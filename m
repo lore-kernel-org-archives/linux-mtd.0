@@ -1,21 +1,19 @@
 Received: from 39.208-78-194.adsl-fix.skynet.be ([194.78.208.39]
 	helo=mail.macqel.be)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BW9zZ-0003ea-5w
-	for linux-mtd@lists.infradead.org; Fri, 04 Jun 2004 04:24:08 -0400
+	id 1BWAEb-0003sF-BQ
+	for linux-mtd@lists.infradead.org; Fri, 04 Jun 2004 04:39:33 -0400
 Received: (from phdm@localhost)
-	by mail.macqel.be (8.11.0/8.11.0/SuSE Linux 8.11.0-0.4) id i548NQL23277
-	for linux-mtd@lists.infradead.org; Fri, 4 Jun 2004 10:23:26 +0200
-Message-Id: <200406040823.i548NQL23277@mail.macqel.be>
-To: uclinux-dev@uclinux.org
-Date: Thu, 3 Jun 2004 11:05:33 +0200 (CEST)
+	by mail.macqel.be (8.11.0/8.11.0/SuSE Linux 8.11.0-0.4) id i548dQe23551
+	for linux-mtd@lists.infradead.org; Fri, 4 Jun 2004 10:39:26 +0200
+Message-Id: <200406040839.i548dQe23551@mail.macqel.be>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 4 Jun 2004 10:39:26 +0200 (CEST)
 From: "Philippe De Muyter" <phdm@macqel.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Sender: phdm@macqel.be
-Cc: 
-Subject: PATCH : 2.6/mtd/Kconfig help
+Subject: PATCH : chips/Kconfig help wording
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
