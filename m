@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BupB4-00026e-3i
-	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2004 05:13:48 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Yann Rapaport <yann.rapaport@6wind.com>
-In-Reply-To: <4119D7B0.8080105@6wind.com>
-References: <4119D7B0.8080105@6wind.com>
-Content-Type: text/plain
-Message-Id: <1092215686.3508.4.camel@lap02.tec.linutronix.de>
-Mime-Version: 1.0
-Date: Wed, 11 Aug 2004 11:14:46 +0200
+	id 1BusLi-0002Y1-37
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2004 08:37:01 -0400
+Message-ID: <032f01c47fa1$ae533f50$0100a8c0@superfortress>
+From: "Dan Brown" <dan_brown@ieee.org>
+To: "Brendan Simon" <BrendanSimon@fastmail.fm>, <linux-mtd@lists.infradead.org>
+References: <4111AEA6.2080605@fastmail.fm><003f01c47aeb$706113d0$0100a8c0@superfortress>
+	<4119723E.8050205@fastmail.fm>
+Date: Wed, 11 Aug 2004 08:49:46 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mkfs.jffs2 and NAND smartmedia card
-Reply-To: tglx@linutronix.de
+Cc: 
+Subject: Re: 128MB DOC2000 with 2.4.X kernel
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-08-11 at 10:24, Yann Rapaport wrote:
-> Hi!
-> 
-> I am currently working on installing a JFFS2 filesystem on an ARM 
-> system, using a Samsung NAND Smartmedia device and 2.4.20 kernel from 
-> montavista 3.1.
-> My aim is now to create my filesystem using mkfs.jffs2. When mounting 
-> the partition, I get ECC, CRC and magic bitmask errors.
-> root:/# mkfs.jffs2 -r /usr/admin -s 512 -e 16384 -b -o /dev/mtd1
+----- Original Message ----- 
+From: "Brendan Simon" <BrendanSimon@fastmail.fm>
+Sent: Tuesday, August 10, 2004 9:11 PM
 
-Direct output of mkfs.jffs2 to NAND is not working yet. Output to a file
-and use nandwrite to store it on the FLASH
 
-tglx
+> Summary regarding the 128MB DOC2000:
+>     1) Cannot use NTFL.  I *must* use INFTL
+
+Or a filesystem that runs directly on flash, such as jffs2 or yaffs.
+
+>     2) 128MB DOC2000 is more like a MilleniumPlus device than a DOC2000
+> device.
+
+I think you mean Millennium.  Millennium Plus is another beast entirely :)
+
+>     3) Recommend using 2.6 kernel and latest MTD tree.
+
+This would still be my recommendation, however, there has been some effort
+in the last few days to allow the latest MTD code to compile under the 2.4
+series.  If you're dead-set against switching to 2.6, it might be worth your
+time to grab the latest MTD snapshot, patch your 2.4 kernel using the
+included script, and see what happens.  No promises.
+
+> Is the 96MB DOC2000 more like the 64MB model or the 128MB model?
+> i.e. can I use a 96MB DOC2000 with my existing 2.4.18 kernel or will I
+> have the same problems as the 128MB DOC.
+
+Take a look at the file "DiskOnChip Software Utilities.pdf", distributed by
+M-Systems as part of their free DOS driver download.  Table 1 (on page 4)
+discusses which parts use NFTL and which use INFTL.  Quoted below:
+
+NFTL [NAND Flash Translation Layer] M-Systems' patented algorithm, used by
+the TrueFFS driver for the following devices:
+
+- Most models of DiskOnChip 2000 (see excluded models below).
+
+- DiskOnChip Millennium 8Mbytes.
+
+INFTL [Inverse NAND Flash Translation Layer] M-Systems' latest flash
+management algorithm, used by the TrueFFS driver for the following devices:
+
+- DiskOnChip Millennium Plus
+
+- Mobile DiskOnChip Plus
+
+- DiskOnChip 2000 DIP (high), 384Mbytes and higher.
+
+- DiskOnChip 2000 DIP (low), 192Mbytes and higher.
+
+
+If I had reviewed this table before I responded to your email, I would have
+noticed that the 128M DOC ought to use NFTL.  Are you sure you have a part
+that "looks like a Millennium"?  (All DOC2000 parts that use the Millennium
+hardware interface also use INFTL, and vice versa.)  I'm willing to believe
+the MSYS docs I have might be out of date (I'm pretty sure the
+low-profile/high-profile boundary has changed), but it would be good to
+confirm this.
+
+
+    -Dan
