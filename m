@@ -1,14 +1,19 @@
-Received: from f28.law11.hotmail.com ([64.4.17.28] helo=hotmail.com)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19FFXl-0006qk-ER
-	for <linux-mtd@lists.infradead.org>; Mon, 12 May 2003 16:48:49 +0100
-From: "Richard Koch" <n1gp@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 12 May 2003 11:48:29 -0400
+	id 19FFYX-0006rZ-30
+	for <linux-mtd@lists.infradead.org>; Mon, 12 May 2003 16:49:37 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Kelly <mgkelly59@yahoo.com>
+In-Reply-To: <20030512152319.11494.qmail@web9602.mail.yahoo.com>
+References: <20030512152319.11494.qmail@web9602.mail.yahoo.com>
+Message-Id: <1052754593.23450.75.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Message-ID: <Law11-F28EgJXOxJagX000156c0@hotmail.com>
-Content-Type: text/plain; format=flowed
-Subject: Booting from a JFFS2 partition
+Date: Mon, 12 May 2003 16:49:53 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Is it normal to have a defunct jffs2_gcd_mtd1 process?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Haven't been able to find an answer looking through past posts, so I
-wonder is it possible to setup a single partition flash device with JFFS2,
-and use LILO or GRUB to boot vmlinuz from it (as well as mount the
-partition as root)?
+On Mon, 2003-05-12 at 16:23, Mike Kelly wrote:
+> I wasn't aware that I was mounting it twice.  I have
+> "root=/dev/mtdblock1 rw" in the default string for the
+> command line options (I am using MontaVista's TCT gui
+> program for configuring and building the kernel). 
+> Where else might I be mounting it?
 
-Rick
+Your initscripts or linuxrc will probably be doing 
+'mount -orw,remount /' somewhere.
 
-_________________________________________________________________
-Add photos to your e-mail with MSN 8. Get 2 months FREE*.  
-http://join.msn.com/?page=features/featuredemail
+-- 
+dwmw2
