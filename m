@@ -1,38 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13wZyc-0001Gn-00
-	for mtd-list@infradead.org; Fri, 17 Nov 2000 01:06:02 +0000
-Date: Thu, 16 Nov 2000 20:18:32 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Erwin Authried <eauth@softsys.co.at>,
-        "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: block device for 2.0
-In-Reply-To: <Pine.LNX.4.30.0011162343080.5514-100000@imladris.demon.co.uk>
-Message-ID: <Pine.LNX.4.30.0011162016000.5921-100000@xanadu.gn.com>
+	id 13waFR-0001Ix-00
+	for mtd-list@infradead.org; Fri, 17 Nov 2000 01:23:25 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13waFQ-0001Ir-00
+	for mtd@infradead.org; Fri, 17 Nov 2000 01:23:24 +0000
+Date: Fri, 17 Nov 2000 01:23:20 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Peter De Schrijver <p2@mind.be>
+cc: <mtd@infradead.org>
+Subject: Re: MTD on intel 28F320B3 flash memory
+In-Reply-To: <20001117005926.A829@portablue.linux-apollo.org>
+Message-ID: <Pine.LNX.4.30.0011170121440.1138-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+Your From address is broken.
 
-On Thu, 16 Nov 2000, David Woodhouse wrote:
+On Fri, 17 Nov 2000, Peter De Schrijver wrote:
 
-> On Thu, 16 Nov 2000, Erwin Authried wrote:
->
-> > I thought it might be best to have the choice between the
-> > old, uncached block block driver (for uClinux) or the new driver
-> > as a configuration option. Are there any better ideas?
->
-> Makes sense. How about having CONFIG_MTD_BLOCK and CONFIG_MTD_BLOCK_RW
-> just like we currently have for NFTL?
+> Is this type of flash memory supported ? It seems to use the standard
+> intel/sharp command set (command set #3), although it's not fully CFI
+> compliant.
 
-Why not the other way around, i.e. CONFIG_MTD_BLOCK and CONFIG_MTD_BLOCK_RO?
-The read-only one is more the "special case" than the read-write one...
+We only explicitly support the Intel 'Extended' command set. But IIRC the
+'Standard' command set is almost identical, apart from some operations
+which we don't support yet anyway.
 
+Try making it use the cfi_cmdset_0001 code and see what happens.
 
-Nicolas
+-- 
+dwmw2
+
 
 
 
