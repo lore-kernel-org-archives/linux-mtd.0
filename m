@@ -1,20 +1,18 @@
-Received: from tele-post-20.mail.demon.net ([194.217.242.20])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15M8wH-0007tA-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2001 15:01:34 +0100
-Received: from eti-group.demon.co.uk ([212.228.32.244] helo=eti01.ntdomain01)
-	by tele-post-20.mail.demon.net with esmtp (Exim 2.12 #2)
-	id 15M91a-0003AY-0K
-	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2001 14:07:02 +0000
-Message-ID: <CD62F9B6A488D31192A900105CAB276627DF35@ETI01>
-From: David Mackay <dave.mackay@monitoreurope.com>
-To: linux-mtd@lists.infradead.org
-Subject: JFFS (2) - File locking
-Date: Mon, 16 Jul 2001 15:02:35 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 15M8yz-0007ta-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2001 15:04:21 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D995552@webmail.mediatrix.com> 
+References: <F1BED55F35F4D3118C0F00E0295CFF4D995552@webmail.mediatrix.com> 
+To: Frederic Giasson <fgiasson@mediatrix.com>
+Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com,
+    Jean-Denis Boyer <jdboyer@mediatrix.com>
+Subject: Re: JFFS2 Stability problem! 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 16 Jul 2001 15:09:52 +0100
+Message-ID: <21355.995292592@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,29 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-=A0
-We are beginning to develop a product using JFFS initially (possibly2 =
-in
-the future) and are using file locks in order to both write locally and
-read remotely with a Java client front end. Currently on Ext2 our
-program uses the system call lockf() which works well, however we read
-with interest that JFFS does not support hard links and may have a
-problem with this call!!? Any comments?
-=A0
-Thanks, David
+fgiasson@mediatrix.com said:
+> 	I found a stability problem that looks like a flash space leak while
+> running intense test case with JFFS2. 
 
-EMC Website=A0=A0=A0=A0=A0 http://www.emc-environment.com=A0 =A0=A0 =
-Real Time Air
-Quality Info =A0=A0=A0 http://www.air-quality.net/
+Definitely looks like a leak. Does the space come back after an unmount and 
+remount?
 
-The information transmitted is intended only for the person or entity =
-to
-which it is addressed and may contain confidential and/or privileged
-material. Any review, retransmission, dissemination or other use of, or
-taking of any action in reliance upon, this information by persons or
-entities other than the intended recipient is prohibited. If you
-received this in error, please contact the sender and delete the
-material from any computer.
-
-=A0
+--
+dwmw2
