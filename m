@@ -1,22 +1,28 @@
-Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cvk6B-00061C-OA
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 17:32:48 -0500
-Date: Mon, 31 Jan 2005 17:30:26 -0500 (EST)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <1107188578.21196.346.camel@tglx.tec.linutronix.de>
-Message-ID: <Pine.LNX.4.61.0501311726300.29562@localhost.localdomain>
-References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-	<1107184897.7567.20.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
-	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
-	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
-	<1107188578.21196.346.camel@tglx.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CvkCW-0006Bq-G7
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 17:39:22 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0VMdGFM022979
+	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 17:39:16 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j0VMdGEF146922
+	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 17:39:16 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0VMdGAI028946
+	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 17:39:16 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: Andrew Victor <andrew@sanpeople.com>
+In-Reply-To: <1107190071.2480.150.camel@fuzzie.sanpeople.com>
+References: <1107190071.2480.150.camel@fuzzie.sanpeople.com>
+Content-Type: text/plain
+Date: Mon, 31 Jan 2005 16:39:10 -0600
+Message-Id: <1107211150.7567.43.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2-on-DataFlash support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 Jan 2005, Thomas Gleixner wrote:
+On Mon, 2005-01-31 at 18:47 +0200, Andrew Victor wrote:
 
-> On Mon, 2005-01-31 at 11:14 -0500, Robert P. J. Day wrote:
-> > > > -p, --pad[=SIZE] Pad output to SIZE bytes with 0xFF. If SIZE is
-> > > >                         not specified, the output is padded to the
-> > > > 			end of the final erase block
-> >
-> > at the moment, this is not being followed.  for instance, mkfs.jffs2
-> > has the --pad=SIZE option, where a simple number is treated as KiB.
-> > anyway, you get idea -- it's pretty confusing.
->
-> ???
->
-> It's just missing the k and M suffixes. So its easy to fix.
+(Note, quoting patches is hard to do when they are sent as attachments).
 
-  while this isn't related to MTD, i thought i'd toss it out since i
-just tripped over it in looking at the source for mkfs.jffs2.c.  that
-utility uses the getopt_long() routine to parse arguments, and the
-long_options array that defines the possible args starts with:
+>@@ -435,7 +435,7 @@
+>           if we have a switch to next page, we will not have
+>           enough remaining space for this. 
+>        */
+>-       if (pad) {
+>+       if (pad && jffs2_cleanmarker_oob(c)) {
+>                c->wbuf_len = PAD(c->wbuf_len);
 
-static struct option long_options[] = {
-    {"pad", 2, NULL, 'p'},
-    {"root", 1, NULL, 'r'},
-    ....
+Why did you do this?  Now padding nodes don't get written out on NOR ECC
+flashes.
 
-that first entry ostensibly means that the "pad" parameter has an
-optional argument.
+Could you update the Kconfig file as well?  Config.in is 2.4 only and
+I'm sure 2.6 people would like to use this.
 
-  however, i was not aware that, defined that way, you *must* specify
-that option as, say, "-p262144" and not "-p 262144".  i had never
-noticed that before, and it strikes me as horribly non-intuitive.
+Also, could you send the patch inline next time?  Makes it easier to
+comment on.
 
-  anyway, just an observation.  now i'll shut up and get back to
-patching.
-
-rday
+thx,
+josh
