@@ -1,22 +1,26 @@
-Received: from rproxy.gmail.com ([64.233.170.203])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D5fm4-0004xa-3C
-	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2005 02:57:04 -0500
-Received: by rproxy.gmail.com with SMTP id y7so374268rne
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 27 Feb 2005 23:57:01 -0800 (PST)
-Message-ID: <f6d0cd06050227235769c791c8@mail.gmail.com>
-Date: Mon, 28 Feb 2005 13:27:01 +0530
-From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
-To: "C. Michael Sundius" <msundius@sundius.com>
-In-Reply-To: <1f065e28ae2a88eda8f37b9c40f54ed2@sundius.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from [202.141.68.3] (helo=desh.cse.iitd.ernet.in)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D5g5W-0005Dh-Di
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2005 03:17:14 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by desh.cse.iitd.ernet.in (8.12.8/8.12.8) with ESMTP id j1S8GYGJ017975
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Feb 2005 13:46:34 +0530
+Received: from desh.cse.iitd.ernet.in ([127.0.0.1])
+	by localhost (desh.cse.iitd.ernet.in [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with LMTP id 17593-06 for <linux-mtd@lists.infradead.org>;
+	Mon, 28 Feb 2005 13:46:34 +0530 (IST)
+Received: from [10.20.50.26] (electron.kritikal.iitd.ernet.in [10.20.50.26])
+	by desh.cse.iitd.ernet.in (8.12.8/8.12.8) with ESMTP id j1S8GRIH017971
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Feb 2005 13:46:29 +0530
+Message-ID: <4222D35B.7070909@kritikalsolutions.com>
+Date: Mon, 28 Feb 2005 13:46:27 +0530
+From: Narinder Kumar <narinder@kritikalsolutions.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-References: <1f065e28ae2a88eda8f37b9c40f54ed2@sundius.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: utilities for mtd
-Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+Subject: SPI DataFlash interfacing using 2.4.26
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-I think you must have tried flash_erase on a block device
-(/dec/mtdblock0) but flash_erase will work only for Char Device. So
-you can create a char MTD device by giving below commands.
+         Did anyone on the group sucessfully interfaced a JFFS2 
+partition on SPI DataFlash on Atmel's AT91RM9200 DK using  kernel 2.4.26 
+? I have been able to mount the partition but read/write was giving CRC 
+errors. If anyone has been able to do it succesfully please let me know 
+your setup and what are the steps that you followed ?
 
-mknod /dev/mtd0 c 90 0
-
-Now try the flash_erase command, it should work.
-
-Regds
-Niraj
-
-
-On Thu, 24 Feb 2005 11:34:34 -0800, C. Michael Sundius
-<msundius@sundius.com> wrote:
-> Hi,
-> 
-> I am using a the mtd code from the 2.4.20 kernel. how/where do I get
-> the corresponding utilities
-> such as flash_erase, flash_lock etc... I grabbed a random version of
-> them somewhere and it
-> didn't seem to work.. for one the flash_erase program calls an ioctl
-> "MEMGETREGIONCOUNT"
-> and my kernel returned:
->        in appropriate ioctl for this device....
-> 
-> any help is appreciated.
-> 
-> thanks
-> 
-> C Michael Sundius
-> Solico Group LLC
-> 232 Nevada St
-> San Francisco, CA 94110
-> msundius@sundius.com
-> (415)608-0121
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Thanx
+Narinder
