@@ -1,30 +1,20 @@
-Received: from e31.co.us.ibm.com ([32.97.110.129])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKhOz-0001xs-B8
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 14:11:09 -0400
-Received: from westrelay04.boulder.ibm.com (westrelay04.boulder.ibm.com
-	[9.17.193.32])
-	by e31.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id i9LIB2Lv375776
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Oct 2004 14:11:02 -0400
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by westrelay04.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	i9LIB2Am150248
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Oct 2004 12:11:02 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	i9LIB1iY012429
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Oct 2004 12:11:01 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-To: bodhi@despammed.com
-In-Reply-To: <200410211624.i9LGOGk29291@mailout.despammed.com>
-References: <200410211624.i9LGOGk29291@mailout.despammed.com>
-Content-Type: text/plain
-Message-Id: <1098382261.20427.16.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Thu, 21 Oct 2004 13:11:01 -0500
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKiIS-0002Rs-Ln
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 15:08:26 -0400
+Message-ID: <417809FB.3060801@inf.u-szeged.hu>
+Date: Thu, 21 Oct 2004 21:11:55 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+References: <41767593.9030004@inf.u-szeged.hu>
+	<20041021124926.GA1497@angel.research.nokia.com>
+In-Reply-To: <20041021124926.GA1497@angel.research.nokia.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Howto write to flash from user space (II)
+Cc: dwmw2@infradead.org, Kluba Patrik <pajko@halom.u-szeged.hu>,
+	linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,39 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-10-21 at 11:24, bodhi@despammed.com wrote:
-> I already read http://www.linux-mtd.infradead.org/
-> but I found no useful informations
+Hi Jarkko,
 
-There's all kinds of useful information on there...  for MTD developers
-;).
+> My initial test was only about the mount time. I have now also tried
+> to exercise the patched file system and with very little testing I get
+> CRC or ECC errors.
+> 
+>   # mount /dev/mtdblock2 /mnt -t jffs2
+>   # mkdir /mnt/testdir
+>   # umount /mnt
+>   jffs2_flush_wbuf(): Write failed with -5
+>   # mount /dev/mtdblock2 /mnt -t jffs2
+>   mtd->read(0x1fbec bytes from 0x1fc0414) returned ECC error
+>   Empty flash at 0x01fc2f1c ends at 0x01fc3000
+>   #
+> 
+> With plain 2.6.9-rc4-omap1 with fresh CVS MTD code, I don't see anything
+> weird occuring.
 
-> How can I write directly into flash from an user space application ?
+Can you send me the full kernel log file?
 
-Using either /dev/mtdblock (CONFIG_MTD_BLOCK) or /dev/mtd
-(CONFIG_MTD_CHAR).
+Another interesting test would be to test the new image (sumtool) with 
+the CVS MTD code. Because the summary is RWCOMPAT_DELETE node it should 
+works well. It would be nice to now if there is CRC/ECC errors in this case.
 
-You might also want to look into JFFS2 if you haven't already.
-
-> I am using a SA1110 with 16MB StrataFlash.
-> I tried using /dev/mem but I can only read and not write to flash.
-
-That's for DRAM only.
-
-> I do not have any /dev/mtd* device in my /dev , why ?
-
-You need to configure MTD into your kernel, and create the /dev nodes if
-you aren't using devfs or udev.  The MAKEDEV script in the utils
-directory helps with that.
-
-> Do I need to develop a driver ?
-
-No, StrataFlash is handled by the cfi_cmdset_0001 driver
-(CONFIG_MTD_CFI_INTELEXT).
-
-Also, the more information you give us, the more help we can provide. 
-The board and flash chip types are a great start.  If you are still
-having trouble, let us know what version of the kernel, what MTD
-snapshot, etc.
-
-josh
+Thanks,
+Ferenc
