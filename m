@@ -1,23 +1,21 @@
-Received: from [207.164.182.47] (helo=hermes.cbnco.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ABGoB-0006TE-D8
-	for <linux-mtd@lists.infradead.org>; Sun, 19 Oct 2003 17:53:35 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by hermes.cbnco.com (Postfix) with ESMTP id 6BE06128D
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Oct 2003 12:52:31 -0400 (EDT)
-Received: from ex-max.ott.wann.com (porcuswine.cbnco.com [207.164.182.8])
-	by hermes.cbnco.com (Postfix) with ESMTP id A5F3E1210
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Oct 2003 12:52:30 -0400 (EDT)
-Date: Sun, 19 Oct 2003 12:52:29 -0400
-To: linux-mtd@lists.infradead.org
-From: Vlad <vdoukhan@cbnco.com>
-MIME-Version: 1.0
-Message-ID: <oprxauhrln6cx9a8@cbncitar.cbnco.com>
-Content-Type: text/plain; format=flowed; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Two commas in cfi_cmdset_0002.c
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AAbiW-000179-1U
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 22:01:00 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Stefano Babic <stefano.babic@siemens.com>
+In-Reply-To: <1060078328.1717.233.camel@mhw42463>
+References: <1060078328.1717.233.camel@mhw42463>
+Message-Id: <1066424098.6281.15.camel@tubarao>
+Mime-Version: 1.0
+Date: 17 Oct 2003 14:54:58 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-0kSLqYBYDZ47lrlTGeBa"
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Concurrency erase/write on the same AMD chip with not aligned
+	words
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +26,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
+--=-0kSLqYBYDZ47lrlTGeBa
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I think you have forgotten two commas.
+On Tue, 2003-08-05 at 04:12, Stefano Babic wrote:
+> Hi all,
+>=20
+> I have seen a problem when I am writing not-aligned words on AMD chips
+> while on the same chip another process starts an erase procedure for
+> other sectors or a different MTD device.=20
 
-Cheers,
-vlad
+Stefano,
 
-cvs -z9 diff  "cfi_cmdset_0002.c"
-Index: cfi_cmdset_0002.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0002.c,v
-retrieving revision 1.89
-diff -r1.89 cfi_cmdset_0002.c
-371c371
-< 			DEBUG(MTD_DEBUG_LEVEL1 "Using buffer write method\n" );
----
-> 			DEBUG(MTD_DEBUG_LEVEL1, "Using buffer write method\n" );
-374c374
-< 			DEBUG(MTD_DEBUG_LEVEL1 "Using word write method\n" );
----
-> 			DEBUG(MTD_DEBUG_LEVEL1, "Using word write method\n" );
+The fix for this is in cfi_cmdset_0002.c v1.87.  I had to pick through
+your patch a bit, but I think all the relevant pieces are there.  Will
+you test it please?
+
+Thanks for your help and the patch.
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-0kSLqYBYDZ47lrlTGeBa
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA/kFcifsBPTKE6HMkRAsvuAJ9DWW7W0AKnANH2E2syKl7QMdmfLACfZB57
+H+K5b6KYQauw8LVa0sbczBA=
+=BVPG
+-----END PGP SIGNATURE-----
+
+--=-0kSLqYBYDZ47lrlTGeBa--
