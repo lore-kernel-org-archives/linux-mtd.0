@@ -1,80 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13gQay-0004JU-00
-	for mtd-list@infradead.org; Tue, 03 Oct 2000 12:50:52 +0100
-Received: from fep04.swip.net ([130.244.199.132] helo=fep04-svc.swip.net)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13gQax-0004JN-00
-	for mtd@infradead.org; Tue, 03 Oct 2000 12:50:51 +0100
-From: "Bjorn Eriksson" <mdeans@algonet.se>
-To: "Steven J. Hill" <sjhill@cotw.com>,
-	"MTD List" <mtd@infradead.org>
-Subject: Re: First release of NAND flash device driver... / Comments
-Date: Tue, 3 Oct 2000 13:50:29 +0200
-Message-ID: <001001c02d30$20a2e380$0800a8c0@win95.inteloop.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <39D44220.FB9C32E4@cotw.com>
+	id 13gYiS-000642-00
+	for mtd-list@infradead.org; Tue, 03 Oct 2000 21:31:08 +0100
+Received: from ils.nlynx.com ([204.251.47.66] helo=nlynx.com)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13gYiR-00063w-00
+	for mtd@infradead.org; Tue, 03 Oct 2000 21:31:07 +0100
+From: Brian.Burton@nlynx.com
+To: mtd@infradead.org
+Message-ID: <8625696D.00709687.00@nlynx.com>
+Date: Tue, 3 Oct 2000 15:26:55 -0500
+Subject: purpose of docprobe module and which device do I use
+Mime-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
- I've had quick peek at your code this morning. I hope to spend some more
-time on this issue this week. I started out trying to understand why you
-want a 'static u_char *ecc_read_buf;' (uppercase initial-letter or some such
-would be nice IMHO) but instead stumbled upon spia_init() (which is 'void'
-BTW, perhaps it should be 'int' and return -ENOMEM etc.).
 
- Small change suggestion: [I know this will forever mark me as a wanker who
-can't read others code...]
+A couple of newbie questions:
+1. Do any of the other drivers use docprobe?  Since I (as the developer) know
+where the DOC is located, shouldn't I hard-code the location of the DOC instead
+of this scanning for the DOC?  It seems to be confused as to what is a DOC and
+what is not.
+2.  I am looking to replace the M-System binary driver with this open source
+driver (I am having problems with the M-System driver thinking that I have 2
+DOCs installed instead of just the one that I have installed).  I was put the
+Linux Router Project into a DOC.  Would I be using the pseudo-block device
+MTDBLOCK driver as a replacement for the M-system driver?  Would that device be
+/dev/mtdb0?
 
-The code in question: (spia_init())
-	/* Allocate memory for MTD device structure and private data */
-	spia_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_info),
-				GFP_KERNEL);
-	if (!spia_mtd) {
-		printk("Unable to allocate SPIA NAND MTD device structure.\n");
-		return;
-	}
+Also, after reading much of the list archives, and having the same problem with
+modprobe in finding the drivers, I found I needed to add
+path[mtd]=/lib/modules/mylinux/mtd for modprobe to find the various modules.
+Was that correct?
 
-	/* Get pointer to private data */
-	this = (struct nand_info *) (&spia_mtd[1]);
-
-	/* Initialize structures */
-	memset((char *) spia_mtd, 0, sizeof(struct mtd_info));
-	memset((char *) this, 0, sizeof(struct nand_info));
-
-	/* Link the private data with the MTD structure */
-	spia_mtd->priv = this;
-
-I think this makes the intent clearer:
-
-	/* Allocate memory for MTD device structure and private data */
-	struct combined_kmalloc_struct {		/* Struct for combined kmalloc()
-		struct mtd_info mtd_info_struct;	 * of mtd_info_struct and ...
-		struct nand_info nand_info_struct;	 * nand_info_struct. */
-	} *p = kmalloc(sizeof(struct combined_kmalloc_struct), GFP_KERNEL);
-
-	if (!p) {
-		printk("Unable to allocate SPIA NAND MTD device structure.\n");
-		return -ENOMEM;
-	}
-
-	/* Initialize structures */
-	memset((char *)p, 0, sizeof(*p));
-
-	/* Get pointers to private data */
-	spia_mtd = &p->mtd_info_struct;
-	spia_mtd->priv = this = &p->nand_info_struct;
-
- I assume (never a good idea) that the intent is to reduce the kmalloc()
-overhead.
-
-
---
-//Björnen [I'll go into hiding now...]
+Brian
 
 
 
