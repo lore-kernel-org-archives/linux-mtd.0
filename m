@@ -1,14 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@oktetlabs.ru
-In-Reply-To: <416122A1.4060302@oktetlabs.ru>
-References: <416122A1.4060302@oktetlabs.ru>
-Content-Type: text/plain
-Message-Id: <1096885344.30942.559.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 11:22:25 +0100
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CEQ7o-0004ZE-1Y
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 06:31:25 -0400
+Date: Mon, 4 Oct 2004 12:31:07 +0200
+From: Lorenzo PARISI <lorenzo.parisi@st.com>
+To: YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Message-Id: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: inode checkpoints
+Cc: 
+Subject: Errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 14:14 +0400, Artem Bityuckiy wrote:
-> Wha do JFFS2 folks think about the idea?
+Hi,
 
-It seems to make a lot of sense. We could write such checkpoints only on
-files which are large enough to warrant them, and we could tune the
-frequency of such checkpoints. 
+whi compiling yaffs_guts.c there are errors, with command:
 
-Of course as with many cute ideas it may turn out to be utterly
-impractical when we implement it :) It does look sane though.
+#ifdefined KERNEL...
 
--- 
-dwmw2
+
+there are more one error.
+
+Thanks.
