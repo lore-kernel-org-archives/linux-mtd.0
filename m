@@ -1,23 +1,22 @@
-Received: from tomts25.bellnexxia.net ([209.226.175.188]
-	helo=tomts25-srv.bellnexxia.net)
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AJOxh-0005nE-Gg
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2003 03:13:01 +0000
-Received: from sympatico.ca ([65.93.214.38]) by tomts25-srv.bellnexxia.net
-	ESMTP
-	<20031111031137.PBTM15340.tomts25-srv.bellnexxia.net@sympatico.ca>
+	id 1AJP6X-0005rx-IG
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2003 03:22:09 +0000
+Received: from 192.168.1.100 (unknown [192.168.1.100])86AD118826
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Nov 2003 22:11:37 -0500
-Message-ID: <3FB05364.2000608@sympatico.ca>
-Date: Mon, 10 Nov 2003 22:11:32 -0500
-From: Mike Gore <magore@sympatico.ca>
-MIME-Version: 1.0
+	Mon, 10 Nov 2003 22:24:15 -0500 (EST)
+From: Joshua Wise <joshua@joshuawise.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: GRUB MTD DISKONCHIP patch failure with "grub-2003-01-08-doc.patch"
- on file stage2/disk_io.c using latest GRUB CVS
-Reply-To: magore@icr1.uwaterloo.ca
+Date: Mon, 10 Nov 2003 22:20:42 -0500
+MIME-Version: 1.0
+Content-Description: clearsigned data
+Content-Disposition: inline
+Message-Id: <200311102220.43215.joshua@joshuawise.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: NAND flash backup
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,103 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I downloaded the latest CVS for grub on 10 Nov 2003 at 9:30pmEST and 
-attempted to apply the MTD patch grub-2003-01-08-doc.patch
-Besides the expected Changelog and Authors errors I got one rejected 
-section on stage2/disk_io.c (see below for copy of the failed section)
+Hi all,
 
-It is not totally clear to me how to fix this - looking at the code it 
-seems that the patch is using a different parsing method and as such it 
-is not clear  how to proceed since
-I do not have the grub code from the original patch date - nor do I know 
-what bugs it may have had and or have fixed...
+As some of you may know, I'm doing the port of Linux to the iPAQ h1910. I'm=
+=20
+almost to the point of flashing a root filesystem to the device, but first =
+I=20
+need to be able to make a backup of the 16MB NAND flash. I do not know what=
+=20
+ECC I'm supposed to use, so I just use ECC_NONE at present. I have verified=
+=20
+that mtdblock reads do not fail, but I have not verified any contents.
 
-I suspect the problem must be recent since others have reported success 
-with patching GRUB in the last few months
+Anyway, to the point. I want to be able to make an *exact* copy of the=20
+previous WinCE image on the device, down to the bad blocks. Is there a=20
+utility that allows me to do this? I've heard of nanddump, but I've not don=
+e=20
+much research into it. This code is not going to run in userland (this is i=
+n=20
+the kernel, for Linux as Bootloader project), but I'm fine with porting any=
+=20
+utilities I need into the kernel.
 
-I would be thankfull for any pointers
+Thanks, and sorry if my writing is a little unclear (been spending most of =
+the=20
+day hacking on h1910 USB setup, and my brain feels like it's been put in th=
+e=20
+blender.)
+/joshua
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <lilo> I akilled *@* by mistake
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-Here is disk_io.c.rej
-
-***************
-*** 964,987 ****
-                return device + 2;
-            }
- 
--         if ((*device == 'f' || *device == 'h' || *device == 'n')
--             && (device += 2, (*(device - 1) != 'd')))
--           errnum = ERR_NUMBER_PARSING;
- 
--         if (ch == 'n')
--           current_drive = NETWORK_DRIVE;
--         else
-            {
-              safe_parse_maxint (&device, (int *) &current_drive);
-             
-              disk_choice = 0;
-              if (ch == 'h')
-                current_drive += 0x80;
-            }
-        }
- 
-        if (errnum)
--       return 0;
- 
-        if (*device == ')')
-        {
---- 1024,1060 ----
-                return device + 2;
-            }
- 
-+         device += 2;
- 
-+ #define MK16(a,b) ( ((a)<<8) + (b) )
-+
-+         switch (MK16(ch, *(device-1)))
-            {
-+           case MK16('n','d'):
-+             current_drive = NETWORK_DRIVE;
-+             break;
-+            
-+           case MK16('d','c'):
-              safe_parse_maxint (&device, (int *) &current_drive);
-+             disk_choice = 0;
-+             current_drive += DISK_ON_CHIP;
-+             break;
-             
-+           case MK16('h','d'):
-+           case MK16('f','d'):
-+             safe_parse_maxint (&device, (int *) &current_drive);
-              disk_choice = 0;
-              if (ch == 'h')
-                current_drive += 0x80;
-+             break;
-+            
-+           default:
-+             errnum = ERR_NUMBER_PARSING;
-            }
-        }
- 
-        if (errnum)
-+        return 0;
- 
-        if (*device == ')')
-        {
-
-
-
--- 
-# Mike Gore
-# At Home:	InfoWrite Consulting
-# Mail:		405 Midwood Cres, Waterloo Ontario, N2L 5N4
-# Phone:	1-519-884-4943
-# Fax:		1-519-885-0548
-# Email:	magore@sympatico.ca
-#
-# At Work: 	Technical Support, CSCF
-# Smail:   	DC3549C, University of Waterloo, 200 University Ave
-#	     	Waterloo Ontario, Canada, N2L 3G1
-# Phone:	1-519-888-4567, x6205
-# Fax:		1-519-746-5036
-# Email:	magore@uwaterloo.ca
+iD8DBQE/sFWKPn9tWOqA4LMRAtWMAJwOVG9Kt/Xn6sQKRy0zeawSsl0lcgCdEBv5
+19CW9E6Lg4qhS0R1P7XNeDk=3D
+=3D+jMn
+=2D----END PGP SIGNATURE-----
