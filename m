@@ -1,31 +1,29 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DBzg3-000164-TO
-	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2005 13:25:00 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j2HIOv9q013360
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Mar 2005 13:24:57 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j2HIOu5u080096
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Mar 2005 13:24:56 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j2HIOuWP000754
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Mar 2005 13:24:56 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: "Mark A. Greer" <mgreer@mvista.com>
-In-Reply-To: <4239C51B.70101@mvista.com>
-References: <42323A97.5070105@mvista.com>
-	<20050317163526.GB10864@wohnheim.fh-wedel.de>
-	<4239C51B.70101@mvista.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Thu, 17 Mar 2005 12:24:31 -0600
-Message-Id: <1111083871.7610.3.camel@windu.rchland.ibm.com>
+	id 1DBzhh-00016K-Al
+	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2005 13:26:42 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1DBzcz-0000Dy-Ol
+	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2005 19:21:56 +0100
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Mar 2005 19:21:49 +0100
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Mar 2005 19:21:49 +0100
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Date: Thu, 17 Mar 2005 18:20:57 +0000 (UTC)
+Message-ID: <loom.20050317T190818-133@post.gmane.org>
+References: <487B538D08487B4D8FEC138A13D4F6AC509BA5@HOUEXCH077.corp.halliburton.com>
+	<1110974906.30606.38.camel@sauron.oktetlabs.ru>
+	<1111002676.4814.112.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	Embedded PPC Linux list <linuxppc-embedded@ozlabs.org>
-Subject: Re: [PATCH 2.6.12] mtd: Remove MTD map file for Chestnut platform.
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
+Subject: Re: failed write verify causes segmentation fault
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +33,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-17 at 10:57 -0700, Mark A. Greer wrote:
-> Jörn Engel wrote:
-> >
-> >Applied to mtd cvs.  It will make its way to Linus eventually...
-> >
-> >Thanks!
-> >  
-> >
-> 
-> Jörn,
-> 
-> Thanks for looking into this but Andrew has already pushed that through 
-> from his end.  (I had posted an earler patch with the map removal in it 
-> before I broke it out and sent that part to you and the rest to Andrew 
-> again.)
-> 
-> Sorry for wasting your time.
+Hi,
 
-Not a waste of time.  It's been removed from MTD CVS so it doesn't
-magically reappear later (or cause headaches when doing a merge).
+> > This is only one possible reason. The other possible reason which I
+> > think is more likely has happened in your case is that JFFS2 tried to
+> > write to a non-empty NAND page, e.g., the page didn't contain all 0xFF.
+> > In this case write_verify() might fail as well. I don't know why JFFS2
+> > might do that, possibly there is some bug.
+> 
+> The question is not why the write verify fails. In his test environment
+> a page failure is expected to happen at some point. The question is why
+> JFFS2 did not cope with the problem as it is supposed to be.
 
-Jörn meant that the next time the MTD BK tree is synced with Linus,
-it'll show up.  If it's already there, then no big deal :).
+Exactly. Could not have said better myself. How should jffs2 handle failed 
+writes? Replace bad page transparently on the fly, return number of bytes 
+written < number of bytes requested, segfault ;-) ? 
 
-josh
+Sergei
+
+P.S. For you, poor souls stuck behind corporate firewalls with Outlook/Exchange,
+it looks like gmane.org is a good alternative. It does threading, posts plain 
+text and checks for >80 chars/lines.
