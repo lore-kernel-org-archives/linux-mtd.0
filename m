@@ -1,18 +1,20 @@
-Received: from msr69.hinet.net ([168.95.4.169] helo=msr.hinet.net)
+Received: from chrudim.coprosys.cz ([194.108.73.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ATME-0007aT-00
-	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 11:28:38 +0100
-From: "Steve Tsai" <startec@ms11.hinet.net>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: RE: FW: Zlib compress 
-Date: Wed, 22 May 2002 18:28:24 +0800
-Message-ID: <002a01c2017b$682474a0$5501a8c0@synso.com.tw>
+	id 17ATgJ-0007bz-00
+	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 11:49:24 +0100
+Received: from wolfhill.cz (user@ales.coprosys.cz [192.168.1.97])
+	by chrudim.coprosys.cz (8.9.3/8.9.3) with ESMTP id MAA15329
+	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 12:49:22 +0200
+Message-ID: <3CEB781F.79F063D0@wolfhill.cz>
+Date: Wed, 22 May 2002 12:51:11 +0200
+From: Ales Makarov <ales.makarov@wolfhill.cz>
+Reply-To: ales.makarov@wolfhill.cz
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Kernel oops after sync command in jffs2
+References: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF49@mail.mediatrix.com> <18394.1022048830@redhat.com>
+Content-Type: text/plain; charset=iso-8859-2
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <23111.1021290954@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,31 +26,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David,
+I have also reported our oops messages few day ago. I traced down the
+functions and I got from JFFS2 to MTD. The problem is somewhere in
+cfi_amdstd_write(). The problem appears only if there are 2 consecutive
+writes (immediately one after another).
 
-I can not use alignment trap with SamsungS3C4510 which is a ARM7TDMI
-processor, because ARM7TDMI does not have coprocessor 15 using in
-alignment trap codes. Now I try to use get_unaligned to fix the
-alignment problem in my platform and I can write the file into the
-flash, but when I read the file, I got decompressing error, then
-unalignment exception. How many codes do I need to modify?  
+This happens regulary when GC tries to reclaim some space. The kernel
+dies when GC calls mtd_fake_writev()...
+
+Now I tried the latest version of cfi_cmdset_0002.c (v1.55). The kernel
+oops messages are gone, but now I get:
+
+Last[2] is ffff, datum is 1985
+Write of 50 bytes at 0x00052438 failed. returned 0, retlen 0
+Not marking the space at 0x00052438 as dirty because the flash driver
+returned retlen zero
+jffs2_write_dirent in garbage_collect_dirent failed: -5
+
+Ales
 
 
-inflate returned -5
-Unhandled fault: alignment exception (13) at 0x00000001
-fault-common.c 96
-Internal error: Oops: 0
-CPU: 0
-pc : [<00028ad0>]    lr : [<00053c7c>]    Not tainted
-sp : 002a5b3c  ip : 001e7a88  fp : 002a5b54
-r10: 003bd000  r9 : 00373000  r8 : 003bd000
-r7 : 00373000  r6 : 00001000  r5 : 002a5bc8  r4 : 002399e8
-r3 : 00000239  r2 : 00239a00  r1 : 00239a00  r0 : 00008e40
-Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
-Control: 0
-Process telnet (pid: 19, stackpage=002a5000)
-Stack:
-002a5b20:                            00053c7c  00028ad0 20000013
-ffffffff 002399
-
-Steve Tsai
+David Woodhouse wrote:
+> 
+> fgiasson@mediatrix.com said:
+> > The 'called while erasing!' message means that I put a trace in the
+> > map driver write16() function to tell me if write16()is called when a
+> > global variable is set.  This global variable indicates that
+> > do_erase_oneword has sent the erase sector command and is currently
+> > polling for the erase operation to complete.
+> 
+> OK. We already fixed one of these by disabling fast programming mode, after
+> you pointed out that it was sending the unlock command without paying due
+> attention to the state machine. If you're definitely using v1.55 of
+> cfi_cmdset_0002.c, can you put a BUG() in the mtxmap_write16() call just
+> after it prints the 'called while erasing!' message, and we'll see where
+> it's being called _from_.
+> 
+> --
+> dwmw2
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
