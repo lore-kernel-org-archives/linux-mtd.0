@@ -1,20 +1,24 @@
 Received: from fish.redhat.com ([213.86.99.237]
 	helo=executor.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19p2HR-00082F-8o
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 09:55:53 +0100
+	id 19p42L-0008U0-T8
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 11:48:25 +0100
+Received: from hades.cambridge.redhat.com (hades.cambridge.redhat.com
+	[172.16.18.64])
+	by executor.cambridge.redhat.com (Postfix) with ESMTP id CD90E63D69
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Aug 2003 11:47:48 +0100 (BST)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Dave Dillow <ddillow@idleaire.com>
-In-Reply-To: <1061283276.9943.1160.camel@hades.cambridge.redhat.com>
-References: <1061236980.14477.20.camel@dillow.idleaire.com>
-	 <1061283276.9943.1160.camel@hades.cambridge.redhat.com>
-Message-Id: <1061283331.9943.1164.camel@hades.cambridge.redhat.com>
+To: jon.hoekwater@spansion.com
+In-Reply-To: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FD4@txexmtab.amd.com>
+References: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FD4@txexmtab.amd.com>
+Message-Id: <1061286060.9943.1235.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Tue, 19 Aug 2003 09:55:31 +0100
+Date: Tue, 19 Aug 2003 10:42:13 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL
+Subject: Re: Unknown host cvs.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-08-19 at 09:54 +0100, David Woodhouse wrote:
-> On Mon, 2003-08-18 at 16:03 -0400, Dave Dillow wrote:
-> > Has anybody used the INFTL that is the CVS tree and can confirm that it
-> > works for writing?
+On Mon, 2003-08-18 at 14:26 -0500, jon.hoekwater@spansion.com wrote:
+> I entered the command as instructed, but I get the following error message:
 > 
-> Yes, but only on the DiskOnChip Millennium.
+> Unknown host cvs.infradead.org
 
-Doh. "Millennium Plus".
-
-/me wanders off to see if the coffee's brewed yet...
+The DSL line which unfortunately at the moment hosts _both_
+ns0.infradead.org and ns1.infradead.org has been going up and down like
+a yoyo for the past couple of days. One (or both) of them is moving
+fairly soon so it's slightly more sensible. In the meantime, just try
+again.
 
 -- 
 dwmw2
