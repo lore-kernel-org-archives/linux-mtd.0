@@ -1,20 +1,26 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from wproxy.gmail.com ([64.233.184.205])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEGYs-0008H3-4z
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 19:50:58 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Aras Vaichas <arasv@magellan-technology.com>
-In-Reply-To: <42420354.5000407@magellan-technology.com>
-References: <42420354.5000407@magellan-technology.com>
-Content-Type: text/plain
-Date: Thu, 24 Mar 2005 01:50:51 +0100
-Message-Id: <1111625452.4010.175.camel@tglx.tec.linutronix.de>
+	id 1DEGd5-0008IB-OV
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 19:55:20 -0500
+Received: by wproxy.gmail.com with SMTP id 37so288784wra
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Mar 2005 16:55:20 -0800 (PST)
+Message-ID: <6934efce05032316553410bfdd@mail.gmail.com>
+Date: Wed, 23 Mar 2005 16:55:20 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1111423965.7635.4.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: flashcp problem when called via execlp
-Reply-To: tglx@linutronix.de
+References: <1110827292.7642.26.camel@windu.rchland.ibm.com>
+	<1110828016.7642.29.camel@windu.rchland.ibm.com>
+	<1110828565.7642.33.camel@windu.rchland.ibm.com>
+	<20050317103418.GA4501@wohnheim.fh-wedel.de>
+	<1111423965.7635.4.camel@windu.rchland.ibm.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: lock bit and erase errors
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-24 at 11:01 +1100, Aras Vaichas wrote:
-> Hello,
-> 
-> I'm calling "flashcp" from a utility in order to write a file to a NOR flash 
-> device. When I call flashcp from my utility, it doesn't work properly.
-> 
-> In my utility I create a temporary file, fill it with data and then I call 
-> flashcp via execlp like so:
-> 
-> execlp( "flashcp", "flashcp", filenamep, MTDFILE, (char *)0 );
+> Me either.  Some kind of test suite would be nice though.  Artem has the
+> NAND simulator.  Perhaps someone could make a NOR simulator as well to
+> test the CFI stuff?  Any volunteers?
 
-I doubt, that flashcp executes different when executed via execlp.
+We've got a unit test framework in alpha that would have caught this
+assuming tests were run for it.  We'll create a test for this bug to
+demonstrate.  Let me get it to a halfway presentable state and get
+Legal's stamp of approval to release, then I will send it out.  I'd
+like to see what ya'll think about it.  There are also some issues
+with the build system we could use some help with.
 
-> $ flashcp uenv_Zdp5Bp /dev/mtd/2 && hexdump /dev/mtd/2
-
-Is the file created by your utility ? If not, then your file creation is
-broken.
-
-tglx
+Can I ftp a tarball somewhere on the hallowed infradead.org or get a
+directory in the CVS tree I can commit it to?
