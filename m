@@ -1,15 +1,16 @@
-Received: from www.optixsoft.de ([213.187.73.226])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18MByb-0000T1-00
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2002 18:52:57 +0000
-Date: Wed, 11 Dec 2002 20:23:02 +0100 (MET)
-From: Tobias Otto-Adamczak <toa@indakom.de>
-To: <linux-mtd@lists.infradead.org>
-cc: Jochen Schaeuble <psionic@psionic.de>
-Subject: slram and buffer cache
-Message-ID: <Pine.LNX.4.31.0212112004250.12431-100000@www.optixsoft.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from [212.68.212.198] (helo=barnabe.hellea.be ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18MSZY-0001vr-00
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 12:36:12 +0000
+Date: Thu, 12 Dec 2002 14:05:46 +0100
+From: Geoffroy Stevenne <geof@hellea.com>
+To: linux-mtd@lists.infradead.org
+Cc: jch@hellea.be
+Subject: bbram access problems
+Message-Id: <20021212140546.3607a3e0.geof@hellea.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,20 +22,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+
 Hi,
 
-I have a custom board with 32MB SDRAM, 16MB Flash and 512K SRAM here. I
-use the slram driver to access the SRAM (which isn't used otherwise by
-the kernel). I created an 512K ext2 fs image and copied it to the SRAM
-using an mtd char dev. I was able to mount this SRAM area as a mtd block
-device (using mtdblock_ro) and read/write files to the ext2 fs.
+We're trying to use BBRAM on a VersaLogic VSBC-6 m-b.  We use the slram
+driver and the 2.4.18 kernel.  The problem is that we can't acces the
+entire memory of the BBRAM, just the first 64k page.
 
-My problem is the buffer cache for the block devices. I do not want
-write operations to the SRAM being delayed. What can I do to avoid that
-? I searched for some hours today but to no avail.
+Other problem: we added to our lilo.conf:
 
-[maybe OT for this list]
-How is this problem solved for "normal" ram disks ?
+append="slram=BBRAM,0xE0000,+0x10000"
 
-Regards
-Tobias
+We can write to the BBRAM but we noticed data corruption (not write
+operation was done) in this address range.  Is there a way to lock this
+memory area?  Is this the right thing to do?
+
+What we need is to mount a filesystem on the entire BBRAM, not just the
+first 64k. I can (and wish to) provide more information, test changes,
+report bugs, etc. I can read and understand C code but I don't feel
+competent in writing drivers on my own.
+
+Thanks for your help,
+
+--
+Geoffroy Stévenne
+Hellea SPRL
