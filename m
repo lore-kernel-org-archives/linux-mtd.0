@@ -1,21 +1,19 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Wrps-0003Mo-BQ
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 07:08:20 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-To: Russell King <rmk@arm.linux.org.uk>
-In-Reply-To: <20030629213450.B5653@flint.arm.linux.org.uk>
-References: <20030623010031.E16537@flint.arm.linux.org.uk>
-	 <1056544988.24294.9.camel@passion.cambridge.redhat.com>
-	 <20030629213450.B5653@flint.arm.linux.org.uk>
-Message-Id: <1056953317.26374.22.camel@imladris.demon.co.uk>
+	id 19WubG-0003je-Gy
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 10:05:26 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Oskar Stolc <stolc@intrak.sk>, mdharm@momenco.com
+In-Reply-To: <20030523063820.GH13272@intrak.sk>
+References: <20030523063820.GH13272@intrak.sk>
+Message-Id: <1056963941.25574.93.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Mon, 30 Jun 2003 07:08:38 +0100
+Date: Mon, 30 Jun 2003 10:05:41 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Fix mtdblock / mtdpart / mtdconcat
+Subject: Re: DiskOnChip MD2202-D256
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2003-06-29 at 21:34, Russell King wrote:
-> > could you try v1.6 from CVS, which should refrain from pretending to have
-> > ecc/oob access functions of none of the subdevices have them, and hence 
-> > fix the problem you observed.
+On Fri, 2003-05-23 at 07:38, Oskar Stolc wrote:
+> Hi,
 > 
-> While looking over the changes between 1.5 and 1.6, I spotted this.  You
-> may want to fix this change:
 > 
-> -                   concat->mtd.eccsize != subdev[i]->eccsize) {
-> +                   concat->mtd.eccsize != subdev[i]->eccsize ||
-> +                   !concat->mtd.read_ecc != !concat->mtd.read_ecc ||
-> +                   !concat->mtd.write_ecc != !concat->mtd.write_ecc ||
-> +                   !concat->mtd.read_oob != !concat->mtd.read_oob ||
-> +                   !concat->mtd.write_oob != !concat->mtd.write_oob) {
+> I'm just trying to install DiskOnChip MD2202-D256 flash disk on my
+> 2.4.21-rc2 linux. While loading modul by command
+> 	'modprobe docprobe'
+> 	
+> these messages occurred on my screen:
+> 
+> DiskOnChip Millenium found at address 0xE0000
 
-Hmmm. That'll optimise well :) 
+Please could you try the following patch:
 
-But it shouldn't bite you -- aside from that does it actually fix the
-problem you'd observed?
+Index: drivers/mtd/devices/docprobe.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/devices/docprobe.c,v
+retrieving revision 1.37
+diff -u -p -r1.37 docprobe.c
+--- drivers/mtd/devices/docprobe.c	30 Jun 2003 09:01:46 -0000	1.37
++++ drivers/mtd/devices/docprobe.c	30 Jun 2003 09:04:41 -0000
+@@ -135,6 +135,12 @@ static inline int __init doccheck(unsign
+ 		 window, DOCControl);
+ #endif /* !DOC_PASSIVE_PROBE */	
+ 
++	/* We need to read the ChipID register four times. For some
++	   newer DiskOnChip 2000 units, the first three reads will
++	   return the DiskOnChip Millennium ident. Don't ask. */
++	ReadDOC(window, ChipID);
++	ReadDOC(window, ChipID);
++	ReadDOC(window, ChipID);
+ 	ChipID = ReadDOC(window, ChipID);
+   
+ 	switch (ChipID) {
+
 
 -- 
 dwmw2
