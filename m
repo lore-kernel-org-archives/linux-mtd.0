@@ -1,28 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 1433S6-0005RQ-00
-	for mtd-list@infradead.org; Mon, 04 Dec 2000 21:47:14 +0000
-Received: from brie.cendio.se ([193.180.23.29] ident=root)
+	id 1433UU-0005Rf-00
+	for mtd-list@infradead.org; Mon, 04 Dec 2000 21:49:42 +0000
+Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.gn.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 1433S4-0005RK-00
-	for mtd@infradead.org; Mon, 04 Dec 2000 21:47:12 +0000
-Date: Mon, 4 Dec 2000 22:51:10 +0100
-Message-Id: <200012042151.WAA13296@localhost.localdomain>
-From: Jan Danielsson <jan@cendio.se>
-To: LKhatskevitch@cachier.com
-CC: rminnich@lanl.gov, mtd@infradead.org, linuxbios@lanl.gov
-In-reply-to: <Pine.LNX.4.21.0012041436200.16124-100000@mini.acl.lanl.gov>
-	(message from Ronald G Minnich on Mon, 4 Dec 2000 14:36:55 -0700
-	(MST))
-Subject: Re: nftl/DoC Mill. root fs question
-References: <Pine.LNX.4.21.0012041436200.16124-100000@mini.acl.lanl.gov>
+	id 1433US-0005RZ-00
+	for mtd@infradead.org; Mon, 04 Dec 2000 21:49:40 +0000
+Date: Mon, 4 Dec 2000 16:49:36 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: <mark.langsdorf@amd.com>
+cc: <mtd@infradead.org>
+Subject: Re: Odd behavior of JFFS with AMD chips - kernel panic!
+In-Reply-To: <Pine.LNX.4.30.0012041525460.16670-100000@xanadu.gn.com>
+Message-ID: <Pine.LNX.4.30.0012041646241.16670-100000@xanadu.gn.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-If you use the proc filesystem: try to let "/etc/mtab" be a soft-link
-to "/proc/mounts".
 
-  --Jan
+
+On Mon, 4 Dec 2000, Nicolas Pitre wrote:
+
+> Beware that /dev/mtd2 (char 90:2) and /dev/mtdblock2 (block 31:2) aren't
+> pointing to the same MTD object...
+
+I'm apparently on drugs...
+
+I just discovered mtd/util/MAKEDEV, and it apparently contains:
+
+for a in `seq 0 16` ; do
+        mknod /dev/mtd$a c 90 `expr $a + $a`
+        mknod /dev/mtdr$a c 90 `expr $a + $a + 1`
+        mknod /dev/mtdblock$a b 31 $a
+done
+
+Sorry for being stupid.
+
+
+Nicolas
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
