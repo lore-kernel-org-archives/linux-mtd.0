@@ -1,21 +1,15 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CJszY-00033L-AS
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 08:21:29 -0400
-Message-ID: <4175065B.6040407@yandex.ru>
-Date: Tue, 19 Oct 2004 16:19:39 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+Received: from web15610.mail.cnb.yahoo.com ([202.165.102.64])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CJtx8-0003PL-O9
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 09:23:10 -0400
+Message-ID: <20041019132248.51622.qmail@web15610.mail.cnb.yahoo.com>
+Date: Tue, 19 Oct 2004 21:22:48 +0800 (CST)
+From: Xin Li <xin123456.li@yahoo.com.cn>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>
-	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>
-	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
-	<4174F0F3.7030604@yandex.ru> <4175035B.80101@inf.u-szeged.hu>
-In-Reply-To: <4175035B.80101@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 compression
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
+Subject: mtd/util code kernel 2.4.25
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I undersand you, but unfortunatelly now there is no way to change 
-> compression mode dimamically. There was (using procfs) but when David 
-> tried to commit it to the kernel, someone (I don't remember who but one 
-> of the kernel developers) declared it bad.
-> 
-> David asked me to reimplement it is sysfs, but that is not an easy 
-> thing. Not technically. There is no fs subdirectory in sysfs. I read in 
-> the mailling list archive of linux-fsdevel@vger.kernel.org. Someone 
-> tried to submit a patch to make this fs subdirectory, because he need it 
-> for NFS. The answer declared it as very bad, too... (sysfs has a 
-> different philosopy...) I had some private discussion with the patch 
-> submitter (what happened exactly, what was really the problem,... what 
-> is his plan). He wrote that he try it again later. He think the guy who 
-> declared his patch bad really hates sysfs (and procfs too). So I decided 
-> to wait, too. :(
-Ferenc, thanks for story, I really interested why the proc support was 
-removed. There is another possibility - ioctl/fcntl. Ok, got it - it is 
-not big deal to move compression mode to superblock, but now it is just 
-unneeded because there are no interfaces to change the compression mode 
-dynamically.
-> 
-> But this new "compressoin configuration" concept may cause that we don't 
-> need sysfs/procfs.
-How are you going to set files/directories compression mode (just 
-interesting) ?
+Hello,
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Can anyone tell where I can get the whole mtd code
+which are integrated into kernel 2.4.25? 
+Since Linux kernel doesn't include mtd/util code, I
+cannot find a proper mtd/util code which matches
+kernel 2.4.25. For example the mtd/util code of
+20020731 of  daily snapshot is too old and doesn't
+support 2KB page Nand flash.
+
+Best regards,
+Li Xin
+
+_________________________________________________________
+Do You Yahoo!?
+150万曲MP3疯狂搜，带您闯入音乐殿堂
+http://music.yisou.com/
+美女明星应有尽有，搜遍美图、艳图和酷图
+http://image.yisou.com
+1G就是1000兆，雅虎电邮自助扩容！
+http://cn.rd.yahoo.com/mail_cn/tag/1g/*http://cn.mail.yahoo.com/event/mail_1g/
