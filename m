@@ -1,20 +1,22 @@
-Received: from gate.epygi.de ([212.126.211.241])
+Received: from mailout09.sul.t-online.com ([194.25.134.84])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19asOy-0003Tn-Vq
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2003 08:33:09 +0100
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: <tglx@linutronix.de>, "David Woodhouse" <dwmw2@infradead.org>,
-   <jasmine@regolith.co.uk>
-Date: Fri, 11 Jul 2003 09:33:05 +0200
-Message-ID: <FCEAKDJJAPHPLJFINDAJGEJBDEAA.Stephan.Linke@epygi.de>
+	id 19azEH-0004Iz-Tu
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2003 15:50:33 +0100
+Received: from merkur.eurodsn.de (merkur.eurodsn.de [192.168.0.7])
+	ESMTP id h6BEeEl01045
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2003 16:40:14 +0200
+From: Juergen Beisert <jbeisert@eurodsn.de>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 11 Jul 2003 16:49:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <200307110218.28358.tglx@linutronix.de>
+Content-Disposition: inline
+Message-Id: <200307111649.26591.jbeisert@eurodsn.de>
 Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-cc: Charles Manning <manningc2@actrix.gen.nz>
-cc: linux-mtd@lists.infradead.org
-Subject: RE: nand flash driver
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Additional arguments to <struct nand_chip.hwcontrol> and .dev_ready
+ functions
+Reply-To: jbeisert@eurodsn.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello all,
 
->=20
-> It will work with addresslines, if
->=20
-> 1. All datasheets are reliable
-> 2. Your hardwaredesigner can precalculate all the timings in details =
-even=20
-> under high interrupt load !!!!
-> 3. the softwareguy is aware of the above problems
->=20
-> My experience is (I have a bunch of different solutions here on top of =
-my=20
-> desk):
->=20
-> Either you have a genius in hardware and software design available or =
-you have=20
-> a rock solid solution with GPIO/FPGA/CPLD. The second one will either=20
-> increase your production costs by <1$ per piece or decrease your =
-performance=20
-> by about 8%.
-> Both negatives will be less than the debugging and redesign costs.
->=20
+I have written a driver for my NAND flash chip application using the mtd 
+framework. It works fine when there is only one chip in one memory area 
+present.
+But if there are more than one NAND chip, you need more than one function for
+    struct nand_chip.hwcontrol,
+because this function don't know which chips control lines it should change.
+Same with
+    struct nand_chip.dev_ready.
+For which chip it should wait?
 
-I don't know exactly what our hardware guys did but from softer =
-perspective I can say the most "difficult" part is to copy =
-nand_command() and modify it so it uses your addresses to switch between =
-data, address and command mode. You can remove a few calls of =
-hwcontrol(). Write your own hwcontrol() and dev_ready() function, that's =
-it. Few magic in there.
-The important question is: did the hardware designer a good job? And I =
-hope ours did. ;-)
+Is it possible to add arguments, like a pointer to the struct nand_chip, to 
+these functions? Then one of this function could handle more than one chip.
 
-Stephan
+--JB
