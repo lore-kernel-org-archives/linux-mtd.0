@@ -1,17 +1,17 @@
-Received: from auriga.auriga.ru ([80.240.102.100])
+Received: from amdext2.amd.com ([163.181.251.1])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19p8iB-0001GP-R1
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 16:47:55 +0100
-content-class: urn:content-classes:message
+	id 19pAeO-0001mI-5j
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 18:52:08 +0100
+Message-ID: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FE1@txexmtab.amd.com>
+From: jon.hoekwater@spansion.com
+To: Bill_Hargen@Jabil.com
+Date: Tue, 19 Aug 2003 12:50:58 -0500
 MIME-Version: 1.0
-Date: Tue, 19 Aug 2003 19:47:37 +0400
-Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D758@auriga.auriga.ru>
-From: "Eugeny Mints" <eugeny.mints@auriga.ru>
-To: <linux-mtd@lists.infradead.org>
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Corrupt my NAND flash device
+ charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: cfi_cmdset_0002.c support for erase suspend and resume
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,139 +21,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Bill,
+
+Thanks for your response.  I have responded below.
 
 > -----Original Message-----
-> From: Eugeny Mints
-> Sent: Monday, August 18, 2003 3:37 PM
-> To: samoutin@hotbox.ru
-> Cc: David Woodhouse; linux-mtd@lists.infradead.org
-> Subject: Fw: corrupt my NAND flash device
->=20
-> Alex, all,
->=20
-> >Alex Samoutin samoutin at hotbox.ru
-> >Wed Jul 2 11:43:11 BST 2003
->=20
-> >Previous message: 2nd try: [PATCH] jffs2 on DOC
-> >Next message: Fw: corrupt my NAND flash device
-> >Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
->=20
-> >Hi Thomas,
-> >Sorry for big delay with answer - I had no hardware to test. Now I=20
-> >got
-> my
-> >CerfCube 405ep back and can play with it.
-> >So I had two problems
->=20
-> >  1.. Write verify sometimes fail
-> >  2.. Write operation during erase sometimes cause data corruption
->=20
-> Could you please describe you test which detects the first problem? I=20
-> have the same, but it arises very seldom and unstable. I'd like to be=20
-> able to reproduce the bug predictably.
->=20
-> >Hardware details :
-> >- NAND chip Toshiba TC58256AFT
-> >- ALE/CLE and CE connected to GPIO
-> >- R/B pin connected to GPIO and I use ready function which reads it
-> pin.
-> >- I played with different timings - even slowest setting gets  me the
-> same
-> >result
->=20
-> >1-st problem was solved by applying new MTD snapshot  (Jun 26). It's
-> look
-> >like nand_deselect(); nand_select() fixes the problem.
->=20
-> It is interesting - this fix doesn't help me:( (I have MIPS Au1100 and
+> From: Bill Hargen [mailto:Bill_Hargen@Jabil.com]
+> Sent: Tuesday, August 19, 2003 12:16 PM
+> To: Hoekwater, Jon
+> Cc: 'linux-mtd@lists.infradead.org'
+> Subject: Re: cfi_cmdset_0002.c support for erase suspend and resume
+> 
+> 
+> -----Original Message-----
+> > Date: Fri, 15 Aug 2003 16:24:30 -0500
+> > From: jon.hoekwater@spansion.com
+> >
+> > I am adding support for the Am29LV640M.
+> >
+> > I will add support for the three byte device ID and buffered
+> > writes.  Testing will be done on an Alchemy DbAU1500 using
+> > MontaVista Linux.
+> 
+> Jon,
+> 
+> I am working with a custom board using the Am29LV640MT flash chip.
+> Linux already had support for that chip - the only "problem" was that
+> writes were taking way too long for my application.  (It took about 14
+> minutes to erase and copy a 5.3 MB release to flash.)  I added support
+> for buffered writes by adapting the code from cfi_cmdset_0001.c and
+> reduced the time from 14 minutes to 2 minutes, and at least a third of
+> that is erase time.  Using the write buffer makes a huge difference!
+> 
+> Since this has been for in-house use so far, I need to get my 
+> manager's
+> OK to release the code.  Should I send it to you to merge 
+> with your work?
+> 
+> --Bill
+> 
+> 
+I have buffered write code, thanks for the offer.  The erase suspend
+code is my primary concern at this point.
 
-> Toshiba TC58256AFTI ) More over, I discovered that fix proposed by=20
-> David in the latests
-> (august) snapshots (reset before write command) hangs my system during
-
-> eraseall:(
-
-Ok, eventually I discovered the core of the problems. In fact, there are
-several problems.=20
-
-Problem 1.
-
-In all snapshots, in which there is no auxiliary routine
-nand_write_bufer there is the bug in nand_command (in RESET command
-implementation):
-
-----code---
-...
-case NAND_CMD_STATUS:
-                return;
-
-        case NAND_CMD_RESET:
-                if (this->dev_ready)
-                        break;
-                this->hwcontrol(mtd, NAND_CTL_SETCLE);
-                writeb (NAND_CMD_STATUS, NAND_IO_ADDR);
-                this->hwcontrol(mtd, NAND_CTL_CLRCLE);
-                while ( !(this->read_byte(mtd) & 0x40));
-                return;
-
-        /* This applies to read commands */
-        default:
-...
----end code---
-
-should be:
-
----code----
-
-...
-case NAND_CMD_STATUS:
-                return;
-
-        case NAND_CMD_RESET:
-                if (this->dev_ready)
-                        break;
-                this->hwcontrol(mtd, NAND_CTL_SETCLE);
-+               NAND_IO_ADDR =3D this->IO_ADDR_W;
-                writeb (NAND_CMD_STATUS, NAND_IO_ADDR);
-                this->hwcontrol(mtd, NAND_CTL_CLRCLE);
-                while ( !(this->read_byte(mtd) & 0x40));
-                return;
-
-        /* This applies to read commands */
-        default:
-...
----end code---
-
-Problem 2.
-
-My board falls in the infinite loop at (!(this->read_byte(mtd) & 0x40));
-even with the latest snapshot 18.08.2003 on RESET command. Interesting,
-that it happens not from the very begging but just when write_oob has
-executed (during eraseall) for about a half of the flash.=20
-
-I found that insertion of udelay() before issuing STATUS command helps.
-Any suggestions?
-
->=20
->=20
-> >However  after applying new MTD release the 2-nd problem still
-> remained.
-> >Then I comment out erase abort in nand_get_chip (as you suggested)=20
-> >and
-> it
-> >fixes my second problem!
-> >Could you remove this erase abort from MTD source? I think it will=20
-> >not affect much on efficiency.
-
-Possibly second Alex's problem may be solved by udelay() also? And there
-is no need to comment out erase abort?=20
-
->=20
-> My second problem is that system hangs if the device is filled once=20
-> and an attempt to re-use previously used sectors is made. Comment out=20
-> erase abort in nand_get_chip fixes my second problem too.
->=20
-
-Regards,
- 		Eugeny
+Thanks again,
+Jon
