@@ -1,27 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14YAOy-0001KR-00
-	for mtd-list@infradead.org; Wed, 28 Feb 2001 17:28:36 +0000
-Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.home)
+	id 14YAZH-0001PJ-00
+	for mtd-list@infradead.org; Wed, 28 Feb 2001 17:39:15 +0000
+Received: from [194.23.27.63] (helo=alpha.telia.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14YAOv-0001KI-00
-	for mtd@infradead.org; Wed, 28 Feb 2001 17:28:34 +0000
-Date: Wed, 28 Feb 2001 12:27:56 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: =?iso-8859-1?Q?Stefan_L=F6fgren?= <stefan.lofgren@introducor.com>
-cc: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: SV: Unable to install modules: initcalls
-In-Reply-To: <01C0A1AC.4FF643C0@STEFANLO>
-Message-ID: <Pine.LNX.4.30.0102281226530.2275-100000@xanadu.home>
+	id 14YAZG-0001PB-00
+	for mtd@infradead.org; Wed, 28 Feb 2001 17:39:14 +0000
+Message-ID: <01C0A1B6.802DD120@STEFANLO>
+From: Stefan Löfgren <stefan.lofgren@introducor.com>
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: SV: SV: Unable to install modules: initcalls
+Date: Wed, 28 Feb 2001 18:44:36 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Yes, sorry about that...
+Forgot to add 2.2.x...
+At least that what the document said... Perhaps it is possible
+to get it to work with some coding... ;-)
+/Stefan
+
+-----Ursprungligt meddelande-----
+Fr=E5n:	Nicolas Pitre [SMTP:nico@cam.org]
+Skickat:	den 28 februari 2001 18:28
+Till:	Stefan L=F6fgren
+Kopia:	mtd@infradead.org
+=C4mne:	Re: SV: Unable to install modules: initcalls
 
 
-On Wed, 28 Feb 2001, Stefan Löfgren wrote:
+
+On Wed, 28 Feb 2001, Stefan L=F6fgren wrote:
 
 > One HOWTOs in the CVS tells me that modules and MTD will not work...
 > I have not tested the theory, but that could be one reason...
@@ -31,7 +42,6 @@ MTD in 2.4.x works great for both with or without modules.
 
 
 Nicolas
-
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
