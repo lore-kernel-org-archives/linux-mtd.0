@@ -1,25 +1,17 @@
-Received: from nwd2mime2.analog.com ([137.71.25.114])
+Received: from natpool.ud.com ([65.112.245.211] helo=dzuylt)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Fhry-0006rh-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2002 21:59:02 +0100
-Received: from nwd2gtw1 (unverified) by nwd2mime2.analog.com
- (Content Technologies SMTPRS 4.2.5) with SMTP id <T5b4da070a689471972101@nwd2mime2.analog.com> for <linux-mtd@lists.infradead.org>;
- Wed, 5 Jun 2002 16:59:44 -0400
-Received: from golf.cpgdesign.analog.com ([137.71.139.100]) by nwd2mhb2.analog.com with ESMTP (8.9.3 (PHNE_18979)/8.7.1) id QAA22078 for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 16:58:50 -0400 (EDT)
-Received: from ws4.cpgdesign.analog.com (ws4 [137.71.139.26])
-	by golf.cpgdesign.analog.com (8.9.1/8.9.1) with ESMTP id NAA15305
-	for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 13:58:49 -0700 (PDT)
-Received: from analog.com (localhost [127.0.0.1])
-	by ws4.cpgdesign.analog.com (8.9.1/8.9.1) with ESMTP id NAA21450
-	for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 13:58:49 -0700 (PDT)
-Message-ID: <3CFE7B89.1EDA745@analog.com>
-Date: Wed, 05 Jun 2002 13:58:49 -0700
-From: Justin Wojdacki <justin.wojdacki@analog.com>
+	id 17FiDh-0006tu-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2002 22:21:30 +0100
+Received: from infinity-studios.com (localhost.localdomain [127.0.0.1])
+	by dzuylt (8.11.6/8.11.6) with ESMTP id g55LLMW01440
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 16:21:23 -0500
+Message-ID: <3CFE80D2.5010508@infinity-studios.com>
+Date: Wed, 05 Jun 2002 16:21:22 -0500
+From: Dzuy Nguyen <dzuy@infinity-studios.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: Strange problem related to writing to flash
-References: <3CFD131D.1AA4678F@analog.com> <15613.16180.337384.910293@gargle.gargle.HOWL> <3CFD502E.870C7AFA@analog.com>
-Content-Type: text/plain; charset="us-ascii"
+Subject: GRUB on DoC Millenium
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -32,31 +24,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Justin Wojdacki wrote:
-> 
-> That's along the lines of what a few of us discussed here, except for
-> one issue:
-> 
-> The bootstrap isn't part of the kernel. So the bootstrap has no
-> problem running, loading the kernel from flash, and then executing the
-> kernel. Seems to me that that wouldn't be possible if the flash wasn't
-> in read mode (unless I'm missing something). The bootstrap being used
-> has to ID the flash device itself, so if it can ID it and read from it
-> fine, the kernel should be able to also right?
-> 
+What is the status on GRUB and DoC Millenium?  I've read the posts in 
+the archive but it seems that people
+have had mixed results with using GRUB to boot DoC Millenium.
 
-Some more information:
+I have 8MB a DoC Millenium.  I've got mtd-snapshot-22020529 from CVS, 
+I've tried with grub 0.90, 0.91,
+and 0.92 (with proper patches) and the board acts as if the DoC is not 
+even there.  I dformat it to verify and
+it works OK.  Here's what I did:
 
-The flash is clearly in the read state when the kernel boots. 
+1. patch grub.
+2. aclocal, automake, autoconf.
+3. configure with --enable-diskonchip for grub0.90.  For grub0.91 and 
+grub 0.92, I've tried each
+--enable-diskonchip-2000, --enable-diskonchip-mil512, 
+--enable-diskonchip-mil256.
+4. cp stage2/pre_stage2 mtd/grub and make (for grub0.90), cp 
+stage1/grub_firmware mtd/grub for 0.91/2.
+5. doc_loadbios.
+6. nftl_format with offset 98304 doesn't work.  With grub 0.91 and 0.92, 
+I notice grub_firmware gets larger
+so I compensate by adding 8192 bytes to the grub_firmware size.
+7. fdisk, mke2fs, etc.
+8. Reboot and never see the grub.
 
-It looks like the first few passes of cfi_check_qry_or_id() don't
-actually get the manufacturer or device ID when this fails. It's not
-until the case where interleave = 2 and device_type = 1 that I see a
-correct ID happening. I'll post more information when I have more
-details into what's going on here. 
-
--- 
--------------------------------------------------
-Justin Wojdacki        
-justin.wojdacki@analog.com         (408) 350-5032
-Communications Processors Group -- Analog Devices
+Has anyone got it working.  If so, please help.
