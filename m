@@ -1,19 +1,19 @@
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+Received: from mailout09.sul.t-online.com ([194.25.134.84])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BFrTG-0003DI-GK
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 10:23:14 +0100
+	id 1BFsH0-0003Ul-Bq
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 11:14:38 +0100
 From: tglx@linutronix.de (Thomas Gleixner)
 To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
  linux-mtd@lists.infradead.org
-Date: Tue, 20 Apr 2004 11:18:03 +0200
-References: <01139FC052A0D411900B00508B9535FC13AC4046@ZCH07EXM04.corp.mot.com>
-In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC4046@ZCH07EXM04.corp.mot.com>
+Date: Tue, 20 Apr 2004 12:09:32 +0200
+References: <01139FC052A0D411900B00508B9535FC13AC4049@ZCH07EXM04.corp.mot.com>
+In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC4049@ZCH07EXM04.corp.mot.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200404201118.03964.tglx@linutronix.de>
+Message-Id: <200404201209.32094.tglx@linutronix.de>
 Subject: Re: ECC byte 4 and 5 not equal to what have just been writen
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,45 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 20 April 2004 09:35, Shen Aaron-r62966 wrote:
-> Hi,
+On Tuesday 20 April 2004 11:40, Shen Aaron-r62966 wrote:
+> >
+> > Which kernel version ?
+> > Which MTD version are you using ?
+> > Is this a userspace application ?
+> > Which oob layout is selected ?
 >
->   Is there anyone aware of such problem about ECC?
->   When I read back the OOB data after writing to a page, I find the offset
-> 06 and 07 are not equal to what have just been writen into the page.
+> Actually, I'm adding ECC part into the spl code for NAND flash bootloader.
+> Most of the algorithm and the interfaces to calculate ecc code and to
+> read/write a page is copied from driver/mtd/nand/. The version of linux
+> kernel is 2.4.18. The oob layout is 16 byte size.
+
+So you are debugging your bootloader code and not kernel code ?
+Did you copy the code from 2.4.18 ? If yes, use code from actual MTD CVS.
+If no, which version of MTD code did you use to copy from ?
+
+> >
+> > Where is the ECC correction done ?
 >
->   The part of codes are :
-> ==========================================
->   ......
->   // char spare[16] is for oob data in spare area
->   mx2_write_ecc((char*)p, spare, last);		// My function to set the
-> spare[16] before write a page printOut("The spare[ ] to write in flash is
-> :\n");	// Messege printed out printOut(spare);					// Print out the spare[
-> ]
->   if(NAND_Write_OnePage(page, (char*)p, spare))	// Write the page with
-> spare[ ] into NAND flash return;
->   NAND_Read_OOB(0, page, spare, 16);		// Read back the oob data into spare[
-> ] printOut("The spare[ ] to read back from flash is :\n");
->   printOut(spare);					// Print out the spare[ ]
->   ......
+> ECC correction should be done after reading each page. But here I
+> only need to read out the OOB data of a page after writing to it.
+> The obvious problem is that ecc data is writen into spare[0~3] and
+> spare[6~7], but only spare[0~5] is what we expected when read out.
+> The spare[6~7] has changed and some unexpected data is writen
+> into spare[8~A]. I still can't find out the reason. Any more suggestion?
 
-Which kernel version ?
-Which MTD version are you using ?
-Is this a userspace application ?
-Which oob layout is selected ?
-
->   As you may have found out, the spare[0]~spare[5] are the same as writen.
-> But spare[6] and spare[7] are different, while spare[8], spare[9] and
-> spare[A] are so strange.
->
->   This will cause the failure of ecc correction for the upper 256 bytes of
-> data in each page. Can you give me some comments?
-
-Where is the ECC correction done ? 
-
->  Is this a known problem of NAND_Read_OOB( )?
-
-No
+The page write function is the right place to look
 
 -- 
 Thomas
