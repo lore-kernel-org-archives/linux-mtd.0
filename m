@@ -1,29 +1,36 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from lightning.swansea.uk.linux.org ([194.168.151.1] helo=the-village.bc.nu)
+Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11iLVQ-0003uA-00
-	for mtd@infradead.org; Mon, 1 Nov 1999 17:44:33 +0000
-Subject: Re: jfs/linux
-To: David.Woodhouse@mvhi.com (David Woodhouse)
-Date: Mon, 1 Nov 1999 17:40:36 +0000 (GMT)
-Cc: miket@bluemug.com, SLEAS@videoupdate.com, sct@redhat.com, joh@xinit.se,
+	id 11iMSD-0003zZ-00
+	for mtd@infradead.org; Mon, 1 Nov 1999 18:45:19 +0000
+Date: Mon, 1 Nov 1999 18:42:06 +0000 (GMT)
+From: Kira Brown <kira@linuxgrrls.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: David Woodhouse <David.Woodhouse@mvhi.com>, miket@bluemug.com,
+	SLEAS@videoupdate.com, sct@redhat.com, joh@xinit.se,
 	linux-kernel@vger.rutgers.edu, mtd@infradead.org
-In-Reply-To: <E11iIib-00088Z-00@devel2.axiom.internal> from "David Woodhouse" at Nov 1, 99 02:45:57 pm
-Content-Type: text
-Message-Id: <E11iLRd-0002uk-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: jfs/linux
+In-Reply-To: <E11iLRd-0002uk-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.4.10.9911011841010.8103-100000@carrot.linuxgrrls.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-> All the solutions we currently have for filesystems on flash present a block 
-> device rather than a filesystem interface - that is, both FTL and NFTL act as 
-> an extra translation layer below the actual filesystem, providing 512-byte 
-> random block access for use by a traditional filesystem. 
 
-Ditto with Compact flash (ATAPI). Compact flash according to the docs does
-its own wear levelling.  Im still baffled why people use the other stuff 8)
 
-Alan
+On Mon, 1 Nov 1999, Alan Cox wrote:
+
+> Ditto with Compact flash (ATAPI). Compact flash according to the docs does
+> its own wear levelling.  Im still baffled why people use the other stuff 8)
+
+SmartMedia does too, according to the stuff I have here.  SmartMedia is
+slightly smaller than CompactFlash, which may explain why we're using it.
+
+Either way it'll be good to get rid of rassen frassen DiskOnChip.
+
+kira.
+
 
 
 
