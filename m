@@ -1,20 +1,23 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BFqP6-0002ij-IV
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 09:14:52 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
-	linux-mtd@lists.infradead.org
-Date: Tue, 20 Apr 2004 20:24:46 +1200
-References: <01139FC052A0D411900B00508B9535FC13AC4046@ZCH07EXM04.corp.mot.com>
-In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC4046@ZCH07EXM04.corp.mot.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20040420081447.531A815368@desire.actrix.co.nz>
-Subject: Re: ECC byte 4 and 5 not equal to what have just been writen
-Reply-To: manningc2@actrix.gen.nz
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
+	helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BFqyh-0002y8-Cl
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 09:51:39 +0100
+Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
+	3.35 #1 (Debian))	id 1BFqyb-0004Nr-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Apr 2004 10:51:33 +0200
+Date: Tue, 20 Apr 2004 10:51:33 +0200
+From: Tino Keitel <tino.keitel@innominate.com>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Message-ID: <20040420085133.GD2171@tkeitel001.bln.innominate.local>
+References: <20040416081729.GN22670@tkeitel001.bln.innominate.local>
+	<200404162011.29247.tglx@linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200404162011.29247.tglx@linutronix.de>
+Sender: Tino Keitel <tino.keitel@innominate.com>
+Subject: Re: JFFS2 writes fail with 2.4.25
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A lot of what happens here will depend on what ECC options you have enabled. 
-Likely the mtd is applying ECC and stomping on what you have written.
+On Fri, Apr 16, 2004 at 20:11:29 +0200, Thomas Gleixner wrote:
+> On Friday 16 April 2004 10:17, Tino Keitel wrote:
+> > On Thu, Apr 15, 2004 at 20:50:25 +0200, Thomas Gleixner wrote:
+> > > On Thursday 15 April 2004 16:40, Tino Keitel wrote:
+> > > > Hi folks,
+> > > >
+> > > > The system is an Intel XScale IXP425 board (ARM little endian)
+> > > > with 16 MB NOR flash. I use the JFFS2 from the 2.4.25 kernel.
+> > > > Any hints what's wrong here?
+> > >
+> > > Can you try  MTD CVS code ?
+> >
+> > What CVS tag or branch should I use? I tried HEAD, but I got this
+> > error:
+> 
+> HI Tino,
+> 
+> there was a fix for 2.6, which broke 2.4. 
+> Sorry, can you please revert mtdchar.c to v1.56 ? 
+> 
+> Will be fixed.
 
-Also note that NAND flash writes result in the AND of the previous data 
-pattern and the newly written pattern. You might like to do a read before the 
-write to check that everything is FF first.
+v1.56 fixes the compilation errors, I also don't get any Oopses
+anymore.
 
--- CHarles
+Regards,
+Tino
 
-On Tuesday 20 April 2004 19:35, Shen Aaron-r62966 wrote:
-> Hi,
->
->   Is there anyone aware of such problem about ECC?
->   When I read back the OOB data after writing to a page, I find the offset
-> 06 and 07 are not equal to what have just been writen into the page.
->
->   The part of codes are :
-> ==========================================
->   ......
->   // char spare[16] is for oob data in spare area
->   mx2_write_ecc((char*)p, spare, last);		// My function to set the
-> spare[16] before write a page printOut("The spare[ ] to write in flash is
-> :\n");	// Messege printed out printOut(spare);					// Print out the spare[
-> ]
->   if(NAND_Write_OnePage(page, (char*)p, spare))	// Write the page with
-> spare[ ] into NAND flash return;
->   NAND_Read_OOB(0, page, spare, 16);		// Read back the oob data into spare[
-> ] printOut("The spare[ ] to read back from flash is :\n");
->   printOut(spare);					// Print out the spare[ ]
->   ......
-> ===========================================
->
->   While, I got the follow output:
-> ===========================================
-> ......
-> The spare[ ] to write in flash is :
-> spare[00] = 56
-> spare[01] = 5A
-> spare[02] = 6B
-> spare[03] = 66
-> spare[04] = 00
-> spare[05] = FF
-> spare[06] = A6
-> spare[07] = 9B
-> spare[08] = FF
-> spare[09] = FF
-> spare[0A] = FF
-> spare[0B] = FF
-> spare[0C] = FF
-> spare[0D] = FF
-> spare[0E] = FF
-> spare[0F] = FF
-> The spare[ ] to read back from flash is :
-> spare[00] = 56
-> spare[01] = 5A
-> spare[02] = 6B
-> spare[03] = 66
-> spare[04] = 00
-> spare[05] = FF
-> spare[06] = C0
-> spare[07] = 33
-> spare[08] = C3
-> spare[09] = A9
-> spare[0A] = 02
-> spare[0B] = FF
-> spare[0C] = FF
-> spare[0D] = FF
-> spare[0E] = FF
-> spare[0F] = FF
-> ......
-> ===========================================
->
->   As you may have found out, the spare[0]~spare[5] are the same as writen.
-> But spare[6] and spare[7] are different, while spare[8], spare[9] and
-> spare[A] are so strange.
->
->   This will cause the failure of ecc correction for the upper 256 bytes of
-> data in each page. Can you give me some comments?
->
->   Is this a known problem of NAND_Read_OOB( )?
->
-> Thanks.
-> Aaron
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   enabling security
+tel: +49.30.6392-3308                      http://www.innominate.com/
