@@ -1,43 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1334Yt-0005ao-00
-	for mtd-list@infradead.org; Fri, 16 Jun 2000 23:26:03 +0100
-Received: from mailq.telia.com ([194.22.190.101] ident=root)
+	id 133Fha-0006m9-00
+	for mtd-list@infradead.org; Sat, 17 Jun 2000 11:19:46 +0100
+Received: from brie.cendio.se ([193.180.23.29] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 1334Ys-0005ai-00
-	for mtd@infradead.org; Fri, 16 Jun 2000 23:26:02 +0100
-Received: from d1o72.telia.com (d1o72.telia.com [62.20.150.241])
-	by mailq.telia.com (8.9.3/8.9.3) with ESMTP id AAA12145
-	for <mtd@infradead.org>; Sat, 17 Jun 2000 00:26:32 +0200 (CEST)
-Received: from jocke (t1o72p43.telia.com [62.20.150.43])
-	by d1o72.telia.com (8.8.8/8.8.8) with SMTP id AAA26590
-	for <mtd@infradead.org>; Sat, 17 Jun 2000 00:26:31 +0200 (CEST)
-Message-ID: <000501bfd7e1$de0ef980$2b96143e@jocke>
-From: "Joakim Tjernlund" <tjernlund@telia.com>
-To: <mtd@infradead.org>
-Subject: HW platform
-Date: Sat, 17 Jun 2000 00:26:06 +0200
+	id 133FhX-0006m3-00
+	for mtd@infradead.org; Sat, 17 Jun 2000 11:19:44 +0100
+Date: Sat, 17 Jun 2000 12:20:21 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: Joakim Tjernlund <tjernlund@telia.com>
+cc: mtd@infradead.org
+Subject: Re: HW platform
+In-Reply-To: <000501bfd7e1$de0ef980$2b96143e@jocke>
+Message-ID: <Pine.LNX.3.96.1000617121832.19548A-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi all
+On Sat, 17 Jun 2000, Joakim Tjernlund wrote:
 
-We are planning the next generation of our product and I want
-to use Linux for the control board(this is an embedded system)
-and I wondering what HW platform to use. We need a file
-system(on flash) and IP/OSPF mainly from Linux.
-Ther will be alot of (internal) communication with the other boards(25 of
-them)
-We have earlier used m68360 and therefore I am thinking a
-PowerPC 860 CPU would serve us well in that respect.
+> Hi all
+> 
+> We are planning the next generation of our product and I want
+> to use Linux for the control board(this is an embedded system)
+> and I wondering what HW platform to use. We need a file
+> system(on flash) and IP/OSPF mainly from Linux.
+> Ther will be alot of (internal) communication with the other boards(25 of
+> them)
+> We have earlier used m68360 and therefore I am thinking a
+> PowerPC 860 CPU would serve us well in that respect.
+> 
+> I need something that does take a lot of effort to get Linux running on.
+> It would be great if there we could buy CPU design that is Linux prepared.
 
-I need something that does take a lot of effort to get Linux running on.
-It would be great if there we could buy CPU design that is Linux prepared.
+ I suppose you mean doesn't take a lot of effort...
+ 
+> Any ideas ? I open for all suggestions
 
-Any ideas ? I open for all suggestions
+The PPC 860 series is well supported by Linux. Several of our customers
+use it and are satisfied. 
 
- Regards
-                   Joakim
+/ Alex
 
 
 
