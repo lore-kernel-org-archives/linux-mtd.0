@@ -1,21 +1,27 @@
-Received: from post2.inre.asu.edu ([129.219.110.73])
+Received: from imladris.infradead.org ([194.205.184.45] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1730Xr-0002SA-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 May 2002 21:17:47 +0100
-Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.1 #40111)
- id <0GVG00J0189VP2@asu.edu> for linux-mtd@lists.infradead.org; Wed,
- 01 May 2002 13:15:31 -0700 (MST)
-Date: Wed, 01 May 2002 13:15:36 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-Subject: Re: Booting from DOC2000 with GRUB loader
-In-reply-to: <02050120383503.07252@diva.localdomain>
-To: John Sutton <john@scl.co.uk>
-Cc: linux-mtd@lists.infradead.org
-Message-id: <1020284137.873.2359.camel@russ>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: <02050120383503.07252@diva.localdomain>
+	id 173AX7-00038t-00
+	for <linux-mtd@lists.infradead.org>; Thu, 02 May 2002 07:57:41 +0100
+Received: from mail005.syd.optusnet.com.au ([210.49.20.136])
+	by phoenix.infradead.org with esmtp (Exim 3.35 #5)
+	id 173AX4-0003GT-00
+	for linux-mtd@lists.infradead.org; Thu, 02 May 2002 07:57:39 +0100
+Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
+	by mail005.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g426vXx13354
+	for <mtd@infradead.org>; Thu, 2 May 2002 16:57:34 +1000
+Received: from k9.ctam.local ([192.168.0.55] helo=bigpond.com)
+	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
+	id 173AWy-0005dr-00
+	for <mtd@infradead.org>; Thu, 02 May 2002 16:57:32 +1000
+Message-ID: <3CD0E35B.4010606@bigpond.com>
+Date: Thu, 02 May 2002 16:57:31 +1000
+From: Brendan J Simon <brendan.simon@bigpond.com>
+Reply-To: brendan.simon@bigpond.com
+MIME-Version: 1.0
+To: mtd <linux-mtd@lists.infradead.org>
+Subject: docprobe.c on PowerPC
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,38 +33,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
- 
-> or nftl_format /dev/mtd0 98304  (bytes)
+There a bug in MTD and/or Linux and/or gcc for docprobe on PowerPC 
+machines.  I have a pretty recent linux.2.4.18-pre8 kernel from the 
+bitkeeper linuxppc_devel archives.  It seems that when setting up 
+doc_locations[] that the #elif defined(__ppc__) is not executed.  The 
+gcc specs file does not mention this definition.  I did a gcc -v on a 
+test file and it seems that -DPPC -D__PPC and -D__PPC__ are defined but 
+not -D__ppc__.  Other architectures in the docprobe.c file use 
+__alpha__, __i386 __x86_64__, etc.  Where do these definitions come from 
+(or where are they supposed to be defined) ?  In GCC, the linux kernel 
+or should the MTD code use __PPC__ instead ???
 
-this one is correct
-
-> I'm nervous about messing this up because since I put grub on the DoC, the
-> machine only ever boots from the DoC - completely ignores floppy, scsi disks
-> and cdrom.  So if I screw up this nftl_format and trash grub, I'm going to end
-> up with an unbootable system ;-(  (OK, I'll just have to pull the DoC chip out
-> of the board *again*, but even this gives me the eebies, so tight is the damn
-> thing stuck in its socket!  And anyway, if the system is unbootable with the
-> DoC chip in there, how am I ever going to reprogram it?)
-> 
-> Help much appreciated!
-
-*** WARNING *** WARNING *** WARNING *** WARNING ***
-
-THIS CAN DAMAGE YOUR HARDWARE AND BLOW YOU UP
-(but it seems to work for me)
-
-*** WARNING *** WARNING *** WARNING *** WARNING ***
-
-I have an ISA card for the DOC2000, I boot up my workstation, carefully
-plug in the isacard, modprobe doc2000, insmod docprobe insmod mtdchar
-(if necessary) insmod nftl (if necessary). Do whatever I need to do,
-rmmod nftl, rmmod docprobe, rmmod doc2000, and remove the card. On my
-machine, doing this using the devfsd nodes causes an oops after the
-first time, a simple workaround is using hand made device files.
-
-*** WARNING *** WARNING *** WARNING *** WARNING ***
-
-THIS CAN DAMAGE YOUR HARDWARE AND BLOW YOU UP
-(but it seems to work for me)
-
-*** WARNING *** WARNING *** WARNING *** WARNING ***
+Thanks,
+Brendan Simon.
