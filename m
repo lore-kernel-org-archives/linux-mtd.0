@@ -1,20 +1,20 @@
-Received: from cmailm2.svr.pol.co.uk ([195.92.193.210])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CESG9-00066s-8K
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:48:10 -0400
-From: "Nick Bane" <nick@cecomputing.co.uk>
-To: "Lorenzo PARISI" <lorenzo.parisi@st.com>,
-	"YAFFS mailing list" <yaffs@stoneboat.aleph1.co.uk>,
-	"MTD mailing list" <linux-mtd@lists.infradead.org>
-Date: Mon, 4 Oct 2004 13:48:12 +0100
-Message-ID: <IDEJKGNLJIGGPDGEHFGBCEACEDAA.nick@cecomputing.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
-Cc: 
-Subject: RE: [Yaffs] Errors
+Received: from e35.co.us.ibm.com ([32.97.110.133])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CESP1-0006Hm-89
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:57:20 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: Lorenzo PARISI <lorenzo.parisi@st.com>
+In-Reply-To: <1096893650.22034.11.camel@weaponx.rchland.ibm.com>
+References: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
+	<1096893650.22034.11.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain
+Message-Id: <1096894619.22034.17.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Date: Mon, 04 Oct 2004 07:56:59 -0500
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>
+Subject: Re: Errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> Hi,
->=20
-> whi compiling yaffs_guts.c there are errors, with command:
->=20
-> #ifdefined KERNEL...
->=20
->=20
-> there are more one error.
->=20
-Thats not enough detail to be helpful.
+On Mon, 2004-10-04 at 07:40, Josh Boyer wrote:
+> On Mon, 2004-10-04 at 05:31, Lorenzo PARISI wrote:
+> > Hi,
+> > 
+> > whi compiling yaffs_guts.c there are errors, with command:
+> > 
+> > #ifdefined KERNEL...
+> > 
+> > 
+> > there are more one error.
+> 
+> Maybe your questions could be answered on the yaffs mailing list. 
+> linux-mtd doesn't do the yaffs development.
 
-Can you give line numbers etc
+Oops, you did ask that mailing list.  Sorry, I should have looked at the
+CC line first.
 
-> Thanks.
->=20
-> _______________________________________________
-> yaffs mailing list
-> yaffs@stoneboat.aleph1.co.uk
-> http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs
+josh
