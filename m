@@ -1,21 +1,21 @@
-Received: from post2.inre.asu.edu ([129.219.110.73])
+Received: from albatross-ext.wise.edt.ericsson.se ([194.237.142.116])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15bl5d-0003Zn-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2001 16:47:46 +0100
-Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.0-24 #47347)
- id <0GIS00E01C5B7R@asu.edu> for linux-mtd@lists.infradead.org; Tue,
- 28 Aug 2001 08:53:35 -0700 (MST)
-Date: Tue, 28 Aug 2001 08:53:59 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-Subject: Re: JFFS2 on 8MB Flash-Chip conneted to MPC850 works extremly slow	:(
-In-reply-to: <3B8B87A9.2F622A89@dgt-lab.com.pl>
-To: Wojciech Kromer <krom@dgt-lab.com.pl>
-Cc: mtd <linux-mtd@lists.infradead.org>
-Message-id: <999014039.27952.2.camel@russ>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: <3B8B87A9.2F622A89@dgt-lab.com.pl>
+	id 15blxJ-0003ds-00
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2001 17:43:13 +0100
+Received: from mailserver1.ericsson.se (mailserver1.ericsson.se [136.225.152.91])
+	by albatross.wise.edt.ericsson.se (8.11.0/8.11.0/WIREfire-1.3) with ESMTP id f7SGnAK18671
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2001 18:49:11 +0200 (MEST)
+Received: from switchboard.ericsson.se (mail@kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
+	by mailserver1.ericsson.se (8.9.3/8.9.3/eri-1.0) with ESMTP id SAA27308
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2001 18:49:08 +0200 (MET DST)
+Message-ID: <3B8BCB83.64A68A5F@inn.ericsson.se>
+Date: Tue, 28 Aug 2001 18:49:08 +0200
+From: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>
+MIME-Version: 1.0
+To: mtd <linux-mtd@lists.infradead.org>
+Subject: jffs2 root
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,18 +27,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 28 Aug 2001 13:59:37 +0200, Wojciech Kromer wrote:
-> I have JFFS2 on my 8MBFujitsu Flash Chip connected to MPC850 (50Mhz).
-> I've decided to have root file system on that flash, but it boots
-> extremly slow.
-> It takes about 5 minutes. With compressed initial ram disk on flash it
-> takes less
-> than 30s.
-> 
-> Q1 Why?
-> Q2 I work on mtd-snapshot-20010628.tar.bz2. Are there any speed changes
-> in furthere releases?
-> 
+This is the last lines of a boot.
 
-It will take longer than a ramdisk because of the way jffs2 works, but
-it looks like you might not be setting your flash timings
+---
+VFS: Mounted root (jffs2 filesystem) readonly.
+Mounted devfs on /dev
+Freeing unused kernel memory: 56k init 4k openfirmware
+Starting userspace with /sbin/init 
+Kernel panic: No init found.  Try passing init= option to kernel.
+Rebooting in 180 seconds..
+-----
+
+What dose this mean?? It mounts jffs2 and I know /sbin/init is there.
+
+The exact same kernel booting a ramdisk then mounting jffs2 works and a diff
+of /sbin/init shows it to be correct. 
+
+
+-- 
+Kenneth Johansson	
+Ericsson Business Innovation AB   Tel: +46 8 404 71 83
+Viderögatan 3                     Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@inn.ericsson.se
