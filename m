@@ -1,19 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from nameservices.net ([208.234.25.16] helo=opersys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mcUS-0001p5-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:54:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFIEKODLAA.acurtis@onz.com> 
-References: <NCBBIINEHIPFGJPLBEIFIEKODLAA.acurtis@onz.com> 
-To: acurtis@onz.com
-Cc: "Jasmine Strong" <jasmine@hex.linuxgrrls.org>,
-    "John Hall" <John.Hall@optionexist.co.uk>,
-    "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Stable cvs version for 2.4 
-Mime-Version: 1.0
+	id 17mcVZ-0001pM-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:55:57 +0100
+Message-ID: <3D762DEC.C2517257@opersys.com>
+Date: Wed, 04 Sep 2002 11:59:40 -0400
+From: Karim Yaghmour <karim@opersys.com>
+Reply-To: karim@opersys.com
+MIME-Version: 1.0
+To: Mark Meade <mark@lakeshoremicro.com>
+CC: linux-mtd@lists.infradead.org, Ilguiz Latypov <ilatypov@superbt.com>
+Subject: Re: No more DoC hotplug on Grub fail [tested & working]
+References: <20020904145950.DRRI12451.rwcrmhc51.attbi.com@there>
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 04 Sep 2002 16:54:28 +0100
-Message-ID: <10914.1031154868@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,23 +24,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-acurtis@onz.com said:
->  Just pick a method that will work for all. No sense in cluttering the
-> code with conditional compile stuff because we can not choose an
-> implementation. How about we make the flags element either a byte or a
-> word depending on architecture. This would only result in a structure
-> redefinition and not affect the rest of the code. 
+Mark,
 
-If we're going to do that, we might as well just use a byte and not even 
-have the #define.
+Mark Meade wrote:
+> I tested your Grub patch on a DoC Millennium, it works fine.
 
-In the common case, on the architectures where stuff will be aligned, the 
-compiler will automatically pad that out so it takes 32 bits anyway, and 
-there's no difference. In the case where the compiler doesn't pad, we gain 
-three bytes per object.
+Great. I'm glad someone else can confirm that it works.
 
-If we're not going to avoid those 32 bits in the common case, it's not 
-really worth the effort.
+>  I used the 0.92
+> patch, but I had to reduce the length of some of the text messages to make
+> everything fit.  This may have been the gas 2.9.5 problem you described
+> earlier.
 
---
-dwmw2
+True.
+
+> This patch, while potentially useful during debugging, takes up precious
+> space that may be needed later (to add support for new flash devices, etc).
+> Also, once Grub is booting correctly from the DoC, I would think this feature
+> would not be needed.
+>
+> For what it's worth, I'd recommend that this patch be made available in the
+> patches directory of the CVS tree, rather than making it part of the official
+> GRUB code.
+
+This is one way of looking at it. However, it seems that this then enforces
+a policy on the way developers use their hardware. Providing it as part of
+the official GRUB and having it disabled by default would provide a capability
+without enforcing a policy. A developer could then pass the
+"--enable-doc-check-keybrd" option to "configure" in order to activate the
+keyboard detection. This should be fairly easy to implement since all the
+added code is enclosed in "#ifdef KEYBRD_READ" statements.
+
+> I'm willing to revise my GRUB/DoC HOWTO to include instructions on the use of
+> this patch, for those who are concerned about this issue.
+
+A mention of any alternatives to the DOC hotplug would certainly be great.
+
+Karim
+
+===================================================
+                 Karim Yaghmour
+               karim@opersys.com
+      Embedded and Real-Time Linux Expert
+===================================================
