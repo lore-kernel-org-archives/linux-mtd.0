@@ -1,27 +1,16 @@
-Received: from postman.ateme.net ([217.167.236.59])
+Received: from stoneboat.aleph1.co.uk ([212.13.198.63])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BPkM1-0007vz-88
-	for linux-mtd@lists.infradead.org; Mon, 17 May 2004 16:48:37 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by postman.ateme.net (Postfix) with ESMTP id 2276E4B8015
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 May 2004 17:48:32 +0200 (CEST)
-Received: from postman.ateme.net ([127.0.0.1])
-	by localhost (lserver [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 11587-06 for <linux-mtd@lists.infradead.org>;
-	Mon, 17 May 2004 17:48:31 +0200 (CEST)
-Received: from pc-179.ateme.net (pc-179.ateme.net [172.16.16.179])
-	by postman.ateme.net (Postfix) with ESMTP id 53E164B800D
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 May 2004 17:48:31 +0200 (CEST)
-From: Frederic Janot <f.janot@ateme.fr>
+	id 1BPl90-0008J4-OF
+	for linux-mtd@lists.infradead.org; Mon, 17 May 2004 17:39:14 +0100
+Date: Mon, 17 May 2004 17:39:45 +0100
+From: Wookey <wookey@aleph1.co.uk>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <1084808911.1659.20.camel@localhost>
+Message-ID: <20040517163945.GJ12570@knossos.aleph1.co.uk>
 Mime-Version: 1.0
-Date: Mon, 17 May 2004 17:48:31 +0200
-Content-Transfer-Encoding: 7bit
-Subject: jffs2_get_inode_nodes(): Data CRC failed on NAND chip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+cc: YAFFS list <yaffs@toby-churchill.org>
+Subject: blkmtd (and YAFFS)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I just came across the blkmtd which is a driver that does the opposite of
+mtdblock, and allows JFFS2 (and maybe YAFFS) on IDE-type devices. 
 
-I've got a problem when using jffs2 filesystem on a nand flash device.
+I know we're not supposed to talk about CF cards here, but I'm not sure who
+else to ask about this...
 
-I've created a root file system image on my pc (little-endian) from
-/rootfs directory which contain all needed files. I burn this image into
-a nand flash (samsung k9f5608 - 32MB nand with 512+16 bytes per pages)
-on a board with a power pc processor (big-endian).
+We have recently found that it's very easy to wear out crummy CF cards using
+conventional disk-journalling systems (ext3 wears a hole in the end of a
+512MB flash card in <10 reboots) because every write goes through the
+journal section of the device, and clearly its internal controller is
+doing a very simple sector->flashpage mapping (yes, we should have turned
+off atime, but still it's amazingly exactly not what you wanted :-) 
 
-So, on the pc, i do :
-# mkfs.jffs2 -p --root=/rootfs -e 16384 -b -o fs_img
+So what I really want to do is use something that distributes the writes
+better than the internal controller so I'm thinking that YAFFS or JFFS2
+should do a better job, but still give us journalling/power fail safety.
 
-My flash partitions are :
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00400000 00004000 "Nand Flash Kernel"
-mtd1: 01a00000 00004000 "Nand Flash RootFS"
-mtd2: 00200000 00004000 "Nand Flash Test"
+blkmtd appears to allow this but I see few mentions of it since early 2002.
+Is it stable, does it work, has anyone ever tried it with YAFFS?
 
-On my target, from an nfs mount root file system, i do :
-# nandwrite -j /dev/mtd1 /fs_img
+Is there a better FS for this purpose (anyone know if reiserfs helps
+distribute writes around your 'disk' at all?)
 
-After that, I reboot my board and make the kernel boot from nand root
-file system. The first boot is ok but when i reboot one more time, I
-have the following message :
-Empty flash at 0x0047b900 ends at 0x0047ba00
-jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc000: Read
-0x5a62bf55, calculated 0x349968c2
+thanx for any info you can provide.
 
-And each time I reboot, there is one message more. (I do nothing else
-than login and reboot)
-Empty flash at 0x0047b900 ends at 0x0047ba00
-Empty flash at 0x015fc268 ends at 0x015fc400
-jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc000: Read
-0x5a62bf55, calculated 0x349968c2
-jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc778: Read
-0xdf13fb17, calculated 0xbdff7e75
-
-etc ...
-
-Do you have any idea on what happens ?
-
-Thanks
-
-Frederic Janot
+Wookey
+-- 
+Aleph One Ltd, Bottisham, CAMBRIDGE, CB5 9BA, UK  Tel +44 (0) 1223 811679
+work: http://www.aleph1.co.uk/     play: http://www.chaos.org.uk/~wookey/
