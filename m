@@ -1,16 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Balint Cristian <rezso@rdsor.ro>
-In-Reply-To: <200501041601.17638.rezso@rdsor.ro>
-References: <41D9949B.5070207@ieee.org> <41DA9D43.70807@ieee.org>
-	<1104846254.13016.293.camel@hades.cambridge.redhat.com>
-	<200501041601.17638.rezso@rdsor.ro>
-Content-Type: text/plain
-Date: Tue, 04 Jan 2005 14:31:31 +0000
-Message-Id: <1104849091.13016.298.camel@hades.cambridge.redhat.com>
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Clq3v-0002Ry-MT
+	for linux-mtd@lists.infradead.org; Tue, 04 Jan 2005 09:53:33 -0500
+Date: Tue, 4 Jan 2005 14:53:22 +0000
+From: Ben Dooks <ben@fluff.org.uk>
+To: Fabrizio Grasso <f.grasso@custom.it>
+Message-ID: <20050104145322.GF29522@home.fluff.org>
+References: <5.0.2.1.2.20050104145418.00b425b8@192.168.2.9>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5.0.2.1.2.20050104145418.00b425b8@192.168.2.9>
+Sender: Ben Dooks <ben@fluff.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: DOCBoot update
+Subject: Re: NAND Partitions on ARM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-01-04 at 16:01 +0200, Balint Cristian wrote:
->  David, everyone pointed out that you are the "man" on this issue, can tell me please:
+On Tue, Jan 04, 2005 at 02:59:29PM +0100, Fabrizio Grasso wrote:
+> 
+> 
+> Hi all,
+> I'm using S3C2410A from Samsung and SMDK2410 from Aiji System. Kernel is 
+> 2.4.18 from MIZI and bootloader is VIVI version 0.1.4 .
+> I'm trying to partition my NAND flash (64MB) by using VIVI commands. The 
+> result I obtained is:
 
-Thomas has been paying far more attention to the NAND code than I have.
+Really, you should be using a 2.6 kernel, but since no-one seems to
+care enough about the support, there has been little work done on
+the smdk2410 boards.
 
->  a) what can i do to make nand to work with my chip, assuming that i can convert DOC MilPlus 16 one, few hint enough for a small magic over the code.
-
-Doesn't the NAND core already work for 16-bit chips?
-
->  b) have you some plan to do this, can help me ? [i am ready to test the code]
-
-I have no plans at the moment to do this. If you turn up on the IRC
-channel and have a go at it, we can perhaps try to help you do it
-yourself though.
+pre 2.4.26 is far too old, and all the work is being applied to
+the 2.6 series. At least someone has loaned me an smdk2440 to
+allow better support for that board.
 
 -- 
-dwmw2
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
