@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1757J9-0004k0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 16:55:19 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020507155052.GA31070@buici.com> 
-References: <20020507155052.GA31070@buici.com>  <20020507152652.GA30979@buici.com> <20020507022357.GC17041@buici.com> <20020505002518.GA3665@buici.com> <10076.1020715656@redhat.com> <25429.1020783875@redhat.com> <27957.1020785387@redhat.com> 
-To: elf@buici.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Latest CVS and 2.2.x 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 07 May 2002 16:55:17 +0100
-Message-ID: <30590.1020786917@redhat.com>
+	id 1757c5-0004nE-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 17:14:54 +0100
+Received: from there ([172.22.2.25])
+	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with SMTP id g47GElw06345
+	for <linux-mtd@lists.infradead.org>; Tue, 7 May 2002 18:14:47 +0200
+Message-Id: <200205071614.g47GElw06345@dagobert.svc.sysgo.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Robert Kaiser <rob@sysgo.de>
+Reply-To: rkaiser@sysgo.de
+To: linux-mtd@lists.infradead.org
+Subject: Re: 2.4.18-howto?
+Date: Tue, 7 May 2002 18:16:10 +0200
+References: <81D0D3538E3CD411AE3C00D0B7474C31C8EE37@jadran.hermes.si> <20020507150057.R16630@schwebel.de>
+In-Reply-To: <20020507150057.R16630@schwebel.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +28,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-elf@buici.com said:
-> 
->   The first problem was that the spinlock types were defined twice
->   incompatibly.  In compactmac.h, the inclusion of linux/spinlock.h at
->   line 362 pulls the file from /usr/include instead of the linux source
->   tree version.  Changing this include to asm/spinlock.h eliminated the
->   problem, though I'm not confident that this is the right way to fix
->   it.
+Am Dienstag, 7. Mai 2002 15:00 schrieb Robert Schwebel:
+> Hi Ludvik,
+>
+> On Tue, May 07, 2002 at 01:31:52PM +0200, Ludvik Kumin wrote:
+> > I work with 2.4.18, but I don't use the latest SW from CVS (I use the
+> > original code from the kernel and it works OK - at least the part I
+> > need).
+>
+> I need the ADNP concaternation layer stuff...
 
-That's very broken. Are you sure that include/linux/spinlock.h exists in 
-your 2.2 kernel tree?
+Does this part cause any specific trouble ? (if so, which ?)
 
->   Then, the pci.c driver in mtd/maps failed to build, but for a reason I
->   couldn't deduce.  The compiler complains that the ioremap_noncache
->   symbol is missing. 
+>
+> > About the HOWTO: do you have "jffs-mtd-HOWTO.txt"?
+>
+> Yes, but it is nearly one year old.
 
-That's probably been introduced since 2.2. Add something like...
+.. which doesn't necessarily mean it's outdated...
 
-	#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,0)
-	#define ioremap_noncache ioremap
-	#endif
+I read in an earlier mail that your problem is with compiling the utils (all 
+of them or is it just mkfs.jffs ?). Note that you don't necessarily need this 
+program, even if you plan on using jffs2. The only utils you really need are 
+erase and eraseall.
 
-... to compatmac.h and then if it works, send me the diff.
+Anyway, I just did the following:
+
+* pull the latest stuff from the MTD CVS (i.e. "cvs up")
+* cd mtd/utils;make
+
+.. and it worked (Suse 7.3).
 
 
+Rob
 
---
-dwmw2
+
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
