@@ -1,16 +1,16 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15RYcu-0005Cv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 13:27:56 +0100
-Message-Id: <5.1.0.14.0.20010731074301.00a67ee8@mail.spewey.com>
-Date: Tue, 31 Jul 2001 07:46:29 -0500
-To: Patrick <patrick_chiu@coventive.com>,linux-mtd@lists.infradead.org
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: I patch the MTD , but compiler do not compile any object
-  code in /usr/src/linux/drivers/MTD/
-In-Reply-To: <3B668812.7020405@coventive.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Received: from port-19.ottawa4.achilles.net ([209.151.2.118] helo=lapdancer.baythorne.internal)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15RgJf-0005d2-00
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 21:40:37 +0100
+Date: Tue, 31 Jul 2001 16:45:18 -0400 (EDT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexandru Harsanyi <a.harsanyi@willhart-tech.com>
+cc: Linux Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: DOC 2000 driver (NFTL) in kernel 2.4.7
+In-Reply-To: <3B6636CA.374A6E14@willhart-tech.com>
+Message-ID: <Pine.LNX.4.33.0107311640330.27691-100000@lapdancer.baythorne.internal>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,27 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 06:27 PM 7/31/2001 +0800, Patrick wrote:
->I patch the MTD code in kernel source 2.4.0-test9 for mipsel
->
->after I build the kernel , booting the kernel ,without any message about
->
->MTD
+On Tue, 31 Jul 2001, Alexandru Harsanyi wrote:
 
-First you seem to have built all the MTD drivers as modules so you won't 
-see any MTD messages during the bootup phase (unless something is 
-explicitly loading a MTD module(s)- which I doubt as you are building this 
-for the first time).
+> 1) Although I have only one DOC 2000, the DOC driver detects many more
+> (see dmesg below)
 
->when I try every kind of MTD driver.
->
->I found the /usr/src/linux/drivers/MTD/ without any object code (*.o)
+Note the word 'possible'. Turn on CONFIG_MTD_DOCPROBE_55AA
 
-I presume that you also did a "make modules" when you "built the kernel"?
+> 2) The DOC driver detects 3 flash chips, I only have one
 
+One DiskOnChip. Three flash chips in it.
 
-># CONFIG_MTD_CHAR is not set
+> 3) (and this is the show stopper) The NFTL driver is not able to find a
+> boot record on the DOC. This is strange because I'm actually booting
+> from the DOC.
 
-You also need CONFIG_MTD_CHAR
+That's odd. Update to the latest code from CVS, although I'm not sure it 
+should make a difference, and put lots of debugging printks in 
+find_boot_record() in nftlmount.c so it tells you why it rejects the 
+header blocks it finds.
 
-Vipin
+-- 
+dwmw2
