@@ -1,14 +1,15 @@
-Received: from web30805.mail.mud.yahoo.com ([68.142.200.148])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DGH0u-0003oT-NA
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2005 08:44:13 -0500
-Message-ID: <20050329133733.49012.qmail@web30805.mail.mud.yahoo.com>
-Date: Tue, 29 Mar 2005 05:37:33 -0800 (PST)
-From: wilho wallaton <wilho_76@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Need help on using jffs2 with blkmtd
+Received: from bay-bridge.veritas.com ([143.127.3.10]
+	helo=MTVMIME01.enterprise.veritas.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DGHAq-00040E-SU
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2005 08:54:29 -0500
+To: greg@kroah.com
+From: Amit S. Gud <gud@eth.net>
+Date: Tue, 29 Mar 2005 19:29:53 +0530
+Message-ID: <ITPXCHFE1572J674Mqb0000209d@itpxchfe1.enterprise.veritas.com>
+Cc: linux-mtd@lists.infradead.org, joern@wh.fh-wedel.de, gud@eth.net
+Subject: [PATCH 50/91] get rid of pci_find_{device,
+	subsys} drivers/mtd/devices/pmc551.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,116 +19,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Although this is may or may not be the mtd problem, I
-dear to to ask your assistance, since you guys are my
-last hope it seems.
-
-AFAIK jffs2 is only compressing rw filesystem on linux
-there is. Therefore I've tried a whole day to create
-jffs2 partition on my HD, I'm going to rdiff-backup
-onto it when it's ready (rdiff compresses only its
-diff-files).
-
-My intention is to make /dev/hdc4 to function with
-jffs2 filesystem. This is what I've done so far:
--------------------------------------------
-I have these modules installed:
-Symbol: MTD [=m]
-Prompt: Memory Technology Device (MTD) support
-Defined at drivers/mtd/Kconfig:5
-Location:
--> Device Drivers
--> Memory Technology Devices (MTD)
-
-Code:
-Prompt: MTD emulation using block device
-Defined at drivers/mtd/devices/Kconfig:116
-Depends on: MTD
-Location:
--> Device Drivers
--> Memory Technology Devices (MTD)
--> Self-contained MTD device drivers
-
-Code:
-Symbol: JFFS2_FS [=m]
-Prompt: Journalling Flash File System v2 (JFFS2)
-support
-Defined at fs/Kconfig:1052
-Depends on: MTD
-Location:
--> File systems
--> Miscellaneous filesystems
-Selects: CRC32
--------------------------------------------
-
-Next thing was:
-
-  #modprobe blkmtd device=/dev/hdc4
-  #mknod /dev/mtdblock0 b 22 4
-
-I'm not sure about usage of mknod command. It seems
-that blkmtd needs it with udev, without it there's no
-/dev/mtdblcok* devices at all. I've checked major and
-minor number from
-/usr/src/linux/Documentation/devices.txt, I'm not sure
-but I think they're all right. BTW, how do I make
-those changes permanent?
-
-Well anyway, story goes on,
-
-  #mkfs.jffs2 -o /dev/mtdblock0
-
-everything seems to be OK this far, no error messages,
-but when I do:
-
-  #mount -t jffs2 /dev/mtdblock0 /mnt/hdc4
--> mount: wrong fs type, bad option, bad superblock on
-/dev/mtdblock0
+Replace pci_find_{device,subsys} with pci_get_{device,subsys}.
 
 
+Signed-off-by: Amit S. Gud <gud@eth.net>
 
-Here's something I've done for troubleshooting:
-
-  #lsmod |grep mtd     
--->blkmtd                  8884  0
-   mtdcore                 5316  3 jffs2,blkmtd
-
-  #lsmod |grep jffs
--->jffs2                  83248  0
-   zlib_deflate           21272  1 jffs2
-   zlib_inflate           17280  1 jffs2
-   mtdcore                 5316  3 jffs2,blkmtd
-
-  #cat /proc/mtd
--->dev:    size   erasesize  name
-   mtd0: 205b0000 00020000 "blkmtd: /dev/hdc4"
-
-if I do
-  #wc -c /dev/mtdblock0
-
-I get out size 542836224 bytes ~ 500MB which seems
-right - thats about the size as how big the partition
-should be.
-
-if I do
-  #head -n1 /dev/mtdblock0
-
-There's some filenames visible in output in middle of
-carbage. 
-
-
-
-So it seems that /dev/mtdblock0 is OK, but is it after
-all? If it it, then what the * is wrong with this, why
-can't I mount it? I'm gettign desperate.
-
-Thanks for all your help,
--wilho
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+---
+--- orig-2.6.12-rc1/drivers/mtd/devices/pmc551.c	2005-03-15 21:01:45.000000000 +0530
++++ work-2.6.12-rc1/drivers/mtd/devices/pmc551.c	2005-03-28 13:28:42.125631824 +0530
+@@ -680,10 +680,10 @@ static int __init init_pmc551(void)
+          */
+         for( count = 0; count < MAX_MTD_DEVICES; count++ ) {
+ 
+-                if ((PCI_Device = pci_find_device(PCI_VENDOR_ID_V3_SEMI,
++                if ((PCI_Device = pci_get_device(PCI_VENDOR_ID_V3_SEMI,
+                                                   PCI_DEVICE_ID_V3_SEMI_V370PDC,
+ 						  PCI_Device ) ) == NULL) {
+-                        break;
++			goto dev_put;
+                 }
+ 
+                 printk(KERN_NOTICE "pmc551: Found PCI V370PDC at 0x%lX\n",
+@@ -699,7 +699,7 @@ static int __init init_pmc551(void)
+                  */
+                 if((length = fixup_pmc551(PCI_Device)) <= 0) {
+                         printk(KERN_NOTICE "pmc551: Cannot init SDRAM\n");
+-                        break;
++                        goto dev_put;
+                 }
+ 
+ 		/*
+@@ -716,7 +716,7 @@ static int __init init_pmc551(void)
+                 mtd = kmalloc(sizeof(struct mtd_info), GFP_KERNEL);
+                 if (!mtd) {
+                         printk(KERN_NOTICE "pmc551: Cannot allocate new MTD device.\n");
+-                        break;
++                        goto dev_put;
+                 }
+ 
+                 memset(mtd, 0, sizeof(struct mtd_info));
+@@ -725,7 +725,7 @@ static int __init init_pmc551(void)
+                 if (!priv) {
+                         printk(KERN_NOTICE "pmc551: Cannot allocate new MTD device.\n");
+                         kfree(mtd);
+-                        break;
++                        goto dev_put;
+                 }
+                 memset(priv, 0, sizeof(*priv));
+                 mtd->priv = priv;
+@@ -749,7 +749,7 @@ static int __init init_pmc551(void)
+ 			printk(KERN_NOTICE "pmc551: Unable to map IO space\n");
+                         kfree(mtd->priv);
+                         kfree(mtd);
+-			break;
++			goto dev_put;
+ 		}
+ 
+ #ifdef CONFIG_MTD_PMC551_DEBUG
+@@ -786,7 +786,7 @@ static int __init init_pmc551(void)
+ 			iounmap(priv->start);
+                         kfree(mtd->priv);
+                         kfree(mtd);
+-                        break;
++                        goto dev_put;
+                 }
+                 printk(KERN_NOTICE "Registered pmc551 memory device.\n");
+                 printk(KERN_NOTICE "Mapped %dM of memory from 0x%p to 0x%p\n",
+@@ -800,8 +800,12 @@ static int __init init_pmc551(void)
+ 		priv->nextpmc551 = pmc551list;
+ 		pmc551list = mtd;
+ 		found++;
++		pci_dev_put(PCI_Device);
+         }
+ 
++  dev_put:
++	pci_dev_put(PCI_Device);
++
+         if( !pmc551list ) {
+                 printk(KERN_NOTICE "pmc551: not detected\n");
+                 return -ENODEV;
