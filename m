@@ -1,18 +1,19 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from [211.219.100.34] (helo=karam.co.kr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e9rs-0000Md-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 08:16:17 +0000
-Date: Thu, 30 Jan 2003 09:47:11 +0100 (CET)
-From: Marius Groeger <mag@sysgo.de>
-To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: PATCH: support for Arctic/Beech/Ebony
-In-Reply-To: <000b01c2c7df$d7c45d40$020120b0@jockeXP>
-Message-ID: <Pine.LNX.4.52.0301300945080.1306@mag.devdep.sysgo.de>
-References: <Pine.LNX.4.52.0301281755410.19671@mag.devdep.sysgo.de>
- <000b01c2c7df$d7c45d40$020120b0@jockeXP>
+	id 18e9tM-0000Mw-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 08:17:49 +0000
+Received: from there (chaos [192.168.1.10])
+	by karam.co.kr (8.11.3/8.11.3) with SMTP id h0U8mto05234
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 17:48:55 +0900
+Message-Id: <200301300848.h0U8mto05234@karam.co.kr>
+Content-Type: text/plain;
+  charset="euc-kr"
+From: khp <khp@karam.co.kr>
+To: linux-mtd@lists.infradead.org
+Subject: Q: Hardware driver for multiple NAND chips
+Date: Thu, 30 Jan 2003 17:48:56 +0900
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,21 +25,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 29 Jan 2003, Joakim Tjernlund wrote:
+Does the nand driver support multiple chips in the same board?
+In some hardware the nand chips share ALE and CLE pins while /CE pins have 
+separate control lines for each chip. 
+But hwcontrol function examples in the directory driver/mtd/nand contain 
+simply NAND_CTL_SETNCE and NAND_CTL_CLRNCE functions. 
+How to activate individual chip explicitly when several /CE pins exist?
 
-> 2 comments:
->   - You don't need mb() since ioremap will add the
->      GUARDED attribute to the mapping.
->
->  - Add support for point()/unpoint().
-
-All right, I did both and have just committed it to CVS.
-
-Thanks,
-Marius
-
------------------------------------------------------------------------------
-Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
-Software Engineering     Embedded and Real-Time Software    www.sysgo.de
-Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
-FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
+TIA.
