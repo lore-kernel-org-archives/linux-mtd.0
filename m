@@ -1,18 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ACpK-0003EM-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 16:45:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0106131144260.23397-100000@xanadu.home> 
-References: <Pine.LNX.4.33.0106131144260.23397-100000@xanadu.home> 
-To: Nicolas Pitre <nico@cam.org>
-Cc: Vipin Malik <vipin.malik@daniel.com>,
-    Xavier DEBREUIL <xde@inventel.fr>, linux-mtd@lists.infradead.org
+	id 15ACwe-0003F9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 16:52:36 +0100
+Date: Wed, 13 Jun 2001 11:56:59 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Vipin Malik <vipin.malik@daniel.com>, Xavier DEBREUIL <xde@inventel.fr>,
+        <linux-mtd@lists.infradead.org>
 Subject: Re: root jffs2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Jun 2001 16:50:23 +0100
-Message-ID: <32016.992447423@redhat.com>
+In-Reply-To: <31256.992447116@redhat.com>
+Message-ID: <Pine.LNX.4.33.0106131155261.23397-100000@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,11 +24,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 
-nico@cam.org said:
->  A blank flash isn't considered dirty.
+On Wed, 13 Jun 2001, David Woodhouse wrote:
 
-Any block which doesn't contain the CLEANMARKER node at the beginning is 
-considered dirty.
+>
+> vipin.malik@daniel.com said:
+> >  Does this mean that you can no longer mount JFFS2 on an erased
+> > (blank) flash mtd device and hand populate the blank fs ?
+>
+> It refuses to mount if it would be erasing some blocks to start with and
+> it's found no valid nodes. Thinks.... if the device is completely
+> pre-erased then it'd be erasing every block 'to make sure', so it'd fail to
+> mount.
 
---
-dwmw2
+That's not what I though...
+
+> We could special-case this - if the device _was_ entirely empty beforehand
+> - if it contained only 0xFF, then we can go ahead with the mount. Only if
+> it actually had some data on should we fail.
+
+Exactly.
+
+
+Nicolas
