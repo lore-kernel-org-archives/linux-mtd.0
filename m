@@ -1,24 +1,26 @@
-Received: from [211.21.46.12] (helo=pluto.setabox.com.tw)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CkksF-0000DM-60
-	for linux-mtd@lists.infradead.org; Sat, 01 Jan 2005 10:09:01 -0500
-Message-ID: <41D6BCF7.4090809@setabox.com>
-Date: Sat, 01 Jan 2005 23:08:39 +0800
-From: William J Beksi <wjbeksi@setabox.com>
+Received: from usti.fccps.cz ([194.108.74.250])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1ClLxu-0003Jd-6q
+	for linux-mtd@lists.infradead.org; Mon, 03 Jan 2005 01:45:19 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by usti.fccps.cz (Postfix) with ESMTP id 4B0A777C89
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Jan 2005 07:45:16 +0100 (CET)
+Received: from usti.fccps.cz ([127.0.0.1])
+	by localhost (usti [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 16200-02 for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Jan 2005 07:45:14 +0100 (CET)
+Received: from frr (unknown [10.0.0.238])
+	by usti.fccps.cz (Postfix) with ESMTP id B0C6277C85
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Jan 2005 07:45:14 +0100 (CET)
+From: "Frantisek Rysanek" <Frantisek.Rysanek@post.cz>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 03 Jan 2005 07:49:07 +0100
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <41C1896F.9000107@setabox.com>	
-	<1103530184.27708.102.camel@tglx.tec.linutronix.de>	
-	<41C7F8C7.8050607@setabox.com>	
-	<1103642836.27708.234.camel@tglx.tec.linutronix.de>	
-	<41D4D228.7060903@setabox.com>	
-	<1104484693.4258.14.camel@tglx.tec.linutronix.de>	
-	<41D6806C.8030409@setabox.com>
-	<1104577162.4258.23.camel@tglx.tec.linutronix.de>
-In-Reply-To: <1104577162.4258.23.camel@tglx.tec.linutronix.de>
-Content-Type: multipart/mixed; boundary="------------010208040508040400010105"
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] command function for nand flash through IDE
+Content-type: Multipart/Mixed; boundary=Message-Boundary-18861
+Message-ID: <41D8F8F3.13501.243F9136@localhost>
+Subject: (Fwd) several bugfixes/workarounds in mtd snapshot of 20041226
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,146 +30,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------010208040508040400010105
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Thomas Gleixner wrote:
+--Message-Boundary-18861
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
 
->On Sat, 2005-01-01 at 18:50 +0800, William J Beksi wrote:
->
->  
->
->>>I still have a question. Did you modify nand_base.c ? 
->>>
->>>      
->>>
->>No, I only add a compile time switch as you recommended because I want 
->>to use outb/inb.
->>    
->>
->
->Can you please provide a patch for this too ?
->  
->
-Hi Thomas,
-This patch allows you to select the i/o instruction you want to use 
-(writeb/readb or outb/inb) at compile time.
+Dear MTD maintainers,
 
--- 
-William
+I suggest several bugfixes and workarounds against the 
+snapshot of 20041226 (inserted into a vanilla 2.4.28) - see 
+the attached patch.
+I hope it's not a problem that my message is posted a few days
+later than I would've liked - I didn't notice I had to 
+subscribe to be able to post :-)
 
---------------010208040508040400010105
-Content-Type: text/x-patch;
- name="nand_base.c.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="nand_base.c.patch"
+I'm using DiskOnChip devices in various sorts of Advantech 
+hardware. I'm compiling my MTD drivers for the DiskOnChip 
+alone - I don't want to include all the other MTD stuff 
+(useless to me).
 
---- /opt/mtd/drivers/mtd/nand/nand_base.c	2004-12-14 07:00:18.000000000 +0800
-+++ nand_base.c	2005-01-01 21:58:19.000000000 +0800
-@@ -66,6 +66,8 @@
- #include <linux/mtd/partitions.h>
- #endif
+Bugs fixed / worked around:
+
+1) if you flush the partition table and issue a BLKRRPART 
+(i.e., you re-partition the diskonchip), the reported device 
+size shrinks to one half of the original. If you do this again 
+before a reboot, the size shrinks again (now one quarter).
+Seems like the driver would re-init device size to a size denominated in 1k blocks,
+rather than sectors (512B).
+
+2) in my DiskOnChip-only setup, CONFIG_MTD_MAP_BANK_WIDTH_1 
+is missing in the .config. I've added that straight to $LINUX/include/linux/map.h
+
+3) two #includes seem to be missing in $MTD/nand/diskonchip.c
+
+4) the Reed-Solomon library hooks are messed up in $LINUX/lib/Config.in
+
+I hope this helps
+
+Frank Rysanek
+
+
+--Message-Boundary-18861
+Content-type: Application/Octet-stream; name="-"; type=Plain text
+Content-disposition: attachment; filename="-"
+Content-transfer-encoding: BASE64
+
+RGVhciBNVEQgbWFpbnRhaW5lcnMsDQoNCkkgc3VnZ2VzdCBzZXZlcmFsIGJ1Z2ZpeGVzIGFu
+ZCB3b3JrYXJvdW5kcyBhZ2FpbnN0IHRoZSANCnNuYXBzaG90IG9mIDIwMDQxMjI2IChpbnNl
+cnRlZCBpbnRvIGEgdmFuaWxsYSAyLjQuMjgpIC0gc2VlIA0KdGhlIGF0dGFjaGVkIHBhdGNo
+Lg0KDQpJJ20gdXNpbmcgRGlza09uQ2hpcCBkZXZpY2VzIGluIHZhcmlvdXMgc29ydHMgb2Yg
+QWR2YW50ZWNoIA0KaGFyZHdhcmUuIEknbSBjb21waWxpbmcgbXkgTVREIGRyaXZlcnMgZm9y
+IHRoZSBEaXNrT25DaGlwIA0KYWxvbmUgLSBJIGRvbid0IHdhbnQgdG8gaW5jbHVkZSBhbGwg
+dGhlIG90aGVyIE1URCBzdHVmZiANCih1c2VsZXNzIHRvIG1lKS4NCg0KQnVncyBmaXhlZCAv
+IHdvcmtlZCBhcm91bmQ6DQoNCjEpIGlmIHlvdSBmbHVzaCB0aGUgcGFydGl0aW9uIHRhYmxl
+IGFuZCBpc3N1ZSBhIEJMS1JSUEFSVCANCihpLmUuLCB5b3UgcmUtcGFydGl0aW9uIHRoZSBk
+aXNrb25jaGlwKSwgdGhlIHJlcG9ydGVkIGRldmljZSANCnNpemUgc2hyaW5rcyB0byBvbmUg
+aGFsZiBvZiB0aGUgb3JpZ2luYWwuIElmIHlvdSBkbyB0aGlzIGFnYWluIA0KYmVmb3JlIGEg
+cmVib290LCB0aGUgc2l6ZSBzaHJpbmtzIGFnYWluIChub3cgb25lIHF1YXJ0ZXIpLg0KU2Vl
+bXMgbGlrZSB0aGUgZHJpdmVyIHdvdWxkIHJlLWluaXQgZGV2aWNlIHNpemUgdG8gYSBzaXpl
+IGRlbm9taW5hdGVkIGluIDFrIGJsb2NrcywNCnJhdGhlciB0aGFuIHNlY3RvcnMgKDUxMkIp
+Lg0KDQoyKSBpbiBteSBEaXNrT25DaGlwLW9ubHkgc2V0dXAsIENPTkZJR19NVERfTUFQX0JB
+TktfV0lEVEhfMSANCmlzIG1pc3NpbmcgaW4gdGhlIC5jb25maWcuIEkndmUgYWRkZWQgdGhh
+dCBzdHJhaWdodCB0byAkTElOVVgvaW5jbHVkZS9saW51eC9tYXAuaA0KDQozKSB0d28gI2lu
+Y2x1ZGVzIHNlZW0gdG8gYmUgbWlzc2luZyBpbiAkTVREL25hbmQvZGlza29uY2hpcC5jDQoN
+CjQpIHRoZSBSZWVkLVNvbG9tb24gbGlicmFyeSBob29rcyBhcmUgbWVzc2VkIHVwIGluICRM
+SU5VWC9saWIvQ29uZmlnLmluDQoNCkkgaG9wZSB0aGlzIGhlbHBzDQoNCkZyYW5rIFJ5c2Fu
+ZWsNCg0KQXR0YWNobWVudHM6DQogIEc6XHZ5bWVuYVxtdGQtYnVncy4yMDA0MTIyNi5wYXRj
+aA0K
+
+--Message-Boundary-18861
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'mtd-bugs.20041226.patch'
+
+--- linux_with_mtd_bugs/drivers/mtd/mtd_blkdevs-24.c	2004-12-27 14:48:52.000000000 +0100
++++ linux/drivers/mtd/mtd_blkdevs-24.c	2004-12-29 14:32:14.000000000 +0100
+@@ -315,7 +315,7 @@
+ 	}
  
-+#define NAND_USE_IO_INSTR	1
-+
- /* Define default oob placement schemes for large and small page devices */
- static struct nand_oobinfo nand_oob_8 = {
- 	.useecc = MTD_NANDECC_AUTOPLACE,
-@@ -171,7 +173,13 @@
- static u_char nand_read_byte(struct mtd_info *mtd)
- {
- 	struct nand_chip *this = mtd->priv;
--	return readb(this->IO_ADDR_R);
-+
-+	switch(NAND_USE_IO_INSTR) {
-+	case 0:
-+		return readb(this->IO_ADDR_R);
-+	case 1:
-+		return inb((unsigned int) this->IO_ADDR_R);
-+	}
- }
+ 	grok_partitions(gd, minor, 1 << tr->part_bits, 
+-			tr->blkcore_priv->sizes[minor]);
++                        dev->size);
+ 	up(&mtd_table_mutex);
  
- /**
-@@ -184,7 +192,15 @@
- static void nand_write_byte(struct mtd_info *mtd, u_char byte)
- {
- 	struct nand_chip *this = mtd->priv;
--	writeb(byte, this->IO_ADDR_W);
-+
-+	switch(NAND_USE_IO_INSTR) {
-+	case 0:
-+		writeb(byte, this->IO_ADDR_W);
-+		break;
-+	case 1:
-+		outb(byte, (unsigned int) this->IO_ADDR_W);
-+		break;
-+	}
- }
- 
- /**
-@@ -277,8 +293,16 @@
- 	int i;
- 	struct nand_chip *this = mtd->priv;
- 
--	for (i=0; i<len; i++)
--		writeb(buf[i], this->IO_ADDR_W);
-+	switch(NAND_USE_IO_INSTR) {
-+	case 0:
-+		for (i=0; i<len; i++)
-+			writeb(buf[i], this->IO_ADDR_W);
-+		break;
-+	case 1:
-+		for (i=0; i<len; i++)
-+			outb(buf[i], (unsigned int) this->IO_ADDR_W);
-+		break;
-+	}
- }
- 
- /**
-@@ -294,8 +318,16 @@
- 	int i;
- 	struct nand_chip *this = mtd->priv;
- 
--	for (i=0; i<len; i++)
--		buf[i] = readb(this->IO_ADDR_R);
-+	switch(NAND_USE_IO_INSTR) {
-+	case 0:
-+		for (i=0; i<len; i++)
-+			buf[i] = readb(this->IO_ADDR_R);
-+		break;
-+	case 1:
-+		for (i=0; i<len; i++)
-+			buf[i] = inb((unsigned int) this->IO_ADDR_R);
-+		break;
-+	}
- }
- 
- /**
-@@ -311,10 +343,18 @@
- 	int i;
- 	struct nand_chip *this = mtd->priv;
- 
--	for (i=0; i<len; i++)
--		if (buf[i] != readb(this->IO_ADDR_R))
--			return -EFAULT;
--
-+	switch(NAND_USE_IO_INSTR) {
-+	case 0:
-+		for (i=0; i<len; i++)
-+			if (buf[i] != readb(this->IO_ADDR_R))
-+				return -EFAULT;
-+		break;
-+	case 1:
-+		for (i=0; i<len; i++)
-+			if (buf[i] != inb((unsigned int) this->IO_ADDR_R))
-+				return -EFAULT;
-+		break;
-+	}
  	return 0;
- }
+--- linux_with_mtd_bugs/include/linux/mtd/map.h	2004-12-27 14:48:54.000000000 +0100
++++ linux/include/linux/mtd/map.h	2004-12-27 15:33:58.000000000 +0100
+@@ -14,6 +14,10 @@
+ #include <asm/io.h>
+ #include <asm/bug.h>
  
++#ifndef CONFIG_MTD_CFI_GEOMETRY
++#define CONFIG_MTD_MAP_BANK_WIDTH_1
++#endif
++
+ #ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
+ #define map_bankwidth(map) 1
+ #define map_bankwidth_is_1(map) (map_bankwidth(map) == 1)
+--- linux_with_mtd_bugs/drivers/mtd/nand/diskonchip.c	2004-12-27 14:48:53.000000000 +0100
++++ linux/drivers/mtd/nand/diskonchip.c	2004-12-27 13:39:56.000000000 +0100
+@@ -24,6 +24,8 @@
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+ #include <linux/rslib.h>
++#include <linux/moduleparam.h>
++#include <linux/rslib.h>
+ #include <asm/io.h>
+ 
+ #include <linux/mtd/mtd.h>
+--- linux_with_mtd_bugs/lib/Config.in	2004-12-27 14:48:54.000000000 +0100
++++ linux/lib/Config.in	2004-12-29 14:37:35.000000000 +0100
+@@ -43,13 +43,15 @@
+ 
+ if [ "$CONFIG_MTD_DOCPROBE" = "y" -o \
+      "$CONFIG_MTD_NAND_RTC_FROM4" = "y" -o \
+-     "$MTD_NAND_DISKONCHIP" = "y" ]; then
++     "$CONFIG_MTD_NAND_DISKONCHIP" = "y" ]; then
+    define_tristate CONFIG_REED_SOLOMON y
++   define_tristate CONFIG_REED_SOLOMON_DEC16 y
+ else
+   if [ "$CONFIG_MTD_DOCPROBE" = "m" -o \
+      "$CONFIG_MTD_NAND_RTC_FROM4" = "m" -o \
+-     "$MTD_NAND_DISKONCHIP" = "m" ]; then
++     "$CONFIG_MTD_NAND_DISKONCHIP" = "m" ]; then
+      define_tristate CONFIG_REED_SOLOMON m
++     define_tristate CONFIG_REED_SOLOMON_DEC16 y
+   else
+      define_tristate CONFIG_REED_SOLOMON n
+   fi
 
---------------010208040508040400010105--
+--Message-Boundary-18861--
