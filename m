@@ -1,18 +1,15 @@
-Received: from [195.205.16.233] (helo=dgt-lab.com.pl)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15fLYV-0006lz-00
-	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 14:20:23 +0100
-Received: from dgt-lab.com.pl (unknown [192.168.6.66])
-	by dgt-lab.com.pl (Postfix) with ESMTP id F2F3647A0
-	for <linux-mtd@lists.infradead.org>; Fri,  7 Sep 2001 14:29:39 +0200 (CEST)
-Message-ID: <3B98CAF4.982C405E@dgt-lab.com.pl>
-Date: Fri, 07 Sep 2001 15:26:12 +0200
-From: Wojciech Kromer <krom@dgt-lab.com.pl>
+Received: from mailout00.sul.t-online.com ([194.25.134.16] helo=mailout00.sul.t-online.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15fRU1-0007DN-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 20:40:09 +0100
+Message-ID: <3B9923F3.3221AEEF@gmx.de>
+Date: Fri, 07 Sep 2001 21:45:55 +0200
+From: Thomas Eschenbacher <Thomas.Eschenbacher@gmx.de>
 MIME-Version: 1.0
-To: mtd <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 on 8MB Flash-Chip conneted to MPC850 works extremly slow:(
-References: <3B987838.A7F8B7AA@dgt-lab.com.pl>  <3C6BEE8B5E1BAC42905A93F13004E8AB6B6B35@mailse01.axis.se> <18025.999850205@redhat.com> <3B98865D.8043C745@dgt-lab.com.pl>
-Content-Type: text/plain; charset=iso-8859-2
+To: Eric <ebrower@usa.net>, linux-mtd@lists.infradead.org
+Subject: Re: [MTD in kernel 2.4.9]
+References: <20010905212443.27840.qmail@nwcst282.netaddress.usa.net>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -25,21 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> Another msgs:
-> # dd if=file of=/dev/mtdblock4
-> 588+1 records in
-> 588+1 records out
-> Last[3] is a79f, datum is 7c60
-> end_request: I/O error, dev 1f:04 (mtdblock), sector 128
-> Last[3] is a79f, datum is 7c60
-> .....
->
-> But /dev/mtdblock4 should be1024K (see my prev mail)
+Eric wrote:
+> 
+> Have you tried using the patchin.sh script (.../patches/patchin.sh)?
+> If that completes and you still get build errors, perhaps it would
+> be best if you posted the errors you are seeing.
 
-Sorry bothering You. This part was a hardware problem.
+Hi Eric,
 
---
-* * * * * * * * * * * *
-* per pedes ad astra! *
-* * * * * * * * * * * *    mailto:krom@dgt-lab.com.pl
+I have taken a look at that script before but was not brave enough to
+let it run. I made those few links on my own and did only forget one or
+two files that I did't need either.
+
+My fault was to enable that "deprecated/obsolete" stuff because I wanted
+to run the same configuration I used to have with kernel 2.4.3. I
+applied that patchin-script anyway, disabled the obsoleted parts and it
+compiles fine now.
+
+bye,
+  Thomas.
+-- 
+________________________________________________________________________
+Thomas Eschenbacher                           Thomas.Eschenbacher@gmx.de
