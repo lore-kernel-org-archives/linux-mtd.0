@@ -1,19 +1,19 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18O46c-0004rm-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 22:52:58 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: Russ Dill <Russ.Dill@asu.edu>, linux-mtd@lists.infradead.org
-Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts?
-Date: Tue, 17 Dec 2002 12:18:57 +1300
-References: <20021216095652.D4D24C6139@atlas.denx.de> <20021216210640.C31D314C2B@dragon.actrix.co.nz> <1040073679.27220.9.camel@timmy>
-In-Reply-To: <1040073679.27220.9.camel@timmy>
-MIME-Version: 1.0
+	id 18ODIc-0005nx-00
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Dec 2002 08:41:58 +0000
+Date: Tue, 17 Dec 2002 10:12:27 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Alex Pavloff <apavloff@eason.com>
+Cc: "'Tobias Otto-Adamczak'" <toa@indakom.de>, linux-mtd@lists.infradead.org
+Subject: Re: writing new BBRAM driver
+Message-ID: <20021217091227.GA11194@wohnheim.fh-wedel.de>
+References: <D3AF5F134D627243993F2F2FC32EE4D229C4B0@mailman.eason.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20021216232336.35B3D151B0@dragon.actrix.co.nz>
+In-Reply-To: <D3AF5F134D627243993F2F2FC32EE4D229C4B0@mailman.eason.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,36 +25,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 17 Dec 2002 10:21, you wrote:
-> On Mon, 2002-12-16 at 14:02, Charles Manning wrote:
-> > Intel's flash is expensive. Figure somwhere over $1 per MB.  NAND costs
-> > approx 30c/MB + SDRAM approx 20c/MB.  Intel's flash thus costs approx
-> > twice what a NAND/RAM image does.
-> >
-> > One NAND flash footprint can give you up to 256MB of storage.
-> >
-> > NOR fully sucks for any sort of writeable file system performance. NAND
-> > runs a very usable fs with YAFFS or JFFS2.
-> >
-> > The only benefit I can see in NOR is a faster boot. This is becoming less
-> > of an issue as more designs switch to sleep/resume models.
->
-> It really depends on how much data you store, and how you use that data.
-> Sure, for you, with a dynamic file system, and 256M of storage, NAND is an
-> easy choice. But many designs out there have static file systems, use 2M or
-> 4M of flash, and for such designs, NOR offers a lot more simplicity for
-> around the same cost as a NAND + boot logic. With NOR flash, I can put a
-> couple cramfs filesystems on there, and use the boot block for storing a
-> simple journalled config, reliably. I don't have to worry about setting
-> aside blocks in case one goes bad.
->
-> I think this is the market intel is targeting, just change 2M or 4M to 4M
-> or 8M (no more compressed fs).
+On Mon, 16 December 2002 14:33:41 -0800, Alex Pavloff wrote:
+> 
+> Alright, one more question:  What should the erasesize be for BBRAM?
+> Obviously I'm not worried about wear, so should it be zero or one or
+> something else?
 
-True, flexibility is the key. If 2-4MB with a static fs is all you need, then 
-no need to take on all the extra drama.
+Depends. :-)
+For jffs2, you need 5 free blocks for operation. But every used block
+eats up ~150Byte roughly, depending on data and compression. Bigger
+blocks eat memory, more blocks eat memory, minimum is somewhere in the
+middle, you do the math.
+For minix, fat, ext2/3 etc., this doesn't really matter. I'd pick 4k,
+as that is pagesize on most machines, but even 1byte might work - with
+lots of overhead.
 
-However, to get back to the start of this thread, Intels big push is for the 
-larger sizes (8MB+) where NOR is less palatable.
+Jörn
 
--- CHarles
+-- 
+But this is not to say that the main benefit of Linux and other GPL
+software is lower-cost. Control is the main benefit--cost is secondary.
+-- Bruce Perens
