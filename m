@@ -1,17 +1,18 @@
-Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
+Received: from mail1.danielind.com ([12.19.96.6])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ADhL-0003Se-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 17:40:51 +0100
-Date: Wed, 13 Jun 2001 12:45:15 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Vipin Malik <vipin.malik@daniel.com>, Xavier DEBREUIL <xde@inventel.fr>,
-        <linux-mtd@lists.infradead.org>
-Subject: Re: root jffs2 
-In-Reply-To: <4676.992450013@redhat.com>
-Message-ID: <Pine.LNX.4.33.0106131238060.23397-100000@xanadu.home>
+	id 15AFTC-0003d6-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 19:34:22 +0100
+Message-ID: <3B27B403.7DE9004A@daniel.com>
+Date: Wed, 13 Jun 2001 13:42:11 -0500
+From: Vipin Malik <vipin.malik@daniel.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Nicolas Pitre <nico@cam.org>
+CC: David Woodhouse <dwmw2@infradead.org>,
+ 	linux-mtd@lists.infradead.org
+Subject: Re: root jffs2
+References: <Pine.LNX.4.33.0106131238060.23397-100000@xanadu.home>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,40 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-
-On Wed, 13 Jun 2001, David Woodhouse wrote:
-
+> This is ridiculous, especially when the fix is probably about a one or two
+> line change in JFFS2 code.  I'm currently looking at it.  Expect the diff
+> soon.
 >
-> nico@cam.org said:
-> >  On Wed, 13 Jun 2001, Vipin Malik wrote:
-> > > What about a "jffs2erase" routine that not only erases the flash sectors
-> > > but also writes out this "signature" at the start of every erase block.
-> > > This way one can mount an empty JFFS2 fs on a MTD partition erased by
-> > > jffs2erase?
->
-> > This is IMHO not the real solution.
->
-> Why? No other filesystem can be mounted on empty media without some form of
-> mkfs.
+> Let's avoid the hassle of requiring people to need yet another tool.
 
-JFFS2 is far from being a conventional filesystem, no?
+You are a good man :)
 
-It is really elegant to just erase the flash partition and mount right away.
-Not yet another special tool please.
-
-> In fact you wouldn't need to do every block. All you'd have to do is put
-> the 12-byte cleanmarker node at the beginning of the first block and it'd
-> be sufficient.
-
-This is ugly.
-
-> You could do this with a suitable 'echo' command.
-
-This is ridiculous, especially when the fix is probably about a one or two
-line change in JFFS2 code.  I'm currently looking at it.  Expect the diff
-soon.
-
-Let's avoid the hassle of requiring people to need yet another tool.
-
-
-Nicolas
+Vipin
