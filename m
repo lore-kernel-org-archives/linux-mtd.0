@@ -1,17 +1,17 @@
-Received: from exg.allot.com ([199.203.223.202])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 166ZW5-0001ie-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 15:42:26 +0000
-Message-ID: <3BFBCE4A.5DF617F3@allot.com>
-Date: Wed, 21 Nov 2001 17:54:50 +0200
-From: Felix Radensky <felix@allot.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Kernel partition
-References: <3BFBB870.5D435486@allot.com> <10926.1006355051@redhat.com>
+	id 166ZXy-0001iy-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 15:44:22 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3BFBCE4A.5DF617F3@allot.com> 
+References: <3BFBCE4A.5DF617F3@allot.com>  <3BFBB870.5D435486@allot.com> <10926.1006355051@redhat.com> 
+To: Felix Radensky <felix@allot.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Kernel partition 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Wed, 21 Nov 2001 15:54:52 +0000
+Message-ID: <16766.1006358092@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +23,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+felix@allot.com said:
+>  Thanks, David. I know I need some translation layer, and I have a
+> driver that provides it. My concern is disk partitioning. Will the
+> method I described
 
-Thanks, David. I know I need some translation layer, and I have a driver
-that provides it. My concern is disk partitioning. Will the method I described
+> work ? Will I be able to use dd to copy kernel image to kernel
+> partition on block device ?
 
-work ? Will I be able to use dd to copy kernel image to kernel partition on
-block
-device ?
+That depends on your translation layer - I assume that'll work. Your 
+translation layer code must use the gendisk mess to get partitioning to 
+work. Persuading your bootloader to understand your translation layer
+and the partitioning within it, and hence to load the kernel from it, is a 
+different matter.
 
-TIA.
-
-Felix.
-
-David Woodhouse wrote:
-
-> felix@allot.com said:
-> >  I'd like to create 2 partitions on my flash disk: kernel partition
-> > (where kernel image resides) and normal ext2 partition. I was thinking
-> > of using fdisk and creating an ext2 partition at some offset from the
-> > start of the disk, thus reserving space for kernel partition. Will
-> > this work, or some other technique is required ?
->
-> No. You can't just put an ext2 filesystem on flash - at least not safely.
-> You need either a translation layer to pretend to be a normal block device,
-> or more usefully a real filesystem designed for use on flash, like JFFS2.
->
-> --
-> dwmw2
+--
+dwmw2
