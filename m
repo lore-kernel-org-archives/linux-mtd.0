@@ -1,21 +1,22 @@
-Received: from ext-ch1gw-5.online-age.net ([64.37.194.13])
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ATRYn-0001oA-KS
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2003 20:00:49 +0000
-Received: from int-ch1gw-1.online-age.net (int-ch1gw-1 [3.159.232.65])
-	id hB8JwJJ6002942	for <linux-mtd@lists.infradead.org>;
-	Mon, 8 Dec 2003 14:58:26 -0500 (EST)
-Received: from uswaumsxb1medge.med.ge.com (localhost [127.0.0.1])
-	id hB8JwEWH010404	for <linux-mtd@lists.infradead.org>;
-	Mon, 8 Dec 2003 14:58:18 -0500 (EST)
-Message-ID: <77FE4A1FA59FF947845A42194AD667620A0F5E@uswaumsx07medge.med.ge.com>
-From: "Howard, Michael (MED)" <Michael.Howard@med.ge.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Mon, 8 Dec 2003 13:58:07 -0600 
+	id 1ATTjm-0002CY-Qr
+	for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2003 22:20:19 +0000
+From: Joshua Wise <joshua@joshuawise.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 8 Dec 2003 17:18:30 -0500
+References: <1070862743.2461.0.camel@localhost>
+In-Reply-To: <1070862743.2461.0.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Where are cleanmarker nodes supposed to go on NAND?
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: clearsigned data
+Content-Disposition: inline
+Message-Id: <200312081718.37279.joshua@joshuawise.com>
+cc: Frankie Davis <watchforathief@earthlink.net>
+Subject: Re: h1910
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-In jffs2_check_nand_cleanmaker() I'm finding that the read_oob() call to to
-the flash is going to the wrong spot.  Where are the cleanmarker nodes
-supposed to be located?
+On Monday 08 December 2003 12:52 am, Frankie Davis wrote:
+> did you ever get linux ported to the h1910?  If so, can I download it
+> somewhere?
 
-My NAND flash is organized as:
-128k erase block = 2k page + 64 byte OOB + 2k page + 64 byte OOB, etc...
+Wrong list.
 
-The read_oob() call to the driver is currently trying to get from the OOB
-region which I thought was only used for the ECC.  I look at other JFFS2
-images and they appear to place the cleanmarker nodes at the beginning of
-the 1st page.  Should I be going there to get cleanmarker, badblock and
-failure counter?  Or is it all supposed to go into the 64 byte OOB region
-between pages?  I'm a little confused, can anybody give me a hint?
+I am the person who is working on the port. It'll be done when it's done, a=
+nd=20
+not a moment sooner. You can go check the handhelds.org status page like=20
+everyone else.
 
-Thanks
-Mike
+/joshua
+
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <lilo> I akilled *@* by mistake
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/1Pi7Pn9tWOqA4LMRAnF5AKClZ+AU+o6ckKjK7w5YAcA7CEcimgCfXHJk
+ayyyrrclucMdxG8UmFTn92w=3D
+=3Dp/EB
+=2D----END PGP SIGNATURE-----
