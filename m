@@ -1,14 +1,24 @@
-Received: from web13201.mail.yahoo.com ([216.136.174.186])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16w0Co-00016z-00
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 13:31:06 +0100
-Message-ID: <20020412123104.21405.qmail@web13201.mail.yahoo.com>
-Date: Fri, 12 Apr 2002 05:31:04 -0700 (PDT)
-From: Sanjay Kumar <sankumar73@yahoo.com>
-Subject: MTD erase problem
-To: linux-mtd@lists.infradead.org
+Received: from imladris.infradead.org ([194.205.184.45] helo=phoenix.infradead.org)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16w0WN-000189-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 13:51:19 +0100
+Received: from gate.aminocom.com
+	([193.132.141.181] helo=aminocom.com ident=0)
+	by phoenix.infradead.org with esmtp (Exim 3.35 #5)
+	id 16w0Up-0006ya-00
+	for linux-mtd@lists.infradead.org; Fri, 12 Apr 2002 13:49:43 +0100
+Received: from aminocom.com (eclarke@eclarke.aminocom.com [10.171.23.32])
+	by aminocom.com (8.11.6/8.11.6) with ESMTP id g3CCmcO26112
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 13:48:38 +0100
+Message-ID: <3CB6D75D.A9E144C7@aminocom.com>
+Date: Fri, 12 Apr 2002 13:47:25 +0100
+From: Elizabeth Clarke <eclarke@aminocom.com>
 MIME-Version: 1.0
+To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Writing JFFS2 image to Nand flash
+References: <541025071C7AC24C84E9F82296BB9B95080502@OPTEX1.optex.local>
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,47 +30,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-I am using two amd flash Am29DL323D of 4MB size each.
-Each of the amd flash have two regions, i.e the first starting
-8 sector is of 8K size each and the remaining sectors is of size 64KB each.
-My flash organisation is shown below -
- _________
-|         |<--   First flash starts at 0xbf800000
-|4MB      |
-|         |
-|         |
-|         |
-|_________|
-|         | <-- Second flash starts at 0xbfc00000
-|         |    
-|         |     
-|         |
-| 4MB     |
-|_________|
+John Hall wrote:
+> I'm having problems writing a JFFS2 image to a Nand flash device whose
+> first block is bad. cp and dd fail in this case. Do I need to write a
+> utility that checks for bad blocks and skips them, or am I missing
+> something?
 
+What messages is it giving? debug enabled? are you using the JFFS2 code
+from the jffs2_nand_branch code from cvs?
 
-Now I am using physmap.c file and assigning WINDOW_ADDR to 0xbf800000 and 
-WINDOW_SIZE to 0x800000(8MB) in the mapping information. 
-In init_physmap(), it calls the do_cfi_probe to probe the flashes and 
-calls add_mtd_device() to add this as MTD device.
-
-Now I am using the character device(crwxr--r--   1 root     root      90,   0 Mar 27  2002 
-
-mtd0) for erase any block at a particular block offset.
-
-It is working fine except for the starting sectors of the second flash(first 64KB, having
-8 sectors of 8KB each). If I make use of "ioctl" for erasing the these sectors, it can
-erase the first 8KB sector but it returns error in case of other remaining 7 secors
-(8KB size each). As a result I am unable to erase the flash completely.
-
-Do I need to look into cfi_cmdset_0002.c and change it to make it working?
-
-
-Thanks & Regards,
-Sanjay
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Tax Center - online filing with TurboTax
-http://taxes.yahoo.com/
+Beth
