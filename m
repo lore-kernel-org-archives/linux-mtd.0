@@ -1,15 +1,15 @@
-Received: from web20401.mail.yahoo.com ([216.136.226.120])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173T9x-0004TO-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 03:51:01 +0100
-Message-ID: <20020503025059.96685.qmail@web20401.mail.yahoo.com>
-Date: Thu, 2 May 2002 19:50:59 -0700 (PDT)
-From: Zhiwei Yu <linux_vpn@yahoo.com>
-Subject: grub stuff
-To: john@scl.co.uk
-Cc: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from tozal.unizar.es ([155.210.3.20] helo=relay.unizar.es)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 173bg4-00053b-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 12:56:44 +0100
+Received: from eupla.unizar.es (eupla.unizar.es [155.210.224.20])
+	by relay.unizar.es (8.11.1/8.11.1) with ESMTP id g43BuXp15563
+	for <linux-mtd@lists.infradead.org>; Fri, 3 May 2002 13:56:34 +0200 (MET DST)
+Message-Id: <200205031156.g43BuXp15563@relay.unizar.es>
+To: linux-mtd@lists.infradead.org
+From: victor.martin@eupla.unizar.es
+Date: Fri, 3 May 2002 06:46:37 EST
+Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,38 +21,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi, John 
+Thanks Charles, i think an IDE flash disk should have the same behaviour than 
+an IDE disk, but one of them i think it works like a flash card, without 
+internal journalling, so it makes incompatible with IDE spec. because of 
+accessing times to the disk. 
 
-I am the one posting "Booting from DOC2000 with GRUB
-Loader", and glad to see you still "fighting" grub. 
-Now I'm using lilo instead. Although grub have a lot
-of benefits, I can't make it work before deadline.:(
-If you work it out, would u please give me some clue?
+The problem is that i can install blkmtd module with a device
 
-Here is my way to recover DOC chip.  I presumed that
-you have an ethernet card on your board.  
-1. Build a ramdisk with root fs, put nftl_format
-inside it
-2. use mknbi to make ramdisk bootable
-3. setup a tftp server and bootp server on your
-desktop
-4. go to etherboot.sourceforge.net to download the
-latest package, find out the bios for ethernet card
-and write it into ethernet card.  After that you can
-choose to boot from local or network.
-5. boot from network, push your ramdisk to your SBC by
-tftp server
-You can now nftl_format your DOC.  It's a little
-tricky to setup all of it. but quite useful for me who
-don't have floppy and harddisk on the SBC.
+insmod blkmtd device=/dev/fd0 for example
 
-For further information, pls refer to
-etherboot.sourceforge.net.
+I can see it in /proc as mtd0
 
-Best Regards
-Zhiwei Yu
+I have a mtdblock 0 with major -minor 31, 0
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Health - your guide to health and wellness
-http://health.yahoo.com
+but when i try to use it, i can't use mtd0 and mtdblock0 and i don't know what 
+is wrong.
+
+I have tried to use /dev filesystem but when i use it my kernel doesn't boot
+
+¿What can i do?
+
+
+---------------------------------------------
+Sent using Endymion MailMan.
