@@ -1,35 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 138eWj-0000XN-00
-	for mtd-list@infradead.org; Sun, 02 Jul 2000 08:50:53 +0100
-Received: from [212.25.93.158] (helo=jodie.lucid)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 138eWi-0000Wv-00
-	for mtd@infradead.org; Sun, 02 Jul 2000 08:50:52 +0100
-From: Dvir Oren <dvir@lucidvon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Date: Sun,  2 Jul 2000 10:53:16 +0300 (IDT)
-To: MTD <mtd@infradead.org>
-Subject: MTD-CVS
-Message-ID: <14686.62580.302882.501842@jodie.lucid>
+	id 138oUd-0001TK-00
+	for mtd-list@infradead.org; Sun, 02 Jul 2000 19:29:23 +0100
+Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 138oUc-0001TE-00
+	for mtd@infradead.org; Sun, 02 Jul 2000 19:29:22 +0100
+Date: Sun, 2 Jul 2000 12:32:49 -0600
+Message-Id: <200007021832.e62IWnh07152@vindaloo.ras.ucalgary.ca>
+From: Richard Gooch <rgooch@ras.ucalgary.ca>
+To: Dvir Oren <dvir@lucidvon.com>
+Cc: MTD <mtd@infradead.org>
+Subject: Re: MTD-CVS
+In-Reply-To: <14686.62580.302882.501842@jodie.lucid>
+References: <14686.62580.302882.501842@jodie.lucid>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-May I suggest opening a new mailing list named mtd-cvs (or mtd-dev)
-for CVS reports.  It seems like the CVS reports are starting to crowd
-the mailing list, and most of the time I just file them away.  I think 
-it would be ehlpful to everyone if the CVS messages would be put in a
-separate mailing list.
+Dvir Oren writes: 
+> May I suggest opening a new mailing list named
+> mtd-cvs (or mtd-dev) for CVS reports.  It seems like the CVS reports
+> are starting to crowd the mailing list, and most of the time I just
+> file them away.  I think it would be ehlpful to everyone if the CVS
+> messages would be put in a separate mailing list.
 
-FYI.
+Seconded.
 
--- 
-Dvir Oren               <dviro@lucidvon.com>
-Lucid VON Ltd.     <http://www.lucidvon.com>
-9 Saloniki St.,        Tel-Aviv       Israel
-Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
+				Regards,
+
+					Richard....
+Permanent: rgooch@atnf.csiro.au
+Current:   rgooch@ras.ucalgary.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
