@@ -1,22 +1,25 @@
-Received: from calvin.codito.com ([203.199.140.162]
-	helo=magrathea.codito.co.in)
+Received: from [65.205.244.70] (helo=mail1.dmz.pioneer-pra.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bl6sC-0004h8-4u
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 10:06:09 -0400
-From: Amit Shah <amitshah@gmx.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 15 Jul 2004 19:33:10 +0530
-References: <cd5p23$dfj$1@sea.gmane.org>
-	<1089896566.14567.1306.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1089896566.14567.1306.camel@hades.cambridge.redhat.com>
+	id 1Bl9Jk-000583-QH
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 12:42:45 -0400
+Received: from philt.pioneer-pdt.com (sd-gateway.pioneer-pra.com
+	[207.215.131.7]) (using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(Client did not present a certificate)
+	by mail1.dmz.pioneer-pra.com (Postfix) with ESMTP id ACF1239006D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Jul 2004 09:42:39 -0700 (PDT)
+From: Patrick Hilt <philt@pioneer-pra.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 15 Jul 2004 09:47:47 -0700
+References: <200407091608.14442.philt@pioneer-pdt.com>
+In-Reply-To: <200407091608.14442.philt@pioneer-pdt.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200407151933.10369.amitshah@gmx.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: PCI flash: found no device
+Message-Id: <200407150947.47727.philt@pioneer-pra.com>
+Subject: Re: JFFS 2 Question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+Hi guys!
+Thanks a lot or your input. Definitely appreciate it!!
+In the project I am working on, we have been seeing an occasional corruption 
+of our JFFS2 partition upon sudden loss of power and we get that even after 
+writing to the parition and sync'ing. Could that be caused by the power loss 
+happening during a block rotation / garbage collection?
 
-On Thursday 15 Jul 2004 18:32, David Woodhouse wrote:
-> On Thu, 2004-07-15 at 16:43 +0530, Amit Shah wrote:
-> > Hi all,
-> >
-> > I've added support for flash memory for a PCI card in
-> > drivers/mtd/maps/pci.c, based on the two existing drivers. The flash type
-> > is Intel 28F series and supports CFI probes.
+Thanks again,
+
+Patrick
+
+
+On Friday 09 July 2004 04:08 pm, Patrick Hilt wrote:
+> Hi list!
+> Is there a way to make sure data is being written to physical flash when
+> using JFFS2? In other words, After writing a file on a JFFS2 partition, is
+> there anything that can be done to make sure that the data is getting
+> written to the flash right away? Would "sync" or "fsync" have that effect?
 >
-> The message you saw means that we didn't recognise any flash chips. Are
-> you sure your 'bankwidth' was set correctly? What type and width of
-> flash chips? How many are interleaved?
-
-This is the text on the manual:
-
-Intel Advanced+ Boot Block Flash Memory (C3)
-28F800C3, 28F160C3, 28F320C3, 28F640C3 (x16)
-< http://www.intel.com/design/flcomp/datashts/290645.htm >
-
-and the flash on the board is 28F160C3B(8?)C70.
-
-I've set the buswidth to 2, since it's 16Mbit memory, the flash size is 2MB.
-
-However, I've not defined any partitions on the memory (yet); how to do it for 
-PCI flash devices? A separate driver?
-
-Thanks,
-Amit.
--- 
-Amit Shah
-http://amitshah.nav.to/
+> Thanks a lot in advance for any input!!!
+>
+> Happy weekend,
+>
+> Patrick
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
