@@ -1,9 +1,9 @@
 Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DS0i-0008AA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 15:34:12 +0100
-Message-ID: <3B335971.27EBD23D@daniel.com>
-Date: Fri, 22 Jun 2001 09:42:58 -0500
+	id 15DS2p-0008AT-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 15:36:23 +0100
+Message-ID: <3B3359F7.64241206@daniel.com>
+Date: Fri, 22 Jun 2001 09:45:11 -0500
 From: Vipin Malik <vipin.malik@daniel.com>
 MIME-Version: 1.0
 To: ashwinp@aftek.com
@@ -23,9 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Make sure that you have included the cfi_cmdset_002.c module.
+Ok, I hit send too quickly. If you flash is not CFI, then make sure that the JDEC module is included.
 
 Vipin
+
+
+
 
 
 ashwinp@aftek.com wrote:
