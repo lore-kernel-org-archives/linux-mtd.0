@@ -1,24 +1,21 @@
 Received: from imladris.infradead.org
 	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159iti-0000Mi-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 08:47:35 +0100
-Received: from jerusalem.magic.fr ([195.154.101.82])
+	id 159itk-0000Mi-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 08:47:36 +0100
+Received: from mail.mediatrix.com ([205.237.248.11])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 159UEF-0001lP-00
-	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2001 17:07:47 +0100
-Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
-	by jerusalem.magic.fr (8.9.0/8.9.0) with ESMTP id SAA22665
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2001 18:06:30 +0200 (CEST)
-Message-ID: <3B24EC1B.7F920021@inventel.fr>
-Date: Mon, 11 Jun 2001 18:04:43 +0200
-From: Xavier DEBREUIL <xde@inventel.fr>
+	id 159TXO-0001Xo-00
+	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2001 16:23:30 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D99549E@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
+Subject: Purpose of sync() function
+Date: Mon, 11 Jun 2001 11:17:37 -0400
 MIME-Version: 1.0
-CC: linux-mtd@lists.infradead.org
-Subject: problem with zlib.o
-References: <991934470.27485.0.camel@timmy>  <20010607114319.A23641@crystal.2d3d.co.za> <20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com> <23825.991907052@redhat.com> <9968.991944081@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,24 +27,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
-I have some problems with linking the mtd stuff with a 2.4.2 kernel on
-ARM.
-I got many of the followings :
+Hi all,
 
-drivers/net/net.o: In function `deflate':
-drivers/net/net.o(.text+0x8b38): multiple definition of `deflate'
-fs/fs.o(.text+0x63db0):/home/xde/arm_linux/linux_2.4/linux-2.4.2/linux/fs/jffs2/zlib.c:
-first defined here
-drivers/net/net.o: In function `_tr_flush_block':
-drivers/net/net.o(.text+0xba9c): multiple definition of
-`_tr_flush_block'
-fs/fs.o(.text+0x66d14):/home/xde/arm_linux/linux_2.4/linux-2.4.2/linux/fs/jffs2/zlib.c:
-first defined here
+	I am working on a device driver for a flash chip that is not
+currently supported by MTD current code.  My driver works fine, I am =
+also
+able to mount a jffs2 filesystem on it.  I have not implemented the =
+sync()
+function, because looking at others drivers it doest not seem to do =
+anything
+useful.  Can anyone tell me if I am right or wrong, and what should be =
+the
+purpose of the sync function^
 
-what I did is removing from jffs2/Makefile zlib.o in COMPR_OBJS...
-and linking is then ok...
+Thanks in advance!
 
-Is it a good work around ?
-
-Xavier
+Fr=E9d=E9ric Giasson
