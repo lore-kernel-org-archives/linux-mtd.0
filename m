@@ -1,19 +1,16 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189ASq-0000xp-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 20:38:20 +0000
-Date: Tue, 5 Nov 2002 22:08:33 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Junping Zhang <JZhang@erinc.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: seeking help on JFFS2
-Message-ID: <20021105210833.GF29951@wohnheim.fh-wedel.de>
-References: <F4608F665DF5D311B231009027B70F700131DF9D@MAIL>
+Received: from mail.airnet.com.au ([202.174.32.5] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 189B6L-000107-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 21:19:10 +0000
+Subject: Building mkfs.jffs2
+From: Darren Freeman <free0076@flinders.edu.au>
+To: Linux MTD List <linux-mtd@lists.infradead.org>
+Cc: Greg Knowles <gknowles@infoeng.flinders.edu.au>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 06 Nov 2002 08:20:01 +0000
+Message-Id: <1036570803.16096.98.camel@dirac.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F4608F665DF5D311B231009027B70F700131DF9D@MAIL>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,32 +22,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 5 November 2002 14:56:56 -0500, Junping Zhang wrote:
-> 
->    I just tested 2.4.19 with shared-zlib patch, same behavior. I could use
-> the JFFS2 system,
-> but it will eventually crash after a while.
-> 
->    The flash chip is original from Motorola: 8M, 80 pin SIMM, SM73228. I
-> used Christian's
-> map file. Since JFFS works on it without any problem, should I safely assume
-> the MTD layer
-> is correct?
+Dear list,
 
-Ok, glancing at the spec, it said something about being compatible to
-Am29F040 chips, which use the amd command set. And looking back at the
-trace, we see
-    Trace; c00df668 <cfi_intelext_read+b4/100>
-                         ^^^^^
-This is strange.
+I am trying to build the latest version of mkfs.jffs2 on either of two
+PCs running RedHat 7.2 and Mandrake 9.0 respectively.
 
-Have you configured only CONFIG_MTD_CFI_AMDSTD, only
-CONFIG_MTD_CFI_INTELEXT or both?
+The problem with the binary mkfs.jffs2 that I have right now is that I
+upgraded from a really really old kernel on the target (around 2.4.2) up
+to 2.4.20-rmk1 and according to the kernel at boot time, JFFS2 has
+changed enough to cause problems.
 
-Jörn
+The symptoms are that I can flash an image and use it for a little
+while, but after a small amount of writing (change text files etc.) the
+filesystem just screws up and becomes 100% full. From that point onwards
+the target is screwed, and only NFS has saved me. Unfortunately with a
+broken root filesystem I can't get too much done =)
 
--- 
-The competent programmer is fully aware of the strictly limited size of
-his own skull; therefore he approaches the programming task in full
-humility, and among other things he avoids clever tricks like the plague. 
--- Edsger W. Dijkstra
+The RedHat host is running the stock kernel, 2.4.2, and I've configured
+the kernel for JFFS2 but not recompiled it. The Mandrake box is running
+2.4.20 recompiled to my liking.
+
+The target is an EPXA10 development board, with cpu=ARM922T,
+kernel=2.4.19-rmk1 patched for the board.
+
+I simply can't get mtd/utils to build on either host. I don't want a
+cross-compiled binary, just something to use on the host. I have tried
+using ./configure --with-kernel= pointing to the host kernel or target
+but no success. I guess the target kernel is the correct one to use
+here.
+
+My latest problem is that mkfs.jffs2.c uses jint16_t which is not found
+when grepping through my kernel source but is in mtd. So I have to do
+--with-kernel=/path/mtd but finally I get the error:
+
+compr_zlib.c:15:2: #error "The userspace support got too messy and was
+removed. Update your mkfs.jffs2"
+
+Followed by tons of garbage.
+
+Any ideas? Or somebody willing to give me a binary of mkfs.jffs2 for
+i386 -> ARM9 ? I would greatly appreciate it!
+
+Have fun,
+Darren Freeman
