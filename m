@@ -1,14 +1,19 @@
-Date: Fri, 14 Jan 2005 11:00:11 +0000 (GMT)
+Date: Fri, 14 Jan 2005 11:07:03 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: matrix lau <matrix_lau@yahoo.com>
-In-Reply-To: <20050114104833.41929.qmail@web61207.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.58.0501141058490.17331@phoenix.infradead.org>
-References: <20050114104833.41929.qmail@web61207.mail.yahoo.com>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+In-Reply-To: <41E79DD5.4050601@imc-berlin.de>
+Message-ID: <Pine.LNX.4.58.0501141105240.17331@phoenix.infradead.org>
+References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
+	<41E52EAD.2090302@imc-berlin.de>
+	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
+	<41E53F52.3010601@imc-berlin.de>
+	<Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
+	<41E79DD5.4050601@imc-berlin.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: Artem Bityuckiy <dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: 2k Page support for the mtd driver
+Subject: Re: JFFS2: checking CRCs twice!?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ah, you use dd to put image. That's may cause problems.
+On Fri, 14 Jan 2005, Steven Scholz wrote:
 
-Use nandwrite utility instead.
+> Artem B. Bityuckiy wrote:
+> 
+> >>>This seems to be true for NOR. But  chrcking CRC helps at least *detect* 
+> >>>and *report* media problems.
+> >>
+> >>Fair enough.
+> >>But who will pay attention if the system is embedded into your microwave oven or 
+> >>washing maschine... ;-)
+> > 
+> > In this case this doesn't make sence.
+> > But in general it does.
+> > 
+> > Possibly it makes sence to have this checking as an configuration option.
+> 
+> So will someone add this config option for JFFS2?
+> Or should it be done in SUMMARY patch?
+> Are there any plans to include this SUMMARY patch to the JFFS2 CVS?
+> Or will it stay seperated?
+AFAIK, Summary will go to JFFS3.
+I don't know for what Ferenc made "enable/disable summary" configuration 
+option, I believe it must be enabled by default.
 
-On Fri, 14 Jan 2005, matrix lau wrote:
-> Hi.
 > 
-> I am using the 2K page nand flash [NAND device:
-> Manufacturer ID: 0xec, Chip ID: 0xf1 (Samsung NAND
-> 128MiB 3,3V 8-bit)] in the ARM system, and the nand
-> driver was modified according to the NAND controller.
-> 
-> Now, I face a problem in mounting the JFFS2 system.
-> After program the JFFS2 to the mtdblock/2 by the
-> following cmd: dd if=JFFS2_FILE of=/dev/mtdblock/2
-> bs=128, then I mount it, the first time, it's ok.
-> 
-> However after umount then I mount it again, it can't
-> be mount again and with the following message: 
-> 
-> mount: wrong fs type, bad option, bad superblock on
-> /dev/mtdblock/2, or too many mounted file systems
-> 
-> I try with the 512 page device and it's ok, but
-> problems exists in 2Kpage nand.
-> 
-> 
-> Can any one help in the above issue?
-> 
-> Thanks
-> Matrix
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around 
-> http://mail.yahoo.com 
+> --
+> Steven
 > 
 > ______________________________________________________
 > Linux MTD discussion mailing list
