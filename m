@@ -1,105 +1,140 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11yH8x-0003p4-00
-	for mtd-list@infradead.org; Wed, 15 Dec 1999 16:19:11 +0000
-Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
+	id 11yI3Z-0003rd-00
+	for mtd-list@infradead.org; Wed, 15 Dec 1999 17:17:41 +0000
+Received: from [200.16.153.9] (helo=mail.netizen.com.ar)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11yH8s-0003ox-00
-	for mtd@imladris.mvhi.com; Wed, 15 Dec 1999 16:19:08 +0000
-Date: Wed, 15 Dec 1999 10:27:12 -0600 (CST)
-From: Adi Linden <adi@adis.on.ca>
-To: ralph stickley <ralph@datalux.com>
-cc: Embedded <linux-embedded@waste.org>, MTD <mtd@imladris.mvhi.com>
-Subject: Re: Anyone embedding RH 6.1 / 2.2.12 ?
-In-Reply-To: <3857ABA8.A6A1024B@datalux.com>
-Message-ID: <Pine.LNX.4.10.9912151000340.6229-100000@localhost.localdomain>
+	id 11yI2Q-0003rX-00
+	for mtd@imladris.mvhi.com; Wed, 15 Dec 1999 17:16:44 +0000
+Received: from salguero_1.grupoclave.com (gclave.netizen.com.ar [200.16.152.73])
+	by mail.netizen.com.ar (8.9.3/8.9.3) with ESMTP id NAA13223
+	for <mtd@imladris.mvhi.com>; Wed, 15 Dec 1999 13:40:16 -0300
+Message-ID: <C0AA6C69A265D311ACCA0090274F09AD03D012@SALGUERO_1>
+From: Diego Roig <diego.roig@grupoclave.com>
+To: "MTD (E-mail)" <mtd@imladris.mvhi.com>
+Subject: "FS over BLOCKDEV over FLASH" versus "FS over FLASH"
+Date: Wed, 15 Dec 1999 13:43:47 -0300
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01BF471B.92AD9150"
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> Yes, we will need to use the flash read-only.  I can make another partition (or
-> two) to use for storing user data.  If the software only writes to one partition,
-> then only that partition can be damaged during power down.   By alternating
-> partitions, only the last changes are lost. Have the application save it twice and
-> then you have it (That's my solution for the power down problem ).
+------_=_NextPart_001_01BF471B.92AD9150
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-That's a neat idea. How do you detect error in writing? Use fsck on boot?
-So far I haven't had any user data to save. The emphasis has been on
-building an appliance type deal where you ask the user if the lights are
-on and if they're not on unplug the power to reset. However, even for
-dhcp it would be nice to save the dhcp.leases file...
-
-> I'd like to make a configuration utility like "make menuconfig", but since I only
-> need one configuration, that may be considered a waste of Co. time :-)  I should
-> finish my V0.0 shell script today...
-
-I created the *.list files with the idea of eventually creating a script
-that parses a file containing the *.tar files to use to build the system.
-Then it might be possible to use the *.list files to tag files that should
-be deleted from the system if they're not needed. A menu type system would
-be nice... :-) but I am not fluent in C, doing a lot of shell and perl
-programming. I opted to to this embedded project and learn about CISCO
-router admin instead of learning C... 
-
-> Hmmm...I'll need to get run level 5 in also, since we need to run X (but thats
-> another task, after I see this thing boot ).
-
-I haven't tackled X yet. I am still looking for an inexpensive embedded
-platform with a LCD touch screen for an Internet kiosk. So far US$2300.00
-was the bottom line I found...
-
-> AFAIK shutdown is not needed if your running from ram disk.  Any software running
-
-I need to be able to telnet into the box and force a reboot.
-
-> on the system
-> should force the writes to be completed when the user is saving something.  (Isn't
-> there a kernel flag or configuration file somewhere to force writes to happen
-> right away ?? I think QNX had that ...Hmmm...)
-
-There are mount options that force immediate writes. Would it be sync?
-
-> I like the idea of sharing files from a desktop to the embedded system...Thats got
-> to be the easiest way to debug the setup (especially when you don't have a floppy
-> disk on the embedded system (it is fun to use hard disks like floppies - 9 hard
-> drives sitting on my desk as I write <:-;).
-
-I almost had to build a remote boot system using bootroms for my employer.
-The idea got scrapped. The embedded platform I use has a build in bootrom.
-I'd love to use it to have a full system mounted nfs to do development,
-install software on the doc, etc... I alread spend significant time
-researching the remote boot thing, unfortunatley my research was centered
-on Windows clients booting from a Linux server.
-
-> Well, Duh....My mistake...I never knew...I was under the impression that there
-> were DOS files involved: command.com calling config.sys or something.  Hey, that
-> means I can leave the lilo (and especially plilo) in the trash - Whoopee Yeah Ra
-> Ra !!
-
-Just found a problem, though. Didn't compile MS-DOS filesystem support in
-the kernel. I tried the driver using using an ext2 formated doc... Got to
-fix that. 
-
-> Spare time ?? whats that, please explain :-)
-
-Hey, after working 30 hours a day and 10 days a week there's still time
-left in the day ;-)
-
-> I'm thinking your connection is getting limited - best I could get on 3 different
-> downloads was about 2.8Kbps...maybe 56K is your upload speed ? Hmmmmm.... Well, if
-> you split it up, this won't be a problem...
-
-RAD modems on 2 pairs of wires, 256k in and 256k out... I wonder, I am far
-up in the boonies. Perhaps I could mirror on xoom.com or something like
-that. I am rearranging my site bit that should make mirroring possible.
-
-TTYL,
-Adi
+Hello,
+	There are two posibilities for implementing a filesystem over a
+flash device (DiskOnChip or others).
+	One, is implementing a block device emulation layer over flash, and
+then a filesystem over it. The block device emulation layer can be a =
+wear
+leveliong one (like M'Systems NFTL) or one that just maps flash memory =
+like
+linear contiguous sectors. The filesystem over the block device needs =
+to
+have a journal or to be log structured to be inmune to power failures =
+and
+crashes.
+	The other apporoach, is implementing a filesystem over flash
+directly.
+	What I don=B4t understand, is what is the difference between layering
+the filesystem over the block device and directly over flash ? The =
+"block
+device" layer, isn=B4t just an abstraction for some REAL device that =
+adapts
+well to the concept of contiguous sectors? Doesn=B4t flash memory adapt =
+to
+that concept?
+	What are the drawbacks of implementing a standard log structured
+filesystem over a block device abstraction of the flash that doesn=B4t
+implement wear leveling?
 
 
+Diego Roig Seigneur
+Gerencia de Desarrollo
+Research & Development
+Clave Electr=F3nica SA
+=20
+Mail Address:
+Salguero 2493
+(B1650BTG) San Mart=EDn
+Argentina
+Tel: +54-11-4755-4554
+Fax: +54-11-4753-3265
+mailto:diego.roig@grupoclave.com
+http://www.grupoclave.com
+
+------_=_NextPart_001_01BF471B.92AD9150
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2448.0">
+<TITLE>&quot;FS over BLOCKDEV over FLASH&quot; versus &quot;FS over =
+FLASH&quot;</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>Hello,</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>There are =
+two posibilities for implementing a filesystem over a flash device =
+(DiskOnChip or others).</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>One, is =
+implementing a block device emulation layer over flash, and then a =
+filesystem over it. The block device emulation layer can be a wear =
+leveliong one (like M'Systems NFTL) or one that just maps flash memory =
+like linear contiguous sectors. The filesystem over the block device =
+needs to have a journal or to be log structured to be inmune to power =
+failures and crashes.</FONT></P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>The other =
+apporoach, is implementing a filesystem over flash directly.</FONT>
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>What I =
+don=B4t understand, is what is the difference between layering the =
+filesystem over the block device and directly over flash ? The =
+&quot;block device&quot; layer, isn=B4t just an abstraction for some =
+REAL device that adapts well to the concept of contiguous sectors? =
+Doesn=B4t flash memory adapt to that concept?</FONT></P>
+
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT SIZE=3D2>What are =
+the drawbacks of implementing a standard log structured filesystem over =
+a block device abstraction of the flash that doesn=B4t implement wear =
+leveling?</FONT></P>
+<BR>
+
+<P><FONT SIZE=3D2>Diego Roig Seigneur</FONT>
+<BR><FONT SIZE=3D2>Gerencia de Desarrollo</FONT>
+<BR><FONT SIZE=3D2>Research &amp; Development</FONT>
+<BR><FONT SIZE=3D2>Clave Electr=F3nica SA</FONT>
+<BR><FONT SIZE=3D2>&nbsp;</FONT>
+<BR><FONT SIZE=3D2>Mail Address:</FONT>
+<BR><FONT SIZE=3D2>Salguero 2493</FONT>
+<BR><FONT SIZE=3D2>(B1650BTG) San Mart=EDn</FONT>
+<BR><FONT SIZE=3D2>Argentina</FONT>
+<BR><FONT SIZE=3D2>Tel: +54-11-4755-4554</FONT>
+<BR><FONT SIZE=3D2>Fax: +54-11-4753-3265</FONT>
+<BR><FONT SIZE=3D2><A =
+HREF=3D"mailto:diego.roig@grupoclave.com">mailto:diego.roig@grupoclave.c=
+om</A></FONT>
+<BR><FONT SIZE=3D2><A HREF=3D"http://www.grupoclave.com" =
+TARGET=3D"_blank">http://www.grupoclave.com</A></FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01BF471B.92AD9150--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
