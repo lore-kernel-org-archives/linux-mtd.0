@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Zry0-0006ZQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 12:48:36 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <712.1028114549@www55.gmx.net> 
-References: <712.1028114549@www55.gmx.net>  <14743.1028068151@redhat.com> 
-To: Frank Oltmanns <frank.oltmanns.ml@gmx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Root-FS on DOC2000 (was Re: Compiling Grub for DOC2000) 
+	id 17Zs2q-0006a2-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 12:53:36 +0100
+Date: Wed, 31 Jul 2002 13:53:33 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Stephen Hui <gromit1463@mailworks.org>
+Subject: Re: "Read-only file system" error while writing
+Message-ID: <20020731115333.GA28984@wohnheim.fh-wedel.de>
+References: <1028064443.23642.52.camel@mahi190.austin.ibm.com> <14660.1028067926@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 31 Jul 2002 12:48:35 +0100
-Message-ID: <3243.1028116115@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14660.1028067926@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +25,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-frank.oltmanns.ml@gmx.de said:
-> > Remove the bogus invalidate_device() from the mtdblock_release()
-> > function in drivers/mtd/mtdblock.c.
-> I did, but nothing happened.
+On Tue, 30 July 2002 23:25:26 +0100, David Woodhouse wrote:
+> gromit1463@mailworks.org said:
+> > When I write to the chips using either cat, dd, stdout redirection, or
+> > cp, the CFI driver complains of attempting to write to a "Read-only
+> > file system", even after unlocking all blocks in the partition and
+> > erasing the partition.  I can mount /dev/mtdblock*, but mount
+> > complains and I still can't put anything into the mounted partition.
+> > do_write_buffer() in cfi_cmdset_0001.c is returning the error (EROFS).
+> 
+> The only case in which do_write_buffer() should return -EROFS is if the 
+> status bit is set which means that the block in question was locked. Try 
+> using the MEMUNLOCK ioctl to unlock it?
 
-Bah. Do what I mean, not what I say. 
+We have had a similar problem with the ECC chips. When doing two
+writes to the same page, the second write causes an error, leaving the
+status word with 0x90. The word is not cleared until an explicit clear
+status register command (0x50) is given.
+The command set 0001 doesn't know about all this and behaves quite
+strange. From user space, the _third_ write to flash causes an error
+condition. The second already failed, but this is unnoticed.
 
-Which, in this instance, means:
+At first glance, your chips doesn't appear to have ecc though. Can you
+please verify, Stephen?
 
-	Remove the bogus invalidate_device() from the nftl_release() 
-	function in drivers/mtd/nftlcore.c
+Jörn
 
-Sorry.
-
---
-dwmw2
+-- 
+You can't tell where a program is going to spend its time. Bottlenecks
+occur in surprising places, so don't try to second guess and put in a
+speed hack until you've proven that's where the bottleneck is.
+-- Rob Pike
