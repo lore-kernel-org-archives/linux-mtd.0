@@ -1,21 +1,18 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16e8H8-0005BL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 05:29:42 +0000
-Received: from ilatypov by infradead.org with local (Exim 3.20 #2)
-	id 16e8S3-000110-00
-	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2002 05:40:59 +0000
-Date: Fri, 22 Feb 2002 00:37:40 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Vadim Khmelnitsky <VadimK@m-sys.com>
-cc: Mark Meade <mark@lakeshoremicro.com>,
-    Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-In-Reply-To: <AEA9DCA73595D411A6D4009027DE9C5E019BF9C8@MSI-EX6>
-Message-ID: <Pine.LNX.4.44.0202220030340.7347-100000@server.superbt.com>
+Received: from ns1.nougen.com ([216.185.81.251] helo=mail.nougen.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16e9VO-0005Hb-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 06:48:30 +0000
+Message-ID: <064e01c1bb6e$8011ee60$f801a8c0@minibm>
+From: "Chung Ming" <min@hello.org>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <027b01c1b9ef$992c63b0$f801a8c0@minibm>  <021101c1b9b5$247c0050$f801a8c0@minibm> <01b401c1b97e$04d09180$f801a8c0@minibm> <00de01c1b8ac$928d8b40$f801a8c0@minibm> <Pine.LNX.4.44.0202112157400.1558-100000@lapdancer.baythorne.internal> <17136.1014059667@redhat.com> <18943.1014154225@redhat.com> <11325.1014195063@redhat.com>  <24219.1014280209@redhat.com>
+Subject: Re: "No Flash Chips Recognized." error. 
+Date: Fri, 22 Feb 2002 14:59:38 +0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,25 +24,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-OK, I updated the util/doc_loadbios to accept an extra offset paramter
-(1024).
+Got it working after replace a new DoC Millenium. that DoC was DIED. so we
+can found it but with strange IDs that not recognized by MTD.
 
-Also, patches/grub-2002-02-19-doc.patch will skip the 1K IPL area if
-Millenium is detected (I know it is silly to detect the DoC type in the
-bootloader at run time -- please change that to conditional compilation if
-you wish).
+Thank you very much for help me, david.
 
-The updated patch will need proper auto-configured files.  You can
-re-generate them by running
-   aclocal && automake && autoconf
-in the GRUB's top level directory.
+----- Original Message -----
+From: David Woodhouse
+To: Chung Ming
+Cc: linux-mtd@lists.infradead.org
+Sent: Thursday, February 21, 2002 4:30 PM
+Subject: Re: "No Flash Chips Recognized." error.
 
-Anyone wants to try his/her Millenium? Mark?
 
-Ilguiz
 
-On Thu, 21 Feb 2002, Vadim Khmelnitsky wrote:
+min@hello.org said:
+> It's a M-sys DoC Millenium, 8MB,  MD-2800-D08, I have tried dozens of
+> times, and one time I got accidentally detected it, then I can't
+> detect again, I am not sure if this is a hardware problem, or maybe
+> this parts is dead ?
 
-> If you want to make doc-loadbios to work with Millennium chip you should
-> put it behind IPL code . IPL is 512 bites long . We have two copies of
-> it . So, you can put your code at offset 1KB .
+Very strange. Maybe it's a timing problem. Ollie?
+
+--
+dwmw2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
