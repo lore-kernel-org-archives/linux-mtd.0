@@ -1,18 +1,18 @@
-Received: from sun06.mazet.de ([193.29.17.6])
+Received: from mailout04.sul.t-online.com ([194.25.134.18] helo=mailout04.sul.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15eeEZ-00030Y-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 16:04:55 +0100
-Received: from se_server.mazet.de ([193.99.171.10])
-	by sun06.MAZeT.de (8.9.3/8.9.3) with SMTP id RAA19882
-	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 17:03:11 +0200 (MET DST)
-Message-Id: <3B96412B.49261E43@mazet.de>
-Date: Wed, 05 Sep 2001 17:13:47 +0200
-From: Holger Friedrich <friedrich@MAZeT.de>
-Mime-Version: 1.0
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Boot from DOC 2000
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+	id 15ejSp-0003Qh-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 21:39:59 +0100
+Received: from gmx.de (lisa.simpson.priv [192.168.2.131])
+	by lisa.simpson.priv (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id f85Kjvc14512
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 22:45:57 +0200
+Message-ID: <3B968F05.55BD868A@gmx.de>
+Date: Wed, 05 Sep 2001 22:45:57 +0200
+From: Thomas Eschenbacher <Thomas.Eschenbacher@gmx.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: MTD in kernel 2.4.9
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,34 +24,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
-I got my kernel to recognize the DOC, I can mount it as nftla, I can put
-file systems on it, read and write. I was even able to put a demo from
-elinos on it and boot it, but this was on msdos fs using syslinux as
-bootloader. =
+Hi there,
 
-Now I want to boot a "real" linux using ext2 or jffs. I've tried to work
-through the mtd-jffs-HOWTO. It works fine as long as you just want to
-detect the DOC. When it comes to booting from it it seems to assume a
-mtd device, which I don't have. =
+just a newbie question: is there a way to get the current cvs version of
+mtd/jffs2 working with kernel 2.4.9?
 
-I'd like to know how to deal with nftl devices. =
+I can't find any patch for current kernels and if I just spread all the
+files/dirs into their destination in the kernel source I can no longer
+compile and earn hundreds of error messages.
 
-Could anyone point me in the right direction?
-Thanks in advance Holger
--- =
+I'd like to use JFFS2 and I have to boot from it, so compiling separate
+from the kernel and making modules is not possible.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-Holger Friedrich
+Is it possible to use the current JFFS2 with the 2.4.9's mtd drivers -
+or let's say: is that mtd stuff in 2.4.9 "new enough" ?
 
-MAZeT GmbH                  mailto:friedrich@mazet.de
-branch office Jena          Phone: +49 3641 280954
-G=F6schwitzer Stra=DFe 32
-07745 Jena
-Germany
-Visit our website: http://www.MAZeT.de
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+thanks,
+   Thomas.
+-- 
+________________________________________________________________________
+Thomas Eschenbacher                           Thomas.Eschenbacher@gmx.de
