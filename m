@@ -1,19 +1,20 @@
 Received: from mail.2d3d.co.za ([196.14.185.200])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15CFoL-0003Rb-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 08:20:31 +0100
-Date: Tue, 19 Jun 2001 09:26:49 +0200
+	id 15CFuO-0003S8-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 08:26:45 +0100
+Date: Tue, 19 Jun 2001 09:33:19 +0200
 From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: Xavier DEBREUIL <xde@inventel.fr>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Xavier DEBREUIL <xde@inventel.fr>,
+  MTD for Linux <linux-mtd@lists.infradead.org>
 Subject: Re: CVS updates
-Message-ID: <20010619092649.B10532@crystal.2d3d.co.za>
-References: <20010618131315.A2156@crystal.2d3d.co.za> <20010618142215.M12246@arthur.ubicom.tudelft.nl> <20010618143104.A3715@crystal.2d3d.co.za> <3B2E2C7A.F997FDEE@inventel.fr>
+Message-ID: <20010619093319.D10532@crystal.2d3d.co.za>
+References: <3B2E2C7A.F997FDEE@inventel.fr> <20010618131315.A2156@crystal.2d3d.co.za> <20010618142215.M12246@arthur.ubicom.tudelft.nl> <20010618143104.A3715@crystal.2d3d.co.za> <3B2E2C7A.F997FDEE@inventel.fr> <29895.992882600@redhat.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WhfpMioaduB5tiZL"
+	protocol="application/pgp-signature"; boundary="8vCeF2GUdMpe9ZbK"
 Content-Disposition: inline
-In-Reply-To: <3B2E2C7A.F997FDEE@inventel.fr>; from xde@inventel.fr on Mon, Jun 18, 2001 at 18:29:46 +0200
+In-Reply-To: <29895.992882600@redhat.com>; from dwmw2@infradead.org on Mon, Jun 18, 2001 at 17:43:20 +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,35 +26,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---WhfpMioaduB5tiZL
+--8vCeF2GUdMpe9ZbK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Xavier!
+Hi David!
 
-> > Originally I wanted to change the maps driver and just write a chip dri=
-ver,
-> > but the sa1100 maps driver is dependant on CFI being configured. Since =
-the
-> > 28F160xx chips isn't CFI compliant, it makes no sense to put the map
-> > definitions in there (It's only about 20 lines of code anyway: read/wri=
-te
-> > routines and the partition definition), so I decided to just make a
-> > standalone driver.
+> xde@inventel.fr said:
+> >  Does it mean that I can not use do_map_probe("cfi", ...) with
+> > 28F160B3 chips ?
 >=20
-> Does it mean that I can not use do_map_probe("cfi", ...) with 28F160B3
-> chips ?
+> ISTR there are some versions of the 28F160 which are CFI-compliant. But i=
+f=20
+> you've got the version which isn't, then no, you'll have to implement an=
+=20
+> Intel-specific probe routine for it. You can still hook into the=20
+> cfi_cmdset_0001 back end code to actually _drive_ it though - you only ha=
+ve=20
+> to do a probe routine.
 
-Yes (i.e. you can't do it)
+Just btw, if you're looking for an Intel probe routine for the 28F160 chips,
+look at the lart driver - I implemented one there which works for 28F160 and
+28F800 chips (but then again you could probably use the entire driver as is
+as it should work with all 28F{800,160} chips.
 
 --=20
 
 Regards
  Abraham
 
-There's no real need to do housework -- after four years it doesn't get
-any worse.
+Thus mathematics may be defined as the subject in which we never know
+what we are talking about, nor whether what we are saying is true.
+		-- Bertrand Russell
 
 __________________________________________________________
  Abraham vd Merwe - 2d3D, Inc.
@@ -67,7 +72,7 @@ __________________________________________________________
   Http: http://www.2d3d.com        South Africa
 
 
---WhfpMioaduB5tiZL
+--8vCeF2GUdMpe9ZbK
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -75,9 +80,9 @@ Content-Disposition: inline
 Version: GnuPG v1.0.4 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE7Lv65zNXhP0RCUqMRAuZZAJ4r0f8B3URw4mOIwFyJPkJ6vyNkpgCeMc/N
-Y3NfTRtAkKUf6nh6pTiHjm8=
-=5ftm
+iD8DBQE7LwA/zNXhP0RCUqMRAtShAJ9pD2qMOAydjnEBcF1HlMp6KgKCKACgiQ8R
+OYV3/fiXNyJKOrlEYZDal4Y=
+=nPIt
 -----END PGP SIGNATURE-----
 
---WhfpMioaduB5tiZL--
+--8vCeF2GUdMpe9ZbK--
