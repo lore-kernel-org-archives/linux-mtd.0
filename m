@@ -1,28 +1,26 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8cCp-0005rO-1B
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 05:44:51 -0500
-Date: Tue, 8 Mar 2005 11:44:52 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+From: David Woodhouse <dwmw2@infradead.org>
 To: Gareth Bult <gareth@linux.co.uk>
-Message-ID: <20050308104452.GA3508@wohnheim.fh-wedel.de>
-References: <1110220494.11445.44.camel@squizzey.bult.co.uk>
+In-Reply-To: <1110277457.11692.7.camel@squizzey.bult.co.uk>
+References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
+	<20050307110413.GD2198@wohnheim.fh-wedel.de>
+	<1110200816.11535.15.camel@squizzey.bult.co.uk>
+	<20050307142402.GC9597@wohnheim.fh-wedel.de>
+	<1110220494.11445.44.camel@squizzey.bult.co.uk>
 	<20050307190012.GA24412@wohnheim.fh-wedel.de>
 	<1110226862.29792.149.camel@baythorne.infradead.org>
 	<1110229064.11284.18.camel@squizzey.bult.co.uk>
-	<20050307210745.GD26318@wohnheim.fh-wedel.de>
-	<1110231980.11310.40.camel@squizzey.bult.co.uk>
-	<20050307220138.GF26318@wohnheim.fh-wedel.de>
-	<1110234038.11284.62.camel@squizzey.bult.co.uk>
-	<20050307224238.GH26318@wohnheim.fh-wedel.de>
-	<1110278011.11697.17.camel@squizzey.bult.co.uk>
+	<1110230771.4591.12.camel@localhost.localdomain>
+	<1110233417.11311.58.camel@squizzey.bult.co.uk>
+	<1110234015.4591.16.camel@localhost.localdomain>
+	<1110234361.11310.63.camel@squizzey.bult.co.uk>
+	<1110234614.4591.21.camel@localhost.localdomain>
+	<1110277457.11692.7.camel@squizzey.bult.co.uk>
+Content-Type: text/plain
+Date: Tue, 08 Mar 2005 11:05:31 +0000
+Message-Id: <1110279932.16158.120.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1110278011.11697.17.camel@squizzey.bult.co.uk>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 Subject: Re: Re; MTD (2) Block Driver broken
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,26 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 March 2005 10:33:31 +0000, Gareth Bult wrote:
-> 
-> would make a lot of sense.
-> 
-> At the end of the day and at the moment, I'm probably the only one using
-> the new driver so it's really not an issue .. I was really just talking
-> about "good form" when releasing updates ..
+On Tue, 2005-03-08 at 10:24 +0000, Gareth Bult wrote:
+> Like many mailers, mine prefers to send HTML by default.
 
-I largely agree with the "good form" aspect.  Trouble with mtd is that
-some of the interfaces are really broken.  And for user-visible
-interfaces, there is no sane way to change them - ever.  So I
-implemented a new interface, trying to make that one as good as
-possible.
+I think you'll find it's configurable. 
 
-So I'll add the rename option and code.
+>  Occasionally one will forget one is posting to a list where people
+> have some sort of religious objection to html and forget to uncheck
+> the appropriate buttons to format as pure text.
 
-Jörn
+I don't have a religious objection to HTML. Like I said, there's little
+cause to prefer HTML over plain text for list traffic (and indeed for
+most email), and most of the HTML we reject is spam -- being HTML is a
+fairly good indicator of spam.
+
+I spend a _lot_ of time reading email each day, and almost none of it is
+HTML -- it's plain text, in a typeface I have carefully selected to be
+easily readable. HTML mail renders differently and is thus harder to
+read. Not a _lot_ harder, mind you, but it's unfamiliar enough that it
+causes me to stop and look rather than just taking in what it says at a
+glance. Mostly I don't actually stop and look; mostly I just delete it. 
+
+I _could_ spend some of my time on decoding gratuitously HTML-encoded
+mail, or I could spend all of my available time on the people who can be
+bothered to be polite. My time is limited enough at the moment anyway
+that I really don't want to waste it.
 
 -- 
-When I am working on a problem I never think about beauty.  I think
-only how to solve the problem.  But when I have finished, if the
-solution is not beautiful, I know it is wrong.
--- R. Buckminster Fuller
+dwmw2
