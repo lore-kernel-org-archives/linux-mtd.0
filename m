@@ -1,20 +1,22 @@
-Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9drv-0001jJ-U7
-	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 01:43:33 -0500
-From: Andrew Victor <andrew@sanpeople.com>
-To: Narinder Kumar <narinder@kritikalsolutions.com>
-In-Reply-To: <422C4B65.50804@kritikalsolutions.com>
-References: <4222D35B.7070909@kritikalsolutions.com>
-	<1109667284.4420.18.camel@fuzzie.sanpeople.com>
-	<422C4B65.50804@kritikalsolutions.com>
+	id 1D9fKA-0002nr-Ev
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 03:16:47 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: William J Beksi <wjbeksi@setabox.com>
+In-Reply-To: <42310F21.5030405@setabox.com>
+References: <4209C985.3020902@setabox.com>
+	<1108969145.24721.419.camel@tglx.tec.linutronix.de>
+	<42310F21.5030405@setabox.com>
 Content-Type: text/plain
-Message-Id: <1110523058.22517.7.camel@fuzzie.sanpeople.com>
+Date: Fri, 11 Mar 2005 09:16:39 +0100
+Message-Id: <1110529000.29330.284.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Date: 11 Mar 2005 08:37:39 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: SPI DataFlash interfacing using 2.4.27-vrs1
+Subject: Re: [PATCH] accessing NAND flash through an IDE interface
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi Narinder,
+On Fri, 2005-03-11 at 11:23 +0800, William J Beksi wrote:
+> > As I said before, I'm not going to accept a change which needs to tweak
+> > a source file to make use of it.
+> 
+> I was not aware of this. I have made all the changes as per your 
+> suggestion and then you finally reject the patch, a little discouraging.
 
-Sorry for the late reply.
+I did not intend to discourage you and I'm sorry if I did not express
+myself clear enough. I guess my assumptions of what's obvious are wrong.
 
-> I tried out mtd-snapshot-20050217.tar and latest one also but still not 
-> able to get rid of my problem.
+> Is there any other way let people choose between using readb/inb and 
+> writeb/outb inside nand_base.c? 
 
-Either of those should work - the DataFlash support was merged before
-then.
+Sure, more than one.
+The simplest is to convert your #define into a CONFIG_OPTION with the
+appropriate dependencies.
 
+Another possibility is to make it runtime selectable via the nand
+options. Also here it should be compile time dependend on CPU
+architectures which have seperate I/O instructions.
 
-> If there is something crucial that i am missing out please let me know. 
+> Or should I just create my own separate 
+> patch to allow people to use the driver and make it available elsewhere?
 
-There is one item I think I forgot to mention.
+Running away is not a solution. Stick your nose into LKML and watch how
+patches are dissected several times before acceptance. Whats wrong with
+that ? It's the way Open Source development works. 
 
-In the at91_dataflash.c driver, change the line:
-    device->type = MTD_NORFLASH;
-to
-    device->type = MTD_DATAFLASH;
-
-Then also make sure you have "JFFS2 write-buffering support" enabled in
-the configuration.  (It's under the File Systems menu).
-
-You should see the message "JFFS2 write-buffering enabled" printed to
-kernel log when you mount the partition.  If you don't see it, the
-Dataflash support is not correctly enabled.
-
-
-Regards,
-  Andrew Victor
+tglx
