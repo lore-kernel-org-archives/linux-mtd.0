@@ -1,21 +1,23 @@
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CJvw6-0004o5-6B
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 11:30:07 -0400
+Received: from mail45.e.nsc.no ([193.213.115.45])
+	by pentafluge.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CJyZO-0003l2-Fu
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 19:18:56 +0100
+Received: from hjemme (062016181233.customer.alfanett.no [62.16.181.233])
+	by mail45.nsc.no (8.12.11/8.12.11) with ESMTP id i9JIHZmp025894
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Oct 2004 20:17:35 +0200 (CEST)
+From: Jan Vestby <vestby@alfanett.no>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 19 Oct 2004 20:16:02 +0200
+References: <OF9C244FBD.F36AE939-ON85256F31.00585A10-85256F31.005A79E1@nanometrics.ca>
+In-Reply-To: <OF9C244FBD.F36AE939-ON85256F31.00585A10-85256F31.005A79E1@nanometrics.ca>
+MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Simon Haynes <simon@baydel.com>
-To: tglx@linutronix.de
-Date: Tue, 19 Oct 2004 16:18:25 +0100
-References: <E0180EAB7181@baydel.com> <E0CCB8742B31@baydel.com>
-	<1098198148.12223.885.camel@thomas>
-In-Reply-To: <1098198148.12223.885.camel@thomas>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <E0F06759379E@baydel.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad Blocks On JFFS2/NAND
-Reply-To: simon@baydel.com
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200410192016.02411.vestby@alfanett.no>
+Subject: Re: JFFS2 behaviour when large number of files are created.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using an old mtd layer which has nand.c and not nand_base.c.
-I have hacked this accordingly and I will see if I can produce the same 
-problem.
+On Monday 18 October 2004 18:28, David Ho wrote:
+> Hi all,
+>
+> I have a snapshot of the CVS MTD/JFFS2 code from Sept 22 patched into a
+> 2.4.24 kernel.  In the process of running a varied set of applications on
+> the system, a program was creating a large number of small files each less
+> than 1KB.  The Linux card is powered up for a short period of time to dump
+> data to persistent storage, then it is powered down for until the next data
+> dump.  As the sytem is run, the mount is becoming slower to a point that
+> the watchdog is reset the card.
+>
+> It appears that JFFS2 is bad for certain usage patterns.  Creating large
+> number of files is one.  What other usage patterns should I avoid?
+>
+I have seen startup time is quite nonlinear with respect to the number of 
+files per directory. You could try to restrict the size of directories.
 
-I did try to update my kernel but patchin.sh failed and I had to hack some 
-header files to get a kernel. This kernel crashed in a couple of different 
-places when writing to my SSFDC partition. I guess things have changed here 
-again ?
-
-Cheers
-
-Simon.
-
-On Tuesday 19 Oct 2004 4:02 pm, Thomas Gleixner wrote:
-> On Tue, 2004-10-19 at 16:39, Simon Haynes wrote:
-> > Thomas,
-> >
-> > I am using the ready pin.
->
-> Hmm, the strange thing is, that it does not complain about a failed
-> erase. It complaines, when checking if the chip is really erased.
->
-> Can you try the hack below, which invalidates the page cachen
-> unconditionally on erase ?
->
-> tglx
->
-> RCS file: /home/cvs/mtd/drivers/mtd/nand/nand_base.c,v
-> retrieving revision 1.121
-> diff -u -r1.121 nand_base.c
-> --- nand_base.c 6 Oct 2004 19:53:11 -0000       1.121
-> +++ nand_base.c 19 Oct 2004 15:09:35 -0000
-> @@ -2091,8 +2091,7 @@
->
->                 /* Invalidate the page cache, if we erase the block
-> which contains
->                    the current cached page */
-> -               if (page <= this->pagebuf && this->pagebuf < (page +
-> pages_per_block))
-> -                       this->pagebuf = -1;
-> +               this->pagebuf = -1;
->
->                 this->erase_cmd (mtd, page & this->pagemask);
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+regards
+jan vestby 
