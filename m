@@ -1,20 +1,29 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from bm-1a.paradise.net.nz ([202.0.58.20]
+	helo=linda-1.paradise.net.nz)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEt4G-000178-P9
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 13:25:42 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Luca Contini <luca.contini@akhela.com>
-In-Reply-To: <4162B2A0.5050200@akhela.com>
-References: <4162B2A0.5050200@akhela.com>
-Content-Type: text/plain
-Message-Id: <1096996674.22827.339.camel@thomas>
-Mime-Version: 1.0
-Date: Tue, 05 Oct 2004 19:17:54 +0200
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mizi support for jffs2 - FAQ
-Reply-To: tglx@linutronix.de
+	id 1CF2kp-0004Ad-RU
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 23:46:17 -0400
+Received: from smtp-1.paradise.net.nz (smtp-1b.paradise.net.nz [202.0.32.210])
+	by linda-1.paradise.net.nz (Paradise.net.nz)
+	with ESMTP id <0I5500FAT94VWT@linda-1.paradise.net.nz> for
+	linux-mtd@lists.infradead.org; Wed, 06 Oct 2004 16:46:08 +1300 (NZDT)
+Received: from hayes.bluewaternz.com
+	(203-96-159-182.paradise.net.nz [203.96.159.182])	by
+	smtp-1.paradise.net.nz
+	(Postfix) with ESMTP id 0786D82977	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Oct 2004 16:46:07 +1300 (NZDT)
+Received: from emma.bluewaternz.com ([192.168.2.44] helo=bluewatersys.com)
+	by hayes.bluewaternz.com with esmtp (Exim 3.35 #1 (Debian))
+	id 1CF2ki-0003rt-00	for <linux-mtd@lists.infradead.org>; Wed,
+	06 Oct 2004 16:46:08 +1300
+Date: Wed, 06 Oct 2004 16:47:33 +1300
+From: Brad Beveridge <bbeveridge@bluewatersys.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Message-id: <41636AD5.4020403@bluewatersys.com>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+Subject: BUG in nand_base.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +33,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-10-05 at 16:41, Luca Contini wrote:
-> Hi all,
-> I'm working on Samsung smdk2410 board using mizi linux (kernel 2.4.18).
-> Did anyone succeeded in modifying the kernel to support jffs2 instead of 
-> cramfs?
+Hi all, I have been playing with large size nand devices & have found 
+what I think is a bug in nand_base.c::nand_command.  I have the latest 
+daily snapshot.
+Starting at line 546, there is the following code
+                        /* One more address cycle for higher density 
+devices */
+                        if (this->chipsize & 0x0c000000)
+                                this->write_byte(mtd, (unsigned char) 
+((page_addr >> 16) & 0x0f));
+Which will correctly trap the 4th write cycle for 64 & 128MiB parts, but 
+not for larger sizes of 256 & 512 MiB.
+In my code I have changed the line to read
+                        if (this->chipsize & 0xfc000000)
 
-This starts to become a FAQ.
+Also, I noticed that for the large page devices (nand_command_lp) a 
+proper compare (>) is used instead of a mask - should one of these be 
+changed to make both functions consistant?
 
-1. We don't know anything about MIZI Linux
-2. 2.4.18 is a kernel from the last century and more than obsolete
+Cheers
+Brad
 
-Use an up to date and supported kernel.
+-- 
+Bluewater Systems Ltd - ARM Technology Solution Centre
 
-tglx
+       Brad Beveridge                           Bluewater Systems Ltd
+Phone: +64 3 3779127 (Aus +1 800 148 751)       Level 17, 119 Armagh St
+Fax:   +64 3 3779135                            PO Box 13889
+Email: bbeveridge@bluewatersys.com              Christchurch
+Web:   http://www.bluewatersys.com              New Zealand 
