@@ -1,17 +1,14 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CVw44-00035Y-0G
-	for linux-mtd@lists.infradead.org; Sun, 21 Nov 2004 13:03:57 -0500
-Date: Sun, 21 Nov 2004 19:01:50 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: David Woodhouse <dwmw2@redhat.com>
-Message-ID: <20041121180150.GE2924@stusta.de>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20041121180150.GE2924@stusta.de>
 References: <20041112135322.GB7707@stusta.de>
 	<1100629567.8191.6993.camel@hades.cambridge.redhat.com>
+	<20041121180150.GE2924@stusta.de>
+Content-Type: text/plain
+Date: Sun, 21 Nov 2004 18:06:11 +0000
+Message-Id: <1101060371.9988.45.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1100629567.8191.6993.camel@hades.cambridge.redhat.com>
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [2.6 patch] MTD: some cleanups
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,45 +20,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 16, 2004 at 06:26:07PM +0000, David Woodhouse wrote:
-> On Fri, 2004-11-12 at 14:53 +0100, Adrian Bunk wrote:
-> > The patch below makes the following cleanups for code under drivers/mtd/ :
-> > - make some needlessly global code static
+On Sun, 2004-11-21 at 19:01 +0100, Adrian Bunk wrote:
+> > Again that's called from elsewhere.
 > 
-> OK.
+> The merging of the code calling it into the kernel is pending?
 
-Thanks.
-
-> > - remove the following unused code:
-> >   - function ftl_freepart in drivers/mtd/ftl.c
-> 
-> It's a bug that we never free these. We should call the function
-> occasionally instead of deleting it.
-
-OK.
-
-> >   - functions nettel_eraseconfig and nettel_erasecallback,
-> >    struct nettel_erase in drivers/mtd/maps/nettel.c
-> 
-> The nettel_eraseconfig() function isn't static -- I assume it was called
-> from the nettel-specific platform code.
-
->From some platform code where the merging into the kernel is pending?
-
-> >   - function physmap_set_partitions in drivers/mtd/maps/physmap.c
-> 
-> Again that's called from elsewhere.
-
-The merging of the code calling it into the kernel is pending?
-
-> dwmw2
-
-cu
-Adrian
+I believe so, yes.
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+dwmw2
