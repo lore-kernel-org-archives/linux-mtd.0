@@ -1,90 +1,56 @@
-From: david@embeddedminds.com (David Jones)
-Date: Mon, 31 Mar 2003 15:08:47 -0700
-Subject: Kernel hangs when trying to probe AM29LV160DB flash device
-Message-ID: <3E88BC6F.6080109@embeddedminds.com>
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 31 Mar 2003 23:47:44 +0100
+Subject: jffs2 / eCos
+In-Reply-To: <1049142569.1913.11.camel@pc-002>
+References: <1049057380.1180.36.camel@pc-002>
+ <1049095079.16365.768.camel@imladris.demon.co.uk>
+ <1049142569.1913.11.camel@pc-002>
+Message-ID: <1049150862.16365.793.camel@imladris.demon.co.uk>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi,
-   I am trying to get an AM29LV160DB flash device to work with the MTD 
-drivers under uClinux.  The device is connected in a 16-bit bus
-fashion to a Motorola MC68VZ328.
+Please don't reply to cross-posts which have travelled via the eCos
+list. The gratuitous and redundant noise which that list adds to the
+Subject line is not welcome here.
 
-The AM29LV160DB is supported by mtd/chips/jedec_probe.c
+Also, please don't top-post (except for editorial comments such as this
+one and the one above :)
 
-In my map file I have:
-mymtd = do_map_probe("jedec_probe", &em1vz328_map);
+On Mon, 2003-03-31 at 21:29, Bob Koninckx wrote:
+> Ok, I think I've come closer :)
+> 
+> Apparently, it has to do with the check
+> 
+> 
+> } else if (frag->ofs < offset && (offset & (PAGE_CACHE_SIZE-1)) != 0) {
+>   D1(printk(KERN_NOTICE "Eep. Overlap in ino #%u fraglist. frag->ofs =
+>           0x%08x, offset = 0x%08x\n",
+>           f->inocache->ino, frag->ofs, offset));
+>   D1(jffs2_print_frag_list(f));
+>   memset(buf, 0, end - offset);
+>   return -EIO;
+> } else if (!frag->node) {
+> 
+> 
+> in read.c / function jffs2_read_inode_range
+> 
+> The ecos libc buffers only 256 bytes of data, PAGE_CACHE SIZE is defined
+> to be 4kB. The first access consequently succeeds, the second one fail
 
-The do_map_probe function calls get_mtd_chip_driver in mtd/mtd/chipreg.c
-and that is where things seem to hang.  The get_mtd_chip_driver function
-never returns and hangs the kernel.
+Hmmm. I could have sworn I'd already fixed that -- doesn't seem like it
+though.
 
-Here is a snippet of the boot messages:
----------------------------------------------------------
-.
-.
-EMDG em1-vz328 mapping:size 200000 at 2000000
-EMDG: MTD Debug: Calling the do_map_probe function...
-EMDG: MTD Debug: Calling get_mtd_chip_driver function...
+> I suppose all that needs to be done (for eCos) is make the
+> PAGE_CACHE_SIZE definition agree with the eCos libc BUFSIZ definition. I
+> am not sure though.
 
----------------------------------------------------------
+No because that would mean we never write a node with more than BUFSIZ
+(256 bytes) of data payload, which would mean we take up a lot more
+space on the medium for any given file -- more node headers and worse
+compression.
 
-I looked through the archives and I noticed someone else had a similar
-problem with this flash device under uClinux, but I could not find what
-the solution was.
-
-If anyone has any ideas I would be grateful.
-
-Thanks,
-David
-
-
-Kernel config:
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=3
-CONFIG_MTD_PARTITIONS=y
-# CONFIG_MTD_CONCAT is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
-
-#
-# User Modules And Translation Layers
-#
-CONFIG_MTD_CHAR=y
-# CONFIG_MTD_BLOCK is not set
-CONFIG_MTD_BLOCK_RO=y
-# CONFIG_FTL is not set
-# CONFIG_NFTL is not set
-
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_CFI=y
-CONFIG_MTD_JEDECPROBE=y
-CONFIG_MTD_GEN_PROBE=y
-CONFIG_MTD_CFI_ADV_OPTIONS=y
-CONFIG_MTD_CFI_NOSWAP=y
-# CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
-# CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
-CONFIG_MTD_CFI_GEOMETRY=y
-# CONFIG_MTD_CFI_B1 is not set
-CONFIG_MTD_CFI_B2=y
-# CONFIG_MTD_CFI_B4 is not set
-CONFIG_MTD_CFI_I1=y
-# CONFIG_MTD_CFI_I2 is not set
-# CONFIG_MTD_CFI_I4 is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-# CONFIG_MTD_CFI_AMDSTD is not set
-CONFIG_MTD_RAM=y
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-# CONFIG_MTD_OBSOLETE_CHIPS is not set
+We should just fix jffs2_read_inode_range() to handle reads which don't
+start at the beginning of a node. It's not hard.
 
 -- 
-David A. Jones                  Phone:  720-971-6381
-Embedded Minds Design Group     Fax:    303-926-0208
-www.EmbeddedMinds.com           Email:  david at EmbeddedMinds.com
+dwmw2
