@@ -1,27 +1,17 @@
-Received: from [210.80.78.61] (helo=serversw.iei.com.tw)
+Received: from law14-oe61.law14.hotmail.com ([64.4.20.196] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19V7qs-0002XD-Ob
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 11:50:11 +0100
-Received: from serversw.iei.com.tw (root@localhost)
-	by serversw.iei.com.tw with ESMTP id h5PAhlf15544
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Jun 2003 18:43:47 +0800 (CST)
-Received: from antivirusgw.hq.iei ([172.16.2.30])
-	by serversw.iei.com.tw with SMTP id h5PAhkI15540
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Jun 2003 18:43:47 +0800 (CST)
-Received: (from kevinliao [172.16.10.95])
- by antivirusgw.hq.iei (NAVGW 2.5.1.19) with SMTP id M2003062518483228798
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 18:48:32 +0800
-Message-ID: <00fd01c33b07$948945e0$5f0a10ac@kevinliao>
-From: "Kevin Liao" <kevinliao@iei.com.tw>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 25 Jun 2003 18:50:23 +0800
+	id 19V95J-0002nB-M1
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 13:09:09 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Tue, 24 Jun 2003 23:00:52 -0700
 MIME-Version: 1.0
+Message-ID: <Law14-OE616yVTdZlEQ00051d3e@hotmail.com>
 Content-Type: text/plain;
-	charset="big5"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 warning message
+cc: "Uclinux-Dev@Uclinux.Org" <uclinux-dev@uclinux.org>
+Subject: JFFS2 MOunt problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+Hi folks,
+I have built a kernel in RAM and Put in Jffs2 Support with two partitions.
 
-I had a mtd partition on NAND flash mounted as JFFS2. If the power was shutdown abnormally, after that each time when the system
-rebooted and tried to mount it again, I always saw a warning message "Empty flash at 0x00000a14 ends at 0x00000c00". Although I
-finally found that message was printed by jffs2_scan_eraseblock function in jffs2/scan.c, I still had no idea about what's really
-happened. Does anyone could explain the reason about that warning message or tell me what should I do to avoid the kernel's
-complaint? Thanks a lot.
+On Booting However I get these messages for a huge number of times
+..........
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e20c8:
+0x0007 id
+...........
+JFFS2: Erase block at 0x000c0000 is not formatted. It will be erased
+.....
+...........
 
-Regards,
-Kevin
+when running the command
+ mount -t jffs2 /dev/mtdblock1 /mnt
+
+I get
+
+mount: Mounting /dev/mtdblock1 on /mnt failed: No such device
+
+What could be the reason?
+
+Vikram
