@@ -1,36 +1,64 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13CIvB-0007KA-00
-	for mtd-list@infradead.org; Wed, 12 Jul 2000 10:35:13 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13CIvA-0007K4-00
-	for mtd@infradead.org; Wed, 12 Jul 2000 10:35:12 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <21454.963389948@cygnus.co.uk> 
-References: <21454.963389948@cygnus.co.uk>  <20000711212323.21257.qmail@web5302.mail.yahoo.com> 
-Cc: Juan Gonzo <kayemmess@yahoo.ca>, MTD Mailing List <mtd@infradead.org>
-Subject: Re: mtd devices & jffs 
-Mime-Version: 1.0
+	id 13CMSl-0007qe-00
+	for mtd-list@infradead.org; Wed, 12 Jul 2000 14:22:07 +0100
+Received: from txn2-30.evoserve.com
+	([210.16.11.30] helo=hut.evoserve.com ident=root)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13CMSi-0007qY-00
+	for mtd@infradead.org; Wed, 12 Jul 2000 14:22:05 +0100
+Message-ID: <396CB32B.F5BDE904@evoserve.com>
+Date: Thu, 13 Jul 2000 02:04:27 +0800
+From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
+MIME-Version: 1.0
+To: Finn Hakansson <finn.hakansson@axis.com>
+CC: mtd@infradead.org
+Subject: Re: inode alignment in flash
+References: <Pine.LNX.4.21.0007120844330.30364-100000@vvv.axis.se>
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 12 Jul 2000 10:35:09 +0100
-Message-ID: <32068.963394509@cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Finn Hakansson wrote:
 
-dwmw2@infradead.org said:
-> > Is there a way to tell JFFS "start at this
-> > addr and only use this much space" without changing this code? 
+>
+> No, raw inodes in JFFS is not aligned on page boundaries. There
+> is a definition in jffs_fm.h called JFFS_ALIGN_SIZE which is the
+> alignment of all kinds of data on-flash. Currently JFFS_ALIGN_SIZE
+> is set to 4 bytes. (The comments in the switch in jffs_scan_flash
+> about blocks are a little obsolete. Sorry about that.)
+>
 
-> Give it an MTD device which points at only the range you want it to
-> use. See how nora.c splits up the flash chips into four 'partitions'. 
+I have already noticed that macro before but I had doubts when I came across
+the comments when I dived deep into the code.
 
-I just committed 'pnc2000.c' which should be clearer. Look at that instead.
+>
+> Did I get this right? You first create a jffs image with mkfs.jffs
+> which you are able to mount the first time. Then you write some more
+> data to the flash device, while mounted, and everything is fine. When
+> you then mount after doing these writes, it fails. Exactly where does
+> the mount fail? Hmmm... Can you turn on the debug printouts and try
+> to see what is going wrong?
+>
+> Best regards,
+> Finn
 
---
-dwmw2
+Not quiet. I created a jffs image by using cat. When I mounted it the first
+time I noticed that some inodes were already being discarded as invlaid . I
+didnt write anything to it. After a long time and a lot of messages about
+invalid checksums it successfuly mounts. I cd into the mounted fs and did an
+"ls -l" in the directory. The file size for one file was wrong. It was the
+file with the "invalid" inodes. When I unmount and then mount again it
+simply fails.
 
+Now I looked at the sources and noticed the patch about byteorder.... I
+applied it and recompiled the kernel and now I can mount with no problems. I
+cant write on it though, it just fails. I commented out the part that
+restricts write to 512 and all but still it wont write. I will try turning
+on debug and post a copy the output.
+
+Thanks.
 
 
 
