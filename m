@@ -1,47 +1,100 @@
-From: g_friend@etang.com (=?us-ascii?Q?=CC=C6=B3=AF=D4=C6?=)
-Date: Fri, 7 Feb 2003 16:51:4 +0800
+From: chaffmanus@yahoo.com (tony Tong)
+Date: Fri, 7 Feb 2003 01:11:59 -0800 (PST)
 Subject: grub-doc patch problem
-Message-ID: <20030207084530.4956C1DAEBEAB@smtp.etang.com>
+In-Reply-To: <20030207090602.24812.16377.Mailman@localhost.localdomain>
+Message-ID: <20030207091159.93150.qmail@web20807.mail.yahoo.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-SSB3YW50IHRvIHVzZSBncnViIHRvIGJvb3QgIGZyb20gbXkgRE9DMjAwMCAoMzJNKS4gDQpBY2Nv
-cmRpbmcgdG8gIiBHUlVCIG9uIERvQyBNaWxsZW5uaXVtLzIwMDAgLSBJbnN0cnVjdGlvbnMgKFJl
-dmlzZWQpICINCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQv
-MjAwMi1PY3RvYmVyLzAwNjE2Ni5odG1sICwNCkkgdXNlIGdydWItMC45MiBhbmQgdGhlIHBhdGNo
-IGZpbGUgaXMgZ3J1Yi0yMDAyLTEwLTA4LWRvYy5wYXRjaA0KYnV0IGV2ZXJ5dGltZSBJIHVzZSJw
-YXRjaCAtcDAgLWkgZ3J1Yi0yMDAyLTEwLTA4LWRvYy5wYXRjaCIgLEkgd2lsbCBnZXQgdGhlIGZv
-bGxvd2luZw0KIg0KcGF0Y2hpbmcgZmlsZSAuL0FVVEhPUlMNCkh1bmsgIzEgRkFJTEVEIGF0IDQy
-Lg0KMSBvdXQgb2YgMSBodW5rIEZBSUxFRCAtLSBzYXZpbmcgcmVqZWN0cyB0byBmaWxlIC4vQVVU
-SE9SUy5yZWoNCnBhdGNoaW5nIGZpbGUgLi9DaGFuZ2VMb2cNCkh1bmsgIzEgRkFJTEVEIGF0IDEu
-DQpIdW5rICMyIEZBSUxFRCBhdCA4OC4NCjIgb3V0IG9mIDIgaHVua3MgRkFJTEVEIC0tIHNhdmlu
-ZyByZWplY3RzIHRvIGZpbGUgLi9DaGFuZ2VMb2cucmVqDQpwYXRjaGluZyBmaWxlIC4vUkVBRE1F
-X0Rpc2tPbkNoaXANCnBhdGNoaW5nIGZpbGUgLi9jb25maWd1cmUuaW4NCkh1bmsgIzEgc3VjY2Vl
-ZGVkIGF0IDIyOCAob2Zmc2V0IC0xMyBsaW5lcykuDQpwYXRjaGluZyBmaWxlIC4vc3RhZ2UxL01h
-a2VmaWxlLmFtDQpwYXRjaGluZyBmaWxlIC4vc3RhZ2UxL2RvY19zdGFnZTEuUw0KcGF0Y2hpbmcg
-ZmlsZSAuL3N0YWdlMS9kb2Nfc3RhZ2UxLmgNCnBhdGNoaW5nIGZpbGUgLi9zdGFnZTEvbWFrZWNz
-dW0uYw0KcGF0Y2hpbmcgZmlsZSAuL3N0YWdlMi9NYWtlZmlsZS5hbQ0KSHVuayAjMSBGQUlMRUQg
-YXQgODMuDQoxIG91dCBvZiAxIGh1bmsgRkFJTEVEIC0tIHNhdmluZyByZWplY3RzIHRvIGZpbGUg
-Li9zdGFnZTIvTWFrZWZpbGUuYW0ucmVqDQoiDQoNClRoZSBBVVRIT1JTIGFuZCBDSEFOR0xPRyBw
-cm9ibGVtcyBoYXMgYmVlbiBwb2ludGVkIGluIHRoZSBpbnN0cnV0aW9uICxidXQgdGhlIGxhc3Qg
-b25lIGhhc25vdCBiZWVuLg0Kd2h5IHRoaXMgaGFwcGVuZWQ/DQpJZiBJIGlnbm9yZSB0aGlzIGVy
-cm9yICwgY29udGludWUgImFjbG9jYWwgJiYgYXV0b21ha2UgLS1hZGQtbWlzc2luZyAmJiBhdXRv
-Y29uZiINCkkgd2lsbCBnZXQgdHdvIHdhcm5pbmdzOg0KY29uZmlndXJlLmluOjE3OiB3YXJuaW5n
-OiBkbyBub3QgdXNlIG00X3BhdHN1YnN0OiB1c2UgcGF0c3Vic3Qgb3IgbTRfYnBhdHN1YnN0DQpj
-b25maWd1cmUuaW46NjgxOiB3YXJuaW5nOiBkbyBub3QgdXNlIG00X3JlZ2V4cDogdXNlIHJlZ2V4
-cCBvciBtNF9icmVnZXhwDQoNClRoZW4gDQoiLi9jb25maWd1cmUgLS1lbmFibGUtZGlza29uY2hp
-cC0yMDAwIC1lbmFibGUtZGlza29uY2hpcC1jdHJsYnlwYXNzIC1lbmFibGUtZXh0MmZzICIgYW5k
-ICAibWFrZSIgLA0KaXQgd2lsbCBzdG9wICxhbmQgZHVtcCB0aGUgZm9sbG93aW5nIGVycm9yIGlu
-Zm9tYXRpb246DQoNCiINCnN0YWdlMi5jOiBJbiBmdW5jdGlvbiBgY21haW4nOg0Kc3RhZ2UyLmM6
-MTAxOTogYGN1cnJlbnRfdGVybScgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rp
-b24pDQpzdGFnZTIuYzoxMDE5OiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0
-ZWQgb25seSBvbmNlDQpzdGFnZTIuYzoxMDE5OiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJz
-IGluLikNCnN0YWdlMi5jOjEwMTk6IGBURVJNX0RVTUInIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBp
-biB0aGlzIGZ1bmN0aW9uKQ0KbWFrZVsyXTogKioqIFtwcmVfc3RhZ2UyX2V4ZWMtc3RhZ2UyLm9d
-IEVycm9yIDENCm1ha2VbMV06ICoqKiBbYWxsLXJlY3Vyc2l2ZV0gRXJyb3IgMQ0KbWFrZTogKioq
-IFthbGxdIEVycm9yIDINCiINCg0KDQp3aGF0IGlzIHdyb25nIHdpdGggbXkgc3RlcHM/IA0KQW55
-dGhpbmcgSSBtaXNzZWQ/DQpIb3BlIHNvbWUga2luZCBndXlzIGNvdWxkICBnaXZlIG1lIGEgaGFu
-ZCBhbmQgdGhhbmtzIGluIGFkdmFuZGNlDQogDQoNCkJUVzoNCkkgaGF2ZSB0cmllZCBncnViLTIw
-MDMtMDEtMDgtZG9jLnBhdGNoICxidXQgSSBnb3QgdGhlIHNhbWUgcmVzdWx0IA0KTXkgbGludXgg
-aXMgcmVkaGF0Ny4xICwga2VybmVsIGlzIDIuNC4yICwgDQpJIGhhdmUgdXNlZCBycG0gcGFja2Fn
-ZSB0byB1cGRhdGUgYXV0b21ha2UgdG8gMS41IGFuZCBhdXRvY29uZiB0byAyLjUzICAgIA0K
+sorry , because the previous two letters is unreadable
+,I have to change a emailaddress to resend it.
+
+I want to use grub to boot  from my DOC2000 (32M). 
+According to " GRUB on DoC Millennium/2000 -
+Instructions (Revised) "
+http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html
+,
+I use grub-0.92 and the patch file is
+grub-2002-10-08-doc.patch
+but everytime I use"patch -p0 -i
+grub-2002-10-08-doc.patch" ,I will get the following
+"
+patching file ./AUTHORS
+Hunk #1 FAILED at 42.
+1 out of 1 hunk FAILED -- saving rejects to file
+./AUTHORS.rej
+patching file ./ChangeLog
+Hunk #1 FAILED at 1.
+Hunk #2 FAILED at 88.
+2 out of 2 hunks FAILED -- saving rejects to file
+./ChangeLog.rej
+patching file ./README_DiskOnChip
+patching file ./configure.in
+Hunk #1 succeeded at 228 (offset -13 lines).
+patching file ./stage1/Makefile.am
+patching file ./stage1/doc_stage1.S
+patching file ./stage1/doc_stage1.h
+patching file ./stage1/makecsum.c
+patching file ./stage2/Makefile.am
+Hunk #1 FAILED at 83.
+1 out of 1 hunk FAILED -- saving rejects to file
+./stage2/Makefile.am.rej
+"
+
+The AUTHORS and CHANGLOG problems has been pointed in
+the instrution ,but the last one hasnot been.
+why this happened?
+If I ignore this error , continue "aclocal && automake
+--add-missing && autoconf"
+I will get two warnings:
+configure.in:17: warning: do not use m4_patsubst: use
+patsubst or m4_bpatsubst
+configure.in:681: warning: do not use m4_regexp: use
+regexp or m4_bregexp
+
+Then 
+"./configure --enable-diskonchip-2000
+-enable-diskonchip-ctrlbypass -enable-ext2fs " and 
+"make" ,
+it will stop ,and dump the following error infomation:
+
+"
+stage2.c: In function `cmain':
+stage2.c:1019: `current_term' undeclared (first use in
+this function)
+stage2.c:1019: (Each undeclared identifier is reported
+only once
+stage2.c:1019: for each function it appears in.)
+stage2.c:1019: `TERM_DUMB' undeclared (first use in
+this function)
+make[2]: *** [pre_stage2_exec-stage2.o] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
+"
+
+
+what is wrong with my steps? 
+Anything I missed?
+Hope some kind guys could  give me a hand and thanks
+in advandce
+ 
+
+BTW:
+I have tried grub-2003-01-08-doc.patch ,but I got the
+same result 
+My linux is redhat7.1 , kernel is 2.4.2 , 
+I have used rpm package to update automake to 1.5 and
+autoconf to 2.53
+
+
+
+
+
+
+
+ 
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
