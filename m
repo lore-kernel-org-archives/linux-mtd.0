@@ -1,17 +1,22 @@
-Received: from thor.lineo.com ([204.246.147.11])
+Received: from ultra.secret.org.uk ([194.154.178.202] helo=ultra)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ExQ5-0006eK-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 19:18:37 +0100
-Message-ID: <3B38D2EF.AA20118D@Rikers.org>
-Date: Tue, 26 Jun 2001 12:22:39 -0600
-From: Tim Riker <Tim@Rikers.org>
-MIME-Version: 1.0
-To: Simon Evans <spse@secret.org.uk>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Block device as MTD
-References: <E15Eq9Y-0005cF-00@spoinky.secret.org.uk>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=us-ascii
+	id 15F0KH-0006p4-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 22:24:50 +0100
+Received: from spoinky.secret.org.uk ([194.154.178.212])
+	by ultra with esmtp (Exim 3.03 #1)
+	id 15F0Zk-0006Zy-00
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2001 22:40:48 +0100
+Received: from localhost ([127.0.0.1] helo=spoinky.secret.org.uk)
+	by spoinky.secret.org.uk with esmtp (Exim 2.02 #1)
+	id 15EzJQ-0008Px-00
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2001 21:19:52 +0100
+From: Simon Evans <spse@secret.org.uk>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Block device as MTD 
+In-reply-to: Your message of "Tue, 26 Jun 2001 11:33:04 BST."
+             <E15Eq9Y-0005cF-00@spoinky.secret.org.uk>
+Date: Tue, 26 Jun 2001 21:19:52 +0100
+Message-Id: <E15EzJQ-0008Px-00@spoinky.secret.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,36 +28,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I assume David will just integrate this into the stuff he maintains and
-from there to the kernel sources. I'd like to test it as well.
+I have checked this into CVS now. The following files are affected:
 
-Simon Evans wrote:
-> 
-> Hi,
-> 
-> I have written a mtd driver that makes a block device
-> appear as an MTD device, ie you can use a floppy disk,
-> hard disk or Compact flash as an MTD then put JFFS2 on
-> top etc. The main reason for writing this was so I could
-> put JFFS2 on a Compact Flash (which pretends to be an IDE drive),
-> however it can be used as a test device for using JFFS2 on
-> large devices (you should be able to use upto a 4gig block device)
-> or floppy disks (ie eject the disk when it does a write for testing
->  jorunalling).
-> 
-> I have tested it on a floppy disk, and 96MB CF and it seems relatively
-> stable.
-> 
-> What is the best procedure for releasing it.
-> 
-> cheers
-> si
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+drivers/mtd/devices/blkmtd.c  - the driver itself
+drivers/mtd/devices/Config.in
+drivers/mtd/devices/Makefile
+patches/Configure.help
 
--- 
-Tim Riker - http://rikers.org/ - short SIGs! <g>
-All I need to know I could have learned in Kindergarten
-... if I'd just been paying attention.
+Please consider this alpha software. It uses raw/io to the disk (not via
+the buffer cache). Basic usage is:
+
+modprobe blkmtd device=/dev/floppy/0  etc
+
+If you are going to put a JFFS2 fs on the device, please note that
+it can take quite a while to mount because JFFS2 scans every block.
+A 96MB CF card took about 2 minutes.
+
+On the plus side, if you have more memory then the size of the device,
+you should find the whole device in the page cache ;)
+
+cheers
+si
