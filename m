@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eMGX-00052k-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 21:58:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200208111908.06874.mtd@mcmen.demon.co.uk> 
-References: <200208111908.06874.mtd@mcmen.demon.co.uk> 
+	id 17eMOf-00054u-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 22:06:41 +0100
+Date: Mon, 12 Aug 2002 23:06:38 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: adr <mtd@mcmen.demon.co.uk>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Help with Dreamcast flash devices 
+Subject: Re: Help with Dreamcast flash devices
+Message-ID: <20020812210638.GA23744@wohnheim.fh-wedel.de>
+References: <200208111908.06874.mtd@mcmen.demon.co.uk> <20020811195238.GA1638@wohnheim.fh-wedel.de> <200208122154.19331.mtd@mcmen.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 12 Aug 2002 21:58:15 +0100
-Message-ID: <18431.1029185895@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200208122154.19331.mtd@mcmen.demon.co.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +25,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mtd@mcmen.demon.co.uk said:
->  Well, the long and the short of it is that I am somewhat at sea here.
-> Are  there any similar mtd devices I can look at?
+On Mon, 12 August 2002 21:54:19 +0100, adr wrote:
+> On Sunday 11 Aug 2002 8:52 pm, Jörn Engel wrote:
+> > My best guess would be to create something similar to the slram
+> > driver, but with different guts. 
+> 
+> I've looked at slram.c - but don't really understand what it is for.
+> What sort of device is it?
 
-> Is there an explanation anywhere of how mapping works and how to
-> 'virtual' map  something which isn't in the physical map at all? 
+Physical RAM, plain and simple. Usually system memory, after passing a
+"mem=a_little_less_than_availlable" command line option. Sometimes
+NVRAM that is mapped into the physical memory address range.
 
-Your map functions must read and write words to the flash, and provide 
-methods for copying chunks of data from the flash. That's about it.
+Jörn
 
-They may not sleep. Is that a problem?
-
---
-dwmw2
+-- 
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
