@@ -1,18 +1,16 @@
-Received: from dns.heurikon.com ([192.48.245.20] helo=frankfurter.heurikon.com)
+Received: from mail.2d3d.co.za ([196.14.185.200])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15NaXN-0004l2-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 14:41:50 +0100
-Received: from frankfurterDMZ.heurikon.com (c3po.heurikon.com [10.64.16.18])
-	by bratwurst.heurikon.com (Postfix) with SMTP id 921BACC8DA
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 08:47:19 -0500 (CDT)
-Message-ID: <F9102D41F595D311ACA7009027DE2C84033D4D81@c3po.heurikon.com>
-From: "McNutt, Scott" <smcnutt@artesyncp.com>
-To: linux-mtd@lists.infradead.org
-Subject: RE: Magic bitmask 0x1985 not found 
-Date: Fri, 20 Jul 2001 08:47:24 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 15Nbjm-0004pg-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 15:58:43 +0100
+Date: Fri, 20 Jul 2001 17:04:55 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Linus/Russell/any tree merge
+Message-ID: <20010720170455.B2757@crystal.2d3d.co.za>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,36 +22,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> From: David Woodhouse
-> 
-> smcnutt@artesyncp.com said:
-> > mount: block device /dev/mtdblock/2 is write-protected, mounting
-> > read-only
-> 
-> Why JFFS2 if it's readonly and the sectors are protected? 
-> Surely cramfs  would suffice?
+--7iMSBzlTiPOCCT2k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't want readonly ... my mistake ... I was
-setting MTD_WRITEABLE vs. clearing it (duh!)
+Hi!
 
-> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
-> 0x00020000: 0xe002 instead
-> 
-> What's at offset 0x1fffc in the partition? 0x1985? 
+Just curious. When will the mtd cvs tree be merged again with
+Russell/Nico's patches or sent off to Linus ?
 
-Here's the dump:
-01fff0 90 87 2f 34 2e 16 d5 26 bc c0 4e d1 ff ff 19 85
-...
-03fff0 84 00 03 00 de 72 b0 79 ff ff ff ff 19 85 e0 02
-05fff0 ff ff ff ff ff ff ff ff ff ff 19 85 e0 02 00 00
+There's some drivers/changes in the CVS tree that imho is much needed in the
+main kernel tree.
 
-So ... the offsets are jacked.
+--=20
 
-> What '-e' value was given to mkfs.jffs2? 
+Regards
+ Abraham
 
-I thought I used 131072. But based on the dump, I must have
-fat-fingered 131071 :-(. I made a new image with -e 131072
-and it looks good.
+You enjoy the company of other people.
 
-Thanks for the help!
---Scott
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
+
+
+--7iMSBzlTiPOCCT2k
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7WEiXzNXhP0RCUqMRAtmCAKCPFj2qBxYltvufYti8oNV6GiolOQCcD6Ol
+Ghe2O0dK6O4KNOUR7CkTp9U=
+=cNFu
+-----END PGP SIGNATURE-----
+
+--7iMSBzlTiPOCCT2k--
