@@ -1,189 +1,83 @@
-From: indy5xl@lycos.de (Indy500)
-Date: Wed, 12 Mar 2003 00:11:56 +0100
-Subject: dbox2 Partition Table
-Message-ID: <200303120011.56251.indy5xl@lycos.de>
+From: tharbaugh@lnxi.com (Thayne Harbaugh)
+Date: 11 Mar 2003 17:25:15 -0700
+Subject: DQ5 & DQ6 in chips/cfi_cmdset_0002.c (Dairy Queen 5 warning)
+Message-ID: <1047428715.11517.50.camel@tubarao>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---Boundary-00=_80mb+FwPFBQa0Xi
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Hi
-
-attached is the Partition Table which is commonly used for Dbox2 with jffs2 in 
-/drivers/mtd/maps
-
-
-
---Boundary-00=_80mb+FwPFBQa0Xi
-Content-Type: text/x-csrc;
-  charset="us-ascii";
-  name="dbox2-flash.c"
+--=-bK4IZ7vhYqXn1yFR9yRW
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="dbox2-flash.c"
 
-/*
- * $Id: dbox2-flash.c,v 1.4 2001/10/02 15:05:14 dwmw2 Exp $
- *
- * D-Box 2 flash driver
- */
+For some reason I am confused: I get the feeling that what I'm trying to
+understand is obvious - I just can't see the forest for the trees.  Will
+someone help me understand?
 
-#include <linux/module.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <asm/io.h>
-#include <linux/mtd/mtd.h>
-#include <linux/mtd/map.h>
-#include <linux/mtd/partitions.h>
-#include <linux/config.h>
+cfi_cmdset_0002.c has several functions that use dq5 and dq6 for
+monitoring the status of erase and write operations:
 
-/* partition_info gives details on the logical partitions that the split the
- * single flash device into. If the size if zero we use up to the end of the
- * device. */
-static struct mtd_partition partition_info[]=3D {{name: "BR bootloader",		/=
-/ raw
-						      size: 128 * 1024,=20
-						      offset: 0,                 =20
-						      mask_flags: MTD_WRITEABLE},
-						{name: "flfs (ppcboot)",=09
-						      size: 128 * 1024,=20
-						      offset: MTDPART_OFS_APPEND,=20
-						      mask_flags: 0},
-						{name: "root (jffs2)",=09
-						      size: 7936 * 1024,=20
-						      offset: MTDPART_OFS_APPEND,=20
-						      mask_flags: 0},
-						{name: "flash without bootloader",=09
-						      size: MTDPART_SIZ_FULL,=20
-						      offset: 128 * 1024,=20
-						      mask_flags: 0},
-						{name: "complete flash",=09
-						      size: MTDPART_SIZ_FULL,=20
-						      offset: 0,=20
-						      mask_flags: MTD_WRITEABLE}};
+dq6 =3D CMD(1<<6);
+dq5 =3D CMD(1<<5);
 
-#define NUM_PARTITIONS (sizeof(partition_info) / sizeof(partition_info[0]))
+Apparently, from the code dq6 toggles during erase/read operations and
+dq5 is low until the erase/read operation times out and then goes high
+(somewhat like a watchdog bit).
 
-#define WINDOW_ADDR 0x10000000
-#define WINDOW_SIZE 0x800000
+My understanding,@least for the SST 49LF040 and PMC Pm49L004 is that
+dq6 toggles during erase/write and dq7 is inverted until the erase/write
+operation completes.  This causes me to expect to see the following code
+rather than what is written above (not to mention that most everything
+in do_write_one_word() should be adapted for dq7 invert):
 
-static struct mtd_info *mymtd;
+dq7 =3D CMD(1<<7); /* invert */
+dq6 =3D CMD(1<<6); /* toggle */
 
-__u8 dbox2_flash_read8(struct map_info *map, unsigned long ofs)
-{
-	return __raw_readb(map->map_priv_1 + ofs);
-}
+The differences give me the feeling that there really are two different
+classes of cfi_cmdset_0002 - those devices that have a dq5 watchdog and
+those devices that don't have the watchdog, but have a bit inverter on
+dq7.
 
-__u16 dbox2_flash_read16(struct map_info *map, unsigned long ofs)
-{
-	return __raw_readw(map->map_priv_1 + ofs);
-}
+Am I not understanding what happens on bits 0-5 during an erase/write
+operation?  The PMC and SST chips don't mention a thing about dq5
+behavior.  If they don't have the dq5 watchdog timer then they will
+behave in an undefined way (depending on the state of bit 5 in the
+written word) with the current dq5 checking.  This explains the many
+warnings I see with the SST and PMC chips in do_write_oneword(),
 
-__u32 dbox2_flash_read32(struct map_info *map, unsigned long ofs)
-{
-	return __raw_readl(map->map_priv_1 + ofs);
-}
+"Warning: DQ5 raised while program operation was in progress, however
+operation completed OK"
 
-void dbox2_flash_copy_from(struct map_info *map, void *to, unsigned long fr=
-om, ssize_t len)
-{
-	memcpy_fromio(to, map->map_priv_1 + from, len);
-}
+Around here we refer to this as the "Dairy Queen 5" warning.
 
-void dbox2_flash_write8(struct map_info *map, __u8 d, unsigned long adr)
-{
-	__raw_writeb(d, map->map_priv_1 + adr);
-	mb();
-}
+Obviosly, during an erase that completes prior to dq5 being read-back,
+dq5 will be high and the current algorithm is erroneously correct.  This
+can explain why I have not seen the same message in do_erase_oneblock().
 
-void dbox2_flash_write16(struct map_info *map, __u16 d, unsigned long adr)
-{
-	__raw_writew(d, map->map_priv_1 + adr);
-	mb();
-}
+Furthermore, the SST documentation on page 10 refers to "spurios
+rejection" of good writes - differentiating between a write that
+succeeds that appears to fail and a write that fails.  It says that a
+write that appears to fail needs to be read back two more times
+successfully to filter out spurious rejection.
 
-void dbox2_flash_write32(struct map_info *map, __u32 d, unsigned long adr)
-{
-	__raw_writel(d, map->map_priv_1 + adr);
-	mb();
-}
+Comments?  What should change to improve the operation completion
+check?  Should cfi_cmdset_0002 be adapted to handle multiple types of
+polling or should another command set be written?
 
-void dbox2_flash_copy_to(struct map_info *map, unsigned long to, const void=
- *from, ssize_t len)
-{
-	memcpy_toio(map->map_priv_1 + to, from, len);
-}
+--=20
+Thayne Harbaugh
+Linux Networx
 
-struct map_info dbox2_flash_map =3D {
-	name: "D-Box 2 flash memory",
-	size: WINDOW_SIZE,
-	buswidth: 4,
-	read8: dbox2_flash_read8,
-	read16: dbox2_flash_read16,
-	read32: dbox2_flash_read32,
-	copy_from: dbox2_flash_copy_from,
-	write8: dbox2_flash_write8,
-	write16: dbox2_flash_write16,
-	write32: dbox2_flash_write32,
-	copy_to: dbox2_flash_copy_to
-};
+--=-bK4IZ7vhYqXn1yFR9yRW
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-int __init init_dbox2_flash(void)
-{
-       	printk(KERN_NOTICE "D-Box 2 flash driver (size->0x%X mem->0x%X)\n",=
- WINDOW_SIZE, WINDOW_ADDR);
-	dbox2_flash_map.map_priv_1 =3D (unsigned long)ioremap(WINDOW_ADDR, WINDOW_=
-SIZE);
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-	if (!dbox2_flash_map.map_priv_1) {
-		printk("Failed to ioremap\n");
-		return -EIO;
-	}
+iD8DBQA+bn5rfsBPTKE6HMkRAs4BAJ9X+2ohh6yJj0pl/bhoePQkSDI+CQCfacc7
+o6FfFw5wUv1dT06gFCcaGnY=
+=+ZHx
+-----END PGP SIGNATURE-----
 
-	// Probe for dual Intel 28F320 or dual AMD
-	mymtd =3D do_map_probe("cfi_probe", &dbox2_flash_map);
-	if (!mymtd) {
-	    // Probe for single Intel 28F640
-	    dbox2_flash_map.buswidth =3D 2;
-=09
-	    mymtd =3D do_map_probe("cfi_probe", &dbox2_flash_map);
-	}
-	   =20
-	if (mymtd) {
-		mymtd->module =3D THIS_MODULE;
-
-                /* Create MTD devices for each partition. */
-	        add_mtd_partitions(mymtd, partition_info, NUM_PARTITIONS);
-	=09
-		return 0;
-	}
-
-	iounmap((void *)dbox2_flash_map.map_priv_1);
-	return -ENXIO;
-}
-
-static void __exit cleanup_dbox2_flash(void)
-{
-	if (mymtd) {
-		del_mtd_partitions(mymtd);
-		map_destroy(mymtd);
-	}
-	if (dbox2_flash_map.map_priv_1) {
-		iounmap((void *)dbox2_flash_map.map_priv_1);
-		dbox2_flash_map.map_priv_1 =3D 0;
-	}
-}
-
-module_init(init_dbox2_flash);
-module_exit(cleanup_dbox2_flash);
-
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("K=E1ri Dav=ED=F0sson <kd@flaga.is>, Bastian Blank <waldi@tux=
-box.org>");
-MODULE_DESCRIPTION("MTD map driver for D-Box 2 board");
-
---Boundary-00=_80mb+FwPFBQa0Xi--
+--=-bK4IZ7vhYqXn1yFR9yRW--
