@@ -1,14 +1,14 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=executor.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nGyq-0003YS-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 10:36:36 +0000
-Date: Tue, 19 Mar 2002 10:48:05 +0000 (GMT)
+	id 16nH1k-0003Yq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 10:39:36 +0000
+Date: Tue, 19 Mar 2002 10:51:05 +0000 (GMT)
 From: David Woodhouse <dwmw2@redhat.com>
-To: Stephan Linke <Stephan.Linke@epygi.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: root=/dev/mtdblock doesn't work with kernel 2.4.18
-In-Reply-To: <FCEAKDJJAPHPLJFINDAJMEKPCDAA.Stephan.Linke@epygi.de>
-Message-ID: <Pine.LNX.4.44.0203191047050.26226-100000@passion.cambridge.redhat.com>
+To: William Jhun <wjhun@ayrnetworks.com>
+Cc: linux-mtd@lists.infradead.org, <kaos@ocs.com.au>
+Subject: Re: Initialization ordering problem
+In-Reply-To: <20020318221449.L6821@ayrnetworks.com>
+Message-ID: <Pine.LNX.4.44.0203191048310.26226-100000@passion.cambridge.redhat.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,17 +22,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 19 Mar 2002, Stephan Linke wrote:
+On Mon, 18 Mar 2002, William Jhun wrote:
 
-> After changing from 2.4.8-pre4 to a 2.4.18 kernel I can't mount the flash as
-> root device any more. I'm using the "root=" boot argument to do so.
-> The filesystem (cramfs) is alredy detected in mount_root() (super.c) when
-> mount_root calls blkdev_put(bdev, BDEV_FS); Which for some reasons has to
-> call the release function of the device which results in mtdblock_release()
-> being called. The hole thing stops when invalidate_device() calls
-> fsync_dev(dev).
+> Hello,
+> 
+> Since mtd chip drivers (cfi_probe.c, etc) register their presence during
+> module (or __initcall) initialization, an attempt to probe for flash
+> devices before all mtd components have initialized may fail. Our
+> platform-specific code (which in turn calls do_map_probe() in chipreg.c)
+> just happens to get linked in before the mtd code. Resultingly, all
+> probes fail as the required chip drivers are not present. Is there a
+> better solution for this than changing the link order? 
 
-Remove just the call to invalidate_device() in mtdblock_release()
+Ask Keith. I objected strongly at the time to the inter_module_xxx stuff
+introducing these link order constraints where previously there were none.
+
+In 2.5, you could possibly use subsys_initcall for the chip registrations 
+to ensure they happen first.
 
 -- 
 dwmw2
