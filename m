@@ -1,44 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13qLhr-0003WB-00
-	for mtd-list@infradead.org; Mon, 30 Oct 2000 20:38:59 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13qLhq-0003W5-00
-	for mtd@infradead.org; Mon, 30 Oct 2000 20:38:58 +0000
-Date: Mon, 30 Oct 2000 20:38:54 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Qiuyuan Liu <q.liu@acm.org>
-cc: mtd@infradead.org
-Subject: Re: building mtd: put_module_symbol?
-In-Reply-To: <39FDD62E1B8.9E6AQ.LIU@mail.neontech.com>
-Message-ID: <Pine.LNX.4.21.0010302033500.15834-100000@imladris.demon.co.uk>
+	id 13qSxb-00067a-00
+	for mtd-list@infradead.org; Tue, 31 Oct 2000 04:23:43 +0000
+Received: from [63.196.9.2] (helo=ftp.neontech.com)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13qSxZ-00067U-00
+	for mtd@infradead.org; Tue, 31 Oct 2000 04:23:42 +0000
+Date: Mon, 30 Oct 2000 20:26:34 -0800
+From: Qiuyuan Liu <q.liu@acm.org>
+To: mtd@infradead.org
+Subject: building mtd: bitsy.h
+Message-Id: <39FE49FA3AC.1785Q.LIU@mail.neontech.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Mon, 30 Oct 2000, Qiuyuan Liu wrote:
+Thank you, David. I am getting closer.
 
-> 1. where is put_module_symbol defined referred in mtd/map.h:
-> do_map_probe().
+I installed 2.2.17 kernel source, and got the put_module_symbol fixed by
+the 2.2.1x.patch.
 
-Apply put_module_symbol-2.2.18.patch to your kernel.
+Now, how about bitsy.h. It seems, from Google's search result, to be a
+file introduced in 2.4.0, right? Then how can I get one on 2.2.17 and
+what's the corresponding source code that implements, e.g.,
+set_bitsy_egpio?
 
-> 2. set_current_state redefinition
-
-Fixed in cvs tree.
-
-> 3. physmap.c, line 65:
-> 'CONFIG_MTD_PHYSMAP_BUSWIDTH' undeclared here (not in a function)
-> initializer elemennt for 'physmap_map.buswidth' is not constant
-
-Likewise.
-
--- 
-dwmw2
-
-
+Thank you,
+Qiuyuan
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
