@@ -1,17 +1,19 @@
-Received: from apcoh.org ([217.197.167.123])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNdLX-0005FV-3w
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 16:27:42 -0400
-Received: from rasz (helo=localhost) by apcoh.org with local-esmtp (Exim 4.30)
-	id 1CNdLQ-0006Ml-B8
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 22:27:32 +0200
-Date: Fri, 29 Oct 2004 22:27:32 +0200 (CEST)
-From: rasz@apcoh.org
-To: linux-mtd@lists.infradead.org
-Message-ID: <unknown.1@apcoh.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: not erasing | help | urgent
+Received: from mail6.speakeasy.net ([216.254.0.206])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CO0yx-00070y-Co
+	for linux-mtd@lists.infradead.org; Sat, 30 Oct 2004 17:41:57 -0400
+Received: from dsl017-104-254.spk0.dsl.speakeasy.net (HELO [192.168.0.10])
+	(jangiels@[69.17.104.254]) (envelope-sender <jangiels@speakeasy.net>)
+	by mail6.speakeasy.net (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 30 Oct 2004 21:35:12 -0000
+From: Jeff Angielski <jangiels@speakeasy.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Message-Id: <1099172137.30440.8.camel@nighteyes.localdomain>
+Mime-Version: 1.0
+Date: Sat, 30 Oct 2004 17:35:37 -0400
+Content-Transfer-Encoding: 7bit
+Subject: mkfs.jffs2 with DENX 2.4 kernel on MPC8260
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,96 +23,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, I'v got a kinda urgent problem, i tried to flash new image to
-my box and encountered a strange problem. Flash seems to be partially
-blocked. The box is running now, but if I turn it off I'm lost (bootloader
-partially broken). Here is some info from my box.
 
-dmesg :
-Linux version 2.4.27 (root@gp) (gcc version 3.3.3) #70 Thu Oct 28 10:02:15
-BST 2004
-physmap flash device: 4000000 at 1fc00000
- Amd/Fujitsu Extended Query Table v1.0 at 0x0040
+Should the current MTD CVS mkfs.jffs2 work with one of the older jffs2
+kernels?  Or do I need to scrounge up an older version?  I ask because
+the jffs2 image is not working correctly on my system while the cramfs
+root image works fine - both built from the same directory tree.
+
+Using the default rootfs image from the ELDK toolkit and with the
+MTD/jffs2 debugging turned on, this is what I see:
+
+
+<snip>
+EP8260: Found 4 x16 devices at 0x0 in 64-bit mode
+ Amd/Fujitsu Extended Query Table at 0x0040
+EP8260: CFI does not contain boot bank location. Assuming top.
 number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-Using command line partition definition
-Creating 2 MTD partitions on "Physically mapped flash":
-0x00000000-0x00100000 : "kern"
-0x00100000-0x00200000 : "root"
+Using word write method
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+EP8260 flash bank 0: Using static image partition definition
+Creating 5 MTD partitions on "EP8260":
+0x00000000-0x00040000 : "hrcw"
+mtd: Giving out device 0 to hrcw
+0x00040000-0x00100000 : "kernel"
+mtd: Giving out device 1 to kernel
+0x00100000-0x01f00000 : "rootfs"
+mtd: Giving out device 2 to rootfs
+0x01f00000-0x01f40000 : "uboot"
+mtd: Giving out device 3 to uboot
+0x01f40000-0x01f80000 : "uboot parms"
+mtd: Giving out device 4 to uboot parms
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 4096 bind 8192)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+mtdblock_open
+ok
+mtdblock: read on "rootfs" at 0x400, size 0x200
+mtdblock: read on "rootfs" at 0x600, size 0x200
+mtdblock_release
+ok
+mtdblock_open
+ok
+Eep. Child "application" (ino #14) of dir ino #2 doesn't exist!
+VFS: Mounted root (jffs2 filesystem).
+Mounted devfs on /dev
+Freeing unused kernel memory: 60k init
+MTD do_write_oneword(): WRITE 0x002e45b8(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45c0(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45c8(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45d0(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45d8(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45e0(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45e8(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45f0(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e45f8(0xc3f19bd4)
+MTD do_write_oneword(): WRITE 0x002e4438(0xc3f19c34)
+MTD do_write_oneword(): WRITE 0x002e4440(0xc3f19c34)
+MTD do_write_oneword(): NOP
+MTD do_write_oneword(): WRITE 0x002e45f8(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4600(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4608(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4610(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4618(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4620(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4620(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4628(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e44f8(0xc3f19ce4)
+MTD do_write_oneword(): WRITE 0x002e4500(0xc3f19ce4)
+MTD do_write_oneword(): NOP
+MTD do_write_oneword(): WRITE 0x002e4570(0xc3f19cb4)
+MTD do_write_oneword(): WRITE 0x002e4578(0xc3f19cb4)
+MTD do_write_oneword(): NOP
+MTD do_write_oneword(): WRITE 0x002e4630(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4638(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4640(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4648(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4650(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4658(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4660(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4668(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4670(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4670(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4678(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4680(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4688(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4690(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4698(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e4698(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e46a0(0xc3f19c44)
+MTD do_write_oneword(): WRITE 0x002e45f8(0xc3f19c74)
+MTD do_write_oneword(): WRITE 0x002e4600(0xc3f19c74)
+MTD do_write_oneword(): NOP
+MTD do_write_oneword(): WRITE 0x002e46a8(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46b0(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46b8(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46c0(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46c8(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46d0(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46d8(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46e0(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e46e8(0xc3f19c94)
+MTD do_write_oneword(): WRITE 0x002e4630(0xc3f19cf4)
+MTD do_write_oneword(): WRITE 0x002e4638(0xc3f19cf4)
+MTD do_write_oneword(): NOP
+MTD do_write_oneword(): WRITE 0x002e46e8(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e46f0(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e46f8(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4700(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4708(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4710(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4718(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4720(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4728(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e4730(0xc3f19c24)
+MTD do_write_oneword(): WRITE 0x002e46a8(0xc3f19c84)
+MTD do_write_oneword(): WRITE 0x002e46b0(0xc3f19c84)
+MTD do_write_oneword(): NOP
 
-The flash is 2M Byte MXIC MX29LV160AB.
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00200000 00010000 "Physically mapped flash"
-mtd1: 00100000 00010000 "kern"
-mtd2: 00100000 00010000 "root"
+BusyBox v0.60.5 (2004.02.16-23:33+0000) Built-in shell
+(msh)jffs2_do_read_inode() on nonexistent ino 14
 
-# ./einfo /dev/mtd0
-Device /dev/mtd0 has 4 erase regions
-Region 0 is at 0x0 with size 0x4000 and has 0x1 blocks
-Region 1 is at 0x4000 with size 0x2000 and has 0x2 blocks
-Region 2 is at 0x8000 with size 0x8000 and has 0x1 blocks
-Region 3 is at 0x10000 with size 0x10000 and has 0x1f blocks
+Enter 'help' for a list of built-in commands.
 
-# ./mtd_debug info /dev/mtd0
+Bummer, could not run '/bin/application': Input/output error
+Bummer, could not run '/bin/application': Input/output error
+Bummer, could not run '/bin/application': Input/output error
+Bummer, could not run '/bin/application': Input/output error
 
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 2097152 (2M)
-mtd.erasesize = 65536 (64K)
-mtd.oobblock = 0
-mtd.oobsize = 0
-mtd.ecctype = MTD_ECC_NONE
-regions = 4
 
-region[0].offset = 0x00000000
-region[0].erasesize = 16384 (16K)
-region[0].numblocks = 1
-region[0].regionindex = 0
-region[1].offset = 0x00004000
-region[1].erasesize = 8192 (8K)
-region[1].numblocks = 2
-region[1].regionindex = 1
-region[2].offset = 0x00008000
-region[2].erasesize = 32768 (32K)
-region[2].numblocks = 1
-region[2].regionindex = 2
-region[3].offset = 0x00010000
-region[3].erasesize = 65536 (64K)
-region[3].numblocks = 31
-region[3].regionindex = 3
-
-And now :
-
-# ./flash_eraseall /dev/mtd0
-Erasing 64 Kibyte @ 1f0000 -- 96 % complete.
-
-Why only one sector ? This tool is from current CVS snapshot.
-
-# ./eraseall /dev/mtd0
-Erased 2048 Kibyte @ 0 -- 100% complete.
-
-mm seems better (this one is from 2002 snapshot), but now :
-
-# dd if=/dev/mtd0 bs=1 count=131000 |hexdump
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0004000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0006000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0008000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0010000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-001ffb0
-131000+0 records in
-131000+0 records out
-
-Those FF'ed areas are fine, i can write there with no problem (dd or my
-own program), but those zeroed are hosed :(. Nothing can be written there.
-
-What can I do ? My bootloader has 128KB, but I can only flash region
-0, second block of region 1 and region 3 :(.
-HELP !
+Jeff Angielski
