@@ -1,19 +1,25 @@
-Received: from smtp2.cybersurf.net ([209.197.145.112])
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 152xOY-0007RB-00
-	for <linux-mtd@lists.infradead.org>; Thu, 24 May 2001 16:51:27 +0100
-Received: from localhost.localdomain ([209.197.132.58]) by
-          smtp2.cybersurf.net (Netscape Messaging Server 4.15) with SMTP
-          id GDUK8O00.S7M for <linux-mtd@lists.infradead.org>; Thu, 24 May
-          2001 09:55:36 -0600
-From: Herman Oosthuysen <herman@wirelessnetworksinc.com>
+	id 153Be5-0008Fj-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 May 2001 08:04:25 +0100
+Received: from cherry.napri.sk ([194.1.128.4] ident=postfix)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 153Bi7-0004vZ-00
+	for linux-mtd@lists.infradead.org; Fri, 25 May 2001 08:08:36 +0100
+Received: from ham.pkx.sk (unknown [194.1.139.234])
+	by cherry.napri.sk (Postfix) with ESMTP id CADF139049
+	for <mtd@infradead.org>; Fri, 25 May 2001 07:43:55 +0200 (CEST)
+Received: (from kundrat@localhost)
+	by ham.pkx.sk (8.9.3/8.9.3/Debian/GNU) id HAA06951
+	for mtd@infradead.org; Fri, 25 May 2001 07:03:48 +0200
+Date: Fri, 25 May 2001 07:03:47 +0200
+From: Peter Kundrat <kundrat@kundrat.sk>
 To: linux-mtd@lists.infradead.org
-Subject: MTD/JFF2 on Kernel 2.0
-Date: Thu, 24 May 2001 09:53:52 -0600
-Content-Type: text/plain
-MIME-Version: 1.0
-Message-Id: <01052409591601.00748@localhost.localdomain>
-Content-Transfer-Encoding: 8bit
+Subject: patch for lilo-21.7.5
+Message-ID: <20010525070347.B5635@napri.sk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="M9NhX3UHpAaciwkO"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,19 +31,3 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi everybody,
-
-Can anybody enlighten me on what would be required to install MTD with JFF2 on
-a 2.0 kernel?  
-
-We are doing an embedded system with Intel 28F320C3 memory and want to make 
-as few changes to the kernel  as possible, to reduce the risk.  
-
-I have read all the FAQs and mailing lists and searched the web, but this stuff is just 
-so new, that few people have published anything.
-
-Cheers,
- -- 
-Herman Oosthuysen
-Phone: 403+569-5687
-E-mail: Herman@WirelessNetworksInc.com
