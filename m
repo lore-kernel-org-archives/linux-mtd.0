@@ -1,16 +1,20 @@
-Received: from mx3.aruba.it ([62.149.128.132])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AVpef-0006eP-0u
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2003 10:08:45 +0000
-From: Andrea Galbusera <andrea.galbusera@teamware.it>
-To: linux-mtd <linux-mtd@lists.infradead.org>, uClinux development list
-	<uclinux-dev@uclinux.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Message-Id: <1071482990.3915.106.camel@andreagal>
-Mime-Version: 1.0
-Date: 15 Dec 2003 11:09:50 +0100
-Content-Transfer-Encoding: 8bit
-Subject: AMD flash lock/unlock support question
+Received: from gate.epygi.de ([212.126.211.241])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AVrG3-0006uu-My
+	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2003 11:51:27 +0000
+Received: from sally.epygi.de (sally.epygi.de [10.20.0.18])
+	by gate.epygi.de (8.12.9/8.12.9) with ESMTP id hBFBndhf026211
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Dec 2003 12:49:39 +0100 (MET)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
+Date: Mon, 15 Dec 2003 12:49:38 +0100
+Message-ID: <NGENJJFPMHGLPILEKKAMMEPPCDAA.Stephan.Linke@epygi.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: reset on NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all!
-I´m new to embedded linux development, so, please, be patient if I ask
-for anything silly.
+Hi,
 
-I´m working with a Coldfire/uClinux system. The hardware mounts two AMD
-Am29DL640G flash chips. I can succesfully enable read/write/erase
-operations via MTD using uClinux kernel 2.4.20-uc0. 
+when scanning the nand device shouldn't the reset command being issued first?
+I am thinking of these situations where the flash is left out of sync after a soft reset. Maybe ID detection can fail since
+NAND_CMD_READID is not recognised by NAND chip?
 
-My project actually require to support lock/unlock functions to protect
-some flash memory sections. Are they already available for AMD chips?
-Anybody succeded using these functions through util/lock.c and
-util/unlock.c tools?
+I would prefer having a NAND_CMD_RESET in nand_scan(). What do you think?
 
-Looking at more recent sources from mtd cvs I saw some functions in
-cfi_cmdset_0002.c (is this the right one for my chips?) which look to be
-relevant for my problem (cfi_amdstd_lock_varsize() and
-cfi_amdstd_unlock_varsize()). What development status are these?
-
-TIA
-Andrea
+Regards, Stephan
