@@ -1,19 +1,19 @@
-Received: from cmailg1.svr.pol.co.uk ([195.92.195.171])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17tuLO-0001TB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 19:23:34 +0100
-Message-ID: <012801c263f7$784e6230$0100a8c0@p450>
-From: "Nick Bane" <nick@cecomputing.co.uk>
-To: "Marc Singer" <elf@buici.com>
-Cc: <linux-mtd@lists.infradead.org>,
-	<yaffs@toby-churchill.org>
-References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <007801c2639b$3a4bc4c0$0100a8c0@p450> <20020924165521.GB2533@buici.com>
+Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17tuUm-0001Uv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 19:33:16 +0100
+Date: Tue, 24 Sep 2002 11:33:14 -0700
+From: Marc Singer <elf@buici.com>
+To: Russ Dill <Russ.Dill@asu.edu>
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org,
+  yaffs@toby-churchill.org
 Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
-Date: Tue, 24 Sep 2002 19:23:24 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20020924183314.GA3074@buici.com>
+References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <20020924044434.GA23917@buici.com> <1032854017.13283.3.camel@russ> <20020924165351.GA2533@buici.com> <1032886743.13283.6.camel@russ> <20020924171419.GA2733@buici.com> <1032888645.13282.11.camel@russ>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1032888645.13282.11.camel@russ>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,39 +25,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> On Tue, Sep 24, 2002 at 08:23:06AM +0100, Nick Bane wrote:
-> > The modifications I made to bootldr (CRL bootloader as used in iPaq
-> > handhelds) were trivial after mkysffsimage was fixed (ask for a copy as
-the
-> > CVS one is still badly broken).
-> >
-> > Bootldr copies the data 512+16 bytes at a time into non-broken NAND. The
-> > kernel is then booted with prior knowledge as to where to find the YAFFS
-> > data and all is ok.
->
-> What is non-broken NAND?
->
-NAND is not guarranteed 100% working. Individual pages may break. This
-renders the whole erase block (a collection of pages) unusable. The
-tradition is to mark the block as broken by clearing more than one bit in
-certain bytes of the oob (spare) data on each page. Non-broken NAND is where
-this oob data is marked as valid - typically 0xff.
+On Tue, Sep 24, 2002 at 10:30:45AM -0700, Russ Dill wrote:
+> > > > A question, though.  I've been doing compression tests with cramfs.
+> > > > I'm finding that gzip -9 of an ext2 filesystem produces smaller images
+> > > > than mkcramfs.  Have you ever compared the two?
+> > > 
+> > > cramfs is meant to be lean, fast, and low on ram consumption, if you
+> > > compress the whole thing at once, you have to load the whole thing into
+> > > ram to read any of it, so cramfs compresses PAGE_CACHE (4096) sized
+> > > pages at a time
+> > 
+> > That's what isn't clear.  I made two filesystems with the same
+> > contents.  One cramfs and the other ext2.  The ext2 filesystem
+> > compressed was smaller than the cramfs.  My understanding is that both
+> > must be uncompressed into a ramfs to be used.  If this is correct,
+> > then the only comparable consideration is the size of the compressed
+> > data.
+> 
+> no, a cramfs does not need to be loaded into a ramfs, only the pages
+> that are needed are loaded from the cramfs, and if memory is in a pinch,
+> fs pages can be dropped. If you gzip a 4M file at once, vs gzip 4096
+> byte pieces of it at a time, the former will end up smaller. (deflate
+> uses repetition of information, and runs of things).
+> 
+> of course, it depends which you want, greatly optimized memory usage
+> (cramfs), or a slightly smaller image.
 
-> > How this works with DOC I am unclear as I had noticed a while back that
-> > there was hardware assisted ECC. This might get in the way of YAFFS ECC
-but
-> > maybe this can be circumvented.
->
-> As far as I can tell, the hardware ECC just makes the DOC faster.
-Umm. It may use some of the oob data area for its own ECC in a YAFFS
-incompatible way. I am not sure of my ground here, only that you need to
-check it out.
+Yes, that is the trade off.  I was unclear about how cramfs was
+loaded.  It was my understanding that the cramfs was unpacked into a
+ramfs so that the fs could be used R/W.
 
-> Also, I think that Microsys has released information about how to use
-> the hardware ECC.
->
-Ok.
-
-Nick
-
->
+I'll evaluate it again when I have a chance.
