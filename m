@@ -1,25 +1,18 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D17OB-0005Pl-U2
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 13:25:36 -0500
-Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR007.ip.videotron.ca
-	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-	with ESMTP id <0IBY007WUTUEO2@VL-MO-MR007.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 13:25:26 -0500 (EST)
-Date: Tue, 15 Feb 2005 13:25:23 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <20050215180809.GA15503@synertronixx3>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-Message-id: <Pine.LNX.4.61.0502151322230.27338@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D17mz-0005e9-RD
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 13:51:14 -0500
+Date: Tue, 15 Feb 2005 19:51:14 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050215185113.GB15503@synertronixx3>
 References: <20050215154819.GB831@synertronixx3>
 	<Pine.LNX.4.61.0502151055150.27338@localhost.localdomain>
 	<20050215165048.GE831@synertronixx3>
-	<Pine.LNX.4.61.0502151210270.27338@localhost.localdomain>
-	<20050215180809.GA15503@synertronixx3>
-Cc: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050215165048.GE831@synertronixx3>
 Subject: Re: XIP aware file system
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,26 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Feb 2005, Konstantin Kletschke wrote:
+Hm, something is unstable yet.
+Either my burstmode is too hard or something else...
 
-> Am 2005-02-15 12:12 -0500 schrieb Nicolas Pitre:
-> 
-> > Where does that 112/4 come from?
-> 
-> OSCR: 3.6MHz
-> i.MX Timer: 32kHz
-> 
-> 3.6/0.032~112
-> 
-> OSCR/4 == i.MX Timer*(112/4)
-> 
-> There I got my 28 from :)
+The burst mode I tuned this day, it worked for a couple of hours, but my
+xip kernels all brak now:
 
-Please re-read my previous email discussing implementation of 
-xip_elapsed_since() again, and re-read it until it's obvious to you why 
-I'm so insisting.
+Creating 5 MTD partitions on "scb9328_flash":             
+0x00000000-0x00020000 : "U-boot"             
+0x00020000-0x00040000 : "U-boot_env"
+0x00040000-0x00240000 : "kernel"    
+0x00240000-0x00640000 : "root"  
+0x00640000-0x01000000 : "fs"  
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 1024 bind 2048)
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x000b2128: Read
+0x405647ad, calculated 0x7e3eb440
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x000b236c: Read
+0xb9570647, calculated 0x35f96289
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x000b35a8: Read
+0x9acd7a6e, calculated 0x87339b9f
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x000e8630: Read
+0x03371d6d, calculated 0x4dcf6e71
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x0010adac: Read
+0xe2abe810, calculated 0xe0794e1f
 
-The SA11x0/PXA2xx implementation is an _example_ not a _reference_.
+And freeze then. Is my xipuImage frying the fs on its first boot?
+Yes, obviously but why not an hour ago? hm...
 
+Adressess are constant with every version and the rootfs is reflashed
+every time. 
+I am puzzled...
 
-Nicolas
+Konsti
+
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
