@@ -1,19 +1,18 @@
 Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15f9zE-0005iA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 01:59:13 +0100
-Message-ID: <3B981BF6.24FD764D@sis.com.tw>
-Date: Fri, 07 Sep 2001 08:59:34 +0800
+	id 15fA1n-0005im-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 02:01:51 +0100
+Message-ID: <3B981CA3.A81D9285@sis.com.tw>
+Date: Fri, 07 Sep 2001 09:02:27 +0800
 From: Ollie Lho <ollie@sis.com.tw>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-CC: kira brown <kira@hex.linuxgrrls.org>,
-        Herman Oosthuysen <herman@wirelessnetworksinc.com>,
+CC: Holger Friedrich <friedrich@MAZeT.de>,
         "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 Subject: Re: DiskOnChip write performance
-References: <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> <14482.999791732@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <3B978FD5.D35F06BF@mazet.de> <9184.999788572@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,13 +26,14 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 David Woodhouse wrote:
 > 
-> kira@hex.linuxgrrls.org said:
-> >  There are basically two ways to speed this situation up:
 > 
-> Don't forget "don't use O(n^3) algorithms when trying to find a new block
-> to write to".
+> Our driver is fairly naïve, and may well be wasting a lot of time which
+> it shouldn't. I can give you pointers on fixing that, if you're
+> interested.
 > 
 
-What does this suppose to mean ??
+David,
+	Did you "threaded" NFTL code yet ?? Or we still get locked
+when NFTL is syncing/flushing ??
 
 Ollie
