@@ -1,17 +1,20 @@
-Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
-	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1At7Rc-0004z7-AR
-	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2004 15:47:32 +0000
-Message-ID: <40323792.3050209@arcom.com>
-Date: Tue, 17 Feb 2004 15:47:30 +0000
-From: David Vrabel <dvrabel@arcom.com>
-MIME-Version: 1.0
-To: linux-mtd list <linux-mtd@lists.infradead.org>
-References: <4030D2AB.7010002@arcom.com>
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1At8JR-0005Ak-64
+	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2004 16:43:09 +0000
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: David Vrabel <dvrabel@arcom.com>
 In-Reply-To: <4030D2AB.7010002@arcom.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <4030D2AB.7010002@arcom.com>
+Content-Type: text/plain
+Message-Id: <1077036046.13463.52.camel@tubarao>
+Mime-Version: 1.0
+Date: 17 Feb 2004 09:40:46 -0700
 Content-Transfer-Encoding: 7bit
+cc: linux-mtd list <linux-mtd@lists.infradead.org>
 Subject: Re: CFI command set 0002 (AMD/Fujitsu) work.
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Vrabel wrote:
-> 
+On Mon, 2004-02-16 at 07:24, David Vrabel wrote:
+
 > I'm currently working on cfi_cmdset_0002.c to get erase-suspend-program 
-> working.
-
-Erase-suspend-program is still disabled...
-
-> So far I've taken all the chip status checking code and 
+> working.  So far I've taken all the chip status checking code and 
 > refactored it into a single function -- it was all a bit of a mess.
 
-This has been done and checked into CVS.  I believe I haven't broken 
-anything.  Users of interleaved AMD chips may wish to check I didn't 
-miss anything.
+Very nice.
 
 > 1. There's a fair amount of crap related to very broken SST chips (all 
-> the stuff for retrying commands). I'd suggest removing this stuff from 
-> cfi_cmdset_0002.c.
+> the stuff for retrying commands).
 
-This has now been removed from CVS.
+There's really not that much code.
 
-David Vrabel
+>   a) This is mess and appears only 
+> applicable to a very few number of chips;
+
+Yes - it's only for a small number.
+
+> b) I'm not sure it would even 
+> work if talking to the chip is broken then retrying a few times won't 
+> guarantee it will work.
+
+Yes, it's so horribly broken that there is *never* a guarantee that it
+will work.  I can't think of a reliable way to go about it other than
+give it a reasonable number of tries.
+
+> I'd suggest removing this stuff from 
+> cfi_cmdset_0002.c.  Clearly the SST chips aren't compliant even though 
+> they claim to be.  Thoughts?
+
+Sure.  It is clutter and is only for a small number of chips that should
+be replaced with chips that work.  I'll see what I can do on my own to
+fix the problems I have to deal with.
+
+> 2. The "fast programming" feature (unlock bypass) which is currently 
+> always disabled (due to "code brokeness"). I don't believe this will 
+> ever work with erase-suspends.  Should the "fast programming" stuff be 
+> removed?
+
+I don't see a reason to keep it.
+
 -- 
-David Vrabel, Design Engineer
-
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+Thayne Harbaugh
+Linux Networx
