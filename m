@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CX3Od-0007Kv-CS
-	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 15:05:49 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Stephan Linke <Stephan.Linke@epygi.de>
-In-Reply-To: <NGENJJFPMHGLPILEKKAMAEAGCFAA.Stephan.Linke@epygi.de>
-References: <NGENJJFPMHGLPILEKKAMAEAGCFAA.Stephan.Linke@epygi.de>
-Content-Type: text/plain
-Date: Wed, 24 Nov 2004 21:05:42 +0100
-Message-Id: <1101326743.9481.40.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1CX7dm-0007vF-7M
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 19:37:43 -0500
+Message-ID: <41A52950.4070600@mvista.com>
+Date: Wed, 24 Nov 2004 16:37:36 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Josh Boyer <jdub@us.ibm.com>
+References: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
+	<1101301663.22829.3.camel@weaponx.rchland.ibm.com>
+In-Reply-To: <1101301663.22829.3.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Linux-Mtd <linux-mtd@lists.infradead.org>
-Subject: RE: using multile partitions on one NAND chip
-Reply-To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Supporting flash that powers up locked
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-11-24 at 19:12 +0100, Stephan Linke wrote:
-> Hi Thomas,
+Josh Boyer wrote:
+> On Tue, 2004-11-23 at 16:25, Todd Poynor wrote:
 > 
-> already noticed the spinlocks; thanks anyway.
+> <snip>
 > 
-> On erase the chip is locked in nand_get_chip() and stays locked
-> until the ERASE2 > command has been send to the chip to wait for the 
-> ready status the chip gets unlcoked since the nand_wait() also tries
-> to lock the chip. Additinaly nand_wait() unlocks the chip befor
-> calling yield().
+>>If anyone has any suggestions or comments as to why this wouldn't work
+>>for their device or usage model or why this isn't the right way to go
+>>about things then I'd appreciate it, thanks. -- Todd
+> 
+> 
+> Not everyone uses mtd partitions...
 
-retry:
-        /* Hardware controller shared among independend devices */
-        if (this->controller) {
-                spin_lock (&this->controller->lock);
-                if (this->controller->active)
-                        active = this->controller->active;
-                else
-                        this->controller->active = this;
-                spin_unlock (&this->controller->lock);
-        }
+Unfortunately options for doing anything terribly intelligent about it 
+seem to be few in such a case.  If somebody wants MTD to automatically 
+figure out what the proper locking status is for these chips then the 
+partition map is the only thing we've got to go on (at present anyhow). 
+  So it could be argued that by not using partitions you've decided to 
+handle it yourself (such as explicit flash_unlock of needed ranges after 
+userspace startup).  I'm guessing that some new way of specifying what 
+areas of flash are intended to be writeable vs. read-only, apart from 
+the existing partition maps, would not be well received.  But if there 
+is some nifty way of doing this outside the partition framework then I'm 
+interested.  And doing nothing or doing something simplistic are 
+certainly options as well.  Thanks,
 
-        if (active == this) {
-                spin_lock (&this->chip_lock);
-                if (this->state == FL_READY) {
-                        this->state = new_state;
-                        spin_unlock (&this->chip_lock);
-                        return;
-                }
-        }
-        set_current_state (TASK_UNINTERRUPTIBLE);
-        add_wait_queue (&active->wq, &wait);
-        spin_unlock (&active->chip_lock);
-        schedule ();
-        remove_wait_queue (&active->wq, &wait);
-        goto retry;
-
-this->state is reset to FL_READY, after the active command is finished.
-All waiters on the waitqueue are woken up.
-
-> If another task tries nand_get_chip() at this verry moment the erase
-> will be interrupted by sending an RESET command. Looks like this is by
-> intention since the erase of the blockis restarted after the 
-> nand_wait() returns.
-
-We stopped to interrupt the erase since long, due to broken chips, which
-do not handle the erase suspend correctly. 
-
-But the locking was always safe and without race conditions.
-
-On SMP the spinlock is protecting the state variable against concurrent
-access by different tasks on different CPU's. 
-
-In case of CONFIG_PREEMPT=y the state variable is protected by 
-spin_lock() (contains preempt_disable()) on SMP and UP against
-concurrent access by different tasks on the same CPU.
-
-CONFIG_PREEMPT=n does not need further protection at this place.
-
-Which version of nand_base.c are you using ?
-
-tglx
+-- 
+Todd
