@@ -1,32 +1,25 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 136vaw-0002T6-00
-	for mtd-list@infradead.org; Tue, 27 Jun 2000 14:40:06 +0100
+	id 136vo7-0002VX-00
+	for mtd-list@infradead.org; Tue, 27 Jun 2000 14:53:43 +0100
 Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 136vav-0002T0-00
-	for cvs-notify@infradead.org; Tue, 27 Jun 2000 14:40:05 +0100
+	id 136vo6-0002VR-00
+	for cvs-notify@infradead.org; Tue, 27 Jun 2000 14:53:42 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel mtdcore.c'
-Message-Id: <E136vav-0002T0-00@infradead.org>
+Subject: MTD CVS update: 'mtd/include/linux/mtd flashchip.h'
+Message-Id: <E136vo6-0002VR-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 27 Jun 2000 14:40:05 +0100
+Date: Tue, 27 Jun 2000 14:53:42 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv9478
+Update of /home/cvs/mtd/include/linux/mtd
+In directory infradead.org:/tmp/cvs-serv9632
 
-Modified Files:
-	mtdcore.c 
+Added Files:
+	flashchip.h 
 Log Message:
-Cover the horribly insane possibility that an MTD device or user could be
-registered from a module which then unloads itself - prevent mtdcore from
-being unloaded in that case.
-
-Not that I ever really expect such a thing to happen, but there's no harm
-in protecting against it.
-
-Al Viro has a sick mind.
+struct flchip, to hold details of individual flash chips, and a spinlock
 
 
 
