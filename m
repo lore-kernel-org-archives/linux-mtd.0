@@ -1,20 +1,19 @@
-Received: from [203.194.209.83] (helo=machine36.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JxFj-0000z4-Hd
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 16:17:39 +0100
-From: Mark Meade <mark@lakeshoremicro.com>
-To: stolc@intrak.sk (Oskar Stolc),
- linux-mtd@lists.infradead.org
-Date: Sun, 25 May 2003 11:16:37 -0400
-References: <20030523063820.GH13272@intrak.sk>
-	<20030525092737.GJ13272@intrak.sk>
+Received: from adsl-67-126-56-187.dsl.pltn13.pacbell.net ([67.126.56.187]
+	helo=mail.plexio.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19JxKJ-00013T-FB
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 16:22:23 +0100
+From: Stephen Lee <splee@plexio.com>
+To: Oskar Stolc <stolc@intrak.sk>
 In-Reply-To: <20030525092737.GJ13272@intrak.sk>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200305251116.38021.mark@lakeshoremicro.com>
-Content-Type: text/plain;
-  charset="iso-8859-1"
+References: <20030523063820.GH13272@intrak.sk>
+	 <20030525092737.GJ13272@intrak.sk>
+Message-Id: <1053876166.32193.11.camel@ralph.plexio.private>
+Mime-Version: 1.0
+Date: 25 May 2003 08:22:47 -0700
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+cc: mtd <linux-mtd@lists.infradead.org>
 Subject: Re: Possible GRUB problem: [Was: DiskOnChip MD2202-D256]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,14 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 25 May 2003 05:27 am, Oskar Stolc wrote:
-> - the following step was to build GRUB with DiskOnChip support:
-> 	wget ftp://alpla.gnu.org/gnu/grub/grub-0.92.tar.gz
-> 	tar xzvf grup-0.92.tar.gz
-> 	cd grup-0.92
-> 	cat ../mtd/patches/grub-0.92-doc.patch |patch -p1
+On Sun, 2003-05-25 at 02:27, Oskar Stolc wrote:
+<snip>
+> Finally I rebooted my computer by turning the power off and on again.
+> 
+> Now I can see loading grub from flash disk, by it crashes by following
+> error:
+> 
+> 	DoC 2000 E600
+> 	E698
+> 	Jumping to Grub
+> 	Attempting to open /dev/grub/menu.lst on drive 0xe0, partition 0xff
+> 	DiskOnChip 2000 found at e0000
+> 	floor 0, chip 0; manufacturer: Toshiba
+> 	Chip: Toshiba TC58V64AFT/DC, total size: 8 MB
+> 		erase unit: 8192 bytes, page: 512 bytes
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	_DoC_WaitReady timed out
+> 	Total of 1 chips found - total capacity 8 MB
+> 	Scanning for NFTL Media Header
+> 	NFTL Media Header found in flash sector 176
+> 	Sorry, we don't support UnitSizeFactor of != 1 yet
+> 	NFTL Media Header found in flash sector 192
+> 	Sorry, we don't support UnitSizeFactor of != 1 yet
+> 	Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
+> 	Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0x0
+> 	Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0x1
+> 	Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0x2
+> 	...
+> 	Attempting to open /boot/grub/menu.lst on drive 0x0, partition 0xf
+> 	
+> 		GRUB version 0.92 (639K lower / 121856K upper memory)
+> 
+> In this moment a get a grub> promtp. Trying enter
+> 	kernel (dc0,0)/boot/bzImage root=/dev/nftla1
+> a get a result
+> 	Loading kernel image...
+> 	Error 21: Selected disk does not exist
 
-> What am I doing incorrectly?
+Make sure /boot/grub/menu.lst exists or is a link to grub.conf in the
+same directory. Try the kernel line with a slightly different path:
+kernel (dc0,0)/bzImage root=/dev/nftla1. In any case it looks like a
+path problem to me.
 
-I would suggest trying the latest GRUB patch: grub-2003-01-08-doc.patch.  This 
-has numerous changes/improvements over the 0.92 patch.
+Stephen
