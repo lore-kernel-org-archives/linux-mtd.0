@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16loZa-0004GX-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2002 10:04:30 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020315095523.2AAD73ED3@sitemail.everyone.net> 
-References: <20020315095523.2AAD73ED3@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: (no subject) 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 15 Mar 2002 10:15:57 +0000
-Message-ID: <28799.1016187357@redhat.com>
+	id 16lzfO-0005Aj-00
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2002 21:55:14 +0000
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Fri, 15 Mar 2002 17:05:49 -0500
+Cc: ilatypov@superbt.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200203151705703.SM01632@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,41 +23,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
->  Chip not ready for buffer write. Xstatus = 18, status = 98
+On Tue, 12 Mar 2002, Ilguiz Latypov wrote:
 
-Do you have the correct voltage applied to the Vpen line of the flash chip? 
-I note you don't have a set_vpp() method. Do you need one?
+> inform that DoC Millennium and DoC Millennium Plus feature a Download
+> Engine which takes care of copying the flash image into the read-only area
+>available at offset 0 of the window.
 
-> sure I can use jffs2 too, but for more insurance , I use jffs:) 
+> Apparently, the XIP IPL doesn't need the DoC 2000 trick with duplicating
+> the code for 256-byte and 512-byte page size devices at offsets 0x100 and
+> 0x200 respectively.
 
-'insurance'? I expect JFFS2 to be more reliable than JFFS at this point. 
-That was, after all, most of the point in doing a complete rewrite :)
+Ilguiz,
 
-> BTW: in my opinion, the "mtd_info" struct should be to describe a mtd
-> device.
+With a DoC Millennium , the doc_stage1 logic will always copy the 
+256-byte-page code to RAM, regardless of the chip type.  In fact, because of 
+the Millennium's 512 byte "boot block" window, the actual 512-byte page code 
+is never directly accessible -- it is always located at 0x200 in this case.
 
-Yes. 
+As I mentioned previously, my hack to get my part to work was simply to force 
+the 512-byte-page code to 0x100, and everything worked great.  If there are 
+256-byte-page parts, this obviously won't work.
 
-> the "map_info" struct should be to describe a mapping area in
-> memory which mapping to the mtd device(?)
+One alternative is to have both 256- and 512-byte code located at 
+0x100..0x1FF, and determine (at run time) which type of part we have.
 
-The map_info struct is used just by the generic flash chip drivers, to 
-access the memory bus on which the flash chip resides. 
+One way of doing this would be to have a small look-up table, and based on 
+the chip ID, determine the part type.  
 
-> and WINDOW_ADDR is the PA of the mtd device(in my file) and 
-> map_info.map_priv_1 is a pointer to the VA of the mtd device. 
+Another way (which I've already tested) is to read from flash address 0x200, 
+using the 256-byte-page access method.  If we are indeed on a 256-byte 
+device, the word at 0x200 will always match the code word at %cs:doc_stage1b.
 
-Those are private information which are specific to your map driver. All 
-that matters is that the read16 call reads a word from the correct offset 
-on the flash chip. But yes, almost all the map drivers are mostly the same 
-code, and this is how they do it.
+In a 512-byte device, reading this address actually reads 0x400, which will 
+*most likely* not match, as it is actually stage 2 GRUB code.  We could 
+compare more bytes, if necessary, to reduce the possibility that this could 
+happen.
 
-> Is that right? to be honest , I am really
-> confused by these.I cant find any documentation to explain it .  
+Maybe there is an easier, cleaner way to handle this problem -- but I haven't 
+found it yet.  Does it make sense to pursue this further?
 
-Occasionally I try to write some documentation. Generally I look at it and 
-think the code explains stuff better, so abandon it.
+Regards,
 
---
-dwmw2
+Mark
