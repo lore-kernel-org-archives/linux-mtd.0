@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178i7t-0005iY-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 14:50:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020517134414.90856.qmail@web21510.mail.yahoo.com> 
-References: <20020517134414.90856.qmail@web21510.mail.yahoo.com> 
-To: Studying MTD <studying_mtd@yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from web21503.mail.yahoo.com ([66.163.169.14])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 178iHl-0005jf-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 15:00:45 +0100
+Message-ID: <20020517140033.25631.qmail@web21503.mail.yahoo.com>
+Date: Fri, 17 May 2002 07:00:33 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
 Subject: Re: FAT for NAND Flash 
-Mime-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <27196.1021643430@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 May 2002 14:50:30 +0100
-Message-ID: <27196.1021643430@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-studying_mtd@yahoo.com said:
->  Are you also using FTL or NFTL for NAND Flash Device.
-> Is it necessary to use FTL or NFTL for NAND Flash Device.
-> What is the difference between FTL and NFTL. 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> studying_mtd@yahoo.com said:
+> >  Are you also using FTL or NFTL for NAND Flash
+> Device.
+> > Is it necessary to use FTL or NFTL for NAND Flash
+> Device.
+> > What is the difference between FTL and NFTL. 
+> 
+> FTL is used on NOR flash, NFTL on NAND. 
+> 
 
-FTL is used on NOR flash, NFTL on NAND. 
+I was asking these question because you told me that i
+have to add translation layer for FAT. what i was
+thinking that, is it possible that if i write only one
+translation layer which will be good for FAT as well
+as it will replace NFTL.
 
---
-dwmw2
+Is it possible ? or this is irrelevant ?
+
+Thank you for your help.
+
+
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
