@@ -1,8 +1,8 @@
-From: Mail Delivery System <Mailer-Daemon@infradead.org>
+Date: 16 Aug 2004 15:17:47 -0000
+From: MAILER-DAEMON@conectiva.com.br
 To: linux-mtd-bounces@lists.infradead.org
-Message-Id: <E1BwiLX-0007Am-I3@canuck.infradead.org>
-Date: Mon, 16 Aug 2004 10:20:23 -0400
-Subject: Mail delivery failed: returning message to sender
+Message-Id: <20040816142006.E72CE472D4@perninha.conectiva.com.br>
+Subject: failure notice
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -12,20 +12,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This message was created automatically by mail delivery software.
+Hi. This is the qmail-send program at conectiva.com.br.
+I'm afraid I wasn't able to deliver your message to the following addresses.
+This is a permanent error; I've given up. Sorry it didn't work out.
 
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es) failed:
+<fuganti@burns.conectiva>:
+Sorry, no mailbox here by that name. (#5.1.1)
 
-  joern@wohnheim.fh-wedel.de
-    retry time not reached for any host after a long failure period
+--- Below this line is a copy of the message.
 
------- This is a copy of the message, including all the headers. ------
-
-Return-path: <linux-mtd-bounces@lists.infradead.org>
+Return-Path: <linux-mtd-bounces@lists.infradead.org>
+Received: (qmail 19300 invoked by uid 0); 16 Aug 2004 15:17:47 -0000
+Received: from perninha.conectiva.com.br (200.140.247.100)
+  by burns.conectiva with SMTP; 16 Aug 2004 15:17:47 -0000
+Received: by perninha.conectiva.com.br (Postfix)
+	id ABD10472D4; Mon, 16 Aug 2004 11:20:06 -0300 (BRT)
+Delivered-To: fuganti@conectiva.com.br
+Received: by perninha.conectiva.com.br (Postfix, from userid 568)
+	id 7B5BD473F1; Mon, 16 Aug 2004 11:20:06 -0300 (BRT)
+Received: from canuck.infradead.org (canuck.infradead.org [205.233.218.70])
+	by perninha.conectiva.com.br (Postfix) with ESMTP id AC414472D4
+	for <fuganti@conectiva.com.br>; Mon, 16 Aug 2004 11:20:04 -0300 (BRT)
 Received: from localhost ([127.0.0.1] helo=canuck.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BwiJv-0006yE-LF; Mon, 16 Aug 2004 10:18:43 -0400
+	id 1BwiJu-0006yE-Gf; Mon, 16 Aug 2004 10:18:42 -0400
 Received: from exim by canuck.infradead.org with local (Exim 4.33 #1 (Red Hat
 	Linux)) id 1BwiHR-0006tb-21
 	for linux-mtd-bounces@lists.infradead.org;
@@ -50,6 +60,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Sender: linux-mtd-bounces@lists.infradead.org
 Errors-To: linux-mtd-bounces@lists.infradead.org
+X-Bogosity: No, tests=bogofilter, spamicity=0.500047, version=0.16.3
 
 This message was created automatically by mail delivery software.
 
