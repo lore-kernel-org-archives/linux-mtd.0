@@ -1,16 +1,17 @@
-Received: from micom.micom-electronics.si ([193.77.34.95])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cdmz2-00011s-J4
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 04:59:13 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by micom.micom-electronics.si (Postfix) with ESMTP id AED0F850194
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Dec 2004 10:59:05 +0100 (CET)
-From: postmaster@micom-electronics.si
-To: linux-mtd@lists.infradead.org
-Message-Id: <20041213095905.11D568500F1@micom.micom-electronics.si>
-Date: Mon, 13 Dec 2004 10:59:05 +0100 (CET)
-Subject: VIRUS V VASEM SPOROCILU / VIRUS IN YOUR MAIL
+Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CdnM5-0001Ff-Ih
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 05:23:03 -0500
+Message-ID: <013c01c4e0fe$0a481e30$8500a8c0@nit37>
+From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 13 Dec 2004 15:55:06 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Subject: Writing data to Flash
+Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-                      V I R U S  -  O P O Z O R I L O
+Hi Stephan,
 
-Sistem za elek. posto je nasel v sporocilu
+In my target there is a Redhat ecos wherein basically I can find out the 
+usnused & used partiitions. To store data (ex: string) in the flash firstly 
+I need to load the file into the RAM using the "fis load" command, 
+thereafter I need to create a partition in the flash based on the data in 
+the RAM using the command "fis create".
 
-	W32/Netsky.q@MM
+To acheive it, the first step is how exaclty should I load data into the 
+(target's) RAM. After the data is available in the target's RAM then only I 
+can create a partition and store data into the flash.
 
-virus(e), ki so bili naslovljeni na spodaj navedene e-naslove:
------------------------------------------------------------------ 
+Kindly suggest a suitable approach.
 
-                         V I R U S  -  A L E R T
-
-Our viruschecker found the
-
-	W32/Netsky.q@MM
-
-virus(es) in your email to the following recipient(s):
------------------------------------------------------------------
-
-  -->  golftur04@micom-electronics.si
-  -->  info@micom-electronics.si
-
------------
-Priporocamo, da vas sistem pregledate z najnovejsim antivirusnim
-programom.
-Please check your system for viruses, or ask your system administrator
-to do so.
------------ 
-For your reference, here are the headers from your email:
-------------------------- BEGIN HEADERS -----------------------------
-Received: from golfturist.si (BSN-165-117-96.dsl.siol.net [194.165.117.96])
-	by micom.micom-electronics.si (Postfix) with ESMTP id BBFF1850194
-	for <info@golfturist.si>; Mon, 13 Dec 2004 10:58:39 +0100 (CET)
-From: linux-mtd@lists.infradead.org
-To: info@golfturist.si
-Subject: Failure (info@golfturist.si)
-Date: Mon, 13 Dec 2004 10:59:13 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 1
-X-MSMail-Priority: High
-Message-Id: <20041213095839.BBFF1850194@micom.micom-electronics.si>
--------------------------- END HEADERS ------------------------------
+Thanks,
+Subrahmanyam. 
