@@ -1,20 +1,14 @@
-Received: from mail15.speakeasy.net ([216.254.0.215] helo=mail.speakeasy.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19rAEc-0002pA-TE
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2003 06:49:47 +0100
-Received: from unknown (HELO localhost3.localdomain) ([66.93.32.104])
-	(envelope-sender <rogerxxmaillist@speakeasy.net>)encrypted SMTP
-	for <linux-mtd@lists.infradead.org>; 25 Aug 2003 05:49:20 -0000
-From: Roger <rogerxxmaillist@speakeasy.net>
+Received: from web20009.mail.yahoo.com ([216.136.225.72])
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19rHaL-0004od-Li
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2003 14:40:41 +0100
+Message-ID: <20030825134016.59014.qmail@web20009.mail.yahoo.com>
+Date: Mon, 25 Aug 2003 06:40:16 -0700 (PDT)
+From: nicolas brin <nino01_2000@yahoo.com>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <200308220515.h7M5Fqdo027697@sorrel.csv.warwick.ac.uk>
-References: <200308220515.h7M5Fqdo027697@sorrel.csv.warwick.ac.uk>
-Message-Id: <1061769868.5452.1.camel@localhost3.localdomain>
-Mime-Version: 1.0
-Date: 24 Aug 2003 22:43:08 -0700
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Subject: Re: VIRUS IN YOUR MAIL (W32/Sobig-F)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: jffs2 and busybox 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+hi,
+I'm a Montavista kernel linux 2.4 and PPCBOOT.
+I boot with PPCBOOT that run LINUX. With the boot
+arguments, I configure kernel running to boot with
+root file system in nfs(host machine). I don't have
+problem!
+Then, I mount my jffs2 partition and I install it my
+jffs2 image. further to I configure kernel running to
+boot with root file system on my jffs partition.
+Kernel display message and when I display busybox
+message then it display me that it tell me :rcS don't
+exist. then I display a message about tty4 in loop.
+I don't know if I forget an option when I configured
+the root file system with Montavista tools.
 
+I need to know which options must I choose to build my
+root file system that it will install in my flash of
+8Mo. And how to run busybox (does it use inittab ...
+like PC)?
 
-On Thu, 2003-08-21 at 22:15, postmaster@csv.warwick.ac.uk wrote:
->                            V I R U S  A L E R T
-> 
-> Our virus checker found the
-> 
->     W32/Sobig-F
-> 
-> virus in your email to the following recipient:
+thks
+bye
 
-Absolutely Impossible!!  
+nicolas  
 
-All of my emails wear condoms!
-
--- 
-
-Roger
-http://www.eskimo.com/~roger/index.html
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
