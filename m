@@ -1,21 +1,17 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from pony1.arc.nasa.gov ([128.102.31.31] helo=mail.arc.nasa.gov)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19FcXr-0002P6-BD
-	for <linux-mtd@lists.infradead.org>; Tue, 13 May 2003 17:22:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Daniel Toussaint <daniel@arbor.com.tw>
-In-Reply-To: <3EC0A6E3.5070404@arbor.com.tw>
-References: <NEBBLJGMNKKEEMNLHGAIEEHGDAAA.mdharm@momenco.com>
-	 <1052811622.10222.42.camel@imladris.demon.co.uk>
-	 <3EC0A6E3.5070404@arbor.com.tw>
-Message-Id: <1052842963.23450.160.camel@passion.cambridge.redhat.com>
+	id 19FdEJ-0002d3-1q
+	for <linux-mtd@lists.infradead.org>; Tue, 13 May 2003 18:06:19 +0100
+Message-Id: <5.2.1.1.2.20030513100802.0124bed8@mail.arc.nasa.gov>
+Date: Tue, 13 May 2003 10:09:02 -0700
+To: "Matthew Dharm" <mdharm@momenco.com>
+From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+In-Reply-To: <NEBBLJGMNKKEEMNLHGAIEEHGDAAA.mdharm@momenco.com>
+References: <5.1.1.5.2.20030512133623.014ec7b0@mail.arc.nasa.gov>
 Mime-Version: 1.0
-Date: Tue, 13 May 2003 17:22:43 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 128Mb problem
+Subject: RE: DiskOnChip 2000 128Mb problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +21,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-05-13 at 09:03, Daniel Toussaint wrote:
-> Interesting. My company wants to deploy the DiskOnChip millenium PLUS as 
-> a new standard for our x86 embedded pc product line. (so far we were 
-> using DIP sockets with a doc2000/mil as an option) . Our other option is 
-> to just use raw memory chips of some kind -but then we leave the wince 
-> and other embedded os users with more difficulties.  
+Haven't tried nanddump.
 
-YAFFS already runs on WinCE. JFFS2 already runs on eCos. Both are easily
-portable.
+Ted
 
-> Also, they don't even want to comment on some issue's (for example
-> jffs2 on DiskOnChip).
-
-Put yourself in their shoes -- they're selling you hardware at premium
-prices because you get it with their 'translation layer' software to
-make it pretend to be a block device, on which you use a 'traditional'
-journalling file system.
-
-Now ask them about using a file system designed specifically to be used
-directly on flash chips, and what do you _think_ they're going to say?
-:)
-
-> I work in support, and whenever a customer has problems with M-systems 
-> binary drivers/ lilo install / license questions - I teach them how to 
-> use the linux mtd utilities(+grub)  and this always solves all problems.
-
-:)
-
-> For the millenium plus however the only way to go is to use the 
-> m-systems binary driver. A while back I saw that www.snapgear.com
-> announced they had spend several months in developing open source (mtd 
-> based drivers & the new INFTL layer) for the millenium plus - but 
-> nothing has been released yet I -  probably licensing/nda issue's.
-
-Until such time as that code is released, the advice remains: avoid this
-hardware like the plague. Do not design it into new boards, do not
-purchase it to plug into older socketed designs. Use real flash instead.
-
-> To get back to the point: Being able to use the raw nand chips in Doc 
-> devices and put jffs2/yaffs on it would be the greatest thing ever.
-> My question is , following guidelines in the nand documentation on how 
-> to write a "mapping driver for your board" is it theoretically possible 
-> to get it to work? I am not an mtd guru - but  given  enough time , and 
-> studying the current Doc code ,myself, or someone else might get it to 
-> work some day?
-> Or is there just no way to make it work due to lack of 
-> information/licensing issue's ??
-
-It can work. The only reason the DiskOnChip drivers don't use the
-generic NAND code is because they predate it by about three years. It
-shouldn't be hard to convert them -- and in fact you may not even need
-to convert them to use the generic NAND code, but just make them agree
-about the ECC API.
-
-It's probably a few weeks' work, and if you don't want to, or can't do
-it yourself, then there are probably quite a few people out there who'd
-be willing to quote you for it.
-
--- 
-dwmw2
+At 06:42 PM 5/12/2003 -0700, you wrote:
+>Well, I found at least one part of the problem.
+>
+>The Linux driver doc2001.c assumes that addresses (in DoC_Address) are
+>23 bits max.  On some parts, the max is 31, so an extra write of the
+>address component is needed.
+>
+>Given that modification (and changing calls to DoC_Address to use 4
+>bytes instead of 3 -- one of the parameters is how many to use), I now
+>have data coming from nanddump.  I'm sending that to David only for
+>now -- it's 800K compressed.
+>
+>What's interesting here is that there is definately data there.  I can
+>even see readable text strings, and the filename of the VxWorks image
+>that was loaded onto this particular unit.  But, the string "ANAND" is
+>somewhat rare -- the string "BNAND" is significantly more common.
+>
+>I'm starting to wonder if M-Systems has changed their on-chip data
+>format from NFTL to something else....
+>
+>Edward, have you ever tried the nanddump utility?
+>
+>Unfortunately for me, the proprietary driver is x86-only, and I'm on a
+>PPC platform.
+>
+>Matt
+>
+>--
+>Matthew D. Dharm                            Senior Software Designer
+>Momentum Computer Inc.                      1815 Aston Ave.  Suite 107
+>(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+>Momentum Works For You                      www.momenco.com
+>
+> > -----Original Message-----
+> > From: Edward A. Hildum [mailto:ehildum@mail.arc.nasa.gov]
+> > Sent: Monday, May 12, 2003 1:43 PM
+> > To: Matthew Dharm
+> > Cc: linux-mtd@lists.infradead.org
+> > Subject: RE: DiskOnChip 2000 128Mb problem
+> >
+> >
+> > They didn't, but I didn't try the Millenium-only driver.
+> > After fooling
+> > around with GRUB, trying to get it working with the DOC, I
+> > punted and went
+> > with the M-Systems proprietary driver.  This solves my problem for
+> > now.  Maybe I'll try again later when I've got some
+> > progress on other
+> > fronts to show.
+> >
+> > Ted
+> >
+> > At 01:29 PM 5/9/2003 -0700, you wrote:
+> > >Did the Linux drivers work for you?
+> > >
+> > >Matt
+> > >
+> > >--
+> > >Matthew D. Dharm                            Senior
+> > Software Designer
+> > >Momentum Computer Inc.                      1815 Aston
+> > Ave.  Suite 107
+> > >(760) 431-8663 X-115                        Carlsbad, CA 92008-7310
+> > >Momentum Works For You                      www.momenco.com
+> > >
+> > > > -----Original Message-----
+> > > > From: Edward A. Hildum [mailto:ehildum@mail.arc.nasa.gov]
+> > > > Sent: Friday, May 09, 2003 1:24 PM
+> > > > To: Matthew Dharm
+> > > > Cc: linux-mtd@lists.infradead.org
+> > > > Subject: RE: DiskOnChip 2000 128Mb problem
+> > > >
+> > > >
+> > > > I had a similar experience using a DOC 2000 TSOP 256M part.
+> > > >  Its chip ID is
+> > > > 0x30, which is right for a Millenium part, even though it
+> > > > has a DOC 2000
+> > > > part number.  The part also has an IPL which can be updated
+> > > > like Millenium
+> > > > parts.
+> > > >
+> > > > Ted Hildum
+> > > >
+> > > > At 09:58 AM 5/9/2003 -0700, you wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: David Woodhouse [mailto:dwmw2@infradead.org]
+> > > > > > Sent: Friday, May 09, 2003 9:48 AM
+> > > > > > To: Matthew Dharm
+> > > > > > Cc: linux-mtd@lists.infradead.org
+> > > > > > Subject: RE: DiskOnChip 2000 128Mb problem
+> > > > > >
+> > > > > >
+> > > > > > On Fri, 2003-05-09 at 17:40, Matthew Dharm wrote:
+> > > > > > > Is it normal for a DoC 2000 to be detected as a Millenium?
+> > > > > >
+> > > > > > No, but it's not normal for its contents to be read back as
+> > > > > > 0x01 0x02
+> > > > > > 0x03 etc. either: )
+> > > > >
+> > > > >Okay, so we're all on the same page.
+> > > > >
+> > > > > > > I've already checked the bus width and timing.
+> > > > > >
+> > > > > > And it's definitely not set to 16-bit? -ECONFUSED.
+> > > > >
+> > > > >No kidding.  I'm hoping the docs will have something
+> > > > useful, and I'm
+> > > > >about to pull out the bus analyizer.
+> > > > >
+> > > > >
+> > > > >Matt
+> > > > >
+> > > > >
+> > > > >______________________________________________________
+> > > > >Linux MTD discussion mailing list
+> > > > >http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > > >
+> >
