@@ -1,27 +1,28 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CooWB-0000SE-Um
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 14:51:01 -0500
-Date: Wed, 12 Jan 2005 20:50:45 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050112195045.GB7038@wohnheim.fh-wedel.de>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CooYW-0000h3-9e
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 14:53:25 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050112194451.GA7038@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
 	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
 	<20050112181006.GI25638@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501121833250.10617@phoenix.infradead.org>
-	<20050112184304.GM25638@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501121844300.12973@phoenix.infradead.org>
-	<Pine.LNX.4.58.0501121857150.12973@phoenix.infradead.org>
+	<1105554479.17853.287.camel@tglx.tec.linutronix.de>
+	<20050112184059.GL25638@wohnheim.fh-wedel.de>
+	<1105557401.17853.293.camel@tglx.tec.linutronix.de>
+	<20050112194451.GA7038@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 12 Jan 2005 20:53:21 +0100
+Message-Id: <1105559601.17853.300.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0501121857150.12973@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS3 & performance
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 January 2005 18:58:18 +0000, Artem B. Bityuckiy wrote:
+On Wed, 2005-01-12 at 20:44 +0100, Jörn Engel wrote:
+> On Wed, 12 January 2005 20:16:41 +0100, Thomas Gleixner wrote:
+> > On Wed, 2005-01-12 at 19:40 +0100, Jörn Engel wrote:
+> > > 
+> > > Wouldn't that also require a DMZ of some size between static and
+> > > dynamic data?  For example, 4MB static, 1MB unused, rest dynamic?
+> > 
+> > No it does not propagate over blocks of blocks. e.g. inside of 0-255,
+> > 256-511, ... you have the trouble, but not between those regions.
 > 
-> Could we summarize?
-> 
-> Does Everybody agree that CRC is needed at least to detect problems *on 
-> time* and report about them ?
+> Ah, ok.  So they simply decided to pack the blocks inside those groups
+> tighter.  Another way to handle it would be to treat those block
+> groups as jffs2 eraseblocks.  Should be quite similar to NOR blocks
+> sizes then.
 
-s/CRC/checksum/
+Yes, but then we need the already discussed change in block handling and
+accounting, which allows us to handle blocks which consist of multiple
+subblocks, where one or more of the subblocks can be bad.
 
-Agreed, with that change.
+The current code treats blocks with multiple subblocks in a way, that
+when one of the subblocks is or becomes bad, the whole block is treated
+as bad.
 
-> If all agree, the question about "do we need CRC for purpose other then 
-> detect unclean reboots?" may be closed. Is it?
-> 
-> The open question: do we need trying recover data in case of errors?
-> For NOR this question is close - errors are critical there.
-> For NAND - is it still open? Does somebody thinks we should recover?
-> 
-> Saying recover I mean trying to move not corrupted data from the block 
-> which have become bad to another, good block.
+So you mark e.g. 128MB bad, because one 16K sub block is bad. This is
+extra annoying on AG-AND where the bad block rate can be quite high.
 
-If it's simple enough, sure.
-
-Imo, it is more important to *report* and *remember* this problem,
-though.  If such a problem ever occurs and it's not just a short
-write, but real data corruption on the medium, the device is broken.
-Trying to recove is fine, but staying silent definitely isn't.
-
-Plus, we should note this information somewhere, preferrably in every
-single erase block.  On every new mount, it should be clear to anyone
-possibly watching that the medium needs urgent replacement.
-
-J�rn
-
--- 
-It does not matter how slowly you go, so long as you do not stop.
--- Confucius
+tglx
