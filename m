@@ -1,41 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13DRyO-0001lb-00
-	for mtd-list@infradead.org; Sat, 15 Jul 2000 14:27:16 +0100
-Date: Sat, 15 Jul 2000 14:26:10 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Juan Gonzo <kayemmess@yahoo.ca>
-cc: MTD Mailing List <mtd@infradead.org>
-Subject: Re: persistence of files using jffs 
-In-Reply-To: <20000714230947.15023.qmail@web5305.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.21.0007151422260.1066-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13DaMt-0002iA-00
+	for mtd-list@infradead.org; Sat, 15 Jul 2000 23:25:07 +0100
+Received: from law-f64.hotmail.com ([209.185.131.127] helo=hotmail.com)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13DaMr-0002i4-00
+	for mtd@infradead.org; Sat, 15 Jul 2000 23:25:05 +0100
+Message-ID: <20000715222433.57109.qmail@hotmail.com>
+From: "Prabha19 Selva" <sprabha19@hotmail.com>
+To: mtd@infradead.org
+Cc: sprabha@hotmail.com
+Subject: Fwd: Re: Error when loading the modules
+Date: Sat, 15 Jul 2000 18:24:33 EDT
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 14 Jul 2000, Juan Gonzo wrote:
+Hi David,
+Still the same problem (can not load the cfi_prob.o, cfi_cmdset_0002.o
+etc. modules. It is still giving "unresolved symbol put-module-symbol". I 
+have added the patch you mentioned earlier and recompile the kernel and also 
+(just to make sure) the mtd drivers. But I still get the same error.
 
-> Our system has 4 Intel Strataflash chips that are coupled pairs
-> to give us 32MB at 32bits data width.  In the structure 'map_info',
-> I set the 'buswidth' field to 4.
-> 
-> The startup code uses the write32 functions, but when I mount 
-> I noticed that write16 functions are being used.  As well, in 
-> the file cfi_cmdset_0001.c, only write16 functions are called.  
-> Is this causing a problem for our system?
+What can I do now...
 
-Almost certainly. That geometry isn't supported yet, for the simple reason
-that I haven't actually met a board which does it yet.
+Prabha
 
-Copy the cfi_intelext_*_1_by_16 routines and make 2_by_16 versions. It
-shouldn't be difficult. We also need to check the geometry in
-cfi_intelext_setup() and make the MTD device's methods point to the right
-set of functions.
+p.s. Do I need to apply anyother patches in the mtd/patches directory?...
+>
+>On Fri, 14 Jul 2000, David Woodhouse wrote:
+>
+> >
+> > Apply the put_module_symbol-2.2.1x.patch patch to your kernel. It 
+>provides
+> > the put_module_symbol() function.
+> >
+> > --
+> > dwmw2
+> >
+> >
+> >
+>
+>
 
--- 
-dwmw2
-
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
 
 
 
