@@ -1,18 +1,14 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from bay1-f74.bay1.hotmail.com ([65.54.245.74] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BPqXf-0001Jf-IO
-	for linux-mtd@lists.infradead.org; Mon, 17 May 2004 23:25:04 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Cristiano Paris <paris@disp.uniroma2.it>
-In-Reply-To: <20040517153758.GA9992@sackville.theshire.org>
-References: <20040517153758.GA9992@sackville.theshire.org>
-Content-Type: text/plain
-Message-Id: <1084832701.6607.597.camel@imladris.demon.co.uk>
+	id 1BPrPs-0001b7-SY
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2004 00:21:05 +0100
+From: "lokesh kumar" <lokeshk@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 17 May 2004 19:20:53 -0400
 Mime-Version: 1.0
-Date: Mon, 17 May 2004 23:25:01 +0100
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Low-level access to USB pendrive
+Content-Type: text/plain; format=flowed
+Message-ID: <BAY1-F74G7Tyc1ZoHGt0001c7c9@hotmail.com>
+Subject: jffs2 2.4.18 kernel problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-05-17 at 17:37 +0200, Cristiano Paris wrote:
-> Hi everyone,
-> 
-> I know that the external interface to usb flash pendrives is implemented
-> as a block device. I also know that this is a logical organization of the
-> underlying flash memory. The question is: is it possible to access the
-> flash memory directly bypassing this "logical-to-physical" mapping layer?
+Hi,
+I have a jffs2 partition on my mpc8xx board, running 2.4.18 kernel. I am 
+using mtd snapshot of july 2002. The mtd partition size is 2MB.
 
-Generally no. A USB pendrive is a SCSI-over-USB disk. If there's a way
-to bypass its internal 'translation layer' and access the flash
-directly, it's very manufacturer-specific and not documented.
+I enabled the mtd options in kernel, and then built an image for this 
+partition using
 
--- 
-dwmw2
+mkfs.jffs2 -e 0x20000 -b -r rootdir -o img
+
+and then I copy this image over this partition using u-boot or debugger. I 
+can then boot the board and mount this partition on a mount point. Then I 
+can cd to this partition and create a directory and copy a file to this 
+directory. Now, I turn the power off and when I reboot, I can mount the file 
+system and can see that the directory and file exist, but when I say "rm -fr 
+file" or "rm -fr directory", it crashes the kernel saying "kernel access of 
+bad area"
+
+What am I doing wrong?
+
+Lokesh
+
+_________________________________________________________________
+Express yourself with the new version of MSN Messenger! Download today - 
+it's FREE! http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
