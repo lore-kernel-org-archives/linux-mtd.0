@@ -1,19 +1,19 @@
-Received: from [221.148.59.218] (helo=bogo.da-san.com)
+Received: from blood.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Af6YP-0004Ud-Kn
-	for linux-mtd@lists.infradead.org; Sat, 10 Jan 2004 00:00:37 +0000
-Received: from freeman (pcsmkim.da-san.com [203.236.124.220])
-	by bogo.da-san.com (v3smtp 8.11.6.9/8.11.6) with SMTP id i09Nnft12050
-	for <linux-mtd@lists.infradead.org>; Sat, 10 Jan 2004 08:49:41 +0900
-Message-ID: <006701c3d70c$901cece0$dc7ceccb@freeman>
-From: "smkim" <smkim@da-san.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Sat, 10 Jan 2004 08:59:05 +0900
-MIME-Version: 1.0
+	id 1Ag6Yu-0003kT-Bz
+	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2004 18:13:16 +0000
 Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-Subject: Re :Can JFFS2 is ported to linux kernel 2.2.x  ?
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: luoxiao@roxus.net, linux-mtd@lists.infradead.org
+Date: Tue, 13 Jan 2004 07:17:51 +1300
+References: <20040109150723.M52805@roxus.net>
+In-Reply-To: <20040109150723.M52805@roxus.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20040112181058.8A0ED5447@blood.actrix.co.nz>
+Subject: Re: best nand flash fs for 2.0.38 kernel?
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am sorry.
-I sent a mail shown below to the mailing list.
+On Friday 09 January 2004 20:07, luoxiao wrote:
+> Hi, all
+>
+> I'm currently trying to add nand flash file system support for the linux
+> 2.0.38 porting on my company's product. I choosed the JFFS but the JFFS2
+> because it fits the old 2.0.x kernel. In the processing of porting I met a
+> lot of troubles and I thought some of them are caused by bugs of JFFS code
+> rather by my porting. So a question is: is the JFFS stable enough for
+> product usage? I saw it is still in the fs/ directory of the brand-new
+> 2.6.0 kernel. Does this fact mean that the version of JFFS in the 2.6.0
+> kernel is stable enough to use? I've searched the docs and mail archive but
+> it seems that no one is using JFFS now. So the question is: what is the
+> best nand flash file system for the 2.0.x kernel?
 
-The mail has a mistake.
+AFAIK JFFS does not support NAND, but JFFS2 does, so does YAFFS.
 
-It's my mistake that "I am wondering if JFFS2 was ported to the 2.4 version
-of the Linux kernel. "
+"Best" is hard to define and mileage will vary. Both YAFFS and JFFS2 have 
+there place in the world.
 
-I correct my mistake ==> "I am wondering if JFFS2 was ported to the 2.2.13
-version of the Linux kernel."
+I can't speak for porting JFFS2, but I can for YAFFS.
 
-I am sorry very much.
+YAFFS currently works with 2.4 and 2.6. YAFFS does not use many kernel 
+features (threads etc), so I would expect porting to other Linux variants to 
+be not too bad.
 
-But I hope your reply.
-
-Thanks.
-
-
-
-------------------------------------------------------------------
-I  have read  "JFFS : The Journalling Flash File System" which David
-Woodhose(Red hat, Inc.) has written.
-
-According to the paper, JFFS was ported to the 2.0, 2.2 and 2.3 version of
-the Linux kernel. JFFS2 was ported to the 2.4 version of the Linux kernel.
-
-I am wondering if JFFS2 was ported to the 2.4 version of the Linux kernel.
-<=== mistake.
-
-            ==> (correct) I am wondering if JFFS2 was ported to the 2.2.13
-version of the Linux kernel.
-
-
-Thanks  for your reply in advance.
-
-Have a nice day.
------------------------------------------------------------------------
+-- Charles
