@@ -1,21 +1,25 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QncJ-0000r7-2I
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 13:25:15 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jasmine Strong <jasmine@regolith.co.uk>
-In-Reply-To: <Pine.LNX.4.53.0306131322360.11502@undine.linuxgrrls.org>
-References: <20030613085457.GA18036@timberwolf.dyndns.org>
-	 <1055494848.2097.475.camel@passion.cambridge.redhat.com>
-	 <Pine.LNX.4.53.0306131322360.11502@undine.linuxgrrls.org>
-Message-Id: <1055507146.3632.4.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 13 Jun 2003 13:25:47 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: which kernel
+	id 19Qq5V-0001Px-GJ
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 16:03:33 +0100
+Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
+	by dummy.domain.name (Postfix) with SMTP id 54DF16D00BC
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Jun 2003 10:59:37 -0400 (EDT)
+Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
+	by lserver.ddiworldwide.com (Postfix) with ESMTP id 3CD906D00B9
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Jun 2003 14:59:37 +0000 (UTC)
+From: Frank R Callaghan <f.callaghan@ieee.org>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 13 Jun 2003 10:51:41 -0400
+MIME-Version: 1.0
+Message-Id: <200306131051.42110.f.callaghan@ieee.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Please Help, problem mounting jffs2
+Reply-To: f.callaghan@ieee.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-06-13 at 13:23, Jasmine Strong wrote:
-> On Fri, 13 Jun 2003, David Woodhouse wrote:
-> 
-> > It's possible to make it work with kernels as old as 2.4.19 though.
-> 
-> We successfully used it with 2.4.7 on PowerPC, but that was deeply 
-> frightening.
+Hi All,
 
-People _used_ to use it on 2.0 kernels too -- but not since I ditched a
-lot of the older compatibility cruft a couple of weeks ago.
+I have a problem with mounting my new mtd/jffs2 system
+after lots of experiment I have found the after doing
+'eraseall /dev/mtd0' I can 'mount -t jffs2 /dev/mtdblock0 /mnt/flash'
+with no problem :) but if I umount it and try to re-mount it
+will sit there forever !
+If I cp a jffs2.img to the device the mount will also lockup=20
+If I erase -> mount I can create files df with no problems,=20
 
--- 
-dwmw2
+It seem like the mount does not like mounting with anything
+in the filesystem !
+
+What infomation should I gather to find out whats gonig on here ?
+
+Any help greatly appreciated,
+
+TIA,
+        Frank.
