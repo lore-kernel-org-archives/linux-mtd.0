@@ -1,21 +1,20 @@
-Received: from alias-1.uta.edu ([129.107.56.97])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CkbFR-0006pv-81
-	for linux-mtd@lists.infradead.org; Fri, 31 Dec 2004 23:52:18 -0500
-Received: from gamma2.uta.edu (gamma2.uta.edu [129.107.8.1])
-	by alias-1.uta.edu (8.12.11/8.12.11) with ESMTP id j014qDgl010141
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Dec 2004 22:52:13 -0600
-Received: from localhost (txb8879@localhost)
-	by gamma2.uta.edu (8.11.7p1+Sun/8.11.7) with ESMTP id j014qCo05982
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 31 Dec 2004 22:52:12 -0600 (CST)
-Date: Fri, 31 Dec 2004 22:52:12 -0600 (CST)
-From: Todor  Boinovski <txb8879@gamma2.uta.edu>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.GSO.4.58.0412312232480.4310@gamma2>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: Centennial linear flash
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cj3jS-0002x4-KZ
+	for linux-mtd@lists.infradead.org; Mon, 27 Dec 2004 17:52:56 -0500
+Resent-Message-ID: <20041227225048.GF5345@stusta.de>
+Date: Mon, 27 Dec 2004 23:50:15 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Message-ID: <20041227225014.GD5345@stusta.de>
+References: <20041227222348.GB13628@mellanox.co.il>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20041227222348.GB13628@mellanox.co.il>
+Cc: nico@cam.org, linux-kernel@vger.kernel.org
+Subject: [2.6 patch] add missing dependencies on MTD_PARTITIONS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +24,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am trying to get an old centennial linear card working but
-/etc/pcmcia/memory fails to create the mtd devices. Kernel is 2.6.10 and
-the stab contents are:
+On Tue, Dec 28, 2004 at 12:23:48AM +0200, Michael S. Tsirkin wrote:
 
-Socket 0: 3Com 572/574 Fast Ethernet
-0       network 3c574_cs        0       eth0
-Socket 1: Memory Card
-1       memory  pcmciamtd       0       mtd0
+> Hello!
 
-lsmod's output is:
+Hi Michael!
 
-Module                  Size  Used by
-cfi_cmdset_0002        23936  1
-cfi_util                3168  1 cfi_cmdset_0002
-mtdpart                 9184  1 cfi_cmdset_0002
-jedec_probe            19872  0
-gen_probe               2752  1 jedec_probe
-pcmciamtd              18456  1
-mtdcore                 5764  3 mtdpart,pcmciamtd
-chipreg                 2368  2 jedec_probe,pcmciamtd
-3c574_cs               13092  1
-pcmcia                 18912  6 pcmciamtd,3c574_cs
-yenta_socket           19104  2
-pcmcia_core            49856  4 pcmciamtd,3c574_cs,pcmcia,yenta_socket
-:
-:
+> Sorry, I had a wrong subject.
+> 
+> It seems that you can disable MTD partitioning support 
+> but enable , e.g. NAND.
+> And, if you are upgrading from and older kernel without
+> the paritioning option, and do oldconfig and are not careful,
+> thats what you end up with.
+> But, lots of code is calling del_mtd_partitions now, so you get
+> unresolved del_mtd_partitions.
+> 
+> Its easy to work around this by enabling partitioning, but
+> should not the dependency be added in the relevant KConfig?
 
-cardctl ident:
-Socket 0:
-  product info: "3Com", "Megahertz 574B", "B", "001"
-  manfid: 0x0101, 0x0574
-  function: 6 (network)
-Socket 1:
-  product info: "Cetennial TechnologieY,", "Inc.", "FL16M-20-11119", "16
-MEG FLASH w/16 Mbit AMD devc"
+First of all thanks for your report.
+You didn't send the exact error mesage.
+I'm able to reproduce the following in 2.6.10-rc3-mm1:
 
-cardctl config:
-Socket 0:
-  Vcc 5.0V  Vpp1 0.0V  Vpp2 0.0V
-  interface type is "memory and I/O"
-  irq 3 [exclusive] [level]
-  function 0:
-    config base 0x10000
-      option 0x41 status 0x00
-    io 0x0300-0x031f [16bit]
-Socket 1:
-  Vcc 5.0V  Vpp1 0.0V  Vpp2 0.0V
-  interface type is "memory-only"
-  function 0:
-    config base 0xd423
-      option 0x00 status 0x23 pin 0xd4 copy 0x00 ext 0xff
-  memory 0x3800000-0x3ffffff @ 0xa0002000 [16bit]
+<--  snip  -->
 
-I am new to mtd. Could somebody give me a hint why there are
-no major/minor numbers in the stab file?
+...
+  LD      .tmp_vmlinux1
+drivers/built-in.o(.init.text+0x6464b): In function `init_scx200_docflash':
+: undefined reference to `add_mtd_partitions'
+drivers/built-in.o(.init.text+0x66ab8): In function `ns_init_module':
+: undefined reference to `add_mtd_partitions'
+drivers/built-in.o(.exit.text+0x8bf4): In function `cleanup_scx200_docflash':
+: undefined reference to `del_mtd_partitions'
+make: *** [.tmp_vmlinux1] Error 1
 
-Thanks,
+<--  snip  -->
+
+The patch below fixes them.
+
+Please tell whether this fixes the problems you observed.
+
+> Cc me directly, I'm not on the list.
+> Thanks,
+> MST
+
+cu
+Adrian
 
 
-****************************
-* Todor Boinovski 	   *
-****************************
+diffstat output:
+ drivers/mtd/maps/Kconfig |    2 +-
+ drivers/mtd/nand/Kconfig |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+--- linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig.old	2004-12-27 23:43:00.000000000 +0100
++++ linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig	2004-12-27 23:44:01.000000000 +0100
+@@ -159,7 +159,7 @@
+ 
+ config MTD_SCx200_DOCFLASH
+ 	tristate "Flash device mapped with DOCCS on NatSemi SCx200"
+-	depends on X86 && MTD_CFI
++	depends on X86 && MTD_CFI && MTD_PARTITIONS
+ 	help
+ 	  Enable support for a flash chip mapped using the DOCCS signal on a
+ 	  National Semiconductor SCx200 processor.
+--- linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig.old	2004-12-27 23:44:44.000000000 +0100
++++ linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig	2004-12-27 23:45:37.000000000 +0100
+@@ -198,7 +198,7 @@
+  
+  config MTD_NAND_NANDSIM
+  	bool "Support for NAND Flash Simulator"
+- 	depends on MTD_NAND
++ 	depends on MTD_NAND && MTD_PARTITIONS
+ 
+ 	help
+ 	  The simulator may simulate verious NAND flash chips for the
