@@ -1,15 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dave Dillow <ddillow@idleaire.com>
-In-Reply-To: <1067376879.9396.1.camel@dillow.idleaire.com>
-References: <3F9EA810.6010905@celerity.net>
-	 <1067376879.9396.1.camel@dillow.idleaire.com>
-Content-Type: text/plain
-Message-Id: <1067427718.15551.1582.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 29 Oct 2003 11:41:59 +0000
-Content-Transfer-Encoding: 7bit
+Received: from [216.40.225.16] (helo=www.webmanixhosting.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AEuzQ-0006UQ-Kt
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 18:24:16 +0000
+From: "Dan Post" <djp.mtd@onemyth.net>
+To: "Chuck Meade" <chuckmeade@mindspring.com>,
+   "Karoliya,Abhishek" <Abhishek.Karoliya@fci.com>
+Date: Wed, 29 Oct 2003 10:16:23 -0800
+Message-Id: <20031029181623.M2380@onemyth.net>
+In-Reply-To: <IIEEICKJLNEPBBDJICNGGEICEBAA.chuckmeade@mindspring.com>
+References: 
+	<903E17B6FF22A24C96B4E28C2C0214D7012BB2D8@sr-bng-exc01.int.tsbu.net>
+	<IIEEICKJLNEPBBDJICNGGEICEBAA.chuckmeade@mindspring.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL problems
+Subject: RE: Intel K3 Flash + MTD
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,13 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-10-28 at 16:34 -0500, Dave Dillow wrote:
-> Try this -- it's my current hack to get my 128MB recoginzed. When I get
-> time, I plan to work on nand/diskonchip.c, per dwmw2's suggestion.
+On Sun, 26 Oct 2003 15:17:35 -0500, Chuck Meade wrote
+> That sounds like the status bit that you are reading back.
+> Most flashes give back status after you issue them commands
+> (like all of your unlocks, for instance).  Usually you put them 
+> back into "read mode" by writing a particular byte to them
+> after reading the status.  Try writing an FF to the flash.
+> Check your flash chip's datasheet for the exact sequence that
+> you must use to put it back in read mode.
 
-That looks sane enough for me to apply it, if it still actually works on
-the 2000 and Millennium parts. Zachi, what's the correct name for these
-parts? Is it 'DiskOnChip 2000 TSOP'?
+For K3's, writing an FF should work, though I don't know why it's coming up in
+status mode.  I don't think that behavior is typical.  You probably should
+check the datasheet.  Or it could be your bootloader that's setting it to
+status mode (maybe not changing it to Read Array after a program or erase etc).
 
--- 
-dwmw2
+However, you should be aware that some NOR chips, such as Intel's L18/L30's,
+are multi-partitioned and each partition must be set to read array mode... the
+details of its multipartitioning can be very sticky, but very cool too...
+
+Dan
