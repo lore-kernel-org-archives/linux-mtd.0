@@ -1,19 +1,17 @@
-Received: from sc-smtp1.homechoice.co.uk ([212.187.157.195] helo=sc-outsmtp2.homechoice.co.uk)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eMC8-00052L-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 21:53:44 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: adr <mtd@mcmen.demon.co.uk>
-To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>
-Subject: Re: Help with Dreamcast flash devices
-Date: Mon, 12 Aug 2002 21:54:19 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17eMGX-00052k-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 21:58:17 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200208111908.06874.mtd@mcmen.demon.co.uk> 
+References: <200208111908.06874.mtd@mcmen.demon.co.uk> 
+To: adr <mtd@mcmen.demon.co.uk>
 Cc: linux-mtd@lists.infradead.org
-References: <200208111908.06874.mtd@mcmen.demon.co.uk> <20020811195238.GA1638@wohnheim.fh-wedel.de>
-In-Reply-To: <20020811195238.GA1638@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200208122154.19331.mtd@mcmen.demon.co.uk>
+Subject: Re: Help with Dreamcast flash devices 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 12 Aug 2002 21:58:15 +0100
+Message-ID: <18431.1029185895@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,14 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sunday 11 Aug 2002 8:52 pm, Jörn Engel wrote:
+mtd@mcmen.demon.co.uk said:
+>  Well, the long and the short of it is that I am somewhat at sea here.
+> Are  there any similar mtd devices I can look at?
 
->
-> My best guess would be to create something similar to the slram
-> driver, but with different guts. 
+> Is there an explanation anywhere of how mapping works and how to
+> 'virtual' map  something which isn't in the physical map at all? 
 
+Your map functions must read and write words to the flash, and provide 
+methods for copying chunks of data from the flash. That's about it.
 
-I've looked at slram.c - but don't really understand what it is for. What sort 
-of device is it?
+They may not sleep. Is that a problem?
 
-Adrian
+--
+dwmw2
