@@ -1,18 +1,14 @@
-Received: from mirapoint3.brutele.be ([212.68.203.242] ident=mirapoint)
+Received: from f90.law11.hotmail.com ([64.4.17.90] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18NuHa-0003lW-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 12:23:38 +0000
-Date: Mon, 16 Dec 2002 13:54:14 +0100
-From: Geoffroy Stevenne <geof@hellea.com>
+	id 18NvEA-0003pT-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 13:24:10 +0000
+From: "the muppeteer" <themuppeteer@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: writing new BBRAM driver
-Message-Id: <20021216135414.6d72949c.geof@hellea.com>
-In-Reply-To: <Pine.LNX.4.31.0212161057400.28011-100000@www.optixsoft.de>
-References: <D3AF5F134D627243993F2F2FC32EE4D229C4A7@mailman.eason.com>
-	<Pine.LNX.4.31.0212161057400.28011-100000@www.optixsoft.de>
+Subject: bug in doc drivers?
+Date: Mon, 16 Dec 2002 14:52:31 +0100
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Message-ID: <F907zk8J05YfrkaWumO0000c6dc@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,21 +20,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hello,
 
-On Mon, 16 Dec 2002 11:14:41 +0100 (MET)
-Tobias Otto-Adamczak <toa@indakom.de> wrote:
+I compile my kernel (2.4.20) with mtd support.
+I did everything as said in the documentation mtd-jffs-HOWTO.
+I boot with my new kernel, and my flash is detected.
+I mount my flash.
+I write a large amount of data on it ,so that its 100% full.
+Then, when I do a sync, the system freezes for about 1min 30.
+Why ? Is this a bug in the drivers ? Does the flash need swap to
+function properly now ? it didn't need swap before with the binairy
+old modules.
 
-> Alex Pavloff, 2002-12-13, 15:45h:
-> 
-> > Hi there folks.  I've written the struct mtd_info functions for a
-> > 128KB BBRAM driver for my companies new board.  It's horribly
-> > simple, as most of it is actually done by a gate array on the board,
-> > so from kernel land its just poking ioports.  Easy stuff.
+System:
+-------
+Red Hat 7.2
+Kernel 2.4.20
+No swap (its for a bootable cd)
+DiskOnChip 2000 16MB
 
-Great! If it works with the versalogic board it will be tested
-here with a 512KB BBRAM.  Of course I'll provide maximum feedback
-(maybe patches if any required). Thanks!
+Regards,
 
---
-Geoffroy
+themuppeteer.
+
+
+_________________________________________________________________
+Ontvang je Hotmail & Messenger berichten op je mobiele telefoon met Hotmail 
+SMS http://www.msn.nl/jumppage/
