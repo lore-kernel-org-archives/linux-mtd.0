@@ -1,16 +1,17 @@
-Received: from mail.2d3d.co.za ([196.14.185.200])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15D20j-000678-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 11:48:30 +0100
-Date: Thu, 21 Jun 2001 12:54:58 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: safe flash filesystem
-Message-ID: <20010621125458.A23785@crystal.2d3d.co.za>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
+Received: from email.aftek.com ([128.121.126.111])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15D3QZ-0006Cj-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 13:19:15 +0100
+Received: from ashwin ([202.54.81.26]) by email.aftek.com (8.11.2) id f5LCOc537624 for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 06:24:39 -0600 (MDT)
+Message-ID: <001101c0fa4d$3cc2a970$4f00000a@ashwin>
+From: "Ashwin" <ashwinp@aftek.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: __ioremap in physmem.c
+Date: Thu, 21 Jun 2001 17:55:17 +0530
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,54 +23,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi friends,
+    I am  trying to get the mtd working on the L7205 board. I am getting the
+following problem.
+    The __ioremap() call in physmem.c calls the function with only two
+parameters but the __ioremap() in  the kernel expects 3 parmaters while only
+2 are passed the third i.e flag is not sent. What should be the flag to this
+call  and the significance of the flag ?
 
-Hi!
+Another thing is that if I send the flag as zero the call does not return it
+gives the error "bad pmd in pte_allocl_kernel".
 
-We're developing a product that needs a small part of the flash memory to
-contain a very scaled down file system containing configuration files. This
-file system have to be extremely reliable. Speed is not an issue, but the
-validity of any data written to it is of utmost importance.
+Also what should be the macros for the functions readb,writeb,...... for
+L7205 board at present I have put just printk's there or do I use the macros
+in include/asm-arm/arch-linkup/io.h but they seem to be io calls  (am I
+correct ?)
 
-So before I go reinvent the wheel, I'd like to know if there's something
-which already does this, i.e. does things like keep duplicate copies of
-everything around, have all sorts of checks and balances to check for
-damaged parts of the flash, no caching and some sort of wear levelling, etc?
+ Could any one please guide me ?
 
---=20
-
-Regards
- Abraham
-
-Have you noticed that all you need to grow healthy, vigorous grass is a
-crack in your sidewalk?
-
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
-
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
-
-
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7MdKCzNXhP0RCUqMRAhZGAJsHQ1DEqHQkRV6abgnLh2XGS9BFXQCbBMG3
-ksNJuSFPEK2C1lG5RN3vmi0=
-=2xRY
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
+Thanks,
+Regards,
+Ashwin.
