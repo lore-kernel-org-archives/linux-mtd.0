@@ -1,27 +1,23 @@
-Received: from fep04-mail.bloor.is.net.cable.rogers.com ([66.185.86.74])
+Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18X5kK-0007eI-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 20:27:16 +0000
-Received: from ei.homeip.net ([65.48.182.245])
-          by fep04-mail.bloor.is.net.cable.rogers.com
-          (InterMail vM.5.01.05.06 201-253-122-126-106-20020509) with ESMTP
-          id <20030110205646.JHBC214174.fep04-mail.bloor.is.net.cable.rogers.com@ei.homeip.net>
-          for <linux-mtd@lists.infradead.org>;
-          Fri, 10 Jan 2003 15:56:46 -0500
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ei.homeip.net (8.12.6/8.12.5) with ESMTP id h0AKvahC012062
-	(version=TLSv1/SSLv3 cipher=EDH-DSS-DES-CBC3-SHA bits=168 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 15:57:36 -0500
-Received: from localhost (ilgiz@localhost)
-	by localhost.localdomain (8.12.6/8.12.5/Submit) with ESMTP id h0AKvadx012058
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 15:57:36 -0500
-Date: Fri, 10 Jan 2003 15:57:36 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@infradead.org>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: DiskOnChip GRUB menu fall-back fix
-Message-ID: <Pine.LNX.4.44.0301101549410.12054-100000@localhost.localdomain>
+	id 18X6F1-0007gH-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 20:58:59 +0000
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	by dummy.ddiworldwide.com (Postfix) with SMTP id 61955162F75
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 13:25:18 -0500 (EST)
+Received: from plinux.ddiworldwide.com (plinux [192.168.1.128])
+	by lserver.ddiworldwide.com (Postfix) with ESMTP id EF2A7162F74
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 13:25:17 -0500 (EST)
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Frank R Callaghan <f.callaghan@ieee.org>
+Reply-To: f.callaghan@ieee.org
+To: LinuxMTD <linux-mtd@lists.infradead.org>
+Subject: JFFS linker error in kernel 2.4.19
+Date: Fri, 10 Jan 2003 16:27:20 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Message-Id: <200301101627.20417.f.callaghan@ieee.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -33,20 +29,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I submitted a modification to the David Woodhouse's GRUB patch,
-patches/grub-2003-01-08-doc.patch in the MTD CVS tree.  It is the same as
-the previous one posted by Mark Meade plus the fix for a fall-back menu 
-option.  When the default drive (DiskOnChip) doesn't contain the menu.lst 
-file, the menu will be looked for among the first hard disk and the floppy 
-disk.  The bug was that selecting an item of the fall-back menu barked 
-about non-existent disk.
+Hi List,
 
-I hope I didn't break anything by fixing this bug.
+I'm compiling linux 2.4.19 patched with today's CVS MTD patched
+with the patching script
+(that states 'no Include Filesytems: yes; Zlib-Patch needed: no)
 
--- 
-Ilguiz Latypov
-Montreal, Quebec
-Canada
+ld -m elf_i386 -T /home/rtlinux/rtai/linux-2.4.19/arch/i386/vmlinux.lds -e 
+stext arch/i386/kernel/head.o arch/i386/kernel/init_task.o init/main.o 
+init/version.o init/do_mounts.o \
+        --start-group \
+        arch/i386/kernel/kernel.o arch/i386/mm/mm.o kernel/kernel.o mm/mm.o 
+fs/fs.o ipc/ipc.o \
+         drivers/char/char.o drivers/block/block.o drivers/misc/misc.o 
+drivers/net/net.o drivers/media/media.o drivers/ide/idedriver.o 
+drivers/mtd/mtdlink.o \
+        net/network.o \
+        /home/rtlinux/rtai/linux-2.4.19/arch/i386/lib/lib.a 
+/home/rtlinux/rtai/linux-2.4.19/lib/lib.a 
+/home/rtlinux/rtai/linux-2.4.19/arch/i386/lib/lib.a \
+        --end-group \
+        -o vmlinux
+fs/fs.o: In function `jffs2_compress':
+fs/fs.o(.text+0x5fc59): undefined reference to `zlib_compress'
+fs/fs.o: In function `jffs2_decompress':
+fs/fs.o(.text+0x5fced): undefined reference to `zlib_decompress'
+fs/fs.o(.text+0x5fd18): undefined reference to `dynrubin_decompress'
+make: *** [vmlinux] Error 1
 
-+1 (514) 526-6911 (home)
-+1 (514) 281-9191 x 117 (work)
+
+Any Ideas ?
+
+TIA,
+    Frank.
