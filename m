@@ -1,16 +1,20 @@
-Received: from d-106.linux2002.uq.net.au ([203.15.37.106] helo=lapdancer.baythorne.internal)
+Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=Dual166.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16YzDN-000284-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 00:48:33 +0000
-Date: Fri, 8 Feb 2002 10:58:58 +1000 (EST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: raja <mahadoc@rediffmail.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DOC firmware problems
-In-Reply-To: <20020207121316.8917.qmail@mailweb21.rediffmail.com>
-Message-ID: <Pine.LNX.4.44.0202081054280.25850-100000@lapdancer.baythorne.internal>
+	id 16Z3K6-0002Og-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 05:11:46 +0000
+Received: from nt40server ([192.168.1.101])
+	by Dual166.localdomain (8.9.3/8.9.3) with SMTP id VAA22727
+	for <linux-mtd@lists.infradead.org>; Thu, 7 Feb 2002 21:21:08 -0800
+Reply-To: <acurtis@onz.com>
+From: "Allen Curtis" <acurtis@onz.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Flash left in a write mode
+Date: Thu, 7 Feb 2002 21:22:20 -0800
+Message-ID: <NCBBIINEHIPFGJPLBEIFMEBBDEAA.acurtis@onz.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,39 +26,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 7 Feb 2002, raja wrote:
+I have observed a problem where the flash is left in a write mode even after
+the file-system is unmounted. (Intel Strata flash, cmdset_0001.c)
 
->  i have a DiskOnChip 2000 and i have the firmware doc504.exb loaded in it.
->   i am new to this and I have a few elementary doubts.
-> 
-> 1. Actually what does this firmware do inside the DOC ?
+The problem is this: if the flash is written to and then the system is
+immediately rebooted, the flash is left in a write state. (if you read it
+you get status information not flash contents.) If you then try to boot off
+of this device, it will fail. If you read the flash, with a "dd" command for
+instance, then you can reboot successfully.
 
-The firmware provides a BIOS extension, which allocates lots of sub-640K 
-memory and installs an extra handler for the INT 13h disc service 
-interrupt. Using this, it pretends to be a hard drive for the benefit of 
-anything which uses the standard BIOS interfaces (i.e. DOS and 
-bootloaders).
+I am surprised that this problem has not been reported. It should be an easy
+fix. (something that I will handle in BIOS code until it is patched.)
 
-> 2. Can this firmware be replaced with some other one (i.e. can i format
-> the DOC with some other open source firmwares )
-
-Yes. You can install the Grub bootloader in place of the M-Systems BIOS 
-extension. Rather than installing an INT 13h handler and continuing to let 
-the machine boot as normal, it hooks the INT 18h bootstrap handler to 
-start Grub instead of trying to boot from floppy or INT 13h device as 
-normal. Grub can drive the DiskOnChip directly, without the assistance of 
-the original firmware extension, and hence boot a kernel from it.
-
-> 3. How does the BIOS recognize the DOC (is BIOS recognition related to
-> firmware ) ?
-
-The DiskOnChip is mapped into the host memory in the Upper Memory Blocks 
-used for BIOS extensions - the first few bytes of it have the BIOS 
-extension signature that has been defined since the first IBM BIOS to 
-persuade the BIOS to run extra stuff at startup.
-
-> I will be grateful if you could clarify my intial doubts ( cause i am
-> stuck up with a DOC which has BIOS and firmware problems)
-
--- 
-dwmw2
+Thanks
