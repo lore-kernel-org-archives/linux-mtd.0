@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15NbnD-0004qO-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 16:02:15 +0100
+	id 15Nbor-0004rG-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 16:03:57 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010720170455.B2757@crystal.2d3d.co.za> 
-References: <20010720170455.B2757@crystal.2d3d.co.za> 
-To: Abraham vd Merwe <abraham@2d3d.co.za>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: Linus/Russell/any tree merge 
+In-Reply-To: <F9102D41F595D311ACA7009027DE2C84033D4D81@c3po.heurikon.com> 
+References: <F9102D41F595D311ACA7009027DE2C84033D4D81@c3po.heurikon.com> 
+To: "McNutt, Scott" <smcnutt@artesyncp.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Magic bitmask 0x1985 not found 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Jul 2001 16:07:45 +0100
-Message-ID: <16900.995641665@redhat.com>
+Date: Fri, 20 Jul 2001 16:09:38 +0100
+Message-ID: <18479.995641778@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+smcnutt@artesyncp.com said:
+>  I thought I used 131072. But based on the dump, I must have
+> fat-fingered 131071 :-(. I made a new image with -e 131072 and it
+> looks good.
 
-abraham@2d3d.co.za said:
->  There's some drivers/changes in the CVS tree that imho is much needed
-> in the main kernel tree.
-
-I merged quite recently, into 2.4.6. What are you missing, precisely?
+Er, yes, that would confuse it quite a lot. Perhaps we ought to make 
+mkfs.jffs2 reject values which aren't a power of two?
 
 --
 dwmw2
