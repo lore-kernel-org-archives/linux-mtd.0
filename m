@@ -1,18 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from fmr05.intel.com ([134.134.136.6] helo=hermes.jf.intel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cOid-0001AD-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 12:11:11 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <00512BA4F9D3D311912A009027E9B8F407E474@NT> 
-References: <00512BA4F9D3D311912A009027E9B8F407E474@NT> 
-To: Dave Ellis <DGE@sixnetio.com>
-Cc: "'joakim.tjernlund@lumentis.se'" <joakim.tjernlund@lumentis.se>,
-    linux-mtd@lists.infradead.org
-Subject: Re: Disk blocks for long periods 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 07 Aug 2002 12:11:06 +0100
-Message-ID: <7780.1028718666@redhat.com>
+	id 17cQRU-0001N7-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 14:01:36 +0100
+Received: from talaria.jf.intel.com (talaria.jf.intel.com [10.7.209.7])
+	by hermes.jf.intel.com (8.11.6/8.11.6/d: outer.mc,v 1.48 2002/05/24 00:39:04 root Exp $) with ESMTP id g77CxGo08527
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 12:59:16 GMT
+Received: from pdsmsxvs01.pd.intel.com (pdsmsxvs01.pd.intel.com [172.16.12.122])
+	by talaria.jf.intel.com (8.11.6/8.11.6/d: inner.mc,v 1.22 2002/05/24 00:38:22 root Exp $) with SMTP id g77CuuR26792
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 12:56:57 GMT
+Message-ID: <957BD1C2BF3CD411B6C500A0C944CA2601499C3B@pdsmsx32.pd.intel.com>
+From: "Yuan, Cain" <cain.yuan@intel.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS2 peoblems with K3 strata flash on Dalhart 
+Date: Wed, 7 Aug 2002 20:59:23 +0800 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,36 +28,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-DGE@sixnetio.com said:
-> The cfi_udelay() call is part of the problem, since it lets other
-> processes run, and the one that runs is the erasing process, but it
-> can't do anything except slow things down since the flash  is busy
-> writing.
+cain.yuan@intel.com said:
+> 	According to your email  I  rebuild a JFFS2 image with the   block
+> size 0x10000,  same as the datasheet saids. but the problem still
+> exist.  First bootup will success without any error message. but when
+> I reset the board and boot it again, many errors occurs.
 
-The erasing process should be sitting in TASK_UNINTERRUPTIBLE and on the 
-chip's wait queue, waiting to be woken when the chip becomes available. Why 
-is it running?
+Looks like you should be using 0x20000. 0x10000 is fine but triggers 
+harmless messages about 'Empty block at 0x.... '. I think you were using 
+0x40000 before which would have caused problems.
+~~~~~~~~~~  yes, I am using 0x40000 before.
 
-> What the erasing process does seem to do (and  I don't understand why)
-> is cause current->need_resched to be set for every call to
-> cfi_udelay(), so it calls schedule_timeout(1)  and sleeps for a whole
-> jiffie. 
 
-Sleeping for a whole jiffie is bad. We should udelay() and yield() as you 
-point out; there's no reason to use schedule_timeout() and hence stop 
-ourself from being woken immediately if there's not really anything else to 
-run. I've committed that change to CVS.
+The other problem still remains, and isn't related, though...
 
-I don't understand why need_resched is being set either, though. 
+> Write of 68 bytes at 0x0035e908 failed. returned 0, retlen 0
+> Not marking the space at 0x0035e908 as dirty because the flash driver
+returned retlen zero
 
-Adding cfi_udelay() to do_write_oneword() is dangerous. You may trigger a
-bug that's actually already there. ISTR there's a time limit on the 'unlock
-bypass' mode, and if you schedule() you may find that the chip is no longer 
-in that mode when you return.
+The hardware driver seems broken -- it's returning success but not actually 
+reporting that it's written any data. What driver, what version?
 
-Another thing you might want to do if you really care about write 
-performance is copy the logic for calculating word_write_time from the 
-cfi_cmdset_0001 driver.
+---  Since using CFI  with Ks flash, I think  it is CFI driver and
+cfi_cmdset_001.c,  the  code   reside in  linux2.4.18-rmk6-pxa2.
+      Should I download  newest   code from CVS server and merge them into
+the   kernel src tree?
+
+
+Thanks!!
+
+
 
 --
 dwmw2
