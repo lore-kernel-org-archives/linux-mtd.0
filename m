@@ -1,19 +1,20 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from ext-ch1gw-3.online-age.net ([216.34.191.37])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AW9IW-00014e-Al
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2003 07:07:13 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Arun.Kalluri@radisys.com
-In-Reply-To: <OF8A3B61AB.36166DAD-ON88256DFD.007E51D0-88256DFE.000A899C@radisys.com>
-References: 
-	<OF8A3B61AB.36166DAD-ON88256DFD.007E51D0-88256DFE.000A899C@radisys.com>
+	id 1AWRpF-0002tv-6N
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2003 02:54:13 +0000
+Received: from int-ch1gw-2.online-age.net (int-ch1gw-2 [3.159.232.66])
+	id hBH2q1Ae016419	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Dec 2003 21:52:01 -0500 (EST)
+Received: from uswaumsxb1medge.med.ge.com (localhost [127.0.0.1])
+	id hBH2pxaX028806	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Dec 2003 21:52:00 -0500 (EST)
+Message-ID: <77FE4A1FA59FF947845A42194AD667620A0F77@uswaumsx07medge.med.ge.com>
+From: "Howard, Michael (MED)" <Michael.Howard@med.ge.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Tue, 16 Dec 2003 20:51:55 -0600
+MIME-Version: 1.0
 Content-Type: text/plain
-Message-Id: <1071558203.7186.3.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Tue, 16 Dec 2003 07:05:19 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems installing MTD for 64 bit bus
+Subject: Data lost when copying large binary files to NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please read http://www.infradead.org/~dwmw2/email.html before replying.
+Hello,
 
-On Mon, 2003-12-15 at 17:55 -0800, Arun.Kalluri@radisys.com wrote:
-> I am having problems getting up a JFFS2 file system with linux kernel
-> 2.4.17 on a 8260 processor with 64 bit bus. I had success in bringing up a
-> similar board with 32 bit bus without any problem.  I went through the
-> mailing archive and as advised applied the latest
-> mtd-snapshot-20031208.tar.bz2 on my kernel. I found there were a few
-> compiling problems I could resolve some, but the zlib.h and some other
-> files were causing problems, which I was not able to resolve. So, I decided
-> to go to a relatively older mtd snapshot and used mtd-snapshot-20020731,
-> which has 64 bit support and fewer changes. I was able to compile and
-> configure, but I am having problems installing JFFS2 on MTD. Could you
-> please tell me where I could be going wrong..
+I have a situation here where I mount JFFS2 on top of my NAND device and
+certain files will fail to copy over.  Small text files are fine.  The
+problem is with large binary files.  I copy to my mounted dir and ls -l
+shows the file is entirely there.  I check at the jffs2_flash_writev() and I
+find that it has created the new inode and all the data is there.  It also
+appears to be correctly fragmented.  It makes its way to the wbuf but I'm
+not sure all frags are commited.  I try a sync and umount to flush the wbuf.
 
-You really should use 2.4.23 and then add the current MTD code.
+Upon remounting, the file is lost or showing a size of 0.  Upon scanning the
+flash at mount I will always get "jffs2_get_inode_nodes(): Data CRC failed
+on node at ..."  
 
-Are you sure your flash partition is entirely erased?
+I don't get any write errors from nand.c upon committing the frags.  My
+theory is either the fragments aren't linking to each other, not all the
+frags are written to flash or the scan on remount is failing to understand
+the inode headers or data. 
 
--- 
-dwmw2
+Has anyone experienced this and have any ideas?  Any help would be much
+appreciated.
+
+Thanks
+Mike
