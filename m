@@ -1,20 +1,19 @@
-Received: from natpost.webmailer.de ([192.67.198.65] helo=post.webmailer.de)
+Received: from dsl-64-129-131-125.telocity.com ([64.129.131.125] helo=cfowler.linuxiceberg.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LSIW-0001PO-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 18:34:12 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Thomas Gleixner <gleixner@autronix.de>
-Reply-To: gleixner@autronix.de
-To: "Steve Tsai" <startec@ms11.hinet.net>,
-        "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: Re: NAND FLASH
-Date: Fri, 21 Jun 2002 19:29:55 +0200
-References: <000001c21946$329fbe10$50021ea3@synso.com.tw>
-In-Reply-To: <000001c21946$329fbe10$50021ea3@synso.com.tw>
-MIME-Version: 1.0
-Message-Id: <02062119295500.01023@linuxtest>
-Content-Transfer-Encoding: 8bit
+	id 17LXnX-0001jE-00
+	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 00:26:35 +0100
+Subject: Re: X Windows Performance with DOC 2000
+From: Christopher Fowler <cfowler@outpostsentinel.com>
+To: brendan.simon@ctam.com.au
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+In-Reply-To: <3D0E8185.2080507@ctam.com.au>
+References: <AIEOIMKIOAAJKHJOGAEFMEDLCEAA.david@forcedpotato.com>
+	<3D0E8185.2080507@ctam.com.au>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 21 Jun 2002 19:33:02 -0400
+Message-Id: <1024702386.27542.23.camel@devel>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,20 +25,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Friday, 21. June 2002 19:07, Steve Tsai wrote:
-> Do I use GPIO to control CE? Because I use memory-map-io to connnect to
-> nand flash, if CE can not use to address the chip, I have to use other
-> design to address the flash chip. Thanks.
-Yep you statically apply CE. Then the processing is done, then CE is released.
-That's the way, how nand.c handles this. And it handles it correct.
+I got X to work on DOC 1.5 years ago.  But I used ext2 with compr format
+on my DOC2000
 
-> 1. CE should be a static signal
-> 2. please read http://www.linux-mtd.infradead.org/tech/nand.html
-> 3. Use the latest code from mtd-cvs
-> 4. Read one of the board specific nand drivers to setup your own
+Chris
 
--- 
-Thomas
-________________________________
-Thomas Gleixner - autronix automation
-http://www.autronix.de gleixner@autronix.de
+On Mon, 2002-06-17 at 20:40, Brendan J Simon wrote:
+> 
+> Can you save it to another computer via NFS ?
+> 
+> 
+> David Cooper wrote:
+> 
+> >Thanks for the tip.
+> >
+> >I tried this but, of course, the screen goes blank, system hangs and I can
+> >never look at the xinit.log file.
+> >
+> >When I do a hard reboot, this file is gone.
+> >
+> >Cheers,
+> >
+> >David Cooper
+> >
+> >-----Original Message-----
+> >From: linux-mtd-admin@lists.infradead.org
+> >[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ilguiz Latypov
+> >Sent: Monday, June 17, 2002 6:32 PM
+> >To: David Cooper
+> >Cc: Linux MTD
+> >Subject: RE: X Windows Performance with DOC 2000
+> >
+> >
+> >
+> >Will this line log anything meaningful?
+> >
+> >   xinit > /tmp/xinit.log 2>&1
+> >
+> >Ilguiz
+> >
+> >On Mon, 17 Jun 2002, David Cooper wrote:
+> >
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
