@@ -1,19 +1,17 @@
-Received: from c135.h203149222.is.net.tw
-	([203.149.222.135] helo=ms.gv.com.tw ident=root)
+Received: from [207.209.118.131] (helo=msi-ex6.m-sys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aF5p-00010t-00
-	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 13:30:13 +0100
-Message-ID: <001001c23957$3a290520$1b0448c0@gv.com.tw>
-From: "??" <kevin@gv.com.tw>
-To: <tglx@linutronix.de>, "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>, "? ??" <djh@gv.com.tw>, <cms@gv.com.tw>
-References: <013d01c2388f$94c655a0$1b0448c0@gv.com.tw> <0H04006C5M7GUI@smtp-out.bhp.t-online.de> <00f801c2390a$d956dd40$1b0448c0@gv.com.tw> <0H05001Y6RM950@smtp-out.bhp.t-online.de>
-Subject: thanks , after this patch , i mount jffs2 successfully
-Date: Thu, 1 Aug 2002 20:30:31 +0800
+	id 17aHCK-0001EP-00
+	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 15:45:04 +0100
+Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BFE61@MSI-EX6>
+From: Vadim Khmelnitsky <vadim.khmelnitsky@m-sys.com>
+To: 'Ilguiz Latypov' <ilatypov@superbt.com>, Mark Meade
+	 <mark@lakeshoremicro.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: [patch] doc_stage1.S : GRUB on DoC
+Date: Thu, 1 Aug 2002 07:47:06 -0700 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,42 +23,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dear all,
+Hi,
 
-thanks , after this patch , i mount jffs2 successfully
-(i also patched to make zlib_deflate/zlib_inflate inside kernel's lib
-instead of module)
+DOC_Millennium 8MB has small SRAM of 512bytes in size to accomodate IPL code
+.
+two copies of IPL code should be placed at offset 0 and offset 0x200 ( first
+and second page ) of erasable unit 0 .
 
-best regards,
-kevin
+Vadim
 
------ Original Message -----
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "??" <kevin@gv.com.tw>; "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Thursday, August 01, 2002 5:28 PM
-Subject: Re: do i have to "eraseall" first?
+-----Original Message-----
+From: Ilguiz Latypov [mailto:ilatypov@superbt.com]
+Sent: Wed, July 17, 2002 11:35 AM
+To: Mark Meade
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [patch] doc_stage1.S : GRUB on DoC
 
 
-> On Thursday, 1. August 2002 05:23, ?? wrote:
-> > dear all,
-> >
-> > the only different config settings is CONFIG_JFFS2_FS_NAND
-> > but there is no "CONFIG_JFFS2_FS_NAND" in source of jffs2/mtd here!!
-> > (i'm using lastest jffs2/mtd source from cvs)
-> > please help
-> Sorry, CONFIG_JFFS2_FS_NAND is not patched in. Please add it manually.
->
-> See updated information at
-http://www.linux-mtd.infradead.org/tech/nand.html
->
-> --
-> Thomas
-> ___________________________________________
-> linutronix - competence in embedded & realtime linux
-> http://www.linutronix.de
-> mail: tglx@linutronix.de
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+On Tue, 16 Jul 2002, Mark Meade wrote:
+
+> Ilguiz -- is the DOC_MIL_KEEP_IPL option still used?
+
+I never used this conditional piece of code because I don't have DoC
+Millennium.  I added that code before I could better understand the
+mechanism of initial loading with DoC Millennium.  I don't know if the
+Millennium's own IPL can perform extra download from flash offset 1024.  
+If it can't, the DOC_MIL_KEEP_IPL piece can be removed.
+
+I am behind my schedule at work at this moment.  I will be able to test 
+the improved code on DoC 2000 around next week.
+
+Ilguiz
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
