@@ -1,50 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13BuWc-00031O-00
-	for mtd-list@infradead.org; Tue, 11 Jul 2000 08:32:14 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13BuWY-00031G-00
-	for mtd@infradead.org; Tue, 11 Jul 2000 08:32:13 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.21.0007101236250.2339-100000@phiggins.transzap.com> 
-References: <Pine.LNX.4.21.0007101236250.2339-100000@phiggins.transzap.com> 
-To: Patrick Higgins <phiggins@transzap.com>
-Cc: mtd@infradead.org
-Subject: Re: NFTL problems 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 11 Jul 2000 08:32:06 +0100
-Message-ID: <21093.963300726@cygnus.co.uk>
+	id 13BvhF-00039r-00
+	for mtd-list@infradead.org; Tue, 11 Jul 2000 09:47:17 +0100
+Received: from ncc1.infomail.es ([194.224.53.134] helo=infomail.es)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13BvhE-00039l-00
+	for mtd@infradead.org; Tue, 11 Jul 2000 09:47:16 +0100
+Date: Tue, 11 Jul 2000 10:43:34 CEST
+From: Rodrigo Moya <rmoya@tsai.es>
+To: mtd@infradead.org
+Subject: no success
+Reply-To: rmoya@tsai.es
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Message-Id: <E13BvhE-00039l-00@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-phiggins@transzap.com said:
->   Anyone know what's going on? 
+Hi all!
 
-Don't ask me - I'm the person who screwed it up in the first place :)
+It's me again with my strange problems. I've finally successfully run lilo
+on the DOC, and reboot, and now I get a normal LILO prompt (not as the
+other day, where I was getting strange characters in the LILO prompt), but:
 
-cf. the comments in the code:
+LILO boot:
+Loading linux................
+Uncompressing Linux... Ok, booting the kernel
 
-/* Linux-specific block device functions */
+and it stops there!
 
-/* I _HATE_ the Linux block device setup more than anything else I've ever
- *  encountered, except ...
- */
+When running lilo, there was no error messages (I even run it with -v -v to
+see all messages, and everything seemed ok)
 
-static int nftl_sizes[256]={0,};
-static int nftl_blocksizes[256] = {0,};
+When I run this kernel booting linux from DOS and from a ZIP drive, the DOC
+is detected and everything seems fine. So, I don't know where the problem
+is.
 
-/* .. for the Linux partition table handling. */
+I've run rdev also on the device with the kernel.
 
-struct hd_struct part_table[256] = {{0,0},};
-
-
-
---
-dwmw2
-
+Thanks
 
 
 
