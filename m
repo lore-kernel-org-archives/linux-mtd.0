@@ -1,20 +1,21 @@
-Received: from wallis.dolphinage.com ([64.81.254.189] helo=DolphinAge.com)
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BBUrt-0002Sg-NV
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 09:26:37 +0100
-Received: from [209.204.188.146] (209.204.188.146) by DolphinAge.com with
- ESMTP (Eudora Internet Mail Server 3.0.3) for
- <linux-mtd@lists.infradead.org>;
- Thu, 8 Apr 2004 01:26:30 -0700
-Message-Id: <6.0.1.1.2.20040408011048.022daec0@mailhost.dolphinage.com>
-Date: Thu, 08 Apr 2004 01:26:23 -0700
-To: linux-mtd@lists.infradead.org
-From: John Lewis <john@lewistotle.net>
-In-Reply-To: <E1BBAmq-00077a-ED@pentafluge.infradead.org>
-References: <E1BBAmq-00077a-ED@pentafluge.infradead.org>
+	id 1BBvLV-0007c2-Ue
+	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2004 13:42:59 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20040408143717.GA1921@wohnheim.fh-wedel.de>
+References: <40742192.5030901@imc-berlin.de>
+	 <1081354787.4799.191.camel@tubarao> <407553A5.5010702@imc-berlin.de>
+	 <20040408143717.GA1921@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <1081514570.20197.182.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: proposed patch for 16-bit AMD/Atmel flash chips
+Date: Fri, 09 Apr 2004 13:42:50 +0100
+Content-Transfer-Encoding: 8bit
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+cc: Steven Scholz <steven.scholz@imc-berlin.de>
+Subject: Re: kernel oops in cfi_cmdset_0002.c:do_write_one()...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,144 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm working on some hardware that uses some Atmel flash chips that are 
-16-bit wide. They are close enough to the AMD command set that I can use it 
-without difficulty, but I did have to make a change to the code since they 
-are 16-bit wide instead of 8-bit.
+On Thu, 2004-04-08 at 16:37 +0200, Jörn Engel wrote:
+> Don't blame him, this is the result of using CVS, which is designed
+> around the assumption of a single central repository.
 
-After going through the code for the driver, I noticed that, in many cases, 
-the bit-width sent to cfi_send_gen_cmd() was assumed to be 8 bit. This 
-likely works for most people, but it would not work for me and my 16-bit 
-flash until I changed the code as shown below.
+Well, switching from CVS wouldn't necessarily make any difference. If I
+were using something like BitKeeper then there'd still only be one
+repository which I actually _care_ about, and the effect would be much
+the same. 
 
-I may be missing something here since, to be honest, I am a bit new to 
-linux and MTD drivers, but it seems to me that you would always want to use 
-the actual device_type rather than hard coding to 8-bit. If I am wrong on 
-this point, and I freely admit the likely possibility, please feel free to 
-shoot me down in flames but I do ask that you at least explain why this is 
-the case first. ;-)
+I'd be quite interested in setting up a CVS->BK gateway like the ALSA
+one though. That might make my life easier.
 
-Thanks.
+>   If current sync speed is to slow for you, try to make it easier for
+> him to send patches forward.
+
+I've been fairly busy recently; I've updated the code in Linus' tree a
+little while ago but it could do with another update. I'm very much
+slower to update 2.4 unless it's actually broken. The 2.4 branch is old
+and dead now; all development should be on 2.6
+
+The way the update goes is something like this...
+
+1. Wait till the MTD CVS code is actually stable. It's not at the
+   moment; cfi_cmdset_0002.c is known to be broken and I can't send it
+   off while it's like that.
+
+2. Look at the current version of the kernel I'm updating. For each file
+   in drivers/mtd and include/linux/mtd, take the version from CVS with
+   matching $Id$ tag -- the version from CVS which was last sent to
+   Linus or Marcelo for inclusion.
+
+3. Generate a patch between those versions in my CVS, and the version
+   currently in the mainstream kernel -- those are the patches which
+   were included in an upstream kernel but didn't go through me. Read
+   each change carefully, and see if it's applicable to _current_ CVS
+   code. If so, apply it. If not, discard it. If it's discarded because
+   the problem was already fixed, that's fine. If it's discarded because
+   it's just a bogus change, make a mental note of it; reversion of
+   upstream patches needs to be justified (or at least noted) in your
+   covering email because it's often done by accident when updating 
+   Linus' tree from an external CVS, and it's _very_ much frowned upon.
+
+4. Now you have all the upstream changes merged into current CVS. Drop
+   current CVS into a current Linux tree, take a diff between the two. 
+   Read it. All of it. Make cosmetic changes in CVS to reduce noise in
+   the patch you're planning to send.
+
+5. Read it again. 
+
+6. Build it. Test it if you're feeling conscientious.
+
+7. Read it again. Identify separate change sets from the whole thing;
+   'bk citool' is useful for this. Commit each set of changes separately
+   with an appropriate changelog. 
+
+8. Stick it in a BK tree somewhere for Linus or Marcelo to pull from.
+
+You can, of course, replace #7 and #8 with splitting it up into separate
+patches and mailbombing if you have religious objections to BK.
 
 
-diff -Nru linux-2.6.5/drivers/mtd/chips/cfi_cmdset_0002.c 
-linux-2.6.5-mx1/drivers/mtd/chips/cfi_cmdset_0002.c
---- linux-2.6.5/drivers/mtd/chips/cfi_cmdset_0002.c	2004-04-03 
-19:36:57.000000000 -0800
-+++ linux-2.6.5-mx1/drivers/mtd/chips/cfi_cmdset_0002.c	2004-04-05 
-16:13:31.000000000 -0700
-@@ -517,9 +517,9 @@
-  		cfi_send_gen_cmd(0xA0, 0, chip->start, map, cfi, cfi->device_type, NULL);
-  	}
-  	else {
--	        cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	        cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	        cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
-+	        cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	        cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	        cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-  	}
-  	cfi_write(map, datum, adr);
+But generally, we try to keep CVS working and stable. It's rare that it
+is non-working for a prolonged period of time. You _should_ be able to
+just drop it in to a recent 2.4 or 2.6 kernel and expect it to 'just
+work'.
 
-@@ -720,9 +720,9 @@
-  	
-  	if (cfi->fast_prog) {
-  		/* Go into unlock bypass mode */
--		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--		cfi_send_gen_cmd(0x20, cfi->addr_unlock1, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
-+		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chipstart, map, cfi, 
-cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chipstart, map, cfi, 
-cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0x20, cfi->addr_unlock1, chipstart, map, cfi, 
-cfi->device_type, NULL);
-  	}
+If I had hardware with interleaved AMD chips to hand, I'd have a look at
+it (or at least wander round the corner to Arcom and take away David's
+excuse :)
 
-  	/* We are now aligned, write as much as possible */
-@@ -768,9 +768,9 @@
-  			chipstart = cfi->chips[chipnum].start;
-  			if (cfi->fast_prog){
-  				/* Go into unlock bypass mode for next set of chips */
--				cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--				cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--				cfi_send_gen_cmd(0x20, cfi->addr_unlock1, chipstart, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
-+				cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chipstart, map, cfi, 
-cfi->device_type, NULL);
-+				cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chipstart, map, cfi, 
-cfi->device_type, NULL);
-+				cfi_send_gen_cmd(0x20, cfi->addr_unlock1, chipstart, map, cfi, 
-cfi->device_type, NULL);
-  			}
-  		}
-  	}
-@@ -850,12 +850,12 @@
-  	 * the chip erase command.
-  	 */
-  	ENABLE_VPP(map);
--	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x10, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x10, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-  	timeo = jiffies + (HZ*20);
-  	adr = cfi->addr_unlock1;
-
-@@ -1029,11 +1029,11 @@
-  	       __func__, adr );
-
-  	ENABLE_VPP(map);
--	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-CFI_DEVICETYPE_X8, NULL);
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-
-  	cfi_write(map, CMD(0x30), adr);
-  	
+-- 
+dwmw2
