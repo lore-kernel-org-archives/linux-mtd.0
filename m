@@ -1,19 +1,19 @@
-Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
-	helo=innominate.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 191R0G-0005vn-Ax
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 14:13:08 +0100
-Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
-	3.35 #1 (Debian))	id 191R0G-0000KT-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 15:13:08 +0200
-Date: Fri, 4 Apr 2003 15:13:08 +0200
-From: Tino Keitel <tino.keitel@innominate.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20030404131307.GB16455@tkeitel001.bln.innominate.local>
-Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset=us-ascii
-Subject: Magic bitmask 0x1985 not found. fs corruption?
+Received: from dragon.actrix.co.nz ([203.96.16.164] helo=desire.actrix.co.nz)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 191XTq-0006lh-OM
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 21:08:08 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: <jimzeus@vip.sina.com>, linux-mtd@lists.infradead.org
+Date: Sat, 5 Apr 2003 08:08:24 +1200
+References: <20030404062136.7806.qmail@vip.sina.com>
+In-Reply-To: <20030404062136.7806.qmail@vip.sina.com>
+MIME-Version: 1.0
+Message-Id: <20030404200804.D416515471@desire.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [SPAM] FAT on NAND
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
+Jim
 
-after some reboots, I sometimes get a filesystem that causes the
-following output when it is mounted:
+As you see from David and Thomas, there is wide  agreement that FAT on NAND 
+is not a good idea if you want reliable storage.
 
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002c0000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002c0008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002e0000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002e0008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00300000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00300008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003e0000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003e0008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00400000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00400008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00420000: 0x2003 instead 
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00420008: 0x8124 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00440000: 0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00440008: 0x8124 instead
+Some associates of mine using WinCE tried three different commercial 
+FAT-on-NAND solutions before they gave up and moved to YAFFS for data 
+integrity and speed reasons.
 
-Since th numers are repeating, I think this is a bug that strikes
-multiple times. I'm using a CVS version that is a few weeks old.
+The easiest way to get FAT-on-NAND is to use SmartMedia. This is used by MP3 
+players, cameras etc. It works OK, has wear levelling (of a sort - not 
+explicit wear levelling). As Thomas says, this is not pure FAT but is very 
+close and it looks like FAT from the operating system.  I would not trust it 
+for any data I cared about or if I needed a fast file system.
 
-Regards,
-Tino
+I have had a look at what is required to get YAFFS working on Windows (98, 
+2000, XP). I think this would be far easier, and give far better results, 
+than trying to make FAT robust.
 
--- 
-tino.keitel@innominate.com
-dipl.-inf.                        Innominate Security Technologies AG
-software engineer                                   networking people
-tel: +49.30.6392-3308                      http://www.innominate.com/
+-- CHarles
