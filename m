@@ -1,15 +1,14 @@
-Date: Tue, 21 Dec 2004 12:19:01 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Rudresh NB <getrudri@yahoo.com>
-In-Reply-To: <20041221120823.80642.qmail@web13205.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.58.0412211216340.23254@phoenix.infradead.org>
-References: <20041221120823.80642.qmail@web13205.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Query
+From: David Woodhouse <dwmw2@infradead.org>
+To: Wang JinFeng <wangjinfeng@gmail.com>
+In-Reply-To: <a46577d50412131817139c1966@mail.gmail.com>
+References: <a46577d50412131817139c1966@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 21 Dec 2004 12:32:31 +0000
+Message-Id: <1103632351.6111.67.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org
+Subject: Re: Failed to implent MTD on uclinux(kernel version 2.4.20-uc0)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Dec 2004, Rudresh NB wrote:
+On Tue, 2004-12-14 at 10:17 +0800, Wang JinFeng wrote:
+> ****Don`t know why this happen,somebody may give me some advice,thanks
+> ****kernel version 2.4.20-uc0
+> ****SoC:s3c4510b
+> ****Flash chip:am29lv160DB
 
-> Hi All,
->        Iam using samsung Nand flash (k9f2g08u0m). In
-> that there is restriction of random page program. I
-> heard that jffs2 takes care. but iam unable to find
-> where exactly (In which file ) it is taken care.=20
-> Brief explanation is appreciated.
->=20
-> Thanx in advance
-Hi.
+I'm led to believe that 2.4.20-uc0 on smdk2410 means a commercial port
+which is of fairly low quality. You'd probably do better to use a 2.6
+kernel instead. You may still need to do a little bit of work on it, but
+at least you'll be working from a sane starting point.
 
-JFFS2 uses a buffer (wbuf) of size =3D NAND page size and accomulates all=
-=20
-the writes there. When the buffer become full, it flushes it to the=20
-correspondent NAND page. See wbuf.c.
-=20
-> Rgds
-> NBR
->=20
->=20
->=20
-> =09=09
-> __________________________________=20
-> Do you Yahoo!?=20
-> All your favorites on one personal page =96 Try My Yahoo!
-> http://my.yahoo.com=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+dwmw2
