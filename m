@@ -1,18 +1,18 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bf37-0003FD-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 11:25:17 +0100
+	id 17bfCx-0003HF-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 11:35:27 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01c201c23c69$7995faa0$1b0448c0@gv.com.tw> 
-References: <01c201c23c69$7995faa0$1b0448c0@gv.com.tw>  <00bc01c239cf$4ef3a8c0$1b0448c0@gv.com.tw> <013d01c2388f$94c655a0$1b0448c0@gv.com.tw> <0H04006C5M7GUI@smtp-out.bhp.t-online.de> <00f801c2390a$d956dd40$1b0448c0@gv.com.tw> <0H05001Y6RM950@smtp-out.bhp.t-online.de> <001001c23957$3a290520$1b0448c0@gv.com.tw> <28541.1028541296@redhat.com> 
-To: "??" <kevin@gv.com.tw>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
-    "? ??" <djh@gv.com.tw>, cms@gv.com.tw
-Subject: Re: error when writing to jffs2 (scan.c v1.79 20020725) 
+In-Reply-To: <20020803141013.GA14370@wohnheim.fh-wedel.de> 
+References: <20020803141013.GA14370@wohnheim.fh-wedel.de>  <AB8D0DF31D9BD511BE94000347959DC901996389@MXSFRCOHOU01> <AB8D0DF31D9BD511BE94000347959DC901996389@MXSFRCOHOU01> <5.1.0.14.0.20020803074026.02927a48@64.170.22.132> 
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Cc: Vipin Malik <vipin@embeddedlinuxworks.com>,
+    linux-mtd@lists.infradead.org
+Subject: Re: MTD Partition problems 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Aug 2002 11:25:13 +0100
-Message-ID: <31970.1028543113@redhat.com>
+Date: Mon, 05 Aug 2002 11:35:11 +0100
+Message-ID: <461.1028543711@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +24,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kevin@gv.com.tw said:
-> scan.c v 1.79 20020725
+joern@wohnheim.fh-wedel.de said:
+> > Sorry for the stupid question: If it's by design, why is it going to
+> > be ripped out sometime soon?
 
-OK, then I don't know -- could you get full logs with 
-CONFIG_JFFS2_FS_DEBUG=1 from mounting the file system to the oops? Make 
-sure you are logging over a serial console so you catch _all_ the messages, 
-and remember they're at level KERN_DEBUG so echo 9 > /proc/sys/kernel/printk
+> It might have made sense, when it was designed. It might just have
+> been a relatively new developer making the usual mistakes. Whatever.
 
+> Fact is that it is useless, the superuser can create a read only
+> device simply by 'chmod -w /dev/mtd0', if she wishes. That is all
+> those extra devices do, except for causing confusion and eating up
+> minor numbers. 
 
+I inherited the major number from elsewhere, and it was already set up like 
+that. I haven't changed it because people have only just started to read 
+the bloody documentation and set it up right -- with the occasional 
+exception :)
+
+>  Currently, there is no branch that tackles this problem. There was
+> one, but David never took a look, was busy, and rescheduled to 'when
+> 2.4.19 is out'. Now I am busy,...
+
+I want to get the remaining changes in the tree into 2.4.20-pre, then 
+update the code for 2.5 and start doing new exciting stuff. 
 
 --
 dwmw2
