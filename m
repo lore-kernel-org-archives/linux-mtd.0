@@ -1,20 +1,21 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JsZe-0001s3-8d
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 11:17:54 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: kusdogan@boun.edu.tr
-In-Reply-To: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-References: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-Message-Id: <1053857920.2082.25.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Sun, 25 May 2003 11:18:41 +0100
-Content-Type: text/plain
+Received: from [203.194.209.83] (helo=machine36.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19JxFj-0000z4-Hd
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 16:17:39 +0100
+From: Mark Meade <mark@lakeshoremicro.com>
+To: stolc@intrak.sk (Oskar Stolc),
+ linux-mtd@lists.infradead.org
+Date: Sun, 25 May 2003 11:16:37 -0400
+References: <20030523063820.GH13272@intrak.sk>
+	<20030525092737.GJ13272@intrak.sk>
+In-Reply-To: <20030525092737.GJ13272@intrak.sk>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200305251116.38021.mark@lakeshoremicro.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Oops ERROR : Unable to handle kernel NULL pointer dereference
- at virtual address 00000000
+Subject: Re: Possible GRUB problem: [Was: DiskOnChip MD2202-D256]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-05-24 at 22:20, kusdogan@boun.edu.tr wrote:
-> Backtrace: no frame pointer
+On Sunday 25 May 2003 05:27 am, Oskar Stolc wrote:
+> - the following step was to build GRUB with DiskOnChip support:
+> 	wget ftp://alpla.gnu.org/gnu/grub/grub-0.92.tar.gz
+> 	tar xzvf grup-0.92.tar.gz
+> 	cd grup-0.92
+> 	cat ../mtd/patches/grub-0.92-doc.patch |patch -p1
 
-That's going to render the information given by the BUG() I just added
-quite useless. Build with -mapcs-frame in your CFLAGS
+> What am I doing incorrectly?
 
-
-
--- 
-dwmw2
+I would suggest trying the latest GRUB patch: grub-2003-01-08-doc.patch.  This 
+has numerous changes/improvements over the 0.92 patch.
