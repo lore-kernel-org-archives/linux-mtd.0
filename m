@@ -1,12 +1,12 @@
 Received: from [62.99.145.147] (helo=mail.it-technology.at)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eE5Q-00040B-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 13:14:16 +0100
+	id 17eE7w-00040e-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 13:16:52 +0100
 Received: from it-technology.at (localhost [127.0.0.1])
-	by mail.it-technology.at (Postfix) with SMTP id D238E1F3CB
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 14:14:15 +0200 (CEST)
-Message-ID: <46155.62.99.145.150.1029154455.squirrel@www.it-technology.at>
-Date: Mon, 12 Aug 2002 14:14:15 +0200 (CEST)
+	by mail.it-technology.at (Postfix) with SMTP id 2D25720C3B
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 14:16:51 +0200 (CEST)
+Message-ID: <46164.62.99.145.150.1029154611.squirrel@www.it-technology.at>
+Date: Mon, 12 Aug 2002 14:16:51 +0200 (CEST)
 Subject: mtdblock and preempt patch
 From: "Peter Holik" <peter.holik@it-technology.at>
 To: <linux-mtd@lists.infradead.org>
