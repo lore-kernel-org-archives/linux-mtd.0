@@ -1,22 +1,30 @@
-Received: from onz.com ([67.121.61.113] helo=dual166.onz.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AXN2g-0001Oj-CO
-	for linux-mtd@lists.infradead.org; Fri, 19 Dec 2003 15:59:54 +0000
-In-Reply-To: <1071785993.3550.8.camel@lapdancer.baythorne.internal>
-References: <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
-	<5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
-	<5.2.1.1.0.20030624073300.00ae2100@192.168.1.10>
-	<1071785993.3550.8.camel@lapdancer.baythorne.internal>
-Mime-Version: 1.0 (Apple Message framework v606)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <11A06BE2-323C-11D8-BA5A-000A95B312BA@onz.com>
-Content-Transfer-Encoding: 7bit
-From: Allen Curtis <acurtis@onz.com>
-Date: Fri, 19 Dec 2003 07:57:38 -0800
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Infradead Org <linux-mtd@lists.infradead.org>
-cc: jffs-dev@axis.com
-Subject: Re: JFFS patch
+Received: from shawidc-mo1.cg.shawcable.net ([24.71.223.10]
+	helo=pd2mo2so.prod.shaw.ca)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AXNO2-0001YC-Dk
+	for linux-mtd@lists.infradead.org; Fri, 19 Dec 2003 16:21:58 +0000
+Received: from pd3mr1so.prod.shaw.ca (pd3mr1so-ser.prod.shaw.ca
+	[10.0.141.177])2003))linux-mtd@lists.infradead.org;
+	Fri, 19 Dec 2003 09:16:25 -0700 (MST)
+Received: from pn2ml10so.prod.shaw.ca
+ (pn2ml10so-qfe0.prod.shaw.ca [10.0.121.80])
+ by l-daemon (iPlanet Messaging Server 5.2 HotFix 1.18 (built Jul 28 2003))
+ with ESMTP id <0HQ5005E9H7DHR@l-daemon> for linux-mtd@lists.infradead.org;
+ Fri, 19 Dec 2003 09:16:25 -0700 (MST)
+Received: from ThomasVan (h24-80-140-166.vc.shawcable.net [24.80.140.166])
+ by l-daemon (iPlanet Messaging Server 5.2 HotFix 1.18 (built Jul 28 2003))
+ with ESMTP id <0HQ500CLTH7CKH@l-daemon> for linux-mtd@lists.infradead.org;
+ Fri, 19 Dec 2003 09:16:25 -0700 (MST)
+Date: Fri, 19 Dec 2003 08:16:30 -0800
+From: Thomas Pang <thomaspang@shaw.ca>
+In-reply-to: <Law11-F49ynA6xSm1A00005337c@hotmail.com>
+To: 'J B' <mad_flasher@hotmail.com>
+Message-id: <000501c3c64b$767a9de0$a68c5018@ThomasVan>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+cc: linux-mtd@lists.infradead.org
+Subject: Problem with mtd-snapshot-20031211.tar
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +34,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am using AMD NOR+SRAM flash in MCP (multi-chip packages) with CFI
+support.
+Thanks.
+Thomas
+
+-----Original Message-----
+
+>I download the boot image into my target system and successfully boot
+up
+>the board.  I also download the file systems, one is CRAMFS, another
+one
+>is JFFS2.
+
+What kind of flash chips does your board have?  AMD, Intel, etc and NOR
+or 
+NAND?
+
 >
-> Dud it? Are you still interested in maintaining JFFS 1? It's getting on
-> for time for it to be dropped from 2.6 if nobody wants to look after 
-> it.
+>I am using the latest mkfs.jffs2 to create my JFFS2 file system as
+shown
+>below:
+>
+>mkfs.jffs2 -p -e 0x10000 -c 12 -b -r rootfs -o jffsImage
+>
+>Problem 1 (Fail to mount JFFS2 file system)
+>===========================================
+>
+>I seem to be able to mount the JFFS2 file system but when I access the
+>JFFS2 file system, the system complains "Chip not ready after erase
+>suspended: status = 0x1985". Any idea?
 
-I am sorry. I have been busy teaching an embedded systems course. This 
-is now completed. Please send me the current issues and will address 
-them over break.
+0x1985 is the magic number on a jffs2 filesystem.  Looks like the chip 
+driver is trying to read the status register of the chips and its in
+read 
+array mode, not read status.
 
-Thanks
+># ls
+>Chip not ready after erase suspended: status = 0x1985
+>error -5 reading node at 0x001901f8 in get_inode_nodes()
+>jffs2_get_inode_nodes() for ino 2 returned -5
+>ls: ./bin: Input/output error
+
+see comment about magic number above.  JFFS2 is probably erasing any
+extra 
+eraseblocks you have so it can use them  and the erase suspend is
+failing 
+when the ls command is done.
+
+
+>Problem 2 (Writing to JFFS2 file system still slow)
+
+<snip>
+
+>     rm myfile
+>     cp bin/myfile .
+>     Chip not ready after erase suspended: status = 0xffff
+>     Chip not ready after erase suspended: status = 0xffff
+
+looks like the same problem.  0xffff is what erased flash blocks look
+like.
+
+So two questions are, what kind of flash chips do you have, and what mtd
+
+chip driver are you using?
+
+j
+
+_________________________________________________________________
+Enjoy the holiday season with great tips from MSN.  
+http://special.msn.com/network/happyholidays.armx
