@@ -1,18 +1,18 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Oyjn-0007Dk-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 10:16:39 +0000
-Received: from pcjonashg.axis.se (pcjonashg.axis.se [10.13.8.50])
-	by krynn.axis.se (8.12.1/8.12.1/Debian -2) with ESMTP id g0BAR7RM023390
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 11:27:07 +0100
+	id 16P86U-0007jU-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 20:16:42 +0000
+To: Alice Hennessy <ahennessy@mvista.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Subject: Re: Problem with cfi_probe.c and Intel chip
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 11 Jan 2002 11:27:07 +0100
-Message-Id: <1010744827.1306.10.camel@pcjonashg>
-Mime-Version: 1.0
+References: <3C3E1515.CD99EB0@mvista.com> <17564.1010702853@redhat.com>
+	<m3sn9d8zs3.fsf@DLT.linuxnetworx.com> <3C3E48B6.C9FF834D@mvista.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 11 Jan 2002 13:27:36 -0700
+In-Reply-To: <3C3E48B6.C9FF834D@mvista.com>
+Message-ID: <m3ita83a6f.fsf@DLT.linuxnetworx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> > 1. Change it to 0xFF and see if anyone screams.
-> I will!
+Alice Hennessy <ahennessy@mvista.com> writes:
 
-Scream, that is.
+> array
+> mode (0xff) would be necessary before the query command so I'm not sure why
+> my board is having problems.  Even if the bios has issued a command to the
+> flash
+> between power up and cfi_probe,  I don't think read array command is necessary
+> between commands.
+> If my board is the only Intel with a problem, then I need to investigate it
+> further.
 
-> Toshiba 8MiB (TC58FVT641FT) won't leave autoselect mode if you
-> change that. Then amd_flash_probe (and jedec_probe I suppose) will not
-> be able to detect "mirrors" of previously found chips. /Jonas
+That would certainly be useful.  My real suspicion is that this code hasn't
+been utilized all that much, and we are entering it's first real
+stabalization phase.  Since all I did was comment out what looked like
+redundant code, I actually think you are the second person to notice
+this.   Personally I have deal with boot block type flash memory,
+which may have different characteristics than other intel product lines.
 
-Forget the part about amd_flash_probe and jedec_probe. What I meant was
-cfi_probe (TC58FVT641FT is a CFI-chip, and I shouldn't write emails
-while programming).
+Having a couple of people get a firm grasp on what things cause
+problems, is probably needed right now.  So if you come up with
+anything interesting I'd be glad to hear it.
 
-/Jonas
+Eric
