@@ -1,18 +1,22 @@
-Received: from [203.115.19.131] (helo=matrix.mediasolv.com ident=root)
+Received: from tiku.hut.fi ([130.233.228.86])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jGHi-0000DP-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 09:31:17 +0100
-Message-ID: <005a01c1401d$55661ff0$0203a8c0@mediasolv.com>
-From: "Kugan" <kugan@mediasolv.com>
-To: "Jarkko Lavinen" <jlavi@iki.fi>,
-   "MTD List" <linux-mtd@lists.infradead.org>
-References: <20010918111926.A22357@kosh.hut.fi>
+	id 15jGnT-0000Fq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 10:04:03 +0100
+Received: from kosh.hut.fi (jlavi@kosh.hut.fi [130.233.228.10])
+	by tiku.hut.fi (8.9.3/8.9.3) with ESMTP id MAA03815
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 12:10:09 +0300 (EET DST)
+Received: (from jlavi@localhost)
+	by kosh.hut.fi (8.9.3/8.9.3) id MAA20432
+	for linux-mtd@lists.infradead.org; Tue, 18 Sep 2001 12:10:09 +0300 (EET DST)
+Date: Tue, 18 Sep 2001 12:00:45 +0300
+From: Jarkko Lavinen <jlavi@iki.fi>
+To: MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: jffs & amd_flash.c
-Date: Tue, 18 Sep 2001 01:37:35 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20010918120045.A23770@kosh.hut.fi>
+References: <20010918111926.A22357@kosh.hut.fi> <005a01c1401d$55661ff0$0203a8c0@mediasolv.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <005a01c1401d$55661ff0$0203a8c0@mediasolv.com>; from Kugan on Tue, Sep 18, 2001 at 01:37:35AM -0700
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,39 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> I am using happily the amd_flash.c driver with AMD 64mbit non-CFI
-> flash chip.  I haven't experienced this problem.  I am using
-> arm-linux kernel, which is based on Alan Cox's 2.4.8-ac8.
+> The flash chip I have also support simultaneous read and write on different
+> plane simultaneously. Is your patch in latest CVS or do i have to get and
+> apply???
 
-I am using 2.0.38 uClinux kernel on ARM7TDMI
+It is in the MTD CVS, but the changes are so small it may not be worth the 
+trouble to take fresh CVS image. flash_is_busy() is called only in two places.
+The change applies to its second argument. Previously there was "chip->start".
+Now there should be "adr".
 
->
-> Your problem seems not to be failing erase or programming, or is it?
-> Surely the debugging message would nag about timeout errors?
+For example in write_one_word() there should read:
 
-I have a dual plane flash , I am running the kernel from the flash(XIP) and
-I bott from romfs and mount a jffs partitione in the other flash plane
-respect to kernel. when I mount I can see some data being written and read
-back to verify, some time it if failing,
+891:  while (times_left-- && flash_is_busy(map, adr, private->interleave)) {
 
-> There were problems in sector erase and word writing code in amd_flash.c.
-> The problem was that the operation status query was not made form the
-> same bank and sector as being erased or written into. This was an issue
-> only with chips supporting simultaneous read & write on separate banks.
-> I've committed a fixes for these problems into CVS.
+This cured all my writing problems. You may already have this fixed in
+erase_one_block(), since I committed that already many weeks ago and the
+write_one_word() change only last weekend.
 
-The flash chip I have also support simultaneous read and write on different
-plane simultaneously. Is your patch in latest CVS or do i have to get and
-apply???
-
->
-> The Amd driver works nicely for me and I although I had initially
-> hardware configuration related speed problems they have been now
-> resolved. Using the command
->
->   dd if=/dev/zero of=/dev/mtd0 bs=1k
-I will try this
-
-Thanx and regards
-Kugan
+Regards,
+Jarkko Lavinen
