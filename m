@@ -1,16 +1,17 @@
-Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=imagequestdesign.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16kuta-0007Wx-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 22:37:26 +0000
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: linux-mtd@lists.infradead.org
+	id 16kv3X-0007Xy-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 22:47:43 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200203121747718.SM01632@there> 
+References: <200203121747718.SM01632@there> 
+To: Mark Meade <mark@lakeshoremicro.com>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: UnitSizeFactor of != 1 yet? 
-Date: Tue, 12 Mar 2002 17:46:53 -0500
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200203121747718.SM01632@there>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 12 Mar 2002 22:59:04 +0000
+Message-ID: <2920.1015973944@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,18 +23,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 7 Mar 2002, David Woodhouse wrote:
+mark@lakeshoremicro.com said:
+>  1) On line 131 of nftlmount.c, ReplUnitTable is accessed before it is
+>  allocated, causing an oops message.  
 
-> Did anyone test the patches for UnitSizeFactor != 1 yet?
+That one should be fixed.
 
-David,
+> 2) A freshly formatted DoC Millennium (with doc504.exb firmware)
+> returns a  UnitSizeFactor of 0x00. 
 
-I have been trying the UnitSizeFactor patches, and have seen two issues:
+Er, as in "Sorry, we don't support UnitSizeFactor 0x00" ?
+I don't think that's legal according to the docs I have. Vadim?
 
-1) On line 131 of nftlmount.c, ReplUnitTable is accessed before it is 
-allocated, causing an oops message.  
 
-2) A freshly formatted DoC Millennium (with doc504.exb firmware) returns a 
-UnitSizeFactor of 0x00.
 
-Mark
+--
+dwmw2
