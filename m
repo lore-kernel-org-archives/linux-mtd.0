@@ -1,15 +1,19 @@
-Received: from web51006.mail.yahoo.com ([206.190.38.137])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcwrR-0003h4-2P
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 21:47:38 -0400
-Message-ID: <20040623014730.52022.qmail@web51006.mail.yahoo.com>
-Date: Tue, 22 Jun 2004 18:47:30 -0700 (PDT)
-From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-To: linux-mtd@lists.infradead.org
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bd3QV-0004Ro-Vw
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2004 04:48:17 -0400
+Received: from yandex.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id A548A2288A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Jun 2004 12:48:01 +0400 (MSD)
+Message-ID: <40D943C1.3000801@yandex.ru>
+Date: Wed, 23 Jun 2004 12:48:01 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: What is the best way of creating a jffs2 image and copying it to
-	NAND flash
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Wasted space question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
- I create the jffs2 image by using mkfs.jffs2 and then
- I try to copy it to NAND flash. When I try to copy
-the jffs2 image by fcp or nandwrite then I get
-different errors.
+Hello guys. I have "theoretical" question about JFFS2.
 
-If I use the eraseall -j command and then mount the
-flash and copy the files directly it works fine!
- 
- What is the best way of creating jffs2 image and
-copying it to NAND flash.
+Perhaps, my question is for David, but will be glad if somebody else 
+reply too.
 
+Exploring JFFS2 sources I can't realize what is *wasted space* ? Dirty 
+space is anything within block excluding valid nodes (no more used clean 
+markers, pad nodes, paddings with JFFS2_DIRTY_BITMASK, obsoleted nodes). 
+But what is *wasted space*. For what is it used?
 
+Thanrs in advance.
+
+-- 
 Best Regards,
---vahid
-
-
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail - 50x more storage than other providers!
-http://promotions.yahoo.com/new_mail
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
