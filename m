@@ -1,68 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 1483lm-0005AJ-00
-	for mtd-list@infradead.org; Mon, 18 Dec 2000 17:08:14 +0000
-Received: from www.softsys.co.at
-	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 1483lj-0005AD-00
-	for mtd@infradead.org; Mon, 18 Dec 2000 17:08:12 +0000
-Message-ID: <001001c06914$bb3be160$5201a8c0@home.at>
-From: "Erwin Authried" <eauth@softsys.co.at>
-To: "Nicolas Pitre" <nico@cam.org>
-Cc: <mtd@infradead.org>
-References: <Pine.LNX.4.30.0012181049550.997-100000@xanadu.gn.com>
-Subject: Re: module registration changes
-Date: Mon, 18 Dec 2000 18:05:32 +0100
+	id 1488ss-0007BM-00
+	for mtd-list@infradead.org; Mon, 18 Dec 2000 22:35:54 +0000
+Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 1488sr-0007BG-00
+	for mtd@infradead.org; Mon, 18 Dec 2000 22:35:53 +0000
+Message-ID: <3A3E93D5.A92FF5BB@cotw.com>
+Date: Mon, 18 Dec 2000 16:46:45 -0600
+From: "Steven J. Hill" <sjhill@cotw.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
+Subject: New patches available for MTD and JFFS...
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Currently, I have two seperate directory trees for mtd and for the linux
-kernel. With a link
-to the mtd sources in the drivers directory, and a second link in
-includes/linux to the includes/linux/mtd directory, both trees can
-maintained with CVS completely seperately. This wouldn't be possible that
-easy with files in the include/linux subdir.
+Greetings.
 
--Erwin
+I have created new kernel patches using the latest MTF/JFFS
+CVS snapshot as of Dec 18, 2000 at 22:30 GMT which was just
+a few minutes ago. The patches are against 2.2.17, 2.2.18,
+2.4.0-test10, 2.4.0-test11 and 2.4.0-test12 . I hope someone
+finds them of use. They can be found at the FTP path shown
+below. Cheers.
 
------ Original Message -----
-From: Nicolas Pitre <nico@cam.org>
-To: Erwin Authried <eauth@softsys.co.at>
-Cc: David Woodhouse <dwmw2@infradead.org>; <mtd@infradead.org>
-Sent: Monday, December 18, 2000 4:50 PM
-Subject: Re: module registration changes
+-Steve
 
+ftp://ftp.infradead.org/pub/mtd/patches/
 
->
->
-> On Mon, 18 Dec 2000, Erwin Authried wrote:
->
-> > there were a couple of small changes necessary to compile on 2.0.
-> > Here are some other changes that I would like to commit too, please let
-me
-> > know if its ok.:
-> >
-> > * Use #ifdef NO_MM in mtdchar.c to avoid vmalloc if no MMU is used
-> > (uClinux).
-> >
-> > * "list.h" is missing in the 2.0 kernel source. The best thing that I
-could
-> > think of is to simply add it
-> > to MTD in linux/mtd/list.h.
->
-> Well...  I would suggest you add it where it belongs i.e.
-> include/linux/list.h.
->
->
-> Nicolas
->
->
-
+-- 
+ Steven J. Hill - Embedded SW Engineer
+ Public Key: 'finger sjhill@mail.cotw.com'
+ FPR1: E124 6E1C AF8E 7802 A815
+ FPR2: 7D72 829C 3386 4C4A E17D
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
