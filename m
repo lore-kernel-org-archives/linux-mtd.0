@@ -1,18 +1,19 @@
-Received: from fed1mtao03.cox.net ([68.6.19.242])
+Received: from 12-234-34-139.client.attbi.com ([12.234.34.139] helo=heavens.murgatroid.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1818BL-0005Wx-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 17:35:03 +0100
-Subject: Re: Memory usage?
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Steve Tsai <startec@ms11.hinet.net>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-In-Reply-To: <000101c27359$9ec6d6b0$80d1a8c0@synso.com.tw>
-References: <000101c27359$9ec6d6b0$80d1a8c0@synso.com.tw>
-Content-Type: text/plain
+	id 181F4p-00067R-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 00:56:47 +0100
+Received: from bergamot (localhost [127.0.0.1])
+	by heavens.murgatroid.com (Postfix) with ESMTP id 6831F233A1
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 16:56:36 -0700 (PDT)
+From: "Christopher Hoover" <ch@murgatroid.com>
+To: "'linux-mtd'" <linux-mtd@lists.infradead.org>
+Subject: Merge to 2.5?
+Date: Mon, 14 Oct 2002 16:56:33 -0700
+Message-ID: <002401c273dd$53057b30$0c5f040f@bergamot>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Date: 14 Oct 2002 09:34:46 -0700
-Message-Id: <1034613287.30080.19.camel@russ>
-Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,11 +25,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 2002-10-14 at 01:13, Steve Tsai wrote:
-> Does JFFS2 will allocate large memory to read big file? I have  a 128M
-> bytes nand flash on my board and there is a large file about 12M bytes.
-> After I use the  testing program to read the file, the free memory
-> reduce to 312Kbytes (from 10660Kbytes). How can I reduce the memory
-> usage of JFFS2? Thanks.
+Is there a plan to merge some branch of cvs to 2.5 before the big
+deadline?
 
-what do you mean by "free memory", are you including buffers and cache?
+As it is, the 2.4 kernel is closer to mtd cvs than 2.5.
+
+For instance, 2.4 has the Intel C3 var-size-block patch yet 2.5 does
+not.
+
+Curious,
+-ch
