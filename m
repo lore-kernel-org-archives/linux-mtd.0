@@ -1,19 +1,26 @@
-Received: from h1.handhelds.org ([192.58.209.91] helo=handhelds.org)
+Received: from zcars04e.nortelnetworks.com ([47.129.242.56])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bzgh0-0000EF-EY
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2004 15:10:51 -0400
-Message-ID: <412B92A9.4060901@joshuawise.com>
-Date: Tue, 24 Aug 2004 15:10:33 -0400
-From: Joshua Wise <joshua@joshuawise.com>
+	id 1BzneL-0000zE-Hn
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2004 22:36:34 -0400
+Received: from zcard303.ca.nortel.com (zcard303.ca.nortel.com [47.129.242.59])
+	by zcars04e.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
+	ESMTP id i7P2aT511501 for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Aug 2004 22:36:29 -0400 (EDT)
+Received: from linhd by linhd-2.ca.nortel.com with local (Exim 3.36 #1
+	(Debian)) id 1BzneH-0007FV-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Aug 2004 22:36:29 -0400
+To: linux-mtd@lists.infradead.org
+References: <20040824120929.1377.qmail@web52204.mail.yahoo.com>
+	<1093350246.14552.12435.camel@hades.cambridge.redhat.com>
+From: Linh Dang <linhd@nortelnetworks.com>
+Date: Tue, 24 Aug 2004 22:36:28 -0400
+In-Reply-To: <1093350246.14552.12435.camel@hades.cambridge.redhat.com> (David
+	Woodhouse's message of "Tue, 24 Aug 2004 13:24:06 +0100")
+Message-ID: <wn5n00kgd03.fsf@linhd-2.ca.nortel.com>
 MIME-Version: 1.0
-To: Todd Poynor <tpoynor@mvista.com>
-References: <412B53F9.5030006@bergeron.com>	<1093360220.14552.12475.camel@hades.cambridge.redhat.com>
-	<412B8EF2.8050606@mvista.com>
-In-Reply-To: <412B8EF2.8050606@mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Can jffs2 support XIP extensions?
+Content-Type: text/plain; charset=us-ascii
+Sender: "Linh Dang" <linhd@nortelnetworks.com>
+Subject: Re: Bottom halves being disabled
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> For the kernel boot time it's true that boot times tend to be dominated 
-> by the decompression step.  I measured this on a couple platforms at one 
-> point (some of my measurements may have been in the OLS presentation, 
-> not sure).  I didn't directly measure kernel boot times of an 
-> uncompressed non-XIP kernel, but would roughly guess an uncompressed 
-> non-XIP kernel would boot to /sbin/init in only about a few tens of 
-> milliseconds more time (I'm guessing about the increased time to copy an 
-> uncompressed tetx image to RAM) than an XIP kernel on a 266MHz PowerPC 
-> 405LP, and 168MHz OMAP ARM 926T is probably similar (it seems to better 
-> deal with the cache effects).
-Also remember that on many systems, flash is a lot slower than RAM, so 
-it is entirely possible that an XIP kernel would actually be _SLOWER_ 
-than non-XIP!
 
-joshua
+David Woodhouse <dwmw2@infradead.org> wrote:
+
+> On Tue, 2004-08-24 at 05:09 -0700, Ed Co wrote:
+>> Hi All,
+>>
+>> In the NOR driver code, the spin locks are acquired
+>> everywhere with bottom halves disabled using the
+>> spin_lock_bh() API. My doubt is why are the bottom
+>> halves disabled? (Doesn't that add to the real time
+>> latency on the system!)
+>>
+>> Hoping someone would clear the doubt
+>
+> Because we intend the erase completion to be asynchronous, hence we
+> lock against the timers which may one day check for it. There's no
+> real reason we couldn't switch to spin_lock() for now.
+
+Is it safe to convert those spin_locks to mutexes?
+
+-- 
+Linh Dang
