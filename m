@@ -1,22 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from mailout11.sul.t-online.com ([194.25.134.85])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Zp2n-0004oy-IS
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 10:45:53 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HHP009YX9S0RP@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Tue, 08 Jul 2003 11:45:37 +0200 (MEST)
-Date: Tue, 08 Jul 2003 12:42:54 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <200307081001.10555.jbeisert@eurodsn.de>
-To: jbeisert@eurodsn.de, linux-mtd@lists.infradead.org
-Message-id: <200307081242.54207.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
+	id 19ZrFP-00057K-CP
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 13:07:03 +0100
+From: Juergen Beisert <jbeisert@eurodsn.de>
+To: tglx@linutronix.de
+Date: Tue, 8 Jul 2003 14:05:55 +0200
 References: <200307081001.10555.jbeisert@eurodsn.de>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+	<200307081242.54207.tglx@linutronix.de>
+In-Reply-To: <200307081242.54207.tglx@linutronix.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200307081405.56822.jbeisert@eurodsn.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
 Subject: Re: NAND-Flash ECC data not used
-Reply-To: tglx@linutronix.de
+Reply-To: jbeisert@eurodsn.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 08 July 2003 10:01, Juergen Beisert wrote:
-> Hello all,
+Am Dienstag, 8. Juli 2003 12:42 schrieben Sie:
+> On Tuesday 08 July 2003 10:01, Juergen Beisert wrote:
 >
-> I have tried to use a 16MiB NAND flash in my application. It seems to work,
-> but it also seem that the driver is not using the ECC data. I have derived
-> my small driver from the spia.c source and have added the line
->
-> this->eccmode=NAND_ECC_SOFT;
->
-> before calling nand_scan(). nand_scan() inserts the ECC check routines
-> correctly in the structure. But later, if the jffs2 calls the driver to
-> read data from flash, it calls nand_read_ecc() with parameter oobsel = 0.
-> So the line
->
-> int	eccmode = oobsel ? this->eccmode : NAND_ECC_NONE;
->
-> in nand_read_ecc() switches back to NONE ecc mode while reading.
+> Have you enabled CONFIG_JFFS2_NAND ?
 
-Have you enabled CONFIG_JFFS2_NAND ?
+I cannot find any source- or "Config.in" file that uses or defines this macro. 
+Not in my 2.4.21pre4 nor in the mtd snapshot (from July 1. 2003).
 
-This happens on boot up too, if you have not given the fs type in the 
-commandline and the kernel tries to mount the partition with ext2 first.
-It should not happen with jffs2.
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+> This happens on boot up too, if you have not given the fs type in the
+> commandline and the kernel tries to mount the partition with ext2 first.
+> It should not happen with jffs2.
+
+Id did: mount -t jffs2 /dev/mtdblock5 /flash
+
+JB
