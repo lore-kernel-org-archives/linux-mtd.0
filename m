@@ -1,16 +1,17 @@
-Received: from carisma.slowglass.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Zi6l-0005de-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 02:17:00 +0100
-Message-ID: <FA06AA2C99BCD511951200005A99441001E3ECC9@irvexch1.sextantifs.com>
-From: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
-To: 'David Woodhouse' <dwmw2@infradead.org>, "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
+	id 17Zjq1-0005rc-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 04:07:49 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <FA06AA2C99BCD511951200005A99441001E3ECC9@irvexch1.sextantifs.com> 
+References: <FA06AA2C99BCD511951200005A99441001E3ECC9@irvexch1.sextantifs.com> 
+To: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Tue, 30 Jul 2002 18:15:20 -0700
-Subject: RE: jffs2_scan_eraseblock() - errors
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: jffs2_scan_eraseblock() - errors 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 31 Jul 2002 04:07:45 +0100
+Message-ID: <20909.1028084865@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,22 +23,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> >  After being used, usage = 41%: JFFS2	real	1m3.583	
-> (4X increase) 
-> 
-> Btw, the most useful thing you can give here is profiling 
-> information. If 
-> you still have INOCACHE_HASHSIZE set to 1 in 
-> include/linux/jffs2_fs_sb.h 
-> then I can guess what's at the top of your profile. Increase 
-> it to 14 or 
-> 128 or something for an instant win.
+Allen.Curtis@Thales-IFS.com said:
+>  INOCACHE_HASHSIZE was set to 1. Changed this to 128 and....
+> real	47.258s sys	47.25s
 
-INOCACHE_HASHSIZE was set to 1. Changed this to 128 and....
+Hmm. Out of interest, What happens if you apply this? Again, profile data 
+are useful :)
 
-real	47.258s
-sys	47.25s
+DO NOT LEAVE THIS IN. It disables the CRC32 check on nodes during mount. 
+It's the first (and easy) part of the proof-of-concept which involves 
+moving said CRC32 check to later so the mount doesn't have to wait for it.
 
-THX
+Index: scan.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/scan.c,v
+retrieving revision 1.51.2.3
+diff -u -p -r1.51.2.3 scan.c
+--- scan.c	25 Jul 2002 20:49:06 -0000	1.51.2.3
++++ scan.c	31 Jul 2002 03:06:44 -0000
+@@ -467,7 +467,7 @@ static int jffs2_scan_inode_node(struct 
+ 		ri.csize = 0;
+ 	}
+ 
+-	if (ri.csize) {
++	if (0 && ri.csize) {
+ 		/* Check data CRC too */
+ 		unsigned char *dbuf;
+ 		__u32 crc;
 
-JFFS is already set to 40. I will try changing this some other time.
+
+--
+dwmw2
