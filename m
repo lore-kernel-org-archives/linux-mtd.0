@@ -1,15 +1,14 @@
 Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16URjB-0004NP-00
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Jan 2002 12:14:37 +0000
-Date: Sat, 26 Jan 2002 12:25:40 +0000 (GMT)
+	id 16UT35-0004Re-00
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Jan 2002 13:39:15 +0000
+Date: Sat, 26 Jan 2002 13:50:15 +0000 (GMT)
 From: kira brown <kira@hex.linuxgrrls.org>
 To: Ramya Ravichandran <rrhsin@yahoo.co.in>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	<linux-mtd@lists.infradead.org>
-Subject: Re: Cf Card vs DiskOnChip 
-In-Reply-To: <20020126041928.83711.qmail@web8103.in.yahoo.com>
-Message-ID: <Pine.LNX.4.33.0201261225090.27446-100000@hex.linuxgrrls.org>
+Cc: <manningc2@actrix.gen.nz>, <linux-mtd@lists.infradead.org>
+Subject: Re: Cf Card vs DiskOnChip
+In-Reply-To: <20020126080500.34286.qmail@web8101.in.yahoo.com>
+Message-ID: <Pine.LNX.4.33.0201261349260.30003-100000@hex.linuxgrrls.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -24,10 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 
-On Fri, 25 Jan 2002, Ramya Ravichandran wrote:
+On Sat, 26 Jan 2002, Ramya Ravichandran wrote:
 
-> Thanks but price is a major concern for us
+> You have a desktop system and in this desktop system I
+> just want to remove the HD and replace it with the CF
+> card or DOC
 
-Who do you work for?  I want to make sure I never buy anything from you.
+I thought you said you were building an industrial embedded system?
 
-k.
+This doesn't sound like it's going to be embedded *or* industrial.
+
+kira.
