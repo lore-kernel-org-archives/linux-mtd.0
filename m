@@ -1,20 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CSd1E-0001mP-Al
-	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 10:07:22 -0500
-Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 5153822886
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Nov 2004 18:06:48 +0300 (MSK)
-Message-ID: <4194D188.9050200@oktetlabs.ru>
-Date: Fri, 12 Nov 2004 18:06:48 +0300
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
+	id 1CSd9Q-0001wj-G6
+	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 10:15:50 -0500
+Message-ID: <4194D39A.9000700@sysgo.de>
+Date: Fri, 12 Nov 2004 16:15:38 +0100
+From: Alexander Hoffmann <ahoffmann@sysgo.de>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <418F5E68.3010200@sysgo.de>	
+	<20041108120624.GE13105@home.fluff.org>
+	<418F6CA7.6000808@sysgo.de> <1099943453.10812.16.camel@tubarao>
+In-Reply-To: <1099943453.10812.16.camel@tubarao>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Garbage collect pristine nodes
-Reply-To: dedekind@oktetlabs.ru
+Cc: eauth@softsys.co.at, tharbaugh@lnxi.com
+Subject: Re: Usage of MTD_UADDR_UNNECESSARY broken?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, looking to the jffs2_garbage_collect_pristine() function 
-(gc.c:489) I've mentioned:
+Hi Thayne,
 
-----------------------
-/* Ask for a small amount of space (or the totlen if smaller) because we
-    don't want to force wastage of the end of a block if splitting would
-    work. */
-ret = jffs2_reserve_space_gc(c, min_t(uint32_t, sizeof(struct 
-jffs2_raw_inode) + JFFS2_MIN_DATA_LEN, rawlen), &phys_ofs, &alloclen);
+sorry for the delayed response.
 
-if (ret)
-      return ret;
+Thayne Harbaugh wrote:
 
-if (alloclen < rawlen) {
-     /* Doesn't fit untouched. We'll go the old route and split it */
-     return -EBADFD;
-}
------------------------
+>On Mon, 2004-11-08 at 13:55 +0100, Alexander Hoffmann wrote:
+>  
+>
+>>Ben Dooks wrote:
+>>
+>>    
+>>
+>>>On Mon, Nov 08, 2004 at 12:54:16PM +0100, Alexander Hoffmann wrote:
+>>>      
+>>>
+>>>>Hi everyone,
+>>>>
+>>>>can anybody please explain me the exact difference between 
+>>>>MTD_UADDR_DONT_CARE and MTD_UADDR_UNNECESSARY .
+>>>>Because if I use MTD_UADDR_UNNECESSARY an not existing field in the 
+>>>>unlock_addrs array is beeing referenced
+>>>>(/drivers/mtd/chips/jedec_probe.c, function cfi_jedec_setup, line 1740):
+>>>>
+>>>>/* Mask out address bits which are smaller than the device type */
+>>>>mask = ~(p_cfi->device_type-1);
+>>>>p_cfi->addr_unlock1 = unlock_addrs[uaddr].addr1 & mask;
+>>>>p_cfi->addr_unlock2 = unlock_addrs[uaddr].addr2 & mask;
+>>>>        
+>>>>
+>>>hmm, thought this masking had been eliminated in later copies of
+>>>the mtd code?
+>>>      
+>>>
+>
+>Yes, the masking has been eliminated, but someone left the comment in
+>(doh!).
+>
+>  
+>
+>>Ok, you are right. But this doesn't change the fact that
+>>
+>>unlock_addrs[uaddr].addr1
+>>
+>>refers to an nonexisting field in the unlock_addrs array.
+>>    
+>>
+>
+>I don't see how the code you that you described is being reached.  It
+>looks like the start of jedec_probe_chip() checks for UNNECESSARY and
+>returns 0 (although I would expect 1) and so cfi_jedec_setup() should
+>never be called with UNNECESSARY (even for subsequent chips).
+>
+I am working with the cdb89712 development board from cirrus. This board 
+has an "Intel 28F320B3B" chip
+(device_id  =  0x8897). Apparently, jedec_probe() finds 
+MTD_UADDR_0x0555_0x02AA.
+for this chip, while the jedec_table[] specifies it as 
+MTD_UADDR_UNNECESSARY.
+Since the probed unlock type is overidden by the static one, the code 
+_does_ reach
+jedec_setup().
 
-We allocate sizeof(struct jffs2_raw_inode) + JFFS2_MIN_DATA_LEN which is 
-   only 68 + 128 bytes. But the maximum size of direntry is more than 
-245 bytes. So, if few bytes were allocated (alloclen < rawlen) and this 
-is just direntry with long name, we Garbage Collect it using long path 
-(which is unneeded).
-
-Thus, I offer to allocate at least sizeof(struct jffs2_raw_dirent) + 254 
-bytes.
-
-How about the following patch:
-
-
-
-diff -auNr mtd-pristine/fs/jffs2/gc.c mtd-gc-modification/fs/jffs2/gc.c
---- mtd-pristine/fs/jffs2/gc.c  2004-07-20 17:44:55.000000000 +0400
-+++ mtd-gc-modification/fs/jffs2/gc.c   2004-11-12 17:57:16.141712270 +0300
-@@ -505,8 +505,7 @@
-         /* Ask for a small amount of space (or the totlen if smaller) 
-because we
-            don't want to force wastage of the end of a block if 
-splitting would
-            work. */
--       ret = jffs2_reserve_space_gc(c, min_t(uint32_t, sizeof(struct 
-jffs2_raw_inode) + JFFS2_MIN_DATA_LEN,
--                                             rawlen), &phys_ofs, 
-&alloclen);
-+       ret = jffs2_reserve_space_gc(c, min_t(uint32_t, 
-JFFS2_DIRENT_NODE_MAXSIZE, rawlen), &phys_ofs, &alloclen);
-         if (ret)
-                 return ret;
-
-diff -auNr mtd-pristine/include/linux/jffs2.h 
-mtd-gc-modification/include/linux/jffs2.h
---- mtd-pristine/include/linux/jffs2.h  2004-05-25 15:31:55.000000000 +0400
-+++ mtd-gc-modification/include/linux/jffs2.h   2004-11-12 
-17:58:50.502488814 +0300
-@@ -29,10 +29,12 @@
-  #define JFFS2_DIRTY_BITMASK 0x0000
-
-  /* We only allow a single char for length, and 0xFF is empty flash so
--   we don't want it confused with a real length. Hence max 254.
--*/
-+   we don't want it confused with a real length. Hence max 254. */
-  #define JFFS2_MAX_NAME_LEN 254
-
-+/* The maximum possible size of the direntry node */
-+#define JFFS2_DIRENT_NODE_MAXSIZE (sizeof(struct jffs2_raw_dirent) + 255)
-+
-  /* How small can we sensibly write nodes? */
-  #define JFFS2_MIN_DATA_LEN 128
-
-
-
-Comments?
-
-
--- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+What I haven't really understood is this: if the code refuses chips of  
+type UNNECESSARY
+(the return code 0 from jedec_probe() is an error), then why are so many 
+chips declared
+as UNECESSARY in jedec_table[]?
