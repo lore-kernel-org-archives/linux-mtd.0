@@ -1,21 +1,19 @@
-Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zeik-0003WD-00
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Oct 2002 15:55:26 +0100
-Subject: RE: help! compile error
-From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-To: acurtis@onz.com
-Cc: paul@maypaul.com, David Woodhouse <dwmw2@infradead.org>,
-   Tino Keitel
-	 <tino.keitel@innominate.com>,
-   Mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFCECEDNAA.acurtis@onz.com>
-References: <NCBBIINEHIPFGJPLBEIFCECEDNAA.acurtis@onz.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 10 Oct 2002 16:55:05 +0200
-Message-Id: <1034261705.14869.14.camel@spawn>
+	id 17zem8-0003Wu-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Oct 2002 15:58:56 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1034261705.14869.14.camel@spawn> 
+References: <1034261705.14869.14.camel@spawn>  <NCBBIINEHIPFGJPLBEIFCECEDNAA.acurtis@onz.com> 
+To: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+Cc: acurtis@onz.com, paul@maypaul.com,
+    Tino Keitel <tino.keitel@innominate.com>,
+    Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: help! compile error 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 10 Oct 2002 15:58:41 +0100
+Message-ID: <4322.1034261921@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,21 +25,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 2002-10-10 at 16:17, Allen Curtis wrote:
-> > how can I solve it? which mail or any link to talk about it's problem?
-> > thanks
-> 
-> Do you know how to search the mailing list archives? I believe that Dave
-> said RTFL.
-> 
+kenneth.johansson@etx.ericsson.se said:
+>  How do you search the archive? 
+> The only way I found when I started with this was to download the mbox
+> files and search them.  
 
-How do you search the archive? 
+http://www.google.com/search?q=site:lists.infradead.org+devexit_p
 
-The only way I found when I started with this was to download the mbox
-files and search them. 
+But there's no matches there -- I said 'elsewhere' for a reason. Drop the 
+site restriction and see what google gives you for devexit_p.
 
--- 
-Kenneth Johansson	
-Ericsson AB                       Tel: +46 8 404 71 83
-Borgafjordsgatan 9                Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
+--
+dwmw2
