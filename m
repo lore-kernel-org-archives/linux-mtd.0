@@ -1,40 +1,39 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from tammy.cendio.se
+	([193.180.23.67] helo=tammy.signum.se ident=alex)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11cYc7-00073e-00
-	for mtd@infradead.org; Sat, 16 Oct 1999 19:31:31 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 3.03 #1)
-	id 11cYc7-00029X-00
-	for mtd@infradead.org; Sat, 16 Oct 1999 19:31:31 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 11cYc7-0006IO-00; Sat, 16 Oct 1999 19:31:31 +0100
-To: mtd@infradead.org
-Subject: Intended submission to Linus.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 16 Oct 1999 19:31:31 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11cYc7-0006IO-00@devel2.axiom.internal>
+	id 11d71s-0000GP-00
+	for mtd@infradead.org; Mon, 18 Oct 1999 08:16:24 +0100
+Date: Mon, 18 Oct 1999 09:18:51 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: "Marco A. Moreno" <marcoamoreno@yahoo.com>
+cc: mtd@infradead.org
+Subject: Re: AM29DL16x series driver
+In-Reply-To: <19991015201554.18428.rocketmail@web214.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.10.9910180916340.5371-100000@tammy.signum.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've fixed up the MTD system to compile with the 2.3.22 kernel, and have it 
-happily booting and interoperating with the builtin BIOS.
+On Fri, 15 Oct 1999, Marco A. Moreno wrote:
+> --- Alexander Larsson <alex@cendio.se> wrote:
+> > What do you mean by "flexible sectors"? The driver can handle flash chips
+> > with erase sectors of different sizes. 
+> > 
+> > / Alex
+> > 
+> 
+> Sorry about that, it's not the 16x parts that have what AMD calls the "Flexible
+> Sector Achitecture", it's the 800 parts.  There's a comment in the mtd memory
+> mapped code that says that the 800 parts aren't supported.  Now that I've taken
+> a closer look, I don't think that the amd_flash driver even depends on the
+> memory mapped code.  Is this true?
 
-I'm intending to submit it to Linus fairly shortly, so if anyone else has 
-updates which they'd like to be included, please let me have them ASAP.
-
-Hopefully I haven't missed the feature freeze - after all, it's 'only' a new 
-set of drivers, not a fundamental change.
-
-----                                ----                                 ----
-David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
- Project Leader,    Process Information Systems     Mobile: (+44) 7976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+Yes, this is true. The amd_flash driver was written by me totally
+separate from the mtd effort. David was interested in merging it though.
+ 
+/ Alex
 
 
 
