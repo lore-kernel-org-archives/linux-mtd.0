@@ -1,15 +1,18 @@
-Received: from [202.109.126.231] (helo=www.support-smartpc.com.cn)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 184beR-0002Ej-00
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2002 07:39:28 +0100
-Message-ID: <3DB79BE0.BD4B5663@mic.com.tw>
-Date: Thu, 24 Oct 2002 15:06:08 +0800
-From: "rain.wang" <rain.wang@mic.com.tw>
-Reply-To: rain.wang@mic.com.tw
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 184enp-0002Vh-00
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2002 11:01:22 +0100
+Message-ID: <014201c27b48$799ba360$b30210ac@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: <tglx@linutronix.de>, "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <013d01c2388f$94c655a0$1b0448c0@gv.com.tw> <0H04006C5M7GUI@smtp-out.bhp.t-online.de> <00f801c2390a$d956dd40$1b0448c0@gv.com.tw> <0H05001Y6RM950@smtp-out.bhp.t-online.de>
+Subject: does mtd support both toshiba and samsung 128MBytes (1GBits) nand flash?
+Date: Thu, 24 Oct 2002 18:31:11 +0800
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: drive SST 39SF040 flash chip
-Content-Type: text/plain; charset=gb2312
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,10 +25,8 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-It seems the 39SF040 commands don't work with jede.c, I'm not familiar
-with JEDEC standards yet, does there need a new chip driver for 39SFxx
-beside current jedec.c?
+dear all,
 
-regards
-rain.w
+does mtd support both toshiba and samsung 128MBytes (1GBits) nand flash?
+
+best regards,
