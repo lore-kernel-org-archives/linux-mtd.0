@@ -1,19 +1,18 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from ns1.ixmail.hkcix.com ([202.181.230.228] helo=ixmail.hkcix.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15s2PF-0006ft-00
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2001 14:31:17 +0100
-Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
-	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id PAA09185
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2001 15:39:07 +0200
-Date: Fri, 12 Oct 2001 15:40:29 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+	id 15s2Wb-0006gS-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2001 14:38:53 +0100
+Received: from uniquemodem.com ([202.181.182.134])
+	by ixmail.hkcix.com (8.11.5/8.10.2) with ESMTP id f9CDfZE29617
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2001 21:41:36 +0800
+Message-ID: <3BC6F486.8E307E2F@uniquemodem.com>
+Date: Fri, 12 Oct 2001 21:47:50 +0800
+From: data <data@uniquemodem.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Bug in __get_mtd_device()
-Message-ID: <20011012154029.A15073@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Subject: Parse error before 'do' in chipreg.c 
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,33 +24,66 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
+Dear David,
 
-Correct me, if I am wrong, but there seems to be a bug in
-__get_mtd_device() in drivers/mtd/mtdcore.c.
+Thanks for your help. I have got the patch file for module.h and
+download the up-to-date patch file from your server.
 
-The following line seems to be dangerous:
-	} else if (num < MAX_MTD_DEVICES) {
+However, I apply the pre-patch-2.2.20-10 to the kernel  2.2.18, it
+couldn't get through. I download the 2.2.19 from the
+kernel.org and apply the patch again, it goes through ok. After apply
+the mtd patch into this kernel, I re-compile the
+kernel again. This time, I failed and cannot get through. I have
+attached the log file below for your reference.
 
-num has type int (signed) and is not checked against negative values.
-You could either use this hack:
-  } else if ((unsigned)num < MAX_MTD_DEVICES) {
+Do you know what has happened? Please let me know what the solution is.
 
-which might break if some platform doesn't use a two's complement for
-negative numbers or do the long check:
-  } else if (num >= 0 && num < MAX_MTD_DEVICES) {
+Best regards,
 
-I would prefer the latter, correctness is more important than
-performance.
+Jimmy Chun
 
-Another fix that changes the semantics slightly would be to use this
-line:
-	if (num < 0) {
+Build Log:
 
-instead of:
-	if (num == -1) {
-
-Jörn
-
--- 
-If you have the right attitude, interesting problems will find you.
+make[4]: Entering directory `/home/root/linux-2.2.19/drivers/mtd/chips'
+cc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -O2
+-fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength-reduce
+-m486 -DCPU=486   -DEXPORT_SYMTAB -c chipreg.c
+In file included from chipreg.c:12:
+/usr/src/linux/include/linux/mtd/compatmac.h:287: warning: static
+declaration for `try_inc_mod_count' follows non-static
+cc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -O2
+-fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength-reduce
+-m486 -DCPU=486   -c -o cfi_probe.o cfi_probe.c
+In file included from /usr/src/linux/include/linux/mtd/mtd.h:12,
+                 from /usr/src/linux/include/linux/mtd/map.h:10,
+                 from cfi_probe.c:17:
+/usr/src/linux/include/linux/mtd/compatmac.h:287: warning: static
+declaration for `try_inc_mod_count' follows non-static
+cc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -O2
+-fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength-reduce
+-m486 -DCPU=486   -c -o cfi_cmdset_0002.o cfi_cmdset_0002.c
+In file included from /usr/src/linux/include/linux/mtd/mtd.h:12,
+                 from /usr/src/linux/include/linux/mtd/map.h:10,
+                 from cfi_cmdset_0002.c:26:
+/usr/src/linux/include/linux/mtd/compatmac.h:287: warning: static
+declaration for `try_inc_mod_count' follows non-static
+cc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -O2
+-fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength-reduce
+-m486 -DCPU=486   -c -o gen_probe.o gen_probe.c
+In file included from /usr/src/linux/include/linux/mtd/mtd.h:12,
+                 from gen_probe.c:9:
+/usr/src/linux/include/linux/mtd/compatmac.h:287: warning: static
+declaration for `try_inc_mod_count' follows non-static
+gen_probe.c:48: parse error before `EXPORT_SYMTAB_not_defined'
+gen_probe.c:48: warning: type defaults to `int' in declaration of
+`EXPORT_SYMTAB_not_defined'
+gen_probe.c:48: warning: data definition has no type or storage class
+make[4]: *** [gen_probe.o] Error 1
+make[4]: Leaving directory `/home/root/linux-2.2.19/drivers/mtd/chips'
+make[3]: *** [first_rule] Error 2
+make[3]: Leaving directory `/home/root/linux-2.2.19/drivers/mtd/chips'
+make[2]: *** [_subdir_chips] Error 2
+make[2]: Leaving directory `/home/root/linux-2.2.19/drivers/mtd'
+make[1]: *** [_subdir_mtd] Error 2
+make[1]: Leaving directory `/home/root/linux-2.2.19/drivers'
+make: *** [_dir_drivers] Error 2
