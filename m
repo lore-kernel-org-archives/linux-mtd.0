@@ -1,19 +1,19 @@
 Received: from rwcrmhc51.attbi.com ([204.127.198.38])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17lVfC-0003qL-00
-	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 15:25:18 +0100
+	id 17lVt9-0003rb-00
+	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 15:39:43 +0100
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: Mark Meade <mark@lakeshoremicro.com>
-To: Andrew Hainsworth <andrew@hainsworth.ath.cx>,
- linux-mtd@lists.infradead.org
-Subject: Re: Frustration.
-Date: Sun, 1 Sep 2002 10:24:17 -0400
-References: <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
-In-Reply-To: <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
+To: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: 48meg DOC
+Date: Sun, 1 Sep 2002 10:38:39 -0400
+Cc: linux-mtd@lists.infradead.org
+References: <20020830140409.A7B5B11DE6@sitemail.everyone.net> <200208301749.24444.hno@marasystems.com>
+In-Reply-To: <200208301749.24444.hno@marasystems.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20020901142446.LRUK12451.rwcrmhc51.attbi.com@there>
+Message-Id: <20020901143912.MCJQ12451.rwcrmhc51.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Andrew,
+The UnitSizeFactor problem will go away if you reformat the DoC with the 4.2 
+version of the M-Sys DFORMAT utility.  This version is still available at 
+www.m-sys.com.
 
-There's a DoC/Grub HOWTO at 
-http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html.
-
-This has an example of using fdisk, mke2fs, and mount with a DoC.
+After reformatting with 4.2, you should be able to use Grub for booting, and 
+also have multiple partitions on the DoC.
 
 Mark
 
-Andrew Hainsworth wrote:
-> I've been trying to get my DoC2000 to boot for the last couple of
-> weeks.  First I tried the drivers from m-sys themselves, but they didn't
-> work.  Now I'm trying the MTD drivers and hopefully GRUB.
+Henrik Nordstrom wrote:
+> But I have not yet figured out how to do this in a stable manner. GRUB does
+> not like my DOC chips complaining about a UnitSizeFactor parameter in the
+> NFTL header (perhaps because of them being formatted by the new firmware? 
