@@ -1,46 +1,47 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12YE8t-0005vW-00
-	for mtd-list@infradead.org; Thu, 23 Mar 2000 20:23:43 +0000
-Received: from out2.prserv.net ([32.97.166.32] helo=prserv.net)
+	id 12b6tc-0003uf-00
+	for mtd-list@infradead.org; Fri, 31 Mar 2000 20:15:52 +0100
+Received: from nsc.netnomics.com
+	([209.150.128.114] helo=geneanet.org ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12YE8q-0005vQ-00
-	for mtd@infradead.org; Thu, 23 Mar 2000 20:23:40 +0000
-From: "Dvir Oren" <dviro@lucidvon.com>
-To: Trevor Woolven <trevw@zentropix.com>
-Date: Thu, 23 Mar 2000 22:23:53 +0200
+	id 12b6ta-0003uZ-00
+	for mtd@infradead.org; Fri, 31 Mar 2000 20:15:50 +0100
+Received: from linux-embedded.com (ppp-224-207.villette.club-internet.fr [195.36.224.207])
+	by geneanet.org (8.8.5/8.8.5) with ESMTP id NAA14310
+	for <mtd@infradead.org>; Fri, 31 Mar 2000 13:20:41 -0600
+Message-ID: <38DAD8BE.D0AEE8E3@linux-embedded.com>
+Date: Fri, 24 Mar 2000 03:53:50 +0100
+From: Sebastien Huet <linuxemb@linux-embedded.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: MTD with 2.2.14 kernel
-CC: MTD <mtd@infradead.org>
-In-reply-to: <38D60614.21F1E8C6@zentropix.com>
-Message-Id: <E12YE8q-0005vQ-00@infradead.org>
+To: mtd@infradead.org
+Subject: Re: CF Works !?
+References: <38D1281F.63D57D8E@datalux.com> <38D1541C.85DB4CEC@nexus-tech.net> <38D24BA5.CB487F1F@datalux.com> <38D26564.78552E62@nexus-tech.net>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-> I don't need to use nftl_format in order to be able to write to the
-> flash using the MTD drivers. I have managed to write successfully to a
-> DOC having formated it using the M-Systems utilities, dformat and
+Kyle Harris a =E9crit :
 
-I tried your patches for the kernel and they worked!  Thank you.  I 
-don't understand, though, why didn't my patches work.  They are 
-very similar.  Perhaps I initialized MTD too late, or something like 
-that.  Maybe I'll look into it.
+> Does the adaptor have active components, or is it simply changing the
+> form factor and pinout? Or is it more like a carrier for easy swapout?
+> $60 is a lot for an adaptor cable!
 
-However, whenever I try to write to the flash without nftl_formating it 
-first, I get errors.  And I still wasn't able to boot from the flash.  
-LILO starts loading, but gets stuck either at LI or LIL-.  Oh well.  I 
-don't understand why it works for you, but doesn't for me.  I also 
-keep getting file system corruption.
+Some links you may find interresting:
 
-Thanks for the help.
+http://www.aemme.net/Publikationen/CFtoIDEpinout.html
+http://www.projectplasma.com/cf2ide/
 
----------
-Dvir Oren <dviro@lucidvon.com>
-Lucid VON Ltd.     <http://www.lucidvon.com>
-9 Saloniki St.,        Tel-Aviv       Israel
-Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
+Hope it helps.
+
+Bye
+
+Seb
+---
+http://linux-embedded.com
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
