@@ -1,14 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Simon Haynes <simon@baydel.com>
-In-Reply-To: <405ACD50.8515.211AB9@localhost>
-References: <B1CA6BCA5B0C@baydel.com>  <405ACD50.8515.211AB9@localhost>
-Content-Type: text/plain
-Message-Id: <1079694679.16952.273.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 19 Mar 2004 11:11:20 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Corruption.
+Received: from ext-ch1gw-2.online-age.net ([216.34.191.36])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B4MA9-00049W-TU
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2004 15:43:58 +0000
+Received: from int-ch1gw-2.online-age.net (int-ch1gw-2 [3.159.232.66])
+	id i2JFhqll009980	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Mar 2004 10:43:53 -0500 (EST)
+Received: from uswaumsxb1medge.med.ge.com (localhost [127.0.0.1])
+	id i2JFhoEM029797	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Mar 2004 10:43:52 -0500 (EST)
+Message-ID: <77FE4A1FA59FF947845A42194AD6676277319C@uswaumsx07medge.med.ge.com>
+From: "Eisenhut, Daniel (MED)" <Daniel.Eisenhut@med.ge.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Fri, 19 Mar 2004 09:43:39 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: Block lock-bits
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-03-19 at 10:37 +0000, Simon Haynes wrote:
-> > That was a bug in the scanning code. Should be fixed in v1.58 of
-> > scan.c in CVS. Please could you try that and let me know if it works?
-> > 
-> I have not had chance a yet to download scan from CVS. However I did make the 
-> simple change you suggested and everything worked fine.
+This is probably a silly question with a very simple answer, but I can't
+find anything on this online, in code comments, or in any documentation.
 
-What I committed was slightly more complicated -- and also broken.
-Thomas fixed it though. :)
+I've set up MTD to use my NOR flash chips (Intel StrataFlash J3) and can
+successfully read and write using /dev/mtdblock/X.  Now I need to be able to
+set and clear the lock-bits on the individual blocks.  My question is how?
+>From the user end of things accessing this mtdblock device, what do I have
+to do to have the two-step commands sent?  It looks like the code is all
+there to do it, but I don't know how to access it.
 
--- 
-dwmw2
+If there is a better place to send these type of questions, let me know.
+Thanks for your time...
+
+Dan
