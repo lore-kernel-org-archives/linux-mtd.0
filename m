@@ -1,35 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11H1y3-0007rR-00
-	for mtd@infradead.org; Wed, 18 Aug 1999 10:25:11 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 11H1y3-0001sq-00; Wed, 18 Aug 1999 10:25:11 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 11H1y3-0003X7-00; Wed, 18 Aug 1999 10:25:11 +0100
+	id 11Hr6T-0000wa-00
+	for mtd@infradead.org; Fri, 20 Aug 1999 17:01:17 +0100
 To: mtd@infradead.org
-Subject: Re: DiskOnChip progress. 
+Cc: linux-kernel@vger.rutgers.edu
+Subject: First release of write support for DiskOnChip 2000
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 18 Aug 1999 10:25:11 +0100
+Date: Fri, 20 Aug 1999 17:01:15 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11H1y3-0003X7-00@devel2.axiom.internal>
+Message-Id: <E11Hr6R-0006rr-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+I've just released the 19990820 version of the Linux-MTD code, which contains 
+a preliminary attempt at write support for the NFTL flash filing system used 
+on the DiskOnChip devices. 
 
-David.Woodhouse@mvhi.com said:
->  Now I can get the ECC codes right, I can start to implement writing
-> back to  the flash. 
+It appears to work if you're nice to it, although it gets confused if the NFTL 
+doesn't _exactly_ meet the specs (or my understanding of them).
 
-All done. Complete read/write/erase/ECC support on the DiskOnChip 2000 is now
-working. The Millennium won't take long now, but I'm going to finish the NFTL
-support first, so that people can actually use it.
+Anyway, there's also an nftl_format program included with it, so if you use 
+that to create your NFTL filesystem on the flash, you shouldn't have any 
+problems. My contact in M-Systems is on vacation at the moment, so I'll work 
+on interoperability with their code when he gets back in a couple of weeks' 
+time.
 
+In the meantime, it needs error correction to be implemented, it needs some 
+proper arbitration of access to the flash other than sti(), and some other 
+cleanups. My request for clever people who know about Reed-Solomon ECC codes 
+to package up their brain and send it to me still remains.
+
+I'd like to offer my thanks to M-Systems for seeing the light and helping me 
+out with specifications for the beast, even though it took me two years to get 
+them to do so :)
+
+Get it at	http://www.linux-mtd.infradead.org/
 
 
 ----                                 ----                                 ----
