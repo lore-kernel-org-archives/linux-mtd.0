@@ -1,20 +1,20 @@
-Received: from pxy3allmi.all.mi.charter.com ([24.247.15.42]
-	helo=proxy3-grandhaven.chartermi.net)
+Received: from lakermmtao08.cox.net ([68.230.240.31])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BbNwb-0000ry-Av
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2004 14:18:30 -0400
-Received: from drewtech.com (24.247.83.26.bay.mi.chartermi.net [24.247.83.26])
-	by proxy3-grandhaven.chartermi.net (8.11.7p1+Sun/8.11.6) with ESMTP
-	id i5III3k20793 for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Jun 2004 14:18:03 -0400 (EDT)
-Message-ID: <40D331EB.80504@drewtech.com>
-Date: Fri, 18 Jun 2004 14:18:19 -0400
-From: Dan DeMaggio <dmag@drewtech.com>
+	id 1BbSpJ-0001ZK-Bj
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2004 19:31:23 -0400
+Received: from tinker ([68.100.185.121]) by lakermmtao08.cox.net
+	(InterMail vM.6.01.03.02 201-2131-111-104-20040324) with SMTP
+	id <20040618233109.LOYC17721.lakermmtao08.cox.net@tinker>
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2004 19:31:09 -0400
+Message-ID: <001501c4558c$4e42ce80$4402a8c0@tinker>
+From: "Dan Brown" <dan_brown@ieee.org>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 18 Jun 2004 19:30:56 -0400
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Idea for MTD CF-IDE
+Subject: DOC support update
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On the linux-mtd page ( http://www.linux-mtd.infradead.org/ ), it states 
-"to the best of my knowledge [CompactFlash] doesn't have any alternative 
-method of accessing the [raw] flash". Although this is true in the 
-general case, it may be possible on some cards. For example, on the last 
-page of the Samsumg ATA flash controller reference design manual, there 
-are extensions to the ATA commands that allow access to the raw flash.
+The new NAND-subsystem-based DiskOnChip driver should now be fairly close to
+providing proper JFFS2 support, if it doesn't already.  A tricky issue with
+the hardware ECC generator was discovered today, and hopefully solved.
 
-http://www.samsung.com/Products/Semiconductor/Flash/TechnicalInfo/ref_guide_010623.pdf
+I say hopefully because I won't have a chance to really test it myself until
+Monday.  However, interested folks who don't have vital data on their DOC
+devices are welcome to do so and provide feedback.
 
-I think this means that someone could write an MTD driver for Samsung CF 
-cards, allowing JFFS2 to run 'natively' on the card. It seems pretty 
-straightforward to me, but I don't have time to work on it. I'm hoping 
-that someone here gets a hankering to implement it, because I'd like to 
-use it. ;)
+Brief HOWTO (better HOWTO coming soon!):
 
--- 
-Dan DeMaggio (dmag@drewtech.com)
-Drew Technologies (810-231-3171)
+- Have a DOC Millenium or DOC2000 TSOP.  Millenium+ is not supported (other
+folks are hard at work on this).  DOC2000 original does not have BBT
+handling yet (coming soon!) and should not be used with JFFS2 yet.
+
+- Load the new diskonchip module (there is now a kernel configuration option
+for this under NAND devices).  If your DOC device is not at window D000,
+you'll have to edit the source or remap your chip.  Proper probing coming
+soon!
+
+- A bunch of mtd devices should be created.  mtd0 is the whole DOC.  The
+others are partitions created by M-Systems.  A "BDK" partition is probably
+the M-Sys BIOS driver.  A "BDTL" partition is where your INFTL filesystem
+used to be.  I say used to be, because you're about to trash it.
+
+- You can review the list of devices with 'cat /proc/mtd'
+
+- Assuming your BDTL partition is mtd3:
+
+    flash_eraseall -j /dev/mtd3
+    mkfs.jffs2 -p -e 16384 -n -q -r <rootdir> -o <outputfile>
+    nandwrite /dev/mtd3 <outputfile from above>
+    mount -t jffs2 /dev/mtdblock3 <mountpoint>
+
+- Cross your fingers.
+
+
+
+Results, comments, etc appreciated.
+
+    -Dan Brown
