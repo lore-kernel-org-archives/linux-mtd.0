@@ -1,20 +1,17 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17647T-0000Id-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 07:43:12 +0100
-Received: from sitemail.everyone.net (dsnat [216.200.145.62])
-	by omta03.mta.everyone.net (Postfix) with ESMTP id 289F449C42
-	for <linux-mtd@lists.infradead.org>; Thu,  9 May 2002 23:43:10 -0700 (PDT)
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+	id 1764kv-0000Lv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 08:23:57 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020510064306.462BF2756@sitemail.everyone.net> 
+References: <20020510064306.462BF2756@sitemail.everyone.net> 
+To: zeusj@firstlinux.net
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: misc question about MTD 
 Mime-Version: 1.0
-Date: Thu, 9 May 2002 23:43:06 -0700 (PDT)
-From: Jim Zeus <zeusj@firstlinux.net>
-To: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: misc question about MTD
-Reply-To: zeusj@firstlinux.net
-Message-Id: <20020510064306.462BF2756@sitemail.everyone.net>
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 10 May 2002 08:23:41 +0100
+Message-ID: <6578.1021015421@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,20 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi, folks
+zeusj@firstlinux.net said:
+> 1.in cfi_probe_chip(cfi_probe.c), what is an 'alias ' of a flash chip?
+> is that the same flash chip mapping in different address? 
 
-when I am reading the code of MTD, I meet some questions :
-1.in cfi_probe_chip(cfi_probe.c), what is an 'alias ' of a flash chip? is that the same flash chip mapping in different address?
-2.if I send Query command (98h, I mean) twice, would the 'QRY' disappear? and if I send it once, can I read the 'QRY' for several times? (in my deduce , the answer of these two questions should be 'yes')
+Yes. Often, people will connect flash chips without all the address lines 
+being used, so they can swap in larger chips later. Then you get these 
+'aliases'.
 
-Thanks
+> 2.if I send Query command (98h, I mean) twice, would the 'QRY' disappear?
 
-Jim Zeus
+Er, I don't know. I don't think so, but if this _is_ required then it could 
+be useful -- currently we have to use a chip-specific command to put chips 
+back in read mode when we do the alias detection.
+
+> and if I send it once, can I read the 'QRY' for several times?
+
+Yes, you can.
 
 
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+--
+dwmw2
