@@ -1,9 +1,9 @@
 Received: from [61.136.62.74] (helo=eyou.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 172Mxj-0007vu-00
+	id 172Mxj-0007vv-00
 	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 03:01:51 +0100
-Date: 30 Apr 2002 10:01:28 +0800
-Message-ID: <20020430100128.45722.qmail@eyou.com>
+Date: 30 Apr 2002 10:01:46 +0800
+Message-ID: <20020430100146.46511.qmail@eyou.com>
 From: "" <cafe@eyou.com>
 To: linux-mtd@lists.infradead.org
 Reply-To: "" <cafe@eyou.com>
