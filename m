@@ -1,17 +1,16 @@
-Received: from fep01-mail.bloor.is.net.cable.rogers.com ([66.185.86.71])
+Received: from mail.frequentis.com ([213.47.210.148])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193u0Y-0003Nq-Vk
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 09:35:39 +0100
-Date: Fri, 11 Apr 2003 04:35:10 -0400 (EDT)
-From: Ilguiz Latypov <ilgiz@rogers.com>
-To: =?ISO-8859-1?Q?Mercier=2C_Andr=E9?= <Mercier.Andre@ireq.ca>
-In-Reply-To: <C1641369CCE2784593A091F212BF90D202D54F@caracas.ireq.ca>
-Message-ID: <Pine.LNX.4.44.0304110432370.4112-100000@CPE00e0292061fa-CM014370001917.cpe.net.cable.roger>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Newbie questions: MTD vs M-Sys, ... RTLinuxPro
+	id 193wse-0003ik-8n
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 12:39:40 +0100
+Message-Id: <se96c581.053@mail.frequentis.com>
+Date: Fri, 11 Apr 2003 13:39:06 +0200
+From: "Gerhard TAEUBL" <Gerhard.TAEUBL@frequentis.com>
+To: <linux-mtd@lists.infradead.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Subject: Intel 28F320 Flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi to all!
 
-On Tue, 8 Apr 2003, "Mercier, André" wrote:
+In our company we use the 28F320 3V3 flashes. The WP ist connected to low, =
+RP is high. So it isn't possible to lock or unlock any block. Also after =
+production we test the wholeflash (only word write, not buffer write).
 
-> I have looked at the
-> http://www.gctglobal.com/Download/DiskOnChip/diskonchip.html web site
-> for some information, but there are still some questions to be answered:
-> 
-> 1) Does MTD work with new DOC2000 release (256 MB with TrueFSS 5.1.4)?
-> 2) Which Redhat distribution is the best choice for MTD (7.3, 8.0, ...9.0) ?
-> 3) What are the specific steps to include the MTD stuff with the RTLinuxPro
->     distribution (note: RTLinux has been tested with Redhat 7.2, 7.3, ...
->     I did not buy the full kernel sources package, but I can make a bzImage
->     and modules without problems) and be able to boot RTLinux from DOC?
+So far so good.
 
+On some hardware (1 -3%) it isn't possible to use the jffs2 filesystem. If =
+we copy files the copy comand will be aborted. After searching in the code =
+and do some additional output, I see, that one flash (we have two in =
+parallel manner for 32 bit access) has set SR.1 bit after the buffer write =
+command.=20
 
-Andre,
+Hum, only one of both... and all pins a right connected.
+So I write an own test program for flash and buffer write =3D> everything =
+seems to be OK! The only difference is, that I check the whole status word =
+if it is correct not like in the cfi_cmdset program to mask only the OK =
+bit.
 
-I can't answer your questions, but this page may provide some instructions 
-on setting up DoC2000 and Millennium:
+If I comment this & code (if ((status /*& status_OK*/) =3D=3D status_OK)) =
+then everything works fine.
 
-http://www.lakeshoremicro.com/diskonchip-grub-howto.html
+Is this a sw bug or the 28F320 chip has a defect?
 
-Thanks,
+Thanks for any hint
 
--- 
-Ilguiz Latypov
-Montreal, Quebec
-Canada
+best regards
+Gerhard
 
-tel. +1 (514) 526-6911
+P.S. I'm not member of this mailing list, so address me direct!
