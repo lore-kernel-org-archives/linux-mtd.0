@@ -1,16 +1,20 @@
-Received: from carrot.linuxgrrls.org ([212.18.228.66] ident=postfix)
+Received: from ultra.secret.org.uk ([194.154.178.202] helo=ultra)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15EqkV-0006Hj-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 12:11:15 +0100
-Date: Tue, 26 Jun 2001 12:16:49 +0100 (BST)
-From: kira brown <kira@linuxgrrls.org>
-To: Alex Lennon <ajlennon@arcom.co.uk>
-Cc: <linux-mtd@lists.infradead.org>, "Bao C. Ha" <baoha@sensoria.com>
-Subject: RE: Disk-On-Module
-In-Reply-To: <NEBBKJHOALKOLCFPGELEGEBMCNAA.ajlennon@arcom.co.uk>
-Message-ID: <Pine.LNX.4.30.0106261216020.1186-100000@carrot.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15ErAN-0006J2-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 12:38:00 +0100
+Received: from spoinky.secret.org.uk ([194.154.178.212])
+	by ultra with esmtp (Exim 3.03 #1)
+	id 15ErPo-0006Bj-00
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2001 12:53:56 +0100
+Received: from localhost ([127.0.0.1] helo=spoinky.secret.org.uk)
+	by spoinky.secret.org.uk with esmtp (Exim 2.02 #1)
+	id 15Eq9Y-0005cF-00
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2001 11:33:04 +0100
+From: Simon Evans <spse@secret.org.uk>
+To: linux-mtd@lists.infradead.org
+Subject: Block device as MTD
+Date: Tue, 26 Jun 2001 11:33:04 +0100
+Message-Id: <E15Eq9Y-0005cF-00@spoinky.secret.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,16 +26,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hi,
 
-On Tue, 26 Jun 2001, Alex Lennon wrote:
+I have written a mtd driver that makes a block device
+appear as an MTD device, ie you can use a floppy disk,
+hard disk or Compact flash as an MTD then put JFFS2 on
+top etc. The main reason for writing this was so I could
+put JFFS2 on a Compact Flash (which pretends to be an IDE drive),
+however it can be used as a test device for using JFFS2 on
+large devices (you should be able to use upto a 4gig block device)
+or floppy disks (ie eject the disk when it does a write for testing
+ jorunalling).
 
-> Certainly wear levelling, and with ECC. This 'journalling' term seems
-> to be bandied around at levels ranging from block access up to
-> application data coherency. As far as I am aware the DOM will retain
-> all but the last 512b sector written in a power fail condition. Does this
-> count as journalling ?
+I have tested it on a floppy disk, and 96MB CF and it seems relatively
+stable.
 
-If it provably will always leave the FTL in a consistent state, then yes,
-probably...
+What is the best procedure for releasing it.
 
-kira.
+cheers
+si
