@@ -1,32 +1,24 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=ocean.magtech.com.au)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bn2n0-00038m-7U
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 18:08:46 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-In-Reply-To: <1090349564.15140.3.camel@famine>
-References: <1089643331.3951.42.camel@famine>
-	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
-	<1089712151.5995.21.camel@famine>
-	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
-	<1089726079.6288.5.camel@famine>
-	<1089759689.8822.18.camel@imladris.demon.co.uk>
-	<1089792912.7607.22.camel@famine> <1090246707.13401.18.camel@famine>
-	<Pine.LNX.4.58.0407191522360.4985@localhost.localdomain>
-	<1090250145.14173.3.camel@famine>
-	<1090285839.4149.8.camel@localhost.localdomain>
-	<1090305682.14825.2.camel@famine>
-	<1090331120.4614.3.camel@localhost.localdomain>
-	<1090337308.15094.2.camel@famine>
-	<1090338869.4614.7.camel@localhost.localdomain>
-	<1090349564.15140.3.camel@famine>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 20 Jul 2004 18:08:38 -0400
-Message-Id: <1090361318.9473.10.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
-Subject: Re: JFFS2 eats memory
+	id 1Bn5Ee-0003Y6-C0
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 20:45:30 -0400
+Received: from [203.26.222.199] (unknown [203.26.222.199])
+	by ocean.magtech.com.au (Postfix) with ESMTP id 3F461458DC0D
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Jul 2004 10:45:22 +1000 (EST)
+Message-ID: <40FDBCA2.30102@magellan-technology.com>
+Date: Wed, 21 Jul 2004 10:45:22 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+References: <40FCDE5A.6080504@magellan-technology.com>
+	<1090316488.6864.0.camel@lap02.tec.linutronix.de>
+In-Reply-To: <1090316488.6864.0.camel@lap02.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: problems mounting >3.3MB JFFS2 partitions on Dataflash
+	on	AT91RM9200DK
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,17 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-20 at 20:52 +0200, Øyvind Harboe wrote:
-> I caught it in gc.c where at some point the code assumes that gc_node
-> does not change beneath it. Don't remember.
 
-Hmmm. That sounds like it could break anyway. Can you be more specific?
+Thomas Gleixner wrote:
+> Turn on MTD_DEBUG and JFFS2_DEBUG and provide the output of those
+> 
+> tglx
+> 
 
-Also, memset the raw_node_ref to 0xdeadbeef before you free it. (Or run
-with slab poisoning enabled in Linux). We should go through the code and
-make sure manually that nothing's going to dereference a pointer to the
-old node after it's freed, but the poisoning is a quick and useful
-debugging aid.
+OK, three examples:
 
--- 
-dwmw2
+(1) mounting a small jffs2 partition
+
+[root@AT91RM9200DK /root]$more /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00200000 00010000 "Physically mapped flash"
+mtd1: 000ffc00 00000420 "kernel_image"
+mtd2: 00400080 00000420 "4MB_part"
+mtd3: 00300060 00000420 "3MB_part"
+mtd4: 00040320 00000420 "the_rest"
+
+[root@AT91RM9200DK /root]$mount /dev/mtdblock/4 /mnt/4
+mtdblock_open
+ok
+mtdblock: read on "the_rest" at 0x0, size 0x800
+mtdblock: read on "the_rest" at 0x800, size 0x800
+mtdblock: read on "the_rest" at 0x2000, size 0x800
+mtdblock: read on "the_rest" at 0x2800, size 0x800
+mtdblock: read on "the_rest" at 0x3000, size 0x800
+mtdblock: read on "the_rest" at 0x3800, size 0x800
+mtdblock: read on "the_rest" at 0x8000, size 0x800
+mtdblock: read on "the_rest" at 0x8800, size 0x800
+mtdblock: read on "the_rest" at 0x9000, size 0x800
+mtdblock: read on "the_rest" at 0x9800, size 0x800
+mtdblock_release
+ok
+mtdblock_open
+ok
+
+
+(2) mounting a large jffs2 partition, no fs type specified
+
+[root@AT91RM9200DK /root]$mount /dev/mtdblock/2 /mnt/2
+mtdblock_open
+ok
+mtdblock: read on "4MB_part" at 0x0, size 0x800
+mtdblock: read on "4MB_part" at 0x800, size 0x800
+mtdblock: read on "4MB_part" at 0x2000, size 0x800
+mtdblock: read on "4MB_part" at 0x2800, size 0x800
+mtdblock: read on "4MB_part" at 0x3000, size 0x800
+mtdblock: read on "4MB_part" at 0x3800, size 0x800
+mtdblock: read on "4MB_part" at 0x8000, size 0x800
+mtdblock: read on "4MB_part" at 0x8800, size 0x800
+mtdblock: read on "4MB_part" at 0x9000, size 0x800
+mtdblock: read on "4MB_part" at 0x9800, size 0x800
+mtdblock_release
+ok
+mtdblock_open
+ok
+mtdblock_release
+ok
+mount: you must specify the filesystem type
+
+(3) mounting a large jffs2 partition, jffs2 type specified
+
+[root@AT91RM9200DK /root]$mount -t jffs2 /dev/mtdblock/2 /mnt/2
+mtdblock_open
+ok
+mtdblock_release
+ok
+mountmtdblock_open
+:ok
+  wrong fsmtdblock_release
+  ok
+type, bad option, bad superblock on /dev/mtdblock/2,
+        or too many mounted file systems
+[root@AT91RM9200DK /root]$
