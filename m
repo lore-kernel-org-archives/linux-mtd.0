@@ -1,35 +1,26 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfLcg-0007A1-4J
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 12:10:35 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e3.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id iBHHAVV8007964
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Dec 2004 12:10:31 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	iBHHAV86270726
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Dec 2004 12:10:31 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iBHHAVqr010476
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Dec 2004 12:10:31 -0500
-Message-ID: <41C31307.70909@us.ibm.com>
-Date: Fri, 17 Dec 2004 11:10:31 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-MIME-Version: 1.0
-To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-References: <1103152743.15913.33.camel@squizzey.bult.co.uk>	
-	<41C0D3AC.3050801@us.ibm.com>	
-	<1103158974.15929.37.camel@squizzey.bult.co.uk>	
-	<1103201631.25765.7.camel@weaponx.rchland.ibm.com>	
-	<1103232128.15927.70.camel@squizzey.bult.co.uk>	
-	<41C1FDFF.3020308@us.ibm.com>	
-	<1103233669.15929.81.camel@squizzey.bult.co.uk>	
-	<1103288058.3018.4.camel@weaponx.rchland.ibm.com>	
-	<1103297611.15917.184.camel@squizzey.bult.co.uk>	
+	id 1CfLrg-0007MI-Oy
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 12:26:06 -0500
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <41C31307.70909@us.ibm.com>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C0D3AC.3050801@us.ibm.com>
+	<1103158974.15929.37.camel@squizzey.bult.co.uk>
+	<1103201631.25765.7.camel@weaponx.rchland.ibm.com>
+	<1103232128.15927.70.camel@squizzey.bult.co.uk>
+	<41C1FDFF.3020308@us.ibm.com>
+	<1103233669.15929.81.camel@squizzey.bult.co.uk>
+	<1103288058.3018.4.camel@weaponx.rchland.ibm.com>
+	<1103297611.15917.184.camel@squizzey.bult.co.uk>
 	<41C3030D.8040607@us.ibm.com>
 	<1103302002.15927.198.camel@squizzey.bult.co.uk>
-In-Reply-To: <1103302002.15927.198.camel@squizzey.bult.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	<41C31307.70909@us.ibm.com>
+Content-Type: text/plain
+Date: Fri, 17 Dec 2004 17:26:00 +0000
+Message-Id: <1103304360.15914.210.camel@squizzey.bult.co.uk>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS2 mount time
@@ -42,47 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gareth Bult (Encryptec) wrote:
+On Fri, 2004-12-17 at 11:10 -0600, Josh Boyer wrote:
+> That's the problem.  There is no filesystem for these "abominations" 
+> really.  They pretend to be IDE, SCSI, etc. but are really flash 
+> underneath.  Neither the MTD driver or the IDE drivers (for example) 
+> deal with them really well, but I'm not sure that they can.
 > 
-> Mm, my point exactly , Journaled _Flash_ File System - as opposed to
-> Journaled _MTD_ _Flash_ File System .. !!
-> 
-> USB flash is still flash! - just presented via a generic interface as
-> opposed to an embedded one .. (AFAIK)
+> Did you try ext3 on the device with a native driver (IDE, SCSI, USB 
+> specific) instead of via blkmtd.c?
 
-No, it's really not.  There is no access to the low level flash, so MTD 
-cannot directly drive it.  Same principle as the Compact Flash devices, 
-which MTD doesn't deal with either (other than via blkmtd).
+Sure, ext2 and ext3 work just fine .. however .. as far as I'm aware,
+although ext3 is log structured, it's not optimised to run in a linear
+fashion and doesn't worry about repeatedly writing to the same block ..
+which is likely to cause the USB flash controller to execute an erase
+prior to write .. which will quickly wear down the device [?!]
 
-> 
-> I guess I was sort of hoping blkmtd.c was written to enable JFFS2 to be
-> more generic and embedded device independent. I suspect however it was
-> written purely for testing purposes .. :(
+(Am I wrong? in which case why isn't everyone using ext3 instead of
+JFFS?)
 
-Yes, most likely.
+The other requirement of course is inline compression, which last time I
+looked ext3 didn't do out of the box (?)
 
-> 
-> As I understand it, the Flash in USB keys is identical to the MTD type
-> embedded devices, except that the USB keys always come with
-> micro-controllers that handle and optimise read/write/erase operations
-> and present them via a generic PC/USB based disk interface. I'm not sure
-> how fast MTD can be driven, but key manufacturers seem to think that
-> keys should be able to run at 20Mb/sec read and 10Mb/sec write [for
-> large block read/writes] which is much faster than is required for a key
-> to replace a hard disk in a workstation.
+I'm going to deliberately wear down some blocks on a key a little later
+(at block level) to see what the OS makes of it ... (and whether it
+takes 100,000 or 1,000,000 cycles .. I see conflicting specs ..
 
-The flash used in the devices is identical, but MTD has no access to it.
+I guess the basic spec for a USB flash key (you may call them
+abominations, but you should see the sales stats!) would be;
 
-> 
-> I'm thinking that JFFS2 could draw in a huge additional user base if it
-> catered for (or at least supported) such devices .. (!)
+a. purely log structured fs with linear / circular operation
+b. write blocks aligned to 2k (or 4k might be smarter to fit with buffer
+page sizes)
+c. erase blocks @ 128k
+d. inline compression
 
-That's the problem.  There is no filesystem for these "abominations" 
-really.  They pretend to be IDE, SCSI, etc. but are really flash 
-underneath.  Neither the MTD driver or the IDE drivers (for example) 
-deal with them really well, but I'm not sure that they can.
+Strikes me JFFS2 does all this, possibly bar the generic device
+support ..
 
-Did you try ext3 on the device with a native driver (IDE, SCSI, USB 
-specific) instead of via blkmtd.c?
-
-josh
+Gareth.
