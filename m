@@ -1,18 +1,24 @@
-Received: from [212.17.98.56] (helo=hofr.at)
+Received: from euros.telenet-ops.be ([195.130.132.55])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B0xbI-0001TB-2l
-	for linux-mtd@lists.infradead.org; Wed, 10 Mar 2004 06:53:56 +0000
-From: Der Herr Hofrat <der.herr@hofr.at>
-Message-Id: <200403100651.i2A6pN531062@hofr.at>
-In-Reply-To: <Pine.LNX.4.10.10403092009150.21570-100000@mail.hurricane.at>
-	from Matthias Gorjup at "Mar 9, 2004 08:14:15 pm"
-To: Matthias Gorjup <mgorjup@norik.com>
-Date: Wed, 10 Mar 2004 07:51:23 +0100 (CET)
+	id 1B1884-00031Q-2Q
+	for linux-mtd@lists.infradead.org; Wed, 10 Mar 2004 18:08:28 +0000
+Received: from asteria.telenet-ops.be (asteria.telenet-ops.be
+	[195.130.132.85])
+	by euros.telenet-ops.be (Postfix) with ESMTP id B7F9C4A307
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Mar 2004 19:08:08 +0100 (MET)
+Received: from asteria.telenet-ops.be (unknown [127.0.0.1])
+	by asteria.telenet-ops.be (Postfix) with ESMTP id 3CF40250024
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Mar 2004 19:08:08 +0100 (MET)
+From: joris.lammers@pandora.be
+To: linux-mtd@lists.infradead.org
+Message-ID: <W418732572587941078942088@asteria.telenet-ops.be>
+Date: Wed, 10 Mar 2004 18:08:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Writing 4k blocks to flashB
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Failed to garbage collect: ENOSPC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hello,
-> 
-> we are trying to optimize the speed of writing large files to flash
-> (Fujitsu MBM29LV650, 8 MB, 16bit). After using strace to see how long and
-> how often system calls are being performed, we have found out that writing
-> to flash is being done in 4kB large blocks and that each write
-> takes between 0.15 and 0.3 sec. Can we optimize this figures? Would it
-> make sense to modify mtd to write larger blocks to flash? Which files do
-> we need to change for this modification?
->
-check how much time the copy is actually spending in system and how much in 
-user (time cp ... a few times should bive you a resonable average) - the 
-large variance may also be due to the strace overhead (which is significant - 
-your running with PTRACE set).  - it might be that you actually
-have a slow flash - the numbers don't tell you what the overhead
-of multiple invokations actually are.
+Hello,
 
-the actual invocation times of the system call is most likely 
-not the bottle neck. I would guess that the 4k make sense as thats 
-alligned with the memory organisation (PAGESIZE). Did you do any comparison
-with a ramdisk copy to see if its not the filesystem+flash-device that is
-causing the delays ?
+We are using jffs2 on a PowerPC board with four AM29LV128 flashes on it. =
+There are 3 jffs2 partitions on the flash and one of the smaller ones (4M=
+B in size) contains the log files (and their rotated counterparts).
 
-hofrat
+If we log intensively to one of the files and reset the board after a ran=
+dom uptime, it sometimes occurs the partition gets full (97% use, 124k fr=
+ee reported by df) and any write to the partition fails with error ENOSPC=
+. If I then turn on debugging of the jffs2 code I get the following error=
+: "dirty size 0x0001BC38 + unchecked_size 0x00000000 < nospc_dirty_size 0=
+x20000, returning -ENOSPC).
+
+Only way to get out of this is to remove the log file that was written to=
+ most. This file is then about 200kB in size but after removal the free s=
+pace of the partition grows from 124kB to 2MB! Apparently there was dirty=
+ space to collect?
+
+What's causing the garbage collector to fail during a write? Where is all=
+ that dirty space gone? What's the difference between a remove and a writ=
+e.
+
+We are using the MTD snapshot of 29 February 2004.
+
+Thanks in advance,
+Joris
