@@ -1,23 +1,17 @@
-Received: from mail.iok.net ([62.249.129.22] helo=mail05.iok.net)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18ebip-0004RM-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 14:00:47 +0000
-Received: from lin01.mn-logistik.de (frdb-d9b95869.pool.mediaWays.net [217.185.88.105])
-	by mail05.iok.net (8.12.5/8.12.5) with ESMTP id h0VEVlpp020229
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 15:31:47 +0100
-Received: from mnz66.mn-logistik.de (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-logistik.de (Postfix) with ESMTP id 8A43E1FF15
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 15:31:30 +0100 (CET)
-From: Holger Schurig <h.schurig@mn-logistik.de>
-To: linux-mtd@lists.infradead.org
-Subject: mkfs.jffs2 buggy?
-Date: Fri, 31 Jan 2003 15:31:30 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40] helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18eboL-0004TB-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 14:06:29 +0000
+Date: Fri, 31 Jan 2003 15:19:46 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Christian =?iso-8859-1?Q?Hohnst=E4dt?= <chohnstaedt@innominate.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Q: Pushing code to 2.4.x
+Message-ID: <20030131141946.GA22399@tkeitel001.bln.gelonet.local>
+Mime-Version: 1.0
+Content-Type: text/PLAIN; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200301311531.30295.h.schurig@mn-logistik.de>
+In-Reply-To: <m3wuknzlp4.fsf@lnxi.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,83 +23,62 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-When I compile mkfs.jffs2 from CVS HEAD, I get the following errors:
+On 29 Jan 2003, Eric W. Biederman wrote:
 
-mkfs.jffs2.c: In function `write_regular_file':
-mkfs.jffs2.c:823: incompatible types in assignment
-mkfs.jffs2.c: In function `write_symlink':
-mkfs.jffs2.c:925: incompatible types in assignment
-mkfs.jffs2.c: In function `write_pipe':
-mkfs.jffs2.c:967: incompatible types in assignment
-mkfs.jffs2.c: In function `write_special_file':
-mkfs.jffs2.c:1007: incompatible types in assignment
+> What is the plan for keeping the kernel and the CVS tree more or less in
+> sync?
 
-Anyway, I somehow got it working, I think with a some older version.
+It goes in cycles...
+	1. I sync to Marcelo/Linus
+	2. People commit changes.
+	3. Those changes stabilise and I become happy with them.
+	4. I plan to find time to sync to Marcelo/Linus again.
+	5. People bitch at me because it's out of sync.
+	6. I say "I'll find some time soon, honest".
+	7. Red Hat finds me more 'real work' to do just when I thought
+	   I'd got some slack some in the Engineering Schedule.
+	8. People bitch at me some more.
+	9. I eventually get round to it.
 
-$ mkfs.jffs2 -d rootfs -p 262144 -e 262144 -o /tftpboot/bdi/root.jffs2
+> There are currently some large divergences, to the point there are some
+> chips that I can use the cfi_cmdset_0002.c from the stable 2.4.x kernel
+> mtd tree but not from the recent CVS tree.
 
-and flash the result with
+That's a bit of a bugger -- because I sent the CVS code to Marcelo this 
+week :) Care to enlighten us on the problems you've seen?
 
-$ burner.py /tftpboot/bdi/root.jffs 0x140000
-...
-00440000: burning 262144 bytes to flash
-00480000: reading 262144 bytes from flash (68.4 %)
-00480000: erase flash
-00480000: burning 262144 bytes to flash
-004c0000: reading 262144 bytes from flash (73.7 %)
-004c0000: erase flash
-004c0000: burning 262144 bytes to flash
-00500000: reading 262144 bytes from flash (78.9 %)
-00500000: erase flash
-00500000: burning 262144 bytes to flash
-...
+> For the short term I can release and maintain patch where everything works,
+> the question is what should my long term strategy be.
+> 
+> A) Push to the MTD cvs repository and let David Woodhouse push to Marcelo.
 
-I get a strange error. Immediately after the flashing, I pressed reset and 
-booted into Linux. Then I see:
+As you've observed, there's a lag involved with this. If you're willing to
+help reduce that I'm happy.
 
-Probing flash at physical address 0x00000000 (32-bit buswidth)
-Using buffer write method
-Using static partition definition
-Creating 3 MTD partitions on "Flash":
-0x00000000-0x00040000 : "Bootloader"
-0x00040000-0x00140000 : "Kernel"
-0x00140000-0x02000000 : "Filesystem"
-...
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
-ffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0000: 0x6574 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0004: 0x665f 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0008: 0x6873 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c000c: 0x3030 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0010: 0x3030 
-instead
-JFFS2: Erase block at 0x004c0000 is not formatted. It will be erased
+> B) Push to the MTD cvs repository and push directly to Marcelo.
 
-Shouldn't a sector that has been freshly created by mkfs.jffs2 have the right 
-ID?
+This is fine by me assuming the following:
 
-So, I re-flashed it again and looked at this address. At physically 0x4c0000 I 
-see
+	1. You commit to CVS first and then send to Marcelo, including
+	   the appropriate $Id$ changes so I know which version 
+	   Marcelo was last sync'd with.
+	2. You Cc me.
+	3. Your changes are correct for both 2.4 and 2.5. I don't care
+	   if they're tested, as long as they're correct :)
+	4. You merge changes from Marcelo's tree into CVS too, before
+	   sending it back to him.
 
-$ telnet bdi
-bdi>mdb 0x004c0000
-004c0000 : 85 19 03 20 0c 00 00 00  ... ....
-004c0008 : b1 b0 1e e4 85 19 02 e0  ........
-004c0010 : 03 09 00 00 16 a0 e5 91  ........
-004c0018 : cb 02 00 00 38 00 00 00  ....8...
-004c0020 : ed 81 00 00 00 00 00 00  ........
-004c0028 : 24 1d 06 00 08 40 c3 3b  $....@.;
-004c0030 : 08 40 c3 3b 08 40 c3 3b  .@.;.@.;
-004c0038 : 00 70 03 00 bf 08 00 00  .p......
+> With LinuxBIOS becoming a fully supported product I expect to continually
+> have more board and more little rom chips that I am making certain work.
 
-... and that looks like a valid ID.
+For new map drivers, and new IDs for the chip drivers, please do commit to 
+CVS and send to Marcelo simultaneously. I'm perfectly happy with that.
+
+-- 
+dwmw2
 
 
-And also in root.fs at file offset 0x380000 = 3670016 I can see this.
 
-
-Am I doing something wrong?  Maybe confusing physical and virtual addressed?
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
