@@ -1,57 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13EKIJ-0000ev-00
-	for mtd-list@infradead.org; Tue, 18 Jul 2000 00:27:27 +0100
-Received: from caja.ldhs.cetuc.puc-rio.br ([139.82.28.1])
+	id 13EiHm-0004JP-00
+	for mtd-list@infradead.org; Wed, 19 Jul 2000 02:04:30 +0100
+Received: from athena.evoserve.com ([210.16.10.134])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13EKIH-0000ep-00
-	for mtd@infradead.org; Tue, 18 Jul 2000 00:27:25 +0100
-From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
-To: phiggins@transzap.com, mtd@infradead.org
-Date: Mon, 17 Jul 2000 20:26:30 GMT-3
+	id 13EiHk-0004JJ-00
+	for mtd@infradead.org; Wed, 19 Jul 2000 02:04:29 +0100
+Received: from evoserve.com (gateway.evoserve.com [210.16.10.120])
+	by athena.evoserve.com (8.9.3/8.9.3) with ESMTP id JAA23534
+	for <mtd@infradead.org>; Wed, 19 Jul 2000 09:06:38 +0800
+Message-ID: <3975038D.40CF3B90@evoserve.com>
+Date: Wed, 19 Jul 2000 09:25:33 +0800
+From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: M-Sys Reed Solomon
-Reply-to: miguel@cetuc.puc-rio.br
-Message-ID: <AF0690B1E@mamao.cetuc.puc-rio.br>
+To: mtd@infradead.org
+Subject: jffs_file_write and DOC
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I observed that the jffs_file_write function misbehaves when given a
+chunk bigger than MAX_CHUNK_SIZE. It is passed a chunk exactly equal to
+MAX_CHUNK_SIZE so when it adds the inode and the name the resulting
+chunk in is more or less 60 bytes bigger than MAX_CHUNK_SIZE which is
+4096 bytes in my case with the DOC2000.
 
-    Hi Patrick,
+Cat just writes a file shorter than it should be on flash. I used a
+modified DOC_loadbios utility to download my JFFS images to the DOC. If
+I dont write anything to it I could mount and unmount cleanly. But when
+I write to it, I get bad checksums on the next mount and totoal mount
+failure after couple more mounts.
 
-    I'm trying to understand the M-Systems Reed Solomon 
-implementation used in DiskOnChip, maybe we could exchange 
-some ideas... how is it going the code?
-
-    I read your email when you went for vacation, more than a month 
-ago. I have some comments on it, probably old ones for you, but 
-let's try...
-    1) How do you know that these 4 x ten bit word encoded in that 6 
-interleaved bytes are actually the syndrom? It doesn't make sense 
-for me... First, a syndrom should be zero for a correct block and 
-second, they always transmit the ECC "parity" and never the 
-syndrom itself. The syndrom is computed from the whole codeword 
-(data+parity)...(apologize me if I'm stating the obvious).
-    2) Where did you get the information to convert the 6 interleaved 
-bytes into 4 x ten bit word? The parallel 8 bit parity at the second 
-byte is easy to see, but the 40 bits could be arranged in a different 
-manner under 5 bytes. The M-Sys driver has a routine to do that 
-conversion, but in another sequence (and without the parallel parity).
-    3) I guess you should have already figured out what is the 
-primitive polynomial they use. Just in case, it's the classical 
-x^10+x^3+1. This became clear with a little reverse engineering...
-
-    I also tryed to match the hardware ECC data initializing the shift 
-register encoder with symbols different than zero without success. 
-Have you had more lucky in the last month?
-
-
-Regards,
-
-Miguel Freitas
-
+How is jffs_write_file called when we write a large file to flash? I
+dont see any loops in jffs_file_write. Does the VFS layer handle the
+subdivisions and calls jffs_file_write with chunks equal to max chunk
+size? How do we handle this ?
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
