@@ -1,19 +1,19 @@
 Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
 	helo=ash.lnxi.com)
 	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BlAz4-0005Zg-Kk
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 14:29:31 -0400
+	id 1BlBu7-0005mq-4f
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 15:28:28 -0400
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
 To: Brad Goodman <bgoodman@acopia.com>
-In-Reply-To: <77A9CE908F115440B48104747E2534220D0930@email1.acopianet.com>
-References: <77A9CE908F115440B48104747E2534220D0930@email1.acopianet.com>
+In-Reply-To: <77A9CE908F115440B48104747E2534220D0943@email1.acopianet.com>
+References: <77A9CE908F115440B48104747E2534220D0943@email1.acopianet.com>
 Content-Type: text/plain
-Date: Thu, 15 Jul 2004 12:15:11 -0600
-Message-Id: <1089915311.8696.181.camel@tubarao>
+Date: Thu, 15 Jul 2004 13:14:11 -0600
+Message-Id: <1089918851.8696.191.camel@tubarao>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: 2.4.26 MTD Patch
+Subject: RE: 2.4.26 MTD Patch
 Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,65 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-07-15 at 12:45 -0400, Brad Goodman wrote:
-> The following patch prevents a kernel OOPS when a faulty MTD device
-> times-out,
-> due to a the cleanup in the error path being done twice.
-
-Thanks for the patch - maintenance is always appreciated.
-
-> =========== PATCH IS AS FOLLOWS ==========
+On Thu, 2004-07-15 at 14:32 -0400, Brad Goodman wrote:
+> You are correct.
 > 
-> --- orig/cfi_cmdset_0002.c      Thu Jul 15 12:31:42 2004
-> +++ cfi_cmdset_0002.c   Thu Jul 15 12:30:48 2004
-> @@ -6,6 +6,8 @@
->   *
->   * 2_by_8 routines added by Simon Munton
->   *
-> + * 7/15/2004 - Brad Goodman <bgoodman@acopia.com> Removed duplicate
-> cleanup from error path
+> The patch I made was for the code that appears in 2.4.26 of the kernel.
+> 
+> The stuff in the newere (2.6.7) kernels is totally different.
+> 
+> I thought this would be a good patch for the 2.4.27 kernel,
 
-looks like your email client line-wrapped the patch - oops!
+That's a question that gets raised a lot - why is 2.4.x so far behind
+the mtd CVS tree.
 
-> + *
->   * This code is GPL
->   *
->   * $Id: cfi_cmdset_0002.c,v 1.62 2003/01/24 23:30:13 dwmw2 Exp $
-> @@ -549,11 +551,7 @@
+> if you are
+> taking summitions for inclusion in it. If not, the code is not
+> applicable
+> In the 2.6.x branch.
 
-Notice that your patch is against version 1.62.  The current CVS version
-is 1.102.
+David Woodhouse is pushing MTD upstream in the next few days.  I'm not
+sure if that is both 2.6.x *and* 2.4.x or if it is *just* 2.6.x.  I
+imagine that it will only be 2.6.x.  I think that the general feeling is
+that the MTD tree has changed so much that it isn't appropriate for 2.4.
 
->                         }
->                 } else {
->                         printk(KERN_WARNING "Waiting for write to
-> complete timed out in do_write_oneword.");        
-> -
-> -                       chip->state = FL_READY;
-> -                       wake_up(&chip->wq);
-> -                       cfi_spin_unlock(chip->mutex);
-> -                       DISABLE_VPP(map);
-> +
->                         ret = -EIO;
->                 }
->         } 
+I think that reasonable maintenance should be done on 2.4, however.
 
-The code has changed considerably and I don't think this chuck applies.
-Please check out a recent version of MTD and check for the double
-cleanup (although I have done a simple scan for it).
+David, comments?
 
-Once again, thanks for your attention.
- 
-> --------------------------------------------------------
->  
-> DISCLAIMER:   The information contained in this e-mail is confidential
-> and is intended solely for the review of the named addressee, and in
-> conjunction with specific Acopia Networks business.  Any review,
-> retransmission, dissemination or other use of, or taking of any action
-> in reliance upon, this information by persons or entities other than
-> the intended recipient is prohibited. If you are unable to treat this
-> information accordingly, or are not the intended recipient, please
-> notify us immediately by returning the e-mail to the originator.  
-
-That disclaimer is just sad.  I imagine you are a victim of your
-employer's mail system.
+Brad, you might forward your patch to Marcelo and see what he says about
+taking MTD patches from random Joe Developer or if he only wants them
+from David Woodhouse.
