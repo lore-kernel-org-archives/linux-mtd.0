@@ -1,30 +1,17 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from webapps.arcom.com ([194.200.159.168])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1By4ah-0004ob-QW
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 04:17:50 -0400
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1By4ad-0007M3-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2004 10:17:35 +0200
-Received: from a2125958202.net-htp.de ([212.59.58.202])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2004 10:17:35 +0200
-Received: from sst by a2125958202.net-htp.de with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2004 10:17:35 +0200
-To: linux-mtd@lists.infradead.org
-From: =?ISO-8859-1?Q?Stefan_St=FCrke?= <sst@pandatel.com>
-Date: Fri, 20 Aug 2004 10:17:31 +0200
-Message-ID: <4125B39B.8010705@pandatel.com>
-References: <cg23u5$gd0$1@sea.gmane.org>	<1092919733.23187.34.camel@linpc003.aimsys.nl>	<4124C848.7000808@pandatel.com>
-	<1092930561.2991.8.camel@weaponx.rchland.ibm.com>
+	id 1By4uz-0004zH-8D
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 04:38:38 -0400
+From: Ian Campbell <icampbell@arcom.com>
+To: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
+In-Reply-To: <6.1.2.0.2.20040819151746.04354ad8@mail.conformative.com>
+References: <6.1.2.0.2.20040819151746.04354ad8@mail.conformative.com>
+Content-Type: text/plain
+Message-Id: <1092991110.15118.29.camel@icampbell-debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1092930561.2991.8.camel@weaponx.rchland.ibm.com>
-Sender: news <news@sea.gmane.org>
-Cc: jdup@us.ibm.com
-Subject: Re: MTD and 28F128J3A
+Date: Fri, 20 Aug 2004 09:38:32 +0100
+Content-Transfer-Encoding: 7bit
+Subject: Re: ilookup-2.4.23.patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,24 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-...
-
-> Is it in CFI query mode, or in Read Status mode?  I have seen it be left
-> in Read Status mode after a write, but never CFI query mode.
-
-Sorry, you are right, the flash is in Read Status mode.
-
+On Thu, 2004-08-19 at 21:17, Clay Douglass wrote:
+> Hi,
 > 
-> Leaving it in Read Status mode shouldn't have any side effects during
-> runtime operation, since the MTD code expects that.  It's probably more
-> efficient anyway, since the code can't be sure of what the next
-> operation will be.
+> i am working on the JFFS2 on 2.4.22 Kernel. I got the ilookup() 
+> unreferenced error. After seeing the messages in this list, i found that 
+> ilookup() implementation is not available in 2.4 series of kernel. I saw a 
+> message from  David Woodhouse stating that there is ilookup-2.4.23.patch is 
+> available on CVS tree. Unfortunately i am unable to ping the CVS server.
 
-Ok, I just implemented my 'dirty fix' and it works for my hardware :-)
+cvs.infradead.org is IPv6 only at the moment.
 
-Thanks again for your help,
-Stefan
+http://www.linux-mtd.infradead.org/ contains simple instructions for
+setting up IPv6 in RH or Fedora and also contains links to nightly CVS
+snapshots. 
+
+Ian.
 
 -- 
-Stefan Stürke
+Ian Campbell, Senior Design Engineer
+                                        Web: http://www.arcom.com
+Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
+Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
