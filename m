@@ -1,11 +1,11 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13snZ0-00075v-00
-	for mtd-list@infradead.org; Mon, 06 Nov 2000 14:47:58 +0000
+	id 13snfN-00076o-00
+	for mtd-list@infradead.org; Mon, 06 Nov 2000 14:54:33 +0000
 Received: from [194.130.39.252] (helo=passion.cygnus)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13snYy-00075n-00
-	for mtd@infradead.org; Mon, 06 Nov 2000 14:47:57 +0000
+	id 13snfM-00076X-00
+	for mtd@infradead.org; Mon, 06 Nov 2000 14:54:32 +0000
 From: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <Pine.LNX.4.10.10011061235070.697-100000@xanadu.gn.com> 
 References: <Pine.LNX.4.10.10011061235070.697-100000@xanadu.gn.com> 
@@ -14,40 +14,42 @@ Cc: mtd@infradead.org
 Subject: Re: corruption with mtdblock 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 06 Nov 2000 14:47:45 +0000
-Message-ID: <18194.973522065@redhat.com>
+Date: Mon, 06 Nov 2000 14:54:13 +0000
+Message-ID: <18972.973522453@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-nico@cam.org said:
->  So in our case, q->head_active is 1 by default.
-> Looking at __make_request() you can see the head of the queue is
-> actually skipped when the queue is unplugged.  It is plugged only when
-> actually empty and no request are processed until it gets unplugged
-> again.  All this is done when io_request_lock is held.  That's why I
-> came to the conclusion that requests don't have to be removed earlier.
-> 
+Try this:
 
-OK. How about 'plugging'?
+Index: mtdblock.c
+===================================================================
+RCS file: /home/cvs/mtd/kernel/mtdblock.c,v
+retrieving revision 1.29
+diff -u -r1.29 mtdblock.c
+--- mtdblock.c	2000/11/03 04:59:01	1.29
++++ mtdblock.c	2000/11/06 14:54:06
+@@ -58,6 +58,11 @@
+ #define blkdev_dequeue_request(req) do {CURRENT = req->next;} while (0)
+ #else
+ #define RQFUNC_ARG request_queue_t *q
++static void mtdblock_plug_device(request_queue_t *q, kdev_t dev)
++{
++	/* Do nothing. We don't want plugging */
++	return;
++}
+ #endif
+ 
+ 
+@@ -616,6 +621,7 @@
+ 	blk_dev[MAJOR_NR].request_fn = mtdblock_request;
+ #else
+ 	blk_init_queue(BLK_DEFAULT_QUEUE(MAJOR_NR), &mtdblock_request);
++	blk_queue_pluggable(BLK_DEFAULT_QUEUE(MAJOR_NR), &mtdblock_plug_device)
+ #endif
+ 	kernel_thread (mtdblock_thread, NULL, CLONE_FS|CLONE_FILES|CLONE_SIGHAND);
+ 	return 0;
 
-The code looks like this...
-
-        /*
-         * skip first entry, for devices with active queue head
-         */
-        if (q->head_active && !q->plugged)
-                head = head->next;
-
-
-It may be that if our request function returns without first ending the 
-request (as it does, because all it does is a wake_up()), the queue is 
-'plugged' to wait for requests to be merged. 
-
-Then the kernel thread is proceeding to deal with the requests while the 
-ll_rw_blk code thinks that the driver's request function isn't running.
-
-I'll see if I can find someone to explain the plugging stuff to me :)
 
 --
 dwmw2
