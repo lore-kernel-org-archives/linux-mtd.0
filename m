@@ -1,25 +1,19 @@
-Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QAg8-0006p4-P0
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 19:50:36 +0100
-Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
-	by dummy.domain.name (Postfix) with SMTP id 8FD246D00B9
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 14:46:20 -0400 (EDT)
-Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id 6D96D6D00B5
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 18:46:20 +0000 (UTC)
-From: Frank R Callaghan <f.callaghan@ieee.org>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 11 Jun 2003 14:38:52 -0400
-MIME-Version: 1.0
-Message-Id: <200306111438.52353.f.callaghan@ieee.org>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Help with mtd + jffs2
-Reply-To: f.callaghan@ieee.org
+	id 19QAvA-0006wV-Lv
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 20:06:09 +0100
+Date: Wed, 11 Jun 2003 21:06:42 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Frank R Callaghan <f.callaghan@ieee.org>
+Message-ID: <20030611190642.GA4833@wohnheim.fh-wedel.de>
+References: <200306111438.52353.f.callaghan@ieee.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200306111438.52353.f.callaghan@ieee.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Help with mtd + jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,57 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 11 June 2003 14:38:52 -0400, Frank R Callaghan wrote:
+> 
+> But then I tryed to put the jffs2 file system image onto
+> the device :=
+> 
+> # cp /myapp/jffs2_file_sys.img /dev/mtd0
+> cp: unable to open `/dev/mtd0': No such device
+> #
+> 
+> but I have the device !
+> # ls -al /dev/mtd?
+> crw-------    1 root     root      90,   0 Jan  1  1970 /dev/mtd0
+> crw-------    1 root     root      90,   2 Jan  1  1970 /dev/mtd1
+> crw-------    1 root     root      90,   4 Jan  1  1970 /dev/mtd2
+> crw-------    1 root     root      90,   6 Jan  1  1970 /dev/mtd3
+> crw-------    1 root     root      90,   8 Jan  1  1970 /dev/mtd4
 
-I have been trying to get the mtd driver working with the flash
-device on the TS-5300 card - all seemed to be going well :=3D
+device != device node
 
-$Id: ftl.c,v 1.50 2003/05/21 10:49:47 dwmw2 Exp $
-physmap flash device: 200000 at 9400000
- Amd/Fujitsu Extended Query Table v1.1 at 0x0040
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-kmod: failed to exec /sbin/modprobe -s -k cmdlinepart, errno =3D 2
-cmdlinepart partition parsing not available
-kmod: failed to exec /sbin/modprobe -s -k RedBoot, errno =3D 2
-RedBoot partition parsing not available
-Using physmap partition definition
-Creating 3 MTD partitions on "Physically mapped flash":
-0x00000000-0x000e0000 : "BOOT FIRMWARE"
-mtd: Giving out device 0 to BOOT FIRMWARE
-ftl_cs: FTL header not found.
-0x000e0000-0x00100000 : "BIOS-DO_NOT_TOUCH"
-mtd: Giving out device 1 to BIOS-DO_NOT_TOUCH
-ftl_cs: FTL header not found.
-0x00100000-0x00200000 : "PNC-2000 filesystem"
-mtd: Giving out device 2 to PNC-2000 filesystem
-ftl_cs: FTL header not found.
+A door alone doesn't make a mansion either. :)
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 000e0000 00010000 "BOOT FIRMWARE"
-mtd1: 00020000 00010000 "BIOS-DO_NOT_TOUCH"
-mtd2: 00100000 00010000 "PNC-2000 filesystem"
+Set CONFIG_MTD_CHAR to yes or better yet set CONFIG_MTD_BLOCK to yes
+and use /dev/mtdblock* instead.  Those devices are usually much nicer
+unless you really *really* know you don't want them.
 
-But then I tryed to put the jffs2 file system image onto
-the device :=3D
+Jörn
 
-# cp /myapp/jffs2_file_sys.img /dev/mtd0
-cp: unable to open `/dev/mtd0': No such device
-#
-
-but I have the device !
-# ls -al /dev/mtd?
-crw-------    1 root     root      90,   0 Jan  1  1970 /dev/mtd0
-crw-------    1 root     root      90,   2 Jan  1  1970 /dev/mtd1
-crw-------    1 root     root      90,   4 Jan  1  1970 /dev/mtd2
-crw-------    1 root     root      90,   6 Jan  1  1970 /dev/mtd3
-crw-------    1 root     root      90,   8 Jan  1  1970 /dev/mtd4
-
-So Close but, So Far ;(
-
-Can anyone suggest what I may have cocked-up ?
-Where I can go from here - be nice ;)
-
-TIA,
-	Frank.=20
+-- 
+It's just what we asked for, but not what we want!
+-- anonymous
