@@ -1,16 +1,15 @@
-Received: from congress107.linuxsymposium.org ([209.151.18.107] helo=lapdancer.baythorne.internal)
+Received: from [194.67.151.5] (helo=okawango.mik.ru ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15QBF3-0007FX-00
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2001 18:17:37 +0100
-Date: Sat, 28 Jul 2001 01:22:23 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: <postmaster@artesyncp.com>, <postmaster@yottayotta.com>,
-   <postmaster@tritec.de>
-cc: <smcnutt@artesyncp.com>, <zluo@yottayotta.com>, <Peter.Blum@tritec.de>,
-   <linux-mtd@lists.infradead.org>
-Subject: Re: Antigen found W32/Sircam@mm.Worm (Norman,CA(InoculateIT)) virus
- (fwd)
-Message-ID: <Pine.LNX.4.33.0107280114540.8516-100000@lapdancer.baythorne.internal>
+	id 15QSIe-0008DB-00
+	for <linux-mtd@lists.infradead.org>; Sat, 28 Jul 2001 12:30:28 +0100
+Received: from localhost (ruslan@localhost [127.0.0.1])
+	by okawango.mik.ru (8.10.2/8.10.2) with ESMTP id f6SFj4E00194
+	for <linux-mtd@lists.infradead.org>; Sat, 28 Jul 2001 15:45:04 GMT
+Date: Sat, 28 Jul 2001 15:45:04 +0000 (/etc/localtime)
+From: Ruslan Satlykov <ruslan@mik.ru>
+To: linux-mtd@lists.infradead.org
+Subject: Acrosser ARB-1047
+Message-ID: <Pine.LNX.4.21.0107281541340.191-100000@okawango.mik.ru>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -24,38 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Subscribers from artesyncp.com, yottayotta.com, tritec.de also ejected. 
-Again, please do not resubscribe until/unless your servers are fixed. Use 
-a non-work address if your company can't run a proper mail system. 
+Hi,
 
-Subsequent offenders will not be notified; just removed.
+ Is there are support for the Acrosser's AR-B1047 flash card? This board
+have a own BIOS, detected by system BIOS at startup. AR-B1047 has support
+for many types of chips, such as flash, ERPOMs and SRAM. Can I access to
+that chips and use it with mtd?
 
--- 
-dwmw2
-
----------- Forwarded message ----------
-Date: Fri, 27 Jul 2001 23:34:33 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: postmaster@vortex.is, kd@vortex.is
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Antigen found W32/Sircam@mm.Worm (Norman,CA(InoculateIT)) virus
-
-On 27 Jul 2001 Antigen wrote:
-
-> Antigen for Exchange found OCTOBER.doc.bat infected with
-> W32/Sircam@mm.Worm (Norman,CA(InoculateIT)) virus.
-
-...and it spammed the mailing list to tell us all about it instead of
-sending the rejection message to the SMTP reverse-path as RFC2821
-requires.
-
-All addresses at vortex.is have now been removed from the list. Please do
-not resubscribe from this domain until the server complies with RFC2821.
-
--- 
-dwmw2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+ Thank you,
+ Ruslan
