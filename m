@@ -1,20 +1,23 @@
-Received: from [203.196.146.243] (helo=Mistralsoftware.com)
+Received: from snifit.smb.utfors.se ([195.58.112.20])
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18g4tk-0006Y7-00
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2003 15:22:09 +0000
-Received: from skumar [192.168.13.30]
-	by mistralsoftware.com [192.168.10.12]
-	with SMTP (MDaemon.PRO.v5.0.0.R)
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2003 21:04:34 +0530
-Message-ID: <000901c2cc64$586adef0$1e0da8c0@skumar>
-From: "Skumar" <skumar@mistralsoftware.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 4 Feb 2003 21:14:47 +0530
-MIME-Version: 1.0
-Subject: not able to build linux image
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 18g5ri-0006v7-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2003 16:24:06 +0000
+Received: from LUMENTIS02 ([212.105.56.242])
+ by snifit.smb.utfors.se (iPlanet Messaging Server 5.2 Patch 1 (built Aug 19
+ 2002)) with SMTP id <0H9S00DCVLK5HV@snifit.smb.utfors.se> for
+ linux-mtd@lists.infradead.org; Tue, 04 Feb 2003 17:24:06 +0100 (MET)
+Date: Tue, 04 Feb 2003 17:24:05 +0100
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+In-reply-to: <200302041501.02542.phil@river-bank.demon.co.uk>
+To: Phil Thompson <phil@river-bank.demon.co.uk>,
+ David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-to: joakim.tjernlund@lumentis.se
+Message-id: <IGEFJKJNHJDCBKALBJLLIEPAFJAA.joakim.tjernlund@lumentis.se>
+MIME-version: 1.0
+Subject: RE: Different zlib CRC Algorithms
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,55 +29,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-i am working on linux 2.4.18 kernel
-i have patched it with mtd-snapshot-20030121.
-by running sp patchin.sh -j (path to linux kernel)
+> mkfs.jffs2 is linked against -lz but first links in crc32.o from the mtd tree, 
+> ie. it seems to be using the kernel zlib not the userspace zlib (at least for 
+> crc32()).
+> 
+> I found this putting together my bootloader JFFS2 reader which I'm doing first 
+> as a Linux application - and so using userspace zlib. I have to calculate the 
+> CRC as follows...
+> 
+> 	crc = (crc32(crc ^ 0xffffffff),buf,len) ^ 0xffffffff);
+> 
+> ...otherwise all the CRC checks fail.
 
-when i run bzImage i ma getting following error
+What bootloader? If ppcboot/uboot I think you will find that
+ppcboot/uboot has 2 versions of crc32 and you are using the
+wrong one?
 
- make zImage
-scripts/split-include include/linux/autoconf.h include/config
-gcc -D__KERNEL__ -I/home/skumar/remove/linux/include -Wall -Wstrict-prototyp
-es -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common 
--pipe -mpreferred-stack-boundary=2 -march=i686   -DKBUILD_BASENAME=main -c -
-o init/main.o init/main.c
-In file included from /home/skumar/remove/linux/include/linux/fs.h:317,
-                 from
-/home/skumar/remove/linux/include/linux/capability.h:17,
-                 from /home/skumar/remove/linux/include/linux/binfmts.h:5,
-                 from /home/skumar/remove/linux/include/linux/sched.h:9,
-                 from /home/skumar/remove/linux/include/linux/mm.h:4,
-                 from /home/skumar/remove/linux/include/linux/slab.h:14,
-                 from /home/skumar/remove/linux/include/linux/proc_fs.h:5,
-                 from init/main.c:15:
-/home/skumar/remove/linux/include/linux/jffs2_fs_i.h:22: field `fragtree'
-has incomplete type
-In file included from /home/skumar/remove/linux/include/linux/fs.h:693,
-                 from
-/home/skumar/remove/linux/include/linux/capability.h:17,
-                 from /home/skumar/remove/linux/include/linux/binfmts.h:5,
-                 from /home/skumar/remove/linux/include/linux/sched.h:9,
-                 from /home/skumar/remove/linux/include/linux/mm.h:4,
-                 from /home/skumar/remove/linux/include/linux/slab.h:14,
-                 from /home/skumar/remove/linux/include/linux/proc_fs.h:5,
-                 from init/main.c:15:
-/home/skumar/remove/linux/include/linux/jffs2_fs_sb.h:8:29:
-linux/workqueue.h: No such file or directory
-In file included from /home/skumar/remove/linux/include/linux/fs.h:693,
-                 from
-/home/skumar/remove/linux/include/linux/capability.h:17,
-                 from /home/skumar/remove/linux/include/linux/binfmts.h:5,
-                 from /home/skumar/remove/linux/include/linux/sched.h:9,
-                 from /home/skumar/remove/linux/include/linux/mm.h:4,
-                 from /home/skumar/remove/linux/include/linux/slab.h:14,
-                 from /home/skumar/remove/linux/include/linux/proc_fs.h:5,
-                 from init/main.c:15:
-/home/skumar/remove/linux/include/linux/jffs2_fs_sb.h:92: field `wbuf_task'
-has incomplete type
-make: *** [init/main.o] Error 1
-
-why?
-
-regards
-sharath
+        Jocke
