@@ -1,23 +1,20 @@
-Received: from mailserv.intranet.gr ([146.124.14.106])
+Received: from orngca-mls01.socal.rr.com ([66.75.160.16])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q1SG-0002L9-D2
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 09:59:41 +0100
-Received: from mailserv.intranet.gr (localhost [127.0.0.1])
-	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id h5B92TD04875
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 12:02:29 +0300 (EEST)
-Message-ID: <3EE6EF42.7030405@intracom.gr>
-Date: Wed, 11 Jun 2003 11:58:42 +0300
-From: Pantelis Antoniou <panto@intracom.gr>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <3EE6EBA0.3080508@intracom.gr>
-	<1055321465.2097.9.camel@passion.cambridge.redhat.com>
-In-Reply-To: <1055321465.2097.9.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 19Q1TR-0002NJ-QC
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:00:54 +0100
+Received: from [192.168.2.4] (66-75-241-113.san.rr.com [66.75.241.113])
+	h5B8wdM26459	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 01:58:39 -0700 (PDT)
+From: roger <rogerxxmaillist@san.rr.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1055118239.10424.49.camel@localhost3.localdomain>
+References: <1055118239.10424.49.camel@localhost3.localdomain>
+Message-Id: <1055322085.31819.31.camel@localhost3.localdomain>
+Mime-Version: 1.0
+Date: 11 Jun 2003 02:01:25 -0700
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Cram FS on NAND - How to do this?
+Subject: Re: Problems with using doc2001 module
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
+ok. just for kicks. i booted into DOS using M-SYS's tffs_5.1.4_DOS_TOOLS
+and dinfo and dformat refused to find the DiskonChip even after
+specifing it's address of 0xfff00000.
 
->On Wed, 2003-06-11 at 09:43, Pantelis Antoniou wrote:
->
->>Hi
->>
->>As it currently stands the only filesystems supporting
->>raw NAND flash are:
->>
->>JFFS2: Read/write, compressed, best support, slow startup.
->>YAFFS: Read/write, not compressed, newcomer, fast startup.
->>
->>I have a requirement to have a compressed read only
->>root filesystem in my board and I've come to the
->>conclussion that the best fit would be CRAMFS if only
->>had any concept of bad blocks.
->>
->
->I think it would probably be better to implement this as a block device
->driver, or perhaps as an extension to the existing mtdblock/mtdblock_ro
->drivers.
->
->
-That is a valid approach.
+something isn't right here.  it's obviously something with the code.  I
+also get the same results on a duplicate 440BX motherboard.
 
-I take it that you mean a new MTD block device over NAND that
-automatically skips over bad blocks and presents an error free
-block interface for use by read only filesystems.
+arrrghh.
 
-Thanks, it really pays off to ask questions first, and hack afterwards ;)
+On Sun, 2003-06-08 at 17:23, roger wrote:
+> For the past couple of days and using every available option with
+> docprobe (kernel compile time options), I have not been able to get the
+> several DiskOnChips-2001 recognized by kernel 2.4.20.
+> 
+> by a fluke accident, i've gotten the DOC recognized.
+> 
+> I'm on a 2x750P3 SMP Tyan Tiger 1832dl and induced a "kernel oops" on
+> cpu1 by trying to insmod ./bios.o
+> (http://www.openbios.info/download/index.html
+> devbios-0.3.2.tar.gz).
+> 
+> the docprobe.o is compiled with "Physical Address = 0" and no other
+> options for docprobe.o.  ... using doc2001.o
+> 
+> i've attached dmesg output below of the oops condition  when trying to
+> insmod bios.o and then after the kernel-oops occurred, modprobed
+> mtdcore, mtdchar,dos2001,dosprobe doc_config_location=0xfff00000. 
+> (unknown if the doc_config_location is needed...have yet to try without
+> as i've only duplicated 3 times.)
+> 
+> (i've been advised that there might be a "hidden write enable" problem -
+> i.e. there is a special GPIO line used to control write enable in
+> addition to the normal mechanism.)
+-- 
 
-Regards
-
-Pantelis
+Roger
+http://www.eskimo.com/~roger/index.html
