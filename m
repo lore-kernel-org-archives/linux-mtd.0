@@ -1,42 +1,56 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from mescaline.gnu.org ([158.121.106.21])
+Received: from tmmi196-012.telusvelocity.net
+	([209.115.196.12] helo=Wakko.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 113mDb-0001H2-00
-	for mtd@infradead.org; Mon, 12 Jul 1999 20:58:27 +0100
-Date: Mon, 12 Jul 1999 16:07:22 -0400
-Message-Id: <199907122007.QAA11851@psilocin.gnu.org>
-From: Richard Stallman <rms@gnu.org>
-To: David.Woodhouse@mvhi.com
-CC: jgg@deltatee.com, mtd@infradead.org
-In-reply-to: <E113dlV-0006YU-00@devel2.axiom.internal> (message from David
-	Woodhouse on Mon, 12 Jul 1999 11:56:53 +0100)
-Subject: Re: Response from M-Systems
-Reply-to: rms@gnu.org
-References: <E113dlV-0006YU-00@devel2.axiom.internal>
+	id 118bE4-0000mk-00
+	for mtd@infradead.org; Mon, 26 Jul 1999 04:14:53 +0100
+Date: Sun, 25 Jul 1999 21:14:27 -0600 (MDT)
+From: Jason Gunthorpe <jgg@ualberta.ca>
+To: dony <dony.he@huawei.com.cn>
+cc: linux-kernel@vger.rutgers.edu, mtd@infradead.org
+Subject: Re: embedded linux help...
+In-Reply-To: <004f01bec2a5$6b10ad40$34750981@huawei.com.cn>
+Message-ID: <Pine.LNX.3.96.990725210700.6434A-100000@Wakko.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-    >  The lawyer told me that licensing the distribution of a program
-    > automatically licenses users to run it.  I was relieved.
 
-    That seems very strange to me - I'd be very interested to know why he believes 
-    this.
+On Wed, 30 Jun 1999, dony wrote:
 
-Lots of things in the law seem strange to non-lawyers.
-His answer was a (pleasant) surprise to me, too.
+>    I want to build embedded linux into FLASHROM . But I some questions
+> to ask: 
 
-    What I'm trying to say is that software patents are a local issue. 
+I have been working on exactly this problem and then some for the past
+little while. Hopefully I'll release a first draft of my stuff to the MTD
+group sometime this week (http://www.linux-mtd.infradead.org/). 
 
-Local to the United States, the UK, Japan, and maybe a year from now
-all of Europe.  It is rather callous to dismiss such a large part of
-the computer-using world as "local".
+>   1 After BIOS starts, how can it switch to FLASHROM address and load
+> the linux kernel there? Do I have to write some BootLoader codes to load
+> the kernel (similar to LILO)? If so, How should I begin to write? Can
+> you give me some example codes or detailed hints? 
 
+Yes, you will need to write a custom boot loader, when I left off work
+Friday I had that doing everything but setting up the final bits to jump
+to the kernel. The boot loader is structured as a bios extension and
+modeled after the etherboot package - it boots directly from an image
+stored in a FFS2 file system for which I have also written a R/W linux
+driver for.. To make use it your flash has to map an 8k region of itself
+into upper memory. 
 
-We can offer a company like M-systems certain kinds of cooperation
-if they cooperate with our community; we can offer this cooperation
-in the context of our relationship with them specifically.
-But we cannot make basic global decisions for the sake of
-our relationship with one company.
+>   2 After linux kernel starts, then how it find its root filesystem and
+> mount it? Or can I remove the root file system and only let the kernel
+> run? 
+
+I've done two things in the past, the first is a simple compressed root
+image and using the boot loader to bring that and the kernel into ram -
+but that is not very good if you need to store state information, so my
+latest focus has been to place a filesystem on the flash, using FFS2, a FS
+designed specifically for flash.
+
+Jason
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
