@@ -1,21 +1,18 @@
-Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNTaU-0003T5-7W
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 06:02:29 -0400
-Message-ID: <37673.192.168.0.2.1099043843.squirrel@192.168.0.2>
-In-Reply-To: <418213C3.3050706@magellan-technology.com>
-References: <20041028230640.GB13105@home.fluff.org>
-	<4181840D.2020605@magellan-technology.com>
-	<1099035223.22387.529.camel@thomas>
-	<418213C3.3050706@magellan-technology.com>
-Date: Fri, 29 Oct 2004 10:57:23 +0100 (BST)
-From: jasmine@linuxgrrls.org
-To: "Aras Vaichas" <arasv@magellan-technology.com>
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CNTnD-0003e9-G9
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 06:15:37 -0400
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id i9TAC44r001577
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Oct 2004 18:12:04 +0800
+Message-ID: <41821A4D.3060701@avantwave.com>
+Date: Fri, 29 Oct 2004 18:24:13 +0800
+From: mike <mikelee@avantwave.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: Read/nBusy via interrupt
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Access mtdblock from a driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Thomas Gleixner wrote:
+Dear all
 
->> No. Usually R/B is connected anyway.
->
-> usually? If the software doesn't need it, then why would you connect it?
+    Could i access a mtdblock from a device driver? Or MTD provide me 
+another interface for driver to access?
 
-Because hardware engineers usually design the hardware to be as flexible
-as possible, in light of the fact that they don't know how the operating
-system is going to want to use the hardware.
+    Actually, i am under a situation that i have a development board 
+with usb client, also it provide me a USB ram disk driver.
+    I want to change it to be MTD access instead of sdram. I just can 
+figure out two method, 1) USB ram disk driver access MTD function , 2) 
+New Application program to act as the middle tier.
 
-It's absolutely essential to implement interrupts on the RnB line if
-you are going to run a realtime OS on the hardware, because polling
-is 100% unacceptable in that situation.  You must poll with interrupts
-disabled on a bus-connected Flash because otherwise interrupts and DMA
-operations could potentially interfere with Flash operations.
+    please fix me if i am wrong
 
-Obviously in a realtime OS with target latency <50usecs, spending maybe
-ten milliseconds with interrupts disabled is completely unacceptable.
+    Thanks for helping
 
-So, connect the damned wire and shut up.
-
--J.,
-software and hardware engineer.
+Mike,Lee
