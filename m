@@ -1,22 +1,22 @@
 Received: from sccrmhc01.attbi.com ([204.127.202.61])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nIJm-0006iQ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:34:34 +0100
+	id 17nIR9-0006k1-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:42:11 +0100
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: Mark Meade <mark@lakeshoremicro.com>
-To: mateo@posta.star.si,
- dwmw2@infradead.org,
- hno@marasystems.com
+To: Henrik Nordstrom <hno@marasystems.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Subject: Re: DOC 2000 and GRUB
-Date: Fri, 6 Sep 2002 08:33:13 -0400
-Cc: Russ.Dill@asu.edu,
+Date: Fri, 6 Sep 2002 08:40:26 -0400
+Cc: Russ Dill <Russ.Dill@asu.edu>,
+ mateo@posta.star.si,
  linux-mtd@lists.infradead.org
-References: <20020906112553.896FB394E@sitemail.everyone.net>
-In-Reply-To: <20020906112553.896FB394E@sitemail.everyone.net>
+References: <200209061149.02058.hno@marasystems.com> <20020906110053.EFQR11061.sccrmhc01.attbi.com@there> <200209061427.15220.hno@marasystems.com>
+In-Reply-To: <200209061427.15220.hno@marasystems.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20020906123402.HNFT11061.sccrmhc01.attbi.com@there>
+Message-Id: <20020906124140.HVSQ11061.sccrmhc01.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,60 +28,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mateo Anderson wrote:
-> Is this modified version comitted in the cvs?
+Henrik Nordstrom wrote:
+> I tried to patch my GRUB to read 0x00 as 0xFF some days ago, but it failed
+> miserably.. but I only changed the ifs around the message. Maybe there is
+> other things that need to be changed?
 
-No, I just started experimenting (with Grub) yesterday.  Things appear to be 
-working great on the DoC Millennium, but I haven't done enough testing to be 
-confident enough to submit a patch.  
+I don't think so -- all I did was accept UnitSizeFactors of both 0x0 and 
+0xff.  No other changes were needed to make it work on a Millennium.
 
-> >I'm guessing that many problems are caused by having the nftl
-> >module loaded during a fdisk, nftl_format, and/or doc_loadbios.
->
-> Are you referring to kernel modules?
-> If so, I have these build in (no modules), as suggested by
-> DOC and GRUB HOW-TO.
-
-Yes.  I'm thinking about revising the how-to to suggest using modules for the 
-development system, and built-in for the kernel booting from the DoC.  
-Alternatively, you could use the built-in stuff all the time, but make sure 
-to reboot often:
-
-http://lists.infradead.org/pipermail/linux-mtd/2002-June/005123.html
-
-Wolfgang Denk submitted a patch to address this problem; it sounds like it 
-would eliminate the need to reboot:
-
-http://lists.infradead.org/pipermail/linux-mtd/2002-August/005831.html
-
-Being able to use DFORMAT to install GRUB and do the NFTL format eliminates 
-the need to use both doc_loadbios and nftl_format, and should make the choice 
-of built-in or module irrelevant.  However, Wolfgang's patch still seems to a 
-very good idea.
-
-> Steps:
-> 1) Boot DOS and use DFORMAT 5.x to format the DOC, with
->    the appropriate space for the GRUB firmware (check the
->    size of the stage1 file).
-> 2) Boot to Linux, use the doc_loadbios to load the GRUB
->    firmware (or use DFORMAT - what parameters??).
-> 3) Format the /dev/nftla.
-> 4) Copy everything to the /dev/nftla1.
-> 5) Boot from DOC.
->
-> Is this correct?
-
-Close.  I've been doing the following (with some Grub modifications):
-
-1) dformat /win:xxxx /BDKF0:grub_firmware
-
-Use dformat 5.x to install grub, and the NFTL format.  You'll end up with one 
-FAT partition on the DoC.  This eliminates the need to use "doc_loadbios" and 
-"nftl_format".
-
-2) It's necessary (on my PC) to turn it off, rather than just rebooting.  The 
-howto explains why this is required.
-
-3) boot to Linux, fdisk, mke2fs, copy everything to /dev/nftla1
-
-4) boot from DoC
+It's my understanding that there are some DoC 2000's that may have values 
+other than 0x0 or 0xff.  In this case, we might need to move some of David's 
+changes from nftlmount.c into Grub's bdev_diskonchip.c.
