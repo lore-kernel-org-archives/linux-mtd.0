@@ -1,16 +1,14 @@
-Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
-	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Avwtq-0007kM-Ux
-	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 11:08:23 +0000
-Message-ID: <403C8225.3040801@arcom.com>
-Date: Wed, 25 Feb 2004 11:08:21 +0000
-From: David Vrabel <dvrabel@arcom.com>
-MIME-Version: 1.0
-To: linux-mtd list <linux-mtd@lists.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: David Vrabel <dvrabel@arcom.com>
+In-Reply-To: <403C8225.3040801@arcom.com>
 References: <20040225012449.90118.qmail@web20722.mail.yahoo.com>
-In-Reply-To: <20040225012449.90118.qmail@web20722.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	 <403C8225.3040801@arcom.com>
+Content-Type: text/plain
+Message-Id: <1077712272.7826.634.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 25 Feb 2004 12:31:12 +0000
 Content-Transfer-Encoding: 7bit
+cc: linux-mtd list <linux-mtd@lists.infradead.org>
 Subject: Re: Why CFI_DEVICETYPE_X8 in cfi_send_gen_cmd()?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -21,39 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Shawn Jin wrote:
-> 
-> In cfi_cmdset_0002.c, there is a piece of comment stating that the
-> CFI_DEVICETYPE_X8 is needed even when cfi->device_type !=
-> CFI_DEVICETYPE_X8. Why is it the case?
+On Wed, 2004-02-25 at 11:08 +0000, David Vrabel wrote:
+> Shawn Jin wrote:
+> > 
+> > In cfi_cmdset_0002.c, there is a piece of comment stating that the
+> > CFI_DEVICETYPE_X8 is needed even when cfi->device_type !=
+> > CFI_DEVICETYPE_X8. Why is it the case?
 
-It appears to be to handle the case of x16 chips in x8 mode.  In such a 
-case the device width is 2, interleave is 1 and buswidth is 1. 
-Therefore, cfi_build_cmd_addr() will not generate the correct unlock 
-addresses. (i.e., there's no integral solution to 0xaaa = addr * 
-device_width (2) * interleave (1) which is the required unlock address.)
+Because you're using it in this case to shift the unlock address. But
+the unlock address was _already_ shifted, because of way the table in
+jedec_probe.c works. It already gives you different unlock addresses
+according to the device type, and they are _already_ shifted. You're
+given a byte-address by the table and that's why you use it as one.
 
-Not sure how to handle all possible arrangements of chips.
+I suspect we could ditch the multiple entries in the table and revert to
+using only one 'uaddr', and shifting it with the device type as you 
+(er, he) suggest.
 
-Dev. width | interleave  | buswidth |   addr1 |   addr2
--------------------------------------------------------
-2          | 1           | 2        |   0xaaa |   0x554
-2          | 1           | 1        |   0xaaa |   0x555
-4          | 2           | 8        |  0x2aa8 |  0x1550
 
-(addr1 and addr2 are byte addresses -- the AMD datasheets typically 
-gives word addresses)
-
-> So I replaced CFI_DEVICETYPE_X8 with cfi->device_type in both
-> do_erase_oneblock() and do_write_oneword(). I tested and found that erase
-> can succeed but write still fails.
-
-Maybe you're using do_write_buffer(..) instead? There's a comment near 
-it that says it may well be broken for interleaved chips, though.
-
-David Vrabel
 -- 
-David Vrabel, Design Engineer
-
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+dwmw2
