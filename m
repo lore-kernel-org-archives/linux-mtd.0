@@ -1,18 +1,16 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
+Received: from venus.webvis.net ([128.242.238.143] helo=eware.com.sg)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177pax-0001FQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 04:36:55 +0100
-Content-Type: text/plain
-Content-Disposition: inline
+	id 177pnn-0001GR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 04:50:11 +0100
+Message-ID: <3CE24BAC.1040005@eware.com.sg>
+Date: Wed, 15 May 2002 19:51:08 +0800
+From: yuanfei <yuanfei@eware.com.sg>
+Reply-To: yuanfei@eware.com.sg
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: MTD on L7205DB and AM29LV160DT
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Date: Tue, 14 May 2002 20:36:50 -0700 (PDT)
-From: Jim Zeus <zeusj@firstlinux.net>
-To: "Subhash Chandra" <schandra@sasken.com>
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: NAND vs NOR Flashs?
-Reply-To: zeusj@firstlinux.net
-Message-Id: <20020515033651.763F636F9@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,27 +22,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---- "Subhash Chandra" <schandra@sasken.com> wrote:
->Hi,
->
->I would like to know the diff. between NAND and NOR flash types.
->Any pointers are appreciated.
+Hello, I am currently trying to turn on MTD driver for above hardware 
+configuration.
+I have turn on:
+MTD core support
+ROM chips in bus mapping
+CFI support
+physical mapping of flash chip.
 
-The size of NAND flash (8-128M)is always bigger than NOR flash (1-16M);
-Reading a NOR flash is a little faster than NAND flash;
-Erasing and Writing a NAND flash is much faster than NOR flash;
-So NAND flash is more fit for storing data and NOR flash is more fit for storing code.
-And there is ECC (error correction) in NAND flash.
-You can access NOR flash with SRAM interface and you have to do it with I/O port to NAND flash.
-Those are some of the differences between NAND and NOR flash.
+but after boot my kernel, there is nothing happen to the MTD driver. It 
+seems it does not working at all.
 
+does any one can tell me what kinds of config I should use. to make it 
+working??
 
-Jim Zeus
-
-
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+thanks.
