@@ -1,18 +1,15 @@
-Received: from maila.telia.com ([194.22.194.231])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cBUI-0007VB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 22:03:30 +0100
-Message-ID: <001f01c23d8d$11bbd240$0200a8c0@telia.com>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "Dave Ellis" <DGE@sixnetio.com>
-Cc: <linux-mtd@lists.infradead.org>
-References: <00512BA4F9D3D311912A009027E9B8F407E475@NT>
-Subject: Re: Disk blocks for long periods
-Date: Tue, 6 Aug 2002 23:06:01 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from user11.ucall.net ([63.126.131.11] helo=guinan.diversehost.net)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17cBrh-0007Wq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 22:27:41 +0100
+Subject: [Fwd: Re: boot from diskonchip millenium]
+From: Glen <mtd@empireenterprises.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Date: 06 Aug 2002 17:26:53 -0400
+Message-Id: <1028669214.1719.1.camel@glen>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,45 +21,70 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Thank you for your help thus far.  
 
-> joakim.tjernlund@lumentis.se said:
+
+> This always happens when the grub_firmware was compiled by
+> running aclocal/autoconf/automake commands from README_DiskOnChip and
+> specifying the --enable-diskonchip-mil option.  [The latest patches are
+> 0.92 and 2002-07-29].
+
+This is what I did, with the 0.92 patch; are you saying I should have
+done otherwise?  
+
+I started from scratch, and recompiled everything, reformatted, and the
+like.  Now I get the following message:  
+
+
+DoC Mil D000
+E698
+Jumping to Grub
+Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
+Unknown ChipID a0 at c8000
+DiskOnChip Millennium found at d0000
+floor 0, chip 0; manufacturer: Toshiba
+Chip: Toshiba TC58V64AFT/DC, total size: 8MiB
+	erase unit: 8192 bytes, page: 512 byes
+unknown manufacturer code: 0x43
+Total of 1 chips found - total capacity 8 MiB
+Scanning for NFTL Media Header
+NFTL Media Header found in flash sector 208
+nftl_rawread(): error 16 in memcpy() or earlier, press any key
+
+
+Interestingly enough, after I boot the machine to the HDD by entering
+the commands in grub manually, I no longer have a nftl partition.  
+
+Does grub write to the DOC upon booting? 
+
+
+-g
+
+
+On Tue, 2002-08-06 at 14:04, Ilguiz Latypov wrote:
 > 
-> > hmm, I just noticed that the BIG kernel lock is held while 
-> > the erasing thread executes, since kupdate takes it in 
-> > sync_old_buffers() (if I understand this code correctly). 
-> > Maybe that is causing current->need_resched to be set?
-> > 
-> > Also, is it not a bad idea to hold the kernel lock for, 
-> > possibly, seconds while erasing sectors?
+> On 6 Aug 2002, Glen wrote:
 > 
-> If it is doing that, it doesn't seem right to me. But I 
-> thought jffs2/mtd bypassed the kernel buffers, so maybe 
-> kupdate and sync_old_buffers() are not involved here? I don't
-> know much about this.
-
-hmm, just remembered that a spin_lock() is NOP on Uni Processor computers.
-
-Kupdate does the erasing and puts a CLEANMARKER on it when its 
-done.  Just follow sync_old_buffers()  until it ends up in jffs2_write_super()
-
-BTW
-          jffs2_mark_erased_blocks() also checks the newly erased block for
-         0xffffffff by reading the EB back. Removing this test improves my litte test case 
-         I wrote about in my previous post to the mtd list. The max copy time is reduced
-         from 20 seconds to 15 seconds.
-
-        Jocke 
-
+> > Attempting to open /boot/grub/menu.lst 0x0 0x0
+> > Attempting to open /boot/grub/menu.lst 0x0 0x1
+> 
+> I believe there were attempts to open configuration file on disk 0xe0
+> (DiskOnChip fake BIOS drive number just for the GRUB's internal BIOS disk
+> access API).  This always happens when the grub_firmware was compiled by
+> running aclocal/autoconf/automake commands from README_DiskOnChip and
+> specifying the --enable-diskonchip-mil option.  [The latest patches are
+> 0.92 and 2002-07-29].
 >  
-> > I assume your chip does not support buffered writes? or is it 
-> > just do_write_one_word() that is causing the log delays?
+> > Ideas??
 > 
-> No, it doesn't support buffered writes. The long delay I saw
-> comes from sleeping for a jiffie during each call to
-> do_write_oneword().
-
-I tried your patch and it improved my write times as well. Thanks
-
+> If you created a partition within NFTL layer, the "root (dc0,0)" command 
+> would be worth trying.
 > 
-> Dave Ellis
-> dge@sixnetio.com
+> Ilguiz
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
