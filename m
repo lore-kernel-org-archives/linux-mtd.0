@@ -1,20 +1,18 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BPyfk-0002i4-C0
-	for linux-mtd@lists.infradead.org; Tue, 18 May 2004 08:05:56 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Wookey <wookey@aleph1.co.uk>, linux-mtd@lists.infradead.org
-Date: Tue, 18 May 2004 14:41:25 +1200
-References: <20040517163945.GJ12570@knossos.aleph1.co.uk>
-In-Reply-To: <20040517163945.GJ12570@knossos.aleph1.co.uk>
+	id 1BQ1ni-0003An-BS
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2004 11:26:22 +0100
+From: "Simon Haynes" <simon@baydel.com>
+To: linux-mtd@lists.infradead.org,
+              Frederic Janot <f.janot@ateme.fr>
+Date: Tue, 18 May 2004 11:20:43 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20040518070547.9FF6D5209@blood.actrix.co.nz>
-cc: YAFFS list <yaffs@toby-churchill.org>
-Subject: Re: blkmtd (and YAFFS)
-Reply-To: manningc2@actrix.gen.nz
+Message-ID: <40A9F18B.12350.192BB7@localhost>
+In-reply-to: <1084808911.1659.20.camel@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Subject: Re: jffs2_get_inode_nodes(): Data CRC failed on NAND chip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As David already pointed out, CF hides the ECC stuff (indeed some CF is not 
-even based on NAND flash) so YAFFS is probably not really the best choice.
+I have had similar problems to this.  As you reboot you must make sure that root is 
+remounted read only. If you don't a reboot can cause the JFFS2 garbage collector to 
+be stopped mid operation. JFFS2 is verbose in error reporting. I suspect that your 
+files are still ok. There was a bug in the JFFS2 layer which caused the garbage 
+collector not to flush it's write buffer on remount read only. This would not screw up 
+the filesystem but it would generate messages for uncleanly finished garbage 
+operations. I have discussed this recently and it should be available via CVS now.
 
-> I know we're not supposed to talk about CF cards here, but I'm not sure who
-> else to ask about this...
+I have had discussions about the empty flash messages too. It seems it is not a 
+problem. If the message concerns you move it to KERN_DEBUG
 
-Yes, mentioning CF on mtd is poor form :-).
->
-> We have recently found that it's very easy to wear out crummy CF cards
-> using conventional disk-journalling systems (ext3 wears a hole in the end
-> of a 512MB flash card in <10 reboots) because every write goes through the
-> journal section of the device, and clearly its internal controller is doing
-> a very simple sector->flashpage mapping (yes, we should have turned off
-> atime, but still it's amazingly exactly not what you wanted :-)
->
-> So what I really want to do is use something that distributes the writes
-> better than the internal controller so I'm thinking that YAFFS or JFFS2
-> should do a better job, but still give us journalling/power fail safety.
->
-> blkmtd appears to allow this but I see few mentions of it since early 2002.
-> Is it stable, does it work, has anyone ever tried it with YAFFS?
+Hope this helps
 
-CF always has been and always will be a "Kleenex technology" for the consumer 
-market. Designing it in as part of a rugged system has always been ill 
-advised.
+Simon.
 
-CF controllers don't do explicit wear levelling. At least some do "implicit 
-wear levelling"  by using a free pool rather like SmartMedia does. It would 
-appear though that some don't even do that.
+On 17 May 2004 at 17:48, Frederic Janot wrote:
 
-CF cards do not necessarily fail due to wear-out. They can get screwed up by 
-corrupting their logical to physical mapping which I hunch is the more likely 
-scenario. If this is happening then extra wear levelling is not going to help.
+> Hi,
+> 
+> I've got a problem when using jffs2 filesystem on a nand flash device.
+> 
+> I've created a root file system image on my pc (little-endian) from
+> /rootfs directory which contain all needed files. I burn this image
+> into a nand flash (samsung k9f5608 - 32MB nand with 512+16 bytes per
+> pages) on a board with a power pc processor (big-endian).
+> 
+> So, on the pc, i do :
+> # mkfs.jffs2 -p --root=/rootfs -e 16384 -b -o fs_img
+> 
+> My flash partitions are :
+> # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 00400000 00004000 "Nand Flash Kernel"
+> mtd1: 01a00000 00004000 "Nand Flash RootFS"
+> mtd2: 00200000 00004000 "Nand Flash Test"
+> 
+> On my target, from an nfs mount root file system, i do :
+> # nandwrite -j /dev/mtd1 /fs_img
+> 
+> After that, I reboot my board and make the kernel boot from nand root
+> file system. The first boot is ok but when i reboot one more time, I
+> have the following message : Empty flash at 0x0047b900 ends at
+> 0x0047ba00 jffs2_get_inode_nodes(): Data CRC failed on node at
+> 0x015fc000: Read 0x5a62bf55, calculated 0x349968c2
+> 
+> And each time I reboot, there is one message more. (I do nothing else
+> than login and reboot) Empty flash at 0x0047b900 ends at 0x0047ba00
+> Empty flash at 0x015fc268 ends at 0x015fc400 jffs2_get_inode_nodes():
+> Data CRC failed on node at 0x015fc000: Read 0x5a62bf55, calculated
+> 0x349968c2 jffs2_get_inode_nodes(): Data CRC failed on node at
+> 0x015fc778: Read 0xdf13fb17, calculated 0xbdff7e75
+> 
+> etc ...
+> 
+> Do you have any idea on what happens ?
+> 
+> Thanks
+> 
+> Frederic Janot
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
->
-> Is there a better FS for this purpose (anyone know if reiserfs helps
-> distribute writes around your 'disk' at all?)
+__________________________
 
-You're making the (possibly invalid) assumption that your failures are due to 
-wear out. If that is indeed the case then some such wear levelling fs might 
-help. 
-
-The biggest problem I see is that YAFFS and JFFSx achieve their robustness by 
-dealing with the flash directly and do not have logical to physical mapping 
-layers. Balancing YAFFS of JFFSx on top of something that relies on a logical 
-to physical mapping just gives a false sense of security since there is no 
-mechanism to repair errors at that level.
-
-Both YAFFS anf JFFSx are journaling/log structured file systems. They can 
-cope with write failures and can handle unclean dismounts, but they cannot 
-recover data that has been lost; for that you need a RAID system or such. A 
-corruption in a CF card results in lost info which will not be recoverable.
-
-
--- Charles
+Simon Haynes - Baydel 
+Phone : 44 (0) 1372 378811
+Email : simon@baydel.com
+__________________________
