@@ -1,15 +1,18 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HUda-0000L2-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 19:47:51 +0000
-Message-ID: <3DE67BC1.2090906@redswitch.com>
-Date: Thu, 28 Nov 2002 12:25:37 -0800
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
-Subject: [Fwd: MTD access problem]
-Content-Type: multipart/mixed;
- boundary="------------030600020907070205020607"
+Received: from popmail.space.net ([195.30.0.14])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18HVvA-0000Sp-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 21:10:05 +0000
+To: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+Cc: linux-mtd@lists.infradead.org
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: MTD access problem 
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Tue, 28 May 2002 12:18:19 PDT."
+             <3CF3D7FB.5020500@redswitch.com>
+Date: Thu, 28 Nov 2002 22:39:56 +0100
+Message-Id: <20021128214001.69C89C614B@atlas.denx.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,101 +24,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------030600020907070205020607
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+In message <3CF3D7FB.5020500@redswitch.com> you wrote:
+>
+> I'm not sure this problem is usual or not. My flash is AMD29LV642D. The 
+> mtd code is from DENX distribution 2.4.4-2002-08-09. It may not be the 
+> latest one from CVS.
 
-Sorry, the last email has wrong date.
+It is definitely not "the latest".
 
-- Shawn.
+> Wolfgang, is the mtd code from your distribution the same as the mtd cvs 
+> from infradead.org?
 
---------------030600020907070205020607
-Content-Type: message/rfc822;
- name="MTD access problem"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="MTD access problem"
+As you can see from a short look at our CVS server it is based  on  a
+CVS snapshot taken 2001-10-09.
 
-Message-ID: <3CF3D7FB.5020500@redswitch.com>
-Date: Tue, 28 May 2002 12:18:19 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-Organization: RedSwitch Inc.
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.1) Gecko/20020826
-X-Accept-Language: en-us, en
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
-Subject: MTD access problem
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Best regards,
 
-I'm experiencing a strange mtd access problem when two threads try to 
-access two different mtd devices which are in the same chip (using CS0). 
-This happens as follows.
-1. Thread A calls get_mtd_device() to an mtd handle (e.g. mtd6), calls 
-erase() to erase one sector (128K byte), and tries to write some data 
-into this sector, then calls put_mtd_device() to return the handle.
-2. At the same time, thread B tries the same action on another mtd 
-device (e.g. mtd5).
-3. The strange thing happens. The write action takes long time (10 
-minutes, sometimes even longer) to finish.
+Wolfgang Denk
 
-I'm not sure this problem is usual or not. My flash is AMD29LV642D. The 
-mtd code is from DENX distribution 2.4.4-2002-08-09. It may not be the 
-latest one from CVS.
-
-Wolfgang, is the mtd code from your distribution the same as the mtd cvs 
-from infradead.org?
-
-I hacked into the mtd source code "mtdcore.c" and found a *temporary* 
-solution to my problem. I added the following two functions. Basically, 
-I intentionally delay the release of mtd_table_mutex until a user calls 
-rs_put_mtd_device() to release an mtd handle. When rs_get_mtd_device() 
-is called, only one can get permission to access an mtd device, thus it 
-prevents the above problem from taking place. Since my threads do not 
-write to mtd devices very frequently, I can tolerate such inefficiency. 
-Obviously, this is not a good fix, or may be a wrong one. Any 
-suggestions? Thank you very much.
-
-Happy Thanksgiving!
-
-- Shawn.
-
-struct mtd_info *rs_get_mtd_device(struct mtd_info *mtd, int num)
-{
-	struct mtd_info *ret = NULL;
-	int i;
-
-	down(&mtd_table_mutex);
-
-	if (num == -1) {
-		for (i=0; i< MAX_MTD_DEVICES; i++)
-			if (mtd_table[i] == mtd)
-				ret = mtd_table[i];
-	} else if (num < MAX_MTD_DEVICES) {
-		ret = mtd_table[num];
-		if (mtd && mtd != ret)
-			ret = NULL;
-	}
-	
-	if (ret && ret->module && !try_inc_mod_count(ret->module)) {
-		up(&mtd_table_mutex);
-		return NULL;
-	}
-
-	return ret;
-}
-
-void rs_put_mtd_device(struct mtd_info *mtd)
-{
-	up(&mtd_table_mutex);
-
-	if (mtd->module)
-	       __MOD_DEC_USE_COUNT(mtd->module);
-}
-
-EXPORT_SYMBOL(rs_get_mtd_device);
-EXPORT_SYMBOL(rs_put_mtd_device);
-
-
---------------030600020907070205020607--
+-- 
+Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
+Quantum Mechanics is God's version of "Trust me."
