@@ -1,20 +1,20 @@
 Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
 	helo=ash.lnxi.com)
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AAbiW-000179-1U
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 22:01:00 +0100
+	id 1AAcVu-0001GX-28
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 22:52:02 +0100
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Stefano Babic <stefano.babic@siemens.com>
-In-Reply-To: <1060078328.1717.233.camel@mhw42463>
-References: <1060078328.1717.233.camel@mhw42463>
-Message-Id: <1066424098.6281.15.camel@tubarao>
+To: Fillod Stephane <stephane.fillod@thomson.net>
+In-Reply-To: <2C1BAF8F8E1DD611862B0002A5D4C3FC01BC05FE@renexch3.rennes.thmulti.com>
+References: 
+	<2C1BAF8F8E1DD611862B0002A5D4C3FC01BC05FE@renexch3.rennes.thmulti.com>
+Message-Id: <1066427159.6281.23.camel@tubarao>
 Mime-Version: 1.0
-Date: 17 Oct 2003 14:54:58 -0600
+Date: 17 Oct 2003 15:46:00 -0600
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-0kSLqYBYDZ47lrlTGeBa"
+	protocol="application/pgp-signature"; boundary="=-wmM2z0sXZ4srrw9s6sWh"
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Concurrency erase/write on the same AMD chip with not aligned
-	words
+Subject: Re: [PATCH] cfi_cmdset_0002.c support for buffered mode
 Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,39 +26,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-0kSLqYBYDZ47lrlTGeBa
+--=-wmM2z0sXZ4srrw9s6sWh
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2003-08-05 at 04:12, Stefano Babic wrote:
-> Hi all,
+On Thu, 2003-08-21 at 11:07, Fillod Stephane wrote:
+> Dave,
 >=20
-> I have seen a problem when I am writing not-aligned words on AMD chips
-> while on the same chip another process starts an erase procedure for
-> other sectors or a different MTD device.=20
+> Here is the patch for buffered mode write on Amd chips.
+> I've Cc'd Thayne if anyone of you cares to commit to cvs.
 
-Stefano,
+I just committed your patch for buffered writes - its cfi_cmdset_0002.c
+v1.89.  Please test it and let me know if it still works.
 
-The fix for this is in cfi_cmdset_0002.c v1.87.  I had to pick through
-your patch a bit, but I think all the relevant pieces are there.  Will
-you test it please?
-
-Thanks for your help and the patch.
+Thanks!
 
 --=20
 Thayne Harbaugh
 Linux Networx
 
---=-0kSLqYBYDZ47lrlTGeBa
+--=-wmM2z0sXZ4srrw9s6sWh
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQA/kFcifsBPTKE6HMkRAsvuAJ9DWW7W0AKnANH2E2syKl7QMdmfLACfZB57
-H+K5b6KYQauw8LVa0sbczBA=
-=BVPG
+iD8DBQA/kGMXfsBPTKE6HMkRAhIrAJ9NPqfC6cRJG1/MEPjsSEnzJT6bjgCfVnYP
+0b6qiqw0HnMYsqdvApjpa3s=
+=nUz7
 -----END PGP SIGNATURE-----
 
---=-0kSLqYBYDZ47lrlTGeBa--
+--=-wmM2z0sXZ4srrw9s6sWh--
