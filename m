@@ -1,14 +1,15 @@
-Received: from web13207.mail.yahoo.com ([216.136.174.192])
+Received: from [66.239.226.123] (helo=hermes.wildseed.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18N5jq-0005l6-00
-	for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2002 06:25:26 +0000
-Message-ID: <20021214065603.11256.qmail@web13207.mail.yahoo.com>
-Date: Fri, 13 Dec 2002 22:56:03 -0800 (PST)
-From: zhu shi song <zhushisongzhu@yahoo.com>
-Subject: mtd can't probe MD2802-D08
-To: linux-mtd@lists.infradead.org
+	id 18NksM-0002of-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 02:20:58 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C8CB@neptune.kirkland.local>
+From: Paul Nash <paulnash@wildseed.com>
+To: "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Intel sez: Synchronous Flash and XIP is the future -- thoughts?
+Date: Sun, 15 Dec 2002 18:51:26 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,18 +21,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have used DOC md2800-d08 in the past and it worked
-fine.
-Now I should transfer it to MD2802-D08. MD2802-D08 is 
-the order information of DOC Millennium Module.  But
-DOC driver((docecc,doc2001,docprobe) or
-(docecc,doc2000,docprobe)) can't
-find the MD2802-D08 inserted in bios socket.
-  does anyone meet the same problem? Need help.
+Touting the various benefits that XIP advocates generally tout, Intel seems
+to be waving the banner that XIP is the future.  Of course, it seems to me
+that this is a little self-serving in that they probably charge more for
+their more advanced flash parts that are suitable for this.  I know in the
+past some fairly strong anti-XIP opinions have been expressed in this
+community.  I myself find it far more probable that Intel is pushing this
+because it happens to be what Windows CE uses rather than because it's a
+clear technical winner.
 
-   zhu shi song
+I believe they claim board space as a win (though, you can't get rid of RAM
+entirely, so this is tenuous).  They also claim power savings through less
+RAM accesses.  I might buy this one.  It seems to me that XIP would
+interfere pretty severly with systems like JFFS2, which must decompress a
+block of memory anyway, so to really get the RAM reduction benefits of XIP,
+you'd have to not use compression, which means you'd probably need twice as
+much flash.  Is that a reasonable conclusion?
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+Any thoughts and opinions from the Linux experts here?
+
+-Paul
