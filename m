@@ -1,15 +1,18 @@
-Received: from web14905.mail.yahoo.com ([216.136.225.57])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kkuG-0006JZ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2002 13:29:44 +0100
-Message-ID: <20020830122942.61137.qmail@web14905.mail.yahoo.com>
-Date: Fri, 30 Aug 2002 05:29:42 -0700 (PDT)
-From: Sriram Neelakandan Iyer <sriramneelakandan@yahoo.com>
-Reply-To: sriramneelakandan@yahoo.com
-Subject: jffs2 with rootmount_flags = rw
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17kmNk-0006TA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2002 15:04:17 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Fri, 30 Aug 2002 07:04:07 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
+To: leland@sway.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 48meg DOC
+Reply-To: mateo@posta.star.si
+Message-Id: <20020830140409.A7B5B11DE6@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,22 +24,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have a jffs2 root partition mounted thru MTD.
-I would like to know if i can mount jffs2 as rw
-directly from mount_root().
-In other words are there any implications if i do a
-read_super on jjfs2 with root_mountflags = rw.
+Hi Leland
 
-Read only mount make sense for filesystems that could 
-be fscked.. but on jffs2 what is the use of mounting
-read only. and i am going to always do a remount,rw
+Thanks for the reply.
 
-tia
-sriram
+>But it sounds like you are getting further than i am... 
+
+I wish I could get to the end.
+
+>here is what i know... 
+>
+>I am using:
+> 2.4.18 kernel
+
+I am using 2.4.7-10 (from RH 7.2)
+
+> 22.2 lilo
+
+I am using mtd pacthed 21 version of lilo.
+
+I was thinking to try the version 22.
+I'll try this tonight, and I'll let you know if I
+get any further.
 
 
+>...***...
+>The latest revision (as of Jan 2002) of the M-Systems DOC firmware is version 
+>5.0.  
+>This newest version is currently incompatible with the open source MTD 
+>drivers.  The 
+>previous version (4.2) seems to work fine.
+>...***...
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+Yep. On mine is written 4.2 (But I'll double chek it agian tonight
+on the boot screen).
+
+>   LI   The first stage boot loader was able to load the second stage boot 
+>    loader, but has failed to execute it. This can either be caused by a 
+>    geometry mismatch or by moving /boot/boot.b without running the map 
+>    installer. 
+
+I am not sure, what is map installer?
+I think I should have a map= line in the lilo.conf.
+Is this correct?
+What is in this map file?
+
+>hope this helps... and let me know if you can think of anything that i 
+>might be doing wrong... 
+
+Are you using the version 5 of the M-Sys firmware?
+Maybe this is the problem?
+
+Regards,
+Mateo
+
+
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
