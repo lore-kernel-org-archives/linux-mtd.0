@@ -1,18 +1,19 @@
-Received: from sccrmhc11.comcast.net ([204.127.202.55])
+Received: from wproxy.gmail.com ([64.233.184.202])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CMDAU-0005x4-40
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2004 18:18:40 -0400
-From: "Bob Coggeshall" <rdcjr@cogwheel.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 25 Oct 2004 15:18:07 -0700
-Message-ID: <GLEEJIHFPNJCEDMIAPLKMEGFEHAA.rdcjr@cogwheel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-In-Reply-To: <1098466711.13633.1398.camel@hades.cambridge.redhat.com>
-Subject: RE: mtdchar.c  w/CONFIG_DEVFS under 2.4.22 busted ?
-Reply-To: rdcjr@cogwheel.com
+	id 1CMK7v-0006eX-Kl
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2004 01:44:12 -0400
+Received: by wproxy.gmail.com with SMTP id 44so214162wri
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Oct 2004 22:42:58 -0700 (PDT)
+Message-ID: <b4618e0f04102522421e607cd8@mail.gmail.com>
+Date: Tue, 26 Oct 2004 11:12:57 +0530
+From: bandwidthcrunch <bandwidthcrunch@gmail.com>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: yaffs on the 2.6
+Reply-To: bandwidthcrunch <bandwidthcrunch@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +23,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBGcmksIDIwMDQtMTAtMjIgYXQgMTI6MzgsIERhdmlkIFdvb2Rob3VzZSB3cm90ZToNCj4g
-PiANCj4gPiBXaGF0IHBhcnQgb2YgdGhlIG1lc3NhZ2UgYmVmb3JlIHlvdXJzIGluIHRoZSBtYWls
-aW5nIGxpc3QgYXJjaGl2ZXMgd2FzDQo+ID4gYW1iaWd1b3VzPyBQbGVhc2UgYXNzaXN0IG1lLiBJ
-IHRyaWVkIHRvIG1ha2UgaXQgY2xlYXIgdGhlcmUuDQoNCk15IGJhZC4gIFRoZSBtZXNzYWdlIHNh
-dCBpbiBteSBvdXRib3ggYW5kIGRpZG4ndCBnZXQgc2VudCBvdXQgdW50aWwgdGhpcyBtb3JuaW5n
-DQpzbyBJIHRoaW5rIG1lc3NhZ2VzIGdvdCBjcm9zc2VkLg0KDQo+ID4gSSBhbHNvIHRyaWVkIHRv
-IG1ha2UgaXQgY2xlYXIgb24gdGhlIHdlYiBzaXRlIHRoYXQgb25lIHNob3VsZCBhbHdheXMNCj4g
-PiByZWFkIHRoZSBsaXN0IGFyY2hpdmVzIGJlZm9yZSBwb3N0aW5nIGEgcXVlc3Rpb24uIFdhcyB0
-aGVyZSBzb21ldGhpbmcgSQ0KPiA+IGNvdWxkIGhhdmUgZG9uZSB0byBtYWtlIHRoYXQgbGVzcyBh
-bWJpZ3VvdXMgdG9vPw0KPiANCj4gVGhlcmUncyBldmVuIGEgd2hvbGUgc2VjdGlvbiBvbiB0aGUg
-d2ViIHNpdGUgZGV2b3RlZCB0byBrZXJuZWwNCj4gdmVyc2lvbnMuICBodHRwOi8vbGludXgtbXRk
-LmluZnJhZGVhZC5vcmcvI2tlcm5lbHZlcnNpb25zDQo+IA0KPiBPYnZpb3VzbHkgcGVvcGxlIGFy
-ZW4ndCByZWFkaW5nIHRoZSB3ZWIgc2l0ZS4NCg0KV2VsbCwgaGVyZSdzIHRoZSBwcm9jZXNzIEkg
-dXNlZC4gTm90ZSB0aGUgbGFzdCBjaGVja291dCBJIGRpZCB3YXMgaW4gQXByaWwgYW5kDQpiYWNr
-IHRoZW4gdGhpbmdzIHdlbnQgZmluZTsNCg0KICAgIC0gSSBjaGVja2VkIGl0IG91dC4gDQogICAg
-LSBMb29rZWQgZm9yIGEgQ0hBTkdFUyBmaWxlIHdoZXJlIHRoaXMgc29ydCBvZiB0aGluZyBzaG91
-bGQgYmUuIE5vbmUuIA0KICAgIC0gSSBsb29rZWQgYXQgdGhlIFJFQURNRSBmaWxlLiBOb3RoaW5n
-IG1lbnRpb25lZCBhYm91dCAyLjQgc3VwcG9ydCBnb2luZyBhd2F5LiANCiAgICAtIEkgbG9va2Vk
-IGF0IHRoZSBJTlNUQUxMIGZpbGUsIHN0aWxsIHNheXM6IA0KDQogICAgICAgICJUaGUgc2NyaXB0
-IHdvcmtzIGZvciBrZXJuZWxzID49IDIuNCBhbmQgY2FuIGJlIHVzZWQgdG8gcHJlcGFyZSANCiAg
-ICAgICAgcHJpc3RpbmUga2VybmVscyBhbmQgdXBkYXRlIHlvdXIgYWxyZWFkeSBtdGQtcGF0Y2hl
-ZCBrZXJuZWwgdG8gdGhlDQogICAgICAgIGxhdGVzdCBzdGF0ZSBvZiB0aGUgYXJ0LiINCg0KV2hp
-Y2gga2luZHMtc29ydGEgaW1wbGllcyB0aGluZ3MgbWlnaHQgc3RpbGwgd29yayB1bmRlciAyLjQN
-Cg0KV2hlbiBJIGhpdCB0aGUgcHJvYmxlbSBJIGJlZ2FuIHRvICpza2ltKiB0aGUgbGlzdC4gQXMg
-b2YgeWVzdGVyZGF5IEkgc2F3IG5vdGhpbmcuIA0KUGVyaGFwcyBJIG1pc3NlZCBzb21ldGhpbmcs
-IGZvciB3aGljaCBJIGFwb2xvZ2l6ZS4gDQoNCj4gSSBkb24ndCB0aGluayB0aGVyZSBpcyBhbnl0
-aGluZyBtb3JlIHRoYXQgeW91IGNhbiBkby4gIEp1c3QgcG9pbnQgcGVvcGxlDQo+IHRvIHRoYXQg
-YW5kIHNtaWxlIDopLg0KDQpJIHByb2JhYmx5IGFtIG5vdCB1bmxpa2UgYWxsb3Qgb2YgcGVvcGxl
-IHVzaW5nIHRoaXMgc3R1ZmY7IFdlJ3ZlIGdvdCBhIGJ1bmNoIG9mDQpzdHVmZiB0byBnZXQgd29y
-a2luZyBiZXNpZGVzIG10ZCwgc28gd2UgYXJlIGluIGEgaHVycnkuIEFuZCBhZnRlciB3ZSBsb29r
-IGluIA0KdGhlIGZpcnN0IGZldyBsb2dpY2FsIHBsYWNlcyAoQ0hBTkdFUywgUkVBRE1FLCBJTlNU
-QUxMKSB0aGVuIHdlIGdpdmUgdXAuIA0KDQpTb3JyeSB0byBhbGwuDQoNCkJvYiBDLg0KDQoNCg==
+Has anyone got yaffs running on the 2.6 kernel ? 
+regards,
+manav
