@@ -1,15 +1,15 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CJopI-000100-5H
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 03:54:37 -0400
-Message-ID: <4174C8EF.50604@inf.u-szeged.hu>
-Date: Tue, 19 Oct 2004 09:57:35 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1CJp18-0001Lv-PS
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 04:07:09 -0400
+Message-ID: <4174CAF9.4070408@yandex.ru>
+Date: Tue, 19 Oct 2004 12:06:17 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
 References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>
-	<4173B404.6040100@yandex.ru>
-In-Reply-To: <4173B404.6040100@yandex.ru>
+	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>
+In-Reply-To: <4174C8EF.50604@inf.u-szeged.hu>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,25 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Hello Ferenc,
 
->> I was not successful. I write JFFS2 to full (there was no left space),
->> than I tried to mkdir, but there was no slab cache corruption.
+> Hi Artem,
 > 
-> Did you see system message "No space left on device"?
-> 
-> How did you see that slab is OK? I've found this when I've enabled the 
-> correspondent option in "Linux Hacking" (no sure, possibly 
-> CONFIG_DEBUG_SLAB).
+> I didn't got slab cache error because it has already returned with "no 
+> left space" before this place. But, I think you are right, and I 
+> commited your patch.
+Don't understand exactly what does "it has already returned with "no 
+left space" before this place" mean (which place?), but anyway, you have 
+recognized the problem.
 
-Yes, I've got the message "No space left on device", and I've 
-CONFIG_DEBUG_SLAB enabled.
+> I hope David will aggree with it.
+I hope either :-)
 
-I didn't got slab cache error because it has already returned with "no 
-left space" before this place. But, I think you are right, and I 
-commited your patch.
+Thank you.
 
-I hope David will aggree with it.
-
-Bye,
-Ferenc
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
