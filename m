@@ -1,20 +1,17 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from mail3.efi.com ([192.68.228.90] helo=fcexgw03.efi.internal)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AwzWs-0003U9-Hu
-	for linux-mtd@lists.infradead.org; Sat, 28 Feb 2004 08:08:58 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
-	linux-mtd@lists.infradead.org
-Date: Sat, 28 Feb 2004 21:17:13 +1300
-References: <01139FC052A0D411900B00508B9535FC102796BE@ZCH07EXM04.corp.mot.com>
-In-Reply-To: <01139FC052A0D411900B00508B9535FC102796BE@ZCH07EXM04.corp.mot.com>
+	id 1AxFxd-0005F4-QM
+	for linux-mtd@lists.infradead.org; Sun, 29 Feb 2004 01:41:41 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20040228080849.232E54687@blood.actrix.co.nz>
-Subject: Re: Searching for 16bit NAND Driver
-Reply-To: manningc2@actrix.gen.nz
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 28 Feb 2004 17:41:19 -0800
+Message-ID: <9961BDB14162AA47A39FF91932F1AE440AF23D@fcexmb01.efi.internal>
+From: "Ranjan Parthasarathy" <Ranjan.Parthasarathy@efi.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Replying to a post bounces back
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 27 February 2004 21:37, Shen Aaron-r62966 wrote:
-> Hi CHarles,
->
->   Thanks for your response at first.
->
->   Let me decribe my doubt in detail. After I boot up my system on board
-> with a NOR Flash, the "/dev/mtd/2" is the partition for bootloader of NAND.
-> I just copy my bootloader for NAND to the partition and then switch to boot
-> up from the NAND Flash. For a 8 bit NAND Flash, it has been succeeded. But
-> failed for 16 bit NAND.
->
->   When booting from NAND Flash, the NFC will copy the data in its first 2k
-> to a special address automatically and then set pc to there to run. What I
-> have found by using MultiICE is that the data copied there are different.
-> For example, the data should be "DF003028". I can read it successfully when
-> using 8 bit NAND. But for 16 bit NAND, the data changed to be "0B300B28",
-> followed by "08DF0800". It seems the original data has been cut to two
-> parts and re-orginized.
->
->   Do you have any comment? Hope I made sense.
+Thanks Thomas for the feedback on the NAND and JFFS2 query.
 
-It looks to me like you need to set up your bus accessing or something like 
-that correctly.
+When I am replying to your reply to my mail, the mail is getting bounced
+back. Anybody know what is happening.
 
-It looks like the data has been written as 8-bytes per cycle, but read as 
-16-bits per cycle. 
+The message on the bounced mail is :
 
--- Charles
+Your request to the linux-mtd mailing list
+
+    Posting of your message titled "RE: JFFS2 on Nand"
+
+has been rejected by the list moderator.  The moderator gave the
+following reason for rejecting your request:
+
+"Your message was top-posting and contained no References: header.
+
+Please read http://www.infradead.org/~dwmw2/email.html"
+
+Any questions or comments should be directed to the list administrator
+at:
+
+    linux-mtd-owner@lists.infradead.org
+
+Thanks
+
+Ranjan
