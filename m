@@ -1,16 +1,24 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17h3cy-0005Z0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 08:40:36 +0100
-Date: Tue, 20 Aug 2002 09:40:27 +0200 (CEST)
-From: Marius Groeger <mag@sysgo.de>
-To: Michael Palme <m.palme@goepel.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: newbie: dynamic partition creation possible
-In-Reply-To: <3D61C1DE.7010202@goepel.com>
-Message-ID: <Pine.LNX.4.40.0208200931340.17964-100000@mag.devdep.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17h3vz-0005aZ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 09:00:15 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H1400KVQU7KI2@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Tue, 20 Aug 2002 09:59:45 +0200 (MEST)
+Date: Tue, 20 Aug 2002 09:59:30 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: No free space left for GC
+In-reply-to: <015501c247f3$d13176a0$b30210ac@gv.com.tw>
+To: =?UTF-8?Q?=E5=B0=8F?= =?UTF-8?Q?=E6=98=8E?= <kevin@gv.com.tw>
+Cc: linux-mtd@lists.infradead.org
+Message-id: <1029830371.22775.150.camel@thomas.tec.linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: quoted-printable
+References: <1029623727.2142.495.camel@thomas.tec.linutronix.de>
+ <1029793649.22781.129.camel@thomas.tec.linutronix.de>
+ <015501c247f3$d13176a0$b30210ac@gv.com.tw>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,39 +30,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 20 Aug 2002, Michael Palme wrote:
+On Tue, 2002-08-20 at 04:46, =E5=B0=8F=E6=98=8E wrote:
+> in our own old nand flash system
+> we always keep 1 nand-flash-block for garbage collection in block device
+> driver
+> (8k/8MB,16k/64MB)
+> it never endless gc, but when diskfull,the speed is really slow
+> finally we reserved more space(512k) for gc to  make gc faster
+> those reversed space is not showed in fs layer
+> we report (real size-reserved space) to fs layer
+> and we use minix as fs layer
+> (we do  bad block management, wear leveling, error correction,
+> all in block device driver not in fs layer)
+> recently, we need compression , so we try jffs2:)
+> i think the design of jffs2 is also better than our old one:)
+1. Please keep answers to mailinglist posting on the list. Thanks.
 
-> the flash devices (no filesystem etc.). i need different "partitions" on
-> the flash and i dont want to hardcode that --
-> i have seen in cmdline.c that this is possible via kernel parameters.
-> i'm not absolutely sure what kernel options are needed and what are
-> unnecessary.
+2. The endless gc, which used up all blocks, is fixed now. I will do
+some more tests and put a final version into CVS today.
 
-What is unclear with it? cmdline.c contains examples how to use it. Actually
-it can be very simple. For instance, the following term will give you two
-partitions, one with 1 MiB and another with all the rest. Both will be
-read-write and will receive standard labels:
-
-   mtdparts=my-mtd-id:1m,-
-
-However, you may have to adapt the mapping driver to use the cmdline
-partitioning. Here's how:
-
-   int num_mtd_parts, result;
-   struct mtd_partition *mtd_parts;
-   struct mtd_info mtd;
-
-   num_mtd_parts = parse_cmdline_partitions(&mtd, &mtd_parts, "my-mtd-id");
-   result = add_mtd_partitions (&mtd, mtd_parts, num_mtd_parts);
-
-As an aside: it is good (but rare) practice to use the various CONFIG_
-options for partitioning features.
-
-Regards,
-Marius
-
------------------------------------------------------------------------------
-Marius Groeger           SYSGO Real-Time Solutions GmbH     mgroeger@sysgo.de
-Software Engineering     Embedded and Real-Time Software    www.sysgo.de
-Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
-FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
+--=20
+Thomas=20
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
