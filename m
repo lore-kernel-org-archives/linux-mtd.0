@@ -1,15 +1,15 @@
 Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e0PM-0007Ya-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:10:12 +0000
-Date: Wed, 29 Jan 2003 22:41:07 +0000 (GMT)
+	id 18e0RG-0007Z1-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:12:11 +0000
+Date: Wed, 29 Jan 2003 22:43:08 +0000 (GMT)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Raphael Hertzog <eng@eipm.ch>
-cc: Henrik Nordstrom <hno@marasystems.com>,  <linux-mtd@lists.infradead.org>
-In-Reply-To: <1043858542.554.144.camel@localhost>
-Message-ID: <Pine.LNX.4.44.0301292238560.4791-100000@imladris.demon.co.uk>
+To: Siddharth Choudhuri <choudhri@cs.tamu.edu>
+cc: linux-mtd@lists.infradead.org
+In-Reply-To: <Pine.GSO.4.44.0301291359440.296-100000@unix.cs.tamu.edu>
+Message-ID: <Pine.LNX.4.44.0301292241561.4791-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Subject: Re: NFTL not recognizing disk on chip in some cases
+Subject: Re: Problems writing to mounted jffs...
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,35 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 29 Jan 2003, Raphael Hertzog wrote:
+On Wed, 29 Jan 2003, Siddharth Choudhuri wrote:
 
-> Am Mit, 2003-01-29 um 15.48 schrieb Henrik Nordstrom:
-> > From what I recall you must not have the NFTL driver loaded while
-> > running nftl_format.. if the NTFL driver is loaded then I think bad
-> > things may happen such as those you describe.
-> 
-> Unless the bad things are irreversible this should not be the case.
-> AFAIR I always took care to remove the module before formating.
-> 
-> And it doesn't explain why I have the problem when I copy a set of files
-> and why I doesn't have it with another set of files. Even stranger when
-> I first copy the good set of files, then umount, remount, remove the
-> good set of files and copy the problematic set of files then it's ok.
+> I am following the mtd-jffs howto to have jffs on LART(ARM processor with
+> 4MB Intel D28F160 Flash).
 
-Does one of your files have 'ANAND' at the start of it (or at an offset of 
-n*512 bytes withing the file? :)
+Why are you using JFFS instead of JFFS2?
 
-That may get seen as an 'extra' NFTL media header sector; we should do 
-more sanity checks and refrain from looking inside an already-detected 
-NFTL partition.
+> lart: write error at address 0x00100d64. //This address keeps increasing
 
-> But if I copy the problematic set of files directly during the first
-> mount after the partitioning/formating then I have the problem exposed
-> in my previous mail.
-
-Because in the first case the 'ANAND' went somewhere other than the first 
-page of an erase block, so wasn't seen as an 'extra' media header? Taking 
-raw dumps of the flash would confirm this.
+Problem with the LART flash driver? Can you make it be more specific about 
+what error it saw?
 
 -- 
 dwmw2
