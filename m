@@ -1,29 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgmUm-0005QX-Tu
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 11:04:22 -0500
-Date: Tue, 21 Dec 2004 17:04:17 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-Message-ID: <20041221160417.GB8917@wohnheim.fh-wedel.de>
-References: <1103233669.15929.81.camel@squizzey.bult.co.uk>
-	<20041218161923.GD1083@wohnheim.fh-wedel.de>
-	<1103391155.10788.13.camel@squizzey.bult.co.uk>
-	<20041218175222.GB4147@wohnheim.fh-wedel.de>
-	<20041218181100.GD4147@wohnheim.fh-wedel.de>
-	<1103402930.10792.20.camel@squizzey.bult.co.uk>
-	<20041221133035.GE22636@wohnheim.fh-wedel.de>
-	<1103636444.10788.145.camel@squizzey.bult.co.uk>
-	<1103641247.6111.91.camel@localhost.localdomain>
-	<1103644945.10792.175.camel@squizzey.bult.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1103644945.10792.175.camel@squizzey.bult.co.uk>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 mount time
+Received: from mailout05.sul.t-online.com ([194.25.134.82])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CgmvM-0005i6-61
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 11:31:49 -0500
+From: stephanwib@t-online.de (Stephan Wiebusch)
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 21 Dec 2004 17:29:11 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1Cgmuu-1zfbjU0@fwd08.sul.t-online.com>
+Subject: DOC2000 bootloader
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 December 2004 16:02:25 +0000, Gareth Bult (Encryptec) wrote:
-> 
-> Ahhhhhh!
+Hello!
 
-I get that a lot. ;)
+I am not able to boot my Linux 2.6.9 Kernel from a 16MB DOC2000 device.
 
-Jörn
+I am not able to compile Grub. I already asked because of this, but there
+came no reply.
 
--- 
-Fantasy is more important than knowledge. Knowledge is limited,
-while fantasy embraces the whole world.
--- Albert Einstein
+Lilo is able to boot the Kernel, but it ends with: "Kernel panic - not
+syncing. VFS: Unable to mount root on device "<NULL>" or
+unknown-block(254,0)"
+
+The Kernel contains the new NAND DiskOnChip-driver and the ext2fs-driver as
+built-in.
+The Kernel and the root-fs seem to be OK, but it simply does not work :(
+
+My lilo.conf looks like this:
+
+-------------------------------------
+boot=/dev/nftla
+compact
+install=/boot/boot.b
+disk=/dev/nftla
+	bios=0x80
+
+prompt
+delay=50
+timeout=20
+
+image=/boot/vmlinuz-2.6.9
+	label=LinuxSTB
+	root=/dev/nftla1
+------------------------------------
+
+Any ideas??
+
+I would like to test a precompiled grub_firmware with ext2 support.
+Can anybody send this to: stephanwib@t-online.de
+
+Thanks 
+Stephan
