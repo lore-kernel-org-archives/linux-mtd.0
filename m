@@ -1,22 +1,17 @@
-Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
+Received: from vmmrnat.verisignmail.com ([216.168.230.187] helo=vmmr9.verisignmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eHqt-0001f1-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 16:47:47 +0000
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
-	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id h0UFKWLT030617
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 16:20:32 +0100
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id SAA18782
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 18:18:46 +0100 (CET)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <3E395E76.5030401@imc-berlin.de>
-Date: Thu, 30 Jan 2003 18:18:46 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: MTD <linux-mtd@lists.infradead.org>
-Subject: Data CRC failed on node at ...
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 18eIh7-0001mw-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 17:41:45 +0000
+Message-Id: <5.1.0.14.2.20030130100614.038d9778@mail.ebshome.net>
+Date: Thu, 30 Jan 2003 10:12:39 -0800
+To: joakim.tjernlund@lumentis.se
+From: Eugene Surovegin <ebs@ebshome.net>
+Subject: RE: PATCH: support for Arctic/Beech/Ebony
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <IGEFJKJNHJDCBKALBJLLKEMCFJAA.joakim.tjernlund@lumentis.se>
+References: <5.1.0.14.2.20030130021112.020b0628@mail.ebshome.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,20 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi there,
+At 03:23 AM 1/30/2003, you wrote:
+> > Joakim,
+> >
+> > At 01:46 PM 1/29/2003, you wrote:
+> > >   - You don't need mb() since ioremap will add the
+> > >      GUARDED attribute to the mapping.
+> >
+> > Well, this is not quite correct.
+> >
+> > GUARDED attribute does _NOT_ prevent reordering of loads and stores on PPC
+> > (on 4xx at least).
+> >
+> > See comments in asm-ppc/system.h and also IBM app note "Software
+> > consideration when migrating to the PowerPC 440GP from 405GP"
+> >
+>
+>hmm, maybe it's specific to the 8xx family. 860 and 862 does not do
+>speculative accesses on GUARDED memory.
 
-while booting my system I get a
+It does! But speculative accesses and access reordering are not the same 
+thing :)
 
-"jffs2_scan_inode_node(): Data CRC failed on node at 0x003a14e0: Read 
-0xdbd307bb, calculated 0x5a8c4838"
+There is a subtle difference.
 
-now. Maybe since I interrupted an ftp transfer.
+>Me wounders what GUARDED is good for if it doesn't prevent reordering.
 
-What can I do now?
+I think it's a FAQ for PPC devel list :)
 
-Is there something like a repair tool?
-Or can I at least find out which file is corrupted?
-
-Thanks,
-
-Steven
+Eugene.
