@@ -1,17 +1,22 @@
-Received: from law14-oe33.law14.hotmail.com ([64.4.20.90] helo=hotmail.com)
+Received: from caramon.arm.linux.org.uk ([212.18.232.186])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19WDTW-000654-Fe
-	for <linux-mtd@lists.infradead.org>; Sat, 28 Jun 2003 12:02:34 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "jffs" <jffs-dev@axis.com>
-Date: Thu, 26 Jun 2003 23:24:47 -0700
-MIME-Version: 1.0
-Message-ID: <Law14-OE33scmwKsUoA000552d3@hotmail.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-cc: mtd <linux-mtd@lists.infradead.org>
-Subject: only 0x50000 size partitions are mounted
+	id 19Wisb-0002O0-Ir
+	for <linux-mtd@lists.infradead.org>; Sun, 29 Jun 2003 21:34:33 +0100
+Date: Sun, 29 Jun 2003 21:34:50 +0100
+From: Russell King <rmk@arm.linux.org.uk>
+To: David Woodhouse <dwmw2@redhat.com>
+Message-ID: <20030629213450.B5653@flint.arm.linux.org.uk>
+References: <20030623010031.E16537@flint.arm.linux.org.uk>
+	<1056544988.24294.9.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1056544988.24294.9.camel@passion.cambridge.redhat.com>;
+	from dwmw2@redhat.com on Wed, Jun 25, 2003 at 01:43:09PM +0100
+Sender: Russell King <rmk@arm.linux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+cc: linux-mtd@lists.infradead.org
+cc: Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Fix mtdblock / mtdpart / mtdconcat
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
+On Wed, Jun 25, 2003 at 01:43:09PM +0100, David Woodhouse wrote:
+> On Mon, 2003-06-23 at 01:00, Russell King wrote:
+> > Dirtily disable ECC support; it doesn't work when mtdpart is layered
+> > on top of mtdconcat on top of CFI flash.
+> > 
+> > There is probably a better fix, but that's for someone else to find.
+> 
+> I had to run 'indent' on mtdconcat.c before I could stand to even look
+> for it, so I haven't attached the patch here -- but could you try v1.6
+> from CVS, which should refrain from pretending to have ecc/oob access
+> functions of none of the subdevices have them, and hence fix the problem
+> you observed.
 
-I have put JFFs2 support in my uCdimm
+While looking over the changes between 1.5 and 1.6, I spotted this.  You
+may want to fix this change:
 
-the erase size shown in /proc/mtd is 0x10000
-So I keep a partion atleast 0x50000
+-                   concat->mtd.eccsize != subdev[i]->eccsize) {
++                   concat->mtd.eccsize != subdev[i]->eccsize ||
++                   !concat->mtd.read_ecc != !concat->mtd.read_ecc ||
++                   !concat->mtd.write_ecc != !concat->mtd.write_ecc ||
++                   !concat->mtd.read_oob != !concat->mtd.read_oob ||
++                   !concat->mtd.write_oob != !concat->mtd.write_oob) {
 
-1.) Is it right that for a partition to work properly I must keep its size
-as a multiple of 0x50000
-
-Anyways I do keep it.
-
-I have found that if a partition is only 0x50000 in size, i can mout it. If
-it is 0x100000 or 0x150000 or 0x200000,  I cannot mount it. If I mount it,
-the system hangs or gives me lots of Call trace .
-
-Also Somtimes the kernel is curropted which is not even in the boundary of
-the partition i want to mount.
-
-What could be the reason?
-
-Help me here.
-
-Vikram
+-- 
+Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
+             http://www.arm.linux.org.uk/personal/aboutme.html
