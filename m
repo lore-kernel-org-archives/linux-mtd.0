@@ -1,19 +1,20 @@
-Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18GbE9-0002EL-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 08:37:53 +0000
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
+	id 18GbEP-0002ES-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 08:38:09 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: SmartMedia Card need to create fs before mounting it ?
-Date: Tue, 26 Nov 2002 09:08:08 -0000
-Message-ID: <541025071C7AC24C84E9F82296BB9B950807BF@OPTEX1.optex.local>
-From: "John Hall" <john.hall@optionexist.co.uk>
-To: <linux-mtd@lists.infradead.org>
-Cc: <manningc2@actrix.gen.nz>,
-	"shadow" <saturn@structure.biochem.nchu.edu.tw>
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: shadow <saturn@structure.biochem.nchu.edu.tw>
+Subject: Re: SmartMedia Card need to create fs before mounting it ?
+Date: Tue, 26 Nov 2002 22:03:50 +1300
+Cc: linux-mtd@lists.infradead.org
+References: <Pine.LNX.4.44.0211260511250.20708-100000@structure.biochem.nchu.edu.tw>
+In-Reply-To: <Pine.LNX.4.44.0211260511250.20708-100000@structure.biochem.nchu.edu.tw>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20021126090832.969E3452B@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +26,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 26 November 2002 07:36 Charles Manning <manningc2@actrix.gen.nz>
-wrote:
+On Tue, 26 Nov 2002 10:16, shadow wrote:
+> On Tue, 26 Nov 2002, Charles Manning wrote:
+> Could you tell me how to format the partition ?
+> This is mkfs.jffs2's help..
 
-> > When I mount a partition on the SmartMedia card, if I must need to
-> > put a jffs2's image on it before mounting it ? Or existed a tool
-> > that can directly make jffs2 on the nand flash ?
->=20
-> I believe you will need to run mkfs.jffs2 to format the nand first.
->=20
-> You will find this in mtd/util in the mtd cvs.
+Sorry my knowledge of jffsx is very limited (I know it uses electricity). 
+BTW: You can also run YAFFS on this device.
 
-Or just erase the NAND flash to create an empty JFFS2 partition:
+ Someone who knows more about JFFSx should be waking up about now.
 
-	eraseall /dev/mtdx
-
-eraseall is also in mtd/util.
-
-cheers,
-John
+-- CHarles
