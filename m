@@ -1,16 +1,17 @@
-Received: from server1.lazerlink.net ([199.234.153.21])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16mwTb-0002AO-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2002 12:42:59 +0000
-From: "Stephen Bardsley" <sbardsley@rlwinc.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: bad block recovery
-Date: Mon, 18 Mar 2002 07:54:26 -0500
-Message-ID: <PCEBLNKIDOKLBPDJECFEEEBBDHAA.sbardsley@rlwinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16mwbf-0002BD-00
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2002 12:51:19 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <PCEBLNKIDOKLBPDJECFEEEBBDHAA.sbardsley@rlwinc.com> 
+References: <PCEBLNKIDOKLBPDJECFEEEBBDHAA.sbardsley@rlwinc.com> 
+To: "Stephen Bardsley" <sbardsley@rlwinc.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: bad block recovery 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 18 Mar 2002 13:02:43 +0000
+Message-ID: <29597.1016456563@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,28 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Greetings:
+sbardsley@rlwinc.com said:
+>  My understanding is that the chip is now "unreliable", which I can
+> live with for now.  Does unreliable mean I can still use the chip if I
+> can somehow format it?
 
-I have a DOC 2000 and cannot format it using the DOS dformat
-tool supplied by M-Systems.  My ultimate goal is to boot a linux
-kernel from the chip, and use the chip as a disk.
+Yes. Blocks can go bad during normal operation, and we have to be able to 
+deal with that case _anyway_. My nftl_format program can be made to do some 
+primitive tests on each erase block, and mark the completely broken ones as 
+such before formatting. But (for the benefit of the peanut gallery) you 
+should _only_ use nftl_format if you have already lost your bad block list.
 
-The only reason I have come up with for no being able to format
-is that the bad block list is gone.  I have come to this conclusion
-after reading then M-Systems FAQ, and some of this lists archives.
-Is there anyway to recover the bad block list?  I do not have a backup
-of it.
-
-My understanding is that the chip is now "unreliable", which I can
-live with for now.  Does unreliable mean I can still use the chip
-if I can somehow format it?
-
-The bottom line is that I want to use the chip if at all possible,
-even if it is unreliable.  I would appreciate any input on the subject.
-Thanks.
-
-Steve
-_____________________
-Stephen Bardsley
-RLW Inc.
-Malta, NY 
+--
+dwmw2
