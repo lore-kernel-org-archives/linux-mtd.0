@@ -1,26 +1,15 @@
 Received: from n10.grp.scd.yahoo.com ([66.218.66.65])
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BJJ4f-00069N-N7
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2004 22:28:05 +0100
-Message-ID: <20040429063301.15520.qmail@web41114.mail.yahoo.com>
-To: jobs-at-personnelonline@egroups.com, jobs_net@egroups.com,
-  jobs_in_IT@yahoogroups.com, 1webjobs@egroups.com, 99csekgp@egroups.com,
-  a1a-as400jobs@egroups.com, a1acomputerjobs@egroups.com,
-  bangalore-jobs@egroups.com, campusjobsavenues@egroups.com
-From: =?iso-8859-1?q?shiva=20kumar?= <veshivakumar@yahoo.com>
+	id 1BJJ4l-00069N-UR
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2004 22:28:12 +0100
+To: bluejobs@yahoogroups.com
+Message-ID: <c6qnag+kgkn@eGroups.com>
+From: "vksomanchi" <vamsikirans@techemail.com>
 MIME-Version: 1.0
-Date: Thu, 29 Apr 2004 07:33:01 +0100 (BST)
-Content-Type: text/plain; charset=US-ASCII
+Date: Thu, 29 Apr 2004 11:01:36 -0000
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-cc: jobsinbangalore@egroups.com
-cc: biotech_jobs@egroups.com
-cc: bharath_rathnas@egroups.com
-cc: programmer-jobs@egroups.com
-cc: itjobsprogrammers@egroups.com
-cc: bank-finservices-insurance-consult-jobs@egroups.com
-cc: bluejobs@yahoogroups.com
-cc: codekings@egroups.com
-Subject: [bluejobs] URGENT -  MAINFRAMES CANDIDATES immediate requirement
+Subject: [bluejobs] UNIX / VC++
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi
-folks! one of our leading PCMM level 5 company in bangalore/chennai
-is looking for the following
+One of our Clients has the following requirements for Bangalore:
  
-MAINFRAME -COBOL/DB2/CICS/JCL/VSAM-   2-8 YRS
- 
-MAINFRAME ASSEMBLER/IMS/DBDC/PL-1 -   2-8 YRS
- 
-ORACLE APPLICATION -  3-8 YEARS 
- 
-C++/UNIX --  3-8 YEARS
- 
- 
-SHOOT UR RESUME TO  resume@consultoneindia.com
- 
-NOTE: (1 )PLS SEND YOUR RESUME WITH DATE OF BIRTH, 
- 
-PASSPORT NO, YEAR OF PASSING
+A. UNIX ADMINISTRATOR (Code: "PCS/BS/UA")
 
-BRANCH STUDIED.
-
-(2)Those who have already send need not send again
+i.  Thorough knowledge of all aspects of System Administration in any 
+flavour of UNIX
+ii.  Knowledge of routers etc a MUST.
+iii. Education: BCA/MCA/BE/BSc/MSc(Science)
+iv. Experience : 4+ years
  
-for more openings call us at CHENNAI - 044-24461395 BANGALORE 
+B. VC++ Programmer (Code: "PCS/BS/VP")
+
+i.   Strong experience in VC++
+ii.  Experience in C# & .NET
+iii. Knowledge of MSC
+iv. Education: BE/MCA
+v.  EXperience: 3+ years
  
-VINOD-9845936437
- 
-consult one india
-
-
-
-
-
-		
----------------------------------
-  Yahoo! Messenger - Communicate instantly..."Ping" your friends today! Download Messenger Now
-
-[Non-text portions of this message have been removed]
+Pls forward your CVs to hr@polycorps.com, mentioning the relevant 
+code in the subject line.
 
 
 
