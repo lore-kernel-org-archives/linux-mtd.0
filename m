@@ -1,21 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D2AnY-0001L5-Iy
-	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2005 11:16:10 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20050218160108.GC5926@synertronixx3>
+	id 1D2B7M-0001eC-PE
+	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2005 11:36:37 -0500
+Date: Fri, 18 Feb 2005 17:36:37 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050218163636.GD5926@synertronixx3>
 References: <20050218154216.GA5926@synertronixx3>
-	<1108741733.13420.20.camel@sauron.oktetlabs.ru>
-	<20050218160108.GC5926@synertronixx3>
-Content-Type: text/plain
-Date: Fri, 18 Feb 2005 19:15:34 +0300
-Message-Id: <1108743334.13420.25.camel@sauron.oktetlabs.ru>
+	<20050218154853.GB5926@synertronixx3>
+	<1108742958.24721.295.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1108742958.24721.295.camel@tglx.tec.linutronix.de>
 Subject: Re: freeze when mounting fs
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-02-18 at 17:01 +0100, Konstantin Kletschke wrote:
-> You mean synchronous logging of syslogd/klogd?
-> Busybox's can't.
-> It seems adding some scripts to /home into the rootfs breaks things.
-> I removed /home before mkfs.jffs2, left the other stuff like it was,
-> voily, mounts, runs, works with no error.
+Am 2005-02-18 17:09 +0100 schrieb Thomas Gleixner:
+> On Fri, 2005-02-18 at 16:48 +0100, Konstantin Kletschke wrote:
 > 
-> Konsti
+> > CONFIG_JFFS2_FS_DEBUG=2
+> 
+> Please use level 1
+> 
+> > And when mounting functional rootfs it speaks a lot, but:
+> 
+> What happens when you mount the non-functional one ? Can you please
 
-I mean via serial line. It is synchronous. In your case it is not,
-meaning that first output goes to the circular buffer, then user space
-daemons fetch it etc etc. Your system may die before the messages have
-been conveyed to syslogd.  
+Nothing.
+
+> provide logs via serial console. klogd does not work for logging of that
+> stuff.
+
+Even with level 3 _nothing_ happens.
+
+> > Rootfs is at http://ludenkalle.de/mtd/52
+> 
+> The image is clean. There is no problem to see.
+> 
+> It would be interesting to have a binary image after you programmed it
+> to FLASH. cat /dev/mtdX >flash.img
+
+I will try what I can do or reproduce it later, I am sure my device
+table triggered a bug or some sort of that:
+
+I removed 3 lines mungling up some access permissions of subdirectories
+under /home and now the image gets mounted.
+I am fighting with svn ATM to get the actual change...
+
+Konsti
+
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
