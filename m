@@ -1,22 +1,20 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ATnk1-00067q-FR
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Dec 2003 19:41:53 +0000
-Received: from 192.168.1.100 (unknown [192.168.1.100])E7509175D4
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  9 Dec 2003 14:40:34 -0500 (EST)
-From: Joshua Wise <joshua@joshuawise.com>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 9 Dec 2003 14:40:18 -0500
+	id 1ATsIK-0006iu-SA
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2003 00:33:37 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Joshua Wise <joshua@joshuawise.com>,
+	linux-mtd@lists.infradead.org
+Date: Wed, 10 Dec 2003 13:38:48 +1300
+References: <200312091440.22926.joshua@joshuawise.com>
+In-Reply-To: <200312091440.22926.joshua@joshuawise.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200312091440.22926.joshua@joshuawise.com>
-Subject: nand: oob question
+Content-Transfer-Encoding: 8bit
+Message-Id: <20031210003150.631E116BB2@desire.actrix.co.nz>
+Subject: Re: nand: oob question
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wednesday 10 December 2003 08:40, Joshua Wise wrote:
+> Hi all,
+>
+> I've been porting Linux to the iPAQ h1910. I'm having lots of issues
+> mounting jffs2 partitions that I've traced down to there only being 16
+> bytes of nand oob, not the 32 bytes that jffs2 seems to be expecting.
+>
+> Is my flash weird, or am I just dense?
 
-Hi all,
+Hopefully neither :-).
 
-I've been porting Linux to the iPAQ h1910. I'm having lots of issues mounti=
-ng=20
-jffs2 partitions that I've traced down to there only being 16 bytes of nand=
-=20
-oob, not the 32 bytes that jffs2 seems to be expecting.
+NAND typically has pages with 512bytes data + 16 bytes oob.  The newer 
+(larger) stuff has 2kB data + 64bytes OOB per page.
 
-Is my flash weird, or am I just dense?
+Why do you think jffs2 wants 32bytes of OOB?
 
-/joshua
-
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/1iUlPn9tWOqA4LMRAtWcAJ9sOFXpRIrvjCaJrZZyIloFwz5DRACggc82
-LRxgvXIkcfd+kBzKrbAxGMk=3D
-=3DiHrx
-=2D----END PGP SIGNATURE-----
+-- Charles
