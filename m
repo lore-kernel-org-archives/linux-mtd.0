@@ -1,24 +1,16 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Brian T <btuch@usa.net>
-In-Reply-To: <082b01c48f94$fe637840$fd0ba8c0@briantpc>
-References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc>
-	<1093894808.25339.57.camel@weaponx.rchland.ibm.com>
-	<073f01c48ecc$abd3e600$fd0ba8c0@briantpc>
-	<1093899187.16320.25.camel@thomas.tec.linutronix.de>
-	<075f01c48ed7$08dbc570$fd0ba8c0@briantpc>
-	<1093900751.16320.28.camel@thomas.tec.linutronix.de>
-	<07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc>
-	<1093966869.6200.34.camel@localhost.localdomain>
-	<080401c48f7d$253bda60$fd0ba8c0@briantpc>
-	<1093972311.6200.47.camel@localhost.localdomain>
-	<082b01c48f94$fe637840$fd0ba8c0@briantpc>
+Received: from ottawa-hs-64-26-171-227.s-ip.magma.ca ([64.26.171.227]
+	helo=edgewater.ca)
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2J31-0000F8-3u
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2004 20:32:24 -0400
+From: Shamile Khan <shamile@edgewater.ca>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Tue, 31 Aug 2004 21:00:09 +0100
-Message-Id: <1093982409.6200.54.camel@localhost.localdomain>
+Message-Id: <1093998741.21592.22.camel@localhost.localdomain>
 Mime-Version: 1.0
+Date: Tue, 31 Aug 2004 20:32:21 -0400
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 file corruption
+Subject: Support for Am29LV2562M NOR flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-08-31 at 14:59 -0500, Brian T wrote:
-> > Putting them up for download is probably better than mailing them to the
-> > list -- yes.
-> >
-> > Make sure that your log includes KERN_DEBUG messages and isn't lossy.
-> > Remote syslog isn't necessarily good enough -- a serial console
-> > certainly is.
-> >
-> > Let me know the inode number of the test file you created too (ls -i me)
-> >
-> 
-> I got console logging on, and will run some tests.  I'll send you a priv
-> email where to get the files from.
-> 
-> With KERN_DEBUG (all options) on, I don't see anything extra in the syslog.
-> Should there be?
+Hello,
 
-man syslogd.conf 
+I am new to MTD so bear with me. I tried getting MTD sources (as of end
+July) to autodetect Am29LV2562M chip in x32 mode (16M * 32-bit). 
 
-syslog doesn't log messages at KERN_DEBUG by default. But syslog is too
-lossy anyway. Use a serial console.
+This chip contains two Am29LV256M chips (16M * 16-bit). However it seems
+that it cannot be modelled as two interleaved x16 chips. This is because
+the data bits are connected as DQ0-7 (chip1), DQ8-15 (chip2), DQ16-23
+(chip1) and DQ24-31 (chip2) i.e it alternates between chips for every
+byte. As far as I understand, two x16 chips interleaved have the
+configuration DQ0-DQ16 (chip 1), DQ17-31 (chip2). As a consequence, the
+command sequences I require are of the form 0x0000XXXX instead of
+0x00XX00XX (which MTD supports for interleaved flash chips as I verified
+in another board). XX refers to the data part of the command e.g 98 for
+CFI query. 
 
-Use CONFIG_JFFS2_FS_DEBUG=1. More than that is overkill.
+I am wondering if I am missing something here. Does MTD support the
+flash geometry for Am29LV2562M? 
 
+Thanks,
+Shamile
 -- 
-dwmw2
+Shamile Khan
+Edgewater Computer Systems, Inc.
+1125 Innovation Drive
+(2nd Floor)
+Kanata, Ontario, K2K 3G6
+Tel: (613) 271-1101 ext. 240
+Fax: (613) 271-1152
