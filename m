@@ -1,16 +1,23 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from mail1.asianet.co.th ([203.144.222.229] helo=mail.asianet.co.th)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BxDiX-0003y3-Rf
-	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2004 19:50:15 -0400
-Date: Tue, 17 Aug 2004 16:50:10 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-To: linux-mtd@lists.infradead.org, viro@ftp.uk.linux.org
-Message-ID: <20040817235010.GA18014@slurryseal.ddns.mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: yoann@prelude-ids.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] JFFS2 mount options discarded
+	id 1BxHFF-0004Nn-6k
+	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2004 23:36:17 -0400
+Received: from virscan1.asianet.co.th (HELO mail.asianet.co.th)
+	([203.144.222.197]) (envelope-sender <jay4mail@yahoo.com>)
+	by mail1.asianet.co.th (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 18 Aug 2004 10:36:05 +0700
+Received: from ppp-210.86.146.194.revip.asianet.co.th (HELO [10.1.1.33])
+	([210.86.146.194]) (envelope-sender <jay4mail@yahoo.com>)
+	by mx3.asianet.co.th (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 18 Aug 2004 10:36:04 +0700
+Message-ID: <4122D157.7070702@yahoo.com>
+Date: Wed, 18 Aug 2004 10:47:35 +0700
+From: Pathompong Puengrostham <jay4mail@yahoo.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: amd_flash.c not compile
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yoann Vandoorselaere noticed an attempt to mount a JFFS2 filesystem
-read-only mounts writeable instead.  I believe the fix is:
+Dear all,
 
---- linux-2.6.8.1-orig/fs/jffs2/super.c	2004-08-15 11:46:43.000000000 -0700
-+++ linux-2.6.8.1-jffs2-mount-fix/fs/jffs2/super.c	2004-08-17 15:45:17.935379784 -0700
-@@ -130,7 +130,7 @@
- 		  mtd->index, mtd->name));
- 
- 	sb->s_op = &jffs2_super_operations;
--	sb->s_flags |= MS_NOATIME;
-+	sb->s_flags = flags | MS_NOATIME;
- 
- 	ret = jffs2_do_fill_super(sb, data, (flags&MS_VERBOSE)?1:0);
- 
+I tried to use mtd 20040816 snapshot with linux 2.6.8.1 but there was a 
+compile errors in amd_flash.c. The latest version I can get it working 
+is 20040707. I read the cvs archive and saw that there was changes in 
+map.h that broke all the devices. Is there anybody already working on 
+this same file or get it working with the latest snapshot? Anyway, I'll 
+try to fix it.
 
-Clue me in if I'm off-base, thanks,
-
--- 
-Todd Poynor
-MontaVista Software
+Best regards,
+Jay
