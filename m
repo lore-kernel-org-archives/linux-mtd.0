@@ -1,15 +1,17 @@
-Received: from mailout01.sul.t-online.com ([194.25.134.80] helo=mailout01.sul.t-online.de)
+Received: from mail.mediatrix.com ([66.129.134.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15WgT6-0002fP-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 16:51:00 +0100
-Message-ID: <3B79497B.6537FFE6@t-online.de>
-Date: Tue, 14 Aug 2001 17:53:31 +0200
-From: attingimus@t-online.de (Rene Burgdorf)
+	id 15WhMM-0002jB-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 17:48:06 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4DD0DAD9@webmail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: 'Vipin Malik' <vipin@embeddedlinuxworks.com>, David Woodhouse
+	 <dwmw2@infradead.org>
+Cc: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS2 is broken 
+Date: Tue, 14 Aug 2001 12:46:15 -0400
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: MTD and 2.2.18-rtl
 Content-Type: multipart/mixed;
- boundary="------------FA07762D9EE2567996B44FB7"
+	boundary="----_=_NextPart_000_01C124E0.A1FBC2F0"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,74 +23,77 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------FA07762D9EE2567996B44FB7
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Hi,
+------_=_NextPart_000_01C124E0.A1FBC2F0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I'm trying to compile the mini-rt linux kernel 2.2.18-rtl with mtd support (no modules).
-Using the latest CVS source from 2001/08/11 the following error shows up:
+It guess it is.  But is it possible (and not too time-consuming) for =
+you to
+take that new one I just created with ssh-keygen and put in
+/root/.ssh/identity.pub along with /root/.ssh/identity and the config =
+file
+you ask me to create?  Here it is, should you decide to use it....
 
-make[4]: Entering directory `/home/att/Projekte/mini/kernel/linux/drivers/mtd/devices'
-cc -D__KERNEL__ -I/home/att/Projekte/mini/kernel/linux/include -Wall -Wstrict-prototypes
--O2 -fomit-frame-pointer -fno-strict-aliasing -D__SMP__ -pipe -fno-strength-reduce -m486
--DCPU=486   -c -o doc2000.o doc2000.c
-doc2000.c:1102: parse error before `cleanup_doc2000'
-doc2000.c:1103: warning: return-type defaults to `int'
-doc2000.c: In function `cleanup_doc2000':
-doc2000.c:1118: warning: control reaches end of non-void function
-doc2000.c: At top level:
-doc2000.c:1120: warning: initialization from incompatible pointer type
-make[4]: *** [doc2000.o] Error 1
-make[4]: Leaving directory `/home/att/Projekte/mini/kernel/linux/drivers/mtd/devices'
-make[3]: *** [first_rule] Error 2
-make[3]: Leaving directory `/home/att/Projekte/mini/kernel/linux/drivers/mtd/devices'
-make[2]: *** [_subdir_devices] Error 2
-make[2]: Leaving directory `/home/att/Projekte/mini/kernel/linux/drivers/mtd'
-make[1]: *** [_subdir_mtd] Error 2
-make[1]: Leaving directory `/home/att/Projekte/mini/kernel/linux/drivers'
-make: *** [_dir_drivers] Error 2
+Fr=E9d=E9ric Giasson
 
-After removing `__exit' from line 1102 of doc2000.c `static void __exit
-cleanup_doc2000(void)' 
-the error doesn't occur anymore. The same applies to nftlcore.c (static void __exit
-cleanup_nftl(void)).
 
-Although a kernel is built, it complains : `Cannot find driver for DiskOnChip Millennium
-at 0xD0000.'
-A 2.4.4-rtl kernel works perfectly with this DoC on the same machine. 
 
-The call to inter_module_get_request() in function DoC_Probe( ) of docprobe.c returns NULL
-although
-function init_doc2000() of doc2000.c was called before.
 
-As I can't use 2.4.4 I'm stuck...
 
-Thank you for any hints
+-----Original Message-----
+From: Vipin Malik [mailto:vipin@embeddedlinuxworks.com]
+Sent: Monday, August 13, 2001 10:40 PM
+To: David Woodhouse
+Cc: Frederic Giasson; MTD mailing list (E-mail)
+Subject: Re: JFFS2 is broken=20
 
-Rene
---------------FA07762D9EE2567996B44FB7
-Content-Type: text/x-vcard; charset=us-ascii;
- name="attingimus.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Description: Card for Rene Burgdorf
+
+At 01:00 AM 8/14/2001 +0100, David Woodhouse wrote:
+
+>vipin@embeddedlinuxworks.com said:
+> > David once mentioned that there are some obvious optimizations that
+> > can be carried out in the JFFS2 code. Maybe he could list out his
+> > favorite ones  and maybe someone could volunteer to tackle them one =
+by
+> > one.
+>
+>I committed the cleanup to jffs2_remove_node_refs_from_ino_list()
+
+Great! Frederic, since you just setup your system to do the jitter =
+tests,=20
+could you pl run them again (with the new code from CVS) and see what=20
+difference it made (my own system is busy running the mird db power =
+fail=20
+tests).
+
+  Also enable profiling and see what else is on the  "CPU hog" list.
+
+The LTT (Linux Trace Toolkit) seems to be an excellent tool to get more =
+
+fine grained performance stats out of the system and
+a new version was just released for 2.4.5 (though it may provide us =
+with=20
+more info that we need/can handle :)
+
+Vipin
+
+
+------_=_NextPart_000_01C124E0.A1FBC2F0
+Content-Type: application/octet-stream;
+	name="identity.pub"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: attachment;
- filename="attingimus.vcf"
+	filename="identity.pub"
 
-begin:vcard 
-n:Burgdorf;Rene
-tel;fax:+49 531 344613
-tel;work:+49 531 344601
-x-mozilla-html:FALSE
-org:Attingimus Nachrichtentechnik GmbH
-adr:;;Bismarckstr. 15;38102 Braunschweig;;;Germany
-version:2.1
-email;internet:attingimus@t-online.de
-note;quoted-printable:HRB 4159 beim AG BS=0D=0A=0D=0A
-x-mozilla-cpt:;-18592
-fn:Rene Burgdorf
-end:vcard
+1024 35 =
+164358453018075670455790203200706540984393749504204243836036681422744008=
+324009655150232134223034277415336613711914311755267437950808937418173965=
+122857400339606006019692108436584787607289775427783920015394610085223007=
+334556116082199981839573028213537755795029530359907389853830876722709464=
+615820281008293377021 root@samlinux=0A=
 
---------------FA07762D9EE2567996B44FB7--
+------_=_NextPart_000_01C124E0.A1FBC2F0--
