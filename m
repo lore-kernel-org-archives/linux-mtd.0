@@ -1,25 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfhIt-0003pP-Qy
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:19:38 -0500
-Date: Sat, 18 Dec 2004 17:19:23 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-Message-ID: <20041218161923.GD1083@wohnheim.fh-wedel.de>
-References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
-	<41C0D3AC.3050801@us.ibm.com>
-	<1103158974.15929.37.camel@squizzey.bult.co.uk>
-	<1103201631.25765.7.camel@weaponx.rchland.ibm.com>
-	<1103232128.15927.70.camel@squizzey.bult.co.uk>
-	<41C1FDFF.3020308@us.ibm.com>
-	<1103233669.15929.81.camel@squizzey.bult.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 1CfhOH-0003zO-Dw
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:25:10 -0500
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
+   "David Vrabel" <dvrabel@arcom.com>
+Date: Sat, 18 Dec 2004 17:25:00 +0100
+Message-ID: <BCEFJBPJCGFCNMMMIDBHGEMNCJAA.Joakim.Tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1103233669.15929.81.camel@squizzey.bult.co.uk>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 mount time
+In-Reply-To: <20041218161437.GC1083@wohnheim.fh-wedel.de>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS3 & performance
+Reply-To: Joakim.Tjernlund@lumentis.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 December 2004 21:47:49 +0000, Gareth Bult (Encryptec) wrote:
-> 
-> blkmtd.c is pretty much a rewrite, less than half the size and uses the
-> system buffer cache instead of reading / writing directly to the device.
-> This boosts performance x 3 on read x lots on write. [I get x 100
-> faster] (albeit you lose bad block detection on write)
-> 
-> If anyone's interested in the code, let me know and I'll clean it up and
-> post it .. however it'll be a new file and not a patch.
+> On Fri, 17 December 2004 11:33:42 +0000, David Vrabel wrote:
+> >
+> > (Also, I wouldn't have thought crc16 on 32 bit archs would have any
+> > significant performance benefits.  But since I don't know either the
+> > crc16 or crc32 algorithms... *shrug*)
+>
+> See my earlier posts in this thread for the algorithms.  Without
+> special optimizations, you can process 16 bits at a time for crc16 and
+> 0 (zero) bits at a time for crc32.
+>
+> Jörn
 
-Sure am!  If the code lives up to your promises I'd like to read it
-(might learn something new) and possibly use it sometime soon.
+Hi Jörn
 
-Jörn
+Care to run this in your test program? Use the
+same table as tglx posted. This will only work on LE machines
+for now.
 
--- 
-The competent programmer is fully aware of the strictly limited size of
-his own skull; therefore he approaches the programming task in full
-humility, and among other things he avoids clever tricks like the plague. 
--- Edsger W. Dijkstra
+ Jocke
+
+#define DO_CRC(x) crc = crc16tab[ (crc ^ (x)) & 255 ] ^ (crc>>8)
+
+unsigned short crc16 (unsigned char *buf, size_t len)
+{
+  const unsigned short  *b =(unsigned short *)buf;
+  unsigned short crc = 0xffff;
+
+  if(len >= 2){
+    /* load data 16 bits wide, xor data 16 bits wide. */
+    size_t save_len = len & 1;
+    len = len >> 1;
+    do {
+      crc ^= *b++;
+      DO_CRC(0);
+      DO_CRC(0);
+    } while (--len);
+    len = save_len;
+  }
+  /* And the last few bytes */
+  if(len){
+      unsigned char *p = (unsigned char *)b;
+      DO_CRC(*p);
+  }
+  return crc;
+}
