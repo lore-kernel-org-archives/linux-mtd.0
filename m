@@ -1,19 +1,19 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CcL0u-00068v-Ar
-	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 04:55:09 -0500
+	id 1CcL9u-0006JR-W9
+	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 05:04:28 -0500
 From: Thomas Gleixner <tglx@linutronix.de>
-To: zhang jingxin <zhangjingxin@sict.ac.cn>
-In-Reply-To: <1102555735.2526.40.camel@z21921>
-References: <1102555735.2526.40.camel@z21921>
+To: Subrahmanyam <subrahmanyam@navayuga.co.in>
+In-Reply-To: <001c01c4dda0$839c4920$8500a8c0@nit37>
+References: <001c01c4dda0$839c4920$8500a8c0@nit37>
 Content-Type: text/plain
-Date: Thu, 09 Dec 2004 10:55:02 +0100
-Message-Id: <1102586103.3306.18.camel@tglx.tec.linutronix.de>
+Date: Thu, 09 Dec 2004 11:04:24 +0100
+Message-Id: <1102586664.3306.26.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: list <linux-mtd@lists.infradead.org>
-Subject: Re: doc2000 problem
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD driver
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,13 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-12-09 at 09:28 +0800, zhang jingxin wrote:
-> flash_eraseall -j /dev/mtd1
-> it doesn't recongize the device.
-> it return no such device.
+On Thu, 2004-12-09 at 09:08 +0530, Subrahmanyam wrote:
+>  Yes, Thomas has suggested that i indeed use a filesystem, but how can I 
+> best
+>  achieve it! I mean the procedure to store data in a file.
 
-Provide the output of
+# echo "KEYSTRING" >/path/to/your/file
 
-# ls -l /dev/mtd*
+All programming languages provide functions to write to files.
+
+# man 2 write
+
+might be a good start. If this does not help you might try
+
+http://www.amazon.com/exec/obidos/ASIN/0764570684/dangookin/104-4933924-3663106?creative=327641&camp=14573&link_code=as1
+
+for further assistance.
 
 tglx
