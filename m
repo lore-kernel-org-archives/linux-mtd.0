@@ -1,53 +1,53 @@
-Return-path: <owner-mtd@imladris.demon.co.uk>
+Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12rKvZ-0007ZV-00
-	for mtd-list@infradead.org; Mon, 15 May 2000 14:28:57 +0100
-Received: from morrison.matrox.com ([204.50.136.19])
+	id 12reXP-0002KO-00
+	for mtd-list@infradead.org; Tue, 16 May 2000 11:25:19 +0100
+Received: from gate.mvhi.com
+	([194.205.184.34] helo=server.axiom.internal ident=mail)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12rKvY-0007ZP-00
-	for mtd@infradead.org; Mon, 15 May 2000 14:28:56 +0100
-Message-ID: <391FFB78.4D0674D@matrox.com>
-Date: Mon, 15 May 2000 09:28:24 -0400
-From: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@Matrox.COM>
-MIME-Version: 1.0
-To: Alexander Larsson <alex@cendio.se>
-CC: mtd@infradead.org
-Subject: Re: ext2_lookup() and i_count
-References: <Pine.LNX.3.96.1000515120001.25053A-100000@biffen.cendio.se>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Sender: owner-mtd@imladris.demon.co.uk
+	id 12reXN-0002KI-00
+	for mtd@infradead.org; Tue, 16 May 2000 11:25:17 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.03 #1)
+	id 12reXN-00036n-00
+	for mtd@infradead.org; Tue, 16 May 2000 11:25:17 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 12reXN-0000O3-00; Tue, 16 May 2000 11:25:17 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: mtd@infradead.org
+Subject: List change notification.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 16 May 2000 11:25:17 +0100
+Message-ID: <1490.958472717@devel2.axiom.internal>
+Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Alexander Larsson wrote :
+The mails sent to this list have previously had the following line, on 
+which people have presumably set procmail (or whatever) to filter:
 
->=20
-> I have huge problems with rm (unlink). If i unlink a file i've recently
-> read i get a BUG() in clear_inode() in fs/inode.c. See my posting to
-> linux-kernel for more info.
-> Otherwise i haven't done much testing, I've mainly done separate testin=
-g
-> of each function as I've implemented them.
+Sender: owner-mtd@imladris.demon.co.uk
 
-I tried to unlink a file after reading it and, even though the file gets
-unlinked without any error, most of the files on the filesystem got
-screwed up.
+I'm phasing out all use of the Demon address, so as of now, that should have 
+changed to:
 
-In kernel 2.2.14, clear_inode() is a bit different :
+Sender: owner-mtd@infradead.org
 
-void clear_inode(struct inode *inode)
-{
-	if (inode->i_nr_pages)
-	    truncate_inode_pages(inode,0);
-	wait_on_inode(inode);
-	...
-}
+Also, I've set up a new CNAME cvs.infradead.org which ought to be used 
+for CVS traffic, as that may be split from the rest of the functionality of 
+my existing machine.
 
-This would explain the fact that I didn't get any BUG().
+This is because my machine is almost certainly going to have to be removed 
+from the premises of my current employer, when I leave their employ in 
+about three weeks' time to join Red Hat.
 
 
---=20
-S=E9bastien C=F4t=E9
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
