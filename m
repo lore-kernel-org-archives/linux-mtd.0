@@ -1,17 +1,23 @@
-Date: Wed, 12 Jan 2005 18:33:33 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050112181006.GI25638@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.58.0501121833250.10617@phoenix.infradead.org>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1ConQb-0006Rh-RQ
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:41:11 -0500
+Date: Wed, 12 Jan 2005 19:40:59 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20050112184059.GL25638@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
 	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
 	<20050112181006.GI25638@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
+	<1105554479.17853.287.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1105554479.17853.287.camel@tglx.tec.linutronix.de>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,33 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joern,
+On Wed, 12 January 2005 19:27:59 +0100, Thomas Gleixner wrote:
+> 
+> Missing error
+> 
+> There is another type of error, which came up lately with AND FLASH. If
+                                                           ^^
+You mean NAND, right?
 
-> Your ability to come up with excellent papers is astounding!
-Thanks :-)
+> you leave a block untouched in a range of blocks and erase/program the
+> surrounding blocks, then the untouched block is likely to have bitflips.
+> GC likeliness to GC clean blocks from time to time will cover this, but
+> if you have a big number of clean blocks you might get into trouble.
+> 
+> A strong argument for using seperate partitions for static and dynamic
+> data.
 
->   Blocks that fail during use
-> Quote: "Therefore, blocks should be marked as bad and no longer
-> accessed if there is either a block erase failure or a page program
-> failure."
->
-> During erase, by definition those blocks don't hold crucial data.  Not
-> a problem.  Page program is slightly worse, but it only means that we
-> have to program a different block instead.  Make sure you don't use
-> the partial programming thing they hinted at and no crucial data is
-> lost.  Again, harmless.
->
->
->   Permanent Failure
-> Those can be noticed during either erase or program, so the above
-> applies.  Harmless.
-Hmm. I think about the intermediate stage. I mean that block is good at 
-one moment, and it is bad at another moment. But *when* it become bad? Is 
-this only during erase? If so, you're probably right. But I'm not sure. Is 
-there some stage when block still contain crucial data, but is already 
-bad? If it is, CRC will cach this.
+Wouldn't that also require a DMZ of some size between static and
+dynamic data?  For example, 4MB static, 1MB unused, rest dynamic?
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Jörn
+
+-- 
+If you're willing to restrict the flexibility of your approach,
+you can almost always do something better.
+-- John Carmack
