@@ -1,18 +1,13 @@
-Received: from jeeves.momenco.com
-	([64.169.228.99] helo=host099.momenco.com ident=root)
+Received: from taurus.mvis.com ([216.202.54.35] helo=[216.202.54.14])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19uFJK-0005PT-Vz
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Sep 2003 18:51:23 +0100
-Date: Mon, 1 Sep 2003 12:18:36 -0700
-From: Matthew Dharm <mdharm@momenco.com>
-To: dima <_pppp@mail.ru>
-Message-ID: <20030901121836.A26873@momenco.com>
-References: <3F52FB48.3020908@mail.ru>
-Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset=us-ascii
-cc: linux-mtd@lists.infradead.org
-Subject: Re: trouble with samsung drive
+	id 19uh1R-00008O-6v
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2003 00:26:45 +0100
+content-class: urn:content-classes:message
+Date: Wed, 3 Sep 2003 16:25:42 -0700
+Message-ID: <AFA2797FA126FD46B8CD281F2809844E181968@taurus.primary.local>
+From: "Keith Outwater" <Keith_Outwater@microvision.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Latest CVS snapshot support for kernel 2.2.4?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +17,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-USB Mass Storage devices aren't handled via the MTD driver, generally.
-They are handled by the usb-storage driver via SCSI emulation.
+Hello - 
 
-If the device shows up in /proc/bus/usb/devices with class code 8, then the
-USB low-level is working and it's time to move on to enabling the
-usb-storage driver.
+I am running a linux-2.4.4 kernel on an embedded target and noticed that
+the latest CVS snapshot has a driver for the DOC Millennium Plus. I
+(unfortunately)
+have one of these devices on my board and up to now had no MTD support.
+Sadly, the
+oldest kernel supported appears to be 2.4.10 per compatmach.h
 
-The place for usb-storage help is linux-usb-users@lists.sf.net
+Are there any plans to add support for earlier kernels?
 
-Matt
+Thanks!
+Keith
 
-On Mon, Sep 01, 2003 at 11:54:48AM +0400, dima wrote:
-> Hello!
-> I got the Samsung flash drive last weekend. It looks like a noname one 
-> marked as "Samsung 128MB, Made in Korea" only. It might be something of 
-> the K9F28XXX0C series 
-> (http://www.samsung.com/Products/Semiconductor/Flash/NAND/128Mbit/K9F2816Q0C/K9F2816Q0C.htm).
-> I tried to get it working on my old laptop on Sunday but failed. It 
-> could be a problem with the USB hub since it is USB 1.1 & the flash 
-> drive is reported to be USB 2.0. I searched the web & figured out that 
-> Samsung chips must be NAND-compatible. I used DiskOnChip 2000 driver 
-> first, but it failed to probe the device (btw, USB hub didn't report any 
-> unclaimed devices). Then I tried almost all MTD drivers availble in the 
-> standard (kernel.org) kernel distribution (v2.4.20) -- none of them 
-> seemed to probe the device successfully.
-> So I have 3 questions:
-> 1) Is this a problem with my old USB hub?
-> 2) Which driver should I use if no?
-> 3) I didn't enable SCSI emulation support in the kernel yet (I decided 
-> to leave it for the next step since the device hadn't been detected). 
-> Can it be the problem?
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Matthew Dharm                              Work: mdharm@momenco.com
-Senior Software Designer, Momentum Computer
+Keith Outwater
+Sr. Staff Engineer
+Microvision, Inc.
+19910 N. Creek Parkway
+Bothell, WA 98011
