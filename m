@@ -1,53 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12O0te-0001n6-00
-	for mtd-list@infradead.org; Thu, 24 Feb 2000 16:13:46 +0000
-Received: from morrison.matrox.com ([204.50.136.19])
+	id 12O8SP-00023h-00
+	for mtd-list@infradead.org; Fri, 25 Feb 2000 00:18:09 +0000
+Received: from out1.prserv.net ([32.97.166.31] helo=prserv.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12O0tZ-0001n0-00
-	for mtd@infradead.org; Thu, 24 Feb 2000 16:13:42 +0000
-Received: (from mtxmail@localhost)
-	by morrison.matrox.com (8.8.8/8.8.8) id LAA27430
-	for <mtd@infradead.org>; Thu, 24 Feb 2000 11:13:27 -0500 (EST)
-Received: from pluton.matrox.com (pluton.matrox.com [192.168.51.7])
-	by venus.matrox.com (8.9.3/8.9.3) with ESMTP id LAA17154
-	for <mtd@infradead.org>; Thu, 24 Feb 2000 11:12:02 -0500 (EST)
-Received: from matrox.com (jlarin.matrox.com [192.168.18.107])
-	by pluton.matrox.com (8.8.8/8.8.8) with ESMTP id LAA02335
-	for <mtd@infradead.org>; Thu, 24 Feb 2000 11:10:10 -0500 (EST)
-Message-ID: <38B557EA.42D45DA8@matrox.com>
-Date: Thu, 24 Feb 2000 11:10:18 -0500
-From: =?iso-8859-1?Q?Jean=2DFran=E7ois?= Larin <jlarin@Matrox.COM>
-MIME-Version: 1.0
+	id 12O8SM-00023b-00
+	for mtd@infradead.org; Fri, 25 Feb 2000 00:18:07 +0000
+From: "Dvir Oren" <dvir@lucidvon.com>
 To: MTD <mtd@infradead.org>
-Subject: Microsoft Flash Filesystem.
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Fri, 25 Feb 2000 02:21:35 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Re: Request for kernel with DOC2000
+In-reply-to: <38B28798.C7D38845@zentropix.com>
+Message-Id: <E12O8SM-00023b-00@infradead.org>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-Anybody knows any link to the specification of Microsoft Flash File
-system 2? I just searched MSDN and the WEB without finding anything.
+> I have managed to compile the MTD driver into a 2.2.14 kernel (mtd.c,
+> doc2000.c & nftl.c) and am now starting to test it out. My collegue
+> (Brendan Knox) did this a while ago but found some problems with the
+> driver. He's now on a sabbatical so the job falls to me. The more heads
+> we can get round this one the better, so if I can be of any help getting
+> you guys going let me know.
 
-Also, is there any legal (patent) restriction with Microsoft FFS2?
+It would be extremely helpful if you could post a patch with 
+whatever you changed in the kernel, plust whatever you changed in 
+the MTD sources (if at all).
 
-Thank you.
+Thanks.
 
---
-
-************************************************************
-Jean-Francois Larin ing. stag.      Head Office:
-Software design                     1055 St. Regis Blvd.
-Network Products Group              Dorval, Quebec, Canada
-Matrox Electronic Systems           H9P 2T4
-Tel:(514)685-7230 ext. 2041
-Fax:(514)822-6272
-E-Mail: JeanFrancois.Larin@matrox.com
-************************************************************
-
-
+---------
+Dvir Oren <dvir@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
