@@ -1,19 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16pWnw-0006e2-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Mar 2002 15:54:40 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020323112215.B13151@wohnheim.fh-wedel.de> 
-References: <20020323112215.B13151@wohnheim.fh-wedel.de>  <3C9BA0DD.B3827964@seranoa.com> 
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Cc: Andrew Dixon <andrew.dixon@seranoa.com>,
-    "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: CVS tags? 
+	id 16pYHM-0006n9-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Mar 2002 17:29:08 +0000
+Date: Mon, 25 Mar 2002 18:29:03 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Andrew Dixon <andrew.dixon@seranoa.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: CVS tags?
+Message-ID: <20020325182903.A16898@wohnheim.fh-wedel.de>
+References: <3C9BA0DD.B3827964@seranoa.com> <20020323112215.B13151@wohnheim.fh-wedel.de> <3C9F38C4.510394D@seranoa.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Date: Mon, 25 Mar 2002 15:54:35 +0000
-Message-ID: <21815.1017071675@redhat.com>
+In-Reply-To: <3C9F38C4.510394D@seranoa.com>; from andrew.dixon@seranoa.com on Mon, Mar 25, 2002 at 09:48:36AM -0500
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,25 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joern@wohnheim.fh-wedel.de said:
-> Whow, someone noticed!
-> That tag belongs to the mtd-2_5-newpartcode-branch, which should get
-> included into 2.5 as soon as David has actually read and approved the
-> code. It is working stable for me, on four different platforms with up
-> to 10 mtd devices, each one being partitioned. But noone else uses the
-> code, as far as I know of, so the decision is yours. :-) 
+On Mon, 25 March 2002 09:48:36 -0500, Andrew Dixon wrote:
+> > You should use it if you
+> > - have more than one device that can be partitioned or
+> > - want to get used to the new code from the beginning.
+> 
+> As far as the MTD device goes I'm in a pretty good spot.  I put together
+> a driver that takes two flashes, creates one device from them, and then
+> partitions them the way I want.  Then I put jffs2 onto my one BIG flash
+> partition.
 
-I will start paying attention to this soon, I promise. In the meantime, it 
-would be good if people could start testing it. 
+Thought so. most people really don't need this stuff, as all the flash
+will be in one big partition (minus bootloader). But if you add nvram,
+slram or such, you already have two devices. Add partitioning and
+things get messy. :-)
+You really should try my code, stumble and demand better
+documentation. As long as noone asks for it...
 
-The current plan, such as there is one, is to wait for Marcelo to 
-release 2.4.19 with the MTD fixes that are already in his tree, then send 
-the remainder of the new code which I didn't want to go into such a late 
-prerelease. Then I'll update the code to build in 2.5 and use all the stuff 
-in compatmac.h for the 2.4 build, and send that to Linus. 
+Jörn
 
-At that point, I'll be looking to merge Jörn's partition code - so if it 
-doesn't work for you, make sure you've squealed by that point.
-
---
-dwmw2
+-- 
+Treating your users as co-developers is your least-hassle route to
+rapid code improvement and effective debugging.
+-- Eric Raymond in "The cathedral and the bazaar"
