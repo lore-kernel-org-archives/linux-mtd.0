@@ -1,17 +1,18 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17uCJA-0003UV-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 14:34:28 +0100
-Date: Wed, 25 Sep 2002 15:34:11 +0200 (CEST)
-From: =?ISO-8859-1?Q?Henrik_Nordstr=F6m?= <hno@marasystems.com>
-To: Russ Dill <Russ.Dill@asu.edu>
-cc: Srinivasan.Ramasubramaniam@nokia.com, <elf@buici.com>,
-   <kenneth.johansson@etx.ericsson.se>, <linux-mtd@lists.infradead.org>
-Subject: RE: Interest in DOC and YAFFS? --> YAFFS bootloading
-In-Reply-To: <1032943112.23565.15.camel@russ>
-Message-ID: <Pine.LNX.4.44.0209251531440.32689-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17uEE8-0003gq-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 16:37:24 +0100
+Received: from rsp ([172.22.2.62])
+	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with SMTP id g8PFbKm17699
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 17:37:20 +0200
+Message-Id: <200209251537.g8PFbKm17699@dagobert.svc.sysgo.de>
+Date: Wed, 25 Sep 2002 17:37:20 +0200
+From: Ralf Spachmann <rsp@sysgo.de>
+To: linux-mtd@lists.infradead.org
+Subject: Is DoC2000's nftla possibly write protected ?
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,22 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 25 Sep 2002, Russ Dill wrote:
+All,
 
-> the compressed cramfs image will be loaded into ram, and then, from
-> there, as pages are needed, they will be decompressed again and put into
-> ram (but again, if memory is in a pinch, these pages can be dropped). I
-> don't know if an ext2 initrd will do XIP (execute in place), but I
-> somehow doubt that anyone has worked on that, meaning that the pages
-> would need to be copied again, in which case, a cramfs would use less
-> ram.
+according to the jffs howto, I nftl_formatted the DOC2000
+I insmod the nftl.o and the partition check issues 
+'unknown partition table' 
+So I want to fdisk the /dev/nftla, create my partitions but
+on the 'w' it complains :  'Unable to write /dev/nftla'
 
-I have never succeded in getting cramfs to work from a ramdisk.. it does 
-something magic with blocksizes that seems to srew up the ramdisk data 
-(first blocks get "forgotten").
+What's wrong ?
 
-As the ramdisk is living within the buffer cache a ext2 image most likely 
-will do XIP.
-
-Regards
-Henrik
+TIA 
+Ralf
