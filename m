@@ -1,15 +1,18 @@
-Received: from web41001.mail.yahoo.com ([66.218.93.0])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18G8bB-0007Vf-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 02:03:45 +0000
-Message-ID: <20021125023343.82844.qmail@web41001.mail.yahoo.com>
-Date: Mon, 25 Nov 2002 10:33:43 +0800 (CST)
-From: =?big5?q?tin=20man=20chan?= <chantinman40@yahoo.com.hk>
-Subject: Problem in using DOC2000
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=big5
-Content-Transfer-Encoding: 8bit
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18GFhr-00089Q-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 09:39:07 +0000
+Subject: Re: GRUB
+From: Henrik Nordstrom <hno@marasystems.com>
+To: Erik Smit <zoiah@zoiah.net>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20021122152105.20437.qmail@timmy.zylon.net>
+References: <20021122152105.20437.qmail@timmy.zylon.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 25 Nov 2002 11:09:35 +0100
+Message-Id: <1038218975.21459.3.camel@henrik.marasystems.com>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,85 +24,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello Gregg C Levine,
+If you used doc_loadbios to install GRUB and the binary partition
+(before the NFTL disk on the flash) was smaller than your GRUB image
+then doc_loadbios overwrote the NFTL table of the DOC flash. 
 
-Here is my machine config.
-
-motherboard model: PCA-6179
-bios: Pheonix Bios
-cpu: PIII 700MHz
-ram: 512MB
-
-Thanks.
-
-William
-
-Hello from Gregg C Levine
-You will need to supply us with more information with
-your project. Such
-as, what motherboard does it use, and what
-distribution you are using.
-And yes it might be a conflict. The first IDE drive in
-a Linux system,
-is typically /dev/hda. Most DOCs are typically set to
-/dev//hdd, so as
-to use the IDE chain that the CD drive is attached to.
--------------------
-Gregg C Levine hansolofalcon@worldnet.att.net
-------------------------------------------------------------
-"The Force will be with you...Always." Obi-Wan Kenobi
-"Use the Force, Luke."=A0 Obi-Wan Kenobi
-(This company dedicates this E-Mail to General Obi-Wan
-Kenobi )
-(This company dedicates this E-Mail to Master Yoda )
+The safest way to install the GRUB "bios" on a DOC is to use mSys
+DFORMAT 5.x from DOS. But this requires a version of the GRUB DOC patch
+which is compatible with DFORMAT 5.x (there is a small undocumented
+difference in the NFTL header between DFORMAT 4.x and 5.x). The
+grub-2002-10-08-doc.patch should work I think. Earlier GRUB patches
+won't work. 
 
 
+The alternative way is to use doc_loadbios and nftl_format from Linux
+but you will then need to calculate all the offsets manually IIRC, and
+there reportedly is critical issues if you have the NFTL Linux driver
+loaded while doing this.
 
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org
-[mailto:linux-mtd-
-> admin@lists.infradead.org] On Behalf Of tin man chan
-> Sent: Saturday, November 23, 2002 10:54 AM
-> To: linux-mtd@lists.infradead.org
-> Subject: Problem in using DOC2000
->=20
-> Hi,
->=20
-> I have compiled a linux kernel 2.4.19 with mtd
-driver
-> built-in and wish to use such kernel to probe the
-DOC
-> and use the DOC to boot my PC later by transferring
-> the kernel to DOC. However, after I insert the DOC
-> chip to the socket and start my PC, the PC will hang
-> in the booting message "Loading linux............."
->=20
-> Is it related to my PC BIOS? Or IDE harddisk
-conflict
-> with DOC? Any comment or idea? Thanks.
->=20
-> William
->=20
->=20
->=20
->=20
->
-_________________________________________________________
-> =A4H=AE=F0=A5=E6=A4=CD=BC=F6=BDu#9351
-=B8=DC=A1u=A4=CD=A1v=B4N=A6=B3
-> http://hk.yahoo.com/promotions/personals/9351
->=20
->
-______________________________________________________
+Regards
+Henrik
+
+
+fre 2002-11-22 klockan 16.21 skrev Erik Smit: 
+> Hi Everybody, 
+> 
+> I just installed grub-0.92 on a DOC Millenium, however this appears to have 
+> overwritten the original partition table: 
+> 
+> Could not find valid boot record
+> Could not mount NFTL device 
+> 
+> Since the documentation states "DO NOT EVER USE THE nftl_format UTILITY 
+> WITHOUT FIRST SEEKING ADVICE ON THE MAILING LIST. It will erase all blocks 
+> on the device, potentially losing the factory-programmed information about 
+> bad blocks. (Someone really ought to fix it one of these days - ed)", what 
+> should I do? 
+> 
+> Thanks in Advance, 
+> 
+> Erik Smit 
+> 
+> 
+> ______________________________________________________
 > Linux MTD discussion mailing list
->
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
-
-
-
-_________________________________________________________
-人氣交友熱線#9351 話「友」就有
-http://hk.yahoo.com/promotions/personals/9351
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
