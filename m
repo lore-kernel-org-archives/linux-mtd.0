@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fz6Q-0006Zq-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 08:06:18 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <00b301c1bf61$31048fc0$da9240d5@jocke> 
-References: <00b301c1bf61$31048fc0$da9240d5@jocke>  <02022614424803.15969@jocke.lumentis.se> <0111121314140A.28381@jocke.lumentis.se> <02010409585400.10979@jocke.lumentis.se> <02012911331100.15969@jocke.lumentis.se> <17624.1014738778@redhat.com> 
-To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: scan.c & ACCURATE 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 27 Feb 2002 08:17:34 +0000
-Message-ID: <22139.1014797854@redhat.com>
+	id 16g33k-0006sb-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 12:19:48 +0000
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: scan.c & ACCURATE 
+Date: Wed, 27 Feb 2002 13:29:40 +0100
+Message-ID: <IGEFJKJNHJDCBKALBJLLAEOEFBAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <22139.1014797854@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +25,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Joakim.Tjernlund@lumentis.se said:
-> > You're trusting ri.totlen before verifying ri.node_crc. Naughty.
-> Totlen has been checked by jffs2_scan_eraseblock() before calling
-> jffs2_scan_inode_node(), but that is not obvious. Move it to after the
-> CRC check if you like.
+> 
+> Sorry, was confusing node_crc with hdr_crc. You're absolutely right. What 
+> I've actually done is move the logic to jffs2_erase_eraseblock(), and made 
+> it trigger for all types of node.
 
-Sorry, was confusing node_crc with hdr_crc. You're absolutely right. What 
-I've actually done is move the logic to jffs2_erase_eraseblock(), and made 
-it trigger for all types of node.
+yes, that's a better place.
 
---
-dwmw2
+ Jocke 
