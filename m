@@ -1,49 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13U8nu-0006G0-00
-	for mtd-list@infradead.org; Wed, 30 Aug 2000 15:25:26 +0100
-From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 30 Aug 2000 11:23:18 GMT-3
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: Re: GRUB on DOC: 2Mb issues 
-Reply-to: miguel@cetuc.puc-rio.br
-CC: mtd@infradead.org, Ciro Cattuto <ciro@prosa.it>
-References: <1512880772E@mamao.cetuc.puc-rio.br> 
-In-reply-to: <16105.967648027@passion.cygnus.co.uk>
-Message-ID: <151C6E876B0@mamao.cetuc.puc-rio.br>
+	id 13U8xN-0006JU-00
+	for mtd-list@infradead.org; Wed, 30 Aug 2000 15:35:13 +0100
+Received: from hci.ucsd.edu ([132.239.215.210] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13U8xM-0006JO-00
+	for mtd@infradead.org; Wed, 30 Aug 2000 15:35:12 +0100
+To: mtd@infradead.org
+Subject: What do these log messages mean?
+From: David Fox <dsfox@cogsci.ucsd.edu>
+Date: 30 Aug 2000 07:35:05 -0700
+In-Reply-To: Alice Hennessy's message of "Tue, 29 Aug 2000 16:54:07 -0700"
+Message-ID: <luu2c2vmue.fsf_-_@hci.ucsd.edu>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On 30 Aug 00, at 16:07, David Woodhouse wrote:
+When I modprobe docprobe I get the following in syslog:
 
-> Now because the IPL ROM only loads the first half of the page on 512-byte 
-> devices, you'll find that whatever type of device you have, you magically 
-> get the 'correct' second half of the loader put into offset 256 when it's 
-> loaded into memory.
+kernel: M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings Inc.
+kernel: Cannot find driver for DiskOnChip 2000 at 0xD6000
+kernel: Possible DiskOnChip with unknown ChipID 50 found at 0xdc000
 
-   Yes! That's an even better idea!
-
-> I can hack this up and get it to work on the 512-byte devices if you like.
-
-   Well, I will not have time to do it in the next few days anyway. But 
-maybe Ciro will want to implement it.
- 
-> >     BTW, forgot my suggestion for "loadbios" ioctl... 
-> 
-> I didn't forget it. You don't like handling it in userspace - I agree. I 
-> just don't like handling it in the mtd character device _either_ :)
-
-   Oh, I expressed myself badly...I just want to say: - please, forget 
-the loadbios ioctl idea! :) I realized it's not necessary.
-
-
-Regards,
-
-Miguel Freitas
-
+That's all I see.  Any ideas what I should do next?  The machine is
+based on a Nat Semi board, essentially the same as a VirginConnect.
+The flash device is marked DiskOnChip 2000, MD2200-D48.  I see that
+the normal DOC 2000 chip ID is 0x20, should I patch the code to accept
+0x50 as well?  Is it perhaps being fooled into thinking it sees a
+DOC2000 at 0xdc000, and the real device is further down the list?
+And what's going on at 0xd6000?
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
