@@ -1,19 +1,18 @@
 Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17tswb-0001FB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 17:53:53 +0100
-Date: Tue, 24 Sep 2002 09:53:51 -0700
+	id 17tsy3-0001GB-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 17:55:23 +0100
+Date: Tue, 24 Sep 2002 09:55:21 -0700
 From: Marc Singer <elf@buici.com>
-To: Russ Dill <Russ.Dill@asu.edu>
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org,
-  yaffs@toby-churchill.org
+To: Nick Bane <nick@cecomputing.co.uk>
+Cc: linux-mtd@lists.infradead.org, yaffs@toby-churchill.org
 Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
-Message-ID: <20020924165351.GA2533@buici.com>
-References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <20020924044434.GA23917@buici.com> <1032854017.13283.3.camel@russ>
+Message-ID: <20020924165521.GB2533@buici.com>
+References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <007801c2639b$3a4bc4c0$0100a8c0@p450>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1032854017.13283.3.camel@russ>
+In-Reply-To: <007801c2639b$3a4bc4c0$0100a8c0@p450>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +24,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, Sep 24, 2002 at 12:53:36AM -0700, Russ Dill wrote:
+On Tue, Sep 24, 2002 at 08:23:06AM +0100, Nick Bane wrote:
+> The modifications I made to bootldr (CRL bootloader as used in iPaq
+> handhelds) were trivial after mkysffsimage was fixed (ask for a copy as the
+> CVS one is still badly broken).
 > 
-> > Some people think that writing a new kernel would be easy.  %^)
-> > 
-> > The trouble is coming up with a convenient method.  LILO stores a list
-> > of blocks.  GRUB reads filesystems.  GRUB is better in the long run,
-> > but harder to implement.
-> 
-> I've written a cramfs reader for grub, to use on the DOC, and grub works
-> great on a DOC. Although the grub code is a bit ugly, and there are a
-> few gotchas, writing a module is pretty straight forward. That being
-> said, writing a module to load files of a journaled fs (jffs2), is a bit
-> more time consuming, but as I understand yaffs is greatly optimized
-> towards NAND (as apposed to NOR) flash layout and lends itself to easy
-> reading (same sized blocks, no compression iirc).
-> 
-> If I were you, I'd use grub.
+> Bootldr copies the data 512+16 bytes at a time into non-broken NAND. The
+> kernel is then booted with prior knowledge as to where to find the YAFFS
+> data and all is ok.
 
-That's what I'd expect.
+What is non-broken NAND?
 
-A question, though.  I've been doing compression tests with cramfs.
-I'm finding that gzip -9 of an ext2 filesystem produces smaller images
-than mkcramfs.  Have you ever compared the two?
+> How this works with DOC I am unclear as I had noticed a while back that
+> there was hardware assisted ECC. This might get in the way of YAFFS ECC but
+> maybe this can be circumvented.
+
+As far as I can tell, the hardware ECC just makes the DOC faster.
+Also, I think that Microsys has released information about how to use
+the hardware ECC.
