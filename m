@@ -1,18 +1,18 @@
-Received: from www12.mailshell.com ([209.157.66.248] helo=mailshell.com)
+Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A49Xm-0005CM-80
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 02:43:14 +0100
-From: Daniel Toussaint <daniel@dmhome.net>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <200309291351.58512.david.goodenough@btconnect.com>
-References: <1064826976.29857.116.camel@host35>
-	 <200309291351.58512.david.goodenough@btconnect.com>
-Message-Id: <1064886137.32296.9.camel@host35>
-Mime-Version: 1.0
-Date: 30 Sep 2003 09:42:17 +0800
-Content-Type: text/plain
+	id 1A49q6-0005K3-UH
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 03:02:11 +0100
+Message-ID: <3F78E3DB.10508@hectrix.com>
+Date: Tue, 30 Sep 2003 10:00:59 +0800
+From: Selwyn Tang <selwyn@hectrix.com>
+MIME-Version: 1.0
+To: "Chiasson, John" <jchiasson@namrl.navy.mil>
+References: <D495FC2E1E65A44EAA961BC66B9395312A9C82@namrl.navy.mil>
+In-Reply-To: <D495FC2E1E65A44EAA961BC66B9395312A9C82@namrl.navy.mil>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Re: raw nand on x86 - reference boards
+cc: linux-mtd@lists.infradead.org
+Subject: Re: redhat 9, doc 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Indeed, as far as I can tell Compulab are really one of the few who have
-this kind of nand flash implementation on an "off the shelf" SBC. I
-briefly looked at their manuals/drivers, and came to the same conclusion
-as you have: it may take some reverse engineering skills or "good
-contacts" to get mtd to work on their board.
-I think may I'll try to get a sample anyways, even so it won't be
-suitable as a "reference board", it will certainly be fun to try and get
-it to work. ... 
+Hi John,
 
-Thanks, 
+On 09/29/2003 10:05 PM, Chiasson, John wrote:
+> me to an example for booting the redhat 9 kernel from the doc?  I tried
+> copying the /boot tree over, but no joy.
 
-Daniel
+Did you copy the kernel image (like bzImage) to your doc and configure
+the grub settings on your doc correctly?
 
+I put my bzImage in /boot and in grub/menu.lst I have the following:
 
-On Mon, 2003-09-29 at 20:51, David Goodenough wrote:
-> On Monday 29 September 2003 10:16, Daniel Toussaint wrote:
-> > Hi,
-> >
-> > Does anyone know where I can find an x86 based sbc with nand chips on
-> > board(NOT implemented as ide flash disk) OR maybe an ISA/pci add-on card
-> > of some sort ? I need it to do a proof of concept , write some drivers
-> > and a bootloader (x86 legacy bios extension)  ....
-> >
-> > Thanks,
-> 
-> How about the Compulab boards.  They come with both NOR and NAND
-> flash on the x86CORE boards.  Unfortunately there is no MTD driver for 
-> them, and while there is Linux support, it comes as part binary only.
-> 
-> From what I can see there is not enough formal documentation to 
-> write a driver, but there are odd bits of information which someone
-> knowledgable about with the MTD driver might be able to interpret
-> into a real driver.  You would be doing the Compulab users a favor
-> if you built such a driver.
-> 
-> There do also appear to be drivers for two of the AMD Elan SC520
-> reference boards, but at least one seems to have lots of comments
-> in it saying that handling it is a kludge.  The Compulab 586CORE
-> is Elan SC520 based.
-> 
-> Regards
-> 
-> David
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://rd.mailshell.com/lists.infradead.org/mailman/listinfo/linux-mtd/
+title DiskOnChip 2000
+	root (dc0,0)
+	kernel /boot/bzImage ro root=/dev/nftla1
+
+When you can boot from doc using grub, that's a good start. You may
+actually edit the boot command line when grub is booted. It supports
+auto-completion for you to easily locate your kernel image.
+
+Hope this helps!
+
+Selwyn
