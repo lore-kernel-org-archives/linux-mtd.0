@@ -1,21 +1,21 @@
 Received: from b19.xdsl.pgtc.com ([65.163.80.19] helo=bitworks.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178mr2-0006NV-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 19:53:28 +0100
-Received: from rsmth [192.168.0.18] by bitworks.com [127.0.0.1] with SMTP (MDaemon.v2.7.SP4.R) for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 13:41:32 -0500
+	id 178nj6-0006cQ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 20:49:20 +0100
+Received: from rsmth [192.168.0.18] by bitworks.com [127.0.0.1] with SMTP (MDaemon.v2.7.SP4.R) for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 14:37:16 -0500
 From: "Richard A. Smith" <rsmith@bitworks.com>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	"rminnich@lanl.gov" <rminnich@lanl.gov>
 Cc: "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Ronald G Minnich" <rminnich@lanl.gov>
-Date: Fri, 17 May 2002 13:52:44 -0500
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 17 May 2002 14:48:33 -0500
 Reply-To: "Richard A. Smith" <rsmith@bitworks.com>
-In-Reply-To: <9295.1021650283@redhat.com>
+In-Reply-To: <Pine.LNX.4.33.0205170948210.11746-100000@snaresland.acl.lanl.gov>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: Re: Re[2]: linux boot time
-Message-ID: <MDAEMON-F200205171341.AA413156MD57703@bitworks.com>
+Subject: Re: Getting big flash onto motherboards. Will CF work? what will?
+Message-ID: <MDAEMON-F200205171437.AA371570MD57739@bitworks.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,21 +27,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 17 May 2002 16:44:43 +0100, David Woodhouse wrote:
+On Fri, 17 May 2002 09:57:31 -0600 (MDT), Ronald G Minnich wrote:
 
->There was Vipin Malik's writeup at http://www.embeddedlinuxworks.com/ but 
->that doesn't seem to be there any more. He was actually doing powerfail 
->testing on JFFS/JFFS2 and making me fix it when it broke, but he also did 
->some on CF, and obviously could do nothing when it broke. Software is _so_ 
->much nicer.
+>Are there other options? These are 1U or .8U spaces most likely, and so a
+>big PCI card is out of the question -- that's needed for Myrinet. There
+>are no ISA slots. There are two IDE headers, and possibly a SCSI header. A
+>very low profile PCI card might work. The only option I was aware of was
+>IDE->CF adapaters. Is there something else I should look at?
 
-Hmmmm... Do you have an e-mail address for him? I would like to get
-info on the type of CF used and the specific failure mode.   
+The IDE->CF is probally your best option. If you can't find a small
+PCI card with flash on it.
+I think that in read only mode you probally won't have any issues. 
+Especially since these things won't power cycle much...
 
-Was he testing JFFS on a CF or just powercycleing a CF under use?
+However if you do have  a problem...
 
+<Shameless Plug>
+Bitworks, Inc has an IDE to CF adapter that we have used in some of
+our products.  We call it the BitDrive.
 
+We could modify this board for you so that it ran off the 12V supply
+rather than the 5V and add in a 5V Linear LDO regulator with a large
+cap on the 5V rail such that the CF would have lots of clean power
+long after the main power died.  This should insure that the CF's
+don't die due to power issues.
+
+In qty. of 1000 I'm pretty sure we can be pretty close to the cost of
+purchasing an off-the-shelf adapter.
+
+Give me me a ring if your interested.
+
+BTW.. We could also build you a low profile Flash memory PCI card but
+I think that will be more expensive.
+
+</Shameless Plug>
 --
 Richard A. Smith                         Bitworks, Inc.               
-rsmith@bitworks.com               501.846.5777 x204                        
+rsmith@bitworks.com               479.846.5777 x104                        
 Sr. Design Engineer        http://www.bitworks.com   
