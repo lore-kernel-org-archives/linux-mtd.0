@@ -1,18 +1,23 @@
-Received: from [63.144.37.162] (helo=mh02.bioace.net)
+Received: from sccrmhc02.attbi.com ([204.127.202.62])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17rkxG-00045V-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 20:57:46 +0100
-Received: from bioace.net (unknown [192.168.10.179])
-	by mh02.bioace.net (Postfix) with ESMTP id 7288F40230
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 15:57:05 -0400 (EDT)
-Message-ID: <3D88DA8E.212465C5@bioace.net>
-Date: Wed, 18 Sep 2002 15:57:03 -0400
-From: Carl Przybylek <carlp@bioace.net>
-MIME-Version: 1.0
+	id 17rlOu-00049h-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 21:26:20 +0100
+Received: from there ([12.245.142.8]) by sccrmhc02.attbi.com
+          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with SMTP
+          id <20020918202548.JYOZ21527.sccrmhc02.attbi.com@there>
+          for <linux-mtd@lists.infradead.org>;
+          Wed, 18 Sep 2002 20:25:48 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
 To: linux-mtd@lists.infradead.org
-Subject: JFFS1/2 with DiskOnChip
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Subject: Re: DiskOnChip 2000 with Mandrake Linux with kernel 2.4.18
+Date: Wed, 18 Sep 2002 16:25:28 -0400
+References: <3D88F3B4.CAEC541@pacific.net.sg>
+In-Reply-To: <3D88F3B4.CAEC541@pacific.net.sg>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020918202548.JYOZ21527.sccrmhc02.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,43 +29,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Sorry I accidentally hit send....
+Hor Meng Yoong wrote:
+> b)  The DOC firmware was DOC42.EXB
+>       - I tried to boot normal or failsafe mode, in both cases, grub
+> told me:
+>            "kernel (hd0,0)/boot/vmlinuz root=/dev/hda1 devfs=mount
+> failsafe mem=128M
+>                  [Linux-bzImage,  setup=0x1400,  size=0xfe6c8]
+>                  Error 28: Selected item cannot fit into memory".
 
-I keep getting these ECC needs a full sector write when trying to put a
-jffs1/2 image onto an m-sys disk on chip.   Seems at first the latest
-mtd source did not link into the kernel correctly, Ive fixed that and I
-still keep getting the errors.  If someone can answer the following
-questions or has put a jffs2 filesytem on DiskOnChip I would greatly
-appreciate a list of the steps you followed to get it to work.
+This error is caused by not having enough conventional memory (<608k).  The 
+latest Grub code (CVS) appears to have lowered the memory requirements needed 
+to boot a bzImage kernel.
 
-Ive went through and ensured the following are configured in the
-kernel.  I do have a question about the CONFIG_MTD_NAND_YOURBOARD=y
-option.  Ive noticed the inti_doc2000 calls are defined so I assume I
-dont need to follow the procedure in
-http://www.linux-mtd.infradead.org/tech/nand.html to add my device.
-However, I dont see an option for CONFIG_MTD_NAND_DOC2000.  Is this
-enabled by the CONFIG_MTD_DOC2000 option?
-
-CONFIG_MTD=y
-CONFIG_MTD_PARTITIONS=y
-CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=y
-CONFIG_MTD_NAND=y
-CONFIG_MTD_NAND_ECC=y
-CONFIG_MTD_NAND_YOURBOARD=y
-CONFIG_JFFS2_FS=y
-CONFIG_JFFS2_FS_DEBUG=0
-CONFIG_JFFS2_FS_NAND=y
-
-Also Ive notice an option CONFIG_MTD_NAND_ECC_JFFS2 in the nand.c file.
-I dont see this defined in any other code, do I need to enable this
-config option in the kernel as well?
-
-Im also confused as to whether I need to worry about the nftla system
-before I add the jffs2 system.  It seems from the howto that I only need
-to eraseall /dev/mtd0 and then cp jffs2.image /dev/mtd0 and I should be
-good to go.  Everytime I try to cp to the dev/mtd0 device i keep getting
-an ECC error.
-
-Thanks
-Carl Przybylek
+The M-Sys DOC firmware seems to use up quite a bit of lower memory, and it 
+hasn't gotten any better with the 5.x versions.  Yet another reason to 
+replace it with Grub... ;-)
