@@ -1,28 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgklR-0000kH-Ul
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 09:13:27 -0500
-Date: Tue, 21 Dec 2004 15:13:12 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-Message-ID: <20041221141312.GB22636@wohnheim.fh-wedel.de>
-References: <20041221135530.GR22636@wohnheim.fh-wedel.de>
-	<20041221135705.GS22636@wohnheim.fh-wedel.de>
-	<20041221140102.GT22636@wohnheim.fh-wedel.de>
-	<20041221140219.GU22636@wohnheim.fh-wedel.de>
-	<20041221140322.GV22636@wohnheim.fh-wedel.de>
-	<20041221140446.GW22636@wohnheim.fh-wedel.de>
-	<20041221140617.GX22636@wohnheim.fh-wedel.de>
-	<20041221140923.GY22636@wohnheim.fh-wedel.de>
-	<20041221141042.GZ22636@wohnheim.fh-wedel.de>
-	<20041221141146.GA22636@wohnheim.fh-wedel.de>
+	id 1CgQZT-00011R-Dt
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 11:39:45 -0500
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+In-Reply-To: <41C6F923.20609@inf.u-szeged.hu>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C19118.1020407@inf.u-szeged.hu>
+	<1103558464.10788.44.camel@squizzey.bult.co.uk>
+	<41C6F923.20609@inf.u-szeged.hu>
+Content-Type: multipart/alternative; boundary="=-CuyNBbcYnX/fJHyEYdcm"
+Date: Mon, 20 Dec 2004 16:39:48 +0000
+Message-Id: <1103560788.10797.47.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20041221141146.GA22636@wohnheim.fh-wedel.de>
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [PATCH 22/22] Readahead
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Small changes to readahead functions.  I guess they can use some more,
-but it was getting late and things looked too complicated.
 
-Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
----
+--=-CuyNBbcYnX/fJHyEYdcm
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
- blockmtd.c |   11 ++++-------
- 1 files changed, 4 insertions(+), 7 deletions(-)
+Yup,
 
---- linux-2.6.9cow/drivers/mtd/devices/blockmtd.c~blockmtd_readahead	2004-12-21 02:24:35.000000000 +0100
-+++ linux-2.6.9cow/drivers/mtd/devices/blockmtd.c	2004-12-21 02:30:03.000000000 +0100
-@@ -54,10 +54,9 @@
- 
- 
- #define PAGE_READAHEAD 64
--
- void cache_readahead(struct address_space *mapping, int index)
- {
--	filler_t *filler = (void*)mapping->a_ops->readpage;
-+	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
- 	int i, pagei;
- 	unsigned ret = 0;
- 	unsigned long end_index;
-@@ -95,17 +94,15 @@
- 		ret++;
- 	}
- 	spin_unlock_irq(&mapping->tree_lock);
--	if (ret) {
-+	if (ret)
- 		read_cache_pages(mapping, &page_pool, filler, NULL);
--		//printk(KERN_INFO "Readahead [%d/%d] pages from [%d]\n",ret,PAGE_READAHEAD,index);
--	}
- }
- 
- 
- static struct page* page_readahead(struct address_space *mapping, int index)
- {
--	filler_t *filler = (filler_t*)(mapping->a_ops->readpage);
--	cache_readahead(mapping,index);
-+	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
-+	cache_readahead(mapping, index);
- 	return read_cache_page(mapping, index, filler, NULL);
- }
- 
+I've cvs'd the latest source and patched ... kernel seems to build Ok ..
+Just trying a full build from clean to make sure, then I'll give it a
+go ..
+
+Is there an example of how to use sumtool anywhere ?
+
+If I eraseall the flash then mount JFFS2 and copy files on, do I need to
+use sumtool ?
+
+Gareth.
+
+On Mon, 2004-12-20 at 17:09 +0100, Ferenc Havasi wrote:
+
+> Hi Gareth,
+> 
+> > I'm afraid this patch seems to be quite a long way from applying cleanly
+> > to my source. I'm using 2.6.9 .. at least half a dozen failures or
+> > more ...
+> 
+> It works with JFFS2 in the latest MTD CVS.
+> 
+> JFFS3 will contains this feature soon.
+> 
+> Regards,
+> Ferenc
+
+--=-CuyNBbcYnX/fJHyEYdcm
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.2.3">
+</HEAD>
+<BODY>
+Yup,<BR>
+<BR>
+I've cvs'd the latest source and patched ... kernel seems to build Ok ..<BR>
+Just trying a full build from clean to make sure, then I'll give it a go ..<BR>
+<BR>
+Is there an example of how to use sumtool anywhere ?<BR>
+<BR>
+If I eraseall the flash then mount JFFS2 and copy files on, do I need to use sumtool ?<BR>
+<BR>
+Gareth.<BR>
+<BR>
+On Mon, 2004-12-20 at 17:09 +0100, Ferenc Havasi wrote:
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Hi Gareth,</FONT>
+
+<FONT COLOR="#000000">&gt; I'm afraid this patch seems to be quite a long way from applying cleanly</FONT>
+<FONT COLOR="#000000">&gt; to my source. I'm using 2.6.9 .. at least half a dozen failures or</FONT>
+<FONT COLOR="#000000">&gt; more ...</FONT>
+
+<FONT COLOR="#000000">It works with JFFS2 in the latest MTD CVS.</FONT>
+
+<FONT COLOR="#000000">JFFS3 will contains this feature soon.</FONT>
+
+<FONT COLOR="#000000">Regards,</FONT>
+<FONT COLOR="#000000">Ferenc</FONT>
+</PRE>
+</BLOCKQUOTE>
+</BODY>
+</HTML>
+
+--=-CuyNBbcYnX/fJHyEYdcm--
