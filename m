@@ -1,28 +1,25 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from av4-2-sn3.vrr.skanova.net ([81.228.9.112])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Csefi-0006gC-EE
-	for linux-mtd@lists.infradead.org; Sun, 23 Jan 2005 05:08:48 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1106474584.22008.6.camel@sauron.oktetlabs.ru>
-References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0501191305530.8174@phoenix.infradead.org>
-	<20050119152427.GB26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191526140.8174@phoenix.infradead.org>
-	<20050119153233.GD26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191957090.8174@phoenix.infradead.org>
-	<6934efce050121144619d2899d@mail.gmail.com>
-	<1106399029.29388.50.camel@sauron.oktetlabs.ru>
-	<1106431453.6932.57.camel@localhost.localdomain>
-	<1106474584.22008.6.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Sun, 23 Jan 2005 13:08:08 +0300
-Message-Id: <1106474888.22008.7.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	id 1Csf6s-0006vt-77
+	for linux-mtd@lists.infradead.org; Sun, 23 Jan 2005 05:36:47 -0500
+Received: from smtp1-2-sn3.vrr.skanova.net (smtp1-2-sn3.vrr.skanova.net
+	[81.228.9.178])
+	by av4-2-sn3.vrr.skanova.net (Postfix) with ESMTP id E868237E43
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 23 Jan 2005 11:36:42 +0100 (CET)
+Received: from tobbe (h19n2fls32o945.telia.com [217.208.77.19])
+	by smtp1-2-sn3.vrr.skanova.net (Postfix) with ESMTP id 944BF38003
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 23 Jan 2005 11:36:42 +0100 (CET)
+From: =?iso-8859-1?Q?Torbj=F6rn_Jansson?= <torbjorn.jansson@mbox200.swipnet.se>
+To: <linux-mtd@lists.infradead.org>
+Date: Sun, 23 Jan 2005 11:37:15 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
-Reply-To: dedekind@infradead.org
+Message-Id: <20050123103642.944BF38003@smtp1-2-sn3.vrr.skanova.net>
+Subject: A few questions about diskonchip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2005-01-23 at 13:03 +0300, Artem B. Bityuckiy wrote:
-> On Sat, 2005-01-22 at 22:04 +0000, David Woodhouse wrote:
-> > Compression has other drawbacks though -- if you throw out compression
-> > you can do fixed-size records, you can have a block-based architecture
-> > and simplify your metadata, ...
-> 
-> Hmm. What do you mean? Do you mean YAFFS-like architecture? Than we
-> would better do YAFFS2 then JFFS3 :-))
-> 
-> If to be serious, I really can't imagine this. Do you mean, just to fix
-> the size of inode node data, say, to 512 bytes? What to do with
-> direntries?
-> 
-> Is it really feasible? Will we still have JFFS3 generation?
-Ouch, I meant JFFS2 generation.
+I've been trying to figure out how the old doc2001plus module works, i was
+hoping i woud be able to make the new diskonchip module work with my
+millenium plus 32mb.
+If i have understood this correctly the millenium plus 16 is supported by
+diskonchip.c module and that one is prety close to the 32 mb version.
+
+I can get the old doc2001plus module to load and detect the chip (2
+modifications requierd), but when i cat from /dev/mtdblock0 the resulting
+data doesn't match a dump of the rom i have on file.
+For example, one string in /dev/mtdblock reads "Cyrht" but it shoud be
+"Copyright" so it looks like the module is reading 32bits and throwing away
+16 or something like that.
+That woud also explain why the media header is BND instead of BNAND
+I haven't figured out how that can happend, maybe the old module is just
+broken.
+
+Another thing i haven't figured out yet is this chip/floor thing.
+What counts as a floor? Is that for the 64Mb version of the millenium plus,
+so it has 2 floors with one chip on each?
+And the 32mb version have one floor and one chip?
+
+I can see in the other init functions there is some chip counting going on,
+but not in doc2001plus_init() maybe that is only needed for the 64 mb
+version?
+
+The 32mb version have some kind of interleaving, right? And that's the main
+difference between the 16 and 32 mb version?
+But how is it done?
+Maybe it have something to do with the comment above DoC_GetDataOffset() in
+doc2001plus.c ?
+
+
+I don't know if i'm able to fix this, i have only the docs that i can
+download from the web, my guess is that there is more technical docs that
+describe all this.
