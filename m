@@ -1,47 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14s45K-0008UO-00
-	for mtd-list@infradead.org; Tue, 24 Apr 2001 15:46:34 +0100
+	id 14s6q4-0001a7-00
+	for mtd-list@infradead.org; Tue, 24 Apr 2001 18:43:00 +0100
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14s45J-0008UI-00
-	for mtd@infradead.org; Tue, 24 Apr 2001 15:46:34 +0100
+	id 14s6pz-0001Ys-00
+	for mtd@infradead.org; Tue, 24 Apr 2001 18:42:56 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010424113037.FQCK11909.t21mta02-app.talk21.com@t21mtaV-lrs> 
-References: <20010424113037.FQCK11909.t21mta02-app.talk21.com@t21mtaV-lrs> 
-To: simon.munton@talk21.com
-Cc: mtd@infradead.org
-Subject: Re: (No Subject) 
+In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is> 
+References: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is> 
+To: =?iso-8859-15?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+Cc: mtd@infradead.org, nico@cam.org
+Subject: Re: partitions and erase regions 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 24 Apr 2001 15:46:26 +0100
-Message-ID: <3311.988123586@redhat.com>
+Date: Tue, 24 Apr 2001 18:41:10 +0100
+Message-ID: <28157.988134070@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-simon.munton@talk21.com said:
-> Back in January, I posted a similar question about the unlock bypass
-> mode.
+kd@flaga.is said:
+> It sounds reasonable to me. Although I have a problem with the "major"
+> erazesize in general. The erase regions are in the flash for a reason,
+> i.e. the chip is not of one "major" erase size but of many erase
+> sizes, although most of it (untill now, who knows what AMD, Intel and
+> others might do in the future 8-)) is of one erase size.
 
-> Unfortunately, I've been busy on other things since then, so I've not
-> been able to follow up on it.
+I have a strong suspicion that we'll never see chips without a 'major' 
+erasesize. Making all clients (such as JFFS2) deal with variable erase 
+sizes is possible, but IMHO suboptimal. If we can avoid that complexity, it 
+would be nice. 
 
-Yes, it's currently broken. It should probably be disabled unless someone 
-cares sufficiently to fix it, and can show that it's actually an advantage to 
-disable interrupts in return for the (probably minimal) speedup.
-
-
-
-simon.munton@talk21.com said:
->  I've also noticed that CFI_DEVICETYPE_X8 is used in several places,
-> where it seems that cfi->device_type should be used instead (one
-> instance is in issuing the enter bypass mode commands).
-
-The unlock addresses are set with that fact taken into consideration. The 
-reason is that some devices with DEVICETYPE_16 need unlock addresses which 
-are odd, for which the 'multiply by two' doesn't help us much :)
-
+Perhaps, however, we should provide a way for clients which _do_ know about 
+variable erase regions to write to partitions which don't have a 'major' 
+erasesize.
 
 --
 dwmw2
