@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17JtRz-0002PU-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 11:09:31 +0100
+	id 17JtXt-0002QU-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 11:15:37 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F252EE46074AB645B4F44947EEAD572730B5D7@mvebe001.NOE.Nokia.com> 
-References: <F252EE46074AB645B4F44947EEAD572730B5D7@mvebe001.NOE.Nokia.com> 
-To: Srinivasan.Ramasubramaniam@nokia.com
+In-Reply-To: <200206170954.g5H9s1JJ003771@blooper.utfors.se> 
+References: <200206170954.g5H9s1JJ003771@blooper.utfors.se>  <0111121314140A.28381@jocke.lumentis.se> <02022614424803.15969@jocke.lumentis.se> 
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI interface ! 
+Subject: Re: [PATCH] scan.c 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 17 Jun 2002 11:09:20 +0100
-Message-ID: <20804.1024308560@redhat.com>
+Date: Mon, 17 Jun 2002 11:15:36 +0100
+Message-ID: <20935.1024308936@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +23,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Srinivasan.Ramasubramaniam@nokia.com said:
-> I am little confused about the CFI interface. As for as i could
-> understand, it the interface for the hardware device (chip driver).
-> But why is that need to different CFI file like cfi_cmdset_0001.c,
-> cfi_cmdset_0002.c etc. Could anybody shed light on it. Thanks in
-> advance.  
+Joakim.Tjernlund@lumentis.se said:
+> I was sure that I sent this one long time ago, but my mind must play
+> tricks on me.
 
-CFI only defines a common interface for _identifying_ flash. The actual 
-command set used to drive writes/erases/etc is still the same for each 
-manufacturer as it always was -- so the CFI standard gives them all 
-'command set' numbers, and we have generic code for probing CFI-compliant 
-chips, which then passes control to the _real_ commandset-specific 
-drivers.
+> Do not scan blocks which just contain a CLEANMARKER, it's a waste of
+> CPU cycles.
 
-Note that because the command sets used now are identical to those of older
-pre-CFI chips, we actually probe older non-CFI chips in the old way and then
-just pass them into the appropriate CFI command set driver too.
+I'd rather we still scanned them, but deferred it till later -- as long as
+it gets done before we actually try to write to them, that's fine.
+
+We can go one better than that -- we can avoid doing the crc32 check on 
+data nodes during mount. As as we do it in read_inode(), and we do _all_ 
+inodes before actually starting to garbage-collect, we don't have to make 
+the user wait for it during mount.
+
+I tried both of these last week (well, actually I just disabled the crc32 
+without doing it later), and the latter gave more of an improvement. If we 
+skip the building up of fragment lists during mount too, it'll probably get 
+even faster.
+
+Of course, the two things that gave me the best improvement in mount time 
+were fixing the inocache_last optimisation, and then just increasing 
+INOCACHE_HASHSIZE to 128. The latter rendered the whole inocache_last 
+optimisation pointless, btw.
 
 --
 dwmw2
