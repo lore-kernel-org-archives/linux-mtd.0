@@ -1,19 +1,16 @@
-Received: from ultra.secret.org.uk ([194.154.178.202] helo=ultra)
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 168yEg-0005tS-00
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2001 06:30:22 +0000
-Message-ID: <006d01c177d7$ee329190$0100a8c0@secret.org.uk>
-From: "Si" <spse@secret.org.uk>
-To: "Michael Rothwell" <rothwell@holly-springs.nc.us>,
-	<spse@secret.org.uk>
-Cc: <linux-mtd@lists.infradead.org>
-References: <1006918956.9840.2.camel@gromit.house> <1006921285.9892.6.camel@gromit.house>
-Subject: Re: Using JFFS2 as root FS on CF
-Date: Wed, 28 Nov 2001 06:42:58 -0000
+	id 168ziP-0005zm-00
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2001 08:05:10 +0000
+Date: Wed, 28 Nov 2001 08:15:41 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: <MQuicquaro@necinfrontia.com>
+cc: <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2 as root
+In-Reply-To: <OFDBD4D128.B09BAC8D-ON85256B11.007D0631@nitsuko.com>
+Message-ID: <Pine.LNX.4.33.0111280815260.6874-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,42 +22,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Michael,
+On Tue, 27 Nov 2001 MQuicquaro@necinfrontia.com wrote:
 
-the latest blkmtd in CVS should fix the problem when compiled into the
-kernel. you can then pass the kernel boot param
-blkmtd_device=/dev/foo
+> How can I make this filesystem have read/write priviledges?
+> VFS mounts is as readonly.
 
-Note, this version isnt yet it the latest kernel sources, but you should
-just be able to get the one out of CVS and copy it
-over the blkmtd.c in the kernel source tree.
+mount -orw,remount /
 
-I will hopefully send a patch off to the 2.4 maintainer later this week, I
-didnt bother earlier as I assumed with the 2.4/2.5 change over,  Linus and
-Marcelo probably had more important bug fixes etc to deal with.
-
-cheers
-si
------ Original Message -----
-From: "Michael Rothwell" <rothwell@holly-springs.nc.us>
-To: "Michael Rothwell" <rothwell@holly-springs.nc.us>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Wednesday, November 28, 2001 4:21 AM
-Subject: Re: Using JFFS2 as root FS on CF
-
-
-> On Tue, 2001-11-27 at 22:42, Michael Rothwell wrote:
-> > Does someone have a recipe for booting a kernel (2.4.13 or 2.4.16) with
-> > this type of setup and having it mount the jffs2 fs as /?
->
->
-> Addendum: blkmtd complains "error, missing 'device' name" -- I'm passing
-> it in via lilo, but it looks like blkmtd doesn't read kernel arguments.
->
-> -M
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+-- 
+dwmw2
