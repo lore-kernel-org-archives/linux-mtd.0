@@ -1,66 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 144awz-0004Cl-00
-	for mtd-list@infradead.org; Sat, 09 Dec 2000 03:45:29 +0000
-Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.gn.com)
+	id 145lgG-0000K8-00
+	for mtd-list@infradead.org; Tue, 12 Dec 2000 09:25:04 +0000
+Received: from trappist.elis.rug.ac.be ([157.193.67.1])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 144awy-0004Cf-00
-	for mtd@infradead.org; Sat, 09 Dec 2000 03:45:28 +0000
-Date: Fri, 8 Dec 2000 13:21:43 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Vrabel <dvrabel@arcom.co.uk>
-cc: <mtd@infradead.org>
-Subject: Re: cfi_cmdset_0001.c: do_write_buffer: wrong length
-In-Reply-To: <3A30F3FE.5C9781CD@arcom.co.uk>
-Message-ID: <Pine.LNX.4.30.0012081303110.6716-100000@xanadu.gn.com>
+	id 145lgE-0000K2-00
+	for mtd@infradead.org; Tue, 12 Dec 2000 09:25:02 +0000
+Message-ID: <3A35EEB6.A5D9EC03@rug.ac.be>
+Date: Tue, 12 Dec 2000 10:24:06 +0100
+From: Michiel Ronsse <Michiel.Ronsse@rug.ac.be>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: michealk@thegravitywell.dhs.org
+CC: mtd@infradead.org
+Subject: Re: MTD & JFFS on Arcom SBC
+References: <0012071234300I.24907@morpheus.espial.com> <3A2FD20E.733446C@rug.ac.be> <00120713554403.04734@morpheus.espial.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Micheal Kelly wrote:
+> 
+> Hello Michiel,
+> 
+> We are using 16 MB also - I'm curious - what version of MTD are you using?
+> Something fairly recent from CVS, or an earlier release?
+> 
 
 
-On Fri, 8 Dec 2000, David Vrabel wrote:
+We are using kernel 2.4.0-test7 with the MTD patches mtd-patch-2.4.x and
+mtd-patch-2.4.0-test2.
 
-> Hi,
->
-> In cfi_cmdset_0001.c do_write_buffer writes an incorrect length to the
-> chip
->
->     cfi_write(map, CMD((len/(cfi->device_type*CFIDEV_INTERLEAVE))-1),
-> cmd_adr);
->
-> which with 1 x16 chip in x8 mode eg on the SBC-MediaGX (buswidth == 1;
-> interleave == 1;
-> devicetype == 2) works out as
->
->     cfi_write(map, CMD(len/2-1), cmd_adr); <-- Fails
->
-> When it should be
->
->     cfi_write(map, CMD(len-1), cmd_adr); <-- Works
->
-> Should it it be?
->     cfi_write(map, CMD(len/map->buswidth-1), cmd_adr);
+Michiel.
 
-No.  This will break the case where the interleave isn't 1.
+-- 
++-- Michiel Ronsse ------- michiel@ronsse.com --+
+| Parallel Information Systems Group            |
+| ELIS - Ghent University  - Ghent, Belgium     |
+| Phone: +32/9/264.33.67   Fax: +32/9/264.35.94 |
++-------- http://www.michiel.ronsse.com --------+
 
-Hmmm... Will it?
-
-Euh...  Each time I get around this question I get confused...
-
-Does someone have the data sheet nearby? (I don't ATM)...  What should the
-lenght be if a x16 chip is used in x8 mode?  bytes/sizeof(char) or
-bytes/sizeof(short)?
-
-On a 2 x16 arrangement you have buswidth=4, interleave=2, devicetype=2.  In
-that case it should be len/4 - 1.
-
-Maybe you are right after all.
-
-
-Nicolas
-
+In a train station the train stops, in a work station ...
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
