@@ -1,18 +1,32 @@
-Received: from modemcable096.213-200-24.mc.videotron.ca ([24.200.213.96]
-	helo=localhost.localdomain)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cw12x-0007fH-CL
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 11:38:36 -0500
-Date: Tue, 1 Feb 2005 11:38:23 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20050201153945.GA26068@synertronixx3>
-Message-ID: <Pine.LNX.4.61.0502011137020.31479@localhost.localdomain>
-References: <20050201153945.GA26068@synertronixx3>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: I need still help with XIP, kernel boots now :)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cw1Ia-00084c-BI
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 11:54:45 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501311804550.17207@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
+	<1106865326.783.146.camel@baythorne.infradead.org>
+	<1106871577.21196.155.camel@tglx.tec.linutronix.de>
+	<1106872400.6480.201.camel@localhost.localdomain>
+	<1106873065.21196.168.camel@tglx.tec.linutronix.de>
+	<Pine.LNX.4.58.0501280817330.11160@phoenix.infradead.org>
+	<1106903029.21196.216.camel@tglx.tec.linutronix.de>
+	<Pine.LNX.4.58.0501280914580.11160@phoenix.infradead.org>
+	<Pine.LNX.4.58.0501281855370.11160@phoenix.infradead.org>
+	<1107111514.18794.37.camel@sauron.oktetlabs.ru>
+	<6934efce05013108463a4d42e4@mail.gmail.com>
+	<Pine.LNX.4.58.0501311804550.17207@phoenix.infradead.org>
+Content-Type: text/plain
+Date: Tue, 01 Feb 2005 17:49:21 +0100
+Message-Id: <1107276561.21196.457.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 memory consumption
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +36,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 Feb 2005, Konstantin Kletschke wrote:
-
-> Hi people!
+On Mon, 2005-01-31 at 18:05 +0000, Artem B. Bityuckiy wrote:
+> Will try to express what I think.
 > 
-> Now I need definately have XIP to get running :/
+> If the inode's nodes are scattered over many blocks, this will quite slow;
 > 
-> I use 2.6.11-rc2-mm2 and put the "xipu" patches into it, which make the
-> "make xipuImage" available and the XIP Kernel boots now. heureka.
+> But we may do the following optimizations:
 > 
-> Due to the fakt I have no hardware partiotionable Flash devices I need
-> to utlize the mtd software support to cexist with an XIP Kernel
-> (CONFIG_MTD_XIP=y).
+> A. Have special GC strategy to put (or try to put) nodes belonging to the 
+> same inode to the same blocks. Thus we may keep the number of blocks where 
+> the inode's nodes are scattered relatively small.
 
-Try that option with a non XIP kernel at first, then test writing to 
-flash etc.  See if that works first.
+This might turn out to be a GC nightmare. Every update to a file might
+result in shuffling tons of nodes around or at least trying to do so.
 
+Keep it simple.
 
-Nicolas
+> 2. ICP... The alternative is using ICP. ICP contains the ICP entries in 
+> its body. These entries describe all the nodes of our inode. Thus, for 
+> each inode, we may keep in-core only the inode's ICP offset. And when we 
+> need to build the inode in the iget() call, we need just to read the 
+> corresponding ICP, and that's all.
+> 
+> The problem here is that ICP contains the physical offsets of nodes. But 
+> the GC works and moves nodes brom one block to another, changing their 
+> offsets. And we need to often update ICPs - even for static RO files.
+
+Not only GC makes this necessary, every write to a file too. 
+
+> Thoughts?
+
+I'm not sure which of the mechanisms will provide us more horror. My
+guess is ICP. The summary method is definitely less performant, but I
+think therefor less complicated to handle. So we trade performance for
+simplicity, which makes more sense for me than the other way round.
+
+tglx
