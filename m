@@ -1,36 +1,28 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14an1s-00039V-00
-	for mtd-list@infradead.org; Wed, 07 Mar 2001 23:07:36 +0000
-Received: from mail1.danielind.com ([12.19.96.6])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14an1r-00039P-00
-	for mtd@infradead.org; Wed, 07 Mar 2001 23:07:35 +0000
-Message-ID: <3AA6C5EC.59609A0A@danielind.com>
-Date: Wed, 07 Mar 2001 17:36:13 -0600
-From: Vipin Malik <vmalik@danielind.com>
+	id 14axTF-0005es-00
+	for mtd-list@infradead.org; Thu, 08 Mar 2001 10:16:33 +0000
+Received: from [62.178.143.33] (helo=gatekeeper.home.at ident=qmailr)
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 14axTE-0005em-00
+	for mtd@infradead.org; Thu, 08 Mar 2001 10:16:32 +0000
+Message-ID: <01C0A7B2.55455BC0@omnibook.home.at>
+From: Erwin Authried <eauth@softsys.co.at>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: reset/read mode cmd for AMD compatible flash
+Date: Thu, 8 Mar 2001 09:29:52 +0100
 MIME-Version: 1.0
-To: mtd <mtd@infradead.org>, jffs-dev <jffs-dev@axis.com>
-Subject: Update to the mtd-jffs HOWTO
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi all,
+In cfi-probe.c, it seems that the command 0xff is used to switch the flash
+into read mode. I have studied several datasheets of AMD compatible flash
+(AMD29F160, Fujitsu MB29F160, Atmel AT49BV160...), and they specify
+0xf0 as the reset mode command. Can anybody please enlighten me?
 
-I've just committed a rather large update to the HOWTO.
-New sections include mounting jffs(1/2) f/s as root as well as mounting
-a *compressed* ext2 f/s stored in a mtdblock device
-as root (from ramdisk).
-
-Some corrections and new FAQ questions as well.
-
-Enjoy and as always please proof read it and mail me the corrections!
-
-Thanks.
-
-Vipin
+-Erwin
 
 
 
