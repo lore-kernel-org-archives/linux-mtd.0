@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aYxJ-0003Hn-00
-	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 10:42:45 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <003b01c23a06$c83c3940$0200a8c0@telia.com> 
-References: <003b01c23a06$c83c3940$0200a8c0@telia.com>  <003d01c2399a$b519a9e0$0200a8c0@telia.com> <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com> <12285.1028244660@redhat.com> 
-To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+	id 17accj-0003gx-00
+	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 14:37:45 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Ilguiz Latypov <ilatypov@superbt.com>
+Subject: Re: [patch] doc_stage1.S : GRUB on DoC
+Date: Fri, 2 Aug 2002 09:37:08 -0400
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: write suspend and/or erase suspend 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 02 Aug 2002 10:42:43 +0100
-Message-ID: <1236.1028281363@redhat.com>
+References: <Pine.LNX.4.44.0208011941330.25251-100000@server.superbt.com>
+In-Reply-To: <Pine.LNX.4.44.0208011941330.25251-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200208020933750.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +25,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Joakim.Tjernlund@lumentis.se said:
->  Yes, it's silly but can it happen by mistake? The flash state machine
-> may be  confused if an access is made during suspend. 
+Ilguiz Latypov wrote:
+> Would this modification make a difference?  It seems we read the first
+> flash block into a different address when identifying the chip.
 
-You'll get a buffer full of status bits, I expect. Doesn't matter -- the 
-contents of the block at that time are undefined because they're in the 
-middle of an erase.
+This didn't make any difference.  It still works find on the faster machine; 
+reboots on the P133.
 
-> hmm, my modified driver also supports "suspend erase to do a write".
-> Could that be a problem? 
+Using GRUBSTART:0 is probably the better way to do this: GRUBSTART:0 is 
+equivalent to GRUBLOADSEG:GRUBLOADOFS (8200:0, 07E0:400), and using zero as 
+the offset causes the "read block" command to send an address of 0 after 
+sending the READID command, similar to the way it's done in bdev_diskonchip.c.
 
-Again, only if someone's trying to write to a block they're currently 
-trying to erase -- which they shouldn't be doing.
+Either way, the result (mfg/id code) temporarily ends up at 8200:0, prior to 
+be replaced by the Grub code.
 
-We _should_ be checking for these things in the driver, and we _definitely_ 
-have to do so before start suspending writes to perform reads. But at the 
-moment, the only way a user could trigger wrong behaviour is if they're 
-doing something bloody stupid anyway.
+Mark
 
-
---
-dwmw2
+> -       movw    $1, %cx         /* read just one page */
+> -       movw    $GRUBSTART, %ax
+> +       movw    $1, %cx			/* read just one block */
+> +       movw    $GRUBLOADSEG, %ax
+>         movw    %ax, %es
+> -       movw    $0, %di
+> +       movw    $GRUBLOADOFS, %di
+>         call    read_block
