@@ -1,13 +1,12 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cgkk6-0000jd-Ui
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 09:12:04 -0500
-Date: Tue, 21 Dec 2004 15:11:46 +0100
+	id 1CgklR-0000kH-Ul
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 09:13:27 -0500
+Date: Tue, 21 Dec 2004 15:13:12 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-Message-ID: <20041221141146.GA22636@wohnheim.fh-wedel.de>
-References: <20041221135405.GQ22636@wohnheim.fh-wedel.de>
-	<20041221135530.GR22636@wohnheim.fh-wedel.de>
+Message-ID: <20041221141312.GB22636@wohnheim.fh-wedel.de>
+References: <20041221135530.GR22636@wohnheim.fh-wedel.de>
 	<20041221135705.GS22636@wohnheim.fh-wedel.de>
 	<20041221140102.GT22636@wohnheim.fh-wedel.de>
 	<20041221140219.GU22636@wohnheim.fh-wedel.de>
@@ -16,13 +15,14 @@ References: <20041221135405.GQ22636@wohnheim.fh-wedel.de>
 	<20041221140617.GX22636@wohnheim.fh-wedel.de>
 	<20041221140923.GY22636@wohnheim.fh-wedel.de>
 	<20041221141042.GZ22636@wohnheim.fh-wedel.de>
+	<20041221141146.GA22636@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20041221141042.GZ22636@wohnheim.fh-wedel.de>
+In-Reply-To: <20041221141146.GA22636@wohnheim.fh-wedel.de>
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [PATCH 21/22] Default erase size
+Subject: [PATCH 22/22] Readahead
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,39 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For block devices, an erase size of 0 makes little sense.  PAGE_SIZE
-should be a sane default.
+Small changes to readahead functions.  I guess they can use some more,
+but it was getting late and things looked too complicated.
 
 Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
 ---
 
- blockmtd.c |    4 +---
- 1 files changed, 1 insertion(+), 3 deletions(-)
+ blockmtd.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
 
---- linux-2.6.9cow/drivers/mtd/devices/blockmtd.c~blockmtd_erasesize	2004-12-21 02:19:58.000000000 +0100
-+++ linux-2.6.9cow/drivers/mtd/devices/blockmtd.c	2004-12-21 02:23:25.000000000 +0100
-@@ -38,7 +38,6 @@
+--- linux-2.6.9cow/drivers/mtd/devices/blockmtd.c~blockmtd_readahead	2004-12-21 02:24:35.000000000 +0100
++++ linux-2.6.9cow/drivers/mtd/devices/blockmtd.c	2004-12-21 02:30:03.000000000 +0100
+@@ -54,10 +54,9 @@
  
  
- /* Default erase size in K, always make it a multiple of PAGE_SIZE */
--#define CONFIG_MTD_BLKDEV_ERASESIZE (128 << 10)	/* 128KiB */
- #define VERSION "$Revision: 1.23 $"
+ #define PAGE_READAHEAD 64
+-
+ void cache_readahead(struct address_space *mapping, int index)
+ {
+-	filler_t *filler = (void*)mapping->a_ops->readpage;
++	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
+ 	int i, pagei;
+ 	unsigned ret = 0;
+ 	unsigned long end_index;
+@@ -95,17 +94,15 @@
+ 		ret++;
+ 	}
+ 	spin_unlock_irq(&mapping->tree_lock);
+-	if (ret) {
++	if (ret)
+ 		read_cache_pages(mapping, &page_pool, filler, NULL);
+-		//printk(KERN_INFO "Readahead [%d/%d] pages from [%d]\n",ret,PAGE_READAHEAD,index);
+-	}
+ }
  
- /* Info for the block device */
-@@ -290,7 +289,6 @@
- 	if (!dev)
- 		return;
  
--	kfree(dev->mtd.eraseregions);
- 	kfree(dev->mtd.name);
+ static struct page* page_readahead(struct address_space *mapping, int index)
+ {
+-	filler_t *filler = (filler_t*)(mapping->a_ops->readpage);
+-	cache_readahead(mapping,index);
++	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
++	cache_readahead(mapping, index);
+ 	return read_cache_page(mapping, index, filler, NULL);
+ }
  
- 	if (dev->blkdev) {
-@@ -432,7 +430,7 @@
- 	char buf[80+12], *str=buf; /* 80 for device, 12 for erase size */
- 	char *token[2];
- 	char *name;
--	size_t erase_size = 0;
-+	size_t erase_size = PAGE_SIZE;
- 	int i, ret;
- 
- 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
