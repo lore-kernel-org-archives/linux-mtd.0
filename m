@@ -1,16 +1,17 @@
 Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189FUv-0001Xn-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2002 02:00:50 +0000
+	id 189LGa-0002Dl-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2002 08:10:24 +0000
 Content-Transfer-Encoding: 7bit
-Content-Type: multipart/mixed; boundary="_----------=_1036549852166762"
+Content-Type: multipart/mixed; boundary="_----------=_103657203842501"
 MIME-Version: 1.0
-Date: Wed, 6 Nov 2002 02:30:52 UT
+Date: Wed, 6 Nov 2002 08:40:38 UT
 From: "Jeffrey Lim" <jfsworld@fastmail.fm>
 To: Dave@imladris.demon.co.uk
-Cc: "linux-mtd list" <linux-mtd@lists.infradead.org>
+Cc: "linux-mtd list" <linux-mtd@lists.infradead.org>,
+	jfsworld@fastmail.fm
 Subject: Re: [PATCH] patches/patchin.sh (was Re: MTD CVS: missing JFFS2?)
-Message-Id: <20021106023051.B8F0C2FD2E@server4.fastmail.fm>
+Message-Id: <20021106084038.3FEDF2FD15@server4.fastmail.fm>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +25,12 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 This is a multi-part message in MIME format.
 
---_----------=_1036549852166762
+--_----------=_103657203842501
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="ISO-8859-1"
 
-
-Sorry - i must have forgotten to attach the patch.
+Sorry there - here's the missing patch (attached)
 
 -jf
 
@@ -89,7 +89,7 @@ tch
 =20
 =20
 
---_----------=_1036549852166762
+--_----------=_103657203842501
 Content-Disposition: attachment; filename="patchin.sh.diff"
 Content-Transfer-Encoding: base64
 Content-Type: application/unknown; name="patchin.sh.diff"
@@ -100,4 +100,4 @@ L2pmZnMyLyouW2NoXSBmcy9qZmZzMgo+IGxuIC1zZiAkVE9QRElSL2ZzL2pm
 ZnMyLypha2VmaWxlIGZzL2pmZnMyCj4gbG4gLXNmICRUT1BESVIvaW5jbHVk
 ZS9saW51eC9qZmZzMiogaW5jbHVkZS9saW51eC9qZmZzMioKPiAK
 
---_----------=_1036549852166762--
+--_----------=_103657203842501--
