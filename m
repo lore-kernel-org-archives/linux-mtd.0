@@ -1,171 +1,106 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12Ayt2-0003gF-00
-	for mtd-list@infradead.org; Wed, 19 Jan 2000 17:27:16 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12Ayt1-0003g9-00
-	for mtd@infradead.org; Wed, 19 Jan 2000 17:27:15 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Cc: Pavel Roskin <pavel_roskin@geocities.com>
-Subject: Byteorder stuff.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 19 Jan 2000 17:36:35 +0000
-Message-Id: <E12Az23-000315-00@devel2.axiom.internal>
+	id 12BZp0-0004b7-00
+	for mtd-list@infradead.org; Fri, 21 Jan 2000 08:53:34 +0000
+Message-ID: <002401bf63ed$e12ec180$5800a8c0@pita>
+From: "jyllyj" <jyllyj@263.net>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>
+References: <001601bf610b$7301de20$5800a8c0@pita>  <004101bf6084$deebad00$5800a8c0@pita> <E12AF35-000707-00@devel2.axiom.internal>  <E12AWHJ-0008NB-00@devel2.axiom.internal>
+Subject: Re: about doc2000 bootstrap without M-system's firmware 
+Date: Fri, 21 Jan 2000 16:58:55 +0800
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Until the __constant byteorder macros get included in Linus' kernels, we have 
-to define them ourselves. This patch should apply to today's release and fix 
-the compilation on big-endian machines.
-
-diff -ur mtd-20000119/include/linux/mtd/byteorder.h mtd/include/linux/mtd/byteorder.h
---- mtd-20000119/include/linux/mtd/byteorder.h	Wed Jan 19 17:33:34 2000
-+++ mtd/include/linux/mtd/byteorder.h	Wed Jan 19 17:30:44 2000
-@@ -0,0 +1,48 @@
-+#ifndef __MTD_BYTEORDER_H__
-+#define __MTD_BYTEORDER_H__
-+
-+/* Yes, I'm aware that it's a fairly ugly hack.
-+   Until the __constant_* macros appear in Linus' own kernels, this is
-+   the way it has to be done.
-+ DW 19/1/00
-+ */
-+
-+#include <asm/byteorder.h>
-+
-+#ifndef __constant_cpu_to_le16
-+
-+#ifdef __BIG_ENDIAN
-+#define __constant_cpu_to_le64(x) ___swab64((x))
-+#define __constant_le64_to_cpu(x) ___swab64((x))
-+#define __constant_cpu_to_le32(x) ___swab32((x))
-+#define __constant_le32_to_cpu(x) ___swab32((x))
-+#define __constant_cpu_to_le16(x) ___swab16((x))
-+#define __constant_le16_to_cpu(x) ___swab16((x))
-+#define __constant_cpu_to_be64(x) ((__u64)(x))
-+#define __constant_be64_to_cpu(x) ((__u64)(x))
-+#define __constant_cpu_to_be32(x) ((__u32)(x))
-+#define __constant_be32_to_cpu(x) ((__u32)(x))
-+#define __constant_cpu_to_be16(x) ((__u16)(x))
-+#define __constant_be16_to_cpu(x) ((__u16)(x))
-+#else
-+#ifdef __LITTLE_ENDIAN
-+#define __constant_cpu_to_le64(x) ((__u64)(x))
-+#define __constant_le64_to_cpu(x) ((__u64)(x))
-+#define __constant_cpu_to_le32(x) ((__u32)(x))
-+#define __constant_le32_to_cpu(x) ((__u32)(x))
-+#define __constant_cpu_to_le16(x) ((__u16)(x))
-+#define __constant_le16_to_cpu(x) ((__u16)(x))
-+#define __constant_cpu_to_be64(x) ___swab64((x))
-+#define __constant_be64_to_cpu(x) ___swab64((x))
-+#define __constant_cpu_to_be32(x) ___swab32((x))
-+#define __constant_be32_to_cpu(x) ___swab32((x))
-+#define __constant_cpu_to_be16(x) ___swab16((x))
-+#define __constant_be16_to_cpu(x) ___swab16((x))
-+#else
-+#error No (recognised) endianness defined (unless it,s PDP)
-+#endif /* __LITTLE_ENDIAN */
-+#endif /* __BIG_ENDIAN */
-+
-+#endif /* ifndef __constant_cpu_to_le16 */
-+
-+#endif /* __MTD_BYTEORDER_H__ */
-diff -ur mtd-20000119/kernel/nftl.c mtd/kernel/nftl.c
---- mtd-20000119/kernel/nftl.c	Wed Jan 19 10:26:04 2000
-+++ mtd/kernel/nftl.c	Wed Jan 19 17:22:24 2000
-@@ -2,7 +2,7 @@
- /* Linux driver for NAND Flash Translation Layer */
- /* (c) 1999 Machine Vision Holdings, Inc.   */
- /* Author: David Woodhouse <dwmw2@mvhi.com> */
--/* $Id: nftl.c,v 1.12 2000/01/19 10:26:04 dwmw2 Exp $ */
-+/* $Id: nftl.c,v 1.14 2000/01/19 17:22:24 dwmw2 Exp $ */
- 
- #define PRERELEASE
- 
-@@ -19,6 +19,7 @@
- #include <linux/init.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nftl.h>
-+#include <linux/mtd/byteorder.h>
- 
- /* NFTL block device stuff */
- #define MAJOR_NR NFTL_MAJOR
-@@ -417,18 +418,18 @@
- 			BlockLastState[block] = (unsigned char) oob.b.Status & 0xff;
- 
- 			switch(oob.b.Status) {
--			case cpu_to_le16(BLOCK_FREE):
-+			case __constant_cpu_to_le16(BLOCK_FREE):
- 				BlockFreeFound[block]=1;
- 				break;
- 
--			case cpu_to_le16(BLOCK_USED):
-+			case __constant_cpu_to_le16(BLOCK_USED):
- 				if (!BlockFreeFound[block])
- 					BlockMap[block] = thisEUN;
- 				else
- 					printk(KERN_WARNING "BLOCK_USED found after BLOCK_FREE in Virtual Unit Chain %d for block %d\n", thisVUC, block);
- 				break;
--			case cpu_to_le16(BLOCK_IGNORE):
--			case cpu_to_le16(BLOCK_DELETED):
-+			case __constant_cpu_to_le16(BLOCK_IGNORE):
-+			case __constant_cpu_to_le16(BLOCK_DELETED):
- 				break;
- 			default:
- 				printk("Unknown status for block %d in EUN %d: %x\n",block,thisEUN, oob.b.Status);
-@@ -710,14 +711,14 @@
- 		MTD_READOOB(thisNFTL->mtd, (thisEUN * thisNFTL->EraseSize) + blockofs,8, &retlen, (char *)&bci);
- 		
- 		switch(bci.Status) {
--		case cpu_to_le16(BLOCK_FREE):
-+		case __constant_cpu_to_le16(BLOCK_FREE):
- 			thisEUN = 0;
- 			break;
--		case cpu_to_le16(BLOCK_USED):
-+		case __constant_cpu_to_le16(BLOCK_USED):
- 			lastgoodEUN = thisEUN;
- 			break;
--		case cpu_to_le16(BLOCK_IGNORE):
--		case cpu_to_le16(BLOCK_DELETED):
-+		case __constant_cpu_to_le16(BLOCK_IGNORE):
-+		case __constant_cpu_to_le16(BLOCK_DELETED):
- 			break;
- 		default:
- 			printk("Unknown status for block %d in EUN %d: %x\n",block,thisEUN, bci.Status);
-@@ -781,12 +782,12 @@
- 				printk("Status of block %d in EUN %d is %x\n", block , writeEUN, le16_to_cpu(bci.Status));
- 
- 			switch(bci.Status) {
--			case cpu_to_le16(BLOCK_FREE):
-+			case __constant_cpu_to_le16(BLOCK_FREE):
- 				return writeEUN;
- 
--			case cpu_to_le16(BLOCK_DELETED):
--			case cpu_to_le16(BLOCK_USED):
--			case cpu_to_le16(BLOCK_IGNORE):
-+			case __constant_cpu_to_le16(BLOCK_DELETED):
-+			case __constant_cpu_to_le16(BLOCK_USED):
-+			case __constant_cpu_to_le16(BLOCK_IGNORE):
- 				break;
- 			default:
- 				// Invalid block. Don't use it any more. Must implement.
-@@ -1126,7 +1127,7 @@
- 	
- 	printk(KERN_NOTICE "M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI\n");
- #ifdef PRERELEASE 
--	printk(KERN_INFO"$Id: nftl.c,v 1.12 2000/01/19 10:26:04 dwmw2 Exp $\n");
-+	printk(KERN_INFO"$Id: nftl.c,v 1.14 2000/01/19 17:22:24 dwmw2 Exp $\n");
- #endif
- 
- 	if (register_blkdev(NFTL_MAJOR, "nftl", &nftl_fops)){
+> jyllyj@263.net said:
+> > I can see SPL at firmware with offset 0x400,but where is the IPL? at
+> > offset 0 looks like DOC2000 hardware initialization.is not so?
+>
+> Maybe I meant SPL not IPL - I can't remember what M-Systems call it.
+>
+> But that code initialises the hardware, then reads the 48K firmware off
+the
+> flash, and jumps to it if its checksum is right.
+>
+I find IPL at D000:0 with your jump's setuping
+it is :
+1272:0103 9C                    PUSHF
+1272:0104 60                    DB      60
+1272:0105 1E                    PUSH    DS
+1272:0106 06                    PUSH    ES
+1272:0107 0E                    PUSH    CS
+1272:0108 1F                    POP     DS
+1272:0109 BB0410            MOV     BX,1004
+1272:010C C647FE85          MOV     BYTE PTR [BX-02],85
+1272:0110 C647FE85      MOV     BYTE PTR [BX-02],85
+1272:0114 BE0018        MOV     SI,1800
+1272:0117 B1FF              MOV     CL,FF
+1272:0119 E80E00        CALL    012A
+1272:011C B90020        MOV     CX,2000
+1272:011F E80800        CALL    012A
+1272:0122 FC            CLD
+1272:0123 8EC1          MOV     ES,CX
+1272:0125 33FF          XOR     DI,DI
+1272:0127 E9D607        JMP     0900
+1272:012A C6071B        MOV     BYTE PTR [BX],1B
+1272:012D FF47FC        INC     WORD PTR [BX-04]
+1272:0130 884F09        MOV     [BX+09],CL
+1272:0133 880C          MOV     [SI],CL
+1272:0135 FF47FC        INC     WORD PTR [BX-04]
+1272:0138 F60780        TEST    BYTE PTR [BX],80
+1272:013B 74FB          JZ      0138
+1272:013D 8517          TEST    DX,[BX]
+1272:013F C3            RET
 
 
---
-dwmw2
+1272:0900 32E4          XOR     AH,AH
+1272:0902 F6C10F        TEST    CL,0F
+1272:0905 751F          JNZ     0926
+1272:0907 C6071D        MOV     BYTE PTR [BX],1D
+1272:090A FF47FC        INC     WORD PTR [BX-04]
+1272:090D 8BD7          MOV     DX,DI
+1272:090F 885709        MOV     [BX+09],DL
+1272:0912 8814          MOV     [SI],DL
+1272:0914 887709        MOV     [BX+09],DH
+1272:0917 8834          MOV     [SI],DH
+1272:0919 33D2          XOR     DX,DX
+1272:091B 885709        MOV     [BX+09],DL
+1272:091E 8814          MOV     [SI],DL
+1272:0920 C60719        MOV     BYTE PTR [BX],19
+1272:0923 E80FF8        CALL    0135
+1272:0926 844709        TEST    AL,[BX+09]
+1272:0929 AC            LODSB
+1272:092A 02E0          ADD     AH,AL
+1272:092C AA            STOSB
+1272:092D 4E            DEC     SI
+1272:092E E2D2          LOOP    0902
+1272:0930 80FC55        CMP     AH,55
+1272:0933 7505          JNZ     093A
+1272:0935 9A00000020    CALL    2000:0000
+1272:093A 07            POP     ES
+1272:093B 1F            POP     DS
+1272:093C 61            DB      61
+1272:093D 9D            POPF
+1272:093E CB            RETF
+1272:093F 5C            POP     SP
+
+it load SPL (offset 0x400h sizeof 8k in doc121.exb) to 2000:0 and jmp there
+to execute.
+ then the SPL load other TTFS etc.
+i can fill the SPL with my bootloader like grub.but i don't know where can
+the kernel put.
+how can i READ/WRITE doc2000 with a absoluteness address.
+
+in linux environment i insmod mtd,nftl,and doc2000.
+i can mkfs and mount it.but can't format it with nftl-format.
+error messages is "ioctl(MEMGETINFO): Invalid argument"
+
+The error be appeared too when  use doc_loadbios to write doc firmware.
+why?
+
+
+
 
 
 
