@@ -1,29 +1,28 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D7ALX-0000Dz-6H
-	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 05:47:51 -0500
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1D7AEY-0007AR-Bu
-	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 11:40:38 +0100
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2005 11:40:38 +0100
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2005 11:40:38 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Fri, 04 Mar 2005 11:43:41 +0100
-Message-ID: <d09dr9$lgu$2@sea.gmane.org>
-References: <d01lkf$v0d$1@sea.gmane.org> <d04hdb$8k1$1@sea.gmane.org>
-	<Pine.LNX.4.58.0503031038120.26599@phoenix.infradead.org>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D7AaL-0007at-MX
+	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 11:03:11 +0000
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+In-Reply-To: <42280EB6.4030007@imc-berlin.de>
+References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
+	<1109845739.16158.14.camel@hades.cambridge.redhat.com>
+	<1109846656.4370.20.camel@tglx.tec.linutronix.de>
+	<1109846792.16158.20.camel@hades.cambridge.redhat.com>
+	<1109847189.4370.27.camel@tglx.tec.linutronix.de>
+	<1109847630.16158.22.camel@hades.cambridge.redhat.com>
+	<4226F51A.7070603@imc-berlin.de>
+	<Pine.LNX.4.62.0503031146070.15953@localhost.localdomain>
+	<1109874008.29792.92.camel@baythorne.infradead.org>
+	<42280EB6.4030007@imc-berlin.de>
+Content-Type: text/plain
+Date: Fri, 04 Mar 2005 14:01:36 +0300
+Message-Id: <1109934096.5169.12.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0503031038120.26599@phoenix.infradead.org>
-Sender: news <news@sea.gmane.org>
-Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: [RFD] Move 2.4 code out from CVS head
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,12 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>Some more information:
->>The problem arose after creating a directory in my JFFS2 NAND fs, and 
->>creating some 1000 (small) files in it. After rebooting I removed the 
->>entire directory, and at the next reboot I got the error.
-> Is it real to look at JFFS2 debugging output?
-Come again?
+On Fri, 2005-03-04 at 08:31 +0100, Steven Scholz wrote:
+> How about SUMMARY patch then? ;-)
+> Seriously, since JFFS3 will not get into the 2.4 stuff Ferenc's SUMMARY patch 
+> would be nice!
+Ferenc's Summaries are in JFFS3.
 
-BR,
-  Martin
+> 
+> And BTW: How do I get the 2.4 branch from CVS?
+
+IIUC, CVS head should work for 2.4 well. I've commited the symlink
+problem fix.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
