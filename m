@@ -1,16 +1,20 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from rezznor.smb.utfors.se ([195.58.112.22])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17c7HD-0006qv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 17:33:43 +0100
-Message-ID: <3D4FFA9B.2C693A02@esteem.com>
-Date: Tue, 06 Aug 2002 09:34:35 -0700
-From: Conn Clark <clark@esteem.com>
+	id 17c7T7-0006sh-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 17:46:01 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: "Dave Ellis" <DGE@sixnetio.com>,
+	<linux-mtd@lists.infradead.org>
+Subject: RE: Disk blocks for long periods 
+Date: Tue, 6 Aug 2002 18:45:59 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLAEIIFFAA.joakim.tjernlund@lumentis.se>
 MIME-Version: 1.0
-To: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: Need help getting JFFS2 working with kernel 2.4.19
-References: <3D4EDA18.C77AEDA@esteem.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <30768.1028636087@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,44 +26,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Conn Clark wrote:
 > 
-> Hello all,
+> spin_lock_bh() should not disable interrupts, only bottom-halves. It was 
+> used to protect against timers, because we intend(ed) to have the erase 
+> completion done from a timer. At the moment there's no real need to use 
+> anything but spin_lock().
+
+Can the JFFS2 layer also use spin_lock() instead of spin_lock_bh()?
+Shold we try not to disable bottom-halves or does it not matter?
+
+BTW,
+     I just did a test, ran this some 20 times:
+     #> time cp tstfile tmp1 & time cp file tmp2 & time cp file tmp3 &
+     sometimes I removed the tmp1,tmp2 and tmp3 files before running it.
+
+     if I rm the files first it takes 10 seconds to complete and if I don't
+     it takes 20 seconds. It's a bit much I think.
+
+I have set kupdate to run every .5 second   
+tstfile is 581K
+
+ Jocke
+
+
+
 > 
->         I am new here and I am having trouble getting the JFFS2 code
-> working/compiling with the 2.4.19 kernel . I get multiple definition
-> errors when the kernel is linking.
 > 
-> Many thanks in advance,
+> --
+> dwmw2
 > 
->         Conn
-
-	I figured it out. The jffs2 zlib was conflicting with the zlib
-used bye ppp compresion. I just had to remove zlib.o from the COMPR_OBJS
-definition in the Makefile.
-
-	Sorry for the lack of details. I figured it out yesterday but
-mailed this post to myself instead of the list. Sorry again.
-
-
-Thanks anyways
-
-	Conn
--- 
-
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
-
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
-
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
+> 
+> 
