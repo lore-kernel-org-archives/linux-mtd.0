@@ -1,16 +1,14 @@
-Received: from [209.116.120.7] (helo=tnint11.telogy.design.ti.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17xakT-0007In-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2002 23:16:41 +0100
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Snehaprabha <nsnehaprabha@tnint11.telogy.design.ti.com>
+Received: from web40506.mail.yahoo.com ([66.218.78.123])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17yYxT-0005px-00
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Oct 2002 15:34:08 +0100
+Message-ID: <20021007143335.5602.qmail@web40506.mail.yahoo.com>
+Date: Mon, 7 Oct 2002 07:33:35 -0700 (PDT)
+From: Sanjay Kumar <sankumar73@yahoo.com>
+Subject: MTD access from user space problem
 To: linux-mtd@lists.infradead.org
-Subject: cramfs issues
-Date: Fri, 4 Oct 2002 18:17:04 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200210041817.04501.nsnehaprabha@tnint11.telogy.design.ti.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +20,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
-=09I have a mtd partition for cramfs. I'm using 2.4.17 kernel. Also I am=20
-building the mkcramfs utility against the files from scripts/cramfs direc=
-tory=20
-of the kernel distribution. I see that in the makefile this utility is li=
-nked=20
-with zlib library (libz.a). This crams image is mounted as root. Kernel c=
-omes=20
-up properly, but gives me the following message.
-"Error -3 While decompressing!"
+Hi,
 
-how do I make sure the versions of zlib used for compression on the host =
-and=20
-zlib for decompression (kernel) on the target are the same?
+On our Linux 2.4.2 board, we are using a 3.8 MB JFFS2 and 0.2 MB raw partition on flash.
+For accessing the raw partition we are opening the MTD device and issuing write() and
+ioctls() for erasing from user space. The problem is under stress i.e when lots of 
+writes are hapenning in both the JFFS2 and raw partition; we get the following problem:
 
-Please help.
+Last[2] is ffff, datum is 1962
+Error writing new dnode : -5
+
+Are there any restrictions in using MTD from the user space simultanesouly while JFFS2
+is using it from the kernel space? We understand that this Linux kernel has the preliminary
+JFFS2; if this is JFFS2 problem will it be resolved if we move to newer kernel?(we
+have in mind 2.4.18)
+
 Thanks
-Sneha
+Sanjay
+
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
