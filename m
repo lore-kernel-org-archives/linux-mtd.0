@@ -1,53 +1,23 @@
-From: joern@wohnheim.fh-wedel.de (=?iso-8859-1?Q?J=F6rn?= Engel)
-Date: Thu, 13 Feb 2003 09:59:27 +0100
-Subject: sharp memory leak
-In-Reply-To: <1045072520.12666.53.camel@tubarao>
-References: <1045072520.12666.53.camel@tubarao>
-Message-ID: <20030213085927.GA25431@wohnheim.fh-wedel.de>
+From: Kschoo70C@netscape.net (Kschoo70C at netscape.net)
+Date: Thu, 13 Feb 2003 06:16:51 -0500
+Subject: copy filesystem to nand flash without ecc
+Message-ID: <4EF56021.2C81712E.0265FBE9@netscape.net>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Wed, 12 February 2003 10:55:20 -0700, Thayne Harbaugh wrote:
-> 
-> I've been sitting on some patches for a while and have not sent them
-> in.  I saw Jorn send in the patch for the missing cfi_cmdset_0020 and
-> decided that I need to get my submissions in befor Jorn sends all of
-> them in.
+Hi,
+     I notice some update on the JFFS2 out of band usage in
+http://www.linux-mtd.infradead.org/tech/nand.html,
+whereby the offset 0x4 used to be ECC valid marker has been made obsolete. In this case, if I write a jffs image to the mtd device without adding the ECC in the out of band area, the nand driver will not know about that. The question here is, what is the consequence of writing an image without adding the ecc to the out of band area ?
+Isn't it true the jffs2 file system always uses read_ecc and write_ecc when the flash type is nand ?
 
-At least you allowed me to fix my own bug. I submitted cfi_cmdset_0020
-a while ago and forgot the Makefile line. Darn!
+Thanks in advance.
 
-> Here's just one - it's a memory leak in the sharp driver.  It's not huge
-> and will likely never leak, but it needs to be there to balance the
-> kmalloc().
+regards
+choo
 
-Leak exists and fix is correct. It may also be worthwhile to do the
-following instead:
-	mtd = kmalloc
-	if (!mtd)
-		goto out1;
-	sharp = kmalloc
-	if (!sharp)
-		goto out2;
-	width = kmalloc
-	if (!width)
-		goto out3;
-	...
-	return mtd;
-out3:
-	kfree(width);
-out2:
-	kfree(sharp);
-out1:
-	kfree(mtd);
-	return NULL;
 
-Dunno, this is not a perfect candidate for that strategy, but it might
-be slightly more obvious. You decide.
+__________________________________________________________________
+The NEW Netscape 7.0 browser is now available. Upgrade now! http://channels.netscape.com/ns/browsers/download.jsp 
 
-J?rn
-
--- 
-With a PC, I always felt limited by the software available. On Unix, 
-I am limited only by my knowledge.
--- Peter J. Schoenster
+Get your own FREE, personal Netscape Mail account today at http://webmail.netscape.com/
