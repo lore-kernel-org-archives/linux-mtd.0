@@ -1,16 +1,19 @@
-Received: from law14-oe19.law14.hotmail.com ([64.4.20.123] helo=hotmail.com)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Wxvp-0004Ta-N8
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 13:38:53 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Mon, 30 Jun 2003 18:04:21 -0700
-MIME-Version: 1.0
-Message-ID: <Law14-OE196YHkidcDj000578d7@hotmail.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 19Wxzc-0004Wo-Lm
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 13:42:48 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Vikram Mehta <vm6580@hotmail.com>
+In-Reply-To: <Law14-OE196YHkidcDj000578d7@hotmail.com>
+References: <Law14-OE196YHkidcDj000578d7@hotmail.com>
+Message-Id: <1056976986.25574.330.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Mon, 30 Jun 2003 13:43:08 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: Kernel Crashes at mount
+cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Kernel Crashes at mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Tue, 2003-07-01 at 02:04, Vikram Mehta wrote:
+> Help me here.... What am I missing....
 
-I need urgent help.
+The output from the kernel when it crashes; decoded by ksymoops.
 
-I don't know the exact  reason  but mount -t jffs2 sowmtimes works and
-sometimes it fails with disastrous consequences. The kernel crashes....
-
-Help me here.... What am I missing....
-
-Vikram
+-- 
+dwmw2
