@@ -1,36 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13qLcN-0003SK-00
-	for mtd-list@infradead.org; Mon, 30 Oct 2000 20:33:19 +0000
+	id 13qLhr-0003WB-00
+	for mtd-list@infradead.org; Mon, 30 Oct 2000 20:38:59 +0000
 Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13qLcL-0003SE-00
-	for mtd@infradead.org; Mon, 30 Oct 2000 20:33:18 +0000
-Date: Mon, 30 Oct 2000 20:33:09 +0000 (GMT)
+	id 13qLhq-0003W5-00
+	for mtd@infradead.org; Mon, 30 Oct 2000 20:38:58 +0000
+Date: Mon, 30 Oct 2000 20:38:54 +0000 (GMT)
 From: David Woodhouse <dwmw2@infradead.org>
-To: "Steven J. Hill" <sjhill@cotw.com>
-cc: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
-Subject: Re: Write support with JFFS and NAND now working...
-In-Reply-To: <39FDC4B2.A52F5D8A@cotw.com>
-Message-ID: <Pine.LNX.4.21.0010302031390.15834-100000@imladris.demon.co.uk>
+To: Qiuyuan Liu <q.liu@acm.org>
+cc: mtd@infradead.org
+Subject: Re: building mtd: put_module_symbol?
+In-Reply-To: <39FDD62E1B8.9E6AQ.LIU@mail.neontech.com>
+Message-ID: <Pine.LNX.4.21.0010302033500.15834-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Mon, 30 Oct 2000, Steven J. Hill wrote:
+On Mon, 30 Oct 2000, Qiuyuan Liu wrote:
 
-> SPECIAL NOTE: Process synchronization has not been implemented i.e.
-> spinlocks and waitqueues. It is NOT currently process/thread safe. I
-> will have this implemented hopefully by the end of the day or early
-> tomorrow morning my time. Enjoy.
+> 1. where is put_module_symbol defined referred in mtd/map.h:
+> do_map_probe().
 
-Actually you'll probably find that the jffs semaphore makes it safe, as
-long as you've only got one filesystem on it and don't access any parts 
-of the device through other means while it's mounted.
+Apply put_module_symbol-2.2.18.patch to your kernel.
 
-Don't let that put you off fixing the locking though :)
+> 2. set_current_state redefinition
 
+Fixed in cvs tree.
+
+> 3. physmap.c, line 65:
+> 'CONFIG_MTD_PHYSMAP_BUSWIDTH' undeclared here (not in a function)
+> initializer elemennt for 'physmap_map.buswidth' is not constant
+
+Likewise.
 
 -- 
 dwmw2
