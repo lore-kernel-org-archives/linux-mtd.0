@@ -1,20 +1,18 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16tBl6-00066W-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 19:14:52 +0100
-Message-Id: <200204041814.g34IEjw20020@dagobert.svc.sysgo.de>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Robert Kaiser <rob@sysgo.de>
-Reply-To: rkaiser@sysgo.de
-To: Sanjay Kumar <sankumar73@yahoo.com>
-Subject: Re: jffs2 mounting problem
-Date: Thu, 4 Apr 2002 19:16:04 +0200
-References: <20020404160719.36532.qmail@web13204.mail.yahoo.com>
-In-Reply-To: <20020404160719.36532.qmail@web13204.mail.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	id 16tByK-00067S-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 19:28:32 +0100
+Received: from devil.iqc-services.com (devil.iqc-services.local [192.168.197.3])
+	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g34J9gh23825
+	for <linux-mtd@lists.infradead.org>; Thu, 4 Apr 2002 21:09:43 +0200
+Message-Id: <5.1.0.14.2.20020404202217.01ed8b20@pop3.iqc-services.com>
+Date: Thu, 04 Apr 2002 20:27:38 +0200
+To: linux-mtd@lists.infradead.org
+From: Marcos Lois =?iso-8859-1?Q?Bermúdez?= <marcos@iqc-services.com>
+Subject: Problem getting MTD work.
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="=====================_448735==_"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,81 +24,181 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+--=====================_448735==_
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Am Donnerstag, 4. April 2002 18:07 schrieben Sie:
-> I am using two AMD flash of 4MB each. Then I am relocating them such that
-> they are continuous.
-> Then I create  three partitions, first one for bootloader, second for JFFS2
-> root partition and the last is free to be used latter.
->
-> Then probing of the flash also shows the following information -
-> physmap flash device: 800000 at bf800000
-> Number of erase regions: 2
-> Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
->
-> Now when I boot the system from 2nd jffs2 root partition I see the
-> following info -
->
-> #cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 000a0000 00010000 "bootstrap and kernel"
-> mtd1: 00360000 00010000 "jffs2 filesystem"
-> mtd2: 00400000 00010000 "jffs2 2nd filesystem"
->
-> Also I have following devices created -
-> #ls -l
-> crwxr--r--   1 root     root      90,   0 Mar 27  2002 mtd0
-> crwxr--r--   1 root     root      90,   1 Mar 27  2002 mtd1
-> crwxr--r--   1 root     root      90,   2 Mar 27  2002 mtd2
-> crw-r--r--   1 root     root      90,   4 Jan  1 00:03 mtd4
-> brwxr--r--   1 root     root      31,   0 Mar 27  2002 mtdblock0
-> brwxr--r--   1 root     root      31,   1 Mar 27  2002 mtdblock1
-> brw-r--r--   1 root     root      31,   2 Jan  1 00:02 mtdblock2
->
+I'm working under uClinux 2.4.17 distribution, and havew a Dragonix board=20
+(MC68VZ328), and usr two banks of 2MB of flash (Amd29LV160B), i use the map=
+=20
+that i atach, i make a copy of physimap and adapt it to my board.
 
-Have a look at the MAKEDEV script in directory "util" of the MTD directory. 
-The minor numbers you chose for /dev/mtd? are, umm, unusual. I doubt you 
-really want them. The MAKEDEV script would have assigned these numbers:
+The probem is that with the physimap map don't work on my board, and with=20
+this map i get this message and the boarg hags:
 
-   mtd0: 0
-   mtd1: 2
-   mtd2: 4
-   mtd4: 8
+Dragonix Strataflash mapping:size 400000 at 2000000
+ZEUS:dragonix_map.map_priv_1=3D2000000
 
->
->
-> Now I want the last partition to be mounted to /mnt directory.
-> For that first I use /dev/mtd4 for erasing the partition and
+What is wrong here, what files i need touch to get this working with the=20
+Amd29LV160B chips.
 
-Due to the (presumably wrong) minor numbers, /dev/mtd4 in your case 
-corresponds to device mtd2 (i.e. "jffs2 2nd filesystem"), so that is
-what got erased.
+Regards.
 
-> then I use the following command to mount the last partition -
->
-> #mount -t jffs2 /dev/mtdblock2 /mnt
+----------------------------------------------------
+Marcos Lois Berm=FAdez
+marcos@iqc-services.com
+IQC-Services.
+Carretera provincial 60 - 1
+36210 Vigo - Pontevedra
+Tel: +34 986 281 830
+Fax: +34 986 415 074
+http://www.iqc-services.com
+----------------------------------------------------
+--=====================_448735==_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="dragonix_map.c"
 
-The minor number for mtdblock2 is correct (i.e. it also corresponds to the 
-"jffs2 2nd filesystem" partition), so this should actually work. My only 
-guess is that you may have used "erase /dev/mtd4" to do the erase ? Note that 
-the "erase" command by default erases only one block, "eraseall" erases an 
-entire device.
-
->
-> When the mounting is completed I use the command "df" and I see the
-> used space in the partition increases rapidly to 100%.
-
-This is normal AFAIK. After increasing to 100% as you observed, it should go 
-back to some 5% or so (depends on the erase block size).
-
-Hope this helps
-
-Rob
+#include <linux/module.h>
+#include <linux/types.h>
+#include <linux/kernel.h>
+#include <asm/io.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/map.h>
+#include <linux/mtd/partitions.h>
 
 
-----------------------------------------------------------------
-Robert Kaiser                         email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14                    phone: (49) 6136 9948-762
-D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
+#define WINDOW_ADDR 0x02000000
+#define WINDOW_SIZE 0x00400000
+#define BUSWIDTH 2
+
+static struct mtd_info *mymtd;
+
+
+static __u8 dragonix_read8(struct map_info *map,unsigned long ofs)
+{
+	return __raw_readb(map->map_priv_1 + ofs);
+}
+
+static __u16 dragonix_read16(struct map_info *map,unsigned long ofs)
+{
+	return __raw_readw(map->map_priv_1 + ofs);
+}
+
+static __u32 dragonix_read32(struct map_info *map, unsigned long ofs)
+{
+	return __raw_readl(map->map_priv_1 + ofs);
+}
+
+static void dragonix_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
+{
+	memcpy(to, (void *)(map->map_priv_1 + from), len);
+}
+
+static void dragonix_write8(struct map_info *map, __u8 d, unsigned long adr)
+{
+	*(__u8 *)(map->map_priv_1 + adr) = d;
+}
+
+static void dragonix_write16(struct map_info *map, __u16 d, unsigned long adr)
+{
+	*(__u16 *)(map->map_priv_1 + adr) = d;
+}
+
+static void dragonix_write32(struct map_info *map, __u32 d, unsigned long adr)
+{
+	*(__u32 *)(map->map_priv_1 + adr) = d;
+}
+
+static void dragonix_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
+{
+	memcpy((void *)(map->map_priv_1 + to), from, len);
+}
+
+/*
+static struct mtd_partition dragonix_partition[]={
+    { 
+	    name: "Dragonix Bootloader", 
+	    offset: 0, 
+	    size:   0x20000,
+    },
+    {
+	   name:"Dragonix Kernel",
+	   offset:0x20000,
+	   size:0x7e0000,
+    },
+    { 
+	    name: "dragonix RamDisk", /////
+	    offset: 0x800000,
+	    size:0x800000, 
+    }
+};
+*/
+
+// Test partition
+static struct mtd_partition dragonix_partition[]={
+    { 
+	    name: "Dragonix Bootloader", 
+	    offset: 0, 
+	    size:   0x400000,
+    }
+};
+
+#define NUM_PARTITIONS (sizeof(dragonix_partition)/sizeof(dragonix_partition[0]))
+
+
+struct map_info dragonix_map = {
+	name: "dragonix StrataFlash map",
+	size: WINDOW_SIZE,
+	buswidth: BUSWIDTH,
+	read8: dragonix_read8,
+	read16: dragonix_read16,
+	read32: dragonix_read32,
+	copy_from: dragonix_copy_from,
+	write8: dragonix_write8,
+	write16: dragonix_write16,
+	write32: dragonix_write32,
+	copy_to: dragonix_copy_to,
+};
+
+
+static  int __init init_dragonix(void)
+{
+	printk(KERN_NOTICE "Dragonix Strataflash mapping:size %x at %x\n", WINDOW_SIZE, WINDOW_ADDR);
+	dragonix_map.map_priv_1 = (unsigned long)ioremap(WINDOW_ADDR, WINDOW_SIZE);
+	printk("ZEUS:dragonix_map.map_priv_1=%x\n",dragonix_map.map_priv_1);
+	if (!dragonix_map.map_priv_1) {
+		printk("Failed to ioremap\n");
+		return -EIO;
+	}
+	
+	mymtd = do_map_probe("cfi_probe", &dragonix_map);
+	if (mymtd) {
+		mymtd->module = THIS_MODULE;
+		add_mtd_partitions( mymtd, dragonix_partition, NUM_PARTITIONS );
+
+		add_mtd_device(mymtd);
+		printk("ZEUS:right end of init_dragonix(I mean flash)\n");
+		return 0;
+	}
+	
+	iounmap((void *)dragonix_map.map_priv_1);
+	printk("ZEUS:so its the wrong end of init_dragonix(flash)\n");
+	return -ENXIO;
+
+}
+
+mod_exit_t cleanup_dragonix(void)
+{
+	if (mymtd) {
+		del_mtd_device(mymtd);
+		map_destroy(mymtd);
+	}
+	if (dragonix_map.map_priv_1) {
+		iounmap((void *)dragonix_map.map_priv_1);
+		dragonix_map.map_priv_1 = 0;
+	}
+}
+
+module_init(init_dragonix);
+module_exit(cleanup_dragonix);
+--=====================_448735==_--
