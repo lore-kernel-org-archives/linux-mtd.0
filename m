@@ -1,20 +1,30 @@
-Received: from mail.utstar.com ([216.37.114.6])
+Received: from e35.co.us.ibm.com ([32.97.110.133])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtuhQ-0002ee-MX
-	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 16:27:42 -0500
-Received: from njtckasturi (njtc-kasturi.nj.us.utstar.com [172.16.2.139])
-	by mail.utstar.com (8.13.2/8.13.2) with SMTP id j0QLRSDe023520
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 Jan 2005 16:27:29 -0500 (EST)
-From: "Kasturi Raghunath" <kasturi@utstar.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 26 Jan 2005 16:27:28 -0500
-Message-ID: <DJEELHNCJDICCAIMLCCCCEIOEGAA.kasturi@utstar.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1CtukS-0002of-O4
+	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 16:30:53 -0500
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e35.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0QLUdZ7419146
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 16:30:40 -0500
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay05.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j0QLUdHF266718
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 14:30:39 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
+	j0QLUdkK013040
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 14:30:39 -0700
+From: Josh Boyer <jdub@us.ibm.com>
+To: Michael <xemc@yahoo.com>
+In-Reply-To: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
+References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
+Content-Type: text/plain
+Message-Id: <1106775037.6955.50.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Date: Wed, 26 Jan 2005 15:30:38 -0600
 Content-Transfer-Encoding: 7bit
-Subject: do_write_buffer(): software timeout
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS3 document
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +34,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-  I am running 2.4.18 linux on my 8270 board with AMD29LV128ML flash chip. I
-have patched May 27 2004 snapshot into my linux OS. JFFS2 and the MTD driver
-works fine when there is no load on the CPU. But when I start sending wire
-speed traffic on the ethernet port and simultaneously download a file to the
-flash I get following error:
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01ae5624 failed. returned -5, retlen 220
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01aef944 failed. returned -5, retlen 68
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01a802ec failed. returned -5, retlen 212
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01a88898 failed. returned -5, retlen 168
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01a8cc90 failed. returned -5, retlen 112
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01a92dfc failed. returned -5, retlen 132
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01a9d7e8 failed. returned -5, retlen 152
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01524e08 failed. returned -5, retlen 184
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x0152bf50 failed. returned -5, retlen 240
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x0107259c failed. returned -5, retlen 228
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x01074e64 failed. returned -5, retlen 156
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x0107e874 failed. returned -5, retlen 140
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x00f60638 failed. returned -5, retlen 200
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x00f669e8 failed. returned -5, retlen 216
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x00f69738 failed. returned -5, retlen 136
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x00f4b0b4 failed. returned -5, retlen 76
-MTD do_write_buffer(): software timeout
-Write of 538 bytes at 0x00f4c078 failed. returned -5, retlen 264
-MTD do_write_buffer(): software timeout
-Write of 580 bytes at 0x00f50418 failed. returned -5, retlen 232
-MTD do_write_buffer(): software timeout
+On Wed, 2005-01-26 at 14:51, Michael wrote:
+> --- "Artem B. Bityuckiy" <dedekind@infradead.org> wrote:
+> 
+> ..
+> > The summary of our JFFS3 discussions could be found at
+> > http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf document.
+> > It is also accessible via MTD web page. The document is generated
+> > from the fd/jffs3/JFFS3design.tex file, so one can contribute
+> even
+> > directly editing it.
+> > 
+> > Any remarks and suggestions are welcomed.
+> 
+> Instead of editing this file via CVS, would it be possible (and a
+> good idea) to use a wiki?  That would make it really easy (and time
+> efficient) for anyone to modify it.
+> 
 
-Any idea what could be the issue. Thanks in advance
+That was brought up on IRC and vetoed.  Wikis tend to get spammed with
+useless or out-dated information, and it's another application for the
+server to have to keep up are the reasons I believe.
+
+You could do locked pages in a Wiki, but that's not much different than
+having CVS access.  :)
+
+josh
