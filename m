@@ -1,21 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18GNev-0000lw-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 18:08:37 +0000
-Date: Mon, 25 Nov 2002 19:38:58 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: joakim.tjernlund@lumentis.se,
-   Herman Oosthuysen <Herman@wirelessnetworksinc.com>,
-   linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Config / FAQ
-Message-ID: <20021125183858.GA26478@wohnheim.fh-wedel.de>
-References: <IGEFJKJNHJDCBKALBJLLOEENFIAA.joakim.tjernlund@lumentis.se> <5807.1038241193@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 18GOPT-0000rI-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 18:56:43 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: <anidea@earthlink.net>, <linux-mtd@lists.infradead.org>
+Subject: Re: Nand flash and blob
+Date: Tue, 26 Nov 2002 08:22:33 +1300
+References: <017c01c294a2$907fe9b0$6401000a@zorak>
+In-Reply-To: <017c01c294a2$907fe9b0$6401000a@zorak>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5807.1038241193@passion.cambridge.redhat.com>
+Message-Id: <20021125192709.87DC44754@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,16 +25,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 25 November 2002 16:19:53 +0000, David Woodhouse wrote:
-> joakim.tjernlund@lumentis.se said:
-> >  I think it's 5 blocks currently. It should be possible to lower that
-> > count, but that needs testing. 
-> 
-> It was tested. It broke. http://mhonarc.axis.se/jffs-dev/msg01495.html
+There are conceptually two ways of doing this:
+* Use reserved NAND blocks to store the image.
+* Store the image in a NAND file system (JFFS2 or YAFFS).
 
-Yes, it broke with a smaller number. But wether that smaller number
-was 4, 1 or 0 is unknown.
+The second option has various advantages in that the image can then be 
+transferred via file system copies. I have done this for WinCE, but other 
+people have done this for Linux..
 
-I would expect 3 or 4 to be fine, but not bet more than a beer on it.
+Nick Bane has done some mork to transfer YAFFS images into the device under 
+bootloader control. See 
+http://www.toby-churchill.org/Distribution/distribution.html
 
-Jörn
+-- CHarles
+
+
+
+
+On Tue, 26 Nov 2002 05:49, Gabriel Goldstein wrote:
+> Hello,
+>
+> I'm working on a arm based design where I have a 16MB Sandisk/Samsung
+> nand flash device.  I think I have the Linux side settled buy using the
+> standard MTD driver.
+>
+> I'm using BLOB and I'd like to know what people are doing to get the
+> system loaded.  I have zImage, params, and ramdisk that I want to use my
+> NAND device to store these blocks.
+>
+> Thanks,
+>
+> Gabriel
+>
+>
+> Gabriel Goldstein
+> Anidea Engineering, Inc.
+> Fort Lauderdale, FL
+> anidea@earthlink.net
+> Phone:  954-254-9898
+> Fax:  240-368-8982
