@@ -1,17 +1,17 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dxOP-00045e-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 17:52:29 +0000
-Message-ID: <3C753577.FFD9EF97@comdev.cc>
-Date: Thu, 21 Feb 2002 09:59:19 -0800
-From: Adam Wozniak <adam.wozniak@comdev.cc>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: M T D C V S update: 'mtd/fs/jffs2 dir.c'
-References: <3C7532E3.A87EC45B@comdev.cc>  <E16dxIT-0006R0-00@infradead.org> <684.1014314167@redhat.com>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16dxVm-00046T-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 18:00:06 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3C753577.FFD9EF97@comdev.cc> 
+References: <3C753577.FFD9EF97@comdev.cc>  <3C7532E3.A87EC45B@comdev.cc> <E16dxIT-0006R0-00@infradead.org> <684.1014314167@redhat.com> 
+To: Adam Wozniak <adam.wozniak@comdev.cc>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: M T D C V S update: 'mtd/fs/jffs2 dir.c' 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 21 Feb 2002 18:11:21 +0000
+Message-ID: <2297.1014315081@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,27 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse wrote:
-> adam.wozniak@comdev.cc said:
-> >  Are you still recommending the jffs2-2_4-branch over the main branch
-> > for production code?
-> 
-> Yes. Especially as I just merged the NAND work onto the main branch. :)
-> 
-> Are you volunteering to merge the occasional bug fix (like this one) onto
-> the jffs2-2_4-branch for me when I forget? :)
+adam.wozniak@comdev.cc said:
+>  I'm not convinced the recent scan.c bugfix found its way into
+> jffs2-2_4-branch
 
-I don't think I have enough time.  I'm also not convinced I understand
-all the subtleties involved in this.
+Probably not. I'll have a look at it tomorrow and hopefully get as far as 
+sending stuff to Marcelo.
 
-I'm not convinced the recent scan.c bugfix found its way into
-jffs2-2_4-branch
+Btw, you can send messages to this list with that subject - but the other 
+list is set up to reject anything that doesn't look _exactly_ like a CVS 
+commit message.
 
-Is there anything (else?) missing from the jffs2-2_4-branch ???
-
---Adam
--- 
-Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
-awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+--
+dwmw2
