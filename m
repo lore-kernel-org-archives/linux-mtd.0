@@ -1,19 +1,19 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16duOd-0003mN-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 14:40:31 +0000
-Subject: Re: MTD concat layer
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: Robert Kaiser <rob@sysgo.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: 
-	<Pine.LNX.4.21.0202201620030.16780-100000@dagobert.svc.sysgo.de>
-References: <Pine.LNX.4.21.0202201620030.16780-100000@dagobert.svc.sysgo.de>
-Content-Type: text/plain
+	id 16dv5V-0003qg-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 15:24:49 +0000
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <joakim.tjernlund@lumentis.se>, "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: jffs2_scan_make_ino_cache() in scan.c very slow 
+Date: Thu, 21 Feb 2002 16:34:55 +0100
+Message-ID: <IGEFJKJNHJDCBKALBJLLOEKKFBAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Date: 21 Feb 2002 15:51:36 +0100
-Message-Id: <1014303096.10758.6.camel@pcjonashg>
-Mime-Version: 1.0
+In-Reply-To: <IGEFJKJNHJDCBKALBJLLAEKJFBAA.joakim.tjernlund@lumentis.se>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,54 +25,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 2002-02-20 at 16:35, Robert Kaiser wrote:
-> Hi Jonas,
+> > 
+> > 
+> > 
+> > joakim.tjernlund@lumentis.se said:
+> > >  I have made some crude measures in jffs2_scan_medium() and friends to
+> > > see where most of the time is spent. It turns out that
+> > > jffs2_scan_make_ino_cache() is takes about 50 % of the total mount
+> > > time!
+> > 
+> > How did you do your profiling?
+> I accumulated the difference of jiffies from the entry of jffs2_scan_make_ino_cache()
+> to it returned.
 > 
-> On 20 Feb 2002, Jonas Holmberg wrote:
+>  Are you sure it's not spending the time in 
+> > jffs2_get_ino_cache() and jffs2_add_ino_cache()? I suspect it is.
 > 
-> > I'm ready to do some serious testing now.
+> That is so, allmost all time is in jffs2_get_ino_cache().
 > 
-> Good!
+> > 
+> > > What can be done to decrease this time? 
+> > 
+> > Try increasing INOCACHE_HASHSIZE - that'll make the hash table more 
+> > efficient - well, it'll make the hash table into a hash table instead of a 
+> > linked list :)
+> > 
+> > You'll probably find that it's looking up the same inode over and over 
+> > again too - in which case caching the last used inode in 
+> > jffs2_scan_make_ino_cache() would probably be useful.
 > 
-> > Should I use these patches or
-> > do you have newer versions?
-> 
-> The erase function has a bug for which I'm currently developing
-> a fix. I hope to get it done by tomorrow. The bug does not show
-> up if you use erase/eraseall, but will probably manifest itself
-> when using JFFS/JFFS2 on a concatenated device.
+> OK, will try an see what happens.
 
-Yep, I get the following when erasing across chip boundry:
+Setting INOCACHE_HASHSIZE to 14(higher values makes it PANIC at mount, don't know
+why) and changed the beginning of jffs2_scan_make_ino_cache() to
+{
+   	static struct jffs2_inode_cache *ic = NULL;
 
-JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
-Last[3] is c6a6, datum is 3931
-Didn't write all bytes in flash_safe_writev(). Returned -5
-JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
-Last[3] is c6a6, datum is 3931
-Didn't write all bytes in flash_safe_writev(). Returned -5
-JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
-Last[3] is c6a6, datum is 3931
-Didn't write all bytes in flash_safe_writev(). Returned -5
-JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
-Last[3] is c6a6, datum is 3931
+	if(ic && ic->ino == ino)
+		return ic;
+...
 
-Other than that it seems fine. I have tried mixing CFI and JEDEC chips
-as well. I'm awaiting your erase-fix.
+is it OK to make *ic an static variable?
 
-It seems like JFFS uses writev. Are you planning to implement the
-v-functions?
-
-> 
-> > When can we expect to see this in CVS?
-> 
-> Good question :-). Apparently David is not yet completely convinced
-> that it should be implemented the way I did. If you do some serious
-> testing, your test results might help to persuade him (or prove to him
-> that his scepticism was right). In any case, please share your
-> results.
-
-Is it much work implementing it his way instead? I have no opinion of
-which is better. Your concat layer looks very clean, but David use to be
-right :-)
-
-/Jonas
+Now my mount time is just half of what it used to be!!(well almost :-)
