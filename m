@@ -1,117 +1,125 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12QT49-0004y6-00
-	for mtd-list@infradead.org; Thu, 02 Mar 2000 10:42:45 +0000
-Received: from [202.112.136.2] (helo=dns.pubnic.buaa.edu.cn)
+	id 12RFum-0000pm-00
+	for mtd-list@infradead.org; Sat, 04 Mar 2000 14:52:20 +0000
+Received: from geisha.cendio.se ([193.180.23.107] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12QT45-0004y0-00
-	for mtd@infradead.org; Thu, 02 Mar 2000 10:42:42 +0000
-Received: from pita ([210.78.131.227]) by dns.pubnic.buaa.edu.cn (8.7.5/8.7.3) with SMTP id SAA28001 for <mtd@infradead.org>; Thu, 2 Mar 2000 18:47:09 +0800
-Message-ID: <000d01bf8433$91592400$5800a8c0@pita>
-From: "jyllyj" <pfrl@sina.com>
-To: <mtd@infradead.org>
-Subject: Re: Booting from the flash
-Date: Thu, 2 Mar 2000 18:37:35 +0800
+	id 12RFuh-0000pg-00
+	for mtd@infradead.org; Sat, 04 Mar 2000 14:52:15 +0000
+Received: from biffen.cendio.se (IDENT:alex@biffen.cendio.se [193.180.23.11])
+	by geisha.cendio.se (8.9.3/8.9.3) with ESMTP id PAA26526
+	for <mtd@infradead.org>; Sat, 4 Mar 2000 15:52:13 +0100
+Received: from localhost (alex@localhost)
+	by biffen.cendio.se (8.8.7/8.8.7) with SMTP id PAA08182
+	for <mtd@infradead.org>; Sat, 4 Mar 2000 15:52:13 +0100
+Date: Sat, 4 Mar 2000 15:52:12 +0100 (CET)
+From: Alexander Larsson <alex@cendio.se>
+Reply-To: Alexander Larsson <alex@cendio.se>
+To: mtd@infradead.org
+Subject: Test mtd ram device
+Message-ID: <Pine.LNX.3.96.1000304154831.8038B-200000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1262417129-1519807863-952181346=:8038"
+Content-ID: <Pine.LNX.3.96.1000304154939.8113A@biffen.cendio.se>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Dvir Oren wrote:
-    It appears that nftl_format deletes M-Systems' firmware.  I
-    remember that David wrote something about fixing that.
-    doc_loadbios seems to destroy the partition entirely.  Neither M-
-    Systems' drivers nor MTD drivers can recognize anything on the
-    flash after doc_loadbios.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-    Is there a way to boot from a DOC2000 flash using MTD drivers?
+---1262417129-1519807863-952181346=:8038
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-ID: <Pine.LNX.3.96.1000304154939.8113B@biffen.cendio.se>
 
-    [BTW:  I was only successful at creating a 2.3 kernel with MTD
-    drivers.  2.2 kernels don't seem to work.  I think I have an idea what
-    could be wrong, and I'll try to test it soon]
-in my case I had some experience about it
-1:get mtd-20000131 release and grub from GNU's CVS
+Since I'm playing around with the MTD stuff i needed a test device that i
+can use on my normal machine. I've attached a device that just vmalloc()s
+some space and registers as an mtd device. 
 
-2:change doc_stage1.S like this
-.......
-   3. Return, and wait for our INT 18h to be called.
- */
+/ Alex
 
-  /* Store the DiskOnChip segment */
- movw %ds, %cs:doc_seg
+---1262417129-1519807863-952181346=:8038
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME="mtdram.c"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.3.96.1000304154906.8038C@biffen.cendio.se>
+Content-Description: 
 
-  /* Find top of memory */
- xorw %ax, %ax
- movw %ax, %ds
- movw 0x0413, %ax
-
-  /* Set up our shiny net INT 18h handler */
-
-
-
-  /* Steal 1K from the top */
- decw %ax
- movw %ax,0x0413
-
-  /* Generate segment address */
- shlw $6,%ax
- movw %ax,%es
-
-  /* Debug: print the address at which we're installing */
- pushw %cs
- popw %ds
-
-  /* Copy ourself into the new segment we've just reserved */
- movw $0x80, %cx
- cld
- xorw %si,%si
- xorw %di,%di
- rep
- movsw
-
- xorw %ax, %ax
- movw %ax, %ds
-
- movw %es,0x0062
- movw $int18,0x0060
-........
-
-3:compile grub
-
-4:cp /cvs/grub/stage2/pre_stage2  /mtd-20000131/grub/
-
-5:compile mtd-20000131
-
-6:inmod mtd
-    insmod doc2000
-
-7: cd /mtd-20000131/grub
-doc_loadbios /dev/mtd0 grub_firmware
-
-8:reboot into dos
-i use int18 just for test.so you must make a floppy to boot it
-in my case like it
-    in dos
-    debug
--a
--xxxx:100 int 18
--
--w 100 0 0 1
--q
-i write 512 byte to floppy boot sector.just to execute int 18 interrupt at
-floppy boot stage
-
-9:reboot and use floppy boot.if all is ok.you can execute into grub command
-interface
-
-Is someone dealing with that grub boot from DOC? i 'm hacking grub code but
-only
-can do something that "periphery" because I can't read ntfl's partition in
-doc.is anyone
-doing it? some advice?
-
-David Woodhourse,how are you ?
-
-
-
+LyogDQogKiBtdGRyYW0gLSBhIHRlc3QgbXRkIGRldmljZQ0KICoNCiAqIEF1
+dGhvcjogQWxleGFuZGVyIExhcnNzb24gPGFsZXhAY2VuZGlvLnNlPiANCiAq
+DQogKiBDb3B5cmlnaHQgKGMpIDE5OTkgQWxleGFuZGVyIExhcnNzb24gPGFs
+ZXhAY2VuZGlvLnNlPg0KICoNCiAqIFRoaXMgY29kZSBpcyBHUEwNCiAqDQog
+Ki8NCg0KI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KI2luY2x1ZGUgPGxp
+bnV4L21hbGxvYy5oPg0KI2luY2x1ZGUgPGxpbnV4L2lvcG9ydC5oPg0KI2lu
+Y2x1ZGUgPGxpbnV4L2luaXQuaD4NCiNpbmNsdWRlIDxsaW51eC92bWFsbG9j
+Lmg+DQojaW5jbHVkZSA8bGludXgvbXRkL21hcHBlZC5oPg0KDQojaWYgTElO
+VVhfVkVSU0lPTl9DT0RFIDwgMHgyMDMwMA0KI2RlZmluZSBfX2V4aXQNCiNl
+bmRpZg0KDQojZGVmaW5lIE1URFJBTV9UT1RBTF9TSVpFIDEwMjQqMTAyNCoy
+DQojZGVmaW5lIE1URFJBTV9FUkFTRV9TSVpFIDY0KjEwMjQNCg0Kc3RydWN0
+IHJhbV9tdGRfaW5mbyB7DQogIHN0cnVjdCBtdGRfaW5mbyBtdGQ7DQogIGNo
+YXIgKmJ1ZmZlcjsNCn07DQoNCi8vIFdlIGNvdWxkIHN0b3JlIHRoZXNlIGlu
+IHRoZSBtdGQgc3RydWN0dXJlLCBidXQgd2Ugb25seSBzdXBwb3J0IDEgZGV2
+aWNlLi4NCnN0YXRpYyBzdHJ1Y3QgcmFtX210ZF9pbmZvICptdGRfaW5mbzsN
+Cg0KDQppbnQNCnJhbV9lcmFzZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3Ry
+dWN0IGVyYXNlX2luZm8gKmluc3RyKQ0Kew0KICBzdHJ1Y3QgcmFtX210ZF9p
+bmZvICpwcml2ID0gKHN0cnVjdCByYW1fbXRkX2luZm8gKiltdGQ7DQoNCiAg
+aWYgKGluc3RyLT5hZGRyICsgaW5zdHItPmxlbiA+IG10ZC0+c2l6ZSkNCiAg
+ICByZXR1cm4gLUVJTlZBTDsNCgkNCiAgbWVtc2V0KHByaXYtPmJ1ZmZlciAr
+IGluc3RyLT5hZGRyLCAweGZmLCBpbnN0ci0+bGVuKTsNCiAgDQogIC8qIFRo
+aXMnbGwgY2F0Y2ggYSBmZXcgcmFjZXMuIEZyZWUgdGhlIHRoaW5nIGJlZm9y
+ZSByZXR1cm5pbmcgOikgDQogICAqIEkgZG9uJ3QgZmVlbCBhdCBhbGwgYXNo
+YW1lZC4gVGhpcyBraW5kIG9mIHRoaW5nIGlzIHBvc3NpYmxlIGFueXdheQ0K
+ICAgKiB3aXRoIGZsYXNoLCBidXQgdW5saWtlbHkuDQogICAqLw0KDQogIGlu
+c3RyLT5zdGF0ZSA9IE1URF9FUkFTRV9ET05FOw0KDQogIGlmIChpbnN0ci0+
+Y2FsbGJhY2spDQogICAgKCooaW5zdHItPmNhbGxiYWNrKSkoaW5zdHIpOw0K
+ICBlbHNlDQogICAga2ZyZWUoaW5zdHIpOw0KICANCiAgcmV0dXJuIDA7DQp9
+DQoNCmludCByYW1fcG9pbnQgKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2Zm
+X3QgZnJvbSwgc2l6ZV90IGxlbiwgc2l6ZV90ICpyZXRsZW4sIHVfY2hhciAq
+Km10ZGJ1ZikNCnsNCiAgc3RydWN0IHJhbV9tdGRfaW5mbyAqcHJpdiA9IChz
+dHJ1Y3QgcmFtX210ZF9pbmZvICopbXRkOw0KDQogIGlmIChmcm9tICsgbGVu
+ID4gbXRkLT5zaXplKQ0KICAgIHJldHVybiAtRUlOVkFMOw0KICANCiAgKm10
+ZGJ1ZiA9IHByaXYtPmJ1ZmZlciArIGZyb207DQogICpyZXRsZW4gPSBsZW47
+DQogIHJldHVybiAwOw0KfQ0KDQp2b2lkIHJhbV91bnBvaW50IChzdHJ1Y3Qg
+bXRkX2luZm8gKm10ZCwgdV9jaGFyICphZGRyKQ0Kew0KfQ0KDQppbnQgcmFt
+X3JlYWQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLCBzaXpl
+X3QgbGVuLA0KCSAgICAgc2l6ZV90ICpyZXRsZW4sIHVfY2hhciAqYnVmKQ0K
+ew0KICBzdHJ1Y3QgcmFtX210ZF9pbmZvICpwcml2ID0gKHN0cnVjdCByYW1f
+bXRkX2luZm8gKiltdGQ7DQoNCiAgaWYgKGZyb20gKyBsZW4gPiBtdGQtPnNp
+emUpDQogICAgcmV0dXJuIC1FSU5WQUw7DQoNCiAgbWVtY3B5IChidWYsIHBy
+aXYtPmJ1ZmZlciArIGZyb20sIGxlbik7DQoNCiAgKnJldGxlbj1sZW47DQog
+IHJldHVybiAwOw0KfQ0KDQppbnQgcmFtX3dyaXRlKHN0cnVjdCBtdGRfaW5m
+byAqbXRkLCBsb2ZmX3QgdG8sIHNpemVfdCBsZW4sDQoJICAgICAgc2l6ZV90
+ICpyZXRsZW4sIGNvbnN0IHVfY2hhciAqYnVmKQ0Kew0KICBzdHJ1Y3QgcmFt
+X210ZF9pbmZvICpwcml2ID0gKHN0cnVjdCByYW1fbXRkX2luZm8gKiltdGQ7
+DQoNCiAgaWYgKHRvICsgbGVuID4gbXRkLT5zaXplKQ0KICAgIHJldHVybiAt
+RUlOVkFMOw0KICANCiAgbWVtY3B5IChwcml2LT5idWZmZXIgKyB0bywgYnVm
+LCBsZW4pOw0KDQogICpyZXRsZW49bGVuOw0KICByZXR1cm4gMDsNCn0NCg0K
+DQpzdGF0aWMgdm9pZCBfX2V4aXQgY2xlYW51cF9tdGRyYW0oKQ0Kew0KICBp
+ZiAobXRkX2luZm8pIHsNCiAgICBkZWxfbXRkX2RldmljZSgmbXRkX2luZm8t
+Pm10ZCk7DQogICAgaWYgKG10ZF9pbmZvLT5idWZmZXIpDQogICAgICB2ZnJl
+ZShtdGRfaW5mby0+YnVmZmVyKTsNCiAgICBrZnJlZShtdGRfaW5mbyk7DQog
+IH0NCn0NCg0Kc3RhdGljIGludCBfX2luaXQgaW5pdF9tdGRyYW0odm9pZCkN
+CnsNCiAgIC8vIEFsbG9jYXRlIHNvbWUgbWVtb3J5DQogICBtdGRfaW5mbyA9
+IChzdHJ1Y3QgcmFtX210ZF9pbmZvICopa21hbGxvYyhzaXplb2Yoc3RydWN0
+IHJhbV9tdGRfaW5mbyksIEdGUF9LRVJORUwpOw0KICAgaWYgKG10ZF9pbmZv
+ID09IDApDQogICAgICByZXR1cm4gMDsNCiAgIA0KICAgbWVtc2V0KG10ZF9p
+bmZvLCAwLCBzaXplb2YoKm10ZF9pbmZvKSk7DQoNCiAgIC8vIFNldHVwIHRo
+ZSBNVEQgc3RydWN0dXJlDQogICBzdHJjcHkobXRkX2luZm8tPm10ZC5uYW1l
+LCJtdGRyYW0gdGVzdCBkZXZpY2UiKTsNCiAgIG10ZF9pbmZvLT5tdGQudHlw
+ZSA9IE1URF9SQU07DQogICBtdGRfaW5mby0+bXRkLmZsYWdzID0gTVREX0NB
+UF9SQU07DQogICBtdGRfaW5mby0+bXRkLnNpemUgPSBNVERSQU1fVE9UQUxf
+U0laRTsNCiAgIG10ZF9pbmZvLT5tdGQuZXJhc2VzaXplID0gTVREUkFNX0VS
+QVNFX1NJWkU7DQogICBtdGRfaW5mby0+YnVmZmVyID0gdm1hbGxvYyhNVERS
+QU1fVE9UQUxfU0laRSk7DQogICBpZiAobXRkX2luZm8tPmJ1ZmZlciA9PSBO
+VUxMKQ0KICAgICByZXR1cm4gLUVOT01FTTsNCg0KICAgbXRkX2luZm8tPm10
+ZC5lcmFzZSA9IHJhbV9lcmFzZTsNCiAgIG10ZF9pbmZvLT5tdGQucG9pbnQg
+PSByYW1fcG9pbnQ7DQogICBtdGRfaW5mby0+bXRkLnVucG9pbnQgPSByYW1f
+dW5wb2ludDsNCiAgIG10ZF9pbmZvLT5tdGQucmVhZCA9IHJhbV9yZWFkOw0K
+ICAgbXRkX2luZm8tPm10ZC53cml0ZSA9IHJhbV93cml0ZTsNCg0KICAgaWYg
+KGFkZF9tdGRfZGV2aWNlKCZtdGRfaW5mby0+bXRkKSkgew0KICAgICAvKiBD
+bGVhbiB1cCAqLw0KICAgfQ0KICAgDQogICByZXR1cm4gMDsNCn0NCm1vZHVs
+ZV9pbml0KGluaXRfbXRkcmFtKTsNCm1vZHVsZV9leGl0KGNsZWFudXBfbXRk
+cmFtKTsNCg==
+---1262417129-1519807863-952181346=:8038--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
