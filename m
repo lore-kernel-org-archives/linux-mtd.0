@@ -1,19 +1,17 @@
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
+Received: from inpbox.inp.nsk.su ([193.124.167.24])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp5ad-0003sQ-Kh
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 09:32:28 -0400
-Received: from mailgate.cabletime.com ([80.177.138.66] helo=cabletime.com)
-	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1Bp5ab-000LtV-0U
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 13:32:25 +0000
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <1090848742.2219.3.camel@adh>
-Mime-Version: 1.0
-Date: 26 Jul 2004 14:32:22 +0100
-Content-Transfer-Encoding: 7bit
-Subject: Problem writing to NOR flash
+	id 1Bp68Z-000485-PM
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 10:07:38 -0400
+Date: Mon, 26 Jul 2004 21:00:10 +0700
+From: "Dmitry A. Fedorov" <D.A.Fedorov@inp.nsk.su>
+To: Andy Hawkins <a.hawkins@cabletime.com>
+In-Reply-To: <1090848742.2219.3.camel@adh>
+Message-ID: <Pine.SGI.4.10.10407262048000.569820-100000@Sky.inp.nsk.su>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem writing to NOR flash
+Reply-To: D.A.Fedorov@inp.nsk.su
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On 26 Jul 2004, Andy Hawkins wrote:
 
-We're using a 2.4.20 derived kernel, and a while back updated to a
-recent MTD snapshot to get support for the Samsung NAND 128MiB on our
-hardware).
+> We're using a 2.4.20 derived kernel, and a while back updated to a
+> recent MTD snapshot
 
-However, we found that with this snapshot, we could no longer write to
-the NOR flash on our board (I posted a message about this on 19th July,
-but had no responses).
+The same for 2.4.26.
 
-To see if this problem has now been fixed, I have just downloaded the
-latest snapshot to try. However, I can no longer get this to compile.
-After changing some Makefiles, I have now found that the new code uses
-'kvec' in place of 'iovec'. Is this a 2.6 feature?
+> To see if this problem has now been fixed, I have just downloaded the
+> latest snapshot to try. However, I can no longer get this to compile.
+> After changing some Makefiles, I have now found that the new code uses
+> 'kvec' in place of 'iovec'. Is this a 2.6 feature?
+> 
+> If so, are there any plans to make the current MTD code work with 2.4?
 
-If so, are there any plans to make the current MTD code work with 2.4?
+Porting of current MTD snapshot that oriented to 2.6 kernel is not
+simple task. I did it for my hardware and have some patch set.
 
-What would people recommend we do in order to get working MTD support
-for the chips on our board for a 2.4 kernel?
+> What would people recommend we do in order to get working MTD support
+> for the chips on our board for a 2.4 kernel?
 
-Many thanks.
-
-Andy
+Ask me for these patches, extend it for your hardware set and try to
+push it back to MTD source.
