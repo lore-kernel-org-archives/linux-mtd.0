@@ -1,9 +1,9 @@
 Received: from nwd2mime2.analog.com ([137.71.25.114])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 181cQ9-0008Mb-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2002 01:52:21 +0100
-Message-ID: <3DACB828.C1C4E2A0@analog.com>
-Date: Tue, 15 Oct 2002 17:51:52 -0700
+	id 181dHn-0008Pa-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2002 02:47:47 +0100
+Message-ID: <3DACC52B.6311412B@analog.com>
+Date: Tue, 15 Oct 2002 18:47:23 -0700
 From: Justin Wojdacki <justin.wojdacki@analog.com>
 Reply-To: justin.wojdacki@analog.com
 MIME-Version: 1.0
@@ -26,16 +26,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Russ Dill wrote:
-> 
-> >
-> > Sorry, no luck getting SysRq-T to work. I think the host OS
-> > (WindowsXP) or terminal program (TeraTerm) might be swallowing it.
-> 
-> send a serial break, followed by a t
-> 
+Is this helpful?
 
-Nothing. :(
+jffs2_reserve_space_gc of 196 bytes for garbage_collect_dnode failed:
+-4
 
 -- 
 -------------------------------------------------
