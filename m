@@ -1,16 +1,19 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15a22y-0001wg-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 22:29:52 +0100
-Message-Id: <5.1.0.14.0.20010823163143.00b03a08@mail.spewey.com>
-Date: Thu, 23 Aug 2001 16:36:04 -0500
-To: Luke <luke_epsilon@yahoo.com>,linux-mtd@lists.infradead.org
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: ZFMicro MachZ modification of physmap.c
-In-Reply-To: <20010823194128.72225.qmail@web13602.mail.yahoo.com>
-References: <5.1.0.14.0.20010823095635.00b00ca0@mail.spewey.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Received: from dialup.rama.com.au ([202.0.186.166] helo=gateway.perth.rama.com.au)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15a6U8-0002GM-00
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2001 03:14:14 +0100
+Received: from willhart-tech.com (IDENT:alex@[192.156.249.82])
+	by gateway.perth.rama.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA16469
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2001 11:47:35 +0800
+Message-ID: <3B85B8C1.66A0EEEC@willhart-tech.com>
+Date: Fri, 24 Aug 2001 10:15:29 +0800
+From: Alexandru Harsanyi <a.harsanyi@willhart-tech.com>
+MIME-Version: 1.0
+To: Linux Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: BLKRRPART bug in NFTL?
+References: <E15ZVks-00081M-00@pentafluge.infradead.org> <1776086221.20010823164242@mail.ru>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,44 +25,63 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 12:41 PM 8/23/2001 -0700, Luke wrote:
->Hello,
->
->--- Vipin Malik <vipin@embeddedlinuxworks.com> wrote:
-> >
-> > Normally, one map's the entire flash as far as the chip select's are
-> > concerned, and set's the start/length logically in the map driver (in your
-> > case physmap.c).
-> > Of course you don't want to start/stop in the middle of a sector. Only on
-> > sector boundaries please :)
-> >
->
->It seems that the standard physmap.c just takes the 3 CONFIG_* inputs of 
->start (of the physical
->memory address to look for the flash),length, and bus width.  To change 
->the offset of the flash to
->access do you modify the return from ioremap() ?
+I'm not sure about that, but I think DOC should be formated/partitioned
+with nftl_format, not *fdisk.
 
-no, you don't mess with the return value from ioremap. That's what the 
-kernel is telling you it's mapped your requested physical memory to 
-(logical memory).
+Best Regards,
+Alex.
 
-
->For example, if I have an 8 Mbyte flash chip that I want to access with 
->MTD and I only want to map
->from byte offset 0x300000 to 0x700000 of the flash I should set my 
->CONFIG_MTD_PHYSMAP_LEN to 4
->Mbytes and inside the physmap.c code add an offset of 0x300000 to something?
-
-I really haven't mapped partial chips myself, so you'll have to play around 
-with what I am suggesting (unless some one else that has done this chimes in :)
-
-I would look at the partition code (that partition's the flash in multiple 
-mtd devices). Essentially you need to do the same. At the very least, you 
-should be able to define a partition for the section that you don't want to 
-use and not mount anything on that.
-
-There's plenty of examples in some of the other physical map drivers that 
-have examples of multiple mtd partitions on the same flash chip.
-
-Vipin
+ASA wrote:
+> 
+> Hello all,
+> 
+> tried anybody to use *fdisk on DiskOnChip2000 from ramdisk
+> and got expected results?
+> 
+> I'm automating linux installation, so such thing is needed...
+> 
+> My system consists of:
+> hardware:
+>   special embedded motherboard with AMD 486DX4-100
+>   8 MB RAM
+>   DiskOnChip 2000 (8 MB flash)
+> software:
+>   linux kernel 2.4.1 with MTD 20010730 snapshot
+>   root filesystem on /dev/ram0 (loaded via cmdline: initrd=inird.gz root=/dev/ram0)
+> 
+> All is based on debian potato (2.2; glibc 2.1; some utils, including
+>   sfdisk, are upgraded in order to proper work with 2.4 kernel)
+> 
+> Symptoms are:
+> after executing
+> 
+>   #deleting any partition for sanity
+>   dd if=/dev/zero of=/dev/nftla bs=512 count=1
+>   # BLKRRPART ioctl (reread partition information)
+>   sfdisk -R /dev/nftla
+> 
+>   # making 5 and 3 megs partitions on 8 MiB DOC
+>   echo ",5000,L,*;,,L;;" | sfdisk -f /dev/nftla
+> 
+>   # make sure partition information is reread
+>   sfdisk -R /dev/nftla
+> 
+> the root filesystem (ramdisk) is screwed up!
+> 
+> again, after clean reboot only invoking
+> BLKRRPART ioctl is enough to break ramdisk
+> 
+> in the same configuration, operating with hard disks instead of DOC
+> is absolutely .
+> 
+> Also, to reproduce this bug in other environment (only the kernel is
+> the same) I tried to put my kernel (2.4.1+MTD-20010730) on the debian
+> installation diskette and after using cfdisk ramdisk was screwed again...
+> 
+> --
+> Best regards,
+>  ASA                            mailto:atris@mail.ru
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
