@@ -1,17 +1,21 @@
-Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
+Received: from rr-border1.ext.ridgerun.com ([207.173.88.193] helo=ridgerun-lx.ridgerun.cxm)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16SmSP-0006Xt-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 21:58:25 +0000
-To: Jeroen Roose <Jeroen.Roose@chess.nl>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Intel C3 chips
-References: <200201211137.MAA19110@enterprise.chess.nl>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 21 Jan 2002 15:09:21 -0700
-In-Reply-To: <200201211137.MAA19110@enterprise.chess.nl>
-Message-ID: <m3g04z1hm6.fsf@DLT.linuxnetworx.com>
+	id 16SmZY-0006Yj-00
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 22:05:49 +0000
+Received: from ridgerun.com (skranz-lx.ridgerun.cxm [192.168.1.15])
+	by ridgerun-lx.ridgerun.cxm (8.11.6/8.11.6) with ESMTP id g0LMB4n29163
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 15:11:04 -0700
+Received: from ridgerun.com (skranz-lx [127.0.0.1])
+	by ridgerun.com (8.11.2/8.11.2) with ESMTP id g0LMALd22938
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 15:10:21 -0700
+Message-ID: <3C4C91CD.D9574F9B@ridgerun.com>
+Date: Mon, 21 Jan 2002 15:10:21 -0700
+From: Steve Kranz <skranz@ridgerun.com>
 MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: MTD on linux 2.0.38?
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,22 +27,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jeroen Roose <Jeroen.Roose@chess.nl> writes:
+Hi,
 
-> Hello,
-> 
-> We've got a board based on the CDB89712 but using C3 (TE28F320/C3BC90) in
-> stead of the B3 version. The C3 chip locks all blocks on chip reset. I've
-> patched the bootloader (hermit) to unlock all blocks on boot.
-> I've got MTD/JFFS2 working on the board, with the bootloader patch, but I
-> think MTD should unlock the blocks.
+  As of many months ago it was my understanding that
+  MTD had never been back-ported to the 2.0.38 kernel.
 
-There is code to do that, usually the command is just
-unlock /dev/mtd0
+  Is this still the case?
 
-> I'm not familiar with the MTD architecture, so I don't no how/where to
-> implement this, can You help me to point this out ?
-
-Unless the unlock needs to happen at mount time trace the unlock command.
-
-Eric
+Thank You.
+skranz@ridgerun.com
