@@ -1,16 +1,16 @@
-Received: from carrot.linuxgrrls.org ([212.18.228.66] ident=postfix)
+Received: from pd9503046.dip.t-dialin.net ([217.80.48.70] helo=splash)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15EZEl-0005Gb-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2001 17:29:19 +0100
-Date: Mon, 25 Jun 2001 17:33:29 +0100 (BST)
-From: kira brown <kira@linuxgrrls.org>
-To: "Bao C. Ha" <baoha@sensoria.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: Disk-On-Module
-In-Reply-To: <019101c0fd93$ecf78c40$326c020a@SENSORIA>
-Message-ID: <Pine.LNX.4.30.0106251732570.1186-100000@carrot.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15EoNf-000663-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 09:39:32 +0100
+Date: Tue, 26 Jun 2001 10:46:15 +0200
+From: Jochen Schaeuble <psionic@psionic.de>
+To: linux-mtd@lists.infradead.org
+Subject: mtd-utilities automake/autoconf
+Message-ID: <20010626104615.A10582@psionic.de>
+Reply-To: psionic@psionic.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,13 +22,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Today I checked in automake/autoconf files to ease the make-process of the
+utilities (no more symbolic linking or copying required). I also added a short
+description to the README file. As soon I'm ready I will also check in a rpm
+spec file.
 
-On Mon, 25 Jun 2001, Bao C. Ha wrote:
+If there are any problems with these files please send me an email. I also
+plan to add a configure-switch "--wich-endianess" to select the default
+endianess used by mkfs.jffs,...
 
-> How do I build a JFFS2 on Disk-On-Modules?  Or
-> any flash-based ATA/IDE devices?
-
-You don't.  They have their own wear levelling, journalling flash
-translation layer built into them.  You just use them as discs.
-
-kira.
+jochen
