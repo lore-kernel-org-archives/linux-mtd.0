@@ -1,20 +1,22 @@
-Received: from smtp5.wanadoo.fr ([193.252.22.26] helo=mwinf0504.wanadoo.fr)
+Received: from motgate7.mot.com ([129.188.136.7])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BFpj0-0002Ht-W4
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 08:31:23 +0100
-Received: from CHENE (ARennes-303-1-9-11.w80-14.abo.wanadoo.fr [80.14.247.11])
-	by mwinf0504.wanadoo.fr (SMTP Server) with ESMTP id 8E440100024F
+	id 1BFpnT-0002RO-03
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2004 08:35:59 +0100
+Received: from az33exr01.mot.com (az33exr01.mot.com [10.64.251.231])
+	by motgate7.mot.com (Motorola/Motgate7) with ESMTP id i3K7Vs9i000478
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Apr 2004 09:31:20 +0200 (CEST)
-From: "pascal fifre" <pascal.fifre@cleode.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 20 Apr 2004 09:31:20 +0200
-Message-ID: <000601c426a9$7a031f50$1900a8c0@CLEODE.local>
+	Tue, 20 Apr 2004 00:31:55 -0700 (MST)
+Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
+	by az33exr01.mot.com (Motorola/az33exr01) with ESMTP id i3K7VLqg029744
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Apr 2004 02:31:22 -0500
+Message-ID: <01139FC052A0D411900B00508B9535FC13AC4046@ZCH07EXM04.corp.mot.com>
+From: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 20 Apr 2004 15:35:52 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Looked for doc on Millenium Plus 64
+Subject: ECC byte 4 and 5 not equal to what have just been writen
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +28,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-I=92m developing a controller board with a DOC Millenium Plus 64 and I
-looked for a doc witch mentioning all software interface (register).
+  Is there anyone aware of such problem about ECC?
+  When I read back the OOB data after writing to a page, I find the offset 06 and 07 are not equal to what have just been writen into the page.
 
-The datasheet that I found on M-systems site is incomplete and not all
-registers is mentioned.
+  The part of codes are :
+==========================================
+  ......
+  // char spare[16] is for oob data in spare area
+  mx2_write_ecc((char*)p, spare, last);		// My function to set the spare[16] before write a page
+  printOut("The spare[ ] to write in flash is :\n");	// Messege printed out
+  printOut(spare);					// Print out the spare[ ]
+  if(NAND_Write_OnePage(page, (char*)p, spare))	// Write the page with spare[ ] into NAND flash
+	return;
+  NAND_Read_OOB(0, page, spare, 16);		// Read back the oob data into spare[ ]
+  printOut("The spare[ ] to read back from flash is :\n");
+  printOut(spare);					// Print out the spare[ ]
+  ......
+===========================================
 
+  While, I got the follow output:
+===========================================
+......
+The spare[ ] to write in flash is :
+spare[00] = 56
+spare[01] = 5A
+spare[02] = 6B
+spare[03] = 66
+spare[04] = 00
+spare[05] = FF
+spare[06] = A6
+spare[07] = 9B
+spare[08] = FF
+spare[09] = FF
+spare[0A] = FF
+spare[0B] = FF
+spare[0C] = FF
+spare[0D] = FF
+spare[0E] = FF
+spare[0F] = FF
+The spare[ ] to read back from flash is :
+spare[00] = 56
+spare[01] = 5A
+spare[02] = 6B
+spare[03] = 66
+spare[04] = 00
+spare[05] = FF
+spare[06] = C0
+spare[07] = 33
+spare[08] = C3
+spare[09] = A9
+spare[0A] = 02
+spare[0B] = FF
+spare[0C] = FF
+spare[0D] = FF
+spare[0E] = FF
+spare[0F] = FF
+......
+===========================================
 
-Thanks a lot
+  As you may have found out, the spare[0]~spare[5] are the same as writen. But spare[6] and spare[7] are different, while spare[8], spare[9] and spare[A] are so strange.
 
+  This will cause the failure of ecc correction for the upper 256 bytes of data in each page. Can you give me some comments?
 
-Pascal FIFRE
-Responsable Syst=E8mes Embarqu=E9s
-CLEODE
-5, rue de Broglie
-22300 LANNION
-Tel : 06 14 99 74 20
-http://www.cleode.com
+  Is this a known problem of NAND_Read_OOB( )?
 
-
-
---=20
-Ce message Envoi est certifi=E9 sans virus connu.
-Analyse effectu=E9e par Anti-virus AVG (http://www.grisoft.com).
-Version: 7.0.230 / Base de donn=E9es virus: 262.9.0 - Date: 19/04/2004
-=20
+Thanks.
+Aaron
