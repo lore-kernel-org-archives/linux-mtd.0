@@ -1,47 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139FKH-0005T8-00
-	for mtd-list@infradead.org; Tue, 04 Jul 2000 00:08:29 +0100
-Date: Mon, 3 Jul 2000 17:12:18 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@Matrox.COM>,
-    mtd@infradead.org
-Subject: Re: Status of MTD for CFI
-In-Reply-To: <Pine.LNX.4.21.0006292149210.991-100000@imladris.demon.co.uk>
-Message-ID: <Pine.LNX.3.96.1000703170541.5555B-100000@white.priv.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 139N79-0006Vp-00
+	for mtd-list@infradead.org; Tue, 04 Jul 2000 08:27:27 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 139N77-0006Vj-00
+	for mtd@infradead.org; Tue, 04 Jul 2000 08:27:26 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.3.96.1000703170541.5555B-100000@white.priv.deltatee.com> 
+References: <Pine.LNX.3.96.1000703170541.5555B-100000@white.priv.deltatee.com> 
+To: Jason Gunthorpe <jgg@deltatee.com>
+Cc: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@Matrox.COM>,
+  mtd@infradead.org
+Subject: Re: Status of MTD for CFI 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 04 Jul 2000 08:31:21 +0100
+Message-ID: <2683.962695881@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Thu, 29 Jun 2000, David Woodhouse wrote:
+jgg@deltatee.com said:
+> I popped my current codes up at http://amber.deltatee.com/~jgg/mtd/
+> jedec/
 
-> Jgg is apparently looking at support for JEDEC flash chips which aren't
-> CFI-compliant.
+Imported. Let me have a SSH public key and I'll give you CVS access.
 
-I popped my current codes up at http://amber.deltatee.com/~jgg/mtd/jedec/
+jgg@deltatee.com said:
+> Anyhow, I am going on a trip soon to Florida and then up to OLS..
 
-I've never actually tried it in the kernel yet, but the logic all appears
-correct and it is in the right sort of format, have been using it to flash
-kernels into the SIMM for booting this board. It needs testing and fixing
-to support 8bit interfaces, I have to steal an octagon board so I can test
-that. 
+Cool. I may bump into you there.
 
-If someone desperately needs this then they are certainly welcome to
-fiddle with it.
+--
+dwmw2
 
-It supports most of the old style AMD uniform sector size chips, maybe
-others. Works on my 16 chip banked flash SIMM, which is the most
-complicated situation possible!
-
-Anyhow, I am going on a trip soon to Florida and then up to OLS.. after
-that I need to do a bunch of VHDL, but I should have time to finish it
-off and write a JFFS bootloader.
-
-Thanks,
-Jason
 
 
 
