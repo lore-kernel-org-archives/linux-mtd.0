@@ -1,23 +1,18 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from softsteprubberfloors.com ([192.220.111.56] helo=rcmenter.iserver.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18flva-0001G1-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 19:06:46 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H9Q0013MYEF7P@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Mon, 03 Feb 2003 20:06:16 +0100 (MET)
-Date: Mon, 03 Feb 2003 20:04:17 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <3E3E517F.9010908@laser5.co.jp>
-To: Vishal <vishal@laser5.co.jp>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200302032004.17611.tglx@linutronix.de>
-MIME-version: 1.0
-References: <3E3E517F.9010908@laser5.co.jp>
-Subject: Re: help: bootloader for loading kernel from mtdblock device on
- flash........
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+	id 18fmDF-0001RI-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 19:25:01 +0000
+From: Russ Dill <Russ.Dill@asu.edu>
+To: leeyang <leeyang@ycig.com>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <001401c2c802$8b31ed30$0200a8c0@ycigrnd.ycig.com>
+References: <001401c2c802$8b31ed30$0200a8c0@ycigrnd.ycig.com>
+Message-Id: <1044300428.15823.11.camel@timmy>
+Mime-Version: 1.0
+Date: 03 Feb 2003 12:27:08 -0700
+Subject: Re: need suggestion about embedded FS plan
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,17 +24,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Monday 03 February 2003 12:24, Vishal wrote:
-> Hi all,
->   I am a mtd newbie, and have been assigned the task of writting a boot
-> loader that can boot a kernel file placed in a mtdblock device, on NAND
-> flash( Samsung K9F2808U08). I would like suggestions on going about with
-> this process. If some one could take some time to at least list down the
-> steps involved in the same, it would be of immense help me.
-What CPU architecture ?
+> In fact,there is only a little fs need to
+> be 'SAVE',like /etc direcory,it take rooms less
+> than %1 of all flash size.And the main parts
+> /lib,/sbin,/bin...maybe never changed.
+> So I have an idea,
+> Put main parts of fs(/lib,/sbin....)on Cramfs
+> at one of the flash bank.
+> Put bootloader,kernel and need-save-fs(/etc) on
+> the other flash bank with jffs2 fs.
+> 
+> Is that possible?Sth ,I am not sure,is if no
+> /etc in root fs,Maybe it can not boot up!!!
+
+just make a /linuxrc, linuxrc is a shell script run by the kernel
+(init=/linuxrc) that would do stuff like:
+
+#!/bin/sh
+mount -t ramfs ramfs /var
+mount -t ramfs ramfs /tmp
+mkdir /var/run
+mkdir /var/lock
+mount -t jffs2 /dev/mtd2 /etc
+exec /sbin/init
+
+
+
 -- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Russ Dill <Russ.Dill@asu.edu>
