@@ -1,74 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Onll-0003cy-00
-	for mtd-list@infradead.org; Fri, 02 Feb 2001 21:29:25 +0000
-Received: from brand.scrye.com
-	([207.174.18.194] helo=scrye.com ident=qmailr)
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14Onlj-0003cq-00
-	for mtd@infradead.org; Fri, 02 Feb 2001 21:29:24 +0000
-Message-ID: <20010202212916.18193.qmail@scrye.com>
-Date: Fri, 2 Feb 2001 14:29:16 -0700 (MST)
-From: Kevin Fenzi <kevin@scrye.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: <mtd@infradead.org>
+	id 14OnzO-0003hC-00
+	for mtd-list@infradead.org; Fri, 02 Feb 2001 21:43:30 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14OnzM-0003h6-00
+	for mtd@infradead.org; Fri, 02 Feb 2001 21:43:29 +0000
+Date: Fri, 2 Feb 2001 21:43:25 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Kevin Fenzi <kevin@scrye.com>
+cc: <mtd@infradead.org>
 Subject: Re: DOC2000 issues...
-In-Reply-To: <Pine.LNX.4.30.0102022117500.8902-100000@imladris.demon.co.uk>
-References: <20010202205810.17803.qmail@scrye.com>
-	<Pine.LNX.4.30.0102022117500.8902-100000@imladris.demon.co.uk>
+In-Reply-To: <20010202212916.18193.qmail@scrye.com>
+Message-ID: <Pine.LNX.4.30.0102022140480.8902-100000@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
->>>>> "David" == David Woodhouse <dwmw2@infradead.org> writes:
+On Fri, 2 Feb 2001, Kevin Fenzi wrote:
 
-David> On Fri, 2 Feb 2001, Kevin Fenzi wrote:
->>  ...  M-Systems DiskOnChip driver. (C) 1999 Machine Vision
->> Holdings, Inc.  M-Systems NAND Flash Translation Layer driver. (C)
->> 1999 MVHI $Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $ ...
+> I left it at 0. How can I tell what address the DOC is at? from the
+> bios? 
+> 
+> So it would print something here if it found the DOC? 
 
-David> Didn't find hardware. Did you hardcode the address or leave it
-David> at zero to auto-probe? Common mistake is to give the segment
-David> address not the real address (0xd800 not 0xd8000). You do need
-David> the extra zero.
+Yep, should do. Make it print stuff anyway - litter the 'doccheck' routine
+in docprobe.c with printks. You do have CONFIG_MTD_DOCPROBE_HIGH turned
+_off_ too, don't you? Another option which wants hiding.
 
-I left it at 0. How can I tell what address the DOC is at? from the
-bios? 
 
-So it would print something here if it found the DOC? 
-
-David> Note to self: Hide that option and the 55AA one inside
-David> if(LINUXBIOS).
-
-yeah, also help for those kernel options would be nice. ;) 
-I had to look at the code to see that 0 meant to auto-probe. ;) 
-
->> Then, I tried the newest m-systems driver with 2.2.18:
-
->> VFS: Cannot open root device 3e:01 Kernel panic: VFS: Unable to
->> mount root fs on 3e:01
-
-David> They changed the major number from the temporary one they were
-David> using. But rather than using the one I'd already registered,
-David> they started using an entirely new one. Major 100 I think.
-
-yeah, I tried that too...no dice. That just should need to be the
-'root=' option for the kernel in lilo.conf, right? 
-
-David> Geometry info is useful though - can you compare it with what
-David> the free driver reports, when you get that working?
-
-sure. 
-
->> I would be happy to write up a HOWTO or the like if someone can
->> help me get it going. ;)
-
-David> I love you.
-
-ha. I have to get it working first tho. ;) 
-
-David> -- dwmw2
-
-kevin
+-- 
+dwmw2
 
 
 
