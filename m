@@ -1,15 +1,14 @@
-Received: from f154.law10.hotmail.com ([64.4.15.154] helo=hotmail.com)
+Received: from mail.sea-tech.be ([193.121.150.226] helo=server10.searo.be)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18QWlb-00050z-00
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Dec 2002 17:53:28 +0000
-From: "Rekha Nagananda" <rekhanaga@hotmail.com>
-To: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Cc: rekhanaga@hotmail.com
-Subject: Erase sector size
-Date: Mon, 23 Dec 2002 13:19:19 -0500
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F154Y0QUUBPcZi71mrv00006ac1@hotmail.com>
+	id 18QlRp-0006Pv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Dec 2002 09:34:01 +0000
+Message-ID: <B5747F3DB39FD411884B00B0D07808CCB6C6C9@server10>
+From: "Philippe Dhont   (Sea-ro)" <Philippe.Dhont@searo.be>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: For information
+Date: Tue, 24 Dec 2002 11:04:10 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,20 +20,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi all,
+I am really not up to date when talking about flash or roms,...
+But i want to set up a firewall with iptables etc. And i wanna do that on a
+flash card and i wanna boot from that flash card.
+The reason is that i want to have a firewall system with as less rotating
+parts as possible, so i want to leave the HDD out because HDD's can crash!
+How can i do that ? Where can i get the right information ?
+Regards,
 
-I am using prpmc815 Motorola's PMC board, it has two 16MB 28F128 Intel 
-flash. According to Intel's data sheet sector size is 128KB. Does anybody 
-know - when we erase a sector does it erase 128KB or 256KB? (since prpmc815 
-has 2 flash chips).
-
-Thanks,
-Rekha
-
-
-
-
-_________________________________________________________________
-MSN 8 with e-mail virus protection service: 3 months FREE*. 
-http://join.msn.com/?page=features/virus&xAPID=42&PS=47575&PI=7324&DI=7474&SU= 
-http://www.hotmail.msn.com/cgi-bin/getmsg&HL=1216hotmailtaglines_eliminateviruses_3mf
+Philippe Dhont 
