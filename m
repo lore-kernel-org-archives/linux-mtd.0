@@ -1,24 +1,15 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEFsk-0008Vr-8i
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Oct 2003 22:30:39 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-In-Reply-To: <3F9D8B54.FFB44876@mvista.com>
-References: <3F984931.E6409ED7@mvista.com>
-	 <1066981292.29915.584.camel@hades.cambridge.redhat.com>
-	 <3F9D6328.547A39A6@mvista.com>
-	 <1067284806.16241.2.camel@imladris.demon.co.uk>
-	 <3F9D8384.ABC9FD4@mvista.com>
-	 <1067288106.16391.5.camel@imladris.demon.co.uk>
-	 <3F9D8B54.FFB44876@mvista.com>
-Message-Id: <1067293762.17740.0.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Mon, 27 Oct 2003 22:29:22 +0000
+To: Jun Sun <jsun@mvista.com>
+In-Reply-To: <20031027101741.C1678@mvista.com>
+References: <20031022182558.U19834@mvista.com>
+	 <20031027101741.C1678@mvista.com>
 Content-Type: text/plain
+Message-Id: <1067338214.15551.405.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Tue, 28 Oct 2003 10:50:15 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Different nand interface
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,12 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-10-27 at 13:17 -0800, Alice Hennessy wrote:
-> Thanks for the quick response.  I'll weigh the massage effort with any
-> future maintenance effort saved.
+On Mon, 2003-10-27 at 10:17 -0800, Jun Sun wrote:
+> Any objections or comments?  David?
 
-Bear in mind I'm happy enough to make changes to the generic NAND
-interface if they're going to be useful in general.
+Sorry for delayed response. I'm not really sure about this. Take a look
+at drivers/mtd/maps/rpxlite.c -- that's what we're able to eliminate,
+and we could even stick half of _that_ into a library function. 
+
+I'm all for cleaning up all the duplication in the map drivers, but I'm
+not sure we need to do it by making users enter correct numbers for
+CONFIG_MTD_PHYSMAP_*...
 
 -- 
 dwmw2
