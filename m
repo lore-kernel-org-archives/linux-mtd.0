@@ -1,15 +1,15 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Ellec, Chris" <cellec@celerity.net>
-In-Reply-To: <E025AA91F3FF3D44A8E713E82C9D359793EA19@ca2smail1.celeritynet.net>
-References: 
-	 <E025AA91F3FF3D44A8E713E82C9D359793EA19@ca2smail1.celeritynet.net>
-Content-Type: text/plain
-Message-Id: <1067357435.15551.450.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 28 Oct 2003 16:10:35 +0000
+Received: from mail.oco.net ([216.171.163.254] helo=oco.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AEXjU-0002X7-Sy
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2003 17:34:17 +0000
+Message-ID: <3F9EA810.6010905@celerity.net>
+Date: Tue, 28 Oct 2003 09:32:00 -0800
+From: Chris Ellec <cellec@celerity.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL and MAKEDEV
+Subject: INFTL problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,11 +19,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-10-28 at 08:07 -0800, Ellec, Chris wrote:
-> shouldn't the major number be 93 for both mknod or 94 for both mknod,
-> instead of one of each ?
+Hello,
 
-It should; now fixed in CVS. Thanks.
+I have a WinSystems devel board with a DOC on it. Dinfo from MSystems 
+reports a DOC 2000 at address D800 with 256 MB and an INFTL format.
 
--- 
-dwmw2
+I apllied the latest CVS patches to 2.4.22, but I can't seem to detect 
+the chip.
+
+I followed the doc in CVS and compiled as modules with the following 
+options:
+
+-------------------  from .config  ---------------------------
+#
+# Memory Technology Devices (MTD)
+CONFIG_MTD=m
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+CONFIG_MTD_CHAR=m
+CONFIG_MTD_BLOCK=m
+CONFIG_NFTL=m
+CONFIG_NFTL_RW=y
+CONFIG_INFTL=m
+
+# Self-contained MTD device drivers
+CONFIG_MTD_DOC2000=m
+CONFIG_MTD_DOCPROBE=m
+CONFIG_MTD_DOCPROBE_ADDRESS=0
+
+#
+# NAND Flash Device Drivers
+CONFIG_MTD_NAND_IDS=m
+------------- end of .config  ----------------------------
+
+Then I do
+# modprobe -a doc2000  inftl mtdchar mtdblock
+# modprobe -a docprobe
+/lib/modules/2.4.22/kernel/driver/mtd/devices/docprobe.o: init_module: 
+Resource temporarily unavailable
+insmod docprobe failed
+
+
+in /var/log/messages I get:
+INFL: inftlcore.c $Revision 1.14 inftlmount.c $Revision 1.12
+No Recognized DiskOnChip found
+
+
+Now what do I do ?
+
+Chris.
