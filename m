@@ -1,20 +1,17 @@
-Received: from mailrelay2.inwind.it ([212.141.54.102])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ISJX-0002Bb-00
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2002 11:58:51 +0100
-Received: from ester (62.98.24.108) by mailrelay2.inwind.it (6.5.015)
-        id 3CF4B8F500ACA4A1 for linux-mtd@lists.infradead.org; Thu, 13 Jun 2002 12:58:18 +0200
-Message-ID: <002e01c212c9$6c6dd920$0100a8c0@ester>
-Reply-To: "Krypton" <krypton8@inwind.it>
-From: "Krypton" <krypton8@inwind.it>
-To: <linux-mtd@lists.infradead.org>
-References: <001101c212c6$de2f94c0$0100a8c0@ester>  <003101c212b5$95362790$0100a8c0@ester> <16692.1023958536@redhat.com>  <28908.1023965039@redhat.com>
+	id 17ISh2-0002EI-00
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2002 12:23:08 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <002e01c212c9$6c6dd920$0100a8c0@ester> 
+References: <002e01c212c9$6c6dd920$0100a8c0@ester>  <001101c212c6$de2f94c0$0100a8c0@ester> <003101c212b5$95362790$0100a8c0@ester> <16692.1023958536@redhat.com> <28908.1023965039@redhat.com> 
+To: "Krypton" <krypton8@inwind.it>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: first jffs2 boot problem 
-Date: Thu, 13 Jun 2002 12:59:34 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 13 Jun 2002 12:23:07 +0100
+Message-ID: <32493.1023967387@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,15 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> How was the JFFS2 image created, and how was it put onto the flash?
-> 
+krypton8@inwind.it said:
+>  Image was created using  mkfs.jffs2 -o root.jffs2 -e 0x20000 -r
+> tmproot -p -l
 
-Image was created using 
-mkfs.jffs2 -o root.jffs2 -e 0x20000 -r tmproot -p -l
+> and is was put onto the flash using my own bootloader 
 
-and is was put onto the flash using my own bootloader
+Is there definitely a /lib directory in the directory from which you made 
+the image? Can you make the image available somewhere?
 
-I think that my problem could depend from bash commands, is it possible ?
-
-TIA
+--
+dwmw2
