@@ -1,52 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12reXP-0002KO-00
-	for mtd-list@infradead.org; Tue, 16 May 2000 11:25:19 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12reXN-0002KI-00
-	for mtd@infradead.org; Tue, 16 May 2000 11:25:17 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 3.03 #1)
-	id 12reXN-00036n-00
-	for mtd@infradead.org; Tue, 16 May 2000 11:25:17 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 12reXN-0000O3-00; Tue, 16 May 2000 11:25:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Subject: List change notification.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 16 May 2000 11:25:17 +0100
-Message-ID: <1490.958472717@devel2.axiom.internal>
+	id 12rgrh-0002Yv-00
+	for mtd-list@infradead.org; Tue, 16 May 2000 13:54:25 +0100
+Date: Tue, 16 May 2000 08:54:39 -0400 (EDT)
+From: Pavel Roskin <pavel_roskin@geocities.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: List change notification.
+In-Reply-To: <1490.958472717@devel2.axiom.internal>
+Message-ID: <Pine.LNX.4.21.0005160842540.11092-100000@sunapee.transcept.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-The mails sent to this list have previously had the following line, on 
-which people have presumably set procmail (or whatever) to filter:
+Hello, David!
 
-Sender: owner-mtd@imladris.demon.co.uk
+> The mails sent to this list have previously had the following line, on 
+> which people have presumably set procmail (or whatever) to filter:
+> 
+> Sender: owner-mtd@imladris.demon.co.uk
 
-I'm phasing out all use of the Demon address, so as of now, that should have 
-changed to:
+Thank you for taking care of procmail users!
+In fact, "Sender:" is not quite reliable. I'm using two rules, the above
+one and "Return-Path: <owner-mtd@imladris.demon.co.uk>"
 
-Sender: owner-mtd@infradead.org
+And yet there has been one message not recognized as coming from the list.
 
-Also, I've set up a new CNAME cvs.infradead.org which ought to be used 
-for CVS traffic, as that may be split from the rest of the functionality of 
-my existing machine.
+If possible, please arrange X-Mailing-List: to be set. This would be the
+cleanest solution.
 
-This is because my machine is almost certainly going to have to be removed 
-from the premises of my current employer, when I leave their employ in 
-about three weeks' time to join Red Hat.
-
-
---
-dwmw2
-
+Regards,
+Pavel Roskin
 
 
 
