@@ -1,26 +1,18 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18GcfZ-0002Os-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 10:10:17 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6600M1NIZ451@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Tue, 26 Nov 2002 11:40:17 +0100 (MET)
-Date: Tue, 26 Nov 2002 11:38:16 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: SmartMedia Card need to create fs before mounting it ?
-In-reply-to: 
- <Pine.LNX.4.44.0211260527100.20708-100000@structure.biochem.nchu.edu.tw>
-To: shadow <saturn@structure.biochem.nchu.edu.tw>,
- John Hall <john.hall@optionexist.co.uk>
-Cc: linux-mtd@lists.infradead.org, manningc2@actrix.gen.nz
-Reply-to: tglx@linutronix.de
-Message-id: <200211261138.16297.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: 
- <Pine.LNX.4.44.0211260527100.20708-100000@structure.biochem.nchu.edu.tw>
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40] helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18GeFI-0002bF-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 11:51:16 +0000
+Received: from tkeitel by tkeitel001.bln.gelonet.local with local (Exim 3.35 #1 (Debian))
+	id 18Gel2-00025D-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 13:24:04 +0100
+Date: Tue, 26 Nov 2002 13:24:04 +0100
+From: Tino Keitel <tino.keitel@innominate.com>
+To: linux-mtd@lists.infradead.org
+Subject: Basic question how jffs2 uses mtd
+Message-ID: <20021126122404.GA7962@tkeitel001.bln.gelonet.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -32,34 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Monday 25 November 2002 22:42, shadow wrote:
-> I don't understand what difference between /dev/mtd/x and /dev/mtdblock/x
-dev/mtd is a character device
-dev/mtdblock is a block device, which is required for mounting filesystems
+Hi folks,
 
-> I used eraseall to erase /dev/mtd/6, it shown following messages..
-> ----
-> <---------skip above
-> eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-> Erasing 8 Kibyte @ 7f4000 -- 99 % complete.
-> eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-> Erasing 8 Kibyte @ 7f8000 -- 99 % complete.
-> eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-> Erasing 8 Kibyte @ 7fa000 -- 99 % complete.
-> eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-> Erasing 8 Kibyte @ 7fe000 -- 99 % complete.
-> eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-> Erased 8192 Kibyte @ 0 -- 100% complete.
-The I/O errors indicate probably that you have bad blocks on your FLASH.
-Use dmesg to verify.
-But it's not a problem. JFFS2 can handle this.
-
-now 
-mount -t jfss2 /dev/mtdblock/x /mnt/bla
+I try to debug a strange problem with jffs2 here. That's why I wonder
+what JFFS2 uses the MTD layer for. I remember that I read somewhere
+that JFFS2 only uses the MTD layer to obtain a handle to the actual
+flash device. Is that right?
 
 -- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   networking people
+tel: +49.30.6392-3308                      http://www.innominate.com/
