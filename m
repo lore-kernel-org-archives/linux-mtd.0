@@ -1,21 +1,19 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19UlMK-0007iz-2I
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 11:49:08 +0100
-From: "Mikael Starvik" <mikael.starvik@axis.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>,
-   "'Alexander Viro'" <aviro@redhat.com>
-Date: Tue, 24 Jun 2003 12:48:54 +0200
-Message-ID: <3C6BEE8B5E1BAC42905A93F13004E8AB03277992@mailse01.axis.se>
-MIME-Version: 1.0
-In-Reply-To: <3C6BEE8B5E1BAC42905A93F13004E8AB032ABD2B@mailse01.axis.se>
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-cc: 'Allen Curtis' <acurtis@onz.com>
-cc: 'Infradead Org' <linux-mtd@lists.infradead.org>
+Received: from onz.com ([67.121.61.113] helo=dual166.onz.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Up1r-0008CU-Jv
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 15:44:15 +0100
+Message-Id: <5.2.1.1.0.20030624073300.00ae2100@192.168.1.10>
+Date: Tue, 24 Jun 2003 07:34:01 -0700
+To: David Woodhouse <dwmw2@infradead.org>
+From: Allen Curtis <acurtis@onz.com>
+In-Reply-To: <1056446261.29264.393.camel@passion.cambridge.redhat.com>
+References: <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
+ <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+cc: Infradead Org <linux-mtd@lists.infradead.org>
 cc: jffs-dev@axis.com
-Subject: RE: JFFS patch
+Subject: Re: JFFS patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Even at Axis (the original copyright holder of JFFS1) we are now using=20
-JFFS2. I'll check if someone inhouse is interrested in keeping JFFS1=20
-maintained 2.6.
+Sure... I had CVS commit access at one time. It has been so long I am not 
+sure if it still works.
 
-PS. I tested JFFS1 in 2.5 a while ago and it seamed to kind of work =
-after=20
-one small patch. But I guess that there is much more to be done to make
-it reliable. DS
-
-/Mikael
-
------Original Message-----
-From: owner-jffs-dev@axis.com [mailto:owner-jffs-dev@axis.com] On Behalf =
-Of
-David Woodhouse
-Sent: Tuesday, June 24, 2003 12:42 PM
-To: Alexander Viro
-Cc: Allen Curtis; Infradead Org; jffs-dev@axis.com
-Subject: Re: JFFS patch
-
-
-On Tue, 2003-06-24 at 11:35, Alexander Viro wrote:
-> It would be nice.  There are several ugly craps in there and I'd=20
-> rather see it gone than try and fix them...
-
-Me too -- I started cleaning up at one point and the result was JFFS2 :)
-
-So unless I hear anguished screams from a huge user base who are using =
-it
-and not JFFS2 for reasons which they haven't yet reported as JFFS2 bugs, =
-and
-someone also steps forward to clean it up for 2.6, I'll submit a patch =
-to
-Linus to remove it in a couple of weeks time.
-
---=20
-dwmw2
-
-
-To unsubscribe from this list: send the line "unsubscribe jffs-dev" in =
-the
-body of a message to majordomo@axis.com
+At 10:17 AM 6/24/03 +0100, David Woodhouse wrote:
+>On Mon, 2003-06-23 at 06:58, Allen Curtis wrote:
+> > Patch for updating JFFS in 2.4.20 kernel
+>
+>Looks good. Want to take over maintenance for JFFS? I'm getting very
+>tempted to remove it from the 2.5 tree unless someone steps forward to
+>look after it.
+>
+>--
+>dwmw2
