@@ -1,16 +1,22 @@
-Received: from tomts15-srv.bellnexxia.net ([209.226.175.3])
+Received: from mg01.austin.ibm.com ([192.35.232.18])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17fmJD-0004u2-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 19:58:55 +0100
-Date: Fri, 16 Aug 2002 14:58:52 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: jay.s@sohu.com
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: grub loading problem, for help
-In-Reply-To: <6753069.1029470073112.JavaMail.postfix@mailsrv1.mail.sohu.com>
-Message-ID: <Pine.LNX.4.44.0208160039180.16312-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17fmhS-0004yH-00
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 20:23:58 +0100
+Received: from austin.ibm.com (netmail.austin.ibm.com [9.3.7.137])
+	by mg01.austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id OAA38798
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:22:32 -0500
+Received: from popmail.austin.ibm.com (popmail.austin.ibm.com [9.53.247.178])
+	by austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id OAA81268
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:23:54 -0500
+Received: from mahi190.austin.ibm.com (mahi190.austin.ibm.com [9.3.154.190]) by popmail.austin.ibm.com (AIX4.3/8.9.3/8.7-client1.01) with ESMTP id OAA06310 for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:23:53 -0500
+Subject: JFFS2 Power Fail Issue
+From: Stephen Hui <gromit1463@mailworks.org>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 16 Aug 2002 14:23:48 -0500
+Message-Id: <1029525828.11559.47.camel@mahi190.austin.ibm.com>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,31 +28,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jay,
+Hi,
 
-On Fri, 16 Aug 2002 jay.s@sohu.com wrote:
+My JFFS2 filesystem doesn't like having the plug pulled on it.  I get
+some bad behaviour when:
 
-> grub>
-> 
-> 
-> I feel lucky to see the prompt, however I cant access the doc anymore( I
-> have tried to use "kernel ...." according to that howto), I have
-> installed the contents in the doc and also the grub/menu.lst, but
-> nothing help. Because I don't know grub much, I don't know what to do
-> then.
+1.  I have the partition mounted under another filesystem, and I pull
+the plug while writing to it, or
 
-Does the "root (dc0)" or the "root (dc0,0)" command work?  Can you see the 
-content of the menu.lst file by typing "cat /boot/grub/menu.lst"?  I 
-always create a symbolic link when preparing the boot partition:
+2.  I have the partition unlocked and mounted read-write as root, and I
+pull the plug (regardless of whether I'm writing).
 
-    cd boot
-    ln -s . boot
+After booting again and mounting the partition, I get a bunch of these:
 
-In this way the path /boot/grub/menu.lst will resolve even when /boot is a 
-mount point.
+Write error in obliterating obsoleted node at 0x0007eaec: -30                                                                                                                     
+Write error in obliterating obsoleted node at 0x0013d66c: -30                                                                                                                     
+Write error in obliterating obsoleted node at 0x0013d7b4: -30                                                                                                                     
+Write error in obliterating obsoleted node at 0x0013d884: -30                                                                                                                     
+Write error in obliterating obsoleted node at 0x0013dbec: -30
 
-Also one has to make sure that the DoC's filesystem can be mounted at all 
-(that is, mount -t ext3 /dev/nftla2 /mnt/flash or similar must work).  
-It's easy to do mounting probe by booting off the hard disk first.
+and each time I pull the plug and bring it back up, more nodes are
+obsoleted.  Has this been seen before?  I'm using the latest JFFS2 code.
 
-Ilguiz
+Thanks in advance,
+Stephen.
+
+
+
+-- 
+"Find out what you've been missing while you've been
+rebooting Windows NT." -- Infoworld on Linux
+
+http://www.ao.com/~regan/penguins/tux.html
