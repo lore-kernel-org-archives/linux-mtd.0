@@ -1,20 +1,15 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CwSt3-0005mP-M9
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2005 17:22:14 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Creech, Matthew" <MattCreech@eaton.com>
-In-Reply-To: <F0A064EBC8C91C449244D108367426DC01E4AFEF@ra1ncsmb01.nasa.ad.etn.com>
-References: <F0A064EBC8C91C449244D108367426DC01E4AFEF@ra1ncsmb01.nasa.ad.etn.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: tglx@linutronix.de
+In-Reply-To: <1107382472.21196.616.camel@tglx.tec.linutronix.de>
+References: <20050202.135036.2985.7488@webmail13.lax.untd.com>
+	<1107382472.21196.616.camel@tglx.tec.linutronix.de>
 Content-Type: text/plain
-Date: Wed, 02 Feb 2005 23:22:11 +0100
-Message-Id: <1107382931.21196.620.camel@tglx.tec.linutronix.de>
+Date: Wed, 02 Feb 2005 22:20:23 +0000
+Message-Id: <1107382823.12383.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 on dataflash problem
-Reply-To: tglx@linutronix.de
+Subject: Re: CONFIG_MTD_PHYSMAP_START
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-02-02 at 10:00 -0500, Creech, Matthew wrote:
-> Hi,
-> 
-> makes the problem occur within 24 to 36 hours.  So something about
-> copying one file over another one breaks things.  The "problem" here is
-> that every I/O operation having to do with the JFFS2 partition blocks
-> indefinitely.  For example, after running the test for 2 days, you can
-> log into the device and try to "ls" the contents of /mnt/jffs2, and your
-> shell will hang.  You can then login on another terminal, but you'll get
-> another hang if you try to have any interaction with the JFFS2
-> partition.  So everything else seems to function normally, but JFFS2
-> just dies.  Also note that rebooting the device sometimes fixes things
-> right up (JFFS2 mounts fine and works properly as if nothing happened at
-> all), but sometimes the filesystem image is corrupt and refuses to
-> mount.
+On Wed, 2005-02-02 at 23:14 +0100, Thomas Gleixner wrote:
+> Keep your postings in the Mail thread by hitting the reply button.
 
-Can you turn on JFFS2 debugging (level 1) in this case and log the debug
-output over a serial console ?
+His reply button is broken; his mailer doesn't conform to RFC2822.
 
-tglx
+Alex, please use a non-broken mailer if you want to use this forum.
+Omitting 'Re:' from the subject to get round the automatic filtering
+isn't acceptable either. All traffic from you will be trapped for
+moderation until I'm sure you are behaving correctly.
+
+The address 0x04000801 is definitely not correct for the physical
+address of the start of flash. Consult your board documentation or
+schematics and find the correct value.
+
+-- 
+dwmw2
