@@ -1,19 +1,17 @@
-Received: from bs1.dnx.de ([213.252.143.130] ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17I19D-0000Vr-00
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Jun 2002 06:58:23 +0100
-Received: from p508611b5.dip.t-dialin.net ([80.134.17.181] helo=callisto.pengutronix.de)
-	by bs1.dnx.de with asmtp (Exim 3.34 #1)
-	id 17I198-0003YB-00
-	for linux-mtd@lists.infradead.org; Wed, 12 Jun 2002 07:58:18 +0200
-Date: Wed, 12 Jun 2002 07:22:29 +0200
-From: Robert Schwebel <robert@schwebel.de>
-To: linux-mtd@lists.infradead.org
-Subject: Directly attached CF
-Message-ID: <20020612072229.P4388@schwebel.de>
+	id 17I5fU-0000mX-00
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Jun 2002 11:48:00 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <614CC7C21856D1118DA30060B06B487302ACCA37@SMF-NT-MAIL1> 
+References: <614CC7C21856D1118DA30060B06B487302ACCA37@SMF-NT-MAIL1> 
+To: Eric Nelson <eric_n2@verifone.com>
+Cc: brendan.simon@bigpond.com, linux-mtd@lists.infradead.org
+Subject: Re: DOC2000 partitiioning question 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Date: Wed, 12 Jun 2002 11:47:50 +0100
+Message-ID: <24980.1023878870@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,17 +23,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi, 
+I discarded your message at first because I couldn't find any original 
+content. It's customary to quote only the relevant part of the message to 
+which you're replying, with a suitable marker such as '> ' to distinguish 
+it from your own text.
 
-I know that CF in TrueIDE mode is offtopic here, but I'm wondering if
-somebody has managed to connect a CF card directly to processor's bus
-interface in one of the other modes and wrote a driver for Linux? 
+eric_n2@verifone.com said:
+>  I know, from following this list, that there are many, like me, who
+> have no choice but to use DOC, and are sold on JFFS2, but just don't
+> have the time or expertise to make these modifications.  I know you
+> are busy, but you are the expert, and it would be widely appreciated
+> if you lend your expertise to finishing porting JFFS2 to DOC, so I,
+> and many others, could quit telling our bosses that JFFS2 is
+> definitely the best, but it's not quite ready for DOC?? 
 
-Robert
--- 
- +--------------------------------------------------------+
- | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
- | Pengutronix - Linux Solutions for Science and Industry |
- |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
- |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
- +--------------------------------------------------------+
+It's getting there, slowly. I dispute the implication that I'm the only
+person with sufficient expertise -- Thomas has done a very good job of
+implementing most of the NAND support, for example.
+
+I don't have much time either -- certainly not enough to set up the hardware
+and run tests on it. But I _can_ find some time occasionally to work on it
+if someone tests it and points out problems. 
+
+The thing is -- I haven't received any failure reports for NAND flash
+recently. That either means it's perfect or it means nobody cares enough to
+even test it. 
+
+The only way it's going to progress from the "I think it works, wouldn't
+want to ship it yet" state to "Ready for production", even if the code
+itself is actually perfect already, is by getting tested hard.
+
+That means either someone out there getting off their proverbial wossname
+and testing it, reporting the results to my satisfaction, or me getting
+assigned sufficient time to do it. I was sort of hoping the former was more
+likely -- because the latter isn't.
+
+--
+dwmw2
