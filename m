@@ -1,19 +1,17 @@
-Received: from darwin.altera.com ([66.35.227.3])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 181Ou8-0006xe-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 11:26:24 +0100
-Message-Id: <200210151025.g9FAP9221781@localhost.localdomain>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Clive Davies <cdavies@altera.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] add access to AMD secure silicon area
-Date: Tue, 15 Oct 2002 11:25:09 +0100
+	id 181P4L-0006yT-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 11:36:57 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200210151025.g9FAP9221781@localhost.localdomain> 
+References: <200210151025.g9FAP9221781@localhost.localdomain>  <200210030816.g938GaW03616@localhost.localdomain> <19345.1034676569@passion.cambridge.redhat.com> 
+To: Clive Davies <cdavies@altera.com>
 Cc: linux-mtd@lists.infradead.org
-References: <200210030816.g938GaW03616@localhost.localdomain> <19345.1034676569@passion.cambridge.redhat.com>
-In-Reply-To: <19345.1034676569@passion.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] add access to AMD secure silicon area 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 15 Oct 2002 11:36:44 +0100
+Message-ID: <26135.1034678204@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,40 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> +	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> CFI_DEVICETYPE_X8, NULL); +	cfi_send_gen_cmd(0x55, cfi->addr_unlock2,
-> chip->start, map, cfi, CFI_DEVICETYPE_X8, NULL); +	cfi_send_gen_cmd(0x90,
-> cfi->addr_unlock1, chip->start, map, cfi, CFI_DEVICETYPE_X8, NULL);
-> +	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi,
-> CFI_DEVICETYPE_X8, NULL);
->
-> Is this always correct?
+cdavies@altera.com said:
+>  It should be, it matches the command sequence in the data sheet for
+> the  AM29DL322D/323D/324D devices.  
 
-It should be, it matches the command sequence in the data sheet for the 
-AM29DL322D/323D/324D devices. 
+And CFI_DEVICETYPE_X8 is always correct? No X16 devices?
 
->
-> +        /* does this chip even have a secsi area? */
-> +	if(cfi->mfr!=1)
-> +		return -EINVAL;
-> +	switch(cfi->id){
-> +	case 0x50:
-> +	case 0x53:
-> +	case 0x55:
-> +	case 0x56:
-> +	case 0x5C:
-> +	case 0x5F:
-> +		break;
-> +	default:
-> +		return -EINVAL;
->
-> Er, is this information not available from the CFI info? I really want to
-> avoid having stuff like this in the chip drivers.
+>  Unfortunately not. There's no mention of it at all in the AMD primary
+> vendor  specific extended query table v1.1 which is used on these
+> devices. I don't  like this method either but in the absence of CFI
+> info I don't have any  better ideas.
 
-Unfortunately not. There's no mention of it at all in the AMD primary vendor 
-specific extended query table v1.1 which is used on these devices. I don't 
-like this method either but in the absence of CFI info I don't have any 
-better ideas.
+Argh. FFS. So AMD can't manage to get the fscking erasesize table correct 
+in the CFI data, and they can't manage to add the appropriate fields to 
+their own vendor-specific table to remove the need to keep the device ID 
+tables which CFI was supposed to eliminate?
 
-Clive
+Would someone from AMD care to either contradict me or promise me 
+faithfully that they've taken a baseball bat to whoever is responsible?
+
+I suspect we need a new 'amd_is_bloody_stupid_probe' alongside jedec_probe 
+and cfi_probe :)
+
+--
+dwmw2
