@@ -1,17 +1,20 @@
-Received: from imo-r01.mx.aol.com ([152.163.225.97])
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eKJZ-00022h-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 19:25:33 +0000
-Message-ID: <3E39852F.8020100@netscape.net>
-Date: Thu, 30 Jan 2003 20:03:59 +0000
-From: kokseng choo <Kschoo70C@netscape.net>
+	id 18eLML-0002C2-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 20:32:29 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: "Alex Samoutin" <samoutin@hotbox.ru>,
+	<linux-mtd@lists.infradead.org>
+Subject: Re: NAND subsector writing problem
+Date: Fri, 31 Jan 2003 09:57:59 +1300
+References: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com>
+In-Reply-To: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Bad Block Handling in jffs2
-References: <03E2B9D1.52EE4DE7.0265FBE9@netscape.net> <200301302016.00528.tglx@linutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Message-Id: <20030130210325.0F2BB405E@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,41 +26,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Thomas,
+There is no problem using this for JFFS2 or YAFFS since neither use 
+sub-page writes.
 
-Thanks for your reply.
+ECC applies to the whole page.  Thus, mixing ECC and sub-page writes is 
+invalid.
 
-Thomas Gleixner wrote:
-
->>   So, I write a program to skip the bad block, and copy the data to the
->>next block. The missing file seems to appear on the file system now, the
->>size looks correct. But when I diff the binary of the file to that of
->>original, they are different and the binary failed to execute.
->>    
->>
->Strange.
->Have you built your fs-image with the correct block size ?
->
-  The command I used is as followed:
-mkfs.jffs2 -p --eraseblock=16KiB -l -d ./jffsRoot -o jffs2.image
-I changed the mkfs.jffs2 so that it allows me to create image with 16KiB 
-erased size. I presumed it is not a problem to make the changed, but may 
-be I was wrong. The raised the question about my changes sometimes ago 
-in http://lists.infradead.org/pipermail/linux-mtd/2002-October/006273.html..
-Please let me know, if my assumption is wrong.
-
->  
->
->> Is anyone manage to transfer an image to the nand device that has bad
->>blocks without losing any files ?
->>    
->>
->Yes, I do
->
->  
->
-That sounds a lot more promising. Probably there is somthing wrong my 
-configuration, I will look into my configuration again.
-
-cheers
-choo
+-- Charles
