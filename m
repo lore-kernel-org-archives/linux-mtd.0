@@ -1,17 +1,17 @@
 Received: from mail.mediatrix.com ([66.129.134.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15WhMM-0002jB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 17:48:06 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4DD0DAD9@webmail.mediatrix.com>
+	id 15WiBX-0002mq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 18:40:59 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4DD0DADF@webmail.mediatrix.com>
 From: Frederic Giasson <fgiasson@mediatrix.com>
-To: 'Vipin Malik' <vipin@embeddedlinuxworks.com>, David Woodhouse
-	 <dwmw2@infradead.org>
+To: 'Vipin Malik' <vipin@embeddedlinuxworks.com>
 Cc: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
 Subject: RE: JFFS2 is broken 
-Date: Tue, 14 Aug 2001 12:46:15 -0400
+Date: Tue, 14 Aug 2001 13:39:07 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C124E0.A1FBC2F0"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Good news! =20
 
-------_=_NextPart_000_01C124E0.A1FBC2F0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The jitter is now down to 3 seconds.=20
+In my test I ran JitterTest as a RT task reading I/P from jffs2.
 
-It guess it is.  But is it possible (and not too time-consuming) for =
-you to
-take that new one I just created with ssh-keygen and put in
-/root/.ssh/identity.pub along with /root/.ssh/identity and the config =
-file
-you ask me to create?  Here it is, should you decide to use it....
+When I run JitterTest with another task running in background which =
+writes
+to JFFS2, the jitter is up to 5 seconds.  No more 40 seconds waiting.
+
 
 Fr=E9d=E9ric Giasson
 
@@ -80,20 +75,3 @@ with=20
 more info that we need/can handle :)
 
 Vipin
-
-
-------_=_NextPart_000_01C124E0.A1FBC2F0
-Content-Type: application/octet-stream;
-	name="identity.pub"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="identity.pub"
-
-1024 35 =
-164358453018075670455790203200706540984393749504204243836036681422744008=
-324009655150232134223034277415336613711914311755267437950808937418173965=
-122857400339606006019692108436584787607289775427783920015394610085223007=
-334556116082199981839573028213537755795029530359907389853830876722709464=
-615820281008293377021 root@samlinux=0A=
-
-------_=_NextPart_000_01C124E0.A1FBC2F0--
