@@ -1,24 +1,23 @@
-Received: from zorglub.ssji.net ([2001:7a8:3030::face])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CDkM1-0007Er-59
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2004 09:55:18 -0400
-Received: from yagoo.io.ssji.net ([2001:7a8:3030:0:240:5ff:fe35:fead]
-	helo=yagoo) by zorglub.ssji.net with smtp (Exim 4.24)
-	id 1CDkLt-0002Vy-Oa
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2004 15:55:09 +0200
-Date: Sat, 2 Oct 2004 15:55:05 +0200
-From: Nicolas Pouillon <nipo@ssji.net>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20041002155505.083d8440.nipo@ssji.net>
-In-Reply-To: <20041001162705.5873dc7c.nipo@ssji.net>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CDqpj-00082a-Qe
+	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2004 16:50:27 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Nicolas Pouillon <nipo@ssji.net>
+In-Reply-To: <20041002155505.083d8440.nipo@ssji.net>
 References: <20041001154617.163cc484.nipo@ssji.net>
 	<1096639064.30942.477.camel@hades.cambridge.redhat.com>
 	<20041001162705.5873dc7c.nipo@ssji.net>
+	<20041002155505.083d8440.nipo@ssji.net>
+Content-Type: text/plain
+Message-Id: <1096749729.21297.54.camel@thomas>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="pgp-sha1";
-	boundary="Signature=_Sat__2_Oct_2004_15_55_06_+0200_VA_QyXKc_Az1sjUQ"
-Subject: Patch !
+Date: Sat, 02 Oct 2004 22:42:09 +0200
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Patch !
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Sat__2_Oct_2004_15_55_06_+0200_VA_QyXKc_Az1sjUQ
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, 2004-10-02 at 15:55, Nicolas Pouillon wrote:
+> I made two patches, for different handleds.org kernel dates (fall July,
+> (the one I'm working on): 2.6.7, and now: 2.6.8.1)
+> 
+> (I've not tried 2.6.8.1 version)
 
-[Fri, 1 Oct 2004 16:27:05 +0200]
-Nicolas Pouillon <nipo@ssji.net> eut le bonheur d'=E9crire:
+You should have tried 2.6.8.1 !!
 
-> I'll submit a patch for these.
+Did you notice the DEPRECATED NOTE in Kconfig ????
 
-Here it is, but I dont like changing 0 to -1 for undefined.
-Maybe adding (another) config option could be better (like "force null
-address probing")... thoughts ?
+INFTL in 2.6.8.1 tells you: 
+"INFTL no longer supports the old DiskOnChip drivers loaded via
+docprobe.\n"
+"Please use the new diskonchip driver under the NAND subsystem.\n");
 
-I made two patches, for different handleds.org kernel dates (fall July,
-(the one I'm working on): 2.6.7, and now: 2.6.8.1)
+Please follow this advise. The docxx stuff in mtd/devices will be
+removed in the near future and INFTL with the old drivers was missing
+some functionality anyway, AFAIK.
 
-http://nipo.ssji.net/mtd/patches/
-(I've not tried 2.6.8.1 version)
+The chip ID part of your patch is giving me a bit more headache. The ID
+0xA5 is a valid ID for NAND 2GiB 1,8V 8-bit.
+Since NAND is available _all_ manufacturers use the same Chip ID codes
+for chips with the same specifications. All Cardreaders, MP3-Players and
+Digicams rely on those ID's.
+I doubt that there are 32 MiB chips around with chip ID 0xA5. The Chip
+ID in all Toshiba datasheets of their various 32MiB NAND chips is 0x75. 
+I'm not going to put this line into the code without sensible
+confirmation that this is the real ID. Please figure out the DoC
+partnumber and let M-Sys confirm this. If they confirm that some moron
+started to break the ID rules, then we have to figure out a way to make
+this work. Putting this line without any further modifications into the
+code would break other drivers.
 
---=20
-Nipo <nipo@ssji.net>
-Gnu-PGP: 1024D/1DBF658F
-http://nipo.ssji.net/nipo.asc
-
---Signature=_Sat__2_Oct_2004_15_55_06_+0200_VA_QyXKc_Az1sjUQ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-
-iD8DBQFBXrM9Lh2qAR2/ZY8RApnPAJ0YLl0D8CI7GiXHswqmlU8m65B/XwCfZSVl
-L2zSQz4S1JXZelRYAu+tKHk=
-=QNSG
------END PGP SIGNATURE-----
-
---Signature=_Sat__2_Oct_2004_15_55_06_+0200_VA_QyXKc_Az1sjUQ--
+tglx
