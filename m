@@ -1,17 +1,17 @@
-Received: from mercury.sun.com ([192.9.25.1])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15MzdQ-0002Z4-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2001 23:17:36 +0100
-Message-ID: <3B560DDC.55ECB635@sun.com>
-Date: Wed, 18 Jul 2001 15:29:48 -0700
-From: Tim Hockin <thockin@sun.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: cfi_cmdset_0002 and writes
-References: <3B560681.4D216FF3@sun.com> <26325.995493875@redhat.com>
+	id 15Mzvg-0002aA-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2001 23:36:28 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3B560DDC.55ECB635@sun.com> 
+References: <3B560DDC.55ECB635@sun.com>  <3B560681.4D216FF3@sun.com> <26325.995493875@redhat.com> 
+To: Tim Hockin <thockin@sun.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: cfi_cmdset_0002 and writes 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Wed, 18 Jul 2001 23:42:10 +0100
+Message-ID: <27004.995496130@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,39 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse wrote:
-> 
-> thockin@sun.com said:
-> >  The flash can be erased by 64k blocks.  Since it is flash, you can
-> > only reprogram '1' bits to '0' bits, and never vice versa.  What I
-> > don't find is any hooks in cfi_cmdset_0002 to read a whole block,
-> > erase it, make changes to the in-memory block and write it back to
-> > flash.
+thockin@sun.com said:
+>  Right, but this is our boot ROM we're dealing with :)  Can you
+> suggest a better alternative?  The device is rarely ever loaded, but
+> when it is loaded we want to read and re-program the whole thing as
+> safely as possible. 
 
-> It doesn't. Doing that kind of thing is scary and dangerous, and certainly
-> doesn't belong in the low-level driver. We have real filesystems and
-> translation layers which work on flash instead.
+It's sane enough. Just loading the 'mtdblock' driver will give you exactly 
+the semantics you described. Alternatively, use the raw chardevice driver, 
+and you have to issue the MEMERASE ioctl before rewriting a sector. There 
+are utilities in CVS which do this for you, given an MTD device and a file 
+to load into it.
 
-Right, but this is our boot ROM we're dealing with :)  Can you suggest a
-better alternative?  The device is rarely ever loaded, but when it is
-loaded we want to read and re-program the whole thing as safely as
-possible.
+Either way, the underlying flash device driver only deals with the physical 
+capabilities of the flash chip. What you do on top of that is none of its 
+business.
 
-MTD seems to be geared more towards flash devices that get lots of use. 
-How should I go about plugging this into MTD?
- 
-> However, the primitive read/erase/modify/pray_we_don't_lose_power/writeback
-> behaviour you described is available in the 'mtdblock' driver, and it's sane
-> enough to use it if you only write to it during setup, then run it normally
-> in read-only mode.
-
-We'll be loading the driver for our flash after potentially months of
-uptime.  The new image will be flashed in, and the driver will be unloaded
-until the next flash update.
-
-
--- 
-Tim Hockin
-Systems Software Engineer
-Sun Microsystems, Cobalt Server Appliances
-thockin@sun.com
+--
+dwmw2
