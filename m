@@ -1,14 +1,20 @@
-Received: from [210.77.143.228] (helo=tsinghua.org.cn)
+Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17l3Rw-00083Q-00
-	for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2002 09:17:45 +0100
-From: "" <yanhy@tsinghua.org.cn>
-To: linux-mtd@lists.infradead.org  
-Date: Sat, 31 Aug 2002 16:18:39 +0800
-Reply-To: "" <yanhy@tsinghua.org.cn>
-Subject: Help needed for jffs2
-Content-Type: text/plain
-Message-Id: <E17l3Rw-00083Q-00@pentafluge.infradead.org>
+	id 17l6pd-0008Ku-00
+	for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2002 12:54:26 +0100
+Received: from [212.100.65.236] (helo=2mails1557.com)
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 17l6pR-000095-00
+	for linux-mtd@lists.infradead.org; Sat, 31 Aug 2002 12:54:23 +0100
+From: "MRS. M. SESE SEKO" <maseko_h3@yahoo.com>
+Reply-To: maseko_h3@yahoo.com
+To: linux-mtd@lists.infradead.org
+Date: Sat, 31 Aug 2002 12:49:11 +0100
+Subject: Urgent Assistance Needed
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E17l6pR-000095-00@phoenix.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,34 +26,62 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,friends!I'm new to uClinux.
-I am trying to port uClinx on Coldfire M5272C3.The kernel is linux-2.4.x.
-Now, if i select MTD and romfs support, the kernel works well on the target.
-I can see the four pre-defined flash patitions and erase them and cp files to
-them.
-Now,I want to use jffs1/2 .but when i select jffs1/2 support, compiling problems 
-come as:
-mkfs.jffs2.c:113: `__BYTE_ORDER' undeclared here (not in a function)
-mkfs.jffs2.c:114: `__BYTE_ORDER' undeclared here (not in a function)
-mkfs.jffs2.c: In function `create_target_filesystem':
-mkfs.jffs2.c:980: warning: assignment makes pointer from integer without a cast
-mkfs.jffs2.c:981: `DT_DIR' undeclared (first use in this function)
-mkfs.jffs2.c:981: (Each undeclared identifier is reported only once
-mkfs.jffs2.c:981: for each function it appears in.)
-mkfs.jffs2.c:991: warning: assignment makes pointer from integer without a cast
-mkfs.jffs2.c:999: `DT_SOCK' undeclared (first use in this function)
-mkfs.jffs2.c:1004: `DT_FIFO' undeclared (first use in this function)
-mkfs.jffs2.c:1024: `DT_LNK' undeclared (first use in this function)
-mkfs.jffs2.c:1039: `DT_REG' undeclared (first use in this function)
-mkfs.jffs2.c:1046: `DT_CHR' undeclared (first use in this function)
-mkfs.jffs2.c:1051: `DT_BLK' undeclared (first use in this function)
-mkfs.jffs2.c: In function `main':
-mkfs.jffs2.c:1202: `__LITTLE_ENDIAN' undeclared (first use in this function)
-mkfs.jffs2.c:1206: `__BIG_ENDIAN' undeclared (first use in this function)
-make[2]: *** [mkfs.jffs2.o] Error 1
-make[2]: Leaving directory `/user/snap-gear-uclinux/uClinux-dist/user/mt
-d-utils'
+FROM=3AMRS=2E M SESE-SEKO
 
-What's the matter?Do i need some jffs2 patch or fix it manually?
-Thanks
-Yan
+DEAR FRIEND=2C
+
+I AM MRS=2E SESE-SEKO WIDOW OF LATE PRESIDENT MOBUTU
+SESE-SEKO OF ZAIRE=3F NOW KNOWN AS DEMOCRATIC REPUBLIC
+OF CONGO =28DRC=29=2E I AM MOVED TO WRITE YOU THIS LETTER=2C
+THIS WAS IN CONFIDENCE CONSIDERING MY PRESENT
+CIRCUMSTANCE AND SITUATION=2E
+
+I ESCAPED ALONG WITH MY HUSBAND AND TWO OF OUR SONS
+JAMES KONGOLO AND BASHER OUT OF DEMOCRATIC REPUBLIC OF
+CONGO =28DRC=29 TO ABIDJAN=2C COTE D'IVOIRE WHERE MY FAMILY
+AND I SETTLED=2C WHILE WE LATER MOVED TO SETTLED IN
+MORROCO WHERE MY HUSBAND LATER DIED OF CANCER
+DISEASE=2E HOWEVER DUE TO THIS SITUATION WE DECIDED TO
+CHANGED MOST OF MY HUSBAND'S BILLIONS OF DOLLARS
+DEPOSITED IN SWISS BANK AND OTHER COUNTRIES INTO OTHER
+FORMS OF MONEY CODED FOR SAFE PURPOSE BECAUSE THE NEW
+HEAD OF STATE OF =28DR=29 MR LAURENT KABILA HAS MADE
+ARRANGEMENT WITH THE SWISS GOVERNMENT AND OTHER
+EUROPEAN COUNTRIES TO FREEZE ALL MY LATE HUSBAND'S
+TREASURES DEPOSITED IN SOME EUROPEAN COUNTRIES=2E HENCE
+MY CHILDREN AND I DECIDED LAYING LOW IN AFRICA TO
+STUDY THE SITUATION TILL WHEN THINGS GETS BETTER=2C
+LIKE NOW THAT PRESIDENT KABILA IS DEAD AND THE SON
+TAKING OVER =28JOSEPH KABILA=29=2E ONE OF MY LATE HUSBAND'S
+CHATEAUX IN SOUTHERN FRANCE WAS CONFISCATED BY THE
+FRENCH GOVERNMENT=2C AND AS SUCH I HAD TO CHANGE MY
+IDENTITY SO THAT MY INVESTMENT WILL NOT BE TRACED AND
+CONFISCATED=2E I HAVE DEPOSITED THE SUM OF EIHGTEEN
+MILLION UNITED STATE DOLLARS=28US$18=2C000=2C000=2C00=2E=29 WITH A
+SECURITY COMPANY =2C FOR SAFEKEEPING=2E THE FUNDS ARE
+SECURITY CODED TO PREVENT THEM FROM KNOWING THE
+CONTENT=2E WHAT I WANT YOU TO DO IS TO INDICATE YOUR
+INTEREST THAT YOU WILL ASSIST US BY RECEIVING 
+THE MONEY ON OUR BEHALF=2EACKNOWLEDGE THIS MESSAGE=2C SO
+THAT I CAN INTRODUCE YOU TO MY SON =28KONGOLO =29 WHO HAS
+THE OUT MODALITIES FOR THE CLAIM OF THE SAID FUNDS=2E I
+WANT YOU TO ASSIST IN INVESTING THIS MONEY=2C BUT 
+I WILL NOT WANT MY IDENTITY REVEALED=2E I WILL ALSO WANT
+TO BUY PROPERTIES AND STOCK IN MULTI-NATIONAL COMPANIES
+AND TO ENGAGE IN OTHER SAFE AND NON-SPECULATIVE 
+INVESTMENTS=2E MAY I AT THIS POINT EMPHASISE THE HIGH
+LEVEL OF CONFIDENTIALITY=2CWHICH THIS BUSINESS DEMANDS=2C
+AND HOPE YOU WILL NOT BETRAY THE TRUST AND CONFIDENCE=2C
+WHICH I REPOSE IN YOU=2E IN CONCLUSION=2CIF YOU WANT
+TO ASSIST US =2C MY SON SHALL PUT YOU IN THE PICTURE OF
+THE BUSINESS=2CTELL YOU WHERE THE FUNDS ARE CURRENTLY
+BEING MAINTAINED AND ALSO DISCUSS OTHER MODALITIES
+INCLUDING REMUNERATION FOR YOUR SERVICES=2E
+
+FOR THIS REASON KINDLY FURNISH US YOUR CONTACT
+INFORMATION=2C AND YOUR PERSONAL TELEPHONE AND FAX
+NUMBER FOR VALIDATION PROCESSES=2E
+
+BEST REGARDS=2C
+
+MRS M=2E SESE SEKO
