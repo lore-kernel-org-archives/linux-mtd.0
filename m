@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from dav46.law15.hotmail.com ([64.4.22.18] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zEpA-0004m9-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 10:39:32 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <004901c0dc57$4b8d97d0$9bca8a89@pcl3af5> 
-References: <004901c0dc57$4b8d97d0$9bca8a89@pcl3af5> 
-To: "Shoudong Xu" <Shoudong.Xu@cern.ch>
+	id 14zITl-0006Qg-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 14:33:42 +0100
+From: "zydla son" <zydlason@hotmail.com>
+To: "PPC-embedded" <linuxppc-embedded@lists.linuxppc.org>
 Cc: "MTD" <linux-mtd@lists.infradead.org>
-Subject: Re: Can not choose the " Specific CFI Flash geometry selection" opition 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 14 May 2001 10:43:09 +0100
-Message-ID: <18477.989833389@redhat.com>
+Subject: kernel can not detect flash device.
+Date: Mon, 14 May 2001 15:35:06 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;	charset="gb2312"
+Content-Transfer-Encoding: base64
+Message-ID: <DAV46AyfxRydC3hSsxL000018db@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +22,55 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ShoudongXu@cern.ch said:
->     I use kernel 2.4.2 and the lastest code ,but can not choose the "
-> Specific CFI Flash geometry selection" opition ,please give me some
-> advice?
-
-You appear to have enabled a buswidth of 1, but not enabled an interleave 
-of 1. This doesn't seem very useful - it's difficult to interleave more 
-than one chip into a bus which is a single byte wide.
-
-We should probably do Config.in magic to prevent this. Either that or 
-something like...
-
---- cfi_probe.c	2001/05/10 14:32:09	1.57
-+++ cfi_probe.c	2001/05/14 09:42:37
-@@ -246,6 +246,9 @@
- int index;
- 	switch (map->buswidth) {
- #ifdef CFIDEV_BUSWIDTH_1		
-+#ifndef CFIDEV_INTERLEAVE_1
-+#error You have asked to support a buswidth of 1, but have not enabled support for having only one chip interleave. How could this possibly work?
-+#endif
- 	case CFIDEV_BUSWIDTH_1:
- 		cfi->interleave = CFIDEV_INTERLEAVE_1;
- 		cfi->device_type = CFI_DEVICETYPE_X8;
-
-(PS. Please fix your From address)
-
---
-dwmw2
+SGksDQogICAgDQogICAgTXkgdGFyZ2V0IHBsYXRmb3JtIGlzIEZvcmNlUG93ZXJDb3JlIDY3NTAg
+d2hpY2ggaGFzIGZvdXIgdXNlcmZsYXNoKEFNMjlGMDE2KSBhbmQgSSBjaG9vc2UgdGhlIHJlbGF0
+aXZlIG9wdGlvbnMgYWNjb3JkaW5nIHRvIHRoZSAiTGludXggTVRELCBKRkZTIEhPV1RPIixidXQg
+a2VybmVsIGNhbiBub3QgZGV0ZWN0IGZsYXNoIGRldmljZS4NCiAgICBTb21lIGluZm9zOg0KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXw0KcGh5c21hcCBmbGFzaCBkZXZpY2U6IDIwMDAwMCBhdCBmZmUw
+MDAwMCAgIC8qIHN5c3RlbSBhZGRyZXNzIHJhbmdlIGlzIGZyb20gZmZlMC4wMDAwIHRvIGZmZmYu
+ZmZmZiAqLw0KUGh5c2ljYWxseSBtYXBwZWQgZmxhc2g6IEZvdW5kIG5vIENGSSBkZXZpY2UgYXQg
+bG9jYXRpb24gemVybw0KDQogICAgTXkgLmNvbmZpZyhhYm91dCBNVEQpDQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fDQojDQojIE1lbW9yeSBUZWNobm9sb2d5IERldmljZXMgKE1URCkNCiMNCkNPTkZJ
+R19NVEQ9eQ0KQ09ORklHX01URF9ERUJVRz15DQpDT05GSUdfTVREX0RFQlVHX1ZFUkJPU0U9Mw0K
+IyBDT05GSUdfTVREX1BBUlRJVElPTlMgaXMgbm90IHNldA0KIyBDT05GSUdfTVREX1JFREJPT1Rf
+UEFSVFMgaXMgbm90IHNldA0KIyBDT05GSUdfTVREX0JPT1RMRFJfUEFSVFMgaXMgbm90IHNldA0K
+IyBDT05GSUdfTVREX0NIQVIgaXMgbm90IHNldA0KIyBDT05GSUdfTVREX0JMT0NLIGlzIG5vdCBz
+ZXQNCiMgQ09ORklHX01URF9CTE9DS19STyBpcyBub3Qgc2V0DQojIENPTkZJR19GVEwgaXMgbm90
+IHNldA0KIyBDT05GSUdfTkZUTCBpcyBub3Qgc2V0DQoNCiMNCiMgUkFNL1JPTS9GbGFzaCBjaGlw
+IGRyaXZlcnMNCiMNCkNPTkZJR19NVERfQ0ZJPXkNCkNPTkZJR19NVERfQ0ZJX1ZJUlRVQUxfRVI9
+eQ0KQ09ORklHX01URF9DRklfQURWX09QVElPTlM9eQ0KQ09ORklHX01URF9DRklfTk9TV0FQPXkN
+CiMgQ09ORklHX01URF9DRklfQkVfQllURV9TV0FQIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9D
+RklfTEVfQllURV9TV0FQIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9DRklfTEFSVF9CSVRfU1dB
+UCBpcyBub3Qgc2V0DQpDT05GSUdfTVREX0NGSV9HRU9NRVRSWT15DQpDT05GSUdfTVREX0NGSV9C
+MT15DQojIENPTkZJR19NVERfQ0ZJX0IyIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9DRklfQjQg
+aXMgbm90IHNldA0KQ09ORklHX01URF9DRklfSTE9eQ0KIyBDT05GSUdfTVREX0NGSV9JMiBpcyBu
+b3Qgc2V0DQpDT05GSUdfTVREX0NGSV9JND15DQojIENPTkZJR19NVERfQ0ZJX0lOVEVMRVhUIGlz
+IG5vdCBzZXQNCkNPTkZJR19NVERfQ0ZJX0FNRFNURD15DQojIENPTkZJR19NVERfQU1EU1REIGlz
+IG5vdCBzZXQNCiMgQ09ORklHX01URF9TSEFSUCBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfUkFN
+IGlzIG5vdCBzZXQNCkNPTkZJR19NVERfUk9NPXkNCiMgQ09ORklHX01URF9KRURFQyBpcyBub3Qg
+c2V0DQoNCiMNCiMgTWFwcGluZyBkcml2ZXJzIGZvciBjaGlwIGFjY2Vzcw0KIw0KQ09ORklHX01U
+RF9QSFlTTUFQPXkNCkNPTkZJR19NVERfUEhZU01BUF9TVEFSVD1mZmUwMDAwMA0KQ09ORklHX01U
+RF9QSFlTTUFQX0xFTj0yMDAwMDANCkNPTkZJR19NVERfUEhZU01BUF9CVVNXSURUSD00DQojIENP
+TkZJR19NVERfU1VOX1VGTEFTSCBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfTk9SQSBpcyBub3Qg
+c2V0DQojIENPTkZJR19NVERfUE5DMjAwMCBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfUlBYTElU
+RSBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfU0M1MjBDRFAgaXMgbm90IHNldA0KIyBDT05GSUdf
+TVREX05FVFNDNTIwIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9TQkNfR1hYIGlzIG5vdCBzZXQN
+CiMgQ09ORklHX01URF9FTEFOXzEwNE5DIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9TQTExMDAg
+aXMgbm90IHNldA0KIyBDT05GSUdfTVREX1NBMTEwMF9SRURCT09UX1BBUlRJVElPTlMgaXMgbm90
+IHNldA0KIyBDT05GSUdfTVREX1NBMTEwMF9CT09UTERSX1BBUlRJVElPTlMgaXMgbm90IHNldA0K
+IyBDT05GSUdfTVREX0RDMjEyODUgaXMgbm90IHNldA0KIyBDT05GSUdfTVREX0lRODAzMTAgaXMg
+bm90IHNldA0KIyBDT05GSUdfTVREX0RCT1gyIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9DU1RN
+X01JUFNfSVhYIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9DRklfRkxBR0FETSBpcyBub3Qgc2V0
+DQojIENPTkZJR19NVERfTUlYTUVNIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9PQ1RBR09OIGlz
+IG5vdCBzZXQNCiMgQ09ORklHX01URF9WTUFYIGlzIG5vdCBzZXQNCiMgQ09ORklHX01URF9BUk0g
+aXMgbm90IHNldA0KDQojDQojIFNlbGYtY29udGFpbmVkIE1URCBkZXZpY2UgZHJpdmVycw0KIw0K
+IyBDT05GSUdfTVREX1BNQzU1MSBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfU0xSQU0gaXMgbm90
+IHNldA0KIyBDT05GSUdfTVREX01URFJBTSBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfRE9DMTAw
+MCBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfRE9DMjAwMCBpcyBub3Qgc2V0DQojIENPTkZJR19N
+VERfRE9DMjAwMSBpcyBub3Qgc2V0DQojIENPTkZJR19NVERfRE9DUFJPQkUgaXMgbm90IHNldA0K
+DQojDQojIE5BTkQgRmxhc2ggRGV2aWNlIERyaXZlcnMNCiMNCiMgQ09ORklHX01URF9OQU5EIGlz
+IG5vdCBzZXQNCiMgQ09ORklHX01URF9OQU5EX1NQSUEgaXMgbm90IHNldA0KDQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQoNClRoYW5rcyBhIGxvdCENCnp5
+ZGxhc29uDQo=
