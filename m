@@ -1,17 +1,17 @@
 Received: from pu90.internetdsl.tpnet.pl ([80.55.20.90]
 	helo=evo.evopolska.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q2jv-0003jP-UY
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 11:22:00 +0100
-Date: Wed, 11 Jun 2003 12:24:15 +0200 (CEST)
+	id 19Q3al-0003zu-W0
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 12:16:36 +0100
+Date: Wed, 11 Jun 2003 13:18:57 +0200 (CEST)
 From: angainor@evo.evopolska.com
-To: Pantelis Antoniou <panto@intracom.gr>
-In-Reply-To: <3EE6FC72.10107@intracom.gr>
-Message-ID: <Pine.LNX.4.44.0306111222000.7730-100000@evo.evopolska.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1055325225.2097.38.camel@passion.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.44.0306111257110.10908-100000@evo.evopolska.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Cram FS on NAND - How to do this?
+Subject: Re: MTD drivers for DoC Millenium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > 3)  What about wear-levelling?
-> >
-> > Flash blocks do not last indefinitely.  Every erase brings the Flash
-> > block you are erasing closer to the end of its lifespan.  Obviously
-> > this is less of a concern on a static filesystem like cramfs.
-> >
-> > Why not put a cramfs filesystem into a file on a YAFFS or JFFS2
-> > filesystem and use a loopback to mount it?
-> >
-> > -Jas.
-> >
-> >
-> >
-> Again, no need for that on a read-only filesystem. The number of erases
-> I expect during the life of the device is lower than 100.
 > 
-> And using the loopback trick is impossible for the root filesystem.
-> 
+> Can you dump the contents of the media header using the DOS tools? How
+> big is the 'binary' partition? If you comment out that sanity check does
+> it actually work? 
 
-Not so impossible ;) You could load the kernel and do the mount
-within initrd, then pivot_root / chroot.
+thie chip has been formated with
 
-Cheers
+./dformat -win:e000 -y -ipl:IPL0508.BIN -s:DOC514.EXB -bdkf0:VT6027D.018  -first
 
-Marcin
+where VT6027D.018 is 262144 bytes large. That's a BIOS. With your current
+CVS updates I get the following. I suspect this behaviour results from the
+fact that my DoC is still recognized as 32MiB, where in fact it is a 64MiB 
+one. That's why the real number of units does not match the expected one.
+And bypassing sanity checks cleared my DoC, including BIOS. nice :))
+
+
+Jun 11 13:59:17 (none) syslog.warn klogd: INFTL: Media Header ->
+Jun 11 13:59:17 (none) syslog.warn klogd:     bootRecordID          = BNAND
+Jun 11 13:59:17 (none) syslog.warn klogd:     NoOfBootImageBlocks   = -1
+Jun 11 13:59:17 (none) syslog.warn klogd:     NoOfBinaryPartitions  = 1
+Jun 11 13:59:17 (none) syslog.warn klogd:     NoOfBDTLPartitions    = 1
+Jun 11 13:59:17 (none) syslog.warn klogd:     BlockMultiplerBits    = 0
+Jun 11 13:59:17 (none) syslog.warn klogd:     FormatFlgs            = 1
+Jun 11 13:59:17 (none) syslog.warn klogd:     OsakVersion           = 0x30343135
+Jun 11 13:59:17 (none) syslog.warn klogd:     PercentUsed           = 98
+Jun 11 13:59:17 (none) syslog.warn klogd:     PARTITION[0] ->
+Jun 11 13:59:17 (none) syslog.warn klogd:         virtualUnits    = 10
+Jun 11 13:59:17 (none) syslog.warn klogd:         firstUnit       = 4
+Jun 11 13:59:17 (none) syslog.warn klogd:         lastUnit        = 13
+Jun 11 13:59:17 (none) syslog.warn klogd:         flags           = 0x20000000
+Jun 11 13:59:17 (none) syslog.warn klogd:         spareUnits      = 0
+Jun 11 13:59:17 (none) syslog.warn klogd:     PARTITION[1] ->
+Jun 11 13:59:17 (none) syslog.warn klogd:         virtualUnits    = 1991
+Jun 11 13:59:17 (none) syslog.warn klogd:         firstUnit       = 15
+Jun 11 13:59:17 (none) syslog.warn klogd:         lastUnit        = 2047
+Jun 11 13:59:17 (none) syslog.warn klogd:         flags           = 0xc0000000
+Jun 11 13:59:17 (none) syslog.warn klogd:         spareUnits      = 2
+Jun 11 13:59:17 (none) syslog.err klogd: _DoC_WaitReady called for out-of-line wait
+Jun 11 13:59:17 (none) syslog.warn klogd: INFTL: Media Header sanity check failed:
+Jun 11 13:59:17 (none) syslog.warn klogd:         numvunits (1991) > 
+				nb_blocks (1024) - nb_boot_blocks(15) - 2
