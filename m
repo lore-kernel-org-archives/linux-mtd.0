@@ -1,22 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from [204.127.198.38] (helo=rwcrmhc51.attbi.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192Xfy-0005uO-0a
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 15:32:46 +0100
-Date: Mon, 7 Apr 2003 16:32:33 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Jim Zeus <jimzeus@vip.sina.com>
-Message-ID: <20030407143233.GH22630@wohnheim.fh-wedel.de>
-References: <20030404062136.7806.qmail@vip.sina.com>
-	<1049449251.1980.90.camel@passion.cambridge.redhat.com>
-	<004a01c2fcb4$8f61cf60$2a00a8c0@zhengjun>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <004a01c2fcb4$8f61cf60$2a00a8c0@zhengjun>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: MTD mail list <linux-mtd@lists.infradead.org>
-cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [SPAM] FAT on NAND
+	id 192aXk-0006MD-Gu
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 18:36:28 +0100
+Message-ID: <3E91B790.6040608@mvista.com>
+Date: Mon, 07 Apr 2003 13:38:24 -0400
+From: "George G. Davis" <gdavis@mvista.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: MTD support for Micron SyncFlash (p/n MT28S4M)?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David didn't respond (yet), so you have to settle with my words of
-lesser wisdom. :)
+Greetings,
 
-On Mon, 7 April 2003 11:19:53 +0800, Jim Zeus wrote:
-> 
-> > Windows won't recognise raw NAND flash anyway. You'll have to write
-> > _some_ kind of driver for Windows.
-> > 
-> 
-> Since the MTD block device(which include nand.c,mtdcore.c 
-> and mtdblock.c) is a block device, why I can't build
-> any filesystem on it? 
+I've noticed in the list archives that this has been asked recently. But no
+follow-ups there. So, I'm asking again, has anyone worked on MTD support for
+Micron SyncFlash p/n MT28S4M?
 
-Oh, you can. But you won't have a-d, unless you use a working nftl.
+Here's the data sheet URL for reference:
 
-> And, what's the difference between MTD block device and NFTL
-> if they stay on the same layer? Even though I cant use NFTL
-> because of some "silly patent problem" ,I still wanna know it,
-> thanks.
+	http://download.micron.com/pdf/datasheets/flash/mt28s4m16lc_6.pdf
 
-Disclaimer: I've never even tried nftl or know of anyone that has.
+I'm not finding any support for this device in current MTD CVS. I'm interested
+in getting this device supported. So if anyone has started working on support
+for this device, I'ld like to help out.
 
-Nftl (or any variant of that theme) should take care of b, d, possibly
-c and - as a side effect - also of a.
-Nftl has no knowledge about the file system on top of it. So you can
-still get the possibility of inconsistent file systems, unless you use
-some variant of ffs or a journaling file system.
+Also, FWIW, this URL seems broken for me. But more info _may_ be availble here:
 
-Whether existing implementations actually do this under all
-circumstances is highly questionable, given the userbase the code has.
-Do you own tests.
+	http://www.syncflash.com
 
-> > > 1.How unstable would it be? Does it support: 
-> > >      a.journaling (crash/power-off safe ,I mean)
-> > 
-> > No.
-> > 
-> > >      b.bad block management
-> > 
-> > No.
-> > 
-> > >      c.wear levelling
-> > 
-> > No.
-> > 
-> > >      d.error correction
-> > 
-> > No.
-> > 
-> > >      e.something else I dont know to make the FS reliable
-> > 
-> > No.
-> 
-> Then, maybe the lower layer (MTD or NFTL) support it? or all the
-> stuff(a.b.c.d.e) are supported only by the file system 
-> (JFFS2/YAFFS,I mean)?
-
-Jffs2 does support it, yaffs should also (not sure, never used it).
-
-> > But really you should have a file system directly on the flash, not a
-> > translation layer pretending to be a block device.
-> 
-> Do you mean build a totally new FS on a _bare_ NAND flash or on a MTD? 
-> You are so right, but I must build a FS which Windows can 
-> recognize and I have no enough time to do this before the time
-> limit.
-
-Mtd is as good as a bare nand. In the traditional unix world of
-character and block devices, flash is neither one nor the other. Thus,
-mtd devices were created as a third kind. They usually give you enough
-abstraction to ignore chip specifics, sometimes not even that.
-
-A *very* thin layer.
-
-Jörn
+TIA!
 
 -- 
-To recognize individual spam features you have to try to get into the
-mind of the spammer, and frankly I want to spend as little time inside
-the minds of spammers as possible.
--- Paul Graham
+Regards,
+George
