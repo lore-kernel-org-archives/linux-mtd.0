@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from fmfdns01.fm.intel.com ([132.233.247.10] helo=calliope1.fm.intel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WEBt-0005Gp-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:11:37 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <02013022481901.00763@thomas> 
-References: <02013022481901.00763@thomas>  <15998.1007200283@redhat.com> 
-To: gleixner@autronix.de
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 on NAND flash 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 31 Jan 2002 10:22:43 +0000
-Message-ID: <17832.1012472563@redhat.com>
+	id 16WEKz-0005Hb-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:21:02 +0000
+Received: from fmsmsxvs041.fm.intel.com (fmsmsxv041-1.fm.intel.com [132.233.48.109])
+	by calliope1.fm.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.49 2002/01/25 02:16:58 root Exp $) with SMTP id KAA01549
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:32:07 GMT
+Received: from fmsmsx29.FM.INTEL.COM ([132.233.42.29])
+ by fmsmsxvs041.fm.intel.com (NAVGW 2.5.1.16) with SMTP id M2002013102330019254
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 02:33:00 -0800
+Message-ID: <413FBB0BA5AED1119122000083234B1A01DD2963@alpha.igk.intel.com>
+From: "Kolakowski, Mikolaj" <Mikolaj.Kolakowski@intel.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Support for Intel 28F800B3B?
+Date: Thu, 31 Jan 2002 11:31:44 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-2"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +27,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-gleixner@autronix.de said:
->  I tried jffs2 on a NAND flash. Tracking down one ugly bug in fs/jffs2/
-> write.c  i got it basicly working ! Thanks to all of you, who did his
-> job on that jffs2/nand stuff obviously  without having access to a
-> NAND device. 
-
-Be careful. You have nothing there to make sure that it doesn't violate the 
-constraints on the number of write cycles per page. You have no ECC, you 
-have no real chance of it working in the wild.
-
-Also note that the locking in jffs2_garbage_collect_deletion_dirent() is 
-broken. We need to lock the erase_completion_lock while we go through the 
-list, and drop the lock when we read the nodes. 
-
-> jffs2_flash_writev calls mtd->writev, if available else it calls
-> mtd_fake_writev. The nand driver supports writev and does not check if
-> the  vecs[1] entry is empty. mtd_fake_writev takes care of this. I
-> suggest to do the check in jffs_write_dnode (where the wrong count
-> comes  from), although i will include a check in nand.c. This problem
-> did not show up due to the fact, that obviously none of the  FLASH
-> drivers supports writev. (I could not find one in mtd)
-
-All the writev stuff was put there for the benefit of NAND flash - so yes,
-nobody's used it yet. This problem had come up recently in the eCos port,
-but the fix hadn't yet propagated to the main tree.
-
---
-dwmw2
+I have IXP1200 eval board equiped with two 28F800B3B. Flashes are 16bit
+wide, data bus is 32 bit wide.
+These configuration works fine in RedBoot. The problem is in linux kernel
+booting, MTD doesn't recognize any flash.
+Whole flash is 0x200000 big and mapped at 0x00000000. I have tried to
+identify flashes using CFI and JEDEC probe but both failed.
+ 
+I have done some additional tests, including raw writing and reading to the
+flash, the result is that I have read always 0xfffff... instead of 
+flash data. I think that I should at least read redboot image?
+ 
+Anybody could help me?
+ 
+Mikolaj
