@@ -1,19 +1,20 @@
-Received: from gate.epygi.de ([212.126.211.241])
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CcK17-0005lL-9Y
-	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 03:51:18 -0500
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>,
-	<linux-mtd@lists.infradead.org>
-Date: Thu, 9 Dec 2004 09:51:12 +0100
-Message-ID: <NGENJJFPMHGLPILEKKAMCEBECFAA.Stephan.Linke@epygi.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1CcL0u-00068v-Ar
+	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 04:55:09 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: zhang jingxin <zhangjingxin@sict.ac.cn>
+In-Reply-To: <1102555735.2526.40.camel@z21921>
+References: <1102555735.2526.40.camel@z21921>
+Content-Type: text/plain
+Date: Thu, 09 Dec 2004 10:55:02 +0100
+Message-Id: <1102586103.3306.18.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <001c01c4dda0$839c4920$8500a8c0@nit37>
-Cc: 
-Subject: RE: MTD driver
+Cc: list <linux-mtd@lists.infradead.org>
+Subject: Re: doc2000 problem
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,117 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Subrahmanyam,
+On Thu, 2004-12-09 at 09:28 +0800, zhang jingxin wrote:
+> flash_eraseall -j /dev/mtd1
+> it doesn't recongize the device.
+> it return no such device.
 
-to setup a separate partition you should have a look at the files in mtd/maps
-directory.
+Provide the output of
 
-The rest is simple as long as you whant to access it from user space. Just use
-open/lseek/write (see man pages (2)) on either the filedescriptor of a regular
-file or the device inode of the new flash partition.
+# ls -l /dev/mtd*
 
-If you need to access the data from within kernel code it is slightly different.
-If you write to a flash partition you can find some ideas how to do it in
-mtd/maps. About writing a file from within kernel code I can only tell you that
-it is possible but I have no experience.
-
-Stephan
-
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org
-> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Subrahmanyam
-> Sent: Donnerstag, 9. Dezember 2004 04:38
-> To: linux-mtd@lists.infradead.org
-> Subject: MTD driver
->
->
->  Hi Stephen,
->
->  Yes as you have said I shall setup a dedicated partition to give access a
->  particular location in flash. We, have an Intel starta NOR flash which uses
->  cfi command set driver, which basically i guess takes care of the erase
->  operation too.  I have accessed the target through minicom tool, is this
->  where i have to set up an additional partition?, can you suggest any site
-> or
->  procedure by which I can acheive setting up an additional partition.
->
->  Yes, Thomas has suggested that i indeed use a filesystem, but how can I
-> best
->  achieve it! I mean the procedure to store data in a file.
->
->  Thanks,
->  Subrahmanyam.
->
-> >
-> > ----- Original Message -----
-> > From: "Stephan Linke" <Stephan.Linke@epygi.de>
-> > To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
-> > Cc: <linux-mtd@lists.infradead.org>
-> > Sent: Wednesday, December 08, 2004 03:33 PM
-> > Subject: RE: MTD driver
-> >
-> >
-> >> Hi,
-> >>
-> >> you may setup a dedicated partition that gives you access to the
-> >> particular
-> >> location in the flash where you whant to place this data. Then you can
-> >> use
-> >> normal open() read() write() and seek() functions to access what ever
-> >> byte in
-> >> this partition. How to erass a block you can look up in one of the MTD
-> >> tools.
-> >> (Only if you are using NAND flash you should not do it like this since
-> >> bad block
-> >> handling whould be missing.)
-> >> But I aggree with Thomas. Best whould be to put it into a filesystem...
-> >>
-> >> Stephan
-> >>
-> >>
-> >>> -----Original Message-----
-> >>> From: linux-mtd-bounces@lists.infradead.org
-> >>> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Thomas
-> >>> Gleixner
-> >>> Sent: Mittwoch, 8. Dezember 2004 07:37
-> >>> To: Subrahmanyam
-> >>> Cc: linux-mtd@lists.infradead.org
-> >>> Subject: Re: MTD driver
-> >>>
-> >>>
-> >>> On Tue, 2004-12-07 at 09:16 +0530, Subrahmanyam wrote:
-> >>> >  Hi,
-> >>> >
-> >>> >  I need to provide an user interface/GUI wherein when a certain data
-> >>> > (string/key) is entered, it should basically store the key in the
-> >>> > flash
-> >>> > (this basically happens during run time after the target has been
-> >>> identified
-> >>> > by the host).
-> >>> >
-> >>> > In the target we have a flash in which there is jffs2 file system and
-> >>> > also
-> >>> > mtd drivers, since i need to store block oriented data, i am looking
-> >>> > at the
-> >>> > possiblity of using mtd driver and storing data(key) in a particular
-> >>> > location in flash. How should i proceed in acheiving the same.
-> >>>
-> >>> Is there any good reason, why the key cannot be stored on the already
-> >>> available jffs2 filesystem ?
-> >>>
-> >>> tglx
-> >>>
-> >>>
-> >>>
-> >>> ______________________________________________________
-> >>> Linux MTD discussion mailing list
-> >>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >>>
-> >>
-> >
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+tglx
