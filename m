@@ -1,24 +1,39 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from lightning.swansea.uk.linux.org ([194.168.151.1] helo=the-village.bc.nu)
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11IJ6M-0001fb-00
-	for mtd@infradead.org; Sat, 21 Aug 1999 22:55:02 +0100
-Subject: Re: First release of write support for DiskOnChip 2000
-To: David.Woodhouse@mvhi.com (David Woodhouse)
-Date: Sat, 21 Aug 1999 22:54:15 +0100 (BST)
-Cc: mtd@infradead.org, linux-kernel@vger.rutgers.edu
-In-Reply-To: <E11Hr6R-0006rr-00@devel2.axiom.internal> from "David Woodhouse" at Aug 20, 99 05:01:15 pm
-Content-Type: text
-Message-Id: <E11IJ5d-0000ys-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+	id 11LjkV-0007ve-00
+	for mtd@infradead.org; Tue, 31 Aug 1999 09:58:39 +0100
+To: Mike Kilburn <mkilburn@ftel.net>
+Cc: mtd@infradead.org
+Subject: Re: DiskonChip2000 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 31 Aug 1999 09:58:37 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E11LjkT-0003Vg-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-> proper arbitration of access to the flash other than sti(), and some other 
-> cleanups. My request for clever people who know about Reed-Solomon ECC codes 
-> to package up their brain and send it to me still remains.
 
-Look in drivers/char/ftape/lowlevel/ftape-ecc.c
+mkilburn@ftel.net said:
+> I've got a DiskOnChip2000 and Linux drivers from M-systems web page. I
+> would like to use your drivers instead. Do I need to program the flash
+> with the alternate firmware for Linux or do your drivers work with the
+> normal firmware?
+
+My drivers don't quite work with the normal firmware yet - although my NFTL 
+driver was written from the specification which M-Systems gave me, there are 
+subtle differences between my understanding (and hence my implementation) of 
+NFTL and their implementation, which means that their driver doesn't always 
+recognise the NFTL after I've been writing to it.
+
+I hope to get that fixed soon.
+
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
 
 
 
