@@ -1,47 +1,83 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JwT1-0001vw-00
-	for mtd-list@infradead.org; Wed, 02 Aug 2000 12:13:43 +0100
-Date: Wed, 2 Aug 2000 13:13:34 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
-To: Markus Thiesmeyer <mthi@gmx.de>
-cc: David Woodhouse <dwmw2@infradead.org>, mtd@infradead.org
-Subject: Re: Is JFFS a full featured filesystem?
-In-Reply-To: <002a01bffbd5$6e5da560$fd8907d4@gallien>
-Message-ID: <Pine.LNX.3.96.1000802130539.27452A-100000@biffen.cendio.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13Jx0z-00021r-00
+	for mtd-list@infradead.org; Wed, 02 Aug 2000 12:48:49 +0100
+Received: from [213.255.48.147] (helo=giga.prosa.it ident=root)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13Jx0y-00021l-00
+	for mtd@infradead.org; Wed, 02 Aug 2000 12:48:48 +0100
+Received: from localhost (root@localhost [127.0.0.1])
+	by giga.prosa.it (8.9.3/8.9.3/Debian/GNU) with ESMTP id NAA06446
+	for <mtd@infradead.org>; Wed, 2 Aug 2000 13:47:49 +0200
+Date: Wed, 2 Aug 2000 13:48:51 +0200
+From: Ciro Cattuto <ciro@prosa.it>
+To: mtd@infradead.org
+Subject: DOC2000 & NFTL problems
+Message-ID: <20000802134851.A2924@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, 1 Aug 2000, Markus Thiesmeyer wrote:
+Hello,
 
-> Hello,
-> 
-> I've integrated the JFFS into a 2.2.16 kernel and it works almost fine.
-> But I cannot use an editor like pico to create a file on a JFFS-filesystem. It leads to an serious error. Other operations like copying or moving files are no problem.
-> So I've written a small program which uses file-mapping to change given files. And the results were very strange: When I run this application it should open a file called map.txt and change the first bytes into the sequence "abcdef...xyz". But when I read the file after I've run that application, the file seems to be unchanged. Changes appear first when I unmount that fs and mount in again. Then the file looks like a concatenation of the unchanged and the changed version.
-> 
-> Is this a bug? And if it is a bug, is this a known bug?
+I decided to give a try to the DOC2000/NFTL driver included in mtd.
+I have an Eurotech PC104 SBC with a DOC socket. I'm using a 2 Mb DOC2000,
+enabled in the SBC BIOS and mapped at 0xd8000.
 
-Well, i haven't had time to work on jffs lately so i haven't talked much
-about this... But, as currently implemented, writing to mmaped jffs files
-is serioiusly broken. Of the address space operations only readpage is
-implemented. To get a correcly working mmap implementation writepage and
-prepare_write_page (or whatever it's called, don't have source handy right
-now) should be implemented. This could cause consistancy problems though,
-because we're not using the (possibly modified) mmaped data when writing
-directly to a file, we also in some way guarantee that all writes are
-done to the log in the correct order. It will also be an inefficient way
-to write data to jffs, since we have to rewrite whole pages instead of
-only the written part.
+Under DOS everything works fine: the systems detects, identifies and
+formats the DOC. Everything is also fine with the binary-only Linux driver
+provided by M-Systems, under Linux 2.0.38.
 
-All this, and the fact that the missing needed mutex around the writing to
-the log makes the jffs filesystem quite seriously borked. It can be used,
-but it's *clearly* marked experimental in the config, and should be
-treated so.
+Next, I try Linux 2.2.16 with the mtd driver and patch.
 
-/ Alex (On vacation)
+ ---------------------------------------------------------------------
+ M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+ DiskOnChip 2000 found at address 0xD8000
+ 1 flash chips found. Total DiskOnChip size: 2 Mb
+ Ignoring DiskOnChip 2000 at 0xDA000 - already configured
+ M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
+ $Id: nftl.c,v 1.37 2000/07/26 10:02:27 dwmw2 Exp $
+ ---------------------------------------------------------------------
+
+...then I get the following message, repeated for all EUNs (0-511)...
+
+ ---------------------------------------------------------------------
+ EUN 506: EraseMark not 0x3c69 (0xffff 0xffff instead)
+ ---------------------------------------------------------------------
+
+...and when it comes to detecting the partition, I get:
+
+ ---------------------------------------------------------------------
+  nftla: unknown partition table
+ ---------------------------------------------------------------------
+
+NOTE: there _is_ a valid NFTL partition on the DOC, while the above happens.
+
+Okay, now I try to format the DOC using nftl_format: no errors.
+When I try to fdisk /dev/nftla, though, I get an invalid partition table.
+Any attempt to write a new partition table results in the following:
+
+ ---------------------------------------------------------------------
+ NFTL_writeblock(): Cannot find block to write to
+ end_request: I/O error, dev 5d:00 (unknown), sector 2
+ No Virtual Unit Chains available for folding. Failing request
+ Cannot make free space.
+ ---------------------------------------------------------------------
+
+...I'm probably missing something obvious, but I would still appreciate
+some feedback on this problem. Thank you.
+
+Cheers,
+
+Ciro
+
+-- 
+Ciro Cattuto, Open Source Developer, Linuxcare Italia SpA
+Tel. +39.338.3002140  Fax +39.049.8036484 
+ciro@linuxcare.com    http://www.linuxcare.com/
+ciro@prosa.it         http://www.prosa.it/
+Linuxcare. Support for the revolution.
 
 
 
