@@ -1,21 +1,17 @@
-Received: from rm-rstar.sfu.ca ([142.58.120.21] ident=root)
+Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17uHet-00044n-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 20:17:16 +0100
-Received: from fraser.sfu.ca (btlee@fraser.sfu.ca [142.58.101.25])
-	by rm-rstar.sfu.ca (8.12.5/8.12.5/SFU-5.0H) with ESMTP id g8PJHANs005226
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 12:17:11 -0700 (PDT)
-From: Benjamin Tze-Kit Lee <btlee@sfu.ca>
-Received: (from btlee@localhost)
-	by fraser.sfu.ca (8.9.2/8.9.2/SFU-5.0C) id MAA24221
-	for linux-mtd@lists.infradead.org; Wed, 25 Sep 2002 12:17:10 -0700 (PDT)
-Message-Id: <200209251917.MAA24221@fraser.sfu.ca>
-Subject: lisencing issues on JFFS2/MTD
+	id 17uQMi-0004tt-00
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2002 05:35:04 +0100
+Received: from [213.9.248.55] (helo=linux.local)
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 17uQMf-0000hH-00
+	for linux-mtd@lists.infradead.org; Thu, 26 Sep 2002 05:35:02 +0100
+From: "Thierry Vanhoudt" <sales@smokersassociation.co.uk>
+Subject: Discounted Tobacco
 To: linux-mtd@lists.infradead.org
-Date: Wed, 25 Sep 2002 12:17:10 -0700 (PDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Reply-To: sales@smokersassociation.co.uk
+Date: Thu, 26 Sep 2002 03:48:51 +0200
+Message-Id: <E17uQMf-0000hH-00@phoenix.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,14 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Dear Sir or Madam
 
-What would the liscencing issues if I were to modify JFFS2/MTD and use it 
-on a different OS in my embedded system application and sell it as a 
-product?
+In the past you have requested information on discounted products. We hope that you find this of interest. If you are not a smoker, and find this email offensive, we sincerely apologise!  We will be only too happy to take you off our mailing list.
 
-Where should I go to look for that answer?
+If you are a smoker, however, and are fed up with paying high prices for your cigarettes and tobacco, take a look at what we have to offer  by clicking on this link.
+http://www.smokersassociation.co.uk/?S=13&ID=2
 
-Thank you very much.
+We can send you, legally, by registered air mail, direct to your door, 4 cartons of cigarettes or 40 pouches of rolling tobacco (all brands are available) from only 170 Euros - about 105 pounds - fully inclusive of postage and packing.  Why pay more?
 
-Ben
+To remove yourself from our mailing list, please click below
+mailto:unsubscribe@smokersassociation.co.uk
+
+Yours faithfully.
+Smokers Association
+
+http://www.smokersassociation.co.uk/?S=13&ID=2
+
+xay5331821y
