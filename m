@@ -1,19 +1,17 @@
-Received: from [62.99.145.147] (helo=mail.it-technology.at)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eE7y-00040l-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 13:16:54 +0100
-Received: from it-technology.at (localhost [127.0.0.1])
-	by mail.it-technology.at (Postfix) with SMTP id 1A70420C3B
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 14:16:54 +0200 (CEST)
-Message-ID: <46164.62.99.145.150.1029154614.squirrel@www.it-technology.at>
-Date: Mon, 12 Aug 2002 14:16:54 +0200 (CEST)
-Subject: mtdblock and preempt patch
-From: "Peter Holik" <peter.holik@it-technology.at>
-To: <linux-mtd@lists.infradead.org>
-Reply-To: peter.holik@it-technology.at
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+	id 17eERf-00044b-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 13:37:15 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <46164.62.99.145.150.1029154614.squirrel@www.it-technology.at> 
+References: <46164.62.99.145.150.1029154614.squirrel@www.it-technology.at> 
+To: peter.holik@it-technology.at
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtdblock and preempt patch 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 12 Aug 2002 13:37:09 +0100
+Message-ID: <28045.1029155829@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Everything works as expected without the preempt patch.
+peter.holik@it-technology.at said:
+>  Everything works as expected without the preempt patch.
 
-I'm using cfi_cmdset_0001, jedec_probe, physmap and mtdblock with
-a 512kByte Intel Flash.
+I thought the preempt patches for 2.4 were known to be broken. Does it 
+happen in 2.5?
 
-But with the patch after 3 to 5 times of copy a file to /dev/mtdblock0
-linux userspace stops working.
-
-Reading from /dev/mtdblock0 produces after 3 to 5 times a reboot.
-
-any hints?
-
-Peter
+--
+dwmw2
