@@ -1,18 +1,21 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAqnd-0000Jw-GK
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 09:44:06 -0500
-Message-ID: <4235A298.50908@yandex.ru>
-Date: Mon, 14 Mar 2005 17:41:28 +0300
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: "Robert P. J. Day" <rpjday@mindspring.com>
+	id 1DAr2l-0000Vd-Jc
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 09:59:44 -0500
+Date: Mon, 14 Mar 2005 15:59:48 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050314145948.GB17977@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.61.0503121217090.24583@localhost.localdomain>
 	<20050314141509.GA17590@wohnheim.fh-wedel.de>
-In-Reply-To: <20050314141509.GA17590@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+	<4235A298.50908@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4235A298.50908@yandex.ru>
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	"Robert P. J. Day" <rpjday@mindspring.com>
 Subject: Re: how to access jffs2 partition properties?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,15 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Not all mtd are flash based.  Mtd code should have zero knowledge
-> about chip, start address, etc.  If you need that information, you
-> have to tweak the mapping driver to give it out.
->=20
-> J=F6rn
+On Mon, 14 March 2005 17:41:28 +0300, Artem B. Bityuckiy wrote:
+> 
+> >Not all mtd are flash based.  Mtd code should have zero knowledge
+> >about chip, start address, etc.  If you need that information, you
+> >have to tweak the mapping driver to give it out.
+> 
+> May be /proc/mtd is what you are looking for ?
 
-May be /proc/mtd is what you are looking for ?
+Nope.  mphysmap (the old version from several years ago) created its
+own proc file.  That one, in combination with /proc/mtd would contain
+the necessary information.
 
---=20
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+New mphysmap is missing the proc file.  And the person that requested
+the driver has been silent for a while, so I have no idea if it even
+works.  Lack of hardware.
+
+Jörn
+
+-- 
+When in doubt, use brute force.
+-- Ken Thompson
