@@ -1,88 +1,122 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14px7y-0008WG-00
-	for mtd-list@infradead.org; Wed, 18 Apr 2001 19:56:34 +0100
-Received: from mail1.danielind.com ([12.19.96.6])
+	id 14pxVw-0000bm-00
+	for mtd-list@infradead.org; Wed, 18 Apr 2001 20:21:20 +0100
+Received: from mailc.telia.com ([194.22.190.4])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14px7x-0008VA-00
-	for mtd@infradead.org; Wed, 18 Apr 2001 19:56:33 +0100
-Message-ID: <3ADDE38C.249F0A11@daniel.com>
-Date: Wed, 18 Apr 2001 13:57:16 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+	id 14pxVu-0000bg-00
+	for mtd@infradead.org; Wed, 18 Apr 2001 20:21:18 +0100
+Message-ID: <003501c0c83d$36d89de0$d897143e@jocke>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: "Vipin Malik" <vipin.malik@daniel.com>
+Cc: <mtd@infradead.org>
+References: <001001c0c826$63b43200$0a01a8c0@Win1> <3ADDCACB.15BF0590@daniel.com>
+Subject: Re: JFFS2 as root FS
+Date: Wed, 18 Apr 2001 21:24:32 +0200
 MIME-Version: 1.0
-To: Marcio Koch <koch@inf.pucrs.br>
-CC: jffs-dev <jffs-dev@axis.com>, mtd <mtd@infradead.org>
-Subject: Re: Intel Flash
-References: <20010418154546.C6248@sirrah.inf.pucrs.br> <20010418155001.A6711@sirrah.inf.pucrs.br>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Marcio Koch wrote:
 
-> TE28F320
+----- Original Message -----
+From: "Vipin Malik" <vipin.malik@daniel.com>
+To: <joakim.tjernlund@lumentis.se>
+Cc: <mtd@infradead.org>
+Sent: den 18 april 2001 19:11
+Subject: Re: JFFS2 as root FS
 
-^^^^^^^^^^^^^ This is the part #. You can ignore the rest of the stuff.
-Go to www.intel.com and download the datasheet on this part and see if it is a
-CFI compatable NOR flash or not.
 
-If not CFI, but is NOR, then try to use the JDEC module, rather than the CFI
-module. If Not NOR (i.e. if NAND)
-then I don't know.
+> Joakim Tjernlund wrote:
+>
+> > Hi there
+> >
+> > Has anybody managed to get a root FS with JFFS2 to work?
+>
+> Sure! But as you say that you followed the HOWTO, and since I wrote the
+> HOWTO,
+> I guess that something in my procedures tripped you up that worked ok for
+> me :)
 
-Hope this helps.
-
-Vipin
-P.S. This is really a MTD issue and you will probably have more luck posting
-to that list. I've CC to that list if you
-need the email.
+Dont think so, I think it's me :-)
 
 >
-> B3BA110
-> U9490626A
-> (c)1998
 >
-> Does anybody know if this flash is supported by linux ? If so what kernel
-> and mtd code should I use ?
+> >
+> > I followed the mtd howto and I have a root partition(with the necessary
+> > files) and
+> > all I get is: "Kernel panic: I have no root and I want to scream"
+> > message.
 >
-> For MPC8xx.
+> Hmm, what kernel version are you using? I've never seen that message (I've
+> seen Kernel panic: Unable to open root..blah blah..)
+
+I using a 2.4 kernel I pulled from Cort Dougan's PPC tree a few weeks ago.
+Can't remeber which version rigth now, I will have to check when I get back
+to work tomorrow. Should I change to the latest official kernel(2.4.3)?
+
 >
-> I'm using kernel 2.4.3-pre4 and it fails when I try to load the physmap
-> module.
 >
-> Here is what I did and the error I got:
+> >
+> >
+> > first I tried to use "rdev zvmlinux /dev/mtdblock1", but
+> > the kernel ignored that an did a NFS mount as usual.
 >
-> sh-2.03# modprobe -a mtdchar mtdblock cfi_cmdset_0001  map_rom cfi_probe
-> sh-2.03# lsmod
-> Module                  Size  Used by
-> cfi_probe               7920   0  (unused)
-> map_rom                 1072   0  (unused)
-> cfi_cmdset_0001         8000   0  (unused)
-> mtdblock                6528   0  (unused)
-> mtdchar                 5408   0  (unused)
-> mtdcore                 2976   2  [mtdblock mtdchar]
-> sh-2.03# modprobe -a physmap
-> physmap flash device: 3fffff at fe000000
-> Physically mapped flash: Found no CFI device at location zero
-> /lib/modules/2.4.3-pre4/kernel/drivers/mtd/physmap.o: init_module: Device
-> not configured
-> Hint: insmod errors can be caused by incorrect module parameters, including
-> invalid IO or IRQ parameters
-> /lib/modules/2.4.3-pre4/kernel/drivers/mtd/physmap.o: insmod
-> /lib/modules/2.4.3-pre4/kernel/drivers/mtd/physmap.o failed
-> /lib/modules/2.4.3-pre4/kernel/drivers/mtd/physmap.o: insmod physmap failed
+> Wait, wait, wait. What do you mean by this? This is *a problem* right
+> here.
 >
-> Any help would be appreciated.
+> Why is it doing a NFS mount? Please describe your config and what you are
+> trying to do.
+> "usual" kernels don't NFS mount their root fs!
+
+I am using an RPX CLLF board with a PPC869T. I found a config under
+arch/ppc/defconfigs
+(If my memory don't fail me)
+
+In that config there were an automount(??) option enabled and a Root fs on
+NFS option also
+enabled.  I will  disable them and se what happens.
+
+
 >
-> Thanks,
 >
-> Marcio Koch
-> koch@inf.pucrs.br
-> PUCRS/ELinux
 >
-> To unsubscribe from this list: send the line "unsubscribe jffs-dev" in
-> the body of a message to majordomo@axis.com
+> > I then
+> > specified on the kernel commad line: root=/dev/mtdblock1
+> > and the I got the kernel panic above.
+>
+> Well, the kernel may not be able to understand the "mtdblock1" device by
+> name unless you patched
+> the init/main.c file to list a conversion table from mtdblockxx to a
+> *device number*.
+
+Well, this I have not done. Cant remember I saw that in the mtd howto, is
+that patch
+included in later kernels?
+
+
+
+Other questions i have:
+
+  Is mkfs.jffs2 Endian safe? I mean can I run mkfs.jffs2 on an Intel PC and
+then copy it to my RPX board?
+
+  Is there a way to disable compression in JFFS2?
+
+I have also noted that sym links in JFFS2 have zero size,  a bug?
+
+>
+>
+> >
+> >
+> > Any Ideas?
+>
+> These are some.
+>
+> Vipin
+>
 
 
 
