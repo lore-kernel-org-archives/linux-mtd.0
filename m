@@ -1,45 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Moln-0002ud-00
-	for mtd-list@infradead.org; Thu, 10 Aug 2000 10:36:59 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13Moll-0002uX-00
-	for mtd@infradead.org; Thu, 10 Aug 2000 10:36:57 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-In-Reply-To: <20000809204516.24763.qmail@web5304.mail.yahoo.com> 
-References: <20000809204516.24763.qmail@web5304.mail.yahoo.com> 
-To: Juan Gonzo <kayemmess@yahoo.ca>
-Cc: MTD Mailing List <mtd@infradead.org>
-Subject: Re: compile errors - missing .h? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 10 Aug 2000 10:36:49 +0100
-Message-ID: <14125.965900209@cygnus.co.uk>
+	id 13MrWG-0003Fb-00
+	for mtd-list@infradead.org; Thu, 10 Aug 2000 13:33:08 +0100
+Received: from pat.uio.no ([129.240.130.16])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13MrWE-0003FV-00
+	for mtd@infradead.org; Thu, 10 Aug 2000 13:33:07 +0100
+Received: from ifi.uio.no ([129.240.64.2])
+	by pat.uio.no with esmtp (Exim 2.12 #7)
+	id 13MrWA-0001X4-00
+	for mtd@infradead.org; Thu, 10 Aug 2000 14:33:02 +0200
+Received: from ganglot.ifi.uio.no (1824@ganglot.ifi.uio.no [129.240.66.26])
+	by ifi.uio.no (8.8.8/8.8.7/ifi0.2) with ESMTP id OAA18986
+	for <mtd@infradead.org>; Thu, 10 Aug 2000 14:33:02 +0200 (MET DST)
+To: mtd@infradead.org
+Subject: Has MTD production quality support for DOC2000?
+From: Sigurd Urdahl <sigurdur@ifi.uio.no>
+Date: 10 Aug 2000 14:33:02 +0200
+Message-ID: <ylb66p947pd.fsf@ganglot.ifi.uio.no>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-kayemmess@yahoo.ca said:
->  I am not sure if I followed you instructions correctly, but I can't
-> get the latest CVS code for JFFS to compile. 
+I'm quite new at embedding my penguin, and will have to embedd it on a
+DOC2000. But since I'm new at this I am quite confused... I am
+considering going with MTD instead of m-sys drivers, but after
+searching the archives I'm still not sure on wether MTD is stable
+enough for production or not, so please help:=)
 
-The compiler is finding an old version of jffs.h. Did you 'cvs update' in 
-or above the ~/armbuild/mtd/mtd/include/linux/ directory, or only in the 
-~/armbuild/mtd/mtd/fs/jffs/ directory?
+-sig
 
-Make sure that it can find this version:
-	$Id: jffs.h,v 1.11 2000/08/04 12:46:34 dwmw2 Exp $
-
-The old version could be in ~/armbuild/linux/include/linux/jffs.h if you 
-ever tried to build JFFS into the kernel.
-
-
-
---
-dwmw2
-
-
+-- 
+sigurd urdahl
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
