@@ -1,19 +1,16 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=Dual166.localdomain)
+Received: from i3micro-gw1.dcs.net ([217.78.32.2] helo=mail.i3micro.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Z3K6-0002Og-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 05:11:46 +0000
-Received: from nt40server ([192.168.1.101])
-	by Dual166.localdomain (8.9.3/8.9.3) with SMTP id VAA22727
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Feb 2002 21:21:08 -0800
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Flash left in a write mode
-Date: Thu, 7 Feb 2002 21:22:20 -0800
-Message-ID: <NCBBIINEHIPFGJPLBEIFMEBBDEAA.acurtis@onz.com>
+	id 16Z4xY-0002Tt-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 06:56:36 +0000
+Message-ID: <3C6378F1.78EEA1BB@i3micro.com>
+Date: Fri, 08 Feb 2002 08:06:25 +0100
+From: Arne Jonsson <arne.jonsson@i3micro.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: acurtis@onz.com
+CC: linux-mtd@lists.infradead.org
+Subject: Re: Flash left in a write mode
+References: <NCBBIINEHIPFGJPLBEIFMEBBDEAA.acurtis@onz.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -26,16 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have observed a problem where the flash is left in a write mode even after
-the file-system is unmounted. (Intel Strata flash, cmdset_0001.c)
+Hi!
 
-The problem is this: if the flash is written to and then the system is
-immediately rebooted, the flash is left in a write state. (if you read it
-you get status information not flash contents.) If you then try to boot off
-of this device, it will fail. If you read the flash, with a "dd" command for
-instance, then you can reboot successfully.
+Another problem is when you have your interrupt vectors stored
+in the flash you are accessing.
+If you get an interrupt and have unlocked the flash your interrupt
+vectors are not seen by the CPU, and off you go into the deep binary
+space.
+I had to disable interrupts at all times when the flash was "unlocked".
+Maybe this is something that we could have a switch/define for ?
+Putting the boot address and hard interrupt vectors in the same address
+range
+is IMHO _very_ bad chip design.
+Another approach would be to have external hardware for the boot vector,
+switching to the flash and have RAM at the address of the interrupt
+vectors, but the extra HW is an extra cost.
 
-I am surprised that this problem has not been reported. It should be an easy
-fix. (something that I will handle in BIOS code until it is patched.)
+Best regards,
+/Arne Jonsson
 
-Thanks
+-- 
+Arne Jonsson
+i3 micro technology AB
+Phone:+46-8-506 388 00
+Fax:  +46-8-506 388 75
