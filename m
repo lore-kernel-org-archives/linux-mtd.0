@@ -1,19 +1,17 @@
-Received: from lorica.ucc.usyd.edu.au ([129.78.64.15])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 152Qca-0005g4-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 05:51:48 +0100
-Received: from heroditus (mridley@pc-180.acfr.usyd.edu.au [129.78.210.180])
-	by lorica.ucc.usyd.edu.au (8.9.3/8.9.3) with SMTP id OAA07990
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 14:55:47 +1000 (EST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Matthew Ridley <m.ridley@acfr.usyd.edu.au>
-To: linux-mtd@lists.infradead.org
-Subject: Ampro P5e and DOC2000
-Date: Wed, 23 May 2001 14:53:29 +1000
-MIME-Version: 1.0
-Message-Id: <01052314532904.01143@heroditus>
-Content-Transfer-Encoding: 8bit
+	id 152Veu-0005wX-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 11:14:28 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F1BD619B2A58D41197990050DA2C08E40258E4@SLINK12> 
+References: <F1BD619B2A58D41197990050DA2C08E40258E4@SLINK12> 
+To: Jan Rovins <Jan.Rovins@radisys.com>
+Cc: linux-mtd@lists.infradead.org, Steve Ferri <steve.ferri@radisys.com>
+Subject: Re: MTD on a Motorola MPCN765 ? (32 bit linux and 64 bit flash) 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 23 May 2001 11:18:31 +0100
+Message-ID: <32329.990613111@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,12 +23,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Does anyone have any hot tips and suggestions for using this particular setup.
-The DOC & system bios are shared in the same NAND flash so frequent trashing 
-of the bios occurs (when you don't read the instructions)
 
-However the linux driver detects a DOC at 0xFFFFe000, which in actual fact is 
-where the system bios is supposedly stored. It detects another elsewhere too.
+Jan.Rovins@radisys.com said:
+>  I was using partitions before, mostly to isolate & protect the boot
+> image. Can I have a setup that uses separately mapped devices and
+> multiple partitions at the same time? (I am having trouble visualizing
+> this) 
 
-When I find time I will read into it more, but in the meantime has anyone 
-figured this one all out yet ?
+Yeah, that's fine. You just call add_mtd_partitions() twice.
+
+
+>  Separate chip mappings also would imply that I would have to alter
+> the read(), write() copy_to/from() functions to skip over the bytes
+> that would show up in the other mapping, since my address lines are
+> wired up to treat the four chips as one range.
+
+Yep.
+
+
+--
+dwmw2
