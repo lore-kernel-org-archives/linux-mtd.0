@@ -1,41 +1,44 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from mail1.danielind.com ([12.19.96.6])
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11lXpi-0006TS-00
-	for mtd@infradead.org; Wed, 10 Nov 1999 13:30:42 +0000
-To: mtd@infradead.org
-Cc: postmaster@igc.org
-Subject: Mailing list admin stuff.
-Mime-Version: 1.0
+	id 11pveT-0005yx-00
+	for mtd@imladris.mvhi.com; Mon, 22 Nov 1999 15:45:14 +0000
+Message-ID: <3839651A.4D22A6F3@danielind.com>
+Date: Mon, 22 Nov 1999 09:45:30 -0600
+From: Vipin Malik <vmalik@danielind.com>
+MIME-Version: 1.0
+To: MTD <mtd@imladris.mvhi.com>
+Subject: Reliability of FLASH data storage
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 10 Nov 1999 13:30:41 +0000
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11lXph-0000eb-00@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've removed l-linux-mtd@igc.org from the list subscription because it keeps 
-getting bounced:
+Hi all, going through the list archive at the web site I did not find
+any discussion on the reliability of data storage during writes to
+FLASH.
 
-  l-linux-mtd@igc.org:
-    (generated from mtd-list@imladris.demon.co.uk):
-    SMTP error from remote mailer after RCPT TO:
-    <l-linux-mtd@igc.org>:
-    host mx7.mindspring.com [207.69.200.37]:
-    550 User unknown
+By reliability I mean, when data is being stored onto a flash sector,
+what happens when power is suddenly and without warning removed?
 
-Also, I've started subscribing to ORBS, which means if your mail servers are
-misconfigured, you may not be able to send mail to infradead.org
+I am thinking of using Linux in embedded systems for future (and
+current) projects. Reliable storage of data is very important in
+embedded systems. More important than speed of access etc. Of course
+cost is also very important- hence
+the desire to use a flash file system rather than IDE flash disk (which
+has its own reliability problems, as I found).
 
-If this bites you, see http://www.orbs.org/ and fix your servers.
+would love to hear your guys thoughts on this issue. Reading the archive
+I got the impression that others are also using/thinking of using Linux
+in their embedded systems.
 
+Vipin
+_______________________________________________________________________________
 
-----                                ----                                 ----
-David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
- Project Leader,    Process Information Systems     Mobile: (+44) 7976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
-
+Daniel Industries
+Houston, TX.
+***All comments are my personal opinion and do not reflect the position
+of my company in any way.***
 
 
 
