@@ -1,23 +1,17 @@
-Received: from ns2.discountwebhost.com ([64.170.22.131] helo=ns1.discountwebhost.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17c9iS-0007F8-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 20:10:00 +0100
-Message-Id: <5.1.0.14.0.20020806140518.02d03890@ns.webzsite.com>
-Date: Tue, 06 Aug 2002 14:08:54 -0500
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: MTD Partition problems
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20020803235032.GA8021@wohnheim.fh-wedel.de>
-References: <5.1.0.14.0.20020803112646.00ace9d8@64.170.22.132>
- <5.1.0.14.0.20020803074026.02927a48@64.170.22.132>
- <AB8D0DF31D9BD511BE94000347959DC901996389@MXSFRCOHOU01>
- <AB8D0DF31D9BD511BE94000347959DC901996389@MXSFRCOHOU01>
- <5.1.0.14.0.20020803074026.02927a48@64.170.22.132>
- <5.1.0.14.0.20020803112646.00ace9d8@64.170.22.132>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Received: from esteem.com ([198.65.249.253])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17cALd-0007Hh-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 20:50:29 +0100
+Message-ID: <3D5028B7.22893B6E@esteem.com>
+Date: Tue, 06 Aug 2002 12:51:19 -0700
+From: Conn Clark <clark@esteem.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: Need help getting JFFS2 working with kernel 2.4.19
+References: <3D4FFA9B.2C693A02@esteem.com>  <3D4EDA18.C77AEDA@esteem.com> <25573.1028653616@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,74 +23,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> > However, if one ignores the duplicated devices, one can still use
-> > partitioning and mount a JFFS2 fs on one of the partitions while having
-> > something completely different on another and device access locking=20
-> will be
-> > taken care of by the mtd driver (which is essentially what partitioning
-> > provides vs. just calling add_mtd() NUM_PARTITION times in your map=20
-> file on
-> > the same flash chip).
->
->Yes. The partitioning code basically checks the limits and hands the
->work to the base device with adjusted offset.
->
-> > Additionally, (say) /dev/mtdblock2 will really provide a handle to
-> > /dev/mtd4 the writable third partition on the partitioned flash chip,=
- thus
-> > mounting the JFFS2 fs on the partition originally intended (the third
-> > partition).
->
->Almost. /dev/mtd4 should be minor number 8. If you check
->/usr/src/linux/Documentation/devices.txt, you will read the following:
->                   0 =3D /dev/mtd0         First MTD (rw)
->                   1 =3D /dev/mtdr0        First MTD (ro)
->Thus mtd0 has minor 0, mtd1 has minor 2, ...
->
->Also, the third partition is /dev/mtd3, as /dev/mtd0 is the real
->device. Look at the minor numbers for /dev/hda*, just the same.
+David Woodhouse wrote:
+> 
+> clark@esteem.com said:
+> >
+> >       I figured it out. The jffs2 zlib was conflicting with the zlib used
+> > bye ppp compresion. I just had to remove zlib.o from the COMPR_OBJS
+> > definition in the Makefile.
+> 
+> There's a better fix in 2.4.20-pre2 and at
+> ftp.kernel.org:/pub/linux/kernel/people/dwmw2/shared-zlib/
+> 
+> Get the latest patch (2.4.19-pre10) and it should apply to most 2.4 kernels.
+> 
+> --
+> dwmw2
 
 
-I got the JFFS2 to mount on /dev/mtdblock2 (most of the partition was=20
-erased. I must have passed the wrong size to the mtd_debug erase. There was=
-=20
-some garbage at the end).
+I take it that this patch wasn't submitted to Marcelo or Marcelo didn't get
+it integrated the final 2.4.19 then?
 
-Anyway, thanks for the explanations.
-
-Vipin
+Is there anything else I need to do or will the patch fix everything?
 
 
->But what you *meant* is correct.
->
-> > Unfortunately, my tests indicate that this is not happening. I know that
-> > /dev/mtdblock2 (the intended third partition) is formatted. However=
- JFFS2
-> > finds data here and refuses to mount on it. I think it is really being
-> > passes a handle to and accesses /dev/mtd2, which is the wrong partition.
->
->See above.
->
-> > /dev/mtdblock[4,5] do not exist, even though /dev/mtd[4,5] do and=20
-> /dev/mtd4
-> > is the correct partition that I want!
->
->See above.
->
-> > Argh! I'll try your patches if you like.
->
->I would be happy if you did. But you don't need my patches, unless you
->have more than one device that you want to partition. With the two
->thinkos out of the way, you should be doing fine. :)
->
->J=F6rn
->
->--
->Mundie uses a textbook tactic of manipulation: start with some
->reasonable talk, and lead the audience to an unreasonable conclusion.
->-- Bruce Perens
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks
+
+	Conn	
+
+
+-- 
+
+*****************************************************************
+  If you live at home long enough, your parents will move out.
+ (Warning they may try to sell their house out from under you.)
+*****************************************************************
+
+Conn Clark
+Engineering Stooge				clark@esteem.com
+Electronic Systems Technology Inc.		www.esteem.com
+
+Stock Ticker Symbol				ELST
+
+"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
+ This email address may be used to communicate to Conn Clark
+ provided it is not being used for advertisement purposes, unless
+ prior written consent is given. This email address may not be 
+ sold under any circumstances. All other rights reserved.
