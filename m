@@ -1,22 +1,17 @@
-Received: from mail826.carrierinternetsolutions.com ([69.49.106.36]
-	helo=mail826.megamailservers.com)
+Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
+	helo=xanadu.home)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BgE5o-000815-Cf
-	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 22:48:01 -0400
-Received: from brigid (pcp08587232pcs.alxndr01.va.comcast.net [69.140.78.107])
-	(authenticated bits=0)
-	by mail826.megamailservers.com (8.12.10/8.12.9) with ESMTP id
-	i622lrY8006255
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Jul 2004 22:47:54 -0400
-From: "Robert Lippmann" <rlippmann@imsventures.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 1 Jul 2004 22:46:00 -0400
-Message-ID: <NFBBKPKLPNGEMNKJKAIKIEBBCDAA.rlippmann@imsventures.com>
+	id 1BgEmh-0008Eb-90
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 23:32:20 -0400
+Date: Thu, 1 Jul 2004 23:32:14 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Robert Lippmann <rlippmann@imsventures.com>
+In-Reply-To: <NFBBKPKLPNGEMNKJKAIKIEBBCDAA.rlippmann@imsventures.com>
+Message-ID: <Pine.LNX.4.44.0407012328180.18865-100000@xanadu.home>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-Subject: unresoved symbol __ffs
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: unresoved symbol __ffs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi all,
+On Thu, 1 Jul 2004, Robert Lippmann wrote:
 
-haven't seen this covered before, but when i try to use recent snapshots
-(late june-ish), i get this unresolved symbol when building a 2.4.26 kernel
-using linux-mips.  i assume it's because the compiler
-sets --disable-builtins when compiling.  it occurs in cfi_cmdset_0001.c
-oddly, the file compiles without warnings.  oh, and i'm using gcc 3.3.2
+> hi all,
+> 
+> haven't seen this covered before, but when i try to use recent snapshots
+> (late june-ish), i get this unresolved symbol when building a 2.4.26 kernel
+> using linux-mips.  i assume it's because the compiler
+> sets --disable-builtins when compiling.  it occurs in cfi_cmdset_0001.c
+> oddly, the file compiles without warnings.  oh, and i'm using gcc 3.3.2
 
-i've tried #define __ffs ffs, but even that doesn't seem to work.
+__ffs should be defined in linux/asm/bitops.h.  It is defined for MIPS as 
+follows in 2.6.7:
 
-any ideas?
+/*
+ * __ffs - find first bit in word.
+ * @word: The word to search
+ *
+ * Undefined if no bit exists, so code should check against 0 first.
+ */
+static inline unsigned long __ffs(unsigned long word)
+{
+        return ffz(~word);
+}
+
+> i've tried #define __ffs ffs, but even that doesn't seem to work.
+
+It's qite odd that it didn't compile, bit even if it did __ffs and ffs 
+aren't equivalent.
+
+
+Nicolas
