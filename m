@@ -1,20 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D54qS-0005zE-3H
-	for linux-mtd@lists.infradead.org; Sat, 26 Feb 2005 11:31:08 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Paolo Tagliavini <ptagliavini@flp-consultant.it>
-In-Reply-To: <42209E97.2070201@flp-consultant.it>
-References: <42209E97.2070201@flp-consultant.it>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D57UI-0006v1-Km
+	for linux-mtd@lists.infradead.org; Sat, 26 Feb 2005 14:20:27 -0500
+Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id A402A22C5A
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 26 Feb 2005 22:19:53 +0300 (MSK)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Sat, 26 Feb 2005 17:30:56 +0100
-Message-Id: <1109435457.31108.21.camel@tglx.tec.linutronix.de>
+Date: Sat, 26 Feb 2005 22:19:53 +0300
+Message-Id: <1109445593.13512.1.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: writing jffs2 file system trought JTAG
-Reply-To: tglx@linutronix.de
+Subject: [BUGFIX] JFFS2 NOR problem
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2005-02-26 at 17:06 +0100, Paolo Tagliavini wrote:
-> Dear all ,
-> 
-> I'm working on ARM920 based embedded system. Linux kernel is 2.4.20.
-> This system mount a 64 Mbyte Samsung NAND flash.
-> My simple questions are:
->     Is it  possible write in nand flash  the jffs2 image , made with 
-> mkfs.jffs2 , using JTAG interface ?
->     Is there any way to handle nand bad block dowloadind jffs2 image 
-> trought JTAG interface ?
+Hello,
 
-Read
+I've detected major JFFS2 bug and have attached the fix. The bug seems
+to be NOR-only. I believe everybody who uses JFFS2 on top of NOR flash
+should have this bug fixed.
 
-http://www.linux-mtd.infradead.org/tech/faq.html
+The brief problem description:
 
-The section "Must my bootloader be aware of NAND FLASH ?" has all the
-answers. The requirements for JTAG programming are the same as for
-bootloaders.
+JFFS2 clears the JFFS2_SB_FLAG_MOUNTING (c-flags) superblock flag after
+it has done the 1st filesystem build pass. But it still has non NULL
+ic->scan_dents pointers which are actually assigned NULL at the very end
+of the file system build procedure. Next FS build passes call the
+jffs2_mark_node_obsolete() function which, in turn, utilizes the
+jffs2_raw_ref_to_ic() function which *requires* ic->scan_dents = NULL.
 
-tglx
+This might cause infinite loops and oopses.
+
+I think it is safe to clear the JFFS2_SB_FLAG_MOUNTING flag at the end
+of JFFS2 filesystem build routine. Comments?
+
+P.S. Possibly, the patch will fix Konstantin Kletschke's and Craig A.
+Vanderborgh's problems. Guys, please try.
+
+
+
+--- build.c     2005-02-26 22:08:17.503657749 +0300
++++ build.c_fixed       2005-02-26 22:07:55.806278357 +0300
+@@ -116,7 +116,6 @@
+                        cond_resched();
+                }
+        }
+-       c->flags &= ~JFFS2_SB_FLAG_MOUNTING;
+
+        D1(printk(KERN_DEBUG "Pass 1 complete\n"));
+
+@@ -164,6 +163,8 @@
+                ic->scan_dents = NULL;
+                cond_resched();
+        }
++       c->flags &= ~JFFS2_SB_FLAG_MOUNTING;
++
+        D1(printk(KERN_DEBUG "Pass 3 complete\n"));
+        D2(jffs2_dump_block_lists(c));
+
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
