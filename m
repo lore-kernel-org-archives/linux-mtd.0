@@ -1,31 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13FDTZ-00088X-00
-	for mtd-list@infradead.org; Thu, 20 Jul 2000 11:22:45 +0100
-Received: from smtp3.libero.it ([193.70.192.53])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13FDTW-00088J-00
-	for mtd@infradead.org; Thu, 20 Jul 2000 11:22:45 +0100
-Message-ID: <000d01bff232$faf1f230$01ffa8c0@studiobalbi.it>
-From: "Studio Balbi" <balbi@iol.it>
-To: <mtd@infradead.org>
-Subject: Questions form a beginner.
-Date: Thu, 20 Jul 2000 12:12:13 +0200
+	id 13FHAu-00008p-00
+	for mtd-list@infradead.org; Thu, 20 Jul 2000 15:19:44 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13FHAt-00008i-00
+	for mtd@infradead.org; Thu, 20 Jul 2000 15:19:43 +0100
+Date: Thu, 20 Jul 2000 15:19:30 +0100 (BST)
+From: David Woodhouse <dwmw2@passion.cygnus.co.uk>
+To: Simon Munton <Simon.Munton@m4data.co.uk>
+cc: mtd@infradead.org
+Subject: Re: Problem in physmap.c
+In-Reply-To: <00B4D286538DD311BC6E005004E9EFC7213E9B@M4EXCH>
+Message-ID: <Pine.LNX.4.21.0007201518110.23213-100000@passion.cygnus.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Where can I find some general information about flash disk technology, and
-the problems involved with it?
-What are the relations and difference between NFTL, JFFS and others file
-systems?
+On Wed, 19 Jul 2000, Simon Munton wrote:
 
-Thanks
+> The call to ioremap() in init_physmap() has its arguments swapped:
+> 
+> currently it is
+> 	physmap_map.map_priv_1 = (unsigned long)ioremap(WINDOW_SIZE,
+> WINDOW_ADDR);
+> 
+> and it should be:
+> 	physmap_map.map_priv_1 = (unsigned long)ioremap(WINDOW_ADDR,
+> WINDOW_SIZE);
 
-Alessandro Staltari.
+Doh! Fixed. Thanks.
 
+Please don't send mail to the 'mtd-cvs' list - that's just for the CVS
+commit logs which people wanted me to remove from the real list.
 
-
-
+--
+dwmw2
 
 
 
