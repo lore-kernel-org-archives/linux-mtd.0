@@ -1,31 +1,20 @@
-Received: from e33.co.us.ibm.com ([32.97.110.131])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Co0jh-0000sK-TR
-	for linux-mtd@lists.infradead.org; Mon, 10 Jan 2005 09:41:41 -0500
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e33.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0AEfMCO731468
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jan 2005 09:41:23 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay05.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0AEfLcf260930
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jan 2005 07:41:21 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	j0AEfL4p003609
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jan 2005 07:41:21 -0700
-From: Josh Boyer <jdub@us.ibm.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050108205152.GF11728@wohnheim.fh-wedel.de>
-References: <1104961832.15121.45.camel@weaponx.rchland.ibm.com>
-	<20050108205152.GF11728@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Mon, 10 Jan 2005 08:41:15 -0600
-Message-Id: <1105368075.10074.4.camel@windu.rchland.ibm.com>
+	id 1Co0tl-00014L-I8
+	for linux-mtd@lists.infradead.org; Mon, 10 Jan 2005 09:52:03 -0500
+Date: Mon, 10 Jan 2005 15:51:54 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20050110145154.GC12520@wohnheim.fh-wedel.de>
+References: <20050108211842.GA17176@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501091202440.19297@phoenix.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: tom_gall@vnet.ibm.com, linux-mtd@lists.infradead.org, sallyt@us.ibm.com
-Subject: Re: [PATCH] Add error checking to slram
+In-Reply-To: <Pine.LNX.4.58.0501091202440.19297@phoenix.infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 simplifications
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,43 +24,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2005-01-08 at 21:51 +0100, Jörn Engel wrote:
-> On Wed, 5 January 2005 15:50:32 -0600, Josh Boyer wrote:
-> > 
-> > The following patch fixes a couple issues I saw with the slram driver.
-> > 
-> > 1) No error checking was being done at all.
-> > 
-> > 2) There was no eraseblock size for slram, which made JFFS2 unhappy.
+On Sun, 9 January 2005 12:03:54 +0000, Artem B. Bityuckiy wrote:
+> Joern Engel wrote:
+> > As an example, scan.c used to be really horrible (and contained one or
+> > two bugs).  After removing all the printk()s, I was able to see what
+> > the code was doing.  Then quite a few obvious changes were possible.
+> > Some things were simple changed to my personal style.  And finally,
+> > the data reading code was abstracted out of the scanning code, which
+> > resulted in about 120 lines less code.
+> I believe, having these debugging printk's is pretty good idea. I suspect 
+> you don't want to say opposite?
+
+I do. ;)
+
+> But as person who develop JFFS2 for several months, I may say that it is 
+> really not very readable, but that was not very big obstacle to understand 
+> it for me (but this is *real* obstacle when developing it, IMHO).
+
+Exactly.  Anything other than functional code makes it hard to read
+and even harder to change.  So the chances of introducing bugs are
+much higher.  In a way, the debug code is needed because of the debug
+code itself.
+
+Sure, it also serves a real purpose and not having any debug code
+requires programmers that don't cause bugs.  So it is a necessary
+evil.  The real art is to get by with as little debug code as
+possible, yet have enough data to easily find any problems.
+
+> > Currently, the scanning should be substantially slower, but getting
+> > back to the old speed should be possible in less than 120 lines.
+> Sorry, I do not quite understand what changes do you mean. Was this 
+> something you previously did in scan.c?
+
+Before my changes: jffs2_scan_eraseblock() had reading and buffer
+handling code all over the place.  Horribly ugly, but relatively
+optimized.
+
+After my changes: Reading and buffer handling moved into
+jffs2_scan_map().  jffs2_scan_eraseblock() is much simpler, but
+optimizations are gone.
+
+> I believe there is something which slows down scan process - the reading 
+> data to buffer and then scanning that buffer, instead of reading only 
+> really needed data. Seems like not very good technique.
+
+Yes, quite a bit could be optimized here.  After my (or similar)
+abstraction, it should be relatively simple to play with it.  Unless
+your mtd supports point(), in that case it just doesn't matter.
+
+> > So: Do people want something like this for jffs3?  If noone cares, I
+> > will get back to my old behaviour of ignoring it.
+> Personally I would be happy to see JFFS3 
+> 1) reformatted
+> 2) uni-styled
+> 3) well commented/documented
+
+Also personally:
+1) well documented
+2) as few comments, debugs, printks as possible
+3) short, simple functions (function names can be enough documentation)
+4) more documentation to the data structures, esp. locking hierarchy
+5) strictly sticking to 80 columns
+
+And apart from style:
+6) mmap support (read: database support)
+7) me running jffs3 on a 1GB flash as rootfs for my notebook
+
+> Would be good to agree on style and use it. Of course, Linux style is the 
+> main - but it is not too restrictive. People still use different styles. 
+> For example, Ferenc doesn't like tabs and uses whitespaces. :-)
+> This is minor, but still important, IMHO.
 > 
-> Had a look at that one and imo it's jffs2 that should get fixed.  But
-> for the moment, your patch is fine.
+> If you would like, just send you offers what to use (smth like JFFS2 
+> coding style), and we may put it to jffs3/JFFS3.Notes file for reference 
+> (after discussing).
 
-No argument from me there.  I've been sitting on this patch for a long
-time and it was simply the easiest fix.  Until JFFS2 gets fixed, this
-should suffice.
+Diff between foo.c and "Lindent foo.c" should be small.  Sometimes
+Lindent makes code actually worse, but most of the time it is pretty
+good.
 
-> > Please take a look at the patch and commit if it looks good.  Comments
-> > are always welcome too :).
-> 
-> Just one, rest looks fine to me.
+Basically, look at mm/*.c or fs/*.c and follow about the same style.
 
-<snip>
+> P.S. I hope David won't mind :-)
 
-> > +	if (from > mtd->size)
-> > +		return -EINVAL;
-> > +
-> > +	if (from + len > mtd->size)
-> > +		len = mtd->size - from;
-> > +
-> 
-> My code is slightly different:
-> 	if (len > mtd->size - from)
-> 		...
-> 
-> And yes, this _can_ make a difference. ;)
+He'll complain loudly if he does.  I'm sure.
 
-It's early and I haven't had my coffee yet :).  Care to educate me on
-why that makes a difference?
+Jörn
 
-josh
+-- 
+Courage is not the absence of fear, but rather the judgement that
+something else is more important than fear.
+-- Ambrose Redmoon
