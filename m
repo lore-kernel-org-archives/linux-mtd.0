@@ -1,14 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alex Bennee <kernel-hacker@bennee.com>
-In-Reply-To: <1094038230.29012.246.camel@cambridge.braddahead.com>
-References: <1094038230.29012.246.camel@cambridge.braddahead.com>
-Content-Type: text/plain
-Message-Id: <1094041258.14552.29878.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 01 Sep 2004 13:20:59 +0100
+Received: from cmsout03.mbox.net ([165.212.64.33])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2X4B-0003Si-Lz
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2004 11:30:33 -0400
+Message-ID: <024801c49038$969f09f0$fd0ba8c0@briantpc>
+From: "Brian T" <btuch@usa.net>
+To: "David Woodhouse" <dwmw2@infradead.org>
+References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc><1093894808.25339.57.camel@weaponx.rchland.ibm.com><073f01c48ecc$abd3e600$fd0ba8c0@briantpc><1093899187.16320.25.camel@thomas.tec.linutronix.de><075f01c48ed7$08dbc570$fd0ba8c0@briantpc><1093900751.16320.28.camel@thomas.tec.linutronix.de><07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc><1093966869.6200.34.camel@localhost.localdomain><080401c48f7d$253bda60$fd0ba8c0@briantpc><1093972311.6200.47.camel@localhost.localdomain><082b01c48f94$fe637840$fd0ba8c0@briantpc>
+	<1093982409.6200.54.camel@localhost.localdomain>
+Date: Wed, 1 Sep 2004 10:30:14 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Handling non-uniform erase blocks
+Subject: Re: jffs2 file corruption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-09-01 at 12:30 +0100, Alex Bennee wrote:
-> We are using Am29LV160D flash chips on our SH based board. The chip has
-> a series on small blocks at the top or bottom of the address range for
-> use in bootstrap code or configuration storage.
 
-All chips have a 'major' erasesize -- the smaller blocks at one end of
-the device can be grouped together into one or more blocks which are the
-same size as the blocks on the rest of the device.
+> > With KERN_DEBUG (all options) on, I don't see anything extra in the
+syslog.
+> > Should there be?
+>
+> man syslogd.conf
+>
+> syslog doesn't log messages at KERN_DEBUG by default. But syslog is too
+> lossy anyway. Use a serial console.
+>
+> Use CONFIG_JFFS2_FS_DEBUG=1. More than that is overkill.
+>
 
-For the AM29LV160DB, the blocks are 1*16KiB, 2*8KiB, 1*32KiB and
-31*64KiB. The 'major' erasesize is 64KiB, and the smaller blocks at the
-beginning add up to that.
+David, I sent you 2 log files.  I have an image untainted (before bootup).
+I flashed the unit to allow it to boot so I could then pull the image off
+through the bootloader, but it failed to start init and completely come up
+this time.  I have the console log.  Do you want a link to an image that has
+booted successfully, or  *this* image that failed? Or both?
 
-Although the MTD code does allow erasing the smaller blocks, it
-currently requires that there be a 'major' erasesize for all partitions.
-So if you had two partitions, one of 32KiB and the other including the
-whole of the device, then it would assign a 'major' erasesize of 16KiB
-to the former, and mark the latter read-only.
-
-> When I set up my partitions I get this report:
-> 
-> Creating 4 MTD partitions on "India1 FLASH":
-> 0x00000000-0x00010000 : "Boot Code"
-> 0x00010000-0x001e0000 : "Kernel"
-> 0x001e0000-0x001fc000 : "FPGA"
-> mtd: partition "FPGA" doesn't end on an erase block -- force read-only
-> 0x001fc000-0x00200000 : "Config"
-
-AFAICT that's correct -- the FPGA partition doesn't actually map to a
-range on the chip which can be erased individually, let alone with a
-'major' erasesize which can be exported.
-
--- 
-dwmw2
+-Brian
