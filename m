@@ -1,20 +1,22 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from creative.actrix.co.nz ([203.96.26.135])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nIA7-0003e9-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 11:52:19 +0000
-Received: from there (hidden-user@[212.105.56.242])
-	by mail.utfors.se (8.8.8/8.8.8) with SMTP id NAA07400
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 13:03:17 +0100 (MET)
-Message-Id: <200203191203.NAA07400@mail.utfors.se>
+	id 16nIAS-0003eG-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 11:52:41 +0000
+Received: from there (203-96-30-48-adsl.actrix.co.nz [203.96.30.48])
+	by creative.actrix.co.nz (Postfix) with SMTP id 645F21255
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 00:01:09 +1200 (NZST)
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
 To: linux-mtd@lists.infradead.org
-Subject: Re: compr_zlib.c
-Date: Tue, 19 Mar 2002 13:03:17 +0100
-References: <0111121314140A.28381@jocke.lumentis.se> <01121714081700.06319@jocke.lumentis.se> 
+Subject: Re: How to protect DoC 2000 from power fail?
+Date: Tue, 19 Mar 2002 23:57:39 +1200
+References: <3C95D945.2DCE55AA@wtms.nl> <30525.1016457013@redhat.com>
+In-Reply-To: <30525.1016457013@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Message-Id: <20020319120109.645F21255@creative.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,138 +28,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-No comments so far.
-Anyone?
+On Tue, 19 Mar 2002 01:10, David Woodhouse wrote:
+> wil@wtms.nl said:
+> >  I am looking for some rigid means of power fail protection for a DoC
+> > 2000 based embedded system. From what I have read so far I understand
+> > that almost any brand of journalling file system should do well but,
+> > then again, those readings also mention raw FLASH and not DoC, in
+> > other words, I think I am lost. Would someone be so kind to enlighten
+> > me?
+>[snip]
+> CompactFlash also uses such a pseudo-filesystem, but does it completely
+> internally. Electrically, it behaves just like an IDE drive. Reportedly CF
+> devices are very bad w.r.t to power failure and wear levelling though, but
+> the concept is similar.
 
-      Jocke
 
-On Monday 11 March 2002 09.56, Joakim Tjernlund wrote:
-> Hi all
->
-> I noticed that zlib.c by default adds a small header and a adler32 checksum
-> to the compressed data. This is not needed since JFFS2 adds it's own CRC32.
-> There is an 'undocumented' way to avoid the header and adler32 checksum,
-> specify a negative windowBits to deflateInit2()/inflateInit2(). Also it is
-> possible to trim the memory usage by adjusting  windowBits and memLevel
-> accordinly. I have left these at their default values since I don't know
-> zlib very well. Perhaps someone else can comment?
->
-> Also I wonder about STREAM_END_SPACE, which is defined to 12. Is it useful
-> to try and compress data as small as 13 bytes with zlib? Maybe the simpler
-> rtime should be used for small amounts of data?
->
-> Below is a patch against the stable 2.4 branch, which is backwards
-> compatible.
->
->         Jocke
->
-> PS.
->      There has been a few improvements to JFFS2 that I would like to see in
-> the stable 2.4 branch, we have been using these for about 2 weeks now and I
-> think they are stable.
->
->
-> Index: fs/jffs2/compr_zlib.c
-> ===================================================================
-> RCS file: /home/cvs/mtd/fs/jffs2/compr_zlib.c,v
-> retrieving revision 1.8
-> diff -u -r1.8 compr_zlib.c
-> --- fs/jffs2/compr_zlib.c       2001/09/20 15:28:31     1.8
-> +++ fs/jffs2/compr_zlib.c       2002/03/11 08:31:35
-> @@ -31,7 +31,7 @@
->   * provisions above, a recipient may use your version of this file
->   * under either the RHEPL or the GPL.
->   *
-> - * $Id: compr_zlib.c,v 1.8 2001/09/20 15:28:31 dwmw2 Exp $
-> + * $Id: compr_zlib.c,v 1.8 2002/01/31 13:56:11 jocke Exp $
->   *
->   */
->
-> @@ -92,9 +92,21 @@
->         strm.zalloc = (void *)0;
->         strm.zfree = (void *)0;
->  #endif
-> -
-> -       if (Z_OK != deflateInit(&strm, 3)) {
-> -               printk(KERN_WARNING "deflateInit failed\n");
-> +       /* The memory requirements for deflate are (in bytes):
-> +          1 << (windowBits+2)   +  1 << (memLevel+9)
-> +          that is: 128K for windowBits=15  +  128K for memLevel = 8 
-> (default values) +          plus a few kilobytes for small objects. For
-> example, if you want to reduce +          the default memory requirements
-> from 256K to 128K, compile with +              make CFLAGS="-O
-> -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7"
-> +          Of course this will generally degrade compression (there's no
-> free lunch). +
-> +          The memory requirements for inflate are (in bytes) 1 <<
-> windowBits +          that is, 32K for windowBits=15 (default value) plus a
-> few kilobytes +          for small objects.
-> +       */
-> +       /* -MAX_WBITS impiles -> suppress zlib header and adler32 */
-> +       if (Z_OK != deflateInit2(&strm, 3, Z_DEFLATED, -MAX_WBITS, 8,
-> Z_DEFAULT_STRATEGY)) { +               printk(KERN_WARNING "deflateInit2
-> failed\n");
->                 return -1;
->         }
->         strm.next_in = data_in;
-> @@ -142,7 +154,7 @@
->                       __u32 srclen, __u32 destlen)
->  {
->         z_stream strm;
-> -       int ret;
-> +       int ret, wbits, i;
->
->  #ifdef __KERNEL__
->         strm.zalloc = zalloc;
-> @@ -151,23 +163,34 @@
->         strm.zalloc = (void *)0;
->         strm.zfree = (void *)0;
->  #endif
-> -
-> -       if (Z_OK != inflateInit(&strm)) {
-> -               printk(KERN_WARNING "inflateInit failed\n");
-> -               return;
-> -       }
-> -       strm.next_in = data_in;
-> -       strm.avail_in = srclen;
-> -       strm.total_in = 0;
-> -
-> -       strm.next_out = cpage_out;
-> -       strm.avail_out = destlen;
-> -       strm.total_out = 0;
-> +       /* -MAX_WBITS impiles -> suppress zlib header and adler32.
-> +          try first with -MAX_WBITS, if that fails, try MAX_WBITS to be
-> +          backwards compatible */
-> +       wbits = -MAX_WBITS;
-> +       for(i = 0; i < 2; i++){
-> +               if (Z_OK != inflateInit2(&strm, wbits)) {
-> +                       printk(KERN_WARNING "inflateInit2 failed\n");
-> +                       return;
-> +               }
-> +               strm.next_in = data_in;
-> +               strm.avail_in = srclen;
-> +               strm.total_in = 0;
-> +
-> +               strm.next_out = cpage_out;
-> +               strm.avail_out = destlen;
-> +               strm.total_out = 0;
-> +
-> +               while((ret = inflate(&strm, Z_FINISH)) == Z_OK)
-> +                       ;
-> +               inflateEnd(&strm);
-> +               if (ret == Z_DATA_ERROR){
-> +                       wbits = -wbits;
-> +                       continue; /* try again with next wbits */
-> +               }
->
-> -       while((ret = inflate(&strm, Z_FINISH)) == Z_OK)
-> -               ;
-> -       if (ret != Z_STREAM_END) {
-> -               printk(KERN_NOTICE "inflate returned %d\n", ret);
-> +               if (ret != Z_STREAM_END) {
-> +                       printk(KERN_NOTICE "inflate returned %d, wbits:
-> %d\n", ret, wbits); +               }
-> +               break; /* all went well */
->         }
-> -       inflateEnd(&strm);
->  }
+CF should have at least 15ms of good power after the last write. This is 
+required to complete the write internally.
+
+Dunno what goes on in a DOC, but basically it needs some power to complete 
+the last write. Dunno how clever it is at fixing itself. Maybe read the 
+msystems www. They have some good application notes - maybe one covers these 
+issues.
+
+Hard disks get around the power issue by using the inertia of the spinning 
+disk to generate sufficient power (well that's what I believe anyway). No 
+such luxury with flash. You either need a resiliant file system - preferably 
+one designed specifically for flash - or some way to guarantee power to 
+complete a shutdown.
+
+I've done both in various situations.
+
+One way to guarantee good power into the FS is to do something like follows:
+* Have the hardware report an early warning of imminent power failure. eg. if 
+you have a two-stage switchmode, detecting the regulation loss flag on the 
+first stage might do the job.
+* Protect all critical FS entry points with power checks:
+   write_func()
+   {
+      while(power is bad) { /* spin */}
+      rest of function
+   }
+*  If you've done this right, you never go into a critical section with bad 
+power. If power turns bad during the run of the function then hopefully the 
+residual energy in the rail etc will be enough to power the system through 
+the rest of the function call.
+
+This can work well if your hardware supports this kind of detection and has 
+sufficient residual energy. Dunno how long you need for a DOC, but I would 
+hunch that 100ms would be enough.
+
+
+> If you want to be able to write to it then the correct solution, IMO, is to
+> write a _real_ file system which operates on flash directly instead of
+> operating on a block device. Build in the wear levelling, journalling, etc.
+
+Too right!
+
+-- Charles
