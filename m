@@ -1,59 +1,58 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12PYNb-0003pk-00
-	for mtd-list@infradead.org; Mon, 28 Feb 2000 22:11:03 +0000
-Received: from mailgate1.uea.ac.uk ([139.222.230.1])
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 12PYNY-0003pe-00
-	for mtd@infradead.org; Mon, 28 Feb 2000 22:11:00 +0000
-Date: Mon, 28 Feb 2000 22:10:49 +0000 (GMT)
-From: wbh <W.B.Hill@uea.ac.uk>
-To: Dvir Oren <dvir@lucidvon.com>
-cc: MTD <mtd@infradead.org>
-Subject: RE: Request for kernel with DOC2000
-In-Reply-To: <E12O8SI-00023T-00@infradead.org>
-Message-ID: <Pine.OSF.4.05.10002282110390.18617-100000@cpca7.uea.ac.uk>
+	id 12Q3xs-0002Av-00
+	for mtd-list@infradead.org; Wed, 01 Mar 2000 07:54:36 +0000
+Received: from adsl-63-192-223-74.dsl.snfc21.pacbell.net ([63.192.223.74] helo=gateway.berkeley.innomedia.com)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 12Q3xq-0002Ap-00
+	for mtd@infradead.org; Wed, 01 Mar 2000 07:54:34 +0000
+Received: from berkeley.innomedia.com (imap.berkeley.innomedia.com [192.168.1.5])
+	by gateway.berkeley.innomedia.com (8.9.1/8.9.1) with ESMTP id XAA01636
+	for <mtd@infradead.org>; Tue, 29 Feb 2000 23:14:58 -0800
+Received: (from mickey@localhost)
+	by berkeley.innomedia.com (8.9.3/8.9.3) id XAA00389
+	for mtd@infradead.org; Tue, 29 Feb 2000 23:54:31 -0800
+From: Michael Thompson <mickey@berkeley.innomedia.com>
+Message-Id: <200003010754.XAA00389@berkeley.innomedia.com>
+Subject: How to use MTD
+To: mtd@infradead.org
+Date: Tue, 29 Feb 2000 23:54:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 25 Feb 2000, Dvir Oren wrote:
 
-> If you could please post a patch with whatever you added to the 
-> kernel, and whatever you changed in the MTD files (if at all), it 
-> could be extremely helpful.
-OK - I'm using an Advantech board, so 486-based with a DOC2000.
-What I did:
-	cd /usr/src
-	mv linux linux.orig
-	tar Ixvf ~/minimpg/linux-2.0.38.tar.bz2
-	cd linux
-	unzip ~/minimpg/doclinux_2_0_x_1_21.zip
-	tar zxvf driver.tgz
-	cat tmp/doc-driver/doc-patch-2.0.35 | patch -p0
-	cp usr/src/linux/drivers/block/flash_doc/*  drivers/block/flash_doc/
-	# Ensure "M-Systems DiskOnChip" is selected :-)
-	# IE CONFIG_BLK_DEV_GENERIC_FLASH_DOC=y
-	cd drivers/block/flash_doc
-	CC=/usr/bin/gcc272 make
-	cd ../../..
-	vim Makefile
-	# Alter line: CC=$(CROSS_COMPILE)gcc -D__KERNEL__ -I$(HPATH)
-	# To CC=$(CROSS_COMPILE)gcc272 -D__KERNEL__ -I$(HPATH)
-	make zImage
-	cat arch/i386/kernel/zImage > /dev/fd0
-	# Stand well back :-)
-	
----------------\--------------------------\--------------------------------
-W.B.Hill        \  Email: wbh@uea.ac.uk    \                               
-492 Earlham Road \  Home: (+44) 1603 455069 \    "Nothing is idiot-proof   
-Norwich  NR4 7HP. \  Fax: 0870 054 7508      \    given the right idiot"   
-United Kingdom     \  Mobile: 0410 781584     \                           
-(+44) 1603 255141   \  Web: http://wbh.org     \ #include <stdisclaimer.h>
----------------------\--------------------------\--------------------------
-PGP-Fingerprint:    B3 6F 2E D6 - B6 48 F1 FB -*- 7C AA 28 0C - 96 61 9A B5
 
+I'd really like to start experimenting with MTD, but I'm afraid I've only
+got half a clue about how to use it.
+
+Here's what I'd like to do:
+
+	1) Create an ext2 filesystem on an mtd block device and mount
+	   it read-write from linux. This is to experiment with MTD
+	   without the flash.
+	2) Create an ext2 filesystem on a set of flash devices from an
+	   embedded system running linux. The underlying flash devices
+	   are Intel's StrataFlash; they support CFI and JEDEC.
+
+To accomplish (1), I thought I should:
+
+	# insmod mtd
+	# insmod slram
+	# insmod mtdblock
+	# mkfs -t ext2 /dev/mtdblock0
+but mkfs says:
+        mke2fs 1.15.6, 13-Aug-1999 for EXT2 FS 0.5b, 95/08/09
+        /dev/mtdblock0: Invalid argument passed to ext2 library while setting up        superblock
+
+Can someone please explain the fundamentals?
+
+Thanks!
+
+-Michael Thompson
+mickey@berkeley.innomedia.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
