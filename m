@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17miT9-0002aY-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 23:17:51 +0100
+	id 17miTn-0002an-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 23:18:31 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <541025071C7AC24C84E9F82296BB9B952D27@OPTEX1.optex.local> 
-References: <541025071C7AC24C84E9F82296BB9B952D27@OPTEX1.optex.local> 
-To: "John Hall" <john.hall@optionexist.co.uk>
-Cc: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: compatmac.h 
+In-Reply-To: <20020904123521.26470.h002.c007.wm@mail.directvinternet.com.criticalpath.net> 
+References: <20020904123521.26470.h002.c007.wm@mail.directvinternet.com.criticalpath.net> 
+To: acurtis@onz.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: recalc_sigpending() - multiple defines 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 04 Sep 2002 23:17:50 +0100
-Message-ID: <23590.1031177870@redhat.com>
+Date: Wed, 04 Sep 2002 23:18:24 +0100
+Message-ID: <23619.1031177904@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-john.hall@optionexist.co.uk said:
->  I haven't submitted a proper patch, because I don't know how to check
-> for specific rmk kernel versions. Any suggestions? 
+acurtis@onz.com said:
+>  When compiling with Module versioning support I get an warning
+> regarding redefinition of recalc_sigpending() from linux/mtd/
+> compatmac.h
 
-#ifndef minor etc. I've just committed it.
+> Is this anything to worry about? Is there a good solution for this?
+
+I've committed a workaround for this.
 
 --
 dwmw2
