@@ -1,18 +1,21 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mc9s-0001ku-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:33:32 +0100
-Date: Wed, 4 Sep 2002 16:33:31 +0100 (BST)
-From: Jasmine Strong <jasmine@hex.linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Allen Curtis <acurtis@onz.com>,
-	John Hall <John.Hall@optionexist.co.uk>,
-	"Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Stable cvs version for 2.4 
-In-Reply-To: <6203.1031152822@redhat.com>
-Message-ID: <Pine.LNX.4.33.0209041629310.22657-100000@hex.linuxgrrls.org>
+	id 17mcHo-0001mQ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:41:44 +0100
+Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
+	by anchor-post-35.mail.demon.net with esmtp (Exim 3.36 #2)
+	id 17mcHn-0001NE-0U
+	for linux-mtd@lists.infradead.org; Wed, 04 Sep 2002 16:41:43 +0100
+Subject: compatmac.h
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 4 Sep 2002 16:41:26 +0100
+Message-ID: <541025071C7AC24C84E9F82296BB9B952D27@OPTEX1.optex.local>
+Content-Class: urn:content-classes:message
+From: "John Hall" <john.hall@optionexist.co.uk>
+To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,41 +27,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I've found a problem in compatmac.h with current versions of 2.4 =
+armlinux. From about 2.4.18-rmk6 or thereabouts, the following #defines =
+are unnecessary:
 
-On Wed, 4 Sep 2002, David Woodhouse wrote:
+#define major(d) (MAJOR(to_kdev_t(d)))=20
+#define minor(d) (MINOR(to_kdev_t(d)))  #define minor(d) =
+(MINOR(to_kdev_t(d)))=20
+#define mk_kdev(ma,mi) MKDEV(ma,mi)  #define mk_kdev(ma,mi) MKDEV(ma,mi) =
 
-> jasmine@hex.linuxgrrls.org said:
-> > > How about we add 1 byte which contains up to 8 bit fields?
-> > Adding a byte will destroy the alignment.  you'd have to add a whole
-> > word.
->
-> Er, what alignment?
 
-The alignment of the structure.  Either it's a whole multiple of words or
-it isn't.
+so I adjusted the #if in my tree from LINUX_VERSION_CODE < =
+KERNEL_VERSION(2,4,19) to 2,4,18. I still need the yield, however, so =
+I've pulled this out into a separate case.
 
-> Either the CPU or something else assumes and requires alignment, in which
-> case we know that we can happily abuse the low-bit of the address.
+I haven't submitted a proper patch, because I don't know how to check =
+for specific rmk kernel versions. Any suggestions?
 
-Yes, that's what I said.
+Regards,
+John Hall
 
-> Or it doesn't, in which case we can add our single byte and use it with
-> impunity.
-
-I said that too...
-
-> And yes, Allen's right that if we're going to add a single byte
-> to the structure we should just put the colour information into that
-> instead of using it to align the pointer so that we can abuse the low bit
-> of the pointer :)
-
-Yep.  I agree wholeheartedly.  I would be happiest with having
-compile-time options for the three different methods-  on many
-architectures writing a byte is much slower than writing a word, so on
-those architectures it may be better to use an int (the current method).
-On other architectures addresses are word aligned and one may abuse the
-pointers with impunity (David's suggested method), and on others pointers
-aren't always aligned and a byte write is nice and fast (the method using
-a flags byte.)
-
-Jas.
+--=20
+OptionExist Limited.
+The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
+Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
+http://www.optionexist.co.uk/
