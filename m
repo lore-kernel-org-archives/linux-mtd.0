@@ -1,40 +1,24 @@
-From: hno@marasystems.com (Henrik Nordstrom)
-Date: 07 Feb 2003 16:37:29 +0100
-Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
-In-Reply-To: <1044620849.21169.4.camel@passion.cambridge.redhat.com>
-References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
- <1044544711.2535.13.camel@passion.cambridge.redhat.com>
- <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
- <1044604814.5502.616.camel@imladris.demon.co.uk>
- <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
- <1044610143.5502.691.camel@imladris.demon.co.uk>
- <1044620396.30969.15.camel@henrik.marasystems.com>
- <1044620849.21169.4.camel@passion.cambridge.redhat.com>
-Message-ID: <1044632248.6361.19.camel@henrik.marasystems.com>
+From: nicola76@inwind.it (Nicola)
+Date: 07 Feb 2003 18:03:24 +0100
+Subject: CFI/MTD weird problem
+Message-ID: <1044637404.22176.37.camel@localhost.localdomain>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-fre 2003-02-07 klockan 13.27 skrev David Woodhouse:
-> On Fri, 2003-02-07 at 12:19, Henrik Nordstrom wrote:
-> > While the root= argument is not passed to root filesystems, rootfsflags=
-> > are. So I think you should be able to use something like
-> > 
-> > devfs=mount root=/dev/root rootfsflags=[mtddevspec]... rootfs=jffs2
-> > 
-> > then have the filesystem fix up /dev/root.
-> > 
-> > This is used successfully in UML to mount a non-block root filesystem
-> > (hostfs).
-> 
-> Shan't :)
-> 
-> The flags are not for passing the device to be mounted. But thanks for
-> pointing out another case where this is needed.
+Booting a linux-2.4.19-rmk4-ds3 I get this weird problem: 
 
-NFS is yet another one perhaps more familiar to most people if you want
-to take the torch on rewriting boot= processing and rootfs mounting..
-NFS is handled quite a bit special in the kernel root mount..
+1.Without MTD support module I get a good output to console until the
+kernel prints out that there is no filesystem support. So my system's
+printk works fine.
 
--- 
-Henrik Nordstrom <hno@marasystems.com>
-MARA Systems AB
+2.With MTD support module 
+The CFI probing is working correctly and detects QRY. 
+When I start tracing the code execution putting some printk into the
+MTD/CFI code, I get a weird behavior where the console output is
+corrupted BEFORE the calling of the MTD/CFI code, (see minicom log
+below).
+And I get out some '%' chars instead of the regular numerical values. 
+
+After some days debugging this problem I need a suggestion because I
+have exhausted ideas about where to search. 
+TIA 
