@@ -1,18 +1,18 @@
-Received: from [210.72.21.206] (helo=mail.china.com.cn)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcFhc-00075A-QD
-	for linux-mtd@lists.infradead.org; Sun, 20 Jun 2004 23:42:44 -0400
-Received: from 210.72.21.207 (HELO china.com.cn) (envelope-from
-	zh_chaohao@china.com.cn)
-	by mx.china.com.cn (quarkmail-1.2.1) with SMTP id S918570AbUFUDsU
-	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 11:48:20 +0800
-Message-ID: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
-From: zh_chaohao@china.com.cn
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BcTkw-0000DC-Hp
+	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 14:43:00 -0400
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004062114533820050
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jun 2004 14:53:38 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
 To: linux-mtd@lists.infradead.org
-Date: Mon, 21 Jun 2004 11:41:54 +0800
-Content-type: text/plain
-Content-Transfer-Encoding: base64
-Subject: Please recommend a mtd snapshot
+Date: Mon, 21 Jun 2004 14:44:43 -0400
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: DOC Mil Plus 32 question erase size erase shift????
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,10 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkNhbiBzb21lYm9keSByZWNvbW1lbmQgbWUgYSBtdGQgc25hcHNo
-b3QgPw0KDQpJIHdhbnQgaXQ6DQoNClN0YWJsZQ0KRHVhbCBmbGFzaCBzdXBw
-b3J0DQpOT1IgYW5kIE5BTkQgRmxhc2ggc3VwcG9ydChJcyBuYW5kIHN1cHBv
-cnQgY29tcGxldGUgbm93PykNCkVyYXNlIHN1c3BlbmQgKG9wdGlvbmFsKQ0K
-DQpidHcsIHdoeSB0aGVyZSBpcyBubyAyMDAzIGFuZCAxLTUgbW9udGhzIG9m
-IDIwMDQgZGFpbHkgc25hcHNob3RzIG9uIGZ0cCA/DQp3aGVyZSBjYW4gSSBk
-b3dubG9hZCB0aGVtPw0KDQpUaGFuayB5b3UgdmVyeSBtdWNoIQ0K
+Hello all,
+
+  Trying to get the bbt stuff working for diskonchip Mil Plus 32.  Question
+in nand_scan_bbt, I pass a erasesize of 8000 (32k bytes).  Is this the
+correct size???  If so then I get 256 bytes of mem allocated for this->bbt
+but then it fails (out of memory) when I try to allocate 88ooo bytes for the
+buffer.  Is this correct?  544K bytes for that buffer.  My proc/meminfo
+shows much more memory
+# cat /proc/meminfo
+        total:    used:    free:  shared: buffers:  cached:
+Mem:  28512256  3280896 25231360        0        0  1691648
+Swap:        0        0        0
+MemTotal:        27844 kB
+MemFree:         24640 kB
+MemShared:           0 kB
+Buffers:             0 kB
+Cached:           1652 kB
+SwapCached:          0 kB
+Active:           1080 kB
+Inactive:          788 kB
+HighTotal:           0 kB
+HighFree:            0 kB
+LowTotal:        27844 kB
+LowFree:         24640 kB
+SwapTotal:           0 kB
+SwapFree:            0 kB
+#
+
+What could be the cause???  Or am I not calculating something right????
+
+Thanks,
+John
