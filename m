@@ -1,14 +1,16 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bo3y-0004H2-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 21:02:46 +0100
-Message-ID: <3D4EDA18.C77AEDA@esteem.com>
-Date: Mon, 05 Aug 2002 13:03:36 -0700
-From: Conn Clark <clark@esteem.com>
-MIME-Version: 1.0
-To: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Need help getting JFFS2 working with kernel 2.4.19
-Content-Type: text/plain; charset=us-ascii
+	id 17bpfS-0004Qu-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 22:45:34 +0100
+Date: Mon, 5 Aug 2002 22:45:33 +0100
+Subject: Re: Disk blocks for long periods 
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+Cc: linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+From: Jasmine Strong <jasmine@regolith.co.uk>
+In-Reply-To: <28973.1028558573@redhat.com>
+Message-Id: <AB0AE002-A8BC-11D6-9E39-000502893FA1@regolith.co.uk>
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -21,30 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello all,
+On Monday, August 5, 2002, at 03:42 PM, David Woodhouse wrote:
 
-	I am new here and I am having trouble getting the JFFS2 code
-working/compiling with the 2.4.19 kernel . I get multiple definition
-errors when the kernel is linking.
+>
+> joakim.tjernlund@lumentis.se said:
+>>> SysRq-T should work on PPC. It's mostly generic code. What's wrong
+>>> with it?
+>
+>> Maybe I spoke too soon, but I can not make sense of it:
+>
+> That's because you're using 2.4.2.
 
-Many thanks in advance,
+...2.4.2 was the last-but-one Redwood PPC kernel release from Montavista;
+they have a 2.4.17 out now which is much more stable and faster.
 
-	Conn
--- 
+On the 2.4.2 kernel we had lots of odd little problems with stuff like
+this that Just Went Away with 2.4.17.
 
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
-
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
-
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
+(in ppc405gp land) Jas.
