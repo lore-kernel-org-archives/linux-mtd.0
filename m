@@ -1,15 +1,18 @@
+Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AIGcx-0003AS-LX
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2003 00:06:57 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: simon@baydel.com
-In-Reply-To: <37CC93E8710D@baydel.com>
-References: <37CC93E8710D@baydel.com>
-Content-Type: text/plain
-Message-Id: <1068214714.6065.887.camel@hades.cambridge.redhat.com>
+To: Chris Ellec <cellec@celerity.net>
+In-Reply-To: <3FAAF44B.8020804@celerity.net>
+References: <3FAAF44B.8020804@celerity.net>
+Message-Id: <1068249762.18801.43.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Fri, 07 Nov 2003 14:18:35 +0000
+Date: Sat, 08 Nov 2003 00:02:42 +0000
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: linux-kernel@vger.kernel.org
-Subject: Re: SFFDC and blksize_size
+Subject: Re: INFTL report
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-11-07 at 13:12 +0000, Simon Haynes wrote:
-> I have been writing a block driver for SSFDC compliant SMC cards. This stuff 
-> allocates 16k blocks.  When I get requests the transfers are split into the 
-> size I specifty in the blksize_size{MAJOR] array. 
+On Thu, 2003-11-06 at 17:24 -0800, Chris Ellec wrote:
+> INFTL: corrupt block 7140 in chain 7140, chain length 0, erase mark 0x0?
+> INFTL: formatting chain at block 7140
+> INFTL: error while formatting block 7140
+> 
+> repeated for a few more addresses.
 
-You can't set a block size larger than page size.
+Hmmm. I suspect those could be bad blocks, and we're not interpreting
+the Bad Block Table correctly. I really do need to spent a little time
+on fixing the BBT handling for all the DiskOnChip devices; I want to
+make it completely impossible to erase a bad block without hacking the
+code to allow it.
 
-> It sems that most things 
-> set this to 1k. In my case this causes a performance problem  as I have to 
-> end up doing 16 * (16K write,  16K read, 16k erase)  to write and verify a 
-> 16k block which has been previously written.
+Can you take a complete dump of the /dev/mtd0 device with nanddump and
+let me have a copy, please?
 
-Urgh. Whereas with FTL, NFTL etc. you can just fill in new sectors
-individually in the newly-allocated eraseblock. 
+> also the loading of docprobe.o seem to fail most of times, even though 
+> /dev/inftla1 is available for me to mount and create files on it.
 
-Surely you're not actually erasing the block and then praying you don't
-lose power before writing the new contents back? There's some kind of
-chaining from the old to the new block? Can't you say which sectors are
-valid in the new block, and which should still be used from the old?
-
-I wouldn't advocate setting the block size even to 4KiB, since that'll
-waste a lot of space. But we could certainly make use of request merging
-if what you're doing really is necessary -- we can make a
-'write_sectors' function which writes more than a sector at a time.
+That's intentional and harmless. It installs the appropriate (doc2000)
+driver and exits having done its work -- the docprobe module _really_ is
+just for probing.
 
 -- 
 dwmw2
