@@ -1,23 +1,18 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CvdUx-0006sc-Of
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 10:29:57 -0500
-Date: Mon, 31 Jan 2005 16:29:43 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cvdk5-00079j-0P
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 10:45:34 -0500
+Date: Mon, 31 Jan 2005 10:43:25 -0500 (EST)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
 To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20050131152943.GF6694@wohnheim.fh-wedel.de>
-References: <1106946232.7542.33.camel@windu.rchland.ibm.com>
-	<1106998793.17802.3.camel@sauron.oktetlabs.ru>
-	<1107013860.10670.5.camel@windu.rchland.ibm.com>
-	<20050131125613.GA6345@wohnheim.fh-wedel.de>
-	<1107184238.7567.17.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1107184238.7567.17.camel@windu.rchland.ibm.com>
-Cc: haverkam@de.ibm.com, linux-mtd@lists.infradead.org
-Subject: Re: NAND partitioning
+In-Reply-To: <1107184897.7567.20.camel@windu.rchland.ibm.com>
+Message-ID: <Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
+References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
+	<1107184897.7567.20.camel@windu.rchland.ibm.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 January 2005 09:10:38 -0600, Josh Boyer wrote:
-> On Mon, 2005-01-31 at 13:56 +0100, Jörn Engel wrote:
-> > 
-> > Problem would be trivial to solve, if said blocks were not scattered
-> > across the device.  Do you have a good reason to need this?
-> 
-> If said blocks were not scattered across the device, then they could be
-> in a static partition and there would be nothing to discuss :).  We just
-> got done discussing this on IRC, so I'll try and summarize.
-> 
-> The main reason to not have static partitions is the concern of bad
-> blocks on NAND and the effects that can have on the available space for
-> updates, etc of binary data.  If a majority of a partition is bad
-> blocks, either from the factory or from eventual wear, then you don't
-> have much room for updating, etc.
+On Mon, 31 Jan 2005, Josh Boyer wrote:
 
-Not sure if there really is a problem that needs solving.
+> On Mon, 2005-01-31 at 10:14 -0500, Robert P. J. Day wrote:
+> >   just for curiosity's sake, after i build a JFFS2 image using
+> > mkfs.jffs2, i want to mount out to verify its contents.  to do
+> > that, i use a recipe i patched together a while back involving
+> > loading the appropriate modules, creating /dev/mtdblock/0, dd'ing
+> > the image to that device, then mounting it.
+> >
+> >   however, this morning, in trying this with a larger-than-normal
+> > JFFS2 image, i get:
+> >
+> >   # dd bs=4096 if=soefsimage of=/dev/mtdblock/0
+> >   # dd: writing `/dev/mtdblock/0': No space left on device
+> >   1025+0 records in
+> >   1024+0 records out
+> >
+> > IOW, it dies after 4M.  is this a limit imposed by the ramdisk
+> > limit in the kernel configuration?  is this a configurable
+> > parameter at module load time?  thanks for any pointers.
+>
+> If you are using mtdram.c, it should be a module parameter.  Try
+> setting total_size to something larger.
 
-Your concern is that you need R blocks for the raw data, pick an
-arbitrary number A of blocks, but notice that A-R is less than B, the
-number of bad blocks in the area.  Sure.
+  ah, excellent, but while we're on the subject of parameters, is
+there any hope of getting some consistency in the way parameter values
+are supplied across the world of JFFS2 and MTD?
 
-So now you simply pick a sufficiently large A.  Let's say that your
-flashes have 5% bad blocks on average.  I'm too lazy to do the math
-properly, but if you pick A = 1.2*R, then well over 99% of all flash
-chips should have less than 20% bad blocks in you boot partition.
+  to wit, with "mkfs.jffs2":
 
-And for the remaining 0.something%, you are the one to argue why those
-chips have a sufficient quality to hit the field.  I'd be scared.
+-p, --pad[=SIZE] Pad output to SIZE bytes with 0xFF. If SIZE is
+                        not specified, the output is padded to the
+			end of the final erase block
 
-Jörn
 
--- 
-Invincibility is in oneself, vulnerability is in the opponent.
--- Sun Tzu
+  so, apparently, you supply an *exact* byte size here (it's not
+mentioned if you can use KiB or MiB prefixes).
+
+  with "--pagesize" and "--eraseblock", the help states that you *can*
+use those prefixes.
+
+  if you check what you can do with the mtdram module, you get:
+
+$ modinfo mtdram
+filename:
+/lib/modules/2.6.10-1.741_FC3/kernel/drivers/mtd/devices/mtdram.ko
+parm:           total_size:Total device size in KiB
+parm:           erase_size:Device erase block size in KiB
+
+  so the values here are ... what?  strictly in KiB?  so i'd supply
+something like
+
+  total_size=16384
+
+to specify 16M?  it's just a bit painful to jump around between the
+various utilities and have to keep remembering what the standard is.
+
+  thoughts?
+
+rday
