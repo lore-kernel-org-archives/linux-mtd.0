@@ -1,14 +1,23 @@
-Received: from web20729.mail.yahoo.com ([216.136.226.119])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Ar3l0-0002px-OF
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 23:27:02 +0000
-Message-ID: <20040211232659.2415.qmail@web20729.mail.yahoo.com>
-Date: Wed, 11 Feb 2004 15:26:59 -0800 (PST)
-From: Shawn Jin <shawnxtech@yahoo.com>
-To: linuxmtd <linux-mtd@lists.infradead.org>
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1Ar80q-0003MB-8X
+	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2004 03:59:40 +0000
+From: Joshua Wise <joshua@joshuawise.com>
+To: tharbaugh@lnxi.com
+Date: Wed, 11 Feb 2004 22:59:52 -0500
+References: <200402110054.31831.joshua@joshuawise.com>
+	<1076516571.19353.582.camel@tubarao>
+In-Reply-To: <1076516571.19353.582.camel@tubarao>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Help: Error on mounting JFFS2
+Content-Disposition: inline
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200402112259.53361.joshua@joshuawise.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: cfi_cmdset_0002.c: do_xxlock_oneblock: overflow subtract
+	causing oopsen on iPAQ h1900
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,85 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have some error when mounting a JFFS2 root
-filesystem. My flash is Am29PL320D on a MPC8245 board,
-16MB at two banks (0xFF800000, and 0xFF000000).
-CONFIG_MTD_CFI_B8 and CONFIG_MTD_CFI_I2 are set. The
-root fs image has benn programmed to bank 1 which
-starts at 0xFF000000. The error message is shown
-below.
+> Yep, it's an incredibly ugly thing - I can see why it blows things out
+> of the water.  I knew it was a bad thing to do - hence the comments.  At
+> the time that it was added, there wasn't an unlock function and so
+> adding, even a broken one, was a starting place.
+Ok, I remember in the past that one of the flash chips that I was using did=
+=20
+not have an unlock function. It was probably the one in the 1900.
 
-MTD do_write_oneword(): WRITE 0x00051b40(0x000000f0)
-MTD do_write_oneword(): Check 0x6f6c65ff 0x1985e002
-MTD do_write_oneword(): Check 0x6f6c65ff 0x1985e002
-MTD do_write_oneword(): Wacky!  Unable to decode
-failure status
-Possible buggy device - try increasing retry_cmd_max
-from 5
-MTD do_write_oneword(): 0x00051b40(0x00000000):
-0x6f6c65ff 0x1985c002 0x6f6c65ff
- 0x1985e002
-Write error in obliterating obsoleted node at
-0x00051b44: -5
-MTD do_erase_oneblock(): ERASE 0x00680000
-Chip not ready after erase suspended: status = 0x1032
-error -5 reading node at 0x0004faac in
-get_inode_nodes()
-jffs2_get_inode_nodes() for ino 2 returned -5
-Returned error for crccheck of ino #2. Expect
-badness...
-Chip not ready after erase suspended: status = 0x1032
-error -5 reading node at 0x000574b0 in
-get_inode_nodes()
-jffs2_get_inode_nodes() for ino 4 returned -5
-Returned error for crccheck of ino #4. Expect
-badness...
+> In the end, please fix up the code so that it works for the general
+> case.  I'll look at things later and see what I can do to either black
+> list the SST parts or deal with them in a sane way that isn't dangerous
+> and ugly.
+Hrm ... you make it sound like there are different unlock codes for every=20
+chip! Is there a general case here?
 
-The following debugging information about the flash
-chip may be helpful.
+As to dealing with the SST parts, I believe that if there is not another wa=
+y=20
+to detect the parts (ie, doing something htat would cause one to reset, but=
+=20
+not another), you should probably make the user specify what type of part i=
+t=20
+is ... dangerous hacks like having to read/write 4MiB below the address spa=
+ce=20
+just to unlock does not seem like a good answer for all chips of the sort!
 
-ep8245:Probing 0x00800000 at 0xff000000
-Number of erase regions: 4
-Primary Vendor Command Set: 0002 (AMD/Fujitsu
-Standard)
-Primary Algorithm Table at 0040
-Alternative Vendor Command Set: 0000 (None)
-No Alternate Algorithm Table
-Vcc Minimum:  2.7 V
-Vcc Maximum:  3.6 V
-No Vpp line
-Typical byte/word write timeout: 16 µs
-Maximum byte/word write timeout: 512 µs
-Full buffer write not supported
-Typical block erase timeout: 1024 ms
-Maximum block erase timeout: 65536 ms
-Chip erase not supported
-Device size: 0x400000 bytes (4 MiB)
-Flash Device Interface description: 0x0005
-  - Unknown
-Max. bytes in buffer write: 0x1
-Number of Erase Block Regions: 4
-  Erase Region #0: BlockSize 0x8000 bytes, 1 blocks
-  Erase Region #1: BlockSize 0x4000 bytes, 2 blocks
-  Erase Region #2: BlockSize 0x30000 bytes, 1 blocks
-  Erase Region #3: BlockSize 0x40000 bytes, 15 blocks
-EP8245 Flash Bank #1: Found 2 x32 devices at 0x0 in
-64-bit mode
- Amd/Fujitsu Extended Query Table at 0x0040
-EP8245 Flash Bank #1: Swapping erase regions for
-broken CFI table.
-number of CFI chips: 1
-Using word write method
-cfi_cmdset_0002: Disabling fast programming due to
-code brokenness.
+> SST, PLEASE FIX YOUR CHIPS AND USE UNIQUE IDS FOR NEW PARTS!!!
+>
+> Yes, I do mean to yell.
+You have caps lock stuck... oh wait, you realized that ;)
 
-Any help is appreciated!
+joshua
 
--Shawn.
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <RockShox> charge up a 50v 1000uf cap and toss it to someone
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Finance: Get your refund fast by filing online.
-http://taxes.yahoo.com/filing.html
+iD8DBQFAKvo4Pn9tWOqA4LMRAgAqAKCmmEsCDYpH38ZLcjnukqohExbKqgCgrP+s
+/YIrhwTsNxFsO25fTd2/3A4=3D
+=3DadYn
+=2D----END PGP SIGNATURE-----
