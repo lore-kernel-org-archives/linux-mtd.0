@@ -1,14 +1,14 @@
-Received: from [66.239.226.123] (helo=hermes.wildseed.com)
+Received: from [194.37.90.50] (helo=columbia.dt.net)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Imiz-0002VN-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2002 09:18:45 +0000
-Message-ID: <43CB1396676FD4119F03001083FD299401A1C6CE@neptune.kirkland.local>
-From: Paul Nash <paulnash@wildseed.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] Linux-2.4.18 block MTD dead-lock
-Date: Mon, 2 Dec 2002 01:49:12 -0800 
+	id 18Is7d-000374-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2002 15:04:33 +0000
+To: linux-mtd@lists.infradead.org
+Subject: Kernel deadlocks during jffs2 mount...
+Message-ID: <OF7C0F5F09.F3127DE1-ONC1256C83.00554D72@keymile.ch>
+From: Thomas.Locher@keymile.com
+Date: Mon, 2 Dec 2002 16:34:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,34 +20,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Below, David says, "wrong fix -- use the which is already in 2.4.19."
+We mount the root filesystem from a partition in a NAND-flashdisk 
+(/dev/mtdblock3)
+After changing few files on the disk and a reboot, the kernel hangs after 
+printing out these messages...
 
-Could someone please summarize where I should look for that in the sense
-that I want to get an isolated patch for it if possible?  I can't stably
-bite off the full task of upgrading to 2.4.19, but would like to see the
-diffs that were this fix.  Not even sure if they were in the MTD CVS or in
-the main linux branch, else I guess I could look at a cvs diff.
+ 
+.....
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bnd 2048)
+IP-Config: Incomplete network configuration information.
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Mounting root filesystem...
+mtd->read(0x400 bytes from 0x1b4000) returned ECC error
+mtd->read(0x3c28 bytes from 0x1b43d8) returned ECC error
+mtd->read(0x3a90 bytes from 0x7b8570) returned ECC error
+mtd->read(0x3c04 bytes from 0x7f03fc) returned ECC error
+VFS: Mounted root (jffs2 filesystem) readonly.
+Freeing unused kernel memory: 64k freed
+mtd->read(0x34 bytes from 0x7f07c4) returned ECC error
+mtd->read(0x34 bytes from 0x7f0670) returned ECC error
+mtd->read(0x34 bytes from 0x7f051c) returned ECC error
+mtd->read(0x737 bytes from 0x7b8a48) returned ECC error
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x007b8a04: Read 
+0x8a379920, calculated 0x199cc518
+......
 
-Pointers appreciated, thx...
+It seems that the GC is blocking the kernel.
+When we use another NFS as root filesystem and then mount the partition, 
+we still get the same errors, but the system does'nt block...
 
--Paul
+Any ideas?
 
------Original Message-----
-From: David Woodhouse <dwmw2@infradead.org>
-To: Takeharu KATO <tkato@cs.fujitsu.co.jp>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Linux-2.4.18 block MTD dead-lock 
-Date: Tue, 26 Nov 2002 13:21:33 +0000
+Regards
 
+Thomas Locher
 
-tkato@cs.fujitsu.co.jp said:
-> 3. The solution
-> We changed the sequence of the function called ``get_sb_bdev''  in 
-> fs/super.c.  We changed the function to make the block device  to be 
-> mounted checked before opening the device.  Please refer the patch to 
-> make out the changes in detail.
+System Infos:
+mtd/jffs2: cvs version 10. Oct. 02
+kernel version:  2.4.17 
 
-Wrong fix. Use the fix which is already in 2.4.19.
+------------------------------------------------------
+Software Developer, Line Systems
 
---
-dwmw2
+KEYMILE AG
+
+E-Mail: thomas.locher@keymile.com
+------------------------------------------------------
