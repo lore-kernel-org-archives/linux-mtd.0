@@ -1,58 +1,43 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1200Ca-0006OB-00
-	for mtd-list@infradead.org; Mon, 20 Dec 1999 10:38:04 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 1204Nb-0006Vc-00
+	for mtd-list@infradead.org; Mon, 20 Dec 1999 15:05:43 +0000
+Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 1200CZ-0006O5-00
-	for mtd@infradead.org; Mon, 20 Dec 1999 10:38:03 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.10.9912190002590.14262-100000@localhost.localdomain> 
-References: <Pine.LNX.4.10.9912190002590.14262-100000@localhost.localdomain> 
-To: Adi Linden <adi@adis.on.ca>
-Cc: mtd@infradead.org
-Subject: Re: doc2000 and mtd 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 20 Dec 1999 10:41:38 +0000
-Message-Id: <E1200G2-0007D5-00@devel2.axiom.internal>
+	id 1204NY-0006VK-00
+	for mtd@imladris.mvhi.com; Mon, 20 Dec 1999 15:05:41 +0000
+Date: Mon, 20 Dec 1999 09:14:51 -0600 (CST)
+From: Adi Linden <adi@adis.on.ca>
+To: ralph stickley <ralph@datalux.com>
+cc: Embedded <linux-embedded@waste.org>, MTD <mtd@imladris.mvhi.com>
+Subject: Re: Anyone embedding RH 6.1 / 2.2.12 ?
+In-Reply-To: <3857ABA8.A6A1024B@datalux.com>
+Message-ID: <Pine.LNX.4.10.9912200909520.1333-100000@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-adi@adis.on.ca said:
->  What am I doing wrong? 
+Just thought I'd mention I am mirroring all the embedded stuff I am
+working on at http://embedded.sourceforge.net
 
-Nothing. You don't need to load the mtdblock driver, but that shouldn't be 
-making anything go wrong.
+I found my connection to the westcoast is really slow. I can hit Chicago
+at 22k/s but uploading to sourceforge is going at 3.2k/s at best. Hope
+this helps.
 
-It's going to be a bug in the driver. What size is the DiskOnChip? Can you 
-send me the entire kernel log (from dmesg not from syslogd)
+Latest version is 0.16. The next few days I will be working on the
+products the embeded thing was started for. After Christmas I am hoping to
+get some documantation done and perhaps some scripts to buid different
+type systems (i.e. boot from HD, flash, CD, etc).
 
-Can you also try it without rebooting - after unmounting the NFTL, run 'sync' 
-a few times, then unload the nftl module and reload it again. See if it's happy then.
+> I'm thinking your connection is getting limited - best I could get on 3 different
+> downloads was about 2.8Kbps...maybe 56K is your upload speed ? Hmmmmm.... Well, if
+> you split it up, this won't be a problem...
 
-There are two possibilities - one is that it's not syncing fast enough and 
-that you're rebooting it too quickly. That wouldn't be your fault, but would 
-be a symptom of two separate bugs: Firstly a bug in the release() routine 
-which is supposed to sync the device before returning. Secondly, and more 
-importantly, a bug in the NFTL code which is supposed to leave the device in a 
-valid and recoverable state at all time.
-
-Alternatively, it could just be a bug in my NFTL code, which leaves the 
-NFTL filesystem in a state which isn't valid whether you interrupt it or not :)
-
-Either way, I'm going to need you to take dumps of the filesystem both before 
-and after mounting it - if you work out a way to reproduce this reliably, 
-without rebooting, and with as few steps as possible (like mount a clean 
-filesystem, untar as small a tar file as you need to cause the problem, 
-unmount), that'd be extremely useful.
-
-Thanks for the bug report.
-
---
-dwmw2
-
+Regards,
+Adi
 
 
 
