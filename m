@@ -1,18 +1,22 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19z0pL-0007By-Bk
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Sep 2003 22:24:07 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Chiasson, John" <jchiasson@namrl.navy.mil>
-In-Reply-To: <D495FC2E1E65A44EAA961BC66B9395312A9820@namrl-es.namrl.navy.mil>
-References: <D495FC2E1E65A44EAA961BC66B9395312A9820@namrl-es.namrl.navy.mil>
-Message-Id: <1063661004.788.26.camel@imladris.demon.co.uk>
+	id 19z9nL-00087h-HX
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2003 07:58:39 +0100
+Date: Tue, 16 Sep 2003 08:55:53 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Yu Chen <dychen@stanford.edu>
+Message-ID: <20030916065553.GA12329@wohnheim.fh-wedel.de>
+References: <200309160435.h8G4ZkQM009953@elaine4.Stanford.EDU>
 Mime-Version: 1.0
-Date: Mon, 15 Sep 2003 22:23:24 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <200309160435.h8G4ZkQM009953@elaine4.Stanford.EDU>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: redhat 9 disk on chip
+cc: mc@cs.stanford.edu
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: linux-kernel@vger.kernel.org
+Subject: Re: [CHECKER] 32 Memory Leaks on Error Paths
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +26,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-09-15 at 16:17 -0500, Chiasson, John wrote:
-> I've tried twice to compile mtd, and got compile errors
-> both times during the make.  Has anyone built this 
-> successfully on rh9?
+On Mon, 15 September 2003 21:35:46 -0700, David Yu Chen wrote:
+> 
+> [FILE:  2.6.0-test5/drivers/mtd/chips/cfi_cmdset_0020.c]
+> [FUNC:  cfi_staa_setup]
+> [LINES: 191-211]
+> [VAR:   mtd]
+>  186:	struct mtd_info *mtd;
+>  187:	unsigned long offset = 0;
+>  188:	int i,j;
+>  189:	unsigned long devsize = (1<<cfi->cfiq->DevSize) * cfi->interleave;
+>  190:
+> START -->
+>  191:	mtd = kmalloc(sizeof(*mtd), GFP_KERNEL);
+>  192:	//printk(KERN_DEBUG "number of CFI chips: %d\n", cfi->numchips);
+>  193:
+>  194:	if (!mtd) {
+>  195:		printk(KERN_ERR "Failed to allocate memory for MTD device\n");
+>  196:		kfree(cfi->cmdset_priv);
+>         ... DELETED 9 lines ...
+>  206:	mtd->eraseregions = kmalloc(sizeof(struct mtd_erase_region_info) 
+>  207:			* mtd->numeraseregions, GFP_KERNEL);
+>  208:	if (!mtd->eraseregions) { 
+>  209:		printk(KERN_ERR "Failed to allocate memory for MTD erase region info\n");
+>  210:		kfree(cfi->cmdset_priv);
+> END -->
+>  211:		return NULL;
+>  212:	}
+>  213:	
+>  214:	for (i=0; i<cfi->cfiq->NumEraseRegions; i++) {
+>  215:		unsigned long ernum, ersize;
+>  216:		ersize = ((cfi->cfiq->EraseRegionInfo[i] >> 8) & ~0xff) * cfi->interleave;
 
-You mean the MTD code included in the 2.4.20-20.9 kernel, or compiling
-the CVS code against 2.4.20-20.9?
+Valid.
 
-What errors did you see, precisely?
+> [FILE:  2.6.0-test5/drivers/mtd/chips/cfi_cmdset_0020.c]
+> [FUNC:  cfi_staa_setup]
+> [LINES: 191-235]
+> [VAR:   mtd]
+>  186:	struct mtd_info *mtd;
+>  187:	unsigned long offset = 0;
+>  188:	int i,j;
+>  189:	unsigned long devsize = (1<<cfi->cfiq->DevSize) * cfi->interleave;
+>  190:
+> START -->
+>  191:	mtd = kmalloc(sizeof(*mtd), GFP_KERNEL);
+>  192:	//printk(KERN_DEBUG "number of CFI chips: %d\n", cfi->numchips);
+>  193:
+>  194:	if (!mtd) {
+>  195:		printk(KERN_ERR "Failed to allocate memory for MTD device\n");
+>  196:		kfree(cfi->cmdset_priv);
+>         ... DELETED 33 lines ...
+>  230:		if (offset != devsize) {
+>  231:			/* Argh */
+>  232:			printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
+>  233:			kfree(mtd->eraseregions);
+>  234:			kfree(cfi->cmdset_priv);
+> END -->
+>  235:			return NULL;
+>  236:		}
+>  237:
+>  238:		for (i=0; i<mtd->numeraseregions;i++){
+>  239:			printk(KERN_DEBUG "%d: offset=0x%x,size=0x%x,blocks=%d\n",
+>  240:			       i,mtd->eraseregions[i].offset,
+
+Also valid.
+
+> looks like checking for mtdblks instead of mtdblk
+> [FILE:  2.6.0-test5/drivers/mtd/mtdblock.c]
+> [FUNC:  mtdblock_open]
+> [LINES: 277-279]
+> [VAR:   mtdblk]
+>  272:		mtdblks[dev]->count++;
+>  273:		return 0;
+>  274:	}
+>  275:	
+>  276:	/* OK, it's not open. Create cache info for it */
+> START -->
+>  277:	mtdblk = kmalloc(sizeof(struct mtdblk_dev), GFP_KERNEL);
+>  278:	if (!mtdblks)
+> END -->
+>  279:		return -ENOMEM;
+>  280:
+>  281:	memset(mtdblk, 0, sizeof(*mtdblk));
+>  282:	mtdblk->count = 1;
+>  283:	mtdblk->mtd = mtd;
+>  284:
+
+Invalid.  This is quite an obvious false positive, at least if your
+algorithm checks for possible value ranges.
+
+> [FILE:  2.6.0-test5/fs/jffs2/scan.c]
+> [FUNC:  jffs2_scan_medium]
+> [LINES: 98-109]
+> [VAR:   flashbuf]
+>   93:			buf_size = c->sector_size;
+>   94:		else
+>   95:			buf_size = PAGE_SIZE;
+>   96:
+>   97:		D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n", buf_size));
+> START -->
+>   98:		flashbuf = kmalloc(buf_size, GFP_KERNEL);
+>   99:		if (!flashbuf)
+>  100:			return -ENOMEM;
+>  101:	}
+>  102:
+>  103:	for (i=0; i<c->nr_blocks; i++) {
+>  104:		struct jffs2_eraseblock *jeb = &c->blocks[i];
+>  105:
+>  106:		ret = jffs2_scan_eraseblock(c, jeb, buf_size?flashbuf:(flashbuf+jeb->offset), buf_size);
+>  107:
+>  108:		if (ret < 0)
+> END -->
+>  109:			return ret;
+>  110:
+>  111:		ACCT_PARANOIA_CHECK(jeb);
+>  112:
+>  113:		/* Now decide which list to put it on */
+>  114:		switch(ret) {
+
+Valid.  And not trivial to fix.
+
+> [FILE:  2.6.0-test5/fs/jffs2/scan.c]
+> [FUNC:  jffs2_scan_medium]
+> [LINES: 98-233]
+> [VAR:   flashbuf]
+>   93:			buf_size = c->sector_size;
+>   94:		else
+>   95:			buf_size = PAGE_SIZE;
+>   96:
+>   97:		D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n", buf_size));
+> START -->
+>   98:		flashbuf = kmalloc(buf_size, GFP_KERNEL);
+>   99:		if (!flashbuf)
+>  100:			return -ENOMEM;
+>  101:	}
+>  102:
+>  103:	for (i=0; i<c->nr_blocks; i++) {
+>         ... DELETED 124 lines ...
+>  228:	}
+>  229:	if (c->nr_erasing_blocks) {
+>  230:		if ( !c->used_size && ((empty_blocks+bad_blocks)!= c->nr_blocks || bad_blocks == c->nr_blocks) ) {
+>  231:			printk(KERN_NOTICE "Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
+>  232:			printk(KERN_NOTICE "empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",empty_blocks,bad_blocks,c->nr_blocks);
+> END -->
+>  233:			return -EIO;
+>  234:		}
+>  235:		jffs2_erase_pending_trigger(c);
+>  236:	}
+>  237:	if (buf_size)
+>  238:		kfree(flashbuf);
+
+Same one, basically.
+
+Jörn
 
 -- 
-dwmw2
+Geld macht nicht glücklich.
+Glück macht nicht satt.
