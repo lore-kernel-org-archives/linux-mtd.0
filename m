@@ -1,26 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12zh8X-0000DO-00
-	for mtd-list@infradead.org; Wed, 07 Jun 2000 15:48:53 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12zh8W-0000DI-00
-	for cvs-notify@infradead.org; Wed, 07 Jun 2000 15:48:52 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel nftl.c'
-Message-Id: <E12zh8W-0000DI-00@infradead.org>
+	id 1300xx-00035l-00
+	for mtd-list@infradead.org; Thu, 08 Jun 2000 12:59:17 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 1300xv-00035f-00
+	for mtd@infradead.org; Thu, 08 Jun 2000 12:59:15 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 07 Jun 2000 15:48:52 +0100
+To: "Sébastien" "Côté" <scote1@Matrox.COM>, "Al Viro" <aviro@redhat.com>
+Cc: alex@cendio.se, mtd@infradead.org, jffs-dev@axis.com
+Subject: JFFS port to 2.2?
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Date: Thu, 08 Jun 2000 12:59:11 +0100
+Message-ID: <13962.960465551@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv820
+Sébastien, Al - 
 
-Modified Files:
-	nftl.c 
-Log Message:
-Remove the 'or it will be when it arrives' line - it's arrived
-already. Much kudos to M-Systems for sorting it out so quickly.
+How much progress have either of you made with the backport of JFFS to 2.2? 
+I'm about to try to get it to work, so if either of you could let me have 
+your current version, that'd be much appreciated.
+
+Neither of you have write access to the MTD CVS at the moment - send me a 
+SSH public key if you want that remedied.
+
+
+--
+dwmw2
+
 
 
 
