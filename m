@@ -1,18 +1,14 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from [210.77.143.228] (helo=tsinghua.org.cn)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kvtB-0007LI-00
-	for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2002 01:13:21 +0100
-Received: from [192.168.5.58] (HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2512490 for linux-mtd@lists.infradead.org; Fri, 30 Aug 2002 17:13:31 -0700
-Message-ID: <3D700A1F.9040208@redswitch.com>
-Date: Fri, 30 Aug 2002 17:13:19 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: mtd write takes 5 minutes
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 17l3Rw-00083Q-00
+	for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2002 09:17:45 +0100
+From: "" <yanhy@tsinghua.org.cn>
+To: linux-mtd@lists.infradead.org  
+Date: Sat, 31 Aug 2002 16:18:39 +0800
+Reply-To: "" <yanhy@tsinghua.org.cn>
+Subject: Help needed for jffs2
+Content-Type: text/plain
+Message-Id: <E17l3Rw-00083Q-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +20,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi,friends!I'm new to uClinux.
+I am trying to port uClinx on Coldfire M5272C3.The kernel is linux-2.4.x.
+Now, if i select MTD and romfs support, the kernel works well on the target.
+I can see the four pre-defined flash patitions and erase them and cp files to
+them.
+Now,I want to use jffs1/2 .but when i select jffs1/2 support, compiling problems 
+come as:
+mkfs.jffs2.c:113: `__BYTE_ORDER' undeclared here (not in a function)
+mkfs.jffs2.c:114: `__BYTE_ORDER' undeclared here (not in a function)
+mkfs.jffs2.c: In function `create_target_filesystem':
+mkfs.jffs2.c:980: warning: assignment makes pointer from integer without a cast
+mkfs.jffs2.c:981: `DT_DIR' undeclared (first use in this function)
+mkfs.jffs2.c:981: (Each undeclared identifier is reported only once
+mkfs.jffs2.c:981: for each function it appears in.)
+mkfs.jffs2.c:991: warning: assignment makes pointer from integer without a cast
+mkfs.jffs2.c:999: `DT_SOCK' undeclared (first use in this function)
+mkfs.jffs2.c:1004: `DT_FIFO' undeclared (first use in this function)
+mkfs.jffs2.c:1024: `DT_LNK' undeclared (first use in this function)
+mkfs.jffs2.c:1039: `DT_REG' undeclared (first use in this function)
+mkfs.jffs2.c:1046: `DT_CHR' undeclared (first use in this function)
+mkfs.jffs2.c:1051: `DT_BLK' undeclared (first use in this function)
+mkfs.jffs2.c: In function `main':
+mkfs.jffs2.c:1202: `__LITTLE_ENDIAN' undeclared (first use in this function)
+mkfs.jffs2.c:1206: `__BIG_ENDIAN' undeclared (first use in this function)
+make[2]: *** [mkfs.jffs2.o] Error 1
+make[2]: Leaving directory `/user/snap-gear-uclinux/uClinux-dist/user/mt
+d-utils'
 
-I have a weird problem when writing hundreds of bytes to an mtd device. 
-It takes about 5 minutes. The situation is as follows.
-
-In module A initialization, a kernel thread is created to update some 
-configuration which is stored in an mtd device. But this thead spent 
-almost 5 minutes to finish writing hundreds of bytes data. What caused 
-this problem? I guess the mtd write was waiting for resources. If so, 
-what kind of resources did it wait for?
-
-Thanks.
-
-- Shawn.
+What's the matter?Do i need some jffs2 patch or fix it manually?
+Thanks
+Yan
