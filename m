@@ -1,42 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
-Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 148OAb-0001bP-00
-	for mtd-list@infradead.org; Tue, 19 Dec 2000 14:55:13 +0000
-Received: from [195.224.55.237] (helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 148OAa-0001b3-00
-	for mtd@infradead.org; Tue, 19 Dec 2000 14:55:12 +0000
+Received: from majordomo by infradead.org with local (Exim 3.20 #2)
+	id 149UoY-0002q8-00
+	for mtd-list@infradead.org; Fri, 22 Dec 2000 16:13:02 +0000
+Received: from dhcp07.ncipher.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 149UoX-0002q2-00
+	for mtd@infradead.org; Fri, 22 Dec 2000 16:13:01 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.30.0012181049550.997-100000@xanadu.gn.com> 
-References: <Pine.LNX.4.30.0012181049550.997-100000@xanadu.gn.com> 
-To: Nicolas Pitre <nico@cam.org>
-Cc: Erwin Authried <eauth@softsys.co.at>, mtd@infradead.org
-Subject: Re: module registration changes 
+To: mark.langsdorf@amd.com
+Cc: mtd@infradead.org
+Subject: CFI ident problems with AMD chips.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 19 Dec 2000 14:52:21 +0000
-Message-ID: <4742.977237541@redhat.com>
+Date: Fri, 22 Dec 2000 16:12:30 +0000
+Message-ID: <4883.977501550@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-nico@cam.org said:
->  Well...  I would suggest you add it where it belongs i.e. include/
-> linux/list.h. 
+I've now started using AMD chips. I have a chip which I believe to be a 
+4MiB part with TOP boot blocks. Should be 63*64KiB erase regions followed by 
+8*8KiB erase regions.
 
-I agree. We need to patch 2.0 anyway to make the initcalls &c work. We 
-might as well add list.h in the right place in the same patch.
+However, the CFI "Erase Block Region" information reports them in the wrong 
+order - the 8*8KiB blocks _before_ the 63*64KiB.
 
-At this stage, I'd like to keep the main code as clean as possible for 2.4. 
-I want it to _work_ on 2.0, but I want it to be _pretty_ in 2.4, because I 
-have to justify it to Linus for 2.4, and I don't for 2.0 :)
-
-Feel free to add an 'infrastructure' patch for 2.0 which does everything 
-you need and lets you just drop the contents of the drivers/mtd and 
-include/linux/mtd directories in place from CVS.
+Is there some way to tell the top-boot parts apart from the bottom-boot 
+parts?
 
 --
 dwmw2
+
+
 
 
 
