@@ -1,21 +1,19 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Yz3h-0003bn-Bl
-	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 03:15:21 +0100
-From: Joshua Wise <joshua@joshuawise.com>
-To: ebiederman@lnxi.com (Eric W. Biederman)
-Date: Sat, 5 Jul 2003 22:15:34 -0400
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Yzbb-0003mB-7B
+	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 03:50:23 +0100
+To: Joshua Wise <joshua@joshuawise.com>
 References: <200307042232.43815.joshua@joshuawise.com>
-	<200307052157.06325.joshua@joshuawise.com> <m3el142yly.fsf@maxwell.lnxi.com>
-In-Reply-To: <m3el142yly.fsf@maxwell.lnxi.com>
+	<200307052157.06325.joshua@joshuawise.com>
+	<m3el142yly.fsf@maxwell.lnxi.com>
+	<200307052215.35596.joshua@joshuawise.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 05 Jul 2003 20:50:25 -0600
+In-Reply-To: <200307052215.35596.joshua@joshuawise.com>
+Message-ID: <m38yrcmkr2.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200307052215.35596.joshua@joshuawise.com>
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
 Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,56 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Joshua Wise <joshua@joshuawise.com> writes:
 
-On Saturday 05 July 2003 10:11 pm, Eric W. Biederman wrote:
-> Ok.  My point is that there is no reason to go through each chip in the
-> array.  We can just iterate through the unlock_addrs array, which
-> holds every unlock address.
+> On Saturday 05 July 2003 10:11 pm, Eric W. Biederman wrote:
+> > Ok.  My point is that there is no reason to go through each chip in the
+> > array.  We can just iterate through the unlock_addrs array, which
+> > holds every unlock address.
+> 
+> Right, that makes sense.
+> 
+> > We can and do have generic probe functions, in the jedec case.
+> 
+> Not even like that - I meant the way gen_probe.c goes through all
+> interlaces, all device sizes, etcetera. I meant that 'different'.
 
-Right, that makes sense.
+gen_probe_chip is one case where the cfi and the jedec case are
+common.  Warts are there but it is a common case.  And handling
+the various combinations of interleaved chips and various word
+sizes is tricky, and is quite easy for people who don't need that
+logic to get it wrong if it is not handled in common.
 
-> We can and do have generic probe functions, in the jedec case.
+> > It is a different probe than the cfi one but it is just as valid.
+> > The challenge is that the query opcode needs a prefix for some chips
+> > so we need to loop through all of the prefixes (unlock addresses) instead
+> > of just some magic subset of them.
+> 
+> Right - guessing at what gen_probe really wants and interpreting it
+> like that, IMHO, makes extremely little sense.
+> 
+> > It shouldn't be, and the probes are just used at probe time.  The
+> > rest of the time their modules can even be unloaded if necessary.
+> 
+> Sweet, so if jedec_probe was rewritten to not have to use
+> jedec_probe_chip, or gen_probe at all for that matter, we would not
+> have to deal with jedec_probe_chip anywhere else?
 
-Not even like that - I meant the way gen_probe.c goes through all interlace=
-s,=20
-all device sizes, etcetera. I meant that 'different'.
+Well yes, but I don't see the point in going in that direction.
+ 
+> Also, out of curiousity, are you on IRC? I would appreciate it if you could 
+> 'look over my shoulder' through a screen session as I hack at a new 
+> jedec_probe, and poke me with a generic sharp object if I do something 
+> obviously stupid.
 
-> It is a different probe than the cfi one but it is just as valid.
-> The challenge is that the query opcode needs a prefix for some chips
-> so we need to loop through all of the prefixes (unlock addresses) instead
-> of just some magic subset of them.
+Sorry, I'm not.  Submitting patches for review is another good
+way of accomplishing the same thing, and it is more economical
+of other peoples time.  This is a weekend and one of my rare moments
+with free time.  Thayne Harbaugh should be able to do just as good
+a job at answering your questions and he has a little more time
+than me.
 
-Right - guessing at what gen_probe really wants and interpreting it like th=
-at,=20
-IMHO, makes extremely little sense.
+I just wanted to catch this and point you onto a useful direction
+before things go to far.  
 
-> It shouldn't be, and the probes are just used at probe time.  The
-> rest of the time their modules can even be unloaded if necessary.
+Seriously all you should need to do is to take the loop in
+jedec_probe_chip where it loops through some unlock address and have
+it explicitly loop through all of the combinations, or at least enough
+of them until a match is found.  Look for the retry label.  It is a
+significant code change but it should be contained to just that one spot.
 
-Sweet, so if jedec_probe was rewritten to not have to use jedec_probe_chip,=
- or=20
-gen_probe at all for that matter, we would not have to deal with=20
-jedec_probe_chip anywhere else?
-
-Also, out of curiousity, are you on IRC? I would appreciate it if you could=
-=20
-'look over my shoulder' through a screen session as I hack at a new=20
-jedec_probe, and poke me with a generic sharp object if I do something=20
-obviously stupid.
-
-> Eric
-~joshua
-
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE/B4ZGPn9tWOqA4LMRAhPaAJwP22JpVB6WzOvaUp/Ah13AjsvRagCgi3vb
-9kZlolNsMbJGmt7gk+EtI0k=3D
-=3Dj9jm
-=2D----END PGP SIGNATURE-----
+Eric
