@@ -1,20 +1,17 @@
-Received: from orngca-mls01.socal.rr.com ([66.75.160.16])
+Received: from [212.18.228.76] (helo=mail.linuxgrrls.org ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q1TR-0002NJ-QC
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:00:54 +0100
-Received: from [192.168.2.4] (66-75-241-113.san.rr.com [66.75.241.113])
-	h5B8wdM26459	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 01:58:39 -0700 (PDT)
-From: roger <rogerxxmaillist@san.rr.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1055118239.10424.49.camel@localhost3.localdomain>
-References: <1055118239.10424.49.camel@localhost3.localdomain>
-Message-Id: <1055322085.31819.31.camel@localhost3.localdomain>
-Mime-Version: 1.0
-Date: 11 Jun 2003 02:01:25 -0700
-Content-Type: text/plain
+	id 19Q1TZ-0002Np-GV
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:01:01 +0100
+Date: Wed, 11 Jun 2003 10:01:29 +0100
+Mime-Version: 1.0 (Apple Message framework v552)
+To: Pantelis Antoniou <panto@intracom.gr>
+From: Jasmine Strong <jasmine@regolith.co.uk>
+In-Reply-To: <3EE6EBA0.3080508@intracom.gr>
+Message-Id: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: Problems with using doc2001 module
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Cram FS on NAND - How to do this?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ok. just for kicks. i booted into DOS using M-SYS's tffs_5.1.4_DOS_TOOLS
-and dinfo and dformat refused to find the DiskonChip even after
-specifing it's address of 0xfff00000.
 
-something isn't right here.  it's obviously something with the code.  I
-also get the same results on a duplicate 440BX motherboard.
+On Wednesday, Jun 11, 2003, at 09:43 Europe/London, Pantelis Antoniou 
+wrote:
+[snip]
 
-arrrghh.
+1)  Where are you going to store this bad block list?
 
-On Sun, 2003-06-08 at 17:23, roger wrote:
-> For the past couple of days and using every available option with
-> docprobe (kernel compile time options), I have not been able to get the
-> several DiskOnChips-2001 recognized by kernel 2.4.20.
-> 
-> by a fluke accident, i've gotten the DOC recognized.
-> 
-> I'm on a 2x750P3 SMP Tyan Tiger 1832dl and induced a "kernel oops" on
-> cpu1 by trying to insmod ./bios.o
-> (http://www.openbios.info/download/index.html
-> devbios-0.3.2.tar.gz).
-> 
-> the docprobe.o is compiled with "Physical Address = 0" and no other
-> options for docprobe.o.  ... using doc2001.o
-> 
-> i've attached dmesg output below of the oops condition  when trying to
-> insmod bios.o and then after the kernel-oops occurred, modprobed
-> mtdcore, mtdchar,dos2001,dosprobe doc_config_location=0xfff00000. 
-> (unknown if the doc_config_location is needed...have yet to try without
-> as i've only duplicated 3 times.)
-> 
-> (i've been advised that there might be a "hidden write enable" problem -
-> i.e. there is a special GPIO line used to control write enable in
-> addition to the normal mechanism.)
--- 
+There isn't anywhere on the Flash that can be guaranteed good.
+You can't pick a set location for the bad block list, so you must scan
+for it-  and once you have found it you must have some way to
+check that you are looking at a good copy of it.
 
-Roger
-http://www.eskimo.com/~roger/index.html
+If you plan to generate it at mount time, you run the risk that
+a block has gone bad while the device has been dormant, and
+thus you may generate a block list that does not match the one
+the device was written with,  which could render a block
+-structured filesystem like cramfs unreadable.
+
+Also, all this scanning takes time, which makes mounting slow.
+
+2)  What about blocks that go bad while the system is in service?
+
+Flash blocks go bad randomly, and often while they are in use.
+You must use a strategy to cope with this-  JFFS and YAFFS use
+Reed-Solomon forward error correction.
+
+3)  What about wear-levelling?
+
+Flash blocks do not last indefinitely.  Every erase brings the Flash
+block you are erasing closer to the end of its lifespan.  Obviously
+this is less of a concern on a static filesystem like cramfs.
+
+Why not put a cramfs filesystem into a file on a YAFFS or JFFS2
+filesystem and use a loopback to mount it?
+
+-Jas.
