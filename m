@@ -1,48 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14IvfL-0000Aq-00
-	for mtd-list@infradead.org; Wed, 17 Jan 2001 16:42:31 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14Iydi-0001dL-00
+	for mtd-list@infradead.org; Wed, 17 Jan 2001 19:53:02 +0000
+Received: from hall.mail.mindspring.net ([207.69.200.60])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14IvfK-0000Ak-00
-	for mtd@infradead.org; Wed, 17 Jan 2001 16:42:30 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A65C7E4.FF2BC9D1@nexus-tech.net> 
-References: <3A65C7E4.FF2BC9D1@nexus-tech.net> 
-To: Kyle Harris <kharris@nexus-tech.net>
-Cc: mtd <mtd@infradead.org>
-Subject: Re: Newbie: archives and legal issues 
-Mime-Version: 1.0
+	id 14Iydh-0001dF-00
+	for mtd@infradead.org; Wed, 17 Jan 2001 19:53:01 +0000
+Received: from nexus-tech.net (pool-63.52.1.28.atln.grid.net [63.52.1.28])
+	by hall.mail.mindspring.net (8.9.3/8.8.5) with ESMTP id OAA23949
+	for <mtd@infradead.org>; Wed, 17 Jan 2001 14:52:48 -0500 (EST)
+Message-ID: <3A65F6B3.B7842663@nexus-tech.net>
+Date: Wed, 17 Jan 2001 14:46:59 -0500
+From: Kyle Harris <kharris@nexus-tech.net>
+MIME-Version: 1.0
+To: mtd <mtd@infradead.org>
+Subject: Newbie: more questions
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 17 Jan 2001 16:41:54 +0000
-Message-ID: <21663.979749714@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-kharris@nexus-tech.net said:
->  Is there a searchable mail archive?
+I got the mail archives, but I still have a few questions (then,
+hopefully, I'll be quiet for a while).
 
-Nope, although the archives are downloadable in mbox format from 
-ftp.infradead.org:/pub/mtd/archives
+1) What is the difference between JFFS and JFFS2?
 
-grep is your friend :)
+2) Is NAND flash supported by JFFS? Is NAND flash supported by the
+character device?
 
-> I'm sure this question has probably been beat to death. So, if there
-> is someplace I can look for discussion, please let me know. Is it
-> legal to use the FTL and/or NFTL on custom hardware (i.e., not
-> M-System devices)?
+3) Can the filesystem be limited to using only part of a device? For
+example, can I write a compressed image to a well-known area in flash 
+(that the boot is aware of) and prevent the fs from using this? Does
+this apply to both NOR and NAND flash?
 
-Unless you live in the Free World or have a separate patent licensing 
-agreement with M-Systems, FTL may only be used on PCMCIA devices, and NFTL 
-only on M-Systems' own hardware.
+4) How are different blocks/sectors within a device accessed by the
+character device? Do I use different device minors or do I seek to an
+address?
 
-But if you have custom hardware, why wouldn't you be using JFFS?
-
---
-dwmw2
-
-
+Thanks for your help, Kyle.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
