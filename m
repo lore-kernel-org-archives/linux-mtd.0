@@ -1,26 +1,27 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DDrah-0004jz-Ny
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2005 17:11:12 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DDrUM-0005ak-PM
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2005 23:04:41 +0100
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2005 23:04:38 +0100
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2005 23:04:38 +0100
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=mail.magtech.com.au)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DDsin-00050u-J4
+	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2005 18:23:38 -0500
+Received: from mail.magtech.com.au (localhost [127.0.0.1])
+	by localhost.magtech.com.au (Postfix) with ESMTP id CC163894002
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Mar 2005 10:23:32 +1100 (EST)
+Received: from [192.168.65.196] (unknown [192.168.65.196])
+	by mail.magtech.com.au (Postfix) with ESMTP id 068EC894002
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Mar 2005 10:23:32 +1100 (EST)
+Message-ID: <4240A8F3.1070203@magellan-technology.com>
+Date: Wed, 23 Mar 2005 10:23:31 +1100
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Tue, 22 Mar 2005 21:57:30 +0000 (UTC)
-Message-ID: <loom.20050322T224733-491@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <1ffb4b0705032109224f2c7805@mail.gmail.com>
+	<423FBE7F.6090700@magellan-technology.com>
+In-Reply-To: <423FBE7F.6090700@magellan-technology.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: atomic file operations
+Subject: Re: mtd permission denied
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Aras Vaichas wrote:
+> Mike Lee wrote:
+> 
+>> Hi all
+>>   i tried to flash_erase and other flash_* tools to my mtd device, the
+>> return value is permission denied, but i am already root login. I have
+>> selected MTD_CHAR and MTD_BLOCK in kernel.  Do i miss somethings?
+> This is spookey, I just got the exact same problem at the same time(!)
+> 
+> I'm trying to write data to my Dataflash device, but I get a "permission 
+> denied" error whenever I try to fopen the file "/dev/mtd/2" to write the 
+> data into it. I can read data from it with no problems.
 
-I am working on a logging application where a (large) log file is appended 
-with 1 kByte data chunks. I cannot miss a chunk or duplicate a chunk in 
-case of a power failure. Kermit will be used to ensure atomicity for 
-incomming data chunks. Now, the question is what file operations on JFFS2 
-are guaranteed to be atomic/transactional? 
-Is a write of 1024 bytes atomic? 
-Does it relate to the page size in any way? BTW I am using NAND and the page 
-may vary between 512 and 2048 bytes depending on a device.
-Is file rename atomic?
-Other file operations?
+Sorry to answer my owns post ... but Mike gave me a hint as to what the problem 
+was.
 
-Second issue is: How badly these small chunks will affect my mount time?
+Mike had MTD_WRITEABLE set in the mask_flags for his partitions, so they were 
+read-only.
 
-Thanks in advance
+My "permission denied" was caused because I'd left the default Dataflash 
+partition settings in at91_dataflash.c from the MTD backporting work I did last 
+year. The default settings don't honour erase block boundaries and thus the 
+partitions were being mounted "read only". Silly me didn't look at dmesg ...
 
-Sergei Sharonov
+
+regards,
+
+Aras
