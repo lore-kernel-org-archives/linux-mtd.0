@@ -1,45 +1,39 @@
-From: samoutin@hotbox.ru (Alex Samoutin)
-Date: Fri, 14 Feb 2003 10:27:26 -0800
-Subject: NAND OOB and endians issue.
-Message-ID: <003e01c2d456$bba71340$1a00a8c0@itc.intrinsyc.com>
+From: grante@visi.com (Grant Edwards)
+Date: Fri, 14 Feb 2003 16:28:20 -0600
+Subject: Problems with BIG_ENDIAN
+In-Reply-To: <3DF38B3E.CD3CA322@imc-berlin.de>; from steven.scholz@imc-berlin.de on Sun, Dec 08, 2002 at 07:11:10PM +0100
+References: <3DF38B3E.CD3CA322@imc-berlin.de>
+Message-ID: <20030214162819.A15729@visi.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-I am using PPC (IBM 405ep) system with NAND flash. It is big endian
-processor.
+On Sun, Dec 08, 2002 at 07:11:10PM +0100, Steven Scholz wrote:
 
+> I am having trouble creating a big endian image with the latest
+> CVS version of mkfs.jffs2!
+> 
+> > mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -l -p
+> > hexdump -n 16 -x images/pFlashdisk 
+> 0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
+> 
+> > mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -b -p
+> > hexdump -n 16 -x images/pFlashdisk 
+> 0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
+> 
+> Both options -l _and_ -b result in the same byteorder!!!
 
+Yup.  And it looks like it's still that way.  Oddly, a comment
+at the top of the file says that cross-endian support has been
+added, but it sure looks like "-l" and "-b" are just ignored.
 
-When I create empty jffs2 image  on board (using mount -t jffs2 /dev/mtd0 on
-erased partition) jffs2 write clean marker bytes to the OOB of first sector
-of each blocks. According to docs it supposet to be
+I tried undefining JFFS2_NATIVE_ENDIAN and defining
+JFFS2_BIG_ENDIAN, but then nothing builds.  (RH7.3 IA32 host)
 
+Where can I get a version of mkfs.jffs2 that pays attention to
+the "-b" flag?  [I unfortunately can't access the CVS archives.]
 
+Thanks,
 
- Offset (hex) 08 09 0a 0b 0c 0d 0e 0f
-
-Data    85 19 03 20 08 00 00 00
-
-But in reality I have
-
-
-
-19 85 20 02 00 00 00 08
-
-
-
-(I used nanddump with formatted output to check it)
-
-
-
-Ok. Inside jffs2.h   I can define JFFS2_BIG_ENDIAN (instead default
-JFFS2_NATIVE_ENDIAN) but result the same. And only if I set
-JFFS2_LITTLE_ENDIAN I will get    85 19 03 20 08 00 00 00 pattern.
-
-
-
-It is look very strange for me. So, which def for endians I should use?
-
-
-
-Alex.
+-- 
+Grant Edwards
+grante at visi.com
