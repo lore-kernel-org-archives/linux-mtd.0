@@ -1,20 +1,19 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BlBu7-0005mq-4f
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 15:28:28 -0400
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Brad Goodman <bgoodman@acopia.com>
-In-Reply-To: <77A9CE908F115440B48104747E2534220D0943@email1.acopianet.com>
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BlCCo-0005yd-Bq
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 15:47:46 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: tharbaugh@lnxi.com
+In-Reply-To: <1089918851.8696.191.camel@tubarao>
 References: <77A9CE908F115440B48104747E2534220D0943@email1.acopianet.com>
+	<1089918851.8696.191.camel@tubarao>
 Content-Type: text/plain
-Date: Thu, 15 Jul 2004 13:14:11 -0600
-Message-Id: <1089918851.8696.191.camel@tubarao>
+Message-Id: <1089920860.14567.1348.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
+Date: Thu, 15 Jul 2004 20:47:41 +0100
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Brad Goodman <bgoodman@acopia.com>
 Subject: RE: 2.4.26 MTD Patch
-Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-07-15 at 14:32 -0400, Brad Goodman wrote:
-> You are correct.
+On Thu, 2004-07-15 at 13:14 -0600, Thayne Harbaugh wrote:
+> On Thu, 2004-07-15 at 14:32 -0400, Brad Goodman wrote:
+> > You are correct.
+> > 
+> > The patch I made was for the code that appears in 2.4.26 of the kernel.
+> > 
+> > The stuff in the newere (2.6.7) kernels is totally different.
+> > 
+> > I thought this would be a good patch for the 2.4.27 kernel,
 > 
-> The patch I made was for the code that appears in 2.4.26 of the kernel.
-> 
-> The stuff in the newere (2.6.7) kernels is totally different.
-> 
-> I thought this would be a good patch for the 2.4.27 kernel,
+> That's a question that gets raised a lot - why is 2.4.x so far behind
+> the mtd CVS tree.
 
-That's a question that gets raised a lot - why is 2.4.x so far behind
-the mtd CVS tree.
+Because 2.4.x is obsolete. It's getting important bug fixes only.
 
-> if you are
-> taking summitions for inclusion in it. If not, the code is not
-> applicable
-> In the 2.6.x branch.
+The 2.6 kernel, on the other hand, should be almost entirely up to date
+as soon as Linus honours my request to pull from
+bk://linux-mtd/bkbits.net/mtd-2.6
 
-David Woodhouse is pushing MTD upstream in the next few days.  I'm not
-sure if that is both 2.6.x *and* 2.4.x or if it is *just* 2.6.x.  I
-imagine that it will only be 2.6.x.  I think that the general feeling is
-that the MTD tree has changed so much that it isn't appropriate for 2.4.
+> I think that reasonable maintenance should be done on 2.4, however.
 
-I think that reasonable maintenance should be done on 2.4, however.
+That makes sense. I'm not sure whether it makes sense to take a branch
+in CVS from the files which are in 2.4, as I've done for JFFS2 on the
+jffs2-2_4-branch, or whether we should just let people submit fixes
+directly to Marcelo and not bother to keep track of them in CVS. 
 
-David, comments?
+I suspect the latter -- so if you can forward me the patch _without_ a
+disclaimer that says I'm not allowed to read it, I'll see if it's sane
+and either give you my blessing to send it to Marcelo, or ask you to fix
+whatever it is that offends me about it.
 
-Brad, you might forward your patch to Marcelo and see what he says about
-taking MTD patches from random Joe Developer or if he only wants them
-from David Woodhouse.
+-- 
+dwmw2
