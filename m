@@ -1,23 +1,18 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JyeP-0001kP-HH
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 17:47:14 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: kusdogan@boun.edu.tr
-In-Reply-To: <1053891017.3ed119c966818@webmail.boun.edu.tr>
-References: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-	 <1053855854.2082.3.camel@passion.cambridge.redhat.com>
-	 <1053887191.3ed10ad7ea7cf@webmail.boun.edu.tr>
-	 <1053876687.17182.1.camel@imladris.demon.co.uk>
-	 <1053891017.3ed119c966818@webmail.boun.edu.tr>
-Message-Id: <1053881278.17182.4.camel@imladris.demon.co.uk>
+	id 19K2If-0002Ou-SN
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 21:41:01 +0100
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 19K2HR-0006kd-00
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 22:39:45 +0200
+To: linux-mtd@lists.infradead.org
+From: David Wuertele <dave-gnus@bfnet.com>
+Date: Sun, 25 May 2003 13:41:45 -0700
+Message-ID: <m3brxqzrli.fsf@bfnet.com>
 Mime-Version: 1.0
-Date: Sun, 25 May 2003 17:47:58 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Oops ERROR : Unable to handle kernel NULL pointer
- dereference	at virtual address 00000000
+Sender: news <news@main.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: v1.38  "mkfs.jffs2 --pad"  goes overboard
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2003-05-25 at 20:30, kusdogan@boun.edu.tr wrote:
-> It's still at the same line in add_mtd_device()
+Why is mkfs.jffs2 generating a larger file than I want?
 
-Why do you say that? It doesn't _look_ like it is...
+  # /sbin/mkfs.jffs2 --version
+  mkfs.jffs2: revision 1.38
 
-> >>EIP; c0089200 <add_mtd_blktrans_dev+74/2b0>   <=====
+  # /sbin/mkfs.jffs2 --pad=10485760 --little-endian --squash -e 16384 -d root -o jffs2.dat
+  # ls -al jffs2.dat
+  -rw-r--r--    1 root     root     10551296 May 25 13:36 jffs2.dat
+  # 
 
-Please show the backtrace.
+My partition is only 10MB.  That's (1024*1024*10) = 10485760 bytes.
+It is divisible by the 16k erase block.  So why does mkfs.jffs2 insist
+on writing 65536 more bytes than I want?  Am I doing something wrong
+or is this a bug?
 
--- 
-dwmw2
+Dave
