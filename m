@@ -1,21 +1,18 @@
-Received: from matrix2.enst.fr ([137.194.2.14] helo=smtp2.enst.fr)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bdhK-00035H-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 09:58:42 +0100
-Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
-	by smtp2.enst.fr (Postfix) with ESMTP id DFEC51EEC7
-	for <linux-mtd@lists.infradead.org>; Mon,  5 Aug 2002 10:58:40 +0200 (MEST)
-Received: from enst.fr (IDENT:WKrZz2YrcIhN0eIK9XQZod5D4x2XUfnu@paris.enst.fr [137.194.161.13])
-	by email.enst.fr (8.9.3/8.9.3) with ESMTP id KAA14821
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Aug 2002 10:58:41 +0200 (MET DST)
-Message-ID: <3D4E3DBC.4F73955D@enst.fr>
-Date: Mon, 05 Aug 2002 10:56:28 +0200
-From: Sylvain Meunier <meunier@enst.fr>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Mix flash sector size and JFFS2
+	id 17beZs-0003An-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 10:55:04 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <00bc01c239cf$4ef3a8c0$1b0448c0@gv.com.tw> 
+References: <00bc01c239cf$4ef3a8c0$1b0448c0@gv.com.tw>  <013d01c2388f$94c655a0$1b0448c0@gv.com.tw> <0H04006C5M7GUI@smtp-out.bhp.t-online.de> <00f801c2390a$d956dd40$1b0448c0@gv.com.tw> <0H05001Y6RM950@smtp-out.bhp.t-online.de> <001001c23957$3a290520$1b0448c0@gv.com.tw> 
+To: "??" <kevin@gv.com.tw>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
+    "? ??" <djh@gv.com.tw>, cms@gv.com.tw
+Subject: Re: error when writing to jffs2 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 05 Aug 2002 10:54:56 +0100
+Message-ID: <28541.1028541296@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,13 +24,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+kevin@gv.com.tw said:
+>  error when writing to jffs2 any idea?
 
-Does a single filesystem JFFS2 need that all sectors of flash partition
-are same size or
-could we use different sector size (as for some flash that mix small and
-big sector). ?
+What version of fs/jffs2/scan.c do you have?
 
-Thanks
-
-Sylvain
+--
+dwmw2
