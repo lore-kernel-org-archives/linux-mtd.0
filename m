@@ -1,25 +1,29 @@
-Received: from mgw-x1.nokia.com ([131.228.20.21])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1C9KFl-00080r-IF
-	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2004 05:14:35 -0400
-Received: from esdks004.ntc.nokia.com (esdks004.ntc.nokia.com [172.21.138.159])
-	by mgw-x1.nokia.com (Switch-2.2.8/Switch-2.2.8) with ESMTP id
-	i8K9EV118229 for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2004 12:14:31 +0300 (EET DST)
-Received: (from root@localhost)
-	by esdks004.ntc.nokia.com (8.12.9/8.12.9) id i8K9EJDd000614
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Sep 2004 12:14:19 +0300
-Received: from [172.21.38.96] (two.research.nokia.com [172.21.38.96])
-	by mgw-int1.ntc.nokia.com (Switch-2.2.8/Switch-2.2.8) with ESMTP id
-	i8K9EGY02327 for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2004 12:14:16 +0300 (EET DST)
-From: Juha =?ISO-8859-1?Q?Yrj=F6l=E4?= <juha.yrjola@nokia.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-/i3oAE5HXxACTlgo/s/9"
-Date: Mon, 20 Sep 2004 12:14:16 +0300
-Message-Id: <1095671656.24922.88.camel@two.research.nokia.com>
-Mime-Version: 1.0
-Subject: [PATCH] Remove staticness from mtdpart_setup()
+Received: from mail.dif.dk ([193.138.115.101])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C9VZp-00012G-KM
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2004 17:20:03 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by mail.dif.dk (Postfix) with ESMTP id ACE06FFC5B
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Sep 2004 23:34:50 +0200 (CEST)
+Received: from mail.dif.dk ([127.0.0.1])
+	by localhost (saerimmer [127.0.0.1]) (amavisd-new,
+	port 10024) with ESMTP
+	id 09346-04 for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Sep 2004 23:34:49 +0200 (CEST)
+Received: from diftmgw2.backbone.dif.dk (diftmgw2.backbone.dif.dk
+	[10.227.136.246]) by mail.dif.dk (Postfix) with ESMTP id 243EEFF441
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Sep 2004 23:34:49 +0200 (CEST)
+Date: Mon, 20 Sep 2004 23:26:38 +0200 (CEST)
+From: Jesper Juhl <juhl-lkml@dif.dk>
+To: David Woodhouse <dwmw2@redhat.com>
+Message-ID: <Pine.LNX.4.61.0409202320270.2729@dragon.hygekrogen.localhost>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH] attempt to fix warnings in dilnetpc.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +34,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-/i3oAE5HXxACTlgo/s/9
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
 Hi,
 
-Attached is a patch that removes the static and __init keywords from
-mtdpart_setup(), so that the mtdpart partition definitions can come from
-other sources than the kernel command line.  This is useful if you have
-another way of passing information to the kernel, e.g. the ATAG
-mechanism on ARM kernels, and do not want to override CONFIG_CMDLINE
-from the bootloader.
+I see these warnings when building 2.6.9-rc2-bk5 allyesconfig :
 
-Cheers,
-Juha
+  CC      drivers/mtd/maps/dilnetpc.o
+drivers/mtd/maps/dilnetpc.c: In function `init_dnpc':
+drivers/mtd/maps/dilnetpc.c:406: warning: assignment makes pointer from integer without a cast
+drivers/mtd/maps/dilnetpc.c:416: warning: long unsigned int format, pointer arg (arg 2)
+drivers/mtd/maps/dilnetpc.c:416: warning: long unsigned int format, pointer arg (arg 2)
+
+Here's a patch to attempt to fix those. I don't have the hardware, so all 
+I could do was read the code, think about it and then compile test my 
+changes. I hope I got it right.
+
+Signed-off-by: Jesper Juhl <juhl-lkml@dif.dk>
+
+diff -up linux-2.6.9-rc2-bk5-orig/drivers/mtd/maps/dilnetpc.c linux-2.6.9-rc2-bk5/drivers/mtd/maps/dilnetpc.c
+--- linux-2.6.9-rc2-bk5-orig/drivers/mtd/maps/dilnetpc.c	2004-08-14 07:36:32.000000000 +0200
++++ linux-2.6.9-rc2-bk5/drivers/mtd/maps/dilnetpc.c	2004-09-20 23:19:34.000000000 +0200
+@@ -403,7 +403,7 @@ static int __init init_dnpc(void)
+ 	printk(KERN_NOTICE "DIL/Net %s flash: 0x%lx at 0x%lx\n", 
+ 		is_dnp ? "DNPC" : "ADNP", dnpc_map.size, dnpc_map.phys);
+ 
+-	dnpc_map.virt = (unsigned long)ioremap_nocache(dnpc_map.phys, dnpc_map.size);
++	dnpc_map.virt = (unsigned long *)ioremap_nocache(dnpc_map.phys, dnpc_map.size);
+ 
+ 	dnpc_map_flash(dnpc_map.phys, dnpc_map.size);
+ 
+@@ -413,7 +413,7 @@ static int __init init_dnpc(void)
+ 	}
+ 	simple_map_init(&dnpc_map);
+ 
+-	printk("FLASH virtual address: 0x%lx\n", dnpc_map.virt);
++	printk("FLASH virtual address: 0x%lx\n", (unsigned long)dnpc_map.virt);
+ 
+ 	mymtd = do_map_probe("jedec_probe", &dnpc_map);
+ 
 
 
---=-/i3oAE5HXxACTlgo/s/9
-Content-Disposition: attachment; filename=mtdpart-staticness-patch.diff
-Content-Type: text/x-patch; name=mtdpart-staticness-patch.diff;
-	charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-===== drivers/mtd/cmdlinepart.c 1.8 vs edited =====
---- 1.8/drivers/mtd/cmdlinepart.c	2004-08-03 13:17:08 +03:00
-+++ edited/drivers/mtd/cmdlinepart.c	2004-09-20 11:36:46 +03:00
-@@ -339,7 +339,7 @@
-  * main.c::checksetup(). Note that we can not yet kmalloc() anything,
-  * so we only save the commandline for later processing.
-  */
--static int __init mtdpart_setup(char *s)
-+int mtdpart_setup(char *s)
- {
- 	cmdline = s;
- 	return 1;
-
---=-/i3oAE5HXxACTlgo/s/9--
+Please CC me on replies.
