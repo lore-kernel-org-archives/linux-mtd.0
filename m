@@ -1,24 +1,23 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19AA8z-0004oA-8Z
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2003 16:02:13 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20030426102323.GB31391@wohnheim.fh-wedel.de>
+Received: from dragon.actrix.co.nz ([203.96.16.164] helo=desire.actrix.co.nz)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19AFwG-0005iB-53
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2003 22:13:28 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Thayne Harbaugh <tharbaugh@lnxi.com>,
+	=?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>
+Date: Tue, 29 Apr 2003 09:14:42 +1200
 References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
-	 <20030423204440.258661528E@desire.actrix.co.nz>
-	 <000d01c30a8e$ebd08150$1a00a8c0@itc.intrinsyc.com>
-	 <20030425130134.GC27144@wohnheim.fh-wedel.de>
-	 <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
-	 <1051312243.1172.388.camel@tubarao>
-	 <20030426102323.GB31391@wohnheim.fh-wedel.de>
-Message-Id: <1051542140.1171.500.camel@tubarao>
-Mime-Version: 1.0
-Date: 28 Apr 2003 09:02:20 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-KrgmreatRyT8M5+aRI44"
+	<20030426102323.GB31391@wohnheim.fh-wedel.de>
+	<1051542140.1171.500.camel@tubarao>
+In-Reply-To: <1051542140.1171.500.camel@tubarao>
+MIME-Version: 1.0
+Message-Id: <20030428211333.100A015505@desire.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: Fw: corrupt my NAND flash device
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I have seen some wierd stuff before... comments further below:
+>
+> The whole thing just makes me sick.  It's ugly putting in such a hack.
+> One little voice in my head keeps telling me that there's an error in
+> software and I just have to find and fix the bug.  Another little voice
+> in my head keeps telling me that broken hardware is more common than
+> most people want to believe.
 
---=-KrgmreatRyT8M5+aRI44
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Yes, there are/ have been cases where the chips do not latch their commands 
+correctly. This can be made worse by marginal chip select timing etc.
 
-On Sat, 2003-04-26 at 04:23, J=F6rn Engel wrote:
-> On Fri, 25 April 2003 17:10:43 -0600, Thayne Harbaugh wrote:
-> >=20
-> > The big question is how common is this problem (needing retries)?=20
-> > Should this be more formalized and added to he chip drivers or should i=
-t
-> > be left up to individuals having to fix things for their special or les=
-s
-> > common cases?
->=20
-> This looks more like an implementation problem. If you manage to add
-> retry code somewhere central
+I was sent some errata sheets by Samsung at some stage, but I did not secure 
+permission to forward these. In all cases, the identified problems have been 
+addressed in currently shipping product. To paraphrase the mentioned problems:
 
-Any suggestion where somewhere central is?  Right now I've been playing
-with it down in the cmdset code - hardly a central place.  I'll have to
-look at the mtdchar.c or something.  The nice thing about the cmdsets is
-that they are the best place to retry an individual command - especially
-individual writes.
+* Reading the status too soon after issuing the command: some parts need a 
+brief wait after latching the command before the busy flag is valid. Without 
+the wait, the busy state might be misinterpreted. 500ns would be ample.
 
-> so that all drivers benefit from it,
+* Ensuring the correct number of address cycles: I have observed cases where 
+a chip seems to work when the wrong number of address cycles was issued, but 
+gave erratic results.
 
-Agreed - why do the work in each command set - duplicate code issues.
+* Issue a reset command before any read/write/erase command. This is a small 
+overhead and ensures that the command register is always in a consistent 
+state.
 
-> there should hardly be a performance hit, even for drivers that don't
-> need it.
+Also check the basics like power and signal integrity. Overshooting/ringing 
+clocks could very easily be latching spurious data and corrupting the 
+commands.
 
-The performance hit is very small - loop while a counter is less than a
-set maximum test - compared to the time of a command (erase/write).
+>
+> I haven't been very aggressive about adding the retry code because right
+> now I'm interested in more data points: Am I the only one that sees the
+> problem of a flash chip that occasionally drops commands or are others
+> seeing this same problem?  Is this problem more common but people don't
+> see it because the flash filesystems think that a location is bad and
+> mark it as unusable?
 
-> And once in a central place, it would be trivial to add a
-> config option for this.
+I'd suggest exploring the above first.
 
-Agreed.
+YAFFS is very aggressive about the way it retires data blocks. If any reads 
+(including verification) have any corruption (even if the ECC fixes them), 
+then the block is retired. The reason for this strategy is that I have a 
+theory that blocks get bad with age/use. Rather than encountering 
+unrecoverable data errors, YAFFS retires blocks on the first sign of a 
+problem.
 
-> But someone has to do it. :)
->=20
-> J=F6rn
+Someone has previously suggested that I provide a flag to disable on-NAND 
+retirement marking during development. I think it is time I added this.
 
-The whole thing just makes me sick.  It's ugly putting in such a hack.=20
-One little voice in my head keeps telling me that there's an error in
-software and I just have to find and fix the bug.  Another little voice
-in my head keeps telling me that broken hardware is more common than
-most people want to believe.
+I guess it would be a good thing to do retries in YAFFS to at least get more 
+information.
 
-I haven't been very aggressive about adding the retry code because right
-now I'm interested in more data points: Am I the only one that sees the
-problem of a flash chip that occasionally drops commands or are others
-seeing this same problem?  Is this problem more common but people don't
-see it because the flash filesystems think that a location is bad and
-mark it as unusable?
-
-I'm more than happy to do the work if others think it's a good thing and
-if someone has a suggestion where/how it should be done.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-KrgmreatRyT8M5+aRI44
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+rUJ7fsBPTKE6HMkRAgtkAJ9GW0GOudmQtk//Ym0JaA1QXf0aawCfYr/a
-XZWUgdzK3XpOAjREvKCc2vo=
-=4AU9
------END PGP SIGNATURE-----
-
---=-KrgmreatRyT8M5+aRI44--
+-- Charles
