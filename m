@@ -1,24 +1,16 @@
-Received: from wproxy.gmail.com ([64.233.184.194])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEaOr-0005lW-6C
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 17:02:04 -0500
-Received: by wproxy.gmail.com with SMTP id 37so582474wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 14:01:55 -0800 (PST)
-Message-ID: <6934efce050324140163fbe8d4@mail.gmail.com>
-Date: Thu, 24 Mar 2005 14:01:55 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0503240918120.15561@phoenix.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+In-Reply-To: <42429C1C.8050600@yandex.ru>
+References: <loom.20050322T224733-491@post.gmane.org>
+	<4241396B.D689EB32@st.com> <loom.20050323T212715-407@post.gmane.org>
+	<4242925F.D29BC7CE@st.com>  <42429C1C.8050600@yandex.ru>
+Content-Type: text/plain
+Date: Thu, 24 Mar 2005 22:00:59 +0000
+Message-Id: <1111701659.6588.4.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-References: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
-	<6934efce0503231727f7234f6@mail.gmail.com>
-	<Pine.LNX.4.58.0503240918120.15561@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & deletion dirents RFC
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +20,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> We can't get rid of version in data nodes.
+On Thu, 2005-03-24 at 13:53 +0300, Artem B. Bityuckiy wrote:
+> then you have the guarantee that you either have written all or 
+> nowthing. JFFS2 does guarantee that due to its implementation.
 
-I'm not suggesting we get rid of 'version' in the actual nodes.
+JFFS2 might happen to _do_ that due to its implementation, but it's not
+a guarantee. POSIX doesn't require that writes are atomic w.r.t power
+failure.
 
-As I understand this adding 'version' to struct jffs2_raw_node_ref
-increases the RAM usage by N*(X+Y) where:
-  N is the size of the version field
-  X is the number of direnties
-  Y is the number of data nodes
-
-It seems there "ought" to be a way to only increase RAM size by N*X. 
-I'm assuming Y>>X so this could be a big factor for RAM usage.
-
-Am I missing something?
-
- ,Jared
+-- 
+dwmw2
