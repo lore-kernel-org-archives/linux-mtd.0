@@ -1,30 +1,26 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from ext-ch1gw-2.online-age.net ([216.34.191.36])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bmwwu-0001lE-1O
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 11:54:36 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-In-Reply-To: <1090337308.15094.2.camel@famine>
-References: <1089643331.3951.42.camel@famine>
-	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
-	<1089712151.5995.21.camel@famine>
-	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
-	<1089726079.6288.5.camel@famine>
-	<1089759689.8822.18.camel@imladris.demon.co.uk>
-	<1089792912.7607.22.camel@famine> <1090246707.13401.18.camel@famine>
-	<Pine.LNX.4.58.0407191522360.4985@localhost.localdomain>
-	<1090250145.14173.3.camel@famine>
-	<1090285839.4149.8.camel@localhost.localdomain>
-	<1090305682.14825.2.camel@famine>
-	<1090331120.4614.3.camel@localhost.localdomain>
-	<1090337308.15094.2.camel@famine>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 20 Jul 2004 11:54:29 -0400
-Message-Id: <1090338869.4614.7.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
-Subject: Re: JFFS2 eats memory
+	id 1BmzKy-0002De-J5
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 14:27:39 -0400
+Received: from int-ch1gw-5.online-age.net (int-ch1gw-5 [3.159.232.69])
+	by ext-ch1gw-2.online-age.net (8.12.9/8.12.9/990426-RLH) with ESMTP id
+	i6KIRRnZ016401 for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jul 2004 14:27:28 -0400 (EDT)
+Received: from cinmlef01.e2k.ad.ge.com (localhost [127.0.0.1])
+	by int-ch1gw-5.online-age.net (8.12.9/8.12.3/990426-RLH) with ESMTP id
+	i6KIRQ4o016395 for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jul 2004 14:27:27 -0400 (EDT)
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 20 Jul 2004 20:18:39 +0200
+Message-ID: <09A97B4DFB4DB64FB8B58BBC4A1F3C2905EF2904@GNTMLVEM01.e2k.ad.ge.com>
+From: "Billalabeitia,
+	Jose Carlos \(GE Consumer & Industrial\)" <jc.billalabeitia@ge.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 Flash Filesystem corrupted
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,18 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-20 at 17:28 +0200, Øyvind Harboe wrote:
-> tir, 20.07.2004 kl. 15.45 skrev David Woodhouse:
-> > On Tue, 2004-07-20 at 08:41 +0200, Øyvind Harboe wrote:
-> > > What if gc_node points to the last node?
-> > 
-> > Then you just finished garbage collecting the eraseblock in question.
-> > You should have a single node which is now first_node and last_node, and
-> > which is obsolete. You can just set gc_node to NULL.
-> 
-> Setting gc_node to NULL crashed when I tried it.
 
-Crashed how? It should be trivially fixable.
+	Hi:
+=09
+	I have a custom board with the following features:
 
--- 
-dwmw2
+		CPU MPC860T (PowerPC)
+		16 MB of FLASH (2 29LV650UE (4Mx16 bit) compatible JEDEC & CFI )
+		16 MB of RAM
+		linux-2.4.4-2002-02-14-denx
+		linux-2.4.4-jffs2-2002-05-01.patch for the JFFS2 (basically improve GC =
+performace)
+
+	We have experienced in a very few occasions, in fact only twice or =
+three times, a weird problem.
+Our application are composed of multiple excutable and module files that =
+are started and insmoded=20
+respectively one by one during the boot up process. After a system =
+rebooting everything was fine
+and we got the app running, therefore executable and module files were =
+right.=20
+However one day after a rebooting we realized that the app. didn=B4t go =
+and we check the integrity of the
+excutable and module files by comparing them with the original ones, and =
+we discovered that 4Kbytes of=20
+executable module file were replaced with all zeros.=20
+
+	Due to the low probability of this type of problem that we have =
+encountered it makes me think
+that it might be a hardware problem, but in this case I can=B4t find a =
+good explanation for it.
+
+	Another thing that surprises me is that the filesystem says that that =
+file is OK, so I suppose
+then that the CRCs of the nodes were the zeros are located are correct, =
+so my suspect is that those
+zeros were put intentionally.
+
+	On the other hand that file never changes so I think that the only one =
+responsible for moving
+those data would be the GC when the "wear levelling" process. Any ideas?
+
+									Thank you
+										Billa
