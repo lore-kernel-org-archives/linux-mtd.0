@@ -1,24 +1,20 @@
-Received: from server.bluewater.co.nz ([203.167.251.250]
-	helo=smtp.bluewaternz.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19IRqN-0003Aw-8B
-	for <linux-mtd@lists.infradead.org>; Wed, 21 May 2003 12:33:15 +0100
-Received: from benmore.bluewaternz.com
-	([192.168.2.3] helo=bluewatersys.com ident=gordon)
-	by smtp.bluewaternz.com with esmtp (Exim 3.03 #1 (Debian))
-	id 19IRqf-0000dQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 May 2003 23:33:33 +1200
-Message-ID: <3ECB640C.5040305@bluewatersys.com>
-Date: Wed, 21 May 2003 23:33:32 +1200
-From: Gordon J Milne <gordon@bluewatersys.com>
+Received: from smtp2.crystaltech.com ([216.119.106.211])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19ISkU-0003S7-Vn
+	for <linux-mtd@lists.infradead.org>; Wed, 21 May 2003 13:31:15 +0100
+From: "John Burch" <jburch@vincisystems.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>,
+	=?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@wohnheim.fh-wedel.de>
+Date: Wed, 21 May 2003 08:33:44 -0400
+Message-ID: <000701c31f95$38ad1040$1200a8c0@JOHNB>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <1028064443.23642.52.camel@mahi190.austin.ibm.com>
-	<14660.1028067926@redhat.com>
-In-Reply-To: <14660.1028067926@redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: "Read-only file system" error while writing
+In-Reply-To: <1053509146.20074.2584.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+cc: linux-mtd@lists.infradead.org
+Subject: RE: Mtd block access (jffs2 formatted) and mtd char
+ access(unformatted) on different partitions of a single flashdevice
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+> >=20
+> > What does "driver" mean? If you have two in-kernel drivers for the=20
+> > same flash chip, they will use different locks and things=20
+> will break.=20
+> > If that is a user-space driver, using the /dev/mtdX=20
+> devices, you are=20
+> > perfectly safe. Which one is it?
+>=20
+> Hmmm. What he actually said was 'driver with its own flash=20
+> support', which sounds bad. As long as everything accessing=20
+> the flash goes through the MTD driver for the flash, using=20
+> its read/write/erase functions rather than banging on the=20
 
-David Woodhouse wrote:
- > gromit1463@mailworks.org said:
- >
- >>When I write to the chips using either cat, dd, stdout redirection, or
- >>cp, the CFI driver complains of attempting to write to a "Read-only
- >>file system", even after unlocking all blocks in the partition and
- >>erasing the partition.  I can mount /dev/mtdblock*, but mount
- >>complains and I still can't put anything into the mounted partition.
- >>do_write_buffer() in cfi_cmdset_0001.c is returning the error (EROFS).
- >
- > The only case in which do_write_buffer() should return -EROFS is if the
- > status bit is set which means that the block in question was locked. Try
- > using the MEMUNLOCK ioctl to unlock it?
+When accessing "raw" flash via the char driver, how can I initiate a
+sector erase?  Also, does the mtd driver for AMD CFI devices handle
+AMD's ability to support erasure of multiple sectors simultaneously?
 
-I am having exactly the same problem with the same ST part (M28W320CB). I am 
-running uClinux (based on Linux 2.4.20). I modified the do_write_buffer() 
-code to print out the status value that was read back. The value is 0xffff. 
-It seems a bit strange to me that ALL the bist should be 1s.
+> hardware directly, it'll be fine. If your raw driver is=20
+> actually dealing with the flash driver directly, that's broken.
+>=20
 
-I have tried using "unlock" to unlock the device (/dev/mtd3) but I get the 
-same result.
-
-The device (1f:03) is the root device and it has been remounted rw. I 
-verified this by checking /proc/mounts - everything was rw, as expected. My 
-system successfully boots and I can execute commands. It is just the 
-filesystem writes that are not working for me.
-
-Any further ideas?
-
-Gordon
+David has it right.  The raw "in-kernel" driver deals with flash
+directly on its own, not through mtd.
