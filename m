@@ -1,63 +1,52 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11w1RY-0005e6-00
-	for mtd-list@infradead.org; Thu, 09 Dec 1999 11:09:04 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 11w4yM-0005rL-00
+	for mtd-list@infradead.org; Thu, 09 Dec 1999 14:55:10 +0000
+Received: from [209.184.180.169] (helo=bob.faxtel.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11w1RX-0005e0-00
-	for mtd@imladris.mvhi.com; Thu, 09 Dec 1999 11:09:03 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <384ECE55.83FAD600@danielind.com> 
-References: <384ECE55.83FAD600@danielind.com> 
-To: Vipin Malik <vmalik@danielind.com>
-Cc: MTD <mtd@imladris.mvhi.com>
-Subject: Re: [Fwd: Power Down] 
-Mime-Version: 1.0
+	id 11w4yL-0005rF-00
+	for mtd@imladris.mvhi.com; Thu, 09 Dec 1999 14:55:09 +0000
+Message-ID: <384FC311.1E57CBD6@go2fax.com>
+Date: Thu, 09 Dec 1999 08:56:17 -0600
+From: Bob Canup <rcanup@go2fax.com>
+MIME-Version: 1.0
+To: MTD <mtd@imladris.mvhi.com>
+Subject: Re: [Fwd: Power Down]
+References: <384ECF77.C1F5D6FC@danielind.com> <384EE388.C92A374E@go2fax.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 09 Dec 1999 11:10:26 +0000
-Message-Id: <E11w1Ss-0005Mr-00@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Bob Canup wrote:
 
-vmalik@danielind.com said:
-> > I've been rushed off my feet here with other things for a while, but
-> > as soon as I get back to it, after I've fixed the NFTL and DiskOnChip 
-> > Millennium support, that's what I'm intending to look at.
+> Vipin Malik wrote:
+>
+> > Bob Canup wrote:
+> > >
+> >
+> I can't see any difference between erasing a bad sector after the next power
+> up and the case of a slightly earlier power failure where the data was never
+> written in the first place; you wind up with an identical file system in both
+> cases.  If you can survive the case of the earlier power failure failing to
+> record the sector then you can survive the case of the bad sector being
+> erased.
+>
+> The only difference that I see is that in the case of the bad sector  you
+> know something happened, in the case of the data never being recorded you
+> don't.
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-> Do you have an estimate for the time frame that you are looking at?
+On the way home last night it occurred to me that if you are doing a
+read-modify-write cycle that it does make a difference where the error occurs.
+In this case if the sector is never written the old data is still valid.
 
-We have an EU research project coming to an end in February/March, and I'm
-running our end of it.
+It seems to me the wear leveling necessary in a flash can be a benefit here; if
+I understand correctly we don't overwrite the physical pages - only when a page
+is 'committed' does the chip change its mapping so that it appears that the
+sector was overwritten.
 
-I'm hoping to snatch a few days in the next week or two to merge in all the MTD
-fixes I've been sent and look at the problems which have been reported, and
-make a new release.
-
-After that, I'm unlikely to be able to be very productive until mid-to-late 
-Feb.
-
-> I am willing to help out with coding, as I am extremely interested in
-> this (and have access to lots of different embedded hardware with
-> FLASH, SRAM etc. on it, and if needed I could possibly buy more :).
-
-I have documentation on NFTL and the DiskOnChip hardware which I am permitted 
-to release under NDA to someone who is serious about contributing to the 
-development - your assistance would be greatly appreciated because I was 
-hoping to have that completed by now.
-
-There is also some work to be done with FTL on NOR flash, I believe. It should 
-work, but apparently there are some problems with it. I don't currently have 
-access to any NOR flash devices so haven't tested it recently.
-
-Also, someone needs to provide new PCMCIA bulkmem drivers which use the MTD 
-system. 
-
-There's plenty of work to go round.
-
-
---
-dwmw2
 
 
 
