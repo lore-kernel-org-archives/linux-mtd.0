@@ -1,14 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Todd Poynor <tpoynor@mvista.com>
-In-Reply-To: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
-References: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
-Content-Type: text/plain
-Message-Id: <1101304647.8191.9015.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 24 Nov 2004 13:57:28 +0000
+Received: from gate.epygi.de ([212.126.211.241])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CWyK7-0006A1-Uj
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 09:40:49 -0500
+Received: from sally.epygi.de (imap [10.20.0.18])
+	by gate.epygi.de (8.12.9/8.12.9) with ESMTP id iAOEebDV007576
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Nov 2004 15:40:37 +0100 (MET)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
+Date: Wed, 24 Nov 2004 15:40:37 +0100
+Message-ID: <NGENJJFPMHGLPILEKKAMMEAECFAA.Stephan.Linke@epygi.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Supporting flash that powers up locked
+Subject: using multile partitions on one NAND chip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,27 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-11-23 at 14:25 -0800, Todd Poynor wrote:
-> Flash chips that power up with all blocks locked (such as K3
-> StrataFlash) seem to be showing up on more and more platforms.  At the
-> risk of being a pest, I'd like to push for some agreement on how to
-> handle this and possibly get the support into linux-mtd.
-> 
-> Below is a patch to the partition driver to use the partition map as the
-> source of information for whether a partition is to be writeable and to
-> unlock blocks upon write if the block is found to be locked when this
-> was not intended.  It intercepts an EROFS return from the chip driver on
-> a write/erase, unlocks blocks, and retries the write/erase, if the
-> partition is marked writeable.  If the partition is not writeable, or if
-> the partition has been explicitly locked, then the locked blocks are
-> left alone and the EROFS is returned to the caller.
+Hi,
 
-We already have a bit to set in the partition flags to show that a
-partition should be read-only. 
+anyone tried using multiple partitions on a NAND flash?
+I can't find the protection mechanism that protects lets say an erase on one block against a read command on the other block.
+In my case I am using 2 YAFFS patitions and 1 partition that fakes a read-only NOR flash using the nand_read_ecc() function
+(mtd->read_ecc()). I'm not shure if there is an efficient protection for this. It looks like nand_chip->chip_lock should do this job
+but it only protects parts of the erase loop agains parts of the nand_chip->waitfunc() wait loop. It does not keep
+nand_chip->cmdfunc() from sending a command while an erase command is still active in the nand chip.
 
-I'd rather do this with a blacklist of the chips which lock themselves,
-and have the chip driver automatically unlock it at boot time and
-suspend time (or automatically as required).
-
--- 
-dwmw2
+Thanks, Stephan
