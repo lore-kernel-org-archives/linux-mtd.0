@@ -1,24 +1,18 @@
-Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
+Received: from sun06.mazet.de ([193.29.17.6])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15edv7-0002yy-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 15:44:49 +0100
-Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
-	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id f85EomJ02673
-	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 20:20:48 +0530
-Received: (from root@localhost)
-	by ncoretech.com (8.10.0/8.10.0) id f85EomZ13694
-	for linux-mtd@lists.infradead.org.VIRCHECK; Wed, 5 Sep 2001 20:20:48 +0530
-Received: from ncoretech.com (ws120.ncoretech.com [192.168.1.120])
-	by ncoretech.com (8.10.0/8.10.0) with ESMTP id f85Eolf13553
-	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 20:20:47 +0530
-Message-ID: <3B963D36.A933B152@ncoretech.com>
-Date: Wed, 05 Sep 2001 14:56:54 +0000
-From: pradeep <pradeep@ncoretech.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Installing the firmware
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 15eeEZ-00030Y-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 16:04:55 +0100
+Received: from se_server.mazet.de ([193.99.171.10])
+	by sun06.MAZeT.de (8.9.3/8.9.3) with SMTP id RAA19882
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 17:03:11 +0200 (MET DST)
+Message-Id: <3B96412B.49261E43@mazet.de>
+Date: Wed, 05 Sep 2001 17:13:47 +0200
+From: Holger Friedrich <friedrich@MAZeT.de>
+Mime-Version: 1.0
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Boot from DOC 2000
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,16 +24,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello ,
+Hi all,
+I got my kernel to recognize the DOC, I can mount it as nftla, I can put
+file systems on it, read and write. I was even able to put a demo from
+elinos on it and boot it, but this was on msdos fs using syslinux as
+bootloader. =
 
-              How do I install  the  actual firmware in DOC2000  once
-again
-as it has a dummy firware installed before and DOC2000 is not recognized
+Now I want to boot a "real" linux using ext2 or jffs. I've tried to work
+through the mtd-jffs-HOWTO. It works fine as long as you just want to
+detect the DOC. When it comes to booting from it it seems to assume a
+mtd device, which I don't have. =
 
-because of this on DOS, how do I go about installing the firmware  using
+I'd like to know how to deal with nftl devices. =
 
-mtd utilities , can anyone help me
+Could anyone point me in the right direction?
+Thanks in advance Holger
+-- =
 
-Thanks
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+Holger Friedrich
 
-Pradeep
+MAZeT GmbH                  mailto:friedrich@mazet.de
+branch office Jena          Phone: +49 3641 280954
+G=F6schwitzer Stra=DFe 32
+07745 Jena
+Germany
+Visit our website: http://www.MAZeT.de
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
