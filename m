@@ -1,30 +1,18 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9NIm-0001Bs-LR
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 08:02:09 -0500
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id 909512F016
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Mar 2005 14:02:04 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 84C4011828
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Mar 2005 14:02:04 +0100 (CET)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id D2610117BE
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Mar 2005 14:02:03 +0100 (CET)
-Message-ID: <42304549.6080104@imc-berlin.de>
-Date: Thu, 10 Mar 2005 14:02:01 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D9NVv-0001Om-Rc
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 08:15:44 -0500
+Date: Thu, 10 Mar 2005 13:15:27 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Konstantin Kletschke <lists@ku-gbr.de>
+In-Reply-To: <20050309131453.GA2497@synertronixx3>
+Message-ID: <Pine.LNX.4.58.0503101314570.4649@phoenix.infradead.org>
+References: <20050309131453.GA2497@synertronixx3>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <1110380223.422f0ebf951f5@intern.netexpress.de>
-In-Reply-To: <1110380223.422f0ebf951f5@intern.netexpress.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: Bugreport: mkfs.jffs2
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 with sync burst mode
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,32 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Wolfram Gettert wrote:
-> Hi,
-> I want to report two bugs on mkfs.jffs2 Revision 1.44
-> 
-> 1.
-> I tried to create a file sytem image with this commandline.
-> 
-> mkfs.jffs2 -l -e 0x20000 -D devtable.txt -d rootfs -o test.img
-> 
-> The file devtable.txt contains a line  
-> 
-> ----8<-----
-> /dev/input   d  755     0       0       -       -       -       -       -
-> ----8<-----
-> 
-> and the rootfs directory contains a directory 
-> 
-> rootfs/dev/input
-So what is the problem?
+> Hi people!
+>
+> These days I have time again for my embedded system to investigate what
+> weird shit is happening here with the probplems introduced trying to
+> configure the Flash device to run in sync burst mode.
+> It is an intel 28F128K3 device with a motorola i.MX cpu.
+>
+> I now set up a debug environment: I am running a classical kernel
+> locatedt in FLASH which is succesfully copied and decompressed into
+> SDRAM. It mounts its root via nfs from server and from there I mount
+> /dev/mtdblockX for testing purposes with jffs2 and mtd debug turned on.
+>
+> First weird thing is, reading writing from the device works perfect.
+> I diffed original and copy and diff putted out no difference. I copied
+> from flash back into root, copied the copy and diffed on the PC also, 
 
-I am using mkfs.jffs2: revision 1.43 with devtable entries like
+First of all we ask to try the latest MTD snapshot. Did you do that?
 
-/dev/input       d   755     0       0       -       -       -       -       -
-/dev/input/event c   640     0       0       13      64      0       1       1
+Just general suggestions:
 
-and it works just fine...
+Try to mount empty filesystem then copy your tree there by "cp -r -a", 
+umount, mount. This will exclude errors during JFFS2 image 
+creation/flashing.
+
+Try to use mtdram device.
 
 --
-Steven
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
