@@ -1,17 +1,16 @@
-Received: from school.cyberec.com ([202.153.122.103])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KFFz-0004Kg-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 10:26:36 +0100
-Message-ID: <3D0EFB61.5000605@emsoftltd.com>
-Date: Tue, 18 Jun 2002 17:20:33 +0800
-From: Jason Chan <jason@emsoftltd.com>
-MIME-Version: 1.0
-To: Marius Groeger <mag@sysgo.de>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: How to configure MTD so that JFFS2 work on 7312 NandFlash?
-References: <Pine.LNX.4.40.0206181118180.23166-100000@mag.devdep.sysgo.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from 205-158-62-105.outblaze.com ([205.158.62.105] helo=ws4-4.us4.outblaze.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17KH3V-0004Ve-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 12:21:49 +0100
+Message-ID: <20020618112117.5634.qmail@linuxmail.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From: "xyz xyz" <watsup@linuxmail.org>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 18 Jun 2002 19:21:17 +0800
+Subject: DOC boot prob,making rum 4 GRUB
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,39 +22,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I use the "eraseall" routine to erase the nand. The I use "mount 
-/dev/mtdblock3 /mnt -t jffs2" to mount the flash. It takes 3-4 minutes.
-After I successfully mounted, and copy some file to the flash and then 
-umount. It very slow.
-And it takes me 3-4 minutes even i mount that again.
+hi all,
+   i m trying to boot DOC using GRUB on linux
+the prob is i have patched grub with DOC-2002 patch also but its not recognising
 
-What tools should I use to format and erase the flash properly?
+i have learnt from the list that we need to make room for GRUB on DOC ,how do i do that,david suggested to use DFORMAT,can any1 give me the exact cmd to do that?
+i dont want to use ntfl_format due to poor block handling
 
+also tell me the steps in order to get DOC booting
+plz tell me if i m wrong,after making room for grub on DOC ,we will put filesys on DOC ,but how do i know where exactly to start my nftl parttion and how to do that.
 
-Marius Groeger wrote:
-
->On Tue, 18 Jun 2002, Jason Chan wrote:
->
->>    Sorry, for my post. But it works now.
->>However, the performance is really very slow. When I try to mount the
->>Toshiba 8Mb nandflash. It takes me 3-4 minutes.
->>
->
->Maybe because it has not been properly erased and formatted?!
->
->Regards,
->Marius
->
->-----------------------------------------------------------------------------
->Marius Groeger           SYSGO Real-Time Solutions GmbH     mgroeger@sysgo.de
->Software Engineering     Embedded and Real-Time Software    www.sysgo.de
->Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
->FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
->
-
-
+plz advice
+TIA
 -- 
-Best Regards,
+Get your free email from www.linuxmail.org 
 
-Jason Chan
-Emsoft Ltd.
+
+Powered by Outblaze
