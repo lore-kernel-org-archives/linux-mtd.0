@@ -1,16 +1,18 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15f1M6-0004zM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 16:46:14 +0100
-Date: Thu, 6 Sep 2001 16:52:09 +0100 (BST)
-From: kira brown <kira@hex.linuxgrrls.org>
-To: Herman Oosthuysen <herman@wirelessnetworksinc.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: DiskOnChip write performance
-In-Reply-To: <01090609533800.00800@grosmorne.wirelessnetworksinc.com>
-Message-ID: <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15f1PH-00050Q-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 16:49:31 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> 
+To: kira brown <kira@hex.linuxgrrls.org>
+Cc: Herman Oosthuysen <herman@wirelessnetworksinc.com>,
+    "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: DiskOnChip write performance 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 06 Sep 2001 16:55:32 +0100
+Message-ID: <14482.999791732@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+kira@hex.linuxgrrls.org said:
+>  There are basically two ways to speed this situation up:
 
-On Thu, 6 Sep 2001, Herman Oosthuysen wrote:
+Don't forget "don't use O(n^3) algorithms when trying to find a new block 
+to write to".
 
-> You may be able to speed the system up a little by optimizing the code, but the
-> improvement will be insignificant compared to the erase cycle time.
 
-There are basically two ways to speed this situation up:
-
-1)  Write to a RAM buffer and do the actual Flash write in the background.
-(I'm sure you've thought of this).
-
-2)  Make sure there are always freshly erased blocks on the Flash when you
-come to need to do a fast write.
-
-Either way, DOC2000 is never going to be any great shakes of speed-  it's
-just not a very fast device.
-
-kira.
+--
+dwmw2
