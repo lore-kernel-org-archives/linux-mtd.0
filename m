@@ -1,19 +1,19 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [195.134.130.80] (helo=pip5.mpl.ch)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19nFX1-00033W-Ac
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 11:40:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Matthew Dharm <mdharm@momenco.com>
-In-Reply-To: <NEBBLJGMNKKEEMNLHGAIEEDODDAA.mdharm@momenco.com>
-References: <NEBBLJGMNKKEEMNLHGAIEEDODDAA.mdharm@momenco.com>
-Message-Id: <1060857620.3152.19.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 14 Aug 2003 11:40:20 +0100
-Content-Type: text/plain
+	id 19nGV5-0003Hd-FQ
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 12:42:39 +0100
+Received: from elsoft.ch (IDENT:1000@pcdm.elsoft.loc [192.168.11.10])
+	h7EBgN2t008752
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 13:42:23 +0200
+Message-ID: <3F3B75AA.6050701@elsoft.ch>
+Date: Thu, 14 Aug 2003 13:42:34 +0200
+From: =?ISO-8859-1?Q?=22David_M=FCller_=28ELSOFT_AG=29=22?=
+ <d.mueller@elsoft.ch>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-cc: "Linux-Mtd@Lists. Infradead. Org" <linux-mtd@lists.infradead.org>
-Subject: Re: put_chip error?
+Subject: JFFS2 internals question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-08-14 at 02:39, Matthew Dharm wrote:
-> 	put_chip() called with oldstate 1!!
+Hello
+
+As i'm not a JFFS2 guru i hope someone familar with the JFFS2 internals
+could answer this question:
+
+Situation:
+
+JFFS2 filesystem on a NAND flash device:
 
 
-revision 1.127
-date: 2003/07/02 20:29:38;  author: acurtis;  state: Exp;  lines: +2 -1
-Added FL_STATUS to the FL_READY case in put_chip(). (Eliminate noise)
+Is it true that the read calls emitted from the JFFS2 code to the MTD HW
+driver do not cross NAND block boundries (nand_read_ecc() has its start
+and end point of reading in the same NAND block)?
 
+TIA
 
--- 
-dwmw2
+Dave
