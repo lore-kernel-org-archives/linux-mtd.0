@@ -1,17 +1,19 @@
-Received: from structure.biochem.nchu.edu.tw ([140.120.131.1])
+Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18JVLf-0007Ga-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 08:57:39 +0000
-Received: from localhost (saturn@localhost)
-	by structure.biochem.nchu.edu.tw (8.11.6/8.11.6) with ESMTP id gB3LgC204915
-	for <linux-mtd@lists.infradead.org>; Wed, 4 Dec 2002 05:42:12 +0800
-Date: Wed, 4 Dec 2002 05:42:12 +0800 (CST)
-From: shadow <saturn@structure.biochem.nchu.edu.tw>
-To: linux-mtd@lists.infradead.org
-Subject: IF eraseall will destryed(phys) the nand flash ?
-Message-ID: <Pine.LNX.4.44.0212030354100.2327-100000@structure.biochem.nchu.edu.tw>
+	id 18JVfQ-0007If-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 09:18:04 +0000
+Message-ID: <3DEDCF74.E77757DC@imc-berlin.de>
+Date: Wed, 04 Dec 2002 10:48:36 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: tglx@linutronix.de
+CC: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>,
+   linux-mtd@lists.infradead.org
+Subject: Re: undefined reference to 'crc32' ?
+References: <3DE7CB23.5535F5E6@imc-berlin.de>
+	 <002301c298c1$e6f10360$0300a8c0@jockeXP> <200212010046.59435.tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,38 +25,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
-I got an Input/Output error when I erase the nand flash. It printed these 
-messages.
--------------------------
-Erasinand_erase: attempt to erase a bad block at page 0x00000020
-ng 8 Kibyte @ 4000 --  0 % complete.
-eraseall: /dev/mtd/6: Mnand_erase: attempt to erase a bad block at page 
-0x00000030
-TD Erase failure: Input/output error
-Erasing 8 Kibyte @ 6000 --  1 % complete.
-eraseall: /dev/mtd/6: Mnand_erase: attempt to erase a bad block at page 
-0x00000040
-TD Erase failure: Input/output error
-Erasing 8 Kibyte @ 8000 --  1 % complete.
-eraseall: /dev/mtd/6: MTD Erase failure: Input/output error
-Erased 2048 Kibyte @ 0 -- 100% complete. 
------------------------------
 
-I found the Input/output error always occurred at the same page even if it 
-is a new SMC. But I have a question, the block_size is larger than 
-page_size, isn't it ? IF larger why nand driver attempt to erase a bad 
-block at page 0x00000020. In my mind, I think one block includes many 
-      ^^
-pages. Another problem is why the new SMC has some bad blocks and occurred 
-at the same page with using eraseall program erase it. Then I put this SMC 
-that has bad blocks into Digital Camera that can erase data on the SMC. 
-The DC Can't format it, what's up ? eraseall destroyed it ?
+Thomas Gleixner wrote:
+> 
+> On Saturday 30 November 2002 23:43, Joakim Tjernlund wrote:
+> > CVS JFFS2 assumes that  crc32()  is avialable as a generic function. You
+> > need my crc32 backport from 2.5 to 2.4. It's somewhere in the MTD
+> > archives(I think). I don't have it handy ATM.
+> I had no 2.4.20 kernel available, when I overhauled patchin.sh. I did not
+> realize that 2.4.19 had include/linux/crc32.h also available.
+> 
+> I changed patchin.sh so it supports those kernels too.
 
-IF the SMC has some bad blocks, then how to correct it ?
+Hi, 
 
-thanks in advance,
+I updated to the latest CVS this morning.
 
-Brian
+The problem with include/linux/crc32.h is solved. Thanks very much!
 
-      
+But, now I am having trouble with the new (rebuilt) mkfs.jffs2!!! It looks like
+a endian problem:
+
+I invoked mkfs.jffs2 as usual from within a script with:
+
+mkfs.jffs2 -d $TMP -o flashdisk.jffs2 -b -p
+
+But now I get loads of
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010000: 0x8519
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010004: 0x0709
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010008: 0x4137
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0001000c: 0x1600
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010010: 0x1c00
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010014: 0xed81
+instead
+
+So "-b" seems not to be working... ???
+
+My old version of mkfs.jffs2 is still wotking correctly!!!
+
+Any ideas?
+
+Thanks,
+
+Steven
