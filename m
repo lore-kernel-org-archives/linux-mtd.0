@@ -1,39 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13FeKK-0004Dl-00
-	for mtd-list@infradead.org; Fri, 21 Jul 2000 16:03:00 +0100
-Date: Fri, 21 Jul 2000 16:53:53 +0100 (BST)
+	id 13FeT6-0004HJ-00
+	for mtd-list@infradead.org; Fri, 21 Jul 2000 16:12:04 +0100
+Date: Fri, 21 Jul 2000 17:03:07 +0100 (BST)
 From: David Woodhouse <dwmw2@alpha1.cygnus.co.uk>
-To: mark.langsdorf@amd.com
-cc: mtd@infradead.org
-Subject: Re: Jedec.c problems in mtd-20000704
-In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9EFEF@txexmta8.amd.com>
-Message-ID: <Pine.LNX.4.21.0007211646360.22633-100000@alpha1.cygnus.co.uk>
+To: Trevor Woolven <trevw@zentropix.com>
+cc: David Woodhouse <dwmw2@infradead.org>, MTD <mtd@infradead.org>
+Subject: Re: building M-Sys DOC driver as a module
+In-Reply-To: <39781EAE.58A56DA3@zentropix.com>
+Message-ID: <Pine.LNX.4.21.0007211654230.22633-100000@alpha1.cygnus.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Thu, 20 Jul 2000 mark.langsdorf@amd.com wrote:
+On Fri, 21 Jul 2000, Trevor Woolven wrote:
 
-> I'm sorry if this got patched in the latest CVS, but my
-> employer's proxy does not seem to support CVS, or perhaps
-> vice versa, so I have to use the latest tarball.
+> Ok, IMHO using an initrd doesn't actually cost you too much, the bulk
+> of it is used to store the kernel which has to go somewhere, right? I
+> haven't done a comparison on the relative sizes of a kernel with the
+> driver compiled in vs one without to measure what the difference is
+> but that would be quite a simple thing to do - especially if space was
+> getting tight.
 
-You really need to track the CVS. Can you at least get outgoing SSH? If
-so, I can give you an account on infradead.org.
+initrd requires block deive support. I want to cut that entirely, too.
+
+> I agree that there's a bit of a waste having a DOS
+> partition on the DOC to boot syslinux from but neither LILO nor GRUB
+> are perfect either.
+
+LILO should be OK now, with the new bootloader protocol which prevents it
+from stomping on the EBDA. Grub will hopefully be driving DoC directly,
+very soon.
 
 > 
-> I've been having some problems with the 20000704 tarball in 
-> regards to jedec.c 
+> I agree that getting JFFS on DOC is a good thing but when will it
+> happen? 
 
- ... it doesn't compile and it can't be enabled. Those two aren't just
-coincidence :) Jgg sent it to me and I dropped it in as-is, to prevent
-duplication of effort.
+As far as I know, it should work now, but it doesn't use the ECC. You only
+get the normal JFFS checksumming, and I haven't yet modified it to cut
+down the number of writes.
 
-Change bus_width to buswidth as necessary, and remove the bank_size
-altogether, or make it an extra argument to the _probe() routines rather
-than putting it in the struct mtd_info.
+> I don't see the M-Systems driver being the driver of choice in
+> the long run, most people would much rather use a GPL one and that's
+> where MTD wins big time!
+> 
+> All I'm doing is a short-term fix for expediency.
+
+This is a very useful thing to do, I agree.
 
 --
 dwmw2
