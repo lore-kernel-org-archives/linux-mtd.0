@@ -1,24 +1,23 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuCrs-0001Ti-S4
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 11:51:42 -0500
-Date: Thu, 27 Jan 2005 17:51:38 +0100
+	id 1CuDYt-0001wL-4E
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 12:36:08 -0500
+Date: Thu, 27 Jan 2005 18:35:54 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: jasmine@linuxgrrls.org
-Message-ID: <20050127165138.GB7755@wohnheim.fh-wedel.de>
+To: Cam <camilo@mesias.co.uk>
+Message-ID: <20050127173554.GC7755@wohnheim.fh-wedel.de>
 References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
 	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
 	<1106819251.783.141.camel@baythorne.infradead.org>
 	<20050127131702.GA22121@wohnheim.fh-wedel.de>
 	<41F9127E.6030508@mesias.co.uk>
 	<20050127163845.GA7755@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.61.0501271637001.3401@hex.linuxgrrls.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.61.0501271637001.3401@hex.linuxgrrls.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <20050127163845.GA7755@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS3 document / wiki [OT]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,27 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 January 2005 16:37:47 +0000, jasmine@linuxgrrls.org wrote:
-> On Thu, 27 Jan 2005, [iso-8859-1] Jörn Engel wrote:
+On Thu, 27 January 2005 17:38:45 +0100, Jörn Engel wrote:
 > 
-> >And if you have too much time on your hands, security audits on php
-> >and mysql wouldn't hurt.
-> 
-> Or just do what anyone with taste does and use Java servlets or JSP on top 
-> of a PostgreSQL database.  I'm pretty sure there are Java-based wikis out 
-> there.
+> Various bits of information on this were spread all over the place:
+> o Code examples of mysql - tons of buffer overflows.
+> o Code examples of php - same.
 
-Not sure how much better postgres is.  Java surely helps.  If all
-input is checked for "normalness" before being passed to the dbms,
-that would help as well.
-
-Sadly the "normalness" includes things like domain names being shorter
-than 100 bytes and other non-obvious stuff.
+Didn't find a video, but here are some slides:
+http://www.ccc.de/congress/2004/fahrplan/files/363-literarisches-code-quartett-slides.pdf
 
 Jörn
 
 -- 
-To announce that there must be no criticism of the President, or that we
-are to stand by the President, right or wrong, is not only unpatriotic
-and servile, but is morally treasonable to the American public.
--- Theodore Roosevelt, Kansas City Star, 1918
+Fancy algorithms are slow when n is small, and n is usually small.
+Fancy algorithms have big constants. Until you know that n is
+frequently going to be big, don't get fancy.
+-- Rob Pike
