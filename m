@@ -1,16 +1,19 @@
-Received: from [61.5.4.148] (helo=enterprise.terasign.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16tirp-00085U-00
-	for <linux-mtd@lists.infradead.org>; Sat, 06 Apr 2002 06:36:04 +0100
-Message-ID: <01C1DD64.091DCAA0@SENLIANG>
-From: Sulung Chang <sulung@terasign.com>
-To: 'Scott Kapu' <kapus1@yahoo.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: RE: LILO booting (L 40 40 40)
-Date: Sat, 6 Apr 2002 12:10:24 +0700
+Received: from ip68-7-112-74.sd.sd.cox.net ([68.7.112.74] helo=clpanic.kennet.coplanar.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16tx4v-0000PY-00
+	for <linux-mtd@lists.infradead.org>; Sat, 06 Apr 2002 21:46:29 +0100
+Received: from bridge (bridge.kennet.coplanar.net [192.168.10.126] (may be forged))
+	by clpanic.kennet.coplanar.net (8.11.6/8.11.2) with SMTP id g36KkRl17913
+	for <linux-mtd@lists.infradead.org>; Sat, 6 Apr 2002 12:46:27 -0800
+Message-ID: <004501c1ddac$1ca95f60$7e0aa8c0@bridge>
+From: "Jeremy Jackson" <jerj@coplanar.net>
+To: <linux-mtd@lists.infradead.org>
+Subject: JEDEC programming command spec
+Date: Sat, 6 Apr 2002 12:46:17 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,46 +25,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I read everywhere about the JEDEC std. commands...
+but www.jedec.org only has CFI command set info.
 
-Hi all,
+Can anyone point me to this info?  Seems every vendor
+has some variation, but without the original to compare with,
+it seems impossible to know what is "standard" and what isn't.
 
-	I'm new with mtd. Is it possible to boot without using any BIOS but =
-replace it with DoCMillenium or DOC2000 with GRUB or 	LILO.=20
+Thanks,
 
-	Has anyone try that .... thanks
-
-
-	Sulung
-
------Original Message-----
-From:	Scott Kapu [SMTP:kapus1@yahoo.com]
-Sent:	Thursday, March 21, 2002 11:02 PM
-To:	linux-mtd@lists.infradead.org
-Subject:	LILO booting (L 40 40 40)
-
-I was having a problem booting using the stock lilo.
-I was getting "L 40 40 40 40 40 40 4"
-
-lilo 22.2
-After adding the following to lilo.conf;
-
-disk=3D/dev/nftla
-bios=3D0x80
-disk=3D/dev/hda
-bios=3D0x81
-lba32
-(dual booting from doc and hda)
-
-Lilo appears to work...
-Hope this helps someone out there
-
--Scott
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Movies - coverage of the 74th Academy Awards=AE
-http://movies.yahoo.com/
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Jeremy
