@@ -1,20 +1,16 @@
-Received: from transedge-153-132.transedge.com ([216.171.153.132] helo=mercury.steinkuehler.net)
+Received: from tomts14.bellnexxia.net ([209.226.175.35] helo=tomts14-srv.bellnexxia.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16EAhZ-0004AD-00
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2001 14:49:41 +0000
-Received: from csteinathlon (transedge-153-131.transedge.com [216.171.153.131])
-	by mercury.steinkuehler.net (8.9.3/8.9.3) with SMTP id MAA06812
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2001 12:41:33 -0600
-Message-ID: <07ba01c1831d$91390d10$4101220a@csteinathlon>
-From: "Charles Steinkuehler" <charles@steinkuehler.net>
-To: <linux-mtd@lists.infradead.org>
-References: <062d01c1829d$c20e54c0$4101220a@csteinathlon>
-Subject: Newbie questions
-Date: Wed, 12 Dec 2001 08:59:15 -0600
+	id 16EF8v-0004O4-00
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2001 19:34:13 +0000
+Date: Wed, 12 Dec 2001 14:43:49 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: <joao.filgueira@copel.com>
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Booting from Disk On Chip 2000
+In-Reply-To: <OF446D3D2A.08857E28-ON03256B20.00701E59@COPELnet>
+Message-ID: <Pine.LNX.4.33.0112121434570.21254-100000@server.superbt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,23 +22,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-OK, I have to ask for help.
+I guess you can program either lilo or Grub into DiskOnChip to boot off
+it, but not both.
 
-I'm trying to compile MTD on a 2.2.19 kernel and am getting all turned
-around.  I've found several patch files (in the CVS patches directory, and
-on the FTP site), but these all see to be ancient (like a year old or so).
+Similarly, you can load either BIOS TrueFFS drivers and the binary-only
+O/S abstraction layer from http://www.m-sys.com/ or the open source MTD
+drivers for DiskOnChip from http://linux-mtd.infradead.org/.
 
-Running the patchin.sh script in the patches directory seems to hook the CVS
-code into my kernel tree, but the kernel build system is left unmodified.
+I can not recollect the installation procedure for lilo.  You may find
+them at M-Sys web site.  The Grub installation procedure was posted last
+month in this list.  There was an error in it: you have to reload the NFTL
+module or reboot if it's compiled in after running nftl_format.
 
-Finally, a simple "make" in the top level of the CVS directory doesn't work,
-I think because I can't get my kernel patched properly.
+Ilguiz
 
-I'm no stranger to writing code, or patching/compiling kernels, I'm just
-seeing too many half-finished trails to figure out which one I'm supposed to
-follow...
+On Wed, 12 Dec 2001 joao.filgueira@copel.com wrote:
 
-So, how does one compile MTD for a 2.2.x kernel?
-
-Charles Steinkuehler
-charles@steinkuehler.net
+> THe Disk on Chip is using BIOS TRUE FFS 1.23. If I try i newer version
+> my DonC hangs. I compiled kernel 2.4.16 with the most recent drivers
+> i've found.
+>
+> I made some progress. LILO says it is installed, but when i try to but
+> from DonC it only writes " L I " and hangs. I dont know what kind of
+> error is this.
