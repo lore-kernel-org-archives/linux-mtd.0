@@ -1,56 +1,35 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 31 Mar 2003 23:47:44 +0100
-Subject: jffs2 / eCos
-In-Reply-To: <1049142569.1913.11.camel@pc-002>
-References: <1049057380.1180.36.camel@pc-002>
- <1049095079.16365.768.camel@imladris.demon.co.uk>
- <1049142569.1913.11.camel@pc-002>
-Message-ID: <1049150862.16365.793.camel@imladris.demon.co.uk>
+Received: from localhost.localdomain ([127.0.0.1] helo=localhost)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 190dG6-0001Qq-Kd
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 09:06:10 +0100
+Date: Wed, 2 Apr 2003 09:06:07 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
 To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Message-ID: <Pine.LNX.4.44.0304012300510.2597-100000@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Linux-MTD list administrivia
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please don't reply to cross-posts which have travelled via the eCos
-list. The gratuitous and redundant noise which that list adds to the
-Subject line is not welcome here.
 
-Also, please don't top-post (except for editorial comments such as this
-one and the one above :)
+lists.infradead.org fell foul of an IBM Deathstar drive, and it's being 
+rebuilt. The lists are (hopefully) back up and I've switched to mailman 
+2.1, which means that messages are now going to appear to be from 
+linux-mtd-bounces@lists.infradead.org rather than from linux-mtd-admin@ as 
+they used to be -- you will probably want to adjust your filters 
+accordingly. Archives are behaving strangely.
 
-On Mon, 2003-03-31 at 21:29, Bob Koninckx wrote:
-> Ok, I think I've come closer :)
-> 
-> Apparently, it has to do with the check
-> 
-> 
-> } else if (frag->ofs < offset && (offset & (PAGE_CACHE_SIZE-1)) != 0) {
->   D1(printk(KERN_NOTICE "Eep. Overlap in ino #%u fraglist. frag->ofs =
->           0x%08x, offset = 0x%08x\n",
->           f->inocache->ino, frag->ofs, offset));
->   D1(jffs2_print_frag_list(f));
->   memset(buf, 0, end - offset);
->   return -EIO;
-> } else if (!frag->node) {
-> 
-> 
-> in read.c / function jffs2_read_inode_range
-> 
-> The ecos libc buffers only 256 bytes of data, PAGE_CACHE SIZE is defined
-> to be 4kB. The first access consequently succeeds, the second one fail
-
-Hmmm. I could have sworn I'd already fixed that -- doesn't seem like it
-though.
-
-> I suppose all that needs to be done (for eCos) is make the
-> PAGE_CACHE_SIZE definition agree with the eCos libc BUFSIZ definition. I
-> am not sure though.
-
-No because that would mean we never write a node with more than BUFSIZ
-(256 bytes) of data payload, which would mean we take up a lot more
-space on the medium for any given file -- more node headers and worse
-compression.
-
-We should just fix jffs2_read_inode_range() to handle reads which don't
-start at the beginning of a node. It's not hard.
+The box still isn't accepting mail from the outside world -- I'll turn 
+that on again soon when I'm convinced it's not going to bounce everything 
+that's currently queued on the MX backup, and if this message actually 
+goes out to the list OK... :)
 
 -- 
 dwmw2
