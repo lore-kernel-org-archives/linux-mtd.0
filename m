@@ -1,16 +1,16 @@
-Received: from tomts12.bellnexxia.net ([209.226.175.56] helo=tomts12-srv.bellnexxia.net)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16BjLj-0002ef-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 21:13:03 +0000
-Date: Wed, 5 Dec 2001 16:22:39 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Yunus Shaikh <yshaikh@start-icon.com>
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Console Messages
-In-Reply-To: <004f01c17db9$a78900c0$c801a8c0@starticon>
-Message-ID: <Pine.LNX.4.33.0112051617470.27391-100000@server.superbt.com>
+Received: from 205-158-62-105.outblaze.com ([205.158.62.105] helo=ws4-4.us4.outblaze.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16BpZe-0002xe-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Dec 2001 03:51:50 +0000
+Message-ID: <20011206040158.24077.qmail@linuxmail.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: "dharmu bavale" <dharmu@linuxmail.org>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 06 Dec 2001 12:01:58 +0800
+Subject: Using Md-2800-D08
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +22,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Funny, it sounds like the MTD patch was supposed to suppress the kernel
-messages on the console.
+I am using the disk on chip model MD-2800-D08 and the kernel is detecting it as mtd0. When I try to access the device it is saying not a valid device. What may be the problem. 
+If any good howto is there for this model let me know, please
+Dharmu
+-- 
 
-The following article
-    http://www.linuxjournal.com/article.php?sid=2365
+Get your free email from www.linuxmail.org 
 
-suggested to apply the following command to suppress the kernel messages:
 
-    echo 2 > /proc/sys/kernel/printk
-
-I believe one can change the klogd options to "-c 2" as well.
-
-Ilguiz
-
-On Wed, 5 Dec 2001, Yunus Shaikh wrote:
-
-> After applying the mtd Patch the kernel messages on the console are still
-> not suppressed
+Powered by Outblaze
