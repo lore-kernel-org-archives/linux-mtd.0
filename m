@@ -1,16 +1,18 @@
-Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
+Received: from smtp2.cybersurf.net ([209.197.145.112])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 155qFs-0001vd-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2001 15:50:24 +0100
-Message-ID: <3B17ACEF.4FA5EA8B@daniel.com>
-Date: Fri, 01 Jun 2001 09:55:43 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+	id 155rSw-00020P-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2001 17:07:58 +0100
+Received: from localhost.localdomain ([209.197.132.58]) by
+          smtp2.cybersurf.net (Netscape Messaging Server 4.15) with SMTP
+          id GE9ECA00.G9V for <linux-mtd@lists.infradead.org>; Fri, 1 Jun
+          2001 10:12:10 -0600
+From: Herman Oosthuysen <herman@wirelessnetworksinc.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2
+Date: Fri, 1 Jun 2001 10:12:15 -0600
+Content-Type: text/plain
 MIME-Version: 1.0
-To: =?iso-8859-1?Q?K=E1ri=20Dav=ED=F0sson?= <kd@flaga.is>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: jffs2
-References: <EADB10BAC266A14A85ECBF8686A73E310A9186@kolkrabbi.flaga.is>
-Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <01060110160400.02053@localhost.localdomain>
 Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -23,39 +25,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Kári Davíðsson wrote:
+Hi guys,
 
-> Are there any known issues of running programs from a jffs2 partition?
+Something is not clear to me:
+In order to have JFFS2 support, do I have to compile in the JFFS stuff as well?
 
-Not that I know of.
+I modified the following lines in fs/config.in:
+## Herman - Add JFFS2 Support
+tristate 'Journaling FLASH filesystem (JFFS) support' CONFIG_JFFS_FS
+tristate 'Journalling Flash filesystem (JFFS2) support' CONFIG_JFFS2_FS
+int 'Journalling Flash filesystem (JFFS2) Debug Verbosity' CONFIG_JFFS2_FS_DEBUG
 
-
-> I am attempting to run a program from a jffs2 partition (not root
-> partition which is mounted on /dev/ram)
-
-Interesting choice of mount dir names (why "ram"?) :)
-
-
-> and the program seem to be running extremely slow and what is worse it
-> seem to block the kernel at the
-> same time, i.e. I can not ping the board nor telnet to it.
-
-Not being able to ping it is bad. Not being able to telnet to it may
-depend on how much CPU resources are available
-to run the telnet daemon.
-
->
->
-> If I wait long enough I get output from the program on the console but
-> everything is very very slow.....
->
-
-What processor are you using? How big is your JFFS2 partition and what is
-this program that you are running doing?
-
-Remember that JFFS2 needs to go GC when the fs gets full (or near full if
-the background GC task is running). If your program
-is reading/writing from/to the JFFS2 fs it will get blocked. Are you
-generating a lot of data to the JFFS2 fs?
-
-Vipin
+Cheers,
+-- 
+Herman Oosthuysen
+Phone: 403+569-5687
+E-mail: Herman@WirelessNetworksInc.com
