@@ -1,19 +1,18 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19N7dw-0008Gi-0v
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 09:59:45 +0100
-Date: Tue, 3 Jun 2003 11:00:13 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Vikram Mehta <vm6580@hotmail.com>
-Message-ID: <20030603090013.GA31569@wohnheim.fh-wedel.de>
-References: <Law14-OE60hyN0a0SMh0002fd22@hotmail.com>
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19MyKv-0006nr-AF
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 00:03:29 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: carolyn.j.smith@exgate.tek.com
+In-Reply-To: <212D7E61C1F7D511B9270002A507DE7D24B628@us-bv-m10.bv.tek.com>
+References: <212D7E61C1F7D511B9270002A507DE7D24B628@us-bv-m10.bv.tek.com>
+Message-Id: <1054595005.1135.7.camel@tubarao.lnxi.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Law14-OE60hyN0a0SMh0002fd22@hotmail.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: mtd <linux-mtd@lists.infradead.org>
-Subject: Re: cfi_probe_chip  problem
+Date: 02 Jun 2003 17:03:26 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-Z9U03iJl1+2cLO8O3TnX"
+cc: linux-mtd@lists.infradead.org
+Subject: Re: 4 AM29LV800B's in 16-bit mode?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 June 2003 13:41:48 -0700, Vikram Mehta wrote:
-> 
-> 
-> Let me tell u in detail with a map
-> cfi_probe     calls
->      cfi_probe_chip. calls
->              cfi_send_gen_cmd calls
->                               cfi_build_cmd
->                             cfi_build_cmd  returns
->        cfi_send_gen_cmd:   code
->                         if (prev_val)
->                      *prev_val = cfi_read(map, addr); doesnot satify
->          cfi_send_gen_cmd     calls
->                            cfi_write     The values called are  __u32
-> val=250 and __u32 addr = 0
->                             cfi_write calls
->                                    mymap->write16 calls
->                                       __raw_writew(d, map->map_priv_1 +
-> adr);
->                                        __raw_writew(d, map->map_priv_1 +
-> adr);      returns
->                                      mymap->write16  returns
->                            cfi_write retruns
->         cfi_send_gen_cmd  returns
-> cfi_probe_chip again calls
->                cfi_send_gen_cmd
->                        .........similar to above stack
->                               cfi_write     The values called are  __u32
-> val=152 and __u32 addr = 170
-> cfi_write calls
->                                    mymap->write16 calls
->                                        __raw_writew(d, map->map_priv_1 +
-> adr);
->                                                         DOES NOT RETURN
-> Whay could be wrong here?
 
-You might be using a proportional font.  The result is completely
-unreadable for anyone else.  Set your font to courier and redraw.
+--=-Z9U03iJl1+2cLO8O3TnX
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Jörn
+On Mon, 2003-06-02 at 14:32, carolyn.j.smith@exgate.tek.com wrote:
+> My board (Wind River's SBC8240) has 4 AM29LV800B chips in 16-bit mode
+> (verified that BYTE# is high using a scope) with buswidth 64 bits for a
+> total of 4 MB.
 
--- 
-Victory in war is not repetitious.
--- Sun Tzu
+Smells like there's yet another issue dealing with interleaved chips
+(already worked out two and I thought all of them were fixed).
+
+> I am using the "jedec_probe" code. With the buswidth set to 8, the chips =
+are
+> not detected at all.=20
+
+wich version of jedec_probe.c, v1.26 or later?
+
+> With the buswidth set to 4, the chips are recognized as long as I modify =
+the
+> unlock addresses to be MTD_UADDR_DONT_CARE instead of
+> MTD_UADDR_0x0AAA_0x0555 and MTD_UADDR_0x0555_0x02AA but erasing the
+> resulting device fails in do_erase_oneblock.=20
+>=20
+> Any suggestions?
+
+I'm likely the one to blame.  Unfortunately I can't look at this until
+tomorrow - sorry.  Let me know the version of jedec_probe.c you have and
+also send me any relevant kernel messages with MTD_DEBUG_LEVEL set to 3.
+
+I don't even have time to look at the data sheet right now, but wanted
+to let you know that someone's listening and interested in fixing this.
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-Z9U03iJl1+2cLO8O3TnX
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+29e9fsBPTKE6HMkRAnbiAJ9nM74CbHynuwHczC13fMSzA0B83wCfZQz3
+ftbATzEm4tJjxF1F4024azU=
+=OvfR
+-----END PGP SIGNATURE-----
+
+--=-Z9U03iJl1+2cLO8O3TnX--
