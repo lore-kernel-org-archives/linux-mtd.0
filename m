@@ -1,19 +1,19 @@
-Received: from imladris.demon.co.uk ([193.237.130.41]
-	helo=lapdancer.baythorne.internal)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ALVJQ-0001kb-LQ
-	for <linux-mtd@lists.infradead.org>; Sun, 16 Nov 2003 22:24:11 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Joshua Wise <joshua@joshuawise.com>
-In-Reply-To: <200311150109.39539.joshua@joshuawise.com>
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1ALY0d-0002H9-KR
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2003 01:16:55 +0000
+To: David Woodhouse <dwmw2@infradead.org>
 References: <200311150109.39539.joshua@joshuawise.com>
-Message-Id: <1069021350.3450.65.camel@lapdancer.baythorne.internal>
-Mime-Version: 1.0
-Date: Sun, 16 Nov 2003 22:22:31 +0000
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+	<1069021350.3450.65.camel@lapdancer.baythorne.internal>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 16 Nov 2003 18:17:18 -0700
+In-Reply-To: <1069021350.3450.65.camel@lapdancer.baythorne.internal>
+Message-ID: <m3smknn68x.fsf@maxwell.lnxi.com>
+MIME-Version: 1.0
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-cc: "Eric W. Biederman" <ebiederman@lnxi.com>
 cc: Thayne Harbaugh <tharbaugh@lnxi.com>
 Subject: Re: JEDEC probing redux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,90 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-11-15 at 01:09 -0500, Joshua Wise wrote:
-> But first, some background. On the iPAQ h1910, we have an LV400BT chip (id 
-> 0001/22B9) that we probe by JEDEC. The chip expects unlock addresses of 
-> 0x555/0x2AA in word mode.
+David Woodhouse <dwmw2@infradead.org> writes:
 
-> However, HP had to throw a twist in - they shifted the address lines over one. 
-> A1 on the CPU is connected to A0 on the flash chip, etcetera, so we have to 
-> left-shift the unlock addresses.
+> On Sat, 2003-11-15 at 01:09 -0500, Joshua Wise wrote:
+> No. The chip manufacturer did that. Its 'A0' line is what normal people
+> would call 'A1', and that's why when you put them in byte mode they also
+> have an 'A-1' line, for which someone really deserves to burn in hell.
+> 
+> The chip in question wants to see a logical '1' on its A1, A3, A5 etc.
+> lines for the first unlock cycle, then on A0, A2, A4 etc. for the
+> second.
+> 
+> That corresponds to the CPU's addresses 0xAAA and 0x554, as you've
+> observed. In byte mode it's just the _same_, only it also wants a logic
+> '1' on its 'A-1' address line too, so the latter address is 0x555.
+> 
+> Looking at the tables in jedec_probe.c, mostly of the form...
+> 
+> 		.name		= "Fujitsu MBM29LV400BC",
+> 		.uaddr		= {
+> 			[0] = MTD_UADDR_0x0AAA_0x0555,  /* x8 */
+> 			[1] = MTD_UADDR_0x0555_0x02AA,  /* x16 */
+> 		},
+> ... it looks like they're supposed to be shifted by cfi->device_type
+> before actually being used. 
 
-No. The chip manufacturer did that. Its 'A0' line is what normal people
-would call 'A1', and that's why when you put them in byte mode they also
-have an 'A-1' line, for which someone really deserves to burn in hell.
+That certainly is not the interpretation the current code gives them.
 
-The chip in question wants to see a logical '1' on its A1, A3, A5 etc.
-lines for the first unlock cycle, then on A0, A2, A4 etc. for the
-second.
+It looks more like the unlock addresses for x16 mode was incorrectly
+specified for this new device.
 
-That corresponds to the CPU's addresses 0xAAA and 0x554, as you've
-observed. In byte mode it's just the _same_, only it also wants a logic
-'1' on its 'A-1' address line too, so the latter address is 0x555.
+> But, aside from a brief experiment of
+> Thayne's, they aren't actually being shifted. So the [1] /* x16 */ entry
+> is wrong, and should be identical to the [0] /* x8 */ one.
 
-Looking at the tables in jedec_probe.c, mostly of the form...
+For this case that sounds right.  For the general case I don't know.
+This sounds like an area where people tend to get confused.
 
-		.name		= "Fujitsu MBM29LV400BC",
-		.uaddr		= {
-			[0] = MTD_UADDR_0x0AAA_0x0555,  /* x8 */
-			[1] = MTD_UADDR_0x0555_0x02AA,  /* x16 */
-		},
-... it looks like they're supposed to be shifted by cfi->device_type
-before actually being used. But, aside from a brief experiment of
-Thayne's, they aren't actually being shifted. So the [1] /* x16 */ entry
-is wrong, and should be identical to the [0] /* x8 */ one.
+> In fact, I assert that the entries for each device_type should _always_
+> be the same. We shouldn't need an array for uaddr; just a single int
+> should suffice. Although we do need to mask out the lower bits (0x555
+> vs. 0x554).
 
-In fact, I assert that the entries for each device_type should _always_
-be the same. We shouldn't need an array for uaddr; just a single int
-should suffice. Although we do need to mask out the lower bits (0x555
-vs. 0x554).
+The array of device type gives us information about which widths
+the device actually supports, in addition which unlock addresses
+are preset.  So there is value there.
 
-I'm going to assert it thusly...
+As for the general assertion that unlock address are the same
+irregardless of width you may have a point.  But until someone does a
+thorough documentation search and shows this to be so for the
+currently supported devices I am not ready to accept this.
 
-Thayne? Eric?
+> I'm going to assert it thusly...
+> 
+> Thayne? Eric?
 
-Index: jedec_probe.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/chips/jedec_probe.c,v
-retrieving revision 1.40
-diff -u -r1.40 jedec_probe.c
---- jedec_probe.c	16 Nov 2003 21:42:44 -0000	1.40
-+++ jedec_probe.c	16 Nov 2003 22:11:23 -0000
-@@ -1510,6 +1510,12 @@
- 
- 	uaddr = finfo->uaddr[uaddr_idx];
- 
-+	if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
-+		/* ASSERT("The unlock addresses for non-8-bit mode
-+		   are bollocks. We don't really need an array."); */
-+		uaddr = finfo->uaddr[0];
-+	}
-+
-  uaddr_done:
- 	return uaddr;
- }
-@@ -1518,6 +1524,7 @@
- static int cfi_jedec_setup(struct cfi_private *p_cfi, int index)
- {
- 	int i,num_erase_regions;
-+	unsigned long mask;
- 	__u8 uaddr;
- 
- 	printk("Found: %s\n",jedec_table[index].name);
-@@ -1551,8 +1558,11 @@
- 		kfree( p_cfi->cfiq );
- 		return 0;
- 	}
--	p_cfi->addr_unlock1 = unlock_addrs[uaddr].addr1;
--	p_cfi->addr_unlock2 = unlock_addrs[uaddr].addr2;
-+
-+	/* Mask out address bits which are smaller than the device type */
-+	mask = ~((1<<p_cfi->device_type)-1);
-+	p_cfi->addr_unlock1 = unlock_addrs[uaddr].addr1 & mask;
-+	p_cfi->addr_unlock2 = unlock_addrs[uaddr].addr2 & mask;
- 
- 	return 1; 	/* ok */
- }
+You are masking the unlock addresses way to late to be of value.
+Things need to be masked out during the probe not when we finally
+see what works and decide to set it up.  Not that masking should
+make any difference when the address line is not hooked up.
 
--- 
-dwmw2
+So while the analysis sounds fine I for this particular case,
+I think the patch is just wrong and should be backed out.
+
+Eric
