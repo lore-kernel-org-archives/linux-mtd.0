@@ -1,45 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13gqVr-0001Nu-00
-	for mtd-list@infradead.org; Wed, 04 Oct 2000 16:31:19 +0100
-Received: from virgo.techno.spb.ru ([195.5.142.100] ident=root)
+	id 13hCqo-0006Lr-00
+	for mtd-list@infradead.org; Thu, 05 Oct 2000 16:22:26 +0100
+Received: from [194.130.39.252] (helo=passion.cygnus)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13gqVp-0001No-00
-	for mtd@infradead.org; Wed, 04 Oct 2000 16:31:18 +0100
-Received: from techno.spb.ru (IDENT:maxs@Maverick.Techno.Spb.Ru [195.5.142.101])
-	by virgo.techno.spb.ru (8.9.3/8.9.3) with ESMTP id TAA04266
-	for <mtd@infradead.org>; Wed, 4 Oct 2000 19:31:09 +0400
-Message-ID: <39DB4D04.B6467E30@techno.spb.ru>
-Date: Wed, 04 Oct 2000 19:30:12 +0400
-From: Nick Maximov <maxs@techno.spb.ru>
-MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: AMPRO Core Module w/ DoC onboard
+	id 13hCqn-0006Ll-00
+	for mtd@infradead.org; Thu, 05 Oct 2000 16:22:26 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E13hCjo-0006JB-00@infradead.org> 
+References: <E13hCjo-0006JB-00@infradead.org> 
+To: bjorn@pobox.com
+Cc: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/kernel pmc551.c' 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 05 Oct 2000 16:22:30 +0100
+Message-ID: <6948.970759350@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-I just got another Ampro module with working DoC. Some time ago I was
-trying to install mtd support and crash my DoC firmware while trying to
-write grub there. (using p5format)
 
-Now I return here and ask everybody who can halp me.
-What sequence should I do to get started and make my module bootable
-from DoC.
-Now I have
+bjorn@pobox.com said:
+> The egcs-2.91.66 optimiser gets confused in pmc551.c:init_pmc551() if
+> PCI support is disabled in the kernel config. 
 
-1. NEW :) CoreModule with DoC (solded onboard) (old module works w/o DoC
-using IDE SSD SunDisk)
-2. Utility disk with DOS p5format p5update
-3. LinuxBox w/ RH 6.2 kernel 2.2.17 srcs
-4. Latest Grub from their CVS arch
+It shouldn't be built if !CONFIG_PCI. Config.in doesn't let you enable it. 
+P'raps we should do something similar for the standalone Makefile.
 
-I afraid to crash it again. So please help me...
+--
+dwmw2
 
---Nick
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
