@@ -1,18 +1,17 @@
-Received: from [66.89.142.11] (helo=exalane.intransa.com)
+Received: from code-monsters.com ([65.67.50.169] helo=smash.codemonsters.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16gVM0-0000hp-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2002 18:32:32 +0000
-content-class: urn:content-classes:message
-Subject: RE: jffs2 and flash sectors 
+	id 16gaDO-00015q-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2002 23:43:59 +0000
+Received: from ba.devicemonsters.com (adsl-65-70-211-41.dsl.austtx.swbell.net [65.70.211.41])
+	by smash.codemonsters.net (8.9.3/8.8.7) with ESMTP id RAA14066
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2002 17:55:18 -0600
+Date: Thu, 28 Feb 2002 19:03:21 -0600 (CST)
+From: "Brian P. Austin" <baustin@codemonsters.net>
+To: linux-mtd@lists.infradead.org
+Subject: UnitSizeFactor of != 1 yet?
+Message-ID: <Pine.LNX.4.21.0202281853280.898-100000@ba.devicemonsters.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 28 Feb 2002 10:43:49 -0800
-Message-ID: <EA23924D8B48774F889C7733226B28E86B1DAD@exalane.intransa.com>
-From: "Paul Lai" <paul.lai@intransa.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,32 +23,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Perfect!  Thanks!
+Hello all,
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-Sent: Thursday, February 28, 2002 10:43 AM
-To: Paul Lai
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 and flash sectors=20
+I have switched from the msys driver and moved to mtd.  Everything
+compiles fine and this is what I get at boot up.
 
+Using configured DiskOnChip probe address 0xd0000
+DiskOnChip 2000 found at address 0xD0000
+Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba TC58256FT/DC)
+9 flash chips found. Total DiskOnChip size: 288 MiB
+mtd: Giving out device 0 to DiskOnChip 2000
+NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
+NFTL_notify_add for DiskOnChip 2000
+NFTL_setup
+Sorry, we don't support UnitSizeFactor of != 1 yet.
+Could not find valid boot record
+Could not mount NFTL device
 
+when I do cat /proc/mtd, I get the following.
 
-paul.lai@intransa.com said:
-> How cognizant of flash sectors is jffs2?=20
+dev:    size   erasesize  name
+mtd0: 12000000 00004000 "DiskOnChip 2000"
 
-Very.
+I'm using a DOC 2000 288MB flash chip with the DOC43.exb file on it.
 
-> Will an inode and it's data cross flash sector boundaries? =20
+I guess my question is...
 
-No single node (log entry) will cross sector boundary. An inode may have
+What does "Sorry, we don't support UnitSizeFactor of != 1 yet." mean?
 
-nodes in any sectors though.
+thanks in advance.
 
-> Or will jffs2 align them to fit within and start them on flash sector
-> boundaries?
-
-http://sources.redhat.com/jffs2/jffs2.pdf
-
---
-dwmw2
+Brian Austin
