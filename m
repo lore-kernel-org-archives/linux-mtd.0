@@ -1,18 +1,16 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from law14-oe12.law14.hotmail.com ([64.4.20.116] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VoUq-0002nc-Ce
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jun 2003 09:22:16 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Madhav Kandhikonda <madhavonline@indiainfo.com>
-In-Reply-To: <20030626201522.9222.qmail@indiainfo.com>
-References: <20030626201522.9222.qmail@indiainfo.com>
-Message-Id: <1056702156.28202.45.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Fri, 27 Jun 2003 09:22:36 +0100
-Content-Type: text/plain
+	id 19VrQz-0003Fa-Ct
+	for <linux-mtd@lists.infradead.org>; Fri, 27 Jun 2003 12:30:29 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Wed, 25 Jun 2003 23:52:47 -0700
+MIME-Version: 1.0
+Message-ID: <Law14-OE128PeNjPMWG0005420b@hotmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: May day, May day; DoC2000 with Flash How-to!!
+Subject: Invalid ioctl 5401 (MEMGETINFO = 801e4d01)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-06-26 at 21:15, Madhav Kandhikonda wrote:
-> b) Tried to install Linux on DoC2000, ended in errors
+hi folks,
 
-How can we possibly help if we do not know what the errors _were_?
+Things are looking much cleaner now
 
-What did you try, and what happened?
+But during copy I get the error
 
-I don't understand precisely what you mean by 'Toshiba Flash' and why
-you might have been trying to plug it into an IDE port.
+Invalid ioctl 5401 (MEMGETINFO = 801e4d01)
 
-> 
-> What am I looking from you
-> **************************
-> 
-> ==> How to make DoC2000 as Boot device
+After that if i try to a mount I get lots of Call Trace.
 
-This is described in the HOWTO. If you have followed the steps in the
-HOWTO and failed, you will need to describe the problem.
+Any ideas?
 
-> ==> How to make Flash device as Storage device
-
-Without any clue what your 'Flash device' is, this is impossible.
-
-> ==> EXT3 or JFFS2 for Flash File system? 
-
-Fish.
-
-> ==> How to use GRUB instead of troublesome LILO
-
-Again -- see the HOWTO.
-
-> **By using only ONE IDE port for these 2 devices**
-
-You can't possibly have tried to put a DiskOnChip 2000 into an IDE port;
-I'm vaguely interested in what else you've tried to plug into it...
-
--- 
-dwmw2
+Vikram
