@@ -1,14 +1,16 @@
 Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=Dual166.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MA0u-0002Io-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2002 15:42:40 +0000
+	id 16MA3d-0002J5-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2002 15:45:29 +0000
+Received: from nt40server ([192.168.1.101])
+	by Dual166.localdomain (8.9.3/8.9.3) with SMTP id HAA00426
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2002 07:55:22 -0800
 Reply-To: <acurtis@onz.com>
 From: "Allen Curtis" <acurtis@onz.com>
-To: <sheela_kashyap@yahoo.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: (no subject)
-Date: Thu, 3 Jan 2002 07:46:16 -0800
-Message-ID: <NCBBIINEHIPFGJPLBEIFMECHDDAA.acurtis@onz.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS and Hard Links
+Date: Thu, 3 Jan 2002 07:49:09 -0800
+Message-ID: <NCBBIINEHIPFGJPLBEIFAECIDDAA.acurtis@onz.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -24,8 +26,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-We had the same problem where the /dev/ entries where not included in the
-JFFS image. In our case I ran MAKEDEV to recreate the missing devices.
+Are hard links supported in the latest JFFS? It appears that some of the
+Linux administrative functions like "useradd" and "su" require hard links.
+If they do not work, then it is not possible to have a system with only
+JFFS.
 
-The version of JFFS we are using came with HHL Professional 2.0. Based on
-the CVS versions, it looks like it is the original code release.
+Recommendations?
