@@ -1,17 +1,18 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from musenki.com ([192.207.126.3] helo=dinky.musenki.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173g0F-0005OO-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:33:51 +0100
-Date: Fri, 3 May 2002 17:33:49 +0100
-Subject: Re: grub stuff
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
-Cc: linux-mtd@lists.infradead.org
-To: John Sutton <john@scl.co.uk>
-From: Jasmine Strong <jasmine@regolith.co.uk>
-In-Reply-To: <02050317250101.14339@diva.localdomain>
-Message-Id: <8C3BA0CE-5EB3-11D6-B6D6-000502893FA1@regolith.co.uk>
+	id 173g17-0005On-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:34:45 +0100
+Received: from zaphod.musenki.com. (cs6625184-203.austin.rr.com [66.25.184.203])
+	by dinky.musenki.com (Postfix) with ESMTP id E06D9F40D1
+	for <linux-mtd@lists.infradead.org>; Fri,  3 May 2002 11:34:43 -0500 (CDT)
+From: Jim Thompson <jim@musenki.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <15570.48163.648146.185360@zaphod.musenki.com>
+Date: Fri, 3 May 2002 11:34:43 -0500
+To: linux-mtd@lists.infradead.org
+Subject: patches to 2.4.18
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +24,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Friday, May 3, 2002, at 04:58 PM, John Sutton wrote:
-> That's interesting!  I've been using netbooted diskless clients for some
-> years but have never bothered to actually put a bootrom in a network 
-> card -
->  I just write the bootloader onto a floppy.  So I've no experience of
-> actually booting from a real bootrom, but what you are saying (if I've
-> understood correctly) is that a real bootrom on an ethercard always gets
-> first bite of the cherry at boot time?  Regardless of the boot order
-> you've configured in the BIOS setup screens? or the presence of a 
-> "grubbed"
-> DiskOnChip?
->
+Is the recommended course of action to simply replace the driver set
+in 2.4.18 (or 2.4.19) with what is found at
+ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/
 
-Nnno.
+We're currently using
+http://ftp.debian.org/debian/pool/main/m/mtd/mtd_20011217.orig.tar.gz,
+but there seem to be a few... issues.
 
-It depends which order your BIOS does things in, and whether you have 
-your
-Grub set to extend the bootstrap int or the netboot int.  (If it's using
-the netboot int, then it'll depend which order your BIOS loaded the ROMs
-in.)
+Also, I (like so many others lately), had to comment out the call to
+invalidate_device() in mtdblock.c::mtdblock_release() in order to get
+my root filesystem (jffs2 on mtdblock on Intel Strataflash) to mount.
 
-That said, as long as you have the grub second stage intact, there should
-never be any need to do such things, as the grub command line will let
-you boot the system any which way you like.  (If, like me, you're scared
-of trashing your system by plugging and unplugging chips while the system
-is running, then doc_loadbios should *always* be the *last* stage in the
-formatting of a new DoC-  that way there will always be a working Grub.)
+I note that the call is still there in the CVS vsion:
+  ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/drivers/mtd/mtdblock.c
 
-Jas.
+and we are getting crashes on halt/reboot if we've modified the
+filesystem.
+
+Similar questions about jffs2 have been asked:
+
+	http://mhonarc.axis.se/jffs-dev/msg01297.html
+
+With no apparent answer.
+
+anyone with clue to offer?
+
+Jim
