@@ -1,19 +1,19 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17oJqk-0007Vk-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2002 09:24:50 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Henrik Nordstrom <hno@marasystems.com>
-To: mateo@posta.star.si, jay.s@sohu.com
-Subject: Re: DOC 2000 and GRUB (WORKING!!)
-Date: Mon, 9 Sep 2002 10:24:24 +0200
-Cc: linux-mtd@lists.infradead.org
-References: <20020909080449.49A693968@sitemail.everyone.net>
-In-Reply-To: <20020909080449.49A693968@sitemail.everyone.net>
+	id 17oL3l-0007cF-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2002 10:42:22 +0100
+Message-ID: <00c301c257e5$3b1d52e0$b30210ac@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <007901c23869$35d3f500$1b0448c0@gv.com.tw>  <31207.1028103302@redhat.com>
+Subject: any function/ioctl to get compression ratio of a single file in jffs2?
+Date: Mon, 9 Sep 2002 17:42:35 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200209091024.24818.hno@marasystems.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +25,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mateo Anderson wrote:
+deal all,
 
-> They recommended me, that id use a DOS 5.x utility DFORMAT to
-> transfer the GRUB firmware to DoC.
+is there any function/ioctl to get compression ratio of a single file in
+jffs2?
 
-Not yet.
-
-What has been said is that DFORMAT 5.X should be used to transfer the GRUB 
-firmware to the DoC, once GRUB understands about the slight difference in the 
-NFTL format between the M-Sys 4.x and 5.x drivers/tools.
-
-Regards
-Henrik
+thx in advanced!:)
