@@ -1,20 +1,19 @@
 Received: from imladris.infradead.org
 	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uyP7-0007KA-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:19:01 +0100
-Received: from oe56.law14.hotmail.com ([64.4.20.191] helo=hotmail.com)
+	id 14uyUt-0007La-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:24:59 +0100
+Received: from oe66.law12.hotmail.com ([64.4.18.201] helo=hotmail.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14uyPb-00025n-00
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2001 16:19:31 +0100
-Reply-To: "Zydla Tsui" <zydla@hotmail.com>
-From: "Zydla Tsui" <zydla@hotmail.com>
+	id 14uyVJ-00028f-00
+	for linux-mtd@lists.infradead.org; Wed, 02 May 2001 16:25:25 +0100
+From: "zud sdf" <zydlaula@hotmail.com>
 To: "MTD" <linux-mtd@lists.infradead.org>
-Date: Wed, 2 May 2001 17:17:38 +0200
+Date: Wed, 2 May 2001 17:24:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;	charset="windows-1252"
+Content-Type: text/plain;	charset="gb2312"
 Content-Transfer-Encoding: base64
-Message-ID: <OE56qt119IfKKby5T03000071cc@hotmail.com>
+Message-ID: <OE66DreBBsQwY6YHkid00005aa9@hotmail.com>
 Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
