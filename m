@@ -1,8 +1,8 @@
 Received: from ns1ca.ubisoft.qc.ca ([205.205.27.131])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MZ4T-0003ow-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 18:28:01 +0000
-Message-ID: <9A1957CB9FC45A4FA6F35961093ABB8406456FC3@srvmail-mtl.montreal.ubisoft.org>
+	id 16MZWp-0003qj-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 18:57:19 +0000
+Message-ID: <9A1957CB9FC45A4FA6F35961093ABB840645704B@srvmail-mtl.montreal.ubisoft.org>
 From: Patrick Allaire <pallaire@gameloft.com>
 To: David Woodhouse <dwmw2@infradead.org>,
         Patrick Allaire
@@ -10,7 +10,7 @@ To: David Woodhouse <dwmw2@infradead.org>,
 Cc: =?iso-8859-1?Q?Bj=F6rn_Eriksson?= <mdeans@algonet.se>,
         linux-mtd@lists.infradead.org
 Subject: RE: From 2.4.9 to CVS ??? 
-Date: Fri, 4 Jan 2002 13:38:25 -0500 
+Date: Fri, 4 Jan 2002 14:07:46 -0500 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -26,25 +26,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi again,
+Ok ... I found ... I reread David's email ... the libs needs to have =
+the
+executable attributes !!!
 
-I have made a statically linked 'Busybox', now the kernel find the init
-(since init is a symbolic link to busybox) ... it goes through my rc =
-file
-but it cannot execute dinamictly linked executable ???
-
-at one point in my rc file I try to start a program and I receive :
-Permission denied ??? I cennot look at any thing manualy because my =
-embedded
-device deos not have a keyboard !!! so if we have to look at something, =
-I
-need to redo a cramfs ...=20
-
-What have benn changed so that I cannot run dinamyc exe ??? with the =
-same
-cramfs (same exe / libs)
-
-thank you
+thank you all !
 
 Patrick Allaire
 mailto:pallaire@gameloft.com
