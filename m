@@ -1,19 +1,18 @@
 Received: from mail.milliontech.com ([210.17.151.186])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ATh6N-0004aB-T7
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Dec 2003 12:36:32 +0000
-Message-ID: <3FD5C197.7080502@milliontech.com>
-Date: Tue, 09 Dec 2003 20:35:35 +0800
+	id 1ATiTL-00054M-LB
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Dec 2003 14:04:19 +0000
+Received: from milliontech.com ([192.168.168.70])
+	by mail.milliontech.com (8.11.6/8.11.6) with ESMTP id hB9E2Pn24690
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2003 22:02:25 +0800
+Message-ID: <3FD5D62F.4070501@milliontech.com>
+Date: Tue, 09 Dec 2003 22:03:27 +0800
 From: Martin Chan <martinc@milliontech.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <3FD5B024.5050808@milliontech.com>
-	<1070969637.31993.125.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1070969637.31993.125.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=Big5
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: IPL block is bad on DiskOnChip 2000
+Subject: error when coping jffs2 file system to mtd0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Great! It works. Thanks David.
+Hi all,
 
+I have DOC 2000 and I can "mount -t msdos /dev/nftla1 /mnt".
+
+I prepare a root.jffs2 using mkfs.jffs2 -d /dir -o root.jffs2
+
+However, when I want to copy my root.jffs2 to /dev/mtd0, I get the
+following errors:
+Dec 9 10:48:09 webprint syslog.info klogd: MTD_open
+Dec 9 10:48:09 webprint syslog.info klogd: MTD_ioctl
+Dec 9 10:48:09 webprint syslog.info klogd: Invalid ioctl 5401
+(MEMGETINFO = 80204d01)
+Dec 9 10:48:09 webprint syslog.info klogd: MTD_write
+Dec 9 10:48:09 webprint syslog.warn klogd: ECC needs a full sector write
+(adr: 0 size 88)
+Dec 9 10:48:09 webprint syslog.info klogd: _DoC_WaitReady called for
+out-of-line wait
+Dec 9 10:48:09 webprint syslog.info klogd: _DoC_WaitReady called for
+out-of-line wait
+Dec 9 10:48:09 webprint syslog.info klogd: MTD_close
+
+I have tried serval times, and get the same errors.
+What did I miss?
+
+Thanks,
 Martin
-
-David Woodhouse wrote:
-
->On Tue, 2003-12-09 at 19:21 +0800, Martin Chan wrote:
->  
->
->>Dear all,
->>
->>I have successfully DFORMATted my MD2202-D64 today, and try to install a
->>jffs2 file system to it.
->>    
->>
->
->Assuming you have no bad blocks on your DiskOnChip, you need to erase it
->with 'eraseall' first.
->
->Really, you shouldn't be doing this before we properly sort out the bad
->block management on these devices.
->
->  
->
