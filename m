@@ -1,39 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Ee5s-0000Fe-00
-	for mtd-list@infradead.org; Fri, 05 Jan 2001 21:08:12 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14Ee5q-0000FY-00
-	for mtd@infradead.org; Fri, 05 Jan 2001 21:08:11 +0000
-Date: Fri, 5 Jan 2001 21:07:55 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-cc: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>,
-     <Russ.Dill@asu.edu>,  <mtd@infradead.org>
-Subject: Re: Supported flash memory 
-In-Reply-To: <Pine.LNX.4.30.0101051257060.535-100000@xanadu.home>
-Message-ID: <Pine.LNX.4.30.0101052106360.30717-100000@imladris.demon.co.uk>
+	id 14FHuK-0000BM-00
+	for mtd-list@infradead.org; Sun, 07 Jan 2001 15:38:56 +0000
+Received: from [62.47.35.159] (helo=nis.hofr.at)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14FHuI-0000BF-00
+	for mtd@infradead.org; Sun, 07 Jan 2001 15:38:54 +0000
+Received: (from root@localhost)
+	by nis.hofr.at (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) id IAA22014
+	for mtd@infradead.org; Sun, 7 Jan 2001 08:38:42 -0700
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Message-Id: <200101071538.IAA22014@nis.hofr.at>
+Subject: offtopic request
+To: mtd@infradead.org
+Date: Sun, 7 Jan 2001 08:38:41 -0700 (MST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 5 Jan 2001, Nicolas Pitre wrote:
 
-> This is required only for flash in command mode, so cfi_build_cmd() is the
-> best place to shuffle bits.  Everything is likely to be shuffled at compile
-> time and raw reads/writes aren't impacted.
+Hi !
 
-Also need it for reading query results. cpu_to_cfi16() et al are provided
-for this purpose. I suppose we should provide cpi_to_cfi8() and
-cfi8_to_cpu() too.
+ I have a question about ide-compatible flash-cards. 
+ The one is a KINMAX KCF008M which works fine and the second
+ is a SanDisk SDCFB , both officially 8MB..., the second card
+ can be mounted formated writen too but I can't get it to boot
+ from that card , I only get
 
--- 
-dwmw2
+01 01 01 01 01 01 ....
 
+ on the screen at boot-up. 
 
+ Now can anybody point out why one is bootable and the other not ? and how
+ can one tell which one will be bootable and which one will not ? Both are
+ detected in the BIOS without any problem (one as (CHS) 250/4/16 the other as
+ (CHS) 245/2/32).
+
+thx !
+hofrat
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
