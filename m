@@ -1,19 +1,20 @@
-Received: from [211.172.225.159] (helo=hartford.siteprotect.co.kr)
+Received: from vistatopology.com ([61.218.47.235])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15h3pX-00005A-00
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2001 07:49:03 +0100
-Received: (from kernelhacker@localhost)
-	by hartford.siteprotect.co.kr (8.9.3/8.9.3) id PAA30081
-	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2001 15:55:04 +0900
-Date: Wed, 12 Sep 2001 15:55:04 +0900
-From: Kim Jong-chan <kernelhacker@hartford.siteprotect.co.kr>
-To: linux-mtd@lists.infradead.org
-Subject: NAND flash driver x86 port problem
-Message-ID: <20010912155503.A26299@hartford.siteprotect.co.kr>
-Reply-To: zeppelin@kernelhacker.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 15h8M9-0000RT-00
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2001 12:39:02 +0100
+Message-ID: <009801c13b7f$e7756380$110aa8c0@vistatopology.com>
+From: "Alex Liao" <alex@vistatopology.com>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	"Chris Lesiak" <clesiak@licor.com>
+Cc: <linux-mtd@lists.infradead.org>,
+	"Siders, Keith" <keith_siders@toshibatv.com>
+References: <Pine.LNX.4.33.0109102046090.30849-100000@imladris.demon.co.uk>
+Subject: Re: Partition question...
+Date: Wed, 12 Sep 2001 19:41:47 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,39 +26,77 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Recent days, I have ported MTD NAND flash driver to x86, using GeodeGX board.
-Module loading is ok. But, when I try to access NAND device, The Kernel says 
-what follows and go away...
-Using ksymoops, I found that kernel dies in __wake_up.
-But I don't know actually which variable causes Null pointer dereferencing.
-If I remove all wake_up in nand.c intentionally, all works file. But, I think
-that's not a solution.  
-Tested kernel includes 
-2.4.9(vanilla) 
-2.4.2(redhat) + mtd snapshot(20010906)
-2.4.2_hhl20(hard hat linux)
-all above kernel shows the same phenomenon. 
+Hi,
+    I want to partition my MTD devices , it physical address :
+    CS0: 0x00000000 - 0x00800000
+    CS1: 0x10000000 - 0x10800000
+    How should I to haldle it ?
 
-Here goes oops message
+Thanks..
+----- Original Message -----
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "Chris Lesiak" <clesiak@licor.com>
+Cc: <linux-mtd@lists.infradead.org>; "Siders, Keith"
+<keith_siders@toshibatv.com>
+Sent: Tuesday, September 11, 2001 3:52 AM
+Subject: Re: Partition question...
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000    
- printing eip:                                                                  
-c010eeb3                                                                        
-*pde = 00000000                                                                 
-Oops: 0000                                                                      
-CPU:    0                                                                       
-EIP:    0010:[<c010eeb3>]                                                       
-EFLAGS: 00010013                                                                
-eax: c12eddf4   ebx: 00000000   ecx: 00000001   edx: c12eddf8                   
-esi: 00000001   edi: fffffff8   ebp: c6c6fefc   esp: c6c6fee0                   
-ds: 0018   es: 0018   ss: 0018                                                  
-Process mke2fs (pid: 570, stackpage=c6c6f000)                                   
-Stack: c12eddf8 00000001 00000282 00000003 00000001 00000001 c12edddc c028d7c8  
-       c881282d 00000000 c6c6e000 00000000 00000000 00000000 c6c6e000 00000000  
-       00000000 c76c5628 c76c5620 00000000 fffffff4 c01a9dba c12edd60 c6d37bc0  
-Call Trace: [<c881282d>] [<c01a9dba>] [<c0134c52>] [<c012e4a9>] [<c012d4e5>]    
-   [<c012d533>] [<c0106d23>]                                                    
-                                                                                
-Code: 8b 1b 8b 4f 04 8b 01 85 45 f0 74 54 31 c0 9c 5e fa c7 01 00               
-Kernel panic: Aiee, killing interrupt handler!                                  
-In interrupt handler - not syncing                 
+
+> On Mon, 10 Sep 2001, Chris Lesiak wrote:
+>
+> > I also have two banks mapped contiguously into virtual memory that I
+would
+> > like to be seen as one.
+>
+> Should be fine, as long as the two chips are identical. At the moment,
+> they need to be mapped with no space between them. However, aliases are
+> OK. So, for example, if you have
+>
+>  0xbe000000-0xbe7fffff Chip 1
+>  0xbe800000-0xbeffffff Chip 1 again
+>  0xbf000000-0xbf7fffff Chip 2
+>  0xbf800000-0xbfffffff Chip 2 again.
+>
+> That'll be fine. It'll detect the aliases in there. It will quit scanning
+> the region when it finds something that's not a flash chip, though, so if
+> those aliases _weren't_ there it'd break (and you could trivially fix it
+> the your 'map' driver by munging the addresses).
+>
+> > The problem is that RedBoot (and ECOS) seems to only support one flash
+> > logical device.  I wrote an ECOS flash driver that treated both banks
+> > as a single large logical device.  RedBoot stores its partition table
+> > in the last erase block of the device.  So in my case, a single
+> > partition table is store in the last erase block of the second bank
+> > but partitions the space of both banks.
+> >
+> > When I get to the linux, mtd seems to expect a partition table for each
+bank.
+> >
+> > What is the best way to reconcile the problem?
+>
+> Change your map driver to encompass the whole region, then it should
+> appear as a single MTD device and it'll look for a single partition table.
+>
+> > I have two 32-bit Flash devices (or so I'm told). Since this is a MIPS
+> > application the reset vector is 0xBFC00000. The Flash devices are
+> > 0xBE000000-BEFFFFFF and 0xBF000000-BFFFFFFF, so I have 4Megs at the
+> > top of the second device, with the first device and lower 12Megs of
+> > the second giving me 28Megs of linear Flash
+>
+> You should be able probe the two chips as a single device with no
+> problems, as I said above. But then you want two non-contiguous regions to
+> appear as a single partition.
+>
+> That's not handled by the existing partition code - but the partition code
+> is just a simple set of wrappers that add an offset and pass control
+> through to the methods of the underlying MTD device. It's simple enough to
+> hack up your own wrapper which does what you want.
+>
+> --
+> dwmw2
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
