@@ -1,17 +1,20 @@
-Received: from [213.86.99.236] (helo=[172.16.18.64])
-	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B9L5I-0004Es-8O
-	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 10:35:32 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <200404020849.i328nX468401@maple.icpdas.com>
-References: <200404020849.i328nX468401@maple.icpdas.com>
-Content-Type: text/plain
-Message-Id: <1080898530.1213.49.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 02 Apr 2004 10:35:31 +0100
+Received: from mail1.cray.com ([136.162.0.111])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B9Okn-0004re-B7
+	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 14:30:37 +0100
+Message-ID: <406D6AF3.9010808@cray.com>
+Date: Fri, 02 Apr 2004 07:30:27 -0600
+From: David Updegraff <dave@cray.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <Pine.LNX.4.44.0404011658150.6508-100000@kiire.colleduc.ee>
+	<1080830176.24117.1858.camel@hades.cambridge.redhat.com>
+	<406CAD57.40004@cray.com> <1080885452.17863.39.camel@imladris.demon.co.uk>
+In-Reply-To: <1080885452.17863.39.camel@imladris.demon.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Administrivia [Re: VIRUS IN YOUR MAIL]
+cc: linux-mtd@lists.infradead.org
+Subject: Re: patch for AMD am29dl800b
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have just reported this mail abuse to the postmaster responsible, and
-to the upstream abuse contact. 
 
-This wasn't a subscriber, but just a reminder to the rest of you -- if
-you have a virus checker which can be configured to send 'bounces' to
-the apparent sender of a mail to which it objects, ensure that
-misfeature is turned _OFF_. 
+> Please don't reply to unrelated threads. This isn't about bad blocks and
+> doesn't live with the message to which you replied.
 
-These things are all faking the sender now, and by sending a mail like
-that you're abusing an innocent third party and making yourself part of
-the _problem_ rather than part of the solution.
+Whoops.. me aculpa.
 
-This one was particularly broken and dangerous because it sent its
-'bounce' with a non-empty reverse-path, in violation of RFC2821 and
-common sense -- making it likely to cause mail loops, and meaning that
-it got past the filter which prevents bounces from getting through to
-the list. 
+> 
+> On Thu, 2004-04-01 at 18:01 -0600, David Updegraff wrote:
+> 
+>>Hi.
+>>
+>>I have a gadget with this amd chip on it.  Whose id and layout dfn. is 
+>>not in the jedec_probe tables.  Unfortuanately, they have _SIX_ (6) 
+>>erase regions.  Anyone know of a reason expanding the regions[] array to 
+>>6 is a bad idea?  Or why dealing with this chip in general is a bad idea?
+> 
+> 
+> Hmmm. And this chip really doesn't do CFI?
 
--- 
-dwmw2
+My attempts at that failed; and their PDF only says 'JEDEC compatible'.
+
+> I wonder how much space we take up with this table, and if we should put
+> the regions outside the table rather than inline ("ulong *regions").
+
+.. or invent a command-line syntax; since in embedded situations one 
+usually knows what one is looking for.. or has that alredy been 
+discussed and discarded?
+
+-dbu.
