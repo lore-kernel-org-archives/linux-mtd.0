@@ -1,20 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from cbshost-12-155-143-237.sbcox.net ([12.155.143.237]
+	helo=sb-lnx3.rinconnetworks.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VCks-0003hY-J0
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 17:04:18 +0100
-Date: Wed, 25 Jun 2003 18:04:35 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+	id 19VEsH-00044p-6I
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 19:20:05 +0100
+Date: Wed, 25 Jun 2003 11:20:20 -0700
+From: Paul van Gool <paul.vangool@rinconnetworks.com>
 To: Jasmine Strong <jasmine@regolith.co.uk>
-Message-ID: <20030625160435.GA1770@wohnheim.fh-wedel.de>
+Message-ID: <20030625182020.GA15879@rinconnetworks.com>
 References: <20030625154815.GA15437@rinconnetworks.com>
 	<0985322B-A725-11D7-A51A-000393AD6294@regolith.co.uk>
+	<20030625155846.GA15628@rinconnetworks.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0985322B-A725-11D7-A51A-000393AD6294@regolith.co.uk>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20030625155846.GA15628@rinconnetworks.com>
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
 Subject: Re: No space left on almost empty JFFS2 filesystem
+Reply-To: paul.vangool@rinconnetworks.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 25 June 2003 16:52:34 +0100, Jasmine Strong wrote:
-> On Wednesday, Jun 25, 2003, at 16:48 Europe/London, Paul van Gool wrote:
-> 
-> >I have created an small and almost empty JFFS2 filesystem and have put 
-> >it
-> >on my flash.
-> 
-> JFFS2 filesystems require a certain number of erase blocks reserved for
-> garbage collection before you can write anything to them.
-> 
-> 128k is only one erase block for most CFI flashes and is thus far too 
-> small
-> to have the five(?) free blocks that are required.  There was talk of 
-> proving
-> the GC for two free blocks, but either way, one block is not (and never 
-> will
-> be) enough.
+So I tried:
 
-Two blocks will be tough, but three seem possible for NOR flash.  If
-you care about it, there was some discussion a couple of month back,
-even an initial patch.  But then priorities shifted, so that is the
-latest status.
+mkfs.jffs2 --pad=0x80000 --little-endian --squash -e 0x20000 -d /home/vangool/jffs -o jffs.img
 
-Jörn
+thinking that that would give me 3 erase blocks but I still get the
+same error. Am I doing something wrong?
+
+Thanks.
+
+Paul
+
+
+On Wed, Jun 25, 2003 at 08:58:46AM -0700, Paul van Gool wrote:
+> On Wed, Jun 25, 2003 at 04:52:34PM +0100, Jasmine Strong wrote:
+> > JFFS2 filesystems require a certain number of erase blocks reserved for
+> > garbage collection before you can write anything to them.
+> I see. 1 Block will indeed never be enough then. Shows my ignorance ;-).
+> 
+> Thanks.
+> 
+> Paul 
+> -- 
+> Paul van Gool                                               Rincon Networks
+> paul.vangool@rinconnetworks.com                              (805)-705-1442
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 -- 
-Ninety percent of everything is crap.
--- Sturgeon's Law
+Paul van Gool                                               Rincon Networks
+paul.vangool@rinconnetworks.com                              (805)-705-1442
