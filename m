@@ -1,18 +1,19 @@
-Received: from mailout02.ims-firmen.de ([213.174.32.97])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C0LXz-00068D-Mv
-	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 10:48:18 -0400
-From: "Jochen Karrer" <j.karrer@lightmaze.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Date: Thu, 26 Aug 2004 16:48:12 +0200
-Message-ID: <MKELJOLMMOHJCMIPKLJKOEMOCAAA.j.karrer@lightmaze.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1093529549.3777.1767.camel@imladris.demon.co.uk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
+	id 1C0LcB-0006Hk-31
+	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 10:52:38 -0400
+Received: from cc ([69.70.1.242]) by VL-MO-MR011.ip.videotron.ca
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	with SMTP id <0I3200H6S6MG4K@VL-MO-MR011.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 10:51:53 -0400 (EDT)
+Date: Thu, 26 Aug 2004 10:51:47 -0400
+From: CG <christian@mcdi.com>
+To: linux-mtd@lists.infradead.org
+Message-id: <004201c48b7c$364abdd0$6b01a8c0@cc>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: MTD utils
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-08-26 at 15:11 +0200, Jochen Karrer wrote:
+Hello,
 
-Hi,
-> > jffs2 did not work in linux-2.6.8.1 because single word writes at the
-end
-> > of a buffer write are done with the wrong address:
+I have a problem to compile MTD utilities (mkfs.jffs2, erase, eraseall,
+etc.) .  The processor that I use is the AT91RM9200 from Atmel.  Is there
+somebody who's using these utilities?  I'll appreciate to have a feedback to
+know to compile these tools for my platform.
 
-> Thanks. If this is needed though -- don't we _also_ need the same fix a
-> few lines up?
 
-Its not required because for the first write "ofs + chipnum <<
-cfi->chipshift"
-should be the same like "to". "ofs" is not yet incremented. But may its
-better
-style.
+I modified the makefile to add the CROSS = arm-linux-
 
-Jochen
+I got these errors :
+arm-linux-gcc -g -o ftl_format ftl_format.o
+/usr/arm-linux/bin/ld: cannot open crt1.o: No such file or directory
+collect2: ls returned 1 exit status
+make: *** [ftl_format] Error 1
+
+Best regards
+
+Christian
