@@ -1,20 +1,17 @@
-Received: from creative.actrix.co.nz ([203.96.26.135])
+Received: from [208.190.191.184] (helo=sekhmet.ad.newisys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VeIW-0002o6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 19:52:04 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: "Alex Lennon" <ajlennon@arcom.co.uk>
-Subject: Re: FW: [OT] Cf Card vs DiskOnChip -->CF wear levelling
-Date: Wed, 30 Jan 2002 08:57:58 +1300
-Cc: "MTD for Linux" <linux-mtd@lists.infradead.org>
-References: <GEEAIDAKDGCGOMMOLAHMKEONCGAA.ajlennon@arcom.co.uk>
-In-Reply-To: <GEEAIDAKDGCGOMMOLAHMKEONCGAA.ajlennon@arcom.co.uk>
+	id 16Vi9l-00034D-00
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 23:59:17 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020129200142.4CAF11061@creative.actrix.co.nz>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Problems with mounting a JFFS2 file system image
+Date: Tue, 29 Jan 2002 18:09:49 -0600
+Message-ID: <D3A72C5007329A4F991C0DD87202259F096A41@sekhmet.ad.newisys.com>
+From: "Navin Boppuri" <navin.boppuri@newisys.com>
+To: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,68 +23,71 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I did read this some time back, I believe on the Sandisk www before it got 
-restructured (Hey, that happy looking face on their home page sure looks like 
-she's getting wear levelling).
+Hello all,
 
-I can no longer find the Sandisk reference, so I can't really support the 
-assertion any more. If I recall correctly, they did wear levelling on the 
-full-size cards but not on CF. They use (or did use) different controllers in 
-these cards. Here is something I found on google 
-http://www.technoir.nu/hplx/hplx-l/0006/msg00714.html
+I have been able to succesfully partition my flash and mount a jffs2 =
+file system on the same. I am able to copy, create, read and write files =
+onto my new file system.=20
 
-I guess it also comes down to your interpretation of wear levelling.  
-SmartMedia, for instance, does not store a count of the number of times a 
-block was programmed and does not do explicite wear levelling. However the 
-block allocation strategy will tend to provide some sort of wear levelling 
-(consistent with the intrinsic pool management blaah you mention below). I 
-hunch therefore that CF uses the same strategy. 
+Now, I wanted to create a file system on my host machine using the =
+mkfs.jffs2 utility and mount the file system onto my flash partition on =
+my embedded device. But I havent been successful in doing so. I followed =
+the JFFS2 README and this is what I did:
 
-OK so how does this translate into system reliability? Well my take on this 
-is as follows:
-* So what? NAND is expected to fail and NAND block drivers/file systems 
-handle block failure. So if you wear out a block, it just gets mapped out. 
-THis, combined with the intrinsic blaah, is probably good enough.
-* CF is far more likely to be corrupted by removing half-way through a write 
-or being de-powered while a write is active. 
+	mkfs.jffs -d tmp_fs -o jffs2.image   ( tmp_fs is a directory with all =
+my files in it)
 
-I must also apologize for saying that a FlashDrive is a wrapped up CF card. I 
-actually believe it is architectually similar to a full-size PCMCIA ATA card. 
-They look the same to the PCMCIA/IDE bus, but the full-size card provides 
-more space to use a better controller. This makes them more reliable.
+	erase /dev/mtd0 0 8 ( I have 8 sectors to erase )
+		Worked like a charm. Verified that the flash was completely erased.
+
+	cp jffs2.image /dev/mtd0	( No problem here. I have it running in DEBUG =
+mode. )
+
+	insmod jffs2.o 			( No problem here. I get all the messages that I =
+expect)
+
+	mount -t jffs2 /dev/mtdblock0 /mnt/jffs2
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: =
+0x8519 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004: =
+0x3100 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008: =
+0x1dd9 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000000c: =
+0x0100 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000014: =
+0x0200 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018: =
+0x0202 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c: =
+0x0908 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020: =
+0x77c0 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024: =
+0x0b76 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000028: =
+0x7465 in
+stead
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2 =
+nodes
+mount: wrong fs type, bad option, bad superblock on /dev/mtdblock0,
+       or too many mounted file systems
 
 
+I dont see any other special instructions on doing this. What am I =
+missing here? What am I doing wrong?=20
 
--- CHarles
-
-
-
-On Tue, 29 Jan 2002 07:36, Alex Lennon wrote:
-> Hi Charles,
->
-> >>move stuff around and level out the wearing.  Some devices do not apply
->
-> wear
->
-> >>levelling (eg. Compact Flash and SmartMedia). Some do (eg. full-size
->
-> PCMCIA
->
-> >>cards, DOC, JFFS).
->
-> The lack of wear-levelling on CF comes as a surprise - could you comment on
-> whether the various manufacturers, such as Sandisk are making this
-> assertion?
->
-> The closest we have seen is in the CF Sandisk spec. where they state they
-> support wear levelling - but that this '.. is an intrinsic part of the
-> Erase Pooling functionality of NAND memory...', '...if necessary, CF cards
-> will rewrite data from a defective sector to a good sector...'.
->
-> With this type of statement it certainly doesn't appear that our flash
-> lifetime calculations for a 'true' wear-levelling implementation would
-> hold for CF.
->
-> Best,
->
-> -Alex
+Thank you,
+Navin Boppuri.
