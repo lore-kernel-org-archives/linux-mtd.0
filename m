@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 160hfF-00063z-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Nov 2001 11:11:37 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BE66F9A.327AC763@emcraft.ru> 
-References: <3BE66F9A.327AC763@emcraft.ru>  <3BE65965.F5C16E70@emcraft.ru> <29072.1004953009@redhat.com> 
-To: Boris Bulkin <boris@emcraft.ru>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DOC2000 support for a custom PPC750 board 
+	id 160mNG-0006Qf-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Nov 2001 16:13:23 +0000
+Date: Mon, 5 Nov 2001 17:22:38 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: linux-mtd@lists.infradead.org
+Cc: Eric <ebrower@usa.net>
+Subject: MTD partitioning rewrite finished
+Message-ID: <20011105172238.A10542@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Nov 2001 11:20:58 +0000
-Message-ID: <10816.1004959258@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +23,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hi!
 
-boris@emcraft.ru said:
->  One more question: from the M-Sys documents I understand there can be
-> two types of partitions on a DOC device, binary and NFTL. Binary is
-> supposed to store an OS image, and NFTL be used as a filesystem. Are
-> there any MTD tools for creating and reading/writing binary DOC
-> partitions? Sorry if it sonds silly. I'm not very familiar with DOC
-> and MTD.
+The code has matured enough on my machine that normal people might try
+it, too. You can download a patch against 2.4.13 now, I don't have to
+scare away normal users anymore. :)
+I also truncated the patch into several smaller ones as the mapping
+stuff and the partition parser are optional. 40k is still plenty.
 
-By 'binary partitions' they presumably mean data stored directly on the 
-flash chips. NFTL is a kind of pseudo-filesystem which is used to emulate a 
-block device - you then put normal filesystems on top of that emulated 
-block device. 
+Here are the links for the web page and the direct download:
+http://wh.fh-wedel.de/~joern/software/kernel/
+http://wh.fh-wedel.de/~joern/software/kernel/mtd_je.patch.2.4.13
 
-Yes, we have programs which will write data to the raw flash. You just open 
-/dev/mtd0, use the MEMERASE ioctl for the region you want to overwrite 
-and then write to it. The doc_loadbios program was used for putting Grub in 
-place of the normal firmware. 
+Jörn
 
---
-dwmw2
+PS: Eric, I cc'd you as you said you had a non-academic use for this
+stuff. It would be nice to get some feedback. "works" is enough,
+"breaks at this point" is better, "this code looks odd" would really
+help me to improve the code and my style.
+
+-- 
+Beware of bugs in the above code; I have only proved it correct,
+but not tried it.
+  -- Donald Knuth
