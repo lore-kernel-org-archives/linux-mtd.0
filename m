@@ -1,40 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139nuf-0002H9-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 13:04:21 +0100
-Received: from ncc4.infomail.es ([195.235.39.6] helo=infomail.es)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 139nuV-0002H3-00
-	for mtd@infradead.org; Wed, 05 Jul 2000 13:04:20 +0100
-Date: Wed, 05 Jul 2000 14:01:09 CEST
-From: Rodrigo Moya <rmoya@tsai.es>
-To: mtd@infradead.org
-Subject: plilo problems
-Reply-To: rmoya@tsai.es
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Message-Id: <E139nuV-0002H3-00@infradead.org>
+	id 139oxj-0002RY-00
+	for mtd-list@infradead.org; Wed, 05 Jul 2000 14:11:35 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 139oxh-0002RS-00
+	for mtd@infradead.org; Wed, 05 Jul 2000 14:11:33 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <00070511345100.24168@frumious.unidec.co.uk> 
+References: <00070511345100.24168@frumious.unidec.co.uk> 
+To: john@frumious.unidec.co.uk
+Cc: mtd@infradead.org
+Subject: Re: doc2000 geometry problem? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 05 Jul 2000 14:11:21 +0100
+Message-ID: <10462.962802681@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Hi all!
+john@frumious.unidec.co.uk said:
+>  The nftldump, erase and nftl_format utils all return an error (-1,
+> helpful that) on the ioctl(blah,MEMGETINFO,&blah) call,
 
-I'm in the last step before successfully booting from the DiskOnChip. In
-this step, as mentioned in the M-Systems docs, I run the patched lilo to
-then update the firmware from DOS. But, when running:
+You _are_ using them on the flash device /dev/mtd0 aren't you, not on the 
+nftl device /dev/nftla ?
 
-/mnt/doc/sbin/plilo -C /mnt/doc/etc/lilo.conf -i /mnt/doc/boot/boot.b -m
-/mnt/doc/boot/map
+You shouldn't need to do it though - can you not mount the /dev/nftla1 
+partition? Or reformat it to ext2 with 'mkfs.ext2 /dev/nftla1' ?
 
-I get the following message:
+--
+dwmw2
 
-First boot sector doesn't have a valid LILO signature
-
-I'm using the plilo and boot.b files as shipped with the M-Systems drivers.
-
-Thanks very much in advance
 
 
 
