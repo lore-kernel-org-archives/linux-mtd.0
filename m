@@ -1,23 +1,20 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Zu5A-0005Un-Hr
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 16:08:40 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1057652512.28965.107.camel@imladris.demon.co.uk>
-References: <200307042232.43815.joshua@joshuawise.com>
-	 <200307052157.06325.joshua@joshuawise.com>
-	 <m3el142yly.fsf@maxwell.lnxi.com>
-	 <200307052215.35596.joshua@joshuawise.com>
-	 <1057589533.1135.8572.camel@tubarao.lnxi.com>
-	 <1057652512.28965.107.camel@imladris.demon.co.uk>
-Message-Id: <1057676896.1251.8626.camel@tubarao.lnxi.com>
-Mime-Version: 1.0
-Date: 08 Jul 2003 09:08:16 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-339/b7bPR8DTcLwtFXIF"
-cc: linux-mtd@lists.infradead.org
-Subject: Re: jedec_probe.c
+Received: from hardrain.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19a1jK-0006Ou-Pm
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Jul 2003 00:18:39 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "gjx" <marchguo@yahoo.com.cn>,
+	linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
+Date: Wed, 9 Jul 2003 11:21:53 +1200
+References: <E19ZLo5-0000XC-Kw@pentafluge.infradead.org>
+In-Reply-To: <E19ZLo5-0000XC-Kw@pentafluge.infradead.org>
+MIME-Version: 1.0
+Message-Id: <20030708231846.7C10B4431@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: nand flash driver
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Monday 07 July 2003 14:33, gjx wrote:
+> hi,linux-mtd
+>
+> 	 The hardware designer connects the control pins(CLE、ALE、R/B) of nand
+> flash to the data bus, The CE、WE、RE pins to corresponding pin of CPU.
+> Nedd I get the address of control pins? separate the data from data bus?
+> How to implement controlling of nand.   Please give me some advice, thanks!
 
---=-339/b7bPR8DTcLwtFXIF
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+R/B is an open collector that is driven from the NAND. You should not be 
+connecting this to the address bus. You can just leave this unconnected (R/B 
+detection not available) or connect it to a GPIO.
 
-On Tue, 2003-07-08 at 02:21, David Woodhouse wrote:
-> On Mon, 2003-07-07 at 15:52, Thayne Harbaugh wrote:
-> > Having a generic, forced configuration would be very useful for those
-> > that already know what they have in the system.  It would also fix case=
-s
-> > where hardware is impossible to reliably probe.  This type of work woul=
-d
-> > be very much appreciated.
->=20
-> If we do this, it needs to be easy to switch back to the generic probe
-> code.
+I think most people connect CLE and ALE to GPIO pins, but some application 
+notes describe driving these via the address bus. you should then be able to 
+drive the lines the way you want by accessing the corresponding addresses.
 
-The forced configuration would be an override.  I've played around and
-have some modules that take parameters that override usual behavior.=20
-I'm not sure if I like this or if I would rather have a separate module
-(maybe forced_probe) that could be used instead of gen_probe and
-jedec_probe (or even cfi_probe).
-
->  Many people don't really know how their board is wired up, or are
-> given incorrect information. I have customers who _insist_ their boot
-> flash is wired up as 32 bits, and file bugs against the working kernel
-> because of the comments and board setup for 16 bit flash. Not because
-> they claim it doesn't work, but just because they're comparing with
-> their docs.
-
-Makes perfect sense.  Most people would use the already established
-probing mechanisms.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-339/b7bPR8DTcLwtFXIF
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA/Ct5ffsBPTKE6HMkRAuSbAJ4i6jpm1YLsbSxMuDlRr0hBoK2rqwCcC4jj
-ORxWgsHwo4ZnsiuK+LWSeqM=
-=y4tb
------END PGP SIGNATURE-----
-
---=-339/b7bPR8DTcLwtFXIF--
+-- CHarles
