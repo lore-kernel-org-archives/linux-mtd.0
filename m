@@ -1,87 +1,72 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 147zvZ-0003a2-00
-	for mtd-list@infradead.org; Mon, 18 Dec 2000 13:02:05 +0000
-Received: from mx0.i-way.net.uk ([212.49.192.2] ident=root)
+	id 147zwz-0003aY-00
+	for mtd-list@infradead.org; Mon, 18 Dec 2000 13:03:33 +0000
+Received: from [195.224.55.237] (helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 147zvW-0003Zv-00
-	for mtd@infradead.org; Mon, 18 Dec 2000 13:02:03 +0000
-Received: from m4exch.m4data.co.uk (host2.m4data.co.uk [212.49.209.214] (may be forged))
-	by mx0.i-way.net.uk (8.10.2/8.10.2) with ESMTP id eBIDAh820870
-	for <mtd@infradead.org>; Mon, 18 Dec 2000 13:10:43 GMT
-Message-ID: <52AF3CB987C7D41183CD0090271F67C3184C@m4eng.m4data.co.uk>
-From: Simon Munton <Simon.Munton@m4data.co.uk>
-To: mtd@infradead.org
-Subject: RE: JFFS: deleted files still appear in directory
-Date: Mon, 18 Dec 2000 13:01:53 -0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 147zwy-0003aR-00
+	for mtd@infradead.org; Mon, 18 Dec 2000 13:03:32 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3A3E07C4.22A3F127@arcom.co.uk> 
+References: <3A3E07C4.22A3F127@arcom.co.uk> 
+To: David Vrabel <dvrabel@arcom.co.uk>
+Cc: mtd@infradead.org, jffs-dev@axis.com
+Subject: Re: JFFS: rmdir wierdness 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 18 Dec 2000 13:02:56 +0000
+Message-ID: <23862.977144576@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-There's still a problem with the following sequence of commands:
 
-# touch foo
-# touch bar
-# mv foo bar
-# rm bar
-rm: cannot unlink `bar': Input/output error
-
-JFFS debug output:
-jffs_create(): dir: 0xc0f20144, name: "foo"
-jffs_write_node(): filename = "foo", ino = 2, total_size = 64
-jffs_fmalloc(): fmc = 0xc0f873f0, size = 64, node = 0xc000b720
-jffs_insert_node(): ino = 2, version = 1, name = "foo", deleted = 0
-thread_should_wake(): free=8257472, dirty=0, blocksize=131072.
-jffs_create(): dir: 0xc0f20144, name: "bar"
-jffs_write_node(): filename = "bar", ino = 3, total_size = 64
-jffs_fmalloc(): fmc = 0xc0f873f0, size = 64, node = 0xc000b630
-jffs_insert_node(): ino = 3, version = 1, name = "bar", deleted = 0
-thread_should_wake(): free=8257408, dirty=0, blocksize=131072.
-***jffs_rename()
-jffs_rename(): old_dir: 0xc0f20144, old name: 0xc0f1e760, new_dir:
-0xc0f20144, new name: 0xc0f1e860
-jffs_write_node(): filename = "bar", ino = 2, total_size = 68
-jffs_fmalloc(): fmc = 0xc0f873f0, size = 68, node = 0xc000b770
-jffs_write_node(): setting version of foo to 2
-***jffs_remove(): file = "bar", ino = 3
-jffs_write_node(): filename = "", ino = 3, total_size = 60
-jffs_fmalloc(): fmc = 0xc0f873f0, size = 60, node = 0xc000b590
-jffs_write_node(): setting version of bar to 2
-jffs_insert_node(): ino = 3, version = 2, name = "", deleted = 1
-thread_should_wake(): free=8257280, dirty=0, blocksize=131072.
-jffs_insert_node(): ino = 2, version = 2, name = "bar", deleted = 0
-jffs_remove_redundant_nodes(): Removing node: ino: 2, version: 1, mod_type:
-3
-jffs_fmfree(): node->ino = 2, node->version = 1
-thread_should_wake(): free=8257280, dirty=64, blocksize=131072.
-***jffs_remove(): file = "bar", ino = 2
-jffs_remove(): wrong inodes
-
-
-Simon
-
-========================================================
-Simon Munton	simonm@m4data.co.uk
-M4 Data Ltd	Tel: 44-1749-683800
-Mendip Court, Bath Rd, Wells	Fax: 44-1749-673928
-Somerset, BA5 3DG, England
-
-
-> -----Original Message-----
-> From: David Vrabel [mailto:dvrabel@arcom.co.uk]
-> Sent: 18 December 2000 12:08 pm
-> To: David Woodhouse
-> Cc: mtd@infradead.org
-> Subject: Re: JFFS: deleted files still appear in directory
+dvrabel@arcom.co.uk said:
+> # mkdir a
+> # ls
+> a
+> # rmdir a
+> # ls
+> # mkdir a
+> mkdir: a: File exists
 > 
+> Also
 > 
-> Hi,
+> # mkdir b
+> # touch b/a
+> # rm b/a
+> # rmdir b
+> rmdir: b: Directory not empty
 > 
-> I think this problem is fixed by this patch.
-> 
-> David Vrabel.
+> rmdir() thinks `b' still has children (I think).
+
+More problems with the deletion code since I did the use counts.
+Hmmm. This was sort of why I didn't want to commit it immediately, till I'd 
+had time to do some sanity checks on it.
+
+Try this:
+
+Index: intrep.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs/intrep.c,v
+retrieving revision 1.84
+diff -u -r1.84 intrep.c
+--- intrep.c	2000/12/18 13:00:23	1.84
++++ intrep.c	2000/12/18 13:02:30
+@@ -1387,7 +1387,7 @@
+ 	D3(printk("jffs_find_child()\n"));
+ 
+ 	for (f = dir->children; f; f = f->sibling_next) {
+-		if (f->name
++		if (!f->deleted && f->name
+ 		    && !strncmp(f->name, name, len)
+ 		    && f->name[len] == '\0') {
+ 			break;
+
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
