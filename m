@@ -1,15 +1,14 @@
-Received: from dedekind (helo=localhost)
-	by phoenix.infradead.org with local-esmtp (Exim 4.43 #1 (Red Hat
-	Linux)) id 1Cp429-0004eO-0g
-	for linux-mtd@lists.infradead.org; Thu, 13 Jan 2005 12:25:15 +0000
-Date: Thu, 13 Jan 2005 12:25:00 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: MTD List <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Subject: CRC on Read-Only partition
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
+Content-Type: text/plain
+Date: Thu, 13 Jan 2005 12:31:40 +0000
+Message-Id: <1105619501.26551.163.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: CRC on Read-Only partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,16 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-But if I formulate the question as:
-we have device with RO partition. It is Read-Only always.
+On Thu, 2005-01-13 at 12:25 +0000, Artem B. Bityuckiy wrote:
+> The blocks from this partition are not ever erased. They are once writte 
+> when the device was shipped, checked.
 
-Does NAND technology imply that this partition may become bad, and it is 
-normal?
+I don't care. You show me formal proof that there cannot ever be an
+error, or we check the CRC anyway :)
 
-The blocks from this partition are not ever erased. They are once writte 
-when the device was shipped, checked.
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+dwmw2
