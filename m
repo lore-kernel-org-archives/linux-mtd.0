@@ -1,16 +1,18 @@
-Received: from host155.209-113-146.oem.net ([209.113.146.155] helo=mail.netx4.com)
+Received: from snail.directvbroadband.net ([216.227.60.197])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14yIWH-0007oy-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 May 2001 20:24:11 +0100
-Message-ID: <3AFC3CD1.1AEBE5EF@mvista.com>
-Date: Fri, 11 May 2001 15:26:09 -0400
-From: "George G. Davis" <davis_g@mvista.com>
-MIME-Version: 1.0
+	id 14yL2f-0003CZ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 May 2001 23:05:47 +0100
+Received: from snail.directvbroadband.net (snail.directvbroadband.net [216.227.60.197])
+	by snail.directvbroadband.net (Build 101 8.9.3/NT-8.9.3) with SMTP id PAA06989
+	for <linux-mtd@lists.infradead.org>; Fri, 11 May 2001 15:25:17 -0700
+Message-ID: <617933180D08D311AB500090273F1F96016767EB@storm.corp.directvbroadband.net>
+From: "Fry, Dan" <dfry@bb.directv.com>
 To: linux-mtd@lists.infradead.org
-CC: "George G. Davis" <davis_g@mvista.com>
-Subject: Does MTD include support for STM M58LW064?
-Content-Type: multipart/mixed;
- boundary="------------7B067BC95D4DE92042A27C77"
+Subject: Mips compiler controversy
+Date: Fri, 11 May 2001 15:09:20 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,38 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------7B067BC95D4DE92042A27C77
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hi list,
 
-Greetings,
+	Mips doesn't seem to compile the JFFS2 code as is.  In write.c
+within function jffs2_new_inode there is an undefined reference to
+new_inode().  I've greped through the kernel source and can't find a
+new_inode().  Is this function responsible for anything more than 
+this:
+	/* some kind of kmalloc for an inode */
+	inode->sb=sb; 
 
-I've reviewed the latest code and believe the answer is no.
+I replaced the new_inode call with the above, and got the code to compile.
+I can mount the chips, however any witting or deletion causes:
 
-But I'll ask the question anyway in case I missed it: does
-MTD include support for the ST Microelectronics M58LW064
-flash device? This device supports CFI commands. But
-I don't see any support for it in the current MTD CVS
-sources.
+Unable to handle kernel paging request at virtual address 00000004, epc ==
+80150
+Oops in fault.c do_page_fault, line 159
 
-TIA and appologies if this has been asked already!  : )
+And then the system locks up after spitting out tons of hex. Funny thing is
+that after reboot the file or directory I created show up but trying to
+access them causes the kernel lockup again.
 
--- 
-Regards,
-George
---------------7B067BC95D4DE92042A27C77
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="davis_g.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for George G. Davis
-Content-Disposition: attachment;
- filename="davis_g.vcf"
+Any ideas??
 
-YmVnaW46dmNhcmQgCm46RGF2aXM7R2VvcmdlCnRlbDt3b3JrOjYwMy84ODAtMTQxNAp4LW1v
-emlsbGEtaHRtbDpGQUxTRQp1cmw6aHR0cDovL3d3dy5tdmlzdGEuY29tCm9yZzpNb250YVZp
-c3RhIFNvZnR3YXJlLCBJbmMuCmFkcjo7OzQ2IFBpbmUgU3RyZWV0IEV4dGVuc2lvbjtOYXNo
-dWE7Tkg7MDMwNjA7VVNBCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0OmRhdmlzX2dAbXZp
-c3RhLmNvbQp0aXRsZTpTb2Z0d2FyZSBFbmdpbmVlcgp4LW1vemlsbGEtY3B0OjstNTM3Ngpm
-bjpHZW9yZ2UgRy4gRGF2aXMKZW5kOnZjYXJkCg==
---------------7B067BC95D4DE92042A27C77--
+Cheers,
+	- Dan
