@@ -1,22 +1,16 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0lAN-0003u1-I6
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 13:41:52 -0500
-To: =?iso-8859-1?q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-References: <20050214175251.GA28755@wohnheim.fh-wedel.de>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 14 Feb 2005 11:41:22 -0700
-In-Reply-To: <20050214175251.GA28755@wohnheim.fh-wedel.de>
-Message-ID: <m3fyzzx9v1.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: joern@wh.fh-wedel.de, Amit Gud <amitg@calsoftinc.com>, gud@eth.net,
-	linux-mtd@lists.infradead.org, kernel-janitors@lists.osdl.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 8/18] drivers/mtd/ remove pci_find_{device, subsys}
+From: David Woodhouse <dwmw2@infradead.org>
+To: tglx@linutronix.de
+In-Reply-To: <1108404250.16612.327.camel@tglx.tec.linutronix.de>
+References: <4210DB19.9000808@ateme.fr> <4210DEDB.DD35E2DE@st.com>
+	<4210E6C3.9030208@ateme.fr>
+	<1108404250.16612.327.camel@tglx.tec.linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 15 Feb 2005 00:03:06 +0000
+Message-Id: <1108425786.22597.6.camel@baythorne.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2_get_inode_nodes(): Data CRC failed on NAND device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=F6rn Engel <joern@wohnheim.fh-wedel.de> writes:
+On Mon, 2005-02-14 at 19:04 +0100, Thomas Gleixner wrote:
+> On Mon, 2005-02-14 at 18:58 +0100, Frédéric Janot wrote:
+> > >JFFS2 on NAND flash uses a page buffer. It is flushed to the flash when
+> > >it is full, or when you do fsync, sync or umount.
+> > >
+> > Does that mean that I have to call fsync each time after fclose a file ?
 
-> Looks fairly simple, but I've never dealt with pci_find_device(), so
-> my voice doesn't count.
+Yes. It's precisely the same as with other file systems. If you write to
+a file, close it and then lose power immediately, your data may be lost.
+It's not guaranteed to be on the medium until you sync.
 
-When switching from pci_find_device to pci_get_device
-the corresponding call to pci_dev_put() needs to be added.
+> > Even if I do not edit some files, I get this kind of error. Does that 
+> > mean something (jffs2 itself or other) write some data to the flash all 
+> > the time ?
+> 
+> No, jffs2 does not write data just for fun. There is some application,
+> script, daemon writing/modifying file(s).
 
-In addition we need an entry in compat.h
+Or garbage collection, but in that case no data are lost. It was just
+copying from one part of the flash to another, and the old copy will
+still be intact.
 
-Beyond that ich2rom.c should just be deleted.  It was renamed
-ichxrom.c a while ago.
-
-Eric
+-- 
+dwmw2
