@@ -1,18 +1,18 @@
 Received: from thorgal.et.tudelft.nl ([130.161.40.91])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aw4Zj-00019c-LA
-	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 19:20:07 +0000
+	id 1Aw4pH-0001I4-3H
+	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 19:36:11 +0000
 Mime-Version: 1.0
-Message-Id: <a06002002bc62a398281f@[130.161.115.44]>
-In-Reply-To: <1077731948.7826.792.camel@hades.cambridge.redhat.com>
+Message-Id: <a06002005bc62a78212ec@[130.161.115.44]>
+In-Reply-To: <Pine.LNX.4.58.0402251827300.29757@hex>
 References: <a06002001bc6281361918@[130.161.115.44]>
  <1077731948.7826.792.camel@hades.cambridge.redhat.com>
-Date: Wed, 25 Feb 2004 20:19:54 +0100
-To: David Woodhouse <dwmw2@infradead.org>
+ <Pine.LNX.4.58.0402251827300.29757@hex>
+Date: Wed, 25 Feb 2004 20:35:51 +0100
+To: jasmine@linuxgrrls.org
 From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
 Content-Type: text/plain; charset="us-ascii" ; format="flowed"
 cc: linux-mtd@lists.infradead.org
-cc: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
 Subject: Re: Handling multiple NAND chips -- take 2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,51 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At 5:59 PM +0000 25/2/04, David Woodhouse wrote:
->Join us on IRC and tglx can heckle you too :)
-
-Time to install an IRC client, I suppose.
-
-<snip>
-
->  > * All detected devices are concatenated and represented as one large
->>  linear array of pages
+At 6:29 PM +0000 25/2/04, jasmine@linuxgrrls.org wrote:
+>  > I think that's acceptable. It's _definitely_ OK on NOR. On NAND we may
+>>  be sharing some control lines between different chips, but I still think
+>>  it's OK and we can deal with that in the board-level driver.
 >
->Look at the DiskOnChip Millennium Plus address-mangling code and
->comments above DoC_GetDataOffset().
+>What if you have a board with an onboard NAND (for the OS) and a
+>SmartMedia slot?  That's surprisingly common.  It's very difficult to buy
+>consistent Smartmedia cards, too-  they often have different parts in
+>them during a run.
+
+That's true, but would you want the SmartMedia card to be part of the 
+linear array ? What I'm doing here is to do for NAND devices what the 
+linear (or possibly RAID0) driver does for disks. In both cases is 
+the array size/configuration fixed on creation, in neither case will 
+you have anything useful/usable when one of the components goes away.
+
+It could well make sense to treat the (hot-plugged) SM card as a 
+separate entity, with its own partitions and all. This, however, is 
+not what I'm trying to achieve. What I want is the reverse, deal with 
+multiple NAND chips as if they were one, larger, NAND device. I can't 
+see how hot-plugging et al would be useful in such a scenario (but 
+I'm open to any and all demonstrations of the narrow-mindedness of 
+such an approach).
+
+>  > > chip = global_page_addr / pages_per_chip;
+>>  > page = global_page_addr % pages_per_chip;
+>>
+>>  I think so. I prefer it to the other.
 >
->If we could support that it would perhaps be useful.
+>divide not shift?
 
-I'll have a look at it, thanks.
-
->  > * All devices are soldered to a motherboard. We are not interested in
->>  taking devices out of the array.
->
->Not sure. Look at how the new DiskOnChip driver has to screw around
->before the chip probing, so it can pretend this is true. T'would be nice
->to deal with a sparse array, at least.
-
-Maybe. I don't have much of a problem of returning -EIO (or another 
-more applicable error code) when higher layers access a non-present 
-device. Then again, I don't see a useful response in such a scenario. 
-What is a file system to do when part of the underlying (block) 
-device is imply Not There ?
-
-I'd very much like to keep this simplification. It makes the code 
-much simpler: you can just rely on the fact that the array consists 
-of all devices that were found during a probe. No config options 
-needed, no 'raid blocks' on the NANDs.
-
->And if you mean hotplug -- think SmartMedia.
-
-I'd rather not, thanks. Seriously though, I don't see many useful 
-applications for a hot-swappable linear array.
-
-Thanks,
+I'd gladly shift if anyone can guarantee that pages_per_chip is a 
+power of two, for all present, past and future NAND devices. 
+Seriously, I don't know NAND well enough to know if this is true or 
+not.
 
 JDB.
 -- 
-It was then I realized how dire my medical situation was.  Here I was,
-a network admin, unable to leave, and here was someone with a broken
-network.  And they didn't ask me to fix it.  They didn't even try to
-casually pry a hint out of me.  -- Ryan Tucker , in the Monastery
+Jan-Derk Bakker, bakker@mmc.et.tudelft.nl
+
+The lazy man's proverb:
+     'There's no business like slow business !'
