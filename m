@@ -1,18 +1,15 @@
-Received: from a.smtp-out.sonic.net ([208.201.224.38])
+Received: from mke-65-30-155-141.wi.rr.com ([65.30.155.141] helo=yahoo.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Mz1O-00057N-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 23:15:06 +0000
-Received: from mailman.eason.com (adsl-209-204-139-80.sonic.net [209.204.139.80])
-	by tempest.sonic.net (8.11.6/8.8.5) with ESMTP id gBDNjiP04143
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 15:45:44 -0800
-Message-ID: <D3AF5F134D627243993F2F2FC32EE4D229C4A7@mailman.eason.com>
-From: Alex Pavloff <apavloff@eason.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: writing new BBRAM driver
-Date: Fri, 13 Dec 2002 15:45:42 -0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 18N3ER-0005Vk-00
+	for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2002 03:44:51 +0000
+From: "Aaron Hackbarth" <hacksbiz2002@yahoo.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Hello there I have a question about your motorcycle ad
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Date: Fri, 13 Dec 2002 22:18:12 -0600
+Message-Id: <E18N3ER-0005Vk-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +21,235 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi there folks.  I've written the struct mtd_info functions for a 128KB
-BBRAM driver for my companies new board.  It's horribly simple, as most of
-it is actually done by a gate array on the board, so from kernel land its
-just poking ioports.  Easy stuff.
+Hello,
 
-Anyway, at this point, I've got that written, but I'm a little hazy as to
-what I do next.  Insmod the driver, and then....?
+     I am responding to your ad you placed at www.motorcycle.com.    My
+question is do you get any responses from this 
+site??      I was just wondering because I was thinking of selling my
+motorcycle here...because I am now going to buy a 
+better bike.....
 
-How do I get a drive to mount?
 
-Also, what FS should I use for this BBRAM?
+You see I have found a way that i get paid while I ride my Bike...I love
+it, and I am a part of history doing it...
+....I encourage you to take a look at my business I welcome your
+opinion..it is a 90 second flash movie..maybe you want to 
+get paid while you ride too...
 
-Thanks!
+http://www.globalsuccess2000.com/hacksbiz
 
-Alex Pavloff - apavloff@eason.com
-Eason Technology -- www.eason.com
- 
+if you enter your name and E-mail the site will show you more, and if you
+enter your number then I can call you and answer 
+any questions you may have...Until then I appreciate any input as the
+effectiveness of this motorcycle site...
+
+Sincerely,
+
+Aaron
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************************************************
+This message is sent in compliance of the new e-mail bill: SECTION 301. Per 
+Section 301, paragraph (a)(2)(C) of S. 1618. This message is NOT Spam as
+long 
+as you are provided with a way to remove your name from this mailing list.
+All
+further transmissions to you from me may be stopped at no cost to you by
+replying to
+this email with "Remove" in the 'Subject' line.
+************************************************************************
