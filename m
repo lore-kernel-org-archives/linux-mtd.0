@@ -1,19 +1,18 @@
-Received: from authicp1.giga.net.tw ([203.133.1.106])
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVYnP-0005hg-49
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 12:40:56 -0400
-Received: from yam.com (61-70-204-82.adsl.static.giga.net.tw [61.70.204.82])
-	by authicp1.giga.net.tw (Postfix) with ESMTP id 016515D2B4
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Jun 2004 00:36:21 +0800 (CST)
-Message-ID: <40BE02C6.5030107@yam.com>
-Date: Thu, 03 Jun 2004 00:39:34 +0800
-From: linuxtom@yam.com
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii
+	id 1BVYwB-0005r3-Bv
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 12:49:59 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Warrick Lacey <wlacey_6151@yahoo.com>
+In-Reply-To: <20040602150619.89651.qmail@web50401.mail.yahoo.com>
+References: <20040602150619.89651.qmail@web50401.mail.yahoo.com>
+Content-Type: text/plain
+Message-Id: <1086194995.26119.422.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 02 Jun 2004 17:49:56 +0100
 Content-Transfer-Encoding: 7bit
-Subject: erase error when I use the Intel E28F128J3C-150 chip
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: TureIDE & CFI
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all:
+On Wed, 2004-06-02 at 08:06 -0700, Warrick Lacey wrote:
+> Hi, I'm trying to use a 128M SanDisk flash device in
+> True IDE Mode for a root file system but I'm confused
+> in whether to configure in IDE capabilities, MTD
+> capabilities some combination of the two. 
 
-I wrote a flash writer program to download all images to this chip,It's
-  working. and then, I tryed to use jffs2 & MTD to mount root filesystem.
-I mounted this partition as root when I mounted It as a read only
-filesystem.
-But when I mounted it as a writeable filesystem, the system was crashed.
-I tryed to debug this error, and I found that the problem is erase error
-in do_erase_oneblock().
-The system crashed after erase command.(CFI:0x20,0xD0) in this
-function.(waiting... and then core dump....)
+It's IDE. You may think it actually has some flash inside it -- we
+couldn't possibly comment. Forget MTD.
 
-I can use my flash writer program to erase block,
-so I rewrite a simple code like the erase function part of my flash
-writer porgram to replace the do_erase_oneblock()
-but the system crash after the CFI erase commend still, even It working
-in my flash writer program.
-
-
-Can you give me some help or advices ?
-
-Thank you!!
-
-
-Thomas# Chiang
+-- 
+dwmw2
