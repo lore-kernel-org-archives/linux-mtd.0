@@ -1,19 +1,20 @@
 Received: from [208.177.141.226] (helo=ash.lnxi.com)
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZXM2-0002Ju-EN
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 15:52:34 +0100
+	id 19ZY4O-0002Ng-Vx
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 16:38:25 +0100
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Joshua Wise <joshua@joshuawise.com>
-In-Reply-To: <200307052215.35596.joshua@joshuawise.com>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+In-Reply-To: <m3k7aw8sua.fsf@maxwell.lnxi.com>
 References: <200307042232.43815.joshua@joshuawise.com>
-	 <200307052157.06325.joshua@joshuawise.com>
-	 <m3el142yly.fsf@maxwell.lnxi.com>
-	 <200307052215.35596.joshua@joshuawise.com>
-Message-Id: <1057589533.1135.8572.camel@tubarao.lnxi.com>
+	 <200307050103.58666.joshua@joshuawise.com>
+	 <m3wuexksa9.fsf@maxwell.lnxi.com>
+	 <200307051406.08109.joshua@joshuawise.com>
+	 <m3k7aw8sua.fsf@maxwell.lnxi.com>
+Message-Id: <1057592282.1135.8613.camel@tubarao.lnxi.com>
 Mime-Version: 1.0
-Date: 07 Jul 2003 08:52:13 -0600
+Date: 07 Jul 2003 09:38:02 -0600
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-mwJR1nRm40qwUuvg1hzF"
+	protocol="application/pgp-signature"; boundary="=-MvIXJlUF7vRtWLOol9Ea"
 cc: linux-mtd@lists.infradead.org
 Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,51 +27,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mwJR1nRm40qwUuvg1hzF
+--=-MvIXJlUF7vRtWLOol9Ea
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2003-07-05 at 20:15, Joshua Wise wrote:
-
-> On Saturday 05 July 2003 10:11 pm, Eric W. Biederman wrote:
-
-> > It shouldn't be, and the probes are just used at probe time.  The
-> > rest of the time their modules can even be unloaded if necessary.
+On Sat, 2003-07-05 at 17:19, Eric W. Biederman wrote:
+> Joshua Wise <joshua@joshuawise.com> writes:
 >=20
-> Sweet, so if jedec_probe was rewritten to not have to use jedec_probe_chi=
-p, or=20
-> gen_probe at all for that matter, we would not have to deal with=20
-> jedec_probe_chip anywhere else?
+> > On Saturday 05 July 2003 9:38 am, Eric W. Biederman wrote:
+> > > Why?  What is your problem.  All the pieces do is validate what
+> > > was detected.
+>=20
+> > My problem is that jedec_probe_chip() incorrectly determines unlock
+> > addresses for my chip. They seemingly work anyway, but then
+> > jedec_match() fails because the unlock addresses that already are
+> > stored in the struct cfi_private do not match what they should be
+> > for my flash chip.=20
+>=20
+> Ok.  So one of the TODO list items in jedec_probe finally hit.
+> The check in jedec_match for unlock addresses was added to verify
+> the proper unlock addresses was actually used so if the probe
+> succeeded the chip would work.
 
-jedec_probe only does chip setup.  Once things are setup then
-jedec_probe and gen_probe are no longer needed - they can be unloaded if
-they are modules.
+More exactly: Some chips will ID with incorrect unlock addresses.  When
+it comes time to use those incorrect unlock addresses to erase or write
+then there is a failure.  The check was put in to prevent chips that ID
+with incorrect unlock addresses from having a successful probe.  This
+sounds like Joshua's MTD's are ID'ing with the wrong unlock addresses.
 
-In the case of an embedded platform I can't see gen_probe and
-jedec_probe being too useful.  I would imagine that someone would write
-a very simple setup that initializes what is already expected to be
-there.  jedec_probe and gen_probe are very useful, however, on platforms
-that are generic.  Do you propose to write a replacement jedec_probe
-that is still generic?
+>   The fact that the proper unlock
+> addresses never get tried is certainly a problem.
 
-I do realize that jedec_probe is not guaranteed to work and is poor when
-the configuration is known.  I have proposed writing a module that can
-take configuration information as arguments or from userspace and simply
-initialize the parts without stumbling around in the dark trying to find
-MTD's.  I have even written some code - I just never committed it
-because I wasn't happy with the solution and didn't have time to
-complete it (that might change in the future).
+This is the _real_ problem.
 
-Having a generic, forced configuration would be very useful for those
-that already know what they have in the system.  It would also fix cases
-where hardware is impossible to reliably probe.  This type of work would
-be very much appreciated.
+> When the code was changed to confirm the proper unlock addresses were
+> being used there were no reported cases of the code not attempting
+> the proper unlock addresses so that part of the existing code was left
+> untouched.
+
+Although it was anticipated that this problem would eventually surface.=20
+Blame the problem on lazy programmers (that's me).
+
+>   Now that we have the information on which unlock addresses
+> the various chips use we can walk through all of the known unlock
+> addresses attempting to match them.
+
+Yes.
+
+> That can be refined by a walk
+> through the table to see if there is a chance of a given unlock
+> address working.
+
+I'm not convinced that "refining" the list is a good thing unless there
+are obvious connections between chip type/mode and unlock addresses.=20
+Maybe there's a slick way to organize the jedec_table[] so that extra
+code isn't necessary.
+
+> > Oh, but there is. Everything on these iPAQs uses MTD
+
+So this is a well-defined platform.  You shouldn't need generic probing
+- just write a simple init module that initializes the CFI structure and
+loads the proper command set.
+
+> > I believe I explained the problem earlier - jedec_probe is wildly probi=
+ng=20
+> > about, and making guesses at addr_unlock, which unfortunately turn out =
+to be=20
+> > correct on every chip but mine.
+
+Not necessarily correct for every chip but yours - I do know of some
+specific cases where the probe is broken and needs to be fixed:
+jedec_match has a problem when checking fit with interleaved devices; 16
+bit chips don't probe correctly in 8 bit mode; I know of another
+situation where the unlock seeds are insufficient.  Sorry to burst your
+bubble when you think that we targeted the iPAQ 8^) (yes, humor
+implied).
+
+>  (For what it's worth, this is a AM29LV400BT.=20
+> > Specs:=20
+> > http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs=
+/21523d1.pdf)
+
+Thanks for the link.  The more broken cases I know about and the more
+data sheets I read, the easier it is to generalize the code so that it
+just works (especially since right now it doesn't).
+
+I'll be able to work on this sometime near the end of this week.
 
 --=20
 Thayne Harbaugh
 Linux Networx
 
---=-mwJR1nRm40qwUuvg1hzF
+--=-MvIXJlUF7vRtWLOol9Ea
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
@@ -78,9 +126,9 @@ Content-Description: This is a digitally signed message part
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQA/CYkcfsBPTKE6HMkRAl56AJ9WbqB6A//CT3BlpCRbmIW0jUBT7gCcDp0g
-agQdCU4m41U/y0eTEuyxUlw=
-=L12O
+iD8DBQA/CZPZfsBPTKE6HMkRAk87AJ4o9yr4fB2271iy7gFDVETy83lClwCfae7B
+5NuZCxKQz9D+fLgzva7q25Q=
+=bXIW
 -----END PGP SIGNATURE-----
 
---=-mwJR1nRm40qwUuvg1hzF--
+--=-MvIXJlUF7vRtWLOol9Ea--
