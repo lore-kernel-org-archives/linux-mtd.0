@@ -1,22 +1,18 @@
-Received: from mail.spectracomcorp.com ([64.65.245.202]
-	helo=nexserver.spectracomcorp.com)
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B5XWT-0001Hx-50
-	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2004 22:03:54 +0000
-Received: (from root@localhost)
-	by nexserver.spectracomcorp.com (8.11.6/8.11.6) id i2MM37g16167
-	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2004 17:03:07 -0500
-Received: from CoOp4 ([10.10.200.196])i2MM34716093
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Mar 2004 17:03:05 -0500
-Message-ID: <00e501c41059$7533cf80$c4c80a0a@CoOp4>
-From: "Eric Hammerle" <ehammerle@spectracomcorp.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 22 Mar 2004 17:03:07 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1B5Xpq-0001S5-2W
+	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2004 22:23:54 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: Eric Hammerle <ehammerle@spectracomcorp.com>
+In-Reply-To: <00e501c41059$7533cf80$c4c80a0a@CoOp4>
+References: <00e501c41059$7533cf80$c4c80a0a@CoOp4>
+Content-Type: text/plain
+Message-Id: <1079994228.16786.23.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Mon, 22 Mar 2004 22:23:49 +0000
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 IO
+cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 IO
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2004-03-22 at 17:03 -0500, Eric Hammerle wrote:
+> uClinux kernel 2.4.20-uc0 on an ARM7TDMI.  
 
-I'm currently developing on a custom board running uClinux kernel 2.4.20-uc0
-on an
-ARM7TDMI.  We use Intel J3 Strataflash and are using jffs2 as our fs.  I've
-run into a
-problem where after FTPing a binary file around 1.3 megs, upon reboot the fs
-outputs
-a single warning such as:
+> jffs2_scan_inode_node(): Data CRC failed on node at 0x0060000c: Read
+> 0x17a11a74, calculated 0xedda2a7c
 
-jffs2_scan_inode_node(): Data CRC failed on node at 0x0060000c: Read
-0x17a11a74,
- calculated 0xedda2a7c
+You need working alignment fixups. Failing that you'll probably get away
+with putting get_unaligned() in the flash chip driver where it reads
+from the buffer to write to the chip. Or in fact with the current code
+just memcpy the name to an aligned location in
+jffs2_garbage_collect_dirent(); I've just fixed the case of an unaligned
+pointer coming in from commit_write() and I think that was the only
+other time it happened.
 
-Unfortunately, the garbage collector never reclaims this node, so any
-subsequent reboot
-will print out the same message.  This wouldn't be a problem, but if I
-upload the file to the
-board one or two more times I get many print outs similar to:
-
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x0052d8b4: Read
-0xd7d56506
-, calculated 0xe489d5cc
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x0052d910: Read
-0x3c262956
-, calculated 0xc2dbebe9
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x0052d940: Read
-0x8b4199a0
-, calculated 0x8c19c269
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x0052d99c: Read
-0x3640ef2e
-, calculated 0x0b987af9
-
-The board then boots into single user mode with most of the fs missing.  The
-same
-effect can be achieved from copying the file described above several times.
-I patched
-my jffs2 and mtd to add the changes found in kernel version 2.4.21 and this
-improved
-the situation for smaller files, but larger files suffer from this problem.
-
-I've found that if I remove the file instead of moving it from the upload
-directory, I start
-getting error messages similar to:
-
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00a16190:
-0x0044 in
-stead
-
-Should I try patching further or could this be related to alignment problems
-related to
-some of the alignment troubles found in the ARM7TDMI's?
-
-TIA
-
-E. Hammerle
+-- 
+dwmw2
