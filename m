@@ -1,16 +1,16 @@
 Received: from mikonos.cyclades.com.br
 	([200.230.227.67] helo=firewall.cyclades.com.br ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Shpg-0001kn-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 18:34:25 +0100
-Message-ID: <3D2DC391.6C13A750@cyclades.com.br>
-Date: Thu, 11 Jul 2002 14:42:41 -0300
+	id 17ShxH-0001mK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 18:42:15 +0100
+Message-ID: <3D2DC576.7B87E64C@cyclades.com.br>
+Date: Thu, 11 Jul 2002 14:50:46 -0300
 From: Daniel Belz <danielb@cyclades.com.br>
 MIME-Version: 1.0
-To: justin.wojdacki@analog.com
+To: Marius Groeger <mag@sysgo.de>
 CC: MTD <linux-mtd@lists.infradead.org>
 Subject: Re: Mounting JFFS2, Bootloader
-References: <3D2D79FE.5C54CC78@cyclades.com.br> <3D2DBB83.ED181F2C@analog.com>
+References: <Pine.LNX.4.40.0207121738590.7172-100000@mag.devdep.sysgo.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -25,47 +25,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
-
-Justin Wojdacki wrote:
+Marius Groeger wrote:
 > 
-> Having recently done the same kind of thing (on a different board), I
-> think I can help.
-...
-> If you want more flexibility than that, you may instead need to look for
-> a configuration file and then process the configuration file.
->
-
-Yes, i need something like this, as an application to be loaded instead
-of the
-kernel. Simple, to allow load for more than one option from flash or
-from network
-(simple tftp). I don't need write on the flash (CF) at this time. 
- 
-> JFFS2 has a really easy to work with on-device layout, so it shouldn't
-> take much effort to locate the files you're interested in.
+> On Thu, 11 Jul 2002, Daniel Belz wrote:
 > 
-> The files you'll need to work with are in fs/jffs2 and include/linux.
+> > PS.: I don't like to use the PPCBoot!!!
 > 
-> Figure out exactly what capabilities you want first though. That'll
-> make it much easier to plan out. And remember, if it's being done in
-> the bootloader, you're not in the kernel, so you may have to
-> reimplement some things.
+> May I ask why? It sure would save you a lot of work... Anyway, if you don't
+> want to use PPCboot, you can always rip out and use it's JFFS support
+> routines.
 
-Ok, but which is the "entry point" of the JFFS, that is, i need to call
-the
-functions to mount, or i can treat like a mounted file system, and just
-read
-the needed files? 
-And, I can read from a CompactFlash card, if i'm using (after boot) the
-MTD 
-emulation? The CF is mapped as a hd device.
+I need somthing more simple, and I like to use the existent code for
+board init.
+I think to use the JFFS2 support from PPCB, but i can't separate the
+JFFS2 code
+from the boards support. And have the kernel parameters...
+
 
 > 
-> --
-> -------------------------------------------------
-> Justin Wojdacki
-> justin.wojdacki@analog.com         (408) 350-5032
-> Communications Processors Group -- Analog Devices
+> Regards,
+> Marius
+> 
+> -----------------------------------------------------------------------------
+> Marius Groeger           SYSGO Real-Time Solutions GmbH     mgroeger@sysgo.de
+> Software Engineering     Embedded and Real-Time Software    www.sysgo.de
+> Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
+> FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
+
+
+Tanks
+
 
 -- 
 ------------------------------------------------- 
