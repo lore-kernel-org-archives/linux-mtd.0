@@ -1,22 +1,18 @@
-Received: from fmr06.intel.com ([134.134.136.7] helo=caduceus.jf.intel.com)
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cEaU-0007xd-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 01:22:06 +0100
-Received: from petasus.jf.intel.com (petasus.jf.intel.com [10.7.209.6])
-	by caduceus.jf.intel.com (8.11.6/8.11.6/d: outer.mc,v 1.48 2002/05/24 00:39:04 root Exp $) with ESMTP id g770JsM01066
-	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 00:19:54 GMT
-Received: from pdsmsxvs01.pd.intel.com (pdsmsxvs01.pd.intel.com [172.16.12.122])
-	by petasus.jf.intel.com (8.11.6/8.11.6/d: inner.mc,v 1.22 2002/05/24 00:38:22 root Exp $) with SMTP id g770JD109993
-	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 00:19:13 GMT
-Message-ID: <957BD1C2BF3CD411B6C500A0C944CA2601499C37@pdsmsx32.pd.intel.com>
-From: "Yuan, Cain" <cain.yuan@intel.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: JFFS2 peoblems with K3 strata flash on Dalhart 
-Date: Wed, 7 Aug 2002 08:19:56 +0800 
+	id 17cFio-000870-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 02:34:46 +0100
+Message-ID: <003001c23db2$a9fe8d20$1b0448c0@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: <brendan.simon@ctam.com.au>, "linux-mtd" <linux-mtd@lists.infradead.org>
+References: <3D4F89CF.3010809@ctam.com.au> <4518.1028624265@redhat.com> <3D505C85.80705@ctam.com.au>
+Subject: Re: kernel hangs on DOC2000 root filesystem
+Date: Wed, 7 Aug 2002 09:35:08 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="ISO-8859-1"
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,25 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Does  this concerned with the fails of JFFS2?  If is, why I can use JFFS2
-system   just after burn JFFS2 fs image into  flash with the help of
-redboot?
+(2.4.18)mount_root():blkdev_put():bdev->bd_op->release():invalidate_device()
+: invalidate_inodes(sb)
+probably caused by doing invalidate_xxx() inside mount_root()?
+(some other driver also hang when doing release() operation inside
+mount_root)
+
+----- Original Message -----
+From: "Brendan J Simon" <brendan.simon@ctam.com.au>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Sent: Wednesday, August 07, 2002 7:32 AM
+Subject: Re: kernel hangs on DOC2000 root filesystem
 
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-To: Yuan, Cain
-Cc: 'nico@cam.org'; linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 peoblems with K3 strata flash on Dalhart 
-
-
-
-cain.yuan@intel.com said:
-> 	I am now test JFFS2 file system on Dalhart with Redboot as
-> boorloader, Linux version 2.4.18-rmk6-pxa2 and some patches for
-> dalhart.
-
-What erase size did you create your JFFS2 image with?
-
---
-dwmw2
+>
+>
+> David Woodhouse wrote:
+>
+> >brendan.simon@ctam.com.au said:
+> >
+> >> Any ideas why the kernel just hangs ?
+> >>
+> >>>>>>>>>>BJS: nftl_release(): invalidate_device()
+> >>>>>>>>>>
+>
+> Is this because get_super() fails ???
+>
+> I've done an fsck.ext2 and it passed with no problems.  This should mean
+> that the super blocks are OK, should it ???
+>
+> I formatted the DOC with nftl_format if that makes any difference.
+> I also used the latest fdisk from util-linux for format the drive with
+> an MSDOS partition table and one ext2 partition.
+>
+> Thanks for any help or advice.
+> Brendan Simon.
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
