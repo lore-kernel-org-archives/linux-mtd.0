@@ -1,21 +1,30 @@
-Received: from gate.epygi.de ([212.126.211.241])
+Received: from bm-3a.paradise.net.nz ([202.0.58.22]
+	helo=linda-3.paradise.net.nz)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CX1sH-0006qu-H2
-	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 13:28:19 -0500
-Received: from sally.epygi.de (imap [10.20.0.18])
-	by gate.epygi.de (8.12.9/8.12.9) with ESMTP id iAOISEDV008749
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Nov 2004 19:28:14 +0100 (MET)
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Date: Wed, 24 Nov 2004 19:28:14 +0100
-Message-ID: <NGENJJFPMHGLPILEKKAMAEAGCFAA.Stephan.Linke@epygi.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <NGENJJFPMHGLPILEKKAMMEAFCFAA.Stephan.Linke@epygi.de>
-Subject: RE: using multile partitions on one NAND chip
+	id 1CX2j6-00075E-Vj
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 14:22:56 -0500
+Received: from smtp-2.paradise.net.nz (smtp-2b.paradise.net.nz [202.0.32.211])
+	by linda-3.paradise.net.nz (Paradise.net.nz)
+	with ESMTP id <0I7P006GV75XP4@linda-3.paradise.net.nz> for
+	linux-mtd@lists.infradead.org; Thu, 25 Nov 2004 08:22:45 +1300 (NZDT)
+Received: from hayes.bluewaternz.com
+	(203-96-159-182.paradise.net.nz [203.96.159.182])	by
+	smtp-2.paradise.net.nz
+	(Postfix) with ESMTP id 93DC19E723	for <linux-mtd@lists.infradead.org>;
+	Thu, 25 Nov 2004 08:22:44 +1300 (NZDT)
+Date: Thu, 25 Nov 2004 08:24:53 +1300
+From: Brad Beveridge <bbeveridge@bluewatersys.com>
+In-reply-to: <41A15A30.4070808@bluewatersys.com>
+To: Brad Beveridge <bbeveridge@bluewatersys.com>
+Message-id: <41A4E005.7040205@bluewatersys.com>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+References: <41A143C4.2090304@bluewatersys.com>
+	<41A15A30.4070808@bluewatersys.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: BUG at dcache.h:276! Causing oops when I rmmod a nand module
+ having mulitple partitions (fix)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,88 +34,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi guys, we've managed to track down my mtd problem.
 
+Setup:
+- Using CONFIG_MTD_BLOCK
+- Compiling your nand driver as a module
+- Having multiple partitions defined
 
-> -----Original Message-----
-> From: Stephan Linke [mailto:Stephan.Linke@epygi.de]
-> Sent: Mittwoch, 24. November 2004 19:13
-> To: tglx@linutronix.de
-> Subject: RE: using multile partitions on one NAND chip
-> 
-> 
-> Hi Thomas,
-> 
-> already noticed the spinlocks; thanks anyway.
-> 
-> On erase the chip is locked in nand_get_chip() and stays locked until 
-> the ERASE2
-> command has been send to the chip to wait for the ready status the chip gets
-> unlcoked since the nand_wait() also tries to lock the chip. 
-> Additinaly nand_wait() unlocks the chip befor calling yield().
-> If another task tries nand_get_chip() at this verry moment the erase will be
-> interrupted by sending an RESET command. Looks like this is by 
-> intention since the erase of the blockis restarted after the 
-> nand_wait() returns.
-> (I'm not shure if a 3rd task could start an ERASE command - after the 
-> 2nd task has interrupted the 1st on - before the first nand_wait() 
-> returns. This could mislead the first task.)
-> 
-> My real problem is this one:
-> Our NAND-chips use to keep the buisy line active "for ever" when the 
-> RESET command is issued at the wrong point of time. A chip in that 
-> condition requires a power-on reset to reactivate the chip. Which 
-> makes it a verry critical condition to us. :)
-> At the moment I am fixing this problem by causing our local copy of 
-> nand_command() (in maps/) to wait for the ready bit of the NAND-chip 
-> (except for the STATUS commands).
-> 
-> To be more specific: If the RESET is issued when the ERASE is almost 
-> finished a deadlock of the chips state is verry likely.
-> 
-> As far as I know the RESET should not do any harm to the chip by 
-> definition. But unfortunately it does. :-(
-> 
-> Stephan
-> 
-> 
-> > -----Original Message-----
-> > From: linux-mtd-bounces@lists.infradead.org
-> > [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Thomas
-> > Gleixner
-> > Sent: Mittwoch, 24. November 2004 17:29
-> > To: Stephan Linke
-> > Cc: Linux-Mtd
-> > Subject: Re: using multile partitions on one NAND chip
-> > 
-> > 
-> > On Wed, 2004-11-24 at 15:40 +0100, Stephan Linke wrote:
-> > > Hi,
-> > 
-> > Please fix your mail client, to 80 characters per line.
-> > Read http://david.woodhou.se/email.html
-> > 
-> > > anyone tried using multiple partitions on a NAND flash?
-> > 
-> > Ever looked into the various drivers in drivers/mtd/nand ?
-> > 
-> > > I can't find the protection mechanism that protects lets
-> > > say an erase on one block against a read command on the
-> > > other block.
-> > 
-> > nand_get_chip() contains the protection.
-> > 
-> > > efficient protection for this. It looks like nand_chip->chip_lock 
-> > > should do this job but it only protects
-> > 
-> > chip_lock is only for SMP and the lock/unlock macros contain the
-> > preemption control if CONFIG_PREEMPT=y. The lock itself is a NOOP on UP
-> > systems
-> > 
-> > tglx
-> > 
-> > 
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
+Problem:
+insmodding the driver works, but when you rmmod the nand driver the 
+kernel will oops.  The oops is caused by line 276 in dcache.h
+The problem looks to be in mtd_blkdevs.c.  Everytime that 
+add_mtd_blktrans_dev is called, a new gendisk is allocated, and its 
+gd->queue member is set to
+gd->queue = tr->blkcore_priv->rq;
+The tr->blkcore_priv->rq appears to only get setup once in 
+tr->blkcore_priv->rq.
+
+Later, when del_mtd_blktrans_dev is called del_gendisk unregisters its 
+queue.  So multiple gendisks point to the same queue & on removal they 
+all try to get de-allocated.
+
+Fix:
+The very, very dodgy fix is to add
+ ((struct gendisk *)old->blkcore_priv)->queue = NULL;
+to del_mtd_blktrans_dev, just before del_gendisk is called.  This 
+appears to let me rmmod my module without breakage.  Though I have no 
+clue as to what the implications of doing this might be.
+
+Can someone who knows the mtd_block layer better offer a proper fix?
+
+Cheers
+Brad
