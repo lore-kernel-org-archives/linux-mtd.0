@@ -1,70 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14tkcN-0003l3-00
-	for mtd-list@infradead.org; Sun, 29 Apr 2001 07:23:39 +0100
-Received: from www.ccimackay.com
-	([203.52.109.14] helo=mail.ccimackay.com ident=root)
+	id 14tuhV-0000lj-00
+	for mtd-list@infradead.org; Sun, 29 Apr 2001 18:09:37 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14tkcK-0003kx-00
-	for mtd@infradead.org; Sun, 29 Apr 2001 07:23:37 +0100
-Received: from dave (dave.ccimackay.com [192.168.100.130])
-	by mail.ccimackay.com (8.9.3/8.8.7) with SMTP id QAA26035
-	for <mtd@infradead.org>; Sun, 29 Apr 2001 16:41:03 +1000
-Message-ID: <004b01c0d074$d2c3b980$8264a8c0@dave>
-From: "David Griffith" <dgriffith@ccimackay.com>
-To: <mtd@infradead.org>
-Subject: Modification to Doc2000.c for Virgin Webplayer
-Date: Sun, 29 Apr 2001 16:22:53 +1000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 14tuhT-0000ld-00
+	for mtd@infradead.org; Sun, 29 Apr 2001 18:09:36 +0100
+Received: from dwmw2 (helo=redhat.com)
+	by passion.cambridge.redhat.com with local-esmtp (Exim 3.16 #2)
+	id 14tugr-0006JW-00
+	for mtd@infradead.org; Sun, 29 Apr 2001 18:08:57 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: mtd@infradead.org
+Subject: Administrivia: List changes
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sun, 29 Apr 2001 18:08:57 +0100
+Message-ID: <24273.988564137@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
-    Apologies for this note if someone else has been there / done that.
+I've managed to get the new machine up and running, and I'll be switching 
+the list over to mailman some time in the near future.
 
-I have a few Virgin Webplayers with 48MB doc2000's in them.
-(Basically a MediaGX 200Mhz sbc)
+This will affect people doing automatic filtering of list mail into folders.
 
-Anyways, I've been having trouble with the detection of the DOC. The MTD
-drivers in the linux kernel have trouble finding
-partitions on the DOC. (When I say "Have trouble" its means 99 out of 100
-times the nftl layer can't find a valid boot record, gets all grumpy, and
-gives up).
+Instead of having an envelope sender <owner-mtd@infradead.org> it'll be
+<linux-mtd-admin@lists.infradead.org>
 
-So I turned on debugging,  liberally sprinkled a few more printk's around..
-and hmmm.... turning on level 3 debugging makes it work.
+Filtering on Return-path: or Sender: (depending on your local MTA) which 
+matches ".*mtd.*@.*infradead.org" should match both old and new lists.
 
-So, I says to meself, "Self, it must be some interaction with some sort of
-delay thingy with the DoC :-)",  a quick poke through the source showed this
-in doc2000.c in one of the functions near the front (I can't remember the
-name! sorry - my code is at home!)
+I'll transfer all current members to the new list and make the old address 
+work, but the new list address will be <linux-mtd@lists.infradead.org>.
 
- what makes it work is to change this line (about 75 lines down in kernel
-2.4.4):
+Don't start using that yet - this is just an advance warning to let people 
+change procmail or other filter files.
 
-    for (i = 0; i < cycles ; i++) {
+--
+dwmw2
 
-    to this :
-
-    for (i = 0; i < cycles*4 ; i++) {
-
-
-This effectively *quadruples* the delay time for all sorts of things in the
-code it seems.
-With this in - I can detect partitions, mount them , read / write to them
-just fine.
-I did try just doubling it, and I could read it, but it wasn't very happy
-about writing to it.
-I'd post logs , but currently I boot to a ramdisk...
-
-So,
-Any ideas as to why? ;-)
-
-Regards,
-    David
 
 
 
