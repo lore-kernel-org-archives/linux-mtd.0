@@ -1,23 +1,17 @@
-Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
+Received: from [213.33.71.165] (helo=hofr.at)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1625kP-0004aM-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2001 07:06:42 +0000
-Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
-	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id fA97FsA29558
-	for <linux-mtd@lists.infradead.org>; Fri, 9 Nov 2001 12:45:54 +0530
+	id 1626fn-0004eD-00
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2001 08:05:59 +0000
 Received: (from root@localhost)
-	by ncoretech.com (8.10.0/8.10.0) id fA97FsU04052
-	for linux-mtd@lists.infradead.org.VIRCHECK; Fri, 9 Nov 2001 12:45:54 +0530
-Received: from ncoretech.com (ws126.ncoretech.com [192.168.1.126])
-	by ncoretech.com (8.10.0/8.10.0) with ESMTP id fA97Frl03963
-	for <linux-mtd@lists.infradead.org>; Fri, 9 Nov 2001 12:45:53 +0530
-Message-ID: <3BEB7E75.AA1840EB@ncoretech.com>
-Date: Fri, 09 Nov 2001 12:27:57 +0530
-From: nagaraja <nagaraja@ncoretech.com>
-MIME-Version: 1.0
+	by hofr.at (8.10.2/8.9.3/SuSE Linux 8.9.3-0.1) id fA98Hxt11516
+	for linux-mtd@lists.infradead.org; Fri, 9 Nov 2001 09:17:59 +0100
+From: Der Herr Hofrat <der.herr@hofr.at>
+Message-Id: <200111090817.fA98Hxt11516@hofr.at>
+Subject: TC58FVT160 question 
 To: linux-mtd@lists.infradead.org
-Subject: DOC-MILL-Plus
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 9 Nov 2001 09:17:59 +0100 (CET)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -30,13 +24,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+HI !
 
-    Can any body tell how do I dformat doc-millennium-plus in DOS
-environment.
+ as I can find the TC58FVT160 chip (a 2MB - 16*1024 chip) in amd_flash.c 
+ cfi_jedec.c and jedec_probe.c I'm kind of confused at what driver I 
+ actually should be configuring for this chip.
 
-I am using dformat /win:c800 /S:doc50.exb --for doc-2000 it works fine.
-But for doc-mill-plus it is not working.
+ any hint apreaciated.
 
-Thanks
-Nagaraja
+thx !
+hofrat
