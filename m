@@ -1,22 +1,24 @@
-Received: from smtp.teol.net ([81.93.64.10])
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19yS7Q-0003os-Di
-	for <linux-mtd@lists.infradead.org>; Sun, 14 Sep 2003 09:20:28 +0100
-Received: from smtp.teol.net (root@localhost)
-	by smtp.teol.net (8.12.9/8.12.9) with SMTP id h8E8Jm4s030126
-	for <linux-mtd@lists.infradead.org>; Sun, 14 Sep 2003 10:19:48 +0200
-Received: from alfa (ppp-69-24.teol.net [81.93.69.24])
-	by smtp.teol.net (8.12.9/8.12.9) with SMTP id h8E8JgOU030108
-	for <linux-mtd@lists.infradead.org>; Sun, 14 Sep 2003 10:19:45 +0200
-Message-ID: <004f01c37a98$e88d5520$1ca9fea9@alfa>
-From: "Mario Ivancic" <mario.i@teol.net>
-To: "MTD Lista" <linux-mtd@lists.infradead.org>
-Date: Sun, 14 Sep 2003 10:18:29 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: DoC on VIA Epia 5000
+	id 19ymeF-00055n-Ef
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Sep 2003 07:15:43 +0100
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+ by smtp-out.bhp.t-online.de
+ (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
+ with SMTP id <0HL800AJSS0AHE@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Mon, 15 Sep 2003 08:14:34 +0200 (MEST)
+Date: Mon, 15 Sep 2003 08:09:17 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <Pine.LNX.4.44.0309120801130.27968-100000@dashnine.joshuawise.com>
+To: joshua@dashnine.joshuawise.com, linux-mtd@lists.infradead.org
+Message-id: <200309150809.17666.tglx@linutronix.de>
+MIME-version: 1.0
+Content-disposition: inline
+References: <Pine.LNX.4.44.0309120801130.27968-100000@dashnine.joshuawise.com>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: Re: h1910 NAND
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+On Friday 12 September 2003 14:06, joshua@dashnine.joshuawise.com wrote:
+> NAND flash seems to work on the iPAQ h1910. Things of note:
+>
+> * Not certain what type of ECC we should be using. Had to comment out the
+> WARNING: Not using ECC is not recommended! message (or something like
+> that) so that my dmesg wasn't flooded with those when I tried to read from
+> flash.
 
-I'm playing with epia 5000 board, and DoC (DiskOnChip Millennium
-Plus - MD2811 D16 in TSOP48), but can't get it to work!
-DINFO from M-Systems can't find DoC, my own util can't find DoC
-(looking on every 16 byte from c0000 to f0000), and on linux I tied
-to build MTD utils and stuff, but can't 'modprobe -a docprobe'.
-Dmesg says 'No Doc detected' or something.
-I succeed to enable writing to flash, I pull BIOS out and still can't
-find DOC.
-I investigate connections on board and find out that DOC address
-lines, data lines, CE#, OE#, WE# lines are connected to BIOS ROM
-address lines, data lines, CE#, OE#, WE# line.
-Is it OK to be that way? (DOC CE#  = BIOS CE# ).
-I can boot from standard BIOS, so I think there is no conflicts
-between DOC and BIOS, but it should be. Is my DOC dead?
-What can I do to get it work?
-Please Help!
+Use Software-ECC.
+
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
