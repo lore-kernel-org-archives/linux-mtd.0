@@ -1,26 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14XX68-00077t-00
-	for mtd-list@infradead.org; Mon, 26 Feb 2001 23:30:32 +0000
-Received: from [209.43.202.2] (helo=stpeter.astanetworks.com)
+	id 14XZZy-0008Hg-00
+	for mtd-list@infradead.org; Tue, 27 Feb 2001 02:09:30 +0000
+Received: from [64.74.56.234] (helo=stardust.tg-embedded.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14XX67-00077h-00
-	for mtd@infradead.org; Mon, 26 Feb 2001 23:30:31 +0000
-Received: from navajo.astanetworks.com (navajo.astanetworks.com [192.168.10.8])
-	by stpeter.astanetworks.com (Postfix) with ESMTP id 7FB6E7F85
-	for <mtd@infradead.org>; Mon, 26 Feb 2001 16:27:03 -0600 (CST)
-Message-ID: <15E6537E180CC545848148F30F6688D81945A4@navajo.astanetworks.com>
-From: Pete Skelly <pete.skelly@astanetworks.com>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: 
-Date: Mon, 26 Feb 2001 15:29:53 -0800
+	id 14XZZx-0008HZ-00
+	for mtd@infradead.org; Tue, 27 Feb 2001 02:09:29 +0000
+Received: from tg-embedded.com ([192.168.1.100])
+	(authenticated)
+	by stardust.tg-embedded.com (8.11.0/8.11.0) with ESMTP id f1R2BsO05715
+	for <mtd@infradead.org>; Mon, 26 Feb 2001 21:11:57 -0500
+Message-ID: <3A9B09BD.C3D3CB68@tg-embedded.com>
+Date: Mon, 26 Feb 2001 20:58:21 -0500
+From: dant@tg-embedded.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+To: mtd@infradead.org
+Subject: lilo kernel params failure
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-subscribe mtd
+I have been strugling with this for some time now.
+
+It looks like a failure of lilo to pass kernel params ( append="...." )
+But we have been through the code and fail to find a reason.
+this happens with the lilo-mtd in the cvs /patches area and we have
+patched 21 with the same results.
+We are using DoC  2000 with kernel 2.4.2 though this has been happening
+for months really.
+Anyone have any ideas?
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
