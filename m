@@ -1,21 +1,20 @@
-From: tglx@linutronix.de (Thomas Gleixner)
-Date: Tue, 11 Mar 2003 09:16:21 +0100
-Subject: NOR and NAND flash at the same time
-In-Reply-To: <001601c2e757$25a58250$1a00a8c0@itc.intrinsyc.com>
-References: <001601c2e757$25a58250$1a00a8c0@itc.intrinsyc.com>
-Message-ID: <200303110916.21508.tglx@linutronix.de>
+From: Russ.Dill@asu.edu (Russ Dill)
+Date: Tue, 11 Mar 2003 00:54:25 -0700
+Subject: Unexpected problems in rebuilding kernel
+In-Reply-To: <000201c2e770$8d71e400$e3c8580c@who5>
+References: <000201c2e770$8d71e400$e3c8580c@who5>
+Message-ID: <1047368655.1782.1.camel@gobbles>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Monday 10 March 2003 23:48, Alex Samoutin wrote:
-> Hi!
-> I have board with NOR (Intel strata flash) and NAND (Toshiba) chips.
-> Do I have a chance to use both of them under Linux at the same time?
-Works right out of the box
+On Mon, 2003-03-10 at 18:50, Gregg C Levine wrote:
+> Hello from Gregg C Levine
+> Something new to report. I am now working my way through the kernel
+> rebuilding, and it is failing on a specific point. I am posting it, as
+> a text file attachment. Basically the process decides to abort
+> complaining about a macro, in the jffs file system. This is a patched
+> 2.4.20 kernel, after running a the patchin.sh script from the patches
+> directory.
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx at linutronix.de
+Don't build jffs, you probably don't want to use it, and its probably
+behind (and thus the macro problems).
