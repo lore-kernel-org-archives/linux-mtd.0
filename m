@@ -1,40 +1,72 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14G0m2-0007RA-00
-	for mtd-list@infradead.org; Tue, 09 Jan 2001 15:33:22 +0000
-Received: from reprofw.itrepro.com ([216.89.237.2] helo=itrepro.atlanta.itserve.com)
+	id 14GQhj-0000rC-00
+	for mtd-list@infradead.org; Wed, 10 Jan 2001 19:14:39 +0000
+Received: from [207.35.116.203] (helo=mail.colubris.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14G0m1-0007R4-00
-	for mtd@infradead.org; Tue, 09 Jan 2001 15:33:21 +0000
-Received: from workbox.atlanta.itserve.com (IDENT:dhamm@workbox.atlanta.itserve.com [10.100.3.219])
-	by itrepro.atlanta.itserve.com (8.9.3/8.9.3) with SMTP id KAA31019
-	for <mtd@infradead.org>; Tue, 9 Jan 2001 10:33:18 -0500
-From: David Hamm <dhamm@itrepro.com>
-Reply-To: dhamm@itrepro.com
-To: mtd@infradead.org
-Subject: DiskOnChip200
-Date: Tue, 9 Jan 2001 10:28:27 -0500
-Content-Type: text/plain
+	id 14GQhh-0000r6-00
+	for mtd@infradead.org; Wed, 10 Jan 2001 19:14:38 +0000
+Received: from colubris.com (ws30-146.colubris.com [192.168.30.146])
+	by mail.colubris.com (8.10.2/8.10.2) with ESMTP id f0AJEXV13609
+	for <mtd@infradead.org>; Wed, 10 Jan 2001 14:14:33 -0500
+Message-ID: <3A5CB4C3.41FC20D1@colubris.com>
+Date: Wed, 10 Jan 2001 14:15:16 -0500
+From: =?iso-8859-1?Q?St=E9phane?= Laroche <stephane.laroche@colubris.com>
 MIME-Version: 1.0
-Message-Id: <01010910331803.23650@workbox.atlanta.itserve.com>
-Content-Transfer-Encoding: 8bit
+To: mtd@infradead.org
+Subject: CFI problems with 32bit bus and 4 devices
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've been fighting with a DiskOnChip2000 box for a while now and its about to
-win.   I've searched the net for specific info on how to use the MTD drivers in
-the kernel rather than M-Sys driver.  Is there a howto or an old email that
-describes how to use the NFTL drivers?  Getting them in the kernel is easy but
-I don't know which device file to use to format the device. 
+Hi,
 
+I've just updated to the latest CVS and my CFI AMD chips are not
+accessible anymore.
 
----------------------------------
-David Hamm
-Systems Analyst
-Imaging Technologies Services Inc.
-email: dhamm@itrepro.com
-voice: 404-870-6663
----------------------------------
+I lokked briefly into it and saw that the cfi->interleave and
+cfi->device_type were removed from offset calculations when accessing
+the devices.
+
+So, for my setup, which has 4 x16 devices on a 32 bit bus (AMDs),  the
+CFI query structure is located at offsets 0x80, 0x88, 0x90, etc.
+
+cfi_read_query()  uses only the buswidth to calculate the offset, which
+is not general enough (it used to be like that before I played with the
+code a bit last summer).  It's obviously wrong in my case ( 0x10 << 2 !=
+0x80 ).
+
+Rewriting cfi_read_query like this made the CFI query structure
+readable:
+
+static inline __u8 cfi_read_query(struct map_info *map, __u32 base,
+__u32 addr)
+{
+    struct cfi_private *cfi = map->fldrv_priv;
+    addr *= cfi->interleave * cfi->device_type;  /* instead of addr <<
+(buswidth / 2) */
+    if (cfi_buswidth_is_1()) {
+        return map->read8(map, base + addr);
+    } else if (cfi_buswidth_is_2()) {
+        return cfi16_to_cpu(map->read16(map, base + addr));
+    } else if (cfi_buswidth_is_4()) {
+        return cfi32_to_cpu(map->read32(map, base + addr));
+    } else {
+        return 0;
+    }
+}
+
+With this change, the chips are now properly recognized.  But I can't
+still not use them (reads are wrong), so I think I have to look at
+cfi_cmdset_002.c to bring back the use of cfi->interleave in some
+calculations...
+
+Any comments?  Is it possible that I'm the only one using that kind of
+geometry?
+
+-Stephane
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
