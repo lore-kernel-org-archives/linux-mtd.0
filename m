@@ -1,28 +1,17 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D38k3-0006NG-6y
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 03:16:32 -0500
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id B915B2F016
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id AE2FE11786
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 08D4199FF
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
-Message-ID: <421998DA.1060503@imc-berlin.de>
-Date: Mon, 21 Feb 2005 09:16:26 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: MTD List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: ioremap_cached in drivers/mtd/maps ?
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D38pB-0006Xt-7W
+	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 03:21:50 -0500
+Date: Mon, 21 Feb 2005 09:21:44 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050221082144.GA1704@synertronixx3>
+References: <20050218154216.GA5926@synertronixx3>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050218154216.GA5926@synertronixx3>
+Subject: Re: freeze when mounting fs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +21,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+I wan' to inform you I can send/commit debug output next wee, not now,
+because we leave to the fair embedded world in Nurnberg now and all
+other tasks sleep for a week now, sorry guys!
 
-it looks like only lubbock-flash.c is using ioremap_cached().
-
-Can I use ioremap_cached() with normal NOR flashes?
-Is it only for DMA transfer from/to flash?
-Does it improve something when using JFFS2?
-What do I have to consider? .inval_cache function?
-
-Thanks a million!
+Regards, Konsti
 
 -- 
-Steven Scholz
-imc Measurement & Control
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
