@@ -1,20 +1,14 @@
-Received: from stork.mail.pas.earthlink.net ([207.217.120.188])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ATEGb-0008B3-Ew
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Dec 2003 05:49:09 +0000
-Received: from lsanca2-ar36-4-63-164-046.lsanca2.dsl-verizon.net
-	([4.63.164.46])
-	by stork.mail.pas.earthlink.net with asmtp (Exim 3.33 #1)
-	id 1ATEEt-0002G9-00
-	for linux-mtd@lists.infradead.org; Sun, 07 Dec 2003 21:47:23 -0800
-From: Frankie Davis <watchforathief@earthlink.net>
-To: linux-mtd@lists.infradead.org
-Message-Id: <1070862743.2461.0.camel@localhost>
-Mime-Version: 1.0
-Date: Sun, 07 Dec 2003 21:52:23 -0800
+From: David Woodhouse <dwmw2@infradead.org>
+To: Devi Priya <ijpriya@hotmail.com>
+In-Reply-To: <BAY2-F160g3AmsfGdMN0000051b@hotmail.com>
+References: <BAY2-F160g3AmsfGdMN0000051b@hotmail.com>
 Content-Type: text/plain
+Message-Id: <1070879126.31993.15.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Mon, 08 Dec 2003 10:25:27 +0000
 Content-Transfer-Encoding: 7bit
-Subject: h1910
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Hardware Help with diskonchip?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,6 +18,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-did you ever get linux ported to the h1910?  If so, can I download it
-somewhere?
--Frankie
+On Mon, 2003-12-08 at 05:15 +0000, Devi Priya wrote:
+> Hi,
+>         In the application note (AP044) from Msystems it is given as:
+> "The DiskOnChip Millennium is mapped into an 8KB memory window in the host 
+> platforms
+> memory map. This 8KB window consists of four 2KB windows." Why is this 
+> mapping done?
+
+The Millennium only uses a handful of those registers. There's no real
+need for the 2KiB range to be repeated -- I don't really know why it's
+done. 
+
+> Is this mapping done in hardware? I use diskonchip millennium (8MByte 
+> MD2800). Then shouldn't the entire 8MB shall be mapped in hardware to the 
+> physical address space?
+
+You can't map 8MiB into 8KiB of physical space, even if it were NOR
+flash and linearly accessible, which it's not.
+
+> The steps for BIOS is summarised as
+> 1. After DiskOnChip Millennium BUSY# signal is negated, the CPU fetches the 
+> Reset Vector from
+> the Boot-Block area, fetches the Boot Code stored there, and starts to 
+> execute the code.
+> 2. Boot Code runs the first part of BIOS, initializing the basic hardware 
+> functionality.
+> 3. Boot Codes loads the rest of the BIOS from the flash memory to the DRAM, 
+> and transfer control
+> (jumps) there.
+> 4. Chip Select of DiskOnChip Millennium is remapped from Reset Vector to 
+> BIOS expansion area.
+> 5. CPU executes the rest of the BIOS code, including ROM expansion devices 
+> (among them, the
+> DiskOnChip Millennium itself).
+> 6. CPU calls OS bootstrap loader (INT19).
+> 7. OS is loaded, and recognizes the DiskOnChip Millennium as the boot 
+> device.
+> 8. OS loads the application code from the DiskOnChip Millennium and executes 
+> it.
+> 9. Application software uses DiskOnChip Millennium exactly as if it were 
+> using a regular hard
+> disk.
+> 
+> In step 4 why is this remapping done? Is this mapping done in hardware?
+
+I don't know why it's done. Probably to preserve software compatibility
+with their 1980s PC BIOS extension hack, so you put your own system BIOS
+into the Millennium but keep it _separate_ from their BIOS extension
+which your BIOS is supposed to load later. You'd need chipset support
+for changing the physical address at which the DiskOnChip appears.
+
+>        In my setup, the diskonchip is mapped in hardware to the higher order 
+> address
+> (0xFFFFFFFF-0xFF800000). SDRAM mapped to lower address 
+> (0x00000000-0x1FFFFFF). What else
+> modification do i require in HARDWARE to use diskonchip millennium?
+
+Probably none. See LinuxBIOS.
+
+-- 
+dwmw2
