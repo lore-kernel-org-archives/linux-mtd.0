@@ -1,16 +1,19 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from tiger.actrix.co.nz ([203.96.26.135] helo=creative.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vkTd-00008e-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 20:43:25 +0100
-Date: Thu, 11 Apr 2002 21:43:21 +0200 (MEST)
-From: Robert Kaiser <rob@sysgo.de>
-To: Tino Keitel <tino.keitel@innominate.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: mapping of boot loader offset
-In-Reply-To: <20020411143018.GA30787@tino>
-Message-ID: <Pine.LNX.4.21.0204112141300.23644-100000@dagobert.svc.sysgo.de>
+	id 16vx42-0000vA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 10:09:50 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: linux-mtd@lists.infradead.org, dmwm2@infradead.org
+Subject: Possible JFFS2 bug
+Date: Fri, 12 Apr 2002 20:21:08 +1200
+References: <200204080906.47847.hxos@rz.fh-augsburg.de>
+In-Reply-To: <200204080906.47847.hxos@rz.fh-augsburg.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020412090913.3DDE34059@creative.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +25,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I'm not using JFFS2, but I happened to be reading the code in 2.4.18
 
-On Thu, 11 Apr 2002, Tino Keitel wrote:
+In dir.c/jffs2_readdir()....
 
-> I wonder what to do if a processor looks for its BIOS/loader at a specified
-> address that is somewhere in the middle of a flash chip. The same chip will
-> contain one JFFS2. The boot loader area will have to be mapped out of the
-> file system. Is there already something that MTD can do for me?
+I notice that if the filldir returns <0 during the fill for "." and "..", the 
+execution gotos out:. This bypasses the down() of the semaphore, however the 
+semaphore still gets up()ed.
 
-Have a look at the dilnetpc.c map driver. It has to deal with 
-exactly this situation and it does so by using the mtd concat layer.
+The up without a corresponding down was, I hunch, unintended.
 
-Rob
+Maybe someone using the code would like to take a look.
 
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+
+-- Charles
