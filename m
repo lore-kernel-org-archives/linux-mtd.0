@@ -1,16 +1,15 @@
-Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AMPR2-0003So-3h
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Nov 2003 10:19:44 +0000
-Message-ID: <001701c3ae86$6a506450$170714ac@lukkino>
-From: "Luca Contini" <luca.contini@mediaenabling.com>
-To: "Linux-mtd" <linux-mtd@lists.infradead.org>
-Date: Wed, 19 Nov 2003 11:18:02 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: smartmedia block driver
+Received: from mail.timesys.com ([65.117.135.102] helo=exchange.timesys.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AMTwN-00049w-4F
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Nov 2003 15:08:23 +0000
+Date: Wed, 19 Nov 2003 10:06:45 -0500
+From: John Whitney <john.whitney@timesys.com>
+To: <linux-mtd@lists.infradead.org>
+Message-ID: <BBE0F135.26DA%john.whitney@timesys.com>
+Mime-version: 1.0
+Content-type: text/plain; charset="US-ASCII"
+Content-transfer-encoding: 7bit
+Subject: Suggested patch for mtdchar.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +19,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I've successfully completed the "read" part of a smartmedia driver for the
-Samsung board smdk2410.
-The Linux kernel is 2.4.18 (mandatory for this board)
-The driver is composed by 3 modules:
-s3c2410nand.o
-smdk2410.o
-mtdblock.o
+Hello,
 
-I've modified these sources in order to read the smartmedia and build up the
-logical to physical block address map.
-Now I am able to mount a vfat filesystem on the smartmedia:
-mount -t vfat /dev/mtdblock0 /mnt/smartmedia
+I've checked out the latest MTD source, and when I added it to my 2.6.0-pre9
+LinuxPPC kernel tree, encountered devfs issues with mtdchar.c.  Listed below
+is a patch created from my updated file.  Sorry if something about this has
+been posted before, but I didn't find any mention of it in the archives.
 
-My problem is that I have no idea about how to write sectors to smartmedia.
-I have already the low level function nand_write_ecc, but I need help from
-the logical side.
-When the mtdblock needs a logical sector (req->sector), I just use my table
-to translate the logical block address to physical block address (the low
-level driver module s3c2410nand.o reads only physical sectors) and pass this
-physical address to the nand_read_ecc function.
-I suppose that when I write, a new logical or physical address must be
-written in the OOB area of the requested block, but which is the logic?
-
-is anybody able to help me?
-
-regards
-
-Luca
+--- mtdchar.c.orig    2003-11-19 10:00:54.000000000 -0500
++++ mtdchar.c    2003-11-18 09:37:16.000000000 -0500
+@@ -24,10 +24,6 @@
+     .add    = mtd_notify_add,
+     .remove    = mtd_notify_remove,
+ };
+-
+-static devfs_handle_t devfs_dir_handle;
+-static devfs_handle_t devfs_rw_handle[MAX_MTD_DEVICES];
+-static devfs_handle_t devfs_ro_handle[MAX_MTD_DEVICES];
+ #endif
+ 
+ static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
+@@ -477,22 +473,15 @@
+ 
+ static void mtd_notify_add(struct mtd_info* mtd)
+ {
+-    char name[8];
+-
+     if (!mtd)
+         return;
+ 
+-    sprintf(name, "%d", mtd->index);
+-    devfs_rw_handle[mtd->index] = devfs_register(devfs_dir_handle, name,
+-            DEVFS_FL_DEFAULT, MTD_CHAR_MAJOR, mtd->index*2,
+-            S_IFCHR | S_IRUGO | S_IWUGO,
+-            &mtd_fops, NULL);
+-
+-    sprintf(name, "%dro", mtd->index);
+-    devfs_ro_handle[mtd->index] = devfs_register(devfs_dir_handle, name,
+-            DEVFS_FL_DEFAULT, MTD_CHAR_MAJOR, mtd->index*2+1,
+-            S_IFCHR | S_IRUGO,
+-            &mtd_fops, NULL);
++    devfs_mk_cdev (MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
++                   S_IFCHR | S_IRUGO | S_IWUGO,
++                   "mtd/%d", mtd->index);
++    devfs_mk_cdev (MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
++                   S_IFCHR | S_IRUGO | S_IWUGO,
++                   "mtd/%dro", mtd->index);
+ }
+ 
+ static void mtd_notify_remove(struct mtd_info* mtd)
+@@ -500,8 +489,8 @@
+     if (!mtd)
+         return;
+ 
+-    devfs_unregister(devfs_rw_handle[mtd->index]);
+-    devfs_unregister(devfs_ro_handle[mtd->index]);
++    devfs_remove ("mtd/%d", mtd->index*2);
++    devfs_remove ("mtd/%dro", mtd->index*2);
+ }
+ #endif
+ 
+@@ -515,7 +504,7 @@
+     }
+ 
+ #ifdef CONFIG_DEVFS_FS
+-    devfs_dir_handle = devfs_mk_dir(NULL, "mtd", NULL);
++    devfs_mk_dir("mtd");
+ 
+     register_mtd_user(&notifier);
+ #endif
+@@ -526,7 +515,7 @@
+ {
+ #ifdef CONFIG_DEVFS_FS
+     unregister_mtd_user(&notifier);
+-    devfs_unregister(devfs_dir_handle);
++    devfs_remove ("mtd");
+ #endif
+     unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
