@@ -1,20 +1,28 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAtSg-0002Ew-4U
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 12:34:38 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Frantisek Rysanek <Frantisek.Rysanek@post.cz>
-In-Reply-To: <4235D290.15983.3536316E@localhost>
-References: <4235D290.15983.3536316E@localhost>
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DAuvc-0002i5-LD
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 14:08:37 -0500
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e6.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJ8UnD020116
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:08:30 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j2EJ8U9J222638
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:08:30 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJ8TEA005239
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:08:29 -0500
+Received: from windu.rchland.ibm.com (windu.rchland.ibm.com [9.10.78.17])
+	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJ8Tl0005220
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:08:29 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Mon, 14 Mar 2005 18:34:36 +0100
-Message-Id: <1110821676.4814.53.camel@tglx.tec.linutronix.de>
+Date: Mon, 14 Mar 2005 13:08:12 -0600
+Message-Id: <1110827292.7642.26.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: lilo vs. diskonchip (again, sorry)
-Reply-To: tglx@linutronix.de
+Subject: lock bit and erase errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-03-14 at 18:06 +0100, Frantisek Rysanek wrote:
-> first of all I'd like to apologize for asking for help
-> while I still work with Linux 2.4 - I guess my problem
-> could be unrelated to the minor kernel version.
+Caveat:  I am using some pretty old code in this case, but the current
+code is also questionable so bear with me.
 
-:)
+I can't for the life of me figure out what the following code from
+do_erase_oneblock cfi_cmdset_0001.c is doing:
 
-> Is this something intrinsic to the re-implemented
-> DoC driver? Is "use docboot" the only right answer?
-> Or should the block device abstraction work to the
-> extent that Lilo should work, using BIOS services
-> to load the kernel?
+	/* check for lock bit */
+	if (status & CMD(0x3a)) {
+		unsigned char chipstatus = status;
+		if (status != CMD(status & 0xff)) {
+			int i = cfi->interleave;
+			for (i = 1; i<cfi->interleave; i++) {
+				      chipstatus |= status >> (cfi->device_type * 8);
+			}
+			printk(KERN_WARNING "Status is not identical for all chips: 0x%x. Merging to give 0x%02x\n", status, chipstatus);
+		}
 
-Never tried lilo with DoC. 
 
-> BTW, is docboot only intended for inftl devices, or
-> does it work for nftl DoC's too?
+My device is a 16-bit device, the interleave is 1, and I have a few
+blocks with the lock bit on.  When I do a write to /dev/mtdblock/0/0, an
+erase is attempted.  When I run an older version of this code, I get:
 
-Docboot seems to be written for and tested on INFTL devices, but it
-should be not that hard to make it work on NFTL DoCs. 
+"Status not identical for all chips: 0xa200.  Merging to give 0x00"
 
-Dan ??
+What I don't understand is how any of the above code is expected to
+work.  A 1 byte variable (chipstatus) is assigned a 4 byte value
+(status), which gets truncated.  Then status is shifted by 16 bits (in
+my case), which still means chipstatus is still 0.  When all is said and
+done, I get the merging printk but none of the checks below this code
+match.  That doesn't seem right...
 
-tglx
+I hacked the older code for my specific instance to do:
+
+chipstatus = status >> 8;
+
+and I get the proper return code for my situation (-EROFS).  I still
+don't get an error in the application writing to /dev/mtdblock/0/0, but
+at least the chip driver is actually returning an error.
+
+Any ideas?
+
+josh
