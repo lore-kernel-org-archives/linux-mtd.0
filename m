@@ -1,15 +1,17 @@
-Received: from web8103.in.yahoo.com ([203.199.70.30])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15p4He-0005Y7-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2001 09:55:10 +0100
-Message-ID: <20011004090331.26203.qmail@web8103.in.yahoo.com>
-Date: Thu, 4 Oct 2001 10:03:31 +0100 (BST)
-From: =?iso-8859-1?q?somshekar=20kadam?= <kadamsom@yahoo.co.in>
-Subject: Am29LV065D
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15p4b7-0005bO-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2001 10:15:17 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20011004090331.26203.qmail@web8103.in.yahoo.com> 
+References: <20011004090331.26203.qmail@web8103.in.yahoo.com> 
+To: =?iso-8859-1?q?somshekar=20kadam?= <kadamsom@yahoo.co.in>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Am29LV065D 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 04 Oct 2001 10:24:15 +0100
+Message-ID: <31099.1002187455@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,31 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi 
-    i using Am29LV065D chip 8mb
- i am able to read from the chip
-  when i write into it contents are not changed
-     i am using crix processor with rtlinux kernel
-2.4.1
-its getting timed out when i try to erase a  sector
-and coming out saying mtd erase failure
-any suggestions 
-thanks in advace
-somshekar 
+kadamsom@yahoo.co.in said:
+>     i using Am29LV065D chip 8mb
+>  i am able to read from the chip
+>   when i write into it contents are not changed
 
+Are you sure the Vpp (or Vpen) line is enabled when you try to write?
 
-
-
-
-
-
-
-
-
-
-
-
-
-____________________________________________________________
-Do You Yahoo!?
-Send a newsletter, share photos & files, conduct polls, organize chat events. Visit http://in.groups.yahoo.com
+--
+dwmw2
