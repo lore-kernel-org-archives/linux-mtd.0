@@ -1,14 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Jarkko Lavinen (NMP/Helsinki)" <jarkko.lavinen@nokia.com>
-In-Reply-To: <20040113125031.GA5146@angel.research.nokia.com>
-References: <20040113125031.GA5146@angel.research.nokia.com>
-Content-Type: text/plain
-Message-Id: <1074001140.17620.3.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 13 Jan 2004 13:39:00 +0000
-Content-Transfer-Encoding: 7bit
-cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 mount time
+Received: from moutng.kundenserver.de ([212.227.126.183])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AgQDz-0006mO-7K
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 15:12:59 +0000
+Received: from [212.227.126.206] (helo=mrelayng.kundenserver.de)
+	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 1AgQBu-00035p-00
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 16:10:50 +0100
+Received: from [10.100.100.154] by server5.adwin.de (GMS
+	9.01.3158/LG0047.00.c59c3165) with ESMTP id qsvibaaa for
+	linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 16:10:49 +0100
+Date: Tue, 13 Jan 2004 16:10:49 +0100
+To: linux-mtd@lists.infradead.org
+From: Markus Borchers <MBorchers@ADwin.de>
+Content-Type: text/plain; format=flowed; charset=utf-8
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID: <opr1py4bes8jdzbh@10.100.100.100>
+Subject: overwrite complete flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-13 at 14:50 +0200, Jarkko Lavinen (NMP/Helsinki) wrote:
-> Is there anything that could be done to reduce the mount time of large
-> JFFS2 partitions?  Lazy mounting with prioritized scanning?
+Hello everyone,
 
-We improved it a lot by not checking CRC32 on all nodes until later --
-but we still need to read the whole medium at mount time.
+during an firmware-update-process I want to overwrite the complete flash 
+with one image.
 
-We _can_ fix that. There's a limited amount of knowledge we're gaining
-from our scan at mount time. For each inode on the medium, we need:
-		Its nlink
-		A list of the physical addresses of all its nodes
+My system is an Intel IXP425-based custom board with RedBoot, linux 
+version 2.4.18, root on jffs2,
+5 MTD partitions on "IXP425 Flash":
+0x00000000-0x00040000 : "RedBoot"
+0x00040000-0x000e0000 : "kernel"
+0x00100000-0x007c0000 : "root"
+0x007c0000-0x007e0000 : "RedBoot config"
+0x007e0000-0x00800000 : "FIS directory"
 
-We currently read the whole of every eraseblock to work this out.
-However, we could write a block 'tailer' at the _end_ of each eraseblock
-as we fill it, containing enough information in compressed form about
-the contents of the eraseblock.
+I know that I can overwrite a complete partition (e.g. /dev/mtdblock1 = 
+kernel),
+but then the update-process depends on the partition table.
 
-That would mean that we only have to read a small proportion of each
-properly-finished eraseblock, and should speed up the mount
-significantly.
+I miss a device-file (like /dev/hda) to have access independent of any 
+partitions.
 
--- 
-dwmw2
+
+I found the implementation of the struct map_info ixp425_map in
+drivers/mtd/maps/ixp425.c with the functions
+read16:     ixp425_read16,
+write16:    ixp425_write16
+After exporting that symbol I can use this funktions with my own
+kernel-modul.
+
+The reading works but the writing not.
+
+
+Any hints?
+
+Thanks in advance!
+Markus
