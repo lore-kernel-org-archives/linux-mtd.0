@@ -1,17 +1,19 @@
-Received: from virtualro.ic.ro ([194.102.78.138])
+Received: from pd903ca3c.dip.t-dialin.net ([217.3.202.60] helo=lappi)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15JZOm-0004vi-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 12:40:20 +0100
-Received: from localhost (jani@localhost)
-	by virtualro.ic.ro (8.9.3/8.9.3) with ESMTP id OAA12006
-	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2001 14:46:59 +0300
-Date: Mon, 9 Jul 2001 14:46:59 +0300 (EEST)
-From: Jani Monoses <jani@astechnix.ro>
+	id 15JZl1-0004xE-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 13:03:21 +0100
+Received: from cemil by lappi with local (Exim 3.22 #1 (Debian))
+	id 15JZGX-00005r-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 13:31:49 +0200
+Date: Mon, 9 Jul 2001 13:31:47 +0200
 To: linux-mtd@lists.infradead.org
-Subject: jffs min_free_space
-Message-ID: <Pine.LNX.4.10.10107091439240.12001-100000@virtualro.ic.ro>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Again Problems with MTD and DoC 2000
+Message-ID: <20010709133147.B340@cemil.debian-linux.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=unknown-8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+From: Cemil Degirmenci <cemil@cemil.debian-linux.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +25,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
+Hello,
+i have again some problems with DiskOnChip.
 
-if minfreespace is erase_size <<2 does that mean that if the sector
-size in the flash is 128K the fs must necessarily be larger that 512K?
-I had a 512k fs and it wouldn-t create new file (ENOSP) only when I
-changed minfreespace to two sectors size.
+root@manuel:~ > lsmod
+Module                  Size  Used by
+docprobe                1600   0 
+mtdchar                 4752   0 
+nftl                   18944   0  (unused)
+doc2000                11200   0 
+docecc                  3616   0  [doc2000]
+mtdcore                 2192   2  [mtdchar nftl doc2000]
+root@manuel:~ > 
 
-Another Q:
-I grepped through the mtd sources and I didn-t find a place where flash
-blocks are unlocked explicitly.mtd->unlock is only called AFAICT in
-mtdchar but nowhere in mtdblock.So both jffs and jffs2 give EROFS when
-trying to write.I made ugly hacks to work around it but I was hoping there
-is a cleaner way andI overlooked something.The flash chips is 28FxxxC3
-so it boots with all blocks software locked.
+root@manuel:~ > cat /proc/mtd 
+dev:    size   erasesize  name
+mtd0: 00800000 00002000 "DiskOnChip 2000"
+root@manuel:~ > 
 
-Thanks,
-Jani.
+root@manuel:/home/cemil/mtd-20000704/util > ./nftl_format /dev/mtd0
+[ this takes about 5 minutes with 99%(!) CPU-Load ... ]
+MEMWRITEOOB at 4200: (null)
+MEMWRITEOOB at 6200: (null)
+MEMWRITEOOB at 8200: (null)
+MEMWRITEOOB at a200: (null)
+MEMWRITEOOB at c200: (null)
+MEMWRITEOOB at e200: (null)
+MEMWRITEOOB at 10200: (null)
+MEMWRITEOOB at 12200: (null)
+MEMWRITEOOB at 14200: (null)
+MEMWRITEOOB at 16200: (null)
+MEMWRITEOOB at 18200: (null)
+...
+...
+
+root@manuel:~ > mount /dev/mtd0 /doc/
+mount: /dev/mtd0  ist kein blockorientiertes Gerät. (means: "is not 
+a valid block device)
+root@manuel:~ > 
+
+a "cat /dev/mtd0" also needs a lot of time and CPU-Load but give no 
+result.
+
+The MTD is the MTD-Driver from Kernel 2.4.6-ac1
+
+Where is the fault? Is it my fault?
+
+mfg,
+
+Cemil
