@@ -1,20 +1,25 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D4bwO-0004n6-Q3
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2005 04:39:22 -0500
+	id 1D4c8M-0004z5-TK
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2005 04:51:44 -0500
 From: Thomas Gleixner <tglx@linutronix.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0502250931370.5525@phoenix.infradead.org>
-References: <20050224231739.LCON24441.mxfep03.bredband.com@mxfep03>
-	<Pine.LNX.4.58.0502250931370.5525@phoenix.infradead.org>
-Content-Type: text/plain
-Message-Id: <1109324349.3033.2.camel@lap02.tec.linutronix.de>
+To: Keshavamurthy Anil S <anil.s.keshavamurthy@intel.com>
+In-Reply-To: <20050224155559.A727@unix-os.sc.intel.com>
+References: <44BDAFB888F59F408FAE3CC35AB47041014F9285@orsmsx409>
+	<1109206700.8215.4.camel@windu.rchland.ibm.com>
+	<20050223171559.A23461@unix-os.sc.intel.com>
+	<1109259722.3796.22.camel@localhost.localdomain>
+	<20050224155559.A727@unix-os.sc.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <1109325105.3033.10.camel@lap02.tec.linutronix.de>
 Mime-Version: 1.0
-Date: Fri, 25 Feb 2005 10:39:09 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND Driver skeleton?
+Date: Fri, 25 Feb 2005 10:51:45 +0100
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, lorenzo@gun.org,
+	Lorenzo =?ISO-8859-1?Q?Hern=E1ndez_?= =?ISO-8859-1?Q?Garc=EDa-Hierro?=
+	<lorenzo@gnu.org>
+Subject: Re: xattr support  for JFFS3
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,23 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-02-25 at 10:31, Artem B. Bityuckiy wrote:
-> extabe@bredband.net wrote:
-> > Hi all!
-> > I will make a new NAND board driver for our own hardware. Is there a 
-> good and basic driver whitch I can start from?
-> > I saw drivers/mtd/nand/skeleton was mentioned in the "MTD NAND Driver 
-> Programming Interface" manual, but I cant find the skeleton anyware.
+On Fri, 2005-02-25 at 00:56, Keshavamurthy Anil S wrote:
+> On Thu, Feb 24, 2005 at 04:42:02PM +0100, Lorenzo Hernández García-Hierro wrote:
+> > I've read the tech. specs. of JFFS2 as David recommended to me, so, we
+> > should separate two possible solutions:
+> Can you please point me to the same spec.
 > > 
-> I don't know about drivers/mtd/nand/skeleton, but IMO nand_base.c contains 
-> good enough "skeleton" comprised on default handlers of NAND operations.
+> > 	- use a new node type(s)     <- what David likes (& wants AFAIK)
+> > 	- use reiserfs style-storage <- what I have done partially
 
-Na, nand_base.c is not a skeleton for a board driver.
-
-I never came around to hack the skeleton driver as I wanted to do it
-with platform_device support.
-
-Use one of the simple drivers like  edb7312.c or autcpu12.c as
-reference.
+I backup Davids POV. xattrs should go into new node type(s) rather than
+into the reiser style "everything is a directory" approach. It's an ugly
+hack. I prefer designed functionality over the patchwork approach. I
+know that it will take more time, but it will fit better and will be
+easier to maintain.
 
 tglx
