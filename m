@@ -1,20 +1,22 @@
-Received: from buserror-extern.convergence.de ([212.84.236.66] helo=jupiter)
+Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1812pR-000530-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 11:52:05 +0100
-Received: from neuber by jupiter with local (Exim 3.35 #1 (Debian))
-	id 1812pO-0000Ai-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 12:52:02 +0200
-Date: Mon, 14 Oct 2002 12:52:02 +0200
-From: Frank Neuber <neuber@convergence.de>
+	id 1816Md-0005MM-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 15:38:35 +0100
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
+	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id g9ECefLT018710
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 14:40:42 +0200
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id QAA19603
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 16:38:32 +0200 (CEST)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3DAAD6E8.CC106C8D@imc-berlin.de>
+Date: Mon, 14 Oct 2002 16:38:32 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: Virtual MTD-Device
-Message-ID: <20021014105202.GA643@jupiter>
-References: <20021014092738.GA21251@jupiter>
-Mime-Version: 1.0
+Subject: What means "Inode #10 was a directory with children" ?
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20021014092738.GA21251@jupiter>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,18 +28,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, Oct 14, 2002 at 11:27:38AM +0200, Frank Neuber wrote:
-Hi again,
-> I'm looking for things like LVM or Softraid what only support striping 
-> in the MTD-Driver. Also it should be simple enough that the bootloader
-> can handle this.
-> Has anyone thought about this problem, maybe there is a ready to run solution :-))
-I feel that mtdconcat is that what I need :-)
+Hi there,
 
-Regards,
- Frank 
--- 
-Dipl.-Ing. Elektrotechnik           convergence / HW
-Frank Neuber                        Rosenthalerstr.51 / 10178 Berlin
-Email:  neuber@convergence.de           Phone:  +49(0)30-72 62 06 76
-WWW:    www.convergence.de              Fax:    +49(0)30-72 62 06 55
+I am using MTD/JFFS2 as root fs for my embedded system for some time now.
+It was working fine.
+But as my image grows bigger and bigger I get strange errors:
+
+While booting Linux I get
+...
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Inode #10 was a directory with children - removing those too...
+Inode #11 was a directory with children - removing those too...
+VFS: Mounted root (jffs2 filesystem).
+Freeing unused kernel memory: 52k init
+...
+
+What does that mean?
+
+Sometimes he's complaining about hardlinks.
+Then for instance some links are not working correctly, i.e. power should be a
+link to busybox but has size zero.
+
+/etc/pcmcia should be a directory, but is a file containing garbage (i.e. some
+text that should be in a file in this directory).
+
+I am using linux-2.4.19 on a ppc platform.
+
+Thanks very much!
+
+Steven
