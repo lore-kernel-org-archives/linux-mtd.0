@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C6Yn4-0003Eq-Fx
-	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2004 14:09:31 -0400
-Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 657BD2288E
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 12 Sep 2004 22:08:56 +0400 (MSD)
-Message-ID: <414490B8.8050304@yandex.ru>
-Date: Sun, 12 Sep 2004 22:08:56 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1C6ZPJ-0003Qx-LS
+	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2004 14:49:04 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+In-Reply-To: <414490B8.8050304@yandex.ru>
+References: <414490B8.8050304@yandex.ru>
+Content-Type: text/plain
+Message-Id: <1095014499.13571.166.camel@thomas.tec.linutronix.de>
+Mime-Version: 1.0
+Date: Sun, 12 Sep 2004 20:41:39 +0200
 Content-Transfer-Encoding: 7bit
-Subject: NAND page programm
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND page programm
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello guys.
+On Sun, 2004-09-12 at 20:08, Artem B. Bityuckiy wrote:
+> Hello guys.
+> 
+> As I understand the NAND_CMD_READ0 command is the "read whole page" 
+> command. What doed the NAND_CMD_READ1 command exactly mean? Is there 
+> some fixed semantic? (see linux/mtd/nand.h)
 
-As I understand the NAND_CMD_READ0 command is the "read whole page" 
-command. What doed the NAND_CMD_READ1 command exactly mean? Is there 
-some fixed semantic? (see linux/mtd/nand.h)
+NAND_CMD_READ0 sets the offset to the start of a page.
+NAND_CMD_READ1 sets the offset to 256. This is only available on chips
+with a pagesize = 512. 
 
-Thanks.
+What are you looking for ?
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+tglx
