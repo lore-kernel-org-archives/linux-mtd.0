@@ -1,36 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141Xy6-0007ic-00
-	for mtd-list@infradead.org; Thu, 30 Nov 2000 17:58:02 +0000
-From: "Levi Khatskevitch" <lkhatskevitch@hotmail.com>
-To: dwmw2@infradead.org
-Cc: linuxbios@lanl.gov, mtd@infradead.org
+	id 141ZQ0-0008CU-00
+	for mtd-list@infradead.org; Thu, 30 Nov 2000 19:30:56 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 141ZPx-0008CO-00
+	for mtd@infradead.org; Thu, 30 Nov 2000 19:30:55 +0000
+Date: Thu, 30 Nov 2000 19:29:59 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Levi Khatskevitch <lkhatskevitch@hotmail.com>
+cc: <linuxbios@lanl.gov>,  <mtd@infradead.org>
 Subject: Re: init_doc2001 and init_doc2000 are hidden from init_mtd
-Date: Thu, 30 Nov 2000 12:57:24 -0500
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <LAW-F59F8HGmCvoXM7e00005533@hotmail.com>
+In-Reply-To: <LAW-F59F8HGmCvoXM7e00005533@hotmail.com>
+Message-ID: <Pine.LNX.4.30.0011301929370.5857-100000@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
->Fixed. As is the increasingly negative use count.
->
->--
->dwmw2
->
->
+On Thu, 30 Nov 2000, Levi Khatskevitch wrote:
 
-David,
+> I've just tested the new code, the doc2001 use count still gets increasingly
+> negative on each access to /dev/mtd0. Like:
 
-I've just tested the new code, the doc2001 use count still gets increasingly 
-negative on each access to /dev/mtd0. Like:
+Are you sure you rebuilt mtdchar.o?
 
-dd if=/dev/mtd0 count=1 of=/dev/null
+-- 
+dwmw2
 
-on all other instances (mount, etc...) it works fine now.
-- Levi
-_____________________________________________________________________________________
-Get more from the Web.  FREE MSN Explorer download : http://explorer.msn.com
 
 
 
