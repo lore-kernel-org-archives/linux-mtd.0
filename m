@@ -1,19 +1,17 @@
-Received: from endruntechnologies.com ([130.94.228.14])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Asz3Y-00046U-Gw
-	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2004 06:50:08 +0000
-Received: from unknown (HELO endruntechnologies.com) ([67.169.85.122])
-	(envelope-sender <bmpenrod@endruntechnologies.com>)
-	by 130.94.228.14 (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 17 Feb 2004 06:50:05 -0000
-Message-ID: <4031B99C.2040908@endruntechnologies.com>
-Date: Mon, 16 Feb 2004 22:50:04 -0800
-From: Bruce Penrod <bmpenrod@endruntechnologies.com>
+Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
+	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1At7Rc-0004z7-AR
+	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2004 15:47:32 +0000
+Message-ID: <40323792.3050209@arcom.com>
+Date: Tue, 17 Feb 2004 15:47:30 +0000
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+References: <4030D2AB.7010002@arcom.com>
+In-Reply-To: <4030D2AB.7010002@arcom.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 messages at shutdown
+Subject: Re: CFI command set 0002 (AMD/Fujitsu) work.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using the MTD/JFFS2 contained in kernel 2.4.20 on a board with a 
-FLASH configuration that is essentially the AMD NETSC520 evaluation 
-board, i.e. two AM29LV641 chips on a 32 bit bus.  The erase block size 
-for the two chips together is 128KB.  I have two JFFS2 partitions, each 
-having 1024KB, so I meet the 5 erase blocks minimum requirement. 
-Everything seems to be working OK, and has been for quite some time. 
-However, there does seem to be a discrepancy between what df reports on 
-the jffs2 partitions and what the actual files sizes stored there are. 
-Perhaps this has been fixed in a later version?
+David Vrabel wrote:
+> 
+> I'm currently working on cfi_cmdset_0002.c to get erase-suspend-program 
+> working.
 
-The other question I have is whether or not to worry about these
-messages, which are displayed while INIT is running the shutdown script:
+Erase-suspend-program is still disabled...
 
-jffs2: No clean _or_ dirty blocks to GC from! Where are they all?
-jffs2: Couldn't find erase block to garbage collect!
+> So far I've taken all the chip status checking code and 
+> refactored it into a single function -- it was all a bit of a mess.
 
-Thanks,
+This has been done and checked into CVS.  I believe I haven't broken 
+anything.  Users of interleaved AMD chips may wish to check I didn't 
+miss anything.
 
-Bruce
+> 1. There's a fair amount of crap related to very broken SST chips (all 
+> the stuff for retrying commands). I'd suggest removing this stuff from 
+> cfi_cmdset_0002.c.
+
+This has now been removed from CVS.
+
+David Vrabel
+-- 
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
