@@ -1,16 +1,17 @@
 Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ch9W7-000261-8b
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 11:39:16 -0500
+	id 1Ch9aK-0002Fl-PB
+	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 11:43:38 -0500
 From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>
-Date: Wed, 22 Dec 2004 17:39:08 +0100
-Message-ID: <JPEALJAFNGDDLOPNDIEEAEKMCPAA.joakim.tjernlund@lumentis.se>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>,
+   "Jörn Engel" <joern@wohnheim.fh-wedel.de>
+Date: Wed, 22 Dec 2004 17:43:31 +0100
+Message-ID: <JPEALJAFNGDDLOPNDIEEKEKMCPAA.joakim.tjernlund@lumentis.se>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20041222155624.GA9783@wohnheim.fh-wedel.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0412221610230.30689@phoenix.infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Linux MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: RE: JFFS3 & performance
@@ -23,70 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Wed, 22 December 2004 16:30:20 +0100, Joakim Tjernlund wrote:
-> > 
-> > Can you do
-> > 1) First run a forward and then a backward version on memory space >= 2*L1 cache
-> > 2) Then do two forward runs on the same memory.
-> > 
-> > Compare the delta between 1) and 2)
-> > That should give a clue if it is worth having a backward version.
-> 
-> In my private not-too-scientific hash-table test, I do a strlen()
-> before calling engel32.  The reverse version is 1.5% faster, even
-> though the strings are in the 80byte arena.  That's well over noise
-> level.
+> On Wed, 22 Dec 2004, [iso-8859-1] Jörn Engel wrote:
+>
+> > On Wed, 22 December 2004 15:56:23 +0000, Artem B. Bityuckiy wrote:
+> > >
+> > > Preliminarily I'm planning:
+> > > 1. Use adler32 on headers
+> > > 2. Leave crc32 on data
+> >
+> > Why keep crc32?
+> This is just my IMHO: headers are small and the probability that serious
+> error appear there is lower that the probability of error on data. So it
+> seems we may reduce crc strength for them.
 
-OK, then there might be worth considering a reverse checksum.
+Maybe, but it is the data CRC that costs. I don't think you will notice
+the difference if you just change the header CRC to Adler32.
 
-> 
-> > > Adler32 beats the hell out of every other algorithm.  Except for the
-> > > backwards part, it appears to be a clear winner.
-> > 
-> > Have you look at the assembler Engler32 generates? Every instruction counts
-> > in such small loops.
-> 
-> Not yet.  Might be worth a try, though.  Since it's losing in direct
-> comparison, but equal in the hash test, it might be slightly stronger
-> than adler32.
+>
+> In case of data - I just not sure if it is correct to use weaker
+> algorithm...
+> If somebody compitent may soundly explain why we may reduce CRC strength
+> there...
+>
+> Anyway, saing zlib not to add adler32 CRC is good idea and I think should
+> be done.
 
-This generates a little better code on PPC.
-Not tested.
-
-uint32_t engel32r_new(uint32_t engel, const void *_s, size_t len)
-{
-	const char *s = _s + len;
-	uint32_t sum=engel, prod=engel;
-	size_t new_len = len >> 2; 
-	len &=3;
-
-	for ( ;new_len; --new_len) {
-		sum += *--s;
-		prod += sum;
-		sum += *--s;
-		prod += sum;
-		sum += *--s;
-		prod += sum;
-		sum += *--s;
-		prod += sum;
-	}
-	for (; len; len--) {
-		sum += *--s;
-		prod += sum;
-	}
-	sum = (sum&0x0000ffff)<<16^ (sum&0xffff0000)>>16;
-	sum = (sum&0x00ff00ff)<<8 ^ (sum&0xff00ff00)>>8;
-	sum = (sum&0x0f0f0f0f)<<4 ^ (sum&0xf0f0f0f0)>>4;
-	sum = (sum&0x33333333)<<2 ^ (sum&0xcccccccc)>>2;
-	sum = (sum&0x55555555)<<1 ^ (sum&0xaaaaaaaa)>>1;
-	prod ^= sum;
-	return prod;
-}
-> 
-> BTW: I reject the name "Engler32".  Few names are worse than
-> "engel32", but that one is. ;)
-
-I am so sorry, I felt something was wrong when I wrote that but I didn't
-check, my bad.
+Yes, that one is independant of what CRC algorithm we choose.
 
  Jocke
