@@ -1,15 +1,15 @@
 Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HUWX-0000KS-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 19:40:33 +0000
-Message-ID: <3CF3D7FB.5020500@redswitch.com>
-Date: Tue, 28 May 2002 12:18:19 -0700
+	id 18HUda-0000L2-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 19:47:51 +0000
+Message-ID: <3DE67BC1.2090906@redswitch.com>
+Date: Thu, 28 Nov 2002 12:25:37 -0800
 From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
-Subject: MTD access problem
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [Fwd: MTD access problem]
+Content-Type: multipart/mixed;
+ boundary="------------030600020907070205020607"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,6 +20,34 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+This is a multi-part message in MIME format.
+--------------030600020907070205020607
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Sorry, the last email has wrong date.
+
+- Shawn.
+
+--------------030600020907070205020607
+Content-Type: message/rfc822;
+ name="MTD access problem"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="MTD access problem"
+
+Message-ID: <3CF3D7FB.5020500@redswitch.com>
+Date: Tue, 28 May 2002 12:18:19 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+Organization: RedSwitch Inc.
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.1) Gecko/20020826
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
+Subject: MTD access problem
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
 I'm experiencing a strange mtd access problem when two threads try to 
 access two different mtd devices which are in the same chip (using CS0). 
@@ -88,3 +116,6 @@ void rs_put_mtd_device(struct mtd_info *mtd)
 
 EXPORT_SYMBOL(rs_get_mtd_device);
 EXPORT_SYMBOL(rs_put_mtd_device);
+
+
+--------------030600020907070205020607--
