@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Rc7s-0000tt-00
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2002 16:44:24 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C48504B.68F8FE7F@comdev.cc> 
-References: <3C48504B.68F8FE7F@comdev.cc>  <20020118010528.A22777@swing.comdev.cc> 
-To: Adam Wozniak <adam.wozniak@comdev.cc>
-Cc: linux-mtd@lists.infradead.org, ateam@comdev.cc
-Subject: Re: need help interpreting debug output from JFFS2 
-Mime-Version: 1.0
+Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16ReyH-00013v-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2002 19:46:41 +0000
+Message-ID: <3C487D9A.D85DDC3D@comdev.cc>
+Date: Fri, 18 Jan 2002 11:55:06 -0800
+From: Adam Wozniak <adam.wozniak@comdev.cc>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: optimum geometry
+References: <3C48504B.68F8FE7F@comdev.cc>  <20020118010528.A22777@swing.comdev.cc> <28158.1011372920@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 18 Jan 2002 16:55:20 +0000
-Message-ID: <28158.1011372920@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +22,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-adam.wozniak@comdev.cc said:
->  Still tracking problems.  I've set JFFS2 debug level to 1. Does the
-> output below indicate any horrible evil bugginess or
-> unrecoverableness? Or is it just normal chatty debugging spew? 
+I've got 8 x 8 bit chips forming my 64 bit wide flash area.
+An erase block on a single chip is 128K bytes, so I've really
+got 128K * 8 == 1024 K == 1 M erase blocks.  My JFFS2 partition
+is 96 Megs, so I've only got 96 erase blocks.
 
-That lot is harmless, at first scan.
+I'm beginning to fear that this is far from optimum.  What is an
+optimum erase block size?
 
---
-dwmw2
+I could drop back and rewrite the MTD driver to address each
+chip seperately, but I'm concerned that would be both messy and
+tough on performance.
+
+Thoughts?
+
+-- 
+Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
+awozniak@comdev.cc      3450 Broad St. 107, San Luis Obispo, CA 93401
+                        http://www.comdev.cc
+                        Voice: (805) 544-1089       Fax: (805) 544-2055
