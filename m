@@ -1,19 +1,24 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from scan1.fhg.de ([153.96.1.35])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1616Pg-0007wF-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 13:37:12 +0000
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: mkfs.jffs2 propsal and a question about burst reads 
-Date: Tue, 6 Nov 2001 14:45:11 +0100
-Message-ID: <IGEFJKJNHJDCBKALBJLLMENKEPAA.joakim.tjernlund@lumentis.se>
+	id 1616el-0007xX-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 13:52:47 +0000
+Received: from scan1.fhg.de (localhost [127.0.0.1])
+	by scan1.fhg.de (8.11.1/8.11.1) with ESMTP id fA6E22W28443
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:02 +0100 (MET)
+Received: from iese.iese.fhg.de (iese.iese.fhg.de [153.96.133.2])
+	by scan1.fhg.de (8.11.1/8.11.1) with ESMTP id fA6E21P28435
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:01 +0100 (MET)
+Received: from iese.fhg.de (pc144.iese.fhg.de [153.96.133.70])
+	by iese.iese.fhg.de (8.9.3/8.9.3) with ESMTP id PAA24165
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:00 +0100 (MET)
+Message-ID: <3BE7ED58.EEB937BA@iese.fhg.de>
+Date: Tue, 06 Nov 2001 15:02:00 +0100
+From: Alexander Kubicki <kubicki@iese.fhg.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <15058.1005052844@redhat.com>
+To: linux-mtd@lists.infradead.org
+Subject: PCMCIA linear Flash (5V read/write)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,37 +30,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> joakim.tjernlund@lumentis.se said:
-> >    I find it unconvinient and time consuming to erase the WHOLE flash partiton
-> >    before I can install a new FS image. Therefore I wonder if it would
-> >    be possible to add some flag/end marker in JFFS2 that mkfs.jffs2 could
-> >    set, so that JFFS2 knows that the flash space after the maker does not
-> >    contain valid JFFS2 data. Once JFFS2 has recongnized its FS, JFFS2 would
-> >    delete the end marker and resume normal behaviour. 
-> 
-> Then JFFS2 would just have to erase the blocks in question anyway. Better 
-> to just fix your bootloader or whatever you use to program the image in the 
-> first place so that it erases any sectors which need it, and puts a clean 
-> marker in them.
+Hi all,
 
-hmm, I don't follow you here. I don't mind that much that the blocks are erased
-again by JFFS2, since it will(should) be a background job, but I would like
-like to be able to tell JFFS2 whatever is after the initial image should be
-considered non valid JFFS2 data and be put on the "to be erased" queue. 
+I´m using a compatible AMD Flash D-Series 4MB PCMCIA Card from Kingmax
+(http://www.tecsys.de/memory_frame.htm)
+I want to erase it blockwise or whole card and write to it adresswise as
+a raw device.
+The tool "wrflash" (http://www.telos.de/download/default_e.htm#alios (in
+alios_source)) is designed for this purpose but crashes because of a
+segmentation fault. The same with ftl_format (only for testing)
 
-> 
-> >    I am using Intel Strata Flash and this flash can do burst reads, so was
-> >    thinking that if I were to enable burst read I would gain performance. 
-> 
-> You need chipset magic to do that.
+The card is recognized by linux (cardctl info, cardctl ident, ftl_check
+/dev/mem0c0c).
+Other PCMCIA-Cards (CompactFlash with Adapter, Adaptec-SCSI) work fine.
 
-I have the chipset magic(I think). I am using a MPC860 that has 
-User Programmable Machine's(UPM). I am using one UPM to control my SDRAM
-and the other UPM could be used to control the Flash. 
+I use SuSE Linux 7.2 (standard SUSE Kernel 2.4.4  / cardmgr 3.1.25)
 
-> 
-> --
-> dwmw2
-> 
-> 
+Can you provide some information?
+Thanks in advance
+
+Alexander
