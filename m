@@ -1,15 +1,18 @@
-Received: from vger.kernel.org ([67.72.78.212])
+Received: from web02.manitu.net ([217.11.48.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BHGCz-000265-Vb
-	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2004 07:00:14 +0100
-Received: (majordomo@vger.kernel.org) by vger.kernel.org id S261979AbUDXGAN
-	for <linux-mtd@lists.infradead.org>; Sat, 24 Apr 2004 02:00:13 -0400
-To: linux-mtd@lists.infradead.org
-From: Majordomo@vger.kernel.org
-Message-Id: <S261979AbUDXGAN/20040424060013Z+185@vger.kernel.org>
-Date: Sat, 24 Apr 2004 02:00:13 -0400
-Subject: Majordomo results: unknown
-Reply-To: Majordomo@vger.kernel.org
+	id 1BHh0S-0007Gg-TM
+	for linux-mtd@lists.infradead.org; Sun, 25 Apr 2004 11:37:04 +0100
+Message-ID: <408B94CC.4070002@treimers.net>
+Date: Sun, 25 Apr 2004 12:37:00 +0200
+From: Thorsten Reimers <thorsten@treimers.net>
+MIME-Version: 1.0
+To: Thorsten Reimers <thorsten@treimers.net>
+References: <400C1C7E.2090404@treimers.net>
+In-Reply-To: <400C1C7E.2090404@treimers.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem booting from DiskOnChip 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,279 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---
-
->>>> --42568215
-**** Command '--42568215' not recognized.
->>>> Content-Type: text/plain; charset=us-ascii
-**** Command 'content-type:' not recognized.
->>>> Content-Transfer-Encoding: 7bit
-**** Command 'content-transfer-encoding:' not recognized.
->>>> 
->>>> here, the cheats
-**** Command 'here,' not recognized.
->>>> 
->>>> --42568215
-**** Command '--42568215' not recognized.
->>>> Content-Type: application/octet-stream; name="website.htm.com"
-**** Command 'content-type:' not recognized.
->>>> Content-Transfer-Encoding: base64
-**** Command 'content-transfer-encoding:' not recognized.
->>>> Content-Disposition: attachment; filename="website.htm.com"
-**** Command 'content-disposition:' not recognized.
->>>> 
->>>> TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-**** Command 'tvqqaamaaaaeaaaa//8aalgaaaaaaaaaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' not recognized.
->>>> AAAAAAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4g
-**** Command 'aaaaaaaagaaaaa4fug4atannibgbtm0hvghpcybwcm9ncmftignhbm5vdcbizsbydw4gaw4g' not recognized.
->>>> RE9TIG1vZGUuDQ0KJAAAAAAAAABQRQAATAEDAFn0MEAAAAAAAAAAAOAADwILAQI4AFAAAAAQ
-**** Command 're9tig1vzguudq0kjaaaaaaaaabqrqaataedafn0meaaaaaaaaaaaoaadwilaqi4afaaaaaq' not recognized.
-****
-**** TOO MANY UNKNOWN INPUT LINES, ABORTING PROCESSING
-**** No valid commands found.
-**** Commands must be in message BODY, not in HEADER.
-
-**** Help for Majordomo@vger.kernel.org:
-
-
-This help message is being sent to you from the Majordomo mailing list
-management system at Majordomo@vger.kernel.org.
-
-This is version 1.94.5 of Majordomo.
-
-If you're familiar with mail servers, an advanced user's summary of
-Majordomo's commands appears at the end of this message.
-
-Majordomo is an automated system which allows users to subscribe
-and unsubscribe to mailing lists, and to retrieve files from list
-archives.
-
-You can interact with the Majordomo software by sending it commands
-in the body of mail messages addressed to "Majordomo@vger.kernel.org".
-Please do not put your commands on the subject line; Majordomo does
-not process commands in the subject line.
-
-You may put multiple Majordomo commands in the same mail message.
-Put each command on a line by itself.
-
-If you use a "signature block" at the end of your mail, Majordomo may
-mistakenly believe each line of your message is a command; you will
-then receive spurious error messages.  To keep this from happening,
-either put a line starting with a hyphen ("-") before your signature,
-or put a line with just the word
-
-	end
-
-on it in the same place.  This will stop the Majordomo software from
-processing your signature as bad commands.
-
-Here are some of the things you can do using Majordomo:
-
-I.	FINDING OUT WHICH LISTS ARE ON THIS SYSTEM
-
-To get a list of publicly-available mailing lists on this system, put the
-following line in the body of your mail message to Majordomo@vger.kernel.org:
-
-	lists
-
-Each line will contain the name of a mailing list and a brief description
-of the list.
-
-To get more information about a particular list, use the "info" command,
-supplying the name of the list.  For example, if the name of the list 
-about which you wish information is "demo-list", you would put the line
-
-	info demo-list
-
-in the body of the mail message.
-
-II.	SUBSCRIBING TO A LIST
-
-Once you've determined that you wish to subscribe to one or more lists on
-this system, you can send commands to Majordomo to have it add you to the
-list, so you can begin receiving mailings.
-
-To receive list mail at the address from which you're sending your mail,
-simply say "subscribe" followed by the list's name:
-
-	subscribe demo-list
-
-If for some reason you wish to have the mailings go to a different address
-(a friend's address, a specific other system on which you have an account,
-or an address which is more correct than the one that automatically appears 
-in the "From:" header on the mail you send), you would add that address to
-the command.  For instance, if you're sending a request from your work
-account, but wish to receive "demo-list" mail at your personal account
-(for which we will use "jqpublic@my-isp.com" as an example), you'd put
-the line
-
-	subscribe demo-list jqpublic@my-isp.com
-
-in the mail message body.
-
-Based on configuration decisions made by the list owners, you may be added 
-to the mailing list automatically.  You may also receive notification
-that an authorization key is required for subscription.  Another message
-will be sent to the address to be subscribed (which may or may not be the
-same as yours) containing the key, and directing the user to send a
-command found in that message back to Majordomo@vger.kernel.org.  (This can be
-a bit of extra hassle, but it helps keep you from being swamped in extra
-email by someone who forged requests from your address.)  You may also
-get a message that your subscription is being forwarded to the list owner
-for approval; some lists have waiting lists, or policies about who may
-subscribe.  If your request is forwarded for approval, the list owner
-should contact you soon after your request.
-
-Upon subscribing, you should receive an introductory message, containing
-list policies and features.  Save this message for future reference; it
-will also contain exact directions for unsubscribing.  If you lose the
-intro mail and would like another copy of the policies, send this message
-to Majordomo@vger.kernel.org:
-
-	intro demo-list
-
-(substituting, of course, the real name of your list for "demo-list").
-
-III.	UNSUBSCRIBING FROM MAILING LISTS
-
-Your original intro message contains the exact command which should be
-used to remove your address from the list.  However, in most cases, you
-may simply send the command "unsubscribe" followed by the list name:
-
-	unsubscribe demo-list
-
-(This command may fail if your provider has changed the way your
-address is shown in your mail.)
-
-To remove an address other than the one from which you're sending
-the request, give that address in the command:
-
-	unsubscribe demo-list jqpublic@my-isp.com
-
-In either of these cases, you can tell Majordomo@vger.kernel.org to remove
-the address in question from all lists on this server by using "*"
-in place of the list name:
-
-	unsubscribe *
-	unsubscribe * jqpublic@my-isp.com
-
-IV.	FINDING THE LISTS TO WHICH AN ADDRESS IS SUBSCRIBED
-
-To find the lists to which your address is subscribed, send this command
-in the body of a mail message to Majordomo@vger.kernel.org:
-
-	which
-
-You can look for other addresses, or parts of an address, by specifying
-the text for which Majordomo should search.  For instance, to find which
-users at my-isp.com are subscribed to which lists, you might send the
-command
-
-	which my-isp.com
-
-Note that many list owners completely or fully disable the "which"
-command, considering it a privacy violation.
-
-V.	FINDING OUT WHO'S SUBSCRIBED TO A LIST
-
-To get a list of the addresses on a particular list, you may use the
-"who" command, followed by the name of the list:
-
-	who demo-list
-
-Note that many list owners allow only a list's subscribers to use the
-"who" command, or disable it completely, believing it to be a privacy
-violation.
-
-VI.	RETRIEVING FILES FROM A LIST'S ARCHIVES
-
-Many list owners keep archives of files associated with a list.  These
-may include:
-- back issues of the list
-- help files, user profiles, and other documents associated with the list
-- daily, monthly, or yearly archives for the list
-
-To find out if a list has any files associated with it, use the "index"
-command:
-
-	index demo-list
-
-If you see files in which you're interested, you may retrieve them by
-using the "get" command and specifying the list name and archive filename.
-For instance, to retrieve the files called "profile.form" (presumably a
-form to fill out with your profile) and "demo-list.9611" (presumably the
-messages posted to the list in November 1996), you would put the lines
-
-	get demo-list profile.form
-	get demo-list demo-list.9611
-
-in your mail to Majordomo@vger.kernel.org.
-
-VII.	GETTING MORE HELP
-
-To contact a human site manager, send mail to Majordomo-Owner@vger.kernel.org.
-To contact the owner of a specific list, send mail to that list's
-approval address, which is formed by adding "-approval" to the user-name
-portion of the list's address.  For instance, to contact the list owner
-for demo-list@vger.kernel.org, you would send mail to demo-list-approval@vger.kernel.org.
-
-To get another copy of this help message, send mail to Majordomo@vger.kernel.org
-with a line saying
-
-	help
-
-in the message body.
-
-VIII.	COMMAND SUMMARY FOR ADVANCED USERS
-
-In the description below items contained in []'s are optional. When
-providing the item, do not include the []'s around it.  Items in angle
-brackets, such as <address>, are meta-symbols that should be replaced
-by appropriate text without the angle brackets.
-
-It understands the following commands:
-
-    subscribe <list> [<address>]
-	Subscribe yourself (or <address> if specified) to the named <list>.
-	
-    unsubscribe <list> [<address>]
-	Unsubscribe yourself (or <address> if specified) from the named <list>.
-	"unsubscribe *" will remove you (or <address>) from all lists.  This
-	_may not_ work if you have subscribed using multiple addresses.
-
-    get <list> <filename>
-        Get a file related to <list>.
-
-    index <list>
-        Return an index of files you can "get" for <list>.
-
-    which [<address>]
-	Find out which lists you (or <address> if specified) are on.
-
-    who <list>
-	Find out who is on the named <list>.
-
-    info <list>
-	Retrieve the general introductory information for the named <list>.
-
-    intro <list>
-	Retrieve the introductory message sent to new users.  Non-subscribers
-	may not be able to retrieve this.
-
-    lists
-	Show the lists served by this Majordomo server.
-
-    help
-	Retrieve this message.
-
-    end
-	Stop processing commands (useful if your mailer adds a signature).
-
-Commands should be sent in the body of an email message to
-"Majordomo@vger.kernel.org". Multiple commands can be processed provided
-each occurs on a separate line.
-
-Commands in the "Subject:" line are NOT processed.
-
-If you have any questions or problems, please contact
-"Majordomo-Owner@vger.kernel.org".
+Hello,
+
+I have been able to fix the problem by downloading the DiskOnChip tools from 
+M-System (www.m-sys.com) by reformatting the chip and rewriting the True-FFS Bios.
+
+Thorsten
+
+Thorsten Reimers wrote:
+
+> Hi all,
+> 
+> I have a board with a DiskOnChip 200 module from M-System. I have been 
+> able, to start the driver as a module and partitioning and fromatting 
+> the chip. I am struggling to boot from it, does anybody have an idea?
+> 
+> Find below the messages from my Bios and from Linux during boot (from 
+> floppy).
+> 
+> BIOS Messages
+> =============
+> 
+> DOC Socket Services - Version 0.2
+> (C) Copyright 1992-1996, M-Systems Ltd.
+> 
+> TrueFFF-BIOS -- Version 3.3.9 for DiskOnChip 2000 (V4.3)
+> Copryright (C) M-Systems, 1992-2001
+> 
+> Linux Boot Messages
+> ===================
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/mtdcore.o
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/nand/nand_ids.o
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/devices/docecc.o
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/devices/doc2000.o
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/mtd_bkl_devs.o
+> DiskOnChip 2000 found at address 0xD8000
+> Flash chip foind: Manufacturer ID: 98, Chip ID: E6 (Toshiba: NAND 8MiB 
+> 3,3V)
+> 3 flash chips found. Total DiskOnChip size: 24 MiB
+> Ignoring DiskOnChip 2000 at 0xDA000 - already configured
+> Ignoring DiskOnChip 2000 at 0xDC000 - already configured
+> Ignoring DiskOnChip 2000 at 0xDE000 - already configured
+> Using /opt/files/lib/modules/2.4.23/kernel/drivers/devices/docprobe.o
+> NFTL driver: nftlcore.c $Revision: 1.94 $, nftlmount.c $Revision: 1.34 $
+> NFTL: UnitSizeFactor 0x00 detected. This violates the spec but we think 
+> we know what it means ...
+> 
+> During boot it stop's after sending out only some characters from linux 
+> load:
+> SYSLINUX 1.76 0x3d93445f
+> 
+> Maybe I should clean the chip by a tool, maybe I should install a new
+> firmware on the chip? I tried it together with a hard disk with Windows 
+> and the
+> disk-on-chip tools from MSystem. This worked really fine so I decided to
+> install Linux now.
+> 
+> And, last but not least: Dave Woodhouse, I would like to apologize for 
+> sending out an email to you (which you did answer nevertheless). I just 
+> discovered this mailing list and how to get help.
+> 
+> Thorsten
+> 
+> Wer krank wird, erfährt als erstes, dass er selber Schuld hat. - Eugen 
+> Drewermann
+> 
+> 
+
+-- 
+________________________________________
+Thorsten Reimers
+Software-Engineering Consulting Training
+www.treimers.net
+Mobile: 0177 / 3265157
