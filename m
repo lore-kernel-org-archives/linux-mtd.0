@@ -1,98 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14OnHi-0003L3-00
-	for mtd-list@infradead.org; Fri, 02 Feb 2001 20:58:22 +0000
-Received: from brand.scrye.com
-	([207.174.18.194] helo=scrye.com ident=qmailr)
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14OnHf-0003Kw-00
-	for mtd@infradead.org; Fri, 02 Feb 2001 20:58:20 +0000
-Message-ID: <20010202205810.17803.qmail@scrye.com>
-Date: Fri, 2 Feb 2001 13:58:10 -0700 (MST)
-From: Kevin Fenzi <kevin@scrye.com>
-To: mtd@infradead.org
-Subject: DOC2000 issues...
+	id 14OnfD-0003bj-00
+	for mtd-list@infradead.org; Fri, 02 Feb 2001 21:22:39 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14OnfB-0003bd-00
+	for mtd@infradead.org; Fri, 02 Feb 2001 21:22:38 +0000
+Date: Fri, 2 Feb 2001 21:22:31 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Kevin Fenzi <kevin@scrye.com>
+cc: <mtd@infradead.org>
+Subject: Re: DOC2000 issues...
+In-Reply-To: <20010202205810.17803.qmail@scrye.com>
+Message-ID: <Pine.LNX.4.30.0102022117500.8902-100000@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Fri, 2 Feb 2001, Kevin Fenzi wrote:
 
-Hi folks. 
+> 
+> ...
+> M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+> M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI       
+> $Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $          
+> ...
 
-Some background:
 
-we have a device that has a doc2000 (48MB version) on it. 
-Currently we have kernel 2.2.14 with a very old m-systems driver
-running on it. It boots fine from the doc2000 (thats the only bootable
-device on there):
+Didn't find hardware. Did you hardcode the address or leave it at zero to 
+auto-probe? Common mistake is to give the segment address not the real 
+address (0xd800 not 0xd8000). You do need the extra zero.
 
-debug: entering NFDC 2148 identification routine.
-Debug: identified NFDC 2148.
-Debug: starting NFTL mount.
-Debug: finished NFTL mount.
-Trueffs: Mount status 0h
-Flash disk driver for DiskOnChip2000
-Copyright (C) 1998 IGEL GmbH
-Copyright (C) 1998 M-Systems Flash Disk Pioneers Ltd.
-Partition check:
- fla: fla1
-VFS: Mounted root (ext2 filesystem) readonly.
-Freeing unused kernel memory: 40k freed
+Note to self: Hide that option and the 55AA one inside if(LINUXBIOS).
 
-It's BIOS reports:
+> Then, I tried the newest m-systems driver with 2.2.18:
 
-TrueFFS-BIOS -- Version 3.3.7 for DiskOnChip 2000 (V1.23)
-Copyright (C) M-Systems, 1992-2000
+> VFS: Cannot open root device 3e:01
+> Kernel panic: VFS: Unable to mount root fs on 3e:01
 
-Ok, so I attempted to get a 2.2.18 + mtdpatch working. 
-I ran into problems getting the mtd stuff to compile into the kernel. 
-I built the mtdpatch stuff as modules, and tried using a initrd. No
-boot. (just hung from the bios)
+They changed the major number from the temporary one they were using. But
+rather than using the one I'd already registered, they started using an
+entirely new one. Major 100 I think.
 
-So, I went to a 2.4.0 kernel, and compiled all the mtd stuff in
-(compiled just fine):
+Geometry info is useful though - can you compare it with what the free 
+driver reports, when you get that working?
 
-...
-M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI       
-$Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $          
-...
-NFTL_open                                          
-ENODEV: thisNFTL = 0, minor = 23809, ip = c1173cf0, fp = c111bef8
-VFS: Cannot open root device "5d01" or 5d:01                     
-Please append a correct "root=" boot option 
-Kernel panic: VFS: Unable to mount root fs on 5d:01
+> I would be happy to write up a HOWTO or the like if someone can help
+> me get it going. ;) 
 
-Then, I tried the newest m-systems driver with 2.2.18:
+I love you.
 
-...
-Copyright (C) 1998,2000 M-Systems Flash Disk Pioneers Ltd.
-Copyright (C) 2000 Lineo                                  
-DOC device(s) found: 4
-...
-fl_geninit: registered device at major: 100                                     
-partition: 0: start_sect: 0, nr_sects: 177a0 Fl_blk_size[]: bbd0kb
-partition: 1: start_sect: 0, nr_sects: 0 Fl_blk_size[]: 0kb       
-partition: 64: start_sect: 0, nr_sects: 177a0 Fl_blk_size[]: bbd0kb
-partition: 65: start_sect: 0, nr_sects: 0 Fl_blk_size[]: 0kb       
-partition: 128: start_sect: 0, nr_sects: 177a0 Fl_blk_size[]: bbd0kb
-partition: 129: start_sect: 0, nr_sects: 0 Fl_blk_size[]: 0kb       
-partition: 192: start_sect: 0, nr_sects: 177a0 Fl_blk_size[]: bbd0kb
-partition: 193: start_sect: 0, nr_sects: 0 Fl_blk_size[]: 0kb       
-Partition check:                                             
- fla: fla1      
- flb: flb1
- flc: flc1
- fld: fld1
-VFS: Cannot open root device 3e:01
-Kernel panic: VFS: Unable to mount root fs on 3e:01
+-- 
+dwmw2
 
-So, I know I am doing something wrong...can anyone point me in the
-right direction? what is the best kernel to use for this? 
 
-I would be happy to write up a HOWTO or the like if someone can help
-me get it going. ;) 
-
-kevin
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
