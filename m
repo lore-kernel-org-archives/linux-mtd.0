@@ -1,38 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13UrTk-0007Oc-00
-	for mtd-list@infradead.org; Fri, 01 Sep 2000 15:07:36 +0100
-Received: from amdext2.amd.com ([163.181.251.1])
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13UrTj-0007OV-00
-	for mtd@infradead.org; Fri, 01 Sep 2000 15:07:35 +0100
-Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
-	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id JAA07477
-	for <mtd@infradead.org>; Fri, 1 Sep 2000 09:06:58 -0500 (CDT)
-From: mark.langsdorf@amd.com
-Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
-	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id JAA22542
-	for <mtd@infradead.org>; Fri, 1 Sep 2000 09:06:58 -0500 (CDT)
-Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F0A0@txexmta8.amd.com>
-To: mtd@infradead.org
-Subject: Booting from CFI chips
-Date: Fri, 1 Sep 2000 09:06:51 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 13VUpR-0006nb-00
+	for mtd-list@infradead.org; Sun, 03 Sep 2000 09:08:37 +0100
+From: <akl@aol.com>
+Subject: smithy tools
+Date: Sun, 3 Sep 2000 00:33:48
+Message-Id: <18.292257.872682@>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Assuming I can get my BIOS to treat my flash array as a 
-bootable device, how do I set up a flashable image so that
-it will boot?  Do I use LILO, doc_loadbios, or some other
-set of programs?  Nothing in the util or html directory
-seems to address this issue directly.
-
-Mark Langsdorf
-Advanced Micro Devices, Inc             Tel: 512.602.3756
-5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
-Austin, TX 78741                        mark.langsdorf@amd.com
+hello just wonted to tell ever body to stay a way from SMITHY
+unless you wont to throw a way  money i bought a granite 1339
+and all tools 5000.00 worth junk you see they had broken it and 
+then put it in a box the box was not damage in any way what so 
+ever  but the equipment was broken i called them at 
+1-800-476-4849 they said they have my money and there was nothing 
+i could do about i asked them a bout the 30 day warranty they 
+said it was up i told them i only had it 2 weeks and then they 
+hung up on me ive called them many times but they wont talk to me 
+when they find out it is me they put me to voice mail and never 
+call me back but they are wrong i bought a mass mailer program 
+and i am sending thes letters out ever day 100000 of them ever 
+day thank you for your time may be this will save some one ther 
+money
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
