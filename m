@@ -1,16 +1,18 @@
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
+Received: from rdu162-229-047.nc.rr.com ([24.162.229.47] helo=gateway.house)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 160UUE-0004xb-00
-	for <linux-mtd@lists.infradead.org>; Sun, 04 Nov 2001 21:07:23 +0000
-Date: Sun, 4 Nov 2001 21:16:35 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Michael Rothwell <rothwell@holly-springs.nc.us>
-cc: <linux-mtd@lists.infradead.org>
+	id 160Ukg-0004yn-00
+	for <linux-mtd@lists.infradead.org>; Sun, 04 Nov 2001 21:24:22 +0000
 Subject: Re: JFFS2, CF, PCMCIA adapter, ATA
-In-Reply-To: <1004907553.4240.42.camel@gromit.house>
-Message-ID: <Pine.LNX.4.33.0111042108140.28157-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Michael Rothwell <rothwell@holly-springs.nc.us>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <Pine.LNX.4.33.0111042108140.28157-100000@imladris.demon.co.uk>
+References: <Pine.LNX.4.33.0111042108140.28157-100000@imladris.demon.co.uk>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 04 Nov 2001 16:34:07 -0500
+Message-Id: <1004909648.1728.53.camel@gromit.house>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,40 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 4 Nov 2001, Michael Rothwell wrote:
+On Sun, 2001-11-04 at 16:16, David Woodhouse wrote:
+> As far as you're concerned, it's just alien technology
 
-> I've been trying to create a jffs2 image on a 16MB compact flash card
-> today. I've got a pcmcia-to-cf adapter that works well for treating the
-> CF like a small disk.
+Okey-dokey, then.
 
-The CF _is_ a small disk. You may think it has flash inside - we couldn't 
-possibly comment. As far as you're concerned, it's just alien technology 
-which allows them to stick a real IDE hard drive inside that package and 
-stops you from hearing the whirring sounds.
+> # dd if=jffs2-image of=/dev/hda (or hda1, hda2, etc.) 
+> # insmod blkmtd device=/dev/hda
+> # mount -t jffs2 /dev/mtdblock0 /mnt/jffs2
 
-There is a driver which uses a real hard drive as backing store for a 
-faked MTD device - see the 'blkmtd' driver. I haven't used it - others can 
-perhaps give you more helpful advice.
+... followed by a litany of "argh, block not erased" type messages in
+the syslog. Mount then returns. Then, I try to copy some files into the
+mounted jffs2 filesystem ...  "cp" causes an oops and the interrupt
+handler gets killed.
 
-> How do I create a "loopback" jffs2 filesystem? 
+> You may want partitioning if you want to boot from this too, not just use 
+> it as filesystem.
 
-# insmod mtdram total_size=16386 erase_size=64
-# dd if=jffs2-image of=/dev/mtdblock0
-# mount -t jffs2 /dev/mtdblock0 /mnt/jffs2
+Am I correct in assuming that I can make partitions with fdisk, then 
 
-> How do I create a jffs2 filesystem on the CF card using the PCMCIA adapter 
+ # dd if=flash.jffs2 of=/dev/hde1
+ # modprobe blkmtd device=/dev/hde1
+ # mount -t jffs2 /dev/mtdblock0 /mnt/flash
 
-# dd if=jffs2-image of=/dev/hda (or hda1, hda2, etc.) 
-# insmod blkmtd device=/dev/hda
-# mount -t jffs2 /dev/mtdblock0 /mnt/jffs2
+...?
 
-You may want partitioning if you want to boot from this too, not just use 
-it as filesystem.
+What would this look like in lilo and /etc/fstab on the device that will
+hopefully be booting from the jffs2 image?
 
-> I'm using 2.4.13, with mtd and jffs2 compiled in. No devfs.
+> There have been some blkmtd updates since then. I'm hoping the 
+> maintainer 
+> will send those to Linus if appropriate.
 
-There have been some blkmtd updates since then. I'm hoping the maintainer 
-will send those to Linus if appropriate.
+Maybe the updates won't oops... :)
 
--- 
-dwmw2
+
+Do you use mtdram to create jffs2 filesystems? Or some other method?
+
+
+Thanks,
+
+Michael
