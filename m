@@ -1,16 +1,17 @@
-Received: from mail.airnet.com.au ([202.174.32.5] ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189B6L-000107-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 21:19:10 +0000
-Subject: Building mkfs.jffs2
-From: Darren Freeman <free0076@flinders.edu.au>
-To: Linux MTD List <linux-mtd@lists.infradead.org>
-Cc: Greg Knowles <gknowles@infoeng.flinders.edu.au>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 06 Nov 2002 08:20:01 +0000
-Message-Id: <1036570803.16096.98.camel@dirac.home>
-Mime-Version: 1.0
+Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 189FAI-0001WR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2002 01:39:30 +0000
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="ISO-8859-1"
+MIME-Version: 1.0
+Date: Wed, 6 Nov 2002 02:09:32 UT
+From: "Jeffrey Lim" <jfsworld@fastmail.fm>
+To: Dave@imladris.demon.co.uk
+Cc: "linux-mtd list" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] patches/patchin.sh (was Re: MTD CVS: missing JFFS2?)
+Message-Id: <20021106020932.A463B2FD34@server4.fastmail.fm>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,46 +23,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear list,
+Hi David,
 
-I am trying to build the latest version of mkfs.jffs2 on either of two
-PCs running RedHat 7.2 and Mandrake 9.0 respectively.
+referencing the email below, this is a simple patch to patches/patchin.sh
+(dated in the CVS Wed Apr 25 12:10:23 2001) to "patch in" the jffs2 code
+as well. Currently patchin.sh only patches in the latest mtd code, and
+jffs, but not jffs*2*)=20
 
-The problem with the binary mkfs.jffs2 that I have right now is that I
-upgraded from a really really old kernel on the target (around 2.4.2) up
-to 2.4.20-rmk1 and according to the kernel at boot time, JFFS2 has
-changed enough to cause problems.
+Would you mind looking over the diff to see if i missed out anything that
+should be patched in as well?
+Thanks.
 
-The symptoms are that I can flash an image and use it for a little
-while, but after a small amount of writing (change text files etc.) the
-filesystem just screws up and becomes 100% full. From that point onwards
-the target is screwed, and only NFS has saved me. Unfortunately with a
-broken root filesystem I can't get too much done =)
+-jf
 
-The RedHat host is running the stock kernel, 2.4.2, and I've configured
-the kernel for JFFS2 but not recompiled it. The Mandrake box is running
-2.4.20 recompiled to my liking.
+On Tue, 5 Nov 2002 20:27:22 +0100, "J=F6rn Engel"
+<joern@wohnheim.fh-wedel.de> said:
+> On Tue, 5 November 2002 17:21:24 +0000, Jeffrey Lim wrote:
+> >=20
+> > I assume David Woodhouse is the person to whom i should submit the patch
+> > to patchin.sh to? (oh boy).
+>=20
+> Correct. It would be nice, if you cc'd the mailinglist as well.
+>=20
+> > I'll have a patch ready first thing i get to work later.
+>=20
+> Cool!
+>=20
+> J=F6rn
+>=20
+> --=20
+> ticks =3D jiffies;
+> while (ticks =3D=3D jiffies);
+> ticks =3D jiffies;
+> -- /usr/src/linux/init/main.c
+>=20
 
-The target is an EPXA10 development board, with cpu=ARM922T,
-kernel=2.4.19-rmk1 patched for the board.
-
-I simply can't get mtd/utils to build on either host. I don't want a
-cross-compiled binary, just something to use on the host. I have tried
-using ./configure --with-kernel= pointing to the host kernel or target
-but no success. I guess the target kernel is the correct one to use
-here.
-
-My latest problem is that mkfs.jffs2.c uses jint16_t which is not found
-when grepping through my kernel source but is in mtd. So I have to do
---with-kernel=/path/mtd but finally I get the error:
-
-compr_zlib.c:15:2: #error "The userspace support got too messy and was
-removed. Update your mkfs.jffs2"
-
-Followed by tons of garbage.
-
-Any ideas? Or somebody willing to give me a binary of mkfs.jffs2 for
-i386 -> ARM9 ? I would greatly appreciate it!
-
-Have fun,
-Darren Freeman
+=20
+--
+  "It's an extraordinary world!" - jfsworld <at> fastmail.fm
+=20
+=20
