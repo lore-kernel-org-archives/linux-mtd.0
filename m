@@ -1,16 +1,20 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtFzo-0006WM-Sh
-	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 20:59:58 -0500
-From: Unnamalai Kanchi Bashyam <unnamalai.bashyam@radixs.com>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CtNg3-0000Qm-2O
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 05:12:04 -0500
+Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 15908229D1
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 25 Jan 2005 13:11:28 +0300 (MSK)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: 
 Content-Type: text/plain
-Date: Tue, 25 Jan 2005 09:59:44 +0800
-Message-Id: <1106618384.13763.8.camel@server11>
+Date: Tue, 25 Jan 2005 13:11:27 +0300
+Message-Id: <1106647887.31239.7.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: New Intel chip with CFIext version 1.3 not working.
+Subject: JFFS3 document
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Mr. Jarkko Lavinen,
+Hi,
 
- I am encountering the same problem that which you faced - "Unknown
-IntelExt Extended Query". I am using Intel Strata Flash chip and its CFI
-version is 1.3.  Linux version 2.4.18-rmk4-mx2bsp, Architecture -
-Motorola MX2ADS. 
- Is a patch available for this problem?
+I wanted to inform that now the http://www.linux-mtd.infradead.org/
+Linux MTD web site has the JFFS3-related section.
 
-Regards,
-Unnamalai
+The summary of our JFFS3 discussions could be found at http://www.linux-
+mtd.infradead.org/tech/JFFS3design.pdf document. It is also accessible
+via MTD web page. The document is generated from the
+fd/jffs3/JFFS3design.tex file, so one can contribute even directly
+editing it.
+
+Any remarks and suggestions are welcomed.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
