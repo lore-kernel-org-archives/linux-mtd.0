@@ -1,16 +1,17 @@
-Received: from mail.addcoinc.com
-	([12.47.38.2] helo=exchange.addcoinc.com ident=fwuser)
+Received: from eris.discordia.ch ([212.55.212.99])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xZdH-00030u-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 20:28:25 +0100
-Message-ID: <5B08DC7C9AA6D411930E00105A19794B3E2423@EXCHANGE>
-From: "Carson, Jon A." <JACarson@addcoinc.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Booting Linux on 16 Meg DiskOnChip 2000
-Date: Wed, 9 May 2001 14:22:34 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 14xZjh-00031y-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 20:35:02 +0100
+Date: Wed, 9 May 2001 21:35:14 +0200
+From: Peter Keel <killer@discordia.ch>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Read Flash-Dumps
+Message-ID: <20010509213514.A11057@discordia.ch>
+References: <20010509192623.A10814@discordia.ch> <20010509190106.A10693@discordia.ch> <27428.989428251@redhat.com> <20010509192623.A10814@discordia.ch> <366.989431089@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <366.989431089@redhat.com>; from dwmw2@infradead.org on Wed, May 09, 2001 at 06:58:09PM +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,88 +23,90 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi All,
+* on the Wed, May 09, 2001 at 06:58:09PM +0100, David Woodhouse was blubbering:
+> 
+> killer@discordia.ch said:
+> >  93 nftl 
+> 
+> You're running the GPL'd drivers, then. Interesting - where did this kernel 
+> come from?
 
-I need some help....HELP....as the subject line says, I am trying to boot 
-Linux on a 16 Meg DiskOnChip 2000. Since I have a lot of information to 
-give, this email will be a little terse,...sorry.
+Compiled it. Anyway, that's not the Igel. That one's the Igel:
 
-I have (apparently) sucsessfully formatted, fdisk'ed and ext2 filesystem'ed
-it. The mount
-point I chose was /doc. I then put a directory hierarchy on it resembling a
-Linux distro. At this
-point, I copied over the nftl* and mtd* drivers to /doc/dev.
+Block devices:                                                                  
+ 2 fd                                                                           
+59 fl                                                                           
+62 flashdisk
 
-I built a kernel choosing to build in all of the MTD/NFTL drivers into the
-kernel ( not as modules ).
-The Kernel is version 2.4.3 was downloadded from ftp.kernel.org.  Everything
-seems to build
-great,...no whining.   I used lilo-mtd to install the new kernel into the
-DiskOnChip.
+fdisk -l /dev/fla
+Disk /dev/fla: 16 heads, 2 sectors, 999 cylinders
+Units = cylinders of 32 * 512 bytes
+Device     Boot    Start       End    Blocks   Id  System
+/dev/fla1   *        1         999    15983    83  linux  
 
-The problem I am having is that the kernel can't seem to find the root
-filesystem on /dev/nftla1.  When the
-kernel finally comes to a screeching halt, the last 4 lines of output are:
+However:
 
-request module [block-major-3]: root fs not mounted
-VFS: cannot open root device "" or 03:03 
-please append a correct "root=" boot option
-Kernel Panic: VFS: unable to mount root fs on 03:03
+cat /etc/fstab
+# device                directory       type    options         freq pass
 
-I am really confused by this because nothing I have done points to this
-filesystem ( 03:03 aka /dev/hda3 ),
-although this just happens to be my main development hard drive.  Another
-interesting thing
-is that there appears to be a NULL string somewhere ( see line #2 above ).
+/dev/igf1               /               minix   defaults        1       1
+/dev/igf2               /usr            minix   defaults        0       0
+/dev/igf3               /usr3           minix   defaults        0       0
+/dev/igf4               /usr4           minix   defaults        0       0
+/proc                   /proc           proc    defaults        0       0
 
-Here is my /doc/etc/lilo.conf:
+though mount reports:
+/dev/igf1 on / type minix (rw)
+/proc on /proc type proc (rw)
+/dev/igf2 on /usr type ext2 (rw)
+/dev/igf3 on /usr3 type ext2 (rw)
 
-	boot=/dev/nftla
-	image=/doc/boot/docmtd243
-	label=DOC-2.4.3-yaya
-	root=/dev/nftla1
+> Can you test the hypothesis that the image you have is a hard drive image? 
 
-Since I have instructed lilo to use /dev/nftla , I have not marked the
-partition as bootable ( primary partition #1 ).
+The ones I mentionned first aren't. They're the update-files from 
+ftp.igel.de.
 
-Here is my lilo incantation, whilst booted onto /dev/hda3, and having
-mounted the DOC:
+> Take a copy and run 'sfdisk blah.image'. What does it do?
 
-# cd /doc/sbin
-# ./lilo-mtd -v -C /doc/etc/lilo.conf -i /doc/boot/boot.b-mtd -m
-/doc/boot/map
+sfdisk fla.img 
+Warning: fla.img is not a block device
+Disk fla.img: cannot get size
+Disk fla.img: cannot get geometry
 
-Here is what happens when the above incantation is executed, indented for
-clarity:
+Disk fla.img: 0 cylinders, 0 heads, 0 sectors/track
+Old situation:
+Warning: The first partition looks like it was made
+  for C/H/S=*/16/2 (instead of 0/0/0).
+For this listing I'll assume that geometry.
+Units = cylinders of 16384 bytes, blocks of 1024 bytes, counting from 0
 
-	Warning: /dev/nftla is not on the first disk
-	Patched LILO for M-Systems' DiskOnChip 2000
-	LILO version 21, Copyright 1992-1998 Werner Almesberger
+   Device Boot Start     End   #cyls   #blocks   Id  System
+ fla.img1   *      0+    998     999-    15983   83  Linux
+ fla.img2          0       -       0         0    0  Empty
+ fla.img3          0       -       0         0    0  Empty
+ fla.img4          0       -       0         0    0  Empty
 
-	Reading boot sector from /dev/nftla
-	Merging with /doc/boot/boot.b-mtd
-	Boot image: /doc/boot/docmtd243
-	Added DOC-2.4.3-yaya *
-	/boot/boot.5D00 exists - no backup copy made.
-	Writing boot sector.
+This one with the image of the whole flash. With the so-called 
+/dev/fla1 I get nothing, but those /dev/igf's have to be there 
+somewhere. It looks like /dev/fla1 contains some bootloader
+00000000   EB 48 90 00  00 00 87 01  00 00 46 6C  61 73 68 20  .H........Flash 
+00000010   4C 69 6E 75  78 20 42 6F  6F 74 20 56  65 72 73 69  Linux Boot Versi 
+00000020   6F 6E 20 30  2E 39 39 00  43 6F 70 79  72 69 67 68  on 0.99.Copyrigh
+00000030   74 20 28 43  29 20 31 39  39 36 2D 31  39 39 39 20  t (C) 1996-1999 
+00000040   49 47 45 4C  20 47 6D 62  48 00 8C C8  2E 03 06 06  IGEL GmbH.......
+About until 00001CF0, then follows a series of 0x00 and then
+at 00004000 follows the directory-index of the small rw-partition,
+and shortly thereafter (00004150) its contents. 
+After that, from 00010000 on, no idea ;) Garbage. 
+Judging from some Errormessage in the bootloader, 
+"The boot/system partition is not of type CROMDISK !" I'd say
+this is compressed.
 
-Everything seems to have gone well with lilo-mtd, but when the kernel boots,
-it seems like it wants
-to phone home over to /dev/hda3.  If I hadn't disabled IDE in the kernel ,
-it would actually continue to 
-boot the /dev/hda3 root filesystem.
+Still interested in my little reverse-engineering Igel? ;-) 
 
-Please note the reference to "/boot/boot.5D00 exists - no backup copy
-made.".  This does not point
-to /dev/nftla ( as it should ) , but /dev/hda3.
-
-Is this a bug in lilo-mtd , or am I doing something wrong ?
-
-I follow this list somewhat regularly and I nave not seen much information
-on this subject.  If anybody out there
-has a good recipe for booting DiskOnChip 2000 as a stand alone item, PLEASE,
-share it with me.
-
-Thanks in advance,
-Jon Carson
-ADDCO Inc.
+Cheers
+Peter
+-- 
+"Any good Unix security engineer can clean up any Unix box. But I'm not 
+ sure there are people even within Microsoft who know how to clean up 
+ an NT box." -- Michael Zbouray
