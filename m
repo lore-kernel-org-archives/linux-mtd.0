@@ -1,25 +1,23 @@
-Received: from dhcp893.linuxsymposium.org ([209.151.11.135]
-	helo=lapdancer.baythorne.internal)
+Received: from [213.86.99.234] (helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19gUNX-00072m-DV
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Jul 2003 20:06:52 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
-In-Reply-To: <a05200f07bb4875574a88@[130.161.115.44]>
-References: <a05200f4ebb46f6708c1c@[130.161.115.44]>
-	 <1059147413.28255.40.camel@lapdancer.baythorne.internal>
-	 <a05200f01bb4700e6ff94@[130.161.115.44]>
-	 <1059148567.28255.47.camel@lapdancer.baythorne.internal>
-	 <a05200f05bb4803789a4f@[130.161.115.44]>
-	 <1059231977.539.2.camel@lapdancer.baythorne.internal>
-	 <a05200f07bb4875574a88@[130.161.115.44]>
-Message-Id: <1059246321.1471.3.camel@lapdancer.baythorne.internal>
-Mime-Version: 1.0
-Date: Sat, 26 Jul 2003 15:05:23 -0400
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Handling multiple NAND chips
+	id 19gZlB-0007a2-KT
+	for <linux-mtd@lists.infradead.org>; Sun, 27 Jul 2003 01:51:37 +0100
+Received: from cedant2.abac.com ([66.175.0.3])
+	by phoenix.infradead.org with esmtp (Exim 4.10)
+	id 19gZlA-0000tO-00
+	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2003 01:51:37 +0100
+Received: from smileatyou.com (localhost [127.0.0.1])
+	by cedant2.abac.com (8.12.9/8.12.9) with SMTP id h6R0pala014897
+	for <mtd@infradead.org>; Sat, 26 Jul 2003 17:51:36 -0700 (PDT)
+Message-ID: <3230.65.103.118.82.1059267096.squirrel@mail.smileatyou.com>
+Date: Sat, 26 Jul 2003 18:51:36 -0600 (MDT)
+From: "Derek Olson" <Tristan@SmileAtYou.com>
+To: <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: settled
+Reply-To: Tristan@SmileAtYou.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-07-26 at 14:20, J.D. Bakker wrote:
-> Not really, if you exclude braindead setups like multiple 
-> hot-swappable SmartMedia cards. The only sane setup I could imagine 
-> is having one partition per NAND device, but it's not one I would be 
-> using myself.
+Most of you likely think I've dropped off the face of the earth.  Actually
+we have settled into our new home and my workshop is now in order.  I
+haven't been connected to the internet for many weeks so if you're
+expecting a reply from me please be patient.
 
-True, but in that case you can still do it as separate devices. 
+While I don't have any new pieces to show today I would like to explain
+the next piece I'll be working on.
 
-> Would you expect all devices to have the same size ?
+The title is 'Rock Bottom', and the focus will be when you're mad enough
+to scream but sad enough to tear ... you've hit rock bottom.
 
-Yes. I made that optimisation for NOR chips and nobody's bitched about
-it yet, IIRC. 
+Derek Olson
+Tristan Woodworks
+http://www.SmileAtYou.com
+Highlands Ranch, Colorado
 
--- 
-dwmw2
+You are subscribed as mtd@infradead.org
+If you know someone who might like this, or you'd like off, please let me
+know.
