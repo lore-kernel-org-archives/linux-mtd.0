@@ -1,27 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11CpdG-000141-00
-	for mtd@infradead.org; Fri, 6 Aug 1999 20:26:22 +0100
+	id 11DmLG-0002OE-00
+	for mtd@infradead.org; Mon, 9 Aug 1999 11:07:42 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 11DmLA-0002md-00; Mon, 9 Aug 1999 11:07:36 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 11DmLA-00089S-00; Mon, 9 Aug 1999 11:07:36 +0100
 To: mtd@infradead.org
-Cc: linux-kernel@vger.rutgers.edu
-Subject: Readonly driver for DiskOnChip.
+Subject: DiskOnChip driver testing - any results?
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 06 Aug 1999 20:26:21 +0100
+Date: Mon, 09 Aug 1999 11:07:36 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11CpdF-0003e4-00@devel2.axiom.internal>
+Message-Id: <E11DmLA-00089S-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-There's a very preliminary driver module available in
-	ftp://ftp.linux-mtd.infradead.org/pub/mtd/DiskOnChip/
+I note a few people have downloaded the driver I released on Friday night, but 
+I've had no feedback.
 
-I've just got it working, and I have a lot of tidying up to do - including 
-fixing the module use counts. But it's enough to use the DiskOnChip 2000 in 
-read-only mode for now.
+Granted, it's only a quick hack to see if I understood the docs correctly, and 
+it's going to get a complete rewrite - but I'd still like to know whether it 
+works on anything but the devices I've tried it on.
 
-More next week.
+So - does it work for you? As far as I'm aware, it should work on all sizes of 
+DiskOnChip 2000, except the ones with Samsung flash in - those will be added 
+as soon as I've downloaded the relevant datasheets.
+
+
+
+
+
+
 
 ----                                 ----                                 ----
 David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
