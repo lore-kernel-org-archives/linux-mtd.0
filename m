@@ -1,24 +1,16 @@
-Received: from ptb-relay02.plus.net ([212.159.14.213])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CdmXF-0000nX-8J
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 04:30:33 -0500
-Received: from [80.229.56.123] (helo=central.bult.co.uk)
-	by ptb-relay02.plus.net with esmtp (Exim) id 1CdmX2-0006i7-FP
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 09:30:16 +0000
-Received: from squizzey.bult.co.uk (squizzey.bult.co.uk [10.1.0.4])
-	by central.bult.co.uk (Postfix) with ESMTP id 0FAB3375ED3
+Received: from micom.micom-electronics.si ([193.77.34.95])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cdmz2-00011s-J4
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 04:59:13 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by micom.micom-electronics.si (Postfix) with ESMTP id AED0F850194
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Dec 2004 10:40:12 +0000 (GMT)
-From: "Gareth Bult (Local)" <gareth@linux.co.uk>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-In-Reply-To: <1102618342.23213.12.camel@squizzey.bult.co.uk>
-References: <1102618342.23213.12.camel@squizzey.bult.co.uk>
-Content-Type: text/plain
-Date: Mon, 13 Dec 2004 09:30:43 +0000
-Message-Id: <1102930243.4350.24.camel@squizzey.bult.co.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: JFFS2 write performance boost ...
+	Mon, 13 Dec 2004 10:59:05 +0100 (CET)
+From: postmaster@micom-electronics.si
+To: linux-mtd@lists.infradead.org
+Message-Id: <20041213095905.11D568500F1@micom.micom-electronics.si>
+Date: Mon, 13 Dec 2004 10:59:05 +0100 (CET)
+Subject: VIRUS V VASEM SPOROCILU / VIRUS IN YOUR MAIL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,74 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+                      V I R U S  -  O P O Z O R I L O
 
-Further to my last email, many thanks to Jarkko Lavinen who pointed me
-in the direction of "mtdblock" as opposed to JFFS2 itself re; the speed
-issue.
+Sistem za elek. posto je nasel v sporocilu
 
-Apparently mtdblock isn't too efficient .. raw tests give me;
-Read: 2.5Mb/sec
-Write: 30k/sec
+	W32/Netsky.q@MM
 
-I've now rewritten most of blkmtd.c to use standard buffering (thus
-losing for now some of the direct bad block detection) and have the
-speed up to;
+virus(e), ki so bili naslovljeni na spodaj navedene e-naslove:
+----------------------------------------------------------------- 
 
-Read: 7.5Mb/sec
-Write: 5.4Mb/sec
+                         V I R U S  -  A L E R T
 
-(which is pretty much the USB key spec..)
+Our viruschecker found the
 
-I'm guessing with a little more work I can solve the bad block detection
-issue and hopefully this will also improve the mount time ..
+	W32/Netsky.q@MM
 
-Regards,
-Gareth.
+virus(es) in your email to the following recipient(s):
+-----------------------------------------------------------------
 
+  -->  golftur04@micom-electronics.si
+  -->  info@micom-electronics.si
 
-
-On Thu, 2004-12-09 at 18:52 +0000, Oddjobz wrote:
-> Hi,
-> 
-> Further to my previous email, I've managed to boost the write
-> performance by a factor of x 4, however I think there is an issue here
-> which probably needs at the very least some comment if not some
-> attention.
-> 
-> mkfs.jffs2 allows for a variable "erasesize" setting.
-> mtdblock   allows for a variable "erasesize" setting.
-> jffs2      should read this setting from the created filesystem.
-> 
-> Unfortunately, jffs2 uses a buffer to cache the erase structure in
-> memory and this cache is acquired using kmalloc - hence limited to 128k.
-> To make the erase structure fit into 128k, jffs2 dynamically resizes the
-> "erasesize" and sector count on the fly, thus you don't get the settings
-> you were looking for if you're using more flash than will "fit".
-> 
-> Indeed on my systems you get a fairly fast panic, more often than not.
-> 
-> Now I'm guessing this problem isn't apparent on small flash sizes,
-> however I'm working with 256Mb and it's a real show stopper - unless you
-> can live with a dribble write speed ..
-> 
-> Suggested solutions:
-> Solution 1: remove the erasesize option in the tools
-> Solution 2: allow a > 128k buffer for the erase structure
-> Solution 3: recode JFFS2 to use a more memory-efficient approach
-> 
-> I've removed the code from fs.c that scales the sector count and erase
-> size (all three lines) and changed the kmalloc in build.c to a vmalloc.
-> (and changes the kfree's to vfrees accordingly)
-> 
-> This "seems" to work just fine (?)
-> 
-> I now have a "proper" 8k erasesize (and I'm assuming other sizes will
-> work) and as a result instead of getting 29k/sec write speed, I'm
-> getting 117k/sec write speed.
-> 
-> [the erase structure eats 1.5Mb in this instance]
-> 
-> Thoughts ?
-> 
-> Gareth.
+-----------
+Priporocamo, da vas sistem pregledate z najnovejsim antivirusnim
+programom.
+Please check your system for viruses, or ask your system administrator
+to do so.
+----------- 
+For your reference, here are the headers from your email:
+------------------------- BEGIN HEADERS -----------------------------
+Received: from golfturist.si (BSN-165-117-96.dsl.siol.net [194.165.117.96])
+	by micom.micom-electronics.si (Postfix) with ESMTP id BBFF1850194
+	for <info@golfturist.si>; Mon, 13 Dec 2004 10:58:39 +0100 (CET)
+From: linux-mtd@lists.infradead.org
+To: info@golfturist.si
+Subject: Failure (info@golfturist.si)
+Date: Mon, 13 Dec 2004 10:59:13 +0100
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 1
+X-MSMail-Priority: High
+Message-Id: <20041213095839.BBFF1850194@micom.micom-electronics.si>
+-------------------------- END HEADERS ------------------------------
