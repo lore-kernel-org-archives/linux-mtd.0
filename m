@@ -1,46 +1,70 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 140xS1-0006kl-00
-	for mtd-list@infradead.org; Wed, 29 Nov 2000 02:58:29 +0000
-Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.gn.com)
+	id 1413nh-0007sm-00
+	for mtd-list@infradead.org; Wed, 29 Nov 2000 09:45:17 +0000
+Received: from natmail2.webmailer.de ([192.67.198.65] helo=post.webmailer.de)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 140xRz-0006ke-00
-	for mtd@infradead.org; Wed, 29 Nov 2000 02:58:28 +0000
-Date: Tue, 28 Nov 2000 21:59:04 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-cc: <mtd@infradead.org>
-Subject: Re: Big Endian issues
-In-Reply-To: <3A244346.12F3235B@mvista.com>
-Message-ID: <Pine.LNX.4.30.0011282151430.914-100000@xanadu.gn.com>
+	id 1413nf-0007sg-00
+	for mtd@infradead.org; Wed, 29 Nov 2000 09:45:16 +0000
+Message-ID: <3A24B000.32747EAB@gmx.de>
+Date: Wed, 29 Nov 2000 08:28:00 +0100
+From: Helge Wehder <wehder@gmx.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: mtd@infradead.org, cort@fsmlabs.com
+Subject: 2.4.0-test11 Bug in 'mm.o' and 'Event interface support' on ppc750]
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
+
+I have some problems while compiling the Kernel on a Powerbook 'pismo'
+G3/400 and don't know where to report to. My ggc is 2.95.2 . I'am able
+to compile the test6 kernel and able to boot it. But there is only one
+terminal available on the test6 Kernel.
+
+Here are some info's about what i have done without known make this and
+that stuff:
+
+Making mrproper
+
+arch/ppc/mm/mm.o: In function `map_page':
+arch/ppc/mm/mm.o(.text+0xe04): undefined reference to `set_pgdir'
+arch/ppc/mm/mm.o(.text+0xe04): relocation truncated to fit: R_PPC_REL24
+set_pgdir
+drivers/input/inputdrv.o: In function `keybdev_event':
+drivers/input/inputdrv.o(.text+0x16cc): undefined reference to
+`emulate_raw'
+drivers/input/inputdrv.o(.text+0x16cc): relocation truncated to fit:
+R_PPC_REL24 emulate_raw
+make: *** [vmlinux] Error 1
+
+Taking out 'Input core support'>'Event interface support'
+Same errors
+
+Change the 'input core support' to module
+
+arch/ppc/mm/mm.o: In function `map_page':
+arch/ppc/mm/mm.o(.text+0xe04): undefined reference to `set_pgdir'
+arch/ppc/mm/mm.o(.text+0xe04): relocation truncated to fit: R_PPC_REL24
+set_pgdir
+make: *** [vmlinux] Error 1
+
+Ok, less errors. These errors are new to me. These errors diden't ecured
+with the test10 sources.
+Taking out 'sound support'
+
+This was stupid. The Error comes from the Memory handling section.
+Taking out 'Ram disk support' in the 'Block devices section'
+Still the same Errors.
+
+Copying the 'mm' section from the test10 sources to the test11 sources
+Still the same Errors. The Error seems to be somewere in the include
+files.
 
 
-On Tue, 28 Nov 2000, Alice Hennessy wrote:
-
-> In dealing with data, however, map->write32 is used in writes but
-> map->copy_from is used in reads.
-> So, the assumption I assume is that map->copy_from will also swap bytes.
-> But in my environment,
-> map->copy_from (memcpy_fromio) doesn't swap bytes.  I don't think it needs to
-> if we make use of
-> map->copy_to (memcpy_toio)  when writing data (in amd_write_val and in the
-> immediate data check). In this case, copy_from and copy_to functions just
-> need to be consistent.
-
-Neither of the write nor copy map methods is supposed to swap bytes.
-
-Bytes might be swapped in cfi_build_cmd so you actually write commands and
-compare with status in the device's endianness.  However data shouldn't be
-swapped at all.
-
-
-Nicolas
-
+Bye Helge...
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
