@@ -1,13 +1,29 @@
-Received: from coderock.org ([193.77.147.115] helo=trashy.coderock.org)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D7tHV-0005JP-37
-	for linux-mtd@lists.infradead.org; Sun, 06 Mar 2005 05:46:42 -0500
-To: dwmw2@infradead.org
-From: domen@coderock.org
-Date: Sun, 06 Mar 2005 11:46:26 +0100
-Message-Id: <20050306104627.13DB31F203@trashy.coderock.org>
-Cc: c.lucas@ifrance.com, linux-mtd@lists.infradead.org, domen@coderock.org
-Subject: [patch 1/1] drivers/mtd/maps/*: convert to pci_register_driver
+Received: from mailer.cse.iitd.ac.in ([202.141.68.3]
+	helo=desh.cse.iitd.ernet.in)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6r4s-0001wY-7F
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 09:13:24 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by desh.cse.iitd.ernet.in (8.12.8/8.12.8) with ESMTP id j23ED3l5009731
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Mar 2005 19:43:03 +0530
+Received: from desh.cse.iitd.ernet.in ([127.0.0.1])
+	by localhost (desh.cse.iitd.ernet.in [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with LMTP id 09700-01-2 for <linux-mtd@lists.infradead.org>;
+	Thu,  3 Mar 2005 19:43:02 +0530 (IST)
+Received: from [10.20.50.26] (electron.kritikal.iitd.ernet.in [10.20.50.26])
+	by desh.cse.iitd.ernet.in (8.12.8/8.12.8) with ESMTP id j23EClxT009708
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Mar 2005 19:42:48 +0530
+Message-ID: <42271B5F.5080207@kritikalsolutions.com>
+Date: Thu, 03 Mar 2005 19:42:47 +0530
+From: Narinder Kumar <narinder@kritikalsolutions.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <E1D6oXI-0008Kp-SH@canuck.infradead.org>
+In-Reply-To: <E1D6oXI-0008Kp-SH@canuck.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: CRC errors using jffs2 partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,80 +33,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
-convert from pci_module_init to pci_register_driver
-(from:http://kerneljanitors.org/TODO).
+       I have been able to mount a jffs2 partition on AT91RM9200DK using 
+linux-2.4.27-vrs1 but still i am getting CRC errors and the problem is 
+sometimes those CRC errors causes my application to terminate and 
+sometimes they don't which makes things horrible for me. Can someone 
+help me out in how to remove these CRC errors. and CRC errors comes only 
+if i unmount the partition and mount it again and run my application, to 
+me it seems to be some problem with JFFS2 write-buffer i,e either the 
+patch i applied did some changes in it or i am using some unstable 
+version of MTD. I am using the following patches and files
 
-Signed-off-by: Christophe Lucas <c.lucas@ifrance.com>
-Signed-off-by: Domen Puncer <domen@coderock.org>
----
+Kernel : linux-2.4.27.tar.gz 
+Arm PATCH : 2.4.27vrs1-at91-06092004.patch 
+VRS-1 patch : patch-2.4.27-vrs1
+MTD/CVS : mtd-snapshot-20050217.tar
 
+Here are the errors:
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x0040d70c: Read 
+0x3ca4fc52, calculated 0x297fb7db              
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x004088e0: Read 
+0x99dd4556, calculated 0x490abaea              
+jffs2_get_inode_nodes(): CRC failed on node at 0x003ffc94: Read 
+0xffffffff, calculated 0xd1438696                   
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x003fd4e4: Read 
+0x009707a1, calculated 0x1f2a72be              
+CRC failed for read_inode of inode 223 at physical location 
+0x3fb974                                                
+Returned error for crccheck of ino #223. Expect 
+badness...                      
+                                   
+ Data CRC 2ee67841 != calculated CRC 6f249f09 for node at 00318b14
+ etc..............
 
- kj-domen/drivers/mtd/maps/amd76xrom.c  |    2 +-
- kj-domen/drivers/mtd/maps/ich2rom.c    |    2 +-
- kj-domen/drivers/mtd/maps/ichxrom.c    |    2 +-
- kj-domen/drivers/mtd/maps/pci.c        |    2 +-
- kj-domen/drivers/mtd/maps/scb2_flash.c |    2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Here are the steps i followed:
+1) Applied the vrs-1 patch on the kernel.
+2) Applied the ARM patch on the kernel
+3) Applied the MTD patches on the kernel
+4) Used following link to get some help which shows how to compile this 
+patched kernel
+          
+http://lists.infradead.org/pipermail/linux-mtd/2004-December/011039.html
+5) Created 3 partitions in MTD of 1MB, 3 MB , 4 MB.
+               while mounting the 4 MB partition it showed error of 
+erasesize very small i,e 1KB. so i changed the erasesize to 2KB in 
+at91_dataflash.c in device->erasesize=2*pagesize
+and then it mounted succesfully and then i copied my application to this 
+partition and tried to run it and it was running without any errors and 
+when i unmounted the partition and remounted it and tried to run it , it 
+was giving CRC errors. without killing the application. But after 2-3 
+trials it started giving more errors and sometime it kills the 
+application and after that generally it never succeds again.
 
-diff -puN drivers/mtd/maps/amd76xrom.c~pci_register_driver-drivers_mtd_maps drivers/mtd/maps/amd76xrom.c
---- kj/drivers/mtd/maps/amd76xrom.c~pci_register_driver-drivers_mtd_maps	2005-03-05 16:12:31.000000000 +0100
-+++ kj-domen/drivers/mtd/maps/amd76xrom.c	2005-03-05 16:12:31.000000000 +0100
-@@ -314,7 +314,7 @@ static int __init init_amd76xrom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&amd76xrom_driver);
-+	return pci_register_driver(&amd76xrom_driver);
- #endif
- }
- 
-diff -puN drivers/mtd/maps/ich2rom.c~pci_register_driver-drivers_mtd_maps drivers/mtd/maps/ich2rom.c
---- kj/drivers/mtd/maps/ich2rom.c~pci_register_driver-drivers_mtd_maps	2005-03-05 16:12:31.000000000 +0100
-+++ kj-domen/drivers/mtd/maps/ich2rom.c	2005-03-05 16:12:31.000000000 +0100
-@@ -299,7 +299,7 @@ int __init init_ich2rom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&ich2rom_driver);
-+	return pci_register_driver(&ich2rom_driver);
- #endif
- }
- 
-diff -puN drivers/mtd/maps/ichxrom.c~pci_register_driver-drivers_mtd_maps drivers/mtd/maps/ichxrom.c
---- kj/drivers/mtd/maps/ichxrom.c~pci_register_driver-drivers_mtd_maps	2005-03-05 16:12:31.000000000 +0100
-+++ kj-domen/drivers/mtd/maps/ichxrom.c	2005-03-05 16:12:31.000000000 +0100
-@@ -366,7 +366,7 @@ static int __init init_ichxrom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&ichxrom_driver);
-+	return pci_register_driver(&ichxrom_driver);
- #endif
- }
- 
-diff -puN drivers/mtd/maps/pci.c~pci_register_driver-drivers_mtd_maps drivers/mtd/maps/pci.c
---- kj/drivers/mtd/maps/pci.c~pci_register_driver-drivers_mtd_maps	2005-03-05 16:12:31.000000000 +0100
-+++ kj-domen/drivers/mtd/maps/pci.c	2005-03-05 16:12:31.000000000 +0100
-@@ -370,7 +370,7 @@ static struct pci_driver mtd_pci_driver 
- 
- static int __init mtd_pci_maps_init(void)
- {
--	return pci_module_init(&mtd_pci_driver);
-+	return pci_register_driver(&mtd_pci_driver);
- }
- 
- static void __exit mtd_pci_maps_exit(void)
-diff -puN drivers/mtd/maps/scb2_flash.c~pci_register_driver-drivers_mtd_maps drivers/mtd/maps/scb2_flash.c
---- kj/drivers/mtd/maps/scb2_flash.c~pci_register_driver-drivers_mtd_maps	2005-03-05 16:12:31.000000000 +0100
-+++ kj-domen/drivers/mtd/maps/scb2_flash.c	2005-03-05 16:12:31.000000000 +0100
-@@ -238,7 +238,7 @@ static struct pci_driver scb2_flash_driv
- static int __init
- scb2_flash_init(void)
- {
--	return pci_module_init(&scb2_flash_driver);
-+	return pci_register_driver(&scb2_flash_driver);
- }
- 
- static void __exit
-_
+Regards
+Narinder
