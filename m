@@ -1,20 +1,20 @@
-Received: from mailout05.sul.t-online.com ([194.25.134.82])
+Received: from mailout04.sul.t-online.com ([194.25.134.18])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BEC0Z-00020S-6R
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 19:54:43 +0100
+	id 1BEC3h-00029p-6Q
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 19:57:57 +0100
 From: tglx@linutronix.de (Thomas Gleixner)
-To: Tino Keitel <tino.keitel@innominate.com>,
- Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Date: Thu, 15 Apr 2004 20:50:25 +0200
-References: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
-In-Reply-To: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
+To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>,
+ linux-mtd@lists.infradead.org
+Date: Thu, 15 Apr 2004 20:52:32 +0200
+References: <a06002006bca469e103ce@[130.161.115.44]>
+In-Reply-To: <a06002006bca469e103ce@[130.161.115.44]>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200404152050.25417.tglx@linutronix.de>
-Subject: Re: JFFS2 writes fail with 2.4.25
+Message-Id: <200404152052.32923.tglx@linutronix.de>
+Subject: Re: NAND bad blocks
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,14 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 15 April 2004 16:40, Tino Keitel wrote:
-> Hi folks,
+On Thursday 15 April 2004 18:39, J.D. Bakker wrote:
+> Hi all,
 >
-> The system is an Intel XScale IXP425 board (ARM little endian) with 16
-> MB NOR flash. I use the JFFS2 from the 2.4.25 kernel. Any hints what's
-> wrong here?
+> There's a slight discrepancy between what mtd and mkyaffs consider a bad
+> block.
+> ...which would indicate that even one bit set to zero would mark the
+> block bad. However, mkyaffs.c has this code:
 >
-Can you try  MTD CVS code ?
+>    /* Read the OOB data to determine if the block is valid.
+>     * If the block is damaged, then byte 5 of the OOB data will
+>     * have at least 2 zero bits.
+>     */
+
+Thats hard to say, as the datasheets tell different stories.
+But most of them say, that any bit set to zero marks the block bad
 
 -- 
 Thomas
