@@ -1,20 +1,17 @@
-Received: from gate.epygi.de ([212.126.211.241])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AVrG3-0006uu-My
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2003 11:51:27 +0000
-Received: from sally.epygi.de (sally.epygi.de [10.20.0.18])
-	by gate.epygi.de (8.12.9/8.12.9) with ESMTP id hBFBndhf026211
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Dec 2003 12:49:39 +0100 (MET)
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Date: Mon, 15 Dec 2003 12:49:38 +0100
-Message-ID: <NGENJJFPMHGLPILEKKAMMEPPCDAA.Stephan.Linke@epygi.de>
+Received: from mail14.messagelabs.com ([212.125.75.19])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AVv8K-0007X0-UA
+	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2003 15:59:45 +0000
+Message-ID: <3FDDD939.8030302@arcom.com>
+Date: Mon, 15 Dec 2003 15:54:33 +0000
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Linux MTD List <linux-mtd@lists.infradead.org>
+References: <3FD998F6.9000303@arcom.com>
+In-Reply-To: <3FD998F6.9000303@arcom.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: reset on NAND flash
+Subject: Re: cfi_cmdset_0002 -- erase suspends broken.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> +			if (((oldstatus ^ status) & dq6) != dq6)
 
-when scanning the nand device shouldn't the reset command being issued first?
-I am thinking of these situations where the flash is left out of sync after a soft reset. Maybe ID detection can fail since
-NAND_CMD_READID is not recognised by NAND chip?
+This should be
+     if (((oldstatus ^ status) & dq6) == 0)
+to account for interleaved chips (not that mine are). (Thanks Steve Wohl).
 
-I would prefer having a NAND_CMD_RESET in nand_scan(). What do you think?
+The problem with the occasional bit errors appears to only occur when 
+the erase is suspended for a write so I've temporarily disabled that.
 
-Regards, Stephan
+It also appears to not be toggle/status bits as the flash reads the same 
+after a hard reset.
+
+David Vrabel
+-- 
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+
+
+________________________________________________________________________
+This email has been scanned for all viruses by the MessageLabs Email
+Security System. For more information on a proactive email security
+service working around the clock, around the globe, visit
+http://www.messagelabs.com
+________________________________________________________________________
