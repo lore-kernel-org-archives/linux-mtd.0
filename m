@@ -1,17 +1,14 @@
-Received: from mail1.danielvalve.com ([12.19.96.6] helo=mail1.danielind.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15aO0j-0003i1-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2001 21:57:01 +0100
-Message-ID: <3B86C272.83F215BD@daniel.com>
-Date: Fri, 24 Aug 2001 16:09:07 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+Received: from web13606.mail.yahoo.com ([216.136.175.117])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15aW0g-0004MK-00
+	for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2001 06:29:30 +0100
+Message-ID: <20010825053526.25584.qmail@web13606.mail.yahoo.com>
+Date: Fri, 24 Aug 2001 22:35:26 -0700 (PDT)
+From: Luke <luke_epsilon@yahoo.com>
+Subject: JFFS problems for the Am29LV065D
+To: linux-mtd@lists.infradead.org, JFFS mailing list <jffs-dev@axis.com>
 MIME-Version: 1.0
-To: Patrick Allaire <pallaire@gameloft.com>
-CC: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Mtd Not loaded at boot up !
-References: <9A1957CB9FC45A4FA6F35961093ABB840417B7D0@srvmail-mtl.ubisoft.qc.ca>
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,68 +20,102 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-For the DoC's I believe that it's the DOC2xxx.c stuff. Maybe some else with
-more DoC experience can comment.
+Hello,
 
-Vipin
+I have "successfully" gotten linux to recognize my second flash chip.  The system I am building
+has 2 flash chips with the first one containing the kernel, initrd, and bios and some room for
+some data. I have decided for the moment to get this 2nd flash chip working before trying to
+partition the first one to use a middle chunk for data storage.
+
+Upon booting I see: 
+
+physmap flash device: 800000 at 10000000
+Physically mapped flash: Found 1 x8 devices at 0x0 in 8-bit mode
+ Amd/Fujitsu Extended Query Table v1.1 at 0x0040
+number of CFI chips: 1
+mtd: Giving out device 0 to Physically mapped flash
+
+and if I cat /proc/mtd I see:
+dev:      size        erasesize          name
+mtd0    00800000      00010000        "physically mapped flash"
+
+I created a mount point at /mnt/flash1 and then mounted:
+
+#mount -t jffs2 /dev/mtdblock0 /mnt/flash1
+mtdblock_open
+ok           
+JFFS2: Erase black at 0x00000000 is not formatted. It will be erased
+JFFS2: Erase black at 0x00000000 is not formatted. It will be erased
+JFFS2: Erase black at 0x00000000 is not formatted. It will be erased
+...
+...
+JFFS2: Erase black at 0x007e0000 is not formatted. It will be erased
+JFFS2: Erase black at 0x007f0000 is not formatted. It will be erased
+
+#df -k
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/ram0                 3963       711      3252  18% /
+/dev/mtdblock0            8192         0      8192   0% /mnt/flash1
+
+I then proceeded to unmount (which took 3-4 minutes)
+
+I then decided to mount again and see what happened:
+
+#mount -t jffs2 /dev/mtdblock0 /mnt/flash1
+mtdblock_open
+ok           
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0000: 0x8366 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0004: 0xfb59 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0008: 0xcb24 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f000c: 0xb964 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0010: 0x21d2 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0014: 0xb734 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0018: 0x5cd7 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f001c: 0x3b29 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0020: 0x0eaf instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000f0024: 0xf64d instead
+Further such events for this erase block will not be printed                         
+JFFS2: Erase block at 0x000f0000 is not formatted. It will be erased
+#                                                                   
+# df -k
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/ram0                 3963       711      3252  18% /
+/dev/mtdblock0            8192       388      7804   5% /mnt/flash1
+# 
+# waiting for erase to complete timed out.<4>Erase at 0x000f0000 failed immediately: -5
+#
+
+Is this 388 Used supposed to be there?  Is this some space that jffs2 has grabbed for its use?
+
+I then created a 1 line test file and tried to copy it over and got this:
+
+# cp test /mnt/flash1
+Waiting for chip to read, status = 4
+
+---
+At this point my system is completely hung (at least it has been
+waiting to copy for over 30 minutes and I can't break out.)
+
+At this point, I need to hard reset and reboot.  :-(
+                                                                                       
+Any ideas on what is wrong? I am using the mtd cvs snapshot from 8-24-01 and kernel 2.4.8-ac9
+(patched with the mtd snapshot).
+
+The flash chip is a Am29LV065D:
+    - 64 Megabit (8M x 8-bit)
+    - uniform sector flash memory
+    - 128 64 Kbyte sectors
+    - CFI compliant
+    
+Thanks,
+Luke
+
+ps. What does the following line from the linux boot mean anyway - was this something detected? 
+"Amd/Fujitsu Extended Query Table v1.1 at 0x0040"
 
 
 
-Patrick Allaire wrote:
-
-> Since I am using a self contained flash : disk on chip 2000, which one of
-> the mapping should I use ?
->
-> Patrick Allaire
-> mailto:pallaire@gameloft.com
-> If you can see it, but it's not there, it's virtual.
-> If you can't see it, but it is there, it's hidden.
-> It you can't see it and it isn't there, it's gone.
->
-> > -----Original Message-----
-> > From: Vipin Malik [mailto:Vipin.Malik@daniel.com]
-> > Sent: August 24, 2001 4:07 PM
-> > To: 'Patrick Allaire'; 'linux-mtd@lists.infradead.org'
-> > Subject: RE: Mtd Not loaded at boot up !
-> >
-> >
-> > You'r probably missing the "map" driver (like physmap.c,
-> > sc520cdp.c or any
-> > other in the same dir).
-> >
-> > The other mtd stuff does not do anything till the map driver
-> > gets called
-> > (either on module load time or kernel init time).
-> >
-> > Vipin
-> >
-> > -----Original Message-----
-> > From: Patrick Allaire [mailto:pallaire@gameloft.com]
-> > Sent: Friday, August 24, 2001 3:00 PM
-> > To: 'linux-mtd@lists.infradead.org'
-> > Subject: Mtd Not loaded at boot up !
-> >
-> >
-> >
-> > Hi,
-> >
-> > I sont see any messages from mtd or DoC when I boot the kernel. I have
-> > compiled the Mtd and DoC2000 support IN the kernel (not in a
-> > module). Do I
-> > have to do something else to trigger the search of the DoC on boot ?
-> >
-> > thank you.
-> >
-> >
-> > Patrick Allaire
-> > mailto:pallaire@gameloft.com
-> > If you can see it, but it's not there, it's virtual.
-> > If you can't see it, but it is there, it's hidden.
-> > It you can't see it and it isn't there, it's gone.
-> >
-> >
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
+__________________________________________________
+Do You Yahoo!?
+Make international calls for as low as $.04/minute with Yahoo! Messenger
+http://phonecard.yahoo.com/
