@@ -1,22 +1,21 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from mailout08.sul.t-online.com ([194.25.134.20])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BdApa-0005kc-EH
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2004 12:42:38 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <40D9B37B.2070605@inf.u-szeged.hu>
-References: <E1Bd9E6-0002UD-O9@phoenix.infradead.org>
-	<1088003135.18627.2676.camel@hades.cambridge.redhat.com>
-	<40D9B37B.2070605@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1088008952.18627.2691.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 23 Jun 2004 17:42:32 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd/fs/jffs2 compr.c, 1.38, 1.39 compr.h, 1.3,
-	1.4	compr_lzari.c, 1.1, 1.2 compr_lzo.c, 1.1, 1.2 compr_rtime.c, 1.12,
-	1.13	compr_rubin.c, 1.18, 1.19 compr_zlib.c, 1.26, 1.27
+	id 1BdDgs-00067n-Ue
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2004 15:45:52 -0400
+From: "Thomas Gleixner" <tglx@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 23 Jun 2004 21:39:44 +0200
+References: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
+In-Reply-To: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200406232139.44496.tglx@linutronix.de>
+Cc: 
+Subject: Re: Please recommend a mtd snapshot
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-06-23 at 18:44 +0200, Ferenc Havasi wrote:
-> >Please don't do this. #define printk in userspace instead. Likewise for
-> >alloc/free.
-> >  
+On Monday 21 June 2004 05:41, zh_chaohao@china.com.cn wrote:
+> Can somebody recommend me a mtd snapshot ?
+> I want it:
+>
+> Stable
+> Dual flash support
+> NOR and NAND Flash support(Is nand support complete now?)
+> Erase suspend (optional)
 
-Thanks. Also please #define spin_lock() /* */ in userspace and remove
-COMPRESSOR_LIST_{UN,}LOCK, and use KERN_xxx printk prefixes which can
-also be #defined to nothing in userspace.
+Well, we have only rare, medium or well done at the moment. Please be=20
+appreciative of any things we can't serve at your wish.
 
+The latest snapshot should be quite stable. If something is missing feel fr=
+ee=20
+to provide patches and improvements.
 
--- 
-dwmw2
+=2D-=20
+Thomas
+_____________________________________________________________________
+=46rom slash dot org
+"When customers are visiting, engineers are not allowed to wear ties.=20
+That way the customer can tell who is the engineer and who is the=20
+salesman (and therefore whom to believe.). Ties cut off blood flow=20
+to the brain, making it easier for the salesmen to do their jobs."=20
+_____________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
