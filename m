@@ -1,26 +1,19 @@
-Received: from zeus.vortex.is ([193.4.145.1])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15953b-0004I9-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Jun 2001 14:15:08 +0100
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <linux-mtd@lists.infradead.org>;
-          Sun, 10 Jun 2001 13:19:24 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <linux-mtd@lists.infradead.org>;
-          Sun, 10 Jun 2001 13:19:23 +0000
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C0F1AF.F6198FAE"
-Subject: RE: partitioning bug
-Date: Sun, 10 Jun 2001 13:19:21 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9191@kolkrabbi.flaga.is>
-From: =?Windows-1252?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: "Abraham vd Merwe" <abraham@2d3d.co.za>,
-	"MTD for Linux" <linux-mtd@lists.infradead.org>
+Received: from mail.2d3d.co.za ([196.14.185.200] helo=crystal.2d3d.co.za)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 159MAr-0005N3-00
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2001 08:31:45 +0100
+Date: Mon, 11 Jun 2001 09:37:11 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: =?iso-8859-1?Q?K=E1ri_Dav=ED=F0sson?= <kd@flaga.is>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: partitioning bug
+Message-ID: <20010611093711.A23639@crystal.2d3d.co.za>
+References: <EADB10BAC266A14A85ECBF8686A73E310A9191@kolkrabbi.flaga.is>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
+In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E310A9191@kolkrabbi.flaga.is>; from kd@flaga.is on Sun, Jun 10, 2001 at 13:19:21 -0000
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -32,69 +25,80 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C0F1AF.F6198FAE
-Content-Type: text/plain;
-	charset="Windows-1252"
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Are you using virtual regions?
-How are your partitions defined?
+Hi K=E1ri!
 
-K.D.
------Original Message-----
-From:	Abraham vd Merwe
-Sent:	Fri 6/8/2001 10:04 AM
-To:	MTD for Linux
-Cc:=09
-Subject:	partitioning bug
+> Are you using virtual regions?
+
+virtual regions?
+
+> How are your partitions defined?
+
+------------< snip <------< snip <------< snip <------------
+#ifdef HAVE_PARTITIONS
+static struct mtd_partition lart_partitions[] =3D
+{
+   /* blob */
+   {
+           name: "blob",
+         offset: BLOB_START,
+           size: BLOB_LEN,
+     mask_flags: 0
+   },
+   /* kernel */
+   {
+           name: "kernel",
+         offset: KERNEL_START,          /* MTDPART_OFS_APPEND */
+           size: KERNEL_LEN,
+     mask_flags: 0
+   },
+   /* initial ramdisk */
+   {
+           name: "initial ramdisk",
+         offset: INITRD_START,          /* MTDPART_OFS_APPEND */
+           size: INITRD_LEN,            /* MTDPART_SIZ_FULL */
+     mask_flags: 0
+   }
+};
+#endif
+------------< snip <------< snip <------< snip <------------
+
+--=20
+
+Regards
+ Abraham
+
+The most exciting phrase to hear in science, the one that heralds new
+discoveries, is not "Eureka!" (I found it!) but "That's funny ..."
+		-- Isaac Asimov
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
 
 
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-------_=_NextPart_001_01C0F1AF.F6198FAE
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
+iD8DBQE7JHUmzNXhP0RCUqMRAiBxAJ9eAvaqfqa1oEqIhia7g8w6r495BgCfZTLm
+q+ubGwHN+l9AmER/O4yWpkw=
+=MRH1
+-----END PGP SIGNATURE-----
 
-eJ8+IhgNAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEEgAEAFQAAAFJFOiBwYXJ0aXRpb25pbmcg
-YnVnAGcHAQWAAwAOAAAA0QcGAAoADQATABUAAAAdAQEggAMADgAAANEHBgAKAA0AEwAWAAAAHgEB
-CYABACEAAABBRkU5OUYzQjE4MkVGODQ2QTEyMzZFNkU1QTY3MTYxQgBLBwEDkAYAeAcAADYAAAAD
-ADYAAAAAAEAAOQCujxn2r/HAAR4APQABAAAABQAAAFJFOiAAAAAAAgFHAAEAAAAxAAAAYz1JUzth
-PSA7cD1GbGFnYTtsPUtPTEtSQUJCSS0wMTA2MTAxMzE5MjFaLTExMDE5AAAAAB4ASQABAAAAEQAA
-AHBhcnRpdGlvbmluZyBidWcAAAAAQABOAAC/QW0C8MABHgBaAAEAAAARAAAAQWJyYWhhbSB2ZCBN
-ZXJ3ZQAAAAACAVsAAQAAAEEAAAAAAAAAgSsfpL6jEBmdbgDdAQ9UAgAAAABBYnJhaGFtIHZkIE1l
-cndlAFNNVFAAYWJyYWhhbUAyZDNkLmNvLnphAAAAAAIBXAABAAAAGAAAAFNNVFA6QUJSQUhBTUAy
-RDNELkNPLlpBAB4AXQABAAAAEQAAAEFicmFoYW0gdmQgTWVyd2UAAAAAAgFeAAEAAABBAAAAAAAA
-AIErH6S+oxAZnW4A3QEPVAIAAAAAQWJyYWhhbSB2ZCBNZXJ3ZQBTTVRQAGFicmFoYW1AMmQzZC5j
-by56YQAAAAACAV8AAQAAABgAAABTTVRQOkFCUkFIQU1AMkQzRC5DTy5aQQAeAGYAAQAAAAUAAABT
-TVRQAAAAAB4AZwABAAAAEwAAAGFicmFoYW1AMmQzZC5jby56YQAAHgBoAAEAAAAFAAAAU01UUAAA
-AAAeAGkAAQAAABMAAABhYnJhaGFtQDJkM2QuY28uemEAAB4AcAABAAAAEQAAAHBhcnRpdGlvbmlu
-ZyBidWcAAAAAAgFxAAEAAAAbAAAAAcDw+zVlO4ZAb/T+TwG4w6GL+CXQkgAs/f40AB4AdAABAAAA
-DgAAAE1URCBmb3IgTGludXgAAAAeABoMAQAAAA8AAABL4XJpIERhdu3wc3NvbgAAHgAdDgEAAAAR
-AAAAcGFydGl0aW9uaW5nIGJ1ZwAAAAACAQkQAQAAAE8BAABLAQAAGAIAAExaRnV269ZLAwAKAHJj
-cGcxMjViMgNDdGV4BUEBAjH/AfcKgAKkA+QHEwKAD/MAUH8EVghVB7IRJQ5RAwECAGPCaArAc2V0
-MgYABsPtESUzBEYTtzASLBEzCO9tCfc7GB8OMDURIgxgY+cAUAsJAWQzNhZQEXML8ZEQwWUgeQhg
-IHUAkKBuZyB2aQAgdQdAkiAYIGdpAiBzPwqi+QqASG8H4ArAHRMFwAqx7HRpIDAekSABAQuACYBD
-HsUe1EsuRC4e1C2tIpJPBRAecG4eIU0HkLBzYWdlIpMe1EYDYUY6DIIQwGJyYRPgbcUdwGQjYXJ3
-ZR7UBmAHAjAk1CSQaSA2LzgCLwHQMDEgMTA6lDA0EMBNHtRUbyTUsE1URCACEAXATAuAZHV4HtRD
-YyTUJjV1PGJqBZAmxSAHHZJidRZnIToe1H0ucAAeADUQAQAAADwAAAA8RUFEQjEwQkFDMjY2QTE0
-QTg1RUNCRjg2ODZBNzNFMzEwQTkxOTFAa29sa3JhYmJpLmZsYWdhLmlzPgAeAEcQAQAAAA8AAABt
-ZXNzYWdlL3JmYzgyMgAACwDyEAEAAAAfAPMQAQAAADYAAABSAEUAJQAzAEEAIABwAGEAcgB0AGkA
-dABpAG8AbgBpAG4AZwAgAGIAdQBnAC4ARQBNAEwAAAAAAAsA9hAAAAAAQAAHMM87XS2v8cABQAAI
-MHqpu/av8cABAwDeP+QEAAADAPE/CQAAAB4A+D8BAAAADwAAAEvhcmkgRGF27fBzc29uAAACAfk/
-AQAAAFoAAAAAAAAA3KdAyMBCEBq0uQgAKy/hggEAAAAAAAAAL089RkxBR0EvT1U9RklSU1QgQURN
-SU5JU1RSQVRJVkUgR1JPVVAvQ049UkVDSVBJRU5UUy9DTj1LQVJJRAAAAB4A+j8BAAAAFQAAAFN5
-c3RlbSBBZG1pbmlzdHJhdG9yAAAAAAIB+z8BAAAAHgAAAAAAAADcp0DIwEIQGrS5CAArL+GCAQAA
-AAAAAAAuAAAAAwD9P+QEAAADABlAAAAAAAMAGkAAAAAAAwAdQAAAAAADAB5AAAAAAB4AMEABAAAA
-BgAAAEtBUklEAAAAHgAxQAEAAAAGAAAAS0FSSUQAAAAeADJAAQAAABMAAABhYnJhaGFtQDJkM2Qu
-Y28uemEAAB4AM0ABAAAAEwAAAGFicmFoYW1AMmQzZC5jby56YQAAHgA4QAEAAAAGAAAAS0FSSUQA
-AAAeADlAAQAAAAIAAAAuAAAACwApAAAAAAALACMAAAAAAAMABhA15cNtAwAHEKMAAAADABAQAAAA
-AAMAERAAAAAAHgAIEAEAAABlAAAAQVJFWU9VVVNJTkdWSVJUVUFMUkVHSU9OUz9IT1dBUkVZT1VS
-UEFSVElUSU9OU0RFRklORUQ/S0QtLS0tLU9SSUdJTkFMTUVTU0FHRS0tLS0tRlJPTTpBQlJBSEFN
-VkRNRVJXRQAAAAACAX8AAQAAADwAAAA8RUFEQjEwQkFDMjY2QTE0QTg1RUNCRjg2ODZBNzNFMzEw
-QTkxOTFAa29sa3JhYmJpLmZsYWdhLmlzPgCWrA==
-
-------_=_NextPart_001_01C0F1AF.F6198FAE--
+--x+6KMIRAuhnl3hBn--
