@@ -1,19 +1,18 @@
 Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19K2QK-0002UZ-Kn
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 21:48:56 +0100
+	id 19K6Fd-0003B2-SS
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 01:54:09 +0100
 Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 19K2Ok-0007YN-00
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 22:47:18 +0200
+	id 19K6EO-0001x6-00
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 02:52:52 +0200
 To: linux-mtd@lists.infradead.org
 From: David Wuertele <dave-gnus@bfnet.com>
-Date: Sun, 25 May 2003 13:48:42 -0700
-Message-ID: <m37k8ezr9x.fsf@bfnet.com>
-References: <m3brxqzrli.fsf@bfnet.com>
+Date: Sun, 25 May 2003 17:54:52 -0700
+Message-ID: <m34r3izfvn.fsf@bfnet.com>
 Mime-Version: 1.0
 Sender: news <news@main.gmane.org>
 Content-Type: text/plain; charset=us-ascii
-Subject: Re: v1.38  "mkfs.jffs2 --pad"  goes overboard
+Subject: mtd/utils automake attic?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Never mind.  My root dir had more than 10MB in it because I forgot to
-strip some files.  Sorry.
+I'm trying to compile the utils directory following the automake
+instructions, but there seem to be files missing in my version of
+CVS:  
 
-Me> Why is mkfs.jffs2 generating a larger file than I want?
-Me>   # /sbin/mkfs.jffs2 --version
-Me>   mkfs.jffs2: revision 1.38
+  automake: `configure.ac' or `configure.in' is required
+  automake: configure.in: required file `./install-sh' not found
+  automake: configure.in: required file `./missing' not found
+  configure.in: 4: required file `./config.h.in' not found
 
-Me>   # /sbin/mkfs.jffs2 --pad=10485760 --little-endian --squash -e 16384 -d root -o jffs2.dat
-Me>   # ls -al jffs2.dat
-Me>   -rw-r--r--    1 root     root     10551296 May 25 13:36 jffs2.dat
-Me>   # 
+When I look at the web CVS, I can see those files:
 
-Me> My partition is only 10MB.  That's (1024*1024*10) = 10485760 bytes.
-Me> It is divisible by the 16k erase block.  So why does mkfs.jffs2 insist
-Me> on writing 65536 more bytes than I want?  Am I doing something wrong
-Me> or is this a bug?
+http://www.infradead.org/cgi-bin/cvsweb.cgi/mtd/util/?hideattic=0&sortby=date
+
+They appear to be "in the attic".  What does that mean?  Is there a
+way to download these files using cvs?
+
+Thanks,
+Dave
