@@ -1,15 +1,16 @@
 Received: from anchor-post-33.mail.demon.net ([194.217.242.91])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp7Zg-000661-Ne
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 11:39:38 -0400
+	id 1Bp80q-0006Pd-Ov
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 12:07:41 -0400
 From: Andy Hawkins <a.hawkins@cabletime.com>
 To: D.A.Fedorov@inp.nsk.su
-In-Reply-To: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
+In-Reply-To: <1090856360.2220.63.camel@adh>
 References: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
+	<1090856360.2220.63.camel@adh>
 Content-Type: text/plain
-Message-Id: <1090856360.2220.63.camel@adh>
+Message-Id: <1090858047.2219.77.camel@adh>
 Mime-Version: 1.0
-Date: 26 Jul 2004 16:39:20 +0100
+Date: 26 Jul 2004 17:07:27 +0100
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Problem writing to NOR flash
@@ -22,32 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-On Mon, 2004-07-26 at 16:00, Dmitry A. Fedorov wrote:
-> I have use the same cmdset (exactly) but single (interleave 1) 16 bit
-> wide chip Am29LV640. No problems yet with backported code.
+After a bit more digging and reading of the data sheet, it appears the
+the chip I'm using doesn't need locking and unlocking. I then went back
+to the version of the code where we had this working (whatever came with
+the 2.4.20 kernel) and found that none of this locking / unlocking
+mechanism was present.
 
-I've been doing a bit of digging now. The chip in question is an ST
-M29W320DB (32MBit)
+So, to test I commented out the contents of cfi_amdstd_lock_varsize and
+cfi_amdstd_unlock_varsize, and I can now successfully write to the NOR!
 
-do_xxlock_oneblock is called, with an address of 0. However, this is
-translated in the function to an address of ffc00002. This address is
-then (eventually) passed into map_write16, which adds the virtual
-address of the flash onto this address...
+Are these functions only required for some very specific chips? If so,
+what is the *correct* way for this code to determine whether or not they
+are needed (this code is in a 'generic' file, so I'm surprised that
+there's chip specific information in there).
 
-This to me appears to be invalid, but I'm not entirely sure what
-*should* be happening here. The chip's start address is added on to the
-address inside do_xxlock_oneblock (although this is zero), and then the
-virtual address is added on again. However, the translation doesn't
-appear correct to me:
-
-adr = ((adr & ~0xffff) | 0x2) + ~0x3fffff;
-
-As you can probably tell, I don't fully understand how the code is
-*supposed* to work, so it's difficult to know exactly what is going
-wrong here.
-
-Thanks.
+Thanks for any advice you can offer.
 
 Andy
