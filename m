@@ -1,20 +1,18 @@
-Received: from ash.lnxi.com ([207.88.130.242])
+Received: from extraetmess.thales-e-transactions.com ([212.234.11.56])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19D3ZS-0008Mu-U9
-	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 15:37:31 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
+	id 19D3iy-0008TV-G8
+	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 15:47:20 +0100
+Message-ID: <3EB7CA4A.49D16F72@thales-e-transactions.com>
+Date: Tue, 06 May 2003 16:44:26 +0200
+From: "Eric DEJONC" <eric.dejonc@thales-e-transactions.com>
+MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1052203806.7532.20.camel@imladris.demon.co.uk>
-References: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
-	 <1052203806.7532.20.camel@imladris.demon.co.uk>
-Message-Id: <1052231851.1172.12864.camel@tubarao>
-Mime-Version: 1.0
-Date: 06 May 2003 08:37:31 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-fRNVCU3eWUq060fWwbKX"
-cc: Michael Moedt <xemc@yahoo.com>
+References: <3EB7A6AC.ED381D4C@thales-e-transactions.com>
+	<1052225362.2097.1.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Error: Wacky! Unable to decode failure status
+Subject: Re: reverse mkfs.jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Well thanks,  I hadn't seen this util, but I'm not lucky, this is the
+only one I couldn't compile.
+I'm gonna try to compile it.
 
---=-fRNVCU3eWUq060fWwbKX
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+thanks again
 
-On Tue, 2003-05-06 at 00:50, David Woodhouse wrote:
+Best regards,
+Eric
 
-> > +#ifdef CFIDEV_BUSWIDTH_8
-> > +        __u64 ones =3D 0;
-> > +#else
-> >          __u32 ones =3D 0;
-> > +#endif
->=20
-> cfi_word is there to prevent these ifdefs.
+David Woodhouse a écrit :
 
-Thanks for the hint.
-
-> > +        if ( CFIDEV_BUSWIDTH =3D=3D CFIDEV_BUSWIDTH_1 ) {
->=20
-> Use cfi_buswidth_is_1() et al. Then the compiler really will be able to
-> optimise them out in the appropriate cases.
-
-Already had this one changed to cfi_buswidth_is_?().
-
-I'll likely commit something today - I'm checking out a problem that has
-mysteriously fixed itself 8-/
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-fRNVCU3eWUq060fWwbKX
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+t8irfsBPTKE6HMkRAkrDAJ9kcE52hwHitE110W4W/lJDpsjr/ACfb2eY
-WT1t1QhqOmFd6jlJRskg6pQ=
-=6O/V
------END PGP SIGNATURE-----
-
---=-fRNVCU3eWUq060fWwbKX--
+> On Tue, 2003-05-06 at 13:12, Eric DEJONC wrote:
+> > Hi all,
+> > I was wondering if someone had already done a prog that reverse
+> > mkfs.jffs2?
+>
+> jffs2reader does this, partially.
+>
+> --
+> dwmw2
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
