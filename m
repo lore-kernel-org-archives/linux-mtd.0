@@ -1,19 +1,23 @@
-Received: from rproxy.gmail.com ([64.233.170.193])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D77PU-0007HE-Sq
-	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 02:39:45 -0500
-Received: by rproxy.gmail.com with SMTP id c16so576342rne
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Mar 2005 23:39:44 -0800 (PST)
-Message-ID: <66f646fd05030323395ed3a52c@mail.gmail.com>
-Date: Fri, 4 Mar 2005 15:39:44 +0800
-From: andrew box <andr3wbox@gmail.com>
-To: linux-mtd@lists.infradead.org
+From: David Woodhouse <dwmw2@infradead.org>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+In-Reply-To: <42280EB6.4030007@imc-berlin.de>
+References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
+	<1109845739.16158.14.camel@hades.cambridge.redhat.com>
+	<1109846656.4370.20.camel@tglx.tec.linutronix.de>
+	<1109846792.16158.20.camel@hades.cambridge.redhat.com>
+	<1109847189.4370.27.camel@tglx.tec.linutronix.de>
+	<1109847630.16158.22.camel@hades.cambridge.redhat.com>
+	<4226F51A.7070603@imc-berlin.de>
+	<Pine.LNX.4.62.0503031146070.15953@localhost.localdomain>
+	<1109874008.29792.92.camel@baythorne.infradead.org>
+	<42280EB6.4030007@imc-berlin.de>
+Content-Type: text/plain
+Date: Fri, 04 Mar 2005 07:53:54 +0000
+Message-Id: <1109922835.29792.106.camel@baythorne.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: differences between NFTL and INFTL
-Reply-To: andrew box <andr3wbox@gmail.com>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: [RFD] Move 2.4 code out from CVS head
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I must apologize for asking this stupid question.
-I have a diskonchip2000dip(NFTL) with jffs2,and I want to use it as a
-boot device,while docboot just support INFTL now...that is the reason
-why I want  to know the difference between them.
+On Fri, 2005-03-04 at 08:31 +0100, Steven Scholz wrote:
+> How about SUMMARY patch then? ;-)
 
-Or is there any other advice to boot my system from doc? Thanks.
+$DEITY no. The 2.4 branch doesn't even have the mount time improvements
+from a couple of years ago. It isn't having summary support.
+
+> And BTW: How do I get the 2.4 branch from CVS?
+
+cvs up -r jffs2-2_4-branch
+
+Or just look at Marcelo's current kernel. Most of what I've done
+recently (i.e. in the last year or so) to fix JFFS2 bugs in 2.4 has been
+in linux/fs/inode.c, not in linux/fs/jffs2/
 
 -- 
-History became Legend... 
-...Legend became Myth.
+dwmw2
