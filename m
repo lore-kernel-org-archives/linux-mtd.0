@@ -1,18 +1,17 @@
-Received: from [208.190.191.184] (helo=sekhmet.ad.newisys.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16blJk-0005qw-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 16:34:36 +0000
-content-class: urn:content-classes:message
+	id 16bmDO-0005uk-00
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 17:32:06 +0000
+Date: Fri, 15 Feb 2002 18:43:15 +0100 (MET)
+From: Robert Kaiser <rob@sysgo.de>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: linux-mtd@lists.infradead.org, J?rn Engel <joern@wohnheim.fh-wedel.de>
+Subject: Re: MTD concat layer 
+In-Reply-To: <3402.1013788700@redhat.com>
+Message-ID: <Pine.LNX.4.21.0202151806180.9629-100000@dagobert.svc.sysgo.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Weird status information on JFFS2 File System 
-Date: Fri, 15 Feb 2002 10:45:30 -0600
-Message-ID: <D3A72C5007329A4F991C0DD87202259F096A75@sekhmet.ad.newisys.com>
-From: "Navin Boppuri" <navin.boppuri@newisys.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,40 +23,55 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have two uniform sector (64K each 16 bit) Flash devices connected to a =
-32 bit bus. So, my sector size is actually 128K. For a 1MB file system, =
-what should be the optimal size of the reserved space for garbage =
-collection? I only have 8 sectors for 1MB out of which 5 sectors are =
-already being taken up by GC. Do I really need 5*128K GC area for 3*128K =
-available space left on the flash?=20
 
-Thanks a lot.
+On Fri, 15 Feb 2002, David Woodhouse wrote:
 
-Navin.
+>=20
+> > +#if defined(CONFIG_MTD_CONCAT) || defined(CONFIG_MTD_CONCAT_MODULE)=20
+>=20
+> Don't ever do that. Modules should be, well, modular - don't make other=
+=20
+> stuff depend on whether you happened to build a particular module today o=
+r=20
+> not.
+>=20
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-Sent: Friday, February 15, 2002 10:10 AM
-To: Navin Boppuri
-Cc: Chris Vagnini; linux-mtd@lists.infradead.org
-Subject: Re: Weird status information on JFFS2 File System=20
+OK, I'll change it.
+
+> It doesn't look like you have the concat_erase code right. An erase which=
+=20
+> covers more than one subdev will only get partially done.
+
+OK, will look into this. I stole that part from Aleksander Sanochkin's
+patch. I did test it, BTW (with erase/eraseall), and it worked.
+Apparently, these tools erase the device block by block. Is it
+legal/supported at all to make erase calls covering multiple blocks or
+partial blocks ?
+
+>=20
+> I think the best way to do this would be to merge it with the existing
+> partition code.
 
 
+Hmm, I agreed with you about this before I actually attempted coding it
+this way, but the code turned out to be a mess. IMHO, it is _much_ cleaner
+as a seperate layer. What would be the advantage of merging it into the
+partition code ?
 
-navin.boppuri@newisys.com said:
->  Is there some way I can change the 5 erase blocks default to a
-> smaller size? What are the implications of doing that?
+Disadvantages are:
 
-grep RESERVED fs/jffs2/nodelist.h
+- more overhead for parties requiring only partitioning or only
+  concatenating.
+- significant effort, specifically since the current partitioning
+  code is scheduled for replacement by J=F6rn's code, so I'd have to
+  do it twice.
 
-The danger in reducing it too far is that you'll run out of free space=20
-entirely, so that garbage collection cannot continue and your file =
-system=20
-gets entirely stuck. We ought to be able to reduce it to only a block or =
+Cheers
 
-two, but the code wants auditing for safety first - we have to ensure =
-that=20
-we never expand while garbage-collecting.
+Rob
 
---
-dwmw2
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
