@@ -1,17 +1,19 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from relay4.clb.oleane.net ([213.56.31.24])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17uQMi-0004tt-00
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2002 05:35:04 +0100
-Received: from [213.9.248.55] (helo=linux.local)
-	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 17uQMf-0000hH-00
-	for linux-mtd@lists.infradead.org; Thu, 26 Sep 2002 05:35:02 +0100
-From: "Thierry Vanhoudt" <sales@smokersassociation.co.uk>
-Subject: Discounted Tobacco
-To: linux-mtd@lists.infradead.org
-Reply-To: sales@smokersassociation.co.uk
-Date: Thu, 26 Sep 2002 03:48:51 +0200
-Message-Id: <E17uQMf-0000hH-00@phoenix.infradead.org>
+	id 17uSxr-0005DV-00
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2002 08:21:35 +0100
+Received: from dg ([217.167.163.86])
+	by relay4.clb.oleane.net with ESMTP id g8Q7L3Nr023899
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2002 09:21:04 +0200
+From: "free" <dag4004@free.fr>
+To: "MTD mailing liste" <linux-mtd@lists.infradead.org>
+Subject: [newbie] MTD and tiny RAM
+Date: Thu, 26 Sep 2002 09:25:41 +0200
+Message-ID: <BNEJIGKFJNJLELKBCMDAMEJGCCAA.dag4004@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +25,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear Sir or Madam
+Hello,
 
-In the past you have requested information on discounted products. We hope that you find this of interest. If you are not a smoker, and find this email offensive, we sincerely apologise!  We will be only too happy to take you off our mailing list.
+I use a very tiny SRAM (128ko) battery backuped to save
+very important and changeable data.
+I have a char. driver for it (i know how to read/write it)
+I would like to mount it on Linux VFS but it seems that
+bloc drivers are RAM cached.
+Acces on this SRAM must be immediatly apply (if power goes
+down data must be safe)
 
-If you are a smoker, however, and are fed up with paying high prices for your cigarettes and tobacco, take a look at what we have to offer  by clicking on this link.
-http://www.smokersassociation.co.uk/?S=13&ID=2
+Does MTD could help me :
+- is my SRAM not to tiny (128KO) for use with MTD ?
+- could i acces to my SRAM through MTD in block mode without caching ?
+- what king of file system could fit on such tiny RAM ?
 
-We can send you, legally, by registered air mail, direct to your door, 4 cartons of cigarettes or 40 pouches of rolling tobacco (all brands are available) from only 170 Euros - about 105 pounds - fully inclusive of postage and packing.  Why pay more?
 
-To remove yourself from our mailing list, please click below
-mailto:unsubscribe@smokersassociation.co.uk
+All advices are welcome.
 
-Yours faithfully.
-Smokers Association
+Thanks
 
-http://www.smokersassociation.co.uk/?S=13&ID=2
-
-xay5331821y
+Damien
