@@ -1,31 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13USDJ-0001ai-00
-	for mtd-list@infradead.org; Thu, 31 Aug 2000 12:08:57 +0100
-Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13USDI-0001ac-00
-	for mtd@infradead.org; Thu, 31 Aug 2000 12:08:56 +0100
-Message-ID: <39AE3D9E.27DF19E7@arcom.co.uk>
-Date: Thu, 31 Aug 2000 12:12:30 +0100
-From: David Vrabel <dvrabel@arcom.co.uk>
-MIME-Version: 1.0
-To: mtd@infradead.org, jffs-dev@axis.com
-Subject: JFFS: df output is incorrected
+	id 13UX5E-0003Ax-00
+	for mtd-list@infradead.org; Thu, 31 Aug 2000 17:20:56 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13UX5D-0003Aq-00
+	for mtd@infradead.org; Thu, 31 Aug 2000 17:20:55 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <151C6E876B0@mamao.cetuc.puc-rio.br> 
+References: <151C6E876B0@mamao.cetuc.puc-rio.br>  <1512880772E@mamao.cetuc.puc-rio.br> 
+To: miguel@cetuc.puc-rio.br
+Cc: mtd@infradead.org, Ciro Cattuto <ciro@prosa.it>
+Subject: Re: GRUB on DOC: 2Mb issues 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 31 Aug 2000 17:20:48 +0100
+Message-ID: <14431.967738848@passion.cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-The output of the df command is not correct for JFFS file systems.  It
-appears to include the size of deleted files as well.
+miguel@cetuc.puc-rio.br said:
+> 
+>    Well, I will not have time to do it in the next few days anyway.
+> But  maybe Ciro will want to implement it.
+>  
 
-I know this is a trival problem that's probably not worth wasting time
-on...
+I just committed it - it's working on 512-byte devices. I see no reason why 
+it shouldn't work on 256-byte devices if I copied Ciro's code correctly.
 
-David Vrabel
+--
+dwmw2
+
 
 
 
