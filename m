@@ -1,19 +1,20 @@
-Date: Fri, 14 Jan 2005 11:07:03 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-In-Reply-To: <41E79DD5.4050601@imc-berlin.de>
-Message-ID: <Pine.LNX.4.58.0501141105240.17331@phoenix.infradead.org>
-References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
-	<41E52EAD.2090302@imc-berlin.de>
-	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
-	<41E53F52.3010601@imc-berlin.de>
-	<Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
-	<41E79DD5.4050601@imc-berlin.de>
+Received: from [192.58.210.9] (helo=crl-mailb.crl.dec.com)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CpRnR-0001BY-F0
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 08:47:26 -0500
+Message-ID: <41E7CD50.1020003@hp.com>
+Date: Fri, 14 Jan 2005 08:46:56 -0500
+From: Jamey Hicks <jamey.hicks@hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: checking CRCs twice!?
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>	<20050111215102.GA6289@wohnheim.fh-wedel.de>	<Pine.LNX.4.58.0501131435510.17331@phoenix.infradead.org>	<Pine.LNX.4.58.0501131503160.17331@phoenix.infradead.org>	<20050113151724.GB18864@wohnheim.fh-wedel.de>	<Pine.LNX.4.58.0501131521470.17331@phoenix.infradead.org>	<20050113154037.GC18864@wohnheim.fh-wedel.de>	<1105631350.26551.204.camel@hades.cambridge.redhat.com>	<20050113161302.GD18864@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501131617030.17331@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501131617030.17331@phoenix.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Jan 2005, Steven Scholz wrote:
+Artem B. Bityuckiy wrote:
 
-> Artem B. Bityuckiy wrote:
-> 
-> >>>This seems to be true for NOR. But  chrcking CRC helps at least *detect* 
-> >>>and *report* media problems.
-> >>
-> >>Fair enough.
-> >>But who will pay attention if the system is embedded into your microwave oven or 
-> >>washing maschine... ;-)
-> > 
-> > In this case this doesn't make sence.
-> > But in general it does.
-> > 
-> > Possibly it makes sence to have this checking as an configuration option.
-> 
-> So will someone add this config option for JFFS2?
-> Or should it be done in SUMMARY patch?
-> Are there any plans to include this SUMMARY patch to the JFFS2 CVS?
-> Or will it stay seperated?
-AFAIK, Summary will go to JFFS3.
-I don't know for what Ferenc made "enable/disable summary" configuration 
-option, I believe it must be enabled by default.
+> Design makes sence, patches makes more sence, running our test 
+> different platforms makes even more sence. :-) Now we have only 
+> x86/ARM results. Need more...
+>
+I'm running jffs2 on blackfin uClinux  I could run jffs3.  What kind of 
+test results are you looking for?
 
-> 
-> --
-> Steven
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Jamey
