@@ -1,41 +1,41 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12O8SK-00023Z-00
-	for mtd-list@infradead.org; Fri, 25 Feb 2000 00:18:04 +0000
-Received: from out1.prserv.net ([32.97.166.31] helo=prserv.net)
+	id 12PLcb-0006yA-00
+	for mtd-list@infradead.org; Mon, 28 Feb 2000 08:33:41 +0000
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12O8SI-00023T-00
-	for mtd@infradead.org; Fri, 25 Feb 2000 00:18:02 +0000
-From: "Dvir Oren" <dvir@lucidvon.com>
-To: MTD <mtd@infradead.org>
-Date: Fri, 25 Feb 2000 02:21:35 +0200
+	id 12PLcZ-0006y4-00
+	for mtd@infradead.org; Mon, 28 Feb 2000 08:33:40 +0000
+Date: Mon, 28 Feb 2000 01:33:35 -0700 (MST)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: =?iso-8859-1?Q?Jean=2DFran=E7ois?= Larin <jlarin@Matrox.COM>
+cc: MTD <mtd@infradead.org>
+Subject: Re: Microsoft Flash Filesystem.
+In-Reply-To: <38B557EA.42D45DA8@matrox.com>
+Message-ID: <Pine.LNX.3.96.1000228013152.20123A-100000@white.priv.deltatee.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: RE: Request for kernel with DOC2000
-References: <NCBBJBECFFOJOPJIKOAAKEOFDGAA.michalk@awpi.com>
-In-reply-to: <Pine.OSF.4.05.10002201212480.14363-100000@cpca7.uea.ac.uk>
-Message-Id: <E12O8SI-00023T-00@infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-> > I have not been successful compiling mine into the kernel either.
-> > If you have any luck, let me know.
-> I haven't managed to get the latest kernel to work, but I've got a 2.0.38
-> to go - any use?
 
-If you could please post a patch with whatever you added to the 
-kernel, and whatever you changed in the MTD files (if at all), it 
-could be extremely helpful.
+On Thu, 24 Feb 2000, [iso-8859-1] Jean-Fran=E7ois Larin wrote:
 
-Thanks!
+> Anybody knows any link to the specification of Microsoft Flash File
+> system 2? I just searched MSDN and the WEB without finding anything.
 
+It is on their website, I used to know the exact search to find it too..
+Probably in a comment someplace..
 
----------
-Dvir Oren <dvir@lucidvon.com>
-Lucid VON Ltd.     <http://www.lucidvon.com>
-9 Saloniki St.,        Tel-Aviv       Israel
-Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
+If you grab http://amber.deltatee.com/~jgg/mtd/mtd-19990727.tar.gz you'll
+find enclosed a nearly-complete implementation and utilities for linux. It
+might also have the actual stuff from MS's site, I forget if I included
+that or not, I have it here someplace..
+
+Jason
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
