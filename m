@@ -1,16 +1,15 @@
-Received: from [203.115.15.101] (helo=obelix.sri.crossvue.com)
+Received: from [213.97.115.166] (helo=drkitkat.Hispafuentes.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15TZxW-0005XN-00
-	for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2001 03:17:35 +0100
-Message-ID: <3B6E01BA.2B394136@sri.crossvue.com>
-Date: Mon, 06 Aug 2001 08:32:26 +0600
-From: dhammika <dpathirana@sri.crossvue.com>
+	id 15TllK-0006DY-00
+	for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2001 15:53:47 +0100
+To: linux-mtd@lists.infradead.org
+Subject: Problems with NAND support
+From: juan@hispafuentes.com (Juan Ramon Jimenez)
+Date: 06 Aug 2001 17:00:02 +0200
+Message-ID: <m34rrlfd3h.fsf@drkitkat.Hispafuentes.com>
 MIME-Version: 1.0
-To: david woodhouse <dwmw2@infradead.org>,
- 	linux-mtd <linux-mtd@lists.infradead.org>
-Subject: mtd lilo
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,51 +21,53 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hello,
+--=20
 
-i'm trying to boot from a 32MB DOC. but am having trouble with mtd-lilo.
-here's my setup, 
-        133Mhz Advantech Biscuit PC (486 SBC),
-        32MB Millennium 2000 DOC,
-        2.4.6 kernel
+   Hi all
 
-what i did,
-        got the mtd-lilo patches from earlier list
-posting,                                     
-	(http://lists.infradead.org/pipermail/linux-mtd/2001-April/000049.html)
-	build mtd-lilo
-        ./mtd-lilo -v -C /etc/lilo.conf -i /boot/mtd.b -c /boot/map.b
+    We are trying to compile a kernel with MTD support but we have
+some problems to get it. We have probed with several kernel sources
+(2.4.3, 2.4.6, 2.4.7) and with the same sources replacing the mtd
+files with the cvs directory files from infredead.org. In both cases
+we have the same results: We only can get a kernel image if we don't
+enable NAND device support.  The problem is that we really need it. Do
+you know why?
 
-now mtd-lilo runs ok, 
+Also we have seen that we _must_ set a value for 'physical start
+address of flash mapping' But we have read in 'mtd-jffs-HOWTO.txt':
 
-	Reading boot sector from /dev/nftla1
-	Merging with /boot/mtd.b
-	Mapping message file /boot/message
-	Boot image: /boot/vmlinuz
-Added linux *
-	Boot other: /dev/fd0, loader /boot/chain.b
-	Pseudo partition start: 0
-	Added floppy
-	/boot/boot.5D01 exists - no backup copy made.
-	Writing boot sector.
+   ' If you leave the address blank (or just don't enable the advanced=20
+     options), the code will *auto probe*. This works quite well (at=20
+     least for me). Try it first.'
 
-and my lilo.conf looks like, 
-	boot=/dev/nftla1
-	map=/boot/map.b
-	install=/boot/mtd.b
-	prompt 
-	timeout=50
-	message=/boot/message
-	image=/boot/vmlinuz
-		label=linux
-		root=/dev/nftla1
-		read-only
-	other=/dev/fd0
-		label=floppy
-		unsafe	
+What's the problem then?
 
-but when i try to boot with lilo nothing comes up, any ideas??
 
-thanks 
+   We have used  gcc 2.96 and egcs 2.91.66 with a Red Hat 7.0 (kernel
+2.2.17-8)=20=20
 
-dhammika
+   Any comment or solution will be welcome. Thanks
+   J
+
+
+                                ///
+                               (@ @)
+ ------------------------oOO----(_)----OOo-------------------------
+
+ - No comas todo lo que puedes, no gastes todo lo que tienes,
+   no creas todo lo que oigas, no digas todo lo que sabes.
+   - Proverbio chino.
+
+ ------------------------------------------------------------------
+
+ =A4=BA=B0=B0=BA=A4=F8,=B8=B8,=F8=A4=BA=B0=B0=BA=A4=F8,=B8=B8,=F8=A4=BA=B0`=
+=B0=BA=A4=F8,=B8
+
+    Juan Ram=F3n Jim=E9nez Garc=EDa
+    Hispafuentes
+    Tfno 91 4575330
+    jjimenez@aucland.com
+    juan@hispafuentes.com
+
+ =A4=BA=B0=B0=BA=A4=F8,=B8=B8,=F8=A4=BA=B0=B0=BA=A4=F8,=B8=B8,=F8=A4=BA=B0`=
+=B0=BA=A4=F8,=B8
