@@ -1,20 +1,22 @@
-Received: from [210.241.255.67] (helo=mail.cable.net.tw)
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AqlvH-0007zj-3H
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 04:24:28 +0000
-Message-ID: <001f01c3f056$cb926ad0$030910ac@linuxer>
-From: "Pham Huy Vu" <vuph@mail.cable.net.tw>
-To: "Pham Huy Vu" <vuph@mail.cable.net.tw>
-References: 
-	<00e301c3eb42$8dfbbc80$030910ac@linuxer><005101c3ec6a$85b05440$030910ac@linuxer><1076053877.12587.149.camel@imladris.demon.co.uk>
-	<015701c3ed39$e540bdd0$030910ac@linuxer>
-Date: Wed, 11 Feb 2004 12:22:53 +0800
+	id 1AqnKG-0008FT-OT
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 05:54:20 +0000
+Received: from 192.168.1.100 (bluefire.joshuawise.com [192.168.1.100])
+	52EED17958	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Feb 2004 00:54:37 -0500 (EST)
+From: Joshua Wise <joshua@joshuawise.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 11 Feb 2004 00:54:27 -0500
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Copy files to jffs2 partition have problem
+Content-Disposition: inline
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200402110054.31831.joshua@joshuawise.com>
+Subject: cfi_cmdset_0002.c: do_xxlock_oneblock: overflow subtract causing
+	oopsen on iPAQ h1900
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I already fixed my bugs. Flash driver for amd can not handle alignment well.
-Thank David Woodhouse, Jonas and mtd list.
-Thanks.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-----Mark Pham----
+I have done some debugging and traced an oops during unlock to this functio=
+n.
 
------ Original Message -----
-From: "Pham Huy Vu" <vuph@mail.cable.net.tw>
-To: "David Woodhouse" <postmaster@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Saturday, February 07, 2004 1:18 PM
-Subject: Re: Copy files to jffs2 partition have problem
+I have an AMD AM29LV400BT flash chip as detected by MTD.
+
+When I try to unlock address 0x0, I get the following: (with my debugging=20
+statements added).
+
+unlock_varsize: about to frob!
+unlock_varsize: ofs: 00000000. len: 00000000.
+frob: about to frob ---> 00000000 00000000
+frob: about to REALLY from: adr 00000000
+about to write 0000 to ca471002 (ca871000 + ffc00002)
+<1>Unable to handle kernel paging request at virtual address ca471002
+
+Note that ca871000 is the virtbase of the chip - doing an overflow subtract=
+=20
+obviously FUBARs things there by bringing it below the ioremapped base!
+
+The offending line of code seems to be the following:
+adr =3D ((adr & ~0xffff) | 0x2) + ~0x3fffff;
+
+This is approximately line 2119 in drivers/mtd/chips/cfi_cmdset_0002.c - gi=
+ve=20
+or take a few lines because of my debugging statements added.
+
+Can anybody shed a little bit of light on why we are doing a 4MiB overflow=
+=20
+subtract? Indeed the comment is annotated with a little "(danger)"... I=20
+assume that we cannot always expect there to be lock block registers=20
+ioremapped below on all platforms (this does not make sense on systems wher=
+e=20
+boot flash is at 0x0, so I know it's not just an oddity in what I'm doing :)
+
+Thanks,
+joshua
 
 
-> Hi David Woodhouse,
-> I use this version:
-> * $Id: cfi_cmdset_0002.c,v 1.52 2001/10/24 09:37:30 dwmw2 Exp $
-> This version have fixed this bug or not? Please give me your hints.
-> Thanks.
-> ----mark pham----
->
-> ----- Original Message -----
-> From: "David Woodhouse" <postmaster@infradead.org>
-> To: "Pham Huy Vu" <vuph@mail.cable.net.tw>
-> Cc: "Jonas Holmberg" <jonas.holmberg@axis.com>;
-> <linux-mtd@lists.infradead.org>
-> Sent: Friday, February 06, 2004 3:51 PM
-> Subject: Re: Copy files to jffs2 partition have problem
->
->
-> > On Fri, 2004-02-06 at 12:34 +0800, Pham Huy Vu wrote:
-> > > Hi Jonas,
-> > > Thanks for your reply,
-> >
-> > Your last message to the list was rejected, partly because you
-> > top-posted. Yet you repeated the offence.
-> >
-> > Do it again and you get a personal entry in the blacklist.
-> >
-> > > Last[3] is 10, datum is 14000010
-> > > Write of 71 bytes at 0x000fe494 failed. returned 0, retlen 68
-> > > .....
-> > > I think mtd driver is ok,
-> > > I just think the jffs2 fs or mkfs.jffs2 have bugs???
-> >
-> > It's the other way around. The error you see is in the flash driver. We
-> > really shouldn't have the top bits set in 'datum' if buswidth is 2. I
-> > have a recollection of this bug having been fixed already. What version
-> > of drivers/mtd/chips/cfi_cmdset_0002.c do you have? (The $ID:... $ tag
-> > near the top of the file).
-> >
-> > --
-> > dwmw2
-> >
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <RockShox> charge up a 50v 1000uf cap and toss it to someone
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQFAKcOTPn9tWOqA4LMRAgAOAJ92vd+ZYZe1jslalcVzAJ42rw1vKACfT9uh
+WZQ/olAVv+aDm5cGpKhg6mI=3D
+=3DOlba
+=2D----END PGP SIGNATURE-----
