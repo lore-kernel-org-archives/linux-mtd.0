@@ -1,31 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JHkP-0002vl-00
-	for mtd-list@infradead.org; Mon, 31 Jul 2000 16:44:57 +0100
-Date: Mon, 31 Jul 2000 16:48:27 +0100 (BST)
-From: Kira Brown <kira@linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: David Vrabel <dvrabel@arcom.co.uk>, mtd@infradead.org
-Subject: Re: Booting from flash 
-In-Reply-To: <25533.965057345@cygnus.co.uk>
-Message-ID: <Pine.LNX.4.21.0007311641500.2881-100000@carrot.linuxgrrls.org>
+	id 13JIbe-00033l-00
+	for mtd-list@infradead.org; Mon, 31 Jul 2000 17:39:58 +0100
+Received: from web5301.mail.yahoo.com ([216.115.106.110])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13JIbc-00033f-00
+	for mtd@infradead.org; Mon, 31 Jul 2000 17:39:56 +0100
+Message-ID: <20000731163920.10575.qmail@web5301.mail.yahoo.com>
+Date: Mon, 31 Jul 2000 12:39:20 -0400 (EDT)
+From: Juan Gonzo <kayemmess@yahoo.ca>
+Subject: flash file system -- which files for image?
+To: JFFS Mailing List <jffs-dev@axis.com>,
+  MTD Mailing List <mtd@infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Ok,
+
+I would like to use mkfs.jffs to create a flash image I can
+burn into flash and then in turn, boot from this image.
+
+My question is... what files should go into this image to
+create a minimal set that the kernel can use to boot?
+
+Currently, we are booting from a ramdisk with a filesystem
+image we downloaded from some site (don't remember which).
+Can I use this filesystem (after running it through mkfs.jffs)
+as my set of files?
+
+Is there a good place on the Internet with info on something
+like this?  Or perhaps an appropriate image for use with JFFS
+to get the system up and running?
+
+Thanks,
+
+   -- kelly
 
 
-On Mon, 31 Jul 2000, David Woodhouse wrote:
 
-> > The board I'm using is a standard PC architecture.
-> 
-> Wimp.
 
-Does the SC4x0 count as a non-standard PC architecture?
-
-kira.
-
+_______________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.ca address at http://mail.yahoo.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
