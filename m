@@ -1,21 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cvl75-0007A4-AI
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 18:37:48 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Alex <pevnev@juno.com>
-In-Reply-To: <20050131.152934.3938.46960@webmail21.lax.untd.com>
-References: <20050131.152934.3938.46960@webmail21.lax.untd.com>
-Content-Type: text/plain
-Date: Tue, 01 Feb 2005 00:37:43 +0100
-Message-Id: <1107214664.21196.362.camel@tglx.tec.linutronix.de>
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050131163919.GH6694@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
+	<1107184897.7567.20.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
+	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
+	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
+	<20050131163919.GH6694@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 01 Feb 2005 00:19:31 +0000
+Message-Id: <1107217171.783.332.camel@baythorne.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, bjorn.wesen@axis.com,
-	linux-mtd@lists.infradead.org
-Subject: Re: Question re initiliazation of MTD NAND flash
-Reply-To: tglx@linutronix.de
+Content-Transfer-Encoding: 8bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	"Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-01-31 at 23:28 +0000, Alex wrote:
-> Well..., it appears that I have put wrong value for CONFIG_MTD_PHYSMAP_LEN
->  ... but what should be done to indicate that 
-> I want two banks (partitions) out of MTD flash each of 8Mb length ?
-> - or should I at this point put there the total length,
-> which is 16 MB ? ... deal with partioning later ?
-> 
-> Is there any documentation (or how to) on this?
->   (obviously I am doing it first time ... ;-) ).
-> 
+On Mon, 2005-01-31 at 17:39 +0100, Jörn Engel wrote:
+> This allows different people with different taste to specify numbers
+> in various simple formats.  If you think you can improve on this,
+> please send me a patch.
 
-CONFIG_MTD_PHYSMAP_START is the physical address of your NOR FLASH
-CONFIG_MTD_PHYSMAP_LEN is the size of your NOR FLASH in bytes
+It is wrong to interpret 'k' 'M' and 'G' as anything other than 10^3,
+10^6 or 10^9 respectively. If you have to do it to support a legacy
+interface like slram, that's vaguely acceptable. No more, though.
 
-You can enable commandline partition parsing and provide the partition
-info on the kernel commandline. There is some "documentation" in the
-code. :)
-
-Another option is to write our own board driver (by copying one which
-fits your needs closely and tweaking it for your board)
-
-NAND is a different beast. You will have to write a board driver (same
-procedure as above), but there's some documentation available.
-See http://www.linux-mtd.infradead.org/tech/mtdnand/index.html
-
-tglx
+-- 
+dwmw2
