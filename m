@@ -1,23 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C19NQ-0005Jg-DX
-	for linux-mtd@lists.infradead.org; Sat, 28 Aug 2004 16:00:43 -0400
-Received: from 192.168.69.102 ([69.70.213.145]) by VL-MO-MR011.ip.videotron.ca
-	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-	with ESMTP id <0I360007EA9039@VL-MO-MR011.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Sat, 28 Aug 2004 16:00:36 -0400 (EDT)
-Date: Sat, 28 Aug 2004 16:00:36 -0400
-From: Ccool <ccool@ninjatech.biz>
-In-reply-to: <1093595310.21861.18.camel@icampbell-debian>
-To: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
-Message-id: <200408281600.36216.ccool@ninjatech.biz>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: quoted-printable
-Content-disposition: inline
-References: <200408270210.53632.ccool@ninjatech.biz>
-	<1093595310.21861.18.camel@icampbell-debian>
-Subject: Re: Trouble with mtd partition
+	id 1C19si-0005VF-JB
+	for linux-mtd@lists.infradead.org; Sat, 28 Aug 2004 16:33:02 -0400
+Message-ID: <4130EBF7.70101@inf.u-szeged.hu>
+Date: Sat, 28 Aug 2004 22:32:55 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <05b901c48c7f$df752c70$fd0ba8c0@briantpc>
+	<200408280106.25436.dominik.karall@gmx.net>
+In-Reply-To: <200408280106.25436.dominik.karall@gmx.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Brian T <btuch@usa.net>
+Subject: Re: Error: jffs2_decompress returned -5
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 27 Ao=FBt 2004 04:28, Ian Campbell a =E9crit :
-> > If it helps (because I surely don't understand what's happenning), it is
-> > like if the partition structure in the physmap.c was not taken count of=
-f.
->
-> The example you said had the contents of the partition structure
-> definition surrounded with "#if 0" / "#endif". Perhaps you should change
-> that to a 1.
-I just tried that, and it did'nt work, I still have:
+Dominik Karall wrote:
+> On Friday 27 August 2004 23:50, Brian T wrote:
+ >
+>>After patching 2.4.27 with the snapshot from today, and adding "__ffs" to
+>>compatmac.h , everything compiles, but then when reading my jffs2 file
+>>system I get this :
+>>
+>>Freeing unused kernel memory: 68k freed
+>>JFFS2 compression type 0x06 not available.
+>>Error: jffs2_decompress returned -5
+>>JFFS2 compression type 0x06 not available.
+>>Error: jffs2_decompress returned -5
+>>Kernel panic: No init found.  Try passing init= option to kernel.
+ >
+> I think you specified a compression type when building the image with 
+> mkfs.jffs2, which isn't selected in the kernel config. But I can't tell you 
+> which type 0x06 is.
 
-/ # cat /proc/mtd                                                          =
-                                                                           =
- =20
-dev:    size   erasesize  name                                             =
-                                                                           =
- =20
-mtd0: 01000000 00040000 "Physically mapped flash"=20
+0x06 means ZLIB. (you can check it in jffs2.h)
 
-I would really like it if my mtd1,mtd2, etc partitions were working...
+Is there CONFIG_JFFS2_ZLIB in your kernel config?
 
-> Also make sure you have the CONFIG_MTD_PARTITIONS turned on in your
-> config (and CONFIG_MTD_CMDLINE_PARTS for mtdparts=3D if that's your
-> thing).
-
-Yeah, I did that, but I think CONFIG_MTD_CMDLINE_PARTS is giving me some ki=
-nd=20
-of error.  When I do a "dmesg" I get this message
-
-physmap flash device: 1000000 at ff000000                                  =
-                                                                           =
- =20
- Amd/Fujitsu Extended Query Table v1.2 at 0x0040                           =
-                                                                           =
- =20
-number of CFI chips: 1                                                     =
-                                                                           =
- =20
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.        =
-                                                                           =
- =20
-mtd: Giving out device 0 to Physically mapped flash                        =
-                                                                           =
- =20
-$Id: ftl.c,v 1.45 2003/01/24 23:31:27 dwmw2 Exp $                          =
-                                                                           =
- =20
-ftl_cs: FTL header not found.                         =20
-
-As you can see, cfi_cmdset_0002 gets itself disable.  I don't know if this =
-is=20
-the cause of the problem ?!?
-
-My init string is:
-Linux/PPC load: console=3DttyS0,9600 nfsroot=3D10.0.0.2:/exports/823_new=20
-ip=3D10.0.0.10 root=3D/dev/nfs=20
-mtdparts=3Dphysmap:512k(boot)ro,1M(zImage)ro,3M(ramdisk.gz)ro=20
-
-I've read many "how to" to get this right, but this is my "best" result.  I=
-=20
-really don't know what to do next.  This problem is my main reason for=20
-getting on this mailing-list.  If you have an idea, I'm all ears :-)
-
-Thanks
-Raphael
+Regards,
+Ferenc
