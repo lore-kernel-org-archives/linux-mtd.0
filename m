@@ -1,15 +1,21 @@
-Received: from web25006.mail.ukl.yahoo.com ([217.12.10.42])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CRGvH-0005Db-12
-	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2004 16:19:36 -0500
-Message-ID: <20041108211932.34600.qmail@web25006.mail.ukl.yahoo.com>
-Date: Mon, 8 Nov 2004 21:19:32 +0000 (GMT)
-From: Chan Siu Ming <namely_void@yahoo.co.uk>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: Getting mtd to work with IBM Evaluation boards (Ebony/Walnut)
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CREdi-00050z-SR
+	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2004 13:53:22 -0500
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Alexander Hoffmann <ahoffmann@sysgo.de>
+In-Reply-To: <418F5E68.3010200@sysgo.de>
+References: <418F5E68.3010200@sysgo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-Jl3u96EjGwLRus+T4IVv"
+Date: Mon, 08 Nov 2004 11:30:15 -0700
+Message-Id: <1099938615.10812.5.camel@tubarao>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Usage of MTD_UADDR_UNNECESSARY broken?
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-I'm trying to get mtd to work with IBM Walnut and
-Ebony PPC evaluation boards. I tried with mtd CVS
-from 2004.11.03 and Linux 2.6.9, but seem to have
-some problems. Here's first what I did do with 
-success:
-* patched kernel with CVS mtd and compiled it, 
-  everything into the kernel - no modules. I'm
-  not quite sure what I should have enabled in
-  the config, but I guess these boards have CFI
-  AMD chips in them.
-* populated /dev with the MAKEDEV in mtd tree
-* compiled the mtd utils
-My problems are:
-* There doesn't seem to be a map for Walnut boards,
-  anyone has got one?
-* Ebony can read from the flash well, but cannot
-write.
-  Flash_info says: "0 erase regions". Flash_unlock and
-  all write attemps fail, when trying to open the
-  device in O_RDWR or O_WRONLY mode. What might be
-  the problem?
-Tested the physical ram test device on Walnut (mapped
-to the boards SRAM at 0xFFF00000) and that worked
-fine.
 
-Thanks for any help.
+--=-Jl3u96EjGwLRus+T4IVv
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2004-11-08 at 12:54 +0100, Alexander Hoffmann wrote:
+> Hi everyone,
+>=20
+> can anybody please explain me the exact difference between=20
+> MTD_UADDR_DONT_CARE and MTD_UADDR_UNNECESSARY .
+
+It's exactly what the comments state:
+
+	MTD_UADDR_DONT_CARE,		/* Requires an arbitrary address */
+	MTD_UADDR_UNNECESSARY,		/* Does not require any address */
 
 
-  
+> Because if I use MTD_UADDR_UNNECESSARY an not existing field in the=20
+> unlock_addrs array is beeing referenced
+> (/drivers/mtd/chips/jedec_probe.c, function cfi_jedec_setup, line 1740):
 
+Unlock addresses shouldn't be assigned if they aren't necessary - hence
+why there isn't an entry for them in unlock_addrs[].  There should be
+logic that checks this before making the assignment.  Of course another
+way to do it would be to have an entry assigned, but not use it.  I
+prefer, however, that things break when the logic is incorrect - which
+is the way it is now.
 
-	
-	
-		
-___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun! http://uk.messenger.yahoo.com
+> /* Mask out address bits which are smaller than the device type */
+> mask =3D ~(p_cfi->device_type-1);
+> p_cfi->addr_unlock1 =3D unlock_addrs[uaddr].addr1 & mask;
+> p_cfi->addr_unlock2 =3D unlock_addrs[uaddr].addr2 & mask;
+>=20
+> If I change MTD_UADDR_DONT_CARE to MTD_UADDR_UNNECESSARY everything=20
+> works fine!
+
+Apparently there is a problem that it isn't exiting the function earlier
+for the MTD_UADDR_UNNECESSARY case.
+
+Of course you also need to know which kind of chip you have: Is it a
+DONT_CARE or an UNNECESSARY?
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-Jl3u96EjGwLRus+T4IVv
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBBj7s3sYFQl3A+qS0RAi6jAKDRzesxfo0jnkmYNMMKipd81jQ/FACfbshc
+sNtDt+trumwQtAUILhm/AH8=
+=6UUZ
+-----END PGP SIGNATURE-----
+
+--=-Jl3u96EjGwLRus+T4IVv--
