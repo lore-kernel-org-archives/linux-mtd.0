@@ -1,23 +1,18 @@
-Received: from moutng.kundenserver.de ([212.227.126.177] helo=moutng3.kundenserver.de)
+Received: from cs242740-33.austin.rr.com ([24.27.40.33] helo=dzuylt)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17VGeQ-00018E-00
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2002 20:09:22 +0100
-Received: from [212.227.126.160] (helo=mrelayng0.kundenserver.de)
-	by moutng3.kundenserver.de with esmtp (Exim 3.35 #2)
-	id 17Uraw-0001Cs-00
-	for linux-mtd@lists.infradead.org; Wed, 17 Jul 2002 18:24:06 +0200
-Received: from [80.134.28.137] (helo=[192.168.1.27])
-	by mrelayng0.kundenserver.de with asmtp (Exim 3.35 #1)
-	id 17Uraw-0006or-00
-	for linux-mtd@lists.infradead.org; Wed, 17 Jul 2002 18:24:06 +0200
-Subject: Can't format my DOC
-From: Jens Nixdorf <jens.nixdorf@embesso.com>
-To: MTD Mailingliste <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
+	id 17Vzcs-0007H3-00
+	for <linux-mtd@lists.infradead.org>; Sat, 20 Jul 2002 20:10:47 +0100
+Received: from infinity-studios.com (localhost.localdomain [127.0.0.1])
+	by dzuylt (8.11.6/8.11.6) with ESMTP id g6KJAgM01503
+	for <linux-mtd@lists.infradead.org>; Sat, 20 Jul 2002 14:10:42 -0500
+Message-ID: <3D39B5B2.1060309@infinity-studios.com>
+Date: Sat, 20 Jul 2002 14:10:42 -0500
+From: Dzuy Nguyen <dzuy@infinity-studios.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: DiskonModule and grub
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: 17 Jul 2002 18:26:47 +0200
-Message-Id: <1026923208.17761.22.camel@pc11>
-Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,51 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+This may be off topic or not correct list, but since it deals with small 
+storage
+drives and grub so I thought I'd ask.
 
-i'm a newbie in DiskOnChip (and generally in embedded linux also) and
-i've had many problems to get linux to see my DOC. Now i've managed
-this, but i get the following messages at boot-time: 
+I have a 16MB DiskOnModule from PQI which plugs right into the IDE 
+controller
+and behaves just like an IDE disk.  I've partitioned it OK and mke2fs 
+and mount, etc.,
+and so far it works just like an IDE drive on /dev/hdd.  However, I'm 
+having problem
+booting from it.  I've installed grub (0.90) on /dev/hdd and it says 
+it's successful but
+everytime I boot from it, all I've got is "GRUB Geom error".
 
-DiskOnChip 2000 found at address 0xD8000
-Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba
-TC58256FT/DC)
-9 flash chips found. Total DiskOnChip size: 288 MiB
-mtd: Giving out device 0 to DiskOnChip 2000
-Ignoring DiskOnChip 2000 at 0xDA000 - already configured
-Ignoring DiskOnChip 2000 at 0xDC000 - already configured
-Ignoring DiskOnChip 2000 at 0xDE000 - already configured
-Possible DiskOnChip with unknown ChipID FF found at 0xe0000
-Possible DiskOnChip with unknown ChipID FF found at 0xe2000
-Possible DiskOnChip with unknown ChipID FF found at 0xe4000
-Possible DiskOnChip with unknown ChipID FF found at 0xe6000
-Possible DiskOnChip with unknown ChipID FF found at 0xe8000
-Possible DiskOnChip with unknown ChipID FF found at 0xea000
-Possible DiskOnChip with unknown ChipID FF found at 0xec000
-Possible DiskOnChip with unknown ChipID FF found at 0xee000
-NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
-NFTL_notify_add for DiskOnChip 2000
-NFTL_setup
-Sorry, we don't support UnitSizeFactor of != 1 yet.
-Could not find valid boot record
-Could not mount NFTL device
+I realize that the DOM is probably another flash device and the geometry 
+is not the same
+as a spinning IDE drive so some grub modification may be required.  I 
+see that there are
+some of us in this list who has done grub modification (Mark, Ilguiz, 
+etc.) so any tip from
+you on how to get started would be much appreciated.  Thanks.
 
-So, i've read in the mtd-jffs-Howto, that i could (or should) format the
-chip. But if i try this with:
-
-./nflt_format /dev/mtd0
-
-i get always the message:
-
-ioctl(MEMGETINFO): Inappropriate ioctl for device
-
-Is this something with the 288 MB DOC? With dmesg i get this message:
-
-MTD_ioctl
-Invalid ioctl 80404d01 (MEMGETINFO = 80204d01)
-MTD_close
-
-What can i do?
-
-
-best regards, and thanks in advance, Jens
+Dzuy
