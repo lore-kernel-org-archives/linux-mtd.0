@@ -1,47 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13vfxa-0004nv-00
-	for mtd-list@infradead.org; Tue, 14 Nov 2000 13:17:14 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 13vjo5-0005w5-00
+	for mtd-list@infradead.org; Tue, 14 Nov 2000 17:23:41 +0000
+Received: from amdext2.amd.com ([163.181.251.1])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13vfxZ-0004np-00
-	for mtd@infradead.org; Tue, 14 Nov 2000 13:17:13 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01C04E3A.C0282520@smithwicks.softsys.co.at> 
-References: <01C04E3A.C0282520@smithwicks.softsys.co.at> 
-To: Erwin Authried <eauth@softsys.co.at>
-Cc: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: JEDEC support broken? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 14 Nov 2000 13:16:57 +0000
-Message-ID: <12128.974207817@redhat.com>
+	id 13vjo3-0005vz-00
+	for mtd@infradead.org; Tue, 14 Nov 2000 17:23:39 +0000
+Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA09729
+	for <mtd@infradead.org>; Tue, 14 Nov 2000 11:23:07 -0600 (CST)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA28370
+	for <mtd@infradead.org>; Tue, 14 Nov 2000 11:23:06 -0600 (CST)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F1B8@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: Big Endian/Little Endian headache in cfi_cmdset_0002.c
+Date: Tue, 14 Nov 2000 11:23:05 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+	The write code in cfi_amdext_write_bytes_32 uses
+be32_to_cpu and cpu_to_be32 to make the last four or 
+less bytes of a buffer Big Endian.  However, none of 
+the other write or read code in cfi_cmdset_002 is 
+concerned with Endianess, so it looks like (on my 
+x86 chip) that the first x bytes of a write are
+little endian, and then the last 3 or 4 are reversed.
+	Is there some reason for handling things this
+way, or is this a bug in the code?
 
-
-eauth@softsys.co.at said:
-> With several patches, I'm able to compile most of the MTD devices and
-> chip drivers  for uClinux now. There are problems with jedec.c, the
-> compiler complains about  the missing "bank_size" in the "map_info"
-> structure. What's wrong with jedec.c?
-
-It's been half-ported to the map stuff, but not completely. Remove all 
-references to bank_size and keep a start offset in the individual flash 
-chip structures.
-
-> Is there a driver that is able to use a physically mapped flash that
-> doesn't support CFI? I think it would be best to probe for CFI, and
-> then for JEDEC in physmap.c.
-
-Agreed. Let me finish merging the inter_module_xxx() stuff before you do 
-that, though.
-
---
-dwmw2
-
-
+Mark Langsdorf
+Advanced Micro Devices, Inc             Tel: 512.602.3756
+5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+Austin, TX 78741                        mark.langsdorf@amd.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
