@@ -1,15 +1,15 @@
 Received: from [208.190.191.184] (helo=sekhmet.ad.newisys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16bSm0-0004hF-00
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Feb 2002 20:46:33 +0000
+	id 16bUAZ-0004oM-00
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Feb 2002 22:15:59 +0000
 content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Subject: RE: Weird status information on JFFS2 File System
-Date: Thu, 14 Feb 2002 14:57:24 -0600
-Message-ID: <D3A72C5007329A4F991C0DD87202259F0EAFC7@sekhmet.ad.newisys.com>
+Date: Thu, 14 Feb 2002 16:26:52 -0600
+Message-ID: <D3A72C5007329A4F991C0DD87202259F096A71@sekhmet.ad.newisys.com>
 From: "Navin Boppuri" <navin.boppuri@newisys.com>
 To: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,6 +22,23 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+I tried using the JFFS file system instead of JFFS2. Now I see that my =
+file system size is 512Kb instead of 1MB. Also, I am only able to write =
+to around 75% of the file sytem.=20
+
+What's going on here? Can somone please give me some inputs on this. I =
+am really new to JFFS and this stuff is driving me crazy.
+
+Navin.
+
+-----Original Message-----
+From: Navin Boppuri=20
+Sent: Thursday, February 14, 2002 2:57 PM
+To: linux-mtd@lists.infradead.org
+Subject: RE: Weird status information on JFFS2 File System
+
+
 
 Well, I guess I think I know what the problem is. I should not use =
 /dev/zero to create files to test the file system size. I decided to use =
@@ -114,6 +131,10 @@ Can someone give me some pointers on this? Thank you.
 
 Navin.
 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
