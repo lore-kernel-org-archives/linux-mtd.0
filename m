@@ -1,18 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177BsT-000770-00
-	for <linux-mtd@lists.infradead.org>; Mon, 13 May 2002 10:12:21 +0100
+	id 177C9Q-00078E-00
+	for <linux-mtd@lists.infradead.org>; Mon, 13 May 2002 10:29:52 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020513114008.A3267@kosh.hut.fi> 
-References: <20020513114008.A3267@kosh.hut.fi>  <13211.1020346858@redhat.com> <20020502155602.A8801@kosh.hut.fi> <13211.1020346858@redhat.com> <912.1021230283@redhat.com> 
-To: Jarkko Lavinen <jlavi@iki.fi>
-Cc: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
-Subject: Re: Benchmarking JFFS2 
+In-Reply-To: <3CDF6922.9A0A870F@netbricks.com> 
+References: <3CDF6922.9A0A870F@netbricks.com> 
+To: franck.fleter@netbricks.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Boot from NAND flash ??? 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Date: Mon, 13 May 2002 10:11:46 +0100
-Message-ID: <16057.1021281106@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 13 May 2002 10:29:36 +0100
+Message-ID: <16389.1021282176@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jlavi@iki.fi said:
->  Is this too naive approach? This relies perhaps too much on the
-> randomness of  semi-random numbers and might mean only first few nodes
-> are ever picked up  and never nodes from the tail. 
+franck.fleter@netbricks.com said:
+> I read in mails archive that Linux kernel can't boot from NAND flash.
+> It can  boot from NOR flash. Does Linux  kernel not able to boot  from
+> NAND flash because :
+>     1) a NAND flash is connected to an I/O controller and not to a BUS. 
 
-I think naïve is fine. In fact, I can't even justify the suggestion that it 
-be exponential -- we could probably do just as well by picking the first 
-(i.e. dirtiest) block with 85% probability, and picking some other block 
-off the list with uniform distribution the other 15% of the time.
+That's the one. You cannot just put a NAND flash chip at the CPU's startup 
+vector and let it boot from it. You need _something_ for the CPU to start 
+with, be that SROM, a tiny NOR flash or ROM, or something else. All you 
+need is a few bytes to set up your DRAM and start pulling the real 
+bootloader off the NAND flash.
 
 --
 dwmw2
