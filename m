@@ -1,18 +1,18 @@
-Received: from wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgMxG-0006cP-Sk
-	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 07:48:04 -0500
-Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
-	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004122007484017845
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Dec 2004 07:48:40 -0500
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E7935181399@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 20 Dec 2004 07:47:49 -0500
+Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CgNRW-0006w1-Gy
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 08:19:19 -0500
+Message-ID: <41C6D531.1020800@ieee.org>
+Date: Mon, 20 Dec 2004 08:35:45 -0500
+From: Dan Brown <dan_brown@ieee.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Doc_loadbios fails?  Docboot?
+To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+References: <EFF9A3506F74924AB5CC77BDC66E7935181399@atcml01.atc.army.mil>
+In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E7935181399@atcml01.atc.army.mil>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Doc_loadbios fails?  Docboot?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am trying to get Grub to load/work on a DOC2000 128Mbyte MD2202-D128x ver
-5.1.2 dip.  This is one of the newer ones using INFTL technology.  The
-doc_loadbios fails.  Nand_erase fails with error attempt to erase bad block
-at page 0x00000000 ioctl(MEMERASE) Input/output error.  How can I get past
-this error?  Has the doc_loadbios worked on these devices before?  Any
-advice?  Should I just try to use docboot?  When using docboot I guess
-everything must be built into the kernel since initrd image is not supported
-(as the readme says it isn't).
+Carlos, John J USAATC wrote:
+> Should I just try to use docboot?  When using docboot I guess
+> everything must be built into the kernel since initrd image is not supported
+> (as the readme says it isn't).
 
-Thanks,
-John
+Adding initrd support would be fairly easy... I'll try to put together a 
+patch over the next few days, if you have a need for it.
+
+	-Dan Brown
