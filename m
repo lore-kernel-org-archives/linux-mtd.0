@@ -1,18 +1,17 @@
-Received: from jafar.unixpac.com.au ([203.3.121.10])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17MJSs-0006V5-00
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2002 03:20:26 +0100
-Subject: Re: Trying to boot linux off a 2MiB M-Sys DoC2000 chip
-From: Gonzalo Servat <gonzalo@linuxaus.com>
-To: Ilguiz Latypov <ilatypov@superbt.com>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-In-Reply-To: <Pine.LNX.4.44.0206232114130.6614-100000@server.superbt.com>
-References: <Pine.LNX.4.44.0206232114130.6614-100000@server.superbt.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 24 Jun 2002 12:19:49 +1000
-Message-Id: <1024885189.15257.51.camel@pluto.unixpac.com.au>
-Mime-Version: 1.0
+Received: from port59.vestas.dk ([195.41.59.59] helo=cotas2.cotas.vestas.dom)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17MSNs-000778-00
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2002 12:51:52 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Esben Nielsen <esn@cotas.dk>
+Reply-To: esn@cotas.dk
+To: linux-mtd@lists.infradead.org
+Subject: Problems with Jffs2 on this board
+Date: Mon, 24 Jun 2002 13:50:20 +0200
+MIME-Version: 1.0
+Message-Id: <02062413502007.08285@tux>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,41 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 2002-06-24 at 11:16, Ilguiz Latypov wrote:
-> 
-> Gonzalo,
-> 
-> Did you see the recent instruction on applying the MTD DiskOnChip patch 
-> to GRUB?  It's in
-> 
->     http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html
+I am trying to board Linux to my company's StrongARM based board.
+I am now using bootldr 2_18_45 from handhelds.org, mkfs.jffs2 revision 1.17 
+and HardHat's Linux-2.4.2_hhl20.
 
-Ah, great. Thanks for that!
+I create a root filesystem image with mkfs.jffs2 which I transfer to the 
+flash on the board with over serial. I can now boot the kernel from the 
+bootloader but the kernel can't find other files that those in /devs (from 
+the debug level of 2 in the jffs2 subsystem in the kernel) and thus
+fails to call /sbin/init.
+Now I see with "ls" in the bootldr that that can't see other subfiles that 
+/devs/*, /boot/zImage and a few in /bin, either!
+Thus I suspect very much that my mkfs.jffs2 is broken - I downloaded it
+binary from www.redhat.com. Now, I try to compile a new one from the
+latest from CVS on infradead.org. But I simply can't make it compile, as
+I get:
 
-I followed the instructions and as I was trying to compile grub-0.92, in
-the stage2 directory it gave me lots of 'overriding old commands for
-target xxxxxxxxxxx' and 'ignorning old commands for target
-xxxxxxxxxxxxx'
+compr_zlib.c:15:2: #error "The userspace support got too messy and was 
+removed. Update your mkfs.jffs2"
 
-where xxxxxxxxxx was for example: nbloader.exec, pxeloader.exe,
-diskless.exec, etc.
+What do I do about that? Do I have to go through my kernel on my host
+machine to create a proper jffs2 image?
 
-After all those errors I got a lot of "undefined reference to terminal"
-and "undefined reference to debug" and a few other undefined references
-and after an undef reference to 'chain_stage2' it exited and didn't
-finish compiling. Any ideas?
-
-Thanks again
-
-Gonzalo.
-
- 
-> Ilguiz
-> 
-> On 24 Jun 2002, Gonzalo Servat wrote:
-> 
-> > I tried this and Grub doesn't like "dc0". It says "Error 23: Error while
-> > parsing number"
-> 
-> 
-> 
+Esben Nielsen
+Cotas Computer Technology A/S
