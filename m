@@ -1,18 +1,19 @@
 Received: from [212.18.228.76] (helo=mail.linuxgrrls.org ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QnL6-0000aD-RL
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 13:07:29 +0100
-Date: Fri, 13 Jun 2003 13:07:56 +0100 (BST)
+	id 19QnVB-0000h0-3m
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 13:17:53 +0100
+Date: Fri, 13 Jun 2003 13:18:21 +0100 (BST)
 From: Jasmine Strong <jasmine@regolith.co.uk>
-To: Conn Clark <clark@esteem.com>
-In-Reply-To: <3EE8A3EA.5090001@esteem.com>
-Message-ID: <Pine.LNX.4.53.0306131307040.11502@undine.linuxgrrls.org>
-References: <20030612163736.CFEC.MINGFENG@linpus.com>
-	<3EE8A3EA.5090001@esteem.com>
+To: Charles Manning <manningc2@actrix.gen.nz>
+In-Reply-To: <20030612231042.C385C409E@blood.actrix.co.nz>
+Message-ID: <Pine.LNX.4.53.0306131316110.11502@undine.linuxgrrls.org>
+References: <3EE6EBA0.3080508@intracom.gr>
+	<20030612231042.C385C409E@blood.actrix.co.nz>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: MRAM will kill FLASH ?
+cc: Pantelis Antoniou <panto@intracom.gr>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Cram FS on NAND - How to do this?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +25,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-On Thu, 12 Jun 2003, Conn Clark wrote:
+On Fri, 13 Jun 2003, Charles Manning wrote:
 
-> mingfeng wrote:
-> > who know MRAM(Magnetoresistive Random Access Memory) ?
-> > Will it kill FLASH soon?
-> 
-> It probably wont be soon. I don't think it will kill flash completely 
-> either.
+> YAFFS is being used extensively and has been shipping in commercial products 
+> for approx 9 months or so with well over ten thousand units in the field.
 
-And either way it'll probably work the same sort of way as NAND Flash;
-ie error-prone, block-oriented and byte-serial.
+It's gone into products that shall remain nameless which will be or are
+shipping in hundreds of thousands;  it works very well indeed.
 
--Jas.
+-J.
