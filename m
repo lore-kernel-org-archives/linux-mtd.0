@@ -1,14 +1,15 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from nameservices.net ([208.234.25.16] helo=opersys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eSc4-0005i7-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Aug 2002 04:44:56 +0100
-Message-ID: <3D5881AE.3020809@redswitch.com>
-Date: Mon, 12 Aug 2002 20:49:02 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+	id 17eTqY-0005pU-00
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Aug 2002 06:03:58 +0100
+Message-ID: <3D5893DA.F0BE2B16@opersys.com>
+Date: Tue, 13 Aug 2002 01:06:34 -0400
+From: Karim Yaghmour <karim@opersys.com>
+Reply-To: karim@opersys.com
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,  linuxppc-embedded@lists.linuxppc.org
-Subject: how to mount a root filesystem stored on MTD device?
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Linux-MTD <linux-mtd@lists.infradead.org>
+Subject: Latest Grub CVS results in UnitSizeFactor problems
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -21,42 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've read the MTD/JFFS howto but still cannot get it. Right now I've 
-been able to enable MTD devices and mount jffs2. I set bootargs to 
-'root=/dev/mtdblock0' on PPCBoot and use tftpboot to boot the kernel via 
-network. But the boot process doesn't succeed due to unability to mount 
-root filesystem.
+I've been playing around with the latest Grub code from CVS
+on a 32MB DOC 2000. There was no way to get the NFTL code in
+MTD to recognize the DOC once the firmware image was written
+using: doc_loadbios /dev/mtd0 grub_firmware
+I always got the following message when loading the nftl module:
+Sorry, we don't support UnitSizeFactor 0x6e
 
-Here is the message showing that mtd devices have been found.
---------------------clip--------------------------------------
-JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis 
-Communications AB.
-loop: loaded (max 8 devices)
-Search for id:(89 88f3) interleave(1) type(2)
-Found: Intel 28F160F3T
-IB8SW Bank 0: Found 1 x16 devices at 0x0 in 16-bit mode
-Using word write method
-init_ib8sw_mtd: part_num=3
-IB8SW flash bank 0: Using static image partition definition
-Creating 3 MTD partitions on "IB8SW Bank 0":
-0x00000000-0x000f0000 : "jffs2"
-mtd: Giving out device 0 to jffs2
-0x000f0000-0x00100000 : "spare"
-mtd: Giving out device 1 to spare
-0x00100000-0x00200000 : "ppcboot"
-mtd: Giving out device 2 to ppcboot
---------------------clip--------------------------------------
+When using Grub 0.92, however, everything works fine (except
+that I had to steal the configure.in, stage1/Makefile.am and
+stage2/Makefile.am from the CVS to get 0.92 to build because
+I have the latest automake/autoconf versions).
 
-But here it complains that root fs hasn't been mounted.
---------------------clip-----------------------------------
-Root-NFS: No NFS server available, giving up.
-VFS: Unable to mount root fs via NFS, trying floppy.
-request_module[block-major-2]: Root fs not mounted
-VFS: Cannot open root device "mtdblock0" or 02:00
-Please append a correct "root=" boot option
-Kernel panic: VFS: Unable to mount root fs on 02:00
---------------------clip-----------------------------------
+I tried digging around the Grub source code to see where the
+problem originates from so that I could fix it, but I don't
+have the time to become a grub-internals guru. I can see that
+the "ANAND" character string has something to do with the
+position where the media header is being looked for, but the
+only place I can find this string is in a C call to strcmp().
+Beats me how this can be used as a marker.
 
-Any instructions or hints? Thanks a lot.
+Karim
 
-- Shawn.
+===================================================
+                 Karim Yaghmour
+               karim@opersys.com
+      Embedded and Real-Time Linux Expert
+===================================================
