@@ -1,21 +1,15 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19cM0E-0000ek-D6
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Jul 2003 10:21:42 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Mike G." <gohas@actinium.org>
-In-Reply-To: <1058260708.5914.4.camel@localhost.localdomain>
-References: <1058249854.1031.24.camel@localhost.localdomain>
-	 <1058251000.2262.114.camel@imladris.demon.co.uk>
-	 <1058260708.5914.4.camel@localhost.localdomain>
-Message-Id: <1058260908.27293.63.camel@passion.cambridge.redhat.com>
+Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
+	helo=wawnet.biz)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19cSpX-000201-Fg
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Jul 2003 17:39:07 +0100
+Message-Id: <5.1.1.6.0.20030715182633.027cd5c0@dns.struinfo.it>
+Date: Tue, 15 Jul 2003 18:39:12 +0200
+To: linux-mtd@lists.infradead.org
+From: llandre <r&d@wawnet.biz>
 Mime-Version: 1.0
-Date: Tue, 15 Jul 2003 10:21:49 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: help installing MTD
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: Help to understand error messages (MTD on Samsung NAND chips)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +19,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-07-15 at 10:18, Mike G. wrote:
-> I have try to use the new kernel 2.4.20 .. Somehow it doesn't work on
-> the custom board. So i m back to the ancient kernel. 
+Hi all,
 
-Find out why. Fix it. Seriously. Using 2.4.4 is likely to cause you more
-trouble in the long term.
+I've just intalled MTD on a Linux box equipped with the 2.4.21-pre5 kernel 
+of the linuxppc_devel tree.
+I have two NAND Flashes from Samsung (K9F5608U0B). I followed the 
+istructions described in the "nand.html" documend released with the MTD 
+source files. I statically linked the MTD drivers and the two chips are 
+recognized correctly during boot:
+----------------------------------------------------------------------------
+NAND device: Manufacture ID: 0xec, Chip ID: 0x75 (Samsung NAND 32MB 3,3V)
+Using static partition definition
+Creating 1 MTD partitions on "NAND 32MB 3,3V":
+0x00000000-0x02000000 : "PPChameleon Nand Flash"
+mtd: Giving out device 0 to PPChameleon Nand Flash
+NAND device: Manufacture ID: 0xec, Chip ID: 0x75 (Samsung NAND 32MB 3,3V)
+Using static partition definition
+Creating 1 MTD partitions on "NAND 32MB 3,3V":
+0x00000000-0x02000000 : "PPChameleonEVB Nand Flash"
+mtd: Giving out device 1 to PPChameleonEVB Nand Flash
+----------------------------------------------------------------------------
 
-> I did used the patch now the compling complaint the exactly as you said
-> "kernel too old" *sigh* 
-> > 
-> > If you really do stay with 2.4.4 you'll probably need some surgery on
-> > linux/mtd/compatmac.h to make it support kernels that ancient again.
-> ok ok  if i were to do surgery, wat changes i hav to do. 
 
-If you really must do this, then start by taking an older copy of
-compatmac.h from CVS, from before I removed all the support for ancient
-kernels. Drop that in place of the current one and then fix up the stuff
-that still breaks. 
+When I try to erase the first one, I get these messages:
+----------------------------------------------------------------------------
+bash-2.05# eraseall /dev/mtd0
+Erasing 16 Kibyte @ 0 --  0 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 4000 --  0 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 8000 --  0 % complete.
+...
+Erasing 16 Kibyte @ 158000 --  4 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 15c000 --  4 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 160000 --  4 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 164000 --  4 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ 168000 --  4 % complete.
+eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erased 32768 Kibyte @ 0 -- 100% complete.
+bash-2.05#
+----------------------------------------------------------------------------
 
--- 
-dwmw2
+
+Anybody can explain me the meaning of error messages?
+Why do they occur only on the lowest addresses?
+
+
+Many thanks in advance.
+
+
+llandre
