@@ -1,40 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13U8jo-0006FQ-00
-	for mtd-list@infradead.org; Wed, 30 Aug 2000 15:21:12 +0100
-Date: Wed, 30 Aug 2000 16:21:28 +0200
-From: Ciro Cattuto <ciro@prosa.it>
+	id 13U8nu-0006G0-00
+	for mtd-list@infradead.org; Wed, 30 Aug 2000 15:25:26 +0100
+From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
 To: David Woodhouse <dwmw2@infradead.org>
-Cc: Miguel Freitas <miguel@cetuc.puc-rio.br>, mtd@infradead.org
-Subject: Re: GRUB on DOC: 2Mb issues
-Message-ID: <20000830162128.A952@localhost>
-References: <20000828185018.A2777@localhost> <10312.967625826@cygnus.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <10312.967625826@cygnus.co.uk>; from dwmw2@infradead.org on Wed, Aug 30, 2000 at 09:57:06AM +0100
+Date: Wed, 30 Aug 2000 11:23:18 GMT-3
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Re: GRUB on DOC: 2Mb issues 
+Reply-to: miguel@cetuc.puc-rio.br
+CC: mtd@infradead.org, Ciro Cattuto <ciro@prosa.it>
+References: <1512880772E@mamao.cetuc.puc-rio.br> 
+In-reply-to: <16105.967648027@passion.cygnus.co.uk>
+Message-ID: <151C6E876B0@mamao.cetuc.puc-rio.br>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, Aug 30, 2000 at 09:57:06AM +0100, David Woodhouse wrote:
+On 30 Aug 00, at 16:07, David Woodhouse wrote:
 
-> doc_stage1.S could be hacked to work with both.
+> Now because the IPL ROM only loads the first half of the page on 512-byte 
+> devices, you'll find that whatever type of device you have, you magically 
+> get the 'correct' second half of the loader put into offset 256 when it's 
+> loaded into memory.
 
-Sure. I posted my 2 Mb modifications just for reference.
+   Yes! That's an even better idea!
 
-> See the existing loader code in the DiskOnChip firmware for inspiration.
+> I can hack this up and get it to work on the 512-byte devices if you like.
 
-I'll think a bit about that - but this requires putting identification
-code into doc_stage1.S - and maintaining it. It's probably worth doing though.
+   Well, I will not have time to do it in the next few days anyway. But 
+maybe Ciro will want to implement it.
+ 
+> >     BTW, forgot my suggestion for "loadbios" ioctl... 
+> 
+> I didn't forget it. You don't like handling it in userspace - I agree. I 
+> just don't like handling it in the mtd character device _either_ :)
 
-Ciro
+   Oh, I expressed myself badly...I just want to say: - please, forget 
+the loadbios ioctl idea! :) I realized it's not necessary.
 
--- 
-Ciro Cattuto, Open Source Developer, Linuxcare Italia SpA
-Tel. +39.338.3002140  Fax +39.049.8036484 
-ciro@linuxcare.com    http://www.linuxcare.com/
-ciro@prosa.it         http://www.prosa.it/
-Linuxcare. Support for the revolution.
 
+Regards,
+
+Miguel Freitas
 
 
 
