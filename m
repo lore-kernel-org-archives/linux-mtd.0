@@ -1,48 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139Ooe-0006ok-00
-	for mtd-list@infradead.org; Tue, 04 Jul 2000 10:16:28 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 139Ood-0006oe-00
-	for mtd@infradead.org; Tue, 04 Jul 2000 10:16:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-kernel@vger.rutgers.edu
-Cc: mtd@infradead.org, linux-router-devel@linuxrouter.org,
-  linux@handhelds.org, linux-embedded@waste.org
-Subject: Memory Technology Device code 2000-07-04 release.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 04 Jul 2000 10:20:19 +0100
-Message-ID: <9972.962702419@cygnus.co.uk>
+	id 139Q9s-00071E-00
+	for mtd-list@infradead.org; Tue, 04 Jul 2000 11:42:28 +0100
+Received: from ncc2.infomail.es ([194.224.53.135] helo=infomail.es)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 139Q9r-000718-00
+	for mtd@infradead.org; Tue, 04 Jul 2000 11:42:27 +0100
+Date: Tue, 04 Jul 2000 12:43:48 CEST
+From: Rodrigo Moya <rmoya@tsai.es>
+To: mtd@infradead.org
+Subject: firmware problem
+Reply-To: rmoya@tsai.es
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Message-Id: <E139Q9r-000718-00@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've been lazy for a long time and not bothered to tar it up and make 
-releases - ever since I set up anoncvs access. 
 
-But here's the release you've all been waiting for. It features sexy new 
-code for driving Common Flash Interface chips, 2.2 and 2.4 ports of Axis' 
-Journalling Flash Filesystem, updated FTL code, and lots and lots of code 
-cleanups for the places where I'd been particularly stupid. There's even a 
-little bit of documentation, which is still mostly relevant despite my best 
-efforts to obsolete it.
+Hi all!
 
-Get it from ftp://ftp.linux-mtd.infradead.org/pub/mtd/mtd-20000704.tar.gz
-or preferably:
+I am trying to put the firmware in the DOC, using the following command:
 
-	cvs -d :pserver:anoncvs@infradead.org:/home/cvs login
-		(password "anoncvs")
-	cvs -d :pserver:anoncvs@infradead.org:/home/cvs co mtd
+dformat /win:d000 /s:doc123.exb
 
-A slightly more detailed changelog is on the web page at
-http://www.linux-mtd.infradead.org/ along with the mailing list 
-archive.
+and I get the following error message:
 
+Format failed, Medium not large enough
 
---
-dwmw2
+Any idea on what's happening?
 
+Thanks
 
 
 
