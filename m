@@ -1,20 +1,20 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from mh1.kwic.com ([205.150.58.4])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VXE2-0007uX-Nr
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 14:55:46 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Yy Yy <yy_hust@yahoo.com.cn>
-In-Reply-To: <20030626133856.50391.qmail@web15312.mail.bjs.yahoo.com>
-References: <20030626133856.50391.qmail@web15312.mail.bjs.yahoo.com>
-Message-Id: <1056635767.27553.177.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 26 Jun 2003 14:56:07 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: Re: Ask a question about mtdblock.
+	id 19VXOh-00083X-64
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 15:06:47 +0100
+Received: from mars.rdsdata.com (orb.kwic.com [205.150.58.194])
+	by mh1.kwic.com (8.11.6/8.11.6) with ESMTP id h5QE78G41848
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Jun 2003 10:07:08 -0400 (EDT)
+To: linux-mtd@lists.infradead.org
+From: Alan Daly <adaly@kwic.com>
+Date: Thu, 26 Jun 2003 10:06:19 -0400
+Message-ID: <jUsT.aNoTheR.mEsSaGe.iD.10566364287676@webmail.kwic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso8859-1
+Content-Transfer-Encoding: 8bit
+Subject: 2 mtd devices with DiskOnChip or
+Reply-To: adaly@kwic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-06-26 at 14:38, Yy Yy wrote:
-> Could you please tell me why the data integrity will
-> be destroyed if I write/read the device file?
+My question is how do I either:
+a) create 2 mtd devices with DiskOnChip
+(I found an old patch http://pficheux.free.fr/eyrolles/linux_embarque/docs_externes/jffs2_on_doc.
+html)
+b) boot the DiskOnChip using just JFFS2
 
-The mtdblock 'translation layer' is not safe. This has been explained in
-various mailing lists on many occasions. Ask Google.
 
-> Do you mean I should add the read/write request to the
-> request_queue of blkdevs[MAJOR_NR], and let it handle
-> the request by itself.
-> Could you please give me more ideas about it.
+I'm setting an embedded linux build using 16 MB DiskOnChip on X86.
+I'm using GRUB as the bootloader.
 
-Not before you have demonstrated that you have read blkmtd.c as I
-suggested.
+My original build was:
 
--- 
-dwmw2
+/dev/mtd0 -> /dev/nftla -> /dev/nftla1  / (root) ext2 16 MB
+
+This build had some issues being hard powered on and off. 
+As a result, I want to use JFFS2.  
+
+My proposed build is:
+
+/dev/mtd0 -> /dev/nftla -> /dev/nftla1 /boot ext2 1.5 MB (read-only)
+/dev/mtd1 (/dev/mtdblock1)  / (root) jffs2 14.5 MB.
+
+I thought that this way:
+1) I can still use the grub_firmware
+2) not worry about the ext2 partition as it is mounted read-only
+3) still get the benifits of jffs2 on the volatile data.
+
+
+
+*****
+dalya
