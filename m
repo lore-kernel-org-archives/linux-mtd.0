@@ -1,30 +1,17 @@
-Received: from shawidc-mo1.cg.shawcable.net ([24.71.223.10]
-	helo=pd2mo2so.prod.shaw.ca)
+Received: from krynn.se.axis.com ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AXNO2-0001YC-Dk
-	for linux-mtd@lists.infradead.org; Fri, 19 Dec 2003 16:21:58 +0000
-Received: from pd3mr1so.prod.shaw.ca (pd3mr1so-ser.prod.shaw.ca
-	[10.0.141.177])2003))linux-mtd@lists.infradead.org;
-	Fri, 19 Dec 2003 09:16:25 -0700 (MST)
-Received: from pn2ml10so.prod.shaw.ca
- (pn2ml10so-qfe0.prod.shaw.ca [10.0.121.80])
- by l-daemon (iPlanet Messaging Server 5.2 HotFix 1.18 (built Jul 28 2003))
- with ESMTP id <0HQ5005E9H7DHR@l-daemon> for linux-mtd@lists.infradead.org;
- Fri, 19 Dec 2003 09:16:25 -0700 (MST)
-Received: from ThomasVan (h24-80-140-166.vc.shawcable.net [24.80.140.166])
- by l-daemon (iPlanet Messaging Server 5.2 HotFix 1.18 (built Jul 28 2003))
- with ESMTP id <0HQ500CLTH7CKH@l-daemon> for linux-mtd@lists.infradead.org;
- Fri, 19 Dec 2003 09:16:25 -0700 (MST)
-Date: Fri, 19 Dec 2003 08:16:30 -0800
-From: Thomas Pang <thomaspang@shaw.ca>
-In-reply-to: <Law11-F49ynA6xSm1A00005337c@hotmail.com>
-To: 'J B' <mad_flasher@hotmail.com>
-Message-id: <000501c3c64b$767a9de0$a68c5018@ThomasVan>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-cc: linux-mtd@lists.infradead.org
-Subject: Problem with mtd-snapshot-20031211.tar
+	id 1AXi9y-0003Nc-Bb
+	for linux-mtd@lists.infradead.org; Sat, 20 Dec 2003 14:32:50 +0000
+Received: from vin (vin.se.axis.com [10.13.8.51])hBKEUdX3004573
+	for <linux-mtd@lists.infradead.org>; Sat, 20 Dec 2003 15:30:39 +0100
+Date: Sat, 20 Dec 2003 15:34:04 +0100
+From: Jonas Holmberg <jonas.holmberg@axis.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20031220143403.GA23544@axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Subject: Determining if writing to a jffs2 partition will fail
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,73 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using AMD NOR+SRAM flash in MCP (multi-chip packages) with CFI
-support.
-Thanks.
-Thomas
+Is there any reliable way to determine if a regular file can be 
+written to a jffs2 partition without getting ENOSPC? I don't want to 
+write the file to jffs2 and then find out that the fs was full, 
+because other processes might fail to write to the fs during that 
+test (if the fs gets full).
 
------Original Message-----
+The best I have come up with is:
 
->I download the boot image into my target system and successfully boot
-up
->the board.  I also download the file systems, one is CRAMFS, another
-one
->is JFFS2.
+1. gzip the file (on tmpfs)
+2. do statfs on jffs2 the get available space
+3. test if the gzipped file would fit in jffs2 without making 
+   available space go below one eraseblock (64KiB on my NOR flash).
 
-What kind of flash chips does your board have?  AMD, Intel, etc and NOR
-or 
-NAND?
+If it succeeds I would be almost shure the gunzipped file could be 
+written to jffs2 without getting ENOSPC, but gzip will of course not 
+compress the file to exacly the same size as jffs2 will. And 
+statfs won't always tell the truth. I could of course send SIGHUP 
+to the gc-thread, wait some and try again.
 
->
->I am using the latest mkfs.jffs2 to create my JFFS2 file system as
-shown
->below:
->
->mkfs.jffs2 -p -e 0x10000 -c 12 -b -r rootfs -o jffsImage
->
->Problem 1 (Fail to mount JFFS2 file system)
->===========================================
->
->I seem to be able to mount the JFFS2 file system but when I access the
->JFFS2 file system, the system complains "Chip not ready after erase
->suspended: status = 0x1985". Any idea?
+This doesn't feel like a good solution though, does anyone know of any 
+better way?
 
-0x1985 is the magic number on a jffs2 filesystem.  Looks like the chip 
-driver is trying to read the status register of the chips and its in
-read 
-array mode, not read status.
-
-># ls
->Chip not ready after erase suspended: status = 0x1985
->error -5 reading node at 0x001901f8 in get_inode_nodes()
->jffs2_get_inode_nodes() for ino 2 returned -5
->ls: ./bin: Input/output error
-
-see comment about magic number above.  JFFS2 is probably erasing any
-extra 
-eraseblocks you have so it can use them  and the erase suspend is
-failing 
-when the ls command is done.
-
-
->Problem 2 (Writing to JFFS2 file system still slow)
-
-<snip>
-
->     rm myfile
->     cp bin/myfile .
->     Chip not ready after erase suspended: status = 0xffff
->     Chip not ready after erase suspended: status = 0xffff
-
-looks like the same problem.  0xffff is what erased flash blocks look
-like.
-
-So two questions are, what kind of flash chips do you have, and what mtd
-
-chip driver are you using?
-
-j
-
-_________________________________________________________________
-Enjoy the holiday season with great tips from MSN.  
-http://special.msn.com/network/happyholidays.armx
+/Jonas
