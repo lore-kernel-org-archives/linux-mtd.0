@@ -1,21 +1,21 @@
 Received: from h002078c680df.ne.client2.attbi.com
 	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ALSwa-00011h-7R
+	id 1ALSwa-00011g-80
 	for <linux-mtd@lists.infradead.org>; Sun, 16 Nov 2003 19:52:24 +0000
-Received: from 192.168.1.100 (unknown [192.168.1.100])E439918A29
+Received: from 192.168.1.100 (unknown [192.168.1.100])B6720196BB
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 15 Nov 2003 18:48:42 -0500 (EST)
+	Sun, 16 Nov 2003 14:09:29 -0500 (EST)
 From: Joshua Wise <joshua@joshuawise.com>
 To: linux-mtd@lists.infradead.org
-Date: Sat, 15 Nov 2003 18:44:56 -0500
+Date: Sun, 16 Nov 2003 14:05:36 -0500
 References: <200311150109.39539.joshua@joshuawise.com>
 	<1068885330.29549.9.camel@imladris.demon.co.uk>
 In-Reply-To: <1068885330.29549.9.camel@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Description: clearsigned data
 Content-Disposition: inline
-Message-Id: <200311151844.57093.joshua@joshuawise.com>
+Message-Id: <200311161405.41539.joshua@joshuawise.com>
 Content-Type: Text/Plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
@@ -32,7 +32,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-(oops meant to send this to the list hte first time.)
+(consider information in this post outdated. I'm having mailer issues, sorry.)
 
 > Surely this affects more than just the unlock addresses? Doesn't it mean
 > that when reading, each 16-bit word of flash would appear _twice_?
@@ -61,7 +61,7 @@ Quote       | <lilo> I akilled *@* by mistake
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/trp4Pn9tWOqA4LMRAkjdAKCJW73dxpZT3UcC34yhZVtWpN0AcQCghjZy
-cSI2GMNqnyQU3OiBhWeV42w=
-=xvbs
+iD8DBQE/t8qCPn9tWOqA4LMRAlUvAJ9vgWGG3hWHxdhNf+PBIw32oLJKGwCfS1AX
+0onqXs6f0h3MRE9u8Yy4534=
+=EuPq
 -----END PGP SIGNATURE-----
