@@ -1,18 +1,17 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17joE3-0003mN-00
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 22:50:15 +0100
-Received: from [192.168.5.81] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2508461 for linux-mtd@lists.infradead.org; Tue, 27 Aug 2002 14:50:25 -0700
-Message-ID: <3D6BF554.3090102@redswitch.com>
-Date: Tue, 27 Aug 2002 14:55:32 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: how to get mtd_info in kernel space?
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 17joQl-0003vT-00
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 23:03:23 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3D6BF554.3090102@redswitch.com> 
+References: <3D6BF554.3090102@redswitch.com> 
+To: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: how to get mtd_info in kernel space? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 27 Aug 2002 23:03:19 +0100
+Message-ID: <30372.1030485799@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+xjin@redswitch.com said:
+>  get_mtd_device() is used to get an MTD device with a specific minor
+> number. I have several MTD devices enabled and how can I get their
+> minor  numbers which can be used to invoke get_mtd_device()? What
+> function call? 
 
-get_mtd_device() is used to get an MTD device with a specific minor 
-number. I have several MTD devices enabled and how can I get their minor 
-numbers which can be used to invoke get_mtd_device()? What function call?
+At the moment you can't. You have to get each one from 0 to MAX_MTD_DEVICES 
+and check whether it's the one you want. We could perhaps implement a 
+get_mtd_device_byname() since JFFS2 wants that too now.
 
-Thanks.
+What do you want it for?
 
-- Shawn.
+--
+dwmw2
