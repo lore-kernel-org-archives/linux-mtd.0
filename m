@@ -1,25 +1,15 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15WUWM-0001rb-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 04:05:34 +0100
-Received: from [203.238.93.91] (helo=hades.idis.co.kr ident=mail)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 15WUc2-0008Qq-00
-	for linux-mtd@lists.infradead.org; Tue, 14 Aug 2001 04:11:26 +0100
-Received: from cwryu by hades.idis.co.kr with local (Exim 3.32 #1 (Debian))
-	id 15WUbG-0000LE-00
-	for <mtd@infradead.org>; Tue, 14 Aug 2001 12:10:38 +0900
-To: linux-mtd@lists.infradead.org
+Received: from web13607.mail.yahoo.com ([216.136.175.118])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15WVPV-0001ui-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 05:02:34 +0100
+Message-ID: <20010814040820.37578.qmail@web13607.mail.yahoo.com>
+Date: Mon, 13 Aug 2001 21:08:20 -0700 (PDT)
+From: Luke <luke_epsilon@yahoo.com>
 Subject: Re: Am29LV065D woes -- ZFMicro MachZ help?
-References: <20010814003549.61100.qmail@web13602.mail.yahoo.com>
+To: Vipin Malik <vipin@embeddedlinuxworks.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <5.1.0.14.0.20010813212346.00a6e8d0@mail.spewey.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=euc-kr
-Content-Transfer-Encoding: 8bit
-From: Changwoo Ryu <cwryu@debian.org>
-Date: 14 Aug 2001 12:10:38 +0900
-In-Reply-To: Luke's message of "Mon, 13 Aug 2001 17:35:49 -0700 (PDT)"
-Message-ID: <87u1zbgwup.fsf@hades.idis.co.kr>
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,41 +21,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Luke <luke_epsilon@yahoo.com> writes:
+Howdy,
 
-> I appreciate the help so far - I have been trying to read what I can about
-> my system.
-> 
-> --- Vipin Malik <vipin@embeddedlinuxworks.com> wrote:
-> > 
-> > That's entirely dependent on your hardware- as to which address range it
-> > decodes the chip select (CS) line going to the flash chip.
-> ...
-> > If it is going to your (embedded PC on a chip) processor (if that's the 
-> > case- like in an AMD SC520 or Intel 386EX) then either look in the bios 
-> > settings where the PAR (programmable address range) chip select
-> > registers are being set or you may have to program them yourself- say in
-> > the physmap.c file before you do the probe for the flash chip.
-> 
-> The flash is going directly to the processor.  In this case it is a
-> ZFMicro MachZ chip (Cyrix 486 dx4) - the documentation on the physical
-> address space is very confusing to me.  Has anyone tried using MTD for
-> this chip?
-> 
-> In the bios, one can configure mem_cs_0 (0-3 actually) memory page size,
-> memory base, and memory offset.  I have 2 Am29LV065D 8M flash chips - one
-> linked to mem_cs_0 and the other to mem_cs_1.  The confusing part comes
-> with the Rom Extension Linux Loader that comes with the platform.  Looking
-> at the assemby for this loader it seems as though it uses the default
-> settings set in bios for mem_cs_0 and then the loader changes these values
-> to address an initrd, and kernel address space.  
+I am excited to get to work tomorrow and pour over the ZFMicro tech docs -
+man that sounds sad.
 
-You don't need the register values (set by the linux loader) after
-linux/initrd loading.  Then the regsiter values should be changed
-before probing the flash.
+--- Vipin Malik <vipin@embeddedlinuxworks.com> wrote:
+> At 05:35 PM 8/13/2001 -0700, Luke wrote:
 
-You can read the H/W manual "ZF-Logic" section about setting the
-values.
+> Well in that case, you have on board programmable chip select's.
+> There must be registers that are associated with each chip select that
+> define the base physical address, the databus width, the wait
+states,what type of memory is located there (read only or read/write) etc.
 
--- 
-Changwoo Ryu
+You think these registers are located on the ZFMicro chip somewhere,
+right?  If I am understanding you correctly, I need to duplicate the
+action that the bios does when setting the chip select registers.  
+
+> You must look for these registers and program them to an address that
+> you will be happy with. Of course if the flash chips are already booting
+> your bios etc. you probably want to dump the contents and decode what
+the base address is and just use that.
+
+How would I go about dumping this?  
+
+The bios seems to launch what it calls an Option Rom Extension (A Phoenix
+Bios feature - maybe others too) - and the extension it launches is called
+the Linux Loader Option Rom Extension.   It is this program that (I
+believe) programs the chip selects to get the system booting.  When the
+bios first starts it has values in the chip select (mem_cs_0) which allows
+this linux loader option rom to load.
+
+> This is exactly like the AMD SC520 processor, except I doubt that the 
+> registers to program the chip selects are in the same location :)
+
+I will look more closely at the sc520cdp.c code and hopefully I can just
+tweak the appropriate addresses.  So if I create a file zfmicro.c (with
+the sc520cdp.c code as a rough template) where do I put this file when
+compiling the kernel?  I am new to this kind of thing too (that is messing
+with kernel driver source code).
+
+Thanks again!  I am having fun learning how this stuff works! (slowly)
+
+Later,
+Luke
+
+__________________________________________________
+Do You Yahoo!?
+Make international calls for as low as $.04/minute with Yahoo! Messenger
+http://phonecard.yahoo.com/
