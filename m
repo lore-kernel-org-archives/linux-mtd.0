@@ -1,19 +1,12 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17qen7-0006hy-00
-	for <linux-mtd@lists.infradead.org>; Sun, 15 Sep 2002 20:10:45 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: Erich Schubert <erich@debian.org>, linux-mtd@lists.infradead.org
+Date: Sun, 15 Sep 2002 20:44:52 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Erich Schubert <erich@debian.org>
+cc: linux-mtd@lists.infradead.org
 Subject: Re: recommended Filesystem for DoC?
-Date: Mon, 16 Sep 2002 07:07:16 +1200
-References: <20020914235138.GA28771@bombadil.xmldesign.de>
-In-Reply-To: <20020914235138.GA28771@bombadil.xmldesign.de>
+In-Reply-To: <20020915175447.GB15367@bombadil.xmldesign.de>
+Message-ID: <Pine.LNX.4.44.0209152032110.1176-100000@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020915191039.67A4514BBB@dragon.actrix.co.nz>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,18 +18,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sun, 15 Sep 2002 11:51, Erich Schubert wrote:
+On Sun, 15 Sep 2002, Erich Schubert wrote:
 
-> any recommendations for the system?
-> grub or lilo? (right now i'm using grub to boot the system off a small
-> partition ~8 MB)
-> any good howto for installing the bootloader?
+> > The JFFS2 NAND support is almost complete -- just a few corner cases to be 
+> > fixed up. AFAIK it should work on DoC without too much trouble -- after 
+> > all, a DoC is just a bunch of NAND flash chips.
+> 
+> Can lilo or grub boot a system off a JFFS2 filesystem?
 
-If a DOC is "just a bunch of NAND chips" then maybe YAFFS will work with DOC. 
- I'd have to look at the DOC geometry to be able to tell. Right now YAFFS 
-wants its flash to be in pages of 512+16 with eraseable blocks being 32 
-pages. Nothing that can't be adjusted with a sledge hammer.
+No. RedBoot has JFFS2 support and should manage with a little persuasion 
+though.
 
-There are pros and cons to both YAFFS and JFFS2, that's why both exist.
+> (with compression enabled... or i'll need my cramdiscs anyway)
+> Is the JFFS2 in 2.4.19 new enough, or do i need additional patches?
+> Which corner cases aren't fixed yet?
 
--- CHarles
+You need the newer code from CVS. It's mainly error handling and the 
+subtleties of doing fsync() efficiently that are missing. And possibly 
+details about using the DiskOnChip HW ECC instead of SW ECC, etc.
+
+> What are the drawbacks with ext2 on a DoC using nftl?
+> when i hopefully will never have to mount the filesystem rw?
+
+If it's always readonly it's sane enough.
+
+Hmmm... Pine on iPAQ with WaveLAN is surprisingly usable :)
+
+-- 
+dwmw2
