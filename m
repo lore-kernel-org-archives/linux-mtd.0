@@ -1,32 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 145vmW-0002iT-00
-	for mtd-list@infradead.org; Tue, 12 Dec 2000 20:12:12 +0000
-Date: Tue, 12 Dec 2000 15:12:00 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <mtd@infradead.org>
+	id 14696O-0005tL-00
+	for mtd-list@infradead.org; Wed, 13 Dec 2000 10:25:36 +0000
+Received: from [195.224.55.237] (helo=passion.cygnus)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 14696N-0005tF-00
+	for mtd@infradead.org; Wed, 13 Dec 2000 10:25:35 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.30.0012121508290.3311-100000@xanadu.gn.com> 
+References: <Pine.LNX.4.30.0012121508290.3311-100000@xanadu.gn.com> 
+To: Nicolas Pitre <nico@cam.org>
+Cc: mtd@infradead.org
 Subject: Re: 2.4 stuff. 
-In-Reply-To: <11858.976627458@redhat.com>
-Message-ID: <Pine.LNX.4.30.0012121508290.3311-100000@xanadu.gn.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 13 Dec 2000 10:24:58 +0000
+Message-ID: <15785.976703098@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+nico@cam.org said:
+>  I think the block write discussion has settled on the current code.
 
-On Tue, 12 Dec 2000, David Woodhouse wrote:
+Cool. I'll get the AMD code up and running on the new toy on my desk and
+send it off to Linus then.
 
-> 1. New CFI code. That's not because I'm intending to leave the CFI code out,
-> but before I do it, because I wanted to let the discussion about block write
-> sizes settle, and test the AMD command set code on the new toy that landed
-> on my desk on Friday.
+--
+dwmw2
 
-I think the block write discussion has settled on the current code.
-
-
-Nicolas
 
 
 
