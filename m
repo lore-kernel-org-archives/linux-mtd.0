@@ -1,17 +1,24 @@
-Received: from albatros.havelsan.com.tr ([195.142.233.60])
+Received: from mail.imc-berlin.de ([217.110.46.186]
+	helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192tWt-00032j-Pa
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 14:52:54 +0100
-Message-ID: <00ba01c2fdd6$0096d9b0$3064000a@nur>
-From: "nur" <nurpinar@e-kolay.net>
-To: <linux-mtd@lists.infradead.org>
-References: <009801c2fdd2$eb0d1da0$3064000a@nur>
-Date: Tue, 8 Apr 2003 16:51:49 +0300
+	id 192tdO-00039e-5b
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 14:59:34 +0100
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
+	[10.0.0.13])h38DxRLT025012
+	for <linux-mtd@lists.infradead.org>; Tue, 8 Apr 2003 15:59:27 +0200
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id PAA26419
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 8 Apr 2003 15:59:36 +0200 (CEST)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3E92D5C7.8020603@imc-berlin.de>
+Date: Tue, 08 Apr 2003 15:59:35 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: UnitSizeFactor 
+Subject: JFFS2 uncompressed?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In addition, I have had disabled DOC_SINGLE_DRIVER from docprobe.c
-The kernel image works fine with DoC Millennium but I got this error when
-working with DoC Millennium Module
-Is there any patch to apply for Millennium Module?
+Hi there,
 
-> "Sorry we don't support UnitSizeFactor of !=1 yet"
->
-> I m getting such an error message during boot.
-> I have kernel 2.2.20. 8MB DoC Millennium Module
-> 32 MB Ram. I have enabled Doc Millennium Only from Kernel and let kernel
-> find window address of it. And mtd char device nftl support.
-> DoC512.exb is installed. What should I do ?
-> Is it safe to install doc42.exb which I think will solve the problem?
-> Thanks
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+IIRC files are stored compressed on a JFFS2 partition.
+
+Is there any chance that I could use JFFS2 without any compression?
+
+I guess this might me faster for our embedded system!
+
+Thanks,
+
+Steven
