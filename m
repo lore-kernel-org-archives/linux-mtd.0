@@ -1,31 +1,19 @@
-Received: from beta.dmz-eu.st.com ([164.129.1.35])
+Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aKg6-0001cA-00
-	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 19:28:02 +0100
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with SMTP id 78CF14981
-	for <linux-mtd@lists.infradead.org>; Thu,  1 Aug 2002 18:27:32 +0000 (GMT)
-Received: from thistle.bri.st.com (localhost [127.0.0.1])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BB9BF1845
-	for <linux-mtd@lists.infradead.org>; Thu,  1 Aug 2002 18:26:25 +0000 (GMT)
-Received: from [164.129.14.5] (helo=ocelot)
-	by thistle.bristol.st.com with smtp (Exim 3.03 #5)
-	id 17aKeX-0007gh-00
-	for linux-mtd@lists.infradead.org; Thu, 01 Aug 2002 19:26:25 +0100
-Date: Thu, 1 Aug 2002 19:26:24 +0100
-From: Stuart Menefy <stuart.menefy@st.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: "Read-only file system" error while writing
-Message-Id: <20020801192624.28fe7b7e.stuart.menefy@st.com>
-In-Reply-To: <20020801190500.7e73cf60.stuart.menefy@st.com>
-References: <1028147069.12139.81.camel@mahi190.austin.ibm.com>
-	<1028064443.23642.52.camel@mahi190.austin.ibm.com>
-	<20020731163530.70c45960.stuart.menefy@st.com>
-	<28851.1028197900@redhat.com>
-	<20020801190500.7e73cf60.stuart.menefy@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+	id 17aKx1-0001e4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 19:45:31 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Ilguiz Latypov <ilatypov@superbt.com>
+Subject: Re: [patch] doc_stage1.S : GRUB on DoC
+Date: Thu, 1 Aug 2002 14:43:00 -0400
+Cc: linux-mtd@lists.infradead.org
+References: <Pine.LNX.4.44.0207300002170.7104-100000@server.superbt.com>
+In-Reply-To: <Pine.LNX.4.44.0207300002170.7104-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020801144115.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -37,39 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 1 Aug 2002 19:05:00 +0100
-stuart.menefy@st.com wrote:
-> On Thu, 1 Aug 2002 11:31:40 +0100
-> dwmw2@infradead.org wrote:
-> > gromit1463@mailworks.org said:
-> > >  they all call do_write_buffer().  I was looking at the specsheet for
-> > > my STMicro chips, and I didn't see any mention of Write-to-Buffer
-> > > (command 0xE0) which is in the Intel command set, and issued by
-> > > do_write_buffer().  Is this command supported on the STMicro chips?
-> > > Could non-support contribute to my problem? 
-> > 
-> > We should be checking the CFI table for buffer-write support and not trying 
-> > to use it if it's not present. Can you check the datasheet for the chip 
-> > agrees with the built-in CFI table?
-> 
-> Yes, the CFI data for this field is right (ie the device does not support
-> Block writes). So I don't think this should be the problem.
+Ilguiz,
 
-Sorry, I should have read the email more closely before replying.
+I tested the 07-29 patch on a DoC Millennium, and everything seemed to be 
+working great.  I was able to build it against cvs grub with no errors, and 
+the resulting grub_firmware booted fine on a 1.3Ghz Athlon.
 
-For the M28W320CB which I'm using, the CFI data is correct, in that it
-reports that the device does not support Block writes. Stephen is using the
-M28W320CT, which will have different CFI data, so maybe it is reporting that
-it is supported?
+However, I have also been experimenting with booting a variant of the Linux 
+Router Project (LRP) from my DoC, and this latest Grub patch locks up on two 
+different Pentium-133 PC's.  
 
-The datasheet is no use in this respect, in its listing of the CFI data it
-gives times for buffer-writes, which the device does not support!
+Additionally, the M-Sys firmware also locked up on both machines.  The 
+earlier Grub patch (the one with the -256 and -512 options) works fine.  I'm 
+not sure what's going on here, but I'll continue to try to figure out what is 
+wrong.  
 
-Try building cfi_probe.c with DEBUG_CFI set, and post what it reports.
+Mark
 
-Stuart
-
--- 
-Stuart Menefy                                        stuart.menefy@st.com
-STMicroelectronics Ltd                         ST Intranet: mo.bri.st.com
-Bristol, UK                         Rest of the World: www.linuxsh.st.com
+Ilguiz Latypov wrote:
+> I added floppy disk BIOS number (0) as a last resort when looking for boot
+> configuration file.  Would you mind testing the aggregate patch I stored
+> under
+>
+>     patches/grub-2002-07-29-doc.patch
