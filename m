@@ -1,33 +1,53 @@
-From: joern@wohnheim.fh-wedel.de (=?iso-8859-1?Q?J=F6rn?= Engel)
-Date: Tue, 25 Mar 2003 13:33:28 +0100
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 25 Mar 2003 12:51:06 +0000
 Subject: not enough blocks for JFFS?
-In-Reply-To: <1048558906.2922.5.camel@gobbles>
-References: <3E7E6DE5.5000003@interepoch.com.tw> <1048483100.3593.3.camel@gobbles> <20030325000503.GA14469@wohnheim.fh-wedel.de> <3E7FBB35.1050100@interepoch.com.tw> <1048558906.2922.5.camel@gobbles>
-Message-ID: <20030325123328.GC29035@wohnheim.fh-wedel.de>
+In-Reply-To: <20030325000503.GA14469@wohnheim.fh-wedel.de>
+References: <3E7E6DE5.5000003@interepoch.com.tw>
+ <1048483100.3593.3.camel@gobbles>
+ <20030325000503.GA14469@wohnheim.fh-wedel.de>
+Message-ID: <1048596666.12528.39.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Mon, 24 March 2003 19:21:47 -0700, Russ Dill wrote:
+On Tue, 2003-03-25 at 00:05, J??rn Engel wrote:
+> But a filesystem is nicer than a quick user space implementation. :)
 > 
-> Your goals would be better served by a user-space solution from what I
-> can tell. Not only would there be less code, but that code would be
-> compressed in cramfs. I'm able to use 1 boot block for blob, another for
-> static configuration, and the remaining two for configuration data saved
-> in this way.
+> Today I have tweaked jffs2 a little to work without compression,
+> depending on mount options. (patch will follow)
 
-Compressed in cramfs is the point where I really disagree. iirc,
-cramfs images are a bit larger than jffs2 images. So if you want a
-read-only rootfs, jffs2 might be a better idea, already.
+Hmmm. Why mount options and not take the path which was already sort-of
+planned, which was to implement ioctl() and have a per-inode (and
+inheritable for directories) set of flags, a la chattr?
 
-Especially, if you need some if the jffs2 functionality again to save
-configuration data. I doubt that you would save a lot with userspace
-code + cramfs versus jffs2 both in flash and in memory consumption.
+> The nice effect of this is that you should be able to work with less
+> reserved blocks. My estimate is somewhere between one and three. In
+> Tims case, that would leave him with 16kB net space, enough for his
+> data. Cool.
 
-Time might be spend better in improving jffs2, than in reimplementing
-a subset of jffs2's functionality each time.
+I'm not really convinced that the _compression_ makes much difference
+here. You still get pages taking up more space when you GC them from a
+single node to a pair of nodes because your new node would have crossed
+an eraseblock boundary. OK, so the loss of compression efficiency makes
+the resulting data payloads slightly larger _too_ but not by much, and
+if you want formal proof of correctness you have to have accounted for
+the expansion _anyway_.
 
-J?rn
+Turning off compression because you don't have a lot of flash space
+available seems rather bizarre to me :)
+
+> Tim, would you volunteer to test patches?
+
+TBH I'm not sure I want stuff that's just tested, I really want stuff
+that is shown _mathematically_ to be correct in theory, although I do
+tend to prefer if if that's backed up in practice of course :)
+
+First I want to start using the REF_PRISTINE bits we already have to
+write clean nodes to _different_ blocks, so we don't keep mixing old
+data with new and we get to improve GC efficiency. Then I want to look
+at eliminating all cases where the size of the data on the medium could
+expand, except for the one where we have to split a GC'd node into two.
+Then the amount of space we require for GC is basically calculable and
+not too large.
 
 -- 
-Invincibility is in oneself, vulnerability is in the opponent.
--- Sun Tzu
+dwmw2
