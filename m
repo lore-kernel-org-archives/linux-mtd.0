@@ -1,36 +1,31 @@
-Return-path: <David.Woodhouse@mvhi.com>
+Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 111F5v-0004kK-00
-	for mtd@infradead.org; Mon, 5 Jul 1999 21:12:03 +0100
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org
-Subject: Re: Disk-On-Chip 2000 and Linux 
+	id 111GKV-0004xa-00
+	for mtd@infradead.org; Mon, 5 Jul 1999 22:31:11 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 111GKV-0001es-00; Mon, 5 Jul 1999 22:31:11 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 111GKV-0002Vn-00; Mon, 5 Jul 1999 22:31:11 +0100
+To: mtd@infradead.org
+Subject: Mailing list archive.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Jul 1999 21:12:02 +0100
+Date: Mon, 05 Jul 1999 22:31:11 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E111F5u-0002Mc-00@devel2.axiom.internal>
-Sender: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E111GKV-0002Vn-00@devel2.axiom.internal>
+Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+There's now an archive of this mailing list available at:
+	http://www.linux-mtd.infradead.org/list-archive/
 
-jgg@deltatee.com said:
->  I was unclear :> The physical device is just an ordinary AMD flash
-> chip with a paginging mechanism. They are using a filesystem on it
-> called TrueFFS (which sounds to me like a take off on FTL). The
-> CardTrick bios seems to provide int 13 services using this TrueFFS to
-> fake a hard drive. 
 
-Yep. Sounds a lot like M-Systems' old devices, except they used Intel flash. 
-I'd be very surprised if this TrueFFS was different to the TrueFFS which I 
-had working before with David Hinds' FTL code.
 
-I'll take a look at combining your drivers with the existing MTD stuff, which 
-has FTL support - then I'll send it back to you for testing - do you currently 
-have TrueFFS on any of these devices?
-
-Can you send me a dump of one of these 'TrueFFS' filesystems? 
 
 ----                                 ----                                 ----
 David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
