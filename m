@@ -1,21 +1,24 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from smtp.mei.co.jp ([133.183.129.25] helo=jazz.mei.co.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B6b60-0004Kf-4n
-	for linux-mtd@lists.infradead.org; Thu, 25 Mar 2004 20:05:03 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Eric Hammerle <ehammerle@spectracomcorp.com>
-In-Reply-To: <029e01c412a0$daaf5ed0$c4c80a0a@CoOp4>
-References: 
-	<OF6499D9FD.A5006680-ON85256E62.00682789-85256E62.0068A11B@ca-chq.celestica.com>
-	<029e01c412a0$daaf5ed0$c4c80a0a@CoOp4>
-Content-Type: text/plain
-Message-Id: <1080245072.3643.52.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Thu, 25 Mar 2004 20:04:32 +0000
+	id 1B6qnn-0006tq-UG
+	for linux-mtd@lists.infradead.org; Fri, 26 Mar 2004 12:51:12 +0000
+Received: by jazz.mei.co.jp (8.12.10/3.7W/bulls) with ESMTP id i2QCp6QG029916
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Mar 2004 21:51:06 +0900 (JST)
+Received: by mail-gw.jp.panasonic.com (8.11.6p2/3.7W/somlx2) with ESMTP id
+	i2QCp6g06805	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Mar 2004 21:51:06 +0900 (JST)
+Received: by mail.jp.panasonic.com (8.11.6p2/3.7W/whitesox) with SMTP id
+	i2QCp6D00279	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Mar 2004 21:51:06 +0900 (JST)
+Message-Id: <200403260958.SAA05970@eagle.msr.mec.mei.co.jp>
+Date: Fri, 26 Mar 2004 19:01:37 +0900
+From: Kei Kurihara <kurihara@jp.panasonic.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Unable to handle kernel paging request at
-	virtualaddress80000013
+Subject: Question about drivers/mtd/devices/slram.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-03-25 at 14:39 -0500, Eric Hammerle wrote:
-> 
-> I suppose a diff would look something like this:
-> 
-> - unsigned char name[0];
-> + unsigned char name[0] __attribute__ ((align(4)));
-> 
-> I'm not sure if this is the recommended fix for the alignment issues, but it
-> worked for me.
+Hello, 
 
-That'll work but at a cost of taking up extra RAM. If you're going to
-try that, make sure you also include the latest patch I committed to
-v1.98 of file.c. That eliminates another unaligned write.
+Are you going to respond the following restriction described in "slram.c"?
 
-You might do better to use get_unaligned() in the flash chip driver when
-reading from the buffer though.
+In slram.c
+----------
+  NOTE:
+  With slram it's only possible to map a contigous memory region. Therfore
+  if there's a device mapped somewhere in the region specified slram will
+  fail to load (see kernel log if modprobe fails).
 
--- 
-dwmw2
+Is it because of technical problem of software or restriction of hardware?
+If so, please let me know the problem and the hint for solving the problem.
+
+best regards
