@@ -1,17 +1,17 @@
-Received: from playa.onespot.com ([64.41.197.68])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fTyg-0003y7-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 22:52:14 +0000
-From: "Christopher Hoover" <ch@murgatroid.com>
-To: <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
+	id 16fU3m-0003ye-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 22:57:30 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <003c01c1be50$93d84590$e297000f@SNAGGLE> 
+References: <003c01c1be50$93d84590$e297000f@SNAGGLE> 
+To: "Christopher Hoover" <ch@murgatroid.com>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: patch for lock/unlock with varsize (against infradead cvs) 
-Date: Mon, 25 Feb 2002 15:03:02 -0800
-Message-ID: <003c01c1be50$93d84590$e297000f@SNAGGLE>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 25 Feb 2002 23:08:47 +0000
+Message-ID: <7546.1014678527@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dwmw2-
+ch@murgatroid.com said:
+>  (I'm not sure this applies cleanly anymore but it did as of
+> Valentine's Day.) 
 
-Is this good to go?
+It doesn't - I cleaned up the #ifdef CFI_WORD_64 stuff. Can I have another? 
+Sorry to be a pain.
 
-http://lists.infradead.org/pipermail/linux-mtd/2002-February/004127.html
-
-(I'm not sure this applies cleanly anymore but it did as of Valentine's
-Day.)
-
-Cheers,
-Christopher.
-
-mailto:ch@murgatroid.com
-mailto:ch@hpl.hp.com
+--
+dwmw2
