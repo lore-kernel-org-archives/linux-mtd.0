@@ -1,23 +1,17 @@
-Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
-	helo=wawnet.biz)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B3ueP-0004a8-S3
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 10:21:22 +0000
-Message-Id: <6.0.1.1.0.20040318105224.01f77d10@192.168.2.1>
-Date: Thu, 18 Mar 2004 10:56:17 +0100
-To: tglx@linutronix.de,David Woodhouse <dwmw2@infradead.org>
-From: llandre <r&d@wawnet.biz>
-In-Reply-To: <200403181015.58675.tglx@linutronix.de>
-References: <6.0.1.1.0.20040317161859.01f80e70@dns.struinfo.it>
- <200403171803.51317.tglx@linutronix.de>
- <6.0.1.1.0.20040318084717.01ef8d60@192.168.2.1>
- <200403181015.58675.tglx@linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-cc: Andrea Scian <andrea.scian@wawnet.biz>
-cc: Matteo Bortolin <matteo.bortolin@wawnet.biz>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Bug in nand_select_chip?
+Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
+	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3uiF-0004fa-Ma
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 10:25:19 +0000
+Message-ID: <4059790D.4020904@arcom.com>
+Date: Thu, 18 Mar 2004 10:25:17 +0000
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <200403172051.22120.dk.dbox2@gmx.net>
+In-Reply-To: <200403172051.22120.dk.dbox2@gmx.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: Erasebug on AMD flashes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+dkey wrote:
+> 
+> we are using jffs2 on the dbox2 and AMD flash chips, but since rev. 1.96 of 
+> cfi_cmdset_0002.c we can't erase the flashes. rev. 1.94 works without 
+> problems.
 
->On Thursday 18 March 2004 09:11, llandre wrote:
-> > > > I fixed the driver as shown in the NAND Flash document:
-> > > > - nCE pin low when hwcontrol is invoked with NAND_CTL_SETNCE
-> > > > - nCE pin high when hwcontrol is invoked with NAND_CTL_CLRNCE
-> > > > and now the driver works with the new MTD code.
-> > >
-> > >That's the reason why documents are written. :)
-> > >
-> > >But the driver should work with the old code too, as this never changed
-> > > since we started NAND support in JFFS2.
-> >
-> > In my understanding the driver does not work with the old code because
-> > the old nand_select_chip() implementation called this->hwcontrol(mtd,
-> > NAND_CTL_CLRNCE),
-> > with chip==0, setting the nCE pin high.
->
->That's correct, but you unfortunaly relied on code, which was in a heavy
->modifciation phase. If you use leading edge code, be aware, that things might
->be broken from time to time. The fix for this was committed 10 days after the
->first rework.
+"since 1.96" doesn't make sense.  Any breakage would be from 1.95.
 
-Ok, thanks for the advice.
-To avoid such problems, is it possible to download "stable" releases? Are they
-tagged in the CVS repository?
+> here are some debug infos, tell me if you need more!
 
+Part numbers of the flash chips and their configuration (interleaved etc.).
 
+> would be please if anybody can take a look over the code or revert revision of 
+> cfi_cmdset_0002.c to 1.94.
 
-Best regards,
+There's no reason why you can't revert to 1.94 yourself.
 
-llandre 
+FWIW, I'm now of the opinion that chip_status() is definately broken for 
+interleaved chips and probably cannot be made to work without ending up 
+with a mess.
+
+I would suggest using the data polling algorithm instead (where applicable).
+
+Also, ignoring the internal flash timeout (DQ5 toggling) and instead 
+relying on the software timeout might be acceptable.  However, a 
+repeatedly suspended erase keeps getting its software timeout extended 
+and thus there is a possibility of the software timeout never occuring. 
+  Hmmm.  An internal timeout requires a chip reset and thus we can't 
+actually suspend an internally timed-out erase so the software timeout 
+won't be extended.
+
+David Vrabel
+-- 
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
