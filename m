@@ -1,25 +1,18 @@
-Received: from imladris.infradead.org ([194.205.184.45] helo=phoenix.infradead.org)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177gVX-0000gc-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 May 2002 18:54:44 +0100
-Received: from pentafluge.infradead.org ([195.224.55.251])
-	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.35 #5)
-	id 177gVU-00051q-00
-	for linux-mtd@lists.infradead.org; Tue, 14 May 2002 18:54:41 +0100
-Received: from host170-pool2175669.interbusiness.it ([217.56.69.170] helo=publicist.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177gVR-0000ga-00
-	for <mtd@infradead.org>; Tue, 14 May 2002 18:54:38 +0100
-Reply-To: <bonsplans19@publicist.com>
-Message-ID: <014c13d00a3e$1124a8a0$5ae70dd1@jrgxkh>
-From: <bonsplans19@publicist.com>
-To: bonsplans19@publicist.com
-Subject: la lettre des bons plans numero 19
-Date: Tue, 14 May 0102 12:51:53 +0500
-MiME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_00B5_31E33C0C.E8285A64"
+	id 177pax-0001FQ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 04:36:55 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Tue, 14 May 2002 20:36:50 -0700 (PDT)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: "Subhash Chandra" <schandra@sasken.com>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: NAND vs NOR Flashs?
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020515033651.763F636F9@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,122 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-------=_NextPart_000_00B5_31E33C0C.E8285A64
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: base64
+--- "Subhash Chandra" <schandra@sasken.com> wrote:
+>Hi,
+>
+>I would like to know the diff. between NAND and NOR flash types.
+>Any pointers are appreciated.
+
+The size of NAND flash (8-128M)is always bigger than NOR flash (1-16M);
+Reading a NOR flash is a little faster than NAND flash;
+Erasing and Writing a NAND flash is much faster than NOR flash;
+So NAND flash is more fit for storing data and NOR flash is more fit for storing code.
+And there is ECC (error correction) in NAND flash.
+You can access NOR flash with SRAM interface and you have to do it with I/O port to NAND flash.
+Those are some of the differences between NAND and NOR flash.
 
 
-PGh0bWw+DQoNCjxib2R5Pg0KDQo8cCBhbGlnbj0iY2VudGVyIj48Zm9udCBz
-aXplPSI2Ij5MZXMgYm9ucyBwbGFucyBkdSBOZXQgTGV0dHJlIE6wIDE5PC9m
-b250Pjxmb250IHNpemU9IjYiPjxicj4NCjwvZm9udD48Zm9udCBzaXplPSI1
-Ij48YnI+DQpCb25qb3VyIOAgdG91cywgYXUgc29tbWFpcmUgY2V0dGUgc2Vt
-YWluZSA6PC9mb250PjwvcD4NCjxwIGFsaWduPSJjZW50ZXIiPiZuYnNwOzwv
-cD4NCjxwIGFsaWduPSJsZWZ0Ij48Yj4xKSA8L2I+PGI+UG91ciBsZXMgbm9z
-dGFsZ2lxdWVzOiBqb3VleiDgIFBBQ01BTiBlbiBsaWduZSE8L2I+PGJyPg0K
-Q2Ugc2l0ZSB2b3VzIHBlcm1ldCBkZSBqb3VleiDgIFBBQ01BTiBzYW5zIHRl
-bGVjaGFyZ2VyIHF1b2kgcXVlIGNlIHNvaXQ8YnI+DQpldCBiaWVuIHN1ciBn
-cmF0dWl0ZW1lbnQhPGJyPg0KQXR0ZW50aW9uIGNhIHJhbWVyYSBzaSB2b3Ry
-ZSBwYyBuJ2VzdCBwYXMgYXNzZXogcHVpc3NhbnQhPGJyPg0KPGJyPg0KPGEg
-aHJlZj0iaHR0cDovL3VzZXJzLmNoZWxsby5iZS9jcjI5NjIxL0phdmFQYWMv
-cGFjLmh0bWwiIHRhcmdldD0iX2JsYW5rIj5DbGlxdWV6IGljaQ0KcG91ciBj
-ZSBib24gcGxhbjwvYT4mbmJzcDs8L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGI+
-MikgR2FnbmV6IGRlcyBjb25zb2xlcyBYLWJveCE8L2I+PGJyPg0KUkRWIHN1
-ciBsZSBtZWlsbGV1ciBzaXRlIGR1IG5ldCBkZWRpZSBhIGxhIGNlbGVicmUg
-Y29uc29sZSBkZSBqZXV4ITxicj4NCjxicj4NCjxhIGhyZWY9Imh0dHA6Ly93
-d3cueGJveC1hdHRpdHVkZS5jb20vIiB0YXJnZXQ9Il9ibGFuayI+Q2xpcXVl
-eiBpY2kgcG91ciBjZSBib24NCnBsYW48L2E+PC9wPg0KPHAgYWxpZ249Imxl
-ZnQiPjxiPjM8L2I+PGI+KSA8L2I+PGI+VHJvdXZleiB1biBzdGFnZSBvdSB1
-biBlbXBsb2kgZ3JhY2UgYXUgd2ViITwvYj48YnI+DQpWb3VzIGNoZXJjaGV6
-IHVuIHN0YWdlIG91IHVuIHZyYWkgam9iPzxicj4NClZvdXMgbmUgc2F2ZXog
-cGFzIGV4YWN0ZW1lbnQgb3UgY2hlcmNoZXIgc3VyIGxlIG5ldD88YnI+DQpB
-bG9ycyBwYXMgZCdoZXNpdGF0aW9uLCBmYWl0ZSB1biB0b3VyIHN1ciBjZSBz
-aXRlITxicj4NCkV0IGJvbm5lIGNoYW5jZSBkYW5zIHZvdHJlIHJlY2hlcmNo
-ZSE8YnI+DQo8YnI+DQo8YSBocmVmPSJodHRwOi8vbWVtYnJlcy5seWNvcy5m
-ci9wcmFjdGlrYS8iIHRhcmdldD0iX2JsYW5rIj5DbGlxdWV6DQppY2kgcG91
-ciBjZSBib24gcGxhbjwvYT48L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGI+NCkg
-PC9iPjxiPlBvdXIgbGVzIGFkdWx0ZXMsIHVuIGFubnVhaXJlIGR1IFggZ3Jh
-dHVpdCBzdXIgbGEgdG9pbGUhPC9iPjxicj4NCkF0dGVudGlvbiwgY2UgYm9u
-IHBsYW4gZXN0IHLpc2VydukgYXV4IHBlcnNvbm5lcyBtYWpldXJzIHVuaXF1
-ZW1lbnQhPGJyPg0KQ2V0IGFubnVhaXJlIHJlZ3JvdXBlIGRlIG5vbWJyZXV4
-IHNpdGVzIHggZ3JhdHVpdHMhPGJyPg0KTGEgbWFqb3JpdGUgZGVzIHNpdGVz
-IGVzdCBlbiBmcmFuY2FpcyBldCB5J2VuIGEgcG91ciB0b3VzIGxlcyBnb3V0
-cyEgOik8L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGEgaHJlZj0iaHR0cDovL3d3
-dy5iZXN0LWFubnVhaXJlLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPkNsaXF1ZXog
-aWNpDQpwb3VyIGNlIGJvbiBwbGFuPC9hPjwvcD4NCjxwIGFsaWduPSJsZWZ0
-Ij48Yj41KSBTaSB2b3VzIGF2ZXogdW4gYW5pbWFsIGNoZXogdm91cyE8L2I+
-PGJyPg0KU2l0ZSBjcmVlIHBvdXIgdm91cyBldCB2b3RyZSBhbmltYWwgcGFy
-IGRlcyB2ZXRlcmluYWlyZXMhPGJyPg0KQ2Ugc2l0ZSB2b3VzIHBlcm1ldCBk
-J2FjaGV0ZXIgZGVzIGFsaW1lbnRzIChwb3VyIGNoaWVucyBldCBjaGF0cykg
-YSBwcml4IHN5bXBhICEhITxicj4NClZvdXMgdHJvdXZlcmV6IGF1c3NpIGRl
-IG5vbWJyZXVzZXMgaW5mb3JtYXRpb25zIHByYXRpcXVlcyAoc2FudGUgZHUg
-Y2hpZW4gZXQgZHUgY2hhdC4uLik8YnI+DQpVbiBkZXMgbWVpbGxldXJzIHNp
-dGVzIGR1IGdlbnJlIChldCBsYSB5J2VuIGEgcGFzIG1hbCBzdXIgbGUgculz
-ZWF1ISkuPC9wPg0KPHAgYWxpZ249ImxlZnQiPjxhIGhyZWY9Imh0dHA6Ly93
-d3cuenViaWFsY29tcGFueS5jb20venViaWFsLyIgdGFyZ2V0PSJfYmxhbmsi
-PkNsaXF1ZXoNCmljaSBwb3VyIGNlIGJvbiBwbGFuPC9hPjwvcD4NCjxwIGFs
-aWduPSJsZWZ0Ij48Yj42KSBTdXJmZXogZW4gZWNvdXRhbnQgZHUgamF6eiE8
-L2I+PGJyPg0KRW52aWUgZCd1bmUgcGV0aXRlIG11c2lxdWUgc3ltcGEgcG91
-ciBhY2NvbXBhZ25lciB2b3RyZSBzdXJmPzxicj4NCkxlcyBib25zIHBsYW5z
-IHZvdXMgcmVjb21tYW5kZW50IGZvcnRlbWVudCBjZXR0ZSBXZWItUmFkaW8s
-PGJyPg0KY29uc2FjcullIDI0IGhldXJlcyBzdXIgMjQgaGV1cmVzIOAgbGEg
-bXVzaXF1ZSBkZSBqYXp6IGVuIG5vbi1zdG9wLi4uZXQgYydlc3QgZ3JhdHVp
-dCE8L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGEgaHJlZj0iaHR0cDovL3d3dy5y
-YWRpby1qYXp6LmNvbS8iIHRhcmdldD0iX2JsYW5rIj5DbGlxdWV6IGljaQ0K
-cG91ciBjZSBib24gcGxhbjwvYT48L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGI+
-NykgVm91cyBjaGVyY2hleiB1biBmb25kIGQnZWNyYW4gb3JpZ2luYWw/PC9i
-Pjxicj4NCkFsb3JzIGxhLCBwYXMgZCdo6XNpdGF0aW9uISBBbGxleiB0b3V0
-IGRlIHN1aXRlIGZhaXJlIHVuIHRvdXIgc3VyIGNlIHNpdGUhPGJyPg0KVm91
-cyB5IHRyb3V2ZXJleiB1bmUgbXVsdGl0dWRlIGRlIGZvbmRzIGQnZWNyYW4g
-cG91ciB2b3RyZSBQQyEgVW4gbXVzdCEhITwvcD4NCjxwIGFsaWduPSJsZWZ0
-Ij48YSBocmVmPSJodHRwOi8vd3d3LnN0dWRpby1saXZlLmNvbS9ob21lLmh0
-bSIgdGFyZ2V0PSJfYmxhbmsiPkNsaXF1ZXogaWNpIHBvdXINCmNlIGJvbiBw
-bGFuPC9hPjwvcD4NCjxwIGFsaWduPSJsZWZ0Ij48Yj44KSA8L2I+PGI+VW4g
-bm91dmVhdSBtb3RldXIgZGUgcmVjaGVyY2hlIGludGVybmV0ITwvYj48YnI+
-DQpDZSBub3V2ZWF1IG1vdGV1ciBkZSByZWNoZXJjaGUgcXVlIHRvdXRlIGwn
-ZXF1aXBlIGRlcyBib25zIHBsYW5zIHMnZXN0IGFtdXNlZSBhIHRlc3Rlcjxi
-cj4NCmVzdCBhYnNvbHVtZW50IGdlbmlhbCEhISBJbCBmYXV0IHZyYWltZW50
-IGxlIHRlc3Rlci4uLkV0IGwnZXNzYXllciwgYydlc3QgbCdhZG9wdGVyISEh
-PGJyPg0KU2FucyBhdWN1biBkb3V0ZSBsZSBtZWlsbGV1ciBib24gcGxhbiBk
-ZSBjZXR0ZSBsZXR0cmUhPC9wPg0KPHAgYWxpZ249ImxlZnQiPjxhIGhyZWY9
-Imh0dHA6Ly93d3cua2FydG9vLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPkNsaXF1
-ZXogaWNpDQpwb3VyIGNlIGJvbiBwbGFuPC9hPjwvcD4NCjxwIGFsaWduPSJs
-ZWZ0Ij48Yj45KSA8L2I+PGI+VGVsZWNoYXJnZXogZGVzIGxvZ2ljaWVscyBn
-cmF0dWl0cyBwb3VyIHZvdHJlIFBDITwvYj48YnI+DQpDZSBzaXRlIHZvdXMg
-cHJvcG9zZSB1biBsYXJnZSBjaG9peCBkZSBsb2dpY2llbHMgYSB0ZWxlY2hh
-cmdlciBncmF0dWl0ZW1lbnQ8YnI+DQpwb3VyIHZvdHJlIFBDISBWb3VzIHkg
-dHJvdXZlcmV6IGRlcyB0cmFpdGVtZW50cyBkZSB0ZXh0ZXMsIGRlcyB0YWJs
-ZXVycywgZGVzIGFudGl2aXJ1cy4uLlVuIG11c3QhPC9wPg0KPHAgYWxpZ249
-ImxlZnQiPjxhIGhyZWY9Imh0dHA6Ly93d3cuamV0ZWxlY2hhcmdlLmNvbS8i
-IHRhcmdldD0iX2JsYW5rIj5DbGlxdWV6IGljaQ0KcG91ciBjZSBib24gcGxh
-bjwvYT48L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGI+MTApIDwvYj48Yj5SZW5j
-b250cmV6IGwnYW1lIHNvZXVyITwvYj48YnI+DQpVbiBkZXMgbWVpbGxldXJz
-IHNpdGVzIGRlIHJlbmNvbnRyZXMgZHUgbW9tZW50ITxicj4NClBvdXIgdHJv
-dXZlciBsJ2FtZSBzb2V1ciBvdSBzaW1wbGVtZW50IHNlIGZhaXJlIGRlIG5v
-dXZlYXV4IGFtaXMhPGJyPg0KVm91cyBwb3VycmV6IHkgcGFzc2VyIHVuZSBh
-bm5vbmNlIGdyYXR1aXRlbWVudC4gQSBjb25zb21tZXIgc2FucyBtb2TpcmF0
-aW9uISA8L3A+DQo8cCBhbGlnbj0ibGVmdCI+PGEgaHJlZj0iaHR0cDovL3d3
-dy5hbW91cmV1eC5jb20vIiB0YXJnZXQ9Il9ibGFuayI+Q2xpcXVleiBpY2kN
-CnBvdXIgY2UgYm9uIHBsYW48L2E+IDwvcD4NCjxwIGFsaWduPSJsZWZ0Ij4m
-bmJzcDsgPC9wPg0KPHAgYWxpZ249ImxlZnQiPjxiPlByb2NoYWlucyBCb25z
-IFBsYW5zIGRhbnMgdW5lIGRpemFpbmUgZGUgam91cnMgbm9ybWFsZW1lbnQh
-Jm5ic3A7PGJyPg0KPGJyPg0KQSBiaWVudPR0IGV0IG1lcmNpIGRlIHZvdHJl
-IGZpZOlsaXTpLjwvYj48L3A+DQo8YnI+DQo8Yj48YSBocmVmPSJodHRwOi8v
-bWVtYnJlcy5seWNvcy5mci9wdWJsaWNpc3QvaW5zY3JpcHRpb24uaHRtIiB0
-YXJnZXQ9Il9ibGFuayI+PGZvbnQgc2l6ZT0iNCI+UG91ciBjb250aW51ZXIg
-4CByZWNldm9pciBjZXR0ZSBsZXR0cmUsIGNsaXF1ZXogaWNpIChw6XJpb2Rp
-Y2l06TogZW52aXJvbiB0b3VzIGxlcyAxMC0xNSBqb3Vycyk8L2ZvbnQ+PC9h
-PjwvYj4NCjxicj4NCjxwIGFsaWduPSJjZW50ZXIiPjxiPlBvdXIgbmUgcGx1
-cyByZWNldm9pciBjZXR0ZSBsZXR0cmUsIGVudm95ZXogc2ltcGxlbWVudCB1
-bjxicj4NCmVtYWlsIOAgc3RvcHplcGxhbnNAcHVibGljaXN0LmNvbSBhdmVj
-IHBvdXIgb2JqZXQgIlJFTU9WRSI8L2I+PC9wPg0KPGNlbnRlcj4ocHJpbmNp
-cGUgZHUgIm9wdC1vdXQiIGxlZ2FsIGVuIEV1cm9wZSwgbWVyY2kgZGUgbmUg
-cGFzIHNwYW1tZXIgbm90cmUgYWRyZXNzZSBSZW1vdmUsIGNhciBzaSBjZXR0
-ZSBkZXJuaWVyZSBlc3QgZmVybWVlLCBQdWJsaWNpc3QgbmUgcG91cnJhIHBy
-ZW5kcmUgZW4gY29tcHRlIHZvdHJlIGRlc2luc2NyaXB0aW9uKTwvY2VudGVy
-Pg0KPHAgYWxpZ249ImNlbnRlciI+PGI+Vm91cyBzb3VoYWl0ZXogdm9pciB2
-b3RyZSBzaXRlIGRhbnMgbGVzIGJvbnMgcGxhbnM/IEVudm95ZXogbm91cyBz
-aW1wbGVtZW50IHVuIGVtYWlsIOA8YnI+DQp6ZWJvbnNwbGFuc0BwdWJsaWNp
-c3QuY29tIGVuIGTpY3JpdmFudCB2b3RyZSBzaXRlITwvYj4NCg0KPC9ib2R5
-Pg0KDQo8L2h0bWw+DQoNCjkyMzNlR29GNC0yOWwxMQ==
+Jim Zeus
 
-------=_NextPart_000_00B5_31E33C0C.E8285A64--
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
