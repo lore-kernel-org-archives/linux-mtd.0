@@ -1,24 +1,19 @@
 Received: from smtp13.mail.yahoo.co.jp ([211.14.15.236])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196BrF-0000ec-38
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 17:03:29 +0100
-Message-ID: <002201c304fa$d04abd40$a10486da@w0a3t0>
+	id 196C5c-0000qD-30
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 17:18:20 +0100
+Message-ID: <002a01c304fc$e3e4d3c0$a10486da@w0a3t0>
 From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
-To: <tglx@linutronix.de>,
-	=?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: 
-	<20030415171123.GH7721@wohnheim.fh-wedel.de><002501c30424$c3fedf20$a10486da@w0a3t0>
-	<200304162019.50838.tglx@linutronix.de>
-Date: Fri, 18 Apr 2003 01:02:57 +0900
+To: <csperandeo@intrinsyc.com>,
+	<linux-mtd@lists.infradead.org>,
+	<tglx@linutronix.de>
+References: <200304101926.h3AJQ8b05913@marmot.intrinsyc.com>
+Date: Fri, 18 Apr 2003 01:17:49 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-cc: Holger Schurig <h.schurig@mn-logistik.de>
-cc: linux-mtd@lists.infradead.org
-cc: esn@cotas.dk
-cc: Jasmine Strong <jasmine@regolith.co.uk>
-Subject: Re: Database on JFFS2?
+	charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2 on NAND reboot problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------ Original Message -----
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>; "Jörn Engel" <joern@wohnheim.fh-wedel.de>
-Cc: <linux-mtd@lists.infradead.org>; "Holger Schurig" <h.schurig@mn-logistik.de>; <esn@cotas.dk>; "Jasmine Strong"
-<jasmine@regolith.co.uk>
-Sent: Thursday, April 17, 2003 3:19 AM
-Subject: Re: Database on JFFS2?
+Hi
+ 
+> Wondering if anyone has experienced a bug described as follows.
+> 
+> I am using the linux powerpc kernel 2.4.21-pre2.  We are using a March 09
+> 2003 snapshot for MTD/JFFS2 from http://www.linux-mtd.infradead.org/.
+> 
+> After rebooting the device we occasionally receive the following:
+> 
+> *********************************
+> jffs2_get_inode_nodes(): CRC failed on node at 0x00d8a9c0: Read 0xffffffff,
+> calculated 0x4deb59e5
+> 
+> jffs2_get_inode_nodes(): Data CRC failed on node at 0x00d89a8c: Read
+> 0xbaa193f5, calculated 0xcdd1fe6c Checked all inodes but still 0x1c20 bytes
+> of unchecked space? kernel BUG at gc.c:140!
+> Oops: Exception in kernel mode, sig: 4
+> NIP: C00A0420 XER: 00000000 LR: C00A0420 SP: C033FF10 REGS: c033fe60 TRAP:
+> 0700
+>  Not tainted
+> MSR: 00009030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+> TASK = c033e000[8] 'jffs2_gcd_mtd1' Last syscall: -1
+> last math 00000000 last altivec 00000000
+> PLB0: bear= 0x00000000 acr=   0x00000000 besr=  0x00000000
+> PLB0 to OPB: bear= 0x00000000 besr0= 0x00000000 besr1= 0x00000000
+> 
+> GPR00: C00A0420 C033FF10 C033E000 00000018 00001030 00000001 00000020 C01F0000
+> GPR08: 00003DA8 C01A5D04 00000000 C033FE30 82004028 1001F598 00FE4100 007FFF2F
+> GPR16: 00000000 00000001 007FFF00 FFFFFFFF 00FDF920 00000000 00F9F548 00000002
+> GPR24: 00000000 C01AB4AC 00000000 FFFFFFFF 00000000 C035CDB8 C03CF0F8 
+> C03CF0C4 Call backtrace: C00A0420 C00A3790 C0006F00
+> **********************************
+> 
+> It appears that something has gone wrong with the garbage collection thread
+> (at least that is one of the theories).  Inserting a delay before actually
+> rebooting the device seems to remedy the problem somewhat but does not make
+> the problem dissappear.
+> 
+> Is it possible that the garbage collection thread is not given enough time to
+> do its works before the device is rebooted?
+> 
+> Any solution or suggestions on what avenues to a solution would be greatly
+> appreciated.
 
+It seems to me that the system was rebooted without wbuf flush.
+If it is true, another problem I think is that mount process cannot detect the inode inconsistency.
+This fs should be designed on the premise that power failure happens.
+The last accessing file do not need to be saved, but fs does.
 
-> On Wednesday 16 April 2003 16:30, matsunaga wrote:
-> > > iirc it used to ignore sync completely so people could potentially get
-> > > into trouble if they write-sync-poweroff with <2s between write and
-> > > poweroff.
-> >
-> > write - sync -poweroff works on NAND. flush_wbuf is also triggered on
-> > umount.
-> >
-> > I think that sys_sync is not supported yet, as is written in jffs2/Todo,
-> > right?
->
-> Sorry, I mixed this up with fsync. sys_sync is not working, just flushing the
-> buffer on umount.
->
-> When I brought in the timed flush, I tried to use kupdated
-> (superblock->s_dirty) and had a bunch of unwanted flush's during consecutive
-> writes, because setting sb->s_dirty is asynchronous to kupdated interval.
-> That's why I used the 2 seconds timer.
->
-> I will think about it again.
-
-I understand the sisuation. Asynchronous sync could prevents consecutive writes.
-I will wait for it ;-)
-Ideally sys_sync while a file is being written should wait for the last wbuf write of the file and flush it...
+Sorry if this is solved on the latest code...
 
 BR.
+Matsunaga.
 
 __________________________________________________
 Do You Yahoo!?
