@@ -1,19 +1,17 @@
-Received: from idiom.com ([216.240.32.1] ident=espin)
+Received: from ns1ca.ubisoft.qc.ca ([205.205.27.131])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MXNi-0003ef-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 16:39:46 +0000
-Received: (from espin@localhost)
-	by idiom.com (8.9.3/8.9.3) id IAA67544
-	for linux-mtd@lists.infradead.org; Fri, 4 Jan 2002 08:50:40 -0800 (PST)
-Date: Fri, 4 Jan 2002 08:50:40 -0800
-From: Geoffrey Espin <espin@idiom.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: linux-mtd digest, Vol 1 #323 - 3 msgs
-Message-ID: <20020104085040.A48397@idiom.com>
-References: <E16MWkI-0003Z1-00@pentafluge.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E16MWkI-0003Z1-00@pentafluge.infradead.org>; from linux-mtd-request@lists.infradead.org on Fri, Jan 04, 2002 at 03:59:02PM +0000
+	id 16MXP3-0003f3-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 16:41:09 +0000
+Message-ID: <9A1957CB9FC45A4FA6F35961093ABB8406456E99@srvmail-mtl.montreal.ubisoft.org>
+From: Patrick Allaire <pallaire@gameloft.com>
+To: =?iso-8859-1?Q?Bj=F6rn_Eriksson?= <mdeans@algonet.se>,
+        linux-mtd@lists.infradead.org
+Subject: RE: From 2.4.9 to CVS ???
+Date: Fri, 4 Jan 2002 11:51:39 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,58 +23,58 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> From: "Sanjay Kumar" <sankumar96@lycos.com>
-> Subject: Problem in changing  the starting location of JFFS2 for AMD flash
-> I am using AMD flash of 4M size and keeping starting 1/2 MB for RAW data. Then for the remaining I want to use JFFS2. That is JFF2 will start from 0.5 MB to 4MB. For that I am making changes in super.c of JFFS2 for function jffs2_read_super. The changes are -    
-> c->free_size = c->mtd->size - jffs2_start_addr;
-> c->flash_size = c->mtd->size - jffs2_start_addr;
-> c->nr_blocks = c->flash_size / c->sector_size;
-> c->blocks[i].offset = i * c->sector_size + jffs2_start_addr;
-> where am keeping jffs2_start_addr = 0x80000.
-> I am using linux 2.4.2.
-> Now I am able to mount the jffs2 file system and able to create a empty file.
-> But when I go for writing into the created empty file, it is crashing.
+No I dont have 'bad cramfs magic' !!! I tought it could be the case ... =
+but
+I looked at the mkcramfs.c from the 2.4.9 and 2.4.17 version and there =
+is no
+difference So the generated code should be the same.
 
-As someone already has replied, don't mess with sources like super.c.
+Patrick Allaire
+mailto:pallaire@gameloft.com
+If you can see it, but it's not there, it's virtual.=20
+If you can't see it, but it is there, it's hidden.=20
+It you can't see it and it isn't there, it's gone.
 
-In linux/.config, have these options on:
 
-    CONFIG_MTD=y
-    CONFIG_MTD_PARTITIONS=y
-    CONFIG_MTD_CHAR=y
-    CONFIG_MTD_BLOCK=y
-    CONFIG_MTD_<myboard>=y
 
-Under linux/drivers/mtd/maps/ you must create your myboard-flash.c
-(and add to Makefile), which has the partition table in it, e.g.:
-
-    #define WINDOW_ADDR 0xbfc00000  /* default 4M part */
-    #define WINDOW_SIZE 0x00400000
-    ...
-    static struct mtd_partition myboard_partitions[] = {
-	    {
-		    name: "bootstrap and kernel",
-		    size: WINDOW_SIZE / 4,  /* 0.5M */
-		    offset: 0,
-	    },{
-		    name: "filesystem",
-		    size: MTDPART_SIZ_FULL, /* 2M */
-		    offset: MTDPART_OFS_APPEND,
-	    }
-    };
-
-Then from shell you can:
-
-    # mtd_debug erase /dev/mtd/0 ${OFFSET} ${SIZE}   # 0 is entire device
-    # cp empty.jffs2 /dev/mtd/2                      # 2 is second partition
-    # mount -t jffs2 /dev/mtdblock/2 /mnt
-
-Where 'empty.jffs2' is a stub file created by mkfs.jffs2,
-and OFFSET & SIZE are whatever boundaries you've setup.
-
-You might need to drop in later mtd files into 2.4.2.
-
-Geoff
--- 
-Geoffrey Espin
-espin@idiom.com
+> -----Original Message-----
+> From: Bj=F6rn Eriksson [mailto:mdeans@algonet.se]
+> Sent: January 4, 2002 11:40 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: Re: From 2.4.9 to CVS ???
+>=20
+>=20
+> On Fri, Jan 04, 2002 at 11:19:13AM -0500, Patrick Allaire wrote:
+> > Every thing is compiled fine ... at boot up, MTD=20
+> find(probe) my flash, it
+> > printout the partioning it will do ... after that I get=20
+> >=20
+> > VFS: Mounted root (cramfs filesystem) readonly.
+> > Freeing unused kernel memory : 36k freed
+> > Kernel panic: No init found....
+> >=20
+> >=20
+> > I know from the last line that the problems is that the=20
+> kernel cannot find
+> > /sbin/init ... but it is there, it is exactly the same=20
+> cramfs I used on
+> > 2.4.9 when it was working !!! To be sure it was not=20
+> corrupted, I redid the
+> > flashing of the /dev/mtdblock0 with my cramfs file ... with the =
+same
+> > results.
+>=20
+>  Are you sure you're not getting a 'bad cramfs magic' as=20
+> well? I know I
+> did when I tried booting a 2.4.9 cramfs-initrd with a 2.4.17 kernel.
+> Anyways, read fs/cramfs/README:
+>=20
+>   <<The disadvantage is that the generated cramfs cannot always be
+>     shared between different kernels, not even necessarily kernels of
+>     the same architecture if PAGE_CACHE_SIZE is subject to change
+>     between kernel versions.>>
+>=20
+>=20
+> --=20
+> //Bj=F6rnen
+>=20
