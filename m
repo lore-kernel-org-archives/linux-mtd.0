@@ -1,14 +1,22 @@
-Received: from web41406.mail.yahoo.com ([66.218.93.72])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cx6AC-0003rs-Vf
-	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2005 11:18:34 -0500
-Message-ID: <20050204161831.32323.qmail@web41406.mail.yahoo.com>
-Date: Fri, 4 Feb 2005 08:18:31 -0800 (PST)
-From: Jeff Stevens <jsteve17@yahoo.com>
+Received: from fed1rmmtao09.cox.net ([68.230.241.30])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cx7xA-0004eD-30
+	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2005 13:13:13 -0500
+Received: from laptop ([70.179.62.151]) by fed1rmmtao09.cox.net
+	(InterMail vM.6.01.04.00 201-2131-117-20041022) with ESMTP
+	id <20050204181304.RNVD8811.fed1rmmtao09.cox.net@laptop>
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Feb 2005 13:13:04 -0500
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Rick Adams <rgadams@cox.net>
 To: linux-mtd@lists.infradead.org
+Date: Fri, 4 Feb 2005 10:12:18 -0800
+References: <E1Cx6oS-0004DA-Fy@canuck.infradead.org>
+In-Reply-To: <E1Cx6oS-0004DA-Fy@canuck.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: MTD JFFS2 Problems
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200502041012.18287.rgadams@cox.net>
+Subject: Re: MTD JFFS2 Problems 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,55 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am trying to create a jffs2 filesystem, and it seems
-to be very flakey.  I have tried creating a jffs2
-filesystem using mkfs.jffs2 and then copy it directly
-to /dev/mtd0, but when I try to mount it I get a bunch
-of errors, and when it finally mounts, the filesystem
-acts weird.  So now I am trying a different approach,
-where I mount an erased mtdblock0 as jffs2 and then
-untar a filesystem on the mounted device.  However,
-when I do this it seems to crap out at various points
-in the filesystem (I have tried it many times).  Here
-is a screen dump:
-
-[root@gtvme ~]# mount -t jffs2 /dev/mtdblock0
-/mnt/root
-[root@gtvme ~]# cd /mnt/root/
-[root@gtvme root]# ls
-./  ../
-[root@gtvme root]# tar xf /gtvmefs.tar
-Write of 1170 bytes at 0x01fa000c failed. returned
--30, retlen 374
-Write of 1170 bytes at 0x01fa04a0 failed. returned
--30, retlen 288
-Write of 1170 bytes at 0x01fa0934 failed. returned
--30, retlen 740
-Write of 2765 bytes at 0x01fa125c failed. returned
--30, retlen 326
-Write of 2765 bytes at 0x01fa1d2c failed. returned
--30, retlen 1032
-Write of 2765 bytes at 0x01fa27fc failed. returned
--30, retlen 862
-Write of 2765 bytes at 0x01fa32cc failed. returned
--30, retlen 116
-tar: Write Error: Read-only file system
-tar: Invalid tar magic
-[root@gtvme root]# Write clean marker to block at
-0x00a20000 failed: -30
-Write clean marker to block at 0x00820000 failed: -30
-
-
-I'm not sure what I'm doing wrong.  I seem to be able
-to copy things to flash just fine using dd, and
-flashcp.  Please help!
-
-Thanks,
-   Jeff Stevens
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - 250MB free storage. Do more. Manage less. 
-http://info.mail.yahoo.com/mail_250
+On Friday 04 February 2005 09:00 am, linux-mtd-request@lists.infradead.or=
+g=20
+wrote:
+> Date: Fri, 4 Feb 2005 08:18:31 -0800 (PST)
+From: Jeff Stevens <jsteve17@yahoo.com>
+>Subject: MTD JFFS2 Problems
+>To: linux-mtd@lists.infradead.org
+>Message-ID: <20050204161831.32323.qmail@web41406.mail.yahoo.com>
+>
+>
+>[root@gtvme root]# Write clean marker to block at
+>0x00a20000 failed: -30
+>Write clean marker to block at 0x00820000 failed: -30
+>
+I had a client that was experiencing the CLEANMARKER errors at boot (moun=
+t of=20
+the jffs2 root  filesystem). The problem was related to using the host=20
+version of mkfs.jffs2 tool when they should have been using the target=20
+version. They were also experiencing several other "weird" operations. Th=
+is=20
+issue is only applicable in a cross development environment. Unfortunatel=
+y=20
+Jeff, you did not give us enough information for me to tell what's going =
+on.=20
+Hope this helps.
+--=20
+Rick Adams
+rick@theptrgroup.com
