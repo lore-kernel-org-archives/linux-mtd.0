@@ -1,18 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cgl9m-00026P-Oi
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 09:38:36 -0500
-Date: Tue, 21 Dec 2004 15:38:30 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-Message-ID: <20041221143830.GE22636@wohnheim.fh-wedel.de>
-References: <JPEALJAFNGDDLOPNDIEEEEGDCPAA.joakim.tjernlund@lumentis.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <JPEALJAFNGDDLOPNDIEEEEGDCPAA.joakim.tjernlund@lumentis.se>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Date: Tue, 21 Dec 2004 14:45:38 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20041216175331.GA6788@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.58.0412211445240.23254@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0412161420360.8020@phoenix.infradead.org>
+	<JPEALJAFNGDDLOPNDIEEMEGECPAA.joakim.tjernlund@lumentis.se>
+	<20041216175331.GA6788@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>,
+	Joakim Tjernlund <joakim.tjernlund@lumentis.se>
 Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,30 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 December 2004 14:20:43 +0100, Joakim Tjernlund wrote:
-> 
-> 2) Consider another checksum algorithm. Crc32 is very expensive
->    and JFFS2 suffered severely in the early days. Now that crc32 is
->    very optimized that problem is less visible, but crc32 is still
->    expensive. Maybe an Adler32 checksum is good enough or a crc16?
+Hi, 
 
-Ok, after further thought, I actually like adler32.  It uses two
-checksums that individually are very weak.  But the combination of the
-two proves to be surprisingly strong.  Running my hash-table test,
-adler32 is on par with the best hash function I could come up with
-(and faster than any hash function in the kernel).
+> Principle of crc:
+> A crc is nothing but the remainder of an integer division.  That
+> simple.
+>
+>
+> Example crc4:
+> crc4(data) = data%13;
+Hmm, is it really correct? CRC is ramainder, but in mod 2 arithmetic. I 
+consulted http://www.cs.waikato.ac.nz/~312/crc.txt
 
-The hash-table test is quite nice, as it penalizes weak hash
-functions.  Hash functions that run fast, but cause many collisions,
-cause more time to be spent in search for a free slot.  So only
-functions that are fast _and_ strong do well.  And adler32 does
-extremely well.
+And if so, your algorithm
+u32 crc24(void *m, size_t len)
+{
+        u32 ret=0;
+        char *s=m;
+        size_t i;
+        for (i=0; i<len; i++) {
+                ret <<= 8;
+                ret += s[i];
+                ret %/ 0xfffffd
+        }
+        return ret;
+}
 
-So, unless you want to change the function to run backwards, I'd
-propose to use adler32.
+doesn't look like something which is called CRC...
 
-Jörn
+Do I misunderstand something?
 
--- 
-/* Keep these two variables together */
-int bar;
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
