@@ -1,21 +1,34 @@
-Received: from motgate8.mot.com ([129.188.136.8])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CpOSF-0007jz-NQ
-	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 05:13:20 -0500
-Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
-	by motgate8.mot.com (Motorola/Motgate8) with ESMTP id j0EAF3JD020357
+	id 1CpOd5-0007xg-Il
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 05:24:34 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id DF0422F016
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Jan 2005 03:15:03 -0700 (MST)
-Received: from zfr17exm01.ds.mot.com (zfr17exm01.ea.mot.com [10.160.17.16])
-	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id j0EADA61026937
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jan 2005 04:13:11 -0600
-Message-ID: <A124D5FDCB07D911920E00110A9AE3833A036E@zfr17exm01.ea.mot.com>
-From: Pihet Jean-jpih01 <jean.pihet@motorola.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 14 Jan 2005 11:13:08 +0100
+	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id D38C311693
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 329767A1E
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
+Message-ID: <41E79DD5.4050601@imc-berlin.de>
+Date: Fri, 14 Jan 2005 11:24:21 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: JFFS2/3 NAND performance figures
+To: linux-mtd@lists.infradead.org
+References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
+	<41E52EAD.2090302@imc-berlin.de>
+	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
+	<41E53F52.3010601@imc-berlin.de>
+	<Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2: checking CRCs twice!?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +38,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all !
+Artem B. Bityuckiy wrote:
 
-I would like to evaluate the JFFS2/3 NAND flash performance. Are there measurements available for the following cases: read, write, erase, GC ?
+>>>This seems to be true for NOR. But  chrcking CRC helps at least *detect* 
+>>>and *report* media problems.
+>>
+>>Fair enough.
+>>But who will pay attention if the system is embedded into your microwave oven or 
+>>washing maschine... ;-)
+> 
+> In this case this doesn't make sence.
+> But in general it does.
+> 
+> Possibly it makes sence to have this checking as an configuration option.
 
-Looking on the MTD website and Google was not helpful =8-
+So will someone add this config option for JFFS2?
+Or should it be done in SUMMARY patch?
+Are there any plans to include this SUMMARY patch to the JFFS2 CVS?
+Or will it stay seperated?
 
-Regards,
-Jean.
+--
+Steven
