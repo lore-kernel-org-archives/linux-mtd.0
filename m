@@ -1,19 +1,16 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Td7Z-0007eS-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2003 07:16:58 +0000
+Received: from [202.106.187.156] (helo=sina.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18TieE-00087a-00
+	for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2003 13:11:03 +0000
+Date: Wed, 1 Jan 2003 21:42:3 +0800
+From: "thierry" <jokyman@sina.com>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
+Subject: jedec probe problem
+Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: Jeff Lin <jlin87@yahoo.com>, linux-mtd@lists.infradead.org
-Subject: Re: FTL of compact flash card
-Date: Wed, 1 Jan 2003 20:43:02 +1300
-References: <20021231194227.16581.qmail@web40412.mail.yahoo.com>
-In-Reply-To: <20021231194227.16581.qmail@web40412.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20030101074730.0D64C158A5@dragon.actrix.co.nz>
+      charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Message-Id: <E18TieE-00087a-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,51 +22,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->From what I read here, what you want is a mapping that provides a block-wise 
-interface to the flash.
+my flash is hy29lv160 in word mode and buswidth is 16 bit.
+I use jedec_probe_chip() to detect my flash.
+According to the data sheet of my flash,I set:
+cfi->addr_unlock1 = 0x555;
+cfi->addr_unlock2 = 0x2aa;
+but when it execute:
+	cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi, CFI_DEVICETYPE_X16, NULL);
+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi, CFI_DEVICETYPE_X16, NULL);
+	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi, CFI_DEVICETYPE_X16, NULL);
+	cfi->mfr = jedec_read_mfr(map, base, osf);
+it stop after the third cfi_send_gen_cmd and can't read the manufacture code.
+Can someone point out my mistake?
+Thanks!
 
-JFFSx is a file system. That will not do what you want.
-
-What you need is some block-like FTL like NFTL or whatever goes on inside a 
-Compact Flash or ATA card. I am not aware of any open source code that will 
-do what you want. As far as I can tell all this code is fiercely guarded by 
-companies like Sandisk and MSystems.
-
-Maybe someone can be more helpful.....
-
--- CHarles
-
-
-On Wed, 01 Jan 2003 08:42, Jeff Lin wrote:
-> Hello, all,
->
->  First, Happy new year to you!
->
->  I am looking for a FTL (flash translation layer)code
-> that will emulates the flash memory as a IDE  disk
-> for the controller IC inside the compact flash card.
->
-> The FTL will need to do logical to physical address
-> mapping, bad block management, and wear level
-> algorithm. There is no File system needed, instead,
-> the FTL will talk to the native file system.
->
-> Is there any open source code of FTL available? Can
-> NFTL or JFFS/JFFS2 be tailored for this purpose? As
-> for commercial FTL, which commercial code is
-> good/reliable and relatively inexpensive?
->
-> Thank you very much for help,
-> Jeff
->
->
->
->
-> __________________________________________________
-> Do you Yahoo!?
-> Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-> http://mailplus.yahoo.com
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+	Thierry Zhong
