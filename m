@@ -1,17 +1,17 @@
 Received: from smtp13.mail.yahoo.co.jp ([211.14.15.236])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JFtt-0000ZV-M8
-	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 18:00:13 +0100
-Message-ID: <003d01c3214c$ca7fa560$740486da@w0a3t0>
+	id 19JFvv-0000fK-AN
+	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 18:02:19 +0100
+Message-ID: <004101c3214d$223c9560$740486da@w0a3t0>
 From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
-To: "David Woodhouse" <dwmw2@infradead.org>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
 References: <001101c32078$7de79840$740486da@w0a3t0>
-	<1053626518.21582.460.camel@imladris.demon.co.uk>
-Date: Sat, 24 May 2003 02:00:19 +0900
+	<20030522195708.GB11240@wohnheim.fh-wedel.de>
+Date: Sat, 24 May 2003 02:02:46 +0900
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: vmalloc for zlib workspace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,21 +24,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 ----- Original Message ----- 
-From: "David Woodhouse" <dwmw2@infradead.org>
+From: "Jörn Engel" <joern@wohnheim.fh-wedel.de>
 To: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
 Cc: <linux-mtd@lists.infradead.org>
-Sent: Friday, May 23, 2003 3:01 AM
+Sent: Friday, May 23, 2003 4:57 AM
 Subject: Re: vmalloc for zlib workspace
 
+> Great idea!
+>
+> How about:
+>
+> static void deflate_workspace[WORKSPACESIZE];
+> static void inflate_workspace[WORKSPACESIZE];
+>
+> int __init jffs2_zlib_init(void)
+> {
+> if (WORKSPACESIZE < zlib_deflate_workspacesize())
+> BUG();
+> if (WORKSPACESIZE < zlib_inflate_workspacesize())
+> BUG();
+> return 0;
+> }
 
-> Hmm. That's a useful idea. Care to benchmark it an show how _much_ it
-> improves performance in practice? Although I suppose there's no downside
-> to it so we might as well change it.
+That's great idea too ;-)
+We only have to check the size in init routine.
 
-I haven't tested it yet, I will check later...
-I think it could be effective to multitask environment.
+> In a second patch, it would be possible to fold those two workspaces
+> into one and save a little memory as well.
+
+I think it is better.
 
 Matsunaga
+
 __________________________________________________
 Do You Yahoo!?
 Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
