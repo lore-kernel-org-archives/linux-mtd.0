@@ -1,17 +1,25 @@
-Received: from ns2a.townisp.com ([216.195.0.134] helo=ns2.townisp.com)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C2BKh-0006iP-NR
-	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2004 12:18:08 -0400
-Date: Tue, 31 Aug 2004 12:18:14 -0400 (EDT)
-From: Jamie Guinan <guinan@bluebutton.com>
-To: Bo Henriksen <bo.henriksen@nordicid.com>
-In-Reply-To: <A6991F0FA073F34C94E97976CAC03231327EF6@server2.nordicid.com>
-Message-ID: <Pine.LNX.4.44.0408311207130.9460-100000@gemini.home.net>
+Received: from cmsout01.mbox.net ([165.212.64.31])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2C7g-0006vE-WC
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2004 13:08:46 -0400
+Message-ID: <080401c48f7d$253bda60$fd0ba8c0@briantpc>
+From: "Brian T" <btuch@usa.net>
+To: "David Woodhouse" <dwmw2@infradead.org>
+References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc>
+	<1093894808.25339.57.camel@weaponx.rchland.ibm.com>
+	<073f01c48ecc$abd3e600$fd0ba8c0@briantpc>
+	<1093899187.16320.25.camel@thomas.tec.linutronix.de>
+	<075f01c48ed7$08dbc570$fd0ba8c0@briantpc>
+	<1093900751.16320.28.camel@thomas.tec.linutronix.de>
+	<07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc>
+	<1093966869.6200.34.camel@localhost.localdomain>
+Date: Tue, 31 Aug 2004 12:08:27 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Setting up MTD via command line?
-Reply-To: Jamie Guinan <guinan@bluebutton.com>
+Subject: Re: jffs2 file corruption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 Aug 2004, Bo Henriksen wrote:
 
-> Hi,
-> 
-> I'm having trouple understanding the new MTD interface with 2.6.8?
-> Can anyone explain, or is there docs on how to setup MTD via command
-> line, which I think was introduced so 
-> you don't need to write your own driver for e.g. embedded processors
-> such as ARM.
+>
+> Logging via syslog is too lossy to be useful. Please obtain messages
+> over a serial console or possibly netconsole if that's reliable enough.
+>
+> You need even the KERN_DEBUG messages which are absent from your syslog,
+> too.
+>
+> I need to see what it said while it wrote the new file, then what it
+> said while remounting the offending file system. If you can take a
+> snapshot of the flash after writing the file and turning the machine
+> off, but before remounting it, that would be useful too.
+>
 
-Hi Bo,
+Ok,
 
-I found it in the config help for "Command line partition table parsing",
-and also in the comments in cmdlinepart.c.
+I'll try to get that done tomorrow.  Will take some time to setup remote
+syslog, boot, break it, turn off, dump the image, reboot, and dump the
+broken image.  Each image will probably be around 10MB compressed.  David, I
+can put the files on an FTP server and give you the link if you will have
+time to take a peek at them
 
-For the LogicPD board (lpd7a404 here), I used this kernel command-line,
+Let me know what you want me to do.
 
-  boot console=ttyAM1 root=/dev/mtdblock3 rootfstype=jffs2 \
-    mtdparts=phys_mapped_flash:256k,256k,1536k,2048k
-
-and (at least) these options,
-
-  CONFIG_MTD_PARTITIONS=y
-  CONFIG_MTD_CMDLINE_PARTS=y
-  CONFIG_MTD_CFI=y
-  CONFIG_MTD_PHYSMAP=y
-  CONFIG_MTD_PHYSMAP_START=0x0
-  CONFIG_MTD_PHYSMAP_LEN=0x4000000
-  CONFIG_MTD_PHYSMAP_BANKWIDTH=4
-
-Now I finally understand the thread from July where the developers were
-discussing this (trading a whole C file (lpd7a400-flash.c) for the
-"mtdparts=" parameter; good stuff).
-
-Good luck,
--Jamie
-
-> 
-> Cheers,
-> 
-> Bo
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+-Brian
