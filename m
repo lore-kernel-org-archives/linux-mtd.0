@@ -1,14 +1,18 @@
-Received: from bay19-f15.bay19.hotmail.com ([64.4.53.65] helo=hotmail.com)
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BlHNp-0006UR-Ls
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 21:19:30 -0400
-From: "w h" <wh3cq@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 16 Jul 2004 01:19:26 +0000
+	id 1BlOpI-0007iC-5c
+	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2004 05:16:20 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dave Airlie <airlied@linux.ie>
+In-Reply-To: <Pine.LNX.4.58.0406020642310.16424@skynet>
+References: <Pine.LNX.4.58.0406020642310.16424@skynet>
+Content-Type: text/plain
+Message-Id: <1089969377.8822.177.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Message-ID: <BAY19-F15ZElV5tTPEi000352a9@hotmail.com>
-Subject: incorrect percent of MTD partition when using "df"
+Date: Fri, 16 Jul 2004 10:16:17 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [patch] MTD: add st m50fw0* to jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2004-06-02 at 06:46 +0100, Dave Airlie wrote:
+> Please ignore my last patch, my hardware guy pointed me at some more
+> chips,
+> 
+> so this patch adds support to the jedec probe for ST M50FW040, M50FW080
+> and M50FW016 all Firmware hubs for i8x0 chipsets,
 
-In using MX1ADS,I have 4 MTD partitions: 1M bootloader,2M kernel,7M root 
-fs, 6M fdisk. Jffs2 is taken as root fs and mounted to the last partition 
-fdisk. 
+AFAICT those three are all already in CVS and in Linus' current
+BitKeeper tree.
 
-In "df" command,100% is given to the usage percent of root fs whatever its 
-actual size is.
-83% is shown for fdisk usage percent.If I change partition to 
-1M,2M,6M,7M,it gives 71%. It seems that 5M of fdisk partition has already 
-been to used.  
-
-What reason leads this? I wonder if some modification has been done in 
-kernel and where.
-
-_________________________________________________________________
-享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
+-- 
+dwmw2
