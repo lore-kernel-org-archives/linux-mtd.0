@@ -1,28 +1,21 @@
-Received: from albatross-ext.wise.edt.ericsson.se ([194.237.142.116])
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jkWI-00035Z-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 17:48:18 +0100
-Received: from mbb5.ericsson.se (mbb5.ericsson.se [136.225.151.210])
-	by albatross.wise.edt.ericsson.se (8.11.0/8.11.0/WIREfire-1.3) with ESMTP id f8JGsMK03625
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 18:54:22 +0200 (MEST)
-Received: from CONVERSION-DAEMON by mbb1.ericsson.se (PMDF V5.2-29 #39352)
- id <0GJX00L015MMNG@mbb1.ericsson.se> for linux-mtd@lists.infradead.org; Wed,
- 19 Sep 2001 18:54:22 +0200 (MET DST)
-Received: from switchboard.ericsson.se
- (kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
- by mbb1.ericsson.se (PMDF V5.2-29 #39352)
- with ESMTP id <0GJX00LJ45MM6W@mbb1.ericsson.se> for
- linux-mtd@lists.infradead.org; Wed, 19 Sep 2001 18:54:22 +0200 (MET DST)
-Date: Wed, 19 Sep 2001 18:54:21 +0200
-From: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>
-Subject: Re: [Fwd: JFFS2 compresses?]
-To: Jose =?iso-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
-Cc: linux-mtd@lists.infradead.org
-Message-id: <3BA8CDBD.DB6C3CF9@inn.ericsson.se>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 8BIT
-References: <3BA8ABDE.6020208@tid.es>
+	id 15jobV-0003Se-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 22:09:57 +0100
+Received: from mail.bustech.com ([199.190.209.11] helo=BTIBURMAIL01.bustech.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 15johQ-00018Y-00
+	for linux-mtd@lists.infradead.org; Wed, 19 Sep 2001 22:16:05 +0100
+Message-ID: <002a01c14150$66554d20$26e8b2c6@hawk>
+From: "Mike Hill" <mhill@bustech.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: RO permission on odd numbered MTD devices?
+Date: Wed, 19 Sep 2001 17:16:48 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -34,17 +27,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jose Rodríguez Argente wrote:
-> Does JFFS2 compress data in flash?
-.
-.
-.
-> I think there is a compression algorythm involved...?
-                                 ^^^^^^^^^
-Yes it dose compression it's groovy, jazzy and funky :)
+Can anyone tell me why the odd numbered MTD character devices are ReadOnly?
 
--- 
-Kenneth Johansson	
-Ericsson Business Innovation AB   Tel: +46 8 404 71 83
-Viderögatan 3                     Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@inn.ericsson.se
+I see the code in MTDCHAR.C, but I have no idea what it was setup this way.
+
+
+ /* You can't open the RO devices RW */
+ if ((file->f_mode & 2) && (minor & 1))
+  return -EACCES;
+
+Thanks for any understanding you can provide...
+-Mike
+
+===========================================
+Michael Hill - Systems Developer
+
+Bus-Tech, Inc.
+Email: mhill@bustech.com
+Phone: (919) 847-7859   Fax: (919) 847-0182
+===========================================
+
+Say "boolah boolah boolah" out loud three times,
+wave a dead chicken, and reboot.
+Works for me...
