@@ -1,17 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [210.8.246.199] (helo=singularity.tronunltd.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dHfK-0000mB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 21:19:10 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01b401c1b97e$04d09180$f801a8c0@minibm> 
-References: <01b401c1b97e$04d09180$f801a8c0@minibm>  <00de01c1b8ac$928d8b40$f801a8c0@minibm> <Pine.LNX.4.44.0202112157400.1558-100000@lapdancer.baythorne.internal> <17136.1014059667@redhat.com> 
-To: "Chung Ming" <min@hello.org>
+	id 16dHzs-0000oJ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 21:40:24 +0000
+Date: Wed, 20 Feb 2002 07:50:44 +1000
+Message-Id: <200202192150.HAA24884@singularity.tronunltd.com>
+To: "Chris Fowler" <cfowler@outpostsentinel.com>
+Subject: Re:Kerlen 2.4.13 and ramdisks
+From: "Ian" <Relativity@HumanHeuristic.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: "No Flash Chips Recognized." error. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 19 Feb 2002 21:30:25 +0000
-Message-ID: <18943.1014154225@redhat.com>
+Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+Content-type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +21,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-min@hello.org said:
-> Yes, I have this: 
->       printk("Chip with mfr %02x, id %02x unknown. Tell dwmw2\n");
+If you have loopback support compiled in you can mount it directly through 
+the loopback driver, without creating a ramdisk ...
 
-It's still printing two random values off the stack instead of the actual 
-mfr and id values. Add the actual numbers.
+What was the error that mount gave?  You probably only need to specify
+the "-o" parameter ... mount doesn't usually detect fancy filesystems ...
 
-	printk("Chip with mfr %02x, id %02x unknown. Tell dwmw2\n", mfr, id);
 
---
-dwmw2
+  ----- Original Message -----
+>From: "Chris Fowler" <cfowler@outpostsentinel.com>
+>To: <linux-mtd@lists.infradead.org>
+>Subject:  Kerlen 2.4.13 and ramdisks
+>Date: Tue, 19 Feb 2002 10:33:33 -0500
+>
+> You guys might have ran across a ramdisk problem.  I have a feeling that kernel 2.4.13 is 
+not respecting my ramdisks.
+> 
+> 
+> dd if=/etc/user.img of=/dev/ram6
+> 
+> mount /dev/ram6  fails.  
+> 
+> 
+> Is this a problem?
+> 
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
