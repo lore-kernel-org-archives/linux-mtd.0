@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15fHDN-0006Oh-00
-	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 09:42:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010907131648.A14568@hartford.siteprotect.co.kr> 
-References: <20010907131648.A14568@hartford.siteprotect.co.kr>  <617933180D08D311AB500090273F1F96026A354E@storm.corp.directvbroadband.net> <Pine.LNX.4.33.0109061717360.9437-100000@hex.linuxgrrls.org> 
-To: zeppelin@kernelhacker.org
-Cc: kira brown <kira@hex.linuxgrrls.org>, linux-mtd@lists.infradead.org
-Subject: Re: What abount NAND driver in current MTD snapshot? 
-Mime-Version: 1.0
+	id 15fIFr-0006U0-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 10:48:55 +0100
+Message-ID: <3B989822.DC1D51BE@sis.com.tw>
+Date: Fri, 07 Sep 2001 17:49:22 +0800
+From: Ollie Lho <ollie@sis.com.tw>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: kira brown <kira@hex.linuxgrrls.org>,
+        Herman Oosthuysen <herman@wirelessnetworksinc.com>,
+        "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: DiskOnChip write performance
+References: <3B981BF6.24FD764D@sis.com.tw>  <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> <14482.999791732@redhat.com> <17891.999850127@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 07 Sep 2001 09:48:02 +0100
-Message-ID: <22302.999852482@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,47 +25,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+David Woodhouse wrote:
+> 
+> ollie@sis.com.tw said:
+> > > Don't forget "don't use O(n^3) algorithms when trying to find a new
+> > > block to write to".
+> 
+> > What does this suppose to mean ??
+> 
+> Algorithms which take time proportional to the cube of 'n', where n is some
+> variable indicating the complexity of the task - in this case it would be
+> the number of blocks on the DiskOnChip which are to be considered for
+> selection.
+> 
 
-kernelhacker@hartford.siteprotect.co.kr said:
-> I've just looked up MTD NAND driver for recent several days.
-> I think it's almost done. But the driver itself has no bad block
-> handling.
+Yea, I know what Big O is although I am not CompSci graduate. My
+question
+is which part of the NFTL code is that bad ??
 
-> Is it right? If it is right, where is the bad block handling?
-
-The hardware driver itself has no bad block handling, yes - that should be 
-done in the next layer up. Each format which you might put onto a NAND 
-flash may have its own way of dealing with bad blocks. 
-
-> Is NFTL capable of handling bad block? 
-
-The NFTL format is capable of dealing with bad blocks, yes. But I don't
-believe the Linux code currently does so with blocks which go bad at
-runtime, only blocks which are marked bad during the initial format. A 
-relatively simple exercise for the reader :)
-
-> then, Can I use NAND driver & NFTL combined and put any filesystem on
-> it? 
-
-Technically, yes. But you probably shouldn't use NFTL. 
-
-Firstly, as Kira says, NFTL suffers from patent problems, so you may find
-it's not legal to use it. I'm not sure whether the M-Systems patents are
-valid in Korea. 
-
-More importantly, I think NFTL is just the wrong approach to putting a 
-filesystem on a flash chip. NFTL is a form of pseudo-filesystem, used to 
-emulate a block device. On top of that filesystem, you're going to have to 
-put another journalling filesystem, like ext3. It is far more efficient 
-just to put a filesystem directly on the flash chips. 
-
-I think the best approach would be to add the necessary support for NAND 
-chips to the JFFS2 code. Getting JFFS2 to deal with the 10-write-per-page 
-restriction should be fairly simple, and the bad block code in JFFS2 is in 
-much the same state as that in the NFTL code - we can deal with bad blocks 
-appropriately but don't yet actually detect bad blocks and mark them as 
-such. So if you're going to add badblock detection code, you might as well 
-add it to JFFS2.
-
---
-dwmw2
+Ollie
