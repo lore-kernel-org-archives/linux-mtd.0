@@ -1,20 +1,20 @@
-Received: from e32.co.us.ibm.com ([32.97.110.130])
+Received: from e4.ny.us.ibm.com ([32.97.182.104])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CES2j-0005OR-6h
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:34:20 -0400
+	id 1CES5I-0005bI-8s
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:36:57 -0400
 From: Josh Boyer <jdub@us.ibm.com>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <416127B7.3070505@yandex.ru>
+To: Artem Bityuckiy <dedekind@oktetlabs.ru>
+In-Reply-To: <4161379C.3070109@oktetlabs.ru>
 References: <416122A1.4060302@oktetlabs.ru>
 	<1096885344.30942.559.camel@hades.cambridge.redhat.com>
-	<416127B7.3070505@yandex.ru>
+	<4161379C.3070109@oktetlabs.ru>
 Content-Type: text/plain
-Message-Id: <1096893242.22034.5.camel@weaponx.rchland.ibm.com>
+Message-Id: <1096893405.22034.9.camel@weaponx.rchland.ibm.com>
 Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 07:34:02 -0500
+Date: Mon, 04 Oct 2004 07:36:45 -0500
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [OBORONA-SPAM]  Re: inode checkpoints
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 05:36, Artem B. Bityuckiy wrote:
-> > It seems to make a lot of sense. We could write such checkpoints only on
-> > files which are large enough to warrant them, and we could tune the
-> > frequency of such checkpoints.
+On Mon, 2004-10-04 at 06:44, Artem Bityuckiy wrote:
+> > 
+> It should also be noted, that the checkpoints support will be added 
+> under the "#ifdef CONFIG_JFFS2_FS_NAND" directive since it only makes 
+> sence for the NAND flash devices...
 > 
-> The following are required features (as I think) of the checkpoint 
-> creation algorithm and strategy.
-> 1 New checkpoint nodes must not be created if there is little free space 
-> left on the file system.
-> 2 New checkpoint nodes ought to be created only for large inodes.
 
-Can we extend this to be "files with a large amount of nodes"?  I'm
-thinking of the fifo problem here too...
+Yes and no.  It makes sense for any flash device that you can't write to
+the same page multiple times without an erase in between.  NAND is
+certainly the largest group of such devices.  There are others that have
+this behavior as well.  See cfi_cmdset_0020.c.
 
-> 3 The checkpoint nodes creation process must not decrease the JFFS2 
-> performance very much.
-> 
-> Checkpoints should be created in background by the GC thread. GC begins 
-> creating checkpoints if the following is true:
-
-eCos doesn't have a GC thread IIRC.  Not a big deal in my opinion, but
-others might care :).
+Although, JFFS2 doesn't support those chips right now, so I guess I am
+just rambling :).
 
 josh
