@@ -1,21 +1,15 @@
-Received: from mailout05.sul.t-online.com ([194.25.134.82])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bckzm-0002Nt-DV
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 09:07:27 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 22 Jun 2004 15:01:29 +0200
-References: <EFF9A3506F74924AB5CC77BDC66E79351812CB@atcml01.atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812CB@atcml01.atc.army.mil>
+Received: from matrix01.home.net.pl ([212.85.112.31])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BcqY6-000358-QJ
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 15:03:16 -0400
+Message-ID: <40D88281.2080300@gazeta.pl>
+Date: Tue, 22 Jun 2004 21:03:29 +0200
+From: MarekSk <mareksk7@gazeta.pl>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200406221501.30299.tglx@linutronix.de>
-Cc: 
-Subject: Re: FW: DOC Mil Plus 32 question erase size erase shift????
-Reply-To: tglx@linutronix.de
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Intel compatible flash device issue
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 22 June 2004 14:49, Carlos, John J USAATC wrote:
-> What should the buffer size be for an erase block in memory.  How is that
-> value tied to the chip geometry???
+Hi,
+  I have encountered a problem using M28W160CT flash chip as
+  LINUX character device. This chips is compatible with INTEL standard
+  command set.
 
-Would you please be so kind and answer the questions, if we should be able =
-to=20
-help you.
+  Since the chip is locked after power-up, there is required to unlock
+  some blocks before write operation. Of course, this can be done
+  from any application using MEMUNLOCK command.
 
-1. Is the device running in x16 mode?
-If yes, then we have to fix this first, as it is not supported by nand_base=
-=2Ec=20
-at the moment. nand_scan() has to be made aware of this.
+  Once the MEMUNLOCK command is executed (without any error)
+  the flash chip remains in the "command" state.
+  This state after MEMUNLOCK blocks any read access to data stored
+  in the flash.
 
-2. What's the output of the chip detection routine including nand_scan() ?
+  Reviewing the cfi_cmdset_0001.c file I have found that single block
+  (un)lock algorithm (do_xxlock_oneblock) is different from these
+  described in the following documents:
+  - STM M28W160CT datasheet (figure 22)
+    <http://www.st.com/stonline/books/pdf/docs/7358.pdf>
+  - Intel 28F160C3 datasheet (figure 20)
+    <ftp://download.intel.com/design/flcomp/datashts/29064518.pdf>
 
-3. What did you change in nand_bbt.c ?=20
+  It seems that there should be issued the reset command (0xff) just
+  after lock (0x01)/unlock (0xd0) command.
 
-4. What's the bbt structure you pass to nand_scan_bbt ?
+  Any comments, ideas ?
 
-5. Can you send me your driver code including he modifications to nand_base=
-=2Ec=20
-and nand_bbt.c, so I can have a look ?
-
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Thanks in advance,
+   MarekSk
