@@ -1,56 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143M1E-00011K-00
-	for mtd-list@infradead.org; Tue, 05 Dec 2000 17:36:44 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 143MbD-000188-00
+	for mtd-list@infradead.org; Tue, 05 Dec 2000 18:13:55 +0000
+Received: from d8fa50aa.ptr.dia.nextlink.net ([216.250.80.170] helo=tetsuo.applianceware.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 143M1D-00011E-00
-	for mtd@infradead.org; Tue, 05 Dec 2000 17:36:43 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A2D24D4.FC82D90D@echostar.com> 
-References: <3A2D24D4.FC82D90D@echostar.com> 
-To: ian.nelson@echostar.com
-Cc: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: Possibly a FAQ or stupid question 
+	id 143MbB-000181-00
+	for mtd@infradead.org; Tue, 05 Dec 2000 18:13:53 +0000
+Received: (from mike@localhost)
+	by tetsuo.applianceware.com (8.9.3/8.9.3) id MAA11220
+	for mtd@infradead.org; Tue, 5 Dec 2000 12:26:57 -0500
+Message-ID: <20001205122657.A11201@tetsuo.applianceware.com>
+Date: Tue, 5 Dec 2000 12:26:57 -0500
+From: Mike Panetta <mpanetta@applianceware.com>
+To: mtd@infradead.org
+Subject: CVS MTD drivers -> latest devel kernel.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Dec 2000 17:30:03 +0000
-Message-ID: <8883.976037403@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-ian.nelson@echostar.com said:
-> Can I just dd to the flash?  Assuming that my AMD flash works with CFI... 
-
-No. you have to use the MEMERASE ioctl first. The doc_loadbios program in 
-the utils directory of the CVS tree will do this for you. Ignore the name, 
-which I should probably change - it's not just for the DiskOnChip.
-
-
-ian.nelson@echostar.com said:
->  Right now my boot loader will boot strap a kernel out of flash and
-> then I hacked the kernel to scan for my initrd in flash and it will
-> decompress it and run, works like a champ but I need a way to put a
-> new initrd in there now. 
-
-That works. As RAM is cheaper than flash, it makes a lot of sense to do 
-that, in the absence of a compressed writable flash filesystem.
-
-> Is JFFS compressed? 
-
-Not yet. Soon. Watch this space.
-
-> Can I set aside a few K at the end of flash for my boot loader and then a
-> few hundred at the beginning for my kernel and use JFFS in the middle?
-
-Yep. You can muck about with the partitioning all you like.
+If I want to use the latest CVS MTD drivers in the
+latest (or not so latest 2.4.0-test10) kernel can
+I just copy the kernel dir in cvs to linux/drivers/mtd?
+I would of course move the old dir out of the way first
+to save it...  The reason I ask is because if I
+currently try to compile CVS MTD it complains
+about the index field not being in struct mtd_info.
+It is not in that struct, in the old kernel driver
+but it obviously is in the new one (I checked).  
+So it looks like the search path finds mtd.h from
+my kernel instead of the include dir in the cvs
+tree. 
 
 
---
-dwmw2
-
-
+TIA
+Mike
+-- 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
