@@ -1,20 +1,17 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from [207.209.118.131] (helo=msi-ex6.ccm.msyscal.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16eP4P-0006gV-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 23:25:41 +0000
-Received: from ilatypov by infradead.org with local (Exim 3.20 #2)
-	id 16ePFK-0007MF-00
-	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2002 23:36:58 +0000
-Date: Fri, 22 Feb 2002 17:38:56 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Mark Meade <mark@lakeshoremicro.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-In-Reply-To: <000b01c1bbe0$0e801cf0$0101a8c0@dellc800>
-Message-ID: <Pine.LNX.4.44.0202221714050.8996-100000@server.superbt.com>
+	id 16ePo3-0006jX-00
+	for <linux-mtd@lists.infradead.org>; Sat, 23 Feb 2002 00:12:52 +0000
+Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BF9D7@MSI-EX6>
+From: Vadim Khmelnitsky <VadimK@m-sys.com>
+To: 'Ilguiz Latypov' <ilatypov@superbt.com>, Mark Meade
+	 <mark@lakeshoremicro.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Fri, 22 Feb 2002 16:23:53 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,6 +22,33 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+[Ilguiz]
+Vadim, should the Millennium SPL check sum include IPL?
+
+[Vadim]
+I will verify it with IPL developer , but as far as i know there is no
+difference in behavior between IPL of DOC2000 and Millennium .
+
+IPL that you use should load SPL ( secondary program loader ) . In case
+of Millennium chip SPL should be placed right after IPL ( offset 0x400 ) and
+i think that size of SPL should be no longer than 7K . 1KB of IPL + 7KB of
+SPL = 8KB , which is the size of the Millennium chip erasable unit .
+
+
+Vadim
+  
+
+
+
+-----Original Message-----
+From: Ilguiz Latypov [mailto:ilatypov@superbt.com]
+Sent: Fri, February 22, 2002 2:39 PM
+To: Mark Meade
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+
+
 
 Mark,
 
@@ -47,3 +71,9 @@ Vadim, should the Millennium SPL check sum include IPL?
 The other thought is if the stage1 code can be placed instead of IPL.
 
 Ilguiz
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
