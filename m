@@ -1,36 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 138oUd-0001TK-00
-	for mtd-list@infradead.org; Sun, 02 Jul 2000 19:29:23 +0100
-Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
+	id 138yTc-0002en-00
+	for mtd-list@infradead.org; Mon, 03 Jul 2000 06:09:00 +0100
+Received: from txn2-7.evoserve.com
+	([210.16.11.7] helo=hut.evoserve.com ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 138oUc-0001TE-00
-	for mtd@infradead.org; Sun, 02 Jul 2000 19:29:22 +0100
-Date: Sun, 2 Jul 2000 12:32:49 -0600
-Message-Id: <200007021832.e62IWnh07152@vindaloo.ras.ucalgary.ca>
-From: Richard Gooch <rgooch@ras.ucalgary.ca>
-To: Dvir Oren <dvir@lucidvon.com>
-Cc: MTD <mtd@infradead.org>
-Subject: Re: MTD-CVS
-In-Reply-To: <14686.62580.302882.501842@jodie.lucid>
-References: <14686.62580.302882.501842@jodie.lucid>
+	id 138yTa-0002ea-00
+	for mtd@infradead.org; Mon, 03 Jul 2000 06:08:59 +0100
+Received: from evoserve.com (rogelio@[210.16.15.22])
+	by hut.evoserve.com (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA07489
+	for <mtd@infradead.org>; Sat, 1 Jul 2000 20:39:34 +0800
+Message-ID: <395DE67C.3276DD8@evoserve.com>
+Date: Sat, 01 Jul 2000 20:39:24 +0800
+From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
+MIME-Version: 1.0
+To: mtd@infradead.org
+Subject: problem with modprobe and other questions
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Dvir Oren writes: 
-> May I suggest opening a new mailing list named
-> mtd-cvs (or mtd-dev) for CVS reports.  It seems like the CVS reports
-> are starting to crowd the mailing list, and most of the time I just
-> file them away.  I think it would be ehlpful to everyone if the CVS
-> messages would be put in a separate mailing list.
+I successfully compiles mtd with the sources but i can not use modprobe
+to load the modules. I did not apply the put_module_symbol... patch.
+Should I also apply it? I can only use insmod.
 
-Seconded.
+I am using linux 2.2.16 and configured all of mtd as modules.
 
-				Regards,
+What parameters should I give to mknod to access mtd as a char device
+and block device?
 
-					Richard....
-Permanent: rgooch@atnf.csiro.au
-Current:   rgooch@ras.ucalgary.ca
+Would jffs also require a dev node? an
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
