@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15w9Mt-0002C0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 22:45:51 +0100
+	id 15w9SA-0002CR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 22:51:18 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <014f01c15c03$c45a8b10$456c020a@SENSORIA> 
-References: <014f01c15c03$c45a8b10$456c020a@SENSORIA> 
-To: "Bao C. Ha" <baoha@sensoria.com>
+In-Reply-To: <20011023143913.42416.qmail@web20302.mail.yahoo.com> 
+References: <20011023143913.42416.qmail@web20302.mail.yahoo.com> 
+To: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Patch to prevent jffs2 from make changes to other filesystems 
+Subject: Re: JFFS 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 23 Oct 2001 22:55:04 +0100
-Message-ID: <15804.1003874104@redhat.com>
+Date: Tue, 23 Oct 2001 23:00:32 +0100
+Message-ID: <15946.1003874432@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+monitoreurope@yahoo.co.uk said:
+>  As we use /var for FIFO data storage on this system (many 8-32K
+> files) we need a reliable predictable free space estimation in order
+> to be able to maximise the number of stored files before we delete to
+> add new. Therefore a better understanding of the inner workings of
+> JFFS would be appreciated.
 
-baoha@sensoria.com said:
->  I would like to propose the following patch to temporarily fix the
-> problem of jffs2 making changes to other filesystems stored on MTD
-> partitions. 
-
-You can't do it like that - you'll get crap on the filesystem sometimes, 
-during normal operation. We have logic in there to abort the mount at the 
-end, if no valid nodes were found, but other data were. Is that failing or 
-are you using an obsolete version?
-
-Line 147 of scan.c should read:
- printk(KERN_NOTICE "Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
-
-Does it? Why doesn't it get triggered?
+We make stuff up in jffs2_statfs(). You may be able to improve it if you 
+include c->erasing_size in the calculation of 'avail', and you'll probably 
+want to include the size of the blocks on the erase_pending_list too.
 
 --
 dwmw2
