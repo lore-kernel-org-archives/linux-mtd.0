@@ -1,16 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-In-Reply-To: <41DBF5F2.5040208@yandex.ru>
-References: <Pine.LNX.4.58.0501031923110.14981@phoenix.infradead.org>
-	<1104924806.5547.49.camel@baythorne.infradead.org>
-	<41DBF5F2.5040208@yandex.ru>
-Content-Type: text/plain
-Date: Sun, 27 Feb 2005 10:30:33 +0000
-Message-Id: <1109500233.27107.20.camel@localhost.localdomain>
+Received: from vds-320151.amen-pro.com ([62.193.204.86])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D4L8O-00083f-5w
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 10:42:37 -0500
+From: Lorenzo =?ISO-8859-1?Q?Hern=E1ndez_?= =?ISO-8859-1?Q?Garc=EDa-Hierro?=
+	<lorenzo@gnu.org>
+To: Keshavamurthy Anil S <anil.s.keshavamurthy@intel.com>
+In-Reply-To: <20050223171559.A23461@unix-os.sc.intel.com>
+References: <44BDAFB888F59F408FAE3CC35AB47041014F9285@orsmsx409>
+	<1109206700.8215.4.camel@windu.rchland.ibm.com>
+	<20050223171559.A23461@unix-os.sc.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-oXdabHPFCdNrclNd0gQ9"
+Date: Thu, 24 Feb 2005 16:42:02 +0100
+Message-Id: <1109259722.3796.22.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] JFFS[23] slab corruption
+Cc: lorenzo@gun.org, linux-mtd@lists.infradead.org
+Subject: Re: xattr support  for JFFS3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-01-05 at 17:13 +0300, Artem B. Bityuckiy wrote:
->I'd like to do some analysis. David, could you please comment my notes:
->
->1. Consider removing ic from mark_node_obsolete (NOR only).
->When ic may have no nodes?
 
-ic will have no nodes when they've all been actually removed or marked
-obsolete -- that's either in mark_node_obsolete() in the case of NOR
-flash, or somewhere in erase.c in the case of NAND.
+--=-oXdabHPFCdNrclNd0gQ9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Until all the nodes are actually gone, we mustn't re-use the old inode
-number for new inodes, so the ic has to stay in the list.
+El mi=E9, 23-02-2005 a las 17:15 -0800, Keshavamurthy Anil S escribi=F3:
+> On Wed, Feb 23, 2005 at 06:58:19PM -0600, Josh Boyer wrote:
+> > On Wed, 2005-02-23 at 15:31 -0800, Keshavamurthy, Anil S wrote:
+> > > Hi,
+> > > 	I am new to this mailing list but would like to contribute to
+> > > xattr for flash file system. While looking at the archive seems like
+> > > jffs2 is just a bug fix only and any new feature development should g=
+o
+> > > to jffs3. So here is my question.
+> >=20
+> > xattr support seems to be a popular topic these days.  You might want t=
+o
+> > take a look at this thread on the lkml:
+> >=20
+> > http://lkml.org/lkml/2005/2/22/85
+> >=20
+> > Lorenzo already has something started.  Perhaps the two of you could
+> > work together.
+> Sure, I will take a look at his patch and will work with him to
+> get this feature into JFFS3.
 
->a). When the inode is deleted. In this case all it's nodes are marked 
->obsolete (thankfully we may mark them obsolete physically). This happens 
->when ic->nlink == 0 and last iput() is called.
+Fine, it could be great if, apart of working together which would be a
+pleasure for me, creating a work team for this.
 
-On NOR, yes. If !jffs2_can_mark_obsolete() it happens only later.
+I've read the tech. specs. of JFFS2 as David recommended to me, so, we
+should separate two possible solutions:
 
->b). I'm not sure, may be temporary it may have no valid nodes. I mean 
->some transient state when, for example, there is one node A, and another 
->node B is added, and B obsoletes A. Then possibly A will be first marked 
->obsolete, then B will be added. Between these two operations, ic may 
->have no nodes. I'm not sure, but it seems in the current implementation 
->in such situations A will be always added first. So, mark_node_obsolete 
->should not delete the ic in such temporary states.
+	- use a new node type(s)     <- what David likes (& wants AFAIK)
+	- use reiserfs style-storage <- what I have done partially
 
-No, that'll never happen because it wouldn't be powerfail-safe. We can't
-ever obsolete an old node before writing the new one.
+We need also a little road-map and to-do list to know what exactly needs
+to be done in each code "section" to achieve our goal.
 
->But why do mark_node_obsolete code delete the correspondent ic if there 
->is no nodes left? It should not delete ic because of b) . Moreover, 
->conceptually it is not its work - the last iput handler should do that 
->(do_clean_inode() may be).
+Just let me know when do you want to start, I would like to talk with
+you at #mtd in irc.freenode.org if it's possible.
 
->Conclusions: a) remove that peace of code from the mark_node_obsolete. 
->b) be sure ic will be deleted by somebody else.
+Thanks in advance and for your interest,
+Cheers.
+--=20
+Lorenzo Hern=E1ndez Garc=EDa-Hierro <lorenzo@gnu.org>=20
+[1024D/6F2B2DEC] & [2048g/9AE91A22][http://tuxedo-es.org]
 
-Perhaps. But I think we have to check for INO_STATE_READING and
-INO_STATE_CLEARING even when we're removing the ic from erase.c, to
-prevent a similar failure. And so I think that we have to do the check
-when we leave read_inode() or clear_inode() (or have some other way of
-postponing it). So since we need all this to handle the erase case, we
-might as well just do the same in mark_node_obsolete() too.
+--=-oXdabHPFCdNrclNd0gQ9
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
+	digitalmente
 
->2. Conceder jffs2_remove_node_refs_from_ino_list() function. It deletes 
->ic if there are no nodes...
->
->At first this is only valid for NAND. In case of NOR obsolete nodes are 
->removed from the per-inode list as soon as they marked obsolete.
->
->In case of nand our live is complicated because we can not mark nodes 
->obsolete physically. And deletion/deleted direntries bring us 
->misfortune. We must keep track of them in the per-inode list and only 
->remove them when the last instance of the deleted direntry has been 
->erased...
->
->But before the erase code deletes ic, it should be sure there are no 
->open files (iget count = 0) and ic->nlink = 0. But it seems it does not 
->do so. ... May continue reasoning, but want to be sure I understand 
->thing correctly. So, will wait for comments.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-You'll never delete ic for a file which is open because it can't be
-actually deleted when it's open, and until it's actually deleted it'll
-always have at least one node.
+iD8DBQBCHfXKDcEopW8rLewRAsRYAJ9gTixtL8ptnD0a+eBhGmud2310NwCeM4IU
+4x/RduRbg/WZf0J9m5mZt9o=
+=KLiD
+-----END PGP SIGNATURE-----
 
--- 
-dwmw2
+--=-oXdabHPFCdNrclNd0gQ9--
