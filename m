@@ -1,42 +1,105 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from 24.64.25.86.ab.wave.home.com
-	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
+Received: from mail01.isidesign.com
+	([205.230.20.52] helo=mail01.doctordesign.com ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11jVq2-0000rX-00
-	for mtd@infradead.org; Thu, 4 Nov 1999 22:58:39 +0000
-Date: Thu, 4 Nov 1999 15:58:12 -0700 (MST)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-cc: mtd@infradead.org
-Subject: Re: jfs/linux
-In-Reply-To: <E11iLRd-0002uk-00@the-village.bc.nu>
-Message-ID: <Pine.LNX.3.96.991104155500.11060B-100000@white.priv.deltatee.com>
+	id 11lM6v-0005vr-00
+	for mtd@infradead.org; Wed, 10 Nov 1999 00:59:42 +0000
+Message-ID: <00e901bf2b17$42a84770$6600160a@isidesign.com>
+From: "Jon Burford" <jburford@xsilogy.com>
+To: <mtd@infradead.org>
+Subject: IGEL DOC2000 flash driver performance
+Date: Tue, 9 Nov 1999 17:02:29 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00E6_01BF2AD4.34680990"
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+This is a multi-part message in MIME format.
 
-On Mon, 1 Nov 1999, Alan Cox wrote:
+------=_NextPart_000_00E6_01BF2AD4.34680990
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> > All the solutions we currently have for filesystems on flash present a block 
-> > device rather than a filesystem interface - that is, both FTL and NFTL act as 
-> > an extra translation layer below the actual filesystem, providing 512-byte 
-> > random block access for use by a traditional filesystem. 
- 
-> Ditto with Compact flash (ATAPI). Compact flash according to the docs does
-> its own wear levelling.  Im still baffled why people use the other stuff 8)
+I have been using the IGEL flash driver on a Linux 2.2.12 system now for =
+several months.  One very annoying "feature" is that it causes the =
+entire OS to hang for 2-5 seconds after mounting or moderate write =
+operations.  I talked with an M-Systems tech and although they did not =
+write the driver, he thought it might be due to the garbage collection =
+running in the DOC2000 firmware.  When a block becomes some configurable =
+percentage utilized, the garbage collector tries to coallesce the used =
+portion of this block with others to decrease block fragmentation and =
+increase wearability.  His theory was that the driver would request =
+space for a particular write operation and if garbage collection was =
+necessary, the write operation would block.  My problem is that when =
+this happens and the blocking lasts for > 1.5 seconds, my watchdog =
+refresh process can't pet the watchdog and the system resets.  I have =
+tried making the watchdog process a real-time thread with RTLinux, but =
+the RTLinux beta11 is proving to be a little unstable for my blood right =
+now.  I am wondering if anyone has encountered this problem and/or may =
+have some advice for me.  Does the MTD DOC2000 driver suffer from this =
+behavior and can it be patched into a 2.2.12 kernel?  Any other =
+thoughts?
 
-Primarily I think it is easier (and cheaper) on a board level to connect
-up a 8bit linear flash ROM than it is to work up a full blown IDE
-interface for compact flash. This is particularly true for things like
-boot flash where I don't think you'll see CF ever being used.
+TIA!
 
-Basically, in our product at least, we need to have flash for booting the
-system and storing the bios, if we make it a little bigger (2M) the cost
-goes up a tiny bit and we can run the OS on there too. 
+Regards,
+Jon
 
-Jason
+------=_NextPart_000_00E6_01BF2AD4.34680990
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2614.3401" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I have been using the IGEL flash driver =
+on a Linux=20
+2.2.12 system now for several months.&nbsp; One very annoying "feature" =
+is that=20
+it causes the entire OS to hang for 2-5 seconds after mounting or =
+moderate write=20
+operations.&nbsp; I talked with an M-Systems tech and although they did =
+not=20
+write the driver, he thought it might be due to the garbage collection =
+running=20
+in the DOC2000 firmware.&nbsp; When a block becomes some configurable =
+percentage=20
+utilized, the garbage collector tries to coallesce the used portion of =
+this=20
+block with others to decrease block fragmentation and increase=20
+wearability.&nbsp; His theory was that the driver would request space =
+for a=20
+particular write operation and if garbage collection was necessary, the =
+write=20
+operation would block.&nbsp; My problem is that when this happens and =
+the=20
+blocking lasts for &gt; 1.5 seconds, my watchdog refresh process can't =
+pet the=20
+watchdog and the system resets.&nbsp; I have tried making the watchdog =
+process a=20
+real-time thread with RTLinux, but the RTLinux beta11 is proving to be a =
+little=20
+unstable for my blood right now.&nbsp; I am wondering if anyone has =
+encountered=20
+this problem and/or may have some advice for me.&nbsp; Does the MTD =
+DOC2000=20
+driver suffer from this behavior and can it be patched into a 2.2.12=20
+kernel?&nbsp; Any other thoughts?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>TIA!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Jon</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_00E6_01BF2AD4.34680990--
 
 
 
