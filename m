@@ -1,20 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from av2-1-sn3.vrr.skanova.net ([81.228.9.107])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CSDIs-0005Dy-Qx
-	for linux-mtd@lists.infradead.org; Thu, 11 Nov 2004 06:39:52 -0500
-Message-ID: <41934F66.2060907@oktetlabs.ru>
-Date: Thu, 11 Nov 2004 14:39:18 +0300
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
+	id 1CSErZ-0005Wh-8M
+	for linux-mtd@lists.infradead.org; Thu, 11 Nov 2004 08:19:48 -0500
+From: "Per Hedblom" <per.hedblom@abem.se>
+To: "'David Woodhouse'" <dwmw2@infradead.org>,
+	"'Mark Hamilton'" <mhamilton@alliantnetworks.com>
+Date: Thu, 11 Nov 2004 14:19:29 +0100
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <41921D97.7040300@oktetlabs.ru>
-	<1100171797.8191.1362.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1100171797.8191.1362.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <1100172461.8191.1369.camel@hades.cambridge.redhat.com>
+Message-Id: <20041111131932.D32EF3800F@smtp1-2-sn3.vrr.skanova.net>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 & the write buffer patch
-Reply-To: dedekind@oktetlabs.ru
+Subject: RE: [JFFS2] GC patch for eCos port
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Wed, 2004-11-10 at 16:54 +0300, Artem Bityuckiy wrote:
-> 
->>Dear JFFS2 maintainers,
->>
->>I was recently fixed the problem with the JFFS2 write buffer races and 
->>have posted it to the MTD list. Unfortunately, maintainers did not 
->>comment the patch (only Estelle Hammache kindly responded).
-> 
-> 
-> Sorry, I've been busy. Like you, I really don't like the extra locking.
-> I was trying to find time to stare really hard at it and find a way of
-> doing it without extra locks.
-The best way that I see is:
-1. Introduce additional functions like jffs2_flash_read_nolock(), 
-jffs2_flush_wbuf_pad_nolock(), etc. When the alloc_sem is locked, use 
-these functions (i.e., from the GC, etc).
+On Thursday 11 November 2004 12:28 David Woodhouse Wrote
+>Yes, that is the expected behaviour and looks like the correct fix. I've
+>just committed the corresponding change to the eCos version of
+>jffs2_gc_fetch_page().
 
-We will need to accurately scan the JFFS2 code and substitute these new 
-calls instead of old ones.
+Will this code handle files larger than PAGE_SIZE?
+I believe the patch for ecos should look like:
+{
+        /* FIXME: This works only with one file system mounted at a time */
+        int ret;
 
-2. (optional). change the alloc_sem type and make it read/write. The 
-only possible problem is that there is no "down_interruptible" call for 
-rw semaphore, only uninterruptible.
+        ret = jffs2_read_inode_range(c, f, gc_buffer, offset,
+PAGE_CACHE_SIZE);
+        if (ret)
+                return ERR_PTR(ret);
 
-This will require a little bit more work, but no additional mutex is 
-needed. I may do this.
+        return gc_buffer - ( offset & ( PAGE_CACHE_SIZE - 1 ) );
+}
 
-> Mail me a SSH public key and you can have an account to commit it
-> yourself. But please let's convince ourself the new lock _really_ is
-> necessary before we do that. I really don't like it.
-> 
-Thanks, I'll sent it to you.
+if you want to do it in fs-ecos.c. (This works in our test case but I think
+I prefer the original patch suggested by Mark for readbility.)
 
--- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+
+
+>The eCos port could definitely do with some love 
+
+I agree, it is hard to believe that anyone can successfully use the jffs2
+file system as a general file system in eCos.
+
+Some experience with jffs2 for eCos so far: 
+* it requires a lot of software maintenance to keep it updated and tested
+for the a specific usage in eCos.
+ 
+* it uses a lot of memory and memory management - a eCos system without
+memory management needs fixed memory pools to run stable for a long time. 
+We use a lot of small files and if someone is considering jffs2 for a new
+design I would recommend reserving a ram space for jffs2 that is in the
+range of the flash area in use.
+
+* it doesn't do gc as a thread in eCos. This means that it almost always
+want to do gc at the time when you need to write data.
+
+
+Tanks,
+Per Hedblom
