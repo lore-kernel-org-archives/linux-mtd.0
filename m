@@ -1,30 +1,19 @@
-Received: from e35.co.us.ibm.com ([32.97.110.133])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuLgb-0006ZZ-2h
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 21:16:38 -0500
-Received: from westrelay01.boulder.ibm.com (westrelay01.boulder.ibm.com
-	[9.17.195.10])
-	by e35.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0S2GZZ7113208
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 21:16:35 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay01.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0S2GYXb248412
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 19:16:34 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	j0S2GY9x010151
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 19:16:34 -0700
-From: Josh Boyer <jdub@us.ibm.com>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce05012717207271fb10@mail.gmail.com>
-References: <6934efce05012717207271fb10@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 27 Jan 2005 20:16:29 -0600
-Message-Id: <1106878589.10729.12.camel@windu.rchland.ibm.com>
+Received: from rproxy.gmail.com ([64.233.170.194])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CuMAo-0006w1-Ah
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 21:47:51 -0500
+Received: by rproxy.gmail.com with SMTP id f1so379224rne
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Jan 2005 18:47:49 -0800 (PST)
+Message-ID: <66f646fd0501271847f4bb9da@mail.gmail.com>
+Date: Fri, 28 Jan 2005 10:47:49 +0800
+From: andrew box <andr3wbox@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: Unit test for cfi_cmdset_0001.c
+Subject: Which types of DiskOnChip are INFTL now?
+Reply-To: andrew box <andr3wbox@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,39 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-01-27 at 17:20 -0800, Jared Hulbert wrote:
-> I plan on creating a unit test based on cutest.sourceforge.net for
-> cfi_cmdset_0001.c.
+Cause want to update machine, I seek a new INFTL doc to replace my 
+(NFTL)diskonchip2000(MD2202-D32). Can some one tell me which types are
+INFTL .
 
-How feasible is a framework like that for things that deal with
-hardware?  Are you planning on emulating flash chips somehow?
 
-> In order to stub out the various functions inside I will have to:
-> 
-> 1. Manually strip out functions for each version.
+Regards,
+Andrew
 
-Not sure what you mean.  Could be partially due to my ignorance of
-cuTest, so bear with me :).
-
-> 2. Add #if''s
-> 3. fork this file into 2-3 files.
-> 
-> I prefer option 3.  As it seems cleaner to me and more maintainable. 
-
-Maybe an example of what you intend here?
-
-> But I want to know which option is more "commitable."   Of course the
-> test be made availiable, I would hope we can get the tests commited
-> too.  CuTest is zlib licenced.  Is that a problem?
-> 
-> The reason for the unit tests is to help us find bugs in the code
-> paths not easily tested and to enable more rapid updates for new flash
-> or features mtd doesn't currently support.
-> 
-> Thoughts, flames, jokes?
-
-I'm all for a test suite for MTD/JFFS[23].  Maybe cuTest could help,
-maybe not.  Artem has a NAND flash simulator.  Maybe that would help
-testing as well.
-
-josh
+---------- 
+History became legend... 
+...Iegend became myth.
