@@ -1,58 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13mcbV-0004dk-00
-	for mtd-list@infradead.org; Fri, 20 Oct 2000 14:53:01 +0100
+	id 13nlSp-0002rm-00
+	for mtd-list@infradead.org; Mon, 23 Oct 2000 18:32:47 +0100
 Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13mcbU-0004de-00
-	for mtd@infradead.org; Fri, 20 Oct 2000 14:53:00 +0100
-Received: from cotw.com (IDENT:samcconn@ptecdev2.ptec.com [192.168.10.4])
-	by cvsftp.cotw.com (8.9.3/8.9.3) with ESMTP id IAA30419
-	for <mtd@infradead.org>; Fri, 20 Oct 2000 08:51:06 -0500
-Message-ID: <39F04F40.893560CA@cotw.com>
-Date: Fri, 20 Oct 2000 08:57:20 -0500
-From: S A McConnell <samcconn@cotw.com>
-Reply-To: samcconn@cotw.com
+	id 13nlSo-0002rg-00
+	for mtd@infradead.org; Mon, 23 Oct 2000 18:32:46 +0100
+Message-ID: <39F478A4.FB6EE843@cotw.com>
+Date: Mon, 23 Oct 2000 12:43:00 -0500
+From: "Steven J. Hill" <sjhill@cotw.com>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Intel Strata Flash (Question)
+To: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
+Subject: JFFS now working on NAND flash...
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I have been having some problems erasing and programming a 32-Mb Strata
-Flash
+Greetings.
 
-Every once in a while after issuing a command I get 0x80ffff in the
-status register. This of course causes my software to believe the
-command has finished and that every possible error that could occur has
-occured.
+I though I would let everyone know that JFFS is working on NAND
+flash devices in read-only mode. All changes have been checked
+into the main MTD CVS repository. Use the 'nandwrite' utility
+in the 'util' directory to raw write your JFFS image to the
+flash and then just do a:
 
-For example, here is some output from a 'software' chip erase.
+     mount -tjffs -oro /dev/mtdblock0 /mnt
 
-Erasing block: 0x0
-Erasing block: 0x40000
-Erasing block: 0x80000
-Erasing block: 0xc0000
-Erasing block: 0x100000
-***Error: Program or set error. Status= 0x80ffff
-***Error: Clear or erase error. Status= 0x80ffff
-***Error: Voltage range error. Status= 0x80ffff
-***Error: Device protection error. Status= 0x80ffff
-Erasing block: 0x140000
-Erasing block: 0x180000
-Erasing block: 0x1c0000
-Erasing block: 0x200000
+-Steve
 
-...
-
-
-Has anyone else seen this?
-
-
-Thanks,
-Scott
+-- 
+ Steven J. Hill - Embedded SW Engineer
+ Public Key: 'finger sjhill@mail.cotw.com'
+ FPR1: E124 6E1C AF8E 7802 A815
+ FPR2: 7D72 829C 3386 4C4A E17D
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
