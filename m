@@ -1,16 +1,19 @@
-Received: from rwcrmhc11.comcast.net ([204.127.198.35])
+Received: from linux2003-temp-17.226.gwc.org.uk ([212.240.17.226]
+	helo=lapdancer.baythorne.internal)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19iNNi-0006Zv-H0
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 01:02:50 +0100
-Message-ID: <3F29AE2C.2020000@mvista.com>
-Date: Thu, 31 Jul 2003 20:02:52 -0400
-From: "George G. Davis" <gdavis@mvista.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed;
- boundary="------------040300080606050307040602"
-Subject: kernel oops due to aligment error in cmdlinepart.c
-Reply-To: gdavis@mvista.com
+	id 19iZus-0007vh-OU
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 14:25:54 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: gdavis@mvista.com
+In-Reply-To: <3F29AE2C.2020000@mvista.com>
+References: <3F29AE2C.2020000@mvista.com>
+Message-Id: <1059744249.19396.75.camel@lapdancer.baythorne.internal>
+Mime-Version: 1.0
+Date: Fri, 01 Aug 2003 14:24:11 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: kernel oops due to aligment error in cmdlinepart.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------040300080606050307040602
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+On Fri, 2003-08-01 at 01:02, George G. Davis wrote:
+> Greetings,
+> 
+> I've been using the latest MTD CVS (+/- a few days) on an ARM
+> Integrator/CM920T running linux-2.4.20'ish and have found that
+> cmdlinepart.c has a struct alignment problem which causes a kernel
+> oops. The attached patch fixes the alignment problem
 
-Greetings,
+No Likee. Linux requires that you fix up misaligned loads and stores.
+Therefore, explicit working around alignment 'breakage' isn't permitted.
+I've added it before and been told to remove it.
 
-I've been using the latest MTD CVS (+/- a few days) on an ARM Integrator/CM920T
-running linux-2.4.20'ish and have found that cmdlinepart.c has a struct alignment
-problem which causes a kernel oops. The attached patch fixes the alignment problem
-for me (YMMV : ). I've successfully tested this on an ARM Integrator/CM920T, ADS
-Graphics Client Plus and TI Innovator/OMAP1510, FWIW. : )
+IF your hardware _cannot_ do this, and I know some ARM7 uCLinux systems
+really can't, then you need to deal with it properly in 2.5 -- talk to
+DaveM and Linus about it. 
 
---
-Regards,
-George
+Alternatively, in this case you could probably just refactor the code to
+allocate the idents separately or at least arrange its storage so that
+the aligned bits are first, like I think the RedBoot code does.
 
-
---------------040300080606050307040602
-Content-Type: text/plain;
- name="cmdlinepart.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="cmdlinepart.patch"
-
-SW5kZXg6IGRyaXZlcnMvbXRkL2NtZGxpbmVwYXJ0LmMKPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmls
-ZTogL2hvbWUvY3ZzL210ZC9kcml2ZXJzL210ZC9jbWRsaW5lcGFydC5jLHYKcmV0cmlldmlu
-ZyByZXZpc2lvbiAxLjEwCmRpZmYgLXUgLXIxLjEwIGNtZGxpbmVwYXJ0LmMKLS0tIGRyaXZl
-cnMvbXRkL2NtZGxpbmVwYXJ0LmMJMjkgTWF5IDIwMDMgMDk6MjU6MjIgLTAwMDAJMS4xMAor
-KysgZHJpdmVycy9tdGQvY21kbGluZXBhcnQuYwkzMSBKdWwgMjAwMyAyMzo0ODoyMCAtMDAw
-MApAQCAtMjQxLDYgKzI0MSw3IEBACiAJCQkJJm51bV9wYXJ0cywJLyogb3V0OiBudW1iZXIg
-b2YgcGFydHMgKi8KIAkJCQkwLAkJLyogZmlyc3QgcGFydGl0aW9uICovCiAJCQkJKHVuc2ln
-bmVkIGNoYXIqKikmdGhpc19tdGQsIC8qIG91dDogZXh0cmEgbWVtICovCisJCQkJX19hbGln
-bm9mX18oKnRoaXNfbXRkKSAtIDEgKwogCQkJCW10ZF9pZF9sZW4gKyAxICsgc2l6ZW9mKCp0
-aGlzX210ZCkpOwogCQlpZighcGFydHMpCiAJCXsKQEAgLTI1Miw3ICsyNTMsMjEgQEAKIAkJ
-CSAqIHVubGlrZWx5IHRvIHN1Y2NlZWQgaW4gcGFyc2luZyBhbnkgbW9yZQogCQkJICovCiAJ
-CQkgcmV0dXJuIDA7Ci0JCSB9CisJCX0KKworCQlpZiAoKHVuc2lnbmVkIGxvbmcpKHRoaXNf
-bXRkKSAmIChfX2FsaWdub2ZfXygqdGhpc19tdGQpIC0gMSkpCisJCXsKKwkJCS8qIFNvbWUg
-YXJjaHMgZG8gbm90IGFsbG93IG5vbi1hbGlnbmVkIGFjY2Vzc2VzCisJCQkgKiB3aXRoaW4g
-dGhlIGtlcm5lbC4gU28gbWFrZSBzdXJlIHdlJ3JlIHByb3Blcmx5CisJCQkgKiBhbGlnbmVk
-IGhlcmUuCisJCQkgKi8KKwkJCXVuc2lnbmVkIGxvbmcgZml4dXAgPSAodW5zaWduZWQgbG9u
-ZykgdGhpc19tdGQ7CisJCQlkYmcoKCJ0aGlzX210ZDogMHglMHhcbiIsIHRoaXNfbXRkKSk7
-CisJCQlmaXh1cCArPSBfX2FsaWdub2ZfXygqdGhpc19tdGQpIC0gMTsKKwkJCWZpeHVwICY9
-IH4oX19hbGlnbm9mX18oKnRoaXNfbXRkKSAtIDEpOworCQkJdGhpc19tdGQgPSAoc3RydWN0
-IGNtZGxpbmVfbXRkX3BhcnRpdGlvbiAqKSBmaXh1cDsKKwkJCWRiZygoInRoaXNfbXRkOiAw
-eCUweCAoYWxpZ25lZClcbiIsIHRoaXNfbXRkKSk7CisJCX0KIAogCQkvKiBlbnRlciByZXN1
-bHRzICovCSAgICAKIAkJdGhpc19tdGQtPnBhcnRzID0gcGFydHM7Cg==
---------------040300080606050307040602--
+-- 
+dwmw2
