@@ -1,14 +1,14 @@
 Received: from mail.mediatrix.com ([205.237.248.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157GI0-0004gz-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 13:50:28 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D995483@mail.mediatrix.com>
+	id 157GVH-0004jA-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 14:04:11 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D995484@mail.mediatrix.com>
 From: Frederic Giasson <fgiasson@mediatrix.com>
-To: 'David Woodhouse' <dwmw2@infradead.org>, Abraham vd Merwe
-	 <abraham@2d3d.co.za>
+To: Frederic Giasson <fgiasson@mediatrix.com>, 'David Woodhouse'
+	 <dwmw2@infradead.org>, Abraham vd Merwe <abraham@2d3d.co.za>
 Cc: MTD for Linux <linux-mtd@lists.infradead.org>
 Subject: RE: erasesize 
-Date: Tue, 5 Jun 2001 08:49:24 -0400 
+Date: Tue, 5 Jun 2001 09:03:19 -0400 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -23,6 +23,22 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+	... Maybe it should be passed through the arg pointer in the
+ioctl(), in a 2 u_long sized structure?
+
+Fr=E9d=E9ric Giasson=20
+
+
+
+
+-----Original Message-----
+From: Frederic Giasson [mailto:fgiasson@mediatrix.com]
+Sent: Tuesday, June 05, 2001 8:49 AM
+To: 'David Woodhouse'; Abraham vd Merwe
+Cc: MTD for Linux
+Subject: RE: erasesize=20
+
 
 	I have a question too about the erase->len ( erasesize ).  I have a
 flash chip with variable block sizes, and I am using cfi_cmdset_0002.  =
@@ -70,6 +86,10 @@ other regions.
 dwmw2
 
 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
