@@ -1,14 +1,16 @@
-Received: from web10801.mail.yahoo.com ([216.136.130.243])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16df0R-0002ZN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 22:14:31 +0000
-Message-ID: <20020220222547.96577.qmail@web10801.mail.yahoo.com>
-Date: Wed, 20 Feb 2002 14:25:47 -0800 (PST)
-From: Scott Kapu <kapus1@yahoo.com>
-Subject: fdisk problem with DOC2000
-To: linux-mtd@lists.infradead.org
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16df0h-0002ZS-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 22:14:47 +0000
+Message-ID: <000301c1ba5d$91441e90$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Wed, 20 Feb 2002 17:25:24 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,28 +22,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-When trying to fdisk /dev/nftla I get...
+On 19 Feb 2002, Ilguiz Latypov wrote:
 
--------------------------------------------------
-Command (m for help):
-Disk /dev/nftla: 1 heads, 577728 sectors, 1 cylinders
-Units = cylinders of 577728 * 512 bytes
+> Can anybody with DOC Millenium try the patch?  It's
+>     patches/grub-2002-02-19-doc.patch
 
-     Device Boot    Start       End    Blocks   Id 
-System
-/dev/nftla1             1         1    288863+  83 
-Linux
-Partition 1 has different physical/logical endings:
-     phys=(768, 0, 0) logical=(0, 0, 577728)
-Partition 1 does not end on cylinder boundary:
-     phys=(768, 0, 0) should be (768, 0, 577728)
-------------------------------------------------
-Any help appreciated!
+Hi,
 
--Scott K.
+I have an 8MB DOC Millenium, and have been booting successfully with the mtd-patched LILO.
 
+I was able to apply the patch, and successfully build the grub_firmware file.  I've
+followed the instructions posted earlier on this list (using doc_loadbios), but I can't
+seem to make it boot.
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Sports - Coverage of the 2002 Olympic Games
-http://sports.yahoo.com
+I'm trying to boot from the DOC ISA eval board on a PC with an AMI BIOS -- and I believe
+"boot from NETWORK" should call INT 18h.  I also tried booting from a floppy with the boot
+record modified to call int 18.  In either case, my PC doesn't seem to recognize the DOC
+at boot time.
+
+I'd love to help out in testing this part -- Can I provide any more information, or maybe
+I'm just missing something easy?
+
+Regards,
+
+Mark
