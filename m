@@ -1,36 +1,57 @@
-Return-path: <owner-mtd@infradead.org>
-Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13aw3T-0001Ue-00
-	for mtd-list@infradead.org; Mon, 18 Sep 2000 09:13:35 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
+Return-path: <mlist@sonn-online.de>
+Received: from moutvdom00.kundenserver.de ([195.20.224.149])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13aw3R-0001UY-00
-	for mtd@infradead.org; Mon, 18 Sep 2000 09:13:34 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20000916115417.D1152@khayman.mavrik.com> 
-References: <20000916115417.D1152@khayman.mavrik.com>  <39C28410.6D1E6AE7@coollogic.com> 
-To: "Matt Hortman" <mbhortman@ieee.org>,
-        Ian Thompson <ithompson@coollogic.com>
-Cc: mtd@infradead.org
-Subject: Re: Independent Thread 
+	id 13b8d4-0005lS-00
+	for mtd-list@infradead.org; Mon, 18 Sep 2000 22:39:10 +0100
+Received: from [195.20.224.208] (helo=mrvdom01.kundenserver.de)
+	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 13b8d3-0001gb-00
+	for mtd-list@infradead.org; Mon, 18 Sep 2000 23:39:09 +0200
+Received: from pec-114-108.tnt7.s2.uunet.de ([149.225.114.108] helo=sonn-online.de)
+	by mrvdom01.kundenserver.de with smtp (Exim 2.12 #2)
+	id 13b8d0-00005Y-00
+	for mtd-list@infradead.org; Mon, 18 Sep 2000 23:39:06 +0200
+Date: Mon, 18 Sep 2000 23:33:53 +0100
+From: Volker Sonn <mlist@sonn-online.de>
+Reply-To: Volker Sonn <mlist@sonn-online.de>
+To: mtd-list@infradead.org
+Subject: Re: Grub support in DiskOnChip.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 18 Sep 2000 09:13:29 +0100
-Message-ID: <4988.969264809@passion.cygnus.co.uk>
-Sender: owner-mtd@infradead.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <E13b8d0-00005Y-00@mrvdom01.kundenserver.de>
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-mbhortman@ieee.org said:
->  My guess is that it uses M-Systems' new Linux DOC driver that can be
-> built as a module...
+i cant boot my DOC2000 with grub :-(
 
-Mine too.
+I did: (in this order)
+- patched grub with the 2 patches in mtd/grub/
+- make, make install (of grub)
+- copied the pre_stage2 to /mdt/grub
+- mdt/grub/make
+- doc_loadbios /dev/mtd0 grub_firmware
+- nftl_format /dev/mdt0 81920
+- fdisk /dev/nftla
+- mke2fs /dev/nftla1 -m 0
+- copied a kernel and /boot/grub to /nftla1
 
---
-dwmw2
+After rebooting, the grub shell comes up, but i can't access the DOC with something like 
+root (dc0,0) etc.
+(Booting from (hd0) is possible)
+
+Where I'm wrong ?
+
+
+> Grub patches to support NFTL properly have just been contributed.
+
+> See mtd/patches/grub* and send virtual beer to void@dr.com
+
+> --
+> dwmw2
 
 
 
 
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
