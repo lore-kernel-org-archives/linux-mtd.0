@@ -1,15 +1,17 @@
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e9V6-0000GJ-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 07:52:45 +0000
-Date: Thu, 30 Jan 2003 08:23:42 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alex Samoutin <samoutin@hotbox.ru>
+	id 18e9rs-0000Md-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 08:16:17 +0000
+Date: Thu, 30 Jan 2003 09:47:11 +0100 (CET)
+From: Marius Groeger <mag@sysgo.de>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
 cc: linux-mtd@lists.infradead.org
-In-Reply-To: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com>
-Message-ID: <Pine.LNX.4.44.0301300822251.4791-100000@imladris.demon.co.uk>
+Subject: Re: PATCH: support for Arctic/Beech/Ebony
+In-Reply-To: <000b01c2c7df$d7c45d40$020120b0@jockeXP>
+Message-ID: <Pine.LNX.4.52.0301300945080.1306@mag.devdep.sysgo.de>
+References: <Pine.LNX.4.52.0301281755410.19671@mag.devdep.sysgo.de>
+ <000b01c2c7df$d7c45d40$020120b0@jockeXP>
 MIME-Version: 1.0
-Subject: Re: NAND subsector writing problem
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,17 +24,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 29 Jan 2003, Alex Samoutin wrote:
-> When I do write and read using "nandwrite/nanddump" utilities - it is look
-> like all working fine. However "nandtest" showed me error message during
-> subsector writing (see log below). Can I use  jffs2 with this type of
-> problem or I have to fix it? (And may be you know - what can cause this
-> error?)
+On Wed, 29 Jan 2003, Joakim Tjernlund wrote:
 
-Are you expected to be able to use ECC with subsector writes? Surely you 
-expect the ECC to fail?
+> 2 comments:
+>   - You don't need mb() since ioremap will add the
+>      GUARDED attribute to the mapping.
+>
+>  - Add support for point()/unpoint().
 
-JFFS2 doesn't do subsector writes on NAND, so shouldn't suffer. 
+All right, I did both and have just committed it to CVS.
 
--- 
-dwmw2
+Thanks,
+Marius
+
+-----------------------------------------------------------------------------
+Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
+Software Engineering     Embedded and Real-Time Software    www.sysgo.de
+Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
+FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
