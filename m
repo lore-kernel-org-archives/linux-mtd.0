@@ -1,117 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14hZ6k-0002i6-00
-	for mtd-list@infradead.org; Mon, 26 Mar 2001 16:40:38 +0100
-Received: from mail.addcoinc.com
-	([12.47.38.2] helo=exchange.addcoinc.com ident=fwuser)
+	id 14hZxo-00035A-00
+	for mtd-list@infradead.org; Mon, 26 Mar 2001 17:35:28 +0100
+Received: from zeus.vortex.is ([193.4.145.1])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14hZ6j-0002fQ-00
-	for mtd@infradead.org; Mon, 26 Mar 2001 16:40:37 +0100
-Message-ID: <5B08DC7C9AA6D411930E00105A19794B02F4D7@EXCHANGE>
-From: "Carson, Jon A." <JACarson@addcoinc.com>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: FW: Can't compile 2.4.2 kernel after MTD patch
-Date: Mon, 26 Mar 2001 09:36:35 -0600
+	id 14hZxn-000352-00
+	for mtd@infradead.org; Mon, 26 Mar 2001 17:35:27 +0100
+Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
+          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
+          ID# 0-71211U5000L1850S0V35) with ESMTP id is
+          for <mtd@infradead.org>; Mon, 26 Mar 2001 16:35:11 +0000
+Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
+          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
+          with ESMTP id is for <mtd@infradead.org>;
+          Mon, 26 Mar 2001 16:35:11 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: jffs in flash?
+Date: Mon, 26 Mar 2001 16:35:10 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9120@kolkrabbi.flaga.is>
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi ,
+Hi,
 
-I had some similar experiences with nftl.c.  Here are the problems I had:
-
-
-1. I added some casts to get the compiler to stop whining about this: 
-
-nftl.c: In function `NFTL_notify_add':
-nftl.c:204: warning: long int format, int arg (arg 3)
-nftl.c:204: warning: long int format, int arg (arg 4)
-
-was:
-	DEBUG(MTD_DEBUG_LEVEL3, "mtd->read = %p, size = %ld, erasesize =
-%ld\n",
-	      mtd->read, mtd->size, mtd->erasesize);
-now:
-      DEBUG(MTD_DEBUG_LEVEL3, "mtd->read = %p, size = %ld, erasesize =
-%ld\n",
-	      mtd->read, ( long int ) mtd->size, ( long int )
-mtd->erasesize);
-
-
-
-2. Here is the same bug that Frank found. Basically just a typo I guess.
-nftl.c: In function `NFTL_findwriteunit':
-nftl.c:624: `MTD_DEBUG_LEVEL_1' undeclared (first use in this function)
-nftl.c:624: (Each undeclared identifier is reported only once
-nftl.c:624: for each function it appears in.)
-
-was:
-        DEBUG(MTD_DEBUG_LEVEL_1, "Using desparate==1 to find free EUN to
-accommodate write to VUC %d\n", thisVUC);
-now:
-	DEBUG(MTD_DEBUG_LEVEL1, "Using desparate==1 to find free EUN to
-accommodate write to VUC %d\n", thisVUC);
-
-
-
-I had a lot of trouble with this one. AS you can see, I just commented the
-version checking code out, since I couldnt figure out what was originally
-meant here.  "nftl.c" now compiles without error for me.   BTW: I think that
-the version statement needs some parenth's like:
-#if (LINUX_VERSION_CODE > 0x20400) . I tried this but, it still did not
-work.
-
-
-nftl.c: In function `nftl_ioctl':
-nftl.c:847: warning: implicit declaration of function `blk_ioctl'
-
-was:
-#if LINUX_VERSION_CODE > 0x20400 /* ??? */
-#include <linux/blkpg.h>
-#endif
-
-now:
-// #if LINUX_VERSION_CODE > 0x20400 /* ??? */
-#include <linux/blkpg.h>
-// #endif
-
-
-Please check out these changes for a "sanity check" I have not updated any
-CVS archive code.  I 'll leave that to the masters :)
+I have one flash chip (4MB) that i want to use parts of as a disk, e.g.
+with jffs or jffs2.
+It seems to me that the jffs wants to use the whole chip under the fs.
+Is this correct?
+If not how can I tell jffs to start using the flash at some offset?
 
 Thanks,
-Jon Carson
-ADDCO Inc.
-USA
 
-
-----------------------------------------
-> -----Original Message-----
-> From: Frank Neuber [mailto:neuber@convergence.de]
-> Sent: Monday, March 26, 2001 5:49 AM
-> To: ihristov@databrokers.net; mtd@infradead.org
-> Subject: re: Can't compile 2.4.2 kernel after MTD patch
-> 
-> 
-> Hi,
-> 
-> > nftl.c: In function `NFTL_findwriteunit':
-> > nftl.c:624: `MTD_DEBUG_LEVEL_1' undeclared (first use in this
-> function)
-> > nftl.c:624: (Each undeclared identifier is reported only once
-> 
-> there is a small bug in nftl.c! The debug variable should be
-> MTD_DEBUG_LEVEL1  :-)
-> 
-> Frank
-> 
-> 
-> 
-> 
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-> 
+K.D.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
