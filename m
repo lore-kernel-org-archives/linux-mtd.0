@@ -1,16 +1,15 @@
-Received: from tomts20.bellnexxia.net ([209.226.175.74] helo=tomts20-srv.bellnexxia.net)
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cq8y-0005uB-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 17:28:12 +0100
-Date: Thu, 8 Aug 2002 12:28:08 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: nur <nurpinar@basari.net.tr>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: docprobe for millennium
-In-Reply-To: <000701c23df1$a20ae1b0$3064000a@nurpinar>
-Message-ID: <Pine.LNX.4.44.0208081226560.18509-100000@server.superbt.com>
+	id 17cwrU-00076y-00
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2002 00:38:36 +0100
+Message-ID: <3D530222.7040303@redswitch.com>
+Date: Thu, 08 Aug 2002 16:43:30 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org,  linuxppc-embedded@lists.linuxppc.org
+Subject: MTD/JFFS2 on Intel 28F160F3
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,30 +21,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 7 Aug 2002, nur wrote:
+Hi *,
 
-> is there such a parameter for docprobe related to memory address of doc?
-> dinfo results doc millennium at 0xe8000 while docprobe says no diskonchip
-> found
+I'm trying to enable MTD and JFFS2 on an Intel 28F160F3 chip but have 
+some problems.
 
-This configuration item can be found inside the advanced DiskOnChip option 
-of the kernel configuration menu.
+The basic problem is what the physical start address of flash mapping 
+is? While on PPCBoot, I got flash information using command 'flinfo'. 
+The start address is FFE00000. Is this address the one used to configure 
+CFI flash device in physical memeory map? I tried using this address but 
+  'physmap' couldn't find flash device.
 
-Quoting linux-2.4.29-rc1 Documentation/Configure.help,
+-----------------clip-----------------------------------------
+root@ib8sw:~# modprobe -a physmap
+physmap flash device: 100000 at ffe00000
+CFI: Found no Physically mapped flash device at location zero
+-----------------clip-----------------------------------------
+-----------------clip-----------------------------------------
+=> flinfo
 
-Physical address of DiskOnChip
-CONFIG_MTD_DOCPROBE_ADDRESS
-  By default, the probe for DiskOnChip devices will look for a
-  DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
-  This option allows you to specify a single address at which to probe
-  for the device, which is useful if you have other devices in that
-  range which get upset when they are probed.
+Bank # 1: INTEL 28F160F3 (16 Mbit, top boot sector)
+   Size: 2 MB in 39 Sectors
+   Sector Start Addresses:
+     FFE00000      FFE10000      FFE20000      FFE30000      FFE40000
+     FFE50000      FFE60000      FFE70000      FFE80000      FFE90000
+     FFEA0000      FFEB0000      FFEC0000      FFED0000      FFEE0000
+     FFEF0000      FFF00000 (RO) FFF10000 (RO) FFF20000 (RO) FFF30000 (RO)
+     FFF40000      FFF50000      FFF60000      FFF70000      FFF80000
+     FFF90000      FFFA0000      FFFB0000      FFFC0000      FFFD0000
+     FFFE0000      FFFF0000      FFFF2000      FFFF4000      FFFF6000
+     FFFF8000      FFFFA000      FFFFC000      FFFFE000
+=>
+-----------------clip-----------------------------------------
 
-  (Note that on PowerPC, the normal probe will only check at
-  0xE4000000.)
+I haven't dived into the routine 'do_cfi_probe()' yet since I'm not sure 
+if the start address I specified is correct. Any help is greatly 
+appreciated.
 
-  Normally, you should leave this set to zero, to allow the probe at
-  the normal addresses.
-
-
-Ilguiz
+- Shawn.
