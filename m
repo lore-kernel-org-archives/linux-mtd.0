@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ip101.enterness.net ([195.138.130.101] helo=empdc.emness)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161qYJ-0003Rg-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 14:53:11 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <82B1591A280FD411B91200D0B75B484A015F5D4D@sis-uk-msg01.altera.com> 
-References: <82B1591A280FD411B91200D0B75B484A015F5D4D@sis-uk-msg01.altera.com> 
-To: Clive Davies <cdavies@altera.com>
+	id 161sZJ-0003aV-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 17:02:21 +0000
+Content-Type: Multipart/Mixed;
+  charset="windows-1251";
+  boundary="------------Boundary-00=_ZSRHAAEHARPQHHLNB5T8"
+From: Anton Todorov <a.todorov@emness.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: MTD on MBX860
+Date: Thu, 8 Nov 2001 19:12:35 +0200
+References: <01071015225100.01159@ronin> <8307.1005222433@redhat.com>
+In-Reply-To: <8307.1005222433@redhat.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Intel protection register read 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 08 Nov 2001 15:02:18 +0000
-Message-ID: <24871.1005231738@redhat.com>
+MIME-Version: 1.0
+Message-Id: <01110819123504.05519@RONIN>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,34 +25,107 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-cdavies@altera.com said:
->  Hmm, this is a problem. Am I correct in thinking that the code only
-> reads the cfi tables from the first device and assumes that any
-> additional devices are of the same type? (That's what it looks like to
-> me) If so there is no way to read the protection register data from
-> subsequent devices. 
+--------------Boundary-00=_ZSRHAAEHARPQHHLNB5T8
+Content-Type: text/plain;
+  charset="windows-1251"
+Content-Transfer-Encoding: 8bit
 
-You can do whatever you like in ->read_prot_reg(), so there's nothing that 
-prevents you from doing this.
+On Thursday 08 November 2001 14:27, you wrote:
+> a.todorov@emness.com said:
+> >  I am using linuxppc_2_4 (2.4.6) with current mtd support from cvs
+> > tree. The board is with JEDEC AMD 29F016 x4 flash chips (8M Flash
+> > space). Map file which I use for this board is attached (I use
+> > rpxlite.c and  tqm8xxl.c (for partitioning) as reference). The problem
+> > I found is that mtd says:
+>
+> Thanks. May I add that map driver to CVS?
 
->  I reckon the best way to handle the multiple/interleaved chip
-> configuration would be to concatenate all the protection registers
-> together into one block. All the other interfaces I can think of would
-> require a chip number to be passed in, which doesn't seem that nice to
-> me. Does that sound reasonable?
+Yes it is under GPL !
 
-Seems like a sane approach to me. We possibly need to couple it with a way
-to query the size of protection register data available. 
+I am attaching another one with more descriptive header :) 
 
-> > Also, isn't it possible to _write_ to the user areas of the chips?
-> 
-> Yes it is, but I haven't implemented that because I don't need it. If
-> adding writes is a condition for getting read functionality into cvs
-> then I can do that too. 
+>
+> You should hopefully now find that the new jedec_probe stuff will work for
+> your chips, and you don't have to use the old jedec code.
 
-Implementing it isn't absolutely necessary, although it would be nice. We 
-do have to make sure that the framework is sane, and whoever _does_ finally 
-implement writes isn't going to have to change stuff around for it, though.
+I hope it works but for the moment my work on ppc based boards is 
+suspended, but I hope soon to came back to it.
 
---
-dwmw2
+> --
+> dwmw2
+
+Best Regards,
+Anton Todorov
+Emness Technology
+http://www.emness.com
+--------------Boundary-00=_ZSRHAAEHARPQHHLNB5T8
+Content-Type: text/x-c;
+  charset="windows-1251";
+  name="mbx860.c"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="mbx860.c"
+
+LyoKICogJElkOiBtYng4NjAuYyx2IDEuMSAyMDAxLzA4LzExIDEwOjQzOjM3IGFudG9uIEV4cCAk
+CiAqCiAqIEhhbmRsZSBtYXBwaW5nIG9mIHRoZSBmbGFzaCBvbiBNQlg4NjAgYm9hcmRzCiAqCiAq
+IEF1dGhvcjoJQW50b24gVG9kb3JvdgogKiBDb3B5cmlnaHQ6CShDKSAyMDAxIEVtbmVzcyBUZWNo
+bm9sb2d5CiAqIAogKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRp
+c3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdO
+VSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwogKiBwdWJsaXNoZWQgYnkgdGhl
+IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KICoKICovCgojaW5jbHVkZSA8bGludXgvbW9kdWxl
+Lmg+CiNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgojaW5jbHVkZSA8bGludXgva2VybmVsLmg+CiNp
+bmNsdWRlIDxhc20vaW8uaD4KI2luY2x1ZGUgPGxpbnV4L210ZC9tdGQuaD4KI2luY2x1ZGUgPGxp
+bnV4L210ZC9tYXAuaD4KI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0aXRpb25zLmg+CgoKI2RlZmlu
+ZSBXSU5ET1dfQUREUiAweGZlMDAwMDAwCiNkZWZpbmUgV0lORE9XX1NJWkUgMHgwMDIwMDAwMAoK
+LyogRmxhc2ggLyBQYXJ0aXRpb24gc2l6aW5nICovCiNkZWZpbmUgTUFYX1NJWkVfS2lCICAgICAg
+ICAgICAgICA4MTkyCiNkZWZpbmUgQk9PVF9QQVJUSVRJT05fU0laRV9LaUIgICAgNTEyCiNkZWZp
+bmUgS0VSTkVMX1BBUlRJVElPTl9TSVpFX0tpQiA1NjMyCiNkZWZpbmUgQVBQX1BBUlRJVElPTl9T
+SVpFX0tpQiAgICAyMDQ4CgojZGVmaW5lIE5VTV9QQVJUSVRJT05TIDMKCi8qIHBhcnRpdGlvbl9p
+bmZvIGdpdmVzIGRldGFpbHMgb24gdGhlIGxvZ2ljYWwgcGFydGl0aW9ucyB0aGF0IHRoZSBzcGxp
+dCB0aGUKICogc2luZ2xlIGZsYXNoIGRldmljZSBpbnRvLiBJZiB0aGUgc2l6ZSBpZiB6ZXJvIHdl
+IHVzZSB1cCB0byB0aGUgZW5kIG9mIHRoZQogKiBkZXZpY2UuICovCnN0YXRpYyBzdHJ1Y3QgbXRk
+X3BhcnRpdGlvbiBwYXJ0aXRpb25faW5mb1tdPXsKCXsgbmFtZTogIk1CWCBmbGFzaCBCT09UIHBh
+cnRpdGlvbiIsCglvZmZzZXQ6IDAsCglzaXplOiAgIEJPT1RfUEFSVElUSU9OX1NJWkVfS2lCKjEw
+MjQgfSwKCXsgbmFtZTogIk1CWCBmbGFzaCBEQVRBIHBhcnRpdGlvbiIsCglvZmZzZXQ6IEJPT1Rf
+UEFSVElUSU9OX1NJWkVfS2lCKjEwMjQsCglzaXplOiAoS0VSTkVMX1BBUlRJVElPTl9TSVpFX0tp
+QikqMTAyNCB9LAoJeyBuYW1lOiAiTUJYIGZsYXNoIEFQUExJQ0FUSU9OIHBhcnRpdGlvbiIsCglv
+ZmZzZXQ6IChCT09UX1BBUlRJVElPTl9TSVpFX0tpQitLRVJORUxfUEFSVElUSU9OX1NJWkVfS2lC
+KSoxMDI0IH0KfTsKCQkJCSAgIAoKc3RhdGljIHN0cnVjdCBtdGRfaW5mbyAqbXltdGQ7CgpfX3U4
+IG1ieF9yZWFkOChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgdW5zaWduZWQgbG9uZyBvZnMpCnsKCXJl
+dHVybiByZWFkYihtYXAtPm1hcF9wcml2XzEgKyBvZnMpOwp9CgpfX3UxNiBtYnhfcmVhZDE2KHN0
+cnVjdCBtYXBfaW5mbyAqbWFwLCB1bnNpZ25lZCBsb25nIG9mcykKewoJcmV0dXJuIHJlYWR3KG1h
+cC0+bWFwX3ByaXZfMSArIG9mcyk7Cn0KCl9fdTMyIG1ieF9yZWFkMzIoc3RydWN0IG1hcF9pbmZv
+ICptYXAsIHVuc2lnbmVkIGxvbmcgb2ZzKQp7CglyZXR1cm4gcmVhZGwobWFwLT5tYXBfcHJpdl8x
+ICsgb2ZzKTsKfQoKdm9pZCBtYnhfY29weV9mcm9tKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCB2b2lk
+ICp0bywgdW5zaWduZWQgbG9uZyBmcm9tLCBzc2l6ZV90IGxlbikKewoJbWVtY3B5X2Zyb21pbyh0
+bywgKHZvaWQgKikobWFwLT5tYXBfcHJpdl8xICsgZnJvbSksIGxlbik7Cn0KCnZvaWQgbWJ4X3dy
+aXRlOChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgX191OCBkLCB1bnNpZ25lZCBsb25nIGFkcikKewoJ
+d3JpdGViKGQsIG1hcC0+bWFwX3ByaXZfMSArIGFkcik7Cn0KCnZvaWQgbWJ4X3dyaXRlMTYoc3Ry
+dWN0IG1hcF9pbmZvICptYXAsIF9fdTE2IGQsIHVuc2lnbmVkIGxvbmcgYWRyKQp7Cgl3cml0ZXco
+ZCwgbWFwLT5tYXBfcHJpdl8xICsgYWRyKTsKfQoKdm9pZCBtYnhfd3JpdGUzMihzdHJ1Y3QgbWFw
+X2luZm8gKm1hcCwgX191MzIgZCwgdW5zaWduZWQgbG9uZyBhZHIpCnsKCXdyaXRlbChkLCBtYXAt
+Pm1hcF9wcml2XzEgKyBhZHIpOwp9Cgp2b2lkIG1ieF9jb3B5X3RvKHN0cnVjdCBtYXBfaW5mbyAq
+bWFwLCB1bnNpZ25lZCBsb25nIHRvLCBjb25zdCB2b2lkICpmcm9tLCBzc2l6ZV90IGxlbikKewoJ
+bWVtY3B5X3RvaW8oKHZvaWQgKikobWFwLT5tYXBfcHJpdl8xICsgdG8pLCBmcm9tLCBsZW4pOwp9
+CgpzdHJ1Y3QgbWFwX2luZm8gbWJ4X21hcCA9IHsKCW5hbWU6ICJNQlggZmxhc2giLAoJc2l6ZTog
+V0lORE9XX1NJWkUsCglidXN3aWR0aDogNCwKCXJlYWQ4OiBtYnhfcmVhZDgsCglyZWFkMTY6IG1i
+eF9yZWFkMTYsCglyZWFkMzI6IG1ieF9yZWFkMzIsCgljb3B5X2Zyb206IG1ieF9jb3B5X2Zyb20s
+Cgl3cml0ZTg6IG1ieF93cml0ZTgsCgl3cml0ZTE2OiBtYnhfd3JpdGUxNiwKCXdyaXRlMzI6IG1i
+eF93cml0ZTMyLAoJY29weV90bzogbWJ4X2NvcHlfdG8KfTsKCiNpZiBMSU5VWF9WRVJTSU9OX0NP
+REUgPCAweDIwMjEyICYmIGRlZmluZWQoTU9EVUxFKQojZGVmaW5lIGluaXRfbWJ4IGluaXRfbW9k
+dWxlCiNkZWZpbmUgY2xlYW51cF9tYnggY2xlYW51cF9tb2R1bGUKI2VuZGlmCgppbnQgX19pbml0
+IGluaXRfbWJ4KHZvaWQpCnsKCXByaW50ayhLRVJOX05PVElDRSAiTW90b3JvbGEgTUJYIGZsYXNo
+IGRldmljZTogJXggYXQgJXhcbiIsIFdJTkRPV19TSVpFKjQsIFdJTkRPV19BRERSKTsKCW1ieF9t
+YXAubWFwX3ByaXZfMSA9ICh1bnNpZ25lZCBsb25nKWlvcmVtYXAoV0lORE9XX0FERFIsIFdJTkRP
+V19TSVpFICogNCk7CgoJaWYgKCFtYnhfbWFwLm1hcF9wcml2XzEpIHsKCQlwcmludGsoIkZhaWxl
+ZCB0byBpb3JlbWFwXG4iKTsKCQlyZXR1cm4gLUVJTzsKCX0KCW15bXRkID0gZG9fbWFwX3Byb2Jl
+KCJqZWRlYyIsICZtYnhfbWFwKTsKCWlmIChteW10ZCkgewoJCW15bXRkLT5tb2R1bGUgPSBUSElT
+X01PRFVMRTsKCQlhZGRfbXRkX2RldmljZShteW10ZCk7CiAgICAgICAgICAgICAgICBhZGRfbXRk
+X3BhcnRpdGlvbnMobXltdGQsIHBhcnRpdGlvbl9pbmZvLCBOVU1fUEFSVElUSU9OUyk7CgkJcmV0
+dXJuIDA7Cgl9CgoJaW91bm1hcCgodm9pZCAqKW1ieF9tYXAubWFwX3ByaXZfMSk7CglyZXR1cm4g
+LUVOWElPOwp9CgpzdGF0aWMgdm9pZCBfX2V4aXQgY2xlYW51cF9tYngodm9pZCkKewoJaWYgKG15
+bXRkKSB7CgkJZGVsX210ZF9kZXZpY2UobXltdGQpOwoJCW1hcF9kZXN0cm95KG15bXRkKTsKCX0K
+CWlmIChtYnhfbWFwLm1hcF9wcml2XzEpIHsKCQlpb3VubWFwKCh2b2lkICopbWJ4X21hcC5tYXBf
+cHJpdl8xKTsKCQltYnhfbWFwLm1hcF9wcml2XzEgPSAwOwoJfQp9Cgptb2R1bGVfaW5pdChpbml0
+X21ieCk7Cm1vZHVsZV9leGl0KGNsZWFudXBfbWJ4KTsK
+
+--------------Boundary-00=_ZSRHAAEHARPQHHLNB5T8--
