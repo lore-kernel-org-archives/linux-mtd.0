@@ -1,39 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13WyG0-00028j-00
-	for mtd-list@infradead.org; Thu, 07 Sep 2000 10:46:08 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13WyFy-00028d-00
-	for mtd@infradead.org; Thu, 07 Sep 2000 10:46:07 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39B762C0.B6DE4B0D@arcom.co.uk> 
-References: <39B762C0.B6DE4B0D@arcom.co.uk>  <39B756F3.7D89AB9A@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: jffs_mknod: bogus imode when creating sockets 
-Mime-Version: 1.0
+	id 13X6Tq-0004qp-00
+	for mtd-list@infradead.org; Thu, 07 Sep 2000 19:32:58 +0100
+Message-ID: <39B7E0CA.49A427A4@mvista.com>
+Date: Thu, 07 Sep 2000 11:39:06 -0700
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: get_module_symbol
+References: <39AF00C6.DA335C86@mvista.com>  <39AC4D1F.BFBEEA21@mvista.com> <398F1287.E29C8ECE@matrox.com> <31647.965720843@cygnus.co.uk> <9503.967625312@cygnus.co.uk> <19439.968073410@passion.cygnus.co.uk>
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Sep 2000 10:44:59 +0100
-Message-ID: <23608.968319899@passion.cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-dvrabel@arcom.co.uk said:
->  Never mind.  Thinking about it some more (should do this more often).
->  I've realized something else is not setting the mode correctly for
-> sockets (I'm sure it shouldn't be 140755 but 6).  Hmmm... shouldn't
-> the socket check be in there anyway?
+Couple of questions:
 
-No, 140755 is correct for a rwxr-xr-x socket. And yes, the socket check 
-should be there, but it's harmless as it doesn't affect the operation, only 
-makes it whinge when it shouldn't. You're not actually getting any 
-behavioural problems, are you?
+get_module_symbol()  is not finding "cfi_cmdset_0002"  in my environment
+because the symbol table has version info after the function name.    Any
+clue why?  (I'm not building mtd as a module) - I'm currently getting
+around this by using  strncmp.
 
---
-dwmw2
+Also,  in mtdchar.c  mtd_write()  -> should be passing kbuf instead of buf
+in  (*(mtd->write)) call,  correct?
 
+Thanks,
+Alice
 
 
 
