@@ -1,19 +1,23 @@
-Received: from snifit.smb.utfors.se ([195.58.112.20])
+Received: from idiom.com ([216.240.32.1] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17wPOE-0000wY-00
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Oct 2002 16:56:50 +0100
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "Michael Palme" <m.palme@goepel.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: jffs2 problem - magic bitmask not found
-Date: Tue, 1 Oct 2002 17:56:47 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLGEMOFGAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <3D99BE0F.40602@goepel.com>
+	id 17wSIc-0001BQ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 01 Oct 2002 20:03:15 +0100
+Received: from idiom.com (espin@localhost [127.0.0.1])
+	by idiom.com (8.12.5/8.12.6) with ESMTP id g91J3AOe040809
+	for <linux-mtd@lists.infradead.org>; Tue, 1 Oct 2002 12:03:10 -0700 (PDT)
+	(envelope-from espin@idiom.com)
+Received: (from espin@localhost)
+	by idiom.com (8.12.5/8.12.6/Submit) id g91J39fh040800
+	for linux-mtd@lists.infradead.org; Tue, 1 Oct 2002 12:03:09 -0700 (PDT)
+	(envelope-from espin)
+Date: Tue, 1 Oct 2002 12:03:09 -0700
+From: Geoffrey Espin <espin@idiom.com>
+To: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: cfi_probe on arm940T (linux-2.4.6pre0 uclinux)
+Message-ID: <20021001190308.GA16608@idiom.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,90 +29,88 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> hello again :-)
-> 
-> after lots of time playing around that thing put me really into madness...
-> 
-> but could be i am doing something wrong!?
-> please verify:
-> 
-> i want to use jffs2 on my strongarmboard with 32Mb Intel strata flash.
-> so i think things to do to get a working jffs2 partition are as follows:
-> 
-> * built kernel with mtd and jffs2 support (i have done this ... kernel 
-> 2.4.18-rmk7 with patched in mtd-cvs)
-> 
-> * built mtd-utils (successfully done -- crossbuilt for running on arm 
-> native)
-> 
-> * create partitions on flash (i have done this via commmand line 
-> partition table parsing -- CONFIG_CMDLINE="root=/dev/ram0 
-> mtdparts=sa1100:256k(blob),256k(parm),1M(krnl),4M(rd),1M(krnl2),4M(rd2),-(jffs2)")
-> 
-> * erase the jffs2 partition (done via "eraseall /dev/mtd6" -- also tried 
-> to delete it via jtag, so im sure theres no crap in after erasing...)
-> 
-> * verify things ("cat /proc/mtd" and "mtd_debug info /dev/mtd6" -- okay, 
-> everything as expected)
-> 
-> * create a jffs2 image (done via "mkfs.jffs2 -r foo -o jffs2.img -p -e 
-> 262144"  -- image contains only a dummy file and is very small)
-> 
-> * copy the image to the mtd partition ("cp jffs2.img /dev/mtd6")
-> 
-> * mounting the jffs2 partition 1st time (works okay via "mount -t jffs2 
-> /dev/mtdblock6 /mnt/jffs2")
-> 
-> * verify contents (okay "ls /mnt/jffs2" shows the dummy file)
-> 
-> BUT THEN:
-> 
-> * umount jffs2 part ("umount /mnt/jffs2") takes *very* long
+I can't seem to identify a TE28F160B3 (x1 Sharp 16Mbit (2M byte))
+on my arm940 (mmu-less) system.  This is 2.4.6pre0/uclinux kernel.
+Separately, I'm trying to upgrade to 2.4.19... but that's different
+challenge.)  I added a little debugging to my sa1100-flash.c derived
+map.  The same problem exist if I use physmap.c.
 
-JFFS2 is probaly erasing and putting a CLEANMARKER on all unused erase blocks
-and will block until it's finished. I think this can be fixed.
+  ...
+  conexant_write16: 0x400000
+  conexant_write16: 0x405555         <<<<<<<<---------------
+  Unable to handle kernel NULL pointer dereference at virtual address 0000003f
+  fault-common.c(98): start_code=0xe1a00000, start_stack=0xe1a00000)
+  Internal error: Oops: ffffffff
 
-What happens if you wait 5-10 minutes before you unmount the FS for the time?
-While waiting, do a couple of 'df' commands and see if the Use field slowly increases to
-100% and then drops back your expected usage.
+CFI options:
 
-> 
-> * immediately remount of the jffs2 part brings lots of error messages:
-> 
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040000:
-> 0x2003 instead
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040004:
-> 0x000c instead
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040008:
-> 0xdc6d instead
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080000:
-> 0x2003 instead
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080004:
-> 0x000c instead
+    CONFIG_MTD_PHYSMAP=y
+    CONFIG_MTD_PHYSMAP_START=400000
+    CONFIG_MTD_PHYSMAP_LEN=200000
+    CONFIG_MTD_PHYSMAP_BUSWIDTH=2
 
-No idea why this happens.
+    CONFIG_MTD_CFI=y
+    CONFIG_MTD_CFI_ADV_OPTIONS=y
+    CONFIG_MTD_CFI_NOSWAP=y
+    CONFIG_MTD_CFI_GEOMETRY=y
+    CONFIG_MTD_CFI_B2=y
+    CONFIG_MTD_CFI_I1=y
+    CONFIG_MTD_CFI_INTELEXT=y
 
-> 
-> * but after that, "mount" shows the jffs2 part as mounted and i can see 
-> the dummy file again
-> 
-> * now unmounting again -- now very fast!?
+I've tried this with the Data Cache enable/disabled.  The kernel
+has fixup/abort handler code for bad alignment CONFIG_ALIGNMENT_TRAP
+but turning this on/off makes no difference.  (I know this code
+along, with MTD, has changed significantly since 2.4.6 to 2.4.19).
 
-That's because JFFS2 already has marked all unused erase blocks with a CLEANMARKER.
+Geoff
+-- 
+Geoffrey Espin
+espin@idiom.com
+--
+                                                                                
+Linux version 2.4.6 (espin@espin.telus.net) (gcc version 2.95.3 20010315 (releas
+e)) #108 Tue Oct 1 02:06:00 PDT 2002                                            
+Processor: ARM/CNXT Arm940si revision 2                                         
+Architecture: CNXT CX821XX                                                      
+On node 0 totalpages: 1920        
+...
+EMAC Network Driver Cnxt 2002/04/29 irq=20 00:30:cd:00:02:f4:                   
+Blkmem copyright 1998,1999 D. Jeff Dionne                                       
+Blkmem copyright 1998 Kenneth Albanowski                 
+Blkmem 1 disk images:                                                           
+0: 500000-5D8BFF [VIRTUAL 500000-5D8BFF] (RO)                                   
+physmap flash device: 200000 at 400000                                          
+cfi_probe called with unsupported buswidth 1                                    
+Physically mapped flash: Found no CFI device at location zero                   
+CONEXANT flash: probing 16-bit flash bus @0x400000                              
+conexant_read16: 0x400000                                                       
+conexant_write16: 0x400000                                                      
+conexant_write16: 0x4000aa                                                      
+conexant_read16: 0x400020            
+...
+conexant_write16: 0x400554                                                      
+conexant_write16: 0x400aaa                                                      
+conexant_read16: 0x400000                                                       
+conexant_read16: 0x400002                                                       
+conexant_read16: 0x400000                                                       
+conexant_write16: 0x400000                                                      
+conexant_write16: 0x405555         <<<<------- ARRRGH!
 
- Jocke
+Unable to handle kernel NULL pointer dereference at virtual address 0000003f    
+fault-common.c(98): start_code=0xe1a00000, start_stack=0xe1a00000)              
+Internal error: Oops: ffffffff                                                  
+CPU: 0                                                                          
+pc : [<0087a30c>]    lr : [<0087a308>]     
+sp : 00a17dbc  ip : 00a17d84  fp : 00000000                                     
+r10: 00808a18  r9 : 41029402  r8 : 008fec48                                     
+r7 : 00000000  r6 : 00a17f68  r5 : 00005555  r4 : 000000aa                      
+r3 : 00400000  r2 : 00000001  r1 : 00000001  r0 : 0000001e                      
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment user                        
+Control: C0001079  Table: 00000002  DAC: 00000002                               
+Process swapper (pid: 1, stackpage=00a17000)                                    
+Stack:                                                           
+...
+Code: ebfe6b5e e3a03501 (e18540b3) e8bd8030 008e7630                            
+Kernel panic: Attempted to kill init!   
 
-> 
-> i've tried again and again... no success.
-> 
-> please who can help
-> i need the fs for production use...
-> 
-> thanks in advance ... Michael Palme
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+--
