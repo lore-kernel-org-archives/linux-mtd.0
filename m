@@ -1,16 +1,17 @@
-Received: from web21508.mail.yahoo.com ([66.163.169.19])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1796AD-0008Jn-00
-	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 16:30:33 +0100
-Message-ID: <20020518153031.25391.qmail@web21508.mail.yahoo.com>
-Date: Sat, 18 May 2002 08:30:31 -0700 (PDT)
-From: Studying MTD <studying_mtd@yahoo.com>
-Subject: Re: FAT for NAND Flash
-To: Yong-iL Joh <tolkien@mizi.com>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <hbznyy9gxw.fsf@tolkien.mizi.com>
-MIME-Version: 1.0
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 1796dR-0008Li-00
+	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 17:00:45 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020517161920.75017.qmail@web21505.mail.yahoo.com> 
+References: <20020517161920.75017.qmail@web21505.mail.yahoo.com> 
+To: Studying MTD <studying_mtd@yahoo.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: FAT for NAND Flash 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Sat, 18 May 2002 17:00:44 +0100
+Message-ID: <23649.1021737644@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,37 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---- Yong-iL Joh <tolkien@mizi.com> wrote:
-> SmartMedia DOS-FAT(abbr. SMFS) filesystem is FAT
-> compatible as they say.
-> we have implemented SMFS on MTD layer,
-> as following...
-> 
-> 1. FAT (of Linux)
-> 2. SCMTL (similar to FTL, NFTL,...)
+studying_mtd@yahoo.com said:
+> A. FAT: filesystem driver 
+> B. Translation: translation layer on the NAND flash to
+> make it emulate a normal hard drive
+> C. MTD: Memory Technology Devices driver (MTD Block)
+> D. NAND: generic NAND driver
+> E. Hardware specific driver (Plus NFTL)
 
-what is SCMTL ? 
+No. NFTL _is_ the translation layer in (B). The SmartMedia format could be
+used in its place. The other list you gave looks more like the existing 
+situation.
 
-from where i can get specs of SCMTL.
+However, in neither list is item 'C' correct. Neither the 'mtdblock' nor 
+'mtdchar' code is involved at all. NFTL or the SmartMedia code talks 
+directly to the MTD device provided by the NAND code.
 
-is it also having patent ?
-
-> 3. NAND_smc (it's almost same NAND in MTD except
-> handling ECC)
-
-then how you handle ECC ?
-
-> 4. SMC (similart to spia.c)
->
-
-from where i can get your source code.
-
-Is it working properly .
-
-Thank you for your help.
-
-
-__________________________________________________
-Do You Yahoo!?
-LAUNCH - Your Yahoo! Music Experience
-http://launch.yahoo.com
+--
+dwmw2
