@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15l4YO-0000yW-00
-	for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2001 09:23:56 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010922160958.5797.qmail@qis> 
-References: <20010922160958.5797.qmail@qis> 
-To: "Nikolai Vladychevski" <niko@isl.net.mx>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nftl driver 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sun, 23 Sep 2001 09:32:08 +0100
-Message-ID: <20004.1001233928@redhat.com>
+	id 15lAh0-0001QM-00
+	for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2001 15:57:14 +0100
+Received: from Win1 (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id RAA08516
+	for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2001 17:05:45 +0200 (MET DST)
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: jffs2_gcd_mtd4 <defunct>
+Date: Sun, 23 Sep 2001 17:06:36 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLEEDLEPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20010922160958.5797.qmail@qis>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +27,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-niko@isl.net.mx said:
->  If this problem of writing zeros  is due to the module unloading
-> problem, how can I solve it if the driver is  in the kernel and cant
-> be reloaded? 
+Hi all
 
-Almost certainly. The driver has lots if internal state about the old NFTL
-format cached, and you've gone and changed it all. You should never need to
-use nftl_format. If you want new data, just write new data to /dev/nftla. 
-You don't need to do a low-level format just to change the data.
+Small bug:
+When i mount a jffs2 FS as root FS I get this [jffs2_gcd_mtd4 <defunct>]
+process(and a [jffs2_gcd_mtd4] process as well). This will not happen
+if I mount jffs2 as a extra FS after boot(mount /dev/mtdblock4 /jffs2)
 
---
-dwmw2
+Another thing:
+We are suffering somewhat from long mount times and I remember something
+about checkpoints in jffs2 would solve this problem. Correct?
+
+Anybody working on this? I would be happy to do some testing if needed.
+
+Yet another thing:
+I remember seeing something about beeing alble to control the compression
+level in jffs2(at mount time?), but I can not find in the sources. Is it
+implemented yet?
+
+    Joakim
