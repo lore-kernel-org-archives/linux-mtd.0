@@ -1,15 +1,19 @@
-Received: from mail1-3.netinsight.se ([212.247.11.2] helo=ernst.netinsight.se)
+Received: from topsns.toshiba-tops.co.jp ([202.230.225.5])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19m7Ae-0003rQ-01
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2003 08:32:48 +0100
-From: Jonas Larsson <jonas.larsson@netinsight.net>
+	id 19mTwC-0006Ed-JS
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Aug 2003 08:51:25 +0100
+Received: from localhost (fragile [172.17.28.65])h7C7ocDV006107
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Aug 2003 16:50:38 +0900 (JST)
+	(envelope-from anemo@mba.ocn.ne.jp)
+Date: Tue, 12 Aug 2003 16:52:12 +0900 (JST)
+Message-Id: <20030812.165212.25480742.nemoto@toshiba-tops.co.jp>
 To: linux-mtd@lists.infradead.org
-Message-Id: <1060587118.28472.66.camel@doris>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
-Date: 11 Aug 2003 09:31:59 +0200
-Content-Type: text/plain
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Cmdline partitions
+Subject: cmdlinepart with zero offset value
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all. I've had some trouble creating my mtd partitions 
-with the 2.6.0-test2 kernel and I need some advice. I have
-my own mapping driver for our board (not submitted yet) which
-is based on the dc21285 map driver.
+I found that cmdlinepart.c can not handle zero offset value correctly
+(ex. "mtdparts=id:2M@2M,2M@0").
 
-In the 2.5.70-rmk1 kernel I call parse_cmdline_partitions with
-mtd_id="mymapdriver", and specify mtdparts=mymapdriver:<partitions>
-to the kernel. In 2.6.0-test2-rmk1 I have to call parse_mtd_partitions
-to parse the cmdline. However I cannot specify my mtd_id from the map
-driver (except setting the .name member of my map_info struct) as I
-could with 2.5.70. This makes the line
+This is a patch to fix it.  Also I removed including asm/setup.h since
+some archs does not have it.  Please apply.
 
-if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
-
-in cmdlinepart.c:parse_cmdline_partitions() to fail. 
-
-The edb7312 map driver calls parse_mtd_partitions like this: 
-mtd_parts_nb = parse_mtd_partitions(mymtd, probes, &mtd_parts,
-"edb7312-nor"); 
-
-But the 4th arg (origin) is a unsigned long and as I can see
-is not used by the implementation of the function. Is this
-really the way it is supposed to be?
-      
-Comments?
-
-/ Jonas
+--- mtd-20030811/drivers/mtd/cmdlinepart.c	Fri May 30 07:00:05 2003
++++ mtd/drivers/mtd/cmdlinepart.c	Tue Aug 12 16:35:43 2003
+@@ -29,7 +29,6 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/compatmac.h>
+-#include <asm/setup.h>
+ #include <linux/bootmem.h>
+ 
+ /* error message prefix */
+@@ -45,6 +44,7 @@
+ 
+ /* special size referring to all the remaining space in a partition */
+ #define SIZE_REMAINING 0xffffffff
++#define OFFSET_CONTINUOUS 0xffffffff
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -77,7 +77,7 @@
+ {
+ 	struct mtd_partition *parts;
+ 	unsigned long size;
+-	unsigned long offset = 0;
++	unsigned long offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -312,7 +312,7 @@
+ 		{
+ 			for(i = 0, offset = 0; i < part->num_parts; i++)
+ 			{
+-				if (!part->parts[i].offset)
++				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+ 				  part->parts[i].offset = offset;
+ 				else
+ 				  offset = part->parts[i].offset;
+---
+Atsushi Nemoto
