@@ -1,20 +1,20 @@
-Received: from [2002:d556:63ea::1] (helo=phoenix.infradead.org)
+Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ABRnr-0007fe-Bm
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2003 05:37:59 +0100
-Received: from steelemr-loadb-nat-49.caltech.edu ([131.215.49.69]
-	helo=water-ox.its.caltech.edu)
-	by phoenix.infradead.org with esmtp (Exim 4.22)	id 1ABRmm-0006cF-Lq
-	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2003 05:36:52 +0100
-Date: Sun, 19 Oct 2003 21:36:15 -0700 (PDT)
-From: "Noah J. Misch" <noah@caltech.edu>
-To: dwmw2@redhat.com
-Message-ID: <Pine.GSO.4.58.0310171454050.13905@blinky>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1ABbEu-000060-AH
+	for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2003 15:42:32 +0100
+Date: Mon, 20 Oct 2003 23:58:42 +0900 (JST)
+Message-Id: <20031020.235842.126570816.anemo@mba.ocn.ne.jp>
+To: noah@caltech.edu
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <Pine.GSO.4.58.0310171454050.13905@blinky>
+References: <Pine.GSO.4.58.0310171454050.13905@blinky>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
+cc: dwmw2@redhat.com
 cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] Remove needless and non-portable include in mtd
+Subject: Re: [PATCH] Remove needless and non-portable include in mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello David,
+>>>>> On Sun, 19 Oct 2003 21:36:15 -0700 (PDT), "Noah J. Misch" <noah@caltech.edu> said:
 
-The #include <asm/setup.h> in drivers/mtd/cmdlinepart.c does not appear to
-provide any definition this file uses, and it quickly breaks builds on
-architectures that lack such a header, including ia64 and sparc.
+noah> The #include <asm/setup.h> in drivers/mtd/cmdlinepart.c does not
+noah> appear to provide any definition this file uses, and it quickly
+noah> breaks builds on architectures that lack such a header,
+noah> including ia64 and sparc.
 
-This applies to your CVS and linux-2.5 BK as of 0700 UTC 10/20/2003 and passes
-an allyesconfig on (with unrelated exceptions) i386, ia64, and sparc.  I do not
-have the hardware to test it further, but I think the change is straightforward.
-Please let me know if you need further information.
+I have posted a patch including this fix to linux-mtd ML two times
+(two month ago and a week ago).  My patch fixes another problem that
+cmdlinepart.c can not handle zero offset value correctly
+(ex. "mtdparts=id:2M@2M,2M@0").  Please consider applying this fix
+also.  Thank you.
 
-I will probably send you at least one more MTD compatibility patch.
-
-Thanks,
-Noah
-
-# This is a BitKeeper generated patch for the following project:
-# Project Name: Linux kernel tree
-# This patch format is intended for GNU patch command version 2.5 or higher.
-# This patch includes the following deltas:
-#	           ChangeSet	1.1369  -> 1.1370
-#	drivers/mtd/cmdlinepart.c	1.5     -> 1.6
-#
-# The following is the BitKeeper ChangeSet Log
-# --------------------------------------------
-# 03/10/16	noah@caltech.edu	1.1370
-# Remove needless include of asm/setup.h in drivers/mtd/cmdlinepart.c.  This
-# was breaking compilation on architectures that lack such a header.
-# --------------------------------------------
-#
-diff -Nru a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
---- a/drivers/mtd/cmdlinepart.c	Fri Oct 17 13:40:56 2003
-+++ b/drivers/mtd/cmdlinepart.c	Fri Oct 17 13:40:56 2003
-@@ -28,7 +28,6 @@
-
+--- mtd-20030811/drivers/mtd/cmdlinepart.c	Fri May 30 07:00:05 2003
++++ mtd/drivers/mtd/cmdlinepart.c	Tue Aug 12 16:35:43 2003
+@@ -29,7 +29,6 @@
  #include <linux/mtd/mtd.h>
  #include <linux/mtd/partitions.h>
+ #include <linux/mtd/compatmac.h>
 -#include <asm/setup.h>
  #include <linux/bootmem.h>
-
+ 
  /* error message prefix */
+@@ -45,6 +44,7 @@
+ 
+ /* special size referring to all the remaining space in a partition */
+ #define SIZE_REMAINING 0xffffffff
++#define OFFSET_CONTINUOUS 0xffffffff
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -77,7 +77,7 @@
+ {
+ 	struct mtd_partition *parts;
+ 	unsigned long size;
+-	unsigned long offset = 0;
++	unsigned long offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -312,7 +312,7 @@
+ 		{
+ 			for(i = 0, offset = 0; i < part->num_parts; i++)
+ 			{
+-				if (!part->parts[i].offset)
++				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+ 				  part->parts[i].offset = offset;
+ 				else
+ 				  offset = part->parts[i].offset;
+---
+Atsushi Nemoto
