@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from jerusalem.magic.fr ([195.154.101.82])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159joI-0000Tk-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 09:46:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1010611181131.ZM26024@bristol.st.com> 
-References: <1010611181131.ZM26024@bristol.st.com> 
-To: Stuart Menefy <Stuart.Menefy@st.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI vs JEDEC read commands 
-Mime-Version: 1.0
+	id 159kH9-0000Wq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 10:15:51 +0100
+Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
+	by jerusalem.magic.fr (8.9.0/8.9.0) with ESMTP id LAA08076
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 11:21:08 +0200 (CEST)
+Message-ID: <3B25DE97.D2041C9@inventel.fr>
+Date: Tue, 12 Jun 2001 11:19:19 +0200
+From: Xavier DEBREUIL <xde@inventel.fr>
+MIME-Version: 1.0
+CC: linux-mtd@lists.infradead.org
+Subject: problem with util
+References: <3B24EC1B.7F920021@inventel.fr>  <991934470.27485.0.camel@timmy> <20010607114319.A23641@crystal.2d3d.co.za> <20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com> <23825.991907052@redhat.com> <9968.991944081@redhat.com> <2667.992333648@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Jun 2001 09:51:06 +0100
-Message-ID: <7578.992335866@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +25,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hello,
+I compiled util for ARM and my computer(INTEL) ;
 
-Stuart.Menefy@st.com said:
->  However, this got me looking at the code. In virtually every case, a
-> 'read' command is 0xf0, apart from two (one in cfi_cfi_probe and the
-> other in cfi_cmdset_unknown), when is it 0xff. Is this deliberate, and
-> would changing the remaining two to 0xf0 cause any problems? 
+Is zlib-1.1.3 the right version to link with (ARM) ?
+I was compelled to replace every memset calls by loops since __memzero
+is not recognized in my system (ARM and INTEL) !!! Known problem ? Any
+work around ?
 
-They were originally 0xFF because I was dealing with Intel flash when I 
-wrote the CFI probe code, and that's the 'Read Array' command for Intel 
-flash. AFAICT CFI doesn't actually specify a way to take the chip _out_ of 
-read mode, and hence to detect aliases. I suspect 0xF0 should work. Let's 
-change it and see if it breaks - if it does we have to implement a 
-cmdset-specific 'switch back to read mode' function.
+And for my system (INTEL), I add a path to 2.4.2 headers since my system
+is 2.2.18...
 
---
-dwmw2
+Xavier
