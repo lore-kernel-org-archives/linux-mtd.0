@@ -1,44 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ejPj-0007Bz-00
-	for mtd-list@infradead.org; Thu, 28 Sep 2000 20:32:15 +0100
-Received: from cr934547-a.flfrd1.on.wave.home.com
-	([24.112.247.163] helo=mokona.furryterror.org ident=mail)
+	id 13eqlU-0000KI-00
+	for mtd-list@infradead.org; Fri, 29 Sep 2000 04:23:12 +0100
+Received: from sis.com.tw ([203.67.208.2] helo=fw11.sis.com.tw)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ejPi-0007Bt-00
-	for mtd@infradead.org; Thu, 28 Sep 2000 20:32:15 +0100
-From: jitvrlcw@umail.furryterror.org (Amy Fong)
-Subject: mtdchar.c
-Date: 28 Sep 2000 15:31:18 -0400
-Message-ID: <8r06a6$vvs$1@mokona.furryterror.org>
-To: <mtd@infradead.org>
+	id 13eqlR-0000KB-00
+	for mtd@infradead.org; Fri, 29 Sep 2000 04:23:10 +0100
+Message-ID: <39D40AD4.5EB3BB08@sis.com.tw>
+Date: Fri, 29 Sep 2000 11:21:56 +0800
+From: Ollie Lho <ollie@sis.com.tw>
+MIME-Version: 1.0
+To: Juergen Beisert <jbeisert@eurodsn.de>
+CC: mtd@infradead.org
+Subject: Re: DOC2000 and DOC Millennium
+References: <3.0.6.32.20000928084316.007d1510@eurodsn.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Juergen Beisert wrote:
+> 
+> Two questions:
+> 
+> 1. What means NFTL? I always read ist, but I can't find what the letters mean :-(
+> 2. Is DOC2000.c able to handle the DOC Millennium chips? When I read the datasheets I mean they are different chips.
+> 
+> Thanks
+> Juergen Beisert
+> 
 
-mtd/kernel/mtdchar.c hasn't been able to compile with 2.2 series since
-1.9 - in static struct file_operations mtd_fops, the field owner should
-be conditionally compiled.
+1. NAND Flash Translation Layer, an M-System patented way to manange "blocks"
+on NAND flash.
 
-static struct file_operations mtd_fops = {
-#if LINUX_VERSION_CODE > 0x20300
-        owner:          THIS_MODULE,
-#endif
-...
+2. Probably, you should try. The one merged doc2001.c and doc2000.c does not
+have Millennium to test. The one have Millennium (me) doese not hve time to
+test it.
 
-
-afong@ifurita:~/mtd/2.2.18/linux/drivers/mtd$ diff mtdchar.c ~/mtd/mtd/kernel/mtdchar.c 
-
-379d378
-< #if LINUX_VERSION_CODE > 0x20300
-381d379
-< #endif
-
---
-We Suzaku no seishi are too stupid to give up!
-                           (Tasuki - Fushigi Yuugi)
-
-              Amy Fong (afong@furryterror.org)
+Ollie
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
