@@ -1,22 +1,17 @@
-Received: from www.altera.com ([66.35.227.11])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16iWu2-0002zG-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2002 08:36:02 +0000
-Received: from Altera.COM (sunrise.altera.com [137.57.1.1])
-	by www.altera.com (8.9.3+Sun/8.9.3) with ESMTP id AAA06985
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Mar 2002 00:42:51 -0800 (PST)
-Received: from localhost (localhost [[UNIX: localhost]])
-	by localhost.localdomain (8.11.6/8.11.6) id g268lKv09419
-	for linux-mtd@lists.infradead.org; Wed, 6 Mar 2002 08:47:20 GMT
-Message-Id: <200203060847.g268lKv09419@localhost.localdomain>
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Clive Davies <cdavies@altera.com>
-To: linux-mtd@lists.infradead.org
-Subject: Fwd: jffs2 & new linux zlib
-Date: Wed, 6 Mar 2002 08:47:20 +0000
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	id 16iXZ7-00032A-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2002 09:18:29 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200203060847.g268lKv09419@localhost.localdomain> 
+References: <200203060847.g268lKv09419@localhost.localdomain> 
+To: Clive Davies <cdavies@altera.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Fwd: jffs2 & new linux zlib 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 06 Mar 2002 09:29:36 +0000
+Message-ID: <23140.1015406976@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,72 +23,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-What, no comments at all? Shall I just check this in then? - it works for me.
+cdavies@altera.com said:
+> What, no comments at all? Shall I just check this in then? - it works
+> for me.
 
-Clive
+Sorry, I missed this one, possibly due to it mentioning 2.5, or the 
+combination of https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=53659
+and iso8859-15 mails. Neither of which are your fault.
 
-----------  Forwarded Message  ----------
+The code against which your patch was made never existed in my CVS tree. It 
+was fundamentally broken, as you observed. Whoever did the zlib changes in 
+2.5 evidently didn't verify that _either_ jffs2 or ppp_deflate were still 
+working. Both are now fixed in Linus' tree, and I've also back-ported the 
+(fixed) shared zlib code to 2.4, so that I can import the changes into CVS 
+without breaking the 2.4 build. Now, we allocate the workspaces once at 
+init time, rather than doing it each time we need to compress/decompress 
+something.
 
-Subject: jffs2 & new linux zlib
-Date: Tue, 19 Feb 2002 14:24:30 +0000
-From: Clive Davies <cdavies@altera.com>
-To: linux-mtd@lists.infradead.org
+2.4 zlib backport patch at ftp.kernel.org:/pub/linux/kernel/people/dwmw2
+or in BK tree at http://linux-mtd.bkbits.net:8080/zlib-2.4 (note jffs2-2.4 
+tree sitting beside it).
 
-In testing jffs2 in linux 2.5.4-rmk1 I've found that kmalloc cannot allocate
-objects of the size returned by zlib_deflate_workspacesize() and
-zlib_inflate_workspacesize(). The patch below uses vmalloc to sucessfully
-allocate the memory, however I'm not sure that this is the best approach.,
-maybe it would be better to try and reduce the size of the deflate_workspace
-& inflate workspace in zlib? (This might be a ridiculous idea, I haven't a
-clue how zlib works) Any suggestions?
+That tree differs from the jffs2-2_4-branch only in the zlib changes, which 
+will make their way onto the jffs2-2_4-branch when the zlib changes get 
+into 2.4.x.
 
---- linux_2.5.4-rmk1/fs/jffs2/compr_zlib.c	Mon Feb 11 01:50:06 2002
-+++ linux/fs/jffs2/compr_zlib.c	Tue Feb 19 13:33:24 2002
-@@ -80,8 +80,7 @@ int zlib_compress(unsigned char *data_in
- 		return -1;
+> I'm not sure that this is the best approach., maybe it would be better
+> to try and reduce the size of the deflate_workspace & inflate
+> workspace in zlib? (This might be a ridiculous idea, I haven't a clue
+> how zlib works) Any suggestions?
 
- #ifdef __KERNEL__
--	strm.workspace = kmalloc(zlib_deflate_workspacesize(),
--				 GFP_KERNEL);
-+	strm.workspace = vmalloc(zlib_deflate_workspacesize());
- 	if (strm.workspace == NULL) {
- 		printk(KERN_WARNING "deflateInit alloc of workspace failed\n");
- 		return -1;
-@@ -123,7 +122,7 @@ int zlib_compress(unsigned char *data_in
+The inflate workspace is OK - that's only about 40KiB. If we could reduce 
+the deflate workspace from its current 400-odd, that would be useful.
 
- 	}
- 	zlib_deflateEnd(&strm);
--	kfree(strm.workspace);
-+	vfree(strm.workspace);
-
- 	D1(printk(KERN_DEBUG "zlib compressed %ld bytes into %ld\n", strm.total_in,
-strm.total_out));
-
-@@ -137,7 +136,7 @@ int zlib_compress(unsigned char *data_in
-
-  out_err:
- 	zlib_deflateEnd(&strm);
--	kfree(strm.workspace);
-+	vfree(strm.workspace);
- 	return -1;
- }
-
-@@ -148,8 +147,7 @@ void zlib_decompress(unsigned char *data
- 	int ret;
-
- #ifdef __KERNEL__
--	strm.workspace = kmalloc(zlib_inflate_workspacesize(),
--				 GFP_KERNEL);
-+	strm.workspace = vmalloc(zlib_inflate_workspacesize());
- 	if (strm.workspace == NULL) {
- 		printk(KERN_WARNING "inflateInit alloc of workspace failed\n");
- 		return;
-@@ -177,5 +175,5 @@ void zlib_decompress(unsigned char *data
- 		printk(KERN_NOTICE "inflate returned %d\n", ret);
- 	}
- 	zlib_inflateEnd(&strm);
--	kfree(strm.workspace);
-+	vfree(strm.workspace);
- }
-
--------------------------------------------------------
+--
+dwmw2
