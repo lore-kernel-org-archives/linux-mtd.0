@@ -1,14 +1,14 @@
-Received: from web51006.mail.yahoo.com ([206.190.38.137])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cr6PY-0006Em-9m
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 22:21:37 -0500
-Message-ID: <20050119032133.28108.qmail@web51006.mail.yahoo.com>
-Date: Tue, 18 Jan 2005 19:21:33 -0800 (PST)
-From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-To: linux-mtd@lists.infradead.org
+Date: Wed, 19 Jan 2005 13:03:55 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Jochen Karrer <j.karrer@lightmaze.com>
+In-Reply-To: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
+Message-ID: <Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
+References: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: some questions regarding the write operation on JFFS2
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mysqld on jffs2: MyISAM Index write is slow
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,23 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
- I traced the write operation from the Linux kernel to
-the JFFS2. I have some questions:
-    1) Is there any chance that there could be some
-partial writes on the NAND flash (if power failure
-happens during write operation).
 
-    2) Does SYNC has any meaning when using the JFFS2.
-As fas as I noticed the write operations are
-formwarded to the MTD device, and they are not cached.
+Not expert in this issue, but I was told by David that JFFS2 is 
+synchronous, and you need redesigning it if you want asynchronous 
+behaviour.
 
-Thank you so much in advance,
---vahid
+> Hi,
+> I am using mysqld on jffs2. Tables work fine, but as soon as
+> i am using indexes the writing of new entries becomes very slow.
+> I found that mysql is writing one 1024 byte block to the index file
+> of the MyISAM table (.MYI) for every new row. This is up to 20 times in
+> sequence
+> the same block. On non synchronous filesystems
+> this goes to a Buffer in RAM, but on jffs2 this causes many writes to
+> the flash. In my amdflash emulator I found that mysql writes about 180MB to
+> the flash
+> for a table of 13MB with 88000 rows.
+> 
+> Is there a way to make jffs2 a little bit asynchronous ? Or does anybody
+> know
+> how to tell mysqld to write smaller blocks ? Mounting a reiser as loopback
+> from
+> a file on jffs2 does not work because jffs2 doesn't support mmap.
+> 
+> Jochen
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Read only the mail you want - Yahoo! Mail SpamGuard. 
-http://promotions.yahoo.com/new_mail 
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
