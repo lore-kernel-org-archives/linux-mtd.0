@@ -1,14 +1,19 @@
-Received: from web52704.mail.yahoo.com ([206.190.39.155])
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
 	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bk86R-00014x-Do
-	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2004 17:12:48 -0400
-Message-ID: <20040712211245.32443.qmail@web52704.mail.yahoo.com>
-Date: Mon, 12 Jul 2004 14:12:45 -0700 (PDT)
-From: Michael Moedt <xemc@yahoo.com>
-To: linux-mtd@lists.infradead.org
+	id 1BkDjF-0001gl-00
+	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2004 23:13:14 -0400
+Received: from eric by maxwell.lnxi.com with local (Exim 3.35 #1 (Debian))
+	id 1BkDjE-0000KS-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Jul 2004 21:13:12 -0600
+To: <linux-mtd@lists.infradead.org> 
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 12 Jul 2004 21:13:11 -0600
+Message-ID: <m3vfgsmwfs.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: Writes failures & cpu speed
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Subject: [RFC] refactoring MTD cmdset ops, jedec_probe, and cfi_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,79 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
 
-I'm running into an MTD problem that I'm not sure how to hunt down.
-Has anyone seen this, or can you guide me as to what I should look
-at?
+Currently for NOR flash we have two general purpose probe
+routines that cover almost every case: cfi_probe and jedec_probe.
 
-Here's the details:
-I'm using a Sharp LH7A400 SoC (that's an ARM9), w/ SDRAM, NAND flash
-(64MiB of Toshiba NAND (512+16 byte pagesize, 16KiB block/erase
-size).  I've partitioned it into four partitions, 1. bootloader, 2.
-kernel, 3 and 4. JFFS2 filesystems. (#3 is my root, 8MiB)
+cfi_probe was written first and it assumes that every command set
+has a unique number.  For CFI chips that appears to hold true
+as the command set identifier is part of the interface.  However
+for devices detected by jedec_probe that is not quite true.
 
-I'm using kernel 2.6.6, with modifications to support my flash layout
-and such things.  I'm also using the 2004-05-04 MTD snapshot.
+While all of the devices have command sets quite similar to those
+supported by cfi_probe frequently there in not a one to one mapping of
+functionality.  The biggest differences are that many AMD command set
+chips detected by jedec_probe do not support all of cfi_cmdset_0002,
+and that several of the firmware hub based devices have weird offset
+unlock registers, that cfi_cmdset_0001 does not support.
 
-When I configure the CPU in the bootloader to run at 100MHz, it seems
-to work fine.  However, when I run it at 195MHz (it goes up to 200),
-I can't successfully copy files to my JFFS2 filesystem.  Here's what
-it looks like:
+As more features are implemented and the mtd drivers are becoming
+more widely used these semantic mismatches are beginning to cause
+maintenance problems.  Calling certain methods on chips
+that do not support them could be quite error prone.
 
-100MHZ:
-# cd /root
-# cp nandwrite nandwrite_2
-# rm nandwrite_2
-#
+To remedy this I would like to have the probe functions fill in
+not the CmdSet number but a structure full of function pointers.
+And of course the upper layers need to be modified to cope.
 
-at 195MHz:
-# cp nandwrite nandwrite_2
-Write of 2260 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-Write of 2260 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-Write of 2263 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-Write of 2263 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-Write of 2263 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-Write of 2263 bytes at 0x0010c000 failed. returned -5, retlen 0
-Not marking the space at 0x0010c000 as dirty because the flash driver
-returned o
-cp: Write Error: Input/output error
-# rm nandwrite_2
-# jffs2_flush_wbuf(): Write failed with -5
-Write of 2554 bytes at 0x0010c034 failed. returned -5, retlen 0
-Not marking the space at 0x0010c034 as dirty because the flash driver
-returned o
-Write of 2554 bytes at 0x00108034 failed. returned -5, retlen 460
-Error writing new dnode: -5
+Doing this refactoring will be a little bit painful but I don't see
+any other way to keep the code base maintainable as our number
+of supported chips grows.
 
-#
+I have both Intel and AMD chips to test against.  CFI and non CFI
+all being used as motherboard BIOS chips.  So I should be able
+to catch the vast majority of problems in testing.  All but the
+delicate chip interleave case, but I should not actually be touching
+that part of the code, and at least I am aware of the issue.
 
-and sometimes, it also results in a kernel Segfault:
-# cp nandwrite nandwrite_2
-Write of 2473 bytes at 0x00108c78 failed. returned -5, retlen 392
-jffs2_flash_writev(): Non-contiguous write to 00109624
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-pgd = c02cc000
-[00000000] *pgd=c0377011, *pte=00000000, *ppte=00000000
-Internal error: Oops: 807 [#1]
-...
+Does anyone have any problems with this refactoring?
 
-
-I don't know why a faster CPU speed would cause something like this. 
-Could there be some timing bug that I've found?
-What does a return value of -5 mean?
-
-
-Thanks in advance,
-Mike
+Eric
