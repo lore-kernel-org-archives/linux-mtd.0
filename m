@@ -1,21 +1,23 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from mailhost.cs.tamu.edu
+	([128.194.130.106] helo=cs.tamu.edu ident=0)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190ku6-00065B-BR
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 17:15:58 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HCQ0038L55RB4@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 18:15:28 +0200 (MEST)
-Date: Wed, 02 Apr 2003 19:15:56 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030402095500.2672a730.EManning@PRISMIQ.com>
-To: Earl Manning <EManning@PRISMIQ.com>, linux-mtd@lists.infradead.org
-Message-id: <200304021915.56265.tglx@linutronix.de>
-MIME-version: 1.0
-References: <20030402095500.2672a730.EManning@PRISMIQ.com>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: issue with eraseall
-Reply-To: tglx@linutronix.de
+	id 190myf-0006VX-BC
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 19:28:49 +0100
+Received: from unix.cs.tamu.edu (unix [128.194.138.13])
+	by cs.tamu.edu (8.11.0/8.11.0) with ESMTP id h32ISlr22168
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 2 Apr 2003 12:28:47 -0600 (CST)
+Received: from localhost (choudhri@localhost)
+	by unix.cs.tamu.edu (8.10.2+Sun/8.10.2) with ESMTP id h32ISlI19098
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 2 Apr 2003 12:28:47 -0600 (CST)
+Date: Wed, 2 Apr 2003 12:28:47 -0600 (CST)
+From: Siddharth Choudhuri <choudhri@cs.tamu.edu>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.GSO.4.44.0304021225270.18949-100000@unix.cs.tamu.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: newbie: struct flchip in flashchip.h...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 April 2003 17:55, Earl Manning wrote:
-> In my implementation I just changed the value written by eraseall to be 8.
-> The offending pieces of code are:
->
-> 	util/eraseall.c:84
-> 	fs/jffs2/wbuf.c:671-675
-I don't see a piece of offending code there
 
-util/eraseall.c: 106 ...
-		// format for JFFS2
-		if (!jffs2) 
-			continue;
-				
-		// write cleanmarker	
---->		if (isNAND) {
-			struct mtd_oob_buf oob;
-			oob.ptr = (unsigned char *) &cleanmarker;
-			oob.start = erase.start;
---->			oob.start += meminfo.oobsize == 16 ? 8 : 6;
---->			oob.length = meminfo.oobsize == 16 ? 8 : 2;
-			if (ioctl (fd, MEMWRITEOOB, &oob) != 0) {
-				fprintf(stderr, "\n%s: %s: MTD writeoob failure: %s\n", exe_name, 
-mtd_device, strerror(errno));
-				continue;
-			}
-		} else {
-This is for NOR !
-		}
+What are the members of the structure <mtd/flashchip.h>
+struct flchip {
+...
+	int word_write_time;
+	int buffer_write_time;
+	int erase_time;
+}
+used for ?
 
+-siddharth
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+_____________________________________________________________________
+     Unix is user friendly - its just picky about its friends.
+_____________________________________________________________________
