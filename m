@@ -1,18 +1,22 @@
-Received: from orion.tskgv.org.tr ([195.142.233.59]
-	helo=orion.havelsan.intranet)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19At8o-0002qW-M9
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 16:05:03 +0100
-Message-ID: <002a01c30f29$ca04e4e0$3064000a@nur>
-From: "nur" <nurpinar@e-kolay.net>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-References: <001b01c30f27$a168d890$3064000a@nur>
-Date: Wed, 30 Apr 2003 18:04:25 +0300
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: Re: unknown chip id FF
+	id 19AtWH-00034r-Iq
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 16:29:17 +0100
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+	21 2002)) with SMTP id <0HE500BD4XO9EV@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Wed, 30 Apr 2003 17:29:00 +0200 (MEST)
+Date: Wed, 30 Apr 2003 18:28:17 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <Law11-F117Oc7wo95EF00013168@hotmail.com>
+To: J B <mad_flasher@hotmail.com>, dwmw2@infradead.org
+Message-id: <200304301828.17498.tglx@linutronix.de>
+MIME-version: 1.0
+References: <Law11-F117Oc7wo95EF00013168@hotmail.com>
+Content-type: text/plain; charset=iso-8859-15
+Content-transfer-encoding: 7BIT
+cc: linux-mtd@lists.infradead.org
+Subject: Re: moving MTD partitions
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok I found the reason still not understanding why
-dinfo tells that window adress is d0000
-I don't know how it changes or what it depends.
-Anyway sorry to bother
+On Wednesday 30 April 2003 17:00, J B wrote:
+>
+> i'll have to check in our version of jffs2 to see if SIGHUP still works.
+> using 2.4.18, so maybe...
 
+SIGHUP still works, but it is hard to figure out, if gc has cleaned up 
+everything. They only way for now is repeat -SIGHUP for a certain amount of 
+time. Note that there is no real switch off for gc. So it will recycle clean 
+blocks until you decide to stop it, so some hacking will be neccecary though.
+The block shuffle stuff (partition magic) itself is no big deal. Find the 
+empty ones and rotate the blocks until the empty ones are on top or bottom of 
+the partition. This could be done from userspace.
 
+> as for the special tool, i wonder if PowerQuest makes a version of
+> PartitionMagic that can deal with MTD devices... ;)
 
------ Original Message -----
-From: "nur" <nurpinar@e-kolay.net>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Sent: Wednesday, April 30, 2003 5:48 PM
-Subject: unknown chip id FF
+I suggested a mtd-partition-magic project some minutes ago on IRC :)
 
-
-> First of all, i searched my problem through google.com
-> Infradead archive refers to wrong pages for a specific subject
-> I mean, i m clicking on "DOC 2000 driver (NFTL) in kernel 2.4.7" link but
-it
-> goes to "Porting FFS2 on MIPS subject"
-> So that, I couldn't find any comment about my problem.
->
-> I can boot my diskonchip millennium on a platform without any problem.
-DoCs
-> window address is e8000
-> The problem is that, I can't boot the same chip on another platform even
-> though I changed window address to e8000 from bios settings
-> If I boot from romdos, i can see the content of diskonchip. When I boot
-from
-> DoC it says, using configured probe address e8000... possible diskonchip
-> with unknown chip id FF found at E8000. So can't mount from DoC.
-> Any idea would be appreciated. Thanks in advance
->
->
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
