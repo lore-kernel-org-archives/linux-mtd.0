@@ -1,43 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13ABC7-0006Fm-00
-	for mtd-list@infradead.org; Thu, 06 Jul 2000 13:55:55 +0100
+	id 13ABSv-0006J3-00
+	for mtd-list@infradead.org; Thu, 06 Jul 2000 14:13:17 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13ABC6-0006Fg-00
-	for mtd@infradead.org; Thu, 06 Jul 2000 13:55:54 +0100
+	id 13ABSu-0006Ix-00
+	for mtd@infradead.org; Thu, 06 Jul 2000 14:13:16 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <396460AB.9BEC2657@crossnet.co.jp> 
-References: <396460AB.9BEC2657@crossnet.co.jp>  <Pine.LNX.4.21.0007050937500.1226-100000@imladris.demon.co.uk> 
-To: Masami Komiya <mkomiya@crossnet.co.jp>
-Cc: mtd@infradead.org
-Subject: Re: Fujitsu MBM29LV160 
+In-Reply-To: <Pine.LNX.3.96.1000706132924.20701C-100000@fafner.axis.se> 
+References: <Pine.LNX.3.96.1000706132924.20701C-100000@fafner.axis.se> 
+To: Bjorn Wesen <bjorn.wesen@axis.com>
+Cc: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>,
+  jffs-dev@axis.com, mtd@infradead.org
+Subject: Re: jffs_erasable_size: offset = 0x0034b000 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 06 Jul 2000 13:55:48 +0100
-Message-ID: <327.962888148@cygnus.co.uk>
+Date: Thu, 06 Jul 2000 14:13:12 +0100
+Message-ID: <488.962889192@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-mkomiya@crossnet.co.jp said:
-> I want to use FTL and JFFS for our system. These filesystems can be
-> used on AMD's flash chips?
+bjorn.wesen@axis.com said:
+>  We'll probably leave the 2.0 as it is, and when we switch to 2.4
+> we'll either use mtd or just keep going with our own little flash.c
+> (which works fine :)
 
-FTL provides a block device, on which you put a 'normal' filesystem.
-JFFS runs directly on the flash.
+It looks like 2.4 will have the MTD code in it already - Linus included 
+Tuesday's snapshot in 2.4.0-test3-pre4.
 
-You don't need both, and FTL is patented in some jurisdictions so you're 
-not permitted to use it on non-PCMCIA devices.
+/me digs into a trench and waits for the bug reports and support questions 
+to roll in :)
 
 
-mkomiya@crossnet.co.jp said:
-> Our system has two interleaved flash in 32 bit mode. So I want to
-> implement only 32bit read & write routines instead of 16 bit if it is
-> allowed. FTL or JFFS require 16bit read & write routines ?
-
-FTL and JFFS can't actually tell what the underlying MTD driver uses to 
-talk to the flash chips. So it doesn't matter. 
 
 --
 dwmw2
