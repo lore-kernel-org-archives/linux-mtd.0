@@ -1,15 +1,18 @@
-Received: from eris.discordia.ch ([212.55.212.99] ident=postfix)
+Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15HAF7-0000us-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 21:24:26 +0100
-Date: Mon, 2 Jul 2001 22:30:28 +0200
-From: Peter Keel <killer@discordia.ch>
-To: linux-mtd@lists.infradead.org
-Subject: DOC missing erasesize
-Message-ID: <20010702223028.A9468@discordia.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 15HC5m-00013D-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 23:22:54 +0100
+Message-ID: <3B40F5BE.6DC58E3A@daniel.com>
+Date: Mon, 02 Jul 2001 17:29:18 -0500
+From: Vipin Malik <vipin.malik@daniel.com>
+MIME-Version: 1.0
+To: jffs-dev <jffs-dev@axis.com>
+CC: David Woodhouse <dwmw2@infradead.org>,
+ 	MTD for Linux <linux-mtd@lists.infradead.org>,
+ 	elw_dev_list@embeddedlinuxworks.com
+Subject: Update on JFFS2 jitter tests
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,36 +24,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Kernel is 2.4.5. My DOC has no erasesize: 
+Ok folks, here is the latest that I have on the JFFS2 Jitter tests that
+I've been doing:
 
-This happens when loading: 
-M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
-$Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $
-Could not find valid boot record
-Could not mount NFTL device
-M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-DiskOnChip 2000 found at address 0xFFFD8000
-Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
-2 flash chips found. Total DiskOnChip size: 16 Mb
-Ignoring DiskOnChip 2000 at 0xFFFDA000 - already configured
+To recap there are two things that I found:
 
-cat /proc/mtd
-mtd0: 01000000 "DiskOnChip 2000"
+1. If a task is writing to the JFFS2 fs, then it can be blocked for
+"A_LARGE_TIME_SECS". How long this is is highly dependent on the speed
+of the underlying platform + the type of data on the JFFS2 fs. If the
+data is highly compressed, then the time is larger.
+On a 486DX4 133 processor (approx 61VAX MIPS), the block time can be as
+large as 8 seconds for (mostly) incompressible data and > 40seconds for
+compressible data!
 
-Consequently, everything else fails with ioctl-errors. 
-nftl_format does its job for some time, until it hits something else
-and starts spewing. 
+This result still stands (in agreement with what I reported earlier).
 
-What should 0xFFFDA000 mean anyway? Nothing like this in the docs. 
+2. I had originally reported that "other" RT tasks not interacting with
+JFFS2 also get blocked for a VARY_LARGE_TIME_SECS. This is
+NOT NECESSARILY TRUE.
 
-I'd be glad to have set up the chip in relatively short time, because
-my other machine keeps turning off its power (god damn ATX), and the
-IDE-Controller on the terminal with the DOC is broken and has a 
-throughput of 400kb/sec.. The world is bad. 
+I was running the task filling up the JFFS2 fs as a POSIX real time
+SCHED_FIFO/SCHED_RR task (behavior is same with both?). This was causing
+the
+GC in the write() to JFFS2 to happen with the priority of the RT task,
+thus blocking my "other" task. My bad for this one!
 
-Thank you
-Peter
--- 
-"Any good Unix security engineer can clean up any Unix box. But I'm not 
- sure there are people even within Microsoft who know how to clean up 
- an NT box." -- Michael Zbouray
+On further tests, with a POSIX RT SCHED_RR task NOT INTERACTING with
+JFFS2, and a "regular" linux user task filling up the JFFS2 fs, I found
+that the
+worst case block (jitter) for the RT task was from ~50ms to ~130ms. This
+was again dependent on the type and amount of compressible data on the
+JFFS2 fs.
+
+This is different from what I had earlier reported and quite acceptable
+from a system standpoint.
+
+I think that we still need to, if we can, speed up the GC process so
+that the block times for tasks writing to JFFS2 go down. Block times as
+high as 8+ seconds
+are IMHO not very palatable.
+
+David, this is also with the rev 1.49 scan.c + nodemgmt.c and erase.c
+patched with the two patches you sent me last weekend.
+
+Vipin
