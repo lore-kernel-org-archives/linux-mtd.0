@@ -1,18 +1,18 @@
-Received: from mailout08.sul.t-online.com ([194.25.134.20])
+Received: from smtp-1.hut.fi ([130.233.228.91] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18287x-00031V-00
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Oct 2002 11:43:41 +0100
-To: xuli <slowforce@zju.edu.cn>
-Cc: linux-mtd@lists.infradead.org
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: JFFS2 basic question 
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Sun, 17 Oct 2004 14:32:30 +0800."
-             <E18243X-0002eo-00@pentafluge.infradead.org>
-Date: Thu, 17 Oct 2002 12:43:13 +0200
-Message-Id: <20021017104318.89BA9FAA7@denx.denx.de>
+	id 1828Sj-00035r-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Oct 2002 12:05:09 +0100
+Date: Thu, 17 Oct 2002 13:36:10 +0300
+From: Jarkko Lavinen <jlavi@iki.fi>
+To: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
+Cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Benchmarking JFFS2
+Message-ID: <20021017103610.GA13795@kosh.hut.fi>
+References: <20020502155602.A8801@kosh.hut.fi> <13211.1020346858@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13211.1020346858@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +24,58 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In message <E18243X-0002eo-00@pentafluge.infradead.org> you wrote:
->
-> i want to implement the jffs2 file system under kernel2.4.4,
-> but when i compile the kernel with the MTD and Jffs2 support
-> i got a lot of errors: multiple definition. Because there is 
+On Thu, May 02, 2002 at 02:40:58PM +0100, David Woodhouse wrote:
 
-You could be a bit more specific _which_ errors you get.
+[ JFFS2 dirty fs poor performance discussd ]
 
-> a file zlib.c both located in fs/jffs2/ and drivers/net/.
-> Does anybody meet the same problem with me?
+> Neither of the above are valid excuses for the fact that write performance
+> on a dirty file system sucks royally. There are some things we can do about
+> that.
 
-It worked fine for me, in a couple of configurations,  running  2.4.4
-on misc PowerPC systems.
+[ three optimizations suggested ]
 
-Best regards,
 
-Wolfgang Denk
+In May I was using a prototype board running on ARM 925T (Omap). Since
+then I have changed the testing to TI EVM 1510 evaluation system
+available from TI. In the spring I was using 120 MHz, now 60MHz. The
+flash was then 28F320B3 Strataflash chip, now it is Intel 28F128
+StrataFlash. Also I am now using reasonably new snapshot of JFFS2 from
+October 9th.
 
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-To program is to be.
+The performance in last spring:
+http://www.hut.fi/~jlavi/jffs2/h_fstime1605combined.png
+
+Please note the block size scale is logarithmic.  Dirty files system
+performance peaked at the block size of 600 .. 700 bytes and at
+singular point of 4096 bytes.
+
+The performance now with the JFFS2 snapshot from October 9th:
+http://www.hut.fi/~jlavi/jffs2/h_14102002_dirtyblocks_2.4.19_CVS0910.png
+
+Please note the block size scale is linear.  The dirty file system
+performance follows now very accurately to the clean file system
+performance. This is partially due improved measurement accuracy:
+longer benchmark time, using warmup pass, setting the benchmark do
+equal mount of overwriting among data-points. The dirty file system
+performance measured this way fluctuates +- 1% with 480 second
+benchmark time.
+
+Latencies:
+http://www.hut.fi/~jlavi/jffs2/refpoint_1610_60M_+ID_t480w120_l100000_v2.4.19_CVS0910.png
+
+This time double logarithmic chart.  I don't see over 10 second
+latencies anymore. In the latency benchmark the maximum latency of
+3.3s occured once among 100 000 samples.
+
+Performance fluctuation due to GC:
+http://www.hut.fi/~jlavi/jffs2/gc_10102002_scatterdirty_2.4.19_MTD0910.png
+
+The sample is short but shows the general pattern of how the background GC 
+thread does its work.
+
+Of course measuring write throughput is just one side of performance
+but I think it is fair to say JFFS2 write performane on dirty file
+system with low performance CPUs has improved dramatically since last
+spring.
+
+Jarkko Lavinen
