@@ -1,23 +1,25 @@
-Received: from phoenix.infradead.org ([195.224.96.167])
+Received: from carisma.slowglass.com ([195.224.96.167]
+	helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JrvW-0000Yt-OZ
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 10:36:27 +0100
-Received: from avicenna.cc.boun.edu.tr ([193.140.210.25])
+	id 19Jrzx-0000w7-BT
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 10:41:02 +0100
+Received: from [203.194.209.83] (helo=machine36.com)
 	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 19Jddq-0001Cm-00
-	for linux-mtd@lists.infradead.org; Sat, 24 May 2003 19:21:15 +0100
-Received: from saritepe.cc.boun.edu.tr ([193.140.192.31])
-	M2003052421193827204
-	for <linux-mtd@lists.infradead.org>; Sat, 24 May 2003 21:19:38 +0300
-Message-ID: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-Date: Sat, 24 May 2003 21:20:51 +0000
-From: kusdogan@boun.edu.tr
-To: linux-mtd@lists.infradead.org
+	id 19JMfI-0007HP-00
+	for linux-mtd@lists.infradead.org; Sat, 24 May 2003 01:13:36 +0100
+From: Mark Meade <mark@lakeshoremicro.com>
+To: scohen@atlanticpositioners.com,
+ <linux-mtd@lists.infradead.org>
+Date: Fri, 23 May 2003 20:10:37 -0400
+References: <001201c32081$b4e2d360$1d28a8c0@flpalmharbor>
+In-Reply-To: <001201c32081$b4e2d360$1d28a8c0@flpalmharbor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso8859-9;q=1.0
-Content-Transfer-Encoding: 8bit
-Subject: Oops ERROR : Unable to handle kernel NULL pointer dereference at
- virtual address 00000000
+Content-Disposition: inline
+Message-Id: <200305232001.01206.mark@lakeshoremicro.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Re: Corrupted DOC 2000 and Tools Building Problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thursday 22 May 2003 12:46 pm, Stephen D. Cohen wrote:
+> If anyone can suggest a method to revive my scrogged DOC, I will greatly
+> appreciate it. 
 
-I patched my 2.4.18 kernel with latest MTD source. Now it crashes in in fucntion 
-add_mtd_device (mtdcore.c). I need help on this topic. I patched the code because 
-the previous one was crashing while invalidating the device after it detects partitions.
+I've had more than a few times when I've thought my DOC was completely dead, 
+and I've always been able to revive it with an older M-Sys utility called 
+"docpmap.exe".  I recall that this command could be dangerous - it had the 
+ability to completely erase the DOC, including the bad block table.
 
----- source -----
+I don't think this utility is available anymore, but similar functionality may 
+be available through command line options to DFORMAT.
 
-                        DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->nam$                   
-                       /* No need to get a refcount on the module containing
-                           the notifier, since we hold the mtd_table_mutex */
-                        list_for_each(this, &mtd_notifiers) {
-                                struct mtd_notifier *not = list_entry(this, stru$                                
-		    not->add(mtd);		<------------- CRASH
-                        }
-
----- output ------
-
-H720x-MTD probing 16bit FLASH
- Amd/Fujitsu Extended Query Table v1.0 at 0x0040
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-cmdlinepart partition parsing not available
-Using builtin partition table
-Creating 1 MTD partitions on "SinX Flash":
-0x00100000-0x00200000 : "jffs2"
-mtd: Giving out device 0 to jffs2
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-pgd = c0004000
-*pgd = 00000000, *pmd = 00000000
-Internal error: Oops: ffffffff
-CPU: 0
-pc : [<c00879a8>]    lr : [<00000001>]    Not tainted
-sp : c0117f68  ip : 60000013  fp : 00000000
-r10: 00000000  r9 : 00000001  r8 : c00c5970
-r7 : c00c57d4  r6 : c00c584c  r5 : ffffffff  r4 : c011f2e0
-r3 : 00000000  r2 : c00c5898  r1 : fffffff8  r0 : c011f2e0
-Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
-Control: 217F  Table: 4000401D  DAC: 0000001D
-Process swapper (pid: 1, stackpage=c0117000)
-Stack: (0xc0117f58 to 0xc0118000)
-7f40:                                                       00000001 c00879a8
-7f60: 00000013 ffffffff c00c587c c01e1160 c00c5890 c00c57d4 c0087da0 c00c58cc
-7f80: c01e1160 c00c57e8 c0084080 c01e1160 c01e1060 00000005 00000000 
-c0085724
-7fa0: 00200000 00000001 c00b9bac c00e44b4 c00e44b8 00000000 c00e44b0 
-41807202
-7fc0: 4000f848 c000f5e8 c0010318 c001031c c00c7418 c00c740c c00c2b40 
-c00088b4
-7fe0: 00000800 c00e5358 c001104c 00000800 c00e5358 c00c7418 c00c740c 
-c0012d28
-Backtrace: no frame pointer
-Code: e582e000 e121f00c d1a0c002 dbfe30e5 (e5833000)
-Kernel panic: Attempted to kill init!
+It's also possible that eraseall and nftl_format under Linux could fix things 
+up, but that may trash the BBT as well.
