@@ -1,19 +1,18 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from [64.244.22.242] (helo=mail.seranoa.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16bn6o-0005yn-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 18:29:22 +0000
-Date: Fri, 15 Feb 2002 19:40:33 +0100
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Robert Kaiser <rob@sysgo.de>, linux-mtd@lists.infradead.org
-Subject: Re: MTD concat layer
-Message-ID: <20020215194033.B10201@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.21.0202151806180.9629-100000@dagobert.svc.sysgo.de> <30752.1013796129@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30752.1013796129@redhat.com>; from dwmw2@infradead.org on Fri, Feb 15, 2002 at 06:02:09PM +0000
+	id 16bo8G-00062W-00
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 19:34:56 +0000
+Received: from seranoa.com (IDENT:andrew.dixon@[172.16.1.202])
+	by mail.seranoa.com (8.11.0/8.11.0) with ESMTP id g1FGbKs07108
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 11:37:47 -0500
+Message-ID: <3C6D35F6.6CF2A996@seranoa.com>
+Date: Fri, 15 Feb 2002 11:23:18 -0500
+From: Andrew Dixon <andrew.dixon@seranoa.com>
+MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: spanning multiple chips with one mtd device
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,39 +24,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
+Hi All,
 
-> >  Hmm, I agreed with you about this before I actually attempted coding
-> > it this way, but the code turned out to be a mess. IMHO, it is _much_
-> > cleaner as a seperate layer. What would be the advantage of merging it
-> > into the partition code ?
-> 
-> Fewer wrapper layers to go through. Look at the part_read() call I 
-> implemented - is that really so bad for the case where people don't have 
-> multiple 'sections' in each partition?
+I've got a board here with two strataflash chips that are contiguous in
+memory.  I'd like linux to use as one mtd device.  I've kind of got it
+to kind of work by faking out cfi_chip_setup in cfi_probe.c.  I just
+increase cfi->cfiq->DevSize by one so that it thinks the device is twice
+as big and then I add one to cfi->cfiq->NumEraseRegions so that it
+thinks that there are two erase blocks (each one being one of my flash
+chips).  
 
-Are fewer wrapper layers really an advantage? They don't improve
-maintainability or correctness, nor do they give new features.
-An additional wrapper only needs one additional function call, so
-execution time should not degrade much. But it will actually improve,
-whenever you don't need the additional layer.
+This device is happily recognized and I can mount it as a jffs2 on
+/mnt.  It even works as long as I don't write too much data to it.  When
+I try to write enough data so that it should access the other flash chip
+I run into problems.  The write seems to go OK and the data looks good
+but if I unmount and remount the partition all of the data is lost and
+I've got an empty filesystem.  If I've only written a few small files I
+can unmount and remount without problem.
 
-> > - significant effort, specifically since the current partitioning
-> >   code is scheduled for replacement by Jörn's code, so I'd have to
-> >   do it twice. 
-> 
-> Jörn's code needs to provide this functionality to be merged - making sure 
-> there's no regression is part of the work necessary for merging the new 
-> stuff, and wouldn't necessarily fall to you.
+If anyone has any hints, tips or pointers for me I'd really appreciate
+it.
 
-Ack.
-Apart from that, it is often quite a good idea to write the same code
-twice. First implementations usually suck, especially mine.
+Thanks,
+Andy
 
-Jörn
-
+ 
 -- 
-You can't tell where a program is going to spend its time. Bottlenecks
-occur in surprising places, so don't try to second guess and put in a
-speed hack until you've proven that's where the bottleneck is.
--- Rob Pike
+Andrew Dixon
+Software Engineer
+Seranoa Networks
+978.897.3434 x231
