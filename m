@@ -1,50 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14sOcv-0000dw-00
-	for mtd-list@infradead.org; Wed, 25 Apr 2001 13:42:37 +0100
-Received: from 61-218-105-170.hinet-ip.hinet.net ([61.218.105.170] helo=maillog.sis.com.tw)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14sOct-0000dl-00
-	for mtd@infradead.org; Wed, 25 Apr 2001 13:42:36 +0100
-Message-ID: <3AE68DD6.382351AC@sis.com.tw>
-Date: Wed, 25 Apr 2001 16:41:58 +0800
-From: Ollie Lho <ollie@sis.com.tw>
+	id 14sOn2-0000j3-00
+	for mtd-list@infradead.org; Wed, 25 Apr 2001 13:53:04 +0100
+Message-ID: <3AE6C937.7C174E07@crossnet.co.jp>
+Date: Wed, 25 Apr 2001 21:55:19 +0900
+From: Masami Komiya <mkomiya@crossnet.co.jp>
 MIME-Version: 1.0
-To: "Carson, Jon A." <JACarson@addcoinc.com>
-CC: "'mtd@infradead.org'" <mtd@infradead.org>,
-        "Meyers, Jerry M." <JMMeyers@addcoinc.com>
-Subject: Re: Still having problems with nftl_format
-References: <5B08DC7C9AA6D411930E00105A19794B3E2405@EXCHANGE>
-Content-Type: text/plain; charset=us-ascii
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org
+Subject: Re: (No Subject)
+References: <3AE6C0DC.CFA18C77@crossnet.co.jp>  <3AE69E21.CDCF90A1@crossnet.co.jp> <20010424113037.FQCK11909.t21mta02-app.talk21.com@t21mtaV-lrs> <3311.988123586@redhat.com> <25105.988194419@redhat.com> <4501.988201568@redhat.com>
+Content-Type: text/plain; charset=iso-2022-jp
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-"Carson, Jon A." wrote:
+David Woodhouse wrote:
 > 
-> Hi,
+> mkomiya@crossnet.co.jp said:
+> >  I was misunderstanding about the definitions in cfi_probe_chip().
+> > Attached patch is for cfi_cmdset_0002.c applied simon's patch.
 > 
-> A while back ( April 9, 2001 ) , I reported a problem with nftl_format. I
-> know you are busy, but I wanted to state the problem again and also add some
-> new information.
-> 
-> The problem is that everything is nice until it gets to Phase 3 which deals
-> with writing some data into the chip.
-> 
-> I plugged in some printf's that show the state of the variables of interest,
-> before we drop into the "for" loop.  I also added a printf to the for loop
-> in case something was sucessful.  Please note that the first time through
-> the loop, the call to the "ioctl" was apparently sucessful.  Every call to
-> the same ioctl after that failed with errno == 14  (Bad address) .  I have
-> included an excerpt from the nftl_format.c showing the revesion level of the
-> code that I am using.
-> 
+> Looks like you mean it's for cfi_cmdset_0002.c _without_ Simon's patch. It
+> looks fine to me - I'll give it a day or so for people to object before I
+> apply it though :)
 
-Did you CVS update and recompile BOTH the driver and nftl_format ?? The
-problem is in a change in *Kernel Header* file. So you must update and
-recompile everything.
+Last patch needs Simon's patch. If you does not want to change
+CFI_DEVICETYPE_X8 to cfi->device_type, please use following.
 
-Ollie
+(twice 0x2aa is equal to 0x554 :-)
+
+*** cfi_probe.c.org	Wed Apr 18 17:26:35 2001
+--- cfi_probe.c	Wed Apr 25 21:39:23 2001
+***************
+*** 202,209 ****
+  		cfi->addr_unlock2=0x2aa; 
+  		break;
+  	case CFI_DEVICETYPE_X16:
+! 		cfi->addr_unlock1=0xaaa; 
+! 		cfi->addr_unlock2=0x555; 
+  		break;
+  	case CFI_DEVICETYPE_X32:
+  		cfi->addr_unlock1=0x1555; 
+--- 202,214 ----
+  		cfi->addr_unlock2=0x2aa; 
+  		break;
+  	case CFI_DEVICETYPE_X16:
+! 		cfi->addr_unlock1=0xaaa;
+! 		if (map->buswidth == 2) {
+! 			cfi->addr_unlock2=0x554; 
+! 		}
+! 		else {
+! 			cfi->addr_unlock2=0x555; 
+! 		}
+  		break;
+  	case CFI_DEVICETYPE_X32:
+  		cfi->addr_unlock1=0x1555;
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
