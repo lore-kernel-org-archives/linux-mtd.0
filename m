@@ -1,19 +1,15 @@
-Received: from fmfdns01.fm.intel.com ([132.233.247.10] helo=calliope1.fm.intel.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Zyw0-0001iM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 19:10:28 +0100
-Received: from hasmsxvs01.iil.intel.com (hasmsxvs01.iil.intel.com [143.185.63.58])
-	by calliope1.fm.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.41 2001/07/09 21:06:22 root Exp $) with SMTP id SAA23168
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 18:16:23 GMT
-Message-ID: <31223C0C0949D211AC3F00A0C9840935047CF084@hasmsx40.iil.intel.com>
-From: "Kremer, Alex" <alex.kremer@intel.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
-        "'jffs-dev@axis.com'" <jffs-dev@axis.com>
-Subject: redboot partition editing
-Date: Thu, 23 Aug 2001 21:16:16 +0300
+Received: from web13602.mail.yahoo.com ([216.136.175.113])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15a0GM-0001nx-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 20:35:34 +0100
+Message-ID: <20010823194128.72225.qmail@web13602.mail.yahoo.com>
+Date: Thu, 23 Aug 2001 12:41:28 -0700 (PDT)
+From: Luke <luke_epsilon@yahoo.com>
+Subject: ZFMicro MachZ modification of physmap.c
+To: Vipin Malik <vipin@embeddedlinuxworks.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <5.1.0.14.0.20010823095635.00b00ca0@mail.spewey.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,14 +21,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hello,
 
-Does anyone know of a utility/library to edit the redboot partition table
-(FIS Directory) from Linux?
-You see it as just another partition, so it shouldn't be very difficult to
-edit it.
-Getting the kernel to reread it while running off flash might be a problem
-though. Any thoughts?
+--- Vipin Malik <vipin@embeddedlinuxworks.com> wrote:
+> 
+> Normally, one map's the entire flash as far as the chip select's are 
+> concerned, and set's the start/length logically in the map driver (in your 
+> case physmap.c).
+> Of course you don't want to start/stop in the middle of a sector. Only on 
+> sector boundaries please :)
+> 
 
-Thanks,
-Kreso
+It seems that the standard physmap.c just takes the 3 CONFIG_* inputs of start (of the physical
+memory address to look for the flash),length, and bus width.  To change the offset of the flash to
+access do you modify the return from ioremap() ?
+
+For example, if I have an 8 Mbyte flash chip that I want to access with MTD and I only want to map
+from byte offset 0x300000 to 0x700000 of the flash I should set my CONFIG_MTD_PHYSMAP_LEN to 4
+Mbytes and inside the physmap.c code add an offset of 0x300000 to something?
+
+Sorry for being a slow learner on this one,
+Luke
+
+
+__________________________________________________
+Do You Yahoo!?
+Make international calls for as low as $.04/minute with Yahoo! Messenger
+http://phonecard.yahoo.com/
