@@ -1,22 +1,17 @@
-Received: from bs1.dnx.de ([213.252.143.130] ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WjmY-0007bu-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 19:55:34 +0000
-Received: from p50861873.dip.t-dialin.net ([80.134.24.115] helo=callisto.local)
-	by bs1.dnx.de with asmtp (Exim 3.34 #1)
-	id 16WlxT-0005Dw-00
-	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2002 23:14:59 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by callisto.local (Postfix on SuSE Linux 7.2 (i386)) with ESMTP id 76C811ECBB
-	for <linux-mtd@lists.infradead.org>; Fri,  1 Feb 2002 19:34:25 +0100 (CET)
-Date: Fri, 1 Feb 2002 19:34:25 +0100 (CET)
-From: Robert Schwebel <robert@schwebel.de>
-Reply-To: <robert@schwebel.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: Clock drift
-Message-ID: <Pine.LNX.4.33.0202011931390.2047-100000@callisto.local>
+Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16WlIG-0007kA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 21:32:24 +0000
+Message-ID: <3C5B0B3A.374C46F@comdev.cc>
+Date: Fri, 01 Feb 2002 13:40:10 -0800
+From: Adam Wozniak <adam.wozniak@comdev.cc>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: David Woodhouse <dwmw2@infradead.org>,
+ 	linux-mtd@lists.infradead.org
+Subject: Re: debugging strategies for jffs2
+References: <3C5AD150.1A3B9AAE@comdev.cc>  <20020201142405.79130.qmail@web20309.mail.yahoo.com> <9323.1012576311@redhat.com> <30239.1012586688@redhat.com> <3C5ADFC8.BD97CFFF@comdev.cc> <3C5AF025.F61F91F6@comdev.cc>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,59 +23,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Adam Wozniak wrote:
+> 
+> 000000 19 85 e0 02 00 00 00 44 a4 ef 22 3e 00 00 10 4c
+> 000010 00 00 1c 19 00 00 81 a4 00 00 00 00 00 32 d3 26
+> 000020 00 00 0d 9d 00 00 0d 9e 00 00 0d 9e 00 00 00 00
+> 000030 00 00 c0 00 00 00 00 00 01 00 00 00 00 00 00 00
+> 000040 cf 8c 20 63
+> 000044
+> 
+> This all by itself is enough to hose things.
+> 
+> The interesting bit to me is that the csize is 0x0000c000
+> and the dsize is 0x00000000.  Is this perhaps causing problems?
+> 
 
-in comp.os.linux.embedded there's currently a discussion about drifting
-clocks on JumpTec's DIMM PCs, which might be flash related. Perhaps
-anybody here can comment this:
+At fs/jffs2/gc.c,v 1.52, line 460:
 
-Snip:
+        fill:
+                ri.magic = JFFS2_MAGIC_BITMASK;
+                ri.nodetype = JFFS2_NODETYPE_INODE;
+                ri.totlen = sizeof(ri);
+                ri.hdr_crc = crc32(0, &ri, sizeof(struct
+jffs2_unknown_node)-4);
+ 
+                ri.ino = inode->i_ino;
+                ri.version = ++f->highest_version;
+                ri.offset = start;
+                ri.csize = end - start;
+                ri.dsize = 0;
+                ri.compr = JFFS2_COMPR_ZERO;
 
-----------8<----------8<----------8<----------
-Subject: Re: system time on dimm-pc
-Date: Thu, 31 Jan 2002 17:19:06 -0700
-From: Michael Dwyer <mdwyer@sixthdimension.com>
-Organization: Sixth Dimension, Inc
-Newsgroups: comp.os.linux.embedded
-References: 1
+This seems backwards to me.  Shouldn't ri.dsize = end-start and ri.csize
+= 0 ???
 
-Richard Schweikl wrote:
-> I am using a JumpTec Dimm-PC-386 for embedded control since 2 years.
-> Now, when the program should use the DOS system time we noticed that
-> this timer is running with very bad accuracy. As this is identical on
-> all our DimmPC-386 it seems to be a problem of this design.
-
-I'm afraid that I'm not familiar with the JumpTec systems, but I can
-tell you that we had severe clock-drift problems on our x86 boards
-because of the flash Disk-On-Chip drivers.  I hypothesised that the
-driver would disable interrupts while writing to the flash.  The flash
-write took quite a while,  and since the regular timer interrupt was
-blocked, the software clock wouldn't get updated correctly.
-
-The clock skew was so severe that the NTPd would soon give up -- and was
-totally unable to keep the clock in sync.
-
-The new drivers seem to have fixed the problem, but you apparently may
-also see this from heavy serial or network activity.  You might check
-that you don't have something taking over interrupts.  As a workaround,
-you might consider reading from the CMOS clock, instead.  It only has a
-1s resolution, but it is more stable in an interrupt-laden system than
-the software clock.
-
-There are a couple other patches on this, like running NTPd (huge!) or
-regular updates to the soft clock from the CMOS clock (dangerous -- time
-could go backwards...)  but your best bet is to find what is making the
-clock skew...
-
-Clock crystals are also sensitive to temperature...  If these machines
-are in harsh environments, this might be a factor.
-----------8<----------8<----------8<----------
-
-Robert
---
- +--------------------------------------------------------+
- | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
- | Pengutronix - Linux Solutions for Science and Industry |
- |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
- |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
- +--------------------------------------------------------+
+--Adam
+-- 
+Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
+awozniak@comdev.cc      3450 Broad St. 107, San Luis Obispo, CA 93401
+                        http://www.comdev.cc
+                        Voice: (805) 544-1089       Fax: (805) 544-2055
