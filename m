@@ -1,17 +1,20 @@
-Received: from inp.nsk.su ([193.124.167.24] helo=inpbox.inp.nsk.su)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BmYpw-0004kx-6T
-	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2004 10:09:49 -0400
-Date: Mon, 19 Jul 2004 21:01:13 +0700
-From: "Dmitry A. Fedorov" <D.A.Fedorov@inp.nsk.su>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1090243692.29112.34.camel@weaponx.rchland.ibm.com>
-Message-ID: <Pine.SGI.4.10.10407192037090.204659-100000@Sky.inp.nsk.su>
+Date: Mon, 19 Jul 2004 15:24:45 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?=D8yvind?=Harboe <oyvind.harboe@zylin.com>
+In-Reply-To: <1090246707.13401.18.camel@famine>
+Message-ID: <Pine.LNX.4.58.0407191522360.4985@localhost.localdomain>
+References: <1089643331.3951.42.camel@famine>
+	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
+	<1089712151.5995.21.camel@famine>
+	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
+	<1089726079.6288.5.camel@famine>
+	<1089759689.8822.18.camel@imladris.demon.co.uk>
+	<1089792912.7607.22.camel@famine> <1090246707.13401.18.camel@famine>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: starting address of mtd device
-Reply-To: D.A.Fedorov@inp.nsk.su
+Content-Type: TEXT/PLAIN; charset=UTF8
+Content-Transfer-Encoding: 8BIT
+Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
+Subject: Re: JFFS2 eats memory
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Jul 2004, Josh Boyer wrote:
-> On Mon, 2004-07-19 at 07:49, Dmitry A. Fedorov wrote:
-> > 
-> > In previous MTD releases there was kernel config parameters
-> > CONFIG_MTD_PHYSMAP_START and CONFIG_MTD_PHYSMAP_LEN
-> > and it was enough to provide these parameters at kernel' .config
-> > for physmap driver and new board worked. Now I should write my own board
-> > map driver.
-> > Why? It is better to restore this nice feature.
+On Mon, 19 Jul 2004, [ISO-8859-1] ØyvindHarboe wrote:
+
+> It crashes during garbage collect.
 > 
-> That feature hasn't been removed...  that's why I said "If there isn't a
-> specific map driver for your board, see physmap.c".  So physmap is still
-> there.
->
-> However, some people prefer to write their own map drivers for their
-> boards for various reasons.  I was simply presenting all the options. 
+> How does this fix look?
 
-Yes, physmap.c, but now I can't specify address/length for it
-from kernel .config parameters. Instead, I should create my own module
-and place it before physmap.o in Makefile.
+Suboptimal. You refrain from freeing if(jeb->gc_node) but that's going to 
+mean that every time GC frees such a node you're not claiming the memory 
+back? Can't you adjust gc_node instead?
 
-Well, what about generic physmap board module?
-I can make patch.
+Standard comments about 8-char indentation and "==NULL" being horrid also 
+apply :)
+
+-- 
+dwmw2
