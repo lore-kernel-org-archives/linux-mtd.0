@@ -1,26 +1,25 @@
-Received: from yuha.menta.net ([212.78.128.42])
+Received: from mail.fh-wedel.de ([213.39.232.194])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEvpF-0006qI-PR
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 19:17:50 +0000
-Received: from gibson.menta.net ([212.78.128.22]) by
-          yuha.menta.net (Netscape Messaging Server 4.15) with ESMTP id
-          HNJ9M800.73S for <linux-mtd@lists.infradead.org>; Wed, 29 Oct
-          2003 20:18:08 +0100
-Received: from stream.amrsystems.com ([62.57.42.165]) by
-          gibson.menta.net (Netscape Messaging Server 4.15 gibson Mar 14
-          2002 21:29:48) with ESMTP id HNJ9PF00.84U for
-          <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 20:20:03 +0100
-Received: (from perello@localhost)
-	by stream.amrsystems.com (8.11.6/linuxconf) id h9TJRXr02191
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2003 20:27:33 +0100
-From: Carles Perello <carles.perello@ieee.org>
-To: linux-mtd@lists.infradead.org
-Message-Id: <1067455652.662.3.camel@stream.amrsystems.com>
+	id 1AEw5M-000783-7w
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 19:34:28 +0000
+Date: Wed, 29 Oct 2003 20:32:09 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Jun Sun <jsun@mvista.com>
+Message-ID: <20031029193209.GA23482@wohnheim.fh-wedel.de>
+References: <20031022182558.U19834@mvista.com>
+	<20031027101741.C1678@mvista.com>
+	<1067338214.15551.405.camel@hades.cambridge.redhat.com>
+	<20031028182828.D30683@mvista.com>
+	<1067426006.15551.1546.camel@hades.cambridge.redhat.com>
+	<20031029104546.K30683@mvista.com>
 Mime-Version: 1.0
-Date: 29 Oct 2003 20:27:32 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Subject: mtd from cvs compiles for a 2.4.x kernel?
+Content-Disposition: inline
+In-Reply-To: <20031029104546.K30683@mvista.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
+On Wed, 29 October 2003 10:45:46 -0800, Jun Sun wrote:
+> 
+> phsmap currently only supports mapping for one physical flash unit.
 
-I updated my mtd sources from CVS today and patched a 2.4.19 kernel for
-an arm target...
+I've created a physmap variant for multiply physical mappings once.
+Google for mphysmap.c and you can still find it.  No reaction
+whatsoever to this day, so you can guess how many people need it. ;)
 
-while trying to compile complains about undefined SA1100_CS0_PHYS in
-sa1100-flash.c.
+Jörn
 
-I wonder is this is a new definition on 2.5.x kernels..or I am missing
-something.
-
-Any hint?
 -- 
-Carles Perello <carles.perello@ieee.org>
+"Error protection by error detection and correction."
+-- from a university class
