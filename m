@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DDaJ-00074U-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 00:09:59 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <0106211659100B.11839@golan> 
-References: <0106211659100B.11839@golan> 
-To: M Butcher <mbutcher@aleph-null.tv>
-Cc: "MTD for Linux" <linux-mtd@lists.infradead.org>
-Subject: Re: DOC Millenium not found by docprobe 
+Received: from mail.2d3d.co.za ([196.14.185.200])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15DM6n-0007kA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 09:16:06 +0100
+Date: Fri, 22 Jun 2001 10:22:38 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: safe flash filesystem
+Message-ID: <20010622102238.F1828@crystal.2d3d.co.za>
+References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com> <20010621163537.A26714@crystal.2d3d.co.za> <3B32668F.8020000@asu.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 22 Jun 2001 00:15:17 +0100
-Message-ID: <26595.993165317@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/QKKmeG/X/bPShih"
+Content-Disposition: inline
+In-Reply-To: <3B32668F.8020000@asu.edu>; from Russ.Dill@asu.edu on Thu, Jun 21, 2001 at 14:26:39 -0700
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +24,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mbutcher@aleph-null.tv said:
-> But I wanted to create a single partition, so I followed the steps in
-> the  jffs howto and did the following: 
-> (0: sometimes do an 'erase')
-> 1: nftl_format /dev/mtd0
-> 2: fdisk /dev/nftla (make one big partition)
+--/QKKmeG/X/bPShih
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You didn't need step 1. We definitely shouldn't be encouraging people to do 
-that. Just using fdisk to change the partitioning would have been enough.
+Hi Russ!
 
-> 3: mke2fs /dev/nftla
+> If its just a config file, why make all this so complicated?
+>=20
+> struct node {
+>=20
+> 	u32 magic;
+> 	char valid;
+> 	u32 version;
+> 	u32 data_crc;
+> 	u32 hdr_crc;
+> 	char data[DATA_SIZE];
+> };
 
-Is this a typo? Having made a partition you then erased it by using mkfs on 
-the _whole_ device rather than the single partition. That's fine if it's 
-what you wanted... but...
+Yes, this is something in the lines I was thinking of. But what complicates
+things is if you start taking things like avoiding damaged blocks into
+account, wear levelling (this is fairly easy to solve) and keeping the flash
+unfragmented.
 
-> 4: mount -t ext2 /dev/nftla1 /mnt
+--=20
 
-I'm amazed this worked.
+Regards
+ Abraham
+
+Walking on water wasn't built in a day.
+		-- Jack Kerouac
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
 
 
-mbutcher@aleph-null.tv said:
->  When I used the Millenium Only driver, I got an error from docprobe
-> saying  something like "no driver", though I could see it with lsmod. 
+--/QKKmeG/X/bPShih
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-To use that, you need to undef DOC_SINGLE_DRIVER in docprobe.c
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
---
-dwmw2
+iD8DBQE7MwBOzNXhP0RCUqMRAu7dAKCGi78of4J6nBMHEEwVrf3PKmxXFgCfatS4
+/ZXKMjRu7DGc2rgkdDlwgRg=
+=5pCO
+-----END PGP SIGNATURE-----
+
+--/QKKmeG/X/bPShih--
