@@ -1,22 +1,18 @@
-Received: from taku.hut.fi ([130.233.228.87])
+Received: from tidos.tid.es ([193.145.240.2] helo=tid.tid.es)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15evNU-0004QU-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 10:23:16 +0100
-Received: from kosh.hut.fi (kosh.hut.fi [130.233.228.10])
-	by taku.hut.fi (8.9.3/8.9.3) with ESMTP id MAA19681
-	for <linux-mtd@lists.infradead.org>; Thu, 6 Sep 2001 12:29:18 +0300 (EET DST)
-Received: (from jlavi@localhost)
-	by kosh.hut.fi (8.9.3/8.9.3) id MAA10500
-	for linux-mtd@lists.infradead.org; Thu, 6 Sep 2001 12:29:18 +0300 (EET DST)
-Date: Thu, 6 Sep 2001 09:29:02 +0300
-From: Jarkko Lavinen <jlavi@iki.fi>
+	id 15eyRT-0004ed-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 13:39:36 +0100
+Received: from tid.es ([1.0.22.18]) by tid.tid.es (Netscape
+          Messaging Server 4.15) with ESMTP id GJ8RFC02.Z3M for
+          <linux-mtd@lists.infradead.org>; Thu, 6 Sep 2001 14:45:12 +0200
+Message-ID: <3B976F5A.2000209@tid.es>
+Date: Thu, 06 Sep 2001 14:43:06 +0200
+From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: MTD in kernel 2.4.9
-Message-ID: <20010906092901.A20085@kosh.hut.fi>
-References: <14713.999728477@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <14713.999728477@redhat.com>; from dwmw2@infradead.org on Wed, Sep 05, 2001 at 11:21:17PM +0100
+Subject: Trying to compile mtd-snapshot
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,18 +24,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->> of mtd/jffs2 working with kernel 2.4.9?
-> 
-> It generally ought to work, although I'm not building JFFS2 against
-> 2.4.9 so I haven't merged the complete_and_exit() fix yet. Other than that, 
+Hi,
 
-The complete_and_exit() problem I experienced was fixed in the 2.4.9 AC 
-kernel by adding the wait queue head initialization just before forking the 
-GC thread in jffs2_start_garbage_collect_thread(). That fixed the crashing
-GC thread problem in unmount.
+   I am trying to compile in my PC the mtd-snapshot-20010806 package to 
+get the jffs utilities working. I have executed:
 
-I haven't tried copying mtd CVS files over Linus kernels but on current
-AC kernels straight copying won't work. At least it will complain about
-missing up_and_exit().
+   automake --foreign  (the automake version is 1.5)
 
-Jarkko Lavinen
+and I get the following message:
+
+/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
+AM_CONDITIONAL
+/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
+AM_CONDITIONAL
+/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
+AM_CONDITIONAL
+/usr/local/share/automake/am/lang-compile.am: AMDEP does not appear in 
+AM_CONDITIONAL
+
+Then I run autoconf and ./configure with no problem. But when finally I 
+run make, the message is :
+
+Makefile:340: *** missing separator.  Stop.
+
+Line 340 in the Makefile is:
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/compr.Po@am__quote@
+
+What am I doing wrong? Do I need another version of automake, or any patch?
+
+Thanks a lot,
+
+Pepe
