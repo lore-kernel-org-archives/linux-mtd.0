@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from motgate4.mot.com ([144.189.100.102])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cRfZ-0001gL-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 15:20:13 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <957BD1C2BF3CD411B6C500A0C944CA2601499C3B@pdsmsx32.pd.intel.com> 
-References: <957BD1C2BF3CD411B6C500A0C944CA2601499C3B@pdsmsx32.pd.intel.com> 
-To: "Yuan, Cain" <cain.yuan@intel.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 peoblems with K3 strata flash on Dalhart 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 07 Aug 2002 15:20:10 +0100
-Message-ID: <24862.1028730010@redhat.com>
+	id 17cRnJ-0001hB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 15:28:14 +0100
+Received: [from pobox3.mot.com (pobox3.mot.com [10.64.251.242]) by motgate4.mot.com (motgate4 2.1) with ESMTP id HAA13737 for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 07:28:11 -0700 (MST)]
+Received: [from zch07exm05.corp.mot.com (ZCH07EXM05.corp.mot.com [200.3.1.211]) by pobox3.mot.com (MOT-pobox3 2.0) with ESMTP id HAA09291 for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 07:26:27 -0700 (MST)]
+Message-ID: <89DEFCC5DB33D411A27F00508BCF8A8205EE3C7D@ZCH07EXM05.corp.mot.com>
+From: Gu Susan-w15879 <w15879@motorola.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>,
+        "Yuan, Cain"
+	 <cain.yuan@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: JFFS2 peoblems with K3 strata flash on Dalhart 
+Date: Wed, 7 Aug 2002 22:28:08 +0800 
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,6 +24,17 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Does K3 (and Dalhart) be configured as "burst" read mode when system is reset?
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Wednesday, August 07, 2002 10:20 PM
+To: Yuan, Cain
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 peoblems with K3 strata flash on Dalhart 
+
+
 
 cain.yuan@intel.com said:
 >  ---  Since using CFI  with Ks flash, I think  it is CFI driver and
@@ -43,3 +56,9 @@ happening to 'retlen' and when it returns.
 
 --
 dwmw2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
