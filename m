@@ -1,15 +1,22 @@
-Received: from web61306.mail.yahoo.com ([216.155.196.149])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CmWnh-0007KA-FU
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2005 07:31:39 -0500
-Message-ID: <20050106123007.74871.qmail@web61306.mail.yahoo.com>
-Date: Thu, 6 Jan 2005 04:30:07 -0800 (PST)
-From: Niraj Maheshwari <neer_mh@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20050106111916.63614.qmail@web61309.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: Booting Ramdisk from MTD 
+Received: from wproxy.gmail.com ([64.233.184.196])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cmbvs-0000U0-9l
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2005 13:00:25 -0500
+Received: by wproxy.gmail.com with SMTP id 36so107731wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 06 Jan 2005 10:00:22 -0800 (PST)
+Message-ID: <9f920bdf0501061000699d8d77@mail.gmail.com>
+Date: Thu, 6 Jan 2005 10:00:22 -0800
+From: Dan Post <postster@gmail.com>
+To: Olav Kongas <ok@artecdesign.ee>
+In-Reply-To: <Pine.LNX.4.44.0501061248210.5515-100000@pcx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+References: <Pine.LNX.4.44.0501061248210.5515-100000@pcx>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 2.6.10, Intel chip, incorrect numparts detection
+Reply-To: Dan Post <postster@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,226 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 6 Jan 2005 13:18:17 +0200 (EET), Olav Kongas <ok@artecdesign.ee> wrote:
+> On 2.6.10, the detected hw partition number seems to be
+> insane. All is ok on 2.6.9. I added few printk's to the
+> cfi_intelext_partition_fixup() in 2.6.10 hoping that this
+> will provide some more useful info (probably not).  Below I
+> give the code fragment sprinkled with my printk's and both
+> unsuccessful 2.6.10 and successful 2.6.9 boot dumps.
 
-Just to add on, i am using Linux 2.6.8.1 for this 
-test.
+Olav,
 
-I appreciate your response.
+What flash chip are you using, e.g. model, density, etc?
+I see you're using a x16 buswidth, not a x32 pair.  That could be
+related to the problem--e.g. one small piece of code not taking into
+account the interleave--but I'm just making a wild stab in the dark,
+which could be utterly wrong.  Latest MTD code works for me on L18,
+32MiB (28F256L18), albeit on a 2.4 kernel (I have yet to try 2.6.10).
 
-Thanks
-Niraj
+As you can tell, 2.6.9 uses a constant number for the partshift, which
+was wrong.  On 8 and 16MiB L18, the partshift should be 20 (1MiB); on
+32MiB L18, it should be 21, and it gets more complicated from there.
+K3 and J3 don't have hardware partitions, so the partition fixup code
+shouldn't be activated.
 
---- Niraj Maheshwari <neer_mh@yahoo.com> wrote:
+Later MTD code, including that in 2.6.10, actually looks at the CFI,
+and in a rather nice manner (thanks Nicolas), but sounds like it has
+some missing cases...
 
-> Hi,
-> 
-> I am using JFFS2 and MTD on our target for booting
-> the
-> Ramdisk from MTD device ( Intel W18 Flash ).
-> 
-> Here is the logs for the same. I am getting this
-> error
-> eveytime when Linux Kernel tries to mount the JFFS2
-> compressed Ramdisk from the Flash Device.
-> 
-> Can anyone help me out on this ?
-> 
-> Thanks
-> Niraj
-> **************************************************
-> 
-> Kernel command line: root=/dev/mtdblock1 rw mem=64M
-> rootfstype=jffs2 console=ttyS0,115200 ramdisk=8192
-> physmap flash device: 1000000 at a0000000
-> phys_mapped_flash: Found 1 x16 devices at 0x0 in
-> 16-bit bank
->  Intel/Sharp Extended Query Table at 0x0039
-> cfi_cmdset_0001: Erase suspend on write enabled
-> Using word write method
-> cmdlinepart partition parsing not available
-> RedBoot partition parsing not available
-> IntelW18  flash driver (size->0x800000
-> mem->0xA0300000)
-> IntelW18 GS504V3.0 Flash: Found 1 x16 devices at 0x0
-> in 16-bit bank
->  Intel/Sharp Extended Query Table at 0x0039
-> cfi_cmdset_0001: Erase suspend on write enabled
-> Using word write method
-> Creating 1 MTD partitions on "IntelW18 Flash":
-> 0x00000000-0x00800000 : "Partition 1"
-> NET: Registered protocol family 2
-> IP: routing cache hash table of 512 buckets, 4Kbytes
-> TCP: Hash tables configured (established 4096 bind
-> 8192)
-> NET: Registered protocol family 1
-> NET: Registered protocol family 17
-> VFS: Mounted root (jffs2 filesystem).
-> Freeing init memory: 68K
-> INIT: Eep. Unknown node type 0080 at 00186f34 was
-> marked REF_UNCHECKED
-> Node header CRC failed at 00186f34. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000001b4)
-> Eep. Unknown node type 0080 at 00186e88 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00186e88. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000000ac)
-> Eep. Unknown node type 0080 at 00186de0 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00186de0. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000000a8)
-> versionEep. Unknown node type 0080 at 00186bf8 was
-> marked REF_UNCHECKED
->  2Node header CRC failed at 00186bf8. But it must
-> have
-> been OK earlier.
-> .7Node was: { 0080, 2080, 00800080, 00800080 }
-> 4 Node totlen on flash (0x00800080) != totlen from
-> node ref (0x000001e8)
-> bootEep. Unknown node type 0080 at 001866e0 was
-> marked
-> REF_UNCHECKED
-> inNode header CRC failed at 001866e0. But it must
-> have
-> been OK earlier.
-> gNode was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x00000518)
-> Eep. Unknown node type 0080 at 00186124 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00186124. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000005bc)
-> Eep. Unknown node type 0080 at 00185958 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00185958. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000007cc)
-> Eep. Unknown node type 0080 at 0018511c was marked
-> REF_UNCHECKED
-> Node header CRC failed at 0018511c. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x0000083c)
-> Eep. Unknown node type 0080 at 00184a2c was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00184a2c. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000006f0)
-> 
-> Eep. Unknown node type 0080 at 00184328 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00184328. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x00000704)
-> Eep. Unknown node type 0080 at 00183e34 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00183e34. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000004f4)
-> Eep. Unknown node type 0080 at 00183a60 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00183a60. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000003d4)
-> Eep. Unknown node type 0080 at 00183444 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00183444. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x0000061c)
-> Eep. Unknown node type 0080 at 00182ca8 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00182ca8. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x0000079c)
-> Eep. Unknown node type 0080 at 00182550 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00182550. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x00000758)
-> Eep. Unknown node type 0080 at 00181e14 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00181e14. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x0000073c)
-> Eep. Unknown node type 0080 at 00181670 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00181670. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000007a4)
-> Eep. Unknown node type 0080 at 00180da4 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00180da4. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x000008cc)
-> Eep. Unknown node type 0080 at 00180414 was marked
-> REF_UNCHECKED
-> Node header CRC failed at 00180414. But it must have
-> been OK earlier.
-> Node was: { 0080, 2080, 00800080, 00800080 }
-> Node totlen on flash (0x00800080) != totlen from
-> node
-> ref (0x00000990)
-> Eep. Unknown node type 0080 at 0018000c was marked
-> REF_UNCHECKED
-> 
-=== message truncated ===
+Also, on L18, numregions should be 2.  You're getting 1.
 
+Are you, by chance, using W18?  I've never tested it there, and there
+may be subtle CFI differences.
 
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - Find what you need with new enhanced search.
-http://info.mail.yahoo.com/mail_250
+Dan
