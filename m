@@ -1,26 +1,14 @@
-Received: from [2002:d556:63eb::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BQse1-0001v7-Re
-	for linux-mtd@lists.infradead.org; Thu, 20 May 2004 14:51:54 -0400
-Received: from mailout01.sul.t-online.com ([194.25.134.80])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BQsdx-0005HB-O5
-	for linux-mtd@lists.infradead.org; Thu, 20 May 2004 19:51:49 +0100
-From: tglx@linutronix.de (Thomas Gleixner)
-To: Gurhan Hatipoglu <gurhan@hatipoglu.biz>,
- linux-mtd@lists.infradead.org
-Date: Thu, 20 May 2004 20:46:10 +0200
-References: <200405201538.40677.gurhan@hatipoglu.biz>
-In-Reply-To: <200405201538.40677.gurhan@hatipoglu.biz>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200405202046.10681.tglx@linutronix.de>
-Cc: 
-Subject: Re: Fwd: NAND Flash Problem.
-Reply-To: tglx@linutronix.de
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org, linux-pcmcia@lists.infradead.org,
+	linux-afs@lists.infradead.org, linux-parport@lists.infradead.org
+Content-Type: text/plain
+Message-Id: <1085398954.27156.55.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Mon, 24 May 2004 12:42:34 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org, jffs-dev@axis.com, etux@embeddedtux.org
+Subject: Linux MTD CVS / lists.infradead.org -- outage / relocation notice
+Reply-To: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +18,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 20 May 2004 14:38, Gurhan Hatipoglu wrote:
-> Hello sir/madam;
->
-> I forwarded the message attached, by the advice of CVS group. Please info=
-rm
-> me about the problem forwarded.
+[ Reply-To set to personal reply. Please don't cross-post. ]
 
-CVS is no group. It's a read only mailing list which keeps you informed of=
-=20
-changes in the CVS.
+For some time now, the machines running mailing list and CVS services
+for Linux MTD development have been on the public side of the Red Hat
+Cambridge network. For generously allowing this I would like to thank
+the previous manager of the Cambridge office, now with eCosCentric, and
+the old sysadmin there, now also moved on.
 
-> I'm working on Hyundai GMS30C7201 board, using ARM Linux V.2.4.18 Rmk 3.
+Last week, some members of the Red Hat IS department took it upon
+themselves to demand that the machines be removed. That in itself is not
+entirely unreasonable -- but they gave such a short period of notice
+that there wasn't enough time to arrange new locations for the machines.
+In fact the disconnection was so hasty that there wouldn't even have
+been enough notice to turn the DNS expiry times down for the changeover
+had I the new homes been already arranged beforehand and had I been able
+to move into them during the week.
 
-Is this the kernel from Hynix ? Use the reworked one available from my=20
-homepage.
+Although I immediately started to arrange new locations, the Red Hat IS
+team did not even do me the courtesy of replying to my email in which I
+stated the time it would take to move the machines and requested an
+extension of their arbitrarily short deadline to cover this.
 
-> In addition to NOR Flash, we mounted KM29U64000T 64Kbit NAND flash on the
-> board to use as a disk, I changed sample VIA board driver according to the
-> directions given in the Document directory
+However, the deadline of noon on Thursday passed, so I assumed that
+sanity had prevailed. Unfortunately this was not the case; on Friday
+morning I arrived at work to find that the machines had been
+disconnected, still without the courtesy of a reply to my email.
 
-Which version of MTD do you use ? The one in the kernel source ?=20
-Use latest MTD CVS code, as everything else does not properly support NAND.
+Even now, no reason has been given for the sudden urgency of the
+disconnection; no reason why it could not have been done with sufficient
+notice to allow a smooth transition or indeed even a single weekend to
+perform a more careful migration of services.
 
-> and by referencing addresses in
-> hardware.h (NAND_BASE 0xf2000000, physical address is 0x08000000).
-> When I boot the system, VM error is appearing, as below and system is
-> crashing. When I test ioremap for physical address 0x0800000, system is
-> giving no nand flash found message.
+In the meantime, the lists.infradead.org mailing lists have been moved
+to an alternative machine, which was already an MX backup so mailing
+list traffic should continue to work. For list administration tasks, you
+may need to use the IP address 2002:cde9:d907::1 or 205.233.217.7
+instead of 'lists.infradead.org' until the DNS propagates. 
 
-The pyhsical address must be converted to a virtual adress by ioremap. Get =
-the=20
-physical address through which the NAND chip can be accessed. In your drive=
-r=20
-use:=20
-nand_virt =3D ioremap (nand_phys, SZ_1K);
-nand_virt must be stored in the IO_ADDR_R and IO_ADDR_W members of the nand=
-=20
-chip structure.
+The CVS server, cvs.infradead.org aka phoenix.infradead.org, is
+currently IPv6-only on 2002:c1ed:8229:10:2c0:f0ff:fe31:e18 and will
+remain IPv6-only on a 64K ISDN line for the next couple of weeks until
+its new home is ready. Those who use it for CVS access or for email and
+have a real IPv4 address may want to investigate the three lines they
+need to add to their networking config to get IPv6 connectivity using
+6to4. Alternatively, contact me to arrange an account on another machine
+in the cluster (which will of course be able to communicate with phoenix
+via IPv6).
 
-> Function entered at [<c0093284>] from [<c00952b0>]
-> Function entered at [<c0095278>] from [<c000ee60>]
->  r8 =3D C00C2B44  r7 =3D C00C6C20  r6 =3D C01342E8  r5 =3D C00E6120
->  r4 =3D C0134260
+Web services will be coming back up within the next few days in another
+location.
 
-Such a backtrace is worthless, as I dont know anything of your kernel. Deco=
-de=20
-it with ksymoops. Read linux/Documentation/oops-tracing.txt
+All these changes have been made at fairly short notice and without the
+amount of planning I would normally have wanted. So please let me know
+as soon as possible if anything seems (unexpectedly) wrong.
 
-=2D-=20
-Thomas
-________________________________________________________________________
-Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
-time managing existing systems. That couldn=E2=80=99t have anything to do w=
-ith=20
-the fact that 99 percent of these systems run Windows, could it?
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+I apologise for the disruption caused by this unforeseen move. Although
+caused by events not strictly within my control, I have to admit that I
+have had cause to deal with these people before, and I do know what
+they're like. I should not have allowed a situation to arise where a
+group of such small-minded, obstructive little men could achieve such
+disruption.
+
+-- 
+dwmw2
