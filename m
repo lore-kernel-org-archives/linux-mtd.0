@@ -1,19 +1,20 @@
-Received: from rproxy.gmail.com ([64.233.170.193])
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0fcH-0000QE-7A
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 07:46:18 -0500
-Received: by rproxy.gmail.com with SMTP id y7so663389rne
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Feb 2005 04:46:14 -0800 (PST)
-Message-ID: <f6d0cd0605021404467195684f@mail.gmail.com>
-Date: Mon, 14 Feb 2005 18:16:13 +0530
-From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
-To: linux-mtd@lists.infradead.org
+	id 1D0gDh-0000g5-Jr
+	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 08:24:58 -0500
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: "Steven J. Magnani" <steve@digidescorp.com>
+In-Reply-To: <002f01c50fc2$0d968ed0$6ffea8c0@banana>
+References: <002f01c50fc2$0d968ed0$6ffea8c0@banana>
+Content-Type: text/plain
+Date: Mon, 14 Feb 2005 16:24:24 +0300
+Message-Id: <1108387464.26412.9.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: Compilation of MTD Utils
-Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Bug in jffs2/scan.c re: incorrect assumption of "all clean"
+	block
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Could you please send your JFFS2 dbg L1 output?
 
-I am trying to compile the MTD utils ( Specifically mkfs.jffs2  ) for
-ARM-Linux platform. I am getting lot of errors while compiling this.
-Does anyone already have mkfs.jffs2 executable for ARM-Linux platform
-then pl. send it to me.
+Is your flash NOR or NAND?
 
-Or if you can help me how to do this compilation then it will be of
-great help. I am getting following error. It's not able to find
-deflate() etc functions.
-
-arm-linux-gcc  -o mkfs.jffs2 crc32.o compr_rtime.o mkfs.jffs2.o
-deftree.o deflate.o compr_zlib.o compr.o compr_lzari.o compr_lzo.o
--L./libz.so.1.1.4
-compr_zlib.o(.text+0x34): In function `jffs2_zlib_compress':
-/root/temp/mtd/util/compr_zlib.c:68: undefined reference to `deflateInit_'
-compr_zlib.o(.text+0x98):/root/temp/mtd/util/compr_zlib.c:80:
-undefined reference to `deflate'
-compr_zlib.o(.text+0xe4):/root/temp/mtd/util/compr_zlib.c:88:
-undefined reference to `deflate'
-compr_zlib.o(.text+0xf4):/root/temp/mtd/util/compr_zlib.c:93:
-undefined reference to `deflateEnd'
-compr_zlib.o(.text+0x128):/root/temp/mtd/util/compr_zlib.c:82:
-undefined reference to `deflateEnd'
-compr_zlib.o(.text+0x158): In function `jffs2_zlib_decompress':
-/root/temp/mtd/util/compr_zlib.c:113: undefined reference to `inflateInit_'
-compr_zlib.o(.text+0x188):/root/temp/mtd/util/compr_zlib.c:124:
-undefined reference to `inflate'
-compr_zlib.o(.text+0x198):/root/temp/mtd/util/compr_zlib.c:127:
-undefined reference to `inflateEnd'
-collect2: ld returned 1 exit status
-make: *** [mkfs.jffs2] Error 1
-
-Thanks
-Niraj
+On Thu, 2005-02-10 at 16:44 -0600, Steven J. Magnani wrote:
+> Hello MTD folk,
+> 
+> I'm not hooked into the MTD list so please cc: me on any replies. Also
+> please note that this is my first experience with this code, so excuse
+> me if I've gone off base.
+> 
+> I believe there is a bug in fs/jffs2/scan.c that causes it to
+> incorrectly assume a block with a cleanmarker is "all clean". This
+> causes an "Eep. Block 0xXXXXXXXX taken from free_list had free_size of
+> 0xXXXXXXXX!!" to go off when jffs2_do_reserve_space() is called later.
+> 
+> There are 4 conditions that have to be met in a particular block for the
+> bug to surface:
+> 
+> * The block has a cleanmarker
+> * The end of the block has to be free space (0xFF)
+> * The block has JFFS2_NODETYPE_INODEs
+> * The block does NOT have any JFFS2_NODETYPE_DIRENTs
+> 
+> The test that governs the "all clean" assumption is as follows (cf.
+> scan.c 1.118 line 435)
+> 
+> 	if (buf_ofs == jeb->offset && jeb->used_size ==
+> PAD(c->cleanmarker_size) && 
+> 	    c->cleanmarker_size && !jeb->dirty_size &&
+> !jeb->first_node->next_in_ino) {
+> 
+> The bug is that there is no test that checks whether any
+> JFFS2_NODETYPE_INODEs have been seen. Since only JFFS2_NODETYPE_DIRENTs
+> are counted as used, and JFFS2_NODETYPE_INODEs are counted as unchecked,
+> I think that the correction should look like this:
+> 
+> 	if (buf_ofs == jeb->offset && ((jeb->used_size +
+> jeb->unchecked_size) == PAD(c->cleanmarker_size)) && 
+> 	    c->cleanmarker_size && !jeb->dirty_size &&
+> !jeb->first_node->next_in_ino) {
+> 
+> 
+> This seems consistent with what is done at line 631:
+> 
+> 	if ((jeb->used_size + jeb->unchecked_size) ==
+> PAD(c->cleanmarker_size) && !jeb->dirty_size 
+> 		&& (!jeb->first_node || !jeb->first_node->next_in_ino) )
+> 
+> ...although the two are still not checking quite the same set of
+> conditions.
+> 
+> Comments? I can provide a JFFS2 image that triggers the problem if
+> someone is interested in stepping through it.
+> 
+> Steve Magnani
+> Digital Design Corporation
+> www.digidescorp.com
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
