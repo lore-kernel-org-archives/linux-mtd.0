@@ -1,18 +1,15 @@
-Received: from kuzey.cc.boun.edu.tr ([193.140.192.30])
+Received: from web9603.mail.yahoo.com ([216.136.129.182])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19CnZ9-0004Qv-Rx
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 22:32:08 +0100
-Received: (from Yarasa [193.140.204.176])M2003050600323523663
-	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 00:32:35 +0300
-From: "Sinan Kusdogan" <kusdogan@boun.edu.tr>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 6 May 2003 00:33:01 +0300
-Message-ID: <001f01c3134d$e7a25190$b0cc8cc1@Yarasa>
+	id 19Cnld-0004Zm-6X
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 22:45:01 +0100
+Message-ID: <20030505214515.9459.qmail@web9603.mail.yahoo.com>
+Date: Mon, 5 May 2003 14:45:15 -0700 (PDT)
+From: Mike Kelly <mgkelly59@yahoo.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1052160051.2446.18.camel@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: CFI chip problem
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: Need help understanding jffs2 mount activity
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I'm trying to boot my own kernel on a non-standard board that uses Hynix
-7201 CPU. I've its original zImage that boots successfully. But my own
-kernel couldn't find my Hynix Flash ROM which is fully CFI compatible.
-It can not detect the CFI chip using cfi_send_gen_cmd functions in
-"cfi_probe.c" file. Chip's at physical address 0. 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> The real answer, though, is to simply avoid checking
+> all those CRCs at
+> mount time, and to postpone the checking till later.
+> That's implemented
+> in the latest code in CVS -- updating to that should
+> give you a fairly
+> dramatic improvement, especially if you also
+> implement the 'point'
+> method in your board's map driver. 
+> 
+I hate to reveal my lack of knowledge, but what is
+this 'point' method? 
 
-1. How can i find the virtual address of flash from the original kernel?
+thanks,
+mike
 
-2. Why doesn't physically mapping at location zero work?
 
-Thnx,
-Sinan Kusdogan
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
