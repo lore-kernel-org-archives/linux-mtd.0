@@ -1,18 +1,21 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D7Cww-0001VG-GD
-	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 08:34:39 -0500
-Message-ID: <422863D9.6010109@ieee.org>
-Date: Fri, 04 Mar 2005 08:34:17 -0500
-From: Dan Brown <dan_brown@ieee.org>
-MIME-Version: 1.0
-To: andrew box <andr3wbox@gmail.com>
-References: <66f646fd05030323395ed3a52c@mail.gmail.com>
-In-Reply-To: <66f646fd05030323395ed3a52c@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: differences between NFTL and INFTL
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D7FL1-0002MD-Sv
+	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 11:07:40 -0500
+Date: Fri, 4 Mar 2005 17:07:04 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Jared Hulbert <jaredeh@gmail.com>
+Message-ID: <20050304160704.GB19598@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
+	<20050302144407.GA18893@wohnheim.fh-wedel.de>
+	<6934efce0503031034475a56a4@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6934efce0503031034475a56a4@mail.gmail.com>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 and RAM consumprion reincarnated
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-andrew box wrote:
-> I have a diskonchip2000dip(NFTL) with jffs2,and I want to use it as a
-> boot device,while docboot just support INFTL now...that is the reason
-> why I want  to know the difference between them.
+On Thu, 3 March 2005 10:34:52 -0800, Jared Hulbert wrote:
+> On Wed, 2 Mar 2005 15:44:07 +0100, Jörn Engel
+> <joern@wohnheim.fh-wedel.de> wrote:
+> > I agree with tglx, your approach is complicated (aka horrible).
+> 
+> Can you point me to the arguments where you and tglx explain why it's
+> 'horrible'.  I was thinking it was a rather nice idea myself.
 
-The DOC2000 parts that use INFTL have a different controller chip 
-(derived from the one used in the DOC Millennium, rather than the one in 
-the original NFTL-based DOC2000).  The register locations, command 
-sequences, etc. are all slightly different.
+Follow one of the links Artem had in the original mail to this thread.
+One of tglx's comments was "this is horrible" or similar.
 
-Also, the boot loader in the NFTL-based parts' ROM does things a bit 
-differently from the way it works on the INFTL parts.
+Jörn
 
-Having said all that, the differences are well understood and would only 
-affect small portions of docboot.  The task of porting docboot to the 
-NFTL-based parts should not be large.
-
-All we need is a volunteer :)
-
-	-Dan
+-- 
+Good warriors cause others to come to them and do not go to others.
+-- Sun Tzu
