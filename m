@@ -1,22 +1,20 @@
-Received: from [200.73.64.66] (helo=apolo.virtuabyte.com)
+Received: from outmail1.freedom2surf.net ([194.106.33.237]
+	helo=outmail.freedom2surf.net)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bvo09-0000Zv-42
-	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2004 22:10:34 -0400
-Received: from cm-vina3-148-69.cm.vtr.net ([200.104.148.69])
-	by apolo.virtuabyte.com (apolo.virtuabyte.com) with ASMTP id CQA74038
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Aug 2004 22:10:30 -0400
-From: Carlos Manuel Duclos Vergara <carlos@embedded.cl>
+	id 1BwVXD-00050j-Tz
+	for linux-mtd@lists.infradead.org; Sun, 15 Aug 2004 20:39:38 -0400
+Received: from wirenth (i-195-137-81-187.freedom2surf.net [195.137.81.187])
+	by outmail.freedom2surf.net (8.12.10/8.12.10) with SMTP id
+	i7G0dYnF005802
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Aug 2004 01:39:34 +0100
+Date: Mon, 16 Aug 2004 01:39:33 +0100
+From: Ian Molton <spyro@f2s.com>
 To: linux-mtd@lists.infradead.org
-Date: Fri, 13 Aug 2004 22:19:38 +0200
-References: <200408131855.16376.lucasvr@gobolinux.org>
-In-Reply-To: <200408131855.16376.lucasvr@gobolinux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Message-Id: <20040816013933.163a101d.spyro@f2s.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <200408132219.39195.carlos@embedded.cl>
-Subject: Re: CRC errors and DMA
+Subject: Support of stupid devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hi,
->
+Hi.
 
-Hi,
+Im porting linux to the toshiba e7xx and 8xx PDAs which contain a nand flash controller.
 
-> What happens when the processor tryies to read data from memory while the
-> bus is being used for DMA transfers by another device? Is it possible that
+Im not certain, but it appears the controllerhas an odd quirk meaning byte-reads of the data register dont work as the linux mtd code expects.
 
-it depends on the processor, but that situation shouldn't happen... there must 
-be some kind of bus master or some way to manage the bus (by using a token, 
-by using a master-slave bus, ...). In most cases the DMA controller takes 
-control of the bus during the DMA transfer, so the rest of the devices cannot 
-use it
+AFAICT if I read a word (after issuing a chipid command) I get:
 
-> this kind of situation turns into CRC errors when trying to read data from
-> a flash device (JFFS2)?
-> Given that this problem can happen, is there a way to make JFFS2, or the
-> MTD subsystem to try to execute the operation again?
->
+0xYYZZ75ec   -- this is good - Samsung, 32MB device.
 
-_IF_ you have that situation it is better to check your hardware or use 
-another one, having a DMA controller that cannot take control of the bus to 
-do its work is not a good situation...
+if I do two byte reads I get 0xec 0xec.
 
--- 
-Carlos Manuel Duclos Vergara
-carlos@embedded.cl
+a halfword access gets me 0xYYZZ.
+
+a misaligned (by one byte) word access gives me 0xecYYZZ75, but this fails to work for byte accesses. halfword misaligned accesses are just weird.
+
+so basically, the only way to read the chipid is to do:
+
+a word access to the data reg and then shift the data out
+
+or
+
+a word access (and mask off the high 3 bytes followed by a misaligned word access and mask off the upper 3 bytes.
+
+clearly the former solution is the better one, but this doesnt fit in the nand driver model very well (read_byte() et.al.)
+
+the chip is a TC6393XB (system on chip) and the flash is a samsung K9F5608UOC YCBO
