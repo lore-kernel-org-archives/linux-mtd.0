@@ -1,20 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CRnW2-0002G3-IR
-	for linux-mtd@lists.infradead.org; Wed, 10 Nov 2004 03:07:43 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: zheng wei <jeanwelly@gmail.com>
-In-Reply-To: <c2bc1f404110918284099b516@mail.gmail.com>
-References: <c2bc1f404110918284099b516@mail.gmail.com>
-Content-Type: text/plain
-Date: Wed, 10 Nov 2004 08:59:13 +0100
-Message-Id: <1100073553.3405.24.camel@thomas>
-Mime-Version: 1.0
+	id 1CRswJ-0002wG-LT
+	for linux-mtd@lists.infradead.org; Wed, 10 Nov 2004 08:55:12 -0500
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 370B5229FF
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Nov 2004 16:54:31 +0300 (MSK)
+Message-ID: <41921D97.7040300@oktetlabs.ru>
+Date: Wed, 10 Nov 2004 16:54:31 +0300
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: which MTD version contains the CONFIG_YAFFS_USE_NANDECC
-Reply-To: tglx@linutronix.de
+Subject: JFFS2 & the write buffer patch
+Reply-To: dedekind@oktetlabs.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-11-10 at 10:28 +0800, zheng wei wrote:
-> I want to update my MTD driver.
-> Which MTD version contains NAND support for YAFFS?
-> Thank you!
-> 
-CONFIG_YAFFS_USE_NANDECC is a config option of YAFFS and is not in MTD.
-YAFFS works of latest MTD code
+Dear JFFS2 maintainers,
 
-tglx
+I was recently fixed the problem with the JFFS2 write buffer races and 
+have posted it to the MTD list. Unfortunately, maintainers did not 
+comment the patch (only Estelle Hammache kindly responded).
+
+Could any one who has the cvs access rights please commit this patch? If 
+the patch is bad, we may discuss how we can change it.
+
+The another possibility is to grant me the CVS access rights and I will 
+commit the patch myself.
+
+Thanks in Advance
+
+-- 
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
