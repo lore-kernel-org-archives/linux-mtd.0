@@ -1,17 +1,18 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mOkl-0000Lv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 02:14:43 +0100
-Date: Wed, 4 Sep 2002 02:14:42 +0100 (BST)
-From: Jasmine Strong <jasmine@hex.linuxgrrls.org>
-To: David Woodhouse <dwmw2@redhat.com>
+	id 17mVt0-0000xx-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 09:51:42 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0209040213410.18377-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0209040213410.18377-100000@hex.linuxgrrls.org> 
+To: Jasmine Strong <jasmine@hex.linuxgrrls.org>
 Cc: John Hall <John.Hall@optionexist.co.uk>,
-	"Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+    "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
 Subject: Re: Stable cvs version for 2.4 
-In-Reply-To: <21107.1031098682@redhat.com>
-Message-ID: <Pine.LNX.4.33.0209040213410.18377-100000@hex.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 04 Sep 2002 09:51:19 +0100
+Message-ID: <21868.1031129479@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,13 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+jasmine@hex.linuxgrrls.org said:
+>  WARNING! WARNING!  there are architectures that will break if you do
+> this. 
 
-On Wed, 4 Sep 2002, David Woodhouse wrote:
+Architectures on which Linux runs? eCos needs its own rbtree implementation 
+anyway, since the one I'm using is GPL'd.
 
-> to clean that up later; I don't like the existing one because it wastes
-> sizeof(int) for a single bit of colour information which could easily be
-> packed into the low bits of one of the pointers. :)
-
-WARNING! WARNING!  there are architectures that will break if you do this.
-
-Jas.
+--
+dwmw2
