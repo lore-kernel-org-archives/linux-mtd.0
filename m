@@ -1,19 +1,20 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19zllI-0005S5-OW
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Sep 2003 00:31:04 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1063838749.2690.0.camel@imladris.demon.co.uk>
-References: <E19zkca-0001jO-CD@phoenix.infradead.org>
-	 <1063838749.2690.0.camel@imladris.demon.co.uk>
-Message-Id: <1063841392.1183.637.camel@tubarao.lnxi.com>
-Mime-Version: 1.0
-Date: 17 Sep 2003 17:29:52 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-/iqFiwYwSmOH6vwS41d7"
+Received: from mail.newlogic.at ([194.208.88.201])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19ztBe-0006Fw-L2
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Sep 2003 08:26:46 +0100
+Message-Id: <200309180725.h8I7PMZS003891@enterprise2.newlogic.at>
+MIME-Version: 1.0
+In-Reply-To: <02fa01c37d86$cb990a40$0201a8c0@ollie>
+Date: Thu, 18 Sep 2003 09:25:22 +0200 (MEST)
+Sender: nwaibel@newlogic.com
+From: Niki Waibel <niki.waibel@newlogic.com>
+To: ??? <ollie@sis.com.tw>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linuxbios@clustermatic.org
 cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd/drivers/mtd/chips cfi_cmdset_0002.c,1.76,1.77
+Subject: Re: damaged DoC MD2808-D08?
+Reply-To: Niki Waibel <niki.waibel@newlogic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 18-Sep-2003 ??? wrote:
+> Did you try to read the ECC area and check with the ECC status
+> registers ?
 
---=-/iqFiwYwSmOH6vwS41d7
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+do you mean this:
+===
+probe_md2802: ChipID: 0x30
+probe_md2802: DOCStatus: 0x01
+probe_md2802: FloorSelect: 0x00
+probe_md2802: CDSNControl: 0x80
+probe_md2802: CDSNDeviceSelect: 0x00
+probe_md2802: ECCConfiguration: 0x82
+probe_md2802: CDSNSlowIO: 0x82
+probe_md2802: ECCSyndrome0: 0xff
+probe_md2802: ECCSyndrome1: 0x00
+probe_md2802: ECCSyndrome2: 0xff
+probe_md2802: ECCSyndrome3: 0xff
+probe_md2802: ECCSyndrome4: 0xff
+probe_md2802: ECCSyndrome5: 0xff
+probe_md2802: AliasResolution: 0x00
+probe_md2802: ConfigurationInput: 0x01
+probe_md2802: ReadPipelineInitialization: 0x01
+probe_md2802: LastDataRead: 0xe6
+probe_md2802:
+probe_md2802: checking ECCConfiguration toggle bit
+probe_md2802: 0x01 0x00 0x01 0x00 0x01 0x00 0x01 0x00 0x01 0x00
+probe_md2802: toggle result: 0/5
+===
+or do you mean the ecc stuff in the flash (nand_ecc) itself?
 
-On Wed, 2003-09-17 at 16:45, David Woodhouse wrote:
-
-> You just broke the 2.6 build.
+niki
 
 
-Thanks.  Sometimes I'm so excited about "fixing" something that I don't
-think past the end of my nose.
 
-I backed out the problem and will drop in a better fix soon.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-/iqFiwYwSmOH6vwS41d7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA/aO5wfsBPTKE6HMkRAtpxAJ9oFtP5h4Cw76rwtLNaOBne2gD34ACePs3i
-ZwuLWNPVMxiPV+EwqBc8Kqg=
-=JAAp
------END PGP SIGNATURE-----
-
---=-/iqFiwYwSmOH6vwS41d7--
+> ----- Original Message ----- 
+> From: "Niki Waibel" <niki.waibel@newlogic.com>
+> To: <linux-mtd@lists.infradead.org>
+> Cc: <linuxbios@clustermatic.org>
+> Sent: Wednesday, September 17, 2003 6:13 PM
+> Subject: damaged DoC MD2808-D08?
+> 
+> 
+> my DoC MD2808-D08 responds fine to the control registers
+> (chipid and ecc toggle bit are ok i.e.).
+> 
+> but if it comes to the stage of sending nand commands and
+> reading memory it seems to do nothing.
+> 
+> if mem is read from the same IO reg (0x800) then
+> i always get the same value (0x55). also if the
+> nand ID command is sent, 0x800 responses with 0x55.
+> 0x55 is the beginning of 0x55 0xaa 0x10 0xeb which
+> is the beginning of the IPL code (rom extension)...
+> 
+> in addition if i read a page. and then read it again.
+> i get some different bytes:
+> ===
+> --- xxx.xxd     2003-09-17 12:01:44.615883064 +0200
+> +++ xxx2.xxd    2003-09-17 12:01:44.629880936 +0200
+> @@ -1,67 +1,67 @@
+>  0000000: 55aa 10eb 3c00 0028 4329 4d2d 5379 7374  U...<..(C)M-Syst
+>  0000010: 656d 7331 3939 3800 0000 2100 0004 001c  ems1998...!.....
+>  0000020: 5524 506e 5001 0200 0000 1e6d 1a01 1000  U$PnP......m....
+> -0000030: 0000 0000 8001 9400 0000 0000 8181 8181  ................
+> +0000030: 0000 0000 8001 9400 0000 0000 8181 98e6  ................
+>  0000040: 009c 5053 5152 5657 551e 06ba c01f 33c0  ..PSQRVWU.....3.
+> -0000050: 8ec0 33ff 83c2 408e da81 fa00 8181 8181  ..3...@.........
+> +0000050: 8ec0 33ff 83c2 408e da81 fa00 439a 8181  ..3...@.....C...
+>  0000060: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 0075  ........u......u
+> -0000070: 021e 0747 83ff 3072 8181 8181 8181 98e6  ...G..0r........
+> +0000070: 021e 0747 83ff 3072 8181 98e6 439a 8181  ...G..0r....C...
+>  0000080: 588e c20e 1f8b ec83 ec04 8cc0 8c46 fec7  X............F..
+>  0000090: 46fc ab00 0ee8 1300 8b46 fe8e c033 ffb9  F........F...3..
+>  00000a0: 0060 33c0 fcf3 ab8b e5eb 7455 8bec 8b46  .`3.......tU...F
+> -00000b0: 048e d8bb 0000 c687 439a 0081 8181 8198  ........C.......
+> +00000b0: 048e d8bb 0000 c687 0381 0081 8181 8181  ................
+>  00000c0: c687 0210 85be 0008 b1ff e85d 00fc 32e4  ...........]..2.
+> -00000d0: b100 e855 002e 8b0e e643 9a81 8181 8181  ...U.....C......
+> +00000d0: b100 e855 002e 8b0e 8181 8181 8181 8181  ...U............
+>  00000e0: 7523 c687 0410 0d2e 8b16 1c00 8181 8181  u#..............
+> -00000f0: 8814 8834 8181 8181 8181 8181 8181 8198  ...4............
+> +00000f0: 8898 8834 e643 9a81 8181 8198 e643 9a81  ...4.C.......C..
+>  0000100: 1009 e836 0084 870d 10ac 02e0 aa4e e2cc  ...6.........N..
+>  0000110: 2e3a 2620 0075 065d 0633 c050 cb5d cb07  .:& .u.].3.P.]..
+>  0000120: 1f5d 5f5e 5a59 5b58 9dcb c687 0410 0b88  .]_^ZY[X........
+> -0000130: 0cc6 871e 1000 c687 0410 09f6 e643 9a81  .............C..
+> +0000130: 0cc6 871e 1000 c687 0410 09f6 8181 8181  ................
+>  0000140: f687 2010 80f6 8720 1080 f687 2010 80f6  .. .... .... ...
+> -0000150: 8704 1080 74f9 f687 2010 80f6 8181 8198  ....t... .......
+> -0000160: c31c 0000 0000 0000 0000 0000 e600 439a  ..............C.
+> -0000170: 0000 0000 0000 8181 8181 8181 8181 8181  ................
+> +0000150: 8704 1080 74f9 f687 2010 80f6 8181 8181  ....t... .......
+> +0000160: c31c 0000 0000 0000 0000 0000 0000 8181  ................
+> +0000170: 0000 0000 8181 0000 8181 8181 8181 8198  ................
+>  0000180: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  0000190: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  00001a0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> -00001b0: 0000 0000 0000 0000 8181 8181 8181 8181  ................
+> +00001b0: 0000 0000 0000 0000 e643 9a81 8181 8198  .........C......
+>  00001c0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> -00001d0: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
+> -00001e0: 0000 0000 0000 0000 0000 0000 8181 98e6  ................
+> -00001f0: 0000 0000 439a 8181 8181 8181 8181 8181  ....C...........
+> +00001d0: 0000 0000 0000 0000 e643 9a81 8181 8181  .........C......
+> +00001e0: 0000 0000 0000 0000 0000 0000 8181 8181  ................
+> +00001f0: 8100 0000 8181 8181 8181 8181 8181 9898  ................
+>  0000200: 55aa 10eb 3c00 0028 4329 4d2d 5379 7374  U...<..(C)M-Syst
+>  0000210: 656d 7331 3939 3800 0000 2100 0004 001c  ems1998...!.....
+>  0000220: 5524 506e 5001 0200 0000 1e6d 1a01 1000  U$PnP......m....
+> -0000230: 0000 0000 8001 9400 0000 0000 8181 8181  ................
+> +0000230: 0000 0000 8001 9400 0000 0000 439a 8181  ............C...
+>  0000240: 009c 5053 5152 5657 551e 06ba c01f 33c0  ..PSQRVWU.....3.
+> -0000250: 8ec0 33ff 83c2 408e da81 fa00 8181 8181  ..3...@.........
+> -0000260: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 8175  ........u......u
+> -0000270: 021e 0747 83ff 3072 8198 e643 9a81 8181  ...G..0r...C....
+> +0000250: 8ec0 33ff 83c2 408e da81 fa00 8181 98e6  ..3...@.........
+> +0000260: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 0043  ........u......C
+> +0000270: 021e 0747 83ff 3072 9a81 8181 8181 8181  ...G..0r........
+>  0000280: 588e c20e 1f8b ec83 ec04 8cc0 8c46 fec7  X............F..
+>  0000290: 46fc ab00 0ee8 1300 8b46 fe8e c033 ffb9  F........F...3..
+>  00002a0: 0060 33c0 fcf3 ab8b e5eb 7455 8bec 8b46  .`3.......tU...F
+> -00002b0: 048e d8bb 0000 c687 0381 98e6 439a 8181  ............C...
+> +00002b0: 048e d8bb 0000 c687 8181 8181 8181 8181  ................
+>  00002c0: c687 0210 85be 0008 b1ff e85d 00fc 32e4  ...........]..2.
+> -00002d0: b100 e855 002e 8b0e 8181 8181 8181 8181  ...U............
+> -00002e0: 7523 c687 0410 0d2e 8b16 1c00 8181 8181  u#..............
+> -00002f0: 8814 8881 8181 8181 8198 e643 9a81 8181  ...........C....
+> +00002d0: b100 e855 002e 8b0e 8181 8181 8198 e643  ...U...........C
+> +00002e0: 7523 c687 0410 0d2e 8b16 1c00 9a81 8181  u#..............
+> +00002f0: 8814 8834 8198 e643 9a81 8181 8181 8181  ...4...C........
+>  0000300: 1009 e836 0084 870d 10ac 02e0 aa4e e2cc  ...6.........N..
+>  0000310: 2e3a 2620 0075 065d 0633 c050 cb5d cb07  .:& .u.].3.P.]..
+>  0000320: 1f5d 5f5e 5a59 5b58 9dcb c687 0410 0b88  .]_^ZY[X........
+> -0000330: 0cc6 871e 1000 c687 0410 09f6 8198 e643  ...............C
+> +0000330: 0cc6 871e 1000 c687 0410 09f6 8181 8181  ................
+>  0000340: f687 2010 80f6 8720 1080 f687 2010 80f6  .. .... .... ...
+> -0000350: 8704 1080 74f9 f687 2010 80f6 9a81 8181  ....t... .......
+> -0000360: c31c 0000 0000 0000 0000 0000 8100 0081  ................
+> -0000370: 0000 0000 8100 8181 8181 8181 8181 8181  ................
+> +0000350: 8704 1080 74f9 f687 2010 80f6 8181 8181  ....t... .......
+> +0000360: c31c 0000 0000 0000 0000 0000 0081 8181  ................
+> +0000370: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
+>  0000380: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  0000390: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  00003a0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> -00003b0: 0000 0000 0000 0000 8181 8181 98e6 439a  ..............C.
+> +00003b0: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
+>  00003c0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> -00003d0: 0000 0000 0000 0000 8181 8181 98e6 439a  ..............C.
+> +00003d0: 0000 0000 0000 0000 8181 8181 8181 8181  ................
+>  00003e0: 0000 0000 0000 0000 0000 0000 8181 8181  ................
+> -00003f0: 0000 8100 8181 8181 8181 8181 8181 8181  ................
+> +00003f0: 8181 0000 8181 8181 98e6 439a 8181 8181  ..........C.....
+>  0000400: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  0000410: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+>  0000420: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> ===
+> that data was read by
+> ===
+>                 cmd(bios, NAND_CMD_READ0);
+>                 adr(bios, page);
+>                 doc_read_nop(bios);  /* nop between write/read */
+>                 doc_write_cdsncontrol(bios, CDSN_CTRL_CE);
+>                 doc_read(bios, ReadPipelineInitialization);
+>                 for(i=0; i<512-1; i++) {
+>                         doc_read_4nop(bios);
+>                         doc_read(bios, CDSNSlowIO);
+>                         doc_read_4nop(bios);
+>                         buf[offset++] = doc_read(bios, _CDSNIO_BASE+i);
+>                         doc_read_4nop(bios);
+>                 }
+>                 buf[offset++] = doc_read(bios, LastDataRead);
+>                 doc_write_cdsncontrol(bios, CDSN_CTRL_CE);
+>                 if(doc_wait(bios, 5000)) {
+>                         printf("outch...\n");
+>                         return(-1);
+>                 }
+> ===
+> if i read without CDSNSlowIO and without doc_read_4nop(bios) then the result
+> is
+> worse and more bits/bytes are different each read.
+> if i read doc_read(bios, _CDSNIO_BASE) (***check the missing ``+ i''***)
+> then
+> i get 0x55 all the time (except for doc_read(bios, LastDataRead)).
+> 
+> all this is very strange and i am beginning to think
+> that my DoC (the flash in it) is damaged.
+> 
+> any idea?
+> 
+> niki w. waibel
