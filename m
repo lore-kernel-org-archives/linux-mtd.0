@@ -1,16 +1,16 @@
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18TjnZ-0008Hm-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2003 14:24:45 +0000
-Date: Wed, 1 Jan 2003 15:55:06 +0100 (CET)
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Charles Manning <manningc2@actrix.gen.nz>
-cc: Jeff Lin <jlin87@yahoo.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: FTL of compact flash card
-In-Reply-To: <20030101074730.0D64C158A5@dragon.actrix.co.nz>
-Message-ID: <Pine.LNX.4.44.0301011519090.21680-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from [202.106.187.156] (helo=sina.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18UKjp-0003OF-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 05:51:22 +0000
+Date: Fri, 3 Jan 2003 14:22:17 +0800
+From: "thierry" <jokyman@sina.com>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
+Subject: jedec_probe still not working
+Mime-Version: 1.0
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E18UKjp-0003OF-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,38 +22,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 1 Jan 2003, Charles Manning wrote:
+I have try to use the cfi_probe.But I met the same problem.
+So I go back to use jedec_probe.
+My board is based on DragonBall ez328,uClinux20020927
+I call the jedec_probe to detect my flash.
+I set:
+=09cfi->addr_unlock1 =3D 0xaaa;
+=09cfi->addr_unlock2 =3D 0x554;
+It execute:
+=09/* Reset */
+=09cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type,=
+ NULL);
 
-> >From what I read here, what you want is a mapping that provides a block-wise 
-> interface to the flash.
-> 
-> JFFSx is a file system. That will not do what you want.
-> 
-> What you need is some block-like FTL like NFTL or whatever goes on inside a 
-> Compact Flash or ATA card. I am not aware of any open source code that will 
-> do what you want. As far as I can tell all this code is fiercely guarded by 
-> companies like Sandisk and MSystems.
+=09/* Autoselect Mode */
+=09cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,=
+ CFI_DEVICETYPE_X16, NULL);
+=09cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,=
+ CFI_DEVICETYPE_X16, NULL);
+=09cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,=
+ CFI_DEVICETYPE_X16, NULL);
 
-There is at least 4 such layers in the Linux MTD kernel sources:
+=09if (!cfi->numchips) {
+=09=09/* This is the first time we're called. Set up the CFI 
+=09=09   stuff accordingly and return */
+=09=09
+=09=09cfi->mfr =3D jedec_read_mfr(map, base, osf);
+=09=09cfi->id =3D jedec_read_id(map, base, osf);
 
-  NFTL. Compatible with the NFTL design and implementation by MSystems for
-their DOC devices. However, any use of NFTL on other devices will likely
-be in violation to their patent unless a license is aquired.
-
-  FTL. Also covered by a M-Systems patent with a special grant for use in
-PCMCIA. See ftl.c for details.
-
-  mtdblock, linear block level access to flash memory. No wear leveling as
-far as I know.
-
-  The journalling level of jffs. Has wear leveling.
-
-  The journalling level of jffs2. Has wear leveling.
-
-
-For most purposes I suspect actually using the JFFS2 filesystem is the
-best fit. Gives you efficient wear leveling (inlcluding not caring about
-deleted content) and reasonable data integrity protection.
-
-Regards
-Henrik
+=09=09printk("mfr:%lx\n",cfi->mfr);
+=09=09printk("id:%lx\n",cfi->id);
+When kernel boot up,it print=A3=BA
+mfr:7f
+id:fffc
+My flash is hy29lv190
+manufacturer code is 0xAD
+device code is 0x22C4
+I can't find out the problem.
+Can anyone point it out?
+Thanks!
