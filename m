@@ -1,30 +1,41 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1233ib-0001W6-00
-	for mtd-list@infradead.org; Tue, 28 Dec 1999 20:59:45 +0000
-Received: from [202.112.136.2] (helo=dns.pubnic.buaa.edu.cn)
+	id 125Ou2-0004GQ-00
+	for mtd-list@infradead.org; Tue, 04 Jan 2000 08:01:14 +0000
+Received: from ctam160.prophecy.com.au
+	([203.21.127.160] helo=k9.prophecy.com.au ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 1233hM-0001W0-00
-	for mtd@infradead.org; Tue, 28 Dec 1999 20:59:39 +0000
-Received: from pita ([210.78.134.197]) by dns.pubnic.buaa.edu.cn (8.7.5/8.7.3) with SMTP id FAA11445 for <mtd@infradead.org>; Wed, 29 Dec 1999 05:04:34 +0800
-Message-ID: <008201bf5176$d01e4a20$5800a8c0@pita>
-From: "jyllyj" <pfrl@sina.com.cn>
-To: "mtd" <mtd@infradead.org>
-Subject: pc mainboard
-Date: Wed, 29 Dec 1999 05:01:30 +0800
+	id 125Oty-0004GI-00
+	for mtd@infradead.org; Tue, 04 Jan 2000 08:01:12 +0000
+Received: from ctam.com.au (brendan@localhost [127.0.0.1])
+	by k9.prophecy.com.au (8.8.7/8.8.7) with ESMTP id SAA03368
+	for <mtd@infradead.org>; Tue, 4 Jan 2000 18:09:59 +1100
+Message-ID: <38719CC6.93FB5729@ctam.com.au>
+Date: Tue, 04 Jan 2000 18:09:58 +1100
+From: Brendan J Simon <Brendan.Simon@ctam.com.au>
+Reply-To: Brendan.Simon@ctam.com.au
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd <mtd@infradead.org>
+Subject: DiskOnChip for PowerPC embedded system.
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-hi,all
-question:
-    how i can use doc2000 on my pc mainboard that no doc socket.
-can i use bios socket?
-Regard. 
 
+I wish to use a DiskOnChip2000 device for PowerPC embedded system
+running Linux, but have a few questions.
+
+1) Do I need to reprogram the firmware on the DOC device or is the Linux
+driver software all I need ?
+
+2) Can I use the firmware/ROM space to put own bootloader code ?  How
+big is it ?
+
+3) Is there an FAQ for DOCs that aren't Intetl PC specific ?
+
+Thanks,
+Brendan Simon.
 
 
 
