@@ -1,24 +1,15 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from [199.221.73.29] (helo=marconi-gfw.marconicommerce.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14whvp-00087i-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 May 2001 11:07:58 +0100
-Received: from mail.com1.fr ([62.161.40.252])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14whwB-0004lk-00
-	for linux-mtd@lists.infradead.org; Mon, 07 May 2001 11:08:20 +0100
-Received: from MSTEMPIN (ns.com1.fr [62.161.40.253])
-	by mail.com1.fr (8.9.3/8.9.3) with SMTP id MAA11647
-	for <mtd@infradead.org>; Mon, 7 May 2001 12:08:10 +0200
-From: "Michel Stempin" <mstempin@com1.fr>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Subject: MTD/JFFS running on SBC-104
-Date: Mon, 7 May 2001 12:09:17 +0200
-Message-ID: <NEBBLPFMELCDALFMOJILOEJGCFAA.mstempin@com1.fr>
+	id 14wkDj-0008HM-00
+	for <linux-mtd@lists.infradead.org>; Mon, 07 May 2001 13:34:35 +0100
+Message-ID: <A3E34B558F5CD211B4980008C7A4A99003163ECC@sparrow.eng.gilbarco.com>
+From: "Williams, Kevin M." <kevin.m.williams@marconi.com>
+To: "'edmund@troche.org'" <edmund@troche.org>, linux-mtd@lists.infradead.org
+Subject: RE: Invalid ioctl answer + another question
+Date: Mon, 7 May 2001 08:34:34 -0400 
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,19 +21,69 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-OK, I've got MTD/JFFS running on an Arcom SBC-104 with kernel 2.2.17. I
-compiled them built-in in the kernel, had to write the map for the SBC-104,
-based on the sbc_mediagx, found a few glitches in cfi, but it works. I will
-post the details when I am done.
+Edmund, 
 
-Now, I want to put JFFS2 in the kernel instead of JFFS. How do you do that?
-There is no config in the kernel for JFFS2. Do I have just to link into the
-kernel with symlinks?
+I just posted a similar problem last week and David's suggestion fixed my
+problem....
 
---
-Michel Stempin
-MIS
-COM One SA, 11 parc de Marticot, 33610 CESTAS, FRANCE
-Tel: +33(0)5 57 97 72 72
-Fax: +33(0)5 56 78 84 78
-Email: mstempin@com1.fr
+I was running a 2.4.4 kernel, but using the utilities built from an older
+kernel (2.4.3-pre-3).  I rebuilt everything in the 'util' directory with the
+new kernel headers from 2.4.4 and my ioctl error went away.  Try rebuilding
+the mkfs.jffs binary with the new kernel headers.
+
+However, I now have the following timeout error and question:
+
+bash#>sbin/erase /dev/mtd2 0 6
+MTD_open
+Erase Total 6 Units
+MTD_ioctlMTD_ioctl
+Erase Unit Size MTD_ioctl
+Performing Flash Erase of length 131072 at offset 0x0waiting for erase to
+complete timed out.
+MTD Erase failure: Input/output error<6>MTD_close
+
+Can anyone give me any ideas on why I am getting this?  I just
+double-checked, and the old 'erase' utility works with this same hardware
+and my 2.4.3-pre-3 kernel (with the 5 April mtd snapsnot).
+
+Thank you in advance for any help!
+
+Kevin
+
+-----Original Message-----
+From: Edmund Troche [mailto:edmund@troche.org]
+Sent: Sunday, May 06, 2001 3:23 PM
+To: MTD Mailing List
+Subject: Re: Invalid ioctl
+
+
+I have  the same results with a 48MB DoC 2000 also.
+
+
+Edmund
+
+Edmund Troche wrote:
+
+> I created a 8MB partition (nftla1) on a 8MB DoC 2000, and tried to cp a
+jffs
+> image that was created with mkfs.jffs, and got the following message:
+>     Invalid ioctl 5401 (MEMGETINFO = 80204d01)
+>     ECC needs a full sector write (adr: 9de00 size 134)
+>
+> The DiskOnChip is being found @ address 0xD6000 and it correctly detects
+it as
+> 8MB. JFFS and MTD support is compiled in, no modules in this case.
+>
+> Anyone familiar with what may be the problem? Thanks in advance for any
+help.
+>
+> Edmund Troche
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
