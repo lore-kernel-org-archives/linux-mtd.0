@@ -1,30 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 132H4P-000475-00
-	for mtd-list@infradead.org; Wed, 14 Jun 2000 18:35:17 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 132H4O-00046z-00
-	for cvs-notify@infradead.org; Wed, 14 Jun 2000 18:35:16 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel cfi_cmdset_0001.c'
-Message-Id: <E132H4O-00046z-00@infradead.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 14 Jun 2000 18:35:16 +0100
+	id 132KGl-0004mL-00
+	for mtd-list@infradead.org; Wed, 14 Jun 2000 22:00:15 +0100
+Received: from ha1.rdc1.ov.nl.home.com ([212.120.66.198] helo=mail.rdc1.ov.nl.home.com)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 132KGk-0004mF-00
+	for mtd@infradead.org; Wed, 14 Jun 2000 22:00:14 +0100
+Received: from pieter ([212.120.115.124]) by mail.rdc1.ov.nl.home.com
+          (InterMail v4.01.01.00 201-229-111) with SMTP
+          id <20000614210026.KFWX5340.mail.rdc1.ov.nl.home.com@pieter>
+          for <mtd@infradead.org>; Wed, 14 Jun 2000 23:00:26 +0200
+From: "Pieter Grimmerink" <p.grimmerink@home.nl>
+To: <mtd@infradead.org>
+Subject: driver for AM29F040W
+Date: Wed, 14 Jun 2000 23:00:57 +0200
+Message-ID: <MPBBIIEFELAEABNCNHMMIEEOCDAA.p.grimmerink@home.nl>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv15783
+I've only recently read about the mtd project,
+and I'm interested in getting the AM29F040W chip
+to work in an embedded system (80188 processor).
+(for which I should probably use the ELK kernel)
 
-Modified Files:
-	cfi_cmdset_0001.c 
-Log Message:
-Erase code. Now we have basic support for Intel Command Set NOR flash. 
-It busy waits for erases, and uses the basic 'word program' for writes
-rather than using buffers, but it works.
-Now I need to sort out flash chip locking so I can deal with async
-behaviour and timers properly.
+What driver should I use to 
+1. boot from this flashchip,
+2. and create a filesystem in it?
 
+Best regards,
+
+Pieter Grimmerink
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
