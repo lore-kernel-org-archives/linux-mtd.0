@@ -1,35 +1,21 @@
-Received: from [160.114.120.248] (helo=eos.fwall.u-szeged.hu)
+Received: from host90-57.pool212171.interbusiness.it ([212.171.57.90]
+	helo=server2.texin.it)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B0HVD-00026W-Az
-	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 09:56:51 +0000
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.24)
-	id 1B0HUW-0004lL-PR
-	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 10:56:08 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
- by eos.fwall.u-szeged.hu (SAVSMTP 3.0.0.44) with SMTP id M2004030810560811037
- for <linux-mtd@lists.infradead.org>; Mon, 08 Mar 2004 10:56:08 +0100
-Received: from sol.cc.u-szeged.hu ([160.114.8.24])
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.30)
-	id 1B0HUW-0004lP-Mx
-	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 10:56:08 +0100
-Received: from sed.inf.u-szeged.hu ([160.114.37.208] helo=sed)
-	by sol.cc.u-szeged.hu with esmtp (Exim 4.24)
-	id 1B0HUW-0004m0-B1
-	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 10:56:08 +0100
-Received: from kpax.inf.u-szeged.hu
-	([160.114.36.214] helo=inf.u-szeged.hu ident=hafy)
-	by sed with esmtp (Exim 3.36 #1 (Debian))
-	id 1B0HUT-0001rt-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Mar 2004 10:56:05 +0100
-Message-ID: <404C433C.7060604@inf.u-szeged.hu>
-Date: Mon, 08 Mar 2004 10:56:12 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1B0IC6-0002KW-Gg
+	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 10:41:10 +0000
+Received: from laboratorio1 (laboratorio1.texin.it [192.168.100.11])
+	by server2.texin.it (Postfix) with SMTP id BAD0E44C0B1
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  8 Mar 2004 05:41:04 -0500 (EST)
+Message-ID: <000f01c404f9$cc1da840$0b64a8c0@laboratorio1>
+From: "Minkiux" <minkiux@texin.it>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 8 Mar 2004 11:40:38 +0100
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: A JFFS2 extension - compression performance improvement
+Subject: lilo-mtd discard kernel options
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,23 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Hi all,
 
-With some of my colleagues at the University of Szeged (Hungary) we have 
-been working on improving the compression performance of JFFS2 - keeping 
-on mind the compatibility and the flexibility.
+I know that lilo-mtd (patched lilo version to work with DoC/mtd) discard the
+kernel command line or append= option in lilo.conf, so I ask: there is a
+patch against lilo-mts or some other way to turn around this?
 
-The result of our work (BBC - Block Based Compression Framework) is an 
-extension to JFFS2. At
+Any answer is very appreciate. Sorry for my english.
 
-http://www.inf.u-szeged.hu/jffs2/
-
-you can read more information about it, download and use it under the 
-terms of the GNU General Public License.
-
-Enjoy! :)
-
-Best regards,
-
-Ferenc Havasi
-http://www.inf.u-szeged.hu/~havasi/
+-------
+Davide Matarese - Minkiux
