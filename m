@@ -1,18 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from tidos.tid.es ([193.145.240.2] helo=tid.tid.es)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jq3l-0003bv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 23:43:13 +0100
-Received: from dwmw2 (helo=redhat.com)
-	by passion.cambridge.redhat.com with local-esmtp (Exim 3.16 #2)
-	id 15jq9i-0004Cl-00
-	for linux-mtd@lists.infradead.org; Wed, 19 Sep 2001 23:49:22 +0100
-From: David Woodhouse <dwmw2@infradead.org>
+	id 15jrFb-0003ha-00
+	for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2001 01:00:04 +0100
+Received: from tid.es ([1.0.22.18]) by tid.tid.es (Netscape
+          Messaging Server 4.15) with ESMTP id GJWU5G02.I0K for
+          <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 14:46:28 +0200
+Message-ID: <3BA89339.50407@tid.es>
+Date: Wed, 19 Sep 2001 14:44:41 +0200
+From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Preparation for sync with Linus.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 19 Sep 2001 23:49:22 +0100
-Message-ID: <16166.1000939762@redhat.com>
+Subject: JFFS2 compresses?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,14 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm preparing to send the latest code to Linus. I'm going to read through 
-the patch for obvious bogosity, probably removing some of the changes which 
-are only for portability, and do some basic testing tomorrow. 
+Does JFFS2 compress data in flash?
 
-In the meantime, if there's anything you don't like about the current set 
-of changes, now would be a good time to shout.
+When I check the available space in Flash
 
-ftp.uk.linux.org:/pub/people/dwmw2/mtd/mtd-diff-against-2.4.9-pre12-v9
+df
 
---
-dwmw2
+Filesystem                    1k-blocks        Used    Available    Use% 
+   Mounted on
+/dev/mtdblock1            32000                5772    26228            
+18%        /
+
+But when I erase a file that is 702k big I get:
+
+df
+
+Filesystem                    1k-blocks        Used    Available    Use% 
+   Mounted on
+/dev/mtdblock1            32000                5648    26352            
+18%        /
+
+Which means that 124k have been freed.
+I think there is a compression algorythm involved...?
+
+Thanks a lot
