@@ -1,14 +1,22 @@
-Received: from bay2-f46.bay2.hotmail.com ([65.54.247.46] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AXEhm-0000ON-JO
-	for linux-mtd@lists.infradead.org; Fri, 19 Dec 2003 07:05:46 +0000
-From: "Devi Priya" <ijpriya@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 19 Dec 2003 07:03:34 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <BAY2-F461ioWwr2UAaT0001ee96@hotmail.com>
-Subject: Physical address?
+Received: from onz.com ([67.121.61.113] helo=dual166.onz.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AXN2g-0001Oj-CO
+	for linux-mtd@lists.infradead.org; Fri, 19 Dec 2003 15:59:54 +0000
+In-Reply-To: <1071785993.3550.8.camel@lapdancer.baythorne.internal>
+References: <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
+	<5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
+	<5.2.1.1.0.20030624073300.00ae2100@192.168.1.10>
+	<1071785993.3550.8.camel@lapdancer.baythorne.internal>
+Mime-Version: 1.0 (Apple Message framework v606)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <11A06BE2-323C-11D8-BA5A-000A95B312BA@onz.com>
+Content-Transfer-Encoding: 7bit
+From: Allen Curtis <acurtis@onz.com>
+Date: Fri, 19 Dec 2003 07:57:38 -0800
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Infradead Org <linux-mtd@lists.infradead.org>
+cc: jffs-dev@axis.com
+Subject: Re: JFFS patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,9 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If I have my filesystem in Flash Memory, at which physical address will the 
-MTD driver access the Flash?
+>
+> Dud it? Are you still interested in maintaining JFFS 1? It's getting on
+> for time for it to be dropped from 2.6 if nobody wants to look after 
+> it.
 
-_________________________________________________________________
-Get the best astro advice. See what the stars hold in store. 
-http://www.msn.co.in/Astrology/ Simply click here.
+I am sorry. I have been busy teaching an embedded systems course. This 
+is now completed. Please send me the current issues and will address 
+them over break.
+
+Thanks
