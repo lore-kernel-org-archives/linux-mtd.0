@@ -1,31 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D857F-00013m-SU
-	for linux-mtd@lists.infradead.org; Sun, 06 Mar 2005 18:24:54 -0500
-Received: from custom-daemon.mailout2.samsung.com by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	id <0ICY00001EDE7C@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 08:24:50 +0900 (KST)
-Received: from ep_mmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0ICY006AHEDD3P@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 08:24:50 +0900 (KST)
-Received: from july7 ([168.219.213.193])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPSA id <0ICY00IO5EDAZC@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 08:24:49 +0900 (KST)
-Date: Mon, 07 Mar 2005 08:24:47 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-In-reply-to: <1110009521.4032.195.camel@tglx.tec.linutronix.de>
-To: tglx@linutronix.de
-Message-id: <0ICY00IOAEDDZC@mmp1.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=ks_c_5601-1987
-Content-transfer-encoding: 7BIT
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D8G25-0003o0-QE
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 06:04:18 -0500
+Date: Mon, 7 Mar 2005 12:04:13 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Gareth Bult <gareth@linux.co.uk>
+Message-ID: <20050307110413.GD2198@wohnheim.fh-wedel.de>
+References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1110043569.11425.63.camel@squizzey.bult.co.uk>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: Trying to get 1Gb Samsung nand flash working
-Reply-To: kyungmin.park@samsung.com
+Subject: Re: Re; MTD (2) Block Driver broken
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,13 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 5 March 2005 17:26:09 +0000, Gareth Bult wrote:
 > 
-> Can you please tell me the CVS $Id string from 
-> drivers/mtd/nand/nand_bbt.c ?
+> A little while back I re-wrote blkmtd.c effectively to provide proper
+> "write" access to jffs2 filesystems mounted on standard Linux block
+> devices.
 > 
+> The driver seems to have worked well (for me) and after many thousands
+> of downloads of FlashLinux, I've not had any reports of JFFS2 problems
+> or corruption.
+> 
+> It appears that someone has "cleaned up" this driver and it now appears
+> as an option in the standard kernel tree for 2.6.11.
+> 
+> Unfortunately it doesn't appear to work. As soon as you mount a JFFS2
+> filesystem on it and try to write data, corruption sets in resulting is
+> a fairly sharp system crash.
+> 
+> Copying back the source from the original driver I submitted to this
+> list and recompiling the kernel (with a one line change) appears to
+> yield a working system again.
+> 
+> So, two questions;
+> a.	Did anyone actually test the code after cleaning it up?
+> b.	Were there any life changing improvements that I really
+> 	*need* to make to the original code?
 
-I just use default mtd in linux 2.6.11 kernel inside
+Gareth, check your archives.
 
-* $Id: nand_bbt.c,v 1.28 2004/11/13 10:19:09 gleixner Exp $
+I sent the whole list of cleanup patches to you, you could have simply
+tested them in order and told me which one broke.  Instead you got
+pissed at dwmw2 since he didn't accept your broken mails and
+explicitly told me various times, you didn't care about the driver.
 
-Kyungmin Park
+The fact that you don't remember me, you don't remember being on Cc:
+when I sent patches to Andrew Morton and now come running back is more
+than a little disturbing to me.  Va snpg, V nz frireyl cvffrq ng lbh!
+
+So can we pretty please both swallow our feelings and work
+constructively together?  Or should I merely treat this mail as a bug
+report, go fix it, remove every single line of your code from the
+driver and remove your name afterwards?  Both are valid options, you
+choose.
+
+Jörn
+
+-- 
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
