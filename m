@@ -1,17 +1,18 @@
-Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15AHsG-0003mI-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 22:08:24 +0100
-Date: Wed, 13 Jun 2001 17:12:41 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Vipin Malik <vipin.malik@daniel.com>
-cc: David Woodhouse <dwmw2@infradead.org>, Xavier DEBREUIL <xde@inventel.fr>,
-        <linux-mtd@lists.infradead.org>
-Subject: Re: root jffs2
-In-Reply-To: <3B27D3EE.34F3C984@daniel.com>
-Message-ID: <Pine.LNX.4.33.0106131703070.23397-100000@xanadu.home>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15AIDM-0003nb-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 22:30:12 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0106131645450.23397-100000@xanadu.home> 
+References: <Pine.LNX.4.33.0106131645450.23397-100000@xanadu.home> 
+To: Nicolas Pitre <nico@cam.org>
+Cc: Vipin Malik <vipin.malik@daniel.com>,
+    Xavier DEBREUIL <xde@inventel.fr>, linux-mtd@lists.infradead.org
+Subject: Re: root jffs2 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 13 Jun 2001 22:35:32 +0100
+Message-ID: <24263.992468132@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,38 +25,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 
-On Wed, 13 Jun 2001, Vipin Malik wrote:
+nico@cam.org said:
+>  If a sector is empty, it is simply put in the queue for signature
+> stamping. 
 
-> > Just committed a patch to allow mounting JFFS2 on entirely empty (erased)
-> > flash.  It should speed up the mount of partially erased partitions as well
-> > since the empty blocks aren't erased unnecessarily anymore.
-> >
->
-> I hope you have accounted for "flipping bits" (TM Vipin Malik) sectors.
-> That's why the start of erase-sector signature was introduced in the first
-> place.
+It's easier to erase it again than prove it's empty. Reading the whole 
+thing ten times wasn't sufficient - an improperly erased bit could return a 
+zero on the eleventh read, after the whole device was reading 0xFF on the ten 
+previous reads.
 
-If a sector is empty, it is simply put in the queue for signature stamping.
+The erases aren't done synchronously - they're done in the background. They 
+shouldn't hold the mount up. I suspect the patch you committed will make it 
+start failing Vipin's powerfail tests again.
 
-> If a sector does not have the signature it *must be erased* even if you read
-> 0xff from
-> all locations in the sector. Just writing the signature is not enough.
-
-What do you mean by that?
-
-> And of course, this signature must be invalidated before going in to erase the
-> sector so that
-> if power fails in the middle of the erase, the sector ends up being erased on
-> the next mount.
-
-If that's really necessary to re-erase them even if they are already erased
-then it's just a matter of replacing "erase_complete_list" by
-"erase_pending_list"  on line 97 of fs/jffs2/scan.c.
-
-> If you don't do this, "flipping bits" will come up behind you and nip you in
-> the bud :)
-
-Please could you enlighten me on the matter?
-
-
-Nicolas
+--
+dwmw2
