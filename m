@@ -1,17 +1,19 @@
-Received: from web20728.mail.yahoo.com ([216.136.226.118])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aluae-0003Sx-P1
-	for linux-mtd@lists.infradead.org; Wed, 28 Jan 2004 18:39:04 +0000
-Message-ID: <20040128183901.24726.qmail@web20728.mail.yahoo.com>
-Date: Wed, 28 Jan 2004 10:39:01 -0800 (PST)
-From: Shawn Jin <shawnxtech@yahoo.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-  "Eric W. Biederman" <ebiederman@lnxi.com>
-In-Reply-To: <1075305569.1633.178.camel@hades.cambridge.redhat.com>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AlzzC-0004L9-UM
+	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2004 00:24:47 +0000
+Received: from mvista.com (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id QAA32099
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Jan 2004 16:24:42 -0800
+Sender: ahennessy@mvista.com
+Message-ID: <4018514D.6E4DB38A@mvista.com>
+Date: Wed, 28 Jan 2004 16:18:21 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=us-ascii
-cc: linux-mtd@lists.infradead.org
-Subject: Re: 64 bit bus access on a customed MPC8245 board
+Content-Transfer-Encoding: 7bit
+Subject: gen_probe.c issue
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > > I'm working on a customed MPC8245 board with
-> flash
-> > > chip Am29LV320 and trying to enable MTD driver
-> > > support.
-> 
-> > I looked and I can't find documentation for that
-> chip.
-> > Is it an atmel one?
-> 
->
-http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/26518.pdf
-> 
-> It's 16-bit, CFI-compliant, and (obviously) AMD
-> command set.
-> 
-Further clarification: It's Am29PL320D, which is
-configured to 32-bit mode.
+Hi,
 
-Thank you very much,
--Shawn.
+The following patch fixes a problem seen when the map->size is less than
+the actual chip size.
+Without the fix,  max_chips gets set to 0.
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free web site building tool. Try it!
-http://webhosting.yahoo.com/ps/sb/
+Alice
+
+Index: drivers/mtd/chips/gen_probe.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/gen_probe.c,v
+retrieving revision 1.14
+diff -u -r1.14 gen_probe.c
+--- drivers/mtd/chips/gen_probe.c       8 Nov 2003 00:51:21 -0000
+1.14
++++ drivers/mtd/chips/gen_probe.c       28 Jan 2004 23:58:38 -0000
+@@ -108,6 +108,9 @@
+         * Align bitmap storage size to full byte.
+         */
+        max_chips = map->size >> cfi.chipshift;
++        /* correct for case where map->size is less than chip size */
++        if (!max_chips)
++                max_chips = 1;
+        chip_map = kmalloc((max_chips / 8) + ((max_chips % 8) ? 1 : 0),
+GFP_KERNEL);
+        if (!chip_map) {
+                printk(KERN_WARNING "%s: kmalloc failed for CFI chip
+map\n", map->name);
