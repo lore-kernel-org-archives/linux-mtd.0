@@ -1,19 +1,17 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.102])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CES99-0005lA-Fc
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:40:56 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Lorenzo PARISI <lorenzo.parisi@st.com>
-In-Reply-To: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
-References: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1096893405.22034.9.camel@weaponx.rchland.ibm.com>
+References: <416122A1.4060302@oktetlabs.ru>
+	<1096885344.30942.559.camel@hades.cambridge.redhat.com>
+	<4161379C.3070109@oktetlabs.ru>
+	<1096893405.22034.9.camel@weaponx.rchland.ibm.com>
 Content-Type: text/plain
-Message-Id: <1096893650.22034.11.camel@weaponx.rchland.ibm.com>
+Message-Id: <1096893838.30942.587.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 07:40:50 -0500
+Date: Mon, 04 Oct 2004 13:43:59 +0100
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>
-Subject: Re: Errors
+Cc: Artem Bityuckiy <dedekind@oktetlabs.ru>, linux-mtd@lists.infradead.org
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 05:31, Lorenzo PARISI wrote:
-> Hi,
+On Mon, 2004-10-04 at 07:36 -0500, Josh Boyer wrote:
+> Yes and no.  It makes sense for any flash device that you can't write to
+> the same page multiple times without an erase in between.  NAND is
+> certainly the largest group of such devices.  There are others that have
+> this behavior as well.  See cfi_cmdset_0020.c.
 > 
-> whi compiling yaffs_guts.c there are errors, with command:
-> 
-> #ifdefined KERNEL...
-> 
-> 
-> there are more one error.
+> Although, JFFS2 doesn't support those chips right now, so I guess I am
+> just rambling :).
 
-Maybe your questions could be answered on the yaffs mailing list. 
-linux-mtd doesn't do the yaffs development.
+There's more chips like that on the way too. It'll be 
 
-http://www.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs
+	if (!jffs2_can_mark_obsolete(c))
 
-josh
+and it'll probably also be in the ifdef, although we may actually change
+the name of that configuration option.
+
+I agree that it shouldn't be left to the GC thread alone -- there isn't
+one on eCos and it's optional on Linux too. We can write out snapshots
+in the normal course of garbage collection though, when we have
+obsoleted a node belonging to the inode in question.
+
+
+
+-- 
+dwmw2
