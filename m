@@ -1,16 +1,17 @@
-Received: from luaren.pc-intouch.com ([66.42.86.8])
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16jEFZ-0006U3-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Mar 2002 06:53:09 +0000
-Date: Thu, 7 Mar 2002 23:06:10 -0800 (PST)
-From: Kristian Hoffmann <khoff@pc-intouch.com>
-To: Dzuy Nguyen <dzuy@infinity-studios.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Compressed root FS & DoC partition
-In-Reply-To: <3C87EB8A.7070305@infinity-studios.com>
-Message-ID: <Pine.LNX.4.44.0203072304070.13630-100000@luaren.pc-intouch.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16jMVh-00077c-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Mar 2002 15:42:21 +0000
+Received: from mail2.rol.it ([193.41.7.204])
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 16jMgi-00037z-00
+	for linux-mtd@lists.infradead.org; Fri, 08 Mar 2002 15:53:44 +0000
+From: request@logos.net
+To: linux-mtd@lists.infradead.org
+Subject: Verba Volant
+Message-Id: <E16jMgi-00037z-00@infradead.org>
+Date: Fri, 08 Mar 2002 15:53:44 +0000
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,40 +23,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-You could just leave the DoC formatted as a full 16MB parition and put a
-kernel, config, and compressed filesystem image in there.  Then load the
-compressed image as an initrd and mount your runtime config after booting.
-It works on a 16MB IDE flash drive.
+08-MAR-02
+We have been requested to insert the following email address, "mtd@infradead.org", in the Verba Volant Newsletter database. Through this daily service you will receive a quotation, selected from amongst the most celebrated philosophers, writers and poets of all time and translated into many languages and dialects by volunteers worldwide.
+If you would like to confirm your subscription to Verba Volant, please click on the following link: 
+http://www.logos.net/owa-l/press.subscribe?lang=en&email=mtd@infradead.org 
+If you do not wish to click on the link, your subscription will be cancelled.
+Thank you for your time.
+Verba Volant
 
-HTH,
 
--Kristian
 
-On Thu, 7 Mar 2002, Dzuy Nguyen wrote:
+08-MAR-02
+Il nous a été demandé d'ajouter l'adresse électronique "mtd@infradead.org" dans la liste des destinataires de Verba Volant, un service qui tous les jours vous adressera une citation sélectionnée parmi les œuvres des meilleurs philosophes, écrivains, poètes de tous les temps et traduite en de très nombreuses langues grâce à des volontaires du monde entier.
+Pour confirmer l'inscription à Verba Volant, veuillez vous connecter au lien suivant:
+http://www.logos.net/owa-l/press.subscribe?lang=fr&email=mtd@infradead.org 
+Si vous préférez ne pas cliquer sur le lien, vous ne recevrez rien.
 
-> I have a 16MB DoC 2000.  I am able to boot make an ext2 FS on and boot
-> via LILO.
->
-> Now, I want to be able to make it boot to a compressed root FS.  I've
-> created my own
-> compressed root FS (about 6MB).  I figured I'd partition the DoC into 2
-> parts of 8MB
-> each.  The first part is to hold the root FS (and possibly kernel) and
-> the latter part an
-> ext2 FS to store system's configuration files (to mount on /etc later).
->
-> I've tried both using dformat and nftl_format to format half of the DoC
-> and mke2fs it.
-> It just refuses to make the formatted half an ext2 unless the entire DoC
-> is formatted.
->
-> Am I on the wrong path here?  Can someone point me to the right
-> direction?  Thanks.
->
-> Dzuy
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Merci dans tous les cas de nous avoir accordé quelques secondes.
+Verba Volant
+
+
+
+08-MAR-02
+Se nos ha solicitado insertar la dirección de correo electrónico "mtd@infradead.org" en el listado de envíos de Verba Volant, un servicio que diariamente le enviará citas elegidas entre los mejores filosofos, escritores, poetas, etc., traducidas a varios idiomas y dialectos. Dichas citas están traducidas por voluntarios que se conectan a nuestra web desde todo el mundo.
+Si quiere confirmar la suscripción a Verba Volant, le rogamos entre en: 
+http://www.logos.net/owa-l/press.subscribe?lang=es&email=mtd@infradead.org 
+Si no entra en la dirección señalada no recibirá las citas.
+Muchas gracias por el tiempo que nos ha dedicado.
+Verba Volant
+
+
+
+08-MAR-02
+Ci è stato chiesto di inserire l'indirizzo di posta elettronica "mtd@infradead.org" nell’elenco dei destinatari di Verba Volant, un servizio che ogni giorno ti invierà una citazione scelta tra quelle dei migliori filosofi, scrittori, poeti di tutti i tempi e tradotta in moltissime lingue e dialetti grazie alla collaborazione di volontari da tutto il mondo.
+Se desideri confermare l'iscrizione, ti preghiamo di collegarti al seguente link:
+http://www.logos.net/owa-l/press.subscribe?lang=it&email=mtd@infradead.org 
+Nel caso preferissi non cliccare sul link, non riceverai nulla. 
+
+Grazie comunque per i secondi che ci hai dedicato.
+Cordiali saluti.
