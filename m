@@ -1,15 +1,20 @@
-Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
+Received: from [195.134.130.80] (helo=pip5.mpl.ch)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19i0nw-0003pn-MZ
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2003 00:56:24 +0100
-From: Dave Dillow <dave@thedillows.org>
-To: linux-mtd@lists.infradead.org
-Message-Id: <1059609350.3569.75.camel@dillow.idleaire.com>
-Mime-Version: 1.0
-Date: 30 Jul 2003 19:55:51 -0400
-Content-Type: multipart/mixed; boundary="=-jiMd3LCQ/14yrQ9E047b"
-cc: dwmw2@infradead.org
-Subject: Problems with 128MB DoC 2000
+	id 19i9lI-0004ij-LA
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2003 10:30:17 +0100
+Message-ID: <3F28E204.5040505@elsoft.ch>
+Date: Thu, 31 Jul 2003 11:31:48 +0200
+From: =?ISO-8859-1?Q?=22David_M=FCller_=28ELSOFT_AG=29=22?=
+ <d.mueller@elsoft.ch>
+MIME-Version: 1.0
+To: tglx@linutronix.de
+References: <3F27DAA6.4050806@elsoft.ch>
+	<200307301821.39997.tglx@linutronix.de>
+In-Reply-To: <200307301821.39997.tglx@linutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem mounting JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,92 +24,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello
 
---=-jiMd3LCQ/14yrQ9E047b
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Thomas Gleixner wrote:
+> On Wednesday 30 July 2003 16:48, David Müller (ELSOFT AG) wrote:
+> 
+>>Hello
+>>
+>>I'm trying to get a JFFS2 filesystem on a 64MB NAND flash device working
+>>on an ARM based system (running Linux-2.4.21 and the latest MTD CVS code).
+>>
+>>I prepare the JFFS2 image on my host system like this
+>>
+>>temp> mkfs.jffs2 --version
+>>mkfs.jffs2: revision 1.38
+>>
+>>temp> mkfs.jffs2 -d targetfs -o targetfs.img -e 16 -l -q -v -n
+>>
+>>
+>>and burn it into the NAND device on the target. If i later try to mount
+>>it under Linux with "mount -t jffs2 /dev/mtdblock/1 /mnt", i get the
+>>following output:
+> 
+> 
+> How do you burn it into the NAND device ? Are you updating the OOB area ?
+> read http://linux-mtd.infradead.org/tech/nand.html
+> use nandwrite from the util directory, if you can do it from a running system
+> 
+> 
 
-I've got a DoC MD2202-D128-X that I'm trying to get working with Linux.
-The binary only drivers from M-Sys may be an option, but I'd much rather
-have the source to work with.
+I'm using U-Boot's http://sourceforge.net/projects/u-boot "nand" command
+to erase and write the NAND flash.
 
-I first tried the CVS version of docprobe, and it reported an unknown
-chip ID of 0x30. Following an exchange between David Woodhouse and Zachi
-Friedman, I cooked up the attached patch to docprobe, which lets it find
-my 2000, but then it fails with the following errors:
+If i use the nandwrite command
 
-Using configured DiskOnChip probe address 0xd0000
-DiskOnChip 2000 found at address 0xD0000
-Unknown flash chip found: C6 C6
-Please report to dwmw2@infradead.org
-Unknown flash chip found: C6 C6
-Please report to dwmw2@infradead.org
-Unknown flash chip found: C6 C6
-Please report to dwmw2@infradead.org
-Unknown flash chip found: C6 C6
-Please report to dwmw2@infradead.org
-No flash chips recognised.
+# nandwrite --version
+nandwrite 1.2
 
-It seems kind of odd that the flash id and manufacturer id are the same
-number, so I also tried forcing the chip to be a Millennium, and got the
-expected failure -- it did not report unknown flash chips; it didn't see
-any at all.
+# nandwrite --jffs2 /dev/mtd/1 /tmp/targetfs.img
 
-So, if doc2000.c is working for DoC 2000 < 128MB, then it looks like the
-new ASIC changed more than just the toggle bit?
+and mount it, the error is gone but the mounted filesystem is empty (no
+files, not directories).
 
-I have a fairly urgent need to get this working in some form or fashion.
-I'm guessing the programming information is not publicly available --
-any pointers on who I should talk to? Zachi, maybe? I'm willing to write
-the code if I can get the information, or at the very least, I can be a
-pretty quick turnaround tester.
--- 
-Dave Dillow <dave@thedillows.org>
+If i write the image using U-Boot's command, then there is the reported
+error but the mounted filesystem is populated with directories and some
+files (see below) although some files are missing or corrupt.
 
---=-jiMd3LCQ/14yrQ9E047b
-Content-Disposition: attachment; filename=docprobe-new-2000.patch
-Content-Type: text/plain; name=docprobe-new-2000.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
---- docprobe.c.orig	2003-07-30 14:24:34.000000000 -0400
-+++ docprobe.c	2003-07-30 14:26:03.000000000 -0400
-@@ -135,13 +135,19 @@
- 		 window, DOCControl);
- #endif /* !DOC_PASSIVE_PROBE */	
- 
--	/* We need to read the ChipID register four times. For some
--	   newer DiskOnChip 2000 units, the first three reads will
--	   return the DiskOnChip Millennium ident. Don't ask. */
--	ReadDOC(window, ChipID);
--	ReadDOC(window, ChipID);
--	ReadDOC(window, ChipID);
-+	/* Some newer DiskOnChip 2000 units report as a Millennium.
-+	 * To tell these apart, read the ID four times, and if the
-+	 * fourth read does not come back as a Millenium, it is a
-+	 * newer 2000 unit. */
- 	ChipID = ReadDOC(window, ChipID);
-+	if (ChipID == DOC_ChipID_DocMil) {
-+		ReadDOC(window, ChipID);
-+		ReadDOC(window, ChipID);
-+		ChipID = ReadDOC(window, ChipID);
-+		if (ChipID != DOC_ChipID_DocMil)
-+			ChipID = DOC_ChipID_Doc2k;
-+	}
-+
-   
- 	switch (ChipID) {
- 	case DOC_ChipID_Doc2k:
-@@ -151,7 +157,10 @@
- 		tmpc = ReadDOC(window, 2k_ECCStatus) & DOC_TOGGLE_BIT;
- 		if (tmp != tmpb && tmp == tmpc)
- 				return ChipID;
--		break;
-+
-+		/* The newer DiskOnChip 2000 units use the same toggle
-+		 * bit as the Millenium chips, so fall through to that
-+		 * test. */
- 		
- 	case DOC_ChipID_DocMil:
- 		/* Check the TOGGLE bit in the ECC register */
+# ll /mnt/
+total 0
+drwxr-xr-x    2 0        0               0 Apr 23  2003 bin
+drwxr-xr-x    2 0        0               0 Apr  2  2003 dev
+drwxr-xr-x    2 0        0               0 Apr  2  2003 dev-state
+drwxr-xr-x    2 0        0               0 Apr  2  2003 etc
+drwxr-xr-x    2 0        0               0 Apr  2  2003 home
+drwxr-xr-x    2 0        0               0 Apr  2  2003 lib
+drwxr-xr-x    2 0        0               0 Apr  2  2003 proc
+drwxr-xr-x    2 0        0               0 Apr  2  2003 root
+drwxr-xr-x    2 0        0               0 Apr  2  2003 sbin
+drwxr-xr-x    2 0        0               0 Apr  2  2003 tmp
+drwxr-xr-x    2 0        0               0 Apr  2  2003 usr
+drwxr-xr-x    2 0        0               0 Apr  2  2003 var
+# ll /mnt/bin/
+total 391
+-rwxr-xr-x    1 0        0          400168 Apr 23  2003 armdemo
 
---=-jiMd3LCQ/14yrQ9E047b--
+
+
+>>jffs2: Erase block size too small (16KiB). Using virtual blocks size
+>>(32KiB) instead
+> 
+> 
+> That's due to memory consumption. If we have 16KiB eraseblock size we need too 
+> much memory to keep track of all eraseblocks. So we use virtual 32KiB blocks 
+> instead.
+> 
+> 
+
+Yes, i know. This was the reason why i had to upgrade to the latest
+version of the JFFS2 code, as the version i used before was unable to
+handle it.
+
+
+What really bothers me is this error:
+
+Ino #14 is absent but node not REF_PRISTINE. Reading.
+ARGH. About to write node to 0x00004000 on flash, but there are data
+already there:
+0x00004000: 85 19 02 e0 20 03 00 00 10 25 f5 2e 0e 00 00 00
+Write of 1576 bytes at 0x00004000 failed. returned -5, retlen 0
+Not marking the space at 0x00004000 as dirty because the flash driver
+returned retlen zero
+Error writing new dnode: -5
+
+
+
+Dave
