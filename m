@@ -1,14 +1,19 @@
-Date: Mon, 31 Jan 2005 15:54:45 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cvdzi-0007Vu-42
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 11:01:45 -0500
+Date: Mon, 31 Jan 2005 17:01:29 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: "Robert P. J. Day" <rpjday@mindspring.com>
-In-Reply-To: <Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
-Message-ID: <Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
+Message-ID: <20050131160129.GG6694@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
 	<1107184897.7567.20.camel@windu.rchland.ibm.com>
 	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,31 +25,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 Jan 2005, Robert P. J. Day wrote:
-
-> On Mon, 31 Jan 2005, Josh Boyer wrote:
-> 
-> > On Mon, 2005-01-31 at 10:14 -0500, Robert P. J. Day wrote:
-> > >   just for curiosity's sake, after i build a JFFS2 image using
-> > > mkfs.jffs2, i want to mount out to verify its contents.  to do
-> > > that, i use a recipe i patched together a while back involving
-> > > loading the appropriate modules, creating /dev/mtdblock/0, dd'ing
-> > > the image to that device, then mounting it.
-> > >
-> > >   however, this morning, in trying this with a larger-than-normal
-> > > JFFS2 image, i get:
-> > >
-> > >   # dd bs=4096 if=soefsimage of=/dev/mtdblock/0
-> > >   # dd: writing `/dev/mtdblock/0': No space left on device
-> > >   1025+0 records in
-> > >   1024+0 records out
-> > >
-> > > IOW, it dies after 4M.  is this a limit imposed by the ramdisk
-> > > limit in the kernel configuration?  is this a configurable
-> > > parameter at module load time?  thanks for any pointers.
-> >
-> > If you are using mtdram.c, it should be a module parameter.  Try
-> > setting total_size to something larger.
+On Mon, 31 January 2005 10:43:25 -0500, Robert P. J. Day wrote:
 > 
 >   ah, excellent, but while we're on the subject of parameters, is
 > there any hope of getting some consistency in the way parameter values
@@ -80,18 +61,21 @@ On Mon, 31 Jan 2005, Robert P. J. Day wrote:
 > various utilities and have to keep remembering what the standard is.
 > 
 >   thoughts?
-My thought that if you sent patch that fixes this inconsistency it will 
-be nice. :-)
 
-> 
-> rday
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Feel free to send patches. :)
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+mkfs.jffs2 is something I personally don't care about.  Few do, thus
+the current state.
+
+mtdram looks pretty broken, interface-wise.  So if you want to fix it,
+you might want to follow my path with slram/phram or blkmtd/block2mtd.
+Rename the file, fix the interface, fix the other crap you find,
+submit for inclusion.  If it's better, people will start using it.
+
+Jörn
+
+-- 
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+-- Theodore Roosevelt, Kansas City Star, 1918
