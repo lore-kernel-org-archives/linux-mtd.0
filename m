@@ -1,19 +1,19 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CaEYu-0005dY-Qx
-	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2004 09:37:34 -0500
-Message-ID: <41B07A23.20409@colleduc.ee>
-Date: Fri, 03 Dec 2004 16:37:23 +0200
-From: Kalev Lember <kalev@colleduc.ee>
-MIME-Version: 1.0
-To: skorinkod@mail.ru
-References: <200412021931.05132.skorinkod@mosk.ru>
-	<200412031242.12036.skorinkod@mail.ru>
-In-Reply-To: <200412031242.12036.skorinkod@mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from sonolo.xs4all.nl ([80.126.206.91] helo=sendmail.metro.cx)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CaGyf-00063x-8U
+	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2004 12:12:18 -0500
+Date: Fri, 3 Dec 2004 18:11:41 +0100
+From: "K.F.J. Martens" <gmc@metro.cx>
+To: Ben Dooks <ben@fluff.org.uk>
+Message-ID: <20041203171141.GE2959@metro.cx>
+References: <20041202225607.GH3233@metro.cx>
+	<20041203004601.GA29522@home.fluff.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20041203004601.GA29522@home.fluff.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Booting from DiskOnChip
+Subject: Re: Horrible Bug? AMD29LV400BB with mtd in 2.6.10rc2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dmitry Skorinko wrote:
+Hi Ben,
 
->People!
->Help me to install grub to DiskOnChip, plz...
->Just for BIOS see it... Then I will install system self
->
->This problem stops all my work :(
->  
->
-Why don't you try the docboot boot loader that is included in linux-mtd cvs?
-It has much less overhead and is considarably simpler to understand than 
-the GRUB and LILO.
+You are everywhere :)
 
-I believe your Diskonchip should be supported.
+On Fri, Dec 03, 2004 at 12:46:01AM +0000, Ben Dooks wrote:
+> On Thu, Dec 02, 2004 at 11:56:07PM +0100, K.F.J. Martens wrote:
+> > If I reverse them like so:
+> > 
+> > 
+> >                         [0] = MTD_UADDR_0x0555_0x02AA,  /* x8 */
+> >                         [1] = MTD_UADDR_0x0AAA_0x0555,  /* x16 */
+> > 
+> 
+> There has been some fixing in the jedec and similar probe code
+> to fix the use of the fields of device width / overlap due to
+> incorrect addressing being used for the chip commands. 
+
+Meaning that a patch is indeed being submitted right now? It can be
+confusing though, how the terms x8 and x16 are used in the datasheets et
+al. 
+
+Kind regards,
+
+Koen
+
 
 -- 
-Best regards,
-Kalev Lember
+K.F.J. Martens, Sonologic, http://www.sonologic.nl/
+Networking, embedded systems, unix expertise, artificial intelligence.
+Public PGP key: http://www.metro.cx/pubkey-gmc.asc
+Wondering about the funny attachment your mail program
+can't read? Visit http://www.openpgp.org/
