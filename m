@@ -1,18 +1,18 @@
-Received: from [216.219.239.237] (helo=www.sensoria.com)
+Received: from [202.98.123.42] (helo=mail.ocdtt.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15wAAk-0002H7-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 23:37:22 +0100
-From: "Bao C. Ha" <baoha@sensoria.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: Patch to prevent jffs2 from make changes to other filesystems 
-Date: Tue, 23 Oct 2001 15:45:08 -0700
-Message-ID: <015201c15c14$5e70b2f0$456c020a@SENSORIA>
+	id 15wD2U-0002ZG-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 02:41:02 +0100
+Received: from ocdtt.com (unknown [61.139.82.145])
+	by mail.ocdtt.com (Postfix) with ESMTP id C9C7713DD4
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 09:33:01 +0800 (CST)
+Message-ID: <3BD61EB0.6FC080F6@ocdtt.com>
+Date: Wed, 24 Oct 2001 09:51:44 +0800
+From: Chen Yaoming <ming@ocdtt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Subject: Why does /dev/mtd0 complain Intel TE28F160C3B as read only file system?
+Content-Type: text/plain; charset=gb2312
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <15804.1003874104@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,59 +24,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David,
+# ls -l /dev/mtd0
+crw-rw----    1 root     disk      90,   0 Oct 15  2001 /dev/mtd0
 
-I am using kernel 2.4.10 and the older mtd stuff.
-I have grabbed the newer mtd from cvs and can
-confirm that we no longer have the problem.  The
-"Cowardly refusing ..." message was triggered with
-no damage to the cramfs.
+# ./mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 2097152 (2M)
+mtd.erasesize = 65536 (64K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 2
 
-I apologize for the panic.  We will be moving
-forward to 2.4.12 to eliminate this type of
-problems.
+region[0].offset = 0x00000000
+region[0].erasesize = 8192 (8K)
+region[0].numblocks = 8
+region[0].regionindex = 0
+region[1].offset = 0x00010000
+region[1].erasesize = 65536 (64K)
+region[1].numblocks = 31
 
-Regards.
-Bao
+# ./mtd_debug write /dev/mtd0 0x100000 16 /boot/vmlinuz
+Copied 16 bytes from /boot/vmlinuz to address 0x00000000 in flash
 
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org
-> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of 
-> David Woodhouse
-> Sent: Tuesday, October 23, 2001 2:55 PM
-> To: Bao C. Ha
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: Patch to prevent jffs2 from make changes to other
-> filesystems 
-> 
-> 
-> 
-> 
-> baoha@sensoria.com said:
-> >  I would like to propose the following patch to temporarily fix the
-> > problem of jffs2 making changes to other filesystems stored on MTD
-> > partitions. 
-> 
-> You can't do it like that - you'll get crap on the filesystem 
-> sometimes, 
-> during normal operation. We have logic in there to abort the 
-> mount at the 
-> end, if no valid nodes were found, but other data were. Is 
-> that failing or 
-> are you using an obsolete version?
-> 
-> Line 147 of scan.c should read:
->  printk(KERN_NOTICE "Cowardly refusing to erase blocks on 
-> filesystem with no valid JFFS2 nodes\n");
-> 
-> Does it? Why doesn't it get triggered?
-> 
-> --
-> dwmw2
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+# dd if=/boot/vmlinuz of=/dev/mtd0 bs=1k seek=1024
+dd: writing `/dev/mtd0': Read-only file system
+1+0 records in
+0+0 records out
+
+# ./mtd_debug erase /dev/mtd0 1048576 65536
+MEMERASE: Read-only file system
+
+# ./erase /dev/mtd0 0x100000 1
+Erase Total 1 Units
+Region 0 is at 0 of 8 sector and with sector size 2000
+Region 1 is at 65536 of 31 sector and with sector size 10000
+Performing Flash Erase of length 65536 at offset 0x100000
+MTD Erase failure: Read-only file system
