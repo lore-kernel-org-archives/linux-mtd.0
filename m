@@ -1,15 +1,15 @@
 Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CX7dm-0007vF-7M
-	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 19:37:43 -0500
-Message-ID: <41A52950.4070600@mvista.com>
-Date: Wed, 24 Nov 2004 16:37:36 -0800
+	id 1CX8El-00088y-7b
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 20:15:56 -0500
+Message-ID: <41A53246.7040704@mvista.com>
+Date: Wed, 24 Nov 2004 17:15:50 -0800
 From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-To: Josh Boyer <jdub@us.ibm.com>
+To: David Woodhouse <dwmw2@infradead.org>
 References: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
-	<1101301663.22829.3.camel@weaponx.rchland.ibm.com>
-In-Reply-To: <1101301663.22829.3.camel@weaponx.rchland.ibm.com>
+	<1101304647.8191.9015.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1101304647.8191.9015.camel@hades.cambridge.redhat.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,30 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On Tue, 2004-11-23 at 16:25, Todd Poynor wrote:
-> 
-> <snip>
-> 
->>If anyone has any suggestions or comments as to why this wouldn't work
->>for their device or usage model or why this isn't the right way to go
->>about things then I'd appreciate it, thanks. -- Todd
-> 
-> 
-> Not everyone uses mtd partitions...
+David Woodhouse wrote:
+> We already have a bit to set in the partition flags to show that a
+> partition should be read-only. 
 
-Unfortunately options for doing anything terribly intelligent about it 
-seem to be few in such a case.  If somebody wants MTD to automatically 
-figure out what the proper locking status is for these chips then the 
-partition map is the only thing we've got to go on (at present anyhow). 
-  So it could be argued that by not using partitions you've decided to 
-handle it yourself (such as explicit flash_unlock of needed ranges after 
-userspace startup).  I'm guessing that some new way of specifying what 
-areas of flash are intended to be writeable vs. read-only, apart from 
-the existing partition maps, would not be well received.  But if there 
-is some nifty way of doing this outside the partition framework then I'm 
-interested.  And doing nothing or doing something simplistic are 
-certainly options as well.  Thanks,
+Yeah I saw that the bit is really an amalgam of 
+MTD_CLEAR_BITS|MTD_SET_BITS that are also involved in other capability 
+combos (MTD_CAP_NANDFLASH, et al) and wasn't sure if there were other 
+side effects of messing with those at runtime.
+
+> I'd rather do this with a blacklist of the chips which lock themselves,
+> and have the chip driver automatically unlock it at boot time and
+> suspend time (or automatically as required).
+
+I did receive some pushback when I previously tried to do something 
+similar, since we'd often be unlocking bootloader firmware and such.
+
+It may be better to err on the side of caution and make it the 
+responsibility of userspace to unlock the needed portions.  Assuming the 
+root fs is read-only then boot time probably isn't a problem.  System 
+resume time could be a problem, since we can't guarantee nothing will 
+write to previously-writeable filesystems before the "restore flash 
+state" script runs.  So if the dangers of unlocking bootloaders etc. 
+aren't felt to be that important then unlocking all blocks is the easier 
+solution.
+
+Another option suggested previously was to require userspace to unlock 
+needed blocks, but keep a bitmap of unlocked blocks and restore the 
+flash to the same state at mtd resume, so writeable file systems 
+continue to be writeable at resume time (and no userspace callback is 
+needed at resume time).
+
+If, all in all, unlocking the whole chip is still the best way to go 
+then I'll send a proposed patch for Intel K3 StrataFlash.  Thanks,
+
 
 -- 
 Todd
