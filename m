@@ -1,18 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from dialpool-210-214-120-123.maa.sify.net ([210.214.120.123] helo=nikunj)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Gz5v-0006T4-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 09:30:11 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B391571.9114E309@daniel.com> 
-References: <3B391571.9114E309@daniel.com>  <3B390B4C.65A5DB68@daniel.com> <25950.993594415@redhat.com> 
-To: Vipin Malik <vipin.malik@daniel.com>
-Cc: jffs-dev <jffs-dev@axis.com>, nico@cam.org,
-    MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: Problems with JFFS2/MTD upgrade to latest in CVS. 
-Mime-Version: 1.0
+	id 15GzO6-0006U1-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 09:49:00 +0100
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Permission problem on mtd block device
+Cc: jffs-dev@axis.com, linux-mtd@lists.infradead.org
+References: <86r8w0yqhz.fsf@bindaas.org> <23926.994060396@redhat.com>
+From: nikunj@bindaas.org (Nikunj A. Dadhania)
+Date: 02 Jul 2001 14:21:14 +0530
+In-Reply-To: David Woodhouse's message of "Mon, 02 Jul 2001 08:53:16 +0100"
+Message-ID: <8666dbww71.fsf@bindaas.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 02 Jul 2001 09:35:29 +0100
-Message-ID: <29076.994062929@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,30 +23,54 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-vipin.malik@daniel.com said:
-> > > jffs2_scan_empty(): Empty block at 0x00000000 ends at 0x00000000 (with 0x00031985)! Marking dirty 
+David Woodhouse <dwmw2@infradead.org> writes:
 
-> > Does reverting to an older version of scan.c fix this?
-> >         cvs up -r 1.46 scan.c
+> nikunj@bindaas.org said:
+> > mount /dev/mtdblock0 /mnt 
+> >
+> > this command works. it gives some directory listing such as..
+> >
+> > / # ls -al /mnt
+> > dr-xr-xr-x   1 0        0               0 Jan  1 00:03 .
+> > drwxr-xr-x  12 0        0            1024 Jul  2  2001 ..
+> > dr-xr-xr-x   1 0        0               0 Jan  1 00:03 001
+> > -r--r--r--   1 0        0               0 Jan  1 00:03 devices
+> > -r--r--r--   1 0        0               0 Jan  1 00:03 drivers
+> 
+> That looks like usbdevfs.
+Ooppps ... you are right...  
 
-> Yes!
+> cat /proc/mounts /proc/filesystems
 
-Nicolas - should I just revert to 1.46? Is there anything in 1.48 you'd 
-like to (fix and) keep?
+/mnt # cat /proc/mounts 
+/dev/root / ext2 rw 0 0
+/proc /proc proc rw 0 0
+/dev/mtdblock0 /mnt usbdevfs rw 0 0
 
+/mnt # cat /proc/filesystems 
+nodev   sockfs
+nodev   shm
+nodev   pipefs
+nodev   proc
+        ext2
+nodev   usbdevfs
+nodev   devpts
+        jffs
 
-----------------------------
-revision 1.48
-date: 2001/06/13 23:01:47;  author: nico;  state: Exp;  lines: +9 -3
-OK... We can't be sure that empty blocks are actually fully erased.  Queue them
-for erase again. (sigh)
-----------------------------
-revision 1.47
-date: 2001/06/13 20:44:16;  author: nico;  state: Exp;  lines: +21 -7
-If flash does not contain any JFFS2 node, don't touch it as before.
-If flash is entirely empty, then go ahead now.
-This also speeds up mount on partially erased flash since completely empty
-flash blocks aren't erased unnecessarily.
+but where is the flash ?
+Is the major and minor number are correct which I have specified in 
+previous mail? (for the reference mtd0 90 0, mtdr 90 1, mtdblock0 31 0)
+In the /proc/mtd it shows the mtd0, mtd1 and mtd2 entries.
+And when i give the command
 
---
-dwmw2
+mount -t jffs /dev/mtdblock0 /mnt/
+mount: Mounting /dev/mtdblock0 on /mnt failed: Permission denied
+
+how do I mount the jffs??
+
+>
+> --
+> dwmw2
+
+regards
+nikunj
