@@ -1,19 +1,14 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTcKQ-0001Ui-RK
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 03:35:16 -0500
-Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id A91E022967
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Nov 2004 11:34:41 +0300 (MSK)
-Message-ID: <41986A21.6040605@yandex.ru>
-Date: Mon, 15 Nov 2004 11:34:41 +0300
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+In-Reply-To: <4198686D.8000301@yandex.ru>
+References: <4198686D.8000301@yandex.ru>
+Content-Type: text/plain
+Date: Mon, 15 Nov 2004 08:45:26 +0000
+Message-Id: <1100508326.8015.57.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: one more field in raw_node_ref ?
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: BUG in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +18,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello guys,
+On Mon, 2004-11-15 at 11:27 +0300, Artem B. Bityuckiy wrote:
+> Hello,
+> 
+> I've hit on bug in JFFS2, but I can not reproduce it easilly yet. I have 
+>   stess test which in general creates files, deletes them, creates 
+> directories and deletes them, and so on so on. When I run this test 
+> nightly, I see the following error when I come at work in the morning:
+> 
+> kernel BUG at 
+> /tester/linux/linux-2.6.8-1.521up-custom-nopreempt/fs/jffs2/gc.c:1164!
 
-I would be happy to know your opinions about to introduce one more 
-32-bit field to the node_ref structure in the JFFS2. Is this really bad?
+In my copy of v1.137 there's three instances of BUG_ON() around there,
+but none at line 1164. They're at lines 116[123]. 
 
-This means to increase the memory needed for in-core structures on 25% 
-:-( I know, it sucks, but this would really simplify and improve the 
-checkpoints processing...
-
-Opinions?
-
-Thanks.
+Start by changing it from a simple BUG_ON() to a printk saying precisely
+what went wrong and giving all the other information which might be
+relevant. If you can just trap into a debugger when it happens, that's
+even better.
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+dwmw2
