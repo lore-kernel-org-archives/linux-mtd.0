@@ -1,36 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141Ws6-0007E7-00
-	for mtd-list@infradead.org; Thu, 30 Nov 2000 16:47:46 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 141Wyn-0007HC-00
+	for mtd-list@infradead.org; Thu, 30 Nov 2000 16:54:41 +0000
+Received: from amdext2.amd.com ([163.181.251.1])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 141Ws5-0007E1-00
-	for mtd@infradead.org; Thu, 30 Nov 2000 16:47:45 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200011301404.AAA00314@singularity.tronunltd.com> 
-References: <200011301404.AAA00314@singularity.tronunltd.com> 
-To: "Ian" <Relativity@HumanHeuristic.com>
-Cc: lkhatskevitch@hotmail.com, mtd@infradead.org
-Subject: Re: inter-module-2.2.17 patch 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 30 Nov 2000 16:47:33 +0000
-Message-ID: <7583.975602853@redhat.com>
+	id 141Wyg-0007H3-00
+	for mtd@infradead.org; Thu, 30 Nov 2000 16:54:39 +0000
+Received: from odyssey.amd.com (odyssey.amd.com [163.181.250.8])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with SMTP id KAA13542
+	for <mtd@infradead.org>; Thu, 30 Nov 2000 10:53:57 -0600 (CST)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118]) by
+ amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id KAA16929 for
+ <mtd@infradead.org>; Thu, 30 Nov 2000 10:53:56 -0600 (CST)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F1FC@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: RE: inter-module-2.2.17 patch
+Date: Thu, 30 Nov 2000 10:53:54 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+> Relativity@HumanHeuristic.com said:
+> >  just copied a file to it ... no error .. sync'd it .. got that
+> > NFTL_findfreeblock error again .. the file is still  there tho ...
+> > reboot ... remount ... yep file is still in-tact.
+> 
+> Strange. Nothing I write to my 4MiB doc2000 seems to 'take'. 
+> 
+> Anyone else?
 
-Relativity@HumanHeuristic.com said:
->  I got the "NFTL_findfreeblock: there are too few free EUNs" ... which
-> is odd, since the only time I've seen them before is after a heap of
-> DoC disk writes ... 
+	I'm still getting link errors (down to only one, though).
+Now it can't find cfi_cmdset_0002 for check_cmd_set.
+	drivers/mtd shows a cfi_cmdset_0002.o and CONFIG_MTD_CFI_AMDSTD
+is set to yes in .config.
+	What the heck is going on?
 
-That's a normal situation. I've toned down the warning (made it a DEBUG 
-message)
-
---
-dwmw2
-
+-Mark Langsdorf
+AMD, Inc.
 
 
 
