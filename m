@@ -1,15 +1,15 @@
 Received: from [202.114.36.28] (helo=bbs.ccnu.edu.cn)
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196mXN-00005l-En
-	for <linux-mtd@lists.infradead.org>; Sat, 19 Apr 2003 08:13:26 +0100
-Date: Sat, 19 Apr 2003 15:29:6 +0800
+	id 196oiY-0000Qz-Kq
+	for <linux-mtd@lists.infradead.org>; Sat, 19 Apr 2003 10:33:07 +0100
+Date: Sat, 19 Apr 2003 17:48:31 +0800
 From: lhl <lhl@phy.ccnu.edu.cn>
 To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Message-Id: <E196mXN-00005l-En@pentafluge.infradead.org>
+Message-Id: <E196oiY-0000Qz-Kq@pentafluge.infradead.org>
 Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Subject: How to Install grub on DiskOnChip?
+Subject: DFORMAT ERROR " IPL block is bad."on DiskOnChip 2000?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,11 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I had download the doc-grub-20000128.tar.gz,then
-#make
-#/usr/src/mtd/util/doc_loadbios /dev/mtd0 grub_firmware
-and I found the partition I had make in /dev/nftla had lost,and 
-fdisk /dev/nfla again make nfla1
-mke2fs /dev/nfla1
-then cp the root filesystem onto /dev/nfla1
-reboot,system still boot my hda device.
+When I use the DOC5.1.4 DOS utilities'
+DFORMAT /WIN:DC00 /S:DOC514.EXB /FIRST
+
+ERRORS
+
+DiskOnChip 2000 found in 0xdc000.
+64M media, 16K unit
+Virgin card rebuilding unit map.
+Media has been scanned
+ERROR - IPL block is bad.
+Error formatting DiskOnChip.
+Status code is 119 (flUnknow status) received from flFormatPhysicalDrive.
+Format failed.
+
+What's the matter with it?
