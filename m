@@ -1,50 +1,69 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13SFSa-00011k-00
-	for mtd-list@infradead.org; Fri, 25 Aug 2000 10:07:36 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13SFSZ-00011e-00
-	for mtd@infradead.org; Fri, 25 Aug 2000 10:07:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39A627FB.85689FFE@arcom.co.uk> 
-References: <39A627FB.85689FFE@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org, jffs-dev@axis.com
-Subject: Re: Latest JFFS fixes bug 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Date: Fri, 25 Aug 2000 10:07:32 +0100
-Message-ID: <21071.967194452@cygnus.co.uk>
+	id 13SI6y-0000Zr-00
+	for mtd-list@infradead.org; Fri, 25 Aug 2000 12:57:28 +0100
+Received: from mb04.swip.net ([193.12.122.208])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13SI6n-0000ZX-00
+	for mtd@infradead.org; Fri, 25 Aug 2000 12:57:17 +0100
+Reply-To: <mdeans@algonet.se>
+From: "=?iso-8859-1?Q?Bj=F6rn_Eriksson?=" <bjorn@brannstrom.se>
+To: <mtd@infradead.org>
+Cc: <mark.langsdorf@amd.com>
+Subject: Anyone using mtd on NAND flash? (Was: The archives [looking for info on AM29LV640 flash])
+Date: Fri, 25 Aug 2000 13:57:11 +0200
+Message-ID: <000801c00e8b$9a649560$0800a8c0@win95.inteloop.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9F079@txexmta8.amd.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+> >  I've been browsing the archive to see if anyone's used MTD on
+> > AM29LV640 (64Mb, NAND I believe) parts.
+>
+> 	The spec sheet for the Am29LV640 indicates they are CFI
+> parts.  You should be able to use the cfi_cmdset_0002 module
+> with them, though admittedly I haven't tested this myself.
 
-dvrabel@arcom.co.uk said:
->  Something positive for a change...
+ I've just been across the hall to strangle our hardware engineer (who
+happens to also be my boss). He /intended/ to use the AM29LV640 part but =
+had
+problems finding a reliable source for them so we're using Samsungs KM29U=
+128
+part instead.
 
-hehe
+ There's no mention of CFI in the .pdf file I've got but I've detected th=
+e
+KM29U128 chip using:
 
-> Latest JFFS from CVS fixes a `running out of free space' bug I
-> encountered last night.
+read_ID() /*pseudo_code*/ {
+	const ReadID_cmd =3D 0x90;
 
-It's still not _quite_ right here. We seem to have swapped rôles.
+	ready_chip();
+	chip_enable();
+	cmd_latch_enable();
+	outportb(DATA, ReadID_cmd);	/*Read ID command */
+	cmd_latch_disable();
+	addr_latch_enable();
+	outportb(DATA, 0x00);		/*1st address cycle */
+	addr_latch_disable();
 
-I came in this morning to find:
-Free size accounting screwed
-free_chunk_size1 == 0x10fed0, free_chunk_size2 == 0x0, fmc->free_size == 0x12fe68
-jffs_flash_erasable_size() given non-aligned offset 1dff98 (erasesize 20000)
+	m_code =3D inportb(DATA);		/* Reading 2 byte data */
+	d_code =3D inportb(DATA);
 
-I think the new logic to avoid marking huge free areas as dirty is giving
-us two free areas on the flash in certain circumstances, and isn't ensuring 
-that the dirty areas are sector-aligned.
+	return (m_code << 8) | d_code;
+}
 
---
-dwmw2
+ Which doesn't have much similarity to the cfi_probe.c:cfi_probe_new_chip=
+()
+function so I guess they're not CFI compliant chips; Why is that?
 
+
+//Bj=F6rnen.
 
 
 
