@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 176yem-00067F-00
-	for <linux-mtd@lists.infradead.org>; Sun, 12 May 2002 20:05:20 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <13211.1020346858@redhat.com> 
-References: <13211.1020346858@redhat.com>  <20020502155602.A8801@kosh.hut.fi> 
-To: Jarkko Lavinen <jlavi@iki.fi>
-Cc: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
-Subject: Re: Benchmarking JFFS2 
-Mime-Version: 1.0
+Received: from web9401.mail.yahoo.com ([216.136.129.107])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17740X-0006TI-00
+	for <linux-mtd@lists.infradead.org>; Mon, 13 May 2002 01:48:09 +0100
+Message-ID: <20020513004807.53730.qmail@web9401.mail.yahoo.com>
+Date: Sun, 12 May 2002 17:48:07 -0700 (PDT)
+From: Matt Cochran <matthewcochran@yahoo.com>
+Subject: Re: Filesystem Driver Panic 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1195.1020845726@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sun, 12 May 2002 20:04:43 +0100
-Message-ID: <912.1021230283@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,35 +22,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dwmw2@infradead.org said:
-> 2. We have a 'dirty_list' containing blocks which have _any_ dirty space, 
->    and we pick blocks from the to garbage-collect from. If there's only a 
->    few bytes of dirty space, we GC the whole block just to gain a few 
->    bytes. We should keep a 'very_dirty_list' of blocks with _significant_ 
->    amounts of dirty space and favour that even more when picking blocks
->    to GC, especially when doing just-in-time GC rather than from the 
->    background thread. 
+Here's an example:
+I created a FAT partition on the system, and formatted
+it to the same. I copied one set of files to it, and
+restarted the machine.
 
-I've done this, and every block with more than 50% dirty space now goes on
-the 'very_dirty_list'. With the file system snapshot I'd taken from my iPAQ
-to investigate what turned out to the double-free bug, the garbage collect 
-thread was GC'ing 6 blocks immediately after mounting before it stopped. 
-With the very_dirty_list optimisation, that dropped to two.
+I needed to change one of the files, but when I
+removed the file I got:
 
-I'm beginning to wonder whether we should actually abolish the separate
-clean/dirty/very_dirty lists and keep a single used_list in decreasing 
-order of dirty space, then in jffs2_find_gc_block just pick the block 
-number $N in that list, where N is exponentially distributed -- high 
-chance of being '1', small but non-negligible chance of being near the end 
-of the list.
+Filesystem Panic (dev 5d:01)
+fat_free: deleting beyond EOF
+Filesystem has been set read-only
 
-Keeping the used_list sorted should be fairly simple and cheap - each time 
-you make a block slightly dirtier you just do a little bit of bubble-sort, 
-and moving nextblock onto the used_list is fairly rare so it doesn't matter 
-too much that it's a bit slower.
+And then rm fails.
 
-Does anyone have any ideas on how we'd generate the random number N for 
-jffs2_find_gc_block() though?
+I have also noticed that the files copied to the
+filesystem are often corrupted.
 
---
-dwmw2
+You're right, I was unable to reproduce this using
+only /dev/nftla. Unfortunately, I can't get syslinux
+to work without using partitions. Is there a way out
+along this path, or do I need to take another
+approach?
+
+Matt
+
+
+
+
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> matthewcochran@yahoo.com said:
+> > I've been developing a system using kernel 2.4.18
+> and the MTD drivers
+> > packaged with it on a system with a Millenium DOC.
+> I've enabled
+> > read-write support and can successfully read the
+> test VFAT filesystem
+> > on the DOC. However, after multiple writes,
+> approximately 6, I get a
+> > "filesystem panic" from the kernel, and the device
+> is remounted
+> > read-only.
+> 
+> Can you give more details? Can you reproduce by just
+> reading from and 
+> writing to the raw /dev/nftla device?
+> 
+> It's better to format with their DFORMAT program
+> than nftl_format.
+> 
+> --
+> dwmw2
+> 
+> 
+
+
+
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
