@@ -1,19 +1,14 @@
-Date: Sat, 8 Jan 2005 12:43:57 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Todd Poynor <tpoynor@mvista.com>
-In-Reply-To: <41DEF6BB.6040704@mvista.com>
-Message-ID: <Pine.LNX.4.58.0501081237420.18324@phoenix.infradead.org>
-References: <41DED6C5.3080502@imc-berlin.de> <41DED888.7040508@imc-berlin.de>
-	<Pine.LNX.4.58.0501071902390.13073@phoenix.infradead.org>
-	<41DEDECA.5070400@imc-berlin.de>
-	<Pine.LNX.4.58.0501071938420.14398@phoenix.infradead.org>
-	<41DEF6BB.6040704@mvista.com>
+Received: from web52705.mail.yahoo.com ([206.190.39.156])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cn0jU-000506-Lb
+	for linux-mtd@lists.infradead.org; Fri, 07 Jan 2005 15:29:18 -0500
+Message-ID: <20050107202914.45709.qmail@web52705.mail.yahoo.com>
+Date: Fri, 7 Jan 2005 12:29:14 -0800 (PST)
+From: Michael <xemc@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	Steven Scholz <steven.scholz@imc-berlin.de>
-Subject: Re: JFFS2: mount time, SUMMARY and gc.c ?
+Content-Type: multipart/mixed; boundary="0-1281056899-1105129754=:45464"
+Subject: little mistake in nandwrite.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +18,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 7 Jan 2005, Todd Poynor wrote:
+--0-1281056899-1105129754=:45464
+Content-Type: text/plain; charset=us-ascii
+Content-Id: 
+Content-Disposition: inline
 
-> Steven Scholz wrote:
-> 
-> >>And this slows down the start up of important user applications.
-> >>
-> >>Would it help to enable CONFIG_PREEMPT?
-> 
-> It sounds like your apps need to write to an fs on flash and are blocked 
-> on completion of the initial jffs2 gc pass, not that the cpu hogging is 
-> blocking your apps.  If so, would suggest a separate partition with a 
-> read-only fs (CramFS, etc.) for read-only data/executables (if not 
-> already), maybe put /tmp and /var/tmp (or whatever dirs the apps are 
-> writing to) in a ram fs such as tmpfs, and later copy 
-> important/persistent data to jffs2 after everything's started up...
-> 
-If he have written something to fs and because of this have been blocked, 
-CPU would have been consumed by the task which tried to write, not by the 
-background task.But in his case the GC thread consumes CPU. So I don't 
-think the problem is the early writing.
+Hi.
+I'm pretty sure I've found a small mistake in 'nandwrite.c'.
 
-> -- 
-> Todd
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Relevant code block:  (mistake is 5 lines in)
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+        // force oob layout for jffs2 or yaffs ?
+        if (forcejffs2 || forceyaffs) {
+                struct nand_oobinfo *oobsel = forcejffs2 ?
+&jffs2_oobinfo : &yaffs_oobinfo;
+
+                if (forceyaffs && meminfo.oobsize == 8) {
+                        if (forceyaffs) {
+                                fprintf (stderr, "YAFSS cannot
+operate on 256 Byte page size");
+                                goto restoreoob;
+                        }
+                        /* Adjust number of ecc bytes */
+                        jffs2_oobinfo.eccbytes = 3;
+                }
+
+                if (ioctl (fd, MEMSETOOBSEL, oobsel) != 0) {
+                        perror ("MEMSETOOBSEL");
+                        goto restoreoob;
+                }
+        }
+
+Patch is attached.
+--0-1281056899-1105129754=:45464
+Content-Type: application/octet-stream; name="nandwrite.c_patch"
+Content-Transfer-Encoding: base64
+Content-Description: nandwrite.c_patch
+Content-Disposition: attachment; filename="nandwrite.c_patch"
+
+LS0tIG5hbmR3cml0ZS5jLm9yaWcJMjAwNS0wMS0wNyAxNDoyMjo1NC4wMDAw
+MDAwMDAgLTA2MDAKKysrIG5hbmR3cml0ZS5jCTIwMDUtMDEtMDcgMTQ6MjM6
+MTAuMDAwMDAwMDAwIC0wNjAwCkBAIC0yNzEsNyArMjcxLDcgQEAKIAlpZiAo
+Zm9yY2VqZmZzMiB8fCBmb3JjZXlhZmZzKSB7CiAJCXN0cnVjdCBuYW5kX29v
+YmluZm8gKm9vYnNlbCA9IGZvcmNlamZmczIgPyAmamZmczJfb29iaW5mbyA6
+ICZ5YWZmc19vb2JpbmZvOwogCQkKLQkJaWYgKGZvcmNleWFmZnMgJiYgbWVt
+aW5mby5vb2JzaXplID09IDgpIHsKKwkJaWYgKG1lbWluZm8ub29ic2l6ZSA9
+PSA4KSB7CiAgICAgCQkJaWYgKGZvcmNleWFmZnMpIHsKIAkJCQlmcHJpbnRm
+IChzdGRlcnIsICJZQUZTUyBjYW5ub3Qgb3BlcmF0ZSBvbiAyNTYgQnl0ZSBw
+YWdlIHNpemUiKTsKIAkJCQlnb3RvIHJlc3RvcmVvb2I7Cg==
+
+--0-1281056899-1105129754=:45464--
