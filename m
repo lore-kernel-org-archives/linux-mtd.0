@@ -1,29 +1,49 @@
-From: tglx@linutronix.de (Thomas Gleixner)
-Date: Tue, 18 Feb 2003 16:19:56 +0100
-Subject: NAND ECC and OOB usage
-In-Reply-To: <200302181321.03287.phil@river-bank.demon.co.uk>
-References: <200302181409.25070.tglx@linutronix.de>
- <200302181321.03287.phil@river-bank.demon.co.uk>
-Message-ID: <200302181619.56976.tglx@linutronix.de>
+From: purushn@future.futsoft.com (Purushothaman N)
+Date: Tue, 18 Feb 2003 19:59:45 +0530
+Subject: CFI device detection fails
+Message-ID: <002701c2d75a$2fb4c600$1504060a@future.futsoft.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Tuesday 18 February 2003 14:21, Phil Thompson wrote:
-> On Tuesday 18 February 2003 1:09 pm, Thomas Gleixner wrote:
-> > I have changed the oob-selection for NAND as follows:
-> >
-> > 1. A default oob selector is added to the mtd structure. It can be
-> > initialized on compile time or modified on runtime. For partitioned
-> > devices a default selector is included in the partition description
-> > structure. This can be set on compile time (see autcpu12.c) or on
-> > runtime.
-> This means we really need to be able to specify the selector on the command
-> line as part of mtdparts as well.
-You don't need that, as the filesystem forces layout selection itself.
+Dear All,
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx at linutronix.de
+I am very new to linux kernel.
+I am having AM29LV260DB flash chips (2MB * 4 chips) in my target
+board.
+
+I wanted to use CRAMFS for my target board and hence i enabled MTD and
+CFI in my linux kernel.
+
+But cfi_probe is failing and it displays
+"Physically mapped device : Found no cfi device at location 0".
+
+I tried printing the values read in the flash. It is always 0xffff even
+after
+writing the query message into it. I doubt even whether the query message
+is written properly into it.
+
+Target board details:
+
+IDT mips processor 32332.
+Flash at address - 0x4000000 (logical address - 0xa4000000)
+
+I would appreciate if somebody helps me to solve this issue.
+
+Thanks and Regards,
+Purush
+
+***************************************************************************
+This message is proprietary to Future Software Limited (FSL) 
+and is intended solely for the use of the individual to whom it
+is addressed. It may contain  privileged or confidential information 
+and should not be circulated or used for any purpose other than for 
+what it is intended. 
+
+If you have received this message in error, please notify the
+originator immediately. If you are not the intended recipient,
+you are notified that you are strictly prohibited from using,
+copying, altering, or disclosing the contents of this message. 
+FSL accepts no responsibility for loss or damage arising from 
+the use of the information transmitted by this email including
+damage from virus.
+***************************************************************************
