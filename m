@@ -1,25 +1,25 @@
-Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
+Received: from smtp.atl.cbeyond.com ([64.238.96.29])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Qq5V-0001Px-GJ
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 16:03:33 +0100
-Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
-	by dummy.domain.name (Postfix) with SMTP id 54DF16D00BC
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jun 2003 10:59:37 -0400 (EDT)
-Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id 3CD906D00B9
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jun 2003 14:59:37 +0000 (UTC)
-From: Frank R Callaghan <f.callaghan@ieee.org>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 13 Jun 2003 10:51:41 -0400
+	id 19QqoZ-0001fj-JC
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 16:50:07 +0100
+Received: from [64.238.96.22] (HELO mail.atl.cbeyond.com)
+	by smtp.atl.cbeyond.com (CommuniGate Pro SMTP 4.0.6)
+	with ESMTP id 30514013 for linux-mtd@lists.infradead.org;
+	Fri, 13 Jun 2003 11:50:38 -0400
+Received: from [64.25.14.193] (HELO sgluckman)
+	by mail.atl.cbeyond.com (CommuniGate Pro SMTP 4.0.6)
+	with SMTP id 42313028 for linux-mtd@lists.infradead.org;
+	Fri, 13 Jun 2003 11:49:56 -0400
+From: "Sid Gluckman" <sgluckman@omnitech.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 13 Jun 2003 09:47:19 -0600
+Message-ID: <OOEOKBMECIFAEPIMFOGIMEPICBAA.sgluckman@omnitech.com>
 MIME-Version: 1.0
-Message-Id: <200306131051.42110.f.callaghan@ieee.org>
+In-Reply-To: <200306131051.42110.f.callaghan@ieee.org>
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Please Help, problem mounting jffs2
-Reply-To: f.callaghan@ieee.org
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Subject: RE: Please Help, problem mounting jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,6 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am kind of a newbie to the jffs2 thing but are you sure that it is just
+"sitting" there?  I found that when a jffs2 system is mounted for the first
+time with something in the filesystem it goes through some kind of
+cataloging function where I'm guessing it is characterizing the device for
+bad flash bytes?  Anyways, if you do a 'df' in another shell while it is
+sitting there you will see that the device is mounted and that the used
+space first slowly cycles to fully used then slowly back down to the correct
+used space.  I'm sure someone else could enlighten us both as to what it is
+actually doing during this time.  Once it completes this cycle everything is
+fine and it doesn't do it on subsequent mounts.  Depending on the flash size
+this could take quite a while.
+
+Hope this helps.
+
+Sid
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Frank R
+Callaghan
+Sent: Friday, June 13, 2003 8:52 AM
+To: linux-mtd@lists.infradead.org
+Subject: Please Help, problem mounting jffs2
+
+
 Hi All,
 
 I have a problem with mounting my new mtd/jffs2 system
@@ -36,8 +61,8 @@ after lots of experiment I have found the after doing
 'eraseall /dev/mtd0' I can 'mount -t jffs2 /dev/mtdblock0 /mnt/flash'
 with no problem :) but if I umount it and try to re-mount it
 will sit there forever !
-If I cp a jffs2.img to the device the mount will also lockup=20
-If I erase -> mount I can create files df with no problems,=20
+If I cp a jffs2.img to the device the mount will also lockup
+If I erase -> mount I can create files df with no problems,
 
 It seem like the mount does not like mounting with anything
 in the filesystem !
@@ -48,3 +73,13 @@ Any help greatly appreciated,
 
 TIA,
         Frank.
+
+
+
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
