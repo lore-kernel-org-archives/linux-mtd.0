@@ -1,20 +1,27 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CQnkj-0001cn-Lj
-	for linux-mtd@lists.infradead.org; Sun, 07 Nov 2004 09:10:46 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: zheng wei <jeanwelly@gmail.com>
-In-Reply-To: <c2bc1f4041107050978fc06ff@mail.gmail.com>
-References: <c2bc1f4041107050978fc06ff@mail.gmail.com>
-Content-Type: text/plain
-Date: Sun, 07 Nov 2004 15:02:14 +0100
-Message-Id: <1099836135.2810.184.camel@thomas>
-Mime-Version: 1.0
+	id 1CR86F-0003o7-EE
+	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2004 06:54:20 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by mailgate.sysgo.de (Postfix) with ESMTP id E723E47B87
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  8 Nov 2004 12:50:15 +0100 (CET)
+Received: from donald.sysgo.com (unknown [172.20.1.30])
+	by mailgate.sysgo.de (Postfix) with ESMTP id DAEC847B87
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  8 Nov 2004 12:50:15 +0100 (CET)
+Received: from sysgo.de (aho-test1.sysgo.com [172.22.26.11])
+	by donald.sysgo.com (Postfix) with ESMTP id 6B3A8C19D1
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  8 Nov 2004 12:54:16 +0100 (CET)
+Message-ID: <418F5E68.3010200@sysgo.de>
+Date: Mon, 08 Nov 2004 12:54:16 +0100
+From: Alexander Hoffmann <ahoffmann@sysgo.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Can't enable ecc check in mtd.
-Reply-To: tglx@linutronix.de
+Subject: Usage of MTD_UADDR_UNNECESSARY broken?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2004-11-07 at 21:09 +0800, zheng wei wrote:
-> Hi, sir
->  I cannot enable ecc check in mtd, the message in nand.c, func int
-> nand_write_page (),
-> printk (KERN_WARNING "Writing data without ECC to NAND-FLASH is not
-> recommended\n");
-> 
-> In mtd/nand.c,
-> static int nand_write_page (struct mtd_info *mtd, struct nand_chip
-> *this, int page, u_char *oob_buf,  struct nand_oobinfo *oobsel)
-> {
-> 	int 	i, status;
-> 	u_char	ecc_code[6], *oob_data;
-> 	int	eccmode = oobsel->useecc ? this->eccmode : NAND_ECC_NONE;
-> //??????? I have initialize the eccmode to NAND_ECC_HW3_512,
+Hi everyone,
 
-Maybe, but the variable which is checked is oobsel->useecc.
+can anybody please explain me the exact difference between 
+MTD_UADDR_DONT_CARE and MTD_UADDR_UNNECESSARY .
+Because if I use MTD_UADDR_UNNECESSARY an not existing field in the 
+unlock_addrs array is beeing referenced
+(/drivers/mtd/chips/jedec_probe.c, function cfi_jedec_setup, line 1740):
 
-Read http://www.linux-mtd.infradead.org/tech/mtdnand/index.html
-and  http://www.linux-mtd.infradead.org/tech/mtdnand/x215.html
-and  http://www.linux-mtd.infradead.org/tech/mtdnand/c460.html
+/* Mask out address bits which are smaller than the device type */
+mask = ~(p_cfi->device_type-1);
+p_cfi->addr_unlock1 = unlock_addrs[uaddr].addr1 & mask;
+p_cfi->addr_unlock2 = unlock_addrs[uaddr].addr2 & mask;
 
-> I have enable the ecc check in mizi linux 2.4.18 for ARM2410.
-
-Read http://www.linux-mtd.infradead.org/#kernelversions
-
-tglx
+If I change MTD_UADDR_DONT_CARE to MTD_UADDR_UNNECESSARY everything 
+works fine!
