@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZodS-0006Gv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 09:15:10 +0100
+	id 17Zoi8-0006HG-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 09:20:00 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <007901c23869$35d3f500$1b0448c0@gv.com.tw> 
-References: <007901c23869$35d3f500$1b0448c0@gv.com.tw> 
-To: "??" <kevin@gv.com.tw>
+In-Reply-To: <NCBBIINEHIPFGJPLBEIFMEBADKAA.acurtis@directvinternet.com> 
+References: <NCBBIINEHIPFGJPLBEIFMEBADKAA.acurtis@directvinternet.com> 
+To: acurtis@directvinternet.com
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: can i use jffs2 directly on /dev/mtdblock? 
+Subject: Re: What happened to 64-bit support? 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 31 Jul 2002 09:15:02 +0100
-Message-ID: <31207.1028103302@redhat.com>
+Date: Wed, 31 Jul 2002 09:19:58 +0100
+Message-ID: <31698.1028103598@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kevin@gv.com.tw said:
->  can i use jffs2 directly on /dev/mtdblock? instead of /dev/nftl?
+acurtis@directvinternet.com said:
+>  In theory yes. if CONFIG_MTD_CFI_B8 translates to 64-bits in config
+> (which I believe it does, then yes) As I mentioned, the problem
+> appears to be in the probe routines not liking an octet of 8.
 
-You cannot use JFFS2 on NFTL. You can _only_ use it on /dev/mtdblock 
-devices.
+What exactly happens?
 
 --
 dwmw2
