@@ -1,19 +1,21 @@
-Received: from mail1.speakeasy.net ([216.254.0.201])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTqoD-0005fM-Dx
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 19:03:15 -0500
-Received: from unknown (HELO [172.16.6.45]) (msundius@[12.47.55.31])
-	(envelope-sender <msundius@sundius.com>)
-	by mail1.speakeasy.net (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 16 Nov 2004 00:02:49 -0000
-Mime-Version: 1.0 (Apple Message framework v619)
+Received: from rproxy.gmail.com ([64.233.170.204])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CTuLE-0006Bz-My
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 22:49:18 -0500
+Received: by rproxy.gmail.com with SMTP id i8so786601rne
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Nov 2004 19:49:15 -0800 (PST)
+Message-ID: <7f89a3ea04111519228bb1765@mail.gmail.com>
+Date: Tue, 16 Nov 2004 11:22:34 +0800
+From: Midnight Xiong <midnight.xiong@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <41889B50.9050608@avantwave.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <D4194EA8-3762-11D9-9C6E-000A95BE1940@sundius.com>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-To: linux-mtd@lists.infradead.org
-From: C. Michael Sundius <msundius@sundius.com>
-Date: Mon, 15 Nov 2004 16:02:38 -0800
-Subject: support for serial flash roms
+References: <41889B50.9050608@avantwave.com>
+Subject: Re: Can i use vfat as the mtd fs
+Reply-To: Midnight Xiong <midnight.xiong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-have you all added support for serial flash in the later versions of 
-MTD? if so
-what chips do you support. I am working on supporting a platform that 
-could configure
-any of the following devices and using the SPI bus to talk to the 
-chips..
-
-	MICROCHIP 25AA640,
-	ST M25P80
-	AMTEL AT45DB642
-
-if any (or all) of these are supported could you point me to the code?
-
-thanks
+I'm also interesting in this question. Could any body reply this? Thanks.
 
 
-C Michael Sundius
-Solico Group LLC
-232 Nevada St
-San Francisco, CA 94110
-msundius@sundius.com
-(415)608-0121
+On Wed, 03 Nov 2004 16:48:16 +0800, mike <mikelee@avantwave.com> wrote:
+> Dear all
+> 
+>    I need to do a flash disk for my board. It should be used by windows
+> system. So vfat or msdosfs should be use.
+>    I have try to use mkdosfs to format the mtdblock device, but it is
+> unable to get the drive geometry. And i have browsed the source code of
+> mtdblock(with linux-2.4.18), there isn't ioctl for check geometry.
+> 
+>    If i want to use vfat with mtdblock , do i need to upgrade the
+> latest mtd version? Is this portable to linux-2.4.18 ? Or any portable
+> version of mtd i can use?
+> 
+> Best Regard
+> Mike,Lee
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
