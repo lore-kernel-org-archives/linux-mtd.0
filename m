@@ -1,21 +1,19 @@
-Received: from mailout06.sul.t-online.com ([194.25.134.19])
+Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17jps0-0004lW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2002 00:35:36 +0100
-Received: from denx.denx.de (denx.denx.de [10.0.0.2])
-	by denx.de (Postfix) with ESMTP id 5F671429EE
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2002 01:35:22 +0200 (MEST)
-Received: from denx.denx.de (localhost [127.0.0.1])
-	by denx.denx.de (Postfix) with ESMTP id 08E6E1182E
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2002 01:35:22 +0200 (MEST)
+	id 17k3Et-0003xY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2002 14:52:07 +0100
+Received: from henrik.marasystems.com (henrik.marasystems.com [192.168.1.53])
+	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id g7SDq7h14806
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2002 15:52:07 +0200
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Henrik Nordstrom <hno@marasystems.com>
 To: linux-mtd@lists.infradead.org
-Subject: DOC / NFTL problem, and fix
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-Type: multipart/mixed ;
-	boundary="==_Exmh_18514510220"
-Date: Wed, 28 Aug 2002 01:35:16 +0200
-Message-Id: <20020827233522.0F5481182F@denx.denx.de>
+Subject: DOC2000, Linux-2.4.18
+Date: Wed, 28 Aug 2002 15:52:05 +0200
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200208281552.05987.hno@marasystems.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,168 +25,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multipart MIME message.
+Hi.
 
---==_Exmh_18514510220
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
+I am trying to get some grips on how to access a DOC2000 from Linux, but I do 
+not have much luck..
 
-Hi,
+The chip gets detected properly by the driver and I can access the flash as a 
+char device, but NFTL does not like what it sees
 
-I noticed a problem when trying to initialize a DOC  device  like  an
-ordinary  harddisk,  i. e. when trying to run a command sequence like
-this one:
+DiskOnChip 2000 found at address 0xD6000
+Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
+3 flash chips found. Total DiskOnChip size: 24 MiB
 
-	bash# eraseall /dev/mtdchar0
-	bash# nftl_format /dev/mtdchar0 0x00300000
-	bash# fdisk /dev/nftla
-	(create partitions, and write partition table)
-	bash# reboot
-
-Usually the DOC would be unusable after this, with no valid partition
-table at all. Depending on the timing it would sometimes work - if  I
-add a long delay before the "reboot", it works.
+NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
+Sorry, we don't support UnitSizeFactor of != 1 yet.
+Could not find valid boot record
+Could not mount NFTL device
 
 
-It turns out that some internal data structures of the  NFTL  driver,
-which are initialized only at boot-time, become invalid after you run
-nftl_format.
-
-To fix this issue, we added an IOCTL  command  to  the  NFTL  driver,
-which would instruct the driver to re-read appropriate meta-data from
-the  DOC  device.  Nftl_format was modified to invoke this command to
-accomplish its operation.
-
-Patch attached.
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-I have made mistakes, but have never made the mistake of  claiming  I
-never made one.                                     - James G. Bennet
+Same thing for the DOC patch to GRUB.
 
 
---==_Exmh_18514510220
-Content-Type: application/x-patch ; name="mtd_nftl.patch"
-Content-Description: mtd_nftl.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="mtd_nftl.patch"
 
-ZGlmZiAtdXJOIG10ZC5vcmlnL2RyaXZlcnMvbXRkL210ZGNoYXIuYyBtdGQvZHJpdmVycy9t
-dGQvbXRkY2hhci5jCi0tLSBtdGQub3JpZy9kcml2ZXJzL210ZC9tdGRjaGFyLmMJVHVlIEp1
-bCAxNiAyMDoyODo0NSAyMDAyCisrKyBtdGQvZHJpdmVycy9tdGQvbXRkY2hhci5jCVR1ZSBB
-dWcgMjAgMTU6Mjk6NDkgMjAwMgpAQCAtNDQyLDYgKzQ0MiwxNSBAQAogCQlicmVhazsKIAl9
-CiAKKwljYXNlIE1FTVJFVkFMSURBVEU6CisJeworCQlpZiAocmV2YWxpZGF0ZV9tdGRfZGV2
-aWNlKG10ZCkpCisJCQlyZXR1cm4gLUVJTlZBTDsKKworCQlyZXQgPSAwOworCQlicmVhazsK
-Kwl9CisKIAkJCiAJZGVmYXVsdDoKIAkJREVCVUcoTVREX0RFQlVHX0xFVkVMMCwgIkludmFs
-aWQgaW9jdGwgJXggKE1FTUdFVElORk8gPSAleClcbiIsIGNtZCwgTUVNR0VUSU5GTyk7CmRp
-ZmYgLXVyTiBtdGQub3JpZy9kcml2ZXJzL210ZC9tdGRjb3JlLmMgbXRkL2RyaXZlcnMvbXRk
-L210ZGNvcmUuYwotLS0gbXRkLm9yaWcvZHJpdmVycy9tdGQvbXRkY29yZS5jCVRodSBNYXIg
-IDcgMjE6Mzg6MTAgMjAwMgorKysgbXRkL2RyaXZlcnMvbXRkL210ZGNvcmUuYwlUdWUgQXVn
-IDIwIDEzOjQxOjI5IDIwMDIKQEAgLTEwNSw2ICsxMDUsNDEgQEAKIH0KIAogLyoqCisgKgly
-ZXZhbGlkYXRlX210ZF9kZXZpY2UgLSByZXZhbGlkYXRlIGFuIE1URCBkZXZpY2UKKyAqCUBt
-dGQ6IHBvaW50ZXIgdG8gTVREIGRldmljZSBpbmZvIHN0cnVjdHVyZQorICoKKyAqCU5vdGlm
-eSBlYWNoIGN1cnJlbnRseSBhY3RpdmUgTVREICd1c2VyJyBvZiBkZXZpY2UgaXMgY2hhbmdl
-ZC4gUmV0dXJucworICoJemVybyBvbiBzdWNjZXNzIG9yIDEgb24gZmFpbHVyZSwgd2hpY2gg
-Y3VycmVudGx5IHdpbGwgb25seSBoYXBwZW4KKyAqCWlmIHRoZSByZXF1ZXN0ZWQgZGV2aWNl
-IGRvZXMgbm90IGFwcGVhciB0byBiZSBwcmVzZW50IGluIHRoZSBsaXN0LiAKKyAqLworCitp
-bnQgcmV2YWxpZGF0ZV9tdGRfZGV2aWNlIChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKK3sKKwlz
-dHJ1Y3QgbXRkX25vdGlmaWVyICpub3Q9bXRkX25vdGlmaWVyczsKKwlpbnQgaTsKKwkKKwlk
-b3duKCZtdGRfdGFibGVfbXV0ZXgpOworCisJZm9yIChpPTA7IGkgPCBNQVhfTVREX0RFVklD
-RVM7IGkrKykKKwl7CisJCWlmIChtdGRfdGFibGVbaV0gPT0gbXRkKQorCQl7CisJCQl3aGls
-ZSAobm90KQorCQkJeworCQkJCWlmIChub3QtPnJldmFsaWRhdGUpCisJCQkJCSgqKG5vdC0+
-cmV2YWxpZGF0ZSkpKG10ZCk7CisJCQkJbm90ID0gbm90LT5uZXh0OworCQkJfQorCQkJdXAg
-KCZtdGRfdGFibGVfbXV0ZXgpOworCQkJcmV0dXJuIDA7CisJCX0KKwl9CisKKwl1cCgmbXRk
-X3RhYmxlX211dGV4KTsKKwlyZXR1cm4gMTsKK30KKworLyoqCiAgKglyZWdpc3Rlcl9tdGRf
-dXNlciAtIHJlZ2lzdGVyIGEgJ3VzZXInIG9mIE1URCBkZXZpY2VzLgogICoJQG5ldzogcG9p
-bnRlciB0byBub3RpZmllciBpbmZvIHN0cnVjdHVyZQogICoKZGlmZiAtdXJOIG10ZC5vcmln
-L2RyaXZlcnMvbXRkL25mdGxjb3JlLmMgbXRkL2RyaXZlcnMvbXRkL25mdGxjb3JlLmMKLS0t
-IG10ZC5vcmlnL2RyaXZlcnMvbXRkL25mdGxjb3JlLmMJV2VkIE1hciAgNiAxNzozODoxNyAy
-MDAyCisrKyBtdGQvZHJpdmVycy9tdGQvbmZ0bGNvcmUuYwlUdWUgQXVnIDIwIDE1OjMyOjE5
-IDIwMDIKQEAgLTg3LDMzICs4NywzMyBAQAogCiBzdHJ1Y3QgTkZUTHJlY29yZCAqTkZUTHNb
-TUFYX05GVExTXTsKIAotc3RhdGljIHZvaWQgTkZUTF9zZXR1cChzdHJ1Y3QgbXRkX2luZm8g
-Km10ZCkKK3N0YXRpYyB2b2lkIE5GVExfc2V0dXAoc3RydWN0IG10ZF9pbmZvICptdGQsIGlu
-dCBmaXJzdGZyZWUsIHN0cnVjdCBORlRMcmVjb3JkICpuZnRsKQogewogCWludCBpOwotCXN0
-cnVjdCBORlRMcmVjb3JkICpuZnRsOwogCXVuc2lnbmVkIGxvbmcgdGVtcDsKLQlpbnQgZmly
-c3RmcmVlID0gLTE7CiAKIAlERUJVRyhNVERfREVCVUdfTEVWRUwxLCJORlRMX3NldHVwXG4i
-KTsKIAotCWZvciAoaSA9IDA7IGkgPCBNQVhfTkZUTFM7IGkrKykgewotCQlpZiAoIU5GVExz
-W2ldICYmIGZpcnN0ZnJlZSA9PSAtMSkKLQkJCWZpcnN0ZnJlZSA9IGk7Ci0JCWVsc2UgaWYg
-KE5GVExzW2ldICYmIE5GVExzW2ldLT5tdGQgPT0gbXRkKSB7Ci0JCQkvKiBUaGlzIGlzIGEg
-U3BhcmUgTWVkaWEgSGVhZGVyIGZvciBhbiBORlRMIHdlJ3ZlIGFscmVhZHkgZm91bmQgKi8K
-LQkJCURFQlVHKE1URF9ERUJVR19MRVZFTDEsICJNVEQgYWxyZWFkeSBtb3VudGVkIGFzIE5G
-VExcbiIpOworCWlmIChuZnRsID09IE5VTEwpIHsKKwkJZm9yIChpID0gMDsgaSA8IE1BWF9O
-RlRMUzsgaSsrKSB7CisJCQlpZiAoIU5GVExzW2ldICYmIGZpcnN0ZnJlZSA9PSAtMSkKKwkJ
-CQlmaXJzdGZyZWUgPSBpOworCQkJZWxzZSBpZiAoTkZUTHNbaV0gJiYgTkZUTHNbaV0tPm10
-ZCA9PSBtdGQpIHsKKwkJCQkvKiBUaGlzIGlzIGEgU3BhcmUgTWVkaWEgSGVhZGVyIGZvciBh
-biBORlRMIHdlJ3ZlIGFscmVhZHkgZm91bmQgKi8KKwkJCQlERUJVRyhNVERfREVCVUdfTEVW
-RUwxLCAiTVREIGFscmVhZHkgbW91bnRlZCBhcyBORlRMXG4iKTsKKwkJCQlyZXR1cm47CisJ
-CQl9CisJCX0KKwkJaWYgKGZpcnN0ZnJlZSA9PSAtMSkgeworCQkJcHJpbnRrKEtFUk5fV0FS
-TklORyAiTm8gbW9yZSBORlRMIHNsb3QgYXZhaWxhYmxlXG4iKTsKIAkJCXJldHVybjsKIAkJ
-fQotCX0KLSAgICAgICAgaWYgKGZpcnN0ZnJlZSA9PSAtMSkgewotCQlwcmludGsoS0VSTl9X
-QVJOSU5HICJObyBtb3JlIE5GVEwgc2xvdCBhdmFpbGFibGVcbiIpOwotCQlyZXR1cm47Ci0g
-ICAgICAgIH0KIAotCW5mdGwgPSBrbWFsbG9jKHNpemVvZihzdHJ1Y3QgTkZUTHJlY29yZCks
-IEdGUF9LRVJORUwpOwotCWlmICghbmZ0bCkgewotCQlwcmludGsoS0VSTl9XQVJOSU5HICJP
-dXQgb2YgbWVtb3J5IGZvciBORlRMIGRhdGEgc3RydWN0dXJlc1xuIik7Ci0JCXJldHVybjsK
-KwkJbmZ0bCA9IGttYWxsb2Moc2l6ZW9mKHN0cnVjdCBORlRMcmVjb3JkKSwgR0ZQX0tFUk5F
-TCk7CisJCWlmICghbmZ0bCkgeworCQkJcHJpbnRrKEtFUk5fV0FSTklORyAiT3V0IG9mIG1l
-bW9yeSBmb3IgTkZUTCBkYXRhIHN0cnVjdHVyZXNcbiIpOworCQkJcmV0dXJuOworCQl9CiAJ
-fQogCiAJaW5pdF9NVVRFWCgmbmZ0bC0+bXV0ZXgpOwpAQCAtMTc1LDcgKzE3NSw3IEBACiAj
-ZW5kaWYKIH0KIAotc3RhdGljIHZvaWQgTkZUTF91bnNldHVwKGludCBpKQorc3RhdGljIHZv
-aWQgTkZUTF91bnNldHVwKGludCBpLCBpbnQga2VlcCkKIHsKIAlzdHJ1Y3QgTkZUTHJlY29y
-ZCAqbmZ0bCA9IE5GVExzW2ldOwogCkBAIC0xODksNyArMTg5LDE4IEBACiAJCWtmcmVlKG5m
-dGwtPkVVTnRhYmxlKTsKIAkJICAgICAgCiAJbmZ0bF9nZW5kaXNrLm5yX3JlYWwtLTsKLQlr
-ZnJlZShuZnRsKTsKKwlpZiAoIWtlZXApIGtmcmVlKG5mdGwpOworfQorCitzdGF0aWMgdm9p
-ZCBORlRMX3Jlc2V0dXAoaW50IGkpCit7CisJc3RydWN0IE5GVExyZWNvcmQgKm5mdGwgPSBO
-RlRMc1tpXTsKKworCURFQlVHKE1URF9ERUJVR19MRVZFTDEsICJORlRMX3Jlc2V0dXAgJWRc
-biIsIGkpOworCQorCU5GVExfdW5zZXR1cChpLCAxKTsKKworCU5GVExfc2V0dXAobmZ0bC0+
-bXRkLCBpLCBuZnRsKTsKIH0KIAogLyogU2VhcmNoIHRoZSBNVEQgZGV2aWNlIGZvciBORlRM
-IHBhcnRpdGlvbnMgKi8KQEAgLTIwNyw3ICsyMTgsNyBAQAogCQlERUJVRyhNVERfREVCVUdf
-TEVWRUwzLCAibXRkLT5yZWFkID0gJXAsIHNpemUgPSAlZCwgZXJhc2VzaXplID0gJWRcbiIs
-IAogCQkgICAgICBtdGQtPnJlYWQsIG10ZC0+c2l6ZSwgbXRkLT5lcmFzZXNpemUpOwogCi0g
-ICAgICAgICAgICAgICAgTkZUTF9zZXR1cChtdGQpOworICAgICAgICAgICAgICAgIE5GVExf
-c2V0dXAobXRkLCAtMSwgTlVMTCk7CiAJfQogfQogCkBAIC0yMTcsNyArMjI4LDIzIEBACiAK
-IAlmb3IgKGkgPSAwOyBpIDwgTUFYX05GVExTOyBpKyspIHsKIAkJaWYgKE5GVExzW2ldICYm
-IE5GVExzW2ldLT5tdGQgPT0gbXRkKQotCQkJTkZUTF91bnNldHVwKGkpOworCQkJTkZUTF91
-bnNldHVwKGksIDApOworCX0KK30KKworc3RhdGljIHZvaWQgTkZUTF9ub3RpZnlfcmV2YWxp
-ZGF0ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKK3sKKwlpbnQgaTsKKworCWZvciAoaSA9IDA7
-IGkgPCBNQVhfTkZUTFM7IGkrKykgeworCQlpZiAoTkZUTHNbaV0gJiYgTkZUTHNbaV0tPm10
-ZCA9PSBtdGQpIHsKKwkJCWlmIChORlRMc1tpXS0+dXNlY291bnQpIHsKKwkJCQlwcmludGso
-S0VSTl9XQVJOSU5HICJDb3VsZCBub3QgcmV2YWxpZGF0ZSBORlRMIGRldmljZVxuIik7CisJ
-CQkJY29udGludWU7CisJCQl9CisKKwkJCU5GVExfcmVzZXR1cChpKTsKKwkJfQogCX0KIH0K
-IApAQCAtMTA0OCw4ICsxMDc1LDkgQEAKICAqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwogCiBz
-dGF0aWMgc3RydWN0IG10ZF9ub3RpZmllciBuZnRsX25vdGlmaWVyID0gewotCWFkZDoJTkZU
-TF9ub3RpZnlfYWRkLAotCXJlbW92ZToJTkZUTF9ub3RpZnlfcmVtb3ZlCisJYWRkOgkJTkZU
-TF9ub3RpZnlfYWRkLAorCXJlbW92ZToJCU5GVExfbm90aWZ5X3JlbW92ZSwKKwlyZXZhbGlk
-YXRlOiAJTkZUTF9ub3RpZnlfcmV2YWxpZGF0ZQogfTsKIAogZXh0ZXJuIGNoYXIgbmZ0bG1v
-dW50cmV2W107CmRpZmYgLXVyTiBtdGQub3JpZy9pbmNsdWRlL2xpbnV4L210ZC9tdGQuaCBt
-dGQvaW5jbHVkZS9saW51eC9tdGQvbXRkLmgKLS0tIG10ZC5vcmlnL2luY2x1ZGUvbGludXgv
-bXRkL210ZC5oCVR1ZSBOb3YgMjcgMTc6NTU6MTIgMjAwMQorKysgbXRkL2luY2x1ZGUvbGlu
-dXgvbXRkL210ZC5oCVR1ZSBBdWcgMjAgMTU6MzA6MjUgMjAwMgpAQCAtOTMsNiArOTMsNyBA
-QAogI2RlZmluZSBNRU1VTkxPQ0sgICAgICAgICAgICAgICBfSU9XKCdNJywgNiwgc3RydWN0
-IGVyYXNlX2luZm9fdXNlcikKICNkZWZpbmUgTUVNR0VUUkVHSU9OQ09VTlQJX0lPUignTScs
-IDcsIGludCkKICNkZWZpbmUgTUVNR0VUUkVHSU9OSU5GTwlfSU9XUignTScsIDgsIHN0cnVj
-dCByZWdpb25faW5mb191c2VyKQorI2RlZmluZSBNRU1SRVZBTElEQVRFCQlfSU8oJ00nLCA5
-KQogCiAjaWZuZGVmIF9fS0VSTkVMX18KIApAQCAtMjE5LDYgKzIyMCw3IEBACiAKIGV4dGVy
-biBpbnQgYWRkX210ZF9kZXZpY2Uoc3RydWN0IG10ZF9pbmZvICptdGQpOwogZXh0ZXJuIGlu
-dCBkZWxfbXRkX2RldmljZSAoc3RydWN0IG10ZF9pbmZvICptdGQpOworZXh0ZXJuIGludCBy
-ZXZhbGlkYXRlX210ZF9kZXZpY2Uoc3RydWN0IG10ZF9pbmZvICptdGQpOwogCiBleHRlcm4g
-c3RydWN0IG10ZF9pbmZvICpfX2dldF9tdGRfZGV2aWNlKHN0cnVjdCBtdGRfaW5mbyAqbXRk
-LCBpbnQgbnVtKTsKIApAQCAtMjQ0LDYgKzI0Niw3IEBACiBzdHJ1Y3QgbXRkX25vdGlmaWVy
-IHsKIAl2b2lkICgqYWRkKShzdHJ1Y3QgbXRkX2luZm8gKm10ZCk7CiAJdm9pZCAoKnJlbW92
-ZSkoc3RydWN0IG10ZF9pbmZvICptdGQpOworCXZvaWQgKCpyZXZhbGlkYXRlKShzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCk7CiAJc3RydWN0IG10ZF9ub3RpZmllciAqbmV4dDsKIH07CiAKZGlm
-ZiAtdXJOIG10ZC5vcmlnL3V0aWwvbmZ0bF9mb3JtYXQuYyBtdGQvdXRpbC9uZnRsX2Zvcm1h
-dC5jCi0tLSBtdGQub3JpZy91dGlsL25mdGxfZm9ybWF0LmMJV2VkIE1heSAgMSAxNDo1OTow
-NCAyMDAyCisrKyBtdGQvdXRpbC9uZnRsX2Zvcm1hdC5jCVR1ZSBBdWcgMjAgMTU6MDg6MzAg
-MjAwMgpAQCAtMzMzLDUgKzMzMywxMyBAQAogCQkJcHJpbnRmKCJNRU1XUklURU9PQiBhdCAl
-bHg6ICVzXG4iLCAodW5zaWduZWQgbG9uZylvb2Iuc3RhcnQsIHN5c19lcnJsaXN0W2Vycm5v
-XSk7CiAJfQogCisJLyogUGhhc2UgNC4gUmV2YWxpZGF0aW5nIHRoZSBkZXZpY2UgKi8KKwlw
-cmludGYoIlBoYXNlIDQuIFJldmFsaWRhdGluZyB0aGUgZGV2aWNlXG4iKTsKKwlpZiAoaW9j
-dGwoZmQsIE1FTVJFVkFMSURBVEUsIDApKSB7CisJCXBlcnJvcigiaW9jdGwoTUVNUkVWQUxJ
-REFURSkiKTsKKwkJY2xvc2UoZmQpOworCQlyZXR1cm4gMTsKKwl9CisKIAlleGl0KDApOwog
-fQo=
+I found in the CVS tree that there is some pending fixes related to this in 
+the kernel sources (but not the GRUB patch), but when I try to upgrade the 
+kernel with the mtd CVS sources then it cannot compile, failing on 
+recalc_sigpending IIRC.  (RedHat-7.3 system). Unfortunately I have lost the 
+exact compiler error message. Can recreate it if there is need to..
 
---==_Exmh_18514510220--
+Regards
+Henrik
