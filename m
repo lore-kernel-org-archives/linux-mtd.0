@@ -1,19 +1,21 @@
-Received: from wproxy.gmail.com ([64.233.184.203])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEWH6-0004hY-Fy
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 12:37:41 -0500
-Received: by wproxy.gmail.com with SMTP id 36so648264wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 09:37:41 -0800 (PST)
-Message-ID: <7e75d4110503240937533ea59f@mail.gmail.com>
-Date: Thu, 24 Mar 2005 11:37:38 -0600
-From: Matthew Hudson <hexsane@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: /dev/mtd0 No such device or memory address
-Reply-To: Matthew Hudson <hexsane@gmail.com>
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DEY4u-00059Y-EB
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 14:33:13 -0500
+Date: Thu, 24 Mar 2005 19:32:51 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+In-Reply-To: <loom.20050324T182625-656@post.gmane.org>
+Message-ID: <Pine.LNX.4.58.0503241932390.15561@phoenix.infradead.org>
+References: <loom.20050322T224733-491@post.gmane.org>
+	<4241396B.D689EB32@st.com>
+	<loom.20050323T212715-407@post.gmane.org> <4242925F.D29BC7CE@st.com>
+	<42429C1C.8050600@yandex.ru> <loom.20050324T182625-656@post.gmane.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linux Kernel 2.6.11.5 + MTD CVS as of March 23rd, 2005
+> Artem, when figuring out if the write goes over the page boudary you did 
+not say
+> anything about CRC and other non-user data.. Should it be taken into 
+account
+> too or am I missing something?
+>
 
-PCMCIA linear flash cards tested
-2MB
-4MB
-16MB
+Well, page boundaries aren't problem. We want a write operation which goes 
+to flash a one node.
 
-I've reached my wits end here.
+There are two points of splitting:
+1. Linux page cache splits data on PAGE_SIZE chunks.
+2. jffs2_write_inode_range may do further split. This is what I missed 
+first time.
 
-stab shows all the devices I have inserted
+Yes, jffs2_write_inode_range will not split if the node to write is fewer 
+then sizeof(struct jffs2_raw_inode) + JFFS2_MIN_DATA_LEN.
 
-/dev/mtd0 and /dev/mtd1 exist.
+So, sizeof(struct jffs2_raw_inode) includes all the "anything about CRC 
+and other non-user data" and you may write JFFS2_MIN_DATA_LEN bytes 
+atomically.
 
-memory probe appears to exclude all of the memory ranges for the CardBus slots.
+So, I'll write the rules again:
+1. write only 0- JFFS2_MIN_DATA_LEN bytes;
+2. do not overlap n*PAGE_SIZE borders (n is 1,2, ...)
+3. do fsync after write
 
-dd if=/dev/mtd0 of=check renders the error in the subject line.
-
-pcmcia/config:
-device "pcmciamtd" module "pcmciamtd"
-
-card "Anonymous Memory"
-  anonymous
-  bind "pcmciamtd"
-
-card "Memory Card"
-  function memory_card
-  bind "pcmciamtd"
-
-I'm thinking I have simply overlooked something. Any ideas welcome. If
-you need more information I will provide it.
-
--Matt
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
