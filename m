@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mailhost.opengroup.fr ([62.160.165.1] helo=mailhost.ri.silicomp.fr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16AvWh-00089u-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2001 16:01:03 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0112030715100.14716-100000@newbast.lynuxworks.com> 
-References: <Pine.LNX.4.33.0112030715100.14716-100000@newbast.lynuxworks.com> 
-To: Aleksander Sanochkin <asanochkin@Lnxw.COM>
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: cfi_cmdset_001.c problem 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 03 Dec 2001 16:11:37 +0000
-Message-ID: <13387.1007395897@redhat.com>
+	id 16Az4G-0008NT-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2001 19:47:56 +0000
+Received: from sisley.ri.silicomp.fr (root@sisley [62.160.165.44])
+	by mailhost.ri.silicomp.fr (8.12.1/8.12.1) with ESMTP id fB3JwSdG010611
+	for <linux-mtd@lists.infradead.org>; Mon, 3 Dec 2001 20:58:28 +0100
+Received: from localhost (saffroy@localhost)
+	by sisley.ri.silicomp.fr (8.11.3/8.11.3) with ESMTP id fB3JwU123819
+	for <linux-mtd@lists.infradead.org>; Mon, 3 Dec 2001 20:58:30 +0100
+Date: Mon, 3 Dec 2001 20:58:30 +0100 (CET)
+From: Jean-Marc Saffroy <saffroy@ri.silicomp.fr>
+To: <linux-mtd@lists.infradead.org>
+Subject: Rational for JFFS2 deletion dirent ?
+Message-ID: <Pine.LNX.4.31.0112032043040.22767-100000@sisley.ri.silicomp.fr>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +26,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-asanochkin@Lnxw.COM said:
->  I seem to remember this, too. But it was in the read() routine. It
-> used to switch flash to the status mode and then back to ready even if
-> it had been ready right away. Our modification affects only write and
-> erase routines.
+Hi all,
 
-OK, if you're sure it doesn't adversely affect performance, then please go 
-ahead and commit it.
+I'm currently looking at the JFFS2 code, and I was wondering why the
+unlink operation creates a deletion dirent. Isn't it sufficient to mark
+the old dirent as obsolete ?
 
---
-dwmw2
+BTW, I can't find where deletion dirents are actually removed, except when
+their parent directory is removed or their erasure block is garbage
+collected, have I missed other places ?
+
+TIA.
+
+
+Regards,
+
+-- 
+Jean-Marc Saffroy - Research Engineer - Silicomp Research Institute
+mailto:saffroy@ri.silicomp.fr
