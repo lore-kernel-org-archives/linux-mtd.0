@@ -1,20 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.194])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BrgSs-0007u0-Px
-	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2004 13:19:12 -0400
-Date: Mon, 2 Aug 2004 19:19:10 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Wolfgang Denk <wd@denx.de>
-Message-ID: <20040802171910.GA29585@wohnheim.fh-wedel.de>
-References: <20040802170824.GC26115@wohnheim.fh-wedel.de>
-	<20040802171502.4DCB1C109F@atlas.denx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20040802171502.4DCB1C109F@atlas.denx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Volatile data device vor jffs2
+	id 1Brhno-0008E1-CA
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2004 14:44:53 -0400
+Received: from smartlink.ee (mail.smartlink.ee [213.180.16.242])
+	(authenticated bits=0)
+	by kiire.colleduc.ee (8.12.11/8.12.10) with ESMTP id i72IiiYr003472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Mon, 2 Aug 2004 21:44:45 +0300
+Message-ID: <410E8B9B.3050607@smartlink.ee>
+Date: Mon, 02 Aug 2004 21:44:43 +0300
+From: Kalev Lember <kalev@smartlink.ee>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: DOCBoot and Millennium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 August 2004 19:14:57 +0200, Wolfgang Denk wrote:
-> In message <20040802170824.GC26115@wohnheim.fh-wedel.de> you wrote:
-> >
-> > Your approach doesn't always work for me because sometimes people care
-> > a lot about the last log entries.  They need to be inside a
-> > non-volatile medium, either nvram or flash.  Unless you want to move
-> > the page cache to nvram... ;)
-> 
-> Did you consider using oramfs? See http://pramfs.sourceforge.net/
+Hi,
 
-We already have something similar.  People have to sort their data and
-send some to one fs, other to the other fs.  Prone to errors, static,
-ugly code, etc.
+I wanted to let you know that I have added support for the Diskonchip 
+Millennium Plus to DOCBoot and also some minor enhancments:
 
-Jffs2 would be able to do the sorting transparently.
+1) added an option to build a BIOS extension
+2) added an option to force specific DOC address
 
-Jörn
+Currently is works only on Millennium Plus 16 MB devices. Support for 32 
+MB is planned.
 
 -- 
-People will accept your ideas much more readily if you tell them
-that Benjamin Franklin said it first.
--- unknown
+Kalev Lember
