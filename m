@@ -1,17 +1,13 @@
-Received: from mgw-x3.nokia.com ([131.228.20.26])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKcjf-0007YL-76
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 09:12:18 -0400
-Date: Thu, 21 Oct 2004 15:49:26 +0300
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-Message-ID: <20041021124926.GA1497@angel.research.nokia.com>
-References: <41767593.9030004@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
 In-Reply-To: <41767593.9030004@inf.u-szeged.hu>
-Sender: <jlavi@angel.research.nokia.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+References: <41767593.9030004@inf.u-szeged.hu>
+Content-Type: text/plain
+Message-Id: <1098365059.13633.1257.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Thu, 21 Oct 2004 14:24:20 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
 Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,27 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 20, 2004 at 04:26:27PM +0200, ext Ferenc Havasi wrote:
-> Jarkko made a measurement on a real NAND device: his JFFS2 image was 
-> 120819928 (115M), after running sumtool the new image was 123338752 (117M).
+On Wed, 2004-10-20 at 16:26 +0200, Ferenc Havasi wrote:
+> Dear All,
 > 
-> Using the original mount time was 55 sec, with the new image it is only 
-> 8.5 sec.
+> Here is the latest version of our mount time improvement.
 
-My initial test was only about the mount time. I have now also tried
-to exercise the patched file system and with very little testing I get
-CRC or ECC errors.
+It's looking good, but the kernel really needs to be able to write these
+summaries for _itself_ in order to give a real improvement over the long
+term. If the file system has to be read-only we might as well be using
+cramfs, and if the summary becomes obsolete over time we might as well
+not bother in a lot of cases.
 
-  # mount /dev/mtdblock2 /mnt -t jffs2
-  # mkdir /mnt/testdir
-  # umount /mnt
-  jffs2_flush_wbuf(): Write failed with -5
-  # mount /dev/mtdblock2 /mnt -t jffs2
-  mtd->read(0x1fbec bytes from 0x1fc0414) returned ECC error
-  Empty flash at 0x01fc2f1c ends at 0x01fc3000
-  #
-
-With plain 2.6.9-rc4-omap1 with fresh CVS MTD code, I don't see anything
-weird occuring.
-
-Jarkko Lavinen
+-- 
+dwmw2
