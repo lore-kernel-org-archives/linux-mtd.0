@@ -1,55 +1,41 @@
-From: tharbaugh@lnxi.com (Thayne Harbaugh)
-Date: 03 Mar 2003 13:49:27 -0700
+From: joern@wohnheim.fh-wedel.de (=?iso-8859-1?Q?J=F6rn?= Engel)
+Date: Mon, 3 Mar 2003 22:06:13 +0100
 Subject: [PATCH] C99 initializers for drivers/mtd files
-In-Reply-To: <20030302185616.GC10681@wohnheim.fh-wedel.de>
-References: <20030226205334.GB8966@debian>
- <20030227194424.GC29233@wohnheim.fh-wedel.de>
- <20030227214646.GD8116@debian>
- <20030302185616.GC10681@wohnheim.fh-wedel.de>
-Message-ID: <1046724566.2672.634.camel@tubarao>
+In-Reply-To: <1046724566.2672.634.camel@tubarao>
+References: <20030226205334.GB8966@debian> <20030227194424.GC29233@wohnheim.fh-wedel.de> <20030227214646.GD8116@debian> <20030302185616.GC10681@wohnheim.fh-wedel.de> <1046724566.2672.634.camel@tubarao>
+Message-ID: <20030303210613.GA7875@wohnheim.fh-wedel.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---=-UIgGkC/XGO+JaNvyNuOE
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Mon, 3 March 2003 13:49:27 -0700, Thayne Harbaugh wrote:
+> 
+> GCC 2.95 does not understand C99 and will fail to compile kernels
+> that require this syntax.
 
-I like the C99 initialization.  I was tempted to make these changes
-myself, but I had a concern so I never did anything.
+You had me for a moment. But at least Debians gcc 2.95.4 does not fail
+too badly:
 
-What does Marcelo think about the C99 initialization syntax?  GCC 2.95
-does not understand C99 and will fail to compile kernels that require
-this syntax.  Is Marcelo willing to break 2.95 and require newer
-compilers?  Is the MTD community willing to maintain two patch sets: one
-with GCC initializers and one with C99 initializers? (granted the old
-GCC way is deprecated).
+joern at Limerick:~/foo$ cat foo.c
+struct foo {
+        int bar;
+        int baz;
+};
 
+struct foo fufu = {
+        .bar = 0,
+        .baz = 0
+};
+joern at Limerick:~/foo$ gcc --version
+2.95.4
+joern at Limerick:~/foo$ gcc -c foo.c
+joern at Limerick:~/foo$ ls
+foo.c  foo.o
+joern at Limerick:~/foo$  
 
-On Sun, 2003-03-02 at 11:56, J=F6rn Engel wrote:
-> On Thu, 27 February 2003 15:46:46 -0600, Art Haas wrote:
-> >=20
-> > No, I don't have cvs access, so I can't commit any of the patches I've
-> > mailed.
->=20
-> Patch 1 and 4 are committed, 2 and 3 don't apply cleanly and will
-> follow later...
->=20
-> J=F6rn
---=20
-Thayne Harbaugh
-Linux Networx
+What compiler do you have that breaks with C99 initializers?
 
---=-UIgGkC/XGO+JaNvyNuOE
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+J?rn
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+Y7/WfsBPTKE6HMkRArz5AJ9tfjUesiCmDcgec1pJN+NBixeZbwCdFgqn
-Ig0FGZ3p2atYKuxNHTi7J/o=
-=UWXZ
------END PGP SIGNATURE-----
-
---=-UIgGkC/XGO+JaNvyNuOE--
+-- 
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
