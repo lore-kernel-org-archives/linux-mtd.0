@@ -1,21 +1,23 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from ptb-relay02.plus.net ([212.159.14.213])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1ChAMS-00034Q-UB
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 12:33:22 -0500
-Date: Wed, 22 Dec 2004 18:33:13 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-Message-ID: <20041222173313.GF9783@wohnheim.fh-wedel.de>
-References: <20041222155624.GA9783@wohnheim.fh-wedel.de>
-	<JPEALJAFNGDDLOPNDIEEAEKMCPAA.joakim.tjernlund@lumentis.se>
+	id 1CgrQB-0001fV-R1
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 16:19:57 -0500
+Received: from [80.229.56.123] (helo=central.bult.co.uk)
+	by ptb-relay02.plus.net with esmtp (Exim) id 1CgrQ9-0004qX-20
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 21:19:53 +0000
+Received: from squizzey.bult.co.uk (squizzey.bult.co.uk [10.1.0.4])
+	by central.bult.co.uk (Postfix) with ESMTP id A8A2E1D32AF
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 21 Dec 2004 22:30:51 +0000 (GMT)
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-goxSTKIUc1EOA9/49sxi"
+Date: Tue, 21 Dec 2004 21:20:03 +0000
+Message-Id: <1103664003.7001.20.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <JPEALJAFNGDDLOPNDIEEAEKMCPAA.joakim.tjernlund@lumentis.se>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Subject: Re; List info
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 December 2004 17:39:08 +0100, Joakim Tjernlund wrote:
-> 
-> OK, then there might be worth considering a reverse checksum.
 
-Looks like it.
+--=-goxSTKIUc1EOA9/49sxi
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> This generates a little better code on PPC.
-> Not tested.
+Hi,
 
-Thanks.  Imo this variant is less readable and doesn't help i386, so
-I'll ignore it for now.  If an i386-optimized engel32 is in the
-adler32 range, I'll get back to it.  If not, let's just drop the whole
-idea.
+Please can someone point me at some information with regards to
+unsubscribing from this list.
 
-> > BTW: I reject the name "Engler32".  Few names are worse than
-> > "engel32", but that one is. ;)
-> 
-> I am so sorry, I felt something was wrong when I wrote that but I didn't
-> check, my bad.
+I've tried mailing majordomo@infradead.org (and a couple of other
+combinations) and they're all bouncing with 'unknown recip..'
 
-No offense taken.  Btw, if you know a better name, that would be nice.
-There should be quite a few, I'm just too lazy to think of one.
+tia
+Gareth.
 
-Jörn
+--=-goxSTKIUc1EOA9/49sxi
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--- 
-Fancy algorithms are slow when n is small, and n is usually small.
-Fancy algorithms have big constants. Until you know that n is
-frequently going to be big, don't get fancy.
--- Rob Pike
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBByJODRX9MUnbSukkRAgxGAJ9xdPVAn3lnFXlCHkpmVKCwm99oTQCfXfTW
+SzOfOoMWQfd0RNICKESQ5F4=
+=8Zm/
+-----END PGP SIGNATURE-----
+
+--=-goxSTKIUc1EOA9/49sxi--
