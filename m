@@ -1,19 +1,22 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from blood.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19OE8I-0003Sp-HQ
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Jun 2003 11:07:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: kevin tseng <kevin@gv.com.tw>
-In-Reply-To: <01d201c32bdb$dde1c9a0$190410ac@gv.com.tw>
-References: <01d201c32bdb$dde1c9a0$190410ac@gv.com.tw>
-Message-Id: <1054894093.17921.1429.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 06 Jun 2003 11:08:14 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+	id 19OkLZ-00071h-WD
+	for <linux-mtd@lists.infradead.org>; Sat, 07 Jun 2003 21:31:30 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "Kevin Liao" <kevinliao@iei.com.tw>
+Date: Sun, 8 Jun 2003 08:34:16 +1200
+References: <3EDB2F4E.6050502@intracom.gr>
+	<20030605210731.4E663157C7@desire.actrix.co.nz>
+	<015b01c32c11$a5c2a950$511711ac@kevinliao>
+In-Reply-To: <015b01c32c11$a5c2a950$511711ac@kevinliao>
+MIME-Version: 1.0
+Message-Id: <20030607203201.B098940BD@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: : jffs2 on nandflash which larger than 64MBytes
+Subject: Re: NAND write verify failed problem -->cramfs
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-06-06 at 04:29, kevin tseng wrote:
-> it seems that jffs2+nand on flash>64MBytes is buggy.
-> can this be fixed?_?
+On Friday 06 June 2003 21:54, you wrote:
+> Sorry I am new to this list and I have two questions as below:
+>
+> 1. To loop mount a CRAMFS (root file system) image on one JFFS2 partition,
+> we should mount that partition first, shouldn't we? But how can we mount
+> that JFFS2 partition without mounting the root file system?
 
-What is the nature of the bug?
+Doing this with a root file system makes it a bit more challenging... I don't 
+know if that can be done.
+>
+> 2. Currently I use NAND flash with ramdisk image on /dev/mtdblock1 as the
+> root file system. Usually I write the ramdisk image using the command
+> "nandwrite /dev/mtdblock1 ramdisk.gz". So far everything works fine. But I
+> am wondering whether the kernel can still load the ramdisk image if there
+> are some bad blocks on /dev/mtdblock1?
 
--- 
-dwmw2
+You could perhaps use a cut-down version of YAFFS (like is used in the YAFFS 
+bootloader) to store a CRAMFS image. This is relatively simple and quite a 
+few people do this for booting.
+
+Do you have enough RAM to load the image into RAM at boot? That would make it 
+even easier.
+
+-- CHarles
+
+>
+> Thanks a lot for the help.
+>
+> Regards,
+> Kevin
+>
+> ----- Original Message -----
+> From: "Charles Manning" <manningc2@actrix.gen.nz>
+> To: "Pantelis Antoniou" <panto@intracom.gr>; <tglx@linutronix.de>
+> Cc: <linux-mtd@lists.infradead.org>
+> Sent: Friday, June 06, 2003 5:10 AM
+> Subject: Re: NAND write verify failed problem -->cramfs
+>
+> > BTW, is there something anologous to CRAMFS for NAND flash?
+> > I have a need for a compressed read-only filesystem on NAND
+> > but CRAMFS has no concept of bad blocks.
+>
+> You could use loop mounting. ie. store the CRAMFS  image using a normal
+> NAND file system (YAFFS or JFFS2) and loop mount it with cramfs.
+>
+> -- CHarles
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
