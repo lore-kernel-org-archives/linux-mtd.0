@@ -1,20 +1,21 @@
-Received: from port61.vestas.dk ([195.41.59.61] helo=cotas2.cotas.vestas.dom)
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 195LTJ-0008T3-1J
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 09:07:17 +0100
-From: Esben Nielsen <esn@cotas.dk>
-To: <manningc2@actrix.gen.nz>,
- <linux-mtd@lists.infradead.org>
-Date: Tue, 15 Apr 2003 10:06:51 +0200
+	id 195MV7-0000HK-2S
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 10:13:13 +0100
+Date: Tue, 15 Apr 2003 11:13:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Esben Nielsen <esn@cotas.dk>
+Message-ID: <20030415091306.GD10280@wohnheim.fh-wedel.de>
 References: <20030414230258.A173D155EF@desire.actrix.co.nz>
-In-Reply-To: <20030414230258.A173D155EF@desire.actrix.co.nz>
-MIME-Version: 1.0
-Message-Id: <200304151006.51147.esn@cotas.dk>
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	<200304151006.51147.esn@cotas.dk>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200304151006.51147.esn@cotas.dk>
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
+cc: manningc2@actrix.gen.nz
+cc: linux-mtd@lists.infradead.org
 Subject: Re: Database on JFFS2?
-Reply-To: esn@cotas.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Our flash is NOR (Intel statoflash). What we a going for is a standeard SQL 
-solution  - so it isn't enough that the filesystem has a database-like 
-behaviour.
+On Tue, 15 April 2003 10:06:51 +0200, Esben Nielsen wrote:
+> 
+> Our flash is NOR (Intel statoflash). What we a going for is a standeard SQL 
+> solution  - so it isn't enough that the filesystem has a database-like 
+> behaviour.
+> 
+> Someone from this list pointed out sqlite to me yesterday. I am looking into 
+> that now.  It has a log system. The most optimal would be if the database 
+> could be tuned not to write too often and on other hand when it does it is 
+> flush to flash immediately to prevent datacorruption. I am not quite sure how 
+> to make it work with JFFS2. DoesJFFS2 write immediately on fsync() or it is 
+> buffered in ram making the database believe it is safe to delete it's 
+> transactionlog?
 
-Someone from this list pointed out sqlite to me yesterday. I am looking into 
-that now.  It has a log system. The most optimal would be if the database 
-could be tuned not to write too often and on other hand when it does it is 
-flush to flash immediately to prevent datacorruption. I am not quite sure how 
-to make it work with JFFS2. DoesJFFS2 write immediately on fsync() or it is 
-buffered in ram making the database believe it is safe to delete it's 
-transactionlog?
+afaik jffs2 writes immediately to flash, even without fsync, as long
+as you use NOR. NAND holds a buffer for 2s, I'd have to check when
+this is flushed exactly.
 
-Esben
+Jörn
 
-On Tuesday 15 April 2003 01:03, Charles Manning wrote:
-> On Mon, 14 Apr 2003 20:08, Esben Nielsen wrote:
-> > Is it posible to run a sql database (mysql forinstance) on a JFFS2
-> > filesystem?
->
-> What kind of flash? NOR flash is very slow for writing, making some
-> database solutions impractical.
->
-> People are using NAND with YAFFS in database-like solutions.
->
-> -- CHarles
+-- 
+Those who come seeking peace without a treaty are plotting.
+-- Sun Tzu
