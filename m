@@ -1,29 +1,38 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6w0B-0004IR-GK
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 14:28:52 -0500
-Received: from dsl-082-082-158-091.arcor-ip.net
-	([82.82.158.91]:34930 helo=zappa ident=mail)
-	by mail.ku-gbr.de with asmtp (Exim 4.24 #1 (Debian))
-	id 1D6w09-0003rF-GE
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2005 20:28:49 +0100
-Received: from [10.10.0.17] (helo=sexmachine.doom)
-	by zappa with esmtp (Exim 3.36 #1 (Debian)) id 1D6w08-0005Hh-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2005 20:28:48 +0100
-Received: from konsti by sexmachine.doom with local (Exim 4.43)
-	id 1D6w07-0002bS-5E
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 20:28:47 +0100
-Date: Thu, 3 Mar 2005 20:28:47 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050303192846.GA9989@ku-gbr.de>
-References: <20050303140816.GA17270@synertronixx3>
-	<6934efce05030310155f826538@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6934efce05030310155f826538@mail.gmail.com>
-Subject: Re: xip AND sync burst modus
+Received: from mail.imc-berlin.de ([217.110.46.186])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D77H6-000753-Et
+	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 02:31:05 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id 58F6A2F017
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  4 Mar 2005 08:31:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 47E8A117F7
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  4 Mar 2005 08:31:03 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 9337C116F7
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  4 Mar 2005 08:31:02 +0100 (CET)
+Message-ID: <42280EB6.4030007@imc-berlin.de>
+Date: Fri, 04 Mar 2005 08:31:02 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: MTD List <linux-mtd@lists.infradead.org>
+References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>	
+	<1109845739.16158.14.camel@hades.cambridge.redhat.com>	
+	<1109846656.4370.20.camel@tglx.tec.linutronix.de>	
+	<1109846792.16158.20.camel@hades.cambridge.redhat.com>	
+	<1109847189.4370.27.camel@tglx.tec.linutronix.de>	
+	<1109847630.16158.22.camel@hades.cambridge.redhat.com>	
+	<4226F51A.7070603@imc-berlin.de>	
+	<Pine.LNX.4.62.0503031146070.15953@localhost.localdomain>
+	<1109874008.29792.92.camel@baythorne.infradead.org>
+In-Reply-To: <1109874008.29792.92.camel@baythorne.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: [RFD] Move 2.4 code out from CVS head
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,60 +42,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2005-03-03 10:15 -0800 schrieb Jared Hulbert:
-
-> What is PageModeEmulation?
-
-That is a access mode which is a bit faster than the classical 
-bus arbitration mode possible with the interface between the i.MX cpu
-and the intel K3 devices. I think this is nit i.MX specific but intel
-specific to their sync burst devices.
-
-> > But XIP is only saving time on my computer, if I succesfully enable the
-> > sync burst modus of the flash interface.
+David Woodhouse wrote:
+> On Thu, 2005-03-03 at 11:48 -0500, Nicolas Pitre wrote:
 > 
-> I don't understand this statement.  Can you clarify?
-
-I wan't to save boot up time on this computer. xip saves time there due
-to the fact it does not copy itself into SDRAM.
-
-> > crc32 around varying regions with different length _always_ have same
-> > checksums when repeated.
+>>>Does that mean that there will be _no_ " maintainence only mode" for
+>>>2.4?
+>>
+>>Depends if _you_ or someone else decides to volunteer for the task.
+>>do you?  I don't.
 > 
-> Can you give an example?
-> Is the crc32 for a given length always the same?
+> 
+> I _am_ maintaining JFFS2 in the 2.4 kernel, even to the extent of
+> backporting the __wait_on_freeing_inode() stuff from 2.6 to fix the
+> problems with simultaneous read_inode() and clear_inode(). But I'm not
+> adding new features, so NAND flash isn't supported in 2.4.
 
-Yes.
+How about SUMMARY patch then? ;-)
+Seriously, since JFFS3 will not get into the 2.4 stuff Ferenc's SUMMARY patch 
+would be nice!
 
-> If the XIP kernel is working but jffs2 fails I would assume one of the
-> following is true:
-> 1-your kernel code is not bursting
-> 2-your jffs2 image is bad
-> 3-your jffs2 code is bad
-> 4-your flash is in status mode when the system starts mounting
+And BTW: How do I get the 2.4 branch from CVS?
 
-I later figured out this evening, that mounting the jffs2 breaks even
-with kernel running out of SDRAM with sync burst enabled in the same
-way (same sector addresses).
-So 1 is false, 2 also since the same image works fine when not bursting.
-The jffs code _may_ be bad because a delay is required after probing
-before mounting the flash.
-So 3 is true or 4 or still my fault because I am to stupid to set up
-burst mode.
-My initial mail was also intended to get to know, if there are any
-people who say they implemented the same and their hardware is ok and
-bursts fine with jffs2.
-
-> I would try another flash based fs.  If another flash based fs mounts.
->  Then it is less likely 2,3, and 4 are problems.  Try using cramfs
-> patched with the CELF cramfs-linear-xip-3.patch from
-> http://tree.celinuxforum.org/CelfPubWiki/PatchArchive it doesn't patch
-> cleanly to 2.6.10 but the fix is easy to do manually.
-
-Does this apply to 2.6.11-rc2 also? I will try to do so.
-
-Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+--
+Steven
