@@ -1,43 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14SjIC-00009O-00
-	for mtd-list@infradead.org; Tue, 13 Feb 2001 17:31:08 +0000
-Received: from mail1.danielvalve.com ([12.19.96.6] helo=mail1.danielind.com)
+	id 14SjPA-0000GD-00
+	for mtd-list@infradead.org; Tue, 13 Feb 2001 17:38:20 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14SjIB-00009I-00
-	for mtd@infradead.org; Tue, 13 Feb 2001 17:31:08 +0000
-Message-ID: <3A89758C.74FD4C74@danielind.com>
-Date: Tue, 13 Feb 2001 11:57:33 -0600
-From: Vipin Malik <vmalik@danielind.com>
-MIME-Version: 1.0
-To: mtd <mtd@infradead.org>
-Subject: cfi_probe module usage count when insmod physmap.o fails
+	id 14SjP9-0000G7-00
+	for mtd@infradead.org; Tue, 13 Feb 2001 17:38:19 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3A89758C.74FD4C74@danielind.com> 
+References: <3A89758C.74FD4C74@danielind.com> 
+To: Vipin Malik <vmalik@danielind.com>
+Cc: mtd <mtd@infradead.org>
+Subject: Re: cfi_probe module usage count when insmod physmap.o fails 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Tue, 13 Feb 2001 17:38:14 +0000
+Message-ID: <9808.982085894@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-When insmod physmap.o fails, it does not decrement the usage count of
-cfi_probe.o
 
-This results in an ever increasing usage count for each "try" of insmod
-physmap.o
+vmalik@danielind.com said:
+>  I solved the problem with an extra line in physmap.c right before it
+> exits because do_cfi_probe() failed that decrements the cfi_probe
+> module usage count as thus:
 
-The problem that I encountered is that trying to unload cfi_probe module
-to add some debug printk's was not possible.
+>  inter_module_put("cfi_probe");
 
-I solved the problem with an extra line in physmap.c right before it
-exits because do_cfi_probe() failed that decrements
-the cfi_probe module usage count as thus:
+Probably right. It was all working fine when it was using 
+get_module_symbol(). Now, I think I'm going to just give up and switch over 
+to hard dependencies on the symbols. 
 
- inter_module_put("cfi_probe");
 
-This works. Anyone see any problems with it? If not can we change
-physmap.c with this change?
+--
+dwmw2
 
-Thanks
-
-Vipin
 
 
 
