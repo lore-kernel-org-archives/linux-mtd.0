@@ -1,24 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1ChTOF-0001M6-OU
-	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 08:52:29 -0500
-Date: Thu, 23 Dec 2004 14:52:31 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: xemc <xemcnet@gmail.com>
-Message-ID: <20041223135231.GB24503@wohnheim.fh-wedel.de>
-References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
-	<20041222160942.GC9783@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0412221610230.30689@phoenix.infradead.org>
-	<20041222172637.GE9783@wohnheim.fh-wedel.de>
-	<1f9886eb0412221014256b83e6@mail.gmail.com>
+	id 1ChUJK-0001lu-PS
+	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 09:51:28 -0500
+Date: Thu, 23 Dec 2004 15:51:19 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20041223145115.GA14940@synertronixx3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f9886eb0412221014256b83e6@mail.gmail.com>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Subject: actual mtd snapshot and jffs3 questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +19,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 December 2004 12:14:18 -0600, xemc wrote:
-> 
-> Please forgive me if this is a naive question, but isn't this data
-> also protected by ECC in the first place?  (or is that just for NAND?)
+Hi People!
 
-Just for NAND.  NOR is pretty reliable anyway, so we could just go
-without a checksum.  Hard drive based filesystems usually do the same
-and few people complain.
-But as long as it's cheap enough, extra confidence doesn't hurt.
+Today I tried out the actual mtd cvs including jffs2 and jffs3.
+Generally jffs2 works. 
+I switchied compiling of jffs3 on also to test it
+but in jffs3.h are #ifdefs in the lines 296 and
+310 which I had to comment out.
 
->  How strong is this ECC compared to CRC32 or Adler32?
+#if defined CONFIG_JFFS3_FS_NAND || defined CONFIG_JFFS3_FS_NOR_ECC
 
-No idea.
+Indeed I have no CONFIG_JFFS3_FS_NAND nor CONFIG_JFFS3_FS_NOR_ECC but
+the code required the members of the struct and compiled fine then.
 
-> If the ECC can handle a few bit errors, then wouldn't a simple
-> checksum handle the case where the file was completely corrupt or
-> partially written?
+Another thing is:
 
-Correct.  Simple parity might be a nice reference as well.  It is
-really bad at catching even-bit errors (2,4,6,...), but it's fast.
+make -C util
+make: Entering directory `/usr/src/mtd/util'
+gcc -I../include -O2 -Wall -g -c -o sumtool.o sumtool.c -g
+-Wp,-MD,.sumtool.c.dep
+sumtool.c:45:24: jffs3-user.h: No such file or directory
 
-Jörn
+which is right, no such file :) Forgot cvs add?
+
+How do I use jffs3? With a normal jffs2 filesystem created by actual
+mkfs.jffs2?
+I found no mkfs.jffs3 so I tried setting rootfstype=jffs2 to
+rootfstype=jffs3 and booted:
+
+[JFFS3] Magic bitmask 0x1985 not found at 0x000000: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000004: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000008: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x00000c: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000010: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000014: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000018: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x00001c: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000020: 0x00b0 instead
+[JFFS3] Magic bitmask 0x1985 not found at 0x000024: 0x00b0 instead
+[JFFS3] Further such events for this erase block will not be printed
+.
+.
+.
+[JFFS3] Cowardly refusing to erase blocks on filesystem with no valid
+JFFS3 nodes
+[JFFS3] Empty blocks 90, bad blocks 0, total blocks 118                          
+VFS: Cannot open root device "mtdblock3" or unknown-block(31,3)
+Please append a correct "root=" boot option                    
+Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(31,3)
+
+
+Regards, Konsti
 
 -- 
-"Translations are and will always be problematic. They inflict violence 
-upon two languages." (translation from German)
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
