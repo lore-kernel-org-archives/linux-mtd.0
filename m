@@ -1,40 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13Q8Lp-0007kf-00
-	for mtd-list@infradead.org; Sat, 19 Aug 2000 14:07:53 +0100
-Received: from ip-151-191.gw.total-web.net ([209.186.151.191] helo=150.81.192.20)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13Q8Ln-0007kZ-00
-	for mtd@infradead.org; Sat, 19 Aug 2000 14:07:52 +0100
-From: "Matt Hortman" <mbhortman@ieee.org>
-Date: Sat, 19 Aug 2000 09:12:39 -0400
+	id 13RCFy-0002ki-00
+	for mtd-list@infradead.org; Tue, 22 Aug 2000 12:30:14 +0100
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13RCFw-0002kc-00
+	for mtd@infradead.org; Tue, 22 Aug 2000 12:30:12 +0100
+Message-ID: <39A26511.240F7998@arcom.co.uk>
+Date: Tue, 22 Aug 2000 12:33:37 +0100
+From: David Vrabel <dvrabel@arcom.co.uk>
+MIME-Version: 1.0
 To: mtd@infradead.org
-Subject: Re: Silicon storage technology disk on chips
-Message-ID: <20000819091239.B1040@khayman.mavrik.com>
-References: <Pine.LNX.4.04.10008171036080.3494-100000@phoenix.bmedesign.com>
-Mime-Version: 1.0
+Subject: Re: JFFS oopses on mount
+References: <399CF6F1.4622CF44@arcom.co.uk> <26879.966589787@cygnus.co.uk>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.04.10008171036080.3494-100000@phoenix.bmedesign.com>; from mdj@phoenix.bmedesign.com on Thu, Aug 17, 2000 at 10:37:16AM -0600
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-> Has anyone here heard of the ssti disk on chips and whether they
-> are compatible with the m-systems chips?
+David Woodhouse wrote:
 > 
-> The website is at
+> dvrabel@arcom.co.uk said:
+> >  Possibly a message of interest
 > 
-> http://www.ssti.com
+> > jffs_garbage_collect_now(): free_size == 0. This is BAD.
+> 
+> I sincerely hope that the latest CVS sources fix this problem. We've been
+> chasing it for days, and we _think_ it's fixed.
 
-I just took a look at the datasheet for their ATA-Disk Chip.  It has a
-completely different pinout and design goal than the M-Sys DOC.  The
-SSTI chip is designed to go directly on an IDE bus and look like a
-hard drive.  The pinout is completely different.  It also does not
-require an additional drivers other than IDE.
+It's working better than before.
 
-(I haven't used one, I gleaned this from the datasheet).
+However, it oopsed again and it seems to have lost a file.
 
--Matt
+I have an image of the flash which causes the oops but I have no idea
+what to do with it.
+
+David Vrabel
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
