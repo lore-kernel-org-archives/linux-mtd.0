@@ -1,22 +1,20 @@
-Received: from fmr05.intel.com ([134.134.136.6] helo=hermes.jf.intel.com)
+Received: from tolkor.sgi.com ([192.48.180.13])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cQRU-0001N7-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 14:01:36 +0100
-Received: from talaria.jf.intel.com (talaria.jf.intel.com [10.7.209.7])
-	by hermes.jf.intel.com (8.11.6/8.11.6/d: outer.mc,v 1.48 2002/05/24 00:39:04 root Exp $) with ESMTP id g77CxGo08527
-	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 12:59:16 GMT
-Received: from pdsmsxvs01.pd.intel.com (pdsmsxvs01.pd.intel.com [172.16.12.122])
-	by talaria.jf.intel.com (8.11.6/8.11.6/d: inner.mc,v 1.22 2002/05/24 00:38:22 root Exp $) with SMTP id g77CuuR26792
-	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 12:56:57 GMT
-Message-ID: <957BD1C2BF3CD411B6C500A0C944CA2601499C3B@pdsmsx32.pd.intel.com>
-From: "Yuan, Cain" <cain.yuan@intel.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS2 peoblems with K3 strata flash on Dalhart 
-Date: Wed, 7 Aug 2002 20:59:23 +0800 
+	id 17cQWa-0001Se-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 14:06:52 +0100
+Received: from ledzep.americas.sgi.com (ledzep.americas.sgi.com [137.38.226.97])
+	by tolkor.sgi.com (8.12.2/8.12.2/linux-outbound_gateway-1.2) with ESMTP id g77D6UK3007854
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 08:06:30 -0500
+Received: from archer.americas.sgi.com (archer.americas.sgi.com [137.38.88.26]) by ledzep.americas.sgi.com (SGI-SGI-8.9.3/americas-smart-nospam1.1) with ESMTP id IAA82641 for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 08:06:30 -0500 (CDT)
+Received: from sgi.com (localhost [127.0.0.1]) by archer.americas.sgi.com (8.8.8/ASC-news-1.4) with ESMTP id IAA222499 for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 08:06:29 -0500 (CDT)
+Message-ID: <3D511B55.6ADABE4D@sgi.com>
+Date: Wed, 07 Aug 2002 08:06:29 -0500
+From: Steven Hein <ssh@sgi.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: Hardware ECC in NAND flash driver
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,36 +26,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-cain.yuan@intel.com said:
-> 	According to your email  I  rebuild a JFFS2 image with the   block
-> size 0x10000,  same as the datasheet saids. but the problem still
-> exist.  First bootup will success without any error message. but when
-> I reset the board and boot it again, many errors occurs.
+Hello,
 
-Looks like you should be using 0x20000. 0x10000 is fine but triggers 
-harmless messages about 'Empty block at 0x.... '. I think you were using 
-0x40000 before which would have caused problems.
-~~~~~~~~~~  yes, I am using 0x40000 before.
+I'm working on the Linux port to the Samsung S3C2410 PDA controller
+(ARM 920T core with many interfaces, including a NAND flash controller,
+built-in).  The 2410's NAND flash controller generates ECC codes
+(3 bytes ECC per each 512 bytes data).  Are there any plans to
+incorporate hardware ECC support into this driver?  Specifically,
+I guess that would mean adding "hooks" so the hardware-specific
+driver could handle the ECC parts   (I only had to make
+a few small changes to nand.c to get this working for the 2410.)
+If there's an effort underway in this area, I'd be happy to
+participate in the development.
 
-
-The other problem still remains, and isn't related, though...
-
-> Write of 68 bytes at 0x0035e908 failed. returned 0, retlen 0
-> Not marking the space at 0x0035e908 as dirty because the flash driver
-returned retlen zero
-
-The hardware driver seems broken -- it's returning success but not actually 
-reporting that it's written any data. What driver, what version?
-
----  Since using CFI  with Ks flash, I think  it is CFI driver and
-cfi_cmdset_001.c,  the  code   reside in  linux2.4.18-rmk6-pxa2.
-      Should I download  newest   code from CVS server and merge them into
-the   kernel src tree?
+Thanks,
+Steve
 
 
-Thanks!!
-
-
-
---
-dwmw2
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Steve Hein (ssh@sgi.com)              Engineering Diagnostics/Software
+Silicon Graphics, Inc.                          
+1168 Industrial Blvd.                 Phone: (715) 726-8410
+Chippewa Falls, WI 54729              Fax:   (715) 726-6715
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
