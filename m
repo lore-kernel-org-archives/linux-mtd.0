@@ -1,20 +1,18 @@
-Received: from [65.18.154.155] (helo=skynetaccess.skynetaccess.net)
+Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AH1Og-0007BJ-4R
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 13:39:02 +0000
-Received: from earthlink.net (ba.e5bccf.client.atlantech.net
-	[207.188.229.186])	(authenticated (0 bits))hA4Db3w26870
-	for <linux-mtd@lists.infradead.org>; Tue, 4 Nov 2003 08:37:03 -0500
-Sender: train@skynetaccess.skynetaccess.net
-Message-ID: <3FA7AB8B.A287F4@earthlink.net>
-Date: Tue, 04 Nov 2003 08:37:15 -0500
-From: Phil Wilshire <philwil@earthlink.net>
-MIME-Version: 1.0
+	id 1AH6AA-0007qp-1z
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 18:44:22 +0000
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AH68f-0005Pp-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 19:42:49 +0100
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: Jffs2 write Error
-Reply-To: philwil@earthlink.net
+From: Miernik <miernik@ctnet.pl>
+Date: Tue, 4 Nov 2003 19:42:49 +0100
+Message-ID: <slrnbqfsp9.k1.miernik@tarnica.ctnet.pl>
+Sender: news <news@sea.gmane.org>
+Subject: non-CFI PCMCIA linear flash: Waiting for chip to be ready timed
+	out. Status a8
+Reply-To: Miernik <miernik@ctnet.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is another try to get my SMART Modular Technologies 
+SM9FA2043IP280 4 MB linear flash card working.
 
-Hi Guys,
+I have compiled the 2.6.0-test9 kernel (from Debian), without applying 
+MTD CVS patches, with devfs turned on.
 
-I am seeing a frequent error 
+This time I have placed my configuration and logs of my problem in 
+http://www.miernik.ctnet.pl/mtd/7-kernel2.6/
 
-on an ARM7TDMI  system
-  uClinux version 2.4.20-uc0 
+Please look at 
+http://www.miernik.ctnet.pl/mtd/7-kernel2.6/log/syslog-cut 
+http://www.miernik.ctnet.pl/mtd/7-kernel2.6/mtd_debug
+for the most useful logs. 
 
-Processor: Atmel AT91M40xxx revision 0
-Architecture: EB01          
+In syslog-cut I have placed * where there was a huge number of 
+identical lines (except time).
+That was when I tried to run 
+/usr/local/src/mtd/util/mtd_debug erase /dev/mtd/0 0 4194304
+I finally stopped it with ^C. 
 
-physmap flash device: 200000 at 1600000
-Found: Atmel AT49BV32XA
-number of JEDEC chips: 1
+It looks like my flash is detected as a MTD_NORFLASH, 
+I'm pretty sure that this card is a NAND card, but I don't remember 
+where did I get that confidence from :(
 
-Creating 3 MTD partitions on "Physically mapped flash":
-0x00000000-0x00100000 : "part1"
-0x00100000-0x00200000 : "part2"
-0x00200000-0x00400000 : "rest"
+The chip inside the card is:
+---------
+Intel
 
+E28F016SA
+70   5.0V
+120  3.3V
+U84433T1C
+1993
 
-I have added some debugging in write.c
-And I get this sort of output
-I am copying a large file into the flash system.
+Flash
+---------
 
-ls -l /var/ram/mytest
--rwxr-xr-x  1 0        0          500856  Jan  1 00:00 /var/ram/mtest
+http://www.intel.com/design/flcomp/support/datashts/29048905.pdf
 
-cp /var/ram/mytest /var/mtd0/mytest
+A document about software routines to erase blocks on this chip:
+http://www.intel.com/design/flcomp/support/applnots/29212601.pdf
 
+BTW I found an old post about the chip: 
+http://lists.infradead.org/pipermail/linux-mtd/2002-August/005677.html
+Does it matter if it's inside a PCMCIA card? 
 
-It all looks to be working just fine...
-( PSW is my debug )
-PSW Write of 2491 bytes at 0x000ac3b4 attempted. returned 0, retlen 2491
-PSW Write of 2514 bytes at 0x000acd70 attempted. returned 0, retlen 2514
-PSW Write of 2422 bytes at 0x000ad744 attempted. returned 0, retlen 2422
-PSW Write of 2550 bytes at 0x000ae0bc attempted. returned 0, retlen 2550
-PSW Write of 2523 bytes at 0x000aeab4 attempted. returned 0, retlen 2523
-PSW Write of 2393 bytes at 0x000af490 attempted. returned 0, retlen 2393
-PSW Write of 527 bytes at 0x000afdec attempted. returned 0, retlen 527
-PSW Write of 2129 bytes at 0x0009000c attempted. returned 0, retlen 2129
- 
+Interesting that in /var/log/syslog I found a line: 
+Nov  4 17:48:27 tarnica kernel: Found: Intel 28F016S5
 
-Then I get this error
+What can be deducted from that? 
 
-Last[3] is 66, datum is 8000066
-Write of 49 bytes at 0x00090860 failed. returned -5, retlen 40
-jffs2_write_dirent in garbage_collect_dirent failed: -5
-Last[3] is 66, datum is 8000066
-Write of 49 bytes at 0x00090894 failed. returned -5, retlen 40
-jffs2_write_dirent in garbage_collect_dirent failed: -5
+BTW it detected it as a 28F016S5 while it is a 28F016SA. The former is 
+a 5V only chip and the latter is a dual 5V/3.3V.
 
-  which produces and IOERROR -5 =  -EIO
- 
+P.S. I found this:
+http://www.tuxmobil.org/pcmcia_ci10249.html
 
-Here is the flash usage..
+BTW: I found this comment about CONFIG_MTD_JEDECPROBE: 
+This option enables JEDEC-style probing of flash chips which are not
+compatible with the Common Flash Interface, but will use the common
+CFI-targetted flash drivers for any chips which are identified which
+are in fact compatible in all but the probe method. This actually
+covers most AMD/Fujitsu-compatible chips, and will shortly cover also
+non-CFI Intel chips (that code is in MTD CVS and should shortly be sent
+for inclusion in Linus' tree)
 
+My chip on the PCMCIA card is for sure a non-CFI Intel chip. Does the 
+above comment matter if the chip is on a PCMCIA card?
 
- /> df
-Filesystem           1k-blocks      Used Available Use% Mounted on
-rootfs                    1999      1999         0 100% /
-/dev/ram0                 1999      1999         0 100% /
-/dev/ram1                  115         8       107   7% /var
-/dev/mtdblock0            1024       444       580  43% /var/mtd0  
-
-The system was eraseall'd and then mounted before this test.
-The first copy of the big file went OK the error was found on the second copy to the same file.
-
-Any clues as to what is happening here ???
-
-
-regards
-  Phil Wilshire
 -- 
-SDCS -- System Design & Consulting Services LLC, http://www.sysdcs.com
-** Embedded Linux Training **  email me for details  
-630 Springhouse Sq., Leesburg VA 20175 t: 703 669 9766 f: 703 669 9768
+    Miernik         ________________________ jabber:miernik@amessage.info
+___________________/__ tel: +48608233394 __/      mailto:miernik@ctnet.pl
+Do not use Paypal. They sometimes shut down accounts and steal users money!
+http://www.paypalsucks.com/
