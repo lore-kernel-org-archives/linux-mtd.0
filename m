@@ -1,16 +1,16 @@
-Received: from firewall1.cammail.net ([193.115.249.1] helo=smtp.camcom.co.uk)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17BDDb-0003JU-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 12:26:47 +0100
-Date: Fri, 24 May 2002 12:25:26 +0100 (BST)
-From: Chris Wilson <chris@netservers.co.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Getting big flash onto motherboards. Will CF work? what will 
-In-Reply-To: <25366.1022237734@redhat.com>
-Message-ID: <Pine.LNX.4.44.0205241221580.31555-100000@localhost>
+Received: from web14403.mail.yahoo.com ([216.136.174.60])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17BEPK-0003OX-00
+	for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 13:42:58 +0100
+Message-ID: <20020524124256.17838.qmail@web14403.mail.yahoo.com>
+Date: Fri, 24 May 2002 20:42:56 +0800 (CST)
+From: =?gb2312?q?cytang?= <cytang_cn@yahoo.com.cn>
+Subject: lilo problem :dont know how to handle device ox5d01
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <E17AqL9-00010h-00@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,43 +22,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David,
+lilo problem : sorry, dont know how to handle device
+ox5d01
 
-> chris@netservers.co.uk said:
-> >  I would guess that these are IDE-compatible then? So I guess I would
-> > have  to use the mtdblock driver to drive it? 
-> 
-> No. The mtdblock driver is a vary simplistic 'translation layer' that 
-> doesn't actually do any wear levelling or translation, just lets you use a 
-> real flash device as if it were a block device.
+After I have make a mini system on my doc , I want to
+make doc the boot disk.
+I have get the doc-lilo from m-sys . but when I run
+"doc-lilo -r /mnt/nftla1 " , I will get the erro
+reported:
+" sorry, dont know how to handle device ox5d01 "
 
-Sorry, I meant mtdblkdev. Silly me =)
+So , I turn to lilo-mtd which can be found in
+mtd-snapshot. 
+This time , I run "./lilo-mtd -v -r /mnt/nftla1 " 
+however , I get another erro:
+" RSN; /dev/nftla1 is not a whole disk device "
 
-> that it must have different reliability characteristics. But there's no real
-> reason for _everyone_ who makes CF to have implemented it so unreliably in
-> the first place -- so maybe M-Systems have managed to do it properly -- they
-> generally do seem to have sufficient clue. You'd have to test it.
+the following may be some helpful 
+1. my mtd code is 20020501 snapshot
+  my linux is redhat 7.1 ,my doc is doc2000 ,32 m
+2.
+ fdisk /dev/nftla
+ p
+ the output is :
+ Device      Boot  start   end  Blocks  id system
+ /dev/nftla1  *    1       1001 32030   83 Linux 
+3.fdisk /dev/nftla1
+ p
+ the output is :
+ Device      Boot  start   end  Blocks  id system
 
-Thanks for your answer, even though it's not encouraging news. I guess we 
-will have to thrash some CFs to death to find out what's going wrong =( 
-It's a shame because they are so expensive.
 
-> The DiskOnChip is a different matter. That allows the system to deal with 
-> real flash, so if there are problems you can fix them. Although in 
-> practice, nobody _does_ seem to be dealing with the problems which 
-> occasionally crop up with the DiskOnChip drivers. I still keep trying to 
-> get our salespeople to find a customer who wants to pay for me to spend 
-> some real time on them, but it hasn't happened yet :)
 
-We'll consider it if I can persuade my boss that we shouldn't be using CF 
-=)
-
-Incidentally, do you or anyone know why there is such a big price 
-different between CF, DoM and DoC for the same capacity?
-
-Cheers, Chris.
--- 
-   ___ __     _
- / __// / ,__(_)_  | Chris Wilson -- UNIX Firewall Lead Developer |
-/ (_ / ,\/ _/ /_ \ | NetServers.co.uk http://www.netservers.co.uk |
-\ _//_/_/_//_/___/ | 21 Signet Court, Cambridge, UK. 01223 576516 |
+_________________________________________________________
+Do You Yahoo!? 
+摊开你的掌心 让我看看你
+http://sweepstakes.yahoo.com/2002cnuser
