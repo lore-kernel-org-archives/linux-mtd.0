@@ -1,16 +1,17 @@
 Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CdnM5-0001Ff-Ih
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 05:23:03 -0500
-Message-ID: <013c01c4e0fe$0a481e30$8500a8c0@nit37>
+	id 1CdpDH-0001hn-8S
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 07:22:06 -0500
+Message-ID: <001d01c4e10e$a06ebc60$8500a8c0@nit37>
 From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
 To: <linux-mtd@lists.infradead.org>
-Date: Mon, 13 Dec 2004 15:55:06 +0530
+References: <NGENJJFPMHGLPILEKKAMEEBHCFAA.Stephan.Linke@epygi.de>
+Date: Mon, 13 Dec 2004 17:53:49 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; format=flowed; charset="iso-8859-1";
 	reply-type=original
 Content-Transfer-Encoding: 7bit
-Subject: Writing data to Flash
+Subject: Re: Writing data to Flash
 Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,17 +24,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Stephan,
 
-In my target there is a Redhat ecos wherein basically I can find out the 
-usnused & used partiitions. To store data (ex: string) in the flash firstly 
-I need to load the file into the RAM using the "fis load" command, 
-thereafter I need to create a partition in the flash based on the data in 
-the RAM using the command "fis create".
+Our target board consists of a IOP80321 processor with 16mb of flash and 
+512mb ram which basically consists of RedHat ecos, but the basic build 
+environment in the host side is a Monta Vista Linux OS. When we connect to 
+the target through "minicom" tool and when red boot is in the process of 
+booting, we basically stop the booting process by which red boot prompt 
+appears. It is here that fis-meaning flash image system comes into effect, 
+wherein one can create partitions. It is in this context that I have thought 
+of to load the key into the flash. Is this approach correct or not!
 
-To acheive it, the first step is how exaclty should I load data into the 
-(target's) RAM. After the data is available in the target's RAM then only I 
-can create a partition and store data into the flash.
+You have said that you create a new flash mapping file in mtd/maps 
+directory, can you please suggest a method by which I can proceed. I have 
+looked into the mtd/maps directory in which there are number of files, 
+please suggest which file is the one I have to start with, for acheiving 
+writing data (key) to the flash, dynamically, after the target has been 
+identified by the host.
 
-Kindly suggest a suitable approach.
+
+You have said you write a C program that uses normal file access functions 
+to read/write the data, do you load this program/file into the flash or does 
+it reside in the target. Where exactly does the flash partition inode has to 
+be set up in the /dev directory. How to use this mknod tool.
+
+Kindly suggest an approach.
 
 Thanks,
-Subrahmanyam. 
+Subrahmanyam.
+
+
+
+
+
+----- Original Message ----- 
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+Sent: Monday, December 13, 2004 05:25 PM
+Subject: RE: Writing data to Flash
+
+
+> Hi Subrahmanyam,
+>
+> what kind of operating system do you use? Unfortunately I don't know this 
+> "fis"
+> tool.
+> It sounds like you are not working in a linux kernel environment.
+> The way I do it I am writing a "new" flash mapping file for mtd/maps that
+> supports the flash layout for my target system. I do run the new linux 
+> kernel
+> which provides the new partition layout for the flash. And then I write a 
+> new C
+> program that uses normal file access functions to read/write the data. The 
+> flash
+> partition inode. has to be set up in the /dev directory using the mknod 
+> tool. In
+> the Documentation directory of the linux kernel you can find the correct 
+> device
+> mappings for this.
+> How to load the data into RAM depends verry much on you operating system. 
+> If you
+> run linux you can simply use the ftp tool to place a copy of the file in 
+> your
+> filesystem. If you are runing some kind of bootloader you actualy have to 
+> read
+> the bootloader documentation. In that case I can be of verry little help. 
+> But
+> most likely there is some tftp download support you can use.
+>
+> Regards, Stephan
+>
+>> -----Original Message-----
+>> From: linux-mtd-bounces@lists.infradead.org
+>> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Subrahmanyam
+>> Sent: Montag, 13. Dezember 2004 11:25
+>> To: linux-mtd@lists.infradead.org
+>> Subject: Writing data to Flash
+>>
+>>
+>> Hi Stephan,
+>>
+>> In my target there is a Redhat ecos wherein basically I can find out the
+>> usnused & used partiitions. To store data (ex: string) in the flash 
+>> firstly
+>> I need to load the file into the RAM using the "fis load" command,
+>> thereafter I need to create a partition in the flash based on the data in
+>> the RAM using the command "fis create".
+>>
+>> To acheive it, the first step is how exaclty should I load data into the
+>> (target's) RAM. After the data is available in the target's RAM then only 
+>> I
+>> can create a partition and store data into the flash.
+>>
+>> Kindly suggest a suitable approach.
+>>
+>> Thanks,
+>> Subrahmanyam.
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+> 
