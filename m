@@ -1,19 +1,18 @@
-Received: from mail.dot4.com ([216.57.134.36])
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bhwfe-0000l4-0A
-	for linux-mtd@lists.infradead.org; Tue, 06 Jul 2004 16:36:06 -0400
-Received: from [192.168.200.101] (unknown [192.168.200.101])
-	by mail.dot4.com (Postfix) with SMTP id 041D64117
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  6 Jul 2004 16:36:02 -0400 (EDT)
-Message-ID: <40EB0D28.60309@dot4.com>
-Date: Tue, 06 Jul 2004 16:35:52 -0400
-From: "Thomas W. Nelson" <twn@dot4.com>
+	id 1BhxRA-00010B-5M
+	for linux-mtd@lists.infradead.org; Tue, 06 Jul 2004 17:25:13 -0400
+Date: Tue, 6 Jul 2004 17:20:46 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+To: Marius Groeger <mgroeger@sysgo.com>
+In-Reply-To: <Pine.LNX.4.56.0407051001290.1879@mag.sysgo.com>
+Message-ID: <Pine.LNX.4.60.0407061710540.21848@localhost.localdomain>
+References: <20040702160247.55F4BC109F@atlas.denx.de>
+	<Pine.LNX.4.56.0407051001290.1879@mag.sysgo.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: MTD support on Motorola Hawk ASIC-based boards
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: adding cmd-line partitioning to rpxlite.c 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have the somewhat dubious honor of migrating a couple of customer's 
-applications environments from VxWorks to TimeSys Linux on obsolete 
-Motorola MVME2400 and MCP750 boards (the wheels of progress in certain 
-defense and telecomm hardware venues turn *very* slowly).  Everything 
-else is working fine except we've been unable to get the MTD subsystem 
-to successfully probe and recognize the 8 MB user flash on these boards.
+On Mon, 5 Jul 2004, Marius Groeger wrote:
 
-The basic configuration is nothing out of the ordinary: 4 AMD 29LV160BT 
-(2 MB) devices in x16 mode, arranged in two 32-bit wide even/odd address 
-banks.  The one major quirk in the design is that the Hawk memory 
-controller ASIC only permits 32-bit wide aligned writes to this array 
-(any other type of write -> /dev/null, reads are unconstrained).  We're 
-very confident that we have the registers in the Hawk set up correctly 
-and we've spent many hours trying all the chip type/bus width/interleave 
-permutations available in the existing MTD implementation with no 
-success.  Therefore, before we embark on any inappropriate or 
-unnecessary major surgery we wanted to ask the community for any 
-suggestions, ideas, or other pearls of wisdom.
+> On Fri, 2 Jul 2004, Wolfgang Denk wrote:
+>
+>> In message <Pine.LNX.4.56.0407021650140.8560@mag.sysgo.com> you wrote:
+>>>
+>>>>>>          lubbock_maps[flashboot^1].name = "Lubbock Application Flash";
+>>>>>>          lubbock_maps[flashboot].name = "Lubbock Boot ROM";
+>> ...
+>>> spaced into it (YMMV). Still, I also like reusing things, and maybe it
+>>> would be a good thing to add code that replaces the embedded spaces
+>>> with underscores?
+>>
+>> Better use shorter names. Wast^H^H^H^H Using  41  characters  of  the
+>> kernel command line for the MTD id's alone is IMHO not a good idea.
+>
+> Probably. Still, the current implementation is misleading and should
+> be resolved. Things were easier if command line partitioning was
+> default for all maps, and not something to add in later on demand.
 
-Thanks for any assistance...
+   not that this needs to be beaten any more than i've already beaten 
+it (well, ok, yes it does), but at the moment, some of the files in 
+drivers/mtd/maps that allegedly have command-line partitioning support 
+just seem, well, broken.  (although, with my track record, i probably 
+just misunderstood something.)
 
--- 
-Tom Nelson
-Sr. Consulting Engineer, Dot4, Inc.
-twn@dot4.com <mailto:twn@dot4.com>
+   consider, for example, ceiva.c.  this file allegedly supports 
+cmdline partitioning, but i don't see how it could possibly work.  in 
+the routine clps_setup_mtd(), the required space for multiple map_info 
+structs is allocated with kmalloc() and then each of them is given the 
+value: map->name="clps flash".
+
+   assuming that the map name is used later for the <mtd-id> value for 
+the partitioning (boy, i hope i got that right), the name not only has 
+an embedded space, but every map_info struct will have the identical 
+name value, which makes the partitioning a bit difficult, no?
+
+   OTOH, consider tqm8xxl.c, which also loops through the number of 
+flash banks but assigns each bank a unique name with:
+
+sprintf(map_banks[idx]->name, "TQM8xxL%d", idx);
+
+so even though that file doesn't even try to do command-line 
+partitioning, at least it's set up to be added easily in the future.
+
+   thoughts?  what have i misread this time?
+
+rday
