@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [195.166.20.93] (helo=frumious.unidec.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xXU0-0002pB-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 18:10:40 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010509190106.A10693@discordia.ch> 
-References: <20010509190106.A10693@discordia.ch> 
+	id 14xXbU-0002r1-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 18:18:24 +0100
+From: dr john halewood <john@frumious.unidec.co.uk>
+Reply-To: john@unidec.co.uk
 To: Peter Keel <killer@discordia.ch>
+Subject: Re: Read Flash-Dumps
+Date: Wed, 9 May 2001 18:18:05 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+References: <20010509190106.A10693@discordia.ch>
+In-Reply-To: <20010509190106.A10693@discordia.ch>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Read Flash-Dumps 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 09 May 2001 18:10:51 +0100
-Message-ID: <27428.989428251@redhat.com>
+MIME-Version: 1.0
+Message-Id: <0105091818050L.10317@frumious.unidec.co.uk>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +26,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-killer@discordia.ch said:
->  I got an Igel-Terminal, which features an M-systems DiskOnAChip 2000.
-> Now I got these flash-images from an ftp and want to modify them
-> before putting them into the flash; preferably on another machine
-> (without flash). 
+On Wednesday 09 May 2001 18:01, Peter Keel wrote:
+>
+> So how do I do a loopack-mount of the files? I tried several
+> filesystems, but that doesn't seem to work. Also, nftl doesn't
+> even appear in /proc/filesystems.
+>
+IIRC the igel box uses minix filesystems mounted on top of the NFTL so you 
+don't access the flash layer directly. (It also uses the M-Systems proprietry 
+driver, which isn't suprising as Igel wrote it)
 
-I'm not sure what form those flash-images are in. They may be a similar 
-dump to the one you'd get from the 'nanddump' program, in which case you 
-could write it back with the 'nandwrite' program and the MTD drivers.
+mount file.img /mnt -t minix -o loop  should do the trick.
+I think the igel box has 4 minix partitions on the DoC.
 
-
-killer@discordia.ch said:
->  Also, nftl doesn't  even appear in /proc/filesystems. 
-
-It would appear as a block device. But last time I knew, I believe Igel were
-shipping the M-Systems binary-only driver statically linked into their 
-kernel in violation of the GPL. In that case, you're on your own.
-
-Can you show me the contents of /proc/devices?
-
---
-dwmw2
+cheers
+john
