@@ -1,20 +1,16 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B39fe-0003UO-U3
-	for linux-mtd@lists.infradead.org; Tue, 16 Mar 2004 08:11:31 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: Brad Campbell <brad@wasp.net.au>
-In-Reply-To: <405686B3.4090607@wasp.net.au>
-References: <002901c406cb$3c049ec0$fd0ba8c0@briantpc>
-	 <1079387201.5835.344.camel@imladris.demon.co.uk>
-	 <405686B3.4090607@wasp.net.au>
+To: simon@baydel.com
+In-Reply-To: <B1CA6BCA5B0C@baydel.com>
+References: <403C6FC3.1941.DDC08@localhost>
+	 <1078327901.4619.21.camel@hades.cambridge.redhat.com>
+	 <AC8EC7070E8A@baydel.com>  <B1CA6BCA5B0C@baydel.com>
 Content-Type: text/plain
-Message-Id: <1079424685.5835.404.camel@imladris.demon.co.uk>
+Message-Id: <1079453688.16952.40.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Tue, 16 Mar 2004 08:11:25 +0000
+Date: Tue, 16 Mar 2004 16:14:48 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: free_list / free_size messages
+Subject: Re: JFFS2 Corruption.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-03-16 at 08:46 +0400, Brad Campbell wrote:
-> I have seen this a bit on my iPAQ 3800 with a familiar 2.4.19-hh36 kernel. I just guessed it was 
-> informative and I tend to ignore it. Should I try and reproduce it for debugging?
+On Tue, 2004-03-09 at 15:33 +0000, Simon Haynes wrote:
+> -bash-2.05b# mount -t jffs2 /dev/ram1 /smc
+> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+> empty_blocks 2047, bad_blocks 0, c->nr_blocks 2048
+> mount: wrong fs type, bad option, bad superblock on /dev/ram1,
+>        or too many mounted file systems
 
-Yes please. It should be harmless; it's just an accounting screwup. We
-seem to have placed a block on the free_list which doesn't actually have
-any significant amount of free space in it at all.
+This I believe we put down to user error?
+
+> After 5 reboots the new SMC gave this magic bitmask failure.
+> 
+> jffs2: Erase block size too small (16KiB). Using virtual blocks size (32KiB) 
+> instead
+> ofs 0x000a8400 has already been seen. Skipping, jeb 0xa8000, sector size 
+> 0x8000
+> saved ofs 0x000a8000, previous 0xa7fff, buf_len 0x7c00, scanned 0x0
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000a8408: 0x273c 
+> instead, 0x0
+
+That was a bug in the scanning code. Should be fixed in v1.58 of scan.c
+in CVS. Please could you try that and let me know if it works?
 
 -- 
 dwmw2
