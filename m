@@ -1,14 +1,15 @@
-Received: from web20727.mail.yahoo.com ([216.136.226.117])
+Received: from web20730.mail.yahoo.com ([216.136.226.131])
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AtajZ-0000P2-9P
-	for linux-mtd@lists.infradead.org; Wed, 18 Feb 2004 23:04:01 +0000
-Message-ID: <20040218230358.72448.qmail@web20727.mail.yahoo.com>
-Date: Wed, 18 Feb 2004 15:03:58 -0800 (PST)
+	id 1Atca3-0000kS-28
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 01:02:19 +0000
+Message-ID: <20040219010217.54066.qmail@web20730.mail.yahoo.com>
+Date: Wed, 18 Feb 2004 17:02:17 -0800 (PST)
 From: Shawn Jin <shawnxtech@yahoo.com>
 To: Florian Schirmer <jolt@tuxbox.org>, linux-mtd@lists.infradead.org
 In-Reply-To: <200402130841.46087.jolt@tuxbox.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+cc: Shawn Jin <shawnxtech@yahoo.com>
 Subject: Re: Help: Error on mounting JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,7 +20,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> 
 > > cfi_cmdset_0002: Disabling fast programming due to
 > > code brokenness.
 > 
@@ -27,78 +27,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > CVS, 
 > since there was another bug in the cmdset2. You should in fact get two 
 > "Disabled X due to bugs" messages.
+ 
+When the latest code from CVS (i.e. with David Vrabel's patches) was used,
+the root filesystem finally got mounted with type JFFS2.
 
-The version of cfi_cmdset_0002.c is 1.94, which is almost up-to-date
-without David Vrabel's patches. I have some questions on the debugging
-messages shown below.
+However I observed some strange behaviors. What I tried is to create some
+new files in the device. Here is the screenshot.
 
-VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 84k init
-init started:  BusyBox v1.00-pre7 (2004.02.18-01:28+0000) multi-call binary
-Config lookback interface...
-Config eth0...
-Add default route...
-mount proc...
-No more tasks for init -- sleeping forever.
-e100: eth0 NIC Link is Up 100 Mbps Full duplex
-------------------------------------------------------
+# ls
+bin   dev   etc   lib   proc  sbin  tmp   usr   var
+--> original root filesystem
 
-Q: The above messages show that the root filesystem seemed to be mounted
-and the first script /etc/rc.sh was executed. Why is MTD tying to erase
-0x00780000? What is MTD trying to do here? Filesystem cleanup?
+# cd tmp
+# ls
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/mtdblock1            8192      2096      6096  26% /
+--> show the device's usage
 
-My flash is Am29PL320D, and the configuration is 64-bit bus width and 2
-chip interleaved. Erase block size is 512KiB. 0xFF000000-0xFF800000 is the
-1st mtd device.
+# cp /bin/busybox busybox
+Node totlen on flash (0xffffffff) != totlen from node ref (0x00000044)
+Node CRC ffffffff != calculated CRC f09e7845 for node at 000f69dc
+# ls -l
+-rwxr-xr-x    1 0        0          785136 Jan  1 00:03 busybox
+# ls -l /bin/busybox
+-rwxr-xr-x    1 0        0          785136 Feb 18  2004 /bin/busybox
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/mtdblock1            8192      2528      5664  31% /
+--> copy a file 'busybox' to 'tmp' directory. Here come some error
+messages.
 
-MTD do_erase_oneblock(): ERASE 0x00780000
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): ERASE 0x007e0000
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): ERASE 0x007e8000
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): ERASE 0x007f0000
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-MTD do_erase_oneblock(): Check 0xffffffff 0xffffffff
-------------------------------------------------------
+# cp busybox bb1
+Node totlen on flash (0xffffffff) != totlen from node ref (0x00000044)
+Node totlen on flash (0xffffffff) != totlen from node ref (0x0000000c)
+Node CRC ffffffff != calculated CRC f09e7845 for node at 000f704c
+Node CRC ffffffff != calculated CRC f09e7845 for node at 000f704c
+cp: Read error: Input/output error
+--> Again error messages. And also the size of 'bb1' is less than the size
+of 'busybox'.
 
-Q: What does the following WRITE mean? Why does it try to write 0xc03bdd84
-to 0x00780000?
+# cp bb1 bb2
+Node totlen on flash (0xffffffff) != totlen from node ref (0x00000044)
+Node totlen on flash (0xffffffff) != totlen from node ref (0x0000000c)
+# cp bb2 bb3
+Node totlen on flash (0xffffffff) != totlen from node ref (0x00000044)
+Node totlen on flash (0xffffffff) != totlen from node ref (0x0000000c)
+# df -k
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/mtdblock1            8192      3820      4372  47% /
+# ls -l
+-rwxr-xr-x    1 0        0          782336 Jan  1 00:04 bb1
+-rwxr-xr-x    1 0        0          782336 Jan  1 00:04 bb2
+-rwxr-xr-x    1 0        0          782336 Jan  1 00:04 bb3
+-rwxr-xr-x    1 0        0          785136 Jan  1 00:03 busybox
+--> The sizes of 'bb1', 'bb2', and 'bb3' are the same but all are less than
+the size of 'busybox'.
 
-It seems to me that WRITE command failed somehow. It might be due to the
-implemention of my own _write64(). But if the problem is in the _write64(),
-I don't think that the chip even can be probed. The chips are found
-correctly. Then what caused this failure?
+--> After the sytem is rebooted, all created files are gone. Why cannot
+they be written to flash?
 
-MTD do_write_oneword(): WRITE 0x00780000(0xc03bdd84)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): WRITE 0x00780000(0x000000f0)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): WRITE 0x00780000(0x000000f0)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): WRITE 0x00780000(0x000000f0)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): WRITE 0x00780000(0x000000f0)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): WRITE 0x00780000(0x000000f0)
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Check 0xffffffff 0xffffffff
-MTD do_write_oneword(): Wacky!  Unable to decode failure status
-Possible buggy device - try increasing retry_cmd_max from 5
-MTD do_write_oneword(): 0x00780000(0x00000000): 0x19852003 0x0000000c
-0xffffffff
- 0xffffffff
-Write clean marker to block at 0x00780000 failed: -5
-
-This issue really drives me crazy. Any hints are appreciated. Thanks a lot.
+Question: Is this problem related to JFFS2? Or just simply to mkfs.jffs2? I
+used the latest util from CVS to make a JFFS2 filesystem image with '-e
+0x80000' specified, no padding.
 
 Regards,
 -Shawn.
