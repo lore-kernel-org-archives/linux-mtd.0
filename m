@@ -1,18 +1,17 @@
-Received: from dc-mxdb05.hsacorp.net ([209.225.8.79] helo=dc-mxdb05.cluster1.charter.net)
+Received: from pony1.arc.nasa.gov ([143.232.48.201] helo=mail.arc.nasa.gov)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jVRx-0001gW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 01:42:49 +0100
-Received: from [206.190.89.51] (account <thepond@charter.net>)
-  by dc-mxdb05.cluster1.charter.net (CommuniGate Pro WebUser 3.4.8)
-  with HTTP id 1051373 for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 20:53:46 -0400
-From: "Gerald Walden" <thepond@charter.net>
-Subject: Can't get Linux on SSTI DOC 
+	id 15jWsT-0001pw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 03:14:17 +0100
+Received: from sg-sdl-eng-1 (sg-sdl-eng1.arc.nasa.gov [128.102.173.53])
+	by mail.arc.nasa.gov (8.9.3/8.9.3) with SMTP id TAA22382
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 19:20:20 -0700 (PDT)
+Message-Id: <4.1.20010918183424.00a8fc20@mail.arc.nasa.gov>
+Date: Tue, 18 Sep 2001 19:20:27 -0700
 To: linux-mtd@lists.infradead.org
-Date: Tue, 18 Sep 2001 20:53:46 -0400
-Message-ID: <web-1051373@dc-mxdb05.cluster1.charter.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
+From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+Subject: New interface to (old) JEDEC chips
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,48 +23,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Greetings:
+Folks,
+	I'm working on a 586 SBC with 2Megs of flash (AM29F016) mapped into a
+window in the 0xD0000 area.  There is also some battery backed RAM mapped
+nearby.  Dwmw2 suggested I check out the probe_jedec.c code for accessing
+the flash.  Some comments:
 
-I have an 8MB Disk-On-Chip Device made by SSTI.  From what I
-am told I do not need any special drivers to use this from
-Linux.
+In probe_jedec.c, jedec_probe_chip() :
+1. I ran into a case where the code returned zeroes for both the
+manufacturer ID and the chip ID (probably a bug in my low level driver).
+The zeroes match the empty structure at the end of jedec_table[], so the
+empty struct gets passed to cfi_jedec_init().  cfi_jedec_init() treats is
+as a legit entry and happily builds some more structures.  In any case the
+empty struct isn't needed (at least by jedec_probe_chip() ).  I deleted it
+from my source.
 
-However - even before I get to that stage - I cannot even
-get the DOC to event try to boot linux.
+2. The 'retried' variable is never incremented.  If we hit the " if
+(!retried ) ... " clause, we can get an infinite loop which screws the
+machine tight.  I've changed "if (!retried) ... " to "if (!retried++) ...".
+ Should it only retry once?
 
-I followed all the step one would normally take to make a
-bootable Hard Drive, and I keep getting the error "Invalid
-or Damaged Bootable partition".
+More as I figure out what I'm doing.
 
-Basically, 
-
-1) I made a filesystem for the device.
-
-2) Then I Fdisk'ed the device, setting the one and only
-partition to be bootable.
-
-2) Then I formatted the device (and hence the entire
-partition) as ext2.
-
-3) and then I mounted the device as a secondary IDE device
-on my Linux Box as ext2.
-
-4) I copied the filesystem files to the device.
-
-5) I ran LILO with a configuration file that pointed to the
-appropriate locations on my device.  In verbose mode it
-looked like everything went okay.
-
-When I try to boot from the device as a master I get the
-error:
-
-"Invalid or Damaged Bootable partition".
-
-Does anyone have any ideas?
-
-Please respond to this email address (thepond@charter.net)
-'cause I am only receiving a daily digest.
-
-Kindest Regards,
-
-Jerry
+Ted Hildum
