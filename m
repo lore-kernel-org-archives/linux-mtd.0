@@ -1,18 +1,27 @@
-Received: from nssinet2.co-nss.co.jp ([150.96.0.5])
+Received: from mail.iok.net ([62.249.129.22] helo=mail05.iok.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19pMO5-0003h2-RT
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 07:24:06 +0100
-Received: from nssnet.co-nss.co.jp (localhost [127.0.0.1])
-	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id PAA19212
+	id 19pNwQ-00042Q-W6
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 09:03:39 +0100
+Received: from lin01.mn-logistik.de (frdb-d9b94419.pool.mediaWays.net
+	[217.185.68.25])
+	by mail05.iok.net (8.12.8/8.12.8) with ESMTP id h7K83HtD002157
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 10:03:19 +0200
+Received: from mnz66.mn-logistik.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-logistik.de (Postfix) with ESMTP id B3D581FFE1
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Aug 2003 15:09:36 +0900 (JST)
-Message-Id: <200308200615.PAA22917@nssnet.co-nss.co.jp>
-Date: Wed, 20 Aug 2003 15:24:03 +0900
-From: Hiroaki KAMON <kamon@co-nss.co.jp>
+	Wed, 20 Aug 2003 09:47:24 +0200 (CEST)
+From: Holger Schurig <h.schurig@mn-logistik.de>
 To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: wrong mutex handler in amd_flash.c
+Date: Wed, 20 Aug 2003 09:47:24 +0200
+References: <000501c36656$c9a96b90$f546a8c0@SIMOTORSPORTS>
+In-Reply-To: <000501c36656$c9a96b90$f546a8c0@SIMOTORSPORTS>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200308200947.24538.h.schurig@mn-logistik.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Re: INFTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +31,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+> Is there an IRC server/channel that you guys generally hang out in?
+> I've been searching for a good embedded systems discussion channel
+> without much luck.
 
-I found a problem in "amd_flash.c".  The kernel (TimeSys Linux) oops 
-due to access of bad area.
+When you're looking for generic embedded channels, I don't know much.
 
-The pointer "chips->mute" for spin_lock_bh() is not pointing the area 
-in private structure, but local variable of amd_flash_probe().
-
-Here's a patch to fix it.
-
-Regards,
-Hiroaki
-
-
-Index: mtd/drivers/mtd/chips/amd_flash.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/chips/amd_flash.c,v
-retrieving revision 1.23
-diff -u -r1.23 amd_flash.c
---- mtd/drivers/mtd/chips/amd_flash.c   12 Jun 2003 09:24:13 -0000      1.23
-+++ mtd/drivers/mtd/chips/amd_flash.c   20 Aug 2003 05:37:58 -0000
-@@ -688,7 +688,6 @@
-
-        chips[0].start = 0;
-        chips[0].state = FL_READY;
--       chips[0].mutex = &chips[0]._spinlock;
-        temp.numchips = 1;
-        for (size = mtd->size; size > 1; size >>= 1) {
-                temp.chipshift++;
-@@ -775,6 +774,7 @@
-        for (i = 0; i < private->numchips; i++) {
-                init_waitqueue_head(&private->chips[i].wq);
-                spin_lock_init(&private->chips[i]._spinlock);
-+               private->chips[i].mutex = &private->chips[i]._spinlock;
-        }
-
-        map->fldrv_priv = private;
-
-
----
-Hiroaki KAMON   <kamon@co-nss.co.jp>
-
-  Nissin Systems co.,ltd.
-      Realtime Component Dept.  Engineer
-        (Phone) +81-75-344-7950  (FAX) +81-75-344-7888
-        Horikawa-douri Shijou-sagaru Higashigawa, Shimogyo-ku,
-        Kyoto, 600-8482, JAPAN
+But people using the www.openzaurus.org auto-build environment (which can 
+create packages for about 8 targets besides Zausu) runs on other embedded 
+targets) hang around in #openzaurus, #openembedded, #buildroot-oe, all on 
+irc.freenode.net
