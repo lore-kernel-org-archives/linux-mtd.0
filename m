@@ -1,15 +1,17 @@
-Received: from eris.discordia.ch ([212.55.212.99])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xXKX-0002nX-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 18:00:54 +0100
-Date: Wed, 9 May 2001 19:01:06 +0200
-From: Peter Keel <killer@discordia.ch>
-To: linux-mtd@lists.infradead.org
-Subject: Read Flash-Dumps
-Message-ID: <20010509190106.A10693@discordia.ch>
+	id 14xXU0-0002pB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 18:10:40 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20010509190106.A10693@discordia.ch> 
+References: <20010509190106.A10693@discordia.ch> 
+To: Peter Keel <killer@discordia.ch>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Read Flash-Dumps 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 09 May 2001 18:10:51 +0100
+Message-ID: <27428.989428251@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,20 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello. 
+killer@discordia.ch said:
+>  I got an Igel-Terminal, which features an M-systems DiskOnAChip 2000.
+> Now I got these flash-images from an ftp and want to modify them
+> before putting them into the flash; preferably on another machine
+> (without flash). 
 
-I got an Igel-Terminal, which features an M-systems DiskOnAChip 2000.
-Now I got these flash-images from an ftp and want to modify them 
-before putting them into the flash; preferably on another machine
-(without flash). 
+I'm not sure what form those flash-images are in. They may be a similar 
+dump to the one you'd get from the 'nanddump' program, in which case you 
+could write it back with the 'nandwrite' program and the MTD drivers.
 
-So how do I do a loopack-mount of the files? I tried several 
-filesystems, but that doesn't seem to work. Also, nftl doesn't 
-even appear in /proc/filesystems. 
 
-Thanks
-Peter
--- 
-"Any good Unix security engineer can clean up any Unix box. But I'm not 
- sure there are people even within Microsoft who know how to clean up 
- an NT box." -- Michael Zbouray
+killer@discordia.ch said:
+>  Also, nftl doesn't  even appear in /proc/filesystems. 
+
+It would appear as a block device. But last time I knew, I believe Igel were
+shipping the M-Systems binary-only driver statically linked into their 
+kernel in violation of the GPL. In that case, you're on your own.
+
+Can you show me the contents of /proc/devices?
+
+--
+dwmw2
