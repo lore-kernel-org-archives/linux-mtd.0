@@ -1,37 +1,36 @@
-From: tglx@linutronix.de (Thomas Gleixner)
-Date: Thu, 20 Feb 2003 12:48:48 +0100
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 20 Feb 2003 13:34:50 +0000
 Subject: Kernel oops with an unclean unmounted filesystem
-In-Reply-To: <lyvfzg3tyr.fsf@ensc-pc.intern.sigma-chemnitz.de>
+In-Reply-To: <200302192122.28841.tglx@linutronix.de>
 References: <lyr8a41m8y.fsf@ensc-pc.intern.sigma-chemnitz.de>
  <200302192122.28841.tglx@linutronix.de>
- <lyvfzg3tyr.fsf@ensc-pc.intern.sigma-chemnitz.de>
-Message-ID: <200302201248.48556.tglx@linutronix.de>
+Message-ID: <1045748089.2242.37.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Wednesday 19 February 2003 21:18, Enrico Scholz wrote:
-> 1. rebooted the device and used the JFFS2 fs as the root-fs
-> 2. cd /etc/minit/getty
-> 3. - mv depends depends_
->    - { echo 'getty/sleep'; cat depends_; } >depends
->    - rm -f depends_
-> 4. - mkdir sleep
->    - ln -s /bin/sleep sleep/run
->    - echo 1 >sleep/params
->    - touch sleep/sync
-> 5. waited 1-2 seconds
-> 6. pressed the reset-button of the device
-> I am not sure about the order of the operations in 3 and 4, or if
-> 3 and 4 were swapped.
-No touch sleep/sync was your last action.
-Current CVS has a sanity check for this, so it should not Oops any more.
-It will give you just a warning.
-Please try, if you can reproduce it, by using the same procedure.
-Nobody can explain how it got there.
+On Wed, 2003-02-19 at 20:22, Thomas Gleixner wrote:
+> What exactly did you do there ? I mean creating and/or modifying.
+> The problem is the node is written with valid CRC, so it seems to be
+> correct, but the node content is totally crap. Compressed data size = 
+> 0x6b6b6b6b.
+
+That's slab poisoning. Looking at the actual node, the 'offset',
+'csize', 'dsize', 'usercompr' and 'flags' fields all seem to be filled
+with 0x6B, but other fields are OK.
+
+I suspect that we're allocating a jffs2_raw_inode structure, and we're
+being given a slab address that someone else has already allocated and
+freed. We're filling in some of the fields (offset, csize, etc), and
+then said 'someone else' is freeing it _again_. At which point the slab
+debugging code memsets it to all 0x6B. 
+
+Then we fill in the rest of the fields, calculate the crcs and write it
+to the flash, blissfully unaware that someone stomped on the offset,
+csize, etc fields after we'd set them up.
+
+What other drivers are present in your system? Can you reproduce this?
+We can stick debugging checks in the write path to check for 0x6B in
+bogus places, and try to debug further.
 
 -- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx at linutronix.de
+dwmw2
