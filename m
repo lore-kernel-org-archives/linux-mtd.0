@@ -1,30 +1,26 @@
-Received: from e35.co.us.ibm.com ([32.97.110.133])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtukS-0002of-O4
-	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 16:30:53 -0500
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e35.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0QLUdZ7419146
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 16:30:40 -0500
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0QLUdHF266718
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 14:30:39 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	j0QLUdkK013040
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2005 14:30:39 -0700
-From: Josh Boyer <jdub@us.ibm.com>
-To: Michael <xemc@yahoo.com>
-In-Reply-To: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
-References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1106775037.6955.50.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Wed, 26 Jan 2005 15:30:38 -0600
+Received: from mail1.asianet.co.th ([203.144.222.229] helo=mail.asianet.co.th)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cu0Vo-0004mB-QH
+	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 22:40:07 -0500
+Received: from virscan1.asianet.co.th (HELO mail.asianet.co.th)
+	([203.144.222.197]) (envelope-sender <jay4mail@yahoo.com>)
+	by mail1.asianet.co.th (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 27 Jan 2005 10:39:57 +0700
+Received: from ppp-210.86.146.220.revip.asianet.co.th (HELO [10.1.1.33]) ([2
+	10.86.146.220])(envelope-sender <jay4mail@yahoo.com>)by
+	mx1.asianet.co.th (
+	qmail-ldap-1.03) with SMTPfor <linux-mtd@lists.infradead.org>;
+	27 Jan 2005 10:39:37 +0700
+Message-ID: <41F8627B.1060809@yahoo.com>
+Date: Thu, 27 Jan 2005 10:39:39 +0700
+From: Pathompong Puengrostham <jay4mail@yahoo.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS3 document
+Subject: AM29LV800BB not detected by jedec_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,29 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-01-26 at 14:51, Michael wrote:
-> --- "Artem B. Bityuckiy" <dedekind@infradead.org> wrote:
-> 
-> ..
-> > The summary of our JFFS3 discussions could be found at
-> > http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf document.
-> > It is also accessible via MTD web page. The document is generated
-> > from the fd/jffs3/JFFS3design.tex file, so one can contribute
-> even
-> > directly editing it.
-> > 
-> > Any remarks and suggestions are welcomed.
-> 
-> Instead of editing this file via CVS, would it be possible (and a
-> good idea) to use a wiki?  That would make it really easy (and time
-> efficient) for anyone to modify it.
-> 
+Hi,
 
-That was brought up on IRC and vetoed.  Wikis tend to get spammed with
-useless or out-dated information, and it's another application for the
-server to have to keep up are the reasons I believe.
+My board has 1 AM29LV800BB chip in 16-bit mode with 16-bit buswidth. 
+jedec_probe v 1.61 cannot detect it but v 1.51 can. After I commented 
+out the line in finfo_uaddr() that force the unlock addresses to be 
+8-bit mode, it detected the chip and ran just fine. Has anybody 
+experienced this?
 
-You could do locked pages in a Wiki, but that's not much different than
-having CVS access.  :)
-
-josh
+Best regards,
+Pathompong Puengrostham
