@@ -1,36 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13tYDs-0002UR-00
-	for mtd-list@infradead.org; Wed, 08 Nov 2000 16:37:16 +0000
-Date: Wed, 8 Nov 2000 11:49:41 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
+	id 13td73-00043p-00
+	for mtd-list@infradead.org; Wed, 08 Nov 2000 21:50:33 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13td72-00043j-00
+	for mtd@infradead.org; Wed, 08 Nov 2000 21:50:33 +0000
+Date: Wed, 8 Nov 2000 21:50:28 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Nicolas Pitre <nico@cam.org>
 cc: mtd@infradead.org
-Subject: Re: cfi_cmdset_0001
-In-Reply-To: <1552.973014908@redhat.com>
-Message-ID: <Pine.LNX.4.10.10011081140110.927-100000@xanadu.gn.com>
+Subject: Re: corruption with mtdblock 
+In-Reply-To: <Pine.LNX.4.10.10011070359100.530-100000@xanadu.gn.com>
+Message-ID: <Pine.LNX.4.21.0011082149370.1291-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tue, 7 Nov 2000, Nicolas Pitre wrote:
 
+> > Ah. If something is mucking with the request at the head of the queue while 
+> >  (q->head_active && !q->plugged) then I think that has to be a kernel bug.
+> 
+> OK!  Forget all this now.  It wasn't a kernel bug, of course.
+> 
+> The lesson is:  never use req->nr_sectors in a request function unless
+> you're playing special tricks with different segments and you know what
+> you're doing.  In the common case req->current_nr_sectors should be used.
+> 
+> It works beautifully now.
 
-On Tue, 31 Oct 2000, David Woodhouse wrote:
+I think we still need to disable plugging to protect the head of the 
+list. It's a small race but it's non-zero.
 
-> Note to self: Must produce a proper bug report for Nico for the current
-> cfi_cmdset_0001 code, does doesn't work for me on 1x16 devices.
+-- 
+dwmw2
 
-I'm interested in it.  I just tested the current code on a GraphicsClient
-board with Intel parts.  There is apparently a problem withe the buffer
-write code.  The word write method works well though.  Oddly enough, the
-buffer write method in my (being deprecated) flash-mem driver has no
-problem...
-
-Could you test with the write buffer disabled?
-
-
-Nicolas
 
 
 
