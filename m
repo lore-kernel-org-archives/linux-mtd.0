@@ -1,19 +1,18 @@
-Received: from sc-smtp1.homechoice.co.uk ([212.187.157.195] helo=sc-outsmtp2.homechoice.co.uk)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17o81y-0006Hg-00
-	for <linux-mtd@lists.infradead.org>; Sun, 08 Sep 2002 20:47:38 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: adr <mtd@mcmen.demon.co.uk>
-To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>
-Subject: Re: Writing an mtd user module
-Date: Sun, 8 Sep 2002 20:49:02 +0100
-Cc: Mtd <linux-mtd@lists.infradead.org>
-References: <200209081726.50430.mtd@mcmen.demon.co.uk> <20020908173635.GA19559@wohnheim.fh-wedel.de>
-In-Reply-To: <20020908173635.GA19559@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
+Received: from [61.135.145.20] (helo=sohumx05.sohu.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17oEmV-0006tZ-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2002 04:00:07 +0100
+Received: from mail.sohu.com (unknown [192.168.41.41])
+	by sohumx05.sohu.com (Postfix) with ESMTP id 650FE576A1
+	for <linux-mtd@lists.infradead.org>; Mon,  9 Sep 2002 10:59:59 +0800 (CST)
+Message-ID: <2522300.1031540399081.JavaMail.postfix@mailsrv1.mail.sohu.com>
+Date: Mon, 9 Sep 2002 10:59:59 +0800 (CST)
+From: <jay.s@sohu.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: re:DOC 2000 and GRUB
+Mime-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 8bit
-Message-Id: <200209082049.02572.mtd@mcmen.demon.co.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,31 +24,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sunday 08 Sep 2002 6:36 pm, Jörn Engel wrote:
-> On Sun, 8 September 2002 17:26:50 +0100, adr wrote:
-> > Having written a driver module for the Dreamcast flash cartridge/vmu, I
-> > am now attempting to write a user module that works with the default fs
-> > on the Dreamcast flash (see http://mc.pp.se/dc/vms/flashmem.html if you
-> > are interested in knowing more about that).
-> >
+well, I've met the same problem as you before. I have choosed not to include the --enable-diskonchip-biosnetboot since there's no option for me to use in my bios.
 
->
-> The block devices don't need to be notified of any changes, devfs
-> does. When you "ls /dev/mtdblock", you want to see all the devices
-> currently registered.
-> To reach that goal, on 'insmod slram something", which creates a new
-> device, mtdblock has to be notified of the change in order to change
-> the devfs entries.
->
-> Now, for an fs, you only need one device, known from mount to umount,
-> so register_mtd_user() is pointless for that purpose.
->
-> Jrn
+later I redo the firmware with this option enabled, and I still have the problem, but I plug out the doc and boot the system from hd, when I saw the lilo option I plug in the doc and fdisk/format the doc, cp the software needed into doc. 
 
-I'm not sure I fully understand this :-<
+now I can boot the doc alone without problem, but I can't get it work along with hd, when they met, usually the grub take the first to boot and hangs.
 
-What was wrong, the documentation on the websiste or my interpretation of it? 
-Am I to take it the notification functions are irrelevant except when devfs 
-is being used?
-
-Adrian
+I don't know why the problem exists, because I have another doc(someone else made it for me) which can work properly with the hd. so there's no concern about the bios, it must be concerned with the grub firmware I built. but what's wrong. yet it can work well alone.
