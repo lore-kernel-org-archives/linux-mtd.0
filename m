@@ -1,17 +1,20 @@
-Received: from mailhost.rdmcorp.com ([204.225.180.10])
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17uciu-0006Fc-00
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2002 18:46:49 +0100
-Received: from PARKER (10.1.2.1) by mailhost.rdmcorp.com (Worldmail 1.3.167) for linux-mtd@lists.infradead.org; 26 Sep 2002 13:51:57 -0400
-From: "Jack Lu" <jlu@rdmcorp.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: decompresion  error when using jffs2
-Date: Thu, 26 Sep 2002 13:47:10 -0400
-Message-ID: <DFEAJMIABOLKNEBOPGDHIEEECBAA.jlu@rdmcorp.com>
-MIME-Version: 1.0
+	id 17ujSG-0006yl-00
+	for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2002 01:58:04 +0100
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Benjamin Tze-Kit Lee <btlee@sfu.ca>,
+	linux-mtd@lists.infradead.org
+Subject: Re: lisencing issues on JFFS2/MTD
+Date: Fri, 27 Sep 2002 12:54:03 +1200
+References: <200209251917.MAA24221@fraser.sfu.ca>
+In-Reply-To: <200209251917.MAA24221@fraser.sfu.ca>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020927005754.066B640A2@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +26,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
-	I have mounted the jffs2 filesystem by:
-	#mount /dev/mtdblock/1 /tmp
+How much this makes sense will depend largely on the OS you're targeting.
 
-	Then I copied a file by:
-	#cp /mnt/test.c /tmp/t.c
+Basically the stuff is usable under GPL. THis means you can redeploy it under 
+any OS you choose, so long as you comply with GPL.
 
-	one prompt displayed:
-	inflate returned -3. -3 means Z_DATA_ERROR. 
+I did this with YAFFS. YAFFS started off under Linux, but I ported it to 
+WinCE too. The WinCE file-system glue code is to be released under GPL (since 
+this is what is required to comply with the original GPL code-base).
 
-	I checked the file fs/jffs2/compr_zlib.c
-	jffs2_zlib_decompress(..){
-		...
-		while(ret=zlib_inflate(&strm,ZFINISH))==Z_OK);
-		if(ret!=Z_STREAM_END){
-			printk(KERN_NOTICE :inflate returned %d\n",ret);
-			}
-		....
-		}
-
-	but I compared the /tmp/t.c and /mnt/test.c, there was no difference.
+-- Charles
 
 
-	Why does this prompt occur?
-
-Thanks.
-
-	
+On Thu, 26 Sep 2002 07:17, Benjamin Tze-Kit Lee wrote:
+> Hi,
+>
+> What would the liscencing issues if I were to modify JFFS2/MTD and use it
+> on a different OS in my embedded system application and sell it as a
+> product?
+>
+> Where should I go to look for that answer?
+>
+> Thank you very much.
+>
+> Ben
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
