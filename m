@@ -1,17 +1,19 @@
-Received: from [211.109.1.113] (helo=3w-smtp-ac.korea.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ldHl-0003e8-00
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2001 22:29:05 +0100
-Reply-To: <killcat@korea.com>
-From: "Yi, Ji-soo" <killcat@korea.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: directory is disappeared.
-Date: Tue, 25 Sep 2001 06:37:33 +0900
-Message-ID: <MLEAKLCODLNDGMJILAGMEEEKCCAA.killcat@korea.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+Received: from [200.53.172.146] (helo=qis)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15leg0-0003jv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2001 23:58:13 +0100
+Message-ID: <20010924221212.11724.qmail@qis>
+References: <20010922160958.5797.qmail@qis>
+            <20004.1001233928@redhat.com>
+In-Reply-To: <20004.1001233928@redhat.com> 
+From: "Nikolai Vladychevski" <niko@isl.net.mx>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: nftl driver
+Date: Mon, 24 Sep 2001 22:12:12 GMT
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,55 +25,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-TGV0IG1lIHNob3cgeW91IHdoYXQgSSBkaWQuDQoNCkkgZG93bmxvYWQgYSByb290IGltYWcgZm9y
-IGlQQVEgSDM2MzAgZnJvbSBoYW5kaGVsZHMub3JnLiBJIGxvb2tzIGxpa2VzIHRoZSBiZWxvdzoN
-Cg0Kfi9pbWckIGxsIHRhc2stYm9vdHN0cmFwLw0KdG90YWwgMTQNCmRyd3hyLXhyLXggICAgMiBy
-b290ICAgICByb290ICAgICAgICAgIDk0MCAgNb/5IDE0IDE2OjMwIGJpbi8NCmRyd3hyLXhyLXgg
-ICAgMyByb290ICAgICByb290ICAgICAgICAgMzAyNSAgNb/5IDE0IDE2OjI4IGRldi8NCmRyd3hy
-LXhyLXggICAyMCByb290ICAgICByb290ICAgICAgICAgIDg4NiAgNb/5IDE0IDE2OjMxIGV0Yy8N
-CmRyd3hyLXhyLXggICAgMiByb290ICAgICByb290ICAgICAgICAgICAzNSAgNL/5IDE5IDIxOjE4
-IGhvbWUvDQpkcnd4ci14ci14ICAgIDQgcm9vdCAgICAgcm9vdCAgICAgICAgIDEzNzAgIDW/+SAx
-NCAxNjoyOSBsaWIvDQotcnd4ci14ci14ICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAgICA2NTQg
-IDO/+SAxNyAgMjAwMSBsaW51eHJjKg0KZHJ3eHIteHIteCAgICA0IHJvb3QgICAgIHJvb3QgICAg
-ICAgICAgIDc1ICA0v/kgMTkgMjE6MTggbW50Lw0KZHJ3eHIteHIteCAgICAyIHJvb3QgICAgIHJv
-b3QgICAgICAgICAgIDM1ICA0v/kgMTkgMjE6MTggcHJvYy8NCmRyd3hyLXhyLXggICAgMiByb290
-ICAgICByb290ICAgICAgICAgICAzNSAgNb/5IDExIDE4OjI0IHJvb3QvDQpkcnd4ci14ci14ICAg
-IDIgcm9vdCAgICAgcm9vdCAgICAgICAgICA5OTcgIDW/+SAxNCAxNjozMSBzYmluLw0KbHJ3eHJ3
-eHJ3eCAgICAxIHJvb3QgICAgIHJvb3QgICAgICAgICAgIDEzICA5v/kgMjMgMjE6MjMgdG1wIC0+
-IG1udC9yYW1mcy90bXANCmRyd3hyLXhyLXggICAgNiByb290ICAgICByb290ICAgICAgICAgIDEx
-NCAgNb/5IDE0IDE2OjI5IHVzci8NCmxyd3hyd3hyd3ggICAgMSByb290ICAgICByb290ICAgICAg
-ICAgICAxMyAgOb/5IDIzIDIxOjIzIHZhciAtPiBtbnQvcmFtZnMvdmFyDQoNCkkgZGlkDQoJLi9t
-a2ZzLmpmZnMyLjEuOC5nbGliYzIuMSAtciB0YXNrLWJvb3RzdHJhcC8gLW8gcm9vdC5qZmZzMiAt
-ZSAweDQwMDAwIC1wDQooQmVjYXVzZSBteSBnbGliYyBpcyAyLjEuMikNCg0KQWZ0ZXIgSSB1cGxv
-YWQgdGhpcyBvbiBpUEFRIHVzaW5nIEJvb3RsZHIsIGFuZCBib290IGl0IHVwLg0KDQpUaGVyZSB3
-YXMgc29tZSBzdXNwZWN0ZWQgbWVzc2FnZSBsaWtlIHRoaXMsIGJ1dCBzZWVtcyB0byB3b3JrIG9r
-Lg0KDQpJbm9kZSAjMiB3YXMgYSBkaXJlY3Rvcnkgd2l0aCBjaGlsZHJlbiAtIHJlbW92aW5nIHRo
-b3NlIHRvby4uLg0KSW5vZGUgIzMgd2FzIGEgZGlyZWN0b3J5IHdpdGggY2hpbGRyZW4gLSByZW1v
-dmluZyB0aG9zZSB0b28uLi4NCklub2RlICM2IHdhcyBhIGRpcmVjdG9yeSB3aXRoIGNoaWxkcmVu
-IC0gcmVtb3ZpbmcgdGhvc2UgdG9vLi4uDQooYmxhYmxhYmxhLi4uKQ0KDQpXZWxsLCB0aGUgYmVs
-b3dzIGFyZSBkb2luZyAnbHMnIG9uIG15IGlQQVEsIC91c3IgZGlyZWN0b3J5IGlzIGRpc2FwcGVh
-cmVkISBXaGF0J3Mgd3Jvbmcgd2l0aCBtZT8NCg0KIyBscyAtYWwgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCnRv
-dGFsIDIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgDQpkcnd4ci14ci14ICAgIDEgcm9vdCAgICAgcm9vdCAgICAg
-ICAgICAgIDAgRGVjIDIzICAyMDA5IC4gICAgICAgICAgICAgICAgICAgICAgIA0KZHJ3eHIteHIt
-eCAgICAxIHJvb3QgICAgIHJvb3QgICAgICAgICAgICAwIERlYyAyMyAgMjAwOSAuLiAgICAgICAg
-ICAgICAgICAgICAgICANCi1ydy1yLS1yLS0gICAgMSByb290ICAgICByb290ICAgICAgICAgIDMw
-OCBNYXIgMTUgIDIwMDEgLnJhbWZzLnRhci5neiAgICAgICAgICAgDQpkcnd4ci14ci14ICAgIDEg
-cm9vdCAgICAgcm9vdCAgICAgICAgICAgIDAgTWF5IDE0ICAyMDAxIGJpbiAgICAgICAgICAgICAg
-ICAgICAgIA0KZHJ3eHIteHIteCAgICAxIHJvb3QgICAgIHJvb3QgICAgICAgICAgICAwIE1heSAx
-NCAgMjAwMSBkZXYgICAgICAgICAgICAgICAgICAgICANCmRyd3hyLXhyLXggICAgMSByb290ICAg
-ICByb290ICAgICAgICAgICAgMCBNYXkgMTQgIDIwMDEgZXRjICAgICAgICAgICAgICAgICAgICAg
-DQpkcnd4ci14ci14ICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAgICAgIDAgQXByIDE5ICAyMDAx
-IGhvbWUgICAgICAgICAgICAgICAgICAgIA0KZHJ3eHIteHIteCAgICAxIHJvb3QgICAgIHJvb3Qg
-ICAgICAgICAgICAwIFNlcCAyNCAgMjAwMSBsaWIgICAgICAgICAgICAgICAgICAgICANCi1yd3hy
-LXhyLXggICAgMSByb290ICAgICByb290ICAgICAgICAgIDY1NCBNYXIgMTYgIDIwMDEgbGludXhy
-YyAgICAgICAgICAgICAgICAgDQpkcnd4ci14ci14ICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAg
-ICAgIDAgQXByIDE5ICAyMDAxIG1udCAgICAgICAgICAgICAgICAgICAgIA0KZHIteHIteHIteCAg
-IDIwIHJvb3QgICAgIHJvb3QgICAgICAgICAgICAwIERlYyAyMyAgMjAwOSBwcm9jICAgICAgICAg
-ICAgICAgICAgICANCmRyd3hyLXhyLXggICAgMSByb290ICAgICByb290ICAgICAgICAgICAgMCBN
-YXkgMTEgIDIwMDEgcm9vdCAgICAgICAgICAgICAgICAgICAgDQpkcnd4ci14ci14ICAgIDEgcm9v
-dCAgICAgcm9vdCAgICAgICAgICAgIDAgTWF5IDE0ICAyMDAxIHNiaW4gICAgICAgICAgICAgICAg
-ICAgIA0KbHJ3eHJ3eHJ3eCAgICAxIHJvb3QgICAgIHJvb3QgICAgICAgICAgIDEzIFNlcCAyNCAg
-MjAwMSB0bXAgLT4gbW50L3JhbWZzL3RtcCAgICANCmxyd3hyd3hyd3ggICAgMSByb290ICAgICBy
-b290ICAgICAgICAgICAxMyBTZXAgMjQgIDIwMDEgdmFyIC0+IG1udC9yYW1mcy92YXIgIA==
+David Woodhouse writes: 
+
+> 
+> niko@isl.net.mx said:
+>>  If this problem of writing zeros  is due to the module unloading
+>> problem, how can I solve it if the driver is  in the kernel and cant
+>> be reloaded? 
+> 
+> Almost certainly. The driver has lots if internal state about the old NFTL
+> format cached, and you've gone and changed it all. You should never need to
+> use nftl_format. If you want new data, just write new data to /dev/nftla. 
+> You don't need to do a low-level format just to change the data.
+
+well, its just my application requires it .... I have to nftl_format because 
+I do not nftl_format at the 0x00000. There is another data of variable 
+lenght that I place before nftla data, so i have to nftl_format 
+0xSOME_OFFSET that is different evry time.... 
+
+but ... if the driver doesn't come the application , the application will 
+have to go to the driver... 
+
+Nikolai
