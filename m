@@ -1,16 +1,17 @@
-Received: from host232-134.pool81113.interbusiness.it ([81.113.134.232]
-	helo=srv-mx.akhela.com)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEqTU-00081E-A5
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 10:39:33 -0400
-Message-ID: <4162B2A0.5050200@akhela.com>
-Date: Tue, 05 Oct 2004 16:41:36 +0200
-From: Luca Contini <luca.contini@akhela.com>
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CErTk-0008Ue-7D
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 11:43:53 -0400
+Date: Tue, 5 Oct 2004 14:18:48 +0200
+From: Lorenzo PARISI <lorenzo.parisi@st.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>,
+	YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Message-Id: <35c66fec.8a805a46.81a3300@mail1.agr.st.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: mizi support for jffs2
+Cc: 
+Subject: /proc
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +21,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I'm working on Samsung smdk2410 board using mizi linux (kernel 2.4.18).
-Did anyone succeeded in modifying the kernel to support jffs2 instead of 
-cramfs?
+Hi,
 
-regards
+I've a s3c2410 board with BAST architecture.
+On board, I've a kernel 2.6.9-rc2-bk13.
+I've compiled the kernel with CONFIG_PROC_FS = YES;
+but the directory /proc is empty, why?
+Thus, I don't see mtd information.
 
-Luca
-
--- 
-Luca Contini
--------------------------------------------------------
-Tecneitalia - AKHELA 
-System Engineer
-Office: (+39) 070 2466 5503
-Mobile: (+39) 328 911 6656
-Fax: (+39) 070 2466 7111
-luca.contini@akhela.com
-URL: http://www.akhela.com
---------------------------------------------------------
+Thanks.
