@@ -1,10 +1,10 @@
-Received: from lyte-mail1.lyse.net ([213.167.96.67])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BmwXe-0001S2-W0
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 11:28:45 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1090331120.4614.3.camel@localhost.localdomain>
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bmwwu-0001lE-1O
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 11:54:36 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+In-Reply-To: <1090337308.15094.2.camel@famine>
 References: <1089643331.3951.42.camel@famine>
 	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
 	<1089712151.5995.21.camel@famine>
@@ -17,11 +17,12 @@ References: <1089643331.3951.42.camel@famine>
 	<1090285839.4149.8.camel@localhost.localdomain>
 	<1090305682.14825.2.camel@famine>
 	<1090331120.4614.3.camel@localhost.localdomain>
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <1090337308.15094.2.camel@famine>
+	<1090337308.15094.2.camel@famine>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 20 Jul 2004 11:54:29 -0400
+Message-Id: <1090338869.4614.7.camel@localhost.localdomain>
 Mime-Version: 1.0
-Date: Tue, 20 Jul 2004 17:28:28 +0200
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
 Subject: Re: JFFS2 eats memory
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,16 +34,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-tir, 20.07.2004 kl. 15.45 skrev David Woodhouse:
-> On Tue, 2004-07-20 at 08:41 +0200, =D8yvind Harboe wrote:
-> > What if gc_node points to the last node?
->=20
-> Then you just finished garbage collecting the eraseblock in question.
-> You should have a single node which is now first_node and last_node, and
-> which is obsolete. You can just set gc_node to NULL.
+On Tue, 2004-07-20 at 17:28 +0200, Øyvind Harboe wrote:
+> tir, 20.07.2004 kl. 15.45 skrev David Woodhouse:
+> > On Tue, 2004-07-20 at 08:41 +0200, Øyvind Harboe wrote:
+> > > What if gc_node points to the last node?
+> > 
+> > Then you just finished garbage collecting the eraseblock in question.
+> > You should have a single node which is now first_node and last_node, and
+> > which is obsolete. You can just set gc_node to NULL.
+> 
+> Setting gc_node to NULL crashed when I tried it.
 
-Setting gc_node to NULL crashed when I tried it.
+Crashed how? It should be trivially fixable.
 
---=20
-=D8yvind Harboe
-http://www.zylin.com
+-- 
+dwmw2
