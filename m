@@ -1,38 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143WSz-0003vi-00
-	for mtd-list@infradead.org; Wed, 06 Dec 2000 04:46:05 +0000
-Received: from [203.46.70.199] (helo=singularity.tronunltd.com)
+	id 143XGg-00043a-00
+	for mtd-list@infradead.org; Wed, 06 Dec 2000 05:37:26 +0000
+Received: from mrserver.wte.net ([206.98.206.71] helo=mrserver.cachier.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 143WSx-0003vb-00
-	for mtd@infradead.org; Wed, 06 Dec 2000 04:46:04 +0000
-Date: Wed, 6 Dec 2000 14:45:59 +1000
-Message-Id: <200012060445.OAA20682@singularity.tronunltd.com>
-To: mtd@infradead.org
-Subject: Millennium
-From: "Ian" <Relativity@HumanHeuristic.com>
-Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+	id 143XGf-00043U-00
+	for mtd@infradead.org; Wed, 06 Dec 2000 05:37:25 +0000
+From: Levi Khatskevitch <LKhatskevitch@cachier.com>
+Reply-To: LKhatskevitch@cachier.com
+To: "Ian" <Relativity@HumanHeuristic.com>
+Subject: Re: Millennium
+Date: Wed, 6 Dec 2000 00:30:26 -0500
+Content-Type: text/plain
+References: <200012060445.OAA20682@singularity.tronunltd.com>
+In-Reply-To: <200012060445.OAA20682@singularity.tronunltd.com>
+Cc: mtd@infradead.org, linuxbios@lanl.gov
+MIME-Version: 1.0
+Message-Id: <00120600343401.02531@mrserver>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tue, 05 Dec 2000, Ian wrote:
+> Is there any firmware required on the DoC2001 to make it perform its 8 x bootblock 
+> memory magic?  .. or is it all done in glue logic?
+> 
 
-Is there any firmware required on the DoC2001 to make it perform its 8 x bootblock 
-memory magic?  .. or is it all done in glue logic?
+No, it's in glue logic tied initially to DoC reset pin. I'm 99.99% certain
+about that. If anyone says otherwise I'd be VERY surprised. My sources
+M-Systems docs & mtd code.
 
-If the answer to that is an overwhelmingly loud "Well DUH .. of course it requires firmware 
-to do its bootblock magic", then Q2 is;
+- Levi
 
-  Isn't that firmware going to be blown away whenever I go to write over the first 1024
-bytes .? .. ie .. "doc_loadbios", and the "erase /dev/mtd0 0 128" are both wiping out 8k
-of DoC from its origin ...
-
-
-Thanks in advance ...
-
---
-http://HumanHeuristic.com/
-"Bringing people together in a world full of computers"
-
+-- 
+Levi Khatskevitch
+CTO
+Cachier, Corp.
+575 Grand St., Suite E306
+New York, NY 10002
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
