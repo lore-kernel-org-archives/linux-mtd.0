@@ -1,18 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16kx9t-0007nN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 01:02:25 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <002201c1ca2b$00ca7fc0$0101a8c0@dellc800> 
-References: <002201c1ca2b$00ca7fc0$0101a8c0@dellc800>  <AEA9DCA73595D411A6D4009027DE9C5E019BFA74@MSI-EX6> <4513.1015976946@redhat.com> 
-To: "Mark Meade" <mark@lakeshoremicro.com>
-Cc: "Vadim Khmelnitsky" <VadimK@m-sys.com>,
-    linux-mtd@lists.infradead.org
-Subject: Re: UnitSizeFactor of != 1 yet? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Mar 2002 01:13:49 +0000
-Message-ID: <6602.1015982029@redhat.com>
+Received: from web11507.mail.yahoo.com ([216.136.172.39])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16l1YH-0008B6-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 05:43:53 +0000
+Message-ID: <20020313055518.77306.qmail@web11507.mail.yahoo.com>
+Date: Wed, 13 Mar 2002 05:55:18 +0000 (GMT)
+From: =?iso-8859-1?q?Ajit=20Anand?= <ajit_anand@yahoo.com>
+Subject: Re: kernel oops loading Doc2000
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +22,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mark@lakeshoremicro.com said:
-> Yes, that was the message I got with the latest cvs code, after
-> relocating the ReplUnitTable assignment.
+it modprobe's the docprobe without an oops but then
+gives an error
+Could not find valid boot record
+Could not mount nftl device 
 
-> Just to make sure I didn't have something else screwed up, I went back
-> to the source in 2.4.18, and added a printk of the UnitSizeFactor.  In
-> that case, it also said 0. 
+and when i try to erase the disk using nftl_format it
+gives an error
+Erase size not 8kb - I'm Confused
 
-Eep. OK, if you put a check in just before we deal with UnitSizeFactor, 
-setting it to 0xFF if it was 0x00 - does that make it work? Don't break the 
-memcmp with the later MediaHeader - use a local variable of something.
+should i be trying something else.
 
-Vadim, is this expected? Is a UnitSizeFactor of zero _always_ going to mean 
-that the Virtual Unit size matches the physical unit size?
+ajit
+
+
+--------------------------------
+
+Documentation/oops-tracing.txt
+
+If you run 'cvs up -D 20020306 drivers/mtd/nftl*.c'
+does it start to work 
+again? That reverts my experimental patch to make the
+driver handle larger 
+DiskOnChip devices.
+
 
 --
 dwmw2
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
