@@ -1,20 +1,14 @@
-Received: from fobos.marketsite.ru ([62.152.84.30] helo=relay1.dataart.com)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D1SOt-0004ty-QB
-	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2005 11:51:44 -0500
-Message-ID: <42137A1A.3090004@yandex.ru>
-Date: Wed, 16 Feb 2005 19:51:38 +0300
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Date: Wed, 16 Feb 2005 17:02:34 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: "Bobzin,Heiko" <h.bobzin@icp-ag.de>
+In-Reply-To: <256713DBAA00D911828C00065BF75DEB025F72@icpmail-hh.icp-intern.de>
+Message-ID: <Pine.LNX.4.58.0502161702270.30538@phoenix.infradead.org>
+References: <256713DBAA00D911828C00065BF75DEB025F72@icpmail-hh.icp-intern.de>
 MIME-Version: 1.0
-To: Konstantin Kletschke <lists@ku-gbr.de>
-References: <20050216114741.GA16239@synertronixx3>	<1108555269.24721.83.camel@tglx.tec.linutronix.de>	<20050216122015.GB16239@synertronixx3>	<1108556645.24721.86.camel@tglx.tec.linutronix.de>	<20050216124409.GC16239@synertronixx3>	<20050216133753.GD16239@synertronixx3>
-	<42135E98.E187DD1A@st.com>	<Pine.LNX.4.58.0502161528260.30538@phoenix.infradead.org>
-	<20050216162944.GE16239@synertronixx3>
-In-Reply-To: <20050216162944.GE16239@synertronixx3>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Oops vanilla 2.6.10
+Subject: Re: Data corrupted
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,9 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Then I'd like to see the full debug output.
+Hello
 
--- 
+1. Messages like "Node header CRC failed at 001f4ec8." are normal after 
+unclean reboots. 
+
+But the fact that you lost data which weren't engaged is *not normal*. 
+Theoretically, if JFFS2 has no bugs, static data can't be lost.
+
+I suspect JFFS2 may have bug: after block is GCed, it is erased, and wbuf 
+isn't sync-ed before erase. I'll see the relative places in JFFS2 and 
+check if it possible. If it is, it definitely must be fixed.
+
+Bobzin,Heiko wrote:
+> Hello mtd-fellows,
+> 
+> I ran into trouble with a test I've implemented. It is basically the 
+same
+> as the mtd-util checkfs: writing into the flash while powering down
+> the device. The problem is, that files which are never touched are
+> corrupted, not the data I write.
+> I diff'd the data and exactly one 4K block is set to zero in a 500k file
+> in a ~7MB JFFS2 flash partition.
+> It is reproducible in some hours, but the location differs.
+
+--
 Best Regards,
 Artem B. Bityuckiy,
 St.-Petersburg, Russia.
