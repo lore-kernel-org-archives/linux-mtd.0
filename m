@@ -1,16 +1,15 @@
-Received: from [207.209.118.131] (helo=MSI-EX6.msu.m-sys.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18T9pA-0004wh-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Dec 2002 00:00:00 +0000
-Message-ID: <87F9EFDE786B68428C807B4F74CC348105573C@msi-ex6.msu.m-sys.com>
-From: Vadim Khmelnitsky <vadim.khmelnitsky@m-sys.com>
-To: 'lhl' <lhl@phy.ccnu.edu.cn>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: Is DiskOnChip IDE pro a MTD Device?
-Date: Mon, 30 Dec 2002 16:27:42 -0800
+Received: from web40412.mail.yahoo.com ([66.218.78.109])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18TRoB-0006aa-00
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Dec 2002 19:12:12 +0000
+Message-ID: <20021231194227.16581.qmail@web40412.mail.yahoo.com>
+Date: Tue, 31 Dec 2002 11:42:27 -0800 (PST)
+From: Jeff Lin <jlin87@yahoo.com>
+Subject: FTL of compact flash card 
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <20021231120008.22857.80291.Mailman@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,30 +21,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Diskonchip IDE Pro is an IDE device ( like a regular harddisk ) .
-It does not require MTD driver . You should treat it as a regular harddisk .
+Hello, all, 
 
-Vadim.
+ First, Happy new year to you!
 
------Original Message-----
-From: lhl [mailto:lhl@phy.ccnu.edu.cn]
-Sent: Mon, December 30, 2002 3:54 AM
-To: linux-mtd@lists.infradead.org
-Subject: Is DiskOnChip IDE pro a MTD Device?
+ I am looking for a FTL (flash translation layer)code 
+that will emulates the flash memory as a IDE  disk 
+for the controller IC inside the compact flash card. 
 
+The FTL will need to do logical to physical address
+mapping, bad block management, and wear level
+algorithm. There is no File system needed, instead,
+the FTL will talk to the native file system. 
 
-linux-mtd
+Is there any open source code of FTL available? Can
+NFTL or JFFS/JFFS2 be tailored for this purpose? As
+for commercial FTL, which commercial code is
+good/reliable and relatively inexpensive?
 
-         I wanna make a JFFS/JFFS2 on My DiskOnChip Ide Pro,while the JFFS2
-is used only for the MTD
-Device,how can my kernel read it to a MTD device?
-
-
-regards
-            lhl
-            lhl@phy.ccnu.edu.cn
+Thank you very much for help,
+Jeff
 
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
