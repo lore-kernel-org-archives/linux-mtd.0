@@ -1,28 +1,23 @@
-Received: from h80ad2599.async.vt.edu
-	([128.173.37.153] helo=turing-police.cc.vt.edu ident=root)
+Received: from kynes.gatewest.net ([198.163.227.7]
+	helo=10-10-1-6.gatewest.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19zHOW-0000zD-MH
-	for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2003 16:05:33 +0100
-Message-Id: <200309161504.h8GF4MYe015141@turing-police.cc.vt.edu>
-To: Timothy Miller <miller@techsource.com>
-In-Reply-To: Your message of "Tue, 16 Sep 2003 10:52:06 EDT."
-             <3F672396.10906@techsource.com>
-From: Valdis.Kletnieks@vt.edu
-References: <200309160435.h8G4ZkQM009953@elaine4.Stanford.EDU>
-	<20030916065553.GA12329@wohnheim.fh-wedel.de>
-	<3F672396.10906@techsource.com>
-Mime-Version: 1.0
-Date: Tue, 16 Sep 2003 11:04:21 -0400
-Content-Type: multipart/signed; boundary="==_Exmh_-837387179P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-cc: David Yu Chen <dychen@stanford.edu>
-cc: linux-mtd@lists.infradead.org
-cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-cc: mc@cs.stanford.edu
-cc: David Woodhouse <dwmw2@infradead.org>
-cc: linux-kernel@vger.kernel.org
-Subject: Re: [CHECKER] 32 Memory Leaks on Error Paths 
+	id 19zNFd-0001qi-2B
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2003 22:20:45 +0100
+Received: from iders01.iders.ca (h24-77-222-52.wp.shawcable.net
+	[24.77.222.52])8.12.0.Beta19) with ESMTP id h8GLIRs8006892
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2003 16:18:27 -0500
+Received: from kilauea.iders.ca (kilauea.iders.ca [200.123.101.201])
+	by iders01.iders.ca (8.12.6/8.12.8) with SMTP id h8GLKqdA004695
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2003 16:20:52 -0500
+From: Cam Mayor <cmayor@iders.ca>
+To: a-linux-mtd <linux-mtd@lists.infradead.org>
+Date: Tue, 16 Sep 2003 16:20:51 -0500
+MIME-Version: 1.0
+Message-Id: <03091616205108.17934@kilauea.iders.ca>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: 8 is enough? - mtd block devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---==_Exmh_-837387179P
-Content-Type: text/plain; charset=us-ascii
+g'day all,
 
-On Tue, 16 Sep 2003 10:52:06 EDT, Timothy Miller said:
-> 
-> >> 276:	/* OK, it's not open. Create cache info for it */
-> >>START -->
-> >> 277:	mtdblk = kmalloc(sizeof(struct mtdblk_dev), GFP_KERNEL);
-> >> 278:	if (!mtdblks)
-> >>END -->
-> >> 279:		return -ENOMEM;
-> 
-> > 
-> > Invalid.  This is quite an obvious false positive, at least if your
-> > algorithm checks for possible value ranges.
-> 
-> Wait... one is "mtdblk", and the other is "mtdblks".  One has an extra 
-> 's' on it.  Unless there is some kind of aliasing going on, they would 
-> appear to be different variables.  Naturally, I didn't check the 
-> original code, so I could be full of it.  :)
+The Summary:
+Can i have mtd block devices higher than the range 0-7?  ie, more than 8?
 
-On the other hand, even if the report was invalid (which another posting says isn't
-the case), this code is just *begging* for somebody to "fix the typo", due to how
-much the kernel uses
-	foo = function(..)
-	if (!foo)
-Yeah, they're different variables - but we alloc mktblk and then return -ENOMEM
-if the OTHER variable is null?? ;)
+I'm working on an embedded system where i partition the some of the mtd from 
+the kernel command line and other devices grab their own mtd.  in my current 
+command line case, mtdparts=phys:4m(system),-(userarea), which uses up to 
+mtd6.
+i can add one more partition than that, but if i add two or more, another 
+device is mapped to /dev/mtd8 (or higher) and i cannot access it through the 
+/dev/mtdblock read-write block devices (ie. block, major 31, minors 0-7) as 
+the block devices don't go as high as 8. 
 
---==_Exmh_-837387179P
-Content-Type: application/pgp-signature
+on a whim, i tried making mtdblock8 at major 31, minor 16, blindly hoping it 
+would work, but it does not.  Any light you could shed on whether this is 
+possible with the current state of affairs or what i might be doing wrong 
+would be great.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
+If it helps, i am currently using 2.4.19-rmk7 (+minor mods) with and MTD tree 
+from March 25/2003 on a cs89712-based system with 8M NOR flash and (random 
+amount) NAND flash.
 
-iD8DBQE/ZyZ1cC3lWbTT17ARAi3pAKD2q/kclzGldljMKcUsbmWwaW3qHwCfV3Ej
-G5i+GBBseF/X2OEnA3gE/9A=
-=HDWl
------END PGP SIGNATURE-----
+regards,
+cam
 
---==_Exmh_-837387179P--
+-- 
+Cameron Mayor
+Iders Incorporated
