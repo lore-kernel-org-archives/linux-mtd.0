@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.mediatrix.com ([66.129.134.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15We6i-0002Vs-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 14:19:44 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <9A1957CB9FC45A4FA6F35961093ABB8403E63FB2@srvmail-mtl.ubisoft.qc.ca> 
-References: <9A1957CB9FC45A4FA6F35961093ABB8403E63FB2@srvmail-mtl.ubisoft.qc.ca> 
-To: Patrick Allaire <pallaire@gameloft.com>
-Cc: Vipin Malik <Vipin.Malik@daniel.com>, linux-mtd@lists.infradead.org
-Subject: Re: Applying MTD to 2.2.x kernel, with more info 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 14 Aug 2001 14:25:36 +0100
-Message-ID: <9656.997795536@redhat.com>
+	id 15Wegq-0002Xq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2001 14:57:04 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D9955F8@webmail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>, Vipin Malik
+	 <vipin@embeddedlinuxworks.com>
+Cc: Frederic Giasson <fgiasson@mediatrix.com>, "MTD mailing list (E-mail)"
+	 <linux-mtd@lists.infradead.org>
+Subject: Erase.c in CVS tree, 08-13-2001 version does not compile
+Date: Tue, 14 Aug 2001 09:55:15 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +25,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-pallaire@gameloft.com said:
->  I am not sure I understand what you are telling me ... I am currently
-> compiling on 2.2.18 so I dont need the patch to call init_mtd ? So
-> whot do I need to change in mtdcore.c ?
+Erase.c in CVS tree does not compile.  This line have to be put this =
+line at
+the beggining of the D2 block:
+        struct jffs2_raw_node_ref *this;
 
-You shouldn't need to change anything in mtdcore.c.
-The module_init(init_mtd) line at the end should make sure it gets 
-initialised.
+Fr=E9d=E9ric Giasson
+
+
+
+
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Monday, August 13, 2001 8:00 PM
+To: Vipin Malik
+Cc: Frederic Giasson; MTD mailing list (E-mail)
+Subject: Re: JFFS2 is broken=20
+
+
+
+vipin@embeddedlinuxworks.com said:
+> David once mentioned that there are some obvious optimizations that
+> can be carried out in the JFFS2 code. Maybe he could list out his
+> favorite ones  and maybe someone could volunteer to tackle them one =
+by
+> one.=20
+
+I committed the cleanup to jffs2_remove_node_refs_from_ino_list() =
+(Christ,=20
+did I name that function?), which showed up near the top of the =
+profiles=20
+you did. What's next? ISTR we got strange data from the profiling.=20
 
 --
 dwmw2
