@@ -1,19 +1,16 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DBXKh-0002FC-Qj
-	for linux-mtd@lists.infradead.org; Wed, 16 Mar 2005 07:09:05 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Sergei Sharonov <Sergei.Sharonov@Halliburton.com>
-In-Reply-To: <487B538D08487B4D8FEC138A13D4F6AC509BA5@HOUEXCH077.corp.halliburton.com>
-References: <487B538D08487B4D8FEC138A13D4F6AC509BA5@HOUEXCH077.corp.halliburton.com>
-Content-Type: text/plain
-Date: Wed, 16 Mar 2005 15:08:26 +0300
-Message-Id: <1110974906.30606.38.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: failed write verify causes segmentation fault
-Reply-To: dedekind@infradead.org
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D9vKW-0004h4-Vj
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 20:22:14 -0500
+Message-ID: <42323A97.5070105@mvista.com>
+Date: Fri, 11 Mar 2005 17:40:55 -0700
+From: "Mark A. Greer" <mgreer@mvista.com>
+MIME-Version: 1.0
+To: dwmw2@infradead.org
+Content-Type: multipart/mixed; boundary="------------090506070708090904090209"
+Cc: linux-mtd@lists.infradead.org,
+	Embedded PPC Linux list <linuxppc-embedded@ozlabs.org>
+Subject: [PATCH 2.6.12] mtd: Remove MTD map file for Chestnut platform.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +20,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
 
-It is difficult to me to say what's going wrong without an additional
-information. The following are my thoughts.
+This is a multi-part message in MIME format.
+--------------090506070708090904090209
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Writing 10000000 bytes.. nand_verify_pages: Failed write verify, 
-> page 0x00013dfd <5>Write of 4164 bytes at 0x09efe1bc failed. retur4
-> jffs2_flash_writev(): Non-contiguous write to 09eff200
-> Unable to handle kernel NULL pointer dereference at virtual 
-This is odd. If you take a glimpse to the corresponding code in fs/jffs2/wbuf.c,
-you'll find:
+Remove Chestnut mtd map file.
 
-        if (to != PAD(c->wbuf_ofs + c->wbuf_len)) {
-                /* We're not writing immediately after the writebuffer. Bad. */
-                printk(KERN_CRIT "jffs2_flash_writev(): Non-contiguous write to %08lx\n", (unsigned long)to);
-                if (c->wbuf_len)
-                        printk(KERN_CRIT "wbuf was previously %08x-%08x\n",
-                                          c->wbuf_ofs, c->wbuf_ofs+c->wbuf_len);
-                BUG();
-        }
+The chestnut now sets up its MTD map from its platform-specific file so 
+the map file drivers/mtd/maps/chestnut.c is no longer needed.  This 
+patch removes the file & the Kconfig/Makefile hooks.
 
-I don't see any reason why the NULL dereferencing might happen after the
-"jffs2_flash_writev(): Non-contiguous write to.." output. BUG()
-should be called instead.
+Please apply.
 
-The fact that the "if (to != PAD(c->wbuf_ofs + c->wbuf_len)" condition fails
-implies that something goes wring. This means that a write operation is made
-the wrong place, not the page which is currently being represented by the write buffer.
-
-> Seems that when (eventually) write verify failed the system could not 
-> handle it graciously. Has anybody seen this before?
-This is only one possible reason. The other possible reason which I
-think is more likely has happened in your case is that JFFS2 tried to
-write to a non-empty NAND page, e.g., the page didn't contain all 0xFF.
-In this case write_verify() might fail as well. I don't know why JFFS2
-might do that, possibly there is some bug.
-
-I'd suggest you to debug JFFS2. You might try to do the following
-things.
-
-1. Before writing anything, check that the target NAND page is empty.
-For this purpose you might insert the corresponding checking code at
-wbuf.c:466 (__jffs2_flush_wbuf() function). The line number must be
-valid for the last MTD snapshot ($Id: wbuf.c,v 1.89 2005/02/09 09:23:54
-pavlov Exp $.). All writes pass this functions in case of NAND flash.
-
-To read a page you may insert something like this:
-char testbuf[2048];
-memset(testbuf, '\0', 2048);
-jffs2_flash_read(c, c->wbuf_ofs, c->wbuf_pagesize, &retlen, &testbuf
-[0]);
-
-Then check that testbuf[] contains all 0xFF.
-
-2. Insert printk's in different places. You might enable the Level 1
-jffs2 debug output. But this will be too noisy.
-
-You might alternatively introduce some variable like 'int
-_shit_have_happened_' and export it.
-
-Redefine D1() to something like:
-
-#define D1(x) { if (_shit_have_happened_) { x; } }
-
-Set _shit_have_happened_ to 1 in nand_verify_page if an error happened,
-or in __jffs2_flush_wbuf() if you've found that you write to non-empty
-NAND page and the like.
-
-This might help.
-
-I wonder does something like this happens in case of normal
-temperatures? Might something except NAND get crazy ?
-
+Signed-off-by: Mark A. Greer <mgreer@mvista.com>
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+
+--------------090506070708090904090209
+Content-Type: text/plain;
+ name="chestnut_mtd.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="chestnut_mtd.patch"
+
+diff -Nru a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+--- a/drivers/mtd/maps/Kconfig	2005-03-11 14:51:08 -07:00
++++ b/drivers/mtd/maps/Kconfig	2005-03-11 14:51:08 -07:00
+@@ -405,14 +405,6 @@
+ 	  Redwood board. If you have one of these boards and would like to
+ 	  use the flash chips on it, say 'Y'.
+ 
+-config MTD_CHESTNUT
+-	tristate "CFI Flash devices mapped on IBM 750FX or IBM 750GX Eval Boards"
+-	depends on MTD_CFI && PPC32 && CHESTNUT && MTD_PARTITIONS
+-	help
+-	  This enables access routines for the flash chips on the IBM
+-	  750FX and 750GX Eval Boards. If you have one of these boards and
+-	  would like to use the flash chips on it, say 'Y'
+-
+ config MTD_CSTM_MIPS_IXX
+ 	tristate "Flash chip mapping on ITE QED-4N-S01B, Globespan IVR or custom board"
+ 	depends on MIPS && MTD_CFI && MTD_JEDECPROBE && MTD_PARTITIONS
+diff -Nru a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+--- a/drivers/mtd/maps/Makefile	2005-03-11 14:51:08 -07:00
++++ b/drivers/mtd/maps/Makefile	2005-03-11 14:51:08 -07:00
+@@ -54,7 +54,6 @@
+ obj-$(CONFIG_MTD_IMPA7)		+= impa7.o
+ obj-$(CONFIG_MTD_FORTUNET)	+= fortunet.o
+ obj-$(CONFIG_MTD_REDWOOD)	+= redwood.o
+-obj-$(CONFIG_MTD_CHESTNUT)	+= chestnut.o
+ obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
+ obj-$(CONFIG_MTD_NETtel)	+= nettel.o
+ obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
+diff -Nru a/drivers/mtd/maps/chestnut.c b/drivers/mtd/maps/chestnut.c
+--- a/drivers/mtd/maps/chestnut.c	2005-03-11 14:51:08 -07:00
++++ /dev/null	Wed Dec 31 16:00:00 196900
+@@ -1,91 +0,0 @@
+-/*
+- * drivers/mtd/maps/chestnut.c
+- *
+- * $Id: chestnut.c,v 1.1 2005/01/05 16:59:50 dwmw2 Exp $
+- *
+- * Flash map driver for IBM Chestnut (750FXGX Eval)
+- *
+- * Chose not to enable 8 bit flash as it contains the firmware and board
+- * info.  Thus only the 32bit flash is supported.
+- *
+- * Author: <source@mvista.com>
+- *
+- * 2004 (c) MontaVista Software, Inc. This file is licensed under
+- * the terms of the GNU General Public License version 2. This program
+- * is licensed "as is" without any warranty of any kind, whether express
+- * or implied.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <asm/io.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-#include <platforms/chestnut.h>
+-
+-static struct map_info chestnut32_map = {
+-   	.name 		= "User FS",
+-   	.size 		= CHESTNUT_32BIT_SIZE,
+-   	.bankwidth 	= 4,
+-	.phys 		= CHESTNUT_32BIT_BASE,
+-};
+-
+-static struct mtd_partition chestnut32_partitions[] = {
+-	{
+-		.name 	= "User FS",
+-		.offset	= 0,
+-		.size	= CHESTNUT_32BIT_SIZE,
+-	}
+-};
+-
+-static struct mtd_info *flash32;
+-
+-int __init init_chestnut(void)
+-{
+-	/* 32-bit FLASH */
+-
+-   	chestnut32_map.virt = ioremap(chestnut32_map.phys, chestnut32_map.size);
+-
+-   	if (!chestnut32_map.virt) {
+-      		printk(KERN_NOTICE "Failed to ioremap 32-bit flash\n");
+-		return -EIO;
+-   	}
+-
+-	simple_map_init(&chestnut32_map);
+-
+-   	flash32 = do_map_probe("cfi_probe", &chestnut32_map);
+-   	if (flash32) {
+-   		flash32->owner = THIS_MODULE;
+-   		add_mtd_partitions(flash32, chestnut32_partitions,
+-					ARRAY_SIZE(chestnut32_partitions));
+-   	} else {
+-      		printk(KERN_NOTICE "map probe failed for 32-bit flash\n");
+-		return -ENXIO;
+-	}
+-
+-   	return 0;
+-}
+-
+-static void __exit
+-cleanup_chestnut(void)
+-{
+-   	if (flash32) {
+-      		del_mtd_partitions(flash32);
+-		map_destroy(flash32);
+-   	}
+-
+-   	if (chestnut32_map.virt) {
+-      		iounmap((void *)chestnut32_map.virt);
+-	  	chestnut32_map.virt = 0;
+-   	}
+-}
+-
+-module_init(init_chestnut);
+-module_exit(cleanup_chestnut);
+-
+-MODULE_DESCRIPTION("MTD map and partitions for IBM Chestnut (750fxgx Eval)");
+-MODULE_AUTHOR("<source@mvista.com>");
+-MODULE_LICENSE("GPL");
+
+--------------090506070708090904090209--
