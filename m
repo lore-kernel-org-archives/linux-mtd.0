@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from aponcelet-101-2-1-11.abo.wanadoo.fr ([193.251.42.11] helo=rostra.safetech.fr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15eBVj-0000X3-00
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2001 09:24:43 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <4494.999501910@redhat.com> 
-References: <4494.999501910@redhat.com>  <3B932CDF.42F6AA02@dgt-lab.com.pl> 
-Cc: Wojciech Kromer <krom@dgt-lab.com.pl>,
-    mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mtd-snapshot-20010902.tar.bz2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 04 Sep 2001 09:30:34 +0100
-Message-ID: <9579.999592234@redhat.com>
+	id 15eFrr-0000yD-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2001 14:03:51 +0100
+Received: from tagada.safetech.fr (norbert@tagada.safetech.fr [192.168.1.86])
+	by rostra.safetech.fr (8.11.1/8.9.3) with ESMTP id f84D55f14980
+	for <linux-mtd@lists.infradead.org>; Tue, 4 Sep 2001 15:05:05 +0200 (CEST)
+	(envelope-from norbert@safetech.com)
+Date: Tue, 4 Sep 2001 15:09:52 +0200 (CEST)
+From: Norbert Leon <norbert@safetech.com>
+To: linux-mtd@lists.infradead.org
+Subject: Problems with Intel TE28F320 B3
+Message-ID: <Pine.LNX.4.21.0109041443430.1177-100000@tagada.safetech.fr>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,27 +24,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dwmw2@infradead.org said:
->  Oops. It was called mtd_do_gen_probe but now it's fixed. cvs update
-> and try  again. 
+Hi all
 
-> Note that I haven't tested any of this new stuff yet. I'm planning to
-> do  that this morning. 
+I'm working on an intel te28f320 b3ba110 (complete reference) and i can't
+get my system to recognize it ... 
 
-Tested. A couple of stupid bugs in gen_probe.c fixed. As cfi_cmdset_0002.c
-was OK and I did much the same changes to cfi_cmdset_0001, I haven't
-bothered to dig out a board with Intel flash on it - someone shout if I
-broke it.
+Here is my kernel configuration :
 
-The new version of the jedec_probe code is also untested. 
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
 
-I'm now a little happier with the setup of the probe code, and the way is 
-clear for someone to write an intel_probe.c or to make jedec_probe.c grok 
-Intel chips.
+CONFIG_MTD_SLRAM=y
+CONFIG_MTD_RAM=y
+CONFIG_MTD_ROM=y
+CONFIG_MTD_CFI=y
+CONFIG_MTD_CFI_GEOMETRY=y
+CONFIG_MTD_CFI_B1=y
+CONFIG_MTD_CFI_B2=y
+CONFIG_MTD_CFI_B4=y
+CONFIG_MTD_CFI_I1=y
+CONFIG_MTD_CFI_I2=y
+CONFIG_MTD_CFI_I4=y
+CONFIG_MTD_CFI_INTELEXT=y
 
-If you do this faked CFI probe for Intel chips, make sure you either fill in
-the cmdset_priv appropriately, or modify the assumption in cfi_cmdset_0001.c
-that one will be present.
+CONFIG_MTD_PHYSMAP=y
+CONFIG_MTD_PHYSMAP_START=0x8000000
+CONFIG_MTD_PHYSMAP_LEN=0x4000000
+CONFIG_MTD_PHYSMAP_BUSWIDTH=2
 
---
-dwmw2
+
+and here are the kernel messages at the boot :
+
+mtd: Giving out device 0 to Raw memory
+Registered physmem device from 98304Kb to 131072Kb
+Mapped from 0xc2808000 to 0xc4808000
+physmap flash device: 4000000 at 8000000
+Physically mapped flash: Found no CFI device at location zero
+
+
+finally, when i type cat /proc/mtd, here is what i get :
+
+/ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 02000000 00010000 "Raw memory"
+
+
+it's all weird because the kernel seems to find the flash, however there
+is this message "Found no CFI ..."
+I've tried to put a jffs filesystem on /dev/mtd but it doesn't work ... i
+also tried the various utilities provided along with jffs (erase,
+ftl_check ...) and it didn't work as well
+
+
+can some of you help me ?
+did some of you already succeed in mounting a filessytem on such an intel
+flash card ??
+
+Thanks in advance
