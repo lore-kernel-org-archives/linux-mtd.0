@@ -1,17 +1,19 @@
-Received: from [64.170.22.138] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15GXHn-0003YP-00
-	for <linux-mtd@lists.infradead.org>; Sun, 01 Jul 2001 03:48:36 +0100
-Message-Id: <5.1.0.14.0.20010630215847.00a67068@mail.spewey.com>
-Date: Sat, 30 Jun 2001 22:05:20 -0500
-To: Frederic Giasson <fgiasson@mediatrix.com>,
- "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: Intense JFFS2 testcase fails after 500 times
-In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D9954F9@webmail.mediatrix.c
- om>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15GmXQ-0005ku-00
+	for <linux-mtd@lists.infradead.org>; Sun, 01 Jul 2001 20:05:44 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E15Fu8H-0008JI-00@the-village.bc.nu> 
+References: <E15Fu8H-0008JI-00@the-village.bc.nu> 
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: vipin.malik@daniel.com (Vipin Malik), jffs-dev@axis.com (jffs-dev),
+    linux-mtd@lists.infradead.org (MTD for Linux),
+    elw_dev_list@embeddedlinuxworks.com
+Subject: Re: JFFS2 is broken 
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Date: Sun, 01 Jul 2001 20:10:48 +0100
+Message-ID: <5174.994014648@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,38 +25,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 01:23 PM 6/30/2001 -0400, Frederic Giasson wrote:
+alan@lxorguk.ukuu.org.uk said:
+> Well there are two things there.
+> 1.	You could wake the GC and sleep on it  using sleep/wakeup or
+> 	semaphores
 
->The first time I fill the flash, df command reports a 88% disk uasge.
+I've tried to keep the GC thread optional. That's not set in stone - but we 
+ought to be able to fix this - there's no real reason why the GC in the 
+write() path should behave like this.
 
-Hmm, there is something weird right here. Why does it say 88% full
-when you say you "fill flash".
+Thinks... is the BKL still held in write()? Should we be releasing it?
 
-The JFFS2 statfs takes into account the number of sectors required
-for GC and should report 100% full when it really is full. Except of course,
-the 18% empty flash is so small that it cannot fit even one of your "small 
-files".
+> 2.	Profile the kernel and find out where it is tight looping. I can't
+> 	see any reason for tight loops except for the compression itself
+> 	so it suggests a code bug.
 
->   It
->remains like that until about 200 test case loops have executed.
+AFAIR the compression routines aren't turning up on the profiles. But then 
+we're getting 71 timer ticks in a 30-second period, according to the 
+profiles I saw.
 
-You mean that when you erase all the files, disk space goes back to
-x% (not 0 of course due to the reserved sectors for GC) but each time
-the max full is >88%?
+> Finally within the compression loops you can check current->
+> need_resched and if it is set call schedule() to allow the compression
+> to switch to other tasks at the point it has used its time slice. 
 
->   But after
->that, disk usage begins to grow slowly, and at about 520 loops, my testcase
->fails, reporting a full disk.
+We already do this between each node we move, in the garbage collection
+loop. Doing it inside the compression loops would be possible - although
+it'd confuse mkfs.jffs2, which just imports those files directly too.
 
-Do you mean even if you delete all the files, df still says that disk is full?
-Is your GC task running?
+Better still to avoid decompressing and recompressing data when we move 
+nodes intact.
 
->   After the test, I checked the flashes chips
->and they are not burned out, they are still very good.  Did anyone ever ran
->such tests?  If so, did it gave the same results?  If so, could there be
->some sort of memory leaks with JFFS2 filesystem?
+I'll poke at this on Monday. 
 
-By memory leak, I guess you mean media (flash) space leak, as you didn't say
-anything about loosing RAM?
-
-Vipin
+--
+dwmw2
