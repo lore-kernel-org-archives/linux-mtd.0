@@ -1,21 +1,20 @@
-Received: from ext-ch1gw-1.online-age.net ([216.34.191.35])
+Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AtrfN-0003fq-VZ
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 17:08:50 +0000
-Received: from int-ch1gw-1.online-age.net (int-ch1gw-1 [3.159.232.65])
-	id i1JH8P8W019231	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 Feb 2004 12:08:26 -0500 (EST)
-Received: from uswaumsxb4medge.med.ge.com (localhost [127.0.0.1])
-	id i1JH8OPP002030	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 Feb 2004 12:08:25 -0500 (EST)
-Message-ID: <77FE4A1FA59FF947845A42194AD667620A0FF2@uswaumsx07medge.med.ge.com>
-From: "Howard, Michael (MED)" <Michael.Howard@med.ge.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Thu, 19 Feb 2004 11:08:13 -0600
+	id 1Atrx0-0003qr-5O
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 17:27:02 +0000
+Received: from baydel.demon.co.uk ([158.152.156.193])
+	by anchor-post-32.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1Atrwy-000Ag5-0W
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 17:27:01 +0000
+From: "" <simon@baydel.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 19 Feb 2004 16:48:45 -0000
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Block device vs char device reads
+Message-ID: <4034E8ED.5757.55A2D9@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Subject: JFFS2 Corruption.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+I am having problems using JFFS2 filesystems on a NAND device. I have had 
+these problems in the past an decided not to use this method for storing my data.
+I would really like to do this and I was wondering if anyone else had been able to 
+run such a system reliably ? The NAND device is a 128MB SMC and I have 
+downloaded the mtd code from CVS within the last week.
 
-I've been doing some benchmarking on reading from the 2 drivers. The
-number of page reads the block device requires is many times more than
-the char.  I'm poking through mtdblock.c trying to understand what it is
-doing.  Is this behaviour to be expected?  Is there any way to optimize
-it?
-
-I need to use the block device as I'm mounting JFFS2 on top but
-performance has been terrible.  Any help would be much appreciated.
+I am using mtdpart to provide partitions but for the moment I am only using mtd1 as 
+a root file system. To build this I perform the following steps.
 
 
-Thanks
-Mike
+1. Boot system via network and mount nfs root
+2. eraseall /dev/mtd1
+3. mount -t jffs2 /dev/mtdblock1 /smc
+4. cd /smc
+5. tar xvzf /rootfilesystem.tgz
+6. unmount /smc
+
+I then reboot using the SMC as my root filesystem. As the system gets rebooted 
+and incurrs more writes I get the following kinds of message
+
+Empty flash at 0x00469ffcb ends at 0x0046a000
+
+or
+
+jffs2_scan_dirent_node(): Node CRC failed on node at 0x0046a7f0 
+read 0xffffffff calculated 0xdec8161b
+
+I have written in before about these messages and I understand that the first is of 
+no concern but the second relates to write data which may not have been written to 
+the SMC.
+
+The thing is I have had this happen on two completely different harware designs. 
+On an X86 board and the other a PPC. 
+
+I have checked and the OS umounts root as it shuts down. Also I cannot find 
+fsck.jffs2 in the util directory. Does it exist ?
+
+In trying to debug this I noticed that the device was still reporting busy when 
+nand_command was entered. I have put a line of code in to delay until the device is 
+ready at the start of the routine. It is my understanding that if the device is busy 
+when you try and select/deselect or send a command the outcome cannot be 
+predicted. If this is not the case I would like to understand why. If it is how does any 
+of the NAND code work ? 
+
+Any help greatly appreciated 
+
+
+Cheers Simon.
+
+
+
+
+
+
+
+   __________________________
+
+Simon Haynes - Baydel 
+Phone : 44 (0) 1372 378811
+Email : simon@baydel.com
+__________________________
