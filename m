@@ -1,18 +1,16 @@
-Received: from e33.co.us.ibm.com ([32.97.110.131])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BxBBB-0003fr-Td
-	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2004 17:07:39 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Michael Howard <michael.howard@med.ge.com>
-In-Reply-To: <41226B8B.7010603@med.ge.com>
-References: <41226B8B.7010603@med.ge.com>
-Content-Type: text/plain
-Message-Id: <1092776847.2912.139.camel@weaponx.rchland.ibm.com>
+	id 1BxDiX-0003y3-Rf
+	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2004 19:50:15 -0400
+Date: Tue, 17 Aug 2004 16:50:10 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+To: linux-mtd@lists.infradead.org, viro@ftp.uk.linux.org
+Message-ID: <20040817235010.GA18014@slurryseal.ddns.mvista.com>
 Mime-Version: 1.0
-Date: Tue, 17 Aug 2004 16:07:28 -0500
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: compile errors with daily snapshots
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: yoann@prelude-ids.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] JFFS2 mount options discarded
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-08-17 at 15:33, Michael Howard wrote:
-> Hello,
-> 
-> I've been grabbing the daily snapshots for a couple of weeks now and 
-> keep seeing the following error:
-> 
-> fs/jffs2/write.c: In function `jffs2_write_dnode':
-> fs/jffs2/write.c:95: error: storage size of `vecs' isn't known
-> fs/jffs2/write.c:95: warning: unused variable `vecs'
-> fs/jffs2/write.c: In function `jffs2_write_dirent':
-> fs/jffs2/write.c:236: error: storage size of `vecs' isn't known
-> fs/jffs2/write.c:236: warning: unused variable `vecs'
-> make[2]: *** [fs/jffs2/write.o] Error 1
-> make[1]: *** [fs/jffs2] Error 2
-> make: *** [fs] Error 2
-> 
-> 
-> Is anyone else getting this?  I've tried patching 2.4.23 and 2.6.7 with 
-> the same results.  Any help would be much appreciated.
+Yoann Vandoorselaere noticed an attempt to mount a JFFS2 filesystem
+read-only mounts writeable instead.  I believe the fix is:
 
-dwmw2 updated CVS to merge with Linus, so you need 2.6.8-rc1 or greater
-for the snapshots to work with a 2.6 kernel.  Actually, because of the
-merge 2.6.8 should be fairly close to CVS anyway.
+--- linux-2.6.8.1-orig/fs/jffs2/super.c	2004-08-15 11:46:43.000000000 -0700
++++ linux-2.6.8.1-jffs2-mount-fix/fs/jffs2/super.c	2004-08-17 15:45:17.935379784 -0700
+@@ -130,7 +130,7 @@
+ 		  mtd->index, mtd->name));
+ 
+ 	sb->s_op = &jffs2_super_operations;
+-	sb->s_flags |= MS_NOATIME;
++	sb->s_flags = flags | MS_NOATIME;
+ 
+ 	ret = jffs2_do_fill_super(sb, data, (flags&MS_VERBOSE)?1:0);
+ 
 
-No comment on 2.4 support... ;)
+Clue me in if I'm off-base, thanks,
 
-As for your specific error, Al Viro moved struct kvec into
-include/linux/uio.h during some sparse annotation cleanup.  That in
-itself wouldn't be hard to fix, but you also need the symlink patches Al
-did for jffs2 to work.  That's a larger patch kit, so it's probably
-simpler to update to 2.6.8.1.
-
-josh
+-- 
+Todd Poynor
+MontaVista Software
