@@ -1,18 +1,14 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13EuZB-0005WB-00
-	for mtd-list@infradead.org; Wed, 19 Jul 2000 15:11:17 +0100
-Received: from roma.axis.se ([193.13.178.2])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13EuZA-0005W4-00
-	for mtd@infradead.org; Wed, 19 Jul 2000 15:11:16 +0100
-Date: Wed, 19 Jul 2000 16:12:42 +0200 (CEST)
-From: Finn Hakansson <finn.hakansson@axis.com>
+	id 13EzHd-0006Bo-00
+	for mtd-list@infradead.org; Wed, 19 Jul 2000 20:13:29 +0100
+Date: Wed, 19 Jul 2000 20:13:28 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
 To: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
-cc: mtd@infradead.org, jffs-dev@axis.com, Per Knudsen <per.knudsen@axis.com>
-Subject: Re: multiple jffs_file_write calls
-In-Reply-To: <39758691.74272A26@evoserve.com>
-Message-ID: <Pine.LNX.4.21.0007191603500.5085-100000@vvv.axis.se>
+cc: mtd@infradead.org
+Subject: Re: jffs_file_write and DOC
+In-Reply-To: <3975038D.40CF3B90@evoserve.com>
+Message-ID: <Pine.LNX.4.10.10007192010540.23491-100000@infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
@@ -20,31 +16,25 @@ List-ID: <linux-mtd.lists.infradead.org>
 
 On Wed, 19 Jul 2000, Rogelio M. Serrano Jr. wrote:
 
-> Does the VFS layer do the subdivision of large file writes such that it
-> calls jffs_file_write multiple times with count exactly equal to
-> MAX_CHUNK_SIZE?
+> I observed that the jffs_file_write function misbehaves when given a
+> chunk bigger than MAX_CHUNK_SIZE. It is passed a chunk exactly equal to
+> MAX_CHUNK_SIZE so when it adds the inode and the name the resulting
+> chunk in is more or less 60 bytes bigger than MAX_CHUNK_SIZE which is
+> 4096 bytes in my case with the DOC2000.
+> 
+> Cat just writes a file shorter than it should be on flash. I used a
+> modified DOC_loadbios utility to download my JFFS images to the DOC. If
+> I dont write anything to it I could mount and unmount cleanly. But when
+> I write to it, I get bad checksums on the next mount and totoal mount
+> failure after couple more mounts.
 
-That was what I thought from the beginning as well. (Or instead of
-MAX_CHUNK_SIZE perhaps a page size of two.) But no. Right now there
-is no check whether the chunk of data is too large or not. The code
-just assumes that the data chunk is not big. As I stated in the last
-mail, this is something that's about to be changed.
+There's a separate problem - the DiskOnChip MTD driver doesn't currently
+handle writes which aren't 512 bytes long, if I recall correcty - because
+I've not actually used it with anything but NFTL yet. It may not be
+JFFS' fault.
 
-
-> When jffs_file_write writes the chunk it appends the
-> name and header to it and we end up with a chunk bigger than
-> MAX_CHUNK_SIZE.
-
-Correct. This is a thing I will look into.
-
-
-> Should we make VFS aware of mtd like what I think should
-> be done or handle it in another way? What do you think?
-
-I think this is something JFFS should handle.
-
-
-/Finn
+--
+dwmw2
 
 
 
