@@ -1,25 +1,23 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from mgw-x4.nokia.com ([131.228.20.27])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19GQv1-0001fP-TV
-	for <linux-mtd@lists.infradead.org>; Thu, 15 May 2003 23:09:43 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HEY00H7Y87W6G@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Fri, 16 May 2003 00:09:33 +0200 (MEST)
-Date: Fri, 16 May 2003 01:08:42 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030515215930.7E21D4099@blood.actrix.co.nz>
-To: manningc2@actrix.gen.nz, Earl Manning <emanning@austin.rr.com>,
- linux-mtd@lists.infradead.org
-Message-id: <200305160108.42152.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <20030515101003.471557de.emanning@austin.rr.com>
- <200305151848.10479.tglx@linutronix.de>
- <20030515215930.7E21D4099@blood.actrix.co.nz>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: Generating a NAND Image
-Reply-To: tglx@linutronix.de
+	id 19HdhO-0003dm-8J
+	for <linux-mtd@lists.infradead.org>; Mon, 19 May 2003 07:00:38 +0100
+Received: from esvir04nok.ntc.nokia.com (esvir04nokt.ntc.nokia.com
+	[172.21.143.36])h4J60uD15441	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 May 2003 09:00:56 +0300 (EET DST)
+Received: from esebh001.NOE.Nokia.com (unverified) by esvir04nok.ntc.nokia.com
+	<T624c0f281dac158f24078@esvir04nok.ntc.nokia.com> for
+	<linux-mtd@lists.infradead.org>; Mon, 19 May 2003 09:00:56 +0300
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Mon, 19 May 2003 14:00:24 +0800
+Message-ID: <AEB09EDA2548094C81ED6AA93269F63D01D09249@siebe001.apac.nokia.com>
+From: <Srinivasu.Vaduguri@nokia.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: page aligned writes in NAND driver causes problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 16 May 2003 00:01, Charles Manning wrote:
-> The one problem with doing it this way is that you end up with the bad
-> blocks in your image file too. THis will be a problem when you go to
-> manufacturing because the manufacturing writer needs to skip over bad
-> blocks it detects as it writes. Your image will then not fit any more and
-> you'd be marking good blocks bad.
-True. Did not htink about that.
+Hi all,
 
-> Rather, IMHO, - if you're using YAFFS-  suck the structure off the NAND
-> onto a host (eg. NFS copy the directory structure to the host) and use
-> mkyaffsimage. Send them the myyaffsimage output file.  I guess there's a
-> JFFSx process to do the same thing.
-There's no OOB generator yet, but that's a good idea for volunteers :)
+I have code CVS checked out on May 7th. I have seen that all the nand =
+writes are page aligned. If not they return error.
 
-> Alternatively (useful to both YAFFS and JFFS2)  hack nanddump.c to not
-> write bad blocks to the dump file. This will definitely work for YAFFS, but
-> I'm not 100% sure it will work for JFFS2.
-Sure, why not. JFFS2 does not rely on bad blocks. :)
+when I used this code I am finding the following errors if i write a =
+file onto my JFFS partition.=20
 
-> ... and submit a patch :-).
-:)
+Anyone has any clue..
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+
+thanx
+Srini
+
+
+Trace :
+
+jffs2_flash_writev(): Non-contiguous write to 000741e8
+ wbuf was previously 00074000-00074200
+ kernel BUG at wbuf.c:297!
+ jffs2_flush_wbuf(): Write failed with -5
+ Write of %zd bytes at 0x00000044 failed. returned 475624, retlen %zd
+ Not marking the space at 0x000741e8 as dirty because the flash driver
+ returned retlen zero
