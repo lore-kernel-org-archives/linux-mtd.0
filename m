@@ -1,27 +1,28 @@
-Received: from ip67-94-185-2.z185-94-67.customer.algx.net ([67.94.185.2]
-	helo=lserver.ddiworldwide.com)
+Received: from [202.37.96.11] (helo=gatekeeper.tait.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AAEIA-0006wQ-Ro
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 21:00:15 +0100
-Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
-	by dummy.domain.name (Postfix) with SMTP id 0767D6D0074
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Oct 2003 15:58:49 -0400 (EDT)
-Received: from plinux.ddiworldwide.com (plinux.ddiworldwide.com
-	[192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id DBC656D006D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Oct 2003 19:58:48 +0000 (UTC)
-From: Frank R Callaghan <f.callaghan@ieee.org>
-To: MTD <linux-mtd@lists.infradead.org>
-Date: Thu, 16 Oct 2003 15:57:19 -0400
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200310161557.19824.f.callaghan@ieee.org>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: Help with 2.4.22 MTD driver
+	id 1AAFiN-0007CJ-Nn
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 22:31:24 +0100
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9GLULS19552
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 10:30:21 +1300
+Received: from sunstorm.tait.co.nz (sunstorm.tait.co.nz [172.25.40.9])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9GLUKS19546
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 10:30:20 +1300
+Received: from tait.co.nz ([172.25.110.7])
+ by sunstorm.tait.co.nz (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with ESMTP id <0HMV0069BD2IXL@sunstorm.tait.co.nz> for
+ linux-mtd@lists.infradead.org; Fri, 17 Oct 2003 10:30:18 +1300 (NZDT)
+Date: Fri, 17 Oct 2003 10:30:09 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+In-reply-to: <3F8DBD52.1020100@tait.co.nz>
+To: mtd list <linux-mtd@lists.infradead.org>
+Message-id: <3F8F0DE1.9030207@tait.co.nz>
+MIME-version: 1.0
+References: <3F8B814D.3050408@tait.co.nz>
+ <1066111497.3172.37.camel@imladris.demon.co.uk> <3F8DBD52.1020100@tait.co.nz>
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+Subject: Re: Mount of jffs2 partition fails
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,54 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-
-I have been using 2.4.19 + mdt patches for sometime with no problem, now
-I must switch to 2.4.22 and I have a problem with MTD 
-
-The kernel seem to detect the chip correctly:
-
-physmap flash device: 200000 at 9400000
- Amd/Fujitsu Extended Query Table v1.1 at 0x0040
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-mtd: Giving out device 0 to Physically mapped flash
-Using physmap partition definition
-Creating 2 MTD partitions on "Physically mapped flash":
-0x00000000-0x001e0000 : "fixed_flash"
-mtd: Giving out device 1 to fixed_flash
-0x001e0000-0x00200000 : "BIOS-DO_NOT_TOUCH"
-mtd: Giving out device 2 to BIOS-DO_NOT_TOUCH
-
-but latter:
-.......................
-.......................
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001e0024: 0x7265 
-id
-Further such events for this erase block will not be printed
-JFFS2: Erase block at 0x001e0000 is not formatted. It will be erased
-................... repeated for tree more blocks
-
-cat /proc/mtd gives:
-
-dev:    size   erasesize  name
-mtd0: 00200000 00010000 "Physically mapped flash"
-mtd1: 001e0000 00010000 "fixed_flash"
-mtd2: 00020000 00010000 "BIOS-DO_NOT_TOUCH"
-
-I'm not sure if this correct as before with 2.4.19 it looks like this
-
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 001e0000 00010000 "fixed_flash"
-mtd1: 00020000 00010000 "BIOS-DO_NOT_TOUCH"
+Robin Gilks wrote:
+> David Woodhouse wrote:
+> 
+>> On Tue, 2003-10-14 at 17:53 +0000, Robin Gilks wrote:
+>>
+>>
+>>> / # mount -t jffs2 /dev/mtdblock1 /mnt
+>>> Write clean marker to block at 0x000d0000 failed: -30
+>>
+>>
+>>
+>> -30 is also -EROFS but we don't normally see it there so we don't have a
+>> nice helpful message telling you the reason :)
+>>
+>> I have no clue why your flash allows erases but not writes. This is a
+>> flash hardware/driver problem, not JFFS2. Can you do more testing on the
+>> raw /dev/mtd0 device itself using
+>> read/write/ioctl(MEMERASE)/ioctl(MEMUNLOCK) to see what you need to do
+>> to make it work?
+> 
+> 
+> I've concluded that the ST chip I'm using, although being Intel command 
+> set compatible, requires a different approach. That being the case I 
+> enabled the ST chip option and on booting I now get the following.
+> 
 
 
-Now the flash file system on the partision is corrupt :(
+In a message from Stuart Menefy on (CFI fixup code ref:
+<20030523235020.3ca198e1.stuart.menefy@st.com>) on 24th May 2003, this 
+exact problem was highlighted and is due to the ST chip not supporting 
+the buffer write mode of the Intel CFI chips. I'll try applying Stuarts 
+patches to 2.4.22 stock kernel and see how I get on!!
 
-can someone please give me a little guidance on how to find the problem ?
-what other info would help ?
+I'm still working on why the lock/unlock is operating correctly (or 
+should I just unprotect the block that MTD is using in the bootstrap?)
 
-Thanks In Advance,
 
-	Frank. 
+
+-- 
+Robin Gilks
+Senior Design Engineer          Phone: (+64)(3) 357 1569
+Tait Electronics                Fax  :  (+64)(3) 359 4632
+PO Box 1645 Christchurch        Email : robin.gilks@tait.co.nz
+New Zealand
