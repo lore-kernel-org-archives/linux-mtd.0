@@ -1,19 +1,20 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from rm-rstar.sfu.ca ([142.58.120.21] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17vyOZ-00075v-00
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 12:07:23 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Schlager Kristian-KSCHLAG1 <Kristian.Schlager@motorola.com>,
-   linux-mtd@lists.infradead.org
-Subject: Re: JFFS(2) on Compact Flash
-Date: Mon, 30 Sep 2002 13:07:13 +0200
-References: <8D4D5329976AD311B47800508B5D521D0329D643@c3po.vienna.ecid.cig.mot.com>
-In-Reply-To: <8D4D5329976AD311B47800508B5D521D0329D643@c3po.vienna.ecid.cig.mot.com>
+	id 17w8tA-0007xA-00
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 23:19:40 +0100
+Received: from fraser.sfu.ca (btlee@fraser.sfu.ca [142.58.101.25])
+	by rm-rstar.sfu.ca (8.12.5/8.12.5/SFU-5.0H) with ESMTP id g8UMJYNs023674
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 15:19:35 -0700 (PDT)
+Received: from localhost (btlee@localhost)
+	by fraser.sfu.ca (8.9.2/8.9.2/SFU-5.0C) with ESMTP id PAA02908
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 15:19:34 -0700 (PDT)
+Date: Mon, 30 Sep 2002 15:19:34 -0700 (PDT)
+From: Benjamin Tze-Kit Lee <btlee@sfu.ca>
+To: linux-mtd@lists.infradead.org
+Subject: compile JFFS2 module
+Message-ID: <Pine.GSO.4.44.0209301513510.1596-100000@fraser.sfu.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200209301307.13462.hno@marasystems.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,30 +26,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-My recommendation: Have temporary files on a ramdisk and mount the CF with the 
-"sync" option, and if possible keep it "ro" at most times..
+Hi,
 
-Regards
-Henrik
+Sorry if this is not supposed to be in this maillist.
 
-Schlager Kristian-KSCHLAG1 wrote:
-> I am running Linux on a Jumptec Dimm PC with built-in Compact Flash.
-> As powerfailures cannot be avoided, the ext2 fs gets screwed up after some
-> time. Can I use JFFS on the Compact Flash?
-> I have read Simon Evans' posting on his mtd/block driver (June 2001) and
-> the follow ups. One poster was stating that it makes no sense to run JFFS
-> on CF.
->
-> Does ext3 (or do other journaling fs) indead perform as well as JFFS(2)
-> regarding stability after power failures?
->
-> Or is the only save way to put all temporay files on ramdisk and have the
-> CF mount read-only?
->
->
-> Kristian Schlager
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+But I just want to know that if I want to compile the JFFS2 module, what
+minimum version of Linux kernel is required for me to be able to compile
+the code successfully?
+
+Thank you very much.
+
+Ben
