@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17jnHf-0003Eh-00
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 21:49:55 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3D6BD539.4050101@goepel.com> 
-References: <3D6BD539.4050101@goepel.com>  <3D6BCCFD.4090707@goepel.com> <27451.1030476296@redhat.com> 
-To: Michael Palme <m.palme@goepel.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: flash file system for production use 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 27 Aug 2002 21:49:43 +0100
-Message-ID: <29072.1030481383@redhat.com>
+	id 17joE3-0003mN-00
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 22:50:15 +0100
+Received: from [192.168.5.81] (account xjin HELO redswitch.com)
+  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 2508461 for linux-mtd@lists.infradead.org; Tue, 27 Aug 2002 14:50:25 -0700
+Message-ID: <3D6BF554.3090102@redswitch.com>
+Date: Tue, 27 Aug 2002 14:55:32 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: how to get mtd_info in kernel space?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-m.palme@goepel.com said:
-> okay... thanks for the answer. i will do some serious testing myself.
-> what would be a real life  scenario ??? is a random loop with
-> creating, writing and deleting files  mixed with mounting and
-> unmounting and some random powerfaults???
+Hi,
 
-Yeah -- coupled with sanity checking every existing file on the file system 
-at every remount, etc. And make them _real_ powerfaults, with an X10 
-controller or something. You get really weird behaviour out of flash chips 
-that way -- which we should deal with just fine.
+get_mtd_device() is used to get an MTD device with a specific minor 
+number. I have several MTD devices enabled and how can I get their minor 
+numbers which can be used to invoke get_mtd_device()? What function call?
 
-If you're going to report any faults, it's best to do the testing with 
-CONFIG_JFFS2_FS_DEBUG=1 and _logging_ the kernel messages over a serial 
-port. But that of course slows down the test run. YMMV. A 230400 baud 
-serial console helps :)
+Thanks.
 
---
-dwmw2
+- Shawn.
