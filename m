@@ -1,17 +1,24 @@
-Received: from hoemail2.lucent.com ([192.11.226.163]
-	helo=hoemail2.firewall.lucent.com)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B3wov-0005YU-3J
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 12:40:21 +0000
-Message-ID: <405998A2.3060107@lucent.com>
-Date: Thu, 18 Mar 2004 05:40:02 -0700
-From: Mike Wellington <wellington@lucent.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: Mike Wellington Failsafe Account <platform@whirlwind.he.net>
-Subject: Strataflash  standard and  LinearFlash vs ATA Flash
+	id 1B3xPO-0005l3-PP
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 13:18:02 +0000
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+ by smtp-out.bhp.t-online.de
+ (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
+ with SMTP id <0HUR0064KWRZZJ@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 14:14:24 +0100 (MET)
+Date: Thu, 18 Mar 2004 14:11:25 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
+To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
+Message-id: <200403181411.25596.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+References: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
+Subject: Re: Large block NAND
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thursday 18 March 2004 13:14, llandre wrote:
+> Hi all,
+>
+> I'm going to write a driver for the Samsung Flash K9F1G08U0M (128MB).
+> The main characteristics are:
+> - erase block size: 128 KB
+> - page program size: 2 KB
+> - total chip size: 128 MB
+> - tR = 25 us
+>
+> This chip is not fully compatible with the standard NAND flash commands
+> defined in
+> nand.h (Samsung call these devices "large block").
+> Thus, in my understanding, I must provide the following custom functions:
+> my_board_nand_command
+> my_board_nand_wait
+> my_board_nand_block_bad
 
-   I am new to Flash memory.  I have just ported
-linux to the PPC405.   Here is my question:
+Those functions should be incorporated into nand.c, as they are generic. So 
+all boards which use those "large block" devices can use them.
 
-Our final hw will have Intel Strataflash.  Our
-development board does not have any flash.  We
-would like to write flash drivers for the Intel
-Strataflash family on the development board.
-I think this can be done by purchasing a PCMCIA
-Linear Flash card.  You can get 20MB for $110. 
-However ATA flash seems to be larger and cheaper:
-160MB for $80.
+Be aware, that the available NAND aware filesystems must be changed too, as 
+they are not aware of pagesizes > 512 byte, but if IIRC  the datasheet 
+details it is possible to write 4  512 byte sub-pages to the device without 
+violating the specs. Anyway changes will be neccecary.
 
-If I want to talk to the memory using the same
-Strataflash interface that I will have to use
-on the final hw, do I have to buy a linear
-flash, or can I just buy an ATA flash?
+> Anybody wrote a driver for a similar device?
+> Have the MTD maintainers already planned to support these devices?
+
+Yep, but nobody forced me / us to implement it by paying for it. :)
 
 -- 
-
-=mike wellington
-wellington@lucent.com
-303.920.6412  Desk
-720.434.7559  Cell
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
