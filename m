@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from elproma-gw.hbz.pl ([213.77.124.176] helo=elproma.com.pl)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17vtln-0006hW-00
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 07:11:03 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <33BB463469A3D411B08F00508BDD1626E1872C@ntsyork.adva_york> 
-References: <33BB463469A3D411B08F00508BDD1626E1872C@ntsyork.adva_york> 
-To: John Messenger <JMessenger@advaoptical.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Trouble building mkfs.jffs2 
+	id 17vvWE-0006rS-00
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 09:03:06 +0100
+Received: from ptroja by elproma.com.pl with local (Exim 3.35 #1 (Debian))
+	id 17vvVh-0000Kv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2002 10:02:33 +0200
+Date: Mon, 30 Sep 2002 10:02:33 +0200
+From: Piotr Trojanek <ptroja@elproma.com.pl>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Question about power fail during file upgrade
+Message-ID: <20020930080233.GA1236@elproma.com.pl>
+References: <19E00413.60CCAB38.0265FBE9@netscape.net> <8493.1033029923@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 30 Sep 2002 07:10:59 +0100
-Message-ID: <27336.1033366259@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <8493.1033029923@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,30 +26,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-JMessenger@advaoptical.com said:
-> cd util
-> make 
-> ...
-> compr_zlib.c:15:2: #error "The userspace support got too messy and was removed.  Update your mkfs.jffs2".
+On Thu, Sep 26, 2002 at 09:45:23AM +0100, David Woodhouse wrote:
+> 
+> Kschoo70C@netscape.net said:
+> >     I need some help to understand how the JFFS2 works. If I have a
+> > version 1 of software component A on JFFS2, what happen if power
+> > failed while I am in the middle of upgrading the component A to
+> > version 2 ? The question is do I have version 1 intact or a
+> > combination of version 1 and 2 ?
+> 
+> > Does the JFFS2 filesystem only set the inodes of a file to be valid
+> > only after a complete file is written to the flash ? Does the old file
+> > will only be deleted only after the new file is verified to be valid ?
+> 
+> JFFS2 knows nothing of 'complete files'. You are guaranteed atomicity of 
+> individual file system operations only, according to POSIX. 
+> 
+> As with other file systems, you can write the new version of the file, then
+> rename it over the top of the original. That will be atomic.
+> 
+> There's been talk about extending JFFS2 to allow userspace 'transactions' 
+> but it's not been done.
 
-> Has this been fixed?  Any suggestions? 
+so the only atomic change, that is guaranteed to work is renaming
+new.file -> old.file?
 
-rm compr_zlib. ; cvs up compr_zlib.c ; make
+if I need to make upgrade which depends on 10 files what should I do?
+how about put all filesystem in one .tar and put it in ramdisk at system
+startup, then make upgrade of .tar file, which is on JFFS2 DOC and
+reboot? will it work?
 
->  Related question: how do you build your initial JFFS2 images?  I am
-> also trying to loopback mount a JFFS2 for a PPC machine on an i386 Red
-> Hat 7.3 after loading JFFS2 modules, but no luck so far. 
-
-mkfs.jffs2 will build a _populated_ image for you, containing all the files
-in the directory you specify. It's more like mkisofs/mkcramfs than
-mkfs.ext2, and should probably be renamed accordingly.
-
-If you really want to mount the image on your PC, you need to be using the 
-latest code which can handle byteswapping (see the #define in jffs2.h) and 
-load an 'mtdram' module on the PC with size and erasesize matching your 
-hardware. Then see http://www.handhelds.org/z/wiki/LoopBack
-
-Don't forget the '-b' option to mkfs.jffs2.
-
---
-dwmw2
+-- 
+Piotr Trojanek
