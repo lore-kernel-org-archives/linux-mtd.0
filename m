@@ -1,37 +1,35 @@
-From: chaffmanus@yahoo.com (tony Tong)
-Date: Sun, 9 Feb 2003 18:16:46 -0800 (PST)
-Subject: grub-doc patch problem
-In-Reply-To: <1044795927.2943.208.camel@imladris.demon.co.uk>
-Message-ID: <20030210021646.73114.qmail@web20805.mail.yahoo.com>
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 10 Feb 2003 08:34:00 +0000
+Subject: About flash chip writing/erasing, reading chip status.
+In-Reply-To: <20030115151745.R1589@brecis.com>
+References: <20030115113705.P1589@brecis.com>
+ <20030115151745.R1589@brecis.com>
+Message-ID: <1044866039.22021.8.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---- David Woodhouse <dwmw2@infradead.org> wrote:
-> You mentioned that you are using WinCVS. I believe
-> that when you check
-> out a file with CVS, it automatically 'fixes' the
-> linefeeds to match the
-> system on which you're checking it out. So all the
-> Unix linefeeds will
-> have been converted to CRLF to make Windows happy. 
+On Wed, 2003-01-15 at 21:17, Steve Wahl wrote:
+> I therefore think the correct test of bit5 is:
+> 
+> 	/* assumes ( (CMD(1<<6) >> 1) == CMD(1<<5) ) for all cases */
+> 	/* I believe this is true from inspection... */
+> 
+> 	dq6 = CMD(1<<6);
+> 
+> 	do {
+> 
+> 		oldstatus = cfi_read(map, adr);
+> 		status = cfi_read(map, addr) ;
+> 
+> 		toggling = ( oldstatus ^ status ) & dq6 ;
+> 		dq5s_set = ( oldstatus & (toggling >> 1) ) ;
+> 
+> 	} while ( (toggling != 0) && (dq5s_set == 0) && !time_after(xxx));
 
-Thank you ,David!
-Thank you very very much!!
-The wincvs is the right key ! It does  convert the
-linefeeds to windows style by default.
-I have managed it to check out with unix LF
-successfully .
-Thanks, without your help , I will be still in the
-nightmare now .
-:)
+> I'm willing to work this in to my patch.  But I want to see what
+> others have to say before I put the work in.
 
-Besides, thanks to Mark Meade for providing me so
-detailed Howto Document .
+Looks sane to me. Sorry for the delayed response.
 
- 
-
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+-- 
+dwmw2
