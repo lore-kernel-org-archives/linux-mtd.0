@@ -1,61 +1,82 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14aTMK-0004lZ-00
-	for mtd-list@infradead.org; Wed, 07 Mar 2001 02:07:24 +0000
-Received: from stm.lbl.gov ([131.243.16.51] ident=mail)
+	id 14aWVq-0005ae-00
+	for mtd-list@infradead.org; Wed, 07 Mar 2001 05:29:26 +0000
+Received: from shell9.ba.best.com ([206.184.139.140] ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14aTMI-0004lT-00
-	for mtd@infradead.org; Wed, 07 Mar 2001 02:07:23 +0000
-Date: Tue, 6 Mar 2001 18:07:00 -0800
-From: David Schleef <ds@schleef.org>
-To: Robert Kaiser <rob@sysgo.de>
-Cc: mtd@infradead.org
-Subject: Re: Using mtdblock as root device
-Message-ID: <20010306180700.A5214@stm.lbl.gov>
-Reply-To: David Schleef <ds@schleef.org>
-References: <01030613110600.01913@rob> <7121.983884306@redhat.com> <01030614494400.02338@rob>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <01030614494400.02338@rob>; from rob@sysgo.de on Tue, Mar 06, 2001 at 02:37:48PM +0100
+	id 14aWVo-0005aY-00
+	for mtd@infradead.org; Wed, 07 Mar 2001 05:29:24 +0000
+From: Subodh Nijsure <subodh@best.com>
+Message-Id: <200103070528.VAA21767@shell9.ba.best.com>
+Subject: JFFS on a powerpc platform.
+To: mtd@infradead.org, subodh@best.com, jffs-dev@axis.com
+Date: Tue, 6 Mar 2001 21:28:37 -0800 (PST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, Mar 06, 2001 at 02:37:48PM +0100, Robert Kaiser wrote:
-> Hi,
-> 
-> On Die, 06 Mär 2001 you wrote:
-> > It's been submitted many many times. If you do submit it again, please add 
-> > nftl[bcd] and ftl[abcd] too, and I don't think you actually need anything 
-> > more than
-> > 	{"mtdblock", 0x1f00},
-> > 
-> > for the mtdblock devices, because they're handled just like partitions.
-> 
-> Hmm, I for one have two mtd devices on my platform, both of which I'd like
-> to be able to use as root device. But I agree that 16 is probably a bit
-> overkill. How about:
-> 
-> 	{"mtdblock0", 0x1f00},
-> 	{"mtdblock1", 0x1f01},
-> or:
-> 	{"mtdblock", 0x1f00},
-> 	{"mtdblock0", 0x1f00},
-> 	{"mtdblock1", 0x1f01},
+
+Hello,
+
+Question I have is -- has anyone tested JFFS on powerpc platform.
+
+I have retrieved the latest mtd code from CVS repository and 
+the data read back from flash is not "correct".
+
+The platform I am running on MPC860 based board having
+intel flash  which mtd is able to recognize correctly.
+
+Here are messages during the boot to indicate that cfi probe has
+detected the flash. 
+
+JFFS version 1.0, (C) 1999, 2000  Axis Communications AB
+physmap.c physmap flash device: size 400000 at address 28000000
+cfi_probe_new_chip map->buswidth 4
+Custom flash device: Found 2 x16 CFI devices at location 0 in 16 bit mode
+JEDEC ID: B0 D0
+
+The /proc/mtd shows following output which matches the partition table I
+have setup.
+
+sh-2.04# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00020000 "Custom flash device"
+mtd1: 00080000 00020000 "Bootrom Area"
+mtd2: 00040000 00020000 "Custom Flash Bank #2 2x128KB"
+mtd3: 00040000 00020000 "Custom Flash Bank #2 2x128KB"
+mtd4: 00300000 00020000 "Custom Flash left overs from 4MB Flash" 
+
+Now I execute command  and I see the following output
+ 
+	mount -t jffs /dev/mtdblock4 /tmp/jffs
+
+	cp /etc/inetd.conf /tmp/jffs/inetd.conf
+
+	sh-2.04# cp /etc/inetd.conf /tmp/jffs
+	sh-2.04# ls -l /etc/inetd.conf /tmp/jffs
+	-rw-r-xr--   1 root     root         2880 Jan 10  2001 /etc/inetd.conf
+
+	/tmp/jffs:
+	total 3
+	-rw-r-xr--   1 root     root         2880 Dec 31 16:05 inetd.conf  
+
+However if I try to see contents of this /tmp/jffs/inetd.conf I see 
+following output instead of my inetd.conf, 
 
 
-Just {"mtdblock", 0x1f00} will suffice, because any number
-appended will be converted to an integer and be added to the
-base number given.
+sh-2.04# more /tmp/jffs/inetd.conf
+#
+#tenioc.dT      fn sihelifsed birct ses ehivre sectahtliw eb lava bali#
+elht            guorht hNI e DTE/PCTs PIrepures .revoT  -er fnocrugi    #
+eeht    nur gninENI p DTecor ,sstideiht if s ,elnehtnes ht d    #
+eENI    p DTecora ssGIS  PUHngis
 
-Check the implementation of name_to_kdev_t in init/main.c for
-details.
+Also now if I reboot the system and remount the device /dev/mtdblock4 I 
+don't see the file inetd.conf, what am I doing wrong?
 
-
-
-dave...
-
+/Subodh Nijsure
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
