@@ -1,14 +1,17 @@
-Received: from f90.law11.hotmail.com ([64.4.17.90] helo=hotmail.com)
+Received: from modemcable166.48-200-24.mtl.mc.videotron.ca ([24.200.48.166] helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18NvEA-0003pT-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 13:24:10 +0000
-From: "the muppeteer" <themuppeteer@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: bug in doc drivers?
-Date: Mon, 16 Dec 2002 14:52:31 +0100
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Message-ID: <F907zk8J05YfrkaWumO0000c6dc@hotmail.com>
+	id 18NySe-0004GZ-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 16:51:20 +0000
+Date: Mon, 16 Dec 2002 12:21:50 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Wolfgang Denk <wd@denx.de>, Paul Nash <paulnash@wildseed.com>,
+   "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts?
+In-Reply-To: <18190.1040039149@passion.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.44.0212161215550.25780-100000@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,30 +23,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+On Mon, 16 Dec 2002, David Woodhouse wrote:
 
-I compile my kernel (2.4.20) with mtd support.
-I did everything as said in the documentation mtd-jffs-HOWTO.
-I boot with my new kernel, and my flash is detected.
-I mount my flash.
-I write a large amount of data on it ,so that its 100% full.
-Then, when I do a sync, the system freezes for about 1min 30.
-Why ? Is this a bug in the drivers ? Does the flash need swap to
-function properly now ? it didn't need swap before with the binairy
-old modules.
+> 
+> wd@denx.de said:
+> > Running the kernel XIP is not so insane. It can help to  reduce  boot
+> > time.  We  still  more  than  3  seconds from power-on to application
+> > start, which is not so  bad,  but  still  too  much  in  some  cases;
+> > avoiding  the  memcpy()  of  some  2 MB of data is kind of attractive
+> > then...
+> 
+> That's true, although even if you have the kernel on a separate flash chip
+> to which you don't ever write, it does cost you later because you then run
+> from flash which is slower than RAM. I wonder if we could copy the kernel
+> from flash to RAM at runtime and fix up the page tables as we go, to get the
+> best of both worlds?
 
-System:
--------
-Red Hat 7.2
-Kernel 2.4.20
-No swap (its for a bootable cd)
-DiskOnChip 2000 16MB
+On ARM this has no value since the kernel takes up at most 1 or 2 page table 
+entries (1MB section descriptors that is).
 
-Regards,
+Fortunately on ARM the kernel seems to be sane with .text and .rodata 
+actually being read-only.
 
-themuppeteer.
+/me who incidentally just finished hacking a XIP kernel and filesystem patch
+on ARM for a customer named Intel...
 
 
-_________________________________________________________________
-Ontvang je Hotmail & Messenger berichten op je mobiele telefoon met Hotmail 
-SMS http://www.msn.nl/jumppage/
+Nicolas
