@@ -1,20 +1,17 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uyZp-0007Nh-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:30:05 +0100
-Received: from oe20.law12.hotmail.com ([64.4.18.124] helo=hotmail.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14uyaE-00028o-00
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2001 16:30:30 +0100
-From: "zud sdf" <zydlaula@hotmail.com>
-To: "MTD" <linux-mtd@lists.infradead.org>
-Date: Wed, 2 May 2001 17:29:48 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;	charset="gb2312"
-Content-Transfer-Encoding: base64
-Message-ID: <OE20kpwrPuYDCq8j0tF00006665@hotmail.com>
-Subject: (no subject)
+	id 14uybL-0007OD-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:31:39 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <OE66DreBBsQwY6YHkid00005aa9@hotmail.com> 
+References: <OE66DreBBsQwY6YHkid00005aa9@hotmail.com> 
+To: "zud sdf" <zydlaula@hotmail.com>
+Cc: "MTD" <linux-mtd@lists.infradead.org>
+Subject: Re: (no subject) 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 02 May 2001 16:32:01 +0100
+Message-ID: <31824.988817521@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,4 +23,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-c3Vic2NyaWJlIG10ZA0K
+
+zydlaula@hotmail.com said:
+>  subscribe
+
+Where did you find details of this list?
+
+I thought that all references to it were clearly marked in capital letters
+'DO NOT SEND SUBSCRIPTION REQUESTS TO THE LIST'. 
+
+If you have found a reference to the list which is not clearly marked as 
+such, please could you let me know where it is so that I can fix it?
+
+
+--
+dwmw2
