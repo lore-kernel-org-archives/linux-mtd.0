@@ -1,24 +1,22 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
+Received: from ext-proxy-2.ftel.co.uk ([192.65.220.98])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aqnbc-0008P9-Nr
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 06:12:16 +0000
-Received: from 192.168.1.100 (bluefire.joshuawise.com [192.168.1.100])
-	0569D18B3E	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Feb 2004 01:12:35 -0500 (EST)
-From: Joshua Wise <joshua@joshuawise.com>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 11 Feb 2004 01:12:28 -0500
-References: <200402110054.31831.joshua@joshuawise.com>
-In-Reply-To: <200402110054.31831.joshua@joshuawise.com>
+	id 1Aqw7X-0001Ah-Ho
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 15:17:47 +0000
+Received: from utility-2.ftel.co.uk (utility-2.ftel.co.uk [193.112.172.11])
+	(8.12.10/8.12.9/Revision:1.91/relay-in/ssl/db) with ESMTP id
+	i1BFHPMu015744
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Feb 2004 15:17:25 GMT
+Received: from mesias.co.uk (melete.ftel.co.uk [172.16.3.21])
+	ESMTP id i1BFHJEp014716
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Feb 2004 15:17:19 GMT
+Message-ID: <402A477D.3020701@mesias.co.uk>
+Date: Wed, 11 Feb 2004 15:17:17 +0000
+From: Cam <camilo@mesias.co.uk>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200402110112.29600.joshua@joshuawise.com>
-Subject: Re: cfi_cmdset_0002.c: do_xxlock_oneblock: overflow subtract
-	causing oopsen on iPAQ h1900
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Intel 28F640 cfi_cmdset_0001 chip is FL_STATUS after MTD_close
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-> adr =3D ((adr & ~0xffff) | 0x2) + ~0x3fffff;
-addendum: removing the + ~0x3fffff; makes it work properly.
+I hope I have the right list for this question.
 
-j
+I'm looking into a problem with some Intel 28F640 flash on a powerPC 
+board. I find that the cfi_cmdset_0001 code leaves the flash in the 
+FL_STATUS state after MTD_close. The chips remain in this state which 
+leaves the memory unreadable.
 
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <RockShox> charge up a 50v 1000uf cap and toss it to someone
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+I would have expected the flash to be left in the read array state when 
+not in use.
 
-iD8DBQFAKcfMPn9tWOqA4LMRAhWOAJkBQWfpe5dja2eC+cmteadRb5LM5QCgobsC
-ilXDFb8bdF5QkgNzKwDJRP0=3D
-=3D45de
-=2D----END PGP SIGNATURE-----
+I think the chip status in the driver and that in the chip is in sync, 
+ie. the driver is deliberately leaving the chip in this state.
+
+I found a previous reference to a similar problem:
+
+http://lists.infradead.org/pipermail/linux-mtd/2001-November/003603.html
+
+The problem described there is more serious in that the chip and the 
+driver seem to get out of step with regards to the FL_STATUS state.
+
+Is there a reason why the chip is not left in the read array state after 
+an MTD_close? My first thought is to modify cfi_intelext_sync, called by 
+MTD_close so that the chip is left in the read array state after the 
+sync command, but being a newcomer to this code I might be missing 
+something important.
+
+Comments?
+
+-Cam
+-- 
+camilo@mesias.co.uk                                                 <--
