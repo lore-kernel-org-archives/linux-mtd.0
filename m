@@ -1,25 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13922q-0002yZ-00
-	for mtd-list@infradead.org; Mon, 03 Jul 2000 09:57:36 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 13922q-0002yT-00
-	for cvs-notify@infradead.org; Mon, 03 Jul 2000 09:57:36 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel cfi_probe.c'
-Message-Id: <E13922q-0002yT-00@infradead.org>
+	id 13925K-0002zq-00
+	for mtd-list@infradead.org; Mon, 03 Jul 2000 10:00:10 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13925J-0002zj-00
+	for mtd@infradead.org; Mon, 03 Jul 2000 10:00:09 +0100
+Received: from cygnus.co.uk (IDENT:dwmw2@localhost [127.0.0.1])
+	by passion.cygnus.co.uk (8.9.3/8.9.3) with ESMTP id KAA07296
+	for <mtd@infradead.org>; Mon, 3 Jul 2000 10:03:55 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 03 Jul 2000 09:57:36 +0100
+In-Reply-To: <E13922q-0002yT-00@infradead.org> 
+References: <E13922q-0002yT-00@infradead.org> 
+To: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/kernel cfi_probe.c' 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 03 Jul 2000 10:03:55 +0100
+Message-ID: <7293.962615035@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv11431
 
-Modified Files:
-	cfi_probe.c 
-Log Message:
-Turn on the CFI ident printing again.
+er... now I've also changed the CVS notification to point at the new list 
+too - which perhaps would have been appropriate in the first place :)
+
+--
+dwmw2
+
 
 
 
