@@ -1,29 +1,25 @@
-Received: from wproxy.gmail.com ([64.233.184.206])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CorPC-0004gt-Lb
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 17:55:59 -0500
-Received: by wproxy.gmail.com with SMTP id 36so639538wra
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Jan 2005 14:55:57 -0800 (PST)
-Message-ID: <6934efce05011214553465438@mail.gmail.com>
-Date: Wed, 12 Jan 2005 14:55:57 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1105569824.3896.44.camel@weaponx.rchland.ibm.com>
+	id 1CovlC-0006do-Ec
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 22:34:59 -0500
+Received: from slurryseal.ddns.mvista.com (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id TAA04435
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Jan 2005 19:34:56 -0800
+Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8) with ESMTP id
+	j0D3YtLV029031
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Jan 2005 19:34:56 -0800
+Received: (from tpoynor@localhost)
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8/Submit) id j0D3Ytd4029029
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 19:34:55 -0800
+Date: Wed, 12 Jan 2005 19:34:55 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050113033455.GA28985@slurryseal.ddns.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
-	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
-	<6934efce050112084111ef438c@mail.gmail.com>
-	<Pine.LNX.4.58.0501121708100.10617@phoenix.infradead.org>
-	<6934efce0501121430471e55a8@mail.gmail.com>
-	<1105569824.3896.44.camel@weaponx.rchland.ibm.com>
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS3 & performance
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: Automatic nest count for ENABLE_VPP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,20 +29,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> That's not true.  Eraseblocks can go bad during operation.  That doesn't
-> mean that the whole device returns bad data.
+Comments in map.h indicate the .set_vpp routine must handle nested
+enable calls, which doesn't seem to be the case for several map drivers.
+And those that do keep a nest count may run into problems due to extra
+DISABLE_VPP calls (by, for example, cfi_cmdset_0001 put_chip).
 
-Sure, during an erase...  How does a checksum help you here?
+The map drivers can be modified to check for nesting underflow, but this
+might best be implemented once in the enable/disable macros (and made a
+property of the map, whereas most counts today are one per map driver).
 
-> CRCs are needed.  Or rather, some form of checksum is needed.  Bits flip
-> during operation on NOR as well.  I've seen it happen.  It's rare, but
-> as David put it in an IRC conversation "it's a sanity check on the
-> hardware".
->
-> There's sort of multiple threads on this topic, so maybe check some of
-> those.  We even got Joern to agree they're needed :).
+It would also be possible to modify routines such as put_chip to check
+whether to call DISABLE_VPP via the count (assuming the count should be
+zero at get_chip time and put_chip time).
 
-I respectfully disagree.  I don't think checksums are needed to
-protect you from NOR read errors *unless* the checksums are the only
-thing protecting the filesystem from bad things like crashes, power
-failures, and bugs.
+Any opinion on the way to do this?  Thanks -- Todd
+
+Index: linux-2.6.10/include/linux/mtd/map.h
+===================================================================
+--- linux-2.6.10.orig/include/linux/mtd/map.h	2004-12-24 21:34:31.000000000 +0000
++++ linux-2.6.10/include/linux/mtd/map.h	2005-01-13 02:10:28.000000000 +0000
+@@ -219,6 +219,7 @@
+ 	unsigned long map_priv_2;
+ 	void *fldrv_priv;
+ 	struct mtd_chip_driver *fldrv;
++	int vpp_count;
+ };
+ 
+ struct mtd_chip_driver {
+@@ -235,8 +236,8 @@
+ struct mtd_info *do_map_probe(const char *name, struct map_info *map);
+ void map_destroy(struct mtd_info *mtd);
+ 
+-#define ENABLE_VPP(map) do { if(map->set_vpp) map->set_vpp(map, 1); } while(0)
+-#define DISABLE_VPP(map) do { if(map->set_vpp) map->set_vpp(map, 0); } while(0)
++#define ENABLE_VPP(map) do { if(map->set_vpp && (map->vpp_count++ == 0)) map->set_vpp(map, 1); } while(0)
++#define DISABLE_VPP(map) do { if(map->set_vpp && map->vpp_count && (--map->vpp_count == 0)) map->set_vpp(map, 0); } while(0)
+ 
+ #define INVALIDATE_CACHED_RANGE(map, from, size) \
+ 	do { if(map->inval_cache) map->inval_cache(map, from, size); } while(0)
