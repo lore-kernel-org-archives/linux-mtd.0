@@ -1,21 +1,15 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
+Received: from [202.181.134.4] (helo=donut.udomain.com.hk)
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ACiCG-0001zu-Gl
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Oct 2003 17:20:24 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: ch@hpl.hp.com
-In-Reply-To: <000001c398ec$81bc7020$d203b60f@duckduck>
-References: <000001c398ec$81bc7020$d203b60f@duckduck>
-Message-Id: <1066925625.6281.211.camel@tubarao>
-Mime-Version: 1.0
-Date: 23 Oct 2003 10:13:45 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-eAUtaftr9GgcB6M0+/Ii"
-cc: ch@murgatroid.com
-cc: 'mtd list' <linux-mtd@lists.infradead.org>
-Subject: RE: Regression of mtd/chips/jedec_probe.c in 2.6.0-test7
-Reply-To: tharbaugh@lnxi.com
+	id 1ACy5h-0005Xn-IG
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Oct 2003 10:18:41 +0100
+Message-ID: <3F98EE07.20006@hectrix.com>
+Date: Fri, 24 Oct 2003 17:16:55 +0800
+From: Selwyn Tang <selwyn@hectrix.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Subject: Setting up compressed rootfs on DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
---=-eAUtaftr9GgcB6M0+/Ii
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I am used to running a DOC patched grub firmware on my DOC 2000 (16MB)
+with nftl, following the instructions of Karim's book. Since the space
+is running out, I am interested in using a compressed root fs.
 
-Now that I've been unhelpful, if not confusing, I figure I should look
-at your emails a bit closer.
+I followed mtd-jffs-HOWTO.txt (1.16) to build a compressed root fs on
+DOC. That is, I copied my root fs to a ramdisk, dd'd it through gzip to
+a compressed gz file, dd'd it to an offset of 1MB on /dev/mtd0 and
+rdev'd the kernel image (967KB) about the offset and the device to be
+used. Then I came to a problem of how to install the kernel on the DOC.
 
-On Wed, 2003-10-22 at 16:33, Christopher Hoover wrote:
+The HOWTO says I can use any boot loader, like lilo, to install the
+kernel, or just place the kernel on the device and boot from it
+directly. I got confused here, as I am used to using a grub firmware,
+which hooks to int 19h as a bios extension. When it is booted, it
+understands the DOC and can load my kernel image from my root fs on the
+ext2 partition on the DOC.
 
-> Search for id:(01 225b) interleave(1) type(2)
-> Search for id:(01 225b) interleave(1) type(2)
+But in here, how should I install my kernel image? I tried dd'ing it to
+the start of my DOC, like creating a boot floppy, but it doesn't seem
+like a boot device to the bios. Should I still install a grub firmware
+and a small partition for storing my kernel image, and then dd my
+compressed root fs after the partition? Or is there any other more
+clever ways?
 
-This is the manufacturer and device id for the AM29LV800BB.
-
-01 =3D AMD
-225b =3D AM29LV800BB in x16 mode.
-
-If that's correct, why doesn't it find it?  Have you tried turning on
-debug and setting it to 3?
-
-> Search for id:(70 e3a0) interleave(1) type(2)
-> Search for id:(01 5b) interleave(2) type(1)
-> Search for id:(01 5b) interleave(2) type(1)
-
-01 =3D AMD
-5b =3D AM29LV800BB in x8 mode.
-
-Once again, why isn't the chip found?
-
-> Search for id:(70 a0) interleave(2) type(1)
-> Search for id:(70 f10) interleave(2) type(2)
-> Search for id:(70 f10) interleave(2) type(2)
-> Search for id:(70 f10) interleave(2) type(2)
-> JEDEC: Found no ceiva flash device at location zero
-                  ^^^^^
-Looks like a Polaroid camera?
-
-> clps_setup_mtd: do_map_probe failed to find flash
-
-We nee the debug verbosity turned up for jedec_probe.  Hopefully that
-will tell us why jedec_match() (I believe) is failing.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-eAUtaftr9GgcB6M0+/Ii
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA/l/45fsBPTKE6HMkRAh6DAJ9HCXOwXE4ic8UsGkhWHWwsie8ecQCeNH6P
-X6ZSVtxgqXFye1mioYsr/o8=
-=UoKp
------END PGP SIGNATURE-----
-
---=-eAUtaftr9GgcB6M0+/Ii--
+Selwyn
