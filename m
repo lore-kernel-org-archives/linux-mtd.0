@@ -1,40 +1,43 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12fOB3-0001U7-00
-	for mtd-list@infradead.org; Wed, 12 Apr 2000 15:31:33 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
+	id 12feHZ-0003Ru-00
+	for mtd-list@infradead.org; Thu, 13 Apr 2000 08:43:21 +0100
+Received: from ncc2.infomail.es ([194.224.53.135] helo=infomail.es)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12fOB2-0001U0-00
-	for mtd@infradead.org; Wed, 12 Apr 2000 15:31:32 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <38F4855A.EF47278A@tsai.es> 
-References: <38F4855A.EF47278A@tsai.es> 
-To: Rodrigo Moya <rmoya@tsai.es>
-Cc: MTD List <mtd@infradead.org>
-Subject: Re: problems compiling 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 12 Apr 2000 15:31:27 +0100
-Message-ID: <2127.955549887@devel2.axiom.internal>
+	id 12feHX-0003Ro-00
+	for mtd@infradead.org; Thu, 13 Apr 2000 08:43:19 +0100
+Message-ID: <38F4D0AA.3FEA3BCF@tsai.es>
+Date: Wed, 12 Apr 2000 21:38:18 +0200
+From: Rodrigo Moya <rmoya@tsai.es>
+MIME-Version: 1.0
+To: MTD List <mtd@infradead.org>
+Subject: Re: problems compiling
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: base64
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-rmoya@tsai.es said:
->  I haven't investigated too much why are these errors, but the first
-> is about linux/compatmac.h.
-
-compatmac.h contains a handful of macros which allow you to use 2.3 code 
-with 2.2 kernels. If you really can't update your kernel, you should be 
-able to get away with just grabbing a copy of include/linux/compatmac.h 
-from a newer kernel.
-
-
-
---
-dwmw2
-
+SGkgYWxsIQ0KDQpBZnRlciBwdXR0aW5nIHRoZSBjb21wYXRtYWMuaCBmaWxlLCBJJ3ZlIHN0
+aWxsIHByb2JsZW1zIGNvbXBpbGluZzoNCg0KMSAtIEkgaGFkIHRvIGNvbW1lbnQgdGhlIGRl
+ZmluaXRpb24gb2YgREVDTEFSRV9XQUlUUVVFVUUgaW4gbXRkLmgsIGFzDQppdCdzIGFsc28g
+ZGVmaW5lZCBpbiBjb21wYXRtYWMuaC4gQ29tbWVudGluZyB0aGUgc2FtZSBsaW5lIGluDQpj
+b21wYXRtYWMuaCBkaWQgbm90IGNvbXBpbGUuDQoNCjIgLSBDb21waWxlciBjb21wbGFpbmVk
+IGFib3V0ICdhZGQnIG5vdCBiZWluZyBhIG1lbWJlciBvZiBtdGRfbm90aWZpZXIuDQpBbmQg
+aXQgd2FzIHJpZ2h0LCBtdGQuaCBjb250YWluZWQgdGhlIGZvbGxvd2luZzoNCg0Kc3RydWN0
+IG10ZF9ub3RpZmllciB7DQogICAgdm9pZCAoKmZ1bmMpKHN0cnVjdCBtdGRfaW5mbyAqbXRk
+LCBpbnQgbnVtKTsNCiAgICBzdHJ1Y3QgbXRkX25vdGlmaWVyICpuZXh0Ow0KfTsNCg0KU28s
+IEkgZ3Vlc3NlZCBJIGhhZCB0byBjaGFuZ2UgaXQgdG86DQoNCnN0cnVjdCBtdGRfbm90aWZp
+ZXIgew0KICAgIHZvaWQgKCphZGQpKHN0cnVjdCBtdGRfaW5mbyAqbXRkKTsNCiAgICB2b2lk
+ICgqcmVtb3ZlKShzdHJ1Y3QgbXRkX2luZm8gKm10ZCk7DQogICAgc3RydWN0IG10ZF9ub3Rp
+ZmllciAqbmV4dDsNCn07DQoNCjMgLSBUaGVuLCBpbiBkb2MyMDAwLmMsIGl0IGNvbXBsYWlu
+ZWQgYWJvdXQgQ0RTTkNvbnRyb2wgYW5kDQpDRFNOX0NUUkxfRlJfQiBub3QgYmVpbmcgZGVm
+aW5lZC4gTG9va2luZyBhdCB0aGUgaGVhZGVyIGZpbGVzDQooZG9jMjAwMC5oKSwgSSBzYXcg
+dGhhdCBpdCdzIENTRE5Db250cm9sIGFuZCBDRFNOX0NUUkxfRlJfQi4gU28gSQ0KY2hhbmdl
+ZCBhbGwgdGhpcy4NCg0KNCAtIEFnYWluIGluIGRvYzIwMDAuYywgZG9jLT5uZXh0ZG9jIChz
+dHJ1Y3QgRGlza09uQ2hpcCAqZG9jKSBkb2VzIG5vdA0KZXhpc3QuIEkgY291bGRuJ3QgZmln
+dXJlIG91dCB0aGlzIG9uZS4NCg0KSSBzdXBwb3NlIGFsbCB0aGVzZSBlcnJvcnMgYXJlIGJl
+Y2F1c2UgSSB0b29rIHRoZSBzb3VyY2VzIGZyb20gQ1ZTLCBhbmQNCnRoYXQgdGhpcyBpcyBk
+ZXZlbG9wbWVudCBjb2RlLg0KDQpDaGVlcnMNCg0K
 
 
 
