@@ -1,16 +1,17 @@
-Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17AUzM-0007lG-00
-	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 13:13:08 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: how to make a bootable linux on doc millennium 
-Date: Wed, 22 May 2002 08:12:08 -0400
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200205220810312.SM02488@there>
+	id 17AVrD-0007pU-00
+	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 14:08:47 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <002a01c2017b$682474a0$5501a8c0@synso.com.tw> 
+References: <002a01c2017b$682474a0$5501a8c0@synso.com.tw> 
+To: "Steve Tsai" <startec@ms11.hinet.net>
+Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: Re: FW: Zlib compress 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 22 May 2002 14:06:45 +0100
+Message-ID: <30199.1022072805@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,18 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 22 May 2002, [gb2312] cytang wrote:
+startec@ms11.hinet.net said:
+>  I can not use alignment trap with SamsungS3C4510 which is a ARM7TDMI
+> processor, because ARM7TDMI does not have coprocessor 15 using in
+> alignment trap codes. Now I try to use get_unaligned to fix the
+> alignment problem in my platform and I can write the file into the
+> flash, but when I read the file, I got decompressing error, then
+> unalignment exception. How many codes do I need to modify?  
 
->   my aim is just to build a mini system which can boot
-> off my doc . I dont know whether 8M space of Doc  is
-> enough . How can I make such a small system ,and can
-> boot form doc?
+I'm not aware of any related to JFFS2 or MTD other than the ones in the 
+flash driver. Did you decode the oops you got? Where was it from?
 
-Marius is correct - both LILO and patched GRUB can make the DOC Millennium 
-bootable.  8MB is more than enough space for a small system.
-
-I used a package called "Peewee Linux" (GPL-license) to set up my DOC Mil.  
-It currently uses 2.2 kernels, but it is possible to use a custom kernel -- 
-in my case, a 2.4.18 with the MTD drivers.
-
-Mark
+--
+dwmw2
