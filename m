@@ -1,24 +1,21 @@
-Received: from zorglub.ssji.net ([2001:7a8:3030::face])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKCMa-0001D8-Fl
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 05:02:33 -0400
-Received: from yagoo.io.ssji.net ([10.0.0.1] helo=yagoo)
-	by zorglub.ssji.net with smtp (Exim 4.24) id 1CKCMW-0004NO-4h
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 11:02:28 +0200
-Date: Wed, 20 Oct 2004 11:02:27 +0200
-From: Nicolas Pouillon <nipo@ssji.net>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20041020110227.4942e11f.nipo@ssji.net>
-In-Reply-To: <20041020104546.4fe9e838.nipo@ssji.net>
-References: <200410052313.27435.rezso@rdsor.ro>
-	<200410091404.15342.rezso@rdsor.ro>
-	<20041013001912.3368476c.nipo@ssji.net>
-	<200410131001.43004.rezso@rdsor.ro>
-	<20041020104546.4fe9e838.nipo@ssji.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: More [DoC] strangeness.
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKCXK-0001NF-6W
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 05:13:39 -0400
+Message-ID: <41762CF9.9030501@inf.u-szeged.hu>
+Date: Wed, 20 Oct 2004 11:16:41 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>	
+	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>	
+	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
+	<1098180892.13633.1079.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1098180892.13633.1079.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 compression
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Wed, 20 Oct 2004 10:45:46 +0200]
-Nicolas Pouillon <nipo@ssji.net> eut le bonheur d'=E9crire:
-[...]
+David Woodhouse wrote:
 
-Whoops, sorry, private conversation, should not have come here.
+> We should probably plug it in using the crypto API or something similar.
+> There's not a _huge_ amount of difference between compression routines
+> and crypto routines. 
 
---=20
-Nipo <nipo@ssji.net>
-Gnu-PGP: 1024D/1DBF658F
-http://nipo.ssji.net/nipo.asc
+Yes, I agree with you. I will look after how cryto API works and think 
+over the differences between crypt and compression. It whould be also 
+nice to collect some really well working public compressor modul.
+
+Regards,
+Ferenc
