@@ -1,20 +1,17 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 195T4u-0001bV-Az
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 17:14:36 +0100
-Date: Tue, 15 Apr 2003 18:14:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Jasmine Strong <jasmine@regolith.co.uk>
-Message-ID: <20030415161442.GF7721@wohnheim.fh-wedel.de>
-References: <20030415153934.GD7721@wohnheim.fh-wedel.de>
-	<F3B9D6B6-6F5C-11D7-B468-000393AD6294@regolith.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <F3B9D6B6-6F5C-11D7-B468-000393AD6294@regolith.co.uk>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
+	id 195TE3-0001kT-A8
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 17:24:03 +0100
+Date: Tue, 15 Apr 2003 17:23:59 +0100
+Mime-Version: 1.0 (Apple Message framework v552)
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+From: Jasmine Strong <jasmine@regolith.co.uk>
+In-Reply-To: <20030415161442.GF7721@wohnheim.fh-wedel.de>
+Message-Id: <A97C8A02-6F5E-11D7-B468-000393AD6294@regolith.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 cc: Holger Schurig <h.schurig@mn-logistik.de>
+cc: linux-mtd@lists.infradead.org
 cc: Esben Nielsen <esn@cotas.dk>
 Subject: Re: Database on JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,31 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 April 2003 17:11:44 +0100, Jasmine Strong wrote:
-> On Tuesday, Apr 15, 2003, at 16:39 Europe/London, Jörn Engel wrote:
-> >
-> >On NOR, there is absolutely no point in avoiding many writes.
-> 
-> Unless it would cause many erases, which would slow things down a lot...
-> If data integrity is the crucial issue (which it usually is) there's no 
-> way to avoid
-> this, though.
 
-Erases get triggered by garbage collection, which depends on the
-amount of data written, not the chunk size.
+On Tuesday, Apr 15, 2003, at 17:14 Europe/London, J=F6rn Engel wrote:
 
-> The only other issue I can foresee is the overhead of the jffs 
-> structures at the
-> start of each write;  if there are only a few bytes being written each 
-> time, it
-> quickly becomes very significant.
+> On Tue, 15 April 2003 17:11:44 +0100, Jasmine Strong wrote:
+>> Unless it would cause many erases, which would slow things down a=20
+>> lot...
+> Erases get triggered by garbage collection, which depends on the
+> amount of data written, not the chunk size.
 
-Correct. iirc, node header was 70 Bytes, so writes below 700 Bytes
-will have significant overhead (10% in my book). Point taken.
+yes.  I think my two points were actually the same point taken twice :-)
+If you're only updating a few bytes of data you will end up writing
+a large proportion of log control data.  That'll end up being
+responsible for most of the erase traffic.
 
-Jörn
+Still, if you need to be powerfail-safe, I can't see any way of not
+doing this.
 
--- 
-Fantasy is more important than knowlegde. Knowlegde is limited,
-while fantasy embraces the whole world.
--- Albert Einstein
+-Jas.=
