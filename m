@@ -1,23 +1,19 @@
-Received: from 100.red-80-36-174.pooles.rima-tde.net ([80.36.174.100]
-	helo=beta.iqc-services.com)
+Received: from draco.netpower.no ([212.33.133.34])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kg2g-0007gQ-DT
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 09:22:38 +0100
-Received: from amavis by beta.iqc-services.com with scanned-ok (Exim 4.20 #1
-	(OpenNA Linux))	id 19kg22-00030f-Q6
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 10:21:58 +0200
-Received: from devil.iqc-services.local ([192.168.197.3]
-	helo=devil.teleline.es)
-	by beta.iqc-services.com with esmtp (Exim 4.20 #1 (OpenNA Linux))
-	id 19kg22-00030W-4v
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 10:21:58 +0200
-Message-Id: <5.2.1.1.2.20030807101847.00bfc310@pop3.iqc-services.com>
-Date: Thu, 07 Aug 2003 10:22:14 +0200
-To: linux-mtd@lists.infradead.org
-From: Marcos Lois =?iso-8859-1?Q?Berm=FAdez?= <securez@teleline.es>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: I have a NOR and NAND flash chips
+	id 19khIZ-0007uM-2v
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 10:43:07 +0100
+Received: from lair ([212.33.152.109])
+	by draco.netpower.no (8.12.9/8.12.8) with ESMTP id h779iWur018925
+	for <linux-mtd@lists.infradead.org>; Thu, 7 Aug 2003 11:44:32 +0200
+From: =?iso-8859-1?Q?=D8yvind_Harboe?= <oyvind.harboe@zylin.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 7 Aug 2003 11:42:54 +0200
+Message-ID: <000601c35cc8$46de3c50$73dea8c0@lair>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2 ram memory usage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello i will start to add support for the new revision of the Dragonix 
-board. Now in the board we have a NOR flash (i already have this flash chip 
-working), and a NAND chip also a SmartMedia slot.
+I've made some changes to JFFS2 locally to reduce memory usage.
 
-My question is:
+The change I did was to disable compresssion as I have lots
+of flash and little ram(Atmel EB40a 2MB flash + 256k ram +
+eCos and my app).
 
-Can i setup mtd to work with both types of memories NOR and NAND, there are 
-any example to do this?
-How i can implement the SmartMedia slot, to allow hot plug of the 
-smartmedia cards?
+My usage of JFFS2 is intermittant and hence I'd like to
+reduce peak memory usage(much better with compression
+disabled) and idle memory usage(perhaps unmounting JFFS2
+when I'm not using it?).
 
-Any hel are apreciated.
+I did post a RFC on the changes I did to the ecos-patches
+mailing list, but I'll clean it up to the best of my abilities
+if there might be useful to others as well.
 
-Regards.
+Comments?
+
+http://sources.redhat.com/ml/ecos-patches/2003-08/msg00019.html
+
+Sincerely,
+=D8yvind
