@@ -1,24 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.196])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CjLOp-0004u2-Hv
-	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2004 12:44:48 -0500
-Received: by wproxy.gmail.com with SMTP id 37so413235wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Dec 2004 09:44:46 -0800 (PST)
-Message-ID: <6934efce041228094447dbfbd1@mail.gmail.com>
-Date: Tue, 28 Dec 2004 09:44:45 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: llandre <r&d2@dave-tech.it>
-In-Reply-To: <6.0.1.1.0.20041228094614.01ec9ff8@192.168.2.1>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CjVGe-0005wq-9k
+	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2004 23:17:03 -0500
+Message-ID: <002a01c4ed5d$70a92050$8500a8c0@nit37>
+From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+To: "Vikrant_Basotra" <Vikrant_Basotra@Satyam.com>,
+	<linux-mtd@lists.infradead.org>
+References: <3D9FDCA910DD4445896A0BE5ECF009D40212F050@bla.satyam.com>
+Date: Wed, 29 Dec 2004 09:48:14 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-References: <6.0.1.1.0.20041227121334.01ec55d8@192.168.2.1>
-	<6934efce04122709464e95ec21@mail.gmail.com>
-	<6.0.1.1.0.20041228094614.01ec9ff8@192.168.2.1>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: How to exploit STS pin of Strata Flash
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Cc: 
+Subject: Re: S29GL064M90 flash memory driver required
+Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> To avoid the bus accesses to detect the end of erase/write operations.
-> This wastes a lot of bus bandwidth.
+Hi,
 
-I believe the current StrataFlash drivers actually sleep() for an
-appropriate amount of time in both the write and erase routines.  I'm
-not sure that they are actually going to be wasting that much useful
-bus time.  I'm curious to know if you have any data to suggest this
-bus usage has any significant impact on system performance.
- 
-> >How?  Connect it to a irq line?
-> 
-> Is this supported by MTD? How to enable this feature in the low-level driver?
-> I had a look at the existing drivers but it neems no one uses interrupt ...
+Usually mtd drivers are available in \usr\src\linux<kernel 
+version>\drivers\mtd\chips.
+I guess the amd driver available there shall work.
 
-No.  I was just curious what you were thinking of.  It could be done. 
-If you really think its worth it.
+Regards,
+Subrahmanyam.
 
-,Jared
+----- Original Message ----- 
+From: "Vikrant_Basotra" <Vikrant_Basotra@Satyam.com>
+To: <linux-mtd@lists.infradead.org>
+Sent: Tuesday, December 28, 2004 06:13 PM
+Subject: S29GL064M90 flash memory driver required
+
+
+> Hi All,
+> I am using Spansion's S29GL064M90 flash memory (CFI Compatible) on
+> mpc8248 based board. I need the linux driver for this flash memory, can 
+> any
+> one guide me from where I could get the driver for this Flash Memory or if
+> some one has a driver which can work with this flash, please do send the
+> code.
+> Regards,
+> Vikrant Basotra
+> **************************************************************************
+> This email (including any attachments) is intended for the sole use of the
+> intended recipient/s and may contain material that is CONFIDENTIAL AND
+> PRIVATE COMPANY INFORMATION. Any review or reliance by others or copying 
+> or
+> distribution or forwarding of any or all of the contents in this message 
+> is
+> STRICTLY PROHIBITED. If you are not the intended recipient, please contact
+> the sender by email and delete all copies; your cooperation in this regard
+> is appreciated.
+> **************************************************************************
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/ 
