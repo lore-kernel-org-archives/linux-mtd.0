@@ -1,19 +1,17 @@
-Received: from [64.120.26.98] (helo=phonos.telos-systems.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15iyIY-000715-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2001 14:18:54 +0100
-Message-id: <fc.000f680100284994000f680100283f75.2849d0@telos-systems.com>
-Date: Mon, 17 Sep 2001 09:06:55 -0400
-Subject: Re(2): trouble compiling mkfs.jffs2
-To: joern@wohnheim.fh-wedel.de
-Cc: linux-mtd@lists.infradead.org
-From: "James Schettine" <james@telos-systems.com>
-References: <fc.000f680100283f75000f680100283f75.283ff2@telos-systems.com>
- <20010915211257.B23628@wohnheim.fh-wedel.de>
-In-Reply-To: <20010915211257.B23628@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+	id 15iyiJ-00073G-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2001 14:45:31 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <fc.000f680100284994000f680100283f75.2849d0@telos-systems.com> 
+References: <fc.000f680100284994000f680100283f75.2849d0@telos-systems.com>  <fc.000f680100283f75000f680100283f75.283ff2@telos-systems.com> <20010915211257.B23628@wohnheim.fh-wedel.de> 
+To: "James Schettine" <james@telos-systems.com>
+Cc: joern@wohnheim.fh-wedel.de, linux-mtd@lists.infradead.org
+Subject: Re: Re(2): trouble compiling mkfs.jffs2 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 17 Sep 2001 14:51:31 +0100
+Message-ID: <14988.1000734691@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,25 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joern@wohnheim.fh-wedel.de writes:
->Just a wild guess, but Debian 2.2 (aka Potato) is based on the 2.2
->Kernel series. This also effects a bunch of files in the /usr/include
->tree and might be the cause of your problems.
->You could update your Debian system to testing/Woody or simply
->temporarily symlink /usr/include/linux to /usr/src/linux/include - if
->that one belongs to a current kernel version.
 
-Thanks...  I got it to compile (v1.15), but when I run it 
-it creates a file size == one erase block.
+james@telos-systems.com said:
+>  Thanks...  I got it to compile (v1.15), but when I run it  it creates
+> a file size == one erase block.
 
-A quick web search led me to :
-ftp://ftp.uk.linux.org/pub/people/dwmw2/iPAQ/mkfs.jffs2.1.8
-running it --version sez 1.7 and it creates the whole 5 meg
-but my kernel complains bitterly that the fs is too old.
+1.15 was doing naughty things when given a relative rootdir, and just 
+segfaulting when the rootdir wasn't specified.  1.16 should fix it.
 
-If I could grab a binary somewhere I could move on.
-If no-one can point me to a binary, I guess I'll
-be debugging this app on a 2.2 kernel.
-(my boss threatens to "just go back to WinCE"!)
+ftp.uk.linux.org:/pub/people/dwmw2/jffs2/mkfs.jffs2-1.16
 
-Thanks  J
+--
+dwmw2
