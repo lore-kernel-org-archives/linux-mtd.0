@@ -1,45 +1,58 @@
-From: enrico.scholz@sigma-chemnitz.de (Enrico Scholz)
-Date: Mon, 24 Feb 2003 13:37:55 +0100
-Subject: Kernel oops with an unclean unmounted filesystem
-In-Reply-To: <1045748089.2242.37.camel@passion.cambridge.redhat.com> (David
- Woodhouse's message of "20 Feb 2003 13:34:50 +0000")
-References: <lyr8a41m8y.fsf@ensc-pc.intern.sigma-chemnitz.de>
- <200302192122.28841.tglx@linutronix.de>
- <1045748089.2242.37.camel@passion.cambridge.redhat.com>
-Message-ID: <lyu1etzwf0.fsf@ensc-pc.intern.sigma-chemnitz.de>
+From: DGE@sixnetio.com (Dave Ellis)
+Date: Mon, 24 Feb 2003 13:46:45 -0500
+Subject: [PATCH] fix jffs2_get_ino_cache()
+Message-ID: <00512BA4F9D3D311912A009027E9B8F407E4BE@NT>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-David Woodhouse <dwmw2@infradead.org> writes:
+This patch fixes a kernel oops that happens when a negative
+inode number is passed to jffs2_get_ino_cache(). The ino
+parameter should be uint32_t, not int since inodes are unsigned.
 
->> What exactly did you do there ? I mean creating and/or
->> modifying.  The problem is the node is written with valid
->> CRC, so it seems to be correct, but the node content is
->> totally crap. Compressed data size = 0x6b6b6b6b.
->
-> That's slab poisoning...
->
-> What other drivers are present in your system?
+If the value passed is negative (when viewed as signed) the
+cache index is calculated as negative (at least on PowerPC
+and x86) and the invalid index causes a kernel oops. I am seeing
+this when trying to mount a NAND flash with the header of
+an inode node at the last 12 bytes of a page. The following
+page with the inode data is still erased, so the inode passed
+to jffs2_get_ino_cache is 0xffffffff, which is seen as -1.
 
-I am running a heavily patched 2.5.59 kernel (rmk + ported PXA +
-specific architecture patches) with potentially broken hardware
-(PXA250 B1 stepping) so it is possible that other parts of the
-system are guilty.
+When mounting only the crc for the header is checked before
+calling jffs2_get_ino_cache(), so the bad inode data is not
+detected.
 
-But because the problem disappears with recent CVS version of
-JFFS2 it is probably caused by it. Since it is fixed in CVS I do
-not know if it is worth to trace it further; when you give me
-patches adding additional debugging checks I can try to get the
-necessary information.
+Dave Ellis
+<dge@sixnetio.com>
 
-
-> Can you reproduce this?
-
-Yes; 100% when doing a 'touch foobar' on the original 2.5.59
-kernel (JFFS2 is not touched by my patches).
-
-
-
-
-Thanks for your explainations
-Enrico
+diff -Naur orig/nodelist.c patch/nodelist.c
+--- orig/nodelist.c	Mon Feb 24 09:58:07 2003
++++ patch/nodelist.c	Mon Feb 24 13:11:26 2003
+@@ -450,7 +450,7 @@
+    Rather than introducing special case get_ino_cache functions or 
+    callbacks, we just let the caller do the locking itself. */
+    
+-struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c, int
+ino)
++struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c,
+uint32_t ino)
+ {
+ 	struct jffs2_inode_cache *ret;
+ 
+diff -Naur orig/nodelist.h patch/nodelist.h
+--- orig/nodelist.h	Mon Feb 24 09:58:07 2003
++++ patch/nodelist.h	Mon Feb 24 13:11:56 2003
+@@ -292,7 +292,7 @@
+ 			  uint32_t *highest_version, uint32_t
+*latest_mctime,
+ 			  uint32_t *mctime_ver);
+ void jffs2_set_inocache_state(struct jffs2_sb_info *c, struct
+jffs2_inode_cache *ic, int state);
+-struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c, int
+ino);
++struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c,
+uint32_t ino);
+ void jffs2_add_ino_cache (struct jffs2_sb_info *c, struct jffs2_inode_cache
+*new);
+ void jffs2_del_ino_cache(struct jffs2_sb_info *c, struct jffs2_inode_cache
+*old);
+ void jffs2_free_ino_caches(struct jffs2_sb_info *c);
