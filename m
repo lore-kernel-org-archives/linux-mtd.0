@@ -1,26 +1,25 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1358A1-00050v-00
-	for mtd-list@infradead.org; Thu, 22 Jun 2000 15:40:53 +0100
+	id 135PD6-000739-00
+	for mtd-list@infradead.org; Fri, 23 Jun 2000 09:53:12 +0100
 Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 1358A1-00050p-00
-	for cvs-notify@infradead.org; Thu, 22 Jun 2000 15:40:53 +0100
+	id 135PD5-000733-00
+	for cvs-notify@infradead.org; Fri, 23 Jun 2000 09:53:11 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/patches put_module_symbol-2.2.1x.patch'
-Message-Id: <E1358A1-00050p-00@infradead.org>
+Subject: MTD CVS update: 'mtd/kernel mtdcore.c'
+Message-Id: <E135PD5-000733-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 22 Jun 2000 15:40:53 +0100
+Date: Fri, 23 Jun 2000 09:53:11 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/patches
-In directory infradead.org:/tmp/cvs-serv19257
+Update of /home/cvs/mtd/kernel
+In directory infradead.org:/tmp/cvs-serv27094
 
-Added Files:
-	put_module_symbol-2.2.1x.patch 
+Modified Files:
+	mtdcore.c 
 Log Message:
-Patch to 2.2 kernels to fix up the race in get_module_symbol() and add
-put_module_symbol
+Add init_mtdram call. The 2.2 initialisation setup sucks
 
 
 
