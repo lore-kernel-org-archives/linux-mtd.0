@@ -1,18 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 12-224-59-30.client.attbi.com ([12.224.59.30] helo=localhost.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17z1Lw-0008Ho-00
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2002 21:53:16 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200210082238.02460.haensse@swissembedded.com> 
-References: <200210082238.02460.haensse@swissembedded.com> 
-To: daniel.haensse@alumni.ethz.ch
-Cc: JFFS developer mailing list <jffs-dev@axis.com>,
-    linux-mtd@lists.infradead.org
-Subject: Re: Eraseall crash on uclinux 2.4.19 
+	id 17z9OJ-0000YC-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2002 06:28:15 +0100
+Received: (from root@localhost)
+	by localhost.localdomain (8.11.6/8.11.6) id g995Rfc04335
+	for linux-mtd@lists.infradead.org; Tue, 8 Oct 2002 22:27:41 -0700
+Date: Tue, 8 Oct 2002 22:27:41 -0700
+From: John Telford <John@JohnTelford.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Booting IDE JFFS2
+Message-ID: <20021009052741.GA4323@lnx2.labnet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 08 Oct 2002 21:53:12 +0100
-Message-ID: <6757.1034110392@passion.cambridge.redhat.com>
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,21 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-daniel.haensse@alumni.ethz.ch said:
-> on line 142 a eraseall /dev/mtd0 stops with a failed 11 (EAGAIN)
+Hello
 
->  Any idea what might be wrong?
+I'm designing a disk-less, Linux-based router using regular, generic,
+off the shelf motherboards.  It will be running the network-centric
+bls linux distribution (http://bls.sf.net).
 
-Er, no -- I can't see how the erase function can return EAGAIN. Where's it 
-coming from?
+Replacing a hard drive with a JFFS2 file system, off the shelf
+CompactFlash technology, and an inexpensive IDE adapter is *very*
+attractive.
 
+The problem is how to boot the sucker.
 
-> Another question: Can we ignore the AMD_BOOTLOC_BUG and switch this
-> off? Is this also Fujitsu  related? 
+My understanding is lilo and grub don't do JFFS2 yet.
 
-I think you can ignore it. It's only valid for AMD parts, I believe. Other 
-people managed to get a simple table correct. Someone was going to clean 
-that up.
+What booting alternatives do I have?
 
---
-dwmw2
+...John
+
+-- 
+John Telford - Owner
+JohnTelford.com LLC
+503-292-6865 - fax:503-292-3094
+john@johntelford.com - www.johntelford.com
