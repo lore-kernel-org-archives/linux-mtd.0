@@ -1,14 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Per Hedblom <per.hedblom@abem.se>
-In-Reply-To: <20041111155005.D5E253800A@smtp1-2-sn3.vrr.skanova.net>
-References: <20041111155005.D5E253800A@smtp1-2-sn3.vrr.skanova.net>
-Content-Type: text/plain
-Message-Id: <1100188953.8191.1422.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 11 Nov 2004 16:02:33 +0000
+Received: from mail.imc-berlin.de ([217.110.46.186])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CSHXL-0006OQ-Kg
+	for linux-mtd@lists.infradead.org; Thu, 11 Nov 2004 11:11:05 -0500
+Message-ID: <41938F11.3040903@imc-berlin.de>
+Date: Thu, 11 Nov 2004 17:10:57 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+In-Reply-To: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: [JFFS2] GC patch for eCos port
+Subject: Re: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-11-11 at 16:50 +0100, Per Hedblom wrote:
-> > Can you elaborate? I've seen very few patches submitted, and from that
-> > I've inferred that we've been doing a good job of keeping the eCos port
-> > working.
->  
-> That's true, but I am afraid that jffs2 has not been stressed and tested
-> enough in eCos. We have spent a lot of time without finding serious bugs
-> like this and I don't expect it to be stable yet.
+Jochen Karrer wrote:
+> Hi,
+> jffs2 did not work in linux-2.6.8.1 because single word writes at the end
+> of a buffer write are done with the wrong address:
+> 
+> --- /home/jkarrer/kernel/linux-2.6.8.1/drivers/mtd/chips/cfi_cmdset_0002.c
+> Sat Aug 14 12:55:20 2004
+> +++ cfi_cmdset_0002.c	Thu Aug 26 14:33:42 2004
+> @@ -1128,7 +1128,7 @@
+>  	if (len) {
+>  		size_t retlen_dregs = 0;
+> 
+> -		ret = cfi_amdstd_write_words(mtd, to, len, &retlen_dregs, buf);
+> +		ret = cfi_amdstd_write_words(mtd, ofs + (chipnum<<cfi->chipshift), len,
+> &retlen_dregs, buf);
+> 
+>  		*retlen += retlen_dregs;
+>  		return ret;
 
-True. But please do keep reporting them. It shouldn't be hard to keep
-the eCos port working, assuming the core code is OK. The glue layer to
-plug it into the operating system code isn't the hard part.
+As far as I can see this bug is still not fixed in 2.6.9!
+Is it done in newer versions?
 
-> Just wanted to give everybody an honest hint on memory usage and that eCos
-> users should use the pool implementation and I think that an updated ecos
-> implementation should include a fully pool supported memory management. 
-
-Yeah. We already have something like that in the Linux version, with the
-slab caches for different objects. It's still dynamic though, because we
-can allocate more slab pages at runtime; it's not a fixed pool.
-
-> I have seen the skeleton but think I need some more guidance about how to
-> protect file operations and the gc operations from each other (what kind of
-> locking is needed?) before I give it a try.
-
-No locking is required for that purpose. Look at fs/jffs2/background.c
-in my CVS tree -- the Linux implementation of the background thread. The
-only locking there is to synchronise starting and killing the thread.
-
--- 
-dwmw2
+--
+Steven
