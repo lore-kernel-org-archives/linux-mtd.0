@@ -1,20 +1,19 @@
-Received: from pc-5.tkhnl.demon.nl
-	([195.11.235.101] helo=intranet.turnkiek.nl ident=root)
+Received: from atllc.net ([24.242.128.194] helo=mail.atllc.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18P26k-0002c4-00
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 14:57:06 +0000
-Reply-To: <wolff@turnkiek.nl>
-From: "Carl Wolff" <wolff@turnkiek.nl>
-To: "'David Woodhouse'" <dwmw2@infradead.org>, <wolff@turnkiek.nl>
-Cc: <linux-mtd@lists.infradead.org>, <vanee@turnkiek.nl>
-Subject: RE: problem using jffs2 on DiskOnChip 
-Date: Thu, 19 Dec 2002 16:29:33 +0100
-Message-ID: <000301c2a773$6f5d5360$446410ac@lt-gw8l30j.turnkiek.nl>
-MIME-Version: 1.0
+	id 18P3dw-0002q1-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 16:35:28 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <12900.1040292850@passion.cambridge.redhat.com>
+  charset="iso-8859-1"
+From: Brian Austin <brian@atllc.net>
+To: <wolff@turnkiek.nl>
+Subject: Re: problem using jffs2 on DiskOnChip
+Date: Thu, 19 Dec 2002 06:21:38 -0600
+References: <000301c2a773$6f5d5360$446410ac@lt-gw8l30j.turnkiek.nl>
+In-Reply-To: <000301c2a773$6f5d5360$446410ac@lt-gw8l30j.turnkiek.nl>
+Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200212190621.38374.brian@atllc.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,46 +25,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello David,
+On Thursday 19 December 2002 09:29, Carl Wolff wrote:
 
-OK. Two questions:
-1) Does JFFS2 actually work on a DiskOnChip?
-2) Other alternatives? We need a powersafe filesystem on DiskOnChip.
-
-
-Thanks, and happy newyear, I'm going on holiday now.
-
-Carl.
+use ext3 instead.  Depending onhow big your chip is.
+or reiserfs
 
 
-> -----Original Message-----
-> From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
-> Woodhouse
-> Sent: donderdag 19 december 2002 11:14
-> To: wolff@turnkiek.nl
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: problem using jffs2 on DiskOnChip 
-> 
-> 
-> 
-> wolff@turnkiek.nl said:
-> > Short read: 0x10 bytes at 0x000001f0 instead of requested 44 
-> 
-> The DiskOnChip hardware driver hasn't been used much with 
-> anything other 
-> than NFTL. It appears not to do a full read if you ask it to 
-> read a range 
-> of data which crosses a page boundary. Fix it accordingly by 
-> putting an 
-> appropriate loop in instead of...
-> 
->         /* Don't allow a single read to cross a 512-byte 
-> block boundary */
->         if (from + len > ((from | 0x1ff) + 1))
->                 len = ((from | 0x1ff) + 1) - from;
-> 
-> --
-> dwmw2
-> 
-> 
-> 
+> Hello David,
+>
+> OK. Two questions:
+> 1) Does JFFS2 actually work on a DiskOnChip?
+> 2) Other alternatives? We need a powersafe filesystem on DiskOnChip.
+>
+>
+> Thanks, and happy newyear, I'm going on holiday now.
+>
+> Carl.
+>
+> > -----Original Message-----
+> > From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
+> > Woodhouse
+> > Sent: donderdag 19 december 2002 11:14
+> > To: wolff@turnkiek.nl
+> > Cc: linux-mtd@lists.infradead.org
+> > Subject: Re: problem using jffs2 on DiskOnChip
+> >
+> > wolff@turnkiek.nl said:
+> > > Short read: 0x10 bytes at 0x000001f0 instead of requested 44
+> >
+> > The DiskOnChip hardware driver hasn't been used much with
+> > anything other
+> > than NFTL. It appears not to do a full read if you ask it to
+> > read a range
+> > of data which crosses a page boundary. Fix it accordingly by
+> > putting an
+> > appropriate loop in instead of...
+> >
+> >         /* Don't allow a single read to cross a 512-byte
+> > block boundary */
+> >         if (from + len > ((from | 0x1ff) + 1))
+> >                 len =3D ((from | 0x1ff) + 1) - from;
+> >
+> > --
+> > dwmw2
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
