@@ -1,15 +1,15 @@
 Received: from [65.200.123.6] (helo=mail.utstar.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 172vrK-00027c-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 May 2002 16:17:34 +0100
+	id 172yAy-0002Fd-00
+	for <linux-mtd@lists.infradead.org>; Wed, 01 May 2002 18:46:00 +0100
 Received: from njtckasturi3 (njtc-kasturi-3.nj.us.utstar.com [172.16.133.70])
-	by mail.utstar.com (8.11.3/8.11.3) with SMTP id g41FHAK09768
-	for <linux-mtd@lists.infradead.org>; Wed, 1 May 2002 11:17:10 -0400 (EDT)
+	by mail.utstar.com (8.11.3/8.11.3) with SMTP id g41HjdK26867
+	for <linux-mtd@lists.infradead.org>; Wed, 1 May 2002 13:45:39 -0400 (EDT)
 From: "Kasturi  Raghunath" <kasturi@utstar.com>
 To: <linux-mtd@lists.infradead.org>
 Subject: Running JFFS on ep8260 board
-Date: Wed, 1 May 2002 11:17:31 -0400
-Message-ID: <DJEELHNCJDICCAIMLCCCOEILCCAA.kasturi@utstar.com>
+Date: Wed, 1 May 2002 13:45:59 -0400
+Message-ID: <DJEELHNCJDICCAIMLCCCOEINCCAA.kasturi@utstar.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
