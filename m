@@ -1,19 +1,21 @@
-Received: from nimbus19.internetters.co.uk ([209.61.216.65])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C2TK2-0002LC-5d
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2004 07:30:40 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by cambridge.braddahead.com (Postfix) with ESMTP id D50375ABEA
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  1 Sep 2004 12:30:30 +0100 (BST)
-From: Alex Bennee <kernel-hacker@bennee.com>
-To: linux-mtd@lists.infradead.org
+Received: from david.siemens.de ([192.35.17.14])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2TWh-0002WM-ND
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2004 07:43:45 -0400
+Received: from mail3.siemens.de (mail3.siemens.de [139.25.208.14])
+	by david.siemens.de (8.12.6/8.12.6) with ESMTP id i81BgElO000052
+	for <linux-mtd@lists.infradead.org>; Wed, 1 Sep 2004 13:42:14 +0200
+Received: from mchh9ega.mchh.siemens.de (mchh9ega.mchh.siemens.de
+	[139.21.194.56])
+	by mail3.siemens.de (8.12.6/8.12.6) with ESMTP id i81Bg3fU007856
+	for <linux-mtd@lists.infradead.org>; Wed, 1 Sep 2004 13:42:13 +0200
+Message-ID: <7F3FE9B2FBF6194691BC493C6699C0B1568B8D@mchh9esa.mchh.siemens.de>
+From: Kuefmann Andreas ICM CP RD SD 1 <andreas.kuefmann@siemens.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Wed, 1 Sep 2004 13:41:58 +0200 
+MIME-Version: 1.0
 Content-Type: text/plain
-Message-Id: <1094038230.29012.246.camel@cambridge.braddahead.com>
-Mime-Version: 1.0
-Date: Wed, 01 Sep 2004 12:30:30 +0100
-Content-Transfer-Encoding: 7bit
-Subject: Handling non-uniform erase blocks
+Subject: how to change size of MTD partitions at runtime
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-We are using Am29LV160D flash chips on our SH based board. The chip has
-a series on small blocks at the top or bottom of the address range for
-use in bootstrap code or configuration storage.
+I'm searching for a solution to dynamically change the size of
+MTD partitions at runtime.
 
-When I set up my partitions I get this report:
+This functionality is required for a flash update of kernel and/or
+rootfs in the special case that the new kernel/rootfs is larger
+than the old one. (in an embedded environment)
 
-Creating 4 MTD partitions on "India1 FLASH":
-0x00000000-0x00010000 : "Boot Code"
-0x00010000-0x001e0000 : "Kernel"
-0x001e0000-0x001fc000 : "FPGA"
-mtd: partition "FPGA" doesn't end on an erase block -- force read-only
-0x001fc000-0x00200000 : "Config"
+1.)
+there is no problem in erasing the flash, e.g eraseall /dev/mtd?,
+(acting from a chrooted environment)
 
-Which indicates the treats the device as having a series of equal sized
-erase blocks so it can't erase the small blocks on their own. Is this a
-limitation of the mtd CFI code? Has anyone attempted to address this
-issue?
+2.)
+However, reprogramming the flash with a larger image (now
+exceeding the limits of the previous partition) isn't as
+easy as a cp newimage.img /dev/mtd?.
 
-I can have a look at implementing support if needed but before I do I
-thought it worth checking with the list. I'm afraid I got no joy out of
-google.
+The MTD layer will still rely on the (old) partition sizes
+that were valid during system startup. (taken over from a
+U-BOOT environment)
 
--- 
-Alex, Kernel Hacker: http://www.bennee.com/~alex/
+My plans are as follows:
+- erase the flash partitions
+- adapt the u-boot environment to reflect the new mtd partition sizes
+- force the MTD subsystem to "re-read" the partition table in u-boot's
+  environment.
+- cp the new images to /dev/mtd? (which now reflect the changed
+  partition sizes)
 
-"The C Programming Language -- A language which combines the flexibility
-of assembly language with the power of assembly language."
+My question now is:
+- How can I manage to force a re-read of the partition table?
+
+Or can you think of another solution to change MTD partitions at
+runtime?
+
+Thank you,
+regards,
+- Andy
