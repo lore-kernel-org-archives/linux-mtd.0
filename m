@@ -1,28 +1,19 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from pacific.moreton.com.au ([203.143.235.130]
+	helo=dorfl.internal.moreton.com.au)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19MwJo-0006Se-EU
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2003 21:54:12 +0100
-Date: Mon, 2 Jun 2003 22:54:41 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20030602205441.GA30619@wohnheim.fh-wedel.de>
-References: <20030530144959.GA4736@wohnheim.fh-wedel.de>
-	<002901c32919$ddc37000$570486da@w0a3t0>
-	<20030602153656.GA679@wohnheim.fh-wedel.de>
-	<1054568407.20369.382.camel@passion.cambridge.redhat.com>
-	<20030602155353.GB679@wohnheim.fh-wedel.de>
-	<1054569564.20369.385.camel@passion.cambridge.redhat.com>
-	<20030602163704.GC679@wohnheim.fh-wedel.de>
-	<1054582573.22361.6.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1054582573.22361.6.camel@imladris.demon.co.uk>
-Content-Type: text/plain; charset=iso-8859-1
+	id 19N0td-00075S-Cx
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 02:47:29 +0100
+Message-ID: <3EDBFE55.2040903@snapgear.com>
+Date: Tue, 03 Jun 2003 11:48:05 +1000
+From: Greg Ungerer <gerg@snapgear.com>
+MIME-Version: 1.0
+To: uClinux development list <uclinux-dev@uclinux.org>
+References: <Law14-OE536PDT89CLh0002e430@hotmail.com>
+In-Reply-To: <Law14-OE536PDT89CLh0002e430@hotmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-cc: matsunaga <matsunaga_kazuhisa@yahoo.co.jp>
-cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
+cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [uClinux-dev] uCdimm 68VZ328  JFFS2 Questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,27 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 June 2003 20:36:13 +0100, David Woodhouse wrote:
+Hi Vikram,
+
+Vikram Mehta wrote:
+> A few questions
+> 1.) I am using uCdimm 68VZ328 with AM29DL323GB flash chip
+> NOw I am on CYGWIN and am using Patrice KADIONIK guide HOW TO USE MTD/JFFS2
+> UNDER µClinux
 > 
-> I was concerned briefly that the allocation could happen when we're
-> trying to evict a page on memory pressure -- but in fact that's
-> virtually impossible since you'd have to mount the file system and mmap
-> your file without actually writing anything to the block device.
+[snip]
+> 2.) Earlier one was  a silly but important  question, The makefile in
+> mtd-utils compliles files with 2 compilers... Onewith m68k-elf-gcc and other
+> with gcc. Now on my machine ( I guess due to bein gon CYGWIN) gcc build
+> doesnot work for all files and I get linker errors. So I hv removed gcc
+> build parts from the makefile. How does that affect the working of the
+> tools, kernels etc.
 
-Right.  If someone gets into memory pressure before ever writing to
-the device, there should be other problems in the system anyway.  No
-need to fix something that is already broken elsewhere.
+ From your description I can tell you are referring the the uClinux-dist
+user/mtd-utils/Makefile, which is different to what is contained in
+the  MTD cvs Makefile.
 
-> And anyway, refer to earlier comments about anyone using the naïve
-> read/erase/modify/writeback mtdblock translation layer for writing in
-> production wanting to be shot for it :)
+The reason it is compiled with gcc in a complete uClinux build is
+to generate the filesystem builer tools for running as part of the
+build. So to build mkfs.jffs, mkfs.jffs2, etc. These will be needed
+on the host to construct a filesystem ready for loading onto the
+real target.
 
-Right!
 
-Jörn
+> 3.) Mr David Woodhouse was kind enough to answer me saying that MTD CVS
+> utils/makefile doenot contain any gcc build options. So Can someone send me
+> this makefile... I tried using the CVS but couldnot ..... I am trying but
+> still
 
--- 
-More computing sins are committed in the name of efficiency (without
-necessarily achieving it) than for any other single reason - including
-blind stupidity.
--- W. A. Wulf 
+If you are building uClinux-dist use what it contains.
+
+If you are using the MTD tools on there own use the MTD CVS
+code.
+
+
+> 4.) Can someone tell me from where can I read in detail about the
+> significance of changes Mentioned in  vendors/.../Makefile
+> DEVICES = \
+> tty,c,5,0 console,c,5,1 cua0,c,5,64 cua1,c,5,65 \
+> 
+> mtd0,c,90,0 mtd1,c,90,2 mdt2,c,90,4 mtd3,c,90,6 \
+> 
+> mtd4,c,90,8 mtd5,c,90,10 mtd6,c,90,12 mtd7,c,90,14 \
+> 
+> mtdblock0,b,31,0 mtdblock1,b,31,1 mtdblock2,b,31,2 mtdblock3,b,31,3 \
+
+In the uClinux-dist build system this is the list of device
+nodes that will be created in the target filesystem. Format is
+simple:
+
+    <node-name>,<b=block/c=char>,<major>,<minor>
+
+They are never created as nodes on the host system, only in the
+target root filesystem (be in ROMfs, JFFS, JFFS2, EXT2, whatever).
+
+Regards
+Greg
+
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
+SnapGear Pty Ltd                            PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
