@@ -1,20 +1,17 @@
-Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
+Received: from [209.50.160.217] (helo=goofy.vitronics.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Atrx0-0003qr-5O
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 17:27:02 +0000
-Received: from baydel.demon.co.uk ([158.152.156.193])
-	by anchor-post-32.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1Atrwy-000Ag5-0W
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 17:27:01 +0000
-From: "" <simon@baydel.com>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 19 Feb 2004 16:48:45 -0000
+	id 1AttQP-0004Ck-8b
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 19:01:30 +0000
 MIME-Version: 1.0
-Message-ID: <4034E8ED.5757.55A2D9@localhost>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
-Subject: JFFS2 Corruption.
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 19 Feb 2004 14:02:54 -0500
+Message-ID: <A1F0D47583A2D711919F00600819B3A427C366@goofy.vitronics.com>
+content-class: urn:content-classes:message
+From: "Cruz, Maria" <maria.cruz@VITRONICS.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: building blkmtd as a module
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +21,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am having problems using JFFS2 filesystems on a NAND device. I have had 
-these problems in the past an decided not to use this method for storing my data.
-I would really like to do this and I was wondering if anyone else had been able to 
-run such a system reliably ? The NAND device is a 128MB SMC and I have 
-downloaded the mtd code from CVS within the last week.
-
-I am using mtdpart to provide partitions but for the moment I am only using mtd1 as 
-a root file system. To build this I perform the following steps.
-
-
-1. Boot system via network and mount nfs root
-2. eraseall /dev/mtd1
-3. mount -t jffs2 /dev/mtdblock1 /smc
-4. cd /smc
-5. tar xvzf /rootfilesystem.tgz
-6. unmount /smc
-
-I then reboot using the SMC as my root filesystem. As the system gets rebooted 
-and incurrs more writes I get the following kinds of message
-
-Empty flash at 0x00469ffcb ends at 0x0046a000
-
-or
-
-jffs2_scan_dirent_node(): Node CRC failed on node at 0x0046a7f0 
-read 0xffffffff calculated 0xdec8161b
-
-I have written in before about these messages and I understand that the first is of 
-no concern but the second relates to write data which may not have been written to 
-the SMC.
-
-The thing is I have had this happen on two completely different harware designs. 
-On an X86 board and the other a PPC. 
-
-I have checked and the OS umounts root as it shuts down. Also I cannot find 
-fsck.jffs2 in the util directory. Does it exist ?
-
-In trying to debug this I noticed that the device was still reporting busy when 
-nand_command was entered. I have put a line of code in to delay until the device is 
-ready at the start of the routine. It is my understanding that if the device is busy 
-when you try and select/deselect or send a command the outcome cannot be 
-predicted. If this is not the case I would like to understand why. If it is how does any 
-of the NAND code work ? 
-
-Any help greatly appreciated 
-
-
-Cheers Simon.
-
-
-
-
-
-
-
-   __________________________
-
-Simon Haynes - Baydel 
-Phone : 44 (0) 1372 378811
-Email : simon@baydel.com
-__________________________
+thank you so much.  i altered the kernel/signal.c file and rebuilt.  and =
+life is good!
+maria cruz
