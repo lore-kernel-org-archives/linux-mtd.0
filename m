@@ -1,24 +1,24 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DBznF-0001cx-9v
-	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2005 13:32:26 -0500
-Date: Thu, 17 Mar 2005 19:32:18 +0100
+	id 1DBzrt-0001na-1z
+	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2005 13:37:13 -0500
+Date: Thu, 17 Mar 2005 19:37:15 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20050317183218.GC11836@wohnheim.fh-wedel.de>
-References: <42323A97.5070105@mvista.com>
-	<20050317163526.GB10864@wohnheim.fh-wedel.de>
-	<4239C51B.70101@mvista.com>
-	<1111083871.7610.3.camel@windu.rchland.ibm.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20050317183715.GD11836@wohnheim.fh-wedel.de>
+References: <20050317161110.GA10864@wohnheim.fh-wedel.de>
+	<1111081817.24487.64.camel@hades.cambridge.redhat.com>
+	<20050317180217.GA11836@wohnheim.fh-wedel.de>
+	<1111082993.24487.69.camel@hades.cambridge.redhat.com>
+	<20050317181737.GB11836@wohnheim.fh-wedel.de>
+	<1111083747.24487.80.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1111083871.7610.3.camel@windu.rchland.ibm.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	"Mark A. Greer" <mgreer@mvista.com>,
-	Embedded PPC Linux list <linuxppc-embedded@ozlabs.org>
-Subject: Re: [PATCH 2.6.12] mtd: Remove MTD map file for Chestnut platform.
+In-Reply-To: <1111083747.24487.80.camel@hades.cambridge.redhat.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] replace pseudo_random with standard random calls
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 17 March 2005 12:24:31 -0600, Josh Boyer wrote:
+On Thu, 17 March 2005 18:22:26 +0000, David Woodhouse wrote:
 > 
-> Jörn meant that the next time the MTD BK tree is synced with Linus,
-> it'll show up.  If it's already there, then no big deal :).
+> My original estimate was that it wouldn't be. If you have to collect
+> entropy from JFFS2 version numbers anyway, you're not making a lot of
+> progress on the code size. If you feed it into the random pool via a
+> cryptographic hash, you do get a better quality of entropy, but it costs
+> you a lot of time -- and time during the mount is at a premium already. 
 
-Not for me at least. ;)
-
-Bk could automatically detect if the same changeset went in through
-different trees.  From cvs, it may give dwmw2 a slight headache.
+Agreed.  More thinking then.
 
 Jörn
 
 -- 
-tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
--- Thomas Gleixner
+You can't tell where a program is going to spend its time. Bottlenecks
+occur in surprising places, so don't try to second guess and put in a
+speed hack until you've proven that's where the bottleneck is.
+-- Rob Pike
