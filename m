@@ -1,20 +1,19 @@
 Received: from fish.redhat.com ([213.86.99.237]
 	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 198GGo-0002nj-DP
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 10:10:26 +0100
+	id 198GKh-0002sy-Fb
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 10:14:27 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: jeffery <jeffery@jhandyh.adsldns.org>
-In-Reply-To: <002901c30767$129a8bd0$0201a8c0@jhandyh.adsldns.org>
-References: <002901c30767$129a8bd0$0201a8c0@jhandyh.adsldns.org>
-Message-Id: <1051089032.1989.18.camel@passion.cambridge.redhat.com>
+To: Sid Gluckman <sgluckman@omnitech.com>
+In-Reply-To: <OOEOKBMECIFAEPIMFOGIIEEBCBAA.sgluckman@omnitech.com>
+References: <OOEOKBMECIFAEPIMFOGIIEEBCBAA.sgluckman@omnitech.com>
+Message-Id: <1051089275.1989.25.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 23 Apr 2003 10:10:33 +0100
+Date: Wed, 23 Apr 2003 10:14:35 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Which version of mkfs.jffs2 could work with
- kernel-2.4.18+patch-2.4.18-rmk6
+Subject: Re: MTD on a USB SmartMedai Reader
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,7 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ftp://sources.redhat.com/pub/jffs2/mkfs.jffs2
+On Mon, 2003-04-21 at 18:00, Sid Gluckman wrote:
+> Hello,
+> 
+> I want to access a SmartMedia card on a USB adapter with JFFS2 filesystem.
+> The USB reader is recognized fine and seems to detect the card correctly.
+> My question is how can I direct the MTD subsystem to use the USB adapter?
+
+I suspect that you don't. Although SmartMedia is basically just NAND
+flash, the USB 'cardreader' will probably be hiding all that from you
+and presenting itself USB mass storage device. Turn on CONFIG_SCSI and
+CONFIG_USB_STORAGE.
+
 
 -- 
 dwmw2
