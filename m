@@ -1,17 +1,19 @@
-Received: from mail1.bluewin.ch ([195.186.1.74])
+Received: from mail6.bluewin.ch ([195.186.4.229])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eBtZ-0000fq-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 10:26:09 +0000
-Subject: Re: NFTL not recognizing disk on chip in some cases
+	id 18eBxh-0000gV-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 10:30:25 +0000
+Subject: Re: Intel Strataflash
 From: Raphael Hertzog <eng@eipm.ch>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <Pine.LNX.4.44.0301300819250.4791-100000@imladris.demon.co.uk>
-References: <Pine.LNX.4.44.0301300819250.4791-100000@imladris.demon.co.uk>
+To: Stephane List <stephane.list@lilotux.net>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20030130094658.GB11189@lilotux.net>
+References: <20030129161457.GA9083@lilotux.net>
+	 <Pine.LNX.4.44.0301292233430.4791-100000@imladris.demon.co.uk>
+	 <20030130094658.GB11189@lilotux.net>
 Content-Type: text/plain; charset=ISO-8859-1
-Message-Id: <1043924186.9795.26.camel@localhost>
+Message-Id: <1043924444.555.30.camel@localhost>
 Mime-Version: 1.0
-Date: 30 Jan 2003 11:56:26 +0100
+Date: 30 Jan 2003 12:00:44 +0100
 Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,37 +26,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Am Don, 2003-01-30 um 09.19 schrieb David Woodhouse:
-> On 30 Jan 2003, Raphael Hertzog wrote:
+Am Don, 2003-01-30 um 10.46 schrieb Stephane List:
+> On mer, jan 29, 2003 at 10:36:13 +0000,
+> David Woodhouse <dwmw2@infradead.org> wrote:
+> > On Wed, 29 Jan 2003, Stephane List wrote:
+> > 
+> > > PS : I couldn't compile my kernel with the CVS code...
+> > 
+> > Details?
+> > 
 > 
-> > I'm happy to test any patch since I can reproduce the problem here very
-> > regularly ... :-)
-> 
-> Index: drivers/mtd/nftlmount.c
-> ===================================================================
-> RCS file: /home/cvs/mtd/drivers/mtd/nftlmount.c,v
-> retrieving revision 1.31
-> diff -u -p -r1.31 nftlmount.c
-> --- drivers/mtd/nftlmount.c	15 Nov 2002 16:34:43 -0000	1.31
-> +++ drivers/mtd/nftlmount.c	30 Jan 2003 08:19:46 -0000
-> @@ -137,7 +137,11 @@ static int find_boot_record(struct NFTLr
->  				printk(KERN_NOTICE "NFTL Media Headers at 0x%x and 0x%x disagree.\n",
->  				       nftl->MediaUnit * nftl->EraseSize, block * nftl->EraseSize);
->  				/* if (debug) Print both side by side */
-> -				return -1;
-> +				if (boot_record_count < 2) {
-> +					/* We haven't yet seen two real ones */
-> +					return -1;
-> +				}
-> +				continue;
->  			}
->  			if (boot_record_count == 1)
->  				nftl->SpareMediaUnit = block;
+> my grep doesn't know the "-m option" so I think that the patch isn't correctly applied.
+> I will look at "patchin.sh" to correct this.
 
-Ok. It effectively fixes the problem. It's not very nice since the
-notice is still displayed ... but that doesn't matter much.
+Here's the patch that I use (if someone wants to commit it ...) :
 
-Thanks for the patch !
+Index: patchin.sh
+===================================================================
+RCS file: /home/cvs/mtd/patches/patchin.sh,v
+retrieving revision 1.9
+diff -u -r1.9 patchin.sh
+--- patchin.sh	30 Nov 2002 23:48:39 -0000	1.9
++++ patchin.sh	30 Jan 2003 10:57:18 -0000
+@@ -60,9 +60,9 @@
+ fi
+ 
+ # Get kernel version
+-VERSION=`grep -sm 1 VERSION <$LINUXDIR/Makefile | sed s/'VERSION = '//`
+-PATCHLEVEL=`grep -sm 1 PATCHLEVEL <$LINUXDIR/Makefile | sed s/'PATCHLEVEL = '//`
+-SUBLEVEL=`grep -sm 1 SUBLEVEL <$LINUXDIR/Makefile | sed s/'SUBLEVEL = '//`
++VERSION=`grep ^VERSION $LINUXDIR/Makefile | sed s/'VERSION = '//`
++PATCHLEVEL=`grep ^PATCHLEVEL $LINUXDIR/Makefile | sed s/'PATCHLEVEL = '//`
++SUBLEVEL=`grep ^SUBLEVEL $LINUXDIR/Makefile | sed s/'SUBLEVEL = '//`
+ 
+ # Can we handle this ?
+ if test $VERSION -ne 2 -o $PATCHLEVEL -lt 4
+
 
 Cheers,
 -- 
