@@ -1,30 +1,18 @@
-Received: from pegasus.siol.net ([193.189.160.25])
+Received: from c-67-165-125-5.client.comcast.net ([67.165.125.5]
+	helo=deathgrab.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AywvD-0006hl-81
-	for linux-mtd@lists.infradead.org; Thu, 04 Mar 2004 17:46:11 +0000
-Received: from kudu.siol.net ([10.10.10.22]) by pegasus.siol.net
-	1cbf71897a39210db31154c99f0b4628)
-	<20040304174610.NSEJ15612.pegasus@kudu.siol.net>
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 4 Mar 2004 18:46:10 +0100
-Received: from [192.168.0.107] ([193.95.213.209]) by kudu.siol.net
-	1cbf71897a39210db31154c99f0b4628)
-	<20040304174609.SKIP1595.kudu@[193.95.213.209]>
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 4 Mar 2004 18:46:09 +0100
-From: Matthias Gorjup <gorjup@norik.com>
+	id 1AzNS1-0002Bu-9g
+	for linux-mtd@lists.infradead.org; Fri, 05 Mar 2004 22:05:49 +0000
+Received: from www.deathgrab.com (localhost [127.0.0.1])
+	by deathgrab.com (8.12.10/8.12.4) with ESMTP id i25NFcrA017293
+	for <linux-mtd@lists.infradead.org>; Fri, 5 Mar 2004 14:15:38 -0900
+Message-ID: <63072.65.37.112.188.1078528537.squirrel@mail.deathgrab.com>
+Date: Fri, 5 Mar 2004 14:15:37 -0900 (AKST)
+From: libber@deathgrab.com
 To: linux-mtd@lists.infradead.org
-Date: Thu, 4 Mar 2004 18:45:05 +0100
-References: <Pine.LNX.4.10.10403022036240.1720-100000@mail.hurricane.at>
-	<1078325271.4619.3.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1078325271.4619.3.camel@hades.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200403041845.05058.gorjup@norik.com>
-Subject: Re: Speed of writing to flash
+Content-Type: text/plain;charset=iso-8859-1
+Subject: can only save empty files
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,28 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 03 March 2004 15:47, you wrote:
-> On Tue, 2004-03-02 at 20:40 +0100, Matthias Gorjup wrote:
-> > Hi, thanks for the prompt answer. But in the kernel 2.4.20 that we are
-> > using, there is not "erase suspend" supported - as I could understand
-> > from the source code. And there is no EraseSuspend variable anywhere in
-> > the mtd source code of the kernel 2.4.20.
-> > Could you give us some info about what else could be wrong?
->
-> Please don't top-post. Your reply should be underneath the _selectively_
-> quoted parts of the original reply.
->
-> You could try updating to the latest code, in that case. Or use
-> profiling to see where it's spending all its time when it's slow.
-OK, I will try... before doing that just one question:
-- when I tried to simply copy 2 MB large file from NFS mounted file system to 
-the flash file system, it took me from 5 to 20 minutes. It took me 5 minutes 
-after rebooting and over 20 minutes after doing it for the fourth time (with 
-no rebooting in between). Is 5 minutes normal for writing such a big file to 
-flash file system?
+Greetings, I am trying to get a read/write partition working for the
+linksys WRT54G. To this end I have created a new partition which is the
+correct size and is alinged on erase-block bounderies and such, I have
+crosscompiled most of the programs in util from cvs. All should be well,
+but alas it is not, I can erase my new partition (this is an amd flash
+chip on a broadcom board if that changes things) and erasing works, I can
+mount the partition rw which works. the really strange thing is that when
+I write an empty file ('touch blah') and unmount or reboot or whatnot, the
+file is saved and is there when I remount the partition. But if a file is
+created that actuially has information in it then it is not saved. I have
+no idea what the problem is here but I find it very strange, I have also
+tried mkfs.jffs2 with the output going to the block device and that does
+not work, I have also tried making an image with mkjfs.jffs2 and dding the
+image to the device /dev/mtdblock/4 and that also does not work. This
+might not even be related to jffs2 and is a problem with the driver for
+the flash chip or something else,I am just hoping my post here will help
+illuminate the problem. I am using kernel 2.4. I would be happy to provide
+more information as needed.
 
-
-Best Regards
-
-Matthias Gorjup
-www.norik.com
+Thanks for your time,
+Libber
