@@ -1,19 +1,19 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+Received: from ns.virtualhost.dk ([195.184.98.160] helo=virtualhost.dk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AJ6tm-0002fW-Qd
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2003 07:55:48 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Chris Ellec <cellec@celerity.net>
-In-Reply-To: <3FAAF44B.8020804@celerity.net>
-References: <3FAAF44B.8020804@celerity.net>
-Message-Id: <1068450843.14962.2.camel@imladris.demon.co.uk>
+	id 1AJCkm-0003QH-3a
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2003 14:10:52 +0000
+Date: Mon, 10 Nov 2003 15:09:27 +0100
+From: Jens Axboe <axboe@suse.de>
+To: Simon Haynes <simon@baydel.com>
+Message-ID: <20031110140927.GE32637@suse.de>
+References: <37CC93E8710D@baydel.com>
 Mime-Version: 1.0
-Date: Mon, 10 Nov 2003 07:54:04 +0000
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: gerg@snapgear.com
+Content-Disposition: inline
+In-Reply-To: <37CC93E8710D@baydel.com>
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL report
+cc: linux-kernel@vger.kernel.org
+Subject: Re: SFFDC and blksize_size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-11-06 at 17:24 -0800, Chris Ellec wrote:
-> $ modprobe -a doc200 inftl mtdchar mtdblock
-> $ modprobe -a  docprobe
+On Fri, Nov 07 2003, Simon Haynes wrote:
 > 
-> produced the attached /var/log/messages and also those lines that were 
-> not in the log file;
-> 
-> INFTL: corrupt block 7140 in chain 7140, chain length 0, erase mark 0x0?
-> INFTL: formatting chain at block 7140
-> INFTL: error while formatting block 7140
-> 
-> repeated for a few more addresses.
+> I have been writing a block driver for SSFDC compliant SMC cards. This stuff 
+> allocates 16k blocks.  When I get requests the transfers are split into the 
+> size I specifty in the blksize_size{MAJOR] array. It sems that most things 
 
-Er, that could be because, as far as I can tell, our INFTL code doesn't
-actually look at the Bad Block Table at all. I suspect those are bad
-blocks and we should be ignoring them.
+Sounds like a bad way to do it. It's much better to prevent builds of
+bigger requests than you can handle in one go. You don't mention what
+kernel you are using, but both 2.4 and 2.6 can do this for you.
 
-We _really_ need to look at handling the BBT properly on these devices.
- 
 -- 
-dwmw2
+Jens Axboe
