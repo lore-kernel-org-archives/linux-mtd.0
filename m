@@ -1,41 +1,31 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qYDw-0001ow-00
-	for mtd-list@infradead.org; Fri, 20 Apr 2001 11:33:12 +0100
+	id 14qdkD-0005OD-00
+	for mtd-list@infradead.org; Fri, 20 Apr 2001 17:26:53 +0100
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qYDv-0001op-00
-	for mtd@infradead.org; Fri, 20 Apr 2001 11:33:11 +0100
+	id 14qdkC-0005O7-00
+	for mtd@infradead.org; Fri, 20 Apr 2001 17:26:52 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E14qQUf-000802-00@infradead.org> 
-References: <E14qQUf-000802-00@infradead.org> 
-To: ds@schleef.org
+In-Reply-To: <000901c0c90c$2acad3e0$8b96143e@jocke> 
+References: <000901c0c90c$2acad3e0$8b96143e@jocke>  <000e01c0c8d6$dfb791c0$0a01a8c0@Win1> <19069.987688353@redhat.com> 
+To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
 Cc: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/drivers/mtd/chips sharp.c' 
+Subject: Re: JFFS2 as root FS 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Apr 2001 11:32:51 +0100
-Message-ID: <24868.987762771@redhat.com>
+Date: Fri, 20 Apr 2001 17:26:47 +0100
+Message-ID: <2192.987784007@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-ds@infradead.org said:
-> Modified Files:
-> 	sharp.c
-> Log Message: Updates from my local development tree
-> Compilation fixes
+Joakim.Tjernlund@lumentis.se said:
+>  Yes, please, please :-) 
 
+That was a 'you need these' not a 'I'll give you these'. 
 
--	mtd_register_map_driver(&sharp_driver);
-+
-+	inter_module_register(im_name, THIS_MODULE, &sharp_probe);
-+
-+	return 0;
-
-Actually I think I prefer your original way of doing it. Let's hide the 
-implementation details from the map and chip drivers. Do you have the 
-rest of the associated code?
+I'm happy to give you pointers if you want to implement them.
 
 --
 dwmw2
