@@ -1,14 +1,19 @@
-Received: from boisdslgw5poolb76.bois.uswest.net ([65.101.73.76] helo=ridgerun-lx.ridgerun.cxm)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15JbDW-00052Y-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 14:36:50 +0100
-Message-ID: <3B49B4B2.87F7E8A5@ridgerun.com>
-Date: Mon, 09 Jul 2001 07:42:10 -0600
-From: Steve Kranz <skranz@ridgerun.com>
+Received: from [164.164.83.132] (helo=arianne.in.ishoni.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15Jphf-0005t6-00
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2001 06:04:55 +0100
+Received: from raghav ([192.168.1.172])
+	by arianne.in.ishoni.com (8.11.1/8.11.4/Ishonir2) with SMTP id f6A5BWk04474
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2001 10:41:32 +0530
+Reply-To: <raghav@ishoni.com>
+From: "Raghav P" <raghav@ishoni.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: FFS2 specification document
+Date: Tue, 10 Jul 2001 10:45:23 +0530
+Message-ID: <E0FDC90A9031D511915D00C04F0CCD250399B3@leonoid.in.ishoni.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, skranz@ridgerun.com
-Subject: MTD/mtdblock.c uclinux 2.0.38?
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -21,23 +26,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-1.
-Anybody know if instruction exist for installing MTD and nftl
-into an uclinux 2.0.38 tree?
+Hi,
 
-2.
-I'm interested in getting the SmartMedia slot of this arm7 board
-working for both read and write -- and I'd like the SmartMedia
-card to be readable/writable by a Windows machine too. Am I
-correct that this interoperability constraint will prevent me from
-using JFFS? I'm assuming that a vfat fs with MTD/nftl will do the
-trick for me. Yes, no?
+Can anyone point to the exact URL for the Microsoft FFS specification? Tried
+searching in msdn.microsoft.com but turned out to be futile.
 
-3.
-I've been glancing at MTD code and didn't think I saw any logic
-to deal with the bad (unusable) blocks of a NAND flash device.
-Did I just miss it?
+Or if someone could be gracious enough to send it as an attachment to my
+email-id ( raghav@ishoni.com ) I would appreciate it a lot.
 
-Thanks,
-Steve Kranz
-skranz@ridgerun.com
+Thanks in advance
+Raghav
