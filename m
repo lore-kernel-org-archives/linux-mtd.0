@@ -1,9 +1,9 @@
-Received: from web20721.mail.yahoo.com ([216.136.226.73])
+Received: from web20728.mail.yahoo.com ([216.136.226.118])
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AltxD-0003HH-GV
-	for linux-mtd@lists.infradead.org; Wed, 28 Jan 2004 17:58:19 +0000
-Message-ID: <20040128175816.99925.qmail@web20721.mail.yahoo.com>
-Date: Wed, 28 Jan 2004 09:58:16 -0800 (PST)
+	id 1Aluae-0003Sx-P1
+	for linux-mtd@lists.infradead.org; Wed, 28 Jan 2004 18:39:04 +0000
+Message-ID: <20040128183901.24726.qmail@web20728.mail.yahoo.com>
+Date: Wed, 28 Jan 2004 10:39:01 -0800 (PST)
 From: Shawn Jin <shawnxtech@yahoo.com>
 To: David Woodhouse <dwmw2@infradead.org>,
   "Eric W. Biederman" <ebiederman@lnxi.com>
@@ -35,12 +35,11 @@ http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/26518.pd
 > 
 > It's 16-bit, CFI-compliant, and (obviously) AMD
 > command set.
+> 
+Further clarification: It's Am29PL320D, which is
+configured to 32-bit mode.
 
-Sorry for this mistake. I mean Am29PL320D, which is
-here
-(http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/24075.pdf).
-And it's 32-bit, CFI-complaint.
-
+Thank you very much,
 -Shawn.
 
 __________________________________
