@@ -1,20 +1,21 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from avanto.org ([193.233.71.179])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuAOz-00006l-AA
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 09:13:42 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Moises Beck - EDS Digicon <mbeck@perto.com.br>
-In-Reply-To: <200501271218.j0RCI9L07866@rsmail.perto.com.br>
-References: <200501271218.j0RCI9L07866@rsmail.perto.com.br>
-Content-Type: text/plain
-Date: Thu, 27 Jan 2005 15:13:36 +0100
-Message-Id: <1106835217.14517.6.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1CuAgi-0000Kw-OC
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 09:32:01 -0500
+Received: from skorinkod.lan ([10.255.2.21])
+	by avanto.org with esmtp (Exim 3.36 #1 (Debian)) id 1CuAgb-0000ba-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 17:31:53 +0300
+From: Dmitry Skorinko <skorinkod@mosk.ru>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 27 Jan 2005 17:31:46 +0300
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand_scan identification problem
-Reply-To: tglx@linutronix.de
+Content-Disposition: inline
+Message-Id: <200501271731.46233.skorinkod@mosk.ru>
+Subject: docboot + 2.4.x
+Reply-To: skorinkod@mail.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-01-27 at 10:18 -0200, Moises Beck - EDS Digicon wrote:
-> Hello,
->      I am using a smartmedia card on linux MTD. Everything runs very
-> well. But just after power on, the first attempt to load the driver
-> spia.o fails. The driver calls nand_scan(), that cannot identify the
-> present card. On the second attempt to load the driver, the flash is
-> correctly identified. I saw that in nand_scan(), the command
-> NAND_CMD_READID return nand_maf_id=0 and nand_dev_id=0 on the first call
-> to it. On the second call the IDs are returned correctly. I tried to
-> solve this by putting the following code just before the command
-> NAND_CMD_READID, on nand_base.c:
-> 
->         /* Select the device */
->         this->select_chip(mtd, 0);
->                                                                        
->         
->         /* by momo - reset smartmedia e put it on mode READ */
->         this->cmdfunc (mtd, NAND_CMD_RESET, -1, -1);
->         this->cmdfunc (mtd, NAND_CMD_READ0, -1, -1);
+Hello,
+I know that 2.4.x is not supported by mtd team now. But I have many drivers 
+that is wrote on 2.4.x and don't have time to rewrite them. Changes in mtd 
+snapshot depended on 2.6 only is not very big and I have now 2.4 system with 
+full working mtd/inftla layers. I have only one big problem and I hope 
+anybode help me.
+docboot + 2.6 = all is working
+docboot + 2.4 = and I have:
+INFTL: inftlcore.c .......
+...
+DiskOnchip found at 0xe0000
+...
+INFTL ..
+INFTL ..
+Partition check:
+ inftla: inftla1
+Creating 2 MTD partitions ...
+....
+VFS: Cannot open root device "inftla1" or 00:00
+Please append a correct "root=" boot option
+Kernel panic: VFS: Unable to mount root fs on 00:00
 
-> Anyone has some clue ?
+docboot options are:
+root=/dev/inftla1 rootfstype=ext3 console=tty1,38400 disk=/dev/inftla 
+sectors=32 heads=16 cylinders=997
 
-Can you verify that your port pins are initialized correctly before
-calling nand_scan(). 
+Maybe reason is that devfs is disable? Does booting from flash depend on 
+devfs? What booting depends on?
 
-nCE = high
-ALE = low
-CLE = low
-
-The calls you inserted do not touch ALE, but the read_ID command does.
-
-tglx
+Thanks for all answers
+Dmitry
