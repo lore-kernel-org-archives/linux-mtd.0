@@ -1,19 +1,20 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from h139-142-224-7.gtcust.grouptelecom.net ([139.142.224.7])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16sXYu-0003Q9-00
-	for <linux-mtd@lists.infradead.org>; Wed, 03 Apr 2002 00:19:36 +0100
-Date: Wed, 3 Apr 2002 01:19:30 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: fyaowen <fyaowen@sina.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: Re: problem with build jffs2 filesystem
-Message-ID: <20020403011930.B13772@wohnheim.fh-wedel.de>
-References: <20020331023459.8404.qmail@sina.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020331023459.8404.qmail@sina.com>; from fyaowen@sina.com on Sun, Mar 31, 2002 at 10:34:58AM +0800
+	id 16sXcr-0003Qg-00
+	for <linux-mtd@lists.infradead.org>; Wed, 03 Apr 2002 00:23:41 +0100
+Received: from athlon (24-66-30-3.gatewest-shaw.ca [24.66.30.3])
+        by kynes.gatewest.net (8.12.1/8.12.0.Beta19/Debian 8.12.0.Beta19) with SMTP id g32NNcdu030461
+        for <linux-mtd@lists.infradead.org>; Tue, 2 Apr 2002 17:23:39 -0600
+Message-ID: <002101c1da9d$7294ce80$87657bc8@athlon>
+From: "Derek Ross" <dross@iders.ca>
+To: <linux-mtd@lists.infradead.org>
+References: <015901c1d9a2$973ef720$87657bc8@athlon>  <30890.1017696947@redhat.com>
+Subject: Re: Can cfi_cmdset.c functions be called by anybody? 
+Date: Tue, 2 Apr 2002 17:23:50 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,19 +26,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sun, 31 March 2002 10:34:58 +0800, fyaowen wrote:
-> ls -l /dev
-> brw-r--r--    1 root     root      31,   7 Jan 28 14:16 mtd7
+Would it be possible for me to modify, or
+add to, the function pointers in the mtd_info
+struct, so there there are also non-blocking 
+write and erase functions?
+
+Thanks,
+Derek.
+
+----- Original Message ----- 
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "Derek Ross" <dross@iders.ca>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Monday, April 01, 2002 3:35 PM
+Subject: Re: Can cfi_cmdset.c functions be called by anybody? 
+
+
 > 
-> I have no mtdblocks, only mtd* instead. The major number of mtd7
-> is 31. So mtd7 is a block device, isn't it?
-
-It is, although the name is confusing. Usually, mtd7 is a char device
-(major 90, minor 14) and mtdblock7 is the name for your mtd7.
-
-Jörn
-
--- 
-When your language is nowhere near Turing-complete, syntactic sugar
-can be your friend.
--- Eric Raymond in "The cathedral and the bazaar"
+> dross@iders.ca said:
+> > This would be simplified if I were able to directly use the functions
+> > from cfi_cmdset_0001.c.
+> 
+> > Are the functions available for any application to use, or are they
+> > only available for device drivers? 
+> 
+> The read/write/erase functionality of the chip driver is presented to 
+> userspace via the /dev/mtd[0123...] devices. Read and write work as 
+> expected, and there's an ioctl to perform an erase.
+> 
+> --
+> dwmw2
