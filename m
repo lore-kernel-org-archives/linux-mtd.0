@@ -1,25 +1,15 @@
-Received: from ip2.esoft.com.tw ([211.21.74.99] helo=esoft.com.tw)
+Received: from f152.pav1.hotmail.com ([64.4.31.152] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1890Dm-00080Z-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 09:42:07 +0000
-Received: (from root@localhost)
-	by esoft.com.tw (8.12.6/8.12.6) id gA5AC744002788
-	for linux-mtd@lists.infradead.org; Tue, 5 Nov 2002 18:12:07 +0800 (CST)
-	(envelope-from jimmyc@esoft.com.tw)
-Received: from jimmy.esoft.com.tw ([192.168.1.15])
-	by esoft.com.tw (8.12.6/8.12.6av) with ESMTP id gA5AC34Y002780
-	for <linux-mtd@lists.infradead.org>; Tue, 5 Nov 2002 18:12:05 +0800 (CST)
-	(envelope-from jimmyc@esoft.com.tw)
-Content-Type: text/plain;
-  charset="us-ascii"
-From: jimmy tanyoongtak <jimmyc@esoft.com.tw>
-Reply-To: jimmyc@esoft.com.tw
-To: linux-mtd@lists.infradead.org
-Subject: Booting on DOM
-Date: Tue, 5 Nov 2002 18:14:11 +0800
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200211051814.12000.jimmyc@esoft.com.tw>
+	id 1891dH-00088R-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 11:12:31 +0000
+From: "vijay vijay" <vijay_peshkar@hotmail.com>
+To: joern@wohnheim.fh-wedel.de
+Cc: linux-mtd@lists.infradead.org, vijay.peshkar@wipro.com
+Subject: Re: mtd2 partition mapping on mtd1?...
+Date: Tue, 05 Nov 2002 11:42:14 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F152wVn20lbhsKd6QR700003f5b@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,16 +21,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-=09I'm compressing jffs2 image and dd to DOM using lfs in x86 arch,that w=
-ork=20
-o.k.Beside i can also mount the DOM with jffs2 filesystem to other=20
-partitions.The question is , how can i using lilo or grub to booting DOM =
-that=20
-filesystem is jffs2.I find information over internet but can't fount it .=
-=20
-Does any one who had been successfully using lilo or grub mounting jffs2=20
-filesystem????
-thanx
---=20
-Esoft embedded system
-email jimmyc@esoft.com.tw
+Jörn,
+
+Thanks.
+
+The fact that am hardcoding my root fs address in cramfs_read
+instead of picking it up from mtd0(which am able to operate on after
+bootup) still bothers me. Any (better) way of telling the kernel to
+pick rootfs from mtd0?. Have tried with root=/dev/mtd0.
+Am building an initrd image.
+
+One more query:
+My kernel and another partition will have raw data. What api's to
+operate on them?. Tried __raw_writel etc., but that doesn't seem
+to change the flash location data.
+
+Regards,
+Vijay
+
+On Mon, 4 November 2002 10:50:05 +0000, vijay vijay wrote:
+>
+>Stupid me. Was all along trying to write without erasing!!.
+>Now am able to write to desired partition after erasing the
+>same.
+
+Cool, I just wanted to take a closer look at your problem. Great
+timing. ;-)
+
+Jörn
+
+--
+Homo Sapiens is a goal, not a description.
+-- unknown
+
+
+_________________________________________________________________
+Internet access plans that fit your lifestyle -- join MSN. 
+http://resourcecenter.msn.com/access/plans/default.asp
