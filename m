@@ -1,16 +1,16 @@
-Received: from oe58.law10.hotmail.com ([64.4.14.193] helo=hotmail.com)
+Received: from isengard.yottayotta.com ([209.115.177.37])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 170wZC-0000Ww-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 04:38:38 +0100
-From: "Gregg C Levine" <mrspock1962@hotmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Current price for DoC devices
-Date: Thu, 25 Apr 2002 23:38:17 -0400
-Message-ID: <000101c1ecd3$cdace800$3472580c@who>
+	id 170wZw-0000X1-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 04:39:24 +0100
+Message-ID: <3CC8CB90.7020108@yottayotta.com>
+Date: Thu, 25 Apr 2002 21:37:52 -0600
+From: Murtada Shah <mshah@yottayotta.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>,
+	linux-mtd@lists.infradead.org
+Subject: inode deleted
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,14 +22,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello from Gregg C Levine
-Still thinking about my current idea, so this question surfaced. How
-much are the DoC devices going for? Typically I am interested in the
-first one available.
--------------------
-Gregg C Levine mrspock1962@hotmail.com
-------------------------------------------------------------
-"The Force will be with you...Always." Obi-Wan Kenobi
-"Use the Force, Luke."=A0 Obi-Wan Kenobi
-(This company dedicates this E-Mail to General Obi-Wan Kenobi )
-(This company dedicates this E-Mail to Master Yoda )
+i'm using 2.4.18-rmk3
+I was using 2.4.5-rmk7
+
+the new one 2.4.18-rmk3 with latest mtd seems to erase an inode in 
+jffs2_build_filesystem function in build.c... Although that's a valid 
+directory.
+ ("Inode #7 was a directory with chidlren... removing those too...")
+
+I haven't made my filesystem with the newest mkfs.jffs2 of the latest 
+mtd but did so with the older one (20000704). Could this be why? I'm 
+just copying stuff over to the filesystem.
+
+Murtada
