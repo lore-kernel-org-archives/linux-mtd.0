@@ -1,29 +1,58 @@
-From: jerj@coplanar.net (Jeremy Jackson)
-Date: 15 Mar 2003 13:39:48 -0500
-Subject: Using a DoC
-In-Reply-To: <000201c2eb0d$e6053b80$4fc9580c@who5>
-References: <000201c2eb0d$e6053b80$4fc9580c@who5>
-Message-ID: <1047753588.1341.1.camel@contact.skynet.coplanar.net>
+From: stepan@suse.de (Stefan Reinauer)
+Date: Sun, 16 Mar 2003 13:05:19 +0100
+Subject: devbios port to MTD
+In-Reply-To: <1047657619.2134.40.camel@contact.skynet.coplanar.net>; from jerj@coplanar.net on Fri, Mar 14, 2003 at 11:00:19AM -0500
+References: <1047657619.2134.40.camel@contact.skynet.coplanar.net>
+Message-ID: <20030316130519.A21957@suse.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Sat, 2003-03-15 at 11:14, Gregg C Levine wrote:
+Hi Jeremy
 
-> Hello again from Gregg C Levine
-> Not surprisingly, yes I did do that. That's how I know that kernel
-> sees the DoC in on startup. I have even given it the address in memory
-> where it is, to make it easier to find, rather then using probing
-> methods.
-> 
-> But the fact is, I am still confused, and lost. Here's one reason:
-> Script started on Sat Mar 15 02:53:00 2003
-> root at drwho4:/usr/src/mtd/grub# ../util/doc/loadbios /dev/mtd0
-> grub_firmware
-> 
-> Open flash device: No such device
+> I've been hacking away for a few days at the devbios code, my goal being
+> to port it to the MTD framework.  Apart from being "the right thing" in
+> my opinion, as well as in the devbios TODO, it solves a few practical
+> problems:  
+[..]
 
-Do you have the proper device nodes present?  Cat /proc/devices to see
-if there's an mtd driver present, then ls -l /dev/mtd0 to see if it has
-a matching device node (major number).
+great! It is definintely "the right thing to do", as it unifies the 
+two projects, providing the users one interface instead of the 
+3 flash devices - 3 drivers mentality. MTD has the far better concept
+as devbios evolved from the old idea of just not having to use a
+DOS bootdisk for flashing my mainboard. Also, MTD has a much bigger
+userbase, being less specific than devbios is.
 
-Jeremy
+> So far I have refactored devbios to eliminate global variables (void
+> *bios), and static flashdevice structures.
+Good idea. It it's one of the ugly things that survived the time when
+the system firmware chip was the only flash device in my system.
+
+> The flash probing routine is
+> now a separate "library", which can use devbios flash_{readb,writeb}, or
+> when linked into MTD, will use the map driver's access routines.  The
+> MTD chip driver which uses the probe routine is about half done.  Any
+> enhancements to the devbios probe routine "library" will automatically
+> enhance the MTD chip probe routine as well.
+
+> I plan to make map drivers out of the devbios pcisets.c code in a
+> similar manner.
+ 
+If there's not a big objection from the MTD developers, I'd vote for
+including the devbios rudiments into MTD completely, allowing it to
+be included in the Linux Kernel some day. I'm sure nobody has anything
+against getting rid of the devbios device interface stuff in favour
+of this unification.
+
+> I'm posting this to elicit comments from the respective parties, words
+> of wisdom, cautions, etc.
+
+> I will post the initial devbios refactoring patch once I've checked it
+> over again.
+
+I'm willing to help and contribute hints and code wherever i can.
+
+Stefan
+  
+-- 
+The use of COBOL cripples the mind; its teaching should, therefore, be
+regarded as a criminal offense.                      -- E. W. Dijkstra
