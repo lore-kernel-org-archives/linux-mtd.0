@@ -1,21 +1,15 @@
-Received: from mail.udm.ru ([217.14.192.20] helo=aps.mark-itt.ru)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ZskC-0001FG-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 12:33:53 +0100
-Received: from [195.161.198.29] (HELO 195.161.198.29)
-  by aps.mark-itt.ru (CommuniGate Pro SMTP 3.4.8)
-  with ESMTP id 13841889 for linux-mtd@lists.infradead.org; Thu, 23 Aug 2001 16:39:43 +0500
-Date: Thu, 23 Aug 2001 16:42:42 +0400
-From: ASA <atris@mail.ru>
-Reply-To: ASA <atris@mail.ru>
-Message-ID: <1776086221.20010823164242@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: BLKRRPART bug in NFTL?
-In-reply-To: <E15ZVks-00081M-00@pentafluge.infradead.org>
-References: <E15ZVks-00081M-00@pentafluge.infradead.org>
-Mime-Version: 1.0
+Received: from web13601.mail.yahoo.com ([216.136.175.112])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15ZvmC-0001Rq-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 15:48:09 +0100
+Message-ID: <20010823145404.4969.qmail@web13601.mail.yahoo.com>
+Date: Thu, 23 Aug 2001 07:54:04 -0700 (PDT)
+From: Luke <luke_epsilon@yahoo.com>
+Subject: Re: ZFMicro MachZ success with the Am29LV065D 
+To: Vipin Malik <vipin@embeddedlinuxworks.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <5.1.0.14.0.20010823052444.00a6f488@mail.spewey.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,51 +21,83 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello all,
+Howdy,
 
-tried anybody to use *fdisk on DiskOnChip2000 from ramdisk
-and got expected results?
+I am trying to mount part of the flash0 device right now as I don't want to mount the portion that
+has my bios or initrd or kernel - this "looks" straightforward for the ZFMicro but I am getting
+some interesting errors.  I will work on messing with the second physical flash device later.
 
-I'm automating linux installation, so such thing is needed...
+in the ZFL registers space I set
+    MemWindow0 window size to 500000h (I want a 5 Mbyte section mounted)
+    MemWindow0 page address to 1c0000h (the initrd and kernel are below this)
+    MemWindow0 base address to 10000000h (this will be mapped at 256Mbyte in the
+                                          physical memory space - above any SDRAM
+                                          conflicts)
 
-My system consists of:
-hardware:
-  special embedded motherboard with AMD 486DX4-100
-  8 MB RAM
-  DiskOnChip 2000 (8 MB flash)
-software:
-  linux kernel 2.4.1 with MTD 20010730 snapshot
-  root filesystem on /dev/ram0 (loaded via cmdline: initrd=inird.gz root=/dev/ram0)
+As I have it right now, linux loads and I see:
 
-All is based on debian potato (2.2; glibc 2.1; some utils, including
-  sfdisk, are upgraded in order to proper work with 2.4 kernel)
+physmap flash device: 500000 at 10000000
+Physically mapped flash: Found 1 x8 devices at 0x0 in 8-bit mode
+ Amd/Fujitsu Extended Query Table v1.1 at 0x0040
+number of CFI chips: 1
+mtd: Giving out device 0 to Physically mapped flash
 
-Symptoms are:
-after executing
+and if I cat /proc/mtd I see
+dev:      size        erasesize          name
+mtd0    00800000      00010000        "physically mapped flash"
 
-  #deleting any partition for sanity
-  dd if=/dev/zero of=/dev/nftla bs=512 count=1
-  # BLKRRPART ioctl (reread partition information)
-  sfdisk -R /dev/nftla
+should this size still be 8 Mbytes?  That is the physical size of the flash but I should be
+mapping only part of the flash.
 
-  # making 5 and 3 megs partitions on 8 MiB DOC
-  echo ",5000,L,*;,,L;;" | sfdisk -f /dev/nftla
+When I try to mount mtdblock0 I get the following (I made a directory /mnt/mtd before the next
+line):
 
-  # make sure partition information is reread
-  sfdisk -R /dev/nftla
+# mount -t jffs2 /dev/mtdblock0 /mnt/mtd
+mtdblock_open
+ok           
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00010000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00020000 is not formatted. It will be erased
+...
+(this continues erasing 64k chunks at a time until)
+...
+JFFS2: Erase block at 0x004c0000 is not formatted. It will be erased
+JFFS2: Erase block at 0x004d0000 is not formatted. It will be erased
+JFFS2: Erase block at 0x004e0000 is not formatted. It will be erased
+JFFS2: Erase block at 0x004f0000 is not formatted. It will be erased
+Unable to handle kernel paging request at virtual address c2d00000  
+ printing eip:                                                    
+c018eacd      
+*pde = 01f93067
+*pte = 00000000
+Oops: 0000     
+CPU:    0 
+EIP:    0010:[<c018eacd>]
+EFLAGS: 00010216         
+eax: c2d00000   ebx: 0000000c   ecx: 00000003   edx: c1bafe30
+esi: c2d00000   edi: c1bafe30   ebp: 0000000c   esp: c1bafd80
+ds: 0018   es: 0018   ss: 0018                               
+Process mount (pid: 16, stackpage=c1baf000)
+Stack: c10988d8 c1bafde4 c1bafdf4 c018bcec c01c6600 c1bafe30 00500000 0000000c 
+       00500000 00000000 00000000 c10988a0 c01c6600 c01a2581 c01e2670 c01e2a3f 
+       00500000 00000000 00000010 ffffffff 00000005 00000000 c1bae000 00000000 
+Call Trace: [<c018bcec>] [<c01a2581>] [<c015c2aa>] [<c015bffd>] [<c015e7ad>]   
+   [<c015b4d7>] [<c012f6d3>] [<c013008f>] [<c01301a3>] [<c013042b>] [<c01246eb>]
+ 
+   [<c013028f>] [<c01304cc>] [<c0106f83>] 
+     
+Code: f3 a5 f6 c3 02 74 02 66 a5 f6 c3 01 74 01 a4 5b 5e 5f c3 53 
+ <0>Kernel panic: Aiee, killing interrupt handler!                
+In interrupt handler - not syncing                
 
-the root filesystem (ramdisk) is screwed up!
+----
+any ideas on what to try?  I am using the standard "physmap" driver and the mtd stuff in kernel
+2.4.8-ac7.
 
-again, after clean reboot only invoking
-BLKRRPART ioctl is enough to break ramdisk
+Thanks,
+Luke
 
-in the same configuration, operating with hard disks instead of DOC
-is absolutely .
-
-Also, to reproduce this bug in other environment (only the kernel is
-the same) I tried to put my kernel (2.4.1+MTD-20010730) on the debian
-installation diskette and after using cfdisk ramdisk was screwed again...
-
--- 
-Best regards,
- ASA                            mailto:atris@mail.ru
+__________________________________________________
+Do You Yahoo!?
+Make international calls for as low as $.04/minute with Yahoo! Messenger
+http://phonecard.yahoo.com/
