@@ -1,43 +1,43 @@
-From: JDay@paradise.co.uk (John Day)
-Date: Tue, 11 Mar 2003 09:57:42 -0000
-Subject: DoC Debug Level Issue
-In-Reply-To: <000401c2e5d3$6cb4e5d0$9d00a8c0@SPEEDWOLF>
-Message-ID: <NFBBJMMEKLAEMEFBDILIGECHCBAA.JDay@paradise.co.uk>
+From: RobertS@visi.com (RobertS)
+Date: Tue, 11 Mar 2003 07:31:29 -0500
+Subject: 2.4.19 rmk4 Jffs2 Performance problems, Upgrade diffulculty.
+References: <3E6D1821.3060002@visi.com> <200303110915.48377.tglx@linutronix.de>
+Message-ID: <3E6DD721.1030501@visi.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-> I have a 64 Mb DoC that boots Linux using GRUB.  However, depending on
-> what I set the MTD debug level to, the system will either work well, or
-> hang when accessing the DoC.  I am using kernel 2.4.18 with the MTD CVS
-> as of about one week ago.  The device has one ext2 partition on it.
+Thomas Gleixner wrote:
 
-> With the debug verbosity set to 3 (highest), the system boots fine, but
-> rapidly fills up the kernel log file, especially when the DoC is the
-> only device in the system.  With the debug level set to 2 or lower, the
-> system hangs at the point during boot where the kernel tries to launch
-> the init process.
+>On Monday 10 March 2003 23:56, RobertS wrote:
+>  
+>
+>>Hello,
+>>    I am running an almost pristine copy of 2.4.19 rmk4.
+>>    I have applied the patch, linux-2.4.19-pre10-shared-zlib.
+>>    I have updated to mtd-snapshot-20030305.tar.
+>>    
+>>
+>Could you please try the following:
+>1. Get your almost pristine copy of 2.4.19.rmk4
+>2. use latest MTD snapshot and use patchin.sh from patches directory. This 
+>will apply zlib patch too
+>3. Report results
+>
+>  
+>
+Hello Thomas,
 
-> Any suggestions are appreciated.
+    Sure.
 
-> -- Dave
+    Please provide the name and location of the MTD snap shot so I use 
+the correct one.  The  mtd snapshot that I used originally was 
+mtd-snapshot-20030305.tar.gz.  I had numerous problems with this snap 
+shot and 2.4.19. Unfortunately, there was a lot of "pilot" error when I 
+started this upgrade effort. Let me know and I will proceed carefully 
+and capture the results.
 
-I have been investigating a similar problem with our MPC8260 PCB with a 3.3v
-48M DOC using 2.4.10 Kernel.
+    The  performance of approximately 4 minutes to copy a 1 meg file was 
+with an almost "pristine" 2.4.19 rmk4 kernel. Does this meet 
+expectations for that iteration of jffs2?
 
-Found the DOC resets during DoC_ScanChips in DOC2000.c when an invalid
-second floor is selected. The code locks up unless the floating data bus
-reads high. Later code seems to re-initialise the DOC....
-
-Try setting MAX_FLOORS in DOC2000.h to 1. Temporary fix but worked for me.
-
-This function does not appear to have changed in later kernels.
-
-Hardware not Linux expert so sorry if email format not correct
-
-John Day
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-This message is intended only for the use of the individual or entity to which it is addressed, and may contain information that is privileged, confidential and exempt from disclosure under applicable law.  If the reader of this message is not the intended recipient, or the employee or agent responsible for delivering the message to the intended recipient, you are hereby notified that any dissemination, distribution or copying of this communication is strictly prohibited.  If you have received this communication in error please return the message immediately to the sender and delete the message from your systems. Thank you.
+Robert
