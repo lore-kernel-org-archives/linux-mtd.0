@@ -1,21 +1,16 @@
-Received: from fepd.post.tele.dk ([195.41.46.149])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17AAvX-0006AH-00
-	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 15:47:51 +0100
-Received: from PLJPC ([80.63.145.22]) by fepD.post.tele.dk
-          (InterMail vM.4.01.03.23 201-229-121-123-20010418) with SMTP
-          id <20020521144751.OTTA17099.fepD.post.tele.dk@PLJPC>
-          for <linux-mtd@lists.infradead.org>;
-          Tue, 21 May 2002 16:47:51 +0200
-Message-ID: <005d01c200d6$a0f88c80$0201a8c0@PLJPC>
-From: =?iso-8859-1?Q?Poul_Lund_J=F8rgensen?= <plj@pragmaticconsult.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: jffs2 on DOC ?
-Date: Tue, 21 May 2002 16:48:54 +0200
+Received: from web21505.mail.yahoo.com ([66.163.169.16])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17AAzx-0006Al-00
+	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 15:52:25 +0100
+Message-ID: <20020521144355.82809.qmail@web21505.mail.yahoo.com>
+Date: Tue, 21 May 2002 07:43:55 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: Installation of DoC, HELP...
+To: Gregory.Janiszewski@esisar.inpg.fr
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <000001c200c4$e306aa10$9225dcc3@ES0325>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,31 +22,110 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Can you show us your autoconfig file (config file of
+linux kernel).
 
-I am looking for a power fail safe way to run a DOC2000 device.
+Thanks.
 
-The system I am developing does only do little amount of disk writing so I
-have been considering to using two partitions:
-a read only boot partition containing the entire linux root and boot dir and
-one writeable for the dynamic application files.
+--- Gregory Janiszewski
+<Gregory.Janiszewski@esisar.inpg.fr> wrote:
+> Hi,
+> 
+> I've got a big problem, I can't install my DoC2000
+> under Linux.
+> I work with the RedHat 7.3, with a 2.4.18 kernel.
+> 
+> I follow the step described in the
+> "mtd-jffs-HOWTO.txt" document for a 2.4.x
+> kernel, with the latest mtd cvs.
+> 
+> The kernel seems to work fine but I can't access the
+> DoC with a fdisk or
+> mk2fs commands.
+> I've got this dmesg :
+> 
+> *******************
+> Possible DiskOnChip with unknown ChipID BF found at
+> 0xc8000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xca000
+> DiskOnChip 2000 found at address 0xCC000
+> Flash chip found: Manufacturer ID: 98, Chip ID: 73
+> (Toshiba TH58V128DC)
+> 3 flash chips found. Total DiskOnChip size: 48 MiB
+> mtd: Giving out device 0 to DiskOnChip 2000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xce000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xd0000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xd2000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xd4000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xd6000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xd8000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xda000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xdc000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xde000
+> Possible DiskOnChip with unknown ChipID F8 found at
+> 0xe0000
+> Possible DiskOnChip with unknown ChipID 97 found at
+> 0xe2000
+> Possible DiskOnChip with unknown ChipID 63 found at
+> 0xe4000
+> Possible DiskOnChip with unknown ChipID F0 found at
+> 0xe6000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xe8000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xea000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xec000
+> Possible DiskOnChip with unknown ChipID FF found at
+> 0xee000
+> NFTL driver: nftlcore.c $Revision: 1.86 $,
+> nftlmount.c $Revision: 1.28 $
+> NFTL: UnitSizeFactor 0x00 detected. This violates
+> the spec but we think we
+> know what it means...
+> Cannot calculate an NFTL geometry to match size of
+> 0x17780.
+> Using C:1001 H:16 S:6 (== 0x17760 sects)
+>  nftla: nftla1
+> 
+> *********************
+> 
+> I use a PCI evaluation board with a MD2202-D48-X
+> DoC2000.
+> RedHat 7.3 on a Pentium 4.
+> 
+> 
+> So I try to format and partition the Doc with "fdisk
+> /dev/nftla", but the
+> command "freeze", nothing append ???
+> 
+> Maybe you have an url that explain step by step, how
+> to install a DoC2000 ?
+> I need your help, thank you.
+> 
+> 
+> 
+> Gregory JANISZEWSKI
+> 
+> 
+>
+______________________________________________________
+> Linux MTD discussion mailing list
+>
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-But from the mail archive I can see that the two partition solution does not
-solve the problem if NFTL is involved as the wear levelling
-will be done across partition boundaries, so the writeable partition may
-corrupt the readonly.
 
-Another solution would be to run jffs2 on the DOC. But the drivers that
-comes with the kernel I use (2.4.18) does not support this.
-
-Are there any version of the mtd drivers that currently support this ?
-
-If no, do there exist a patch that makes the DOC driver compatible with
-jffs2 or can anybody supply me with
-description of the necessary modifications.
-
-Any advice are appreciated.
-
-Thanks,
-
-Poul Lund Jørgensen
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
