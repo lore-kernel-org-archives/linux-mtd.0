@@ -1,67 +1,67 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GTWr-00022X-00
-	for mtd-list@infradead.org; Wed, 10 Jan 2001 22:15:37 +0000
-Received: from web2106.mail.yahoo.com ([128.11.68.250])
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14GTWp-00022R-00
-	for mtd@infradead.org; Wed, 10 Jan 2001 22:15:36 +0000
-Message-ID: <20010110221533.7759.qmail@web2106.mail.yahoo.com>
-Date: Wed, 10 Jan 2001 14:15:33 -0800 (PST)
-From: Michael Stumpf <michaelstumpf@yahoo.com>
-Reply-To: mstumpf@pobox.com
-Subject: Re: howto
-To: Livio Plos <livioplos@bigfoot.com>
-Cc: mtd@infradead.org
+	id 14GTdy-00025J-00
+	for mtd-list@infradead.org; Wed, 10 Jan 2001 22:22:58 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14GTdx-00025B-00
+	for mtd@infradead.org; Wed, 10 Jan 2001 22:22:57 +0000
+Date: Wed, 10 Jan 2001 22:22:42 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Nicolas Pitre <nico@cam.org>
+cc: =?iso-8859-1?Q?St=E9phane_Laroche?= <stephane.laroche@colubris.com>,
+     <mtd@infradead.org>
+Subject: Re: CFI problems with 32bit bus and 4 devices
+In-Reply-To: <Pine.LNX.4.30.0101101629560.584-100000@xanadu.home>
+Message-ID: <Pine.LNX.4.30.0101102149450.1062-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Wed, 10 Jan 2001, Nicolas Pitre wrote:
 
-Sorry for the slow response; been on vacation.
+> No.  Usually the actual x16 flash devices are able to operate in 8-bit mode
+> (selected with a pin tied to VCC or GND I think).  Then you route four of
+> them in parallel on a 32-bit bus.
 
-> Can I boot totally from flash without any other storage support?
+OK, sorry - I misunderstood. I was thinking of four x16 devices in x16
+mode.  (Which would make a certain amount of sense - although you can't
+drive them all with a single bus access, you can still have all four
+writing simultaneously, hence achieving four times the write bandwidth of
+a single chip.)
 
-I'm doing some work requiring precisely this--flash chips, preprogrammed,
-intended to boot linux with a read-only filesystem, preferrably compressed,
-from a well-known ROM address.
+So in this case, you've essentially got 4 8-bit devices with the address
+lines all shifted left by one bit, right?
 
-I originally hacked up mtdram.c to do what has already been done, quite
-elegantly infact..
+I thought the whole point in the 8-bit emulation mode was that you just
+didn't connect the chips' A0 line, and then you pretended they really were
+8-bit chips, rather than having to add all this extra support to the
+drivers (and all the extra probe setups, which I've only just started to
+understand). Although having seen the schematics for the LART, I suppose
+we ought to be grateful that the address lines are at least connected in
+_order_ :)
 
-There is a patch out there somewhere (search this list, if you can't find it,
-let me know and I'll get it to you.) that adds a block device to the kernel
-called "/dev/rom".. it has two modes of operation:
+But just like the LART, I think we should probably fix up the address line
+miswiring in the map driver, by shifting the requested address back to the
+right by one bit to make up for the offset in the hardware. It'll allow us
+to keep the actual CFI code simpler.
 
-1)  Encodes the binary filesystem image and compiles it directly into the
-kernel, bloating its final size
+This kind of thing is really what the separation between chip and map
+drivers was designed for - to prevent the CFI drivers from having to know
+about the variety of ways in which the chips' address lines can be
+connected to the CPU.
 
-or 2)  Allow you to point it to a "well known" memory address that has (this is
-unclear) 4 bytes containing the filesystem size (in bytes), 4 bytes of "00",
-and then the filesystem image, whatever that may be.  I use cramfs with great
-success on a very memory-constrained target.
- 
-> Is there any howto or high level docs to configure and compile?
+So - are x16 devices in x8 mode _really_ compatible with x8 devices if you
+shift the address lines over by one? Common sense would imply that's the
+case. Bitter experience would imply that the manufacturers have
+probably screwed it up in interesting ways.
 
-Patch it in, enable it in config, refer to above notes.  Let me know if you're
-still lost.
-
-Regards,
-Michael
+--
+dwmw2
 
 
-=====
-=====================================================================
-Michael J. Stumpf                              
-LinuxPPC enablement
-IBM-Austin, TX     512.838.1524 [lab]  512.838.5335 [work]   
-http://www.pobox.com/~mstumpf
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Photos - Share your holiday photos online!
-http://photos.yahoo.com/
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
