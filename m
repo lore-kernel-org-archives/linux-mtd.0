@@ -1,62 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14tw6O-0001E9-00
-	for mtd-list@infradead.org; Sun, 29 Apr 2001 19:39:24 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14uD2E-0007Dy-00
+	for mtd-list@infradead.org; Mon, 30 Apr 2001 13:44:14 +0100
+Received: from zeus.vortex.is ([193.4.145.1])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14tw6N-0001E3-00
-	for mtd@infradead.org; Sun, 29 Apr 2001 19:39:23 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Cc: ahennessy@mvista.com, ds@schleef.org, jonas.holmberg@axis.com,
-    cwryu@debian.org, eauth@softsys.co.at, nico@cam.org
-Subject: Flash driver probe/commandset separation.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sun, 29 Apr 2001 19:38:17 +0100
-Message-ID: <26353.988569497@redhat.com>
+	id 14uD2C-0007BF-00
+	for mtd@infradead.org; Mon, 30 Apr 2001 13:44:12 +0100
+Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
+          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
+          ID# 0-71211U5000L1850S0V35) with ESMTP id is
+          for <mtd@infradead.org>; Mon, 30 Apr 2001 12:43:55 +0000
+Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
+          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
+          with ESMTP id is for <mtd@infradead.org>;
+          Mon, 30 Apr 2001 12:43:55 +0000
+Subject: chipreg
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 30 Apr 2001 12:43:54 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E31459126@kolkrabbi.flaga.is>
+content-class: urn:content-classes:message
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+hi,
 
-We seem to have an unnecessary amount of duplication of flash chip driver 
-code. We have three drivers for AMD/Fujitsu compatible chips - 
-cfi_cmdset_0002.c, amd_flash.c and jedec.c. We have two drivers for Intel/
-Sharp compatible chips - cfi_cmdset_0001.c and sharp.c.
+I have the following patch to drivers/mtd/chiptreg.c. It basically makes
+the=20
+file compile without errors and warnings?
 
-Erwin noticed this and wrote code to fall back to an AMD-compatible probe
-for JEDEC ID if the CFI probe failed, and then use cfi_cmdset_0002.c if 
-appropriate. I think that was the right approach, but I don't like merging
-the probes together like that. I think the mfr-specific probes for JEDEC ID 
-should be kept separate. The map driver can always call them in order if 
-the CFI probe fails, if it wants to.
+Is it o.k. to commit it?
 
-What I'd like to do is provide core drivers for each of the different 
-command sets, and separate probe functions which set up the necessary 
-parameters and invoke the core drivers.
-
-The current cfi_cmdset_000x drivers are the most generic, so I'd like to use
-those as the basis of the core drivers, and ensure that they can fully
-replace the functionality of the other individual drivers. 
-
-We end up with:
-	cmdset_intel (and sharp, etc.)
-	cmdset_amd (and fujitsu, macronix, etc.)
-	cfi_probe
-	intel_jedec_probe
-	amd_jedec_probe
-	
-Comments?
-
-Even assuming people agree (or disagree unconvincingly :), I'm not sure
-whether I should hold off on this until after I've sync'd up with Linus, or 
-whether I should get this all done first and worry about feeding the new 
-code to Linus later on. Probably the latter.
-
---
-dwmw2
-
-
+K.D.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
