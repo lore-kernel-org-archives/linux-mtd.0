@@ -1,18 +1,18 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mx2.mail.ru ([194.67.23.122])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGFsR-00043F-30
-	for linux-mtd@lists.infradead.org; Sat, 09 Oct 2004 07:59:10 -0400
-Message-ID: <4167D252.2040207@yandex.ru>
-Date: Sat, 09 Oct 2004 15:58:10 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+	id 1CGGqd-0004Jz-UT
+	for linux-mtd@lists.infradead.org; Sat, 09 Oct 2004 09:01:21 -0400
+Message-ID: <4167E11C.1020202@mail.ru>
+Date: Sat, 09 Oct 2004 17:01:16 +0400
+From: "Artem B. Bityuckiy" <dedekind@mail.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+To: David Woodhouse <dwmw2@infradead.org>
 References: <416122A1.4060302@oktetlabs.ru>		<1096885344.30942.559.camel@hades.cambridge.redhat.com>		<416127B7.3070505@yandex.ru>		<1096893242.22034.5.camel@weaponx.rchland.ibm.com>		<41614B2F.8060901@yandex.ru>		<1096895892.30942.614.camel@hades.cambridge.redhat.com>		<41615BA7.60801@yandex.ru>		<1096899817.30942.618.camel@hades.cambridge.redhat.com>		<4162AABC.9060809@yandex.ru>		<1096994744.30942.905.camel@hades.cambridge.redhat.com>	<1096996838.24013.3.camel@weaponx.rchland.ibm.com>
 	<4167CF42.3030506@yandex.ru>
 In-Reply-To: <4167CF42.3030506@yandex.ru>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -53,13 +53,15 @@ Artem B. Bityuckiy wrote:
 > The drawback is that the inode cache will eat more memory. But this 
 > isn't in-core object, just cache, so I don't think this is a big 
 > disadvantage.
+Moreover, there is the 'ofs' field in the jffs2_full_dnode which isn't 
+really needed since the sabe information is in the raw->flash_offset 
+field. So, we can for example add 'version' and remove 'ofs' field. The 
+size won't change, the JFFS2 will be a bit simpler. Only small overhead 
+(need to dereference pointer to get the ofs) will be introduced.
+
 > 
-> 2. Don't use the inode cache at all
-when building ICP.
-> This is bad because in order to 
-> build the inode cache
- > soory, not inode cache, I meant "build ICP"
-> we'll need to read *all* the node headers, even if 
+> 2. Don't use the inode cache at all. This is bad because in order to 
+> build the inode cache we'll need to read *all* the node headers, even if 
 > there is existing inode cache.
 > 
 > I believe this approach is bad and too heavyweight. Moreover, just 
@@ -79,6 +81,5 @@ when building ICP.
 > 
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Best Regards
+Artem B. Bityckiy
