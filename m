@@ -1,14 +1,14 @@
 Received: from [207.209.118.131] (helo=msi-ex6.ccm.msyscal.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fVGi-00045o-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 00:14:56 +0000
-Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BF9E3@MSI-EX6>
+	id 16fVTj-00046p-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 00:28:23 +0000
+Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BF9E4@MSI-EX6>
 From: Vadim Khmelnitsky <VadimK@m-sys.com>
 To: 'Ilguiz Latypov' <ilatypov@superbt.com>, Mark Meade
 	 <mark@lakeshoremicro.com>
 Cc: linux-mtd@lists.infradead.org
 Subject: RE: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-Date: Mon, 25 Feb 2002 16:26:08 -0800
+Date: Mon, 25 Feb 2002 16:39:35 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -22,6 +22,22 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Another thing that i forgot to mention earlier . When you guys write SPL to
+flash i assume you read the content of the first 1Kb ( 2 copies of IPL ) of
+flash and attach it to your SPL . The important thing here is to write IPL
+part with ECC/EDC syndrom . Otherwise, IPL will not be able to read SPL out
+of flash .
+
+Vadim
+
+-----Original Message-----
+From: Vadim Khmelnitsky [mailto:VadimK@m-sys.com]
+Sent: Mon, February 25, 2002 4:26 PM
+To: 'Ilguiz Latypov'; Mark Meade
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+
 
 [Ilguiz]
 Vadim, should the Millennium SPL check sum include IPL?
@@ -64,6 +80,10 @@ The other thought is if the stage1 code can be placed instead of IPL.
 Ilguiz
 
 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
