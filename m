@@ -1,64 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JQ15-00050U-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 01:34:43 +0100
-Received: from [203.67.208.2] (helo=fw11.sis.com.tw)
+	id 13JXWR-0005nV-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 09:35:35 +0100
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13JQ14-00050B-00
-	for mtd@infradead.org; Tue, 01 Aug 2000 01:34:42 +0100
-Message-ID: <398619F3.6422BCEB@sis.com.tw>
-Date: Tue, 01 Aug 2000 08:29:40 +0800
-From: Ollie Lho <ollie@sis.com.tw>
+	id 13JXWQ-0005nP-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 09:35:34 +0100
+Message-ID: <39868C80.6C48378E@arcom.co.uk>
+Date: Tue, 01 Aug 2000 09:38:24 +0100
+From: David Vrabel <dvrabel@arcom.co.uk>
 MIME-Version: 1.0
-To: Patrick Higgins <phiggins@transzap.com>, mtd@infradead.org
-Subject: Re: nftl and multi page read write support
-References: <Pine.LNX.4.21.0007311121400.32307-100000@phiggins.transzap.com>
+To: mtd@infradead.org
+Subject: Re: Booting from flash
+References: <398598C4.D6FC3ED8@arcom.co.uk> <25533.965057345@cygnus.co.uk>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=big5
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Patrick Higgins wrote:
+David Woodhouse wrote:
 > 
-> On Mon, 31 Jul 2000, David Woodhouse wrote:
+> dvrabel@arcom.co.uk said:
+> >  How would I go about getting linux to boot of flash.
 > 
-> > rogelio@evoserve.com said:
-> > > David - NFTL support is safe with the multipage read-write support. I
-> > > have a system running on ext2 on nftl and it is stable.
-> >
-> > Cool - you mean not only does it _not_ break it, but it magically makes it
-> > stable too?
-> 
-> Unless you've made some changes to NFTL (you were just verifying that your
-> DoC2000 changes *didn't* break NFTL, right?) then NFTL still has some
-> problems.  I'm having trouble finding time to look into the cause, but
-> while I am able to read and write from a preexisting NFTL partition, I'm
-> unable to make changes to it.  Using M-Systems' dformat utility from
-> dosemu makes a single FAT partition.  When I try to use fdisk to toggle it
-> to a Linux partition, things seem to go normally, but then when I run it
-> again, the partition still shows up as FAT.  mke2fs also seems to complete
-> successfully, but doesn't actually make changes.  However, mounting the
-> FAT partition, touching a few files, unmounting, *rebooting*, and mounting
-> again shows that the changes were permanent.  I have no idea what's
-> wrong--but I assume, as David has pointed out, that something is probably
-> wrong with the block device setup and/or partition table setup.  I'll look
-> into it when I get the chance.
-> 
+> See Jason's stuff in the boot/ directory of my CVS tree. I haven't looked
+> at it. Other people are booting off flash quite happily.
 
-One potential problem I just found and discussed with David. Currently the MTD
-driver (doc2000.c doc2001.c) is hardcoded with Erase Block == 8kB but actually
-very few nand flash chips in the M-System DoC 2000 are in 8kB block, most of 
-them have 16kB erase block. This cause problem when you "folding" the "Virtual
-Block Chain" in the NFTL layer (folding a vitrual block chain is a kind of
-"garbage collection" in the NFTL that is the only case Erase is issued). Half of the block is lost since you think the
-block is only 8kB but actually you have to
-save 16kB of data.
+Thanks.
 
-I am currently reviewing the NFTL layer, there seems to be other problems too.
-For example, try to use "nanddump" on a nftl_formatted/fdisked/mke2fsed DoC.
-You will lost all your data (especially partition table) on the DoC.
+> > If I'm using FTL do I need to make GRUB/LILO understand FTL?
+> 
+> Yes. But why are you using FTL? It's patented and you're not permitted to
+> use it on non-PCMCIA devices. You should probably be using JFFS instead.
 
-Ollie
+Woah! This sort of restriction should be listed in the README or website
+to prevent dumb people like me from using it by mistake.
+ 
+> (You'd need to get your bootloader to understand JFFS, too, but keep an eye
+> on handhelds.org where that task is fairly high up on the TODO list.)
+> 
+> > The board I'm using is a standard PC architecture.
+> 
+> Wimp.
+
+Not my fault. I just work here.  In fact I'm just a lowly student
+working during summer hence all the clueless questions.
+ 
+David Vrabel
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
