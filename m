@@ -1,14 +1,16 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E793518138D@atcml01.atc.army.mil>
-References: <EFF9A3506F74924AB5CC77BDC66E793518138D@atcml01.atc.army.mil>
-Content-Type: text/plain
-Date: Mon, 13 Dec 2004 14:00:01 +0000
-Message-Id: <1102946402.6694.82.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: DOC 128 Mbyte, which boot loader?
+Received: from mailout09.sul.t-online.com ([194.25.134.84])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CdsPS-00035j-EH
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2004 10:46:54 -0500
+From: stephanwib@t-online.de (Stephan Wiebusch)
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 13 Dec 2004 16:46:27 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <1CdsP6-0Z25Jo0@fwd10.sul.t-online.com>
+Subject: Cannot bulid grub_firmware for DOC2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +20,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-12-13 at 07:33 -0500, Carlos, John J USAATC wrote:
->   I have a DOC 128Mbyte DIP on a pc104 board.  I am running 2.4.28 kernel
-> with a recent patch from MTD site.  Modules loaded are DiskONChip, Inftl,
-> Mtdchar, Mtdblock.  I can access the chip, read and write to it.  I am
-> having problems booting from it. 
+Hi all!
 
-The patch for LILO is just to make it cope with the fact that the
-standard M-Systems BIOS extension for NFTL/INFTL uses a _lot_ of RAM.
-There's no real support for the DiskOnChip in it; you need to keep the
-original BIOS extension loaded on the DiskOnChip. I think that newer
-versions of LILO don't need the patch -- I'm not sure. I think the patch
-also makes a default mapping from /dev/nftla to BIOS drive 0x80 but you
-can put that in your lilo.conf anyway.
+I am trying to build a grub bootloader-firmware for a Diskonchip-2000 =
+(16MB)
+device.
+Therefor, I used the howto found at
+http://lakeshoremicro.com/diskonchip-grub-howto.html.
 
-Grub could also work in the same way too, without modification -- you
-put it into the 'MBR' of the emulated hard drive. The Grub patches you
-see in CVS are to make it support the DiskOnChip directly, so it can be
-put directly into the flash on the DiskOnChip _instead_ of the M-Systems
-BIOS extension. And I think you're right that INFTL support is missing
-from that. Adding it is left as an exercise for the reader.
+The DOC should be used in a small x86-PC-system. It is devided in only =
+one
+ext2-partition, where a 2.6.9-Kernel is located in /boot and a =
+=84menu.lst=93
+file in /boot/grub.
+My development PC uses Fedora Linux Core 3.
 
--- 
-dwmw2
+
+I was able to build =84grub_firmware=93 in /stage1 directory only for =
+one time;
+but i cannot remember the combination of grub package and mtd-patch =
+anymore.
+After installing it on the DOC using M-System=B4s DOS-TOOLS, grub =
+successfully
+booted from it. But unfortunately grub says: =84Error 23: Error while =
+parsing
+number=93.
+Using the DOC in my development PC, grub was able to recognize the
+ext2-filesystem on my hard disk (=84root hd(0,0)=93).
+
+I tried to build the Grub sources from CVS with the mtd-grub-patch
+2003-11-10 (not compiling) and 2003-01-08 (compiling, but no
+grub_firmware).With these patches, =A0I also tried the grub-0.92 (also =
+with
+grub-0.92-patch) and grub-0.95 packages from the ftp-server, but all
+combinations were not able to compile successfully.
+
+I did it this way:
+
+1)Patch grub with =84patch =96p0 =96i ../mtd/patches/<patch-file>=93
+2)aclocal && autoconf =96add-missing && automake
+3)./configure =96enable-diskonchip-2000 =96enable-diskonchip-ctrlbypass
+=96enable-ext2fs =96disable-ffs =96disable-xfs =96disable-jfs =
+=96disable-vstafs
+=96disable-reiserfs =96disable-minix =96disable-fat
+4)make
+
+Can anybody tell me a working combination or how to fix my problem? Or =
+can I
+use an alternative bootloader (unfortunately, i did not find any =
+information
+about using lilo)?
+I also would be happy if anybody would send me his/her grub_firmware =
+file.
+
+Greetings, Stephan
