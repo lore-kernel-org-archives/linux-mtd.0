@@ -1,14 +1,28 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: shamu <shamu@semidj.com>
-In-Reply-To: <20041124082726.BNFV478.mailgate4@shamu>
-References: <20041124082726.BNFV478.mailgate4@shamu>
+Received: from e6.ny.us.ibm.com ([32.97.182.106])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CWws7-0005j3-Ey
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 08:07:48 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.12.10/8.12.9) with ESMTP id iAOD7i0V479460
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:44 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	iAOD7hCv255766
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:43 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iAOD7hRL028436
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:43 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
+References: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
 Content-Type: text/plain
-Message-Id: <1101288063.21273.505.camel@baythorne.infradead.org>
+Message-Id: <1101301663.22829.3.camel@weaponx.rchland.ibm.com>
 Mime-Version: 1.0
-Date: Wed, 24 Nov 2004 09:21:03 +0000
+Date: Wed, 24 Nov 2004 07:07:43 -0600
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: JFFS & MTD Port
+Subject: Re: Supporting flash that powers up locked
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +32,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-11-24 at 13:57 +0530, shamu wrote:
-> Dear All,
-> My previous mail regarding MTD & JFFS.
-> In that mail I didn't mention specifically what I want from you guys.
+On Tue, 2004-11-23 at 16:25, Todd Poynor wrote:
 
-You haven't read http://david.woodhou.se/email.html -- or if you have,
-you haven't acted upon it.
+<snip>
 
--- 
-dwmw2
+> 
+> If anyone has any suggestions or comments as to why this wouldn't work
+> for their device or usage model or why this isn't the right way to go
+> about things then I'd appreciate it, thanks. -- Todd
+
+Not everyone uses mtd partitions...
+
+josh
