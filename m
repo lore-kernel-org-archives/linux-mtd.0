@@ -1,18 +1,21 @@
-Received: from wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bckh2-0002Cr-Qq
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 08:48:09 -0400
-Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
-	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004062208584625019
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2004 08:58:46 -0400
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812CB@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+Received: from mailout05.sul.t-online.com ([194.25.134.82])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bckzm-0002Nt-DV
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 09:07:27 -0400
+From: "Thomas Gleixner" <tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 22 Jun 2004 08:49:51 -0400
+Date: Tue, 22 Jun 2004 15:01:29 +0200
+References: <EFF9A3506F74924AB5CC77BDC66E79351812CB@atcml01.atc.army.mil>
+In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812CB@atcml01.atc.army.mil>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: FW: DOC Mil Plus 32 question erase size erase shift????
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200406221501.30299.tglx@linutronix.de>
+Cc: 
+Subject: Re: FW: DOC Mil Plus 32 question erase size erase shift????
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What should the buffer size be for an erase block in memory.  How is that
-value tied to the chip geometry???
+On Tuesday 22 June 2004 14:49, Carlos, John J USAATC wrote:
+> What should the buffer size be for an erase block in memory.  How is that
+> value tied to the chip geometry???
 
-Thanks,
-John
+Would you please be so kind and answer the questions, if we should be able =
+to=20
+help you.
 
------Original Message-----
-From: Thomas Gleixner [mailto:tglx@linutronix.de] 
-Sent: Monday, June 21, 2004 5:28 PM
-To: Carlos, John J USAATC
-Subject: Re: DOC Mil Plus 32 question erase size erase shift????
+1. Is the device running in x16 mode?
+If yes, then we have to fix this first, as it is not supported by nand_base=
+=2Ec=20
+at the moment. nand_scan() has to be made aware of this.
 
+2. What's the output of the chip detection routine including nand_scan() ?
 
-On Monday 21 June 2004 23:32, you wrote:
-> Hi Thomas,
->
->   I will look again at where I get the value of erasesize.  I thought 
-> I read it in the DOC pdf file???  I am not at work now so in the 
-> morning I will see where I have gone wrong and let you know.
+3. What did you change in nand_bbt.c ?=20
 
-Oh, the device operates in interleave-2 16 bit mode. This is a seperate
-issue 
-which we have to check.
+4. What's the bbt structure you pass to nand_scan_bbt ?
 
--- 
-Thomas _____________________________________________________________________
->From slash dot org
-"When customers are visiting, engineers are not allowed to wear ties. 
-That way the customer can tell who is the engineer and who is the 
-salesman (and therefore whom to believe.). Ties cut off blood flow 
-to the brain, making it easier for the salesmen to do their jobs." 
+5. Can you send me your driver code including he modifications to nand_base=
+=2Ec=20
+and nand_bbt.c, so I can have a look ?
+
+=2D-=20
+Thomas
+_____________________________________________________________________
+=46rom slash dot org
+"When customers are visiting, engineers are not allowed to wear ties.=20
+That way the customer can tell who is the engineer and who is the=20
+salesman (and therefore whom to believe.). Ties cut off blood flow=20
+to the brain, making it easier for the salesmen to do their jobs."=20
 _____________________________________________________________________
 linutronix - competence in embedded & realtime linux
 http://www.linutronix.de
