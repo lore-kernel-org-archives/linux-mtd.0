@@ -1,19 +1,18 @@
-Received: from jeeves.momenco.com
-	([64.169.228.99] helo=host099.momenco.com ident=root)
+Received: from pony2pub.arc.nasa.gov ([128.102.31.42] helo=mail.arc.nasa.gov)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Febw-00030f-55
-	for <linux-mtd@lists.infradead.org>; Tue, 13 May 2003 19:34:48 +0100
-From: "Matthew Dharm" <mdharm@momenco.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Date: Tue, 13 May 2003 11:34:58 -0700
-Message-ID: <NEBBLJGMNKKEEMNLHGAICEHLDAAA.mdharm@momenco.com>
-MIME-Version: 1.0
-In-Reply-To: <1052811622.10222.42.camel@imladris.demon.co.uk>
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 19G4lH-0006oC-4e
+	for <linux-mtd@lists.infradead.org>; Wed, 14 May 2003 23:30:11 +0100
+Message-Id: <5.2.1.1.2.20030514152328.01234a98@mail.arc.nasa.gov>
+Date: Wed, 14 May 2003 15:32:23 -0700
+To: David Woodhouse <dwmw2@infradead.org>, David.Mattes@Boeing.com
+From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+In-Reply-To: <1052943424.2326.2.camel@imladris.demon.co.uk>
+References: <3EC28764.6050102@Boeing.com>
+ <3EC28764.6050102@Boeing.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 cc: linux-mtd@lists.infradead.org
-Subject: RE: DiskOnChip 2000 128Mb problem
+Subject: Re: problem installing grub on DOC2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: David Woodhouse [mailto:dwmw2@infradead.org]
-> Sent: Tuesday, May 13, 2003 12:40 AM
-> To: Matthew Dharm
-> Cc: Edward A. Hildum; linux-mtd@lists.infradead.org
-> Subject: RE: DiskOnChip 2000 128Mb problem
->
->
-> On Tue, 2003-05-13 at 02:42, Matthew Dharm wrote:
-> > Well, I found at least one part of the problem.
+I'm not sure about 48MB DOCs, but with 256 MB DOC 2000 TSOPs, DFORMAT 5.1.4 
+installs an initial program loader that wants grub_firmware to have 
+properties different than the ones the GRUB build process makes.  In 
+particular, it wants the first 12KB to have a checksum of 0x55 rather than 
+the first 8KB.
+
+On the other hand, DFORMAT is aware of the different DOC models and treats 
+them differently, so this may not apply to the 48M DOC.  If you can boot 
+DOS from a floppy, you can use DOS DEBUG to look at the initial program 
+loader in the DOC memory window.  With a little effort, you can figure out 
+what the IPL wants grub_firmware to look like.
+
+Ted Hildum
+
+At 09:17 PM 5/14/2003 +0100, you wrote:
+>On Wed, 2003-05-14 at 19:13, David Mattes wrote:
+> > hi linux-mtd readers,
 > >
-> > The Linux driver doc2001.c assumes that addresses (in
-> DoC_Address) are
-> > 23 bits max.  On some parts, the max is 31, so an extra
-> write of the
-> > address component is needed.
+> > i've tried subscribing to the list but the moderator isn't replying :-(
+> > ....
 >
-> Interesting. If we make this change, does it still work
-> with the older
-> units?
-
-Doubtful.  The doc2000 'integrated' code actually has a system for
-marking certain parts as needed 3 or 4 bytes of address, depending on
-the part ID.  I can't use that code, since it can't ID my parts (and I
-haven't figured out why).
-
-Matt
+>That would be me. I haven't seen anything that needed a reply -- what
+>happened? Did you fill in your address etc in the form at
+>http://lists.infradead.org/mailman/listinfo/linux-mtd ?
+>
+> > i'm following mark meade's DOC-GRUB how-to to the letter for installing
+> > GRUB on my M-Systems DOC2000 48M unit, but have hit a wall.  i've been
+> > scouring the list archives for help with no luck, so i ask you...
+> >
+> > after using DFORMAT 5.1.4:
+> > DFORMAT /win:E000 /BDKF0:grub_firmware
+> >
+> > i reboot system and the message "DoC found" scrolls on the screen about
+> > 8 times, and then the computer reboots.
+>
+>Aren't you supposed to use DFORMAT 4.2 to be compatible with the Grub
+>code?
+>
+>--
+>dwmw2
