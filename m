@@ -1,19 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.194])
+Received: from galaxy.systems.pipex.net ([62.241.162.31])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DJ5y3-0002rW-Gg
-	for linux-mtd@lists.infradead.org; Wed, 06 Apr 2005 04:32:58 -0400
-Received: by wproxy.gmail.com with SMTP id 55so206636wri
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Apr 2005 01:32:55 -0700 (PDT)
-Message-ID: <29f9165105040601323ef8d30@mail.gmail.com>
-Date: Wed, 6 Apr 2005 04:32:55 -0400
-From: alfred hitch <alfred.hitch@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1DJ9Ni-0003Q4-L3
+	for linux-mtd@lists.infradead.org; Wed, 06 Apr 2005 08:11:39 -0400
+Message-ID: <4253D280.6090308@infocell-its.com>
+Date: Wed, 06 Apr 2005 13:13:52 +0100
+From: Zeri Virgo <zerivirgo@infocell-its.com>
+MIME-Version: 1.0
+To: Dan Brown <dan_brown@ieee.org>
+References: <4249C357.2040600@ieee.org>	<424C1C58.3000905@infocell-its.com>	<424C5F16.8010809@ieee.org>	<424CA4EA.8090904@infocell-its.com>	<424CAE31.8040302@ieee.org>
+	<425157C5.4040007@infocell-its.com>	<425181A7.2010809@ieee.org>
+	<42527DD5.4080009@infocell-its.com> <4252EC5D.4090806@ieee.org>
+In-Reply-To: <4252EC5D.4090806@ieee.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: 2nd flash detection on ixp425 based boards
-Reply-To: alfred hitch <alfred.hitch@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [UPDATE] DOCBoot support for NFTL-based DOC2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+ > There is a small (but important) fix to
+> memory size detection, which shouldn't affect you since you're not using 
+> initrd (I think).
+No, you're right - I'm not using initrd.
 
-This is regading cfi probe for multiple flash chips  ..
+> There is also a new option in doc_bootstub.h: #define DEBUG_BUILD.  This 
+> will print out some interesting info during the "Installing DOCBoot" 
+> phase, and wait for a keypress.
 
-On my IXP425 based board, with 2 chips, one on CS0(16MB)
-and other on CS1 (16 MB) ..
+--------------------------------------------------------------
+Award Modular BIOS v4.51PG, An Energy Star Ally
+...
+HS-4020 VER:1.4
 
-I am able to probe and write through to these devices in my probe ..
-all's well .
+Cyrix MediaGX With MMX-S CPU at 300MHz
+Memory Test :   64000K OK + 1536 shared memory
 
-but today, we were changing hardware configuration to have 8MB on CS1
-in stead of 16MB ..
-and I notice that in the gen_probe.c -> genprobe_ident_chips function ..
-the for loop which checks for base size is to map->size will not pass thru ..
-that is it will say find 16 + 16 <= 24 (configured as window_size)
+Award Plug and Play BIOS Extension v1.0A
+...
+Installing DOCBoot.
+doc_seg = 0xD000    setup_seg = 0x2000
+int15/88 returns 0xF600    initrd_start = 0x000000
+top of low mem = 0x0280k    handler seg = 0x9FC0
+   -- Press any key --
+--------------------------------------------------------------
 
-I see a comment above it also saying that this is to check that the
-size is good enough to accomodate another chip of same size in this
-probe..
+...<snip>...
+Loading kernel ... page 0x.... <- this seems to start at zero and be 
+going up at roughly 0x200 a second up to 0xFFFF then restarting at zero 
+again over and over.
 
-Please help me understand that why are we doing it this way .. is h/w
-config like we are trying to have wrong ? why cannot I put base <
-cfi.chipshiftsize in
-that for loop and map both the devices .. why does the second one has
-to be this way of size more or equal to first one ..
+Just to give you a clearer picture, the bzImage is 1148021 bytes and 
+doc_spl is 1187472 bytes. The nandwrite command wrote doc_spl from 0 up 
+to the erase block at 0x118000 which is well within the 0x208000 
+firmware area. The board is a Boser HS-4020 v1.4.
 
-Cheers,
-Alfred
+Unfortunately, assembler is greek to me!
+
+- Zeri
