@@ -1,20 +1,19 @@
-Received: from msr21.hinet.net ([168.95.4.121] helo=msr.hinet.net)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18YVFJ-0001TL-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2003 17:53:05 +0000
-Received: from ms11.hinet.net (61-228-122-141.HINET-IP.hinet.net [61.228.122.141])
-	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id CAA10338
-	for <linux-mtd@lists.infradead.org>; Wed, 15 Jan 2003 02:23:56 +0800 (CST)
-Message-ID: <3E2455BE.1010301@ms11.hinet.net>
-Date: Wed, 15 Jan 2003 02:23:58 +0800
-From: Steve Tsai <startec@ms11.hinet.net>
-MIME-Version: 1.0
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Display Unchecked space...
-References: <000201c2bb7e$ff1e89a0$80d1a8c0@synso.com.tw> <14587.1042556118@passion.cambridge.redhat.com>
-In-Reply-To: <14587.1042556118@passion.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 18YYO3-0001o4-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2003 21:14:19 +0000
+Date: Tue, 14 Jan 2003 22:45:10 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Simon Evans <spse@secret.org.uk>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: default readv/writev functions
+Message-ID: <20030114214510.GC19834@wohnheim.fh-wedel.de>
+References: <E18XNfT-0003Sp-00@spoinky.renegade.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E18XNfT-0003Sp-00@spoinky.renegade.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,30 +25,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I will try it. Thanks.
+On Sat, 11 January 2003 15:35:26 +0000, Simon Evans wrote:
+> 
+> I noticed in fs/jffs2/writev.c there is a mtd_fake_writev and a comment
+> that it should be in the MTD core. Is the following ok to commit?
+> 
+> diff -u -p -u -r1.32 mtdcore.c
+> --- drivers/mtd/mtdcore.c	7 Mar 2002 18:38:10 -0000	1.32
+> +++ drivers/mtd/mtdcore.c	11 Jan 2003 12:28:16 -0000
+>
+> +int default_mtd_writev(struct mtd_info *mtd, const struct iovec *vecs,
+> +		       unsigned long count, loff_t to, size_t *retlen)
+> +int default_mtd_readv(struct mtd_info *mtd, struct iovec *vecs,
+> +		      unsigned long count, loff_t from, size_t *retlen)
+>
+> +EXPORT_SYMBOL(default_mtd_writev);
+> +EXPORT_SYMBOL(default_mtd_readv);
+>
+> diff -u -p -u -r1.37 mtd.h
+> --- include/linux/mtd/mtd.h	19 Nov 2002 01:22:31 -0000	1.37
+> +++ include/linux/mtd/mtd.h	11 Jan 2003 12:28:17 -0000
+>
+> +int default_mtd_writev(struct mtd_info *mtd, const struct iovec *vecs,
+> +		       unsigned long count, loff_t to, size_t *retlen);
+> +
+> +int default_mtd_readv(struct mtd_info *mtd, struct iovec *vecs,
+> +		      unsigned long count, loff_t from, size_t *retlen);
 
-Steve Tsai
+IMHO this is the wrong place. This should go into
+drivers/mtd/chips/cfi_cmdset*.c.
 
-David Woodhouse wrote:
+Maybe I should comment on the code as well, but I'm lazy tonight. You
+can compare it with cfi_cmdset_0003.c, that one should have a working
+writev-function.
 
->startec@ms11.hinet.net said:
->  
->
->>kernel BUG at gc.c:136! Checked all inodes but still 0x6a0 bytes of
->>unchecked space?
->>    
->>
->
->We think this is fixed. cvs up and try again.
->
->--
->dwmw2
->
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->  
->
+Jörn
+
+-- 
+Jörn Engel
+mailto: joern@wohnheim.fh-wedel.de
+http://wohnheim.fh-wedel.de/~joern
+Phone: +49 179 6704074
