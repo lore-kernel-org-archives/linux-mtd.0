@@ -1,17 +1,17 @@
-Received: from host155.209-113-146.oem.net ([209.113.146.155] helo=mail.netx4.com)
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zKVq-0006Zq-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 16:43:58 +0100
-Message-ID: <3AFFFDAA.328323DD@mvista.com>
-Date: Mon, 14 May 2001 11:45:46 -0400
-From: "George G. Davis" <davis_g@mvista.com>
-MIME-Version: 1.0
+	id 14zKa3-0006aH-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 16:48:20 +0100
 To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Does MTD include support for STM M58LW064?
-References: <3AFC3CD1.1AEBE5EF@mvista.com> <22562.989772843@redhat.com>
-Content-Type: multipart/mixed;
- boundary="------------DD047FE524D4358E40460E5C"
+Cc: linux-mtd@lists.infradead.org, ajlennon@arcom.co.uk
+Subject: Re: CPU caching of flash regions.
+References: <27217.989849725@redhat.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 14 May 2001 09:51:36 -0600
+In-Reply-To: David Woodhouse's message of "Mon, 14 May 2001 15:15:25 +0100"
+Message-ID: <m38zk07wtz.fsf@DLT.linuxnetworx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,61 +23,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------DD047FE524D4358E40460E5C
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+David Woodhouse <dwmw2@infradead.org> writes:
 
-David Woodhouse wrote:
+> I've just seen profiling of a system mounting JFFS2 filesystem which shows 
+> that the majority of the time is spend in the map driver's copy_from 
+> function.
 > 
-> davis_g@mvista.com said:
-> >  But I'll ask the question anyway in case I missed it: does MTD
-> > include support for the ST Microelectronics M58LW064 flash device?
-> > This device supports CFI commands. But I don't see any support for it
-> > in the current MTD CVS sources.
+> The copy_from() functions are currently using a completely uncached mapping 
+> of the flash chip, but in fact for reading the chip that's not strictly 
+> necessary. This is especially true during the initial scan. 
 > 
-> There's no such thing as 'CFI commands'. The only thing that's _common_
-> about the Common Flash Interface is the way you probe the chip to find out
-> what commands it supports.
-
-Thanks for the education. The part data sheet states "The device supports the
-CFI command set definition". My apologies for the syntactical error - I'm not
-an expert on the subject matter!  : )
-
-
-> Looking at the datasheet for that chip, it seem to support command set
-> number 0x20, which we don't currently have code to recognise. But at first
-> glance, the command set described seems identical to the Intel chips.
+> I think we ought to allow map drivers to do intelligent caching of bus 
+> accesses. Suggested semantics:
 > 
-> Compare the commands listed in the datasheet with the ones in the Intel
-> datasheets, and if the latter really is a subset of the (parts we actually
-> use of the) former, then try hacking the CFI probe to treat cmdset 0x20 as
-> if it was cmdset 1, and see what happens. It'll probably work.
+>  1. Only the copy_from() and copy_to() functions can use a cacheable mapping.
+> 
+>  2. Any access to the chip through one of the other ({read,write}{8,16,32}) 
+> 	functions causes the cache to be flushed for the entire mapping.
+> 
+> If a cache flush is expensive, a mapping driver may optimise the flushes and
+> perform a cache flush only if the cache is expected to be non-empty.
+> 
+> This approach is fairly simple, and allows mapping drivers to do something 
+> closely approximating the "right thing" without adding complexity to the 
+> chip driver code. An alternative, which I'm dubious about, is to add 
+> explicit cache management functionality to the methods exported by the 
+> mapping drivers, and to have the chip driver explicitly turn the cache 
+> on/off and flush parts of it when writing/erasing.
+> 
+> Comments?
 
-Thanks. That's the impression I had - this device implements only a subset
-of the Intel/Sharp command set. At the moment I'm only investigating support
-for alternate sourcing of components. If we proceed with evaulating this
-device, I'll follow your recommendation and let you know how it goes.
+What kind of scenario are we talking about?  Do the pages get read
+multiple times?  Of is it just that that copy_from needs to be more
+highly optimized like memcpy?  I suspect that before the whole interface
+changes you should experiment and see what really needs to be done.
 
- 
-> --
-> dwmw2
+As for interface changes I would suggest an additional opertation
+memory_barrier that forces the flush if needed.  
 
--- 
-Regards,
-George
---------------DD047FE524D4358E40460E5C
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="davis_g.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for George G. Davis
-Content-Disposition: attachment;
- filename="davis_g.vcf"
+But I really think you should be able to get it working faster simply
+by optimizing the copy_from routine.
 
-YmVnaW46dmNhcmQgCm46RGF2aXM7R2VvcmdlCnRlbDt3b3JrOjYwMy84ODAtMTQxNAp4LW1v
-emlsbGEtaHRtbDpGQUxTRQp1cmw6aHR0cDovL3d3dy5tdmlzdGEuY29tCm9yZzpNb250YVZp
-c3RhIFNvZnR3YXJlLCBJbmMuCmFkcjo7OzQ2IFBpbmUgU3RyZWV0IEV4dGVuc2lvbjtOYXNo
-dWE7Tkg7MDMwNjA7VVNBCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0OmRhdmlzX2dAbXZp
-c3RhLmNvbQp0aXRsZTpTb2Z0d2FyZSBFbmdpbmVlcgp4LW1vemlsbGEtY3B0OjstNTM3Ngpm
-bjpHZW9yZ2UgRy4gRGF2aXMKZW5kOnZjYXJkCg==
---------------DD047FE524D4358E40460E5C--
+Eric
