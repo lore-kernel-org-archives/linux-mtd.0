@@ -1,23 +1,15 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from webapps.arcom.com ([194.200.159.168])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNTvr-0003pJ-Ti
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 06:24:33 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Aras Vaichas <arasv@magellan-technology.com>
-In-Reply-To: <418213C3.3050706@magellan-technology.com>
-References: <20041028230640.GB13105@home.fluff.org>
-	<4181840D.2020605@magellan-technology.com>
-	<1099035223.22387.529.camel@thomas>
-	<418213C3.3050706@magellan-technology.com>
+	id 1CNWsz-0004M9-Vo
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 09:33:48 -0400
+From: Ian Campbell <icampbell@arcom.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Fri, 29 Oct 2004 12:16:18 +0200
-Message-Id: <1099044978.22387.557.camel@thomas>
+Message-Id: <1099056821.24918.1669.camel@icampbell-debian>
 Mime-Version: 1.0
+Date: Fri, 29 Oct 2004 14:33:42 +0100
 Content-Transfer-Encoding: 7bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: Read/nBusy via interrupt
-Reply-To: tglx@linutronix.de
+Subject: [PATCH 2/2] Make redboot partition table location configurable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +19,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-10-29 at 19:56 +1000, Aras Vaichas wrote:
-> > No. Usually R/B is connected anyway.
-> 
-> usually? If the software doesn't need it, then why would you connect it?
+Hi all,
 
-There's a different between needs it and takes advantage of it. If I can
-take advantage, then I will connect it. Using the R/B signal instead of
-polling is an advantage.
+RedBoot has a compile time configuration option called
+CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK. 
 
-> >>* more code to write and debug!
-> > 
-> > About 20 lines. I'm scared.
-> 
-> No need to be scared. Software engineers don't come for free. development time 
-> == money.
+The patch below (against BK) adds an equivalent option to the Linux
+redboot partition table parsing code.
 
-Developing efficient polling might need software engineers too. 
+Is it OK to commit to MTD CVS and send to Linus?
 
-> I never said it would affect it significantly (or did I?). I was simply stating 
-> the fact that the time does increase. Every pin on a chip costs extra and when 
-> you are planning on making 10,000+ per year of a product, that price difference 
-> makes a affects your company's bottom line. If you don't believe me, then take 
-> a look at the Digikey page for the AT45DB081 and take a long hard look at unit 
-> price versus pin count.
+Ian.
 
-I'm aware of high volume designs, where the pin count, pcb size ... has 
-to be taken into account.
+Index: 2.6-bk/drivers/mtd/Kconfig
+===================================================================
+--- 2.6-bk.orig/drivers/mtd/Kconfig	2004-10-29 09:52:28.814675295 +0100
++++ 2.6-bk/drivers/mtd/Kconfig	2004-10-29 10:09:19.565036333 +0100
+@@ -54,8 +54,8 @@
+ 	depends on MTD_PARTITIONS
+ 	---help---
+ 	  RedBoot is a ROM monitor and bootloader which deals with multiple
+-	  'images' in flash devices by putting a table in the last erase
+-	  block of the device, similar to a partition table, which gives
++	  'images' in flash devices by putting a table one of the erase
++	  blocks on the device, similar to a partition table, which gives
+ 	  the offsets, lengths and names of all the images stored in the
+ 	  flash.
+ 
+@@ -68,6 +68,23 @@
+ 	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for 
+ 	  example.
+ 
++config MTD_REDBOOT_DIRECTORY_BLOCK
++	int "Location of RedBoot partition table"
++	depends on MTD_REDBOOT_PARTS
++	default "-1"
++	---help---
++	  This option is the Linux counterpart to the
++	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
++	  option.
++
++	  The option specifies which Flash sectors holds the RedBoot
++	  partition table.  A zero or positive value gives an absolete
++	  erase block number. A negative value specifies a number of
++	  sectors before the end of the device.
++	  
++	  For example "2" means block number 2, "-1" means the last
++	  block and "-2" means the penultimate block.
++	  
+ config MTD_REDBOOT_PARTS_UNALLOCATED
+ 	bool "  Include unallocated flash regions"
+ 	depends on MTD_REDBOOT_PARTS
+Index: 2.6-bk/drivers/mtd/redboot.c
+===================================================================
+--- 2.6-bk.orig/drivers/mtd/redboot.c	2004-10-29 10:09:01.798848528 +0100
++++ 2.6-bk/drivers/mtd/redboot.c	2004-10-29 10:09:35.374754066 +0100
+@@ -30,6 +30,9 @@
+ 	struct fis_list *next;
+ };
+ 
++static int directory = CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK;
++module_param(directory, int, 0);
++
+ static inline int redboot_checksum(struct fis_image_desc *img)
+ {
+ 	/* RedBoot doesn't actually write the desc_cksum field yet AFAICT */
+@@ -51,6 +54,7 @@
+ 	int namelen = 0;
+ 	int nulllen = 0;
+ 	int numslots;
++	unsigned long offset;
+ #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
+ 	static char nullstring[] = "unallocated";
+ #endif
+@@ -60,8 +64,15 @@
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	/* Read the start of the last erase block */
+-	ret = master->read(master, master->size - master->erasesize,
++	if ( directory < 0 )
++		offset = master->size + directory*master->erasesize;
++	else
++		offset = directory*master->erasesize;
++
++	printk(KERN_NOTICE "Searching for RedBoot partition table in %s at offset 0x%lx\n",
++	       master->name, offset);
++
++	ret = master->read(master, offset,
+ 			   master->erasesize, &retlen, (void *)buf);
+ 
+ 	if (ret)
 
-> Doesn't it count as an MTD device? Where did this kernel option come from -> 
-> "CONFIG_MTD_AT91_DATAFLASH" ??
-
-Did I say that ?
-
-> 
-> > We are talking about NAND >= 32MB, which is often used for filesystems.
-> 
-> Ben didn't mention "NAND >= 32MB, which is often used for filesystems", or 
-> perhaps I read the initial email incorrectly ... hmmm, my bad. 
-
-Ben was explicitly talking about NAND FLASH, where today the non
-obsolete devices start at 32MB
-
-> Thomas, your reply to my email was so ridiculously over the top and harsh. 
-
-Sorry, It was not my intention to offend you. 
-
-> I was simply offering an opinion and some information on a useful MTD device from 
-> the position of someone with hardware experience. Perhaps next time you should 
-> re-think the tone of your replies and consider the signal-to-noise ratio of 
-> what you write. I'm sure this forum will be a better place for it.
-
-Just FYI, I have >20 years hardware/software experience.
-
-Talking about signal/noise ratio. Is an extensive explanation of
-DataFlash in answer to a question on NAND FLASH signal or noise ?
-
-tglx
+-- 
+Ian Campbell, Senior Design Engineer
+                                        Web: http://www.arcom.com
+Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
+Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
