@@ -1,22 +1,17 @@
-Received: from fed1mtao04.cox.net ([68.6.19.241])
+Received: from mail.mediatrix.com ([66.129.134.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178lCz-0006CA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 18:08:01 +0100
-Subject: Re: Getting big flash onto motherboards. Will CF work? what will?
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Ronald G Minnich <rminnich@lanl.gov>
-Cc: David Woodhouse <dwmw2@infradead.org>, "Richard A. Smith"
-	 <rsmith@bitworks.com>, "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
-	linux-mtd@lists.infradead.org
-In-Reply-To: 
-	<Pine.LNX.4.33.0205170948210.11746-100000@snaresland.acl.lanl.gov>
-References: 
-	<Pine.LNX.4.33.0205170948210.11746-100000@snaresland.acl.lanl.gov>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 17 May 2002 10:08:01 -0700
-Message-Id: <1021655281.27483.0.camel@timmy>
-Mime-Version: 1.0
+	id 178m5l-0006Ih-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 19:04:37 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF40@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Kernel oops after sync command in jffs2 
+Date: Fri, 17 May 2002 14:04:35 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,10 +23,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> Are there other options? These are 1U or .8U spaces most likely, and so a
-> big PCI card is out of the question -- that's needed for Myrinet. There
-> are no ISA slots. There are two IDE headers, and possibly a SCSI header. A
-> very low profile PCI card might work. The only option I was aware of was
-> IDE->CF adapaters. Is there something else I should look at?
+Hi,
 
-there are DOC devices that plug into IDE
+I think I found a possible source for the oops I reported previously =
+this
+week.
+
+When the oops happen, the do_erase_oneblock() function if =
+cfi_cmdset_0002.c
+complains that DQ5 has been asserted to "1" while the flash was still
+erasing, meaning that a program command has been attempted. =20
+
+So I examined the chip driver to see if there were a gap in the mutual
+exclusion of the chip access.  I found that function cfi_amdstd_write() =
+send
+unlock bypass command to the flash without verifying if the flash is =
+ready
+first, if cfi->fast_prog is true.  I tryied to disable fast_prog in
+cfi_probe.c, and the oops did not happen again.  It sound like it were =
+the
+problem, although I am not 100% sure yet.
+
+I will send you the oops trace along with the callback trace if it ever
+shows up again.
+
+Fr=E9d=E9ric Giasson
+
+|-----Original Message-----
+|From: David Woodhouse [mailto:dwmw2@infradead.org]
+|Sent: Thursday, May 16, 2002 1:35 PM
+|To: Frederic Giasson
+|Cc: 'linux-mtd@lists.infradead.org'
+|Subject: Re: Kernel oops after sync command in jffs2=20
+|
+|
+|
+|Show oops? Decoded.
+|
+|--
+|dwmw2
+|
+|
