@@ -1,18 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from router-100m.swansea.linux.org.uk ([194.168.151.17] helo=the-village.bc.nu)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15H37t-0000QL-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 13:48:29 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B406B63.4E28CA8A@cotw.com> 
-References: <3B406B63.4E28CA8A@cotw.com>  <200107012207.PAA01921@adam.yggdrasil.com> 
+	id 15H38K-0000QK-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 13:48:57 +0100
+Subject: Re: linux-2.4.6-pre8/drivers/mtd/nand/spia.c: undefined symbols
 To: sjhill@cotw.com
-Cc: "Adam J. Richter" <adam@yggdrasil.com>, linux-kernel@vger.kernel.org,
-    linux-mtd@lists.infradead.org
-Subject: Re: linux-2.4.6-pre8/drivers/mtd/nand/spia.c: undefined symbols 
-Mime-Version: 1.0
+Date: Mon, 2 Jul 2001 13:52:46 +0100 (BST)
+Cc: adam@yggdrasil.com (Adam J. Richter), dwmw2@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <3B406B63.4E28CA8A@cotw.com> from "Steven J. Hill" at Jul 02, 2001 07:38:59 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 02 Jul 2001 13:53:45 +0100
-Message-ID: <27019.994078425@redhat.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <E15H3C2-0005qS-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +24,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-sjhill@cotw.com said:
->  'spia.c' is the device dependent part. You should write your own
-> version of 'spia.c' and "simply" fill in the addresses for the IO
-> address and control register address depending on your specific
-> hardware. The above symbols are only defined for my specific hardware.
+> The way that I architected the raw NAND flash device driver was to
+> break it into 2 parts. 'nand.c' contains the actual driver code and
+> is considered to be device independent. 'spia.c' is the device
+> dependent part. You should write your own version of 'spia.c' and
 
-Where are those four variables defined? In platform-dependent code for your 
-board? If so, we should probably make the config option dependent on that 
-platform. 
-
-That'll make ESR whinge at me if support for your platform isn't (yet) in 
-Linus' tree - but I don't care too much about that.
-
---
-dwmw2
+So the Config.in is wrong since I can select spia on x86
