@@ -1,16 +1,16 @@
 Received: from ip68-6-32-25.sb.sd.cox.net ([68.6.32.25] helo=speedy.datawave.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16cppU-0007CR-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 15:35:48 +0000
+	id 16cpvv-0007Cx-00
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 15:42:28 +0000
 From: "Brian J. Fox" <bfox@ua.com>
-To: rob@sysgo.de
-CC: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+To: dwmw2@infradead.org
+CC: rob@sysgo.de, linux-mtd@lists.infradead.org,
 	joern@wohnheim.fh-wedel.de
-In-reply-to: <Pine.LNX.4.21.0202180915200.5439-100000@dagobert.svc.sysgo.de>
-	(message from Robert Kaiser on Mon, 18 Feb 2002 09:48:51 +0100 (MET))
+In-reply-to: <16804.1014023155@redhat.com> (message from David Woodhouse on
+	Mon, 18 Feb 2002 09:05:55 +0000)
 Subject: Re: MTD concat layer
-Message-Id: <E16cq07-0004Hc-00@speedy.datawave.net>
-Date: Mon, 18 Feb 2002 07:46:47 -0800
+Message-Id: <E16cq6b-0004Hq-00@speedy.datawave.net>
+Date: Mon, 18 Feb 2002 07:53:29 -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,45 +22,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-   Date: Mon, 18 Feb 2002 09:48:51 +0100 (MET)
-   From: Robert Kaiser <rob@sysgo.de>
+   From: David Woodhouse <dwmw2@infradead.org>
+   Cc: "Brian J. Fox" <bfox@ua.com>, linux-mtd@lists.infradead.org,
+       J?rn Engel <joern@wohnheim.fh-wedel.de>
+   Date: Mon, 18 Feb 2002 09:05:55 +0000
+   Sender: David Woodhouse <dwmw2@redhat.com>
 
-   > In order to achieve predictable behavior, and fewer bugs in the driver
-   > overall, functions should simply refuse to operate on parameters that
-   > fall out-of-bounds, and should return an error which specifies why
-   > nothing happened.
+   There is never any excuse for passing invalid offset/length to the
+   erase function - even the ioctl code can do a sanity check before
+   passing through the values provided by the user.
 
-   Now, here comes the problem. In the context of an erase function,
-   what does "predictable behavior" mean ? If it returns EINVAL, the caller
-   can see that they passed a faulty parameter, so does it make any
-   difference wether some of the specified flash range have been erased in
-   the process?
+That's right.
 
-Sure.  Erasing the blocks *changes* the state of the world from a
-predictable one to an unpredictable one.
+   For errors which can understandably occur, your concerns are valid
+   and we should ensure sanity by failing the request as safely as
+   possible, doing nothing else.
 
-   By specifying a certain area of flash to be erased, the user has by
-   definition given up any hope of seeing the data in that area again.
+   This is not such an error. As long as the ioctl() has an
+   appropriate sanity check, the occurrence of such an error indicates
+   that the kernel code is completely broken. Better to BUG()
 
-If the arguments are invalid, the code that calculated them is
-probably invalid.  Erasing the blocks is simply mean, and irreversible.
-
-   I think one can compare this to a read() function: if read() returns
-   an error, would you expect that the buffer that you passed to it
-   still contains all of its previous data ?
-
-It wouldn't matter if the buffer contained partial data, or no data,
-or the previous data.  You haven't done something that is user visibly
-irreversible!
-
-   > Hab' ich meine Gedanken gut eklaren?
-   > 
-
-   Ja. Ich meine auch ?
-
-Ja, aber "read" ist nicht "delete"!
-
-MBD,
+BUG() is completely acceptable.  It allows the driver to be fixed.
+It's also orthogonal to the original question.  Erasing blocks is
+simply a way to guarantee that data has been irrevocably lost.
 
 Brian
 == The Difference Between Cultures: ==
