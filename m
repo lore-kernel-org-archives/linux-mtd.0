@@ -1,28 +1,22 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from mail.dot4.com ([216.57.134.36])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BiF1A-0003pq-6I
-	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2004 12:11:32 -0400
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1BiF0z-00065M-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:24 +0200
-Received: from calvin.codito.com ([203.199.140.162])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:21 +0200
-Received: from amitshah by calvin.codito.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:21 +0200
+	id 1BiHMl-0004G5-IC
+	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2004 14:42:00 -0400
+Received: from [192.168.200.101] (unknown [192.168.200.101])
+	by mail.dot4.com (Postfix) with SMTP id 37A1A40DC
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  7 Jul 2004 14:41:58 -0400 (EDT)
+Message-ID: <40EC43ED.6090401@dot4.com>
+Date: Wed, 07 Jul 2004 14:41:49 -0400
+From: "Thomas W. Nelson" <twn@dot4.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: Amit Shah <amitshah@gmx.net>
-Date: Wed, 07 Jul 2004 21:39:08 +0530
-Message-ID: <cch7b6$i3g$1@sea.gmane.org>
-References: <ccdut4$do6$2@sea.gmane.org>
-	<1089175560.27262.13.camel@thomas.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: Accessing flash on a PCI card
+References: <40EB0D28.60309@dot4.com>
+	<1089196350.5577.22.camel@localhost.localdomain>
+In-Reply-To: <1089196350.5577.22.camel@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: MTD support on Motorola Hawk ASIC-based boards
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+David Woodhouse wrote:
 
-> On Tue, 2004-07-06 at 12:26, Amit Shah wrote:
->> I have a PCI card that has Intel Flash. I've cooked up a small driver
->> (the host kernel is 2.6.6) that iomaps the base address exported by the
->> PCI BARs and can verify that it's an intel flash by doing some config-
->> write and read sequences.
->> 
->> I now want to export the flash to userspace for reading / writing to the
->> flash. I guess it would be better to let MTD handle the stuff than me
->> doing things all over again. So, how can I access that flash memory over
->> the PCI with MTD?
-> 
-> Look at
-> drivers/mtd/maps/pci.c and other files using PCI in the same folder
+>Our code doesn't currently handle the case where you have more chips
+>than you can address in a single bus cycle, and there are different sets
+>of chips at different bus addresses.
+>
+>I've just encountered a board slightly more pathological than this --
+>the Dy-4 SVME/DMV-182 seems to have eight 32-bit chips, arranged
+>interleaved so that the word at 0x0000 is the first chip, as is the word
+>at 0x0020... You then find your CFI 'Q' at 0x200, 'R' at 0x220, etc...
+>
+>There's a hack in the TimeSys kernel which was never discussed or shown
+>here, which makes the code handle the concept that the repetition
+>interval (the address at which you start talking to chip 0 again) may be
+>a _multiple_ of the buswidth. They call this multiple
+>'extra_interleave'.
+>
+>When I first looked at it I thought it was a horrifically ugly hack, but
+>having looked for alternative approaches I don't think it's their fault
+>--  _all_ the CFI code gives me the same kind of skullache.
+>
+>Alternative suggestions for handling this are most definitely welcome.
+>
+>A simple alternative in your case might be to say your buswidth is 64,
+>and hack your write64 to do it in 2 32-bit accesses. But we need to
+>address this properly anyway.
+>
+>The patch is against an old snapshot of MTD code but should serve to
+>illustrate the concept. The CVS Ids of the files it's based on are
+>present in the diff.
+>  
+>
+Thanks for the info and insight on this, Dave.  Your assistance is 
+sincerely appreciated.
 
-Thanks, Thomas!
+We did some preliminary work for TimeSys on the SVME182 (since we had 
+already ported their 4.1 release to the '181), and I was rather 
+surprised when our initial shot at the MTD code didn't work on it.  Now 
+I know why.
 
+Just as a sanity check (since I have so little left :-), will these 
+modifications also correctly deal with the 32-bit only write limitation 
+during probes?  Getting the chips into query mode appears to be the real 
+challenge here; I haven't been able to perform the correct incantation 
+to get them to respond in any way, CFI or JEDEC.  BTW, despite the 
+apparent chip labeling, there's a possibility that the devices on the 
+Mot boards may actually be a pre-CFI version released by AMD for them.  
+Sigh...
+
+I'd also like to inject some personal observations about the more 
+complex flash geometries that are appearing.  On higher-end boards, such 
+as those from Dy4, Pentek, etc., these multibank interleaved 
+configurations are becoming very common as their customers want high 
+performance flash access for their XIP or flash filesystem-based 
+application environments.  We are seeing an increasing number of our 
+clients in the avionics, machine vision, and other demanding 
+high-performance environments using this class of hardware migrating 
+from proprietary to embedded Linux solutions for all the well-publicized 
+reasons I won't repeat here.  Therefore, it will become increasingly 
+important for the credibility of Linux in these higher-end embedded 
+systems to provide adequate support for these configurations.
+
+That said, I'll certainly assist with this effort whenever I can slice 
+off some spare cycles and we have access to this type of hardware for 
+testing.  First, I have to finish wrapping my brain around the current 
+MTD design/implementation.
+
+Best regards...
 -- 
-Amit Shah
-http://amitshah.nav.to/
+Thomas W. Nelson
+Sr. Consulting Engineer, Dot4, Inc.
+twn@dot4.com <mailto:twn@dot4.com>
