@@ -1,19 +1,13 @@
-Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEY4u-00059Y-EB
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 14:33:13 -0500
-Date: Thu, 24 Mar 2005 19:32:51 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
 To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20050324T182625-656@post.gmane.org>
-Message-ID: <Pine.LNX.4.58.0503241932390.15561@phoenix.infradead.org>
+In-Reply-To: <loom.20050323T212715-407@post.gmane.org>
 References: <loom.20050322T224733-491@post.gmane.org>
-	<4241396B.D689EB32@st.com>
-	<loom.20050323T212715-407@post.gmane.org> <4242925F.D29BC7CE@st.com>
-	<42429C1C.8050600@yandex.ru> <loom.20050324T182625-656@post.gmane.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
+	<4241396B.D689EB32@st.com>  <loom.20050323T212715-407@post.gmane.org>
+Content-Type: text/plain
+Date: Thu, 24 Mar 2005 21:59:53 +0000
+Message-Id: <1111701594.6588.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,34 +19,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Artem, when figuring out if the write goes over the page boudary you did 
-not say
-> anything about CRC and other non-user data.. Should it be taken into 
-account
-> too or am I missing something?
->
+On Wed, 2005-03-23 at 20:50 +0000, Sergei Sharonov wrote:
+> I believe I saw a proposal to save small chunks as separate files,
+> then append them as a temp file and rename temp file to real log
+> file. 
+> The problems are (1) the log file is huge (2) rename is not atomic per
+> your reply.
 
-Well, page boundaries aren't problem. We want a write operation which goes 
-to flash a one node.
+The important part of rename is atomic. If you have 'log_file', and then
+you create 'log_file.new' and rename that to 'log_file', then there is
+never an instant where 'log_file' does not exist; it goes directly from
+pointing to one inode, to pointing to the other.
 
-There are two points of splitting:
-1. Linux page cache splits data on PAGE_SIZE chunks.
-2. jffs2_write_inode_range may do further split. This is what I missed 
-first time.
-
-Yes, jffs2_write_inode_range will not split if the node to write is fewer 
-then sizeof(struct jffs2_raw_inode) + JFFS2_MIN_DATA_LEN.
-
-So, sizeof(struct jffs2_raw_inode) includes all the "anything about CRC 
-and other non-user data" and you may write JFFS2_MIN_DATA_LEN bytes 
-atomically.
-
-So, I'll write the rules again:
-1. write only 0- JFFS2_MIN_DATA_LEN bytes;
-2. do not overlap n*PAGE_SIZE borders (n is 1,2, ...)
-3. do fsync after write
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+dwmw2
