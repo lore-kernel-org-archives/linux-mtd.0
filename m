@@ -1,20 +1,20 @@
 Received: from phoenix.infradead.org ([195.224.96.167])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190dhR-0001u7-OT
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 09:34:29 +0100
+	id 190djj-0001u7-39
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 09:36:48 +0100
 Received: from ash.lnxi.com ([207.88.130.242])
 	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 190Sw6-0007dt-00
-	for linux-mtd@lists.infradead.org; Tue, 01 Apr 2003 22:04:51 +0100
+	id 190PJs-0005Wr-00
+	for linux-mtd@lists.infradead.org; Tue, 01 Apr 2003 18:13:09 +0100
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
 To: Stefan Roese <stefan.roese@esd-electronics.com>
 In-Reply-To: <EFEAIMDCOOOHIEPHDNFJAEECFEAA.stefan.roese@esd-electronics.com>
 References: <EFEAIMDCOOOHIEPHDNFJAEECFEAA.stefan.roese@esd-electronics.com>
-Message-Id: <1049230283.25992.114.camel@tubarao>
+Message-Id: <1049216388.25992.91.camel@tubarao>
 Mime-Version: 1.0
-Date: 01 Apr 2003 13:51:24 -0700
+Date: 01 Apr 2003 09:59:49 -0700
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-Sdb6OnbKsDi3vhkUGv0Y"
+	protocol="application/pgp-signature"; boundary="=-BThTQneA7vm4upTXv676"
 cc: linux-mtd@lists.infradead.org
 cc: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: Wacky JEDEC probes
@@ -28,7 +28,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Sdb6OnbKsDi3vhkUGv0Y
+--=-BThTQneA7vm4upTXv676
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
@@ -46,76 +46,49 @@ d
 > The simple solution is to add the 16bit part as new device. Works here fi=
 ne.
 
-<snip>
+Looks good.  I figured this would be a reasonable way for handling these
+16bit devices.  I guess I should go back and fix all of the FIXME's.
 
-I looked at your patch and saw this section where the AM29LV160 has byte
-and word entries in jedec_table[]:
+> 2) Support for the ST39LF160 device.
+> The ID-check in every block doesn't work on this device, since it's block
+> size is smaller that it's unlock addresses.
 
-@@ -206,7 +218,20 @@
-                mfr_id: MANUFACTURER_AMD,
-                dev_id: AM29LV160DT,
-                name: "AMD AM29LV160DT",
--               uaddr: MTD_UADDR_0x0555_0x02AA, /* FIXME - for words,
-not bytes!! */
-+               uaddr: MTD_UADDR_0x0555_0x02AA, /* bytes mode */
-+               DevSize: SIZE_2MiB,
-+               CmdSet: P_ID_AMD_STD,
-+               NumEraseRegions: 4,
-+               regions: {ERASEINFO(0x10000,31),
-+                         ERASEINFO(0x08000,1),
-+                         ERASEINFO(0x02000,2),
-+                         ERASEINFO(0x04000,1)
-+               }
-+       }, {
-+               mfr_id: MANUFACTURER_AMD,
-+               dev_id: AM29LV160DT,
-+               name: "AMD AM29LV160DT",
-+               uaddr: MTD_UADDR_0x0AAA_0x0554, /* word mode */
-                DevSize: SIZE_2MiB,
-                CmdSet: P_ID_AMD_STD,
-                NumEraseRegions: 4,
-@@ -219,7 +244,20 @@
-                mfr_id: MANUFACTURER_AMD,
-                dev_id: AM29LV160DB,
-                name: "AMD AM29LV160DB",
--               uaddr: MTD_UADDR_0x0555_0x02AA, /* FIXME - for words,
-not bytes!! */
-+               uaddr: MTD_UADDR_0x0555_0x02AA, /* byte mode */
-+               DevSize: SIZE_2MiB,
-+               CmdSet: P_ID_AMD_STD,
-+               NumEraseRegions: 4,
-+               regions: {ERASEINFO(0x04000,1),
-+                         ERASEINFO(0x02000,2),
-+                         ERASEINFO(0x08000,1),
-+                         ERASEINFO(0x10000,31)
-+               }
-+       }, {
-+               mfr_id: MANUFACTURER_AMD,
-+               dev_id: AM29LV160DB,
-+               name: "AMD AM29LV160DB",
-+               uaddr: MTD_UADDR_0x0AAA_0x0554, /* word mode */
-                DevSize: SIZE_2MiB,
-                CmdSet: P_ID_AMD_STD,
-                NumEraseRegions: 4,
+Somehow I don't understand what "block size smaller than unlock
+addresses" means.
 
+>  Therefore the ID-check in every
+> block has to disabled for SST devices.
 
-Your diff indicates that MTD_UADDR_0x0AAA_0x0554 is for word mode and
-MTD_UADDR_0x0555_0x02AA is for byte mode.
+I was somewhat uncertain about this method - thought it would be enough
+to check just the first block.  The "check ID in every block" method was
+suggested by David Woodhouse.  I implemented it because it worked for
+the selection of devices I have access to - including an SST49LF040.
 
-The AMD data sheet for AM29LV160D
-(http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/22=
-358B.pdf)
-in table 9 - Am29LV160D command defenitions (page 24) indicates that the
-unlock addresses for word mode are 0x0555 and 0x02AA while the unlock
-addresses for byte mode are 0x0AAA and 0x0555.
+Should just the first block be checked for the ID for _all_ devices or
+should we have "if" statements to disable it for certain devices?  I
+don't like having a bunch of special cases, but I also prefer things to
+work.
 
-Why the difference?  Are the data sheets in error?
+> Please find attached a patch for these two problems (against the current =
+cvs
+> version). Any comments? Could this be commited?
+
+I'll likely commit the 16bit devices today.  I also want to do some
+cleanup with unlock addresses - the addresses listed in jedec_table[]
+should be used in more places (I don't like the hard-coded magic numbers
+that appear in various sections of the code).
+
+> Best regards,
+> Stefan.
+>=20
+
+<old context snipped>
 
 --=20
 Thayne Harbaugh
 Linux Networx
 
---=-Sdb6OnbKsDi3vhkUGv0Y
+--=-BThTQneA7vm4upTXv676
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
@@ -123,9 +96,9 @@ Content-Description: This is a digitally signed message part
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQA+ifvLfsBPTKE6HMkRAu+pAJ0aZG865sdLFR8/pGsglQNFMCupdgCfbgzy
-u/jXcBDeHe1AEbWxrB8fHNc=
-=AclA
+iD8DBQA+icWEfsBPTKE6HMkRAl6HAJ43YDYGVLKNIvkmcnXbxEfJAgqFWACfQqyy
+KMYGmwtbOHSz1EyBPgNi8iI=
+=Zr2a
 -----END PGP SIGNATURE-----
 
---=-Sdb6OnbKsDi3vhkUGv0Y--
+--=-BThTQneA7vm4upTXv676--
