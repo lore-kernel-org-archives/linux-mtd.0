@@ -1,18 +1,22 @@
 Received: from saturn.open-widgets.com ([209.251.101.200]
 	helo=saturn.billgatliff.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aj7E1-00005g-W8
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2004 01:32:10 +0000
-Message-ID: <400DD613.80601@billgatliff.com>
-Date: Tue, 20 Jan 2004 19:29:55 -0600
+	id 1Aj7GM-00008L-A2
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2004 01:34:34 +0000
+Received: from billgatliff.com (meta-adsl-71.mtco.com [207.179.223.71])
+	by saturn.billgatliff.com (Postfix) with ESMTP id E7E614E0004
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jan 2004 19:32:19 -0600 (CST)
+Message-ID: <400DD6A4.6040903@billgatliff.com>
+Date: Tue, 20 Jan 2004 19:32:20 -0600
 From: Bill Gatliff <bgat@billgatliff.com>
 MIME-Version: 1.0
-To: Dan Post <djp.mtd@onemyth.net>
+To: linux-mtd@lists.infradead.org
 References: <20040120215050.M62159@onemyth.net>
-In-Reply-To: <20040120215050.M62159@onemyth.net>
+	<1074638670.16045.74.camel@imladris.demon.co.uk>
+In-Reply-To: <1074638670.16045.74.camel@imladris.demon.co.uk>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
 Subject: Re: Intel flash and cfi_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,63 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dan:
+David:
 
 
-I've seen similar behavior with the J flashes, see my posts from a 
-couple of days ago.  My temporary workaround was to issue my own 0xff in 
-my map driver functions.  :^(
+I had seen the lines of code that Thayne had referred to; there are 
+other exit paths out of that code that leave the flash in READ STATUS 
+mode, apparently.  Haven't researched it enough yet.
 
-I noticed the F0's, but didn't wade into the datasheet enough to spot 
-that as an issue...
+Let me know what, if anything, I can do to help!
 
 
 b.g.
 
 
-Dan Post wrote:
+David Woodhouse wrote:
 
->Hi,
+>On Tue, 2004-01-20 at 13:50 -0800, Dan Post wrote:
+>  
 >
->I was looking at the cfi_probe.c file, and noticed that there are numerous
->'0xF0' commands to flash (theoretically to put the flash back into read array
->mode).  This is incorrect in terms of Intel flash; according to the datasheets
->for L18/30 and K3/18, the "read array" command is 0xFF.
+>>Hi,
+>>
+>>I was looking at the cfi_probe.c file, and noticed that there are numerous
+>>'0xF0' commands to flash (theoretically to put the flash back into read array
+>>mode).  This is incorrect in terms of Intel flash; according to the datasheets
+>>for L18/30 and K3/18, the "read array" command is 0xFF.
+>>    
+>>
 >
->Normally, it would work fine (by virtue of accident, the state machine is
->coherent enough not to break after the probe), except in cases of XIP (based
->on dwmw2's code, which I have been working on and will send out probably this
->week).  It breaks the system then because 0xF0 doesn't really put an Intel
->chip into read array, so when you enable intterupts, you schedule to a
->function running out of flash, which happens to be in status mode.... == big
->bad no-run, i.e. you freeze.
+>Yeah.... the CFI spec says how to get into query mode, but unfortunately
+>doesn't specify how to get out of it. And without getting out of it we
+>can't check for aliases.
 >
->(Specifically, it blows up on L*...  though it seemed to "work" on K*, that
->may just be an accident or compatibility mode that wasn't put into L*.  Or
->maybe I munged my code somehow and something magically changed.  It's not in
->the datasheets, so the behavior could change at any time.  When I changed the
->0xF0's to 0xFF's, it worked on L*.)
+>We'd previously observed that 0xF0 happened to work for Intel chips...
+>now evidently it doesn't any more. I suspect we might just have to bite
+>the bullet and make it depend on the chip type, although it was easier
+>to avoid that.
 >
->I assume that the 0xF0 is for AMD flash (a datasheet I checked out confirms
->this).  For the cfi_probe.c file to be "proper", it needs to issue 0xFF to
->Intel flash, and 0xF0 for AMD.  (Any other chips using different commands??)
+>  
 >
->What would happen if we issued an 0xF0;0xFF to an AMD chip?  Or 0xFF;0xF0? 
->Any AMD chip-heads care to answer?  It looks like it will "work" on Intel chips...
+>>What would happen if we issued an 0xF0;0xFF to an AMD chip?  Or 0xFF;0xF0? 
+>>Any AMD chip-heads care to answer?  It looks like it will "work" on Intel chips...
+>>    
+>>
 >
->At any rate, either there needs to be a clever hack like that, or the
->cfi_probe.c facilities need to be refactored so they know which command to
->issue to flash.
+>Hmmm. That could work.
 >
->Dan
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >  
 >
 
 -- 
 Bill Gatliff
-So what part of make clean all install do you not understand?
+Embedded GNU, Linux, and other board support packages.
 bgat@billgatliff.com
