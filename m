@@ -1,18 +1,17 @@
-Received: from musenki.com ([192.207.126.3] helo=dinky.musenki.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173g17-0005On-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:34:45 +0100
-Received: from zaphod.musenki.com. (cs6625184-203.austin.rr.com [66.25.184.203])
-	by dinky.musenki.com (Postfix) with ESMTP id E06D9F40D1
-	for <linux-mtd@lists.infradead.org>; Fri,  3 May 2002 11:34:43 -0500 (CDT)
-From: Jim Thompson <jim@musenki.com>
-MIME-Version: 1.0
+	id 173gIg-0005Rt-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:52:54 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <15570.48163.648146.185360@zaphod.musenki.com> 
+References: <15570.48163.648146.185360@zaphod.musenki.com> 
+To: Jim Thompson <jim@musenki.com>
+Cc: linux-mtd@lists.infradead.org, xkaspa06@fit.vutbr.cz
+Subject: Re: patches to 2.4.18 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <15570.48163.648146.185360@zaphod.musenki.com>
-Date: Fri, 3 May 2002 11:34:43 -0500
-To: linux-mtd@lists.infradead.org
-Subject: patches to 2.4.18
+Date: Fri, 03 May 2002 17:52:47 +0100
+Message-ID: <23173.1020444767@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,30 +23,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Is the recommended course of action to simply replace the driver set
-in 2.4.18 (or 2.4.19) with what is found at
-ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/
+jim@musenki.com said:
+>  Also, I (like so many others lately), had to comment out the call to
+> invalidate_device() in mtdblock.c::mtdblock_release() in order to get
+> my root filesystem (jffs2 on mtdblock on Intel Strataflash) to mount.
 
-We're currently using
-http://ftp.debian.org/debian/pool/main/m/mtd/mtd_20011217.orig.tar.gz,
-but there seem to be a few... issues.
+> I note that the call is still there in the CVS vsion:
 
-Also, I (like so many others lately), had to comment out the call to
-invalidate_device() in mtdblock.c::mtdblock_release() in order to get
-my root filesystem (jffs2 on mtdblock on Intel Strataflash) to mount.
+Eep. That was removed from CVS long ago, but was added back again. I've now 
+removed it again.
 
-I note that the call is still there in the CVS vsion:
-  ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/drivers/mtd/mtdblock.c
+>  and we are getting crashes on halt/reboot if we've modified the
+> filesystem. 
 
-and we are getting crashes on halt/reboot if we've modified the
-filesystem.
+More details please.
 
-Similar questions about jffs2 have been asked:
+>  Similar questions about jffs2 have been asked:
+> 	http://mhonarc.axis.se/jffs-dev/msg01297.html
+> With no apparent answer.
+> anyone with clue to offer? 
 
-	http://mhonarc.axis.se/jffs-dev/msg01297.html
+For the MTD drivers, the code in 2.4.19-pre is probably the best option 
+unless you need the new features I held back for 2.4.20-pre. For JFFS2, you 
+should be using the code from the jffs2-2_4-branch in CVS. I _think_ that's 
+all been sent to Marcelo for 2.4.19 though. 
 
-With no apparent answer.
-
-anyone with clue to offer?
-
-Jim
+--
+dwmw2
