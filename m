@@ -1,14 +1,17 @@
-Received: from web40004.mail.yahoo.com ([66.218.78.22])
+Received: from gateway.digitalview.com.hk
+	([152.101.51.1] helo=janus.hk.panelx.com ident=qmailr)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17rVmM-0002je-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 04:45:30 +0100
-Message-ID: <20020918034458.23918.qmail@web40004.mail.yahoo.com>
-Date: Tue, 17 Sep 2002 20:44:58 -0700 (PDT)
-From: Venkat Raghu <venkatraghu2002@yahoo.com>
-Subject: newbie
-To: linux-mtd@lists.infradead.org
+	id 17rVwQ-0002kV-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 04:55:54 +0100
+Message-ID: <005601c25ec7$0b5f8f30$9000010a@paulwong>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: jffs2 filesystem
+Date: Wed, 18 Sep 2002 11:53:43 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,17 +23,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi! all,
+    I have a problem about the jffs2 file system. Pls. refer below message.
+If the i/o error occur in eraseall process, is the jffs2 fs corrupted if i
+copy the jffs2 image to /dev/mtd1 ? Does the "dd" or "cp" take care the i/o
+error? thanks.
 
-Any pointers to documents describing the basics
-of mtd drivers. I would like know how it works, what
-are the operations. Whats the reason behind erase 
-operation etc.
 
-regards
-Venkat.
+Paul
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! News - Today's headlines
-http://news.yahoo.com
+****************************************************************************
+***
+bash-2.04# eraseall /dev/mtd1
+Erasing 16 Kibyte @ f0000 --  9 % compnand_erase: attempt to erase a bad
+block a
+t page 0x00003d20
+Erasing 16 Kibyte @ 1a4000 -- 16 % complete.
+eraseall: /dev/mtd1: MTD Erase failure: Input/output error
+Erased 10240 Kibyte @ 0 -- 100% complete.
+bash-2.04# dd if=jffs2.img of=/dev/mtd1 bs=1k
+dd: writing `/dev/mtd1': Bad address
+3607+1 records in
+3607+0 records out
+bash-2.04#
+
+****************************************************************
