@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17HhGz-0007eJ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 09:45:05 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3D05A8E5.9040808@bigpond.com> 
-References: <3D05A8E5.9040808@bigpond.com>  <3D057440.5000104@bigpond.com> <20449.1023779170@redhat.com> 
-To: brendan.simon@bigpond.com
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: DOC2000 partitiioning question 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 11 Jun 2002 09:45:01 +0100
-Message-ID: <22131.1023785101@redhat.com>
+Received: from 205-158-62-105.outblaze.com ([205.158.62.105] helo=ws4-4.us4.outblaze.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17HjPV-0007mX-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 12:02:01 +0100
+Message-ID: <20020611110129.25556.qmail@linuxmail.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From: "xyz xyz" <watsup@linuxmail.org>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 11 Jun 2002 19:01:29 +0800
+Subject: linux on a DOC-2000 without a RAMDISK(HDD kind of install)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +22,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-brendan.simon@bigpond.com said:
-> HUH ??? If I read this correctly, this means one can NEVER reformat a
-> NFTL  device with kernel that boots from a DOC (since the driver must
-> be built  in to the kernel).  Is this correct ?
+is it possible to use mtd drivers to boot from a DOC 2000 chip without a RAMDISK based linux install,i mean a HDD type of install which reads from a DOC like a HDD?
+i want to put my own small distribution which works on a HDD,
+is it necessary to go 4 a RAMDISK based distribution?
+if its possible(a HDD type of install),how should i go abt it?
 
-Yes, although in practice you'll get away with it if the NFTL is not in use 
-at the time and you reboot without starting to use it. In general, you 
-should be using the M-Systems DFORMAT utility under DOS anyway, rather than 
-the nftl_format program under Linux.
-
-> This is obviously different for EXT2 and other filesystems, as they
-> can  be reformatted anytime with the driver module loaded or built in
-> to the  kernel.  Is there a technical reason why NFTL is not the same
-> ???
-
-You can't mount it in the same way as other file systems because it is not 
-a normal file system. It doesn't provide a file system to the VFS, it 
-provides a block device. It's only _like_ a file system.
-
-We could feasibly add an ioctl or some other way to instruct the NFTL code 
-to 'unmount' and 'remount' an NFTL. It wouldn't be that hard - we have the 
-code there to deal with modular DiskOnChip drivers being loaded and going 
-away. Nobody's cared enough to do it, though.
-
-Reformatting the NFTL should be a rare occurrence.
+tks
 
 
---
-dwmw2
+-- 
+Get your free email from www.linuxmail.org 
+
+
+Powered by Outblaze
