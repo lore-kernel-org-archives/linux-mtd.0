@@ -1,30 +1,20 @@
-Received: from bm-3a.paradise.net.nz ([202.0.58.22]
-	helo=linda-3.paradise.net.nz)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CX2j6-00075E-Vj
-	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 14:22:56 -0500
-Received: from smtp-2.paradise.net.nz (smtp-2b.paradise.net.nz [202.0.32.211])
-	by linda-3.paradise.net.nz (Paradise.net.nz)
-	with ESMTP id <0I7P006GV75XP4@linda-3.paradise.net.nz> for
-	linux-mtd@lists.infradead.org; Thu, 25 Nov 2004 08:22:45 +1300 (NZDT)
-Received: from hayes.bluewaternz.com
-	(203-96-159-182.paradise.net.nz [203.96.159.182])	by
-	smtp-2.paradise.net.nz
-	(Postfix) with ESMTP id 93DC19E723	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Nov 2004 08:22:44 +1300 (NZDT)
-Date: Thu, 25 Nov 2004 08:24:53 +1300
-From: Brad Beveridge <bbeveridge@bluewatersys.com>
-In-reply-to: <41A15A30.4070808@bluewatersys.com>
-To: Brad Beveridge <bbeveridge@bluewatersys.com>
-Message-id: <41A4E005.7040205@bluewatersys.com>
-MIME-version: 1.0
-Content-type: text/plain; format=flowed; charset=ISO-8859-1
-Content-transfer-encoding: 7bit
-References: <41A143C4.2090304@bluewatersys.com>
-	<41A15A30.4070808@bluewatersys.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: BUG at dcache.h:276! Causing oops when I rmmod a nand module
- having mulitple partitions (fix)
+	id 1CX3Od-0007Kv-CS
+	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 15:05:49 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Stephan Linke <Stephan.Linke@epygi.de>
+In-Reply-To: <NGENJJFPMHGLPILEKKAMAEAGCFAA.Stephan.Linke@epygi.de>
+References: <NGENJJFPMHGLPILEKKAMAEAGCFAA.Stephan.Linke@epygi.de>
+Content-Type: text/plain
+Date: Wed, 24 Nov 2004 21:05:42 +0100
+Message-Id: <1101326743.9481.40.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux-Mtd <linux-mtd@lists.infradead.org>
+Subject: RE: using multile partitions on one NAND chip
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys, we've managed to track down my mtd problem.
+On Wed, 2004-11-24 at 19:12 +0100, Stephan Linke wrote:
+> Hi Thomas,
+> 
+> already noticed the spinlocks; thanks anyway.
+> 
+> On erase the chip is locked in nand_get_chip() and stays locked
+> until the ERASE2 > command has been send to the chip to wait for the 
+> ready status the chip gets unlcoked since the nand_wait() also tries
+> to lock the chip. Additinaly nand_wait() unlocks the chip befor
+> calling yield().
 
-Setup:
-- Using CONFIG_MTD_BLOCK
-- Compiling your nand driver as a module
-- Having multiple partitions defined
+retry:
+        /* Hardware controller shared among independend devices */
+        if (this->controller) {
+                spin_lock (&this->controller->lock);
+                if (this->controller->active)
+                        active = this->controller->active;
+                else
+                        this->controller->active = this;
+                spin_unlock (&this->controller->lock);
+        }
 
-Problem:
-insmodding the driver works, but when you rmmod the nand driver the 
-kernel will oops.  The oops is caused by line 276 in dcache.h
-The problem looks to be in mtd_blkdevs.c.  Everytime that 
-add_mtd_blktrans_dev is called, a new gendisk is allocated, and its 
-gd->queue member is set to
-gd->queue = tr->blkcore_priv->rq;
-The tr->blkcore_priv->rq appears to only get setup once in 
-tr->blkcore_priv->rq.
+        if (active == this) {
+                spin_lock (&this->chip_lock);
+                if (this->state == FL_READY) {
+                        this->state = new_state;
+                        spin_unlock (&this->chip_lock);
+                        return;
+                }
+        }
+        set_current_state (TASK_UNINTERRUPTIBLE);
+        add_wait_queue (&active->wq, &wait);
+        spin_unlock (&active->chip_lock);
+        schedule ();
+        remove_wait_queue (&active->wq, &wait);
+        goto retry;
 
-Later, when del_mtd_blktrans_dev is called del_gendisk unregisters its 
-queue.  So multiple gendisks point to the same queue & on removal they 
-all try to get de-allocated.
+this->state is reset to FL_READY, after the active command is finished.
+All waiters on the waitqueue are woken up.
 
-Fix:
-The very, very dodgy fix is to add
- ((struct gendisk *)old->blkcore_priv)->queue = NULL;
-to del_mtd_blktrans_dev, just before del_gendisk is called.  This 
-appears to let me rmmod my module without breakage.  Though I have no 
-clue as to what the implications of doing this might be.
+> If another task tries nand_get_chip() at this verry moment the erase
+> will be interrupted by sending an RESET command. Looks like this is by
+> intention since the erase of the blockis restarted after the 
+> nand_wait() returns.
 
-Can someone who knows the mtd_block layer better offer a proper fix?
+We stopped to interrupt the erase since long, due to broken chips, which
+do not handle the erase suspend correctly. 
 
-Cheers
-Brad
+But the locking was always safe and without race conditions.
+
+On SMP the spinlock is protecting the state variable against concurrent
+access by different tasks on different CPU's. 
+
+In case of CONFIG_PREEMPT=y the state variable is protected by 
+spin_lock() (contains preempt_disable()) on SMP and UP against
+concurrent access by different tasks on the same CPU.
+
+CONFIG_PREEMPT=n does not need further protection at this place.
+
+Which version of nand_base.c are you using ?
+
+tglx
