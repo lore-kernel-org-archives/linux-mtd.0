@@ -1,19 +1,14 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKj8B-00031i-Al
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 16:01:54 -0400
-Message-ID: <41781683.3020602@inf.u-szeged.hu>
-Date: Thu, 21 Oct 2004 22:05:23 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Received: from mail.nanometrics.ca ([206.191.47.130])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKl8v-0003xa-0X
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 18:10:54 -0400
+To: linux-mtd@lists.infradead.org
+Message-ID: <OFF3D1B3E9.33E9B550-ON85256F34.00792064-85256F34.0079E65D@nanometrics.ca>
+From: David Ho <DavidHo@nanometrics.ca>
+Date: Thu, 21 Oct 2004 18:11:28 -0400
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <41767593.9030004@inf.u-szeged.hu>
-	<1098365059.13633.1257.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1098365059.13633.1257.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS2 mount time
+Content-type: text/plain; charset=US-ASCII
+Subject: [patch] unaligned word write bug
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> It's looking good, but the kernel really needs to be able to write these
-> summaries for _itself_ in order to give a real improvement over the long
-> term. If the file system has to be read-only we might as well be using
-> cramfs, and if the summary becomes obsolete over time we might as well
-> not bother in a lot of cases.
 
-Our plan for it:
 
-We would like to store some additional information in jeb struct:
-- a type information, where there this type can be INODE_ONLY and 
-ANYTHING_OTHER. This information is easy to detect during mount time.
-- a predicted summary size (calculated dinamically). It will be used to 
-  decide when to generate the summary. Ceratinly only for INODE_ONLY 
-erase blocks.
 
-If I am right every node allocation is done by jffs2_reserve_space(). We 
-would like to modify it, and introduce a new interface for it called 
-jffs2_reserve_space_for_inode() function. Every inode storing function 
-(there is no too much I think) should call 
-jffs2_reserve_space_for_inode() with some extra information (inode 
-number...).
 
-jffs2_reserve_space() should use only ANYTHING_OTHER eraseblocks, as 
-jffs2_reserve_space_for_inode() use only INODE_ONLY ones. If there is no 
-free space in them it should use the usual technique to find a clean 
-eraseblock and start to store the new node in it.
+Hi all,
 
-The generating of summary is also the task of 
-jffs2_reserve_space_for_inode(), if the new inode (+summary) is not fit 
-in the erase block, it will generates summary.
-
-What do you think?
+This was causing my u-boot fw_setenv utility to fail.
+As far as I can tell the latest CVS snapshot still have the bug. The
+function involved is map_word_load_partial.
 
 Regards,
-Ferenc
+David Ho
+
+
+--- mtd-cvs-20040921/include/linux/mtd/map.h    2004-09-17
+18:00:20.000000000 -0400
++++ linuxppc-2.4-bootstrap/include/linux/mtd/map.h      2004-10-21
+17:58:35.000000000 -0400
+@@ -317,7 +317,7 @@
+                        bitpos = (map_bankwidth(map)-1-i)*8;
+ #endif
+                        orig.x[0] &= ~(0xff << bitpos);
+-                       orig.x[0] |= buf[i] << bitpos;
++                       orig.x[0] |= buf[i-start] << bitpos;
+                }
+        }
+        return orig;
