@@ -1,15 +1,17 @@
-Received: from stone.tmok.com ([204.17.163.2] ident=pla)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15WNFj-0001JZ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 20:19:55 +0100
-Received: (from pla@localhost)
-	by stone.tmok.com (8.9.3/8.9.3) id PAA19680
-	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2001 15:25:47 -0400 (EDT)
-Date: Mon, 13 Aug 2001 15:25:47 -0400 (EDT)
-From: pla <pla@tmok.com>
-Message-Id: <200108131925.PAA19680@stone.tmok.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: DOC2000 erase size of 16k? 
+Received: from [64.170.22.142] (helo=mail.spewey.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15WQ5J-0001Uj-00
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 23:21:21 +0100
+Message-Id: <5.1.0.14.0.20010813172206.00b02a38@mail.spewey.com>
+Date: Mon, 13 Aug 2001 17:27:06 -0500
+To: Frederic Giasson <fgiasson@mediatrix.com>,
+ "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
+From: Vipin Malik <vipin@embeddedlinuxworks.com>
+Subject: RE: JFFS2 is broken
+In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D9955F7@webmail.mediatrix.c
+ om>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,30 +23,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> Er, that code is older than the 20010807 snapshot you said you were using. 
-> I meant the latest code from my CVS. I'm slightly concerned that the older 
-> code works when the newer code doesn't - it's supposed to work the other 
-> way round. Can you check the latest code and make sure it works there too?
+At 02:34 PM 8/13/2001 -0400, Frederic Giasson wrote:
+>Hi again Vipin,
+>
+>I ran your JitterTest program on my MPC860T 50MHz embedded platform.  I
+>experienced worst case around 40 seconds like you did.  I think that such
+>jitter time is unacceptable in a real time embedded system like mine, so I
+>wonder what can be done to patch JFFS2 so it relinquish the CPU from time to
+>time... I spinkled a lot of loops into JFFS2 compression files with "if(
+>current->need_resched) schedule();" and the worst case was 4 seconds.
 
-Hmm, yes, the 20010812 snapshot works correctly.  I just diff'd the two
-snapshots, and would have to say that the problems I experienced did not
-result from anything in the MTD code, so don't trouble yourself with
-what went wrong.  I must have accidentally whacked something without
-noticing.  My apologies for wasting your time.
- 
+Did the 40 become 4 for the task writing to JFFS2? or was it some "other" task
+that had the 40 seconds jitter?
+Could you pl describe your setup. Were you running JitterTest as a POSIX 
+Real Time
+task or regular task?
 
-> It doesn't work perfectly yet, although it shouldn't take much to fix it.
-> To make it fit, you have to use nftl_format to make the NFTL start further 
-> in to the device.
+In my test, the task writing to JFFS2 experienced the 40seconds block 
+times, but
+another task- not interacting with JFFS2- experienced a jitter of "only" ~50ms.
 
-Ah!  Now I see how this all fits together.  Many thanks, and I will
-certainly write up my experiences for the HowTo.  Incidentally, for
-anyone else trying this, it would serve them well to back up the
-bad blocks section of their DOC before doing *anything*.  I seem
-to have killed my DOC by overwriting it, without a backup (fortunately,
-I can just get another from work, but not everyone has that
-luxury).
- 
- 
- 
-                              - Ben
+
+
+>After having spinkled the code with schedule(), I ran another application
+>which accessses JFFS2 too at the same time that JitterTest, and the
+>execution of my program took 17% more time, which in my opinion is
+>acceptable because now JFFS2 has to cope with 2 applications accessing it at
+>the same time.
+>
+>Do you think that something sharp and clean could be done with JFFS2 to fix
+>that problem once and for all?
+
+I hope something can be done. Those excessive blocking times are just killer!
+David once mentioned that there are some obvious optimizations that can be
+carried out in the JFFS2 code. Maybe he could list out his favorite ones 
+and maybe
+someone could volunteer to tackle them one by one.
+
+Vipin
