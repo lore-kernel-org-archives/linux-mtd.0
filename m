@@ -1,27 +1,17 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DErWq-0003R6-F2
-	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 11:19:21 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DErWG-0003LB-BR
-	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 17:18:50 +0100
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2005 17:18:44 +0100
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2005 17:18:44 +0100
-To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Fri, 25 Mar 2005 16:18:35 +0000 (UTC)
-Message-ID: <loom.20050325T163810-877@post.gmane.org>
-References: <loom.20050322T224733-491@post.gmane.org>
+Received: from alephnull.demon.nl ([212.238.201.82] helo=xi.wantstofly.org)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DExuf-0004zS-Gs
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 18:08:23 -0500
+Date: Sat, 26 Mar 2005 00:08:01 +0100
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: dsaxena@plexity.net, linux-mtd@lists.infradead.org
+Message-ID: <20050325230801.GB31444@xi.wantstofly.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: atomic file operations
+Content-Disposition: inline
+Cc: 
+Subject: [PATCH] fix compile warnings and remove slowport mode setting from
+	ixp2000 map driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+(please CC on replies, not on the list)
 
-I was browsing the mailing lists and found that this topic has already 
-generated a fair bit of discussions started by Vipin Malik around 2001. 
-Then the consensus was that it is not a responsibility of a filesystem 
-to do transactions but a user space application. Nevertheless this question 
-keeps coming back again and again because obviously people with 
-"real life" applications want a way to store data in a transactional 
-manner. Nowadays there are also filesystems out there that sport that
-transactional functionality to address this need despite the fact that 
-"POSIX does not require it" and such. Obviously there are also transactional 
-databases out there (Dah!) but that does not help much if one needs to expose 
-data as a filesystem.
+Setting the slowport to 8-bit mode is done in the generic IXP2000
+code (where it belongs) as of 2.6.11, so there's no need to do it
+in the MTD map driver anymore.  Also fix two compile warnings that
+occur because of treating two 'unsigned long's as 'void *'s.
 
-I appologize since it now appears that the original post had little to 
-do with JFFS2 ;-) so the question may be rephrased as: Is anybody aware 
-of a generic transactional library that can be run on top of JFFS2 to 
-provide transactions for the filesystem operations? Or is everybody 
-for himself?
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-
-Sergei Sharonov
+diff -urN linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c
+--- linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c	2005-03-20 18:33:46.000000000 +0100
++++ linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c	2005-03-25 22:42:54.000000000 +0100
+@@ -191,7 +191,7 @@
+ 	/*
+  	 * map_priv_2 is used to store a ptr to to the bank_setup routine
+  	 */
+-	info->map.map_priv_2 = (void __iomem *) ixp_data->bank_setup;
++	info->map.map_priv_2 = (unsigned long) ixp_data->bank_setup;
+ 
+ 	info->map.name = dev->dev.bus_id;
+ 	info->map.read = ixp2000_flash_read8;
+@@ -208,7 +208,7 @@
+ 		goto Error;
+ 	}
+ 
+-	info->map.map_priv_1 = ioremap(dev->resource->start, 
++	info->map.map_priv_1 = (unsigned long) ioremap(dev->resource->start, 
+ 			    	dev->resource->end - dev->resource->start + 1);
+ 	if (!info->map.map_priv_1) {
+ 		dev_err(_dev, "Failed to ioremap flash region\n");
+@@ -216,11 +216,6 @@
+ 		goto Error;
+ 	}
+ 
+-	/*
+-	 * Setup read mode for FLASH
+-	 */
+-	*IXP2000_SLOWPORT_FRM = 1;
+-
+ #if defined(__ARMEB__)
+ 	/*
+ 	 * Enable erratum 44 workaround for NPUs with broken slowport
