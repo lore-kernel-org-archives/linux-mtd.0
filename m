@@ -1,35 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ukEK-00039o-00
-	for mtd-list@infradead.org; Sat, 11 Nov 2000 23:38:40 +0000
-Received: from po4.glue.umd.edu ([128.8.10.124])
+	id 13v6Wm-0006mh-00
+	for mtd-list@infradead.org; Sun, 12 Nov 2000 23:27:12 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ukEJ-00039i-00
-	for mtd@infradead.org; Sat, 11 Nov 2000 23:38:39 +0000
-Received: from y.glue.umd.edu (IDENT:root@y.glue.umd.edu [128.8.10.68])
-	by po4.glue.umd.edu (8.10.1/8.10.1) with ESMTP id eABNcau22449
-	for <mtd@infradead.org>; Sat, 11 Nov 2000 18:38:36 -0500 (EST)
-Received: from y.glue.umd.edu (IDENT:sendmail@localhost [127.0.0.1])
-	by y.glue.umd.edu (8.9.3/8.9.3) with SMTP id SAA03090
-	for <mtd@infradead.org>; Sat, 11 Nov 2000 18:38:35 -0500 (EST)
-Received: from localhost (agnew@localhost)
-	by y.glue.umd.edu (8.9.3/8.9.3) with ESMTP id SAA03086
-	for <mtd@infradead.org>; Sat, 11 Nov 2000 18:38:35 -0500 (EST)
-Date: Sat, 11 Nov 2000 18:38:35 -0500 (EST)
-From: Adam Agnew <agnew@glue.umd.edu>
-To: mtd@infradead.org
-Subject: Detecting the Disk-On-Chip 2800
-In-Reply-To: <Pine.LNX.4.21.0011092235030.7969-100000@imladris.demon.co.uk>
-Message-ID: <Pine.GSO.4.21.0011111836570.1496-100000@y.glue.umd.edu>
+	id 13v6Wl-0006mb-00
+	for mtd@infradead.org; Sun, 12 Nov 2000 23:27:11 +0000
+Date: Sun, 12 Nov 2000 23:27:08 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adam Agnew <agnew@glue.umd.edu>
+cc: <mtd@infradead.org>
+Subject: Re: Detecting the Disk-On-Chip 2800
+In-Reply-To: <Pine.GSO.4.21.0011111836570.1496-100000@y.glue.umd.edu>
+Message-ID: <Pine.LNX.4.30.0011122323360.4815-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Is it common to be unable to detect the DOC after you've flashed a bios to
-it? Can you get around that by explicitly stating the the memory address
-and length for it?
-- Adam Agnew
+On Sat, 11 Nov 2000, Adam Agnew wrote:
+
+> Is it common to be unable to detect the DOC after you've flashed a bios to
+> it?
+
+Yes. You've removed the 0x55 0xaa signature at the beginning of the device
+which the probe code uses to detect it.
+
+> Can you get around that by explicitly stating the the memory address
+> and length for it?
+
+You can disable the check for that signature by turning off
+CONFIG_MTD_DOCPROBE_55AA. It should still do the rest of the probe as
+normal.
+
+-- 
+dwmw2
+
 
 
 
