@@ -1,17 +1,16 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from rrcs-nys-24-97-130-2.biz.rr.com
+	([24.97.130.2] helo=nt.sixnet.com ident=fwuser)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cALd-0007Hh-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 20:50:29 +0100
-Message-ID: <3D5028B7.22893B6E@esteem.com>
-Date: Tue, 06 Aug 2002 12:51:19 -0700
-From: Conn Clark <clark@esteem.com>
+	id 17cAkZ-0007Nv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 21:16:15 +0100
+Message-ID: <00512BA4F9D3D311912A009027E9B8F407E475@NT>
+From: Dave Ellis <DGE@sixnetio.com>
+To: "'joakim.tjernlund@lumentis.se'" <joakim.tjernlund@lumentis.se>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Disk blocks for long periods
+Date: Tue, 6 Aug 2002 16:16:10 -0400 
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: Need help getting JFFS2 working with kernel 2.4.19
-References: <3D4FFA9B.2C693A02@esteem.com>  <3D4EDA18.C77AEDA@esteem.com> <25573.1028653616@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,49 +22,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse wrote:
+joakim.tjernlund@lumentis.se said:
+
+> hmm, I just noticed that the BIG kernel lock is held while 
+> the erasing thread executes, since kupdate takes it in 
+> sync_old_buffers() (if I understand this code correctly). 
+> Maybe that is causing current->need_resched to be set?
 > 
-> clark@esteem.com said:
-> >
-> >       I figured it out. The jffs2 zlib was conflicting with the zlib used
-> > bye ppp compresion. I just had to remove zlib.o from the COMPR_OBJS
-> > definition in the Makefile.
-> 
-> There's a better fix in 2.4.20-pre2 and at
-> ftp.kernel.org:/pub/linux/kernel/people/dwmw2/shared-zlib/
-> 
-> Get the latest patch (2.4.19-pre10) and it should apply to most 2.4 kernels.
-> 
-> --
-> dwmw2
+> Also, is it not a bad idea to hold the kernel lock for, 
+> possibly, seconds while erasing sectors?
 
+If it is doing that, it doesn't seem right to me. But I 
+thought jffs2/mtd bypassed the kernel buffers, so maybe 
+kupdate and sync_old_buffers() are not involved here? I don't
+know much about this.
+ 
+> I assume your chip does not support buffered writes? or is it 
+> just do_write_one_word() that is causing the log delays?
 
-I take it that this patch wasn't submitted to Marcelo or Marcelo didn't get
-it integrated the final 2.4.19 then?
+No, it doesn't support buffered writes. The long delay I saw
+comes from sleeping for a jiffie during each call to
+do_write_oneword().
 
-Is there anything else I need to do or will the patch fix everything?
-
-
-Thanks
-
-	Conn	
-
-
--- 
-
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
-
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
-
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
+Dave Ellis
+dge@sixnetio.com
