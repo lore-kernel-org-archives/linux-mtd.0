@@ -1,18 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Thomas Koeller <thomas.koeller@baslerweb.com>
-In-Reply-To: <200310151330.02902.thomas.koeller@baslerweb.com>
-References: <1065598642.12197.6.camel@famine>
-	 <200310151211.29172.thomas.koeller@baslerweb.com>
-	 <1066215157.14783.933.camel@hades.cambridge.redhat.com>
-	 <200310151330.02902.thomas.koeller@baslerweb.com>
-Content-Type: text/plain
-Message-Id: <1066299929.14783.2697.camel@hades.cambridge.redhat.com>
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AA8t1-00061G-GT
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 15:13:55 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: ch@hpl.hp.com
+In-Reply-To: <000901c39376$9cb111e0$d203b60f@duckduck>
+References: <000901c39376$9cb111e0$d203b60f@duckduck>
+Message-Id: <1066313282.10573.121.camel@tubarao>
 Mime-Version: 1.0
-Date: Thu, 16 Oct 2003 11:25:29 +0100
+Date: 16 Oct 2003 08:08:02 -0600
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: ecos-discuss@sources.redhat.com
-Subject: Re: [ECOS] Stress testing JFFS2
+cc: 'mtd list' <linux-mtd@lists.infradead.org>
+Subject: Re: Regression of mtd/chips/jedec_probe.c in 2.6.0-test7
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-10-15 at 13:30 +0200, Thomas Koeller wrote:
-> I do not think this path leads anywhere I want to go. The flash size
-> was chosen to meet the expected storage requirements, which means that
-> at some point the flash will be filled with valid data and consequently
-> there will be few obsoleted nodes. I expect this to be true for most
-> systems.
-
-A sane observation.
-
-> > Omitting the 'totlen' field should be relatively simple if you're not
-> > freeing obsolete refs. Observe that in 99% of cases, it's true that
-> >
-> > 	ref->totlen == ref_offset(ref->next_phys) - ref_offset(ref)
-> >
-> > Make it 100% and make me believe it, and you can remove totlen from the
-> > structure.
-> >
+On Wed, 2003-10-15 at 17:46, Christopher Hoover wrote:
+> Perhaps this is already known, but it may serve as useful news to some. 
 > 
-> I will consider that.
+> The version of mtd/chips/jedec_probe.c in 2.6.0-test7 (revision 1.29
+> according to $Id$) has suffered a regression.  That version fails to detect
+> AMD AM29LV800BB flash in 16-bit x 1 configuration.  Replacing it with
+> revision 1.32 from CVS or downgrading to revision 1.6 from 2.5.70-rmk1,
+> holding everything else constant, solves the problem.
 
-OK... I've made it slightly easier for you by switching all use of
-'ref->totlen' to an accessor function ref_totlen(c, jeb, ref), where
-'jeb' can be NULL if the caller doesn't know it -- it _can_ be
-calculated in the relatively rare case that it's required, but if it's
-already to hand we might as well use it.
+Does that mean that 1.29 and 1.7 didn't work or did you just try those
+versions because they were convenient for your?
 
-I've written what I suspect will be the new version of that accessor
-function, and included some sanity checks for it. It's in #if 0 for now
-since we know it'll be broken -- look in nodelist.h. We may end up
-wanting it out of line, since it's not entirely trivial.
+> Also, all versions of mtd/chips/jedec_probe.c need:
+> 
+> #include <linux/init.h>
 
-To make it usable, we need to ensure that we have a node reference for
-areas of dirty space which we've previously been ignoring -- scan.c can
-no longer just skip over stuff it ignores but must allocate node
-references for it, and we must allocate node references for the wasted
-space at the end of eraseblocks when we've filled them _almost_ to the
-end and then filed them elsewhere.
+I fixed it moments before I read your email - thanks.
 
-It should be relatively simple.
+I'm concerned that the changes from 1.29 -> 1.33 are significant and
+will meet resistance for inclusion in 2.6.0.  If you can narrow the
+problem down to just a few lines that are obviously incorrect then the
+patch should have a fighting chance.  There is a section that is an
+obvious bug in jedec_match() that should be fixed:
 
--- 
-dwmw2
+@@ -1480,7 +1524,7 @@
+ 	DEBUG( MTD_DEBUG_LEVEL3,
+ 	       "MTD %s(): Check fit 0x%.8x + 0x%.8x = 0x%.8x\n",
+ 	       __func__, base, 1 << finfo->DevSize, base + (1 <<
+finfo->DevSize) );
+-	if ( base + ( 1 << finfo->DevSize ) > map->size ) {
++	if ( base + cfi->interleave * ( 1 << finfo->DevSize ) > map->size ) {
+ 		DEBUG( MTD_DEBUG_LEVEL3,
+ 		       "MTD %s(): 0x%.4x 0x%.4x %dKiB doesn't fit\n",
+ 		       __func__, finfo->mfr_id, finfo->dev_id,
+
+The most likely problem, however is this chunk:
+
+@@ -1538,10 +1582,10 @@
+ 	 */
+ 	DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): return to ID mode\n", __func__ );
+ 	if(cfi->addr_unlock1) {
+-		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
+-		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
++		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,
+cfi->device_type, NULL);
++		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,
+cfi->device_type, NULL);
+ 	}
+-	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
++	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,
+cfi->device_type, NULL);
+ 	/* FIXME - should have a delay before continuing */
+ 
+  match_done:	
+
+
+Of course I can point to a few more chunks that should go into 2.6 (and
+2.4 obviously), but the arguments are much weaker about why they have to
+go in *now*.
+
+If you figure out exactly what the regression is then we should lob it
+at lkml.
+
+Once again, thanks.
