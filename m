@@ -1,19 +1,20 @@
-Received: from [81.200.0.1] (helo=mail.su29.ru)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19tjnP-0001wA-Cr
-	for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2003 09:12:19 +0100
-Received: from mail.ru (host-81.200.0.26.su29.ru [81.200.0.26])
-	by mail.su29.ru (Postfix) with ESMTP id 8B7EF13069
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  1 Sep 2003 11:52:56 +0400 (MSD)
-Message-ID: <3F52FB48.3020908@mail.ru>
-Date: Mon, 01 Sep 2003 11:54:48 +0400
-From: dima <_pppp@mail.ru>
+Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19tky9-0002AV-L5
+	for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2003 10:27:29 +0100
+Message-ID: <041c01c3706b$63cd8210$a970a8c0@topo>
+From: "Luca Contini" <luca.contini@mediaenabling.com>
+To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
+References: <023501c36e31$81a4a610$a970a8c0@topo>
+	<a05200f17bb750899ef6e@[130.161.115.44]> <024b01c36e35$62241600$a970a8c0@topo>
+	<a05200f19bb750ddd2b65@[130.161.115.44]>
+Date: Mon, 1 Sep 2003 11:28:17 +0200
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: trouble with samsung drive
+cc: "linux-mtd-request@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: latest MTD snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
-I got the Samsung flash drive last weekend. It looks like a noname one 
-marked as "Samsung 128MB, Made in Korea" only. It might be something of 
-the K9F28XXX0C series 
-(http://www.samsung.com/Products/Semiconductor/Flash/NAND/128Mbit/K9F2816Q0C/K9F2816Q0C.htm).
-I tried to get it working on my old laptop on Sunday but failed. It 
-could be a problem with the USB hub since it is USB 1.1 & the flash 
-drive is reported to be USB 2.0. I searched the web & figured out that 
-Samsung chips must be NAND-compatible. I used DiskOnChip 2000 driver 
-first, but it failed to probe the device (btw, USB hub didn't report any 
-unclaimed devices). Then I tried almost all MTD drivers availble in the 
-standard (kernel.org) kernel distribution (v2.4.20) -- none of them 
-seemed to probe the device successfully.
-So I have 3 questions:
-1) Is this a problem with my old USB hub?
-2) Which driver should I use if no?
-3) I didn't enable SCSI emulation support in the kernel yet (I decided 
-to leave it for the next step since the device hadn't been detected). 
-Can it be the problem?
+> At 15:56 +0200 29-08-2003, Luca Contini wrote:
+> >  > At 15:28 +0200 29-08-2003, Luca Contini wrote:
+> >  > >What Am I missing?
+> >>
+> >>  1) Which kernel version ?
+> >
+> >2.4.18-rmk6-swl6
+>
+> That's a pretty ancient kernel (almost 18 months old). You may want
+> to retry with 2.4.21-rmk1 (works fine on the LART, which is also
+> arm-based).
+
+I've tried kernel 2.4.21, but the patch I have from samsung didn't work.
+So the point is: to make the new MTD subsystem work with my old 2.4.18
+kernel. Is it possible and how?
+
+>
+> >  > 3) Any particular reason why you don't use the patchin.sh script ? I
+> >>  know, you 'only' need mtdblock, but partial installs tend to create
+> >>  no end of trouble.
+> >
+> >I just thought it was easiest to do it manually just for mtdblock device.
+> >I've copied the snapshot to ../linux/drivers/mtd/util/snapshot and tried
+the
+> >patchin.sh:
+> >[root@Lab patches]# patchin.sh
+> >Directory  does not exist or is not a kernel source directory
+>
+> You must give it the path to your kernel tree as an argument (as
+> documented on http://www.linux-mtd.infradead.org/).
+>
+> HTH,
+>
+> JDB.
+> -- 
+> LART. 250 MIPS under one Watt. Free hardware design files.
+> http://www.lart.tudelft.nl/
+>
+>
