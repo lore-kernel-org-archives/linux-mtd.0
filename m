@@ -1,23 +1,22 @@
-From: Russ.Dill@asu.edu (Russ Dill)
-Date: 04 Mar 2003 03:02:09 -0700
-Subject: AMD - Am29LV160B
-In-Reply-To: <04C8EDC5AE3FD611ABE40002B39CF69B07F2E0@ntah901e.savan.com>
-References: <04C8EDC5AE3FD611ABE40002B39CF69B07F2E0@ntah901e.savan.com>
-Message-ID: <1046772128.3368.6.camel@gobbles>
+From: robert@schwebel.de (Robert Schwebel)
+Date: Tue, 4 Mar 2003 19:01:13 +0100
+Subject: Reboot delay
+Message-ID: <20030304180113.GN3593@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Tue, 2003-03-04 at 02:35, Amit.Lubovsky at infineon.com wrote:
-> Thanks,
-> 
-> 
-> I have applied BUSWIDTH 4 in the mapping driver and my
-> 
-> 	Memory Technology Devices (MTD)  ---> RAM/ROM/Flash chip drivers
-> 
-> looks like:
+Hi, 
 
-again, the quickest way of tracking this down is to add in some printk's
-so you know whats being read/written, and then possibly some more
-printk's in the CFI stuff so you know what is being expected. From
-there, its usually pretty easy to track down.
+when jffs2 was used on our ARM based embedded board and you enter
+'reboot' at the Linux command line it takes a _very_ long time until the
+system finally reboots. Is there anything that can be done against this
+behaviour? It would be great to have boot times which are not
+significantly longer than on a PC.  
+
+Robert
+-- 
+ Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de
+ Pengutronix - Linux Solutions for Science and Industry
+   Braunschweiger Str. 79,  31134 Hildesheim, Germany
+   Handelsregister:  Amtsgericht Hildesheim, HRA 2686
+    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4
