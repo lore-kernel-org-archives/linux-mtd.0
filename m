@@ -1,19 +1,24 @@
-Received: from [213.239.205.147] (helo=debian.tglx.de)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BphOY-0000H4-3Y
-	for linux-mtd@lists.infradead.org; Wed, 28 Jul 2004 01:54:31 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Ben Gamsa <ben@somanetworks.com>
-In-Reply-To: <41070C86.4060608@somanetworks.com>
-References: <41070C86.4060608@somanetworks.com>
-Content-Type: text/plain
-Message-Id: <1090993694.20889.174.camel@thomas.tec.linutronix.de>
-Mime-Version: 1.0
-Date: Wed, 28 Jul 2004 07:48:14 +0200
+	id 1Bpi83-0001BX-Ee
+	for linux-mtd@lists.infradead.org; Wed, 28 Jul 2004 02:41:35 -0400
+Received: from yandex.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 749F4229D1
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Jul 2004 10:41:00 +0400 (MSD)
+Message-ID: <41074A7C.9020808@yandex.ru>
+Date: Wed, 28 Jul 2004 10:41:00 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <410653C0.3070609@yandex.ru>	
+	<1090934568.20889.162.camel@thomas.tec.linutronix.de>	
+	<41066966.8070107@yandex.ru>
+	<1090949508.20889.169.camel@thomas.tec.linutronix.de>
+In-Reply-To: <1090949508.20889.169.camel@thomas.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 deadlock on alloc_sem in jffs2_reserve_space
-Reply-To: tglx@linutronix.de
+Subject: Re: bugreport
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-07-28 at 04:16, Ben Gamsa wrote:
->
-> 	f = jffs2_gc_fetch_inode(c, inum, nlink);
-> 	if (IS_ERR(f))
-> 		return PTR_ERR(f);
-> 	if (!f)
-> 		return 0;
-> 
-> 	ret = jffs2_garbage_collect_live(c, jeb, raw, f);
-> 
-> 	jffs2_gc_release_inode(c, f);
-> 
->   release_sem:
-> 	up(&c->alloc_sem);
-> 
-Sure, it has to release the semaphore. It's fixed in current CVS
-already.
+Thomas Gleixner wrote:
+> On Tue, 2004-07-27 at 16:40, Artem B. Bityuckiy wrote:
+> proc support was removed in meantime (current CVS).
+Oh, sorry, my snapshot was deprecated.
 
-tglx
+Note, the same thing should also be fixed in super-v24.c.
+
+Just interesting, why the proc interface was removed? Have you added 
+ioctl interface? My JFFS2 CVS snapshot of 15 Jul 2004 has no ioctl 
+interface.
+
+> But anyway thanks for pointing this out
+Not at all.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
