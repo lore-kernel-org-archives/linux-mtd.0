@@ -1,17 +1,16 @@
-Received: from imladris.demon.co.uk ([193.237.130.41]
-	helo=lapdancer.baythorne.internal)
+Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19WjiS-0002aS-1n
-	for <linux-mtd@lists.infradead.org>; Sun, 29 Jun 2003 22:28:08 +0100
+	id 19Wrps-0003Mo-BQ
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 07:08:20 +0100
 From: David Woodhouse <dwmw2@redhat.com>
 To: Russell King <rmk@arm.linux.org.uk>
 In-Reply-To: <20030629213450.B5653@flint.arm.linux.org.uk>
 References: <20030623010031.E16537@flint.arm.linux.org.uk>
 	 <1056544988.24294.9.camel@passion.cambridge.redhat.com>
 	 <20030629213450.B5653@flint.arm.linux.org.uk>
-Message-Id: <1056922045.6616.28.camel@lapdancer.baythorne.internal>
+Message-Id: <1056953317.26374.22.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Sun, 29 Jun 2003 22:27:25 +0100
+Date: Mon, 30 Jun 2003 07:08:38 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
@@ -27,6 +26,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Sun, 2003-06-29 at 21:34, Russell King wrote:
+> > could you try v1.6 from CVS, which should refrain from pretending to have
+> > ecc/oob access functions of none of the subdevices have them, and hence 
+> > fix the problem you observed.
+> 
 > While looking over the changes between 1.5 and 1.6, I spotted this.  You
 > may want to fix this change:
 > 
@@ -37,7 +40,10 @@ On Sun, 2003-06-29 at 21:34, Russell King wrote:
 > +                   !concat->mtd.read_oob != !concat->mtd.read_oob ||
 > +                   !concat->mtd.write_oob != !concat->mtd.write_oob) {
 
-Oops. Fixed in CVS.
+Hmmm. That'll optimise well :) 
+
+But it shouldn't bite you -- aside from that does it actually fix the
+problem you'd observed?
 
 -- 
 dwmw2
