@@ -1,15 +1,15 @@
 Received: from webapps.arcom.com ([194.200.159.168])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNWsz-0004M9-Vo
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 09:33:48 -0400
+	id 1CNX9F-0004XT-HG
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 09:50:34 -0400
 From: Ian Campbell <icampbell@arcom.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Message-Id: <1099056821.24918.1669.camel@icampbell-debian>
+Message-Id: <1099057831.24918.1684.camel@icampbell-debian>
 Mime-Version: 1.0
-Date: Fri, 29 Oct 2004 14:33:42 +0100
+Date: Fri, 29 Oct 2004 14:50:31 +0100
 Content-Transfer-Encoding: 7bit
-Subject: [PATCH 2/2] Make redboot partition table location configurable
+Subject: [PATCH 1/2] fix detection of redboot fis partition table
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,98 +19,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I think I sent this via our regular mail-server (that adds legal rubbish
+to the bottom of mails) the first time so it won't get through to the
+list. Apologies if it comes through twice.
+
 Hi all,
 
-RedBoot has a compile time configuration option called
-CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK. 
+The redboot partitioning code currently searches for a FIS table entry
+named "RedBoot" (including the trailing \0) in one of the first three
+entries to try and verify that the sector it is looking at really is a
+FIS partition table.
 
-The patch below (against BK) adds an equivalent option to the Linux
-redboot partition table parsing code.
+Firstly it fails when RedBoot is stored in some other Flash chip such as
+a boot PROM, in this case there is no "RedBoot" entry in the partition
+table. However there will always be a "FIS directory" entry in any valid
+FIS directory.
+        
+Secondly it can fail since the RedBoot entry is not always in the first
+3 slots -- this can happen for example on an x86 based platform where
+the processor expects the boot device to be at the top of memory rather
+than the bottom and so RedBoot is at the end of the flash device.
+Equally when using "FIS directory" as the entry to search for it very
+likely is not in the first three since the directory is typically at the
+end of the flash.
 
-Is it OK to commit to MTD CVS and send to Linus?
+The patch (against BK) below sorts these out. Is it OK to commit to MTD
+CVS and then send to Linus?
 
 Ian.
 
-Index: 2.6-bk/drivers/mtd/Kconfig
-===================================================================
---- 2.6-bk.orig/drivers/mtd/Kconfig	2004-10-29 09:52:28.814675295 +0100
-+++ 2.6-bk/drivers/mtd/Kconfig	2004-10-29 10:09:19.565036333 +0100
-@@ -54,8 +54,8 @@
- 	depends on MTD_PARTITIONS
- 	---help---
- 	  RedBoot is a ROM monitor and bootloader which deals with multiple
--	  'images' in flash devices by putting a table in the last erase
--	  block of the device, similar to a partition table, which gives
-+	  'images' in flash devices by putting a table one of the erase
-+	  blocks on the device, similar to a partition table, which gives
- 	  the offsets, lengths and names of all the images stored in the
- 	  flash.
- 
-@@ -68,6 +68,23 @@
- 	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for 
- 	  example.
- 
-+config MTD_REDBOOT_DIRECTORY_BLOCK
-+	int "Location of RedBoot partition table"
-+	depends on MTD_REDBOOT_PARTS
-+	default "-1"
-+	---help---
-+	  This option is the Linux counterpart to the
-+	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
-+	  option.
-+
-+	  The option specifies which Flash sectors holds the RedBoot
-+	  partition table.  A zero or positive value gives an absolete
-+	  erase block number. A negative value specifies a number of
-+	  sectors before the end of the device.
-+	  
-+	  For example "2" means block number 2, "-1" means the last
-+	  block and "-2" means the penultimate block.
-+	  
- config MTD_REDBOOT_PARTS_UNALLOCATED
- 	bool "  Include unallocated flash regions"
- 	depends on MTD_REDBOOT_PARTS
+%patch
 Index: 2.6-bk/drivers/mtd/redboot.c
 ===================================================================
---- 2.6-bk.orig/drivers/mtd/redboot.c	2004-10-29 10:09:01.798848528 +0100
-+++ 2.6-bk/drivers/mtd/redboot.c	2004-10-29 10:09:35.374754066 +0100
-@@ -30,6 +30,9 @@
- 	struct fis_list *next;
- };
- 
-+static int directory = CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK;
-+module_param(directory, int, 0);
-+
- static inline int redboot_checksum(struct fis_image_desc *img)
- {
- 	/* RedBoot doesn't actually write the desc_cksum field yet AFAICT */
-@@ -51,6 +54,7 @@
+--- 2.6-bk.orig/drivers/mtd/redboot.c	2004-09-15 11:00:22.000000000 +0100
++++ 2.6-bk/drivers/mtd/redboot.c	2004-10-29 14:21:33.018453911 +0100
+@@ -50,6 +50,7 @@
+ 	char *nullname;
  	int namelen = 0;
  	int nulllen = 0;
- 	int numslots;
-+	unsigned long offset;
++	int numslots;
  #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
  	static char nullstring[] = "unallocated";
  #endif
-@@ -60,8 +64,15 @@
- 	if (!buf)
- 		return -ENOMEM;
+@@ -71,12 +72,16 @@
+ 		goto out;
+ 	}
  
--	/* Read the start of the last erase block */
--	ret = master->read(master, master->size - master->erasesize,
-+	if ( directory < 0 )
-+		offset = master->size + directory*master->erasesize;
-+	else
-+		offset = directory*master->erasesize;
-+
-+	printk(KERN_NOTICE "Searching for RedBoot partition table in %s at offset 0x%lx\n",
-+	       master->name, offset);
-+
-+	ret = master->read(master, offset,
- 			   master->erasesize, &retlen, (void *)buf);
+-	/* RedBoot image could appear in any of the first three slots */
+-	for (i = 0; i < 3; i++) {
+-		if (!memcmp(buf[i].name, "RedBoot", 8))
++	numslots = (master->erasesize / sizeof(struct fis_image_desc));
++	for (i = 0; i < numslots; i++) {
++		if (buf[i].name[0] == 0xff) {
++			i = numslots;
++			break;
++		}
++		if (!memcmp(buf[i].name, "FIS directory", 14))
+ 			break;
+ 	}
+-	if (i == 3) {
++	if (i == numslots) {
+ 		/* Didn't find it */
+ 		printk(KERN_NOTICE "No RedBoot partition table detected in %s\n",
+ 		       master->name);
+@@ -84,7 +89,7 @@
+ 		goto out;
+ 	}
  
- 	if (ret)
+-	for (i = 0; i < master->erasesize / sizeof(struct fis_image_desc); i++) {
++	for (i = 0; i < numslots; i++) {
+ 		struct fis_list *new_fl, **prev;
+ 
+ 		if (buf[i].name[0] == 0xff)
 
+
+
+-- 
+Ian Campbell, Senior Design Engineer
+                                        Web: http://www.arcom.com
+Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
+Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
 -- 
 Ian Campbell, Senior Design Engineer
                                         Web: http://www.arcom.com
