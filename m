@@ -1,14 +1,15 @@
-Received: from tomts20-srv.bellnexxia.net ([209.226.175.74])
+Received: from vernon.teraflops.com ([213.173.140.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZDKD-00032E-00
-	for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2002 17:24:50 +0100
-Date: Mon, 29 Jul 2002 12:24:47 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Frank Oltmanns <frank.oltmanns.ml@gmx.de>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Compiling Grub for DOC2000
-In-Reply-To: <20537.1027956511@www7.gmx.net>
-Message-ID: <Pine.LNX.4.44.0207291211590.20751-100000@server.superbt.com>
+	id 17ZIjh-0003RV-00
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2002 23:11:29 +0100
+Received: from localhost (oh3mqu@localhost)
+	by vernon.teraflops.com (8.11.6/8.11.6) with ESMTP id g6TMBKn10815
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 01:11:20 +0300
+Date: Tue, 30 Jul 2002 01:11:20 +0300 (EEST)
+From: Ari Saastamoinen <mtd@oh3mqu.pp.vip.fi>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 and block size for writing
+Message-ID: <Pine.LNX.4.44.0207300109560.10806-100000@vernon.teraflops.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,35 +23,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 29 Jul 2002, Frank Oltmanns wrote:
+Hello,
 
-> 1) With grub on my DoC, I can't boot from diskette anymore (I want to use
-> Etherboot)
+First I must be sorry if that subject has discussed before and/or this    
+situation is already supported, but only thing what I found was with 
+suvject "Does MTD include support for STM M58LW064?"  And the answer was  
+no.  I have the project what have that chip, and I tried to use that
+command set 0001 with the chip and it seems to be working somehow (using
+linux kernel 2.4.18-rmk7).  When I tried to dd something to the
+/dev/mtdblock/0 it seems to appear to the chip, but the JFFS2 writing do  
+not work.
 
-This can probably be solved by changing this line in stage2/stage2.c
+I tried to debug what went wrong and it seems that problem might be in    
+write alignments.  On some chips it is possible to write zeros to the chip
+at any time, but with this chip writing to the 4*16 bit page is allowed   
+only once after erase.  Is there any configuration parameters for JFFS2 to
+make it perform writes only with that kind of alignment?
 
-                    is_opened = find_config(0x80);
+And if there is no currently supporting for that I will make it by myself.
+What is your suggestions?
 
-to
+1) Should I patch mtdblock so it caches all the writes and writes only 64
+at the time?  I believe that file system is not safe agaings power
+failures any more with that patch.
 
-                    is_opened = find_config(0);
+2) Should I patch mtdblock like: if I write 1 byte to it and it will
+report that 8 bytes were written?  Can JFFS2 recognize that and next write
+will go to the right place?
 
->       nftl_format /dev/mtd0 90112  (since my firmware is 89792 bytes)
+3) Or should I patch JFFS2 so it will do all needed alignment by itself?
 
-You may need to specify a multiple of 16 KiB as a start of NFTL layer in
-case your erase block size is 16 KiB.  Make sure the /dev/nftl* drivers
-weren't activated or were unloaded when running nftl_format.
+4) Does anyone have any other suggestions?
 
->       fdisk /dev/nftla  (created 1 partition)
 
-I believe it is required to reload the MTD NFTL driver between nftl_format
-and any subsequent actions against /dev/nftl*.  Since my kernel has MTD
-NFTL driver compiled in, I need to reboot.
+PS. Sorry about my bad english too 8-)
 
-Check out 
-
-    http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html
-
-for detailed instructions.
-
-Ilguiz
+--
+Ari Saastamoinen
