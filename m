@@ -1,26 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.177])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1915so-0002zc-TA
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Apr 2003 15:40:02 +0100
-Received: from [212.227.126.160] (helo=mrelayng.kundenserver.de)
-	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 1915sp-0007QG-00
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2003 16:40:03 +0200
-Received: from [217.227.92.20] (helo=comm.esd-electronics.com)
-	by mrelayng.kundenserver.de with asmtp (Exim 3.35 #1)
-	id 1915so-0001ME-02
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2003 16:40:03 +0200
-From: "Stefan Roese" <stefan.roese@esd-electronics.com>
-To: "Thayne Harbaugh" <tharbaugh@lnxi.com>
-Date: Thu, 3 Apr 2003 16:38:01 +0200
-Message-ID: <EFEAIMDCOOOHIEPHDNFJKEHJFEAA.stefan.roese@esd-electronics.com>
+Received: from smtp2.crystaltech.com ([216.119.106.211])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 1916lr-0003QV-61
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Apr 2003 16:36:56 +0100
+From: "John Burch" <jburch@vincisystems.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>,
+	"'Kenneth Johansson'" <kenneth.johansson@etx.ericsson.se>
+Date: Thu, 3 Apr 2003 10:36:54 -0500
+Message-ID: <003501c2f9f6$dc7373a0$1200a8c0@JOHNB>
 MIME-Version: 1.0
-In-reply-to: <1049217336.25948.101.camel@tubarao>
+In-reply-to: <1049369136.14220.5.camel@passion.cambridge.redhat.com>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Wacky JEDEC probes
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+cc: tglx@linutronix.de
+cc: 'Mtd' <linux-mtd@lists.infradead.org>
+Subject: RE: Can mtd partition span multiple devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thayne!
+>=20
+> On Thu, 2003-04-03 at 12:15, Kenneth Johansson wrote:
+> > On Thu, 2003-04-03 at 02:58, Thomas Gleixner wrote:
+> > > On Thursday 03 April 2003 00:56, John Burch wrote:
+> > > > I'm wondering if a single mtd partition can span more than one=20
+> > > > physical flash device.  For example, if two flash=20
+> devices span the=20
+> > > > following address ranges, 0x0-0x3FFFFF and=20
+> 0x400000-0x7FFFFF, can=20
+> > > > an mtd partition be defined as follows?
+> > > >
+> > > > Name: spanning_partition
+> > > > Size: 0x200000
+> > > > Offset: 0x300000
+> > > >
+> > > > So this partition would span physical addresses 0x300000 -=20
+> > > > 0x3FFFFF (device 1) and 0x400000 - 0x4FFFFF (device 2).
+> > >=20
+> > > Enable MTD concatenating support.
+> > >=20
+> >=20
+> > You mean MTD partitioning no need for concatenating with=20
+> this layout.
+>=20
+> Probably true -- if the two physical devices are laid out=20
+> such that a single chip probe will find them together, they=20
+> can be used as a single MTD device even without mtdconcat=20
+> just by setting your map to cover the whole range 0->8M. You=20
+> only really need mtdconcat for more complicated setups.
+>=20
 
-> > I am trying to use "jedec_probe.c" on our ppc based board to support two
-> > different flash types (AMD AM29VL160xT and SSTI SST39LF160).
-> Both are used
-> > in 16bit mode. Since the SST flash is not really CFI compliant,
-> I have to
-> > use jedec_probe, right?
->
-> BTW, it looks like you can simplify switch statement in your patch if
-> cfi->device_type is a good way to represent the byte width of a device.
-> Then again, the intention of cfi->device_type might be intended to be an
-> opaque symbol only and using it as a byte width value might be an abuse.
+I'm using 2.4.17 and I don't think mtdconcat is part of that kernel
+(though I may not need it anyway based on dwmw2's response).  Are the
+changes since then substantial, and can 2.4.17 be patched to support the
+latest mtd/jffs2 code?
 
-If cfi->device_type can't be used for bus-width checking, how can we do it?
-We have to read the chip id from different addresses for different
-bus-widths...
+Second, you imply that a single chip probe will handle multiple devices
+(assuming contiguous addressing?).  Is this supported in 2.4.17 and is
+it a common approach to use for multiple devices?
 
-Best regards,
-Stefan.
+John
