@@ -1,18 +1,19 @@
-Received: from [66.78.16.3] (helo=host2.hosting4everyone.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta02.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16qJXm-000264-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 19:57:14 +0000
-Message-ID: <008801c1d5c9$d6c25f90$be04010a@MTG016>
-From: "Sebastian" <sebastian.vaitus@masstechgroup.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-References: <005a01c1d5c0$26756730$be04010a@MTG016>  <001201c1cf6b$64df4a50$be04010a@MTG016> <8945.1016645253@redhat.com>  <16753.1017256426@redhat.com>
-Subject: Re: No space left on device 
-Date: Wed, 27 Mar 2002 14:58:58 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 16qSjh-0002h7-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2002 05:46:09 +0000
+Content-Type: text/plain
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Wed, 27 Mar 2002 21:46:04 -0800 (PST)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: David Woodhouse <dwmw2@infradead.org>,
+	"David  Woodhouse" <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Whats wrong with my jffs2?
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020328054604.BFC5D2755@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,49 +25,71 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-It's a 512K AMD flash with 8 erase blocks on an IBM Walnut board. The ROM
-Monitor program which I use for booting takes up the last 2 blocks, and I'm
-trying to use the first 6 blocks for JFFS.
-I've attached a previous email below that gives more details.
 
-Sebastian
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+>
+>zeusj@firstlinux.net said:
+>>     Can you tell me why only my mtd char device with even minor deivce
+>> number works? and there is no such thing happened on my mtd block
+>> device. 
+>
+>Did you run the MAKEDEV script or try to make your devices by hand? If you 
+>did them by hand, did you do so without referring to Documentation/devices.txt?
+>
+>grep -A6 " 90 char" /usr/src/linux/Documentation/devices.txt 
+
+Thanks, I have checked the devices.txt, so I got why the odd mtd "permission denied". But if the device nodes with major 31 ,mi 0-7 are ROM card (as the device.txt said),why my flash can works without nothing wrong? I think the minor number should be 8-15 , isnt it?
+
+one more question
+when I use jffs as the root filesystem, everything is ok, but when I use jffs2 (I remeber that you said its more stable than jffs:), I got a problem some message appears on my screen and the root filesystem is readonly (this never happened on jffs), the following is the message:
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e0014: 0x552f in
+stead
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e0018: 0x175e in
+stead
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e001c: 0xcdf6 in
+stead
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e0020: 0xb7fb in
+stead
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e0024: 0x7615 in
+stead
+
+Further such events for this erase block will not be printed
+
+VFS: Mounted root (jffs2 filesystem) readonly.
+
+Freeing init memory: 40K
+
+serial console detected.  Disabling virtual terminals.
+
+init started:  BusyBox v0.60.2 (2002.02.24-07:14+0000) multi-call
+mount: Mounting /dev/ram0 on / failed: No such device or address
+
+mount: Mounting devpts on /dev/pts failed: Nh
 
 
 
-Hi,
 
-I'm trying to use JFFS2 on a 512K AMD (AM29F040B) flash chip (8 erase
-blocks) installed on the IBM Walnut board. I was able to create a JFFS2
-image with mkfs.jffs2, erase the flash, and then copy the image to the flash
-( about 200 bytes). I can mount the mtdblock and browse the files on the
-JFFS2 file system, but I cannot make any changes to the existing files or
-add new ones. Everytime I try to modify it I get the 'No space left on
-device' error. I had a quick look through the JFFS2 code and I see that
-there has to be at least 5 free erase blocks (+ data) for the FS to function
-properly ... but I have 8! I tried changing JFFS2_RESERVED_BLOCKS_BASE from
-3 to 1 (which gives a total of 3 blocks for minimum requirement) and it
-still didn't work. Am I missing something here? Do I have to pad my image
-with 0xFF and make it 512K before I copy it? Is there another way to make
-the image and copy it to the flash ... etc?
+BusyBox v0.60.2 (2002.02.24-07:25+0000) Built-in shell (msh)
 
-Regards,
-Sebastian Vaitus
+Ee o-a
 
 
->
-> sebastian.vaitus@masstechgroup.com said:
-> > Erase at 0x00010000 finished, but state != MTD_ERASE_DONE. State is
-> > 0x0 instead.
->
-> What hardware?
->
-> --
-> dwmw2
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
+Processing /etc/profile... Done
+#
+
+Thank you very much!
+
+
+Jim Zeus 
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
