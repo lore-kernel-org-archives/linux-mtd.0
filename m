@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uypV-0007Rn-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:46:17 +0100
+	id 14uyyC-0007VB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:55:16 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3AEEAE8F.4C2BB285@cs.ccu.edu.tw> 
-References: <3AEEAE8F.4C2BB285@cs.ccu.edu.tw> 
-To: lmc83 <lmc83@cs.ccu.edu.tw>
+In-Reply-To: <3AF02966.9689ABA5@convergence.de> 
+References: <3AF02966.9689ABA5@convergence.de> 
+To: Frank Neuber <neuber@convergence.de>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD driver module for SmartMedia 
+Subject: Re: FIX-Problem: use counter armflash.c 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 02 May 2001 16:45:46 +0100
-Message-ID: <8870.988818346@redhat.com>
+Date: Wed, 02 May 2001 16:55:28 +0100
+Message-ID: <17081.988818928@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,28 +23,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-lmc83@cs.ccu.edu.tw said:
->     Is there MTD driver module for SmartMedia? 
 
-No, not yet. Nobody's yet shown much interest in creating one.
+neuber@convergence.de said:
+> The use counter never counts down when I unload the module armflash.
+> Here is my patch to correct this behavior: 
 
-
->     Can I use nand.c to drive SmartMedia ?
-
-If SmartMedia contains NAND flash chips, then probably, yes. With the right 
-glue layer this ought to be possible.
+Not by deregistering every MTD device in the system, you don't :)
+Make it remember which device(s) it owns instead.
 
 
->     In the source code tree structure, "mtd/devices" means MTD driver
-> module
->     what does "mtd/maps" means for? 
+neuber@convergence.de said:
+> There is another usecounter problem in armflash. In the afs_cfi_init()
+> function the  function do_map_probe() is called. After this call the
+> usecount  of the module cfi_cmdset_0001 is incremented and would never
+> be decremented. How can I fix this behaviour? Is there anybody who is
+> working with mtd's on arm-integrator? 
 
-mtd/devices are complete standalone device drivers for MTD devices.
-
-mtd/maps contains 'mapping' drivers which provide just access to the bus on 
-which memory chips reside. The actual chip drivers are in mtd/chips. Those 
-are only for memory-mapped chips though, not NAND chips.
-
+That one should be fixed now - I just have to fix up the command sets 
+accordingly.
 
 --
 dwmw2
