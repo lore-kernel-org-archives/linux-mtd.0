@@ -1,16 +1,20 @@
-Received: from samar.sasken.com ([164.164.56.2])
+Received: from pd9e41948.dip.t-dialin.net ([217.228.25.72] helo=thomas.tec.autronix.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16axYZ-0002ac-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 11:26:36 +0000
-Message-ID: <3C6A9E35.C4B8664F@sasken.com>
-Date: Wed, 13 Feb 2002 17:11:17 +0000
-From: Ashok M Padmanaban <ashokmp@sasken.com>
+	id 16axZH-0002aw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 11:27:19 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: NAND flash and JFFS(2)
+Date: Wed, 13 Feb 2002 12:40:52 +0100
+References: <Pine.LNX.4.44.0202112137580.1558-100000@lapdancer.baythorne.internal> <0202121847440K.00764@thomas>
+In-Reply-To: <0202121847440K.00764@thomas>
 MIME-Version: 1.0
-To: MTD for Linux <linux-mtd@lists.infradead.org>,
-   JFFS mailing list <jffs-dev@axis.com>
-Subject: init taking 5sec
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-Id: <0202131200230Q.00764@thomas>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, <jffs-dev@axis.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +26,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi All,
-Iam  using kernel 2.4.8 (ac12 patch)
+On Tuesday, 12. February 2002 18:47, Thomas Gleixner wrote:
+>
+> Actual state of JFFS2 on NAND
+>
+> I will run some more tests tonight.
+Excellent test result. 
 
-partition sizes : 1MB (boot loafder + kernel)
-                            13 MB ( cramfs as root file system)
-                              2 MB (jffs2 partition)
+Test is as follows:
 
+SmartMediaCard: 16MB two partitions a 8MB
+1st partition is root
+2nd partition is data
 
+data contains 20 files, which are not touched.
 
-The kernel boot up till init in 6sec and then init takes 5secs....till
-i get the login prompt.
-Iam using nicoramdisks init.
+3 tasks running in loops
 
-Is there any way i can reduce the boot time
-Any pointers where i can get the init source file ( version 2.74)
+task 1: 
+	copy 40 files from root to data, remove the files on root
+	diff against original files on nfs
+	copy 40 files from data to root, remove the files on data
+	diff against original files on nfs
+task 2:
+	open file A on data for write every 1 sec. 
+	append 1000 bytes and close the file 
+	loop until filesize is >1MB
+	open file B on data for write every 1 sec. 
+	append 1000 bytes and close the file 
+	loop until filesize is >1MB
+task3:	
+	wait until A is >1MB
+	copy file A to nfs
+	check file integrity of A
+	remove file A on data
+	wait until B is >1MB
+	copy file B to nfs
+	check file integrity of B
+	remove file B on data
 
-Thanks and regards
-ashok
+A independent control removes power after ~ 1-2 hours without warning.
+After reboot:
+The untouched 20 files on data are diffed against the original files on nfs
+The 40 files, which are shuffeld between root and data are diffed against 
+original files on nfs.
+task1 starts
+task2 takes the file, which was filled at last and starts
+task3 starts
+
+The test ran for 8 hours without any problem.
+
+Thomas 
+__________________________________________________
+Thomas Gleixner, autronix automation GmbH
+auf dem berg 3, d-88690 uhldingen-muehlhofen
+fon: +49 7556 919891 , fax: +49 7556 919886
+mail: gleixner@autronix.de, http://www.autronix.de  
