@@ -1,16 +1,20 @@
-Received: from pony1.arc.nasa.gov ([128.102.31.31] helo=mail.arc.nasa.gov)
+Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197gso-0003YS-BA
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 20:23:18 +0100
-Message-Id: <5.1.1.5.2.20030421121805.014ebf68@mail.arc.nasa.gov>
-Date: Mon, 21 Apr 2003 12:24:21 -0700
-To: lhl <lhl@phy.ccnu.edu.cn>
-From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
-In-Reply-To: <E196oiY-0000Qz-Kq@pentafluge.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DFORMAT ERROR " IPL block is bad."on DiskOnChip 2000?
+	id 197hiS-0003sz-MM
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 21:16:41 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "Stephan Linke" <Stephan.Linke@epygi.de>,
+	"Linux-Mtd" <linux-mtd@lists.infradead.org>
+Date: Tue, 22 Apr 2003 08:17:39 +1200
+References: <FCEAKDJJAPHPLJFINDAJIEBIDAAA.Stephan.Linke@epygi.de>
+In-Reply-To: <FCEAKDJJAPHPLJFINDAJIEBIDAAA.Stephan.Linke@epygi.de>
+MIME-Version: 1.0
+Message-Id: <20030421201646.C88A140B5@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: "verify NAND page writes" and & partial write
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ihl,
-         The IPL (initial program loader) block contains the BIOS extension 
-used by the BIOS to boot the chip during startup.  In your case, it is a 
-small block of code that appears at 0xDC00:0 during boot.  If the IPL block 
-really is bad, your DOC can't boot because that code can't be written by 
-DFORMAT.
+Veriify NAND page writes does not work with YAFFS for the reason you give.
+YAFFS does its own verification when needed.
 
-Ted Hildum
+-- Charles
 
-At 05:48 PM 4/19/2003 +0800, you wrote:
->When I use the DOC5.1.4 DOS utilities'
->DFORMAT /WIN:DC00 /S:DOC514.EXB /FIRST
+On Monday 21 April 2003 23:36, Stephan Linke wrote:
+> Hi,
 >
->ERRORS
+> I try to use the "verify NAND page writes" option but but it always failes
+> when YAFFS tries to do a partial write on the OOB area. Is it intentional
+> that this option failes with partial writes? Everything works fine when I
+> disable this feature.
 >
->DiskOnChip 2000 found in 0xdc000.
->64M media, 16K unit
->Virgin card rebuilding unit map.
->Media has been scanned
->ERROR - IPL block is bad.
->Error formatting DiskOnChip.
->Status code is 119 (flUnknow status) received from flFormatPhysicalDrive.
->Format failed.
+> Thanks, Stephan
 >
->What's the matter with it?
->
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
