@@ -1,46 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ZHc7-0001Zx-00
-	for mtd-list@infradead.org; Wed, 13 Sep 2000 19:50:31 +0100
-Received: from [216.84.103.11] (helo=coolexchange.coollogic.com)
+	id 13ZSux-0000F5-00
+	for mtd-list@infradead.org; Thu, 14 Sep 2000 07:54:43 +0100
+Received: from [194.179.100.27] (helo=smtp.jet.es)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ZHc6-0001Zl-00
-	for mtd@infradead.org; Wed, 13 Sep 2000 19:50:30 +0100
-Message-ID: <39BFCCE8.F95BA237@coollogic.com>
-Date: Wed, 13 Sep 2000 13:52:24 -0500
-From: Ian Thompson <ithompson@coollogic.com>
+	id 13ZSuv-0000Ez-00
+	for mtd@infradead.org; Thu, 14 Sep 2000 07:54:42 +0100
+Received: from guadalfeo.com (infou573.jet.es [195.55.162.61])
+	by smtp.jet.es (8.9.3/8.9.1) with SMTP id KAA07314
+	for <mtd@infradead.org>; Thu, 14 Sep 2000 10:57:30 +0200
+Received: from carlitos [192.168.0.2] by guadalfeo.com [192.168.0.50] with SMTP (MDaemon.v2.7.SP4.R) for <mtd@infradead.org>; Thu, 14 Sep 2000 09:01:09 +0200
+From: =?iso-8859-1?Q?Carlos_S=E1nchez?= <carlos@guadalfeo.com>
+To: <mtd@infradead.org>
+Subject: Standard Memory Module
+Date: Thu, 14 Sep 2000 08:50:39 +0200
+Message-ID: <NCBBKHFKIKLHNJJCCDEMGENHCGAA.carlos@guadalfeo.com>
 MIME-Version: 1.0
-To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: lilo patch
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-Forgive me if I'm covering familiar territory.
+Can anybody tell me if there is available one standard module (SIMM, DIMM=
+,
+CF...) that implements the posibility to expand FLASH memory and SRAM/DRA=
+M
+memory in a system with low cost and suficient extended in the market?
 
-What was the purpose of the lilo-ebda.patch?
+Regards:
+Carlos S=E1nchez
+carlos@guadalfeo.com
 
-I have a development setup with a hard-drive and a DiskOnChip
-and I was looking for a lilo patch that would allow me to boot
-the hard-drive with a configured DiskOnChip in place but this 
-didn't do it.
 
-I have a 32M DOC2000 @ 0xd000:0000 
-
-Other things I have noticed, that I, with my limited DOC knowledge,
-can't explain...
-
-A configured 32M Millenium will allow lilo to boot the hard-drive but
-a configured 16M Millenium wiil not.
-
-64M DOC2000s don't seem to work with M-Systems binary driver.
-
-Has anyone any experience with 64M DOC2000s? We have several and 
-approx. 25% won't format to full capacity with the M-Systems utilities.
-
-Ian T.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
