@@ -1,56 +1,67 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14TMK3-0004AS-00
-	for mtd-list@infradead.org; Thu, 15 Feb 2001 11:11:39 +0000
-Message-Id: <200102151111.DAA02064@concorde.cs.ucla.edu>
-From: Jeremy Elson <jelson@ISI.EDU>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: jffs-dev@axis.com, mtd@infradead.org
+	id 14TMo0-0004Jn-00
+	for mtd-list@infradead.org; Thu, 15 Feb 2001 11:42:36 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14TMny-0004Jh-00
+	for mtd@infradead.org; Thu, 15 Feb 2001 11:42:35 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200102151111.DAA02064@concorde.cs.ucla.edu> 
+References: <200102151111.DAA02064@concorde.cs.ucla.edu> 
+To: Jeremy Elson <jelson@ISI.EDU>
+Cc: jffs-dev@axis.com, mtd@infradead.org
 Subject: Re: Does JFFS respect partitions? 
-In-Reply-To: Message from David Woodhouse <dwmw2@infradead.org>
-   of "Thu, 15 Feb 2001 10:10:11 GMT." <20534.982231811@redhat.com>
-Date: Thu, 15 Feb 2001 03:11:20 -0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 15 Feb 2001 11:41:47 +0000
+Message-ID: <1018.982237307@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-David Woodhouse writes:
->Having a read-only partition on the _emulated_ block device doesn't help. 
->The blocks of that partition will still be shifted around to perform 
->wear-levelling while you write to the other partition. If the NFTL 
->filesystem gets corrupted (note the BETA in capital letters in the 
->CONFIG_NFTL_RW config option), you've still lost your read-only filesystem.
+jelson@ISI.EDU said:
+>  Interesting - I didn't realize the DOC did internal wear-levelling.
 
-Interesting - I didn't realize the DOC did internal wear-levelling.  I
-guess that might mean that there's no point in using JFFS on top of
-the NTFL layer anyway?
+The DiskOnChip doesn't. It's just a bunch of flash chips with a clever ASIC 
+to multiplex them and do some ECC in hardware.
 
-I appreciate your advice and knowing that readonly partitions are not,
-in reality, readonly from the point of view of the actual flash
-blocks.  Our original (non-Linux) system was split into two partitions
-to prevent against corruption of the OS filesystem - we didn't want
-the readonly boot partition to stop working due to, say, a poweroff in
-the middle of a write to a log file on the writable partition.  I
-guess I was assuming that, underneath, writes to the DOC sectors were
-more or less atomic, and that corruption on that level was much more
-unlikely.  I was more worried about a long-lived write failing,
-e.g. 30 seconds worth of buffer cache in the OS not being flushed
-before a poweroff.
+The NFTL psuedo-filesystem does. In software. 
 
->It's also possible to register the DiskOnChip raw flash as two separate MTD 
->devices, which is how we 'partition' normal flash. Then you let the NFTL 
->code put a filesystem on one of them and use JFFS on the other. 
+> I guess that might mean that there's no point in using JFFS on top of
+> the NTFL layer anyway?
 
-This sounds ideal - how does one do this?
+True.
 
->> Also, what's jffs2?  Is it safe to use that, and how is it different? 
->
->Pay no attention to the man behind the curtain.
 
-I don't know the intricacies of the existing jffs2 code or what's left
-to implement, but, will a broomstick speed things up for you?  :-)
+> > It's also possible to register the DiskOnChip raw flash as two
+> > separate MTD devices, which is how we 'partition' normal flash. Then
+> > you let the NFTL code put a filesystem on one of them and use JFFS
+> > on the other. 
 
--Jer
+> This sounds ideal - how does one do this?
+
+You need to get your hands dirty. See the 'add_mtd_partitions' code in 
+mtdpart.c and some of the drivers which call it - basically you have an 
+underlying MTD device (the DiskOnChip) and you define two dummy devices 
+which just add an offset to the address requested and pass through to the 
+'real' device's methods. 
+
+It's probably better to take the other route I suggested - have two NFTL
+partitions on the DiskOnChip. Clever offset/len args to nftl_format will do
+that. The NFTL code ought to be OK with it, and it shouldn't be difficult to
+fix if it isn't.
+
+> I don't know the intricacies of the existing jffs2 code or what's left
+> to implement, but, will a broomstick speed things up for you?  :-)
+
+Heh - maybe. But stupid quantities of caffeine seem to be working OK at the 
+moment.
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
