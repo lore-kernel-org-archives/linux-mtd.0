@@ -1,25 +1,19 @@
-Received: from tyo201.gate.nec.co.jp ([210.143.35.51])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192paH-00029D-B3
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 10:40:05 +0100
-Sender: miles@mcspd15.ucom.lsi.nec.co.jp
-To: Daniel Egger <degger@fhm.edu>
-References: <20030407171037.GB8178@wohnheim.fh-wedel.de.suse.lists.linux.kernel>
-	<p73r88exh3r.fsf@oldwotan.suse.de>
-	<20030407194039.GF8178@wohnheim.fh-wedel.de>
-	<buo3cktfvss.fsf@mcspd15.ucom.lsi.nec.co.jp>
-	<1049786306.27774.87.camel@localhost>
-From: Miles Bader <miles@lsi.nec.co.jp>
-Date: 08 Apr 2003 18:36:49 +0900
-In-Reply-To: <1049786306.27774.87.camel@localhost>
-Message-ID: <buou1d9e3f2.fsf@mcspd15.ucom.lsi.nec.co.jp>
+Received: from ash.lnxi.com ([207.88.130.242])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 192rd9-0002RX-Bw
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 12:51:11 +0100
+To: Jeremy Jackson <jerj@coplanar.net>
+References: <m3znp0zqaw.fsf@lnxi.com>
+	<1046982052.3713.6.camel@contact.skynet.coplanar.net>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 08 Apr 2003 05:52:42 -0600
+In-Reply-To: <1046982052.3713.6.camel@contact.skynet.coplanar.net>
+Message-ID: <m365ppjjed.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
+Sender: "Eric W. Biederman" <eric@lnxi.com>
 Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-cc: =?iso-8859-15?q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-cc: Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>
-Subject: Re: [ANNOUNCE] New kernel tree for embedded linux
-Reply-To: Miles Bader <miles@gnu.org>
+Subject: Re: Q: MTD and NIC Roms...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel Egger <degger@fhm.edu> writes:
-> > How about dealing with uClinux?  That's almost entirely embedded
-> > systems.
+Jeremy Jackson <jerj@coplanar.net> writes:
+
+> On Thu, 2003-02-13 at 00:45, Eric W. Biederman wrote:
+> > Currently I have a patch to eepro100.c that adds an MTD map driver so
+> > the onboard rom can be written.  Making code like etherboot easier to
+> > flash etc. 
+> > 
 > 
-> ... without MMU. If you have one you better use it.
+> > Anyway here is the diff with respect to the eepro100.c in 2.4.17,
+> > suggestions on how to do this cleanly are welcome.
+> 
+> Here it is diffed against 2.4.19.  I removed the local variable ioaddr
+> in eepro100_remove_one() because it caused a compile warning when
+> CONFIG_MTD was not set.
+> 
+> Did you have any mtd chip drivers to use with it?  I'm looking at
+> devbios now to port it's NOR flash chip drivers.
 
-uClinux runs fine on systems with an MMU (why wouldn't it?).
+Sorry for the delayed reply.  
 
--Miles
--- 
-Is it true that nothing can be known?  If so how do we know this?  -Woody Allen
+Yes.  But that one is already in jedec_probe.c 
+
+Eric
