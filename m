@@ -1,21 +1,15 @@
-From: eddy@emsoftltd.com (Eddy Yeung)
-Date: Thu, 27 Feb 2003 16:14:09 +0800
-Subject: Help on bad block table handling
-Message-ID: <3E5DC8D1.9000900@emsoftltd.com>
+From: thomas@wehrspann.de (Thomas Wehrspann)
+Date: Thu, 27 Feb 2003 10:20:58 +0100
+Subject: NFTL partition on DoC 2001 with Kernel 2.5.5x
+Message-ID: <009801c2de41$8a3a1ce0$152ea8c0@lenor>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi,
+Hello,
+i'm using LinuxBIOS with the DiscOnChip Millenium and a root filesystem on
+an NFTL partition. With kernel 2.4.20 it works, but 2.5.59 can't recognize
+NFTL.
+Is there any solution or an altenative?
 
-I have questions about the bad block table handling on nand flash with 
-ext2.  Do you update the bad block table when you have erase and program 
-failures?  The implementation that I am having creates the bad block 
-table only when the flash is being formated.  That is, there will be no 
-updating of the bad block table until next formating of the flash. 
- Should I update the bad block table when erase and program failures are 
-detected?  Does anyone know whether there is an implementation for that? 
- Please advise!!  Thank you.
-
-Best regards,
-Eddy
-eddy at emsoftltd.com
+Thanks
+Thomas
