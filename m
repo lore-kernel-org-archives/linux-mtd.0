@@ -1,54 +1,64 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11zZOw-0005m1-00
-	for mtd-list@infradead.org; Sun, 19 Dec 1999 06:01:02 +0000
-Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
+	id 11ztzC-0006Ey-00
+	for mtd-list@infradead.org; Mon, 20 Dec 1999 03:59:50 +0000
+Received: from cr355197-a.poco1.bc.wave.home.com ([24.112.113.88] helo=nero.fireplug.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11zZOu-0005lt-00
-	for mtd@infradead.org; Sun, 19 Dec 1999 06:01:00 +0000
-Received: from localhost.localdomain (IDENT:adi@[192.168.100.2])
-	by gizmo.adis.on.ca (8.9.3/8.9.3) with ESMTP id XAA21870
-	for <mtd@infradead.org>; Sat, 18 Dec 1999 23:58:56 -0600
-Date: Sun, 19 Dec 1999 00:10:08 -0600 (CST)
-From: Adi Linden <adi@adis.on.ca>
+	id 11ztzA-0006Es-00
+	for mtd@infradead.org; Mon, 20 Dec 1999 03:59:48 +0000
+Received: from news by nero.fireplug.net with local (Exim 2.04 #4)
+	id 11zu2O-000226-00
+	for mtd@infradead.org; Sun, 19 Dec 1999 20:03:08 -0800
 To: mtd@infradead.org
-Subject: doc2000 and mtd
-Message-ID: <Pine.LNX.4.10.9912190002590.14262-100000@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: sl@gateway.fireplug.net (Stuart Lynne)
+Subject: Re: [Fwd: power down]
+Date: 20 Dec 1999 04:03:08 GMT
+Message-ID: <83k9ps$7k9$1@nero.fireplug.net>
+References: <384D2C2D.6A6F4CE6@go2fax.com>
+Reply-To: sl@fireplug.net
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+In article <384D2C2D.6A6F4CE6@go2fax.com>, Bob Canup <rcanup@go2fax.com> wrote:
+>Vipin Malik wrote:
+>
+>> Bob Canup wrote:
+>> >
+>
+>I don't think that you understand what we're trying to tell you. There is a
+>difference in philosophy.
+>
+>If you are running a flash as a normal read - write imitation of a disk there
+>are severe time limitations as to how long the flash is going to work because
+>of the limit on write cycles which flash technology has. As has been pointed
+>out in an earlier post - one write a second will ruin a flash chip in a few
+>weeks - which is not a very long for an embedded system to work.
 
-I am trying to get he mtd driver to work... Here's what I've got so far:
+Assuming load levelling across a 4mb flash drive, if you average 4kb per
+write and write once per second continously you will write each sector a 
+about 40 times per day. 
 
-1. Compiled the driver
-2. Ran MAKEDEV
-3. Load modules
-     insmod mtd.o
-     insmod mtdblock.o
-     insmod nftl.o
-     insmod doc2000.o
-4. Mount the doc (factory fresh)
-     mount -t msdos /dev/nftla1 /mnt
+AMD specs a minimum program/erase cycles of 100,000 per sector (flash
+sector) and 1,000,000 per device. To reach 100,000 writes at 50 per day
+would take over 5 years.
 
-Now I can cd into /mnt (the doc2000 partiton) and I can also read and
-write to it. So I copy a bunch of files there, the unmount and power off
-the machine. Upon reboot I do step 3. above. When I attempt to mount
-/dev/nftla1 I get an error message saying the partition doesn't exist or
-is the wrong file system. If I do fdisk /dev/nftla my partition doesn't
-exist.
+>Because of this limitation most of the people in this group who do design
+>with flash use it in a Write Rarely Read Mostly manner. The only time the
+>flash is written to is when there is a firmware upgrade. This is also the
+>manner in which flash chips are used on conventional PC motherboards - if you
+>lose power during a firmware upgrade - you are in trouble - nor do I see any
+>practical method of handling that problem.
 
-I ran my dos boot floppy and reinstalled the doc firmaware from the
-M-Systems disk. I repeated the above steps with the same result.
+Well if you have control over your design simply ensure that you have two
+banks and can boot from either of them. Upgrading involves booting from
+one to upgrade the other and then selecting the new bank as the default
+boot.
 
-What am I doing wrong?
 
-Regards,
-Adi
-   
-
+-- 
+Stuart Lynne <sl@fireplug.net>                __O 
+<http://www.thinlinux.org>                  _-\<,_               604-461-7532
+PGP Fingerprint: 28 E2 A0 15 99 62 9A 00   (_)/ (_)   88 EC A3 EE 2D 1C 15 68
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
