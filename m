@@ -1,144 +1,95 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14oRlo-0001D5-00
-	for mtd-list@infradead.org; Sat, 14 Apr 2001 16:15:28 +0100
+	id 14oTJi-0001lK-00
+	for mtd-list@infradead.org; Sat, 14 Apr 2001 17:54:34 +0100
 Received: from zeus.vortex.is ([193.4.145.1])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14oRlk-0001Cy-00
-	for mtd@infradead.org; Sat, 14 Apr 2001 16:15:24 +0100
+	id 14oTJg-0001lE-00
+	for mtd@infradead.org; Sat, 14 Apr 2001 17:54:32 +0100
 Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
           by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
           ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <mtd@infradead.org>; Sat, 14 Apr 2001 15:15:01 +0000
+          for <mtd@infradead.org>; Sat, 14 Apr 2001 16:54:13 +0000
 Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
           (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
           with ESMTP id is for <mtd@infradead.org>;
-          Sat, 14 Apr 2001 15:15:01 +0000
+          Sat, 14 Apr 2001 16:54:14 +0000
 content-class: urn:content-classes:message
-Subject: RE: [Q] MEMGETREGIONxxx ioctls
+Subject: RE: CFI with 4 x8/x16 devices on a 32-bit bus 
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C0C4F5.AB7505BA"
-Date: Sat, 14 Apr 2001 15:14:58 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9137@kolkrabbi.flaga.is>
-From: =?Windows-1252?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: "Eric" <ebrower@usa.net>,
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 14 Apr 2001 16:54:11 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A913A@kolkrabbi.flaga.is>
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <joakim.tjernlund@lumentis.se>,
 	<mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C0C4F5.AB7505BA
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-
-
 Hi,
 
-Corrected these errors and commited.
+> -----Original Message-----
+> From: Joakim Tjernlund [mailto:joakim.tjernlund@lumentis.se]
+> Sent: 12. apr=EDl 2001 13:53
+> To: K=E1ri Dav=ED=F0sson; mtd@infradead.org
+> Subject: RE: CFI with 4 x8/x16 devices on a 32-bit bus=20
+>=20
+>=20
+> Hi
+>=20
+> I been all the time wrong! I just discovered that hexl-mode i=20
+> emacs is broken!
+> Emacs in hexl-mode displays 81ff81ff81ff ... and od -x says=20
+> fffffff ...
+>=20
+> Sorry about that.
+>=20
+> While I am at it perhaps someone can enlighten me somewhat ...
+>=20
+> I am a bit confused about how add_mtd_device() and=20
+> add_mtd_partitions() work.
+> Looking in nora.c it looks like you can partition a flash by doing=20
+> a few calls to add_mtd_device() with different offsets, but=20
+> if you can do
+> that with add_mtd_device(), what's the point with=20
+> add_mtd_partitions()?
 
-Thanks,
+To call a few calls to add_mtd_device() 8-)
+
+>=20
+> I am missing something here, can someone explain when and how=20
+> you are supposed to
+> use these two functions?
+
+Well as you can see in add_mtd_partition() it is not a question of just
+calling a couple of times to add_mtd_device(). You need set up the
+correspding
+device structeres etc, etc, add the virtual regions if you wan't to use
+them etc,
+etc....
+
+I find it a good abstractation to add partitions to flash devices. After
+you
+add the partition you just access it like any other flash device, i.e.
+you do not
+have to know that you are accessing only part of a flash device
+(partition)=20
+rather than the whole device it self. It is all abstracted for you and
+makes the
+world a much nicer place 8-).
+
+To summary: It is a good way to convert a simple partition description
+structures
+into device description structures so that the rest of the code does not
+have to
+know the difference of devices and partitions.
 
 K.D.
 
------Original Message-----
-From:	Eric
-Sent:	Thu 4/12/2001 7:27 PM
-To:	mtd@infradead.org
-Cc:=09
-Subject:	[Q] MEMGETREGIONxxx ioctls
-
-Here are a few questions related to the MEMGETREGIONxxx ioctls.
-I'd simply submit a patch, but I am not sure about the reasoning
-and I'm not near a build system for verification:
-
-	1) Why is MEMGETREGIONCOUNT declared with _IOW
-	   instead of _IOR in mtd.h?  It seems to be a
-	   read from kernelspace, rather than a write to
-           kernelspace in mtdchar.c.
-
-	2) Why is MEMGETREGIONINFO declared likewise with _IOW
-	   instead of _IOWR?  The ioctl in mtdchar.c reads the
-	   regionindex member and then populates the rest of the
-	   struct accordingly.
-
-	3) Do we need the declaration of=20
-		"struct mtd_erase_region_info *kr"
-	   inside the MEMGETREGIONINFO ioctl handler?  It is=20
-	   initialized but never used, so I doubt it is necessary.
-
-Thanks,
-E
-
-____________________________________________________________________
-Get free email and a permanent address at =
-http://www.netaddress.com/?N=3D1
-
-
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-
-
-
-
-------_=_NextPart_001_01C0C4F5.AB7505BA
-Content-Type: application/ms-tnef;
-	name="winmail.dat"
-Content-Transfer-Encoding: base64
-
-eJ8+IjwPAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQ2ABAACAAAAAgACAAEEgAEAHwAAAFJFOiBbUV0gTUVNR0VUUkVH
-SU9OeHh4IGlvY3RscwCzCQEFgAMADgAAANEHBAAOAA8ADgA6AAYARwEBIIADAA4AAADRBwQADgAP
-AA4AOwAGAEgBAQmAAQAhAAAAQzBBMDk1MjQyMDIxOTM0MThENEQ1NzdBM0I3NTc5ODUA5AYBA5AG
-ANwJAAA2AAAAAwA2AAAAAABAADkAugV1q/XEwAEeAD0AAQAAAAUAAABSRTogAAAAAAIBRwABAAAA
-MAAAAGM9SVM7YT0gO3A9RmxhZ2E7bD1LT0xLUkFCQkktMDEwNDE0MTUxNDU4Wi0xMDEwAB4ASQAB
-AAAAGwAAAFtRXSBNRU1HRVRSRUdJT054eHggaW9jdGxzAABAAE4AAAIMlYbDwAEeAFoAAQAAAAUA
-AABFcmljAAAAAAIBWwABAAAAMgAAAAAAAACBKx+kvqMQGZ1uAN0BD1QCAAAAAEVyaWMAU01UUABl
-YnJvd2VyQHVzYS5uZXQAAAACAVwAAQAAABUAAABTTVRQOkVCUk9XRVJAVVNBLk5FVAAAAAAeAF0A
-AQAAAAUAAABFcmljAAAAAAIBXgABAAAAMgAAAAAAAACBKx+kvqMQGZ1uAN0BD1QCAAAAAEVyaWMA
-U01UUABlYnJvd2VyQHVzYS5uZXQAAAACAV8AAQAAABUAAABTTVRQOkVCUk9XRVJAVVNBLk5FVAAA
-AAAeAGYAAQAAAAUAAABTTVRQAAAAAB4AZwABAAAAEAAAAGVicm93ZXJAdXNhLm5ldAAeAGgAAQAA
-AAUAAABTTVRQAAAAAB4AaQABAAAAEAAAAGVicm93ZXJAdXNhLm5ldAAeAHAAAQAAABsAAABbUV0g
-TUVNR0VUUkVHSU9OeHh4IGlvY3RscwAAAgFxAAEAAAAbAAAAAcDDlJc3INnXH0oXQWS0XKvbcP+v
-yABYASNVAB4AdAABAAAAEgAAAG10ZEBpbmZyYWRlYWQub3JnAAAAHgAaDAEAAAAPAAAAS+FyaSBE
-YXbt8HNzb24AAB4AHQ4BAAAAGwAAAFtRXSBNRU1HRVRSRUdJT054eHggaW9jdGxzAAACAQkQAQAA
-AM4DAADKAwAAswYAAExaRnV1TTyuAwAKAHJjcGcxMjViMgNDdGV4BUEBAjH/AfcKgAKkA+QHEwKA
-D/MAUH8EVghVB7IRJQ5RAwECAGPCaArAc2V0MgYABsPtESUzBEYTtzASLBEzCO9tCfc7GB8OMDUR
-IgxgY+cAUAsJAWQzNhZQEXML8ccK4wqECoBIaSwc+ghQCnIYIGMOsGQgdGi5B5BlIASQA2AUACAA
-cKMfIAWgbW1pHwEuHPoiVBPgbmtzHdtLLqpEINstI9JPBRBnC4CHB0AF0AeQc2FnZSPTlRz0RgNh
-OgyCIEUFED8A4B0DBmACMCYUIaB1IBQ0Lw4gLwHQMDEggDc6MjcgUE0hRWZvJhQOoGRAC4ADUGGr
-AQAqYC4FsGceRWMmFDEmtXViah7hJhRbUQJdBdBFTUdFVFJARUdJT054LgAg5GlvHvBscxz7BJAf
-gFMKwC+RIGYH0XEKUHO+dC5ABjEYIAtgHwNvHzJnLT8uRCDVSScfIACQbX0LUHkz4CxAIIEv4Qqw
-dKET0CwgYnUFQEkgAPBtIG5vBUA0YC+CBuDnNXExohggYXMCIAuAKuX3IBIzsDXUbiqABcAv8DVg
-6wMQM9F5MIBlNdACEAXA/nYGcg3gMSAwoSYQHQkmI+AxKSBXaDRABAAx28BDT1VOVCAFgQtgTRgh
-IAPwH0AgXy3QVx87iT+xC4A5wSpgIG9mjT7CUj/hKdIuaD8/sLZJNhEJ4G0EIDFxYi+Rzz8cNyEf
-IANSIGsEkTEA8nMKsGNlNUAqUB9BBcD3H0ADkS/wdwUQDrAxYRz0nz+yRrVEKUDlE9IuYyDbDSYj
-MjxPLcJJTkZP+T3obGlEIAPxH4A+jz+f/U0iUkFxIaBIAS5SSBtDc/9CER9QQq4kUDdiAQAuIAeA
-HwbQEoEgEh9BA6Bwb3D+dTESUSMw4TCAQGJRTzCA1nIa0DSxYwWhZDeBNDCpSO8gM0oQRDGAdx+A
-fzjQHxQ95TrDQGI7iSYjIptWhSnhXwSQN0BlX1JUhl8qITGAKmtyIk1vPmkBADGfS2NPtCGxZGw/
-BJBBdDyhXf4gkAcxaXpPHxE1YjjQOlEgdRQQZNc1QDdQNZFkCGBiYaFho7c40ESwJNFyV5whq0Uc
-+r5faK9pv2rPa94c9EcUIP9DwQngH5AAwAMRIBI00QSQ5wOBJyEgAGRkVPEf8QVAgmgCQHA6Ly93
-cFA+LjjQAZBvREjAA3AvP/xOPRrzO2cpFWQgAIAsQN8E8kJgZHEJ8B8gInMZKdK2IjFiAMBqVyED
-cG8qHwVx/X14IAAAHgA1EAEAAAA8AAAAPEVBREIxMEJBQzI2NkExNEE4NUVDQkY4Njg2QTczRTMx
-MEE5MTM3QGtvbGtyYWJiaS5mbGFnYS5pcz4AHgBHEAEAAAAPAAAAbWVzc2FnZS9yZmM4MjIAAAsA
-8hABAAAAHwDzEAEAAABKAAAAUgBFACUAMwBBACAAWwBRAF0AIABNAEUATQBHAEUAVABSAEUARwBJ
-AE8ATgB4AHgAeAAgAGkAbwBjAHQAbABzAC4ARQBNAEwAAAAAAAsA9hAAAAAAQAAHMES7xJv0xMAB
-QAAIMIi1hav1xMABAwDeP+QEAAADAPE/CQAAAB4A+D8BAAAADwAAAEvhcmkgRGF27fBzc29uAAAC
-Afk/AQAAAFoAAAAAAAAA3KdAyMBCEBq0uQgAKy/hggEAAAAAAAAAL089RkxBR0EvT1U9RklSU1Qg
-QURNSU5JU1RSQVRJVkUgR1JPVVAvQ049UkVDSVBJRU5UUy9DTj1LQVJJRAAAAB4A+j8BAAAAFQAA
-AFN5c3RlbSBBZG1pbmlzdHJhdG9yAAAAAAIB+z8BAAAAHgAAAAAAAADcp0DIwEIQGrS5CAArL+GC
-AQAAAAAAAAAuAAAAAwD9P+QEAAADABlAAAAAAAMAGkAAAAAAAwAdQAAAAAADAB5AAAAAAB4AMEAB
-AAAABgAAAEtBUklEAAAAHgAxQAEAAAAGAAAAS0FSSUQAAAAeADJAAQAAABAAAABlYnJvd2VyQHVz
-YS5uZXQAHgAzQAEAAAAQAAAAZWJyb3dlckB1c2EubmV0AB4AOEABAAAABgAAAEtBUklEAAAAHgA5
-QAEAAAACAAAALgAAAAsAKQAAAAAACwAjAAAAAAADAAYQGPz59gMABxBLAwAAAwAQEAAAAAADABEQ
-AAAAAB4ACBABAAAAZQAAAEhJLENPUlJFQ1RFRFRIRVNFRVJST1JTQU5EQ09NTUlURURUSEFOS1Ms
-S0QtLS0tLU9SSUdJTkFMTUVTU0FHRS0tLS0tRlJPTTpFUklDU0VOVDpUSFU0LzEyLzIwMDE3OjI3
-UE0AAAAAAgF/AAEAAAA8AAAAPEVBREIxMEJBQzI2NkExNEE4NUVDQkY4Njg2QTczRTMxMEE5MTM3
-QGtvbGtyYWJiaS5mbGFnYS5pcz4AgXk=
-
-------_=_NextPart_001_01C0C4F5.AB7505BA--
+>=20
+>  Jocke
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
