@@ -1,51 +1,43 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12EEwD-0002uP-00
-	for mtd-list@infradead.org; Fri, 28 Jan 2000 17:12:01 +0000
+	id 12FJ27-0004Xq-00
+	for mtd-list@infradead.org; Mon, 31 Jan 2000 15:46:31 +0000
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12EEwC-0002uJ-00
-	for mtd@infradead.org; Fri, 28 Jan 2000 17:12:00 +0000
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 3.03 #1)
-	id 12EEwB-0003gv-00
-	for mtd@infradead.org; Fri, 28 Jan 2000 17:11:59 +0000
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 12EEwB-0000nb-00; Fri, 28 Jan 2000 17:11:59 +0000
+	id 12FJ25-0004Xj-00
+	for mtd@infradead.org; Mon, 31 Jan 2000 15:46:29 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E12DseX-0005jo-00@devel2.axiom.internal> 
-References: <E12DseX-0005jo-00@devel2.axiom.internal> 
-Cc: mtd@infradead.org
-Subject: Re: Loading Grub from DiskOnChip. 
+To: mtd@infradead.org
+Cc: linux-router@linuxrouter.org, linux-kernel@vger.rutgers.edu
+Subject: Memory Technology Device support mtd-20000131 release
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 28 Jan 2000 17:11:59 +0000
-Message-Id: <E12EEwB-0000nb-00@devel2.axiom.internal>
+Date: Mon, 31 Jan 2000 15:46:19 +0000
+Message-Id: <E12FJ1v-0006Tc-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+This really is the last release I can make until the end of Feb. I've included
+the grub bootloader code, fixed to use INT 19 instead of INT 18 - which means
+it's not just a last resort before falling back to ROM BASIC, it's the first
+thing the machine tries to boot from.
 
-I've now updated my Grub loader so that it's capable of loading the new GNU 
-Grub, which has a slightly different loading convention than Erich Boleyn's 
-original versions.
+It's also updated to handle the block device changes in recent 2.3.x kernels, 
+and the fact that request merging appears to be screwed in them too.
 
-As GNU Grub can also get significantly larger than the old versions, I've 
-updated the loader so it's capable of loading files bigger than 64K.
+There's a patch against 2.3.41, which includes changes to arch/*/config.in for 
+all architectures rather than just i386, and also includes the byteorder fixes 
+which are necessary.
 
-It's almost feasible at this point to decide you want to load a kernel 
-directly from the flash, rather than just a bootloader.
+The patch ought to apply to 2.2.1x fairly cleanly too - you'll just need to 
+add some calls to the init() routines if you're compiling the drivers into the 
+kernel.
 
-Whatever you place in your 'pre_stage2' file will get loaded to 0x08200, then 
-jumped to with CS:IP 0000:8200.
+	http://www.linux-mtd.infradead.org/
 
-It's available from ftp://ftp.infradead.org/pub/mtd/doc-grub-20000128.tar.gz
-
-(And no, I don't know why I called the last one '20000121' when in fact I 
-only put it there yesterday - I only just noticed that myself :)
-
-
+Oh - I've disabled FTL in the 2.3.41 kernel patch - my copy of ftl.c is so out 
+of date that it's probably better to start again with David Hinds' version and 
+port it to the MTD setup again. Volunteers?
 
 --
 dwmw2
