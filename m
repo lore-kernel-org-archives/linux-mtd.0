@@ -1,20 +1,16 @@
-Received: from 216.184.14.34.unused.swcp.com ([216.184.14.34]
-	helo=scone.biscuit.swcp.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Ao7v1-0004zJ-NL
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2004 21:17:15 +0000
-Received: from scone.biscuit.swcp.com (localhost [127.0.0.1])
-	id i13LJP36000315
-	for <linux-mtd@lists.infradead.org>; Tue, 3 Feb 2004 14:19:25 -0700
-Received: from localhost (bill@localhost)i13LJPqO000312
-	for <linux-mtd@lists.infradead.org>; Tue, 3 Feb 2004 14:19:25 -0700
-Date: Tue, 3 Feb 2004 14:19:25 -0700 (MST)
-From: Bill Mann <bill@biscuit.swcp.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.58.0402031331450.2191@scone.biscuit.swcp.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: mtd, nand, lilo
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alice Hennessy <ahennessy@mvista.com>
+In-Reply-To: <401FEA03.7DCCA6F5@mvista.com>
+References: <4018514D.6E4DB38A@mvista.com>
+	<401FEA03.7DCCA6F5@mvista.com>
+Content-Type: text/plain
+Message-Id: <1075847401.786.3961.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Tue, 03 Feb 2004 22:30:02 +0000
+Content-Transfer-Encoding: 7bit
+cc: andrzej_mialkowski@o2.pl
+cc: linux-mtd@lists.infradead.org
+Subject: Re: gen probe.c issue
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Tue, 2004-02-03 at 10:35 -0800, Alice Hennessy wrote:
+> I believe it's ok to set up partitions for a flash and not have all the flash visible.  Perhaps
+> a better way to do this would be to just make another partition and make the protected part
+> read only.   But I believe not making the whole flash visible is also acceptable.
+> BTW, I don't use redboot partitioning with this flash.
+> 
+> David,  if you think it's bad practice,  I will change my mapping file instead.
 
-I've got a SH4 system with a SmartMedia device that I'm able to read, 
-write, erase and mount as a JFFS2 filesystem.  
+I'd very much prefer to show the chip driver the whole chip and
+partition it appropriately, yes please.
 
-After applying the lilo-mtd patch, building and running lilo, I'm getting 
-the following errors:
-
-	Reading data from NAND FLASH without ECC is not recommended
-		-
-		-
-	Reading data from NAND FLASH without ECC is not recommended
-	geo_query_dev HDIO_GETGEO (dev 0x1f01): Inappropriate ioctl for device
-
-lilo.conf file:
-	linear
-	boot=/dev/mtdblock/0
-	image=/boot/zImage
-	root=/dev/mtdblock/1
-	label=linux
-
-Should I be using lilo or is there another relevant patch?
-
-- Bill
+-- 
+dwmw2
