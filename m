@@ -1,19 +1,20 @@
-Received: from smtp.orbitel.bg ([195.24.32.22])
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
 	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C4dXD-00084s-86
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2004 06:49:13 -0400
-Received: from smtp.orbitel.bg ([10.0.0.3])
-	by localhost (sof-rv2.orbitel.bg [10.0.0.4]) (amavisd-new, port 10024)
-	with SMTP id 23643-14 for <linux-mtd@lists.infradead.org>;
-	Tue,  7 Sep 2004 14:55:16 +0300 (EEST)
-Message-ID: <1094554143.413d921f56b09@mail.orbitel.bg>
-Date: Tue,  7 Sep 2004 13:49:03 +0300
-From: zaho@architect.bg
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: 8bit
-Subject: Problems getting DiskOnChip boot
+	id 1C4gPR-00007L-8F
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2004 09:53:26 -0400
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Ben Dooks <ben-mtd@fluff.org>
+In-Reply-To: <20040904173703.GA2100@fluff.org>
+References: <20040904173703.GA2100@fluff.org>
+Content-Type: text/plain
+Date: Tue, 07 Sep 2004 07:34:51 -0600
+Message-Id: <1094564091.20769.350.camel@tubarao>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: ben@fluff.org, linux-mtd@lists.infradead.org, ch@hpl.hp.com
+Subject: Re: jedec_probe problems with 16bit devices
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- 
+On Sat, 2004-09-04 at 18:37 +0100, Ben Dooks wrote:
+> I have been trying to get an SST 39LF160 on an Simtec Electronics
+> EB2410ITX (aka Bast). I have found some problems with jedec_probe
+> with non-8bit devices.
 
+> 1) A number of functions are masking out bits from the command
+> addresses, but the cfi_send_gen_cmd() moves the addresses up
+> depending on the chip type, so the masking is not needed.
 
-Hi there !
+Dave, can you comment on this?  It seems like it was something that you
+worked with - something about not probing at unaligned addresses?
 
-I am desperate. I am trying to make my DiskOnChip 2000 bootable but till now I 
-get no
-much success. I have a Debian distro and with it I can read and write to the 
-device. The problem
-comes when I am trying to compile the 2.4.18 kernel with the new snapshot from 
-mtd. I follow the
-instructions from mtd-jffs-HOWTO. But after executing make bzImage I get the 
-following errors:
+> 2) the cfi_send_gen_cmd() is called with CFI_DEVICETYPE_X8
+> instead of cfi->device_type, which causes the wrong accesses to
+> be generated to the chip.
 
-fs/fs.o: In function `jffs2_garbage_collect_dnode':
-fs/fs.o(.text+0x55ad6): undefined reference to `BUG_ON'
-fs/fs.o(.text+0x55d4f): undefined reference to `BUG_ON'
-fs/fs.o(.text+0x55d64): undefined reference to `BUG_ON'
-fs/fs.o(.text+0x55d80): undefined reference to `BUG_ON'
-fs/fs.o: In function `jffs2_build_filesystem':
-fs/fs.o(.text+0x56257): undefined reference to `BUG_ON'
-fs/fs.o: In function `jffs2_gc_fetch_inode':
-fs/fs.o(.text+0x589a4): undefined reference to `ilookup'
-drivers/mtd/mtdlink.o: In function `put_mtd_device':
-drivers/mtd/mtdlink.o(.text+0x308): undefined reference to `BUG_ON'
-drivers/mtd/mtdlink.o: In function `mtd_blktrans_thread':
-drivers/mtd/mtdlink.o(.text+0x2a24): undefined reference to `BUG_ON'
-drivers/mtd/mtdlink.o: In function `_DoC_WaitReady':
-drivers/mtd/mtdlink.o(.text+0x57af): undefined reference to `cond_resched'
-drivers/mtd/mtdlink.o: In function `DoC_IdentChip':
-drivers/mtd/mtdlink.o(.text+0x5c9d): undefined reference to `nand_flash_ids'
-drivers/mtd/mtdlink.o(.text+0x5ca9): undefined reference to `nand_flash_ids'
-drivers/mtd/mtdlink.o(.text+0x5cc1): undefined reference to `nand_manuf_ids'
-drivers/mtd/mtdlink.o(.text+0x5cce): undefined reference to `nand_manuf_ids'
-drivers/mtd/mtdlink.o(.text+0x5cdf): undefined reference to `nand_flash_ids'
-drivers/mtd/mtdlink.o(.text+0x5cee): undefined reference to `nand_manuf_ids'
-drivers/mtd/mtdlink.o(.text+0x5d44): undefined reference to `nand_flash_ids'
-drivers/mtd/mtdlink.o(.text+0x5d60): undefined reference to `nand_flash_ids'
-make: *** [vmlinux] Error 1
+It seems like the CFI_DEVICETYPE_X8 was changed to cfi->device_type at
+one point and it broke some 16-bit chips.
 
+I think all of the CFI_DEVICETYPE_X8s were removed from jedec_probe.c
+1.30, but then some were added back in at 1.36.  I'm trying to find the
+discussion as to why this happened, but what I'm finding isn't very
+descriptive:
 
-Can someone help and give info how to make the DiskOnChip bootable without 
-using 
-M-Sys stuff ?
+http://lists.infradead.org/pipermail/linux-mtd/2003-October/008685.html
 
-Best regards,
-     Zax 
+I seem to remember IRC'ing with Christopher Hoover on this.  Maybe he
+can remember something?  Christopher?  My memory is somewhat murky.
