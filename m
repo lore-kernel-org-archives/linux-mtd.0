@@ -1,18 +1,17 @@
-Received: from maynard.mail.mindspring.net ([207.69.200.243])
+Received: from [210.75.16.21] (helo=MAIL.yulong.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ADrKa-0004eF-CE
-	for <linux-mtd@lists.infradead.org>; Sun, 26 Oct 2003 20:17:44 +0000
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: "Karoliya, Abhishek" <Abhishek.Karoliya@fci.com>,
-	<linux-mtd@lists.infradead.org>
-Date: Sun, 26 Oct 2003 15:17:35 -0500
-Message-ID: <IIEEICKJLNEPBBDJICNGGEICEBAA.chuckmeade@mindspring.com>
+	id 1AE0a0-0005YL-FB
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Oct 2003 06:10:16 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <903E17B6FF22A24C96B4E28C2C0214D7012BB2D8@sr-bng-exc01.int.tsbu.net>
+Date: Mon, 27 Oct 2003 14:15:45 +0800
+Message-ID: <4E9160487E71D944A7422391941AF4024CF4EB@MAIL.yulong.com>
+From: =?gb2312?B?0N7VvdPu?= <xiuzhanyu@yulong.com>
+To: <linux-mtd@lists.infradead.org>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: RE: Intel K3 Flash + MTD
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2 on SMDK2410 with Mizi Linux...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-That sounds like the status bit that you are reading back.
-Most flashes give back status after you issue them commands
-(like all of your unlocks, for instance).  Usually you put them 
-back into "read mode" by writing a particular byte to them
-after reading the status.  Try writing an FF to the flash.
-Check your flash chip's datasheet for the exact sequence that
-you must use to put it back in read mode.
+>Hello All,
 
-Chuck Meade
+>I am trying to port JFFS2 on a SMDK2410 board based on S3c2410
+>processor.I am using Mizi Linux on the board but as the Mizi as only
+>Cramfs support i am trying to port Jffs2 as a rw system, I have =
+included
+>the JFFS2 fs in my kernel and is it possible for me to mount the JFFS2
+>on top of a bon system like mount -t jffs2 /dev/bon/3 /mnt as a read
+>write partition ?.Pls advice me on this.
 
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org
-> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Karoliya,
-> Abhishek
-> Sent: Sunday, October 26, 2003 3:01 PM
-> To: 'linux-mtd@lists.infradead.org'
-> Subject: Intel K3 Flash + MTD
-> 
-> 
-> Hi All,
->   
->      I am using an Intel 128k3 flash chips {4 chips in total with each pair
-> forming a 32MB capacity} on a PMC board having powerpc 7447 + marvel 64360
-> combination . I running Linux from kernel.org 2.4.20 version.
->          I can erase and write to flash without any problems . But once
-> written to flash when I reboot and  read back {using the mtd utils } it just
-> returns 0x80 for all location. 
->    I am pretty sure that write is successful as I burn my image and ramdisk
-> into the flash from Linux and can reboot the board using these flash
-> contents. Also I have taken care that the flash is unlocked every time by
-> writing the unlock pattern to the flash  through the init code in the mtd
-> map file.
->    Is the cache playing some havoc??
-> Please provide some pointers in the direction of resolution of this problem.
-> 
-> thanks a million
-> Abhishek
-> 
->  
-> 
->    
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+>Thanks and Regards
+>sivam
+
+
+hello sivam:
+
+do you solute this problum ? can you tell me  the solution ?
