@@ -1,22 +1,17 @@
 From: tglx@linutronix.de (Thomas Gleixner)
-Date: Tue, 11 Mar 2003 09:15:48 +0100
-Subject: 2.4.19 rmk4 Jffs2 Performance problems, Upgrade diffulculty.
-In-Reply-To: <3E6D1821.3060002@visi.com>
-References: <3E6D1821.3060002@visi.com>
-Message-ID: <200303110915.48377.tglx@linutronix.de>
+Date: Tue, 11 Mar 2003 09:16:21 +0100
+Subject: NOR and NAND flash at the same time
+In-Reply-To: <001601c2e757$25a58250$1a00a8c0@itc.intrinsyc.com>
+References: <001601c2e757$25a58250$1a00a8c0@itc.intrinsyc.com>
+Message-ID: <200303110916.21508.tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Monday 10 March 2003 23:56, RobertS wrote:
-> Hello,
->     I am running an almost pristine copy of 2.4.19 rmk4.
->     I have applied the patch, linux-2.4.19-pre10-shared-zlib.
->     I have updated to mtd-snapshot-20030305.tar.
-Could you please try the following:
-1. Get your almost pristine copy of 2.4.19.rmk4
-2. use latest MTD snapshot and use patchin.sh from patches directory. This 
-will apply zlib patch too
-3. Report results
+On Monday 10 March 2003 23:48, Alex Samoutin wrote:
+> Hi!
+> I have board with NOR (Intel strata flash) and NAND (Toshiba) chips.
+> Do I have a chance to use both of them under Linux at the same time?
+Works right out of the box
 
 -- 
 Thomas
