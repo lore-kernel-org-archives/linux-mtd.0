@@ -1,20 +1,20 @@
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+Received: from mailout08.sul.t-online.com ([194.25.134.20])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BB8GT-0006NS-JQ
-	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2004 09:18:29 +0100
+	id 1BB8HQ-0006TX-4x
+	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2004 09:19:28 +0100
 From: tglx@linutronix.de (Thomas Gleixner)
-To: andreas.huebner@hp.com,
+To: Jon Schlueter <jonschl@umd.umich.edu>,
  linux-mtd@lists.infradead.org
-Date: Wed, 7 Apr 2004 10:14:29 +0200
+Date: Wed, 7 Apr 2004 10:15:16 +0200
 References: <Pine.LNX.4.44.0404041514100.12090-100000@kiire.colleduc.ee>
-	<407355CB.8000602@umd.umich.edu> <20040407054717.GA18413@smstf09.bbn.hp.com>
-In-Reply-To: <20040407054717.GA18413@smstf09.bbn.hp.com>
+	<200404041421.11425.tglx@linutronix.de> <407355CB.8000602@umd.umich.edu>
+In-Reply-To: <407355CB.8000602@umd.umich.edu>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200404071014.29275.tglx@linutronix.de>
+Message-Id: <200404071015.16985.tglx@linutronix.de>
 Subject: Re: CVS compile errors
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,14 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 07 April 2004 07:47, andreas.huebner@hp.com wrote:
-> Hi all,
+On Wednesday 07 April 2004 03:13, Jon Schlueter wrote:
+> Thomas Gleixner wrote:
+> > I'm in the middle of an overhaul of nand stuff. I modified the id
+> > structure and forgot to adjust the doc stuff. I have a look into it
 >
-> I can confirm this error.
+> doc2000.c:415: structure has no member named `page256'
 
-That's nice, if everybody can confirm this. 
-
-I can confirm this too.
+Thanks for pointing it out. I will fix it.
 
 -- 
 Thomas
