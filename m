@@ -1,18 +1,20 @@
-Received: from [212.105.56.244] (helo=dmz.lumentis.net)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cex6v-00029j-Nm
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 10:00:11 -0500
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "Artem Bityuckiy" <dedekind@infradead.org>
-Date: Thu, 16 Dec 2004 16:00:05 +0100
-Message-ID: <JPEALJAFNGDDLOPNDIEEAEGGCPAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0412161449410.8020@phoenix.infradead.org>
+	id 1Cezow-0003Eb-2I
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 12:53:47 -0500
+Date: Thu, 16 Dec 2004 18:53:31 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Message-ID: <20041216175331.GA6788@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.58.0412161420360.8020@phoenix.infradead.org>
+	<JPEALJAFNGDDLOPNDIEEMEGECPAA.joakim.tjernlund@lumentis.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <JPEALJAFNGDDLOPNDIEEMEGECPAA.joakim.tjernlund@lumentis.se>
 Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Thu, 16 Dec 2004, Joakim Tjernlund wrote:
+On Thu, 16 December 2004 15:45:00 +0100, Joakim Tjernlund wrote:
+> > On Thu, 16 Dec 2004, Joakim Tjernlund wrote:
 > 
-> > > On Thu, 16 Dec 2004, Joakim Tjernlund wrote:
-> > > 
-> > > > Hi List
-> > > > 
-> > > > I am a long time JFFS2 user(and developer), but I haven't been following
-> > > > JFFS2 for a year or two. I have noticed that JFFS3 has begun and I figured
-> > > > I would offer a few thoughts.
-> > > > 
-> > > > 1) Consider changing the start seed to crc32 from 0 to -1. Zero
-> > > >    is not a good start seed for crc32
-> > > If you do point 2 this will not be needed :-)
-> > 
-> > Yes, but if you do point 2, you still have to consider start seed and it should
-> > be != 0 regardless of what checksum you choose.
+> > > 2) Consider another checksum algorithm. Crc32 is very expensive
+> > >    and JFFS2 suffered severely in the early days. Now that crc32 is
+> > >    very optimized that problem is less visible, but crc32 is still
+> > >    expensive. Maybe an Adler32 checksum is good enough or a crc16?
+> > IMHO, NAND/ECC NOR are additionally protected by ECCs so that sounds 
+> > reasonable. NORs are reliable, so that is reasonable too, IMHO.
 > 
-> Do you have some of your Ideas done? :)
+> Exactly.
 
-No, I had the removal of the Adler32 checksum, but it is gone now.
-I could possibly do that again and a optimized crc16(I did the crc32 in current kernel
-so it shouldn't be hard) or adler32 checksum algorithm.
-It will have to wait as I got plenty to do currently.
+I'd vote against adler32 and in favor of crc16 or crc24.  Crc24 would
+be slightly safer, but still much faster than crc33 (crc32 is a
+misnamer, actually).
 
- Jocke
+Code should be something like this for crc24:
+
+u32 crc24(void *m, size_t len)
+{
+	u32 ret=0;
+	char *s=m;
+	size_t i;
+	for (i=0; i<len; i++) {
+		ret <<= 8;
+		ret += s[i];
+		ret %/ 0xfffffd
+	}
+	return ret;
+}
+
+Completely untested, written from scratch just now.  But apart from
+the bugs, it should be reasonably fast.
+
+Jörn
+
+-- 
+Fancy algorithms are buggier than simple ones, and they're much harder
+to implement. Use simple algorithms as well as simple data structures.
+-- Rob Pike
