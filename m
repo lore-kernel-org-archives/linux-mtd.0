@@ -1,129 +1,56 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13TS60-0004bF-00
-	for mtd-list@infradead.org; Mon, 28 Aug 2000 17:49:16 +0100
-Date: Mon, 28 Aug 2000 18:50:18 +0200
-From: Ciro Cattuto <ciro@prosa.it>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Miguel Freitas <miguel@cetuc.puc-rio.br>, mtd@infradead.org
-Subject: GRUB on DOC: 2Mb issues
-Message-ID: <20000828185018.A2777@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 13TXLG-0006Kp-00
+	for mtd-list@infradead.org; Mon, 28 Aug 2000 23:25:22 +0100
+From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
+To: Ciro Cattuto <ciro@prosa.it>
+Date: Mon, 28 Aug 2000 19:24:09 GMT-3
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Re: GRUB on DOC: 2Mb issues
+Reply-to: miguel@cetuc.puc-rio.br
+CC: mtd@infradead.org, David Woodhouse <dwmw2@infradead.org>
+In-reply-to: <20000828185018.A2777@localhost>
+Message-ID: <129C7B9418F@mamao.cetuc.puc-rio.br>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David,
+On 28 Aug 00, at 18:50, Ciro Cattuto wrote:
 
-since the only DiskOnChip I have is a 2 Mb one, I had to solve some issues
-with makecsum.c and doc_stage1.S before being able to load/run GRUB as a
-replacement firmware. The ROM IPL of the 2Mb DOC (or any DOC with page256==1,
-I guess) loads the first 0x2000 bytes sequentially instead of loading half
-of the first 0x4000 bytes, as you describe in mtd/grub/README. This requires
-some modifications to makecsum.c in order to build a valid firmware image.
-Also, doc_stage1.S doesn't support the addressing scheme needed for 2Mb DOCs,
-so I had to make a few modifications to make it load GRUB-stage2.
+> Also, doc_stage1.S doesn't support the
+> addressing scheme needed for 2Mb DOCs, so I had to make a few
+> modifications to make it load GRUB-stage2.
 
-The relevant cvs diffs follow. Notice: these mods make doc_stage1.S and
-makecsum.c work _only_ for 2Mb DOCs! I'd like to merge this functionality
-into the existing code, but I'll wait for your feedback. I'd use a simple
-"#ifdef DOC_PAGE256" both in doc_stage1.S and makecsum.c, but in the long
-run it would be nice to be able to access the page256 flag (mtd->priv->page256)
-from userland (page256 in mtd_info_user?).
+   I haven't tried your modifications yet, but IMHO it looks right. The  
+doc_stage1 should work on both 256 and 512 paged devices without 
+any conditionals. The loop will send a READ0 command, set 
+address such as column(byte)=0 and page(word)=counter++ and 
+read 256 bytes. Of course stage2 needs to be written as described 
+in mtd/grub/README.
+   It may also be a good idea to send an additional address byte 
+zero for compatibility with >= 64Mb chips. Datasheet of 2MB says 
+this additional byte would be ignored, but I need to check for all 
+other chips.
 
-Cheers,
+> The relevant cvs diffs follow. Notice: these mods make doc_stage1.S and
+> makecsum.c work _only_ for 2Mb DOCs! I'd like to merge this functionality
+> into the existing code, but I'll wait for your feedback. I'd use a simple
+> "#ifdef DOC_PAGE256" both in doc_stage1.S and makecsum.c, but in the long
+> run it would be nice to be able to access the page256 flag
+> (mtd->priv->page256) from userland (page256 in mtd_info_user?).
 
-Ciro
-
-
-Index: doc_stage1.S
-===================================================================
-RCS file: /home/cvs/mtd/grub/doc_stage1.S,v
-retrieving revision 1.8
-diff -r1.8 doc_stage1.S
-166c166
-< 		/* Send new READ command - is it READ0 or READ1? */
----
-> 		/* Send new READ0 command */
-169c169
-< 	andb	$1,%ah
----
-> 	xorb	%ah,%ah
-176,177c176
-< 		/* We sent bits 0-7, then 9-16, then 17-23 */
-< 		/* Yes bit 8 is missing. Read the NAND flash specs */		
----
-> 		/* We sent bits 0-7, then 8-15, then 16-23 */
-182,186c181
-< 			/* Bits 9-16 */
-< 	shrw	$1,%dx
-< 	.byte	0x80, 0xce /* orb adrbit16, %dh */
-< adrbit16:	
-< 	.byte	0	
----
-> 			/* Bits 8-15 */
-189c184
-< 		/* Bits 17-23 are also zero */
----
-> 		/* Bits 16-23 */
-216,217d210
-< 	addb	$0x80, %cs:adrbit16	/* Increase bit 16 */
-< 	jnc	endloop			/* Did it overflow? */
+   I don't really like userland tools (eg. makecsum or doc_loadbios) 
+taking care of such details as addressing mechanism of nand chips. 
+I guess it would be better to create an ioctl called "loadbios" and 
+handle that odditys inside the kernel driver. If page256==1, just write 
+the 8kb image. If page256==0, write 512 byte pages padding with 
+0xff the unused bytes.
 
 
+Regards,
 
-
-Index: makecsum.c
-===================================================================
-RCS file: /home/cvs/mtd/grub/makecsum.c,v
-retrieving revision 1.1
-diff -r1.1 makecsum.c
-5c5
-< unsigned char buf[16384];
----
-> unsigned char buf[8192];
-12c12
-< 	memset(buf, 0xff, 16384);
----
-> 	memset(buf, 0xff, 8192);
-61c61
-< 	len = read(st2fd, buf+512, 16384-512);
----
-> 	len = read(st2fd, buf+512, 8192-512);
-73,74c73
-< 	i=0;
-< 	while (i<16384) {
----
-> 	for (i=0 ; i<8192 ; i++)
-76,79d74
-< 		i++;
-< 		if ((i >> 8)&1)
-< 			i += 256;
-< 	}
-85c80
-< 	len = write(outfd, buf, 16384);
----
-> 	len = write(outfd, buf, 8192);
-94,95c89,90
-< 	if (len < 16384) {
-< 		fprintf(stderr, "short write of output file (%d bytes < 16384)\n",
----
-> 	if (len < 8192) {
-> 		fprintf(stderr, "short write of output file (%d bytes < 8192)\n",
-105c100
-< 		len = read(st2fd, buf, 16384);
----
-> 		len = read(st2fd, buf, 8192);
-
-
-
--- 
-Ciro Cattuto, Open Source Developer, Linuxcare Italia SpA
-Tel. +39.338.3002140  Fax +39.049.8036484 
-ciro@linuxcare.com    http://www.linuxcare.com/
-ciro@prosa.it         http://www.prosa.it/
-Linuxcare. Support for the revolution.
-
+Miguel Freitas
 
 
 
