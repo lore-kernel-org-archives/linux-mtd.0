@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WjKq-0007ZX-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 19:26:56 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C5ADFC8.BD97CFFF@comdev.cc> 
-References: <3C5ADFC8.BD97CFFF@comdev.cc>  <3C5AD150.1A3B9AAE@comdev.cc> <20020201142405.79130.qmail@web20309.mail.yahoo.com> <9323.1012576311@redhat.com> <30239.1012586688@redhat.com> 
-To: Adam Wozniak <adam.wozniak@comdev.cc>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: debugging strategies for jffs2 
-Mime-Version: 1.0
+Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16WjUI-0007aX-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 19:36:42 +0000
+Message-ID: <3C5AF025.F61F91F6@comdev.cc>
+Date: Fri, 01 Feb 2002 11:44:37 -0800
+From: Adam Wozniak <adam.wozniak@comdev.cc>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>,
+ 	linux-mtd@lists.infradead.org
+Subject: Re: debugging strategies for jffs2
+References: <3C5AD150.1A3B9AAE@comdev.cc>  <20020201142405.79130.qmail@web20309.mail.yahoo.com> <9323.1012576311@redhat.com> <30239.1012586688@redhat.com> <3C5ADFC8.BD97CFFF@comdev.cc>
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 01 Feb 2002 19:38:02 +0000
-Message-ID: <31627.1012592282@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,13 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-adam.wozniak@comdev.cc said:
->  scan.c, 495
->                         return -0; 
-> Was that intentional?
+000000 19 85 e0 02 00 00 00 44 a4 ef 22 3e 00 00 10 4c
+000010 00 00 1c 19 00 00 81 a4 00 00 00 00 00 32 d3 26
+000020 00 00 0d 9d 00 00 0d 9e 00 00 0d 9e 00 00 00 00
+000030 00 00 c0 00 00 00 00 00 01 00 00 00 00 00 00 00
+000040 cf 8c 20 63
+000044
 
-Er, that looks buggered. Make it mark the node obsolete and continue 
-scanning.
+This all by itself is enough to hose things.
 
---
-dwmw2
+The interesting bit to me is that the csize is 0x0000c000
+and the dsize is 0x00000000.  Is this perhaps causing problems?
+
+--Adam
+-- 
+Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
+awozniak@comdev.cc      3450 Broad St. 107, San Luis Obispo, CA 93401
+                        http://www.comdev.cc
+                        Voice: (805) 544-1089       Fax: (805) 544-2055
