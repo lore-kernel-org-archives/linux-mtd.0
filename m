@@ -1,26 +1,16 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=ocean.magtech.com.au)
+Received: from bay18-dav3.bay18.hotmail.com ([65.54.187.183] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bn8VB-0004Ap-U9
-	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 00:14:47 -0400
-Received: from [203.26.222.199] (unknown [203.26.222.199])
-	by ocean.magtech.com.au (Postfix) with ESMTP id 24E83458E81D
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 21 Jul 2004 14:14:42 +1000 (EST)
-Message-ID: <40FDEDB1.8090002@magellan-technology.com>
-Date: Wed, 21 Jul 2004 14:14:41 +1000
-From: Aras Vaichas <arasv@magellan-technology.com>
+	id 1BnA4F-0004Ut-Th
+	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 01:55:07 -0400
+From: "Moreshwar Salpekar" <moreshwars@hotmail.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 20 Jul 2004 11:30:19 +0530
 MIME-Version: 1.0
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-References: <40FCDE5A.6080504@magellan-technology.com>	
-	<1090316488.6864.0.camel@lap02.tec.linutronix.de>	
-	<40FDBCA2.30102@magellan-technology.com>
-	<1090378285.4280.1.camel@localhost.localdomain>
-In-Reply-To: <1090378285.4280.1.camel@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Re: problems mounting >3.3MB JFFS2 partitions on
-	Dataflash	on	AT91RM9200DK
+Message-ID: <BAY18-DAV3K2kXqbpZd000480c0@hotmail.com>
+Subject: Regarding NAND MTD Driver Help Required
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Wed, 2004-07-21 at 10:45 +1000, Aras Vaichas wrote:
-> 
-> As I said, it's fixed in the current 2.6 kernel.
-> 
+Dear All,
+I am new to this list. I have just gone through the latest code and
+documentation of NAND Flash MTD Driver. I am facing certain problems in
+understanding this code as I need to modify this code for my board. I would
+like somebody to help me understand this code. The problems are as follows:
+1. The code on this site and documentation is different from source code of
+mtd in drivers/mtd/nand even in kernel version 2.6.7. The following files
+are specifically different:
+The code in Linux source includes nand.c here I think it is nand_base.c,
+there is no file nand_ids.c in Linux source.
 
-I would love to be using the 2.6 kernel but there was this fairly recent 
-email from SAN people  ...
+2. Which version of kernel is this code applicable to ?
 
-What can I do?
+3. What is the latest stable version of this code? What about snapshots in
+this code
 
-# To: linux-arm@xxxxxxxxxxxxxxxxxxxxxx
-# Subject: Re: linux and the at91rm9200
-# From: Andrew Victor <andrew@xxxxxxxxxxxxx>
-# Date: 03 Jun 2004 19:21:29 +0200
- > Just get 2.6.6.
+4. What are the bus widths of NAND flash supported (code in kernel supports
+8-bit but your version lists a constant BUSWIDTH_16 which I think implies
+that 16-bit bus width is supported)? I need to support 8 and 16 bit right
+now. What are the bus other options that may be set in the nand_flash_dev
+structure
 
-The AT91RM9200 is currently only supported by the 2.4 kernels.
-Latest version is 2.4.26-vrs1.
+5. Does the code support GPIO mode of addressing or Address lines? The code
+uses register to control ALE, CLE and nCE signals and uses another register
+(IO_ADDR) to driver date lines. I think this implies that GPIO or some other
+IO pins are being used to drive ALE, CLE and nCE rather than
+microprocessor/microcontroller driving these signals. I think that this
+could slower down the operation of NAND Flash if software drives the
+operation.
 
+6. What is SPIA board as mentioned in codes? I want to check how is the NAND
+flash connected to microprocessor/ microcontroller as I may need to modify
+the code to suit my requirements (addressing mode).
 
-Regards,
-   Andrew Victor
-   SAN People
+7. If anybody has whole code that is based on addressing lines please give
+me the same.
+
+Thanks in advance
+Regards
+Moreshwar Salpekar
