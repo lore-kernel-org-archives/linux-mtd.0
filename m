@@ -1,18 +1,18 @@
 Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVedq-00071r-5d
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 18:55:27 -0400
+	id 1BVepd-0007FX-Gp
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 19:07:38 -0400
 From: David Woodhouse <dwmw2@infradead.org>
-To: "Zhang, Jian" <jzhang@ti.com>
-In-Reply-To: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
-References: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
+To: Dan Brown <dan_brown@ieee.org>
+In-Reply-To: <002301c448f3$bf552e60$4402a8c0@tinker>
+References: <002301c448f3$bf552e60$4402a8c0@tinker>
 Content-Type: text/plain
-Message-Id: <1086216922.26119.869.camel@hades.cambridge.redhat.com>
+Message-Id: <1086217653.26119.892.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 02 Jun 2004 23:55:23 +0100
+Date: Thu, 03 Jun 2004 00:07:33 +0100
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: stable MTD snapshot
+Subject: Re: NAND driver for DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +22,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-06-02 at 17:48 -0500, Zhang, Jian wrote:
-> My reply to David's question has been bounced back twice. I still don't
-> know how to configure outlook to reply in the way the list server likes.
-> So I restart it.
+On Wed, 2004-06-02 at 18:48 -0400, Dan Brown wrote:
+> For the project I'm working on, I have a board with a DiscOnChip 2000 TSOP.
+> I need to get Linux support for this chip working, and yes I'm volunteering
+> :)
+> 
+> As I see it, there are two options:
+>     1) Fix bad block support in the INFTL driver so that I can then use some
+> other FS (ext2, etc) on top of INFTL.
+>     2) Finish NAND support for the DOC (starting with the incomplete
+> nand/diskonchip.c driver) so I can use JFFS2 or YAFFS.
+> 
+> I prefer the latter option in the long run, and my feeling from a brief
+> reading of both files is that the work required will be similar either way.
+> I imagine both will get done eventually, since each is useful in different
+> situations.
 
-Either use it in IMAP mode (you can do that even while it's talking to
-the Exchange server, I'm told) or use a real, standards-compliant mail
-program instead. Starting a new broken-thread without 'Re:' in the
-subject line deliberately to get round the automatic filters will just
-get you into the blacklist. :)
+I'd like to ditch the old devices/doc200* drivers and use the NAND code
+exclusively -- so you can use nand/diskonchip.c _either_ with
+JFFS2/YAFFS directly or with the NFTL/INFTL translation layer code.
 
-Talk to your IS department. Surely they have a responsibility to provide
-you with a configuration which allows you to behave as a responsible
-citizen in your interaction with the outside world?
+Yes, either way we need to implement the bad block table handling -- and
+Thomas has just done a lot of the work you need for that.
 
-> I have tried a few snapshots and encountered either compile failure or
-> run-time errors. Can someone point me to a daily MTD snapshot that is
-> known to pass compilation and do not have major issue with JFFS2 on
-> NAND?
+> I'd like some guidance to make sure I don't go down a wrong path.  Is
+> someone else already busily working on this?
 
-There's been quite a bit of work on the NAND drivers recently. Look at
-the linux-mtd-cvs list archives and pick a date before the recent flurry
-of activity, or try current CVS.
+No, although Thomas has been doing other bad block table stuff which was
+designed with DiskOnChip in mind.
 
-> 20040518:
-> I was able to mount an empty NAND partition. The partition was
-> erased/prepared by U-Boot. JFFS2 clean marker was programmed to OOB
-> area. I could mount it cleanly. But I got message "jffs2: No clean,
-> dirty _or_ erasable blocks to GC from! Where are they all" when I
-> created a file. A 192K file was truncated after umount/re-mount. Files
-> even disappeared after umount/re-mount.
+> To fix the INFTL driver, it seems (based on prior postings from David) that
+> I need to know how to parse the INFTL bad block table.  The relevant code in
+> inftlmount.c is #ifdef'd out, and looks like a straight port of the
+> nftlmount.c code.  Presumably removing the #ifdef 0 is not the solution, or
+> it would already be done.
 
-If you can reproduce this today, it would be interesting to do so with
-'CONFIG_JFFS2_FS_DEBUG=1' while you're writing and subsequently
-remounting and trying to read the file. 
+It shouldn't like in INFTL code. It should live in the low-level driver
+instead.
 
-> 20040526:
-> Kernel doesn't build because nand.c has compile error in
-> single_erase_cmd()
+> I've been staring at hex dumps of my 192M DOC (both data and OOB) and I must
+> confess it isn't obvious to me how INFTL bad block marking works.
+> M-Systems' dinfo reports 3 bad blocks, but all of the bytes in the bad block
+> area that NFTL would use (the sector after the BNAND header) are 0xff.
+> Examining the OOB data shows clear differences for those 3 blocks, but that
+> doesn't let me narrow it down to a particular OOB byte(s).
 
-Less interesting.
+Hint: Look at the end of the device, not immediately after the BNAND
+header. Actually at the end of each 'floor' not the end of the whole
+logical device.
 
-> 20040531:
-> Kernel builds but I got I/O error when mounting a partition. The
-> underlying MTD NAND driver works since I am able to read/write MTD
-> nodes.
+> So, does anyone know how it works?
 
-Can you be more precise about what happens? 
+Yeah, but unfortunately I'm not allowed to show you. Come to #mtd on
+irc.freenode.net though and perhaps I can hint some more :)
+
+> Switching gears to diskonchip.c:  It looks like the major thing missing is
+> (once again) bad block handling.  It occurs to me that as a first cut, one
+> could clear all the OOB data and use the default bbt handling in nand_bbt.c.
+> Suitably configured, this would do an integrity test on every block and
+> either store the results at an arbitrary OOB position, or construct a bbt at
+> the end of the device (or both).  I know it isn't ideal to simply throw away
+> the manufacturer's bbt info, but is it really a disaster (assuming we
+> rescan)?  Can anyone explain to me why this wouldn't work?
+
+Yes, it's a disaster. You can't rescan; you must not touch blocks which
+were marked bad at shipping time. You _have_ to keep the original table.
+
+> The more elaborate solution would be to utilize the bad block info provided
+> by an existing NFTL/INFTL format.  I can see two suboptions for this:
+
+Yes.
+
+>     a) Write a user-space utility that extracts the (I)NFTL bbt info to a
+> file, and (possibly another utility) that formats the chip in default
+> nand_bbt.c style (possibly just creating OOB markers, possibly creating an
+> end-of-device bbt) using the data from this file.  When we're done, we've
+> effectively thrown away (I)NFTL.
+
+Urgh.
+
+>     b) Preserve the (I)NFTL media header and bbt (mark them as unusable from
+> the NAND driver).  Parse the (I)NFTL bbt at startup and update it as
+> necessary.  The rest of the device gets used by the fs (JFFS2,YAFFS) even
+> though the (I)NFTL media header implies that it contains (I)NFTL data.
+
+That's the way we're heading. The BBT code which Thomas committed
+recently is designed to allow this. Although we don't update the BBT
+live on DiskOnChip media -- I think we mark blocks bad in their OOB area
+if they go bad during operation.
+
+Get on IRC and we'll be more than happy to talk you through it.
 
 -- 
 dwmw2
