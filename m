@@ -1,14 +1,14 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: aaa <qixiaolili@163.com>
-In-Reply-To: <4042EC2C.000060.10501@bj230.163.com>
-References: <4042EC2C.000060.10501@bj230.163.com>
-Content-Type: text/plain
-Message-Id: <1078218754.17069.64.camel@hades.cambridge.redhat.com>
+Received: from bay7-f101.bay7.hotmail.com ([64.4.11.101] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1Ay6S0-0006MB-As
+	for linux-mtd@lists.infradead.org; Tue, 02 Mar 2004 09:44:32 +0000
+From: "liu zixing" <liuzixing@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 02 Mar 2004 17:42:53 +0800
 Mime-Version: 1.0
-Date: Tue, 02 Mar 2004 09:12:35 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Need help on ffs2.0 !
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY7-F101vNGXa1VPAq0002ccc2@hotmail.com>
+Subject: compile error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-03-01 at 15:54 +0800, aaa wrote:
-> hello ,i am a new member from china . I have some quetion about ffs2.0 .if u have some information on ffs2.0 ,please help me ...(my english is very worse :D )
-> who can tell me how to get the specification of ffs2.0 ? and how to get some codes from microsoft or other place ?
-> if some one have these information ,please tell me how to get . or send these to me by my email ----- qixiaolili@163.com
-> It's very important to me. so any help will be appreciated... :)
+I work on a board with Xscale IXP425 , I want to make a DiskOnChip 2000 as 
+a storage device.
+We already have a linux kernel-2.4.21-rmk1-ds1 run on it.
+I download the linux driver for DOC from m-systems.com, and configure the 
+"M-systems driver" as a module.
+But  when I run "make modules", there are error messages:
+    tffs2lnx.o compiled for a little endian system and target is big 
+endian.
 
-I'm afraid I don't know anything about FFS2.0.
+That means the library libosak  is compiled as little endian, 
+so I want to ask whether  there is big endian version libosak ? And where 
+can I download ?
 
-The implementation we have is very old and I don't think it was ever
-complete. I think it was provided by jgg@deltatee.com.
+thanks.
+                                                             hugh.liu
+                                                             3.2
 
--- 
-dwmw2
+_________________________________________________________________
+√‚∑—œ¬‘ÿ MSN Explorer:   http://explorer.msn.com/lccn  
