@@ -1,18 +1,16 @@
-Received: from [65.117.135.105] (helo=yoda.timesys)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CK18r-0006Oa-6k
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 17:03:38 -0400
-Received: from scott by yoda.timesys with local (Exim 3.36 #1 (Debian))
-	id 1CK18n-0005Bu-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Oct 2004 17:03:33 -0400
-Date: Tue, 19 Oct 2004 17:03:33 -0400
-To: linux-mtd@lists.infradead.org
-Message-ID: <20041019210333.GA15953@yoda.timesys>
-Mime-Version: 1.0
+Received: from web52703.mail.yahoo.com ([206.190.39.154])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CK1nE-0006e2-JY
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 17:45:22 -0400
+Message-ID: <20041019214518.26339.qmail@web52703.mail.yahoo.com>
+Date: Tue, 19 Oct 2004 14:45:18 -0700 (PDT)
+From: Michael Moedt <xemc@yahoo.com>
+To: tglx@linutronix.de, simon@baydel.com
+In-Reply-To: <1098186608.12223.857.camel@thomas>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: Scott Wood <scott@timesys.com>
-Subject: [PATCH] Interleave order while probing
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Bad Blocks On JFFS2/NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current 2.6 MTD code probes starting with minimal interleave.
-This can result in false positives, if the flash happens to contain
-zeroes at the QRY address.  For example, two interleaved 16-bit chips
-can be detected as a non-interleaved 32-bit chip when only one of the
-chips is put into read-CFI-query mode, and the "\0\0\0Q" that it gets
-back is the same as what a real 32-bit chip would produce.
 
-The patch below (against the latest MTD CVS snapshot) starts with the
-highest interleave first; I don't think there are any situations
-where that would produce a false positive (short of having QRY as the
-actual flash data at the relevant addresses).
+--- Thomas Gleixner <tglx@linutronix.de> wrote:
+> On Tue, 2004-10-19 at 13:22, Simon Haynes wrote:
+> > I have experienced a problem in which a JFF2 filesystem on NAND
+> > became full. 
+> > This is a root file system and constant writes to a logfile
+> > filled the filesystem. On investigation it was found that the
+> > NAND device now had hundreds of bad blocks.
+> > 
+> > I started to investigate this and found that JFFS2 was announcing
+> > 
+> > Newly-erased block contained word 0x1985e002 at offset 0x020f7e00
+> > 
+> > Messages which result in my mtd/jffs2 code marking the block bad.
+> > What I find strange is that a subsequent scan list the new block
+> > at a different 16k offset when the device erasesize is 16k, in
+> > this case 0x020f0000.
+> > Is that because my device is 128Mb and JFFS2 is using this
+> > 'virtual erase size' of 32k ?
+> 
+> Yes. The bad block code scans/marks physical blocks and JFFS2
+> operates
+> on virtual ones, if the device size is big enough.
+> 
+> > I have observed this now on several different NAND devices and it
+> > seems to be more prominent while performing small writes.
+> >
+> > I am currently trying to work out if the erase is not completing,
+> > or this is the wrong block or something else. 
+> 
+> Hmm, are you using Ready/Busy Pin or the timeout ?
+> 
+> tglx
+> 
 
-Signed-off-by: Scott Wood <scott.wood@timesys.com> under TS0068
+Hi guys.  This topic has given me a little bit of concern.  Could you
+try to answer a few questions for me?
 
-diff -urN mtd.orig/drivers/mtd/chips/gen_probe.c mtd/drivers/mtd/chips/gen_probe.c
---- mtd.orig/drivers/mtd/chips/gen_probe.c	2004-08-14 18:00:11.000000000 -0400
-+++ mtd/drivers/mtd/chips/gen_probe.c	2004-10-19 16:42:11.000000000 -0400
-@@ -162,7 +162,7 @@
- 	int max_chips = map_bankwidth(map); /* And minimum 1 */
- 	int nr_chips, type;
- 
--	for (nr_chips = min_chips; nr_chips <= max_chips; nr_chips <<= 1) {
-+	for (nr_chips = max_chips; nr_chips >= min_chips; nr_chips >>= 1) {
- 
- 		if (!cfi_interleave_supported(nr_chips))
- 		    continue;
+1. Do you know what usually causes the "Newly-erased block contained
+word   "... error?
+Is it caused by a interrupted (or otherwise failed) erase?  Would
+power-fail cause this?
+
+2. Would this cause good blocks to be incorrectly [and permanently]
+marked as bad?
+
+
+I think I may have seen something similar on my system.  I'm
+considering writing a test to see if this is a problem for me, but
+I'd like to learn more about this also.
+
+Thanks,
+Mike
