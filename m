@@ -1,19 +1,14 @@
-Received: from proxy.force.de ([158.116.254.130])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18En9Y-0006kE-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2002 08:57:40 +0000
-Received: from ex-deu-munich02.force.de (ex-deu-munich02.force.de [10.254.2.10])
-	by proxy.force.de (8.11.4/8.11.4) with ESMTP id gAL9SI207793
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2002 10:28:19 +0100 (MET)
-Message-ID: <9CFB9DA5261CD611A29B00508B789048380A66@ex-deu-munich02.force.de>
-From: "Gettert, Wolfram" <Wolfram.Gettert@fci.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Cannot unload cfi_cmdset_0001 module
-Date: Thu, 21 Nov 2002 10:28:23 +0100
+Received: from web21006.mail.yahoo.com ([216.136.227.60])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18F1te-00084J-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2002 00:42:14 +0000
+Message-ID: <20021122011236.8686.qmail@web21006.mail.yahoo.com>
+Date: Thu, 21 Nov 2002 17:12:36 -0800 (PST)
+From: kas turi <inox_kas@yahoo.com>
+Subject: Garbage collection failed
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +20,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hallo,
-I cannot unload the cfi_cmdset_0001 module because the use count is not
-decreased.
-The us counter is increased in=20
-static struct mtd_info *cfi_intelext_setup(struct map_info *map)
-but there is no place in the module where the use counter is decreased. =
-I am
-using the module
-with a map module derived from physmap.c where I do jedec_probe. Is =
-this a
-wanted behaviour?
+Hi
+  I am running timesys linux on my custom made 8250
+board. The board has AMD flash with interleaving as 2
+and buswidth as 32. I have created two partitions one
+for ppcboot and another jffs2. At the boot up the MTD
+layer successfully probes the AMD flash and
+recongnises both the partitions. After the kernel
+boots I copy the JFFS2 image file into /dev/mtd/1.
+When I mount the JFFS2 I keep getting the following
+error:
 
-Wolfram
+"jffs2: No clean _or_ dirty blocks to GC from! Where
+are they all?\n");
 
---
-Wolfram Gettert
-Software Engineer=20
-Force Computers GmbH
-- A Solectron Company -
-Lilienthalstr. 15=20
-D-85579 Neubiberg/M=FCnchen
-Wolfram.Gettert_at_fci.com
-www.forcecomputers.com
+After delving into the code I found out that garbage
+collection is done from a kernel thread. When I
+comment out that code I am able to successfully mount
+JFFS2. 
+
+Any idea why the garbage collection is failing. 
+
+Thanks in advance
+
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus – Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
