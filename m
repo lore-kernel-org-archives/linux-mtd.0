@@ -1,24 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuDYt-0001wL-4E
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 12:36:08 -0500
-Date: Thu, 27 Jan 2005 18:35:54 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Cam <camilo@mesias.co.uk>
-Message-ID: <20050127173554.GC7755@wohnheim.fh-wedel.de>
-References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
-	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
-	<1106819251.783.141.camel@baythorne.infradead.org>
-	<20050127131702.GA22121@wohnheim.fh-wedel.de>
-	<41F9127E.6030508@mesias.co.uk>
-	<20050127163845.GA7755@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050127163845.GA7755@wohnheim.fh-wedel.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS3 document / wiki [OT]
+Date: Thu, 27 Jan 2005 17:35:55 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1106730647.6480.190.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
+	<1106730647.6480.190.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 memory consumption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 January 2005 17:38:45 +0100, Jörn Engel wrote:
-> 
-> Various bits of information on this were spread all over the place:
-> o Code examples of mysql - tons of buffer overflows.
-> o Code examples of php - same.
+On Wed, 26 Jan 2005, David Woodhouse wrote:
+> We can also look at true write-behind caching, if we're a _lot_ more
+> careful about free space than we are now. To have data outstanding in
+> the page cache, we need to be able to guarantee that we have enough free
+> space to write it out, and we need to be able to write it out _without_
+> allocating memory. That includes any memory which might be required for
+> GC. Doing that would allow us to coalesce writes so we fill a page (or a
+> full node size) more often.
 
-Didn't find a video, but here are some slides:
-http://www.ccc.de/congress/2004/fahrplan/files/363-literarisches-code-quartett-slides.pdf
+How do you think, if we implement write-back caching (I do not imagine 
+how yet) then will we still need to distinguish between "pristine" and 
+"normal" nodes?
 
-Jörn
+Since JFFS2 is now write-through, we do write small data chunks if there 
+are few changes in the cache. This is for space efficiency, right?
 
--- 
-Fancy algorithms are slow when n is small, and n is usually small.
-Fancy algorithms have big constants. Until you know that n is
-frequently going to be big, don't get fancy.
--- Rob Pike
+In case of write-back cache, a lot of small changes will be merged to the 
+page and we possibly may just write it fully. Perhaps, we might not bother 
+writing only part of page.
+
+The agvantage of this is that we will not need to overcompicate the GC 
+getting it merge "normal" nodes and produce "pristine" ones. All our nodes 
+will be pristine.
+
+On commit_write request we may really write several neigbour pages either 
+if they are marked dirty, thus having nodes with several pages.
+
+If we have only 4K-multiple data chunks on nodes, we will even save some 
+RAM (both in-core and fragtree).
+
+Comments?
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
