@@ -1,25 +1,17 @@
-Received: from host.kingdommedia.net ([209.239.36.136] helo=host2.fw2.com)
+Received: from [63.118.32.25] (helo=c2.ciena.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173jUu-0005kn-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 21:17:44 +0100
-Received: from localhost (CPE0080c8df51b7.cpe.net.cable.rogers.com [24.112.28.188])
-	by host2.fw2.com (8.10.2/8.10.2) with ESMTP id g43KHhT22315
-	for <linux-mtd@lists.infradead.org>; Fri, 3 May 2002 16:17:43 -0400
-Received: from [10.0.0.19] (helo=localhost.localdomain ident=slayne)
-	by localhost with esmtp (Exim 3.12 #1 (Debian))
-	id 173jUt-0006XM-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 16:17:43 -0400
-Subject: Re: A few questions (cramfs as root, flash permissions and JFFS2 on
-	2.2.18)
-From: Chris AtLee <catlee@canada.com>
+	id 173kk2-0005qB-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 22:37:27 +0100
+From: jm1@angert.net
+Received: from tangert-2k.pc.atl.ciena.com (jawheeler-lt.pc.atl.ciena.com [10.88.2.63] (may be forged))
+	by sylvester.ciena.com (8.8.8+Sun/8.8.8) with ESMTP id PAA20115
+	for <linux-mtd@lists.infradead.org>; Fri, 3 May 2002 15:21:50 -0400 (EDT)
+Date: Fri, 3 May 2002 15:21:49 -0400 (Eastern Daylight Time)
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <1020452092.878.45.camel@geb>
-References: <1020452092.878.45.camel@geb>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-8z7srWFAmgfHfJoIysaV"
-Date: 03 May 2002 16:17:42 -0400
-Message-Id: <1020457063.12077.52.camel@geb>
-Mime-Version: 1.0
+Subject: Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist!
+Message-ID: <Pine.WNT.4.44.0205031453060.1528-100000@tangert-2k.pc.atl.ciena.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,39 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---=-8z7srWFAmgfHfJoIysaV
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+JFFS2 on a powerPC embedded system. 64M Intel Strataflash. Latest CVS patched
+into Hardhat Linux (2.4.3 based)
 
-> My second question has to do with protection on the flash chip itself.=20
-> Whenever I try to mount a jffs image I get lots of errors saying that
-> Erasing failed horribly.  So I tried the erase and eraseall utilities
-> and get the message that I'm trying to erase a Read-Only filesystem.  My
-> bootloader allows me to peek and poke memory manually, so I played
-> around with locking / unlocking sections of flash and it seems that I
-> can lock and unlock blocks of flash just fine, it's just that they
-> aren't reported correctly by the Read Configuration command...Is this
-> what is meant by "Legacy lock/unlock" in the MTD debug output?  MTD
-> detects this at unsupported on my unit.
+We are using the board for development and test. It had an uptime of about a
+month and was working fine - it was running CVS code from 6 to 8 weeks ago.
 
-Ok, I fixed this problem by adding a command to mtd->unlock for the
-addresses corresponding to the partition I want to be read/write.  Is
-this the correct solution?
+Today we rebooted it with the latest MTD CVS code (as of 5/2/02) and got:
 
-Cheers,
-Chris
+Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist!
 
---=-8z7srWFAmgfHfJoIysaV
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+in the syslog. I am unable to delete the bad entry from the dir inode:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+# perl -e "unlink 'ncp.cfg';"
+# ls -la
+ls: ./ncp.cfg: Input/output error
+drwxrwxr-x 2 root root 0 May 3 14:10 .
+drwxr-xr-x 8 root root 0 May 3 14:57 ..
 
-iD8DBQA80vBmoOgacgDd/cQRAgwzAJ0W6QwKsJQSDY1FpldzeTKX21pkbgCeL1hg
-fzCWJudxI8h9ZrED4yOv/uY=
-=cLId
------END PGP SIGNATURE-----
+Rebooting doesn't seem to help - the error is reported each time.
 
---=-8z7srWFAmgfHfJoIysaV--
+Other than this error the JFFS2 filesystem is working fine.
+
+Obviously I can clear this up by erasing the whole flash, but is there anything
+I should look at first?
+
+Thanks,
+
+Tom Angert
