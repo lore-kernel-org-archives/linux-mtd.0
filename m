@@ -1,18 +1,28 @@
-Received: from ns.hht.co.jp ([210.227.191.18])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AwB4E-0002Pc-HI
-	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2004 02:16:03 +0000
-Received: by manai.hht.co.jp (8.9.3/3.7W) with ESMTP id LAA63204
+Received: from news.ti.com ([192.94.94.33] helo=dragon.ti.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AwG4l-00031k-Gi
+	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2004 07:36:55 +0000
+Received: from dlep52.itg.ti.com ([157.170.134.103])
+	by dragon.ti.com (8.12.11/8.12.11) with ESMTP id i1Q7anxC024240
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Feb 2004 11:17:38 +0900 (JST)
-Date: Thu, 26 Feb 2004 11:19:59 +0900
-From: Yuzuru Nitta <nitta@hht.co.jp>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20040226095217.4793.NITTA@hht.co.jp>
+	Thu, 26 Feb 2004 01:36:50 -0600 (CST)
+Received: from popsvr.india.ti.com (localhost [127.0.0.1])
+	by dlep52.itg.ti.com (8.12.10/8.12.10) with ESMTP id i1Q7alKs008832
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Feb 2004 01:36:48 -0600 (CST)
+Received: from SBAJAN14 (sbajan-14.india.ti.com [192.168.182.115])
+	by popsvr.india.ti.com (8.8.8/8.8.8) with SMTP id NAA29352
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Feb 2004 13:06:45 +0530 (IST)
+Message-ID: <015601c3fc3b$49a70b20$73b6a8c0@ent.ti.com>
+From: "Trilok Soni" <x000soni@india.ti.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 26 Feb 2004 13:06:45 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: JFFS2 for ST M29W320DT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Unable to mount rootfs on mtdblock3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,169 +32,230 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi All,
 
-Hi all,
+We are trying to mount JFFS2 Filesystem on OMAP-H2 with 2.6.3-rc2-omap1
+Kernel.
 
-I am trying to install an JFFS2 filesystem on our original=20
-board(CPU SH3).
+Note: I am able to mount the filesystem on 2.4 Kernel. I  see that mtdblock
+has introduced blktrans interface...
+          Do you think that I need to change flash driver buswidth from 16
+to 32 bit?
+          Do you think that I need to minimize "filesystem" partition, which
+is right now 28.7 Mb Approx. to 4 Mb, so that driver will not
+          have to wait longer for IO?
 
-It is fine about jffs2 filesystem on "ST M29W640DT",
-but it doesn't work very well about "ST M29W320DT" ...
+Steps performed:
 
+1. Created filesytem image using mkfs.jff2 command. (jffs2.filesystem size -
+1.8 Mb).
+2. Write filesystem image to flash.
+    2.1 For this kernel has been mounted using NFS.
+    2.2. eraseall /dev/mtd3
+[---- output-----------------------------------------]
+MTD_open
+MTD_ioctl
+Erasing 128 Kibyte @ 0 --  0 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 20000 --  0 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 40000 --  0 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 60000 --  1 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 80000 --  1 % complete.MTD_ioct
+....Continue
+Erasing 128 Kibyte @ 1d00000 -- 97 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 1d20000 -- 97 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 1d40000 -- 98 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 1d60000 -- 98 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 1d80000 -- 99 % complete.MTD_ioctl
+Erasing 128 Kibyte @ 1da0000 -- 99 % complete.MTD_ioctl
+Erased 30464 Kibyte @ 0 -- 100% complete.       MTD_close
+[---- output-----------------------------------------]
 
-Here is the memory map(FlashROM).
-/---------------------------------------------------------
-   address               size   device          buswidth
-/---------------------------------------------------------
-0x00000000 - 0x01FFFFFF  32MB   ST M29W640DT x4  (32bit)
-/---------------------------------------------------------
-0x02000000 - 0x027FFFFF  8MB    ST M29W320DT x2  (32bit)
-/---------------------------------------------------------
+    2.3  cat filesystem.jffs2 > /dev/mtd3
+[----output -----------------------------------------]
+MTD_write
+MTD_write
+MTD_write
+MTD_write
+MTD_write
+MTD_write
+...Continue..
+[----output -----------------------------------------]
 
+    2.4  mount -t jffs2 /dev/mtdblock3 /mnt/jffs2
+          It successfully mounts the filesystem...
+    2.5  umount /mnt/jffs2
 
-The boot log is:
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-Kernel command line: root=3D/dev/mtdblock2 sh_mv=3DToughSoB console=3DttySC=
-2,115200
-ether=3D11,0x300,0,0,eth0
+3. Now I had tried to boot using root=/dev/mtdblock3 command line argument.
+Here is the kernel -boot output.
 
-=2E..
+---------------------------------snip----2.6 ------------------------
+Starting kernel ...
 
-JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis
-Communications AB.
+Uncompressing
+Linux...................................................................
+done, booting the kernel.
+Linux version 2.6.3-rc2-omap1 (sasken2@lxlab001) (gcc version 3.3.2) #41 Wed
+Feb 25 21:07:55 IST 2004
+CPU: ARM926EJ-Sid(wb) [41069263] revision 3 (ARMv5TEJ)
+CPU: D write back cache
+CPU: I cache: 16384 bytes, associativity 4, 32 byte lines, 128 sets
+CPU: D cache: 8192 bytes, associativity 4, 32 byte lines, 64 sets
+Machine: TI-Innovator/OMAP1610
+Memory policy: ECC disabled, Data cache writeback
+On node 0 totalpages: 8192
+  DMA zone: 8192 pages, LIFO batch:2
+  Normal zone: 0 pages, LIFO batch:1
+  HighMem zone: 0 pages, LIFO batch:1
+Built 1 zonelists
+Kernel command line: mem=32M console=ttyS0,115200n8 noinitrd
+root=/dev/mtdblock3 rw ip=off
+PID hash table entries: 256 (order 8: 2048 bytes)
+Console: colour dummy device 80x30
+Memory: 32MB = 32MB total
+Memory: 30168KB available (1687K code, 394K data, 88K init)
+Calibrating delay loop... 29.90 BogoMIPS
+Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+CPU: Testing write buffer coherency: ok
+POSIX conformance testing by UNIFIX
+NET: Registered protocol family 16
+drivers/usb/core/usb.c: registered new driver usbfs
+drivers/usb/core/usb.c: registered new driver hub
+omap1610 FB 2004 by Dirk Behme
+OMAP DMA hardware version 1
+DMA capabilities: 000c0000:00000000:01ff:003f:007f
+OMAP virtual buses initialized
+OMAP GPIO hardware version 1.0
+OMAP OCPI interconnect driver loaded
+NetWinder Floating Point Emulator V0.97 (double precision)
+JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+Console: switching to colour frame buffer device 30x40
+pty: 256 Unix98 ptys configured
+omap-rtc: RTC power up reset detected.
+omap-rtc: Enabling RTC.
+Real Time Clock Driver v1.0
+Serial: 8250/16550 driver $Revision: 1.90 $ 7 ports, IRQ sharing disabled
+ttyS0 at MMIO 0xfffb0000 (irq = 46) is a OMAP UART
+ttyS1 at MMIO 0xfffb0800 (irq = 47) is a OMAP UART
+ttyS2 at MMIO 0xfffb9800 (irq = 15) is a OMAP UART
+RAMDISK driver initialized: 16 RAM disks of 8192K size 1024 blocksize
+loop: loaded (max 8 devices)
+smc9194.c:v0.15 12/15/00 by Erik Stahlman (erik@vt.edu)
+eth0: SMC91C94/91C96 (rev 9) at 0xe8000000 IRQ:96 INTF:TP MEM:6144b ADDR:
+00:30:48:10:04:00
+PPP generic driver version 2.4.2
+SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256).
+CSLIP: code copyright 1989 Regents of the University of California.
+Console: switching to colour frame buffer device 30x40
+Registering OMAP device 'omap-lcd1'. Parent at tipb
+Using anticipatory io scheduler
+OMAP1610 NOR FLASH: MTD Self-Contained Driver ver. 1.0
+OMAP1610 NOR FLASH: Intel 28F256L18T found
+Creating 4 MTD partitions on "OMAP1610 NOR FLASH":
+0x00000000-0x00020000 : "bootloader"
+mtd: Giving out device 0 to bootloader
+0x00020000-0x00040000 : "params"
+mtd: Giving out device 1 to params
+0x00040000-0x00240000 : "kernel"
+mtd: Giving out device 2 to kernel
+0x00240000-0x02000000 : "file system"
+mtd: Giving out device 3 to file system
+Registering OMAP device 'omap-ohci0'. Parent at ocp
+Omap: Setting register W9_USB0_TXEN
+      FUNC_MUX_CTRL_B (0xfffe1030) = 0x00000000 -> 0x00000a00
+      PULL_DWN_CTRL_2 (0xfffe1048) = 0x00000000 -> 0x00080000
+Omap: Setting register AA9_USB0_VP
+      FUNC_MUX_CTRL_B (0xfffe1030) = 0x00000a00 -> 0x00000b40
+      PULL_DWN_CTRL_2 (0xfffe1048) = 0x00080000 -> 0x000c0000
+Omap: Setting register Y5_USB0_RCV
+      FUNC_MUX_CTRL_C (0xfffe1034) = 0x09000000 -> 0x09a00000
+      PULL_DWN_CTRL_3 (0xfffe104c) = 0x00000000 -> 0x00000002
+Omap: Setting register R9_USB0_VM
+      FUNC_MUX_CTRL_C (0xfffe1034) = 0x09a00000 -> 0x09b40000
+      PULL_DWN_CTRL_3 (0xfffe104c) = 0x00000002 -> 0x00000003
+Omap: Setting register V6_USB0_TXD
+      FUNC_MUX_CTRL_C (0xfffe1034) = 0x09b40000 -> 0x29b40000
+      PULL_DWN_CTRL_3 (0xfffe104c) = 0x00000003 -> 0x0000000b
+Omap: Setting register W5_USB0_SE0
+      FUNC_MUX_CTRL_C (0xfffe1034) = 0x29b40000 -> 0x2db40000
+      PULL_DWN_CTRL_3 (0xfffe104c) = 0x0000000b -> 0x0000000f
+drivers/usb/host/ohci-omap.c: ohci_hcd (OMAP) at 0xfffba000, irq 38
 
-=2E..
-
-TOUGHSOB FLASH: Found 2 x16 devices at 0x1000000 in 32-bit mode
- Amd/Fujitsu Extended Query Table v0.3 at 0x0040
-TOUGHSOB FLASH: JEDEC Device ID is 0xDE. Assuming broken CFI table.
-TOUGHSOB FLASH: Swapping erase regions for broken CFI table.
-number of CFI chips: 2
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
- Amd/Fujitsu Extended Query Table v1.0 at 0x0040
-TOUGHSOB FLASH(LOG AREA): JEDEC Device ID is 0xCA. Assuming broken CFI tabl=
-e.
-TOUGHSOB FLASH(LOG AREA): Swapping erase regions for broken CFI table.
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-Creating 3 MTD partitions on "TOUGHSOB FLASH":
-0x00000000-0x00020000 : "IPL"
-mtd: Giving out device 0 to IPL
-0x00020000-0x00120000 : "KERNEL IMAGE"
-mtd: Giving out device 1 to KERNEL IMAGE
-0x00120000-0x02000000 : "FS IMAGE"
-mtd: Giving out device 2 to FS IMAGE
-Creating 1 MTD partitions on "TOUGHSOB FLASH(LOG AREA)":
-0x00000000-0x00800000 : "LOG AREA"
-mtd: Giving out device 3 to LOG AREA
-
-=2E...
-
-ToughSoB login:
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-
-And, I mounted the LOG AREA ...
-
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> mount -t jffs2 /dev/mtdblock3  /mnt/mtd3
-root@ToughSoB:~# mount -t jffs2 /dev/mtdblock3 /mnt/mtd3/mtdblock_open
+omap-ohci omap-ohci0: new USB bus registered, assigned bus number 1
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 3 ports detected
+drivers/usb/core/usb.c: registered new driver usbtest
+mice: PS/2 mouse device common for all mice
+OMAP Keypad Driver
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 4096)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+mtdblock_open
 ok
-jffs2_scan_eraseblock(): Node at 0x00000000 {0x1985, 0xe002, 0x0000002b) ha=
-s invalid CRC 0xfddb6ee6=20
-(calculated 0xfbb21c48)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004: 0x00=
-2b instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008: 0x6e=
-e6 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000000c: 0x00=
-01 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000014: 0x00=
-02 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018: 0x47=
-62 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c: 0x04=
-03 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020: 0x00=
-65 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024: 0xa4=
-5a instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000028: 0x6d=
-74 instead
-Further such events for this erase block will not be printed
-Old JFFS2 bitmask found at 0x000082b8
-You cannot use older JFFS2 filesystems with newer kernels
-JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+ok
+mtdblock: read on "file system" at 0x400, size 0x200
+mtdblock: read on "file system" at 0x600, size 0x200
+mtdblock_release
+ok
+mtdblock_open
+ok
+ok
+mtdblock: read on "file system" at 0x0, size 0x200
+mtdblock: read on "file system" at 0x200, size 0x200
+mtdblock: read on "file system" at 0x400, size 0x200
+mtdblock: read on "file system" at 0x600, size 0x200
+mtdblock: read on "file system" at 0x800, size 0x200
+mtdblock: read on "file system" at 0xa00, size 0x200
+mtdblock: read on "file system" at 0xc00, size 0x200
+mtdblock: read on "file system" at 0xe00, size 0x200
+mtdblock: read on "file system" at 0x1000, size 0x200
+mtdblock: read on "file system" at 0x1200, size 0x200
+mtdblock: read on "file system" at 0x1400, size 0x200
+mtdblock: read on "file system" at 0x1600, size 0x200
+mtdblock: read on "file system" at 0x1800, size 0x200
+mtdblock: read on "file system" at 0x1a00, size 0x200
+mtdblock: read on "file system" at 0x1c00, size 0x200
+mtdblock: read on "file system" at 0x1e00, size 0x200
+mtdblock: read on "file system" at 0x2000, size 0x200
+mtdblock: read on "file system" at 0x2200, size 0x200
+mtdblock: read on "file system" at 0x2400, size 0x200
+mtdblock: read on "file system" at 0x2600, size 0x200
+mtdblock: read on "file system" at 0x2800, size 0x200
+mtdblock: read on "file system" at 0x2a00, size 0x200
+mtdblock: read on "file system" at 0x2c00, size 0x200
+mtdblock: read on "file system" at 0x2e00, size 0x200
+mtdblock: read on "file system" at 0x3000, size 0x200
+mtdblock: read on "file system" at 0x3200, size 0x200
+mtdblock: read on "file system" at 0x3400, size 0x200
+mtdblock: read on "file system" at 0x3600, size 0x200
+mtdblock: read on "file system" at 0x3800, size 0x200
+mtdblock: read on "file system" at 0x3a00, size 0x200
+mtdblock: read on "file system" at 0x3c00, size 0x200
+mtdblock: read on "file system" at 0x3e00, size 0x200
+mtdblock_release
+ok
+mtdblock_open
+ok
+ok
+mtdblock: read on "file system" at 0x0, size 0x200
+mtdblock_release
+ok
+mtdblock_open
+ok
+ok
+mtdblock: read on "file system" at 0x0, size 0x200
+mtdblock: read on "file system" at 0x200, size 0x200
+mtdblock_release
+ok
+Kernel panic: VFS: Unable to mount root fs on mtdblock3
 
-=2E..
+---------------------------------snip-----------------------------
 
-JFFS2: Erase block at 0x00020000 is not formatted. It will be erased
-
-=2E..
-=2E..
-=2E..
-
-JFFS2: Erase block at 0x005e0000 is not formatted. It will be erased
-Inode #6 was a directory with children - removing those too...
-Inode #12 was a directory with children - removing those too...
-Inode #13 was a directory with children - removing those too...
-Inode #14 was a directory with children - removing those too...
-Inode #45 was a directory with children - removing those too...
-Inode #46 was a directory with children - removing those too...
-Inode #49 was a directory with children - removing those too...
-Inode #50 was a directory with children - removing those too...
-Inode #51 was a directory with children - removing those too...
-root@ToughSoB:~# Newly-erased block contained word 0x2003ffff at offset 0x0=
-0660000
-Newly-erased block contained word 0x2003ffff at offset 0x00640000
-root@ToughSoB:~#
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-
-so, I copy some textfile to /mnt/mtd3 ,and remount /mnt/mtd3,
-I get the following message ...
-
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-root@ToughSoB:/mnt/mtd3# ls -l
-Unknown INCOMPAT nodetype FFFF at 005613B8
-
-=2E..
-
-Unknown INCOMPAT nodetype FFFF at 00560558
-jffs2_read_inode(): No data nodes found for ino #652
-ls: sometextfile: Input/output error
-total 0
-root@ToughSoB:/mnt/mtd3#=20
-/=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
+Any Suggestions?
 
 
-I just mistake making 'Mapping drivers for chip access' ?
-I can't find where the plobrem is.
-
-
-Thanks
-Joe
-
----
-Yuzuru (Joe) Nitta
-HIJI HIGH-TECH CO.,LTD.
-System Solution Group
-
-mailto: nitta@hht.co.jp
-http://www.hht.co.jp
+Regards,
+Trilok Soni
