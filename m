@@ -1,23 +1,18 @@
-Received: from saturn.open-widgets.com ([209.251.101.200]
-	helo=saturn.billgatliff.com)
+Received: from host11.oneononeinternet.com ([209.239.43.35])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aj7GM-00008L-A2
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2004 01:34:34 +0000
-Received: from billgatliff.com (meta-adsl-71.mtco.com [207.179.223.71])
-	by saturn.billgatliff.com (Postfix) with ESMTP id E7E614E0004
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Jan 2004 19:32:19 -0600 (CST)
-Message-ID: <400DD6A4.6040903@billgatliff.com>
-Date: Tue, 20 Jan 2004 19:32:20 -0600
-From: Bill Gatliff <bgat@billgatliff.com>
+	id 1AjBIu-0000ks-NK
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2004 05:53:28 +0000
+From: "Mark Richards" <markr@massmicro.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Date: Wed, 21 Jan 2004 00:51:02 -0500
+Message-ID: <00a001c3dfe2$93f3b090$6e01a8c0@solarwave>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <20040120215050.M62159@onemyth.net>
-	<1074638670.16045.74.camel@imladris.demon.co.uk>
-In-Reply-To: <1074638670.16045.74.camel@imladris.demon.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: Intel flash and cfi_probe.c
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1074622256.7885.12.camel@hades.cambridge.redhat.com>
+cc: linux-mtd@lists.infradead.org
+Subject: RE: MTD - DOC 2000 freezes on umount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David:
+David, I ran the kernel build process and, sadly, no joy.
+
+Here's the ending of a long string of various warnings from the compiler =
+as
+it worked through the MTD code...
+
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.24.new.mtd/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-fomit-frame-pointer -pipe -mpreferred-stack-boundary=3D2 -march=3Di686 =
+-DMODULE
+-DMODVERSIONS -include
+/usr/src/linux-2.4.24.new.mtd/include/linux/modversions.h  -nostdinc
+-iwithprefix include -DKBUILD_BASENAME=3Dwrite
+-c -o write.o write.c
+write.c: In function `jffs2_new_inode':
+write.c:91: `current' undeclared (first use in this function)
+write.c:91: (Each undeclared identifier is reported only once
+write.c:91: for each function it appears in.)
+write.c:103: `CURRENT_TIME' undeclared (first use in this function)
+make[2]: *** [write.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/fs/jffs2'
+make[1]: *** [_modsubdir_jffs2] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/fs'
+make: *** [_mod_fs] Error 2
+[root@localhost linux]#
+
+The compile was performed on a new source tree (2.4.24) that had been
+patched according to instructions and the configuration process operated =
+as
+recommended.
+
+GCC: 2.96 20000731 (Red Hat 7.1 2.96-98) Specs from
+/usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
+
+I wonder if I should just re-install RedHat, or is there any hope
+otherwise??
+
+Mark Richards
 
 
-I had seen the lines of code that Thayne had referred to; there are 
-other exit paths out of that code that leave the flash in READ STATUS 
-mode, apparently.  Haven't researched it enough yet.
-
-Let me know what, if anything, I can do to help!
-
-
-b.g.
-
-
-David Woodhouse wrote:
-
->On Tue, 2004-01-20 at 13:50 -0800, Dan Post wrote:
->  
->
->>Hi,
->>
->>I was looking at the cfi_probe.c file, and noticed that there are numerous
->>'0xF0' commands to flash (theoretically to put the flash back into read array
->>mode).  This is incorrect in terms of Intel flash; according to the datasheets
->>for L18/30 and K3/18, the "read array" command is 0xFF.
->>    
->>
->
->Yeah.... the CFI spec says how to get into query mode, but unfortunately
->doesn't specify how to get out of it. And without getting out of it we
->can't check for aliases.
->
->We'd previously observed that 0xF0 happened to work for Intel chips...
->now evidently it doesn't any more. I suspect we might just have to bite
->the bullet and make it depend on the chip type, although it was easier
->to avoid that.
->
->  
->
->>What would happen if we issued an 0xF0;0xFF to an AMD chip?  Or 0xFF;0xF0? 
->>Any AMD chip-heads care to answer?  It looks like it will "work" on Intel chips...
->>    
->>
->
->Hmmm. That could work.
->
->  
->
-
--- 
-Bill Gatliff
-Embedded GNU, Linux, and other board support packages.
-bgat@billgatliff.com
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org]
+> Sent: Tuesday, January 20, 2004 13:11
+> To: Mark Richards
+> Cc: linux-mtd@lists.infradead.org
+> Subject: RE: MTD - DOC 2000 freezes on umount
+>=20
+> On Tue, 2004-01-20 at 13:04 -0500, Mark Richards wrote:
+> > drivers/mtd/chips/Config.in: 14: unknown command
+>=20
+> Try 'make oldconfig' instead.
+>=20
+> --
+> dwmw2
