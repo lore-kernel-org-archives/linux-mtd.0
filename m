@@ -1,23 +1,20 @@
 Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19MoHp-00037C-RF
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2003 13:19:38 +0100
-Date: Mon, 2 Jun 2003 14:19:59 +0200
+	id 19MoO2-0003Di-4G
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2003 13:26:02 +0100
+Date: Mon, 2 Jun 2003 14:26:31 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Matt Mackall <mpm@selenic.com>
-Message-ID: <20030602121959.GA20423@wohnheim.fh-wedel.de>
-References: <20030530174319.GA16687@wohnheim.fh-wedel.de>
-	<20030530.235505.23020750.davem@redhat.com>
-	<20030531075615.GA25089@wohnheim.fh-wedel.de>
-	<200305311822.21823.kernel@kolivas.org> <20030601012516.GJ23715@waste.org>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+Message-ID: <20030602122631.GB20423@wohnheim.fh-wedel.de>
+References: <20030530144959.GA4736@wohnheim.fh-wedel.de>
+	<002101c3278b$7b5d37f0$020120b0@jockeXP>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20030601012516.GJ23715@waste.org>
+In-Reply-To: <002101c3278b$7b5d37f0$020120b0@jockeXP>
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-cc: linux-kernel@vger.kernel.org
-cc: Con Kolivas <kernel@kolivas.org>
+cc: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,25 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 31 May 2003 20:25:16 -0500, Matt Mackall wrote:
+On Sat, 31 May 2003 17:44:06 +0200, Joakim Tjernlund wrote:
+> > jffs2: inflate & deflate, initialized once, 450k
 > 
-> Timing on jffs2 is notoriously unrepeatable anyway - it's fully log
-> structured rather than journalled so it behaves a little differently.
+> 450KB looks like a lot considering JFFS2 will never compress more than a PAGE at a time.
+> I think the actual workspace needed is much less, but none has figured out how to calculate
+> the  real workspace needed for a fixed buffer size, right?
 
-cp jffs2.image /dev/partition_for_jffs2
-do_test_1
-cp jffs2.image /dev/partition_for_jffs2
-do_test_2
+When talking about zlib, "noone has done it yet" is almost always
+right. :)
 
-No problem, if you know how to deal with it.  And when doing
-comparison benchmarks remember to sleep a lot.  Without that, you end
-up measuring GC efficiency, which doesn't matter in real life too
-much.
+The kernel workspace #defines MAX_MEM_LEVEL to 9, while the zlib
+default is 8.  That translates to 256k instead of 128k is is likely
+pointless for JFFS2 style of compression.  Another 50k come from the
+seperate workspaces for inflate and deflate.  So JFFS2 should be able
+to work with 280k, roughly.
+
+Have you ever seen/done benchmarks that test zlib compression
+efficiency?
 
 Jörn
 
 -- 
-To recognize individual spam features you have to try to get into the
-mind of the spammer, and frankly I want to spend as little time inside
-the minds of spammers as possible.
--- Paul Graham
+Eighty percent of success is showing up.
+-- Woody Allen
