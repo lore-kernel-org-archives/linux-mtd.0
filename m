@@ -1,37 +1,52 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12pp7F-0007nD-00
-	for mtd-list@infradead.org; Thu, 11 May 2000 10:18:45 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12pp7E-0007n7-00
-	for cvs-notify@infradead.org; Thu, 11 May 2000 10:18:44 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/patches grub-diskonchip.patch'
-Message-Id: <E12pp7E-0007n7-00@infradead.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 11 May 2000 10:18:44 +0100
+	id 12ptgV-0008BY-00
+	for mtd-list@infradead.org; Thu, 11 May 2000 15:11:27 +0100
+Date: Thu, 11 May 2000 16:16:52 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+Reply-To: Alexander Larsson <alex@cendio.se>
+To: =?iso-8859-1?Q?S=E9bastien_C=F4t=E9?= <scote1@Matrox.COM>
+cc: mtd@infradead.org, dwmw2@infradead.org
+Subject: Re: ext2_lookup() and i_count 
+In-Reply-To: <30252.958050596@devel2.axiom.internal>
+Message-ID: <Pine.LNX.3.96.1000511160915.11688A-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/patches
-In directory infradead.org:/tmp/cvs-serv29922
+On Thu, 11 May 2000, David Woodhouse wrote:
 
-Added Files:
-	grub-diskonchip.patch 
-Log Message:
-Add a first version of a patch against CVS grub which teaches it about the
-DiskOnChip. So far, this only drives the hardware, and scans it for an
-NFTL Media Header. It should be fairly simple to add real NFTL translation
-to it, so that it can find and boot a kernel off the filesystem on the
-device. It shouldn't even require access to the NFTL documentation - the
-code already in kernel/nftl.c ought to be enough.
+> 
+> scote1@Matrox.COM said:
+> >  Btw, is there any document indicating how to use the mtdram.o module
+> > ?  Now I can insert every module without a glitch, including jffs, and
+> > I'm ready for testing!  
+> 
+> You load it and it behaves just like a normal flash device. You presumably 
+> stick an empty JFFS filesystem on it with something like 
+> 'jffs_format /dev/mtd0', then 'mount /dev/mtdblock0 /mnt/jffs -tjffs'
 
-I'll schedule myself to do that between about 3am and 6am tomorrow
-morning; or maybe I'll wait and see if anyone else cares enough to have a
-go.
+Almost.
 
-This is sort of orthogonal to the MTD drivers - you could boot a system
-with M-Systems' drivers using a DiskOnChip-capable grub too.
+First create your to be filesystem in a directory (call it e.g. img_dir),
+then run "mkfs.jffs img_dir > fs.jffs", this creates an image fs.jffs that
+you can copy to your flash (in the case of an mtdram flash, just do "cat
+fs.jffs > /dev/mtd0". Then mount the flash "mount -t jffs /dev/mtdblock0
+/mnt/jffs".
+
+Then just go to /mnt/jffs and play around with the filesystem. Not
+everything works well right now, rename isn't implemented, and unlink
+seems to have some problems.
+
+Also note that the default size of the mtdram device is 2 meg, if you want
+a different size you have to change a define in the mtdram.c code.
+
+/ Alex
+
+
+
+
 
 
 
