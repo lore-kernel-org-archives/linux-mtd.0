@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from samar.sasken.com ([164.164.56.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15cC5L-0005nQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2001 21:37:15 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B8D391D.F0272295@inn.ericsson.se> 
-References: <3B8D391D.F0272295@inn.ericsson.se> 
-To: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>
-Cc: "mtd@infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: warning or debug text ? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 29 Aug 2001 21:43:00 +0100
-Message-ID: <13755.999117780@redhat.com>
+	id 15cJ5w-0006KM-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2001 05:06:21 +0100
+Message-ID: <3B8E0B3B.3182A367@sasken.com>
+Date: Thu, 30 Aug 2001 09:45:31 +0000
+From: Ashok M Padmanaban <ashokmp@sasken.com>
+MIME-Version: 1.0
+To: MTD for Linux <linux-mtd@lists.infradead.org>,
+   JFFS mailing list <jffs-dev@axis.com>
+Subject: Lock utility in MTD util directory.
+Content-Type: multipart/mixed;
+ boundary="------------A4CCDFC7AD012BE17D34CFB3"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +22,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kenneth.johansson@inn.ericsson.se said:
->  In the mtd subsystem it's ALOT of this. Should I just add KERN_DEBUG
-> to everything ?? It's not nice to get stuff on the console when it's
-> only a warning or debug info. 
+This is a multi-part message in MIME format.
+--------------A4CCDFC7AD012BE17D34CFB3
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Making them KERN_DEBUG or better still putting them inside some kind of 
-DEBUG macro like the ones in some other files would be useful. If you do 
-this, please could you let me have a patch?
+Hi,
+  how can i use the lock utiliry in the MTD/util directory.
+Has any one had success in using it. Can i use the unlock utility
+to reverse back to the configuration.
+thanks and regards
+ashok
 
---
-dwmw2
+--------------A4CCDFC7AD012BE17D34CFB3
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="ashokmp.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Card for Ashok M Padmanaban
+Content-Disposition: attachment;
+ filename="ashokmp.vcf"
+
+begin:vcard 
+n:.m.padmanabhan;ashok
+tel;work:5281461/5281229 ext 3096
+x-mozilla-html:FALSE
+org:sasken communication technologies ltd;internt access solutions
+version:2.1
+email;internet:ashokmp@sasken.com
+title:software engineer
+adr;quoted-printable:;;3008,12 th B cross,=0D=0Aindranagar	;banglore;;;india
+x-mozilla-cpt:;0
+fn:ashok .m.padmanabhan
+end:vcard
+
+--------------A4CCDFC7AD012BE17D34CFB3--
