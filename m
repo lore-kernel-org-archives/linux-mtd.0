@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from msr90.hinet.net ([168.95.4.190] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Idzr-00031c-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 00:27:19 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020613235324.F4388@schwebel.de> 
-References: <20020613235324.F4388@schwebel.de> 
-To: Robert Schwebel <robert@schwebel.de>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Plans for 2.4.19 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jun 2002 00:27:15 +0100
-Message-ID: <32738.1024010835@redhat.com>
+	id 17Igjb-0003CQ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 03:22:43 +0100
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "'Krypton'" <krypton8@inwind.it>
+Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: RE: Howto create a new jffs2
+Date: Fri, 14 Jun 2002 10:22:13 +0800
+Message-ID: <001301c2134a$4bf3ed20$5501a8c0@synso.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <00a601c212fd$a5c3e5a0$0100a8c0@ester>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +24,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-robert@schwebel.de said:
-> I remember having read something about the plans for the 2.4.19
-> upgrade, but couldn't find the thread in my archive any more. As the
-> DIL/Net-PC code currently being in 2.4.19-pre10 is currently broken
-> I'm wondering if it would be possible to get the stuff from CVS into
-> _this_ version? Marcelo releases very slowly at the moment, so not
-> doing it does probably mean to wait another half a year for a working
-> kernel... 
+Try, mount -t jffs2 /dev/mtdblock4 <dir>
 
-> David, what's your current plan? 
+Steve Tsai
 
-I fed Marcelo most of the latest code for 2.4.19-pre. All that I remembered
-was outstanding was the updated flash driver probe stuff and 64-bit 
-support. The plan was to do that in 2.4.20-pre1. What's wrong with the DIL/
-Net-PC code and can it be fixed without having to update all the CFI code?
+-----Original Message-----
+From: linux-mtd-admin@lists.infradead.org
+[mailto:linux-mtd-admin@lists.infradead.org] On Behalf Of Krypton
+Sent: Friday, June 14, 2002 1:13 AM
+To: linux-mtd@lists.infradead.org
+Subject: Howto create a new jffs2
 
---
-dwmw2
+
+I added my new 'test' MTD partition.
+I'd like to add a new little home.jffs2
+How can I mount a new little jffs2 partition when I have 
+linux prompt ?
+Thank you  
+
+Creating 5 MTD partitions on "SA1100 flash":
+
+0x00000000-0x00020000 : "firmware"
+
+0x00020000-0x00040000 : "params"
+
+0x00040000-0x00140000 : "kernel"
+
+0x00140000-0x00fe0000 : "rootdisk"
+
+0x00fe0000-0x01000000 : "test"
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
