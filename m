@@ -1,20 +1,16 @@
-Received: from 12-234-34-139.client.attbi.com ([12.234.34.139] helo=heavens.murgatroid.com)
+Received: from ip68-7-112-74.sd.sd.cox.net ([68.7.112.74] helo=clpanic.kennet.coplanar.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16sq52-0004ao-00
-	for <linux-mtd@lists.infradead.org>; Wed, 03 Apr 2002 20:06:01 +0100
-From: "Christopher Hoover" <ch@murgatroid.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>,
-	"'Christopher Hoover'" <ch@hpl.hp.com>
-Cc: <linux-arm-kernel@lists.arm.linux.org.uk>,
-	<linux-mtd@lists.infradead.org>
-Subject: RE: 2.5.7{,-rmk1}: jffs2 on root patch 
-Date: Wed, 3 Apr 2002 11:05:59 -0800
-Message-ID: <003b01c1db42$974f84e0$7b00000a@SNAGGLE>
+	id 16svUI-0004sd-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 01:52:26 +0100
+Message-ID: <00fd01c1db72$f225c200$7e0aa8c0@bridge>
+From: "Jeremy Jackson" <jerj@coplanar.net>
+To: <linuxbios@lanl.gov>, <linux-mtd@lists.infradead.org>
+Subject: PIIX flashing woes with SST29EE010
+Date: Wed, 3 Apr 2002 16:52:07 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <19796.1017797325@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,61 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I discovered that with vanilla 2.5.7, the kernel will indeed mount a
-jffs root, if you do:
+(crossposted)
+FYI,
 
-  root=/dev/mtdblockX rootfstype=jffs2
+A problem I was having that *appeared* to be a problem with
+getting writes to the flash chip, wasn't
 
-[ 
+It turns out that SST's datasheet for SST29EE010 is incorrect.
+It turns out that the part I have *doesn't* respond to "new" style
+ID mode entry sequence, as indicated in the manual.
+It only responds to the "old" AA 55 80 AA 55 60 sequence.
 
-as opposed to simply:
+I should have a generic PIIX map driver for MTD soon now.
 
-  root=/dev/mtdblockX 
-
-which work just fined prior to 2.5.7
-
-]
-
-The "rootfstype=jffs2" part is *mandatory*, because
-do_mounts.c:get_fs_names(), which computes which filesystems should be
-attempted for the root partitition, skips any filesystem, such as jffs2,
-that is "nodev."
-
--ch
-
-
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org 
-> [mailto:linux-mtd-admin@lists.infradead.org] On Behalf Of 
-> David Woodhouse
-> Sent: Tuesday, April 02, 2002 5:29 PM
-> To: Christopher Hoover
-> Cc: linux-arm-kernel@lists.arm.linux.org.uk; 
-> linux-mtd@lists.infradead.org
-> Subject: Re: 2.5.7{,-rmk1}: jffs2 on root patch 
-> 
-> 
-> 
-> ch@hpl.hp.com said:
-> >  2.5.7-rmk1 (and apparently any 2.5.7 kernel, hence the 
-> cross-posting) 
-> > requires the following patch, if you wish to use a jffs2 
-> file system 
-> > as your root.  Without the patch, mount_block_root() won't 
-> attempt to 
-> > use jffs2.
-> 
-> I don't like it. We don't require a block device, and I'd 
-> rather see the mechanism fixed to pass the 'root=' argument 
-> to the file system, so we can use the new mount-by-name 
-> functionality on the rootfs.
-> 
-> --
-> dwmw2
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list 
-> http://lists.infradead.org/mailman/listinfo> /linux-mtd/
-> 
+Jeremy
