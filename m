@@ -1,17 +1,15 @@
-Received: from mail.mediatrix.com ([66.129.134.11])
+Received: from [207.152.29.75] (helo=server3.toshibatv.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15X2KZ-0004CK-00
-	for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2001 16:11:39 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4DD0DAEF@webmail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: 'Vipin Malik' <vipin@embeddedlinuxworks.com>
-Cc: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS2 is broken 
-Date: Wed, 15 Aug 2001 11:09:54 -0400
+	id 15X4cH-0004LK-00
+	for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2001 18:38:05 +0100
+Message-ID: <7DF7BFDC95ECD411B4010090278A44CA0A3BEF@ATVX>
+From: "Siders, Keith" <keith_siders@toshibatv.com>
+To: linux-mtd@lists.infradead.org
+Subject: Partition question...
+Date: Wed, 15 Aug 2001 12:41:47 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,35 +21,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
------Original Message-----
-From: Vipin Malik [mailto:vipin@embeddedlinuxworks.com]
-Sent: Tuesday, August 14, 2001 5:57 PM
-To: Frederic Giasson; MTD mailing list (E-mail)
-Subject: RE: JFFS2 is broken=20
+If the addressing between two Flash devices remains linear with no gaps, 
+can they be part of the same mtd[n] partition, or must the next chip be
+mtd[n+1]?
 
-
-
-Be careful, in my tests, the worst case blocking times came when the =
-flash=20
-was >90+%
-full. You may want to increase the full % on your flash full program =
-and=20
-retest.
-
-
-I ran JitterTest with -w 1000 bytes and after a while, it began to slow =
-down
-a lot.  Note that I had the kernel image file stored in jffs2 during =
-that
-test, so that JitterTest had 50% of the flash left for itself.  When I
-stopped JitterTest, the worst case was 24 seconds and the instant =
-average
-jitter was probably around 5 seconds... What is happening?  Is JFFS2
-constantly gargabe collecting after a while?  I looked at the size of =
+I have two 32-bit Flash devices (or so I'm told). Since this is a MIPS
+application the
+reset vector is 0xBFC00000. The Flash devices are 0xBE000000-BEFFFFFF and 
+0xBF000000-BFFFFFFF, so I have 4Megs at the top of the second device, with
 the
-file created by the -f option, and along with my kernel file it was =
-using
-95% of the flash.
+first device and lower 12Megs of the second giving me 28Megs of linear Flash
 
+available. 
 
-Fr=E9d=E9ric Giasson
+Keith Siders
+Software Engineer
+ Toshiba America Consumer Products, Inc.
+Advanced Television Technology Center
+801 Royal Parkway, Suite 100
+Nashville, Tennessee 37214
+Phone: (615) 257-4050
+Fax:   (615) 453-7880
