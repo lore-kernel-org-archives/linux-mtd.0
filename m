@@ -1,26 +1,18 @@
-Received: from fra-del-02.spheriq.net ([195.46.51.98])
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9Nci-0001ax-OO
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 08:22:45 -0500
-Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
-	by fra-del-02.spheriq.net with ESMTP id j2ADMOXr011745
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2005 13:22:24 GMT
-Received: from fra-cus-01.spheriq.net (fra-cus-01.spheriq.net [195.46.51.37])
-	by fra-out-03.spheriq.net with ESMTP id j2ADMOTF006699
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2005 13:22:24 GMT
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <42304A0B.434C1858@st.com>
-Date: Thu, 10 Mar 2005 14:22:19 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+	id 1D9NdY-0001i2-Fk
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 08:23:41 -0500
+Date: Thu, 10 Mar 2005 13:23:17 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Wolfram Gettert <Wolfram.Gettert@mixed-mode.de>
+In-Reply-To: <1110380223.422f0ebf951f5@intern.netexpress.de>
+Message-ID: <Pine.LNX.4.58.0503101323010.4851@phoenix.infradead.org>
+References: <1110380223.422f0ebf951f5@intern.netexpress.de>
 MIME-Version: 1.0
-To: Joe Barnett <joseph.barnett@gmail.com>, linux-mtd@lists.infradead.org
-References: <52249cdc0502171225706e3cf8@mail.gmail.com>
-	<4215F668.F570E28B@st.com> <52249cdc05021807135f0ff90f@mail.gmail.com>
-	<52249cdc0503091355364639dc@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: symlink corruption in jffs2
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Bugreport: mkfs.jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Forwarded to the list.
-Congratulations !
+> I'm having some trouble mounting a JFFS2 root partition as rw at
+> boot/init time, and would appreciate any insight that you guys can
+> provide.
+>
+General suggestions:
 
-Joe Barnett wrote:
-> 
-> Found it, map driver was broken in the copy_to/copy_from routines.
-> Seems that the odd reads where broken
-> 
-> On Fri, 18 Feb 2005 10:13:06 -0500, Joe Barnett
-> <joseph.barnett@gmail.com> wrote:
-> > Thank you all for your input, I will try your suggestions and post any
-> > results I find back to the list.
-> >
-> > Kind regards,
-> > Joseph
-> >
-> >
-> > On Fri, 18 Feb 2005 15:06:32 +0100, Estelle wrote :
-> > > Notice how even-length names are ok and odd-length names are KO.
-> > > There was a thread about a similar problem, with a suggested
-> > > approach for finding the bug.
-> > > http://lists.infradead.org/pipermail/linux-mtd/2004-May/009735.html
-> > >
-> > > > lrwxrwxrwx  1 root root      11 Feb 17  2005 ld.so.1 -> ld-2.3.2.so?10
-> > > > lrwxrwxrwx  1 root root      24 Feb 17  2005 libBrokenLocale.so.1 ->
-> > > > libBrokenLocale-2.3.2.so
-> > > > lrwxrwxrwx  1 root root      15 Feb 17  2005 libacl.so.1 -> libacl.so.1.1.0?.3
-> > > > lrwxrwxrwx  1 root root      15 Feb 17  2005 libanl.so.1 ->
-> > > > libanl-2.3.2.so?.so?so
-> > > > lrwxrwxrwx  1 root root      16 Feb 17  2005 libattr.so.1 -> libattr.so.1.1.0
-> > > > lrwxrwxrwx  1 root root      15 Feb 17  2005 libblkid.so.1 -> libblkid.so.1.0?3?
-> > >
-> > > bye
-> > > Estelle
-> > >
-> >
+*	Make sure you use the latest mkfs.jffs2;
+*	Try to exclude summary patch and to see what happens;
+*	Enable JFFS2 debugging messages and provide the output in the next 
+report;
+*	Make sure you put your JFFS2 image on the flash correctly. To do 
+this you might erase your flash (flash_eraseall -j), mount it and copy 
+your files there by means of "cp -r -a";
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
