@@ -1,20 +1,17 @@
-Received: from h011.c007.snv.cp.net ([209.228.33.239] helo=c007.snv.cp.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Zty9-0006vz-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 14:56:53 +0100
-Reply-To: <acurtis@directvinternet.com>
-From: <acurtis@directvinternet.com>
-To: "David Woodhouse" <dwmw2@infradead.org>,
-	<acurtis@directvinternet.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: What happened to 64-bit support? 
-Date: Wed, 31 Jul 2002 06:56:20 -0700
-Message-ID: <NCBBIINEHIPFGJPLBEIFOEBGDKAA.acurtis@directvinternet.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <31698.1028103598@redhat.com>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17Zu2J-0006x3-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 15:01:12 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <NCBBIINEHIPFGJPLBEIFOEBGDKAA.acurtis@directvinternet.com> 
+References: <NCBBIINEHIPFGJPLBEIFOEBGDKAA.acurtis@directvinternet.com> 
+To: acurtis@directvinternet.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: What happened to 64-bit support? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 31 Jul 2002 15:01:09 +0100
+Message-ID: <15434.1028124069@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,16 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> >  In theory yes. if CONFIG_MTD_CFI_B8 translates to 64-bits in config
-> > (which I believe it does, then yes) As I mentioned, the problem
-> > appears to be in the probe routines not liking an octet of 8.
->
-> What exactly happens?
+acurtis@directvinternet.com said:
+>  cfi_probe() terminates with an unsupported buswidth. 
 
-cfi_probe() terminates with an unsupported buswidth. The devices do get
-mounted as ROM but then they are read-only.
+Looking at the cfi_probe code I can't tell what you mean by 'terminates 
+with an unsupported buswidth'. 
 
-Sequence:
-cfi - unsupported buswidth
-jedec - fails
-ROM - mapped but read-only
+--
+dwmw2
