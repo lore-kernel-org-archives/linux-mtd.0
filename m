@@ -1,14 +1,18 @@
-Received: from [212.18.228.76] (helo=mail.linuxgrrls.org ident=postfix)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q1TZ-0002Np-GV
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:01:01 +0100
-Date: Wed, 11 Jun 2003 10:01:29 +0100
-Mime-Version: 1.0 (Apple Message framework v552)
+	id 19Q1WE-0002Wz-TK
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:03:46 +0100
+From: David Woodhouse <dwmw2@infradead.org>
 To: Pantelis Antoniou <panto@intracom.gr>
-From: Jasmine Strong <jasmine@regolith.co.uk>
-In-Reply-To: <3EE6EBA0.3080508@intracom.gr>
-Message-Id: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <3EE6EF42.7030405@intracom.gr>
+References: <3EE6EBA0.3080508@intracom.gr>
+	 <1055321465.2097.9.camel@passion.cambridge.redhat.com>
+	 <3EE6EF42.7030405@intracom.gr>
+Message-Id: <1055322260.2097.13.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 11 Jun 2003 10:04:20 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: Cram FS on NAND - How to do this?
@@ -21,39 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2003-06-11 at 09:58, Pantelis Antoniou wrote:
+> That is a valid approach.
+> 
+> I take it that you mean a new MTD block device over NAND that
+> automatically skips over bad blocks and presents an error free
+> block interface for use by read only filesystems.
 
-On Wednesday, Jun 11, 2003, at 09:43 Europe/London, Pantelis Antoniou 
-wrote:
-[snip]
+Basically, yes. You can then either require the use of a special
+userspace tool to program the file system images onto the flash, or
+perhaps you could implement it as a writable block device, in the
+expectation that people don't _actually_ use it in write mode in
+production.
 
-1)  Where are you going to store this bad block list?
-
-There isn't anywhere on the Flash that can be guaranteed good.
-You can't pick a set location for the bad block list, so you must scan
-for it-  and once you have found it you must have some way to
-check that you are looking at a good copy of it.
-
-If you plan to generate it at mount time, you run the risk that
-a block has gone bad while the device has been dormant, and
-thus you may generate a block list that does not match the one
-the device was written with,  which could render a block
--structured filesystem like cramfs unreadable.
-
-Also, all this scanning takes time, which makes mounting slow.
-
-2)  What about blocks that go bad while the system is in service?
-
-Flash blocks go bad randomly, and often while they are in use.
-You must use a strategy to cope with this-  JFFS and YAFFS use
-Reed-Solomon forward error correction.
-
-3)  What about wear-levelling?
-
-Flash blocks do not last indefinitely.  Every erase brings the Flash
-block you are erasing closer to the end of its lifespan.  Obviously
-this is less of a concern on a static filesystem like cramfs.
-
-Why not put a cramfs filesystem into a file on a YAFFS or JFFS2
-filesystem and use a loopback to mount it?
-
--Jas.
+-- 
+dwmw2
