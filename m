@@ -1,21 +1,19 @@
-Received: from tomts5.bellnexxia.net ([209.226.175.25] helo=tomts5-srv.bellnexxia.net)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16BNZJ-0001L2-00
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2001 21:57:37 +0000
-Received: from mike ([65.93.96.25]) by tomts5-srv.bellnexxia.net
-          (InterMail vM.4.01.03.16 201-229-121-116-20010115) with SMTP
-          id <20011204220741.WXWQ7882.tomts5-srv.bellnexxia.net@mike>
-          for <linux-mtd@lists.infradead.org>;
-          Tue, 4 Dec 2001 17:07:41 -0500
-From: "Mike Ruthven" <mike@creonova.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: nftl
-Date: Tue, 4 Dec 2001 17:07:56 -0500
-Message-ID: <NPENLOCCCBDDFGHLFFBLMEEMCAAA.mike@creonova.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 16BNis-0001MT-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2001 22:07:30 +0000
+Date: Tue, 4 Dec 2001 23:18:07 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Aleksander Sanochkin <asanochkin@lnxw.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: JFFS1/MTD bug-fixes
+Message-ID: <20011204231807.A14180@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.33.0112040830450.7813-100000@newbast.lynuxworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.33.0112040830450.7813-100000@newbast.lynuxworks.com>; from asanochkin@Lnxw.COM on Tue, Dec 04, 2001 at 08:36:51AM -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,18 +25,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-2 quick problems:
+Hi!
 
-nftl_format gives error
-Erase size not 8Kb - I'm confused
+> > Not having seen any code, I fear that your patch won't easily merge
+> > with mine. But I would like to have a look - it might get rid of some
+> > dear old problems, commonly known as reboot. :)
+> 
+> Yes, it won't be easy to merge. Though it won't be harder than to merge
+> your patch with the current MTD code.
 
-loading nftl module gives error
-Sorry, we don't support UnitSizeFactor of != 1 yet.
-Could not find valid boot record
-Could not mount NFTL device
+As this is the first real feedback I got, did you have problems
+merging the patch with the current MTD code?
 
-Somehow these seem related to me.  Any suggestions?
+I am basically creating those blindly and untested, as my companies
+codebase has diverged quite far from the official kernels. It's a
+mess and noone is willing to fix it. :(
 
-Mike Ruthven, R&D Specialist
-Creonova Systems Inc.
-mike@creonova.com (519)767-0067
+Jörn
+
+-- 
+Open your arms to change, but don't let go
+of your values.
