@@ -1,30 +1,15 @@
-Received: from e34.co.us.ibm.com ([32.97.110.132])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CR96J-0004Kb-Me
-	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2004 07:58:30 -0500
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e34.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id iA8CwDJ8369470
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Nov 2004 07:58:13 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by westrelay02.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	iA8CwDPs271466
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Nov 2004 05:58:13 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	iA8CwDFC000673
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Nov 2004 05:58:13 -0700
-From: Josh Boyer <jdub@us.ibm.com>
-To: David Wuertele <dave-gnus@bfnet.com>
-In-Reply-To: <m3wtwznbr4.fsf@bfnet.com>
-References: <m33bzonifa.fsf@bfnet.com>  <m3wtwznbr4.fsf@bfnet.com>
-Content-Type: text/plain
-Message-Id: <1099918691.28947.1.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Mon, 08 Nov 2004 06:58:11 -0600
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: in situ MTD upgrade from userspace (kernel, CRAMFS, YAFFS)
+Received: from web25006.mail.ukl.yahoo.com ([217.12.10.42])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CRGvH-0005Db-12
+	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2004 16:19:36 -0500
+Message-ID: <20041108211932.34600.qmail@web25006.mail.ukl.yahoo.com>
+Date: Mon, 8 Nov 2004 21:19:32 +0000 (GMT)
+From: Chan Siu Ming <namely_void@yahoo.co.uk>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Getting mtd to work with IBM Evaluation boards (Ebony/Walnut)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,22 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-11-05 at 16:59, David Wuertele wrote:
-> > 1.  There are many other processes running at the time of the upgrade.
-> >     They are running out of CRAMFS.  As I overwrite the CRAMFS
-> >     partition, is it possible that my write could get corrupted?
-> >     Perhaps by crashing programs that inadvertently do weird syscalls?
-> 
-> Corollary question:
-> 
->   As my own userspace process overwrites the CRAMFS block that
->   contains that process's program, how can I ensure that the process
->   doesn't get hosed until after it has a chance to reboot the system?
+Hello,
+I'm trying to get mtd to work with IBM Walnut and
+Ebony PPC evaluation boards. I tried with mtd CVS
+from 2004.11.03 and Linux 2.6.9, but seem to have
+some problems. Here's first what I did do with 
+success:
+* patched kernel with CVS mtd and compiled it, 
+  everything into the kernel - no modules. I'm
+  not quite sure what I should have enabled in
+  the config, but I guess these boards have CFI
+  AMD chips in them.
+* populated /dev with the MAKEDEV in mtd tree
+* compiled the mtd utils
+My problems are:
+* There doesn't seem to be a map for Walnut boards,
+  anyone has got one?
+* Ebony can read from the flash well, but cannot
+write.
+  Flash_info says: "0 erase regions". Flash_unlock and
+  all write attemps fail, when trying to open the
+  device in O_RDWR or O_WRONLY mode. What might be
+  the problem?
+Tested the physical ram test device on Walnut (mapped
+to the boards SRAM at 0xFFF00000) and that worked
+fine.
 
-Copy it and all it's needed shared libraries (including libc) into a
-tmpfs and start it from there.
+Thanks for any help.
 
-If you don't do that, then cramfs gets mighty confused if it needs to
-read a text page of your app and thing have changed underneath it.
 
-josh
+  
+
+
+	
+	
+		
+___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun! http://uk.messenger.yahoo.com
