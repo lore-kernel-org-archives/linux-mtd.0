@@ -1,40 +1,30 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12uaz0-0007FM-00
-	for mtd-list@infradead.org; Wed, 24 May 2000 14:13:58 +0100
-Received: from alex by infradead.org with local (Exim 3.03 #1)
-	id 12uayz-0007FG-00
-	for cvs-notify@infradead.org; Wed, 24 May 2000 14:13:57 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/fs/jffs intrep.c intrep.h jffs_fm.c jffs_fm.h'
-Message-Id: <E12uayz-0007FG-00@infradead.org>
-From: Alexander Larsson <alex@infradead.org>
-Date: Wed, 24 May 2000 14:13:57 +0100
+	id 12uj3v-0000Jc-00
+	for mtd-list@infradead.org; Wed, 24 May 2000 22:51:35 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 12uj3t-0000JW-00
+	for mtd@infradead.org; Wed, 24 May 2000 22:51:34 +0100
+Received: from localhost (phiggins@localhost)
+	by phiggins.transzap.com (8.9.3/8.8.7) with ESMTP id PAA17075
+	for <mtd@infradead.org>; Wed, 24 May 2000 15:55:07 -0600
+From: Patrick Higgins <phiggins@transzap.com>
+To: mtd@infradead.org
+Date: Wed, 24 May 2000 15:55:07 -0600 (MDT)
+Subject: Patched LILO problems
+Message-ID: <Pine.LNX.4.21.0005241545550.16970-100000@phiggins.transzap.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/fs/jffs
-In directory infradead.org:/tmp/cvs-serv27828
 
-Modified Files:
-	intrep.c intrep.h jffs_fm.c jffs_fm.h 
-Log Message:
-Patch from finn håkansson (finn@axis.se).
-Changelog:
-
-        * intrep.c (jffs_rewrite_data): Added a missing free_page().
-        (jffs_garbage_collect_next): Modified the computations of
-        the amount of data to rewrite. Correctly check if `dirty_fm'
-        was allocated.
-        (jffs_try_to_erase): Better handle the return value from
-        the call to jffs_clear_end_of_node.
-        Added and changed some printouts.
-        Modified the TODO list and the header.
-        * intrep.h: Modified the header.
-        * jffs_fm.h: Likewise.
-        * jffs_fm.c: Likewise.
-
-
+I'm using the binary patched LILO from mtd/patches/lilo-mtd.tar.gz, and it
+doesn't seem to pass the correct command line to kernel.  The parameters I
+specify in the lilo.conf are totally ignored, and after the system boots,
+cat'ing /proc/cmdline shows that it's full of 0xff's.  Has anyone had
+similar problems, or know what might be going on?
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
