@@ -1,54 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Fab3-0003RE-00
-	for mtd-list@infradead.org; Fri, 21 Jul 2000 12:04:01 +0100
-Received: from athena.evoserve.com ([210.16.10.134])
+	id 13Fabp-0003Rq-00
+	for mtd-list@infradead.org; Fri, 21 Jul 2000 12:04:49 +0100
+Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13Fab0-0003R8-00
-	for mtd@infradead.org; Fri, 21 Jul 2000 12:03:59 +0100
-Message-ID: <39783001.2FE9E3AC@evoserve.com>
-Date: Fri, 21 Jul 2000 19:12:01 +0800
-From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
+	id 13Fabh-0003RM-00
+	for mtd@infradead.org; Fri, 21 Jul 2000 12:04:48 +0100
+Date: Fri, 21 Jul 2000 12:07:54 +0100 (BST)
+From: Kira Brown <kira@linuxgrrls.org>
+To: David Woodhouse <dwmw2@passion.cygnus.co.uk>
+Cc: Matt Hortman <mbhortman@ieee.org>, mtd@infradead.org
+Subject: Re: using int 13h to access DOC
+In-Reply-To: <Pine.LNX.4.21.0007201521560.23213-100000@passion.cygnus.co.uk>
+Message-ID: <Pine.LNX.4.21.0007211206520.12438-100000@carrot.linuxgrrls.org>
 MIME-Version: 1.0
-To: Ollie Lho <ollie@sis.com.tw>
-CC: hecman@evoserve.com, mtd@infradead.org
-Subject: Re: SOLVED: Turnning On DOC Millennium ECC Logic
-References: <397825D6.BDE058A3@sis.com.tw>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hec, this got me very excited:
 
-Ollie Lho wrote:
 
-> David,
->         I have successfully turned on the ECC logic of DoC Millennium. The
-> ECC logic correctly caculate the ECC on both read and write cases. Now the Millennium driver is as complete as DoC 2000
-> driver. I will send you a patch
-> next Monday after I did some test (should I CC to Linus also ??).
->
-> Ronald,
->         I can now program the IPL area correctly, the IPL area can be download
+On Thu, 20 Jul 2000, David Woodhouse wrote:
 
-Cool! Can this be done on the DOC2000 too?
+> Note - with the new 2.02 boot protocol for the Linux kernel, we should be
+> able to boot happily from DiskOnChip even with the huge EBDA that its
+> firmware requires. New bootloaders and 2.4 kernels should 'just work'
+> according to hpa. There's a patch available for the 2.2 kernel to support
+> the 2.02 protocol too.
 
->
-> by the internal logic of the Millennium such that the disk on chip acts as a
-> 512 bytes ROM when power-up. We can proceed to work on how to shrink the DRAM
-> sizing/timing code into 512 byte. After that we will have a complete Diskless,
-> BIOSless, maintance free enviroment which should be very useful for you cluster
+Available where?  I'd like to get rid of our annoying FreeDOS bootloader.
 
-Is that also usefull on ordinary PC?  Super cool!
-
->
-> nodes. BTW, did you read the SPD DRAM sizing/timing code I sent to you ?? And
-> did you reproduce the SiS FB (no VGA BIOS) stuff on your side ??
->
-> Ollie
->
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+kira.
 
 
 
