@@ -1,19 +1,15 @@
-Received: from rwcrmhc53.attbi.com ([204.127.198.39])
+Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18VVrk-0004OQ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 06 Jan 2003 11:56:24 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: Sanal Kumar <p_sanalk@yahoo.com>
-Subject: Re: Problem with DiskOnChipMillenium
-Date: Mon, 6 Jan 2003 07:24:59 -0500
-References: <20030106114629.39183.qmail@web10304.mail.yahoo.com>
-In-Reply-To: <20030106114629.39183.qmail@web10304.mail.yahoo.com>
+	id 18VYYw-0004gu-00
+	for <linux-mtd@lists.infradead.org>; Mon, 06 Jan 2003 14:49:10 +0000
+Message-ID: <3E199E9D.8A02D98F@imc-berlin.de>
+Date: Mon, 06 Jan 2003 16:19:57 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Message-Id: <E18VVrk-0004OQ-00@pentafluge.infradead.org>
+To: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Compile error in mtdblock-core...
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,30 +21,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Sanal Kumar wrote:
-> Thanks for your reply.
-> I have tried as you said . But it is giving exactly
-> the same error as before any other ideas.
+Hi there,
 
-Sorry, I've never seen those type of error messages before.
+first Happy New Year!
 
-It may be worth a try to completely reformat the DiskOnChip using the 
-M-Systems DOS utilities:
+Second:
 
-http://www.m-sys.com/content/download/OSSupport2.asp?id=8&pid=2
+I just tried to compile the latest linuxppc_2_4_devel patched with the recent
+CVS code of MTD using ppc's TQM860L_config.
 
-Whenever my DoC had problems, the DFORMAT utility was usually able to get it 
-back to a known state.
+But I get compiler errors:
 
-Unless you're using newer code from the MTD CVS archives, you'll want to use 
-version 4.2 of the utilities.
+ppc_8xx-gcc -D__KERNEL__
+-I/opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-fomit-frame-pointer
+-I/opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/arch/ppc
+-fsigned-char -msoft-float -pipe -ffixed-r2 -Wno-uninitialized -mmultiple
+-mstring   -nostdinc -I /opt/ELDK/usr/lib/gcc-lib/ppc-linux/2.95.3/include
+-DKBUILD_BASENAME=mtdblock_core  -c -o mtdblock-core.o mtdblock-core.c
+In file included from
+/opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/include/linux/blk.h:4,
+                 from mtdblock-core.c:18:
+/opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/include/linux/blkdev.h:147:
+parse error before `struct'
+make[3]: *** [mtdblock-core.o] Fehler 1
 
-These instructions show how to install the Grub bootloader on a DoC, but 
-there is some general information about using DFORMAT and installing a Linux 
-filesystem:
+I can't see where this "parse error" is coming from!
 
-http://www.lakeshoremicro.com/diskonchip-grub-howto.html
+Any ideas?
 
-I hope this helps.
+Thanks,
 
-Mark
+Steven
