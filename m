@@ -1,23 +1,22 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CiyYr-0002H9-Vh
-	for linux-mtd@lists.infradead.org; Mon, 27 Dec 2004 12:21:39 -0500
-Date: Mon, 27 Dec 2004 18:21:34 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Jesper Juhl <juhl-lkml@dif.dk>
-Message-ID: <20041227172134.GB16025@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0412262202510.3552@dragon.hygekrogen.localhost>
+Received: from wproxy.gmail.com ([64.233.184.204])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CiyxP-0002S4-Pb
+	for linux-mtd@lists.infradead.org; Mon, 27 Dec 2004 12:47:00 -0500
+Received: by wproxy.gmail.com with SMTP id 37so289836wra
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Dec 2004 09:46:58 -0800 (PST)
+Message-ID: <6934efce04122709464e95ec21@mail.gmail.com>
+Date: Mon, 27 Dec 2004 09:46:58 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: llandre <r&d2@dave-tech.it>
+In-Reply-To: <6.0.1.1.0.20041227121334.01ec55d8@192.168.2.1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.61.0412262202510.3552@dragon.hygekrogen.localhost>
-Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wh.fh-wedel.de>,
-	David Woodhouse <dwmw2@redhat.com>, Greg Ungerer <gerg@snapgear.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [patch] remove unnessesary casts from drivers/mtd/maps/nettel.c
-	and kill two warnings
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+References: <6.0.1.1.0.20041227121334.01ec55d8@192.168.2.1>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: How to exploit STS pin of Strata Flash
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 26 December 2004 22:13:48 +0100, Jesper Juhl wrote:
+On Mon, 27 Dec 2004 12:23:18 +0100, llandre <r&d2@dave-tech.it> wrote:
+> Hi,
 > 
-> I took a look at the cause for these warnings in the 2.6.10 kernel,
-> 
-> drivers/mtd/maps/nettel.c:361: warning: assignment makes pointer from integer without a cast
-> drivers/mtd/maps/nettel.c:395: warning: assignment makes pointer from integer without a cast
-> 
-> and as far as I can see the casts in there (to unsigned long and back to 
-> void*) are completely unnessesary ('virt' in 'struct map_info' is a void 
-> __iomem *), and getting rid of those casts buys us a warning free build.
-> 
-> Are there any reasons not to apply the patch below?
-> Unfortunately I don't have hardware to test this patch, so it has been 
-> compile tested only.
+> I have a question about STS pin of Strata Flash.
+> I'd like to implement a function in the low-level map driver
+> in order to exploit the STS pin to read the ready/busy
+> status (NAND-like).
+> How should I hack the code? It seems there is
+> no <board>_device_ready or something like that ...
 
-Neither do I, but the patch looks fine to me.  Give Greg a grace
-period, in case he knows better.  And interpret this as a personal
-opinion, not as dwmw2's final word.
+Why?
 
-If it helps:
-Acked-by: Jörn Engel <joern@wh.fh-wedel.de>
-
-Jörn
-
--- 
-To recognize individual spam features you have to try to get into the
-mind of the spammer, and frankly I want to spend as little time inside
-the minds of spammers as possible.
--- Paul Graham
+How?  Connect it to a irq line?
