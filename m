@@ -1,19 +1,19 @@
-Received: from ns1.spewey.com ([64.170.22.140])
+Received: from mail.2d3d.co.za ([196.14.185.200])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15D5Cf-0006Jo-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 15:13:01 +0100
-Message-Id: <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>
-Date: Thu, 21 Jun 2001 09:29:06 -0500
-To: Abraham vd Merwe <abraham@2d3d.co.za>
-From: Vipin Malik <mtd-linux@embeddedlinuxworks.com>
-Subject: Re: safe flash filesystem
+	id 15D5SE-0006Kj-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 15:29:07 +0100
+Date: Thu, 21 Jun 2001 16:35:37 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: Vipin Malik <mtd-linux@embeddedlinuxworks.com>
 Cc: MTD for Linux <linux-mtd@lists.infradead.org>
-In-Reply-To: <20010621155737.A26310@crystal.2d3d.co.za>
-References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com>
- <20010621125458.A23785@crystal.2d3d.co.za>
- <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com>
+Subject: Re: safe flash filesystem
+Message-ID: <20010621163537.A26714@crystal.2d3d.co.za>
+References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>; from mtd-linux@embeddedlinuxworks.com on Thu, Jun 21, 2001 at 09:29:06 -0500
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,53 +25,107 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->Exciting stuff. It does address the issues I'm interested in. More
->specifically I agree that a driver level system is needed and not a user
->layer (otherwise we should be using Sleepycat's db3 which is perfect for
->transactional data except that it's not free).
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, that "except is not free" means it costs >100K USD (for the 
-transaction version) if I remember the quote they gave me.
+Hi Vipin!
 
-Plus, it's too "thick" for the typical use in embedded systems to store 
-configuration variables and a few logs and data values.
+> Yeah, that "except is not free" means it costs >100K USD (for the=20
+> transaction version) if I remember the quote they gave me.
 
->Doing this sort of thing properly though is a huge task however and should
->be carefully planned.
->
->I'm really interested in helping (if we're talking driver, not user level
->process - I don't want to develop a database :P)
+$125K iirc (;
 
-I guess I should change the name away from a "database", as I really don't 
-want to do anything more drastic than maybe a linear "recno" type flat file 
-database or something very simple. Something that you or I may have 
-probably implemented anyway to solve our needs to store these config 
-variables in our respective systems.
+> I guess I should change the name away from a "database", as I really don'=
+t=20
+> want to do anything more drastic than maybe a linear "recno" type flat fi=
+le=20
+> database or something very simple. Something that you or I may have=20
+> probably implemented anyway to solve our needs to store these config=20
+> variables in our respective systems.
 
-I did not have a full featured commercial "database" type database in mind, 
-or even anything close.
+That's exactly what I've started writing today (:
 
-I agree that this functionality should be present in the JFFS2 layer 
-itself, but have been unable to convince the powers to be.
+> I agree that this functionality should be present in the JFFS2 layer=20
+> itself, but have been unable to convince the powers to be.
+>=20
+> David W. says that he'll entertain a diff -u if we (I) implement the=20
+> feature, but I don't think that I have the time or the capability to chan=
+ge=20
+> JFFS2 to implement this functionality all by myself. Plus the issue of th=
+e=20
+> blocked access will remain (even if we solve the power fail issue) and th=
+e=20
+> solution to that may be not be acceptable for inclusion to the regular=20
+> JFFS2 fs.
 
-David W. says that he'll entertain a diff -u if we (I) implement the 
-feature, but I don't think that I have the time or the capability to change 
-JFFS2 to implement this functionality all by myself. Plus the issue of the 
-blocked access will remain (even if we solve the power fail issue) and the 
-solution to that may be not be acceptable for inclusion to the regular 
-JFFS2 fs.
+I don't know if merging something like this with jffs2 would solve the
+problem like you said. I was more thinking of a completely different user
+MTD driver to provide an uncached block device and slap a file system on top
+of that. Or we can sync() all the time from the file system.
 
-Maybe you may want to subscribe to the development list on the 
-www.EmbeddedLinuxWorks site and we can take this discussion there. I am 
-looking for user input to define the feature set of this "config system" 
-(not database :) And I want to make it LGPL (if it does become a lib or 
-task) so that users can link to it without releasing the source of their 
-own code.
+I have to agree that it's probably better to write a library/utilities first
+to do a preliminary thing. That way we'd get a functional thing quite fast
+and figure out what we did wrong in the first place.
 
-I can't believe that you and I are the only folks that may be interested in 
-this. Maybe there is an existing solution- we just don't know about it- or 
-other's have not thought about this issue just yet ;)
+> Maybe you may want to subscribe to the development list on the=20
+> www.EmbeddedLinuxWorks site and we can take this discussion there. I am=
+=20
 
-Regards,
+Where do I subscribe?
 
-Vipin
+> looking for user input to define the feature set of this "config system"=
+=20
+> (not database :) And I want to make it LGPL (if it does become a lib or=
+=20
+> task) so that users can link to it without releasing the source of their=
+=20
+> own code.
+
+I'm in the fortunate position of being able to work on this fulltime for
+the next week or so, so if we can figure out a useful specification for this
+in a short time, I'm really keen on helping to implement this and LGPL/BSD
+license is just fine.
+
+> I can't believe that you and I are the only folks that may be interested =
+in=20
+> this. Maybe there is an existing solution- we just don't know about it- o=
+r=20
+> other's have not thought about this issue just yet ;)
+
+That's why I mailed here in the first place :P
+
+--=20
+
+Regards
+ Abraham
+
+Matrimony is the root of all evil.
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
+
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7MgY5zNXhP0RCUqMRAindAJ4gW6GKYidrYdShTSghKVi1sHDwpwCeIqQJ
+mVbZYvGxUh0lYcIAv6VhZ8I=
+=91Pb
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
