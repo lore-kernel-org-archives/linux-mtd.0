@@ -1,14 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
-References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain
-Date: Thu, 03 Mar 2005 10:28:58 +0000
-Message-Id: <1109845739.16158.14.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: [RFD] Move 2.4 code out from CVS head
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6nj4-0006il-SS
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 05:38:39 -0500
+Date: Thu, 3 Mar 2005 10:38:17 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+In-Reply-To: <d04hdb$8k1$1@sea.gmane.org>
+Message-ID: <Pine.LNX.4.58.0503031038120.26599@phoenix.infradead.org>
+References: <d01lkf$v0d$1@sea.gmane.org> <d04hdb$8k1$1@sea.gmane.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-03 at 10:14 +0100, Thomas Gleixner wrote:
-> I strongly vote to branch of a mtd-2.4-latest-devel in CVS from said
-> point and then remove the whole 2.4 crap from CVS head. 
+Martin Egholm Nielsen wrote:
+> Some more information:
+> 
+> The problem arose after creating a directory in my JFFS2 NAND fs, and 
+> creating some 1000 (small) files in it. After rebooting I removed the 
+> entire directory, and at the next reboot I got the error.
 
-Nah. There's already a 2.4 branch. If someone wants to keep -HEAD
-working on 2.4, that's OK, but I don't want a new branch for it. If
-nobody keeps it working, just remove the 2.4-specific files.
+Is it real to look at JFFS2 debugging output?
 
--- 
-dwmw2
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
