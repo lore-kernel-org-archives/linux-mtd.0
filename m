@@ -1,12 +1,12 @@
 Received: from [202.98.123.42] (helo=mail.ocdtt.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15wGAe-0002sS-00
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 06:01:41 +0100
+	id 15wGMR-0002vS-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 06:13:52 +0100
 Received: from ocdtt.com (unknown [61.139.82.145])
-	by mail.ocdtt.com (Postfix) with ESMTP id 91ACB13D8F
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 12:51:56 +0800 (CST)
-Message-ID: <3BD64D4F.53F78EC5@ocdtt.com>
-Date: Wed, 24 Oct 2001 13:10:40 +0800
+	by mail.ocdtt.com (Postfix) with ESMTP id 37E7113D8F
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 13:05:34 +0800 (CST)
+Message-ID: <3BD64DC2.3E3E79F1@ocdtt.com>
+Date: Wed, 24 Oct 2001 13:12:34 +0800
 From: Chen Yaoming <ming@ocdtt.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
