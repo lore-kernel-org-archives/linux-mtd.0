@@ -1,15 +1,22 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 195ZP3-0002cM-9G
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 23:59:49 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <1050447582.1171.222.camel@tubarao>
-Mime-Version: 1.0
-Date: 15 Apr 2003 16:59:42 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-PHKyMkP3vAjLwQUzs5vG"
-Subject: WARNING: cfi_cmdset_0002 - consider updating your revision
+Received: from port61.vestas.dk ([195.41.59.61] helo=cotas2.cotas.vestas.dom)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 195jmj-000471-KS
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2003 11:04:57 +0100
+From: Esben Nielsen <esn@cotas.dk>
+To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
+ "Jasmine Strong" <jasmine@regolith.co.uk>
+Date: Wed, 16 Apr 2003 12:04:32 +0200
+References: <20030415171123.GH7721@wohnheim.fh-wedel.de>
+In-Reply-To: <20030415171123.GH7721@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Message-Id: <200304161204.32557.esn@cotas.dk>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+cc: Holger Schurig <h.schurig@mn-logistik.de>
+Subject: Re: Database on JFFS2?
+Reply-To: esn@cotas.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,75 +26,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I appreciate that you look into my problem and get a good discussion out of it 
+:-)
 
---=-PHKyMkP3vAjLwQUzs5vG
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I did try to follow it and as far as I can see it JFFS2 _only_ writes to flash 
+in the GC thread? That contradicts the manual page for fsync(): "fsync copies 
+all in core parts of a file to disk, and waits  until  the device  reports  
+that all parts are on stable storage."
 
-All cfi_cmdset_0002 users please read.
+I am not much into flash technology itself (NOR contra NAND), but I know that 
+on our device one write erases and rewrites one block of 128k. Each block can 
+only be erased between 1E5 and 1E6 times. We thus have to be carefull as our 
+device have to live for 20 years (yes, that is what a promise our 
+customers!).
 
-I have just committed revision 1.67 of cfi_cmdset_0002.c.  It now works
-well with interleaved chips - thanks to Alexander Wild for helping with
-the debugging and testing.  It may change one more time for interleaved
-chips to handle a very remote, spurious rejection case (it might return
-an error when an operation really succeeded - see the FIXME comment that
-was added in do_write_oneword()).
+If JFFS2 does do a real write on fsync() we will get too many physical writes 
+unless we buffer our inserts/updates into one big transaction in the 
+application layer above the database. On the other hand if JFFS2 doesn't 
+commit changes we risc getting our database file inconsistant if we loose 
+power in the middle :-(
 
-URGENT NOTE:  revision 1.64 of cfi_cmdset_0002.c and likely most prior
-revisions allow some UNREPORTED failures (yes, I am yelling).  That
-means that erase or write operations could fail and go unreported.=20
-Depending on your application this could be serious data loss and I
-encourage you to evaluate revision 1.67 to decide if you should upgrade.
+Now in our application the most important thing is that our database file is 
+self-consistant at reboot such we can get up running again. If we loose the 
+last few inserts before the reboot we wont go out of buisness. The most 
+optimal was if we could tweak sqlite to syncronice it's fsync with JFFS2 such 
+the last written data resides purely in memory until we have enough to erase 
+a full page on flash and then we sync it all. That way we can minimalize the 
+number of writes and at the same time avoid inconsistant data at boot.
 
-The care and feeding of flash devices for erase and write operations
-requires understanding of how the devices work and isn't as simple as it
-appears - especially coupled with interleaved cases and other varying
-uses.  The logic often seems redundant and inefficient.  I am quite
-convinced that in the past, as people fixed bugs, different requirements
-were understood by different people at different times and bugs would
-get pushed back and forth and 'round and 'round and some would just
-never get squished - the symptoms would just change.
+Another option was to have JFFS2 use battery backed up SRAM as temporately 
+storage. fsync() would then work "correcty" by just writing to that SRAM. 
+Is it in possible to do make JFFS2 use a specific part of memory as "cache" 
+before the GC thread writes it to flash? Is it even possible to make JFFS2 
+reestablish that cache at mount such no data would be lost if it was synced 
+with the cache before a crash?
 
-I feel good that things are finally settling down with cfi_cmdset_002
-and that it might just work now.  If the current version doesn't work
-for you I need to hear about it soon.
+Esben
 
-To be completely forthcoming, I need to admit that I still have an
-SST49LF040A that doesn't work completely.  I'm still trying to decide if
-it's a software problem or a hardware problem.  I have multiple devices
-that of this part - one being used for a BIOS chip on an Opteron
-motherboard and one as BIOS on a Tyan 2466.  Both have the same problem
-that occasionally they ignore an erase or write command - as if the
-command was never sent.  This problem happened in cfi_cmdset_0002
-revision 1.64 - it was never reported as an error by cfi_cmdset_0002 so
-failures would happen at other locations - especially user-space
-programs.  Strangely, these failures disappear on retries of the same
-operation.
-
-Kernel messages have enough information to get a feel for the operation
-that failed and why it was marked as a failure.  If CONFIG_MTD_DEBUG is
-turned on and CONFIG_MTD_DEBUG_VERBOSE is set to 3 then significant
-command state is reported.  If you have a failure, please set the debug
-level to 3 and send me your dmesg output.
-
-Thanks.
-
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-PHKyMkP3vAjLwQUzs5vG
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+nI7efsBPTKE6HMkRAg5UAJ9g58O2KWFJqre9Q+E2lGVBPO+P/QCfZq3l
-9FzZhGrqUWanVeS2NDTi/NM=
-=mSdW
------END PGP SIGNATURE-----
-
---=-PHKyMkP3vAjLwQUzs5vG--
+On Tuesday 15 April 2003 19:11, Jörn Engel wrote:
+> On Tue, 15 April 2003 17:23:59 +0100, Jasmine Strong wrote:
+> > On Tuesday, Apr 15, 2003, at 17:14 Europe/London, Jörn Engel wrote:
+> > >On Tue, 15 April 2003 17:11:44 +0100, Jasmine Strong wrote:
+> > >>Unless it would cause many erases, which would slow things down a
+> > >>lot...
+> > >
+> > >Erases get triggered by garbage collection, which depends on the
+> > >amount of data written, not the chunk size.
+> >
+> > yes.  I think my two points were actually the same point taken twice :-)
+> > If you're only updating a few bytes of data you will end up writing
+> > a large proportion of log control data.  That'll end up being
+> > responsible for most of the erase traffic.
+>
+> Actually, that shouldn't matter too much. For comparison, I did some
+> benchmarks using jffs2 (without compression) as a filesystem for a
+> ramdisk.
+>
+> The benchmark wrote data to jffs2, deleted it and repeated this
+> several times to remove statistical noise. Horrible results.
+> Then I got a clue and added "sleep 6" after both writing and deleting,
+> getting roughly twice the performance. Why?
+>
+> Under normal operation, the system is idle a lot and the garbage
+> collector (GC) has plenty of time to clean up the mess you made. But
+> the first benchmark was measuring a system without idle times, so all
+> writes were waiting for GC to finally free some space. Wrong.
+>
+> Back to the Database:
+> Even if you write data in very small chunks, the system should have
+> enough free time to GC those fragments and reassemble them into larger
+> chunks with less overhead, so this doesn't matter.
+>
+> Unless you permanently operate near the limit. Without the free time
+> for GC, this does matter.
+>
+> > Still, if you need to be powerfail-safe, I can't see any way of not
+> > doing this.
+>
+> Right.
+>
+> Jörn
