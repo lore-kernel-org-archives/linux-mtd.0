@@ -1,18 +1,14 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19UXc8-0005CU-P3
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Jun 2003 21:08:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Marc Kleine-Budde <kleine-budde@gmx.de>
-In-Reply-To: <20030623160245.GA25579@timberwolf.dyndns.org>
-References: <20030623160245.GA25579@timberwolf.dyndns.org>
-Message-Id: <1056398934.19043.19.camel@imladris.demon.co.uk>
+Received: from onz.com ([67.121.61.113] helo=dual166.onz.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Uerh-0006FG-93
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 04:53:05 +0100
+Message-Id: <5.2.1.1.0.20030623204036.00acb910@192.168.1.10>
+Date: Mon, 23 Jun 2003 20:42:51 -0700
+To: Infradead Org <linux-mtd@lists.infradead.org>
+From: Allen Curtis <acurtis@onz.com>
 Mime-Version: 1.0
-Date: Mon, 23 Jun 2003 21:08:54 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DNP mounting issue
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: Suspicious Header message
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +18,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-06-23 at 17:02, Marc Kleine-Budde wrote:
-> Hi!
-> 
-> I'm using linux-2.4.21 together with mtd from 'Mon Jun 23 17:45:34 CEST 2003'
-> The hardware is SSV's DNP-486 (=2 MB flash).
-> 
-> When booting the jffs2 filesystem on the mtd cannot be mounted,
-> surprisingly it works with an unpatched linux-2.4.21 out of the box.
-> 
-> I've attached the bootingmessages from both kernels....
-> 
-
-Comment out the setting of mtd->read_ecc and mtd->write_ecc for the new
-concatenated device in mtdconcat.c.
-
--- 
-dwmw2
+Why do I get "Suspicious header" messages when I try to post to the MTD 
+list? I switch to Eudora from Outlook. Is this the problem?
