@@ -1,52 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139vc1-0003Y4-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 21:17:37 +0100
-Received: from web5304.mail.yahoo.com ([216.115.106.113])
+	id 139wUe-0003jt-00
+	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:14:04 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 139vbz-0003Xy-00
-	for mtd@infradead.org; Wed, 05 Jul 2000 21:17:35 +0100
-Message-ID: <20000705201702.5221.qmail@web5304.mail.yahoo.com>
-Date: Wed, 5 Jul 2000 16:17:02 -0400 (EDT)
-From: Juan Gonzo <kayemmess@yahoo.ca>
-Subject: MTD, JFFS, my target -- bringing them together?
-To: MTD Mailing List <mtd@infradead.org>
+	id 139wUd-0003jn-00
+	for mtd@infradead.org; Wed, 05 Jul 2000 22:14:03 +0100
+From: Patrick Higgins <phiggins@transzap.com>
+To: john@frumious.unidec.co.uk
+Cc: mtd@infradead.org
+Date: Wed, 5 Jul 2000 15:18:04 -0600 (MDT)
+Subject: NS Geode (was: doc2000 geometry problem?)
+Message-ID: <Pine.LNX.4.21.0007051510010.14615-100000@phiggins.transzap.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Ok,
 
-I am using Intel Strataflash with the CFI command
-set.  I have managed to compile the kernel with the
-MTD code in place.  I would like to use JFFS for the
-filesystem.  The following were enabled with make
-oldconfig:
+John Halewood wrote:
 
-   Memory Technology Device (MTD) support
-   Common Flash Interface (CFI) support
-   CFI support for Intel/Sharp Extended Command Set
-chips
-   CFI chips on memory bus support
-   Direct blockdevice access to MTD devices
-   Journalling Flash filesystem (JFFS) support
+> I'm yet another person trying to embed linux using the doc2000 on a
+> NatSemi-based platform (Geode aka MediaGX - uck).
 
->From previous emails, it seems I have to supply a
-read16() and write16() function for MTD to work
-properly on my system.  Is this right?  Is that all
-I have to supply?  What about all that info from the
-website about populating the mtd_info struct and the
-add_mtd_device business?  Do I still have to do that?
+I've also been using a Geode and found it to have *horrible* performance
+(~3-7 times slower than equivalent clock PIII).  Has this been your
+experience as well?  My company is currently considering asking our
+hardware supplier to use another CPU in their boxes, but we don't really
+know what the good options are for systems which need to run without a
+fan.  We have some AMD K6-2's 450s that perform quite well, but require a
+fan, though I've heard that the 250s can be used fanless.  Has anyone had
+some good (or bad, so we know what to avoid) experiences they could share?
 
-Thanks for any help,
-   -- kelly
-
-
-
-_______________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.ca address at http://mail.yahoo.ca
+-Patrick
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
