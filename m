@@ -1,37 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H12Q-0007cF-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 10:30:10 +0100
+	id 13H14d-0007d0-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 10:32:27 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13H12J-0007by-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 10:30:08 +0100
+	id 13H14Z-0007ct-00
+	for mtd@infradead.org; Tue, 25 Jul 2000 10:32:25 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.21.0007241657220.18380-100000@vvv.axis.se> 
-References: <Pine.LNX.4.21.0007241657220.18380-100000@vvv.axis.se> 
-To: Finn Hakansson <finn@axis.com>
-Cc: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>,
-  "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
-Subject: Re: jffs_file_write 
+In-Reply-To: <8likhn$d2h$1@whiskey.fireplug.net> 
+References: <8likhn$d2h$1@whiskey.fireplug.net>  <005001bff32c$b59a92a0$8e00a8c0@gpc> 
+To: sl@fireplug.net
+Cc: mtd@infradead.org
+Subject: Re: ELANSC400 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 25 Jul 2000 10:29:47 +0100
-Message-ID: <31773.964517387@cygnus.co.uk>
+Date: Tue, 25 Jul 2000 10:31:54 +0100
+Message-ID: <31986.964517514@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-finn@axis.com said:
->  Yeah. One day, write and rewrite should be merged into one single
-> function... 
+sl@whiskey.fireplug.net said:
+>  The flash parts on the SC400 are mapped through the SC400 MMU. There
+> are  several models, but the easiest is to map them 8kb at a time into
+> a memory window in low memory (0xc8000 if I remember correctly).
 
-I'm been thinking about this, and about the problems with garbage collection
-taking to long. What about shifting all node writes into a kernel thread,
-which also does the GC?
+> Once there you can access them as normal flash memory. 
 
-The jffs_file_write() function then only needs to queue the node(s) to be 
-written, and can return immediately. Obviously we have to implement a way 
-of flushing a particular file, but that shouldn't be too difficult.
+Any more details on how to set up and modify the mapping?
+
+Preferably in the form of source code based on octagon-5066.c :)
+
+
 
 --
 dwmw2
