@@ -1,19 +1,20 @@
-Received: from saturn.cs.uml.edu ([129.63.8.2])
+Received: from green.csi.cam.ac.uk ([131.111.8.57] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157YgJ-0005tB-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 09:28:47 +0100
-From: "Albert D. Cahalan" <acahalan@cs.uml.edu>
-Message-Id: <200106060832.f568WR3253749@saturn.cs.uml.edu>
+	id 157YuZ-0005u2-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 09:43:32 +0100
+Date: Wed, 6 Jun 2001 09:43:30 +0100 (BST)
+From: James Sutherland <jas88@cam.ac.uk>
+To: Chris Wedgwood <cw@f00f.org>
+cc: Jamie Lokier <lk@tantalophile.demon.co.uk>,
+    "David S. Miller" <davem@redhat.com>,
+    David Woodhouse <dwmw2@infradead.org>,
+    Jeff Garzik <jgarzik@mandrakesoft.com>,  <bjornw@axis.com>,
+     <linux-kernel@vger.kernel.org>,  <linux-mtd@lists.infradead.org>
 Subject: Re: Missing cache flush.
-To: davem@redhat.com (David S. Miller)
-Date: Wed, 6 Jun 2001 04:32:27 -0400 (EDT)
-Cc: dwmw2@infradead.org (David Woodhouse), cw@f00f.org (Chris Wedgwood),
-       jgarzik@mandrakesoft.com (Jeff Garzik), bjornw@axis.com,
-       linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-In-Reply-To: <15132.54565.311995.865807@pizda.ninka.net> from "David S. Miller" at Jun 05, 2001 05:48:37 AM
+In-Reply-To: <20010606112419.A24800@metastasis.f00f.org>
+Message-ID: <Pine.SOL.4.33.0106060942160.14836-100000@green.csi.cam.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,34 +26,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David S. Miller writes:
-> David Woodhouse writes:
-
->>> Call it flush_ecache_full() or something.
->>
->> Strange name. Why? How about __flush_cache_range()?
+> On Tue, Jun 05, 2001 at 07:01:28PM +0200, Jamie Lokier wrote:
 >
-> How about flush_cache_range_force() instead?
->
-> I want something in the name that tells the reader "this flushes
-> the caches, even though under every other ordinary circumstance
-> you would not need to".
+>     Whether this works depends on the cache line replacement policy.
+>     It will always work with LRU, for example, and probably
+>     everything else that exists.  But it is not guaranteed, is it?
 
-"flush" means what to you?
+LFU, if used, wouldn't be flushed by this trick... Potentially, you could
+have a slice of kernel interrupt handler sitting in a cache line, having
+been accessed $BIG_NUMBER times... (Does anything actually use this
+approach, though???)
 
-write-back
-write-back-and-invalidate
-discard-and-invalidate
 
-All 3 behaviors are useful to me, and a few more. I've been
-using chunks of PowerPC assembly. Using PowerPC mnemonics...
-
-dcba -- allocate a cache block with undefined content
-dcbf -- write to RAM, then invalidate ("data cache block flush")
-dcbi -- invalidate, discarding any data
-dcbst -- initiate write if dirty
-dcbt -- prefetch, hinting about future load instructions
-dcbtst -- prefetch, hinting about future store instructions
-dcbz -- allocate and zero a cache block (cacheable mem only!)
-
-So dcbf_range() and dcbi_range() sound good to me. :-)
+James.
