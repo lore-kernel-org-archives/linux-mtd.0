@@ -1,23 +1,19 @@
-Received: from mail.broadpark.no ([217.13.4.2])
+Received: from [213.239.205.147] (helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkeB4-0000OU-Hv
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 03:27:43 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1089788931.8822.54.camel@imladris.demon.co.uk>
-References: <1089728296.6288.19.camel@famine>
-	<1089760454.8822.23.camel@imladris.demon.co.uk>
-	<1089786408.7607.4.camel@famine>
-	<1089787265.8822.31.camel@imladris.demon.co.uk>
-	<1089787869.7607.9.camel@famine>
-	<1089788931.8822.54.camel@imladris.demon.co.uk>
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <1089790059.7607.18.camel@famine>
+	id 1BkeVK-0000dQ-TP
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 03:48:39 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Pathompong Puengrostham <jay4mail@yahoo.com>
+In-Reply-To: <40F4BD37.4090500@yahoo.com>
+References: <40F4B205.6060902@yahoo.com>  <40F4BD37.4090500@yahoo.com>
+Content-Type: text/plain
+Message-Id: <1089790912.5274.61.camel@thomas.tec.linutronix.de>
 Mime-Version: 1.0
-Date: Wed, 14 Jul 2004 09:27:40 +0200
-Content-Transfer-Encoding: 8bit
+Date: Wed, 14 Jul 2004 09:41:52 +0200
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Prune obsolete raw_node_ref's from RAM
+Subject: Re: JFFS2 on NAND, Magic bitmask 0x1985 not found
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-07-14 at 09:08, David Woodhouse wrote:
-> On Wed, 2004-07-14 at 08:51 +0200, Øyvind Harboe wrote:
-> > On Wed, 2004-07-14 at 08:41, David Woodhouse wrote:
-> > > On Wed, 2004-07-14 at 08:26 +0200, Øyvind Harboe wrote:
-> > > > Would all the performance problems go away if the lists were doubly
-> > > > linked?
-> > > 
-> > > Well yes, but since the object of the exercise was to save memory,
-> > > doubling the size of the objects in question doesn't really strike me as
-> > > being the right way to approach the problem :)
-> > 
-> > The memory problem I ran into wasn't the size of the un-obsolete nodes,
-> > but that they grew with the number of obsolete nodes.
-> > 
-> > I hate #if's in code as much as the next guy, but JFFS2 spans deeply
-> > embedded systems to full-fledged PCs and it is only to be expected that
-> > the different profiles have different needs.
+On Wed, 2004-07-14 at 06:57, Pathompong Puengrostham wrote:
+> Hi,
 > 
-> Well, I'm more than happy to do 
-> 	#define jffs2_prune_ref_lists(c, ref) do { } while (0)
-> in the Linux code and let the implementation we're playing with live in
-> eCos code alone. It would be nicer if it were generic though -- that's
-> why I'm thinking about making it happen in a periodic pass, rather than
-> doing it all on _every_ obsoletion. By doing it every single time, we
-> maximise the amount of list-walking required. 
+> I just found the problem. It is that my NAND flash CE pin is not driven 
+> by GPIO. It is driven by CS from the CPU. Here is the change that I made.
+
+Ok, I accept the change in nand_verify_pages. I expected this to break,
+as it was stated in the comment. But for sure we will not invent a new
+CONFIG_ switch, we have an options field for such stuff already, also
+using a wait for ready there in any case will be enough.
+
+> I also had to add the following to my nand_init().
 > 
-> We could walk the next_in_ino list when we remove a given inode from the
-> inode cache, dropping all obsolete nodes from it then in a single pass. 
-> 
-> And we could walk each eraseblock's list at some other time...
+> for (i = 0; nand_flash_ids[i].name != NULL; i++)
+> 	nand_flash_ids[i].options |= NAND_NO_AUTOINCR;
 
-Hmmm... how about a configurable threshold(i.e. a maximum number
-obsolete nodes) that triggers a "purge" at the end of
-jffs2_mark_node_obsolete()?
+Sorry, thats crap. The options are defined in nand_ids.c and are not a
+subject to be modified anywhere else. If you want to have the
+NO_AUTOINCR option set for your board, then set it in the options field
+before calling nand_scan. The bit is not overwritten by the option init
+in nand_scan.
 
-A "purge" would be to loop through all the physical nodes and merge
-those that can be merged.
+Which chiptype are you using exactly? 
 
-For my purposes, I need to make sure that there is a predictable peak
-usage of RAM. What precisely that peak usage is, is somewhat less
-important.
+The changes you made make not really sense as you put in delays which
+are neccecary for chips, which do autoincrement. Those chips which can
+not autoincrement do neither need a wait nor a deselect/select after a
+page is read.
 
--- 
-Øyvind Harboe
-http://www.zylin.com
+tglx
