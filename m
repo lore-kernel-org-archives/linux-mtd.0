@@ -1,22 +1,25 @@
-Received: from port61.vestas.dk ([195.41.59.61] helo=cotas2.cotas.vestas.dom)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 195jmj-000471-KS
-	for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2003 11:04:57 +0100
-From: Esben Nielsen <esn@cotas.dk>
-To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
- "Jasmine Strong" <jasmine@regolith.co.uk>
-Date: Wed, 16 Apr 2003 12:04:32 +0200
+	id 195kH6-0004Ja-4A
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2003 11:36:20 +0100
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+	21 2002)) with SMTP id <0HDF00MV5MRUJ8@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Wed, 16 Apr 2003 12:35:55 +0200 (MEST)
+Date: Wed, 16 Apr 2003 13:35:50 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <200304161204.32557.esn@cotas.dk>
+To: esn@cotas.dk, =?iso-8859-1?q?J=F6rn=20Engel?=
+	<joern@wohnheim.fh-wedel.de>, Jasmine Strong <jasmine@regolith.co.uk>
+Message-id: <200304161335.50367.tglx@linutronix.de>
+MIME-version: 1.0
 References: <20030415171123.GH7721@wohnheim.fh-wedel.de>
-In-Reply-To: <20030415171123.GH7721@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Message-Id: <200304161204.32557.esn@cotas.dk>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
+ <200304161204.32557.esn@cotas.dk>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 cc: Holger Schurig <h.schurig@mn-logistik.de>
+cc: linux-mtd@lists.infradead.org
 Subject: Re: Database on JFFS2?
-Reply-To: esn@cotas.dk
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +29,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I appreciate that you look into my problem and get a good discussion out of it 
-:-)
+On Wednesday 16 April 2003 12:04, Esben Nielsen wrote:
+> I did try to follow it and as far as I can see it JFFS2 _only_ writes to
+> flash in the GC thread? That contradicts the manual page for fsync():
+> "fsync copies all in core parts of a file to disk, and waits  until  the
+> device  reports that all parts are on stable storage."
 
-I did try to follow it and as far as I can see it JFFS2 _only_ writes to flash 
-in the GC thread? That contradicts the manual page for fsync(): "fsync copies 
-all in core parts of a file to disk, and waits  until  the device  reports  
-that all parts are on stable storage."
+No, JFFS2 writes all data immidiately to the FLASH chip. GC takes care of 
+reusing blocks, where obsolete information is stored. This happens, if you 
+change the contents of a file. This space is garbage collected at some point 
+and valid nodes, which reside on the same block are moved to a different 
+block. If the block, which is gc'ed contains no more valid information it is 
+erased and can be used for writing again.
 
-I am not much into flash technology itself (NOR contra NAND), but I know that 
-on our device one write erases and rewrites one block of 128k. Each block can 
-only be erased between 1E5 and 1E6 times. We thus have to be carefull as our 
-device have to live for 20 years (yes, that is what a promise our 
-customers!).
+> I am not much into flash technology itself (NOR contra NAND), but I know
+> that on our device one write erases and rewrites one block of 128k. Each
+> block can only be erased between 1E5 and 1E6 times. We thus have to be
+> carefull as our device have to live for 20 years (yes, that is what a
+> promise our customers!).
 
-If JFFS2 does do a real write on fsync() we will get too many physical writes 
-unless we buffer our inserts/updates into one big transaction in the 
-application layer above the database. On the other hand if JFFS2 doesn't 
-commit changes we risc getting our database file inconsistant if we loose 
-power in the middle :-(
+Erase is always a full block (e.g. 128K), but writes happen in small chunks. 
 
-Now in our application the most important thing is that our database file is 
-self-consistant at reboot such we can get up running again. If we loose the 
-last few inserts before the reboot we wont go out of buisness. The most 
-optimal was if we could tweak sqlite to syncronice it's fsync with JFFS2 such 
-the last written data resides purely in memory until we have enough to erase 
-a full page on flash and then we sync it all. That way we can minimalize the 
-number of writes and at the same time avoid inconsistant data at boot.
+Have you really thought about the numbers ?
+20 years, 365 days
+Erasecycles max. 10E5:	13,6 erases per day
+Erasecycles max. 10E6:	136 erases per day
 
-Another option was to have JFFS2 use battery backed up SRAM as temporately 
-storage. fsync() would then work "correcty" by just writing to that SRAM. 
-Is it in possible to do make JFFS2 use a specific part of memory as "cache" 
-before the GC thread writes it to flash? Is it even possible to make JFFS2 
-reestablish that cache at mount such no data would be lost if it was synced 
-with the cache before a crash?
+I assume a compressed database size of 1MB and a FLASH size of 8MB.
+Even if you have to write the full database every time you will be allowed
+to do it 
+108,8 times for max. Erasecycles of 10E5 and
+1088 times for  max. Erasecycles of 10E6
 
-Esben
+which means a write every
+13 minutes  for max. Erasecycles of 10E5 and
+1,3 minutes  for max. Erasecycles of 10E6
 
-On Tuesday 15 April 2003 19:11, Jörn Engel wrote:
-> On Tue, 15 April 2003 17:23:59 +0100, Jasmine Strong wrote:
-> > On Tuesday, Apr 15, 2003, at 17:14 Europe/London, Jörn Engel wrote:
-> > >On Tue, 15 April 2003 17:11:44 +0100, Jasmine Strong wrote:
-> > >>Unless it would cause many erases, which would slow things down a
-> > >>lot...
-> > >
-> > >Erases get triggered by garbage collection, which depends on the
-> > >amount of data written, not the chunk size.
-> >
-> > yes.  I think my two points were actually the same point taken twice :-)
-> > If you're only updating a few bytes of data you will end up writing
-> > a large proportion of log control data.  That'll end up being
-> > responsible for most of the erase traffic.
->
-> Actually, that shouldn't matter too much. For comparison, I did some
-> benchmarks using jffs2 (without compression) as a filesystem for a
-> ramdisk.
->
-> The benchmark wrote data to jffs2, deleted it and repeated this
-> several times to remove statistical noise. Horrible results.
-> Then I got a clue and added "sleep 6" after both writing and deleting,
-> getting roughly twice the performance. Why?
->
-> Under normal operation, the system is idle a lot and the garbage
-> collector (GC) has plenty of time to clean up the mess you made. But
-> the first benchmark was measuring a system without idle times, so all
-> writes were waiting for GC to finally free some space. Wrong.
->
-> Back to the Database:
-> Even if you write data in very small chunks, the system should have
-> enough free time to GC those fragments and reassemble them into larger
-> chunks with less overhead, so this doesn't matter.
->
-> Unless you permanently operate near the limit. Without the free time
-> for GC, this does matter.
->
-> > Still, if you need to be powerfail-safe, I can't see any way of not
-> > doing this.
->
-> Right.
->
-> Jörn
+assumed, that your device operates 20 years, 365 days/year and 24h /day.
+
+If you buffer your small changes in sqlite or on a ramfs, which maybe located 
+in a buffered SRAM, you can reduce the write cycles further and expand the 
+lifetime beyond your retirement age. :)
+
+> If JFFS2 does do a real write on fsync() we will get too many physical
+> writes unless we buffer our inserts/updates into one big transaction in the
+> application layer above the database. On the other hand if JFFS2 doesn't
+> commit changes we risc getting our database file inconsistant if we loose
+> power in the middle :-(
+
+JFSS2 does no write on fsync, as data are already written.
+
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
