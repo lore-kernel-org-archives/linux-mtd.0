@@ -1,22 +1,14 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from f98.law12.hotmail.com ([64.4.19.98] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zon3-0004cL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 02:40:33 +0100
-Received: from fencepost.gnu.org ([199.232.76.164])
-	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.10)
-	id 17zon0-0002jc-00
-	for linux-mtd@lists.infradead.org; Fri, 11 Oct 2002 02:40:31 +0100
-Received: from proski by fencepost.gnu.org with local (Exim 4.10)
-	id 17zomv-0000T4-00
-	for mtd@infradead.org; Thu, 10 Oct 2002 21:40:25 -0400
-Date: Thu, 10 Oct 2002 21:40:24 -0400 (EDT)
-From: Pavel Roskin <proski@gnu.org>
+	id 17zt0z-00053j-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 07:11:13 +0100
+From: "fretre lewis" <fretre_lewis@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] devfs support for read-only MTD block driver
-Message-ID: <Pine.LNX.4.44.0210102118130.9952-100000@marabou.research.att.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: how can I setup all head files before browsing the source code?
+Date: Fri, 11 Oct 2002 06:10:35 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F987MaLJJRGE56bPkzM0001e63b@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,110 +20,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello!
+what I want is only to read and learn some arm-linux kernel code, please 
+note, I mean not compiler kernel or toolchain etc, I just want to use LXR to 
+browse source code.
 
-If I enable devfs and CONFIG_MTD_BLOCK_RO, but not CONFIG_MTD_BLOCK, I
-don't have /dev/mtdblock/ directory.  I tested this with 2.4.17 kernel on
-an embedded i386 system, but I don't see this being fixed in either
-2.4.20-pre10 or 2.5.41.
+before I invoke LXR to work, I need setup head files, for i386-linux, 
+following is enough:
 
-I don't really know much about MTD drivers, so please be careful with my
-patch, although it works for me.
+ln -s /usr/src/linux/include/asm-i386  /usr/include/asm
+ln -s /usr/src/linux/include/linux     /usr/include/linux
 
-The idea of my patch is to copy the devfs code from the read-write block
-driver.  I'm assuming that both drivers cannot coexist in the running
-kernel, but please correct me if I'm wrong.
 
-I renamed devfs_rw_handle to devfs_ro_handle.  Not sure if it makes sense, 
-but it's just a name of a static variable.
+however, I am new to arm-linux, I guess there is more setup than above, for 
+example, I can't find some directories in source tree, like:
 
-The patch was tested with Linux 2.4.17, but this version has been
-readjusted for 2.5.41 for your convenience.  Note that the read-write
-driver in Linux 2.4.x uses register_blkdev() or devfs_register_blkdev()
-dependent on whether devfs is enabled, so the same precaution should
-probably be taken when backporting the patch to 2.4.x kernels.
+    include/asm-arm/arch
+    include/asm-arm/proc
+    ......
+etc
 
-======================================
---- linux.orig/drivers/mtd/mtdblock_ro.c
-+++ linux/drivers/mtd/mtdblock_ro.c
-@@ -22,6 +22,19 @@
- #define DEVICE_NR(device) (device)
- #include <linux/blk.h>
- 
-+#ifdef CONFIG_DEVFS_FS
-+#include <linux/devfs_fs_kernel.h>
-+static void mtd_notify_add(struct mtd_info* mtd);
-+static void mtd_notify_remove(struct mtd_info* mtd);
-+static struct mtd_notifier notifier = {
-+        mtd_notify_add,
-+        mtd_notify_remove,
-+        NULL
-+};
-+static devfs_handle_t devfs_dir_handle = NULL;
-+static devfs_handle_t devfs_ro_handle[MAX_MTD_DEVICES];
-+#endif
-+
- #define RQFUNC_ARG request_queue_t *q
- 
- #ifdef MTDBLOCK_DEBUG
-@@ -216,6 +229,33 @@ static struct block_device_operations mt
- 	.ioctl		= mtdblock_ioctl
- };
- 
-+#ifdef CONFIG_DEVFS_FS
-+/* Notification that a new device has been added. Create the devfs entry for
-+ * it. This code is only used if the read-write driver doesn't do it for us. */
-+
-+static void mtd_notify_add(struct mtd_info* mtd)
-+{
-+        char name[8];
-+
-+        if (!mtd || mtd->type == MTD_ABSENT)
-+                return;
-+
-+        sprintf(name, "%d", mtd->index);
-+        devfs_ro_handle[mtd->index] = devfs_register(devfs_dir_handle, name,
-+                        DEVFS_FL_DEFAULT, MTD_BLOCK_MAJOR, mtd->index,
-+                        S_IFBLK | S_IRUGO | S_IWUGO,
-+                        &mtd_fops, NULL);
-+}
-+
-+static void mtd_notify_remove(struct mtd_info* mtd)
-+{
-+        if (!mtd || mtd->type == MTD_ABSENT)
-+                return;
-+
-+        devfs_unregister(devfs_ro_handle[mtd->index]);
-+}
-+#endif
-+
- int __init init_mtdblock(void)
- {
- 	int err = -ENOMEM;
-@@ -238,6 +278,10 @@ int __init init_mtdblock(void)
- 		err = -EAGAIN;
- 		goto out;
- 	}
-+#ifdef CONFIG_DEVFS_FS
-+	devfs_dir_handle = devfs_mk_dir(NULL, DEVICE_NAME, NULL);
-+	register_mtd_user(&notifier);
-+#endif
- 
- 	blk_init_queue(BLK_DEFAULT_QUEUE(MAJOR_NR), &mtdblock_request);
- 	return 0;
-@@ -250,6 +294,10 @@ out:
- static void __exit cleanup_mtdblock(void)
- {
- 	int i;
-+#ifdef CONFIG_DEVFS_FS
-+	unregister_mtd_user(&notifier);
-+	devfs_unregister(devfs_dir_handle);
-+#endif
- 	unregister_blkdev(MAJOR_NR,DEVICE_NAME);
- 	blk_cleanup_queue(BLK_DEFAULT_QUEUE(MAJOR_NR));
- 	for (i = 0; i < MAX_MTD_DEVICES; i++)
-======================================
+and I can't find some files like:
+     mach-types.h
+     ......
+etc
 
--- 
-Regards,
-Pavel Roskin
+   I think there are many work, say, symlink directories,create new 
+files,etc, would be done automaticly during compiling kernel, however I need 
+not compiler kernel, I just want to use LXR to build cross-reference among 
+the source code, so perhaps, I have to do all of these work manually about 
+setup head files , without these I am afraid LXR can not generate index 
+database rightly.
+
+  supposing I am interested in code about Xscale, how can I setup all head 
+files and other files/dirs referenced?
+
+please help
+
+thank very much
+
+fretre
+
+
+
+
+
+_________________________________________________________________
+Chat with friends online, try MSN Messenger: http://messenger.msn.com
