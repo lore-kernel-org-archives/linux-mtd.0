@@ -1,22 +1,14 @@
-Received: from dsl093-192-209.stl1.dsl.speakeasy.net ([66.93.192.209]
-	helo=newman.jbmsoft.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JF8G-0000eg-Sv
-	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 17:11:01 +0100
-Message-ID: <000f01c32145$f6560b40$150a0ac0@jbmsoft.com>
-From: "Brian T." <btuch@usa.net>
-To: "RobertS" <RobertS@visi.com>,
-	"Chuck Meade" <chuckmeade@mindspring.com>
-References: <IIEEICKJLNEPBBDJICNGEEEFDFAA.chuckmeade@mindspring.com>
-	<3ECE1C02.3090105@visi.com>
-Date: Fri, 23 May 2003 11:11:26 -0500
+Date: Fri, 23 May 2003 17:16:42 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Brian T." <btuch@usa.net>
+In-Reply-To: <000f01c32145$f6560b40$150a0ac0@jbmsoft.com>
+Message-ID: <Pine.LNX.4.44.0305231715140.2461-100000@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: RobertS <RobertS@visi.com>
 cc: linux-mtd@lists.infradead.org
 Subject: Re: A solution for a particular "Magic bitmask 0x1985 not found"
-	error
+ error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,86 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 23 May 2003, Brian T. wrote:
 
-I have seen this also, but it was caused by uploading the jffs2 image to the
-unit using xmodem, which annoyingly pads the last (128 - (SIZE % 128)) of
-the file being uploaded with 0x1A.  I fixed this by padding the end of the
-file with 0xFF prior to upload to make it look erased instead.
+> I have seen this also, but it was caused by uploading the jffs2 image to the
+> unit using xmodem, which annoyingly pads the last (128 - (SIZE % 128)) of
+> the file being uploaded with 0x1A.  I fixed this by padding the end of the
+> file with 0xFF prior to upload to make it look erased instead.
 
-Funny, we actually just found this 1/2 hour ago.
+That's why I added the '-p' option to mkfs.jffs2 many moons ago. It's not 
+quite the same as the others are seeing though -- if you look closer at 
+their messages, the words on the flash that JFFS2 is complaining about 
+aren't all 0x1A1A and aren't at the end of the image; they're at the 
+beginning.
 
-Regards,
-
--Brian
-
-
-> Chuck Meade wrote:
->
-> >Hello,
-> >
-> >Regarding this error message sequence at boot time:
-> >
-> >...
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040000:
-0x2003 instead
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040004:
-0x000c instead
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040008:
-0xdc6d instead
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080000:
-0x2003 instead
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080004:
-0x000c instead
-> >jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080008:
-0xdc6d instead
-> >...
-> >
-> >I had this happen for a long time each time I booted Linux.
-> >I finally found a solution which stopped it, and maybe this
-> >will help anyone else out there who is getting it.  I have
-> >seen it mentioned in the archives, so I know I am not the
-> >first to get this error "triplet".
-> >
-> >The solution was to simply make the jffs2 filesystem with a
-> >newer version of mkfs.jffs2.  I had been using version 1.9
-> >(see output of your "mkfs.jffs2 --version") when I got the
-> >errors, and it stopped when I began using version 1.35.  So
-> >it looks like this message is due to compatibility issues
-> >between the jffs2 support in your kernel and the version of
-> >mkfs.jffs2 that you use.
-> >
-> >One thing of note is that the filesystem did work OK after
-> >spewing all these msgs, they were just a nuisance -- I guess
-> >that's why I lived with them for a while before seeking the
-> >answer. :)
-> >
-> >Chuck Meade
-> >
-> >
-> >______________________________________________________
-> >Linux MTD discussion mailing list
-> >http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
-> >
-> >
-> It seems that we are having similiar experiences. I have also
-> experienced a similiar problem. The addresses were different but the
-> values returned were the same.  When I updated to the latest snapshot of
-> the mkfs.jffs2 utility and started with a fresh file system, the
-> messages went away but only briefly.  After I had been exercising the
-> file system, the messages returned again when powering up.
->
-> I investigated further and came to the conclusion that the file system
-> was unable to "reclaim" the first node on an erase block. In my case
-> these are the nodes at addresses on a multiple of 0x20000.  I verified
-> this by completing filling my file system, then erasing the entire
-> contents, then rebooting the system.  When I did this, the message:
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not .... at 0x.....20000:
-> 0x2003 instead ... occurred for every eraseblock boundary in the mounted
-> partition.
->
-> This problem is just another non-critical item on my open issues list. I
-> will be returning to it at a later date. I expect that your problem has
-> just been masked by the creation of the new file system. It may be
-> worthwhile to test for this problem in a manner similiar to mine.
->
+-- 
+dwmw2
