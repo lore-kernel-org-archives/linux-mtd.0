@@ -1,20 +1,18 @@
 Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AwGLa-0003BA-A3
-	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2004 07:54:18 +0000
+	id 1AwGOY-0003Ei-Tc
+	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2004 07:57:23 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <200402252023.47907.tglx@linutronix.de>
-References: <a06002001bc6281361918@[130.161.115.44]>
-	 <200402252023.47907.tglx@linutronix.de>
+To: Trilok Soni <x000soni@india.ti.com>
+In-Reply-To: <015601c3fc3b$49a70b20$73b6a8c0@ent.ti.com>
+References: <015601c3fc3b$49a70b20$73b6a8c0@ent.ti.com>
 Content-Type: text/plain
-Message-Id: <1077782052.11584.1038.camel@imladris.demon.co.uk>
+Message-Id: <1077782240.11584.1041.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Thu, 26 Feb 2004 07:54:12 +0000
+Date: Thu, 26 Feb 2004 07:57:21 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
-Subject: Re: Handling multiple NAND chips -- take 2
+Subject: Re: Unable to mount rootfs on mtdblock3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-02-25 at 21:22 +0100, Thomas Gleixner wrote:
-> The idea is to add 3 pointers to the nand structure. 
-> p_state		points to state 
-> p_chip_lock	points to chip_lock
-> p_wq			points to wq
+On Thu, 2004-02-26 at 13:06 +0530, Trilok Soni wrote:
 
-/me shudders. No Hungarian Notation please. :)
+> 3. Now I had tried to boot using root=/dev/mtdblock3 command line argument.
+> Here is the kernel -boot output.
+
+In the 2.6 kernel you also need 'rootfstype=jffs2'.
 
 -- 
 dwmw2
