@@ -1,28 +1,28 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12wpvx-00089B-00
-	for mtd-list@infradead.org; Tue, 30 May 2000 18:36:05 +0100
+	id 12wqDI-0008EM-00
+	for mtd-list@infradead.org; Tue, 30 May 2000 18:54:00 +0100
 Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12wpvv-000895-00
-	for cvs-notify@infradead.org; Tue, 30 May 2000 18:36:03 +0100
+	id 12wqDH-0008EG-00
+	for cvs-notify@infradead.org; Tue, 30 May 2000 18:53:59 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel mtdchar.c'
-Message-Id: <E12wpvv-000895-00@infradead.org>
+Subject: MTD CVS update: 'mtd/kernel nftl.c'
+Message-Id: <E12wqDH-0008EG-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 30 May 2000 18:36:03 +0100
+Date: Tue, 30 May 2000 18:53:59 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv31306
+In directory infradead.org:/tmp/cvs-serv31632
 
 Modified Files:
-	mtdchar.c 
+	nftl.c 
 Log Message:
-Primitive fix to the copy from/to user-space problem - vmalloc a buffer
-and bounce through it. Not ideal - some time later when the code has
-settled down more and I'm less concerned about #ifdefs, I'll stick in the
-kiovec solution which will be nicer.
+Trying to debug the #define WE_KNOW_WTF_THIS_DOES_NOT_WORK case. To start
+with, stop it from using both end_request and nftl_end_request when that's
+defined.
+Now to find someone clever to look at it and tell me what I'm doing wrong.
 
 
 
