@@ -1,47 +1,60 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Gnws-00008Y-00
-	for mtd-list@infradead.org; Thu, 11 Jan 2001 20:03:50 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14Gnwr-00008S-00
-	for mtd@infradead.org; Thu, 11 Jan 2001 20:03:49 +0000
-Date: Thu, 11 Jan 2001 20:03:40 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-cc: <mtd@infradead.org>
-Subject: Re: LOCK and UNLOCK functions
-In-Reply-To: <3A5E0C73.887353C5@mvista.com>
-Message-ID: <Pine.LNX.4.30.0101111956500.5758-100000@imladris.demon.co.uk>
+	id 14GoQz-0000Ez-00
+	for mtd-list@infradead.org; Thu, 11 Jan 2001 20:34:57 +0000
+Message-ID: <3A5E19BB.B6F06694@mvista.com>
+Date: Thu, 11 Jan 2001 12:38:19 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: Re: LOCK and UNLOCK functions
+References: <Pine.LNX.4.30.0101111956500.5758-100000@imladris.demon.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Thu, 11 Jan 2001, Alice Hennessy wrote:
+David Woodhouse wrote:
 
-> 1. It doesn't appear to me that suspend affects the locking and
-> unlocking flowcharts - only program and erase.  Is this a correct
-> assumption?
+> On Thu, 11 Jan 2001, Alice Hennessy wrote:
+>
+> > 1. It doesn't appear to me that suspend affects the locking and
+> > unlocking flowcharts - only program and erase.  Is this a correct
+> > assumption?
+>
+> What do you mean? Suspend affects everything, because we're about to turn
+> off the chip (the oldstate stuff is a thinko). If we're in the middle of
+> telling the chip to lock/unlock then suspend has return failure till we're
+> finished.
 
-What do you mean? Suspend affects everything, because we're about to turn
-off the chip (the oldstate stuff is a thinko). If we're in the middle of
-telling the chip to lock/unlock then suspend has return failure till we're
-finished.
+I was referring to the "Block Erase, Program Suspend" command in the STRATA
+spec
+and was wondering  if I need to add checking for  FL_LOCKING  in
+do_read_onechip() as we do for
+FL_ERASING.   Should have been more specific :)
+BTW: what does "thinko" mean?
 
-> 2. The mtdchar.c ioctl call for MEMUNLOCK passes the start and len
-> addresses.  The unlock for the STRATA clears all the lock bits.  So I
-> intend to include logic to reinstate the locked bits that are outside
-> the desired range.  Sound reasonable?
+>
+>
+> > 2. The mtdchar.c ioctl call for MEMUNLOCK passes the start and len
+> > addresses.  The unlock for the STRATA clears all the lock bits.  So I
+> > intend to include logic to reinstate the locked bits that are outside
+> > the desired range.  Sound reasonable?
+>
+> Hmmm. Better to design the API better so it can describe the capabilities
+> of the chip. You don't have to stick to what I threw together - I'm full
+> of crap half the time. Hadn't you realised that yet?
 
-Hmmm. Better to design the API better so it can describe the capabilities
-of the chip. You don't have to stick to what I threw together - I'm full
-of crap half the time. Hadn't you realised that yet?
+Then my choice would be to keep it simple and let userland keep track of
+what lock bits it has set in the past.
 
--- 
-dwmw2
+Alice
 
+>
+>
+> --
+> dwmw2
 
 
 
