@@ -1,14 +1,19 @@
-Received: from f161.law11.hotmail.com ([64.4.17.161] helo=hotmail.com)
+Received: from motgate3.mot.com ([144.189.100.103])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18LkC2-00067B-00
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 13:12:59 +0000
-From: "the muppeteer" <themuppeteer@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: is this normal
-Date: Tue, 10 Dec 2002 14:43:04 +0100
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Message-ID: <F161BW3qoMLdP4GLqfj00010be8@hotmail.com>
+	id 18LkOm-0006At-00
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 13:26:08 +0000
+Reply-To: <fred@sc23.sc.mcel.mot.com>
+From: "fred" <fred@sc23.sc.mcel.mot.com>
+To: <manningc2@actrix.gen.nz>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: Which filesystem can live on one flash sector?
+Date: Tue, 10 Dec 2002 21:56:31 +0800
+Message-ID: <000101c2a053$f2732f80$940879c8@sc.mcel.mot.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20021210071208.F30D7154A1@dragon.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,31 +25,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+Ok, I understand I can't run JFFS at only one sector.
 
-Is this normal ?
+In fact, I have 64k space left for saving configuration data.
+The size of a sector is 64k normally except the bottom sectors that are 8k,
+4k, 4k, 16k, 32k.
+So you see, I have five sectors to run JFFS rather than one 64k sector.
+Then, is it possible to run JFFS on these sectors?
 
-on bootup I get:
+-----Original Message-----
+From: Charles Manning [mailto:manningc2@actrix.gen.nz]
+Sent: Tuesday, December 10, 2002 3:07 PM
+To: fred@sc23.sc.mcel.mot.com
+Subject: Re: Which filesystem can live on one flash sector?
 
-Flash chip found. Total DiskOnChip size: 16Mib
-Possible DiskOnChip with unknown ChipID FF found at 0xe4000
-Possible DiskOnChip with unknown ChipID CA found at 0xe6000
-Possible DiskOnChip with unknown ChipID FB found at 0xe8000
-Possible DiskOnChip with unknown ChipID 8B found at 0xea000
-Possible DiskOnChip with unknown ChipID F8 found at 0xec000
-Possible DiskOnChip with unknown ChipID 89 found at 0xee000
-ftl_cs: FTL header not found.
-M-Systems NAND Flash Translation Layer driver. (C)1999 MVHI
-$Id: nftlcore.c,v 1.73 2001/06/09 01:09:43 dwmv2 Exp $
-nftla: unknown partition table
-NET4: Linux TCP/IP 1.0 for NET4.0
-...
-INIT: version 2.78 booting
-           Welcome to Red Hat Linux
-...
+On Tue, 10 Dec 2002 19:02, you wrote:
+> Hi,
+>
+> I am using CRAMFS plus RAMFS on my board.
+> And there is only one sector left for saving configuration data.
+> Can I put a file system, e.g. JFFS, on it?
 
 
+I don't see how any fs - alive or dead - could live in one sector. You need
+at least one free sector to do garbage collection. (more for any real file
+system).
 
-_________________________________________________________________
-Ontvang je Hotmail & Messenger berichten op je mobiele telefoon met Hotmail 
-SMS http://www.msn.nl/jumppage/
+Sounds to me like you'll just have to use it as raw flash.
+
+-- Charles
