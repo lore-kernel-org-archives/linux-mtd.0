@@ -1,40 +1,78 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 137JTo-0006O1-00
-	for mtd-list@infradead.org; Wed, 28 Jun 2000 16:10:20 +0100
-Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 137JTm-0006Nv-00
-	for mtd@infradead.org; Wed, 28 Jun 2000 16:10:18 +0100
-Date: Wed, 28 Jun 2000 09:12:33 -0600
-Message-Id: <200006281512.e5SFCXw25688@vindaloo.ras.ucalgary.ca>
-From: Richard Gooch <rgooch@ras.ucalgary.ca>
-To: brendan.simon@ctam.com.au
-Cc: mtd@infradead.org
-Subject: Re: Flash chip locking
-In-Reply-To: <395AB066.3070708@ctam.com.au>
-References: <16397.962188563@cygnus.co.uk>
-	<395AB066.3070708@ctam.com.au>
+	id 137JUV-0006OC-00
+	for mtd-list@infradead.org; Wed, 28 Jun 2000 16:11:03 +0100
+Date: Wed, 28 Jun 2000 09:13:51 -0600 (MDT)
+From: Jason Gunthorpe <jgg@ualberta.ca>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/kernel cfi_cmdset_0001.c cfi_probe.c nora.c octagon-5066.c vmax301.c' 
+In-Reply-To: <9649.962182936@cygnus.co.uk>
+Message-ID: <Pine.LNX.3.96.1000628090756.16453A-100000@wakko.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Brendan Simon writes:
-> You are implying that 128us is a large amount of time to wait.  Maybe 
-> with todays processors it is, I don't really know if it is or isn't for 
-> the average processor speed.  Does the udelay() imply that the scheduler 
-> can switch to another process ?  If so, I would have thought that the 
-> scheduling process would take a lot longer that 128us, but I could be 
-> wrong !!!
 
-Even on a P5, scheduling processes is < 10 us. The problem is getting
-control back before they complete their timeslice. If we had an
-interrupt after that 128 us it would be easy.
+On Wed, 28 Jun 2000, David Woodhouse wrote:
 
-				Regards,
+> >  The map driver is the only driver that knows what the eletrical
+> > connection is, if it knows the banks are 4 meg apart then it has to
+> > communicate that up. The only thing this is used for is detection, the
+> > detector can jump to the next bank start and do all of the banks. The
+> > only other option is to probe every block int the mapping region
+> > looking for bank starts, which is gross since the information is
+> > available.
+> 
+> Ah - you mean there are two sets of address lines which are unused - for 
+> example:
 
-					Richard....
-Permanent: rgooch@atnf.csiro.au
-Current:   rgooch@ras.ucalgary.ca
+No, not really..
+ 
+>  A20-A19 : chip select
+>  A18-A17 : not even connected on the chip sockets.
+>  A16-A15 : present but the chips that are plugged in today don't use them
+>  A14-A0  : connected to the chip and in use
+ 
+> The map driver has no clue about the ones in the third category, but it 
+> definitely knows about the second, you're right.
+
+These are all just weird special cases of the same thing. If the flash is
+banked in any way at all the mapped driver knows the bank size so it can
+always say that 'every xxx bytes a new block of flash chips start' the
+probe routine can use that to reliably locate all the flash chips.
+ 
+> I'm inclined to suggest that the map driver should map around the ones 
+> which are hardwired, and let the flash chip driver sort out the rest, 
+> having been given a hint as to the bank size.
+
+It doesn't matter at all, once you add support for any of the cases the
+others you get for free.
+
+> Do we need to expand the map_info structure any further by including the
+> bank size, though? It's likely to be needed only at probe time, so shall we
+> pass it as an extra argument to the _probe functions instead?
+
+You need the bank_size to realign all IO requests from a linear flash
+address to a memory address. The value needs to exist, but it could be
+hidden in the private structure.
+ 
+> >  No, the C99 named member initializers for structs:
+> > struct foo = {name: "Hello",size: 1024};
+> > Makes those big initializers readable. 
+> 
+> Oh right - yeah, that makes sense. Using the form you quote, which is in 
+> fact a GCC extension - C99 would be:
+> 
+> struct foo = { .name = "Hello", .size = 1024 };
+
+Hm.. the one I quoted is used all over the kernel, the C99 version
+doesn't seem to be used at all. I thought they had settled on using C99
+rather than the extension, oh well.
+
+Jason
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
