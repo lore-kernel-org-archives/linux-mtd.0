@@ -1,19 +1,19 @@
-Received: from rezznor.smb.utfors.se ([195.58.112.22])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17PKcO-0003i2-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 11:10:44 +0100
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "John Hall" <John.Hall@optionexist.co.uk>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: [Fwd: cfi_cmdset_0001.c: do_write_buffer bug] 
-Date: Tue, 2 Jul 2002 12:10:42 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLKEANFFAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
+Received: from [194.249.198.85] (helo=kasica.elsis.si)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17PKtV-0003jB-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 11:28:25 +0100
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <541025071C7AC24C84E9F82296BB9B950805E5@OPTEX1.optex.local>
+  charset="iso-8859-1"
+From: Iztok Zupet <iz@vsr.si>
+Reply-To: iz@vsr.si
+To: linux-mtd@lists.infradead.org
+Subject: Re: RedBoot from DoC not working quite well
+Date: Tue, 2 Jul 2002 12:28:59 +0200
+References: <Pine.LNX.4.33.0207011440090.1800-100000@hex.linuxgrrls.org> <200207011603.35218.iz@vsr.si>
+In-Reply-To: <200207011603.35218.iz@vsr.si>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200207021228.59254.iz@vsr.si>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,37 +25,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi John
-
-Has Intel responded yet? If yes, do they have a fix?
-
-         Jocke
-> 
-> 
-> On 20 June 2002 13:25 David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> > John.Hall@optionexist.co.uk said:
-> > >  Not yet. We've spoken to Intel and they acknowledge there might be
-> > >  a problem, but we're waiting for them to get back to us.
-> 
-> > OK, I suspect what we want to do is something like...
-> > 
-> >  Send WriteToBuffer command.
-> >  Poll for a little while for chips to become ready.
-> >  If neither chip is ready, repeat.
-> >  If only one chip is ready, abort the WriteToBuffer. Send a
-> >  zero-length (or one-byte) buffer and then something other than a
-> >  WriteConfirm command, to abort the write. Clear the resulting
-> >  'Invalid Command/ Sequence' error bits which will get set, and start
-> >  again.
-> 
-> Possibly. We're going to wait and see what Intel say, and then submit a
-> patch if needed.
-> 
-> Regards,
-> John Hall
-> 
+On Monday 01 July 2002 16:03, Iztok Zupet wrote:
+> On Monday 01 July 2002 15:41, Jasmine Strong wrote:
+> > On Mon, 1 Jul 2002, Iztok Zupet wrote:
+> > > RedBoot boots fine (int18 or int19). But after formating my DoC with
+> > >
+> > > nftl_format utility:
+> > > 	>>> nftl_format /dev/mtd0 128000
+> >
+> > You can't start a format from that address.  It's not an erase block
+> > boundary.  (Most DoC devices have 8k erase blocks.  THat means 8192
+> > bytes, not 8000.)
+> >
+> > Try erasing from 131072, rather than 128000.
+> >
+> > Jas.
+>
+>  I tried but it still owerwrites or erases my RedBoot.
+> Size of my redboot_firmware is exactly 123.2K.
+>
+> Regards
+> iz
+>
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+
+ It OK now . My RedBoot firware was 8K bytes too big, eg it loaded yust a 
+little pass the 0x20000 in DoC.
+
+Regards
+iz
