@@ -1,13 +1,13 @@
 Received: from h013.c007.snv.cp.net ([209.228.33.241] helo=c007.snv.cp.net)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17WnFb-00054X-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 01:10:03 +0100
-Message-ID: <003a01c231dd$03df6260$37032240@Presario>
+	id 17WnFd-00054Y-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 01:10:05 +0100
+Message-ID: <003b01c231dd$053fdcc0$37032240@Presario>
 Reply-To: "Allen Curtis" <acurtis@directvinternet.com>
 From: "Allen Curtis" <acurtis@directvinternet.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: 2.4.17 64-bit support, read-only
-Date: Mon, 22 Jul 2002 17:03:32 -0700
+Subject: 2.4.17 JFFS2 support, back porting zlib
+Date: Mon, 22 Jul 2002 17:07:00 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -23,11 +23,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-The 2.4.17 distribution that I am using did not properly support 64-bit
-flash. In order to fix this, I got the latest version of the MTD code from
-CVS and integrated that into our source tree. I modified maps/physmap.c to
-provide the partition information required for our configuration but no
-matter what I do the partitions appear to be Read-only. I can not erase or
-mount the partitions with Write enabled.
+I wanted to integrate the latest JFFS2/JFFS file system into our 2.4.17
+source tree. It appears that the interface to "zlib" has changed
+significantly. Does anyone have suggestions for back porting JFFS2 to an
+older kernel source tree?
 
-Any ideas?
+THX
