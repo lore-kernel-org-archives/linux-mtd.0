@@ -1,14 +1,21 @@
-Received: from baikonur.stro.at ([213.239.196.228])
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CAaPk-00029j-Qq
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 16:42:19 -0400
-To: dwmw2@redhat.com
-From: janitor@sternwelten.at
-Date: Thu, 23 Sep 2004 22:42:05 +0200
-Message-ID: <E1CAaPl-00028K-AF@sputnik>
-Cc: nacc@us.ibm.com, janitor@sternwelten.at, linux-mtd@lists.infradead.org
-Subject: [patch 4/4] mtd/cfi_cmdset_0020: replace schedule_timeout() with
-	msleep()
+	id 1CAaj8-0002an-PD
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 17:02:08 -0400
+Date: Thu, 23 Sep 2004 22:01:50 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+Message-ID: <20040923210150.GF25491@home.fluff.org>
+References: <20040920234450.GA17169@home.fluff.org>
+	<m3brfxycuf.fsf@maxwell.lnxi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m3brfxycuf.fsf@maxwell.lnxi.com>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Fix to jedec_probe unlock addresses
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,50 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Sep 22, 2004 at 07:48:40PM -0600, Eric W. Biederman wrote:
+> Ben Dooks <ben-mtd@fluff.org> writes:
+> 
+> > Fix unlock address calculation for non-x8 chips for the
+> > cfi cmdset code, which assumes always X8
+> > 
+> > Patch against 2.6.9-rc2 with 19th September CVS
+> > 
+> > Signed-off-by: Ben Dooks <ben-mtd@fluff.org>
+> > 
+> > --- linux-2.6.9-rc2-bk6-mtd20040919/drivers/mtd/chips/jedec_probe.c 2004-09-20
+> > 13:02:46.000000000 +0100
+> > 
+> > +++ linux-2.6.9-rc2-bk6-mtd20040919-work/drivers/mtd/chips/jedec_probe.c
+> > 2004-09-20 23:21:40.000000000 +0100
+> > 
+> > @@ -2046,7 +2046,15 @@
+> >  	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+> >  	       map->name, cfi_interleave(cfi), cfi->device_type*8, base, 
+> >  	       map->bankwidth*8);
+> > -	
+> > +
+> > +	/* fixup unlock addresses for the cmdset */
+> > +
+> > +	cfi->addr_unlock1 *= cfi_interleave(cfi) * cfi->device_type;
+> > +	cfi->addr_unlock2 *= cfi_interleave(cfi) * cfi->device_type;
+> > +
+> > +	printk(KERN_DEBUG "unlocks at %08x,%08x\n", 
+> > +	       cfi->addr_unlock1, cfi->addr_unlock2);
+> > +
+> >  	return 1;
+> >  }
+> 
+> Hmm.  I think that points out a real issue but I think the bug actually
+> lies in cfi_cmdset_0002.  
+> 
+> That fix makes below comment from cfi_cmdset_0002 clearly wrong.
+> 	/*
+> 	 * The CFI_DEVICETYPE_X8 argument is needed even when
+> 	 * cfi->device_type != CFI_DEVICETYPE_X8.  The addresses for
+> 	 * command sequences don't scale even when the device is
+> 	 * wider.  This is the case for many of the cfi_send_gen_cmd()
+> 	 * below.  I'm not sure, however, why some use
+> 	 * cfi->device_type.
+> 	 */
 
-
-
-Any comments would be appreciated.
-
-Description: Use msleep() instead of schedule_timeout()
-to guarantee the task delays as expected.
-
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
-
-Signed-off-by: Maximilian Attems <janitor@sternwelten.at>
----
-
- linux-2.6.9-rc2-bk7-max/drivers/mtd/chips/cfi_cmdset_0020.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff -puN drivers/mtd/chips/cfi_cmdset_0020.c~msleep-drivers_mtd_chips_cfi_cmdset_0020 drivers/mtd/chips/cfi_cmdset_0020.c
---- linux-2.6.9-rc2-bk7/drivers/mtd/chips/cfi_cmdset_0020.c~msleep-drivers_mtd_chips_cfi_cmdset_0020	2004-09-21 21:07:48.000000000 +0200
-+++ linux-2.6.9-rc2-bk7-max/drivers/mtd/chips/cfi_cmdset_0020.c	2004-09-21 21:07:48.000000000 +0200
-@@ -788,7 +788,7 @@ retry:
- 	chip->state = FL_ERASING;
- 	
- 	spin_unlock_bh(chip->mutex);
--	schedule_timeout(HZ);
-+	msleep(1000);
- 	spin_lock_bh(chip->mutex);
+[snip]
  
- 	/* FIXME. Use a timer to check this, and return immediately. */
-@@ -1087,7 +1087,7 @@ retry:
- 	chip->state = FL_LOCKING;
- 	
- 	spin_unlock_bh(chip->mutex);
--	schedule_timeout(HZ);
-+	msleep(1000);
- 	spin_lock_bh(chip->mutex);
- 
- 	/* FIXME. Use a timer to check this, and return immediately. */
-@@ -1236,7 +1236,7 @@ retry:
- 	chip->state = FL_UNLOCKING;
- 	
- 	spin_unlock_bh(chip->mutex);
--	schedule_timeout(HZ);
-+	msleep(1000);
- 	spin_lock_bh(chip->mutex);
- 
- 	/* FIXME. Use a timer to check this, and return immediately. */
-_
+> Does anyone have cfi cmdset 0002 devices in an interleaved configuration
+> who would care to comment?
+
+I took the jedec_probe alterations as I was unsure wether I was going
+to damage anything else by changing the cfi cmdset 0002 code.
+
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
