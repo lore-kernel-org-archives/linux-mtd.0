@@ -1,18 +1,19 @@
-Received: from lmsmtp04.st1.spray.net ([212.78.202.114])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18AIwP-0001Gx-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Nov 2002 23:53:33 +0000
-Received: from lycos.de (p50859B38.dip.t-dialin.net [80.133.155.56])
-	by lmsmtp04.st1.spray.net (Postfix) with ESMTP id 5A74F47E92
-	for <linux-mtd@lists.infradead.org>; Sat,  9 Nov 2002 01:23:24 +0100 (MET)
-Message-ID: <3DCC55A3.301@lycos.de>
-Date: Sat, 09 Nov 2002 01:24:03 +0100
-From: Indy500 <indy5xl@lycos.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Compile error
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 18AXVa-0002vk-00
+	for <linux-mtd@lists.infradead.org>; Sat, 09 Nov 2002 15:26:50 +0000
+Date: Sat, 9 Nov 2002 16:57:06 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Asier Santamaria <asier_s@telefonica.net>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Compact Flash Reliability Embeded System
+Message-ID: <20021109155706.GA18502@wohnheim.fh-wedel.de>
+References: <001901c28757$46ffd0f0$adef99c1@ordenadorcasa>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <001901c28757$46ffd0f0$adef99c1@ordenadorcasa>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +25,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
+On Fri, 8 November 2002 19:47:21 +0100, Asier Santamaria wrote:
+> 
+> I've read something about the Compact Flash reliability problems on an
+> embedded system. I'm developing an embedded system running Linux and I was
+> thinking to use a Compact Flash as storage drive. But I read that Compact
+> Flash is not the most reliable storage system, that you can have problems
+> during the power failure or bad shutting down of the system (usual on an
+> embedded system), that the CF can death.
+> Anyone has more information about that?
 
-I try to compile the CVS Tree 21.10 and above with linuxkernel 2.4.19 
-but there is always a compile error on File mtdpart.c
+Try http://www.linux-mtd.infradead.org/tech/nand.html
 
-mtdpart.c: In function `part_unpoint':
-mtdpart.c:76: too many arguments to function
-mtdpart.c: In function `add_mtd_partitions':
-mtdpart.c:331: warning: assignment from incompatible pointer type
-make[4]: *** [mtdpart.o] Fehler 1
+Jörn
 
-any Ideas?
+-- 
+Data dominates. If you've chosen the right data structures and organized
+things well, the algorithms will almost always be self-evident. Data
+structures, not algorithms, are central to programming.
+-- Rob Pike
