@@ -1,20 +1,21 @@
-Received: from shyguy.smb.utfors.se ([195.58.112.21])
+Received: from eagle.basari.net.tr ([213.248.128.40])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ciio-0004P3-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 09:32:42 +0100
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: "Dave Ellis" <DGE@sixnetio.com>,
-	<linux-mtd@lists.infradead.org>
-Subject: RE: Disk blocks for long periods 
-Date: Thu, 8 Aug 2002 10:32:40 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLMEJGFFAA.joakim.tjernlund@lumentis.se>
+	id 17cikI-0004PI-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 09:34:15 +0100
+Received: from nurpinar ([195.142.234.243]) by eagle.basari.net.tr
+          (InterMail vK.4.02.00.10 201-232-116-110 license c1a63c2345dd5b62855a869805df768e)
+          with SMTP id <20020808083058.KPE1736.eagle@nurpinar>
+          for <linux-mtd@lists.infradead.org>;
+          Thu, 8 Aug 2002 11:30:58 +0300
+Message-ID: <001301c23eb6$4a184630$3064000a@nurpinar>
+From: "nur" <nurpinar@basari.net.tr>
+To: <linux-mtd@lists.infradead.org>
+Subject: kernel 2.2.18
+Date: Thu, 8 Aug 2002 11:33:32 +0300
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <28015.1028793771@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,45 +27,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> joakim.tjernlund@lumentis.se said:
-> >  I noticed that erase_callback() in erase.c useses spin_lock(), not
-> > spin_lock_bh(). Should it?
-> 
-> It expects to actually be called in bottom-half context, and if it isn't 
-> then nothing else will be. So it's fine to use spin_lock() there.
-OK.
-> 
-> >  I dont understand what using a timer would give us. I suppose that
-> > one could have more the one erase simontainously(one per bank) but
-> > that won't give a significant improvement and erase.c must be made
-> > "bank aware" as well. 
-> 
-> > Unless there is some other advantage, I think you should change the
-> > spec.
-> 
-> Using a timer to check for erase completion means that the process which 
-> submitted the erase doesn't have to be blocked waiting for it. The callback 
-> can happen some time later. In the case of JFFS2, it's kupdated that ends 
-> up stuck in the erase routine for ages.
+I receive this error every time i compile kernel with doc2000 or doc 2001
+support
+I do something wrong?
+Thanks
 
-Maybe erasing should be moved away from kupdate then, to the gc thread or a new
-erase thread that does not mind beeing blocked?
-> 
-> But using a timer to actually do the check doesn't mean we have to call the 
-> completion callback in timer context -- we could use schedule_task() to run 
-> it in process context.
 
-OK, so if schedule_task() is used instead its possible to replace spin_lock_bh
-with spin_lock everywhere?
-
-I think we should change erase.c to do atmost 3 erase & mark in one go.
-That will free up space more quickly when there is a lot of pending erases.
-
- Jocke
-> 
-> --
-> dwmw2
-> 
-> 
-> 
+cc -D__KERNEL__ -I/usr/src/rtlinux_kernel_2.2.18-rtl/include -Wall -Wstrict-
+prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength
+-reduce
+-m486 -DCPU=486 -DMODULE   -c -o doc2000.o doc2000.c
+doc2000.c: In function `init_doc2000':
+doc2000.c:1090: warning: implicit declaration of function
+`inter_module_register'
+doc2000.c: At top level:
+doc2000.c:1094: parse error before `cleanup_doc2000'
+doc2000.c:1095: warning: return-type defaults to `int'
+doc2000.c: In function `cleanup_doc2000':
+doc2000.c:1109: warning: implicit declaration of function
+`inter_module_unregister'
+doc2000.c:1110: warning: control reaches end of non-void function
+doc2000.c: In function `__cleanup_module_inline':
+doc2000.c:1112: warning: return from incompatible pointer type
+make[2]: *** [doc2000.o] Error 1
+make[2]: Leaving directory `/usr/src/rtlinux_kernel_2.2.18-rtl/drivers/mtd'
+make[1]: *** [_modsubdir_mtd] Error 2
+make[1]: Leaving directory `/usr/src/rtlinux_kernel_2.2.18-rtl/drivers'
+make: *** [_mod_drivers] Error 2
