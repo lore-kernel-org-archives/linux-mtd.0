@@ -1,12 +1,12 @@
 Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16uanD-0004PP-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Apr 2002 16:10:52 +0100
+	id 16uuI3-0005So-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Apr 2002 13:00:00 +0100
 Received: from devil.teleline.es (devil.iqc-services.local [192.168.197.3])
-	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g38FqMh05442
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Apr 2002 17:52:22 +0200
-Message-Id: <5.1.0.14.2.20020408170908.01f6f4a0@pop3.terra.es>
-Date: Mon, 08 Apr 2002 17:09:52 +0200
+	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g39CfXh17511
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Apr 2002 14:41:34 +0200
+Message-Id: <5.1.0.14.2.20020409135855.01f8a050@pop3.terra.es>
+Date: Tue, 09 Apr 2002 13:58:58 +0200
 To: linux-mtd@lists.infradead.org
 From: Securez <securez@teleline.es>
 Subject: About get MTD working.
