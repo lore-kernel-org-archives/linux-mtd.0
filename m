@@ -1,7 +1,7 @@
-Date: 16 Aug 2004 15:12:03 -0000
+Date: 16 Aug 2004 15:11:58 -0000
 From: MAILER-DAEMON@conectiva.com.br
 To: linux-mtd-bounces@lists.infradead.org
-Message-Id: <20040816141423.0D13947448@perninha.conectiva.com.br>
+Message-Id: <20040816141418.1D1A5473D8@perninha.conectiva.com.br>
 Subject: failure notice
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -16,26 +16,26 @@ Hi. This is the qmail-send program at conectiva.com.br.
 I'm afraid I wasn't able to deliver your message to the following addresses.
 This is a permanent error; I've given up. Sorry it didn't work out.
 
-<beckmann@burns.conectiva>:
+<fuganti@burns.conectiva>:
 Sorry, no mailbox here by that name. (#5.1.1)
 
 --- Below this line is a copy of the message.
 
 Return-Path: <linux-mtd-bounces@lists.infradead.org>
-Received: (qmail 18818 invoked by uid 0); 16 Aug 2004 15:12:03 -0000
+Received: (qmail 18808 invoked by uid 0); 16 Aug 2004 15:11:58 -0000
 Received: from perninha.conectiva.com.br (200.140.247.100)
-  by burns.conectiva with SMTP; 16 Aug 2004 15:12:03 -0000
+  by burns.conectiva with SMTP; 16 Aug 2004 15:11:58 -0000
 Received: by perninha.conectiva.com.br (Postfix)
-	id E549947448; Mon, 16 Aug 2004 11:14:22 -0300 (BRT)
-Delivered-To: beckmann@conectiva.com.br
+	id E3EB5473D8; Mon, 16 Aug 2004 11:14:17 -0300 (BRT)
+Delivered-To: fuganti@conectiva.com.br
 Received: by perninha.conectiva.com.br (Postfix, from userid 568)
-	id DD0784745F; Mon, 16 Aug 2004 11:14:22 -0300 (BRT)
+	id D0FF0473E4; Mon, 16 Aug 2004 11:14:17 -0300 (BRT)
 Received: from canuck.infradead.org (canuck.infradead.org [205.233.218.70])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id D346947448
-	for <beckmann@conectiva.com.br>; Mon, 16 Aug 2004 11:14:20 -0300 (BRT)
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 71F4B473F1
+	for <fuganti@conectiva.com.br>; Mon, 16 Aug 2004 11:14:14 -0300 (BRT)
 Received: from localhost ([127.0.0.1] helo=canuck.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BwiFQ-0006YI-Qn; Mon, 16 Aug 2004 10:14:04 -0400
+	id 1BwiFP-0006YI-G4; Mon, 16 Aug 2004 10:14:03 -0400
 Received: from e32.co.us.ibm.com ([32.97.110.130])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
 	id 1BwiF0-0006YB-1m
