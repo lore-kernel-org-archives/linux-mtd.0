@@ -1,62 +1,62 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GeVF-0004WU-00
-	for mtd-list@infradead.org; Thu, 11 Jan 2001 09:58:41 +0000
-Received: from [195.166.20.93] (helo=frumious.unidec.co.uk)
+	id 14Gkvm-0006lC-00
+	for mtd-list@infradead.org; Thu, 11 Jan 2001 16:50:30 +0000
+Received: from roma.axis.se ([193.13.178.2])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14GeVD-0004WO-00
-	for mtd@infradead.org; Thu, 11 Jan 2001 09:58:39 +0000
-From: dr john halewood <john@frumious.unidec.co.uk>
-To: David Hamm <dhamm@itrepro.com>, mtd@infradead.org
-Subject: Re: DiskOnChip200 howto
-Date: Thu, 11 Jan 2001 09:58:06 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-References: <01010910331803.23650@workbox.atlanta.itserve.com>
-In-Reply-To: <01010910331803.23650@workbox.atlanta.itserve.com>
+	id 14Gkvj-0006kI-00
+	for mtd@infradead.org; Thu, 11 Jan 2001 16:50:28 +0000
+Date: Thu, 11 Jan 2001 19:58:03 +0100 (CET)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: mstumpf@pobox.com
+cc: Livio Plos <livioplos@bigfoot.com>, mtd@infradead.org
+Subject: Re: howto
+In-Reply-To: <20010110221533.7759.qmail@web2106.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.21.0101111953040.23392-100000@godzilla.axis.se>
 MIME-Version: 1.0
-Message-Id: <0101110958060C.27002@frumious.unidec.co.uk>
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tuesday 09 January 2001 15:28, David Hamm wrote:
-> I've been fighting with a DiskOnChip2000 box for a while now and its about
-> to win.   I've searched the net for specific info on how to use the MTD
-> drivers in the kernel rather than M-Sys driver.  Is there a howto or an old
-> email that describes how to use the NFTL drivers?  Getting them in the
-> kernel is easy but I don't know which device file to use to format the
-> device.
+On Wed, 10 Jan 2001, Michael Stumpf wrote:
+> > Can I boot totally from flash without any other storage support?
+> 
+> There is a patch out there somewhere (search this list, if you can't find it,
+> let me know and I'll get it to you.) that adds a block device to the kernel
+> called "/dev/rom".. it has two modes of operation:
 
-As a quick guide:
+That would be the krom device, I think it was done by the uClinux
+guys. It's not necessary for booting from cramfs though, it was made for
+hackish support of romfs/mmap's directly to flash without going through
+the buffer layer.
 
-Build the mtd support into the kernel.
+> unclear) 4 bytes containing the filesystem size (in bytes), 4 bytes of "00",
+> and then the filesystem image, whatever that may be.  I use cramfs with great
+> success on a very memory-constrained target.
 
-If using modules, I'd suggest ordering them something like (depending on what 
-support you've chosen of course)
+To do that I just replace cramfs_read with this (romfs_start is defined by
+head.S during boot to the place where the cramfs lives):
 
-mtdcore.o
-nftl.o
-mtdchar.o
-mtdblock.o
-doc2000.o
-modprobe.o
+static inline void *cramfs_read(struct super_block *sb, unsigned int
+offset, unsigned int len)
+{
+	return romfs_start + offset;
+}
 
-Run the MAKEDEV script from the utils directory of the cvs tree to create the 
-necessary files in /dev
+Then to be able to boot from it, add this to fs/super.c:
 
-Reboot. You should see a "Disk on Chip found at xxxxx" message followed by a 
-"Giving out device <x> to DiskOnChip...". Generally I'd expect the DoC to be 
-nftla
+#ifdef CONFIG_ROOT_CRAMFS_AS_IMAGE
+       void *data;
+       fs_type = get_fs_type("cramfs");
+       ROOT_DEV = get_unnamed_dev();
+       sb = read_super(ROOT_DEV, NULL, fs_type, root_mountflags, data, 1);
+       goto mount_it;
+#endif
 
+in mount_root just above the CONFIG_NFS_ROOT check.
 
-fdisk /dev/nftla and set up whatever partitions you want, then run mkfs to 
-create the partitions. Mount and enjoy.
+-BW
 
-Alternatively you can create your own filesystems and dd them in directly.
-
-cheers
-john
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
