@@ -1,16 +1,18 @@
-Received: from tlug.sinica.edu.tw ([140.109.13.42])
+Received: from cpe-144-132-145-175.nsw.bigpond.net.au ([144.132.145.175] helo=fuego.linuxaus.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LZNJ-0001rM-00
-	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 02:07:37 +0100
-Date: Sat, 22 Jun 2002 09:07:35 +0800 (CST)
-From: chester@linux.org.tw
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: xyz xyz <watsup@linuxmail.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: X11 or microwindows on a DOC using GRUB?? 
-In-Reply-To: <6989.1024654179@redhat.com>
-Message-ID: <Pine.LNX.4.44.0206220905480.28064-100000@tlug.sinica.edu.tw>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17LY0k-0001k4-00
+	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 00:40:14 +0100
+Received: from beamer.servat.com (beamer.servat.com [192.168.1.6])
+	by fuego.linuxaus.com (Postfix) with ESMTP id 95B2E82BA
+	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 09:40:09 +1000 (EST)
+Subject: Trying to boot linux off a 2MiB M-Sys DoC2000 chip
+From: Gonzalo Servat <gonzalo@linuxaus.com>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-g5NpPqoX3JecIgxrQrwU"
+Date: 22 Jun 2002 09:40:09 +1000
+Message-Id: <1024702809.32427.8.camel@beamer.servat.com>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,15 +24,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> The TinyX server used on the iPAQ is only about 700KiB. That's not really
-> so huge, although it's still larger than microwindows.
->
-> You might also consider using Qt-Embedded.
->
-Well,it's.
-But you can try TinyX with uclibc build,its smaller than glibc ones.
+--=-g5NpPqoX3JecIgxrQrwU
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+For the last couple of weeks I've been getting closer and closer to
+booting a kernel from my 2MiB DoC. :)
+
+I managed to get grub installed onto the DoC yesterday (very exciting
+stuff), and I have a ext2 partition (about 1.8MiB in size)
+
+My question is, how do I configure grub to know how to boot off the DoC?
+I can get it to boot off an IDE HDD (root hd(0,0); kernel /boot/bzImage;
+boot) but how would grub know how to access the DoC's kernel?
+
+Would doc-lilo be a better alternative?
+
+Thanks in advance for any help!
+
+Regards,
+
+Gonzalo.
 
 
 
-CK.
+--=-g5NpPqoX3JecIgxrQrwU
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA9E7lZvTbSWKMx8O4RAtiCAKCjyMOAWRrbjbZyJaWwtaXuBlQ9iQCgzS8R
++yD2iH1rhj9Lw/7xKrhpZws=
+=7xig
+-----END PGP SIGNATURE-----
+
+--=-g5NpPqoX3JecIgxrQrwU--
