@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17myak-0004Nl-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2002 16:30:46 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <AEEFILJDOOHJLBCFOBJDKEINDAAA.thomas.testasecca@etictelecom.com> 
-References: <AEEFILJDOOHJLBCFOBJDKEINDAAA.thomas.testasecca@etictelecom.com> 
-To: "Thomas TESTASECCA" <thomas.testasecca@etictelecom.com>
-Cc: "Mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: Scheduler, or task priority problem ... i need help 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 05 Sep 2002 16:30:45 +0100
-Message-ID: <28951.1031239845@redhat.com>
+	id 17n3nO-0004uG-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2002 22:04:10 +0100
+Received: from [192.168.5.81] (account xjin HELO redswitch.com)
+  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 2516990 for linux-mtd@lists.infradead.org; Thu, 05 Sep 2002 14:04:20 -0700
+Message-ID: <3D77C812.3080108@redswitch.com>
+Date: Thu, 05 Sep 2002 14:09:38 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: writing to jffs2 is so slow?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +24,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-thomas.testasecca@etictelecom.com said:
->  What do i need to do to update my kernel with last mtd cvs ? Is just
-> copying the files ? 
+Hi,
 
-Yep.
+I have an empty mtd partition (capacity is 16 MB) where a jffs2 fs is 
+mounted. The strange observation is that making a first directory on 
+that partition takes almost 2 minutes. So far I observed this behaviour 
+just when making the first directory and just on that particular 
+partition. Can anyone help me to explain this? Is there anything wrong 
+with flash memory (hardware) or MTD device driver or JFFS2? Thanks.
 
---
-dwmw2
+- Shawn.
