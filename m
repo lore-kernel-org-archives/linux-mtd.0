@@ -1,17 +1,24 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ecPh-0002rt-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 14:08:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0109051411460.31189-100000@hex.linuxgrrls.org> 
-References: <Pine.LNX.4.33.0109051411460.31189-100000@hex.linuxgrrls.org> 
-To: kira brown <kira@hex.linuxgrrls.org>
-Cc: Adil EL YOUSSEFI <adilos2@yahoo.com>, linux-mtd@lists.infradead.org
-Subject: Re: mtd/jffs2 src. Help ! 
-Mime-Version: 1.0
+	id 15edhq-0002yE-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 15:31:06 +0100
+Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
+	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id f85Eb5J02611
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 20:07:05 +0530
+Received: (from root@localhost)
+	by ncoretech.com (8.10.0/8.10.0) id f85Eb5V11853
+	for linux-mtd@lists.infradead.org.VIRCHECK; Wed, 5 Sep 2001 20:07:05 +0530
+Received: from ncoretech.com (ws120.ncoretech.com [192.168.1.120])
+	by ncoretech.com (8.10.0/8.10.0) with ESMTP id f85Eb4f11764
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Sep 2001 20:07:04 +0530
+Message-ID: <3B963A00.D054A7FC@ncoretech.com>
+Date: Wed, 05 Sep 2001 14:43:12 +0000
+From: pradeep <pradeep@ncoretech.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Installing the firmware
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 05 Sep 2001 14:14:18 +0100
-Message-ID: <26630.999695658@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +30,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kira@hex.linuxgrrls.org said:
->  Hey, it's not *my* problem.  Our sysadmins have left ssh open...
+Hello ,
 
-Of course they have. You couldn't be expected to do your job if you didn't 
-have access to the outside world. 
+              How do I install  the  actual firmware in DOC2000  once
+again
+as it has a dummy firware installed before and DOC2000 is not recognized
 
-And if they _did_ break it, I'm sure you wouldn't need me to hand you a
-baseball bat and point you in the right direction.
+because of this on DOS, how do I go about installing the firmware  using
 
---
-dwmw2
+mtd utilities , can anyone help me
+
+Thanks
+
+Pradeep
