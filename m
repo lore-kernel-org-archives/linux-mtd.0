@@ -1,19 +1,25 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from mailout.fastq.com ([204.62.193.66])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QAvA-0006wV-Lv
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 20:06:09 +0100
-Date: Wed, 11 Jun 2003 21:06:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Frank R Callaghan <f.callaghan@ieee.org>
-Message-ID: <20030611190642.GA4833@wohnheim.fh-wedel.de>
-References: <200306111438.52353.f.callaghan@ieee.org>
+	id 19QBAL-00074Z-Hs
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 20:21:50 +0100
+Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
+	h5BJMLV86107	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 12:22:21 -0700 (MST)
+	(envelope-from Russ.Dill@asu.edu)
+From: Russ Dill <Russ.Dill@asu.edu>
+To: Pantelis Antoniou <panto@intracom.gr>
+In-Reply-To: <3EE6FC72.10107@intracom.gr>
+References: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
+	 <3EE6FC72.10107@intracom.gr>
+Message-Id: <1055359356.896.38.camel@russ>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200306111438.52353.f.callaghan@ieee.org>
+Date: 11 Jun 2003 12:22:36 -0700
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Help with mtd + jffs2
+cc: Jasmine Strong <jasmine@regolith.co.uk>
+Subject: Re: Cram FS on NAND - How to do this?
+Reply-To: Russ.Dill@asu.edu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 June 2003 14:38:52 -0400, Frank R Callaghan wrote:
+
+> I'm talking about a read only filesystem, and generating
+> the bad block info at mount time.
 > 
-> But then I tryed to put the jffs2 file system image onto
-> the device :=
+> Perhaps I could also use some kind of lazy bad block scanning technique
+> in which the list would only be generated up to point where
+> someone requested a read.
 > 
-> # cp /myapp/jffs2_file_sys.img /dev/mtd0
-> cp: unable to open `/dev/mtd0': No such device
-> #
-> 
-> but I have the device !
-> # ls -al /dev/mtd?
-> crw-------    1 root     root      90,   0 Jan  1  1970 /dev/mtd0
-> crw-------    1 root     root      90,   2 Jan  1  1970 /dev/mtd1
-> crw-------    1 root     root      90,   4 Jan  1  1970 /dev/mtd2
-> crw-------    1 root     root      90,   6 Jan  1  1970 /dev/mtd3
-> crw-------    1 root     root      90,   8 Jan  1  1970 /dev/mtd4
+> Well, and if a block goes bad what was written as good there
+> is nothing any filesystem can do but die complaining.
 
-device != device node
+Bad blocks would be generated at FS creation time, but as time goes on,
+some blocks may start going bad. May not be important for 5 or 6
+devices, but when you go into production with 100+ devices, this would
+become important. Once a block goes bad, but the data is recoverable
+with ECC, you'd want to relocate the block at the end of the FS and note
+it somehow..
 
-A door alone doesn't make a mansion either. :)
+or not:
 
-Set CONFIG_MTD_CHAR to yes or better yet set CONFIG_MTD_BLOCK to yes
-and use /dev/mtdblock* instead.  Those devices are usually much nicer
-unless you really *really* know you don't want them.
+An index is in each oob, for the first n (where n is the size of the FS)
+blocks, the index is just the block number. After that, if a block is
+found bad while writing the FS, or during usage, that block is rewritten
+past the end of the FS in the "reserve area" with the index number of
+that block.
 
-Jörn
+At mount time, the only scanning that would need to be done is in the
+reserve area.
+
 
 -- 
-It's just what we asked for, but not what we want!
--- anonymous
+Russ Dill <Russ.Dill@asu.edu>
