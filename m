@@ -1,21 +1,17 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
+Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AHRv8-0003Ho-II
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 17:58:18 +0000
-Date: Wed, 5 Nov 2003 09:56:58 -0800
-From: Jun Sun <jsun@mvista.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20031105095658.B19785@mvista.com>
-References: <20031104164431.K16745@mvista.com>
-	<1068023691.6065.7.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1068023691.6065.7.camel@hades.cambridge.redhat.com>;
-	from dwmw2@infradead.org on Wed, Nov 05, 2003 at 09:14:51AM +0000
-Content-Type: text/plain; charset=us-ascii
-cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] extend physmap.c to support run-time configure and
-	partitioning (take 3)
+	id 1AHV6M-0003qJ-Oo
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 21:22:06 +0000
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AHV57-0007Xn-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 22:20:49 +0100
+To: linux-mtd@lists.infradead.org
+From: Miernik <miernik@ctnet.pl>
+Date: Wed, 5 Nov 2003 22:20:50 +0100
+Message-ID: <slrnbqiqdi.ke.miernik@tarnica.ctnet.pl>
+Sender: news <news@sea.gmane.org>
+Subject: SMART PCMCIA linear flash: compiled latest CVS - still no luck
+Reply-To: Miernik <miernik@ctnet.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 05, 2003 at 09:14:51AM +0000, David Woodhouse wrote:
-> On Tue, 2003-11-04 at 16:44 -0800, Jun Sun wrote:
-> > David,
-> > 
-> > Since you did not give any preference on how board should
-> > pass partition info to physmap, I just picked a reasonable
-> > one.
-> 
-> Sorry for the lack of response. Been beating up JFFS2 with LTP and it's
-> been, erm, 'interesting'. S'fixed now though :)
-> 
-> > Is this patch now good enough to apply?  Thanks.
-> 
-> I'd still prefer to do it without any static variables in physmap.c. 
-> 
+I finally compiled the code from CVS (substituting the three 
+problematic files with their versions from the Linus' tree).
+My config file:
+http://www.miernik.ctnet.pl/mtd/9-CVS/config-2.6.0-test9
 
-Hmm, can you be more specific?  Here are all static variables that
-matter in physmap.c.  Which ones are you thinking to eliminate?  And in 
-what way?  (Assuming you do not mean I just drop "static" modifier...)
+This time the logs of my debug may be found in 
+http://www.miernik.ctnet.pl/mtd/9-CVS/2/
 
-static struct mtd_info *mymtd;
+Everything seems OK until I tru to do anything with an erase.
 
-static struct mtd_partition *mtd_parts;
-static int                   mtd_parts_nb;
+When I try erase or eraseall on /dev/mtd0 I get it do nothing 
+endlessly, in the syslog it places messages like:
+Nov  4 17:56:25 tarnica kernel: drivers/mtd/maps/pcmciamtd.c:pcmcia_read16_remap(): ofs = 0x00000000 (c00c8000) data = 0x00a8
+millions of times. 
 
-static int num_physmap_partitions;
-static struct mtd_partition *physmap_partitions;
+If I try try to ^C or kill it, it prints something like: 
+"Kernel Panic .... aaaiee interupt handler..."
+and I can only press RESET switch, or Alt+SysRq+B. 
 
-Jun
+BTW the same was for the stock kernel version, if I forgot to write 
+that already.
+
+Does anyone has any ideas what to try more?
+
+How do I get it to try the MTD_OBSOLETE_CHIPS drivers?
+I compiled MTD_SHARP and MTD_JEDEC, but how do I configure it to use 
+them?
+
+If you see that the "sharp" module is loaded in my dump of lsmod, it 
+was just because I've put it in /etc/modules But it did not make it 
+use it.
+
+If anyone had ever sucess with a SMART Modular PCMCIA linear flash, a 
+non-CFI model, can you please send me the output of lsmod, and 
+/var/log/syslog fragment (with CONFIG_MTD_DEBUG_VERBOSE=3 preferably) 
+while you erase/write/ftl_format the card?
+
+-- 
+    Miernik         ________________________ jabber:miernik@amessage.info
+___________________/__ tel: +48608233394 __/      mailto:miernik@ctnet.pl
+Truth about Bush's military operations: 
+http://www.TruthAboutWar.org/
