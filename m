@@ -1,19 +1,17 @@
-Received: from pd9e41b01.dip.t-dialin.net ([217.228.27.1] helo=thomas.tec.autronix.de)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 175A8D-0004zG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 19:56:13 +0100
-Message-Id: <200205071901.g47J1sW09350@thomas.tec.autronix.de>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Thomas Gleixner <gleixner@autronix.de>
-Reply-To: gleixner@autronix.de
-To: John Sutton <john@scl.co.uk>, linux-mtd@lists.infradead.org
-Subject: Re: patches to 2.4.18
-Date: Tue, 7 May 2002 21:01:54 +0200
-References: <02050719233200.21005@diva.localdomain>
-In-Reply-To: <02050719233200.21005@diva.localdomain>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	id 175ArE-00052X-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 20:42:44 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020507204659.A20246@kosh.hut.fi> 
+References: <20020507204659.A20246@kosh.hut.fi>  <20020506151930.A15109@kosh.hut.fi> <20020503201900.A32761@kosh.hut.fi> <20020502155602.A8801@kosh.hut.fi> <13211.1020346858@redhat.com> <20020503201900.A32761@kosh.hut.fi> <28528.1020448474@redhat.com> <20020506151930.A15109@kosh.hut.fi> <25024.1020783726@redhat.com> 
+To: Jarkko Lavinen <jlavi@iki.fi>
+Cc: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
+Subject: Re: Benchmarking JFFS2 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 07 May 2002 20:42:11 +0100
+Message-ID: <7557.1020800531@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,19 +23,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday, 7. May 2002 20:10, John Sutton wrote:
-> I'm a newbie with CVS... but the paragraph above makes it sound like there
-> are a number of different branches, and that the one I need is called
-> 2.4.19-pre.  So I tried:
-No, it means the mtd code in kernel version 2.4.19-pre, which does not 
-contain the latest changes.
+jlavi@iki.fi said:
+>  The code was not the latest and I really hope I am not causing a
+> wrong alarm. Kernel 2.4.15, JFFS2 and mtd code from 11 February 2002
+> snapshot  in ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/. 
 
-Latest changes are available from
+Forgive me - my brain goes in and out of phase with JFFS2, and it's mostly 
+out at this point. Thomas seems generally more clueful than I.
 
-cvs -d:pserver:anoncvs@cvs.infradead.org:/home/cvs co mtd
+Version 1.63 of scan.c contains what was intended to be an optimisation (from
+Joakim Tjernlund), but which should also have the effect of preventing 
+obsolete nodes from ending up on the lists. That's in the trunk code but 
+not the jffs2-2_4-branch.
 
--- 
-Thomas
-___________________________________
-autronix automation GmbH
-http://www.autronix.de gleixner@autronix.de
+--
+dwmw2
