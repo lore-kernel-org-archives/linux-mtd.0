@@ -1,58 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14rV4K-0001SL-00
-	for mtd-list@infradead.org; Mon, 23 Apr 2001 02:23:12 +0100
-Received: from enst.enst.fr ([137.194.2.16])
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14rV4J-0001SF-00
-	for mtd@infradead.org; Mon, 23 Apr 2001 02:23:11 +0100
-Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
-	by enst.enst.fr (Postfix) with ESMTP id 828E31C8C9
-	for <mtd@infradead.org>; Mon, 23 Apr 2001 03:23:05 +0200 (MET DST)
-Received: from FABRICE (droopy.maisel1.rezel.enst.fr [137.194.8.239])
-	by email.enst.fr (8.9.3/8.9.3) with ESMTP id DAA19614
-	for <mtd@infradead.org>; Mon, 23 Apr 2001 03:22:46 +0200 (MET DST)
-Date: Mon, 23 Apr 2001 03:22:14 +0200
-From: Fabrice Gautier <gautier@email.enst.fr>
-To: mtd@infradead.org
-Subject: STPC and Macronix Flash.
-Message-Id: <20010423030902.1FEC.GAUTIER@email.enst.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+	id 14rVX5-0001Yx-00
+	for mtd-list@infradead.org; Mon, 23 Apr 2001 02:52:55 +0100
+Date: Sun, 22 Apr 2001 18:52:23 -0700
+From: David Schleef <ds@schleef.org>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+Cc: David Woodhouse <dwmw2@infradead.org>, mtd@infradead.org
+Subject: Re: JFFS2 as root FS
+Message-ID: <20010422185223.A7345@stm.lbl.gov>
+Reply-To: David Schleef <ds@schleef.org>
+References: <002d01c0ca3a$23ee2f20$5cd9b5d4@jocke> <000901c0c90c$2acad3e0$8b96143e@jocke> <000e01c0c8d6$dfb791c0$0a01a8c0@Win1> <19069.987688353@redhat.com> <2192.987784007@redhat.com> <32289.987852161@redhat.com> <006801c0caa0$bdbf8fc0$8997143e@jocke>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <006801c0caa0$bdbf8fc0$8997143e@jocke>; from Joakim.Tjernlund@lumentis.se on Sat, Apr 21, 2001 at 10:22:08PM +0200
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+On Sat, Apr 21, 2001 at 10:22:08PM +0200, Joakim Tjernlund wrote:
+> > Joakim.Tjernlund@lumentis.se said:
+> > > In the mean time I would appriciate any pointers to fix the endian
+> > > problems in mkfs.jffs2 and how to disable compression in JFFS2(can
+> > > that  be done with mkfs.jffs2?).
+> >
+> > David Schleef gave me patches to do byteswapping the other day. I
+> requested
+> > some cleanups but his code was perfectly usable as it was.
+> 
+> Sure would like to lay my hands on that code ...
 
-I have this cutom STPC board with this odd Macronix Flash (MX29F1610)
-i'm trying to deal with. So i've tried to write an mtd driver for this.
-For now the driver should just try to read the Device ID.
 
-First problem is: In order to enable the flash i have to write in an
-STPC register (a RAM controller register) which open a memory hole.
+I just checked it in, along with a man page describing the various
+options as I understand them.  I also wrote a little shell script
+that creates a test filesystem and compares it to a reference
+filesystem.  The reference filesystems were created on i386 and
+powerpc hosts before I made the endianness changes.  The limit
+of my testing is creating a BE JFFS2 filesystem on an i386 and
+comparing it to the reference filesystem -- they were identical,
+so I called the operation a success.  I'll check in the test
+script in the next couple days.
 
-Then the flash should be mapped to 0x2a00000 so i'm doing an ioremap and
-using the return value to access the flash. Just like it is done in
-physmap.c and oher.
 
-But I can't even get anything. The sample code from Macronix I'm using
-gave good result an VxWorks and eCos. I personnally tested the code for
-eCos so i'm quite sure i'm doing the right thing from the flash point of
-view, but i'm thinking that maybe i get something wrong with the virtual
-memory mapping. (There's no virtual memory stuff in eCos so it's very
-simple)
 
-And anyway is it really safe to manipulate the RAM controller in the mtd
-driver? Didn't that would mess up with linux virtual memory managment?
 
-Is there anyone doing things like that with an STPC ?
-
-Thanks
-
--- 
-Fabrice Gautier <gautier@email.enstfr>
+dave...
 
 
 
