@@ -1,17 +1,17 @@
 Received: from tweedy.ksc.nasa.gov ([128.217.76.165])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17DUc0-0005Sp-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 May 2002 19:25:24 +0100
+	id 17DjiX-0006Q3-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 May 2002 11:33:09 +0100
 Subject: Re: Grub Booting Disk On Chip
 From: Bob Chiodini <Robert.Chiodini-1@ksc.nasa.gov>
 To: Ilguiz Latypov <ilatypov@superbt.com>
 Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <Pine.LNX.4.44.0205301054300.16783-100000@server.superbt.com>
-References: <Pine.LNX.4.44.0205301054300.16783-100000@server.superbt.com>
+In-Reply-To: <Pine.LNX.4.44.0205301138270.16856-100000@server.superbt.com>
+References: <Pine.LNX.4.44.0205301138270.16856-100000@server.superbt.com>
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Date: 30 May 2002 14:25:20 -0400
-Message-Id: <1022783120.19406.108.camel@tweedy.ksc.nasa.gov>
+Date: 31 May 2002 06:33:02 -0400
+Message-Id: <1022841182.19406.118.camel@tweedy.ksc.nasa.gov>
 Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,34 +24,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I did some digging, however dangerous that may be.
+I found the code in stage2.c that attempts to load from the DOC.  At
+about line 1009, I changed the following:
 
-I put a "phword" call in doc_stage1.S to print out the value of
-"doc_seg".  It looks like the routine runs 4 times.  Once for each d000,
-d200, d400, and d600, leaving d600 in doc_seg.
+                  is_opened = find_config(0xE0);
+//                is_opened = find_config(saved_drive);
 
-The DOC2000 I have is 32M.
+It seems safe since this code is inside of an #ifdef BDEV_DISKONCHIP.
+
+I haven't determined where "saved_drive" is getting setup, or why it is
+not set to 0xe0, but forcing it seems to work.
 
 Bob...
 
-On Thu, 2002-05-30 at 10:59, Ilguiz Latypov wrote:
+On Thu, 2002-05-30 at 11:48, Ilguiz Latypov wrote:
+    Bob,
+    
     On 30 May 2002, Bob Chiodini wrote:
     
-    > 1.  I get "DoC 2000 at D600".  The DOC is really at D000.
+    > root (dc0,0)
+    > configfile /boot/grub/menu.lst
+    > 
+    > At this point a get a menu with the second entry highlighted.  Hitting
+    > enter boots from /dev/hda1.  /dev/hda1 is the only disk on the system.
     
-    Weird.  Looks like BIOS calls DoC 2000 firmware with a different value of
-    Command Segment register.  I don't know if addressing D000:0 by offsetting
-    the D600 segment with a different value of IP register is possible.
+    Does GRUB show unsuccessful attempts to load /boot/grub/menu.lst from the 
+    disk 0xE0 before going to interactive mode?  
     
-    > default=1
-    > [...]
-    > 2.  I get several messages about GRUB trying to find
-    > /boot/grub/menu.lst.  None of the messages indicate drive 0xE0.
+    Also, the fact that menu.lst is a symbolic link could confuse the stripped
+    down ext2 filesystem driver of GRUB.  Can you remove the link and create a 
+    regular configuration file?
     
-    Does the "default" parameter in menu.lst makes GRUB attempt to load the
-    second entry which refers to the disk 0x80?
+    > It looks like DS is saved as the address of the DOC, if it is not a
+    > Millenium DOC.
     
-    Ilguiz
+    Oops, you are right.  In fact, the read-only initial program loader of DoC 
+    2000 will copy the firmware from the flash memory to 0x2000:0 before 
+    jumping there with the DS segment pointing to the DoC BIOS window.  Here 
+    is the David's comment in the patch:
+    
+            * With DoC 2000, _start is loaded at 0x20000 by the IPL,
+            * and is jumped to with CS:IP 0x2000:0, DS is <DoC segment>.
+    
+    Later DS is stored in %cs:doc_seg where %cs holds the segment at the end
+    of conventional RAM.
+    
 -- 
 Bob Chiodini
 Sr. Communications Engineer
