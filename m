@@ -1,16 +1,28 @@
-Date: Tue, 16 Nov 2004 16:42:54 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20041116131632.GD15759@synertronixx3>
-Message-ID: <Pine.LNX.4.58.0411161642460.27293@phoenix.infradead.org>
-References: <20041116124403.GC15759@synertronixx3>
-	<Pine.LNX.4.58.0411161258350.25950@phoenix.infradead.org>
-	<20041116131632.GD15759@synertronixx3>
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CU72C-0001QE-2i
+	for linux-mtd@lists.infradead.org; Tue, 16 Nov 2004 12:22:29 -0500
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 67955DD78
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Nov 2004 17:22:10 +0000 (GMT)
+Received: from zeta.dmz-eu.st.com (localhost [127.0.0.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F0F975998
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Nov 2004 17:22:25 +0000 (UTC)
+Received: from mail2.agr.st.com (mail2.agr.st.com [164.130.4.72])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EDB57473CF
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Nov 2004 17:22:24 +0000 (GMT)
+From: Domenico DI TULLIO <domenico.di-tullio@st.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 16 Nov 2004 18:22:05 +0100
+Message-ID: <001001c4cc00$cc1ee6a0$a83682a4@nap.st.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 Oops on 2.6.10-rc1-mm5
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Mtd for NAND with page 2112k
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Konstantin Kletschke wrote:
-> Is the root filesystem copyied together by ptxdist-0.5.2,
-> device_table.txt comntains some device nodes and file perission things,
-> is its content importand? 
-Theoretically may be.
+Dear all,
 
+I have a question. Do the MTD version - 19 sept. 2004 support also page =
+2112K for NAND device?
+If no, there is another version that support this feature?
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Thank for your help,
+Domenico
