@@ -1,17 +1,21 @@
-Received: from law14-oe61.law14.hotmail.com ([64.4.20.196] helo=hotmail.com)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19V95J-0002nB-M1
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 13:09:09 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Tue, 24 Jun 2003 23:00:52 -0700
-MIME-Version: 1.0
-Message-ID: <Law14-OE616yVTdZlEQ00051d3e@hotmail.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 19V9bq-0002yK-SI
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2003 13:42:46 +0100
+From: David Woodhouse <dwmw2@redhat.com>
+To: Russell King <rmk@arm.linux.org.uk>
+In-Reply-To: <20030623010031.E16537@flint.arm.linux.org.uk>
+References: <20030623010031.E16537@flint.arm.linux.org.uk>
+Message-Id: <1056544988.24294.9.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 25 Jun 2003 13:43:09 +0100
+Sender: David Woodhouse <dwmw2@redhat.com>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: "Uclinux-Dev@Uclinux.Org" <uclinux-dev@uclinux.org>
-Subject: JFFS2 MOunt problem
+cc: linux-mtd@lists.infradead.org
+cc: Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Fix mtdblock / mtdpart / mtdconcat
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
-I have built a kernel in RAM and Put in Jffs2 Support with two partitions.
+On Mon, 2003-06-23 at 01:00, Russell King wrote:
+> Dirtily disable ECC support; it doesn't work when mtdpart is layered
+> on top of mtdconcat on top of CFI flash.
+> 
+> There is probably a better fix, but that's for someone else to find.
 
-On Booting However I get these messages for a huge number of times
-..........
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e20c8:
-0x0007 id
-...........
-JFFS2: Erase block at 0x000c0000 is not formatted. It will be erased
-.....
-...........
+I had to run 'indent' on mtdconcat.c before I could stand to even look
+for it, so I haven't attached the patch here -- but could you try v1.6
+from CVS, which should refrain from pretending to have ecc/oob access
+functions of none of the subdevices have them, and hence fix the problem
+you observed.
 
-when running the command
- mount -t jffs2 /dev/mtdblock1 /mnt
-
-I get
-
-mount: Mounting /dev/mtdblock1 on /mnt failed: No such device
-
-What could be the reason?
-
-Vikram
+-- 
+dwmw2
