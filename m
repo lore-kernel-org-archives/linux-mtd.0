@@ -1,19 +1,16 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16g33k-0006sb-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 12:19:48 +0000
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: scan.c & ACCURATE 
-Date: Wed, 27 Feb 2002 13:29:40 +0100
-Message-ID: <IGEFJKJNHJDCBKALBJLLAEOEFBAA.joakim.tjernlund@lumentis.se>
+	id 16g3wy-0006xJ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 13:16:52 +0000
+Message-ID: <003201c1bf92$97c3b340$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: I need your help . 
+Date: Wed, 27 Feb 2002 08:26:46 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <22139.1014797854@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,11 +22,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> Sorry, was confusing node_crc with hdr_crc. You're absolutely right. What 
-> I've actually done is move the logic to jffs2_erase_eraseblock(), and made 
-> it trigger for all types of node.
+hiram@thyme.com.tw said:
 
-yes, that's a better place.
+> Sorry, we don,t support UnitSizeFactor of !=1 yet
 
- Jocke 
+I've seen this happen with the latest versions (5.0) of the M-Systems firmware.  Using the
+4.2 version (still available at www.m-sys.com) makes this problem go away.
+
+To clarify, use the DOS DFORMAT utility with the DOC42.EXB file.  The TrueFFS driver for
+Linux is *not* needed - as this is what the open-source MTD drivers are replacing.
