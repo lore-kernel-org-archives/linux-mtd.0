@@ -1,47 +1,55 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZWK2-0006La-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 11:00:34 +0100
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 12ZZ8Y-0000PV-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 14:00:54 +0100
+Received: from colo.asti-usa.com ([205.252.89.99] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZWK1-0006LU-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 11:00:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Cc: dhinds@pcmcia.sourceforge.org
-Subject: FTL endianness
-Mime-Version: 1.0
+	id 12ZZ8X-0000PP-00
+	for mtd@infradead.org; Mon, 27 Mar 2000 14:00:53 +0100
+Received: from zentropix.com ([195.166.67.91])
+	by colo.asti-usa.com (8.9.3/8.9.3) with ESMTP id IAA06131
+	for <mtd@infradead.org>; Mon, 27 Mar 2000 08:06:30 -0500
+Message-ID: <38DF5BE8.1700BEE8@zentropix.com>
+Date: Mon, 27 Mar 2000 14:02:32 +0100
+From: Trevor Woolven <trevw@zentropix.com>
+MIME-Version: 1.0
+To: MTD <mtd@infradead.org>
+Subject: GRUB vs LILO
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 27 Mar 2000 11:01:37 +0100
-Message-ID: <6457.954151297@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I'm porting the latest FTL code to the MTD system. I see code like this:
+Does anyone know if GRUB has an in-built limit to the size of DOC you
+can use it with?
 
-  if ((header.NumEraseUnits > 65536) || (header.BlockSize != 9) ||
-	(header.EraseUnitSize < 10) || (header.EraseUnitSize > 31) ||
-	(header.NumTransferUnits >= header.NumEraseUnits)) {
-	printk(KERN_NOTICE "ftl_cs: FTL header corrupt!\n");
-	return -1;
-    }
+I've got a 4MB DOC2000 and a 24MB DOC2000, both with very similar
+filesystems & kernels on. I can boot my system (from hard-disk or DOC)
+using LILO (with Dvir Oren's patch applied) with either device installed
+but GRUB will only allow me to use the smaller one.
 
-This is odd - unless I'm missing something, it means that FTL on bigendian
-machines has to be bigendian, and FTL on littleendian machines has to be
-littleendian. And that you can't swap flash cards between the two.
+My command line is:
+grub> kernel (hd0,0)/mtd/bzImage root=/dev/hda5
 
-The NFTL spec certainly says that the format on the media should be 
-little-endian, so I byteswap it all. Isn't this the case for FTL?
+and I get:
 
-If so - how many people are actually using FTL on BE machines? If there aren't 
-{m,}any, we can just fix it and forget about it. Otherwise we could make it 
-conditional and/or provide two modules - ftl_be and ftl_le.
+  [Linux-bzImage, setup=0x800, size=0x88440]
 
+Selected item cannot fit into memory
 
---
-dwmw2
+Any help much appreciated.
 
+Thanks
 
+Trevor.
+-- 
+Trevor Woolven - Director of Customer Applications Engineering
+Zentropix Inc - a Lineo company
+
+Tel: +44 (0)1273 234 647	 Fax: +44 (0)1273 704 482
+
+Visit http://www.zentropix.com/ for Real Time Linux Tools
+Visit http://www.realtimelinux.org/ for Real Time Linux Information
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
