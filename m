@@ -1,86 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14siL4-0000PY-00
-	for mtd-list@infradead.org; Thu, 26 Apr 2001 10:45:30 +0100
-Received: from moutvdom01.kundenserver.de ([195.20.224.200])
+	id 14slUN-0001i6-00
+	for mtd-list@infradead.org; Thu, 26 Apr 2001 14:07:19 +0100
+Received: from finch-post-10.mail.demon.net ([194.217.242.38])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14siL3-0000PS-00
-	for mtd@infradead.org; Thu, 26 Apr 2001 10:45:29 +0100
-Received: from [195.20.224.209] (helo=mrvdom02.schlund.de)
-	by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #2)
-	id 14siKp-0003Ih-00
-	for mtd@infradead.org; Thu, 26 Apr 2001 11:45:15 +0200
-Received: from pd950302c.dip.t-dialin.net ([217.80.48.44] helo=splash.psionic.de)
-	by mrvdom02.schlund.de with esmtp (Exim 2.12 #2)
-	id 14siKn-0000wT-00
-	for mtd@infradead.org; Thu, 26 Apr 2001 11:45:13 +0200
-Date: Thu, 26 Apr 2001 11:49:20 +0200
-From: Jochen Schaeuble <psionic@psionic.de>
-To: mtd@infradead.org
-Subject: slram.c modifications
-Message-ID: <20010426114920.B1198@psionic.de>
-Reply-To: psionic@psionic.de
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
-Content-Disposition: inline
+	id 14slUM-0001i0-00
+	for mtd@infradead.org; Thu, 26 Apr 2001 14:07:18 +0100
+Received: from activesilicon.demon.co.uk ([212.228.31.28] helo=activesilicon.co.uk)
+	by finch-post-10.mail.demon.net with esmtp (Exim 2.12 #1)
+	id 14slUA-0002sS-0A
+	for mtd@infradead.org; Thu, 26 Apr 2001 13:07:06 +0000
+Received: from p90nt4 (p90nt4.activesilicon.co.uk [192.168.1.64])
+	by activesilicon.co.uk (8.11.3/8.11.3) with SMTP id f3QD6tm23680
+	for <mtd@infradead.org>; Thu, 26 Apr 2001 14:06:55 +0100
+Message-ID: <01C0CE5A.276D58F0.chris.read@activesilicon.co.uk>
+From: Chris Read <chris.read@activesilicon.co.uk>
+Reply-To: "chris.read@activesilicon.co.uk"
+	 <chris.read@activesilicon.co.uk>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Power blackouts and brownouts
+Date: Thu, 26 Apr 2001 14:06:56 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Does anyone know what actually happens to a flash chip when the power 
+starts to fail during an erase or a write cycle? We are all trying to write 
+code which can recover when abruptly halted at any point, but can all the 
+devices which we are using claim the same?
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have noticed that several flash devices have a power on reset line; most 
+however do not. Whilst I appreciate that flash devices are not fully static 
+like SRAM or EPROM, and therefore must have some way of initialising in a 
+known state at power up; most devices appear to not need this external 
+signal. My hypothesis is therefore that this line may be more for abruptly 
+stopping any internal state machine during the first stages of a brown-out 
+whilst there is still sufficient power available to do so.
 
-After reading the slram sources I found two things. First of all the
+Any thoughts?
 
-memset(mymtd, 0, sizeof(*mymtd));
+Chris Read
 
-In my opinion this is not neccesary because this is done two lines below this
-one. The next thing I found is the
 
-memset(mymtd->priv, 0, sizeof(struct mypriv));
-
-If the allocation of the priv field failed above mymtd is set to NULL. If
-the priv-field is accessed I guess this would lead to a segmentation fault.
-
-Attached to this mail I send a patch to cover both this issues. I hope this
-may be helpfull in some way.
-
-jochen
-
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="slram.patch"
-
-Index: slram.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/devices/slram.c,v
-retrieving revision 1.14
-diff -u -r1.14 slram.c
---- slram.c	2001/01/11 15:17:42	1.14
-+++ slram.c	2001/04/26 09:38:41
-@@ -156,8 +156,6 @@
- 
- 	mymtd = kmalloc(sizeof(struct mtd_info), GFP_KERNEL);
- 	
--	memset(mymtd, 0, sizeof(*mymtd));
--	
- 	if (mymtd)
- 	{
- 		memset((char *)mymtd, 0, sizeof(struct mtd_info));
-@@ -166,8 +164,9 @@
- 		{
- 			kfree(mymtd);
- 			mymtd = NULL;
-+		} else {
-+			memset(mymtd->priv, 0, sizeof(struct mypriv));
- 		}
--		memset(mymtd->priv, 0, sizeof(struct mypriv));
- 	}
- 
- 	if (!mymtd)
-
---ZGiS0Q5IWpPtfppv--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
