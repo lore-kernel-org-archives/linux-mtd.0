@@ -1,62 +1,78 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143Uab-0003Vj-00
-	for mtd-list@infradead.org; Wed, 06 Dec 2000 02:45:49 +0000
-Received: from [203.46.70.199] (helo=singularity.tronunltd.com)
+	id 143UhM-0003Y7-00
+	for mtd-list@infradead.org; Wed, 06 Dec 2000 02:52:48 +0000
+Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.gn.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 143UaZ-0003Vd-00
-	for mtd@infradead.org; Wed, 06 Dec 2000 02:45:47 +0000
-Date: Wed, 6 Dec 2000 12:45:36 +1000
-Message-Id: <200012060245.MAA20187@singularity.tronunltd.com>
-To: "Ollie Lho" <ollie@sis.com.tw>
+	id 143UhL-0003Y1-00
+	for mtd@infradead.org; Wed, 06 Dec 2000 02:52:47 +0000
+Date: Tue, 5 Dec 2000 21:52:37 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Ian <Relativity@HumanHeuristic.com>
+cc: <mtd@infradead.org>, <linuxbios@lanl.gov>
 Subject: Re: Problems with r/w on mtdblock0
-From: "Ian" <Relativity@HumanHeuristic.com>
-Cc: mtd@infradead.org
-Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+In-Reply-To: <200012060228.MAA20125@singularity.tronunltd.com>
+Message-ID: <Pine.LNX.4.30.0012052137370.2601-100000@xanadu.gn.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-> Of course it WILL BEHAVIOR THIS WAY !!!!
-What is /dev/mtd0 ?
+
+On Wed, 6 Dec 2000, Ian wrote:
+
+>
+> Well, that's how this started;
+>
+>
+>  >    bash# dd if=/dev/zero of=/dev/mtdblock0 bs=512 count=1
+>  >    end_request: I/O error, dev 1f:00 (mtdblock), sector 0
+>  >    dd: /dev/mtdblock0: Input/output error
+>  >    1+0 records in
+>  >    0+0 records out
+>  >
+>  >    bash# /bin/dd if=/dev/mtdblock0 of=/dev/null bs=512 count=1
+>  >    end_request: I/O error, dev 1f:00 (mtdblock), sector 0
+>  >    /bin/dd: /dev/mtdblock0: Input/output error
+>  >    0+0 records in
+>  >    0+0 records out
+
+The above should be considered as a mtdblock bug IMHO.
+
+> .. and Ollie said ...
+>
+>  >        The /dev/mtdblockN device the the "block device" node for MTD devices.
+>  >  In the DoC case, it can only read/write data in 8KB block (the erase size).
+>  >  You can not read/write 512B on itm it will get "cached" by the driver. If
+
+It shouldn't matter.  The driver will actually write 8k if that's the erase
+size regardless of the size of your access.
+
+>  >  you are playing with the IPL stuff, WRITE TO /dev/mtd0.
+
+Hmmm....  What's IPL?
+
+> ... which then started a series of questions about whether or not its being cached
+> and I'm just rebooting too soon, if that's possible.
+
+No it's not, unless you actually reboot before dd return to the shell
+prompt.
+
+> *BUT* .. as above .. I'm getting
+> errors to that device (that I didn't used to).
+
+... and that you shouldn't.
+
+I just don't have any hardware with DiskOnChip or NAND flash to test and fix
+the problem... therefore I'm not aware of the difference with NOR flash as
+far as the block interface is concerned.
+
+Any hints someone?
 
 
-Is it a "raw" device ... do I see unhindered access to the DoC Millennium, or am
-I being processed in some way (maybe address mapped) .. ?
 
-
-
- 
-> The DoC has an NAND flash chip in side. For NAND flash chip
-> you can only turn each bit form 1 to 0 by WRITE operation,
-> not the other way around. The only way to turn a 0 bit to 1
-> is by a ERASE operation. This is why I have to erase the first
-> few Erase Blocks befor writing the DoC in my loaddoc script.
-> 
-> # Erase the first 128 pages of the DoC,
-> # 128 pages == 128 page * 512 bytes per page == 1 MB
-> ./erase /dev/mtd0 0 128
-> 
-> # Use dd to (zero) pad linuxbios.strip to 63 KB
-> dd conv=sync bs=63k if=$LINUXBIOS/util/config/winfast/linuxbios.strip 
-> of=linuxbios.block
-> 
-> # Use dd to wrtie IPL to the first and second pages (page 0, 1) on the DoC
-> # N.B. if you are using 2.4.0-test10 and later kernel, the conv=notrunc
-> # is neceressary.
-> dd if=$LINUXBIOS/util/config/winfast/docipl of=/dev/mtd0 conv=notrunc
-> dd if=$LINUXBIOS/util/config/winfast/docipl of=/dev/mtd0 seek=1 conv=notrunc
-> 
-> 
-> Ollie
-> 
-> 
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-> 
-
---
-http://HumanHeuristic.com/
-"Bringing people together in a world full of computers"
+Nicolas
 
 
 
