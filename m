@@ -1,37 +1,28 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 140nxU-0004I0-00
-	for mtd-list@infradead.org; Tue, 28 Nov 2000 16:50:20 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 140nxT-0004Ht-00
-	for mtd@infradead.org; Tue, 28 Nov 2000 16:50:19 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <00B4D286538DD311BC6E005004E9EFC73B0F6C@M4EXCH> 
-References: <00B4D286538DD311BC6E005004E9EFC73B0F6C@M4EXCH> 
-To: Simon Munton <Simon.Munton@m4data.co.uk>
+	id 140o0c-0004JK-00
+	for mtd-list@infradead.org; Tue, 28 Nov 2000 16:53:34 +0000
+Message-ID: <00B4D286538DD311BC6E005004E9EFC73B0F6E@M4EXCH>
+From: Simon Munton <Simon.Munton@m4data.co.uk>
+To: David Woodhouse <dwmw2@infradead.org>
 Cc: mtd@infradead.org, "JFFS (E-mail)" <jffs-dev@axis.com>
-Subject: Re: Oops in JFFS 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Nov 2000 16:49:36 +0000
-Message-ID: <2744.975430176@redhat.com>
+Subject: RE: Oops in JFFS 
+Date: Tue, 28 Nov 2000 16:53:29 -0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+> -----Original Message-----
+> 
+> Which didn't happen before?
+> 
 
-Appears to be dying at 
+No - after the first oops, anything that was talking to JFFS just stopped,
+and trying to unmount JFFS came back with device busy.
 
-    printk("***jffs_remove(): file = \"%s\", ino = %ld\n", _name, dentry->d_inode->i_ino);
-
-dentry->d_inode == NULL?
-
-
-
---
-dwmw2
-
-
+Simon
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
