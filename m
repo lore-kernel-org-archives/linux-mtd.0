@@ -1,52 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13pK7T-0004Pl-00
-	for mtd-list@infradead.org; Sat, 28 Oct 2000 01:45:11 +0100
-Received: from [208.201.248.136] (helo=nt.Broadlink.com)
+	id 13pYBY-0008G5-00
+	for mtd-list@infradead.org; Sat, 28 Oct 2000 16:46:20 +0100
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13pK7S-0004Pf-00
-	for mtd@infradead.org; Sat, 28 Oct 2000 01:45:11 +0100
-Message-ID: <39FA2171.E9D9EB63@broadlink.com>
-Date: Fri, 27 Oct 2000 17:44:33 -0700
-From: John Whipple <john@broadlink.com>
+	id 13pYBU-0008Fz-00
+	for mtd@infradead.org; Sat, 28 Oct 2000 16:46:19 +0100
+Date: Sat, 28 Oct 2000 16:45:12 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: John Whipple <john@broadlink.com>
+cc: mtd@infradead.org
+Subject: Re: DOC + MTD + Advantech Biscuit = nothing?
+In-Reply-To: <39FA2171.E9D9EB63@broadlink.com>
+Message-ID: <Pine.LNX.4.21.0010281639090.19542-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: DOC + MTD + Advantech Biscuit = nothing?
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
+On Fri, 27 Oct 2000, John Whipple wrote:
 
-I'm using a PCM-4823, Linux 2.2.17 with the most recent CVS patch (dated
-Oct 25).  I achieve the same result with DOC2000 4MB, DOC2000 8MB, and
-Millenium 8MB, whether modular or built-in:
+> Obviously the DOC is not being found,
 
-Upon bootup/insertion of modules:
+Looks like it - can you check it's not turning up in /proc/mtd? 
+When using modules, make sure doc2000.o and doc2001.o are either loaded
+before docprobe.o, or they're somewhere where modprobe can find and
+autoload them.
 
-Initializing MTD Layer
-M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
-$Id: mtd-patch-2.2.17,v 1.1 2000/10/25 19:04:35 sjhill Exp $
 
-and when I run "fdisk /dev/nftla":
+> but If I have the address jumpered to something other than D400, I get:
+> unable to register NFTL block device
 
-NFTL_open
-ENODEV: thisNFTL = 0, minor = 23808, ip = c0a34440, fp = c056a4a0
-NFTL_open
-ENODEV: thisNFTL = 0, minor = 23808, ip = c0a34440, fp = c056a4a0
-
-Obviously the DOC is not being found, but If I have the address jumpered
-to something other than D400, I get:
-
-unable to register NFTL block device
-
-Any helpful hints?  I need them!
+That really shouldn't depend on where the DiskOnChip is jumpered to or
+whether it's found or not. Play with different locations for it until you
+get it to turn up in /proc/mtd. Worry about NFTL later. The error message
+you quoted looks like you tried to load the NFTL module into a kernel with
+NFTL support builtin. Check for nftl in /proc/devices.
 
 -- 
-John Whipple / Geek Dept., BroadLink Communications, Inc. / Linux 2.2
-Calm down, they're just zeroes and ones.
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
