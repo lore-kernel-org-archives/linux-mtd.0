@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [213.154.159.190] (helo=pinot.profis.ro ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fU3m-0003ye-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 22:57:30 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <003c01c1be50$93d84590$e297000f@SNAGGLE> 
-References: <003c01c1be50$93d84590$e297000f@SNAGGLE> 
-To: "Christopher Hoover" <ch@murgatroid.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: patch for lock/unlock with varsize (against infradead cvs) 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 25 Feb 2002 23:08:47 +0000
-Message-ID: <7546.1014678527@redhat.com>
+	id 16fULD-00040j-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 23:15:32 +0000
+Received: from localhost (IDENT:rcorlan@localhost.localdomain [127.0.0.1])
+	by pinot.profis.ro (8.9.3/8.8.7) with ESMTP id BAA01289
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 01:30:10 -0500
+Date: Tue, 26 Feb 2002 01:30:10 -0500 (EST)
+From: Radu Corlan <rcorlan@pcnet.ro>
+To: linux-mtd@lists.infradead.org
+Subject: Support for parallel access in nand chips
+In-Reply-To: <0202251944320H.03406@thomas>
+Message-ID: <Pine.LNX.4.10.10202260121390.701-100000@pinot.profis.ro>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +24,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ch@murgatroid.com said:
->  (I'm not sure this applies cleanly anymore but it did as of
-> Valentine's Day.) 
+On our application (a PPC405 embedded system), we use two TC58256 NAND
+chips conected on a 16-bit bus. we designed it this way in order to
+increase the read/write speed - it would double our bandwidth. The
+problem, of course, is that nand.c only accesses the flash 8 bits at a
+time.
 
-It doesn't - I cleaned up the #ifdef CFI_WORD_64 stuff. Can I have another? 
-Sorry to be a pain.
+We intend to hack nand.c to use the 16-bit access (and make a special
+entry in nand_chip with a double erase_size), but i'd like to know if
+anybody thought of supporting the parallel access.
 
---
-dwmw2
+Radu
+
+-------------
+Radu Corlan           Snail Mail: Bucuresti sect. 1, 
+rcorlan@pcnet.ro             str. Argentina nr. 28, 71206 Romania
+
+   You can still escape the "Gates" of Hell!   
+                 Use Linux!                       
+-------------
