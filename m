@@ -1,22 +1,21 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=executor.cambridge.redhat.com)
+Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19sNYi-0006Vi-Nw
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Aug 2003 15:15:32 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: John Hall <john-news1@cambridgetechgroup.com>
-In-Reply-To: <414.3f4e0a87.b6729@irwin2.crw.uk.net>
+	id 19sNwc-0006mj-U6
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Aug 2003 15:40:15 +0100
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 19sNww-0002JY-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Aug 2003 16:40:34 +0200
+To: linux-mtd@lists.infradead.org
+From: "John Hall" <john-news1@cambridgetechgroup.com>
+Date: Thu, 28 Aug 2003 15:25:44 +0100
+Message-ID: <9bb.3f4e10e8.4a743@irwin2.crw.uk.net>
 References: <6306.3f4dd070.667ee@irwin2.crw.uk.net>
-	 <1062066193.8465.1571.camel@hades.cambridge.redhat.com>
-	 <696f.3f4dd944.a899d@irwin2.crw.uk.net>
-	 <1062070043.8465.1615.camel@hades.cambridge.redhat.com>
-	 <414.3f4e0a87.b6729@irwin2.crw.uk.net>
-Message-Id: <1062080106.12122.1.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 28 Aug 2003 15:15:07 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
+	<1062066193.8465.1571.camel@hades.cambridge.redhat.com>
+	<696f.3f4dd944.a899d@irwin2.crw.uk.net>
+	<1062070043.8465.1615.camel@hades.cambridge.redhat.com>
+	<414.3f4e0a87.b6729@irwin2.crw.uk.net>
+	<1062080106.12122.1.camel@hades.cambridge.redhat.com>
+Sender: news <news@sea.gmane.org>
 Subject: Re: Lost space on JFFS2 partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,26 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-08-28 at 14:58 +0100, John Hall wrote:
-> Is the current CVS head considered stable,
+"David Woodhouse" <dwmw2@infradead.org> wrote in message
+news:1062080106.12122.1.camel@hades.cambridge.redhat.com...
 
-Yes.
+> >  and will it work correctly under 2.4
+>
+> Yes....
+>
+> > (in fact armlinux 2.4.18-rmk7)?
+>
+> ... but maybe not for ancient 2.4 like that. Won't be far off though
+> -- you may just have to reinstate some backward-compat stuff in
+> include/linux/mtd/compatmac.h which got removed recently.
 
->  and will it work correctly under 2.4 
+2.4.18 is considered ancient? :(
+I've discovered the backward-compat stuff - seems to mainly be 'BUG_ON'
+and 'likely'. I did get some compiler warnings about %z in printf
+strings - is this just gcc 2.95.3 not being aware of them?
 
-Yes....
+> > On a completely different note, is it possible to disable
+> > compression in JFFS2 without hacking the sourcecode?
+>
+> No. At least not if you count just reading the archives for the last
+> week or two and applying the patch therein as 'hacking' ;)
 
-> (in fact armlinux 2.4.18-rmk7)? 
+I found this in the archives:
+"Just replace jffs2_{de,}compress() with NOPs. Return zero from
+jffs2_compress()", which seems to be more of a hack...
 
-... but maybe not for ancient 2.4 like that. Won't be far off though --
-you may just have to reinstate some backward-compat stuff in
-include/linux/mtd/compatmac.h which got removed recently.
-
-> On a completely different note, is it possible to disable compression in
-> JFFS2 without hacking the sourcecode?
-
-No. At least not if you count just reading the archives for the last
-week or two and applying the patch therein as 'hacking' ;) 
-
--- 
-dwmw2
+Regards,
+John
