@@ -1,23 +1,21 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cona0-0007N7-B7
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:50:53 -0500
-Date: Wed, 12 Jan 2005 19:50:27 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20050112185027.GN25638@wohnheim.fh-wedel.de>
-References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
-	<41E52EAD.2090302@imc-berlin.de>
-	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
-	<20050112182638.GK25638@wohnheim.fh-wedel.de>
-	<1105555410.3896.34.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1105555410.3896.34.camel@weaponx.rchland.ibm.com>
-Cc: Steven Scholz <steven.scholz@imc-berlin.de>, linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: checking CRCs twice!?
+Date: Wed, 12 Jan 2005 18:58:18 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <Pine.LNX.4.58.0501121844300.12973@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501121857150.12973@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
+	<20050111215102.GA6289@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
+	<20050112181006.GI25638@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501121833250.10617@phoenix.infradead.org>
+	<20050112184304.GM25638@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501121844300.12973@phoenix.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 January 2005 12:43:30 -0600, Josh Boyer wrote:
-> 
-> I've seen them fail.  Multiple times.  And yes, the CRCs detected it and
-> helped me figure out that the hardware was borked.
+Anyway, guys, this is *crucial* question. Would be nice to come up with 
+consensus :-) I hope we do not discuss for discussion :-) Hope we want to 
+come up with the truth :-) ?
 
-Ok, Empiria has spoken, I stand corrected.
+Could we summarize?
 
-> You may be right that failures are rare, and when they do occur the
-> flash definitely needs to be replaced.  But I'd much rather debug a card
-> that had CRC errors than one that just had apps mysteriously getting
-> SIGILL because a bit flipped and the filesystem didn't bother to verify
-> the data before using it.
+Does Everybody agree that CRC is needed at least to detect problems *on 
+time* and report about them ?
 
-Agreed.  So we still need checksums, and have the type of checksums
-left to argue about.
+If all agree, the question about "do we need CRC for purpose other then 
+detect unclean reboots?" may be closed. Is it?
 
-Jörn
+The open question: do we need trying recover data in case of errors?
+For NOR this question is close - errors are critical there.
+For NAND - is it still open? Does somebody thinks we should recover?
 
--- 
-Public Domain  - Free as in Beer
-General Public - Free as in Speech
-BSD License    - Free as in Enterprise
-Shared Source  - Free as in "Work will make you..."
+Saying recover I mean trying to move not corrupted data from the block 
+which have become bad to another, good block.
+
+Comment anybody please.
+Thanks.
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
