@@ -1,54 +1,128 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13SzPa-0007bP-00
-	for mtd-list@infradead.org; Sun, 27 Aug 2000 11:11:34 +0100
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13SzPY-0007bJ-00
-	for mtd@infradead.org; Sun, 27 Aug 2000 11:11:33 +0100
-Date: Sun, 27 Aug 2000 11:09:48 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Nick Ivanter <nick@auriga.ru>
-cc: mtd <mtd@infradead.org>, jffs-dev@axis.com
-Subject: Re: gc_minfree_threshold
-In-Reply-To: <39A7A51A.63F2BCBB@auriga.ru>
-Message-ID: <Pine.LNX.4.21.0008271104290.946-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13TS60-0004bF-00
+	for mtd-list@infradead.org; Mon, 28 Aug 2000 17:49:16 +0100
+Date: Mon, 28 Aug 2000 18:50:18 +0200
+From: Ciro Cattuto <ciro@prosa.it>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Miguel Freitas <miguel@cetuc.puc-rio.br>, mtd@infradead.org
+Subject: GRUB on DOC: 2Mb issues
+Message-ID: <20000828185018.A2777@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Sat, 26 Aug 2000, Nick Ivanter wrote:
+David,
 
-> David,
-> I have just noticed some strange things in the code dealing
-> with gc_minfree_threshold. I guess you added that code that is
-> why I am addressing my questions to you.
-> 
-> First, when you initialize c->gc_minfree_threshold to 5%
-> of the total Flash size, you then make sure that it is not less
-> than a sector size. Why? Shouldn't it rather be not less than
-> fmc->min_free_size?
+since the only DiskOnChip I have is a 2 Mb one, I had to solve some issues
+with makecsum.c and doc_stage1.S before being able to load/run GRUB as a
+replacement firmware. The ROM IPL of the 2Mb DOC (or any DOC with page256==1,
+I guess) loads the first 0x2000 bytes sequentially instead of loading half
+of the first 0x4000 bytes, as you describe in mtd/grub/README. This requires
+some modifications to makecsum.c in order to build a valid firmware image.
+Also, doc_stage1.S doesn't support the addressing scheme needed for 2Mb DOCs,
+so I had to make a few modifications to make it load GRUB-stage2.
 
-Yes, it probably should.
+The relevant cvs diffs follow. Notice: these mods make doc_stage1.S and
+makecsum.c work _only_ for 2Mb DOCs! I'd like to merge this functionality
+into the existing code, but I'll wait for your feedback. I'd use a simple
+"#ifdef DOC_PAGE256" both in doc_stage1.S and makecsum.c, but in the long
+run it would be nice to be able to access the page256 flag (mtd->priv->page256)
+from userland (page256 in mtd_info_user?).
 
-> Second, when you evaluate a gc starting criteria in
-> thread_should_wake(), you compare gc_minfree_threshold with
-> dirty_size. I guess there should be free_size instead.
+Cheers,
 
-It was once. Between v1.44 and 1.45, this happened:
--       if (nfree < c->gc_minfree_threshold)
-+       if (c->fmc->dirty_size < c->gc_minfree_threshold)
+Ciro
 
-Mea Culpa. I got the replacement wrong.
 
-Actually I was thinking of dropping both of those and changing it to
-something like:
-	if (dirty_size > free_size)
-		return 1;
+Index: doc_stage1.S
+===================================================================
+RCS file: /home/cvs/mtd/grub/doc_stage1.S,v
+retrieving revision 1.8
+diff -r1.8 doc_stage1.S
+166c166
+< 		/* Send new READ command - is it READ0 or READ1? */
+---
+> 		/* Send new READ0 command */
+169c169
+< 	andb	$1,%ah
+---
+> 	xorb	%ah,%ah
+176,177c176
+< 		/* We sent bits 0-7, then 9-16, then 17-23 */
+< 		/* Yes bit 8 is missing. Read the NAND flash specs */		
+---
+> 		/* We sent bits 0-7, then 8-15, then 16-23 */
+182,186c181
+< 			/* Bits 9-16 */
+< 	shrw	$1,%dx
+< 	.byte	0x80, 0xce /* orb adrbit16, %dh */
+< adrbit16:	
+< 	.byte	0	
+---
+> 			/* Bits 8-15 */
+189c184
+< 		/* Bits 17-23 are also zero */
+---
+> 		/* Bits 16-23 */
+216,217d210
+< 	addb	$0x80, %cs:adrbit16	/* Increase bit 16 */
+< 	jnc	endloop			/* Did it overflow? */
 
---
-dwmw2
+
+
+
+Index: makecsum.c
+===================================================================
+RCS file: /home/cvs/mtd/grub/makecsum.c,v
+retrieving revision 1.1
+diff -r1.1 makecsum.c
+5c5
+< unsigned char buf[16384];
+---
+> unsigned char buf[8192];
+12c12
+< 	memset(buf, 0xff, 16384);
+---
+> 	memset(buf, 0xff, 8192);
+61c61
+< 	len = read(st2fd, buf+512, 16384-512);
+---
+> 	len = read(st2fd, buf+512, 8192-512);
+73,74c73
+< 	i=0;
+< 	while (i<16384) {
+---
+> 	for (i=0 ; i<8192 ; i++)
+76,79d74
+< 		i++;
+< 		if ((i >> 8)&1)
+< 			i += 256;
+< 	}
+85c80
+< 	len = write(outfd, buf, 16384);
+---
+> 	len = write(outfd, buf, 8192);
+94,95c89,90
+< 	if (len < 16384) {
+< 		fprintf(stderr, "short write of output file (%d bytes < 16384)\n",
+---
+> 	if (len < 8192) {
+> 		fprintf(stderr, "short write of output file (%d bytes < 8192)\n",
+105c100
+< 		len = read(st2fd, buf, 16384);
+---
+> 		len = read(st2fd, buf, 8192);
+
+
+
+-- 
+Ciro Cattuto, Open Source Developer, Linuxcare Italia SpA
+Tel. +39.338.3002140  Fax +39.049.8036484 
+ciro@linuxcare.com    http://www.linuxcare.com/
+ciro@prosa.it         http://www.prosa.it/
+Linuxcare. Support for the revolution.
 
 
 
