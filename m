@@ -1,18 +1,20 @@
-Received: from [210.72.128.8] (helo=sict.ac.cn)
-	by pentafluge.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CelPl-0008GD-SG
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 02:30:51 +0000
-Received: from [10.32.4.45] ([10.32.4.45])
-	by sict.ac.cn (Merak 7.2.0) with ASMTP id 42U08685
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 10:30:34 +0800
-From: zhang jingxin <zhangjingxin@sict.ac.cn>
-To: list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Message-Id: <1103164209.2460.9.camel@z21921>
-Mime-Version: 1.0
-Date: Thu, 16 Dec 2004 10:30:10 +0800
+Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cemux-00072S-K8
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 23:07:10 -0500
+Message-ID: <004801c4e325$01260320$8500a8c0@nit37>
+From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+To: "Craig Hollabaugh" <craig@hollabaugh.com>, <linux-mtd@lists.infradead.org>
+References: <00cf01c4e29d$0b173670$8500a8c0@nit37>
+	<20041215222528.GA7880@boa.ouraynet.com>
+Date: Thu, 16 Dec 2004 09:39:03 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Subject: doc2000 flash_eraseall error
+Cc: 
+Subject: Re: Flash programming
+Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi
+Hi Craig,
 
-I'am having trouble eraseing the doc2000.
+Thank you, actually our target comprises of an intel processor(iop80321), a 
+flash(Intel NOR) and a ram, two usb ports and a ieee1394 port. In the flash 
+there are drivers for existing system to work, my present requirement is to 
+store a certain key/data/string in the flash, which shall be dynamically be 
+modifiable by an user interface provided to the host, when connected to the 
+target either through usb/firewire ports.
 
-I use doc2000(NAND device: Manufacturer ID: 0x98, Chip ID: 0x75 (Toshiba
-NAND 32MiB 3,3V 8-bit)).This is a linux with kernel 2.4.27 and the
-mtdsnapshot 20041128.
+Firstly, I have looked into mtd drivers to store data (which basically is a 
+key, a group of characters) in the flash, but I am not clear whether this 
+will work or I have to look into jffs2 file system also, basically my path 
+is not clear whether I have to use mtd/jffs2.
 
-The dmesg show:
-Dec 16 08:46:16 localhost kernel: mtd: Giving out device 0 to DiskOnChip
-2000 (NFTL Model)
-Dec 16 08:46:16 localhost kernel: Creating 1 MTD partitions on
-"DiskOnChip 2000(NFTL Model)":
-Dec 16 08:46:16 localhost kernel: 0x00014000-0x02000000 : " DiskOnChip
-BDTL partition"
+I will be thankful if you can suggest an approach, for storing the key
+(group of characters).
 
-and the /proc/mtd show:
-[root@localhost util]# cat /proc/mtd 
-dev:    size   erasesize  name
-mtd0: 02000000 00004000 "DiskOnChip 2000 (NFTL Model)"
-mtd1: 01fec000 00004000 " DiskOnChip BDTL partition"
+Thanks,
+Subrahmanyam.
 
-It seems to be ok.
-Then I use utils/erase
 
-[root@localhost util]# ./flash_eraseall -j /dev/mtd1
-./flash_eraseall: /dev/mtd1: No such device
+----- Original Message ----- 
+From: "Craig Hollabaugh" <craig@hollabaugh.com>
+To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+Sent: Thursday, December 16, 2004 03:55 AM
+Subject: Re: Flash programming
 
-but I am sure the mtd* device exist.
-I have use MAKEDEV.
 
-[root@localhost util]# ls -l /dev/mtd*
-crw-r--r--    1 root     root      90,   0 Dec 16 08:19 /dev/mtd0
-crw-r--r--    1 root     root      90,   2 Dec 16 08:19 /dev/mtd1
-crw-r--r--    1 root     root      90,  20 Dec 16 08:19 /dev/mtd10
-crw-r--r--    1 root     root      90,  22 Dec 16 08:19 /dev/mtd11
-crw-r--r--    1 root     root      90,  24 Dec 16 08:19 /dev/mtd12
-crw-r--r--    1 root     root      90,  26 Dec 16 08:19 /dev/mtd13
-crw-r--r--    1 root     root      90,  28 Dec 16 08:19 /dev/mtd14
-crw-r--r--    1 root     root      90,  30 Dec 16 08:19 /dev/mtd15
-crw-r--r--    1 root     root      90,  32 Dec 16 08:19 /dev/mtd16
-crw-r--r--    1 root     root      90,   4 Dec 16 08:19 /dev/mtd2
-crw-r--r--    1 root     root      90,   6 Dec 16 08:19 /dev/mtd3
-crw-r--r--    1 root     root      90,   8 Dec 16 08:19 /dev/mtd4
-crw-r--r--    1 root     root      90,  10 Dec 16 08:19 /dev/mtd5
-crw-r--r--    1 root     root      90,  12 Dec 16 08:19 /dev/mtd6
-crw-r--r--    1 root     root      90,  14 Dec 16 08:19 /dev/mtd7
-..........
-
-So what should I do?
-
-Thanks.
-			zhang jingxin
+> On Wed, Dec 15, 2004 at 05:25:49PM +0530, Subrahmanyam wrote:
+>> Can you please help me write into the flash, my present requirement is to
+>> store a certain key/data/string in the flash, which shall be dynamically 
+>> be
+>> modifiable by an user interface provided to the host, when connected to 
+>> the
+>> target either through usb/firewire ports.
+>
+> which processor, which board, what kind of flash?
+> 
