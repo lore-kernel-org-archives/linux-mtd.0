@@ -1,19 +1,19 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16du8x-0003l7-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 14:24:19 +0000
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: jffs2_scan_make_ino_cache() in scan.c very slow 
-Date: Thu, 21 Feb 2002 15:34:29 +0100
-Message-ID: <IGEFJKJNHJDCBKALBJLLAEKJFBAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+	id 16duOd-0003mN-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 14:40:31 +0000
+Subject: Re: MTD concat layer
+From: Jonas Holmberg <jonas.holmberg@axis.com>
+To: Robert Kaiser <rob@sysgo.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: 
+	<Pine.LNX.4.21.0202201620030.16780-100000@dagobert.svc.sysgo.de>
+References: <Pine.LNX.4.21.0202201620030.16780-100000@dagobert.svc.sysgo.de>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <2078.1014301104@redhat.com>
+Date: 21 Feb 2002 15:51:36 +0100
+Message-Id: <1014303096.10758.6.camel@pcjonashg>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,57 +25,54 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+On Wed, 2002-02-20 at 16:35, Robert Kaiser wrote:
+> Hi Jonas,
 > 
+> On 20 Feb 2002, Jonas Holmberg wrote:
 > 
+> > I'm ready to do some serious testing now.
 > 
-> joakim.tjernlund@lumentis.se said:
-> >  I have made some crude measures in jffs2_scan_medium() and friends to
-> > see where most of the time is spent. It turns out that
-> > jffs2_scan_make_ino_cache() is takes about 50 % of the total mount
-> > time!
+> Good!
 > 
-> How did you do your profiling?
-I accumulated the difference of jiffies from the entry of jffs2_scan_make_ino_cache()
-to it returned.
+> > Should I use these patches or
+> > do you have newer versions?
+> 
+> The erase function has a bug for which I'm currently developing
+> a fix. I hope to get it done by tomorrow. The bug does not show
+> up if you use erase/eraseall, but will probably manifest itself
+> when using JFFS/JFFS2 on a concatenated device.
 
- Are you sure it's not spending the time in 
-> jffs2_get_ino_cache() and jffs2_add_ino_cache()? I suspect it is.
+Yep, I get the following when erasing across chip boundry:
 
-That is so, allmost all time is in jffs2_get_ino_cache().
+JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
+Last[3] is c6a6, datum is 3931
+Didn't write all bytes in flash_safe_writev(). Returned -5
+JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
+Last[3] is c6a6, datum is 3931
+Didn't write all bytes in flash_safe_writev(). Returned -5
+JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
+Last[3] is c6a6, datum is 3931
+Didn't write all bytes in flash_safe_writev(). Returned -5
+JFFS: jffs_write_node: Failed to write, requested 8260, wrote 1
+Last[3] is c6a6, datum is 3931
 
-> 
-> > What can be done to decrease this time? 
-> 
-> Try increasing INOCACHE_HASHSIZE - that'll make the hash table more 
-> efficient - well, it'll make the hash table into a hash table instead of a 
-> linked list :)
-> 
-> You'll probably find that it's looking up the same inode over and over 
-> again too - in which case caching the last used inode in 
-> jffs2_scan_make_ino_cache() would probably be useful.
+Other than that it seems fine. I have tried mixing CFI and JEDEC chips
+as well. I'm awaiting your erase-fix.
 
-OK, will try an see what happens.
-> 
-> 
-> 
-> joakim.tjernlund@lumentis.se said:
-> >  PS.
-> >     I sent a patch (Subject:  cfi_cmdset0001.c: bug fixes and new
-> > features) a week ago
-> >     and I haven't got any comments so far.
-> 
-> 
-> Sorry. Can you make sure it still applies to the current CVS tree and 
-> resend it?
-
-Well, I not using the current CVS at the moment. It will take some time
-until I upgrade again.
-
- Jocke
+It seems like JFFS uses writev. Are you planning to implement the
+v-functions?
 
 > 
-> --
-> dwmw2
+> > When can we expect to see this in CVS?
 > 
-> 
-> 
+> Good question :-). Apparently David is not yet completely convinced
+> that it should be implemented the way I did. If you do some serious
+> testing, your test results might help to persuade him (or prove to him
+> that his scepticism was right). In any case, please share your
+> results.
+
+Is it much work implementing it his way instead? I have no opinion of
+which is better. Your concat layer looks very clean, but David use to be
+right :-)
+
+/Jonas
