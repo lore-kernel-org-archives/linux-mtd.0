@@ -1,125 +1,122 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14bQB0-0000gP-00
-	for mtd-list@infradead.org; Fri, 09 Mar 2001 16:55:38 +0000
-Received: from zeus.vortex.is ([193.4.145.1])
+	id 14bR0P-0001It-00
+	for mtd-list@infradead.org; Fri, 09 Mar 2001 17:48:45 +0000
+Received: from [216.174.202.135] (helo=celeborn.rivendell.insynq.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14bQAv-0000gJ-00
-	for mtd@infradead.org; Fri, 09 Mar 2001 16:55:33 +0000
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-60460U3500L350S0V35) with ESMTP id is
-          for <mtd@infradead.org>; Fri, 9 Mar 2001 16:55:29 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <mtd@infradead.org>;
-          Fri, 9 Mar 2001 16:55:29 +0000
-Date: Fri, 9 Mar 2001 16:54:23 +0000
+	id 14bR0O-0001In-00
+	for mtd@infradead.org; Fri, 09 Mar 2001 17:48:44 +0000
+Received: from pyramid.insynq.com (pyramid.office.insynq.com [10.2.2.10])
+	by celeborn.rivendell.insynq.com (8.9.3/8.8.7) with ESMTP id LAA19153
+	for <mtd@infradead.org>; Fri, 9 Mar 2001 11:05:08 -0800
+Received: by insynq.com
+	via sendmail from stdin
+	id <m14bR0P-00169FC@pyramid.insynq.com> (Debian Smail3.2.0.102)
+	for mtd@infradead.org; Fri, 9 Mar 2001 09:48:45 -0800 (PST)
+From: "Ian Eure <Ian Eure" <ieure@insynq.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <15017.6013.604261.151332@pyramid.insynq.com>
+Date: Fri, 9 Mar 2001 09:48:45 -0800 (PST)
 To: mtd@infradead.org
-Subject: Small patch
-Message-ID: <20010309165423.A2340@BigTits.flaga>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="h31gzZEtNLTqOjlF"
-Content-Disposition: inline
-From: kd@flaga.is (Kári Davíðsson)
+Subject: [PATCH] lilo 21.6.1 patch
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+ok, i decided to put my code where my mouth was. here's an updated
+lilo patch, against 21.6.1. it works for me, and i've booted 32mb &
+48mb doc2000s with it.
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-I propose the following small patch so that the utils can acept arguments
-int hexadecimal form, e.g. 
-	erase device 0x1f0000
-instead of erase device 2031616.
-
-K.D.
-
-
-
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="atoi.diff"
-
-diff -ubr mtd/util/erase.c mtd-20010308/util/erase.c
---- mtd/util/erase.c	Thu Sep 21 22:00:07 2000
-+++ mtd-20010308/util/erase.c	Fri Mar  9 16:38:55 2001
-@@ -35,12 +35,12 @@
-       printf("Erase Unit Size 0x%lx, ", meminfo.erasesize);
+diff -u lilo-21.6.1.orig/Makefile lilo-21.6.1/Makefile
+--- lilo-21.6.1.orig/Makefile	Sat Dec 16 14:41:35 2000
++++ lilo-21.6.1/Makefile	Wed Feb 21 14:59:08 2001
+@@ -50,6 +50,9 @@
+   sed 's/-D/-DLCF_/g'` `[ -r /usr/include/asm/boot.h ] && echo -DHAS_BOOT_H`
+ GO=-DGO=0x`sed '/go/s/^.*go *0 \(....\) A.*$$/\1/p;d' first.lis`
  
-       if (argc > 2)
--	  erase.start = atoi(argv[2]);
-+	  erase.start = strtol(argv[2], NULL, 0);
-       else
- 	  erase.start = 0;
++#CONFIG+=-DLCF_LARGE_EBDA
++#PCONFIG+=-DLCF_LARGE_EBDA
++
+ SHELL=/bin/sh
+ CC=cc
+ CPP=$(CC) -E
+Only in lilo-21.6.1: activate
+Only in lilo-21.6.1: boot-menu.b
+Only in lilo-21.6.1: boot-text.b
+Only in lilo-21.6.1: chain.b
+Only in lilo-21.6.1: disk.com
+Common subdirectories: lilo-21.6.1.orig/doc and lilo-21.6.1/doc
+Only in lilo-21.6.1: dparam.com
+diff -u lilo-21.6.1.orig/geometry.c lilo-21.6.1/geometry.c
+--- lilo-21.6.1.orig/geometry.c	Sat Dec 16 14:09:21 2000
++++ lilo-21.6.1/geometry.c	Wed Feb 21 15:01:36 2001
+@@ -125,7 +125,8 @@
+       MAJOR(dev) == MAJOR_IDE3 || MAJOR(dev) == MAJOR_IDE4 ||
+       MAJOR(dev) == MAJOR_IDE5 || MAJOR(dev) == MAJOR_IDE6 ||
+       MAJOR(dev) == MAJOR_XT || MAJOR(dev) == MAJOR_SD ||
+-      MAJOR(dev) == MAJOR_ESDI || MAJOR(dev) == MAJOR_DAC960;
++      MAJOR(dev) == MAJOR_ESDI || MAJOR(dev) == MAJOR_DAC960 ||
++      MAJOR(dev) == MAJOR_FL || MAJOR(dev) == MAJOR_NFTL;
+ }
  
-       if (argc > 3)
--	  count = atoi(argv[3]);
-+	  count = strtol(argv[3], NULL, 0);
-       else
- 	  count = 1;
  
-diff -ubr mtd/util/mkfs.ffs2.c mtd-20010308/util/mkfs.ffs2.c
---- mtd/util/mkfs.ffs2.c	Tue Aug 17 19:04:42 1999
-+++ mtd-20010308/util/mkfs.ffs2.c	Fri Mar  9 16:43:05 2001
-@@ -65,11 +65,11 @@
-       switch (Opt)
-       {
- 	 case 'b':
--	 BlockSize = atoi(optarg);
-+	 BlockSize = strtol(optarg, NULL, 0);
- 	 break;
- 	 
- 	 case 's':
--	 Start = atoi(optarg);
-+	 Start = strtol(optarg,NULL,0);
- 	 break;
+@@ -310,8 +311,15 @@
+ 	    /* fall through */
+ 	case MAJOR_ESDI:
+ 	    /* fall through */
++	case MAJOR_FL:
++	    /* fall through */
++	case MAJOR_NFTL:
++	    /* fall through */
+ 	case MAJOR_XT:
+-	    geo->device = 0x80+(MINOR(device) >> 6)+(MAJOR(device) == MAJOR_HD ?
++	    geo->device = 0x80+(MINOR(device) >> 6)+(
++	      (MAJOR(device) == MAJOR_HD || 
++	       MAJOR(device) == MAJOR_FL ||
++	       MAJOR(device) == MAJOR_NFTL) ?
+ 	      0 : last_dev(MAJOR_HD,64));
+ 	    if (ioctl(fd,HDIO_GETGEO,&hdprm) < 0)
+ 		die("geo_query_dev HDIO_GETGEO (dev 0x%04x): %s",device,
+@@ -403,6 +411,10 @@
+ 	case MAJOR_IDE6:
+ 	    /* fall through */
+ 	case MAJOR_ESDI:
++	    /* fall through */
++	case MAJOR_FL:
++	    /* fall through */
++	case MAJOR_NFTL:
+ 	    /* fall through */
+ 	case MAJOR_XT:
+ 	    return MINOR(device) >> 6 ? 0 : !last_dev(MAJOR_HD,64);
+Only in lilo-21.6.1: lilo
+diff -u lilo-21.6.1.orig/lilo.h lilo-21.6.1/lilo.h
+--- lilo-21.6.1.orig/lilo.h	Thu Sep 21 16:18:50 2000
++++ lilo-21.6.1/lilo.h	Wed Feb 21 15:02:17 2001
+@@ -41,6 +41,8 @@
+ #define MAJOR_DAC960	48 /* First Mylex DAC960 PCI RAID controller */
+ #define MAJOR_IDE5	55 /* IDE on fifth interface */
+ #define MAJOR_IDE6	57 /* IDE on sixth interface */
++#define MAJOR_FL  62 /* M-Systems Disk On Chip 2000 */
++#define MAJOR_NFTL  93 /* M-Systems DOC2000 NFTL driver */
+ #define COMPAQ_SMART2_MAJOR	72 /* First Smart/2 Major */
  
- 	 case '?':
-diff -ubr mtd/util/mkfs.jffs.c mtd-20010308/util/mkfs.jffs.c
---- mtd/util/mkfs.jffs.c	Wed Jan 17 23:00:03 2001
-+++ mtd-20010308/util/mkfs.jffs.c	Fri Mar  9 16:44:20 2001
-@@ -698,7 +698,7 @@
-       }
-       break;
-     case 'e':
--      MAX_CHUNK_SIZE = (atoi(optarg) / 2);
-+      MAX_CHUNK_SIZE = (strtol(optarg,NULL,0) / 2);
-       break;
-     case 'h':
-     case '?':
-diff -ubr mtd/util/mkfs.jffs2.c mtd-20010308/util/mkfs.jffs2.c
---- mtd/util/mkfs.jffs2.c	Mon Feb 26 23:00:06 2001
-+++ mtd-20010308/util/mkfs.jffs2.c	Fri Mar  9 16:43:52 2001
-@@ -430,7 +430,7 @@
- 	while ( (opt = getopt_long(argc, argv, "p:d:r:s:e:o:h?", long_options, &c) ) >= 0) {
- 		switch(opt) {
- 		case 'p':
--			pad_fs_size = atoi(optarg);
-+			pad_fs_size = strtol(optarg, NULL, 0);
- 			break;
+ #define MAX_IMAGES      ((SECTOR_SIZE*2-2)/sizeof(IMAGE_DESCR))
+@@ -271,4 +273,4 @@
  
- 		case 'r':
-@@ -447,11 +447,11 @@
- 			break;
+ #endif
  
- 		case 's':
--			page_size = atoi(optarg);
-+			page_size = strtol(optarg,NULL,0);
- 			break;
- 
- 		case 'e':
--			erase_block_size = atoi(optarg);
-+			erase_block_size = strtol(optarg,NULL,0);
- 			break;
- 
- 		case 'o':
+-#endif
+\ No newline at end of file
++#endif
+Common subdirectories: lilo-21.6.1.orig/manPages and lilo-21.6.1/manPages
 
---h31gzZEtNLTqOjlF--
+-- 
+ ___________________________________
+| Ian Eure - <ieure@insynq.com>     | "You're living in a facist world...
+|         -  Developer -            | Freedom is a luxury." -Front Line
+|        -  InsynQ, Inc. -          | Assembly, "Digital Tension Dementia"
+| Your Internet Utility Company.tm  |________________________________________
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
