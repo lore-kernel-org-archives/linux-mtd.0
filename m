@@ -1,18 +1,17 @@
-Received: from [213.33.71.165] (helo=hofr.at)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15vYJf-0007VO-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2001 07:12:03 +0100
-Received: (from root@localhost)
-	by hofr.at (8.10.2/8.9.3/SuSE Linux 8.9.3-0.1) id f9M66BL25224
-	for linux-mtd@lists.infradead.org; Mon, 22 Oct 2001 08:06:11 +0200
-From: Der Herr Hofrat <der.herr@hofr.at>
-Message-Id: <200110220606.f9M66BL25224@hofr.at>
-Subject: ANNOUNCMENT 3ed Real Time Linux Workshop
+	id 15vaao-0007fe-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2001 09:37:55 +0100
+Received: from localhost (rob@localhost)
+	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with ESMTP id f9M8l7B23353
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2001 10:47:07 +0200
+Date: Mon, 22 Oct 2001 10:47:07 +0200 (MEST)
+From: Robert Kaiser <rob@sysgo.de>
 To: linux-mtd@lists.infradead.org
-Date: Mon, 22 Oct 2001 08:06:11 +0200 (CEST)
+Subject: MTD support for Intel E28F016S3 ?
+Message-ID: <Pine.LNX.4.21.0110221043350.13158-100000@dagobert.svc.sysgo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,29 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-                   Third Real-Time Linux Workshop
- 
-                           26-29.11.2001
-                  Crowne Plaza in Milan San Donato
-                           Milano, Italy
+Hi,
 
-As followup to the meetings of developers and users of real-time linux 
-in Vienna and Orlando, the Third Real Time Linux Workshop is held in 
-the framework of the Embedded Linux Expo & Conference and the Real-Time
-& Embedded Computing Conference, Summit Milan, organized by ACTIVE 
-Exhibitions Europe. This Summit will offer two days of tutorials, four 
-tracks of conferences over two days, interesting keynotes, exhibitions 
-and more. The contribution of the Real Time Linux Foundation to this 
-outstanding event will be:
+I am trying to implement JFFS/MTD support for the SSV DNPC module.
+This module has an Intel E28F016S3 which does not appear to be CFI
+compliant. Which chip driver should I use for this one (is there any) ?
 
-   - technical keynotes,
-   - kick start sessions,
-   - paper presentations,
-   - work in progress reports,
-   - real time linux tutorials,
+Rob
 
-For any further information take a look at the Real-Time Linux Foundation, 
-http://www.realtimelinuxfoundation.org/, by following Contents->Events->
-Real Time Linux Workshop 2001. For all events of the summit, organisational 
-details and registration, please go to ACTIVE Exhibitions Europe's Summit 
-Milan page, http://www.rtcgroup.com/summitmilan/invitation.html.
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
