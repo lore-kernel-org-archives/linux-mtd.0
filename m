@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail3.cadvision.com ([207.228.64.48])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16QuXA-0006rC-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2002 18:11:36 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020116163239.99399.qmail@web13206.mail.yahoo.com> 
-References: <20020116163239.99399.qmail@web13206.mail.yahoo.com> 
-To: Sanjay Kumar <sankumar73@yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 is crashing the kernel 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 16 Jan 2002 18:22:34 +0000
-Message-ID: <8630.1011205354@redhat.com>
+	id 16QvrC-0006wx-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2002 19:36:22 +0000
+Message-ID: <000e01c19ec6$b2cd5980$0100007f@localdomain.wni.com.wirelessnetworksinc.com>
+From: "Herman Oosthuysen" <Herman@WirelessNetworksInc.com>
+To: "Cam Mayor" <cmayor@iders.ca>,
+        "linux MTD mailing list" <linux-mtd@lists.infradead.org>
+References: <02011512182209.16722@kilauea.iders.ca>
+Subject: Re: open question on flash speed/app blocking
+Date: Wed, 16 Jan 2002 12:47:57 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +24,56 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-sankumar73@yahoo.com said:
-> 5>inflate returned -4 
+Hmm, the problem is not writing to flash per se, but rather garbage
+collection, which requires the erase of dirty Flash sectors.  Erasing a
+sector on an Intel chip can take from a couple hundred milliseconds to about
+15 seconds, depending on the age of the device - by the time a chip gets to
+15 seconds, I usually toss them away.  Flash chips tend to get slower with
+age.  So, you have to repeat your tests a few hundred thousand times before
+you can draw any real conclusions.  This also means that the worst case
+performance will be about the same, irrespective of the file system used,
+since the hardware constraints will eventually dominate.
 
-That's Z_MEM_ERROR. Looks like a kmalloc failed.
-
-The oops is impossible to interpret unless it's passed through ksymoops.
-
+If your system has to write to flash every few seconds, then consider using
+a file system that has a large write cache, to enable you to survive the
+periods when the system is busy erasing a sector.
 --
-dwmw2
+Herman Oosthuysen
+Herman@WirelessNetworksInc.com
+Suite 300, #3016, 5th Ave NE,
+Calgary, Alberta, T2A 6K4, Canada
+Phone: (403) 569-5688, Fax: (403) 235-3965
+----- Original Message -----
+From: Cam Mayor <cmayor@iders.ca>
+To: linux MTD mailing list <linux-mtd@lists.infradead.org>
+Sent: Tuesday, January 15, 2002 11:18 AM
+Subject: open question on flash speed/app blocking
+
+
+Hi all,
+
+We're making an app that periodically writes a persistance file to flash.  I
+haven't actually gotten a flash file system area working yet on my board, so
+i can't test this yet for speed.   I know that the results will vary with
+the
+hardware, the filesystem used, and a handful of other factors.  I'm assuming
+that a write to the flash will be blocking - that is, nothing else will be
+allowed to happen on the bus while that function is being performed.
+
+For a file the size of 32bytes, 1kByte, and 32kBtyes, what kind of blocking
+delay might one expect from linux writing to flash for each of those file
+sizes?  What would be an optimum flash filesystem to use for something like
+this?  (if there is one)
+
+cheers,
+cam
+
+ps. i'm using linux 2.4.6-rmk1-rayl1 and 2.4.16-rmk2.  I could use the
+latest
+kernel, too, i just haven't gotten around to it.  For development purposes,
+i'm using a cirrus CDB89712 development board, which has the cs89712
+processor and some Intel 28f320B3 flash on it.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
