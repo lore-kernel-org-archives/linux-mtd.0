@@ -1,16 +1,26 @@
-Received: from mail.billabong.tm.fr ([194.206.148.137])
+Received: from main.gmane.org ([80.91.224.249])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bl09n-0003er-CT
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 02:55:52 -0400
-From: =?ISO-8859-1?Q?Jean-fran=E7ois_Villamor?= <jeanfrancois@billabong.tm.fr>
-Date: Thu, 15 Jul 2004 08:59:55 +0200
+	id 1Bl4E8-0004BN-Pz
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 07:16:37 -0400
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1Bl4Dw-0008Eq-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Jul 2004 13:16:26 +0200
+Received: from calvin.codito.com ([203.199.140.162])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Jul 2004 13:16:24 +0200
+Received: from amitshah by calvin.codito.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Jul 2004 13:16:24 +0200
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF0CA2C41F.1D5A3111-ONC1256ED2.002612EF@billabong.tm.fr>
-MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: quoted-printable
-Subject: Virus =?iso-8859-1?q?d=E9tect=E9_dans_le_message_=22Delivery_Fail?=
-	=?iso-8859-1?q?ed=22?=
+From: Amit Shah <amitshah@gmx.net>
+Date: Thu, 15 Jul 2004 16:43:55 +0530
+Message-ID: <cd5p23$dfj$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7Bit
+Sender: news <news@sea.gmane.org>
+Subject: PCI flash: found no device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
+I've added support for flash memory for a PCI card in
+drivers/mtd/maps/pci.c, based on the two existing drivers. The flash type
+is Intel 28F series and supports CFI probes. On loading the pci.ko module
+(I'm using 2.6.6), the message says CFI: Found no 0000:04:02.2 device at
+location zero. This also means that it found the PCI card and the flash
+memory at the appropriate function and BAR. I've sprinkled some printk's
+which show that the pci_resource_start is being read correctly from the
+device that's to be used as the flash resource.
 
+Do I have to have some extra driver, like a standalone driver in
+drivers/mtd/maps/ which does some other initialization? I tried that
+approach as well, but even that thing reports the same problem, so I'm not
+sure what I'm missing.
 
+Can someone tell me what's missing?
 
-Symantec AntiVirus a d=E9tect=E9 un virus dans une pi=E8ce jointe que v=
-ous
-(linux-mtd@lists.infradead.org) avez envoy=E9e =E0
-jeanfrancois@billabong.tm.fr.
-
-
-
-Pour garantir que les destinataires pourront utiliser les fichiers envo=
-y=E9s,
-lancez une analyse des virus sur votre ordinateur, nettoyez les fichier=
-s
-infect=E9s, puis renvoyez cette pi=E8ce jointe.
-
-
-
-
-Pi=E8ce jointe :  news.exe
-
-Nom du virus :W32.Netsky.C@mm
-
-Op=E9ration effectu=E9e :  Nettoyer  - =E9chec : Quarantaine - r=E9ussi=
-te :
-
-Etat du fichier :  Infect=E9s
-
-
-=
+Thanks,
+Amit.
+-- 
+Amit Shah
+http://amitshah.nav.to/
