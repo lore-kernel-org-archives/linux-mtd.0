@@ -1,21 +1,16 @@
-Received: from [213.39.233.138] (helo=wohnheim.fh-wedel.de)
+Received: from law14-oe49.law14.hotmail.com ([64.4.20.21] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19euHh-0003hG-4L
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jul 2003 11:22:17 +0100
-Date: Tue, 22 Jul 2003 12:21:48 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: andrzej.mialkowski@inetia.pl
-Message-ID: <20030722102148.GD29430@wohnheim.fh-wedel.de>
-References: <1058792691.3f1be4f31ca98@imail.internetia.pl>
-	<20030721160453.GA3677@wohnheim.fh-wedel.de>
-	<1058823245.3f1c5c4da93b0@imail.internetia.pl>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1058823245.3f1c5c4da93b0@imail.internetia.pl>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: hardcoded maximum number of CFI chips - continued
+	id 19evKl-0003uq-Tc
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jul 2003 12:29:32 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Tue, 22 Jul 2003 17:02:36 -0700
+MIME-Version: 1.0
+Message-ID: <Law14-OE49bFP9qM5Jy00011206@hotmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Garbage Collection thread questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 21 July 2003 23:34:05 +0200, andrzej.mialkowski@inetia.pl wrote:
-> 
-> Yes, linked list is nice solution; I would also prefer it while writing a new 
-> module. 
-> Problem is that module exist and works pretty well. My priorities are time to 
-> solution and risk of bug avoidance. You must agree that this is big difference 
-> between changing number 8 to 10 and rewriting even only module initialization 
-> to linked lists. 
-> Compromise solution may be leave runtime structures as they are, and change 
-> chips table to be 'reallocated' for instance in 4-16 chip increments. This 
-> solution reduces to reasonable amount of copying and memory allocations (still 
-> not critical during initialization), supports 'unlimited' number of chips and 
-> may be implemented and tested in period of few hours. I can do this tomorrow.
+Hi Folks,
 
-In that case, why don't you just crank up the number from 8 to 16?  It
-is the simpler solution to your problem at hand.
+I am trying to solve the problem of  mount-crashing-the-system problem.
 
-Jörn
+1.) The GC thread written in background.c is primarily a optimization.
 
--- 
-Correctness comes second.
-Features come third.
-Performance comes last.
-Maintainability is needed for all of them.
+So can I avoid using it for the time being.
+I am almost certain that GC is the  problem for my mount crashing the system
+
+2.) Kernel_thread used in background.c makes a new thread  .. right?
+But I have read that in uClinux, parent and child thread have the same
+stack. ( Correct me if I am wrong anywhere)
+So if the stack space is the same, will not one thread curropt the return
+addresses etc of hte other thread.
+
+So iun uClinux , how do I make sure this does not happen. I am getting
+little confused here
+
+
+Hep me here
+
+Vikram Mehta
