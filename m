@@ -1,28 +1,14 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D7AaL-0007at-MX
-	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 11:03:11 +0000
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-In-Reply-To: <42280EB6.4030007@imc-berlin.de>
-References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
-	<1109845739.16158.14.camel@hades.cambridge.redhat.com>
-	<1109846656.4370.20.camel@tglx.tec.linutronix.de>
-	<1109846792.16158.20.camel@hades.cambridge.redhat.com>
-	<1109847189.4370.27.camel@tglx.tec.linutronix.de>
-	<1109847630.16158.22.camel@hades.cambridge.redhat.com>
-	<4226F51A.7070603@imc-berlin.de>
-	<Pine.LNX.4.62.0503031146070.15953@localhost.localdomain>
-	<1109874008.29792.92.camel@baythorne.infradead.org>
-	<42280EB6.4030007@imc-berlin.de>
-Content-Type: text/plain
-Date: Fri, 04 Mar 2005 14:01:36 +0300
-Message-Id: <1109934096.5169.12.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: [RFD] Move 2.4 code out from CVS head
-Reply-To: dedekind@infradead.org
+Received: from web11607.mail.yahoo.com ([216.136.172.59])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D7BOD-0000o5-FL
+	for linux-mtd@lists.infradead.org; Fri, 04 Mar 2005 06:54:42 -0500
+Message-ID: <20050304115440.64103.qmail@web11607.mail.yahoo.com>
+Date: Fri, 4 Mar 2005 03:54:40 -0800 (PST)
+From: prasadam kumar <prasadamkumar@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: IQ80321 flash writing problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +18,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-03-04 at 08:31 +0100, Steven Scholz wrote:
-> How about SUMMARY patch then? ;-)
-> Seriously, since JFFS3 will not get into the 2.4 stuff Ferenc's SUMMARY patch 
-> would be nice!
-Ferenc's Summaries are in JFFS3.
 
-> 
-> And BTW: How do I get the 2.4 branch from CVS?
+hai to all
 
-IIUC, CVS head should work for 2.4 well. I've commited the symlink
-problem fix.
+ sorry to trouble you again because i am sending this
+problem second time. plz read this problem and give
+me the resons why it is altering some memory
+locations, so i can look into those issues.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+We are working on a task which has to write to a
+IQ80321 flash  which is configured as a
+MTD CHAR device which uses CFI cmdset 0001 in the
+kernel version 2.4.19-rmk7-ds2.
+
+The problem we've encountered is while writing to the
+flash, data is getting corrupted in
+some memory locations which are at random.
+
+        Here's the flow symbols which are invoked at
+the time of write....
+
+                     cfi_intelext_write_buffers ( )
+                                      |
+                                      |
+                                      V
+                           do_write_buffers(... )
+                                       |
+                                       |
+                                       V
+                              map->write8( )
+                                        |
+                                        |
+                                        V
+                               iq80321_write8 ( )
+We are cross checking the data that is been sent
+before invoking map->write8(). Over here the
+checking was successful (i.e there is no corruption in
+the data ). But after map->write8() is
+invoked, data at some memory locations is getting
+altered.
+
+
+
+
+	
+		
+__________________________________ 
+Celebrate Yahoo!'s 10th Birthday! 
+Yahoo! Netrospective: 100 Moments of the Web 
+http://birthday.yahoo.com/netrospective/
