@@ -1,17 +1,17 @@
-Received: from [195.41.59.254] (helo=rkbexch01.vws.vestas.dom)
+Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGwuv-0001hX-BT
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 05:56:41 -0400
-content-class: urn:content-classes:message
+	id 1CGxEQ-0001uk-9Z
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 06:16:43 -0400
+Date: Mon, 11 Oct 2004 11:16:11 +0100 (BST)
+From: jasmine@linuxgrrls.org
+To: Esben Nielsen <ESN@vestas.com>
+In-Reply-To: <98223556A08BA64E8C969246704EEE3B17FE85@aarexch01.vws.vestas.dom>
+Message-ID: <Pine.LNX.4.60.0410111114030.13309@hex.linuxgrrls.org>
+References: <98223556A08BA64E8C969246704EEE3B17FE85@aarexch01.vws.vestas.dom>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 11 Oct 2004 11:56:04 +0200
-Message-ID: <98223556A08BA64E8C969246704EEE3B17FE85@aarexch01.vws.vestas.dom>
-From: "Esben Nielsen" <ESN@vestas.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Booting from DOC Millenium
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Booting from DOC Millenium
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hya all,
- I see that Linux now have support for DOC Millenium(?). I have a PPC =
-board here with 1 Mb NOR flash supposed to contain the bootsector and 64 =
-DOC-M to hold the filesystem.
 
-As I can see it I have the following options for booting:
 
-1)  Have a small bootsector and used a compressed kernel in the 1Mb NOR. =
-I don't like this solution, as I will only be able to have 1 kernel =
-available. There is no room for a fall-back image if an update fails. I =
-don't like this.
+On Mon, 11 Oct 2004, Esben Nielsen wrote:
 
-2) Get a bootsector which can read the kernel from the filesystem on the =
-DOC.  Is there any such bootsector anywhere?
+> 1)  Have a small bootsector and used a compressed kernel in the 1Mb NOR.
 
-3) Go for a 3 stage boot: Have  a small bootsector which boots a small, =
-never changed Linux kernel from the 1Mb NOR. That small kernel does one =
-thing: read out the real kernel from the DOC. Do anyone have experience =
-with such a strategy?
+This is a common strategy.
 
-4) Use a small Linux as a bootsector. Compile the initial hardware setup =
-in before decompression and instead of starting initrd make something =
-like "kexec" to start the real, runtime kernel. Has anyone been playing =
-with this?
+> 2) Get a bootsector which can read the kernel from the filesystem on the 
+>    DOC.  Is there any such bootsector anywhere?
 
-Having to have a seperate bootsector for Linux is not very good. We =
-otherwise use VxWorks here. In that context the bootsector is simply a =
-scaled down version of VxWorks itself. I.e. we only have to worry about =
-fitting one system to our hardware and just have to compile it in two =
-versions. Last time I made Linux run on one of our boards (SA1110, NOR =
-flash). I had to first to fit a bootsector, then fit Linux. Double work =
-:-(
+GRUB can do this.  If you're on a non-Intel platform, there are other
+bootloaders that could be persuaded to do this.
 
-Regards,
-Esben
+> 3) Go for a 3 stage boot: Have a small bootsector which boots a small, 
+>    never changed Linux kernel from the 1Mb NOR. That small kernel does 
+>    one thing: read out the real kernel from the DOC. Do anyone have 
+>    experience with such a strategy?
+
+LinuxBIOS does this.
+
+> 4) Use a small Linux as a bootsector. Compile the initial hardware setup 
+>    in before decompression and instead of starting initrd make something 
+>    like "kexec" to start the real, runtime kernel. Has anyone been 
+>    playing with this?
+
+...that's functionally the same as (3) above.
+
+> Having to have a seperate bootsector for Linux is not very good. We 
+> otherwise use VxWorks here.
+
+Grub et al. can boot VxWorks.
+
+-J.
