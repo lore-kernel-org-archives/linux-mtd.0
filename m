@@ -1,43 +1,54 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11zTAr-0005ag-00
-	for mtd-list@infradead.org; Sat, 18 Dec 1999 23:22:05 +0000
-Received: from out4.prserv.net ([165.87.194.239] helo=prserv.net)
+	id 11zZOw-0005m1-00
+	for mtd-list@infradead.org; Sun, 19 Dec 1999 06:01:02 +0000
+Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11zTAo-0005aa-00
-	for mtd@infradead.org; Sat, 18 Dec 1999 23:22:02 +0000
-From: "Dvir Oren" <dviro@lucidvon.com>
-To: MTD <mtd@infradead.org>
-Date: Sun, 19 Dec 1999 01:23:31 +0200
+	id 11zZOu-0005lt-00
+	for mtd@infradead.org; Sun, 19 Dec 1999 06:01:00 +0000
+Received: from localhost.localdomain (IDENT:adi@[192.168.100.2])
+	by gizmo.adis.on.ca (8.9.3/8.9.3) with ESMTP id XAA21870
+	for <mtd@infradead.org>; Sat, 18 Dec 1999 23:58:56 -0600
+Date: Sun, 19 Dec 1999 00:10:08 -0600 (CST)
+From: Adi Linden <adi@adis.on.ca>
+To: mtd@infradead.org
+Subject: doc2000 and mtd
+Message-ID: <Pine.LNX.4.10.9912190002590.14262-100000@localhost.localdomain>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: lilo clarification
-Message-Id: <E11zTAo-0005aa-00@infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I just realized that I forgot to mention that the lilo that I sent was 
-compiled for libc6, and it is lilo version 21.
+Hi,
 
-M-Systems provides a plilo which was compiled for libc5, and is lilo 
-version 20.
+I am trying to get he mtd driver to work... Here's what I've got so far:
 
-Lilo version 20 is incompatible with lilo version 21, as far as the 
-boot.b file is concerned.
+1. Compiled the driver
+2. Ran MAKEDEV
+3. Load modules
+     insmod mtd.o
+     insmod mtdblock.o
+     insmod nftl.o
+     insmod doc2000.o
+4. Mount the doc (factory fresh)
+     mount -t msdos /dev/nftla1 /mnt
 
-Oh, and as of lilo 21, they already included some of the changes 
-that M-Systems included in the patch, and put them under an 
-#ifdef (xxx_LARBE_EBDA, or sometihng like that).  Now, if 
-someone would be able to do that with EtherBoot, I would be a 
-happy man.
+Now I can cd into /mnt (the doc2000 partiton) and I can also read and
+write to it. So I copy a bunch of files there, the unmount and power off
+the machine. Upon reboot I do step 3. above. When I attempt to mount
+/dev/nftla1 I get an error message saying the partition doesn't exist or
+is the wrong file system. If I do fdisk /dev/nftla my partition doesn't
+exist.
 
----------
-Dvir Oren <dvir@lucidvon.com>
-Lucid VON Ltd. <http://www.lucidvon.com>
-Twin Towers 2,     Suite 406,     P.O.Box 159
-35 Jabotinsky street, Ramat-Gan 52511, ISRAEL
-Tel:+972 3 6137214         Fax:+972 3 6137215
+I ran my dos boot floppy and reinstalled the doc firmaware from the
+M-Systems disk. I repeated the above steps with the same result.
+
+What am I doing wrong?
+
+Regards,
+Adi
+   
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
