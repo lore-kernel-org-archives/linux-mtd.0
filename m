@@ -1,17 +1,21 @@
-Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
+Received: from moutvdom00.kundenserver.de ([195.20.224.149])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15PVWK-0004p4-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2001 21:44:41 +0100
-Message-ID: <3B5F31CC.6705F4B0@daniel.com>
-Date: Wed, 25 Jul 2001 15:53:32 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+	id 15Phyx-0005Wg-00
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jul 2001 11:03:03 +0100
+Received: from [195.20.224.209] (helo=mrvdom02.schlund.de)
+	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 15Pi4X-00034y-00
+	for linux-mtd@lists.infradead.org; Thu, 26 Jul 2001 12:08:49 +0200
+Received: from pd9055330.dip.t-dialin.net ([217.5.83.48] helo=jurca.de)
+	by mrvdom02.schlund.de with esmtp (Exim 2.12 #2)
+	id 15Pi4X-0003QY-00
+	for linux-mtd@lists.infradead.org; Thu, 26 Jul 2001 12:08:49 +0200
+Message-ID: <3B5FEC30.82309CCC@jurca.de>
+Date: Thu, 26 Jul 2001 12:08:48 +0200
+From: Jan Debiec <jan.debiec@jurca.de>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@redhat.com>
-CC: Vipin Malik <vipin@embeddedlinuxworks.com>,
- 	olea@hispafuentes.com, linux-mtd@lists.infradead.org,
- 	juan@hispafuentes.com
-Subject: Re: Ask for some guidance...
-References: <Pine.LNX.4.33.0107252008450.4023-100000@passion.cambridge.redhat.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS and RTLinux
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -25,27 +29,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
-> > What BIOS is it using? I know that General Software's Embedded BIOS
-> > supports that functionality.
->
-> Do you know the format used?
+Hello,
 
-Nope-sorry! Though GSW may be willing to share that info (if it is that).
+I'm trying to use RealTimeLinux (RTL 3.0 pre9) on Arcom MediaGX SBC
+(2.2.17 with MTD and JFFS1)
+AS condition to run RTL, kernel (2.2.17) must be compiled with SMP flag
+set on.
+But then the JFFS is not running properly, kernel is not able to mount
+the /dev/mtdblock2 as root fs. After message "Building JFFS fs crash
+recovery tree ... " system is hanging.
+Do you know the solution?
 
->
-> For booting, compatibility with the existing BIOS extension is useful.
-
-Actually, for a x86 solution, most of these BIOS int 13 extensions can detect and
-load a "floppy boot sector" format from resident flash disk (I think so, unless
-I've lost my mind- which is quite a possibility :)
-
-One can then use rolo (see web site www.embeddedlinuxworks.com under "ROLO: A
-developers guide") to load a bzImage kernel into ram and boot it. The kernel can
-then just detect the flash as MTD and mount JFFS2 on it.
-
-You really don't even need the BIOS if you don't need thinks like video etc. in
-your system- but having a BIOS makes life a bit easy- you don't have to figure out
-chipset/peripheral initializations etc.
-
-Vipin
+Jan
+-- 
+----------------------------------	
+ Jan Debiec    
+ Jurca Optoelektronik
+ Raiffeisenstr. 5D
+ D-63110 Rodgau (Dudenhofen)
+ Germany 
+ 
+ tel      +49 6106 8290 20
+ fax      +49 6106 8290 26
+ email    jan.debiec@jurca.de
+ www.jurca.de
+----------------------------------
