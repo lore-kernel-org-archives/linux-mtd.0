@@ -1,18 +1,16 @@
-Received: from [61.135.145.20] (helo=sohumx05.sohu.com)
+Received: from tomts15-srv.bellnexxia.net ([209.226.175.3])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17fYG9-0003aM-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 04:58:50 +0100
-Received: from mail.sohu.com (unknown [192.168.41.41])
-	by sohumx05.sohu.com (Postfix) with ESMTP id 98E8B596ED
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 11:54:13 +0800 (CST)
-Message-ID: <6753069.1029470073112.JavaMail.postfix@mailsrv1.mail.sohu.com>
-Date: Fri, 16 Aug 2002 11:54:20 +0800 (CST)
-From: <jay.s@sohu.com>
-To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
-Subject: grub loading problem, for help
-Mime-Version: 1.0
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 8bit
+	id 17fmJD-0004u2-00
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 19:58:55 +0100
+Date: Fri, 16 Aug 2002 14:58:52 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: jay.s@sohu.com
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: grub loading problem, for help
+In-Reply-To: <6753069.1029470073112.JavaMail.postfix@mailsrv1.mail.sohu.com>
+Message-ID: <Pine.LNX.4.44.0208160039180.16312-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,55 +22,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-thanks in advance.
+Jay,
 
-I am doing as a document advice, since I havn't the choice of change boot sequence to NETWORK boot option in bios, I did ./configure without "--enable-diskonchip-biosnetboot ", now I halt the system and reboot it, it says :
+On Fri, 16 Aug 2002 jay.s@sohu.com wrote:
 
-DoC 2000 D800
-E698
-Jumping to Grub
+> grub>
+> 
+> 
+> I feel lucky to see the prompt, however I cant access the doc anymore( I
+> have tried to use "kernel ...." according to that howto), I have
+> installed the contents in the doc and also the grub/menu.lst, but
+> nothing help. Because I don't know grub much, I don't know what to do
+> then.
 
-then nothing appeared on the screen, the keyboard is not locked.
+Does the "root (dc0)" or the "root (dc0,0)" command work?  Can you see the 
+content of the menu.lst file by typing "cat /boot/grub/menu.lst"?  I 
+always create a symbolic link when preparing the boot partition:
 
-accidently, I reboot the system without the hard disk, things were changed as follows:
+    cd boot
+    ln -s . boot
 
-DoC 2000 D800
-D698
-Jumping to Grub
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
-DiskOnChip 2000 found at d8000
-floor 0, chip 0; manufacturer:Toshiba
-Chip: Toshiba TC58V64AFT/DC, total size:8 MiB
-erase unit: 8192 bytes, page: 512 bytes
-total of 1 chip2 found - total capacity 8 MiB
-Scanning for NFTL Media Header
-NFTL Media Header found in flash sector 192
-spare Media Header for NFTL 0 fount in flash sector 208
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0x0
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0x1
-.....................
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xf
-Attempting to open /boot/grub/menu.lst on drive 0x80, partition 0xff
-Attempting to open /boot/grub/menu.lst on drive 0x80, partition 0xff
-Attempting to open /boot/grub/menu.lst on drive 0x80, partition 0xf0
-.....................
-Attempting to open /boot/grub/menu.lst on drive 0x80, partition 0xf
-Attempting to open /boot/grub/menu.lst on drive 0x0, partition 0xff
-Attempting to open /boot/grub/menu.lst on drive 0x0, partition 0x0
-.....................
-Attempting to open /boot/grub/menu.lst on drive 0x0, partition 0xf
+In this way the path /boot/grub/menu.lst will resolve even when /boot is a 
+mount point.
 
-GRUB version 0.93 (616k lower / 31744k upper memory)
+Also one has to make sure that the DoC's filesystem can be mounted at all 
+(that is, mount -t ext3 /dev/nftla2 /mnt/flash or similar must work).  
+It's easy to do mounting probe by booting off the hard disk first.
 
-[ Minimal BASH-like line editing is supported......]
-grub>
-
-
-I feel lucky to see the prompt, however I cant access the doc anymore( I have tried to use "kernel ...." according to that howto), I have installed the contents in the doc and also the grub/menu.lst, but nothing help. Because I don't know grub much, I don't know what to do then.
-
-could you have any suggestions?
-
-regards
-
-jays
+Ilguiz
