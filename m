@@ -1,14 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Andre Sodermans <andreesje_werk@yahoo.com>
-In-Reply-To: <20040511155327.9810.qmail@web41502.mail.yahoo.com>
-References: <20040511155327.9810.qmail@web41502.mail.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1084291123.4426.26.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 11 May 2004 16:58:44 +0100
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: diskonchip2000 support in 2.4.22
+Received: from smtp8.wanadoo.fr ([193.252.22.23] helo=mwinf0804.wanadoo.fr)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BNZjS-0003cf-V1
+	for linux-mtd@lists.infradead.org; Tue, 11 May 2004 17:03:51 +0100
+Received: from CHENE (ARennes-303-1-30-216.w81-248.abo.wanadoo.fr
+	[81.248.97.216])
+	by mwinf0804.wanadoo.fr (SMTP Server) with ESMTP id B435F1800169
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 11 May 2004 18:03:48 +0200 (CEST)
+From: "Pascal Fifre" <pascal.fifre@cleode.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 11 May 2004 18:03:48 +0200
+Message-ID: <004401c43771$8bcc7140$3055a8c0@cleode.local>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Millenium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-05-11 at 08:53 -0700, Andre Sodermans wrote:
-> hmmmm
-> 
-> So, I do need 'CONFIG_INFTL'? I wasn't sure when I
-> built my most recent kernel.
+Hi,
 
-Yes, and then you need to write support for the Bad Block Table.
-It's not hard -- I can help you. But I haven't got round to doing it
-myself yet, and while it's not yet done the hardware driver deliberately
-disables itself.
+I would like to know if someone tests the last version of linux mtd
+source with Millenium Plus 64 MB.
 
--- 
-dwmw2
+Can I format this DiskOnChip with nftl_format ?
+
+Help me please, help me
+
+Thanks a lot
+
+Pascal FIFRE
+Responsable Syst=E8mes Embarqu=E9s
+CLEODE
+5, rue de Broglie
+22300 LANNION
+Tel : 02 96 48 68 18
+http://www.cleode.com
