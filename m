@@ -1,18 +1,17 @@
-Received: from rwcrmhc51.attbi.com ([204.127.198.38])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mbdm-0001ZQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:00:22 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: No more DoC hotplug on Grub fail [tested & working]
-Date: Wed, 4 Sep 2002 10:58:38 -0400
-Cc: Karim Yaghmour <karim@opersys.com>,
- Ilguiz Latypov <ilatypov@superbt.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020904145950.DRRI12451.rwcrmhc51.attbi.com@there>
+	id 17mbjG-0001dV-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:06:02 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0209041546020.22265-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0209041546020.22265-100000@hex.linuxgrrls.org> 
+To: Jasmine Strong <jasmine@hex.linuxgrrls.org>
+Cc: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Stable cvs version for 2.4 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 04 Sep 2002 16:06:02 +0100
+Message-ID: <4414.1031151962@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,47 +23,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Karim,
+jasmine@hex.linuxgrrls.org said:
+>  Is there nowhere that's not a pointer that you can stuff it? 
 
-I tested your Grub patch on a DoC Millennium, it works fine.  I used the 0.92 
-patch, but I had to reduce the length of some of the text messages to make 
-everything fit.  This may have been the gas 2.9.5 problem you described 
-earlier.
+struct jffs2_node_frag
+{
+	rb_node_t rb;
+	struct jffs2_full_dnode *node; /* NULL for holes */
+	uint32_t size;
+	uint32_t ofs; /* Don't really need this, but optimisation */
+};
 
-This patch, while potentially useful during debugging, takes up precious 
-space that may be needed later (to add support for new flash devices, etc).  
-Also, once Grub is booting correctly from the DoC, I would think this feature 
-would not be needed.
+Not really. 'size' and 'ofs' are within the file -- so if you open a file,
+seek to 0xFFFFFFFD and write a byte, you can quite happily end up with a
+hole frag with size=0xFFFFFFFD and a subsequent data frag with the same ofs.
+So I can't abuse the high or low bits like I do with the physical offsets on
+the flash in the jffs2_raw_node_ref.
 
-For what it's worth, I'd recommend that this patch be made available in the 
-patches directory of the CVS tree, rather than making it part of the official 
-GRUB code.
+And although I thought at the time that 'size' was an optimisation I don't 
+really think it is any more.
 
-I'm willing to revise my GRUB/DoC HOWTO to include instructions on the use of 
-this patch, for those who are concerned about this issue.
+Although actually perhaps it is. Must investigate that possibility too -- no
+reason why I can't assume that 'frag->size' is always equivalent to
+'frag_next(frag)->ofs - frag->ofs', as long as I stick in an end-marker to
+show the size of the last frag, if I can stick 0xFFFFFFFF in the 'node'
+pointer to mark that or something. Or if you'd shoot me for that too I could
+allocate something at boot and use _that_ address as the 'end marker' in the
+knowledge that it's not ambiguous.
 
-Mark
-
-Karim Yaghmour wrote:
-> I modified doc_stage1.S to check whether the user is holding
-> down the "ctrl" key while booting. If so, then it uses the
-> BIOS's original bootstrap handler instead of its own. This
-> avoids having to hotplug the DOC in case you misconfigure it
-> or if it fails to boot adequately for some other reason.
-
-> I had suggested this idea earlier on this list, but I figured
-> I'd dig up some of my old real-mode witchcraft and get it over
-> with. I sent a preliminary version of the code earlier, but
-> now that I tested it out, I know that that version doesn't
-> work. The version attached with the current e-mail, however,
-> does work.
-
-> The scheme works as described in my earlier emails.
-
-> Hopefully this saves some folks some cold sweat (me included).
-
-> Karim
-
-> P.S.: For some reason, gas 2.9.5 is unable to build my modified
-> doc_stage1.S in the prescribed 512 bytes. gas 2.12, nevertheless,
-> works just fine.
+--
+dwmw2
