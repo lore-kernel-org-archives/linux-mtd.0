@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [207.164.182.16] (helo=cbnsitar.cbnco.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15tqWd-00040F-00
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 14:14:23 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BCD84E1.4DD484A6@uniquemodem.com> 
-References: <3BCD84E1.4DD484A6@uniquemodem.com> 
-To: data <data@uniquemodem.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtdblock.c cannot compile under Linux 2.2.x 
-Mime-Version: 1.0
+	id 15tryf-000475-00
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 15:47:26 +0100
+Received: from wann.com (porcupine.wann.com [207.164.182.104])
+	by cbnsitar.cbnco.com (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id f9HFsrI28310
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 10:54:53 -0500
+Message-ID: <3BCD9CAB.2F21AFFE@wann.com>
+Date: Wed, 17 Oct 2001 10:58:51 -0400
+From: Vladimir Doukhanine <vdoukhan@wann.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 patch for 2.4.5 kernel.
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 17 Oct 2001 14:23:32 +0100
-Message-ID: <25716.1003325012@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,9 +24,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Comment out the BLKGETSIZE64 stuff in include/linux/mtd/compatmac.h and 
-don't apply the patch which adds the init calls - 2.2.18 can do that the 
-new way.
+Hi everybody,
 
---
-dwmw2
+Could you please help me with finding a JFFS2 patch for 2.4.5 kernel?
+
+Cheers,
+Vladimir.
