@@ -1,17 +1,16 @@
-Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bo6Ee-0005Nq-C2
-	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 16:01:45 -0400
-Received: from [10.1.1.113] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
-	1.3.167) for linux-mtd@lists.infradead.org;
-	23 Jul 2004 16:01:37 -0400
-Date: Fri, 23 Jul 2004 15:57:13 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.60.0407231550080.4572@dell.enoriver.com>
+Received: from smtp802.mail.sc5.yahoo.com ([66.163.168.181])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bo6hQ-0005cb-VD
+	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 16:31:28 -0400
+From: "Brock Denson" <bdenson@wa-ventures.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 23 Jul 2004 15:31:13 -0500
+Message-ID: <011d01c470f4$012c7b40$6400a8c0@BDENSONLAPTOP>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: timeout of flash write, possible fix in gc.c?
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: problems with mtd on atmel dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am having problems with the flash on my at91rm9200dk board with
+linux-2.4.26-vrs1 and the at91-03052004 patch.  The dk has two flash =
+chips,
+an 8M dataflash (serial) at54db642, and a 2M parallel at49bv1614a.  In =
+the
+boot log I get the following:
 
-   (A colleague passed this on to me to post, I did some editing so I 
-hope I'm representing the problem accurately.)
+For the parallel flash:
+...
+physmap flash device: 200000 at 10000000
+CFI: Found no Physically mapped flash device at location zero
+Search for id:(1f c0) interleave(1) type(2)
+Found: Atmel AT49BV16X
+Physically mapped flash:=20
+Found 1 x16 devices at 0x0 in 16-bit mode
+kmod: failed to exec /sbin/modprobe -s -k cfi_cmdset_0002, errno =3D 2
+Support for command set 0002 not present
+gen_probe: No supported Vendor Command Set found
+kmod: failed to exec /sbin/modprobe -s -k map_rom, errno =3D 2
+...
 
-   Scenario:  JFFS2 2.2 code back-ported to ~2.4.22 kernel source tree,
-850DE processor with 2x16M AMD MirrorBit flash chips, concatenated.
-3.5M of that is already spoken for, so the write test was run on the 
-remaining 28.5M.  According to my colleague:
+For the serial flash:
+...
+Found AT91 i2c
+AT91 SPI driver loaded
+at91_dataflash: Atmel AT45DB642 detected [spi0] (8650752 bytes)
+Creating 3 MTD partitions on "Atmel AT45DB642":
+0x00000000-0x00010000 : "bootloader"
+0x00010000-0x000d0000 : "kernel"
+mtd: partition "kernel" doesn't start on an erase block boundary -- =
+force
+read-only
+0x000d0000-0x00840000 : "filesystem"
+mtd: partition "filesystem" doesn't start on an erase block boundary --
+force read-only
+...
 
-   "First we run the makefiles to fill the area until 95% space are
-filled.  Then we run a modified checkfs which reads the file, does a
-checksum and overwrites it again in a loop.
+If I do a ls dev/mtdblock I see:
+0	1	2
+Which I assume are the three partitions on the dataflash device, but I =
+can
+not mount them with mount -t jffs2 /dev/mtdblock/0 /mnt.  I get a =
+permission
+denied error.
 
-   (the makefiles and checkfs are the files under mtd/utils/checkfs)
-
-   But sometimes we get the following messages endlessly:
-
-   MTD do_write_oneword(): software timeout
-   Write of 2616 bytes at 0x0198e594 failed. returned -5,retlen 0
-   jffs2_garbage_collect_pristine():Not marking the space at 0x0198e594 
-as dirty because the flash driver returned retlen zero
-   MTD do_write_oneword(): software timeout
-   Write of 2616 bytes at 0x0198e594 failed. returned -5, retlen 0
-   jffs2_garbage_collect_pristine():Not marking the space at 0x0198e594 
-as dirty because the flash driver returned retlen zero
-   MTD do_write_oneword(): software timeout
-   Write of 2616 bytes at 0x0198e594 failed. returned -5, retlen 0
-   jffs2_garbage_collect_pristine():Not marking the space at 0x0198e594 
-as dirty because the flash driver returned retlen zero
-                         ................
-
-         maybe the original code:
-
-                   if (retlen) {
-                         /* Doesn't belong to any inode */
-                        nraw->next_in_ino = NULL;
-
-                        nraw->flash_offset |= REF_OBSOLETE;
-                        jffs2_add_physical_node_ref(c, nraw);
-                        jffs2_mark_node_obsolete(c, nraw);
-                   } else {
-                        printk(KERN_NOTICE "Not marking the space at 0x%08x
-as dirty because the flash driver returned retlen zero\n",
-nraw->flash_offset);
-                         jffs2_free_raw_node_ref(nraw);
-                       }
-
-         should be modified to:
-
-                       /* Doesn't belong to any inode */
-                        nraw->next_in_ino = NULL;
-
-                        nraw->flash_offset |= REF_OBSOLETE;
-                        jffs2_add_physical_node_ref(c, nraw);
-                        jffs2_mark_node_obsolete(c, nraw);
+I don't see any listing at all for the parallel flash.  Can someone =
+point me
+in the right direction on how to solve this problem?
 
 
-         because:
 
-if retlen==0 and we do not mark this node obsolete, next time when the 
-GC comes in , the same flash space will be reserved and the mtd write 
-fails again, so we will go into an endless loop."
+Thanks,
 
-   thoughts?
-
-rday
+Brock Denson
+WAIV
+bdenson@wa-ventures.com
+210 849-1988
