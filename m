@@ -1,16 +1,16 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178yyY-0007gD-00
-	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 08:50:02 +0100
-Date: Sat, 18 May 2002 09:49:54 +0200 (MEST)
-From: Robert Kaiser <rob@sysgo.de>
-To: john riehl <jr@i-bucks.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Getting big flash onto motherboards. Will CF work? what   will?
-In-Reply-To: <3.0.32.20020517142924.0074ef10@mail.i-bucks.com>
-Message-ID: <Pine.LNX.4.21.0205180939300.18909-100000@dagobert.svc.sysgo.de>
+Received: from web21508.mail.yahoo.com ([66.163.169.19])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 1796AD-0008Jn-00
+	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 16:30:33 +0100
+Message-ID: <20020518153031.25391.qmail@web21508.mail.yahoo.com>
+Date: Sat, 18 May 2002 08:30:31 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: FAT for NAND Flash
+To: Yong-iL Joh <tolkien@mizi.com>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <hbznyy9gxw.fsf@tolkien.mizi.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,49 +22,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-
-On Fri, 17 May 2002, john riehl wrote:
-
-> At 08:51 PM 5/17/02 +0200, Robert Kaiser wrote:
-> >
-> >>> 
-> >> These are called DiskonModule  (as opposed to diskonchip).  
-> >> 
-> >> They come in both 40 and 44 pin connections.  They arent very big, they
-> >> look like a terminator.  Most are flat, like a hard drive (but much shorter
-> >> & smaller), some have an L-shape.
-> >
-> >So, except for the form factor, what is the difference beween these and
-> >a CompactFlash (wrt to reliabilty on power failure, etc.) ?
-> >
+--- Yong-iL Joh <tolkien@mizi.com> wrote:
+> SmartMedia DOS-FAT(abbr. SMFS) filesystem is FAT
+> compatible as they say.
+> we have implemented SMFS on MTD layer,
+> as following...
 > 
-> I dont know.  I dont know about CF.  how does cf connect to a system?
+> 1. FAT (of Linux)
+> 2. SCMTL (similar to FTL, NFTL,...)
 
-Basically, a CF uses flash as storage media but looking at it's
-interface, it behaves exactly like a normal IDE disk. You can actually
-buy adapters (just wiring, no logic) to connect a CF to a normal IDE
-connector. So it's pretty much like a DOM.
+what is SCMTL ? 
 
->  what
-> happens when cf loses power?
+from where i can get specs of SCMTL.
 
-I understand that when a CF loses power while a write is in progress, it
-may corrupt some blocks in such a way that they can not be recovered.
+is it also having patent ?
 
-> can you boot from it?
+> 3. NAND_smc (it's almost same NAND in MTD except
+> handling ECC)
 
-Obviously yes, since it behaves like an IDE drive.
+then how you handle ECC ?
 
-> 
-> afaik, dom keeps info despite a power loss.
+> 4. SMC (similart to spia.c)
+>
 
-So does a CF, the problem occurrs when it loses power while a write
-is in progress.
+from where i can get your source code.
 
-Rob
+Is it working properly .
 
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+Thank you for your help.
+
+
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
