@@ -1,17 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17I6bR-0000qb-00
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Jun 2002 12:47:53 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020611110129.25556.qmail@linuxmail.org> 
-References: <20020611110129.25556.qmail@linuxmail.org> 
-To: "xyz xyz" <watsup@linuxmail.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: linux on a DOC-2000 without a RAMDISK(HDD kind of install) 
-Mime-Version: 1.0
+Received: from web21505.mail.yahoo.com ([66.163.169.16])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17IHvO-0001VS-00
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2002 00:53:14 +0100
+Message-ID: <20020612235313.86108.qmail@web21505.mail.yahoo.com>
+Date: Wed, 12 Jun 2002 16:53:13 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: why MTD model ?
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 12 Jun 2002 12:47:36 +0100
-Message-ID: <30829.1023882456@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,26 +21,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-watsup@linuxmail.org said:
-> is it possible to use mtd drivers to boot from a DOC 2000 chip without
-> a RAMDISK based linux install,i mean a HDD type of install which reads
-> from a DOC like a HDD?
+hi all,
 
-The MTD drivers are part of Linux, and you can't use them until Linux has 
-booted. So they can't be used for booting Linux. But they can be used to 
-allow Linux to use a DiskOnChip for its root file system without having to 
-use a ramdisk, yes.
+i am curious why we need MTD model ?
 
-For booting, there's a version of Grub which can drive the DiskOnChip
-directly and replace its built-in firmware, or you could use LILO, which 
-should work fine, using the INT 13h disk BIOS services which are provided
-by the default firmware.
+Can we use ordinary linux driver model for memory
+devices ?
 
-> i want to put my own small distribution which
-> works on a HDD, is it necessary to go 4 a RAMDISK based distribution?
-> if its possible(a HDD type of install),how should i go abt it? 
+Thank you for your help.
 
-Build the DiskOnChip drivers into your kernel, install a boot loader. Boot.
 
---
-dwmw2
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
