@@ -1,16 +1,16 @@
 Received: from host11.oneononeinternet.com ([209.239.43.35])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aixa0-0005yz-KL
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2004 15:14:12 +0000
+	id 1Aj0HN-0006RG-Mo
+	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2004 18:07:09 +0000
 From: "Mark Richards" <markr@massmicro.com>
 To: "'David Woodhouse'" <dwmw2@infradead.org>
-Date: Tue, 20 Jan 2004 10:11:54 -0500
-Message-ID: <011b01c3df67$bd65d960$6e01a8c0@solarwave>
+Date: Tue, 20 Jan 2004 13:04:54 -0500
+Message-ID: <000d01c3df7f$e8685c60$6e01a8c0@solarwave>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1074607648.29472.17.camel@hades.cambridge.redhat.com>
+In-reply-to: <1074607648.29472.17.camel@hades.cambridge.redhat.com>
 cc: linux-mtd@lists.infradead.org
 Subject: RE: MTD - DOC 2000 freezes on umount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,66 +24,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 David,
 
-Thanks much for the reply and especially for all your hard work on these
-drivers.  I was pleased to find them as my beginning work with DOC was
-difficult using what the vendor has provided.
+This may now be better referenced under a different subject line =
+perhaps,
+but here goes...
 
-> Hit SysRq-P and/or SysRq-T to see precisely where it's locked up.
+I set up a fresh source tree in order that I might enable SYSRQ and =
+build
+with the very latest MTD drivers.
 
-Invoking sysrq is ineffective.  Seems sysrq was not configured.  I =
-searched
-my last .config used for the kernel build and there's no instance of =
-SYSRQ
-there.
+1. Got latest via CVS
+2. In the mtd/patches/ directory, ran:
+  sh patchin.sh /usr/src/linux=20
+3. Then put in my current .config file into /usr/src/linux (link to my =
+new
+source tree) and ran make xconfig.
 
-I'll build again and then be able to tell you more as my problem is
-reproducible.
+The following happened:
+[root@localhost linux]# make xconfig
+rm -f include/asm
+( cd include ; ln -sf asm-i386 asm)
+make -C scripts kconfig.tk
+make[1]: Entering directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+cat header.tk >> ./kconfig.tk
+./tkparse < ../arch/i386/config.in >> kconfig.tk
+drivers/mtd/chips/Config.in: 14: unknown command
+make[1]: *** [kconfig.tk] Error 1
+make[1]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+make: *** [xconfig] Error 2
 
-I also see this in bootup:
+It appeared that something was mangled by running patchin.  So I created =
+a
+new tree and first ran make xconfig, which worked fine, then applied =
+patchin
+and then ran make xconfig again. =20
+
+Here's the sequence:
 
 
-Possible DiskOnChip with unknown ChipID 00 found at 0xc8000
-Possible DiskOnChip with unknown ChipID B2 found at 0xca000
-Possible DiskOnChip with unknown ChipID 83 found at 0xcc000
-Possible DiskOnChip with unknown ChipID FF found at 0xce000
-Possible DiskOnChip with unknown ChipID 85 found at 0xd0000
-Possible DiskOnChip with unknown ChipID BD found at 0xd2000
-DiskOnChip Millennium found at address 0xD4000
-Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba:NAND 8MB =
-3,3V)
-1 flash chips found. Total DiskOnChip size: 8 MiB
-mtd: Giving out device 0 to DiskOnChip Millennium
-Possible DiskOnChip with unknown ChipID BD found at 0xd6000
-Possible DiskOnChip with unknown ChipID FF found at 0xd8000
-Possible DiskOnChip with unknown ChipID FF found at 0xda000
-Possible DiskOnChip with unknown ChipID FF found at 0xdc000
-Possible DiskOnChip with unknown ChipID FF found at 0xde000
-Possible DiskOnChip with unknown ChipID FF found at 0xe0000
-Possible DiskOnChip with unknown ChipID FF found at 0xe2000
-Possible DiskOnChip with unknown ChipID FF found at 0xe4000
-Possible DiskOnChip with unknown ChipID FF found at 0xe6000
-Possible DiskOnChip with unknown ChipID FF found at 0xe8000
-Possible DiskOnChip with unknown ChipID FF found at 0xea000
-Possible DiskOnChip with unknown ChipID FF found at 0xec000
-Possible DiskOnChip with unknown ChipID FF found at 0xee000
-$Id: ftl.c,v 1.45 2003/01/24 23:31:27 dwmw2 Exp $
-ftl_cs: FTL header not found.
-NFTL driver: nftlcore.c $Revision: 1.87 $, nftlmount.c $Revision: 1.31 $
- nftla: nftla1
-usb.c: registered new driver hub
+[root@localhost linux]# make xconfig
+rm -f include/asm
+( cd include ; ln -sf asm-i386 asm)
+make -C scripts kconfig.tk
+make[1]: Entering directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -c -o tkparse.o
+tkparse.c
+gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -c -o tkcond.o
+tkcond.c
+gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -c -o tkgen.o =
+tkgen.c
+gcc -o tkparse tkparse.o tkcond.o tkgen.o
+cat header.tk >> ./kconfig.tk
+./tkparse < ../arch/i386/config.in >> kconfig.tk
+echo "set defaults \"arch/i386/defconfig\"" >> kconfig.tk
+echo "set ARCH \"i386\"" >> kconfig.tk
+cat tail.tk >> kconfig.tk
+chmod 755 kconfig.tk
+make[1]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+wish -f scripts/kconfig.tk
+[root@localhost linux]# cd ../mtd
+[root@localhost mtd]# ls
+boot     drivers  grub     INSTALL  Makefile            patches
+COPYING  ffs2     html     kernel   mtd-jffs-HOWTO.txt  README
+CVS      fs       include  lib      obsolete            util
+[root@localhost mtd]# cd patches
+[root@localhost patches]# sh patchin.sh /usr/src/linux
+Patching /usr/src/linux
+Include Filesytems: no
+Zlib-Patch needed: no
+Method: Link
+Can we start now ? [y/N]y
 
-I don't believe I've seen " ftl_cs: FTL header not found." in my =
-previous
-builds.
+Patching MTD
+drivers/mtd
+drivers/mtd/chips
+drivers/mtd/devices
+drivers/mtd/maps
+drivers/mtd/nand
+include/linux/mtd
+Patching done
+Please update Documentation/Configure.help from
+/usr/src/mtd/Documentation/Configure.help
+[root@localhost patches]# cd ../linux
+bash: cd: ../linux: No such file or directory
+[root@localhost patches]# cd ../..
+[root@localhost src]# cd linux
+[root@localhost linux]# make xconfig
+rm -f include/asm
+( cd include ; ln -sf asm-i386 asm)
+make -C scripts kconfig.tk
+make[1]: Entering directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+cat header.tk >> ./kconfig.tk
+./tkparse < ../arch/i386/config.in >> kconfig.tk
+drivers/mtd/chips/Config.in: 14: unknown command
+make[1]: *** [kconfig.tk] Error 1
+make[1]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/scripts'
+make: *** [xconfig] Error 2 [root@localhost linux]#
 
-Sorry, I don't know enough about the file systems to know if this is =
-normal.
-Does it look ok to you?
 
-Regarding the compile error, when I build for the sysrq I'll also apply =
-the
-latest MTD source to the new source tree for 2.4.24 and let you know
-specifically what I find.
+Is it something I'm missing?  My kernel sources are the 2.4.24 (latest).
 
 
 Mark Richards
@@ -118,7 +156,8 @@ mount
 > > the shell session freezes (the umount command does not return a =
 prompt).
 >=20
-> Hit SysRq-P and/or SysRq-T to see precisely where it's locked up.>=20
+> Hit SysRq-P and/or SysRq-T to see precisely where it's locked up.
+>=20
 >=20
 > > I tried in one kernel build to apply the latest sources to my source
 > tree
