@@ -1,22 +1,27 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEkJa-0000bW-7K
-	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 03:37:11 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce050324140163fbe8d4@mail.gmail.com>
-References: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
-	<6934efce0503231727f7234f6@mail.gmail.com>
-	<Pine.LNX.4.58.0503240918120.15561@phoenix.infradead.org>
-	<6934efce050324140163fbe8d4@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 25 Mar 2005 11:36:39 +0300
-Message-Id: <1111739799.1978.5.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from gw.voda.cz ([212.24.154.90] helo=smtp.voda.cz)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DElJV-0001Q1-3n
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 04:41:09 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.voda.cz (Postfix) with ESMTP id DC739117D7
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Mar 2005 10:41:09 +0100 (CET)
+Received: from smtp.voda.cz ([127.0.0.1])
+	by localhost (gw [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 04198-08 for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Mar 2005 10:40:56 +0100 (CET)
+Received: from [10.1.1.111] (unknown [10.1.1.111])
+	by smtp.voda.cz (Postfix) with ESMTP id 3DC38117DC
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Mar 2005 10:40:55 +0100 (CET)
+Message-ID: <4243DCA5.9010802@voda.cz>
+Date: Fri, 25 Mar 2005 10:40:53 +0100
+From: =?ISO-8859-2?Q?Tom=E1=B9_Vr=E1na?= <tom@voda.cz>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & deletion dirents RFC
-Reply-To: dedekind@infradead.org
+Subject: MX29LV160BTC problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-24 at 14:01 -0800, Jared Hulbert wrote:
-> > We can't get rid of version in data nodes.
-> 
-> I'm not suggesting we get rid of 'version' in the actual nodes.
-> 
-> As I understand this adding 'version' to struct jffs2_raw_node_ref
-> increases the RAM usage by N*(X+Y) where:
->   N is the size of the version field
->   X is the number of direnties
->   Y is the number of data nodes
-> 
-> It seems there "ought" to be a way to only increase RAM size by N*X. 
-> I'm assuming Y>>X so this could be a big factor for RAM usage.
-> 
-> Am I missing something?
-> 
->  ,Jared
-Ok, now I understand you. Yes, good point, thanks. Frankly, I bear in
-mind 2 more things which I didn't publish:
+Hi,
 
-1. We will have some memory "reap" or "shrink" mechanism in JFFS3
-(possibly with the ICP help), this is why I so bravely increase the
-node_ref's size.
-2. I strongly suspect that the version field well be very useful for
-other purposes as well, even in the inode node (AKA data node)
-node_refs. This is why I don't afraid to add version to node_refs of all
-node types.
+I'm trying to use a MX29LV160BTC flash on a MIPS board under 2.6.11rc4 
+kernel. I can detect it, I can read it, I can even write it - but the 
+data is not there after write. I remember having this problem on 2.4.x 
+kernel some time ago, but after a MTD update it just suddenly went 
+away... Does thiss remind you of something similar ? Can you please 
+direct where to look further ?.
 
-So, I still need to design more precisely that "shrink" mechanism and to
-prove other usage of (node_ref)->version.
+    Thanks, Tom
+
+-- 
+ Tomas Vrana  <tom@voda.cz>
+ --------------------------
+ VODA IT consulting, Borkovany 48, 691 75
+ http://www.voda.cz/
+ phone: +420 519 419 416 mobile: +420 603 469 305 UIN: 105142752
