@@ -1,18 +1,18 @@
-Received: from mout01.kundenserver.de ([195.20.224.132])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15UnPk-0002Cz-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2001 11:51:44 +0100
-Message-ID: <3B726C90.F8A182F5@jurca.de>
-Date: Thu, 09 Aug 2001 12:57:20 +0200
-From: Jan Debiec <jan.debiec@jurca.de>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>,
- 	"'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>
-CC: "Alex Lennon @ Arcom" <ajlennon@arcom.co.uk>
-Subject: Re: JFFS and RTLinux
-References: <3B6571F2.6258156D@jurca.de>  <30724FF712DFD2119E6200104B244892011974BC@mail1> <12764.997170980@redhat.com>
+	id 15Undu-0002Ee-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2001 12:06:22 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3B726C90.F8A182F5@jurca.de> 
+References: <3B726C90.F8A182F5@jurca.de>  <3B6571F2.6258156D@jurca.de> <30724FF712DFD2119E6200104B244892011974BC@mail1> <12764.997170980@redhat.com> 
+To: Jan Debiec <jan.debiec@jurca.de>
+Cc: "'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>,
+    "Alex Lennon @ Arcom" <ajlennon@arcom.co.uk>
+Subject: Re: JFFS and RTLinux 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 09 Aug 2001 12:12:13 +0100
+Message-ID: <515.997355533@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,43 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David,
+jan.debiec@jurca.de said:
+>  unfortunately "stext_lock" tells me nothing (is used in head.S),
+> sbc_mediagx_map is a structure used for Arcom GXM board
 
-as you suggested,
+Spinlock deadlock. Check the spin_lock() and spin_unlock() pairs are evenly 
+matched in sbc_mediagx.c (they look like they are in the current version of 
+sbc_gxx.c).
 
-David Woodhouse wrote:
-> jan.debiec@jurca.de said:
-> >  P.S. But the question is still open, why has MTD and JFFS problems
-> > with SMP flag set in kernel config.
-> 
-> Reproduce on a non-RT kernel and use SysRq-P to find where it's blocking.
+$ gdb vmlinux
+(gdb) disassemble 0xc01986d3
 
+It should be in a loop which looks something like
 
-the results:
-EIP: 0010:[<c01986d3>] EFLAGS: 00000202
-...			EBP: c01d0040
+0xc0263620 <stext_lock+64>:	cmpb   $0x0,0xc02ccdf8
+0xc0263627 <stext_lock+71>:	repz nop 
+0xc0263629 <stext_lock+73>:	jle    0xc0263620 <stext_lock+64>
+0xc026362b <stext_lock+75>:	jmp    0xc0105b3f <__down+111>
 
+The place it's jumping to in the final line is the place that's trying to 
+obtain the (blocked) spinlock. 
 
-in system.map for that kernel:
-c0195940 T stext_lock
-c019b360 R lk_lockmsg
-...
-c01d0040 d sbc_mediagx_map
-
-unfortunately "stext_lock" tells me nothing (is used in head.S),
-sbc_mediagx_map is a structure used for Arcom GXM board
-
-Jan 
--- 
-----------------------------------	
- Jan Debiec    
- Jurca Optoelektronik
- Raiffeisenstr. 5D
- D-63110 Rodgau (Dudenhofen)
- Germany 
- 
- tel      +49 6106 8290 20
- fax      +49 6106 8290 26
- email    jan.debiec@jurca.de
- www.jurca.de
-----------------------------------
+--
+dwmw2
