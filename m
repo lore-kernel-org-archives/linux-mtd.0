@@ -1,49 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13eE8l-00065O-00
-	for mtd-list@infradead.org; Wed, 27 Sep 2000 11:08:39 +0100
-Received: from polaris.uk.insnet.net ([194.177.174.245])
+	id 13eFJo-0006HM-00
+	for mtd-list@infradead.org; Wed, 27 Sep 2000 12:24:08 +0100
+Received: from tele2-gw.tao-group.com ([212.19.67.123] helo=gate.tao-group.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13eE8k-00065I-00
-	for mtd@infradead.org; Wed, 27 Sep 2000 11:08:38 +0100
-Received: from imladris.demon.co.uk (imladris.demon.co.uk [193.237.130.41])
-	by polaris.uk.insnet.net (8.9.3/8.9.3) with ESMTP id KAA10545
-	for <mtd@infradead.org>; Wed, 27 Sep 2000 10:20:43 +0100 (BST)
-Date: Wed, 27 Sep 2000 10:17:57 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Peter Kundrat <kundrat@pkx.sk>
-cc: mtd@infradead.org
+	id 13eFJn-0006HG-00
+	for mtd@infradead.org; Wed, 27 Sep 2000 12:24:07 +0100
+Received: from pearl.tao.co.uk (pearl.tao.co.uk [172.16.100.66])
+	by gate.tao-group.com (8.9.3/8.9.3) with ESMTP id MAA11053
+	for <mtd@infradead.org>; Wed, 27 Sep 2000 12:24:01 +0100
+To: mtd@infradead.org
+From: "David Given" <dg@tao-group.com>
 Subject: Re: journalled fs on partitioned flash
-In-Reply-To: <20000927080515.A15228@napri.sk>
-Message-ID: <Pine.LNX.4.21.0009271015050.4342-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-reply-to: Your message of "Wed, 27 Sep 2000 10:17:57 BST."
+             <Pine.LNX.4.21.0009271015050.4342-100000@imladris.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 27 Sep 2000 12:22:25 +0100
+Message-Id: <E13eFI9-0003GD-00@pearl.tao.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 27 Sep 2000, Peter Kundrat wrote:
+[...]
+>Yep. The mtdblock device doesn't actually work, and it's used by JFFS
+>_only_ to get a handle on the underlying MTD device. Use the character
+>device to put your initial image on there instead.
 
-> When i tried to dd if=rootfs.jffs of=/dev/mtdblock/0 i got
-> end_request: I/O error, dev 1f:00 (mtdblock) sector 0 
-> end_request: I/O error, dev 1f:00 (mtdblock) sector 254
-> etc. every 254 blocks
-> and dd hung in D state (__wait_on_buffer+0x4c)
-> 
-> Is it a known problem ? 
+It worked all right when I was playing with it. Admittedly, I wasn't doing any 
+real work.
 
-Yep. The mtdblock device doesn't actually work, and it's used by JFFS
-_only_ to get a handle on the underlying MTD device. Use the character
-device to put your initial image on there instead.
+>I'm not sure how effective cloop on JFFS will be - if it's just
+>compression you're after, you'd probably be better off implementing
+>compression in JFFS - it's not too hard.
 
-I'm not sure how effective cloop on JFFS will be - if it's just
-compression you're after, you'd probably be better off implementing
-compression in JFFS - it's not too hard.
+I'm using a cramfs FS image in a jffs partition. It works fine, although I get 
+a few access-beyond-end-of-device errors when it gets mounted.
 
-And JFFS doesn't work on the DiskOnChip yet, because the DiskOnChip uses
-NAND flash. See sjhill's TODO list.
+Do I take it that I can't burn a cramfs image into a raw partition, and then
+
+mount /mnt /dev/mtdblock/1 -t cramfs
+
+...?
 
 -- 
-dwmw2
+David Given
+dg@tao-group.com
 
 
 
