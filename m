@@ -1,18 +1,15 @@
-Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A7mHs-0001uk-6E
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 02:41:48 +0100
-Message-ID: <3F860E15.1060008@hectrix.com>
-Date: Fri, 10 Oct 2003 09:40:37 +0800
-From: Selwyn Tang <selwyn@hectrix.com>
+Received: from mx-00.sil.at ([62.116.68.196])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A7nkc-0002IU-9D
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 04:15:34 +0100
+Date: Fri, 10 Oct 2003 05:13:02 +0200 (CEST)
+From: Ingo Flaschberger <if@sil.at>
+To: jffs-dev@axis.com
+Message-ID: <Pine.GSO.4.56.0310100453520.19931@ikarus.sil.at>
 MIME-Version: 1.0
-To: Slim <slimaffi@yahoo.com>
-References: <20031009163345.54331.qmail@web9907.mail.yahoo.com>
-In-Reply-To: <20031009163345.54331.qmail@web9907.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 cc: linux-mtd@lists.infradead.org
-Subject: Re: redhat 9, doc 2000
+Subject: kmalloc jffs2_do_mount_fs 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +19,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/10/2003 12:33 AM, Slim wrote:
-> Worked fine - thanks.  I'd like to incorporate the ctrl-key bypass
-> or better yet, have it recognize the bios setting to boot from C
-> instead.
+Hi
 
-AFAIK, the ctrl-bypass is the only option to make the grub on doc return
-control to the bios.
+after 3 nights... debugging why my sharp zaurus do not boot from my
+initrd.. i found:
 
->    mount /dev/nftla /mnt/doc
-> and I get
->    mount: /dev/nftla: unknown device
-> but 
->    ls -l /dev/nftla
-> gives
->    brw-r--r--   1  root     93,   0 Sep 23 10:22 /dev/nftla
+kmalloc does not give you more than 128k (only i you "hack" it).
+jffs2 with a filesystem about 40Mb need more when mounting..
+to fix this.. i have luckily found a patch at the list:
+http://lists.infradead.org/pipermail/linux-mtd/2002-December/006577.html
 
-/dev/nftla is the nftl device representing your doc, but not a
-partition. You have to create a new partition on it. You may use fdisk
-/dev/nftla to do create one. Suppose you only create one partition, you
-will get /dev/nftla1, representing the first partition. Then, you should
-use mke2fs /dev/nftla1 to create a ext-2 filesystem on it (assuming you
-choose ext-2.
+but why doe you not apply it to the source or warn because of this
+"jffs2" problem???
 
-Selwyn
+thnx & bye, Ingo
