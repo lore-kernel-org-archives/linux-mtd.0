@@ -1,19 +1,18 @@
-Received: from smtp13.mail.yahoo.co.jp ([211.14.15.236])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196C5c-0000qD-30
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 17:18:20 +0100
-Message-ID: <002a01c304fc$e3e4d3c0$a10486da@w0a3t0>
-From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
-To: <csperandeo@intrinsyc.com>,
-	<linux-mtd@lists.infradead.org>,
-	<tglx@linutronix.de>
-References: <200304101926.h3AJQ8b05913@marmot.intrinsyc.com>
-Date: Fri, 18 Apr 2003 01:17:49 +0900
+Received: from crowe.psilongbeach.com ([63.168.124.5])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 196CsA-00011X-CU
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 18:08:30 +0100
+Received: from psilongbeach.com (localhost.localdomain [127.0.0.1])
+	by crowe.psilongbeach.com (8.12.5/8.12.5) with ESMTP id h3HH8ZZ8023259
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 12:08:35 -0500
+Message-ID: <3E9EDF93.9070700@psilongbeach.com>
+Date: Thu, 17 Apr 2003 12:08:35 -0500
+From: crowe@psilongbeach.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-15"
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: JFFS2 on NAND reboot problems
+Subject: CVS patch breaks zlib
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
- 
-> Wondering if anyone has experienced a bug described as follows.
-> 
-> I am using the linux powerpc kernel 2.4.21-pre2.  We are using a March 09
-> 2003 snapshot for MTD/JFFS2 from http://www.linux-mtd.infradead.org/.
-> 
-> After rebooting the device we occasionally receive the following:
-> 
-> *********************************
-> jffs2_get_inode_nodes(): CRC failed on node at 0x00d8a9c0: Read 0xffffffff,
-> calculated 0x4deb59e5
-> 
-> jffs2_get_inode_nodes(): Data CRC failed on node at 0x00d89a8c: Read
-> 0xbaa193f5, calculated 0xcdd1fe6c Checked all inodes but still 0x1c20 bytes
-> of unchecked space? kernel BUG at gc.c:140!
-> Oops: Exception in kernel mode, sig: 4
-> NIP: C00A0420 XER: 00000000 LR: C00A0420 SP: C033FF10 REGS: c033fe60 TRAP:
-> 0700
->  Not tainted
-> MSR: 00009030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-> TASK = c033e000[8] 'jffs2_gcd_mtd1' Last syscall: -1
-> last math 00000000 last altivec 00000000
-> PLB0: bear= 0x00000000 acr=   0x00000000 besr=  0x00000000
-> PLB0 to OPB: bear= 0x00000000 besr0= 0x00000000 besr1= 0x00000000
-> 
-> GPR00: C00A0420 C033FF10 C033E000 00000018 00001030 00000001 00000020 C01F0000
-> GPR08: 00003DA8 C01A5D04 00000000 C033FE30 82004028 1001F598 00FE4100 007FFF2F
-> GPR16: 00000000 00000001 007FFF00 FFFFFFFF 00FDF920 00000000 00F9F548 00000002
-> GPR24: 00000000 C01AB4AC 00000000 FFFFFFFF 00000000 C035CDB8 C03CF0F8 
-> C03CF0C4 Call backtrace: C00A0420 C00A3790 C0006F00
-> **********************************
-> 
-> It appears that something has gone wrong with the garbage collection thread
-> (at least that is one of the theories).  Inserting a delay before actually
-> rebooting the device seems to remedy the problem somewhat but does not make
-> the problem dissappear.
-> 
-> Is it possible that the garbage collection thread is not given enough time to
-> do its works before the device is rebooted?
-> 
-> Any solution or suggestions on what avenues to a solution would be greatly
-> appreciated.
+Hi I'm new to the list
+I'm designing with the Altera EPXA10.
+I got the CVS version of mtd and applied the patch
+patchin.sh -c -j /home/crowe/aacSpva/linux-2.4.17_zlibBusted
 
-It seems to me that the system was rebooted without wbuf flush.
-If it is true, another problem I think is that mount process cannot detect the inode inconsistency.
-This fs should be designed on the premise that power failure happens.
-The last accessing file do not need to be saved, but fs does.
+I did a
+make clean
+make dep
+make bzImage then died with make modules (mtd stuff is configured for modules)
 
-Sorry if this is solved on the latest code...
+Here is a snippit of what happened
+make modules
+....
+make[1]: Entering directory `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib'
+arm_920t_le-gcc -D__KERNEL__ -I/home/crowe/aacSpva/linux-2.4.17_zlibBusted/include -Wall 
+-Wstrict-prototypes -Wno-trigraphs -O2  -fno-strict-aliasing -fno-common -fno-common -pipe -g 
+-mapcs-32 -march=armv4 -mtune=arm9tdmi -mshort-load-bytes -msoft-float -DMODULE   -DEXPORT_SYMTAB -c 
+zlib.c
+zlib.c:72: `deflate' undeclared here (not in a function)
+zlib.c:72: initializer element is not constant
+...
+a whole bunch of errors and warnings
+...
+ending with
+zlib.c:5374: `adler32' used prior to declaration
+zlib.c:5374: warning: `adler32' was previously implicitly declared to return `int'
+make[1]: *** [zlib.o] Error 1
+make[1]: Leaving directory `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib'
+make: *** [_mod_lib] Error 2
 
-BR.
-Matsunaga.
+Any Ideas on what I did wrong?
+Thanks
+Mike
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
+
+-- 
+Mike Crowe
+crowe@psilongbeach.com
