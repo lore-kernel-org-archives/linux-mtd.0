@@ -1,31 +1,18 @@
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
+Received: from [2001:838:3de:1000::2] (helo=fserver.unsec.nl)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CwhkF-0003tb-Iv
-	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 09:14:28 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j13EDnXB030529
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Feb 2005 09:13:49 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j13EDncP266134
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Feb 2005 09:13:49 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j13EDmHC000462
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Feb 2005 09:13:49 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1107429877.19262.258.camel@hades.cambridge.redhat.com>
-References: <20050202110715.GH27015@axis.com> <20050203095842.GA20345@axis.com>
-	<1107426233.12383.46.camel@localhost.localdomain>
-	<20050203105505.GB20345@axis.com>
-	<1107429877.19262.258.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain
-Date: Thu, 03 Feb 2005 08:13:41 -0600
-Message-Id: <1107440021.7780.0.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Device ID collision in amd_flash.c
+	id 1Cx1sb-00027V-Mw
+	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2005 06:44:06 -0500
+Received: from unsec.nl (localhost.localdomain [127.0.0.1])
+	by fserver.unsec.nl (8.12.11/8.12.11) with ESMTP id j14Bhwrm024607
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Feb 2005 12:43:58 +0100
+From: "Rudi Engelbertink" <rudi@unsec.nl>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 4 Feb 2005 12:43:58 +0100
+Message-Id: <20050204112622.M33820@unsec.nl>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+Subject: unable to get NAND oobinfo
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,15 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-02-03 at 11:24 +0000, David Woodhouse wrote:
-> On Thu, 2005-02-03 at 11:55 +0100, Jonas Holmberg wrote:
-> > It would be quite nice with a 2.4-branch that we can commit bugfixes 
-> > to that could be sent to Marcelo regularly.  But if I'm the first to 
-> > ask, we probably don't need it.
-> 
-> We have one for JFFS2. For the MTD code we probably don't need it.
+Hi,
 
-Unless you finally get around to removing all the inter_module_* stuff
-and use symbol_{get,put}... ;)
+trying to get my nand driver (for compulab 586core board) on kernel 2.4.27
+working, i ran into the following problem:
+The driver is recognised and appears to work. That means I can read the mtdchar
+device but whin I'm trying to format the device, I recieve the message
+'flash_eraseall: /dev/mtd3: unable to get NAND oobinfo'
+An strace replies with:
+open("/dev/mtd3", O_RDWR)               = 3
+ioctl(3, 0x80204d01, 0xbffffdf0)        = 0
+ioctl(3, 0x80c84d0a, 0xbffffd20)        = -1 ENOTTY (Inappropriate ioctl for
+device)
+At that moment it does an ioctl(fd, MEMGETOOBSEL, &oobinfo) but it looks
+like the device is not registered properly.
 
-josh
+NAND device: Manufacture ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MB 3,3V)
+
+On the mailing list I found an email with the same question about this but no
+answer.
+Could you give me a hint about what is going wrong or a posible solution.
+
+RGDS Rudi.
+-- 
+They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety.
+   Benjamin Franklin (1706-1790), Letter to Josiah Quincy, Sept. 11, 1773.
+GnuPG Key fingerprint = 706C E2AC 7AE2 BCEE 04EB  A962 0A75 7F9B 07A1 83E8
