@@ -1,18 +1,15 @@
-Received: from host.globalsecureserver.com ([209.239.37.116])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AxaSf-0001Zu-QL
-	for linux-mtd@lists.infradead.org; Sun, 29 Feb 2004 23:35:05 +0000
-Received: from softplc.com (dpc69194025.direcpc.com [69.19.4.25])
-	i1TNYxUu007281
-	for <linux-mtd@lists.infradead.org>; Sun, 29 Feb 2004 18:35:01 -0500
-Message-ID: <40427594.4030602@softplc.com>
-Date: Sun, 29 Feb 2004 17:28:20 -0600
-From: DHollenbeck <dick@softplc.com>
+Received: from [202.108.44.230] (helo=163.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AxiFy-0002Xr-27
+	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 07:54:30 +0000
 MIME-Version: 1.0
+Message-ID: <4042EC2C.000060.10501@bj230.163.com>
+Date: Mon, 1 Mar 2004 15:54:20 +0800 (CST)
+From: "aaa" <qixiaolili@163.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH] util/nftl_format  util/nftldump
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gb2312"
+Subject: Need help on ffs2.0 !
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
 
-RE: most recent snapshot, while trying to make util/nftl* utilities:
-
-The util/Makefile had the subject utilities commented out.
-
-Uncommenting created compile time errors.
-
-A simple fix is the attached patch to nftl.h,
-
---- mtdold/include/linux/mtd/nftl.h    2003-05-23 06:25:02.000000000 -0500
-+++ mtd/include/linux/mtd/nftl.h    2004-02-29 17:07:47.000000000 -0600
-@@ -9,5 +9,8 @@
-
- #include <linux/mtd/mtd.h>
-+
-+#if defined(__KERNEL__)
- #include <linux/mtd/blktrans.h>
-+#endif
-
- /* Block Control Information */
-
-
-Dick Hollenbeck
+aGVsbG8gLGkgYW0gYSBuZXcgbWVtYmVyIGZyb20gY2hpbmEgLiBJIGhhdmUgc29tZSBxdWV0
+aW9uIGFib3V0IGZmczIuMCAuaWYgdSBoYXZlIHNvbWUgaW5mb3JtYXRpb24gb24gZmZzMi4w
+ICxwbGVhc2UgaGVscCBtZSAuLi4obXkgZW5nbGlzaCBpcyB2ZXJ5IHdvcnNlIDpEICkNCndo
+byBjYW4gdGVsbCBtZSBob3cgdG8gZ2V0IHRoZSBzcGVjaWZpY2F0aW9uIG9mIGZmczIuMCA/
+IGFuZCBob3cgdG8gZ2V0IHNvbWUgY29kZXMgZnJvbSBtaWNyb3NvZnQgb3Igb3RoZXIgcGxh
+Y2UgPw0KaWYgc29tZSBvbmUgaGF2ZSB0aGVzZSBpbmZvcm1hdGlvbiAscGxlYXNlIHRlbGwg
+bWUgaG93IHRvIGdldCAuIG9yIHNlbmQgdGhlc2UgdG8gbWUgYnkgbXkgZW1haWwgLS0tLS0g
+cWl4aWFvbGlsaUAxNjMuY29tDQpJdCdzIHZlcnkgaW1wb3J0YW50IHRvIG1lLiBzbyBhbnkg
+aGVscCB3aWxsIGJlIGFwcHJlY2lhdGVkLi4uIDopDQp+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+Cs340tdWSVDK1bfR08rP5MG91tzE6rOs1rXTxbvd
+ISDC+jHU+TajoaOhoaEgICAgICAgICAgaHR0cDovL3ZpcC4xNjMuY29tCgrW0Ln61+6087XE
+w+K30dPKz+TU2rXIxOMgMjXV17/VvOQ01de4vbz+o6GhoaGhoaGhoaGhIGh0dHA6Ly9tYWls
+LjE2My5jb20KCrXju/fN+NLXxd3F3b6qz7LO3s/eIMirw+K30crWu/q2zNDFyM7E47eiIaGh
+oaGhoaGhoaGhoWh0dHA6Ly9wb3BvLjE2My5jb20K
