@@ -1,16 +1,18 @@
-Received: from tomts8.bellnexxia.net ([209.226.175.52] helo=tomts8-srv.bellnexxia.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LmCb-0002gM-00
-	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 15:49:25 +0100
-Date: Sat, 22 Jun 2002 10:49:22 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Gonzalo Servat <gonzalo@linuxaus.com>
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Trying to boot linux off a 2MiB M-Sys DoC2000 chip
-In-Reply-To: <1024702809.32427.8.camel@beamer.servat.com>
-Message-ID: <Pine.LNX.4.44.0206221044210.24642-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17LoQe-0002pv-00
+	for <linux-mtd@lists.infradead.org>; Sat, 22 Jun 2002 18:12:04 +0100
+Received: from dwmw2 (helo=redhat.com)
+	by passion.cambridge.redhat.com with local-esmtp (Exim 3.35 #5)
+	id 17LoQd-0001Tn-00
+	for linux-mtd@lists.infradead.org; Sat, 22 Jun 2002 18:12:03 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: PSA: Next couple of weeks [READ THIS OR DIE!] (fwd)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 22 Jun 2002 18:12:03 +0100
+Message-ID: <5690.1024765923@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,25 +24,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 22 Jun 2002, Gonzalo Servat wrote:
+What Russell said.
 
-> My question is, how do I configure grub to know how to boot off the DoC?
-> I can get it to boot off an IDE HDD (root hd(0,0); kernel /boot/bzImage;
-> boot) but how would grub know how to access the DoC's kernel?
+--
+dwmw2
 
-Try
+------- Forwarded Message
 
-  root (dc0)
-  kernel /boot/vmlinuz root=/dev/nftla ro
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Subject: PSA: Next couple of weeks [READ THIS OR DIE!]
+Date: Fri, 21 Jun 2002 23:51:22 +0100
 
-for a filesystem on top of /dev/nftla or
+I hope the subject line is sufficiently clear that _everyone_ should
+read this mail.  If it isn't, I'm at a loss how to make everyone read
+and inwardly digest the contents of important messages like this one.
+If you feel that you need to reply to anything in this email, please
+don't; I probably won't even read it.
 
-  root (dc0,0)
-  kernel /boot/vmlinuz root=/dev/ntla1
+=========================================================================
 
-for one on top of /dev/nftla1.  The first line may point to a different 
-partition that would hold the kernel image.  Such separation allows to 
-let GRUB boot a kernel off an ext2 partition.  The kernel in turn can 
-mount another ext3 partition under "/".  GRUB is not aware of ext3.
+As some people are aware, the Ottawa Linux Symposium and Linux Kernel
+Summit are being held in Ottawa next couple of week, which attracts many
+kernel developers.  Several people from this list will be attending the
+event.
 
-Ilguiz
+Since the events are back to back, and jammed-packed (eg, 9am to 11pm)
+with talks and the like, there is a high possibility that some of the
+more active people on these lists may not be available to answer questions,
+look at patches and fix problems as promptly as they otherwise would do.
+Please bear this in mind when re-sending your question to these lists.
+
+Therefore, I ask that people ensure that:
+
+- all mails sent to the list in the following couple of weeks are "high
+  quality".
+
+  By that, I mean, if you have a problem, please use the format suggested
+  in REPORTING-BUGS (found in the Linux kernel source tree) so you enclose
+  as much relevant information in _one_ self contained message.
+
+- re-sends of messages in the next couple of weeks are kept to an absolute
+  minimum.
+
+- you don't send emails to them personally in the hope that you'll get
+  preferential treatment (these types of mailings will probably end up
+  in /dev/null)
+
+- you do resend the message after two weeks if you have not had a reply.
+
+Even if people do reply to _some_ emails, do not assume that:
+
+- they have time to reply to all emails.
+- they are going to be around the next day to read or reply to mails.
+
+
+------- End of Forwarded Message
