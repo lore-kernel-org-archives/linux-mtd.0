@@ -1,49 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Ztfq-0007xn-00
-	for mtd-list@infradead.org; Mon, 05 Mar 2001 12:01:10 +0000
-Received: from chello062178007137.3.11.vie.surfer.at ([62.178.7.137] helo=quake.thinstuff.com)
+	id 14ZuGz-00084j-00
+	for mtd-list@infradead.org; Mon, 05 Mar 2001 12:39:33 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14Ztfp-0007xf-00
-	for mtd@infradead.org; Mon, 05 Mar 2001 12:01:09 +0000
-Received: from dmz.thinstuff.com ([192.168.2.1] helo=mg)
-	by quake.thinstuff.com with smtp (Exim 3.12 #1 (Debian))
-	id 14ZuWA-0006DJ-00
-	for <mtd@infradead.org>; Mon, 05 Mar 2001 12:55:15 +0000
-Reply-To: <m.gibson@esesixtech.com>
-From: "Michael Gibson" <m.gibson@esesixtech.com>
-To: <mtd@infradead.org>
-Subject: Kernel panic DiskOnChip /Newbie question
-Date: Mon, 5 Mar 2001 13:03:59 +0100
-Message-ID: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 14ZuGx-00084d-00
+	for mtd@infradead.org; Mon, 05 Mar 2001 12:39:32 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com> 
+References: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com> 
+To: m.gibson@esesixtech.com
+Cc: mtd@infradead.org
+Subject: Re: Kernel panic DiskOnChip /Newbie question 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 8bit
+Date: Mon, 05 Mar 2001 12:39:10 +0000
+Message-ID: <15844.983795950@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Is there somebody who could help me with following jffs problem?
 
-kernel 2.4.2, mtd cvs snapshot of 02nd March 2001(same problem with original
-mtd modules from kernel 2.4.2), DOC2000 8MB with firmware 1.21
+m.gibson@esesixtech.com said:
+> " Didn´t read all bytes in flash_safe_read(). Returned 0 " 
 
-DOC2000 is detected OK
-when I try to do "mount -t jffs /dev/mtdblock0 /test" after "erase
-/dev/mtd0" (as described in the mtd/jffs HOWTO from the CVS snapshot)
-I get a Kernel panic:
-" Didn´t read all bytes in flash_safe_read(). Returned 0 "
+The read/write/erase routines for the DiskOnChip hardware don't currently 
+support reads/writes greater than one page, or erases greater than one 
+eraseblock. You need to put a simple loop in to read/write multiple pages 
+and erase multiple blocks when it's asked to do so.
 
-but NFTL workes fine, I can do nftl_format - create a partition - put a
-minix fs on it and mount it.
-Also writing to the nftl partition works fine.
+The reason NFTL works OK is because it doesn't ask the hardware driver to 
+do that.
 
-What am I doing wrong?
+Using JFFS on NAND flash isn't tested very aggressively yet.
 
-Best regards
-Michael Gibson
-
-
+--
+dwmw2
 
 
 
