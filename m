@@ -1,18 +1,19 @@
-Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19jyoi-0002FI-Ei
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 11:13:27 +0100
-Message-ID: <3F2F8385.5090606@hectrix.com>
-Date: Tue, 05 Aug 2003 18:14:29 +0800
-From: Selwyn Tang <selwyn@hectrix.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <3F2F329D.5040204@hectrix.com>
-In-Reply-To: <3F2F329D.5040204@hectrix.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mail9.speakeasy.net ([216.254.0.209] helo=mail.speakeasy.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19k2tO-0002yP-5r
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 15:34:26 +0100
+From: Roger <rogerxxmaillist@speakeasy.net>
+To: Selwyn Tang <selwyn@hectrix.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <3F2E38FE.8030800@hectrix.com>
+References: <3F2E3089.40904@hectrix.com>
+	 <1059992609.7431.19.camel@localhost3.localdomain>
+	 <3F2E38FE.8030800@hectrix.com>
+Message-Id: <1060093933.3861.6.camel@localhost3.localdomain>
+Mime-Version: 1.0
+Date: 05 Aug 2003 07:32:14 -0700
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: Re: Cannot automake after patching grub with
-	grub-2003-01-08-doc.patch
+Subject: Re: Problems with DOC 2000 on 2.4.21
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+On both of my 440BX boards, Intel incorporated a shadow feature which
+shadows the mtd devices (bios chip/DIP socket) from the normal mtd
+drivers/modules.
 
-I solved the problem. It was that I've forgotten to symlink my aclocal, 
-which was 1.4p5 from RH7.3, to 1.5, together with automake. After that, 
-aclocal, automake and autoconf run successfully, but with the following 
-warnings when running autoconf:
+I have to utilize the openbios/devbios module/code to unshadow the 440BX
+DIP socket.
 
-   configure.in:17: warning: do not use m4_patsubst: use patsubst or
-   m4_bpatsubst
-   configure.in:700: warning: do not use m4_regexp: use regexp or
-   m4_bregexp
+There are many other chipsets supported for unshadowing in that code.  I
+believe the code only needs to be implemented into mtd somehow.
 
-I don't know if they bother, but I got grub_firmware produced.
+But basically, I get nothing found in dmesg when loading the DOC modules
+and nothing showing in /proc/mtd* -- but mtdchar does show some info in
+the /proc/mtd* files.
 
-Selwyn
+After unshadowing the 440BX DIP socket (using openbios/devbios -- i
+hacked module to leave the DIP socket unshadowed after unloading;-), and
+then loading the mtd/doc modules,  I get 'found DOC ...' in dmesg and I
+get good info in the /proc/mtd* files. 
 
-Selwyn Tang wrote:
-> Dear all,
+
+On Mon, 2003-08-04 at 03:44, Selwyn Tang wrote:
+> Dear Roger,
 > 
-> I downloaded the latest snapshot of grub through cvs and applied 
-> grub-2003-01-08-doc.patch with only one rejection in ChangeLog. I then 
-> followed README_DiskOnChip to run aclocal successfully. But when I run 
-> automake, a lot of "AMDEP does not appear in AM_CONDITIONAL" messages 
-> appeared! For examples,
+> Roger wrote:
+> > I usually find after loading the mtd doc200x modules, doing:
+> > # modprobe mtdchar
+> > will usually produce the /dev/mtd* devices.
 > 
-> /usr/share/automake-1.5/am/depend2.am: AMDEP does not appear in 
-> AM_CONDITIONAL
-> /usr/share/automake-1.5/am/lang-compile.am: AMDEP does not appear in 
-> AM_CONDITIONAL
+> When I compiled those MTD stuffs as modules, and after modprobe, I still 
+> didn't get any /dev/mtd* devices. But when I compiled those as builtin, 
+> I can cat /proc/mtd and get "mtd0:..." but still no /dev/mtd*
 > 
-> Before that, I use automake 1.4p5 and when I run automake it told me 
-> that 1.5 was expected. Then I ln -s automake to automake-1.5 in my 
-> RedHat 7.3, and got the above error.
-> 
-> Have anyone successfully applied the patch to grub, compiled it and get 
-> the "grub_firmware" file in stage1/ ?
-> 
-> Yours,
+> Do you know why?
 > 
 > Selwyn
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+-- 
+
+Roger
+http://www.eskimo.com/~roger/index.html
