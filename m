@@ -1,19 +1,16 @@
-Received: from sccrmhc02.attbi.com ([204.127.202.62])
+Received: from albatros.havelsan.com.tr ([195.142.233.60])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17qu4B-00081v-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2002 12:29:24 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: Erich Schubert <erich@debian.org>
-Subject: Re: another question: what can break?
-Date: Mon, 16 Sep 2002 07:27:46 -0400
-Cc: linux-mtd@lists.infradead.org
-References: <20020916002848.GB23510@bombadil.xmldesign.de> <20020916031806.QNX26805.rwcrmhc52.attbi.com@there> <20020916080118.GA16280@bombadil.xmldesign.de>
-In-Reply-To: <20020916080118.GA16280@bombadil.xmldesign.de>
+	id 17quij-00086n-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2002 13:11:18 +0100
+Message-ID: <001c01c25d79$fc271180$3064000a@nurpinar>
+From: "nur" <nurpinar@e-kolay.net>
+To: "MTD" <linux-mtd@lists.infradead.org>
+Subject: diskonchip millenium, will it ever work?
+Date: Mon, 16 Sep 2002 15:10:01 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020916112850.BWRQ23613.sccrmhc02.attbi.com@there>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,18 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Erich Schubert wrote:
-> as far as i now understood the way the old firmware probably chose was
-> to hook the disc handler 13h which would mean that it has to emulate a
-> real block device, is that correct?
+After partitioning by fdisk, my DoC become inaccessible
+I mean i get the messsage "No recognized diskonchip found" error at every
+boot process
+This happened ~3 months before and I havent' found any solution yet! I hope
+somebody has a solved the same problem before.
+I compiled kernel 2.4.18. I know DoC is at 0xe8000 address
+My other DoCs are working very well..
+I can't change window address from bios. It is fixed.
+What would you recommend me to do
+Enabling/disabling "probe for 0x55 0xAA Extension Signature" didn't change
+the result
+Thanks
 
-Yes.
-
-> Where do i find the old firmware, in case i want to restore the original
-> contents of the flash?
-> is that in DOC52.EXB in the ttfs_5.1.2 package from m-systems?
-
-Yes, you can use the DFORMAT command in the M-Sys DOS utilities to restore 
-the original contents.  Using the newest versions of DFORMAT (5.x) prior to 
-installing Grub may cause problems (UnitSizeFactor != 1) -- but the earlier 
-versions (4.x) should work fine for now.
+Nur.
