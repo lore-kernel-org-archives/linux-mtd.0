@@ -1,17 +1,18 @@
-Received: from pony1.arc.nasa.gov ([143.232.48.201] helo=mail.arc.nasa.gov)
+Received: from tidos.tid.es ([193.145.240.2] helo=tid.tid.es)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jWsT-0001pw-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 03:14:17 +0100
-Received: from sg-sdl-eng-1 (sg-sdl-eng1.arc.nasa.gov [128.102.173.53])
-	by mail.arc.nasa.gov (8.9.3/8.9.3) with SMTP id TAA22382
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 19:20:20 -0700 (PDT)
-Message-Id: <4.1.20010918183424.00a8fc20@mail.arc.nasa.gov>
-Date: Tue, 18 Sep 2001 19:20:27 -0700
+	id 15jiIW-0002ty-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 15:26:01 +0100
+Received: from tid.es ([1.0.22.18]) by tid.tid.es (Netscape
+          Messaging Server 4.15) with ESMTP id GJWZ0I00.51K for
+          <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 16:31:30 +0200
+Message-ID: <3BA8ABDE.6020208@tid.es>
+Date: Wed, 19 Sep 2001 16:29:50 +0200
+From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
-Subject: New interface to (old) JEDEC chips
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Subject: [Fwd: JFFS2 compresses?]
+Content-Type: multipart/mixed;
+ boundary="------------010203000500000809000103"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,26 +24,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Folks,
-	I'm working on a 586 SBC with 2Megs of flash (AM29F016) mapped into a
-window in the 0xD0000 area.  There is also some battery backed RAM mapped
-nearby.  Dwmw2 suggested I check out the probe_jedec.c code for accessing
-the flash.  Some comments:
+This is a multi-part message in MIME format.
+--------------010203000500000809000103
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In probe_jedec.c, jedec_probe_chip() :
-1. I ran into a case where the code returned zeroes for both the
-manufacturer ID and the chip ID (probably a bug in my low level driver).
-The zeroes match the empty structure at the end of jedec_table[], so the
-empty struct gets passed to cfi_jedec_init().  cfi_jedec_init() treats is
-as a legit entry and happily builds some more structures.  In any case the
-empty struct isn't needed (at least by jedec_probe_chip() ).  I deleted it
-from my source.
 
-2. The 'retried' variable is never incremented.  If we hit the " if
-(!retried ) ... " clause, we can get an infinite loop which screws the
-machine tight.  I've changed "if (!retried) ... " to "if (!retried++) ...".
- Should it only retry once?
 
-More as I figure out what I'm doing.
+--------------010203000500000809000103
+Content-Type: message/rfc822;
+ name="JFFS2 compresses?"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="JFFS2 compresses?"
 
-Ted Hildum
+
+>From - Wed Sep 19 14:44:48 2001
+X-Mozilla-Status2: 00000000
+Message-ID: <3BA89339.50407@tid.es>
+Date: Wed, 19 Sep 2001 14:44:41 +0200
+From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+User-Agent: Mozilla/5.0 (X11; U; Linux 2.4.4-4GB i686; en-US; 0.8.1) Gecko/20010515
+X-Accept-Language: en
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 compresses?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Does JFFS2 compress data in flash?
+
+When I check the available space in Flash
+
+df
+
+Filesystem                    1k-blocks        Used    Available    Use% 
+   Mounted on
+/dev/mtdblock1            32000                5772    26228            
+18%        /
+
+But when I erase a file that is 702k big I get:
+
+df
+
+Filesystem                    1k-blocks        Used    Available    Use% 
+   Mounted on
+/dev/mtdblock1            32000                5648    26352            
+18%        /
+
+Which means that 124k have been freed.
+I think there is a compression algorythm involved...?
+
+Thanks a lot
+
+
+
+--------------010203000500000809000103--
