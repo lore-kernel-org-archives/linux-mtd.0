@@ -1,17 +1,17 @@
-Received: from recycle.lbl.gov ([131.243.169.124])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15lzZU-0005Nb-00
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2001 22:16:52 +0100
-Message-ID: <20010925142549.A22356@recycle.lbl.gov>
-Date: Tue, 25 Sep 2001 14:25:49 -0700
-From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
-To: David Woodhouse <dwmw2@infradead.org>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15lzcH-0005Nw-00
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2001 22:19:45 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20010925142549.A22356@recycle.lbl.gov> 
+References: <20010925142549.A22356@recycle.lbl.gov>  <20010925134029.A22314@recycle.lbl.gov> <24339.1001451631@redhat.com> 
+To: Larry Doolittle <ldoolitt@recycle.lbl.gov>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: problems with 28F320B still
-References: <20010925134029.A22314@recycle.lbl.gov> <24339.1001451631@redhat.com>
+Subject: Re: problems with 28F320B still 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <24339.1001451631@redhat.com>; from David Woodhouse on Tue, Sep 25, 2001 at 10:00:31PM +0100
+Date: Tue, 25 Sep 2001 22:28:48 +0100
+Message-ID: <25195.1001453328@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David -
+Ideally, this would be done by implementing a new probe routine which can 
+detect these chips, make up a fake CFI structure, and pass control to the 
+normal cfi_cmdset_000x back end. 
 
-> [the 28F320B3] is not a CFI chip. Why is cfi_probe claiming to
-> recognise it? The CFI structure you quoted is obviously wrong. 
+Alternatively, a patch was posted to the mailing list recently which 
+contained a standalone driver for these chips alone. 
 
-I can't tell you why it was recognized, but the probe was
-triggered by the line in drivers/mtd/maps/physmap.c :
-
-	mymtd = do_map_probe("cfi_probe", &physmap_map);
-
-I added a coupla printk's, and find it entered cfi_probe_chip with
-cfi->device_type==2.  The line in the logfile
-   Physically mapped flash: Found 1 x16 devices at 0x0 in 16-bit mode
-came from the first of two cfi_probe_chip_1() calls within cfi_probe_chip(),
-which returned index == 0.
-
-I'll happily apply patches and help debug, but I'm not terribly
-familiar with this corner of the Linux kernel, so suggestions
-and comments will be greatly appreciated.
-
-    - Larry
+--
+dwmw2
