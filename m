@@ -1,16 +1,13 @@
-Received: from ext-proxy-1.ftel.co.uk ([192.65.220.99])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AqwXS-0001SR-Qn
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2004 15:44:35 +0000
-Message-ID: <402A4DC0.1090206@mesias.co.uk>
-Date: Wed, 11 Feb 2004 15:44:00 +0000
-From: Cam <camilo@mesias.co.uk>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Cam <camilo@mesias.co.uk>
+In-Reply-To: <402A4DC0.1090206@mesias.co.uk>
 References: <402A477D.3020701@mesias.co.uk>
-	<1076513408.21968.423.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1076513408.21968.423.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	 <1076513408.21968.423.camel@hades.cambridge.redhat.com>
+	 <402A4DC0.1090206@mesias.co.uk>
+Content-Type: text/plain
+Message-Id: <1076514597.21968.428.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 11 Feb 2004 15:49:58 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: Intel 28F640 cfi_cmdset_0001 chip is FL_STATUS after MTD_close
@@ -23,37 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David
+On Wed, 2004-02-11 at 15:44 +0000, Cam wrote:
+> After the mtd device has been closed, is it not perverse to leave the 
+> chips unredable? I don't mind if they are showing FL_STATUS while the 
+> device is busy.
 
-Thanks for the speedy reply,
+You might consider it perverse. On the other hand, I consider it _more_
+perverse to paper over hardware problems, given that anything we could
+do wouldn't be 100% reliable. :)
 
->>I would have expected the flash to be left in the read array state when 
->>not in use.
-> 
-> 
-> Why? If we've just finished writing to the device, and we're about to
-> write to the device again... why change it into read mode?
+> I have a patch to leave the chip (and driver) in FL_READY state after 
+> sync, but it sounds like no-one will be interested.
 
-After the mtd device has been closed, is it not perverse to leave the 
-chips unredable? I don't mind if they are showing FL_STATUS while the 
-device is busy.
-
-> Mostly if you're going to need this it's because you forgot to wire up
-> the RESET line to the flash chips properly, and you're already going to
-> die if the user hits the RESET button at the wrong time, or reboots or
-> hits SysRq-B, etc. I prefer not to work around this in the generic code,
-> since it's actually helpful for some people to realise this problem
-> early on. 
-
-It seems as if the linux commands erase and dd behave strangely on my 
-board, although what you say about the reset line is also true (I had 
-already emailed the board designer).
-
-I have a patch to leave the chip (and driver) in FL_READY state after 
-sync, but it sounds like no-one will be interested.
-
--Cam
-
+I wonder if you'd do better to do it in machine_restart() or register a
+reboot notifier.
 
 -- 
-camilo@mesias.co.uk                                                 <--
+dwmw2
