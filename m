@@ -1,16 +1,21 @@
-Received: from dedekind (helo=localhost)
-	by phoenix.infradead.org with local-esmtp (Exim 4.43 #1 (Red Hat
-	Linux)) id 1CyU4D-0005Pu-8f
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 12:02:09 +0000
-Date: Tue, 8 Feb 2005 12:02:04 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: MTD List <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.58.0502081156310.20565@phoenix.infradead.org>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1456859747-767461628-1107864124=:20565"
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Subject: [PATCH] nand_default_block_markbad fix
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CyVLe-00065O-2O
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 08:24:11 -0500
+Date: Tue, 8 Feb 2005 14:23:54 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Message-ID: <20050208132354.GA21515@wohnheim.fh-wedel.de>
+References: <54CC136E5398384485619BC34B3A0F0B055D0DB0@ma00exh02.atitech.com>
+	<20050207195209.GC25504@wohnheim.fh-wedel.de>
+	<20050208001528.C613F409A@blood.actrix.co.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20050208001528.C613F409A@blood.actrix.co.nz>
+Cc: linux-mtd@lists.infradead.org, Matthew Cole <mcole@ati.com>
+Subject: Re: Follow-up to wearing / caching question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Tue, 8 February 2005 13:22:23 +1300, Charles Manning wrote:
+> 
+> 20 year product life? Really? What stuff are you still using that was first 
+> plugged in in 1985?
 
---1456859747-767461628-1107864124=:20565
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Most likely some old mainframes.  But even for them it'd be a long
+life.
 
-Hello, here is small bugfix.
+> There are two factors which skew this:
+> 
+> 1) Garbage collection. Depending on the way the files are rewritten and freed 
+> up, different amounts of garbage collection rewrites will be performed. Worst 
+> case GC can drive up the number of writes.
+> 
+> 2) "Squatter files". Some files live a long time and some are transient. 
+> Those that live a long time will tend to take up "squatters rights" on an 
+> area of flash which means that the rest gets written more often.
 
-Bug description: kernel oops if there is no BBT table and the 
-nand_default_block_markbad() function is called.
+I guess dwmw2's approach to split up writes between two erase blocks
+would solve both issues.  GC'd data can be expected to be rather
+long-living, so it goes to a different block than newly written data.
 
-The patch should be applied to the drivers/mtd/nand/nand_base.c file.
+Jörn
 
-Ok to commit?
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
---1456859747-767461628-1107864124=:20565
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="nand_base_bbt_fix.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.58.0502081202040.20565@phoenix.infradead.org>
-Content-Description: 
-Content-Disposition: attachment; filename="nand_base_bbt_fix.patch"
-
-LS0tIG5hbmRfYmFzZS5jCTIwMDUtMDItMDggMTQ6NTQ6MDMuMzMwODk3MjE5
-ICswMzAwDQorKysgbmFuZF9iYXNlX2ZpeGVkLmMJMjAwNS0wMi0wOCAxNDo1
-Mjo0NC4zMzAzNzYxMDQgKzAzMDANCkBAIC00NjEsNyArNDYxLDggQEANCiAJ
-DQogCS8qIEdldCBibG9jayBudW1iZXIgKi8NCiAJYmxvY2sgPSAoKGludCkg
-b2ZzKSA+PiB0aGlzLT5iYnRfZXJhc2Vfc2hpZnQ7DQotCXRoaXMtPmJidFti
-bG9jayA+PiAyXSB8PSAweDAxIDw8ICgoYmxvY2sgJiAweDAzKSA8PCAxKTsN
-CisJaWYgKHRoaXMtPmJidCkNCisJCXRoaXMtPmJidFtibG9jayA+PiAyXSB8
-PSAweDAxIDw8ICgoYmxvY2sgJiAweDAzKSA8PCAxKTsNCiANCiAJLyogRG8g
-d2UgaGF2ZSBhIGZsYXNoIGJhc2VkIGJhZCBibG9jayB0YWJsZSA/ICovDQog
-CWlmICh0aGlzLT5vcHRpb25zICYgTkFORF9VU0VfRkxBU0hfQkJUKQ0K
-
---1456859747-767461628-1107864124=:20565--
+-- 
+People will accept your ideas much more readily if you tell them
+that Benjamin Franklin said it first.
+-- unknown
