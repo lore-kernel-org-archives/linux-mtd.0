@@ -1,14 +1,14 @@
-Date: Wed, 19 Jan 2005 13:03:55 +0000 (GMT)
+Date: Wed, 19 Jan 2005 13:07:39 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Jochen Karrer <j.karrer@lightmaze.com>
-In-Reply-To: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
-Message-ID: <Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
-References: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+In-Reply-To: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
+Message-ID: <Pine.LNX.4.58.0501191305530.8174@phoenix.infradead.org>
+References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mysqld on jffs2: MyISAM Index write is slow
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +18,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 18 Jan 2005, Joakim Tjernlund wrote:
 
-Not expert in this issue, but I was told by David that JFFS2 is 
-synchronous, and you need redesigning it if you want asynchronous 
-behaviour.
+> > 
+> > There was interesting offer to calculate checksum from the end of buffer 
+> > since it implies better L1 cache behaviour. Then there was another 
+> > argument against this idea - it was standed that some CPUs might be 
+> > capable to prefetch data forward and not capable to do it backward.
+> 
+> Sorry for being so quiet lately, work is a bit much currently.
+> 
+> Another idea is to calculate the checksum while reading/writing(much like
+> the networking code does). That would probably require support from the MTD layer
+> and that the checksum is stored at the end of the JFFS3 node.
+Hmm. How to do this? In case of NAND we issue 
+read command and provide buffer, and it is up to driver/hw how to read. 
+One may use DMA.
 
-> Hi,
-> I am using mysqld on jffs2. Tables work fine, but as soon as
-> i am using indexes the writing of new entries becomes very slow.
-> I found that mysql is writing one 1024 byte block to the index file
-> of the MyISAM table (.MYI) for every new row. This is up to 20 times in
-> sequence
-> the same block. On non synchronous filesystems
-> this goes to a Buffer in RAM, but on jffs2 this causes many writes to
-> the flash. In my amdflash emulator I found that mysql writes about 180MB to
-> the flash
-> for a table of 13MB with 88000 rows.
-> 
-> Is there a way to make jffs2 a little bit asynchronous ? Or does anybody
-> know
-> how to tell mysqld to write smaller blocks ? Mounting a reiser as loopback
-> from
-> a file on jffs2 does not work because jffs2 doesn't support mmap.
-> 
-> Jochen
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>  Jocke
 > 
 
 --
