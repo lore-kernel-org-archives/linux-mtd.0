@@ -1,20 +1,19 @@
-Received: from reefedge.com ([216.10.14.212] helo=reefedge.reefedge.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16B18W-00004t-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2001 22:00:28 +0000
-Received: from gwydir (localhost.localdomain [127.0.0.1])
-	by reefedge.reefedge.com (8.12.1/8.12.1) with SMTP id fB3M9rAI018485
-	for <linux-mtd@lists.infradead.org>; Mon, 3 Dec 2001 17:09:54 -0500
-From: "Craig Gwydir" <craig@reefedge.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: creating jffs filesystems with mkfs.jffs
-Date: Mon, 3 Dec 2001 17:14:22 -0500
-Message-ID: <BCEMJHKGMLINCAMLMLBFIEMDCDAA.craig@reefedge.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <BCEMJHKGMLINCAMLMLBFOELLCDAA.craig@reefedge.com>
+	id 16BBNr-0000ec-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2001 08:56:59 +0000
+Date: Tue, 4 Dec 2001 10:07:35 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Aleksander Sanochkin <asanochkin@lnxw.com>, linux-mtd@lists.infradead.org
+Subject: Re: JFFS1/MTD bug-fixes
+Message-ID: <20011204100735.A15389@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.33.0112030726090.14716-100000@newbast.lynuxworks.com> <11102.1007394901@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <11102.1007394901@redhat.com>; from dwmw2@infradead.org on Mon, Dec 03, 2001 at 03:55:01PM +0000
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,16 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am using an Intel E28F128 flash part in my design along with jffs v1 (x86,
-linux 2.4).
+Hi!
 
-The Intel flash part is organized as 128 x 128KB blocks.
+> >  We have also added a possibility for run-time partitioning of an MTD
+> > device, and use this usage_counter to prevent deleting of a partition
+> > while it is being used by some process.
+> 
+> In that context, I agree that it makes sense. Have you seen Jörn Engel's
+> rewrite of the partitioning code, which I was intending to look at merging
+> in 2.5? It would be useful to make that does what you require before we
+> merge it.
 
-Question: Are there any options I should use on mkfs.jffs to accomodate
-this?
-          Should I use the mkfs.jffs -e option and set it to 131072 for the
-erase size
-          when creating the jffs filesystem?
+http://wh.fh-wedel.de/~joern/software/kernel/
+http://wh.fh-wedel.de/~joern/software/kernel/mtd.patch.core.2.4.15
 
-Thx,
-Craig
+Not having seen any code, I fear that your patch won't easily merge
+with mine. But I would like to have a look - it might get rid of some
+dear old problems, commonly known as reboot. :)
+
+Jörn
+
+-- 
+When writing gateway software of any kind, take pains to disturb 
+the data stream as little as possible -- and *never* throw 
+away information unless the recipient forces you to!
