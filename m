@@ -1,18 +1,24 @@
-Received: from [210.17.210.210] (helo=mail.avantwave.com)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CkDSO-0004F3-Lf
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2004 22:28:06 -0500
-Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id iBV3RSXb014258
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Dec 2004 11:27:28 +0800
-Message-ID: <41D4C9AC.6020901@avantwave.com>
-Date: Fri, 31 Dec 2004 11:38:20 +0800
-From: mike <mikelee@avantwave.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CkIvM-00052n-4E
+	for linux-mtd@lists.infradead.org; Fri, 31 Dec 2004 04:18:21 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: William J Beksi <wjbeksi@setabox.com>
+In-Reply-To: <41D4D228.7060903@setabox.com>
+References: <41C1896F.9000107@setabox.com>
+	<1103530184.27708.102.camel@tglx.tec.linutronix.de>
+	<41C7F8C7.8050607@setabox.com>
+	<1103642836.27708.234.camel@tglx.tec.linutronix.de>
+	<41D4D228.7060903@setabox.com>
+Content-Type: text/plain
+Date: Fri, 31 Dec 2004 10:18:13 +0100
+Message-Id: <1104484693.4258.14.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: porting to new flash
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] command function for nand flash through IDE
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all
-    I have a development board with using 32 bit bus AMD flash and now 
-move to 8-bit AM29LV652d. What do i need to do with my kernel mtd 
-mapping? Just change the size, buswidth?
-    As i have not yet got the new flash from hardware engineer, i am now 
-just imagining and preparing the problem. I am wonder if anyone can give 
-me a checklist or some hints on that.
+On Fri, 2004-12-31 at 12:14 +0800, William J Beksi wrote:
+> Thomas Gleixner wrote:
+> 
+> > Implement hwcontrol function
+> >
+> >case CLE: this->io_addr_w = IDE_IO_BASE+1; break;
+> >case nCLE: this->io_addr_w = IDE_IO_BASE; break;
+> >case ALE: this->io_addr_w = IDE_IO_BASE+2; break;
+> >case nALE: this->io_addr_w = IDE_IO_BASE; break;
+> >
+> >There is also an example in the NAND API documentation.
+> >  
+> >
+> Hi Thomas,
+> I've implemented the hwcontrol function as per the NAND API 
+> documentation. I did not use the ioremap because the i/o port addresses 
+> 170-17F and 1F0-1FF are reserved for the IDE controller. I've spent the 
+> last week testing this driver and I hope it can be commited to the cvs 
+> if you find it useful.
+> 
 
-best regard
-Mike,Lee
+Hi William,
+
+looks better now. Can you please provide patches for Makefile and
+KConfig too ?
+
+I still have a question. Did you modify nand_base.c ? What ARCH/Platform
+are you using ?
+
+tglx
