@@ -1,17 +1,20 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from [192.58.209.91] (helo=handhelds.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BZoZL-0007TM-17
-	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2004 06:19:59 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <40CD76C2.1080007@inf.u-szeged.hu>
+	id 1BZuRB-0008QK-N2
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2004 12:35:58 -0400
+From: Joshua Wise <joshua@joshuawise.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 14 Jun 2004 12:34:35 -0400
 References: <40CD76C2.1080007@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1087208395.15845.1393.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 14 Jun 2004 11:19:56 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	<1087208395.15845.1393.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1087208395.15845.1393.camel@hades.cambridge.redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200406141234.39629.joshua@joshuawise.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: NAND device for JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,21 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-06-14 at 11:58 +0200, Ferenc Havasi wrote:
-> Dear All,
-> 
-> Can anyone advice us any (not too expensive) hardware device to test 
-> JFFS2 on NAND under Linux. Actually we would like to speed up the mount 
-> time of JFFS2 and we need a hardware to try our ideas.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-SmartMedia connected off a parallel port? Or a DiskOnChip 2000 in one of
-their ISA or PCI evaluation boards?
+> > We had some IPAQ with Familiar Linux, but they have NOR flash. There is
+> > some IPAQ  (1900 and 2200) with NAND flash but there is no working Linux
+> > on them :-(
+>
+> Don't we have Linux on the h1900 yet?
+I let the magic smoke out of the last one :(
 
-> We had some IPAQ with Familiar Linux, but they have NOR flash. There is 
-> some IPAQ  (1900 and 2200) with NAND flash but there is no working Linux 
-> on them :-(
+I have a 2200 here that I'm working on a bootloader for now.
 
-Don't we have Linux on the h1900 yet?
+joshua
 
--- 
-dwmw2
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAzdOePn9tWOqA4LMRAh+DAJ95Q8MxdgfrnqBmtMnjLDHPQK1KmACgmDgP
+UDU3/5uF7EzDhR27uxlFH3U=3D
+=3DTYfW
+=2D----END PGP SIGNATURE-----
