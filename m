@@ -1,61 +1,55 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14t9Eb-0001mu-00
-	for mtd-list@infradead.org; Fri, 27 Apr 2001 15:28:37 +0100
+	id 14t9KV-0001ps-00
+	for mtd-list@infradead.org; Fri, 27 Apr 2001 15:34:43 +0100
 Received: from mail1.danielind.com ([12.19.96.6])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14t9EZ-0001mo-00
-	for mtd@infradead.org; Fri, 27 Apr 2001 15:28:36 +0100
-Message-ID: <3AE98278.48DA955@daniel.com>
-Date: Fri, 27 Apr 2001 09:30:16 -0500
+	id 14t9KU-0001pm-00
+	for mtd@infradead.org; Fri, 27 Apr 2001 15:34:42 +0100
+Message-ID: <3AE983D7.E377707D@daniel.com>
+Date: Fri, 27 Apr 2001 09:36:07 -0500
 From: Vipin Malik <vipin.malik@daniel.com>
 MIME-Version: 1.0
-To: joakim.tjernlund@lumentis.se
-CC: 'Chris Read ' <chris.read@activesilicon.co.uk>,
- 	mtd@infradead.org
-Subject: Re: Power blackouts and brownouts
-References: <002801c0ceed$28aad830$0a01a8c0@Win1>
+To: "chris.read@activesilicon.co.uk" <chris.read@activesilicon.co.uk>
+CC: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Re: Brownouts
+References: <01C0CF15.C21A24D0.chris.read@activesilicon.co.uk>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Joakim Tjernlund wrote:
+Chris Read wrote:
 
-> -----Original Message-----
-> From: owner-mtd@infradead.org [mailto:owner-mtd@infradead.org]On Behalf
+> As a follow up to my earlier message:
 >
-> Well, I haven't seen any flash chips without a reset line, not to say that
-> they aren't out there.
+> I am currently working with Intel B3 parts. The datasheet makes no specific
+> mention of any built in brownout detection. However, there are a set of
+> timings for the reset line. Specifically, it states that it may take up to
+> 22us to reset the internal state machine during an erase or write cycle
+> after the reset pin is asserted. My interpretation of this, in the absence
+> of any explicit information, is that whilst erasing or programming, the
+> reset line must be asserted a minimum of 22us before the power supply falls
+> below the chip's minVcc specification, otherwise the results are
+> undefined.....and we all know what that can mean.
 >
-> With a flash chip *with* a reset line, and one which is connected to the
-> system reset, and assuming that the reset gets asserted in a power down, up,
-> and brown condition, then everything is ok.
->
-> <snip>
->
-> hmm, do you mean that reset has to asserted at power DOWN as well in order
-> for JFFS2 FS to manage its FS? How do you manage that when someone pulls
-> the power cable?
->
->          Jocke
+> Any thoughts/experiences?
 
-No, but most well designed embedded systems will assert the reset line both on
-power
-up AND down. Actually, direction does not really matter. Reset is asserted when
-the
-power rail is out of spec, which will happen (due to the laws of physics), both
-on up and down.
+IMHO, you'r reading too much into the spec.
 
-You wan't the reset line asserted on power down also, else the processor may
-"wander off"
-into the weeds and overwrite battery backed RAM or other such stuff if present.
+If this was my design, based on this spec that you posted, I would be happy
+with this 22 us of power *up* reset. There is usually nothing to worry about
+power down reset *for the flash chip*. Of course, you may want your processor
+to be in reset when VCC falls out of spec to prevent it from misbehaving.
 
-I don't think that JFFS(2) *require* you to assert the reset line (processor or
-flash) on power down.
+All IMHO.
 
 Vipin
 
+
+>
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 
