@@ -1,12 +1,12 @@
-Received: from mlbmx1.corp.harris.com ([137.237.90.73])
+Received: from mlbmx2.corp.harris.com ([137.237.90.74])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15RS4i-0004pz-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 06:28:13 +0100
-Message-ID: <8D4C69676E66D511A1CB00508BBBB1921BCE91@ranmx1.ran.harris.com>
+	id 15RSGt-0004rI-00
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 06:40:47 +0100
+Message-ID: <8D4C69676E66D511A1CB00508BBBB1921BCE94@ranmx1.ran.harris.com>
 From: "Walser, Martin" <mwalser@harris.com>
 To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 Subject: unable to mount Disk on Chip -> unknown partition table
-Date: Tue, 31 Jul 2001 01:33:29 -0400
+Date: Tue, 31 Jul 2001 01:46:00 -0400
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
@@ -19,10 +19,6 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-
-I'm using a MD-2800-D08 Disk on Chip.
-
-I've tried to mount the device as described in JFFS HOWTO.
 
 When booting, the following message is shown:
 
