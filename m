@@ -1,24 +1,16 @@
-Received: from post2.inre.asu.edu ([129.219.110.73])
+Received: from zcamail05.zca.compaq.com ([161.114.32.105])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15bODo-0001n1-00
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2001 16:22:40 +0100
-Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.0-24 #47347)
- id <0GIQ00401GBONQ@asu.edu> for linux-mtd@lists.infradead.org; Mon,
- 27 Aug 2001 08:28:37 -0700 (MST)
-Date: Mon, 27 Aug 2001 08:28:57 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-Subject: Re: Dynamic Rubin compression performance in JFFS2 on iPAQ
-In-reply-to: 
- <D99C1FB421989A40818B6370E3187094C9B90F@tayexc19.americas.cpqcorp.net>
-To: "Christian, Andrew" <Andrew.Christian@compaq.com>
+	id 15bOs8-0001pc-00
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2001 17:04:20 +0100
+Message-ID: <D99C1FB421989A40818B6370E3187094C8E2F5@tayexc19.americas.cpqcorp.net>
+From: "Christian, Andrew" <Andrew.Christian@compaq.com>
+To: 'Russ Dill' <Russ.Dill@asu.edu>
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
- "Hicks, Jamey" <Jamey.Hicks@compaq.com>
-Message-id: <998926138.15715.4.camel@russ>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: 
- <D99C1FB421989A40818B6370E3187094C9B90F@tayexc19.americas.cpqcorp.net>
+	"Hicks, Jamey" <Jamey.Hicks@compaq.com>
+Subject: RE: Dynamic Rubin compression performance in JFFS2 on iPAQ
+Date: Mon, 27 Aug 2001 12:09:41 -0400
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,8 +22,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I should have mentioned that we started with your stuff, and modified it.
+The major change is to cache the scanned dirnodes so directory traversals
+are faster, and allowed us to add an "ls" command from the bootloader.
+
+	Brian Avery		<brian.avery@compaq.com>
+
+
+-----Original Message-----
+From: Russ Dill [mailto:Russ.Dill@asu.edu]
+Sent: Monday, August 27, 2001 11:29 AM
+To: Christian, Andrew
+Cc: 'linux-mtd@lists.infradead.org'; Hicks, Jamey
+Subject: Re: Dynamic Rubin compression performance in JFFS2 on iPAQ
+
+
 On 27 Aug 2001 11:04:59 -0400, Christian, Andrew wrote:
-> We recently updated the iPAQ bootldr (version 2.15.0 on  www.handhelds.org)
+> We recently updated the iPAQ bootldr (version 2.15.0 on
+www.handhelds.org)
 > to support booting the kernel out of JFFS2.  In the process of doing this,
 > we ran into difficulties uncompressing kernel images from non-sorted lists
 > of file fragments - in particular, we had troubles with DYNRUBIN
@@ -51,7 +59,8 @@ On 27 Aug 2001 11:04:59 -0400, Christian, Andrew wrote:
 > 
 > Total       13175       21156017    47152223   25996206     55%
 > 
-> These numbers are representative of the different iPAQs we tested - in fact,
+> These numbers are representative of the different iPAQs we tested - in
+fact,
 > DYNRUBIN in this iPAQ saved the most bytes of any of the tested iPAQS.
 > 
 > Including DYNRUBIN compression in the iPAQ Linux kernel requires an
