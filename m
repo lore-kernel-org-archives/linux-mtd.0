@@ -1,49 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JIbe-00033l-00
-	for mtd-list@infradead.org; Mon, 31 Jul 2000 17:39:58 +0100
-Received: from web5301.mail.yahoo.com ([216.115.106.110])
+	id 13JJMj-0003CS-00
+	for mtd-list@infradead.org; Mon, 31 Jul 2000 18:28:37 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13JIbc-00033f-00
-	for mtd@infradead.org; Mon, 31 Jul 2000 17:39:56 +0100
-Message-ID: <20000731163920.10575.qmail@web5301.mail.yahoo.com>
-Date: Mon, 31 Jul 2000 12:39:20 -0400 (EDT)
-From: Juan Gonzo <kayemmess@yahoo.ca>
-Subject: flash file system -- which files for image?
-To: JFFS Mailing List <jffs-dev@axis.com>,
-  MTD Mailing List <mtd@infradead.org>
+	id 13JJMi-0003CM-00
+	for mtd@infradead.org; Mon, 31 Jul 2000 18:28:36 +0100
+Received: from localhost (phiggins@localhost)
+	by phiggins.transzap.com (8.9.3/8.8.7) with ESMTP id LAA32427
+	for <mtd@infradead.org>; Mon, 31 Jul 2000 11:32:33 -0600
+From: Patrick Higgins <phiggins@transzap.com>
+To: mtd@infradead.org
+Date: Mon, 31 Jul 2000 11:32:33 -0600 (MDT)
+Subject: Re: nftl and multi page read write support 
+In-Reply-To: <4314.965029230@cygnus.co.uk>
+Message-ID: <Pine.LNX.4.21.0007311121400.32307-100000@phiggins.transzap.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Ok,
+On Mon, 31 Jul 2000, David Woodhouse wrote:
 
-I would like to use mkfs.jffs to create a flash image I can
-burn into flash and then in turn, boot from this image.
+> rogelio@evoserve.com said:
+> > David - NFTL support is safe with the multipage read-write support. I
+> > have a system running on ext2 on nftl and it is stable. 
+> 
+> Cool - you mean not only does it _not_ break it, but it magically makes it 
+> stable too?
 
-My question is... what files should go into this image to
-create a minimal set that the kernel can use to boot?
+Unless you've made some changes to NFTL (you were just verifying that your
+DoC2000 changes *didn't* break NFTL, right?) then NFTL still has some
+problems.  I'm having trouble finding time to look into the cause, but
+while I am able to read and write from a preexisting NFTL partition, I'm
+unable to make changes to it.  Using M-Systems' dformat utility from
+dosemu makes a single FAT partition.  When I try to use fdisk to toggle it
+to a Linux partition, things seem to go normally, but then when I run it
+again, the partition still shows up as FAT.  mke2fs also seems to complete
+successfully, but doesn't actually make changes.  However, mounting the
+FAT partition, touching a few files, unmounting, *rebooting*, and mounting
+again shows that the changes were permanent.  I have no idea what's
+wrong--but I assume, as David has pointed out, that something is probably
+wrong with the block device setup and/or partition table setup.  I'll look
+into it when I get the chance.
 
-Currently, we are booting from a ramdisk with a filesystem
-image we downloaded from some site (don't remember which).
-Can I use this filesystem (after running it through mkfs.jffs)
-as my set of files?
-
-Is there a good place on the Internet with info on something
-like this?  Or perhaps an appropriate image for use with JFFS
-to get the system up and running?
-
-Thanks,
-
-   -- kelly
-
-
-
-
-_______________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.ca address at http://mail.yahoo.ca
+-Patrick
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
