@@ -1,42 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13WO6G-000233-00
-	for mtd-list@infradead.org; Tue, 05 Sep 2000 20:09:40 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13WO6D-00022w-00
-	for mtd@infradead.org; Tue, 05 Sep 2000 20:09:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9F0AC@txexmta8.amd.com> 
-References: <0FA1031B65A9D111960900805F9FA8E103B9F0AC@txexmta8.amd.com> 
-To: mark.langsdorf@amd.com
-Cc: mtd@infradead.org
-Subject: Re: offsetting fmc->flash_start to accommodate the BIOS 
-Mime-Version: 1.0
+	id 13Wk3C-0007c6-00
+	for mtd-list@infradead.org; Wed, 06 Sep 2000 19:35:58 +0100
+Received: from [212.25.93.158] (helo=jodie.lucid)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13Wk3A-0007c0-00
+	for mtd@infradead.org; Wed, 06 Sep 2000 19:35:57 +0100
+From: Dvir Oren <dvir@lucidvon.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Sep 2000 20:09:25 +0100
-Message-ID: <2667.968180965@passion.cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
+Date: Wed,  6 Sep 2000 21:40:09 +0300 (IDT)
+To: David Woodhouse <dwmw2@infradead.org>
+CC: MTD <mtd@infradead.org>
+Subject: Grub support in DiskOnChip.
+In-Reply-To: <21668.968158401@passion.cygnus.co.uk>
+References: <21668.968158401@passion.cygnus.co.uk>
+Message-ID: <14774.36710.632024.133080@jodie.lucid>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse writes ("Grub support in DiskOnChip."):
+> Grub patches to support NFTL properly have just been contributed. 
+> See mtd/patches/grub* and send virtual beer to void@dr.com
 
-mark.langsdorf@amd.com said:
-> in jffs_fm.c, line 53, flash_start is set to 0.  Will the flash code
-> still work if flash_start is set to some other value?  I realize that
-> flash_size would also need to be modified.
+Does this mean that grub can boot DoC?
 
-I haven't tried it. 
-
-> Or is there some better way to set up MTD/JFFS for a CFI flash chip
-> that has both BIOS and the root filesystem on it?
-
-Partition them into two separate MTD devices. See pnc2000.c
-
-
---
-dwmw2
-
-
+-- 
+Dvir Oren               <dviro@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
