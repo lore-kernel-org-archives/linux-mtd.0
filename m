@@ -1,21 +1,16 @@
-Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
+Received: from tomts21-srv.bellnexxia.net ([209.226.175.183])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16kpX4-00074p-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 16:53:51 +0000
-Date: Tue, 12 Mar 2002 10:05:06 -0700
-Message-Id: <200203121705.g2CH56e29716@vindaloo.ras.ucalgary.ca>
-From: Richard Gooch <rgooch@ras.ucalgary.ca>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Administrivia. 
-In-Reply-To: <17407.1015952375@redhat.com>
-References: <200203121651.g2CGpTK28931@vindaloo.ras.ucalgary.ca>
-	<200203121640.g2CGeRg28441@vindaloo.ras.ucalgary.ca>
-	<200203121605.g2CG54o27683@vindaloo.ras.ucalgary.ca>
-	<32074.1015924653@redhat.com>
-	<6849.1015949674@redhat.com>
-	<15927.1015951511@redhat.com>
-	<17407.1015952375@redhat.com>
+	id 16ktJN-0007OG-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 20:55:57 +0000
+Date: Tue, 12 Mar 2002 16:07:19 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Mark Meade <mark@lakeshoremicro.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader
+In-Reply-To: <200203111306968.SM01632@there>
+Message-ID: <Pine.LNX.4.44.0203121533350.15005-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,38 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse writes:
-> 
-> rgooch@ras.ucalgary.ca said:
-> >  Um, let me be more clear. If I want to bounce emails which, say, have
-> > a high proportion of high-bit characters (guess why:-), I want them to
-> > go to the From: address (i.e. the original sender), not the list
-> > administrator. I think that's a good thing, since I want to apply the
-> > clue-by-four to the sender, and not the list admin.
-> 
-> > And formail looks at the From: address nicely, just the way I like it
-> > :-) 
-> 
-> In that case, it makes some sense, yes. Unless you also obey
-> Reply-To and encounter a list which stupidly sets the Reply-To
-> header to go back to the list - another common combination of
-> idiocies.
+Mark,
 
-Yeah, stupid Reply-To: set by some arrogant list administrators
-(XFree86 and ISC, to name two). The hardline approach is: tough.
-But there is an easy solution to that as well:
+1. Thanks for the latest patch to stage2/bdev_diskonchip.c that rectifies
+the chip identification.
 
-| sed -e 's/^Reply-To:.*@isc\.org/Bogus-&/'
+2. As for the device page size issue in Millennium IPL, the data sheets
+and application notes at
 
-> As long as you don't respond to messages with _NULL_ reverse-path
-> (i.e.  error messages), that is.
+    http://www.m-sys.com/content/Products/ShowInformation.asp?PID=1&Code=1
 
-Hm. Never tried that. Not sure what happens, but I suspect the
-auto-reply would be bounced back. That's harmless (easy to filter to
-/dev/null).
+inform that DoC Millennium and DoC Millennium Plus feature a Download
+Engine which takes care of copying the flash image into the read-only area
+available at offset 0 of the window.
 
-				Regards,
+The above process takes place when the device is reset.
 
-					Richard....
-Permanent: rgooch@atnf.csiro.au
-Current:   rgooch@ras.ucalgary.ca
+Apparently, the XIP IPL doesn't need the DoC 2000 trick with duplicating
+the code for 256-byte and 512-byte page size devices at offsets 0x100 and
+0x200 respectively.
+
+3. There is a data sheet on Millennium Plus at the aove link, if anyone is
+interested.  The chip has ID 0x40, its IPL is downloaded from a non-zero
+flash offset, and there are few data structures in the beginning of the
+flash memeory.
+
+Ilguiz
+
+On Mon, 11 Mar 2002, Mark Meade wrote:
+
+> You mentioned that there are DoC Millennium parts based on 256-byte-page
+> chips -- so my hack to force the 512-byte code to 0x100 will not work
+> correctly for all Millennium parts.
