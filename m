@@ -1,15 +1,17 @@
-Received: from he002war.uk.vianw.net ([195.102.249.209])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15w1J6-0001Tp-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 14:09:24 +0100
-Message-ID: <25D13BA49CC6D31193040040953309CE7FAB@MICSERV>
-From: Gareth Williams <gareth@microm-electronics.com>
-To: 'David Woodhouse' <dwmw2@infradead.org>
+	id 15w1S2-0001UO-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 14:18:38 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <25D13BA49CC6D31193040040953309CE7FAB@MICSERV> 
+References: <25D13BA49CC6D31193040040953309CE7FAB@MICSERV> 
+To: Gareth Williams <gareth@microm-electronics.com>
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: RE: DOC LILO BIOS Identities. 
-Date: Tue, 23 Oct 2001 14:35:17 +0100
-MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: DOC LILO BIOS Identities. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 23 Oct 2001 14:27:54 +0100
+Message-ID: <15446.1003843674@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,35 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Okay - tell me about GRUB, I take it that it's similar to LILO in that it's
-a boot manager?
+gareth@microm-electronics.com said:
+> Okay - tell me about GRUB, I take it that it's similar to LILO in that
+> it's a boot manager?
 
-Gareth.
+Yep. You can load it into the DiskOnChip in place of their normal firmware, 
+so that the system BIOS runs Grub instead of trying to boot normally. 
 
-> -----Original Message-----
-> From:	David Woodhouse [SMTP:dwmw2@infradead.org]
-> Sent:	23 October 2001 13:56
-> To:	Gareth Williams
-> Cc:	'linux-mtd@lists.infradead.org'
-> Subject:	Re: DOC LILO BIOS Identities. 
-> 
-> 
-> gareth@microm-electronics.com said:
-> > How does one discover what the BIOS disk identities will be for the
-> > disk on chip? E.g. 0x80 or 0x83 etc...
-> 
-> > I am trying to use LILO and it is getting confused!!
-> 
-> Just the same as for mixed SCSI/IDE drives - you don't, you just guess. 
-> 
-> Wanna get Grub finished?
-> 
-> --
-> dwmw2
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Then there are patches to grub itself to make it drive the DiskOnChip. 
+Those patches aren't 100% perfect yet, but they're fairly close. They're in 
+CVS. 
+
+--
+dwmw2
