@@ -1,19 +1,21 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp3TI-0002ca-O5
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 07:16:47 -0400
-Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 2CB6F22897
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Jul 2004 15:16:05 +0400 (MSD)
-Message-ID: <4104E7F5.1060005@oktetlabs.ru>
-Date: Mon, 26 Jul 2004 15:16:05 +0400
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="------------030304000704030601060503"
-Subject: bugreport
-Reply-To: dedekind@oktetlabs.ru
+	id 1Bp9wr-0007t4-Cy
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 14:11:42 -0400
+Date: Mon, 26 Jul 2004 19:11:34 +0100
+From: Ben Dooks <ben-=mtd@fluff.org>
+To: Ben Dooks <ben-mtd@fluff.org>
+Message-ID: <20040726181134.GF7414@home.fluff.org>
+References: <20040726145639.GE7414@home.fluff.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+In-Reply-To: <20040726145639.GE7414@home.fluff.org>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Suspend on 2.6.7-rc1 with mtd-snapshot-20040718
+Reply-To: Ben Dooks <ben@fluff.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------030304000704030601060503
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello.
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There is a bug in jffs2 module registration function - super.c line 293: 
-the init_jffs2_fs function doesn't properly perform
-the de-initialization in case of failures on lines 315 and 321.
+On Mon, Jul 26, 2004 at 03:56:39PM +0100, Ben Dooks wrote:
+> I have a 2.6.7-rc2 kernel (PXA255) with a newish mtd
+> snapshot applied, and I have a problem with suspend-to-ram
+> with the mtdblockd and ntfld not going to sleep, and causing
+> the suspend to fail.
+> 
+> The kernel outputs the following:
+> 
+> stopping tasks failed (1 tasks remaining)
+> Restarting tasks...<6> Strange, mtdblockd not stopped
+> 
+> I guess mtdblockd isn't going to sleep when
+> requested, and is therefore causing the power
+> management to abort. Is there a fix in the newer
+> releases, or do I need to investiage this problem
+> further?
 
-The jffs2_inode_cachep is also not feed.
-
-The proposed patch is attached.
-
-Note 1: I didn't test this patch and didn't even compile JFFS2 with it - 
-*be careful*.
-
-Note 2: The similar ought to be fixed in super-v24.c
-
-Artem.
+I added the attached patch, and at least the system
+can now suspend and resume, but is this the right
+solution?
 
 -- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+Ben (ben@fluff.org, http://www.fluff.org/)
 
---------------030304000704030601060503
-Content-Type: text/plain;
- name="super.c.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="super.c.diff"
+  'a smiley only costs 4 bytes'
 
---- super.c	2004-07-18 18:44:42.000000000 +0400
-+++ /home/dedekind/tmp/super_fixed.c	2004-07-26 15:05:34.000000000 +0400
-@@ -318,7 +318,7 @@
- 	ret = jffs2_compressors_init();
- 	if (ret) {
- 		printk(KERN_ERR "JFFS2 error: Failed to initialise compressors\n");
--		goto out;
-+		goto out_proc;
- 	}
- 	ret = jffs2_create_slab_caches();
- 	if (ret) {
-@@ -336,10 +336,12 @@
- 	jffs2_destroy_slab_caches();
-  out_compressors:
- 	jffs2_compressors_exit();
-+ out_proc:
- #ifdef CONFIG_JFFS2_PROC
-         jffs2_proc_exit();
- #endif
-  out:
-+        kmem_cache_destroy(jffs2_inode_cachep);
- 	return ret;
- }
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="blkdev.patch"
+
+Index: drivers/mtd/mtd_blkdevs.c
+===================================================================
+RCS file: /var/lib/cvs/linux-2.6/kernel/drivers/mtd/mtd_blkdevs.c,v
+retrieving revision 1.2
+diff -u -r1.2 mtd_blkdevs.c
+--- drivers/mtd/mtd_blkdevs.c	19 Jul 2004 16:23:59 -0000	1.2
++++ drivers/mtd/mtd_blkdevs.c	26 Jul 2004 18:10:05 -0000
+@@ -10,6 +10,7 @@
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
++#include <linux/suspend.h>
+ #include <linux/list.h>
+ #include <linux/fs.h>
+ #include <linux/mtd/blktrans.h>
+@@ -111,6 +112,12 @@
+ 			spin_unlock_irq(rq->queue_lock);
  
+ 			schedule();
++
++			if (current->flags & PF_FREEZE) {
++				printk(KERN_DEBUG "mtdblockd: sleeping\n");
++				refrigerator(0);
++			}
++
+ 			remove_wait_queue(&tr->blkcore_priv->thread_wq, &wait);
+ 
+ 			spin_lock_irq(rq->queue_lock);
 
---------------030304000704030601060503--
+--EeQfGwPcQSOJBaQU--
