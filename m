@@ -1,21 +1,19 @@
-Received: from imf23aec.mail.bellsouth.net ([205.152.59.71])
+Received: from mail-relay-1.warwick.ac.uk ([137.205.128.7] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19pzT4-0002ok-0x
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Aug 2003 01:07:50 +0100
-Received: from luna.siliconmotorsports.com ([68.158.3.61])
-	by imf23aec.mail.bellsouth.netESMTP
-	<20030822000659.OGAA21889.imf23aec.mail.bellsouth.net@luna.siliconmotorsports.com>
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2003 20:06:59 -0400
-From: "Tim Drury" <tdrury@siliconmotorsports.com>
+	id 19q4HU-0003Vg-4E
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Aug 2003 06:16:12 +0100
+Received: from sorrel.csv.warwick.ac.uk (amavis@localhost [127.0.0.1])
+	h7M5Fqs0027698	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Aug 2003 06:15:52 +0100 (BST)
+From: postmaster@csv.warwick.ac.uk
+Received: (from amavis@localhost)
+	by sorrel.csv.warwick.ac.uk (8.12.9/8.12.8/Submit) id h7M5Fqdo027697
+	for linux-mtd@lists.infradead.org;
+	Fri, 22 Aug 2003 06:15:52 +0100 (BST)
+Date: Fri, 22 Aug 2003 06:15:52 +0100 (BST)
+Message-Id: <200308220515.h7M5Fqdo027697@sorrel.csv.warwick.ac.uk>
 To: <linux-mtd@lists.infradead.org>
-Date: Thu, 21 Aug 2003 20:06:56 -0400
-Message-ID: <000601c36841$4d06a570$3301a8c0@SIMOTORSPORTS>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: NFTL device not found (boot floppies)
+Subject: VIRUS IN YOUR MAIL (W32/Sobig-F)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+                           V I R U S  A L E R T
 
-I'm building a couple boot floppies for my target system - an Elan/586
-based system with a 32MB DOC 2000.  I built the kernel with MTD built in
-(not modules) according to the faq.  On bootup I get the following:
+Our virus checker found the
 
-----
-NFTL driver: nftlcore.c $Revision: 1.94 $, nftlmount.c $Revision: 1.34 $
-DiskOnChip 2000 found at address 0xE0000 Flash chip found: Manufacturer
-ID: EC, Chip ID: 75 (Samsung: NAND 32MiB 3,3V) 1 flash chips found.
-Total DiskOnChip size: 32 MiB Could not find valid boot record
-NFTL: could not mount device
-----
+    W32/Sobig-F
 
-Could this be because I'm using 2-floppy boot system with the /dev fs on
-the second floppy (which hasn't been inserted yet)?  After I insert it
-and /dev is loaded, I try to do anything with /dev/nftla I get errors. I
-made /dev/nftla and /dev/nftla1 using 'mknod /dev/nftla b 90 0' and
-'mknod /dev/nftla b 90 1' on the 2nd boot disk.
+virus in your email to the following recipient:
 
-% fdisk /dev/nftla
+-> csuov@csv.warwick.ac.uk
 
-Unable to open /dev/nftla
+Delivery of the email was stopped!
 
-% fdisk /dev/nftla1
+Please check your system for viruses,
+or ask your system administrator to do so.
 
-Unable to open /dev/nftla1
-
-I can see the MTD via /proc:
-
-% cat /proc/mtd
-dev:   size    erasesize   name
-mtd0: 02000000 00004000 "DiskOnChip 2000"
-
-Any ideas?
-
--tim
+For your reference, here are headers from your email:
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <linux-mtd@lists.infradead.org>
+From: <linux-mtd@lists.infradead.org>
+To: <csuov@csv.warwick.ac.uk>
+Subject: Re: Details
+Date: Fri, 22 Aug 2003 13:19:12 +0800
+X-MailScanner: Found to be clean
+Importance: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MSMail-Priority: Normal
+X-Priority: 3 (Normal)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="_NextPart_000_01196C88"
+-------------------------- END HEADERS ------------------------------
