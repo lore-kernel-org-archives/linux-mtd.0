@@ -1,16 +1,20 @@
-Received: from crystal.2d3d.co.za ([196.14.185.203] ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157CKG-0004Lq-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 09:36:33 +0100
-Date: Tue, 5 Jun 2001 10:42:01 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: acceptable chip driver limitations
-Message-ID: <20010605104201.A26328@crystal.2d3d.co.za>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 157CPd-0004MR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 09:42:05 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <15132.22933.859130.119059@pizda.ninka.net> 
+References: <15132.22933.859130.119059@pizda.ninka.net>  <13942.991696607@redhat.com> <3B1C1872.8D8F1529@mandrakesoft.com> <15132.15829.322534.88410@pizda.ninka.net> <20010605155550.C22741@metastasis.f00f.org> 
+To: "David S. Miller" <davem@redhat.com>
+Cc: Chris Wedgwood <cw@f00f.org>, Jeff Garzik <jgarzik@mandrakesoft.com>,
+    bjornw@axis.com, linux-kernel@vger.kernel.org,
+    linux-mtd@lists.infradead.org
+Subject: Re: Missing cache flush. 
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
-Content-Disposition: inline
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
+Date: Tue, 05 Jun 2001 09:46:09 +0100
+Message-ID: <25587.991730769@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,55 +26,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+davem@redhat.com said:
+> Chris Wedgwood writes:
+> > What if the memory is erased underneath the CPU being aware of
+> > this? In such a way ig generates to bus traffic...
 
-Hi!
+> This doesn't happen on x86.  The processor snoops all transactions
+> done by other agents to/from main memory.  The processor caches are
+> always up to date. 
 
-Is it allright if my chip driver read/write's only accept 32-bit
-to/from/len's?
+No. My original mail presented two situations in which this assumption is 
+false.
 
-I.e. if I return with -EINVAL if somebody tries to read/write a single byte
-or tries to read from a non-dword boundary, is that acceptable or should the
-driver cater for word/byte read/writes as well?
+1. Bank-switched RAM. You want to force a writeback before switching pages.
+   I _guarantee_ you that the CPU isn't snooping my access to the I/O port
+   which sets the latch that drives the upper few address bits of the RAM 
+   chips.
 
-If this is the case, it complicates things a lot because for instance in my
-case the flash device can only handle 32-bit read/write's and smaller
-accesses will have to be emulated.
+2. Flash. A few writes of magic data to magic addresses and a whole erase
+   block suddenly contains 0xFF. The CPU doesn't notice that either.
 
---=20
+What I want is a function like simon_says_flush_page_to_ram(). In this 
+case, I _do_ know better than the CPU. It is _not_ coherent with these 
+devices.
 
-Regards
- Abraham
+I'm actually working on a MIPS box at the moment - the particular problems
+with doing it on i386 don't interest me too much. To be honest, I could do
+it by sticking asm instructions inside ifdefs in what is otherwise
+arch-independent code. I'd rather not do it like that, though. 
 
-First study the enemy.  Seek weakness.
-		-- Romulan Commander, "Balance of Terror", stardate 1709.2
+Surely stuff like that should be exported by the arch-specific code or
+include files somehow. Possibly with a #define or function I can use to tell
+whether a selective flush is actually available on the current CPU. If it's
+not possible to flush the dcache selectively, then the cost of doing a full
+flush probably outweighs the benefit¹ of running the flash cached in the
+first place. But it should still be possible to do it from arch-independent
+code without manually inserting asm instructions to do it.
 
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
+--
+dwmw2
 
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
-
-
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7HJtZzNXhP0RCUqMRAllRAJ45ODgHlpPlxDpUxB2Xc8fs8T6aegCgkLmc
-IoilWSBRS8stndEKvWLT2yI=
-=gi6p
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
+¹ The _assumed_ benefit, admittedly. I should get some benchmarks to back up
+the comment about molasses in arch/cris/drivers/axisflashmap.c
