@@ -1,59 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139knO-0001nq-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 09:44:38 +0100
-Date: Wed, 5 Jul 2000 09:43:46 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Masami Komiya <mkomiya@crossnet.co.jp>
-cc: mtd@infradead.org
-Subject: Re: Fujitsu MBM29LV160
-In-Reply-To: <3962E0E9.14051B82@crossnet.co.jp>
-Message-ID: <Pine.LNX.4.21.0007050937500.1226-100000@imladris.demon.co.uk>
+	id 139mW8-0001zC-00
+	for mtd-list@infradead.org; Wed, 05 Jul 2000 11:34:56 +0100
+Received: from firewall.unidec.co.uk ([195.166.19.2])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 139mW6-0001z6-00
+	for mtd@infradead.org; Wed, 05 Jul 2000 11:34:54 +0100
+Received: from frumious.unidec.co.uk (frumious.unidec.co.uk [195.166.20.93])
+	by firewall.unidec.co.uk (8.9.3/8.9.3) with ESMTP id LAA10557
+	for <mtd@infradead.org>; Wed, 5 Jul 2000 11:34:52 +0100
+Received: from localhost (localhost [[UNIX: localhost]])
+	by frumious.unidec.co.uk (8.9.3/8.9.3) id LAA27201
+	for mtd@infradead.org; Wed, 5 Jul 2000 11:34:52 +0100
+From: dr john halewood <john@frumious.unidec.co.uk>
+Reply-To: john@frumious.unidec.co.uk
+To: mtd@infradead.org
+Subject: doc2000 geometry problem?
+Date: Wed, 11 Oct 71684 18:46:28 +0100
+Content-Type: text/plain
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <00070511345100.24168@frumious.unidec.co.uk>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 5 Jul 2000, Masami Komiya wrote:
+I've got a feeling this is going to turn out to be bad hardware but I thought
+it would be worth checking first.
+  I'm yet another person trying to embed linux using the doc2000 on a
+NatSemi-based platform (Geode aka MediaGX - uck). I've got the system up and
+running but I've run into a problem (this is with 2.2.16+current mtd cvs). As I
+add the modules dmesg looks like this
+M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
+$Id: nftl.c,v 1.34 2000/06/07 14:48:52 dwmw2 Exp $
+M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+DiskOnChip 2000 found at address 0xD4000
+1 flash chips found. Total DiskOnChip size: 8 Mb
+Cannot calculate an NFTL geometry to match size of 0x3c0.
+Using C:1024 H:0 S:1 (== 0 sects)
+nftla: nftla1
+ It turns out that /dev/nftla1 is a FAT12 partition: the people who supplied me
+with the board also helpfully put their Wince-based thin client software on the
+DOC. Now here's the rub: I can't reformat the doc2000. The nftldump, erase and
+nftl_format utils all return an error (-1, helpful that) on the
+ioctl(blah,MEMGETINFO,&blah) call, which makes me suspect that there's
+something about this chip that's not very healthy. Anyone have any clues or
+have I just done something really stupid?
 
-> 
-> It is CFI-compliant. May be, the command set is the different from
-> Intel's.
-> 
-> The messages from kernel are:
-> 
-> NORA: Found a coupled pair of CFI devices at location 0 in 16 bit mode
-> Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-
-Excellent.
-
-> Number of Erase Block Regions: 4
->   Erase Region #0: BlockSize 0x4000 bytes, 1 blocks
->   Erase Region #1: BlockSize 0x2000 bytes, 2 blocks
->   Erase Region #2: BlockSize 0x8000 bytes, 1 blocks
->   Erase Region #3: BlockSize 0x10000 bytes, 31 blocks
-
-> Should I make cfi_cmdset_0002? Is there the another resources ?
-
-Yes, you need to make cfi_cmdset_0002 for that particular
-configuration (2x16bit). It should be quite simple t copy cfi_cmdset_0001
-and modify it accordingly - not only changing the command set used 
-but also changing it to drive two interleaved chips at once. You'll need
-the AMD data sheets for those chips.
-
-For now, I'd suggest that you combine all the smaller erase blocks at the
-beginning of the device, and pretend that the erase size is always 0x10000
-(actually 0x20000 because you have two chips interleaved).  Then when you
-receive an erase request at location zero, erase all the smaller blocks at
-once.
-
-We'll work out how to handle that properly, but not quite yet. Probably
-the cfi_probe routine needs to be able to return more than one MTD device.
-
--- 
-dwmw2
-
-
+cheers
+john
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
