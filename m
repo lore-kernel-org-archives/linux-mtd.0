@@ -1,15 +1,19 @@
-Received: from florence.buici.com ([206.124.142.26])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CJeZB-0008FY-FN
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2004 16:57:18 -0400
-Date: Mon, 18 Oct 2004 13:57:03 -0700
-From: Marc Singer <elf@buici.com>
+Received: from okigate.oki.co.jp ([202.226.91.194] helo=iscan1.intra.oki.co.jp)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CJobO-0000ni-BT
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 03:40:15 -0400
+Received: from aoi.bmc.oki.co.jp (localhost.localdomain [127.0.0.1])
+	by iscan1.intra.oki.co.jp (8.9.3/8.9.3) with SMTP id QAA04683
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Oct 2004 16:40:12 +0900
+Date: Tue, 19 Oct 2004 16:42:32 +0900
+From: =?ISO-2022-JP?B?IhskQkgrQ2YhITc8GyhCIC8gSGFqaW1lIA==?=
+	=?ISO-2022-JP?B?SEFUQU5BS0Ei?= <hatanaka663@oki.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20041018205703.GA30241@buici.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Odd behavior with non-linear mapping and CFI_0001
+Message-Id: <20041019163009.92EF.HATANAKA663@oki.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-2022-JP"
+Content-Transfer-Encoding: 7bit
+Subject: JFFS2 Flash Filesystem corrupted
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On my target hardware, the flash is mapped in two discontiguous 8MiB
-regions with an 8MiB gap between them.  Initially, I used the physmap
-driver and gave it the whole 24MiB region.  The CFI driver correctly
-recognized the two chips, at 0x0 and at 0x01000000.  The chip data
-structures were correct in that the chipshift and start addresses
-correctly described the flash devices.  I forcibly disabled the
-point/unpoint methods because the cfi driver assumed that it was OK.
+On Tue, 2004-07-20 at 20:18, Billalabeitia, Jose Carlos (GE Consumer &
+Industrial) wrote:
+> linux-2.4.4-2002-02-14-denx
+> linux-2.4.4-jffs2-2002-05-01.patch for the JFFS2 
+> (basically improve GC performace)
 
-But there was a subtle problem.  Periodically, the first chip would
-become unreadable.  It would get in a mode that I couldn't recognize
-and I could not reset unless I cycled the target's power.  Sending the
-READARRAY command would not reset it.  I could usually get it to
-display the array status (which was 0x80), but it would not go back to
-the READARRAY state.
+We have similar problem on
+linux-2.4.22-jffs2-2004-8-xx with different CPU
+and NAND flash memory.
 
-I would have assumed that this was a hardware problem except that when
-I wrote a new map driver to map the flash chips onto a contiguous
-virtual memory region, the whole kit and kaboodle worked fine.  I'm
-now able to mount a jffs2 partition as /.
+Do we need try with latest kernel?
 
-It seems to me that there could be something wonky in the cfi driver,
-but I was never able to pin down the location where the array went
-south.
-
-Any comments?
-
-Cheers.
+Have this problem been solved finally?
