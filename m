@@ -1,15 +1,18 @@
-Received: from web9404.mail.yahoo.com ([216.136.129.110])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 175GgV-0005ME-00
-	for <linux-mtd@lists.infradead.org>; Wed, 08 May 2002 02:56:04 +0100
-Message-ID: <20020508015602.65389.qmail@web9404.mail.yahoo.com>
-Date: Tue, 7 May 2002 18:56:02 -0700 (PDT)
-From: Matt Cochran <matthewcochran@yahoo.com>
-Subject: Filesystem Driver Panic 
+Received: from spiresoftware.com
+	([64.170.143.214] helo=aillas.spiresoftware.com ident=root)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 175KFo-0005ax-00
+	for <linux-mtd@lists.infradead.org>; Wed, 08 May 2002 06:44:44 +0100
+Received: from shimrod.spiresoftware.com (adsl-64-170-143-212.spiresoftware.com [64.170.143.212])
+	by aillas.spiresoftware.com (8.11.0/8.11.0) with ESMTP id g484knh11446
+	for <linux-mtd@lists.infradead.org>; Tue, 7 May 2002 21:46:49 -0700
+Date: Tue, 7 May 2002 22:43:52 -0700 (Pacific Daylight Time)
+From: Glenn Serre <gaserre@spiresoftware.com>
 To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Status of XIP for userspace programs?  
+Message-ID: <Pine.WNT.4.44.0205072239040.1020-100000@shimrod.spiresoftware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,21 +24,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've been developing a system using kernel 2.4.18 and
-the MTD drivers packaged with it on a system with a
-Millenium DOC. I've enabled read-write support and can
-successfully read the test VFAT filesystem on the DOC.
-However, after multiple writes, approximately 6, I get
-a "filesystem panic" from the kernel, and the device
-is remounted read-only.
+Good evening,
 
-During the course of this, I've run nftl_format, tried
-several filesystems, and repeated this on two systems
-with identical hardware. Has anyone reported or
-experienced the same kind of issues?
+What is the status of XIP for userspace programs?  Is anyone working on
+this for a recent kernel?  A quick grep through the mailing list archive
+seems to indicate that
 
+1. The consensus is that it's better to have compression than XIP.
+2. XIP work for userspace programs has never progressed to the point of
+being able to actually run programs.
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Health - your guide to health and wellness
-http://health.yahoo.com
+Does this seem correct?
+
+Thanks in advance,
+--Glenn Serre
