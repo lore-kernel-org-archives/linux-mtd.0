@@ -1,14 +1,15 @@
-Received: from smtp.zipmail.com.br ([200.221.11.147] helo=www.zipmail.com.br)
+Received: from smtp.innovsys.com ([66.115.232.196] helo=mail.innovsys.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DHCTR-0008B2-HV
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 22:05:30 -0500
-Message-ID: <424C679900000F1E@www.zipmail.com.br>
-Date: Thu, 31 Mar 2005 18:27:05 -0800
-From: jwheeler7@zipmail.com.br
+	id 1DG32H-0001a6-JZ
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2005 17:48:42 -0500
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Waiting
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C533E8.4A439191"
+Date: Mon, 28 Mar 2005 16:48:42 -0600
+Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B85931E@ismail.innsys.innovsys.com>
+From: "Rune Torgersen" <runet@innovsys.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: AMD flash problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,122 +19,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sir,
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C533E8.4A439191
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+I have a AMD 29LV640 flash (16bit) that behaves incorrectly with mtd.
+
+When doing erase or programming, the cfi mtd functions return too early.
+
+I can especially see this when usiong flash_eraseall -j /dev/mtd5
+
+The erase returns too quicly, so that every other sector is erased.
+
+I tracked it down to the chiplevel, where it seems that this particular
+AMD chip doesn't always toggle the toggle bits, causion chip_ready() to
+retturn true, and the erase (or program_onw_word) functions to think
+they are ready.
+
+Only way I could get it to work correctly, was to add an extra read when
+chip_ready() returns, to see if the data is what it should be (all FF's
+on erase or actual data when programming one word)
+
+This is what I did (and I think this should be done for all chips, adds
+an extra check that everything went ok)
+
+--- tmp/drivers/mtd/chips/cfi_cmdset_0002.c     2005-03-28
+16:41:30.438298024 -0600
++++ linux-innsys/drivers/mtd/chips/cfi_cmdset_0002.c    2005-03-28
+16:45:21.000000000 -0600
+@@ -764,7 +764,7 @@ static int do_write_oneword(struct map_i
+                        continue;
+                }
+
+-               if (chip_ready(map, adr))
++               if (chip_ready(map, adr) && map_word_equal(map, datum,
+map_read(map, adr)))
+                        goto op_done;
+
+                if (time_after(jiffies, timeo))
+@@ -1220,8 +1220,11 @@ static inline int do_erase_oneblock(stru
+ {
+        struct cfi_private *cfi =3D map->fldrv_priv;
+        unsigned long timeo =3D jiffies + HZ;
++       map_word all_ones;
+        DECLARE_WAITQUEUE(wait, current);
+-       int ret =3D 0;
++       int ret =3D 0;
++
++       memset(all_ones.x, 0xff, map->bankwidth);
+
+        adr +=3D chip->start;
+
+@@ -1271,7 +1274,7 @@ static inline int do_erase_oneblock(stru
+                        chip->erase_suspended =3D 0;
+                }
+
+-               if (chip_ready(map, adr))
++               if (chip_ready(map, adr) && map_word_equal(map,
+all_ones, map_read(map,adr)))
+                        goto op_done;
+
+                if (time_after(jiffies, timeo))
 
 
-I have the pleasure to call upon you at this hour and my greetings to
-you.
-My name is MRS Maria J.Wheeler, the Wife of a farmer from Zimbabwe, Who
-was murdered in the land dispute in my country during the conflite
-between
-President Mugabe and the prominent white farmers. As led by my
-instinct,I
-decided
-to contact you through email, as it is the only means I can contact
-anybody
-since I am cutting off ties with Zimbabwe for now. I apologize if this
-is
-not acceptable to you.
+Rune Torgersen
+System Developer
+Innovative Systems LLC
+1000 Innovative Drive
+Mitchell, SD 57301
+Ph: 605-995-6120
+www.innovsys.com
 
-The purpose of this letter is to seek your most needed ssistance in a
-project
-venture. Due to the land and political problems in Zimbabwe, as a result
-of President Robert Mugabe's introduction of new Land Act Reform wholly
-affecting the rich white farmers
-and the few rich black farmers, all white farmers were asked to
-surrender
-their farms to the government for re-distribution and infact to his
-political
-party members and my husband though black was the treasurer of the
-farmers
-association and a strong member of an opposition party that did not
-support
-the president's idea.
-He then ordered his party members and the police under his pay row to
-invade
-my husband's farm and burn down everything in the farm. 
+------_=_NextPart_001_01C533E8.4A439191
+Content-Type: application/octet-stream;
+	name="amd_flash_patch"
+Content-Transfer-Encoding: base64
+Content-Description: amd_flash_patch
+Content-Disposition: attachment;
+	filename="amd_flash_patch"
 
-They killed my husband and took away a lot of items from his farm.After
-the death of my husband, our local pastor and a close friend of my
-husband
-handed us his will documents
-with instructions from my husband that we should leave Zimbabwe incase
-anything
-happens to him. The will documents has a certificate of deposit,
-confirmed
-a cash deposit totaling thirteen million five hundred thousand united
-state
-dollars. [$13.5m] Kept in custody for us in a security and finance
-company
-in Eroupe .
+LS0tIHRtcC9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwkyMDA1LTAzLTI4IDE2
+OjQxOjMwLjQzODI5ODAyNCAtMDYwMAorKysgbGludXgtaW5uc3lzL2RyaXZlcnMvbXRkL2NoaXBz
+L2NmaV9jbWRzZXRfMDAwMi5jCTIwMDUtMDMtMjggMTY6NDU6MjEuMDAwMDAwMDAwIC0wNjAwCkBA
+IC03NjQsNyArNzY0LDcgQEAgc3RhdGljIGludCBkb193cml0ZV9vbmV3b3JkKHN0cnVjdCBtYXBf
+aQogCQkJY29udGludWU7CiAJCX0KIAotCQlpZiAoY2hpcF9yZWFkeShtYXAsIGFkcikpCisJCWlm
+IChjaGlwX3JlYWR5KG1hcCwgYWRyKSAmJiBtYXBfd29yZF9lcXVhbChtYXAsIGRhdHVtLCBtYXBf
+cmVhZChtYXAsIGFkcikpKQogCQkJZ290byBvcF9kb25lOwogCiAJCWlmICh0aW1lX2FmdGVyKGpp
+ZmZpZXMsIHRpbWVvKSkKQEAgLTEyMjAsOCArMTIyMCwxMSBAQCBzdGF0aWMgaW5saW5lIGludCBk
+b19lcmFzZV9vbmVibG9jayhzdHJ1CiB7CiAJc3RydWN0IGNmaV9wcml2YXRlICpjZmkgPSBtYXAt
+PmZsZHJ2X3ByaXY7CiAJdW5zaWduZWQgbG9uZyB0aW1lbyA9IGppZmZpZXMgKyBIWjsKKwltYXBf
+d29yZCBhbGxfb25lczsKIAlERUNMQVJFX1dBSVRRVUVVRSh3YWl0LCBjdXJyZW50KTsKLQlpbnQg
+cmV0ID0gMDsKKwlpbnQgcmV0ID0gMDsNCisNCisJbWVtc2V0KGFsbF9vbmVzLngsIDB4ZmYsIG1h
+cC0+YmFua3dpZHRoKTsKIAogCWFkciArPSBjaGlwLT5zdGFydDsKIApAQCAtMTI3MSw3ICsxMjc0
+LDcgQEAgc3RhdGljIGlubGluZSBpbnQgZG9fZXJhc2Vfb25lYmxvY2soc3RydQogCQkJY2hpcC0+
+ZXJhc2Vfc3VzcGVuZGVkID0gMDsKIAkJfQogCi0JCWlmIChjaGlwX3JlYWR5KG1hcCwgYWRyKSkK
+KwkJaWYgKGNoaXBfcmVhZHkobWFwLCBhZHIpICYmIG1hcF93b3JkX2VxdWFsKG1hcCwgYWxsX29u
+ZXMsIG1hcF9yZWFkKG1hcCxhZHIpKSkKIAkJCWdvdG8gb3BfZG9uZTsKIAogCQlpZiAodGltZV9h
+ZnRlcihqaWZmaWVzLCB0aW1lbykpCg==
 
- due to violent and barbaric act by Mugabe has, since led to the death
-of
-my beloved husband and kid sister and other innocent lives.I was
-continually
-threatened to abandon my inheritance from my husband after he was
-murdered.
-I resisted for a while, but when the danger became unbearable,and I
-survived
-two murder attempts, I fled Zimbabwe with the help of my father's close
-friend Mr. John Casahans from Australia also a farmer who was leaving in
-Zimbabwe with us but left with his family following this ugly
-development
-I have tried to reach him but all to no avail.
-
-I am currently staying in the South Africa where I am seeking political
-asylum.I need a person like you who will assist me to go and claim this
-money as my late husband deposited it a customers item, And the Law of
-the
-south African's prohibits a refugee (asylum seeker) to open any bank
-account
-or to be involved in any financial transaction, this is why I am seeking
-a genuine and reliable person. we be able to travel and claim this money
-for me and plan for my coming over where I have mapped out a total of
-10%
-, hence this proposal meets to you.
-You have to understand that this decision taken by me is a very big and
-brave one, and it entrusts my future in your hands, as a result of the
-safe
-keeping of these funds.If you accept to assist me, all I want you to do
-for me, is to assist with arrangements to claim the deposit from the
-security
-company from their office.
-
-The company will be legally informed of your representation to my
-family.
-I have two options for you. Firstly you can choose to have 10% of the
-money
-for your assistance, and helping me open an account for the money to be
-deposited there, or you can go into partnership with me for the proper
-profitable
-investment in your country. Whichever the option you want, please notify
-me in your reply.
-
-I have also set aside 1 % of this money for all kinds of expenses that
-come our way in the process of this transaction, and 4% for Charity
-donations.If
-you prefer to accept the 10% for your moral and financial assistance
-then
-the balance will be left in the account here for me.
-
-For more information concerning the brutality of the Mugabe government
-against
-farmers please click these links:
-iafrica.com/news/specialreport/zimbabwe/226559.htm
-http://www.guardian.co.uk/weblog/special/0,10627,536901,00.html
-Note:your prompt response will be appreciated.
-May Almighty God Bless you.Pls,Get back to me Immediately to mail
-private
-email address;jwheelerm7@yahoo.ca.
-
-Sincerely
-
-Mrs Maria.J.wheeler
-
-
-
-
-------------------------------------------
-Use o melhor sistema de busca da Internet
-Radar UOL - http://www.radaruol.com.br
+------_=_NextPart_001_01C533E8.4A439191--
