@@ -1,19 +1,16 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dXXs-000217-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 14:16:32 +0000
+	id 16dYbJ-00025b-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 15:24:09 +0000
+Date: Wed, 20 Feb 2002 16:35:19 +0100 (MET)
+From: Robert Kaiser <rob@sysgo.de>
+To: Jonas Holmberg <jonas.holmberg@axis.com>
+cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: MTD concat layer
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: Robert Kaiser <rob@sysgo.de>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: 
-	<Pine.LNX.4.21.0202121938210.25544-102000@dagobert.svc.sysgo.de>
-References: <Pine.LNX.4.21.0202121938210.25544-102000@dagobert.svc.sysgo.de>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 20 Feb 2002 15:28:06 +0100
-Message-Id: <1014215286.11576.13.camel@pcjonashg>
-Mime-Version: 1.0
+In-Reply-To: <1014215286.11576.13.camel@pcjonashg>
+Message-ID: <Pine.LNX.4.21.0202201620030.16780-100000@dagobert.svc.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,17 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 2002-02-12 at 19:40, Robert Kaiser wrote:
-> Hi,
-> 
-> attached is my first version of the MTD "concatenation layer".
-> This basically allows to build virtual MTD devices by concatenating
-> existing ones, so it is -in a way- the opposite of partitioning.
-> I would like to add this to the MTD CVS and so I'm asking people
-> to have a look at it.
+Hi Jonas,
 
-Hi Robert,
-I'm ready to do some serious testing now. Should I use these patches or
-do you have newer versions? When can we expect to see this in CVS?
+On 20 Feb 2002, Jonas Holmberg wrote:
 
-/Jonas
+> I'm ready to do some serious testing now.
+
+Good!
+
+> Should I use these patches or
+> do you have newer versions?
+
+The erase function has a bug for which I'm currently developing
+a fix. I hope to get it done by tomorrow. The bug does not show
+up if you use erase/eraseall, but will probably manifest itself
+when using JFFS/JFFS2 on a concatenated device.
+
+> When can we expect to see this in CVS?
+
+Good question :-). Apparently David is not yet completely convinced
+that it should be implemented the way I did. If you do some serious
+testing, your test results might help to persuade him (or prove to him
+that his scepticism was right). In any case, please share your
+results.
+
+Cheers
+
+Rob
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
