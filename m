@@ -1,16 +1,20 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from mail3.aracnet.com ([216.99.193.38])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1765Xi-0000QX-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 09:14:22 +0100
-Date: Fri, 10 May 2002 10:14:19 +0200 (MEST)
-From: Armin Schindler <acs@sysgo.de>
-To: Robert Schwebel <robert@schwebel.de>
-cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mtdblock and devfs
-In-Reply-To: <20020510100655.T15258@schwebel.de>
-Message-ID: <Pine.LNX.4.21.0205101012540.28784-100000@dagobert.svc.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1765Zr-0000R4-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 09:16:35 +0100
+Received: from tinman.seitzassoc.com (216-99-217-243.dsl.aracnet.com [216.99.217.243])
+	by mail3.aracnet.com (8.12.2/8.12.1) with ESMTP id g4A8GWk3006032
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 01:16:33 -0700
+Received: from tinman.seitzassoc.com (IDENT:galens@localhost [127.0.0.1])
+	by tinman.seitzassoc.com (8.11.6/8.11.6) with ESMTP id g4A8GVP25163
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 01:16:32 -0700
+Message-Id: <200205100816.g4A8GVP25163@tinman.seitzassoc.com>
+To: linux-mtd@lists.infradead.org
+Subject: can't rmmod cfi_cmdset_0002
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 10 May 2002 01:16:31 -0700
+From: Galen Seitz <galens@seitzassoc.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,48 +26,62 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-The block devices have thier own directory,
-have a look into
-/dev/mtdblock
+In the course of hacking on pci.c, I've encountered an issue with removing
+the cfi_cmdset_0002 module.  It seems that once I have successfully
+loaded the pci module, I can't unload the cmdset module.  Is it likely
+that I have created this problem?  How does one go about tracking
+down a problem like this?
 
+thanks,
+galen
 
-Armin
-
-On Fri, 10 May 2002, Robert Schwebel wrote:
-> Hi, 
-> 
-> using devfs and mtd from CVS I see only the char device nodes in /dev/mtd,
-> although I've enabled CONFIG_MTD_BLOCK=y: 
-> 
-> # ls -l /dev/mtd/
-> crw-rw-rw-    1 0        0         90,   0 Jan  1  1970 0
-> crw-rw-rw-    1 0        0         90,   1 Jan  1  1970 0ro
-> crw-rw-rw-    1 0        0         90,   2 Jan  1  1970 1
-> crw-rw-rw-    1 0        0         90,   3 Jan  1  1970 1ro
-> crw-rw-rw-    1 0        0         90,   4 Jan  1  1970 2
-> crw-rw-rw-    1 0        0         90,   5 Jan  1  1970 2ro
-> 
-> Any idea? 
-> 
-> Robert
-> -- 
->  +--------------------------------------------------------+
->  | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
->  | Pengutronix - Linux Solutions for Science and Industry |
->  |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
->  |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
->  +--------------------------------------------------------+
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
-Armin Schindler <acs@sysgo.de>
-Sysgo RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany
-phone: +49 6136 9948-0
-fax  : +49 6136 9948-10
-http://www.sysgo.de
-http://www.elinos.com
+oz:~# cat /proc/version
+Linux version 2.4.19-pre8 (galens@oz.seitzassoc.com) (gcc version 2.96 
+20000731 (Red Hat Linux 7.1 2.96-98)) #1 Thu May 9 13:48:33 PDT 2002
+oz:~# /sbin/modprobe -a mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
+oz:~# /sbin/lsmod 
+Module                  Size  Used by
+cfi_probe               7424   0  (unused)
+gen_probe               1712   0  [cfi_probe]
+map_rom                  688   0  (unused)
+chipreg                  704   0  [cfi_probe map_rom]
+cfi_cmdset_0002        15616   0  (unused)
+mtdblock                4608   0  (unused)
+mtdchar                 4064   0  (unused)
+mtdcore                 2176   0  [mtdblock mtdchar]
+3c59x                  24928   1 
+rtc                     6016   0  (autoclean)
+oz:~# /sbin/rmmod mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
+oz:~# /sbin/lsmod 
+Module                  Size  Used by
+gen_probe               1712   0 
+chipreg                  704   0 
+mtdcore                 2176   0 
+3c59x                  24928   1 
+rtc                     6016   0  (autoclean)
+oz:~# /sbin/modprobe -a mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
+oz:~# /sbin/modprobe -a pci                                               
+oz:~# /sbin/lsmod 
+Module                  Size  Used by
+pci                     2880   0  (unused)
+cfi_probe               7424   0 
+map_rom                  688   0  (unused)
+cfi_cmdset_0002        15616   2 
+mtdblock                4608   0  (unused)
+mtdchar                 4064   0  (unused)
+gen_probe               1712   0  [cfi_probe]
+chipreg                  704   0  [pci cfi_probe map_rom]
+mtdcore                 2176   1  [pci mtdblock mtdchar]
+3c59x                  24928   1 
+rtc                     6016   0  (autoclean)
+oz:~# /sbin/rmmod pci                                       
+oz:~# /sbin/rmmod mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
+cfi_cmdset_0002: Device or resource busy
+oz:~# /sbin/lsmod 
+Module                  Size  Used by
+cfi_cmdset_0002        15616   1 
+gen_probe               1712   0 
+chipreg                  704   0 
+mtdcore                 2176   0 
+3c59x                  24928   1 
+rtc                     6016   0  (autoclean)
