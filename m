@@ -1,23 +1,21 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from blood.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ScFv-0001aJ-Pt
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2003 13:41:39 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ken Gordon <kengordon@magneticscrolls.com>
-In-Reply-To: <006a01c33596$579895d0$1207a8c0@kenlap>
-References: <004101c33586$cb802a90$1207a8c0@kenlap>
-	 <1055933659.2233.98.camel@passion.cambridge.redhat.com>
-	 <004a01c3358c$8e522eb0$1207a8c0@kenlap>
-	 <1055936016.2233.100.camel@passion.cambridge.redhat.com>
-	 <006a01c33596$579895d0$1207a8c0@kenlap>
-Message-Id: <1055940128.27851.1.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 18 Jun 2003 13:42:08 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Getting a mtd_info with a valid map.
+	id 19SsgC-0003zo-Bx
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Jun 2003 07:13:52 +0100
+Received: from there (203-96-48-178-tollfree.actrix.co.nz [203.96.48.178])
+	by blood.actrix.co.nz (Postfix) with SMTP id 3D2F440CB
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Jun 2003 18:14:15 +1200 (NZST)
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 19 Jun 2003 18:16:56 +1200
+MIME-Version: 1.0
+Message-Id: <20030619061415.3D2F440CB@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: NAND file systems paper
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,11 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-06-18 at 13:37, Ken Gordon wrote:
-> I do. It is 1.27. So I should be getting newer sources then?
+Hi Folks.
 
-Please don't top-post. Yes, you should be getting newer sources. v1.28
-fixed this bug.
+I found this interesting looking paper today while scrounging the www. 
 
--- 
-dwmw2
+It mentions our favourite file systems (JFFSx and YAFFS), but is really about 
+the ones that make dwmw2's have chest pains and bulging arteries in his neck 
+and how to improve them.
+
+I have not had much of a read yet, but the performance (relative to FTL) and 
+pictures look good.
+
+http://140.112.4.49/me/papers/btreeflash.pdf
+
+-- Charles
