@@ -1,21 +1,22 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from h109-210-243-242.aiptek.com.tw ([210.243.242.109] helo=aiptekser1.aiptek.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16FzsO-0003HD-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2001 15:40:24 +0000
-Received: from tomts10.bellnexxia.net ([209.226.175.54] helo=tomts10-srv.bellnexxia.net)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 16G02k-0001cE-00
-	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2001 15:51:07 +0000
-Date: Mon, 17 Dec 2001 10:43:38 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: dharmu bavale <dharmu@linuxmail.org>
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: After installing firmware
-In-Reply-To: <20011217053502.11397.qmail@linuxmail.org>
-Message-ID: <Pine.LNX.4.33.0112171039130.19177-100000@server.superbt.com>
+	id 16G7sQ-0003gy-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 00:12:59 +0000
+Received: from andrew (ANDREW.aiptek.com.tw [10.0.3.35])
+          by aiptekser1.aiptek.com.tw (Post.Office MTA v3.5.3 release 223
+          ID# 619-69644U200L100S0V35) with SMTP id tw
+          for <linux-mtd@lists.infradead.org>;
+          Tue, 18 Dec 2001 08:23:36 +0800
+From: andrewkuo@aiptek.com.tw (AndrewKuo)
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: Contents of linux-mtd digest...
+Date: Tue, 18 Dec 2001 08:21:43 +0800
+Message-ID: <INEDIIEAKHENJJGJFHMECEDPCAAA.andrewkuo@aiptek.com.tw>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: base64
+In-Reply-To: <E16FwS6-00034R-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,20 +28,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dharmu,
-
-The full-screen menu not showing up means the boot loader couldn't find
-the configuration file /boot/grub/menu.lst in the DiskOnChip whole disk
-NFTL partition (mke2fs /dev/nftla) and in the first partition (fdisk
-/dev/nftla; mke2fs /dev/nftla1).
-
-What is the output of the "root (dc0)" command in the GRUB shell?  What is
-the output of the "root (dc0,0)" command?
-
-Ilguiz
-
-On Mon, 17 Dec 2001, dharmu bavale wrote:
-
->    I just got installed grub firmware on to the DOC. After removing
-> the harddisk, I am getting the grub prompt, where in I cant able to
-> boot linux. What may be the problem?
+DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBsaW51eC1tdGQtYWRtaW5AbGlz
+dHMuaW5mcmFkZWFkLm9yZyBbbWFpbHRvOmxpbnV4LW10ZC1hZG1pbkBsaXN0cy4NCmluZnJhZGVh
+ZC5vcmddT24gQmVoYWxmIE9mIGxpbnV4LW10ZC1yZXF1ZXN0QGxpc3RzLmluZnJhZGVhZC5vcmcN
+ClNlbnQ6IE1vbmRheSwgRGVjZW1iZXIgMTcsIDIwMDEgODowMSBQTQ0KVG86IGxpbnV4LW10ZEBs
+aXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBsaW51eC1tdGQgZGlnZXN0LCBWb2wgMSAjMzA3
+IC0gMiBtc2dzDQoNCg0KU2VuZCBsaW51eC1tdGQgbWFpbGluZyBsaXN0IHN1Ym1pc3Npb25zIHRv
+DQoJbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCg0KVG8gc3Vic2NyaWJlIG9yIHVuc3Vi
+c2NyaWJlIHZpYSB0aGUgV29ybGQgV2lkZSBXZWIsIHZpc2l0DQoJaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQNCm9yLCB2aWEgZW1haWwsIHNlbmQg
+YSBtZXNzYWdlIHdpdGggc3ViamVjdCBvciBib2R5ICdoZWxwJyB0bw0KCWxpbnV4LW10ZC1yZXF1
+ZXN0QGxpc3RzLmluZnJhZGVhZC5vcmcNCg0KWW91IGNhbiByZWFjaCB0aGUgcGVyc29uIG1hbmFn
+aW5nIHRoZSBsaXN0IGF0DQoJbGludXgtbXRkLWFkbWluQGxpc3RzLmluZnJhZGVhZC5vcmcNCg0K
+V2hlbiByZXBseWluZywgcGxlYXNlIGVkaXQgeW91ciBTdWJqZWN0IGxpbmUgc28gaXQgaXMgbW9y
+ZSBzcGVjaWZpYw0KdGhhbiAiUmU6IENvbnRlbnRzIG9mIGxpbnV4LW10ZCBkaWdlc3QuLi4iDQoN
+Cg0KVG9kYXkncyBUb3BpY3M6DQoNCiAgIDEuIDY0LWJpdCBidXMgc3VwcG9ydCBmb3IgU3RyYXRh
+IChBbGxlbiBDdXJ0aXMpDQogICAyLiBBZnRlciBpbnN0YWxsaW5nIGZpcm13YXJlIChkaGFybXUg
+YmF2YWxlKQ0KDQotLV9fLS1fXy0tDQoNCk1lc3NhZ2U6IDENClJlcGx5LVRvOiA8YWN1cnRpc0Bv
+bnouY29tPg0KRnJvbTogIkFsbGVuIEN1cnRpcyIgPGFjdXJ0aXNAb256LmNvbT4NClRvOiA8bGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+DQpTdWJqZWN0OiA2NC1iaXQgYnVzIHN1cHBvcnQg
+Zm9yIFN0cmF0YQ0KRGF0ZTogU3VuLCAxNiBEZWMgMjAwMSAxMDoyODo0MiAtMDgwMA0KDQoNCkkg
+aGF2ZSBiZWVuIGxvb2tpbmcgdGhyb3VnaCB0aGUgYXJjaGl2ZXMgYW5kIGhhdmUgZm91bmQgcmVm
+ZXJlbmNlcyB0bw0KcGF0Y2hlcw0KdG8gc3VwcG9ydCA2NC1iaXQgYnVzZXMuIFdoZXJlIGNhbiBJ
+IGZpbmQgdGhlbT8gV2hpbGUgSSB3YXMgbG9va2luZyBJIGFsc28NCm5vdGljZWQgbWVzc2FnZXMg
+dGhhdCBpbmRpY2F0ZWQgdGhlIGNmaV9jbWRzZXRfMDAwMS5jIG9ubHkgc3VwcG9ydGVkIDMyIGJp
+dHMNCmJ1c2VzLiBJcyB0aGlzIHRydWU/DQoNCihJIHN0YXJ0ZWQgd2l0aCB0aGUgTVREL0pGRlMg
+ZnJvbSBNb250YVZpc3RhKQ0KT3JpZ2luYWxseSBJIHRob3VnaHQgdGhhdCBJIGNvdWxkIGdldCB0
+aGlzIHRvIHdvcmsgYnkgbWFuaXB1bGF0aW5nIHRoZQ0KY2ZpX3ByaXZhdGUgc3RydWN0dXJlLiBJ
+dCBsb29rcyBsaWtlIGl0IGlzIGdvaW5nIHRvIGJlIGEgbGl0dGxlIG1vcmUNCmRpZmZpY3VsdCB0
+aGFuIHRoaXMuIEFueSBoZWxwIHdvdWxkIGJlIGFwcHJlY2lhdGVkLg0KDQpQUzogT3VyIGhhcmR3
+YXJlIGNvbmZpZ3VyYXRpb24gaGFzIDQgSW50ZWwgMTI4TWIgU3RyYWRhcyBGbGFzaCBpbiB4MTYg
+bW9kZS4NCkkNCmp1c3QgZG93bmxvYWRlZCB0aGUgbGF0ZXN0IHZlcnNpb24gZnJvbSBDVlMgYnV0
+IEkgZG8gbm90IHRoaW5rIGl0IGZpeGVzIHRoaXMNCnByb2JsZW0uDQoNCg0KDQotLV9fLS1fXy0t
+DQoNCk1lc3NhZ2U6IDINCkZyb206ICJkaGFybXUgYmF2YWxlIiA8ZGhhcm11QGxpbnV4bWFpbC5v
+cmc+DQpUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCkRhdGU6IE1vbiwgMTcgRGVj
+IDIwMDEgMTM6MzU6MDIgKzA4MDANClN1YmplY3Q6IEFmdGVyIGluc3RhbGxpbmcgZmlybXdhcmUN
+Cg0KSEkgYWxsLA0KICAgSSBqdXN0IGdvdCBpbnN0YWxsZWQgZ3J1YiBmaXJtd2FyZSBvbiB0byB0
+aGUgRE9DLiBBZnRlciByZW1vdmluZyB0aGUgaGFyZGRpc2ssIEkgYW0gZ2V0dGluZyB0aGUgZ3J1
+YiBwcm9tcHQsIHdoZXJlIGluIEkgY2FudCBhYmxlIHRvIGJvb3QgbGludXguIFdoYXQgbWF5IGJl
+IHRoZSBwcm9ibGVtPw0KSG9wZSB0aGlzIHRpbWUgSSB3aWxsIGdldCB0aGUgYW5zd2VyDQpEaGFy
+bXUNCi0tIA0KDQpHZXQgeW91ciBmcmVlIGVtYWlsIGZyb20gd3d3LmxpbnV4bWFpbC5vcmcgDQoN
+Cg0KUG93ZXJlZCBieSBPdXRibGF6ZQ0KDQoNCg0KLS1fXy0tX18tLQ0KDQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdCBkaWdlc3QNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0KDQoNCkVuZCBvZiBsaW51eC1tdGQgRGlnZXN0
