@@ -1,20 +1,19 @@
-Received: from tiger.actrix.co.nz ([203.96.16.160])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ujSG-0006yl-00
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2002 01:58:04 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: Benjamin Tze-Kit Lee <btlee@sfu.ca>,
-	linux-mtd@lists.infradead.org
-Subject: Re: lisencing issues on JFFS2/MTD
-Date: Fri, 27 Sep 2002 12:54:03 +1200
-References: <200209251917.MAA24221@fraser.sfu.ca>
-In-Reply-To: <200209251917.MAA24221@fraser.sfu.ca>
-MIME-Version: 1.0
+	id 17ur3j-0007ip-00
+	for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2002 10:05:15 +0100
+Date: Fri, 27 Sep 2002 11:05:15 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: free <dag4004@free.fr>
+Cc: MTD mailing liste <linux-mtd@lists.infradead.org>
+Subject: Re: [newbie] MTD and tiny RAM
+Message-ID: <20020927090515.GB5144@wohnheim.fh-wedel.de>
+References: <BNEJIGKFJNJLELKBCMDAMEJGCCAA.dag4004@free.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20020927005754.066B640A2@tiger.actrix.co.nz>
+In-Reply-To: <BNEJIGKFJNJLELKBCMDAMEJGCCAA.dag4004@free.fr>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,31 +25,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-How much this makes sense will depend largely on the OS you're targeting.
+On Thu, 26 September 2002 09:25:41 +0200, free wrote:
+> I use a very tiny SRAM (128ko) battery backuped to save
+> very important and changeable data.
+> I have a char. driver for it (i know how to read/write it)
+> I would like to mount it on Linux VFS but it seems that
+> bloc drivers are RAM cached.
+> Acces on this SRAM must be immediatly apply (if power goes
+> down data must be safe)
+> 
+> Does MTD could help me :
+> - is my SRAM not to tiny (128KO) for use with MTD ?
+> - could i acces to my SRAM through MTD in block mode without caching ?
+> - what king of file system could fit on such tiny RAM ?
 
-Basically the stuff is usable under GPL. THis means you can redeploy it under 
-any OS you choose, so long as you comply with GPL.
+(This assumes 128KO == 128 kilobyte)
 
-I did this with YAFFS. YAFFS started off under Linux, but I ported it to 
-WinCE too. The WinCE file-system glue code is to be released under GPL (since 
-this is what is required to comply with the original GPL code-base).
+You could use the slram driver for this and put a jffs2 on top of it.
+But slram uses eraseblocks of 64kiB and jffs2 needs 5 of those free
+for being operational. You should tweak the slram driver to use
+something closer to 4kiB.
 
--- Charles
+Jörn
 
-
-On Thu, 26 Sep 2002 07:17, Benjamin Tze-Kit Lee wrote:
-> Hi,
->
-> What would the liscencing issues if I were to modify JFFS2/MTD and use it
-> on a different OS in my embedded system application and sell it as a
-> product?
->
-> Where should I go to look for that answer?
->
-> Thank you very much.
->
-> Ben
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+There's nothing better for promoting creativity in a medium than
+making an audience feel "Hmm ­ I could do better than that!"
+-- Douglas Adams in a slashdot interview
