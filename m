@@ -1,18 +1,22 @@
-Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17tuYT-0001Ve-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 19:37:06 +0100
-Date: Tue, 24 Sep 2002 11:37:04 -0700
-From: Marc Singer <elf@buici.com>
-To: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-Cc: mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
-Message-ID: <20020924183704.GB3074@buici.com>
-References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <20020924044434.GA23917@buici.com> <1032854017.13283.3.camel@russ> <20020924165351.GA2533@buici.com> <1032886743.13283.6.camel@russ> <20020924171419.GA2733@buici.com> <1032889498.1600.22.camel@spawn>
+Received: from taurus-1.siol.net ([193.189.160.11])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17tud8-0001WI-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 19:41:54 +0100
+Received: from BSN-77-247-181.dsl.siol.net ([193.77.247.181])
+          by taurus-1.siol.net
+          (InterMail vK.4.03.05.03 201-232-132-103 license 5ac1ec526f2360901e54ffce7671dc4c)
+          with ESMTP
+          id <20020924183623.FMRF18509.taurus-1@BSN-77-247-181.dsl.siol.net>
+          for <linux-mtd@lists.infradead.org>;
+          Tue, 24 Sep 2002 20:36:23 +0200
+Subject: jffs, jffs2
+From: Simon Posnjak <simon@activetools.si>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 24 Sep 2002 20:41:52 +0200
+Message-Id: <1032892912.2909.139.camel@klada.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1032889498.1600.22.camel@spawn>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, Sep 24, 2002 at 07:44:58PM +0200, Kenneth Johansson wrote:
-> On Tue, 2002-09-24 at 19:14, Marc Singer wrote:
-> > That's what isn't clear.  I made two filesystems with the same
-> > contents.  One cramfs and the other ext2.  The ext2 filesystem
-> > compressed was smaller than the cramfs.  My understanding is that both
-> > must be uncompressed into a ramfs to be used.  If this is correct,
-> > then the only comparable consideration is the size of the compressed
-> > data.
-> 
-> cramfs is a read only filesystem not an archive format like zip or tar
-> so you do not have to copy the data into another filesystem to use it.
-> You use cramfs instead of initrd+filesystem.
+Hi all,
 
-That isn't really the issue here.  We're talking about using gzip'd
-ext2 versus cramfs to do initrd.  The thing is that in my tests,
-cramfs images are larger than compressed ext2 images.  Not what I
-would expect.
+I have some newbie quastions about jffs and jffs2. Our SA1110 based
+board has 16MB of NOR based FLASH (Intel StrataFlesh).
+
+-Which one (jffs or jffs2) would be a better choice(I need stability and
+good back up on power fail)? Which version should I use (CVS or the one
+that comes with vanila Linux kernel). 
+
+-Have can I create a empty image? (I have a partition of 8 MB and I want
+to put jffs or jffs2 on it)
+
+-Have can I write the image from my bootloader - I mean how should I
+modify my bootloader to support writing of a jffs/jffs2 image to flash
+so that I can boot my system from it(only root will be on jffs - the
+kernel will be preloaded and booted by bootloader). (My bootloader is
+blob) 
+
+	lp simon
