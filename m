@@ -1,29 +1,18 @@
-Received: from mail.dif.dk ([193.138.115.101])
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C9VZp-00012G-KM
-	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2004 17:20:03 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by mail.dif.dk (Postfix) with ESMTP id ACE06FFC5B
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2004 23:34:50 +0200 (CEST)
-Received: from mail.dif.dk ([127.0.0.1])
-	by localhost (saerimmer [127.0.0.1]) (amavisd-new,
-	port 10024) with ESMTP
-	id 09346-04 for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2004 23:34:49 +0200 (CEST)
-Received: from diftmgw2.backbone.dif.dk (diftmgw2.backbone.dif.dk
-	[10.227.136.246]) by mail.dif.dk (Postfix) with ESMTP id 243EEFF441
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2004 23:34:49 +0200 (CEST)
-Date: Mon, 20 Sep 2004 23:26:38 +0200 (CEST)
-From: Jesper Juhl <juhl-lkml@dif.dk>
-To: David Woodhouse <dwmw2@redhat.com>
-Message-ID: <Pine.LNX.4.61.0409202320270.2729@dragon.hygekrogen.localhost>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH] attempt to fix warnings in dilnetpc.c
+	id 1C9XlM-0001Kr-KL
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2004 19:40:08 -0400
+Date: Tue, 21 Sep 2004 00:40:02 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040920234002.GA17073@home.fluff.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org>
+Cc: ben@fluff.org
+Subject: Incorrect word calculation in some configs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+There seems to be a problem with map_words() if there are
+types longer than `unsigned long` enabled at the same time
+as anything shorted than an `unsigned long`
 
-Hi,
+Tested on an EB2410ITX (ARM9 SoC)
+Patch against 2.6.9-rc2 patched with 19th September CVS
 
-I see these warnings when building 2.6.9-rc2-bk5 allyesconfig :
+Signed-off-by: Ben Dooks <ben-mtd@fluff.org>
 
-  CC      drivers/mtd/maps/dilnetpc.o
-drivers/mtd/maps/dilnetpc.c: In function `init_dnpc':
-drivers/mtd/maps/dilnetpc.c:406: warning: assignment makes pointer from integer without a cast
-drivers/mtd/maps/dilnetpc.c:416: warning: long unsigned int format, pointer arg (arg 2)
-drivers/mtd/maps/dilnetpc.c:416: warning: long unsigned int format, pointer arg (arg 2)
-
-Here's a patch to attempt to fix those. I don't have the hardware, so all 
-I could do was read the code, think about it and then compile test my 
-changes. I hope I got it right.
-
-Signed-off-by: Jesper Juhl <juhl-lkml@dif.dk>
-
-diff -up linux-2.6.9-rc2-bk5-orig/drivers/mtd/maps/dilnetpc.c linux-2.6.9-rc2-bk5/drivers/mtd/maps/dilnetpc.c
---- linux-2.6.9-rc2-bk5-orig/drivers/mtd/maps/dilnetpc.c	2004-08-14 07:36:32.000000000 +0200
-+++ linux-2.6.9-rc2-bk5/drivers/mtd/maps/dilnetpc.c	2004-09-20 23:19:34.000000000 +0200
-@@ -403,7 +403,7 @@ static int __init init_dnpc(void)
- 	printk(KERN_NOTICE "DIL/Net %s flash: 0x%lx at 0x%lx\n", 
- 		is_dnp ? "DNPC" : "ADNP", dnpc_map.size, dnpc_map.phys);
+--- linux-2.6.9-rc2-bk6-mtd20040919/include/linux/mtd/map.h	2004-09-20 13:02:46.000000000 +0100
++++ linux-2.6.9-rc2-bk6-mtd20040919-work/include/linux/mtd/map.h	2004-09-21 00:25:47.000000000 +0100
+@@ -56,6 +56,11 @@
+ #define map_bankwidth_is_4(map) (0)
+ #endif
  
--	dnpc_map.virt = (unsigned long)ioremap_nocache(dnpc_map.phys, dnpc_map.size);
-+	dnpc_map.virt = (unsigned long *)ioremap_nocache(dnpc_map.phys, dnpc_map.size);
- 
- 	dnpc_map_flash(dnpc_map.phys, dnpc_map.size);
- 
-@@ -413,7 +413,7 @@ static int __init init_dnpc(void)
- 	}
- 	simple_map_init(&dnpc_map);
- 
--	printk("FLASH virtual address: 0x%lx\n", dnpc_map.virt);
-+	printk("FLASH virtual address: 0x%lx\n", (unsigned long)dnpc_map.virt);
- 
- 	mymtd = do_map_probe("jedec_probe", &dnpc_map);
- 
-
-
-Please CC me on replies.
++/* ensure we never evaluate anything shorted than an unsigned long
++ * to zero, and ensure we'll never miss the end of an comparison (bjd) */
++
++#define map_calc_words(map) ((map_bankwidth(map) + (sizeof(unsigned long)-1))/ sizeof(unsigned long))
++
+ #ifdef CONFIG_MTD_MAP_BANK_WIDTH_8
+ # ifdef map_bankwidth
+ #  undef map_bankwidth
+@@ -64,12 +69,12 @@
+ #   undef map_bankwidth_is_large
+ #   define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
+ #   undef map_words
+-#   define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#   define map_words(map) map_calc_words(map)
+ #  endif
+ # else
+ #  define map_bankwidth(map) 8
+ #  define map_bankwidth_is_large(map) (BITS_PER_LONG < 64)
+-#  define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#  define map_words(map) map_calc_words(map)
+ # endif
+ #define map_bankwidth_is_8(map) (map_bankwidth(map) == 8)
+ #undef MAX_MAP_BANKWIDTH
+@@ -85,11 +90,11 @@
+ #  undef map_bankwidth_is_large
+ #  define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
+ #  undef map_words
+-#  define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#  define map_words(map) map_calc_words(map)
+ # else
+ #  define map_bankwidth(map) 16
+ #  define map_bankwidth_is_large(map) (1)
+-#  define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#  define map_words(map) map_calc_words(map)
+ # endif
+ #define map_bankwidth_is_16(map) (map_bankwidth(map) == 16)
+ #undef MAX_MAP_BANKWIDTH
+@@ -105,11 +110,11 @@
+ #  undef map_bankwidth_is_large
+ #  define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
+ #  undef map_words
+-#  define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#  define map_words(map) map_calc_words(map)
+ # else
+ #  define map_bankwidth(map) 32
+ #  define map_bankwidth_is_large(map) (1)
+-#  define map_words(map) (map_bankwidth(map) / sizeof(unsigned long))
++#  define map_words(map) map_calc_words(map)
+ # endif
+ #define map_bankwidth_is_32(map) (map_bankwidth(map) == 32)
+ #undef MAX_MAP_BANKWIDTH
