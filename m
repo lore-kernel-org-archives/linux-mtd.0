@@ -1,22 +1,25 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cr0gu-0004nX-BX
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 16:15:09 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "David A. Marlin" <dmarlin@redhat.com>
-In-Reply-To: <41ED50B7.9000107@redhat.com>
-References: <41ED2EB3.1070203@redhat.com>
-	<1106068748.16877.109.camel@tglx.tec.linutronix.de>
-	<41ED50B7.9000107@redhat.com>
-Content-Type: text/plain
-Date: Tue, 18 Jan 2005 22:15:05 +0100
-Message-Id: <1106082905.16877.141.camel@tglx.tec.linutronix.de>
+	id 1Cr2b0-0005MF-Pc
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 18:17:14 -0500
+Received: from slurryseal.ddns.mvista.com (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id PAA24493
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2005 15:16:59 -0800
+Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8) with ESMTP id
+	j0INGxLV029659
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2005 15:16:59 -0800
+Received: (from tpoynor@localhost)
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8/Submit) id j0INGwFx029657
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 15:16:58 -0800
+Date: Tue, 18 Jan 2005 15:16:58 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050118231658.GA28585@slurryseal.ddns.mvista.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: additional error checks for AG-AND erase/write
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: JFFS2: Eep. No valid nodes for ino #1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-01-18 at 12:08 -0600, David A. Marlin wrote:
-> Yes.  Please see the flowcharts on pages 35 and 36 of the HN29V1G91T-30 
-> data sheet.  They show the additional checks I referred to.
+jffs2_get_inode_nodes() recently started to print:
 
-Oops, I missed them. So you have to go through the page, read it back,
-do the RS error correction and check, whether the number of corrected
-bit errors = 1 or not. Interesting.
+# flash_eraseall /dev/mtd2
+# mount -t jffs2 /dev/mtdblock2 /mnt
+Eep. No valid nodes for ino #1
 
-> I would not disagree, but the Renesas considers this a "feature" of 
-> their chips that they would like to see supported.  It could be that 
-> they are trying to avoid marking blocks bad, since doing so makes 128KiB 
-> unusable (JFFS2 virtual erase block size), and they think it is worth 
-> the performance hit.  I'm just trying to figure out if it is practical 
-> to implement in the current driver.
+The old code printed that message if !f->inocache->nodes while the new
+code will also print it if !f->inocache->nodes->next_in_ino (the entry
+points back to the inode cache).  Hazarding a guess that the new check
+is valid for all cases except when creating inode #1 for a new fs (for
+which there are no data nodes).  If yet another special check for
+inode #1 is needed then here's a suggested patch:
 
-Hmm. Everything is possible. It's in the error path anyway so it does
-not hurt anybody. What we can do to avoid the deadlock is:
+===== fs/jffs2/nodelist.c 1.15 vs edited =====
+--- 1.15/fs/jffs2/nodelist.c	2004-12-13 03:33:34 -08:00
++++ edited/fs/jffs2/nodelist.c	2005-01-18 13:31:19 -08:00
+@@ -127,7 +127,7 @@
+ 
+ 	valid_ref = jffs2_first_valid_node(f->inocache->nodes);
+ 
+-	if (!valid_ref)
++	if (!valid_ref && (f->inocache->ino != 1))
+ 		printk(KERN_WARNING "Eep. No valid nodes for ino #%u\n", f->inocache->ino);
+ 
+ 	while (valid_ref) {
 
-Rename nand_read_ecc to do_nand_read_ecc and add an flag argument. Look
-at the erase function, where we have the additional argument for
-allowbbt. 
-flag bits:	0-7 tolerable errors
-		8   do not get chip
-or something like that.
-Create a new wrapper function nand_read_ecc which calls do_nand_read_ecc
-with flags = 0xff. Depending on this argument we grab the device and
-release it on the end and react on the error check.
-The same call can be done from erase in the failure path. 
 
-To make this actually work we should add a member like
-int (*ext_errchk) (.....)
-which is checked in the error path
-if (this->ext_errchk) {
-	res = this->ext_errchk(....);
-}
-This is a board supplied function, as the board driver knows how much
-errors are acceptable. We return the number of corrected bits anyway in
-the correct_data() function, but we check only for -1 at the moment.
-An additional check does not hurt here, as we are in the slow path
-again. We check the return value of correct_data() for 
-(res == -1 || res > flags & 0xff) which ensures in the normal case this
-tolerance will never bite us, as error correction of 256 bits is unreal.
-
-Hope that helps. I think this will make the code not uglier than it is
-anyway and keeps it nicely dependend on the board drivers featurelist.
-
-tglx
+-- 
+Todd
