@@ -1,20 +1,14 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AKOqa-00068E-Uu
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 21:17:49 +0000
-Received: from localhost (nico@localhost)
-	by xanadu.home (8.11.6/8.11.6) with ESMTP id hADLGOd11693
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 16:16:24 -0500
-Date: Thu, 13 Nov 2003 16:16:24 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
+Received: from web41509.mail.yahoo.com ([66.218.93.92])
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AKQfj-0006Vn-UU
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 23:14:44 +0000
+Message-ID: <20031113231250.68456.qmail@web41509.mail.yahoo.com>
+Date: Thu, 13 Nov 2003 15:12:50 -0800 (PST)
+From: Andre Sodermans <andreesje_werk@yahoo.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.44.0311131607230.12180-300000@xanadu.home>
 MIME-Version: 1.0
-Content-ID: <Pine.LNX.4.44.0311131607231.12180@xanadu.home>
-Content-Type: MULTIPART/Mixed; BOUNDARY=------------000806010609010805060004
-Subject: RedBoot partition support, was re: 2.6.0-test9-rmk1 ioremap() oops
- (with lubbock-flash) (fwd)
+Content-Type: text/plain; charset=us-ascii
+Subject: suggestion to extend life of ATA IDE flash drive
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +18,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+Hi all,
 
---------------000806010609010805060004
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
-Content-ID: <Pine.LNX.4.44.0311131607232.12180@xanadu.home>
+I am somewhat confused about the flash technology and
+I have been doing some research but can't seem to find
+all the answers.
 
+I have a SSD made by memtech which has a full blown
+IDE interface. I am looking for some suggestions on
+how to extend the life of this disk (manuf. guarantees
+1,000,000 writes per block minimum) by using an
+appropriate driver on top of IDE. 
 
----------- Forwarded message ----------
-Date: Thu, 13 Nov 2003 08:37:10 -0800
-From: David Brownell <david-b@pacbell.net>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: Re: 2.6.0-test9-rmk1 ioremap() oops (with lubbock-flash)
+There are some obvious things I can do, i.e. moving
+/var/* to ramdisk etc, which should help minimize the
+number of writes to the SSD. 
 
->> This patch should fix it.
-> 
-> Indeed it does -- though without KMOD, that particular modprobe
-> needed a bit of manual assistance to finish.
+I did read the note By David on the very bottom of the
+mtd homepage about compactflash IDE drives, but I have
+been hearing different stories about this - somebody
+mentioned that there exists an mtd-emulation. Is this
+really true?
 
-And for that matter, all the mtd map code expects a module
-called "RedBoot" instead of "redboot".  Rather than expect
-them all to change, this patch seems preferable.
-
-- Dave
+thanks in advance,
+Andre
 
 
 
---------------000806010609010805060004
-Content-Type: TEXT/PLAIN; NAME=Diff
-Content-ID: <Pine.LNX.4.44.0311131607233.12180@xanadu.home>
-Content-Description: 
-Content-Disposition: INLINE; FILENAME=Diff
-
---- 1.4/drivers/mtd/redboot.c	Wed May 28 08:01:05 2003
-+++ edited/drivers/mtd/redboot.c	Thu Nov 13 08:32:14 2003
-@@ -189,6 +189,7 @@
- module_init(redboot_parser_init);
- module_exit(redboot_parser_exit);
- 
-+MODULE_ALIAS("RedBoot");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
- MODULE_DESCRIPTION("Parsing code for RedBoot Flash Image System (FIS) tables");
-
---------------000806010609010805060004
-Content-Type: TEXT/PLAIN; CHARSET=us-ascii
-Content-ID: <Pine.LNX.4.44.0311131607234.12180@xanadu.home>
-Content-Description: 
-Content-Disposition: INLINE
-
--------------------------------------------------------------------
-Subscription options: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-FAQ/Etiquette:       http://www.arm.linux.org.uk/armlinux/mailinglists.php
-
-
---------------000806010609010805060004--
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
