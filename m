@@ -1,21 +1,15 @@
-Received: from post2.inre.asu.edu ([129.219.110.73])
+Received: from mail.copel.com ([200.195.129.8] helo=sede_mta.COPELnet)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16DY3f-00024b-00
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2001 21:33:55 +0000
-Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.1 #40111)
- id <0GO500E01DQCHD@asu.edu> for linux-mtd@lists.infradead.org; Mon,
- 10 Dec 2001 14:44:36 -0700 (MST)
-Date: Mon, 10 Dec 2001 14:44:54 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-Subject: Re: Flash/DOC in NIC boot-rom socket
-In-reply-to: <00c501c181c3$03639bf0$4101220a@csteinathlon>
-To: Charles Steinkuehler <charles@steinkuehler.net>
-Cc: linux-mtd@lists.infradead.org
-Message-id: <1008020695.18635.0.camel@russ>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: <00c501c181c3$03639bf0$4101220a@csteinathlon>
+	id 16DkM8-0002jj-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2001 10:41:49 +0000
+Subject: Booting from Disk On Chip 2000
+To: linux-mtd@lists.infradead.org
+From: joao.filgueira@copel.com
+Date: Tue, 11 Dec 2001 08:51:50 -0300
+Message-ID: <OF91E0A003.03E7B951-ON03256B1F.00401E6D@COPELnet>
+MIME-Version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,11 +21,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 2001-12-10 at 14:38, Charles Steinkuehler wrote:
-> I'm looking for a zero hardware/cable solution to hooking up some flash or a
-> M-Systems DiskOnChip to a "standard" PC (ie, not one of the nifty embedded
-> systems with a DOC socket already there).
-> 
-
-M-Systems sell ISA cards pretty cheap that hold 1-3 DOC's (I'we also
-seen smaller cards that hold 1)
+SSBoYXZlIGEgU0JDLTgyNDEgbWFpbmJvYXJkIHdpdGggYSA4TWJ5dGVzIERpc2sgb24gQ2hpcCBv
+biBpdC4NCkkgYW0gdXNpbmcga2VybmVsIDIuNC4xNiB3aXRoIE1URCBhbmQgTlRGTCBzdXBwb3J0
+IGVuYWJsZWQuDQpJIHVzZWQgRkRJU0sgdG8gY3JlYXRlIGEgN01ieXRlcyBwYXJ0aXRpb24gaW4g
+L2Rldi9udGZsYTEgYW5kIGZvcm1hdGVkIGl0DQp3aXRoIG1rZTJmcyAuDQpNeSBwcm9ibGVtIGlz
+IHRoYXQgIGVpdGhlciBMSUxPIG5vciBHUlVCIGFyZSBtYWtpbmcgbXkgRGlza09uQ2hpcCBib290
+YWJsZS4NCkm0dmUgZ290IEdSVUIgRlNGIDAuOTAsIGNvbXBpbGVkIGl0IGFuZCBhcHBsaWVkIHRo
+ZSBwYXRjaCBmcm9tIHRoZSBDVlMNCnJlcG9zaXRvcnkuIFdoZW4gaSB0cnkgdG8gdXNlIHRoZSB1
+dGlsaXR5IERPQ19MT0FEQklPUyBpIGdldCBhICJpb2N0bDoNCk1FTUdFVElORk8gZXJyb3IiIG1l
+c3NhZ2UuDQpXaGF0IHNob3VsZCBiZSBteSBuZXh0IHN0ZXAgPw0KDQpKb2FvIEFsZnJlZG8gRmls
+Z3VlaXJhLyBCcmF6aWw=
