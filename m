@@ -1,19 +1,19 @@
-Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
+Received: from [213.239.205.147] (helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BpP9R-00010w-1X
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 06:25:43 -0400
-Received: from mailgate.cabletime.com ([80.177.138.66] helo=cabletime.com)
-	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BpP9O-0002lp-0V
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 10:25:38 +0000
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: linux-mtd@lists.infradead.org
+	id 1BpQu3-00024F-Vn
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 08:17:58 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Andy Hawkins <a.hawkins@cabletime.com>
+In-Reply-To: <1090923928.2237.6.camel@adh>
+References: <1090923928.2237.6.camel@adh>
 Content-Type: text/plain
-Message-Id: <1090923928.2237.6.camel@adh>
+Message-Id: <1090930297.20889.93.camel@thomas.tec.linutronix.de>
 Mime-Version: 1.0
-Date: 27 Jul 2004 11:25:28 +0100
+Date: Tue, 27 Jul 2004 14:11:38 +0200
 Content-Transfer-Encoding: 7bit
-Subject: Large JFFS2 filesystem problem
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Large JFFS2 filesystem problem
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all.
+On Tue, 2004-07-27 at 12:25, Andy Hawkins wrote:
 
-A while back I posted a message about some problems we were having
-mounting a large JFFS2 filesystem on a NAND device. We want to treat up
-to 16 128MB devices as a single device, and have a filesystem on that
-device (i.e a total of 2 Gig)
+>  * Check, if we have to concatenate physical blocks to larger virtual
+> blocks
+>  * to reduce the memorysize for c->blocks. (kmalloc allows max. 128K
+> allocation)
+>  */
+> c->sector_size = c->mtd->erasesize; 
+> blocks = c->flash_size / c->sector_size;
+> while ((blocks * sizeof (struct jffs2_eraseblock)) > (128 * 1024)) {
+> 	blocks >>= 1;
+> 	c->sector_size <<= 1;
+> }	
+> 
+> could be the source of the proble, because while it decreases the number
+> of blocks, it increases the sector size, and it is this sector size that
+> is used in the kmalloc line that fails.
 
-However, I've found that if I try to use more than two of these devices,
-then I can no longer mount a JFFS2 filesystem on the device.
+Sure, the combination of sector size and number of sectors in relation
+to the maximum allocation size of 128K is the limitation.
 
-After some debugging, it appears that the kmalloc in jffs2_scan_medium
-fails, trying to allocate 256K of memory. Elsewhere, there is a comment
-that the maximum that kmalloc can return is 128K, so this is obviously
-incorrect.
+It should be easy to fix the scan code. All we have to do is to reduce
+the chunk size which we read in one go. The functionality to do so is
+already there and its simple to make it work
 
-Is this a limitation in the size of a JFFS2 filesystem, or is this an
-error? It seems to me that this code:
+Can you try the following patch ?
+Please let me know if it works.
 
-/* 
- * Check, if we have to concatenate physical blocks to larger virtual
-blocks
- * to reduce the memorysize for c->blocks. (kmalloc allows max. 128K
-allocation)
- */
-c->sector_size = c->mtd->erasesize; 
-blocks = c->flash_size / c->sector_size;
-while ((blocks * sizeof (struct jffs2_eraseblock)) > (128 * 1024)) {
-	blocks >>= 1;
-	c->sector_size <<= 1;
-}	
+Index: scan.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/scan.c,v
+retrieving revision 1.110
+diff -u -r1.110 scan.c
+--- scan.c      17 Jun 2004 17:15:31 -0000      1.110
++++ scan.c      27 Jul 2004 12:15:52 -0000
+@@ -104,6 +104,10 @@
+                else
+                        buf_size = PAGE_SIZE;
+  
++               /* Respect kmalloc limitations */
++               if (buf_size > 128*1024)
++                       buf_size = 128*1024;
++
+                D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n",
+buf_size));
+                flashbuf = kmalloc(buf_size, GFP_KERNEL);
+                if (!flashbuf)
 
-could be the source of the proble, because while it decreases the number
-of blocks, it increases the sector size, and it is this sector size that
-is used in the kmalloc line that fails.
+> Previously, someone recommended waiting for YAFFS2, as this is likely to
+> be more efficient with large filesystems. Does anyone have any idea as
+> to when this is likely to be available?
 
-Previously, someone recommended waiting for YAFFS2, as this is likely to
-be more efficient with large filesystems. Does anyone have any idea as
-to when this is likely to be available?
+Ask on the YAFFS mailing list.
 
-Many thanks.
-
-Andy
+tglx
