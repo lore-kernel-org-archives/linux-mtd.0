@@ -1,14 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: rhea@matrix-vision.de
-In-Reply-To: <200401271247.41281.rhea@matrix-vision.de>
-References: <200401271247.41281.rhea@matrix-vision.de>
+Received: from [65.39.220.40] (helo=bn3.bravidio.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AlTLh-0006Wg-73
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 13:33:49 +0000
+Received: from 81-86-64-242.dsl.pipex.com ([81.86.64.242] helo=tank)
+	by bn3.bravidio.com with asmtp (Exim 4.24)
+	id 1AlTLe-0004ie-Nw
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 05:33:47 -0800
+From: Surjan Singh <surj@surj.net>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Message-Id: <1075209755.1633.52.camel@hades.cambridge.redhat.com>
+Message-Id: <1075210425.2325.14.camel@tank>
 Mime-Version: 1.0
-Date: Tue, 27 Jan 2004 13:22:36 +0000
+Date: Tue, 27 Jan 2004 13:33:45 +0000
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem deleting files with NAND/JFFS2 and a possible solution
+Subject: Using MTD to flash mainboard BIOS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,12 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-27 at 12:47 +0100, Howard Gray wrote:
-> I'm not sufficiently knowledgeable about the internals of JFFS2 to supply a 
-> proper patch, but it would seem to me that the call to "jffs2_flash_writev" 
-> in write.c at line 282 should be like this:
+Hi,
 
-Correct diagnosis, correct fix. I've applied it to CVS -- thanks.
+I have an EPIA 5000 mainboard
+(http://www.viavpsd.com/product/epia_mini_itx_spec.jsp?motherboardId=21), which uses a SST39SF020A-70-4C-NH BIOS chip.
 
--- 
-dwmw2
+Is it possible to flash this chip using MTD? If so, can someone offer
+some pointers?
+
+Thanks,
+Surj
