@@ -1,24 +1,57 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Ydum-0002eq-00
-	for mtd-list@infradead.org; Fri, 02 Mar 2001 00:59:24 +0000
+	id 14Yl5P-00040Q-00
+	for mtd-list@infradead.org; Fri, 02 Mar 2001 08:38:51 +0000
 Received: from [209.43.202.2] (helo=stpeter.astanetworks.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14Yduk-0002e4-00
-	for mtd@infradead.org; Fri, 02 Mar 2001 00:59:23 +0000
+	id 14Yl5O-00040K-00
+	for mtd@infradead.org; Fri, 02 Mar 2001 08:38:50 +0000
 Received: from navajo.astanetworks.com (navajo.astanetworks.com [192.168.10.8])
-	by stpeter.astanetworks.com (Postfix) with ESMTP id 578B07F89
-	for <mtd@infradead.org>; Thu,  1 Mar 2001 17:56:02 -0600 (CST)
-Message-ID: <15E6537E180CC545848148F30F6688D81945BD@navajo.astanetworks.com>
+	by stpeter.astanetworks.com (Postfix) with ESMTP id 98BA07F88
+	for <mtd@infradead.org>; Fri,  2 Mar 2001 01:35:25 -0600 (CST)
+Message-ID: <15E6537E180CC545848148F30F6688D81945BF@navajo.astanetworks.com>
 From: Pete Skelly <pete.skelly@astanetworks.com>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: DOC2000 - 96MB on a 650Mhz PIII - cannot doc_read_ecc 
-Date: Thu, 1 Mar 2001 16:58:50 -0800 
+To: Pete Skelly <pete.skelly@astanetworks.com>,
+	"'mtd@infradead.org'" <mtd@infradead.org>
+Subject: RE: DOC2000 - 96MB on a 650Mhz PIII - cannot doc_read_ecc 
+Date: Fri, 2 Mar 2001 00:38:10 -0800 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="ISO-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
+
+
+Looks like timing is in fact the problem.  I multiplied the delay
+in the routine DoC_Delay by 3, making this call last as long
+as if my machine were a 200Mhz machine (which is probably closer to
+what the Doc2000 drivers we're developed on), and was able to
+successfully use nflt on the drive.
+
+Although it looks like M-Systems doesn't publish the actual delays required,
+they did indicate that there were in fact delays that had to be taken into
+account.  
+
+Any idea on the real numbers for the delays.  If one knew that, one could
+write
+proc-speed independent delay code (err, not sure whether I'm volunteering or
+not)
+
+
+Also, could this be related to some of the problems people are seeing with
+larger
+modules?  Do the larger modules have greater delays for sending commands to
+the chip,
+or are they simply found in faster systems?
+
+p
+
+-----Original Message-----
+From: Pete Skelly [mailto:pete.skelly@astanetworks.com]
+Sent: Thursday, March 01, 2001 4:59 PM
+To: 'mtd@infradead.org'
+Subject: DOC2000 - 96MB on a 650Mhz PIII - cannot doc_read_ecc 
+
 
 
 I've been having trouble getting my 96MB DOC device to run on my system,
@@ -51,6 +84,9 @@ appreciated.
 
 p
 
+
+
+To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
