@@ -1,25 +1,29 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from mail.tuke.sk ([147.232.3.3] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19KZhj-0002Di-AO
-	for <linux-mtd@lists.infradead.org>; Tue, 27 May 2003 09:21:07 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HFJ0089HDVLEJ@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Tue, 27 May 2003 10:21:22 +0200 (MEST)
-Date: Tue, 27 May 2003 11:20:01 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <m3k7cdy0yg.fsf@bfnet.com>
-To: David Wuertele <dave-gnus@bfnet.com>,
- =?utf-8?q?J=C3=B6rn=20Engel?= <joern@wohnheim.fh-wedel.de>
-Message-id: <200305271120.01358.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <m34r3izfvn.fsf@bfnet.com>
- <20030526182624.GA551@wohnheim.fh-wedel.de> <m3k7cdy0yg.fsf@bfnet.com>
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: quoted-printable
-cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd/utils automake attic?
-Reply-To: tglx@linutronix.de
+	id 19Kg00-0003Xe-V5
+	for <linux-mtd@lists.infradead.org>; Tue, 27 May 2003 16:04:25 +0100
+Received: from smtp.tuke.sk (dot.tuke.sk [147.232.16.16])
+	(using TLSv1 with cipher EDH-RSA-DES-CBC3-SHA (168/168 bits))
+	(No client certificate requested)
+	by mail.tuke.sk (Postfix) with ESMTP id 06E4F166B66
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 May 2003 17:04:37 +0200 (CEST)
+Received: from alfa.intrak.tuke.sk (alfa.intrak.tuke.sk [147.232.152.3])
+	by smtp.tuke.sk (Postfix) with ESMTP id E6D49B3A6F
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 May 2003 17:04:07 +0200 (CEST)
+Date: Tue, 27 May 2003 17:04:36 +0200
+To: linux-mtd@lists.infradead.org
+Message-ID: <20030527150436.GA3856@intrak.sk>
+References: <20030523063820.GH13272@intrak.sk>
+	<20030525092737.GJ13272@intrak.sk>
+	<200305251116.38021.mark@lakeshoremicro.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200305251116.38021.mark@lakeshoremicro.com>
+From: stolc@intrak.sk (Oskar Stolc)
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: Possible GRUB problem: [Was: DiskOnChip MD2202-D256]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 26 May 2003 21:14, David Wuertele wrote:
-> J=C3=B6rn> Your kernel contains NAND code that is missing from mtd cvs?
-> J=C3=B6rn> Care to provide a patch or at least the source files in
-> J=C3=B6rn> question?
->
-> Of course I don't mind, it is GPL after all.  But I doubt it will be
-> useful to you: it is specifically for my vendor's CPU, and if you have
-> their CPU you have this code already.
-It's not a problem, that it's specifically for this CPU.=20
-The problem is that it's totaly incompatible to MTD stuff. It's based on 2=
-=20
-year old MTD code and does not match the current MTD-CVS implementation. A=
-=20
-lot of stuff like bad block mapping ... is in there, which is likely to be =
-a=20
-PITA, if you try to run current JFFS2 code on top of it.
+> 
+> I would suggest trying the latest GRUB patch: grub-2003-01-08-doc.patch.  This 
+> has numerous changes/improvements over the 0.92 patch.
 
-=2D-=20
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+I was not able to patch on version 2003-01-08. Send me
+grub_firmware for this version, if you can, please.
+
+Thanx you for your help
+
+Oskar
+-- 
