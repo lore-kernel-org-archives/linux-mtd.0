@@ -1,15 +1,17 @@
-Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
-	helo=wawnet.biz)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B3wPc-0005M0-Jv
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 12:14:13 +0000
-Message-Id: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
-Date: Thu, 18 Mar 2004 13:14:06 +0100
-To: linux-mtd@lists.infradead.org
-From: llandre <r&d@wawnet.biz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: Large block NAND
+Received: from hoemail2.lucent.com ([192.11.226.163]
+	helo=hoemail2.firewall.lucent.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3wov-0005YU-3J
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 12:40:21 +0000
+Message-ID: <405998A2.3060107@lucent.com>
+Date: Thu, 18 Mar 2004 05:40:02 -0700
+From: Mike Wellington <wellington@lucent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+cc: Mike Wellington Failsafe Account <platform@whirlwind.he.net>
+Subject: Strataflash  standard and  LinearFlash vs ATA Flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I'm going to write a driver for the Samsung Flash K9F1G08U0M (128MB).
-The main characteristics are:
-- erase block size: 128 KB
-- page program size: 2 KB
-- total chip size: 128 MB
-- tR = 25 us
+   I am new to Flash memory.  I have just ported
+linux to the PPC405.   Here is my question:
 
-This chip is not fully compatible with the standard NAND flash commands 
-defined in
-nand.h (Samsung call these devices "large block").
-Thus, in my understanding, I must provide the following custom functions:
-my_board_nand_command
-my_board_nand_wait
-my_board_nand_block_bad
+Our final hw will have Intel Strataflash.  Our
+development board does not have any flash.  We
+would like to write flash drivers for the Intel
+Strataflash family on the development board.
+I think this can be done by purchasing a PCMCIA
+Linear Flash card.  You can get 20MB for $110. 
+However ATA flash seems to be larger and cheaper:
+160MB for $80.
 
-Anybody wrote a driver for a similar device?
-Have the MTD maintainers already planned to support these devices?
+If I want to talk to the memory using the same
+Strataflash interface that I will have to use
+on the final hw, do I have to buy a linear
+flash, or can I just buy an ATA flash?
 
+-- 
 
-
-
-Best regards,
-
-llandre  
+=mike wellington
+wellington@lucent.com
+303.920.6412  Desk
+720.434.7559  Cell
