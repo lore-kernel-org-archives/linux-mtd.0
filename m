@@ -1,52 +1,59 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H1eM-0007o8-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 11:09:22 +0100
-Date: Tue, 25 Jul 2000 12:11:48 +0200 (CEST)
-From: Finn Hakansson <finn@axis.com>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>,
-        "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
+	id 13H1kv-0007qH-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 11:16:09 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13H1kn-0007q8-00
+	for mtd@infradead.org; Tue, 25 Jul 2000 11:16:02 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.3.96.1000725115308.8086L-100000@fafner.axis.se> 
+References: <Pine.LNX.3.96.1000725115308.8086L-100000@fafner.axis.se> 
+To: Bjorn Wesen <bjornw@axis.com>
+Cc: "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
 Subject: Re: jffs_file_write 
-In-Reply-To: <3583.964519300@cygnus.co.uk>
-Message-ID: <Pine.LNX.4.21.0007251206470.17368-100000@vvv.axis.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 25 Jul 2000 11:15:53 +0100
+Message-ID: <4992.964520153@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, 25 Jul 2000, David Woodhouse wrote:
 
-> 
-> finn@axis.com said:
-> >  I cannot understand that. How much time are we talking about? How
-> > large is the flash? How long does an erase take? One garbage collect
-> > cannot consume more time than (sectors on flash * number of sectors)
-> > time I think. 
-> 
-> After making a few copies of /usr and /lib, then deleting them, I saw it
-> take an hour and a half with a 16Mb flash which was about half-full.
+bjornw@axis.com said:
+> But you will run into the same problem then that the buffer-cache we
+> avoid solves. If you start queueing stuff, the reads will need to
+> check the queue before reading from the flash for example (the in-core
+> node which keeps track of the data contents of the files can of course
+> have a pointer to the queued data if it's not on flash yet). You
+> cannot rely on the page cache caching the changes because the pages
+> might have become invalidated. 
 
-Then something else must be very wrong. A garbage collect shouldn't take
-more than a few seconds at most. Unless you have a really slow flash chip.
+True. It should be possible to make JFFS use the page cache and
+generic_file_{read,write}() though, so the data in the page cache are always
+valid. There are apparently ways to do it without having to write 4 KB nodes
+each time we're told a page has been dirtied.
+
+I need to schedule myself a crash course on Linux VFS so that I know what 
+I'm talking about :)
+
+bjornw@axis.com said:
+> . When he has hit OK and gotten the "Saved" webpage, he pulls the
+> plug. OK that is perhaps fixed by writing files with O_SYNC or
+> whatever that mechanism is called like you say...
+
+Netscape does actually write changes to its config files with O_SYNC, and I
+think it's reasonable to expect that to be necessary. A journalling
+filesystem should always have a consistent state, but it allowed to have
+write-behind. It doesn't necessarily have to commit writes to the media
+before returning - that's what O_SYNC is for.
 
 
-> Now I've implemented buffer writes on chips which support it, that should be
-> down to ten minutes. I'm sure the verbose logging over the serial port
-> doesn't help :)
-> 
-> But it's still done in process context, and writes of new nodes have to 
-> wait while it's happening. Shifting that into its own kernel thread would 
-> be nice, and would also allow us to merge writes. 
-> 
-> I'm far more concerned by the thing getting corrupted when I abruptly 
-> remove power - I'm about to see if I can reproduce it with the patches you 
-> committed just before I left - do you have any ideas from the log I posted 
-> on the 17th of July?
 
-I'll take a look at it after lunch.
 
-/Finn
+--
+dwmw2
+
 
 
 
