@@ -1,17 +1,20 @@
-Received: from freesurfmta02.sunrise.ch ([194.230.0.17] helo=freesurfmail.sunrise.ch)
+Received: from gate.aminocom.com
+	([193.132.141.181] helo=aminocom.com ident=0)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16T0vl-0007Qv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 13:25:41 +0000
-From: Felix Frey <ffrey@freesurf.ch>
-To: paolo.supino@harmonicdata.com
-Subject: Re: DOC, grub and whatever is in between
-Date: Tue, 22 Jan 2002 14:36:26 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-mtd@lists.infradead.org
+	id 16T1nV-0007V5-00
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 14:21:13 +0000
+Received: from aminocom.com (eclarke.aminocom.com [10.171.23.32])
+	by aminocom.com (8.11.6/8.11.6) with ESMTP id g0MEWG810711
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 14:32:16 GMT
+Message-ID: <3C4D779C.B3894752@aminocom.com>
+Date: Tue, 22 Jan 2002 14:30:52 +0000
+From: Elizabeth Clarke <eclarke@aminocom.com>
 MIME-Version: 1.0
-Message-Id: <02012214362600.01417@theodul>
-Content-Transfer-Encoding: quoted-printable
+To: linux-mtd@lists.infradead.org
+Subject: Re: Self Answer & NAND driver wait queue init problem
+References: <20010912155503.A26299@hartford.siteprotect.co.kr> <20010913145341.A21279@hartford.siteprotect.co.kr>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +26,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Paolo,
+Kim Jong-chan wrote back in september last year!:
+> Finally, I've solved the problem.
+> The answer is that wq of struct nand_chip is not initialized.
+> So I suggest... nand_scan() in nand.c
+> 
+>     /* Initialize state and spinlock */
+>     this->state = FL_READY;
+>     spin_lock_init(&this->chip_lock);
+> 
+>     /* Initialize wait queue : fixed by Adelinux */
+> >   init_waitqueue_head(&this->wq);
+> 
+>     /* De-select the device */
+>     nand_deselect ();
+> 
+> I've looked up MTD drivers code of other chips. And I think wq must be
+> initialized. Otherwise, wake_up will kill the system.
 
-I've no experience in using grub, however, I'm running a system with a DO=
-C=20
-millenium using lilo v22.1 as bootloader. It runs perfectly, you don't ha=
-ve=20
-to patch anything, not even the bios part of the DOC (use the original on=
-e=20
-from m-systems).
-Be aware to use the latest lilo version, older ones don't support mtd.
+I've just been caught by this too, so the/a fix didn't get into CVS...
+Is Kim's fix a good one, if so can someone check it in please? If it
+isn't what is the Right Thing to do?....
 
-Felix
+
+Beth
+
+-- 
+Chief Engineer - Software
+Amino Communications Ltd
+01954 784523 (Direct Line)
