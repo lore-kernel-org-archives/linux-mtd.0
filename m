@@ -1,41 +1,55 @@
-From: hno@marasystems.com (Henrik Nordstrom)
-Date: Wed, 26 Feb 2003 01:31:11 +0100
+From: jasmine@regolith.co.uk (Jasmine Strong)
+Date: Wed, 26 Feb 2003 01:41:03 +0000
 Subject: "Hot" updating root-mounted mtd partitions
-In-Reply-To: <3E5C016C.4070700@elitedvb.net>
-References: <3E5C016C.4070700@elitedvb.net>
-Message-ID: <200302260131.11190@henrik.marasystems.com>
+In-Reply-To: <200302260131.11190@henrik.marasystems.com>
+Message-ID: <5D750506-492B-11D7-A737-000393AD6294@regolith.co.uk>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Wednesday 26 February 2003 00.51, Felix Domke wrote:
+On Wednesday, Feb 26, 2003, at 00:31 Europe/London, Henrik Nordstrom 
+wrote:
 
-> Of course updating it (be it from internet, from satellite or
-> whatever) includes erasing and rewriting the root. This naturally
-> causes troubles. How can i avoid this?
+[trials and tribulations]
 
-Have the system load the filesystem into ram at startup, and run from 
-there.. can very easily by done by loading the root as an initrd.. 
-this obviously assumes your root is relatively small.
+The way I have solved this problem in the past is to make the update 
+actually
+happen during the reboot.
 
-or have two partitions, and only update the one not currently running 
-and then update the boot loader nvram to load the "other" image after 
-a successful upgrade.
+This is a bit more 'feely' than just replacing the Flash contents with 
+a new
+image file but it leaves more wiggle room when things go wrong.
 
-> Possibilities are:
->   - remount rootfs using an in-memory-copy (ramfs), but i don't
-> think this is possible, since there are many open files in the old
-> fs. - including ugly hacks in the flash driver, mainly by copying
-> the partition to RAM and redirect accesses to that backup while
-> flashing the rootfs
->
-> both possibilities suck.
+This is what you do:
 
-Of these, a devise layer hack sounds most appealing, but you should 
-also consider what happens on partial upgrades etc..
+1)  Download the update, a file at a time, so that all the 
+non-conflicting or
+	non-critical files are already in their final locations.  Obviously 
+all the
+	non-essential processes are halted before this happens.  Checksum
+	all the downloaded files so that you are sure they are good.
 
-You might actually be able to pivot_root into a ram based rootfs while 
-upgrading, but almost certainly involves a near complete shutdown to 
-terminate all applications before the actual upgrade starts..
+2)  Download the new kernel.  It can replace the old one, unless you do
+	kernel XIP, which would be unlikely in a modern STB (they're mostly
+	NAND based for cost reasons.)
 
-Regards
-Henrik
+3)  Download a system updater binary.  Set the bootloader to run the
+	updater binary on init and to use the new kernel.  Download the
+	files to replace the open binaries and libraries into a temporary
+	place.
+
+4)  Put 'Please wait' on your LCD :-)  Garbage collect the flash and
+       sync; sync; reboot the box.
+
+...At this point the box reboots, the bootloader starts the new kernel 
+and
+the new kernel runs the updater binary.  The updater binary moves the
+libraries and so forth into place, changes the bootloader configuration 
+to
+normal (whatever that is :-) and triggers a second reboot.
+
+If anything goes wrong the updater binary is still running;  the flash 
+has
+never been completely wiped clean so the box has never been in that
+'if you power down you have a beige brick' situation.
+
+Jas.
