@@ -1,15 +1,18 @@
-Received: from securedesign.net ([216.99.200.242] helo=firewall.sdesign.com)
+Received: from snail.directvbroadband.net ([216.227.60.197])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14v4eq-00086M-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 22:59:40 +0100
-Message-ID: <000f01c0d353$7c5d27c0$160aa8c0@gumby>
-From: "Stephen Herzog" <mtd@sdesign.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: DoC, NFTL, partitions
-Date: Wed, 2 May 2001 15:01:48 -0700
+	id 14v5Sd-0008BM-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 23:51:07 +0100
+Received: from snail.directvbroadband.net (snail.directvbroadband.net [216.227.60.197])
+	by snail.directvbroadband.net (Build 101 8.9.3/NT-8.9.3) with SMTP id QAA09843
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:06:58 -0700
+Message-ID: <617933180D08D311AB500090273F1F96016767D9@storm.corp.directvbroadband.net>
+From: "Fry, Dan" <dfry@bb.directv.com>
+To: linux-mtd@lists.infradead.org
+Subject: /dev/mtdblock missing
+Date: Wed, 2 May 2001 15:51:25 -0700 
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,77 +25,71 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Greetings,
+Hi List,
 
-I am currently working on a project using a single DoC Millennium 8M=20
-for boot, os, and data collection.  I currently have a system configured
-with a single nftl filesystem, and then devided it into a 6M (OS) and 2M
-(log file) partitions nftla1 and nftla2.  Both have ext2 file systems on
-it.  Boot is achived by using the msystems bios and modified lilo.=20
+	I'm trying to get JFFS2 up and running on an atlas demo board.  The
+flash chip are being found and /dev/mtd0 (char device) is created.  =
+However
+I can't mount a jffs2 because /dev/mtdblock0,1,2 etc. is missing.
+mtdblock.c is compiled in, and cat /proc/devices lists mtdblock under =
+block
+devices.  I tried including ftl.c figuring there may be dependences.
 
-My problem is this: the 2M log file partition gets corrupted with=20
-unscheduled power down.=20
+This is the output at boot up:
 
-I have read a large amount of information and source code and one of=20
-the best solution I have seen was suggested by dwmw2 at =20
-http://mhonarc.axis.se/jffs-dev/msg00411.html  where I would place
-two nftl filesystems on the DOC, and then use ext2 on the first,=20
-and jffs on the second.=20
+physmap flash device: 2000000 at 1c000000
 
-I have made a few attempts at this, however I am not succeeding=20
-at it and decided to ask for some help. I am using kernel 2.4.3=20
-with mtd-snapshot-20010430.tar.bz2=20
+<4><6>Physically mapped flash: Found 2 x16 devices at 0x0 in 32-bit =
+mode
 
-here are the steps I have taken thus far:
+Number of erase regions: 1
 
-eraseall /dev/mtd0
-  Erased 8192 Kibyte @ 0 -- 100% complete.
+Erase Region #0: BlockSize 0x20000 bytes, 64 blocks
 
-nftl_format /dev/mtd0 0 4194303
-  Phase 1. Checking and erasing Erase Zones from 0x00000000 to =
-0x003fffff
-          Erasing Zone #510 @ 0x3fc000
-  Phase 2.a Writing NFTL Media Header and Bad Unit Table
-  Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
-  Phase 3. Writing Unit Control Information to each Erase Unit
+Primary Vendor Command Set: 0001 (Intel/Sharp Extended)
 
-nftl_format /dev/mtd0 4194304 4194303
-  Phase 1. Checking and erasing Erase Zones from 0x00400000 to =
-0x007fffff
-          Erasing Zone #1022 @ 0x7fc000
-  Phase 2.a Writing NFTL Media Header and Bad Unit Table
-  Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
-  Phase 3. Writing Unit Control Information to each Erase Unit
+Primary Algorithm Table at 0031
 
-I reboot now as I am not using modules.
-On boot, I get the following:
+Alternative Vendor Command Set: 0000 (None)
 
-  M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-  ...
-  DiskOnChip Millennium found at address 0xD0000
-  Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba =
-TC58V64AFT/DC)
-  1 flash chips found. Total DiskOnChip size: 8 Mbytes
-  mtd: Giving out device 0 to DiskOnChip Millennium
-  ...
-  M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
-  $Id: nftlcore.c,v 1.68 2001/03/26 15:44:47 dwmw2 Exp $
-  NFTL_notify_add for DiskOnChip Millennium
-  NFTL_setup
-   nftla: unknown partition table
-  Linux PCMCIA Card Services 3.1.22   =20
+No Alternate Algorithm Table
 
-I was really wanting to see nftla AND nftlb here.   As an aside,=20
-I can fdisk /dev/nftla and get a single 4M partition on /dev/nftla1
-however I can't seem to find the other 4M of the chip.  From reading=20
-the nftl kernel code, it sounds like it should scan then entire DoC=20
-and find the two partitions, however that is not happening.=20
+Vcc Minimum: 4.5 V
 
-Can someone offer advice as to what I am doing wrong?
+Vcc Maximum: 5.5 V
 
-Also, any tips for getting jffs onto the nftl partition, I don't
-seem to be having much luck there either.=20
+No Vpp line
 
-Thanks in advance,
+Typical byte/word write timeout: 128 =B5s
 
-Steve Herzog
+Maximum byte/word write timeout: 2048 =B5s
+
+Typical full buffer write timeout: 128 =B5s
+
+Maximum full buffer write timeout: 2048 =B5s
+
+Typical block erase timeout: 1024 =B5s
+
+Max. bytes in buffer write: 0x20
+
+Number of Erase Block Regions: 1
+
+Physically mapped flash: Found 2 x16 devices at 0x1000000 in 32-bit =
+mode
+
+JEDEC ID: 89 15
+
+0: offset=3D0x0,size=3D0x40000,blocks=3D64
+
+1: offset=3D0x1000000,size=3D0x40000,blocks=3D64
+
+<5>ftl_cs: FTL header not found. =20
+
+Questions:
+1) How to I get /dev/mtdblock0 created?
+
+2) Is ftl.c needed -- the HOWTO doesn't include it?
+
+Cheers,
+
+	- Dan=20
