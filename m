@@ -1,44 +1,43 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from localhost ([127.0.0.1] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10wcdu-0006CW-00
-	for mtd@imladris.demon.co.uk; Wed, 23 Jun 1999 03:20:02 +0100
+	id 10wky6-0006Lv-00
+	for mtd@imladris.demon.co.uk; Wed, 23 Jun 1999 12:13:26 +0100
 Received: from pop3.mail.demon.net
 	by localhost with POP3 (fetchmail-5.0.0)
-	for mtd@imladris.demon.co.uk (multi-drop); Wed, 23 Jun 1999 03:20:02 +0100 (BST)
-Received: from punt-2.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
-          id 930104383:20:00920:9; Wed, 23 Jun 99 02:19:43 GMT
-Date: Tue, 22 Jun 1999 20:19:23 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-Reply-To: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
+	for mtd@imladris.demon.co.uk (multi-drop); Wed, 23 Jun 1999 12:13:26 +0100 (BST)
+Received: from punt-1.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
+          id 930136344:10:12028:0; Wed, 23 Jun 99 11:12:24 GMT
+To: Jason Gunthorpe <jgg@deltatee.com>
+Cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
 Subject: Re: RFC: kernel-based PCMCIA ... 
-In-Reply-To: <E10qvrK-00038e-00@devel2.axiom.internal>
-Message-ID: <Pine.LNX.3.96.990622201422.28153B-100000@white.priv.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 23 Jun 1999 12:10:59 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E10wkvj-0008H8-00@devel2.axiom.internal>
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Mon, 7 Jun 1999, David Woodhouse wrote:
+jgg@deltatee.com said:
+>  We managed to extract the location of the specs today, go to  http://
+> msdn.microsoft.com and search for "microsoft flash file system". It
+> documents the MS FFS2 file system - I'll probably start working on one
+> this week unless someone else already has.. 
 
-> jgg@deltatee.com said:
-> >  Has there been an talk of a FFS driver for linux? 
+I couldn't find the pages - most of the search results are broken links, and 
+those that aren't don't seem very helpful - they just refer to the original 
+FTL.
 
-> There's already an FTL driver for Linux, and has been for some time. 
-> M-Systems' new version of 'TrueFFS' doesn't appear to be FTL, and so there
-> isn't (yet) a driver for it. I'm unlikely to be looking into that - I'm
-> going to just put FTL on the device when I can eventually get it working
-> properly.
+Could you send me a copy of the docs, or a direct URL, please?
 
-We managed to extract the location of the specs today, go to 
-http://msdn.microsoft.com and search for "microsoft flash file system". It
-documents the MS FFS2 file system - I'll probably start working on one
-this week unless someone else already has..
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
 
-Jason
 
 
 
