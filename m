@@ -1,22 +1,28 @@
-Received: from eppat.qlogic.com ([63.170.40.2] helo=EPEXCH01.qlogic.org)
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6sNZ-0002GO-8n
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 10:36:46 -0500
-Date: Thu, 3 Mar 2005 09:36:27 -0600
-From: Steve Wahl <steve.wahl@qlogic.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20050303153627.GM2119@qlogic.com>
-References: <018701c51fac$bef413b0$1b0a060a@WellSyn.org>
-	<1109838505.5398.3.camel@tglx.tec.linutronix.de>
-	<01e801c51fcc$ae93fa10$1b0a060a@WellSyn.org>
-	<1109840487.5398.16.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1109840487.5398.16.camel@tglx.tec.linutronix.de>
+	id 1D6tW7-0002jZ-90
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 11:49:39 -0500
+Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR011.ip.videotron.ca
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	with ESMTP id <0ICS00A6IC0SVO@VL-MO-MR011.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 11:48:28 -0500 (EST)
+Date: Thu, 03 Mar 2005 11:48:25 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <4226F51A.7070603@imc-berlin.de>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+Message-id: <Pine.LNX.4.62.0503031146070.15953@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
+	<1109845739.16158.14.camel@hades.cambridge.redhat.com>
+	<1109846656.4370.20.camel@tglx.tec.linutronix.de>
+	<1109846792.16158.20.camel@hades.cambridge.redhat.com>
+	<1109847189.4370.27.camel@tglx.tec.linutronix.de>
+	<1109847630.16158.22.camel@hades.cambridge.redhat.com>
+	<4226F51A.7070603@imc-berlin.de>
 Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: compile error (undefined reference to jffs2_getlink) forkernel
-	2.4.26
+Subject: Re: [RFD] Move 2.4 code out from CVS head
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 03, 2005 at 10:01:27AM +0100, Thomas Gleixner wrote:
-> On Thu, 2005-03-03 at 16:40 +0800, Kevin Liao wrote:
-> > Thanks for the reply. Actully I had read it before I ask this question.
-> > According to the webpage, the kernel version I used should be ok.
-> > I think the root cause is not the kernel version. Because I serach
-> > the whole directory extracted from snapshop 20050302 but found
-> > no implementation for jffs2_getlink function. Maybe I search the
-> > wrong place?
+On Thu, 3 Mar 2005, Steven Scholz wrote:
+
+> David Woodhouse wrote:
+> > On Thu, 2005-03-03 at 11:53 +0100, Thomas Gleixner wrote:
+> > 
+> > > > If you don't need it alive, you don't need a branch. You don't even need
+> > > > a tag -- 'cvs up -D2005-03-01'.
+> > > 
+> > > I have zero interest to keep it alive.
+> > 
+> > 
+> > Then we have no need of a branch. Just remove the files.
 > 
-> Yes, jffs2_getlink is removed. There was an update to jffs2 a couple of
-> days ago. It broke the 2.4 code.
-> 
-> Frankly spoken, I personally don't care.
-> 
-> 2.4 is as is and we are not going to do anything about. Feel free to fix
-> it by porting the link changes back to super-v24.c or use an snapshot
-> before said changes.
+> Does that mean that there will be _no_ " maintainence only mode" for 2.4?
 
-I'm a real outsider here, and don't care much about whether the code
-works under 2.4 or not.
+Depends if _you_ or someone else decides to volunteer for the task.
+do you?  I don't.
 
-But at least one way of interpreting
-http://www.linux-mtd.infradead.org/#kernelversions is:
+> It's ok ig there are no new features for 2.4. But bugs should still be
+> fixed...
 
-	Code in the 2.6 kernel tree gets updated.  Code in the 2.4
-	tree doesn't, you'll have to fetch it from CVS yourself.  You
-	need at least 2.4.26; anything lower than that is ancient and
-	we're not interested in supporting it.
+It just won't happen magically.
 
-In other words, the whole text about "ancient kernels" can easily be
-interpreted to mean anything *before 2.4.26*, and that 2.4.26 and on
-is still fair game to ask the mailing list at the moment.  
 
-It also says that in the *future*, 2.4 will be completely put into
-maintenance mode.  If that future is now, IMHO somebody should update
-that web page to say so.
-
-With the way that page currently reads, I don't think being curt with
-someone who asks about 2.4.26 and pointing them at the web page is
-really fair.
-
-[Personally, I don't think you should move to that future just yet;
-2-6 more months would be where I would do it.  Where I work, there was
-some resistance to moving to 2.6 because it isn't yet "mature" in the
-embedded space, as in the major embedded suppliers like MontaVista
-aren't really shipping 2.6 yet.  That was a couple of months ago, and
-I haven't been paying attentiion; they might be there now.  At any
-rate, I recognize my opinion doesn't really matter because I'm not an
-active developer; I'm only suggesting what I think is a way to create
-less friction in this community.]
-
-Thanks for listening; If I cause more heat than light with this, I
-appologize profusely.
-
---> Steve Wahl
+Nicolas
