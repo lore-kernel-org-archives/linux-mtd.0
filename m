@@ -1,16 +1,19 @@
-Received: from tomts21-srv.bellnexxia.net ([209.226.175.183])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ktJN-0007OG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 20:55:57 +0000
-Date: Tue, 12 Mar 2002 16:07:19 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Mark Meade <mark@lakeshoremicro.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader
-In-Reply-To: <200203111306968.SM01632@there>
-Message-ID: <Pine.LNX.4.44.0203121533350.15005-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16ktn7-0007Rq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 21:26:41 +0000
+Date: Tue, 12 Mar 2002 22:38:01 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: rkaiser@sysgo.de
+Cc: linux-mtd@lists.infradead.org, Robert Schwebel <robert@schwebel.de>
+Subject: Re: [patch] dilnetpc.c broken?
+Message-ID: <20020312223801.A7811@wohnheim.fh-wedel.de>
+References: <20020311202323.A11507@wohnheim.fh-wedel.de> <200203121322.g2CDMLw14608@dagobert.svc.sysgo.de> <20020312155351.A10431@wohnheim.fh-wedel.de> <200203121503.g2CF3Ew17376@dagobert.svc.sysgo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200203121503.g2CF3Ew17376@dagobert.svc.sysgo.de>; from rob@sysgo.de on Tue, Mar 12, 2002 at 04:03:50PM +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,35 +25,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mark,
+On Tue, 12 March 2002 16:03:50 +0100, Robert Kaiser wrote:
+> Hmm, then you must have a different version of partitions.h in
+> /usr/src/linux/include/linux/mtd. Mine is from the MTD CVS
+> (cvs up'ed this morning, but the #defines have been there
+> for a long time, AFAIK):
 
-1. Thanks for the latest patch to stage2/bdev_diskonchip.c that rectifies
-the chip identification.
+That explains a bit. You just found a bug in my partitioning rewrite.
+Many thanks!
 
-2. As for the device page size issue in Millennium IPL, the data sheets
-and application notes at
+Jörn
 
-    http://www.m-sys.com/content/Products/ShowInformation.asp?PID=1&Code=1
-
-inform that DoC Millennium and DoC Millennium Plus feature a Download
-Engine which takes care of copying the flash image into the read-only area
-available at offset 0 of the window.
-
-The above process takes place when the device is reset.
-
-Apparently, the XIP IPL doesn't need the DoC 2000 trick with duplicating
-the code for 256-byte and 512-byte page size devices at offsets 0x100 and
-0x200 respectively.
-
-3. There is a data sheet on Millennium Plus at the aove link, if anyone is
-interested.  The chip has ID 0x40, its IPL is downloaded from a non-zero
-flash offset, and there are few data structures in the beginning of the
-flash memeory.
-
-Ilguiz
-
-On Mon, 11 Mar 2002, Mark Meade wrote:
-
-> You mentioned that there are DoC Millennium parts based on 256-byte-page
-> chips -- so my hack to force the 512-byte code to 0x100 will not work
-> correctly for all Millennium parts.
+-- 
+Highly skilled employees are always promoted to a level of
+incompetency. They get promoted for doing a good job, until they
+don't.
+-- unknown
