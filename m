@@ -1,17 +1,16 @@
-Received: from bolna.monet.no ([195.139.82.18])
+Received: from tomts12.bellnexxia.net ([209.226.175.56] helo=tomts12-srv.bellnexxia.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16BgYQ-0002V8-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 18:13:58 +0000
-Message-ID: <004f01c17db9$a78900c0$c801a8c0@starticon>
-From: "Yunus Shaikh" <yshaikh@start-icon.com>
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
-References: <Pine.LNX.4.33.0112040830450.7813-100000@newbast.lynuxworks.com>
-Subject: Console Messages
-Date: Wed, 5 Dec 2001 19:21:23 +0100
+	id 16BjLj-0002ef-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 21:13:03 +0000
+Date: Wed, 5 Dec 2001 16:22:39 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Yunus Shaikh <yshaikh@start-icon.com>
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Console Messages
+In-Reply-To: <004f01c17db9$a78900c0$c801a8c0@starticon>
+Message-ID: <Pine.LNX.4.33.0112051617470.27391-100000@server.superbt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,10 +22,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-After applying the mtd Patch the kernel messages on the console are still
-not suppressed
-even after passing console=none to the kernel is there any way to supress
-the kernel messages ??
+Funny, it sounds like the MTD patch was supposed to suppress the kernel
+messages on the console.
 
-regards
-Yunus
+The following article
+    http://www.linuxjournal.com/article.php?sid=2365
+
+suggested to apply the following command to suppress the kernel messages:
+
+    echo 2 > /proc/sys/kernel/printk
+
+I believe one can change the klogd options to "-c 2" as well.
+
+Ilguiz
+
+On Wed, 5 Dec 2001, Yunus Shaikh wrote:
+
+> After applying the mtd Patch the kernel messages on the console are still
+> not suppressed
