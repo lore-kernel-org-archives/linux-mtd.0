@@ -1,37 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13Rzl5-0005QQ-00
-	for mtd-list@infradead.org; Thu, 24 Aug 2000 17:21:39 +0100
-Received: from amdext2.amd.com ([163.181.251.1])
+	id 13S4jr-0007F0-00
+	for mtd-list@infradead.org; Thu, 24 Aug 2000 22:40:43 +0100
+Received: from polaris.uk.insnet.net ([194.177.174.245])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13Rzl4-0005QK-00
-	for mtd@infradead.org; Thu, 24 Aug 2000 17:21:38 +0100
-Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
-	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA03429
-	for <mtd@infradead.org>; Thu, 24 Aug 2000 11:21:05 -0500 (CDT)
-From: mark.langsdorf@amd.com
-Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
-	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA21424
-	for <mtd@infradead.org>; Thu, 24 Aug 2000 11:21:05 -0500 (CDT)
-Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F079@txexmta8.amd.com>
-To: mtd@infradead.org
-Subject: RE: The archives [looking for info on AM29LV640 flash]
-Date: Thu, 24 Aug 2000 11:21:03 -0500
+	id 13S4jq-0007Eu-00
+	for mtd@infradead.org; Thu, 24 Aug 2000 22:40:42 +0100
+Received: from blackdog.wirespeed.com (blackdog.wirespeed.com [208.170.106.25])
+	by polaris.uk.insnet.net (8.9.3/8.9.3) with ESMTP id WAA00376
+	for <mtd@infradead.org>; Thu, 24 Aug 2000 22:40:43 +0100 (BST)
+Received: from redhat.com (IDENT:root@I-graph2.wirespeed.com.16.16.172.in-addr.arpa [172.16.16.39] (may be forged))
+	by blackdog.wirespeed.com (8.9.3/8.9.3) with ESMTP id QAA08010
+	for <mtd@infradead.org>; Thu, 24 Aug 2000 16:19:00 -0500
+Message-ID: <39A59519.BB89118E@redhat.com>
+Date: Thu, 24 Aug 2000 16:35:21 -0500
+From: root <ikinner@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: mtd@infradead.org
+Subject: slram
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
->  I've been browsing the archive to see if anyone's used MTD on
-> AM29LV640 (64Mb, NAND I believe) parts.
 
-	The spec sheet for the Am29LV640 indicates they are CFI
-parts.  You should be able to use the cfi_cmdset_0002 module
-with them, though admittedly I haven't tested this myself.
+I am attempting to use the slram module, but the ftl_format program
+crashes with a floating-point error every time. If anyone could point me
+to _any_ info on slmod.o, it would be very helpful. There seems to be no
+documentation on it, anywhere...
 
--Mark Langsdorf
-AMD, Inc.
+Thanks,
+
+Ian
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
