@@ -1,19 +1,19 @@
-Received: from gate.epygi.de ([212.126.211.241] helo=epygi.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17In8k-0003p6-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 10:13:06 +0100
-Received: from pcstephan (pc-stephan.epygi.de [192.168.13.32])
-	by epygi.de (8.12.3/8.12.3) with SMTP id g5E9Cx3v015198
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 11:12:59 +0200 (METDST)
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Subject: FW: why MTD model ? 
-Date: Fri, 14 Jun 2002 11:13:02 +0200
-Message-ID: <FCEAKDJJAPHPLJFINDAJAEJPCFAA.Stephan.Linke@epygi.de>
+Received: from avg3.hkpc.org ([202.64.133.85])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17InBl-0003pd-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 10:16:14 +0100
+Received: from smtp2.hkpc.org ([202.64.133.13])
+ by avg3.hkpc.org (NAVGW 2.5.2.11) with SMTP id M2002061417155907011
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 17:15:59 +0800
+Date: Fri, 14 Jun 2002 17:18:23 +0800 (HKT)
+From: Clifford Loo <kfloo@hkpc.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Problem putting JFFS on MTD 
+In-Reply-To: <19580.1024044614@redhat.com>
+Message-ID: <Pine.LNX.4.33.0206141703010.8899-100000@cliffordux.hkpc.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,61 +25,92 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
-
-> 
-> Can somehow we treat(emulate) memory device as a block
-> device and treat memory device like a hard disk ?
+On Fri, 14 Jun 2002, David Woodhouse wrote:
 >
+>kfloo@hkpc.org said:
+>>  I can now mount an erased mtdblock device directly to "/mnt/jffs".
+>> But creating files or directories results in I/O errors:
+>
+>Hmmm. No message from the flash driver when this happens? They're not from
+>JFFS, they're from the flash driver itself.
 
-Maybe I didn't got the point. But if you like to use some (maybe 
-battery backuped) memory with a filesystem on it you could setup 
-your MTD device just like this:
->>>>
+I'm not sure what's from the flash driver itself, but there's no "Flash
+writer error" or anything like that.  In any case I've attached all the
+log messages leading up to the "I/O error" in my previous post.  For the
+mount command, here's an excerpt of the debug message:
 
-static void* memremap;                                            
-              
-static struct mtd_info *myrammtd;                                 
-              
-
-__u8 my_ram_read8(struct map_info *map, unsigned long ofs)
+bash# mount -t jffs /dev/mtdblock0 /mnt/jffs
+mtdblock_open
+ok
+JFFS: Trying to mount device 1f:00.
+jffs_build_fs()
+jffs_create_control()
+jffs_build_begin()
+  fmc->flash_start = 0x00000000
+  fmc->flash_size = 4194304 bytes
+jffs_scan_flash(): start pos = 0x0, end = 0x400000
+jffs_scan_flash(): 0xff at pos 0x0.
+flash_safe_read(c0d91da0, 00000000, 00000000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x1000.
+flash_safe_read(c0d91da0, 00000000, 00001000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x2000.
+flash_safe_read(c0d91da0, 00000000, 00002000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x3000.
+flash_safe_read(c0d91da0, 00000000, 00003000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x4000.
+flash_safe_read(c0d91da0, 00000000, 00004000, c0e9b000)
+[...]
+jffs_scan_flash(): 0xff at pos 0x3fd000.
+flash_safe_read(c0d91da0, 00000000, 003fd000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x3fe000.
+flash_safe_read(c0d91da0, 00000000, 003fe000, c0e9b000)
+jffs_scan_flash(): 0xff at pos 0x3ff000.
+flash_safe_read(c0d91da0, 00000000, 003ff000, c0e9b000)
+jffs_build_end()
+struct jffs_fmcontrol: 0xc0daeec0
 {
-    return *(__u8 *)(memremap  + ofs);
+        0x00000000, /* flash_start  */
+        4194304, /* flash_size  */
+        0, /* used_size  */
+        0, /* dirty_size  */
+        4194304, /* free_size  */
+        131072, /* sector_size  */
+        262144, /* min_free_size  */
+        65536, /* max_chunk_size  */
+        0xc0d91da0, /* mtd  */
+        0x00000000, /* head  */    (head->offset = 0x00000000)
+        0x00000000, /* tail  */    (tail->offset + tail->size =
+0x00000000)
+        0x00000000, /* head_extra  */
+        0x00000000, /* tail_extra  */
 }
-...
-
-struct map_info my_ram_map = {
-    name: "MY bbram    ",
-    size: RAM_WINDOW_SIZE,
-    buswidth: 4,
-    read8: my_ram_read8,
-    read16: my_ram_read16,
-    read32: my_ram_read32,
-    copy_from: my_ram_copy_from,
-    write8: my_ram_write8,
-    write16: my_ram_write16,
-    write32: my_ram_write32,
-    copy_to: my_ram_copy_to
-};
-
-
-...
-        myrammtd = do_map_probe("map_ram", &my_ram_map);          
-            
-        if (myrammtd) {
-            memremap = ioremap (RAM_WINDOW_ADDR, RAM_WINDOW_SIZE);
-            add_mtd_device (myrammtd);
-        } else {
-            printk ("mtd/my.o: error installing bbdram device!\n");
-        }
-        return 0;
-...
-
-<<<<
-(If someone thinks that this is the wrong way, feel free to send 
-comments.) :o)
+jffs_scan_flash(): Leaving...
+jffs_find_file(): ino: 1
+jffs_find_file(): Didn't find file with ino 1.
+jffs_add_virtual_root(): Creating a virtual root directory.
+jffs_insert_file_into_hash(): f->ino: 1
+jffs_possibly_delete_file(): ino: 1
+jffs_remove_redundant_nodes(): ino: 1, name: "", newest_type: 1
+jffs_insert_file_into_tree(): name: ""
+jffs_find_file(): ino: 0
+jffs_find_file(): Didn't find file with ino 0.
+jffs_build_file(): ino: 1, name: ""
+jffs_update_file(): ino: 1, version: 0
+JFFS: Dumping the file system's hash table...
+*** c->hash[1]: "" (ino: 1, pino: 0)
+/ (ino: 1, highest_version: 0, size: 0)
+jffs_read_inode(): inode->i_ino == 1
+read_inode(): down biglock
+jffs_find_file(): ino: 1
+jffs_find_file(): Found file with ino 1. (name: "")
+read_inode(): up biglock
+JFFS: GC thread pid=12.
+JFFS: Successfully mounted device 1f:00.
+jffs_garbage_collect_thread(): Starting infinite loop.
+thread_should_wake(): free=4194304, dirty=0, blocksize=131072.
+bash#
 
 
 
-Stephan Linke
-> 
+-- 
+Clifford
