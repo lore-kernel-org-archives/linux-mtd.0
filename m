@@ -1,20 +1,17 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from gatekeeper.trintech.com ([62.221.5.212]
+	helo=ntdub1e.trintech.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CyYbg-0007sm-3C
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 11:52:57 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Rudi Engelbertink <rudi@unsec.nl>
-In-Reply-To: <20050204112622.M33820@unsec.nl>
-References: <20050204112622.M33820@unsec.nl>
-Content-Type: text/plain
-Date: Tue, 08 Feb 2005 17:51:47 +0100
-Message-Id: <1107881508.17747.2.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: unable to get NAND oobinfo
-Reply-To: tglx@linutronix.de
+	id 1CyYd8-00083b-QX
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 11:54:28 -0500
+Message-ID: <BBB9FA5E1514D511A88D00B0D0AA8EA60AD22073@ntdub1e.trintech.com>
+From: Eoghan Doyle <Eoghan.Doyle@trintech.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 8 Feb 2005 16:50:20 -0000 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: ST Flashes and buffer write
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +21,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-02-04 at 12:43 +0100, Rudi Engelbertink wrote:
-> Hi,
-> 
-> trying to get my nand driver (for compulab 586core board) on kernel 2.4.27
-> working, i ran into the following problem:
-> The driver is recognised and appears to work. That means I can read the mtdchar
-> device but whin I'm trying to format the device, I recieve the message
-> 'flash_eraseall: /dev/mtd3: unable to get NAND oobinfo'
-> An strace replies with:
-> open("/dev/mtd3", O_RDWR)               = 3
-> ioctl(3, 0x80204d01, 0xbffffdf0)        = 0
-> ioctl(3, 0x80c84d0a, 0xbffffd20)        = -1 ENOTTY (Inappropriate ioctl for
-> device)
+Hi,
 
-I guess you are using vanilla 2.4.27 without mtd patches. So the ioctl
-is not implemented. The NAND stuff in MTD/JFFS2 on vanilla 2.4.xx is not
-really fully functional. 
+I have a problem with an ST flash and buffer write. It looks similar to =
+what
+as discussed in several threads as far back as Aug 2002, but I cannot =
+find
+the solution.
 
-tglx
+I am using a M28W640 flash. This claims to be an Intel/Sharp Standard =
+flash
+supporting buffered write.
+But the buffered write it supports is not the same as coded in
+cfi_cmdset_0001.c.
+It uses a double/quad word write instead of a buffer write.
+
+The Intel buffer write is:
+1.	Write buffer write command (0xe8)
+2.	Write the number of words to follow.
+3.	Write each word.
+4.	Write the confirm command (0xd0).
+5.	Check status.
+
+The ST version is: (see the datasheet at
+http://www.datasheetarchive.com/datasheet/pdf/46/469684.html)
+
+1.	Write double/quad word command (0x30/0x56)
+2.	Write 2/4 words.
+3.	Check status.
+
+In the ST case you must check that the addresses are consecutive and =
+that
+only bottom bits change.
+
+If you use one of these chips with the MTD you will get EROFS returned =
+from
+do_write_buffer.
+
+Currently I am defining FORCE_WORD_WRITE as a work around.
+I have attached some debug output below.
+
+The questions I have are:
+1.	Is there already code to handle this difference, which I have
+missed?
+2.	How can you tell the difference between the 2 write buffer methods
+without resorting to tying it to a specific vender/chip?
+3.	Will this make much of a difference to write speeds?
+
+Thanks for your help,
+Eoghan
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Debug output:
+Number of erase regions: 2
+Primary Vendor Command Set: 0003 (Intel/Sharp Standard)
+Primary Algorithm Table at 0035
+Alternative Vendor Command Set: 0000 (None)
+No Alternate Algorithm Table
+Vcc Minimum: 2.7 V
+Vcc Maximum: 3.6 V
+Vpp Minimum: b.4 V
+Vpp Maximum: c.6 V
+Typical byte/word write timeout: 16 =B5s
+Maximum byte/word write timeout: 512 =B5s
+Typical full buffer write timeout: 16 =B5s
+Maximum full buffer write timeout: 512 =B5s
+Typical block erase timeout: 1024 =B5s
+Maximum block erase timeout: 8192 =B5s
+Chip erase not supported
+Device size: 0x800000 bytes (8 MiB)
+Flash Device Interface description: 0x0001
+  - x16-only asynchronous interface
+Max. bytes in buffer write: 0x8
+Number of Erase Block Regions: 2
+  Erase Region #0: BlockSize 0x2000 bytes, 8 blocks
+  Erase Region #1: BlockSize 0x10000 bytes, 127 blocks
+  Feature/Command Support: 0066
+     - Chip Erase:         unsupported
+     - Suspend Erase:      supported
+     - Suspend Program:    supported
+     - Legacy Lock/Unlock: unsupported
+     - Queued Erase:       unsupported
+     - Instant block lock: supported
+     - Protection Bits:    supported
+     - Page-mode read:     unsupported
+     - Synchronous read:   unsupported
+  Supported functions after Suspend: 01
+     - Program after Erase Suspend: supported
+  Block Status Register Mask: 0003
+     - Lock Bit Active:      yes
+     - Valid Bit Active:     yes
+  Vcc Logic Supply Optimum Program/Erase Voltage: 0.0 V
+  Vpp Programming Supply Optimum Program/Erase Voltage: 0.0 V
+Using buffer write method
