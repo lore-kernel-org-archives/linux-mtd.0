@@ -1,18 +1,18 @@
-Received: from maild.telia.com ([194.22.190.101])
+Received: from [203.231.231.195] (helo=smtp.netian.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18fNGE-0004jn-00
-	for <linux-mtd@lists.infradead.org>; Sun, 02 Feb 2003 16:46:26 +0000
-Message-ID: <003501c2cada$9b6c9120$020120b0@jockeXP>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "MTD for Linux" <linux-mtd@lists.infradead.org>,
-   "Vipin Malik" <vipin@embeddedlinuxworks.com>
-References: <5.1.0.14.0.20030202082532.02427e68@64.170.22.132>
-Date: Sun, 2 Feb 2003 17:46:17 +0100
+	id 18fcD1-00072a-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 08:44:07 +0000
+Received: from blueidev (165.194.27.54) by smtp.netian.com (5.1.048.1k) (authenticated as blueidev@smtp.netian.com)
+        id 3E31FCC900002F20 for linux-mtd@lists.infradead.org; Mon, 3 Feb 2003 17:42:03 +0900
+Message-ID: <002501c2cb60$bd7733c0$361bc2a5@cslab.cse.cau.ac.kr>
+From: =?utf-8?B?67CV7KCV7YOc?= <blueidev@netian.com>
+Cc: <linux-mtd@lists.infradead.org>
+Date: Mon, 3 Feb 2003 17:46:27 +0900
 MIME-Version: 1.0
-Subject: Re: mtd partition1 corruption during writes to JFFS2 on partition2.
+Subject: Anyone have NAND Flash interface circuit diagram ?
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,37 +24,5 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Vipin
-
-I also have several partions(ppcboot, kernel and JFFS2) and I never had any
-problems to update ppcboot or kernel(cp file /dev/mtdblock0) while JFFS2 is mounted.
-I am using cmdset0001 driver, so perhaps it's a driver problem? 
-If you will play with the cmdset0002 driver, consider to add point/unpoint
-support(already in cmdset0001).
-
-Recently(a few weeks ago) a locking bug in JFFS2 was fixed which bit me during
-boot, don't think this what's biting you though.
-
- Jocke
-
-> I've got multiple mtd partitions on one NOR flash device (CFI/AMD).
-> 
-> I've got JFFS2 fs mounted on the last partition. The other partitions hold 
-> compressed firmware, that I intent upgrade while JFFS2 is being written to.
-> 
-> However, I find that if I write to the mtd device(s) (erase, followed by 
-> dd) and then reboot, the firmware is corrupt.
-> If I stop writes to the JFFS2 partition before upgrading the firmware on 
-> the mtd partitions, everything is ok every time.
-> 
-> Is this a known "feature"?
-> Ideas?
-> 
-> TIA
-> 
-> Vipin
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksIGFsbA0KDQpQbHosIHNlbmQgdG8gbWUgdGhlIE5BTkQgZmxhc2ggY2hpcChzYW1zdW5nKSAm
+IFNBLTExMTAgY2lyY3VpdCBkaWFncmFtLg0KDQpvciBTbWFydG1lYWRpYSBpbnRlcmZhY2UgLi4u
