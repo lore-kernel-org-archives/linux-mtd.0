@@ -1,20 +1,19 @@
 Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A7ph4-0002pW-6v
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 06:20:02 +0100
+	id 1A7q7n-00030F-UW
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 06:47:43 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Selwyn Tang <selwyn@hectrix.com>
-In-Reply-To: <3F860E15.1060008@hectrix.com>
-References: <20031009163345.54331.qmail@web9907.mail.yahoo.com>
-	 <3F860E15.1060008@hectrix.com>
-Message-Id: <1065763141.30987.315.camel@imladris.demon.co.uk>
+To: Ingo Flaschberger <if@sil.at>
+In-Reply-To: <Pine.GSO.4.56.0310100453520.19931@ikarus.sil.at>
+References: <Pine.GSO.4.56.0310100453520.19931@ikarus.sil.at>
+Message-Id: <1065764780.30987.333.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Fri, 10 Oct 2003 06:19:01 +0100
+Date: Fri, 10 Oct 2003 06:46:21 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: Slim <slimaffi@yahoo.com>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: redhat 9, doc 2000
+cc: jffs-dev@axis.com
+Subject: Re: kmalloc jffs2_do_mount_fs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-10-10 at 09:40 +0800, Selwyn Tang wrote:
-> >    mount: /dev/nftla: unknown device
-> 
-> /dev/nftla is the nftl device representing your doc, but not a
-> partition. You have to create a new partition on it. 
+On Fri, 2003-10-10 at 05:13 +0200, Ingo Flaschberger wrote:
+> but why doe you not apply it to the source or warn because of this
+> "jffs2" problem???
 
-No, you don't have to. If you were going to make only one partition,
-that'd just be a gratuitous waste of space -- you'd do better just to
-create your file system on /dev/nftla instead.
+Partly because I'm unconvinced that we want to actually _use_ such a
+small erasesize. It means you split far more page writes into two nodes
+to avoid crossing block boundaries, and hence waste space.
 
-The problem is elsewhere. Check the driver is loaded and present in
-/proc/devices. Check it's actually detected the NFTL on the DiskOnChip
--- what messages did you get at boot or when you loaded the modules?
+I suspect the main reason Thomas objected to my original 'min 64KiB' was
+because of the 5-erase-block threshold. Since I've just wound that
+threshold _up_ on NAND because and it's also based in part on nr_blocks
+now, we could perhaps rethink the minimum erasesize. I didn't manage to
+tie him down on #mtd yesterday though.
 
 -- 
 dwmw2
