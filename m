@@ -1,22 +1,15 @@
-Received: from mailout06.sul.t-online.com ([194.25.134.19])
+Received: from 61-222-138-20.hinet-ip.hinet.net ([61.222.138.20]
+	helo=masteria.com.tw)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVn6y-0008I1-RI
-	for linux-mtd@lists.infradead.org; Thu, 03 Jun 2004 03:58:07 -0400
-From: tglx@linutronix.de (Thomas Gleixner)
-To: "Zhang, Jian" <jzhang@ti.com>, "David Woodhouse" <dwmw2@infradead.org>,
-	<linux-mtd@lists.infradead.org>
-Date: Thu, 3 Jun 2004 09:52:30 +0200
-References: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
-In-Reply-To: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
+	id 1BVq4f-0000Lp-Ir
+	for linux-mtd@lists.infradead.org; Thu, 03 Jun 2004 07:07:54 -0400
+To: linux-mtd@lists.infradead.org
+Message-ID: <OFEAD3BCB5.CEF27553-ON48256EA8.003D7F5E@com.tw>
+From: elvin@masteria.com.tw
+Date: Thu, 3 Jun 2004 19:18:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200406030952.30695.tglx@linutronix.de>
-Cc: 
-Subject: Re: stable MTD snapshot
-Reply-To: tglx@linutronix.de
+Content-type: text/plain; charset=us-ascii
+Subject: SAMSUNG NAND Flash (K9F1208X0B) driver support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +19,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 03 June 2004 00:48, Zhang, Jian wrote:
->
-> 20040531:
-> Kernel builds but I got I/O error when mounting a partition. The
-> underlying MTD NAND driver works since I am able to read/write MTD
-> nodes.
+Greetings..
 
-Use a more recent snapshot please. There were some issues recently as I=20
-reworked a lot.
+      I am porting SAMSUNG K9F1208x0b serious nand flash on my platform,
+which is arm922-based platform.
+I am using 2.4.18 arm linux kernel. I cannot find any driver in the
+driver/mtd/nand directory for nand flash of this kind.
+I am wondering if I could get driver support for the flash of this type
+from somewhere?
 
-If the problem persists with a recent snapshot could you please describe in=
-=20
-detail what happens.
+Any help is really appreciated.
 
-=2D-=20
-Thomas
-________________________________________________________________________
-Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
-time managing existing systems. That couldn=E2=80=99t have anything to do w=
-ith=20
-the fact that 99 percent of these systems run Windows, could it?
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+
+Elvin Kao
+Tel: 886-2-2788-0198 ext: 5735
+Fax:   886-2-26548310
+Master Integrated Appliances Co., Ltd
+http://www.masteria.com.tw
