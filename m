@@ -1,29 +1,15 @@
-Received: from smtp-out.hamburg.pop.de ([195.222.210.86])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17wLq9-0000d8-00
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Oct 2002 13:09:25 +0100
-Received: from mail.hamburg.pop.de ([193.98.9.7] helo=mail.provi.de)
-	by smtp-out.hamburg.pop.de with esmtp (Exim 3.22 #1)
-	id 17wLiy-0000yr-00
-	for linux-mtd@lists.infradead.org; Tue, 01 Oct 2002 14:02:00 +0200
-Received: from mail.jena.pop.de ([195.222.197.3])
-	by mail.provi.de with esmtp (Exim 3.20 #2)
-	id 17wLoV-0008Vi-00
-	for linux-mtd@lists.infradead.org; Tue, 01 Oct 2002 14:07:43 +0200
-Received: from goepel2.jena.provi.de (goepel2.jena.provi.de [195.222.197.91])
-	by mail.jena.pop.de (8.9.3/8.9.3) with ESMTP id OAA09411
-	for <linux-mtd@lists.infradead.org>; Tue, 1 Oct 2002 14:08:58 +0200
-Received: from goepel.com (goepel109.goepel [172.16.1.109])
-	by goepel2.jena.provi.de (8.10.0/8.10.0) with ESMTP id g91C8kj15098
-	for <linux-mtd@lists.infradead.org>; Tue, 1 Oct 2002 14:08:46 +0200
-Message-ID: <3D998F83.9000803@goepel.com>
-Date: Tue, 01 Oct 2002 14:05:23 +0200
-From: Michael Palme <m.palme@goepel.com>
-MIME-Version: 1.0
+Received: from web14906.mail.yahoo.com ([216.136.225.58])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17wMp5-0000iW-00
+	for <linux-mtd@lists.infradead.org>; Tue, 01 Oct 2002 14:12:23 +0100
+Message-ID: <20021001131221.26804.qmail@web14906.mail.yahoo.com>
+Date: Tue, 1 Oct 2002 06:12:21 -0700 (PDT)
+From: Sriram Neelakandan Iyer <sriramneelakandan@yahoo.com>
+Reply-To: sriramneelakandan@yahoo.com
+Subject: MTD copy on JFFS2
 To: linux-mtd@lists.infradead.org
-Subject: Interesting MTD (jffs2) problem - magic bitmask not found
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -35,69 +21,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hello...
+hi list,
+i have 2 jffs2 partitions(over mtd) used for storing
+config files.
+I need to copy all the files from one partition to
+another, and the destination mtd partition is larger
+than the source mtd partition.(i cannot mount the
+second partition as jffs2 before the data is copied)
+
+As of now i run mkfs.jffs2 over the source jffs2
+directory and copy to ramfs and then erase the
+destination partition and i do a mtd-write over the
+destination partition.
+
+But mkfs.jffs2 needs libz and both of them occupy
+about 87K of space.
+
+So i plan to do a plain mtd-copy ,i.e 
+1. first unmount source jffs2,
+2. read over the source mtd-char-device and 
+3. dump it back to the second mtd-partition. 
+
+Will jffs2 be able to mount the second partition
+without trouble?  (or) must i do a mkfs.jffs2 always
+to have a jffs2 mountable partition.
+
+regards
+sriram.
 
 
-i've posted this on linux-arm mailing list, but i think its also 
-interesting for this list...
-
-i run 2.4.18-rmk7 with mtd from cvs (mid september).
-problem as follows:
-# cat /proc/mtd
-   dev:    size   erasesize  name
-   mtd0: 00040000 00040000 "blob"
-   mtd1: 00040000 00040000 "parm"
-   mtd2: 00100000 00040000 "krnl"
-   mtd3: 00400000 00040000 "rd"
-   mtd4: 00100000 00040000 "krnl2"
-   mtd5: 00400000 00040000 "rd2"
-   mtd6: 01580000 00040000 "jffs2"
-# mtd_debug info /dev/mtd6
-   mtd.type = MTD_NORFLASH
-   mtd.flags = MTD_CAP_NORFLASH
-   mtd.size = 22544384 (21M)
-   mtd.erasesize = 262144 (256K)
-   mtd.oobblock = 0
-   mtd.oobsize = 0
-   mtd.ecctype = MTD_ECC_NONE
-   regions = 0
-# cd /root
-# ls temp
-   temp1  temp2
-# mkfs.jffs2 -r temp -e 262144 -o jffs2img
-# eraseall /dev/mtd6
-   Erasing 256 Kibyte @ ...[snip]...  100% complete.
-# cp jffs2img /dev/mtd6
-# mount /dev/mtdblock6 -t jffs2 /mnt/jffs2/
-# cd /mnt/jffs2
-# ls
-   temp1  temp2
-# rm -r temp*
-... [this tooks very long time] ...
-# ls
-# cd /
-# umount /mnt/jffs2/
-# mount /dev/mtdblock6 -t jffs2 /mnt/jffs2/
-?????????????????????????????????????????????????????????????????????
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040000:
-0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040004:
-0x000c instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00040008:
-0xdc6d instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080000:
-0x2003 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080004:
-0x000c instead
-...[snip]...
-?????????????????????????????????????????????????????????????????????
-# mount
-   /dev/ramdisk on / type ext2 (rw)
-   none on /proc type proc (rw)
-   /dev/mtdblock6 on /mnt/jffs2 type jffs2 (rw)
-# cd /mnt/jffs2/
-# ls
-#
-...
-
-best regards... Michael Palme
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
