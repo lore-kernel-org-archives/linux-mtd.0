@@ -1,45 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1332YT-00053x-00
-	for mtd-list@infradead.org; Fri, 16 Jun 2000 21:17:29 +0100
-Received: from roma.axis.se ([193.13.178.2])
+	id 1334Yt-0005ao-00
+	for mtd-list@infradead.org; Fri, 16 Jun 2000 23:26:03 +0100
+Received: from mailq.telia.com ([194.22.190.101] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 1332YS-00053r-00
-	for mtd@infradead.org; Fri, 16 Jun 2000 21:17:28 +0100
-Date: Fri, 16 Jun 2000 22:17:37 +0200 (CEST)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
-To: Alexander Larsson <alex@cendio.se>
-cc: jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: Bug in JFFS
-In-Reply-To: <Pine.LNX.4.10.10006161855460.32348-100000@tammy.signum.se>
-Message-ID: <Pine.LNX.3.96.1000616221427.18983B-100000@fafner.axis.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1334Ys-0005ai-00
+	for mtd@infradead.org; Fri, 16 Jun 2000 23:26:02 +0100
+Received: from d1o72.telia.com (d1o72.telia.com [62.20.150.241])
+	by mailq.telia.com (8.9.3/8.9.3) with ESMTP id AAA12145
+	for <mtd@infradead.org>; Sat, 17 Jun 2000 00:26:32 +0200 (CEST)
+Received: from jocke (t1o72p43.telia.com [62.20.150.43])
+	by d1o72.telia.com (8.8.8/8.8.8) with SMTP id AAA26590
+	for <mtd@infradead.org>; Sat, 17 Jun 2000 00:26:31 +0200 (CEST)
+Message-ID: <000501bfd7e1$de0ef980$2b96143e@jocke>
+From: "Joakim Tjernlund" <tjernlund@telia.com>
+To: <mtd@infradead.org>
+Subject: HW platform
+Date: Sat, 17 Jun 2000 00:26:06 +0200
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 16 Jun 2000, Alexander Larsson wrote:
-> We should use generic_file_write in jffs_file_operations instead of
-> jffs_write_file. Then we should implement writepage, prepare_write and 
-> commit_write in address_space_operations. These should look quite like
-> jffs_write_file, so this wouldn't be hard.
-> 
-> There is one problem here though. For each write the page of the file that
-> is modified is read in, modified and written out in its entierty. This
-> means several small writes to a file will become several 4Kb writes to the
-> log.
+Hi all
 
-That's why its unsymmetric from the beginning. It does not matter if the
-OS reads pages or files, but it matters if it writes pages or passes on
-writes directly. The latter is more or less required by JFFS design, while
-the former is not. If you start involving page-based file i/o, you're back
-at the block-based journaling that any other JFS uses, eventually.. but
-with more overhead :) 
+We are planning the next generation of our product and I want
+to use Linux for the control board(this is an embedded system)
+and I wondering what HW platform to use. We need a file
+system(on flash) and IP/OSPF mainly from Linux.
+Ther will be alot of (internal) communication with the other boards(25 of
+them)
+We have earlier used m68360 and therefore I am thinking a
+PowerPC 860 CPU would serve us well in that respect.
 
-I thought we had correct page invalidation in the write mechanism. Did it
-disappear in the 2.2/2.3 port or was it never there ? :) 
+I need something that does take a lot of effort to get Linux running on.
+It would be great if there we could buy CPU design that is Linux prepared.
 
--Bjorn
+Any ideas ? I open for all suggestions
+
+ Regards
+                   Joakim
+
 
 
 
