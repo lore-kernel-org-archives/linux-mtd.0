@@ -1,20 +1,21 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CJsd2-0002d1-7k
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 07:58:13 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: simon@baydel.com
-In-Reply-To: <E0180EAB7181@baydel.com>
-References: <E0180EAB7181@baydel.com>
-Content-Type: text/plain
-Message-Id: <1098186608.12223.857.camel@thomas>
-Mime-Version: 1.0
-Date: Tue, 19 Oct 2004 13:50:08 +0200
+	id 1CJsiS-0002qa-SQ
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 08:03:50 -0400
+Message-ID: <4175035B.80101@inf.u-szeged.hu>
+Date: Tue, 19 Oct 2004 14:06:51 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>
+	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>
+	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
+	<4174F0F3.7030604@yandex.ru>
+In-Reply-To: <4174F0F3.7030604@yandex.ru>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad Blocks On JFFS2/NAND
-Reply-To: tglx@linutronix.de
+Subject: Re: JFFS2 compression
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-10-19 at 13:22, Simon Haynes wrote:
-> I have experienced a problem in which a JFF2 filesystem on NAND became full. 
-> This is a root file system and constant writes to a logfile filled the 
-> filesystem. On investigation it was found that the NAND device now had 
-> hundreds of bad blocks. 
-> 
-> I started to investigate this and found that JFFS2 was announcing 
-> 
-> Newly-erased block contained word 0x1985e002 at offset 0x020f7e00
-> 
-> Messages which result in my mtd/jffs2 code marking the block bad. What I find 
-> strange is that a subsequent scan list the new block at a different 16k 
-> offset when the device erasesize is 16k, in this case 0x020f0000.
-> Is that because my device is 128Mb and JFFS2 is using this 'virtual erase 
-> size' of 32k ?
+Artem B. Bityuckiy wrote:
+> It isn't needed to store the default compression mode *on flash*. If you 
+> just move the variable jffs2_compression mode to the jffs2_sb_info 
+> structure, you will have per-filesystems compression mode. This means, 
+> for example, that if user changes (dynamically) the compression mode for 
+> one file-system, the compression mode for another file system isn't 
+> changed.
 
-Yes. The bad block code scans/marks physical blocks and JFFS2 operates
-on virtual ones, if the device size is big enough.
+I undersand you, but unfortunatelly now there is no way to change 
+compression mode dimamically. There was (using procfs) but when David 
+tried to commit it to the kernel, someone (I don't remember who but one 
+of the kernel developers) declared it bad.
 
-> I have observed this now on several different NAND devices and it seems to be 
-> more prominent while performing small writes.
->
-> I am currently trying to work out if the erase is not completing, or this is 
-> the wrong block or something else. 
+David asked me to reimplement it is sysfs, but that is not an easy 
+thing. Not technically. There is no fs subdirectory in sysfs. I read in 
+the mailling list archive of linux-fsdevel@vger.kernel.org. Someone 
+tried to submit a patch to make this fs subdirectory, because he need it 
+for NFS. The answer declared it as very bad, too... (sysfs has a 
+different philosopy...) I had some private discussion with the patch 
+submitter (what happened exactly, what was really the problem,... what 
+is his plan). He wrote that he try it again later. He think the guy who 
+declared his patch bad really hates sysfs (and procfs too). So I decided 
+to wait, too. :(
 
-Hmm, are you using Ready/Busy Pin or the timeout ?
+But this new "compressoin configuration" concept may cause that we don't 
+need sysfs/procfs.
 
-tglx
+Bye,
+Ferenc
