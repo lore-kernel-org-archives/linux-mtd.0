@@ -1,33 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141Vhj-0006oT-00
-	for mtd-list@infradead.org; Thu, 30 Nov 2000 15:32:59 +0000
+	id 141Wk7-0007AA-00
+	for mtd-list@infradead.org; Thu, 30 Nov 2000 16:39:31 +0000
 Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 141Vhi-0006oN-00
-	for mtd@infradead.org; Thu, 30 Nov 2000 15:32:59 +0000
+	id 141Wk6-0007A3-00
+	for mtd@infradead.org; Thu, 30 Nov 2000 16:39:30 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200011301404.AAA00314@singularity.tronunltd.com> 
-References: <200011301404.AAA00314@singularity.tronunltd.com> 
-To: "Ian" <Relativity@HumanHeuristic.com>
-Cc: lkhatskevitch@hotmail.com, mtd@infradead.org
-Subject: Re: inter-module-2.2.17 patch 
+In-Reply-To: <LAW-F154GeU75iMaUfO000040f1@hotmail.com> 
+References: <LAW-F154GeU75iMaUfO000040f1@hotmail.com> 
+To: "Levi Khatskevitch" <lkhatskevitch@hotmail.com>
+Cc: linuxbios@lanl.gov, mtd@infradead.org
+Subject: Re: init_doc2001 and init_doc2000 are hidden from init_mtd 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 30 Nov 2000 15:32:46 +0000
-Message-ID: <28787.975598366@redhat.com>
+Date: Thu, 30 Nov 2000 16:39:23 +0000
+Message-ID: <5894.975602363@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Relativity@HumanHeuristic.com said:
->  just copied a file to it ... no error .. sync'd it .. got that
-> NFTL_findfreeblock error again .. the file is still  there tho ...
-> reboot ... remount ... yep file is still in-tact.
+lkhatskevitch@hotmail.com said:
+>  I removed 'static' from those declarations and now it compiles  both
+> ways. I still have to test how the new kernel runs I'll do tomorrow
+> morning. 
 
-Strange. Nothing I write to my 4MiB doc2000 seems to 'take'. 
+Fixed. As is the increasingly negative use count. 
 
-Anyone else?
+
 
 --
 dwmw2
