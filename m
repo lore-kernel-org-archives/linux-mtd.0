@@ -1,25 +1,19 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from chambertin.convergence.de ([212.84.236.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14urPt-0006jd-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 08:51:21 +0100
-Received: from mail.com1.fr ([62.161.40.252])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14urQM-0000JI-00
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2001 08:51:51 +0100
-Received: from MSTEMPIN (ns.com1.fr [62.161.40.253])
-	by mail.com1.fr (8.9.3/8.9.3) with SMTP id JAA19147
-	for <mtd@infradead.org>; Wed, 2 May 2001 09:51:43 +0200
-From: "Michel STEMPIN" <admin@com1.fr>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Subject: RE: Is DOC Address 0xC8000 Something Special?
-Date: Wed, 2 May 2001 09:52:59 +0200
-Message-ID: <NEBBLPFMELCDALFMOJILCEICCFAA.admin@com1.fr>
+	id 14ux55-00078G-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 14:54:16 +0100
+Received: from router-dmz.convergence.de ([212.84.236.1] helo=convergence.de)
+	by chambertin.convergence.de with esmtp (Exim 3.16 #7 (Debian))
+	id 14ux5L-0000TC-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 15:54:31 +0200
+Message-ID: <3AF01004.D38B940E@convergence.de>
+Date: Wed, 02 May 2001 15:47:48 +0200
+From: Frank Neuber <neuber@convergence.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: map.h is broken
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <004f01c0d188$4688c5e0$88b4b8d1@ShuhIII>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,17 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> The same problem (not recognizing DOC) occurs for both fixed address probe
-> (C8000 in config) as well as autoprobe (0000 in config).  Strangely,
-> docprobe works well (again, both fixed and auto probe) at two other DOC
-> addresses: 0xD0000 and 0xD8000.
-Just as a sanity check, make sure you don't have your video BIOS shadowed at
-this address in you BIOS setup.
+Hi,
+I think the /include/linux/mtd/map.h is broken. After the daily
+(2.5.2001) cvs
+update my kernel don't complile.
+After inserting the following two lines (++) into map.h (struct
+map_info) 
+the "make modules" work well.
+--- cut---
+        void *fldrv_priv;
+++       void (*fldrv_destroy)(struct mtd_info *);
+++       const char *im_name;
+        struct mtd_chip_driver *fldrv;
 
---
-Michel Stempin
-MIS
-COM One SA, 11 parc de Marticot, 33610 CESTAS, FRANCE
-Tel: +33(0)5 57 97 72 72
-Fax: +33(0)5 56 78 84 78
-Email: mstempin@com1.fr
+---cut---
+
+Regards
+Frank
+
+-- 
+Dipl.-Ing. Elektrotechnik     convergence integrated media gmbh / HW
+Frank Neuber                        Rosenthalerstr.51 / 10178 Berlin
+Email:  neuber@convergence.de           Phone:  +49(0)30-72 62 06 50
+WWW:    www.convergence.de              Fax:    +49(0)30-72 62 06 55
