@@ -1,41 +1,43 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from 24.64.25.86.ab.wave.home.com
-	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 112jOA-0007RE-00
-	for mtd@infradead.org; Fri, 9 Jul 1999 23:45:02 +0100
-Date: Fri, 9 Jul 1999 16:44:54 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-cc: mtd@infradead.org
+	id 112jXr-0007Sg-00
+	for mtd@infradead.org; Fri, 9 Jul 1999 23:55:03 +0100
+To: Jason Gunthorpe <jgg@deltatee.com>
+Cc: mtd@infradead.org
 Subject: Re: Response from M-Systems 
-In-Reply-To: <E112idz-0002jo-00@devel2.axiom.internal>
-Message-ID: <Pine.LNX.3.96.990709163733.11475A-100000@white.priv.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 09 Jul 1999 23:55:01 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E112jXq-0002oo-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Fri, 9 Jul 1999, David Woodhouse wrote:
+jgg@deltatee.com said:
+>  I'm not sure you can actually patent and enforce the software side of
+> a hardware interface. Ie if we write a driver that does the proper
+> sequence to page, write and erase their chip they cannot take action
+> agaist us, unless perhaps that sequence involved lots more software
+> control that the AMD flash chips do.
 
-> I ought to have pointed out that this applies to _any_ GPL'd driver for the 
-> Disk-On-Chip and NFTL, regardless of whether it's produced by M-Systems, with 
-> M-Systems' specifications, or by reverse-engineering.
-> 
-> If we accept the premise that the patents prevent the code from being released 
-> under GPL, then what are we playing at in the first place? 
+That I suppose I'd agree with - although I would like to get NFTL working too, 
+which is a different matter.
 
-I'm not sure you can actually patent and enforce the software side of a
-hardware interface. Ie if we write a driver that does the proper sequence
-to page, write and erase their chip they cannot take action agaist us,
-unless perhaps that sequence involved lots more software control that the
-AMD flash chips do.
+> Can you dig up the patents they actually hold on their FTL and on
+> their hardware interface? 
 
-Can you dig up the patents they actually hold on their FTL and on their
-hardware interface? 
+http://www.patents.ibm.com/ and search for "M-Systems". I can't see NFTL, just 
+FTL, which is a moot point because it's already done. There's some stuff on 
+hardware, too.
 
-Jason
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+
 
 
 
