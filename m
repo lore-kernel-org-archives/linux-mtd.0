@@ -1,17 +1,19 @@
-Received: from tidos.tid.es ([193.145.240.2] helo=tid.tid.es)
+Received: from [64.120.26.98] (helo=phonos.telos-systems.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15iyBc-00070T-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2001 14:11:50 +0100
-Message-ID: <3BA5F773.4010105@tid.es>
-Date: Mon, 17 Sep 2001 15:15:31 +0200
-From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+	id 15iyIY-000715-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2001 14:18:54 +0100
+Message-id: <fc.000f680100284994000f680100283f75.2849d0@telos-systems.com>
+Date: Mon, 17 Sep 2001 09:06:55 -0400
+Subject: Re(2): trouble compiling mkfs.jffs2
+To: joern@wohnheim.fh-wedel.de
+Cc: linux-mtd@lists.infradead.org
+From: "James Schettine" <james@telos-systems.com>
+References: <fc.000f680100283f75000f680100283f75.283ff2@telos-systems.com>
+ <20010915211257.B23628@wohnheim.fh-wedel.de>
+In-Reply-To: <20010915211257.B23628@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Flash writings limit?
-References: <3BA5F4EC.2060909@tid.es> <10490.1000732286@redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,37 +25,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse wrote:
+joern@wohnheim.fh-wedel.de writes:
+>Just a wild guess, but Debian 2.2 (aka Potato) is based on the 2.2
+>Kernel series. This also effects a bunch of files in the /usr/include
+>tree and might be the cause of your problems.
+>You could update your Debian system to testing/Woody or simply
+>temporarily symlink /usr/include/linux to /usr/src/linux/include - if
+>that one belongs to a current kernel version.
 
-> 
-> jradc@tid.es said:
-> 
->>     Is it harmful to the flash memory if the whole filesystem tree in
->> linux is intalled on flash (including /tmp /var and other directories
->> with a high rate of writing operations) ? I have Strata Flash with
->> JFFS2  installed.
-> 
-> 
-> It depends how much you actually write to those directories, but yes - it's 
-> advisable to put them elsewhere. The iPAQ uses ramfs for /tmp and some of 
-> the subdirectories of /var - that seems like a sensible plan.
-> 
-> --
-> dwmw2
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
-Thanks a lot. How do you set this ram partitions at boot time? I am 
-considering two options:
+Thanks...  I got it to compile (v1.15), but when I run it 
+it creates a file size == one erase block.
 
-1) Have a compressed image in flash and load it with a loader in RAM
-2) Execute a script in init to set the ramdisks partitions
+A quick web search led me to :
+ftp://ftp.uk.linux.org/pub/people/dwmw2/iPAQ/mkfs.jffs2.1.8
+running it --version sez 1.7 and it creates the whole 5 meg
+but my kernel complains bitterly that the fs is too old.
 
-   Which one do you think is best?
+If I could grab a binary somewhere I could move on.
+If no-one can point me to a binary, I guess I'll
+be debugging this app on a 2.2 kernel.
+(my boss threatens to "just go back to WinCE"!)
 
-   Thanks a lot again
+Thanks  J
