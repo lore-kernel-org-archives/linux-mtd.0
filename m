@@ -1,16 +1,20 @@
-Received: from [202.108.35.197] (helo=vip.sina.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197FMT-0006pB-IH
-	for <linux-mtd@lists.infradead.org>; Sun, 20 Apr 2003 15:00:05 +0100
-Message-ID: <001301c30745$438c1e60$0365a8c0@leeyang>
-From: "leeyang" <leeyang@ycig.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Sun, 20 Apr 2003 22:00:51 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-Subject: mmap on jffs2
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 197a56-0001zP-BK
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 13:07:32 +0100
+Date: Mon, 21 Apr 2003 14:07:41 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "S.Meunier" <meunier@enst.fr>
+Message-ID: <20030421120741.GD9550@wohnheim.fh-wedel.de>
+References: <3E9FBA82.10505@enst.fr>
+	<20030421115822.GC9550@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20030421115822.GC9550@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: NOSPAM SH*T (was: Deflate option for JFFS2)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using jffs2 on a ppc860 system(amd29lv160).
-Things seems ok,but when I am trying mmap.
+On Mon, 21 April 2003 13:58:22 +0200, Jörn Engel wrote:
+> To: "S.Meunier" <NOSPAMmeunierNOSPAM@enst.fr>
 
-I want to mmap a file in flash,so i can treat
-the file like some records.
+BTW: Don't expect everyone to go through the hassle of removing those
+twelve characters from your address to protect you from spam.
 
-I mean operation like
- fd = open("/usr/dat/sot.dat",O_RDWR,FILEMODE);
- 
- ptr1=mmap(NULL,filesize,PROT_READ|PROT_WRITE,
-   MAP_SHARED,fd,0);
+In fact: Don't expect anyone to reply to you more than once, for as
+long as you use them. *Your* spam is *your* problem, so don't hurt
+others with it.
 
-fd returns 3 and it is ok,however ptr1 returns -1.
-I checked the errno it said invalid argument.
+Jörn
 
-I have to say arguments "filesize" above is not
-aligment to any requirements,just the real file
-size?Does it matter?
-
-The same procedure can done on common ext2
-so i wonder jffs2 implement all the features like
-ext2?
-
-leeyang
+-- 
+The cheapest, fastest and most reliable components of a computer
+system are those that aren't there.
+-- Gordon Bell, DEC labratories
