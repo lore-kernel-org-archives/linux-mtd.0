@@ -1,21 +1,20 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AAcVu-0001GX-28
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 22:52:02 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Fillod Stephane <stephane.fillod@thomson.net>
-In-Reply-To: <2C1BAF8F8E1DD611862B0002A5D4C3FC01BC05FE@renexch3.rennes.thmulti.com>
-References: 
-	<2C1BAF8F8E1DD611862B0002A5D4C3FC01BC05FE@renexch3.rennes.thmulti.com>
-Message-Id: <1066427159.6281.23.camel@tubarao>
-Mime-Version: 1.0
-Date: 17 Oct 2003 15:46:00 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-wmM2z0sXZ4srrw9s6sWh"
+Received: from [2002:d556:63ea::1] (helo=phoenix.infradead.org)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1ABRnr-0007fe-Bm
+	for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2003 05:37:59 +0100
+Received: from steelemr-loadb-nat-49.caltech.edu ([131.215.49.69]
+	helo=water-ox.its.caltech.edu)
+	by phoenix.infradead.org with esmtp (Exim 4.22)	id 1ABRmm-0006cF-Lq
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2003 05:36:52 +0100
+Date: Sun, 19 Oct 2003 21:36:15 -0700 (PDT)
+From: "Noah J. Misch" <noah@caltech.edu>
+To: dwmw2@redhat.com
+Message-ID: <Pine.GSO.4.58.0310171454050.13905@blinky>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] cfi_cmdset_0002.c support for buffered mode
-Reply-To: tharbaugh@lnxi.com
+cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove needless and non-portable include in mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello David,
 
---=-wmM2z0sXZ4srrw9s6sWh
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The #include <asm/setup.h> in drivers/mtd/cmdlinepart.c does not appear to
+provide any definition this file uses, and it quickly breaks builds on
+architectures that lack such a header, including ia64 and sparc.
 
-On Thu, 2003-08-21 at 11:07, Fillod Stephane wrote:
-> Dave,
->=20
-> Here is the patch for buffered mode write on Amd chips.
-> I've Cc'd Thayne if anyone of you cares to commit to cvs.
+This applies to your CVS and linux-2.5 BK as of 0700 UTC 10/20/2003 and passes
+an allyesconfig on (with unrelated exceptions) i386, ia64, and sparc.  I do not
+have the hardware to test it further, but I think the change is straightforward.
+Please let me know if you need further information.
 
-I just committed your patch for buffered writes - its cfi_cmdset_0002.c
-v1.89.  Please test it and let me know if it still works.
+I will probably send you at least one more MTD compatibility patch.
 
-Thanks!
+Thanks,
+Noah
 
---=20
-Thayne Harbaugh
-Linux Networx
+# This is a BitKeeper generated patch for the following project:
+# Project Name: Linux kernel tree
+# This patch format is intended for GNU patch command version 2.5 or higher.
+# This patch includes the following deltas:
+#	           ChangeSet	1.1369  -> 1.1370
+#	drivers/mtd/cmdlinepart.c	1.5     -> 1.6
+#
+# The following is the BitKeeper ChangeSet Log
+# --------------------------------------------
+# 03/10/16	noah@caltech.edu	1.1370
+# Remove needless include of asm/setup.h in drivers/mtd/cmdlinepart.c.  This
+# was breaking compilation on architectures that lack such a header.
+# --------------------------------------------
+#
+diff -Nru a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+--- a/drivers/mtd/cmdlinepart.c	Fri Oct 17 13:40:56 2003
++++ b/drivers/mtd/cmdlinepart.c	Fri Oct 17 13:40:56 2003
+@@ -28,7 +28,6 @@
 
---=-wmM2z0sXZ4srrw9s6sWh
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+-#include <asm/setup.h>
+ #include <linux/bootmem.h>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA/kGMXfsBPTKE6HMkRAhIrAJ9NPqfC6cRJG1/MEPjsSEnzJT6bjgCfVnYP
-0b6qiqw0HnMYsqdvApjpa3s=
-=nUz7
------END PGP SIGNATURE-----
-
---=-wmM2z0sXZ4srrw9s6sWh--
+ /* error message prefix */
