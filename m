@@ -1,19 +1,26 @@
-Received: from softsteprubberfloors.com ([192.220.111.56] helo=rcmenter.iserver.net)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18WLbj-0002Cf-00
-	for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2003 19:11:19 +0000
-Subject: Re: CRAMFS on MTD/NAND Issue
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Srinivasu.Vaduguri@nokia.com
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <F252EE46074AB645B4F44947EEAD5727C83809@mvebe001.americas.nokia.com>
-References: 
-	 <F252EE46074AB645B4F44947EEAD5727C83809@mvebe001.americas.nokia.com>
-Content-Type: text/plain
-Message-Id: <1042054935.10724.10.camel@timmy>
-Mime-Version: 1.0
-Date: 08 Jan 2003 12:42:15 -0700
-Content-Transfer-Encoding: 7bit
+	id 18WMHd-0002IH-00
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2003 19:54:37 +0000
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H8E001DLWPLNG@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Wed, 08 Jan 2003 21:24:59 +0100 (MET)
+Date: Wed, 08 Jan 2003 21:23:57 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: 16 NANDS
+In-reply-to: <4752.1042013699@passion.cambridge.redhat.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: manningc2@actrix.gen.nz, m.neiger@synergie-inf.com,
+ "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Reply-to: tglx@linutronix.de
+Message-id: <200301082123.57689.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+References: <200301072004.45259.tglx@linutronix.de>
+ <20030106230808.9E85F439D@tiger.actrix.co.nz>
+ <4752.1042013699@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,32 +32,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 2003-01-08 at 05:40, Srinivasu.Vaduguri@nokia.com wrote:
-> Hi all,
-> 
-> I am trying to mount CRAMFS using MTD driver on a NAND flash. 
-> If there is a BAD block in the CRAMFS area of the NAND flash then i get the following error during mount. 
-> 
-> Error -3 while decompressing!
-> 802c3674(666163445)->83d7d000(4096)
-> 
-> Then the applications on the mounted cramfs are not running properly.
+On Wednesday 08 January 2003 09:14, David Woodhouse wrote:
+> tglx@linutronix.de said:
+> >  The  functions are not that different, but it's better to have a
+> > little duplicated  code instead of if (buswitdh == x) then else....
+> > crap.
+>
+> Bear in mind that if/then/else crap can be hidden inside #defines fairly
+> effectively, and optimises away perfectly in the case where you compile for
+> only one buswidth -- unlike out-of-line function calls.
+>
+> What Nico did with cfi_read() et al is worth considering.
+I have the option already built in to compile for one buswidth only, but if 
+you want to compile it for 8/16/32 3 different functions give you more code, 
+but also more speed and more flexibility for code maintainence
 
-NAND *will* have bad blocks, cramfs does not handle bad blocks. There
-isn't an elegant solution for this right now, but here are some options:
-
-cramfs on top of nftl: This works resonably well, but seems like
-overkill to me, and it puts you in questionable legal status if you
-aren't using an m-systems product afaik (this is what I use)
-
-yaffs: desgined for NAND, but has no compression
-
-jffs2: The NAND code is pretty new, and the journalling is probably
-overkill for your application, but it will work, and should be able to
-adapt to bad blocks.
-
-roll your own: Please, make a static compressed filesystem (like cramfs)
-that incorporates extra blocks, so that when the checksum is bad while
-initially writing the filesystem, or reading the file system (in the
-case where ecc can save the data), it rewrites this block to a free
-sector). It would seem like a simple modification to cramfs to me.
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
