@@ -1,17 +1,17 @@
-Received: from jakorasia.nic.fi ([212.38.224.80])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15XfPU-0006tv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2001 09:55:20 +0100
-Received: from netti.nic.fi (netti.nic.fi [212.38.224.82])
-	by jakorasia.nic.fi (8.9.3/8.9.3) with ESMTP id MAA11517
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2001 12:01:07 +0300 (EET DST)
-Date: Fri, 17 Aug 2001 12:01:04 +0300 (EET DST)
-From: Riipinen Petri <riipinen@nic.fi>
-To: <linux-mtd@lists.infradead.org>
-Subject: [Novice] Few simple questions on DOC.
-Message-ID: <Pine.GSO.4.31.0108171144030.404-100000@netti.nic.fi>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15XfWi-0006v1-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2001 10:02:48 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.GSO.4.31.0108171144030.404-100000@netti.nic.fi> 
+References: <Pine.GSO.4.31.0108171144030.404-100000@netti.nic.fi> 
+To: Riipinen Petri <riipinen@nic.fi>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [Novice] Few simple questions on DOC. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 17 Aug 2001 10:08:09 +0100
+Message-ID: <20660.998039289@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,54 +23,57 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi folks,
+riipinen@nic.fi said:
+>  1) I found a DOC driver for Linux from M-Systems website. Do I need
+> this at all or is everything included in the 2.4.7 kernel? I have read
+> the mtd-jffs-HOWTO and configured the kernel accordingly. 
 
-I'm setting up a Linux system on a SBC which has a DOC 2000 socket on it.
-This is going to be a pretty small setup for the simple purpose of running
-a dedicated program, so no need for very large setup.
+The DiskOnChip driver on the M-Systems website is a different driver. It's 
+binary-only, so if you're going to distribute the box you're making, it's 
+illegal to link it into the kernel, and it's dubious even whether it's 
+legal to use it as a module.
 
-So far I've built my setup (kernel + devices + boot stuff + few libs +
-binaries + my application binaries) on a hard disk that's connected to
-the SBC and it works fine, booting the system to run only my application
-and nothign else. I'm not using Lilo/Grub, instead I'm booting directly
-the Kernel (2.4.7). My whole setup requires about 10 megs of space, so I
-thought I'd use 16M DOC chip, although I might expand to 32M as well,
-haven't really decided on that yet.
+The code in 2.4.7 is slightly out of date - you should update to the latest 
+code from CVS which has a couple of useful bug fixes in it. 
 
-The next step is to transfer the setup to the DOC, remove the hard disk
-and use only DOC for bootin the system and starting my application. And
-that's where I would like to ask some "novice" questions to avoid
-making some obvious mistakes in the beginning.
 
-Ok, now on to few of questions:
+>  2) Do I really need to use Lilo/Grub, or can I just write the kernel
+> directly into beginning of the DOC to make it boot? I don't need to
+> give any parameters to the kernel when booting from hd, so I don't
+> really see a need for a boot manager from my point of view.
 
-1) I found a DOC driver for Linux from M-Systems website. Do I need this
-at all or is everything included in the 2.4.7 kernel? I have read the
-mtd-jffs-HOWTO and configured the kernel accordingly.
+If you just write the kernel to the beginning of the device, what's going 
+to load it? The bootsector built into the kernel is old, probably broken, 
+and only designed for use on floppies - I don't think it'll do the job.
 
-2) Do I really need to use Lilo/Grub, or can I just write the kernel
-directly into beginning of the DOC to make it boot? I don't need to
-give any parameters to the kernel when booting from hd, so I don't really
-see a need for a boot manager from my point of view.
 
-3) How should I partition the DOC? First a small partition for the kernel,
-and then another partition for the rest of the files? Do I use fdisk for
-that?
+>  3) How should I partition the DOC? First a small partition for the
+> kernel, and then another partition for the rest of the files? Do I use
+> fdisk for that? 
 
-4) Maybe I should use jffs on the DOC, can I just make it with mkfs -t
-jffs ...?
+Don't partition it. Just make a filesystem on /dev/nftla and put the kernel 
+in that filesystem.
 
-5) If I want to write some data into the DOC to keep between boots,
-would it be a good idea to make a small partition (and mount it to /var?)
-and mount that RW and then mount the other partition with other files as
-RO?
 
-6) To write the kernel bzImage to DOC boot sector, would I just use dd
-if=input of=/dev/mtd ... or what?
+>  4) Maybe I should use jffs on the DOC, can I just make it with mkfs
+> -t jffs ...?
 
-Thanks!
+JFFS doesn't work on it yet. 
 
-- Petri
+>  5) If I want to write some data into the DOC to keep between boots,
+> would it be a good idea to make a small partition (and mount it to /
+> var?) and mount that RW and then mount the other partition with other
+> files as RO?
 
-PS. I haven't really done anything with the DOC-chips so far (only with
-hard disk) so bear with me if I'm not making the right questions...;)
+No point. NFTL uses the whole device anyway, and partitions within the 
+block device wouldn't buy you anything. The NFTL write code ought to be 
+fine now anyway - don't be too scared by the help text for CONFIG_NFTL_RW
+
+> 6) To write the kernel bzImage to DOC boot sector, would I just use dd
+> if=input of=/dev/mtd ... or what? 
+
+Don't do that. Just use the patched LILO and pretend it's a hard drive.
+
+
+--
+dwmw2
