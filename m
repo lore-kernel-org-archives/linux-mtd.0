@@ -1,19 +1,19 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+Received: from mail.broadpark.no ([217.13.4.2])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A5Ivn-0006hz-3n
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Oct 2003 06:56:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Selwyn Tang <selwyn@hectrix.com>
-In-Reply-To: <3F7CD9CA.5090805@hectrix.com>
-References: <Law15-F74mSknvh7wFI000062b3@hotmail.com>
-	 <3F7CD9CA.5090805@hectrix.com>
-Message-Id: <1065160480.16088.0.camel@imladris.demon.co.uk>
+	id 1A5Kgv-0006vG-NU
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Oct 2003 08:49:34 +0100
+Received: from famine (217-13-20-38.dd.nextgentel.com [217.13.20.38])
+	by mail.broadpark.no (Postfix) with ESMTP id 0936A79E8B
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  3 Oct 2003 09:48:07 +0200 (MEST)
+From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <1065167286.24334.12.camel@famine>
 Mime-Version: 1.0
-Date: Fri, 03 Oct 2003 06:54:41 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: high cpu usage using nftl for DOC2000
+Date: Fri, 03 Oct 2003 09:48:06 +0200
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: Can I set JFFS2_RESERVED_BLOCKS_WRITE=0?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-10-03 at 10:07 +0800, Selwyn Tang wrote:
-> Hi Edward,
-> 
-> On 10/02/2003 02:54 PM, edward jose wrote:
-> > i don't know if any one else experience this, i have a doc2000 with linux 
-> > 2.4.17 kernel compiled with mtd and doc modules. i use the kernel to boot 
-> > the doc2000 everything is ok, but when i check the cpu load, it uses all the 
-> 
-> I experienced the same problem recently. I notice that whenever I try to
-> access the DOC, the process [nftla] starts to use up all the cpu time.
-> Right now I am suspecting that it is the problem with the filesystem on
-> the DOC. Sometimes, after running e2fsck on my ext2 partition on the
-> DOC, the problem just goes away. I have this problem both in 2.4.22 and
-> 2.4.17, both patched with mtd snapshots of different dates. Therefore, I
->  think it is a problem with the mtd driver.
+I've got a JFFS2 fs mounted with only a single sector.
 
-Boot with 'profile=1' and use readprofile to see where it's spending all
-the CPU time. Note your driver must be built-in to the kernel for this.
+In this application, there is a phase where JFFS2 is written to,
+and afterwards it is protected in hardware and never changed again.
 
--- 
-dwmw2
+JFFS2 scores over a ROM fs, because a ROM fs is normally created
+on the developer machine during compile time, whereas the JFFS2
+fs can be laid out by the application in the field.
+
+To my surprise, JFFS2 will refuse to write more files if there
+are less than 5 secotors free.
+
+Having no fear, I set JFFS2_RESERVED_BLOCKS_WRITE = 0.
+
+Apparently this is to avoid "endless gc looping".
+
+http://lists.infradead.org/pipermail/linux-mtd/2003-April/007437.html
+
+If someone could shed some light on this, I would be much obliged.
+
+
+Øyvind
