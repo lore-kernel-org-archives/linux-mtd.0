@@ -1,22 +1,16 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from law14-oe46.law14.hotmail.com ([64.4.20.18] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19cSz3-00025Y-3c
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Jul 2003 17:48:57 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HI2007ECS0Y8V@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Tue, 15 Jul 2003 18:48:35 +0200 (MEST)
-Date: Tue, 15 Jul 2003 19:45:33 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <5.1.1.6.0.20030715182633.027cd5c0@dns.struinfo.it>
-To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
-Message-id: <200307151945.33907.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <5.1.1.6.0.20030715182633.027cd5c0@dns.struinfo.it>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: Help to understand error messages (MTD on Samsung NAND chips)
-Reply-To: tglx@linutronix.de
+	id 19cfEI-0003wP-BS
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2003 06:53:30 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Wed, 16 Jul 2003 08:25:14 -0700
+MIME-Version: 1.0
+Message-ID: <Law14-OE461Np7vXee4000069bc@hotmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: How to check or set FLASH ID
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +20,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 15 July 2003 18:39, llandre wrote:
-> Hi all,
->
->- bash-2.05# eraseall /dev/mtd0
-> Erasing 16 Kibyte @ 0 --  0 % complete.
-> eraseall: /dev/mtd0: MTD Erase failure: Input/output error
-> Erasing 16 Kibyte @ 4000 --  0 % complete.
-> eraseall: /dev/mtd0: MTD Erase failure: Input/output error
-> Erasing 16 Kibyte @ 8000 --  0 % complete.
+ have a uCdimm board.
 
-This message comes either, if you try to erase a bad block, which is not 
-likely, as all your blocks would be bad or the erasefunction is not 
-successful
+its bootloader was curropted. Now when I restore the Bootloader back, it
+gives me a message that FLash 2253 is unknown
 
-Do you use the latest CVS code ?
-If yes, there were a lot of changes in NAND the last few days. 
+How Do I check the FLASH ID and set it
 
-Can you switch on the debugging in MTD and provide more detailed information. 
-Please do a 
-echo 9 >/proc/sys/kernel/printk 
-before you start the erase .
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Virkam
