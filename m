@@ -1,58 +1,79 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12kl89-0001Oz-00
-	for mtd-list@infradead.org; Thu, 27 Apr 2000 11:02:45 +0100
+	id 12l6De-0003rQ-00
+	for mtd-list@infradead.org; Fri, 28 Apr 2000 09:33:50 +0100
 Received: from colo.asti-usa.com ([205.252.89.99] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12kl87-0001Ot-00
-	for mtd@infradead.org; Thu, 27 Apr 2000 11:02:43 +0100
-Message-ID: <39080C3B.B6F3A58B@zentropix.com>
-Date: Thu, 27 Apr 2000 10:45:31 +0100
+	id 12l6Dd-0003rK-00
+	for mtd@infradead.org; Fri, 28 Apr 2000 09:33:49 +0100
+Received: from zentropix.com ([195.166.67.91])
+	by colo.asti-usa.com (8.9.3/8.9.3) with ESMTP id EAA11239
+	for <mtd@infradead.org>; Fri, 28 Apr 2000 04:43:25 -0400
+Message-ID: <39094DF8.7BD43B12@zentropix.com>
+Date: Fri, 28 Apr 2000 09:38:16 +0100
 From: Trevor Woolven <trevw@zentropix.com>
 MIME-Version: 1.0
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-CC: Rodrigo Moya <rmoya@tsai.es>, MTD List <mtd@infradead.org>,
-        trevorw@zentropix.com
-Subject: Re: no success
-References: <Pine.LNX.4.10.10004181756500.32688-100000@devel2.axiom.internal>
+To: MTD <mtd@infradead.org>
+Subject: TODO List
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
-> 
-> On Mon, 17 Apr 2000, Rodrigo Moya wrote:
-> 
-> > yes, all the nftla* devices have 93 as major number. Another thing, is
-> > that the kernel displays no messages about the MTD drivers. Should it
-> > show something?
-> 
-> It should. Are you sure you patched the init routines in properly? The
-> patch in the CVS patches (?) directory ought to work. Anyway, I'm
-> supposed to be on holiday. Trevor?
-> 
-> --
-> dwmw2
-Hi,
+Hi Everyone,
 
-Apologies but I've been away for 10 days or so.
-It sounds to me as if the init routines have not been set-up correctly
-as Dave suggested.
+Dave Woodhouse and I had a meeting yesterday and we came up with the
+following list of things that need doing to/fixing in the MTD code:
 
-linux/init/main.c - do_basic_setup() calls init_mtd()
-mtd.c - init_mtd() calls the rest of the configured init routines.
+1	Write Support
+	a	ECC
+	b	Bad block handling (static)
+	c	Bad block detection and handling (dynamic)
+	d	Timing constraints
+	e	Asynchronous writes
 
-I can't remember if there's much screen output to see, there should be
-something. If in doubt, try enabling the DBG output, (recompile with
--DZDBG).
+2	FTL fix
 
-Hope this helps, if not get back to me with some more details
+3	Support for NOR flash/PCMCIA
 
-Cheers
+4	Support utilities
+	a	Formatting
+	b	Bad sector/block detection
+	c	Consistency checking
 
-Trev.
--- 
+5	Documentation
+	a	Architectural description
+	b	User Guide and API listing
+	c	...
+
+6	DOC Millenium support
+
+7	Fix the character device memory copy to/from user space
+
+8	JFFS/FFS2 support
+
+9	GRUB
+	a	Filesystem support (NFTL, JFFS etc)
+	b	MTD support
+
+10	Execute-in-place
+
+We attempted to prioritize them as we saw fit with the following two
+goals: 
+	a)	submission to the main-stream linux kernel (2.4/2.5)
+	b)	production of a fully GPL alternative to what M-Systems offer
+
+Since Dave's still officially on holiday I agreed to post this to the
+list. We're after your opinions and suggestions regarding the TODO list
+and the two immediate goals for this work. We're also after volunteers
+to take on various parts of the development. Please feel free to comment
+upon the above.
+
+Thanks,
+
+Trevor.
+
+--
 Zentropix Inc - a Lineo company
 
 Tel: +44 (0)1273 234 647	 Fax: +44 (0)1273 704 482
