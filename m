@@ -1,20 +1,12 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from [211.21.188.98] (helo=maple.icpdas.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B9HgP-0003Ta-5h
-	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 06:57:37 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: David Updegraff <dave@cray.com>
-In-Reply-To: <406CAD57.40004@cray.com>
-References: <Pine.LNX.4.44.0404011658150.6508-100000@kiire.colleduc.ee>
-	 <1080830176.24117.1858.camel@hades.cambridge.redhat.com>
-	 <406CAD57.40004@cray.com>
-Content-Type: text/plain
-Message-Id: <1080885452.17863.39.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Fri, 02 Apr 2004 06:57:32 +0100
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: patch for AMD am29dl800b
+	id 1B9KMt-0003yO-AH
+	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 09:49:39 +0100
+Date: Fri, 2 Apr 2004 16:49:33 +0800 (CST)
+From: postmaster@maple.icpdas.com
+Message-Id: <200404020849.i328nX468401@maple.icpdas.com>
+To: linux-mtd@lists.infradead.org
+Subject: VIRUS IN YOUR MAIL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +16,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please don't reply to unrelated threads. This isn't about bad blocks and
-doesn't live with the message to which you replied.
+                           V I R U S  A L E R T
 
-On Thu, 2004-04-01 at 18:01 -0600, David Updegraff wrote:
-> Hi.
-> 
-> I have a gadget with this amd chip on it.  Whose id and layout dfn. is 
-> not in the jedec_probe tables.  Unfortuanately, they have _SIX_ (6) 
-> erase regions.  Anyone know of a reason expanding the regions[] array to 
-> 6 is a bad idea?  Or why dealing with this chip in general is a bad idea?
+Our viruschecker found the
 
-Hmmm. And this chip really doesn't do CFI?
+	'W32/Netsky-Q'
 
-I wonder how much space we take up with this table, and if we should put
-the regions outside the table rather than inline ("ulong *regions").
-> 
-> ______________________________________________________________________
--- 
-dwmw2
+virus(es) in your email to the following recipient(s):
+
+-> beijing@icpdas.com
+
+Please check your system for viruses, or ask your system administrator
+to do so.
+
+For your reference, here are the headers from your email:
+
+------------------------- BEGIN HEADERS -----------------------------
+Return-Path: <linux-mtd@lists.infradead.org>
+Received: from icpdas.com ([218.88.41.109])
+	by maple.icpdas.com (8.11.6/8.11.6) with ESMTP id i328nOX68347
+	for <beijing@icpdas.com>; Fri, 2 Apr 2004 16:49:24 +0800 (CST)
+	(envelope-from linux-mtd@lists.infradead.org)
+From: linux-mtd@lists.infradead.org
+Message-Id: <200404020849.i328nOX68347@maple.icpdas.com>
+To: beijing@icpdas.com
+Subject: Delivery Error (beijing@icpdas.com)
+Date: Fri, 2 Apr 2004 16:49:22 +0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA81.7B015D10"
+X-Priority: 1
+X-MSMail-Priority: High
+-------------------------- END HEADERS ------------------------------
