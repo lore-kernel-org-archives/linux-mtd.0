@@ -1,33 +1,134 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 11 Feb 2003 16:45:27 +0000
-Subject: mkfs.jffs on arm
-In-Reply-To: <3E47E72C.22242.1F4159F@localhost>
-References: <3E43CE5A.28886.1612269@localhost>
- <3E47E72C.22242.1F4159F@localhost>
-Message-ID: <1044981926.2263.35.camel@passion.cambridge.redhat.com>
+From: vdoukhan@cbnco.com (Vladimir Doukhanine)
+Date: Tue, 11 Feb 2003 12:36:05 -0500
+Subject: cfi_cmdset_0002.c do_write_oneword(...) problem.
+Message-ID: <oprkfxufr27bj7b7@cbnsitar.cbnco.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Mon, 2003-02-10 at 16:53, Igor Trevisan wrote:
+Hello,
 
-> compr_zlib.c: In function `jffs2_zlib_compress':
-> compr_zlib.c:63: structure has no member named `zalloc'
-> compr_zlib.c:64: structure has no member named `zfree'
-> compr_zlib.c:66: warning: implicit declaration of function `deflateInit'
-> compr_zlib.c:78: warning: implicit declaration of function `deflate'
-> compr_zlib.c:80: warning: implicit declaration of function `deflateEnd'
-> compr_zlib.c: In function `jffs2_zlib_decompress':
-> compr_zlib.c:108: structure has no member named `zalloc'
-> compr_zlib.c:109: structure has no member named `zfree'
-> compr_zlib.c:111: warning: implicit declaration of function `inflateInit'
-> compr_zlib.c:122: warning: implicit declaration of function `inflate'
-> compr_zlib.c:125: warning: implicit declaration of function `inflateEnd'
-> make: *** [compr_zlib.o] Error 1
-> [igortr at linuxbw1 util]$
+I use the latest mtd from cvs, 2.4.19 kernel for sh-4 processor and
+AMD AM29LV641DL (Dev.ID: 22D7 ) flash chip which is equal to Fujitsu 
+MBM29LV650UE defined in jedec_probe.c.
+The problem is that for some reason I can???t write more then one word of 
+data without errors.
+But if I have debug printf inserted in do_write_oneword(???) 
+cfi_cmdset_0002.c everything looks OK.
 
-What version of zlib.h is it including? It looks like it might be
-including the kernel's version instead of the one for the userspace
-zlib.
+I???ll appreciate any suggestions.
+Have a look at my screenshot:
 
--- 
-dwmw2
+Thanks,
+Vlad
+
+P.S.One more thing - I can program this chip without any errors from an 
+emulator with small assembler routine which supports two commands "Chip 
+erase"(555-AA 2AA-55 555-80 555-AA 2AA-55 555-10)
+and "Program" (555-AA 2AA-55 555-A0 PA-PD)from AM29LV641DL specification 
+datasheet.
+
+
+
+
+With debug printf in do_write_oneword :
+
+# fcp test2.txt /dev/mtd4
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+do_write_oneword datum=0xa47 adr=0x00190000
+MTD_read
+MTD_close
+
+# erase /dev/mtd4
+MTD_open
+Erase Total 1 UMTD_ioctl
+MTD_ioctl
+nits
+MTD_ioctl
+Performing Flash Erase of length 65536 at offset 0x0 done
+MTD_close
+
+# fcp test1.txt /dev/mtd4
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+do_write_oneword datum=0x4746 adr=0x00190000
+do_write_oneword datum=0xff0a adr=0x00190002
+MTD_read
+MTD_close
+
+# erase /dev/mtd4
+MTD_open
+Erase Total 1 UMTD_ioctl
+MTD_ioctl
+nits
+MTD_ioctl
+Performing Flash Erase of length 65536 at offset 0x0 done
+MTD_close
+
+# fcp test.txt /dev/mtd4
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+do_write_oneword datum=0x4241 adr=0x00190000
+do_write_oneword datum=0x4443 adr=0x00190002
+do_write_oneword datum=0x4645 adr=0x00190004
+do_write_oneword datum=0xa47 adr=0x00190006
+MTD_read
+MTD_close
+
+Without debug printf in do_write_oneword :
+
+# fcp test2.txt /dev/mtd4     MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+MTD_read
+MTD_close
+
+# erase /dev/mtd4
+MTD_open
+Erase Total 1 UMTD_ioctl
+MTD_ioctl
+nits
+MTD_ioctl
+Performing Flash Erase of length 65536 at offset 0x0 done
+MTD_close
+
+# fcp test1.txt /dev/mtd4
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+MTD_read
+File does not seMTD_close
+em to match flash data. First mismatch at 0x00000000-0x00000003
+
+# erase /dev/mtd4
+MTD_open
+Erase Total 1 UMTD_ioctl
+MTD_ioctl
+nits
+MTD_ioctl
+Performing Flash Erase of length 65536 at offset 0x0 done
+MTD_close
+
+# fcp test.txt /dev/mtd4
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_write
+MTD_read
+File does not seMTD_close
+em to match flash data. First mismatch at 0x00000000-0x00000008
+
+# cat test2.txt
+G
+# cat test1.txt
+FG
+# cat test.txt
+ABCDEFG
