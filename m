@@ -1,22 +1,17 @@
-Received: from smtp-4.hut.fi ([130.233.228.94])
+Received: from idiom.com ([216.240.32.1] ident=espin)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 168uPX-0005Wz-00
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2001 02:25:19 +0000
-Received: from kosh.hut.fi (jlavi@kosh.hut.fi [130.233.228.10])
-	by smtp-4.hut.fi (8.9.3/8.9.3) with ESMTP id OAA64682
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Nov 2001 14:13:57 +0200 (EET)
-Received: (from jlavi@localhost)
-	by kosh.hut.fi (8.9.3/8.9.3) id OAA02739
-	for linux-mtd@lists.infradead.org; Tue, 27 Nov 2001 14:13:57 +0200 (EET)
-Date: Tue, 27 Nov 2001 14:13:57 +0200
-From: Jarkko Lavinen <jlavi@iki.fi>
-To: MTD List <linux-mtd@lists.infradead.org>
-Subject: CFI driver & flash banks
-Message-ID: <20011127141357.A29578@kosh.hut.fi>
+	id 168vGL-0005b7-00
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2001 03:19:53 +0000
+Date: Tue, 27 Nov 2001 19:30:15 -0800
+From: Geoffrey Espin <espin@idiom.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 4 x AMD29LV800B CFI?
+Message-ID: <20011127193015.A35212@idiom.com>
+References: <20011123130136.A94932@idiom.com> <E1669aI-0001iv-00@pentafluge.infradead.org> <20011123130136.A94932@idiom.com> <16214.1006859128@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <16214.1006859128@redhat.com>; from David Woodhouse on Tue, Nov 27, 2001 at 11:05:28AM +0000
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,52 +23,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Currently there is no concept of banks (planes, or partition regions)
-within the CFI driver.  The whole chip has one single state regardless
-of what is going on inside various regions in the chip.  With multiple
-banks on chips this can lead to erroneous operation and less than
-optimal performance.
+> >  Perhaps my h/w setup is insisting that all 4 parts are programmed at
+> > once?  I see ifdef SOMEONE_ACTUALLY... for width 4 type 32 interleave
+> > 4; maybe this means generate the right pattern? 
+> That's around the code for 32-bit flash chips. You don't have 32-bit chips, 
+> you have 16-bit chips, in 8-bit mode.
+> I've used the 29LV160, and it's definitely CFI-compliant. Strangely, the 
+> 29LV800 isn't. But the jedec_probe code doesn't yet recognise it. Try 
+> this...
+> Index: drivers/mtd/chips/jedec_probe.c
+> ...
 
-Structure fi_private contains an array of cñhips of type flchip. The
-flchip structure contains the global state of the chip.
+Thanks, David, ever so much for the patch.  I'd played with Jedec too.
+I actually got amd_flash.c to seemingly work on its own -- just
+tested with "mtd_debug read/write ..."  My hacked amd_flash.c prints:
 
-What is needed is more fine granularity in chip state control. The
-driver should be able to know the state of each bank in the chip
-independently of other banks. The driver should be able to read from
-another bank while writing or erasing another. The driver should be
-able to understand that difference between only one bank changing its
-state versus all banks changing their state together.
+    Physically mapped flash: Found 1 x 4MiB AMD AM29LV800BT (*4) at 0x0
+                                                            ^^^^
+Yeah!
 
-What kind of state transitions there are?
+I'd prefer to use your version, will give it a try...
 
-  - With chip reset, all banks are set to FL_READY (read array).
-
-  - When entering status query, only one bank is put into FL_STATUS state.
-
-  - With programming or erasing, only one bank is set to FL_WRITING or
-    FL_ERASING. This requires no other bank is in erasing, programing,
-    or in erase suspend. Other banks will be typically in FL_READY or
-    FL_STATUS state.
-
-  - When entering erase suspend, the bank returns to read array mode
-    but no other bank can start erase or programming. The old state
-    FL_ERASING is remembered,
-
-It would make good for JFFS2 performance if writing in one sector
-would block only one bank from reads, not the whole chip. The need for
-suspending erase would be reduced.
-
-My question is, how to implement this functionality in the CFI driver
-in backward compliant way?
-
-Instead of accessing chip->state, should one also be able to access
-each banks like state chip->banks[bank].state ?
-
-Or perhaps one should always query the chip state from the chip
-itself? How about the old status when doing erase suspend?
-
-Or should the status be a method that would cache the banks' status
-and would read the status from the chiu only when crossing the bank
-boundary?
-
-Jarkko Lavinen
+Geoff
+-- 
+Geoffrey Espin
+espin@idiom.com 
