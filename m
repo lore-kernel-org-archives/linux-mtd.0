@@ -1,15 +1,16 @@
-Received: from smtp6.mindspring.com ([207.69.200.110])
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19knKn-0002KL-A8
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 17:09:49 +0100
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Date: Thu, 7 Aug 2003 12:09:32 -0400
-Message-ID: <IIEEICKJLNEPBBDJICNGOEHADMAA.chuckmeade@mindspring.com>
-MIME-Version: 1.0
-In-Reply-To: <1060252989.25209.39.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 19knh2-0002U0-QA
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 17:32:48 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chuck Meade <chuckmeade@mindspring.com>
+In-Reply-To: <IIEEICKJLNEPBBDJICNGOEHADMAA.chuckmeade@mindspring.com>
+References: <IIEEICKJLNEPBBDJICNGOEHADMAA.chuckmeade@mindspring.com>
+Message-Id: <1060273956.25209.267.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Thu, 07 Aug 2003 17:32:36 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: RE: DOC filesystem questions
@@ -22,62 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
+On Thu, 2003-08-07 at 17:09, Chuck Meade wrote:
+> It looks like nftldump sees the bad unit table as being the 7680 
+> bytes starting at byte offset 512 into the device. 
 
-> > Also I am concerned from what I have read in the archives about
-> > the bad block table.  From what I see in the archives and in
-> > Karim Yaghmour's book, I needed to save this off.  Unfortunately
-> > however I cannot run DOS or its utilities on this target board,
-> > so I don't think that there is any way to do this.
-> 
-> You can read from /dev/mtd0 after first loading the DiskOnChip driver.
-> It's in there somewhere (see the NFTL and nftl_format code for more
-> details of precisely where). In fact, you could probably hack nftldump
-> to dump it, quite easily. 
+Er, there's a copy of the Bad Unit Table in each of the two eraseblocks
+containing an NFTL Media Header, at offset 512 within each block. It's
+not unconditionally offset 512 in the device.
 
-It looks like nftldump sees the bad unit table as being the 7680 
-bytes starting at byte offset 512 into the device.  So this would
-certainly be possible.  After looking more closely at nftl_format
-I don't know if it is absolutely necessary to save it though:
+The Bad Unit Table is one byte per logical erase unit, where the
+relationship from physical to logical erase units (UnitSizeFactor) is
+given in the Media Header itself (i.e. in the struct in the first 512
+bytes). It's _normally_ 1:1 but that isn't mandatory.
 
-nftl_format actually creates a bad unit table at offset 512
-beyond the offset that the user provides on the command line.  The
-size of the bad unit table it creates is based on the actual number
-of erase units in the device, so I suppose it will not always be
-7680.  It looks for blocks marked bad in their oob data to create
-this table.  It also (by default) will do read/write/erase checking
-on each block not already marked bad in its oob data, and any
-failures are added to the bad unit table as well.
+In devices with 16KiB erase size, the Bad Unit Table can also be
+16384-512 bytes, not 7680 (8192-512)
 
-So it seems the news isn't that bad.  If we always leave the oob
-data alone when the oob is marked bad for a block at the factory,
-then nftl_format will include it in the BadUnitTable it creates.
-Then preserving the factory-set bad block table would only be
-critical if it marks blocks bad that are not marked bad in their
-oob data.
+> nftl_format actually creates a bad unit table at offset 512
+> beyond the offset that the user provides on the command line.  The
+> size of the bad unit table it creates is based on the actual number
+> of erase units in the device, so I suppose it will not always be
+> 7680.
 
-Is this correct?  It appears that nftl_format is already doing
-a good job of preserving bad block data, at least that which comes
-from the oob data and r/w/e testing.
+That's correct. I believe that if it would be more than would fit then
+we have to change the UnitSizeFactor though.
 
-> > I use the following commands:
-> > 
-> >   nftl_format /dev/mtd0
-> >   fdisk /dev/nftla
-> 
-> Not without 'insmod nftl' or 'reboot -f' between them, I hope.
+>   It looks for blocks marked bad in their oob data to create
+> this table.  It also (by default) will do read/write/erase checking
+> on each block not already marked bad in its oob data, and any
+> failures are added to the bad unit table as well.
 
-You are correct.  I missed entering that line as I transcribed
-my notes.  There is an 'insmod nftl' between those 2 lines in
-the command sequence that I used.
+The OOB check isn't necessarily correct. I have in front of me a Toshiba
+TC58V64AFT datasheet which says...
 
-> > 3. What I would really prefer to use is JFFS2 on this DOC.
-> >    I have seen messages from David that this may now be 
-> >    possible.
-> 
-> It's becoming possible. Give me a few weeks.
+	"At the time of shipment, all data bytes in a Valid Block
+	 at FFh.  For Bad Blocks, all bytes are not in the FFh
+	 state. Please don't perform erase operation to Bad Blocks."
 
-That is great news!
+Basically a block is bad if it contains anything but 0xFF when it
+_arrives_ but obviously if the device has been subsequently used, many
+other blocks could be in that state.
 
-Thanks,
-Chuck
+Likewise, the custom of setting the 5th byte of the OOB area to
+something other than 0xFF gives you false positives on used DiskOnChip
+devices, since we use the first six OOB bytes for DiskOnChip hardware
+ECC. 
+
+We _must_ retain the bad block table which was on the device when it
+arrived from the factory. 
+
+> So it seems the news isn't that bad.  If we always leave the oob
+> data alone when the oob is marked bad for a block at the factory,
+> then nftl_format will include it in the BadUnitTable it creates.
+> Then preserving the factory-set bad block table would only be
+> critical if it marks blocks bad that are not marked bad in their
+> oob data.
+
+It is critical, because it _does_ mark blocks bad which are not marked
+bad in their oob-data, and because there are blocks which would
+_apparently_ be marked bad in their oob-data which _aren't_ actually
+bad.
+
+I've fixed up the generic NAND code to allow the board code to register
+a 'nand_block_bad()' function, and the DiskOnChip driver needs to hook
+into that correctly, using the BBT as appropriate.
+
+And I need to come up with a solution for the JFFS2-on-DiskOnChip
+situation, where we don't have the NFTL Media Header block which would
+contain a BBT. I'll probably end up with an INFTL header with its
+'partition table' instead. 
+
+-- 
+dwmw2
