@@ -1,15 +1,17 @@
-Received: from ultra.secret.org.uk ([194.154.178.202] helo=ultra)
+Received: from mail1.danielvalve.com ([12.19.96.6] helo=mail1.danielind.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15F0vN-0006s6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 23:03:09 +0100
-From: Simon Evans <spse@secret.org.uk>
-To: "Bao C. Ha" <baoha@sensoria.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Block device as MTD 
-In-reply-to: Your message of "Tue, 26 Jun 2001 14:41:14 PDT."
-             <01e501c0fe88$ba42a0f0$326c020a@SENSORIA>
-Date: Tue, 26 Jun 2001 21:58:03 +0100
-Message-Id: <E15EzuN-0008RQ-00@spoinky.secret.org.uk>
+	id 15F15m-0006sn-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 23:13:54 +0100
+Message-ID: <3B390B4C.65A5DB68@daniel.com>
+Date: Tue, 26 Jun 2001 17:23:08 -0500
+From: Vipin Malik <vipin.malik@daniel.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: jffs-dev <jffs-dev@axis.com>,
+ 	MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Problems with JFFS2/MTD upgrade to latest in CVS.
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,57 +23,90 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-yes, just modprobe blkmtd device=/dev/hda3
+Hmm, I upgraded from an <older> version (before the dir change)of JFFS2
+& MTD (that I've been testing) to the latest one in CVS
+and to the 2.4.5 kernel.
 
-Then you should get a new device in /dev/mtdblock/ (if you are using devfs)
-just mount the /dev/mtdblock device.
+When I mounted my JFFS2 flash partition again, I got the following on
+the console.
+Now the system periodically does not respond for multiple "seconds" to
+CR's on the bash prompt.
 
-cheers
-si
+What's going on?
+
+Vipin
 
 
-
-
->
->Can I mount a partition like /dev/hda3 or perhaps
->/dev/ide/host0/bus0/target0/lun0/part3?
->
->Bao
->
->> -----Original Message-----
->> From: linux-mtd-admin@lists.infradead.org
->> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Simon Evans
->> Sent: Tuesday, June 26, 2001 1:20 PM
->> To: linux-mtd@lists.infradead.org
->> Subject: Re: Block device as MTD 
->> 
->> 
->> 
->> I have checked this into CVS now. The following files are affected:
->> 
->> drivers/mtd/devices/blkmtd.c  - the driver itself
->> drivers/mtd/devices/Config.in
->> drivers/mtd/devices/Makefile
->> patches/Configure.help
->> 
->> Please consider this alpha software. It uses raw/io to the 
->> disk (not via
->> the buffer cache). Basic usage is:
->> 
->> modprobe blkmtd device=/dev/floppy/0  etc
->> 
->> If you are going to put a JFFS2 fs on the device, please note that
->> it can take quite a while to mount because JFFS2 scans every block.
->> A 96MB CF card took about 2 minutes.
->> 
->> On the plus side, if you have more memory then the size of the device,
->> you should find the whole device in the page cache ;)
->> 
->> cheers
->> si
->> 
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->> 
->
+jffs2_scan_empty(): Empty block at 0x00000000 ends at 0x00000000 (with
+0x00031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00080000 ends at 0x00080000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x000c0000 ends at 0x000c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00100000 ends at 0x00100000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00140000 ends at 0x00140000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00180000 ends at 0x00180000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x001c0000 ends at 0x001c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00200000 ends at 0x00200000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00240000 ends at 0x00240000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00280000 ends at 0x00280000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x002c0000 ends at 0x002c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00300000 ends at 0x00300000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00340000 ends at 0x00340000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00380000 ends at 0x00380000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x003c0000 ends at 0x003c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00400000 ends at 0x00400000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00440000 ends at 0x00440000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00480000 ends at 0x00480000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x004c0000 ends at 0x004c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00500000 ends at 0x00500000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00540000 ends at 0x00540000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00580000 ends at 0x00580000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x005c0000 ends at 0x005c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00600000 ends at 0x00600000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00640000 ends at 0x00640000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00680000 ends at 0x00680000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x006c0000 ends at 0x006c0000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00700000 ends at 0x00700000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00740000 ends at 0x00740000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x00780000 ends at 0x00780000 (with
+0x20031985)! Marking dirty
+jffs2_scan_empty(): Empty block at 0x007c0000 ends at 0x007c0000 (with
+0x00031985)! Marking dirty
+Waiting for chip to read, status = 4
+Waiting for chip to read, status = 4
+Waiting for chip to read, status = 7
+Waiting for chip to read, status = 4
+Waiting for chip to read, status = 7
+Waiting for chip to read, status = 4
+Waiting for chip to read, status = 4
+Waiting for chip to read, status = 4
+....
+....
+....
