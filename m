@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from richardson.uni2.net ([130.227.52.104])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16LNDY-00083a-00
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Jan 2002 11:36:28 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1009664975.9699.2.camel@planck.gaussian-it.com> 
-References: <1009664975.9699.2.camel@planck.gaussian-it.com> 
-To: Krist van Besien <krist@vanbesien.org>
-Cc: mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Which major/minor for DOC2000? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 01 Jan 2002 11:47:06 +0000
-Message-ID: <5952.1009885626@redhat.com>
+	id 16LioP-0000m1-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jan 2002 10:39:57 +0000
+Received: from firewall.pallas.dk (firewall.pallas.dk [130.227.11.8])
+	by richardson.uni2.net (8.11.0/8.11.0) with SMTP id g02Aopu03243
+	for <linux-mtd@lists.infradead.org>; Wed, 2 Jan 2002 11:50:51 +0100
+Message-ID: <D0B43857843DD41185DE0060979AC20C2FD28B@intermail.pallas.dk>
+From: Agust Karlsson <Gusti@pallas.dk>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Elan SC400 and Am29F016B
+Date: Wed, 2 Jan 2002 11:50:45 +0100 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,22 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-krist@vanbesien.org said:
->  I have been digging in the kernel Documentation and found some
-> indication that I need a block device, with major 31 and minor 16. So
-> I made one in the /dev/ directory on my initrd image. 
-
-mknod /dev/nftla b 93 0
-mknod /dev/nftla1 b 93 1
-mknod /dev/nftla2 b 93 2
-
-> But upon mounting I get a "device not initialised" error. I do get a
-> lot of messages (repeatedly) like .... seems to be a DiskOnChip... or
-> something. They scroll away to fast. And I do not get to the point
-> that I can cal them back using dmesg... 
-
-Use a serial console, or a video camera. Can you show me the config options 
-you used to build the kernel?
+I am trying to build a Linux kernel on a AMD Elan SC400. It is an OEM =
+built
+device with 2 Am29F016B Flash memory.
+Does anyone have any experience in how I can access theat device as a =
+block
+device (to build a file system on top of it).
+Best regards.
 
 --
-dwmw2
+Agust Karlsson            mailto:gusti@pallas.dk
+Pallas Informatik A/S     http://www.pallas.dk
+Aller=F8d Stationsvej 2D    Tel.: +45 48 10 24 10
+DK-3450 Aller=F8d           Fax.: +45 48 10 24 01
