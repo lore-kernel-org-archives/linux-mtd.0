@@ -1,33 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13Pglx-0003DX-00
-	for mtd-list@infradead.org; Fri, 18 Aug 2000 08:41:01 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13Pglw-0003DR-00
-	for mtd@infradead.org; Fri, 18 Aug 2000 08:41:00 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.04.10008171239060.3886-100000@phoenix.bmedesign.com> 
-References: <Pine.LNX.4.04.10008171239060.3886-100000@phoenix.bmedesign.com> 
-To: Mark Jackson <mdj@phoenix.bmedesign.com>
-Cc: mtd@infradead.org
-Subject: Re: Procedure for mounting DOC2000 
-Mime-Version: 1.0
+	id 13PhgG-0003Ia-00
+	for mtd-list@infradead.org; Fri, 18 Aug 2000 09:39:12 +0100
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13PhgF-0003IU-00
+	for mtd@infradead.org; Fri, 18 Aug 2000 09:39:12 +0100
+Message-ID: <399CF6F1.4622CF44@arcom.co.uk>
+Date: Fri, 18 Aug 2000 09:42:25 +0100
+From: David Vrabel <dvrabel@arcom.co.uk>
+MIME-Version: 1.0
+To: mtd@infradead.org, jffs-dev@axis.com
+Subject: JFFS oopses on mount
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 18 Aug 2000 08:40:53 +0100
-Message-ID: <17950.966584453@cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-insmod docprobe.o afterwards.
+JFFS oopses during mounting.  Are the latest CVS sources likely to fix
+this problem (last checked out Aug 16th)? If not how can I go about
+finding out what the problem is?  Unfortunatly I had to disable
+debugging because the problem didn't occur with it enabled (sending
+masses of debugging information via a serial link reduces greatly the
+number of test iterations).  I do have more images of the flash than you
+can shake a stick at though.
 
-That advice might now be obsoleted by Miguel's merge of the Doc2000 and 
-DocMillennium drivers into one.
+Possibly a message of interest
+jffs_garbage_collect_now(): free_size == 0. This is BAD.
 
---
-dwmw2
-
+David Vrabel
 
 
 
