@@ -1,17 +1,21 @@
-Received: from idiom.com ([216.240.32.1] ident=espin)
+Received: from h109-210-243-242.aiptek.com.tw ([210.243.242.109] helo=aiptekser1.aiptek.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16G9CL-0003lD-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 01:37:37 +0000
-Received: (from espin@localhost)
-	by idiom.com (8.9.3/8.9.3) id RAA71187
-	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2001 17:48:22 -0800 (PST)
-Date: Mon, 17 Dec 2001 17:48:21 -0800
-From: Geoffrey Espin <espin@idiom.com>
-To: linux-mtd@lists.infradead.org
-Subject: mtd_debug.c patch for hex options and low memory
-Message-ID: <20011217174821.A64308@idiom.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 16GC2A-0003xN-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 04:39:19 +0000
+Received: from andrew (drivema2.aiptek.com.tw [10.0.3.35])
+          by aiptekser1.aiptek.com.tw (Post.Office MTA v3.5.3 release 223
+          ID# 619-69644U200L100S0V35) with SMTP id tw
+          for <linux-mtd@lists.infradead.org>;
+          Tue, 18 Dec 2001 10:33:55 +0800
+From: andrewkuo@aiptek.com.tw (AndrewKuo)
+To: <linux-mtd@lists.infradead.org>
+Subject: Patch MTD/JFFS on uClinux-2.0.38.1pre7 
+Date: Tue, 18 Dec 2001 10:32:02 +0800
+Message-ID: <INEDIIEAKHENJJGJFHMEOEEACAAA.andrewkuo@aiptek.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,183 +27,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-1. The 'mtd_debug' utility doesn't allow hex offsets on the
-command-line.
-
-2. If you're short of contiguous RAM then kmalloc() a smaller buffer
-and chunk along instead of bailing out.  Especially painful, if
-after erasing the existing contents!
-
-Geoff
--- 
-Geoffrey Espin espin@idiom.com
---
-
---- mtd_debug.c.ORIG	Mon Oct  8 15:00:06 2001
-+++ mtd_debug.c	Mon Dec 17 15:13:21 2001
-@@ -103,42 +103,62 @@
- 
- int flash_to_file (int fd,u_int32_t offset,size_t len,const char *filename)
- {
--   u_int8_t *buf;
-+   u_int8_t *buf = NULL;
-    int outfd,err;
-+   int size = len * sizeof (u_int8_t);
-+   int n = len;
-+
-    if (offset != lseek (fd,offset,SEEK_SET))
- 	 {
- 		perror ("lseek()");
- 		goto err0;
- 	 }
--   if ((buf = (u_int8_t *) malloc (len * sizeof (u_int8_t))) == NULL)
--	 {
--		perror ("malloc()");
--		goto err0;
--	 }
-    outfd = creat (filename,O_WRONLY);
-    if (outfd < 0)
- 	 {
- 		perror ("creat()");
- 		goto err1;
- 	 }
--   err = read (fd,buf,len);
-+
-+retry:
-+   if ((buf = (u_int8_t *) malloc (size)) == NULL)
-+	 {
-+#define BUF_SIZE	(64 * 1024 * sizeof (u_int8_t))
-+		fprintf (stderr, __FUNCTION__ ": malloc(%#x)\n", size);
-+		if (size != BUF_SIZE) {
-+			size = BUF_SIZE;
-+			fprintf (stderr, __FUNCTION__ ": trying buffer size %#x\n", size);
-+			goto retry;
-+		}
-+		perror ("malloc()");
-+		goto err0;
-+	 }
-+ do {
-+   if (n <= size)
-+	   size = n;
-+   err = read (fd,buf,size);
-    if (err < 0)
- 	 {
-+		fprintf (stderr, __FUNCTION__ ": read, size %#x, n %#x\n", size, n);
- 		perror ("read()");
- 		goto err2;
- 	 }
--   err = write (outfd,buf,len);
-+   err = write (outfd,buf,size);
-    if (err < 0)
- 	 {
-+		fprintf (stderr, __FUNCTION__ ": write, size %#x, n %#x\n", size, n);
- 		perror ("write()");
- 		goto err2;
- 	 }
--   if (err != len)
-+   if (err != size)
- 	 {
--		fprintf (stderr,"Couldn't copy entire buffer to %s. (%d/%d bytes copied)\n",filename,err,len);
-+		fprintf (stderr,"Couldn't copy entire buffer to %s. (%d/%d bytes copied)\n",filename,err,size);
- 		goto err2;
- 	 }
-+   n -= size;
-+   } while (n > 0);
- 
-+   if (buf != NULL)
-    free (buf);
-    close (outfd);
-    printf ("Copied %d bytes from address 0x%.8x in flash to %s\n",len,offset,filename);
-@@ -147,6 +167,7 @@
-    err2:
-    close (outfd);
-    err1:
-+   if (buf != NULL)
-    free (buf);
-    err0:
-    return (1);
-@@ -154,40 +175,59 @@
- 
- int file_to_flash (int fd,u_int32_t offset,u_int32_t len,const char *filename)
- {
--   u_int8_t *buf;
-+   u_int8_t *buf = NULL;
-    FILE *fp;
-    int err;
-+   int size = len * sizeof (u_int8_t);
-+   int n = len;
-+
-    if (offset != lseek (fd,offset,SEEK_SET))
- 	 {
- 		perror ("lseek()");
- 		return (1);
- 	 }
--   if ((buf = (u_int8_t *) malloc (len * sizeof (u_int8_t))) == NULL)
-+   if ((fp = fopen (filename,"r")) == NULL)
- 	 {
--		perror ("malloc()");
-+		perror ("fopen()");
- 		return (1);
- 	 }
--   if ((fp = fopen (filename,"r")) == NULL)
-+retry:
-+   if ((buf = (u_int8_t *) malloc (size)) == NULL)
- 	 {
--		perror ("fopen()");
--		free (buf);
-+		fprintf (stderr, __FUNCTION__ ": malloc(%#x) failed\n", size);
-+		if (size != BUF_SIZE) {
-+			size = BUF_SIZE;
-+			fprintf (stderr, __FUNCTION__ ": trying buffer size %#x\n", size);
-+			goto retry;
-+		}
-+		perror ("malloc()");
-+		fclose (fp);
- 		return (1);
- 	 }
--   if (fread (buf,len,1,fp) != 1 || ferror (fp))
-+ do {
-+   if (n <= size)
-+	   size = n;
-+   if (fread (buf,size,1,fp) != 1 || ferror (fp))
- 	 {
-+		fprintf (stderr, __FUNCTION__ ": fread, size %#x, n %#x\n", size, n);
- 		perror ("fread()");
- 		free (buf);
- 		fclose (fp);
- 		return (1);
- 	 }
--   err = write (fd,buf,len);
-+   err = write (fd,buf,size);
-    if (err < 0)
- 	 {
-+		fprintf (stderr, __FUNCTION__ ": write, size %#x, n %#x\n", size, n);
- 		perror ("write()");
- 		free (buf);
- 		fclose (fp);
- 		return (1);
- 	 }
-+   n -= size;
-+} while (n > 0);
-+
-+   if (buf != NULL)
-    free (buf);
-    fclose (fp);
-    printf ("Copied %d bytes from %s to address 0x%.8x in flash\n",len,filename,offset);
-@@ -386,13 +426,13 @@
- 		showinfo (fd);
- 		break;
- 	  case OPT_READ:
--		err = flash_to_file (fd,atol (argv[3]),atol (argv[4]),argv[5]);
-+		err = flash_to_file (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0),argv[5]);
- 		break;
- 	  case OPT_WRITE:
--		err = file_to_flash (fd,atol (argv[3]),atol (argv[4]),argv[5]);
-+		err = file_to_flash (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0),argv[5]);
- 		break;
- 	  case OPT_ERASE:
--		err = erase_flash (fd,atol (argv[3]),atol (argv[4]));
-+		err = erase_flash (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0));
- 		break;
- 	 }
- 
+DQpIaSBhbGwsDQoNCglJJ20gbmV3IGluIGxpbnV4LCBJJ20gdHJ5IHRvIHBvcnQgSkZGUyBvbiB1
+Q2xpbnV4LTIuMC4zOC4xcHJlNyBmb3IgQVJNIHRhcmdldC4gSSBmb2xsb3cgTVRELUpGRlMtSE9X
+VE8gdG8gdXNlIGN2cyB0byBnZXQgdGhlIGxhc3RlZCBjb2RlIG9mIE1URC9KRkZTLCBhbmQgcGF0
+Y2ggdG8ga2VybmVsLiBCdXQgdGhlcmUgaXMgb25lIHBhdGNoIGZhaWwgb24gImFyY2gvYXJtbm9t
+bXUvY29uZmlnLmluIiwgYW5kIGxvZyB0aGUgcGF0Y2ggZmFpbCBpbmZvcm1hdGlvbiBpbiAiY29u
+ZmlnLmluLnJlaiIuIFRoZSBjb250ZW50IGlzLA0KDQoqKioqKioqKioqKioqKioqKioqKioNCioq
+KiA3MiwgNzcqKioqKioqKioNCiAgZmkNCiAgZW5kbWVudQ0KDQogIHNvdXJjZSBhcmNoL2FybW5v
+bW11L2RyaXZlcnMvYmxvY2svQ29uZmlnLmluDQoNCiAgaWYgWyAiJENPTkZJR19ORVQiID0gInki
+XTsgICB0aGVuDQotLS0gNzIsIDc5IC0tLS0tLS0tLS0NCiAgZmkNCiAgZW5kbWVudQ0KDQorICBz
+b3VyY2UgZHJpdmVycy9tdGQvQ29uZmlnLmluDQorDQogICAgc291cmNlIGFyY2gvYXJtbm9tbXUv
+ZHJpdmVycy9ibG9jay9Db25maWcuaW4NCg0KICAgaWYgWyAiJENPTkZJR19ORVQiID0gInkiXTsg
+ICB0aGVuDQoNCg0KDQoJQnkgdGhlIHdheSwgSSBmb3VuZCB0aGVyZSBpcyBub3QgImFyY2gvYXJt
+bm9tbXUvZHJpdmVycy9ibG9jayIgZGlyZWN0b3J5IGluIHVDbGludXgtMi4wLjM4LjFwcmU3IGtl
+cm5lbC4gRG9lcyBJIG1pc3MgdG8gdXBkYXRlIGFueSBwYXRjaGVzIGZvciB1Q2xpbnV4J3Mga2Vy
+bmVsLiBDb3VsZCBhbnlib2R5IGhlbHAgbWU/IFRoYW5rcyBhIGxvdC4NCg0KQW5kcmV3
