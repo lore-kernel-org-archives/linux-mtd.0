@@ -1,20 +1,18 @@
-Received: from av2.rz.fh-augsburg.de ([141.82.16.242] helo=FH-Augsburg.DE)
+Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16uU96-0003zp-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Apr 2002 09:05:00 +0100
-Received: from wstefan (mail.bodmann.de [195.143.6.222])
-	(authenticated (0 bits))
-	by FH-Augsburg.DE (8.11.3/8.11.3) with ESMTP id g3884m802042
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Apr 2002 10:04:51 +0200 (MEST)
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Stefan Warmuth <hxos@rz.fh-augsburg.de>
+	id 16uUix-00041Z-00
+	for <linux-mtd@lists.infradead.org>; Mon, 08 Apr 2002 09:42:03 +0100
+Received: from devil.iqc-services.com (devil.iqc-services.local [192.168.197.3])
+	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g389NVh04755
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Apr 2002 11:23:31 +0200
+Message-Id: <5.1.0.14.2.20020408103956.01f944b0@pop3.iqc-services.com>
+Date: Mon, 08 Apr 2002 10:41:05 +0200
 To: linux-mtd@lists.infradead.org
-Subject: Problems with writing on jffs2
-Date: Mon, 8 Apr 2002 09:06:47 +0200
-MIME-Version: 1.0
+From: Marcos Lois =?iso-8859-1?Q?Bermúdez?= <marcos@iqc-services.com>
+Subject: Creating the /dev devices
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <200204080906.47847.hxos@rz.fh-augsburg.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,32 +24,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all
+I have get the MTD work, but i can't see any mtd device under /dev
+How i can create it=BF?
 
-I have trouble with our custom-made arm platform. We use a Intel SA-1110=20
-processor and Intel 28F640J3A Flash-Memory. We use 2.4.17-rmk5 kernel.
+Regards.
 
-I made the image with,
-mkfs.jffs2 -r source -o image.jffs2 -e 0x40000 -l -p
-and flashed it into the memory and boot. All worked fine also on reboot.
-Then i copied some files from the host into the flash and it workes also =
-fine.
-But on next reboot i got some errors and the system crashed.
-
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x00c00384: Read=20
-0x088b1c33
-jffs2_scan_inode_node(): Data CRC failed on node at 0x00c4000c: Read=20
-0x2207d3bb3
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x00c821e0: Read=20
-0xb5211fe6
-jffs2_scan_dirent_node(): Name CRC failed on node at 0x00dd8a80: Read=20
-0x9a7b54b2
-jffs2_scan_inode_node(): Data CRC failed on node at 0x00e1e5e4: Read=20
-0x46eb4974c
-
-I don't know where I am doing any wrong.
-
-Have anybody an idea?
-
-Thanks
-Stefan
+----------------------------------------------------
+Marcos Lois Berm=FAdez
+marcos@iqc-services.com
+IQC-Services.
+Carretera provincial 60 - 1
+36210 Vigo - Pontevedra
+Tel: +34 986 281 830
+Fax: +34 986 415 074
+http://www.iqc-services.com
+----------------------------------------------------
