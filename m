@@ -1,32 +1,15 @@
-Received: from motgate.mot.com ([129.188.136.100])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AoI73-0006NY-9p
-	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2004 08:10:21 +0000
-Received: from az33exr03.mot.com (pobox3.mot.com [10.64.251.242])
-	by motgate.mot.com (Motorola/Motgate) with ESMTP id i148AI46013655
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 4 Feb 2004 01:10:18 -0700 (MST)
-Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
-	by az33exr03.mot.com (Motorola/az33exr03) with ESMTP id i1488YUY024750
-	for <linux-mtd@lists.infradead.org>; Wed, 4 Feb 2004 02:08:35 -0600
-From: Li Yang <leoli@motorola.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1074583969.14499.100.camel@imladris.demon.co.uk>
-References: 
-	 <01139FC052A0D411900B00508B9535FC0F0D25BB@ZCH07EXM04.corp.mot.com>
-	 <1074503876.14499.40.camel@imladris.demon.co.uk>
-	 <1074509881.14564.3.camel@Gundam>
-	 <1074510244.14499.49.camel@imladris.demon.co.uk>
-	 <1074572447.14559.23.camel@Gundam>
-	 <1074583969.14499.100.camel@imladris.demon.co.uk>
-Content-Type: text/plain
-Message-Id: <1075882281.14564.108.camel@Gundam>
-Mime-Version: 1.0
-Date: 04 Feb 2004 16:11:23 +0800
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2+mtd+big endian problem
-Reply-To: leoli@motorola.com
+Received: from web20404.mail.yahoo.com ([66.163.169.92]
+	helo=web20416.mail.yahoo.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AoK16-0006h5-M6
+	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2004 10:12:20 +0000
+Message-ID: <20040204101218.92472.qmail@web20416.mail.yahoo.com>
+Date: Wed, 4 Feb 2004 02:12:18 -0800 (PST)
+From: Roy Lauer <rlaor@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Problems with DOC Millennium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,60 +19,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-20 at 15:32, David Woodhouse wrote:
-> On Tue, 2004-01-20 at 12:20 +0800, Li Yang wrote:
-> > > This sounds like you're using byte-swapping operations in your map
-> > > driver. You should be using __raw_write*() not write*(). You said you
-> > > were 'at the very beginning'... are you still doing that now?
-> > 
-> > I have verified my maps/ file.  I'm using __raw_write*() now.  Here is
-> > part of my maps file, I don't know if the memcpy_toio() matters.
 > 
-> It doesn't -- it'll never get used. All you need are read32, write32 and
-> copy_from. Try this...
->                                                                       
-> __u32 ads_read32(struct map_info *map, unsigned long ofs)
-> {
->         return *(volatile __u32 *)(map->map_priv_1 + ofs);
-> }
->                                                                                                        
-> void ads_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
-> {
->         memcpy(to, (void *)(map->map_priv_1 + from), len);
-> }
->                                                                                                        
-> void ads_write32(struct map_info *map, __u32 d, unsigned long adr)
-> {
->         *(volatile __u32 *)(map->map_priv_1 + adr) = d;
->         mb();
-> }
->  
-> 
-> Did you try reading and writing chunks of 1, 2 and 4 bytes directly
-> to/from /dev/mtd0?
+> The DiskOnChip Millennium Plus uses INFTL not NFTL.
+You should be very
+> careful using the current INFTL code -- it does not
+observe the Bad Block Table.
 
-It's very strange even when I use the complex mapping as you given above
-the write is still 32bit swapped.  And I tried writing 1, 2 and 4 bytes
-using cp.  For block device, write is successful but still swapped.  For
-char device, the following error message is given.
+What does it mean?
+Does it mean that practically the current INFTL code
+is unusable with the DiskOnChip Millennium Plus?
 
-# cp u16 /dev/mtd1
-MTD_open
-MTD_ioctl
-Invalid ioctl 402c7413 (MEMGETINFO = 40204d01)
-MTD_write
-MTD_close
-# cp u16 /dev/mtdblock1
-mtdblock_open
-ok
-mtdblock: read on "JFFS" at 0x0, size 0x200
-mtdblock: write on "JFFS" at 0x0, size 0x200
-mtdblock_release
-mtdblock: writing cached data for "JFFS" at 0x0, size 0x40000
-ok
-#
+The DOC is recognized correctly but I keep getting
+"corrupt block" errors (please see the log below).
+
+It is because of the Bad Block Table, or is there
+another reason?
+
+Please help.
+
+Roy Lauer
+Commil Ltd.
 
 
--- 
-Li Yang <leoli@motorola.com>
-Metrowerks
+INFTL: inftlcore.c $Revision: 1.14 $, inftlmount.c
+$Revision: 1.12 $
+Using configured DiskOnChip probe address 0xf0400000
+DiskOnChip Millennium Plus found at address 0xF0400000
+Flash chip found: Manufacturer ID: 98, Chip ID: 75
+(Toshiba:NAND 32MiB 3,3V)
+Flash chip found: Manufacturer ID: 98, Chip ID: 75
+(Toshiba:NAND 32MiB 3,3V)
+2 flash chips found. Total DiskOnChip size: 64 MiB
+mtd: Giving out device 0 to DiskOnChip Millennium Plus
+INFTL: Media Header ->
+    bootRecordID          = BNAND
+    NoOfBootImageBlocks   = -1
+    NoOfBinaryPartitions  = 1
+    NoOfBDTLPartitions    = 1
+    BlockMultiplerBits    = 0
+    FormatFlgs            = 1
+    OsakVersion           = 0x35313430
+    PercentUsed           = 98
+    PARTITION[0] ->
+        virtualUnits    = 32
+        firstUnit       = 4
+        lastUnit        = 35
+        flags           = 0x20000000
+        spareUnits      = 0
+    PARTITION[1] ->
+        virtualUnits    = 1969
+        firstUnit       = 37
+        lastUnit        = 2047
+        flags           = 0xc0000000
+        spareUnits      = 2
+INFTL: corrupt block 1024 in chain 1024, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1024
+INFTL: formatting block 1024
+MTD: Error 0xffffffa5 erasing at 0x2000000
+INFTL: error while formatting block 1024
+INFTL: corrupt block 1025 in chain 1025, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1025
+INFTL: formatting block 1025
+MTD: Error 0xffffffa5 erasing at 0x2008000
+INFTL: error while formatting block 1025
+INFTL: corrupt block 1026 in chain 1026, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1026
+INFTL: formatting block 1026
+MTD: Error 0xffffffa5 erasing at 0x2010000
+INFTL: error while formatting block 1026
+INFTL: corrupt block 1027 in chain 1027, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1027
+INFTL: formatting block 1027
+MTD: Error 0xffffffa5 erasing at 0x2018000
+INFTL: error while formatting block 1027
+INFTL: corrupt block 1028 in cha
+......
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
