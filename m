@@ -1,47 +1,53 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11vfE5-0004Ql-00
-	for mtd-list@infradead.org; Wed, 08 Dec 1999 11:25:41 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 11viTw-0004a6-00
+	for mtd-list@infradead.org; Wed, 08 Dec 1999 14:54:16 +0000
+Received: from [209.184.180.169] (helo=bob.faxtel.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11vfE4-0004Qf-00
-	for mtd@imladris.mvhi.com; Wed, 08 Dec 1999 11:25:40 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01BF4176.8754EF20.mdeans@algonet.se> 
-References: <01BF4176.8754EF20.mdeans@algonet.se> 
-To: Bjorn Eriksson <mdeans@algonet.se>
-Cc: MTD list <mtd@imladris.mvhi.com>
-Subject: Re: noatime mount option (Was: Power Down) 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Date: Wed, 08 Dec 1999 11:26:56 +0000
-Message-Id: <E11vfFI-0002n7-00@devel2.axiom.internal>
+	id 11viTu-0004a0-00
+	for mtd@imladris.mvhi.com; Wed, 08 Dec 1999 14:54:14 +0000
+Message-ID: <384E7150.F31E542C@go2fax.com>
+Date: Wed, 08 Dec 1999 08:55:12 -0600
+From: Bob Canup <rcanup@go2fax.com>
+MIME-Version: 1.0
+To: MTD <mtd@imladris.mvhi.com>
+Subject: Re: Power Down
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+It is obvious that a physical medium such as a disk is vulnerable to
+having a bad sector created by the process that I described. The proof
+is simple: pop out a diskette while you are writing to it and you stand
+a good chance of creating a sector in which the CRC and data are out of
+sync. When you attempt to read the sector you will get a bad CRC.
 
-mdeans@algonet.se said:
->  Do you know in what kernel version this was added? I didn't find it
-> in 2.0.30.
+This occurs in a diskette because the writing process is a serial event;
+it is spread over time. So there is a window in which an interruption
+can create a bad sector.
 
-It's probably in 2.0.latest - the 2.0 series had lots of features added to it. 
-If not, maybe it's available as a separate patch. It should also be in 2.2
+Let us assume the the DOC writes all of the bytes in a page including
+the ECC code in parallel, let us also assume that you have an internal
+bit which marks a sector as good when that process has completed. There
+nevertheless is a time during the 'burn' of the bits where we are in an
+analog state of changing the bits. If power is lost at that time - some
+of the bits will not have changed to their proper state. Even if the
+page is not marked as good an attempt to read the page will result in an
+ECC and data which do not match and the result is a bad sector. The
+sector may be easily recovered by erasing it and starting over - but as
+long as there is an analog aspect to changing the states - the bits will
+not all change at the same instant and a window for corruption exists.
 
-I believe there's also some way of doing it per-directory.
+Vipin's original post said that he saw bad sectors about once in every
+250 power down cycles. Oran is telling us that can't occur.
 
-> P.s Whats with iso-8859-15? D.s 
+Of course if my analysis is correct then you are safe to erase the bad
+sector - it was the last one being written; the file system would then
+be left in a state in which e2fsck could hopefully repair it.
 
-Err... we got a batch of new keyboards with the ¤ (euro) sign on them, so I 
-played about with exmh till it could use it. My tests seemed to show that most 
-mailreaders which couldn't handle 8859-15 would revert to 8859-1 when reading 
-those mails, so I didn't bother to change it back.
+Or am I off in left field with this?
 
- 
-
---
-dwmw2
 
 
 
