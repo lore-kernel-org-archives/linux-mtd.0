@@ -1,59 +1,43 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10kTnD-0002SN-00
-	for mtd@imladris.mvhi.com; Thu, 20 May 1999 15:27:27 +0100
-To: Mike Kilburn <mkilburn@ftel.net>
-Cc: mtd@imladris.mvhi.com
-Subject: Re: Re[2]: RFC: kernel-based PCMCIA ... 
+	id 10kaGE-0002hE-00
+	for mtd@imladris.mvhi.com; Thu, 20 May 1999 22:21:50 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@imladris.mvhi.com
+	id 10kaGE-0003oZ-00; Thu, 20 May 1999 22:21:50 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@imladris.mvhi.com
+	id 10kaGD-0004A7-00; Thu, 20 May 1999 22:21:49 +0100
+To: mtd@imladris.mvhi.com
+Subject: Disk-On-Chip progress.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 20 May 1999 15:27:26 +0100
+Date: Thu, 20 May 1999 22:21:49 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E10kTnC-0001T8-00@devel2.axiom.internal>
+Message-Id: <E10kaGD-0004A7-00@devel2.axiom.internal>
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
+I seem to be able to read the flash. I can also detect the presence of a 
+Disk-On-Chip. I can't yet work out the size of the DOC automatically, or 
+decode the filesystem on it.
 
-mkilburn@ftel.net said:
->  Is there any beta code available for this. We have a PC104 with a 4M
-> boot flash from M-Systems. The vendor of the PC104 wont give us any
-> hardware  details on accessing the Flash and they say they are working
-> with M-Systems to have a driver in a month or so. We dont want to be
-> dependent on them for a driver.
+There are some files in ftp://imladris.mvhi.com/pub/mtd/DOCdocs/ which may be 
+useful.
 
-There's some very preliminary stuff, which isn't anywhere near working at the
-moment. 
+BIOS-startupcode.asm: Disassembly of the BIOS ROM which loads the main code 
+		from flash. It's this on which I based the C code.
 
-I've tried a few approaches - I've disassembled the entire binary Linux driver,
-and looked at how it deals with the device. I've also traced the BIOS startup
-code on the device, including converting parts of it into C code and running 
-them. I'm about to start with Dosemu, getting it to log all accesses to the 
-device - I don't have a bus analyser or I'd do it that way.
+linuxdriver.asm: A disassembly of the binary-only Linux driver, with as many 
+		symbols put back in for readability as possible. 
 
-Often with things like this, you'll see bits of how it works, and understand
-what they were thinking when they designed it - and you'll be able to make 
-(correct) assumptions about how it all goes together. The DoC2000 seems to be 
-a product of a warped imagination, though - I have no clue what it's doing 
-most of the time.
-
-It doesn't look like it ever actually maps the flash in the CPU's memory map, 
-though - it may well only allow sequential cpu-driven reads of individual 
-bytes, which would explain the extremely poor performance of the thing.
-
-I'm currently trying to tidy up the notes I do have, and will post them to the 
-list later this afternoon, to see if anyone else has any more insight into the 
-thing than I have.
-
-> > As an aside - we may have patent problems with using FTL on anything
-> > other than PCMCIA devices. 
-
-> Why would a PCMICA be any different than a Flash on a PC104 cpu card?
-
->From a technical viewpoint - no reason at all. However, M-Systems apparently
-own the patent, and have granted free use of it with PCMCIA devices. Using it 
-on non-PCMCIA devices doesn't come under that blanket permission, so approval 
-would have to be obtained from them.
+doc-kernel.c: My preliminary kernel driver for the beast. It appears to be 
+		able to read lots of interesting stuff off the DoC. Strangely,
+		I can't see anything on there that looks even vaguely like FTL,
+		so perhaps I'm missing something.
 
 
 
