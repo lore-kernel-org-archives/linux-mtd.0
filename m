@@ -1,39 +1,52 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12AUju-0002WB-00
-	for mtd-list@infradead.org; Tue, 18 Jan 2000 09:15:50 +0000
+	id 12AWdQ-0002YR-00
+	for mtd-list@infradead.org; Tue, 18 Jan 2000 11:17:16 +0000
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12AUjt-0002W5-00
-	for mtd@infradead.org; Tue, 18 Jan 2000 09:15:49 +0000
+	id 12AWdP-0002YL-00
+	for mtd@infradead.org; Tue, 18 Jan 2000 11:17:15 +0000
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.03 #1)
+	id 12AWmF-0000nd-00
+	for mtd@infradead.org; Tue, 18 Jan 2000 11:26:23 +0000
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 12AWmF-0008PT-00; Tue, 18 Jan 2000 11:26:23 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
-References: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
-To: Pavel Roskin <pavel_roskin@geocities.com>
-Cc: mtd@infradead.org
-Subject: Re: Patch for PowerPC 
+To: mtd@infradead.org
+Subject: DiskOnChip bootloader.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 18 Jan 2000 09:24:56 +0000
-Message-Id: <E12AUsi-0008B9-00@devel2.axiom.internal>
+Date: Tue, 18 Jan 2000 11:26:23 +0000
+Message-Id: <E12AWmF-0008PT-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-pavel_roskin@geocities.com said:
-> That all for today. Don't hesitate to put a new diff on the website.
-> This will save time and labor of people interested in getting your
-> stuff working on PowerPC.
+I've just taken a look at the grub source code, and it looks like:
 
-Excellent work - thanks. I'll try to get an updated release out by the end of 
-the week, or early next week at the latest.
+	a. It should easily it in the 48Kb which we have for DoC firmware.		b. It should be fairly easy to make it talk DiskOnChip.
 
-I'll also upgrade CVS on our server - all the workstations have been upgraded 
-to Red Hat 6.1, but the server is still on 5.2 because we haven't had the 
-courage to upgrade it yet - hence it still has an old version of CVS.
+This is promising - we should be able to replace the DiskOnChip built-in BIOS 
+with a version of grub which is capable of reading DOS and ext2 partitions off 
+the DiskOnChip, and booting kernels it finds on them.
 
-As it takes a little more thought than just rpm --rebuild of the RH6.1 SRPM, 
-that failed too - hopefully I'll get some time to sort it out this week too.
+All we need to do is modify stage1 to handle the fact that the whole 
+thing's already been loaded into memory - stage1 could probably be eliminated, 
+in fact, if we modify stage2 to be aware that it may be loaded at a different 
+address to normal.
+
+I reckon it'd be a few minutes work to get Grub running from the DiskOnChip 
+firmware, and about half a day more to add primitive read-only DiskOnChip 
+support to its rawread() routine so it can actually boot a kernel off the 
+DiskOnChip too.
+
+If only I had that time available ATM :)
+
+
+
 
 --
 dwmw2
