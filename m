@@ -1,19 +1,19 @@
 Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Bd1d-0003J6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 15:32:25 +0000
-Date: Tue, 12 Nov 2002 17:02:35 +0100
+	id 18Bd7Z-0003JX-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 15:38:33 +0000
+Date: Tue, 12 Nov 2002 17:08:43 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ian Campbell <icampbell@arcomcontrols.com>
-Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] Add a map_sram driver to drivers/chips/
-Message-ID: <20021112160235.GD5031@wohnheim.fh-wedel.de>
-References: <1037099125.26491.81.camel@LinuxDev>
+To: Miraj Mohamed <miraj@procsys.com>
+Cc: jffs-dev@axis.com, linux-mtd@lists.infradead.org
+Subject: Re: mirroring in JFFS2
+Message-ID: <20021112160843.GE5031@wohnheim.fh-wedel.de>
+References: <3DD0D966.E6D877EC@procsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1037099125.26491.81.camel@LinuxDev>
+In-Reply-To: <3DD0D966.E6D877EC@procsys.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,20 +25,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 12 November 2002 11:05:25 +0000, Ian Campbell wrote:
+On Tue, 12 November 2002 16:05:18 +0530, Miraj Mohamed wrote:
 > 
-> The attached patch adds "map_sram" as a second chip driver in
-> drivers/mtd/chips/map_ram.c.  The two are basically identical apart from
-> the use of the MTD_VOLATILE flag.
+>         Our system needs error detection and recovery of data on Flash.
+> We selected Jffs2 which has in built CRC. And planning to modify
+> Jffs2 code for mirroring. This means...each write and erase will be
+> duplicated
+> on mirror partition . While reading if a CRC error is detected,
+> the mirror data will be read.
+> 
+>                     Can any one say if this implementation is ok (or is
+> possible)?
+> Have anyone implemented a similar system before? Any other way to attain
+> redundancy?
 
-Slightly OT.
+Are you trying to put the mirroring stuff into jffs2?
 
-Have you tried the slram driver? I have always used that one to access
-plain old memory and was very happy. And now you make me wonder, if
-there is another way that might even be better.
+In the hard disk world, people use md for this, which uses two devices
+and returns one. The filesystem does not need to worry about anything.
+
+Writing an mtd driver in that fashion should be pretty easy. Robert
+Kaiser has done something similar already, have a look at the concat
+layer.
 
 Jörn
 
 -- 
-A victorious army first wins and then seeks battle.
--- Sun Tzu
+Data expands to fill the space available for storage.
+-- Parkinson's Law
