@@ -1,18 +1,20 @@
-Received: from [212.68.212.198] (helo=barnabe.hellea.be ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18MpUY-0004Bc-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 13:04:34 +0000
-Date: Fri, 13 Dec 2002 14:35:00 +0100
-From: Geoffroy Stevenne <geof@hellea.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: bbram access problems
-Message-Id: <20021213143500.630bedeb.geof@hellea.com>
-In-Reply-To: <200212121540.43586.tglx@linutronix.de>
-References: <20021212140546.3607a3e0.geof@hellea.com>
-	<200212121540.43586.tglx@linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from [213.170.46.14] (helo=madimc2.indra.es)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18MqhG-0004K8-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 14:21:47 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Carlos Mateo <cmateo@indra.es>
+Reply-To: cmateo@indra.es
+To: "Alejandro O. Gonzalez" <aogonzalez@uolsinectis.com.ar>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: Linux installation on DOC / problems / I need your help
+Date: Fri, 13 Dec 2002 15:50:02 -0100
+References: <002c01c2a2a9$54ea2900$a2e4f4d8@nnn123>
+In-Reply-To: <002c01c2a2a9$54ea2900$a2e4f4d8@nnn123>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200212131550.02199.cmateo@indra.es>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,27 +26,66 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Le Thu, 12 Dec 2002 15:40:43 +0100
-Thomas Gleixner <tglx@linutronix.de> a écrit:
+The second problem you described (UnitSizeFactor !=3D 1) was solved some =
+time=20
+ago.  Try the latest CVS code.
+I have used it with DFORMAT and grub as bootloader and it works.
 
-> from slram.c
-> NOTE:
->   With slram it's only possible to map a contigous memory region. 
-> 
-> So you can't access it with slram, as the BBSRAM is a device with
-> paged access. All you have to do, is copy slram.c to bbram.c and add
-> an additional parameter, which tells the driver the number of
-> pages.available. Then modify the erase / read / write functions to do
-> the page selection depending on the address you have to access. 
-> If you think this is out of your league, then hope, that somebody does
-> this for you sometimes, or ask one of the experts to help you for a
-> little fee immidiately :)
+Carlos Mateo
 
-Thanks to all! We will code... but I still can't figure how to prevent
-other processes to access this memory area.  IANAE on memory locking and
-stuff like that, nor in kernel programming in general.
-
-I'll learn :-)
-
---
-Geoffroy
+El Vie 13 Dic 2002 12:12, Alejandro O. Gonzalez escribi=F3:
+> I rebuild the kernel. Then I made this
+>
+> 1- run the driver
+> #modprobe doc2000
+> #modprobe docprobe
+>
+> 2- format the memory
+> #nftl_format /dev/mtd0 0 16777216
+>
+> 3- run nftl
+> #modprobe nftl
+>
+> 4- make a partition
+> #fdisk /dev/nftla
+> I make two partition first DOS, and second Linux.
+>
+> 5- make filesystem
+> #mkfs.msdos /dev/nftla1
+> #mke2fs /dev/nftla2
+>
+> 6-Install syslinux
+> #syslinux /dev/nftla1
+>
+> 7-configure boot and reboot
+>
+> I don=B4t know if this procedure is correct, but when reboot the bios n=
+ot
+> found a valid boot device.
+> When I format all memory with nftl_format command I delete the TrueFFS =
+bios
+> of MSYS. This is Ok ?
+>
+> I try then to overwrite the TrueFFS bios driver
+>
+> DFORMAT /WIN:E000 /S:DOC512.EXB /NOFORMAT /FIRST
+>
+> but display an error, can=B4t write the bios.
+>
+> I do so that the bios recognize the DOC like a valid device of boot.
+>
+> I try also to format with MSYS utility, then create a 2MB of DOS partit=
+ion.
+> Boot with linux and format the last 14 MB of memory with
+> nftl_format. But when startup nftl driver says "we don=B4t support
+> UnitSizeFactor!=3D1" and it is not possible to work with a nftl partiti=
+on.
+> I will appreciate any commentary, thank you for your time.
+> Regards,
+> Alejandro Gonzalez
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
