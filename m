@@ -1,20 +1,18 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from mx1.mail.ru ([194.67.23.121])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cn16r-0005JZ-Qj
-	for linux-mtd@lists.infradead.org; Fri, 07 Jan 2005 15:53:27 -0500
-Message-ID: <41DEF6BB.6040704@mvista.com>
-Date: Fri, 07 Jan 2005 12:53:15 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1Cn2jR-00065p-15
+	for linux-mtd@lists.infradead.org; Fri, 07 Jan 2005 17:37:22 -0500
+From: Alexey Dobriyan <adobriyan@mail.ru>
+To: dwmw2@redhat.com
+Date: Sat, 8 Jan 2005 01:36:23 +0200
 MIME-Version: 1.0
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-References: <41DED6C5.3080502@imc-berlin.de>
-	<41DED888.7040508@imc-berlin.de>	<Pine.LNX.4.58.0501071902390.13073@phoenix.infradead.org>	<41DEDECA.5070400@imc-berlin.de>
-	<Pine.LNX.4.58.0501071938420.14398@phoenix.infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0501071938420.14398@phoenix.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200501080136.23339.adobriyan@mail.ru>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: mount time, SUMMARY and gc.c ?
+Subject: [PATCH] jedec_probe.c: add c99 initializers
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Steven Scholz wrote:
-
->>And this slows down the start up of important user applications.
->>
->>Would it help to enable CONFIG_PREEMPT?
-
-It sounds like your apps need to write to an fs on flash and are blocked 
-on completion of the initial jffs2 gc pass, not that the cpu hogging is 
-blocking your apps.  If so, would suggest a separate partition with a 
-read-only fs (CramFS, etc.) for read-only data/executables (if not 
-already), maybe put /tmp and /var/tmp (or whatever dirs the apps are 
-writing to) in a ram fs such as tmpfs, and later copy 
-important/persistent data to jffs2 after everything's started up...
-
-
--- 
-Todd
+--- a/drivers/mtd/chips/jedec_probe.c	2005-01-08 01:20:33.805808392 +0200
++++ b/drivers/mtd/chips/jedec_probe.c	2005-01-08 01:24:16.630933824 +0200
+@@ -514,15 +514,16 @@
+ 			ERASEINFO(0x10000,8),
+ 		}
+ 	}, {
+-		mfr_id: MANUFACTURER_AMD,
+-		dev_id: AM29F002T,
+-		name: "AMD AM29F002T",
+-		DevSize: SIZE_256KiB,
+-		NumEraseRegions: 4,
+-		regions: {ERASEINFO(0x10000,3),
+-			  ERASEINFO(0x08000,1),
+-			  ERASEINFO(0x02000,2),
+-			  ERASEINFO(0x04000,1)
++		.mfr_id		= MANUFACTURER_AMD,
++		.dev_id		= AM29F002T,
++		.name		= "AMD AM29F002T",
++		.DevSize	= SIZE_256KiB,
++		.NumEraseRegions= 4,
++		.regions	= {
++			ERASEINFO(0x10000,3),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x04000,1)
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_ATMEL,
+@@ -770,15 +771,16 @@
+ 			ERASEINFO(0x04000,1)
+ 		}
+ 	}, {
+-		mfr_id: MANUFACTURER_HYUNDAI,
+-		dev_id: HY29F002T,
+-		name: "Hyundai HY29F002T",
+-		DevSize: SIZE_256KiB,
+-		NumEraseRegions: 4,
+-		regions: {ERASEINFO(0x10000,3),
+-			  ERASEINFO(0x08000,1),
+-			  ERASEINFO(0x02000,2),
+-			  ERASEINFO(0x04000,1)
++		.mfr_id		= MANUFACTURER_HYUNDAI,
++		.dev_id		= HY29F002T,
++		.name		= "Hyundai HY29F002T",
++		.DevSize	= SIZE_256KiB,
++		.NumEraseRegions= 4,
++		.regions	= {
++			ERASEINFO(0x10000,3),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x04000,1)
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_INTEL,
+@@ -1177,15 +1179,16 @@
+ 			ERASEINFO(0x10000,7),
+ 		}
+ 	}, {
+-		mfr_id: MANUFACTURER_MACRONIX,
+-		dev_id: MX29F002T,
+-		name: "Macronix MX29F002T",
+-		DevSize: SIZE_256KiB,
+-		NumEraseRegions: 4,
+-		regions: {ERASEINFO(0x10000,3),
+-			  ERASEINFO(0x08000,1),
+-			  ERASEINFO(0x02000,2),
+-			  ERASEINFO(0x04000,1)
++		.mfr_id		= MANUFACTURER_MACRONIX,
++		.dev_id		= MX29F002T,
++		.name		= "Macronix MX29F002T",
++		.DevSize	= SIZE_256KiB,
++		.NumEraseRegions= 4,
++		.regions	= {
++			ERASEINFO(0x10000,3),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x04000,1)
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_PMC,
+@@ -1262,7 +1265,8 @@
+  		.DevSize	= SIZE_256KiB,
+  		.CmdSet		= P_ID_SST_PAGE,
+  		.NumEraseRegions= 1,
+- 		regions: {ERASEINFO(0x01000,64),
++ 		.regions	= {
++			ERASEINFO(0x01000,64),
+  		}
+          }, {
+  		.mfr_id		= MANUFACTURER_SST,
+@@ -1274,7 +1278,8 @@
+  		.DevSize	= SIZE_256KiB,
+  		.CmdSet		= P_ID_SST_PAGE,
+  		.NumEraseRegions= 1,
+- 		regions: {ERASEINFO(0x01000,64),
++ 		.regions	= {
++			ERASEINFO(0x01000,64),
+  		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_SST,
