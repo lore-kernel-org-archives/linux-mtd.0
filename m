@@ -1,25 +1,21 @@
-Received: from ext-ch1gw-5.online-age.net ([64.37.194.13])
+Received: from anchor-post-34.mail.demon.net ([194.217.242.92])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BxRPp-0005y4-8e
-	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 10:27:50 -0400
-Received: from int-ch1gw-5.online-age.net (int-ch1gw-5 [3.159.232.69])
-	by ext-ch1gw-5.online-age.net (8.12.9/8.12.9/990426-RLH) with ESMTP id
-	i7IERdvC029170 for <linux-mtd@lists.infradead.org>;
-	Wed, 18 Aug 2004 10:27:39 -0400 (EDT)
-Received: from uswaumsxb1medge.am.med.ge.com (localhost [127.0.0.1])
-	by int-ch1gw-5.online-age.net (8.12.9/8.12.3/990426-RLH) with ESMTP id
-	i7IERbXK017304 for <linux-mtd@lists.infradead.org>;
-	Wed, 18 Aug 2004 10:27:38 -0400 (EDT)
-Message-ID: <412367CE.8050509@med.ge.com>
-Date: Wed, 18 Aug 2004 09:29:34 -0500
-From: Michael Howard <michael.howard@med.ge.com>
+	id 1BxS5o-00069H-2w
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 11:11:13 -0400
+Received: from baydel.demon.co.uk ([158.152.156.193])
+	by anchor-post-34.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BxS5i-0007Ue-0Y
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 15:11:07 +0000
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Simon Haynes <simon@baydel.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 18 Aug 2004 15:59:16 +0100
 MIME-Version: 1.0
-To: "havasi at inf.u-szeged.hu"@int-ch1gw-5.online-age.net,
-	linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: JFFS2 (NAND) mount time improvment
+Content-Transfer-Encoding: 8bit
+Message-ID: <1B6027A6223B@baydel.com>
+Subject: SSFDC
+Reply-To: simon@baydel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ferenc,
+I recently committed a ssfdc.c to CVS. I have changed this file recently to 
+operate with recent changes to the way in which the OOB data is written/read.
+It seems I have overlooked autoplacement for reads ?
 
-I have a 256M Samsung Nand and really need this reduced mount time.  I 
-would be most willing to test out your improvements.   Pls let me know 
-when it's submitted and I would be happy to test drive.
+I was getting some single bit errors in seemingly random bytes.  I believe 
+these were generated because I was performing a mtd->read and it was using 
+the oob ecc to correct the data. The problem was my ecc bytes were not in the
+same position as auto placement.
 
-Thanks
+Can anyone verify that this could be the case ?
 
-Mike
+I have applied a temporary fix to ssfdc.c but the whole way in which the oob
+is written/read needs addressing. I believe it should be possible for the mtd 
+layer to generate and correct my ecc bytes for me but I need to look into 
+this.
+
+I plan to update CVS but I would like to do some more testing first.
+
+Cheers
+
+Simon.
