@@ -1,19 +1,14 @@
-Received: from mercury.sun.com ([192.9.25.1])
+Received: from patan.sun.com ([192.18.98.43])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15NOcz-0003yZ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 01:58:49 +0100
-Received: from hsmtv32a.SFBay.Sun.COM ([129.145.120.36])
-	by mercury.Sun.COM (8.9.3+Sun/8.9.3) with ESMTP id SAA06254
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2001 18:03:47 -0700 (PDT)
-Received: from sun.com (natbox [129.145.120.47])
-	by hsmtv32a.SFBay.Sun.COM (8.9.3+Sun/8.9.3/ENSMAIL,v2.1p1) with ESMTP id SAA15963
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2001 18:03:46 -0700 (PDT)
-Message-ID: <3B5784F4.4A8F6BA5@sun.com>
-Date: Thu, 19 Jul 2001 18:10:12 -0700
+	id 15NOxO-00040K-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 02:19:54 +0100
+Message-ID: <3B578A10.2475DD64@sun.com>
+Date: Thu, 19 Jul 2001 18:32:00 -0700
 From: Tim Hockin <thockin@sun.com>
 MIME-Version: 1.0
-To: MTD List <linux-mtd@lists.infradead.org>
-Subject: structure field names
+To: Eric <ebrower@usa.net>, MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: [structure field names]
+References: <20010720011341.17284.qmail@nwcst289.netaddress.usa.net>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -27,9 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-would anyone object if I renamed some structure field members?  It would
-make the code much easier to follow, I think.  I would, of course, grep and
-replace as appropriate.
+Eric wrote:
+> 
+> There is a patch for SPARC/Linux in the patches directory
+> that performs 32- to 64-bit ioctl conversions.  If you
+> touch any struct member names that are used as ioctl args
+> this patch will need to be rev'ed as well.
+> 
+> Also, I just sent a new patch to Dave Miller this morning
+> for an update to these ioctl conversions-- if he accepts
+> it, I will update the patch in MTD CVS (which will then
+> need to merge with your changes).
+> 
+> Do you plan to change any of those ioctl args in mtd.h?
+
+I was just planning to change the map_info, cfi_private, mtd_info
+structures, so that the fields were more descriptive:
+
+size -> map_size
+size -> mtd_size
+
+And the likes.  Trying to decipher the MTD layer is very hard right now :)
+
+If there are any problems with Sparc patches, I can talk to Dave, he is
+always hanging around here.
 
 Tim
 -- 
