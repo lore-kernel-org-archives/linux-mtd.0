@@ -1,17 +1,15 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from f144.pav1.hotmail.com ([64.4.31.144] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 188T23-0004c1-00
-	for <linux-mtd@lists.infradead.org>; Sun, 03 Nov 2002 22:15:47 +0000
-Date: Sun, 3 Nov 2002 23:45:59 +0100 (CET)
-From: =?ISO-8859-1?Q?Henrik_Nordstr=F6m?= <hno@marasystems.com>
-To: Joseph Teichman <af671@osfn.org>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems with GRUB & nftl_format
-In-Reply-To: <1036364578.1604.12.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.44.0211032339150.10855-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+	id 188c5P-0005SV-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 07:55:51 +0000
+From: "vijay vijay" <vijay_peshkar@hotmail.com>
+To: joern@wohnheim.fh-wedel.de
+Cc: linux-mtd@lists.infradead.org, vijay.peshkar@wipro.com
+Subject: Re: mtd2 partition mapping on mtd1?...
+Date: Mon, 04 Nov 2002 08:25:37 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F144tdrNLa1Um2n8jey00002d52@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +21,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-You need to reserve sufficient amount of binary flash for the GRUB image
-before the NFTL partition. This is set by the "<start offset>" argument to
-nftl_format IIRC.
+Jörn,
 
-Alternatively, use the msys 5.X dformat tool to install GRUB. I think
-current versions of the DOC GRUB should be compatible with msys dformat
-5.x. (unfortunately I have not yet had time to verify)
+A correction. On further checking thru BDM device, am seeing that the
+mapping is OK. Only the write's are failing...
+After setting the proper unlock commands and writing the first 32bits,
+its reading back the same location and looping in that read. After some
+time (out?), its coming out, sometimes with Input/output error.
+Something unexpected is dd from /dev/zero seems to go thru...
 
-Regards
-Henrik Nordström
-MARA Systems AB, Sweden
+In my partitions table have not set any mask_flags and am using
+physmap.c with partition table and add/del _mtd_partitions() calls
+added.
+
+Any advice on how to go about this?.
+
+Thanks and Regards,
+Vijay
 
 
-On Sun, 3 Nov 2002, Joseph Teichman wrote:
-
-> partition it and set up an ext2 file system. Then, I used doc_loadbios
-> tool to install GRUB. GRUB Installed successfully, and it works, but at
-> the same time, it seems to have hosed up the doc again. The only thing
-> that I can do is to reformat the doc, which of course overwrites GRUB,
-> leaving back to square one. I am using a 2.4.19 kernel, with the latest
-> cvs grab of mtd-linux. Can anyone tell me what is happening and how I
-> can work around it?
+_________________________________________________________________
+Internet access plans that fit your lifestyle -- join MSN. 
+http://resourcecenter.msn.com/access/plans/default.asp
