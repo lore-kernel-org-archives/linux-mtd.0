@@ -1,17 +1,18 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fOJI-0003Tl-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 16:49:08 +0000
-Date: Mon, 25 Feb 2002 08:55:47 -0800 (PST)
-From: Adam Wozniak <awozniak@comdev.cc>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16fOQI-0003UL-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 16:56:22 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.21.0202251744570.12881-200000@dagobert.svc.sysgo.de> 
+References: <Pine.LNX.4.21.0202251744570.12881-200000@dagobert.svc.sysgo.de> 
 To: Robert Kaiser <rob@sysgo.de>
-cc: David Woodhouse <dwmw2@infradead.org>,  <linux-mtd@lists.infradead.org>,
+Cc: Adam Wozniak <awozniak@comdev.cc>, linux-mtd@lists.infradead.org,
     Jonas Holmberg <jonas.holmberg@axis.com>
 Subject: Re: Re-entrancy of flash erase/write 
-In-Reply-To: <Pine.LNX.4.21.0202251744570.12881-200000@dagobert.svc.sysgo.de>
-Message-ID: <Pine.LNX.4.33.0202250854540.28416-100000@rangers.comdev.cc>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 25 Feb 2002 17:07:37 +0000
+Message-ID: <22009.1014656857@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +24,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 25 Feb 2002, Robert Kaiser wrote:
-> On Mon, 25 Feb 2002, Adam Wozniak wrote:
->
-> > ENABLE/DISABLE_VPP  call the map_info set_vpp function
-> > For the physmap_map map_info, there is no set_vpp, it is NULL
-> >
-> > So for people who use physmap_map anyway, they won't see the behavior
-> > you are describing.  I suspect it is the same for other maps.
->
-> Hmm, so you are suggesting that this problem has not been noticed
-> because so few people have set_vpp() functions these days ?
+rob@sysgo.de said:
+>  [David, OK to apply this ?] 
 
-It explains why many people may not see the problem you're describing.
-I have no way to test that theory, however. =)
+I'd rather it was done in the map driver's set_vpp function itself. 
+Sometimes you have more than one map driver, because you have different 
+regions of flash - but they all share the same Vpp control. In which case 
+you need to do the counting in the map driver anyway. 
 
---Adam
--- 
-Adam Wozniak (KG6GZR)   COM DEV Broadband - Digital and Software Systems
-awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+
+>  I looked into this a little further: it seems that the erase
+> functions in cfi_cmdset_000?.c and amd_flash.c temporarily release the
+> chip->mutex while VPP is on. Won't that allow other threads to get
+> hold of the mutex and fiddle with VPP, possibly turning it off ? 
+
+I see the possibility, but surely that would only _actually_ happen if we 
+started to support writes during erase suspend? Otherwise, the only thing 
+that should happen during an erase is a _read_, which doesn't set and clear 
+vpp.
+
+
+--
+dwmw2
