@@ -1,16 +1,17 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from [213.154.159.169] (helo=pinot.profis.ro ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fffX-0004r1-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 11:21:15 +0000
-Date: Tue, 26 Feb 2002 12:32:18 +0100 (MET)
-From: Robert Kaiser <rob@sysgo.de>
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: MTD concat layer
-In-Reply-To: <1014303096.10758.6.camel@pcjonashg>
-Message-ID: <Pine.LNX.4.21.0202261145590.27658-202000@dagobert.svc.sysgo.de>
+	id 16fhN3-0004yr-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 13:10:18 +0000
+Date: Tue, 26 Feb 2002 15:24:41 -0500 (EST)
+From: Radu Corlan <rcorlan@pcnet.ro>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Thomas Gleixner <gleixner@autronix.de>, linux-mtd@lists.infradead.org,
+        Joerg Zastrau <dl1bku@amsat.org>
+Subject: Re: Support for parallel access in nand chips 
+In-Reply-To: <12603.1014686709@redhat.com>
+Message-ID: <Pine.LNX.4.10.10202261415120.706-100000@pinot.profis.ro>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="380371457-77528563-1014723138=:27658"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,320 +23,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+But nftl_format complains that the erase size is not 0x2000; Is there a
+newer version than 1.17?
 
---380371457-77528563-1014723138=:27658
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Radu
 
-Hi,
-
-here is my second attempt of an MTD concat layer. The issues that
-David found with the first one have (hopefully) been fixed. I have also
-made some benchmarks comparing MTD performance on the platforms I have
-at my disposal (DIL/NetPC and SC520CDP) with vs. without concat layer.
-
-Judging by these benchmarks it seems to me that the performance impact of
-the concat layer is almost negligible.
-
-On 21 Feb 2002, Jonas Holmberg wrote:
-
-> On Wed, 2002-02-20 at 16:35, Robert Kaiser wrote:
-> > The erase function has a bug for which I'm currently developing
-> > a fix. I hope to get it done by tomorrow.
-> I'm awaiting your erase-fix.
-
-As usual, it took a little longer than expected, but finally here it is :)
-
-> It seems like JFFS uses writev. Are you planning to implement the
-> v-functions?
-
-Yes, Both jffs and jffs2 use it, but both also have a substitute routine
-in case the driver doesn't provide one. Of course I could hack up
-what would basically be a copy of mtd_fake_writev() from jffs2/wbuf.c
-and add that to mtdconcat.c, but I think that would be wrong (see
-the comment in jffs2/wbuf.c, BTW).
+On Tue, 26 Feb 2002, David Woodhouse wrote:
 
 > 
-> > 
-> > > When can we expect to see this in CVS?
-> > 
-> > Good question :-). Apparently David is not yet completely convinced
-> > that it should be implemented the way I did. If you do some serious
-> > testing, your test results might help to persuade him (or prove to him
-> > that his scepticism was right). In any case, please share your
-> > results.
+> rcorlan@pcnet.ro said:
+> >  ok - i was going to make a separate source anyway. Do you know if the
+> > upper layers mind the 32k erase size?
 > 
-> Is it much work implementing it his way instead?
+> They'll be fine - it's still smaller than the typical erase size on NOR 
+> flash.
+> 
+> If you want to run JFFS2 on it, the ECC layout needs to be decided.
+> 
+> --
+> dwmw2
+> 
+> 
+> 
 
-The simple cases like read/write, etc. will probably not be hard
-to do in the partition layer. However, if you look at the new concat_erase
-function, I do not think it has much in common with the one in
-in mtdpart.c. Also the actual merging of MTD devices (i.e. generating
-a singe device object that reflects the properties of multiple underlying
-device objects) seems fundamentally different to me from what the
-partitioning layer does, but maybe I'm already so focused in my idea
-that I can't see the alternatives...
+-------------
+Radu Corlan           Snail Mail: Bucuresti sect. 1, 
+rcorlan@pcnet.ro             str. Argentina nr. 28, 71206 Romania
 
-> Your concat layer looks very clean, but David use to be
-> right :-)
-
-I believe David's biggest objection was the potential loss of performance
-due to the stacking of layers. I hope the benchmarks I made show that this
-is not a problem.
-
-Cheers
-
-Rob
-
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
-
---380371457-77528563-1014723138=:27658
-Content-Type: APPLICATION/x-gunzip; name="patch-mtd-concat.gz"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.21.0202261232180.27658@dagobert.svc.sysgo.de>
-Content-Description: New concat layer
-Content-Disposition: attachment; filename="patch-mtd-concat.gz"
-
-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
---380371457-77528563-1014723138=:27658
-Content-Type: APPLICATION/x-gunzip; name="patch-mtd-concat-part.gz"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.21.0202261232181.27658@dagobert.svc.sysgo.de>
-Content-Description: Additional concat stuf w/ slight modification to partitioni
-Content-Disposition: attachment; filename="patch-mtd-concat-part.gz"
-
-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
-F3eaAeb1Ajde96UgOqb9D2P9cYrxHwAA
---380371457-77528563-1014723138=:27658
-Content-Type: TEXT/plain; name="Benchmark.txt"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.21.0202261232182.27658@dagobert.svc.sysgo.de>
-Content-Description: concat benchmark results
-Content-Disposition: attachment; filename="Benchmark.txt"
-
-UGxhdGZvcm0gICAgICAgICAgICAgICAgICAgICAgICAgICAgIERJTC9OZXRQ
-QyB3aXRoIGNvbmNhdCBsYXllciBESUwvTmV0UEMgd2l0aG91dCBjb25jYXQg
-bGF5ZXIgIEFNRCBTQzUyMENEUCB3aXRoIGNvbmNhdCBsYXllciBBTUQgU0M1
-MjBDRFAgd2l0aG91dCBjb25jYXQgbGF5ZXINCkxheWVycyB0cmF2ZXJzZWQg
-ICAgICAgICAgICAgICAgICAgICAzICgyIHggcGFydC4gMSB4IGNvbmNhdCkg
-ICAgMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAyICgxIHggY29u
-Y2F0LCAxIHggcGFydC4pICAgICAgMA0KZXJhc2VhbGwgL2Rldi9tdGQveHgg
-ICAgICAgICAgICAgICAgIDQ1LjcgICAgICAgICAgICAgICAgICAgICAgICA0
-NS44ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDI4LjcgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAyOC4yDQpkZCBpZj0vZGV2L210ZC94eCBvZj0v
-ZGV2L251bGwgICAgICAgMS42ICAgICAgICAgICAgICAgICAgICAgICAgIDEu
-NiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMS4zICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIDEuMw0KZGQgaWY9L2Rldi96ZXJvIG9mPS9kZXYv
-bXRkL3h4ICAgICAgIDE4Ny41ICAgICAgICAgICAgICAgICAgICAgICAxODcu
-MyAgICAgICAgICAgICAgICAgICAgICAgICAgIDY2LjcgICAgICAgICAgICAg
-ICAgICAgICAgICAgICA2NS43DQptb3VudCAtdCBqZmZzMiAvZGV2L210ZGJs
-b2NrL3h4IC90bXAgMS4zICAgICAgICAgICAgICAgICAgICAgICAgIDEuMyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgMS4zICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIDEuMw0KY2QgL3RtcDsgdGFyIHh2ZiAvdGVzdC50YXIg
-ICAgICAgICAgIDIyNy4xICAgICAgICAgICAgICAgICAgICAgICAyMjIuMyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIDQ0LjYgICAgICAgICAgICAgICAg
-ICAgICAgICAgICA0NC41DQpjZCAvdG1wOyB0YXIgY3ZmIC90ZXN0MS50YXIg
-LiAgICAgICAgMzAuNCAgICAgICAgICAgICAgICAgICAgICAgIDMwLjkgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgOC40ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIDguNQ0KY2QgL3RtcDsgcm0gLXJmICogICAgICAgICAgICAg
-ICAgICAgIDIuOCAgICAgICAgICAgICAgICAgICAgICAgICAyLjcgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIDAuNiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAwLjUNCg0K
---380371457-77528563-1014723138=:27658--
+   You can still escape the "Gates" of Hell!   
+                 Use Linux!                       
+-------------
