@@ -1,19 +1,14 @@
-Received: from [203.200.31.15] (helo=mail.bpltelecom.com)
+Received: from web20004.mail.yahoo.com ([216.136.225.49])
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19rths-0002NA-K6
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Aug 2003 07:23:00 +0100
-Message-ID: <1574.10.10.14.131.1061966391.squirrel@mail.bpltelecom.com>
-Date: Wed, 27 Aug 2003 12:09:51 +0530 (IST)
-From: "Vidya Srinivas" <vidya.s@bpltelecom.com>
-To: <ilatypov@infradead.org>
-In-Reply-To: <20030826224753.GA4135@ei.homeip.net>
-References: <1578.10.10.13.147.1061881336.squirrel@mail.bpltelecom.com>
-        <20030826224753.GA4135@ei.homeip.net>
+	id 19rvA4-0002eg-Sf
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Aug 2003 08:56:13 +0100
+Message-ID: <20030827075547.44802.qmail@web20004.mail.yahoo.com>
+Date: Wed, 27 Aug 2003 00:55:47 -0700 (PDT)
+From: nicolas brin <nino01_2000@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: cramfs:wrong magic
+Content-Type: text/plain; charset=us-ascii
+Subject: file system using busybox
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +18,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+hi,
+I work with Montavista OS, I would like to buid a file
+system using busybox. Actually, when I run Linux with
+busybox tools I can see busybow message but after
+nothing: no message. Normally, I must display a
+message that is "mounted filesystem: ok". I think I
+find a package or something during filesystem
+configuration with Montavista's target tool. Please,
+could you say the package I have to choose it.
 
-Thanks a lot for the support.
+thks
 
-Actually it was a problem  regarding the endianness.
-My system was a big endian system and i am supposed to create a cramfs
-image for a big endian system (-rb option). One more person Mr. Fillod
-Stephane helped me out.
+nicolas 
 
-Thanks again.
-
-Regards,
-Vidya
-
-
->
-> On Tue, Aug 26, 2003 at 12:32:16PM +0530, Vidya Srinivas wrote:
->
->> root=/dev/mtdblock3 rootfstype=cramfs init=/sbin/init
->>
->> At the time of FS mounting, the kernel is throwing this error:
->>
->> cramfs : wrong magic
->
-> I know Debian (http://debian.org/) has a kernel patch to correctly
-> support cramfs root file system.  Debian maintainers provide this patch
-> for a long time.
->
-> I understand /dev/mtdblock3 can also be verified against the original
-> image.
->
-> --
-> Ilguiz Latypov
->
-> tel.  +1 (519) 569-7193
-> 31 Oprington Drive, Unit D3
-> Kitchener, Ontario N2N 3G3
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
--- 
-Vidya.S
-BPL TELECOM LTD
-11th KM, Arikere
-Bannergatta Road,
-Bangalore - 560072
-email - vidya.s@bpltelecom.com
-Ph - 6589080 extn - 2005
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
