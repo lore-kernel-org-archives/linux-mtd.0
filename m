@@ -1,15 +1,25 @@
-Received: from mail.oco.net ([216.171.163.254] helo=oco.net)
+Received: from blood.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEXjU-0002X7-Sy
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2003 17:34:17 +0000
-Message-ID: <3F9EA810.6010905@celerity.net>
-Date: Tue, 28 Oct 2003 09:32:00 -0800
-From: Chris Ellec <cellec@celerity.net>
-MIME-Version: 1.0
+	id 1AEdG9-0003KH-RK
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2003 23:28:22 +0000
+Received: from there (203-96-62-11-tollfree.actrix.co.nz [203.96.62.11])
+	by blood.actrix.co.nz (Postfix) with SMTP id 9B8854414
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Oct 2003 12:26:58 +1300 (NZDT)
+From: Charles Manning <manningc2@actrix.gen.nz>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: INFTL problems
+Date: Wed, 29 Oct 2003 12:33:08 +1300
+References: <3F9D3D98.6453.14E703@localhost>
+	<20031027202807.DA4481A0A7@desire.actrix.co.nz>
+	<1067339503.15551.429.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1067339503.15551.429.camel@hades.cambridge.redhat.com>
+MIME-Version: 1.0
+Message-Id: <20031028232658.9B8854414@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: SmartMedia FAT
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-I have a WinSystems devel board with a DOC on it. Dinfo from MSystems 
-reports a DOC 2000 at address D800 with 256 MB and an INFTL format.
+> Implementing SMTL really shouldn't be that hard. The mtd_blkdevs code in
+> CVS handles all the horridness of the Linux block layer for you and you
+> only need to write readsector() and writesector() routines. There's code
+> in drivers/usb/storage/sddr09.c which may help, since those devices make
+> the host do the translation.
 
-I apllied the latest CVS patches to 2.4.22, but I can't seem to detect 
-the chip.
+The flip side to this is that if you can find an SDDR09  you could likely get 
+YAFFS/JFFS2 working with that by bypassing the usb storage driver and 
+exposing it as NAND to mtd. However, SDDR09's are pretty rare. Samsung does 
+make a USB device for experimenting with NAND that could be used for the same 
+purpose.
 
-I followed the doc in CVS and compiled as modules with the following 
-options:
+I agree with David that the SMTL is simple. I have the code for a Win2K 
+version which I am not allowed to release. 
 
--------------------  from .config  ---------------------------
-#
-# Memory Technology Devices (MTD)
-CONFIG_MTD=m
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=3
-CONFIG_MTD_CHAR=m
-CONFIG_MTD_BLOCK=m
-CONFIG_NFTL=m
-CONFIG_NFTL_RW=y
-CONFIG_INFTL=m
-
-# Self-contained MTD device drivers
-CONFIG_MTD_DOC2000=m
-CONFIG_MTD_DOCPROBE=m
-CONFIG_MTD_DOCPROBE_ADDRESS=0
-
-#
-# NAND Flash Device Drivers
-CONFIG_MTD_NAND_IDS=m
-------------- end of .config  ----------------------------
-
-Then I do
-# modprobe -a doc2000  inftl mtdchar mtdblock
-# modprobe -a docprobe
-/lib/modules/2.4.22/kernel/driver/mtd/devices/docprobe.o: init_module: 
-Resource temporarily unavailable
-insmod docprobe failed
-
-
-in /var/log/messages I get:
-INFL: inftlcore.c $Revision 1.14 inftlmount.c $Revision 1.12
-No Recognized DiskOnChip found
-
-
-Now what do I do ?
-
-Chris.
+-- Charles
