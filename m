@@ -1,55 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14gGuc-0007pn-00
-	for mtd-list@infradead.org; Fri, 23 Mar 2001 02:02:46 +0000
-Received: from new-york.lcs.mit.edu ([18.26.4.65])
+	id 14gN50-0000aY-00
+	for mtd-list@infradead.org; Fri, 23 Mar 2001 08:37:54 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14gGub-0007ph-00
-	for mtd@infradead.org; Fri, 23 Mar 2001 02:02:45 +0000
-Date: Thu, 22 Mar 2001 21:02:27 -0500 (EST)
-Message-Id: <200103230202.f2N22R612056@new-york.lcs.mit.edu>
-From: "Douglas S. J. De Couto" <decouto@lcs.mit.edu>
-To: mtd@infradead.org
-cc: ipaq@handhelds.org
-Subject: jffs2 problem
-Reply-to: decouto@lcs.mit.edu
+	id 14gN4y-0000aS-00
+	for mtd@infradead.org; Fri, 23 Mar 2001 08:37:52 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200103230202.f2N22R612056@new-york.lcs.mit.edu> 
+References: <200103230202.f2N22R612056@new-york.lcs.mit.edu> 
+To: decouto@lcs.mit.edu
+Cc: mtd@infradead.org, ipaq@handhelds.org
+Subject: Re: jffs2 problem 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 23 Mar 2001 08:37:37 +0000
+Message-ID: <11429.985336657@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-running jffs2 on ipaq with linux, get the following errors:
+decouto@lcs.mit.edu said:
+>  is this likely to happen if i forgot to erase the flash with eflash
+> in the boat loader before loading the jffs2 image?  e.g. i had one
+> jffs2 image, and then i loaded another without eflashing.
 
+Yes.
 
-Argh. Special inode #1013 had more than one node
-Argh. Special inode #1007 had more than one node
-Argh. Special inode #1019 had more than one node
-Argh. Special inode #1014 had more than one node
-Argh. Special inode #1009 had more than one node
-Argh. Special inode #1022 had more than one node
-Argh. Special inode #1016 had more than one node
-Argh. Special inode #1017 had more than one node
-Argh. Special inode #1020 had more than one node
+>  the kernel i compiled is from the handhelds.org CVS, and the CVS
+> version is... well ther are a lot of files, so if you want to know a
+> specific thing i can tell you. 
 
-i am not really sure what the file system is supposed to be doing, QPE
-is running....
+A date should be sufficient.
 
-is this likely to happen if i forgot to erase the flash with eflash in
-the boat loader before loading the jffs2 image?  e.g. i had one jffs2
-image, and then i loaded another without eflashing.  or is it a bug?
+--
+dwmw2
 
-the jffs2 image was produced using mkfs.jffs2 with options 
-``-p -e 0x40000'' 
-
-the kernel i compiled is from the handhelds.org CVS, and the CVS
-version is... well ther are a lot of files, so if you want to know a
-specific thing i can tell you.
-
-cheers
-
-d
-
--- 
-Douglas S. J. De Couto    decouto@lcs.mit.edu
 
 
 
