@@ -1,19 +1,21 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141TiW-0006HN-00
-	for mtd-list@infradead.org; Thu, 30 Nov 2000 13:25:40 +0000
-Date: Thu, 30 Nov 2000 23:25:26 +1000
-Message-Id: <200011301325.XAA32592@singularity.tronunltd.com>
+	id 141U0Z-0006LU-00
+	for mtd-list@infradead.org; Thu, 30 Nov 2000 13:44:19 +0000
+Date: Thu, 30 Nov 2000 23:44:08 +1000
+Message-Id: <200011301344.XAA32650@singularity.tronunltd.com>
 To: "David Woodhouse" <dwmw2@infradead.org>
 Subject: Re: inter-module-2.2.17 patch
 From: "Ian" <Relativity@HumanHeuristic.com>
-Cc: mtd@infradead.org
+Cc: lkhatskevitch@hotmail.com, mtd@infradead.org
 Reply-To: "Ian" <Relativity@HumanHeuristic.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-I've just downloaded it ... lemme build it up and give it a go .. back shortly.
+Works like a bought one :)
+
+Thanks Dave - and thanks to Levi too.
 
 
   ----- Original Message -----
