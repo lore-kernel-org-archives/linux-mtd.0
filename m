@@ -1,13 +1,13 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11vofg-0004yY-00
-	for mtd-list@infradead.org; Wed, 08 Dec 1999 21:30:48 +0000
+	id 11vokM-0004zm-00
+	for mtd-list@infradead.org; Wed, 08 Dec 1999 21:35:38 +0000
 Received: from mail1.danielind.com ([12.19.96.6])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11voff-0004yS-00
-	for mtd@imladris.mvhi.com; Wed, 08 Dec 1999 21:30:47 +0000
-Message-ID: <384ECE55.83FAD600@danielind.com>
-Date: Wed, 08 Dec 1999 15:32:05 -0600
+	id 11vokL-0004zg-00
+	for mtd@imladris.mvhi.com; Wed, 08 Dec 1999 21:35:37 +0000
+Message-ID: <384ECF77.C1F5D6FC@danielind.com>
+Date: Wed, 08 Dec 1999 15:36:55 -0600
 From: Vipin Malik <vmalik@danielind.com>
 MIME-Version: 1.0
 To: MTD <mtd@imladris.mvhi.com>
@@ -17,76 +17,56 @@ Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
+Bob Canup wrote:
 > 
-> Orono@m-sys.com said:
-> > The only way to be resistant to power failures in the file system
-> > level  is to use a log-structured file system.
+> It is obvious that a physical medium such as a disk is vulnerable to
+> having a bad sector created by the process that I described. The proof
+> is simple: pop out a diskette while you are writing to it and you stand
+> a good chance of creating a sector in which the CRC and data are out of
+> sync. When you attempt to read the sector you will get a bad CRC.
 > 
-> > I heard ext3 is log-structured but I am sure one of the Linux guys here
-> > knows more about this,
+> This occurs in a diskette because the writing process is a serial event;
+> it is spread over time. So there is a window in which an interruption
+> can create a bad sector.
 > 
-> ext3 is a journalling filesystem. I believe that it's not log-structured.
+> Let us assume the the DOC writes all of the bytes in a page including
+> the ECC code in parallel, let us also assume that you have an internal
+> bit which marks a sector as good when that process has completed. There
+> nevertheless is a time during the 'burn' of the bits where we are in an
+> analog state of changing the bits. If power is lost at that time - some
+> of the bits will not have changed to their proper state. Even if the
+> page is not marked as good an attempt to read the page will result in an
+> ECC and data which do not match and the result is a bad sector. The
+> sector may be easily recovered by erasing it and starting over - but as
+> long as there is an analog aspect to changing the states - the bits will
+> not all change at the same instant and a window for corruption exists.
 
-Is ext3 already available in beta form? Is it included in the latest
-2.3.x kernels?
-
-
-> 
-> Journalling is sufficient for protection from power failures. Stephen,
-> would you care to elaborate on the difference?
-
-What is the overhead of Journalling? (CPU AND flash space). Of course if
-that solves the problem, then that is the most important thing (for me
-at least).
-
-> 
-> > Any other file system  that takes power failures into account, (I am afraid
-> > to guess NFTL ????).
-> 
-> I believe that NTFS is also journalling but not log-structured.
-> 
-> > Some of our customers use their own home brewed LFSs and do it successfully.
-> 
-> Personally, I'm inclined to believe that we should run a filesystem directly
-> on the flash device - rather than faking a block device and running a 'normal'
-> filesystem on top of that.
-
-I think that would probably be the best idea also, since in repairing
-low level partitions vs a higher level f/s, could get really difficult
-to prove that it is reliable.
-
-The only problem with this approach is that it is not the usual "linux"
-layered approach. But maybe that approach does not work well with
-embedded systems and is a hit we are willing to accept?
-
-Another problem with the usual "layered" approach is that the VFS uses a
-lot of buffering in its layer. This is usually desirable for read/write
-performance, however for logs etc. on FLASH this is probably NOT
-desirable.
-
-When I write a log, I want it written and saved. I guess one could do
-sync() etc. every time but not very elegant.
-
-> 
-> I've been rushed off my feet here with other things for a while, but as soon as
-> I get back to it, after I've fixed the NFTL and DiskOnChip Millennium support,
-> that's what I'm intending to look at.
-
-Do you have an estimate for the time frame that you are looking at?
-
-I am willing to help out with coding, as I am extremely interested in
-this (and
-have access to lots of different embedded hardware with FLASH, SRAM etc.
-on it, and if needed I could possibly buy more :).
+Ah! buy having a CRC on the *ENTIRE* sector gets around this problem.
+Unless ALL the bits are burned in, the CRC will not match on a read.
+As to what happens the next time power comes back on, I guess that one
+does not erase the "good" sector till the new one is completely written.
+This way, at least you have the last (old) data still available.
 
 
 > 
-> If you're running ext2 on a DiskOnChip you should mount it with the noatime
-> option if you can - this will eliminate a lot of write activity.
+> Vipin's original post said that he saw bad sectors about once in every
+> 250 power down cycles. Oran is telling us that can't occur.
+
+I mailed a detailed post about this one a few mails ago. Plese refer
+that.
+
 > 
-> --
-> dwmw2
+> Of course if my analysis is correct then you are safe to erase the bad
+> sector - it was the last one being written; the file system would then
+> be left in a state in which e2fsck could hopefully repair it.
+
+Unfortunately, if the lower layer driver does not know WHAT goes in that
+sector (inodes, data, etc), it could end up erasing a sector with inodes
+in it. This is something that e2fsck will not be able to recover from
+(at least without potentially killing a bunch of files on the system).
+
+> 
+> Or am I off in left field with this?
 > 
 > To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
