@@ -1,15 +1,15 @@
 Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ZDfy-0002ye-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 16:15:03 +0000
-Message-ID: <3C63FB44.5541D76D@comdev.cc>
-Date: Fri, 08 Feb 2002 08:22:28 -0800
+	id 16ZFh8-00035o-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2002 18:24:22 +0000
+Message-ID: <3C64199A.2E61AB33@comdev.cc>
+Date: Fri, 08 Feb 2002 10:31:54 -0800
 From: Adam Wozniak <adam.wozniak@comdev.cc>
 MIME-Version: 1.0
-To: acurtis@onz.com
+To: David Woodhouse <dwmw2@infradead.org>
 CC: linux-mtd@lists.infradead.org
-Subject: Re: Flash left in a write mode
-References: <NCBBIINEHIPFGJPLBEIFMEBBDEAA.acurtis@onz.com>
+Subject: i node, u node, we all node for inodes
+References: <Pine.LNX.4.44.0202081054280.25850-100000@lapdancer.baythorne.internal>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -23,23 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Allen Curtis wrote:
-> 
-> I have observed a problem where the flash is left in a write mode even after
-> the file-system is unmounted. (Intel Strata flash, cmdset_0001.c)
-> 
-> The problem is this: if the flash is written to and then the system is
-> immediately rebooted, the flash is left in a write state. (if you read it
-> you get status information not flash contents.) If you then try to boot off
-> of this device, it will fail. If you read the flash, with a "dd" command for
-> instance, then you can reboot successfully.
-> 
-> I am surprised that this problem has not been reported. It should be an easy
-> fix. (something that I will handle in BIOS code until it is patched.)
+Is there some sort of "JFFS2 internals for dummies" guide around?
 
-Yeah, I've seen that.  I patched my reboot code to always throw the
-flash
-into read mode.
+I'm seeing odd behavior that I can only attribute to linked lists
+in RAM becoming corrupt, and I'd like to get a better understanding
+of how each list is used, etc...
+
+In the JFFS2 context...
+
+Is the next_phys chain in the raw_node_ref null terminated?
+
+Is the trick with the NULL member in the inode_cache guaranteed to
+always work,
+or just at boot time?
+
+Can an inode have raw nodes in multiple erase blocks?  If so, how is
+this
+represented in the raw_node_ref?
+
+Does an inode have a fixed or maximum size?
+
+Can a raw node contain data used by mutiple inodes?  If not, what
+prevents
+this from happening?
+
+Some basic definitions would be helpful.
 
 --Adam
 -- 
