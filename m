@@ -1,18 +1,15 @@
-Received: from elproma-gw.hbz.pl ([213.77.124.176] helo=elproma.com.pl)
+Received: from f69.pav1.hotmail.com ([64.4.31.69] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 187HCI-0003JD-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 15:25:26 +0000
-Received: from ptroja by elproma.com.pl with local (Exim 3.35 #1 (Debian))
-	id 187Hey-0006bh-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 16:55:04 +0100
-Date: Thu, 31 Oct 2002 16:55:04 +0100
-From: Piotr Trojanek <ptroja@elproma.com.pl>
+	id 187HTM-0003KH-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 15:43:04 +0000
+From: "vijay vijay" <vijay_peshkar@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: how to compile CVS stuff
-Message-ID: <20021031155504.GA25329@elproma.com.pl>
+Cc: vijay.peshkar@wipro.com
+Subject: patches for PPC 2.2...
+Date: Thu, 31 Oct 2002 16:12:42 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; format=flowed
+Message-ID: <F69qiaxoNW2ec6ncyab00019ad9@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,19 +21,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello!
+Hi,
 
-I work with DOC with nftl driver from vanilla 2.4.19.
-Now I wan't to take fresh stuff from CVS, but I'm unable to comile it.
-I was trying many ways, but can you give me step-by-step instruct how to
-do this? When I just copy things into kernel tree, it won't work.
+Am having montavista's PPC kernel version 2.2. There seem to be lot of 
+changes between the code(cramfs/inode.c and fs.h - super_lock). Any pointers 
+on getting patch(es?) for mtd, cramfs etc.,?.
 
-And one more question:
-can I make 2 partitions on my DOC: nftla[12] and put bootloader stuff
-and bzImage on first, with JFFS2 on second?
-JFFS2 needs mtdblock device, and whole chip is seen as mtd0.
+Thanks and Regards,
+Vijay
 
-or maybe I miss something?:)
 
--- 
-Piotr Trojanek
+_________________________________________________________________
+Unlimited Internet access -- and 2 months free!  Try MSN. 
+http://resourcecenter.msn.com/access/plans/2monthsfree.asp
