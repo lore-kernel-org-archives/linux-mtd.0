@@ -1,16 +1,17 @@
-Received: from [194.79.107.66] (helo=abc1915.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kJpY-00055t-00
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 08:35:07 +0100
-From: "Opt-inList" <besthomebiz@subdimension.com>
-Reply-To: stockbuyer@netzero.net
-To: linux-mtd@lists.infradead.org
-Date: Thu, 29 Aug 2002 03:47:28 -0500
-Subject: Everybody Gets Paid - No Recruiting Needed
+Received: from msr8.hinet.net ([168.95.4.108] helo=msr.hinet.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17kKqO-0005gc-00
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 09:40:02 +0100
+Message-ID: <3D6DDDC9.2080106@ms11.hinet.net>
+Date: Thu, 29 Aug 2002 16:39:37 +0800
+From: Steve Tsai <startec@ms11.hinet.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E17kJpY-00055t-00@pentafluge.infradead.org>
+To: Paul <eepaul@cnuninet.com>
+CC: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: I need some help about nand flash.
+References: <000501c24f26$2d8cf800$09090d0a@paul2k>
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,43 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Everybody gets paid=2E  No recruiting required=2E
+I do not know your condition very well, but I think all the pins of the
+flash you connect correctly. What's the WE and RE timimg diagram in your
+board? In my board, I use CS to control WE and RE and I have not enought
+WE pull-high hold time, when two continue writeb functions are called in
+nand_command. I delay few nsec between writeb funciotns to solve my
+problem. You can try this and if you can provide more information about
+your system, maybe I can give you more sugestion.
 
-Join and reserve a position for free now=2E
-Program is 18 weeks old and it's paying=2E
+Steve Tsai
 
-Everybody gets in line to get paid by all
-the new people coming in =28but it's NOT a
-traditional straightline=29=2E=2E=2EEVERYONE makes money=2E=2E=2E
-and those that sponsor make more=2E=2E=2E=2E
-
-=3Chtml=3E
-=3Ca href=3D=22mailto=3Agmt101info=40profitresponder=2Ecom=3Fsubject=3Dsend-more-info=22=3Cb=3E
-Click here to request for more information=3C=2Fb=3E=3C=2Fa=3E
-
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-=3Cbr=3E
-
-
-
-
-
-
-
-
-
-
-
-
-=3Ca href=3D=22mailto=3Astockbuyer=40netzero=2Enet=3Fsubject=3DREMOVE=22=3Cb=3E
-We belong to the same opt-in list=2E But if wish to have your email
-address REMOVE from our database please click here=3C=2Fb=3E=3C=2Fa=3E
-=3C=2Fhtml=3E
+>Hi:
+>    I have read your post http://lists.infradead.org/pipermail/linux-mtd/2002-June/005286.html.
+>    
+>    Now I encounter the same problem as you. 
+>    The flash I used is TC58128AFTI manufacted by Toshiba.
+>    I can read Device ID,read Status and Reset it successfully,but I can't read data.
+>    I captured the timing diagram with a logic analyzer .It meets all requirements stated in 
+>the chip's datasheet. 
+>    When I perform a read operation(the command code is 0x00),the RY/BY# keeps high when the third address has been latched and that the data I read is always 0x00.
+>   
+>   
+>   Any advice will be apreciated.
+>
+>   Thank you very much.
+>
+>
+>
+>  
+>
