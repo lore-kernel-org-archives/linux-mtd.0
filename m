@@ -1,65 +1,52 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14QCbR-0003Zn-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 18:12:33 +0000
-Received: from celeborn.rivendell.insynq.com ([216.174.202.131] ident=root)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14QCbQ-0003Zh-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 18:12:32 +0000
-Received: from pyramid.insynq.com (pyramid.office.insynq.com [10.2.2.10])
-	by celeborn.rivendell.insynq.com (8.9.3/8.8.7) with ESMTP id KAA14826
-	for <mtd@infradead.org>; Tue, 6 Feb 2001 10:12:00 -0800
-Received: by insynq.com
-	via sendmail from stdin
-	id <m14QCaj-0016mGC@pyramid.insynq.com> (Debian Smail3.2.0.102)
-	for mtd@infradead.org; Tue, 6 Feb 2001 10:11:49 -0800 (PST)
-From: "Ian Eure <Ian Eure" <ieure@insynq.com>
+	id 14QDTx-00045q-00
+	for mtd-list@infradead.org; Tue, 06 Feb 2001 19:08:53 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14QDTw-00045k-00
+	for mtd@infradead.org; Tue, 06 Feb 2001 19:08:52 +0000
+Date: Tue, 6 Feb 2001 19:08:44 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Ian Eure <Ian Eure" <ieure@insynq.com>
+cc: <mtd@infradead.org>
+Subject: Re: NFTL Performance
+In-Reply-To: <14976.15788.166844.107972@pyramid.insynq.com>
+Message-ID: <Pine.LNX.4.30.0102061906020.2237-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <14976.15973.43530.527006@pyramid.insynq.com>
-Date: Tue, 6 Feb 2001 10:11:49 -0800 (PST)
-To: mtd@infradead.org
-Subject: doc2k: "formatting block"?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-while testing a 32mb doc2000, i see these messages:
+On Tue, 6 Feb 2001, Ian Eure <Ian Eure wrote:
 
--- snip --
-DiskOnChip 2000 found at address 0xD0000
-Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
-2 flash chips found. Total DiskOnChip size: 32 Mb
-Block 807: referencing block 110 already in another chain
-Formatting chain at block 807
-Formatting block 807
-Unreferenced block 366, formatting it
--- snip --
+> a more important problem that i see is that when blocks are being
+> flushed to the DOC, certain parts of the system (mouse, maybe others) stop
+> responding until the write is complete.
 
-...and later on:
+More likely to be the busy-wait in _DoC_WaitReady():
 
--- snip --
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 121, count = 1
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 185, count = 1
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 217, count = 1
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 233, count = 1
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 248, count = 1
-EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 243, count = 1
-end_request: I/O error, dev 5d:01 (unknown), sector 8274
-EXT2-fs error (device nftl(93,1)): ext2_free_branches: Read failure, inode=12, block=4137
--- snip --
+ while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B) && --c)
+                ;
 
-is this a software problem, or a bad doc?
+Try... 
+	while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B) && --c) {
+		if (current->need_resched)
+			schedule();
+		else
+			udelay(1);
+	}
 
-i suppose it could be my eval board, they don't seem to be made very
-well.
+But I think you have to protect against being re-entered by using a 
+'state' variable to mark that you're currently writing to the chip, and 
+probably also a spinlock to protect that state variable. The NOR flash 
+drivers do all this if you're after an example.
 
 -- 
- ___________________________________
-| Ian Eure - <ieure@insynq.com>     | "You're living in a facist world...
-|         -  Developer -            | Freedom is a luxury." -Front Line
-|        -  InsynQ, Inc. -          | Assembly, "Digital Tension Dementia"
-| Your Internet Utility Company.tm  |________________________________________
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
