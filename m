@@ -1,50 +1,31 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141Ayw-0001Fq-00
-	for mtd-list@infradead.org; Wed, 29 Nov 2000 17:25:22 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 141Ayo-0001Fk-00
-	for mtd@infradead.org; Wed, 29 Nov 2000 17:25:16 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <44632C76B97BD211AF6B00805FADCAB202D738E3@exchange.saltaire.pace.co.uk> 
-References: <44632C76B97BD211AF6B00805FADCAB202D738E3@exchange.saltaire.pace.co.uk> 
-To: Simon Wood <Simon.Wood@pace.co.uk>
-Cc: "'wear-hard@haven.org'" <wear-hard@haven.org>,
-    "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: M-System DOC Millennium with MTD. 
+	id 141BmP-0001bJ-00
+	for mtd-list@infradead.org; Wed, 29 Nov 2000 18:16:29 +0000
+Date: Wed, 29 Nov 2000 11:19:36 +0000
+From: Shane Nay <shane@agendacomputing.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Shane Nay <shane@agendacomputing.com>, Nicolas Pitre <nico@cam.org>,
+   mtd@infradead.org
+Subject: Re: XIP kernel + MTD polling interest
+Message-ID: <20001129111936.M996@www.easysolutions.net>
+References: <20001129101917.H996@www.easysolutions.net> <20001128085354.L17376@www.easysolutions.net> <20001128070007.E17376@www.easysolutions.net> <Pine.LNX.4.30.0011282033210.546-100000@xanadu.gn.com> <20001128085354.L17376@www.easysolutions.net> <28079.975427082@redhat.com> <20001129101917.H996@www.easysolutions.net> <28305.975518294@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 29 Nov 2000 17:24:33 +0000
-Message-ID: <28915.975518673@redhat.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <28305.975518294@redhat.com>; from dwmw2@infradead.org on Wed, Nov 29, 2000 at 17:18:14 +0000
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Simon.Wood@pace.co.uk said:
-> 2). insmod'ed the modules (without any options) in the following order
-> -
-> 	nftlmount
-> 	mtdcore
-> 	nftl
-> 	docprobe
-> 	docecc
-> 	doc2001 
+> 
+> Sounds reasonable to me. I'd like to see the section magic too.
 
-Load docprobe last. We are going to merge the code so you only have to load 
-nftl.o and the DiskOnChip driver (we'll probably call it doc200x.o) and 
-then it won't matter what order you load them in. Not quite yet though.
+It's in:
+ftp://shane.dnsalias.net/pub/mtd-xip-snap-0.1.tar.gz
 
-Simon.Wood@pace.co.uk said:
->  3). Tried to 'mount /dev/nftla /floppy' and got error 'mount: /dev/
-> nftla has wrong major or minor number'.
-
-It hasn't found the DiskOnChip. mount(8) ought to give you a better error 
-than that though.
-
---
-dwmw2
-
+Included is the linker script, and the files I've changed thus far.  When
+I'm finished I'll make a real diff, and do the kernel configuration stuff.
 
 
 
