@@ -1,12 +1,8 @@
-Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CmvEx-0008PZ-Rv
-	for linux-mtd@lists.infradead.org; Fri, 07 Jan 2005 09:37:24 -0500
-Date: Fri, 7 Jan 2005 14:37:08 +0000 (GMT)
-From: jasmine@linuxgrrls.org
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0501071432390.12887@phoenix.infradead.org>
-Message-ID: <Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
+Date: Fri, 7 Jan 2005 14:50:56 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: jasmine@linuxgrrls.org
+In-Reply-To: <Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
+Message-ID: <Pine.LNX.4.58.0501071448290.12960@phoenix.infradead.org>
 References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
 	<20041222160942.GC9783@wohnheim.fh-wedel.de>
@@ -22,8 +18,10 @@ References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0501071419550.12054@phoenix.infradead.org>
 	<Pine.LNX.4.61.0501071425550.28205@hex.linuxgrrls.org>
 	<Pine.LNX.4.58.0501071432390.12887@phoenix.infradead.org>
+	<Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
 Cc: joakim.tjernlund@lumentis.se, MTD List <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS3 & performance
@@ -36,20 +34,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 7 Jan 2005 jasmine@linuxgrrls.org wrote:
 
+> 
+> 
+> On Fri, 7 Jan 2005, Artem B. Bityuckiy wrote:
+> 
+> > Hmm, why is this better? (I suppose you mean cache line size)
+> 
+> Because ARM926 has a compulsory cache penalty cycle on every line
+> traversal.  (This is why ARM926 is about 8% slower than ARM925 at
+> the same clock frequency.)  There is also a penalty on every eighth
+> page mapped in, because there are only eight microTLB entries and
+> there are wait states on the main TLB.
+> 
+> > But bake them word-aligned is good.
+> 
+> Not word-aligned, cacheline-aligned.
+> 
+> -J.
+> 
+And it seems difficult to take into account a lot of platform-dependent 
+things. Isn't it better to have one universal test?
 
-On Fri, 7 Jan 2005, Artem B. Bityuckiy wrote:
-
-> Hmm, why is this better? (I suppose you mean cache line size)
-
-Because ARM926 has a compulsory cache penalty cycle on every line
-traversal.  (This is why ARM926 is about 8% slower than ARM925 at
-the same clock frequency.)  There is also a penalty on every eighth
-page mapped in, because there are only eight microTLB entries and
-there are wait states on the main TLB.
-
-> But bake them word-aligned is good.
-
-Not word-aligned, cacheline-aligned.
-
--J.
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
