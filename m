@@ -1,22 +1,19 @@
-Received: from mail.dev.equiinet.com ([194.164.241.163])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C2tyB-0008Ep-8A
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2004 11:57:52 -0400
-Received: from invader.dev.equiinet.com (unknown [192.168.100.120])
-	by mail.dev.equiinet.com (Postfix) with ESMTP id A31344B6D7
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  2 Sep 2004 16:57:47 +0100 (BST)
-Received: from graham by invader.dev.equiinet.com with local (Exim 3.36 #1
-	(Debian)) id 1C2ty7-0002oB-00
-	for <linux-mtd@lists.infradead.org>; Thu, 02 Sep 2004 16:57:47 +0100
-Date: Thu, 2 Sep 2004 16:57:47 +0100
-From: Graham Keeling <graham@equiinet.com>
+Received: from m11.nyc.untd.com ([64.136.22.74])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2wsY-0000Ur-Cv
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2004 15:04:15 -0400
+Received: from m11.nyc.untd.com (localhost [127.0.0.1])
+	by m11.nyc.untd.com with SMTP id AABAVQ5VSA67ZKLA
+	for <linux-mtd@lists.infradead.org> (sender <alanastinson@juno.com>);
+	Thu,  2 Sep 2004 12:03:12 -0700 (PDT)
 To: linux-mtd@lists.infradead.org
-Message-ID: <20040902155747.GA9201@invader.dev.equiinet.com>
-Mime-Version: 1.0
+Date: Thu, 2 Sep 2004 13:41:23 -0500
+Message-ID: <20040902.134123.3496.1.alanastinson@juno.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: MTD newbie trying to use AM29F016B
+Content-Transfer-Encoding: 7bit
+From: Alana R Stinson <alanastinson@juno.com>
+Subject: subscription
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-I am trying to get access (using Linux) to two AM29F016B flash chips on a
-machine that I have inherited.
-I haven't been able to find an introduction to MTD on the internet.
-What I've been trying (using 2.4.22 kernel) is this:
-Set the following kernel options...
-
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=m
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=3
-CONFIG_MTD_PARTITIONS=m
-# CONFIG_MTD_CONCAT is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
-# CONFIG_MTD_CHAR is not set
-CONFIG_MTD_BLOCK=m
-# CONFIG_MTD_BLOCK_RO is not set
-# CONFIG_FTL is not set
-# CONFIG_NFTL is not set
-
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_CFI=m
-CONFIG_MTD_JEDECPROBE=m
-CONFIG_MTD_GEN_PROBE=m
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-CONFIG_MTD_CFI_AMDSTD=m
-# CONFIG_MTD_CFI_STAA is not set
-CONFIG_MTD_RAM=m
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-CONFIG_MTD_OBSOLETE_CHIPS=y
-CONFIG_MTD_AMDSTD=m
-# CONFIG_MTD_SHARP is not set
-CONFIG_MTD_JEDEC=m
-
-
-I then end up with these modules:
-
-mtdcore
-mtdblock
-mtdpart
-
-amd_flash
-cfi_cmdset_0002
-cfi_probe
-chipreg
-gen_probe
-jedec
-jedec_probe
-map_ram
-
-When I use modprobe to install these modules, they give no errors and lsmod
-shows that they are installed. No warnings or anything else appear in any
-log. I don't know whether I am installing them in the wrong order or
-something.
-
-/proc/mtd contains:
-dev:    size   erasesize  name
-
-If things were working correctly, I think that there should be more stuff in
-/proc/mtd.
-AM29F016 is listed in jedec_probe.c, which seems similar enough to
-AM29F016B.
-
-I don't know where to go from here. Any help at all would be appreciated!
+I don't think that I subscribed to your list, but would like information
+in case I want to in the future.
 Thanks,
-Graham.
+A Stinson
+
+________________________________________________________________
+Get your name as your email address.
+Includes spam protection, 1GB storage, no ads and more
+Only $1.99/ month - visit http://www.mysite.com/name today!
