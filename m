@@ -1,16 +1,17 @@
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+Received: from gw3.laser5.co.jp ([211.5.140.198] helo=mail.laser5.co.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18foHM-0002CJ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 21:37:24 +0000
-Date: Mon, 3 Feb 2003 22:37:03 +0100 (CET)
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Russ Dill <Russ.Dill@asu.edu>
-cc: leeyang <leeyang@ycig.com>, <linux-mtd@lists.infradead.org>
-In-Reply-To: <1044300428.15823.11.camel@timmy>
-Message-ID: <Pine.LNX.4.44.0302032233510.22969-100000@filer.marasystems.com>
+	id 18ftcm-0003Hf-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2003 03:19:53 +0000
+Message-ID: <3E3F31CC.7070701@laser5.co.jp>
+Date: Tue, 04 Feb 2003 12:21:48 +0900
+From: Vishal <vishal@laser5.co.jp>
 MIME-Version: 1.0
-Subject: Re: need suggestion about embedded FS plan
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org
+References: <3E3E517F.9010908@laser5.co.jp> <200302032004.17611.tglx@linutronix.de>
+Subject: Re: help: bootloader for loading kernel from mtdblock device on flash........
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,43 +23,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-No need for a linuxrc for such stuff.. simply have it as a sysinit script 
-in your inittab.
+Its for an ARM7 core.
+I have the block driver for the JFFS on NAND Flash ready. I have the 
+basic bootloader code. I was wondering whether i can do the proceed in 
+the following way :
+1. take the read/verify  code from the JFFS block driver for NAND flash, 
+and put it in my bootloader code
+2. The driver code that i copy will have a lot of kernel API calls...so 
+i need to incorporate those also into my driver.
+3. finally use this functionality achieved to read a kernel.bin file 
+from the /dev/mtdblock device and load it.
+ or is there  any other workaroud?
 
-If the mounting of etc makes that you will have a "better" inittab than in 
-the underlying root just do a "telinit q" after mounting the real etc.
+Thomas Gleixner wrote:
 
-Regards
-Henrik
-
-
-On 3 Feb 2003, Russ Dill wrote:
-
-> 
-> > In fact,there is only a little fs need to
-> > be 'SAVE',like /etc direcory,it take rooms less
-> > than %1 of all flash size.And the main parts
-> > /lib,/sbin,/bin...maybe never changed.
-> > So I have an idea,
-> > Put main parts of fs(/lib,/sbin....)on Cramfs
-> > at one of the flash bank.
-> > Put bootloader,kernel and need-save-fs(/etc) on
-> > the other flash bank with jffs2 fs.
-> > 
-> > Is that possible?Sth ,I am not sure,is if no
-> > /etc in root fs,Maybe it can not boot up!!!
-> 
-> just make a /linuxrc, linuxrc is a shell script run by the kernel
-> (init=/linuxrc) that would do stuff like:
-> 
-> #!/bin/sh
-> mount -t ramfs ramfs /var
-> mount -t ramfs ramfs /tmp
-> mkdir /var/run
-> mkdir /var/lock
-> mount -t jffs2 /dev/mtd2 /etc
-> exec /sbin/init
-> 
-> 
-> 
-> 
+>On Monday 03 February 2003 12:24, Vishal wrote:
+>
+>>Hi all,
+>>  I am a mtd newbie, and have been assigned the task of writting a boot
+>>loader that can boot a kernel file placed in a mtdblock device, on NAND
+>>flash( Samsung K9F2808U08). I would like suggestions on going about with
+>>this process. If some one could take some time to at least list down the
+>>steps involved in the same, it would be of immense help me.
+>>
+>What CPU architecture ?
+>
