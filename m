@@ -1,24 +1,17 @@
-Received: from ptb-relay03.plus.net ([212.159.14.214])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8PIR-00080s-01
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 15:57:48 -0500
-From: Gareth Bult <gareth@linux.co.uk>
+	id 1D8PLH-0008As-5R
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 16:00:44 -0500
+Date: Mon, 7 Mar 2005 22:00:39 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1110226862.29792.149.camel@baythorne.infradead.org>
-References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
-	<20050307110413.GD2198@wohnheim.fh-wedel.de>
-	<1110200816.11535.15.camel@squizzey.bult.co.uk>
-	<20050307142402.GC9597@wohnheim.fh-wedel.de>
-	<1110220494.11445.44.camel@squizzey.bult.co.uk>
-	<20050307190012.GA24412@wohnheim.fh-wedel.de>
-	<1110226862.29792.149.camel@baythorne.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Mon, 07 Mar 2005 20:57:43 +0000
-Message-Id: <1110229064.11284.18.camel@squizzey.bult.co.uk>
+Message-ID: <20050307210039.GC26318@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Re; MTD (2) Block Driver broken
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] code simplification of blkdevs.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,64 +21,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-03-07 at 20:21 +0000, David Woodhouse wrote:
-> On Mon, 2005-03-07 at 20:00 +0100, J=F6rn Engel wrote:
-> > o You want your name removed.
-> > o You will have your name removed.
-> > o I'm left wondering why you submitted the code in the first place.
->=20
-> Er, because he'd done the work and figured it might be useful to others=
-.
-> For which we are grateful, Gareth. Please don't be discouraged. You
-> aren't obliged to maintain the code for ever just because you posted it
-> once.
+This could be a matter of taste, but it shrinks the binary by a few
+bytes.
 
-Oh, I'm not discouraged. What I have works for now.
+Before:
+  [ 1] .text             PROGBITS        00000000 000040 000c18 00  AX  0   0 16
+After:
+  [ 1] .text             PROGBITS        00000000 000040 000bd8 00  AX  0   0 16
 
-I did a fair bit of work while writing the driver and had every
-intention of tidying it up, commenting it etc etc.
+Commit?
 
-Then I got an email from the list telling me that what I'd posted was
-unacceptable and had been rejected. Furthermore it was telling me what I
-could and couldn't post and how I should format my emails and
-effectively, that I should read and follow a set of posting instructions
-specific to the linux-mtd list.
+Jörn
 
-All things considered. I was offended.
+-- 
+Geld macht nicht glücklich.
+Glück macht nicht satt.
 
-My choice was to leave the list and spend my time elsewhere.
 
-I'm an unpaid / full time Linux "developer", I have no problem
-(generally) maintaining the code I write.
+Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+---
 
-> It is common for people to want to take credit for their work -- and
-> thankfully it's not so common for us to screw it up for them immediatel=
-y
-> after they submit it either :)
+ drivers/mtd/mtd_blkdevs.c |   38 +++++++++++++++++++-------------------
+ 1 files changed, 19 insertions(+), 19 deletions(-)
 
-Sure, generally I have no problem taking credit for my work. However I
-made it fairly clear (I thought) to Jorn at the time that I wanted
-nothing more to do with it.
-
-> However, if you really want your name removed from the driver, that's
-> perfectly OK with us. I would normally be inclined to follow the lead
-> set in lib/vsprintf.c and leave your name in it in such a way that it's
-> clear you're not to blame if it doesn't work (grep for 'portably') but
-> it's your call.
-
-Well, my inclination is to go with "please remove it".
-
-My priority is working code, working documentation and working Linux.
-
-To reject posts from a developer because he's formatted an email in such
-a way that it doesn't conform to someone's idea of a perfect posting,
-just beggars belief.
-
-Gareth.
-
---
-Linux.co.uk - promoting open source software in the UK
-"If you have an apple and I have an apple and we exchange apples then
-you and I will still each have one apple. But if you have an idea and I
-have an idea and we exchange these ideas, then each of us will have two
-ideas." - George Bernard Shaw
+--- linux-2.6.10cow/drivers/mtd/mtd_blkdevs.c~blktrans	2005-02-27 23:26:46.652890848 +0100
++++ linux-2.6.10cow/drivers/mtd/mtd_blkdevs.c	2005-02-27 23:34:26.855929352 +0100
+@@ -382,34 +382,25 @@ int register_mtd_blktrans(struct mtd_blk
+ 
+ 	ret = register_blkdev(tr->major, tr->name);
+ 	if (ret) {
+-		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+-		       tr->name, tr->major, ret);
+-		kfree(tr->blkcore_priv);
+-		up(&mtd_table_mutex);
+-		return ret;
++		printk(KERN_WARNING "Unable to register %s block device on "
++				"major %d: %d\n", tr->name, tr->major, ret);
++		goto err0;
+ 	}
+ 	spin_lock_init(&tr->blkcore_priv->queue_lock);
+ 	init_completion(&tr->blkcore_priv->thread_dead);
+ 	init_waitqueue_head(&tr->blkcore_priv->thread_wq);
+ 
+-	tr->blkcore_priv->rq = blk_init_queue(mtd_blktrans_request, &tr->blkcore_priv->queue_lock);
+-	if (!tr->blkcore_priv->rq) {
+-		unregister_blkdev(tr->major, tr->name);
+-		kfree(tr->blkcore_priv);
+-		up(&mtd_table_mutex);
+-		return -ENOMEM;
+-	}
++	tr->blkcore_priv->rq = blk_init_queue(mtd_blktrans_request,
++			&tr->blkcore_priv->queue_lock);
++	ret = -ENOMEM;
++	if (!tr->blkcore_priv->rq)
++		goto err1;
+ 
+ 	tr->blkcore_priv->rq->queuedata = tr;
+ 
+ 	ret = kernel_thread(mtd_blktrans_thread, tr, CLONE_KERNEL);
+-	if (ret < 0) {
+-		blk_cleanup_queue(tr->blkcore_priv->rq);
+-		unregister_blkdev(tr->major, tr->name);
+-		kfree(tr->blkcore_priv);
+-		up(&mtd_table_mutex);
+-		return ret;
+-	} 
++	if (ret < 0)
++		goto err2;
+ 
+ 	devfs_mk_dir(tr->name);
+ 
+@@ -424,6 +415,15 @@ int register_mtd_blktrans(struct mtd_blk
+ 	up(&mtd_table_mutex);
+ 
+ 	return 0;
++
++err2:
++	blk_cleanup_queue(tr->blkcore_priv->rq);
++err1:
++	unregister_blkdev(tr->major, tr->name);
++err0:
++	kfree(tr->blkcore_priv);
++	up(&mtd_table_mutex);
++	return ret;
+ }
+ 
+ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
