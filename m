@@ -1,21 +1,20 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from creative.actrix.co.nz ([203.96.26.135])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VcWd-0002ft-00
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 17:58:31 +0000
-Received: from jocke.lumentis.se (hidden-user@[212.105.56.242])
-	by mail.utfors.se (8.8.8/8.8.8) with SMTP id TAA26910
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 19:09:06 +0100 (MET)
+	id 16VeIW-0002o6-00
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 19:52:04 +0000
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-To: linux-mtd@lists.infradead.org
-Subject: Re: MTD/CFI probe broken?
-Date: Tue, 29 Jan 2002 19:09:06 +0100
-References: <0111121314140A.28381@jocke.lumentis.se> <02010409585400.10979@jocke.lumentis.se> <02012911331100.15969@jocke.lumentis.se>
-In-Reply-To: <02012911331100.15969@jocke.lumentis.se>
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: "Alex Lennon" <ajlennon@arcom.co.uk>
+Subject: Re: FW: [OT] Cf Card vs DiskOnChip -->CF wear levelling
+Date: Wed, 30 Jan 2002 08:57:58 +1300
+Cc: "MTD for Linux" <linux-mtd@lists.infradead.org>
+References: <GEEAIDAKDGCGOMMOLAHMKEONCGAA.ajlennon@arcom.co.uk>
+In-Reply-To: <GEEAIDAKDGCGOMMOLAHMKEONCGAA.ajlennon@arcom.co.uk>
 MIME-Version: 1.0
-Message-Id: <02012919090601.15969@jocke.lumentis.se>
 Content-Transfer-Encoding: 8bit
+Message-Id: <20020129200142.4CAF11061@creative.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,72 +26,68 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi again
+I did read this some time back, I believe on the Sandisk www before it got 
+restructured (Hey, that happy looking face on their home page sure looks like 
+she's getting wear levelling).
 
-I found the problem in chips/gen_probe.c:
-I changed 
-1<<cfi.chipshift) < map->size 
-part back to
-1<<cfi.chipshift) <= map->size
+I can no longer find the Sandisk reference, so I can't really support the 
+assertion any more. If I recall correctly, they did wear levelling on the 
+full-size cards but not on CF. They use (or did use) different controllers in 
+these cards. Here is something I found on google 
+http://www.technoir.nu/hplx/hplx-l/0006/msg00714.html
 
-+       for (base = (1<<cfi.chipshift); base + (1<<cfi.chipshift) <= map->size;
--       for (base = (1<<cfi.chipshift); base + (1<<cfi.chipshift) < map->size;
-             base += (1<<cfi.chipshift))
-                cp->probe_chip(map, base, &chip[0], &cfi);
+I guess it also comes down to your interpretation of wear levelling.  
+SmartMedia, for instance, does not store a count of the number of times a 
+block was programmed and does not do explicite wear levelling. However the 
+block allocation strategy will tend to provide some sort of wear levelling 
+(consistent with the intrinsic pool management blaah you mention below). I 
+hunch therefore that CF uses the same strategy. 
 
-What was the reason for this change? Have I broken something else now?
+OK so how does this translate into system reliability? Well my take on this 
+is as follows:
+* So what? NAND is expected to fail and NAND block drivers/file systems 
+handle block failure. So if you wear out a block, it just gets mapped out. 
+THis, combined with the intrinsic blaah, is probably good enough.
+* CF is far more likely to be corrupted by removing half-way through a write 
+or being de-powered while a write is active. 
 
-            Jocke
+I must also apologize for saying that a FlashDrive is a wrapped up CF card. I 
+actually believe it is architectually similar to a full-size PCMCIA ATA card. 
+They look the same to the PCMCIA/IDE bus, but the full-size card provides 
+more space to use a better controller. This makes them more reliable.
 
-On Tuesday 29 January 2002 11:33, Joakim Tjernlund wrote:
-> Hi there
+
+
+-- CHarles
+
+
+
+On Tue, 29 Jan 2002 07:36, Alex Lennon wrote:
+> Hi Charles,
 >
-> I am trying to upgrade our MTD/JFFS2 code(from October) to the latest  CVS
-> in the jffs2-2_4-branch and I think something is broken in the MTD
-> sublayer. Now MTD does not find my
-> second chip. This is the output from MTD before and after upgrade.
-> Before upgrade:
-> Lumentis: Found 2 x16 devices at 0x2000000 in 32-bit mode
-> 0: offset=0x0,size=0x40000,blocks=128
-> 1: offset=0x2000000,size=0x40000,blocks=128
-> Creating 5 MTD partitions on "Lumentis":
-> 0x00000000-0x00040000 : "PPCBoot"
-> 0x00040000-0x00080000 : "Environment"
-> 0x00080000-0x00100000 : "FPGA"
-> 0x00100000-0x001c0000 : "Kernel"
-> 0x001c0000-0x04000000 : "JFFS2"
+> >>move stuff around and level out the wearing.  Some devices do not apply
 >
-> After upgrade:
-> Lumentis flash device: 4000000 at f0000000
-> map_priv_1 ioremaped to : c9000000
-> map_priv_2 ioremaped to : cd001000
-> 0: offset=0x0,size=0x40000,blocks=128
-> Creating 5 MTD partitions on "Lumentis":
-> 0x00000000-0x00040000 : "PPCBoot"
-> 0x00040000-0x00080000 : "Environment"
-> 0x00080000-0x00100000 : "FPGA"
-> 0x00100000-0x001c0000 : "Kernel"
-> 0x001c0000-0x02000000 : "JFFS2"
+> wear
 >
+> >>levelling (eg. Compact Flash and SmartMedia). Some do (eg. full-size
 >
->     Jocke
-> PS.
->    Had to apply this patch to compile util/mkfs.jffs2:
+> PCMCIA
 >
-> Index: util/Makefile
-> ===================================================================
-> RCS file: /home/cvs/mtd/util/Makefile,v
-> retrieving revision 1.20
-> diff -u -r1.20 Makefile
-> --- util/Makefile       2001/09/05 00:18:11     1.20
-> +++ util/Makefile       2002/01/29 10:27:41
-> @@ -27,7 +27,7 @@
->         $(CC) -o $@ $^ -lz
+> >>cards, DOC, JFFS).
 >
->  compr.o: compr.c
-> -       $(CC) $(CFLAGS) -Dprintk=printf -DKERN_NOTICE= -c -o $@ $<
-> +       $(CC) $(CFLAGS) -Dprintk=printf -DKERN_NOTICE= -DKERN_WARNING= -c
-> -o $@ $<
+> The lack of wear-levelling on CF comes as a surprise - could you comment on
+> whether the various manufacturers, such as Sandisk are making this
+> assertion?
 >
->  jffs2reader: jffs2reader.c
->         $(CC) $(CFLAGS) jffs2reader.c -o jffs2reader -lz
+> The closest we have seen is in the CF Sandisk spec. where they state they
+> support wear levelling - but that this '.. is an intrinsic part of the
+> Erase Pooling functionality of NAND memory...', '...if necessary, CF cards
+> will rewrite data from a defective sector to a good sector...'.
+>
+> With this type of statement it certainly doesn't appear that our flash
+> lifetime calculations for a 'true' wear-levelling implementation would
+> hold for CF.
+>
+> Best,
+>
+> -Alex
