@@ -1,20 +1,20 @@
-Received: from finch-post-12.mail.demon.net ([194.217.242.41])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16t9Pp-0005tn-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 16:44:45 +0100
-Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
-	by finch-post-12.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 16t9Pi-000Ao4-0C
-	for linux-mtd@lists.infradead.org; Thu, 04 Apr 2002 15:44:38 +0000
-content-class: urn:content-classes:message
-Subject: [PATCH] drivers/mtd/nand/Config.in
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C1DBEF.9E9CABD0"
-Date: Thu, 4 Apr 2002 16:44:34 +0100
-Message-ID: <541025071C7AC24C84E9F82296BB9B950804DF@OPTEX1.optex.local>
-From: "John Hall" <John.Hall@optionexist.co.uk>
-To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+	id 16t9kZ-0005wP-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 17:06:11 +0100
+Date: Thu, 4 Apr 2002 18:05:51 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: John Hall <John.Hall@optionexist.co.uk>
+Cc: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] drivers/mtd/nand/Config.in
+Message-ID: <20020404180551.A13187@wohnheim.fh-wedel.de>
+References: <541025071C7AC24C84E9F82296BB9B950804DF@OPTEX1.optex.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <541025071C7AC24C84E9F82296BB9B950804DF@OPTEX1.optex.local>; from John.Hall@optionexist.co.uk on Thu, Apr 04, 2002 at 04:44:34PM +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,45 +26,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
+On Thu, 4 April 2002 16:44:34 +0100, John Hall wrote:
+> I found a small typo in the NAND Config.in that prevented the JFFS2 OOB
+> option from being displayed. The patch is against the latest cvs.
+> 
+> -   if [ "$CONFIG_JFFS2_FS" = "y" -o "$CONFIG_JFFS2_FS" = "m"]; then
+> +   if [ "$CONFIG_JFFS2_FS" = "y" -o "$CONFIG_JFFS2_FS" = "m" ]; then
 
-------_=_NextPart_001_01C1DBEF.9E9CABD0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+A real no-brainer. Thanks!
+David, any objections against application?
 
-I found a small typo in the NAND Config.in that prevented the JFFS2 OOB
-option from being displayed. The patch is against the latest cvs.
+Jörn
 
-Regards,
-John Hall
-
---=20
-OptionExist Limited.
-The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
-Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
-http://www.optionexist.co.uk/
-
-------_=_NextPart_001_01C1DBEF.9E9CABD0
-Content-Type: application/octet-stream;
-	name="nand-config.in.diff"
-Content-Transfer-Encoding: base64
-Content-Description: nand-config.in.diff
-Content-Disposition: attachment;
-	filename="nand-config.in.diff"
-
-SW5kZXg6IENvbmZpZy5pbgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvaG9tZS9jdnMvbXRkL2RyaXZl
-cnMvbXRkL25hbmQvQ29uZmlnLmluLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjYKZGlmZiAtdSAt
-YiAtcjEuNiBDb25maWcuaW4KLS0tIENvbmZpZy5pbgkyMSBGZWIgMjAwMiAyMzo0NToxOSAtMDAw
-MAkxLjYKKysrIENvbmZpZy5pbgk0IEFwciAyMDAyIDE1OjQzOjE0IC0wMDAwCkBAIC0xMCw3ICsx
-MCw3IEBACiBpZiBbICIkQ09ORklHX01URF9OQU5EIiA9ICJ5IiAtbyAiJENPTkZJR19NVERfTkFO
-RCIgPSAibSIgXTsgdGhlbgogICAgYm9vbCAnICAgIEVuYWJsZSBFQ0MgY29ycmVjdGlvbiBhbGdv
-cml0aG0nICBDT05GSUdfTVREX05BTkRfRUNDCiAgICBib29sICcgICAgVmVyaWZ5IE5BTkQgcGFn
-ZSB3cml0ZXMnIENPTkZJR19NVERfTkFORF9WRVJJRllfV1JJVEUKLSAgIGlmIFsgIiRDT05GSUdf
-SkZGUzJfRlMiID0gInkiIC1vICIkQ09ORklHX0pGRlMyX0ZTIiA9ICJtIl07IHRoZW4KKyAgIGlm
-IFsgIiRDT05GSUdfSkZGUzJfRlMiID0gInkiIC1vICIkQ09ORklHX0pGRlMyX0ZTIiA9ICJtIiBd
-OyB0aGVuCiAgICAJYm9vbCAnICAgIFVzZSBKRkZTMiBsYXlvdXQgZm9yIE9PQiBhcmVhJyBDT05G
-SUdfTVREX05BTkRfRUNDX0pGRlMyCiAgICBmaQogZmkK
-
-------_=_NextPart_001_01C1DBEF.9E9CABD0--
+-- 
+Victory in war is not repetitious.
+-- Sun Tzu
