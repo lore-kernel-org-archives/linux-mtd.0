@@ -1,22 +1,14 @@
-Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
-	helo=innominate.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BE89l-0000qb-Kk
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 15:47:57 +0100
-Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
-	3.35 #1 (Debian))	id 1BE89k-0008N5-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2004 16:47:56 +0200
-Date: Thu, 15 Apr 2004 16:47:56 +0200
-From: Tino Keitel <tino.keitel@innominate.com>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Message-ID: <20040415144756.GV29551@tkeitel001.bln.innominate.local>
-References: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
+Received: from thorgal.et.tudelft.nl ([130.161.40.91])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BE9vE-0001KE-9W
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 17:41:04 +0100
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
-Sender: Tino Keitel <tino.keitel@innominate.com>
-Subject: Re: JFFS2 writes fail with 2.4.25
+Message-Id: <a06002006bca469e103ce@[130.161.115.44]>
+Date: Thu, 15 Apr 2004 18:39:55 +0200
+To: linux-mtd@lists.infradead.org
+From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: NAND bad blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +18,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 15, 2004 at 16:40:31 +0200, Tino Keitel wrote:
-> Hi folks,
-> 
-> I just switched from 2.4.19 to 2.4.25 and was afraid that there are
-> problems with file creation. Here is an example:
-> 
-> # mkdir x
+Hi all,
 
-[a lot of debugging output]
+There's a slight discrepancy between what mtd and mkyaffs consider a bad block.
 
-> The system is an Intel XScale IXP425 board (ARM little endian) with 16
-> MB NOR flash. I use the JFFS2 from the 2.4.25 kernel. Any hints what's
-> wrong here?
+ From mtd/drivers/mtd/nand/nand.c:
 
-Maybe I should mention that the system hangs after the mkdir command.
+   static int nand_block_bad(struct mtd_info *mtd, unsigned long page)
+   {
+         struct nand_chip *this = mtd->priv;
 
-Regards,
-Tino
+         this->cmdfunc (mtd, NAND_CMD_READOOB, NAND_BADBLOCK_POS, page);
+         if (this->read_byte(mtd) != 0xff)
+                 return 1;
 
+         return 0;
+   }
+
+...which would indicate that even one bit set to zero would mark the 
+block bad. However, mkyaffs.c has this code:
+
+   /* Read the OOB data to determine if the block is valid.
+    * If the block is damaged, then byte 5 of the OOB data will
+    * have at least 2 zero bits.
+    */
+
+..snip..
+
+   if(countBits[oobbuf[5]] < 7)
+   {
+	printf("Block at 0x08%lx is damaged and is not being 
+formatted\n",addr);
+   }
+
+So, which is it ?
+
+JDB
 -- 
-tino.keitel@innominate.com
-dipl.-inf.                        Innominate Security Technologies AG
-software engineer                                   enabling security
-tel: +49.30.6392-3308                      http://www.innominate.com/
+LART. 250 MIPS under one Watt. Free hardware design files.
+http://www.lart.tudelft.nl/
