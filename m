@@ -1,23 +1,16 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197t4V-0005f8-4R
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 09:24:11 +0100
-Date: Tue, 22 Apr 2003 10:24:07 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Esben Nielsen <esn@cotas.dk>
-Message-ID: <20030422082407.GA13335@wohnheim.fh-wedel.de>
-References: <200304161335.50367.tglx@linutronix.de>
-	<200304221007.59780.esn@cotas.dk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200304221007.59780.esn@cotas.dk>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: Holger Schurig <h.schurig@mn-logistik.de>
-cc: tglx@linutronix.de
-cc: linux-mtd@lists.infradead.org
-cc: Jasmine Strong <jasmine@regolith.co.uk>
-Subject: Re: Database on JFFS2?
+Received: from [202.108.35.197] (helo=vip.sina.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 197FMT-0006pB-IH
+	for <linux-mtd@lists.infradead.org>; Sun, 20 Apr 2003 15:00:05 +0100
+Message-ID: <001301c30745$438c1e60$0365a8c0@leeyang>
+From: "leeyang" <leeyang@ycig.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Sun, 20 Apr 2003 22:00:51 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+Subject: mmap on jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 April 2003 10:07:59 +0200, Esben Nielsen wrote:
-> On Wednesday 16 April 2003 13:35, Thomas Gleixner wrote:
-> >
-> > Erase is always a full block (e.g. 128K), but writes happen in small
-> > chunks.
-> 
-> Ah! Now I get it: You have erase a block as a whole and then you can write 
-> parts of it until it is full? I always believed you had to write a full block 
-> just to write a single byte, but this does make much more sense to me. We 
-> have been through similar discussions with TFFS under vxWorks where we 
-> couldn't find out how many times we were actually allowed to write.
+I am using jffs2 on a ppc860 system(amd29lv160).
+Things seems ok,but when I am trying mmap.
 
-:)
+I want to mmap a file in flash,so i can treat
+the file like some records.
 
-> > JFSS2 does no write on fsync, as data are already written.
-> 
-> Doesn't Linux per default for any filesystem hold a write cache which needs to 
-> be flushed with fsync()?
+I mean operation like
+ fd = open("/usr/dat/sot.dat",O_RDWR,FILEMODE);
+ 
+ ptr1=mmap(NULL,filesize,PROT_READ|PROT_WRITE,
+   MAP_SHARED,fd,0);
 
-Linux is designed for disk io, it holds a buffer cache that is flushed
-to disk as a whole on sync, for any mount point on umount and for any
-file on fsync. Sync also happens regularly every 30s.
+fd returns 3 and it is ok,however ptr1 returns -1.
+I checked the errno it said invalid argument.
 
-With flash, many things are different. Latency is very small, compared
-to disks, and it doesn't (usually) make sense to hold any writes back
-from the medium. No cache -> no need for (f)sync.
+I have to say arguments "filesize" above is not
+aligment to any requirements,just the real file
+size?Does it matter?
 
-The cache came back with NAND flash, but you don't use it and don't
-need to worry about it.
+The same procedure can done on common ext2
+so i wonder jffs2 implement all the features like
+ext2?
 
-Jörn
-
--- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface. 
--- Doug MacIlroy
+leeyang
