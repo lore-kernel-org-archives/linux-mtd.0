@@ -1,118 +1,91 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12XIi6-0005Tg-00
-	for mtd-list@infradead.org; Tue, 21 Mar 2000 07:04:14 +0000
-Received: from [203.231.214.12] (helo=mx1.dreamwiz.com)
+	id 12XKXG-0005iB-00
+	for mtd-list@infradead.org; Tue, 21 Mar 2000 09:01:10 +0000
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12XIi4-0005Ta-00
-	for mtd@infradead.org; Tue, 21 Mar 2000 07:04:13 +0000
-Received: from mail0.dreamwiz.com ([203.231.214.21])
-	by mx1.dreamwiz.com (8.10.0/8.10.0) with ESMTP id e2L6v9i56315
-	for <mtd@infradead.org>; Tue, 21 Mar 2000 15:57:09 +0900 (KST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail0.dreamwiz.com (8.9.3/8.9.3) with ESMTP id QAA28683
-	for <mtd@infradead.org>; Tue, 21 Mar 2000 16:01:56 +0900 (KST)
-Message-Id: <200003210701.QAA28683@mail0.dreamwiz.com>
-Date: Tue, 21 Mar 2000 16:31:56 +0930 (GMT)
-From: "Á¤Àç¿ë(JaeYong.Jeong)" <trusty@dreamwiz.com>
-Reply-To: trusty@dreamwiz.com
-Subject: Any body has physmem.o or physmem.c?
-To: mtd@infradead.org
-MIME-Version: 1.0
-Content-Type: MULTIPART/ALTERNATIVE; BOUNDARY="0-1398474027-953622116=:28678"
+	id 12XKXF-0005i5-00
+	for mtd@infradead.org; Tue, 21 Mar 2000 09:01:09 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E12X9bX-00042l-00@infradead.org> 
+References: <E12X9bX-00042l-00@infradead.org> 
+To: Dvir Oren <dviro@ibm.net>
+Cc: mtd@infradead.org
+Subject: Re: Questions about MTD 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 21 Mar 2000 09:01:08 +0000
+Message-ID: <30814.953629268@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
---0-1398474027-953622116=:28678
-Content-Type: TEXT/PLAIN; CHARSET=EUC-KR
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by mx1.dreamwiz.com id e2L6v9i56315
 
-I just saw this MTD site yesterday. I'm very interested in=20
-Flash memory file system. To simulate ffs (I don't have
-any flash memory nor DiskOnChip ^^;;), I have installed=20
-mtd-20000131, but this version has no physmem.o nor physmem.c.
-So, please anybody help me!
-Thanks in advance.
+dviro@ibm.net said:
+>  When I do dd if=/dev/nftla of=some_file bs=512 count=1, what do I
+> get?
 
-Trusty.
+This goes through the NFTL translation code, and you get the boot sector of 
+the simulated hard disk.
 
 
+> When I do dd if=/dev/mtd0 of=some_file bs=512 count=1, what do I
+> get? 
 
-=C1=A4=C0=E7=BF=EB (JaeYong Jeong)
-
-151-742
-=BC=AD=BF=EF=BD=C3 =B0=FC=BE=C7=B1=B8 =BD=C5=B8=B2=B5=BF=20
-=BC=AD=BF=EF=B4=EB=C7=D0=B1=B3 =C4=C4=C7=BB=C5=CD=B0=F8=C7=D0=B0=FA =BD=C3=
-=BD=BA=C5=DB =BC=D2=C7=C1=C6=AE=BF=FE=BE=EE =BF=AC=B1=B8=BD=C7
-
-151-742
-System Software Research Lab.=20
-Dept. of Computer Engineering
-Seoul National University
-Shillimdong, Kwanak-Gu, Seoul
-Korea
-
-Tel: +82-2-875-7726
+The first 512 bytes of the raw data on the flash, which is the start of the 
+firmware bootloader.
 
 
--------------------------------------------------
-DreamWiz Free Mail @ http://www.dreamwiz.com/
+dviro@ibm.net said:
+> Suppose I take a brand new flash, run nftl_format /dev/mtd0 49152. 
+>  I then run fdisk /dev/nftla to create the partition, and then mke2fs
+> /dev/nftla1, and then reboot, or remove the modules, and then  insert
+> them.  When I'll mount /dev/nftla1, it will be trashed.  Before I
+> took out the module, I could mount, e2fsck, or whatever, and
+> everything was fine. 
+
+You need to remove the NFTL module before using nftl_format, and then load it 
+again afterwards. The NFTL code caches a lot of data about what blocks are 
+stored where on the flash, and if you reformat the NFTL while it's loaded, 
+you're going to confuse the hell out of it.
 
 
---0-1398474027-953622116=:28678
-Content-Type: TEXT/HTML; CHARSET=EUC-KR
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by mx1.dreamwiz.com id e2L6v9i56315
+dviro@ibm.net said:
+>  Then what should I pass doc_loadbios, and why not simply dd (and  to
+> where should I dd, and from where should I dd)? 
 
-<HTML>
-<BODY>
+doc_loadbios is almost the same as dd - it just erases the blocks before 
+writing to them. 
 
-<BR>I just saw this MTD site yesterday. I'm very interested in=20
-<BR>Flash memory file system. To simulate ffs (I don't have
-<BR>any flash memory nor DiskOnChip ^^;;), I have installed=20
-<BR>mtd-20000131, but this version has no physmem.o nor physmem.c.
-<BR>So, please anybody help me!
-<BR>Thanks in advance.
-<BR>
-<BR>Trusty.
-<BR>
-<BR>
-<BR>
-<BR></BODY>
-</HTML>
+You need to convert the DOC121.EXB file into the form in which it actually 
+takes on the flash. It's probably easier to explain in pseudo-C than English:
 
-<BR>
+	u_char buf[512];
 
-<BR>=C1=A4=C0=E7=BF=EB (JaeYong Jeong)
-<BR>
-<BR>151-742
-<BR>=BC=AD=BF=EF=BD=C3 =B0=FC=BE=C7=B1=B8 =BD=C5=B8=B2=B5=BF=20
-<BR>=BC=AD=BF=EF=B4=EB=C7=D0=B1=B3 =C4=C4=C7=BB=C5=CD=B0=F8=C7=D0=B0=FA =BD=
-=C3=BD=BA=C5=DB =BC=D2=C7=C1=C6=AE=BF=FE=BE=EE =BF=AC=B1=B8=BD=C7
-<BR>
-<BR>151-742
-<BR>System Software Research Lab.=20
-<BR>Dept. of Computer Engineering
-<BR>Seoul National University
-<BR>Shillimdong, Kwanak-Gu, Seoul
-<BR>Korea
-<BR>
-<BR>Tel: +82-2-875-7726
-<BR>
-<BR>
+	memset(buf,255,512);
 
-<BR>
-<a HREF=3D"http://www.dreamwiz.com/" TARGET=3D_blank><img SRC=3D"http://m=
-ail.dreamwiz.com/trusty/cgi-bin/receive_check.cgi?mailbox=3DSent&uid=3D00=
-000000000000000010&key=3Db8555cdc8090a6f0be353cd9cf727f9a" BORDER=3D"0"><=
-/a> <FONT SIZE=3D2><B>Your life on the net</FONT></B><br>
--------------------------------------------------<br>
-DreamWiz Free Mail @ <a href=3D"http://www.dreamwiz.com/" TARGET=3D_blank=
->http://www.dreamwiz.com/</a><br>
+	/* Split up the first 4Kb of data over the first 8Kb of flash */
+
+	while (x<8192) {
+		read(0,buf,256);
+		write(1,buf,512);
+		x += 512;
+	}
+
+	/* Add the rest */
+
+	while (!eof) {
+		read(0,buf,512);
+		write(1,buf,512);
+	}
+	
+
+I'm not sure if this is right, but it's something like that. Try comparing 
+what you get by dd'ing 48Kb _from_ /dev/mtd0 with the data in the file.
+
+--
+dwmw2
 
 
---0-1398474027-953622116=:28678--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
