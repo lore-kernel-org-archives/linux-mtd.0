@@ -1,18 +1,22 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from mail.fh-wedel.de ([213.39.232.194])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AFVvP-0004vt-Gm
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Oct 2003 09:50:35 +0000
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1AFVuC-0004jK-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Oct 2003 10:49:20 +0100
-To: linux-mtd@lists.infradead.org
-From: Miernik <miernik@ctnet.pl>
-Date: Fri, 31 Oct 2003 10:49:20 +0100
-Message-ID: <slrnbq4c10.qor.miernik@tarnica.ctnet.pl>
-Sender: news <news@sea.gmane.org>
-Subject: "this device cannot be used for FTL" with a SMART PCMCIA linear
-	flash
-Reply-To: Miernik <miernik@ctnet.pl>
+	id 1AFXQU-0005CD-4E
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Oct 2003 11:26:46 +0000
+Date: Fri, 31 Oct 2003 12:24:21 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20031031112421.GC5604@wohnheim.fh-wedel.de>
+References: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
+	<1067539988.3423.208.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1067539988.3423.208.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+cc: jffs-dev@axis.com
+cc: J B <mad_flasher@hotmail.com>
+Subject: Re: jffs2 fragmentation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,101 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm trying to get a "SMART Modular Technologies 4MB FAST FLASH CARD 
-SM9FA2043IP280" PCMCIA linear flash Intel Series 2+ card working.
+On Thu, 30 October 2003 18:53:08 +0000, David Woodhouse wrote:
+> On Sat, 2003-10-18 at 09:20 -0500, J B wrote:
+> > Normally, a rm/cp pair takes about 2 minutes on my system.  After about 10 
+> > iterations, the copies begin to take longer, about 3-4 minutes.   After 
+> > about 10 iterations they take upwards of 1/2 an hour.
+> 
+> I suspect you've triggered the worst case of a performance bug which
+> I've known about for a while.
+> 
+> We should write new data out to one empty block, while writing out
+> garbage-collected data out to another. We don't do that at the moment;
+> we interleave old and new data and then you erase your new file, leaving
+> us with a very suboptimal mix of valid and obsolete nodes in each
+> eraseblock we've been writing to.
+> 
+> I'm still a bit surprised it takes half an hour though. 
 
-The explanation of SM9FA2043IP280:
+If your explanation is correct, a shift from 4 to 28 minutes would
+correspond to 6 clean nodes reused for every 1 dirty node deleted and
+new node written.
 
-SM      Smart Modular
-9       Product Category:       Memory Card
-F       Technology:             Flash
-A       Attribute:              With Attribute (2kB)
-2       Nop. of banks:          2 Bank
-04      Card Density:           4 MB
-3       Component Data Width:   x16
-I       Device Manufacturer:    Intel
-P       Pinout:                 68 Pin PC Card (Type I)
-2       Interface:              x16 only
-80      Card Speed:             80ns
+Doesn't make a lot of sense with a filesystem that should be >80% free
+or dirty, does it?
 
-
-FLA16MPX16ICB REV.A
-
-To know what I'm working with, I have opened the card, and found these 
-4 chips:
-
-2 * chip:
----------
-Intel
-
-E28F016SA
-70   5.0V
-120  3.3V
-U84433T1C
-1993
-
-Flash
----------
-
----------
-ATMEL
-AT28C16
-15TC
-9837
----------
-
----------
-IDT 74FCT
-108CTQ
-KP84ST
----------
-
-I have accidentally erased attribute memory of this card, so it is 
-detected only as anonymous memory. I fix it like this:
-
-card "Anonymous Memory"
-  anonymous
-  cis "cis/smartm-4mb-flash.dat"
-  bind "memory_cs", "ftl_cs"
-
-
-I am using 2.4.22-3 kernel from Debian, self-compiled, not compiling 
-pcmcia-modules from the kernel, but separately. 
-I compiled pcmcia-modules_3.2.2-1.4.
-
-These are self-made packages of my kernel and pcmcia-modules:
-http://www.miernik.ctnet.pl/debian/pool/kernel-image-2.4.22_tarnica.1.0_i386.deb
-http://www.miernik.ctnet.pl/debian/pool/pcmcia-modules-2.4.22_3.2.2-1.4+tarnica.1.0_i386.deb
-
-This is my problem:
-
-tarnica:~# ftl_format -i /dev/mem0c0c
-this device cannot be used for FTL!
-format failed.
-tarnica:~#
-
-tarnica:~# ftl_check /dev/mem0c0c
-Memory region info:
-  Card offset = 0x0, region size = 4 mb, access speed = 200 ns
-  Erase block size = 1 bytes, partition multiple = 1 bytes
-
-No valid erase unit headers!
-tarnica:~#
-
-If I try a dd to it I get "input/output error" or no error messages, 
-but when I try to dd it back ftom the card, I get a file with all bits 
-set to 1. Depending on if I try to use /dev/mem0c, /dev/mem0c0b or 
-/dev/mem0c0c.
-
-I forgot to note exactly what when happens with dd, and I can't check 
-it not, as I have my WLAN card in that PCMCIA slot to access the 
-Internet, I can check it later if needed.
-
-Logs, pcmcia configuration, and other detailed info of my problems can 
-be found in: http://www.miernik.ctnet.pl/mtd/3-repeat-clear/
+Jörn
 
 -- 
-    Miernik         ________________________ jabber:miernik@jabber.gda.pl
-__ ICQ: 4004001 ___/__ tel: +48608233394 __/      mailto:miernik@ctnet.pl
-Protect Europe from a law-disaster. Petition for a Software Patent Free Europe
-http://www.noepatents.org/index_html?LANG=en 
+Fools ignore complexity.  Pragmatists suffer it.
+Some can avoid it.  Geniuses remove it.
+-- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
