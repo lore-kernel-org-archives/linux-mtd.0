@@ -1,41 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JzH5-0002dl-00
-	for mtd-list@infradead.org; Wed, 02 Aug 2000 15:13:35 +0100
-Date: Wed, 2 Aug 2000 16:13:24 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Markus Thiesmeyer <mthi@gmx.de>, mtd@infradead.org, jffs-dev@axis.com,
-        bmatthews@redhat.com
+	id 13Jzgn-0002j8-00
+	for mtd-list@infradead.org; Wed, 02 Aug 2000 15:40:09 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13Jzgm-0002j2-00
+	for mtd@infradead.org; Wed, 02 Aug 2000 15:40:08 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.3.96.1000802154249.31703A-100000@biffen.cendio.se> 
+References: <Pine.LNX.3.96.1000802154249.31703A-100000@biffen.cendio.se> 
+To: Alexander Larsson <alex@cendio.se>
+Cc: Markus Thiesmeyer <mthi@gmx.de>, mtd@infradead.org, jffs-dev@axis.com,
+  bmatthews@redhat.com
 Subject: Re: Is JFFS a full featured filesystem? 
-In-Reply-To: <11108.965218269@cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000802161220.31962D-100000@biffen.cendio.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 02 Aug 2000 15:20:04 +0100
+Message-ID: <24735.965226004@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+alex@cendio.se said:
+>  Exactly how did you plan to work out the dirty ranges? Compare with
+> on-flash contents? 
 
-On Wed, 2 Aug 2000, David Woodhouse wrote:
+Apparently it's easy when using generic_file_write, because prepare_write 
+will give you the exact range. 
 
-> 
-> alex@cendio.se said:
-> >  This could cause consistancy problems though, because we're not using
-> > the (possibly modified) mmaped data when writing directly to a file,
-> > we also in some way guarantee that all writes are done to the log in
-> > the correct order. It will also be an inefficient way to write data to
-> > jffs, since we have to rewrite whole pages instead of only the written
-> > part.
-> 
-> I believe that we can address both of those problems - we can write data 
-> directly from the page cache and we can also work out which ranges within
-> a page have actually been dirtied. 
+When doing writable mmap() we have to do something cleverer - basically yes,
+comparing with the on-flash contents. We can either do that by going and
+reading the flash nodes again on writepage(), or we can keep a copy of the 
+clean page in RAM before it's dirtied. 
 
-Exactly how did you plan to work out the dirty ranges? Compare with
-on-flash contents?
+To start with, I'm inclined just to accept the hit of the 4Kb writes, and 
+let the GC combine nodes later as necessary. Comparing with old contents 
+can come later. This is only going to be a problem with writable mmap(), 
+which isn't supported at the moment _anyway_. The normal write() case is 
+fairly simple to optimise.
 
-/ Alex
+
+--
+dwmw2
+
 
 
 
