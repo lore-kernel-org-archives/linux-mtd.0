@@ -1,18 +1,23 @@
-Received: from imo-r07.mx.aol.com ([152.163.225.103])
+Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 183w3Y-0006P2-00
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2002 11:14:36 +0100
-Received: from Kschoo70C@netscape.net
-	by imo-r07.mx.aol.com (mail_out_v34.13.) id 3.4.5348cd4 (22681)
-	 for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2002 06:13:32 -0400 (EDT)
-Date: Tue, 22 Oct 2002 06:05:56 -0400
-From: Kschoo70C@netscape.net
-To: linux-mtd@lists.infradead.org
-Subject: NAND erase size problem
-MIME-Version: 1.0
-Message-ID: <778071C8.0A118C12.0265FBE9@netscape.net>
+	id 184IAu-0000I9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2002 10:51:40 +0100
+Received: from buserror-extern.convergence.de ([212.84.236.66] helo=jupiter)
+	by phoenix.infradead.org with esmtp (Exim 4.10)
+	id 184IEq-0000CS-00
+	for linux-mtd@lists.infradead.org; Wed, 23 Oct 2002 10:55:44 +0100
+Date: Wed, 23 Oct 2002 11:49:28 +0200
+From: Frank Neuber <neuber@convergence.de>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: parse_cmdline_partitions equivalent for map_info
+Message-ID: <20021023094928.GA27905@jupiter>
+References: <20021018104910.GA11807@jupiter> <26791.1034943288@passion.cambridge.redhat.com> <20021019164445.GA9364@wohnheim.fh-wedel.de> <20021022103936.GA24369@jupiter> <20021022170803.GA9161@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20021022170803.GA9161@wohnheim.fh-wedel.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,62 +29,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-     I have a hardware that has a samsung 16MB NAND flash (K9F2808UoB -- page size 512 bytes, erase block size = 32 pages). I have a problem to copy the image created by mkfs.jffs2 to the mtd device. 
-    When I ask mkfs.jffs2 to create an image with erase size of 16KB, it will create image with erase size 64KiB instead. I suppose that is the minimum size set by mkfs.jffs2. When I copy the image to the mtd device, there is no error. However, when I mount to the mtdblock device, it gives me an error of "Perhaps the file system was created with the wrong erase size?" during scanning.
-   On the other hand, if I use the system "cp -a /rfs /mnt/nandroot" to transfer the file from NFS root to the flash, everything works fine. Therefore, I guess the NAND driver works fine.
+On Tue, Oct 22, 2002 at 07:08:03PM +0200, Jörn Engel wrote:
+Hi Jörn,
+thanks for your patch ....
+> 
+> Ok, enough rambling. Try this patch:
+> http://wh.fh-wedel.de/~joern/software/kernel/mtd.patch.mphysmap.2.4.19-untested
+But this is not what I need :-(
+I would like to pass the physical specification through the kernel
+command line.
 
-The following are my steps:
-On the host
-mkfs.jffs2 --eraseblock=16KiB -l -d ./lib -o lib.image
-    > Increasing erase size to 64KiB minimum
+I think the best place to do this is to add such function to cmdline.c
 
-On the target
-    # cat /proc/mtd
-    dev:    size   erasesize  name
-    mtd0: 00300000 00004000 "SPIA flash partition 1"
-    mtd1: 00d00000 00004000 "SPIA flash partition 2"
+David, since yesterday I got no mail from the mtd-mailinglist. Maybe it
+is my mistake?
 
-    # eraseall /dev/mtd2
-    Erased 13312 Kibyte @ 0 -- 100% complete.
-    # cp ./lib.image /dev/mtd2
-    # mount -t jffs2 /dev/mtdblock1 /mnt/nandroot
-    Node at 0x00003884 with length 0x0000089e would run over the end of the erase block
-    Perhaps the file system was created with the wrong erase size?
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003888: 0x089e instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000388c: 0xf358 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003890: 0x000d instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003894: 0x0007 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003898: 0x81ff instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000389c: 0x0063 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000038a0: 0xfae4 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000038a4: 0x2ad2 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000038a8: 0x2ad2 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000038ac: 0x2ad2 instead
-    Further such events for this erase block will not be printed
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004000: 0xc30f instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004004: 0xc279 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004008: 0xa219 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000400c: 0x6f73 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004010: 0xe29c instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004014: 0x4438 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004018: 0x84e4 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000401c: 0xbff9 instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004020: 0xee7a instead
-    jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00004024: 0x8cd1 instead
-    Further such events for this erase block will not be printed
+Regards,
+ Frank
 
-=======================================================================
-
-     Can anyone tell me how to get the erase size for the nand image right ? Or could it be other problems ?
-
-      Thanks.
-
-regards
-choo
-
-
-__________________________________________________________________
-The NEW Netscape 7.0 browser is now available. Upgrade now! http://channels.netscape.com/ns/browsers/download.jsp 
-
-Get your own FREE, personal Netscape Mail account today at http://webmail.netscape.com/
+-- 
+Dipl.-Ing. Elektrotechnik           convergence / HW
+Frank Neuber                        Rosenthalerstr.51 / 10178 Berlin
+Email:  neuber@convergence.de           Phone:  +49(0)30-72 62 06 76
+WWW:    www.convergence.de              Fax:    +49(0)30-72 62 06 55
