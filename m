@@ -1,15 +1,20 @@
-Received: from nimbus19.internetters.co.uk ([209.61.216.65])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 187ZS7-0005JA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2002 10:54:59 +0000
-Subject: Pointer to documentation request
-From: Alex Bennee <alex@braddahead.com>
-To: linux-mtd list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 01 Nov 2002 11:24:20 +0000
-Message-Id: <1036149861.2401.202.camel@cambridge>
+Received: from mail.fh-wedel.de ([195.37.86.23])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 187jwA-0006Ub-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2002 22:06:42 +0000
+Date: Fri, 1 Nov 2002 23:36:15 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Eugene Surovegin <ebs@innocent.com>
+Cc: Anders Olsson <Anders.Olsson@matchpointds.com>,
+   linux-mtd@lists.infradead.org
+Subject: Re: MTD devices at the wrong place
+Message-ID: <20021101223615.GA12891@wohnheim.fh-wedel.de>
+References: <1036137508.26545.46.camel@Europa.matchpointds> <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,20 +26,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+On Fri, 1 November 2002 00:28:22 -0800, Eugene Surovegin wrote:
+> At 11:58 PM 10/31/2002, you wrote:
+> 
+> >##I guess it's ok to just create one device? or do I have to create them
+> >all? Or a directory structure under /dev/mtd0 and /dev/mtd1
+> >mknod /dev/mtd4 c 90 4
+> 
+> /dev/mtd4 should be c 90 8
 
-I know I've seen this somewhere before but I'm having no joy picking
-through the MTD site so I'm resorting the the list.
+Correction:
+/dev/mtd4 *should be* c 90 4, but for historical reasons, it is c 90 8.
 
-Is there a document that describes the steps you take to configure the
-partitions of an MTD device. In my case I'm using an AMD AM29LV160D but
-as its a CFI device I'm assuming that all I need do is set out the
-correct mapping and I should be able to access various sized blocks of
-the flash as normal block devices.
+Jörn
 
-Is there a pointer to a HOWTO or some such to *using* MTD devices
-anywhere?
-
-Regards,
-
-Alex.
+-- 
+Mundie uses a textbook tactic of manipulation: start with some
+reasonable talk, and lead the audience to an unreasonable conclusion.
+-- Bruce Perens
