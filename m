@@ -1,21 +1,16 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CoL9r-0008WN-Og
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2005 07:30:01 -0500
-Message-ID: <41E3C6A3.6070207@yandex.ru>
-Date: Tue, 11 Jan 2005 15:29:23 +0300
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Date: Tue, 11 Jan 2005 12:34:11 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1105380565.17584.4.camel@weaponx.rchland.ibm.com>
+Message-ID: <Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
+References: <Pine.LNX.4.61.0501101246150.20261@localhost.localdomain>
+	<1105380565.17584.4.camel@weaponx.rchland.ibm.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <20050108211842.GA17176@wohnheim.fh-wedel.de>	
-	<Pine.LNX.4.58.0501091202440.19297@phoenix.infradead.org>	
-	<20050110145154.GC12520@wohnheim.fh-wedel.de>
-	<1105369990.5698.95.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1105369990.5698.95.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 simplifications
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	"Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: how to loopback mount a JFFS2 filesystem on my linux box?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I prefer to optimise for the common case -- which is the _user_ not the
-> developer. The level of verbosity if you enable CONFIG_JFFS2_FS_DEBUG is
-> high, but it means that I can take a log from a clueless end-user and
-> see precisely what's going on. I can look at a log from someone who's
-> having problems, see precisely what's happening, and provide a patch in
-> reply. While there are certainly some printks which can go, and even
-> more could be demoted to level 2 from level 1 (which is all that's ever
-> really useful), I wouldn't want to see it completely stripped of
-> debugging output. Not unless you want to take over the task of
-> supporting users ;)
->
-I have seen once how David have fixed bug after guy just provided the 
-debugging output. From this point of view debugging printks are really good.
+On Mon, 10 Jan 2005, Josh Boyer wrote:
 
-When developing, the debugging printks are extremely helpful, at least 
-for me.
+> On Mon, 2005-01-10 at 11:49, Robert P. J. Day wrote:
+> >   i swear i once knew how to do this, but it's lost in the mists of
+> > time.  i used "mkfs.jffs2" to create a simple JFFS2 image, and now i
+> > just want to mount it on my fedora core 3 system using a loopback
+> > mount.
+> > 
+> >   i have the jffs2 and mtdcore modules currently loaded, and normally,
+> > what i would try is:
+> > 
+> >   # mkdir m
+> >   # mount -o loop -t jffs2 <jffs2.img file> m
+> > 
+> > but what i get is:
+> > 
+> > # mount -o loop -t jffs2 hello.img m
+> > mount: wrong fs type, bad option, bad superblock on /dev/loop0,
+> >        or too many mounted file systems
+> >        (could this be the IDE device where you in fact use
+> >        ide-scsi so that sr0 or sda or so is needed?)
+> > 
+> >   i *vaguely* recall needing to do a bit more work, like loading
+> > another module or two.  any pointers to a URL for this?  thanks.
+> 
+> You can't do that AFAIK because JFFS2 needs an MTD device.  Instead, use
+> mtdram to create a fake MTD device, dd the image to it, and do:
+> 
+> # mount -t jffs2 /dev/mtdblock0 <mnt/point>
+mtdblock is hardcoded to 4BM. So if you need larger, use nand/nandsim.c. 
+This is NAND flash simulation driver and it is configurable, so you may 
+configure it to have larger size. 
+ 
+> Really though, we should look at making JFFS2 and/or the loopback driver
+> grok each other.  Would be useful.  Maybe a JFFS3 candidate?
+AFAIK, JFFS3 is candidate for all improvements :-)
 
+> 
+> josh
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
--- 
+--
 Best Regards,
 Artem B. Bityuckiy,
 St.-Petersburg, Russia.
