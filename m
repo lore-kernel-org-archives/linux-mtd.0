@@ -1,43 +1,94 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14hZxo-00035A-00
-	for mtd-list@infradead.org; Mon, 26 Mar 2001 17:35:28 +0100
-Received: from zeus.vortex.is ([193.4.145.1])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14hZxn-000352-00
-	for mtd@infradead.org; Mon, 26 Mar 2001 17:35:27 +0100
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <mtd@infradead.org>; Mon, 26 Mar 2001 16:35:11 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <mtd@infradead.org>;
-          Mon, 26 Mar 2001 16:35:11 +0000
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 14hcFi-0004M8-00
+	for mtd-list@infradead.org; Mon, 26 Mar 2001 20:02:06 +0100
+Received: from nw175.netaddress.usa.net ([204.68.24.75])
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 14hcFc-0004M1-00
+	for mtd@infradead.org; Mon, 26 Mar 2001 20:02:04 +0100
+Message-ID: <20010326190157.6036.qmail@nw175.netaddress.usa.net>
+Date: 26 Mar 2001 11:01:57 PST
+From: Eric <ebrower@usa.net>
+To: "Alex Lennon" <ajlennon@arcom.co.uk>,
+  "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [RE: CFI Devices in x8 mode ]
+CC: <mtd@infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-Subject: jffs in flash?
-Date: Mon, 26 Mar 2001 16:35:10 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9120@kolkrabbi.flaga.is>
-From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: <mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+"Alex Lennon" <ajlennon@arcom.co.uk> wrote:
 
-I have one flash chip (4MB) that i want to use parts of as a disk, e.g.
-with jffs or jffs2.
-It seems to me that the jffs wants to use the whole chip under the fs.
-Is this correct?
-If not how can I tell jffs to start using the flash at some offset?
+>> The 8-bit buswidth probe doesn't attempt to probe for a =
 
-Thanks,
+>> device type X16 any more. It should. Someone gave me a =
 
-K.D.
+>> patch for that a few days ago, I think - but I can't find =
+
+>> it. I've just committed what I think is the correct fix to
+>> CVS.
+
+You may be referring to my proposed patch:
+
+--- cfi_probe.c.orig	Wed Mar 21 15:59:05 2001
++++ cfi_probe.c	Thu Mar 22 13:12:43 2001
+@@ -235,6 +235,11 @@
+ 		cfi->device_type =3D CFI_DEVICETYPE_X8;
+ 		index =3D cfi_probe_chip(map,base,chips,cfi);
+ 		if (index>=3D0) return index;
++
++		/* if this did not work, attempt again in x16 mode */
++		cfi->device_type =3D CFI_DEVICETYPE_X16;
++		index =3D cfi_probe_chip(map,base,chips,cfi);
++		if (index>=3D0) return index;
+ 		break;			=
+
+ #endif
+
+
+> Sorry - I think I'm misunderstanding - I've got an eight bit =
+
+> device here but the code looks as though its accessing it as =
+
+> a 16-bit device from what I can see in the spec.
+
+[ ... ]
+
+> If I'm reading this stuff right then the cfi_cfi_probe() =
+
+> code doesn't seems to be taking the base offset into account ?
+
+No, I believe it attempts to calculate the offset properly in =
+
+cfi_probe.c cfi_check_qry_or_id():
+
+  int osf =3D cfi->interleave * cfi->device_type;	// scale factor
+
+  [ ... ]
+
+  cfi_read(map,base+osf*0x10)=3D=3Dcfi_build_cmd('Q',map,cfi->interleave)=
+ =
+
+
+So it appears the calculation is done properly.  What is NOT done =
+
+properly as of the last cfi_probe.c revision is that cfi->device_type
+is unconditionally set to DEVICETYPE_X16 for all 8-bit-wide busses in
+cfi_probe_new_chip().  The above patch simply falls-back to probing
+in DEVICETYPE_X8 mode if the X16 fails.  I have not seen David's
+patch in CVS as of yet, but if it does the same it should be fine--
+I cannot speak to whether or not this is the appropriate solution, but
+it does work in my case (8-bit bus with 16-bit chip in X8 mode).
+
+E
+
+
+
+____________________________________________________________________
+Get free email and a permanent address at http://www.netaddress.com/?N=3D=
+1
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
