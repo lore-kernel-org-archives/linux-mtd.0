@@ -1,21 +1,19 @@
-Received: from h-66-166-124-218.lsanca54.covad.net ([66.166.124.218]
-	helo=sb-exchange1.rinconnetworks.com)
+Received: from orion.cirsa.com ([195.77.234.21])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A0L2V-0000IQ-JQ
-	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 14:11:11 +0100
-Date: Fri, 19 Sep 2003 06:10:26 -0700
-From: Paul van Gool <paul.vangool@rinconnetworks.com>
-To: Russ Dill <Russ.Dill@asu.edu>
-Message-ID: <20030919131025.GA22290@rinconnetworks.com>
-References: <20030918190403.GA6047@rinconnetworks.com>
-	<1063913545.1035.2.camel@localhost>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1063913545.1035.2.camel@localhost>
-Content-Type: text/plain; charset=us-ascii
-cc: linux-mtd@lists.infradead.org
-Subject: Re: PCI to Compact flash adapter question
-Reply-To: paul.vangool@rinconnetworks.com
+	id 1A0N2j-0000Y8-I7
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 16:19:33 +0100
+Received: from ntdes.cirsa.com (unverified [172.16.32.11]) by orion.cirsa.com
+	<T64c74635abac12030e340@orion.cirsa.com> for
+	<linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 17:19:56 +0200
+From: "Joan Bertran" <jbertran@cirsa.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 19 Sep 2003 17:18:11 +0200
+Message-ID: <NBBBLDNNJKMLEPACANBFMEHBDIAA.jbertran@cirsa.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: base64
+Subject: Command line parameters for physmap.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks. This is for an embedded device that only has PCI support at this
-point. Going PCI->USB first might be an option.
-
-Thanks.
-
-Paul
-
-On Thu, Sep 18, 2003 at 12:32:25PM -0700, Russ Dill wrote:
-> On Thu, 2003-09-18 at 12:04, Paul van Gool wrote:
-> > Hi,
-> > 
-> > can anybody recommend a PCI to Compact flash adapter that can be used with
-> > Linux?
-> 
-> pci->cardbus bridges might work. Personally, I'd recommend usb->cf, and
-> if you don't have usb, put a pci usb card in. It'll be a lot simplier,
-> and a lot cheaper.
-> 
-> -- 
-> Russ Dill <Russ.Dill@asu.edu>
-
--- 
-Paul van Gool                                               Rincon Networks
-paul.vangool@rinconnetworks.com                              (805)-705-1442
+DQogIEhpLA0KDQogIEknbSBwcm9ncmFtbWluZyBhbiBlbWJlZGRlZCBsaW51eCB1bmRlciBhbiB4
+ODYsIGJvb3RpbmcgZnJvbQ0KICBhIFBDSSByb20gYW5kIGkgZm91bmQgaW50ZXJlc3RpbmcgdG8g
+Z2l2ZSB0aGUgcm9tIGFkZHJlc3MNCiAgdGhyb3VnaCBrZXJuZWwgY29tbWFuZCBsaW5lIGNvbXBv
+c2VkIGJ5IHRoZSBiaW9zIGluc3RlYWQNCiAgb2Ygd3JpdGluZyBhIHBjaSBtYXBwaW5nIGRyaXZl
+ciBiZWNhdXNlIHRoZSBpbnRlcm5hbCByb20gbWFwDQogIGNvdWxkIGJlIGtub3duIG9ubHkgYnkg
+dGhlIGJpb3MuDQoNCiAgSSBoYXZlIHNldmVyYWwgcXVlc3Rpb25zDQogLSBXaHkgcGh5c21hcC5j
+IGRlcGVuZHMgb24gY2ZpX3Byb2JlIGlmIGl0IGNhbiB3b3JrIHdpdGggbWFwX3JvbT8NCg0KIC0g
+V291bGQgeW91IGZpbmQgaW50ZXJlc3RpbmcgdG8gYmUgYWJsZSB0byBwYXNzIHBoeXNtYXAgYWRk
+cmVzc2VzDQogICBhcyBwYXJhbWV0ZXJzIChtb2R1bGUgb3Iga2VybmVsIGNtZCBsaW5lIHBhcmFt
+ZXRlcnMpDQoNCiAgIFRvIHRlc3QgaWYgaXQgaXMgcG9zaWJsZSBpIGhhdmUgbW9kaWZpZWQgcGh5
+c21hcC5jDQogICBhbmQgZHJpdmVycy9tdGQvbWFwcy9Db25maWcuaW4NCg0KICBSZWdhcmRzLg0K
+DQogIEhlcmUgYXJlIHRoZSBkaWZmcy4NCg0KDQokIGRpZmYgcGh5c21hcC5jIHBoeXNtYXAuYy5P
+UklHSU5BTA0KMTksMjBjMTksMjANCjwgI2RlZmluZSBXSU5ET1dfQUREUiByb21fYWRkcmVzcw0K
+PCAjZGVmaW5lIFdJTkRPV19TSVpFIHJvbV9zaXplDQotLS0NCj4gI2RlZmluZSBXSU5ET1dfQURE
+UiBDT05GSUdfTVREX1BIWVNNQVBfU1RBUlQNCj4gI2RlZmluZSBXSU5ET1dfU0laRSBDT05GSUdf
+TVREX1BIWVNNQVBfTEVODQoyMyw0OWQyMg0KPCBNT0RVTEVfUEFSTShyb21fYWRkcmVzcywgImki
+KTsNCjwgTU9EVUxFX1BBUk1fREVTQyhyb21fYWRkcmVzcywgIlJvbSBBZGRyZXNzIG9mIHRoZSBm
+bGFzaCIpOw0KPCBNT0RVTEVfUEFSTShyb21fc2l6ZSwgImkiKTsNCjwgTU9EVUxFX1BBUk1fREVT
+Qyhyb21fc2l6ZSwgIlNpemUgb2YgdGhlIGZsYXNoIG1hcHBpbmciKTsNCjwNCjwgc3RhdGljIHNp
+emVfdCByb21fYWRkcmVzcyA9IENPTkZJR19NVERfUEhZU01BUF9TVEFSVDsNCjwgc3RhdGljIHVu
+c2lnbmVkIHJvbV9zaXplICA9IENPTkZJR19NVERfUEhZU01BUF9MRU47DQo8DQo8DQo8IC8qIG9w
+dGlvbnMgLSBub25tb2R1bGFyICovDQo8ICNpZm5kZWYgTU9EVUxFDQo8IHN0YXRpYyBpbnQgX19p
+bml0IHNldF9yb21fc2l6ZShjaGFyICpzdHIpDQo8IHsNCjwgICAgICAgcm9tX3NpemUgPSBzaW1w
+bGVfc3RydG91bChzdHIsTlVMTCwwKTsNCjwgICAgICAgcmV0dXJuIDE7DQo8IH0NCjwNCjwgc3Rh
+dGljIGludCBfX2luaXQgc2V0X3JvbV9hZGRyZXNzKGNoYXIgKnN0cikNCjwgew0KPCAgICAgICBy
+b21fYWRkcmVzcyA9IHNpbXBsZV9zdHJ0b3VsKHN0cixOVUxMLDApOw0KPCAgICAgICByZXR1cm4g
+MTsNCjwgfQ0KPA0KPCBfX3NldHVwKCJyb21fc2l6ZT0iLCBzZXRfcm9tX3NpemUpOw0KPCBfX3Nl
+dHVwKCJyb21fYWRkcmVzcz0iLCBzZXRfcm9tX2FkZHJlc3MpOw0KPCAjZW5kaWYNCjwNCjk3Yzcw
+DQo8ICAgICAgIHNpemU6IENPTkZJR19NVERfUEhZU01BUF9MRU4sICAgLy9XSU5ET1dfU0laRSwN
+Ci0tLQ0KPiAgICAgICBzaXplOiBXSU5ET1dfU0laRSwNCjE1MGQxMjINCjwgICAgIHBoeXNtYXBf
+bWFwLnNpemUgPSBXSU5ET1dfU0laRTsNCg0KDQokIGRpZmYgQ29uZmlnLmluIENvbmZpZy5pbi5P
+UklHSU5BTA0KOWM5DQo8IGRlcF90cmlzdGF0ZSAnICBDRkkgRmxhc2ggZGV2aWNlIGluIHBoeXNp
+Y2FsIG1lbW9yeSBtYXAnIENPTkZJR19NVERfUEhZU01BUA0KJENPTkZJR19NVEQNCi0tLQ0KPiBk
+ZXBfdHJpc3RhdGUgJyAgQ0ZJIEZsYXNoIGRldmljZSBpbiBwaHlzaWNhbCBtZW1vcnkgbWFwJyBD
+T05GSUdfTVREX1BIWVNNQVANCiRDT05GSUdfTVREX0dFTl9QUk9CRQ0KDQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXw0KX19fXw0KRXN0ZSBtZW5zYWplIHNlIGRpcmlnZSBleGNsdXNpdmFtZW50ZSBh
+IHN1IGRlc3RpbmF0YXJpbyB5IHB1ZWRlIGNvbnRlbmVyDQppbmZvcm1hY2nzbiBDT05GSURFTkNJ
+QUwgc29tZXRpZGEgYSBzZWNyZXRvIHByb2Zlc2lvbmFsIG8gY3V5YSBkaXZ1bGdhY2nzbg0KZXN0
+6SBwcm9oaWJpZGEgZW4gdmlydHVkIGRlIGxhIGxlZ2lzbGFjafNuIHZpZ2VudGUuIFNpIGhhIHJl
+Y2liaWRvIGVzdGUNCm1lbnNhamUgcG9yIGVycm9yLCBsZSByb2dhbW9zIHF1ZSBub3MgbG8gY29t
+dW5pcXVlIGlubWVkaWF0YW1lbnRlIHBvciBlc3RhDQptaXNtYSB27WEgbyBwb3IgdGVs6WZvbm8g
+KDM0IDkzIDczOSA2NyAwMCkgeSBwcm9jZWRhIGEgc3UgZGVzdHJ1Y2Np824uDQpO83Rlc2UgcXVl
+IGVsIGNvcnJlbyBlbGVjdHLzbmljbyB27WEgSW50ZXJuZXQgbm8gcGVybWl0ZSBhc2VndXJhciBu
+aSBsYQ0KY29uZmlkZW5jaWFsaWRhZCBkZSBsb3MgbWVuc2FqZXMgcXVlIHNlIHRyYW5zbWl0ZW4g
+bmkgbGEgY29ycmVjdGEgcmVjZXBjafNuDQpkZSBsb3MgbWlzbW9zLiAgRW4gZWwgY2FzbyBkZSBx
+dWUgZWwgZGVzdGluYXRhcmlvIGRlIGVzdGUgbWVuc2FqZSBubw0KY29uc2ludGllcmEgbGEgdXRp
+bGl6YWNp824gZGVsIGNvcnJlbyBlbGVjdHLzbmljbyB27WEgSW50ZXJuZXQsIHJvZ2Ftb3MgbG8N
+CnBvbmdhIGVuIG51ZXN0cm8gY29ub2NpbWllbnRvIGRlIG1hbmVyYSBpbm1lZGlhdGEuDQoNClRo
+aXMgbWVzc2FnZSBpcyBpbnRlbmRlZCBleGNsdXNpdmVseSBmb3IgaXRzIGFkZHJlc3NlZSBhbmQg
+bWF5IGNvbnRhaW4NCmluZm9ybWF0aW9uIHRoYXQgaXMgQ09ORklERU5USUFMIGFuZCBwcm90ZWN0
+ZWQgYnkgYSBwcm9mZXNzaW9uYWwgcHJpdmlsZWdlDQpvciB3aGljaCBkaXNjbG9zdXJlIGlzIHBy
+b2hpYml0ZWQgYnkgbGF3LiBJZiB0aGlzIG1lc3NhZ2UgaGFzIGJlZW4gcmVjZWl2ZWQNCmluIGVy
+cm9yLCBwbGVhc2UgaW1tZWRpYXRlbHkgbm90aWZ5IHVzIHZpYSBlLW1haWwgb3IgYnkgdGVsZXBo
+b25lICgzNCA5Mw0KNzM5IDY3IDAwKSBhbmQgZGVsZXRlIGl0Lg0KUGxlYXNlIG5vdGUgdGhhdCBJ
+bnRlcm5ldCBlLW1haWwgZG9lcyBub3QgZ3VhcmFudGVlIHRoZSBjb25maWRlbnRpYWxpdHkgb3IN
+CnRoZSBwcm9wZXIgcmVjZWlwdCBvZiB0aGUgbWVzc2FnZXMgc2VudC4gIElmIHRoZSBhZGRyZXNz
+ZWUgb2YgdGhpcyBtZXNzYWdlDQpkb2VzIG5vdCBjb25zZW50IHRvIHRoZSB1c2Ugb2YgSW50ZXJu
+ZXQgZS1tYWlsLCBwbGVhc2UgY29tbXVuaWNhdGUgaXQgdG8gdXMNCmltbWVkaWF0ZWx5Lg0KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18NCl9fX18NCg0KDQo=
