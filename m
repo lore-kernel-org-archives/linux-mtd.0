@@ -1,15 +1,22 @@
-Received: from f117.pav1.hotmail.com ([64.4.31.117] helo=hotmail.com)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 188eLH-0005hH-00
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 10:20:23 +0000
-From: "vijay vijay" <vijay_peshkar@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: vijay.peshkar@wipro.com
-Subject: Re: mtd2 partition mapping on mtd1?...
-Date: Mon, 04 Nov 2002 10:50:05 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F1170uJLisx4Vy8zHiv0001806d@hotmail.com>
+	id 188guJ-0005yF-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 13:04:43 +0000
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H52004C60D9P8@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Mon, 04 Nov 2002 14:34:21 +0100 (MET)
+Date: Mon, 04 Nov 2002 14:32:16 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: how to handle the invalid block of the NAND flash?
+In-reply-to: <000f01c283ec$cf3a7330$9000010a@paulwong>
+To: Paul Wong <paul.wong@digitalview.com>, linux-mtd@lists.infradead.org
+Reply-to: tglx@linutronix.de
+Message-id: <200211041432.16552.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=big5
+Content-transfer-encoding: 7BIT
+References: <000f01c283ec$cf3a7330$9000010a@paulwong>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,84 +28,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Stupid me. Was all along trying to write without erasing!!.
-Now am able to write to desired partition after erasing the
-same.
+On Monday 04 November 2002 11:27, Paul Wong wrote:
+> Hi! all,
+>     I know that the NAND flash memory is not guaranteed to be good in all
+> block. Has the MTD/NAND driver handle this condition? If not, how to
+> implement this?
+>
+The NAND driver itself does not handle bad blocks, except that it denies the 
+request to erase a bad block. The bad block management has to be done in the 
+filesystem layer. There are two NAND aware filesystems: JFFS2 and YAFFS.
+See also http://www.linux-mtd.infradead.org/tech/nand.html
 
-Regards,
-Vijay
-
->From: Jörn Engel <joern@wohnheim.fh-wedel.de>
->To: vijay vijay <vijay_peshkar@hotmail.com>
->CC: linux-mtd@lists.infradead.org, vijay.peshkar@wipro.com
->Subject: Re: mtd2 partition mapping on mtd1?...
->Date: Sat, 2 Nov 2002 21:02:37 +0100
->
->On Sat, 2 November 2002 09:52:47 +0000, vijay vijay wrote:
-> > Have added 3 partitions in mtd. The root filesystem is cramfs type.
-> > Since it was not being located by default, hardcoded cramfs_read
-> > to return the rootfs addr. Now the target is coming up..Am getting
-> > below results too...
-> >
-> > # cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 000c0000 00020000 "boot firmware + kernel"
-> > mtd1: 00200000 00020000 "cramfs partition"
-> > mtd2: 00100000 00020000 "test partition"
-> >
-> > # mount
-> > /dev/root on / type cramfs (rw)
-> > /proc on /proc type proc (rw)
-> > ramfs on /var type ramfs (rw)
-> >
-> > Now, "cat /dev/mtd1" and "cat /dev/mtd2" are both fetching
-> > same data. How's that?. A dd to /dev/mtd2 is going as..
->
->What do you get on "ls -l /dev/mtd?" ?
->I'd like to be sure what device we are dealing with.
->
-> > # busybox dd if=mtd2fs.bin bs=94208 of=/dev/mtd2 count=1
-> > MTD_open
-> > MTD_write
-> > vijay mtd_write (?=E
-> > (vijay) in physmap_write32(data=0xaa00aa, adr=0x1554)
-> > (vijay) in physmap_write32(data=0x550055, adr=0xaa8)
-> > (vijay) in physmap_write32(data=0x200020, adr=0x1554)
-> > (vijay) in physmap_write32(data=0xa000a0, adr=0x0)
-> > (vijay) in physmap_write32(data=0x28cd3d45, adr=0x400000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > :
-> > :
-> > :
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > (vijay) in physmap_read32(0xc3ba3000)
-> > Last[3] is d726c2a6, datum is 28cd3d45
-> > (vijay) in physmap_write32(data=0xf000f0, adr=0x0)
-> > (vijay) in physmap_write32(data=0x900090, adr=0x0)
-> > (vijay) in physmap_write32(data=0x0, adr=0x0)
-> > dd: /dev/mtd2: Input/output error
->   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > MTD_close
-> >
-> > On "cat /dev/mtd2", am still seeing old data(as on mtd1)?.
->
->This does not surprise me. Something went wrong on the write. Can you
->narrow the options down a little? Make sure that you don't have an
->-ro-device, check wether flash is locked, etc.
->
->The flash is nor, I suppose.
->
->Jörn
->
->--
->When in doubt, use brute force.
->-- Ken Thompson
-
-
-_________________________________________________________________
-Unlimited Internet access for only $21.95/month.  Try MSN! 
-http://resourcecenter.msn.com/access/plans/2monthsfree.asp
+-- 
+Thomas
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
