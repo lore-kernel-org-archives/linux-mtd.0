@@ -1,22 +1,26 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from moutng.kundenserver.de ([212.227.126.173])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Al38E-000824-Nj
-	for linux-mtd@lists.infradead.org; Mon, 26 Jan 2004 09:34:11 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Eric W. Biederman" <ebiederman@lnxi.com>
-In-Reply-To: <m3brorf4hg.fsf@maxwell.lnxi.com>
-References: <m3u12jr8y4.fsf@maxwell.lnxi.com>
-	 <1075099329.17157.97.camel@lapdancer.baythorne.internal>
-	 <m3bror89u9.fsf@maxwell.lnxi.com>
-	 <1075102799.17157.209.camel@lapdancer.baythorne.internal>
-	 <m3brorf4hg.fsf@maxwell.lnxi.com>
-Content-Type: text/plain
-Message-Id: <1075109506.19924.45.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Mon, 26 Jan 2004 09:31:46 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Q: Filesystem choice..
+	id 1Al7hl-0000CO-4a
+	for linux-mtd@lists.infradead.org; Mon, 26 Jan 2004 14:27:09 +0000
+Received: from [212.227.126.160] (helo=mrelayng.kundenserver.de)
+	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 1Al7hQ-0007m1-00
+	for linux-mtd@lists.infradead.org; Mon, 26 Jan 2004 15:26:48 +0100
+Received: from [217.88.220.117] (helo=phoenix.one.melware.de)
+	by mrelayng.kundenserver.de with asmtp (Exim 3.35 #1)
+	id 1Al7hP-0007ks-00
+	for linux-mtd@lists.infradead.org; Mon, 26 Jan 2004 15:26:47 +0100
+Received: from phoenix.one.melware.de (phoenix.one.melware.de [192.168.100.2])
+	by phoenix.one.melware.de (8.12.9/8.12.9) with ESMTP id i0QEQjnB032327
+	for <linux-mtd@lists.infradead.org>; Mon, 26 Jan 2004 15:26:45 +0100
+Date: Mon, 26 Jan 2004 15:26:45 +0100 (MET)
+From: Armin Schindler <armin@melware.de>
+Sender: <armin@melware.de>
+To: <linux-mtd@lists.infradead.org>
+Message-ID: <Pine.LNX.4.31.0401261520320.32301-100000@phoenix.one.melware.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: fix jffs2 data errors ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-01-26 at 02:23 -0700, Eric W. Biederman wrote:
-> Compression is an interesting question.  Do you encode the uncompressed
-> size of a block in bytes. 
+Hi,
 
-Yes.
+together with latest CVS of jffs2 (one week old), I try to use
+my rootfs on a jffs2 NAND-Flash partition.
 
->  If so I don't think it would be too difficult to get your uncompressed
->  block size > page size. 
+It seems to work pretty good, but when I have e.g. reset/power-down,
+on the next boot/rootfs-mount I get messages like:
 
-It wouldn't be difficult -- but that's not really at all relevant to the
-above question. By 'uncompressed block size' here I'm assuming you're
-talking of the amount of data payload we attach to any given node (log
-entry). The rule is currently that it mustn't cross a page boundary --
-and hence, by inference, obviously can't exceed a page in size.
+ jffs2_scan_dirent_node(): Name CRC failed on node at 0x001b89dc: Read 0xffffffff,
+ calculated 0xc04c39e5
+ Empty flash at 0x001b8a10 ends at 0x001b8c00
+ Empty flash at 0x001b93f8 ends at 0x001b9400
 
-That assumption did allow a little simplification of bits of the code,
-but actually it turned out to be less useful than I originally thought,
-so it might be worth ditching in order to let us get better compression
-by compressing larger chunks at a time.
+I thought, that such errors will be fixed, but every time I mount the partition,
+these errors still exist.
 
->  With the page cache there is real reason a block size <= page size. 
->  You just need what amounts to scatter/gather support.
+Is the filesystem now unfixable or am I doing something wrong?
 
-Yes. It's been done for zisofs -- if we have to decompress, for example,
-16KiB to satisfy a single 4KiB readpage, we can prefetch the other data
-which we had to decompress anyway. 
-
-Fix up some other assumptions about the first byte in any given page
-also being the first byte in a node, and fix up the garbage-collection
-which will need to have enough workspace to decompress and recompress
-the largest block it may encounter, and it should work.
-
-> My real question here is how difficult is it to disable compression?
-> Or can compression be deliberately disabled on a per file basis?
-
-It's not too hard. To disable it completely you just need to change a
-few #defines in os-linux.h. The support for disabling it on a per-file
-basis isn't complete, but there are flags allocated in the inode
-structure to keep track of it.
-
-> I have a truly perverse case I would like to ask your opinion about.
-> A filesystem composed of 2 8K erase blocks?  That is one of the
-> weird special cases that flash chips often support.  I could
-> only store my parameter file in there but it would be interesting.
-
-To be honest, at that size I'd just do it directly via /dev/mtd0. Put
-the file directly on the flash with a checksum. Alternate between the
-eraseblocks each time it changes, then erase the old copy.
-
-> And a last question. jffs2 rounds all erase blocks up to a common size
-> doesn't it?
-
-Yes.
-
--- 
-dwmw2
+Thanks for any hint,
+Armin
