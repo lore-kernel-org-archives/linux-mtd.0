@@ -1,22 +1,19 @@
-Received: from avanto.mpei.ac.ru ([193.233.71.179])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGzGb-000384-Bv
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 08:27:06 -0400
-Received: from skorinkod.lan ([10.255.2.21])
-	by avanto.mpei.ac.ru with esmtp (Exim 3.36 #1 (Debian))
-	id 1CGzGT-0001WB-00
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Oct 2004 16:26:57 +0400
-From: Dmitry Skorinko <skorinkod@mosk.ru>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 11 Oct 2004 16:27:58 +0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200410111627.58486.skorinkod@mosk.ru>
-Subject: BNAND Media Header not found
-Reply-To: skorinkod@mail.ru
+Received: from zorglub.ssji.net ([2001:7a8:3030::face])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CGzUE-0003LB-2c
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 08:41:11 -0400
+Date: Mon, 11 Oct 2004 14:41:02 +0200
+From: Nicolas Pouillon <nipo@ssji.net>
+To: Kalev Lember <kalev@colleduc.ee>
+Message-Id: <20041011144102.5f419c76.nipo@ssji.net>
+In-Reply-To: <Pine.LNX.4.44.0410111142280.30772-100000@kiire.colleduc.ee>
+References: <1097261009.11402.1703.camel@thomas>
+	<Pine.LNX.4.44.0410111142280.30772-100000@kiire.colleduc.ee>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Probing at 0x0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-first, sorry for my English
+[Mon, 11 Oct 2004 12:00:02 +0300 (EEST)]
+Kalev Lember <kalev@colleduc.ee> eut le bonheur d'=E9crire:
 
-2.6.8.1 kernel
-pc104 system with DiskOnChip 2000 256MB
+> This is a 64 MB device that must be accessed it 16 bit mode.
 
-After nftl_format I start modules and have: 
-DiskOnChip BNAND Media Header not found
-and diskonchip don't find my flash :(
-/proc/mtd and /dev/mtd0 is empty....
-How I can return this header?
+Indeed, and as I have no control over the hardware configuration, I wont
+be able to use it as 8bit.
 
+Forcing some detection code, it finally ends up with something like
+"Media Header not found". I did not understand the calling chain which
+ended in the corresponding function, and didn't understand what is
+"media header"... no ref in datasheets (at least in those I have)
 
-second question:
-when I had working system (hehe), there was note:
-DiskOnChip 2000 (INFTL model) during modules were loading
-                 ^^^^^^^
-
-I tried "insmod" inftl.ko but I had kernel panic with it.... and I "insmod" 
-nftl.ko...
-where is problem?
-
-I'm only starting work with flash and study all these drivers and i'm sorry 
-for silly questions...
-
-
-Dmitry
+--=20
+Nipo <nipo@ssji.net>
