@@ -1,31 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141BmP-0001bJ-00
-	for mtd-list@infradead.org; Wed, 29 Nov 2000 18:16:29 +0000
-Date: Wed, 29 Nov 2000 11:19:36 +0000
-From: Shane Nay <shane@agendacomputing.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Shane Nay <shane@agendacomputing.com>, Nicolas Pitre <nico@cam.org>,
-   mtd@infradead.org
-Subject: Re: XIP kernel + MTD polling interest
-Message-ID: <20001129111936.M996@www.easysolutions.net>
-References: <20001129101917.H996@www.easysolutions.net> <20001128085354.L17376@www.easysolutions.net> <20001128070007.E17376@www.easysolutions.net> <Pine.LNX.4.30.0011282033210.546-100000@xanadu.gn.com> <20001128085354.L17376@www.easysolutions.net> <28079.975427082@redhat.com> <20001129101917.H996@www.easysolutions.net> <28305.975518294@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <28305.975518294@redhat.com>; from dwmw2@infradead.org on Wed, Nov 29, 2000 at 17:18:14 +0000
+	id 141Dle-0002AB-00
+	for mtd-list@infradead.org; Wed, 29 Nov 2000 20:23:50 +0000
+Received: from amdext2.amd.com ([163.181.251.1])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 141DlO-00029v-00
+	for mtd@infradead.org; Wed, 29 Nov 2000 20:23:48 +0000
+Received: from iliad.amd.com (iliad.amd.com [163.181.250.7])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with SMTP id OAA19899
+	for <mtd@infradead.org>; Wed, 29 Nov 2000 14:23:02 -0600 (CST)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id OAA04986
+	for <mtd@infradead.org>; Wed, 29 Nov 2000 14:23:01 -0600 (CST)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F1F5@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: inter-module-2.2.17 patch
+Date: Wed, 29 Nov 2000 14:23:00 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I installed the latest CVS code on my computer today.
+After the kernel recompile, I keep getting undefined
+references to inter_module_put.
 
-> 
-> Sounds reasonable to me. I'd like to see the section magic too.
+I tried applying the inter-module-2.2.17 patch to
+my 2.2.17 kernel, using
+'patch -p1 < inter-module-2.2.17.patch'
+but I get an immediate error, 
+"malformed patch at line 6: #include <linux/smp_lock.h>"
 
-It's in:
-ftp://shane.dnsalias.net/pub/mtd-xip-snap-0.1.tar.gz
+What should I be doing to get the latest MTD code to 
+compile against 2.2.17?
 
-Included is the linker script, and the files I've changed thus far.  When
-I'm finished I'll make a real diff, and do the kernel configuration stuff.
+Mark Langsdorf
+Advanced Micro Devices, Inc             Tel: 512.602.3756
+5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+Austin, TX 78741                        mark.langsdorf@amd.com
 
 
 
