@@ -1,24 +1,14 @@
-Received: from avanto.mpei.ac.ru ([193.233.71.179] helo=avanto.org)
+Received: from webapps.arcom.com ([194.200.159.168])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ca9wn-0004sS-PY
-	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2004 04:41:55 -0500
-Received: from skorinkod.lan ([10.255.2.21])
-	by avanto.mpei.ac.ru with esmtp (Exim 3.36 #1 (Debian))
-	id 1Ca9ws-0007Q8-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Dec 2004 12:41:58 +0300
-From: Dmitry Skorinko <skorinkod@mail.ru>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 3 Dec 2004 12:42:12 +0300
-References: <200412021931.05132.skorinkod@mosk.ru>
-In-Reply-To: <200412021931.05132.skorinkod@mosk.ru>
+	id 1CaAyM-00059u-T9
+	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2004 05:47:36 -0500
+Message-ID: <41B04442.9050109@arcom.com>
+Date: Fri, 03 Dec 2004 10:47:30 +0000
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200412031242.12036.skorinkod@mail.ru>
-Subject: Re: Booting from DiskOnChip
-Reply-To: skorinkod@mail.ru
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="------------000608040601060201060402"
+Subject: cfi_cmdset_0002: don't use jiffies for short timeouts
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +18,189 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-People!
-Help me to install grub to DiskOnChip, plz...
-Just for BIOS see it... Then I will install system self
+This is a multi-part message in MIME format.
+--------------000608040601060201060402
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This problem stops all my work :(
+Hi,
 
-> I patch and build grub-0.92, then:
->
-> # ./doc_loadbios /dev/mtd0 ./grub_firmware
-> Performing Flash Erase of length 16384 at offset 0
-> ioctl(MEMERASE): Input/output error
-> # dmesg | tail -8
-> MTD_open
-> MTD_ioctl
-> MTD_ioctl
-> nand_erase: start =3D 0x00000000, len =3D 16384
-> nand_isbad_bbt(): bbt info for offs 0x00000000: (block 2) 0x00
-> nand_erase: attempt to erase a bad block at page 0x00000000
-> MTD_close
-> nand_sync: called
+Due to problems I've been having with short timeouts expiring early [1] 
+I propose the following patch:
 
-if I use M-System tools:
+   - Add word_write_time_max, write_buffer_time_max, erase_time_max 
+field to struct flchips.
+   - Fill in the above fields based on the CFI data.
+   - Use a simple down counter for the timeout on word and buffer writes 
+instead of jiffies and time_after().
 
-# ./dformat -win:e000 -s:./DOC514.EXB -first -bdkf0:./grub_firmware -y
-DFORMAT Version 5.1.4.37 for Linux
-Copyright (C) M-Systems, 1992-2002
+The first two bits seem generally useful so I could commit those if the 
+3rd part is acceptable.
 
-DiskOnChip 2000 TSOP found in 0xe0000.
-256M media, 16K unit
+[1] 
+http://lists.arm.linux.org.uk/pipermail/linux-arm-kernel/2004-December/025695.html
 
-=46ormatting =A0 =A0 =A0 =A0 =A0 =A0 =A0 16384
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-Mounting Disk Partition 0
-Unit 16368 out of 16368
+David Vrabel
+-- 
+David Vrabel, Design Engineer
 
-Writing boot image =A0 =A0 =A0 197728
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
 
-Writing file to BDK 0 =A0 =A098304
-OK
-Please reboot to let DiskOnChip install itself.
-#reboot
+--------------000608040601060201060402
+Content-Type: text/plain;
+	name="mtd-cfi_cmdset_0002-no-jiffies-for-short-timeouts"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="mtd-cfi_cmdset_0002-no-jiffies-for-short-timeouts"
 
-BIOS:
-searching for boot sector on SCSI... not found
+? j
+? drivers/mtd/chips/log
+Index: drivers/mtd/chips/cfi_cmdset_0002.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0002.c,v
+retrieving revision 1.113
+diff -u -B -p -r1.113 cfi_cmdset_0002.c
+--- drivers/mtd/chips/cfi_cmdset_0002.c	3 Dec 2004 10:26:41 -0000	1.113
++++ drivers/mtd/chips/cfi_cmdset_0002.c	3 Dec 2004 10:34:57 -0000
+@@ -303,6 +303,12 @@ struct mtd_info *cfi_cmdset_0002(struct 
+ 		cfi->chips[i].word_write_time = 1<<cfi->cfiq->WordWriteTimeoutTyp;
+ 		cfi->chips[i].buffer_write_time = 1<<cfi->cfiq->BufWriteTimeoutTyp;
+ 		cfi->chips[i].erase_time = 1<<cfi->cfiq->BlockEraseTimeoutTyp;
++		cfi->chips[i].word_write_time_max = (1<<cfi->cfiq->WordWriteTimeoutTyp)
++			* (1<<cfi->cfiq->WordWriteTimeoutMax);
++		cfi->chips[i].buffer_write_time_max = (1<<cfi->cfiq->BufWriteTimeoutTyp)
++			* (1<<cfi->cfiq->BufWriteTimeoutMax);
++		cfi->chips[i].erase_time_max = (1<<cfi->cfiq->BlockEraseTimeoutTyp)
++			* (1<<cfi->cfiq->BlockEraseTimeoutMax);
+ 	}		
+ 	
+ 	map->fldrv = &cfi_amdstd_chipdrv;
+@@ -695,19 +701,9 @@ static int cfi_amdstd_secsi_read (struct
+ static int do_write_oneword(struct map_info *map, struct flchip *chip, unsigned long adr, map_word datum)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
+-	/*
+-	 * We use a 1ms + 1 jiffies generic timeout for writes (most devices
+-	 * have a max write time of a few hundreds usec). However, we should
+-	 * use the maximum timeout value given by the chip at probe time
+-	 * instead.  Unfortunately, struct flchip does have a field for
+-	 * maximum timeout, only for typical which can be far too short
+-	 * depending of the conditions.	 The ' + 1' is to avoid having a
+-	 * timeout of 0 jiffies if HZ is smaller than 1000.
+-	 */
+-	unsigned long uWriteTimeout = ( HZ / 1000 ) + 1;
++	unsigned long timeo;
+ 	int ret = 0;
+-	map_word oldd, curd;
++	map_word oldd;
+ 	int retry_cnt = 0;
+ 
+ 	adr += chip->start;
+@@ -747,9 +743,8 @@ static int do_write_oneword(struct map_i
+ 	cfi_udelay(chip->word_write_time);
+ 	cfi_spin_lock(chip->mutex);
+ 
+-	/* See comment above for timeout value. */
+-	timeo = jiffies + uWriteTimeout; 
+-	for (;;) {
++	timeo = chip->word_write_time_max * 2;
++	do {
+ 		if (chip->state != FL_WRITING) {
+ 			/* Someone's suspended the write. Sleep */
+ 			DECLARE_WAITQUEUE(wait, current);
+@@ -759,7 +754,6 @@ static int do_write_oneword(struct map_i
+ 			cfi_spin_unlock(chip->mutex);
+ 			schedule();
+ 			remove_wait_queue(&chip->wq, &wait);
+-			timeo = jiffies + (HZ / 2); /* FIXME */
+ 			cfi_spin_lock(chip->mutex);
+ 			continue;
+ 		}
+@@ -767,14 +761,11 @@ static int do_write_oneword(struct map_i
+ 		if (chip_ready(map, adr))
+ 			goto op_done;
+ 
+-		if (time_after(jiffies, timeo))
+-                        break;
+-
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		cfi_spin_unlock(chip->mutex);
+ 		cfi_udelay(1);
+ 		cfi_spin_lock(chip->mutex);
+-	}
++	} while (--timeo > 0);
+ 
+ 	printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
+ 
+@@ -943,9 +934,7 @@ static inline int do_write_buffer(struct
+ 				  unsigned long adr, const u_char *buf, int len)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
+-	/* see comments in do_write_oneword() regarding uWriteTimeo. */
+-	unsigned long uWriteTimeout = ( HZ / 1000 ) + 1;
++	unsigned long timeo;
+ 	int ret = -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+@@ -1000,9 +989,8 @@ static inline int do_write_buffer(struct
+ 	cfi_udelay(chip->buffer_write_time);
+ 	cfi_spin_lock(chip->mutex);
+ 
+-	timeo = jiffies + uWriteTimeout; 
+-		
+-	for (;;) {
++	timeo = chip->buffer_write_time_max * 2;
++	do {
+ 		if (chip->state != FL_WRITING) {
+ 			/* Someone's suspended the write. Sleep */
+ 			DECLARE_WAITQUEUE(wait, current);
+@@ -1012,22 +1000,18 @@ static inline int do_write_buffer(struct
+ 			cfi_spin_unlock(chip->mutex);
+ 			schedule();
+ 			remove_wait_queue(&chip->wq, &wait);
+-			timeo = jiffies + (HZ / 2); /* FIXME */
+ 			cfi_spin_lock(chip->mutex);
+ 			continue;
+ 		}
+ 
+ 		if (chip_ready(map, adr))
+ 			goto op_done;
+-		    
+-		if( time_after(jiffies, timeo))
+-			break;
+ 
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		cfi_spin_unlock(chip->mutex);
+ 		cfi_udelay(1);
+ 		cfi_spin_lock(chip->mutex);
+-	}
++	} while (--timeo > 0);
+ 
+ 	printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 	       __func__ );
+Index: include/linux/mtd/flashchip.h
+===================================================================
+RCS file: /home/cvs/mtd/include/linux/mtd/flashchip.h,v
+retrieving revision 1.15
+diff -u -B -p -r1.15 flashchip.h
+--- include/linux/mtd/flashchip.h	5 Nov 2004 22:41:06 -0000	1.15
++++ include/linux/mtd/flashchip.h	3 Dec 2004 10:34:58 -0000
+@@ -70,9 +70,12 @@ struct flchip {
+ 	spinlock_t _spinlock; /* We do it like this because sometimes they'll be shared. */
+ 	wait_queue_head_t wq; /* Wait on here when we're waiting for the chip
+ 			     to be ready */
+-	int word_write_time;
++	int word_write_time;       /* Typical */
+ 	int buffer_write_time;
+ 	int erase_time;
++	int word_write_time_max;   /* Maximum */
++	int buffer_write_time_max;
++	int erase_time_max;
+ 
+ 	void *priv;
+ };
 
-I can dformat flash with DOS:
-# ./dformat -win:e000 -s:./DOC514.EXB -first
-then from floppy
-SYS A: C:
-and MS-DOS can boot from flash... =3D> Problem is not in hardware.
-
-
-Thanks
-Dmitry
+--------------000608040601060201060402--
