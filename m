@@ -1,63 +1,55 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14b2fW-0000uo-00
-	for mtd-list@infradead.org; Thu, 08 Mar 2001 15:49:34 +0000
-Message-ID: <3AA7AAEE.FB7E4DC1@inventel.fr>
-Date: Thu, 08 Mar 2001 16:53:18 +0100
-From: Xavier DEBREUIL <xde@inventel.fr>
-MIME-Version: 1.0
+	id 14b2pY-00014R-00
+	for mtd-list@infradead.org; Thu, 08 Mar 2001 15:59:56 +0000
+Date: Thu, 8 Mar 2001 09:49:43 -0500 (EST)
+From: Kevin Jacobs <jacobs@penguin.theopalgroup.com>
 To: David Woodhouse <dwmw2@infradead.org>
-CC: mtd@infradead.org
-Subject: Re: mtd with 2.0.4-test6
-References: <3AA3A2FF.9E25407A@inventel.fr> <31161.983802881@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+cc: mtd@infradead.org
+Subject: Re: Oh, the many joys of MTD... 
+In-Reply-To: <12369.984062580@redhat.com>
+Message-ID: <Pine.LNX.4.21.0103080945140.7891-100000@penguin.theopalgroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
-I build the utilities for arm and almost all of these have been build without
-any problem.
-I got just one problem with the compr_zlib.c
+On Thu, 8 Mar 2001, David Woodhouse wrote:
+> jacobs@penguin.theopalgroup.com said:
+> >  My first questions is likely something fairly basic.  I've read over
+> > much of the MTD source and it seems that many of the erase and write
+> > functions do not deal with concurrent access and CPU cache issues.
+> > What happens when a {read,write,erase} request comes in for a sector
+> > that is being {written,erased}?
+> 
+> See the state machine in cfi_cmdset_000[12].c. We wait until the operation 
+> which is currently in progress has completed. Theoretical support for 
+> interruption of erases and writes is there, but it's not yet implemented.
 
-In fact, I was compelled to explicitly give the zlib.h path. Should it be in my
-glibc ?
-Another point is that zalloc and zfree are defined as nozalloc and nozfree in
-the 2.4.0 kernel headers. Do I have just to rename those two fields in
-comp_zlib.c ?
-
-Xavier.
+That seems to be a feature of the cfi_cmdset_* but not of jedec.c,
+amd_flash.c, among others.
 
 
-arm-linux-gcc -O -Wall -I/usr/arm-linux -I../include
--I/home/xde/arm_linux/linux_2.4/linux/fs/cramfs/inflate   -c compr_zlib.c -o
-compr_zlib.o
-In file included from
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/stdio.h:40,
-                 from compr_zlib.c:47:
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/bits/types.h:95:
-warning: `__NFDBITS' redefined
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/posix_types.h:22:
-warning: this is the location of the previous definition
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/bits/types.h:97:
-warning: `__FDMASK' redefined
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/posix_types.h:34:
-warning: this is the location of the previous definition
-In file included from compr_zlib.c:47:
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/stdio.h:477:
-warning: redefinition of `off_t'
-/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/types.h:18:
-warning: `off_t' previously declared here
-compr_zlib.c: In function `zlib_compress':
-compr_zlib.c:73: structure has no member named `zalloc'
-compr_zlib.c:74: structure has no member named `zfree'
-compr_zlib.c: In function `zlib_decompress':
-compr_zlib.c:132: structure has no member named `zalloc'
-compr_zlib.c:133: structure has no member named `zfree'
-compr_zlib.c:136: warning: implicit declaration of function `inflateInit'
-compr_zlib.c:148: warning: implicit declaration of function `inflate'
-compr_zlib.c:153: warning: implicit declaration of function `inflateEnd'
-make: *** [compr_zlib.o] Error 1
+> > Also, is it assumed that the memory mapped for MTD devices will not be
+> > cached by the CPU?  If so, is it feasible to add support.  If not,
+> > where is code to flush/update the cache after a write or erase
+> > operation? 
+> 
+> It's assumed that it won't be cached, you are correct. 
+
+If a flash device was cached then writes should be fine, correct?  Erase
+operations would require Writing 0xFF to erased sectors should make the
+cache coherent, right?
+
+-Kevin
+
+--
+Kevin Jacobs
+The OPAL Group - Enterprise Systems Architect
+Voice: (216) 986-0710 x 19         E-mail: jacobs@the
+Fax:   (216) 986-0714              WWW:    http://www.theopalgroup.com
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
