@@ -1,22 +1,18 @@
-Received: from darwin.altera.com ([66.35.227.3])
+Received: from taurus-1.siol.net ([193.189.160.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17u8w6-00039N-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 10:58:26 +0100
-Received: from Altera.COM (sunrise [137.57.1.1])
-	by darwin.altera.com (8.10.2+Sun/8.10.2) with ESMTP id g8P9tMs17957
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 02:55:22 -0700 (PDT)
-Received: from localhost (localhost [[UNIX: localhost]])
-	by localhost.localdomain (8.11.6/8.11.6) id g8P9vkh20983
-	for linux-mtd@lists.infradead.org; Wed, 25 Sep 2002 10:57:46 +0100
-Message-Id: <200209250957.g8P9vkh20983@localhost.localdomain>
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Clive Davies <cdavies@altera.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Bugfix in cfi_intelext_read_prot_reg
-Date: Wed, 25 Sep 2002 10:57:46 +0100
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	id 17uABH-0003Iv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 12:18:11 +0100
+Subject: RE: jffs, jffs2
+From: Simon Posnjak <simon@activetools.si>
+To: Christopher Hoover <ch@murgatroid.com>
+Cc: 'linux-mtd' <linux-mtd@lists.infradead.org>
+In-Reply-To: <001501c26404$40977630$7e00000a@bergamot>
+References: <001501c26404$40977630$7e00000a@bergamot>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 25 Sep 2002 13:18:07 +0200
+Message-Id: <1032952690.2913.27.camel@klada.dyndns.org>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,22 +24,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This patch fixes a bug with the calculation of which byte to read from the 
-protection regsietsr which are presennt in some Intel flash devices.
+On Tue, 2002-09-24 at 21:54, Christopher Hoover wrote:
+> 
+> Use jffs2 over jffs.
+> 
+> Caveat with 2.5: if your flash has variable-sized blocks (e.g. Intel C3
+> flash), you'll need to either use the mtd CVS or patch the 2.5 sources
+> accordingly. 
+I wasn't to clear: I will be using 2.4.18. The date in TODO file which
+is located in fs/jffs2 directory is 2001/03/01 which seams to be a bit
+old. What I would like to now is there a newer (stable) version. (What
+to pull out of the CVS - HEAD or some other taged version)
 
-Index: cfi_cmdset_0001.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0001.c,v
-retrieving revision 1.102
-diff -u -p -r1.102 cfi_cmdset_0001.c
---- cfi_cmdset_0001.c   13 Sep 2002 14:39:34 -0000      1.102
-+++ cfi_cmdset_0001.c   25 Sep 2002 09:46:16 -0000
-@@ -527,7 +527,7 @@ static int cfi_intelext_read_prot_reg (s
+> Use mkfs.jffs2 to build the image.
+> 
+> With blob, just pretend "ramdisk" is "root".  You'll need to have
+> configured the proper partitioning into both blob and the sa1100 mtd
+> partition code. 
+> 
+> Write the image by doing "erase ramdisk; xdownload ramdisk; {send the
+> file}; flash ramdisk".  The erase is important.    
+> 
+> One final thing: be sure to configure your blob parameters to tell it
+> not to load the ramdisk automatically.  
 
-                cfi_send_gen_cmd(0x90, 0x55,chip->start, map, cfi, cfi->device_type, NULL);
-                while(count && ((offst-base_offst)<reg_sz)){
--                       *buf=map->read8(map,(chip->start+(extp->ProtRegAddr*ofs_factor)+offst));
-+                       *buf=map->read8(map,(chip->start+((extp->ProtRegAddr+1)*ofs_factor)+offst));
-                        buf++;
-                        offst++;
-                        count--;
+OK I got this, thank you for your help. Just one more thing:
+
+So to mount an empty mtd partition as jffs/jffs2 all I have to do is to
+erase it (using erase utilty from mtd)and then just do mount -t jffs2
+/dev/mtdblock5 /somedir. Is this correct?
+
+	Regards Simon
