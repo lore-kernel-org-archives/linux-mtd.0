@@ -1,23 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.197])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgqEm-0000qd-0B
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 15:04:05 -0500
-Received: by wproxy.gmail.com with SMTP id 67so6794wri
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Dec 2004 12:04:02 -0800 (PST)
-Message-ID: <1f9886eb04122112011e89a5f4@mail.gmail.com>
-Date: Tue, 21 Dec 2004 14:01:35 -0600
-From: xemc <xemcnet@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1103632766.6111.74.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-References: <20041217231645.79122.qmail@web52701.mail.yahoo.com>
-	<1103632766.6111.74.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Rootfs choice ideas
-Reply-To: xemc <xemcnet@gmail.com>
+Received: from moat.murgatroid.com ([69.17.55.116] helo=mail.murgatroid.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CgrFw-0001Qy-0R
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 16:09:21 -0500
+From: "Christopher Hoover" <ch@murgatroid.com>
+To: =?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@wohnheim.fh-wedel.de>
+Date: Tue, 21 Dec 2004 13:09:12 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20041221184918.GC10974@wohnheim.fh-wedel.de>
+Message-Id: <20041221210916.00C8CA00096@mail.murgatroid.com>
+Cc: 'Linux MTD' <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH 13/22] remove erase regions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > And we can modify files freely.
-> 
-> Yes but you don't _have_ to modify files freely. You can exercise a
-> little restraint :)
 
-Well, perhaps you don't know me too well.  =]  But you have a good point.
 
-> Yes. This is usually done in packages -- by RPM or more usefully on an
-> embedded system by something smaller like ipkg. Take a look at the
-> Familiar distribution.
+>From J=F6rn Engel [mailto:joern@wohnheim.fh-wedel.de] -=20
+> On Tue, 21 December 2004 10:42:07 -0800, Christopher Hoover wrote:
+> > >From J=F6rn Engel -
+> > > I see absolutely no reason for complicated erase reagions.  On the
+> > > user side, everyone but mtdchar effectively ignores it anyway.
+> >=20
+> > I don't grok this.   What about flash with variable-sized=20
+> blocks?  (I have a
+> > board with such flash and code that uses eraseregions.)
+>=20
+> Sure, from AMD or some other compatible manufacturer.  The
+> variable-sized blocks were nice until there were better solutions to
+> the problem, like jffs2.  Jffs2 exists, so they are largely useless.
 
-Thanks, I will do that.  I guess I just haven't thought along those lines.
+Intel C3 flash, too.
 
-> 'rpm -Vva'
-> 
-> Not sure if ipkg stores checksums of the installed files.
+> 5. mtdchar
 
-Aha.  Well, I'd have to say I've never used rpm before.  I usually use
-Slackware, just starting with Debian (laptop) and Gentoo (x86-64
-desktop)
- 
-> >  3. I could perhaps run into problems when updating it, for
-> > instance if the update fails part-way through.
-> 
-> You reattempt the update after you come back up.
+This is an important case. =20
 
-If I can come back up with a partially failed update.  But yes, the
-same thing can be done that I was proposing, but using packages on a
-JFFS2 filesystem as well.
+The reason embedded systems use flash with variable sized blocks is for =
+(in
+the small blocks) parameter stores for bootloaders and applications.
 
-> Basically it's up to you -- if you can manage to live with a read-only
-> file system, as presumably you could since you seem to consider
-> writeability a disadvantage, then you might as well stick with cramfs.
+I've got several deployed systems that use this technique.  I've seen at
+least one other.
 
-Well, I suppose I considered it a disadvantage when I don't need it. 
-My idea was to partition read-only areas (maybe CRAMFS) separately
-from a read-write area (JFFS2).  But there seem to be multiple ways of
-doing this.
 
-Thanks for your feedback.  It is appreciated, and I'll mull over it for a bit.
+> 5 does, but is horribly ugly and noone cares enough to clean it up.=20
 
-Mike
+This is not a reason to toss it.  We don't capriciously break user space
+interfaces in Linux.
+
+Also this:
+
+6. The hook that unlocks locked-on-power-up flash, such as (*surprise*) =
+C3
+flash.  It needs to call unlock with the start address of each block.  =
+It
+needs eraseergions to do that.
+
+-ch
