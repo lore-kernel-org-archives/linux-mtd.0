@@ -1,21 +1,20 @@
-Received: from codepoet.org
-	([166.70.99.138] helo=winder.codepoet.org ident=postfix)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nB87-0005hi-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 05:54:03 +0100
-Date: Thu, 5 Sep 2002 22:54:05 -0600
-From: Erik Andersen <andersen@codepoet.org>
-To: Tim Riker <Tim@Rikers.org>
-Cc: lixi_avansys <lixi@avansys.com>, uclibc@uclibc.org,
-	linux <linux-mtd@lists.infradead.org>
-Subject: Re: [uClibc]Re: GPL ,LGPL ,and our application
-Message-ID: <20020906045405.GA7747@codepoet.org>
-Reply-To: andersen@codepoet.org
-References: <001801c2532b$fda0d3f0$e8023f0a@l23009> <3D78306A.38DB8612@Rikers.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 17nCSN-0005q4-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 07:19:04 +0100
+Received: from sitemail.everyone.net (dsnat [216.200.145.62])
+	by omta03.mta.everyone.net (Postfix) with ESMTP id E805349788
+	for <linux-mtd@lists.infradead.org>; Thu,  5 Sep 2002 23:01:20 -0700 (PDT)
+Content-Type: text/plain
 Content-Disposition: inline
-In-Reply-To: <3D78306A.38DB8612@Rikers.org>
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Thu, 5 Sep 2002 23:01:15 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
+To: linux-mtd@lists.infradead.org
+Subject: DOC 2000 and GRUB
+Reply-To: mateo@posta.star.si
+Message-Id: <20020906060115.6A1663946@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,48 +26,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu Sep 05, 2002 at 10:34:50PM -0600, Tim Riker wrote:
-> This is the wrong list for this question. I've copied the uClibc list on
-> my reply that would be a better place to ask.
-> 
-> As noted in the COPYING.LIB:
-> 
-> http://uclibc.org/cgi-bin/cvsweb/uClibc/COPYING.LIB?rev=HEAD&content-type=text/vnd.viewcvs-markup
-> 
-> uClibc is under the LGPL which states:
+Hi
 
-Indeed, thanks Tim.  And if people bothered to read the uClibc
-FAQ (wishful thinking I know), which is available from 
-    http://www.uclibc.org/FAQ.html 
-this concern is specifically addressed.  I'll quote the FAQ entry
-here for the sake of further squashing this concern:
+I have some problems booting Linux form DOC 2000 using GRUB.
 
+I am using the PC104+ (with Zfx86 processor) and I made a
+custom Linux on the hard drive, with libs and 
+binares required for my project.
 
- If I use uClibc, do I have to release all my source code to the
- world for free? I want to create a closed source commercial
- application and I want to protect my intellectual property.  
- 
-     No, you do not need to give away your source code just
-     because you use uClibc and/or run on Linux. uClibc is
-     licensed under the LGPL, just like GNU libc. Using shared
-     libraries makes complying with the license easy. If you are
-     using uClibc as a shared library, then your closed source
-     application is 100% legal.  Please consider sharing some of
-     the money you make with us! :-)
+I want to transfers this to DOC 2000 (48Mb). I followed
+instructions how to build a mtd driver. The Linux boots
+fine from the HD and finds my DOC, where I created one
+ext2 partition and copied all the files there.
 
-     If you are statically linking your closed source application
-     with uClibc, then you must take additional steps to comply
-     with the uClibc license. You may sell your statically linked
-     application as usual, but you must also make your
-     application available to your customers as an object file
-     which can later be re-linked against updated versions of
-     uClibc. This will (in theory) allow your customers to apply
-     uClibc bug fixes to your application. You do not need to
-     make the application object file available to everyone, just
-     to those you gave the fully linked application. 
+Now I want to boot the system from the DOC without any
+HD. First I used LILO, but I just could not get it to work.
+I used the laterst version of LILO, the patched version from
+M-sys, the patched version from mtd, ...
 
- -Erik
+All I got was, "L" then "LI" and finally "L 40 40 40 ...".
 
---
-Erik B. Andersen             http://codepoet-consulting.com/
---This message was written using 73% post-consumer electrons--
+Because I found many messages on this list, that GRUB works
+fine I decided to try with it.
+Yesterday I buil GRUB 0.92 with the patches found in the MTD.
+
+I booted the system from the HD, loaded the GRUB firmware into
+the DOC and rebooted the system.
+
+It found the DOC2000 and I got the grub> prompt (The HD was
+not connected!!!).
+
+But when I connected the HD, I got (something like):
+DOC 2000 at ....
+Jumping to Grub
+
+and then hangs.
+If I disconect the HD, I get the grub> prompt.
+
+Questions:
+1) How to boot Linux from HD?
+   - DO I remove the DOC, boot Linux and then insert DOC?
+   - Can I boot the LInux to grub> prompt, and then connect
+     the disk? (Dangerous!!)
+2) I said I already copied everything on DOC. How can
+   I boot that kernel? I tried with 
+   grub> kernel (dc0,0)/myKernel root=/dev/nftla1
+   GRUB display message something about invalid disk (or something
+   like that).
+3) Anything else I could try?
+
+Oh, I did not use the latest version from the CVS, but a CVS 
+snapshot with the date 07.28.2002.
+
+Thank you and best regards,
+Mateo
+
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
