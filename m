@@ -1,18 +1,20 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kUkE-00031L-00
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 20:14:18 +0100
-Received: from henrik.marasystems.com (henrik.marasystems.com [192.168.1.53])
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id g7TJEHh08092
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 21:14:17 +0200
-From: Henrik Nordstrom <hno@marasystems.com>
+	id 17kfm8-0005qM-00
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2002 08:01:01 +0100
+Received: from sitemail.everyone.net (dsnat [216.200.145.62])
+	by omta03.mta.everyone.net (Postfix) with ESMTP id 2171C48E0B
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2002 00:00:59 -0700 (PDT)
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Fri, 30 Aug 2002 00:00:55 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
 To: linux-mtd@lists.infradead.org
-Subject: [patch] mkfs.jffs2
-Date: Thu, 29 Aug 2002 21:14:16 +0200
-MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_SFDM3SSO331WA9LAR0YF"
-Message-Id: <200208292114.16531.hno@marasystems.com>
+Subject: DOC 2000 on PC104 +
+Reply-To: mateo@posta.star.si
+Message-Id: <20020830070056.094013948@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,108 +26,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---------------Boundary-00=_SFDM3SSO331WA9LAR0YF
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Hi all
 
-Noticed mkfs.jffs2 does not build in CVS due to the change in jffs2 byte 
-orderered types.
+I found a lot of helpful information on this site, but still can get my device to work.
 
-Attached is a patch to allow mkfs.jffs2 to build again. It is merely an 
-search-replace of the existing code to match the new types. Have not tried if 
-it does what it should as I do not (yet) have a system where I can use JFFS2.
+I have a PC 104+ with ZFx86 on it and a socket for DOC.
+First I made my own kernel, and all the required binaries and libraries on an IDE disk, that was connected to this device. Everything works fine from the IDE disk (the way I want it). Then I wanted to transfer everything to the DOC 2000 from M-Systems, size 48Mb.
 
-Regards
-Henrik
+First problem was, that I was unable to boot the kernel form the disk with the DOC in the socket. I found a patched version of LILO on m-sys site.
+Then I tried the driver for DOC from m-sys, but I could not get it to work, besides all that GPL stuff I did not like.
+I found this site and I successfully compiled the kernel (it is 2.4.7-10 from RH 7.2) with the MTD support. When I booted the new kernel, it found the DOC 2000. 
+Run the fdisk and erased 4 partitions.
+Made a new partition, and this was the first weird thing:
+This is what fdisk reports:
 
---------------Boundary-00=_SFDM3SSO331WA9LAR0YF
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="mkfs.jffs2.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="mkfs.jffs2.patch"
+1 head, 96160 sectors and 1 cylinder.
 
-Index: util/mkfs.jffs2.c
-===================================================================
-RCS file: /home/cvs/mtd/util/mkfs.jffs2.c,v
-retrieving revision 1.26
-diff -u -r1.26 mkfs.jffs2.c
---- util/mkfs.jffs2.c	3 Jul 2002 22:20:13 -0000	1.26
-+++ util/mkfs.jffs2.c	29 Aug 2002 18:54:50 -0000
-@@ -142,9 +142,9 @@
- 		(((uint32_t)(x) & (uint32_t)0xff000000UL) >> 24) ))
- 
- #define cpu_to_target16(x) \
--	((host_endian==target_endian)?(x):(swab16(x)))
-+	((jint16_t){(host_endian==target_endian)?(x):(swab16(x))})
- #define cpu_to_target32(x) \
--	((host_endian==target_endian)?(x):(swab32(x)))
-+	((jint32_t){(host_endian==target_endian)?(x):(swab32(x))})
- 
- 
- 
-@@ -568,8 +568,8 @@
- 
- 	ri.ino = cpu_to_target32(ino);
- 	ri.mode = cpu_to_target32(statbuf->st_mode);
--	ri.uid = cpu_to_target32(statbuf->st_uid);
--	ri.gid = cpu_to_target32(statbuf->st_gid);
-+	ri.uid = cpu_to_target16(statbuf->st_uid);
-+	ri.gid = cpu_to_target16(statbuf->st_gid);
- 	ri.atime = cpu_to_target32(statbuf->st_atime);
- 	ri.ctime = cpu_to_target32(statbuf->st_ctime);
- 	ri.mtime = cpu_to_target32(statbuf->st_mtime);
-@@ -621,7 +621,7 @@
- 			offset += dsize;
- 		}
- 	}
--	if (!ri.version) {
-+	if (!je32_to_cpu(ri.version)) {
- 		/* Was empty file */
- 		version++;
- 		ri.version = cpu_to_target32(version);
-@@ -646,7 +646,7 @@
- 
- 	/* FIXME:  I am using illicit insider knowledge of kernel 
- 	 * major/minor representation...  */
--	unsigned short kdev;
-+	jint16_t kdev;
- 
- 	kdev = cpu_to_target16((major(statbuf->st_rdev) << 8) +
- 		minor(statbuf->st_rdev));
-@@ -661,8 +661,8 @@
- 
- 	ri.ino = cpu_to_target32(ino);
- 	ri.mode = cpu_to_target32(statbuf->st_mode);
--	ri.uid = cpu_to_target32(statbuf->st_uid);
--	ri.gid = cpu_to_target32(statbuf->st_gid);
-+	ri.uid = cpu_to_target16(statbuf->st_uid);
-+	ri.gid = cpu_to_target16(statbuf->st_gid);
- 	ri.atime = cpu_to_target32(statbuf->st_atime);
- 	ri.ctime = cpu_to_target32(statbuf->st_ctime);
- 	ri.mtime = cpu_to_target32(statbuf->st_mtime);
-@@ -695,8 +695,8 @@
- 
- 	ri.ino = cpu_to_target32(ino);
- 	ri.mode = cpu_to_target32(statbuf->st_mode);
--	ri.uid = cpu_to_target32(statbuf->st_uid);
--	ri.gid = cpu_to_target32(statbuf->st_gid);
-+	ri.uid = cpu_to_target16(statbuf->st_uid);
-+	ri.gid = cpu_to_target16(statbuf->st_gid);
- 	ri.atime = cpu_to_target32(statbuf->st_atime);
- 	ri.ctime = cpu_to_target32(statbuf->st_ctime);
- 	ri.mtime = cpu_to_target32(statbuf->st_mtime);
-@@ -729,8 +729,8 @@
- 
- 	ri.ino = cpu_to_target32(ino);
- 	ri.mode = cpu_to_target32(statbuf->st_mode);
--	ri.uid = cpu_to_target32(statbuf->st_uid);
--	ri.gid = cpu_to_target32(statbuf->st_gid);
-+	ri.uid = cpu_to_target16(statbuf->st_uid);
-+	ri.gid = cpu_to_target16(statbuf->st_gid);
- 	ri.atime = cpu_to_target32(statbuf->st_atime);
- 	ri.ctime = cpu_to_target32(statbuf->st_ctime);
- 	ri.mtime = cpu_to_target32(statbuf->st_mtime);
+Device        Boot  Start   End   Blocks  Id  System
+/dev/nftla1    *      1      1    48079+  83   Linux
 
---------------Boundary-00=_SFDM3SSO331WA9LAR0YF--
+Partition 1 has different physical/logical endings
+phys=(512,0,32) logical=(0,0,96160)
+
+I was unable to make more than 1 partition. 
+What is wrong?
+
+I was able to mkfs.ext2 on it, copied everything on it, but first I was unable to make it bootable, because LILO ended with error "Sorry, don't know how..."
+
+The I used the lilo-mtd and it successfully written everything.
+When I reboot the computer from the DOC I get:
+"LI" and hangs.
+
+Please help me.
+
+BTW: Did I mention that I am a new comer to the Linux.
+
+Thank you and best regards,
+Mateo
+
+
+
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
