@@ -1,17 +1,14 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15qWod-00067w-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2001 10:35:15 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0110030044530.481-100000@lisa.rhpk.springfield.inwind.it> 
-References: <Pine.LNX.4.33.0110030044530.481-100000@lisa.rhpk.springfield.inwind.it> 
-To: Cristiano Paris <c.paris@libero.it>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD newbie 
-Mime-Version: 1.0
+	id 15qpDw-0007fM-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2001 06:14:37 +0100
+To: <linux-mtd@lists.infradead.org>
+Subject: Q: Probing for devices > buswidth???
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 08 Oct 2001 23:23:44 -0600
+Message-ID: <m3y9mljsin.fsf@DLT.linuxnetworx.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 08 Oct 2001 10:44:21 +0100
-Message-ID: <14553.1002534261@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +20,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> netconsole: network logging started up successfully!
-> jffs2_lookup()
-> jffs2_create()
-> jffs2_reserve_space(): Requested 0x44 bytes
-> jffs2_reserve_space(): alloc sem got
-> jffs2_do_reserve_space(): Giving 0xfffffffc bytes at 0x206004
+I'm trying to bringin some mtd map drivers for some non cfi devices.
 
-It's already broken by this point. The free space in this block is -4 bytes. 
-Can you start the console logging before mounting the filesystem?
+Trying to understand some anomolous results I discovered that
+gen_probe_newchip is looking for:
+16 bit devices on an 8 bit bus.
+byte interleaved 16 bit devices on a 16 bit bus.
+And some really bizare things for a 32 bit bus.
 
---
-dwmw2
+Is there any good reason for doing it that way?
+
+If not I'm going to figure out how to kill that extra confusing code.
+
+Eric
