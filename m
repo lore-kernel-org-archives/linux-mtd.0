@@ -1,45 +1,43 @@
 Return-path: <David.Woodhouse@mvhi.com>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from lobosuelto.arnet.com.ar ([200.45.0.2] helo=mx1.arnet.com.ar)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 111AL6-0004an-00
-	for mtd@infradead.org; Mon, 5 Jul 1999 16:07:24 +0100
-To: mtd@infradead.org
-Cc: Dov Moran <Dovm@m-sys.com>, Aryeh Mergi <Aryehm@m-sys.com>,
-    Tamar Har-Oz <Tamarh@m-sys.com>
-Reply-To: Dave@infradead.org, mtd@infradead.org
-Subject: Disk-On-Chip 2000 and Linux
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Jul 1999 16:07:23 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E111AL5-0001wk-00@devel2.axiom.internal>
+	id 111Cpo-0004eK-00
+	for mtd@infradead.org; Mon, 5 Jul 1999 18:47:17 +0100
+Message-ID: <31D39723911ED31189DBFE1DF900000002626D@SALGUERO_1>
+From: Luis Tombo <luis@grupoclave.com>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: 
+Date: Mon, 5 Jul 1999 14:43:02 -0300 
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="---- =_NextPart_001_01BEC70D.D474E9F0"
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
-Those of you who have seen my page regarding the Disk-On-Chip 2000 and Linux,
-at http://www.linux-mtd.infradead.org/doc2000.html , please go back and re-read
-it. 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I have now heard from M-Systems regarding Linux support, and it seems that my 
-previous requests for assistance fell upon the wrong ears. They seem genuinely 
-concerned, and I firmly believe that it should prove possible to provide a 
-GPL'd Linux driver which does not give away M-Systems' intellectual property.
-
-So those of you who have been waiting for the last few weeks for my verdict on
-the Disk-On-Chip, please don't rush off and redesign your boards for
-CompactFlash yet - there is light at the end of the tunnel, and I hope that we
-should be able to provide proper Linux support for the devices quite soon. 
-
-I'll keep you posted.
+------ =_NextPart_001_01BEC70D.D474E9F0
+Content-Type: text/plain
 
 
-----                                 ----                                 ----
-David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
- Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
 
+------ =_NextPart_001_01BEC70D.D474E9F0
+Content-Type: text/html
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.1960.3">
+<TITLE></TITLE>
+</HEAD>
+<BODY>
+<BR>
+
+</BODY>
+</HTML>
+------ =_NextPart_001_01BEC70D.D474E9F0--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
