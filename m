@@ -1,43 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14t6Th-0000lW-00
-	for mtd-list@infradead.org; Fri, 27 Apr 2001 12:32:01 +0100
-Received: from humbolt.nl.linux.org ([131.211.28.48] ident=root)
+	id 14t7ty-00016y-00
+	for mtd-list@infradead.org; Fri, 27 Apr 2001 14:03:14 +0100
+Received: from h154.195-230-144.ukrpack.net ([195.230.144.154] helo=srv1.lrpeople.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14t6Tg-0000lP-00
-	for mtd@infradead.org; Fri, 27 Apr 2001 12:32:00 +0100
-Received: from activesilicon.demon.co.uk ([212.228.31.28] helo=activesilicon.co.uk)
-	by anchor-post-32.mail.demon.net with esmtp (Exim 2.12 #1)
-	id 14t6Rs-000NJE-0W
-	for mtd@infradead.org; Fri, 27 Apr 2001 12:30:08 +0100
-Received: from p90nt4 (p90nt4.activesilicon.co.uk [192.168.1.64])
-	by activesilicon.co.uk (8.11.3/8.11.3) with SMTP id f3RBTrm29673
-	for <mtd@infradead.org>; Fri, 27 Apr 2001 12:29:53 +0100
-Message-ID: <01C0CF15.C21A24D0.chris.read@activesilicon.co.uk>
-From: Chris Read <chris.read@activesilicon.co.uk>
-Reply-To: "chris.read@activesilicon.co.uk" <chris.read@activesilicon.co.uk>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Brownouts
-Date: Fri, 27 Apr 2001 12:29:51 +0100
+	id 14t7tx-00016s-00
+	for mtd@infradead.org; Fri, 27 Apr 2001 14:03:13 +0100
+Message-ID: <000d01c0cf12$129fd700$4d02010a@lrpeople.com>
+From: "Alexander Melichenko" <AlexanderM@lrpeople.com>
+To: "Vipin Malik" <vipin.malik@daniel.com>
+Cc: <mtd@infradead.org>
+References: <NEBBKJHOALKOLCFPGELEIEJLCJAA.ajlennon@arcom.co.uk> <01042316543802.01109@rob> <3AE4B5B3.26E340E8@daniel.com> <01042412450101.00394@rob> <3AE5950D.D10C1F8B@daniel.com>
+Subject: Re: Boot kernel from flash on CDPSC520 w/o BIOS!
+Date: Fri, 27 Apr 2001 16:03:24 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-As a follow up to my earlier message:
+Hello, Vipin!
+To boot kernel from flash I do :
+- reset the board (z).
+- init it (yi).
+- load lstart16.abs to it (ns lstart16.abs ff800, ns lstart16.abs 7ff800).
+- load zImage to it with offset 0 (ns zImage 0).
+After that I reboot CDP, but nothing is happening.
+What step is wrong? 
 
-I am currently working with Intel B3 parts. The datasheet makes no specific 
-mention of any built in brownout detection. However, there are a set of 
-timings for the reset line. Specifically, it states that it may take up to 
-22us to reset the internal state machine during an erase or write cycle 
-after the reset pin is asserted. My interpretation of this, in the absence 
-of any explicit information, is that whilst erasing or programming, the 
-reset line must be asserted a minimum of 22us before the power supply falls 
-below the chip's minVcc specification, otherwise the results are 
-undefined.....and we all know what that can mean.
-
-Any thoughts/experiences?
+Alexander Melichenko.
 
 
 
