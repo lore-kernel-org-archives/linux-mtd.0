@@ -1,47 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13nzEc-0006vz-00
-	for mtd-list@infradead.org; Tue, 24 Oct 2000 09:15:02 +0100
-Received: from [194.130.39.252] (helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13nzEb-0006vt-00
-	for mtd@infradead.org; Tue, 24 Oct 2000 09:15:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E13nksk-0002RR-00@infradead.org> 
-References: <E13nksk-0002RR-00@infradead.org> 
-To: sjhill@cotw.com
-Cc: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/kernel mtdblock.c' 
-Mime-Version: 1.0
+	id 13o2Mt-0007aN-00
+	for mtd-list@infradead.org; Tue, 24 Oct 2000 12:35:47 +0100
+Message-ID: <39F5767A.48E1A44C@cotw.com>
+Date: Tue, 24 Oct 2000 06:46:02 -0500
+From: "Steven J. Hill" <sjhill@cotw.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/kernel mtdblock.c'
+References: <E13nksk-0002RR-00@infradead.org> <18079.972375290@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 24 Oct 2000 09:14:50 +0100
-Message-ID: <18079.972375290@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse wrote:
+> 
+> *(int *)0=0; doesn't cause an oops on all platforms. That was why BUG() was
+> introduced. Probably better just to omit my paranoia checks altogether,
+> once we're happy that mtdblock actually works. For now, surround them in
+> #ifdef PARANOIA. I thought I'd done that already.
+> 
+Alright, will do.
 
-sjhill@cotw.com said:
->  Made changes so that 'mtdblock' would build with 2.2.x kernels again
-> and not only on ARM platforms. People PLEASE remember that this code
-> is used in two different kernel trees AND on different CPU
-> architectures. 
+> DECLARE_MUTEX_LOCKED wants adding to compatmac.h if it's not already there.
+> 
+Will do.
 
-*(int *)0=0; doesn't cause an oops on all platforms. That was why BUG() was 
-introduced. Probably better just to omit my paranoia checks altogether, 
-once we're happy that mtdblock actually works. For now, surround them in 
-#ifdef PARANOIA. I thought I'd done that already.
+> What was the reasoning for removing the 'static' from the declaration of
+> thr_wq?
+> 
+Uhhh...that would be my stupidity. I forgot to put 'static' back on
+the declaration.
 
-DECLARE_MUTEX_LOCKED wants adding to compatmac.h if it's not already there.
+-Steve
 
-What was the reasoning for removing the 'static' from the declaration of 
-thr_wq?
-
-Anyway, it didn't build _only_ on ARM - it built on SH too :)
-
---
-dwmw2
-
-
+-- 
+ Steven J. Hill - Embedded SW Engineer
+ Public Key: 'finger sjhill@mail.cotw.com'
+ FPR1: E124 6E1C AF8E 7802 A815
+ FPR2: 7D72 829C 3386 4C4A E17D
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
