@@ -1,28 +1,18 @@
-Received: from thoth.sbs.de ([192.35.17.2])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19jynr-0002F0-Vt
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 11:12:28 +0100
-Received: from mail3.siemens.de (mail3.siemens.de [139.25.208.14])
-	by thoth.sbs.de (8.11.7/8.11.7) with ESMTP id h75ACAn19137
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Aug 2003 12:12:10 +0200 (MEST)
-Received: from blues.mchh.siemens.de (blues.mchh.siemens.de [139.21.204.206])
-	by mail3.siemens.de (8.11.7/8.11.7) with ESMTP id h75AC9G12103
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Aug 2003 12:12:09 +0200 (MEST)
-Received: from demchh2msx.icn.siemens.de (ss-aladin.mchh.siemens.de
-	[139.21.149.125])
-	by blues.mchh.siemens.de (8.9.3/8.9.1) with ESMTP id MAA14160
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Aug 2003 12:10:58 +0200 (MET DST)
-From: Stefano Babic <stefano.babic@siemens.com>
+Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19jyoi-0002FI-Ei
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 11:13:27 +0100
+Message-ID: <3F2F8385.5090606@hectrix.com>
+Date: Tue, 05 Aug 2003 18:14:29 +0800
+From: Selwyn Tang <selwyn@hectrix.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Date: 05 Aug 2003 12:12:08 +0200
-Message-Id: <1060078328.1717.233.camel@mhw42463>
-Mime-Version: 1.0
-Content-Type: text/plain
+References: <3F2F329D.5040204@hectrix.com>
+In-Reply-To: <3F2F329D.5040204@hectrix.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Concurrency erase/write on the same AMD chip with not aligned words
+Subject: Re: Cannot automake after patching grub with
+	grub-2003-01-08-doc.patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Dear all,
 
-I have seen a problem when I am writing not-aligned words on AMD chips
-while on the same chip another process starts an erase procedure for
-other sectors or a different MTD device. 
+I solved the problem. It was that I've forgotten to symlink my aclocal, 
+which was 1.4p5 from RH7.3, to 1.5, together with automake. After that, 
+aclocal, automake and autoconf run successfully, but with the following 
+warnings when running autoconf:
 
-I have tested with the cfi_cmdset_0002.c v.1.75 and I have found the
-problem in the cfi_amstd_write() function.
+   configure.in:17: warning: do not use m4_patsubst: use patsubst or
+   m4_bpatsubst
+   configure.in:700: warning: do not use m4_regexp: use regexp or
+   m4_bregexp
 
-In fact, when we want to write less that CFIDEV_BUSWIDTH bytes, the
-function performs a read/modify/write on the flash with the
-instructions:
+I don't know if they bother, but I got grub_firmware produced.
 
-        if (ofs & (CFIDEV_BUSWIDTH-1)) {
-		.............
-                map->copy_from(map, tmp_buf, ....
+Selwyn
 
-The flash is directly read using the copy_from() function. However, if
-another process is currently erasing the same chip (even if it erases on
-a different MTD device), we are not allowed to read from flash because
-we are reading only the status of the internal state machine (DQ7, DQ6,
-DQ5). The resulting read value is wrong and then the write function has
-no success (a wrong value is written).
-
-I set the check with the cfi status before the copy_from() as usual with
-(mutex omissis):
-
-        if (cfi->chips[chipnum].state != FL_READY) {
-		.....
-
-to be sure that the chip is not in FL_ERASING and everything is working
-fine. 
-
-Has anybody had the same problem ? 
-
-
-stefano
-
--- 
+Selwyn Tang wrote:
+> Dear all,
+> 
+> I downloaded the latest snapshot of grub through cvs and applied 
+> grub-2003-01-08-doc.patch with only one rejection in ChangeLog. I then 
+> followed README_DiskOnChip to run aclocal successfully. But when I run 
+> automake, a lot of "AMDEP does not appear in AM_CONDITIONAL" messages 
+> appeared! For examples,
+> 
+> /usr/share/automake-1.5/am/depend2.am: AMDEP does not appear in 
+> AM_CONDITIONAL
+> /usr/share/automake-1.5/am/lang-compile.am: AMDEP does not appear in 
+> AM_CONDITIONAL
+> 
+> Before that, I use automake 1.4p5 and when I run automake it told me 
+> that 1.5 was expected. Then I ln -s automake to automake-1.5 in my 
+> RedHat 7.3, and got the above error.
+> 
+> Have anyone successfully applied the patch to grub, compiled it and get 
+> the "grub_firmware" file in stage1/ ?
+> 
+> Yours,
+> 
+> Selwyn
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
