@@ -1,58 +1,84 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13vnyQ-0007Ok-00
-	for mtd-list@infradead.org; Tue, 14 Nov 2000 21:50:38 +0000
-Received: from gateway-490.mvista.com ([63.192.220.206] helo=hermes.mvista.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13vnyP-0007Oe-00
-	for mtd@infradead.org; Tue, 14 Nov 2000 21:50:37 +0000
-Message-ID: <3A11B3BE.B4987B74@mvista.com>
-Date: Tue, 14 Nov 2000 13:50:54 -0800
+	id 13vr5R-0000N7-00
+	for mtd-list@infradead.org; Wed, 15 Nov 2000 01:10:05 +0000
+Message-ID: <3A11E285.1FF18FF7@mvista.com>
+Date: Tue, 14 Nov 2000 17:10:29 -0800
 From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-To: mark.langsdorf@amd.com
-CC: mtd@infradead.org, ahennessy@mvista.com
-Subject: Re: Big Endian/Little Endian headache in cfi_cmdset_0002.c
-References: <0FA1031B65A9D111960900805F9FA8E103B9F1B8@txexmta8.amd.com>
+To: David Woodhouse <dwmw2@infradead.org>
+CC: Erwin Authried <eauth@softsys.co.at>,
+   "'mtd@infradead.org'" <mtd@infradead.org>, ahennessy@mvista.com
+Subject: Re: JEDEC support broken?
+References: <01C04E3A.C0282520@smithwicks.softsys.co.at> <12128.974207817@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-mark.langsdorf@amd.com wrote:
+David Woodhouse wrote:
 
->         The write code in cfi_amdext_write_bytes_32 uses
-> be32_to_cpu and cpu_to_be32 to make the last four or
-> less bytes of a buffer Big Endian.  However, none of
-> the other write or read code in cfi_cmdset_002 is
-> concerned with Endianess, so it looks like (on my
-> x86 chip) that the first x bytes of a write are
-> little endian, and then the last 3 or 4 are reversed.
->         Is there some reason for handling things this
-> way, or is this a bug in the code?
+> eauth@softsys.co.at said
+> > With several patches, I'm able to compile most of the MTD devices and
+> > chip drivers  for uClinux now. There are problems with jedec.c, the
+> > compiler complains about  the missing "bank_size" in the "map_info"
+> > structure. What's wrong with jedec.c?
 >
-> Mark Langsdorf
-> Advanced Micro Devices, Inc             Tel: 512.602.3756
-> 5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
-> Austin, TX 78741                        mark.langsdorf@amd.com
+> It's been half-ported to the map stuff, but not completely. Remove all
+> references to bank_size and keep a start offset in the individual flash
+> chip structures.
+
+I am using jedec.c after making a few quick changes, ie making
+bank_size a static variable and setting to map->size and setting
+priv.size to bank_size, fleshing out jedec_probe8() and making a few other
+small changes.
+I'm using mtdpart.c for partitioning of the flash.    It seems to work fine
+but only
+because I have one flash chip.    Do you mean to use map->size instead of
+bank_size (to spread the individual start offsets over if there are gaps
+between chips)  and
+start offset instead of bank_fill[0] to skip over gaps in flash_write and
+jedec_read_banked?
+Also,  is spin_lock support going to be added in jedec.c?
+
+
+
+
+>
+>
+> > Is there a driver that is able to use a physically mapped flash that
+> > doesn't support CFI? I think it would be best to probe for CFI, and
+> > then for JEDEC in physmap.c.
+>
+> Agreed. Let me finish merging the inter_module_xxx() stuff before you do
+> that, though.
+>
+> --
+> dwmw2
 >
 > To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-I'm also having to alter cfi_cmdset_0002.c for big endianness -  I think
-we should use
-cfi_write and cfi_read functions that cfi_cmdset_0001.c uses  but alter
-them to take care
-of both be32_to_cpu and le32_to_cpu (depending on a define) to take care
-of both endiannesses.
-This would isolate both the bus width issue and the endianness in these
-2 functions.   In other words, move the
-endianness out of cfi_build_cmd and put it into cfi_read and
-cfi_write.   Also,  the handling
-of unaligned bytes in cfi_cmdset_0001. c is good for both
-endiannesses.   We should use this
-method in cfi_cmdset_0002.c
+I have a board that needs support for both cfi and jedec flashes.   So,
+the approach
+I have taken is to use physmap.c with an array of "physmap_info" structures
+that describe the window
+address, window size, buswidth and number of partitions for each flash.  I
+also use a double array of
+mtd_partition structures to divide each flash into partitions (making use
+of mtdpart.c).   This allows multiple
+flashes to be described in one mapping file so the file is really a
+description of a particular board.  There is
+a probe for a cfi flash  and if that fails, then a probe for a jedec
+flash.    This eliminates the use of
+CONFIG_MTD_PHYSMAP_START  (and len and buswidth).   Is this in keeping with
+the intent
+of the map file?
 
 Alice
+
+
+
+
 
 
 
