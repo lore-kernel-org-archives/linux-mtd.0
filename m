@@ -1,17 +1,26 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from moutvdom01.kundenserver.de ([195.20.224.200])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17APaa-0007I9-00
-	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 07:27:12 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF49@mail.mediatrix.com> 
-References: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF49@mail.mediatrix.com> 
-To: Frederic Giasson <fgiasson@mediatrix.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Kernel oops after sync command in jffs2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 22 May 2002 07:27:10 +0100
-Message-ID: <18394.1022048830@redhat.com>
+	id 17ARos-0007Rn-00
+	for <linux-mtd@lists.infradead.org>; Wed, 22 May 2002 09:50:06 +0100
+Received: from [172.19.20.61] (helo=mrvdomng0.kundenserver.de)
+	by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #3)
+	id 17ARoo-0003K0-00
+	for linux-mtd@lists.infradead.org; Wed, 22 May 2002 10:50:02 +0200
+Received: from [217.81.53.57] (helo=comm.esd-electronics.com)
+	by mrvdomng0.kundenserver.de with esmtp (Exim 3.22 #2)
+	id 17ARoo-0003Aq-01
+	for linux-mtd@lists.infradead.org; Wed, 22 May 2002 10:50:02 +0200
+From: "Stefan Roese" <stefan.roese@esd-electronics.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: SST Flash Support (SST39VF160) 
+Date: Wed, 22 May 2002 10:49:18 +0200
+Message-ID: <EFEAIMDCOOOHIEPHDNFJOEMCDPAA.stefan.roese@esd-electronics.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <17271.1021997293@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +32,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-fgiasson@mediatrix.com said:
-> The 'called while erasing!' message means that I put a trace in the
-> map driver write16() function to tell me if write16()is called when a
-> global variable is set.  This global variable indicates that
-> do_erase_oneword has sent the erase sector command and is currently
-> polling for the erase operation to complete. 
+> stefan.roese@esd-electronics.com said:
+> > physmap flash device: 200000 at ffc00000 CFI: Found no Physically
+> > mapped flash device at location zero
+>
+> Weird. That chip is definitely supposed to do CFI.
+> http://www.ssti.com/products/pdf/399-39LF-VF160-02.000-DS.pdf
+>
+> Sure it's wired up the same and your configured buswidth is right?
 
-OK. We already fixed one of these by disabling fast programming mode, after 
-you pointed out that it was sending the unlock command without paying due 
-attention to the state machine. If you're definitely using v1.55 of 
-cfi_cmdset_0002.c, can you put a BUG() in the mtxmap_write16() call just 
-after it prints the 'called while erasing!' message, and we'll see where 
-it's being called _from_. 
+Absolutely sure. It's the same board!
 
---
-dwmw2
+After digging a little deeper into the sst documentation, I found the
+problem:
+
+SST flash need a three byte write sequence (no one), to enter the cfi query
+mode!
+
+5555 <- aa
+2aaa <- 55
+5555 <- 98
+
+This does not seem to be CFI compliant!!!
+
+How can we support the sst chips? Extend the cfi code (special for sst), or
+extend the amd code? In PPCBoot we use the amd mode and it works pretty
+good.
+
+Any ideas/comments?
+
+Stefan.
