@@ -1,21 +1,19 @@
-Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mcHo-0001mQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:41:44 +0100
-Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
-	by anchor-post-35.mail.demon.net with esmtp (Exim 3.36 #2)
-	id 17mcHn-0001NE-0U
-	for linux-mtd@lists.infradead.org; Wed, 04 Sep 2002 16:41:43 +0100
-Subject: compatmac.h
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 4 Sep 2002 16:41:26 +0100
-Message-ID: <541025071C7AC24C84E9F82296BB9B952D27@OPTEX1.optex.local>
-Content-Class: urn:content-classes:message
-From: "John Hall" <john.hall@optionexist.co.uk>
-To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+	id 17mcLe-0001n2-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:45:42 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0209041629310.22657-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0209041629310.22657-100000@hex.linuxgrrls.org> 
+To: Jasmine Strong <jasmine@hex.linuxgrrls.org>
+Cc: Allen Curtis <acurtis@onz.com>,
+    John Hall <John.Hall@optionexist.co.uk>,
+    "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Stable cvs version for 2.4 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 04 Sep 2002 16:44:48 +0100
+Message-ID: <9941.1031154288@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,28 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've found a problem in compatmac.h with current versions of 2.4 =
-armlinux. From about 2.4.18-rmk6 or thereabouts, the following #defines =
-are unnecessary:
+jasmine@hex.linuxgrrls.org said:
+> > > Adding a byte will destroy the alignment.  you'd have to add a whole
+> > > word.
+> > Er, what alignment?
+>  The alignment of the structure.  Either it's a whole multiple of
+> words or it isn't.
 
-#define major(d) (MAJOR(to_kdev_t(d)))=20
-#define minor(d) (MINOR(to_kdev_t(d)))  #define minor(d) =
-(MINOR(to_kdev_t(d)))=20
-#define mk_kdev(ma,mi) MKDEV(ma,mi)  #define mk_kdev(ma,mi) MKDEV(ma,mi) =
+Sorry, I was making the unstated assumption that we would have a #define 
+and add the byte only in the case where it was required because the 
+allocator would _already_ be giving us unaligned structures.
 
+So we never need to add a word instead of a byte to preserve the alignment, 
+because in the case where the alignment needs preserving, we didn't need to 
+add the byte in the first place.
 
-so I adjusted the #if in my tree from LINUX_VERSION_CODE < =
-KERNEL_VERSION(2,4,19) to 2,4,18. I still need the yield, however, so =
-I've pulled this out into a separate case.
+(And now I'm making the assumption that "aligned structures" == "pointers 
+without the low bit set", but that's not unreasonable in the real world.) 
 
-I haven't submitted a proper patch, because I don't know how to check =
-for specific rmk kernel versions. Any suggestions?
+But anyway, having seen that it's not as huge a saving as I thought, and
+having seen that I can probably save the 4 bytes of 'size' with less pain,
+I may not bother with it at all for a while.
 
-Regards,
-John Hall
-
---=20
-OptionExist Limited.
-The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
-Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
-http://www.optionexist.co.uk/
+--
+dwmw2
