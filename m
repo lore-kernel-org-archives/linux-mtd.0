@@ -1,20 +1,16 @@
-Received: from firewall.unidec.co.uk ([195.166.19.2])
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15NEK5-0003OW-00
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2001 14:58:37 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: dr john halewood <john@frumious.unidec.co.uk>
-Reply-To: john@unidec.co.uk
-To: Cemil Degirmenci <cemil@tuxfriend.dyndns.org>,
-        linux-mtd@lists.infradead.org
-Subject: Re: Lilo and DiskOnChip
-Date: Thu, 19 Jul 2001 15:03:34 +0100
-References: <E15ITM6-00068D-00@pentafluge.infradead.org> <20010719135625.A488@cemil.debian-linux.de>
-In-Reply-To: <20010719135625.A488@cemil.debian-linux.de>
+	id 15NHjB-0003ax-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2001 18:36:46 +0100
+Date: Thu, 19 Jul 2001 19:44:37 +0200 (CEST)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: Tim Hockin <thockin@sun.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: cfi_cmdset_0002 and writes
+In-Reply-To: <3B560DDC.55ECB635@sun.com>
+Message-ID: <Pine.LNX.4.21.0107191942320.12985-100000@godzilla.axis.se>
 MIME-Version: 1.0
-Message-Id: <01071915033404.20117@frumious.unidec.co.uk>
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,16 +22,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thursday 19 July 2001 12:56, Cemil Degirmenci wrote:
-> I search the web, but i am not really found a way of installing the patch
-> for lilo.
-> How to install lilo21-mtd-patch? what does my /etc/lilo.conf need?
->
-> Does anybody have a good howto for Lilo On DiskOnChip?
+On Wed, 18 Jul 2001, Tim Hockin wrote:
+> Right, but this is our boot ROM we're dealing with :)  Can you suggest a
+> better alternative?  The device is rarely ever loaded, but when it is
+> loaded we want to read and re-program the whole thing as safely as
+> possible.
 
-I'd suggest looking at Ralph Jennings' posting here (archived as 
-http://lists.infradead.org/pipermail/linux-mtd/2001-April/000049.html).
-It contains all the source you need plus a sample lilo.conf.
+If you have the space or can make space, the standard way is to
+double-buffer the sector in question. Write a new one at a spare sector
+with a checksum and sequence number, then after that erase the first
+one. So if it crashes you always have at least one sane copy. 
 
-cheers
-john
+If your code requires one sector, and you have a flash with at least 3
+sectors, put code to choose the sane sector in sector 0 (the one which is
+booted) and use sectors 1 and 2 for the boot code itself. And never update
+sector 0 :) 
+
+/Bjorn
