@@ -1,29 +1,22 @@
-Received: from zorglub.ssji.net ([2001:7a8:3030::face])
+Received: from mx.zebratelecom.ru ([213.145.47.145] helo=smtp.zebratelecom.ru)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEVr4-0001AG-Sr
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 12:38:32 -0400
-Received: from yagoo.io.ssji.net ([2001:7a8:3030:0:240:5ff:fe35:fead]
-	helo=yagoo) by zorglub.ssji.net with smtp (Exim 4.24)
-	id 1CEVr1-000280-8m
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 18:38:27 +0200
-Date: Mon, 4 Oct 2004 18:38:27 +0200
-From: Nicolas Pouillon <nipo@ssji.net>
+	id 1CEWkh-0001VS-06
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 13:36:00 -0400
+From: Dmitry Skorinko <skorinkod@mosk.ru>
+To: tglx@linutronix.de
+Date: Mon, 4 Oct 2004 21:26:10 +0400
+References: <200410011858.28776.skorinkod@mosk.ru>
+	<1096751135.21297.73.camel@thomas>
+In-Reply-To: <1096751135.21297.73.camel@thomas>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200410042126.10303.skorinkod@mosk.ru>
 Cc: linux-mtd@lists.infradead.org
-Message-Id: <20041004183827.7bcc5071.nipo@ssji.net>
-In-Reply-To: <1096877111.21297.208.camel@thomas>
-References: <20041001154617.163cc484.nipo@ssji.net>
-	<1096639064.30942.477.camel@hades.cambridge.redhat.com>
-	<20041001162705.5873dc7c.nipo@ssji.net>
-	<20041002155505.083d8440.nipo@ssji.net>
-	<1096749729.21297.54.camel@thomas>
-	<20041003030653.2e0452a7.nipo@ssji.net>
-	<1096768161.21297.129.camel@thomas>
-	<20041003221827.7bea56fc.nipo@ssji.net>
-	<1096877111.21297.208.camel@thomas>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: Patch !
+Subject: Re: Problems with DiskOnChip 2000
+Reply-To: skorinkod@mosk.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,38 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Mon, 04 Oct 2004 10:05:11 +0200]
-Thomas Gleixner <tglx@linutronix.de> eut le bonheur d'=E9crire:
+> On Fri, 2004-10-01 at 16:58, Dmitry wrote:
+> > Hi, all
+> > 
+> > I have pc104 system ICOP-6070 with DiskOnChip 2000 on it..
+> > Here is task to install linux OS on this system..
+> > With Knoppix 3.6 CD I start linux and try load drivers for this flash disk 
+for 
+> > next step with installation on it, but modules don't see chip on board...
+> > 
+> > kernel 2.6.8:
+> > #insmod mtdcore
+> > #insmod nand_ids
+> > #insmod docecc
+> > #insmod doc2000
+> > #insmod docprobe
+> > and i have:
+> > Resource temporarily unavailable
 
-> If you can start something like a kernel or a repairtool via JTAG you
-> should have access.
+oops, it's mistake. Knoppix 3.6 has 2.6.7 kernel....
 
-Hm, sould document more on JTAG ;)
+> 
+> Use the new diskonchip driver in drivers/mtd/nand. The old drivers are
+> DEPRECATED (See Kernel config) and will be removed in the near future.
+> 
+> > kernel 2.4.27:
+> > Unknown flash chip found: 81 81
+> > Please report to dwmw2@infradead.org
+> > No flash chips recognised.
+> > Possible DiskOnChip with unknown ChipID 36 found at 0xe8000
+> > Possible DiskOnChip with unknown ChipID C6 found at 0xea000
+> > Possible DiskOnChip with unknown ChipID F6 found at 0xec000
+> > Possible DiskOnChip with unknown ChipID C1 found at 0xee000
+> 
+> None of those ID's is a valid chip ID except the 0x36, which is a
+> 64MiB,1.8V chip. I doubt, that there are DoC's available with 1.8V
+> supply. The stuff looks more like random nonsense.
+> 
+> Use a recent 2.6 kernel with the new diskonchip driver. We don't know
+> which kernel modifications are on the Knoppix CD, so please use a kernel
+> >= V2.6.8.1 from kernel.org and if the problems persist the latest MTD
+> patches from the MTD website.
+> 
+> tglx
 
-> > > #define. The code runs on 2.4 too. See compatmac.h
-> >=20
-> > I'll have a look at it ;)
+ok, I wil do install linux diskette with 2.6.8.1 
+but what modules i must have there??
 
-Ok, it does compile.
-I still have problems like oops when accessing MTD (same than before).
-error is "Unhandled fault: imprecise external abort (0xcf6) at
-0x20800014", which seems a blur.
-I cant understand why Xscale complains, but I saw this issue has been
-addressed some times on arm-linux ML, without fix (at least not in same
-threads)
+what about 2.4.x kernel? Will these new drivers included in this kernels? With 
+2.6 I must rewrite other self drivers and it's not best way for me...
 
-> Is the chip configured for 16-bit interface mode ?=20
-
-PXA boots of it and its BOOT_SEL is configured to "Asynchronous 16bit
-ROM", elsewhere, in mem controller, it is configured as "16bit fast
-flash or rom, non burst read". so I assume it is.
-
-> If yes, there are more tweaks neccecary.
-
-I can see some NAND_BUSWIDTH_16 options, but how can this be enabled at
-probe time ?
-
---=20
-Nipo <nipo@ssji.net>
-Gnu-PGP: 1024D/1DBF658F
-http://nipo.ssji.net/nipo.asc
+Dmitry
