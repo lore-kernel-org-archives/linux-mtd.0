@@ -1,36 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14XZZy-0008Hg-00
-	for mtd-list@infradead.org; Tue, 27 Feb 2001 02:09:30 +0000
-Received: from [64.74.56.234] (helo=stardust.tg-embedded.com)
+	id 14XcK7-0000W3-00
+	for mtd-list@infradead.org; Tue, 27 Feb 2001 05:05:19 +0000
+Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14XZZx-0008HZ-00
-	for mtd@infradead.org; Tue, 27 Feb 2001 02:09:29 +0000
-Received: from tg-embedded.com ([192.168.1.100])
-	(authenticated)
-	by stardust.tg-embedded.com (8.11.0/8.11.0) with ESMTP id f1R2BsO05715
-	for <mtd@infradead.org>; Mon, 26 Feb 2001 21:11:57 -0500
-Message-ID: <3A9B09BD.C3D3CB68@tg-embedded.com>
-Date: Mon, 26 Feb 2001 20:58:21 -0500
-From: dant@tg-embedded.com
+	id 14XcK3-0000Vx-00
+	for mtd@infradead.org; Tue, 27 Feb 2001 05:05:16 +0000
+Message-ID: <3A9B3570.F7ADA01D@sis.com.tw>
+Date: Tue, 27 Feb 2001 13:04:48 +0800
+From: Ollie Lho <ollie@sis.com.tw>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: lilo kernel params failure
+To: Tim Hurman <kano-mtd@kano.org.uk>
+CC: mtd@infradead.org
+Subject: Re: linuxbios
+References: <Pine.BSO.4.30.0102231004360.20457-100000@marvin.jump.org.uk>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I have been strugling with this for some time now.
+Tim Hurman wrote:
+> 
+> Hi,
+> 
+> I am fairly new to the whole mtd thing and wonder if anyone help me. I am
+> currently developing linuxbios on a motherboard (lanner em-370b). Recently
+> however I have found that the ROM is not big enough for the kernel. The
+> board comes with a DiskOnChip socket and wondered if it was possible to
+> use this to store the kernel + ramdisk etc. However, as I would have to
+> re-write the filesystem support I am curious as to whether it is possible
+> to use ROMfs on the device as it is very simple.
+> 
+> Also, are there any docs the basic layout of DOC devices and how they are
+> accessed?
+> 
 
-It looks like a failure of lilo to pass kernel params ( append="...." )
-But we have been through the code and fail to find a reason.
-this happens with the lilo-mtd in the cvs /patches area and we have
-patched 21 with the same results.
-We are using DoC  2000 with kernel 2.4.2 though this has been happening
-for months really.
-Anyone have any ideas?
+Have you read the documents on LinuxBIOS home page ??
 
+Ollie
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
