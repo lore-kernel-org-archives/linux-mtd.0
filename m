@@ -1,24 +1,19 @@
-Received: from mailserv.intranet.gr ([146.124.14.106])
+Received: from avtrex.com ([216.102.217.178])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BLMFs-0003rj-Bu
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2004 14:16:09 +0100
-Received: from mailserv.intranet.gr (localhost [127.0.0.1])
-	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id i45DLAc07959
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 5 May 2004 16:21:10 +0300 (EEST)
-Message-ID: <4098E62A.2050702@intracom.gr>
-Date: Wed, 05 May 2004 16:03:38 +0300
-From: Pantelis Antoniou <panto@intracom.gr>
+	id 1BLOIQ-0004P5-UI
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2004 16:26:55 +0100
+Message-ID: <40990798.9020703@avtrex.com>
+Date: Wed, 05 May 2004 08:26:16 -0700
+From: David Daney <ddaney@avtrex.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
+To: Pantelis Antoniou <panto@intracom.gr>
 References: <4098DF0D.1040703@intracom.gr>
-	<1083761869.26125.1382.camel@imladris.demon.co.uk>
-In-Reply-To: <1083761869.26125.1382.camel@imladris.demon.co.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <4098DF0D.1040703@intracom.gr>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+cc: David Woodhouse <dwmw2@infradead.org>
 cc: Thomas Gleixner <tglx@linutronix.de>
 cc: linux-mtd@lists.infradead.org
-cc: David Daney <ddaney@avtrex.com>
 Subject: Re: [patch] Allow any filesystem on MTD Nand when Read Only
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,31 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
+Pantelis Antoniou wrote:
 
->On Wed, 2004-05-05 at 15:33 +0300, Pantelis Antoniou wrote:
+> Hello there.
 >
->>Hello there.
->>
->>The following patch allows you to have any filesystem over NAND when mounted
->>read only.
->>
+> The following patch allows you to have any filesystem over NAND when 
+> mounted
+> read only.
 >
->Please don't do it like this. Do it as a block device 'translation
->layer' instead. See nftl/ftl/mtdblock for examples.
+> The main drive for this was that I wanted to use CRAMFS over NAND 
+> flash since
+> it has a much higher compression ratio than JFFS2.
 >
->Can you join irc.freenode.net #mtd ?
+> How it works is pretty simple.
 >
+> It's pretty reasonable assumption that bad blocks are created only when
+> writting to NAND. So in the read-only case it is possible to skip over 
+> the bad
+> blocks and offer a bad-block free block device to the upper layers.
+> This allows us to utilize any filesystem when  read-only.
 >
-Sorry I'm at work now and IRC is blocked.
+> In order to speed the mount operation the bad block detection is 
+> performed lazilly.
+>
+> Using the patch I was able to mount as read-only CRAMFS/JFFS2 partitions
+> which contained simulated bad-blocks.
+>
+> Awaiting your comments...
+>
+> Regards
+>
+> Pantelis
+>
+After more thought, I am in the process of doing something similar.
 
-I'll try to get into it when I get home in about 2 hours.
+However my changes are not quite done yet.  Roughly it goes like this:
 
-I'll take a look at nftl/ftl/mtdblock.
+Write a new read-only block driver that skips bad blocks and uses ECC 
+reads.  This allows any read only file system to use it (ie cramfs).  
+The bad block map is kept in the first non-bad page in the partition, 
+when the driver is installed it reads the bad block map.
 
-The patch is very small and it works perfectly however.
-What are your main objections?
+To write the data into the mtd, you have a special version of nandwrite 
+that checks for bad blocks while writing the image and finally writes 
+the bad block map.
 
-Regards
+One difference between my approach and yours is that no existing mtd 
+driver code is touched, it is simply another mtd block driver.
 
-Pantelis
+David Daney.
