@@ -1,18 +1,18 @@
-Received: from mailb.telia.com ([194.22.194.6])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18AtWj-00075H-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 14:57:29 +0000
-Message-ID: <002301c288cd$c11a6180$0200a8c0@telia.com>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <jffs-dev@axis.com>, <linux-mtd@lists.infradead.org>
-References: <F122OgRGkQ6mBySsxVY00000854@hotmail.com>  <24987.1036797874@passion.cambridge.redhat.com>
-Subject: crc32() optimization
-Date: Sun, 10 Nov 2002 16:28:00 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18AwZx-0007TP-00
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 18:13:01 +0000
+Date: Sun, 10 Nov 2002 10:43:21 -0800
+From: Marc Singer <elf@buici.com>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: crc32() optimization
+Message-ID: <20021110184321.GB16087@buici.com>
+References: <F122OgRGkQ6mBySsxVY00000854@hotmail.com> <24987.1036797874@passion.cambridge.redhat.com> <002301c288cd$c11a6180$0200a8c0@telia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <002301c288cd$c11a6180$0200a8c0@telia.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,37 +24,60 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David
+As it should.  I wonder if you'd do better changing the loop slightly.
 
-This patch improves my scan time with 22%( from 2.39 to 1.86 seconds).
-Maybe you want to include it in the 2.4 branch.
+Check for len == 0 and do a short-circuit return.  Then do this
 
-I will put this in my next backport of the crc32 stuff from 2.5.
+  for (++len; len & 0x7; len >>= 3) {
+     ONCE(); // repeat eight times
+     ...
+     len >>= 3;
+  }
+  while (--len > 0)
+     ONCE();
 
-          Jocke
+This is the implementation I've written for another project which
+we've found to be relatively optimal.  Note that len *must* be an int
+even though contemporary convention is to use the size_t type.
 
-Index: fs/jffs2/crc32.h
-===================================================================
-RCS file: /home/cvs/mtd/fs/jffs2/crc32.h,v
-retrieving revision 1.3
-diff -u -b -r1.3 crc32.h
---- fs/jffs2/crc32.h    26 Feb 2001 14:44:37 -0000      1.3
-+++ fs/jffs2/crc32.h    10 Nov 2002 15:25:11 -0000
-@@ -13,7 +13,16 @@
- crc32(__u32 val, const void *ss, int len)
- {
-        const unsigned char *s = ss;
--        while (--len >= 0)
-+        while (len >= 6){
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-+         len -= 6;
-+        }
-+        while (len--)
-                 val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-         return val;
- }
+
+On Sun, Nov 10, 2002 at 04:28:00PM +0100, Joakim Tjernlund wrote:
+> Hi David
+> 
+> This patch improves my scan time with 22%( from 2.39 to 1.86 seconds).
+> Maybe you want to include it in the 2.4 branch.
+> 
+> I will put this in my next backport of the crc32 stuff from 2.5.
+> 
+>           Jocke
+> 
+> Index: fs/jffs2/crc32.h
+> ===================================================================
+> RCS file: /home/cvs/mtd/fs/jffs2/crc32.h,v
+> retrieving revision 1.3
+> diff -u -b -r1.3 crc32.h
+> --- fs/jffs2/crc32.h    26 Feb 2001 14:44:37 -0000      1.3
+> +++ fs/jffs2/crc32.h    10 Nov 2002 15:25:11 -0000
+> @@ -13,7 +13,16 @@
+>  crc32(__u32 val, const void *ss, int len)
+>  {
+>         const unsigned char *s = ss;
+> -        while (--len >= 0)
+> +        while (len >= 6){
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+> +         len -= 6;
+> +        }
+> +        while (len--)
+>                  val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
+>          return val;
+>  }
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
