@@ -1,146 +1,124 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 137QcC-0007rM-00
-	for mtd-list@infradead.org; Wed, 28 Jun 2000 23:47:28 +0100
-Received: from ctam155.prophecy.net.au ([203.21.127.155] helo=powerbook.ctam.com.au)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 137Qc9-0007qu-00
-	for mtd@infradead.org; Wed, 28 Jun 2000 23:47:27 +0100
-Received: from localhost ([127.0.0.1] helo=ctam.com.au)
-	by powerbook.ctam.com.au with esmtp (Exim 3.12 #1 (Debian))
-	id 137eha-0005QY-00
-	for <mtd@infradead.org>; Thu, 29 Jun 2000 08:49:58 -0500
-Message-ID: <395B5405.7030604@ctam.com.au>
-Date: Thu, 29 Jun 2000 08:49:57 -0500
-From: Brendan Simon <brendan.simon@ctam.com.au>
-Reply-To: brendan.simon@ctam.com.au
+	id 137esI-0000sI-00
+	for mtd-list@infradead.org; Thu, 29 Jun 2000 15:01:02 +0100
+Received: from gateway.pel.dk ([195.249.83.130])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 137esG-0000sA-00
+	for mtd@infradead.org; Thu, 29 Jun 2000 15:01:01 +0100
+Message-ID: <395B574E.CD20E7C2@pel.dk>
+Date: Thu, 29 Jun 2000 16:03:58 +0200
+From: akc <akc@pel.dk>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Re: Flash chip locking
-References: <395AB066.3070708@ctam.com.au>  <16397.962188563@cygnus.co.uk> <20586.962191497@cygnus.co.uk>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To: mtd@infradead.org, akc@pel.dk
+Subject: Problem accessing physical memory...
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
-> =
+Howdy:
 
-> brendan.simon@ctam.com.au said:
-> =
 
-> =
+I'am trying to use slram on a RPXlite PowerPC board, but as soon as
+slram tries to memcpy to
+physical memory, the kernel makes an exception(see below for output)
 
-> > Or to avoid ugly "goto" statements.
-> >=A0=A0 spin_lock_bh();
-> >=A0=A0 while (!ready)
-> >=A0=A0 {
-> >=A0=A0 =A0 =A0 spin_unlock()
-> >=A0=A0 =A0 =A0 udelay(a_little_while);
-> >=A0=A0 =A0 =A0 spin_lock_bh();
-> >=A0=A0 }
+I've told the RPXLite board it only has 4Mb ram, (It didn't work by
+telling the kernel only), and tries to
+access from 0x800000 and up.
 
-Maybe this is a better so that the spin_lock_bh() call is not repeated.
-=A0=A0 while(1)
-=A0=A0 {
-=A0=A0 =A0 =A0 spin_lock_bh();
-=A0=A0 =A0 =A0 if (ready)
-=A0=A0 =A0 =A0 {
-=A0=A0 =A0 =A0 =A0 =A0 break;
-=A0=A0 =A0 =A0 }
-=A0=A0 =A0 =A0 spin_unlock();
-=A0=A0 =A0 =A0 udelay(some_period);
-=A0=A0 }
+I'am using kernel 2.4.0-test1-ac18 from bitkeeper.
 
-> Personally, I prefer the goto version. I think it's clearer. We're =
+I've tried mtdram and it works, but I am going to make a flash driver
+and need access to physical memory.
 
-> releasing the lock and going back to exactly the state we were in at th=
-e =
+I've made a small test module, which only tries to write something in
+physical mem, by using:
 
-> 'retry:' label. It doesn't really matter though. =
+    ioremap :                                                      fails
+like slram
+    mmap (from user space);                         didn't get any
+messages just didn't work.
+    just type casting a physical addr.             didn't work.
+    using phys_to_virt(0x800000)                didn't work.
 
-You are right.=A0 At the end of the day I guess it doesn't really matter.=
+I haven't used remap_page_range yet, because I haven't found enough
+documentation, eg. how _do_ I use it?
 
-I just think that using labels and gotos is not a scalable technique, so =
 
-I try to avoid them.
+HELP
+;-)
 
-Thanks for the explanations below.=A0 It is much clearer now.=A0 I am sti=
-ll =
+Thanks in advance
+    Arnold..
 
-green when it comes to linux internals.=A0 Hopefully that will change in =
 
-the next 6 months when I have to write drivers and apps for a powerpc =
 
-embedded product with DOC and some custom hardware.
+PS: The DAR  should show at which (virtual) address it went wrong, but
+it isn't the same, (well sometime it is)
+I have
+tried using writeb() instead of memcpy, and followed the call down in
+the kernel. The address stays right until an asm.
+instruction which writes the byte, so ?????
 
-Thanks,
-Brendan Simon.
 
-> > You are implying that 128us is a large amount of time to wait.=A0 May=
-be
-> > with todays processors it is, I don't really know if it is or isn't
-> > for  the average processor speed.=A0
-> =
 
-> It's a long time to disable interrupts or bottom halves. If we didn't h=
-ave =
+-----------------------------------------------------------
 
-> to disable bottom halves, I wouldn't worry about it.
-> =
+Some debug form slram:
 
-> =
+In physmem_write
+        priv->start=0xc1004000
+        priv->start+to=0xc1004000
+        to=0
+        len=248
+        len=248,buf=0x30000000,tmp=0xc1004000
 
-> > Does the udelay() imply that the scheduler  can switch to another pro=
-cess?=A0
-> =
+Machine check in kernel mode.
+Caused by (from SRR1=9032): Unknown values in msr
+NIP: C1002254 XER: A000857F LR: C1002254 REGS: c033bd60 TRAP: 0200
+MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+TASK = c033a000[13] 'sh' Last syscall: 4
+last math 00000000 last altivec 00000000
+GPR00: C1002254 C033BE10 C033A000 0000002A 00001032 C014D7A4 C01F7320
+00000000 GPR08: 00000027 C0150000 FA202830 C033BD60 55553F39 1014C154
+214C0694 BCDA4025 GPR16: 1004FC3D 820459D8 00000000 84300612 00009032
+0033BE80 00000000 C0003528 GPR24: C0003264 FFF147FC C033BE38 000000F8
+000000F8 00000000 30000000 C1004000 vector: 200 at pc = c1002254, lr =
+c1002254, msr = 9032, sp = c033be10 [c033bd]current = c033a000, pid =
+13, comm = sh
 
-> No. We'd use schedule_timeout() to allow the scheduler to switch.
-> =
+mon> r
+R00 = c1002254   R01 = c033be10   R02 = c033a000   R03 = 0000002a
+R04 = 00001032   R05 = c014d7a4   R06 = c01f7320   R07 = 00000000
+R08 = 00000027   R09 = c0150000   R10 = fa202830   R11 = c033bd60
+R12 = 55553f39   R13 = 1014c154   R14 = 214c0694   R15 = bcda4025
+R16 = 1004fc3d   R17 = 820459d8   R18 = 00000000   R19 = 84300612
+R20 = 00009032   R21 = 0033be80   R22 = 00000000   R23 = c0003528
+R24 = c0003264   R25 = fff147fc   R26 = c033be38   R27 = 000000f8
+R28 = 000000f8   R29 = 00000000   R30 = 30000000   R31 = c1004000
+pc  = c1002254   msr = 00009032   lr  = c1002254   cr  = 35553f39
+ctr = c0101854   xer = a000857f   trap =  200
+dar = 0x00000000
 
-> > If so, I would have thought that the  scheduling process would take a=
- lot
-> > longer that 128us, but I could be  wrong !!! =
-
-> =
-
-> I agree - that's why I used udelay() which is a busy-wait rather than =
-
-> scheduling. =
-
-> =
-
-> > If no scheduling is performed  then then there would be no difference=
- to
-> > the naive "foreach" loop that you mention.
-> =
-
-> The difference is that in the latter version we are allowing interrupts=
-
-> while we're doing the delay, while in the former they're disabled. Ther=
-e =
-
-> are in fact _two_ major differences between the two - the presence of t=
-he =
-
-> delay, and the place at which we actually wait for the chip to be ready=
-=2E
-> =
-
-> The delay is just an optimisation - there's no a lot of point in beatin=
-g on =
-
-> the chip's READY line until there's at least a chance that it'll be don=
-e, =
-
-> whether we're busy-waiting with IRQs disabled or not.
-> =
-
-> The important bit is that we let the interrupts run while we're waiting=
- for =
-
-> the chip.
-
+mon> S
+msr = 1032, pvr = 500000
+sprg0-3 = 9032 33be80 0 33a250
+srr0 = c00b7120, srr1 = 1032
+sr0-15 =NIP: C007E7D0 XER: A000857F LR: C007E7C8 REGS: c033bb80 TRAP:
+1000
+MSR: 00001032 EE: 0 PR: 0 FP: 0 ME: 1 IR/DR: 11
+TASK = c033a000[13] 'sh' Last syscall: 4
+last math 00000000 last altivec 00000000
+GPR00: C007E7C8 C033BC30 C033A000 00000008 C0171244 00000008 C01F7320
+C0171244 GPR08: 00000008 00000000 FA202830 0000003D 00000001 1014C154
+214C0694 BCDA4025 GPR16: 1004FC3D 820459D8 00000000 84300612 00001032
+0033BD50 00000000 C0003528 GPR24: C0003744 FFF147FC C033BE38 C033A000
+C033BC30 C0120000 00000000 00000010 vector: 1000 at pc = c007e7d0, lr =
+c007e7c8, msr = 1032, sp = c033bc30 [c033b]current = c033a000, pid = 13,
+comm = sh
+mon>
 
 
 
