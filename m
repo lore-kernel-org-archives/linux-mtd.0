@@ -1,29 +1,30 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from bm-2a.paradise.net.nz ([202.0.58.21]
+	helo=linda-2.paradise.net.nz)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CW2Ed-0004cz-BY
-	for linux-mtd@lists.infradead.org; Sun, 21 Nov 2004 19:39:16 -0500
-Date: Sun, 21 Nov 2004 19:38:04 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20041121195617.GB13254@stusta.de>
-Message-ID: <Pine.LNX.4.61.0411211932000.3732@xanadu.home>
-References: <20041118021538.5764d58c.akpm@osdl.org>
-	<20041118154110.GE4943@stusta.de>
-	<1100793112.8191.7315.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.61.0411181132440.12260@xanadu.home>
-	<20041118213232.GG4943@stusta.de>
-	<Pine.LNX.4.61.0411181727010.12260@xanadu.home>
-	<20041118232527.GI4943@stusta.de>
-	<Pine.LNX.4.61.0411182041130.12260@xanadu.home>
-	<20041119133500.GF22981@stusta.de>
-	<Pine.LNX.4.61.0411191130190.3732@xanadu.home>
-	<20041121195617.GB13254@stusta.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Andrew Morton <akpm@osdl.org>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [patch] 2.6.10-rc2-mm2: MTD_XIP dependencies
+	id 1CW3LF-0004yw-9t
+	for linux-mtd@lists.infradead.org; Sun, 21 Nov 2004 20:50:10 -0500
+Received: from smtp-2.paradise.net.nz (smtp-2b.paradise.net.nz [202.0.32.211])
+	by linda-2.paradise.net.nz (Paradise.net.nz)
+	with ESMTP id <0I7K00MCY4LBQI@linda-2.paradise.net.nz> for
+	linux-mtd@lists.infradead.org; Mon, 22 Nov 2004 14:39:12 +1300 (NZDT)
+Received: from hayes.bluewaternz.com
+	(203-96-159-182.paradise.net.nz [203.96.159.182])	by
+	smtp-2.paradise.net.nz
+	(Postfix) with ESMTP id A8BE49E744	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Nov 2004 14:39:11 +1300 (NZDT)
+Received: from emma.bluewaternz.com ([192.168.2.44] helo=bluewatersys.com)
+	by hayes.bluewaternz.com with esmtp (Exim 3.35 #1 (Debian))
+	id 1CW3Ad-0003uN-00	for <linux-mtd@lists.infradead.org>; Mon,
+	22 Nov 2004 14:39:11 +1300
+Date: Mon, 22 Nov 2004 14:41:24 +1300
+From: Brad Beveridge <bbeveridge@bluewatersys.com>
+To: linux-mtd@lists.infradead.org
+Message-id: <41A143C4.2090304@bluewatersys.com>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+Subject: BUG at dcache.h:276! Causing oops when I rmmod a nand module having
+ mulitple partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,29 +34,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 21 Nov 2004, Adrian Bunk wrote:
+Hi all.  Here is the basic problem, I have a nand module that I want to 
+insmod & rmmod.  It has multiple partitions that look like
+static struct mtd_partition partition_info1[] = {   
+        { name: "part1",                   
+          offset: 0,                                                     
+          size: 4 * 1024 * 1024 },                                     
+        { name: "part2",                      
+          offset: 4 * 1024 * 
+1024,                                          
+          size: 4 * 1024 * 1024 
+},                                          
+        { name: "part3",                             
+                  offset: 8 * 1024 * 
+1024,                                  
+                  size: MTDPART_SIZ_FULL }
+};
 
-> On Fri, Nov 19, 2004 at 11:35:26AM -0500, Nicolas Pitre wrote:
-> 
-> > On Fri, 19 Nov 2004, Adrian Bunk wrote:
-> > 
-> > > The Kconfig file should express all dependencies of a driver.
-> > 
-> > Absolutely!
-> 
-> Good that we agree.  :-)
+I call nand_scan on my device, and then add_mtd_partitions.
+When I rmmod the module I simply call nand_release, because it 
+automatically calls del_mtd_partitions.
 
-On this very point only.
+However, this causes a BUG in dcache.h:276.
+There is no oops if I only use a single partition.
 
-> > So please would you just ask Andrew to apply the following patch and be 
-> > happy?  Thank you.
-> 
-> A slightly improved patch is below.
+Any thoughts on what might be going on?
 
-But I continue to disagree with your proposed patch.
-And I'll bet that you will continue to disagree with mine.
-
-Can we let the MTD maintainer arbitrate on this?
-
-
-Nicolas
+Cheers
+Brad
