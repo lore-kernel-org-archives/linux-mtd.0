@@ -1,18 +1,20 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from port61.vestas.dk ([195.41.59.61] helo=cotas2.cotas.vestas.dom)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 195KjO-0008Im-Gn
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 08:19:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jeremy Bowen <Jeremy.Bowen@opennw.com>
-In-Reply-To: <DEA23DB61B62D4118B5900508B323B840105552F@OPENMAIL>
-References: <DEA23DB61B62D4118B5900508B323B840105552F@OPENMAIL>
-Message-Id: <1050391194.3035.25.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Tue, 15 Apr 2003 08:19:54 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Unable to write to some JFFS partitions
+	id 195LTJ-0008T3-1J
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2003 09:07:17 +0100
+From: Esben Nielsen <esn@cotas.dk>
+To: <manningc2@actrix.gen.nz>,
+ <linux-mtd@lists.infradead.org>
+Date: Tue, 15 Apr 2003 10:06:51 +0200
+References: <20030414230258.A173D155EF@desire.actrix.co.nz>
+In-Reply-To: <20030414230258.A173D155EF@desire.actrix.co.nz>
+MIME-Version: 1.0
+Message-Id: <200304151006.51147.esn@cotas.dk>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: Database on JFFS2?
+Reply-To: esn@cotas.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. Don't use JFFS, use JFFS2.
-2. Don't attempt to use partitions which have fewer free blocks than are
-   required to make progress -- combine all your file system space into
-   one JFFS2 partition. Note that there exist bootloaders which can boot
-   from JFFS2 so you can put the kernel in there too.
-3. eraseall works on the /dev/mtd character devices, not the block 
-   devices.
+Our flash is NOR (Intel statoflash). What we a going for is a standeard SQL 
+solution  - so it isn't enough that the filesystem has a database-like 
+behaviour.
 
--- 
-dwmw2
+Someone from this list pointed out sqlite to me yesterday. I am looking into 
+that now.  It has a log system. The most optimal would be if the database 
+could be tuned not to write too often and on other hand when it does it is 
+flush to flash immediately to prevent datacorruption. I am not quite sure how 
+to make it work with JFFS2. DoesJFFS2 write immediately on fsync() or it is 
+buffered in ram making the database believe it is safe to delete it's 
+transactionlog?
+
+Esben
+
+On Tuesday 15 April 2003 01:03, Charles Manning wrote:
+> On Mon, 14 Apr 2003 20:08, Esben Nielsen wrote:
+> > Is it posible to run a sql database (mysql forinstance) on a JFFS2
+> > filesystem?
+>
+> What kind of flash? NOR flash is very slow for writing, making some
+> database solutions impractical.
+>
+> People are using NAND with YAFFS in database-like solutions.
+>
+> -- CHarles
