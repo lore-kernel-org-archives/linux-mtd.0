@@ -1,17 +1,16 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e0He-0007XD-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:02:15 +0000
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Q: Pushing code to 2.4.x
-References: <Pine.LNX.4.44.0301292135120.4791-100000@imladris.demon.co.uk>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 29 Jan 2003 15:34:11 -0700
-In-Reply-To: <Pine.LNX.4.44.0301292135120.4791-100000@imladris.demon.co.uk>
-Message-ID: <m34r7ry49o.fsf@lnxi.com>
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18e0Ka-0007XY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:05:17 +0000
+Date: Wed, 29 Jan 2003 22:36:13 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Stephane List <stephane.list@lilotux.net>
+cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20030129161457.GA9083@lilotux.net>
+Message-ID: <Pine.LNX.4.44.0301292233430.4791-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: Intel Strataflash
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,74 +22,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse <dwmw2@infradead.org> writes:
+On Wed, 29 Jan 2003, Stephane List wrote:
 
-> On 29 Jan 2003, Eric W. Biederman wrote:
-> 
-> > What is the plan for keeping the kernel and the CVS tree more or less in
-> > sync?
-> 
-> It goes in cycles...
-> 	1. I sync to Marcelo/Linus
-> 	2. People commit changes.
-> 	3. Those changes stabilise and I become happy with them.
-> 	4. I plan to find time to sync to Marcelo/Linus again.
-> 	5. People bitch at me because it's out of sync.
-> 	6. I say "I'll find some time soon, honest".
-> 	7. Red Hat finds me more 'real work' to do just when I thought
-> 	   I'd got some slack some in the Engineering Schedule.
-> 	8. People bitch at me some more.
-> 	9. I eventually get round to it.
+> PS : I couldn't compile my kernel with the CVS code...
 
-That sounds about right.  Things similar things tend to happen here
-but as the mtd stuff becomes more real work, and the volume goes
-up it is easier to find the time...
+Details?
 
-> > There are currently some large divergences, to the point there are some
-> > chips that I can use the cfi_cmdset_0002.c from the stable 2.4.x kernel
-> > mtd tree but not from the recent CVS tree.
-> 
-> That's a bit of a bugger -- because I sent the CVS code to Marcelo this 
-> week :) Care to enlighten us on the problems you've seen?
 
-Primarily these are the chips from SST.  In particular the Roms used
-on the old tyan s2466 motherboards.  Currently we are working on
-a port to PMC flash chips, which is what that board is using now.  I didn't
-look closely at the time, but we should be able to retest and figure
-out what is going on. 
+> CONFIG_MTD_CFI_ADV_OPTIONS=y
 
-> > For the short term I can release and maintain patch where everything works,
-> > the question is what should my long term strategy be.
-> > 
-> > A) Push to the MTD cvs repository and let David Woodhouse push to Marcelo.
-> 
-> As you've observed, there's a lag involved with this. If you're willing to
-> help reduce that I'm happy.
+Advanced options? Why did you enable this? On this occasion it isn't the 
+problem, because you got the options it hides correct anyway. 
 
-I am certainly willing to look at that.
- 
-> > B) Push to the MTD cvs repository and push directly to Marcelo.
-> 
-> This is fine by me assuming the following:
-> 
-> 	1. You commit to CVS first and then send to Marcelo, including
-> 	   the appropriate $Id$ changes so I know which version 
-> 	   Marcelo was last sync'd with.
-> 	2. You Cc me.
-> 	3. Your changes are correct for both 2.4 and 2.5. I don't care
-> 	   if they're tested, as long as they're correct :)
-> 	4. You merge changes from Marcelo's tree into CVS too, before
-> 	   sending it back to him.
-> 
-> > With LinuxBIOS becoming a fully supported product I expect to continually
-> > have more board and more little rom chips that I am making certain work.
-> 
-> For new map drivers, and new IDs for the chip drivers, please do commit to 
-> CVS and send to Marcelo simultaneously. I'm perfectly happy with
-> that.
+> #Because the data bus of the CPU is 4 bytes
+> CONFIG_MTD_CFI_B4=y
 
-O.k. Then I will do that.  It sounds like a reasonable procedure.
-It might be someone else doing the legwork but it that will definitely
-be the plan.
+Correct.
 
-Eric
+> #Because There are 2 flashs connected on the same Data bus.
+> CONFIG_MTD_CFI_I2=y
+
+Correct.
+
+> #Because it's an Intel Strataflash
+> CONFIG_MTD_CFI_INTELEXT=m
+
+Correct.
+
+> #Because my flash chip data bus is 2 bytes width
+> CONFIG_MTD_PHYSMAP_BUSWIDTH=2
+
+No, your CPU data bus is 4 bytes width (cf. CFI_B4 above) and has two 
+chips on it so
+ CONFIG_MTD_PHYSMAP_BUSWIDTH=4
+
+
+-- 
+dwmw2
