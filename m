@@ -1,18 +1,20 @@
-Received: from crowe.psilongbeach.com ([63.168.124.5])
+Received: from [203.194.144.59] (helo=ns3.dns-hk.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196CsA-00011X-CU
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 18:08:30 +0100
-Received: from psilongbeach.com (localhost.localdomain [127.0.0.1])
-	by crowe.psilongbeach.com (8.12.5/8.12.5) with ESMTP id h3HH8ZZ8023259
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 12:08:35 -0500
-Message-ID: <3E9EDF93.9070700@psilongbeach.com>
-Date: Thu, 17 Apr 2003 12:08:35 -0500
-From: crowe@psilongbeach.com
+	id 196Cz3-0001Bk-Lj
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 18:15:38 +0100
+Received: from 203186230076.ctinets.com ([203.186.230.76] helo=home)
+	by ns3.dns-hk.net with smtp (Exim 3.36 #1)
+	id 196Cz5-0007nT-00
+	for linux-mtd@lists.infradead.org; Fri, 18 Apr 2003 01:15:39 +0800
+Message-ID: <001201c30505$c4b83dd0$6c00a8c0@home>
+From: "Paul" <paul@maypaul.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 18 Apr 2003 01:21:12 +0800
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Subject: CVS patch breaks zlib
+Subject: Restore the bad block flag in OOB of  NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi I'm new to the list
-I'm designing with the Altera EPXA10.
-I got the CVS version of mtd and applied the patch
-patchin.sh -c -j /home/crowe/aacSpva/linux-2.4.17_zlibBusted
+ Dear All,
 
-I did a
-make clean
-make dep
-make bzImage then died with make modules (mtd stuff is configured for modules)
+    How can I restore the 0xFF in the OOB[5]?   i understood the oob[5] is
+ the bad block indicator. The YAFFS set accidentally the byte to 0x00 . I
+ want to use JFFS2 but the eraseall command said they are invalid block. I
+am
+ sure that the block is health . So, I want to force set the oob[5] to oxFF,
+ pls. how can i do? Thank you.
 
-Here is a snippit of what happened
-make modules
-....
-make[1]: Entering directory `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib'
-arm_920t_le-gcc -D__KERNEL__ -I/home/crowe/aacSpva/linux-2.4.17_zlibBusted/include -Wall 
--Wstrict-prototypes -Wno-trigraphs -O2  -fno-strict-aliasing -fno-common -fno-common -pipe -g 
--mapcs-32 -march=armv4 -mtune=arm9tdmi -mshort-load-bytes -msoft-float -DMODULE   -DEXPORT_SYMTAB -c 
-zlib.c
-zlib.c:72: `deflate' undeclared here (not in a function)
-zlib.c:72: initializer element is not constant
-...
-a whole bunch of errors and warnings
-...
-ending with
-zlib.c:5374: `adler32' used prior to declaration
-zlib.c:5374: warning: `adler32' was previously implicitly declared to return `int'
-make[1]: *** [zlib.o] Error 1
-make[1]: Leaving directory `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib'
-make: *** [_mod_lib] Error 2
-
-Any Ideas on what I did wrong?
-Thanks
-Mike
-
-
--- 
-Mike Crowe
-crowe@psilongbeach.com
+ Paul
