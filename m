@@ -1,16 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: tharbaugh@lnxi.com
-In-Reply-To: <1095190893.5442.35.camel@tubarao>
-References: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
-	<1095190893.5442.35.camel@tubarao>
-Content-Type: text/plain
-Message-Id: <1095194840.9144.273.camel@imladris.demon.co.uk>
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C7M4B-0001se-C4
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2004 18:46:28 -0400
+Date: Tue, 14 Sep 2004 23:46:16 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: Thayne Harbaugh <tharbaugh@lnxi.com>
+Message-ID: <20040914224616.GA10212@home.fluff.org>
+References: <20040904173703.GA2100@fluff.org> <1095081159.5442.1.camel@tubarao>
 Mime-Version: 1.0
-Date: Tue, 14 Sep 2004 21:47:20 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Jochen Karrer <j.karrer@lightmaze.com>,
-	steven.scholz@imc-berlin.de
-Subject: Re: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1095081159.5442.1.camel@tubarao>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: ch@hpl.hp.com, linux-mtd@lists.infradead.org
+Subject: Re: jedec_probe problems with 16bit devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,12 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-09-14 at 13:41 -0600, Thayne Harbaugh wrote:
-> Anyone else that cares should comment now or I'll commit it so that it
-> doesn't get forgotten.
+On Mon, Sep 13, 2004 at 07:12:39AM -0600, Thayne Harbaugh wrote:
+> On Sat, 2004-09-04 at 18:37 +0100, Ben Dooks wrote:
+> > I have been trying to get an SST 39LF160 on an Simtec Electronics
+> > EB2410ITX (aka Bast). I have found some problems with jedec_probe
+> > with non-8bit devices.
+> > 
+> > Basically, the two problems are as follows:
+> > 
+> > 1) A number of functions are masking out bits from the command
+> > addresses, but the cfi_send_gen_cmd() moves the addresses up
+> > depending on the chip type, so the masking is not needed.
+> > 
+> > 2) the cfi_send_gen_cmd() is called with CFI_DEVICETYPE_X8
+> > instead of cfi->device_type, which causes the wrong accesses to
+> > be generated to the chip.
+> 
+> committed patch - please try it.
 
-Looks good -- best to commit it. Are there other places where we need
-the same fix?
+I'll try this on my EB2410ITX as soon as I can, would like to
+polish the NOR flash driver and get it uploaded.
 
 -- 
-dwmw2
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
