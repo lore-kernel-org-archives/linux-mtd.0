@@ -1,61 +1,204 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H7jZ-0000zy-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 17:39:09 +0100
-Received: from [216.84.103.11] (helo=coolexchange.coollogic.com)
+	id 13HEPr-0002aJ-00
+	for mtd-list@infradead.org; Wed, 26 Jul 2000 00:47:15 +0100
+Received: from athena.evoserve.com ([210.16.10.134])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13H7jY-0000zW-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 17:39:08 +0100
-Message-ID: <397DC47C.E8E8E364@coollogic.com>
-Date: Tue, 25 Jul 2000 16:46:52 +0000
-From: Ian Thompson <ithompson@coollogic.com>
+	id 13HEPp-0002aD-00
+	for mtd@infradead.org; Wed, 26 Jul 2000 00:47:14 +0100
+Received: from evoserve.com (gateway.evoserve.com [210.16.10.120])
+	by athena.evoserve.com (8.9.3/8.9.3) with ESMTP id HAA08684
+	for <mtd@infradead.org>; Wed, 26 Jul 2000 07:48:57 +0800
+Message-ID: <397E2C0B.3DFFB9A@evoserve.com>
+Date: Wed, 26 Jul 2000 08:08:43 +0800
+From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
 MIME-Version: 1.0
 To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: 64M DOC2000
-References: <397DA945.60FED4FA@coollogic.com>  <397DA681.1DBEC4DA@coollogic.com> <2943.964535514@cygnus.co.uk> <4349.964536318@cygnus.co.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Subject: muti-page-rw.diff
+Content-Type: multipart/mixed;
+ boundary="------------21E6BA8E1CC1947A226BDCBD"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Actually I had to play with the code to get it to recognise the device.
-This 
-is probably due to my test setup.
+This is a multi-part message in MIME format.
+--------------21E6BA8E1CC1947A226BDCBD
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-I boot from a hard drive and set the DOC up from within Linux. This
-means contending
-with the LILO/DOC interaction so I use DOC2.FFF to blank out the
-conflicting region.
-The detection code misses the device when using this, because it reads
-FFs instead of the
-55 and AA signature. I took out that detection and restricted
-doc_locations[] to 
-the actual location of the DOC and the device is found. 
+I modified the doc2000 read and write functions to allow multipage read
+and write to any offest. I am behind a firewall so I cant do cvs. I am
+working on jffs_file_write to fix the max_chunk_size problem.
 
-Kernel output to follow.
+--------------21E6BA8E1CC1947A226BDCBD
+Content-Type: text/plain; charset=us-ascii;
+ name="multi-page-rw.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="multi-page-rw.diff"
 
-Ian T.
+diff -r -u mtd/kernel/doc2000.c mtd-snapshot-20000725/kernel/doc2000.c
+--- mtd/kernel/doc2000.c	Wed Jul 26 06:00:03 2000
++++ mtd-snapshot-20000725/kernel/doc2000.c	Wed Jul 26 07:27:47 2000
+@@ -496,18 +496,37 @@
+ 	unsigned long docptr;
+ 	struct Nand *mychip;
+ 
++        loff_t subfrom;
++        size_t sublen;
++        u_char *pos;
++        int multipage = 0;
++        loff_t end = from + len;
++
+ 	docptr = this->virtadr;
+ 
++        *retlen = 0;
++        sublen = len;
++        subfrom = from;
++        pos = buf;
++        
+ 	/* Don't allow read past end of device */
+ 	if (from >= this->totlen)
+ 		return -EINVAL;
+-	
+-	/* Don't allow a single read to cross a 512-byte block boundary */
+-	if (from + len > ( (from | 0x1ff) + 1)) 
+-		len = ((from | 0x1ff) + 1) - from;
+ 
++        if ((subfrom + sublen) > ((subfrom | 0x1ff) + 1)) {
++              multipage = 1;
++              sublen = ((subfrom | 0x1ff) + 1) - subfrom;
++        }
++do {
++        if ((subfrom + 512) > end) {
++             multipage = 0;
++             sublen = end - subfrom;
++             if (!sublen) break;
++        }
++
++	
+ 	/* Find the chip which is to be used and select it */
+-	mychip = &this->chips[from >> (this->chipshift)];
++	mychip = &this->chips[subfrom >> (this->chipshift)];
+ 	
+ 	if (this->curfloor != mychip->floor) {
+ 		DoC_SelectFloor(docptr, mychip->floor);
+@@ -527,15 +546,15 @@
+ 		WriteDOC ( DOC_ECC_EN, docptr, ECCConf);
+ 	}
+ 
+-	DoC_Command(docptr, (from >> 8) & 1, CDSN_CTRL_WP);
+-	DoC_Address(docptr, 3, from, CDSN_CTRL_WP , CDSN_CTRL_ECC_IO);
++	DoC_Command(docptr, (subfrom >> 8) & 1, CDSN_CTRL_WP);
++	DoC_Address(docptr, 3, subfrom, CDSN_CTRL_WP , CDSN_CTRL_ECC_IO);
+ 
+-	for (di=0; di < len ; di++) {
+-		buf[di] = ReadDOC(docptr, 2k_CDSN_IO);
++	for (di=0; di < sublen ; di++) {
++		pos[di] = ReadDOC(docptr, 2k_CDSN_IO);
+ 	}
+ 
+ 	/* Let the caller know we completed it */
+-	*retlen = len;
++	*retlen += sublen;
+ 
+ 	if (eccbuf) {
+ 		/* Read the ECC data through the DiskOnChip ECC logic */
+@@ -571,6 +590,14 @@
+ 		
+ 	}
+ 
++        if (multipage){
++             subfrom += sublen;
++             pos += sublen;
++             sublen = 512;
++        }
++
++} while (multipage);
++
+ 	return 0;
+ }
+ 
+@@ -587,24 +614,36 @@
+ 	unsigned long docptr;
+ 	struct Nand *mychip;
+ 
++        loff_t subto;
++        size_t sublen;
++        u_char *pos;
++        int multipage = 0;
++        loff_t end = to + len;
++        
+ 	docptr = this->virtadr;
+ 
++        *retlen = 0;
++        sublen = len;
++        subto = to;
++        pos = buf;
++        
+ 	/* Don't allow write past end of device */
+ 	if (to >= this->totlen)
+ 		return -EINVAL;
+-#if 0	
+-	/* Don't allow a single write to cross a 512-byte block boundary */
+-	if (to + len > ( (to | 0x1ff) + 1)) 
+-		len = ((to | 0x1ff) + 1) - to;
+-
+-#else
+-	/* Don't allow writes which aren't exactly one block */
+-	if (to & 0x1ff || len != 0x200)
+-		return -EINVAL;
+-#endif
+ 
++        if ((subto + sublen) > ((subto | 0x1ff) + 1)) {
++              multipage = 1;
++              sublen = ((subto | 0x1ff) + 1) - subto;
++        }
++do {
++        if ((subto + 512) > end) {
++             multipage = 0;
++             sublen = end - subto;
++             if (!sublen) break;
++        }
++        
+ 	/* Find the chip which is to be used and select it */
+-	mychip = &this->chips[to >> (this->chipshift)];
++	mychip = &this->chips[subto >> (this->chipshift)];
+ 	
+ 	if (this->curfloor != mychip->floor) {
+ 		DoC_SelectFloor(docptr, mychip->floor);
+@@ -628,10 +667,10 @@
+ 	}
+ 
+ 	DoC_Command(docptr, NAND_CMD_SEQIN, 0);
+-	DoC_Address(docptr, 3, to, 0, CDSN_CTRL_ECC_IO);
++	DoC_Address(docptr, 3, subto, 0, CDSN_CTRL_ECC_IO);
+ 
+-	for (di=0; di < len ; di++) {
+-		WriteDOC(buf[di], docptr, 2k_CDSN_IO);
++	for (di=0; di < sublen ; di++) {
++		WriteDOC(pos[di], docptr, 2k_CDSN_IO);
+ 	}
+ 
+ 
+@@ -675,8 +714,14 @@
+ 	}
+ 
+ 	/* Let the caller know we completed it */
+-	*retlen = len;
++	*retlen += sublen;
+ 
++        if (multipage){
++             subto += sublen;
++             pos += sublen;
++             sublen = 512;
++        }
++} while (multipage); 
+ 	return 0;
+ }
+ 
 
+--------------21E6BA8E1CC1947A226BDCBD--
 
-David Woodhouse wrote:
-> 
-> ithompson@coollogic.com said:
-> > The part is recognised by the mtd driver with 2.4.0. I can partition
-> > it with fdisk /dev/nftl and create  ext2 disks.
-> 
-> Good.
-> 
-> > However, when I try
-> > to copy data to it I start getting input/output errors after I've got
-> > a certain amount of data (yet to be determined) on it.
-> 
-> Urgh. That may be normal though :(
-> 
-> Can you post the whole of the kernel's output while you're doing this,
-> including what it says when it probes and finds the device?
-> 
-> --
-> dwmw2
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
