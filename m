@@ -1,16 +1,16 @@
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=[aV1luUrNmLo0HVN25oYkupKu0P6W1u8+])
+Received: from unix.worldpath.net ([206.152.180.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15x15d-0007EU-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2001 08:07:38 +0100
-Date: Fri, 26 Oct 2001 08:16:46 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Kim, Sanghun" <shkim@fdma.snu.ac.kr>
-cc: Linux Mtd <linux-mtd@lists.infradead.org>
-Subject: Re: NAND-MTD (Please help me.....)
-In-Reply-To: <AEECKHHDHJAAFPKILIGNIELJCAAA.shkim@fdma.snu.ac.kr>
-Message-ID: <Pine.LNX.4.33.0110260815020.12271-100000@imladris.demon.co.uk>
+	id 15x6OZ-0007eQ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2001 13:47:31 +0100
+Received: from toybox.demon.co.uk (dsl-199.worldpath.net [206.152.188.199]) by unix.worldpath.net (8.9.3/8.9.3(WPI)) with ESMTP id IAA04098 for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2001 08:56:47 -0400 (EDT)
+Message-ID: <3BD95D89.4090701@technicaltoys.net>
+Date: Fri, 26 Oct 2001 08:56:41 -0400
+From: Derek Mulcahy <derek@technicaltoys.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: MTD driver for Atmel serial flash
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,27 +22,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 26 Oct 2001, Kim, Sanghun wrote:
+Hi
 
-> 
-> I have changed "spia.c" to my own "spia.c"
-> (later spia.c is ported to our board..)
-> 
-> but at boot process, following messages returned.
-> "Could not find valid boot record"
-> "Could not mount NFTL device"
-> ....
-> 
-> so, according to "MTD_Howto",
-> 
-> we do "nftl_format .....". But our NAND Flash's erase size is 0x4000.
-> so nftl_format returned with reporting "not 8kb, i'm confused"....
-> 
-> Please tell me SOLUTION...!!!...
+I am developing an MTD driver for an Atmel serial flash.
 
-You can't use NFTL on devices other than a DiskOnChip. Use JFFS, or I 
-believe people might be looking at writing a SmartMedia translation layer 
-which does much the same as NFTL but without requiring ECC hardware. 
+The device has 264 byte pages and they can be erased and written 
+individually.
 
---
-dwmw2
+I'm not sure what values to put in the mtd_info structure. I intend this 
+to be used with JFFS2.
+
+Currently I have
+
+    mtd->name = "atmel";
+    mtd->type = MTD_OTHER;
+    mtd->flags = MTD_WRITEB_WRITEABLE | MTD_ERASEABLE | MTD_CLEAR_BITS | 
+MTD_SET_BITS;
+    mtd->size = 256 * 2048;
+    mtd->read = serial_read;
+    mtd->write = serial_write;
+    mtd->sync = serial_sync;
+    mtd->erase = serial_erase;
+    mtd->erasesize = 256;
+
+As you can see, I am hiding the extra 8 bytes per page from the MTD 
+system, this makes the read/writes simpler.
+
+An advice/pointers on the right way to do this would be much appreciated.
+
+Cheers
+
+Derek
