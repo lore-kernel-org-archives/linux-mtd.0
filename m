@@ -1,14 +1,17 @@
-Received: from f83.law11.hotmail.com ([64.4.17.83] helo=hotmail.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15FZCH-0000KX-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2001 11:38:53 +0100
-From: "Svend Bengt" <pastaanta@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: JEDEC flash confusion?
-Date: Thu, 28 Jun 2001 10:43:51 -0000
+	id 15FZi1-0000NE-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2001 12:11:41 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F83i95HfqR77bieLYCT000174a7@hotmail.com> 
+References: <F83i95HfqR77bieLYCT000174a7@hotmail.com> 
+To: "Svend Bengt" <pastaanta@hotmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JEDEC flash confusion? 
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F83i95HfqR77bieLYCT000174a7@hotmail.com>
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 28 Jun 2001 12:16:55 +0100
+Message-ID: <17844.993727015@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,82 +23,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+pastaanta@hotmail.com said:
+>  What chip driver should generally be used for JEDEC flash chips? When
+>  looking at the MTD snapshots i found both jedec.c, cfi_jedec.c and
+> amd_flash.c as possible candidates. Will there be made a "unified"
+> JEDEC  driver which incorporates support for all JEDEC flashes? 
 
-What chip driver should generally be used for JEDEC flash chips? When 
-looking at the MTD snapshots i found both jedec.c, cfi_jedec.c and 
-amd_flash.c as possible candidates. Will there be made a "unified" JEDEC 
-driver which incorporates support for all JEDEC flashes?
+Hopefully, yes. We'll use the cfi_cmdset_0002 back end, and write a probe
+routine which does the necessary magic to identify the chips, then sets up a
+faked CFI data structure.
 
-My own story is that I have a board with Macronix MX29F800B flash chips. I 
-made it work by patching the amd_flash.c to recognize Macronix manufacturer 
-ID and patching physmap.c to use amd_flash instead of cfi.
+Some work has already been done on this, but it is merged into the real CFI 
+probe code, which in hindsight was probably the wrong thing to do - it 
+should be separated into a new probe routine.
 
-Regards,
-T. Vestermark
+pastaanta@hotmail.com said:
+> Here is my patch to mtd-snapshot-20010609 to include support for
+> Macronix  flash. I hope you can use it. (Is this an OK way to supply
+> patches?)
 
+3 out of 3 hunks FAILED -- saving rejects to amd_flash.c.rej
 
-BTW.
-Here is my patch to mtd-snapshot-20010609 to include support for Macronix 
-flash. I hope you can use it. (Is this an OK way to supply patches?)
+Your mailer ate the whitespace.
 
-diff -r -C3 -P mtd_original/drivers/mtd/chips/amd_flash.c 
-mtd/drivers/mtd/chips/amd_flash.c
-*** mtd_original/drivers/mtd/chips/amd_flash.c Sun Jun  3 00:00:07 2001
---- mtd/drivers/mtd/chips/amd_flash.c Sun Jun 17 19:13:48 2001
-***************
-*** 51,56 ****
---- 51,57 ----
-  #define MANUFACTURER_ST  0x0020
-  #define MANUFACTURER_SST 0x00BF
-  #define MANUFACTURER_TOSHIBA 0x0098
-+ #define MANUFACTURER_MACRONIX   0x00C2
-
-  /* AMD */
-  #define AM29F800BB 0x2258
-***************
-*** 416,421 ****
---- 417,434 ----
-     { offset: 0x010000, erasesize: 0x10000, numblocks: 15 }
-    }
-   }, {
-+   mfr_id: MANUFACTURER_MACRONIX,
-+   dev_id: AM29F800BB,
-+   name: "Macronix MX29F800B",
-+   size: 0x00100000,
-+   numeraseregions: 4,
-+   regions: {
-+    { offset: 0x000000, erasesize: 0x04000, numblocks:  1 },
-+    { offset: 0x004000, erasesize: 0x02000, numblocks:  2 },
-+    { offset: 0x008000, erasesize: 0x08000, numblocks:  1 },
-+    { offset: 0x010000, erasesize: 0x10000, numblocks: 15 }
-+   }
-+  }, {
-    mfr_id: MANUFACTURER_AMD,
-    dev_id: AM29LV800BT,
-    name: "AMD AM29LV800BT",
-***************
-*** 431,436 ****
---- 444,461 ----
-    mfr_id: MANUFACTURER_AMD,
-    dev_id: AM29F800BT,
-    name: "AMD AM29F800BT",
-+   size: 0x00100000,
-+   numeraseregions: 4,
-+   regions: {
-+    { offset: 0x000000, erasesize: 0x10000, numblocks: 15 },
-+    { offset: 0x0F0000, erasesize: 0x08000, numblocks:  1 },
-+    { offset: 0x0F8000, erasesize: 0x02000, numblocks:  2 },
-+    { offset: 0x0FC000, erasesize: 0x04000, numblocks:  1 }
-+   }
-+  }, {
-+   mfr_id: MANUFACTURER_MACRONIX,
-+   dev_id: AM29F800BT,
-+   name: "Macronix MX29F800T",
-    size: 0x00100000,
-    numeraseregions: 4,
-    regions: {
-
-
-_________________________________________________________________________
-Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com.
+--
+dwmw2
