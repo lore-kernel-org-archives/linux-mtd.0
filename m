@@ -1,19 +1,24 @@
-Received: from ihemail2.lucent.com ([192.11.222.163]
-	helo=ihemail2.firewall.lucent.com)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AJGww-0004bh-Kz
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2003 18:39:42 +0000
-Received: from ihmail.ih.lucent.com (h135-1-218-70.lucent.com [135.1.218.70])
-	ESMTP id hAAIcHw18514	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Nov 2003 12:38:18 -0600 (CST)
-Message-ID: <3FAFDAE9.5050506@lucent.com>
-Date: Mon, 10 Nov 2003 12:37:29 -0600
-From: James Solner <solner@lucent.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: zlib compilation failures
+	id 1AJLKu-0005Ie-5f
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Nov 2003 23:20:44 +0000
+Date: Mon, 10 Nov 2003 15:19:18 -0800
+From: Jun Sun <jsun@mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20031110151918.D19785@mvista.com>
+References: <20031104164431.K16745@mvista.com>
+	<1068023691.6065.7.camel@hades.cambridge.redhat.com>
+	<20031105095658.B19785@mvista.com>
+	<1068112207.6065.455.camel@hades.cambridge.redhat.com>
+	<20031106110921.G19785@mvista.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20031106110921.G19785@mvista.com>;
+	from jsun@mvista.com on Thu, Nov 06, 2003 at 11:09:21AM -0800
+Content-Type: text/plain; charset=us-ascii
+cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] extend physmap.c to support run-time configure and
+	partitioning (take 3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I got the most recent snapshot of the MTD and JFFS2 and try to
-compile it, but it fails on the following errors. The kernel is 2.4.18.
-Any ideas on whats wrong?
+On Thu, Nov 06, 2003 at 11:09:21AM -0800, Jun Sun wrote:
+> On Thu, Nov 06, 2003 at 09:50:07AM +0000, David Woodhouse wrote:
+> > On Wed, 2003-11-05 at 09:56 -0800, Jun Sun wrote:
+> > > Hmm, can you be more specific?  Here are all static variables that
+> > > matter in physmap.c.  Which ones are you thinking to eliminate?  And in 
+> > > what way?  (Assuming you do not mean I just drop "static" modifier...)
+> > 
+> > I mean mymtd, in particular. 
+> > 
+> 
+> Can you explain how to eliminate that?
+> 
+> All mapping drivers keep a static pointer to remember the mtd info
+> it discovers so that it can free it later.  Are you suggesting
+> we get rid of the exit function and we don't free it?
+> 
 
-Thanks!
+(This replies to the IRC discussion David and I had:
 
+<jun> around?  I am really confued by your comment of eliminating "mymtd" variable.  Can you elaborate?
+<jun> either we get rid of the exit cleanup function, or somehow we can retrieve this pointer without resorting to the static variable..
+<jun> either way the solution is not obvious to me.
+<dwmw2> get rid of the exit cleanup function, let the caller do that
 
-ppc_405-gcc -D__KERNEL__ -I/home/jds/PPC_DEV/WT405_LINUX/linux/include 
--Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer 
--fno-strict-aliasing -fno-common -g -ggdb 
--I/home/jds/PPC_DEV/WT405_LINUX/linux/arch/ppc -fsigned-char 
--msoft-float -pipe -ffixed-r2 -Wno-uninitialized -mmultiple -mstring 
--Wa,-m405   -DKBUILD_BASENAME=zlib  -DEXPORT_SYMTAB -c zlib.c
-zlib.c:72: `deflate' undeclared here (not in a function)
-zlib.c:72: initializer element is not constant
-zlib.c:72: (near initialization for `__ksymtab_deflate.value')
-zlib.c:73: `deflateInit_' undeclared here (not in a function)
-zlib.c:73: initializer element is not constant
-zlib.c:73: (near initialization for `__ksymtab_deflateInit_.value')
-zlib.c:74: `deflateInit2_' undeclared here (not in a function)
-zlib.c:74: initializer element is not constant
-zlib.c:74: (near initialization for `__ksymtab_deflateInit2_.value')
-zlib.c:75: `deflateEnd' undeclared here (not in a function)
-zlib.c:75: initializer element is not constant
-zlib.c:75: (near initialization for `__ksymtab_deflateEnd.value')
-zlib.c:76: `deflateSetDictionary' undeclared here (not in a function)
-zlib.c:76: initializer element is not constant
-zlib.c:76: (near initialization for `__ksymtab_deflateSetDictionary.value')
-zlib.c:77: `deflateCopy' undeclared here (not in a function)
-zlib.c:77: initializer element is not constant
-zlib.c:77: (near initialization for `__ksymtab_deflateCopy.value')
-zlib.c:78: `deflateReset' undeclared here (not in a function)
-zlib.c:78: initializer element is not constant
-...
+)
 
-zlib.c: In function `inflate_codes_free':
-zlib.c:4864: structure has no member named `zfree'
-zlib.c:4864: structure has no member named `opaque'
-zlib.c: At top level:
-zlib.c:5170: warning: function declaration isn't a prototype
-zlib.c:5374: warning: function declaration isn't a prototype
-zlib.c:5374: `adler32' used prior to declaration
-zlib.c:5374: warning: `adler32' was previously implicitly declared to 
-return `int'
-make[2]: *** [zlib.o] Error 1
-make[2]: Leaving directory `/home/jds/PPC_DEV/WT405_LINUX/linux/lib'
-make[1]: *** [first_rule] Error 2
-make[1]: Leaving directory `/home/jds/PPC_DEV/WT405_LINUX/linux/lib'
-make: *** [_dir_lib] Error 2
-Make status: 2
-***** Build Failure -make bzImage *****
+David,
+
+If I understand you correctly, you essentially want to make
+physmap_set_map() do what init_physmap() does, and have 
+physmap_unset_map() do what cleanup_physmap() does, right?  That 
+would also explain your desire of having
+
+	mtd = physmap_set_map(....)
+	...
+	physmap_unset_map(mtd)
+
+Well, unfortunately that does _not_ work because run-time configuration
+should run in the board setup code which is too early for what 
+init_physmap() is doing (for example, such as ioremap() because trap_init()
+has not run yet).
+
+In order for the whole thing to work, the most obivous solution is 
+to have three steps :
+
+. during board setup time, call run-time configure routine, which remember
+  arguments in local static variables
+. during do_initcalls() time, we do physmap_init() like it is doing right
+  now,
+. during kernel exit time, we clean it up.
+
+Does that make sense?  Do you have any more objections to the current patch
+(take 3)?
+
+Jun
