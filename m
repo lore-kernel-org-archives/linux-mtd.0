@@ -1,20 +1,22 @@
-Received: from ext-ch1gw-5.online-age.net ([64.37.194.13])
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AQDai-0005op-Jt
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Nov 2003 22:29:28 +0000
-Received: from int-ch1gw-6.online-age.net (int-ch1gw-6 [3.159.232.70])
-	id hATMRKqu003644	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Nov 2003 17:27:20 -0500 (EST)
-Received: from uswaumsxb1medge.med.ge.com (localhost [127.0.0.1])
-	id hATMRJpU011636	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Nov 2003 16:27:20 -0600 (CST)
-Message-ID: <77FE4A1FA59FF947845A42194AD667620A0F45@uswaumsx07medge.med.ge.com>
-From: "Howard, Michael (MED)" <Michael.Howard@med.ge.com>
+	id 1AQE1X-0005yC-43
+	for <linux-mtd@lists.infradead.org>; Sat, 29 Nov 2003 22:57:11 +0000
+Received: from 192.168.1.100 (unknown [192.168.1.100])F239F1441D
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 29 Nov 2003 17:56:09 -0500 (EST)
+From: Joshua Wise <joshua@joshuawise.com>
 To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Sat, 29 Nov 2003 16:27:15 -0600
+Date: Sat, 29 Nov 2003 17:55:32 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: 2048 byte page size in JFFS2
+Content-Description: clearsigned data
+Content-Disposition: inline
+Message-Id: <200311291755.33309.joshua@joshuawise.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: [NAND] Multi-page OOB reads
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have a Samsung 256 Meg flash with a page size of 2048 bytes.  The latest
-mtd code is blocking out any writes which are not page aligned.  However,
-every time I try to copy to a JFFS2 mounted directory, it is calling the
-nand write routines using 68 byte chucks which is then rejected.  
+Hi all,
 
-Can anyone tell me how to configure JFFS2 to write in 2048 chunks?  I was
-poking around in write.c and think that I need to somehow increase the dnode
-size to a fixed 2048.
+I'm on an iPAQ h1910 board working with a Samsung NAND 16MiB 3,3V chip=20
+(0xec/0x73).
 
-Thanks
-Mike
+I have a few questions about reading from the out of band area, namely with=
+=20
+reading multiple pages. First off, by reading the spec sheet for this flash=
+=20
+chip, I don't see any information about multiple pages of OOB data. Would i=
+t=20
+be called something else?
+
+Secondly, I don't see any code in nanddump or nandwrite to deal with multip=
+le=20
+pages of OOB data. Should there be?
+
+=46inally, I'm looking through drivers/mtd/nand/nand.c, and I'm looking at =
+the=20
+particular block that begins with the comment:
+        /*
+         * Read the data, if we read more than one page
+         * oob data, let the device transfer the data !
+         */
+I see how there's a read command before that. Should that be inside the loo=
+p=20
+if we're going to modify col?
+
+Thanks,
+/joshua
+
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <lilo> I akilled *@* by mistake
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/ySPkPn9tWOqA4LMRAi0lAKCn3EKofWY81eUaff0O3iR0GSRTdQCfbUv0
+Gnd8CfRPe0xzV0vOuN3/pHQ=3D
+=3DnHv3
+=2D----END PGP SIGNATURE-----
