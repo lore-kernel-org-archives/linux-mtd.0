@@ -1,49 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14W4ee-00017q-00
-	for mtd-list@infradead.org; Thu, 22 Feb 2001 22:56:08 +0000
-Received: from mail7.galactica.it ([212.41.208.24] helo=galactica.it)
+	id 14WDV5-0003JD-00
+	for mtd-list@infradead.org; Fri, 23 Feb 2001 08:22:51 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14W4ec-00017k-00
-	for mtd@infradead.org; Thu, 22 Feb 2001 22:56:06 +0000
-Message-ID: <006d01c09d22$8d0c0d00$010110ac@archimede>
-From: "Alessandro Staltari" <a_staltari@yahoo.it>
-To: <mtd@infradead.org>
-References: <20010221152836.A12119@fr.alcove.com>
-Subject: R: M-sys or MTD for production use ?
-Date: Thu, 22 Feb 2001 23:52:13 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 14WDV4-0003J7-00
+	for mtd@infradead.org; Fri, 23 Feb 2001 08:22:50 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3A957005.3400694E@danielind.com> 
+References: <3A957005.3400694E@danielind.com>  <30724FF712DFD2119E6200104B2448920119744A@mail1> <3A956884.2050504@brocade.com> 
+To: Vipin Malik <vmalik@danielind.com>
+Cc: Amit D Chaudhary <amitc@brocade.com>,
+    Vipin Malik <Vipin.Malik@daniel.com>,
+    "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Re: Unable to mount compressed root f/s because init_mtd() does not r egister block device! 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 23 Feb 2001 08:22:47 +0000
+Message-ID: <20729.982916567@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> From now I have to choose one solution that will be used in production
-> and I'd like people to correct my following reflexions if I made
-> some mistakes:
->
->
-> M-sys:
-> ------
->
-> - new version needs the updated firmware to work.
->
-I believe the new version requires an updated firmware image only if you
-want to boot also from hard disk.
 
-> MTD:
-> ----
->
-> - I didn't find any statement about the stability of MTD and the use in
->   a production environment.
->
-Search on the mailing list archive the replies sent to me some weeks days
-ago about this questions.
+vmalik@danielind.com said:
+>  Also, as far as reading goes, there is no real difference between the
+> mtd0 device and the block device (i.e. reading from mtd0 does not get
+> you anything extra).
 
-Regards
+Except that the block device is quite a lot of unnecessary overhead (and a 
+kernel thread, etc.). Reading directly from the MTD device rather than 
+through either the blockdevice or chardevice would be nicer. 
 
-Alessandro Staltari
+Actually, for 2.4 I'd like to be able to extract a tarball from an MTD 
+device directly into ramfs rather than ramdisk. CONFIG_BLK_DEV=n
+
+
+--
+dwmw2
 
 
 
