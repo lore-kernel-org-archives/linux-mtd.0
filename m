@@ -1,14 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Russell King <rmk@arm.linux.org.uk>
-In-Reply-To: <20050124233941.C5541@flint.arm.linux.org.uk>
-References: <20050124233941.C5541@flint.arm.linux.org.uk>
-Content-Type: text/plain
-Date: Mon, 24 Jan 2005 23:43:19 +0000
-Message-Id: <1106610200.6480.97.camel@localhost.localdomain>
+Received: from rproxy.gmail.com ([64.233.170.195])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CtEYd-0005g9-Ei
+	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 19:27:50 -0500
+Received: by rproxy.gmail.com with SMTP id r35so35051rna
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Jan 2005 16:27:46 -0800 (PST)
+Message-ID: <66f646fd05012416276839f41c@mail.gmail.com>
+Date: Tue, 25 Jan 2005 08:27:46 +0800
+From: andrew box <andr3wbox@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Fix MTD device probing... (really)
+Subject: How can i search in the linux-mtd archives
+Reply-To: andrew box <andr3wbox@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,14 +23,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-01-24 at 23:39 +0000, Russell King wrote:
-> Fix MTD device probing, trying larger numbers of chips before smaller
-> numbers of chips across the bus width.
-> 
-> This means we'll avoid misdetecting a 2 x16 array as 1 x32 if the
-> high 16-bits happen to read as zeros in the QRY area.
-
-Looks obviously correct to me. Please commit it.
-
--- 
-dwmw2
+Is there some way to search something in full archive maillists? ;D
