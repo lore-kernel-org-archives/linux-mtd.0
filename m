@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mailhost1-bcvloh.bcvloh.ameritech.net ([66.73.20.42] helo=mailhost.bcv1.ameritech.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17sQ7u-0007tL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2002 16:55:30 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <DFEAJMIABOLKNEBOPGDHOEDLCBAA.jlu@rdmcorp.com> 
-References: <DFEAJMIABOLKNEBOPGDHOEDLCBAA.jlu@rdmcorp.com> 
-To: "Jack Lu" <jlu@rdmcorp.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: about jffs2's compression and cfi->fast_prog being turn off 
-Mime-Version: 1.0
+	id 17tBNp-0005ap-00
+	for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2002 19:23:05 +0100
+Received: from rtcworks.com ([64.108.129.239])
+          by mailhost.bcv1.ameritech.net
+          (InterMail vM.4.01.02.17 201-229-119) with ESMTP
+          id <20020922182303.FACB12029.mailhost.bcv1.ameritech.net@rtcworks.com>
+          for <linux-mtd@lists.infradead.org>;
+          Sun, 22 Sep 2002 14:23:03 -0400
+Message-ID: <3D8E0A8A.E657084A@rtcworks.com>
+Date: Sun, 22 Sep 2002 13:23:06 -0500
+From: Bob Wirka <bobwirka@rtcworks.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: lilo-22.1 works with 2.4.19 kernel MTD
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Sep 2002 16:55:26 +0100
-Message-ID: <22326.1032537326@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,33 +27,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jlu@rdmcorp.com said:
->  1. With this latest jffs2, can we turn  off the compression? If can ,
-> how can we turn it? 
+Hello,
 
-Not implemented yet. Send patch -- it's quite simple :)
+I've been trying to use LILO with a Disk on Chip with no success. I've
+got a 2.4.19 kernel, and have been trying to use lilo-21.4. When booted
+from a kernel on floppy disk, the Disk on Chip was recognized; I could
+fdisk, mke2fs, mount, etc., all normally. LILO would not work, however.
+I tried the M-Systems lilo with no success (though I have used their
+lilo successfully with a 2.2.12 kernel and disk on chip).
 
->  2. If we still use the jffs2 compression after we compress the image
-> using CCITT4 Group algorithm, could it help us to reduce  the size to
-> store the compressed image into the flash memory? 
+A colleague had apparently used lilo-22.1 successfully. I tried it, and
+it works. It's available as an rpm (you'll need gfxboot.rpm, also).
+You'll find these rpms through 'rpm.bone.net'. Search for 'lilo-22*i386'
+with 'SuSE other' checked. Use the new boot.b and chain.b.
 
-It's unlikely that further compression will have any useful effect. You 
-could try telling it to attempt only 'rtime' compression, but just telling 
-it not to compress the file(s) in question would be best.
+There have been a number of posts on this list regarding the use of lilo
+with the MTD drivers; I thought some of you might be intereseted.
 
->  3. With the latest jffs2, the erase suspend is implemented for AMD
-> CFI chips, such as Am29Lv320MB? 
+Best regards,
 
-JFFS2 knows nothing of such things. The current cfi_cmdset_0002 code does 
-not support erase suspend. I've never had hardware I can test on, and 
-nobody's submitted a patch known to be working. Again, fairly simple to 
-implement this yourself.
-
-> Turnning off the cfi->fast_prog will affect the the time needed to
-> program the flahsh?
-
-It shouldn't make a lot of difference.
-
-
---
-dwmw2
+Bob Wirka
