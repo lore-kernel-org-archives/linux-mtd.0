@@ -1,48 +1,52 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JYIb-0005vi-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 10:25:21 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13JYIa-0005vc-00
-	for mtd@infradead.org; Tue, 01 Aug 2000 10:25:20 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3985C29C.8F37EBC3@colubris.com> 
-References: <3985C29C.8F37EBC3@colubris.com> 
-To: Stephane Laroche <stephane.laroche@colubris.com>
-Cc: mtd@infradead.org
-Subject: Re: Erasing more than one sector at a time? 
+	id 13Jbe1-0006KT-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 13:59:41 +0100
+Received: from [211.116.76.10] (helo=tinuviel.mizi.com)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13Jbdz-0006KM-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 13:59:39 +0100
+Received: (from tolkien@localhost)
+	by tinuviel.mizi.com (8.9.3/8.9.3) id WAA01067
+	for mtd@infradead.org; Tue, 1 Aug 2000 22:00:30 +0900
+Date: Tue, 1 Aug 2000 22:00:30 +0900
+From: Yong-iL Joh <tolkien@mizi.com>
+To: mtd@infradead.org
+Subject: if flash_size is less than megabyte
+Message-ID: <20000801220030.A1053@tinuviel.mizi.com>
+Reply-To: tolkien@mizi.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 01 Aug 2000 10:25:16 +0100
-Message-ID: <12989.965121916@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I'm working on Intel BootBlock Flash.
+if mtd->size is less than a megabyte, kernel panic. :(
 
-stephane.laroche@colubris.com said:
->  I'm wondering why the parameter validation at the start of those
-> function specifically prohibits erasing more than one sector.  Is this
-> because the interface is defined this way or is it an oversight?
+in ftl.c, here is a tiny patch.
 
-Unless I'm smoking crack, the CFI command set code _does_ support erases 
-longer than one erase block. The three checks which could cause it to 
-return EINVAL are:
-	1. start address must be erase-block-aligned
-	2. length needs to be a multiple of erase block size.
-	3. start + length must not exceed the _total_ size of the device.
+===================================================================
+RCS file: /exports/misc/embedded/cvs/linux/drivers/mtd/ftl.c,v
+retrieving revision 1.3
+diff -r1.3 ftl.c
+266c266
+<     loff_t offset;
+---
+>     loff_t offset, max_offset;
+268a269
+>     max_offset = (0x100000<part->mtd->size)?0x100000:part->mtd->size;
+271c272
+<        offset < 0x100000;
+---
+>        offset < max_offset;
+283c284
+<     if (offset == 0x100000) {
+---
+>     if (offset == max_offset) {
 
-
-The DiskOnChip code is different, but that's been/being fixed - depending 
-on whether the patch has hit the CVS tree yet or not.
-
-
-
-
---
-dwmw2
-
-
+-- 
+Joh, Yong-iL
+E-mail: tolkien@nownuri.net tolkien@mizi.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
