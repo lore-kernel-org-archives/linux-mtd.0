@@ -1,15 +1,31 @@
-Received: from [209.87.241.202] (helo=[10.0.1.46])
-	by pentafluge.infradead.org with esmtpsa (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9XDJ-0000AO-4v
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 23:37:11 +0000
-Message-ID: <4230DA22.8070305@netwinder.org>
-Date: Thu, 10 Mar 2005 18:37:06 -0500
-From: Ralph Siemsen <ralphs@netwinder.org>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Autodetection problems
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D9Xe9-0006pT-Vx
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 19:04:54 -0500
+Received: from dsl-213-023-243-193.arcor-ip.net
+	([213.23.243.193]:33208 helo=zappa ident=mail)
+	by mail.ku-gbr.de with asmtp (Exim 4.24 #1 (Debian))
+	id 1D9Xe7-0001Yh-FJ
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Mar 2005 01:04:51 +0100
+Received: from [10.10.0.17] (helo=sexmachine.doom)
+	by zappa with esmtp (Exim 3.36 #1 (Debian)) id 1D9Xe6-0003eR-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Mar 2005 01:04:50 +0100
+Received: from konsti by sexmachine.doom with local (Exim 4.43)
+	id 1D9Xe5-0002fQ-FY
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 01:04:49 +0100
+Resent-Message-ID: <20050311000449.GD10058@ku-gbr.de>
+Date: Fri, 11 Mar 2005 00:18:51 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Message-ID: <20050310231850.GA10058@ku-gbr.de>
+References: <20050310164848.GB7018@synertronixx3>
+	<JPEALJAFNGDDLOPNDIEECEJFDBAA.joakim.tjernlund@lumentis.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <JPEALJAFNGDDLOPNDIEECEJFDBAA.joakim.tjernlund@lumentis.se>
+Cc: 
+Subject: Re: jffs2 with sync burst mode
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +35,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm using kernel 2.6.10 on a PPC440GX with TWO 32MiB Intel J-series 
-Strataflash.  These are x16 devices and they are arranged in parallel 
-across the 32-bit data bus (interleave=2).  They share a common chip 
-select and are mapped at the top of the address space.
+Am 2005-03-10 18:01 +0100 schrieb Joakim Tjernlund:
 
-With mostly default options to the kernel, the MTD autodetection logic 
-performs two calls to do_cfi_probe() at offset 0x000000 and 0x2000000, 
-and then proclaims, erroneously:
-    Found 1 x32 devices at 0x0 in 32-bit bank
-Attempts to use the flash in this state fail miserably (tons of block 
-bitmap errors, cannot access beyond 32MiB, etc).
+> I think there is old data/garbage in the CPU:s cache thats causing your problem.
+> Do you invalidate the data cache before you burst copy data from flash?
 
-Thanks to suggestion by ThomasG, I switched on the advanced options, 
-selected _only_ 32-bit buswidth, and _only_ interleave of 2.  Now the 
-kernel reports what I expected:
-    Found 2 x16 devices at 0x0 in 32-bit bank
-and everything works like it a charm.
+I drunk a couple of beer after several hours of hacking onto this and I
+think in the same direction as you at the moument.
+If you followed the thread in the mailing list you see my debugging
+printk effords, which show that memcpy() reads the wrong line after page
+boundary to the next line.
+I thought first that page wrap mode of sync burst mode is freaking out,
+but source and destiantion of memcpy() is in RAM.
 
-Though I'd mention this in case anyone encounters similar situation. 
-I'm not sure if the autodetection code is meant to work in my situation...
+So DataCache is the problem to check up. I don't know yet if _I_
+invalidate cache before bursting. I should... or jffs2 or mtd-tools...
 
-PS. I also learned that having jffs2 debug level set at 2 causes 
-considerably slowdown - doing an "ls" was taking 11 seconds.  Putting 
-debug back to 0 makes everything work quickly as you'd expect.
+May I copy this mail into the ml, since you addressed me without it?
 
-I'm currently not subscribed to the list, please cc: any replies!
--Ralph
+> Whats your CPU?
+
+Motorla ARM9 core implemented on their i.MX architecture.
+
+Regards, Konsti
+
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
