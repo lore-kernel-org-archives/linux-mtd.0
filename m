@@ -1,19 +1,18 @@
-Received: from rwcrmhc51.attbi.com ([204.127.198.38])
+Received: from dsl-205-210-52-251.kingston.net ([205.210.52.251] helo=linux.interlinx.bc.ca)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189lt1-0005Sz-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 12:35:51 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: eylon eyal <ayalon@tadlys.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: GRUB on DoC Millennium/2000 - Instructions (Revised)  problem
-Date: Thu, 7 Nov 2002 08:05:02 -0500
-References: <200211071020.16625.ayalon@tadlys.com>
-In-Reply-To: <200211071020.16625.ayalon@tadlys.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20021107130540.TIEL13074.rwcrmhc51.attbi.com@there>
+	id 189maW-0005Ye-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 13:20:48 +0000
+Date: Thu, 7 Nov 2002 08:50:53 -0500
+To: linux-mtd@lists.infradead.org
+Subject: Re: MTD Config.in items not escaped by bus availability
+Message-ID: <20021107135052.GA13914@pc.ilinx>
+References: <20021106204530.GE12743@pc.ilinx> <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <6557.1036
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
+Content-Disposition: inline
+In-Reply-To: <6557.1036656036@passion.cambridge.redhat.com>
+From: "Brian J. Murrell" <e88cd5ffd87e620fdc30b3e6db510d03@interlinx.bc.ca>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,24 +24,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-eylon eyal wrote:
-> i understand that this patch should be under directory
-> /usr/src/mtd/patches/
->
-> but the last patch i find there is grub-2002-07-29-doc.patch
-> were can i get the correct patch? or is it ok to use this patch?
+--ibTvN161/egqYuK8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This patch has not been uploaded to the MTD cvs yet.  I apologize -- I will 
-try to get to that soon.
+On Thu, Nov 07, 2002 at 08:00:36AM +0000, David Woodhouse wrote:
+>=20
+> What happens when someone makes a mapping driver for UML which mmaps part=
+=20
+> of /dev/kmem from the host?
 
-The 10-08 grub patch is currently available in two places:
+I hope I am understanding the question/scenario you are proposing, but
+the answer seems to simple, so I am sure I am missing something.
 
-http://savannah.gnu.org/bugs/?func=detailbug&bug_id=505&group_id=68
-http://lists.infradead.org/pipermail/linux-mtd/2002-October/006150.html
+When/if someone makes that UML mapping driver, it would have it's
+CONFIG_MTD_UML (or whatever they will call it) outside of the
+CONFIG_MEMORY bus protected portions of the MTD Config.in files.
 
-Please let us know how things go.   Any feedback on the patch and/or the 
-instructions is welcome.
+b.
 
-Thanks,
+--=20
+Brian J. Murrell
 
-Mark
+--ibTvN161/egqYuK8
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE9ym+8l3EQlGLyuXARAr5XAKCTh9Pa718B6NFfQPvev3ApxnoyoACgooOo
+98hStMrx8tlHvTzghh7gqSo=
+=MGzG
+-----END PGP SIGNATURE-----
+
+--ibTvN161/egqYuK8--
