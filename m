@@ -1,18 +1,17 @@
-Received: from natpool.ud.com ([65.112.245.211] helo=jikku-lt.corp.ud.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16njP2-0005Vm-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 16:57:32 +0000
-Received: from infinity-studios.com (localhost.localdomain [127.0.0.1])
-	by jikku-lt.corp.ud.com (8.11.6/8.11.6) with ESMTP id g2KGuTP12011
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 10:56:30 -0600
-Message-ID: <3C98BF3D.7030006@infinity-studios.com>
-Date: Wed, 20 Mar 2002 10:56:29 -0600
-From: Dzuy Nguyen <dzuy@infinity-studios.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: mtd device clarification
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 16njhK-0005Xw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 17:16:26 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <001201c1cf6b$64df4a50$be04010a@MTG016> 
+References: <001201c1cf6b$64df4a50$be04010a@MTG016> 
+To: "Sebastian" <sebastian.vaitus@masstechgroup.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: No space left on device 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 20 Mar 2002 17:27:33 +0000
+Message-ID: <8945.1016645253@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Can someone clarify what these device files are:
+sebastian.vaitus@masstechgroup.com said:
+>  I was able to create a JFFS2 image with mkfs.jffs2, erase the flash,
+> and then copy the image to the flash ( about 200 bytes). I can mount
+> the mtdblock and browse the files on the JFFS2 file system, but I
+> cannot make any changes to the existing files or add new ones.
+> Everytime I try to modify it I get the 'No space left on device'
+> error.
 
-/dev/mtd*
-/dev/mtdblock*
-/dev/nftla*
+Please compile with CONFIG_JFFS2_FS_DEBUG=1, set the console loglevel to 9 
+so that you see all the KERN_DEBUG messages, and log the output over a 
+serial console while you reproduce this and also run 'df'. 
 
-I have a 16MB DoC.  My plan is to store a compressed root FS on the DoC 
-flash and run the OS from
-ramdisk.  I've erase the entire DoC, nftl_format the latter half of the 
-DoC, make an ext2 FS on it,
-and copy the kernel there.  I put my compressed root FS onto the flash 
-section (first 8MB) with a
-1024 offset:
-
-# dd if=rootfs.gz of=/dev/mtd0 bs=1k seek=1024
-
-I then tell the kernel where to get the rootfs
-
-# rdev -r <kernel> 17408
-# rdev <kernel> /dev/<which device file here?>
-
-I've tried /dev/ramdisk, /dev/nftla and the kernel complains that it 
-"Couldn't find valid RAM disk image
-at 1024".
-I've tried /dev/mtdblock0 (as in HOWTO) and I get I/O error from 
-end_request.
-
-I've read the bootdisk HOWTO (for /dev/fd0) and I think I can do the 
-same for the DoC if I can just tell
-the kernel where to get the compressed root FS.  Thanks for any advice.
-
-Dzuy
+--
+dwmw2
