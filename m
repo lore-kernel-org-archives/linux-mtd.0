@@ -1,29 +1,51 @@
-From: ahaas@airmail.net (Art Haas)
-Date: Thu, 27 Feb 2003 15:46:46 -0600
-Subject: [PATCH] C99 initializers for drivers/mtd files
-In-Reply-To: <20030227194424.GC29233@wohnheim.fh-wedel.de>
-References: <20030226205334.GB8966@debian> <20030227194424.GC29233@wohnheim.fh-wedel.de>
-Message-ID: <20030227214646.GD8116@debian>
+From: vijoy@nortelnetworks.com (Vijoy Pandey)
+Date: Fri, 28 Feb 2003 12:56:11 -0800
+Subject: AMD 29LV640D
+Message-ID: <3E5FCCEB.19ACA1EE@nortelnetworks.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Thu, Feb 27, 2003 at 08:44:24PM +0100, J?rn Engel wrote:
-> On Wed, 26 February 2003 14:53:34 -0600, Art Haas wrote:
-> > 
-> > Here is a set of patches for converting files in drivers/mtd to use C99
-> > initializers. The patches are against the current BK.
-> 
-> Looks trivial, although a bit lengthy. Do you have cvs commit access?
-> If not, but me next Monday (got a cold right now) if noone committed
-> it before.
-> 
+Folks,
 
-No, I don't have cvs access, so I can't commit any of the patches I've
-mailed.
+Has anyone used the mtd device with the AMD
+LV640D chips? They are 64Mbit (4Mx16) chips
+and are CFI-compatible.
 
-Art Haas
+I have a layout where 4 of these chips have
+been arranged over a bus width of 64bits.
 
--- 
-They that can give up essential liberty to obtain a little temporary safety
-deserve neither liberty nor safety.
- -- Benjamin Franklin, Historical Review of Pennsylvania, 1759
+I have tried the following..
+
+MTD RAM/ROM Config section:
+16bit-buswidth
+4 chip interleaving
+
+MAP section:
+Buswidth in octets = 2 (Tried 8, but got "unsupported")
+
+
+Using the above, all the modules (physmap
+cfi_probe map_rom chipreg gen_probe cfi_cmdset_0002 
+mtdchar mtdcore, in reverse order) get inserted,
+but I get a complaint of:
+CFI: Found no Physically mapped flash device at location zero
+Can't locate module jedec_probe
+
+So, on a whim, I inserted the following in reverse
+order - physmap jedec_probe cfi_probe map_rom chipreg 
+gen_probe cfi_cmdset_0002 mtdchar mtdcore.
+
+Again, everything gets inserted fine, but
+I get "CFI: Found no Physically mapped flash device at 
+location zero", and "JEDEC: Found no Physically mapped 
+flash device at location zero".
+
+*BUT*, now I am able to read from /dev/mtd0 anywhere
+in the flash address space. While trying to write, I
+get a "dd: cannot open /dev/mtd0: permission denied",
+even though I am root, and the permissions are fine.
+
+Any ideas as to what might be going on?
+
+Thanks a bunch,
+-vijoy
