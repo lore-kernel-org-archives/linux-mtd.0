@@ -1,19 +1,24 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CCG4o-00059v-8R
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 07:23:25 -0400
-Message-ID: <41594975.7060902@yandex.ru>
-Date: Tue, 28 Sep 2004 15:22:29 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: =?ISO-8859-2?Q?Kornel_Mas=B3owski?= <maslow@pf.pl>
-References: <000701c4a4c3$822d6e90$0b0aa8c0@maslow>
-	<415905E4.1020601@yandex.ru>
-In-Reply-To: <415905E4.1020601@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: quoted-printable
+	id 1CCGsx-0005Q7-71
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 08:15:12 -0400
+Date: Tue, 28 Sep 2004 13:15:07 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+Message-ID: <20040928121507.GE22627@home.fluff.org>
+References: <20040920234450.GA17169@home.fluff.org>
+	<m3brfxycuf.fsf@maxwell.lnxi.com>
+	<20040923210150.GF25491@home.fluff.org>
+	<m3r7ossm5q.fsf@maxwell.lnxi.com>
+	<m3pt4cqohc.fsf_-_@maxwell.lnxi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m3pt4cqohc.fsf_-_@maxwell.lnxi.com>
+Sender: Ben Dooks <ben@fluff.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2
+Subject: Re: [CFT] FIX CFI cmdset 0002 for x16 and x32 devices.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Also, the direntry node and probably the root directory inode node will=20
-also add 1-2 NAND pages. Thus, 24-27 pages if compression is disabled...
+On Thu, Sep 23, 2004 at 10:29:03PM -0600, Eric W. Biederman wrote:
+> ebiederman@lnxi.com (Eric W. Biederman) writes:
+> 
+> > So it looks like the TODO item is to just look up what cfi standard
+> > says are the unlock addresses for cfi command set 2. And make certain
+> > the cfi hard codes are correct and nothing should be broken.
+> 
+> Looking at cfi specification and the AMD/Fujitsu specific
+> portion of it.  This is what the CFI address assignment code
+> needs to look like:
+> 
+> 		/* Set the default CFI lock/unlock addresses */
+> 		cfi->addr_unlock1 = 0x555;
+> 		cfi->addr_unlock2 = 0x2aa;
+> 		/* Modify the unlock address if we are in compatibility mode */
+> 		if (	/* x16 in x8 mode */
+> 			((cfi->device_type == CFI_DEVICETYPE_X8) && 
+> 				(cfi->cfiq->InterfaceDesc == 2)) ||
+> 			/* x32 in x16 mode */
+> 			((cfi->device_type == CFI_DEVICETYPE_X16) &&
+> 				(cfi->cfiq->InterfaceDesc == 4))) 
+> 		{
+> 			cfi->addr_unlock1 = 0xaaa;
+> 			cfi->addr_unlock2 = 0x555;
+> 		}
+> 
+> 
+> The previous code to handle this was quite bogus.  Unless I completely
+> cannot read the code.
+> 
+> I have committed this change and corresponding change to use
+> cfi_send_gen_cmd.
+> 
+> Will people please test this?
 
-Artem B. Bityuckiy wrote:
-> Kornel Mas=B3owski wrote:
->=20
->> I'm not sure how jffs2 works.
->> I have jffs2 on  8bit NAND flash (page 512 B).
->> I want to append record 32B to the file on flash which current size is=
-=20
->> 10kB.
->> Flash device is almost empty.
->> How many pages will be written by jffs2?
->>
->>
-> It is hard to calculate because of compression. Moreover, if your file =
+I've just had a chance to test this on my EB2410ITX (BAST) and it
+seems to work (erased and then zeroed the spare partition). I'll
+try and bootloader upgraded with it later.
 
-> was created by
-> seek to "nowhere" it will cosist of only one "hole" node and fit into=20
-> one NAND page only.
->=20
-> If there is no compression, the exact number of pages also depends on=20
-> how your file was created. Also, there is some platform dependency -=20
-> does you platform has 4K RAM pages? - but this is minor since most=20
-> platforms have 4K RAM pages.
->=20
-> If your 10K file was created by one go and there is no compression, the=
-=20
-> file will consist of 3 JFFS2 nodes (4K + 4K + 2K) and fit into 9 + 9 + =
-5=20
-> =3D 23 NAND pages (4K data =3D 4 NAND pages and one is needed for node =
 
-> header; the rest of page won't be used since the next node isn't fit to=
-=20
-> it).
->=20
-> When you append 32 bytes, one more page will be used (24 total). But if=
-=20
-> your append just after 10K file creation (i.e, the JFFS2 write buffer=20
-> hasn't yet been written to the NAND flash media), the 32B appendix node=
-=20
-> will be added to the 23-th page and there will be only 23 used pages.
->=20
-> If the compression is on, there ought to be fewer used NAND pages.
->=20
-> Ok, this is theory (I didn't check) and my own understanding of how=20
-> JFFS2 works. I might make mistakes :-)
->=20
-> You may check this by creating/appending your file and then calculating=
-=20
-> the numbur of used pages. The nanddump utility may be used.
->=20
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
---=20
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+  'a smiley only costs 4 bytes'
