@@ -1,40 +1,60 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12sqsO-0002Wo-00
-	for mtd-list@infradead.org; Fri, 19 May 2000 18:47:56 +0100
-Received: from www.softsys.co.at
-	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 12sqsM-0002Wi-00
-	for mtd@infradead.org; Fri, 19 May 2000 18:47:55 +0100
-Message-ID: <01BFC1CB.35B15840@smithwicks.softsys.co.at>
-From: Erwin Authried <eauth@softsys.co.at>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: more 2.0 compatibility problems
-Date: Fri, 19 May 2000 19:48:30 +0200
+	id 12t5Nh-0003xL-00
+	for mtd-list@infradead.org; Sat, 20 May 2000 10:17:13 +0100
+Received: from brie.cendio.se ([193.180.23.29] ident=root)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 12t5Nf-0003xF-00
+	for mtd@infradead.org; Sat, 20 May 2000 10:17:12 +0100
+Date: Sat, 20 May 2000 11:17:09 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: Alexander Viro <aviro@redhat.com>
+cc: Bjorn Wesen <bjorn.wesen@axis.com>, jffs-dev@axis.com, mtd@infradead.org
+Subject: Re: rename semantics
+In-Reply-To: <Pine.LNX.4.10.10005191236020.684-100000@aviro.devel.redhat.com>
+Message-ID: <Pine.LNX.3.96.1000520111028.10527A-100000@biffen.cendio.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I have tried to use compatmac.h from 2.3.99 to compile for 2.0, without success.
-Some definitions in this file are simply wrong.
+On Fri, 19 May 2000, Alexander Viro wrote:
+> On Fri, 19 May 2000, Alexander Larsson wrote:
+> > The 2.2 version will be merged into the MTD cvs tree.=20
+> > S=E9bastien C=F4t=E9 <scote1@matrox.com> is working on it. The change=
+s are
+> > sufficiently small to warrant #ifdef's.=20
+>=20
+> Notice that 2.3 and 2.2 versions will seriously diverge in interp.c too=
+ -
+> current code maintains the heck of redundant stuff that already belongs
+> to dcache. And I'm not too sure that cleanups in that area will be port=
+able
+> to 2.2
 
-Further problems:
-the functions end_that_request_first and end_that_request_last are missing.
-I don't know if they can simply be copied from some recent kernel.
+Ahh, I see. I didn't think about that, but it would be much better to use
+the dcache for the in-memory representation of the filesystem. That chang=
+e
+will surely make a lot of changes in interp.c, but it will mean less code=
+,
+use less memory, and will (i think) mean that we will not need to keep th=
+e
+entire jffs meta-data in memory (parts of it is cached, the rest read on
+demand into the dcache from the journal).
 
-David's definition for __MOD_INC_USE_COUNT and __MOD_DEC_USE_COUNT in
-include/linux/mtd/compatmac.h doesn't work, the usage count in 2.0 kernels is 
-implemented in a different way. Is there an easy way to implement this functionality
-for 2.0 kernels? 
+That will be a good change, and with the threaded dcache (and other
+2.2->2.3 dcache changes) it might mean that 2.2 compatibility will be
+hard.
 
-Regarding the userspace copy problem in mtdchar.c:
-If a kernel buffer is used to hold the data for flash writes, may there be problems
-with some flash hardware if the write is splitted up into small chunks?
+Anyway, I will try to get a well-working version of the current code
+before i do any dcache stuff. That version will probably support 2.2 and
+2.3/4, and the interp.c changes are small (mainly bugfixes and MTD
+support) so that the old inode.c with some small MTD changes could
+probably be used for 2.0 support.
 
--Erwin
+/ Alex
+
 
 
 
