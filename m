@@ -1,37 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pmvK-00028y-00
-	for mtd-list@infradead.org; Wed, 18 Apr 2001 09:02:50 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14pmvJ-00028s-00
-	for mtd@infradead.org; Wed, 18 Apr 2001 09:02:49 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3ADCDA29.5E167060@echostar.com> 
-References: <3ADCDA29.5E167060@echostar.com>  <3ADC7273.DB541A9C@echostar.com> <10503.987545517@redhat.com> 
-To: ian.nelson@echostar.com
-Cc: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: A pair of stupid questions, I hope 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 18 Apr 2001 09:02:42 +0100
-Message-ID: <13711.987580962@redhat.com>
+	id 14ppNR-0002t8-00
+	for mtd-list@infradead.org; Wed, 18 Apr 2001 11:40:01 +0100
+From: "Alex Lennon" <ajlennon@arcom.co.uk>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>,
+	<bmoyle@mvista.com>
+Subject: RE: Arcom SBC-MediaGX name change 
+Date: Wed, 18 Apr 2001 11:38:22 +0100
+Message-ID: <NEBBKJHOALKOLCFPGELEKEFECJAA.ajlennon@arcom.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <20535.987515506@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David,
 
-ian.nelson@echostar.com said:
->  I'll ask the guys who need it.  I suspect the proposal would be an
-> ISLOCKED ioctl that takes a region as an argument and returns a 0 or
-> 1.   I'm a flash novice though, is this something that should go in to
-> one of those region structures? 
+>>  The latest we heard from them was that we should use the new name.
+>> So, the question is should we update the MTD driver to reflect the new
+>> name? 
 
-I was thinking of the internal API - what method do we add to the struct 
-mtd_info, and how generic can we make it? Aren't there other similar 
-per-block data which we may want to query on some chips?
+>OK, as it's not yet in the official kernel, I'll change it when I shuffle
+>the directories around. Which ought to be quite soon.
 
---
-dwmw2
+Thanks - appreciated; given that the suggested name is SBC-GXx or similar
+(both our SBC-GXm and SBC-GX1 boards are supported through this driver)
+
+Alex
 
 
 
