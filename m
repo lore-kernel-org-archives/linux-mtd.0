@@ -1,17 +1,15 @@
-Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
+Received: from f120.pav1.hotmail.com ([64.4.31.120] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 187oOy-0006vt-00
-	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 02:52:44 +0000
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="ISO-8859-1"
-MIME-Version: 1.0
-Date: Sat, 2 Nov 2002 03:22:42 UT
-From: "Jeffrey Lim" <jfsworld@fastmail.fm>
-To: "Piotr Trojanek" <ptroja@elproma.com.pl>,
-	linux-mtd@lists.infradead.org
-Subject: Re: how to compile CVS stuff
-Message-Id: <20021102032242.DEED82FD17@server4.fastmail.fm>
+	id 187uUn-0007aH-00
+	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 09:23:09 +0000
+From: "vijay vijay" <vijay_peshkar@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: vijay.peshkar@wipro.com
+Subject: mtd2 partition mapping on mtd1?...
+Date: Sat, 02 Nov 2002 09:52:47 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F120gLEbWm5zHXJ6uCu0001bb1e@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,37 +21,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Could you read all the READMEs?
-and please list down exactly the steps that you took, and what happened.
+Hi Friends,
 
--jf
+Have added 3 partitions in mtd. The root filesystem is cramfs type.
+Since it was not being located by default, hardcoded cramfs_read
+to return the rootfs addr. Now the target is coming up..Am getting
+below results too...
 
-On Thu, 31 Oct 2002 16:55:04 +0100, "Piotr Trojanek"
-<ptroja@elproma.com.pl> said:
-> Hello!
-> 
-> I work with DOC with nftl driver from vanilla 2.4.19.
-> Now I wan't to take fresh stuff from CVS, but I'm unable to comile it.
-> I was trying many ways, but can you give me step-by-step instruct how to
-> do this? When I just copy things into kernel tree, it won't work.
-> 
-> And one more question:
-> can I make 2 partitions on my DOC: nftla[12] and put bootloader stuff
-> and bzImage on first, with JFFS2 on second?
-> JFFS2 needs mtdblock device, and whole chip is seen as mtd0.
-> 
-> or maybe I miss something?:)
-> 
-> -- 
-> Piotr Trojanek
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 000c0000 00020000 "boot firmware + kernel"
+mtd1: 00200000 00020000 "cramfs partition"
+mtd2: 00100000 00020000 "test partition"
 
- 
---
-  "It's an extraordinary world!" - jfsworld <at> fastmail.fm
- 
- 
+# mount
+/dev/root on / type cramfs (rw)
+/proc on /proc type proc (rw)
+ramfs on /var type ramfs (rw)
+
+Now, "cat /dev/mtd1" and "cat /dev/mtd2" are both fetching
+same data. How's that?. A dd to /dev/mtd2 is going as..
+
+# busybox dd if=mtd2fs.bin bs=94208 of=/dev/mtd2 count=1
+MTD_open
+MTD_write
+vijay mtd_write (Í=E
+(vijay) in physmap_write32(data=0xaa00aa, adr=0x1554)
+(vijay) in physmap_write32(data=0x550055, adr=0xaa8)
+(vijay) in physmap_write32(data=0x200020, adr=0x1554)
+(vijay) in physmap_write32(data=0xa000a0, adr=0x0)
+(vijay) in physmap_write32(data=0x28cd3d45, adr=0x400000)
+(vijay) in physmap_read32(0xc3ba3000)
+(vijay) in physmap_read32(0xc3ba3000)
+(vijay) in physmap_read32(0xc3ba3000)
+(vijay) in physmap_read32(0xc3ba3000)
+:
+:
+:
+(vijay) in physmap_read32(0xc3ba3000)
+(vijay) in physmap_read32(0xc3ba3000)
+(vijay) in physmap_read32(0xc3ba3000)
+Last[3] is d726c2a6, datum is 28cd3d45
+(vijay) in physmap_write32(data=0xf000f0, adr=0x0)
+(vijay) in physmap_write32(data=0x900090, adr=0x0)
+(vijay) in physmap_write32(data=0x0, adr=0x0)
+dd: /dev/mtd2: Input/output error
+MTD_close
+
+On "cat /dev/mtd2", am still seeing old data(as on mtd1)?.
+
+Any suggestions on what's going wrong here?..
+
+Thanks and Regards,
+Vijay
+
+
+_________________________________________________________________
+Surf the Web without missing calls! Get MSN Broadband.  
+http://resourcecenter.msn.com/access/plans/freeactivation.asp
