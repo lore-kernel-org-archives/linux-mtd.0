@@ -1,15 +1,14 @@
-Received: from [202.108.44.230] (helo=163.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B1GVD-000483-Rw
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 03:04:56 +0000
-MIME-Version: 1.0
-Message-ID: <404FD74C.000051.05799@bj230.163.com>
-Date: Thu, 11 Mar 2004 11:04:44 +0800 (CST)
-From: "hit_leeh" <hit_leeh@163.com>
+Received: from bay7-f78.bay7.hotmail.com ([64.4.11.78] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B1MCe-0004mM-G9
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 09:10:08 +0000
+From: "liu zixing" <liuzixing@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gb2312"
-Subject: why can not ioremap?
+Date: Thu, 11 Mar 2004 17:09:41 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY7-F78Z0By6mGrV6R0003f439@hotmail.com>
+Subject: ReadDOC and WriteDOC error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +18,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+hello, would you please help me:
+    I use a DiskOnChip 2000 (MD2202-D32)  on a XScale IXP425 board.
+    There is one  8M flash which is selected by CS0, 
+     and  one DiskOnChip I mention above which is  selected by CS1.
+     A linux-2.4.21-rmk1-ds1 has worked normally which is booted by redboot 
+burned in 8M flash, 
+and now I try to make linux recognize the DiskOnChip.
+    I read the Document mtd-jffs-HOWTO.txt and  make the kernel config as:
+    CONFIG_MTD=y
+    CONFIG_MTD_DEBUG=y
+    CONFIG_MTD_DEBUG_VERBOSE=3
+    CONFIG_NFTL=m
+    CONFIG_NFTL_RW=y
+    CONFIG_MTD_DOC2000=m
+    CONFIG_MTD_NAND=m
+    CONFIG_MTD_NAND_IDS=m,
+but I did not patch the kernel , because the document says 2.4 kernel has 
+already supported DOC.
+    
+    In doc2000.h , I make changes as:
+   #define ReadDOC_(adr, reg)      ((unsigned char)(*(__u32 *)(((unsigned 
+long)adr)+((reg)<<1))))
+   #define WriteDOC_(d, adr, reg)  do{ *(__u32 *)(((unsigned 
+long)adr)+((reg)<<1)) = (__u32)d; wmb();} while(0)
+   because we connect SA_A1 ->DOC_A0 ...SA_A13->DOC_A12.
+   In docprobe.c , I make changes as :
+  static unsigned long __initdata doc_locations[] = {
+     #if defined(__arm__)
+	0xf1000000,
+     ...
+     #endif
+    } , 
+     because CS1 virtual base address is 0xf1000000.
 
-SSBhbSBuZXd1c2VyIGZvciBqZmZzMi4gTm93IEkgaGF2ZSBhIHF1ZXN0aW9uICxteSBqZmZz
-MiBjYW4gbm90IHdvcmsgY29ycmVjdGx5LiBJIHNob3cgdGhlIGluZm9ybWF0aW9uIGluIHRo
-ZSBzdGFydGluZyBwcm9jZWR1cmUgb2YgbXkgc3lzdGVtLg0KDQogICAgICAgIExpbnV4IHZl
-cnNpb24gMi40LjE3LXVjMCAoQWRtaW5pc3RyYXRvckBMSUhVQSkgKGdjYyB2ZXJzaW9uIDIu
-OTUuMyAyMDAxMDMxNSAocmVsDQplYXNlKShDb2xkRmlyZSBwYXRjaGVzIC0gMjAwMTAzMTgg
-ZnJvbSBodHRwOi8vZmlkZGVzLm5ldC9jb2xkZmlyZS8pKC1tc2VwLWRhdGEgcA0KYXRjaGVz
-KSkgIzQ2MCBUaHUgTWFyIDExIDEwOjE2OjIzIDIwMDQNClByb2Nlc3NvcjogTWljZXRlayBT
-M0M0NEIwIHJldmlzaW9uIDYNCkFyY2hpdGVjdHVyZTogRVY0NEIwDQpPbiBub2RlIDAgdG90
-YWxwYWdlczogMjA0OA0Kem9uZSgwKTogMCBwYWdlcy4NCnpvbmUoMSk6IDIwNDggcGFnZXMu
-DQp6b25lKDIpOiAwIHBhZ2VzLg0KS2VybmVsIGNvbW1hbmQgbGluZTogcm9vdD0vZGV2L3Jv
-bTANCkNvbnNvbGU6IGNvbG91ciBkdW1teSBkZXZpY2UgODB4MzANCkNhbGlicmF0aW5nIGRl
-bGF5IGxvb3AuLi4gNC4yMiBCb2dvTUlQUw0KTWVtb3J5OiA4TUIgPSA4TUIgdG90YWwNCk1l
-bW9yeTogNTY4OEtCIGF2YWlsYWJsZSAoMjA5MEsgY29kZSwgMjA1SyBkYXRhLCA2MEsgaW5p
-dCkNCkRlbnRyeS1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEwMjQgKG9yZGVyOiAxLCA4
-MTkyIGJ5dGVzKQ0KSW5vZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA1MTIgKG9yZGVy
-OiAwLCA0MDk2IGJ5dGVzKQ0KTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA1MTIg
-KG9yZGVyOiAwLCA0MDk2IGJ5dGVzKQ0KQnVmZmVyLWNhY2hlIGhhc2ggdGFibGUgZW50cmll
-czogMTAyNCAob3JkZXI6IDAsIDQwOTYgYnl0ZXMpDQpQYWdlLWNhY2hlIGhhc2ggdGFibGUg
-ZW50cmllczogMjA0OCAob3JkZXI6IDEsIDgxOTIgYnl0ZXMpDQpQT1NJWCBjb25mb3JtYW5j
-ZSB0ZXN0aW5nIGJ5IFVOSUZJWA0KTGludXggTkVUNC4wIGZvciBMaW51eCAyLjQNCkJhc2Vk
-IHVwb24gU3dhbnNlYSBVbml2ZXJzaXR5IENvbXB1dGVyIFNvY2lldHkgTkVUMy4wMzkNCklu
-aXRpYWxpemluZyBSVCBuZXRsaW5rIHNvY2tldA0KU3RhcnRpbmcga3N3YXBkDQpKRkZTMiB2
-ZXJzaW9uIDIuMS4gKEMpIDIwMDEsIDIwMDIgUmVkIEhhdCwgSW5jLiwgZGVzaWduZWQgYnkg
-QXhpcyBDb21tdW5pY2F0aW9ucyBBQi4NCn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn53aGV0aGVyIGl0IG1lYW5zIGpmZnMyIGJlZ2luIHRvIHdv
-cms/IA0KQ29uc29sZTogc3dpdGNoaW5nIHRvIG1vbm8gZnJhbWUgYnVmZmVyIGRldmljZSAy
-MHgzMA0KRVY0NEIwSUkgU2VyaWFsIGRyaXZlciB2ZXJzaW9uIDEuMTAgKDIwMDMtMDEtMTUp
-IHdpdGggbm8gc2VyaWFsIG9wdGlvbnMgZW5hYmxlZA0KdHR5UzAwIGF0IDB4MWQwMDAwMCAo
-aXJxID0gNykgaXMgYSBTM0M0NEIwDQp0dHlTMDEgYXQgMHgxZDA0MDAwIChpcnEgPSA2KSBp
-cyBhIFMzQzQ0QjANCkVWNDRCMElJIFVTQiBkcml2ZXIgdjEuMCAoMjAwMy0wMS0wOSkgUWlu
-d2VpLCBNSUNFVEVLIFNoYW5naGFpDQpFVjQ0QjBJSSBsMyBBZGFwdGVyIEluaXRpYWxpemVk
-DQpFVjQ0QjBJSSBTb3VuZCBkcml2ZXIgdjEuMCAoMjAwMy0wMS0yMikgUWlud2VpLCBNSUNF
-VEVLIFNoYW5naGFpDQpibG9jazogNjQgc2xvdHMgcGVyIHF1ZXVlLCBiYXRjaD0xNg0KUkFN
-RElTSyBkcml2ZXIgaW5pdGlhbGl6ZWQ6IDE2IFJBTSBkaXNrcyBvZiAxMDI0SyBzaXplIDEw
-MjQgYmxvY2tzaXplDQpCbGttZW0gY29weXJpZ2h0IDE5OTgsMTk5OSBELiBKZWZmIERpb25u
-ZQ0KQmxrbWVtIGNvcHlyaWdodCAxOTk4IEtlbm5ldGggQWxiYW5vd3NraQ0KQmxrbWVtIDEg
-ZGlzayBpbWFnZXM6DQowOiBDMTA5Q0MwLUMyMjE4QkYgW1ZJUlRVQUwgQzEwOUNDMC1DMjIx
-OEJGXSAoUk8pDQpFVjQ0QjAgZXRoOiBFcnJvciAtNSByZWdpc3RlcmluZyBkZXZpY2UgImV0
-aDAiDQptNDRiMCBmbGFzaCBkZXZpY2U6IDIwMDAwMCBhdCAwDQpGYWlsZWQgdG8gaW9yZW1h
-cA0Kfn5+fn5+fn5+fn5+fn5+fn53aHkgY2FuIG5vdCBpb3JlbWFwLEkgZG9uJ3Qga25vdyB0
-aGUgcmVhc29uLg0KDQpUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbi4NCn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KzfjS11ZJUMrVt9HTys/kwb3W
-3MTqs6zWtdPFu90hIML6MdT5NqOho6GhoSAgICAgICAgICBodHRwOi8vdmlwLjE2My5jb20K
-CtbQufrX7rTztcTD4rfR08rP5NTatcjE4yAyNdXXv9W85DTV17i9vP6joaGhoaGhoaGhoaEg
-aHR0cDovL21haWwuMTYzLmNvbQoKteO798340tfF3cXdvqrPss7ez94gyKvD4rfRyta7+rbM
-0MXIzsTjt6IhoaGhoaGhoaGhoaGhaHR0cDovL3BvcG8uMTYzLmNvbQo=
+   But when I traced the flow, I found that all the values read from DOC 
+registers were 0x20, 
+   eg, ReadDoc(0xf1000000, DOCContrl) = 0x20, and other control registers 
+were the same.
+   And WriteDOC took no effect.
+   so, "DiskOnChip failed TOGGLE test, dropping." was  printed and no DOC 
+recognised.
+  
+   Would some one help me , thanks.
+                                                                            
+                       hugh.liu
+                                                                            
+                       3.11
+
+_________________________________________________________________
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
