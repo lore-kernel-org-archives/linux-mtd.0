@@ -1,33 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ozGJ-0006nv-00
-	for mtd-list@infradead.org; Fri, 27 Oct 2000 03:28:55 +0100
-Received: from [63.196.9.2] (helo=ftp.neontech.com)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13ozGH-0006np-00
-	for mtd@infradead.org; Fri, 27 Oct 2000 03:28:54 +0100
-Date: Thu, 26 Oct 2000 19:38:49 -0700
-From: Qiuyuan Liu <q.liu@acm.org>
-To: mtd@infradead.org
-Subject: building mtd: DECLARE_MUTEX?
-Message-Id: <39F8EAB996.E4A2Q.LIU@mail.neontech.com>
+	id 13p5Nb-0007YO-00
+	for mtd-list@infradead.org; Fri, 27 Oct 2000 10:00:51 +0100
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13p5NZ-0007YI-00
+	for mtd@infradead.org; Fri, 27 Oct 2000 10:00:49 +0100
+Date: Fri, 27 Oct 2000 10:00:36 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alice Hennessy <ahennessy@mvista.com>
+cc: mtd@infradead.org
+Subject: Re: kernel syncs
+In-Reply-To: <39F8C785.AEEB4CF4@mvista.com>
+Message-ID: <Pine.LNX.4.21.0010270958530.14252-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I am trying to build mtd (checked out from the CVS version) on my Red
-Hat Linux 6.2 box (2.2.14).
+On Thu, 26 Oct 2000, Alice Hennessy wrote:
 
-I can't find where DECLARE_MUTEX is defined, which referenced in
-mtdcore.c (line 89).
+> >Rarely at the moment. I sync to Linus' kernel frequently, but I'm not
+> >intending to send him anything more for 2.4. Once the 2.5 series starts,
+> >I'll be keeping it reasonably up-to-date.
+> 
+> Can you tell me when the last kernel sync was and when the next one is
+> planned?
 
-Btw, there isn't a file named compatmac.h under /usr/include/linux,
-except the one came with mtd package, which refers to it.
+As far as I know, the current code in CVS should work against
+2.4.0-test10-pre5. So there's no sync required.
 
-Thank you,
-Qiuyuan
+As I said, I'm not intending to send anything in the other direction until
+2.5, with the exception of a handful of bugfixes.
+
+
+-- 
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
