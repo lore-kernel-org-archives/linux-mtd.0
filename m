@@ -1,27 +1,21 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CV8uo-0002Jg-EF
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2004 08:35:07 -0500
-Date: Fri, 19 Nov 2004 14:35:00 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Nicolas Pitre <nico@cam.org>
-Message-ID: <20041119133500.GF22981@stusta.de>
-References: <20041118021538.5764d58c.akpm@osdl.org>
-	<20041118154110.GE4943@stusta.de>
-	<1100793112.8191.7315.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.61.0411181132440.12260@xanadu.home>
-	<20041118213232.GG4943@stusta.de>
-	<Pine.LNX.4.61.0411181727010.12260@xanadu.home>
-	<20041118232527.GI4943@stusta.de>
-	<Pine.LNX.4.61.0411182041130.12260@xanadu.home>
-Mime-Version: 1.0
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CVBXM-0002si-S3
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2004 11:23:07 -0500
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <419E1DE0.FDD5DEC0@st.com>
+Date: Fri, 19 Nov 2004 17:22:56 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <419B8715.4036BDBB@st.com>
+	<1100795260.8191.7333.camel@hades.cambridge.redhat.com>
+	<419CE1E8.F20DD890@st.com>
+	<1100870238.8191.7368.camel@hades.cambridge.redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0411182041130.12260@xanadu.home>
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [patch] 2.6.10-rc2-mm2: MTD_XIP dependencies
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 & NAND failure
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,54 +25,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 18, 2004 at 08:58:26PM -0500, Nicolas Pitre wrote:
-> On Fri, 19 Nov 2004, Adrian Bunk wrote:
+David Woodhouse wrote:
 > 
-> > On Thu, Nov 18, 2004 at 05:31:32PM -0500, Nicolas Pitre wrote:
-> > >...
-> > > Can we make it conditional on CONFIG_XIP_KERNEL instead?
-> > > It would be less messy IMHO.
-> > 
-> > I copied the dependency from the #ifdef before the #error.
-> > 
-> > The #error should either go or be the same than the Kconfig dependency.
+> On Thu, 2004-11-18 at 18:54 +0100, Estelle HAMMACHE wrote:
+> > David Woodhouse wrote:
+> > > >  - during wbuf flushing, if the previously written node filled
+> > > >    wbuf exactly, "buf" may be used instead of "wbuf"
+> > > >    in jffs2_wbuf_recover (access to null pointer)
+> > >
+> > > Hmmm. But now with your change we can end up with a completely full wbuf
+> > > which we don't actually flush; we leave it in memory. We should write
+> > > that immediately, surely?
+> >
+> > Not necessarily I think. If we write it immediately and the write fails,
+> > we have a fatal error. But if we leave it be, the next call to
+> > jffs2_flash_writev will flush the buffer and we get 1 more try.
+> > Unless there is something I don't understand, there is no harm in
+> > leaving the wbuf full.
 > 
-> And on what basis?  This just doesn't make sense.
+> Generally we should flush the wbuf as soon as we can. And if there's
+> going to be an error when we retry, surely we want that to happen
+> _immediately_ so that the _current_ write() call returns an error,
+> rather than leaving it in the wbuf and then losing it later?
+
+Whether jffs2_wbuf_recover succeeds or not, __jffs2_flush_wbuf always
+returns an error so that jffs2_flash_writev returns immediately, and
+the caller knows it needs to reallocate space to try again. Then, 
+since wbuf is full, it will be flushed before the new (retry) node 
+can be written.
+The node which was in wbuf was outstanding anyway. It is not part
+of the data from the current call to jffs2_flash_writev.
+What I meant is that if we write wbuf in jffs2_write_recover, like we
+write buf, 1 write error means we never write the node, and we lose data.
+Whereas if we leave the full wbuf, the node still has 2 regular write
+attempts (flush and recover) before some data is lost. I can see
+no difference between this "full wbuf" case and the usual 
+jffs2_wbuf_recover where wbuf is left partly filled ?
+
+I feel that writing wbuf immediately adds code without necessity
+(or maybe I'm just too lazy to test it).
+On the other hand, maybe jffs2_wbuf_recover should be tweaked to
+resist to failure to write buf ? in this case writing a filled-up 
+wbuf immediately too would be logical. How many blocks can we
+afford to refile to the bad block lists in a single call to 
+jffs2_flash_writev ?
+
+
+> > > >  - if a write error occurs, but part of the data was written,
+> > > >    an obsolete raw node ref is added but nextblock has changed.
+> > >
+> > > Where? You mean in jffs2_wbuf_recover()? That's an obsolete raw node ref
+> > > in the _new_ nextblock, surely?
+> >
+> > No, it is the "Mark the space as dirtied" case in jffs2_write_dirent and
+> > jffs2_write_dnode. I think this happens only if the write error occurs
+> > on mtd->writev_ecc and part of the data was successfully written by
+> > jffs2_flush_wbuf or writev_ecc previously so jffs2_flash_writev says
+> > some data was written. In this case, when jffs2_write_dirent/dnode
+> > adds this obsolete raw node ref for the dirty space, nextblock was
+> > modified during the refiling and / or recovery.
 > 
-> CONFIG_MTD_XIP is there to be compatible with kernels which are made 
-> XIP.  This currently means _all_ ARM flavours the kernel currently 
-> supports.  Yet there is only SA11x0 and PXA2xx which have proper MTD_XIP 
-> primitives ence the #error.
+> OK... you mean the case where there was already a node in the wbuf and
+> the wbuf flush failed, so we rewrote that node to a new block, along
+> with the start of the new node? Then the write of the _rest_ of the new
+> node failed, and we return with 'retlen' set to the amount of the new
+> node that fitted into the wbuf and we actually written?
+
+I should have mentionned that the problem in 
+jffs2_add_physical_node_ref cannot happen with the original code - 
+it only happens with the modification of jffs2_flash_writev 
+to refile nextblock on mtd->writev_ecc failure.
+With the original code, nextblock it not refiled so there is no
+problem in jffs2_add_physical_node_ref, but the retry occurs on the
+same page which already failed in mtd->writev_ecc.
+
+Here is an example of the obsolete node/refiled nextblock pb:
+- page size 512 bytes
+- start condition: wbuf contains 500 bytes
+jffs2_write_dnode call, total node size 700 bytes
+-->jffs2_flash_writev
+------>fill up wbuf
+------>donelen = 12
+------>jffs2_flush_wbuf (succeeds)
+------>c->mtd->writev_ecc to write 1 page - fails
+------>nextblock is refiled (new code!)
+------>*retlen = donelen   (= 12)
+-->add obsolete frag for dirtied space 
+------> free raw node & return early because c->nextblock == 0
+-->probable segfault on (redundant?) jffs2_mark_node_obsolete
+-->retry.
+
+Maybe I ought to test nextblock == 0 in addition to the
+obsolete flag to make the exclusion case more precise in
+jffs2_add_physical_node_ref ?
+Or is the "dirty" node really necessary ? what happens if we
+don't list it in the raw node refs ?
+
+
+> > > Hmm, true. We should check f->highest_version after we reallocate space,
+> > > and update ri->version or rd->version accordingly.
+> >
+> > This was my first idea too but I found it ugly to tamper with
+> > structures which are clearly the responsibility of the caller.
+> > However this is a recovery case so... maybe it is necessary.
 > 
-> My position is therefore that the CONFIG_MTD_XIP should depend on 
-> CONFIG_XIP_KERNEL since this is what it is for, and the #error stay as 
-> is.  If ever you make x86 kernel XIPable you'll need to add the missing 
-> bits guarded by the #error anyway.
-> 
-> And no, allyesconfig makes little sense on ARM as it has been discussed 
-> on lkml before.
+> Well we can always turn it around and make them always the
+> responsibility of the callee instead -- set them _always_ in
+> jffs2_write_{dirent,dnode}?
 
-I'm not talking about allyesconfig.
+Ok, let's do that.
 
-The Kconfig file should express all dependencies of a driver.
-If a driver doesn't compile, it should not be selectable - and not 
-#error at compile time.
-
-Rethinking it, perhaps the following expresses the dependencies best:
-
-  depends on ... && XIP_KERNEL && (ARCH_SA1100 || ARCH_PXA || BROKEN)
-
-This would push the #error as a dependency on BROKEN to the Kconfig 
-file.
-
-> Nicolas
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+bye
+Estelle
