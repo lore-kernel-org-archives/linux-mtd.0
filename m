@@ -1,18 +1,18 @@
 Received: from lrts1.demon.co.uk ([158.152.10.39])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16JHM1-0007yF-00
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Dec 2001 16:56:33 +0000
-Received: from tomsk.lotwillow.ltd (grmd@tomsk.lotwillow.ltd [192.168.0.2])
-	by lrts1.demon.co.uk (8.8.7/8.8.7) with SMTP id QAA31532
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Dec 2001 16:54:15 GMT
+	id 16JWZX-0000Jk-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 09:11:31 +0000
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: Gareth Davies <grmd@lotwillow.co.uk>
 To: linux-mtd@lists.infradead.org
-Subject: FAQ? How do I use slram?
-Date: Wed, 26 Dec 2001 16:54:19 +0000
+Subject: Re: FAQ? How do I use slram?
+Date: Thu, 27 Dec 2001 09:11:20 +0000
+References: <NFBBLCEFBCFEPMJJKOIKGEAHCBAA.cfowler@outpostsentinel.com>
+In-Reply-To: <NFBBLCEFBCFEPMJJKOIKGEAHCBAA.cfowler@outpostsentinel.com>
+Cc: "Chris Fowler" <cfowler@outpostsentinel.com>
 MIME-Version: 1.0
-Message-Id: <01122616541901.01003@tomsk.lotwillow.ltd>
+Message-Id: <01122709112000.02532@tomsk.lotwillow.ltd>
 Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -25,56 +25,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I understand that slram can be used to support using uncached RAM for
-swapping but I do not know how to set it up.
+On Thursday 27 December 2001 00:07 am, Chris Fowler wrote:
+>Is slram hardware?
+>
 
-I have compiled both slram and mtdcore as modules have loaded mtdcore.o
-but slram.o emits errors about the number of parameters.
+Yes and no ...
 
-I tried adding parameters to the kernel command line or via modules.conf
-but am unclear as to the correct format in either case. From reading the
-source file, I think 3 parameters are required, the device name, the
-start address and either the length or the end address.
+On older pentium motherboards that use Intel's FX, VX and TX chipsets,
+only the first 64 Mbytes of on-board RAM is cached. Such boards often
+support more that 64 Mbytes, typically 128 or 256 Mbytes, but the extra
+is uncached. Adding more than 64 Mbytes really hurts the performance of
+operating systems such as Linux and Windows-95 that load themselves to
+the top of memory.
 
-The computers I use currently have 64 Mbytes, but can support up to 128
-Mbytes, although the upper 64 Mbytes is uncached. Before I add extra RAM,
-I have been testing by limiting the kernel to 48 Mbytes and attempting to
-use the remaining 16 Mbytes as a high priority swap space.
+One solution to this is to restrict the operating system to the cached
+part of memory, and use the extra RAM for something else. Ideally, the
+operating system would be able to use it directly for buffers, but Linux
+cannot do this. An alternative that many people have suggested is to use
+the additional memory as a ramdisk, then use it as the highest priority
+swap area.
 
-I started by doing:
+This is what I am trying to achieve. My systems typically use up to 40
+Mbytes of swap, so if the slower memory was used instead of the disk,
+there ought to be a significant performance increase.
 
-  mknod -m 600 /dev/slram b 35 0
-
-(although I am concerned that I should be using a /dev/mtd? device) and 
-adding mem=48152k to the kernel command line.
-
-I have tried putting options on the command line:
-
-  map=slram,48152k,16384k
-  map=/dev/slram,48152k,16384k
-
-or in modules.conf:
-
-  alias block-major-35 slram
-  options slram device=slram start=48152k length=16384k
-  options slram device=/dev/slram start=48152k length=16384k
-  options slram map=slram,48152k,16384k
-  options slram map=/dev/slram,48152k,16384k
-
-but so far to no avail.
-
-Having looked at older drivers for uncached RAM, I would expect to be able 
-to do something like
-
-  mkswap /dev/slram
-
-and then enable it as the highest priority swap-space.
-
-This is using RedHat 7.2 with either a 2.4.7 or a 2.4.9 kernel.
-
-Will someone please point me in the right direction?
-
-Many thanks,
+I have searched for drivers that provide this functionality. There was
+an older slram patch provided by Brad Keryan but this doesn't seem to be
+available anymore. In August 1999, David Woodhouse posted on a Linux
+kernel mailing list that there was an alternative driver that is part of
+the MTD codebase. Since slram.c is included as part of current kernel
+distributions, in the drivers/mtd/devices directory, I am trying to make
+use of it ... but without success as yet!
 
 Gareth.
 
