@@ -1,18 +1,26 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CWE8U-0000cv-0w
-	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2004 08:21:43 -0500
-Message-ID: <41A1E7DE.6010005@smartlink.ee>
-Date: Mon, 22 Nov 2004 15:21:34 +0200
-From: Kalev Lember <kalev@smartlink.ee>
-MIME-Version: 1.0
-To: skorinkod@mosk.ru
-References: <200411221211.12394.skorinkod@mosk.ru>	<41A1BE40.2000106@colleduc.ee>
+Received: from avanto.mpei.ac.ru ([193.233.71.179] helo=avanto.org)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CWGMa-0000zU-QS
+	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2004 10:44:26 -0500
+Received: from skorinkod.lan ([10.255.2.21])
+	by avanto.mpei.ac.ru with esmtp (Exim 3.36 #1 (Debian))
+	id 1CWGMc-0002sg-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Nov 2004 18:44:26 +0300
+From: Dmitry Skorinko <skorinkod@mosk.ru>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 22 Nov 2004 18:44:42 +0300
+References: <200411221211.12394.skorinkod@mosk.ru>
 	<200411221339.15109.skorinkod@mosk.ru>
-In-Reply-To: <200411221339.15109.skorinkod@mosk.ru>
-Content-Type: multipart/mixed; boundary="------------010000020402090302080109"
-Cc: linux-mtd@lists.infradead.org
+	<41A1E7DE.6010005@smartlink.ee>
+In-Reply-To: <41A1E7DE.6010005@smartlink.ee>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411221844.42518.skorinkod@mosk.ru>
 Subject: Re: mkfs.ext3 - segmentation fault
+Reply-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------010000020402090302080109
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Dmitry Skorinko wrote:
-
->try current cvs and have same :((   :
->  
+On Monday 22 November 2004 16:21, you wrote:
+> Dmitry Skorinko wrote:
+> >try current cvs and have same :((   :
 >
-Try the attached patch.
+> Try the attached patch.
 
--- 
-Best regards,
-Kalev Lember
+ok
+thank you very much
 
---------------010000020402090302080109
-Content-Type: text/plain;
- name="inftlmount.c.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="inftlmount.c.diff"
-
-Index: inftlmount.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/inftlmount.c,v
-retrieving revision 1.15
-diff -u -r1.15 inftlmount.c
---- inftlmount.c	5 Nov 2004 21:55:55 -0000	1.15
-+++ inftlmount.c	22 Nov 2004 13:17:53 -0000
-@@ -389,8 +389,6 @@
- 	struct erase_info *instr = &inftl->instr;
- 	int physblock;
- 
--	instr->mtd = inftl->mbd.mtd;
--
- 	DEBUG(MTD_DEBUG_LEVEL3, "INFTL: INFTL_formatblock(inftl=%p,"
- 		"block=%d)\n", inftl, block);
- 
-@@ -400,6 +398,7 @@
- 	   _first_? */
- 
- 	/* Use async erase interface, test return code */
-+	instr->mtd = inftl->mbd.mtd;
- 	instr->addr = block * inftl->EraseSize;
- 	instr->len = inftl->mbd.mtd->erasesize;
- 	/* Erase one physical eraseblock at a time, even though the NAND api
-
---------------010000020402090302080109--
+Dmitry
