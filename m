@@ -1,20 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [207.164.182.16] (helo=cbnsitar.cbnco.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16GgUx-0005nk-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2001 13:11:03 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01121914160800.03136@rob> 
-References: <01121914160800.03136@rob>  <Pine.LNX.4.21.0112181832140.3242-100000@dagobert.svc.sysgo.de> <20544.1008697534@redhat.com> 
-To: rkaiser@sysgo.de
-Cc: linux-mtd@lists.infradead.org,
-    =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
-    Aleksander Sanochkin <asanochkin@Lnxw.COM>
-Subject: Re: Map driver usage 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Date: Wed, 19 Dec 2001 13:21:37 +0000
-Message-ID: <12142.1008768097@redhat.com>
+	id 16GjaK-00060a-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2001 16:28:48 +0000
+Received: from wann.com (porcupine.wann.com [207.164.182.104])
+	by cbnsitar.cbnco.com (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id fBJGdCY13082
+	(using TLSv1/SSLv3 with cipher RC4-MD5 (128 bits) verified NO)
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2001 11:39:14 -0500
+Message-ID: <3C20C36F.D02FD5A5@wann.com>
+Date: Wed, 19 Dec 2001 11:42:23 -0500
+From: Vladimir Doukhanine <vdoukhan@wann.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Two flash chips with a gap between them.
+References: <01121914160800.03136@rob>  <Pine.LNX.4.21.0112181832140.3242-100000@dagobert.svc.sysgo.de> <20544.1008697534@redhat.com> <12142.1008768097@redhat.com>
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,20 +26,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-rob@sysgo.de said:
->  I just looked at Aleksander Sanochkin's code as Jörn suggested. It
-> looks as if it indeed implements just what I need for my mapping
-> driver. (Actually it  implements quite a few more things, I only need
-> support for partitions that  are not physically contiguous). I see
-> that his code has not made it into the   MTD CVS so far. Is that
-> because you have objections ? I would really like to  build on this
-> stuff in my mapping driver.
+Hi,
 
-The plan, such as there was one, was to leave 2.4 as it is for a while, and 
-to adopt Jörn's code in 2.5 - so I hadn't applied Aleksander's patch; I was 
-hoping that its extra functionality would be merged into Jörn's version 
-before the time comes to start paying attention to 2.5 and playing with the 
-MTD code.
+I have two flash chips Am29lv320db90ei, which are physically mapped to
+different memory areas and even have a memory gap between each other. I
+would like to have one file system (JFFS2) for these two chips.
+Is it possible to create only one MTD partition&JFFS2 on top of them?
+Or the only way is to create MTD partitions & JFFS2 for each of the
+chips? (Does it mean that in this case each JFFS2 going to have 4 blocks
+overhead? I guess so.)
 
---
-dwmw2
+Thanks,
+Vlad
