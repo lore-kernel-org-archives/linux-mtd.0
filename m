@@ -1,47 +1,47 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12px9m-0000DZ-00
-	for mtd-list@infradead.org; Thu, 11 May 2000 18:53:54 +0100
-Received: from [212.25.93.158] (helo=jodie.lucid)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12px9j-0000DT-00
-	for mtd@infradead.org; Thu, 11 May 2000 18:53:52 +0100
-Received: from localhost (1203 bytes) by jodie.lucid
-	via sendmail with P:stdio/R:bind_hosts/T:inet_zone_bind_smtp
-	(sender: <dvir>) (ident <dvir> using unix)
-	id <m12pxG2-0000ccC@jodie.lucid>
-	for <mtd@infradead.org>; Thu, 11 May 2000 21:00:22 +0300 (IDT)
-	(Smail-3.2.0.102 1998-Aug-2 #2 built 1998-Oct-13)
-From: Dvir Oren <dvir@lucidvon.com>
+	id 12pzCy-0000S7-00
+	for mtd-list@infradead.org; Thu, 11 May 2000 21:05:20 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 12pzCx-0000S1-00
+	for mtd@infradead.org; Thu, 11 May 2000 21:05:19 +0100
+Date: Thu, 11 May 2000 14:14:21 -0600 (MDT)
+From: Patrick Higgins <phiggins@transzap.com>
+To: mtd@infradead.org
+cc: syslinux@linux.kernel.org
+Subject: DOC firmware update with PXELinux
+Message-ID: <Pine.LNX.4.21.0005111346170.12018-100000@phiggins.transzap.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <14618.62773.723372.310409@jodie.local>
-Date: Thu, 11 May 2000 21:00:21 +0300 (IDT)
-To: Patrick Higgins <phiggins@transzap.com>
-Subject: Initrd?
-In-Reply-To: <Pine.LNX.4.21.0005101335290.1556-100000@phiggins.transzap.com>
-References: <Pine.LNX.4.21.0005101335290.1556-100000@phiggins.transzap.com>
-Reply-To: Dvir Oren <dviro@lucidvon.com>
-CC: mtd@infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Patrick Higgins writes ("Initrd?"):
-> linking the driver?  Would the bootloader require special knowledge of
 
-You'll most likely need to use a modified LILO, so that it will be able
-to read the kernel from the flash.  After reading the kernel, I don't
-think there will be any problems.
+I've been using a DOC I got from Neoware which is already setup for Linux,
+but I just switched it out with one I got from Flytech, which seems to
+have different firmware installed.  I'm not sure if this is what's causing
+the problem, but I've been booting my system with PXE (network boot) and
+now that I've switched the DOC, it no longer works.  Now I get all the way
+through downloading the kernel image, and it says "Ready to start kernel",
+but hangs there, instead of uncompressing and booting it as usual.
 
-The modified LILO has been published on this list, and is also
-part of M-Systems' drivers (though their version is a libc5 lilo v20).
+So, I believe I need to update the firmware on the DOC as specified in the
+M-Systems user guide.  However, I have no easy way to boot DOS on this
+machine, other than using PXE (it's diskless).  Has anyone gotten this to
+work, and might have some tips?
 
--- 
-Dvir Oren               <dviro@lucidvon.com>
-Lucid VON Ltd.     <http://www.lucidvon.com>
-9 Saloniki St.,        Tel-Aviv       Israel
-Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
+I'm currently using the RedHat pxe-0.1-14 RPM for the initial stages,
+configured with an NT server doing the DHCP, my box doing PXE proxyDHCP
+and serving up pxelinux.bin (from the syslinux distribution) with mtftp,
+and pxelinux finishes off by connecting to my tftp-hpa server to get it's
+kernel image.  This seems overly complicated, but I've not been able to
+get a simpler configuration to work.  In particular, it seems like I need
+to run a DHCP daemon on both the normal DHCP port and proxyDHCP ports, but
+I'm not sure what is supposed to be different in the information served
+from each port.  If anyone has working config files for ISC DHCP 3.0, they
+would be very helpful.
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
