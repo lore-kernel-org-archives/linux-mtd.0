@@ -1,15 +1,19 @@
-Received: from user11.ucall.net ([63.126.131.11] helo=guinan.diversehost.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cBrh-0007Wq-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 22:27:41 +0100
-Subject: [Fwd: Re: boot from diskonchip millenium]
-From: Glen <mtd@empireenterprises.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 06 Aug 2002 17:26:53 -0400
-Message-Id: <1028669214.1719.1.camel@glen>
-Mime-Version: 1.0
+Received: from rwcrmhc51.attbi.com ([204.127.198.38])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17cCcj-0007ed-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 23:16:17 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Glen <mtd@empireenterprises.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [Fwd: Re: boot from diskonchip millenium]
+Date: Tue, 6 Aug 2002 18:15:01 -0400
+References: <1028669214.1719.1.camel@glen>
+In-Reply-To: <1028669214.1719.1.camel@glen>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020806221545.NGDX19356.rwcrmhc51.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,70 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Thank you for your help thus far.  
+Glen wrote:
+> This is what I did, with the 0.92 patch; are you saying I should have
+> done otherwise?  
 
+Glen,
 
-> This always happens when the grub_firmware was compiled by
-> running aclocal/autoconf/automake commands from README_DiskOnChip and
-> specifying the --enable-diskonchip-mil option.  [The latest patches are
-> 0.92 and 2002-07-29].
+The 0.92 patch is for released Grub; 2002-07-29 is for the latest Grub CVS 
+code.  The 0.92 w/patch should work fine.
 
-This is what I did, with the 0.92 patch; are you saying I should have
-done otherwise?  
+> Interestingly enough, after I boot the machine to the HDD by entering
+> the commands in grub manually, I no longer have a nftl partition.
 
-I started from scratch, and recompiled everything, reformatted, and the
-like.  Now I get the following message:  
+It's been my experience that after burning the grub_firmware, you may need to 
+do the format and fdisk again.   This could be caused by running doc_loadbios 
+when the NFTL module is loaded (and a valid NFTL signature is detected):
 
+http://lists.infradead.org/pipermail/linux-mtd/2002-June/005129.html
+http://lists.infradead.org/pipermail/linux-mtd/2002-June/005123.html
 
-DoC Mil D000
-E698
-Jumping to Grub
-Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
-Unknown ChipID a0 at c8000
-DiskOnChip Millennium found at d0000
-floor 0, chip 0; manufacturer: Toshiba
-Chip: Toshiba TC58V64AFT/DC, total size: 8MiB
-	erase unit: 8192 bytes, page: 512 byes
-unknown manufacturer code: 0x43
-Total of 1 chips found - total capacity 8 MiB
-Scanning for NFTL Media Header
-NFTL Media Header found in flash sector 208
-nftl_rawread(): error 16 in memcpy() or earlier, press any key
+> Does grub write to the DOC upon booting?
 
+Grub doesn't have the capability to write to a DoC, as far as I know.
 
-Interestingly enough, after I boot the machine to the HDD by entering
-the commands in grub manually, I no longer have a nftl partition.  
-
-Does grub write to the DOC upon booting? 
-
-
--g
-
-
-On Tue, 2002-08-06 at 14:04, Ilguiz Latypov wrote:
-> 
-> On 6 Aug 2002, Glen wrote:
-> 
-> > Attempting to open /boot/grub/menu.lst 0x0 0x0
-> > Attempting to open /boot/grub/menu.lst 0x0 0x1
-> 
-> I believe there were attempts to open configuration file on disk 0xe0
-> (DiskOnChip fake BIOS drive number just for the GRUB's internal BIOS disk
-> access API).  This always happens when the grub_firmware was compiled by
-> running aclocal/autoconf/automake commands from README_DiskOnChip and
-> specifying the --enable-diskonchip-mil option.  [The latest patches are
-> 0.92 and 2002-07-29].
->  
-> > Ideas??
-> 
-> If you created a partition within NFTL layer, the "root (dc0,0)" command 
-> would be worth trying.
-> 
-> Ilguiz
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Mark
