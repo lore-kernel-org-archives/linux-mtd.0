@@ -1,18 +1,18 @@
-Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CAzNW-0006A9-1p
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2004 19:21:27 -0400
-Message-ID: <4154ABF8.4090203@gmx.de>
-Date: Sat, 25 Sep 2004 01:21:28 +0200
-From: Arik Funke <arik.funke@gmx.de>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CB1Ho-0006Ry-Su
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2004 21:23:42 -0400
+Received: from [10.0.10.193] (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id SAA26202
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Sep 2004 18:23:35 -0700
+Message-ID: <4154C897.3030008@mvista.com>
+Date: Fri, 24 Sep 2004 18:23:35 -0700
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-References: <41546333.50102@gmx.de>
-	<20040924191930.965AD60A7@blood.actrix.co.nz>
-In-Reply-To: <20040924191930.965AD60A7@blood.actrix.co.nz>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: i386 Linux on USB pen drive
+Subject: Supporting flash that is locked by default
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Various flash chips may be locked (at a chip or block level) at power-on 
+(perhaps depending on the board wiring), requiring an unlock before 
+writing to the device.  It doesn't seem unreasonable to require one to 
+run flash_unlock on appropriate partitions before writing to the device, 
+at least in the case of initially mounting filesystems during system 
+startup.  Platforms that power-cycle the device during a suspend/resume 
+make this a little more complicated, since there's not really a standard 
+way to insert the necessary flash_unlock commands into the system resume 
+sequence, especially for a writeable root filesystem.   (For example, 
+the Intel XScale PXA27x uses K3 StrataFlash, which powers up with all 
+blocks locked and power-cycles the chip on suspend.)
 
-Charles Manning wrote:
-| Most likely, IMHO, these devices will be using a block swapping
-strategy like
-| that used in SmartMedia. This does not do explicite wear levelling,
-but the
-| block management does effect wear levelling.
-|
-| The biggest source of problems with these devices, IMHO, is FAT
-corruption. I
-| see you've taken steps too get rid of that.
-|
-| The flash file systems like JFFSx and YAFFS are really suited to raw
-flash
-| (SmartMedia and XD cards and soldered down chips) , not USB Mass storage
-| devices (which look like hard disks). Dave might not share my opinion
-on this.
+This could all be handled inside the kernel, unlocking blocks as written 
+to (if the block has not been explicitly locked).  But keeping track of 
+which blocks are supposed to be unlockable is a messy business, and 
+could fairly be accused of placing intelligence or policy in the kernel 
+that is better left to userspace.  I don't, however, have an easy answer 
+for how to handle the suspend/resume case.  The embedded engineers I've 
+talked to felt this was a hardware detail the kernel should take care of 
+for them, and it might not be that bad of an idea to have the kernel 
+restore the flash to pre-suspend state by keeping track of 
+previously-unlocked blocks.
 
-If I understood you correctly I have done everything right without even
-knowing about the possible technical traps? I do not need to worry about
-dying sectors, etc. and ext3 was the right choice? Or should I chose a
-journaling filesystem? (the system will run as minimal communication server)
+So I thought I'd ask whether an architectural direction for linux-mtd 
+has been set in this regard, or whether anybody has an opinion on this. 
+  Thanks for any insight you can add,
 
-As there seems to be extensibe knowledge here about linux on flash
-devices, two other questions:
-1. Is it correct to assume that systems on flash devices need to run
-without swap partitions? (due to frequent writing on these)
-
-2. Is there any easy advice which parts of the directory structure
-should better not be mounted on the flash? Or in which directories in
-the linux structure will typically occur frequent write accesses? (E.g.
-log-files?)
-
-Is there maybe a HOWTO or anything discussing linux on flash in general?
-~ I guess these are fairly typical questions...
-
-Cheers,
-Arik
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBVKv4//PXyz2NiW8RAiSEAJ0RVMiYdN9gJzrskwX/xputQYhabwCfePZQ
-QvOQ2jkuDsqcs1z5hk9lk4o=
-=3JNo
------END PGP SIGNATURE-----
+-- 
+Todd Poynor
+MontaVista Software
