@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from albatros.havelsan.com.tr ([195.142.233.60])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eERf-00044b-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 13:37:15 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <46164.62.99.145.150.1029154614.squirrel@www.it-technology.at> 
-References: <46164.62.99.145.150.1029154614.squirrel@www.it-technology.at> 
-To: peter.holik@it-technology.at
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtdblock and preempt patch 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 12 Aug 2002 13:37:09 +0100
-Message-ID: <28045.1029155829@redhat.com>
+	id 17eFO7-0004Cr-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 14:37:39 +0100
+Message-ID: <009601c24205$690cc730$3064000a@nurpinar>
+From: "nur" <nurpinar@e-kolay.net>
+To: "MTD" <linux-mtd@lists.infradead.org>
+Subject: DOC millenium doesnt work anymore 
+Date: Mon, 12 Aug 2002 16:37:32 +0300
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +22,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-peter.holik@it-technology.at said:
->  Everything works as expected without the preempt patch.
+I have created two partitions as minix and msdos. After reboot, my kernel
+printed a message as follows
+Using configured DiskOnChip probe address 0ex8000
+Possible Diskonchop with unknown ChipID FD found at 0xe8000
+No recognised Diskonchip devices found
 
-I thought the preempt patches for 2.4 were known to be broken. Does it 
-happen in 2.5?
+Anyone has faced such a problem?
 
---
-dwmw2
+Under romdos dformat /win:e800 /s:doc51.exb doesn't work
+It can't find any diskonchip. dinfo /win:e800 doesnt work as well
+
+running nftl_format after insmod nftl could harm my diskonchip? I don't
+suppose, because it was ok after formating and re-booting.
+I would like to know what was my mistake so that I won't do it again. Cos I
+have one doc millenium left
+Thanks
+
+P.S. mtd-patch-2.4.0-test12-20001218-2230GMT doesn't apply to 2.4.0 kernel.
+gives many errors
