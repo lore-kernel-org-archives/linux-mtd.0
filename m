@@ -1,16 +1,20 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Rtxa-0006UC-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 Aug 2001 12:14:42 +0100
-Message-Id: <5.1.0.14.0.20010801063242.00a67f20@mail.spewey.com>
-Date: Wed, 01 Aug 2001 06:33:33 -0500
-To: Juan Ramon Jimenez Garcia <juan@hispafuentes.com>,
- linux-mtd@lists.infradead.org,olea@hispafuentes.com
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: Problems compiling kernel 2.2.17
-In-Reply-To: <3B67E336.B7925626@hispafuentes.com>
+Received: from mx7.port.ru ([194.67.57.17])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15RuLj-0006Vu-00
+	for <linux-mtd@lists.infradead.org>; Wed, 01 Aug 2001 12:39:39 +0100
+Received: from [195.161.198.29] (helo=195.161.198.29)
+	by mx7.port.ru with esmtp (Exim 3.14 #1)
+	id 15RuRK-0006uT-00
+	for linux-mtd@lists.infradead.org; Wed, 01 Aug 2001 15:45:26 +0400
+Date: Wed, 1 Aug 2001 16:46:05 +0400
+From: ASA <atris@mail.ru>
+Reply-To: ASA <atris@mail.ru>
+Message-ID: <13728558576.20010801164605@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: re: got stuck with DoC 2000: excuse me
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,13 +26,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 01:08 PM 8/1/2001 +0200, Juan Ramon Jimenez Garcia wrote:
+Hello all,
 
->
->but now we got another link error with an undefined reference to
->'init_nftl'
+Excuse me for hurrying and asking before thoroughly examining...
 
-Don't link in nftl. What do you need this for? You don't need this for 
-either DOC OR NOR flash.
+>  Where I was wrong? Is there any detailed step-by-step instruction to
+>  set up DoC2000?
+mtd-jffs-HOWTO. at first looking I did not saw this file at all :-(
 
-Vipin
+It says what I want... And that 2.2.x does not work with DoC...
+
+>  I can use 2.4 kernel but I don't want this - I'm developing embedded
+>  device and do not want to enlarge system even by 150-200K. In fact,
+>  I cannot fit kernel 2.4 (even packed with UPX) and initrd with glibc
+>  2.1 together on single bootable standard-formatted floppy.
+No, 2.4.1 kernel was enlarged by 20 kbytes only and it does work with DoC.
+
+Thank you
+-- 
+Best regards,
+ ASA                          mailto:atris@mail.ru
