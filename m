@@ -1,13 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-In-Reply-To: <20040127100613.GA16078@angel.research.nokia.com>
+Received: from mgw-x1.nokia.com ([131.228.20.21])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AlUiS-0007Jr-3s
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 15:01:24 +0000
+Received: from esvir05nok.ntc.nokia.com (esvir05nokt.ntc.nokia.com
+	[172.21.143.37])i0RF1DV14495	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Jan 2004 17:01:13 +0200 (EET)
+Date: Tue, 27 Jan 2004 15:48:35 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: MTD List <linux-mtd@lists.infradead.org>
+Message-ID: <20040127134835.GA9404@angel.research.nokia.com>
 References: <20040127100613.GA16078@angel.research.nokia.com>
-Content-Type: text/plain
-Message-Id: <1075211292.1633.90.camel@hades.cambridge.redhat.com>
+	<1075202008.1633.26.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Tue, 27 Jan 2004 13:48:13 +0000
-Content-Transfer-Encoding: 7bit
-cc: MTD List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1075202008.1633.26.camel@hades.cambridge.redhat.com>
+cc: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS2 case insensitivity
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,27 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-27 at 12:06 +0200, Jarkko Lavinen wrote:
-> How difficult it would be to add support for file name case
-> insensitivity to JFFS2?
+On Tue, Jan 27, 2004 at 11:13:28AM +0000, David Woodhouse wrote:>
+> What precisely is the problem you're trying to solve?
 
-I'm dubious about the need for this. 
+User space people want the file name case insensitivity.  I guess the
+old files are likely to be selected from a list on an embedded device.
+However case insensitivity is a desirable feature when adding new file
+names.
 
-You only need case insensitivity when the filename you're given is wrong
-in case only -- which is basically only if you're taking input from the
-user and trying to look up a filename directly, surely? 
+My primary concern was to estimate the cost or pain of implementing
+file name case insensitivity and find arguments against doing it in
+the kernel.
 
-On an embedded device, how often are your filenames coming from external
-sources in that way, rather than being chosen by the user from a list?
-
-Even then, it should be easy enough to do it in userspace if you really
-need it.
-
-Unless, of course, you're pondering a port to WinCE. In which case it's
-easier than it would be under Linux. You don't actually _use_ the
-readdir() and lookup() functions which the Linux version uses, you
-implement real FindFirst() and FindNext() functions directly on top of
-the JFFS2 core code, and can do what you want.
-
--- 
-dwmw2
+Jarkko Lavinen
