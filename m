@@ -1,20 +1,17 @@
-Received: from sccrmhc11.comcast.net ([204.127.202.55])
+Received: from sccrmhc12.comcast.net ([204.127.202.56])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kVw1-0006e5-8W
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2003 22:35:05 +0100
-Message-ID: <3F3174DC.3090609@mvista.com>
-Date: Wed, 06 Aug 2003 17:36:28 -0400
-From: "George G. Davis" <gdavis@mvista.com>
+	id 19kZOL-00073W-2S
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 02:16:33 +0100
+Message-ID: <3F31A8C5.4050507@comcast.net>
+Date: Wed, 06 Aug 2003 21:17:57 -0400
+From: "George G. Davis" <davis_g@comcast.net>
 MIME-Version: 1.0
-To: davis_g@mvista.com
-References: <3F317459.1060300@mvista.com>
-In-Reply-To: <3F317459.1060300@mvista.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: multipart/mixed;
- boundary="------------010604000809060104090905"
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Add cmdlinepart and default static partition table support for
- ARM Integrator
-Reply-To: gdavis@mvista.com
+ boundary="------------010405000908010307050801"
+Subject: Add cmdlinepart and default static partition table support for ARM
+ Integrator - resend
+Reply-To: davis_g@comcast.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +22,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------010604000809060104090905
+--------------010405000908010307050801
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Doh, patch is attached now...
+Ok, hopefully I'm using the correct e-mail account for list postings now. So
+here is a repost with the patch attached this time!
 
-George G. Davis wrote:
-> Greetings,
-> 
-> The attached patch adds cmdlinepart and default static partition table 
-> support
-> to integrator-flash. I've tested this on an ARM Integrator/AP with CM920T
-> core module. The patch is against recent MTD CVS checkout +/- 1 day. 
-> I'ld like
-> to get this committed to the MTD CVS repository. TIA!
-> 
-> -- 
-> Regards,
-> George
-> 
-> 
-> 
+Greetings,
 
---------------010604000809060104090905
+The attached patch adds cmdlinepart and default static partition table support
+to integrator-flash. I've tested this on an ARM Integrator/AP with CM920T
+core module. The patch is against recent MTD CVS checkout +/- 1 day. I'ld like
+to get this committed to the MTD CVS repository. TIA!
+
+--
+Regards,
+George
+
+
+
+
+--------------010405000908010307050801
 Content-Type: text/plain;
  name="integrator-flash.patch"
 Content-Transfer-Encoding: base64
@@ -101,4 +96,4 @@ cnRpdGlvbnMpOwogCX0KKworCXJldCA9IGFkZF9tdGRfcGFydGl0aW9ucyhtdGQsIHBhcnRz
 LCByZXQpOworCWlmIChyZXQpCisJCXByaW50ayhLRVJOX0VSUiAibXRkIHBhcnRpdGlvbiBy
 ZWdpc3RyYXRpb24gZmFpbGVkOiAlZFxuIiwgcmV0KTsKIAogCS8qCiAJICogSWYgd2UgZ290
 IGFuIGVycm9yLCBmcmVlIGFsbCByZXNvdXJjZXMuCg==
---------------010604000809060104090905--
+--------------010405000908010307050801--
