@@ -1,22 +1,15 @@
-Received: from host-216-252-217-242.interpacket.net ([216.252.217.242]
-	helo=forof.hylink.am)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CeTEW-00007a-Dw
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 02:06:03 -0500
-Received: from araav ([10.0.0.16])
-	by forof.hylink.am (8.12.10/8.12.10) with SMTP id iBF75NXV096505
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2004 11:05:25 +0400 (AMT) (envelope-from araav@hylink.am)
-Message-ID: <003e01c4e274$73696ff0$1000000a@araav>
-From: "Ara Avanesyan" <araav@hylink.am>
-To: <linux-mtd@lists.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ara Avanesyan <araav@hylink.am>
+In-Reply-To: <003e01c4e274$73696ff0$1000000a@araav>
 References: <redirect-100966814@mail5.rambler.ru>
-Date: Wed, 15 Dec 2004 11:05:24 +0400
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+	<003e01c4e274$73696ff0$1000000a@araav>
+Content-Type: text/plain
+Date: Wed, 15 Dec 2004 10:03:16 +0000
+Message-Id: <1103104997.13016.99.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: supporting DiskOnChip G3
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: supporting DiskOnChip G3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,9 +19,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Wed, 2004-12-15 at 11:05 +0400, Ara Avanesyan wrote:
+> Do you have any plans to supporting DOC G3 and/or newer devices in MTD?
 
-Do you have any plans to supporting DOC G3 and/or newer devices in MTD?
+We have no access to the documentation required.
 
-Thanks,
-Ara
+-- 
+dwmw2
