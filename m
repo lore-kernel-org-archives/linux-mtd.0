@@ -1,15 +1,18 @@
-Received: from [202.108.44.144] (helo=163.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AxkBp-0002sS-5a
-	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 09:58:21 +0000
-MIME-Version: 1.0
-Message-ID: <40430937.000115.28664@bj144.163.com>
-Date: Mon, 1 Mar 2004 17:58:15 +0800 (CST)
-From: "aaa" <qixiaolili@163.com>
+Received: from fireext.wenk.be ([193.190.145.130] helo=hardy.denayer.wenk.be)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1Axpc3-0003mK-Us
+	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 15:45:48 +0000
+Received: from [192.168.0.150] (moet.denayer.wenk.be [10.30.30.235])
+	QAA04147	for <linux-mtd@lists.infradead.org>;
+	Mon, 1 Mar 2004 16:46:06 +0100 (MET)
+From: Gerrit Van de Velde <gvd@denayer.wenk.be>
 To: linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gb2312"
-Subject: Some question about ffs2.0.(Need Help)
+Content-Type: text/plain
+Message-Id: <1078156118.4832.7.camel@nios>
+Mime-Version: 1.0
+Date: 01 Mar 2004 16:48:38 +0100
+Content-Transfer-Encoding: 7bit
+Subject: JFFS2 strange behaveour
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,19 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-aGVsbG8gLGkgYW0gYSBuZXcgbWVtYmVyIGZyb20gY2hpbmEgLiBJIGhhdmUgc29tZSBxdWV0
-aW9uIGFib3V0IGZmczIuMCAuaWYgdSBoYXZlIHNvbWUgaW5mb3JtYXRpb24gb24gZmZzMi4w
-ICxwbGVhc2UgaGVscCBtZSAuLi4obXkgZW5nbGlzaCBpcyB2ZXJ5IHdvcnNlIDpEICkNCndo
-byBjYW4gdGVsbCBtZSBob3cgdG8gZ2V0IHRoZSBzcGVjaWZpY2F0aW9uIG9mIGZmczIuMCA/
-IGFuZCBob3cgdG8gZ2V0IHNvbWUgY29kZXMgZnJvbSBtaWNyb3NvZnQgb3Igb3RoZXIgcGxh
-Y2UgPw0KaWYgc29tZSBvbmUgaGF2ZSB0aGVzZSBpbmZvcm1hdGlvbiAscGxlYXNlIHRlbGwg
-bWUgaG93IHRvIGdldCAuIG9yIHNlbmQgdGhlc2UgdG8gbWUgYnkgbXkgZW1haWwgLS0tLS0g
-cWl4aWFvbGlsaUAxNjMuY29tDQpJdCdzIHZlcnkgaW1wb3J0YW50IHRvIG1lLiBzbyBhbnkg
-aGVscCB3aWxsIGJlIGFwcHJlY2lhdGVkLi4uIDopDQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENvbmFuY29vbA0Kfn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgrN+NLXVklQytW30dPKz+TB
-vdbcxOqzrNa108W73SEgwvox1Pk2o6GjoaGhICAgICAgICAgIGh0dHA6Ly92aXAuMTYzLmNv
-bQoK1tC5+tfutPO1xMPit9HTys/k1Nq1yMTjIDI11de/1bzkNNXXuL28/qOhoaGhoaGhoaGh
-oSBodHRwOi8vbWFpbC4xNjMuY29tCgq147v3zfjS18Xdxd2+qs+yzt7P3iDIq8Pit9HK1rv6
-tszQxcjOxOO3oiGhoaGhoaGhoaGhoaFodHRwOi8vcG9wby4xNjMuY29tCg==
+I've made a JFFS2 image from my root filesystem to use in an embedded
+platform (Motorola MPC5200). Everything works, i can mount it when burnt
+into flash but when I switch from root filesystem on NFS to the image
+which resides in FLASH, I get following strange errors during startup:
+
+jffs_scan_flash(): Did not find even a single chunk of free space. This
+is BAD!
+jffs_scan_falsh():Free size accounting screwed
+jfffs_scan_flash():free_chunk_size1 == 0xd00000, free_chunk_size2 ==
+0x0, fmc->free_size == 0x0
+JFFS: Failed to mount device 1f:02.
+VFS: Mounted root (jffs2 filesystem).
+
+So JFFS states: mount failed,
+VFS states: mount successful...
+
+after that i get the login prompt and only after one minute i'm able to
+login (don't know why)
+
+after logged in i can retrieve the following information:
+
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+rootfs                   13312      3920      9392  29% /
+/dev/mtdblock2           13312      3920      9392  29% /
+
+# dmesg
+<snip>Kernel command line: root=/dev/mtdblock2 rw
+ip=192.168.0.3:192.168.0.150:192.168.0.1:255.255.255.0:icecube::off
+init=init
+<snip>
+
+# cat /etc/fstab
+none /proc proc defaults
+
+Does anyone know why df states two mounts on the /
+and why the jffs errors occur during startup ?
+
+Kind regards,
+Gerrit Van de Velde
