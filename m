@@ -1,20 +1,26 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CQCw7-0005hH-FA
-	for linux-mtd@lists.infradead.org; Fri, 05 Nov 2004 17:52:04 -0500
-Received: from [192.168.2.59] (mail.smartlink.ee [213.180.16.242])
-	(authenticated bits=0)
-	by kiire.colleduc.ee (8.12.11/8.12.10) with ESMTP id iA5MnuXh015429
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Sat, 6 Nov 2004 00:49:56 +0200
-Message-ID: <418C0409.7020706@colleduc.ee>
-Date: Sat, 06 Nov 2004 00:51:53 +0200
-From: Kalev Lember <kalev@colleduc.ee>
-MIME-Version: 1.0
+Received: from main.gmane.org ([80.91.229.2])
+	by pentafluge.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CQD36-0000Ly-LM
+	for linux-mtd@lists.infradead.org; Fri, 05 Nov 2004 22:59:17 +0000
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CQD35-0006ik-00
+	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
+Received: from dsl081-242-215.sfo1.dsl.speakeasy.net ([64.81.242.215])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
+Received: from dave-gnus by dsl081-242-215.sfo1.dsl.speakeasy.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: INFTL and NFTL oopses
+From: David Wuertele <dave-gnus@bfnet.com>
+Date: Fri, 05 Nov 2004 14:59:11 -0800
+Message-ID: <m3wtwznbr4.fsf@bfnet.com>
+References: <m33bzonifa.fsf@bfnet.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: news <news@sea.gmane.org>
+Subject: Re: in situ MTD upgrade from userspace (kernel, CRAMFS, YAFFS)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> 1.  There are many other processes running at the time of the upgrade.
+>     They are running out of CRAMFS.  As I overwrite the CRAMFS
+>     partition, is it possible that my write could get corrupted?
+>     Perhaps by crashing programs that inadvertently do weird syscalls?
 
-I have just committed changes to the MTD CVS repository that fix kernel 
-NULL pointer dereference at mtd_erase_callback+6 when trying to insmod 
-INFTL or NFTL modules.
-Anyone suffering from these problems should check if the latest CVS 
-fixes them.
+Corollary question:
 
--- 
-Best regards,
-Kalev Lember
+  As my own userspace process overwrites the CRAMFS block that
+  contains that process's program, how can I ensure that the process
+  doesn't get hosed until after it has a chance to reboot the system?
