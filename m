@@ -1,17 +1,17 @@
-Received: from d-200.linux2002.uq.net.au ([203.15.37.200] helo=lapdancer.baythorne.internal)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16YiUu-0001Ec-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2002 06:57:33 +0000
-Date: Thu, 7 Feb 2002 17:04:24 +1000 (EST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: gleixner@autronix.de
-cc: Veli-Pekka =?iso-8859-1?q?Yl=F6nen?= <velpeyl@utu.fi>,
-     <linux-mtd@lists.infradead.org>,  <jffs-dev@axis.com>
-Subject: Re: NAND flash and JFFS(2)
-In-Reply-To: <02020707510901.00888@thomas>
-Message-ID: <Pine.LNX.4.44.0202071703480.11698-100000@lapdancer.baythorne.internal>
+Received: from web20302.mail.yahoo.com ([216.136.226.83])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16YmMX-0001RW-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2002 11:05:10 +0000
+Message-ID: <20020207111620.70256.qmail@web20302.mail.yahoo.com>
+Date: Thu, 7 Feb 2002 11:16:20 +0000 (GMT)
+From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
+Subject: RE: CF
+To: "Malik, Vipin \[FRCO/HOU\]" <Vipin.Malik@EmersonProcess.com>
+Cc: Linux MTD Lists <linux-mtd@lists.infradead.org>
+In-Reply-To: <AB8D0DF31D9BD511BE94000347959DC9C615A0@MXSFRCOHOU01>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +23,88 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 7 Feb 2002, Thomas Gleixner wrote:
+Hi Vipin,
 
-> I mean we should keep the batch write. Thats correct. But we can leave the 
-> cleanmarker where it is now and write it without ECC and put the rest of the 
-> page with ECC. On small NAND devices we have only 8byte spare area per block. 
-> We need 3 byte for ECC and at least 1 byte for flags. Then the cleanmarker 
-> area is reduced to 4 bytes. Is that enough ?
+Thanks for your 2c, allways valuable to hear
+viewpoints before we cock things up ourselves! We are
+kind of limited to CF for this product at this stage
+so we have to live with its short commings i guess. We
+were proposing to use ext3 for asynchronus power down
+protection. However the product is not designed to be
+powered down except in the event of brown and
+blackouts.
 
-Yeah, that's fine. We can do either - I'm not sure it matters too much.
+Thanks again, David
 
--- 
-dwmw2
+ --- "Malik, Vipin [FRCO/HOU]"
+<Vipin.Malik@EmersonProcess.com> wrote: > JFFS2 also
+provides file system corruption
+> protection in case of unclean
+> shutdowns.
+> 
+> To really answer your question, you need to provide
+> the fs that you are
+> thinking about on top of CF.
+> 
+> ext2 will not work as it is not designed for regular
+> unclean shutdowns (even
+> with e2fsck).
+> ext3 may work as it is journaled and a buddy of mine
+> tested ext3 format
+> reliability with a hard drive and was happy with it
+> (for his needs).
+> 
+> However, I would not use CF for any app that may be
+> suffer asynchronous
+> power down. CF (at least the ones I tested a few
+> years ago) are notoriously
+> bad at being able to withstand an asynchronous
+> shutdown if the OS is writing
+> to them. They suffer from low level formatting
+> failures (And in one case
+> even a partial hardware failure- where a portion of
+> the CF became completely
+> unaccessable).
+> 
+> Just my 2c.
+> 
+> Vipin
+> 
+> 
+> > -----Original Message-----
+> > From: David Mackay
+> [mailto:monitoreurope@yahoo.co.uk]
+> > Sent: Wednesday, February 06, 2002 10:26 AM
+> > To: Linux MTD Lists
+> > Subject: CF
+> > 
+> > 
+> > We have just been informed that CF disks have wear
+> > levelling built in and we do not need therfore to
+> > consider a file system such as JFFS(2), is this
+> true?
+> > 
+> > Is so any comments about how sucsessful it is?
+> > 
+> > Thanks, David
+> > 
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Everything you'll ever need on one web page
+> > from News and Sport to Email and Music Charts
+> > http://uk.my.yahoo.com
+> > 
+> >
+>
+______________________________________________________
+> > Linux MTD discussion mailing list
+> >
+>
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >  
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
