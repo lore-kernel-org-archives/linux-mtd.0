@@ -1,16 +1,19 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CElAO-0006AG-Kj
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 04:59:30 -0400
-Date: Tue, 5 Oct 2004 11:59:19 +0300 (EEST)
-From: Kalev Lember <kalev@colleduc.ee>
-To: Nicolas Pouillon <nipo@ssji.net>
-In-Reply-To: <20041004215001.769d8017.nipo@ssji.net>
-Message-ID: <Pine.LNX.4.44.0410051152070.2033-100000@kiire.colleduc.ee>
+Received: from rubin.euroweb.hu ([193.91.90.74] helo=imap.rubin.hu)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CEp8b-0007Lm-V1
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 09:13:55 -0400
+Message-ID: <41629E04.3000405@rubin.hu>
+Date: Tue, 05 Oct 2004 15:13:40 +0200
+From: Robert Szabo <robbie@rubin.hu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]Probing at 0x0
+To: Lorenzo PARISI <lorenzo.parisi@st.com>
+References: <35c66fec.8a805a46.81a3300@mail1.agr.st.com>
+In-Reply-To: <35c66fec.8a805a46.81a3300@mail1.agr.st.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>
+Subject: Re: [Yaffs] /proc
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Lorenzo PARISI wrote:
 
-On Mon, 4 Oct 2004, Nicolas Pouillon wrote:
+>Hi,
+>
+>I've a s3c2410 board with BAST architecture.
+>On board, I've a kernel 2.6.9-rc2-bk13.
+>I've compiled the kernel with CONFIG_PROC_FS = YES;
+>but the directory /proc is empty, why?
+>Thus, I don't see mtd information.
+>
+>Thanks.
+>
+>_______________________________________________
+>yaffs mailing list
+>yaffs@stoneboat.aleph1.co.uk
+>http://stoneboat.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs
+>  
+>
 
-> This time, chip is probed as a DoC-Mil+ 32MB, driver complains about it
+Try mount it with:
+mount -t proc / /proc
 
-I believe it is detected correctly. The Diskonchip Millennium Plus 64MB is 
-actually two 32 MB devices stacked up.
-
-> not being supported. It seems ok, and as mtd are much like rocket
-> science to me, I'll wait a little until it is (i hope) supported...
-
-I reimplemented the Diskonchip Millennium Plus support in the new driver, 
-but unfortunately I have only 16MB pieces at hand.
-
--- 
-Best regards,
-Kalev Lember
+regards,
+Robbie
