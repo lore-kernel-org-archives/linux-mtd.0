@@ -1,19 +1,14 @@
-Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgjGR-0007a2-SD
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 07:37:21 -0500
-Date: Tue, 21 Dec 2004 12:36:34 +0000 (GMT)
-From: jasmine@linuxgrrls.org
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1103632351.6111.67.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.61.0412211235350.3342@hex.linuxgrrls.org>
-References: <a46577d50412131817139c1966@mail.gmail.com>
-	<1103632351.6111.67.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: Wang JinFeng <wangjinfeng@gmail.com>, linux-mtd@lists.infradead.org,
-	uclinux-dev@uclinux.org
-Subject: Re: Failed to implent MTD on uclinux(kernel version 2.4.20-uc0)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Michael <xemc@yahoo.com>
+In-Reply-To: <20041217231645.79122.qmail@web52701.mail.yahoo.com>
+References: <20041217231645.79122.qmail@web52701.mail.yahoo.com>
+Content-Type: text/plain
+Date: Tue, 21 Dec 2004 12:39:26 +0000
+Message-Id: <1103632766.6111.74.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Rootfs choice ideas
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +18,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2004-12-17 at 15:16 -0800, Michael wrote:
+> And we can modify files freely.
 
+Yes but you don't _have_ to modify files freely. You can exercise a
+little restraint :)
 
-On Tue, 21 Dec 2004, David Woodhouse wrote:
+> However, there seem to be some disadvantages:
+>  1. Instead of versioning a fixed filesystem image (which you could
+> do  with cramfs or initrd), you now manage a collection of files
+> each of which could change independently.
 
-> On Tue, 2004-12-14 at 10:17 +0800, Wang JinFeng wrote:
->> ****Don`t know why this happen,somebody may give me some advice,thanks
->> ****kernel version 2.4.20-uc0
->> ****SoC:s3c4510b
->> ****Flash chip:am29lv160DB
->
-> I'm led to believe that 2.4.20-uc0 on smdk2410 means a commercial port
-> which is of fairly low quality. You'd probably do better to use a 2.6
-> kernel instead. You may still need to do a little bit of work on it, but
-> at least you'll be working from a sane starting point.
+Yes. This is usually done in packages -- by RPM or more usefully on an
+embedded system by something smaller like ipkg. Take a look at the
+Familiar distribution.
 
-Why the hell would you be running uClinux on an s3c2410 anyway?  It's an 
-ARM920T and has a real MMU.  It is very capable (and fast!) at running 
-real Linux.
+>  2. It would be hard or impractical to check the entire image for
+> consistency, as you could with a cramfs image.
 
--J.
+'rpm -Vva'
+
+Not sure if ipkg stores checksums of the installed files.
+
+>  3. I could perhaps run into problems when updating it, for
+> instance if the update fails part-way through.
+
+You reattempt the update after you come back up.
+
+>  4. There seems to be some overhead in scanning the rootfs at boot
+> time (yeah, there are recent changes that speed this up), and
+> garbage collection running in the background. (which is a seperate
+> issue)
+
+These are true. We're trying to improve it.
+
+> So, it's acting very much like a desktop (which can possibly
+> develope cruft), and very little like an embedded device (which
+> typically can't change).
+> 
+> Does anyone share some of these same concerns (or perhaps others as
+> well)?  What schemes have you used or seen, and how do they
+> compare?
+
+Basically it's up to you -- if you can manage to live with a read-only
+file system, as presumably you could since you seem to consider
+writeability a disadvantage, then you might as well stick with cramfs.
+
+-- 
+dwmw2
