@@ -1,9 +1,9 @@
 Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dgTS-0002fj-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 23:48:34 +0000
-Message-ID: <3C743765.F0A5F5D8@comdev.cc>
-Date: Wed, 20 Feb 2002 15:55:17 -0800
+	id 16dgX3-0002g9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 23:52:18 +0000
+Message-ID: <3C74383D.EC664E52@comdev.cc>
+Date: Wed, 20 Feb 2002 15:58:53 -0800
 From: Adam Wozniak <adam.wozniak@comdev.cc>
 MIME-Version: 1.0
 To: gleixner@autronix.de
@@ -24,6 +24,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Ok, maybe this is a problem:
+
+
 Thomas Gleixner wrote:
 > 
 > On Wednesday, 20. February 2002 20:41, Thomas Gleixner wrote:
@@ -39,9 +42,15 @@ Thomas Gleixner wrote:
 >                                  /* Better candidate for the next writes to
 > go to */
 >                                  if (c->nextblock)
+
+UMMM open { here?
+
 > +                                       /* We must delete, because mark_node_obsolete
 > +                                          could have added this block to dirty_list already */
 > +                                        list_del(&c->nextblock->list);
+
+and close } here?
+
 >                                          list_add(&c->nextblock->list,
 > &c->dirty_list);
 >                                  c->nextblock = jeb;
@@ -52,12 +61,8 @@ Thomas Gleixner wrote:
 >                                  list_add(&jeb->list, &c->dirty_list);
 >                          }
 >                 } else {
-> 
-> I put it into CVS too
 
-Ummm.  Applying that patch gives me a seg fault on boot.
 
---Adam
 -- 
 Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
 awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
