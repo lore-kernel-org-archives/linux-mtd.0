@@ -1,16 +1,14 @@
-Received: from tolkor.sgi.com ([192.48.180.13])
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eN44-00059Q-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 22:49:28 +0100
-Message-ID: <3D582D5B.A18054F@sgi.com>
-Date: Mon, 12 Aug 2002 16:49:15 -0500
-From: Steven Hein <ssh@sgi.com>
+	id 17eSc4-0005i7-00
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Aug 2002 04:44:56 +0100
+Message-ID: <3D5881AE.3020809@redswitch.com>
+Date: Mon, 12 Aug 2002 20:49:02 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Aw: Re: Hardware ECC in NAND flash driver
-References: <34a9835a72.35a7234a98@t-online.de>
-Content-Type: text/plain; charset=us-ascii
+To: linux-mtd@lists.infradead.org,  linuxppc-embedded@lists.linuxppc.org
+Subject: how to mount a root filesystem stored on MTD device?
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -23,64 +21,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-tglx@linutronix.de wrote:
-> >
-> > Dumb question--is ECC calculation "generic" enough to be
-> > applicable from
-> > one hardware ECC generator to the next, even if they do the same
-> > numberof ECC bytes for the same block size?  Is it very likely
-> > that the
-> > algorithm
-> > is actually going to be the same between platforms?
-> I think so, because  Samsung and others will bring up similar chips,
-> which
-> incorporate the same ECC generator, but with maybe different registers
-> or
-> opcodes. But the algorithm will be the same for interdevice compability.
-> So
-> IMHO it's correct to put it in the generic nand_ecc code.
-> 
+I've read the MTD/JFFS howto but still cannot get it. Right now I've 
+been able to enable MTD devices and mount jffs2. I set bootargs to 
+'root=/dev/mtdblock0' on PPCBoot and use tftpboot to boot the kernel via 
+network. But the boot process doesn't succeed due to unability to mount 
+root filesystem.
 
-Sounds fine with me!
+Here is the message showing that mtd devices have been found.
+--------------------clip--------------------------------------
+JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis 
+Communications AB.
+loop: loaded (max 8 devices)
+Search for id:(89 88f3) interleave(1) type(2)
+Found: Intel 28F160F3T
+IB8SW Bank 0: Found 1 x16 devices at 0x0 in 16-bit mode
+Using word write method
+init_ib8sw_mtd: part_num=3
+IB8SW flash bank 0: Using static image partition definition
+Creating 3 MTD partitions on "IB8SW Bank 0":
+0x00000000-0x000f0000 : "jffs2"
+mtd: Giving out device 0 to jffs2
+0x000f0000-0x00100000 : "spare"
+mtd: Giving out device 1 to spare
+0x00100000-0x00200000 : "ppcboot"
+mtd: Giving out device 2 to ppcboot
+--------------------clip--------------------------------------
 
-Any preference on how the correct_data function should be named
-(the one I should add to nand_ecc.c)?  Let me know what you'd prefer
-and I'll use that name from the start.
+But here it complains that root fs hasn't been mounted.
+--------------------clip-----------------------------------
+Root-NFS: No NFS server available, giving up.
+VFS: Unable to mount root fs via NFS, trying floppy.
+request_module[block-major-2]: Root fs not mounted
+VFS: Cannot open root device "mtdblock0" or 02:00
+Please append a correct "root=" boot option
+Kernel panic: VFS: Unable to mount root fs on 02:00
+--------------------clip-----------------------------------
 
-> > THANKS for adding this!!  I'll try it today/tomorrow.
-> I'm curious, how many bugs you will detect. :)
-> 
+Any instructions or hints? Thanks a lot.
 
-The final tally is.......ZERO!!  I tried it and it worked great.
-Thanks again!
-
-
-> > Another question--how do you typically handle adding new HW drivers
-> > to the NAND flash code?  I know that in my case, the HW implementation
-> > uses access to specific S3C2410 processor registers, and those
-> > register definitions live in include/asm-arm/arch-s3c2410 directory
-> > in the Linux kernel tree.  I would expect that these arch-specific
-> > files would not live in the MTD tree.  Let me know--I'd like to get
-> > this HW driver incorporated into the standard tree as soon as I
-> > get it working!
-> 
-> That's easy, you include <asm/hardware.h> and you should be done. When
-> your
-> driver is ready, let me know. I will take care for incorporation.
-> 
-I'll let you know when I have it done  (I'm working with a Samsung
-employee on the 2410 port; when we get it cleaned up I'll
-send it to you).
-
-
-Steve
-
-
-
--- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Steve Hein (ssh@sgi.com)              Engineering Diagnostics/Software
-Silicon Graphics, Inc.                          
-1168 Industrial Blvd.                 Phone: (715) 726-8410
-Chippewa Falls, WI 54729              Fax:   (715) 726-6715
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Shawn.
