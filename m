@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from rproxy.gmail.com ([64.233.170.205])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CeLun-0007ax-GT
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2004 18:17:12 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: MQuicquaro@necii.com
-In-Reply-To: <OFD7229C12.76AD2125-ON85256F6A.007CB17C-85256F6A.007F521E@necii.com>
-References: <OFD7229C12.76AD2125-ON85256F6A.007CB17C-85256F6A.007F521E@necii.com>
-Content-Type: text/plain
-Date: Wed, 15 Dec 2004 00:17:03 +0100
-Message-Id: <1103066223.3406.82.camel@tglx.tec.linutronix.de>
+	id 1CePiV-00083P-3D
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2004 22:20:44 -0500
+Received: by rproxy.gmail.com with SMTP id j1so834878rnf
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Dec 2004 19:20:41 -0800 (PST)
+Message-ID: <c3d0340b041214192038f70c2e@mail.gmail.com>
+Date: Tue, 14 Dec 2004 19:20:40 -0800
+From: Shawn Jin <shawnxjin@gmail.com>
+To: linuxmtd <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 - mtd - nand flash works....except....
-Reply-To: tglx@linutronix.de
+Subject: 2.6.x cannot mount the root fs on a jffs2 image?
+Reply-To: Shawn Jin <shawnxjin@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-12-14 at 18:09 -0500, MQuicquaro@necii.com wrote:
-> Just about everything seems to be working great as far as I can see
-> except subsector writing.
+Hi,
 
-Subsector writes are not permitted in the nand driver.
+Can 2.6.x mount the root fs on a jffs2 image? After a while of
+research by googling, I found that do_mounts.c was re-written quite a
+lot compared with 2.4.x. In 2.4.x there is root_dev_names specifying
+all devices can be mounted as the root fs. But there isn't such a
+struct any more. Probably root_device_name is the sibling?
 
-I'm curious why you don not get an error on write.
+How to add jffs2 support in do_mounts.c?
 
-Hmm, someone should fix nandtest and remove the subsector stuff.
-
-tglx
+Thanks,
+-Shawn.
