@@ -1,14 +1,16 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@oktetlabs.ru
-In-Reply-To: <41921D97.7040300@oktetlabs.ru>
-References: <41921D97.7040300@oktetlabs.ru>
+To: Estelle HAMMACHE <estelle.hammache@st.com>
+In-Reply-To: <416A7A0A.591B4A03@st.com>
+References: <019301c4ad6e$33e3c730$0400a8c0@mark> <416A4930.6AF5C472@st.com>
+	<416A7A0A.591B4A03@st.com>
 Content-Type: text/plain
-Message-Id: <1100171797.8191.1362.camel@hades.cambridge.redhat.com>
+Message-Id: <1100172461.8191.1369.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Thu, 11 Nov 2004 11:16:37 +0000
+Date: Thu, 11 Nov 2004 11:27:42 +0000
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 & the write buffer patch
+Cc: linux-mtd@lists.infradead.org,
+	Mark Hamilton <mhamilton@alliantnetworks.com>
+Subject: Re: [JFFS2] GC patch for eCos port
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-11-10 at 16:54 +0300, Artem Bityuckiy wrote:
-> Dear JFFS2 maintainers,
-> 
-> I was recently fixed the problem with the JFFS2 write buffer races and 
-> have posted it to the MTD list. Unfortunately, maintainers did not 
-> comment the patch (only Estelle Hammache kindly responded).
+On Mon, 2004-10-11 at 14:18 +0200, Estelle HAMMACHE wrote:
+> was discussed in the eCos mailing list, but I meant that
+> jffs2_gc_fetch_page should call jffs2_read_inode with the reading
+> offset set to the page boundary: (offset & ~(PAGE_CACHE_SIZE-1)).
+> I believe this is the expected behavior for jffs2_gc_fetch_page.
 
-Sorry, I've been busy. Like you, I really don't like the extra locking.
-I was trying to find time to stare really hard at it and find a way of
-doing it without extra locks. 
+Yes, that is the expected behaviour and looks like the correct fix. I've
+just committed the corresponding change to the eCos version of
+jffs2_gc_fetch_page(). 
 
-> Could any one who has the cvs access rights please commit this patch? If 
-> the patch is bad, we may discuss how we can change it.
-> 
-> The another possibility is to grant me the CVS access rights and I will 
-> commit the patch myself.
+Sorry for the delay in responding.
 
-Mail me a SSH public key and you can have an account to commit it
-yourself. But please let's convince ourself the new lock _really_ is
-necessary before we do that. I really don't like it.
+The eCos port could definitely do with some love -- I did a lot of work
+to remove all the Linuxisms from it, and provide abstractions like
+jffs2_gc_fetch_page(), and it would be nice if someone could make the
+eCos bits no longer look like it's trying to emulate the Linux VFS, but
+actually behave as a proper eCos file system.
 
 -- 
 dwmw2
