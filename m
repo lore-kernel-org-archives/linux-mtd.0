@@ -1,21 +1,17 @@
-Received: from smtp3.libero.it ([193.70.192.127])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CCeVb-0005cS-V9
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2004 09:28:43 -0400
-Received: from localhost (172.16.1.83) by smtp3.libero.it (7.0.027-DD01)
-	id 4153CC0C001134B3 for linux-mtd@lists.infradead.org;
-	Wed, 29 Sep 2004 15:28:36 +0200
-Received: from libero.it (172.16.1.80) by smtp20.libero.it (7.0.027-DD01)
-	id 40E3F8E400732F23 for linux-mtd@lists.infradead.org;
-	Wed, 29 Sep 2004 15:28:36 +0200
-Date: Wed, 29 Sep 2004 15:28:36 +0200
-Message-Id: <I4T1FO$B6B45C614484D57A6F4917A9CBA57C48@libero.it>
+Received: from web52706.mail.yahoo.com ([206.190.39.157])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CCgRP-00060r-Il
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2004 11:32:28 -0400
+Message-ID: <20040929153225.9627.qmail@web52706.mail.yahoo.com>
+Date: Wed, 29 Sep 2004 08:32:25 -0700 (PDT)
+From: Michael Moedt <xemc@yahoo.com>
+To: "lp4u@inwind.it" <lp4u@inwind.it>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
+In-Reply-To: <I4T1FO$B6B45C614484D57A6F4917A9CBA57C48@libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-From: "lp4u\@inwind\.it" <lp4u@inwind.it>
-To: "MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: Jffs
+Content-Type: text/plain; charset=us-ascii
+Cc: 
+Subject: Re: Jffs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, 
- 
-how to mount jffs on a NAND? 
-how to write a file in a NAND, us=
-ing jffs? 
-what's a jffs image ? 
- 
-Thanks, 
-Lorenzo 
+> Hi,
+> 
+> how to mount jffs on a NAND?
+> how to write a file in a NAND, using jffs?
+> what's a jffs image ?
+> 
+
+Please go to linux-mtd.infradead.org, and follow the Documentation
+links.
+
+Mike
