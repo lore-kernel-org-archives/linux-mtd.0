@@ -1,50 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14JQCu-0001f7-00
-	for mtd-list@infradead.org; Fri, 19 Jan 2001 01:19:12 +0000
-Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.home)
+	id 14L5rZ-0004oD-00
+	for mtd-list@infradead.org; Tue, 23 Jan 2001 16:00:05 +0000
+Received: from mx0.i-way.net.uk ([212.49.192.2] ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14JQCt-0001f1-00
-	for mtd@infradead.org; Fri, 19 Jan 2001 01:19:11 +0000
-Date: Thu, 18 Jan 2001 20:19:05 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Gregory Schallert <gschallert@dawning.com>
-cc: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: mtdblock: module -vs- kernel
-In-Reply-To: <3A677BD2.421F2332@dawning.com>
-Message-ID: <Pine.LNX.4.30.0101182017080.21027-100000@xanadu.home>
+	id 14L5rX-0004o7-00
+	for mtd@infradead.org; Tue, 23 Jan 2001 16:00:04 +0000
+Message-ID: <52AF3CB987C7D41183CD0090271F67C301C7CE@m4eng.m4data.co.uk>
+From: Simon Munton <Simon.Munton@m4data.co.uk>
+To: "JFFS (E-mail)" <jffs-dev@axis.com>, "MTD (E-mail)"
+	 <mtd@infradead.org>
+Subject: Endless garbage collection
+Date: Tue, 23 Jan 2001 15:59:20 -0000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
+It's possible to get the garbage collection going in an endless loop by
+creating lots of small files. eg, if I create 25 files, each 0 bytes long,
+on an empty filesystem, garbage collection starts and goes on and on.
 
-On Thu, 18 Jan 2001, Gregory Schallert wrote:
+Perhaps the test for too much RAM being used in thread_should_wake() ought
+to take the number of files into account? ie should it be:
 
-> I have hacked physmap.c and jedec.c (my chips do not support CFI) and can now
-> mount a filesystem on my flash device.  Everything works wonderful as a
-> modules ( both block and char devices)....
->
-> Now I want to make the flash device a root filesystem.  I have edited
-> init/main.c and added the /dev/flash I node number and init_mtd function.
+	/* If there is too much RAM used by the various structures, GC */
+	if (jffs_get_node_inuse() >
+(c->fmc->used_size/c->fmc->max_chunk_size * 5 + 25 + jffs_get_file_count()))
+{
 
-Why adding init_mtd?
+where  jffs_get_file_count() returns the number of files on the filesystem.
 
-> When I boot with mtdblock0 as my boot device It will uncompress the kernel and
-> load it.  It then recognizes /dev/mtdblock0 as the boot device, but when it
-> tries to load the filesystem it crashes.
->
-> If  I do not set mtdblock0 as my boot device( and boot from floppy), the mtd
-> char driver seems to be working fine when compiled into the kernel but I can
-> not mount a block device. The proc/dev/ dir contains both mtd and mtdblock.
-> the /proc/mtd dir only contains mtd0, and will not recognize mtdblock0 as a
-> valid block device. (that means I can not mount any flash chips)
-
-What does /proc/devices say?
-
-
-Nicolas
+Simon
 
 
 
