@@ -1,37 +1,85 @@
-From: nicola76@inwind.it (Nicola)
-Date: 07 Feb 2003 18:20:00 +0100
-Subject: CFI/MTD weird problem
-Message-ID: <1044638400.10751.40.camel@localhost.localdomain>
+From: leeyang@ycig.com (leeyang)
+Date: Sat, 8 Feb 2003 16:59:04 +0800
+Subject: 2 bank raw flash problem
+Message-ID: <001a01c2cf50$5504dab0$0200a8c0@ycigrnd.ycig.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-I forgot to attach the console output that could be useful to understand
-the problem:
+HW:2 bank AM29LV160B(16bit bus,2M bytes)
+        And MPC860(flash connected to flash with 16bit bus wide)
+1st  bank mapped at 0xFF800000-0xFF9FFFFF
+2nd bank mapped at 0xFFA00000-0xFFBFFFFF
+SW:kernel 2.4.20-pre7 with patch 'cvsed' from infradead.org
 
-Uncompressing Linux............................................ done,
-booting the kernel.
-Linux version 2.4.19-rmk4-ds2 (local at localhost.localdomain) (gcc version
-2.95.3 20010315 (release)) #261 ven feb 7 14:32:33 CET 2003
-CPU: %s revision -1073616200
-Machine: %
-Ignoring unrecognised tag 0x00000000
-On node 0 totalpages: 16384
-zone(0): 16384 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: %
-Calibrating delay loop... 398.%2lu BogoMIPS
-Memory: 64MB = 64MB total
-Memory: 63344KB available (1187K code, 205K data, 52K init)
-XScale Cache/TLB Locking Copyright(c) 2001 MontaVista Software, Inc.
-Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
-Inode cache hash table entries: 4096 (order: 3, 32768 bytes)
-Mount-cache hash table entries: 1024 (order: 1, 8192 bytes)
-Buffer-cache hash table entries: 4096 (order: 2, 16384 bytes)
-Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
-POSIX conformance testing by UNIFIX
-init!
-Unable to handle kernel %at virtual address c0127b5c
-pgd = c0004000
-*pgd = 00000000, *pmd = 00000000
-Internal error: %: c0127b6c
+I want to implemnt mtd on the 2nd bank flash,and leave 1st one
+unaffacted.
+
+so I set
+
+CONFIG_MTD_PHYSMAP_START=ffa00000
+CONFIG_MTD_PHYSMAP_LEN=200000
+
+kernel booting msg:
+.............
+physmap flash device: 200000 at ffa00000
+ Amd/Fujitsu Extended Query Table v1.0 at 0x0040
+Physically mapped flash: JEDEC Device ID is 0xC4. Assuming broken CFI table.
+Physically mapped flash: Swapping erase regions for broken CFI table.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+mtd: Giving out device 0 to Physically mapped flash
+.............
+seems did not find that flash.
+
+but when I
+cat /proc/mtd
+it reports size 200000 and block size 10000
+
+I try to
+eraseall /dev/mtd0
+it reports "no such device",I check the /dev directory,it does have mtd0-20
+
+I also tried
+od -x /dev/mtd0,
+it reports almost the same thing
+
+However if  I set
+CONFIG_MTD_PHYSMAP_START=ff800000
+CONFIG_MTD_PHYSMAP_LEN=400000
+
+kernel msg:
+Starting kswapd
+JFFS version 1.0, (C) 1999, 2000  Axis Communications AB
+JFFS2 version 2.1. (C) 2001, 2002 Red Hat, Inc., designed by Axis
+Communications AB.
+..............
+physmap flash device: 400000 at ff800000
+Physically mapped flash: Found 1 x16 devices at 0x200000 in 16-bit mode
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no this line in the former msg
+ Amd/Fujitsu Extended Query Table v1.0 at 0x0040
+Physically mapped flash: JEDEC Device ID is 0xC4. Assuming broken CFI table.
+Physically mapped flash: Swapping erase regions for broken CFI table.
+number of CFI chips: 2
+cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+mtd: Giving out device 0 to Physically mapped flash
+.............
+
+this time seems really find 2 flashs
+
+but when I try to erase or od  /dev/mtd0 the same as above,FAILS.
+
+Q1:why mtd can not find 2nd flash separately?
+
+Q2:If find the flash,why unable to operate the flash  with /dev/mtd0
+
+and a common sense question:
+
+AM29LV160B have 35 sectors,
+31*64kbytes+1*32kbytes+2*8kbytes+1*4kbytes=2048kbytes
+
+if block size is 64kbytes,the 4 'small-size' block will be look as a whole
+one?
+
+Best regards
+
+leeyang
