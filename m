@@ -1,19 +1,16 @@
-Received: from dsl-64-129-131-125.telocity.com ([64.129.131.125] helo=mir.outpostsentinel.com)
+Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Jaf3-0000Yb-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 13:33:29 +0000
-Received: from amd800 (dhcp03.zfh-csg.com [192.168.1.102])
-	by mir.outpostsentinel.com (8.11.0/8.11.0) with SMTP id fBRFI8201905
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 10:18:08 -0500
-From: "Chris Fowler" <cfowler@outpostsentinel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: msys/fla
-Date: Thu, 27 Dec 2001 08:43:26 -0500
-Message-ID: <NFBBLCEFBCFEPMJJKOIKAEAKCBAA.cfowler@outpostsentinel.com>
+	id 16JbUc-0000bj-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 14:26:46 +0000
+Date: Thu, 27 Dec 2001 14:37:36 +0000 (GMT)
+From: kira brown <kira@hex.linuxgrrls.org>
+To: Chris Fowler <cfowler@outpostsentinel.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: msys/fla
+In-Reply-To: <NFBBLCEFBCFEPMJJKOIKAEAKCBAA.cfowler@outpostsentinel.com>
+Message-ID: <Pine.LNX.4.33.0112271434101.3571-100000@hex.linuxgrrls.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,20 +22,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
 
-Maybe someone can shed some light on something that I'm seeing.  I have 2
-systems.  One loads the software from cdrom and the other from a 32MB
-DOC2000.  I use the first for testing.  On the 2nd I appear to get high load
-averages.  I'm not sure where it is coming from since most of the software
-on the unit is server and waits for connections.  When I do a process
-listing I see 2 processes:
+On Thu, 27 Dec 2001, Chris Fowler wrote:
 
-msys/fla
-msys/flb
+> DOC2000.  I use the first for testing.  On the 2nd I appear to get high load
+> averages.
 
-I'm not sure what they are but maybe someone here will know.  After loading,
-I only use my DOC to store the sw and saved configuration.
+Why does this worry you?
 
-Thanks,
-Chris
+Load averages are not really meaningful-  all they signify is the number
+of processes that are blocked.  Blocked processes are an indicator that
+your IO world isn't fast enough to satisfy your processor;  and indeed, if
+you're forcing the flash to write any volume of data, and thus to erase
+frequently, your storage is going to be blocking on you as the Flash is
+garbage collected, erased and rewritten.
+
+kira.
