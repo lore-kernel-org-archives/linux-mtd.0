@@ -1,17 +1,20 @@
-Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
+Received: from smtp.comcast.net ([24.153.64.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16x9Tf-0006iV-00
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2002 17:37:15 +0100
-content-class: urn:content-classes:message
-Subject: [PATCH] Compiling nand.c without ecc
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C1E49B.C481BE70"
-Date: Mon, 15 Apr 2002 17:37:01 +0100
-Message-ID: <541025071C7AC24C84E9F82296BB9B9508051B@OPTEX1.optex.local>
-From: "John Hall" <John.Hall@optionexist.co.uk>
-To: <gleixner@autronix.de>
-Cc: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+	id 16xBww-0006rd-00
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2002 20:15:38 +0100
+Received: from [192.168.0.101]
+ (pcp657911pcs.micske01.fl.comcast.net [68.35.215.220])
+ by mtaout04.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
+ with ESMTP id <0GUM0078WIT6KJ@mtaout04.icomcast.net> for
+ linux-mtd@lists.infradead.org; Mon, 15 Apr 2002 15:15:07 -0400 (EDT)
+Date: Mon, 15 Apr 2002 15:16:20 -0400
+From: Edgar Hilton <efhilton@comcast.net>
+Subject: DOC-2000 problems
+To: linux-mtd@lists.infradead.org
+Message-id: <1018898181.3931.18.camel@tuxie>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,43 +26,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
+Hi!
 
-------_=_NextPart_001_01C1E49B.C481BE70
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have a DOC-2000.  Following the mtd-jffs-HOWTO, I get to the point
+where I can type:
 
-The enclosed patch fixes nand.c so that it compiles without
-CONFIG_MTD_NAND_ECC being defined. The patch is against the latest CVS.
+bash-2.04# modprobe -a doc2000 nftl mtdchar mtdblock
+bash-2.04# modprobe -a docprobe
+bash-2.04# cat /proc/mtd
+dev:    size   erasesize name 
+mtd0: 06000000 00004000 "DiskOnChip 2000"
 
-Regards,
-John Hall
+Howewer, dmesg gives:
 
---=20
-OptionExist Limited.
-The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
-Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
-http://www.optionexist.co.uk/
+------------------ cut here -------------------------
+NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.23 $
+DiskOnChip 2000 found at address 0xCE000
+Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba
+TC58256FT/DC)
+3 flash chips found. Total DiskOnChip size: 96 MiB
+mtd: Giving out device 0 to DiskOnChip 2000
+NFTL_notify_add for DiskOnChip 2000
+mtd->read = c483d9a8, size = 100663296, erasesize = 16384
+NFTL_setup
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+Sorry, we don't support UnitSizeFactor of != 1 yet.
+Could not find valid boot record
+Could not mount NFTL device
+------------------ cut here -----------------------
 
-------_=_NextPart_001_01C1E49B.C481BE70
-Content-Type: application/octet-stream;
-	name="nand.patch"
-Content-Transfer-Encoding: base64
-Content-Description: nand.patch
-Content-Disposition: attachment;
-	filename="nand.patch"
+Also, as per the howto, I run:  
 
-SW5kZXg6IGRyaXZlcnMvbXRkL25hbmQvbmFuZC5jCj09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6IGU6XGN2
-cy9jbGllbnRzL2ZsZWV0d29vZC9saW51eC9kcml2ZXJzL210ZC9uYW5kL25hbmQuYyx2CnJldHJp
-ZXZpbmcgcmV2aXNpb24gMS40CmRpZmYgLXUgLWIgLXIxLjQgbmFuZC5jCi0tLSBkcml2ZXJzL210
-ZC9uYW5kL25hbmQuYwkyMDAyLzA0LzA0IDEwOjE4OjQ1CTEuNAorKysgZHJpdmVycy9tdGQvbmFu
-ZC9uYW5kLmMJMjAwMi8wNC8xNSAxNjozNTowNwpAQCAtOTA3LDcgKzkwNywxMSBAQAogCQl9CiAK
-IAkJLyogV2UgdXNlIHRoZSBzYW1lIGZ1bmN0aW9uIGZvciB3cml0ZSBhbmQgd3JpdGV2ICEpICov
-CisjaWZkZWYgQ09ORklHX01URF9OQU5EX0VDQwogCQlyZXQgPSBuYW5kX3dyaXRlX3BhZ2UgKG10
-ZCwgdGhpcywgcGFnZSwgY29sLCBjbnQsIHRoaXMtPmVjY19jb2RlX2J1Zik7CisjZWxzZQorCQly
-ZXQgPSBuYW5kX3dyaXRlX3BhZ2UgKG10ZCwgdGhpcywgcGFnZSwgY29sLCBjbnQsIE5VTEwpOwor
-I2VuZGlmCiAJCWlmIChyZXQpCiAJCQlnb3RvIG91dDsKIAo=
+bash-2.04# ./nftl_format /dev/mtd0
 
-------_=_NextPart_001_01C1E49B.C481BE70--
+But I get:
+$Id: nftl_format.c,v 1.17 2001/08/29 14:28:48 dwmw2 Exp $
+Erase size not 8Kb - I'm confused
+
+
+Any ideas?
+
+-Edgar
