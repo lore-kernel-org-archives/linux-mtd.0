@@ -1,20 +1,20 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1ClcO0-0005qs-AN
-	for linux-mtd@lists.infradead.org; Mon, 03 Jan 2005 19:17:22 -0500
-Date: Tue, 4 Jan 2005 01:15:16 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Mark_H_Johnson@raytheon.com
-Message-ID: <20050104001516.GU2980@stusta.de>
-References: <OF0551C40F.E8032010-ON86256F7E.007EFEBA-86256F7E.007EFF1F@raytheon.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from mail.rdsor.ro ([193.231.238.10])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Clkql-0000bQ-T6
+	for linux-mtd@lists.infradead.org; Tue, 04 Jan 2005 04:19:37 -0500
+From: Balint Cristian <rezso@rdsor.ro>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 4 Jan 2005 11:19:24 +0200
+References: <41D9949B.5070207@ieee.org>
+In-Reply-To: <41D9949B.5070207@ieee.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <OF0551C40F.E8032010-ON86256F7E.007EFEBA-86256F7E.007EFF1F@raytheon.com>
-Cc: Andrew Morton <akpm@osdl.org>, dwmw2@infradead.org, nico@cam.org,
-	lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-Subject: [2.6 patch] add missing dependencies on MTD_PARTITIONS (fwd)
+Message-Id: <200501041119.25138.rezso@rdsor.ro>
+Cc: Dan Brown <dan_brown@ieee.org>
+Subject: Re: DOCBoot update
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,107 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 03, 2005 at 05:07:08PM -0600, Mark_H_Johnson@raytheon.com wrote:
-> I was looking to compare RT latency between this kernel and the latest from
-> Ingo and I had the following warnings / errors building 2.6.10-mm1:
+On Monday 03 January 2005 20:53, Dan Brown wrote:
+> To those interested:
+
+
+Just a undocumented Question:
+
+ Can please tell me if run on ARM/xscale not on intel only ?
+If not, it is difficult to adapt ?, or you already have some plans for this.
+
 > 
-> [no apparent compile / link errors]
->...
-> *** Warning: "del_mtd_partitions" [drivers/mtd/maps/scx200_docflash.ko]
-> undefined!
-> *** Warning: "add_mtd_partitions" [drivers/mtd/maps/scx200_docflash.ko]
-> undefined!
->...
-
-
-Known bug, fix below:
-
-
-<--  snip  -->
-
-
-Date:   Mon, 27 Dec 2004 23:50:15 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Cc: nico@cam.org, linux-kernel@vger.kernel.org
-Subject: [2.6 patch] add missing dependencies on MTD_PARTITIONS
-
-On Tue, Dec 28, 2004 at 12:23:48AM +0200, Michael S. Tsirkin wrote:
-
-> Hello!
-
-Hi Michael!
-
-> Sorry, I had a wrong subject.
+> I've just committed to CVS a new version of DOCBoot, a small Linux 
+> bootloader for some DiskOnChip devices.  This version adds initrd 
+> support, the ability to abort DOCBoot from the keyboard, and flexibility 
+> in the location of the kernel image.  Full details are available in 
+> docboot/README.
 > 
-> It seems that you can disable MTD partitioning support 
-> but enable , e.g. NAND.
-> And, if you are upgrading from and older kernel without
-> the paritioning option, and do oldconfig and are not careful,
-> thats what you end up with.
-> But, lots of code is calling del_mtd_partitions now, so you get
-> unresolved del_mtd_partitions.
+>  -Dan Brown
 > 
-> Its easy to work around this by enabling partitioning, but
-> should not the dependency be added in the relevant KConfig?
-
-First of all thanks for your report.
-You didn't send the exact error mesage.
-I'm able to reproduce the following in 2.6.10-rc3-mm1:
-
-<--  snip  -->
-
-...
-  LD      .tmp_vmlinux1
-drivers/built-in.o(.init.text+0x6464b): In function `init_scx200_docflash':
-: undefined reference to `add_mtd_partitions'
-drivers/built-in.o(.init.text+0x66ab8): In function `ns_init_module':
-: undefined reference to `add_mtd_partitions'
-drivers/built-in.o(.exit.text+0x8bf4): In function `cleanup_scx200_docflash':
-: undefined reference to `del_mtd_partitions'
-make: *** [.tmp_vmlinux1] Error 1
-
-<--  snip  -->
-
-The patch below fixes them.
-
-Please tell whether this fixes the problems you observed.
-
-> Cc me directly, I'm not on the list.
-> Thanks,
-> MST
-
-cu
-Adrian
-
-
-diffstat output:
- drivers/mtd/maps/Kconfig |    2 +-
- drivers/mtd/nand/Kconfig |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig.old	2004-12-27 23:43:00.000000000 +0100
-+++ linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig	2004-12-27 23:44:01.000000000 +0100
-@@ -159,7 +159,7 @@
- 
- config MTD_SCx200_DOCFLASH
- 	tristate "Flash device mapped with DOCCS on NatSemi SCx200"
--	depends on X86 && MTD_CFI
-+	depends on X86 && MTD_CFI && MTD_PARTITIONS
- 	help
- 	  Enable support for a flash chip mapped using the DOCCS signal on a
- 	  National Semiconductor SCx200 processor.
---- linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig.old	2004-12-27 23:44:44.000000000 +0100
-+++ linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig	2004-12-27 23:45:37.000000000 +0100
-@@ -198,7 +198,7 @@
-  
-  config MTD_NAND_NANDSIM
-  	bool "Support for NAND Flash Simulator"
-- 	depends on MTD_NAND
-+ 	depends on MTD_NAND && MTD_PARTITIONS
- 
- 	help
- 	  The simulator may simulate verious NAND flash chips for the
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
