@@ -1,15 +1,20 @@
-Received: from gate12.itt.com ([151.190.254.107] helo=fwetgfw2r.itt.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19844y-000829-E6
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 21:09:26 +0100
-Message-ID: <998FEBD9C16DD211881200A0C9D61AD705AD5F56@acdfwx3.acdin.de.ittind.com>
-From: "Kelly, Mike - ACDIN" <Michael.Kelly@itt.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Tue, 22 Apr 2003 15:08:55 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Does jffs2 garbage collection include erasing
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19849B-00088N-QZ
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 21:13:48 +0100
+Date: Tue, 22 Apr 2003 22:13:44 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Art Haas <ahaas@airmail.net>
+Message-ID: <20030422201344.GA662@wohnheim.fh-wedel.de>
+References: <20030422155653.GB7260@debian>
+	<20030422190324.GC12947@wohnheim.fh-wedel.de> <20030422192529.GB17381@debian>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20030422192529.GB17381@debian>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] C99 initializers for drivers/mtd/devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,19 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When one discusses garbage collection, does that include erasure of the
-flash device?  Should manual activation of the garbage collection by sending
-the SIGHUP signal to the jffs2 process also cause the process to start
-erasing part of the flash device?
+On Tue, 22 April 2003 14:25:29 -0500, Art Haas wrote:
+> 
+> Here's a patch against the CVS lart.c to convert it to C99. The
+> 'blkmtd.c' file from CVS doesn't match the file I generated the C99
+> patch for that was in the kernel.
 
-Thanks for any assistance you can give me -- a jffs2 newbie. 
+Committed, thanks!
 
-************************************ 
-If this email is not intended for you, or you are not responsible for the
-delivery of this message to the addressee, please note that this message may
-contain ITT Privileged/Proprietary Information.  In such a case, you may not
-copy or deliver this message to anyone.  You should destroy this message and
-kindly notify the sender by reply email.  Information contained in this
-message that does not relate to the business of ITT is neither endorsed by
-nor attributable to ITT. 
-************************************ 
+Jörn
+
+-- 
+Fantasy is more important than knowlegde. Knowlegde is limited,
+while fantasy embraces the whole world.
+-- Albert Einstein
