@@ -1,18 +1,18 @@
-Received: from bdsl.66.14.23.165.gte.net ([66.14.23.165]
-	helo=eai-exchange.edgeaccess.net)
+Received: from webmanixhosting.com ([216.40.225.16]
+	helo=www.webmanixhosting.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aj265-0007QP-VK
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2004 20:03:38 +0000
-Message-ID: <400D8910.9060102@ieee.org>
-Date: Tue, 20 Jan 2004 15:01:20 -0500
-From: Bob Beers <bbeers@ieee.org>
-MIME-Version: 1.0
+	id 1Aj3lI-0007kz-KN
+	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2004 21:50:16 +0000
+Received: from www.onemyth.net (localhost [127.0.0.1])
+	by localhost (8.10.2/8.10.2) with ESMTP id i0KLoo909677
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Jan 2004 13:50:50 -0800
+From: "Dan Post" <djp.mtd@onemyth.net>
 To: linux-mtd@lists.infradead.org
-References: <E1Aj0eB-0006rS-Bn@pentafluge.infradead.org>
-In-Reply-To: <E1Aj0eB-0006rS-Bn@pentafluge.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re:  MTD - DOC 2000 freezes on umount
+Date: Tue, 20 Jan 2004 13:50:50 -0800
+Message-Id: <20040120215050.M62159@onemyth.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Subject: Intel flash and cfi_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Tue, 2004-01-20 at 13:04 -0500, Mark Richards wrote:
+I was looking at the cfi_probe.c file, and noticed that there are numerous
+'0xF0' commands to flash (theoretically to put the flash back into read array
+mode).  This is incorrect in terms of Intel flash; according to the datasheets
+for L18/30 and K3/18, the "read array" command is 0xFF.
 
- >[root@localhost linux]# make xconfig
- >rm -f include/asm
- >( cd include ; ln -sf asm-i386 asm)
- >make -C scripts kconfig.tk
- >make[1]: Entering directory `/usr/src/linux-2.4.24.new.mtd/scripts'
- >cat header.tk >> ./kconfig.tk
- >./tkparse < ../arch/i386/config.in >> kconfig.tk
- >drivers/mtd/chips/Config.in: 14: unknown command
- >make[1]: *** [kconfig.tk] Error 1
- >make[1]: Leaving directory `/usr/src/linux-2.4.24.new.mtd/scripts'
- >make: *** [xconfig] Error 2 [root@localhost linux]#
- >
- >
- >Is it something I'm missing?  My kernel sources are the 2.4.24 (latest).
+Normally, it would work fine (by virtue of accident, the state machine is
+coherent enough not to break after the probe), except in cases of XIP (based
+on dwmw2's code, which I have been working on and will send out probably this
+week).  It breaks the system then because 0xF0 doesn't really put an Intel
+chip into read array, so when you enable intterupts, you schedule to a
+function running out of flash, which happens to be in status mode.... == big
+bad no-run, i.e. you freeze.
 
-I saw the exact same issue.  I edited drivers/mtd/chips/Config.in by hand,
-  after mtd patchin, to change the lines (14 and 59) to modify
-  the 'elif' into a nested 'else if'.  After that make xconfig works.  Also as
-  mentioned by dwmw2, the other make *config don't seem to have any trouble
-  with those lines.  I didn't get around to it figuring out why.
+(Specifically, it blows up on L*...  though it seemed to "work" on K*, that
+may just be an accident or compatibility mode that wasn't put into L*.  Or
+maybe I munged my code somehow and something magically changed.  It's not in
+the datasheets, so the behavior could change at any time.  When I changed the
+0xF0's to 0xFF's, it worked on L*.)
 
--bbeers
+I assume that the 0xF0 is for AMD flash (a datasheet I checked out confirms
+this).  For the cfi_probe.c file to be "proper", it needs to issue 0xFF to
+Intel flash, and 0xF0 for AMD.  (Any other chips using different commands??)
+
+What would happen if we issued an 0xF0;0xFF to an AMD chip?  Or 0xFF;0xF0? 
+Any AMD chip-heads care to answer?  It looks like it will "work" on Intel chips...
+
+At any rate, either there needs to be a clever hack like that, or the
+cfi_probe.c facilities need to be refactored so they know which command to
+issue to flash.
+
+Dan
