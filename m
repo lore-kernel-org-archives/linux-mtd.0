@@ -1,18 +1,14 @@
-Received: from wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BfdMx-0004GL-Mz
-	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2004 07:35:16 -0400
-Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
-	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004063007461025979
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Jun 2004 07:46:10 -0400
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812E0@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 30 Jun 2004 07:32:37 -0400
+Received: from [63.149.69.17] (helo=ADDISON.belkin.com)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bfi0f-0004ur-A0
+	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2004 12:32:34 -0400
+Message-ID: <006B22B846854640942D08F78855FCE18160E4@addison.belkin.com>
+From: Michael Leibow <MichaelLe@belkin.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Wed, 30 Jun 2004 12:32:30 -0400
 MIME-Version: 1.0
 Content-Type: text/plain
-Subject: BBT question on DOC MIL Plus
+Subject: Failure writing to flash in drivers/mtd/chips/cfi_cmdset_0002.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I downloaded the DOC_Millennium_plus_DS_Rev1.7.pdf from M-sys.  Pg 28 give a
-layout of the chip.  I will have to get on the chat site when I get home
-tonight (eastern time zone).  I am not allowed to use chat software here at
-my current location. Rules that hamper productivity, just what I don't need!
-Sorry about the inconvenience I hope later tonight someone will be on to
-discuss this with me.
+I have an AMD Spansion S29GL064M flash chip.  The cfi_amdstd_setup() code in
+cfi_cmdset_0002.c chooses a write method:
 
-John
+If( cfi->cfiq->BufWriteTimeoutTyp )
+{
+   printk( "Using buffer write method\n" );
+   mtd->write = cfi_amdstd_write_buffers;
+} else {
+   printk( "Using word write method\n" );
+   mtd->write = cfi_amdstd_write_words;
+}
+
+This flash part doesn't seem to work properly with the write_buffers code.
+cfi_amdstd_write_buffers() always returns with retlen == 0.
+
+If I comment out the top part of the if and force the "word write" method,
+then it works fine.  Anybody else seen this?
+
+Michael Leibow
+Senior Software Engineer
+
+Belkin Corporation
+Research & Development Labs
+585 324-7815
+www.belkin.com
