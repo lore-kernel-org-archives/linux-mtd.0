@@ -1,19 +1,26 @@
-Received: from [2002:d4ee:c952::1] (helo=xi.wantstofly.org)
+Received: from brmea-mail-4.sun.com ([192.18.98.36])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D3yMI-0001Pd-6R
-	for linux-mtd@lists.infradead.org; Wed, 23 Feb 2005 10:23:27 -0500
-Date: Wed, 23 Feb 2005 16:23:24 +0100
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: "Mialkowski, Andrzej" <Andrzej.Mialkowski@intel.com>
-Message-ID: <20050223152324.GF9272@xi.wantstofly.org>
-References: <A11645C193F77D429D800AED92117422016CBF72@swsmsx404>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A11645C193F77D429D800AED92117422016CBF72@swsmsx404>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH,
-	RFC] remove slowport mode setting from ixp2000 map driver
+	id 1D45hF-0002dD-1V
+	for linux-mtd@lists.infradead.org; Wed, 23 Feb 2005 18:13:33 -0500
+Received: from phys-san-2 ([129.153.85.71])
+	by brmea-mail-4.sun.com (8.12.10/8.12.9) with ESMTP id j1NNDUL0024199
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Feb 2005 16:13:30 -0700 (MST)
+Received: from conversion-daemon.san-mail1.west.sun.com by
+	san-mail1.west.sun.com
+	(iPlanet Messaging Server 5.2 HotFix 1.24 (built Dec 19 2003))
+	id <0ICE00M010AMF4@san-mail1.west.sun.com>
+	(original mail from Muhammad.Yahya@Sun.COM) for
+	linux-mtd@lists.infradead.org; Wed, 23 Feb 2005 15:13:30 -0800 (PST)
+Date: Wed, 23 Feb 2005 15:13:29 -0800
+From: Muhammad Yahya <Muhammad.Yahya@Sun.COM>
+To: jffs-dev@axis.com, linux-mtd@lists.infradead.org
+Message-id: <421D0E19.6030507@sun.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1; format=flowed
+Content-transfer-encoding: 7BIT
+Cc: 
+Subject: Errors writing to flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 23, 2005 at 11:26:44AM -0000, Mialkowski, Andrzej wrote:
-
-> Lennert,
-
 Hi,
 
-
-> 	I'm OK with this change I just not caught that you are moving
-> this setting to other place in ixp2000 global code.
-
-Ok, great.  Can you commit it, or can someone else do that?
+I am running a PPC 875 board with Linux  2.4.25 and an 8MB flash.
+When I try to write to the flash an image, as
 
 
-> Little surprise for
-> me is that you are saying that you have(seen?) problem with access to
-> devices when FRM=0, I never noticed that. This may of course happen in
-> some hardware implementations but this means that there is no access to
-> devices when executing from flash :(.
+>
+> /tmp # wget -O - 
+> http://129.148.183.102/~muhammad/flashupdate/spimage_nouboot |
+> dd of=/dev/mtdblock0 bs=1k seek=256
+> 7936+0 records in
+> 7936+0 records out
+>
+> The write seems to go OK withiout any errors, but, on the console, we see
+> the following messages which I an not sure if they are coming from 
+> jffs or the mtd driver.
+> Sometimes these messages are output right away after the write 
+> completes and
+> sometimes there is a delay before they are output:
+>
+>
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x000000c0)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00000064)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00000044)
+>
+> Any idea as to what this means and how to avoid this ? 
 
-There is, but it's somewhat tricky -- you have to keep byteswapping
-in mind, and the slowport might do more reads than you expect it to.
+Thanks!
+Muhammad
 
-I have a byte-addressable device on my slowport region #0 which has
-byte-sized registers.  The first four registers of the device are
-normally '31 13 19 00'.  When the xscale runs in big-endian, I get
-this:
-
-		word read	halfword reads		byte reads
-SP_FRM=0	00191331	0019 1331		00 19 13 31
-SP_FRM=1	31313131	3113 1900		31 13 19 00
-
-In SP_FRM=0, the output still looks 'fixable'.
-
-But note that when SP_FRM=0 and you're doing a byte or halfword read,
-what actually happens is that the slowport does four byte reads, combines
-that to a word using little-endian ordering (00191331), presents that
-word to the xscale, and the xscale then picks one of the {byte,halfword}s
-from that word.
-
-So, even if you do only a single byte read, it can still be doing four
-byte reads on the slowport.  This can obviously confuse attached devices.
-
-
-cheers,
-Lennert
+>
+>
+>
+>
+>
+>
+>
