@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta02.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16l4i9-00006z-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 09:06:17 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C8F04B4.D745D633@ctam.com.au> 
-References: <3C8F04B4.D745D633@ctam.com.au> 
-To: justin.ipsen@ctam.com.au
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: ECC Reset problems 
+	id 16l4pH-00007c-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 09:13:40 +0000
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Mar 2002 09:17:32 +0000
-Message-ID: <25659.1016011052@redhat.com>
+Date: Wed, 13 Mar 2002 01:25:05 -0800 (PST)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: "David  Woodhouse" <dwmw2@infradead.org>,
+	"David  Woodhouse" <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: why the kernel doesnt work
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020313092505.3D9472756@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +25,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-justin.ipsen@ctam.com.au said:
->  I'm running linux 2.4.1-pre11 on a powerPC platform. I have been
-> using a 32M doc2000 with no problems. I've just started to use a 48M
-> doc2000 but the On-Chip ECC engine seems to work just once after reset
-> and not again.   It looks like the "ECC Config" Resets function has
-> stopped working?
+HI , David 
+ 
+I am trying to add a intel 28f128 strataflash to perseus borad 
+I think what I should do is just to:
+1.create a file named perseus-flash.c in /drivers/mtd/maps based on physmap
+2.modify the Config.in and Makefile in the same directory
+3.set the configuration and remake the kernel image to restart
 
-Hmmm. I can't see any documented timing constraints on the ECC Reset. But 
-try adding a delay between...
+is that right? and if it is,what should happen or how can i check whether the flash works well.
 
-		/* Prime the ECC engine */
-		WriteDOC(DOC_ECC_RESET, docptr, ECCConf);
-		WriteDOC(DOC_ECC_EN, docptr, ECCConf);
+thanks
 
-Might also be worth looking in include/linux/mtd/doc2000.h and changing the 
-definition of DOC_ECC_RESET to DOC_ECC_RESV instead of zero.
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
 
-
---
-dwmw2
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
