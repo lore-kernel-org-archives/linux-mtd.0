@@ -1,17 +1,19 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18VtD4-0007A7-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2003 12:51:58 +0000
-Received: from dagobert.svc.sysgo.de ([172.22.1.2])
-	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with ESMTP id h07DMkl07041
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Jan 2003 14:22:46 +0100
-Date: Tue, 7 Jan 2003 14:22:46 +0100 (MET)
-From: Armin Schindler <acs@sysgo.de>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: DQ5 Warning
-Message-ID: <Pine.LNX.4.21.0301071416230.6948-100000@dagobert.svc.sysgo.de>
+	id 18VtYI-0007CR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2003 13:13:56 +0000
+Received: from willem.sanpeople.com ([192.168.4.3] helo=sanpeople.com)
+	by za-gw.sanpeople.com with esmtp (Exim 3.33 #2)
+	id 18VuAm-0002Ye-00
+	for linux-mtd@lists.infradead.org; Tue, 07 Jan 2003 15:53:40 +0200
+Message-ID: <3E1ADA96.7000308@sanpeople.com>
+Date: Tue, 07 Jan 2003 15:48:06 +0200
+From: Willem Myburgh <willem@sanpeople.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: Meaning of "DQ5 raised while program operation was in progress" ?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,27 +25,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+Hi there
 
-I use an AMD AM29LV800BB NOR-Flash and during writes I often get :
+I'm using an ATMEL AT49BV1614 Flash chip and the physical memory mapping 
+driver. I've patched linux-2.4.19-rmk4 with the latest mtd sources on
 
-"Warning: DQ5 raised while program operation was in progress, however
-operation completed OK"
-
-Can this be considered as an error ? If yes, what could be wrong ?
-If this is "almost" normal, it's not nice to get lot of these messages
-on the console.
-
-Thanks for any hint,
-
-Armin
+anoncvs@cvs.infradead.org
 
 
-Armin Schindler <acs@sysgo.de>
-SYSGO AG
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany
-phone: +49 6136 9948-0
-fax  : +49 6136 9948-10
-http://www.sysgo.de
-http://www.elinos.com
+I get this warning in the kernel log while I'm writing to a jffs2 fs:
+"DQ5 raised while program operation was in progress, however operation 
+completed OK".
+
+Is this a problem? What can I do to solve it?
+
+
+--Willem
