@@ -1,19 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from blackbird.intercode.com.au ([203.32.101.10]
+	ident=[oFWANE6KpxyIAsdCb0oDUzX+53VbG1me])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19LlDk-0007I1-08
-	for <linux-mtd@lists.infradead.org>; Fri, 30 May 2003 15:51:04 +0100
-Date: Fri, 30 May 2003 16:51:39 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20030530145139.GA15609@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
+	id 19Llox-0007Y1-Uy
+	for <linux-mtd@lists.infradead.org>; Fri, 30 May 2003 16:29:32 +0100
+Date: Sat, 31 May 2003 01:29:42 +1000 (EST)
+From: James Morris <jmorris@intercode.com.au>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20030530144959.GA4736@wohnheim.fh-wedel.de>
+Message-ID: <Mutt.LNX.4.44.0305310101550.30969-100000@excalibur.intercode.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+cc: "David S. Miller" <davem@redhat.com>
 cc: matsunaga <matsunaga_kazuhisa@yahoo.co.jp>
+cc: David Woodhouse <dwmw2@infradead.org>
 cc: linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] 2/2 convert jffs2, cramfs, zisofs to central workspace
+cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,217 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-See 1/2 for the description.
+On Fri, 30 May 2003, Jörn Engel wrote:
 
-Jörn
+> The following creates a central workspace per cpu for the zlib.  The
+> original idea was to save memory for embedded, but this should also
+> improve performance for smp.
+> 
+> Currently, each user of the zlib has to provide a workspace for the
+> zlib to draw memory from.  Each workspace amounts to 400k for deflate
+> or 50k for inflate.  Four users exist, as of 2.4.20:
+> jffs2:	inflate & deflate, initialized once, 450k
+> cramfs:	inflate,	   initialized once,  50k
+> zisofs:	inflate,	   initialized once,  50k
+> ppp:	inflate & deflate, per channel,      450k * n
 
+In 2.5 (and soon 2.4), the crypto/deflate.c module makes use of zlib as
+well.  This is typically used in ipsec for ipcomp.  Each ipcomp security
+association has a zlib context, and access to the workspace is serialized 
+by the security association's bh lock.
+
+(Something needs to be done for this particular case in general: a box
+with 1000 tunnels could use use 450MB of atomic kernel memory just for
+zlib workspaces alone.  A solution I've been looking at for this is to
+allow workspaces to be dynamically sized based on the compression
+parameters instead of using worst-case figures.  The memory savings may be
+up to 90% in this case).
+
+> This patch creates an extra workspace of 400k per cpu, that is used for
+> both inflate and deflate.  One of the central workspaces is used for
+> users that don't provide their own.  Semaphore protection is done in
+> zlib_(in|de)flateInit() and zlib_(in|de)flateEnd, so the user has to
+> call those functions more often to release the semaphores before
+> returning to userspace.
+
+This won't work for the bh lock protected case outlined above, and will
+cause contention between different users of zlib.
+
+
+- James
 -- 
-With a PC, I always felt limited by the software available. On Unix, 
-I am limited only by my knowledge.
--- Peter J. Schoenster
-
---- linux-2.4.20/fs/jffs2/compr_zlib.c~zlib_users	2002-11-29 00:53:15.000000000 +0100
-+++ linux-2.4.20/fs/jffs2/compr_zlib.c	2003-05-30 16:16:26.000000000 +0200
-@@ -56,33 +56,13 @@
- 	*/
- #define STREAM_END_SPACE 12
- 
--static DECLARE_MUTEX(deflate_sem);
--static DECLARE_MUTEX(inflate_sem);
--static void *deflate_workspace;
--static void *inflate_workspace;
--
- int __init jffs2_zlib_init(void)
- {
--	deflate_workspace = vmalloc(zlib_deflate_workspacesize());
--	if (!deflate_workspace) {
--		printk(KERN_WARNING "Failed to allocate %d bytes for deflate workspace\n", zlib_deflate_workspacesize());
--		return -ENOMEM;
--	}
--	D1(printk(KERN_DEBUG "Allocated %d bytes for deflate workspace\n", zlib_deflate_workspacesize()));
--	inflate_workspace = vmalloc(zlib_inflate_workspacesize());
--	if (!inflate_workspace) {
--		printk(KERN_WARNING "Failed to allocate %d bytes for inflate workspace\n", zlib_inflate_workspacesize());
--		vfree(deflate_workspace);
--		return -ENOMEM;
--	}
--	D1(printk(KERN_DEBUG "Allocated %d bytes for inflate workspace\n", zlib_inflate_workspacesize()));
- 	return 0;
- }
- 
- void jffs2_zlib_exit(void)
- {
--	vfree(deflate_workspace);
--	vfree(inflate_workspace);
- }
- 
- int zlib_compress(unsigned char *data_in, unsigned char *cpage_out, 
-@@ -94,12 +74,10 @@
- 	if (*dstlen <= STREAM_END_SPACE)
- 		return -1;
- 
--	down(&deflate_sem);
--	strm.workspace = deflate_workspace;
-+	strm.workspace = NULL;
- 
- 	if (Z_OK != zlib_deflateInit(&strm, 3)) {
- 		printk(KERN_WARNING "deflateInit failed\n");
--		up(&deflate_sem);
- 		return -1;
- 	}
- 
-@@ -120,7 +98,6 @@
- 		if (ret != Z_OK) {
- 			D1(printk(KERN_DEBUG "deflate in loop returned %d\n", ret));
- 			zlib_deflateEnd(&strm);
--			up(&deflate_sem);
- 			return -1;
- 		}
- 	}
-@@ -128,7 +105,6 @@
- 	strm.avail_in = 0;
- 	ret = zlib_deflate(&strm, Z_FINISH);
- 	zlib_deflateEnd(&strm);
--	up(&deflate_sem);
- 	if (ret != Z_STREAM_END) {
- 		D1(printk(KERN_DEBUG "final deflate returned %d\n", ret));
- 		return -1;
-@@ -151,12 +127,10 @@
- 	z_stream strm;
- 	int ret;
- 
--	down(&inflate_sem);
--	strm.workspace = inflate_workspace;
-+	strm.workspace = NULL;
- 
- 	if (Z_OK != zlib_inflateInit(&strm)) {
- 		printk(KERN_WARNING "inflateInit failed\n");
--		up(&inflate_sem);
- 		return;
- 	}
- 	strm.next_in = data_in;
-@@ -173,5 +147,4 @@
- 		printk(KERN_NOTICE "inflate returned %d\n", ret);
- 	}
- 	zlib_inflateEnd(&strm);
--	up(&inflate_sem);
- }
---- linux-2.4.20/fs/cramfs/uncompress.c~zlib_users	2002-11-29 00:53:15.000000000 +0100
-+++ linux-2.4.20/fs/cramfs/uncompress.c	2003-05-30 16:17:22.000000000 +0200
-@@ -34,19 +34,21 @@
- 	stream.next_out = dst;
- 	stream.avail_out = dstlen;
- 
--	err = zlib_inflateReset(&stream);
--	if (err != Z_OK) {
--		printk("zlib_inflateReset error %d\n", err);
--		zlib_inflateEnd(&stream);
--		zlib_inflateInit(&stream);
--	}
-+	stream.workspace = NULL;
-+	stream.next_in = NULL;
-+	stream.avail_in = 0;
-+	err = zlib_inflateInit(&stream);
-+	if (err != Z_OK)
-+		goto err;
- 
- 	err = zlib_inflate(&stream, Z_FINISH);
- 	if (err != Z_STREAM_END)
- 		goto err;
-+	zlib_inflateEnd(&stream);
- 	return stream.total_out;
- 
- err:
-+	zlib_inflateEnd(&stream);
- 	printk("Error %d while decompressing!\n", err);
- 	printk("%p(%d)->%p(%d)\n", src, srclen, dst, dstlen);
- 	return 0;
-@@ -54,24 +56,10 @@
- 
- int cramfs_uncompress_init(void)
- {
--	if (!initialized++) {
--		stream.workspace = vmalloc(zlib_inflate_workspacesize());
--		if ( !stream.workspace ) {
--			initialized = 0;
--			return -ENOMEM;
--		}
--		stream.next_in = NULL;
--		stream.avail_in = 0;
--		zlib_inflateInit(&stream);
--	}
- 	return 0;
- }
- 
- int cramfs_uncompress_exit(void)
- {
--	if (!--initialized) {
--		zlib_inflateEnd(&stream);
--		vfree(stream.workspace);
--	}
- 	return 0;
- }
---- linux-2.4.20/fs/isofs/compress.c~zlib_users	2003-05-27 16:51:45.000000000 +0200
-+++ linux-2.4.20/fs/isofs/compress.c	2003-05-30 16:16:26.000000000 +0200
-@@ -48,13 +48,6 @@
- static char zisofs_sink_page[PAGE_CACHE_SIZE];
- 
- /*
-- * This contains the zlib memory allocation and the mutex for the
-- * allocation; this avoids failures at block-decompression time.
-- */
--static void *zisofs_zlib_workspace;
--static struct semaphore zisofs_zlib_semaphore;
--
--/*
-  * When decompressing, we typically obtain more than one page
-  * per reference.  We inject the additional pages into the page
-  * cache as a form of readahead.
-@@ -206,8 +199,7 @@
- 		stream.avail_in = min(bufsize-(cstart & bufmask), csize);
- 		csize -= stream.avail_in;
- 
--		stream.workspace = zisofs_zlib_workspace;
--		down(&zisofs_zlib_semaphore);
-+		stream.workspace = NULL;
- 		
- 		zerr = zlib_inflateInit(&stream);
- 		if ( zerr != Z_OK ) {
-@@ -215,7 +207,7 @@
- 				err = -ENOMEM;
- 			printk(KERN_DEBUG "zisofs: zisofs_inflateInit returned %d\n",
- 			       zerr);
--			goto z_eio;
-+			goto b_eio;
- 		}
- 
- 		while ( !bail && fpage < maxpage ) {
-@@ -293,9 +285,6 @@
- 		}
- 		zlib_inflateEnd(&stream);
- 
--	z_eio:
--		up(&zisofs_zlib_semaphore);
--
- 	b_eio:
- 		for ( i = 0 ; i < haveblocks ; i++ ) {
- 			if ( bhs[i] )
-@@ -339,11 +328,6 @@
- 		return 0;
- 	}
- 
--	zisofs_zlib_workspace = vmalloc(zlib_inflate_workspacesize());
--	if ( !zisofs_zlib_workspace )
--		return -ENOMEM;
--	init_MUTEX(&zisofs_zlib_semaphore);
--
- 	initialized = 1;
- 	return 0;
- }
-@@ -355,6 +339,5 @@
- 		return;
- 	}
- 
--	vfree(zisofs_zlib_workspace);
- 	initialized = 0;
- }
+James Morris
+<jmorris@intercode.com.au>
