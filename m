@@ -1,38 +1,23 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
+Received: from mx1.redhat.com ([66.187.233.31])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Crznq-0008U4-Dh
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2005 09:30:25 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0LEUJ8S022204
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 09:30:19 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0LEUJDW277566
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 09:30:19 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0LEUJZU016203
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 09:30:19 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050120173341.GA24657@wohnheim.fh-wedel.de>
-References: <20050119153233.GD26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191957090.8174@phoenix.infradead.org>
-	<20050120143525.GA18170@wohnheim.fh-wedel.de>
-	<1106233518.2903.15.camel@sauron.oktetlabs.ru>
-	<20050120152736.GA20639@wohnheim.fh-wedel.de>
-	<1106235461.2903.25.camel@sauron.oktetlabs.ru>
-	<20050120161306.GG20639@wohnheim.fh-wedel.de>
-	<1106238673.7940.0.camel@sauron.oktetlabs.ru>
-	<20050120164153.GM20639@wohnheim.fh-wedel.de>
-	<1106240903.7940.12.camel@sauron.oktetlabs.ru>
-	<20050120173341.GA24657@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=
-Message-Id: <1106317818.6524.7.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Fri, 21 Jan 2005 08:30:18 -0600
-Content-Transfer-Encoding: 8bit
+	id 1Cs0LX-0000OP-Ql
+	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2005 10:05:12 -0500
+Message-ID: <41F119F8.2050500@redhat.com>
+Date: Fri, 21 Jan 2005 09:04:24 -0600
+From: "David A. Marlin" <dmarlin@redhat.com>
+MIME-Version: 1.0
+To: tglx@linutronix.de
+References: <41ED2EB3.1070203@redhat.com>	
+	<1106068748.16877.109.camel@tglx.tec.linutronix.de>	
+	<41ED50B7.9000107@redhat.com>	
+	<1106082905.16877.141.camel@tglx.tec.linutronix.de>	
+	<41F03217.3070300@redhat.com>
+	<1106299658.5483.16.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1106299658.5483.16.camel@tglx.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Subject: Re: additional error checks for AG-AND erase/write
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,25 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-01-20 at 11:33, Jörn Engel wrote:
-> > One more by the way, compression mode and whatever people implement in
-> > xattr flags may go to that inode flags node.
+
+Thomas Gleixner wrote:
+> On Thu, 2005-01-20 at 16:35 -0600, David A. Marlin wrote:
+	:
+>>Note:  I changed a few literals to defined symbols in 'nand_base.c'. 
+>>Please let me know if you would prefer this in a separate patch (or not 
+>>at all).
 > 
-> Extended attributes can be arbitrary, so they should go somewhere
-> else.  Basically, have a pseudo-directory for each inode and treat the
-> inodes inside that pseudo-directory as extended attributes.  Similar
-> to reiser4.  Didn't Josh plan to work in this area?
+> If it's not too much work it would be nice when you can do this change
+> first.
 
-<Delayed reaction>
+Sure.  Would you like it as a patch, or should I just commit it?
 
-What I'd like to do and what time allows are two separate things :). 
-And time will be in very short supply for me in a while.
+>>@@ -1052,6 +1062,30 @@
+>> static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
+>> 			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo *oobsel)
+>> {
+>>+	return do_nand_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel, 0xff);
+>>+}
+> 
+> Can you please change the call in nand_read too, so it calls
+> do_nand_read_ecc directly instead of doing the double call ?
 
-I'd be happy to review anything in this area.  And if I do get some
-time, I'll look into it as well.  But I wouldn't hold your breath.
+Will do.
 
-You know what they say about best laid plans...
+As I was looking over this, it occurred to me that the new name 
+(do_nand_read_ecc) will be visible external to 'nand_base.c', but the 
+function does not begin with 'nand'.  Would it be more appropriate to 
+call it 'nand_do_read_ecc'?  Just trying to be consistent.
 
-</Delayed reaction>
 
-josh
+Thank you,
+
+d.marlin
