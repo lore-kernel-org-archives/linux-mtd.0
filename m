@@ -1,20 +1,14 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from bay2-f142.bay2.hotmail.com ([65.54.247.142] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19XTqm-0000pi-3B
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Jul 2003 23:43:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dan Brown <brown@osdsun1.nrl.navy.mil>
-In-Reply-To: <1056978369.25574.357.camel@passion.cambridge.redhat.com>
-References: <E16Av0k-00087F-00@pentafluge.infradead.org>
-	 <004501c17ce9$b6077210$3501a8c0@MONSTROSITY>
-	 <1056978369.25574.357.camel@passion.cambridge.redhat.com>
-Message-Id: <1057099445.26374.180.camel@imladris.demon.co.uk>
+	id 19XUpI-00011f-Bs
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2003 00:46:20 +0100
+From: "George Jiang" <thinkpad_linux@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 01 Jul 2003 17:46:07 -0600
 Mime-Version: 1.0
-Date: Tue, 01 Jul 2003 23:44:05 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: 2nd try: [PATCH] jffs2 on DOC
+Message-ID: <BAY2-F142dZhotjCjWE00001848@hotmail.com>
+Content-Type: text/plain; format=flowed
+Subject: size of my program too large
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've also just committed the other patches required to make the current
-JFFS2 work on the DiskOnChip 2000 and Millennium; I haven't done the
-Millennium Plus or old Millennium-only drivers.
+Thanks for your time.
 
-I really ought to convert the DiskOnChip drivers to use the generic NAND
-code.
+--- Steps ---
+During my research I have to use a Fortran program for scientific 
+computation. It deals with a large model.
+first, I use "f77 aa.f -o aa.exe" to compile it;
+second, I use "size aa.exe" to view the size of the exe file;
+third, I use "./aa.exe" to run the program.
 
--- 
-dwmw2
+--- Problem ---
+When the size is larger than 1.0 G, I got the message "Segmentation fault 
+(core dumped)"  when I run "./aa.exe";
+Then I adjusted the model size, and redo step1,2,3. This time the program 
+runs well.
+
+--- Question ---
+My computer has 1.5G memory; does anyone know how to fix this problem so 
+that I can run the program with a larger model (my research requires me to 
+run a large model)?  such a
+s modify the configuration or settings of the Linux system... ( red hat 
+linux 8.0
+)?
+( I've thought about MPI; But it's not easy to modify the program for 
+parralel
+computing, so I want to find another solution)
+
+Thanks a lot!!
+  George Jiang
+
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
