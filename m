@@ -1,39 +1,24 @@
-From: grante@visi.com (Grant Edwards)
-Date: Fri, 14 Feb 2003 16:28:20 -0600
-Subject: Problems with BIG_ENDIAN
-In-Reply-To: <3DF38B3E.CD3CA322@imc-berlin.de>; from steven.scholz@imc-berlin.de on Sun, Dec 08, 2002 at 07:11:10PM +0100
-References: <3DF38B3E.CD3CA322@imc-berlin.de>
-Message-ID: <20030214162819.A15729@visi.com>
+From: tglx@linutronix.de (Thomas Gleixner)
+Date: Fri, 14 Feb 2003 23:37:34 +0100
+Subject: copy filesystem to nand flash without ecc
+In-Reply-To: <000901c2d44b$fef48a70$1a00a8c0@itc.intrinsyc.com>
+References: <4EF56021.2C81712E.0265FBE9@netscape.net>
+ <200302131752.54716.tglx@linutronix.de>
+ <000901c2d44b$fef48a70$1a00a8c0@itc.intrinsyc.com>
+Message-ID: <200302142337.34683.tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Sun, Dec 08, 2002 at 07:11:10PM +0100, Steven Scholz wrote:
-
-> I am having trouble creating a big endian image with the latest
-> CVS version of mkfs.jffs2!
-> 
-> > mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -l -p
-> > hexdump -n 16 -x images/pFlashdisk 
-> 0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
-> 
-> > mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -b -p
-> > hexdump -n 16 -x images/pFlashdisk 
-> 0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
-> 
-> Both options -l _and_ -b result in the same byteorder!!!
-
-Yup.  And it looks like it's still that way.  Oddly, a comment
-at the top of the file says that cross-endian support has been
-added, but it sure looks like "-l" and "-b" are just ignored.
-
-I tried undefining JFFS2_NATIVE_ENDIAN and defining
-JFFS2_BIG_ENDIAN, but then nothing builds.  (RH7.3 IA32 host)
-
-Where can I get a version of mkfs.jffs2 that pays attention to
-the "-b" flag?  [I unfortunately can't access the CVS archives.]
-
-Thanks,
+On Friday 14 February 2003 18:10, Alex Samoutin wrote:
+> But I can see call     mtd->write()  in  jffs2_flash_write() (wbuf.c).  It
+> is not ECC write.
+> This function invoked from jffs2_garbage_collect_pristine(). and   cause a
+> problem.
+Well spotted. Thanks.
 
 -- 
-Grant Edwards
-grante at visi.com
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx at linutronix.de
