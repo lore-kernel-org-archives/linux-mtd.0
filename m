@@ -1,19 +1,18 @@
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Nr4K-0003Ld-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 08:57:44 +0000
-To: David Woodhouse <dwmw2@infradead.org>
+	id 18NrEB-0003Ml-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 09:07:55 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20021216092801.80539C6139@atlas.denx.de> 
+References: <20021216092801.80539C6139@atlas.denx.de> 
+To: Wolfgang Denk <wd@denx.de>
 Cc: Paul Nash <paulnash@wildseed.com>,
-	"Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
-From: Wolfgang Denk <wd@denx.de>
+    "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
 Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts? 
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Mon, 16 Dec 2002 09:07:42 GMT."
-             <1914.1040029662@passion.cambridge.redhat.com>
-Date: Mon, 16 Dec 2002 10:27:56 +0100
-Message-Id: <20021216092801.80539C6139@atlas.denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 16 Dec 2002 09:38:34 +0000
+Message-ID: <2466.1040031514@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,33 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In message <1914.1040029662@passion.cambridge.redhat.com> you wrote:
-> 
-> The power saving point is fair -- flash does take less power than RAM. But
-> if you're _that_ short of power, you're likely to be using expensive (but
-> low-power) SRAM, and have the rest of the system so tightly specified that
-> you'll be more likely to be using something like eCos on it, not Linux.
+wd@denx.de said:
+> Also you might find problems running recent (and future)  kernels  in
+> XIP  mode  -  the kernel text segment is often not exactly read-only.
+> Especially when you use one f the existing real-time extensions  (but
+> not only then). It seems the amount of tweaking that is necessary for
+> XIP  is  growing  with  each new kernel release - to a level where it
+> becomes impractical. 
 
-Agreed.
+Also true. Of course we have to distinguish between XIP of file system 
+pages and of the kernel -- I was ignoring the latter because it's even less 
+sane than the former. If you ever want to write to the chip, you have to 
+disable all interrupts and wait while the chip is busy. For up to 20 
+seconds, in the case of a slow erase.
 
-> With the chips available today and in the near future, XIP, at least for a
-> writable flash chip, makes virtually zero sense on Linux. Anyone who tries
-> to tell you otherwise is either on crack, trying to sell you something, or
-> both.
+Of course, you could poll the interrupt controller while polling the flash
+for completion, and suspend the flash operation to service pending
+interrupts if they happen -- but that's really not the kind of thing that
+should be encouraged. Until people start making flash chips were every part 
+of the chip other than the part which is being erased/written is readable 
+during an erase or write operation, XIP is just a silly buzzword, for any 
+writable application.
 
-Also you might find problems running recent (and future)  kernels  in
-XIP  mode  -  the kernel text segment is often not exactly read-only.
-Especially when you use one f the existing real-time extensions  (but
-not only then). It seems the amount of tweaking that is necessary for
-XIP  is  growing  with  each new kernel release - to a level where it
-becomes impractical.
-
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-A list is only as strong as its weakest link.            -- Don Knuth
+--
+dwmw2
