@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from bolna.monet.no ([195.139.82.18])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16BecQ-0002NM-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 16:09:58 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <NPENLOCCCBDDFGHLFFBLEEEOCAAA.mike@creonova.com> 
-References: <NPENLOCCCBDDFGHLFFBLEEEOCAAA.mike@creonova.com> 
-To: "Mike Ruthven" <mike@creonova.com>
-Cc: ilatypov@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: nftl 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 05 Dec 2001 16:20:23 +0000
-Message-ID: <16933.1007569223@redhat.com>
+	id 16BgYQ-0002V8-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 18:13:58 +0000
+Message-ID: <004f01c17db9$a78900c0$c801a8c0@starticon>
+From: "Yunus Shaikh" <yshaikh@start-icon.com>
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.33.0112040830450.7813-100000@newbast.lynuxworks.com>
+Subject: Console Messages
+Date: Wed, 5 Dec 2001 19:21:23 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +23,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mike@creonova.com said:
-> Not that one case is a test, but I was able to nftl_format my DOC with
-> erase size 0x4000. 
+After applying the mtd Patch the kernel messages on the console are still
+not suppressed
+even after passing console=none to the kernel is there any way to supress
+the kernel messages ??
 
-Yeah - but did it _work_ afterwards? :)
-
---
-dwmw2
+regards
+Yunus
