@@ -1,14 +1,20 @@
-Received: from mail.icp-ag.de ([212.185.29.13] helo=icpmail-hh.icp-intern.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D1SDA-0004i4-EG
-	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2005 11:39:37 -0500
-Message-ID: <256713DBAA00D911828C00065BF75DEB025F72@icpmail-hh.icp-intern.de>
-From: "Bobzin,Heiko" <h.bobzin@icp-ag.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 16 Feb 2005 17:39:39 +0100
+Received: from fobos.marketsite.ru ([62.152.84.30] helo=relay1.dataart.com)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D1SOt-0004ty-QB
+	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2005 11:51:44 -0500
+Message-ID: <42137A1A.3090004@yandex.ru>
+Date: Wed, 16 Feb 2005 19:51:38 +0300
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Data corrupted
+To: Konstantin Kletschke <lists@ku-gbr.de>
+References: <20050216114741.GA16239@synertronixx3>	<1108555269.24721.83.camel@tglx.tec.linutronix.de>	<20050216122015.GB16239@synertronixx3>	<1108556645.24721.86.camel@tglx.tec.linutronix.de>	<20050216124409.GC16239@synertronixx3>	<20050216133753.GD16239@synertronixx3>
+	<42135E98.E187DD1A@st.com>	<Pine.LNX.4.58.0502161528260.30538@phoenix.infradead.org>
+	<20050216162944.GE16239@synertronixx3>
+In-Reply-To: <20050216162944.GE16239@synertronixx3>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Oops vanilla 2.6.10
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,57 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello mtd-fellows,
+Then I'd like to see the full debug output.
 
-I ran into trouble with a test I've implemented. It is basically the same
-as the mtd-util checkfs: writing into the flash while powering down
-the device. The problem is, that files which are never touched are
-corrupted, not the data I write.
-I diff'd the data and exactly one 4K block is set to zero in a 500k file
-in a ~7MB JFFS2 flash partition.
-It is reproducible in some hours, but the location differs.
-
-Here is the info about the chips and the system:
-
-MX29LV640T (64Mbit)
-Flash:  8 MB
-
-Linux version 2.4.27-vrs1 (root@linux) (gcc version 3.4.3) #16 Wed Feb 16
-12:24:31 CET 2005
-with latest stable mtd patched.
-
-CPU: Arm920Tid(wb) revision 0
-Machine: ATMEL AT91RM9200
-
- Amd/Fujitsu Extended Query Table at 0x0040
-  Silicon revision: 0
-  Address sensitive unlock: Required
-  Erase Suspend: Read/write
-  Block protection: 4 sectors per group
-  Temporary block unprotect: Supported
-  Block protect/unprotect scheme: 4
-  Number of simultaneous operations: 0
-  Burst mode: Not supported
-  Page mode: Not supported
-  Vpp Supply Minimum Program/Erase Voltage: 0.0 V
-  Vpp Supply Maximum Program/Erase Voltage: 0.0 V
-  Top/Bottom Boot Block: Top boot
-
-Last messages while booting, before detecting the corrupted file:
-
-Node header CRC failed at 001f4ec8. But it must have been OK earlier.
-Node was: { 0000, 2000, 00000000, 00000000 }
-Eep. Unknown node type 0000 at 00603348 was marked REF_UNCHECKED
-Node header CRC failed at 00603348. But it must have been OK earlier.
-Node was: { 0000, 2000, 00000000, 00000000 }
-jffs2_do_read_inode(): No data nodes found for ino #294
-Returned error for crccheck of ino #294. Expect badness...
-
-I've also seen read errors, though after a later reboot the system was
-intact
-and the "read error" was gone.
-
-Any ideas? Does it look like a hardware (chip timing) or software problem?
-
-Thanks in advance,
-Heiko
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
