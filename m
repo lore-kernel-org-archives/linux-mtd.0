@@ -1,19 +1,23 @@
-Received: from [213.239.205.147] (helo=debian.tglx.de)
+Received: from outmail1.freedom2surf.net ([194.106.33.237]
+	helo=outmail.freedom2surf.net)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1ByVTz-0000Uv-71
-	for linux-mtd@lists.infradead.org; Sat, 21 Aug 2004 09:00:32 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: xuelu@xuelu.org
-In-Reply-To: <001c01c48739$b268e140$0600a8c0@fujitsu>
-References: <001c01c48739$b268e140$0600a8c0@fujitsu>
-Content-Type: text/plain
-Message-Id: <1093092820.11658.719.camel@thomas.tec.linutronix.de>
+	id 1Bys7R-0001Ix-7k
+	for linux-mtd@lists.infradead.org; Sun, 22 Aug 2004 09:10:48 -0400
+Received: from wirenth (i-195-137-81-187.freedom2surf.net [195.137.81.187])
+	by outmail.freedom2surf.net (8.12.10/8.12.10) with SMTP id
+	i7MDAgnF013802
+	for <linux-mtd@lists.infradead.org>; Sun, 22 Aug 2004 14:10:42 +0100
+Date: Sun, 22 Aug 2004 14:10:42 +0100
+From: Ian Molton <spyro@f2s.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <20040822141042.3b3f0dfa.spyro@f2s.com>
+In-Reply-To: <20040821002633.13ba0927.spyro@f2s.com>
+References: <20040820132332.42c78dcc.spyro@f2s.com>
+	<20040821002633.13ba0927.spyro@f2s.com>
 Mime-Version: 1.0
-Date: Sat, 21 Aug 2004 14:53:40 +0200
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Hello,About jffs2 on NAND,on S3C2410
-Reply-To: tglx@linutronix.de
+Subject: Re: supporting stupid chips part III
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-08-21 at 06:45, xuelu@xuelu.org wrote:
-> I am using Samsung SMDK S3C2410 with one 64MB SM card,MIZI linux, Linux
-> version 2.4.18-rmk7-pxa1 with jffs2 compiled in.Now I meet one problem of
-> erase jffs2 filesystem on SM card.
-> I use vivi to part the SM card as the same size above and specify
-> the "data" to jffs2:
-> I cvs the recently source code,cross-compiled the util dir in the
-> mtd's source tree.
 
-1. We don't know anything about MIZI Linux and vivi
-2. 2.4.18 is a kernel from the last century and more than obsolete
-3. MTD utils in current CVS have evolved over time. So it's rather
-expected that they wont work with old and obsolete code.
+Hi.
 
-Use a up to date and supported kernel.
+so, we can read the chip... progress!
 
-tglx
+this isnt sitting very well with me though.
+
+this controllers read accesses to the data register are odd in that it
+*requires* word reads for some accesses but not others, which doesnt
+mesh well with the generic code.
+
+Currently in the generic code, we call this->read_byte in the functions:
+
+nand_scan
+nand_block_bad
+nand_check_wp
+nand_command
+nand_command_lp
+nand_wait
+
+in nand_scan(), we use it to read the id and extended id attributes.
+in nand_block_bad(), its used to read a single byte of the OOB
+in nand_check_wp() its used to read the chips status.
+in nand_wait() its used to read the chips status also.
+
+I havent been able to test this, but based on what I know, the usage in
+nand_block_bad(), nand_check_wp(), and nand_wait() will probably work on
+this chip. nand_scan() does not as it attempts two consecutive reads
+when the chip demands a word read.
+
+Im also unclear as to what on earth nand_command() is up to when given a
+SEQIN comand - heres the code...
+
+        if (command == NAND_CMD_SEQIN) {
+                int readcmd;
+
+                if (column >= mtd->oobblock) {
+                        /* OOB area */
+                        column -= mtd->oobblock;
+                        readcmd = NAND_CMD_READOOB;
+                } else if (column < 256) {
+                        /* First 256 bytes --> READ0 */
+                        readcmd = NAND_CMD_READ0;
+                } else {
+                        column -= 256;
+                        readcmd = NAND_CMD_READ1;
+                }
+                this->write_byte(mtd, readcmd);
+        }
+        this->write_byte(mtd, command);
+
+SEQIN is 0x80, and according to both my spec and my disassemblies, you
+dont send additional data with it. AFAICT, every time we send SEQIN we
+send readcmd first. why?
