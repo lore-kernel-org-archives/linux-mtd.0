@@ -1,30 +1,28 @@
-From: Russ.Dill@asu.edu (Russ Dill)
-Date: 03 Mar 2003 18:51:28 -0700
-Subject: AMD - Am29LV160B
-In-Reply-To: <1046720379.1638.5.camel@gobbles>
-References: <04C8EDC5AE3FD611ABE40002B39CF69B07F2D9@ntah901e.savan.com>
- <1046720379.1638.5.camel@gobbles>
-Message-ID: <1046742660.3368.1.camel@gobbles>
+From: robert@schwebel.de (Robert Schwebel)
+Date: Tue, 4 Mar 2003 09:13:46 +0100
+Subject: [PATCH] makefile bug and some cleanup
+In-Reply-To: <20030302181439.GA31492@wohnheim.fh-wedel.de>
+References: <20030302092359.GN15015@pengutronix.de> <20030302105730.GA18324@wohnheim.fh-wedel.de> <20030302181439.GA31492@wohnheim.fh-wedel.de>
+Message-ID: <20030304081346.GI15015@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Mon, 2003-03-03 at 12:39, Russ Dill wrote:
-> On Mon, 2003-03-03 at 07:08, Amit.Lubovsky at infineon.com wrote:
-> > Hi,
-> > 
-> > Has anyone used the mtd device with the AMD
-> > Am29LV160B chips? They are 16 Megabit (2M x 8-Bit/1M x 16-Bit) chips
-> > and are CFI-compatible.
-> > 
-> > I work with kernel 2.4.6 and am trying to detect 4MB,
-> > 2 x16 bit devices in parallel (32 bit access) at address 0,
+On Sun, Mar 02, 2003 at 07:14:39PM +0100, J?rn Engel wrote:
+> And they are correct. u_int32_t is typedef'd to be unsigned int on all
+> platforms for the linux kernel and in glibc for i386.
 > 
-> they work great on my device (as well as the Am29LV800B, which are not
-> CFI)
+> I'd have to check this on a 64bit machine on Monday but I expect
+> pretty ugly results. Correct fix would be to remove the 'l' from the
+> format string each and every time.
 > 
-> > #define BUSWIDTH 2
-> 
-> I'm away from my code right now, but shouldn't this be 32?
+> Robert, do you agree? Is is ok if I commit my proposed patch?
 
-replying to myself here, the correct buswidth for 2 x16 devices in
-parallel is 4
+Sounds sane. 
+
+Robert
+-- 
+ Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de
+ Pengutronix - Linux Solutions for Science and Industry
+   Braunschweiger Str. 79,  31134 Hildesheim, Germany
+   Handelsregister:  Amtsgericht Hildesheim, HRA 2686
+    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4
