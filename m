@@ -1,14 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <4176449B.4090706@yandex.ru>
-References: <4176449B.4090706@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1098270013.3872.83.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Date: Wed, 20 Oct 2004 12:00:13 +0100
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKEPh-0003QN-Cu
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 07:13:54 -0400
+Message-ID: <41764851.4030207@yandex.ru>
+Date: Wed, 20 Oct 2004 15:13:21 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>	
+	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>	
+	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
+	<1098180892.13633.1079.camel@hades.cambridge.redhat.com>
+	<41762CF9.9030501@inf.u-szeged.hu>
+In-Reply-To: <41762CF9.9030501@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: 4K block size question
+Subject: Re: JFFS2 compression
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-10-20 at 14:57 +0400, Artem B. Bityuckiy wrote:
-> Hello,
-> 
-> In case of 2MiB NAND flash (with 256-byte page) the sector size is 4KiB. 
-> The JFFS2 virtual block size is also 4KiB.
-> 
-> The size of pristine node is 4KiB data + node header. So, in 
-> uncompressed form, the pristine node can't fit into JFFS2 block if the 
-> compression is disabled. So, how does JFFS2 work on such flash :-) ?
+Hello Ferenc,
 
-By writing nodes which don't cover a full 4KiB and hence aren't
-pristine.
+I know you are very familiar with compression in JFFS2. Please, could 
+you answer me a question.
+
+I have several different buffers. I want to compose one JFFS2 node from 
+them. As I understand, I need to allocate one big temporary buffer, copy 
+my small buffers to it, and then compress the big buffer. After this I 
+will be able to uncompress the compression buffer in one step.
+
+But, it would be very very nice if I can compress each small buffer to 
+one compression buffer and later be able to uncompress the resulting 
+compression buffer in one step. Can I do so?
+
+Thanks.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
