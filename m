@@ -1,18 +1,22 @@
-Received: from mail.theptrgroup.com ([209.183.211.17])
+Received: from frontend1.messagingengine.com ([66.111.4.30])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C54em-0003NB-3U
-	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2004 11:46:49 -0400
-Received: from [192.168.180.200] ([132.250.144.104])
-	by mail.theptrgroup.com (8.11.6/linuxconf) with ESMTP id i88Fkfs07480
-	for <linux-mtd@lists.infradead.org>; Wed, 8 Sep 2004 11:46:44 -0400
-From: Jeff Angielski <jeff@theptrgroup.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Message-Id: <1094658352.23122.7.camel@localhost.localdomain>
-Mime-Version: 1.0
-Date: 08 Sep 2004 11:45:52 -0400
+	id 1C5FQ5-0004Se-Tf
+	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2004 23:16:25 -0400
+Received: from [192.168.0.58] (203-219-10-94-vic.tpgi.com.au [203.219.10.94])
+	by www.fastmail.fm (Postfix) with ESMTP id 67F60C1552E
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  8 Sep 2004 23:16:13 -0400 (EDT)
+Message-ID: <413FCAFE.6090002@fastmail.fm>
+Date: Thu, 09 Sep 2004 13:16:14 +1000
+From: Brendan Simon <BrendanSimon@fastmail.fm>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <4111AEA6.2080605@fastmail.fm><003f01c47aeb$706113d0$0100a8c0@superfortress>	<4119723E.8050205@fastmail.fm>	<032f01c47fa1$ae533f50$0100a8c0@superfortress>
+	<411AFFAF.5030908@fastmail.fm>
+In-Reply-To: <411AFFAF.5030908@fastmail.fm>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: 64bit support
+Subject: Re: 96MB/128MB DOC2000 with 2.4.X kernel
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Brendan Simon wrote:
 
-After downloading the official 2.4.27 PPC kernel and applying a snapshot
-from 20040902, what is the "correct" way to enable 64bit support?
+>
+>>> Is the 96MB DOC2000 more like the 64MB model or the 128MB model?
+>>> i.e. can I use a 96MB DOC2000 with my existing 2.4.18 kernel or will I
+>>> have the same problems as the 128MB DOC.
+>>>   
+>>
+>> INFTL [Inverse NAND Flash Translation Layer] M-Systems' latest flash
+>> management algorithm, used by the TrueFFS driver for the following 
+>> devices:
+>>
+>> - DiskOnChip Millennium Plus
+>> - Mobile DiskOnChip Plus
+>> - DiskOnChip 2000 DIP (high), 384Mbytes and higher.
+>> - DiskOnChip 2000 DIP (low), 192Mbytes and higher.
+>>
+>> If I had reviewed this table before I responded to your email, I 
+>> would have
+>> noticed that the 128M DOC ought to use NFTL.  Are you sure you have a 
+>> part
+>> that "looks like a Millennium"?  (All DOC2000 parts that use the 
+>> Millennium
+>> hardware interface also use INFTL, and vice versa.)  I'm willing to 
+>> believe
+>> the MSYS docs I have might be out of date (I'm pretty sure the
+>> low-profile/high-profile boundary has changed), but it would be good to
+>> confirm this.
+>>  
+>
+> I can confirm that the 128MB DOC I received in Australia definately 
+> DOES NOT work.  i.e. it looks like it has the new ASIC embedded in 
+> it.  A friend of mine in the USA also sees the same thing on his newly 
+> received 128MB DOC.  Therefore I think the M-System docs are wrong.
+>
+> Anyone know about the 96MB DOC2000 ????
+> Is it an old style or new style DOC2000 ????
 
-There is no provision in the Config or Makefiles to compile
-physmap64.c.  Should I then create my own mapfile based on physmap64.c
-or just fix the Makefiles so the correct file gets compiled?
 
-Either way is fine with me, I just figured I would try to do it the
-"right" way.
+A colleague of mine just tested a 96MB DOC and he says that it works 
+perfectly with the 2.4 kernel.
+i.e. it is correctly detected as a DOC2000 device.
 
-
-Thanks,
-Jeff Angielski
+Brendan Simon.
