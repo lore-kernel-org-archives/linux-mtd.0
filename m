@@ -1,20 +1,24 @@
 Received: from fish.redhat.com ([213.86.99.237]
 	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Js2P-0001BL-T4
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 10:43:33 +0100
+	id 19JsPb-0001YB-B9
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 11:07:31 +0100
+Received: from localhost
+	([127.0.0.1] helo=localhost.localdomain ident=dwmw2)
+	by passion.cambridge.redhat.com with esmtp (Exim 4.14)
+	id 19JsQM-0000hT-E1
+	for linux-mtd@lists.infradead.org; Sun, 25 May 2003 11:08:18 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: kusdogan@boun.edu.tr
-In-Reply-To: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-References: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-Message-Id: <1053855854.2082.3.camel@passion.cambridge.redhat.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <Pine.LNX.4.44.0305231717230.2461-100000@pentafluge.infradead.org>
+References: 
+	 <Pine.LNX.4.44.0305231717230.2461-100000@pentafluge.infradead.org>
+Message-Id: <1053857297.2082.17.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Sun, 25 May 2003 10:44:15 +0100
+Date: Sun, 25 May 2003 11:08:18 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Oops ERROR : Unable to handle kernel NULL pointer dereference
- at virtual address 00000000
+Subject: Re: Outage notice
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-05-24 at 22:20, kusdogan@boun.edu.tr wrote:
-> Hi,
+On Fri, 2003-05-23 at 17:18, David Woodhouse wrote:
+> On Fri, 23 May 2003, David Woodhouse wrote:
 > 
-> I patched my 2.4.18 kernel with latest MTD source. Now it crashes in in fucntion 
-> add_mtd_device (mtdcore.c). 
-
+> > Due to power maintenance, lists.infradead.org is scheduled to be
+> > off-line from 0800-1600 GMT tomorrow (Saturday May 24th).
+> > 
+> > Hopefully it should be back up again by the evening; there exists a
+> > possibility that the power interruption will last longer than that,
+> > and/or that I won't get back in to bring it back up.
 > 
->                         DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->nam$                   
->                        /* No need to get a refcount on the module containing
->                            the notifier, since we hold the mtd_table_mutex */
->                         list_for_each(this, &mtd_notifiers) {
->                                 struct mtd_notifier *not = list_entry(this, stru$                                
-> 		    not->add(mtd);		<------------- CRASH
->                         }
+> It turns out that the ADSL router is on a UPS which needs to be shut down 
+> tonight and can't be brought back up till Sunday morning. So the outage 
+> will in fact be from some time quite soon until about 10:00 GMT on Sunday.
 
-Thanks for the report. Please could you apply this patch and check what
-it prints...
-
-Index: mtdcore.c
-===================================================================
-RCS file: /home/dwmw2/.mtd-cvs-backup/cvs/mtd/drivers/mtd/mtdcore.c,v
-retrieving revision 1.39
-diff -u -p -r1.39 mtdcore.c
---- mtdcore.c	21 May 2003 15:15:03 -0000	1.39
-+++ mtdcore.c	25 May 2003 09:42:23 -0000
-@@ -64,6 +64,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 			   the notifier, since we hold the mtd_table_mutex */
- 			list_for_each(this, &mtd_notifiers) {
- 				struct mtd_notifier *not = list_entry(this, struct mtd_notifier, list);
-+				printk("Add %p for notifier at %p\n", not->add, not);
- 				not->add(mtd);
- 			}
- 			
-@@ -134,6 +135,11 @@ int del_mtd_device (struct mtd_info *mtd
- void register_mtd_user (struct mtd_notifier *new)
- {
- 	int i;
-+
-+	if (!new->add) { 
-+		printk("Notifier at %p has no ->add().\n", new);
-+		BUG();
-+	}
- 
- 	down(&mtd_table_mutex);
- 
-
-
+Wheee. The machine is back and has also been upgraded to a dual
+Celeron-466 so SpamAssassin should cope a little better when it gets
+flooded with mail.
 
 -- 
 dwmw2
