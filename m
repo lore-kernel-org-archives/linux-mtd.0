@@ -1,35 +1,29 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ZYwn-0001W0-00
-	for mtd-list@infradead.org; Thu, 14 Sep 2000 14:21:01 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
+	id 13ZZWp-0001cH-00
+	for mtd-list@infradead.org; Thu, 14 Sep 2000 14:58:15 +0100
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ZYwm-0001Vu-00
-	for mtd@infradead.org; Thu, 14 Sep 2000 14:21:00 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <NEBBLLDBMLGONJHPHHEKIEMNCHAA.ajlennon@arcom.co.uk> 
-References: <NEBBLLDBMLGONJHPHHEKIEMNCHAA.ajlennon@arcom.co.uk> 
-To: "Alex J Lennon" <ajlennon@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: sbc-mediagx 
-Mime-Version: 1.0
+	id 13ZZWo-0001cB-00
+	for mtd@infradead.org; Thu, 14 Sep 2000 14:58:14 +0100
+Message-ID: <39C0DA66.FF77C6BB@arcom.co.uk>
+Date: Thu, 14 Sep 2000 15:02:14 +0100
+From: David Vrabel <dvrabel@arcom.co.uk>
+MIME-Version: 1.0
+To: mtd@infradead.org
+Subject: CFI detection of x16 chips in x8 mode
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 14 Sep 2000 14:20:53 +0100
-Message-ID: <14383.968937653@passion.cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
+Just commited some new stuff to detect x16 CFI chips which are in x8
+mode.  Arcom's SBC-MediaGX now works "out of the box".  I hope I didn't
+break anything...
 
-ajlennon@arcom.co.uk said:
->  There is a whitepaper discussing VBF at www.datalight.com/
-> wp-data-integrity.htm 
-
-Hmmm. Who's gonna reverse-engineer it and provide an MTD module for it then?
-
---
-dwmw2
-
+David Vrabel
 
 
 
