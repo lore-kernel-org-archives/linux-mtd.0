@@ -1,21 +1,16 @@
-Received: from dhcp695.linuxsymposium.org ([209.151.10.193]
-	helo=lapdancer.baythorne.internal)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19fqQF-0001ab-GK
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jul 2003 01:26:59 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Matthew Dharm <mdharm@momenco.com>
-In-Reply-To: <NEBBLJGMNKKEEMNLHGAIEEKPDCAA.mdharm@momenco.com>
-References: <NEBBLJGMNKKEEMNLHGAIEEKPDCAA.mdharm@momenco.com>
-Message-Id: <1059092763.28255.4.camel@lapdancer.baythorne.internal>
+Received: from [202.106.127.236] (helo=harbournetworks.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19fueM-00023n-B0
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jul 2003 05:57:50 +0100
+From: "Yuxiao Xi" <xiyuxiao@harbournetworks.com>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Date: Thu, 24 Jul 2003 20:26:06 -0400
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: manningc2@actrix.gen.nz
-cc: linux-mtd@lists.infradead.org
-cc: Holly Gates <hgates@eink.com>
-Subject: RE: Smartmedia block mapping
+Date: Fri, 25 Jul 2003 13:0:13 +0800
+Message-Id: <E19fueM-00023n-B0@pentafluge.infradead.org>
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Subject: compiling MTD error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-07-24 at 18:57, Matthew Dharm wrote:
-> But the current code just makes the media look like traditional
-> block-media via the usb-storage driver.  You would need to do some
-> significant hacking to expose the low-level interface.
+Which MTD version works well with linux kernel 2.4.17?
+=09
 
-I suspect it's worth doing. There are plenty of 'raw' SmartMedia
-adapters out there, which want plugging into the MTD core as normal NAND
-devices -- and we only want one implementation of SMTL.
+=3D=3D=3D=3D=3D=3D=3D 2003-07-22 20:35:00 =C4=FA=D4=DA=C0=B4=D0=C5=D6=D0=D0=B4=B5=C0=A3=BA=3D=3D=3D=3D=3D=3D=3D
 
--- 
-dwmw2
+>Hello,
+>     My armlinux kernel version is 2.4.18 rmk6. MTD source code
+>is downloaded form CVS and added to kernel tree using=
+ patch.sh.When I compiled the kernel compiler reported info as=
+ follow:
+>
+>drivers/mtd/mtdlink.o:In function 'put_mtd_device':
+>/home/linux/drivers/mtd/mtdcore.c:225:undefined reference=
+ 'BUG_ON'
+>drivers/mtd/mtdlink.o:In function 'mtdblock_writesect':
+>/home/linux/drivers/mtd/mtdblock.c:251:undefined reference to=
+ 'unlikely'
+>drivers/mtd/mtdlink.o:In function 'mtd_blktrans_thread':
+>/home/linux/drivers/mtd/mtd/mtd_blkdevs-24.c:180:undefined=
+ reference to 'BUG_ON'
+>     I have used grep searching the kernel tree ,but can not=
+ find  where
+>defined 'BUG_ON' and 'unlikely'.
+>Thanks.
+>Gavin
+> 
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+=3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D =3D
+=09=09=09
+
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=D6=C2
+=C0=F1=A3=A1
+ 
+=09=09=09=09 
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1Yuxiao Xi
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1xiyuxiao@harbournetworks.com
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-07-25
