@@ -1,67 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 140o3w-0004Jw-00
-	for mtd-list@infradead.org; Tue, 28 Nov 2000 16:57:00 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 140uNs-0005zf-00
+	for mtd-list@infradead.org; Tue, 28 Nov 2000 23:42:00 +0000
+Received: from hybrid-024-221-181-223.ca.sprintbbd.net ([24.221.181.223] helo=hermes.mvista.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 140o3q-0004Jq-00
-	for mtd@infradead.org; Tue, 28 Nov 2000 16:57:00 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <00B4D286538DD311BC6E005004E9EFC73B0F6C@M4EXCH> 
-References: <00B4D286538DD311BC6E005004E9EFC73B0F6C@M4EXCH> 
-To: Simon Munton <Simon.Munton@m4data.co.uk>
-Cc: mtd@infradead.org, "JFFS (E-mail)" <jffs-dev@axis.com>
-Subject: Re: Oops in JFFS 
-Mime-Version: 1.0
+	id 140uNq-0005zZ-00
+	for mtd@infradead.org; Tue, 28 Nov 2000 23:41:58 +0000
+Message-ID: <3A244346.12F3235B@mvista.com>
+Date: Tue, 28 Nov 2000 15:44:06 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: mtd@infradead.org, ahennessy@mvista.com
+Subject: Big Endian issues
+References: <0FA1031B65A9D111960900805F9FA8E103B9F1C0@txexmta8.amd.com> <3A14638F.8EBE29DA@mvista.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Nov 2000 16:56:04 +0000
-Message-ID: <3375.975430564@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hello all,
 
-This code in jffs_rename() looks strange to me. Why are we passing
-new_dentry to jffs_remove() when we want the _old_ file with the same name 
-to be removed? I think we need to do a lookup to get the dentry for the old 
-file with that name, don't we?
+I need some advice regarding my big endian arch (ppc). I am using
+cfi_cmdset_0002.c  and there is
+a built-in assumption that  words will be swapped when reading and writing to
+a little endian device.
+This assumption is present in cfi_build_cmd and in cfi_probe_new_chip.  Both
+of these (in my configuration)
+use map->write32 and map->read32 when dealing with commands and status
+words.   This seems reasonable.
 
+In dealing with data, however, map->write32 is used in writes but
+map->copy_from is used in reads.
+So, the assumption I assume is that map->copy_from will also swap bytes.
+But in my environment,
+map->copy_from (memcpy_fromio) doesn't swap bytes.  I don't think it needs to
+if we make use of
+map->copy_to (memcpy_toio)  when writing data (in amd_write_val and in the
+immediate data check). In this case, copy_from and copy_to functions just
+need to be consistent.
 
+Any opinions?   Anyone else get this to work with big endian?
+Is a change needed in my memcpy_fromio?
 
---        /* See if there already exists a file with the same name as
-           new_name.  */
-        if ((del_f = jffs_find_child(new_dir_f, new_dentry->d_name.name,
-                                     new_dentry->d_name.len))) {
-                raw_inode.rename = 1;
-                raw_inode.dsize = sizeof(__u32);
-                rename_data = del_f->ino;
-        }
-
-        /* Write the new node to the flash memory.  */
-        if ((result = jffs_write_node(c, node, &raw_inode,
-                                      new_dentry->d_name.name,
-                                      (unsigned char*)&rename_data, 0, f)) < 0) {
-                D(printk("jffs_rename(): Failed to write node to flash.\n"));
-                kfree(node);
-                DJM(no_jffs_node--);
-                goto jffs_rename_end;
-        }
-        raw_inode.dsize = 0;
-
-        if (raw_inode.rename) {
-                /* The file with the same name must be deleted.  */
-                //FIXME deadlock                down(&c->fmc->gclock);
-                if ((result = jffs_remove(new_dir, new_dentry,
-                                          del_f->mode)) < 0) {
-                        /* This is really bad.  */
-                        printk(KERN_ERR "JFFS: An error occurred in "
-                               "rename().\n");
-                }
-                //              up(&c->fmc->gclock);
-        }
-
-
-dwmw2
-
+Alice
 
 
 
