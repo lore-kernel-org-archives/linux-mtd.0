@@ -1,47 +1,68 @@
-From: tharbaugh@lnxi.com (Thayne Harbaugh)
-Date: 20 Feb 2003 08:45:41 -0700
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 20 Feb 2003 16:32:32 +0000
 Subject: Wacky JEDEC probes
 In-Reply-To: <1045671999.2672.28.camel@tubarao>
 References: <1045671999.2672.28.camel@tubarao>
-Message-ID: <1045755941.2666.45.camel@tubarao>
+Message-ID: <1045758752.27290.9.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---=-bRw5EG2fgueDWb1B7yyL
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-I'm wondering if the lack of comments is and indicator that the patch
-should be committed to CVS?
-
-On Wed, 2003-02-19 at 09:26, Thayne Harbaugh wrote:
+On Wed, 2003-02-19 at 16:26, Thayne Harbaugh wrote:
 > I have been experiencing wacky JEDEC probes which have the following
 > symptoms:
->=20
+> 
 > - Devices ID at an aliased address where later on they won't respond
->=20
+> 
 > - Devices ID as the wrong device
->=20
+> 
 > - Devices respond with the wrong unlock addresses
->=20
+> 
+> I believe that most of the reason why this is happening is that the
+> device has the ID's of another device stored as data.  Unlock address
+> sequences vary slightly from device to device and if the wrong unlock
+> addresses are used then the device really is not put into ID mode.  When
+> addresses 0x0000 and 0x0001 are read then the _data_ is read and not the
+> device ID's.  This means that the wrong device is detected and the wrong
+> unlock addresses are stored for later use in erasing and writing. 
+> Because the unlock addresses are wrong the erasing and writing fail.
+> 
+> The obvious problem is that there is no way to challenge a device and
+> discover if it truly is in ID mode.  Because of this one must assume
+> that sending the unlock sequence was correct and really worked.
 
-<snip>
+Some devices don't _have_ an unlock sequence though. I'm more inclined
+to follow the route of taking the chip _out_ of ident mode and checking
+the contents change. Bear in mind that (IIRC) we should get the correct
+ident from offset 0 and 1 in _every_ erase block, shouldn't we?
 
---=20
-Thayne Harbaugh
-Linux Networx
+After finding an ident, we put the chip back in read mode and check for
+the ident again. If it hasn't changed (i.e. the data matches the ident
+we think we saw) then go back to ident mode and check for the ids in the
+_next_ eraseblock instead. Or something like that ;)
 
---=-bRw5EG2fgueDWb1B7yyL
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+> - Some devices have 8 bit and 16 bit modes and have unique unlock
+> addresses for each.  I'm not sure which ones should be used - that's why
+> these cases are labeled as "FIXME."
 
-iD8DBQA+VPgkfsBPTKE6HMkRAv0RAJ491L1rJHyvCfGQMZ9RWDrJCIOFswCfXh0h
-aKib7n6ff5CTM9ZtgAbxoJ4=
-=Vave
------END PGP SIGNATURE-----
+The one you use depends on the mode the chip is in -- you'd probably end
+up wanting two separate entries for these chips, or depending on which
+mode we're in.
 
---=-bRw5EG2fgueDWb1B7yyL--
+> - It appears that some CFI devices are in the jedec_table[] - I'm not
+> sure if this is desirable.
+
+Possibly not. Who added them and when? (cvs annotate :)
+
+> - The unlock_addrs[] array enumerates the known unlock addresses.  I
+> have noticed that these address pairs can be x555/x2aa, x555/xaaa,
+> x5555/x2aaa, x5555/xaaaa, x0/x0.  Some of these pairs are not currently
+> listed because they are used for 8 bit mode on 16 bit devices.  Now that
+> these addresses are enumerated it might be better to iterate over the
+> list instead of keep state while shifting and or'ing.
+
+That's a sane idea and entirely orthogonal to the original change, I
+suppose.
+
+-- 
+dwmw2
