@@ -1,19 +1,22 @@
-Received: from mailrelay2.inwind.it ([212.141.54.102])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VGf5-0000kd-00
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 18:37:47 +0000
-Received: from archimede (62.98.77.103) by mailrelay2.inwind.it (5.5.053)
-        id 3C3ABE8B00B16655 for linux-mtd@lists.infradead.org; Mon, 28 Jan 2002 19:47:59 +0100
-Message-ID: <007101c1a82c$33dec770$674d623e@archimede>
-From: "Alessandro Staltari" <staltari@geocities.com>
-To: <linux-mtd@lists.infradead.org>
-References: <20020128100328.31708.qmail@web8102.in.yahoo.com>
-Subject: Re: Cf Card vs DiskOnChip
-Date: Mon, 28 Jan 2002 19:46:18 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from fw01.queens.org ([204.94.115.5])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16VI0x-0000sM-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 20:04:28 +0000
+Received: from [204.62.161.159] (helo=aha.dlabs.com)
+	by kahala.dls.queens.org with esmtp (Exim 3.03 #1)
+	id 16VIBC-000870-00
+	for linux-mtd@lists.infradead.org; Mon, 28 Jan 2002 10:15:02 -1000
+Received: (from cyago@localhost)
+	by aha.dlabs.com (8.11.2/8.11.2) id g0SKF2S03886
+	for linux-mtd@lists.infradead.org; Mon, 28 Jan 2002 10:15:02 -1000
+Date: Mon, 28 Jan 2002 10:15:02 -1000
+From: Cliff Yago <cyago@dls.queens.org>
+To: linux-mtd@lists.infradead.org
+Subject: 32MB DOC Millennium
+Message-ID: <20020128101502.B3779@aha.dlabs.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,24 +28,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-From: "Ramya Ravichandran"
->
->
-> What we wnat is an application that takes about
-> 100-120 MB disk storage space and 128MB memory
-> footprint on top of linux. This communicates with a
-> microcontroller which does some image procesing etc.
-> The criteria for doing image processing is input from
-> the user to the appln. on linux which inturn gives it
-> to the microcontroller. All this in a dusty industrial
-> environment.Amy I have ur sugesstions.
->
+I have a 32MB DOC Millennium (M-Systems MD-2810-D08) in a GCT Allwell 3036. I am running Linux 2.4.17 with the MTD source from CVS for 1/20/02 patched in.
 
-Please take care that if such huge application always have enough memory and
-don't need to swap data to disk since flash disk is probably too slow for
-this job.
-Did you evaluate to remote it using an X-terminal, or mounting an NFS
-partition?
+When I do modprobe -a docprobe I get the following in /var/log/messages:
 
-Alessandro Staltari
-staltari(a)geocities.com
+Jan 28 03:24:27 allwell kernel: DiskOnChip Millennium found at address 0xC8000
+Jan 28 03:24:27 allwell kernel: Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
+Jan 28 03:24:27 allwell kernel: 4 flash chips found. Total DiskOnChip size: 32 MiB
+Jan 28 03:24:27 allwell kernel: mtd: Giving out device 0 to DiskOnChip Millennium
+Jan 28 03:24:27 allwell kernel: Sorry, we don't support UnitSizeFactor of != 1 yet.
+Jan 28 03:24:27 allwell kernel: Could not find valid boot record
+Jan 28 03:24:27 allwell kernel: Could not mount NFTL device
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xca000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 00 found at 0xcc000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 00 found at 0xce000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xd0000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xd2000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xd4000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xd6000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xd8000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xda000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xdc000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xde000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 0B found at 0xe0000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID B8 found at 0xe2000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 00 found at 0xe4000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 00 found at 0xe6000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 6D found at 0xe8000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 00 found at 0xea000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID 3A found at 0xec000
+Jan 28 03:24:27 allwell kernel: Possible DiskOnChip with unknown ChipID FF found at 0xee000
+
+It appears that my DOC isn't supported yet by the MTD drivers. Could anyone point me to the appropriate MTD source code I could look at to address the UnitSizeFactor support?
+
+Thanks,
+--Cliff
