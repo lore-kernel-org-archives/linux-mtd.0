@@ -1,16 +1,15 @@
-Received: from cmsrelay03.mx.net ([165.212.11.112])
+Received: from [202.108.44.230] (helo=163.com)
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B189C-00031g-Kz
-	for linux-mtd@lists.infradead.org; Wed, 10 Mar 2004 18:09:39 +0000
-Message-ID: <002901c406cb$3c049ec0$fd0ba8c0@briantpc>
-From: "Brian T" <btuch@usa.net>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 10 Mar 2004 12:12:21 -0600
+	id 1B1GVD-000483-Rw
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 03:04:56 +0000
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: free_list / free_size messages
+Message-ID: <404FD74C.000051.05799@bj230.163.com>
+Date: Thu, 11 Mar 2004 11:04:44 +0800 (CST)
+From: "hit_leeh" <hit_leeh@163.com>
+To: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gb2312"
+Subject: why can not ioremap?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-Since moving from JFFS2 2.1 to 2.2, I have noticed klog messages I didn't
-see before.  It only seems to happen after a fresh flash when writing data
-to the romfs.  sometimes I get a few messages, but this time I only got the
-one:
-
-Mar 10 12:07:25 klogd: Eep. Block 0x00120000 taken from free_list had
-free_size of 0x00000038!!
-
-It seems to recover, and I cannot find any corrupt files.  I see this error
-also listed in the 2.1 source code, but never actually *got* the error
-before.
-
-Could someone explain what would cause it?  Sorry if this has been discussed
-before, I didn't see anything on it when searching.
-
-Thanks,
-
--Brian
+SSBhbSBuZXd1c2VyIGZvciBqZmZzMi4gTm93IEkgaGF2ZSBhIHF1ZXN0aW9uICxteSBqZmZz
+MiBjYW4gbm90IHdvcmsgY29ycmVjdGx5LiBJIHNob3cgdGhlIGluZm9ybWF0aW9uIGluIHRo
+ZSBzdGFydGluZyBwcm9jZWR1cmUgb2YgbXkgc3lzdGVtLg0KDQogICAgICAgIExpbnV4IHZl
+cnNpb24gMi40LjE3LXVjMCAoQWRtaW5pc3RyYXRvckBMSUhVQSkgKGdjYyB2ZXJzaW9uIDIu
+OTUuMyAyMDAxMDMxNSAocmVsDQplYXNlKShDb2xkRmlyZSBwYXRjaGVzIC0gMjAwMTAzMTgg
+ZnJvbSBodHRwOi8vZmlkZGVzLm5ldC9jb2xkZmlyZS8pKC1tc2VwLWRhdGEgcA0KYXRjaGVz
+KSkgIzQ2MCBUaHUgTWFyIDExIDEwOjE2OjIzIDIwMDQNClByb2Nlc3NvcjogTWljZXRlayBT
+M0M0NEIwIHJldmlzaW9uIDYNCkFyY2hpdGVjdHVyZTogRVY0NEIwDQpPbiBub2RlIDAgdG90
+YWxwYWdlczogMjA0OA0Kem9uZSgwKTogMCBwYWdlcy4NCnpvbmUoMSk6IDIwNDggcGFnZXMu
+DQp6b25lKDIpOiAwIHBhZ2VzLg0KS2VybmVsIGNvbW1hbmQgbGluZTogcm9vdD0vZGV2L3Jv
+bTANCkNvbnNvbGU6IGNvbG91ciBkdW1teSBkZXZpY2UgODB4MzANCkNhbGlicmF0aW5nIGRl
+bGF5IGxvb3AuLi4gNC4yMiBCb2dvTUlQUw0KTWVtb3J5OiA4TUIgPSA4TUIgdG90YWwNCk1l
+bW9yeTogNTY4OEtCIGF2YWlsYWJsZSAoMjA5MEsgY29kZSwgMjA1SyBkYXRhLCA2MEsgaW5p
+dCkNCkRlbnRyeS1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEwMjQgKG9yZGVyOiAxLCA4
+MTkyIGJ5dGVzKQ0KSW5vZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA1MTIgKG9yZGVy
+OiAwLCA0MDk2IGJ5dGVzKQ0KTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA1MTIg
+KG9yZGVyOiAwLCA0MDk2IGJ5dGVzKQ0KQnVmZmVyLWNhY2hlIGhhc2ggdGFibGUgZW50cmll
+czogMTAyNCAob3JkZXI6IDAsIDQwOTYgYnl0ZXMpDQpQYWdlLWNhY2hlIGhhc2ggdGFibGUg
+ZW50cmllczogMjA0OCAob3JkZXI6IDEsIDgxOTIgYnl0ZXMpDQpQT1NJWCBjb25mb3JtYW5j
+ZSB0ZXN0aW5nIGJ5IFVOSUZJWA0KTGludXggTkVUNC4wIGZvciBMaW51eCAyLjQNCkJhc2Vk
+IHVwb24gU3dhbnNlYSBVbml2ZXJzaXR5IENvbXB1dGVyIFNvY2lldHkgTkVUMy4wMzkNCklu
+aXRpYWxpemluZyBSVCBuZXRsaW5rIHNvY2tldA0KU3RhcnRpbmcga3N3YXBkDQpKRkZTMiB2
+ZXJzaW9uIDIuMS4gKEMpIDIwMDEsIDIwMDIgUmVkIEhhdCwgSW5jLiwgZGVzaWduZWQgYnkg
+QXhpcyBDb21tdW5pY2F0aW9ucyBBQi4NCn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn53aGV0aGVyIGl0IG1lYW5zIGpmZnMyIGJlZ2luIHRvIHdv
+cms/IA0KQ29uc29sZTogc3dpdGNoaW5nIHRvIG1vbm8gZnJhbWUgYnVmZmVyIGRldmljZSAy
+MHgzMA0KRVY0NEIwSUkgU2VyaWFsIGRyaXZlciB2ZXJzaW9uIDEuMTAgKDIwMDMtMDEtMTUp
+IHdpdGggbm8gc2VyaWFsIG9wdGlvbnMgZW5hYmxlZA0KdHR5UzAwIGF0IDB4MWQwMDAwMCAo
+aXJxID0gNykgaXMgYSBTM0M0NEIwDQp0dHlTMDEgYXQgMHgxZDA0MDAwIChpcnEgPSA2KSBp
+cyBhIFMzQzQ0QjANCkVWNDRCMElJIFVTQiBkcml2ZXIgdjEuMCAoMjAwMy0wMS0wOSkgUWlu
+d2VpLCBNSUNFVEVLIFNoYW5naGFpDQpFVjQ0QjBJSSBsMyBBZGFwdGVyIEluaXRpYWxpemVk
+DQpFVjQ0QjBJSSBTb3VuZCBkcml2ZXIgdjEuMCAoMjAwMy0wMS0yMikgUWlud2VpLCBNSUNF
+VEVLIFNoYW5naGFpDQpibG9jazogNjQgc2xvdHMgcGVyIHF1ZXVlLCBiYXRjaD0xNg0KUkFN
+RElTSyBkcml2ZXIgaW5pdGlhbGl6ZWQ6IDE2IFJBTSBkaXNrcyBvZiAxMDI0SyBzaXplIDEw
+MjQgYmxvY2tzaXplDQpCbGttZW0gY29weXJpZ2h0IDE5OTgsMTk5OSBELiBKZWZmIERpb25u
+ZQ0KQmxrbWVtIGNvcHlyaWdodCAxOTk4IEtlbm5ldGggQWxiYW5vd3NraQ0KQmxrbWVtIDEg
+ZGlzayBpbWFnZXM6DQowOiBDMTA5Q0MwLUMyMjE4QkYgW1ZJUlRVQUwgQzEwOUNDMC1DMjIx
+OEJGXSAoUk8pDQpFVjQ0QjAgZXRoOiBFcnJvciAtNSByZWdpc3RlcmluZyBkZXZpY2UgImV0
+aDAiDQptNDRiMCBmbGFzaCBkZXZpY2U6IDIwMDAwMCBhdCAwDQpGYWlsZWQgdG8gaW9yZW1h
+cA0Kfn5+fn5+fn5+fn5+fn5+fn53aHkgY2FuIG5vdCBpb3JlbWFwLEkgZG9uJ3Qga25vdyB0
+aGUgcmVhc29uLg0KDQpUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbi4NCn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KzfjS11ZJUMrVt9HTys/kwb3W
+3MTqs6zWtdPFu90hIML6MdT5NqOho6GhoSAgICAgICAgICBodHRwOi8vdmlwLjE2My5jb20K
+CtbQufrX7rTztcTD4rfR08rP5NTatcjE4yAyNdXXv9W85DTV17i9vP6joaGhoaGhoaGhoaEg
+aHR0cDovL21haWwuMTYzLmNvbQoKteO798340tfF3cXdvqrPss7ez94gyKvD4rfRyta7+rbM
+0MXIzsTjt6IhoaGhoaGhoaGhoaGhaHR0cDovL3BvcG8uMTYzLmNvbQo=
