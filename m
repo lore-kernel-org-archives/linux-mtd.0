@@ -1,25 +1,28 @@
-Received: from wproxy.gmail.com ([64.233.184.206])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cw2Xr-0000pC-4K
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 13:14:38 -0500
-Received: by wproxy.gmail.com with SMTP id 68so836739wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 01 Feb 2005 10:14:24 -0800 (PST)
-Message-ID: <6934efce0502011014a75e21b@mail.gmail.com>
-Date: Tue, 1 Feb 2005 10:14:23 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20050201174419.GA32581@synertronixx3>
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cw6hk-0002Ae-Sb
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 17:41:06 -0500
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j11Megbs002996
+	for <linux-mtd@lists.infradead.org>; Tue, 1 Feb 2005 17:40:42 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j11MegY7114150
+	for <linux-mtd@lists.infradead.org>; Tue, 1 Feb 2005 17:40:42 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j11MegDO025839
+	for <linux-mtd@lists.infradead.org>; Tue, 1 Feb 2005 17:40:42 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: Andrew Victor <andrew@sanpeople.com>
+In-Reply-To: <1107248402.22631.53.camel@fuzzie.sanpeople.com>
+References: <1107248402.22631.53.camel@fuzzie.sanpeople.com>
+Content-Type: text/plain
+Date: Tue, 01 Feb 2005 16:40:36 -0600
+Message-Id: <1107297636.8235.3.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-References: <20050201153945.GA26068@synertronixx3>
-	<Pine.LNX.4.61.0502011137020.31479@localhost.localdomain>
-	<20050201172059.GB26068@synertronixx3>
-	<Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
-	<20050201174419.GA32581@synertronixx3>
-Subject: Re: I need still help with XIP, kernel boots now :)
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2-on-DataFlash : 2 - DataFlash support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +32,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I changed IMX_TCN(1) to IMX_TCN(0) because this is the system timer,
-> damn! Oops is away then and booting an non xip uImage with
-> CONFIG_XIP_MTD=y works very well! I could copy a file onto the extra
-> partition mounted rw.
+On Tue, 2005-02-01 at 11:00 +0200, Andrew Victor wrote:
 > 
-> Running this xipuImage (/ mounted ro) allowed me to mount
-> an extra jffs2 partition and ls on it, but writing on it freezes the
-> system.
+> Configuration (Config.in and Kconfig) and Makefiles updated.
 
-JTAG/BDM debug time?  I've had good luck with the Abatron BDI2000. ;)
+Cool.
 
-If you look at cfi_cmdset_0001 you'll find some function use __xipram.
- This is intended to place them in RAM so when the flash goes into
-status mode you can run these functions.  Make sure they are actually
-in RAM.  Check your System.map.
+> 
+> Padding nodes are only skipped for DataFlash devices - no longer breaks
+> the NOR ECC flash support.
+
+Looks better.  Thanks!
+
+josh
