@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178ys8-0007fM-00
-	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 08:43:24 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF40@mail.mediatrix.com> 
-References: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF40@mail.mediatrix.com> 
-To: Frederic Giasson <fgiasson@mediatrix.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Kernel oops after sync command in jffs2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 18 May 2002 08:43:23 +0100
-Message-ID: <11464.1021707803@redhat.com>
+	id 178yyY-0007gD-00
+	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 08:50:02 +0100
+Date: Sat, 18 May 2002 09:49:54 +0200 (MEST)
+From: Robert Kaiser <rob@sysgo.de>
+To: john riehl <jr@i-bucks.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Getting big flash onto motherboards. Will CF work? what   will?
+In-Reply-To: <3.0.32.20020517142924.0074ef10@mail.i-bucks.com>
+Message-ID: <Pine.LNX.4.21.0205180939300.18909-100000@dagobert.svc.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +22,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-fgiasson@mediatrix.com said:
->  When the oops happen, the do_erase_oneblock() function if
-> cfi_cmdset_0002.c complains that DQ5 has been asserted to "1" while
-> the flash was still erasing, meaning that a program command has been
-> attempted.  
 
-> So I examined the chip driver to see if there were a gap in the mutual
-> exclusion of the chip access.  I found that function
-> cfi_amdstd_write() send unlock bypass command to the flash without
-> verifying if the flash is ready first, if cfi->fast_prog is true.  I
-> tryied to disable fast_prog in cfi_probe.c, and the oops did not
-> happen again.  It sound like it were the problem, although I am not
-> 100% sure yet.
+On Fri, 17 May 2002, john riehl wrote:
 
-Thanks. I've disabled fast programming mode completely, until the code gets 
-fixed. 
+> At 08:51 PM 5/17/02 +0200, Robert Kaiser wrote:
+> >
+> >>> 
+> >> These are called DiskonModule  (as opposed to diskonchip).  
+> >> 
+> >> They come in both 40 and 44 pin connections.  They arent very big, they
+> >> look like a terminator.  Most are flat, like a hard drive (but much shorter
+> >> & smaller), some have an L-shape.
+> >
+> >So, except for the form factor, what is the difference beween these and
+> >a CompactFlash (wrt to reliabilty on power failure, etc.) ?
+> >
+> 
+> I dont know.  I dont know about CF.  how does cf connect to a system?
 
-That should have just caused an I/O error though; not an oops.
+Basically, a CF uses flash as storage media but looking at it's
+interface, it behaves exactly like a normal IDE disk. You can actually
+buy adapters (just wiring, no logic) to connect a CF to a normal IDE
+connector. So it's pretty much like a DOM.
 
+>  what
+> happens when cf loses power?
 
---
-dwmw2
+I understand that when a CF loses power while a write is in progress, it
+may corrupt some blocks in such a way that they can not be recovered.
+
+> can you boot from it?
+
+Obviously yes, since it behaves like an IDE drive.
+
+> 
+> afaik, dom keeps info despite a power loss.
+
+So does a CF, the problem occurrs when it loses power while a write
+is in progress.
+
+Rob
+
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
