@@ -1,22 +1,26 @@
-Received: from ip10.savigear.adsl.uk.xo.com ([195.147.222.170] helo=xerp.secret.org.uk)
+Received: from nwd2mime2.analog.com ([137.71.25.114])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17FaBV-0006PY-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2002 13:46:42 +0100
-Received: from spoinky.renegade.org.uk ([192.168.1.2])
-	by xerp.secret.org.uk with esmtp (Exim 3.33 #1)
-	id 17FaBR-00042t-00
-	for linux-mtd@lists.infradead.org; Wed, 05 Jun 2002 13:46:37 +0100
-Received: from localhost ([127.0.0.1] helo=secret.org.uk)
-	by spoinky.renegade.org.uk with esmtp (Exim 3.35 #1 (Debian))
-	id 17FaBQ-0005du-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2002 13:46:36 +0100
-From: Simon Evans <spse@secret.org.uk>
+	id 17Fhry-0006rh-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2002 21:59:02 +0100
+Received: from nwd2gtw1 (unverified) by nwd2mime2.analog.com
+ (Content Technologies SMTPRS 4.2.5) with SMTP id <T5b4da070a689471972101@nwd2mime2.analog.com> for <linux-mtd@lists.infradead.org>;
+ Wed, 5 Jun 2002 16:59:44 -0400
+Received: from golf.cpgdesign.analog.com ([137.71.139.100]) by nwd2mhb2.analog.com with ESMTP (8.9.3 (PHNE_18979)/8.7.1) id QAA22078 for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 16:58:50 -0400 (EDT)
+Received: from ws4.cpgdesign.analog.com (ws4 [137.71.139.26])
+	by golf.cpgdesign.analog.com (8.9.1/8.9.1) with ESMTP id NAA15305
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 13:58:49 -0700 (PDT)
+Received: from analog.com (localhost [127.0.0.1])
+	by ws4.cpgdesign.analog.com (8.9.1/8.9.1) with ESMTP id NAA21450
+	for <linux-mtd@lists.infradead.org>; Wed, 5 Jun 2002 13:58:49 -0700 (PDT)
+Message-ID: <3CFE7B89.1EDA745@analog.com>
+Date: Wed, 05 Jun 2002 13:58:49 -0700
+From: Justin Wojdacki <justin.wojdacki@analog.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Add sharp_probe into jedec_probe
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 05 Jun 2002 13:46:35 +0100
-Message-Id: <E17FaBQ-0005du-00@spoinky.renegade.org.uk>
+Subject: Re: Strange problem related to writing to flash
+References: <3CFD131D.1AA4678F@analog.com> <15613.16180.337384.910293@gargle.gargle.HOWL> <3CFD502E.870C7AFA@analog.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,212 +32,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi, 
+Justin Wojdacki wrote:
+> 
+> That's along the lines of what a few of us discussed here, except for
+> one issue:
+> 
+> The bootstrap isn't part of the kernel. So the bootstrap has no
+> problem running, loading the kernel from flash, and then executing the
+> kernel. Seems to me that that wouldn't be possible if the flash wasn't
+> in read mode (unless I'm missing something). The bootstrap being used
+> has to ID the flash device itself, so if it can ID it and read from it
+> fine, the kernel should be able to also right?
+> 
 
-I just wanted to see if anyone had any objections to me committing the below
-patch to CVS. Basically I have some sharp chips that almost work with the
-normal jedec_probe routine however they do not like the Autoselect Command.
+Some more information:
 
-The patch below adds a second probing function `sharp_probe' to jedec_probe.c
-that handles this difference. Is it ok to put this into the same file? 
-I thought it would be preferable to putting it into a second file since so
-much of the jedec code is reused.
+The flash is clearly in the read state when the kernel boots. 
 
-Comments?
+It looks like the first few passes of cfi_check_qry_or_id() don't
+actually get the manufacturer or device ID when this fails. It's not
+until the case where interleave = 2 and device_type = 1 that I see a
+correct ID happening. I'll post more information when I have more
+details into what's going on here. 
 
-cheers
-si
-
-
-Index: jedec_probe.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/chips/jedec_probe.c,v
-retrieving revision 1.15
-diff -u -r1.15 jedec_probe.c
---- jedec_probe.c	17 May 2002 08:48:57 -0000	1.15
-+++ jedec_probe.c	5 Jun 2002 12:21:54 -0000
-@@ -870,37 +880,13 @@
- 	return 1; 	/* ok */
- }
- 
--static int jedec_probe_chip(struct map_info *map, __u32 base,
--			      struct flchip *chips, struct cfi_private *cfi)
-+
-+static int do_jedec_probe_chip(struct map_info *map, __u32 base, struct flchip *chips, struct cfi_private *cfi)
-+
- {
- 	int i;
- 	int retried = 0;
- 
--	if (!cfi->numchips) {
--		switch (cfi->device_type) {
--		case CFI_DEVICETYPE_X8:
--			cfi->addr_unlock1 = 0x555; 
--			cfi->addr_unlock2 = 0x2aa; 
--			break;
--		case CFI_DEVICETYPE_X16:
--			cfi->addr_unlock1 = 0xaaa;
--			if (map->buswidth == cfi->interleave) {
--				/* X16 chip(s) in X8 mode */
--				cfi->addr_unlock2 = 0x555;
--			} else {
--				cfi->addr_unlock2 = 0x554;
--			}
--			break;
--		case CFI_DEVICETYPE_X32:
--			cfi->addr_unlock1 = 0x1555; 
--			cfi->addr_unlock2 = 0xaaa; 
--			break;
--		default:
--			printk(KERN_NOTICE "Eep. Unknown jedec_probe device type %d\n", cfi->device_type);
--		return 0;
--		}
--	}
--
-  retry:
- 	/* Make certain we aren't probing past the end of map */
- 	if (base >= map->size) {
-@@ -928,9 +914,14 @@
- 	/* Reset */
- 	jedec_reset(base, map, cfi);
- 
--	/* Autoselect Mode */
--	cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi, CFI_DEVICETYPE_X8, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi, CFI_DEVICETYPE_X8, NULL);
-+	/* Autoselect Mode - Some sharp chips dont like these two commands. 
-+	 * sharp_probe sets addr->unlock1 = 0, jedec_probe sets addr->unlock1
-+	 * to a !0 address
-+	 */
-+	if(cfi->addr_unlock1) {
-+		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi, CFI_DEVICETYPE_X8, NULL);
-+		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi, CFI_DEVICETYPE_X8, NULL);
-+	}
- 	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi, CFI_DEVICETYPE_X8, NULL);
- 
- 	if (!cfi->numchips) {
-@@ -1025,11 +1016,84 @@
- 	return 1;
- }
- 
-+
-+static int jedec_probe_chip(struct map_info *map, __u32 base,
-+			      struct flchip *chips, struct cfi_private *cfi)
-+{
-+	if (!cfi->numchips) {
-+		switch (cfi->device_type) {
-+		case CFI_DEVICETYPE_X8:
-+			cfi->addr_unlock1 = 0x555; 
-+			cfi->addr_unlock2 = 0x2aa; 
-+			break;
-+		case CFI_DEVICETYPE_X16:
-+			cfi->addr_unlock1 = 0xaaa;
-+			if (map->buswidth == cfi->interleave) {
-+				/* X16 chip(s) in X8 mode */
-+				cfi->addr_unlock2 = 0x555;
-+			} else {
-+				cfi->addr_unlock2 = 0x554;
-+			}
-+			break;
-+		case CFI_DEVICETYPE_X32:
-+			cfi->addr_unlock1 = 0x1555; 
-+			cfi->addr_unlock2 = 0xaaa; 
-+			break;
-+		default:
-+			printk(KERN_NOTICE "Eep. Unknown jedec_probe device type %d\n", cfi->device_type);
-+		return 0;
-+		}
-+	}
-+	return do_jedec_probe_chip(map, base, chips, cfi);
-+}
-+
-+
-+static int sharp_probe_chip(struct map_info *map, __u32 base,
-+			      struct flchip *chips, struct cfi_private *cfi)
-+{
-+
-+
-+	if (!cfi->numchips) {
-+		switch (cfi->device_type) {
-+		case CFI_DEVICETYPE_X8:
-+			cfi->addr_unlock1 = 0x0; 
-+			cfi->addr_unlock2 = 0x1; 
-+			break;
-+		case CFI_DEVICETYPE_X16:
-+			cfi->addr_unlock1 = 0x0;
-+			if (map->buswidth == cfi->interleave) {
-+				/* X16 chip(s) in X8 mode */
-+				cfi->addr_unlock2 = 0x1;
-+			} else {
-+				cfi->addr_unlock2 = 0x2;
-+			}
-+			break;
-+		case CFI_DEVICETYPE_X32:
-+			cfi->addr_unlock1 = 0x0; 
-+			cfi->addr_unlock2 = 0x4; 
-+			break;
-+		default:
-+			printk(KERN_NOTICE "Eep. Unknown sharp_probe device type %d\n", cfi->device_type);
-+		return 0;
-+		}
-+	}
-+	return do_jedec_probe_chip(map, base, chips, cfi);
-+}
-+
-+
-+
- static struct chip_probe jedec_chip_probe = {
- 	name: "JEDEC",
- 	probe_chip: jedec_probe_chip
- };
- 
-+
-+static struct chip_probe sharp_chip_probe = {
-+	name: "SHARP",
-+	probe_chip: sharp_probe_chip
-+};
-+
-+
- struct mtd_info *jedec_probe(struct map_info *map)
- {
- 	/*
-@@ -1039,21 +1103,40 @@
- 	return mtd_do_chip_probe(map, &jedec_chip_probe);
- }
- 
-+struct mtd_info *sharp_probe(struct map_info *map)
-+{
-+	/*
-+	 * This is for chips that work with the jedec_probe except
-+	 * they dont like the autoselect command.
-+	 */
-+	return mtd_do_chip_probe(map, &sharp_chip_probe);
-+}
-+
- static struct mtd_chip_driver jedec_chipdrv = {
- 	probe: jedec_probe,
- 	name: "jedec_probe",
- 	module: THIS_MODULE
- };
- 
-+
-+static struct mtd_chip_driver sharp_chipdrv = {
-+	probe: sharp_probe,
-+	name: "sharp_probe",
-+	module: THIS_MODULE
-+};
-+
-+
- int __init jedec_probe_init(void)
- {
- 	register_mtd_chip_driver(&jedec_chipdrv);
-+	register_mtd_chip_driver(&sharp_chipdrv);
- 	return 0;
- }
- 
- static void __exit jedec_probe_exit(void)
- {
- 	unregister_mtd_chip_driver(&jedec_chipdrv);
-+	unregister_mtd_chip_driver(&sharp_chipdrv);
- }
- 
- module_init(jedec_probe_init);
+-- 
+-------------------------------------------------
+Justin Wojdacki        
+justin.wojdacki@analog.com         (408) 350-5032
+Communications Processors Group -- Analog Devices
