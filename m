@@ -1,19 +1,17 @@
-Received: from rezznor.smb.utfors.se ([195.58.112.22])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17biOc-0003cN-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 14:59:42 +0100
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: Disk blocks for long periods 
-Date: Mon, 5 Aug 2002 15:59:39 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLEEHJFFAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <22091.1028555040@redhat.com>
+	id 17biQ0-0003cv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 15:01:08 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3D4E3DBC.4F73955D@enst.fr> 
+References: <3D4E3DBC.4F73955D@enst.fr> 
+To: Sylvain Meunier <meunier@enst.fr>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Mix flash sector size and JFFS2 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 05 Aug 2002 15:01:04 +0100
+Message-ID: <24149.1028556064@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,37 +23,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> joakim.tjernlund@lumentis.se said:
-> >  I have noticed that if i copy a "big" file(580K) it sometimes take up
-> > to 42 seconds before it's finished. Normally it takes about 3-4
-> > seconds. When this long copy happen, top reports that kupdate and the
-> > copy(cp) process is in D state, the rest is sleeping. The FS is a 45%
-> > usage. FS is about 63MB in size. Using the stable branch.
-> 
-> > Why does it block for so long time?
-> 
-> Dunno. What's it doing? Where are cp and kupdate sleeping? (SysRq-T).
 
-I am on PPC and SysRq-T does not display anything useful :-(
-Perhaps readprofile?
+meunier@enst.fr said:
+>  Does a single filesystem JFFS2 need that all sectors of flash
+> partition are same size or could we use different sector size (as for
+> some flash that mix small and big sector). ?
 
-> 
-> >  Also, if I fill the FS up to 100% and later reboots, it kan take
-> > 10-15 minutes before init starts to run. The root fs mount takes about
-> > 20 seconds and the system just stops between the last message from the
-> > kernel and when init prints its version.
-> 
-> > It is just the first reboot after I fill the FS, once I have gotten
-> > past the first reboot and reboots again, things are back to normal. 
-> 
-> More logs and SysRq-T required. Sounds like it's erasing blocks and for 
-> some reason not allowing anything else to happen while it's doing it.
+JFFS2 only operates with a single sector size. However, when you have 
+smaller erase blocks you will generally find that they add up to a single 
+block's worth of the normal erase size. For example, 8*8KiB + 15*64KiB. 
 
-Perhaps kupdate is holding some VFS specific block? I am on a MV 2.4.2 kernel 
+JFFS2 will work OK on that, and just treat the 8*8KiB blocks as a single 
+64KiB block.
 
-> 
-> --
-> dwmw2
-> 
-> 
-> 
+
+--
+dwmw2
