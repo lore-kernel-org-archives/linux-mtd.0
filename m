@@ -1,22 +1,17 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18I1uA-0003xv-00
-	for <linux-mtd@lists.infradead.org>; Sat, 30 Nov 2002 07:19:10 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6D004CIPPZXE@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sat, 30 Nov 2002 08:49:12 +0100 (MET)
-Date: Sat, 30 Nov 2002 08:47:02 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: undefined reference to 'crc32' ?
-In-reply-to: <3DE7CB23.5535F5E6@imc-berlin.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200211300847.02340.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <3DE7CB23.5535F5E6@imc-berlin.de>
+Received: from [66.239.226.123] (helo=hermes.wildseed.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18I8Pb-0004ek-00
+	for <linux-mtd@lists.infradead.org>; Sat, 30 Nov 2002 14:16:03 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C6CB@neptune.kirkland.local>
+From: Paul Nash <paulnash@wildseed.com>
+To: =?iso-8859-1?Q?=27J=F6rn_Engel=27?= <joern@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Restart problems after writing to mtdblock?
+Date: Sat, 30 Nov 2002 06:46:22 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,20 +23,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Friday 29 November 2002 21:16, Steven Scholz wrote:
-> Hi there,
->
-> I am using linux 2.4.20 on a powerpc platform.
->
-> I just pulled the recent CVS, run patchin.sh on it and tried to build a new
-> kernel image.
-> But I get load of these:
-patchin.sh was overhauled. Did you use patchin.sh with the -j option to 
-include jffs(2) filesystems ?
+Power fail is not a concern -- this only occurs in the case of a =
+software
+reboot of the chip without power loss.  An external reset is not an =
+issue.
+Flash chips don't store state as to their last read mode across power
+failure anyway.
 
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-----Original Message-----
+From: J=F6rn Engel [mailto:joern@wohnheim.fh-wedel.de]=20
+Sent: Wednesday, November 27, 2002 11:39 PM
+To: Paul Nash
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Restart problems after writing to mtdblock?
+
+
+On Wed, 27 November 2002 18:33:31 -0800, Paul Nash wrote:
+>=20
+> Partially answering my question, it looks like I was partly correct.  =
+
+> It appears that MTD is setup to lazily delay a reset to read array=20
+> mode until an actual read request comes along.  In my case, this is=20
+> fatal.
+>=20
+
+Frankly, if the hardware doesn't reset the flash chips on reboot, you =
+have
+broken hardware and have to deal with it. A reboot_notifier would work,
+unless you have a power fail. Not good.
+
+Hacking cfi_cmdset_0001.c to bring the chips back into read mode =
+whenever
+possible would work better, breaking only on power fail during a write =
+or
+erase operation. Still not good.
+
+So, unless you want to live with the problem, there is no alternative =
+to
+fixing the hardware.
+
+J=F6rn
