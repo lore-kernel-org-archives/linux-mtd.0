@@ -1,24 +1,19 @@
-Received: from mgw-x4.nokia.com ([131.228.20.27])
+Received: from p15106599.pureserver.info ([217.160.134.213])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BuA3y-0004jm-Kr
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2004 09:19:46 -0400
-Date: Mon, 9 Aug 2004 16:11:59 +0300
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Wu Jian Feng <jianfengw@mobilesoft.com.cn>
-Message-ID: <20040809131158.GA6838@angel.research.nokia.com>
-References: <20040807150458.E2805@flint.arm.linux.org.uk>
-	<20040808061206.GA5417@mobilesoft.com.cn>
-	<1091962414.1438.977.camel@imladris.demon.co.uk>
-	<20040809015950.GA20408@mobilesoft.com.cn>
-	<1092033702.1438.2169.camel@imladris.demon.co.uk>
-	<1092049678.4383.5149.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1092049678.4383.5149.camel@hades.cambridge.redhat.com>
-Cc: 
-Subject: Re: [BUG] 2.6.8-rc3 slab corruption (jffs2?)
+	id 1BuRrk-0006XT-W0
+	for linux-mtd@lists.infradead.org; Tue, 10 Aug 2004 04:20:19 -0400
+Received: from synth.net (localhost.localdomain [127.0.0.1])
+	(authenticated (0 bits))
+	by p15106599.pureserver.info (8.11.6/8.11.6) with ESMTP id i7A8KDU07383
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Aug 2004 09:20:13 +0100
+Message-ID: <58183.80.135.154.217.1092126013.squirrel@www.synth.net>
+Date: Tue, 10 Aug 2004 09:20:13 +0100 (BST)
+From: <jayv@synth.net>
+To: <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: SmartMedia driver for SMDK2410 Board?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 09, 2004 at 12:07:59PM +0100, ext David Woodhouse wrote:
-> Don't bother, thanks. I found the problem, in the part_erase() code.
-> Waiting for the culprit to wake up and fix it... :)
+Hi All,
 
-I also see the Slab corruption and it is very reproducible with
-something like:
+November last year, this message was posted to linux-mtd:
 
-  flash_eraseall -j /dev/mtd0
-  mount -t jffs2 /dev/mtdblock0 /mnt
-  cp -a /usr /mnt
+--- quote ---------
+Subject: smartmedia block driver
+Luca Contini luca.contini at mediaenabling.com
+Wed Nov 19 11:18:02 GMT 2003
+Previous message: Suggested patch for mtdchar.c
+Next message: smartmedia block driver
 
-I am using Nand flash and 2.6.8-rc3-omap1. Once the fs is filled
-enough I see typically following:
+Hi all,
+I've successfully completed the "read" part of a smartmedia driver for the
+Samsung board smdk2410.
+The Linux kernel is 2.4.18 (mandatory for this board)
+The driver is composed by 3 modules:
+s3c2410nand.o
+smdk2410.o
+mtdblock.o
 
-  Slab corruption: start=c3a31980, len=64
-  Redzone: 0x5a2cf071/0x5a2cf071.
-  Last user: [<c0185fd0>](nand_erase_nand+0x1fc/0x210)
-  000: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 09 6b
-  Prev obj: start=c3a31934, len=64
-  Redzone: 0x5a2cf071/0x5a2cf071.
-  Last user: [<00000000>](0x0)
-  000: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b
-  010: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b
-  Next obj: start=c3a319cc, len=64
-  Redzone: 0x170fc2a5/0x170fc2a5.
-  Last user: [<c00fcddc>](jffs2_alloc_full_dirent+0x18/0x1c)
-  000: 8c 68 80 c3 30 11 a3 c3 0d 00 00 00 a1 0c 00 00
-  010: 46 4d 28 9e 08 44 62 44 72 69 76 65 72 2e 70 6d
+I've modified these sources in order to read the smartmedia and build up the
+logical to physical block address map.
+Now I am able to mount a vfat filesystem on the smartmedia:
+mount -t vfat /dev/mtdblock0 /mnt/smartmedia
 
-Jarkko Lavinen
+My problem is that I have no idea about how to write sectors to smartmedia.
+I have already the low level function nand_write_ecc, but I need help from
+the logical side.
+When the mtdblock needs a logical sector (req->sector), I just use my table
+to translate the logical block address to physical block address (the low
+level driver module s3c2410nand.o reads only physical sectors) and pass this
+physical address to the nand_read_ecc function.
+I suppose that when I write, a new logical or physical address must be
+written in the OOB area of the requested block, but which is the logic?
+
+is anybody able to help me?
+
+regards
+
+Luca
+--- end quote -----
+
+I've been unable to contact Luca to see what sort of state the SD driver
+for SMDK2410is now in, almost a year later ... does anyone have any details?
+
+I have an SMDK2410 which I'd like to press into development work, but the
+only large'ishmedia I have for it is a 512Meg SD Card, which I'd like to put all the dev
+tools on ... is thispossible?  Maybe someone has a working SD driver for SMDK2410?  (linux
+kernel 2.4.18)
+;
+--
+Jay Vaughan
