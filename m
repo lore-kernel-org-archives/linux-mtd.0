@@ -1,14 +1,17 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from carrot.linuxgrrls.org ([212.18.228.66] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157Ct2-0004Qf-01
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 10:12:28 +0100
-Date: Tue, 5 Jun 2001 11:17:48 +0200 (CEST)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
+	id 157D8y-0004Ru-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 10:28:56 +0100
+Date: Tue, 5 Jun 2001 10:29:16 +0100 (BST)
+From: kira brown <kira@linuxgrrls.org>
 To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: Missing cache flush.
-In-Reply-To: <13942.991696607@redhat.com>
-Message-ID: <Pine.LNX.4.21.0106051105110.1078-100000@godzilla.axis.se>
+Cc: "David S. Miller" <davem@redhat.com>,
+	Chris Wedgwood <cw@f00f.org>, Jeff Garzik <jgarzik@mandrakesoft.com>,
+	<bjornw@axis.com>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: Re: Missing cache flush. 
+In-Reply-To: <25587.991730769@redhat.com>
+Message-ID: <Pine.LNX.4.30.0106051028390.10786-100000@carrot.linuxgrrls.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,45 +25,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+
 On Tue, 5 Jun 2001, David Woodhouse wrote:
-> The flash mapping driver arch/cris/drivers/axisflashmap.c uses a cached
-> mapping of the flash chips for bulk reads, but obviously an uncached mapping
-> for sending commands and reading status when we're actually writing to or
-> erasing parts of the chip.
-> 
-> However, it fails to flush the dcache for the range used when the flash is 
-> accessed through the uncached mapping. So after an erase or write, we may 
-> read old data from the cache for the changed area.
 
-I'll start by saying that axisflashmap.c was not meant to be used by any
-other archs, that's why it's in arch/cris. But if anyone find it useful,
-that's great. Just be aware that it's not _designed_ for general use and
-something like this might be just what that might mean.
+>
+> davem@redhat.com said:
+> > Chris Wedgwood writes:
+> > > What if the memory is erased underneath the CPU being aware of
+> > > this? In such a way ig generates to bus traffic...
+>
+> > This doesn't happen on x86.  The processor snoops all transactions
+> > done by other agents to/from main memory.  The processor caches are
+> > always up to date.
+>
+> No. My original mail presented two situations in which this assumption is
+> false.
+>
+> 1. Bank-switched RAM. You want to force a writeback before switching pages.
+>    I _guarantee_ you that the CPU isn't snooping my access to the I/O port
+>    which sets the latch that drives the upper few address bits of the RAM
+>    chips.
+>
+> 2. Flash. A few writes of magic data to magic addresses and a whole erase
+>    block suddenly contains 0xFF. The CPU doesn't notice that either.
 
-CRIS is cache coherent just like the x86 cache and does not need any
-explicit cache flushes for the write case. Even when doing cache bypass
-writing, if a cacheline already exist with the referenced memory, the
-cacheline is updated.
+3. Buggy implementations like the Cyrix 486es that don't properly maintain
+   cache coherency.
 
-In the erase case though, yes there should be a flush. However during the
-1-2 seconds it takes to erase a sector, you can with very high certainity
-guarantee that the direct-mapped unified 8 kB cache on the CRIS is
-flushed from any flash references at all.. I mean, it's one-way
-associative, during 1-2 seconds it executes potentially 200 million
-instructions. So we haven't really bothered to think about the problem..
-
-For other CPU's it might be more dangerous, although I don't hold my
-breath.. 1-2 seconds is a long time when talking about L1 caches.
-
-> However, I can't see a cache operation which performs this function.
-> flush_dcache_page() is defined as a NOP on CRIS as, it seems, it is on most
-> architectures. On other architectures, there's dma_cache_wback_inv(), but
-> that also seems to be a NOP on i386, to pick a random example.
-
-I'd agree that to be really certain, a "flush_dcache()" function
-should be implemented and used when an erase finishes. Like David Miller
-wrote somewhere in the thread, one way is to use your knowledge of the
-arch's cache and do suitable dummy accesses to flush it, if there is no
-explicit command to do it. But that's just up to the arch coders..
-
--bw
+kira.
