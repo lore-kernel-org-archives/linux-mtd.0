@@ -1,18 +1,19 @@
-Received: from webmanixhosting.com ([216.40.225.16]
-	helo=www.webmanixhosting.com)
+Received: from [221.148.59.218] (helo=bogo.da-san.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Aehh6-0001P8-DN
-	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2004 21:27:56 +0000
-From: "Dan Post" <djp.mtd@onemyth.net>
-To: "Lothar Wassmann" <LW@KARO-electronics.de>
-Date: Thu, 8 Jan 2004 13:12:06 -0800
-Message-Id: <20040108211206.M17119@onemyth.net>
-In-Reply-To: <16381.14656.474765.390645@ipc1.karo>
-References: <16381.14656.474765.390645@ipc1.karo>
+	id 1AekPJ-0001su-RW
+	for linux-mtd@lists.infradead.org; Fri, 09 Jan 2004 00:21:46 +0000
+Received: from freeman (pcsmkim.da-san.com [203.236.124.220])
+	by bogo.da-san.com (v3smtp 8.11.6.9/8.11.6) with SMTP id i090Ari25362
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Jan 2004 09:10:53 +0900
+Message-ID: <002801c3d646$58da9280$dc7ceccb@freeman>
+From: "smkim" <smkim@da-san.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 9 Jan 2004 09:20:12 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-cc: linux-mtd@lists.infradead.org
-Subject: Re: put_chip() called with oldstate 1!! (linux 2.6.0-rmk2)
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+Subject: Can JFFS2 is ported to linux kernel 2.2.x  ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Jan 2004 12:04:32 +0100, Lothar Wassmann wrote
-> I'm using the MTD driver with Intel flash chips on a PXA255 platform
-> with Redboot partitions. Whenever I write data to the flash and
-> subsequently unmount and remount the modified partition I get several
-> messages: 'put_chip() called with oldstate 1!!'.
+I  have read  "JFFS : The Journalling Flash File System" which David
+Woodhose(Red hat, Inc.) has written.
 
-Hmmm, strange.
+According to the paper, JFFS was ported to the 2.0, 2.2 and 2.3 version of
+the Linux kernel. JFFS2 was ported to the 2.4 version of the Linux kernel.
 
-Actually, looking at include/linux/mtd/flashchip.h, 1 == FL_STATUS.  (That
-holds true for older versions as well.)
-
-Looking at the CVS version of cfi_cmdset_0001.c,
-                chip->state = FL_ERASING;
-                break;
-
-        case FL_READY:
-+        case FL_STATUS:
-                /* We should really make set_vpp() count, rather than doing
-this */
-                DISABLE_VPP(map);
-                break;
-        default:
-                printk(KERN_ERR "put_chip() called with oldstate %d!!\n",
-chip->oldstate);
-        }
+I am wondering if JFFS2 was ported to the 2.4 version of the Linux kernel.
 
 
-Note the line with the "+" at the front.  That was added in version 1.127 of
-that file (thanks, CVSweb!), on Wed Jul 2 2003, by acurtis.
-The comment: "Added FL_STATUS to the FL_READY case in put_chip(). (Eliminate
-noise)"
+Thanks  for your reply in advance.
 
-Given my knowledge of flash chips and the driver, that looks like the
-appropriate behavior... you may want to upgrade your file or at least add that
-line.  There have been some other nice changes since then.  From a quick
-glance, I can't find any mailing list activity from that timeperiod on this
-fix though...
-
-Dan
+Have a nice day.
