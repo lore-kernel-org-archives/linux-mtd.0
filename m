@@ -1,17 +1,19 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157Fuh-0004f5-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 13:26:23 +0100
+	id 157G6f-0004fm-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 13:38:45 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010605125233.A31929@crystal.2d3d.co.za> 
-References: <20010605125233.A31929@crystal.2d3d.co.za> 
-To: Abraham vd Merwe <abraham@2d3d.co.za>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: erasesize 
+In-Reply-To: <15132.41562.879696.484467@pizda.ninka.net> 
+References: <15132.41562.879696.484467@pizda.ninka.net>  <15132.40298.80954.434805@pizda.ninka.net> <15132.22933.859130.119059@pizda.ninka.net> <13942.991696607@redhat.com> <3B1C1872.8D8F1529@mandrakesoft.com> <15132.15829.322534.88410@pizda.ninka.net> <20010605155550.C22741@metastasis.f00f.org> <25587.991730769@redhat.com> <25831.991731935@redhat.com> 
+To: "David S. Miller" <davem@redhat.com>
+Cc: Chris Wedgwood <cw@f00f.org>, Jeff Garzik <jgarzik@mandrakesoft.com>,
+    bjornw@axis.com, linux-kernel@vger.kernel.org,
+    linux-mtd@lists.infradead.org
+Subject: Re: Missing cache flush. 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Jun 2001 13:30:21 +0100
-Message-ID: <12554.991744221@redhat.com>
+Date: Tue, 05 Jun 2001 13:42:50 +0100
+Message-ID: <14071.991744970@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +25,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-abraham@2d3d.co.za said:
->  What should I set erasesize to when the flash chips have multiple
-> erase sizes (and therefor I use eraseregions to get erasesize info)?
-> Is 0 acceptable or should I set it to something else - it doesn't
-> really make sense to put any value in this after all...
+davem@redhat.com said:
+> David Woodhouse writes:
+> > What shall we call this function? The intuitive "flush_dcache_range" 
+> > appears to have already been taken.
 
-See the other Intel driver. Set the erase size to the 'major' erase size 
-for the device, then fill in the appropriate structure to represent the 
-other regions.
+> Call it flush_ecache_full() or something.
+
+Strange name. Why? How about __flush_cache_range()?
 
 --
 dwmw2
