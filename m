@@ -1,18 +1,16 @@
-Received: from h154.195-230-144.ukrpack.net ([195.230.144.154] helo=srv1.lrpeople.com)
+Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zglf-0007sF-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 16:29:48 +0100
-Message-ID: <003f01c0dd4c$11102e60$5502010a@lrpeople.com>
-From: "Alexander Melichenko" <AlexanderM@lrpeople.com>
-To: "Vipin Malik" <vipin.malik@daniel.com>
-Cc: <linux-mtd@lists.infradead.org>,
-	<s_krishna@in.ibm.com>
-Subject: SC520 CDP - problem with booting from BIOS Flash
-Date: Tue, 15 May 2001 18:33:48 +0400
+	id 14zhJ5-0007uR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 17:04:19 +0100
+Date: Tue, 15 May 2001 12:08:10 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: "Bao C. Ha" <baoha@sensoria.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: Booting from JFFS2 
+In-Reply-To: <27752.989910645@redhat.com>
+Message-ID: <Pine.LNX.4.33.0105151207240.30128-100000@xanadu.home>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,36 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello, Vipin!
-I work with AMD SC520 CDP. I use file sc520cdp.c from CVS (written by Robert
-Kaiser). It works good when Linux boots from HDD or FDD. I can read/write
-into mtd0,... device or work with JFFS placed into mtdblock device.
-My root FS (JFFS) is placed into mtdblock0. Now I would like to place kernel
-into BIOS-flash (29F040). I followed instructions, written by You.  But I
-have some questions. My actions is :
 
-I use lstart16.asm from AMD site with Your modifications.
+On Tue, 15 May 2001, David Woodhouse wrote:
 
-BOOTCS - DIP
-ROMCS1 - 8MHCS
-ROMCS2 - 8MLCS
+> The answer to that question is entirely dependent on the bootloader you
+> use. But at the moment, I think there are no bootloaders which support this.
+>
+> There are patches available for Compaq bootldr used on the iPAQ, which make
+> it capable of loading a kernel from a JFFSv1 filesystem. But nobody's yet
+> done JFFS2, AFAIK.
 
-z
-yi
-nb0
-ns lstart16.abs 7f800
-ns zFlashImage 0 (zFlashImage is kernel with assigning root device
-mtdblock0).
-z
-g
+Yes, JFFS2 is apparently done as well.
 
-After reset I see changing some digits on the LEDs but kernel is not
-booting.
 
-Why kernel doesn't booting? This kernel boots good ( with root fs into
-mtdblock0 ) when I use HDD.
-Any ideas?
-
-Thanks for any help.
-
-Alexander Melichenko
+Nicolas
