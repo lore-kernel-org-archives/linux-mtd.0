@@ -1,20 +1,18 @@
-Received: from dsl-64-129-131-125.telocity.com
-	([64.129.131.125] helo=mir.outpostsentinel.com ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16b1GZ-0002rU-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 15:24:15 +0000
-From: "Chris Fowler" <cfowler@outpostsentinel.com>
-To: "Ashok M Padmanaban" <ashokmp@sasken.com>,
-        "MTD for Linux" <linux-mtd@lists.infradead.org>,
-        "JFFS mailing list" <jffs-dev@axis.com>
-Subject: RE: init taking 5sec
-Date: Wed, 13 Feb 2002 10:35:49 -0500
-Message-ID: <NFBBLCEFBCFEPMJJKOIKAECPCDAA.cfowler@outpostsentinel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <3C6A9E35.C4B8664F@sasken.com>
+	id 16b1M2-0002s1-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 15:29:54 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <002001c1b0e5$7bda7bc0$7b00000a@SNAGGLE> 
+References: <002001c1b0e5$7bda7bc0$7b00000a@SNAGGLE> 
+To: "Christopher Hoover" <ch@murgatroid.com>
+Cc: linux-mtd@lists.infradead.org, Jeroen.Roose@chess.nl,
+    linux-arm-kernel@lists.arm.linux.org.uk
+Subject: Re: [PATCH] New Lock and Unlock Code for Intel FLASH parts 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 13 Feb 2002 15:41:00 +0000
+Message-ID: <27071.1013614860@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,40 +24,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm not sure if creating your own init will dramatically reduce your time.
-You'll need to create a custom
-optimized init program.  I wouild not bother with the SysVInit 2.78 sources.
+ch@murgatroid.com said:
+>  I rewrote some of the locking and unlocking support for Intel parts
+> in drivers/mtd/chips/cfi_cmdset_0001.c because it seemed completely
+> broken for parts with variable block sizes, such as the Intel C3 flash
+> I am using.
 
------Original Message-----
-From: linux-mtd-admin@lists.infradead.org
-[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ashok M
-Padmanaban
-Sent: Wednesday, February 13, 2002 12:11 PM
-To: MTD for Linux; JFFS mailing list
-Subject: init taking 5sec
-
-
-Hi All,
-Iam  using kernel 2.4.8 (ac12 patch)
-
-partition sizes : 1MB (boot loafder + kernel)
-                            13 MB ( cramfs as root file system)
-                              2 MB (jffs2 partition)
-
+passion /home/dwmw2/working/mtd/drivers/mtd/chips $ patch -p4 --dry-run < ~/Mail/inbox/504  
+patching file `cfi_cmdset_0001.c'
+Hunk #2 succeeded at 65 (offset 2 lines).
+Hunk #3 succeeded at 1079 with fuzz 1 (offset 25 lines).
+Hunk #4 succeeded at 1331 (offset 22 lines).
+Hunk #5 FAILED at 1407.
+Hunk #6 succeeded at 1490 (offset 25 lines).
+Hunk #7 FAILED at 1522.
+Hunk #8 succeeded at 1608 (offset 26 lines).
+Hunk #9 succeeded at 1628 (offset 29 lines).
+Hunk #10 succeeded at 1640 (offset 26 lines).
+2 out of 10 hunks FAILED -- saving rejects to cfi_cmdset_0001.c.rej
 
 
-The kernel boot up till init in 6sec and then init takes 5secs....till
-i get the login prompt.
-Iam using nicoramdisks init.
-
-Is there any way i can reduce the boot time
-Any pointers where i can get the init source file ( version 2.74)
-
-Thanks and regards
-ashok
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--
+dwmw2
