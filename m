@@ -1,25 +1,15 @@
-Received: from dcardamo.ott.istop.com ([66.11.174.105] helo=sparky.hld.ca)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19lsSq-0002hp-Pz
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2003 16:50:37 +0100
-Received: from sparky.hld.ca (localhost [127.0.0.1])
-	by sparky.hld.ca (8.12.9/8.12.9/Debian-1) with ESMTP id h7AFoNCP021902
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2003 11:50:23 -0400
-Received: (from dan@localhost)
-	by sparky.hld.ca (8.12.9/8.12.9/Debian-1) id h7AFoNkH021900
-	for linux-mtd@lists.infradead.org; Sun, 10 Aug 2003 11:50:23 -0400
-Date: Sun, 10 Aug 2003 11:50:23 -0400
-From: Dan Cardamore <dan.cardamore@officeserver.ca>
+Received: from mail1-3.netinsight.se ([212.247.11.2] helo=ernst.netinsight.se)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19m7Ae-0003rQ-01
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2003 08:32:48 +0100
+From: Jonas Larsson <jonas.larsson@netinsight.net>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20030810155023.GA21857@officeserver.ca>
-References: <20030809053345.GA27061@officeserver.ca>
-	<1060504021.29776.5.camel@imladris.demon.co.uk>
+Message-Id: <1060587118.28472.66.camel@doris>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1060504021.29776.5.camel@imladris.demon.co.uk>
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: Problem mounting JFFS2 as root, works for ext2
+Date: 11 Aug 2003 09:31:59 +0200
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Subject: Cmdline partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 10, 2003 at 09:27:04AM +0100, David Woodhouse wrote:
-> On Sat, 2003-08-09 at 06:33, Dan Cardamore wrote:
-> 
-> > If I boot using JFFS2 as my root, I get:
-> > <snip>
-> > VFS: Mounted root (jffs2 filesystem)
-> > mount_devfs_fs(): unable to mount devfs, err: -2
->   <...>
-> > Warning: unable to open an initial console.
-> > Kernel panic: No init found.  Try passing init= option to the kernel
-> > 
-> > If I boot from /dev/hda3 as my root (ext2), I get everything working
-> > perfect.
-> 
-> Does it bitch about failing to mount devfs in the case where you mount
-> ext2-root too?
+Hi all. I've had some trouble creating my mtd partitions 
+with the 2.6.0-test2 kernel and I need some advice. I have
+my own mapping driver for our board (not submitted yet) which
+is based on the dc21285 map driver.
 
-No, everything boots properly when I ext2.  I should add some more info:
- - When it mounts the jffs2 FS, it does it instantly which means that it
-   can't be mounted.  Mounting it properly takes about 20 seconds.
- - In my initrd linuxrc, I can run:
-   mount -t jffs2 /dev/mtdblock/1 /
-   and it works just fine.  Then the kernel unmouts / and tries to mount
-   it again.
+In the 2.5.70-rmk1 kernel I call parse_cmdline_partitions with
+mtd_id="mymapdriver", and specify mtdparts=mymapdriver:<partitions>
+to the kernel. In 2.6.0-test2-rmk1 I have to call parse_mtd_partitions
+to parse the cmdline. However I cannot specify my mtd_id from the map
+driver (except setting the .name member of my map_info struct) as I
+could with 2.5.70. This makes the line
 
-I've gotten past the problem by making my /dev/hda1 boot partition a
-mini-root with just busybox and it then mounts the JFFS2 partition and
-pivot_root's to it.
+if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
 
-If anyone has an idea though as to why the kernel can't mount it, I'd
-love to skip that kluge.
+in cmdlinepart.c:parse_cmdline_partitions() to fail. 
 
-Thanks,
+The edb7312 map driver calls parse_mtd_partitions like this: 
+mtd_parts_nb = parse_mtd_partitions(mymtd, probes, &mtd_parts,
+"edb7312-nor"); 
 
-Dan
+But the 4th arg (origin) is a unsigned long and as I can see
+is not used by the implementation of the function. Is this
+really the way it is supposed to be?
+      
+Comments?
 
---
-Dan Cardamore                              dan.cardamore@officeserver.ca
-Cell: (613)355-8048                        http://www.officeserver.ca
+/ Jonas
