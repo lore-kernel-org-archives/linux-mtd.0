@@ -1,36 +1,40 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 07 Feb 2003 14:29:44 +0000
-Subject: mkfs.jffs on arm
-In-Reply-To: <3E43CE5A.28886.1612269@localhost>
-References: <3E43C03E.4616.12A05CE@localhost>
- <3E43CE5A.28886.1612269@localhost>
-Message-ID: <1044628184.21169.23.camel@passion.cambridge.redhat.com>
+From: hno@marasystems.com (Henrik Nordstrom)
+Date: 07 Feb 2003 16:37:29 +0100
+Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
+In-Reply-To: <1044620849.21169.4.camel@passion.cambridge.redhat.com>
+References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
+ <1044544711.2535.13.camel@passion.cambridge.redhat.com>
+ <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
+ <1044604814.5502.616.camel@imladris.demon.co.uk>
+ <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
+ <1044610143.5502.691.camel@imladris.demon.co.uk>
+ <1044620396.30969.15.camel@henrik.marasystems.com>
+ <1044620849.21169.4.camel@passion.cambridge.redhat.com>
+Message-ID: <1044632248.6361.19.camel@henrik.marasystems.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Please do not place your reply above the quoted text. Place it below,
-and quote _only_ what is absolutely necessary when replying.
+fre 2003-02-07 klockan 13.27 skrev David Woodhouse:
+> On Fri, 2003-02-07 at 12:19, Henrik Nordstrom wrote:
+> > While the root= argument is not passed to root filesystems, rootfsflags=
+> > are. So I think you should be able to use something like
+> > 
+> > devfs=mount root=/dev/root rootfsflags=[mtddevspec]... rootfs=jffs2
+> > 
+> > then have the filesystem fix up /dev/root.
+> > 
+> > This is used successfully in UML to mount a non-block root filesystem
+> > (hostfs).
+> 
+> Shan't :)
+> 
+> The flags are not for passing the device to be mounted. But thanks for
+> pointing out another case where this is needed.
 
-On Fri, 2003-02-07 at 14:18, Igor Trevisan wrote:
-> I could build almost all the utilities related with JFFS
-> a part from mkfs.jffs2 (mkfs.jffs is ok).
-> This is how the compile flow ends...
-
-> mkfs.jffs2.c:66:18: zlib.h: No such file or directory
-
-You need zlib cross-compiled and installed such that your cross-compiler
-can find zlib.h (and libz.so or libz.a).
-
-
-> mkfs.jffs2.c: In function `write_dirent':
-> mkfs.jffs2.c:770: warning: implicit declaration of function `cpu_to_je16'
-> mkfs.jffs2.c:772: warning: implicit declaration of function `cpu_to_je32'
-
-It seems to be including the wrong version of linux/jffs2.h. It should
-be including the one from '../include/linux', due to the 
-'CFLAGS += -I../include' in util/Makefile. 
-
-
+NFS is yet another one perhaps more familiar to most people if you want
+to take the torch on rewriting boot= processing and rootfs mounting..
+NFS is handled quite a bit special in the kernel root mount..
 
 -- 
-dwmw2
+Henrik Nordstrom <hno@marasystems.com>
+MARA Systems AB
