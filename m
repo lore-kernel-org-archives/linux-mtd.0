@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ip10.savigear.adsl.uk.xo.com ([195.147.222.170] helo=xerp.secret.org.uk)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17T2EW-0003h8-00
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Jul 2002 16:21:24 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020712075715.GA9952@rhin> 
-References: <20020712075715.GA9952@rhin>  <20020604132254.GA4911@rhin.smartdata.ch> <20020701131443.GA10227@rhin> <20020711161909.GA8143@rhin> <20020711191540.GA16466@wohnheim.fh-wedel.de> 
-To: Frederic Gobry <frederic.gobry@smartdata.ch>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mmap question 
+	id 17TRGb-0005dP-00
+	for <linux-mtd@lists.infradead.org>; Sat, 13 Jul 2002 19:05:14 +0100
+Received: from spoinky.renegade.org.uk ([192.168.1.2])
+	by xerp.secret.org.uk with esmtp (Exim 3.33 #1)
+	id 17TRIX-0004GF-00
+	for linux-mtd@lists.infradead.org; Sat, 13 Jul 2002 19:07:13 +0100
+Received: from localhost ([127.0.0.1] helo=secret.org.uk)
+	by spoinky.renegade.org.uk with esmtp (Exim 3.35 #1 (Debian))
+	id 17TRGY-0001q2-00
+	for <linux-mtd@lists.infradead.org>; Sat, 13 Jul 2002 19:05:10 +0100
+From: Simon Evans <spse@secret.org.uk>
+To: linux-mtd@lists.infradead.org
+Subject: minor permissions patch to mtdchar 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 12 Jul 2002 16:21:19 +0100
-Message-ID: <10934.1026487279@redhat.com>
+Date: Sat, 13 Jul 2002 19:05:09 +0100
+Message-Id: <E17TRGY-0001q2-00@spoinky.renegade.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,45 +28,54 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-frederic.gobry@smartdata.ch said:
->  I can work around this for my program (I just tested, performing a
-> simple read just after the write restores what is seen in the mmapped
-> memory), but I still would like to know if the MTD API could be
-> augmented in order to handle read-only memory mapped areas (when
-> available) in a cleaner way as what I currently do?  I don't think
-> this would imply lots of changes:
+Are there any objections to me commiting the following?
 
->       - a flag indicating if the flash can be mmapped
+It:
 
->       - the implementation  of mmap (which probably would  need a call
->         similar  to  'point'  but  with an  explicit  semantic  toward
->         mmapping.
+1. sets the permission on /dev/mtd/*ro to 444 rather than 666
+2. Disallows MEMWRITEOOB & MEMERASE ioctls if the device is not opened with
+   write permissions.
 
-Er, ditch the crap 'point' semantics and implement something sane for 
-mmapping, because that's about the only sane use of point() anyway.
+cheers
+si
 
->       - possibly another  flag to indicate  that an area  is currently
->         mmapped, so that the erase / write operations set the flash in
->         read mode once they have finished their duty 
-
-That's not sufficient. If you let the erase or write operations happen 
-while it's mapped, what prevents your app from reading from the flash 
-_during_ the erase/write operation? You need to either prevent the erases/
-writes from happening while the flash is mapped (bad) or arrange for the 
-pages mapped to userspace to be marked invalid during the erase/write 
-operation, and faults on those pages have to wait until the flash is back 
-in read mode again.
-
-We want some kind of mtd_remap() call which has its own struct vm_operations,
-with a nopage() which sets a flag in the state of the underlying mtd_info, 
-and ensure that the page can be found again and made invalid before any 
-other MTD operations. With the rmap VM the latter is quite simple, without 
-it we'd need to keep track of all vmas ourselves.
-
-This can be used from userspace via the mtdchar device's mmap() method, and 
-also from kernelspace so that things like jffs2 can just remap the flash 
-and read from it directly instead of having to make repeated mtd->read() 
-calls. 
-
---
-dwmw2
+Index: mtdchar.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/mtdchar.c,v
+retrieving revision 1.44
+diff -u -p -r1.44 mtdchar.c
+--- mtdchar.c	2 Oct 2001 15:05:11 -0000	1.44
++++ mtdchar.c	13 Jul 2002 17:50:35 -0000
+@@ -287,7 +287,12 @@ static int mtd_ioctl(struct inode *inode
+ 
+ 	case MEMERASE:
+ 	{
+-		struct erase_info *erase=kmalloc(sizeof(struct erase_info),GFP_KERNEL);
++		struct erase_info *erase;
++
++		if(!(file->f_mode & 2))
++			return -EPERM;
++
++		erase=kmalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+ 		else {
+@@ -338,6 +343,9 @@ static int mtd_ioctl(struct inode *inode
+ 		void *databuf;
+ 		ssize_t retlen;
+ 		
++		if(!(file->f_mode & 2))
++			return -EPERM;
++
+ 		if (copy_from_user(&buf, (struct mtd_oob_buf *)arg, sizeof(struct mtd_oob_buf)))
+ 			return -EFAULT;
+ 		
+@@ -474,7 +482,7 @@ static void mtd_notify_add(struct mtd_in
+ 	sprintf(name, "%dro", mtd->index);
+ 	devfs_ro_handle[mtd->index] = devfs_register(devfs_dir_handle, name,
+ 			DEVFS_FL_DEFAULT, MTD_CHAR_MAJOR, mtd->index*2+1,
+-			S_IFCHR | S_IRUGO | S_IWUGO,
++			S_IFCHR | S_IRUGO,
+ 			&mtd_fops, NULL);
+ }
+ 
