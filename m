@@ -1,66 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14sTC7-0003DK-00
-	for mtd-list@infradead.org; Wed, 25 Apr 2001 18:35:15 +0100
-From: "Alex Lennon" <ajlennon@arcom.co.uk>
-To: "Michel STEMPIN" <mstempin@com1.fr>
-Cc: "mtd" <mtd@infradead.org>,
-	<wjf@arcom.co.uk>,
-	"David Woodhouse" <dwmw2@infradead.org>
-Subject: RE: Booting from StrataFlash on SBC-104 
-Date: Wed, 25 Apr 2001 18:33:34 +0100
-Message-ID: <NEBBKJHOALKOLCFPGELEKEPGCJAA.ajlennon@arcom.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <27955.988215062@redhat.com>
+	id 14sU9G-0003cf-00
+	for mtd-list@infradead.org; Wed, 25 Apr 2001 19:36:22 +0100
+Received: from topaz.3com.com ([192.156.136.158])
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14sU9A-0003cY-00
+	for mtd@infradead.org; Wed, 25 Apr 2001 19:36:20 +0100
+Received: from opal.3com.com (opal.3com.com [139.87.50.117])
+	by topaz.3com.com (Switch-2.1.0/Switch-2.1.0) with ESMTP id f3PIXjf06443
+	for <mtd@infradead.org>; Wed, 25 Apr 2001 11:33:45 -0700 (PDT)
+Received: from hqoutbound.ops.3com.com (hqoutbound.ops.3com.com [139.87.48.104])
+	by opal.3com.com (Switch-2.1.0/Switch-2.1.0) with SMTP id f3PIZO705717
+	for <mtd@infradead.org>; Wed, 25 Apr 2001 11:35:25 -0700 (PDT)
+From: Chester_Szczepucha@3com.com
+To: mtd@infradead.org
+Message-ID: <88256A39.00661864.00@hqoutbound.ops.3com.com>
+Date: Wed, 25 Apr 2001 11:36:01 -0700
+Subject: JFFS usage question
+Mime-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Michel,
 
->> 	- I saw a "boot" directory under the CVS: what is its status?
->> 	- under "boot" the Makefile is building 2 targets "flashloader.rom"
->> and "sbc_mediagx.rom": what are they for? Which one should I get,
->> since the sbc_mediagx and the sbc_104 are from the same manufacturer?
->
->I'll let the people from Arcom answer those.
 
-I hope my colleague Will Frazer passed on my reply to you ?
 
-you can modify the code in sbc_mediagx_boot.c to boot your zImage
-out of a linear boot partition as mentioned.
+Guys,
 
-To do this you would change the flash window base and size, flash paging I/O
-port etc. - Technical details are in the SBC-104 board manual.
+I do not understand all the issues involved, so please bear with me.
+I've got a FLASH that is partially occupied (start and end) with non JFFS stuff.
+In the middle I've got some room
+where I'd like to put JFFS.
 
-Also you would need to change the partition sizes (possibly having
-only the boot and and application partition) for the 4Mb onboard flash part.
+After
+mount -t jffs /dev/rom0 fl
+Flash scan completes with 2 hexdumps and afterwards
+I get repeated complaints from garbage collector regarding lack of oldest node.
 
-You cannot flash update the BIOS on the SBC-104 so you would need access to
-an EPROM programmer: you would have to update your BIOS to add in the
-custom 'sbc_mediagx.rom' BIOS extension.
+My intent was to create an empty file system where I could store some files for
+persistance.
 
-I think that should get you up and running... Please contact Will or myself
-offline
-if you have any further board specific queries.
+Could you please tell me if that makes sense?
+Would you be able to suggest some reading or otherwise help me?
 
-Alternatively you might want to look at the ROM bootloader:
-ftp://ftp.sysgo.de/pub/elinos/1.0/updates/rolo_1.1_src.tar.gz
-
-(see the list archives for further details - this was mentioned a couple of
-days ago
- and looks _very_ interesting. I can't comment further as I haven't had a
-change to
- investigate yet)
-
-Finally (and by far the easiest of options I think) you could plug a D-o-C
-onto the board ...
-
-Regards,
-
-	Alex
+Chester
 
 
 
