@@ -1,18 +1,20 @@
-Received: from smtp2.crystaltech.com ([216.119.106.211])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193FKX-0007C7-2w
-	for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2003 14:09:33 +0100
-From: "John Burch" <jburch@vincisystems.com>
-To: =?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@wohnheim.fh-wedel.de>
-Date: Wed, 9 Apr 2003 09:09:54 -0400
-Message-ID: <000501c2fe99$509aaa40$1200a8c0@JOHNB>
-MIME-Version: 1.0
-In-Reply-To: <20030407195308.GA28178@wohnheim.fh-wedel.de>
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 193FVw-0007Ge-Db
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2003 14:21:21 +0100
+Date: Wed, 9 Apr 2003 15:21:22 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: John Burch <jburch@vincisystems.com>
+Message-ID: <20030409132122.GA11970@wohnheim.fh-wedel.de>
+References: <20030407195308.GA28178@wohnheim.fh-wedel.de>
+	<000501c2fe99$509aaa40$1200a8c0@JOHNB>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <000501c2fe99$509aaa40$1200a8c0@JOHNB>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: 'Mtd' <linux-mtd@lists.infradead.org>
-Subject: RE: Problems making jffs2 utils
+Subject: Re: Problems making jffs2 utils
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Several questions...
+On Wed, 9 April 2003 09:09:54 -0400, John Burch wrote:
+> 
+> 1.  Even to build 'erase' only, one still needs zlib?
 
-1.  Even to build 'erase' only, one still needs zlib?
-2.  I can't seem to track down the 'common zlib patch' you refer to.  Is
-this a special patch in support of mtd, or a general patch for zlib
-(such that if I get the latest zlib I wouldn't need the patch)?
-3.  Is the patch particular to a specific version of zlib?
-4.  Can my target zlib version differ from the host zlib version without
-causing problems?
+No, that shouldn't be the case.
 
-Thanks,
-John
+> 2.  I can't seem to track down the 'common zlib patch' you refer to.  Is
+> this a special patch in support of mtd, or a general patch for zlib
+> (such that if I get the latest zlib I wouldn't need the patch)?
 
+Dammit! I was stupid, confused or worse and didn't read the work
+"utils" in your mail. Others got it right, so I hoped this would go
+unnoticed. You didn't have to rub it in.
 
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org=20
-> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of J=F6rn =
-Engel
-> Sent: Monday, April 07, 2003 2:53 PM
-> To: John Burch
-> Cc: 'Mtd'
-> Subject: Re: Problems making jffs2 utils
->=20
->=20
-> On Mon, 7 April 2003 14:50:49 -0400, John Burch wrote:
-> >=20
-> > I'm running into compiler errors when trying to build the jffs2=20
-> > utilities for a 2.4.17/mips target.  I've checked out the=20
-> latest mtd=20
-> > code according to www.linux-mtd.infradead.org, then have=20
-> followed the=20
-> > instructions in the mtd/util/README file (copied mtd/util=20
-> contents to=20
-> > directory under linux root and changed $CROSS as necessary=20
-> since I'm=20
-> > cross-compiling to mips).  I cd to=20
-> <mips-kernel-path>/linux/utils and=20
-> > do a make, but get errors immediately, which typically include the=20
-> > following (depending on which util I'm trying to make)...
-> >=20
-> > .../libc.so.6: undefined reference to 'no symbol'
-> > .../mips-linux-ld: cannot find -lz
->=20
-> You need the common zlib patch, it should be on=20
-www.kernel.org somewhere under people/dwmw2.
+Forget the common zlib, you only need it for the kernel.
 
-J=F6rn
+> 3.  Is the patch particular to a specific version of zlib?
+> 4.  Can my target zlib version differ from the host zlib version without
+> causing problems?
 
---=20
-Data expands to fill the space available for storage.
--- Parkinson's Law
+see above. Sorry about that.
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Jörn
+
+-- 
+And spam is a useful source of entropy for /dev/random too!
+-- Jasmine Strong
