@@ -1,49 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13BXsm-0007se-00
-	for mtd-list@infradead.org; Mon, 10 Jul 2000 08:21:36 +0100
-Received: from ncc1.infomail.es ([194.224.53.134] helo=infomail.es)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13BXsk-0007sY-00
-	for mtd@infradead.org; Mon, 10 Jul 2000 08:21:34 +0100
-Date: Mon, 10 Jul 2000 09:17:20 CEST
-From: Rodrigo Moya <rmoya@tsai.es>
-To: Dvir Oren <dvir@lucidvon.com>
-CC: MTD <mtd@infradead.org>
-Subject: Re: Re: Re: plilo problems
-Reply-To: rmoya@tsai.es
+	id 13BYAc-0007tz-00
+	for mtd-list@infradead.org; Mon, 10 Jul 2000 08:40:02 +0100
+Date: Mon, 10 Jul 2000 09:38:32 +0200 (CEST)
+From: Simon Kagstrom <simonk@axis.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>,
+        Alexander Larsson <alex@cendio.se>, jffs-dev@axis.com,
+        mtd@infradead.org
+Subject: Re: jffs_erasable_size: offset = 0x0034b000 
+In-Reply-To: <10755.963162663@cygnus.co.uk>
+Message-ID: <Pine.LNX.4.21.0007100937140.21465-100000@bitwise.axis.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Message-Id: <E13BXsk-0007sY-00@infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Sun, 9 Jul 2000, David Woodhouse wrote:
 
+>=20
+> scote1@Matrox.COM said:
+> > I don't think JFFS is ready to be included in the kernel.  It hasn't
+> > been tested a lot (the 2.2 and 2.4 ports) and I'm sure we'll find man=
+y
+> > bugs (the invalidate_inode_pages bug is a good example of a huge bug
+> > that we almost missed).  Just today, I untarred the source code of a
+> > program on a JFFS partition, tried to compile it and got a read error
+> > from jffs_readpage(). =20
+>=20
+> It wasn't really my intention to send it in - it was in the tarball I s=
+ent=20
+> to Linus out of habit because I've been doing it every time I've releas=
+ed=20
+> one for some time - I'm amazed that he actually took it.
+>=20
+> But now it's in, it does seem to have attracted some attention, and wit=
+h it=20
+> at least one bug fix so far - which can only really be a good thing.=20
 
+What bug fix is that?
+=20
+// Simon K=E5gstr=F6m
 
-On Thu,  6 Jul 2000, Dvir Oren wrote:
-> Date: Thu,  6 Jul 2000 16:36:49 +0300 (IDT)
-> To: rmoya@tsai.es
-> From: Dvir Oren <dvir@lucidvon.com>
-> Subject: Re: Re: plilo problems
-> 
-> Rodrigo Moya writes ("Re: Re: plilo problems"):
-> 
-> > > LILO
-> > > .ccboot:
-> > > Loading linux.........................
-> 
-> It might be because you have a large kernel.  One of the effects that
-> the patch does is limit the size of the kernel you can use.  I think
-> that LILO should have warned about it, or not installed it, but I may
-> be wrong.  What size kernel are you using?  I think it should not be
-> larger than 450K or so.  Try to make a smaller kernel.
-> 
-Yes, it might be this, the kernel I'm using is 579140 bytes. I'll try
-removing some things.
-
-Thanks
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
