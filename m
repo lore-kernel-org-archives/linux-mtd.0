@@ -1,22 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from ns2.arlut.utexas.edu ([129.116.174.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18JZkN-0007qf-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 13:39:27 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6L0035SLZV3D@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 04 Dec 2002 15:09:31 +0100 (MET)
-Date: Wed, 04 Dec 2002 15:07:32 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: fail to mount MTD (NAND) as root file system
-In-reply-to: <BDEDIOGGNJEEPBHLJLFGAEDPCEAA.tium@palmpalm.com>
-To: Taeil Um <tium@mail.palmpalm.com>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200212041507.32162.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=euc-kr
-Content-transfer-encoding: 7BIT
-References: <BDEDIOGGNJEEPBHLJLFGAEDPCEAA.tium@palmpalm.com>
+	id 18JcJD-0008DW-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 16:23:35 +0000
+Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
+	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id gB4Gs8lg026458
+	for <linux-mtd@lists.infradead.org>; Wed, 4 Dec 2002 10:54:08 -0600 (CST)
+Received: from arlut.utexas.edu (koffer.arlut.utexas.edu [10.8.17.114])
+	by ns5.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id gB4Gs61j014205
+	for <linux-mtd@lists.infradead.org>; Wed, 4 Dec 2002 10:54:06 -0600 (CST)
+Date: Wed, 4 Dec 2002 10:54:06 -0600
+Mime-Version: 1.0 (Apple Message framework v548)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Subject: Problem: 51MB partition max size on jffs2
+From: Ken Offer <koffer@arlut.utexas.edu>
+To: LinuxMTD <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <0067E3B6-07A9-11D7-937A-000393467F1A@arlut.utexas.edu>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,34 +27,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wednesday 04 December 2002 14:54, Taeil Um wrote:
-> When i tried mount the NAND flash as a root file system, i succeeded for
-> the first time.
- 
-> But if i reboot the system and mount NAND flash as a root file system
-> again,
- i got a KERNEL-OOPS as bellow
-> VFS: Mounted root (ext2 filesystem).
-> VFS: Mounted root (jffs2 filesystem).
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 00000003
- pgd = c0024000
-> *pgd = 00000000, *pmd = 00000000
-> Internal error: Oops: ffffffff
-> CPU: 0
-> pc : [<c0055668>]    lr : [<c0006000>]    Not tainted
-> sp : c001fe6c  ip : ffffffff  fp : c001fe88
-> r10: c1d41000  r9 : c017274c  r8 : 00000003
-> r7 : 60000013  r6 : c020f218  r5 : 000001f0  r4 : c020f210
-> r3 : ffffffff  r2 : ffffffff  r1 : ffffffff  r0 : ffffffbf
-> ------------------------------------------------------------------
-> 
-Please recompile your kernel with debugging enabled and provide a stacktrace 
-through ksymoops.
+Hello all,
 
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+I've run into a strange problem and I wonder if any of you have seen 
+this and perhaps understand it better.
+
+I've got a Toshiba 128MB Smart Card in my embedded system and I wrote a 
+custom nand driver to support it.  I have discovered that I cannot 
+mount a jffs2 partition larger than 51MB on the card (so at this point 
+I have two 51MB partitions and 1 26MB partition).  Trying to mount a 
+larger partition yields a less than helpful error message from mount.  
+I've tried adding printk statements to the jffs2 code, but none of them 
+get hit during the errant mount process.
+
+So... is 51MB a valid jffs2 limitation?  If so, why?
+
++-----------------------------------------------------------+
+|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
+|  Office: 512-835-3859                  Fax: 512-835-3259  |
++-----------------------------------------------------------+
