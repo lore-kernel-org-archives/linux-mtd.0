@@ -1,19 +1,14 @@
-Received: from wproxy.gmail.com ([64.233.184.194])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0skn-0006IJ-IK
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 21:47:58 -0500
-Received: by wproxy.gmail.com with SMTP id 68so1914314wra
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Feb 2005 18:47:56 -0800 (PST)
-Message-ID: <43507b7c0502141847134e1e68@mail.gmail.com>
-Date: Mon, 14 Feb 2005 20:47:56 -0600
-From: Sean Kelley <sean.sweng@gmail.com>
-To: linux-mtd@lists.infradead.org
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sean Kelley <sean.sweng@gmail.com>
+In-Reply-To: <43507b7c0502141847134e1e68@mail.gmail.com>
+References: <43507b7c0502141847134e1e68@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 15 Feb 2005 07:48:05 +0000
+Message-Id: <1108453685.22597.30.camel@baythorne.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: Linux MTD and NFTL - Question
-Reply-To: Sean Kelley <sean.sweng@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Linux MTD and NFTL - Question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +18,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've been looking into an NFTL implementation for a device that uses a
-NAND part and needs to be mounted on a Window's PC Desktop.  Thus I
-need a Block Device interface so as to present a surface on which a
-FAT filesystem can be placed.  However, in the course of my research
-it came to my attention that a company called M-Systems has a hefty
-amount of IP with regards to FTL and NFTL for pseudo-block devices. 
-How does the Linux MTD-NFTL skirt the patents that M-Systems has in
-place?  If I want to sell my product commercially what sort of risk? 
-It is not terribly clear.  I've looked at YAFFS and JFFS2, but those
-won't work if I wish to support USB mass storage for the Windows
-desktop.
+On Mon, 2005-02-14 at 20:47 -0600, Sean Kelley wrote:
+> However, in the course of my research it came to my attention that a
+> company called M-Systems has a hefty amount of IP with regards to FTL
+> and NFTL for pseudo-block devices. How does the Linux MTD-NFTL skirt
+> the patents that M-Systems has in place?  If I want to sell my product
+> commercially what sort of risk? It is not terribly clear. 
 
-Any comments on NFTL and M-Systems patents much appreciated.
+In general, we only really use FTL/NFTL/INFTL for backwards
+compatibility on devices which already had it when we started. The block
+device emulation thing just doesn't make much sense now that we're not
+running on DOS where we have to provide an INT 13h disk BIOS handler.
 
-Thanks,
+So even outside the Free World it's never really been much of an issue,
+because that means we tend to operate within the licence which was
+granted for use on PCMCIA devices (for FTL) or for use on M-Systems
+hardware (NFTL).
 
-Sean
+I'm happy enough shipping the code like that, following the precedent
+set by David Hinds with FTL in pcmcia-cs. AFAICT the GPL doesn't
+actually specify that you have to be able to _use_ the code without
+restrictions -- only to copy, modify and redistribute it. I could write
+GPL'd code for running a nuclear power plant, for example -- but I
+suspect the authorities will be less than amused if you try to _use_ it.
+
+If you're in a part of the world where the patents apply, and you think
+that they're sufficiently non-obvious or the patent office is
+sufficiently corrupt that you'd stand a good chance of losing in court
+when you try to challenge them, then you probably shouldn't be using the
+techniques outside the terms of the licence granted by M-Systems. You
+should consult a patent lawyer though.
+
+> > I've looked at YAFFS and JFFS2, but those won't work if I wish to
+> > support USB mass storage for the Windows desktop.
+
+Does it have to be USB mass storage? What about the file system profile
+which is used with cameras? That should work when backed by JFFS2.
+
+-- 
+dwmw2
