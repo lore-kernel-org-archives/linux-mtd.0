@@ -1,59 +1,42 @@
-From: guo_zl9@hotmail.com (guo_zhenglin)
-Date: Thu, 20 Mar 2003 16:01:01 +0800
+From: robert.chiodini-1@ksc.nasa.gov (Bob Chiodini)
+Date: 21 Mar 2003 06:18:28 -0500
 Subject: help: network cannot startup from FLASH
-Message-ID: <OE64iIWMzRsft83wxnG00000add@hotmail.com>
+In-Reply-To: <OE64iIWMzRsft83wxnG00000add@hotmail.com>
+References: <OE64iIWMzRsft83wxnG00000add@hotmail.com>
+Message-ID: <1048245508.1717.21.camel@tweedy.ksc.nasa.gov>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
- 1) I have a MBX860 board.
-    my linux kernel is 2.4.4
-  
- 2) when I boot linux from MBX860 RAM,
-    BOOTP is ok. detail messages following:
+On Thu, 2003-03-20 at 03:01, guo_zhenglin wrote:
 
-       .....     
-      POSIX conformance testing by UNIFIX
-     Linux NET4.0 for Linux 2.4
-    Based upon Swansea University Computer Society NET3.039
-    Starting kswapd v1.8
-    CPM UART driver version 0.03
-    ttyS0 on SMC1 at 0x0280, BRG1
-    pty: 256 Unix98 ptys configured
-    block: queued sectors max/low 8186kB/2728kB, 64 slots per queue
-    RAMDISK driver initialized: 16 RAM disks of 8192K size 1024 blocksize
+>   4) then I put linux's kernel file in MBX860 FLASH,
+>       boot it from FLASH,
+>     BOOTP is NOT success . detail messages following: 
+>     
+>     ....
+>     eth0: CPM ENET Version 0.2 on SCC1, 03:94:80:82:9f:f9
+>     NET4: Linux TCP/IP 1.0 for NET4.0
+>     IP Protocols: ICMP, UDP, TCP, IGMP
+>     IP: routing cache hash table of 512 buckets, 4Kbytes
+>     TCP: Hash tables configured (established 1024 bind 1024)
+>     Sending BOOTP requests........timeout
+>   5) eth0's MAC is different ???!! 
+>      and BOOTP timeout.
 
-    eth0: CPM ENET Version 0.2 on SCC1, 08:00:3e:2e:68:41
+A non-MTD related thought:  Is the network switch upstream from the
+MBX860 configured with any kind of MAC layer security?  If so, maybe the
+change in MAC address is stopping you.  Also, some Cisco equipment may
+take a minute or two to renegotiate speed and duplex mode.
 
-    ....
-    NET4: Linux TCP/IP 1.0 for NET4.0
-    IP Protocols: ICMP, UDP, TCP, IGMP
-    IP: routing cache hash table of 512 buckets, 4Kbytes
-    TCP: Hash tables configured (established 1024 bind 1024)
+One other thing:  Is your bootpd/dhcpd configured fro the correct MAC?
 
-    Sending BOOTP requests.... OK
-    IP-Config: Got BOOTP answer from 192.168.1.252, my address is 
-    192.168.1.1
-
-    NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-
-  3) I ping 192.168.1.252 ,is success.
-  4) then I put linux's kernel file in MBX860 FLASH,
-      boot it from FLASH,
-    BOOTP is NOT success . detail messages following: 
-    
-    ....
-    eth0: CPM ENET Version 0.2 on SCC1, 03:94:80:82:9f:f9
-    NET4: Linux TCP/IP 1.0 for NET4.0
-    IP Protocols: ICMP, UDP, TCP, IGMP
-    IP: routing cache hash table of 512 buckets, 4Kbytes
-    TCP: Hash tables configured (established 1024 bind 1024)
-    Sending BOOTP requests........timeout
-  5) eth0's MAC is different ???!! 
-     and BOOTP timeout.
-     
-  
-
-------------------------------
- guo zhenglin 
- E-mail: guo_zl9 at hotmail.com
- ------------------------------
+Bob...
+---
+Bob Chiodini
+Senior Engineer
+ASRC Aerospace
+M/S ASRC-18
+Kennedy Space Center, FL 32899
+321-867-6313 (voice)
+321-867-6300 (fax)
+bob.chiodini at ksc.nasa.gov
