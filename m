@@ -1,17 +1,17 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=dual166.onz.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mawD-0001Rf-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:15:22 +0100
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: 64-bit support..what happened?
-Date: Wed, 4 Sep 2002 07:14:22 -0700
-Message-ID: <NCBBIINEHIPFGJPLBEIFEEKGDLAA.acurtis@onz.com>
+Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17mb2H-0001SM-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:21:37 +0100
+Date: Wed, 4 Sep 2002 15:21:36 +0100 (BST)
+From: Jasmine Strong <jasmine@hex.linuxgrrls.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: John Hall <John.Hall@optionexist.co.uk>,
+	"Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Stable cvs version for 2.4 
+In-Reply-To: <21868.1031129479@redhat.com>
+Message-ID: <Pine.LNX.4.33.0209041519170.22265-100000@hex.linuxgrrls.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am trying to integrate a recent version of MTD from CVS with Linux 2.4.19
-in order to gain 64-bit support. However there appears to be several things
-wrong which indicates that this does not work.
 
-1. The conditional CONFIG_CFI_64 is defined within cfi.h. However not all
-the source modules that use this conditional include the proper header file.
-(all the source modules under drivers/mtd/maps)
+On Wed, 4 Sep 2002, David Woodhouse wrote:
 
-2. drivers/mtd/maps/physmap.c - attempts to reference __raw_readll() and
-__raw_writell() when in 64-bit mode. These functions/macros do not exist.
-They would appear in include/asm/io.h. Nothing exists in the MTD tree to
-patch this file or otherwise provide these functions.
+>
+> jasmine@hex.linuxgrrls.org said:
+> >  WARNING! WARNING!  there are architectures that will break if you do
+> > this.
+>
+> Architectures on which Linux runs?
 
-Any ideas where I can get the 64-bit implementation?
+Yes.  uCLinux, anyway.   Pointers should always be treated as opaque
+unless you have a *really* good reason not to.
 
-THX
+(Architectures that don't always use word-aligned pointers include m68k
+and ARM Thumb.)
+
+Jas.
