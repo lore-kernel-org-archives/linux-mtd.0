@@ -1,28 +1,67 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 13 Mar 2003 07:14:20 +0000
-Subject: dnode of meta data
-In-Reply-To: <000601c2e8ae$b46ea9a0$210486da@ybb>
-References: <000e01c2e65b$71ca7020$210486da@ybb>
- <1047405009.24808.254.camel@passion.cambridge.redhat.com>
- <000601c2e8ae$b46ea9a0$210486da@ybb>
-Message-ID: <1047539659.23182.18.camel@imladris.demon.co.uk>
+From: tharbaugh@lnxi.com (Thayne Harbaugh)
+Date: 12 Mar 2003 09:35:34 -0700
+Subject: DQ5 & DQ6 in chips/cfi_cmdset_0002.c (Dairy Queen 5 warning)
+In-Reply-To: <001401c2e8ae$37e20cb0$1200a8c0@JOHNB>
+References: <001401c2e8ae$37e20cb0$1200a8c0@JOHNB>
+Message-ID: <1047486934.11512.61.camel@tubarao>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Wed, 2003-03-12 at 15:47, matsunaga wrote:
-> Thank you for the quick reaction. I would apreciate it.
-> By the way, if you write a file, a dnode of meta data is written and obsoleted just after that.
-> It consumes flash area(not much though) and might be caused by old fasioned format, 
-> but could the process be omitted in advance?
+--=-SCiByEcspzKD8yaWvDLo
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Not easily. When you open and write a file, there are two separate
-system calls -- open() and write().
+On Wed, 2003-03-12 at 08:44, John Burch wrote:
+> > -----Original Message-----
+> > From: linux-mtd-admin at lists.infradead.org=20
+> > [mailto:linux-mtd-admin at lists.infradead.org] On Behalf Of=20
+> > Thayne Harbaugh
+> > Sent: Tuesday, March 11, 2003 7:25 PM
+> > To: linux-mtd at lists.infradead.org
+> > Subject: DQ5 & DQ6 in chips/cfi_cmdset_0002.c (Dairy Queen 5 warning)
+> >=20
+> >=20
 
-JFFS2 is entirely synchronous -- we ensure that the results of a system
-call have hit the medium before we return to the user. So optimising out
-the 'metadata' node which holds the permissions and timestamps etc. of
-the new file, and which exists before any data are written, isn't very
-easy.
+<snip>
 
--- 
-dwmw2
+>=20
+> The attached app note
+
+Attachment?
+
+> from AMD explains things in detail relative
+> to AMD devices.
+
+<snip>
+
+>=20
+> John
+>=20
+> >=20
+> > --=20
+> > Thayne Harbaugh
+> > Linux Networx
+> >=20
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-SCiByEcspzKD8yaWvDLo
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+b2HWfsBPTKE6HMkRAhHHAJ9pblnTYxLLUr10W6LJtazo28wKmgCfRHFy
+sqjeNuPDPxFm0yhfrss2E8o=
+=aEVN
+-----END PGP SIGNATURE-----
+
+--=-SCiByEcspzKD8yaWvDLo--
