@@ -1,17 +1,18 @@
-Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xQCX-0002Ei-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 10:24:10 +0100
-Message-ID: <3AF90A9C.E0FE06F2@sis.com.tw>
-Date: Wed, 09 May 2001 17:15:08 +0800
-From: Ollie Lho <ollie@sis.com.tw>
-MIME-Version: 1.0
-To: Jason Walker <jasonw@uswo.net>
-CC: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: Oddities with MTD/DOC
-References: <NEBBIDMHCLDPHDHEGDMLEEHACBAA.jasonw@uswo.net>
+	id 14xQlv-0002IL-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 11:00:43 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3AF90A9C.E0FE06F2@sis.com.tw> 
+References: <3AF90A9C.E0FE06F2@sis.com.tw>  <NEBBIDMHCLDPHDHEGDMLEEHACBAA.jasonw@uswo.net> 
+To: Ollie Lho <ollie@sis.com.tw>
+Cc: Jason Walker <jasonw@uswo.net>,
+    MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: Oddities with MTD/DOC 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Wed, 09 May 2001 10:57:21 +0100
+Message-ID: <29986.989402241@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jason Walker wrote:
-> 
-> Just a question for you all: Have you ever had a DOC just *not* work
-> anymore?  After formatting/installing my software on one for about 10-20
-> times, the device refuses to be recognized by the kernel. I have a stack of
-> boxes that are in this state now.  Do I have to do some kind of low level
-> format to them? I can't even fdisk them.  I would have a hard time believing
-> these are all just faulty.  Any insight on this?
-> 
+ollie@sis.com.tw said:
+>  It happens a lot. You got two options: 1. replace it with another, 2.
+> wait a few days, sometimes it just come back "magically". 
 
-It happens a lot. You got two options: 1. replace it with another,
-2. wait a few days, sometimes it just come back "magically".
+Eep. Complete death of the hardware? That's not good. How can it happen?
 
-Ollie
+I assume that if it's a DiskOnChip Millennium you've tried probing without 
+the CONFIG_DOCPROBE_55AA option, in case it's just overwritten the start of 
+the flash?
+
+--
+dwmw2
