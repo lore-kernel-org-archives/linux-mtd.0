@@ -1,18 +1,17 @@
-Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mvr0-00041J-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2002 13:35:22 +0100
-Received: from switchboard.ericsson.se (kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
-	by albatross.wise.edt.ericsson.se (8.12.1/8.12.1/WIREfire-1.4) with ESMTP id g85CZLrU026907
-	for <linux-mtd@lists.infradead.org>; Thu, 5 Sep 2002 14:35:21 +0200 (MEST)
-Subject: mkfs.jffs2
-From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-To: Mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 05 Sep 2002 14:35:21 +0200
-Message-Id: <1031229322.28699.109.camel@spawn>
+	id 17mwLa-00046N-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2002 14:06:58 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1031229012.20555.102.camel@spawn> 
+References: <1031229012.20555.102.camel@spawn> 
+To: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+Cc: Mtd <linux-mtd@lists.infradead.org>, alan@lxorguk.ukuu.org.uk
+Subject: Re: cvs snapshot 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 05 Sep 2002 14:06:54 +0100
+Message-ID: <8639.1031231214@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-How well is mkfs.jffs2 working when creating images ??
+kenneth.johansson@etx.ericsson.se said:
+> The snapshot of cvs is a little out of date ftp://ftp.uk.linux.org/pub/
+> people/dwmw2/mtd/cvs/ 
 
-I did a quick test creating a big endian image from x86 and it worked so
-far as reading the disk was ok but file permissions was wrong. A quick
-look in the code indicate that this was at least intended to work. 
+Yes. Some accounts got moved around but not the crontabs or the FTP space. 
+Hence, the snapshots are no longer being made.
 
-
--- 
-Kenneth Johansson	
-Ericsson AB                       Tel: +46 8 404 71 83
-Borgafjordsgatan 9                Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
+--
+dwmw2
