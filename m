@@ -1,45 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JyxC-0002UG-00
-	for mtd-list@infradead.org; Wed, 02 Aug 2000 14:53:02 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13Jyx7-0002UA-00
-	for mtd@infradead.org; Wed, 02 Aug 2000 14:53:00 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000802154249.31703A-100000@biffen.cendio.se> 
-References: <Pine.LNX.3.96.1000802154249.31703A-100000@biffen.cendio.se> 
-To: Alexander Larsson <alex@cendio.se>
-Cc: Markus Thiesmeyer <mthi@gmx.de>, mtd@infradead.org, jffs-dev@axis.com,
-  bmatthews@redhat.com
+	id 13JzH5-0002dl-00
+	for mtd-list@infradead.org; Wed, 02 Aug 2000 15:13:35 +0100
+Date: Wed, 2 Aug 2000 16:13:24 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Markus Thiesmeyer <mthi@gmx.de>, mtd@infradead.org, jffs-dev@axis.com,
+        bmatthews@redhat.com
 Subject: Re: Is JFFS a full featured filesystem? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 02 Aug 2000 14:52:45 +0100
-Message-ID: <22134.965224365@cygnus.co.uk>
+In-Reply-To: <11108.965218269@cygnus.co.uk>
+Message-ID: <Pine.LNX.3.96.1000802161220.31962D-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-alex@cendio.se said:
-> What about the log-ordering constraints? That kinda voids any write
-> caching at all.
 
-Not really. It's not that difficult, you just need a warped mind. (Mine 
-isn't currently warped _enough_, but I'm learning fast :)
+On Wed, 2 Aug 2000, David Woodhouse wrote:
 
-> It could possibly be solved using a kernel thread that
-> does all the flash writing (in a serialized fashion), 
+> 
+> alex@cendio.se said:
+> >  This could cause consistancy problems though, because we're not using
+> > the (possibly modified) mmaped data when writing directly to a file,
+> > we also in some way guarantee that all writes are done to the log in
+> > the correct order. It will also be an inefficient way to write data to
+> > jffs, since we have to rewrite whole pages instead of only the written
+> > part.
+> 
+> I believe that we can address both of those problems - we can write data 
+> directly from the page cache and we can also work out which ranges within
+> a page have actually been dirtied. 
 
-yesyesyes
+Exactly how did you plan to work out the dirty ranges? Compare with
+on-flash contents?
 
-> but the caching problems get a lot harder then.
-
-Not _so_ hard that it isn't worth doing, IMHO.
-
---
-dwmw2
-
+/ Alex
 
 
 
