@@ -1,18 +1,19 @@
-Received: from [203.199.83.150] (helo=mailweb30.rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dX7i-0001yN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 13:49:30 +0000
-Date: 20 Feb 2002 13:54:11 -0000
-Message-ID: <20020220135411.4011.qmail@mailweb30.rediffmail.com>
-MIME-Version: 1.0
-From: "raja" <mahadoc@rediffmail.com>
-Reply-To: "raja" <mahadoc@rediffmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: fdisk problems in DOC millenium
-Content-type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Received: from krynn.axis.se ([193.13.178.10])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16dXXs-000217-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 14:16:32 +0000
+Subject: Re: MTD concat layer
+From: Jonas Holmberg <jonas.holmberg@axis.com>
+To: Robert Kaiser <rob@sysgo.de>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: 
+	<Pine.LNX.4.21.0202121938210.25544-102000@dagobert.svc.sysgo.de>
+References: <Pine.LNX.4.21.0202121938210.25544-102000@dagobert.svc.sysgo.de>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 20 Feb 2002 15:28:06 +0100
+Message-Id: <1014215286.11576.13.camel@pcjonashg>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,16 +25,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
- Hi,=0A  I have got a DOC millenium [i bought a week back]=0AI have a linux=
- kernel with DOC support and i have my DOC recognized by linux.=0A So when =
-i get into LINUX and try to fdisk it ,it gave me this output and i was conf=
-used ,can you help ?=0A=0A  when i try to print the partition table using '=
-p'=0Ai get=0A=0ADisk /dev/nftla : 1 heads ,15920 sectors ,1 cylinders=0AUni=
-ts =3D cylinders of 15920 * 512 bytes=0A =0ADevice  boot start  end  blocks=
- ID system=0A=0Anftla1         1    3993        83  linux=0A=0APartition 1 =
-has different physical/logical beginnings=0A  phy =3D(0,1,1)  logical =3D (=
-0,0,2)=0A=0APartition 1 has different physical/logical endings=0A  phy =3D(=
-995,15,1)  logical =3D (0,0,15920)=0A=0APartition 1 does not end on cylinde=
-r boundary=0A  phy =3D(995,15,1)  logical =3D (0,0,924)=0A=0A=0AI am able t=
-o mount the DOC anyhow and am able to read /write to it .=0AI dont get it .=
- Can you help.=0AThank  You . =0A
+On Tue, 2002-02-12 at 19:40, Robert Kaiser wrote:
+> Hi,
+> 
+> attached is my first version of the MTD "concatenation layer".
+> This basically allows to build virtual MTD devices by concatenating
+> existing ones, so it is -in a way- the opposite of partitioning.
+> I would like to add this to the MTD CVS and so I'm asking people
+> to have a look at it.
+
+Hi Robert,
+I'm ready to do some serious testing now. Should I use these patches or
+do you have newer versions? When can we expect to see this in CVS?
+
+/Jonas
