@@ -1,21 +1,18 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19nNpA-0004vO-9w
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 20:31:52 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Stefano Babic <stefano.babic@siemens.com>
-In-Reply-To: <1060324952.24780.115.camel@mhw42463>
-References: <1060252618.25209.31.camel@passion.cambridge.redhat.com>
-	 <1060324952.24780.115.camel@mhw42463>
-Message-Id: <1060889458.23754.247.camel@tubarao.lnxi.com>
-Mime-Version: 1.0
-Date: 14 Aug 2003 13:30:58 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-6s7KjogBMCFQn7Cfl4dz"
+Received: from auriga.auriga.ru ([80.240.102.100])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19nazL-0006DR-Vj
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 10:35:16 +0100
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 15 Aug 2003 13:34:58 +0400
+Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E165648D@auriga.auriga.ru>
+From: "Eugeny Mints" <eugeny.mints@auriga.ru>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 cc: linux-mtd@lists.infradead.org
-cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Concurrency erase/write on the same AMD chip with not aligned
-	words
+Subject: eraseall in mtd snapshot at 04 of August 2003 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +23,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-6s7KjogBMCFQn7Cfl4dz
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-08-08 at 00:42, Stefano Babic wrote:
-> On Thu, 2003-08-07 at 12:36, David Woodhouse wrote:
-> >=20
-> > I haven't seen it personally, but it definitely looks like you're right=
-.
-> > Please could you send a patch?
->=20
-> Hi David,
->=20
-> I send you the patch file for the cfi_cmdset_0002.c .
->=20
-> stefano
+Hello David, all!
 
-I looked through the patch and it might cause problems with AMD
-compatible chips that do not support suspend/resume concurrent writes.
+I use mtd snapshot at 04 of August 2003.  While 'eraseall /dev/mtdX'
+works fine for my TOSHIBA TC58256AFT NAND flash, 'eraseall -j /dev/mtdX'
+hangs. Earlier I used mtd snapshot at ealy of June and 'eraseall -j'
+worked. I checked eraseall implementation - it is the same in both
+snapshots. So, it seems the problem is somewhere in nand implementation
+(possible with cleanmarker of writeoob). Any suggestions would be very
+helpful!
 
-There needs to be a mechanism for dealing with supported/unsupported
-features in cfi_cmdset_0002.  One of these days I'll finish my current
-ECC project and I'll be able to put time back into this.  (let's hope
-it's real soon).
-
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-6s7KjogBMCFQn7Cfl4dz
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA/O+NyfsBPTKE6HMkRAvDSAJ4xspgxQbKj8B6aoE1UngldT72lmgCfR5UI
-HOxfaQhRH3wZZJMhX3Hdq9g=
-=5x4+
------END PGP SIGNATURE-----
-
---=-6s7KjogBMCFQn7Cfl4dz--
+Thanks in advance,
+				Eugeny
