@@ -1,59 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13U3Xx-0005BA-00
-	for mtd-list@infradead.org; Wed, 30 Aug 2000 09:48:37 +0100
+	id 13U3gJ-0005DF-00
+	for mtd-list@infradead.org; Wed, 30 Aug 2000 09:57:15 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.16 #2)
-	id 13U3Xv-0005B4-00
-	for mtd@infradead.org; Wed, 30 Aug 2000 09:48:35 +0100
+	id 13U3gH-0005D8-00
+	for mtd@infradead.org; Wed, 30 Aug 2000 09:57:13 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39AC4D1F.BFBEEA21@mvista.com> 
-References: <39AC4D1F.BFBEEA21@mvista.com>  <398F1287.E29C8ECE@matrox.com> <31647.965720843@cygnus.co.uk> 
-To: Alice Hennessy <ahennessy@mvista.com>
-Cc: mtd@infradead.org
-Subject: Re: MTD support for 8x16 devices 
+In-Reply-To: <20000828185018.A2777@localhost> 
+References: <20000828185018.A2777@localhost> 
+To: Ciro Cattuto <ciro@prosa.it>
+Cc: Miguel Freitas <miguel@cetuc.puc-rio.br>, mtd@infradead.org
+Subject: Re: GRUB on DOC: 2Mb issues 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Date: Wed, 30 Aug 2000 09:48:32 +0100
-Message-ID: <9503.967625312@cygnus.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 30 Aug 2000 09:57:06 +0100
+Message-ID: <10312.967625826@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-ahennessy@mvista.com said:
->  Has any of this already been checked in recently?  And what is the
-> procedure?
+ciro@prosa.it said:
+> The relevant cvs diffs follow. Notice: these mods make doc_stage1.S
+> and makecsum.c work _only_ for 2Mb DOCs!
 
-Stéphane already pointed you at the latest CVS. If you want write access, 
-let me have a SSH public key and a sample of your work :)
+doc_stage1.S could be hacked to work with both. See the existing loader 
+code in the DiskOnChip firmware for inspiration.
 
-Can you confirm the mapping of the flash chips - you've got two interleaved
-16-bit devices ('2_by_16') but you can only actually access them a byte at 
-a time? What is the CPU? What happens if you _do_ try to read a whole word 
-instead of only a byte?
-
-
-
-ahennessy@mvista.com said:
->  I'm also thinking about different ways for the partition sizes to be
-> set outside of physmap.c.   - any opinions?   Perhaps board specifics
-> should be contained in a header file and be set via menuconfig or
-> command line or ?
-
-I think it's probably best to keep it in a header file or in physmap.c 
-itself. The driver can default to no partitioning, and we can set up some
-#defines at the beginning which allow people to change it as they see fit.
-
-
-ahennessy@mvista.com said:
-> 4.   I need to implement a char device where the customer wants to
-> write to the flash and have all the erase details handle by the
-> driver.  They want to simply do a dd into the device. 
-
-No. Erase is a single ioctl() call, or a single invocation of the 
-'eraseall' utility. The customer is wrong. :)
+There's no real reason to waste the second half of the pages either - and 
+we could easily make the checksums work in _both_ types of device at once.
 
 --
 dwmw2
