@@ -1,18 +1,27 @@
-Received: from mail.utstar.com ([65.200.123.6])
+Received: from postman.ateme.net ([217.167.236.59])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BNyoZ-0008AP-3x
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2004 19:50:47 +0100
-From: "Linda Zhu" <lindazhu@utstar.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 12 May 2004 14:50:23 -0400
-Message-ID: <LCENIFAENEHNMKDCGDGBEECGCJAA.lindazhu@utstar.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1BPkM1-0007vz-88
+	for linux-mtd@lists.infradead.org; Mon, 17 May 2004 16:48:37 +0100
+Received: from localhost (localhost [127.0.0.1])
+	by postman.ateme.net (Postfix) with ESMTP id 2276E4B8015
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 May 2004 17:48:32 +0200 (CEST)
+Received: from postman.ateme.net ([127.0.0.1])
+	by localhost (lserver [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 11587-06 for <linux-mtd@lists.infradead.org>;
+	Mon, 17 May 2004 17:48:31 +0200 (CEST)
+Received: from pc-179.ateme.net (pc-179.ateme.net [172.16.16.179])
+	by postman.ateme.net (Postfix) with ESMTP id 53E164B800D
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 May 2004 17:48:31 +0200 (CEST)
+From: Frederic Janot <f.janot@ateme.fr>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Message-Id: <1084808911.1659.20.camel@localhost>
+Mime-Version: 1.0
+Date: Mon, 17 May 2004 17:48:31 +0200
 Content-Transfer-Encoding: 7bit
-cc: Janar Thoguluva <janar@utstar.com>
-cc: Kasturi Raghunath <kasturi@utstar.com>
-Subject: JFFS2 problems on 32M AMD AM29LV128
+Subject: jffs2_get_inode_nodes(): Data CRC failed on NAND chip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +33,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-This is Linda. In our system, we run JFFS2 on AMD AM29LV128. We have total
-32M
-flash memory. It is partitioned into two part. First 1M memory is used by
-loader,
-the rest is used by JFFS2.
+I've got a problem when using jffs2 filesystem on a nand flash device.
 
-Originally, we use 16M flash. The JFFS2 run well on it. Recently, after we
-increased the memory to 32M, we constantly encounter error messages as
-indicated
-below. If you can explain to me what these error messages mean, it is deeply
-appreciated.
+I've created a root file system image on my pc (little-endian) from
+/rootfs directory which contain all needed files. I burn this image into
+a nand flash (samsung k9f5608 - 32MB nand with 512+16 bytes per pages)
+on a board with a power pc processor (big-endian).
 
-===============problem no.1 =====================
-172.16.133.223 login: root
-Password:
-sh-2.05# mount -t jffs2 /dev/mtdblock/1 /mnt/jffs2
-jffs2_scan_inode_node(): Data CRC failed on node at 0x00fc49a0: Read
-0x140e2b245
-jffs2_scan_inode_node(): CRC failed on node at 0x01696db0: Read 0xffffffff,
-cal5
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01696db8:
-0x4a78 id
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01696dc0:
-0x0004 id
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01696dcc:
-0x0001 id
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01696ddc:
-0x0001 id
-jffs2_scan_empty(): Empty block at 0x01696de4 ends at 0x016971ac (with
-0x1985c0y
-jffs2_scan_inode_node(): Data CRC failed on node at 0x01a90a60: Read
-0x4eec817c6
-sh-2.05# cd /mnt/jffs2/tftpboot/
-sh-2.05# cp /home/lindazhu/icm3/icm2_upgrade.gz .
-Warning: DQ5 raised while program operation was in progress, however
-operation K
-Warning: DQ5 raised while program operation was in progress, however
-operation K
-Warning: DQ5 raised while program operation was in progress, however
-operation K
-Warning: DQ5 raised while program operation was in progress, however
-operation K
-Warning: DQ5 raised while program operation was in progress, however
-operation K
-Warning: DQ5 raised while program operation was in progress, however
-operation K
+So, on the pc, i do :
+# mkfs.jffs2 -p --root=/rootfs -e 16384 -b -o fs_img
 
-======================================================
-The problems occurred when we login in from NFS, then tried to mount to
-jffs2.
-And then tried to copy a gz file from NFS file server to flash.
+My flash partitions are :
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00004000 "Nand Flash Kernel"
+mtd1: 01a00000 00004000 "Nand Flash RootFS"
+mtd2: 00200000 00004000 "Nand Flash Test"
 
+On my target, from an nfs mount root file system, i do :
+# nandwrite -j /dev/mtd1 /fs_img
 
+After that, I reboot my board and make the kernel boot from nand root
+file system. The first boot is ok but when i reboot one more time, I
+have the following message :
+Empty flash at 0x0047b900 ends at 0x0047ba00
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc000: Read
+0x5a62bf55, calculated 0x349968c2
 
-============= problem no. 2 ==========================
-bash-2.05# cp /mnt/nfs/home/lindazhu/icm3/icm2_upgrade.gz .
-Warning: DQ5 raised while program operation was in progress, however
-operation c
-ompleted OK
-Warning: DQ5 raised while program operation was in progress, however
-operation c
-ompleted OK
-Warning: DQ5 raised while program operation was in progress, however
-operation c
-ompleted OK
-Waiting for write to complete timed out in do_write_oneword.<5>Write of 4164
-byt
-es at 0x011a71e8 failed. returned -5, retlen 1528
-cp: write: Input/output error
-========================================================
-The problem occurred when we login in with FLASH file system. Then tried to
-copy
-a 3M file from NFS server to flash. The copy couldn't complete, because the
-writing
-operation failed.
+And each time I reboot, there is one message more. (I do nothing else
+than login and reboot)
+Empty flash at 0x0047b900 ends at 0x0047ba00
+Empty flash at 0x015fc268 ends at 0x015fc400
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc000: Read
+0x5a62bf55, calculated 0x349968c2
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x015fc778: Read
+0xdf13fb17, calculated 0xbdff7e75
 
-Please advice what might be the problem and how to resolve it.
+etc ...
 
-Many many thanks,
-Linda
+Do you have any idea on what happens ?
+
+Thanks
+
+Frederic Janot
