@@ -1,18 +1,18 @@
-Received: from mail.mediatrix.com ([205.237.248.11])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157GVH-0004jA-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 14:04:11 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D995484@mail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: Frederic Giasson <fgiasson@mediatrix.com>, 'David Woodhouse'
-	 <dwmw2@infradead.org>, Abraham vd Merwe <abraham@2d3d.co.za>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: RE: erasesize 
-Date: Tue, 5 Jun 2001 09:03:19 -0400 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 157GZW-0004jh-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 14:08:34 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D995484@mail.mediatrix.com> 
+References: <F1BED55F35F4D3118C0F00E0295CFF4D995484@mail.mediatrix.com> 
+To: Frederic Giasson <fgiasson@mediatrix.com>
+Cc: Abraham vd Merwe <abraham@2d3d.co.za>,
+    MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: erasesize 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 05 Jun 2001 14:12:30 +0100
+Message-ID: <22079.991746750@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,73 +24,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-	... Maybe it should be passed through the arg pointer in the
-ioctl(), in a 2 u_long sized structure?
+fgiasson@mediatrix.com said:
+> 	... Maybe it should be passed through the arg pointer in the ioctl(),
+> in a 2 u_long sized structure?
 
-Fr=E9d=E9ric Giasson=20
+I don't fully understand the question. The 'len' member of the struct 
+erase_info contains the total length of the erase requested by the user of 
+the MTD device. The only connexion with the device's erase size(s) is that 
+obviously the range to be erase must start and end on an eraseblock 
+boundary.
 
-
-
-
------Original Message-----
-From: Frederic Giasson [mailto:fgiasson@mediatrix.com]
-Sent: Tuesday, June 05, 2001 8:49 AM
-To: 'David Woodhouse'; Abraham vd Merwe
-Cc: MTD for Linux
-Subject: RE: erasesize=20
-
-
-	I have a question too about the erase->len ( erasesize ).  I have a
-flash chip with variable block sizes, and I am using cfi_cmdset_0002.  =
-Where
-should that ->len be set?  When I printk the value held by erase->len =
-just
-before calling do_erase_oneblock() in cfi_amdstd_erase_varsize(), I get =
-a
-dummy value.  I suspect that it should be set according to the
-mtd_erase_region_info structure, but it is not done.=20
-
-	Does anyone has a clue about it? =20
-
-Thanks!
-
-Fr=E9d=E9ric Giasson  =20
-
-
-
-
-
-
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-Sent: Tuesday, June 05, 2001 8:30 AM
-To: Abraham vd Merwe
-Cc: MTD for Linux
-Subject: Re: erasesize=20
-
-
-
-abraham@2d3d.co.za said:
->  What should I set erasesize to when the flash chips have multiple
-> erase sizes (and therefor I use eraseregions to get erasesize info)?
-> Is 0 acceptable or should I set it to something else - it doesn't
-> really make sense to put any value in this after all...
-
-See the other Intel driver. Set the erase size to the 'major' erase =
-size=20
-for the device, then fill in the appropriate structure to represent the =
-
-other regions.
+cfi_amdstd_erase_varsize() is an internal function intended to issue the
+magic erase commands only to a certain address on the chip - it doesn't 
+know anything about the erase size at that address, or care about the 
+length field, does it?
 
 --
 dwmw2
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
