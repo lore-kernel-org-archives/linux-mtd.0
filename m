@@ -1,23 +1,19 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkPi2-0004jb-SU
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 12:00:47 -0400
-To: tharbaugh@lnxi.com
+Received: from e35.co.us.ibm.com ([32.97.110.133])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BkPyU-0004uI-T9
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 12:17:50 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+In-Reply-To: <m3658sj5ex.fsf@maxwell.lnxi.com>
 References: <m3vfgsmwfs.fsf@maxwell.lnxi.com>
 	<1089699909.8822.9.camel@imladris.demon.co.uk>
-	<m33c3widyq.fsf@maxwell.lnxi.com>
-	<1089705743.2899.46.camel@hades.cambridge.redhat.com>
-	<m3u0wcj899.fsf@maxwell.lnxi.com> <1089729938.8696.115.camel@tubarao>
-	<m3acy4j6dn.fsf@maxwell.lnxi.com> <1089732108.8696.127.camel@tubarao>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 13 Jul 2004 10:00:51 -0600
-In-Reply-To: <1089732108.8696.127.camel@tubarao>
-Message-ID: <m3y8lndhho.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+	<m3658sj5ex.fsf@maxwell.lnxi.com>
+Content-Type: text/plain
+Message-Id: <1089735455.29112.14.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Date: Tue, 13 Jul 2004 11:17:35 -0500
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [RFC] refactoring MTD cmdset ops, jedec_probe, and cfi_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,41 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thayne Harbaugh <tharbaugh@lnxi.com> writes:
+On Tue, 2004-07-13 at 10:25, Eric W. Biederman wrote:
+> Ok recording what the reason for this that I got on irc.
+> 
+> cfi_cmdset_0020 is just a variant on cfi_cmdset_0001 that shares most of
+> the code.
 
-> On Tue, 2004-07-13 at 09:04 -0600, Eric W. Biederman wrote:
-> > Thayne Harbaugh <tharbaugh@lnxi.com> writes:
-> 
-> > > There's a short list of things that have been removed or changed
-> > > significantly (although this is from memory and may not match the
-> > > current code):
-> > > 
-> > > * read-back check of written data
-> > 
-> > I have a patch  for that already.  Since we are not checking any other
-> > status bits.  At least verifying the data is correct is useful.  
-> 
-> Wonderful.
-> 
-> > > * retry of failed writes
-> > 
-> > This one is more interesting.  I don't know if it should be generic or we
-> should
-> 
-> > just override do_write_one_word...
-> > 
-> > One way or another we will get this one back in there.
-> 
-> Good.
+Thinking about this more, I wouldn't worry too much about
+cfi_cmdset_0020.c.  It's old, fairly unmaintained, and only has a single
+user as far as I know.
 
-Looking at where we are Dave has just reworked the code for handling multiple
-word sizes for reads and writes, and things are just starting to settle out.
-And since he is going to be gone he will be sending these changes to Linus
-later this week.
+If your changes break it, then it'll give someone and excuse to update
+the code.  Eventually it should be merged with cfi_cmdset_0001.c anyway,
+since M58LW128A reports command set 01, but really needs the
+functionality of command set 20.  The exception list you talked about in
+IRC might help with that.
 
-Since refactoring does not work well if I don't have a working code base
-to start with. I will push for the appropriate fixes to the MTD command sets
-so I know I am starting with a working base.  And then I will start refactoring
-the command sets.
+But don't let me stop you from making it work if you want to :).
 
-Eric
+> A data sheet for the M58LW128A ( which erroneously reports cmdset 01 instead of 0x20)
+> is at:
+> http://www.st.com/stonline/books/pdf/docs/9229.pdf
+> 
+> cmdset 020 was written for the  M58LW064A and I doesn't currently have a datasheet reference
+> for on ST site.
+
+Probably because it isn't that common of a part, and newer versions of
+that chip have been made available.
+
+josh
