@@ -1,69 +1,279 @@
-From: todd.fischer@cadenux.com (Todd Fischer)
-Date: Wed, 12 Feb 2003 14:50:27 -0700
-Subject: cfi_cmdset_0002.c do_write_oneword(...) problem
-Message-ID: <NGBBKMBLKLBCENJIBEJJMEOCCEAA.todd.fischer@cadenux.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 12 Feb 2003 22:45:59 -0700
+Subject: Q: MTD and NIC Roms...
+Message-ID: <m3znp0zqaw.fsf@lnxi.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Vlad,
+Currently I have a patch to eepro100.c that adds an MTD map driver so
+the onboard rom can be written.  Making code like etherboot easier to
+flash etc. 
 
-I am also using the AMD L640DU chip (same internals as 641, just different
-packaging).  The do_write_oneword() routine in cfi_cmdset_0002.c didn't work
-for me.  I put in the following very ugly temporary patch to test where in
-the code the problem was occurring.  This hack does allow JFFS2 / MTD to
-work fine for me.  However, this hack is architecture specific (I am running
-on an ARM7), so you may need to make appropriate changes for your
-environment.  Also notice that I am not using the fast programming method
-supported by the chip.  The purpose of the hack was to narrow down where in
-the code it was failing, it is not a fix to the problem.
+This works by default except when everything is compiled into the
+kernel.  In the latter case the map driver fails because NIC are
+initialized before the mtd subsystem.  This can be handled be
+modifying the link order of the kernel in 2.4. but that is not
+a pretty situation.
 
-I have the added complexity that the ARM7 interrupt table is located in the
-same flash part I am using for JFFS2, so I have to disable interrupts
-whenever I put the flash chip in a non "read array" mode.  The
-cfi_cmdset_0002.c code has many places where the flash chip is left if CFI
-mode and erase-more-sectors mode, (thus hiding the interrupt vector table)
-which I had to modify.  I hope there are no more silicon vendors dumb enough
-to put interrupt vector tables in flash!
+I am currently looking for ideas on ways to cleanly get this code
+into the kernel, and I am looking for ideas.  The map driver is
+part of the eepro100 driver because it needs to share a lock or
+multiple accesses to the same part of the chip by other parts of the
+driver may cause problems.  Though looking at my code I cannot see it
+now.
+
+Anyway here is the diff with respect to the eepro100.c in 2.4.17,
+suggestions on how to do this cleanly are welcome.
+
+I think I might even have the bandwidth right now to do something
+about it.
+
+Eric
 
 
-#if 1
-	    /* short cut that works */
-	{
-	    volatile unsigned short *addr1;
-	    unsigned short *block_addr;
+diff -uNrX linux-exclude-files linux-2.4.17-mtd/drivers/net/eepro100.c linux-2.4.17.eb-mtd2/drivers/net/eepro100.c
+--- linux-2.4.17-mtd/drivers/net/eepro100.c	Fri Dec 21 10:41:54 2001
++++ linux-2.4.17.eb-mtd2/drivers/net/eepro100.c	Wed Jan  9 10:31:29 2002
+@@ -116,6 +116,11 @@
+ #include <linux/ethtool.h>
+ #include <linux/delay.h>
+ 
++#ifdef CONFIG_MTD
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#endif
++
+ MODULE_AUTHOR("Maintainer: Andrey V. Savochkin <saw@saw.sw.com.sg>");
+ MODULE_DESCRIPTION("Intel i82557/i82558/i82559 PCI EtherExpressPro driver");
+ MODULE_LICENSE("GPL");
+@@ -286,7 +291,8 @@
+ 
+ */
+ 
+-static int speedo_found1(struct pci_dev *pdev, long ioaddr, int fnd_cnt, int acpi_idle_state);
++static int speedo_found1(struct pci_dev *pdev, long ioaddr, 
++	unsigned long romio_addr, int fnd_cnt, int acpi_idle_state);
+ 
+ enum pci_flags_bit {
+ 	PCI_USES_IO=1, PCI_USES_MEM=2, PCI_USES_MASTER=4,
+@@ -383,6 +389,10 @@
+ 	PortReset=0, PortSelfTest=1, PortPartialReset=2, PortDump=3,
+ };
+ 
++enum SCBflash_states {
++	FlashDisable=2, FlashEnable=1,
++};
++
+ /* The Speedo3 Rx and Tx frame/buffer descriptors. */
+ struct descriptor {			    /* A generic descriptor. */
+ 	s32 cmd_status;				/* All command and status fields. */
+@@ -502,6 +512,10 @@
+ #ifdef CONFIG_PM
+ 	u32 pm_state[16];
+ #endif
++#ifdef CONFIG_MTD
++	struct map_info map;
++	struct mtd_info *mtd;
++#endif
+ };
+ 
+ /* The parameters for a CmdConfigure operation.
+@@ -556,6 +570,14 @@
+ static void set_rx_mode(struct net_device *dev);
+ static void speedo_show_state(struct net_device *dev);
+ 
++#ifdef CONFIG_MTD
++static u8 eepro100rom_read8(struct map_info *map, unsigned long ofs);
++static void eepro100rom_copy_from(struct map_info *map, void *to, 
++	unsigned long from, ssize_t len);
++static void eepro100rom_write8(struct map_info *map, u8 data, unsigned long ofs);
++static void eepro100rom_copy_to(struct map_info *map, unsigned long to, 	
++	const void *from, ssize_t len);
++#endif
+ 
 
-	    addr1 = (unsigned short *)chip->start;
-	    addr1[0x555] = 0xAA;
-	    addr1[0x2aa] = 0x55;
-	    addr1[0x555] = 0xA0;
-	    block_addr = (unsigned short *)adr;
-	    *block_addr = datum;
-	}
-#else
-	    /* original code that looks like it should work, but doesn't */
+ 
+ #ifdef honor_default_port
+@@ -568,7 +590,7 @@
+ static int __devinit eepro100_init_one (struct pci_dev *pdev,
+ 		const struct pci_device_id *ent)
+ {
+-	unsigned long ioaddr;
++	unsigned long ioaddr, romio_addr = 0;
+ 	int irq;
+ 	int acpi_idle_state = 0, pm;
+ 	static int cards_found /* = 0 */;
+@@ -595,8 +617,8 @@
+ 		printk("Found Intel i82557 PCI Speedo at I/O %#lx, IRQ %d.\n",
+ 			   ioaddr, irq);
+ #else
+-	ioaddr = (unsigned long)ioremap(pci_resource_start(pdev, 0),
+-									pci_resource_len(pdev, 0));
++	ioaddr = (unsigned long)ioremap(pci_resource_start(pdev, 0), 
++		pci_resource_len(pdev, 0));
+ 	if (!ioaddr) {
+ 		printk (KERN_ERR "eepro100: cannot remap MMIO region %lx @ %lx\n",
+ 				pci_resource_len(pdev, 0), pci_resource_start(pdev, 0));
+@@ -607,6 +629,24 @@
+ 			   pci_resource_start(pdev, 0), irq);
+ #endif
+ 
++#ifdef CONFIG_MTD
++	if (pci_resource_start(pdev, 2) == 0) {
++		pci_assign_resource(pdev, 2);
++	}
++	if ((pci_resource_start(pdev, 2) != 0) &&
++		(request_mem_region(
++			pci_resource_start(pdev, 2),
++			pci_resource_len(pdev, 2), 
++			"eepro100") != 0)) {
++		romio_addr = (unsigned long)ioremap(
++			pci_resource_start(pdev, 2),
++			pci_resource_len(pdev, 2));
++		printk(KERN_INFO "eepro100 Boot ROM enabled at 0x%08lx mapped at 0x%08lx\n", 
++			pci_resource_start(pdev, 2),
++			romio_addr);
++	}
++#endif
++
+ 	/* save power state b4 pci_enable_device overwrites it */
+ 	pm = pci_find_capability(pdev, PCI_CAP_ID_PM);
+ 	if (pm) {
+@@ -616,18 +656,20 @@
+ 	}
+ 
+ 	if (pci_enable_device(pdev))
+-		goto err_out_free_mmio_region;
++		goto err_out_iounmap;
+ 
+ 	pci_set_master(pdev);
+ 
+-	if (speedo_found1(pdev, ioaddr, cards_found, acpi_idle_state) == 0)
++	if (speedo_found1(pdev, ioaddr, romio_addr, cards_found, acpi_idle_state) == 0)
+ 		cards_found++;
+ 	else
+ 		goto err_out_iounmap;
+ 
+ 	return 0;
+ 
+-err_out_iounmap: ;
++err_out_iounmap: 
++	if (romio_addr) 
++		iounmap((void *)romio_addr);
+ #ifndef USE_IO
+ 	iounmap ((void *)ioaddr);
+ #endif
+@@ -640,7 +682,7 @@
+ }
+ 
+ static int speedo_found1(struct pci_dev *pdev,
+-		long ioaddr, int card_idx, int acpi_idle_state)
++	long ioaddr, unsigned long romio_addr, int card_idx, int acpi_idle_state)
+ {
+ 	struct net_device *dev;
+ 	struct speedo_private *sp;
+@@ -846,6 +888,34 @@
+ 	dev->set_multicast_list = &set_rx_mode;
+ 	dev->do_ioctl = &speedo_ioctl;
+ 
++#ifdef CONFIG_MTD
++	/* Enable Writes to the flash chpi */
++	outw(FlashEnable, ioaddr + SCBflash);
++
++	/* Now setup the data structures */
++	sp->map.name = "eepro100 rom";
++	sp->map.size = pci_resource_len(pdev, 2);
++	sp->map.buswidth = 1;
++	sp->map.read8 = eepro100rom_read8;
++	sp->map.copy_from = eepro100rom_copy_from;
++	sp->map.write8 = eepro100rom_write8;
++	sp->map.copy_to = eepro100rom_copy_to;
++	sp->map.map_priv_1 = romio_addr;
++	sp->mtd = 0;
++	if (romio_addr) {
++		sp->mtd = do_map_probe("jedec_probe", &sp->map);
++		if (!sp->mtd) {
++			sp->mtd = do_map_probe("map_rom", &sp->map);
++		}
++		if (sp->mtd) {
++			sp->mtd->module = THIS_MODULE;
++			add_mtd_device(sp->mtd);
++			printk(KERN_INFO "eepro100: found flash boot rom\n");
++		}
++	} else {
++		printk(KERN_NOTICE "eepro100: No boot rom address??\n");
++	}
++#endif /* CONFIG_MTD */
+ 	return 0;
+ }
+ 
 
-	if (fast) { /* Unlock bypass */
-		cfi_send_gen_cmd(0xA0, 0, chip->start, map, cfi, cfi->device_type, NULL);
-	}
-	else {
-	        cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-CFI_DEVICETYPE_X8, NULL);
-	        cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-CFI_DEVICETYPE_X8, NULL);
-	        cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi,
-CFI_DEVICETYPE_X8, NULL);
-	}
+@@ -1834,7 +1904,7 @@
+ 	if (speedo_debug > 3)
+ 		speedo_show_state(dev);
+ 
+-    /* Free all the skbuffs in the Rx and Tx queues. */
++	/* Free all the skbuffs in the Rx and Tx queues. */
+ 	for (i = 0; i < RX_RING_SIZE; i++) {
+ 		struct sk_buff *skb = sp->rx_skbuff[i];
+ 		sp->rx_skbuff[i] = 0;
+@@ -2192,6 +2262,29 @@
+ 	sp->rx_mode = new_rx_mode;
+ }
+ 
 
-	cfi_write(map, datum, adr);
++#ifdef CONFIG_MTD
++static u8 eepro100rom_read8(struct map_info *map, unsigned long ofs)
++{
++	return readb(map->map_priv_1 + ofs);
++}
++
++static void eepro100rom_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
++{
++	memcpy_fromio(to, map->map_priv_1 + from, len);
++}
++
++static void eepro100rom_write8(struct map_info *map, u8 data, unsigned long ofs)
++{
++	writeb(data, map->map_priv_1 + ofs);
++}
++
++static void eepro100rom_copy_to(struct map_info *map, unsigned long to, 
++	const void *from, ssize_t len)
++{
++	memcpy_toio(map->map_priv_1 + to, from, len);
++}
++#endif
++
 
-#endif
-
-You might try a similar change to see if your problem goes away.  If so, I
-bet we are experiencing the same issue.
-
-When I get to the bottom of what is causing the problem, I will let you know
-what I found.
-
-Todd Fischer
-Cadenux
-www.cadenux.com
+ #ifdef CONFIG_PM
+ static int eepro100_suspend(struct pci_dev *pdev, u32 state)
+ {
+@@ -2243,11 +2336,27 @@
+ {
+ 	struct net_device *dev = pci_get_drvdata (pdev);
+ 	struct speedo_private *sp = (struct speedo_private *)dev->priv;
++	long ioaddr = dev->base_addr;
+ 	
+ 	unregister_netdev(dev);
+ 
++#ifdef CONFIG_MTD
++	if (sp->mtd) {
++		del_mtd_device(sp->mtd);
++		map_destroy(sp->mtd);
++		sp->mtd = 0;
++	}
++	/* Disable writes to the flash chip */
++	outw(FlashDisable, ioaddr + SCBflash);
++	release_mem_region(
++		pci_resource_start(pdev, 2), pci_resource_len(pdev, 2));
++	iounmap((void *)sp->map.map_priv_1);
++#endif 
++
++
+ 	release_region(pci_resource_start(pdev, 1), pci_resource_len(pdev, 1));
+ 	release_mem_region(pci_resource_start(pdev, 0), pci_resource_len(pdev, 0));
++
+ 
+ #ifndef USE_IO
+ 	iounmap((char *)dev->base_addr);
