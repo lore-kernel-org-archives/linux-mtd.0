@@ -1,18 +1,18 @@
-Received: from gate.epygi.de ([212.126.211.241])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cbyg1-0006mb-TO
-	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2004 05:04:07 -0500
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
-Date: Wed, 8 Dec 2004 11:03:51 +0100
-Message-ID: <NGENJJFPMHGLPILEKKAMGEBBCFAA.Stephan.Linke@epygi.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from [222.33.36.197] (helo=sict.ac.cn)
+	by pentafluge.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cc19G-00089j-Vf
+	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2004 12:42:31 +0000
+Received: from [10.32.4.45] ([10.32.4.45])
+	by sict.ac.cn (Merak 7.2.0) with ASMTP id 42U08685
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Dec 2004 20:41:53 +0800
+From: zhang jingxin <zhangjingxin@sict.ac.cn>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Message-Id: <1102509710.2462.6.camel@z21921>
+Mime-Version: 1.0
+Date: Wed, 08 Dec 2004 20:41:50 +0800
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1102487832.13353.486.camel@tglx.tec.linutronix.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: MTD driver
+Subject: doc2000 problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +22,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+hi,
+I want use JFFS2 on my DOC2000 original.I download the latest CVS
+version(041128).I use diskonchip.c to drive.It works.
 
-you may setup a dedicated partition that gives you access to the particular
-location in the flash where you whant to place this data. Then you can use
-normal open() read() write() and seek() functions to access what ever byte in
-this partition. How to erass a block you can look up in one of the MTD tools.
-(Only if you are using NAND flash you should not do it like this since bad block
-handling whould be missing.)
-But I aggree with Thomas. Best whould be to put it into a filesystem...
+Dec  6 17:47:11 localhost kernel: Creating 1 MTD partitions on
+"DiskOnChip 2000 (NFTL Model)":
+Dec  6 17:47:11 localhost kernel: 0x00014000-0x02000000 : " DiskOnChip
+BDTL partition"
+Dec  6 17:47:11 localhost kernel: mtd: Giving out device 1 to 
+DiskOnChip BDTL partition
 
-Stephan
+But it has a little error.
 
 
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org
-> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Thomas
-> Gleixner
-> Sent: Mittwoch, 8. Dezember 2004 07:37
-> To: Subrahmanyam
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: MTD driver
->
->
-> On Tue, 2004-12-07 at 09:16 +0530, Subrahmanyam wrote:
-> >  Hi,
-> >
-> >  I need to provide an user interface/GUI wherein when a certain data
-> > (string/key) is entered, it should basically store the key in the flash
-> > (this basically happens during run time after the target has been
-> identified
-> > by the host).
-> >
-> > In the target we have a flash in which there is jffs2 file system and also
-> > mtd drivers, since i need to store block oriented data, i am looking at the
-> > possiblity of using mtd driver and storing data(key) in a particular
-> > location in flash. How should i proceed in acheiving the same.
->
-> Is there any good reason, why the key cannot be stored on the already
-> available jffs2 filesystem ?
->
-> tglx
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+
+Dec  8 10:23:54 localhost kernel: nand_read_ecc: from = 0x0000c000, len
+= 512
+Dec  8 10:23:54 localhost kernel: nand_read_ecc: Failed ECC read, page
+0x00000060 on chip 0
+Dec  8 10:23:54 localhost kernel: ECC error scanning DOC at 0xc000
+
+Dec  8 10:23:54 localhost kernel: nand_read_ecc: from = 0x00010000, len
+= 512
+Dec  8 10:23:55 localhost kernel: nand_read_ecc: Failed ECC read, page
+0x00000080 on chip 0
+Dec  8 10:23:55 localhost kernel: ECC error scanning DOC at 0x10000
+
+There are two ECC errors.
+Then it nand_read_ecc 0x0000c200 .
+
+Dec  8 10:23:55 localhost kernel: nand_read_ecc: from = 0x0000c200, len
+= 2048
+
+I don't know why,this position has already done.
+
+I had read below
+
+2004-10-26 15:46
+
+Dan Brown dan_brown at ieee.org 
+Fri Jun 18 19:30:56 EDT 2004 
+Brief HOWTO (better HOWTO coming soon!):
+
+- Have a DOC Millenium or DOC2000 TSOP.  Millenium+ is not supported
+(other
+folks are hard at work on this).  DOC2000 original does not have BBT
+handling yet (coming soon!) and should not be used with JFFS2 yet.
+
+- Load the new diskonchip module (there is now a kernel configuration
+option
+for this under NAND devices).  If your DOC device is not at window D000,
+you'll have to edit the source or remap your chip.  Proper probing
+coming
+soon!
+
+- A bunch of mtd devices should be created.  mtd0 is the whole DOC.  The
+others are partitions created by M-Systems.  A "BDK" partition is
+probably
+the M-Sys BIOS driver.  A "BDTL" partition is where your INFTL
+filesystem
+used to be.  I say used to be, because you're about to trash it.
+
+- You can review the list of devices with 'cat /proc/mtd'
+
+- Assuming your BDTL partition is mtd3:
+
+    flash_eraseall -j /dev/mtd3
+    mkfs.jffs2 -p -e 16384 -n -q -r <rootdir> -o <outputfile>
+    nandwrite /dev/mtd3 <outputfile from above>
+    mount -t jffs2 /dev/mtdblock3 <mountpoint>
+
+So I follow it.
+I review the list of devices with 'cat /proc/mtd'
+ 
+ 
+cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 02000000 00004000 "DiskOnChip 2000 (NFTL Model)"
+mtd1: 01fec000 00004000 " DiskOnChip BDTL partition"
+
+
+flash_eraseall -j /dev/mtd1
+It doesn't recongize the device.
+
+what should i do??
+It's this reason --DOC2000 original does not have BBT
+handling yet (coming soon!).
