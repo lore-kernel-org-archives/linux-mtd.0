@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from chello062178007137.3.11.vie.surfer.at ([62.178.7.137] helo=quake.thinstuff.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 153LT0-0000Tb-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 May 2001 18:33:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B0F0766.1080207@niisi.msk.ru> 
-References: <3B0F0766.1080207@niisi.msk.ru>  <3B0EF62E.30207@niisi.msk.ru> <3B0EE338.1000701@niisi.msk.ru> <3B0E5857.636CBC17@niisi.msk.ru> <11329.990796371@redhat.com> <25506.990803856@redhat.com> <1765.990808662@redhat.com> 
-To: Alexandr Andreev <andreev@niisi.msk.ru>
-Cc: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Why timer interrupt is disabled? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 25 May 2001 18:36:14 +0100
-Message-ID: <11416.990812174@redhat.com>
+	id 153vK7-0003vy-00
+	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2001 08:50:51 +0100
+Received: from tk212017127147.teleweb.at ([212.17.127.147] helo=privat)
+	by quake.thinstuff.com with smtp (Exim 3.12 #1 (Debian))
+	id 153vLg-0003yy-00
+	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2001 09:52:28 +0200
+Message-ID: <003001c0e682$85a2cd70$937f11d4@privat>
+Reply-To: "MG" <m.gibson@thinstuff.com>
+From: "MG" <m.gibson@thinstuff.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: HELP! - ISDN device not working with 16M DOC2000 but working with 8MB DOC Millenium
+Date: Sun, 27 May 2001 09:56:22 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +27,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-andreev@niisi.msk.ru said:
-> reemptively. So, we can unlock the io_request_lock in ftl.c, but what
-> about double  unlocking? Or, do you want to lock it back after
-> proceeding request :)  Is there any conflicts, when we try to unlock
-> already unlocked lock?  
+I can mount nftla1 from the 16MB DOC2000, but when I try to load the hisax
+module for the Sedlbauer ISDN card it simply does not work.
+When I try to do the same thing with a 8MB DOC millenium I can load the
+hisax module without any problem.
 
-You have to lock it again before returning. 
+Same problem with wavelan - PCMCIA.
+it works perfect with 8MB DOC Millenium but with 16MB DOC2000 it does not
+work?
 
-But you really shouldn't be taking my advice on how to write block devices. 
-I've been trying to avoid it :)
+What is going wrong here???
+I would be very happy about any hints / help.
 
---
-dwmw2
+Best regards
+Michael
