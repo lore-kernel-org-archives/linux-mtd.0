@@ -1,19 +1,15 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19dXA6-0002nw-6A
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 16:28:46 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: =?UTF-8?Q?=E5=B8=AD=E8=82=B2?= =?UTF-8?Q?=E5=AD=9D?=
-	<xiyuxiao@harbournetworks.com>
-In-Reply-To: <E19dNHB-0001PU-Vv@pentafluge.infradead.org>
-References: <E19dNHB-0001PU-Vv@pentafluge.infradead.org>
-Message-Id: <1058541954.23754.30.camel@tubarao.lnxi.com>
-Mime-Version: 1.0
-Date: 18 Jul 2003 09:25:54 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-D3zFOsRgN5uji/G1ZBBh"
-cc: linux-mtd@lists.infradead.org
-Subject: Re: AM29LV160DB
+Received: from mail1.m-sys.com ([207.209.118.131] helo=MSI-EX6.msu.m-sys.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19dfg2-0003mj-1V
+	for <linux-mtd@lists.infradead.org>; Sat, 19 Jul 2003 01:34:18 +0100
+Message-ID: <F9A3835696B7B24097087C3611BD8D38097C74@msi-ex6.msu.m-sys.com>
+From: Zachi Friedman <zachi.friedman@m-sys.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Fri, 18 Jul 2003 17:32:21 -0700
+MIME-Version: 1.0
+Content-Type: text/plain
+cc: 'David Woodhouse' <dwmw2@infradead.org>
+Subject: RE: DiskOnChip 2000 128Mb problem - clarifications
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +19,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Please see my notes below...
 
---=-D3zFOsRgN5uji/G1ZBBh
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org] 
+Sent: Monday, July 14, 2003 5:31 AM
+To: Zachi Friedman
+Cc: 'linux-mtd@lists.infradead.org'
+Subject: Re: DiskOnChip 2000 128Mb problem - clarifications
 
-On Thu, 2003-07-17 at 22:57, =E5=B8=AD=E8=82=B2=E5=AD=9D wrote:
-> I am now working with NEC VR4131 and flash AM29LV160DB.
-> I use Harhat Linux.
-> I have a trouble now.Can anyone help me?
-> I configure MTD subsystem as below:
->     MTD support
->     Direct char devices access to MTD devices
->     Caching block device access to MTD devices
->     Detect flash chips by CFI
->     Older drivers for non-CFI chips
+On Mon, 2003-06-02 at 20:58, Zachi Friedman wrote:
+> Here is the deal:
+> 
+> Newer (and higher capacity) DiskOnChip 2000 devices have a new ASIC
+> controller. This ASIC controller has the chip ID of 0x30 (instead of
+> 0x20). I guess that is the reason the MTD driver identifies the 128MB
+> as a Millennium... 
 
-You shouldn't need non-CFI drivers - the AM29LV160DB is a CFI chip.
+OK. So if we ignore that and treat it precisely as a DiskOnChip 2000
+with an anomalous ChipID, will that work? Are the toggle registers and
+_everything_ else precisely the same as the 2000 and it's just the
+ChipID which is different?
+[Zachi Friedman] Actually the toggle bit is now (new ASIC) located at offset
+0x1006 (instead of 0x1007). Other than the ChipID, Toggle bit location (and
+the use of INFTL instead of NFTL) - it should be the same. These are the
+only changes as far as I know.
 
->     JEDEC device support
+> Also, to solve the confusion here once and for all: Millennium comes
+> _ONLY_ 8MB. There never was, and never will be a Millennium is
+> different capacity! 
 
-Does this mean CONFIG_MTD_JEDECPROBE, CONFIG_MTD_JEDEC or both?=20
-JEDECPROBE shouldn't be necessary for the CFI part.
+Erm, but I think there's one on my desk. :)
 
->     Mapping drivers for chip access
+It's a DIL unit in a square plastic case with a sticker, like all the
+DiskOnChip 2000 DIL units I've seen -- whereas other Millennium units
+I've seen have been a plain black case with white stencil on. It's an
+orange sticker and says 'Millennium Module' 'MD2841-D016' '00910104864
+1.21'. IIRC the Linux driver works with it just fine and claims it's a
+Millennium with a single 16MiB chip.
+[Zachi Friedman] Actually I have just spent some time looking for MD-2841,
+but could not find it :-(  I suspect it is DiskOnChip 2000 TSOP (we had such
+a beast, in 16MB only, and in TSOP-I only. Maybe there was a DIP package of
+it, called MD-2841. I will do some more investigations on that one next
+week...).
+ 
+> So, once you have chip ID of 0x30, how can you tell whether it's a
+> Millennium or the newer DiskOnChip 2000?  You have to read chip ID 4
+> times. If the 4th read is NOT 0x30 - it's a new DiskOnChip 2000 !
 
-Which mapping drivers?  Do the mapping drivers match the hardware?
+OK... what _will_ the 4th read return? Is it always safe just to read
+ChipID four times and use the fourth answer, or should we read four
+times _only_ in the case where it first says it's a Millennium?
+[Zachi Friedman] If memory serves, the 4th time would read zero.
 
-> But when I boot my target,the AM29LV160DB can not be detected!!!:(
-> Did I make some mistakes?Please help me.
+For the case where the fourth read indicates it's one of these newer
+DiskOnChip 2000 units and not actually a Millennium, do we need to do
+anything else? Is absolutely everything else going to be precisely like
+an old DiskOnChip 2000, including the 'TOGGLE' test &c.? I seem to
+recall someone trying to get it to work just by overriding the ChipID
+check, and failing further down the line.
+[Zachi Friedman] As mentioned above, as far as I know, only ChipID and
+Toggle bit location were changed. All the other registers should be the
+same.
 
-You should select CONFIG_MTD_DEBUG and set CONFIG_MTD_DEBUG_VERBOSE to
-3.  The dmesg output (or "echo 9 >/proc/sys/kernel/printk" for console
-output) might provide more hints as to what is going on.
+Would it be possible to get me one of these units for further testing,
+please? I think it's the last of your devices which isn't properly
+supported by the Linux drivers.
+[Zachi Friedman] I will take care of that next week... 
 
---=20
-Thayne Harbaugh
-Linux Networx
+> Also, these new DiskOnChip 2000 SHOULD be used with INFTL.
 
---=-D3zFOsRgN5uji/G1ZBBh
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+OK; we actually use either NFTL or INFTL according to what we find on it
+-- the decision is actually made at format time, not really in the
+kernel at all. It's probably actually worth us fixing
+nftl_format/inftl_format to automatically do the right thing according
+to the detected hardware, just as your DFORMAT will.
+[Zachi Friedman] That makes sense ;-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA/GBGCfsBPTKE6HMkRArX7AJsGXj6brBmFeJzfPrpUKim/5xTF9gCfRF4H
-9lMv4jlTN4YM1Pxjsa2XH2M=
-=sTot
------END PGP SIGNATURE-----
-
---=-D3zFOsRgN5uji/G1ZBBh--
+-- 
+dwmw2
