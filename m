@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [211.210.107.125] (helo=palmpalm.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15cvt1-0000tj-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2001 22:31:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <9A1957CB9FC45A4FA6F35961093ABB8404344CFC@srvmail-mtl.ubisoft.qc.ca> 
-References: <9A1957CB9FC45A4FA6F35961093ABB8404344CFC@srvmail-mtl.ubisoft.qc.ca> 
-To: Patrick Allaire <pallaire@gameloft.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: lilo and mtd ans doc 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 31 Aug 2001 22:37:29 +0100
-Message-ID: <10029.999293849@redhat.com>
+	id 15d0h0-0001Ec-00
+	for <linux-mtd@lists.infradead.org>; Sat, 01 Sep 2001 03:39:30 +0100
+Received: from nkkim ([192.168.1.39])
+	by palmpalm.com (8.10.1/8.10.1) with SMTP id f812iV910482
+	for <linux-mtd@lists.infradead.org>; Sat, 1 Sep 2001 11:44:31 +0900
+From: =?ks_c_5601-1987?B?seizsrHU?= <minix@kldp.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: Question for CFI Write Suspend
+Date: Sat, 1 Sep 2001 11:44:16 +0900
+Message-ID: <PCBBJKFICLOAPDLGMGJEGELHCGAA.minix@kldp.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +25,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-
-pallaire@gameloft.com said:
-> Kernel Panic : VFS: unable to mount root fs on 03:05 
-
-Er, that's /dev/hda5. It's not trying to mount the DiskOnChip at all.
-Try append="root=/dev/nftla1" instead of just root=/dev/nftla1
-
-LILO sucks like that.
-
-BTW, how many partitions do you have on the DiskOnChip? If only one, why 
-are you wasting space on partitions rather than just using a filesystem on 
-/dev/nftla ?
-
---
-dwmw2
+SGVsbG8sDQoNCkkgaGF2ZSBhIHF1ZXN0aW9uIGZvciBDRkkgY29kZS4NCg0KQ3VycmVudGx5LCB0
+aGUgQ0ZJIGNvZGUgZG9lc24ndCBzdXBwb3J0IGZsYXNoLXdyaXRlLXN1c3BlbmQgdG8gcmVhZC4N
+CkkgaGF2ZSBhIHBsYW4gdG8gaW1wbGVtZW50IGl0Lg0KDQpCZWZvcmUgc3RhcnRpbmcsIEkgd291
+bGQgbGlrZSB0byBsaXN0ZW4geW91ciBhZHZpc2UuDQpPciwgQ291bGQgeW91IHRlbGwgbWUgYSBw
+cm9ibGVtIHRvIGJlIGV4cGVjdGVkIHdoaWxlIEkgaW1wbGVtZW50IGZsYXNoLXdyaXRlLXN1c3Bl
+bmQgPw0KDQoNClRoYW5rIHlvdS4NCkJ5ZS4=
