@@ -1,20 +1,18 @@
-Received: from mail.2d3d.co.za ([196.14.185.200])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15CFuO-0003S8-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 08:26:45 +0100
-Date: Tue, 19 Jun 2001 09:33:19 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Xavier DEBREUIL <xde@inventel.fr>,
-  MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: CVS updates
-Message-ID: <20010619093319.D10532@crystal.2d3d.co.za>
-References: <3B2E2C7A.F997FDEE@inventel.fr> <20010618131315.A2156@crystal.2d3d.co.za> <20010618142215.M12246@arthur.ubicom.tudelft.nl> <20010618143104.A3715@crystal.2d3d.co.za> <3B2E2C7A.F997FDEE@inventel.fr> <29895.992882600@redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8vCeF2GUdMpe9ZbK"
-Content-Disposition: inline
-In-Reply-To: <29895.992882600@redhat.com>; from dwmw2@infradead.org on Mon, Jun 18, 2001 at 17:43:20 +0100
+Received: from jerusalem.magic.fr ([195.154.101.82])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15CGq3-0003VJ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 09:26:19 +0100
+Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
+	by jerusalem.magic.fr (8.9.0/8.9.0) with ESMTP id KAA24372
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 10:31:50 +0200 (CEST)
+Message-ID: <3B2F0D7C.AEB02B3E@inventel.fr>
+Date: Tue, 19 Jun 2001 10:29:48 +0200
+From: Xavier DEBREUIL <xde@inventel.fr>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: use of low level driver
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,63 +24,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---8vCeF2GUdMpe9ZbK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am a little confused about the use of low level functions provided by
+different drivers.
+I got the mtd stuff work on my board with amd std non cfi flashes. In
+amd_flash.c
 
-Hi David!
+int __init amd_flash_init(void)
+{
+	register_mtd_chip_driver(&amd_flash_chipdrv);
+	return 0;
+}
 
-> xde@inventel.fr said:
-> >  Does it mean that I can not use do_map_probe("cfi", ...) with
-> > 28F160B3 chips ?
->=20
-> ISTR there are some versions of the 28F160 which are CFI-compliant. But i=
-f=20
-> you've got the version which isn't, then no, you'll have to implement an=
-=20
-> Intel-specific probe routine for it. You can still hook into the=20
-> cfi_cmdset_0001 back end code to actually _drive_ it though - you only ha=
-ve=20
-> to do a probe routine.
+allows me to call : do_map_probe("amd_flash",...)
 
-Just btw, if you're looking for an Intel probe routine for the 28F160 chips,
-look at the lart driver - I implemented one there which works for 28F160 and
-28F800 chips (but then again you could probably use the entire driver as is
-as it should work with all 28F{800,160} chips.
+But, if I want to call do_map_probe("cfi" or "cfi_intel",...), I need to
+have registered the corresponding mtd chip driver. But when it is part
+of the kernel (not a module), "mod_init_t cfi_intelext_init(void)" is
+not called in kernel initialisation ? (correct?)
 
---=20
+Is it correct to replace it with
 
-Regards
- Abraham
+int __init cfi_intelext_init(void)
+{
+	register_mtd_chip_driver(&cfi_intelext_chipdrv);
+	return 0;
+}
 
-Thus mathematics may be defined as the subject in which we never know
-what we are talking about, nor whether what we are saying is true.
-		-- Bertrand Russell
-
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
-
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
+and
+mod_init_t cfi_probe_init(void) by
+int __init cfi_probe_init(void)
 
 
---8vCeF2GUdMpe9ZbK
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+so that I will be able to call do_map_probe("cfi_intel" or "cfi",...) in
+kernel initialisation ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+otherwise, what happend is that kmod is looking for module in the
+filesystem ; but at that point, no root fs is mounted.
 
-iD8DBQE7LwA/zNXhP0RCUqMRAtShAJ9pD2qMOAydjnEBcF1HlMp6KgKCKACgiQ8R
-OYV3/fiXNyJKOrlEYZDal4Y=
-=nPIt
------END PGP SIGNATURE-----
-
---8vCeF2GUdMpe9ZbK--
+Xavier
