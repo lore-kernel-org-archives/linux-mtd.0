@@ -1,9 +1,9 @@
 Received: from tolkor.sgi.com ([192.48.180.13])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eHcj-0004U8-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 17:00:53 +0100
-Message-ID: <3D57DB99.A8F39B75@sgi.com>
-Date: Mon, 12 Aug 2002 11:00:25 -0500
+	id 17eHmX-0004bl-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 17:11:01 +0100
+Message-ID: <3D57DE0C.9EF20FF@sgi.com>
+Date: Mon, 12 Aug 2002 11:10:52 -0500
 From: Steven Hein <ssh@sgi.com>
 MIME-Version: 1.0
 To: Thomas Gleixner <tglx@linutronix.de>
@@ -11,7 +11,8 @@ CC: linux-mtd@lists.infradead.org
 Subject: Re: Hardware ECC in NAND flash driver
 References: <3D511B55.6ADABE4D@sgi.com>
 	 <1028726139.19447.255.camel@thomas.tec.linutronix.de>
-	 <3D527739.5B19816C@sgi.com> <1028975588.9592.167.camel@thomas.tec.linutronix.de>
+	 <3D527739.5B19816C@sgi.com>
+	 <1028975588.9592.167.camel@thomas.tec.linutronix.de> <1029020732.9668.344.camel@thomas.tec.linutronix.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -26,84 +27,88 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Thomas Gleixner wrote:
-
-> > I don't have any experience with how any other Hardware ECC generators
-> > for NAND flash might work (including DiskOnChip), but the one in the
-> > S3C2410 is pretty simple.  Before reading/writing data, you write a bit
-> > to an internal register to reset the ECC generator.  Then, after
-> > reading/writing the 512 bytes of data, you read a register that contains
-> > the 3 byte ECC code (this must be read *before* reading/writing OOB data).
-> 3 byte for 512 byte data reduces the recovery probabilty by factor 2.
-> I'm wondering, why Samsung did it this way. They support 256 byte page
-> NAND chips and don't care about the ECC for these chips. Also they are
-> member of the SmartMedia Consortium and the spec's there use definitly 3
-> byte ECC per 256 Byte, which means 6 Byte per 512 Byte. So you cannot
-> read/write SmartMediaSpec compatible Cards, if you wan't to use the
-> onchip ECC generator.
-> But maybe they have decided that the ugly SmartMedia DOS-FAT filesystem
-> is not reliable and give a sh.. on compability :). This is likely the
-> case as they support booting from NAND  in a way which is definitly not
-> compatible with SmartMediaDosFAT.
 > 
-Interesting...... (I didn't have any background on the SmartMedia
-spec.).
-I just discovered that the next rev. of the Samsung 2410 (rev. 1) no
-longer supports NAND parts with 256 byte pages (there was a problem with
-nWAIT holding the bus during erase operations or something, so they
-redefined the the pin used for 256/512 byte pages to be a R/nB signal
-for NAND flash).
-
-
+> On Sat, 2002-08-10 at 12:33, Thomas Gleixner wrote:
+> > More comments later today.
+> Hi Steven,
 > 
-> >   2) In nand_write_page(), in order to generate a correct hardware ECC
-> >      for partial page writes, you need to write the actual data stored
-> >      in the page (rather than pre-padding with 0xff).
-> I see your need, but this breaks the datasheet specs. You have to pad
-> already written data with 0xff or in case of Samsung NAND you can write
-> only the bytes you want program to the chip and the chip takes care of
-> 0xff padding itself. As far as I understand the physical insides of
-> NAND, it might lead to erroneous behaviour, if you reprogram contents.
-> In that case, which should not happen with JFFS2 or any other
-> filesystem, which takes care of NAND specific issues, we should skip ECC
-> for this page in case we are using a 512 byte only hardware ECC
-> generator.
+> back again. I tried several possibilities to deal with all aspects. I
+> picked up most of your ideas and worked them into the existing code. My
+> final conclusion is as follows:
+> 
+> struct nand_chip got following extensions:
+> 
+> calculate_ecc - function for ecc calculation or readback from ecc
+> hardware, defaults to nand_calculate_ecc for software ecc
+> correct_data - function for ecc correction, matching to ecc generator
+> (sw/hw), defaults to nand_correct_data for software ecc
+> enable_hwecc - function to enable (reset) hardware ecc generator
+> eccmod - mode of ecc: see constants
+> eccsize - databytes used per ecc-calculation, set by nand.c depending on
+> eccmod value
+> 
+> following eccmodes are defined at the moment
+> 
+> #define NAND_ECC_NONE           0
+> is forced, if CONFIG_MTD_NAND_ECC is not set
+> #define NAND_ECC_SOFT           1
+> is forced, if CONFIG_MTD_NAND_ECC is set and no hardware ecc is selected
+> #define NAND_ECC_HW3_256        2
+> user selectable, if your ecc hardware supports 3 byte ecc for 256 byte
+> of data (DOC or passive SmartMedia adaptors)
+> #define NAND_ECC_HW3_512        3
+> user selectable, if your ecc hardware supports 3 byte ecc for 512 byte
+> of data (Samsung S3C2410)
+> 
+> If you select hardware ecc in your driver, you have to take care, that
+> calculate_ecc, correct_data and enable_hwecc are filled with the
+> relevant function pointers and eccmod is set to the appropriate type,
+> before you call nand_scan.
 
-That sounds like the best approach to me also.   (Since I just have a
-JFFS2 filesystems and a couple of partitions with a kernel and a
-CRAMFS ramdisk, I don't expect to see any partial page programming
-happening anyway......)
-
-....As an alternative, if you *really* wanted to do ECC on when you
-finally
-program to the end of the page, couldn't you....
-   -- write the entire 512 bytes out exactly as it should be in Flash
-   -- capture/generate the correct hardware ECC
-   -- reset (via the SEQIN command) and rewrite the block padded with
-0xFF
-   -- then issue the PAGE_PROGRAM command
-The data doesn't actually get written to the flash until the
-PAGE_PROGRAM
-command, correct?  This would be slower (as you are writing out the data
-twice), but it would allow the correct ECC to be generated.  (This may
-not work for all hardware ECC generators I guess).  Again, just a
-thought
-but not worth pursuing.
+This all looks great!
 
 > 
-> >   3) For NAND controllers like mine with 512-byte ECC, using ECC with
-> >      256-byte page NAND chips isn't really practical  (my changes currently
-> >      don't handle that case very gracefully, but I'm not using chips with
-> >      256-byte pages).
-> In this case you could use the software ECC. Your HW driver can specify
-> this after chipdetection.
+> I'm still not willing to write already written data to the device for a
+> second time. So I decided to skip hardware ecc for that case. If you use
+> a NAND aware filesystem e.g. JFFS2 this should not happen, otherwise you
+> will get in trouble anyway.
 
-I guess I don't have to worry about this anymore   :)
+Sounds good.
+
+> 
+> The funtion, which does correct_data calculations for the specfic
+> hardware ecc should be implemented as a general function in nand_ecc.c
+> to make it usable for similar hardware drivers and to avoid duplicated
+> code in these drivers.
+
+Dumb question--is ECC calculation "generic" enough to be applicable from
+one hardware ECC generator to the next, even if they do the same number
+of ECC bytes for the same block size?  Is it very likely that the
+algorithm
+is actually going to be the same between platforms?
 
 
+> 
+> Get code from CVS and enjoy. Thanks for your suggestions. The standard
+> software ecc mode runs on my machine without complains. I tested HW3_256
+> mode with software ecc routines and a dummy enable_hwecc and found no
+> problems. Any suggestions and improvements are welcome.
+> Happy testing.
+> 
+THANKS for adding this!!  I'll try it today/tomorrow.
 
-Thanks,
+Another question--how do you typically handle adding new HW drivers
+to the NAND flash code?  I know that in my case, the HW implementation
+uses access to specific S3C2410 processor registers, and those
+register definitions live in include/asm-arm/arch-s3c2410 directory
+in the Linux kernel tree.  I would expect that these arch-specific
+files would not live in the MTD tree.  Let me know--I'd like to get
+this HW driver incorporated into the standard tree as soon as I
+get it working!
+
+
+Thanks again,
 Steve
-
 
 -- 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
