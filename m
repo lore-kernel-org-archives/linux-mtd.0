@@ -1,18 +1,18 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uM6K-00041D-00
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2001 23:25:04 +0100
-Message-ID: <3AEDE678.51C6F94E@daniel.com>
-Date: Mon, 30 Apr 2001 17:26:00 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
-MIME-Version: 1.0
-To: mtd <linux-mtd@lists.infradead.org>,
-	jffs-dev <jffs-dev@axis.com>,
- 	David Woodhouse <dwmw2@infradead.org>
-Subject: Wear Leveling in JFFS2 NOT working!(?)
+	id 14uMMV-000440-00
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2001 23:41:47 +0100
+Received: from dwmw2 (helo=redhat.com)
+	by passion.cambridge.redhat.com with local-esmtp (Exim 3.16 #2)
+	id 14uMMu-00036o-00
+	for linux-mtd@lists.infradead.org; Mon, 30 Apr 2001 23:42:12 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Administrivia: List changeover complete.
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 30 Apr 2001 23:42:12 +0100
+Message-ID: <11953.988670532@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,52 +24,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I setup a simple test to measure the wear leveling. During my power down
-tests (which are at 10,090 cycles!) I print to the console which sector
-is being erased.
+OK, you should be receiving this through the shiny new mailman list.
 
-Then using a simple program, I went through the console log and got the
-following result: (Note! This data is only from 3615 of the total 10,090
-pwr cycles).
+Theoretically, all the past mail should also be visible in the archive (see 
+the List-archive: header), but mailman is playing silly buggers so only 
+this month's is there. I know not why.
 
-Sector Address:0x780000 Number Of Erases:2050
-Sector Address:0x640000 Number Of Erases:1573
-Sector Address:0x600000 Number Of Erases:1503
-Sector Address:0x5c0000 Number Of Erases:1406
-Sector Address:0x580000 Number Of Erases:1297
-Sector Address:0x500000 Number Of Erases:1045
-Sector Address:0x4c0000 Number Of Erases:824
-Sector Address:0x7c0000 Number Of Erases:2283
-Sector Address:0x740000 Number Of Erases:1906
-Sector Address:0x700000 Number Of Erases:1817
-Sector Address:0x6c0000 Number Of Erases:1753
-Sector Address:0x680000 Number Of Erases:1654
-Sector Address:0x540000 Number Of Erases:1190
-Sector Address:0x480000 Number Of Erases:514
-Sector Address:0x440000 Number Of Erases:216
-Sector Address:0x400000 Number Of Erases:60
-Sector Address:0x3c0000 Number Of Erases:13
-Sector Address:0x380000 Number Of Erases:1
+I've disabled the old list and made Exim rewrite mail sent to it and send 
+it on to the new list. I've also transferred all the subscriptions - you 
+should each have received a confirmation mail. Ignore what it said about 
+resending your password once a month - that gets on my tits so I turned it 
+off. I suppose you can have it back if people really want it, though.
 
-Total Unique Sectors Found= 20, total sum of all erases=21105
+Watching it send all those welcome mails and stumble over broken mail 
+setups has severely tempted me to be far more pedantic about the domains I 
+allow subscriptions from.
 
-Obviously, not all sectors are being "cycled" evenly. As a matter of
-fact, none of the sectors below 0x380000 are being cycled at all.
+Please take a moment to enter your email address into the form at 
+	http://lists.infradead.org/mxverify-cgi.html
 
-I am using 4x wide 8bit memory for a total of 8MBytes (for a total of 32
-sectors). 12 sectors haven't even been touched.
+If there is a server which is _not_ listed as 'Apparently OK', or if there
+is only one server listed, then please report the fault to whoever's in
+charge of your mail system, and if they can't fix it quickly, please
+unsubscribe the offending address and resubscribe with an alternative
+address which is more professionally administered.
 
-The fs is a "root" fs, with about 4-5Megs of the 8MB with static OS data
-and the rest being used to write out 100 binary files (about 100-400KB
-total).
+Bonus points for incompetence above and beyond the call of duty are awarded 
+to those with MX records pointing to hosts with 10.x.x.x IP addresses, or 
+to hosts with names like 'ms-exchange.' You know who you are.
 
-Now, one thing that may be tripping up the wear leveling algorithm is
-the fact that the system is being cycled every 2-3 minutes.
+(No, I didn't omit the domain from that, there really is an MX record 
+pointing at the top-level 'ms-exchange.')
 
-
-David? What does the algorithm to "pickup" a new "less cycled" sector
-and give a over-used sector a rest depend on?
-
-Thanks
-
-Vipin
+--
+dwmw2
