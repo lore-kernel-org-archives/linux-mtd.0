@@ -1,17 +1,17 @@
-Received: from webapps.arcom.com ([194.200.159.168])
+Received: from 213-229-28-240.static.adsl-line.inode.at ([213.229.28.240]
+	helo=contec-int.at)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1By4uz-0004zH-8D
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 04:38:38 -0400
-From: Ian Campbell <icampbell@arcom.com>
+	id 1By73N-0005IO-A1
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 06:55:26 -0400
+From: Manfred Gruber <gruber.m@utanet.at>
 To: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
-In-Reply-To: <6.1.2.0.2.20040819151746.04354ad8@mail.conformative.com>
-References: <6.1.2.0.2.20040819151746.04354ad8@mail.conformative.com>
-Content-Type: text/plain
-Message-Id: <1092991110.15118.29.camel@icampbell-debian>
-Mime-Version: 1.0
-Date: Fri, 20 Aug 2004 09:38:32 +0100
+Date: Fri, 20 Aug 2004 13:00:05 +0200
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: Re: ilookup-2.4.23.patch
+Message-Id: <200408201300.05579.gruber.m@utanet.at>
+Subject: Number of CFI chips ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-08-19 at 21:17, Clay Douglass wrote:
-> Hi,
-> 
-> i am working on the JFFS2 on 2.4.22 Kernel. I got the ilookup() 
-> unreferenced error. After seeing the messages in this list, i found that 
-> ilookup() implementation is not available in 2.4 series of kernel. I saw a 
-> message from  David Woodhouse stating that there is ilookup-2.4.23.patch is 
-> available on CVS tree. Unfortunately i am unable to ping the CVS server.
+Hi guys !
 
-cvs.infradead.org is IPv6 only at the moment.
+I am trying to find out why my 2 AM29LV256M do not work.
+See before was: Re: JFFS2 with AM29LV256M
 
-http://www.linux-mtd.infradead.org/ contains simple instructions for
-setting up IPv6 in RH or Fedora and also contains links to nightly CVS
-snapshots. 
+I found out that CFI only detects one chip.
 
-Ian.
+What should CFI detect when I have 2 AM29LV256M chips on a 32 bit bus. Each 
+AM29LV256 has 16 bit bus with with connected to the 32bit bus. So CFI has to 
+setect 2 chips, am i right ?(wehn interleave is set to 2, and buswith is set 
+to 32)
 
--- 
-Ian Campbell, Senior Design Engineer
-                                        Web: http://www.arcom.com
-Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
-Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
+When it only detects one chip, my problem must be in detecting the chips by 
+CFI, is this correct ?
+
+Thanks, regards manfred
