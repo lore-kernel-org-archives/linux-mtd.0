@@ -1,19 +1,19 @@
 Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197hiS-0003sz-MM
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 21:16:41 +0100
+	id 197htQ-000400-Cs
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 21:28:00 +0100
 From: Charles Manning <manningc2@actrix.gen.nz>
-To: "Stephan Linke" <Stephan.Linke@epygi.de>,
-	"Linux-Mtd" <linux-mtd@lists.infradead.org>
-Date: Tue, 22 Apr 2003 08:17:39 +1200
-References: <FCEAKDJJAPHPLJFINDAJIEBIDAAA.Stephan.Linke@epygi.de>
-In-Reply-To: <FCEAKDJJAPHPLJFINDAJIEBIDAAA.Stephan.Linke@epygi.de>
+To: "Paul Wong" <paul.wong@digitalview.com>,
+	<linux-mtd@lists.infradead.org>
+Date: Tue, 22 Apr 2003 08:28:57 +1200
+References: <007001c30639$6d034820$9000010a@paulwong>
+In-Reply-To: <007001c30639$6d034820$9000010a@paulwong>
 MIME-Version: 1.0
-Message-Id: <20030421201646.C88A140B5@blood.actrix.co.nz>
+Message-Id: <20030421202804.C9527414B@blood.actrix.co.nz>
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-Subject: Re: "verify NAND page writes" and & partial write
+Subject: Re: compare JFFS2 vs YAFFS
 Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,21 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Veriify NAND page writes does not work with YAFFS for the reason you give.
-YAFFS does its own verification when needed.
+On Saturday 19 April 2003 18:03, Paul Wong wrote:
+> Hi All,
+>     could u tell me the JFFS2 and YAFFS comparsion? speed, save, reliable,
+> and future
+>
+> Thanks
+>
+> Paul
+
+Paul
+
+This is a tricky one. Both YAFFS and JFFS2 have their pros and cons.
+
+I have not used JFFS2 myself, but I have studied it a bit. Herewith my 
+impressions.
+* YAFFS is likely faster than JFFS2 in many situations. YAFFS does not do 
+compression (which takes time). YAFFS has a simpler garbage collection 
+mechanism that is likely to be faster.
+* YAFFS uses smaller management structures (and therefore uses less RAM).
+* JFFS2 provides compression. Nice if you have a small NAND. Some people 
+achieve almost the same thing (for read) by loop mounting compressed file 
+systems (eg. cramfs)  on a YAFFS file.
+* You might already have JFFS2 for NOR, therefore you get an image footprint 
+saving if you use it for NAND too.
+* YAFFS is very reliable. I think JFFS2 is also.
+* Both file systems are widely used and will continue to be supported. 
+
+As a hunch, I'd say it is better to use JFFS2 on smaller NAND arrays where 
+you gain from the compression and YAFFS on larger sizes.
+
+My suggestion to you is that you try both and go with the one that is the 
+best fit for your needs.
 
 -- Charles
-
-On Monday 21 April 2003 23:36, Stephan Linke wrote:
-> Hi,
->
-> I try to use the "verify NAND page writes" option but but it always failes
-> when YAFFS tries to do a partial write on the OOB area. Is it intentional
-> that this option failes with partial writes? Everything works fine when I
-> disable this feature.
->
-> Thanks, Stephan
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
