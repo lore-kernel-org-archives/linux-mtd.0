@@ -1,22 +1,18 @@
-Received: from mailout07.sul.t-online.com ([194.25.134.83])
+Received: from news.ti.com ([192.94.94.33] helo=dragon.ti.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVdve-0006Zl-Ez
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 18:09:52 -0400
-From: tglx@linutronix.de (Thomas Gleixner)
-To: Pantelis Antoniou <panto@intracom.gr>
-Date: Thu, 3 Jun 2004 00:04:12 +0200
-References: <200406020023.02262.tglx@linutronix.de>
-	<40BD6EE4.5010805@intracom.gr>
-In-Reply-To: <40BD6EE4.5010805@intracom.gr>
+	id 1BVeXV-0006kU-RP
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 18:48:55 -0400
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200406030004.12864.tglx@linutronix.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND driver
-Reply-To: tglx@linutronix.de
+Date: Wed, 2 Jun 2004 17:48:44 -0500
+Message-ID: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
+From: "Zhang, Jian" <jzhang@ti.com>
+To: "David Woodhouse" <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+Cc: 
+Subject: stable MTD snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 June 2004 08:08, Pantelis Antoniou wrote:
-> Thomas Gleixner wrote:
-> >Hi all,
-> >
-> >the NAND driver has some more new features
-> >
-> >- support for AG-AND chips (currently tested with HN29V1G91T-30)
-> >- bad block table support (memory and flash based)
-> >- a new API documentation (online version is available on MTD homepage)
->
-> Sounds interesting...
->
-> I'll test when I have some spare time available.
->
-> Just a question.
->
-> Does it do the automatic bad block skipping on read-only
-> like my patch did, so I can mount CRAMFS?
->
-> That is, is something like my patch still required,
-> or it is no longer necessary?
+My reply to David's question has been bounced back twice. I still don't
+know how to configure outlook to reply in the way the list server likes.
+So I restart it.
+=20
+I have tried a few snapshots and encountered either compile failure or
+run-time errors. Can someone point me to a daily MTD snapshot that is
+known to pass compilation and do not have major issue with JFFS2 on
+NAND?
 
-No, it does not. This is the job of a translation layer. So your patch os n=
-ot=20
-obsolete
+I have patched the following snapshots to our 2.6.4 kernel by running
+patchin.sh script:
+=20
+./patchin -j -c <kernel path>
+=20
+20040518:
+I was able to mount an empty NAND partition. The partition was
+erased/prepared by U-Boot. JFFS2 clean marker was programmed to OOB
+area. I could mount it cleanly. But I got message "jffs2: No clean,
+dirty _or_ erasable blocks to GC from! Where are they all" when I
+created a file. A 192K file was truncated after umount/re-mount. Files
+even disappeared after umount/re-mount.
 
-=2D-=20
-Thomas
-________________________________________________________________________
-Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
-time managing existing systems. That couldn=E2=80=99t have anything to do w=
-ith=20
-the fact that 99 percent of these systems run Windows, could it?
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+20040526:
+Kernel doesn't build because nand.c has compile error in
+single_erase_cmd()
+
+20040531:
+Kernel builds but I got I/O error when mounting a partition. The
+underlying MTD NAND driver works since I am able to read/write MTD
+nodes.
+
+Jian
