@@ -1,14 +1,16 @@
-Received: from web41710.mail.yahoo.com ([66.218.93.127])
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19ujvk-0000cy-0v
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2003 03:33:04 +0100
-Message-ID: <20030904023203.32771.qmail@web41710.mail.yahoo.com>
-Date: Wed, 3 Sep 2003 19:32:03 -0700 (PDT)
-From: John Praveen <ijpraveen1@yahoo.com>
-To: MTD <linux-mtd@lists.infradead.org>
+Received: from [62.254.213.145] (helo=cambridgebroadband.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19uqaz-0001Pz-3D
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2003 10:40:05 +0100
+From: Dave Pegler <dwp@cambridgebroadband.com>
 MIME-Version: 1.0
+Message-ID: <16215.2124.700769.333575@localhost.localdomain>
+Date: Thu, 4 Sep 2003 10:39:24 +0100
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=us-ascii
-Subject: MTD and JFFS?
+Content-Transfer-Encoding: 7bit
+cc: dwp@cambridgebroadband.com
+Subject: OTP registers
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-
-I have a very preliminary doubt. If I use a JFFS file
-system for my embedded system, is it mandatory to use
-the MTD utilities? I found in many places that this
-MTD utilities and JFFS are paired together. What is
-the exact link.
-
-Thanks in advance.
 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Is there any way of accessing the manufacturer and customer OTP protection
+registers in Intel Strata and Micron Q-Flash ?
+
+Dave
