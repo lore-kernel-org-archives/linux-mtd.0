@@ -1,24 +1,17 @@
-Received: from omail02.samsung.co.kr ([203.254.197.74])
+Received: from patan.sun.com ([192.18.98.43])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15LCQ7-0002py-00
-	for <linux-mtd@lists.infradead.org>; Sat, 14 Jul 2001 00:32:28 +0100
-Received: from gp_xman. ([101.1.3.10])
-	by omail02.samsung.co.kr (8.8.8/8.8.8) with ESMTP id IAA06494
-	for <linux-mtd@lists.infradead.org>; Sat, 14 Jul 2001 08:42:12 +0900 (KST)
-From: kingseft@samsung.co.kr
-Received: from localhost (root@localhost)
-	by gp_xman. (8.8.8H1/8.8.8) with ESMTP id IAA15868
-	for <linux-mtd@lists.infradead.org>; Sat, 14 Jul 2001 08:40:09 +0900 (KST)
-Date: Sat, 14 Jul 2001 08:43:46 +0900
-Message-Id: <H00002af04ff19c1@MHS>
-Subject: =?EUC-KR?Q?(=C0=E7=C0=FC=BC=DB)_/dev/mtd0_qeustions?=
+	id 15LDhm-0002us-00
+	for <linux-mtd@lists.infradead.org>; Sat, 14 Jul 2001 01:54:46 +0100
+Message-ID: <3B4F9B50.5DFAB105@sun.com>
+Date: Fri, 13 Jul 2001 18:07:28 -0700
+From: Tim Hockin <thockin@sun.com>
 MIME-Version: 1.0
-TO: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline; filename="mail.txt"
-	;Creation-Date="Fri, 13 Jul 2001 17:28:45 +0900"
-	;Modification-Date="Sat, 14 Jul 2001 08:43:45 +0900"
-Content-Transfer-Encoding: 8bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: module names in request_module()
+References: <3B4F3ABA.2EFCAB42@sun.com>  <3B4E5085.62422401@sun.com> <24251.995007133@redhat.com> <15106.995048244@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,21 +23,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
- I got latest MTD source code(2001-07-11 version)
- and set Kernel options.
+David Woodhouse wrote:
+> 
+> thockin@sun.com said:
+> >  So we have three options:
+> >       1) rename files to match their probe names
+> >       2) rename probe names to match module names
+> >       3) use modules.conf to give external fixes for internal flaws
+> > I'm leaning towards #2.  Comments?
+> 
+> Fine.
 
- when the kernel booted, I found all correct messages from kernel.
- but, when I tyepd MAKEDEV, and then
+in CVS now.  Will this be propogated to 2.4.7 or should I send it to Linus
+also?
 
- mkfs.jffs -d /home/jffs -o /tmp/jffs.image
- and
-
- cp /tmp/jffs.image /dev/mtd0
- the result message is
-
- cp: /dev/mtd0  Read-only file system.     <----Here.
-
- so, I can't proceed next step!!
-
- Could anyone explain this problem??
- Any comments will help me.. thanks.
+-- 
+Tim Hockin
+Systems Software Engineer
+Sun Microsystems, Cobalt Server Appliances
+thockin@sun.com
