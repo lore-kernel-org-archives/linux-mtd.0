@@ -1,18 +1,25 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CVWZH-0005yJ-45
-	for linux-mtd@lists.infradead.org; Sat, 20 Nov 2004 09:50:28 -0500
-Date: Sat, 20 Nov 2004 15:50:21 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20041120145020.GA15782@synertronixx3>
-References: <20041118163528.GA9471@synertronixx3>
-	<1100959034.8600.33.camel@localhost.localdomain>
+	id 1CVFrB-0003i5-DJ
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2004 15:59:51 -0500
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Alexander Hoffmann <ahoffmann@sysgo.de>
+In-Reply-To: <419C7E72.8040005@sysgo.de>
+References: <418F5E68.3010200@sysgo.de>
+	<20041108120624.GE13105@home.fluff.org> <418F6CA7.6000808@sysgo.de>
+	<1099943453.10812.16.camel@tubarao> <4194D39A.9000700@sysgo.de>
+	<1100274921.3549.13.camel@justakiss> <4194E233.70902@sysgo.de>
+	<1100277677.3549.22.camel@justakiss>  <419C7E72.8040005@sysgo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-cZmAHd3kJWepW8nefFar"
+Date: Fri, 19 Nov 2004 13:35:58 -0700
+Message-Id: <1100896558.29654.12.camel@tubarao>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1100959034.8600.33.camel@localhost.localdomain>
-Subject: Re: jffs2 Oops on 2.6.10-rc2
+Cc: linux-mtd@lists.infradead.org, Erwin Authried <eauth@softsys.co.at>
+Subject: Re: Usage of MTD_UADDR_UNNECESSARY broken?
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,94 +29,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2004-11-20 13:57 +0000 schrieb David Woodhouse:
 
-> Is this with an SMP or preemptable kernel? If so, I think I see the
+--=-cZmAHd3kJWepW8nefFar
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Its not SMP but preemtive. Is this even recommend on an embedded system?
+On Thu, 2004-11-18 at 11:50 +0100, Alexander Hoffmann wrote:
 
-> problem. Does it also fix it if you wrap the code you disabled with 
-> 	spin_lock(&c->erase_completion_lock);
-> 	<...>
-> 	spin_unlock(&c->erase_completion_lock);
+> Then I guess that there is really the bug I described in my first mail.
+> I would recommend a check for MTD_UADDR_UNNECESSARY in the=20
+> cfi_jedec_setup(), before
+> the unlock_addrs[] array is  referenced:
+>=20
+> if ( uaddr !=3D MTD_UADDR_UNNECESSARY ) {
+>                 p_cfi->addr_unlock1 =3D unlock_addrs[uaddr].addr1 & mask;
+>                 p_cfi->addr_unlock2 =3D unlock_addrs[uaddr].addr2 & mask;
+> }
+> return 1;
 
-No, that does not help. I replaced my disabling #defines by the
-lock<->unlcocp pair, no avail:
+Well, I committed a change, even though I originally wasn't going to do
+it this way:
 
->>EIP; c00b1c74 <jffs2_build_remove_unlinked_inode+30/ec>   <=====
+--- drivers/mtd/chips/jedec_probe.c	18 Nov 2004 14:13:09 -0000	1.60
++++ drivers/mtd/chips/jedec_probe.c	19 Nov 2004 20:51:07 -0000
+@@ -227,6 +227,11 @@
+ 	[MTD_UADDR_DONT_CARE] =3D {
+ 		.addr1 =3D 0x0000,      /* Doesn't matter which address */
+ 		.addr2 =3D 0x0000       /* is used - must be last entry */
++	},
++
++	[MTD_UADDR_UNNECESSARY] =3D {
++		.addr1 =3D 0x0000,
++		.addr2 =3D 0x0000
+ 	}
+ };
 
->>r3; c0177f24 <log_wait+0/8>
+I figure that simply adding a dummy entry will prevent having to always
+branch on MTD_UADDR_UNNECESSARRY when the remaining logic can be
+identical.
 
-Trace; c00b1c44 <jffs2_build_remove_unlinked_inode+0/ec>
-Trace; c00b1a9c <jffs2_build_filesystem+1e4/38c>
-Trace; c00b18b8 <jffs2_build_filesystem+0/38c>
-Trace; c00b1fd8 <jffs2_do_mount_fs+228/270>
-Trace; c00b1db0 <jffs2_do_mount_fs+0/270>
-Trace; c00b3f80 <jffs2_do_fill_super+130/238>
-Trace; c00b3e50 <jffs2_do_fill_super+0/238>
-Trace; c00b45b8 <jffs2_get_sb_mtd+98/f8>
-Trace; c00b4520 <jffs2_get_sb_mtd+0/f8>
-Trace; c00b4804 <jffs2_get_sb+194/1d0>
+My apologies for taking so long - thanks for your patience.
 
->>r8; c017bdf0 <jffs2_fs_type+0/20>
+BTW, I haven't seen any comments regarding this:
 
-Trace; c00b4670 <jffs2_get_sb+0/1d0>
-Trace; c00750c0 <do_kern_mount+5c/f4>
-Trace; c0075064 <do_kern_mount+0/f4>
-Trace; c008c558 <do_new_mount+84/b8>
-Trace; c008c4d4 <do_new_mount+0/b8>
-Trace; c008ccdc <do_mount+150/16c>
-Trace; c008cb8c <do_mount+0/16c>
-Trace; c008d128 <sys_mount+a8/f0>
-Trace; c008d080 <sys_mount+0/f0>
-Trace; c0008f18 <do_mount_root+30/bc>
-
->>r8; c018e3c8 <names_cachep+0/4>
->>r7; c01581c8 <__func__.1+458/f5f0>
-
-Trace; c0008ee8 <do_mount_root+0/bc>
-Trace; c0008ffc <mount_block_root+58/124>
-Trace; c0008fa4 <mount_block_root+0/124>
-Trace; c0009194 <prepare_namespace+60/a0>
-
->>r4; c0016648 <root_device_name+0/4>
-
-Trace; c0009134 <prepare_namespace+0/a0>
-Trace; c0017258 <init+54/f8>
-
->>r4; c0157fe0 <__func__.1+270/f5f0>
-
-Trace; c0017204 <init+0/f8>
-Trace; c00359cc <do_exit+0/500>
-
-Code;  c00b1c64 <jffs2_build_remove_unlinked_inode+20/ec>
-00000000 <_EIP>:
-Code;  c00b1c64 <jffs2_build_remove_unlinked_inode+20/ec>
-   0:   05 00 00 0a 04            add    $0x40a0000,%eax
-Code;  c00b1c69 <jffs2_build_remove_unlinked_inode+25/ec>
-   5:   10 a0 e1 07 00 a0         adc    %ah,0xa00007e1(%eax)
-Code;  c00b1c6f <jffs2_build_remove_unlinked_inode+2b/ec>
-   b:   e1 cd                     loope  ffffffda <_EIP+0xffffffda>
-Code;  c00b1c71 <jffs2_build_remove_unlinked_inode+2d/ec>
-   d:   e3 ff                     jecxz  e <_EIP+0xe>
-Code;  c00b1c73 <jffs2_build_remove_unlinked_inode+2f/ec>   <=====
-   f:   eb 00                     jmp    11 <_EIP+0x11>   <=====
-Code;  c00b1c75 <jffs2_build_remove_unlinked_inode+31/ec>
-  11:   40                        inc    %eax
-Code;  c00b1c76 <jffs2_build_remove_unlinked_inode+32/ec>
-  12:   94                        xchg   %eax,%esp
-Code;  c00b1c77 <jffs2_build_remove_unlinked_inode+33/ec>
-  13:   e5 00                     in     $0x0,%eax
-
- <0>Kernel panic - not syncing: Attempted to kill init!
-
-1 error issued.  Results may not be reliable.
+On Thu, 2004-11-18 at 07:44 -0700, Thayne Harbaugh wrote:=20
+> On Thu, 2004-11-18 at 11:50 +0100, Alexander Hoffmann wrote:
+> > Furthermore I dont understand the following code in the finfo_uaddr()=20
+> > function:
+> >=20
+> > if (uaddr !=3D MTD_UADDR_NOT_SUPPORTED ) {
+> >                 /* ASSERT("The unlock addresses for non-8-bit mode
+> >                    are bollocks. We don't really need an array."); */
+> >                 uaddr =3D finfo->uaddr[0];
+> >         }
+>=20
+> I don't necessarily understand it either.  I have chip documentation
+> that shows that the unlock addresses of a chip are different for
+> different modes.  Unfortunately, I don't have a chip to test.
+>=20
+> > In my opinion this can't work, because there are a lot of  entries in=20
+> > the jedec_table[] where uaddr[0]
+> > is not defined ?
+>=20
+> C specifications require that structures with static initializers always
+> have uninitialized members set to 0.  That means that entries in
+> jedec_table[] that don't have a specific uaddr[0] initializer then it is
+> 0 - which is MTD_UADDR_UNSUPPORTED.  What it buys us is that there's
+> less typing and any width that isn't explicitly stated as supported is
+> not supported.
+>=20
+> Considering the above WRT the code logic, it means that if a width for a
+> chip is not supported (MTD_UADDR_NOT_SUPPORTED) then it will return
+> whatever the unlock address is for X8.  The return value for finfo_uaddr
+> () is used to not only determine what the unlock addresses should be,
+> but also if a chip functions in a particular width.  This could cause
+> chips that only have an X16 and greater modes, but no X8 mode to fail in
+> jedec_match() and jedec_setup().
+>=20
+> Yes, it does look broken.  If the ASSERT comment is *really* true (I am
+> not convinced) then they should accomplish what they want by using the
+> same uaddr initializer for all modes of a chip.
 
 
-Even disabling preemtion generates the same Oops :(
+--=20
+Thayne Harbaugh
+Linux Networx
 
-Regards, Konsti
+--=-cZmAHd3kJWepW8nefFar
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBBnlkusYFQl3A+qS0RAowlAJ0Q43FERpW3xXQdBFq0DmOEsuyucgCfeLzi
+13HZJBkEjYDYCXPKpotvERU=
+=lq/F
+-----END PGP SIGNATURE-----
+
+--=-cZmAHd3kJWepW8nefFar--
