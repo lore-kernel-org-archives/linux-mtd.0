@@ -1,23 +1,21 @@
-Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
+Received: from ns2.arlut.utexas.edu ([129.116.174.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18K0wi-0002YC-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2002 18:42:00 +0000
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	by dummy.ddiworldwide.com (Postfix) with SMTP id C36AE162F7B
-	for <linux-mtd@lists.infradead.org>; Thu,  5 Dec 2002 14:13:55 -0500 (EST)
-Received: from plinux.ddiworldwide.com (plinux [192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id 38849162F7A
-	for <linux-mtd@lists.infradead.org>; Thu,  5 Dec 2002 14:13:55 -0500 (EST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Frank R Callaghan <f.callaghan@ieee.org>
-Reply-To: f.callaghan@ieee.org
-Subject: Fwd: NewBee Question
-Date: Thu, 5 Dec 2002 14:10:28 -0500
+	id 18K2Um-0002jq-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2002 20:21:16 +0000
+Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
+	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id gB5Kpnlg062502
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Dec 2002 14:51:50 -0600 (CST)
+Received: from arlut.utexas.edu (koffer.arlut.utexas.edu [10.8.17.114])
+	by ns5.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id gB5Kpn1j074186
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Dec 2002 14:51:49 -0600 (CST)
+Date: Thu, 5 Dec 2002 14:51:48 -0600
+Mime-Version: 1.0 (Apple Message framework v548)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Subject: mdblock device not registering
+From: Ken Offer <koffer@arlut.utexas.edu>
 To: LinuxMTD <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200212051410.28872.f.callaghan@ieee.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <5F99B6E0-0893-11D7-971A-000393467F1A@arlut.utexas.edu>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,24 +27,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi All,
+This is a strange one.
 
-I am looking to use an AMD flash chip on my pc104 card
-to store some non-volatile data, the chip is a 2MB part but,
-the BIOS is in the first 128KB (do not want to overwrite).
+I checked out the latest MTD cvs (on 20021202) and integrated it into 
+my 2.4.19 Yellow Dog kernel.  When I try to load the mtdblock module 
+NONE of my initialization debug statements print and the mtdblock 
+device is NOT registered.  I do an lsmod and the module is loaded.  If 
+its loaded, why isn't it printk'ing?  I thought the only way a module 
+could load is if its initialization succeeds.
 
-After setting up the kernel with MDT I get
-cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00200000 00010000 "Physically mapped flash"
+This doesn't happen under the 20020819 source code.  The mtdblock 
+module loads fine, my debug statements print and the mtdblock device is 
+registered.
 
-ok but I only need the second 1MB - is there some way to either
-prevent the first meg being mapped/used ?
+Has anybody else tried the latest cvs code with a 2.4 kernel (as 
+opposed to a 2.5 kernel)?
 
-also I'm looking to use jffs as the file system - maybe I can partion it
-to only use the second meg ???
-
-Any help greatly appreciated,
-
-TIA,
-	Frank.
++-----------------------------------------------------------+
+|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
+|  Office: 512-835-3859                  Fax: 512-835-3259  |
++-----------------------------------------------------------+
