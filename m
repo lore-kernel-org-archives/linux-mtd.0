@@ -1,7 +1,7 @@
 Received: from [202.106.187.156] (helo=sina.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18TieE-00087a-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2003 13:11:03 +0000
+	id 18TieG-00087b-00
+	for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2003 13:11:04 +0000
 Date: Wed, 1 Jan 2003 21:42:3 +0800
 From: "thierry" <jokyman@sina.com>
 To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
@@ -10,7 +10,7 @@ Mime-Version: 1.0
 Content-Type: text/plain;
       charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Message-Id: <E18TieE-00087a-00@pentafluge.infradead.org>
+Message-Id: <E18TieG-00087b-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
