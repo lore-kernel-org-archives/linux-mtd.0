@@ -1,17 +1,19 @@
-Received: from opersys.com ([64.40.108.71] helo=www.opersys.com)
+Received: from jeeves.momenco.com
+	([64.169.228.99] helo=host099.momenco.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19DpeL-0001Jw-UV
-	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2003 18:57:46 +0100
-Sender: karim@www.opersys.com
-Message-ID: <3EBA9856.CDE12048@opersys.com>
-Date: Thu, 08 May 2003 13:48:06 -0400
-From: Karim Yaghmour <karim@opersys.com>
+	id 19DpkY-0001OH-2C
+	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2003 19:04:10 +0100
+From: "Matthew Dharm" <mdharm@momenco.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Date: Thu, 8 May 2003 11:04:21 -0700
+Message-ID: <NEBBLJGMNKKEEMNLHGAIKEFKDAAA.mdharm@momenco.com>
 MIME-Version: 1.0
-To: Linux-MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1052374635.6876.35.camel@imladris.demon.co.uk>
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [ANNOUNCE] embedded book / embeddedTUX.org
-Reply-To: karim@opersys.com
+cc: linux-mtd@lists.infradead.org
+Subject: RE: DiskOnChip 2000 128Mb problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> On Wed, 2003-05-07 at 21:37, Matthew Dharm wrote:
+> > I'm porting Linux to our embedded PPC platform.  We have
+> a DoC 2000
+> > (apparently known as "Millenium") on the board,
+>
+> The DiskOnChip 2000 and DiskOnChip Millennium are separate beasts.
+> Remember the new Millennium didn't start till 2001 :)
+>
+> You had a DiskOnChip 2000 on the Ocelots, and it's been
+> working fine --
+> looks like you really do have a Millennium on the new board though.
 
-Hello,
+Well, now we may have found part of the problem -- the label on the
+chip says "DiskOnChip 2000" with a part number of MD2202-D128-V3
 
-For some time now I have been working on putting together
-documentation to help developers use Linux in embedded
-systems without requiring the purchase of any product or
-the use of any pre-packaged distribution:
-http://www.oreilly.com/catalog/belinuxsys/
-The approach I've documented requires only that you have
-an Internet connection to download the various packages
-straight from the source. The complete procedure to obtain
-a functional embedded system based on those packages is
-detailed in the book.
+So is that a 2000 or Millennium?  If it's really a 2000, then the
+driver is detecting it incorrectly.
 
-There is, for instance, an in-depth discussion of the
-configuration, installation, and use of the MTD subsystem
-and the MTD tools. In fact, the entire chapter 7 is mainly
-dedicated to discussing the use of solid-state storage
-devices in Linux.
+> > and I'm having problems getting the driver working.  I'm hoping
+> > someone here can help... I think the issue is that the
+> driver doesn't
+> > support this part, tho it should (are we really the first to try
+> > this?).
+> >
+> > We're using kernel 2.4.17, upgraded with MTD from CVS as of today.
+> > Our DoC is 128MB in size and operates at 3.3 V.
+> >
+> > Here's our story:  The main DoC driver detects the device, but is
+> > unable to identify any flash devices.  At boot time, it shows:
+> >
+> > Using configured DiskOnChip probe address 0x70400000
+> > DiskOnChip Millennium found at address 0x70400000
+> > No flash chips recognised.
+>
+> Odd. There shouldn't really be much difference in behaviour
+> between the
+> 2000 and the 2001 drivers. They diverged for a while, then we merged
+> them. Some tracing and debugging ought to show what the
+> merged driver is
+> doing differently (and, I assume, wrong).
+>
+>  <...>
+>
+> > Which is interesting, because it is exactly half the
+> correct size.  A
+> > quick check through the source code shows that
+> MAX_CHIPS_MIL is set to
+> > 1, and there is a FIXME in doc2001.c "to deal with multi-flash on
+> > multi-Millenium case more carefully".  If I change the
+> definition of
+> > MAX_CHIPS_MIL to 4, we get:
+> >
+> > Using configured DiskOnChip probe address 0x70400000
+> > DiskOnChip Millennium found at address 0x70400000
+> > Flash chip found: Manufacturer ID: EC, Chip ID: 76
+> (Samsung:NAND 64MB 3,3V)
+> > Flash chip found: Manufacturer ID: EC, Chip ID: 76
+> (Samsung:NAND 64MB 3,3V)
+> > 2 flash chips found. Total DiskOnChip size: 128 MiB
+> > mtd: Giving out device 0 to DiskOnChip Millennium
+>
+> That looks basically correct now.
 
-In order to further increase the level of technical
-discussion around the use of Linux in embedded systems and
-provide up-to-date information, I've also set up a web site
-and a mailing list at:
-http://www.embeddedtux.org/
-As the site states, hype and other marketing-related material
-aren't welcome on embeddedTUX.org. I think many will agree
-that there has been enough of that already on the subject of
-"embedded Linux."
+Well, that's worth something, I guess.
 
-My intent with writing the book and building the site was
-to bridge the gap that exists between embedded systems
-developers that use open source and free software packages,
-and the open source and free software community that produces
-these packages. My hope is that we will see mainstream
-embedded developers make more contributions to the open
-source and free software packages they use in building
-embedded Linux systems. Ultimately, this will ensure Linux
-remains the best choice for an embedded OS.
+> > NFTL driver: nftlcore.c $Revision: 1.88 $, nftlmount.c
+> $Revision: 1.31$
+> > NFTL_notify_add for DiskOnChip Millennium
+> > mtd->read = c00cd450, size = 134217728, erasesize = 8192
+> > NFTL_setup
+> > Could not find valid boot record
+> > Could not mount NFTL device
+>
+> At this point, it failed to find the NFTL format on the
+> DiskOnChip. If
+> the kernel code fails, then 'nftldump' will too. Try
+> 'nanddump' which
+> should just dump the contents of the raw flash. Look
+> through it for a
+> block starting 'ANAND' and/or send me a copy.
 
-[There is, of course, more detail to these ideas than I
-can fit in an email. I invite you to take a look at the
-book and the site if you're interested.]
+I presume nanddump works on the /dev/mtd0 node?
 
-HTH,
-
-Karim
-
-===================================================
-                 Karim Yaghmour
-               karim@opersys.com
-      Embedded and Real-Time Linux Expert
-===================================================
+Matt
