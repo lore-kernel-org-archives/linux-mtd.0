@@ -1,22 +1,21 @@
-Received: from ip10.savigear.adsl.uk.xo.com ([195.147.222.170] helo=xerp.secret.org.uk)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17TRGb-0005dP-00
-	for <linux-mtd@lists.infradead.org>; Sat, 13 Jul 2002 19:05:14 +0100
-Received: from spoinky.renegade.org.uk ([192.168.1.2])
-	by xerp.secret.org.uk with esmtp (Exim 3.33 #1)
-	id 17TRIX-0004GF-00
-	for linux-mtd@lists.infradead.org; Sat, 13 Jul 2002 19:07:13 +0100
-Received: from localhost ([127.0.0.1] helo=secret.org.uk)
-	by spoinky.renegade.org.uk with esmtp (Exim 3.35 #1 (Debian))
-	id 17TRGY-0001q2-00
-	for <linux-mtd@lists.infradead.org>; Sat, 13 Jul 2002 19:05:10 +0100
-From: Simon Evans <spse@secret.org.uk>
+Received: from mail0.epfl.ch ([128.178.50.57])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17U0Tf-0001D8-00
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Jul 2002 08:41:03 +0100
+Received: from fred by rhin with local (Exim 3.35 #1 (Debian))
+	id 17U0Tc-0001DF-00
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Jul 2002 09:41:00 +0200
+Date: Mon, 15 Jul 2002 09:41:00 +0200
+From: Frederic Gobry <frederic.gobry@smartdata.ch>
 To: linux-mtd@lists.infradead.org
-Subject: minor permissions patch to mtdchar 
+Subject: Re: mmap question
+Message-ID: <20020715074100.GA4582@rhin>
+References: <20020701131443.GA10227@rhin> <20020711161909.GA8143@rhin> <20020711191540.GA16466@wohnheim.fh-wedel.de> <10934.1026487279@redhat.com> <20020604132254.GA4911@rhin.smartdata.ch> <20020701131443.GA10227@rhin> <20020711161909.GA8143@rhin> <20020711191540.GA16466@wohnheim.fh-wedel.de> <20020712075715.GA9952@rhin> <20020712150813.GA19718@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 13 Jul 2002 19:05:09 +0100
-Message-Id: <E17TRGY-0001q2-00@spoinky.renegade.org.uk>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
+In-Reply-To: <10934.1026487279@redhat.com> <20020712150813.GA19718@wohnheim.fh-wedel.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,54 +27,70 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Are there any objections to me commiting the following?
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It:
+J=F6rn said:
+> BTW: Did you already try to mmap /dev/mtd* or /dev/mtdblock* ?
 
-1. sets the permission on /dev/mtd/*ro to 444 rather than 666
-2. Disallows MEMWRITEOOB & MEMERASE ioctls if the device is not opened with
-   write permissions.
+Sure, but neither does implement the mmap method.
 
-cheers
-si
+> One possibility to order the pizza is Joeys:
+> http://www.joeys.de/joeys/65/index.htm
 
-Index: mtdchar.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/mtdchar.c,v
-retrieving revision 1.44
-diff -u -p -r1.44 mtdchar.c
---- mtdchar.c	2 Oct 2001 15:05:11 -0000	1.44
-+++ mtdchar.c	13 Jul 2002 17:50:35 -0000
-@@ -287,7 +287,12 @@ static int mtd_ioctl(struct inode *inode
- 
- 	case MEMERASE:
- 	{
--		struct erase_info *erase=kmalloc(sizeof(struct erase_info),GFP_KERNEL);
-+		struct erase_info *erase;
-+
-+		if(!(file->f_mode & 2))
-+			return -EPERM;
-+
-+		erase=kmalloc(sizeof(struct erase_info),GFP_KERNEL);
- 		if (!erase)
- 			ret = -ENOMEM;
- 		else {
-@@ -338,6 +343,9 @@ static int mtd_ioctl(struct inode *inode
- 		void *databuf;
- 		ssize_t retlen;
- 		
-+		if(!(file->f_mode & 2))
-+			return -EPERM;
-+
- 		if (copy_from_user(&buf, (struct mtd_oob_buf *)arg, sizeof(struct mtd_oob_buf)))
- 			return -EFAULT;
- 		
-@@ -474,7 +482,7 @@ static void mtd_notify_add(struct mtd_in
- 	sprintf(name, "%dro", mtd->index);
- 	devfs_ro_handle[mtd->index] = devfs_register(devfs_dir_handle, name,
- 			DEVFS_FL_DEFAULT, MTD_CHAR_MAJOR, mtd->index*2+1,
--			S_IFCHR | S_IRUGO | S_IWUGO,
-+			S_IFCHR | S_IRUGO,
- 			&mtd_fops, NULL);
- }
- 
+Gargl, I'll need to find my french/german dictionnary first (I'm in
+the french speaking part of switzerland !) Should I drop you an email
+before, or is a pizza always welcome ?
+
+David said:
+> Er, ditch the crap 'point' semantics and implement something sane for=20
+> mmapping, because that's about the only sane use of point() anyway.
+
+Ok. What was the idea of unpoint, BTW ?
+
+> That's not sufficient. If you let the erase or write operations happen=20
+> while it's mapped, what prevents your app from reading from the flash=20
+> _during_ the erase/write operation? You need to either prevent the erases/
+> writes from happening while the flash is mapped (bad) or arrange for the=
+=20
+> pages mapped to userspace to be marked invalid during the erase/write=20
+> operation, and faults on those pages have to wait until the flash is back=
+=20
+> in read mode again.
+
+I admit I looked at it from the narrow point of view of my single
+process which is safe by construction... I do agree that the only
+acceptable solution is the second (disallow page access during write /
+erase).
+
+> We want some kind of mtd_remap() call which has its own struct vm_operati=
+ons,
+> with a nopage() which sets a flag in the state of the underlying mtd_info=
+,=20
+> and ensure that the page can be found again and made invalid before any=
+=20
+> other MTD operations. With the rmap VM the latter is quite simple, withou=
+t=20
+> it we'd need to keep track of all vmas ourselves.
+
+I'm quite a newcomer to VM management (my only experience comes from
+"Linux Device Drivers" and what I tested for this driver...). What is
+the rmap VM ?
+
+Fr=E9d=E9ric
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE9MnyMFjQHpltE9KURAsN9AJ9BZ0cEjdIh5EDeoIREf2hM+FmsRwCffC9m
+zrp8wKyw31D/J8uNPJY+mF0=
+=1yCl
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
