@@ -1,22 +1,21 @@
-Received: from www14.mailshell.com ([209.157.66.246] helo=mailshell.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AOsAi-0006gu-CZ
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2003 05:25:04 +0000
-Message-ID: <20031126052329.30052.qmail@mailshell.com>
-In-Reply-To: <20031126054700.1d653837.lanas@t-online.de>
-References: <20031124213552.5357c92a.lanas@t-online.de>
-	 <20031125003817.GA1762@ei.homeip.net>
-	 <Pine.LNX.4.53.0311250040510.2903@pink.linuxgrrls.org>
-	 <20031125053911.6526ba39.lanas@t-online.de>
-	 <000001c3b38f$b3118170$6401a8c0@f87htyy9967774jjyuww2>
-	 <20031126054700.1d653837.lanas@t-online.de>
-Mime-Version: 1.0
-Date: Wed, 26 Nov 2003 13:23:30 +0000
-From: daniel@dmhome.net
+Received: from mail03.agrinet.ch ([81.221.250.52])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AOuVB-0006xa-Ne
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Nov 2003 07:54:21 +0000
+Received: from pegasus (80.254.183.189) by mail03.agrinet.ch (7.0.024)
+	id 3FBB9BD6000EAB5B for linux-mtd@lists.infradead.org;
+	Wed, 26 Nov 2003 08:52:17 +0100
+From: Felix Frey <ffrey@freesurf.ch>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Subject: Re: DoC newbie
+Date: Tue, 25 Nov 2003 08:09:17 +0100
+References: <E1AOFNr-0001Yk-QS@pentafluge.infradead.org>
+In-Reply-To: <E1AOFNr-0001Yk-QS@pentafluge.infradead.org>
+MIME-Version: 1.0
+Message-Id: <200311241354.38322.ffrey@freesurf.ch>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: booting from DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+> The grub loader boots from the DOC but stops at the grub prompt, how do=
+ I
+> get grub to boot my kernel image ?
+> in karims book it talks about building a root filesystem and
+> /boot/grub/menu.lst but I can't see how this can run without the module=
+s
+> loaded needed by the kernel (e.g. docecc.o, doc2000.o etc) confused ;/ =
+=2E..
 
-[ Sorry if I inform you about things that others already mentioned, I've
-missed a few posts from this thread. ]  
+Grub stage2 contains the code which can access a filesystem (and the DoC,=
+ of=20
+course)
+For a step-by-step howto, read these instructions:=20
+ http://www.lakeshoremicro.com/diskonchip-grub-howto.html
+For more infos on grub, IBM has written a nice tutorial:         =20
+http://www-106.ibm.com/developerworks/edu/l-dw-linuxgrub-i.html?S_TACT=3D=
+103AMW03&S_CMP=3DEDU
 
-In the past I have booted and setup many diskonchip devices with grub. I
-can't find the original HOWTO anymore, but this link is more or less
-what I used to do, and it worked great. 
-
-http://lakeshoremicro.com/diskonchip-grub-howto.html
-
-
-> Meanwhile, is it also possible to install either the jffs2 file system
-> or either another type of journaling system targeted for leveling cell
-> wear on a regular flash IDE device ?
-
-Using the blkmtd driver, which is an emulation layer. I feel it's
-usefull to benefit from the compression that jffs2 offers (as opossed to
-cramfs, which is also compressed , but read-only) - but i am not sure if
-you really can benefit from the wear leveling that jffs2 offers, since
-ide flash devices have controllers inside that have their own flash
-trasnlation layer... 
-
-
-Greetings, 
-Daniel 
+Felix
