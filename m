@@ -1,8 +1,8 @@
-Date: Thu, 13 Jan 2005 16:16:35 +0000 (GMT)
+Date: Thu, 13 Jan 2005 16:21:20 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 In-Reply-To: <20050113161302.GD18864@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.58.0501131614000.17331@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501131617030.17331@phoenix.infradead.org>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
 	<Pine.LNX.4.58.0501131435510.17331@phoenix.infradead.org>
@@ -44,12 +44,13 @@ On Thu, 13 Jan 2005, [iso-8859-1] J=F6rn Engel wrote:
 > > by reading through that eraseblock.
 >=20
 > Sounds like "design makes sense, please send patches". :)
+Design makes sence, patches makes more sence, running our test =20
+different platforms makes even more sence. :-) Now we have only x86/ARM=20
+results. Need more...
+
 >=20
 > Would this also allow us to use adler32/adler32r as checksum
 > algorithm?
-IMHO:
-Keeping CRC at the end still makes sence.
-
 >=20
 > J=F6rn
 >=20
