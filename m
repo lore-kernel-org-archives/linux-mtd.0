@@ -1,18 +1,31 @@
-Received: from mail1.speakeasy.net ([216.254.0.201])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CONHU-0008Hl-Vx
-	for linux-mtd@lists.infradead.org; Sun, 31 Oct 2004 16:30:34 -0500
-From: Jeff Angielski <jangiels@speakeasy.net>
-To: Wolfgang Denk <wd@denx.de>
-In-Reply-To: <20041031210540.B0558C146B@atlas.denx.de>
-References: <20041031210540.B0558C146B@atlas.denx.de>
-Content-Type: text/plain
-Message-Id: <1099258204.10498.12.camel@nighteyes.localdomain>
-Mime-Version: 1.0
-Date: Sun, 31 Oct 2004 16:30:04 -0500
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=mail.magtech.com.au)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1COPeB-00008S-7f
+	for linux-mtd@lists.infradead.org; Sun, 31 Oct 2004 19:02:11 -0500
+Received: from mail.magtech.com.au (localhost [127.0.0.1])
+	by localhost.magtech.com.au (Postfix) with ESMTP id 8F4E78940F2
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  1 Nov 2004 11:02:00 +1100 (EST)
+Received: from [192.168.65.196] (unknown [192.168.65.196])by
+	mail.magtech.com.au (Postfix) with ESMTP id 7BC2F8940CBfor
+	<linux-mtd@lists.infradead.org>; Mon,  1 Nov 2004 11:02:00 +1100 (EST)
+Message-ID: <41857CF7.3050402@magellan-technology.com>
+Date: Mon, 01 Nov 2004 11:01:59 +1100
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+References: <20041028230640.GB13105@home.fluff.org>
+	<4181840D.2020605@magellan-technology.com>
+	<1099035223.22387.529.camel@thomas>
+	<418213C3.3050706@magellan-technology.com>
+	<1099044978.22387.557.camel@thomas>
+In-Reply-To: <1099044978.22387.557.camel@thomas>
+Content-Type: text/plain;
+	charset=us-ascii;
+	format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mkfs.jffs2 with DENX 2.4 kernel on MPC8260
+Subject: Re: Read/nBusy via interrupt
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +35,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2004-10-31 at 16:05, Wolfgang Denk wrote:
-> In message <1099172137.30440.8.camel@nighteyes.localdomain> you wrote:
-> > 
-> > Using the default rootfs image from the ELDK toolkit and with the
-> > MTD/jffs2 debugging turned on, this is what I see:
 > 
-> You may want to update your kernel tree. On our CVS server  you  will
-> find a kernel tree which includes a much more recent MTD snapshot.
+>>Thomas, your reply to my email was so ridiculously over the top and harsh. 
+> 
+> Sorry, It was not my intention to offend you. 
 
-My 2.4 kernel source is up-to-date with the latest code from the DENX
-CVS linuxppc_2_4_devel tree.
+No problem, it's good that we can all get flared up now again. It shows that we 
+are passionate about what we do. In the end, it is just a job and it pays the 
+bills. So no need to get so serious about it, there's so much more to life than 
+being angry geeks! ;)
 
-It is the ramdisk_image from ELDK 3.0 that I am using for the rootfs. 
-In fact, I tried todays buildroot image from uclibc/busybox and it did
-not work either
 
-The only "unusual" think about my flash is that it is configured for a
-64bit bus (4x16).  The DENX kernel was the only 2.4 kernel that would
-even work this much with the 64bit bus configuration - due mainly to
-your efforts to hand merge the MTD code before it went 2.6-only.
+jasmine@linuxgrrls.org wrote:
+ > Because hardware engineers usually design the hardware to be as flexible
+ > as possible, in light of the fact that they don't know how the operating
+ > system is going to want to use the hardware.
 
-Jeff Angielski
+If this is the case, then the system isn't properly specified, and software 
+needs to talk to hardware a little more.
+
+On last Friday, the guy responsible for our hardware had to finish routing our 
+PCB. We are replacing an ATmega128 (8bit) with the AT91RM9200 (32bit) in the 
+*same* space (plus adding SDRAM, FLASH, Dataflash, ethernet and USB!). There 
+came a point where he could route no more connections because there just wasn't 
+enough room left - plus the law-of-diminishing-returns was beginning to apply. 
+Therefore, he needed to know which signals were absolutely necessary for a 
+fully functional design (according to the system spec.) So I had tell him that 
+he could use the smaller MTD (without READY/nBUSY) and that it would still work 
+with the existing software.
+
+
+jasmine@linuxgrrls.org wrote:
+ > So, connect the damned wire and shut up.
+
+ROFL! So, in a word, "no", because there was no pin for the wire to be 
+connected to!
+
+It looks like we have thoroughly answered Ben's original question from various 
+passionate points of view.
+
+regards,
+
+Aras
