@@ -1,20 +1,15 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B1PqJ-0005uB-CD
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 13:03:19 +0000
-To: "Adalbert =?iso-8859-1?q?M=FCller?=" <adalbert.mueller@web.de>
-References: <200403111111.i2BBBOQ08193@mailgate5.cinetic.de>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 11 Mar 2004 06:10:29 -0700
-In-Reply-To: <200403111111.i2BBBOQ08193@mailgate5.cinetic.de>
-Message-ID: <m3r7vzr0l6.fsf@maxwell.lnxi.com>
+Received: from mailout1.echostar.com ([204.76.128.101])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B1QD2-00063e-Uw
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 13:26:49 +0000
+Message-ID: <C86A9402F6A07E47B2F50A302DFA9BAE044BA2@alm-exch.europe.echostar.com>
+From: "Teuling, Sieme" <Sieme.Teuling@echostar.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Thu, 11 Mar 2004 06:26:17 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: ich2rom mapper
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: timing problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +19,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Adalbert M=FCller"  <adalbert.mueller@web.de> writes:
+Hi,
 
-Please don't use html mail...
+I'm currently working on getting the nand driver to work on a conexant/arm
+based platform running at 250 MHz, with a samsung
+K9F2808UOC-YCB0 nand chip and I have been running into problems when
+mounting (all kinds of strange errors). 
 
-Please ask general questions on the appropriate mailing list, there
-are more people who can answer questions there.
-
-But since I am feeling nice at the moment.
-
-
-"Adalbert M=FCller" <adalbert.mueller@web.de> writes:
-
-> Hello Mr Biederman,
->=20
-> I'm just playing around with your ich2 mapping driver.=20
->=20
-> Unfortunatelly after hours of walking through the ich2rom/mtd code
-> it's not clear to me why you are adding the additional offsets in
-> addr() function.
-
-There is an assumption that you will be using an intel firmware hub
-part.  As I recall intel firmware hubs have memory mapped registers
-4MB from the address of the flash device.
-
-> Do you have some additional documentation for the driver or do you
-> know where to get more informations?=20
-
-developer.intel.com  Look for 82801ab I think is the part number
-for the firmware hub code.
-=20
-> Any help is greatly appreciated.
-
-Welcome.
->=20
-> Kind regards,
-> Adalbert M=FCller=20
+I have been able to get the whole thing working by adding a delay of 500 ns
+in the 'nand_command' function in nand.c, right here:
 
 
-Eric
+ /* This applies to read commands */
+ default:
+  /*
+   * If we don't have access to the busy pin, we apply the given
+   * command delay
+  */
+      ndelay(500);
+      if (!this->dev_ready) {
+    udelay (this->chip_delay);
+         return;
+      }
+
+
+In my opinion the problem seems to be that without the delay the busy pin is
+checked before the nand chip is able to lower the
+r/b-pin, i cannot fully explane why I need a delay of 500 ns to get it to
+work because looking at the spec I would say Twb=150 ns (WE high to busy
+low) should be enough, or otherwise 3*Twp+2*Twh+Talh+Twb=315 ns, but that
+also still gives errors (less eventhough).
+
+My question is: shouldn't there be a default hardware specific delay added
+to the nand_chip structure (like this->chip_delay, but then specifically for
+being called in the default case for read commands). I wrote a nand driver
+myself a year ago for a non-linux platform and i then also had to put in a
+delay (then 204 ms on a 200 MHz platform) at this place.
+
+Another thing i ran into is this:
+
+I turned on the write check in 'nand_write_page' (the code between '#ifdef
+CONFIG_MTD_NAND_VERIFY_WRITE') and this was reporting errors all the time
+when i copied somewhat bigger files to the flash. I found the error wasn't
+in the data on flash, but rather in the check code which always uses
+NAND_CMD_READ0, even if the col value is bigger than 256. This cannot work
+since the column address is a byte. I changed this line:
+
+ /* Send command to read back the page */
+    this->cmdfunc (mtd, NAND_CMD_READ0, col, page);
+
+to this:
+
+ /* Send command to read back the page */
+   if (col < 256)
+      this->cmdfunc (mtd, NAND_CMD_READ0, col, page);
+   else
+      this->cmdfunc (mtd, NAND_CMD_READ1, col-256, page);
+
+..and everything worked fine.
+
+Please give me some feedback on the timing issue,
+
+Sieme Teuling
