@@ -1,18 +1,18 @@
-Received: from msr93.hinet.net ([168.95.4.193] helo=msr.hinet.net)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17N5X0-0001Wq-00
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 06:39:55 +0100
-From: "Steve Tsai" <startec@ms11.hinet.net>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: Sorry for previous mail
-Date: Wed, 26 Jun 2002 13:39:41 +0800
-Message-ID: <001901c21cd3$e0820610$5501a8c0@synso.com.tw>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.44.0206260035390.23044-100000@lapdancer.baythorne.internal>
+	id 17N9Vu-0001nD-00
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 10:55:02 +0100
+Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
+	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id LAA05570
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 11:54:40 +0200
+Date: Wed, 26 Jun 2002 11:55:01 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: linux-mtd@lists.infradead.org
+Subject: 64 bit problem in fs/jffs2/wbuf.c
+Message-ID: <20020626115501.A25628@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,32 +24,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Sorry for the previous unqualified email to the list. Because I use mtd
-into uclinux, it need to patch mtd to run in uclinux 2.x. I do some
-changes and I can use the new mtd on my board. By the way, I know some
-email discuss improving mounting times, but it is hard to search all
-mails to find it out. I will download the old archive to find it out.
-Anyway, apology again.
+Hi!
 
-Steve Tsai
+I've tripped into a strange problem while modifying the jffs2 nand
+support for nor flashes with ecc checking.
 
+The problem appears to be that jffs2_flash_writev defines the
+parameter "to" to be loff_t, which is 64 bit (at least on ppc). Only
+the lower 32 bit appear to be used and the upper should be all zeros.
+But I have one occasion, where the high bits contain 0xc02fdd18, which
+causes a sanity check in wbuf.c, line 347 to fail.
 
+A straightforward fix appears to be a cast, the patch is appended.
+The high bits should not contain any junk in the first place, but at
+least, this ignores them in this position.
 
+Thomas or David, is this a really stupid idea or can I search for
+further bugs elsewhere?
 
-Read the list archive, particularly the message at 
-http://lists.infradead.org/pipermail/linux-mtd/2002-June/005311.html
+Joern
 
-I'd have replied to your original messages, but the answers to your
-questions about improving mount times are in the documentation and the
-list archives, you didn't bother to quote the errors you saw on
-compiling against 2.4.17, and besides you've annoyed me now so I can't
-be bothered.
-
--- 
-dwmw2
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--- wbuf.c	Wed Jun 19 18:56:26 2002
++++ wbuf.c.new	Wed Jun 26 11:27:27 2002
+@@ -234,7 +234,7 @@
+ 		c->wbuf_len = PAGE_MOD(to);			
+ 	} 
+ 
+-	if (to != PAD(c->wbuf_ofs + c->wbuf_len)) {
++	if ((unsigned long)to != PAD(c->wbuf_ofs + c->wbuf_len)) {
+ 		/* We're not writing immediately after the writebuffer. Bad. */
+ 		printk(KERN_CRIT "jffs2_flash_writev(): Non-contiguous write to %08lx\n", (unsigned long)to);
+ 		if (c->wbuf_len)
