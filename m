@@ -1,25 +1,21 @@
-Received: from wproxy.gmail.com ([64.233.184.205])
+Received: from wproxy.gmail.com ([64.233.184.196])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEGd5-0008IB-OV
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 19:55:20 -0500
-Received: by wproxy.gmail.com with SMTP id 37so288784wra
+	id 1DEH8J-0000CY-7A
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 20:27:35 -0500
+Received: by wproxy.gmail.com with SMTP id 37so292437wra
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Mar 2005 16:55:20 -0800 (PST)
-Message-ID: <6934efce05032316553410bfdd@mail.gmail.com>
-Date: Wed, 23 Mar 2005 16:55:20 -0800
+	Wed, 23 Mar 2005 17:27:36 -0800 (PST)
+Message-ID: <6934efce0503231727f7234f6@mail.gmail.com>
+Date: Wed, 23 Mar 2005 17:27:36 -0800
 From: Jared Hulbert <jaredeh@gmail.com>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1111423965.7635.4.camel@windu.rchland.ibm.com>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-References: <1110827292.7642.26.camel@windu.rchland.ibm.com>
-	<1110828016.7642.29.camel@windu.rchland.ibm.com>
-	<1110828565.7642.33.camel@windu.rchland.ibm.com>
-	<20050317103418.GA4501@wohnheim.fh-wedel.de>
-	<1111423965.7635.4.camel@windu.rchland.ibm.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: lock bit and erase errors
+References: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & deletion dirents RFC
 Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,16 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Me either.  Some kind of test suite would be nice though.  Artem has the
-> NAND simulator.  Perhaps someone could make a NOR simulator as well to
-> test the CFI stuff?  Any volunteers?
-
-We've got a unit test framework in alpha that would have caught this
-assuming tests were run for it.  We'll create a test for this bug to
-demonstrate.  Let me get it to a halfway presentable state and get
-Legal's stamp of approval to release, then I will send it out.  I'd
-like to see what ya'll think about it.  There are also some issues
-with the build system we could use some help with.
-
-Can I ftp a tarball somewhere on the hallowed infradead.org or get a
-directory in the CVS tree I can commit it to?
+Forgive me if my ignorance is obvious...
+Are there any implications to non-dirent nodes?  Shouldn't this speed
+up the GC, mount time for any node?  If not then the version field for
+non-dirent nodes is utterly wasted, right?  If the version field is
+wasted for all non-dirent nodes (in other words, most nodes) then it
+seems like a bad idea to add a WORD or DWORD to each node. If there is
+a way to make version field only apply to dirent nodes then it would
+be much better, of course that sounds ugly without even thinking it
+through too far.
