@@ -1,40 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13EzHd-0006Bo-00
-	for mtd-list@infradead.org; Wed, 19 Jul 2000 20:13:29 +0100
-Date: Wed, 19 Jul 2000 20:13:28 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
-cc: mtd@infradead.org
-Subject: Re: jffs_file_write and DOC
-In-Reply-To: <3975038D.40CF3B90@evoserve.com>
-Message-ID: <Pine.LNX.4.10.10007192010540.23491-100000@infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13F2Oh-0006y0-00
+	for mtd-list@infradead.org; Wed, 19 Jul 2000 23:32:59 +0100
+Received: from ip-151-191.gw.total-web.net ([209.186.151.191] helo=150.81.192.20)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13F2Og-0006xu-00
+	for mtd@infradead.org; Wed, 19 Jul 2000 23:32:59 +0100
+From: "Matt Hortman" <mbhortman@ieee.org>
+Date: Wed, 19 Jul 2000 18:33:41 -0400
+To: mtd@infradead.org
+Subject: using int 13h to access DOC
+Message-ID: <20000719183341.B26693@khayman.mavrik.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 19 Jul 2000, Rogelio M. Serrano Jr. wrote:
+Hi guys...
 
-> I observed that the jffs_file_write function misbehaves when given a
-> chunk bigger than MAX_CHUNK_SIZE. It is passed a chunk exactly equal to
-> MAX_CHUNK_SIZE so when it adds the inode and the name the resulting
-> chunk in is more or less 60 bytes bigger than MAX_CHUNK_SIZE which is
-> 4096 bytes in my case with the DOC2000.
-> 
-> Cat just writes a file shorter than it should be on flash. I used a
-> modified DOC_loadbios utility to download my JFFS images to the DOC. If
-> I dont write anything to it I could mount and unmount cleanly. But when
-> I write to it, I get bad checksums on the next mount and totoal mount
-> failure after couple more mounts.
+Shoot this down: Since the M-Sys firmware in the DOC simply installs
+an int 13h handler, why not use it to access the DOC using "bios"
+calls.  I realize that the kernel probably overwrites that handler but
+that could be fixed.  I don't know, however, about using a real-mode
+interrupt from a device driver.  It seems too simple to work.  What
+have I overlooked?
 
-There's a separate problem - the DiskOnChip MTD driver doesn't currently
-handle writes which aren't 512 bytes long, if I recall correcty - because
-I've not actually used it with anything but NFTL yet. It may not be
-JFFS' fault.
+thanks,
 
---
-dwmw2
+-Matt
 
 
 
