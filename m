@@ -1,21 +1,17 @@
-Received: from ext-ch1gw-3.online-age.net ([216.34.191.37])
+Received: from mail3.efi.com ([192.68.228.90] helo=fcexgw03.efi.internal)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Awoyz-0001sN-OS
-	for linux-mtd@lists.infradead.org; Fri, 27 Feb 2004 20:53:17 +0000
-Received: from int-ch1gw-3.online-age.net (int-ch1gw-3 [3.159.232.67])
-	id i1RKqpFc008282	for <linux-mtd@lists.infradead.org>;
-	Fri, 27 Feb 2004 15:52:51 -0500 (EST)
-Received: from uswaumsxb4medge.med.ge.com (localhost [127.0.0.1])
-	id i1RKqo1S005275	for <linux-mtd@lists.infradead.org>;
-	Fri, 27 Feb 2004 15:52:50 -0500 (EST)
-Message-ID: <77FE4A1FA59FF947845A42194AD6676277311E@uswaumsx07medge.med.ge.com>
-From: "Eisenhut, Daniel (MED)" <Daniel.Eisenhut@med.ge.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Fri, 27 Feb 2004 14:52:41 -0600
+	id 1AwqN8-0002DJ-AF
+	for linux-mtd@lists.infradead.org; Fri, 27 Feb 2004 22:22:18 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Subject: How to access NOR flash
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 27 Feb 2004 14:21:56 -0800
+Message-ID: <9961BDB14162AA47A39FF91932F1AE440ADF54@fcexmb01.efi.internal>
+From: "Ranjan Parthasarathy" <Ranjan.Parthasarathy@efi.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 on Nand
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've been trying to figure out how to access NOR flash using MTD for the
-last couple days but without success.  Can someone point me in the right
-direction?
+Hi
 
-I have two NOR flash chips, each with it's own Chip Select, that are
-mapped into physical memory.  I just need to be able to erase and write
-whole blocks without the use of an overlaying filesystem.
+How do I make a JFFS2 image for a NAND device with the OOB data included =
+in
+the image. I have the new mkfs.jffs2 and related utils from cvs.=20
 
-I looked through the archives (is there a good way to search it?) and
-noticed that there were significant changes made last Oct/Nov that
-invalidate the howto.  I'm not sure how to proceed to setup the
-necessary partitions and mtdblock devices.  What configuration options
-and changes do I have to make?
+Currently when I run=20
+# nandwrite -j -o /dev/mtd/1 jffs2.img
+I get the following message-
+Input file is not page aligned: Success
 
-Any assistance would be greatly appreciated.
+The jffs2.img was created using mkfs.jffs2 -r <root> -o jffs2.img
 
-Dan
+Any info would be greatly appreciated.
+
+Thanks
+
+Ranjan
