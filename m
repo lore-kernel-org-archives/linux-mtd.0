@@ -1,18 +1,18 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19cuif-0006Gb-07
-	for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2003 23:25:53 +0100
+	id 19cujP-0006HU-53
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2003 23:26:39 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Eric Laly <e.laly@wanadoo.fr>
-In-Reply-To: <20030716185406.GA24813@Bragon>
-References: <20030716185406.GA24813@Bragon>
-Message-Id: <1058394356.2914.19.camel@imladris.demon.co.uk>
+To: Vikram Mehta <vm6580@hotmail.com>
+In-Reply-To: <Law14-OE1840m3DwZpu000076e5@hotmail.com>
+References: <Law14-OE1840m3DwZpu000076e5@hotmail.com>
+Message-Id: <1058394402.2914.21.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Wed, 16 Jul 2003 23:25:56 +0100
+Date: Wed, 16 Jul 2003 23:26:42 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: mount a DOC2000 [newbie]
+cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: thread_should_wake() in background.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-07-16 at 19:54, Eric Laly wrote:
-> I've used a 2.4.18 kernel.
+On Thu, 2003-07-17 at 02:59, Vikram Mehta wrote:
+> Hi ,
+> 
+> When I mount jffs2 partition
+> 
+> the system simply stops responding
+> after givinng the message
+> 
+> 
+> JFFS2: Garbage collect thread is pid 1792
+> thread_should_wake(): nr_free_blocks 1, nr_erasing_blocks 15, dirty_size 0x0
+> jffs2_garbage_collect_thread sleeping...
+> thread_should_wake(): nr_free_blocks 1, nr_erasing_blocks 15, dirty_size 0x0
 
-Why so old? This should be fixed in 2.4.21.
-
->  (I've even tried the latest CVS 
-> on ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/ but the modules 
-> don't compile...)
-
-It's feasible that it's just because we dropped support for kernels so
-old and broken. Add stuff like BUG_ON() to the compatmac.h file again
-any you may have more joy.
+Does SysRq not even work? No network activity at all?
 
 -- 
 dwmw2
