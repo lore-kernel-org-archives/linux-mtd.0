@@ -1,20 +1,22 @@
-Received: from outbound-mail.lax.untd.com ([64.136.28.164])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CvjeL-0005Xt-3k
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 17:04:02 -0500
-Received: from outbound29-sr.lax.untd.com (webmail04.lax.untd.com
-	[10.131.27.144])
-	by smtpout02.lax.untd.com with SMTP id AABA97L4FA2PNVQ2
-	for <linux-mtd@lists.infradead.org> (sender <pevnev@juno.com>);
-	Mon, 31 Jan 2005 14:03:49 -0800 (PST)
-Mime-Version: 1.0
-From: "Alex" <pevnev@juno.com>
-Date: Mon, 31 Jan 2005 22:02:21 GMT
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <20050131.140249.2957.44910@webmail04.lax.untd.com>
-Cc: bjorn.wesen@axis.com, dwmw2@infradead.org
-Subject: Question re initiliazation of MTD NAND flash
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cvk6B-00061C-OA
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 17:32:48 -0500
+Date: Mon, 31 Jan 2005 17:30:26 -0500 (EST)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <1107188578.21196.346.camel@tglx.tec.linutronix.de>
+Message-ID: <Pine.LNX.4.61.0501311726300.29562@localhost.localdomain>
+References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
+	<1107184897.7567.20.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
+	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
+	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
+	<1107188578.21196.346.camel@tglx.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 31 Jan 2005, Thomas Gleixner wrote:
 
-Hi Bjorn and David,
+> On Mon, 2005-01-31 at 11:14 -0500, Robert P. J. Day wrote:
+> > > > -p, --pad[=SIZE] Pad output to SIZE bytes with 0xFF. If SIZE is
+> > > >                         not specified, the output is padded to the
+> > > > 			end of the final erase block
+> >
+> > at the moment, this is not being followed.  for instance, mkfs.jffs2
+> > has the --pad=SIZE option, where a simple number is treated as KiB.
+> > anyway, you get idea -- it's pretty confusing.
+>
+> ???
+>
+> It's just missing the k and M suffixes. So its easy to fix.
 
-I am trying to bring the custom 8xx based board on Linux 2.6.10-rc3 . 
+  while this isn't related to MTD, i thought i'd toss it out since i
+just tripped over it in looking at the source for mkfs.jffs2.c.  that
+utility uses the getopt_long() routine to parse arguments, and the
+long_options array that defines the possible args starts with:
 
-MPC880 microprocessor
-4 Mbytes Normal Flash 
-8 + 8 Mbytes NAND Flash 
-32 Mbytes DRAM
+static struct option long_options[] = {
+    {"pad", 2, NULL, 'p'},
+    {"root", 1, NULL, 'r'},
+    ....
 
-To what values I should set 
+that first entry ostensibly means that the "pad" parameter has an
+optional argument.
 
-CONFIG_MTD_PHYSMAP_START=  /*  I  tried  0x05000401  but have problems 
-                             - see log buffer supplied  */ 
-and 
+  however, i was not aware that, defined that way, you *must* specify
+that option as, say, "-p262144" and not "-p 262144".  i had never
+noticed that before, and it strikes me as horribly non-intuitive.
 
-CONFIG_MTD_PHYSMAP_LEN=  /*  I  tried 0xFFFF8790  but have problems 
-                                - see log buffer supplied  */ 
- 
-in .config file   ? 
+  anyway, just an observation.  now i'll shut up and get back to
+patching.
 
-The initial boot provides the following Memory map:
-
-/*********************************************************************/
-
-/* Chip Select FLASH Normal */
-#define BR0_VAL     0x04000801  /* Offset=0x04000000 PS=16 GPCM Valid=1 */
-#define OR0_VAL     0xFFC00160  /* OK */
-
-/* Chip Select NAND */
-#define BR1_VAL     0x05000401  /* MS=[00] -> GPCM */
-#define OR1_VAL     0xFFFF8790
- 
-My current Log Buffer shows:
-.....
-<6>HDLC support module revision 1.17.
-<6>elevator: using anticipatory as default io scheduler.
-
-<5>physmap flash device:ffff8790 at 5000401.
-<4>__iorema p(): phys addr 05000000 is RAM lr c01d93f0.
-<4>__ioremap(): virt_to_phys(high_memory) addr 02000000.
-<4>__ioremap(): passed first cond.
-<4>__ioremap(): passed second cond.
-<4>allocation failed: out of vmalloc space - use vmalloc=<size> to increase size.
-<4>__ioremap(): area == 0 return NULL.
-<4>Failed to ioremap.
-
-<7>CLASS: registering class device: ID = 'mice'.
-<6>mice: PS/2 mouse device common for all mice
-
-Thanks,
-Alex 
-
-PS Do I need to do anything else - like to load extra modules before that point of booting the kernel ?
-
-
-
-___________________________________________________________________
-Speed up your surfing with Juno SpeedBand.
-Now includes pop-up blocker!
-Only $14.95/month -visit http://www.juno.com/surf to sign up today!
+rday
