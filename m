@@ -1,17 +1,17 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AH73B-00086J-Hs
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 19:41:13 +0000
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
+Received: from main.gmane.org ([80.91.224.249])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AH9rv-0000BE-Vq
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 22:41:48 +0000
+Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AH9qh-0000pd-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2003 23:40:31 +0100
 To: linux-mtd@lists.infradead.org
-Message-Id: <1067974394.6281.1886.camel@tubarao>
-Mime-Version: 1.0
-Date: 04 Nov 2003 12:33:14 -0700
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-ZgrhhGK+mkwKc0xgfY2z"
-Subject: broken cfi_cmdset_0001.c
-Reply-To: tharbaugh@lnxi.com
+From: Miernik <miernik@ctnet.pl>
+Date: Tue, 4 Nov 2003 23:35:06 +0100
+Message-ID: <slrnbqgacq.1t2.miernik@tarnica.ctnet.pl>
+Sender: news <news@sea.gmane.org>
+Subject: in CVS: drivers/mtd/mtdchar.c:65: called object is not a function
+Reply-To: Miernik <miernik@ctnet.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +21,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I tried patching 2.6.0-test9 kernel with CVS code fetched today at ~ 
+22:30 CET, and I ended with this:
 
---=-ZgrhhGK+mkwKc0xgfY2z
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-A while ago I committed an "improvement" to cfi_cmdset_0001.c that would
-skip writing a cfi_word if it was identical to what was already
-written.  Apparently, even though I thought I had, I didn't test this.=20
-This resulted in cfi_cmdset_0001.c r1.131 being horribly broken.  Please
-use r1.130 or r1.132.
+  CC [M]  drivers/mtd/mtdcore.o
+  CC [M]  drivers/mtd/mtdchar.o
+drivers/mtd/mtdchar.c: In function `mtd_open':
+drivers/mtd/mtdchar.c:65: called object is not a function
+make[3]: *** [drivers/mtd/mtdchar.o] Error 1
+make[2]: *** [drivers/mtd] Error 2
+make[1]: *** [drivers] Error 2
+make[1]: Leaving directory `/usr/src/kernel-source-2.6.0-test9'
+make: *** [stamp-build] Error 2
 
-My apologies.
 
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-ZgrhhGK+mkwKc0xgfY2z
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA/p/76fsBPTKE6HMkRAiHnAJ0diUCcCGSnYUVLoyLD3sHNysa0HwCeMZ0o
-12Sj4Va+JXh3Kz1cmaDs16c=
-=Ce05
------END PGP SIGNATURE-----
-
---=-ZgrhhGK+mkwKc0xgfY2z--
+-- 
+    Miernik         ________________________ jabber:miernik@amessage.info
+___________________/__ tel: +48608233394 __/      mailto:miernik@ctnet.pl
+Support impeaching the war criminalist George W. Bush
+http://www.votetoimpeach.org/
