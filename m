@@ -1,21 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from rproxy.gmail.com ([64.233.170.193])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0eQS-0008UC-JH
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 06:30:01 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: kyungmin.park@samsung.com
-In-Reply-To: <1108380228.16612.300.camel@tglx.tec.linutronix.de>
-References: <0IBW0090KFFB9Z@mmp2.samsung.com>
-	<1108380228.16612.300.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain
-Date: Mon, 14 Feb 2005 12:29:58 +0100
-Message-Id: <1108380598.16612.303.camel@tglx.tec.linutronix.de>
+	id 1D0fcH-0000QE-7A
+	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 07:46:18 -0500
+Received: by rproxy.gmail.com with SMTP id y7so663389rne
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Feb 2005 04:46:14 -0800 (PST)
+Message-ID: <f6d0cd0605021404467195684f@mail.gmail.com>
+Date: Mon, 14 Feb 2005 18:16:13 +0530
+From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: RE: [RFC] adding support for OneNAND flash memory
-Reply-To: tglx@linutronix.de
+Subject: Compilation of MTD Utils
+Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-02-14 at 12:23 +0100, Thomas Gleixner wrote:
-> > 
-> > Currently, I don't apply bad block table code to onenand. But I think
-> > there's no problem to use current bbt code.
-> 
-> Ok, so I guess it makes sense to put it into drivers/mtd/onenand. If you
-> want to use the bbt code from nand it's no problem, just a tweak in
-> KConfig.
+Hi,
 
-If you are going to implement a block replacement scheme, please put it
-into a seperate file, so it can be used by others too. 
+I am trying to compile the MTD utils ( Specifically mkfs.jffs2  ) for
+ARM-Linux platform. I am getting lot of errors while compiling this.
+Does anyone already have mkfs.jffs2 executable for ARM-Linux platform
+then pl. send it to me.
 
-thanks
+Or if you can help me how to do this compilation then it will be of
+great help. I am getting following error. It's not able to find
+deflate() etc functions.
 
-tglx
+arm-linux-gcc  -o mkfs.jffs2 crc32.o compr_rtime.o mkfs.jffs2.o
+deftree.o deflate.o compr_zlib.o compr.o compr_lzari.o compr_lzo.o
+-L./libz.so.1.1.4
+compr_zlib.o(.text+0x34): In function `jffs2_zlib_compress':
+/root/temp/mtd/util/compr_zlib.c:68: undefined reference to `deflateInit_'
+compr_zlib.o(.text+0x98):/root/temp/mtd/util/compr_zlib.c:80:
+undefined reference to `deflate'
+compr_zlib.o(.text+0xe4):/root/temp/mtd/util/compr_zlib.c:88:
+undefined reference to `deflate'
+compr_zlib.o(.text+0xf4):/root/temp/mtd/util/compr_zlib.c:93:
+undefined reference to `deflateEnd'
+compr_zlib.o(.text+0x128):/root/temp/mtd/util/compr_zlib.c:82:
+undefined reference to `deflateEnd'
+compr_zlib.o(.text+0x158): In function `jffs2_zlib_decompress':
+/root/temp/mtd/util/compr_zlib.c:113: undefined reference to `inflateInit_'
+compr_zlib.o(.text+0x188):/root/temp/mtd/util/compr_zlib.c:124:
+undefined reference to `inflate'
+compr_zlib.o(.text+0x198):/root/temp/mtd/util/compr_zlib.c:127:
+undefined reference to `inflateEnd'
+collect2: ld returned 1 exit status
+make: *** [mkfs.jffs2] Error 1
+
+Thanks
+Niraj
