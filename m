@@ -1,19 +1,21 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BnyC3-0003um-Hn
-	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 07:26:29 -0400
-Message-ID: <4100F602.6010005@inf.u-szeged.hu>
-Date: Fri, 23 Jul 2004 13:26:58 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <33587.128.93.9.76.1090511579.squirrel@smis.inria.fr>
-	<1090512202.4089.10.camel@localhost.localdomain>
-In-Reply-To: <1090512202.4089.10.camel@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: emulator for NAND Flash memory
+	id 1Bo1iM-0004N6-3O
+	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 11:12:02 -0400
+Received: from baikonur.stro.at ([213.239.196.228])
+	by pentafluge.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bo1iB-00086e-Gc
+	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 16:11:52 +0100
+Date: Fri, 23 Jul 2004 17:11:16 +0200
+From: maximilian attems <janitor@sternwelten.at>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040723151116.GH14000@stro.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: maximilian attems <max@stro.at>
+Cc: linux-kernel@vger.kernel.org, wmw2@redhat.com
+Subject: [patch-kj] remove old ifdefs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
 
->>My question: is there an emulator of NAND Flash in Linux,
->>and can it be used directly by the mtd core?
-> 
-> There isn't, although it shouldn't be so hard to update mtdram to do it.
-> Or you could just use a DiskOnChip :)
 
-David, can you offer me some concrete types? (web addresses?)
+ Patches to remove some old ifdefs.
+ remove most of the #include <linux/version.h>
+ kill compat cruft like #define ahd_pci_set_dma_mask pci_set_dma_mask
 
-I asked the computer-vendor of university and he was just looking me 
-strangely :)
+applies cleanly to 2.6.8-rc2
 
-Regards,
-Ferenc
+From: Domen Puncer <domen@coderock.org>
+Signed-off-by: Maximilian Attems <janitor@sternwelten.at>
+
+
+
+---
+
+ linux-2.6.7-bk20-max/include/linux/mtd/cfi.h |    2 --
+ 1 files changed, 2 deletions(-)
+
+diff -puN include/linux/mtd/cfi.h~remove-old-ifdefs-mtd-cfi include/linux/mtd/cfi.h
+--- linux-2.6.7-bk20/include/linux/mtd/cfi.h~remove-old-ifdefs-mtd-cfi	2004-07-11 14:42:34.000000000 +0200
++++ linux-2.6.7-bk20-max/include/linux/mtd/cfi.h	2004-07-11 14:42:34.000000000 +0200
+@@ -458,14 +458,12 @@ static inline __u8 cfi_read_query(struct
+ 
+ static inline void cfi_udelay(int us)
+ {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
+ 	unsigned long t = us * HZ / 1000000;
+ 	if (t) {
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		schedule_timeout(t);
+ 		return;
+ 	}
+-#endif
+ 	udelay(us);
+ 	cond_resched();
+ }
