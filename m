@@ -1,36 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ZwYa-00069i-00
-	for mtd-list@infradead.org; Fri, 15 Sep 2000 15:33:36 +0100
-Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
+	id 13a1uI-0000Vs-00
+	for mtd-list@infradead.org; Fri, 15 Sep 2000 21:16:22 +0100
+Received: from [216.84.103.11] (helo=coolexchange.coollogic.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ZwYZ-00069c-00
-	for mtd@infradead.org; Fri, 15 Sep 2000 15:33:35 +0100
-Message-ID: <39C2342C.F24C13F3@arcom.co.uk>
-Date: Fri, 15 Sep 2000 15:37:32 +0100
-From: David Vrabel <dvrabel@arcom.co.uk>
+	id 13a1uG-0000Vm-00
+	for mtd@infradead.org; Fri, 15 Sep 2000 21:16:21 +0100
+Message-ID: <39C28410.6D1E6AE7@coollogic.com>
+Date: Fri, 15 Sep 2000 15:18:24 -0500
+From: Ian Thompson <ithompson@coollogic.com>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Re: Can't read bytes from x16 device
-References: <39C1F36B.8E97D5F4@arcom.co.uk>
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: Independent Thread
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Vrabel wrote:
 
-> I have an Intel 28F640J5 part in x16 mode.  It appears I can't read
-> bytes which are odd aligned.  After reading one odd aligned byte all
-> reads fail.
+   M-Systems Flash Disk Pioneers Ltd. (Nasdaq: FLSH), M-Systems
+   Flash Disk Pioneers Ltd. (Nasdaq: FLSH) announced today that
+   LynuxWorks, a leader in embedded Linux and a pioneer in the open
+   standards real-time operating system (RTOS) industry, is providing
+   support for DiskOnChip with its BlueCat? Linux embedded operating
+   system (OS). 
 
-Reading the specs for this chip indicates that the high byte is not used
-for command or status information.  So I changed
-do_read_1_by_16_onechip() to align commands and status reads on word
-boundaries.
+Is this an independent development thread or are they just using the
+work done in mtd?
 
-David Vrabel.
-
+Ian T.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
