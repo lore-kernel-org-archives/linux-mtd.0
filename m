@@ -1,14 +1,18 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Dan Eisenhut <deisenhut@wi.rr.com>
-In-Reply-To: <1080221409.21277.30.camel@localhost>
-References: <1080221409.21277.30.camel@localhost>
+To: "Rajesh B. V." <rajeshbv@intotoinc.com>
+In-Reply-To: <5.1.0.14.0.20040325181511.01b26820@172.16.1.10>
+References: <5.1.0.14.0.20040325161533.030dd948@172.16.1.10>
+	 <5.1.0.14.0.20040325143833.01b20e50@172.16.1.10>
+	 <5.1.0.14.0.20040325143833.01b20e50@172.16.1.10>
+	 <5.1.0.14.0.20040325161533.030dd948@172.16.1.10>
+	 <5.1.0.14.0.20040325181511.01b26820@172.16.1.10>
 Content-Type: text/plain
-Message-Id: <1080222037.29835.50.camel@hades.cambridge.redhat.com>
+Message-Id: <1080224234.29835.65.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Thu, 25 Mar 2004 13:40:37 +0000
+Date: Thu, 25 Mar 2004 14:17:14 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: do_erase_oneblock failing to detect lock-bit failure
+Subject: Re: Running out of space on MTD partition with JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-03-25 at 07:30 -0600, Dan Eisenhut wrote:
-> Is byte-lane swapping common?  
+On Thu, 2004-03-25 at 18:16 +0530, Rajesh B. V. wrote:
+> Hi David,
+> 
+> Pl. find the output of "df -h" after every copy and the file sizes also, 
+> copied below.
 
-Not really. It's generally a symptom of hardware engineers who really
-don't understand the problem, and think it might help.
+Hmmm. Strange -- what else is on the file system in question? What does
+'du -s /mnt/jffs2' show each time?
 
-> Wouldn't this code fail for someone
-> without byte-lane swapping but requiring little endian enabled?  By
-> changing the if statements with (chipstatus & 0xNN) with (status &
-> CMD(0xNN)) appears to correct my problem, but I sure this is not the
-> best solution.
-
-You made me think about it again and now my head hurts. I suspect that
-we should be using cfi_read_query() to read the status bits, not
-cfi_read(). 
-
+JFFS2 isn't really designed to work on such small partitions, but it
+ought to be behaving better than it is.
 
 -- 
 dwmw2
