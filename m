@@ -1,19 +1,17 @@
-Received: from msgbas2x.cos.agilent.com ([192.25.240.37])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B2yLT-0001Vp-Mj
-	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2004 20:05:55 +0000
-Message-ID: <40560EA2.3000205@agilent.com>
-Date: Mon, 15 Mar 2004 12:14:26 -0800
-From: Shawn Jin <xiaogeng_jin@agilent.com>
+Received: from cmsrelay03.mx.net ([165.212.11.112])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B2zaP-0001ml-AO
+	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2004 21:25:25 +0000
+Message-ID: <03ea01c40ad4$804de6b0$fd0ba8c0@briantpc>
+From: "Brian T" <btuch@usa.net>
+To: <linux-mtd@lists.infradead.org>
+References: <002901c406cb$3c049ec0$fd0ba8c0@briantpc>
+Date: Mon, 15 Mar 2004 15:28:46 -0600
 MIME-Version: 1.0
-To: David Vrabel <dvrabel@arcom.com>
-References: <20040312205250.8650.qmail@web20729.mail.yahoo.com>
-	<40558646.2040907@arcom.com>
-In-Reply-To: <40558646.2040907@arcom.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linuxmtd <linux-mtd@lists.infradead.org>
-Subject: Re: DQ7 vs DQ6 in flash erase/write
+Subject: Re: free_list / free_size messages
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Vrabel wrote:
->>On Am29LV256M with the same board, the chip is writable but not erasable.
-> I have this part and it works.  I suspect a board specific issue.
-Two Am29LV256M chips are interleaved to form a 32-bit data bus.
+Just wondering if anyone had some insight on this error message.
 
->>After long time investigation on the problem I found the following comment
->>on ver 1.3 of cfi_cmdset_0002.c.
-> 
-> 1.3?  That's fossilized.
-Right, :(. But it works for me. It comes from Denx's linux-ppc distribution.
+-Brian
 
->>   /* The dq6 toggling method of determining whether the erase is finished
->>    * doesn't seem to work for the Fujistu flash chips populated on the
->>    * TQM8260 board. We poll dq7 instead.
->>    */
-> 
-> This sounds like a problem with a particular Fujitsu chip.  It would 
-> have been helpful for the person writing that comment to have mentioned 
-> which chip had the problem.
-
-I guess it's Wolfgang Denk. I'll ask him about this.
-
->>2. Why was the data polling algorithm (DQ7) removed?
-> Earlier versions were a mess with code for reading the chip status all 
-> over the place.  I refactored it for easier maintainance.
-
-The code is much easier to understand than before. It'll be much better 
-if the same functionalities are supported. ;)
-
-> Are the chips interleaved?  I've never tested interleaving so that may 
-> be broken.
-Yes. The chips are interleaved. That may be the problem.
-
-> MTD driver is accessing the flash.  This would certainly mess up the 
-> toggle bit algorithm.  Perhaps the chip selects are setup incorrectly?
-I don't think so far the chip selects would be messed up.
-
--Shawn.
+> Since moving from JFFS2 2.1 to 2.2, I have noticed klog messages I didn't
+> see before.  It only seems to happen after a fresh flash when writing data
+> to the romfs.  sometimes I get a few messages, but this time I only got
+the
+> one:
+>
+> Mar 10 12:07:25 klogd: Eep. Block 0x00120000 taken from free_list had
+> free_size of 0x00000038!!
+>
+> It seems to recover, and I cannot find any corrupt files.  I see this
+error
+> also listed in the 2.1 source code, but never actually *got* the error
+> before.
+>
+> Could someone explain what would cause it?  Sorry if this has been
+discussed
+> before, I didn't see anything on it when searching.
