@@ -1,20 +1,19 @@
-Received: from dns.kernelconcepts.de ([212.60.202.194]
-	helo=gateway.kernelconcepts.de)
+Received: from mail.auriga.ru ([80.240.102.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BGNhM-0000LZ-Vg
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2004 20:47:57 +0100
-Received: from pd955b35a.dip.t-dialin.net ([217.85.179.90] helo=lem)
-	by gateway.kernelconcepts.de with asmtp (Exim 3.35 #1 (Debian))
-	id 1BGNdJ-00021r-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Apr 2004 21:43:45 +0200
-From: Florian Boor <florian.boor@kernelconcepts.de>
+	id 1BGdPZ-0002gD-7y
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2004 13:34:37 +0100
+Received: from localhost ([127.0.0.1] helo=auriga.ru)
+	by mail.auriga.ru with esmtp (Exim 4.30)
+	id 1BGdc8-0008IW-GB
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2004 16:47:36 +0400
+Message-ID: <4087BBD5.5070205@auriga.ru>
+Date: Thu, 22 Apr 2004 16:34:29 +0400
+From: Dmitry Konyshev <dmitry.konyshev@auriga.ru>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <1082576874.7915.9.camel@lem>
-Mime-Version: 1.0
-Date: Wed, 21 Apr 2004 21:47:55 +0200
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Wrong device id
+Subject: jffs2 messages
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all!
+Hi there,
 
-Looks like there is a wrong device ID in this file:
+    I'm using jffs2 with nand mtd. Jffs2 driver starts printing such 
+messages soon after deleting the last file in a jffs2 partition:
 
-The id of the AM29DL800BB flash ic is 0x22CB instead of 0x22C8.
-At least my device is using it and shows this id. Some other clue about
-this may be found in tuxscreen code:
-http://cvs.sourceforge.net/viewcvs.py/tuxscreen/jflash/flash.h?rev=1.2
+jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they all?
+jffs2: Couldn't find erase block to garbage collect!
 
-Greetings
+    The driver looks working after that. Any ideas what could it mean?
 
-Florian
--- 
-The dream of yesterday                  Florian Boor
-is the hope of today                    Tel: 0271-771091-14 
-and the reality of tomorrow.            Fax: 0271-771091-19 
-[Robert Hutchings Goddard, 1904]        florian.boor@kernelconcepts.de 
-
-6C 44 30 4C 43 20 6B 61  16 07 0F AA E6 97 70 A8
+wbr, Dmitry.
