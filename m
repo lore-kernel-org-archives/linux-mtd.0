@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNAnA-0000Eb-RT
-	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 09:58:17 -0400
-Message-ID: <4180FAD8.2000107@yandex.ru>
-Date: Thu, 28 Oct 2004 17:57:44 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <417F961A.1090107@yandex.ru>		<1098881953.13633.1786.camel@hades.cambridge.redhat.com>		<417FA408.9080906@yandex.ru>	<1098884706.13633.1791.camel@hades.cambridge.redhat.com>
-	<4180E732.70608@yandex.ru>
-In-Reply-To: <4180E732.70608@yandex.ru>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 & SMP
+	id 1CNJLy-00011r-Mk
+	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 19:06:48 -0400
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1CNJLs-0008GD-00
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Oct 2004 00:06:40 +0100
+Date: Fri, 29 Oct 2004 00:06:40 +0100
+From: Ben Dooks <ben@fluff.org.uk>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20041028230640.GB13105@home.fluff.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org>
+Subject: Read/nBusy via interrupt
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-how the the wbuf and related variables in the jffs2_sb_info are protected?
+Does anyone here have any comments over the pros/cons of using
+an interrupt which goes off to wait for a NAND flash ready/not-busy
+signal?
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
