@@ -1,16 +1,19 @@
-Received: from web21104.mail.yahoo.com ([216.136.227.106])
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19sZWd-0000AC-AB
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 04:02:11 +0100
-Message-ID: <20030829030144.91914.qmail@web21104.mail.yahoo.com>
-Date: Thu, 28 Aug 2003 20:01:44 -0700 (PDT)
-From: Kien Phung Chi <pckien2001@yahoo.com>
+Received: from mail03.agrinet.ch ([81.221.250.52])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19sfDt-0000iT-IU
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 10:07:13 +0100
+Received: from pegasus (80.254.183.189) by mail03.agrinet.ch (7.0.018)
+	id 3F4A99F100082D2D for linux-mtd@lists.infradead.org;
+	Fri, 29 Aug 2003 11:06:17 +0200
+From: Felix Frey <ffrey@freesurf.ch>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <E19sKVX-0005o4-Uv@pentafluge.infradead.org>
+Date: Fri, 29 Aug 2003 11:04:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-cc: tdrury@siliconmotorsports.com
-Subject: RE: DFORMAT ERROR " IPL block is bad."on DiskOnChip 2000?
+Message-Id: <200308291104.06237.ffrey@freesurf.ch>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: SRAM and MTD
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I hope that your DOC is not bad
-Ypu should try again, use nftlformat from MTD utils:
-./nftlformat /dev/mtd0
+Hi
 
-After that, you can use dformat from DOS to reformat
-the DOC.
+I'd like to connect a 32kx8 static RAM (battery buffered) to the ISAbus o=
+f my=20
+x86 based system to frequently store sensitive data which _must_ survive =
+a=20
+powerfail. Access should be made through the mtd character device. By div=
+ing=20
+a bit into the code I saw there is a ram chip driver, however, I got pret=
+ty=20
+confused.=20
+Do I have to write my own mapping driver or how can I tell the chip drive=
+r=20
+where it finds my RAM device and how large it is ?
+Does the ram chip driver accept any parameters ?
 
-> ATTACHMENT part 3.1 message/rfc822 
-> Date: Wed, 27 Aug 2003 09:42:07 -0400
-> From: "Tim Drury" <tdrury@siliconmotorsports.com>
-> To: <linux-mtd@lists.infradead.org>
-> Subject: RE: DFORMAT ERROR " IPL block is bad."on
-> DiskOnChip 2000?
-> 
-> For the sake of the archives, I'll answer my own
-> question.  M-systems
-> tech support says my DOC is bad and needs to be
-> replaced.
-> 
-> -tim
+Any help is greatly appreciated.
 
-
-=====
-Phung Chi Kien
-Automation Institute
-Hanoi
-Vietnam
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Felix
