@@ -1,35 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JMqz-0003vy-00
-	for mtd-list@infradead.org; Mon, 31 Jul 2000 22:12:05 +0100
-Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13JMqy-0003vs-00
-	for mtd@infradead.org; Mon, 31 Jul 2000 22:12:04 +0100
-Date: Mon, 31 Jul 2000 22:15:59 +0100 (BST)
-From: Kira Brown <kira@linuxgrrls.org>
-To: Bjorn Eriksson <mdeans@algonet.se>
-Cc: mtd@infradead.org
-Subject: Re: Booting from flash 
-In-Reply-To: <000601bffb20$ff8fc280$0800a8c0@win95.inteloop.se>
-Message-ID: <Pine.LNX.4.21.0007312215380.4864-100000@carrot.linuxgrrls.org>
+	id 13JPZF-0004uh-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 01:05:57 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13JPZE-0004ub-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 01:05:56 +0100
+Received: from localhost (phiggins@localhost)
+	by phiggins.transzap.com (8.9.3/8.8.7) with ESMTP id SAA01252
+	for <mtd@infradead.org>; Mon, 31 Jul 2000 18:10:28 -0600
+From: Patrick Higgins <phiggins@transzap.com>
+To: mtd@infradead.org
+Date: Mon, 31 Jul 2000 18:10:28 -0600 (MDT)
+Subject: ECC module?
+Message-ID: <Pine.LNX.4.21.0007311726300.1214-100000@phiggins.transzap.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+Excuse me for not being a kernel wizard, but what am I going to have to do
+to integrate the Disk on Chip ECC code into the 2000 and Millenium
+drivers?
 
-On Mon, 31 Jul 2000, Bjorn Eriksson wrote:
+I've currently written a separate source file containing the key routines,
+only one of which is non-static.  Now, since the 2000 and the Millenium
+are separate modules, do I have to make the ECC into a *third* module
+which they can both use, or can I just link the ECC object into both of
+them?
 
-> > Does the SC4x0 count as a non-standard PC architecture?
-> 
->  Sure, if you're booting it using your own boot loader w/o BIOS. <ignore me>
+It seems like it might be simpler to make the docprobe, doc2000, and
+doc2001 modules into a single doc module which may or may not have support
+for both.
 
-We write our own BIOSen, is that sufficient?
+To do either of these, though, I need to learn more about kernel
+makefiles.  Anyone know of a good introduction?  From Rules.make, it looks
+like you define one O_TARGET and a few O_OBJS and OX_OBJS and these will
+get linked to make the O_TARGET.  Would this force a separate subdirectory
+to be used for disk on chip if the ECC was not made into a module?
 
-kira.
 
+-Patrick
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
