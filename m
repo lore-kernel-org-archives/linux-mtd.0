@@ -1,17 +1,21 @@
-Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
+Received: from ns1.thmulti.com ([141.11.234.67])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Vp9g-0006eQ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2003 08:32:12 +0000
-Message-ID: <3E1A97C2.DA5A0FC0@imc-berlin.de>
-Date: Tue, 07 Jan 2003 10:02:58 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 18VpcQ-0006hE-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2003 09:01:55 +0000
+Received: from smtprelay.thmulti.com (smtprelay [141.11.194.9])
+	by ns1.thmulti.com (8.9.3/8.9.1) with ESMTP id KAA22767
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Jan 2003 10:32:14 +0100 (MET)
+Received: from parexch9.paris.thmulti.com (localhost [127.0.0.1])
+	by smtprelay.thmulti.com (8.9.3/8.9.1) with ESMTP id KAA02148
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Jan 2003 10:32:12 +0100 (MET)
+Message-ID: <BC0FB3F45E37D611B6AB006008F6C2C490A4C3@villexch1.villingen.thmulti.com>
+From: Muenzer Markus <MuenzerM@thmulti.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: DiskOnChip blocks ... 
+Date: Tue, 7 Jan 2003 10:32:11 +0100 
 MIME-Version: 1.0
-To: tglx@linutronix.de
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Compile error in mtdblock-core...
-References: <3E199E9D.8A02D98F@imc-berlin.de> <200301062003.40607.tglx@linutronix.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +27,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hy everybody, 
 
-Thomas Gleixner wrote:
-> 
-> On Monday 06 January 2003 16:19, Steven Scholz wrote:
-> > -DKBUILD_BASENAME=mtdblock_core  -c -o mtdblock-core.o mtdblock-core.c
-> > In file included from
-> > /opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/include/linux/blk
-> >.h:4, from mtdblock-core.c:18:
-> > /opt/BITKEEPER/Exports/linuxppc_2_4_devel-2003-01-06.test/include/linux/blk
-> >dev.h:147: parse error before `struct'
-> Check in blkdev.h, if the define before the struct contains any control
-> characters. Happens sometimes and gcc is not very happy with this. Should not
-> be a problem of mtd, because mtd does not modify blkdev.h.
-
-Hmm, I see. But this only happens after I used the patchin script from MTD CSV.
-I can't see any control characters in blkdev.h.
-
-Is it working for you? With the latest BitKeeper tree?
-
-Steven
+I'm trying to run a doc 2000 with linux kernel 2.4.18 but fdisk blocks ?
+I set up the driver correctly and the doc is recognized. The chip is nftla1
+after booting. If I do more /proc/mtd I get
+mtd0: 01000000 00004000 "DiskOnChip 2000". 
+If I enter fdisk /dev/nftla1 the execution blocks. Does anyone have a
+suggestion ? 
