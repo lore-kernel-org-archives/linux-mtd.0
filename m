@@ -1,19 +1,19 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+Received: from gate.epygi.de ([212.126.211.241] helo=epygi.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nEM9-0003ON-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 07:48:29 +0000
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Date: Mon, 18 Mar 2002 23:59:57 -0800 (PST)
-From: Jim Zeus <zeusj@firstlinux.net>
-To: David Woodhouse <dwmw2@infradead.org>,
-	"David  Woodhouse" <dwmw2@infradead.org>
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: (no subject)
-Reply-To: zeusj@firstlinux.net
-Message-Id: <20020319075957.63C5536F9@sitemail.everyone.net>
+	id 16nFNQ-0003SH-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 08:53:52 +0000
+Received: from pcstephan (pc-stephan.epygi.de [192.168.13.32])
+	by epygi.de (8.11.2/8.11.2) with SMTP id g2J95SM16099
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 10:05:28 +0100 (MET)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: root=/dev/mtdblock doesn't work with kernel 2.4.18
+Date: Tue, 19 Mar 2002 10:04:30 +0100
+Message-ID: <FCEAKDJJAPHPLJFINDAJMEKPCDAA.Stephan.Linke@epygi.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,20 +25,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-thanks!  David, I have solved the problem! Ola, Ola ,Ola ......^O^
+Hi!
 
---- David Woodhouse <dwmw2@infradead.org> wrote:
->it'll be controlled by a GPIO pin somewhere. That would be board-specific.
+After changing from 2.4.8-pre4 to a 2.4.18 kernel I can't mount the flash as
+root device any more. I'm using the "root=" boot argument to do so.
+The filesystem (cramfs) is alredy detected in mount_root() (super.c) when
+mount_root calls blkdev_put(bdev, BDEV_FS); Which for some reasons has to
+call the release function of the device which results in mtdblock_release()
+being called. The hole thing stops when invalidate_device() calls
+fsync_dev(dev). Where we'll shurely get back to the MTD driver (some how).
+Calling blk_dev_get() and blk_dev_put() in mount_root() is a difference
+between both kernel versions. But removing that change simply leades to
+another problem...
 
-it doesnt controlled by a GPIO,but just like that, its be controlled by a TC(traffic controller), no introduction about it in the document. 
-But finally I beat the problem.
+Everything works fine when running with NFS as rootfs mounting the flash
+with /etc/fstab. So it looks like this is some kind of race condition.
 
-thank you for your help very much!
+Maybe this is an issue to the FS people. But you should have experience with
+using the rootfs that way.
 
-Jim Zeus(survivor from the problem)
+Thanks, Stephan
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
 
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+#--
+ STEPHAN LINKE (dipl. inform); software engineer
+ epygi labs de  gmbh;  herrenstraﬂe 23, 3. og, D-76133 karlsruhe
+ http://www.epygi.de;  mailto:stephan.linke@epygi.de
+ phone 0721-20596-30;  fax 0721-20596-59
+----------------------------------------
+Motto: ÑWenn es defekt ist, dann isses kaputt!ì
