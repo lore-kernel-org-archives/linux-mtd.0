@@ -1,13 +1,17 @@
-Received: from musenki.com ([192.207.126.3] helo=dinky.musenki.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1711Ma-0000sL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 09:45:57 +0100
-To: linux-mtd@lists.infradead.org, mshah@yottayotta.com
-Subject: Re: removing invalidate_device makes it boot /dev/mtdblock/0
-In-Reply-To: <3CC87F1F.2010407@yottayotta.com>
-Message-Id: <E1711HW-00062J-00@zaphod.musenki.com>
-From: Jim Thompson <jim@musenki.com>
-Date: Fri, 26 Apr 2002 03:40:42 -0500
+	id 1711gJ-0000vJ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 10:06:19 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E1711HW-00062J-00@zaphod.musenki.com> 
+References: <E1711HW-00062J-00@zaphod.musenki.com> 
+To: Jim Thompson <jim@musenki.com>
+Cc: linux-mtd@lists.infradead.org, mshah@yottayotta.com
+Subject: Re: removing invalidate_device makes it boot /dev/mtdblock/0 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 26 Apr 2002 10:06:17 +0100
+Message-ID: <26008.1019811977@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -19,11 +23,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-	I got past my last problem (last post by me today) by erasing 
-	invalidate_device line in mtdblock_release
+jim@musenki.com said:
+>  I'm having the same problem. 
 
-	Is this OK? I'm using 2.4.18-rmk3
+http://lists.infradead.org/pipermail/linux-mtd/ doesn't work for you either?
 
-I'm having the same problem.
-
-All you did was to kill the call to invalidate_device() in mtdblock_release()?
+--
+dwmw2
