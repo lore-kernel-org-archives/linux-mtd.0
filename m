@@ -1,16 +1,17 @@
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+Received: from rwcrmhc53.attbi.com ([204.127.198.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 194KFs-0006b4-Nc
-	for <linux-mtd@lists.infradead.org>; Sat, 12 Apr 2003 13:37:13 +0100
-Date: Sat, 12 Apr 2003 14:37:14 +0200 (CEST)
-From: Henrik Nordstrom <hno@marasystems.com>
-To: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
-In-Reply-To: <5.1.1.5.2.20030411131136.0190b008@mail.arc.nasa.gov>
-Message-ID: <Pine.LNX.4.44.0304121431070.9036-100000@filer.marasystems.com>
+	id 194VQU-0007IA-G9
+	for <linux-mtd@lists.infradead.org>; Sun, 13 Apr 2003 01:32:54 +0100
+From: Arun Dharankar <ADharankar@ATTBI.Com>
+To: linux-mtd@lists.infradead.org
+Date: Sat, 12 Apr 2003 20:31:20 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Newbie questions: MTD vs M-Sys, ... RTLinuxPro
+Content-Disposition: inline
+Message-Id: <200304122031.20901.ADharankar@ATTBI.Com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Module parameters for cmdlinepart 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 11 Apr 2003, Edward A. Hildum wrote:
+Greetings!
 
->          I'm also having problems with the 256MB DoC2000 with TrueFFS 
-> 5.1.4.  I've built a recent kernel (2.4.18) with MTD.  When it starts, the 
-> DoC is recognized as a DoC Millenium, and the driver says the flash chips 
-> are not recognized.  I am trying now to get information about the flash 
-> chips from M-Systems.  If I get this, it should be easy to update the table 
-> of known flash chips so MTD can access the new DoC.
->          I'm also working on booting from the DoC using GRUB, but I am 
-> having trouble getting information from M-Systems.  If I find a solution, I 
-> will post it to this list.
+Are there any enhancements made to the cmdlinepart  module to
+pass the parition information via insmod/modprobe command line
+arguments? 
 
-What we currently do (pending the time to investigate having a fully
-native GPL solution investigated) is to have the DOC formatted with the
-M-Sys firmware, and then install GRUB on the block device offered by the
-M-Sys firmware. Works great. If you use DFORMAT 4.x then using the MTD
-Linux drivers should have no problem accessing the NFTL partition.
+I am aware of:
+  - if this driver is configured to be statically linked driver into the
+    Linux kernel, the partitioning information can be nicely passed
+    via the bootloader. 
+  - hardcoding the partitioning information into the driver.
 
-By not using the native GRUB DoC firmware you loose a hundred KB of flash
-for the M-Sys firmware and a little boot time only.. not a big deal in my 
-opinion.
+What I am looking for is for use as a Linux kernel dynamically
+loadable driver module.
 
-Regards
-Henrik
+Best regards,
+-Arun.
