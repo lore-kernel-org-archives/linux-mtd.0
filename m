@@ -1,16 +1,20 @@
-Received: from ip68-6-32-25.sb.sd.cox.net ([68.6.32.25] helo=speedy.datawave.net)
+Received: from pd9eb897f.dip.t-dialin.net ([217.235.137.127] helo=thomas.tec.autronix.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16cWTK-0001xu-00
-	for <linux-mtd@lists.infradead.org>; Sun, 17 Feb 2002 18:55:38 +0000
-From: "Brian J. Fox" <bfox@ua.com>
-To: rob@sysgo.de
-CC: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	joern@wohnheim.fh-wedel.de
-In-reply-to: <Pine.LNX.4.21.0202171132030.24980-100000@dagobert.svc.sysgo.de>
-	(message from Robert Kaiser on Sun, 17 Feb 2002 11:36:30 +0100 (MET))
-Subject: Re: MTD concat layer
-Message-Id: <E16cWdG-0003jL-00@speedy.datawave.net>
-Date: Sun, 17 Feb 2002 11:05:54 -0800
+	id 16cWsb-000201-00
+	for <linux-mtd@lists.infradead.org>; Sun, 17 Feb 2002 19:21:45 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2 & NAND
+Date: Sun, 17 Feb 2002 20:36:07 +0100
+Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
+References: <02021712440204.08654@thomas> <7814.1013939475@redhat.com> <21587.1013966739@redhat.com>
+In-Reply-To: <21587.1013966739@redhat.com>
+MIME-Version: 1.0
+Message-Id: <02021720360705.08654@thomas>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,70 +26,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-   Date: Sun, 17 Feb 2002 11:36:30 +0100 (MET)
-   From: Robert Kaiser <rob@sysgo.de>
-   X-Sender: rob@dagobert.svc.sysgo.de
-   cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-      joern@wohnheim.fh-wedel.de
-
-   On Sat, 16 Feb 2002, Brian J. Fox wrote:
-
-   > 
-   >    From: Robert Kaiser <rob@sysgo.de>
-   >    Date: Sat, 16 Feb 2002 12:03:27 +0100 (MET)
-   > 
-   >    On Sat, 16 Feb 2002, David Woodhouse wrote:
-   > 
-   >    > 
-   >    > rob@sysgo.de said:
-   >    > > OK, just to be clear about this: If my erase function is asked to
-   >    > > erase -say-  1.5 blocks, what should it do: 
-   >    > 
-   >    > -EINVAL.
-   > 
-   >    OK, but is the function allowed to erase blocks up to the point
-   >    where it hits the partial block request ? That would make it simpler,
-   >    especially in the presence of variable block sizes.
-   > 
-   > *No*, you should *not* erase some blocks and return an error.
-   > 
-
-   Hmm, would you care to elaborate why ?
-
-Just to be clear, the words that are important to me in my above
-statement are the combination of "erase" and "and error" -- i.e., a
-better printing of my above statement is:
-
-   *No*, you should *not* erase some blocks *and* return an error.
-
-For each function that you call (or write) in your program, there are
-a myriad of possibilities for how bad inputs are handled.  Three of
-these are common.  One may ignore bad inputs, and just keep chugging,
-*perhaps* causing a crash.  One may massage the bad inputs into "good"
-inputs, and pretend that the caller supplied those inputs.  Or, one
-may refuse to operate utilizing the bad inputs.
-
-Of the three options that I gave above, only one of them results in
-predictable behavior -- the last one.
-
-In order to achieve predictable behavior, and fewer bugs in the driver
-overall, functions should simply refuse to operate on parameters that
-fall out-of-bounds, and should return an error which specifies why
-nothing happened.
-
-If the erase function could only be called from within the driver code
-proper (i.e., the only way bad inputs could be generated would be
-purely from other bugs in the driver code), it would be acceptable to
-*deliberately* crash at the point that the bad input was seen, so as
-to speed the debugging of the driver code.
-
-Low-level system software should never try to DWIM -- it is guaranteed
-to fail.
-
-Hab' ich meine Gedanken gut eklaren?
-
-Brian
-== The Difference Between Cultures: ==
-    Einigkeit und Recht und Freiheit
-    Liberte', E'galite', Fraternite'
-    Sex, drugs and rock'n'roll
+On Sunday, 17. February 2002 18:25, David Woodhouse wrote:
+> gleixner@autronix.de said:
+> > Maybe we  could reduce the information to a filesystem type and define
+> > the oob-layout  as constants in a .h file. That would be less overhead
+> > but gives the  flexibility for both chip and filesystem driver to use
+> > free oob layouts. It would be not a big hack to rearrange it that way.
+>
+> I think that might be best. After all, there are only a limited number of
+> such arrangements.
+>
+> I'd actually like to overhaul all the oob and ecc stuff in the mtd_info
+> structure - I don't like any of it very much. If we can make do with the
+> existing API for a while longer, then we can give some serious thought to
+> its replacement.
+I looked for the usage of eectype in MTD. There's only nand.c, which writes a 
+value to this field. We could use a OR-value for the oob-configuration and 
+use this field for our oob-layout selection.
+ 
+Thomas
+__________________________________________________
+Thomas Gleixner, autronix automation GmbH
+auf dem berg 3, d-88690 uhldingen-muehlhofen
+fon: +49 7556 919891 , fax: +49 7556 919886
+mail: gleixner@autronix.de, http://www.autronix.de  
