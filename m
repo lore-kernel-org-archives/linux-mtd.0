@@ -1,14 +1,19 @@
-Received: from f98.law12.hotmail.com ([64.4.19.98] helo=hotmail.com)
+Received: from shyguy.smb.utfors.se ([195.58.112.21])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zt0z-00053j-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 07:11:13 +0100
-From: "fretre lewis" <fretre_lewis@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: how can I setup all head files before browsing the source code?
-Date: Fri, 11 Oct 2002 06:10:35 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F987MaLJJRGE56bPkzM0001e63b@hotmail.com>
+	id 17zw7j-0005Po-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 10:30:23 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: RE: mtd/fs/jffs2 Makefile,1.25,1.25.2.1 compr_zlib.c,1.8,1.8.2.1 nodelist.h,1.46.2.2,1.46.2.3 super.c,1.48.2.2,1.48.2.3 zlib.h,1.1,NONE zlib.c,1.1.2.1,NONE
+Date: Fri, 11 Oct 2002 11:30:19 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLGEALFHAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <E17zvix-0005MC-00@phoenix.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,49 +25,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-what I want is only to read and learn some arm-linux kernel code, please 
-note, I mean not compiler kernel or toolchain etc, I just want to use LXR to 
-browse source code.
+> -----Original Message-----
+> From: linux-mtd-cvs-admin@lists.infradead.org
+> [mailto:linux-mtd-cvs-admin@lists.infradead.org]On Behalf Of David
+> Woodhouse
+> Sent: Friday, October 11, 2002 11:05
+> To: linux-mtd-cvs@lists.infradead.org
+> Subject: mtd/fs/jffs2 Makefile,1.25,1.25.2.1 compr_zlib.c,1.8,1.8.2.1
+> nodelist.h,1.46.2.2,1.46.2.3 super.c,1.48.2.2,1.48.2.3 zlib.h,1.1,NONE
+> zlib.c,1.1.2.1,NONE
+> 
+> 
+> Update of /home/cvs/mtd/fs/jffs2
+> In directory phoenix.infradead.org:/tmp/cvs-serv20573
+> 
+> Modified Files:
+>       Tag: jffs2-2_4-branch
+> 	Makefile compr_zlib.c nodelist.h super.c 
+> Removed Files:
+>       Tag: jffs2-2_4-branch
+> 	zlib.h zlib.c 
+> Log Message:
+> Remove old zlib code, shared zlib is now in a released 2.4.
 
-before I invoke LXR to work, I need setup head files, for i386-linux, 
-following is enough:
+Relased? Is it not in 2.4.20-preX?
 
-ln -s /usr/src/linux/include/asm-i386  /usr/include/asm
-ln -s /usr/src/linux/include/linux     /usr/include/linux
-
-
-however, I am new to arm-linux, I guess there is more setup than above, for 
-example, I can't find some directories in source tree, like:
-
-    include/asm-arm/arch
-    include/asm-arm/proc
-    ......
-etc
-
-and I can't find some files like:
-     mach-types.h
-     ......
-etc
-
-   I think there are many work, say, symlink directories,create new 
-files,etc, would be done automaticly during compiling kernel, however I need 
-not compiler kernel, I just want to use LXR to build cross-reference among 
-the source code, so perhaps, I have to do all of these work manually about 
-setup head files , without these I am afraid LXR can not generate index 
-database rightly.
-
-  supposing I am interested in code about Xscale, how can I setup all head 
-files and other files/dirs referenced?
-
-please help
-
-thank very much
-
-fretre
-
-
-
-
-
-_________________________________________________________________
-Chat with friends online, try MSN Messenger: http://messenger.msn.com
+ Jocke
