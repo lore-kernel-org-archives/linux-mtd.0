@@ -1,37 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13HVwa-00050a-00
-	for mtd-list@infradead.org; Wed, 26 Jul 2000 19:30:12 +0100
-Received: from [24.64.25.86] (helo=white.priv.deltatee.com ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13HVwX-00050S-00
-	for mtd@infradead.org; Wed, 26 Jul 2000 19:30:10 +0100
-Date: Wed, 26 Jul 2000 12:29:50 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <dwmw2@alpha1.cygnus.co.uk>
-cc: mark.langsdorf@amd.com, mtd@infradead.org
-Subject: Re: Jedec.c problems in mtd-20000704
-In-Reply-To: <Pine.LNX.4.21.0007211646360.22633-100000@alpha1.cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000726122859.30982B-100000@white.priv.deltatee.com>
+	id 13HWnv-0005AH-00
+	for mtd-list@infradead.org; Wed, 26 Jul 2000 20:25:19 +0100
+Received: from [195.88.125.154] (helo=smtp.zls.de)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13HWnt-0005A7-00
+	for mtd@infradead.org; Wed, 26 Jul 2000 20:25:17 +0100
+Received: from zls.de(ws-cal.zls.de[172.16.0.35]) (1157 bytes) by smtp.zls.de
+	via sendmail with P:smtp/R:remote_hosts/T:smtp
+	(sender: <cal@zls.de>)
+	id <m13HWo6-000MPSC@smtp.zls.de>
+	for <mtd@infradead.org>; Wed, 26 Jul 2000 21:25:30 +0200 (MEST)
+	(Smail-3.2.0.109 1999-Oct-27 #3 built 1999-Nov-16)
+Message-ID: <397F3B15.D420B9AF@zls.de>
+Date: Wed, 26 Jul 2000 21:25:09 +0200
+From: Christian Lademann <cal@zls.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: mtd@infradead.org
+Subject: Request: examples of using LILO or GRUB to boot from DOC
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I am trying hard to get a 4Mb DoC to boot something else but MS-DOS.
+Could somebody please mail me her/his lilo-
+or grub-configuration?
+Is there currently a working way to boot Linux from a DOC using free
+software, anyhow?
 
-On Fri, 21 Jul 2000, David Woodhouse wrote:
+cu, Christian.
 
-> Change bus_width to buswidth as necessary, and remove the bank_size
-> altogether, or make it an extra argument to the _probe() routines rather
-> than putting it in the struct mtd_info.
+--
+*  Christian A. Lademann, ZLS Software GmbH               mailto:cal@zls.de
+*  ZLS Software GmbH
+*  Frankfurter Strasse 59       Postfach 1628             mailto:zls@zls.de
+*  D-65779 Kelkheim             D-65766 Kelkheim          http://www.zls.de
+*  Telefon +49-6195-9902-0      Telefax +49-6195-900600
+*  Geschäftsführer John A. Shuter     -     Amtsgericht Königstein HRB 3105
 
-The JEDEC code has to refer to bank_size so it either goes into the main
-structure or the private structure. All banked chips need that number so
-IMHO you might as well make it common.
 
-Check out the banked read routine to see why.
-
-Jason
 
 
 
