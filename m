@@ -1,20 +1,17 @@
-Received: from c135.h203149222.is.net.tw
-	([203.149.222.135] helo=ms.gv.com.tw ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZoUr-0006GB-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 09:06:17 +0100
-Received: from jmt (IDENT:root@h250-192-72-4.seed.net.tw [192.72.4.250] (may be forged))
-	by ms.gv.com.tw (8.11.2/8.11.2) with SMTP id g6V8CiO18235
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 16:12:44 +0800
-Message-ID: <007901c23869$35d3f500$1b0448c0@gv.com.tw>
-From: "??" <kevin@gv.com.tw>
-To: <linux-mtd@lists.infradead.org>
-Subject: can i use jffs2 directly on /dev/mtdblock?
-Date: Wed, 31 Jul 2002 16:06:44 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+	id 17ZodS-0006Gv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 09:15:10 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <007901c23869$35d3f500$1b0448c0@gv.com.tw> 
+References: <007901c23869$35d3f500$1b0448c0@gv.com.tw> 
+To: "??" <kevin@gv.com.tw>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: can i use jffs2 directly on /dev/mtdblock? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 31 Jul 2002 09:15:02 +0100
+Message-ID: <31207.1028103302@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,11 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dear all,
- 
-can i use jffs2 directly on /dev/mtdblock?
-instead of /dev/nftl?
- 
-best regards,
-kevin
- 
+kevin@gv.com.tw said:
+>  can i use jffs2 directly on /dev/mtdblock? instead of /dev/nftl?
+
+You cannot use JFFS2 on NFTL. You can _only_ use it on /dev/mtdblock 
+devices.
+
+--
+dwmw2
