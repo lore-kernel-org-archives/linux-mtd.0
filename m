@@ -1,16 +1,18 @@
-Received: from d-200.linux2002.uq.net.au ([203.15.37.200] helo=lapdancer.baythorne.internal)
+Received: from kynes.gatewest.net ([198.163.227.7])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ZMkz-0003Zs-00
-	for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2002 01:56:50 +0000
-Date: Sat, 9 Feb 2002 11:34:05 +1000 (EST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Chris Fowler <cfowler@outpostsentinel.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: msys/fla and load tims
-In-Reply-To: <200202081322.g18DMQY32394@skylab.outpostsentinel.com>
-Message-ID: <Pine.LNX.4.44.0202091132220.2394-100000@lapdancer.baythorne.internal>
+	id 16ZYwq-0004GY-00
+	for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2002 14:57:52 +0000
+Message-ID: <002501c1b17b$80b65010$87657bc8@athlon>
+From: "Derek Ross" <dross@iders.ca>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.44.0202091129030.2394-100000@lapdancer.baythorne.internal>
+Subject: Re: Is realtime logging possible?
+Date: Sat, 9 Feb 2002 09:07:34 -0600
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,20 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 8 Feb 2002, Chris Fowler wrote:
+> > We'll be logging about 6 bytes once a second into
+> > flash.  The maximum blocking duration for a write
+> > should be 0.1 second or less.
+>
+> You probably don't want to use a filesystem for this - just log to the raw 
+> flash, using the mtd chardevice and issuing MEMERASE calls manually when 
+> necessary. 
 
-> It appears that the device I'm building has hight load averages.  
-> Around 1.  I notice that the msys/fla process is running with a priority
-> of -10.  What I can not understand is what this process is doing. I
-> mount my flash temporarily in r/o mode to load software. I also read
-> about 30k of data from a raw partition.  The only time the flash is
-> mounted r/w is during a flash.  Top shows all my processes idle.  This
-> would be normal oreration for my system. Could the msys process be
-> looping or doing something not needed?
+Yes, our logging structure will basically be some circular
+buffers, so it will be easy to do that at the lower level.
 
-We don't know. We don't have the source. I recommend you either ask 
-M-Systems or use the driver in the kernel tree instead. I doubt that's 
-perfect either - but at least we can improve that one.
+However, we would still like to use the filesystem
+capabilities of the flash during non-"realtime" modes,
+like during configuration or initialization.
 
--- 
-dwmw2
+Is it possible for a filesystem to coexist with 
+low-level reading, writing and erasing?  Maybe by
+specifying in advance which sectors are forbidden
+to the filesystem.
+
+Or is it "never the twain shall meet"?
+
+Derek.
