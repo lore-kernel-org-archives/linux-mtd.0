@@ -1,20 +1,21 @@
-Received: from [212.105.56.244] (helo=dmz.lumentis.net)
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cf2pQ-0005i4-O6
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 16:06:30 -0500
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
-   "Thomas Gleixner" <tglx@linutronix.de>
-Date: Thu, 16 Dec 2004 22:06:21 +0100
-Message-ID: <BCEFJBPJCGFCNMMMIDBHCEMGCJAA.Joakim.Tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1Cf345-0005wO-46
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 16:21:39 -0500
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1103201631.25765.7.camel@weaponx.rchland.ibm.com>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C0D3AC.3050801@us.ibm.com>
+	<1103158974.15929.37.camel@squizzey.bult.co.uk>
+	<1103201631.25765.7.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain
+Date: Thu, 16 Dec 2004 21:22:08 +0000
+Message-Id: <1103232128.15927.70.camel@squizzey.bult.co.uk>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20041216205102.GC10285@wohnheim.fh-wedel.de>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
-Reply-To: Joakim.Tjernlund@lumentis.se
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > unsigned short crc16 (unsigned char *buf, size_t len)
-> > {
-> >         unsigned short crc = 0xffff;
-> >         while (len--)
-> >                 crc = (unsigned short) (crc >> 8) ^ 
-> > 		     crc16tab[(crc ^ (unsigned short)(*buf++)) & 0xff];
-> >         return crc;
-> > }
-> > 
-> 
-> Thomas, you respond faster than I can think!
-> 
-> real    0m0.395s
-> user    0m0.326s
-> sys     0m0.067s
-> 
-> The algorithm doesn't run that fast, though.
+Hi,
+> There is one more feature pending that I know of.  Ferenc Havasi has
+> some eraseblock summary changes that should help.  I believe the
+> intention was to commit that to JFFS3, but I haven't seen it go in yet.
 
-There is still more one can do, look in lib/crc32.c in the kernel to see
-what I mean. It is tricky to get everything right, but just unrolling it a bit will help.
+Ok, I have these and will be trying them presently .. 
 
- Jocke
+just wondered if there was any way I could avoid running "patch" .. :)
+
+Tvm
+Gareth.
+
+
+
+> josh
+> 
