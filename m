@@ -1,43 +1,74 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 148IBU-00007c-00
-	for mtd-list@infradead.org; Tue, 19 Dec 2000 08:31:44 +0000
+	id 148IqS-0000Eq-00
+	for mtd-list@infradead.org; Tue, 19 Dec 2000 09:14:04 +0000
+Received: from polaris.uk.insnet.net ([194.177.174.245])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 148IqR-0000Ek-00
+	for mtd@infradead.org; Tue, 19 Dec 2000 09:14:03 +0000
+Received: from laxmls02.socal.rr.com (laxmls02.socal.rr.com [24.30.163.11])
+	by polaris.uk.insnet.net (8.9.3/8.9.3) with ESMTP id JAA15116
+	for <mtd@infradead.org>; Tue, 19 Dec 2000 09:16:10 GMT
 From: Shane Nay <shane@agendacomputing.com>
 Reply-To: shane@agendacomputing.com
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: MTD, generic physmap memory, MTD_BLOCK
-Date: Mon, 18 Dec 2000 21:31:43 +0000
+To: "D. Vrabel" <dv207@cam.ac.uk>, Nicolas Pitre <nico@cam.org>
+Subject: Re: cfi_cmdset_0001.c: do_write_buffer: wrong length
+Date: Mon, 18 Dec 2000 22:13:46 +0000
 Content-Type: text/plain;
-  charset="US-ASCII"
-Cc: Nicolas Pitre <nico@cam.org>, <mstumpf@pobox.com>, <mtd@infradead.org>
-References: <Pine.LNX.4.30.0012172223230.15911-100000@imladris.demon.co.uk>
-In-Reply-To: <Pine.LNX.4.30.0012172223230.15911-100000@imladris.demon.co.uk>
+  charset="us-ascii"
+Cc: mtd@infradead.org
+References: <Pine.LNX.4.30.0012081303110.6716-100000@xanadu.gn.com> <3A313CE7.DFF1BC4E@cam.ac.uk>
+In-Reply-To: <3A313CE7.DFF1BC4E@cam.ac.uk>
 MIME-Version: 1.0
-Message-Id: <0012182131432A.11759@www.easysolutions.net>
+Message-Id: <0012182213462I.11759@www.easysolutions.net>
 Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Sunday 17 December 2000 22:24, David Woodhouse wrote:
-> Unless there's something missing (or I'm being dim) that code doesn't do
-> XIP. It still copies from the cramfs into the page provided to
-> cramfs_readpage.
+On Friday 08 December 2000 19:56, D. Vrabel wrote:
+> Hi,
 >
-> What you want to do is make up some struct pages to represent the pages
-> of the ROM chip and pre-populate the page cache with those pages directly
-> - marked readonly, of course.
+> Nicolas Pitre wrote:
+> > On Fri, 8 Dec 2000, David Vrabel wrote:
+> > > In cfi_cmdset_0001.c do_write_buffer writes an incorrect length to the
+> > > chip
+> > >
+> > >     cfi_write(map, CMD((len/(cfi->device_type*CFIDEV_INTERLEAVE))-1),
+> > >         cmd_adr);
+> > >
+> > > Should it it be?
+> > >     cfi_write(map, CMD(len/map->buswidth-1), cmd_adr);
+> >
+> > No.  This will break the case where the interleave isn't 1.
+> >
+> > Hmmm... Will it?
+> >
+> > Euh...  Each time I get around this question I get confused...
+> >
+> > Does someone have the data sheet nearby? (I don't ATM)...  What should
+> > the lenght be if a x16 chip is used in x8 mode?  bytes/sizeof(char) or
+> > bytes/sizeof(short)?
+> >
+> > On a 2 x16 arrangement you have buswidth=4, interleave=2, devicetype=2. 
+> > In that case it should be len/4 - 1.
+> >
+> > Maybe you are right after all.
+>
+> Time to compile a big list of all the arrangements of chips and the
+> resultant buffer write length...
+>
+> So far we have:
+>
+> device type  interleave  bus width    buf write len
+> 2 (x16)      1           1 (x8)       len/1-1
+> 2 (x16)      1           2 (x16)      len/2-1
+> 2 (x16)      2           4 (x32)      len/4-1
+>
+> So far it len/buswidth-1...
 
 
-Hehe, no, it's not an XIP implementation.  I think I mentioned in my message, 
-even if I didn't make it clear (probably not) that this only made cramfs read 
-directly off of the flash, taking one layer of abstraction out.  It kills the 
-buffer, and the copy to buffer that would usually be associated with a dev 
-device, so it speeds up performance of cramfs on a flash device.  It's _only_ 
-a performance hack at this point.
-
-But we are working on XIP for cramfs.  But this requires either expanding the 
-inode, or stealing a bit or two away from GIDS, or UIDs.  This is only a 
-"linear addressing" patch.
+Yea..., this is what I was _trying_ to say, but communicated very poorly 
+about 2 weeks ago.  It's fixed in the patches I posted to the agenda site.
 
 Thanks,
 Shane.
