@@ -1,15 +1,18 @@
-Received: from mail.truetzschler.de ([213.164.131.155])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKXQu-00042t-Cs
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 03:32:26 -0400
-Message-ID: <41776604.4010101@truetzschler.de>
-Date: Thu, 21 Oct 2004 09:32:20 +0200
-From: christoph glaeser <christoph.glaeser@truetzschler.de>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKXTt-0004Cf-23
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 03:35:31 -0400
+Message-ID: <41776794.90101@inf.u-szeged.hu>
+Date: Thu, 21 Oct 2004 09:39:00 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+References: <41767593.9030004@inf.u-szeged.hu> <41776351.4040204@yandex.ru>
+In-Reply-To: <41776351.4040204@yandex.ru>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 problem on ST M29W640DB (90 ns)
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, jffs-dev@axis.com
+Subject: Re: JFFS2 mount time - 3 more questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Artem,
 
-the problem is the Flash ST-M29W640DB itself:
+> 1. How large are your summary nodes (in average) for blocks full of 
+> dirents/nodes ?
 
-"The Read/Reset command must be issued to return the device to the 
-previous mode (the Read Array mode or Autoselected mode). A second 
-Read/Reset command would be needed if the device is to be put in the 
-Read Array mode from Autoselected mode."
+It heavily depends on
+- the size of the earase block
+- the sizes of the nodes
+It is 4 words for every jffs2_raw_inode. Dirents are stored separatedly 
+  without summary.
 
-To solve this problem, change the funktion "cfi_cmdset_0002()" in File 
-"cfi_cmdset_0002.c":
+> 2. Why do not you use compression for them?
 
-  ...
-  cfi_send_gen_cmd(0xf0, 0x55, base, map, cfi, cfi->device_type, NULL);
-  
-/***********************************************************************************************/
-  /* Fixed 20.10.2004 (C.Gl.)                  
-                                                  */
-  
-/*                                                                                             
-*/
-  /* Probleem: Flash ST 
-M29W640DB                                                                */
-  /* If the Chip is in "Read CFI Query Command"-Mode, the first 
-"Read/Reset"-Command will turn   */
-  /* the Flash back to previous mode (=Autoselet-Mode); a second 
-"Read/Reset"-command would be   */
-  /* needed if the device is to be put in the "Read Array"-mode from 
-Autoselected mode!          */
-  
-/*                                                                                             
-*/
-    cfi_send_gen_cmd(0xf0, 0x55, base, map, cfi, cfi->device_type, NULL);
-  
-/***********************************************************************************************/
-    return cfi_amdstd_setup(map);
-}
+To make boot time as fast as possible :) But not a bad idea. If someone 
+needs it we can make a new option.
 
-Good Luck,
+> 3. Why did you introduce new tool instead of just adding new options to 
+> the mkfs.jffs2 ?
 
-Christoph Glaeser
+I think it is "nicer", cleaner design, and uing this separation the 
+reordering of the nodes is much more easier.
+
+Bye,
+Ferenc
