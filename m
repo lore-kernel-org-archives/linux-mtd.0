@@ -1,18 +1,21 @@
-Received: from 12-234-34-139.client.attbi.com ([12.234.34.139] helo=heavens.murgatroid.com)
+Received: from rm-rstar.sfu.ca ([142.58.120.21] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17uGoS-0003yt-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 19:23:04 +0100
-From: "Christopher Hoover" <ch@murgatroid.com>
-To: "'Simon Posnjak'" <simon@activetools.si>
-Cc: "'linux-mtd'" <linux-mtd@lists.infradead.org>
-Subject: RE: jffs, jffs2
-Date: Wed, 25 Sep 2002 11:22:42 -0700
-Message-ID: <003a01c264c0$8bc72da0$7e00000a@bergamot>
+	id 17uHet-00044n-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 20:17:16 +0100
+Received: from fraser.sfu.ca (btlee@fraser.sfu.ca [142.58.101.25])
+	by rm-rstar.sfu.ca (8.12.5/8.12.5/SFU-5.0H) with ESMTP id g8PJHANs005226
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 12:17:11 -0700 (PDT)
+From: Benjamin Tze-Kit Lee <btlee@sfu.ca>
+Received: (from btlee@localhost)
+	by fraser.sfu.ca (8.9.2/8.9.2/SFU-5.0C) id MAA24221
+	for linux-mtd@lists.infradead.org; Wed, 25 Sep 2002 12:17:10 -0700 (PDT)
+Message-Id: <200209251917.MAA24221@fraser.sfu.ca>
+Subject: lisencing issues on JFFS2/MTD
+To: linux-mtd@lists.infradead.org
+Date: Wed, 25 Sep 2002 12:17:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1032952690.2913.27.camel@klada.dyndns.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +27,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> I wasn't to clear: I will be using 2.4.18.
+Hi,
 
-I don't know.  I haven't run 2.4.18 on ARM in a long time.  (Why are you
-deliberately using an old kernel?)
+What would the liscencing issues if I were to modify JFFS2/MTD and use it 
+on a different OS in my embedded system application and sell it as a 
+product?
 
-> So to mount an empty mtd partition as jffs/jffs2 all I have to do is
-to
-> erase it (using erase utilty from mtd)and then just do mount -t jffs2
-> /dev/mtdblock5 /somedir. Is this correct?
+Where should I go to look for that answer?
 
-You need to use mkfs.jffs2, just as you would use mkfs.ext2 to create an
-ext2 filesystem.  See my original prescription.
+Thank you very much.
 
--ch
+Ben
