@@ -1,35 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13CHlF-00078v-00
-	for mtd-list@infradead.org; Wed, 12 Jul 2000 09:20:53 +0100
+	id 13CIvB-0007KA-00
+	for mtd-list@infradead.org; Wed, 12 Jul 2000 10:35:13 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13CHlE-00078p-00
-	for mtd@infradead.org; Wed, 12 Jul 2000 09:20:52 +0100
+	id 13CIvA-0007K4-00
+	for mtd@infradead.org; Wed, 12 Jul 2000 10:35:12 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <396BC59F.47F1B14F@evoserve.com> 
-References: <396BC59F.47F1B14F@evoserve.com>  <20000710221950.8117.qmail@web5304.mail.yahoo.com> 
-To: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
-Cc: mtd@infradead.org
+In-Reply-To: <21454.963389948@cygnus.co.uk> 
+References: <21454.963389948@cygnus.co.uk>  <20000711212323.21257.qmail@web5302.mail.yahoo.com> 
+Cc: Juan Gonzo <kayemmess@yahoo.ca>, MTD Mailing List <mtd@infradead.org>
 Subject: Re: mtd devices & jffs 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 12 Jul 2000 09:20:50 +0100
-Message-ID: <21762.963390050@cygnus.co.uk>
+Date: Wed, 12 Jul 2000 10:35:09 +0100
+Message-ID: <32068.963394509@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-rogelio@evoserve.com said:
-> The same happens to me and im using a DOC2000. The second time i mount
-> jffs fails to build the tree. 
+dwmw2@infradead.org said:
+> > Is there a way to tell JFFS "start at this
+> > addr and only use this much space" without changing this code? 
 
-Doc2000 doesn't currently support writes which aren't 512 bytes long, which 
-isn't particularly useful for JFFS. S'fairly trivial to fix. Just that 
-nobody's done it yet. You don't need to know anything about the DiskOnChip 
-to do it - just read the datasheet for the flash chips it's using.
+> Give it an MTD device which points at only the range you want it to
+> use. See how nora.c splits up the flash chips into four 'partitions'. 
 
-
+I just committed 'pnc2000.c' which should be clearer. Look at that instead.
 
 --
 dwmw2
