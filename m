@@ -1,46 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H4ce-0008TG-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 14:19:48 +0100
+	id 13H5AJ-00009t-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 14:54:35 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13H4cc-0008TA-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 14:19:46 +0100
+	id 13H5AH-00009m-00
+	for mtd@infradead.org; Tue, 25 Jul 2000 14:54:33 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000725145702.8086O-100000@fafner.axis.se> 
-References: <Pine.LNX.3.96.1000725145702.8086O-100000@fafner.axis.se> 
-To: Bjorn Wesen <bjornw@axis.com>
-Cc: Finn Hakansson <finn@axis.com>, "mtd@infradead.org" <mtd@infradead.org>,
-  jffs-dev@axis.com
+In-Reply-To: <Pine.LNX.4.21.0007251206470.17368-100000@vvv.axis.se> 
+References: <Pine.LNX.4.21.0007251206470.17368-100000@vvv.axis.se> 
+To: Finn Hakansson <finn@axis.com>
+Cc: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>,
+  "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
 Subject: Re: jffs_file_write 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 25 Jul 2000 14:19:44 +0100
-Message-ID: <26128.964531184@cygnus.co.uk>
+Date: Tue, 25 Jul 2000 14:54:30 +0100
+Message-ID: <31437.964533270@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-bjornw@axis.com said:
->  It usually takes about 1-2 seconds to erase a sector, so if you
-> really need to erase the entire 16 mb flash during GC, that's 250
-> sectors times 2 seconds, about 8 minutes. Mileage may vary depending
-> on flash manufacturer - I've never used 16 mbyte flashes in anything..
-> 
+finn@axis.com said:
+> On Tue, 25 Jul 2000, David Woodhouse wrote:
+> > I'm far more concerned by the thing getting corrupted when I abruptly 
+> > remove power - I'm about to see if I can reproduce it with the patches
+> > you committed just before I left - do you have any ideas from the log I
+> > posted on the 17th of July?
 
-On these chips, erases only take a second. At the time, it was also 128
-microseconds per _word_ write. So although a complete erase only takes 128
-seconds, writing the whole device was more like 20 minutes.
+> I'll take a look at it after lunch. 
 
-Even so, it should be far less than the 90 minutes that I observed. Is it
-possible that the GC was compacting the data on the flash repeatedly, before
-it had completed removing all the files? The command I was running was:
- rm -r /mnt/usr
-
-If it removed a couple of MB, then garbage collected, then removed another 
-couple of MB, then would it have ended up moving the same data twice?
-
-
+I've now updated my kernel to the latest code from CVS, and I can still 
+reproduce it. I'll start logging and try to do it again. 
 
 --
 dwmw2
