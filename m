@@ -1,18 +1,19 @@
-Received: from maild.telia.com ([194.22.190.101])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18B0aQ-0007wf-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 22:29:46 +0000
-Message-ID: <002b01c2890c$f2c058e0$0200a8c0@telia.com>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "Wolfgang Denk" <wd@denx.de>
-Cc: "Marc Singer" <elf@buici.com>, <linux-mtd@lists.infradead.org>
+Received: from ash.lnxi.com ([207.88.130.242] helo=ash.altatech.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18B1Sj-00082M-00
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 23:25:54 +0000
+To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+Cc: "Wolfgang Denk" <wd@denx.de>,  "Marc Singer" <elf@buici.com>,
+	  <linux-mtd@lists.infradead.org>
+Subject: Re: crc32() optimization
 References: <20021110224142.2F39310162@denx.denx.de>
-Subject: Re: crc32() optimization 
-Date: Mon, 11 Nov 2002 00:00:22 +0100
+	<002b01c2890c$f2c058e0$0200a8c0@telia.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 10 Nov 2002 16:56:30 -0700
+In-Reply-To: <002b01c2890c$f2c058e0$0200a8c0@telia.com>
+Message-ID: <m3k7jl0yj5.fsf@maxwell.default.domain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +25,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> In message <001301c28909$743f1f40$0200a8c0@telia.com> you wrote:
-> > I could not wait until tomorrow, so I did it now instead.
-> > The result was worse. The best I got was 7% improvement.
-> > I tried 16, 8, 6 and 4 as unrolling steps.
+"Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se> writes:
+
+> > In message <001301c28909$743f1f40$0200a8c0@telia.com> you wrote:
+> > > I could not wait until tomorrow, so I did it now instead.
+> > > The result was worse. The best I got was 7% improvement.
+> > > I tried 16, 8, 6 and 4 as unrolling steps.
+> > 
+> > Makes no sense to me.  Should  be  at  least  as  efficient  as  your
+> > original code (marginally better).
 > 
-> Makes no sense to me.  Should  be  at  least  as  efficient  as  your
-> original code (marginally better).
+> I don't understand this either.
+> Anyone?
 
-I don't understand this either.
-Anyone?
+You might try it with 6.  But a lot depends on what gcc can do with
+it and gcc may not be like all of those potential entry points.. 
 
-         Jocke
+Running gcc -S and checking to see the difference in the generated
+assembly might be instructive.
+
+Eric
