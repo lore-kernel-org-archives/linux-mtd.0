@@ -1,68 +1,55 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14kcuh-0002yS-00
-	for mtd-list@infradead.org; Wed, 04 Apr 2001 03:20:51 +0100
-Received: from nw171.netaddress.usa.net ([204.68.24.71])
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14kcuf-0002yM-00
-	for mtd@infradead.org; Wed, 04 Apr 2001 03:20:49 +0100
-Message-ID: <20010404022046.11794.qmail@nw171.netaddress.usa.net>
-Date: 3 Apr 2001 19:20:46 PDT
-From: Eric <ebrower@usa.net>
-To: Tim Bowman <tbowman@emware.com>, Eric <ebrower@usa.net>,
-  mtd mailing list <mtd@infradead.org>
-Subject: Re: [Re: [RPX Classic/Lite and byte ordering]]
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+	id 14kppd-0005z5-00
+	for mtd-list@infradead.org; Wed, 04 Apr 2001 17:08:29 +0100
+Received: from mail.addcoinc.com
+	([12.47.38.2] helo=exchange.addcoinc.com ident=fwuser)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14kppb-0005yz-00
+	for mtd@infradead.org; Wed, 04 Apr 2001 17:08:28 +0100
+Message-ID: <5B08DC7C9AA6D411930E00105A19794B3E23B3@EXCHANGE>
+From: "Carson, Jon A." <JACarson@addcoinc.com>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: GRUB'y Stuff
+Date: Wed, 4 Apr 2001 11:04:42 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Tim,
+Hi All,
 
-Have you verified that a kernel compiled with this io.h
-change still works properly on your system?  This sounds
-shakey to me if your kernel was already working as a whole
-without your changes.
+I am trying to use GRUB to boot an embedded system with a  Linux kernel in
+my DiskOnChip 2000 ( on m-systems ISA card plugged into a PII 300 system)
+but I am having some trouble.
 
-I would think that using __raw_writeX and __raw_readX combined
-with the appropriate endian setting in cfi_endian.h would have
-the same effect without such a drastic change.  I am more concerned
-about the statement that other folks with the same boardset do not
-experience this problem-- likely, the correct fix is an endian-map
-(similar in spirit to LART) in cfi_endian.h rather than io.h in such =
+I downloadded the latest GRUB, and I also downloadded the latest MTD/GRUB
+patches.  I built all of the stuff and did the "doc_loadbios grub_firmware".
+that part of it seems to have gone well.  
 
-a case.  If you can find a mythical RPX system that does not have this
-error, perhaps you can modify the driver to read/write/read/write some
-location to determine if you have an 'affected' board or not.
+My DiskOnChip now boots GRUB, but thats all.  It boots to the GRUB command
+prompt and sits there.  This tells me that the Bios extension has been
+properly found and GRUB has been loaded correctly.......I just kinda loose
+it at this point.  I would like to be able to boot directly into my kernel
+but I am ignorant of how to do this.
 
-E
+Some backround info:  I am using a 2.4 kernel I built with the MTD/NFTL
+stuff built in. The kernel recognises the DOC 2000 at 0xd0000 during the
+boot process.  I have sucessfully formatted, fdisked, and mkfs.ext2'ed it
+and subsequently put directories on it.  I am using /doc as my mount point.
+I then put the kernel into /doc/boot.
 
-Tim Bowman <tbowman@emware.com> wrote:
+I suspect that I put my kernel in the wrong place, but at any rate I do not
+know the incantation to get GRUB to load it.
 
-> Ta-Da.... I fixed the problem in include/asm-ppc/io.h:
-> ...
-> #define readb(addr) in_8((volatile u8 *)(addr))
-> #define writeb(b,addr) out_8((volatile u8 *)(addr), (b))
-> #if defined(CONFIG_APUS) || defined(RPXCLASSIC)
-> #define readw(addr) (*(volatile u16 *) (addr))
-> #define readl(addr) (*(volatile u32 *) (addr))
-> #define writew(b,addr) ((*(volatile u16 *) (addr)) =3D (b))
-> #define writel(b,addr) ((*(volatile u32 *) (addr)) =3D (b))
-> #else
+If anyone has had any experience with this, please set me straight.
 
-[ ... ]
-
-> This solution doesn't explain why some of you haven't had this problem.=
- =
-
-> Maybe the flash really is wired up two different ways on RPX boards...
+Thanks much in advance,
+Jon Carson
+ADDCO Inc..
 
 
-
-____________________________________________________________________
-Get free email and a permanent address at http://www.netaddress.com/?N=3D=
-1
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
