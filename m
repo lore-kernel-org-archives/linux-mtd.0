@@ -1,17 +1,18 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
+Received: from mail.milliontech.com ([210.17.151.186])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AXi9y-0003Nc-Bb
-	for linux-mtd@lists.infradead.org; Sat, 20 Dec 2003 14:32:50 +0000
-Received: from vin (vin.se.axis.com [10.13.8.51])hBKEUdX3004573
-	for <linux-mtd@lists.infradead.org>; Sat, 20 Dec 2003 15:30:39 +0100
-Date: Sat, 20 Dec 2003 15:34:04 +0100
-From: Jonas Holmberg <jonas.holmberg@axis.com>
+	id 1AYMXz-0000Xl-NU
+	for linux-mtd@lists.infradead.org; Mon, 22 Dec 2003 09:40:20 +0000
+Received: from milliontech.com ([192.168.168.70])
+	by mail.milliontech.com (8.11.6/8.11.6) with ESMTP id hBM9cEc23411
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Dec 2003 17:38:14 +0800
+Message-ID: <3FE6BBD8.5000106@milliontech.com>
+Date: Mon, 22 Dec 2003 17:39:36 +0800
+From: Martin Chan <martinc@milliontech.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Message-ID: <20031220143403.GA23544@axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Subject: Determining if writing to a jffs2 partition will fail
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: 7bit
+Subject: booting DOC2000 with jffs2 as root
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any reliable way to determine if a regular file can be 
-written to a jffs2 partition without getting ENOSPC? I don't want to 
-write the file to jffs2 and then find out that the fs was full, 
-because other processes might fail to write to the fs during that 
-test (if the fs gets full).
+Hi,
 
-The best I have come up with is:
+I can copy a root.jffs2 image to DiskOnChip2000 and mount it. I can't
+install the boot loader using patched lilo-mtd in mtd-snapshot. This is
+my lilo.conf
 
-1. gzip the file (on tmpfs)
-2. do statfs on jffs2 the get available space
-3. test if the gzipped file would fit in jffs2 without making 
-   available space go below one eraseblock (64KiB on my NOR flash).
+default=linux
+linear
+bios=0x80
+vga=Extended
+image=/boot/vmlinuz
+label=linux
+root=/dev/mtdblock0
 
-If it succeeds I would be almost shure the gunzipped file could be 
-written to jffs2 without getting ENOSPC, but gzip will of course not 
-compress the file to exacly the same size as jffs2 will. And 
-statfs won't always tell the truth. I could of course send SIGHUP 
-to the gc-thread, wait some and try again.
 
-This doesn't feel like a good solution though, does anyone know of any 
-better way?
+When running lilo-mtd -r /mnt -v -v -v
+It gives the following errors:
 
-/Jonas
+Reading boot sector from current root
+Caching devices /dev/mtdblock0 (0x1f00)
+mtdblock_open
+mtdblock: read on "DiskOnChip 2000" ar 0x0, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0x200, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0x400, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0x600, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0x800, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0xa00, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0xc00, size 0x200
+mtdblock: read on "DiskOnChip 2000" ar 0xe00, size 0x200
+Merging with /boot/boot.b
+mtdblock_open
+Sorry, don't know hw to handle device 0x1f00
+mtdblock_release
+ok
+mtdblock_release
+ok
+
+What can I do? Does the lilo-mtd support /dev/mtdblock[n] or it just
+support nftla?
+
+Thanks,
+Martin Chan
