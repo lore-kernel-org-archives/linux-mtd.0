@@ -1,19 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from h24-66-30-3.wp.shawcable.net ([24.66.30.3] helo=iders01.iders.ca)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vIJ5-0006tz-00
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 14:38:39 +0100
-Date: Wed, 10 Apr 2002 15:38:37 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: Trevor Warren <trevorwarren@yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: problem with old M-sys 1000 DOC
-Message-ID: <20020410153837.B22327@wohnheim.fh-wedel.de>
-References: <20020410070333.75392.qmail@web21403.mail.yahoo.com> <20020410112815.86335.qmail@web21402.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020410112815.86335.qmail@web21402.mail.yahoo.com>; from trevorwarren@yahoo.com on Wed, Apr 10, 2002 at 04:28:15AM -0700
+	id 16vIXy-0006v1-00
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 14:54:02 +0100
+Received: from athlon ([200.123.101.135])
+	by iders01.iders.ca (8.12.2/8.12.2/Debian -11) with SMTP id g3ADrwbY027343
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 08:53:58 -0500
+Message-ID: <008f01c1e097$2dce41a0$87657bc8@athlon>
+From: "Derek Ross" <dross@iders.ca>
+To: <linux-mtd@lists.infradead.org>
+Subject: What is smallest JFFS2 size (#blocks)
+Date: Wed, 10 Apr 2002 08:54:05 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,29 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 10 April 2002 04:28:15 -0700, Trevor Warren wrote:
-> Dudes...the mail below i got from some1 whose tryin to
-> act like a real smart ***.. 
-> 
->   I may b wrong in my approach to the DOC for buildin
-> a thin client or other embedded systems which i wanna
-> use...but if i am wron, then some1 could point that
-> out. 
->   I appreciate pple correctin me....not some1
-> bashing....;)
+Hello,
 
-If you want answers, give people a reason to answer. They might feel
-more inclined to do so, if:
-- You pay them.
-- You try to write correct English.
-- You ask clear questions that can be answered with few words.
-- You pay attention to the netiquette.
+We plan to use JFFS2 to store several
+text configuration files, but we don't 
+expect the total size of the files to 
+be more than 10k or so.
 
-The last part includes, keeping private mail private and not starting
-flame wars. If you don't like the answers you get, just ignore them.
+What is the smallest possible size
+for a JFFS2 file system, in number
+of blocks? I'm sure it's at least 2...
 
-Jörn
-
--- 
-When you lose, don't lose the lesson.
--- reputely from the Dalai Lama, unverified
+Thanks,
+Derek Ross.
