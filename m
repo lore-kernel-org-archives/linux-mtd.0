@@ -1,22 +1,27 @@
-Received: from wproxy.gmail.com ([64.233.184.196])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEH8J-0000CY-7A
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 20:27:35 -0500
-Received: by wproxy.gmail.com with SMTP id 37so292437wra
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Mar 2005 17:27:36 -0800 (PST)
-Message-ID: <6934efce0503231727f7234f6@mail.gmail.com>
-Date: Wed, 23 Mar 2005 17:27:36 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-References: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & deletion dirents RFC
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+	id 1DEHfd-0000Wu-1E
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 21:02:01 -0500
+Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR011.ip.videotron.ca
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	with ESMTP id <0IDU007TM2ZDG5@VL-MO-MR011.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 21:02:01 -0500 (EST)
+Date: Wed, 23 Mar 2005 21:02:01 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <6934efce05032316553410bfdd@mail.gmail.com>
+To: Jared Hulbert <jaredeh@gmail.com>
+Message-id: <Pine.LNX.4.62.0503232100210.9677@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <1110827292.7642.26.camel@windu.rchland.ibm.com>
+	<1110828016.7642.29.camel@windu.rchland.ibm.com>
+	<1110828565.7642.33.camel@windu.rchland.ibm.com>
+	<20050317103418.GA4501@wohnheim.fh-wedel.de>
+	<1111423965.7635.4.camel@windu.rchland.ibm.com>
+	<6934efce05032316553410bfdd@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: lock bit and erase errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +31,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Forgive me if my ignorance is obvious...
-Are there any implications to non-dirent nodes?  Shouldn't this speed
-up the GC, mount time for any node?  If not then the version field for
-non-dirent nodes is utterly wasted, right?  If the version field is
-wasted for all non-dirent nodes (in other words, most nodes) then it
-seems like a bad idea to add a WORD or DWORD to each node. If there is
-a way to make version field only apply to dirent nodes then it would
-be much better, of course that sounds ugly without even thinking it
-through too far.
+On Wed, 23 Mar 2005, Jared Hulbert wrote:
+
+> Can I ftp a tarball somewhere on the hallowed infradead.org or get a
+> directory in the CVS tree I can commit it to?
+
+The CVS directory is probably the best way forward IMHO.
+
+
+Nicolas
