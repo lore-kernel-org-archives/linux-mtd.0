@@ -1,19 +1,22 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 188kK0-0006NI-00
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 16:43:28 +0000
-Date: Mon, 4 Nov 2002 18:13:39 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Brian J. Murrell" <0c9fc0b0347685d368eb3e4aecd72738@interlinx.bc.ca>,
-   linux-mtd@lists.infradead.org
-Subject: Re: MTD Config.in items not escaped by bus availability
-Message-ID: <20021104171339.GB13152@wohnheim.fh-wedel.de>
-References: <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <20021030204937.GG27880@pc.ilinx> <20021104142950.GO16306@pc.ilinx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	id 188yMo-0007oA-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 07:43:19 +0000
+Received: from www.fastmail.fm (localhost [127.0.0.1])
+	by localhost.localdomain (Postfix) with ESMTP id ABFA66DA63
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Nov 2002 02:13:33 -0600 (CST)
+Received: from server4.fastmail.fm (server4.internal [10.202.2.135])
+	by www.fastmail.fm (Postfix) with ESMTP id 5C6906D9D6
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Nov 2002 02:13:33 -0600 (CST)
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20021104142950.GO16306@pc.ilinx>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-1"
+MIME-Version: 1.0
+Date: Tue, 5 Nov 2002 08:13:30 UT
+From: "Jeffrey Lim" <jfsworld@fastmail.fm>
+To: "linux-mtd list" <linux-mtd@lists.infradead.org>
+Subject: MTD CVS: missing JFFS2?
+Message-Id: <20021105081328.7AE732FD4D@server4.fastmail.fm>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,32 +28,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 4 November 2002 09:29:51 -0500, Brian J. Murrell wrote:
-> 
-> Of course, you are absolutely correct.  I guess the reason I jumped
-> the gun was that the last time I did this dance, there was no active
-> maintainer so I went ahead and sent my patch to Marcelo my self.  I
-> guess I was just following the footsteps of my last time around with
-> this sort of thing.
-> 
-No problem. I've made bigger thinkos on a regular basis. :-(
+Hi guys, i follow the instructions found at
+sources.redhat.com/jffs2 and download the latest MTD source from CVS.
 
-> +++ linux-2.4.19-16mdkcustom.memory_bus/arch/alpha/defconfig	2002-11-01 18:50:35.000000000 -0500
-> +++ linux-2.4.19-16mdkcustom.memory_bus/arch/i386/defconfig	2002-11-01 18:50:44.000000000 -0500
-> +++ linux-2.4.19-16mdkcustom.memory_bus/arch/ia64/defconfig	2002-11-01 18:50:51.000000000 -0500
-> +++ linux-2.4.19-16mdkcustom.memory_bus/arch/ppc/defconfig	2002-11-01 18:50:57.000000000 -0500
-> +++ linux-2.4.19-16mdkcustom.memory_bus/arch/x86_64/defconfig	2002-11-01 18:51:03.000000000 -0500
+under the patches subdir, there is a patchin.sh, which i run.
 
-That is five architectures out of of sixteen. You might argue that
-s390 does not need mtd (which I'm not even sure about), but arm is
-definitely missing and surely some more.
+However, after taking a look at patchin.sh, i realize that the jffs2 code
+doesnt seem to get patched at all!, only jffs. Am i therefore to assume
+that the MTD CVS does not contain any jffs2 code at all, and that i
+should just use the jffs2 code from the stock kernel?
 
-Can you add the other architectures or explain for each missing one,
-why this was not necessary? Maybe I am just stupid.
+Any help/explanation would be appreciated. Thanks.
 
-Jörn
+-jf
 
--- 
-The cost of changing business rules is much more expensive for software
-than for a secretaty.
--- unknown
+(according to sources.redhat.com/jffs2 -
+"JFFS2 has been included in the official Linux kernel since the 2.4.10
+release. The latest code is available from the Memory Technology Device
+(MTD) CVS tree at cvs.infradead.org. To obtain an up to date copy, use
+the following commands:...")
+
+ 
+--
+  "It's an extraordinary world!" - jfsworld <at> fastmail.fm
+ 
+ 
