@@ -1,19 +1,19 @@
-Received: from [213.86.99.234] (helo=phoenix.infradead.org)
+Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kl2S-0001nS-Hd
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 14:42:44 +0100
-Received: from [211.35.174.85] (helo=user-4c5cfe14d1)
-	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 19kl2G-0003zf-00
-	for linux-mtd@lists.infradead.org; Thu, 07 Aug 2003 14:42:33 +0100
-From: a_rajan2@redsalsa.com
-To: linux-mtd@lists.infradead.org
-Sender: a_rajan2@redsalsa.com
+	id 19klpk-00020Q-77
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 15:33:40 +0100
+From: Dave Dillow <dave@thedillows.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1060254121.25209.69.camel@passion.cambridge.redhat.com>
+References: <97303ED3C472254E8888E5F74A783471045BD2@msu-ex01.corp.m-sys.com>
+	 <1060254121.25209.69.camel@passion.cambridge.redhat.com>
+Message-Id: <1060266774.27837.2.camel@dillow.idleaire.com>
 Mime-Version: 1.0
-Date: Thu, 7 Aug 2003 22:42:00 +0900
-Message-Id: <E19kl2G-0003zf-00@phoenix.infradead.org>
-Content-Type: text/plain; charset="iso-8859-1"
-Subject: Protect your PC today
+Date: 07 Aug 2003 10:32:54 -0400
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: RE: Problems with 128MB DoC 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-POSSIBLE TROJAN DETECTED! WARNING..
-most common viruses infect themselves through email!
-A downloadable copy of Norton Antivirus will terminate viruses before they can infect your system!
+On Thu, 2003-08-07 at 07:02, David Woodhouse wrote:
+> Dave, does the code in drivers/mtd/nand/diskonchip.c work for you if you
+> hack it to have the correct address for the DiskOnChip, and make the
+> ident bits work?
 
-btw, you look great today.
-
-You can be totally safe and secure within 5 minutes!
-http://appqov@softwaresavings2you.biz/default.asp?id=3000
-
-
-
-
-
-
-
-
-
-ps. dont want any more of this shit?
-http://appq5ov@softwaresavings2you.biz/remove/remove.html
+No, I still get the C6, C6 signature.
+-- 
+Dave Dillow <dave@thedillows.org>
