@@ -1,17 +1,16 @@
-Received: from [217.167.239.213] (helo=tasmanie.mensi.net)
+Received: from tomts23-srv.bellnexxia.net ([209.226.175.185])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LLpQ-0000yZ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 11:39:44 +0100
-Message-ID: <003a01c2190f$998b1cf0$280300c0@groenland>
-From: "Guillaume David" <guillaume.david@mensi.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: <guillaume.david@mensi.com>
-Subject: Problem in duplicating DoC2000
-Date: Fri, 21 Jun 2002 12:37:11 +0200
+	id 17LOfU-000193-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 14:41:40 +0100
+Date: Fri, 21 Jun 2002 09:41:36 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Guillaume David <guillaume.david@mensi.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem in duplicating DoC2000
+In-Reply-To: <003a01c2190f$998b1cf0$280300c0@groenland>
+Message-ID: <Pine.LNX.4.44.0206210936030.9587-100000@server.superbt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Guillaume,
 
-I'm really happy having success in building an embedded linux system on
-DoC2000 with the mtd stuff.
-This system boots thanks to grub.
+Error 16 is 
 
-I bought the disk-on-chip GANG programmer from M-System to copy easily and
-fast my systems.
-This programmer first copies the source DoC to its own hard disk in an image
-file. Then in a second time, it writes the image file to the target DoC.
-But it doesn't really works, the copies seem to start but I have a message
-such as :
-    Spare Media Header for NFTL 0 found in flash sector 224
-    nftl_rawread error 16 in memcpy() or earlier, press any key...
+   [ERR_FSYS_CORRUPT] = "Inconsistent filesystem structure"
 
-I press a key and then the boot sequence goes on and hangs up after having
-written
-    NFTL driver: nftlcore.c $ Revision1.86$, nflmount.c $ Revision 1.28 $
+according to GRUB's shared.h and common.c.
 
-The original DoC works pretty well instead, there must be some problem in
-the copy process.
+Perhaps, the flash programmer is smart enough to move the NFTL payload
+around the chip when a bad block is detected.  I wonder what happens when 
+the resulting size of the NFTL payload is smaller than the original one.  
+In this case there could be a problem with copying the filesystem 
+one-to-one.
 
-Do you have any idea of what happened and how I can correct or avoid the
-problem.
+Ilguiz
 
-Best Regards
+On Fri, 21 Jun 2002, Guillaume David wrote:
 
-Guillaume DAVID
-Mensi
+> I bought the disk-on-chip GANG programmer from M-System to copy easily and
+> fast my systems.
+> This programmer first copies the source DoC to its own hard disk in an image
+> file. Then in a second time, it writes the image file to the target DoC.
