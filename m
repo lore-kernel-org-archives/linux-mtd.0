@@ -1,51 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13DaMt-0002iA-00
-	for mtd-list@infradead.org; Sat, 15 Jul 2000 23:25:07 +0100
-Received: from law-f64.hotmail.com ([209.185.131.127] helo=hotmail.com)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13DaMr-0002i4-00
-	for mtd@infradead.org; Sat, 15 Jul 2000 23:25:05 +0100
-Message-ID: <20000715222433.57109.qmail@hotmail.com>
-From: "Prabha19 Selva" <sprabha19@hotmail.com>
-To: mtd@infradead.org
-Cc: sprabha@hotmail.com
-Subject: Fwd: Re: Error when loading the modules
-Date: Sat, 15 Jul 2000 18:24:33 EDT
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+	id 13DpTo-0004Fo-00
+	for mtd-list@infradead.org; Sun, 16 Jul 2000 15:33:16 +0100
+Date: Sun, 16 Jul 2000 15:32:13 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Prabha19 Selva <sprabha19@hotmail.com>
+cc: mtd@infradead.org, sprabha@hotmail.com
+Subject: Re: Fwd: Re: Error when loading the modules
+In-Reply-To: <20000715222433.57109.qmail@hotmail.com>
+Message-ID: <Pine.LNX.4.21.0007161530460.900-100000@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi David,
-Still the same problem (can not load the cfi_prob.o, cfi_cmdset_0002.o
-etc. modules. It is still giving "unresolved symbol put-module-symbol". I 
-have added the patch you mentioned earlier and recompile the kernel and also 
-(just to make sure) the mtd drivers. But I still get the same error.
+On Sat, 15 Jul 2000, Prabha19 Selva wrote:
 
-What can I do now...
+> Hi David,
+> Still the same problem (can not load the cfi_prob.o, cfi_cmdset_0002.o
+> etc. modules. It is still giving "unresolved symbol put-module-symbol". I 
+> have added the patch you mentioned earlier and recompile the kernel and also 
+> (just to make sure) the mtd drivers. But I still get the same error.
 
-Prabha
 
-p.s. Do I need to apply anyother patches in the mtd/patches directory?...
->
->On Fri, 14 Jul 2000, David Woodhouse wrote:
->
-> >
-> > Apply the put_module_symbol-2.2.1x.patch patch to your kernel. It 
->provides
-> > the put_module_symbol() function.
-> >
-> > --
-> > dwmw2
-> >
-> >
-> >
->
->
+Either the patch didn't apply properly, or you're not running the kernel
+to which you applied the patch.
 
-________________________________________________________________________
-Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+Check that kernel/ksyms.c contains a line which says:
+	EXPORT_SYMBOL(put_module_symbol);
+
+Check that put_module_symbol exists in /proc/ksyms
+
+Make sure CONFIG_MODVERSIONS is turned off.
+
+--
+dwmw2
 
 
 
