@@ -1,20 +1,17 @@
-Received: from bay-bridge.veritas.com ([143.127.3.10]
-	helo=MTVMIME03.enterprise.veritas.com)
+Received: from cl-303.ams-04.nl.sixxs.net ([2001:960:2:12e::2]
+	helo=joshuawise.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DGaUC-0007VE-No
-	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2005 05:31:45 -0500
-Message-ID: <424A814A.10807@eth.net>
-Date: Wed, 30 Mar 2005 16:06:58 +0530
-From: Amit Gud <gud@eth.net>
+	id 1DGoKu-0001d9-NB
+	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2005 20:19:05 -0500
+Message-ID: <424B4FFA.7050906@joshuawise.com>
+Date: Wed, 30 Mar 2005 20:18:50 -0500
+From: Joshua Wise <joshua@joshuawise.com>
 MIME-Version: 1.0
-To: "Amit S. Gud" <gud@eth.net>,  greg@kroah.com
-References: <ITPXCHFE1572J674Mqb0000209d@itpxchfe1.enterprise.veritas.com>
-In-Reply-To: <ITPXCHFE1572J674Mqb0000209d@itpxchfe1.enterprise.veritas.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, joern@wh.fh-wedel.de
-Subject: Re: [PATCH 50/91] get rid of	pci_find_{device,
-	subsys}drivers/mtd/devices/pmc551.c
+Cc: Matt Reimer <mreimer@vpop.net>
+Subject: oobavail issues
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Amit Gud wrote:
- > replace pci_find_{device,subsys} with pci_get_{device,subsys}
- >
+Hi folks,
 
-Please don't apply, its incorrect.
+We're debugging a mysterious crash on NAND writes on an s3c2410-derived 
+driver. The culprit seems to be in how oobavail is determined:
 
-Sorry for the inconvenience.
+line 2524 nand_base.c: mtd->oobavail = mtd->oobsize - 
+(this->autooob->eccbytes + 1);
 
+Our oobinfo is the same as the s3c2410's. For reference, that's:
 
-Best,
-AG
---
-May the source be with you.
+static struct nand_oobinfo nand_hw_eccoob = {
+         .useecc = MTD_NANDECC_AUTOPLACE,
+         .eccbytes = 3,
+         .eccpos = {0, 1, 2 },
+         .oobfree = { {8, 8} }
+};
+
+We found that making our oobfree match up with oobavail seemed to do the 
+trick for avoiding this, and make JFFS2 work, to boot! Here's what we did:
+
+static struct nand_oobinfo nand_hw_eccoob = {
+         .useecc = MTD_NANDECC_AUTOPLACE,
+         .eccbytes = 3,
+         .eccpos = {0, 1, 2 },
+         .oobfree = { {8, 8}, {3, 2}, {6, 2} } /* {6, 10} instead? */
+};
+
+I suspect that oobavail should be summing oobfree instead of doing that 
+arithmetic. Or is there something I'm not seeing?
+
+joshua
