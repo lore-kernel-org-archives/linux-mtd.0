@@ -1,49 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qChj-0006pb-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 12:34:31 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14qDYE-0007p0-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 13:28:46 +0100
+Received: from [212.87.56.100] (helo=mail.taytron.net)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qChh-0006pV-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 12:34:30 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.21.0104191118570.11552-100000@godzilla.axis.se> 
-References: <Pine.LNX.4.21.0104191118570.11552-100000@godzilla.axis.se> 
-To: Bjorn Wesen <bjorn.wesen@axis.com>
-Cc: mtd@infradead.org
-Subject: Re: cramfs and mtd 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 19 Apr 2001 12:33:37 +0100
-Message-ID: <1991.987680017@redhat.com>
+	id 14qDYD-0007ou-00
+	for mtd@infradead.org; Thu, 19 Apr 2001 13:28:45 +0100
+Message-ID: <001a01c0c8d1$143aece0$0d3318b5@jolt>
+From: "Florian Schirmer / TayTron" <schirmer@taytron.net>
+To: <joakim.tjernlund@lumentis.se>,
+	"'Vipin Malik'" <vipin.malik@daniel.com>
+Cc: <mtd@infradead.org>
+References: <000801c0c8bb$44e56de0$0a01a8c0@Win1>
+Subject: Re: JFFS2 as root FS
+Date: Thu, 19 Apr 2001 15:02:16 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hallo!
 
-bjorn.wesen@axis.com said:
-> When using cramfs directly on a ROM chip like below.. can we make
-> cramfs/inode.c talk to mtd to find a chip maybe instead of using
-> direct pointers like I do in my small patch below ? That is, would it
-> mess up inode.c to the degree that it would not be accepted in the
-> mainline kernel ? :) Or is there a better way to do this ? 
+> By adding /dev/mtdblock1 to init/main.c I managed to make Linux recognize
+> my root FS on mtdblock1 :-)
+>
+> Now I am having some other problems :-(
+> First it takes about 1 min 30 sec to mount my root FS. Is that expected? I
+> was hoping for a much shorter
+> mount time, 10-20 sec
 
-See the evil hack in jffs and jffs2 which uses the minor number of the 
-mtdblock device to get a handle on the underlying MTD device. Copy that and 
-then use the MTD device directly for read/write.
+Did you try to mount the flash again under linux? We had a problem with the
+endianess some time ago and run into the same trouble as you did. Mounting
+took a long time and after that the flash was completely empty. Files cound
+be moved onto it, but as soon as you re-mounted the flash it was empty
+again. Try if this happens to you too.
 
-The real advantage of cramfs-on-mtd comes when you can set 
-CONFIG_BLK_DEV=n, though - which means the above evil hack is no longer 
-possible. We need to remove FS_REQUIRES_DEV from JFFS{,2} and pass the name 
-or number of the MTD device as a mount option instead. If you're doing the 
-same thing for cramfs, it's probably better to copy the cramfs code to a 
-new filesystem (cmtdfs?) and hack it there. 
+I know its a wild guess but maybe it helps!
 
-There are also vague plans to provide an 'xipfs', which has page-aligned 
-data, for the benefit of those with more flash space than sense.
-
---
-dwmw2
-
+Happy hacking
+   Florian
 
 
 
