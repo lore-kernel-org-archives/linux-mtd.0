@@ -1,19 +1,20 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Amr2-0006QL-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 07:50:00 +0000
-Date: Sun, 10 Nov 2002 09:20:17 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Kevin Kaichuan He <hek_u5@yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Q on MTD support for NOR flash
-Message-ID: <20021110082017.GC16704@wohnheim.fh-wedel.de>
-References: <20021109205730.GB16704@wohnheim.fh-wedel.de> <20021110074920.4607.qmail@web14812.mail.yahoo.com>
+Received: from mail.airnet.com.au ([202.174.32.5] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18AnQA-0006VL-00
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 08:26:18 +0000
+Subject: Re: Building mkfs.jffs2
+From: Darren Freeman <free0076@flinders.edu.au>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>
+In-Reply-To: <20021107153857.GC31118@wohnheim.fh-wedel.de>
+References: <1036570803.16096.98.camel@dirac.home>
+	<1036709357.3637.5.camel@dirac.home>
+	<20021107153857.GC31118@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Date: 10 Nov 2002 19:27:22 +0000
+Message-Id: <1036956444.2367.4.camel@dirac.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20021110074920.4607.qmail@web14812.mail.yahoo.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,30 +26,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sat, 9 November 2002 23:49:20 -0800, Kevin Kaichuan He wrote:
-> 
-> One Further question is : how do I configure MTD driver to support
-> my NOR flash ? For example, the AMD29LV800 flash has two width: 8bits
-> or 16bits, how do I let the driver know which width of word I choose ?
-> Or can the MTD magically figure out the configuration of my NOR 
-> flash ?
+Jorn,=20
 
-You need something like this:
-CONFIG_MTD=y
-CONFIG_MTD_PARTITIONS=y
-CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=y
-CONFIG_MTD_CFI=y
-CONFIG_MTD_GEN_PROBE=y
-CONFIG_MTD_CFI_AMDSTD=y
-CONFIG_MTD_PHYSMAP=y
-CONFIG_MTD_PHYSMAP...=...
+On Thu, 2002-11-07 at 15:38, J=F6rn Engel wrote:=20
+> On Thu, 7 November 2002 22:49:15 +0000, Darren Freeman wrote:
+> >=20
+> > > I simply can't get mtd/utils to build on either host. I don't want a
+> > > cross-compiled binary, just something to use on the host. I have trie=
+d
+> > > using ./configure --with-kernel=3D pointing to the host kernel or tar=
+get
+> > > but no success. I guess the target kernel is the correct one to use
+> > > here.
+> >=20
+> > Yeah I tried and tried and tried some more. Still gave up.
+>=20
+> Dunno. I've never had any problems, compiling for x86 or
+> crosscompiling for ppc. Provide ssh login and I will have a look. If
+> company policy forbids this, let the company pay your time. :-)
+University policy forbids it from even being networked to anything other
+than the RedHat box next to it. Let me tell you, it's a real *pain* =3D)=20
 
-Details might vary, have fun figuring those out. Buswidth must be set
-for physmap.
+Imagine the suffering I go through just to get the kernel source on that
+box =3D)=20
 
-Jörn
+> J=F6rn
+Thanks anyway =3D)=20
 
--- 
-Good warriors cause others to come to them and do not go to others.
--- Sun Tzu
+Have fun,=20
+Darren
