@@ -1,19 +1,20 @@
 Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ATsIK-0006iu-SA
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2003 00:33:37 +0000
+	id 1ATt80-0006um-Lq
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2003 01:27:01 +0000
+Received: from there (203-96-48-55-tollfree.actrix.co.nz [203.96.48.55])
+	by desire.actrix.co.nz (Postfix) with SMTP id C4B8C16D29
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Dec 2003 14:25:15 +1300 (NZDT)
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: Charles Manning <manningc2@actrix.gen.nz>
-To: Joshua Wise <joshua@joshuawise.com>,
-	linux-mtd@lists.infradead.org
-Date: Wed, 10 Dec 2003 13:38:48 +1300
-References: <200312091440.22926.joshua@joshuawise.com>
-In-Reply-To: <200312091440.22926.joshua@joshuawise.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 10 Dec 2003 14:32:13 +1300
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20031210003150.631E116BB2@desire.actrix.co.nz>
-Subject: Re: nand: oob question
+Message-Id: <20031210012515.C4B8C16D29@desire.actrix.co.nz>
+Subject: mtd: Config.in syntax broken for olde kernels?
 Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,20 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 10 December 2003 08:40, Joshua Wise wrote:
-> Hi all,
->
-> I've been porting Linux to the iPAQ h1910. I'm having lots of issues
-> mounting jffs2 partitions that I've traced down to there only being 16
-> bytes of nand oob, not the 32 bytes that jffs2 seems to be expecting.
->
-> Is my flash weird, or am I just dense?
+Some of us old'uns still use 2.4.18 etc. Ok, ok I know I should get with the 
+90's.....
 
-Hopefully neither :-).
+When I ran a config on the latest mtd from cvs I hit a problem. It seems that 
+the old 2.4.18 config script chokes on elif
 
-NAND typically has pages with 512bytes data + 16 bytes oob.  The newer 
-(larger) stuff has 2kB data + 64bytes OOB per page.
+I fixed the poblem in drivers/mtd/chips as follows.
 
-Why do you think jffs2 wants 32bytes of OOB?
+-- CHarles
 
--- Charles
+
+--- Config.in.old	Mon Dec  8 07:15:16 2003
++++ Config.in	Mon Dec  8 07:16:40 2003
+@@ -58,12 +58,14 @@
+ 	-o "$CONFIG_MTD_CFI_AMDSTD" = "y" \
+ 	-o "$CONFIG_MTD_CFI_STAA" = "y" ]; then
+    define_bool CONFIG_MTD_CFI_UTIL y
+-elif [ "$CONFIG_MTD_CFI_INTELEXT" = "m" \
++else
++   if [ "$CONFIG_MTD_CFI_INTELEXT" = "m" \
+ 	-o "$CONFIG_MTD_CFI_AMDSTD" = "m" \
+ 	-o "$CONFIG_MTD_CFI_STAA" = "m" ]; then
+-   define_bool CONFIG_MTD_CFI_UTIL m
+-else
+-   define_bool CONFIG_MTD_CFI_UTIL n
++      define_bool CONFIG_MTD_CFI_UTIL m
++   else
++      define_bool CONFIG_MTD_CFI_UTIL n
++   fi
+ fi
+ 
+ dep_tristate '  Support for RAM chips in bus mapping' CONFIG_MTD_RAM 
+$CONFIG_MTD
