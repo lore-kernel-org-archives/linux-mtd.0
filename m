@@ -1,22 +1,26 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from bavaria.muenchen.pop.de
+	([195.30.254.66] helo=fallback.pop.de ident=mail)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17jaY5-0004RI-00
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 08:14:02 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H1H00H76QQI7B@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Tue, 27 Aug 2002 09:13:31 +0200 (MEST)
-Date: Tue, 27 Aug 2002 09:13:08 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Cannot remove child on JFFS2 FS
-In-reply-to: <1030428801.3d6b1881e7ed3@imp.free.fr>
-To: olivier.eribon@free.fr
-Cc: linux-mtd@lists.infradead.org
-Message-id: <1030432389.12249.0.camel@thomas.tec.linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7BIT
-References: <1030428801.3d6b1881e7ed3@imp.free.fr>
+	id 17jldI-0002Ho-00
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 20:04:09 +0100
+Received: from mail.jena.pop.de ([195.222.197.3])
+	by fallback.pop.de with esmtp (Exim 3.20 #1)
+	id 17jld8-0001yP-00
+	for linux-mtd@lists.infradead.org; Tue, 27 Aug 2002 21:04:02 +0200
+Received: from goepel2.jena.provi.de (goepel2.jena.provi.de [195.222.197.91])
+	by mail.jena.pop.de (8.9.3/8.9.3) with ESMTP id VAA01374
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 21:03:21 +0200
+Received: from goepel.com (goepel109.goepel [172.16.1.109])
+	by goepel2.jena.provi.de (8.10.0/8.10.0) with ESMTP id g7RJ3F221829
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2002 21:03:15 +0200
+Message-ID: <3D6BCCFD.4090707@goepel.com>
+Date: Tue, 27 Aug 2002 21:03:25 +0200
+From: Michael Palme <m.palme@goepel.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: flash file system for production use
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,18 +32,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 2002-08-27 at 08:13, olivier.eribon@free.fr wrote:
-> Now, after reboot for each FS mount and for each file on the removed directory, 
-> this message appears on console :
-> Cannot remove child "fileXXX", ino #0, because it doesn't exist
-> 
-> How can I solve this problem ? (because this message induce long time to
-> mount partition.)
-Use latest CVS code. It's fixed there.
+hello...
+
+i've got a strongarm system with 32mb intel strata flash. i need a 
+mechanism for storing configuration files etc in the flashes. for this 
+purpose 20mb of the flashes are free. the performance/ stability thing 
+is very important for me. i cant wait 10 secs fot mounting/ checking 
+etc. i' ve tried jffs2 from CVS and it seems to be "fast" on a nearly 
+empty flash partition, but i have no suggestion about what happens in 
+hard production use, when the flash will be written  over and over again 
+and the wear leveling takes place. the device is never shutdown'ed in a 
+clean way -- always hard power off...
+
+because i have 20megs free and only small information to store i think 
+there is no need for a complex wear leveling mechanism but im not an expert.
+
+what the best solution fot my problems???
+
+please give some hints....
+
+
+thanks in advance ... Michael Palme
 
 -- 
-Thomas 
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-------------------------------
+Dipl.-Ing. (FH)
+Michael Palme
+software engineer
+Goepel electronic GmbH
+
+mailto: m.palme@goepel.com
+phone:  +493641689682
+fax:    +493641689644
+inet:   http://www.goepel.com
+-------------------------------
