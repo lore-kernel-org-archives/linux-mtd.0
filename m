@@ -1,19 +1,14 @@
-Received: from ms-smtp-01.nyroc.rr.com ([24.92.226.148])
+Received: from law11-f26.law11.hotmail.com ([64.4.17.26] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AAcK6-00019t-CS
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Oct 2003 22:39:50 +0100
-From: "Dave Ellis" <dge@sixnetio.com>
-To: "'Ingo Flaschberger'" <if@sil.at>
-Date: Fri, 17 Oct 2003 17:39:16 -0400
-Message-ID: <00512BA4F9D3D311912A009027E9B8F407E54C@nt.sixnet.com>
-MIME-Version: 1.0
-In-Reply-To: <Pine.GSO.4.56.0310100453520.19931@ikarus.sil.at>
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: RE: kmalloc jffs2_do_mount_fs 
-Reply-To: dge@sixnetio.com
+	id 1AArxx-0002LV-6A
+	for <linux-mtd@lists.infradead.org>; Sat, 18 Oct 2003 15:22:01 +0100
+From: "J B" <mad_flasher@hotmail.com>
+To: jffs-dev@axis.com, linux-mtd@lists.infradead.org
+Date: Sat, 18 Oct 2003 09:20:23 -0500
+Mime-Version: 1.0
+Message-ID: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
+Content-Type: text/plain; format=flowed
+Subject: jffs2 fragmentation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,108 +18,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-10-10 at 05:13 +0200, Ingo Flaschberger wrote:
-> kmalloc does not give you more than 128k (only i you "hack" it).
-> jffs2 with a filesystem about 40Mb need more when mounting..
-> to fix this.. i have luckily found a patch at the list:
->
-http://lists.infradead.org/pipermail/linux-mtd/2002-December/006577.html
+Ok, maybe I am just completely missing something here, but I am stumped.  I 
+am running some tests (similar to the jitter tests Vipin did a long time 
+ago), and I am seeing some very bad performance.   Below is a summary of 
+what I am doing and what I am seeing.
 
-As David pointed out in his reply to my original post, the corresponding
-kfree() needs to change to vfree(). I am including an updated patch
-that does that. It is clean against current CVS, but I have only tested
-it with my code, which is nowhere near current.
+I have a jffs2 filesystem that is mounted and starts out at ~87% full.  
+There are various small files on there, and one big file, ~15MiB (lgood 
+compression :).  Here is what I do:
 
-I am still using this patch since I have questions about possible
-problems
-with the virtual blocks. The virtual block size depends on the size of a
-kernel
-structure that can change and may differ for some architectures. If the
-flash
-is removable, it may be unusable when moved to a different system. Even
-if it is not removable (mine isn't for now) a newer kernel could break
-it.
+rm /opt/big_file; cp /home/big_file /opt/big_file; rm /opt/big_file; cp 
+/home/big_file2 /opt/big_file
 
-It also complicates building images with mkfs.jffs2, since the block
-size depends on the size of the partition. With vmalloc() I can use the
-same image for any flash with the same erase size.
+/opt is the jffs2 filesystem, /home is an nfs mounted directory.  big_file 
+and big_file2 are the same size, but have different content (i.e. possibly 
+different compression ratios).
 
-Also, with NAND flash, I don't see how to determine the virtual block
-size when loading an image. I use U-Boot to erase the flash and load 
-the image. It is not clear how the clean markers interact with virtual
-blocks or what should it do when one of erase blocks in a virtual block
-is bad.
+Normally, a rm/cp pair takes about 2 minutes on my system.  After about 10 
+iterations, the copies begin to take longer, about 3-4 minutes.   After 
+about 10 iterations they take upwards of 1/2 an hour.
 
-Dave Ellis
+Looking at the dirty, used, and wasted size from a df command, I see this:
 
-diff -Naur kmalloc/build.c vmalloc/build.c
---- kmalloc/build.c	Wed Oct 15 10:03:20 2003
-+++ vmalloc/build.c	Wed Oct 15 10:48:34 2003
-@@ -286,7 +286,7 @@
- 
- 	c->free_size = c->flash_size;
- 	c->nr_blocks = c->flash_size / c->sector_size;
--	c->blocks = kmalloc(sizeof(struct jffs2_eraseblock) *
-c->nr_blocks, GFP_KERNEL);
-+	c->blocks = vmalloc(sizeof(struct jffs2_eraseblock) *
-c->nr_blocks);
- 	if (!c->blocks)
- 		return -ENOMEM;
- 	for (i=0; i<c->nr_blocks; i++) {
-@@ -325,7 +325,7 @@
- 		D1(printk(KERN_DEBUG "build_fs failed\n"));
- 		jffs2_free_ino_caches(c);
- 		jffs2_free_raw_node_refs(c);
--		kfree(c->blocks);
-+		vfree(c->blocks);
- 		return -EIO;
- 	}
- 
-diff -Naur kmalloc/fs.c vmalloc/fs.c
---- kmalloc/fs.c	Wed Oct 15 10:03:20 2003
-+++ vmalloc/fs.c	Wed Oct 15 10:48:34 2003
-@@ -444,8 +444,6 @@
- 	 * to reduce the memorysize for c->blocks. (kmalloc allows max.
-128K allocation)
- 	 */
- 	blocks = c->flash_size / c->mtd->erasesize;
--	while ((blocks * sizeof (struct jffs2_eraseblock)) > (128 *
-1024))
--		blocks >>= 1;
- 	
- 	c->sector_size = c->flash_size / blocks;
- 	if (c->sector_size != c->mtd->erasesize)
-@@ -506,7 +504,7 @@
-  out_nodes:
- 	jffs2_free_ino_caches(c);
- 	jffs2_free_raw_node_refs(c);
--	kfree(c->blocks);
-+	vfree(c->blocks);
-  out_inohash:
- 	kfree(c->inocache_list);
-  out_wbuf:
-diff -Naur kmalloc/super-v24.c vmalloc/super-v24.c
---- kmalloc/super-v24.c	Wed Oct 15 10:03:21 2003
-+++ vmalloc/super-v24.c	Wed Oct 15 10:48:34 2003
-@@ -89,7 +89,7 @@
- 	up(&c->alloc_sem);
- 	jffs2_free_ino_caches(c);
- 	jffs2_free_raw_node_refs(c);
--	kfree(c->blocks);
-+	vfree(c->blocks);
- 	jffs2_nand_flash_cleanup(c);
- 	kfree(c->inocache_list);
- 	if (c->mtd->sync)
-diff -Naur kmalloc/super.c vmalloc/super.c
---- kmalloc/super.c	Wed Oct 15 10:03:21 2003
-+++ vmalloc/super.c	Wed Oct 15 10:48:34 2003
-@@ -264,7 +264,7 @@
- 	up(&c->alloc_sem);
- 	jffs2_free_ino_caches(c);
- 	jffs2_free_raw_node_refs(c);
--	kfree(c->blocks);
-+	vfree(c->blocks);
- 	jffs2_nand_flash_cleanup(c);
- 	kfree(c->inocache_list);
- 	if (c->mtd->sync)
- 
+<7>STATFS:
+<7>flash_size: 00680000
+<7>used_size: 0041afe4
+<7>dirty_size: 00199d2c
+<7>wasted_size: 0000012c
+<7>free_size: 000cb1c4
+<7>erasing_size: 00000000
+<7>bad_size: 00000000
+<7>sector_size: 00020000
+<7>nextblock: 0x00660000
+<7>gcblock: 0x000a0000
+
+So almost 13 eraseblocks worth of dirty space (NOR flash with 128KiB 
+eraseblocks).  But, there is only 1 block on the dirty_list, 6 on the 
+free_list, and 44 on the clean_list.  Garbage collection is going on during 
+the writes obviously, but it doesn't seem to be making any difference.  In 
+fact, the dirty_size _increases_.
+
+So here is my question:  because of the size of the file involved and the 
+relative lack of free eraseblocks to start with, is it possible that the 
+filesystem is so fragmented that the dirty space is spread accross many 
+eraseblocks and garbage collection is incapable of actually freeing up any 
+space?
+
+That is the only conclusion I could come to.  Any thoughts would be 
+appreciated.
+
+Thx,
+J
+
+_________________________________________________________________
+Want to check if your PC is virus-infected?  Get a FREE computer virus scan 
+online from McAfee.    
+http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
