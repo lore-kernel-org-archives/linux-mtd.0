@@ -1,31 +1,20 @@
-Received: from mailout.fastq.com ([204.62.193.66])
+Received: from host242-133.pool80206.interbusiness.it ([80.206.133.242]
+	helo=dns.ctsgroup.it)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19RfwK-0006CT-1k
-	for <linux-mtd@lists.infradead.org>; Sun, 15 Jun 2003 23:25:32 +0100
-Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
-	h5FMQ1V32147	for <linux-mtd@lists.infradead.org>;
-	Sun, 15 Jun 2003 15:26:01 -0700 (MST)
-	(envelope-from Russ.Dill@asu.edu)
-From: Russ Dill <Russ.Dill@asu.edu>
-To: "=?ISO-8859-1?Q?J=F6rn?= Engel" <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20030615183648.GA28134@wohnheim.fh-wedel.de>
-References: <20030612163736.CFEC.MINGFENG@linpus.com>
-	 <3EE8A3EA.5090001@esteem.com>
-	 <Pine.LNX.4.53.0306131307040.11502@undine.linuxgrrls.org>
-	 <20030615013104.0663F44BF@blood.actrix.co.nz>
-	 <1055700917.5401.0.camel@russ>
-	 <20030615183648.GA28134@wohnheim.fh-wedel.de>
-Message-Id: <1055715982.7533.0.camel@russ>
-Mime-Version: 1.0
-Date: 15 Jun 2003 15:26:22 -0700
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: manningc2@actrix.gen.nz
-cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-cc: Jasmine Strong <jasmine@regolith.co.uk>
-cc: Conn Clark <clark@esteem.com>
-Subject: Re: MRAM will kill FLASH ?
-Reply-To: Russ.Dill@asu.edu
+	id 19RsCa-0008Lv-Cn
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Jun 2003 12:31:08 +0100
+Received: from Massimo (dyn225.ctsgroup.it [192.6.1.225])
+	by dns.ctsgroup.it (8.11.6/8.11.6) with SMTP id h5GBVbM04553
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Jun 2003 13:31:37 +0200
+Message-ID: <001001c333fb$3c2b3ba0$e10106c0@Massimo>
+From: =?iso-8859-1?Q?Massimo_Cal=F2?= <m.calo@ctsgroup.it>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 16 Jun 2003 13:34:23 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Data CRC failed on node...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,17 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2003-06-15 at 11:36, Jörn Engel wrote:
-> On Sun, 15 June 2003 11:15:17 -0700, Russ Dill wrote:
-> > 
-> > correct, right now cypress is shipping 64kb and 256kb units, their
-> > marketing angle is for replacement of batery backed sram.
-> 
-> Interesting.  Do you have rough prices?  Something line "NOR costs 3x
-> as much as RAM"?
+Hi All,
 
-I can't find any pricing, and its a very new product. You'd probably
-have to contact them for a quote.
+    I have a 5272 Motorola Coldfire based board, running "uClinux dist. :
+uClinux-20030305.tar.gz" +
 
--- 
-Russ Dill <Russ.Dill@asu.edu>
+"Tool Chain : m68k-elf-tools-20030314.sh.".
+
+I have a 2Mb flash (AMD AM29LV160DB) using MTD + JFFS2.
+
+It has worked fine for a long time, then I received the following message
+during the bootstarp :
+
+        Command: mkdir /var/run
+        Command: mkdir /var/lock
+        Command: mount -t jffs2 /dev/mtdblock2 /mnt
+        jffs2_scan_inode_node(): Data CRC failed on node at 0x0005ca64: Read
+0xb399e587c
+        jffs2_scan_inode_node(): Data CRC failed on node at 0x000a1424: Read
+0xee61d2b26
+        Command: ifconfig lo 127.0.0.1
+        Command: route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+To fix the problem I do the command "eraseall /dev/mtd2" and the error was
+cleared.
+
+I have posted the problem to the uClinux List and I received the following
+answer :
+
+>>        Yes. Pls umount when u done using the flash. Because if u don't
+unmount
+>>        properly it will just scan for the nodes once again when the
+filesystems
+>>        comes up next time. It's just scans all the nodes,if u properly
+unmount
+>>        the filesystem before turning it off. So pls ensure u umount the
+>>        filesystem before turning off.
+
+
+Do I have to mount/unmount the flash every time I have to read/write from it
+?
+
+Which is the correct way to read/write from flash to avoid the "Data CRC"
+problem ?
+
+Thanks!
+
+Massimo.
