@@ -1,20 +1,21 @@
-Received: from mail3.aracnet.com ([216.99.193.38])
+Received: from bs1.dnx.de ([213.252.143.130] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1765Zr-0000R4-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 09:16:35 +0100
-Received: from tinman.seitzassoc.com (216-99-217-243.dsl.aracnet.com [216.99.217.243])
-	by mail3.aracnet.com (8.12.2/8.12.1) with ESMTP id g4A8GWk3006032
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 01:16:33 -0700
-Received: from tinman.seitzassoc.com (IDENT:galens@localhost [127.0.0.1])
-	by tinman.seitzassoc.com (8.11.6/8.11.6) with ESMTP id g4A8GVP25163
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 01:16:32 -0700
-Message-Id: <200205100816.g4A8GVP25163@tinman.seitzassoc.com>
+	id 1765kM-0000SF-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 09:27:27 +0100
+Received: from p50861435.dip.t-dialin.net ([80.134.20.53] helo=callisto.pengutronix.de)
+	by bs1.dnx.de with asmtp (Exim 3.34 #1)
+	id 1765kL-0007QH-00
+	for linux-mtd@lists.infradead.org; Fri, 10 May 2002 10:27:25 +0200
+Date: Fri, 10 May 2002 10:27:03 +0200
+From: Robert Schwebel <robert@schwebel.de>
 To: linux-mtd@lists.infradead.org
-Subject: can't rmmod cfi_cmdset_0002
+Subject: Re: mtdblock and devfs
+Message-ID: <20020510102702.U15258@schwebel.de>
+References: <20020510100655.T15258@schwebel.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 10 May 2002 01:16:31 -0700
-From: Galen Seitz <galens@seitzassoc.com>
+Content-Disposition: inline
+In-Reply-To: <20020510100655.T15258@schwebel.de>; from robert@schwebel.de on Fri, May 10, 2002 at 10:06:55AM +0200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,62 +27,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In the course of hacking on pci.c, I've encountered an issue with removing
-the cfi_cmdset_0002 module.  It seems that once I have successfully
-loaded the pci module, I can't unload the cmdset module.  Is it likely
-that I have created this problem?  How does one go about tracking
-down a problem like this?
+On Fri, May 10, 2002 at 10:06:55AM +0200, Robert Schwebel wrote:
+> using devfs and mtd from CVS I see only the char device nodes in /dev/mtd,
+> although I've enabled CONFIG_MTD_BLOCK=y: 
 
-thanks,
-galen
+stupid me - I've just discovered /dev/mtdblock :-) 
 
-oz:~# cat /proc/version
-Linux version 2.4.19-pre8 (galens@oz.seitzassoc.com) (gcc version 2.96 
-20000731 (Red Hat Linux 7.1 2.96-98)) #1 Thu May 9 13:48:33 PDT 2002
-oz:~# /sbin/modprobe -a mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
-oz:~# /sbin/lsmod 
-Module                  Size  Used by
-cfi_probe               7424   0  (unused)
-gen_probe               1712   0  [cfi_probe]
-map_rom                  688   0  (unused)
-chipreg                  704   0  [cfi_probe map_rom]
-cfi_cmdset_0002        15616   0  (unused)
-mtdblock                4608   0  (unused)
-mtdchar                 4064   0  (unused)
-mtdcore                 2176   0  [mtdblock mtdchar]
-3c59x                  24928   1 
-rtc                     6016   0  (autoclean)
-oz:~# /sbin/rmmod mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
-oz:~# /sbin/lsmod 
-Module                  Size  Used by
-gen_probe               1712   0 
-chipreg                  704   0 
-mtdcore                 2176   0 
-3c59x                  24928   1 
-rtc                     6016   0  (autoclean)
-oz:~# /sbin/modprobe -a mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
-oz:~# /sbin/modprobe -a pci                                               
-oz:~# /sbin/lsmod 
-Module                  Size  Used by
-pci                     2880   0  (unused)
-cfi_probe               7424   0 
-map_rom                  688   0  (unused)
-cfi_cmdset_0002        15616   2 
-mtdblock                4608   0  (unused)
-mtdchar                 4064   0  (unused)
-gen_probe               1712   0  [cfi_probe]
-chipreg                  704   0  [pci cfi_probe map_rom]
-mtdcore                 2176   1  [pci mtdblock mtdchar]
-3c59x                  24928   1 
-rtc                     6016   0  (autoclean)
-oz:~# /sbin/rmmod pci                                       
-oz:~# /sbin/rmmod mtdchar mtdblock cfi_cmdset_0002 map_rom cfi_probe
-cfi_cmdset_0002: Device or resource busy
-oz:~# /sbin/lsmod 
-Module                  Size  Used by
-cfi_cmdset_0002        15616   1 
-gen_probe               1712   0 
-chipreg                  704   0 
-mtdcore                 2176   0 
-3c59x                  24928   1 
-rtc                     6016   0  (autoclean)
+Robert
+-- 
+ +--------------------------------------------------------+
+ | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
+ | Pengutronix - Linux Solutions for Science and Industry |
+ |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
+ |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
+ +--------------------------------------------------------+
