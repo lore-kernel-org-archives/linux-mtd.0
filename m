@@ -1,16 +1,17 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZhXA-0005Xv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 01:40:13 +0100
-Message-ID: <FA06AA2C99BCD511951200005A99441001E3ECC7@irvexch1.sextantifs.com>
-From: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
-To: 'David Woodhouse' <dwmw2@infradead.org>, "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
+	id 17ZhfM-0005Yw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 01:48:40 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <FA06AA2C99BCD511951200005A99441001E3ECC7@irvexch1.sextantifs.com> 
+References: <FA06AA2C99BCD511951200005A99441001E3ECC7@irvexch1.sextantifs.com> 
+To: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Tue, 30 Jul 2002 17:38:33 -0700
-Subject: RE: jffs2_scan_eraseblock() - errors
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: jffs2_scan_eraseblock() - errors 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 31 Jul 2002 01:48:37 +0100
+Message-ID: <17606.1028076517@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,11 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> you still have INOCACHE_HASHSIZE set to 1 in 
-> include/linux/jffs2_fs_sb.h 
-> then I can guess what's at the top of your profile. Increase 
-> it to 14 or 
-> 128 or something for an instant win.
+Allen.Curtis@Thales-IFS.com said:
+>  THX, anything like that for JFFS? Unfortunately that is what we are
+> shipping now and it gets VERY slow, even with our GCD nice level
+> modification. 
 
-THX, anything like that for JFFS? Unfortunately that is what we are shipping
-now and it gets VERY slow, even with our GCD nice level modification.
+Dunno. You could try increasing JFFS_HASH_SIZE but it may not be a 
+bottleneck there -- it's been a very long time since I've looked seriously 
+at JFFS1 code. Again, profile data are useful.
+
+--
+dwmw2
