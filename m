@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16GjmM-00061V-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2001 16:41:14 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C20C36F.D02FD5A5@wann.com> 
-References: <3C20C36F.D02FD5A5@wann.com>  <01121914160800.03136@rob> <Pine.LNX.4.21.0112181832140.3242-100000@dagobert.svc.sysgo.de> <20544.1008697534@redhat.com> <12142.1008768097@redhat.com> 
-To: Vladimir Doukhanine <vdoukhan@wann.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Two flash chips with a gap between them. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 19 Dec 2001 16:51:54 +0000
-Message-ID: <17497.1008780714@redhat.com>
+	id 16GlnT-0006AV-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2001 18:50:31 +0000
+Received: from ilatypov (helo=localhost)
+	by infradead.org with local-esmtp (Exim 3.20 #2)
+	id 16Glxu-0007MR-00
+	for linux-mtd@lists.infradead.org; Wed, 19 Dec 2001 19:01:18 +0000
+Date: Wed, 19 Dec 2001 19:01:18 +0000 (GMT)
+From: <ilatypov@infradead.org>
+To: Linux MTD list <linux-mtd@lists.infradead.org>
+Message-ID: <Pine.LNX.4.33.0112191859560.27757-100000@infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +25,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-vdoukhan@wann.com said:
-> I have two flash chips Am29lv320db90ei, which are physically mapped to
-> different memory areas and even have a memory gap between each other.
+There are two concerns as I see:
 
-Just create a 'map' driver for your board which makes them appear 
-to be together. 
+1. I don't know too much about the FTL layer.  The patch to the GRUB boot
+loader for booting off DiskOnChip will recognize NFTL block device access
+layer only.  The corresponding format command is
+   nftl_format /dev/mtd0 98304
+provided that the bootloader itself takes the first 12 * 8K bytes.  Make
+sure that the nftl drivers were not loaded or activated before issuing
+this command.  The device names corresponding to the partitions of
+DiskOnChip are /dev/nftla*, of course.
 
-__u16 xxx_read16(struct map_info *map, unsigned long ofs)
-{
-	if (ofs < CHIP_SIZE)
-		return __raw_readw(map->map_priv_1 + ofs);
-	else
-		return __raw_readw(map->map_priv_2 + ofs - CHIP_SIZE);
-}
+2. The GRUB firmware might not include the DiskOnChip patch.  I suppose
+you copied the pre_stage2 file from the GRUB tree to the MTD tree and ran
+the make command to generate the grub_firmawre file.  I also understand
+that the firmware was stored onto DiskOnChip by launching this command:
+    doc_loadbios /dev/mtd0 grub_firmware
 
-etc.
-}
+Thank you,
 
---
-dwmw2
+Ilguiz
+
+On Wed, 19 Dec 2001, dharmendra.t bavale wrote:
+
+>   I tried all mke2fs /dev/flta1.
+[..]
+> grub>root (dc0,1)
+> The selected disk does not exist
+[..]
