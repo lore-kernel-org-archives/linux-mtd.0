@@ -1,18 +1,23 @@
-Received: from mailgate5.web.de ([217.72.192.165])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BENqx-0004XK-Ti
-	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2004 08:33:35 +0100
-Received: by mailgate5.web.de (8.11.6p2/8.11.2/SuSE Linux 8.11.0-0.4) with
-	SMTP id i3G7XZ415631
-	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2004 09:33:35 +0200
-Date: Fri, 16 Apr 2004 09:33:34 +0200
-Message-Id: <1196013956@web.de>
-MIME-Version: 1.0
-From: "Tobias Arp" <tobiasarp@web.de>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: MTD partitions
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
+	helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BEOXU-0004lr-7o
+	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2004 09:17:32 +0100
+Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
+	3.35 #1 (Debian))	id 1BEOXR-0000YX-00
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Apr 2004 10:17:29 +0200
+Date: Fri, 16 Apr 2004 10:17:29 +0200
+From: Tino Keitel <tino.keitel@innominate.com>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Message-ID: <20040416081729.GN22670@tkeitel001.bln.innominate.local>
+References: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
+	<200404152050.25417.tglx@linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200404152050.25417.tglx@linutronix.de>
+Sender: Tino Keitel <tino.keitel@innominate.com>
+Subject: Re: JFFS2 writes fail with 2.4.25
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,  
-  
-on my old kernel (2.4.21 and the arm linux patch rmk2) it was possible to configure the  
-remapping of the flash in the xconfig/menuconfig files. I have created the mtd partitions in  
-physmap.c. So when i have made:  
-  
-cat /proc/mtd  
-  
-i got these outputs  
-  
-dev: size erasesize name  
-mtd0: 00400000 00010000 ""physically mapped flash"  
-mtd1: 00060000 00010000 ""USER fs"  
-  
-My flash has a size of 4 MBytes and typically 64kbytes sector size. It started physically at  
-offset 0x10000000 and is connected via a 16 bit bus. These were also the configuration  
-paramter which i added to my config files. This must be mtd0. The mtd1 device is the partition  
-which i have configured in physmap.c.  
-  
-After applieing the mtd snapshot(mtd-snapshot-20040407.tar.bz2) i have used  
-physmap_configure with the same data:  
-  
-physmap_configure(0x10000000,0x00400000,2,NULL);  
-  
-0x10000000 = physical flash base  
-0x00400000 = Flash size  
-2 = 16 Bit Buswidth  
-  
-Then i have used  
-  
-physmap_set_partitions(at91_mtd_parts,1);  
-  
-to add my USER fs  
-  
-static struct mtd_partition at91_mtd_parts[] __initdata = {  
- {  
- .name = "USER fs",  
- .offset = 0x00380000,  
- .size = 0x00060000,  
- }  
-};  
-  
-Now i get following outputs when i make cat proc/mtd  
-  
-dev: size erasesize name  
-mtd0: 00060000 00010000 ""USER fs"  
-  
-where is the "old mtd0" device with the whole flashsize ?  
-  
-And how can i remove these messages from the startup of the kernel:  
-  
-  
->cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.  
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
-- Is there any patch for this problem ? -  
-  
->kmod: failed to exec /sbin/modprobe -s -k cmdlinepart, errno = 2  
->cmdlinepart partition parsing not available  
->kmod: failed to exec /sbin/modprobe -s -k RedBoot, errno = 2  
->RedBoot partition parsing not available  
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
-- Is there any reason for these messages ? -  
-  
-  
-Regards  
-Tobias Arp  
-  
-_____________________________________________________________________
-Der WEB.DE Virenschutz schuetzt Ihr Postfach vor dem Wurm Netsky.A-P!
-Kostenfrei fuer alle FreeMail Nutzer. http://f.web.de/?mc=021157
+On Thu, Apr 15, 2004 at 20:50:25 +0200, Thomas Gleixner wrote:
+> On Thursday 15 April 2004 16:40, Tino Keitel wrote:
+> > Hi folks,
+> >
+> > The system is an Intel XScale IXP425 board (ARM little endian) with
+> > 16 MB NOR flash. I use the JFFS2 from the 2.4.25 kernel. Any hints
+> > what's wrong here?
+> >
+> Can you try  MTD CVS code ?
+
+What CVS tag or branch should I use? I tried HEAD, but I got this
+error:
+
+/usr/local/innominate/bin/arm-xscale-linux-gnu-gcc -mbig-endian
+-D__KERNEL__ -I/usr/home/tkeitel/cvs/mguard_new_gai/source/
+linux-2.4.25-mtd-cvs/include -Wall -Wstrict-prototypes -Wno-trigraphs
+-Os -fno-strict-aliasing -fno-common -Uarm -fno-common -pipe -mapcs-32
+-D__LINUX_ARM_ARCH__=5 -march=armv4 -Wa,-mxscale -mtune=strongarm
+-mshort-load-bytes -msoft-float -Uarm   -nostdinc -iwithprefix include
+-DKBUILD_BASENAME=mtdchar   -c -o mtdchar.o mtdchar.c
+mtdchar.c: In function `mtd_notify_add':
+mtdchar.c:480: warning: implicit declaration of function `devfs_mk_cdev'
+mtdchar.c: In function `mtd_notify_remove':
+mtdchar.c:494: warning: implicit declaration of function `devfs_remove'
+mtdchar.c: In function `init_mtdchar':
+mtdchar.c:509: warning: passing arg 1 of `devfs_mk_dir' from incompatible pointer type
+mtdchar.c:509: too few arguments to function `devfs_mk_dir'
+make[3]: *** [mtdchar.o] Error 1
+
+Regards,
+Tino
+
+-- 
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   enabling security
+tel: +49.30.6392-3308                      http://www.innominate.com/
