@@ -1,18 +1,29 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from go4.ext.ti.com ([192.91.75.132])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVYwB-0005r3-Bv
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 12:49:59 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: Warrick Lacey <wlacey_6151@yahoo.com>
-In-Reply-To: <20040602150619.89651.qmail@web50401.mail.yahoo.com>
-References: <20040602150619.89651.qmail@web50401.mail.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1086194995.26119.422.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 02 Jun 2004 17:49:56 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: TureIDE & CFI
+	id 1BVcWO-0006BN-GQ
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 16:39:41 -0400
+Received: from dlep52.itg.ti.com ([157.170.134.103])
+	by go4.ext.ti.com (8.12.11/8.12.11) with ESMTP id i52KdP8H014774
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 2 Jun 2004 15:39:25 -0500 (CDT)
+Received: from dlep90.itg.ti.com (localhost [127.0.0.1])
+	by dlep52.itg.ti.com (8.12.11/8.12.11) with ESMTP id i52KdOPg019096
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 2 Jun 2004 15:39:24 -0500 (CDT)
+Received: from dlee2k70.ent.ti.com (localhost [127.0.0.1])
+	by dlep90.itg.ti.com (8.12.10/8.12.10) with ESMTP id i52KdOTI005233
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 2 Jun 2004 15:39:24 -0500 (CDT)
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 2 Jun 2004 15:38:51 -0500
+Message-ID: <BA2832125C3C994384FCC051CDFC73690F4194@dlee2k05.ent.ti.com>
+From: "Zhang, Jian" <jzhang@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: stable MTD snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-06-02 at 08:06 -0700, Warrick Lacey wrote:
-> Hi, I'm trying to use a 128M SanDisk flash device in
-> True IDE Mode for a root file system but I'm confused
-> in whether to configure in IDE capabilities, MTD
-> capabilities some combination of the two. 
+Hi,
 
-It's IDE. You may think it actually has some flash inside it -- we
-couldn't possibly comment. Forget MTD.
+I have tried a few snapshots and encountered either compile failure or
+run-time errors. Can someone point me to a daily MTD snapshot that is
+known to pass compilation and do not have major issue with JFFS2 on
+NAND?
 
--- 
-dwmw2
+Thanks in advance.
+
+Regards,
+Jian
