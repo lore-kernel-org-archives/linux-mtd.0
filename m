@@ -1,18 +1,14 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15p4lA-0005c6-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2001 10:25:40 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20011003182904.C21578@wohnheim.fh-wedel.de> 
-References: <20011003182904.C21578@wohnheim.fh-wedel.de>  <20011002091421.A15650@recycle.lbl.gov> <30731.1002040544@redhat.com> 
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Cc: linux-mtd@lists.infradead.org,
-    Larry Doolittle <ldoolitt@recycle.lbl.gov>
-Subject: Re: JFFS2_RESERVED_BLOCKS_* 
+Received: from recycle.lbl.gov ([131.243.169.124])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15pBKU-0006AB-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2001 17:26:34 +0100
+Message-ID: <20011004093533.A25013@recycle.lbl.gov>
+Date: Thu, 4 Oct 2001 09:35:33 -0700
+From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
+To: linux-mtd@lists.infradead.org
+Subject: No clean _or_ dirty blocks to GC from!
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 04 Oct 2001 10:34:32 +0100
-Message-ID: <32571.1002188072@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +20,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joern@wohnheim.fh-wedel.de said:
->  Formal proof is a tough one. But the difference between theoretical
-> and practical minimum should be a couple of bugs, that might be found
-> with a bigger userbase.
+This is really strange.  I go through the following steps:
 
-True, but people are using this in production, so just changing the default
-isn't particularly sane. 
+0. Run linux-2.4.9-ac10-rmk2-np1 with latest CVS MTD/JFFS2 on a
+   StrongARM with Intel 28F320B3B Flash.  /dev/mtd2 is a 1M partition.
 
-Changing the default would also require that I (or someone) actually has
-enough time available in the near future to _fix_ those bugs when they turn
-up. I'm hoping that we can get a contract soon which involves reducing the
-GC overhead, and I can spend some real time on it. Until then, I have to 
-leave it at the overly-conservative current value.
+1. eraseall /dev/mtd2
+    (works, I can verify all 1's in the 16 64K blocks)
 
-I can point you at some of the offending bugs already. We decompress and 
-recompress data on garbage-collection. If it's not changing, we should just 
-copy the compressed version intact. If it _is_ changing because the block 
-we're garbage-collecting is partially obsoleted by later writes, we should
-make sure the new compressed version isn't larger than the old version 
-unless we have slack space. If it would exceed the available space, we need 
-to copy it intact and keep the old version number. 
+2. cp image /dev/mtd2
+    (image created with mkfs.jffs2.  Seems to work)
 
-We probably also need to make the decisions on whether to allow writes more 
-fine-grained - actually working on the number of bytes available not the 
-number of blocks.
+3. mount -t jffs2 /dev/mtdblock2 /mnt/test
 
-> What wheel do I have to turn, to lower the limit myself? 
+mtdblock_open
+ok
+jffs2: No clean _or_ dirty blocks to GC from! Where are they all?
+jffs2: Couldn't find erase block to garbage collect!
 
-This one's been answered. If it breaks, you get to keep both pieces :)
+   The files are there.
 
---
-dwmw2
+4. umount /mnt/test
+    (works)
+
+5. check the blocks -- the 15 blocks that were all 1's before
+   all now have at the beginning:
+
+begin 644 foo
+@A1D#(`P```"QL![D__________________________\`
+`
+end
+
+$ hexdump foo
+0000000 1985 2003 000c 0000 b0b1 e41e ffff ffff
+0000010 ffff ffff ffff ffff ffff ffff ffff ffff
+0000020
+
+   Wild guess, after reading jffs2.h: these are "clean" markers.
+   magic is 0x1985 == JFFS2_MAGIC_BITMASK,
+   nodetype is 0x2003 == JFFS2_NODETYPE_CLEANMARKER,
+   totlen is 12,
+   hdr_crc is 0xe41eb0b1.
+   So everything is fine, why the complaint?  And if I mount again,
+   I get the same nasty message as before.
+
+Clearly, I'm still a novice at JFFS2.
+
+     - Larry
