@@ -1,17 +1,18 @@
-Received: from oe75.law10.hotmail.com ([64.4.14.210] helo=hotmail.com)
+Received: from cc60549-a.deven1.ov.nl.home.com ([217.120.142.92] helo=server.wielewaal)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 175a0v-0006YN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 08 May 2002 23:34:25 +0100
-From: "Gregg C Levine" <mrspock1962@hotmail.com>
+	id 175aJw-0006Za-00
+	for <linux-mtd@lists.infradead.org>; Wed, 08 May 2002 23:54:04 +0100
+From: "Pieter Grimmerink" <mailinglists@grimmerink.nl>
 To: <linux-mtd@lists.infradead.org>
-Subject: RE: Jedec probe for strange 28F800B3 chips (patch)
-Date: Wed, 8 May 2002 18:34:04 -0400
-Message-ID: <002201c1f6e0$75675ce0$3551580c@who>
+Cc: <gleixner@autronix.de>
+Subject: RE: Current status JFFS2 on DOC
+Date: Thu, 9 May 2002 00:52:56 +0200
+Message-ID: <MPBBIIEFELAEABNCNHMMAELCDAAA.mailinglists@grimmerink.nl>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1020891940.2172.32.camel@sycamore.mit.edu>
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200205081822.g48IMck11634@thomas.tec.autronix.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,45 +24,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello from Gregg C Levine
-Parts like that, are not uncommon, just darned annoying to fellow
-designers. Suggest you call them, part-number-A, such as 28F800B3A. In
-fact I suggest you examine the parts, to see what part number they have
-stamped on them. I'd be surprised, if the thought never occurred to
-Intel before.
--------------------
-Gregg C Levine mrspock1962@hotmail.com
-------------------------------------------------------------
-"The Force will be with you...Always." Obi-Wan Kenobi
-"Use the Force, Luke."=A0 Obi-Wan Kenobi
-(This company dedicates this E-Mail to General Obi-Wan Kenobi )
-(This company dedicates this E-Mail to Master Yoda )
-
-
-
 > -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org [mailto:linux-mtd-
-> admin@lists.infradead.org] On Behalf Of Colin Cross
-> Sent: Wednesday, May 08, 2002 5:06 PM
-> To: linux-mtd@lists.infradead.org
-> Subject: Jedec probe for strange 28F800B3 chips (patch)
->=20
-> I'm working on an embedded system that has two Flash chips labeled
-> 28F800B3-10BD.  The Intel datasheets say they should have an
-identifier
-> of 0x8893 (which matches jedec_probe.c), but they report an identifier
-> of 0x889D.  I found one errata datasheet that says the correct
-> identifier for these chips is in fact 0x889D.  However, the block map
-of
-> this chip is completely different from the one described in the
-> datasheets.  It has 1 16kB block, 2 8kB blocks, 1 96kB, and 7 128kB
-> blocks.  This matches the block map for some other random Intel 8Mb
-> flash chip, but I can't find any datasheets that give this block map
-and
-> identifier together.  I've added these chips to jedec_probe.c, and
-they
-> work fine once added, but I'm at a loss as to why these chips don't
-> agree with the datasheets.  Can anyone offer any insight?  Does anyone
-> have 28F800B3 chips that follow the datasheet?  I've attached a patch
-> that adds support for them, but I'm not sure what to call them (Intel
-> 28F800B3B version 2? for now).
+> From: linux-mtd-admin@lists.infradead.org
+> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Thomas Gleixner
+> Sent: woensdag 8 mei 2002 20:23
+> To: Pieter Grimmerink; linux-mtd@lists.infradead.org
+> Subject: Re: Current status JFFS2 on DOC
+>
+>
+> On Wednesday, 8. May 2002 18:37, Pieter Grimmerink wrote:
+> > From a design point of view, DiscOnChip looks nice with
+> > it's feature to boot from it.
+> > SmartMedia looks a bit cheaper, but that would require
+> > a separate NOR device, large enough to hold a compressed
+> > kernel, total price going up above the DOC prices again.
+> The minimum requirement is 1MB for a compressed kernel image
+> and a bootloader. That's affordable and working :)
+
+Well, it's still something like up to 10 $ extra. Might not sound
+much for a few devices, but when numbers get higher...
+
+> The DOC solution is not workable, because it's not available, but you are
+> heartly invited to join the club and hack the neccecary drivers.
+> There are
+> some more people around, who are interrested.
+
+I'd be happy to contribute, though this won't be the first thing I'll
+be working on, there are a few devicedrivers to implement first.
+I'll probably start off with a different fs, or even with a different
+flash device, to get the main functionality right.
+But judging by the information I've got so far, I think JFFS2 on DOC
+is what I'll eventually go for.
+
+Best regards,
+
+Pieter
