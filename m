@@ -1,15 +1,17 @@
-Received: from [212.59.42.147] (helo=eurobird.dt.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AeUiI-0007ub-OQ
-	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2004 07:36:18 +0000
-Message-ID: <3FFD07E1.2040305@keymile.com>
-Date: Thu, 08 Jan 2004 08:33:53 +0100
-From: Axel Ludszuweit <alu@keymile.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from www11.mailshell.com ([209.157.66.249] helo=mailshell.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AeVdz-00088S-Hd
+	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2004 08:35:55 +0000
+Message-ID: <20040108083349.28595.qmail@mailshell.com>
+In-Reply-To: <004d01c3d5b9$7ed266d0$6e01a8c0@solarwave>
+References: <004d01c3d5b9$7ed266d0$6e01a8c0@solarwave>
+Content-Type: text/plain
+Mime-Version: 1.0
+Date: Thu, 08 Jan 2004 16:34:03 +0000
 Content-Transfer-Encoding: 7bit
-Subject: cfi_amdstd_resume vs. cfi_intelext_resume
+From: daniel@dmhome.net
+To: linux-mtd@lists.infradead.org
+Subject: RE: Changing parameters on the fly - possible?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+> 
+> Additional information: if it helps you to know this, the same problem I
+> described also occurs with the 2.4.22-10mdk source tree (when I apply the
+> MTD patch).  So I'm just going with the stock drivers and using the 22
+> source to build my kernel for now.
 
+That's my suggestion also:  use a vanilla 2.4.22, unless you really need
+the Mandrake kernel for something in particular. I have recently
+compiled mtd from CVS against 2.4.22 & 2.6.0-test11 without any
+problems.
 
-I have compared both function, mentioned in the subject.
-I think, there is an error in
-  static void cfi_intelext_resume(struct mtd_info *mtd),
-which can be fixed with the following patch.
-
-
---- ./drivers/mtd/chips/cfi_cmdset_0001.c.orig  2004-01-08 08:28:23.000000000 +0100
-+++ ./drivers/mtd/chips/cfi_cmdset_0001.c       2004-01-08 08:29:29.000000000 +0100
-@@ -1676,7 +1676,7 @@
+Good luck, 
  
-                /* Go to known state. Chip may have been power cycled */
-                if (chip->state == FL_PM_SUSPENDED) {
--                       cfi_write(map, CMD(0xFF), 0);
-+                       cfi_write(map, CMD(0xFF), chip->start);
-                        chip->state = FL_READY;
-                        wake_up(&chip->wq);
-                }
-
-Is this correct, or have I misunderstanding something?
-
-
-
-
--- 
-
---------------------------------------------
-
-Axel Ludszuweit
-
-Keymile GmbH
-Wohlenbergstr. 3, D-30179 Hannover 
-
-Tel.: +49 511 / 978197-630
-Fax : +49 511 / 978197-670
-http://www.keymile.com
-mailto:axel.ludszuweit@keymile.com
-
->> Be the FIRST on the LAST MILE <<
