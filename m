@@ -1,24 +1,19 @@
-Received: from mail.imc-berlin.de ([217.110.46.186]
-	helo=mail.berlin.imc-berlin.de)
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192tdO-00039e-5b
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 14:59:34 +0100
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
-	[10.0.0.13])h38DxRLT025012
-	for <linux-mtd@lists.infradead.org>; Tue, 8 Apr 2003 15:59:27 +0200
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id PAA26419
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 8 Apr 2003 15:59:36 +0200 (CEST)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <3E92D5C7.8020603@imc-berlin.de>
-Date: Tue, 08 Apr 2003 15:59:35 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: JFFS2 uncompressed?
+	id 192twz-0003Ik-Tb
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 15:19:50 +0100
+Date: Tue, 8 Apr 2003 16:19:52 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+Message-ID: <20030408141952.GA30313@wohnheim.fh-wedel.de>
+References: <3E92D5C7.8020603@imc-berlin.de>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <3E92D5C7.8020603@imc-berlin.de>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 uncompressed?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Tue, 8 April 2003 15:59:35 +0200, Steven Scholz wrote:
+> 
+> IIRC files are stored compressed on a JFFS2 partition.
+> 
+> Is there any chance that I could use JFFS2 without any compression?
+> 
+> I guess this might me faster for our embedded system!
 
-IIRC files are stored compressed on a JFFS2 partition.
+Piece of cake.
+Look at fs/jffs2/compr.c, first function. Add a couple of #if 0 and
+you're done.
 
-Is there any chance that I could use JFFS2 without any compression?
+Do the same with the second function and the kernel image should
+shrink a little.
 
-I guess this might me faster for our embedded system!
+Jörn
 
-Thanks,
-
-Steven
+-- 
+Beware of bugs in the above code; I have only proved it correct, but
+not tried it.
+-- Donald Knuth
