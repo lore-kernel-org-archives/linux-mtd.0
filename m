@@ -1,24 +1,17 @@
-Received: from 200164173216.user.veloxzone.com.br ([200.164.173.216])
-	by pentafluge.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CeJC2-0002JA-6f
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2004 20:22:52 +0000
-Received: from mail.netbird.com   (mail.netbird.com  [64.40.135.237])
-	by fep4.bolt.com (Postfix) with ESMTP id 2D81D00A5
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2004 00:18:40 +0500 (EDT)
-Received: from doneasy.com  (unknown  [207.106.114.45])
-	by mail.bolt.com (mailer) with SMTP id 3FE5782DBA0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2004 15:25:40 -0400 (EDT)
-Date: Tue, 14 Dec 2004 22:23:40 +0300
-From: "Out-Loans Corp." <Arnold.Harvey@bolt.com>
+Received: from 69.37.115.40.ded.snet.net ([69.37.115.40] helo=www.necii.com)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CeLoZ-0007QT-3i
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2004 18:10:44 -0500
+Received: from Shelton.necii.com (shelton [143.101.35.7])
+	by www.necii.com (8.12.8/8.12.8) with ESMTP id iBENDlUn005327
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Dec 2004 18:13:47 -0500
 To: linux-mtd@lists.infradead.org
-Message-Id: <40772B54.5F6C9D8314331@bolt.com>
+Message-ID: <OFD7229C12.76AD2125-ON85256F6A.007CB17C-85256F6A.007F521E@necii.com>
+From: MQuicquaro@necii.com
+Date: Tue, 14 Dec 2004 18:09:40 -0500
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset="us-ascii"
-Content-Transfer-Encoding: 8bit
-Subject: Offer Valid til - Dec 28/2004
+Content-type: text/plain; charset=US-ASCII
+Subject: jffs2 - mtd - nand flash works....except....
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +22,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Client Update:
-
-Several Companies have been competing for your mortgage
-refinance application over the past 2 weeks.  
-
-The company that offered the lowest rate, and largest
-loan quantity has requested your information be verified.
 
 
-http://yjlaxtqv.rungknoll.net/prime/alphdr
 
 
-Thanks,
-Harvey Arnold
-Out-Loans Corp.
-Fin-Broker
+Hi all,
+My system is running as described in the subject....
 
- 
+a nand flash with mtd and jffs2.
 
-WR0NG PERS0N?
-Visit our Site to 0pt-0ut
+Just about everything seems to be working great as far as I can see
+except subsector writing.
+
+I get CRC errors when I load my kernel sometimes and I assume
+its because of this problem.
+
+Is there something that anyone can think of that would cause this kind
+of behavior?  I've racked my brain and can't come up with anything.
+
+As far as my low level hardware interface goes, I imagine that it must
+work ok since everything else is fine.
+
+Any  help would be appreciated.
+
+Here is output from 'nandtest':
+
+# nandtest /dev/mtd/0
+MTD_open
+MTD_ioctl
+meminfo.oobsize = 16
+meminfo.oobblock = 512
+meminfo.erasesize = 16384
+This will erase the first block of device, continue? y
+
+Performing Flash Erase of length 16384 at offset 0...
+MTD_ioctl
+OK
+Test if block was erased...MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+.
+.
+.
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+MTD_read
+MTD_ioctl
+OK
+Writing 512 byte sectors...MTD_write
+MTD_write
+MTD_write
+MTD_write
+OK
+Reading 512 byte sectors...MTD_read
+MTD_read
+MTD_read
+MTD_read
+OK
+Testing subsector writing...MTD_write
+MTD_write
+MTD_write
+MTD_write
+MTD_write
+OK
+Reading back...MTD_read
+0x0064: (0xff) != (0x57)
+MTD_close
+#
