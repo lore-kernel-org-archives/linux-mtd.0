@@ -1,43 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14ZuGz-00084j-00
-	for mtd-list@infradead.org; Mon, 05 Mar 2001 12:39:33 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14ZvxC-000094-00
+	for mtd-list@infradead.org; Mon, 05 Mar 2001 14:27:14 +0000
+Received: from sofia.magic.fr ([195.115.17.9])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14ZuGx-00084d-00
-	for mtd@infradead.org; Mon, 05 Mar 2001 12:39:32 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com> 
-References: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com> 
-To: m.gibson@esesixtech.com
-Cc: mtd@infradead.org
-Subject: Re: Kernel panic DiskOnChip /Newbie question 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
-Date: Mon, 05 Mar 2001 12:39:10 +0000
-Message-ID: <15844.983795950@redhat.com>
+	id 14Zvwn-00008v-00
+	for mtd@infradead.org; Mon, 05 Mar 2001 14:27:13 +0000
+Received: from mail.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
+	by sofia.magic.fr (8.9.0/8.9.0) with ESMTP id PAA19744
+	for <mtd@infradead.org>; Mon, 5 Mar 2001 15:26:24 +0100 (CET)
+Received: from inventel.fr (193.54.84.10) by mail.inventel.fr (NPlex 1.3.171) for mtd@infradead.org; 5 Mar 2001 15:23:38 +0100
+Message-ID: <3AA3A2FF.9E25407A@inventel.fr>
+Date: Mon, 05 Mar 2001 15:30:23 +0100
+From: Xavier DEBREUIL <xde@inventel.fr>
+MIME-Version: 1.0
+To: mtd@infradead.org
+Subject: mtd with 2.0.4-test6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hello all,
+I am trying to add the mtd features to my 2.4.0-test6 system. But the inter
+module is not available in this kernel. Is it safe to patch it with the 2.2.17
+inter module patch ?
 
-m.gibson@esesixtech.com said:
-> " Didn´t read all bytes in flash_safe_read(). Returned 0 " 
+Thank you.
 
-The read/write/erase routines for the DiskOnChip hardware don't currently 
-support reads/writes greater than one page, or erases greater than one 
-eraseblock. You need to put a simple loop in to read/write multiple pages 
-and erase multiple blocks when it's asked to do so.
-
-The reason NFTL works OK is because it doesn't ask the hardware driver to 
-do that.
-
-Using JFFS on NAND flash isn't tested very aggressively yet.
-
---
-dwmw2
-
-
+Xavier
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
