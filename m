@@ -1,29 +1,21 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 09 Feb 2003 13:05:28 +0000
-Subject: grub-doc patch problem
-In-Reply-To: <20030209125245.17383.qmail@web20801.mail.yahoo.com>
-References: <20030209125245.17383.qmail@web20801.mail.yahoo.com>
-Message-ID: <1044795927.2943.208.camel@imladris.demon.co.uk>
+From: robert@schwebel.de (Robert Schwebel)
+Date: Sun, 9 Feb 2003 19:08:11 +0100
+Subject: patchin script
+Message-ID: <20030209180810.GN31292@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Sun, 2003-02-09 at 12:52, tony Tong wrote:
+Thomas, 
 
-> Today I have used grub-2003-01-08-doc.patch to patch
-> the GRUB cvs version . But I get more than one errors
-> ,the following is selected from  my patch output
-> result :
+Debian's grep does not understand the "-m N" switch you used in the 
+patchin.sh script. Could you change it to reflect this behaviour? The
+script does currently fail horribly when being invoked on a debian
+machine. 
 
-You mentioned that you are using WinCVS. I believe that when you check
-out a file with CVS, it automatically 'fixes' the linefeeds to match the
-system on which you're checking it out. So all the Unix linefeeds will
-have been converted to CRLF to make Windows happy. 
-
-However, that means that patch isn't happy, because it's looking for
-lines that _don't_ end in a carriage return.
-
-Try the '-l' option to patch, or running 'dos2unix' on the offending
-files, or running CVS on a real box, or configuring CVS not to convert. 
-
+Robert
 -- 
-dwmw2
+ Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de
+ Pengutronix - Linux Solutions for Science and Industry
+   Braunschweiger Str. 79,  31134 Hildesheim, Germany
+   Handelsregister:  Amtsgericht Hildesheim, HRA 2686
+    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4
