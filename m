@@ -1,19 +1,17 @@
-Received: from darwin.altera.com ([66.35.227.3])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 181Req-0007JA-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 14:22:48 +0100
-Message-Id: <200210151321.g9FDLP722607@localhost.localdomain>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Clive Davies <cdavies@altera.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] add access to AMD secure silicon area
-Date: Tue, 15 Oct 2002 14:21:24 +0100
+	id 181Rga-0007JR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 14:24:36 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200210151321.g9FDLP722607@localhost.localdomain> 
+References: <200210151321.g9FDLP722607@localhost.localdomain>  <200210151025.g9FAP9221781@localhost.localdomain> <19345.1034676569@passion.cambridge.redhat.com> <26135.1034678204@passion.cambridge.redhat.com> 
+To: Clive Davies <cdavies@altera.com>
 Cc: linux-mtd@lists.infradead.org
-References: <200210151025.g9FAP9221781@localhost.localdomain> <19345.1034676569@passion.cambridge.redhat.com> <26135.1034678204@passion.cambridge.redhat.com>
-In-Reply-To: <26135.1034678204@passion.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] add access to AMD secure silicon area 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 15 Oct 2002 14:24:29 +0100
+Message-ID: <13738.1034688269@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,28 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> And CFI_DEVICETYPE_X8 is always correct? No X16 devices?
->
+cdavies@altera.com said:
+> > And CFI_DEVICETYPE_X8 is always correct? No X16 devices?
+> Good point, how about ....
 
-Good point, how about ....
+Looks saner to me.
 
-+       cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+       cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+       cfi_send_gen_cmd(0x88, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+
-+       map->copy_from(map, buf, adr, len);
-+
-+       cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+       cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+       cfi_send_gen_cmd(0x90, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+       cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-+
 
-instead?
+--
+dwmw2
