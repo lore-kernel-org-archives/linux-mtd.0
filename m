@@ -1,20 +1,19 @@
-Received: from avtrex.com ([216.102.217.178])
+Received: from mail.auriga.ru ([80.240.102.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BDm4l-0001qa-1l
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 16:13:19 +0100
-Message-ID: <407D550E.8090306@avtrex.com>
-Date: Wed, 14 Apr 2004 08:13:18 -0700
-From: David Daney <ddaney@avtrex.com>
+	id 1BDmR9-00023o-5F
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 16:36:27 +0100
+Received: from localhost ([127.0.0.1] helo=auriga.ru)
+	by mail.auriga.ru with esmtp (Exim 4.30)
+	id 1BDmcY-0006cb-Vi
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 19:48:14 +0400
+Message-ID: <407D59A6.7030102@auriga.ru>
+Date: Wed, 14 Apr 2004 19:32:54 +0400
+From: Dmitry Konyshev <dmitry.konyshev@auriga.ru>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <407CC018.3030505@avtrex.com>
-	<200404141443.56257.tglx@linutronix.de> <407D46AD.4000801@avtrex.com>
-	<200404141648.12848.tglx@linutronix.de>
-In-Reply-To: <200404141648.12848.tglx@linutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd, mtdblock and nand ecc.
+Subject: nand driver bug?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let me start by saying that I am not trying to cause problems, but just 
-to understand the best options...
+Hi everybody,
 
-Thomas Gleixner wrote:
+    The driver happens to fall in BUG in nand_select_chip when writing 
+the last page of a device. It's trying to select_chip in nand_write_ecc 
+even in case there's nothing left to write.
 
->On Wednesday 14 April 2004 16:11, David Daney wrote:
->
->  
->
->>>NAND aware filesystem drivers provide their own oobsel structure and use
->>>the xxx_ecc functions.
->>>      
->>>
->>I am using the cramfs on a NAND partition as my root file system.
->>cramfs is not NAND aware, and I cannot be running userspace programs
->>before mounting as it is the root file system.
->>    
->>
->
->I know, but why must you use cramfs ? Why dont you use jffs2 or yaffs as your 
->root fs. Mount it r/o, so you have no hassle at all.
->  
->
-With my NAND drivers, booting the linux kernel and mounting a minimal 
-root file system on a 16MB flash takes 1:08 for yaffs and 1:25 for 
-jffs2.  Using cramfs it boots in under 0:10.
-
-That is why I am thinking about using a non NAND aware file system for 
-things that can be read-only.
-
->  
->
->>I have not completely educated myself on the mtdblock driver.  Since the
->>mtdblock driver can be used by non-mtd-aware filesystems, I am proposing
->>making mtdblock NAND aware so that it uses the xxx_ecc functions iff ECC
->>is available.  Perhaps there would be a kernel/module command line
->>switch to help manage the behavior.
->>
->>Thoughts?
->>    
->>
->
->mtdblock is a block device driver and only provides an interface. It must not 
->be aware of anything. 
->
-That is not quite correct.  mtdblock is well aware of the mtd backend.  
-It does this:
-    ret = MTD_WRITE (mtd, pos, len, &retlen, buf);
-
-All I am suggesting is to have it do MTD_WRITE_ECC when possible.
-
->Using NAND unaware filesystems on NAND is nothing we want to support.
->ECC is only one part of NAND support. What about bad blocks? NAND chips can 
->have bad blocks, even when they are new. Only block 0 is guaranteed to be not 
->bad at delivery time. How want you deal with a board, where a bad block is in 
->the partition which is reserved for your cramfs ?
->
-
->We have two reliable working NAND aware filesystems around. I don't see any 
->reason to provide support for predictable trouble. 
->
->  
->
-You already support it.  /dev/mtd and /dev/mtdblock work off-the-shelf 
-with NAND devices and allow arbitrary programs/filesystems to overwrite 
-bad blocks if they choose.
-
-All I was thinking about was the ECC issue.
-
-David Daney.
+wbr, Dmitry.
