@@ -1,15 +1,17 @@
 Received: from [208.177.141.226] (helo=ash.lnxi.com)
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A2GXH-0006u6-1V
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Sep 2003 21:46:55 +0100
+	id 1A2GkA-0006vT-QY
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Sep 2003 22:00:14 +0100
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
 To: linux-mtd@lists.infradead.org
-Message-Id: <1064436337.1183.3856.camel@tubarao.lnxi.com>
+In-Reply-To: <1064436337.1183.3856.camel@tubarao.lnxi.com>
+References: <1064436337.1183.3856.camel@tubarao.lnxi.com>
+Message-Id: <1064437137.1183.3861.camel@tubarao.lnxi.com>
 Mime-Version: 1.0
-Date: 24 Sep 2003 14:45:37 -0600
+Date: 24 Sep 2003 14:58:58 -0600
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-CFOWdYlful3AuSWRODAu"
-Subject: cfi_util dependency
+	protocol="application/pgp-signature"; boundary="=-nzO4SbH4a6YiIOfM3iZe"
+Subject: Re: cfi_util dependency
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +22,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-CFOWdYlful3AuSWRODAu
+--=-nzO4SbH4a6YiIOfM3iZe
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-There is now an unnecessary cfi_util dependency.  It seems that
-cfi_probe is needed to build cfi_util (CONFIG_MTD_CFI turns on both
-cfi_probe and cfi_util).  This causes a problem for using
-cfi_cmdset_0001, 0002 and 0020.  Any of the cfi_cmdset_* drivers can be
-used without cfi_probe if the jedec_probe path is used.
+On Wed, 2003-09-24 at 14:45, Thayne Harbaugh wrote:
 
+> It seems to me that cfi_util should be a unique config value
+> (CONFIG_MTD_CFI_UTIL) that is turned on when either CONFIG_MTD_CFI or
+> CONFIG_MTD_JEDECPROBE is enabled.
 
-It seems to me that cfi_util should be a unique config value
-(CONFIG_MTD_CFI_UTIL) that is turned on when either CONFIG_MTD_CFI or
-CONFIG_MTD_JEDECPROBE is enabled.
-
-Another thing, cfi_read_pri() and cfi_fixup() need EXPORT_SYMBOL().
-
-If someone wants to fix this, thanks; else I'll fix it soon enough.
-
+Errr - that should be that CONFIG_MTD_CFI_UTIL should be turned on when
+any of CONFIG_MTD_CFI_INTELEXT, CONFIG_MTD_CFI_AMDSTD or
+CONFIG_MTD_CFI_STAA are turned on.
 
 --=20
 Thayne Harbaugh
 Linux Networx
 
---=-CFOWdYlful3AuSWRODAu
+--=-nzO4SbH4a6YiIOfM3iZe
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
@@ -52,9 +48,9 @@ Content-Description: This is a digitally signed message part
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQA/cgJxfsBPTKE6HMkRAvu5AJ0YwOlcJK36rZw8aTUDBDazDYvvngCfTaa6
-XCMZrkzsYXBKBw7wBi8Mc3A=
-=5qXk
+iD8DBQA/cgWRfsBPTKE6HMkRAlDeAJ9QmDB7HjtlBQIUuD+SJvXHMZh8QQCfVN5A
+vy9+VHPqX0a/sUPqPuYozWI=
+=NPNX
 -----END PGP SIGNATURE-----
 
---=-CFOWdYlful3AuSWRODAu--
+--=-nzO4SbH4a6YiIOfM3iZe--
