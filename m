@@ -1,35 +1,53 @@
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 13 Feb 2003 00:41:47 -0700
-Subject: Q: MTD and NIC Roms...
-In-Reply-To: <1045117634.9349.19.camel@imladris.demon.co.uk>
-References: <m3znp0zqaw.fsf@lnxi.com>
- <1045117634.9349.19.camel@imladris.demon.co.uk>
-Message-ID: <m34r78bpac.fsf@lnxi.com>
+From: joern@wohnheim.fh-wedel.de (=?iso-8859-1?Q?J=F6rn?= Engel)
+Date: Thu, 13 Feb 2003 09:59:27 +0100
+Subject: sharp memory leak
+In-Reply-To: <1045072520.12666.53.camel@tubarao>
+References: <1045072520.12666.53.camel@tubarao>
+Message-ID: <20030213085927.GA25431@wohnheim.fh-wedel.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-David Woodhouse <dwmw2@infradead.org> writes:
-
-> On Thu, 2003-02-13 at 05:45, Eric W. Biederman wrote:
-> > Currently I have a patch to eepro100.c that adds an MTD map driver so
-> > the onboard rom can be written.  Making code like etherboot easier to
-> > flash etc. 
-> > 
-> > This works by default except when everything is compiled into the
-> > kernel.  In the latter case the map driver fails because NIC are
-> > initialized before the mtd subsystem.  This can be handled be
-> > modifying the link order of the kernel in 2.4. but that is not
-> > a pretty situation.
-> > 
-> > I am currently looking for ideas on ways to cleanly get this code
-> > into the kernel, and I am looking for ideas. 
+On Wed, 12 February 2003 10:55:20 -0700, Thayne Harbaugh wrote:
 > 
-> grep --after-context=15 'BIG UGLY NOTE' drivers/mtd/
-> 
-> Thankfully, the inter_module_register() abortion is now gone and we can
-> fix it all again in 2.5 by reverting to get_module_symbol() as it was
-> before.
+> I've been sitting on some patches for a while and have not sent them
+> in.  I saw Jorn send in the patch for the missing cfi_cmdset_0020 and
+> decided that I need to get my submissions in befor Jorn sends all of
+> them in.
 
-That one is good to hear.
+At least you allowed me to fix my own bug. I submitted cfi_cmdset_0020
+a while ago and forgot the Makefile line. Darn!
 
-Eric
+> Here's just one - it's a memory leak in the sharp driver.  It's not huge
+> and will likely never leak, but it needs to be there to balance the
+> kmalloc().
+
+Leak exists and fix is correct. It may also be worthwhile to do the
+following instead:
+	mtd = kmalloc
+	if (!mtd)
+		goto out1;
+	sharp = kmalloc
+	if (!sharp)
+		goto out2;
+	width = kmalloc
+	if (!width)
+		goto out3;
+	...
+	return mtd;
+out3:
+	kfree(width);
+out2:
+	kfree(sharp);
+out1:
+	kfree(mtd);
+	return NULL;
+
+Dunno, this is not a perfect candidate for that strategy, but it might
+be slightly more obvious. You decide.
+
+J?rn
+
+-- 
+With a PC, I always felt limited by the software available. On Unix, 
+I am limited only by my knowledge.
+-- Peter J. Schoenster
