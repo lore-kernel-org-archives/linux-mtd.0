@@ -1,38 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ZSux-0000F5-00
-	for mtd-list@infradead.org; Thu, 14 Sep 2000 07:54:43 +0100
-Received: from [194.179.100.27] (helo=smtp.jet.es)
+	id 13ZUxR-0000Yt-00
+	for mtd-list@infradead.org; Thu, 14 Sep 2000 10:05:25 +0100
+Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ZSuv-0000Ez-00
-	for mtd@infradead.org; Thu, 14 Sep 2000 07:54:42 +0100
-Received: from guadalfeo.com (infou573.jet.es [195.55.162.61])
-	by smtp.jet.es (8.9.3/8.9.1) with SMTP id KAA07314
-	for <mtd@infradead.org>; Thu, 14 Sep 2000 10:57:30 +0200
-Received: from carlitos [192.168.0.2] by guadalfeo.com [192.168.0.50] with SMTP (MDaemon.v2.7.SP4.R) for <mtd@infradead.org>; Thu, 14 Sep 2000 09:01:09 +0200
-From: =?iso-8859-1?Q?Carlos_S=E1nchez?= <carlos@guadalfeo.com>
-To: <mtd@infradead.org>
-Subject: Standard Memory Module
-Date: Thu, 14 Sep 2000 08:50:39 +0200
-Message-ID: <NCBBKHFKIKLHNJJCCDEMGENHCGAA.carlos@guadalfeo.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 13ZUxN-0000Yn-00
+	for mtd@infradead.org; Thu, 14 Sep 2000 10:05:23 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E13ZGzr-0002Zs-00@pearl.tao.co.uk> 
+References: <E13ZGzr-0002Zs-00@pearl.tao.co.uk> 
+To: David Given <dg@tao-group.com>
+Cc: mtd@infradead.org
+Subject: Re: sbc-mediagx 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 14 Sep 2000 10:04:51 +0100
+Message-ID: <25904.968922291@passion.cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-Can anybody tell me if there is available one standard module (SIMM, DIMM=
-,
-CF...) that implements the posibility to expand FLASH memory and SRAM/DRA=
-M
-memory in a system with low cost and suficient extended in the market?
+dg@tao-group.com said:
+>  ...and here is a patch to devfsify mtdchar. I even got a chance to
+> test it,  and the previous patch, and it all seems to work. 
 
-Regards:
-Carlos S=E1nchez
-carlos@guadalfeo.com
+Doesn't look like it'll work on 2.2 without devfs. I've littered it with 
+appropriate (but ugly) ifdefs. We should probably put the devfs stuff into 
+compatmac.h
+
+I'd go for /dev/mtdblock/%d
+
+It'd be nice if we could get it to create the device nodes only when 
+devices are present.
+
+--
+dwmw2
 
 
 
