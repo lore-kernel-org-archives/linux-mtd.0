@@ -1,18 +1,18 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bazw0-0005wO-Tm
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2004 12:40:19 -0400
-Message-ID: <40D1CA4D.1000604@inf.u-szeged.hu>
-Date: Thu, 17 Jun 2004 18:43:57 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1BbGdw-0007dZ-Bz
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2004 06:30:45 -0400
+Message-ID: <40D2C445.6010402@yandex.ru>
+Date: Fri, 18 Jun 2004 14:30:29 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-To: andrea.tarani@gilbarco.com,  linux-mtd@lists.infradead.org
-References: <OF77935382.F1EA090B-ONC1256EB6.00526020@logitron.it>
-In-Reply-To: <OF77935382.F1EA090B-ONC1256EB6.00526020@logitron.it>
+To: linux-mtd@lists.infradead.org
+References: <002301c45340$7e44ffc0$e100a8c0@ycigrnd.ycig.com>
+In-Reply-To: <002301c45340$7e44ffc0$e100a8c0@ycigrnd.ycig.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: Memory leak in compr.c
+Cc: leeyang <leeyang@ycig.com>
+Subject: Re: [OBORONA-SPAM]  Is it possible to reduce GC blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-andrea.tarani@gilbarco.com wrote:
+leeyang wrote:
+> I am kind of short of flash space in my board.
+> 2M total 64k per block
+> loader 1 block
+> kernel 11 blocks,mtd 
+> initrd 14 blocks,mtd ramdisk
+> configuration section have 6 blocks only with jffs2
+> but GC will take 5 of 6,only 1 blocks for data!
+> 
+> Is it possible to release 1 or 2 block from gc?
+> 
 
->If compression are enabled and the current block can't be compressed the
->allocated buffer
->aren't released.
->  
->
-You're right, and this leak was present in mtd/util/compr.c, too.
-Your patch was not exactly correct, but now it is fixed.
+Critical parameters may be tuned by hacking jffs2_calc_trigger_levels()
+(build.c). You may try this.
 
-Thank you for your feedback.
-
-Regards,
-Ferenc
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
