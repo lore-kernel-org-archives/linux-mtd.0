@@ -1,18 +1,17 @@
-Received: from astro.phpwebhosting.com ([66.33.60.221])
+Received: from web20304.mail.yahoo.com ([216.136.226.85])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VDVu-0000WZ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 15:16:06 +0000
-Message-Id: <5.1.0.14.1.20020128092633.00a75640@mail.wavix.com>
-Date: Mon, 28 Jan 2002 10:26:59 -0500
-To: kira brown <kira@hex.linuxgrrls.org>
-From: Mark Sienkiewicz <ms@wavix.com>
-Subject: Re: Cf Card vs DiskOnChip
-Cc: <linux-mtd@lists.infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0201280914130.9494-100000@hex.linuxgrrls.org
- >
-References: <20020128013905.81A0611FD@creative.actrix.co.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+	id 16VEnl-0000b8-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 16:38:37 +0000
+Message-ID: <20020128164940.38134.qmail@web20304.mail.yahoo.com>
+Date: Mon, 28 Jan 2002 16:49:40 +0000 (GMT)
+From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
+Subject: Re: JFFS XConfig 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <16227.1011718346@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +23,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->I'm sorry, I just don't have much respect for people who say things like
->'cost is more important than reliability'.  Probably becasue I've cleaned
->up their messes so often.
+ --- David Woodhouse <dwmw2@infradead.org> wrote: > 
+> monitoreurope@yahoo.co.uk said:
+> >  We have downloaded the source of 2.4.12 and are
+> using XConfig to set
+> > compile parameters. We intend a system with a 16M
+> compact flash IDE
+> > device formatted as JFFS2. However when it comes
+> to JFFS2 the option
+> > is greyed out, JFFS is however available for
+> selection, any thoughts? 
+> 
+> JFFS and JFFS2 will not be available unless you have
+> selected CONFIG_MTD.
+> 
+> As you don't have any flash devices on your system
+> and you want to use 
+> JFFS2 on a hard drive, you need to select the
+> 'blkmtd' driver and configure 
+> it to use your CF drive as backing store for the
+> faked MTD device.
+> 
+> --
+> dwmw2
 
-This guy is just asking about how to use flash.  He isn't going to include
-the entire cost/benefit analysis of his project in the posting, so he just
-summarizes it by saying "cost is more important".  There is no reason to
-assume that he hasn't thought of the implications of the decision, or even
-that he has any other choice.  If you make your product so expensive that
-nobody buys it, it is a failure no matter how reliable it is.  Cost is
-always an important factor.
+Thanks for the advice David, however it appears still
+not to be available with CONFID_MTD enabled. However
+JFFS is available!
 
->When designing an embedded system it's important to start by looking at
->your application rather than by looking at what technologies you
->understand and kludging the design to make it all fit.
+Any other ideas?
 
-But don't forget labor costs.  If I use a system that I already know
-everything about, I don't have to spend time learning about it.
-Lots of embedded industrial systems are just desktop PCs or ruggedized
-desktop PCs for exactly that reason.  They work just fine, and for
-a lower cost than some of the alternatives.
-
->I think someone needs to tell us what they actually need from a storage
->device, and then we can help them, rather than saying 'I need 128M of
->somethign exactly like a hard disc' which is clearly a specification
->derived from trying to make a desktop system embedded.
-
-I don't think that is clear at all.  You can't tell the architecture of a
-system solely by looking at storage requirements.  Maybe he just has a lot
-of data.
-
-Mark S.
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
