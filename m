@@ -1,19 +1,20 @@
-Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=ocean.magtech.com.au)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BppFY-0007Jw-Dk
-	for linux-mtd@lists.infradead.org; Wed, 28 Jul 2004 10:17:48 -0400
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: tglx@linutronix.de
-In-Reply-To: <1090930297.20889.93.camel@thomas.tec.linutronix.de>
-References: <1090923928.2237.6.camel@adh>
-	<1090930297.20889.93.camel@thomas.tec.linutronix.de>
-Content-Type: text/plain
-Message-Id: <1091024257.2610.0.camel@adh>
-Mime-Version: 1.0
-Date: 28 Jul 2004 15:17:38 +0100
+	id 1Bq2yh-0006IB-HG
+	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2004 00:57:17 -0400
+Message-ID: <41088381.80702@magellan-technology.com>
+Date: Thu, 29 Jul 2004 14:56:33 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: Brock Denson <bdenson@wa-ventures.com>,
+	MTD-LIST <linux-mtd@lists.infradead.org>
+References: <017e01c473f4$580789c0$6400a8c0@BDENSONLAPTOP>
+In-Reply-To: <017e01c473f4$580789c0$6400a8c0@BDENSONLAPTOP>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Large JFFS2 filesystem problem
+Cc: 
+Subject: Re: uboot-1.1.1 on at91rm9200dk problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-27 at 13:11, Thomas Gleixner wrote:
-> Ask on the YAFFS mailing list.
+I use these scripts to reflash my uboot on my AT91RM9200DK:
 
-I've tried to join this list, and am still waiting for the promised
-'confirmation' e-mail.
+Uboot> printenv
+...
+prooff=protect off 10000000 10007fff; protect off 10010000 1002ffff
+proon=protect on 10000000 10007fff; protect on 10010000 1002ffff
+ubootgz2flash=loadb 20000000; cp.b 20000000 10010000 ffff
+bootbin2flash=loadb 20000000; cp.b 20000000 10000000 5fff
+eraseuboot=erase 10000000 10007fff; erase 10010000 1002ffff
+upgradeuboot=run prooff; run eraseuboot; run bootbin2flash; run ubootgz2flash; 
+run proon
 
-Is some human intervention required?
 
-Andy
+* prooff - PROtect OFF - unprotects the section of flash that holds uboot.
+
+* eraseuboot - erases ONLY the uboot sections of the flash. it leaves the 
+environment stuff alone. this saves much typing!
+
+* ubootgz2flash - loads the uboot.gz file over the serial port and copies it to 
+flash
+
+* bootbin2flash - loads the boot.bin file over the serial port and copies it to 
+flash
+
+* proon - PROtect ON - protects the section of flash that holds uboot
+
+* upgradeuboot - runs all the scripts in the correct order!
+
+to reflash:
+
+Uboot> run upgradeuboot
+  ... send boot.bin by KERMIT
+  ... send u-boot.gz by KERMIT
+Uboot> saveenv   (just in case!)
+  ... press reset and hope it works.
+
+If it doesn't work, then you have to get those files in there another way. On 
+the AT91RM9200DK, I used the CPU's built in bootloader to load an image of 
+u-boot into RAM and execute it.
+
+Aras
+
+Brock Denson wrote:
+>>I've had to reflash my old version of u-boot (0.3.2) on a few 
+>>occasions,
+> 
+> 
+> Can you explain the steps you used to reflash uboot?
+> 
+> Thanks,
+> Brock Denson
+> 
