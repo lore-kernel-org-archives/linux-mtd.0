@@ -1,14 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: gregmartin@lucent.com
-In-Reply-To: <000101c38e6c$469fdd40$1a53b987@na02.lucent.com>
-References: <000101c38e6c$469fdd40$1a53b987@na02.lucent.com>
-Content-Type: text/plain
-Message-Id: <1065708286.22298.1679.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 09 Oct 2003 15:04:48 +0100
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Nand Flash with 2048 Byte Page sizes
+Received: from auriga.auriga.ru ([80.240.102.100])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A7cM4-0008Ed-GP
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Oct 2003 16:05:28 +0100
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Thu, 9 Oct 2003 19:04:27 +0400
+Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D806@auriga.auriga.ru>
+From: "Eugeny Mints" <eugeny.mints@auriga.ru>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+cc: Dmitry Pervushin <dmitry.pervushin@auriga.ru>
+Subject: NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-10-09 at 08:50 -0500, Greg A. Martin wrote:
-> Hi,
-> I haven't seen any references yet to the newer NAND devices from
-> Samsung that have 2048 byte pages with 64 bytes extra data. The Part
-> numbers are K9F1G08U0M and K92G08U0M. These are 1 and 2 Gbit devices
-> with 11 bit column addresses and 16 or 17 bit page addresses that need
-> two byte read commands. Any idea if support for these devices will be
-> forth coming soon, or do I get to blaze a trail?
+Hello,
 
-You get to blaze a trail. :)
+Could anybody help me to solve such a problem with JFFS2 and NAND flash:
+- the NAND flash Toshiba TC58256AFTI
+- kernel 2.4.22 with latest MTD and JFFS2=20
+- handy-written miniport for the paticular flash chip
 
--- 
-dwmw2
+The device works OK almost in any case, but when I try to execute  while
+true; do dd if=3D/dev/zero of=3D/dev/mnt/foo count=3D1000; done after =
+10-15
+minutes the system hangs; I cannot login from console or via telnet, but
+it is still ping'able. I tried to use YAFFS, perform dd to device itself
+instead of file on the filesystem on top of flash - no hangs were
+observed.
+
+Could anybody help me, please?=20
+--
+cheers, dmitry pervushin
