@@ -1,23 +1,24 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 199CL0-00046w-Oo
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Apr 2003 00:10:39 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Alex Samoutin <samoutin@hotbox.ru>
-In-Reply-To: <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
-References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
-	 <20030423204440.258661528E@desire.actrix.co.nz>
-	 <000d01c30a8e$ebd08150$1a00a8c0@itc.intrinsyc.com>
-	 <20030425130134.GC27144@wohnheim.fh-wedel.de>
-	 <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
-Message-Id: <1051312243.1172.388.camel@tubarao>
-Mime-Version: 1.0
-Date: 25 Apr 2003 17:10:43 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-sEznoZ6QgKRaHlH2Q5ej"
-cc: linux-mtd@lists.infradead.org
-cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-Subject: Re: Fw: corrupt my NAND flash device
+Received: from phoenix.infradead.org ([195.224.96.167])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 199EDf-0004QY-OW
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Apr 2003 02:11:18 +0100
+Received: from addr16.addr.com ([209.249.147.130])
+	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.10)
+	id 199EDZ-0003tL-00
+	for linux-mtd@lists.infradead.org; Sat, 26 Apr 2003 02:11:06 +0100
+Received: from addr16.addr.com (localhost.addr.com [127.0.0.1])
+	by addr16.addr.com (8.12.8/8.12.8/Submit) with ESMTP id h3Q1A931084639
+	for <mtd@infradead.org>; Fri, 25 Apr 2003 18:10:09 -0700 (PDT)
+Date: Fri, 25 Apr 2003 18:10:09 -0700 (PDT)
+Message-Id: <200304260110.h3Q1A9Lx084637@addr16.addr.com>
+To: linux-mtd@lists.infradead.org
+From: "WILLIAMS OGUNYINKA ESQ." <esqwill_7@zwallet.com>
+MIME-Version: 2.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: PLEASE CONFIRM URGENTLY.
+Reply-To: esqwill_g@zwallet.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+DATE 26TH APRIL 2003 
+WILLIAMS OGUNYINKA ESQ 
+LAGOS, THE FEDERAL REPUBLIC OF NIGERIA. 
 
---=-sEznoZ6QgKRaHlH2Q5ej
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-04-25 at 16:23, Alex Samoutin wrote:
-> > > cause. As I mentioned NAND driver (nand.c) has lock mechanism to prev=
-ent
-> > > this situation. But it doesn't work in my case. I don't know why - th=
-e
-> code
-> > > look Ok. A added some additional locks and it solved this problem.
+HELLO DEAR,
 
-You added locks?
 
-> >
-> > Ah, sorry for me misinterpreting you original post. I thought, you had
-> > found a problem in yaffs.
-> >
-> > Do you have a patch for this? Even if it is ugly and slow, correct
-> > code is better than broken one.
-> >
-> This is diff file for drivers/mtd/nand.c  (I made to many changes to crea=
-te
-> a patch)
->=20
-> 151a152,154
-> > static struct semaphore sam;
-> > #define NAND_WRITE_RETRY 1
+I AM BARRISTER WILLIAMS OGUNYINKA, A SOLICITOR AT LAW.I AM THE PERSONAL ATTORNEY TO MR.BUFFET EDMOND, A NATIONAL OF THE UNITED KINGDOM, WHO USED TO WORK WITH SHELL PETROLEUM DEVELOPMENT COMPANY IN THE REPUBLIC OF GABON.ON THE 21st OF APRIL 2000,MY CLIENT,HIS WIFE AND THEIR ONLY DAUGHTER WERE INVOLVED IN A CAR ACCIDENT ALONG SAGBAMA EXPRESS ROAD.ALL OCCUPANTS OF THE VEHICLE UNFORTUNATELY LOST THERE LIVES. SINCE THEN I HAVE MADE SEVERAL ENQUIRIES TO THE PEOPLE I KNOW HERE TO LOCATE ANY OF MY CLIENTS EXTENDED RELATIVES, THIS HAS ALSO PROVED UNSUCCESSFUL. 
 
-Hmmm - looks like you have more than just locking - you also have some
-retry logic for failed commands.
+AFTER THESE SEVERAL UNSUCCESSFUL ATTEMPTS,I DECIDED TO TRACK HIS NAME OVER THE INTERNET,TO LOCATE ANY MEMBER OF HIS FAMILY HENCE I CONTACTED YOU TO ASSIST IN RECOVERING THE FUND VALUED AT US$14.9 MILLION LEFT BEHIND BY MY CLIENT BEFORE IT GETS CONFISCATED OR DECLARED UNSERVICEABLE BY THE SECURITY FINANCE FIRM WHERE THIS HUGE AMOUNT WERE DEPOSITED. 
 
-I'm jumping in because I have some chips that appear to be broken - they
-occasionally drop operations (erase/write).  Eric Beiderman and I have
-been through the code (specifically cfi_cmdset_0002.c) and can't find
-anywhere that the software might be at fault.  Until I connect a logic
-analyzer I can't be certain it's the hardware either - although none of
-the other models of flash chip have this problem and everything points
-to bad hardware.
+THE SAID FINANCIAL INSTITUTION HAS ISSUED ME A NOTICE TO PROVIDE THE NEXT OF KIN OR HAVE THE ACCOUNT CONFISCATED WITHIN THE NEXT SIXTY ONE OFFICIAL WORKING DAYS.SINCE I HAVE BEEN UNSUCCESSFUL IN LOCATING THE RELATIVES FOR FOR OVER 2 YEARS NOW I THEREFORE SEEK YOUR CONCENT TO PRESENT YOU AS THE NEXT OF KIN TO THE DECEASED, SO THAT THE PROCEEDS OF THIS ACCOUNT CAN BE PAID TO YOU. 
 
-Right now Eric and I are debating adding retry logic.  When a command is
-"dropped" it seems to always succeed when sent a second time (don't have
-any examples that failed on the second try).  I'm interested because
-your situation seems to be related.  Is the problem that the chip
-sometimes ignores a command?  Does your retry fix things?
+ON RECEIPT OF YOUR POSITIVE RESPONSE, WE SHALL THEN DISCUSS THE SHARING RATIO AND MODALITIES FOR TRANSFER.I HAVE ALL NECESSARY INFORMATION AND LEGAL DOCUMENTS NEEDED TO BACK YOU UP FOR CLAIMS ALL
+I REQUIRE FROM YOU IS YOUR HONEST COOPERATION TO ENABLE US SEE THIS TRANSACTION THROUGH. 
 
-The big question is how common is this problem (needing retries)?=20
-Should this be more formalized and added to he chip drivers or should it
-be left up to individuals having to fix things for their special or less
-common cases?
+I GUARANTEE THAT THIS WILL BE EXECUTED UNDER LEGITIMATE ARRANGEMENT THAT WILL PROTECT YOU FROM ANY BREACH OF LAW.
 
---=20
-Thayne Harbaugh
-Linux Networx
+PLEASE NOTE THAT I AM PRESENTLY IN LAGOS THE FEDERAL REPUBLIC OF NIGERIA IN PURSUANCE OF THIS SUBJECT MATTER SINCE THE FINANCIAL INSTITUTION IS BASED HERE. 
 
---=-sEznoZ6QgKRaHlH2Q5ej
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+BEST REGARDS 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+qcBzfsBPTKE6HMkRApMfAKCBdZf4Lujx6QHcvJ/2HcKqy3BycgCfY5yf
-UQgOVPrTnFP+8SJx6Zow+1w=
-=otfI
------END PGP SIGNATURE-----
-
---=-sEznoZ6QgKRaHlH2Q5ej--
+WILLIAMS OGUNYINKA ESQ 
