@@ -1,18 +1,17 @@
-Received: from dns.uswo.net ([207.153.115.5] helo=mail.uswo.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14vqKm-0003Ye-00
-	for <linux-mtd@lists.infradead.org>; Sat, 05 May 2001 01:54:08 +0100
-From: "Jason Walker" <jasonw@uswo.net>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: "MTD Mailing List" <linux-mtd@lists.infradead.org>
-Subject: RE: MTD and 2.4 
-Date: Fri, 4 May 2001 20:54:59 -0400
-Message-ID: <NEBBIDMHCLDPHDHEGDMLKEGLCBAA.jasonw@uswo.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <32275.989022180@redhat.com>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 14vzxu-00049u-00
+	for <linux-mtd@lists.infradead.org>; Sat, 05 May 2001 12:11:10 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3AF3414F.967F95DF@mvista.com> 
+References: <3AF3414F.967F95DF@mvista.com>  <617933180D08D311AB500090273F1F96016767DE@storm.corp.directvbroadband.net> 
+To: Alice Hennessy <ahennessy@mvista.com>
+Cc: "Fry, Dan" <dfry@bb.directv.com>, linux-mtd@lists.infradead.org
+Subject: Re: Improper Command Sequence 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 05 May 2001 12:11:27 +0100
+Message-ID: <2053.989061087@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,36 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-of course, when I am using the 2.2.17 kernel used to install this stuff, it
-says this then running dLILO:
-cannot locate block-major-93
+ahennessy@mvista.com said:
+> > Chip reports improper command sequence: status 0xa800a8
 
-when I have /dev/nftla1 in my lilo.conf. hmmmm. I assume that's because I
-don't have nftla in thsi mystery 2.2.x kernel.
+> a800a8 looks like the error status for low programming voltage detected -
+> you need to add some code to handle set_vpp (and unset_vpp) for your board.
 
-perhaps rdev'ing the 2.4 kernel I am working on would be a better approach.
+Bah. And I need to fix the blinkin' error reporting so it prints the 
+correct message.
 
-Jason
-
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
-Woodhouse
-Sent: Friday, May 04, 2001 8:23 PM
-To: Jason Walker
-Cc: MTD Mailing List
-Subject: Re: MTD and 2.4
+-		if (chipstatus & 0x30) {
++		if ((chipstatus & 0x30) == 0x30) {
+ 			printk(KERN_NOTICE "Chip reports improper command sequence: status 0x%x\n", status);
 
 
-
-jasonw@uswo.net said:
-> request_module[block-major-100]: root fs not mounted cannot open root
-> device 6401 blah blah blah
-
-Quite why someone felt it necessary to register block major 100 for the
-strangely named 'fla' device, when there was already a perfectly usable
-major assigned for NFTL, I have no idea.
-
-Switching your root device to /dev/nftla1 should fix it.
 
 --
 dwmw2
