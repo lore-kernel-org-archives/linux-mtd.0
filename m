@@ -1,22 +1,18 @@
-Received: from tiku.hut.fi ([130.233.228.86])
+Received: from ip66-35-227-11.altera.com ([66.35.227.11] helo=www.altera.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jGnT-0000Fq-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 10:04:03 +0100
-Received: from kosh.hut.fi (jlavi@kosh.hut.fi [130.233.228.10])
-	by tiku.hut.fi (8.9.3/8.9.3) with ESMTP id MAA03815
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 12:10:09 +0300 (EET DST)
-Received: (from jlavi@localhost)
-	by kosh.hut.fi (8.9.3/8.9.3) id MAA20432
-	for linux-mtd@lists.infradead.org; Tue, 18 Sep 2001 12:10:09 +0300 (EET DST)
-Date: Tue, 18 Sep 2001 12:00:45 +0300
-From: Jarkko Lavinen <jlavi@iki.fi>
-To: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: jffs & amd_flash.c
-Message-ID: <20010918120045.A23770@kosh.hut.fi>
-References: <20010918111926.A22357@kosh.hut.fi> <005a01c1401d$55661ff0$0203a8c0@mediasolv.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <005a01c1401d$55661ff0$0203a8c0@mediasolv.com>; from Kugan on Tue, Sep 18, 2001 at 01:37:35AM -0700
+	id 15jN04-0000p0-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 16:41:28 +0100
+Received: from Altera.COM (sunrise.altera.com [137.57.1.1])
+	by www.altera.com (8.9.3+Sun/8.9.3) with ESMTP id IAA07670
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 08:44:26 -0700 (PDT)
+Message-ID: <82B1591A280FD411B91200D0B75B484A015F5C3E@sis-uk-msg01.altera.com>
+From: Clive Davies <cdavies@altera.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Intel Flash protection registers
+Date: Tue, 18 Sep 2001 08:47:52 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,22 +24,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> The flash chip I have also support simultaneous read and write on different
-> plane simultaneously. Is your patch in latest CVS or do i have to get and
-> apply???
+I'd like to be able to read/write the OTP protection registers which are a
+feature of some Intel flash chips. Is anybody already looking at this?
 
-It is in the MTD CVS, but the changes are so small it may not be worth the 
-trouble to take fresh CVS image. flash_is_busy() is called only in two places.
-The change applies to its second argument. Previously there was "chip->start".
-Now there should be "adr".
+If not then I'm intending to do it myself and map this onto the oob
+read/write functionality. Is this a sensible approach or is there a better
+approach?
 
-For example in write_one_word() there should read:
-
-891:  while (times_left-- && flash_is_busy(map, adr, private->interleave)) {
-
-This cured all my writing problems. You may already have this fixed in
-erase_one_block(), since I committed that already many weeks ago and the
-write_one_word() change only last weekend.
-
-Regards,
-Jarkko Lavinen
+Clive
