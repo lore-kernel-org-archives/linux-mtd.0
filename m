@@ -1,43 +1,26 @@
-From: ahaas@airmail.net (Art Haas)
-Date: Wed, 26 Feb 2003 15:04:03 -0600
-Subject: [PATCH] C99 initializer for drivers/mtd/nand/spia.c
-Message-ID: <20030226210403.GG8966@debian>
+From: zzan2800@bigpond.net.au (Colin Durey)
+Date: Thu, 27 Feb 2003 11:33:55 +1030
+Subject: DoC and Linux New vs Old
+Message-ID: <001401c2ddfc$19fbbaa0$4e4a33cb@PTC>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi.
+I have equipment fitted with older DoC 2000 (MD2201-D40 -- 40mb capacity)
+and running Linux kernel 2.0.34. These Docs are now unavailable and have
+been superceded by MD2202-D48  - 48Mb capacity.
 
-Here is a small patch that converts the file to use C99 initializers. It
-is against the current 2.5 BK.
+I have a disk image for the older Docs, but this is useless with the new
+ones due to the different chip size. As well, the new DoCs don't like the
+older kernel and won't run. The Older Docs won't work with the new kernel
+(2.4.xx). C22!
 
-Art Haas
+Can anyone suggest a solution which is less painful than completely redoing
+my code to run on the new kernel? Is there some utility which allows the new
+DoCs to be configured to work with the older kernel, or is there some
+fundamental h/w different which totally prevents this?
 
-===== drivers/mtd/nand/spia.c 1.4 vs edited =====
---- 1.4/drivers/mtd/nand/spia.c	Sat Mar  2 05:53:22 2002
-+++ edited/drivers/mtd/nand/spia.c	Wed Feb 26 13:44:53 2003
-@@ -66,12 +66,15 @@
-  * Define partitions for flash device
-  */
- const static struct mtd_partition partition_info[] = {
--	{ name: "SPIA flash partition 1",
--	  offset: 0,
--	  size: 2*1024*1024 },
--	{ name: "SPIA flash partition 2",
--	  offset: 2*1024*1024,
--	  size: 6*1024*1024 }
-+	{
-+		.name	= "SPIA flash partition 1",
-+		.size	= 2*1024*1024
-+	},
-+	{
-+		.name	= "SPIA flash partition 2",
-+		.offset	= 2*1024*1024,
-+		.size	= 6*1024*1024
-+	}
- };
- #define NUM_PARTITIONS 2
- 
--- 
-They that can give up essential liberty to obtain a little temporary safety
-deserve neither liberty nor safety.
- -- Benjamin Franklin, Historical Review of Pennsylvania, 1759
+Help!!!
+
+Colin Durey
+PTC
+colind at cabcam.com.au
