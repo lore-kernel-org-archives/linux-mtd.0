@@ -1,22 +1,18 @@
-Received: from mailout03.sul.t-online.com ([194.25.134.81])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BXSP8-0002Ww-3C
-	for linux-mtd@lists.infradead.org; Mon, 07 Jun 2004 18:15:45 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "Andriy Korud" <a.korud@vector.com.pl>,
- <linux-mtd@lists.infradead.org>
-Date: Tue, 8 Jun 2004 00:10:08 +0200
-References: <80908CC5B2C9DB47AAF8C77892FCB44315F7AD@lion.vector.com.pl>
-In-Reply-To: <80908CC5B2C9DB47AAF8C77892FCB44315F7AD@lion.vector.com.pl>
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BXhT1-0003xP-5j
+	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2004 10:20:45 -0400
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004060810305430294
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jun 2004 10:30:54 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812B3@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 8 Jun 2004 10:22:14 -0400 
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200406080010.08485.tglx@linutronix.de>
-Cc: 
-Subject: Re: Unmarking bad blocks?
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain
+Subject: Generic nand and DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 07 June 2004 20:54, Andriy Korud wrote:
-> Hi,
-> after playing with mkfs.jffs2 and nandwrite a lot of blocks on my flash
-> chip (Samsung 128Mb) become marked as bad (and I'm sure they were not bad
-> at the beginning). Is it possible to 'unmark' them or should this chip is
-> unusble anymore? flash_eraseall gives:
+Hi All,
 
-What does playing mean ?
+  I have been trying to get my DOC Mil plus to work properly.  The code in
+the devices dir that is M-sys specific seems to works for the chip but I
+can't use nandwrite on the chip.  Am I to assume from the lists that the
+goal is to stop using the code in the devices directory and use the generic
+nand/inftl stuff to work for all devices?  The code for DoC_IdentChip is
+very specific, is it the plan that nand_scan will replace the later?
 
-> nand_erase: attempt to erase a bad block at page 0x00000000
-> nand_erase: attempt to erase a bad block at page 0x00000040
-> nand_erase: attempt to erase a bad block at page 0x00000080
-> nand_erase: attempt to erase a bad block at page 0x000000c0
-> ...
+  I have been taking time to try to understand the workings of the drivers
+and want to make sure I have the correct big picture.
 
-Thats odd.
-
-> Even I commented out bad block checking in nand_erase(), flash_eraseall
-> comlete successfully however blocks remain marked as bad.
-
-Hmm, the erase command runs if you remove the bad block check in nand_erase=
-()
-inside the nand driver. So the blocks including the bad block marker should=
- be=20
-erased.
-
-NAND chip type ?
-Bus width ?
-Kernel version ?
-MTD version ?
-
-=2D-=20
-Thomas
-________________________________________________________________________
-Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
-time managing existing systems. That couldn=92t have anything to do with=20
-the fact that 99 percent of these systems run Windows, could it?
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Thanks,
+John
