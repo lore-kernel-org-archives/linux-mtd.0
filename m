@@ -1,19 +1,23 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from neutrino1.hep.caltech.edu ([131.215.126.112] helo=neutrino2.hep.caltech.edu)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17XH57-0007RJ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Jul 2002 09:01:13 +0100
-Date: Wed, 24 Jul 2002 10:01:09 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Yuan, Cain" <cain.yuan@intel.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: about intel K3 strata falsh.
-Message-ID: <20020724080109.GA13031@wohnheim.fh-wedel.de>
-References: <957BD1C2BF3CD411B6C500A0C944CA2601499C18@pdsmsx32.pd.intel.com>
+	id 17XO0r-0007z7-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Jul 2002 16:25:17 +0100
+Received: (from root@localhost)
+	by neutrino2.hep.caltech.edu (8.11.6/8.11.6) id g6OFPFa09273
+	for linux-mtd@lists.infradead.org; Wed, 24 Jul 2002 08:25:15 -0700
+Received: from heppc22.hep.caltech.edu (heppc22.hep.caltech.edu [131.215.126.114])
+	by neutrino2.hep.caltech.edu (8.11.6/8.11.6) with ESMTP id g6OFPFV09266
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Jul 2002 08:25:15 -0700
+Subject: Re: MTD/DOC2000 question
+From: Conrad Steenberg <conrad@hep.caltech.edu>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1027488370.4105.7.camel@Tafelberg>
+References: <1027488370.4105.7.camel@Tafelberg>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 24 Jul 2002 15:25:10 -0700
+Message-Id: <1027549510.3366.9.camel@heppc22.cithep.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <957BD1C2BF3CD411B6C500A0C944CA2601499C18@pdsmsx32.pd.intel.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,17 +29,57 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 24 July 2002 15:26:48 +0800, Yuan, Cain wrote:
-> 	in drivers/mtd there is no corresponding code for Intel starta
-> flash. As intel's datasheet said, strata K3/K18 flash has an  write buffer
-> and Sync mode that can improve 
-> the performance, I decide to drive it. So  should I write an "driver module"
-> for it?  Any ideas?  TIA!!
+Hi
 
-try drivers/mtd/chips/cfi_cmdset_0001.c
+OK, let me reply to myself, since others have asked this question on
+various lists, but the answer never seems to get posted :-)
 
-Jörn
+To get the DOC to work if you get the below messages while creating a
+filesystem, do the following:
 
+1. nftl_format /dev/nftla
+2. Reboot the device so that the bad "blocks" marked in the above
+process are detected.
+3. fdisk /dev/nftla and create the partitions you want
+4. Reboot again so that the partitions can be properly detected (in the
+old days exiting fdisk used to warn that this needs to be done)
+5. Create the filesystem using mkfs.jffs2, mke2fs etc.
+
+Cheers!
+
+Conrad
+
+On Tue, 2002-07-23 at 22:26, Conrad Steenberg wrote:
+> Hi
+> 
+> I'm trying to create a filesystem on a 72M DOC2000 (Netier XL1000), and
+> get up to creating a partition (/dev/nftla1). This is with Bering-rc3.
+> 
+> When I try mke2fs /dev/nftla1, the following gets reported:
+> 
+> NFTL_writeblock(): Cannot find block to write to
+> end_request; I/O error, dev 5d:01 (unknown) sector XXXXX
+> Argh! No free blocks found LastFreeEUN = 4603, FirstEUN = 3
+> No Virtual Unit Chains available for folding. Failing request
+> 
+> The device was formatted with nftl_format first.
+> 
+> Any ideas?
+> 
+> Cheers!
+> 
+> Conrad
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 -- 
-Remember that silence is sometimes the best answer.
--- reputely from the Dalai Lama, unverified
+*-----------------------------------------*
+| Conrad Steenberg                        |
+| Caltech, Mail Code 356-48               |
+| Pasadena, CA, 91125                     |
+| e-mail: conrad@hep.caltech.edu          |
+| Tel: (626) 395-8758                     |
+*-----------------------------------------*
