@@ -1,19 +1,22 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19YQTj-0008A2-2J
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Jul 2003 14:19:55 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Cristiano Parzani <c.parzani@tattile.com>
-In-Reply-To: <000701c3422d$eb1417f0$1d00a8c0@cristianop>
-References: <000701c3422d$eb1417f0$1d00a8c0@cristianop>
-Message-Id: <1057324808.12384.314.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 04 Jul 2003 14:20:09 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Secure Digital on Linux
+	id 19Ycqo-0000l7-LP
+	for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2003 03:32:34 +0100
+Received: from 192.168.1.100 (unknown [192.168.1.100])2FB8216894
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  4 Jul 2003 22:33:41 -0400 (EDT)
+From: Joshua Wise <joshua@joshuawise.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 4 Jul 2003 22:32:39 -0400
+MIME-Version: 1.0
+Content-Description: clearsigned data
+Content-Disposition: inline
+Message-Id: <200307042232.43815.joshua@joshuawise.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-07-04 at 14:12, Cristiano Parzani wrote:
-> Hi to all,
-> I am interested in Secure Digital (SD) under Linux, I have read the
-> previous email posted here, someone could gladly tell me where to find
-> information? 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-SD is a problem because the specs are fairly hard to get hold of, and
-without them we don't know how to initialise the cards. 
+Hi all,
 
-There is some information at
-http://polysat.calpoly.edu/documents_cp2/cdh/data_sheets/toshiba_m1283bx.pdf
+I've added a new flash chip to the jedec_probe.c definitions, and it seems=
+=20
+that it's throwing back errors that the unlock codes don't match. I've=20
+tracked this down to jedec_probe_chip's cfi->addr_unlock* garbage - it does=
+=20
+look like that function will need to be rewritten. Has anyone already start=
+ed=20
+this, or should I just go ahead?
 
-I'm not sure if it's enough to get anything working though.
+~joshua
 
-> There is already something in kernel tree, what type of
-> file-system mount. I have read that SD use FAT16 on Win9x and under
-> Linux is the same? 
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <lilo> I akilled *@* by mistake
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-There's only MMC support as far as I'm aware. It presents itself as a
-block device and you should be able to put any type of file system on
-it.
-
--- 
-dwmw2
+iD8DBQE/BjjLPn9tWOqA4LMRAkOnAJ9pIVC8b1nSW3lXJZhcnnMa+uSCQACgjUsJ
+fK4lWnznSpEloOaklDaQRdg=3D
+=3D7gh4
+=2D----END PGP SIGNATURE-----
