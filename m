@@ -1,16 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Kevin Liao <kevinliao@iei.com.tw>
-In-Reply-To: <018301c3ad14$07225eb0$f80a10ac@rdkevinliaonb>
-References: <013301c3acf4$8d3033d0$f80a10ac@rdkevinliaonb>
-	 <1069065133.4490.53.camel@hades.cambridge.redhat.com>
-	 <018301c3ad14$07225eb0$f80a10ac@rdkevinliaonb>
-Content-Type: text/plain
-Message-Id: <1069078336.4490.78.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 17 Nov 2003 14:12:17 +0000
+Received: from [64.46.100.7] (helo=wolverine.usa.assimilatedservers.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1ALkug-0005X8-AT
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2003 15:03:38 +0000
+Received: from dsl-217-155-44-202.zen.co.uk ([217.155.44.202]
+	helo=192.168.0.4)
+	by wolverine.usa.assimilatedservers.net with esmtp (Exim 4.24)
+	id 1ALkJe-0008Da-2a
+	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2003 14:25:22 +0000
+From: david stevenson <david@rondotheatre.co.uk>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 17 Nov 2003 14:25:19 +0000
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200311171425.19219.david@rondotheatre.co.uk>
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Garbage collection problem for nand flash
+Subject: 8bit / 16bit access amd29f016 success
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-11-17 at 22:06 +0800, Kevin Liao wrote:
-> But I did not saw such messages when I used the mtd snapshot 20030720 (I
-> just updated from snapshot 20030720 to 20031112). 
+Appolgies if this is a double posting as the first time I got the from: wrong.
 
-Yes. The code in question was added in August.
+Hi
+This is for information, unless anyone knows more and can improve it.
 
-> I also compared the gc.c with these two snapshots. But I did not found obvious difference in the
-> functions that issue the complaint, that is jffs2_find_gc_block and
-> jffs2_garbage_collect_pass. Therefore I still doubt that there may be
-> something I did wrong. 
+I have 4off amd29F016 2megx8bit chips arranged as 4meg 16bit words.
+(on a amd sc400).
+I have hacked the elan-104nc.c map file to work for me. (I can post this if 
+anyone wants).
+I found I needed to set the proccessor to 8bit bus access mode before calling 
+cfi_probe, the chips were then detected correctly, but then I needed to reset 
+the bus mode to 16bit before any reading or writing.
 
-The change was made elsewhere, in places which now call those functions
-but did not do so before.
-
--- 
-dwmw2
+With this slightly odd switch all works fine.
+Thanks
+David
