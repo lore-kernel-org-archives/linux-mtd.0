@@ -1,39 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qFva-000102-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 16:01:02 +0100
-Date: Thu, 19 Apr 2001 10:55:24 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <joakim.tjernlund@lumentis.se>,
-        "'Florian Schirmer / TayTron'" <schirmer@taytron.net>,
-        "'Vipin Malik'" <vipin.malik@daniel.com>, <mtd@infradead.org>
-Subject: Re: JFFS2 as root FS 
-In-Reply-To: <13506.987685342@redhat.com>
-Message-ID: <Pine.LNX.4.33.0104191051220.9400-100000@xanadu.home>
+	id 14qHAB-0001gY-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:20:11 +0100
+Received: from enst.enst.fr ([137.194.2.16])
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14qHAA-0001gM-00
+	for mtd@infradead.org; Thu, 19 Apr 2001 17:20:10 +0100
+Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
+	by enst.enst.fr (Postfix) with ESMTP id D0B7E1C8F1
+	for <mtd@infradead.org>; Thu, 19 Apr 2001 18:19:47 +0200 (MET DST)
+Received: from FABRICE (droopy.maisel1.rezel.enst.fr [137.194.8.239])
+	by email.enst.fr (8.9.3/8.9.3) with ESMTP id SAA19792
+	for <mtd@infradead.org>; Thu, 19 Apr 2001 18:19:31 +0200 (MET DST)
+Date: Thu, 19 Apr 2001 18:18:58 +0200
+From: Fabrice Gautier <gautier@email.enst.fr>
+To: mtd@infradead.org
+Subject: MTD CVS and Official Kernel Tree
+Message-Id: <20010419181031.18A9.GAUTIER@email.enst.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
+Am I right when I assume that the mtd cvs tree can be applied to a 2.4
+kernel tree by coppying directories like this?
 
-On Thu, 19 Apr 2001, David Woodhouse wrote:
+Mtd cvs ---------------> Kernel Tree
 
->
-> joakim.tjernlund@lumentis.se said:
-> >  I have tried to mount the FS again and the files are still there. It
-> > still takes 1 min and 30 sec to mount it and sometime when I do a ls
-> > the system hangs for 10-20 sec before the output from ls is seen. Is
-> > this normal?
->
-> That's very very slow. I don't know why it's being so slow for you.
+mtd/drivers/mtd -------> linux/drivers/mtd
+mtd/fs ----------------> linux/fs
+mtd/include -----------> linux/include
 
-Maybe the flash access timing is awfully slow?  Default values for such
-things are often the slowest.
+And then what about the mtd/kernel directory in the CVS ? 
 
+Thanks,
 
-Nicolas
+-- 
+Fabrice Gautier <gautier@email.enstfr>
 
 
 
