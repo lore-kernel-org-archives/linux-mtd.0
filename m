@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17h5rf-0005o6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 11:03:55 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1029796472.22781.136.camel@thomas.tec.linutronix.de> 
-References: <1029796472.22781.136.camel@thomas.tec.linutronix.de>  <1029623727.2142.495.camel@thomas.tec.linutronix.de> <1029793649.22781.129.camel@thomas.tec.linutronix.de> 
-To: Thomas Gleixner <tglx@linutronix.de>
+	id 17h5xv-0005op-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 11:10:23 +0100
+Date: Tue, 20 Aug 2002 12:10:20 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Conn Clark <clark@esteem.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: No free space left for GC 
+Subject: Re: Re: How does one mount an existing jffs2 partition so it is writeable?
+Message-ID: <20020820101020.GA18210@wohnheim.fh-wedel.de>
+References: <3D612C1F.55297C10@esteem.com> <20020819234239.GA6792@wohnheim.fh-wedel.de> <3D6186CD.6BCD1850@esteem.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 20 Aug 2002 11:03:53 +0100
-Message-ID: <30887.1029837833@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3D6186CD.6BCD1850@esteem.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +25,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-tglx@linutronix.de said:
->  The new decision function for gc and reserve_space takes only those
-> blocks into account, which are on the dirty and very dirty list. The
-> dirty space in the clean_list is ignored. This is neccecary to avoid
-> endless GC loops. 
+On Mon, 19 August 2002 17:01:17 -0700, Conn Clark wrote:
+> Jörn Engel wrote:
+> > On Mon, 19 August 2002 10:34:23 -0700, Conn Clark wrote:
+> > >       How does one mount an existing jffs2 partition so it is writeable?
+> > > After a reboot I can mount my jffs2 and read from it, but not write to it
+> > > I can erase it first and mount it then read and write to it , but then I
+> > > lose my info on it which defeats the whole reason for having it.
+> > 
+> > 1) Append "rw" to kernel command line.
+> > 2) mount / -o remount,rw
+> 
+> 	Didn't work, I get the same message. Did I do it right?
+> 
+> [/gpig]# cd ..
+> [/]# mount /gpig -o remount,rw
+> [/]# cd gpig
+> [/gpig]# cp ../bin/MAKEDEV .                                                    
+> Write of 68 bytes at 0x00059a28 failed. returned 0, retlen 0
+> Not marking the space at 0x00059a28 as dirty because the flash driver returned r
+> etlen zero
+> cp: ./MAKEDEV: Input/output error
+> [/gpig]# 
 
-> Any suggestions ?
+Maybe. If the locking hint from Christopher doesn't work either, we
+need more information:
+- Number, size and type of flash chips
+- output from mount
+- kernel version plus applied patches
+- ...
 
-<IRC conversation repeated, for the benefit of the peanut gallery>
+Without knowing whether /gpid is the mounted partition in question or
+not, my best answer is maybe. :)
 
-Nice work, thanks. If this fixes the problem, as I believe it does, please
-don't calculate the dirty size in thread_should_wake() -- use c->dirty_size 
-and just don't count the wasted space in the end of blocks on the 
-clean_list in that; add something like 'wasted_size' to keep track of that
-instead.
+Jörn
 
-And read README.Locking again. It's rare that I actually write sensible 
-documentation -- make the most of it :)
-
---
-dwmw2
+-- 
+The competent programmer is fully aware of the strictly limited size of
+his own skull; therefore he approaches the programming task in full
+humility, and among other things he avoids clever tricks like the plague. 
+-- Edsger W. Dijkstra
