@@ -1,21 +1,18 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BsrbJ-0004G4-VP
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2004 19:24:47 -0400
-To: Andy Hawkins <a.hawkins@cabletime.com>
-References: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
-	<1090856360.2220.63.camel@adh> <1090858047.2219.77.camel@adh>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 05 Aug 2004 17:24:39 -0600
-In-Reply-To: <1090858047.2219.77.camel@adh>
-Message-ID: <m37jsdnp6w.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
+Received: from [2002:d412:e8ba::1] (helo=caramon.arm.linux.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BtQf9-0007Ru-5f
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2004 08:51:04 -0400
+Date: Sat, 7 Aug 2004 13:50:56 +0100
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+To: Linux Kernel List <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org
+Message-ID: <20040807135056.C2805@flint.arm.linux.org.uk>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: D.A.Fedorov@inp.nsk.su, linux-mtd@lists.infradead.org,
-	Thayne Harbaugh <tharbaugh@lnxi.com>
-Subject: Re: Problem writing to NOR flash
+Content-Disposition: inline
+Sender: Russell King <rmk@arm.linux.org.uk>
+Cc: 
+Subject: [BUG] 2.6.8-rc3 redboot.c tries to kmalloc 256K
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andy Hawkins <a.hawkins@cabletime.com> writes:
+Hi,
 
-> Hi all,
-> 
-> After a bit more digging and reading of the data sheet, it appears the
-> the chip I'm using doesn't need locking and unlocking. I then went back
-> to the version of the code where we had this working (whatever came with
-> the 2.4.20 kernel) and found that none of this locking / unlocking
-> mechanism was present.
-> 
-> So, to test I commented out the contents of cfi_amdstd_lock_varsize and
-> cfi_amdstd_unlock_varsize, and I can now successfully write to the NOR!
-> 
-> Are these functions only required for some very specific chips? 
+With 2.6.8-rc3, I'm unable to mount the jffs2 root filesystem on one of
+my test systems.  The system uses redboot, so has a redboot partition
+table.  However, the kernel was not detecting the table.
 
-Yes.
+After prodding about for a while, I've found that redboot.c seems to
+be trying to kmalloc 256K of memory.   The largest size that kmalloc
+supports is 128K on MMUfull systems.
 
-> If so,
-> what is the *correct* way for this code to determine whether or not they
-> are needed (this code is in a 'generic' file, so I'm surprised that
-> there's chip specific information in there).
+static int parse_redboot_partitions(struct mtd_info *master,
+                             struct mtd_partition **pparts,
+                             unsigned long fis_origin)
+{
+	...
+printk("erasesize: %d\n", master->erasesize);
+        buf = kmalloc(master->erasesize, GFP_KERNEL);
 
-When Thayne wrote the code he was assuming that since there were no
-lock/unlock functions the lock/unlock entry points were simply
-not called.  And he figured if it actually broken something someone
-would scream.  And then he thought someone had removed the code
-when cfi_cmdset_0002 was scrubbed a while ago.
+        if (!buf)
+                return -ENOMEM;
 
-In addition that code really is generic, it applies to firmware
-hub parts and there are chips that use both cfi_cmdset_0001 and
-cfi_cmdset_0002 that can use it.
+produces:
 
-When I get a chance it is my intention to refactor the probing
-routines to make handling of chips with special capabilities
-simpler.
+sa1100-0: Found 2 x16 devices at 0x0 in 32-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+cfi_cmdset_0001: Erase suspend on write enabled
+Using buffer write method
+SA1100 flash: CFI device at 0x00000000, 32MiB, 32-bit
+CFI: Found no sa1100-1 device at location zero
+cmdlinepart: c03e69ec
+cmdlinepart: returned -22
+RedBoot: c03e69d8
+erasesize: 262144
+RedBoot: returned -12
+SA1100 flash: using static partition definition
+Creating 3 MTD partitions on "sa1100-0":
+0x00000000-0x00040000 : "bootloader"
+0x00040000-0x00080000 : "bootloader params"
+0x00080000-0x02000000 : "jffs"
+...
+Kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
 
-As a first step I am putting a few conditionals in cfi_amdstd_setup
-so that chips that we won't use those methods on chips that
-don't support them.  Then we can look at better ways to organize
-the probe code so the probe/setup code is not such a mess.
-
-I have the first chunk done but I'm not ready to check it
-in until I have a chance to test it.  And I am swamped right now...
-
-Eric
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
