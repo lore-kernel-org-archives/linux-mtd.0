@@ -1,19 +1,17 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178W6B-0004V7-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 01:59:59 +0100
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+	id 178apr-0004vy-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 07:03:27 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.44.0205161315020.26329-100000@localhost.localdomain> 
+References: <Pine.LNX.4.44.0205161315020.26329-100000@localhost.localdomain> 
+To: Paul <paul@oz.net>
+Cc: Studying MTD <studying_mtd@yahoo.com>, linux-mtd@lists.infradead.org
+Subject: Re: FAT for NAND Flash 
 Mime-Version: 1.0
-Date: Thu, 16 May 2002 17:59:57 -0700 (PDT)
-From: Jim Zeus <zeusj@firstlinux.net>
-To: ales.makarov@wolfhill.cz,
-	all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Cc: "Ales  Makarov" <ales.makarov@wolfhill.cz>
-Subject: Re: MTD+JFFS2 on DragonBall VZ
-Reply-To: zeusj@firstlinux.net
-Message-Id: <20020517005957.F227B2756@sitemail.everyone.net>
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 17 May 2002 07:03:23 +0100
+Message-ID: <32431.1021615403@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +23,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+paul@oz.net said:
+>  Perhaps I used the wrong terminology when I said "FAT12 translation",
+> but doesn't the firmware on a USB SmartMedia reader have to be able to
+>  parse the SSFDC Physical Format Specification, such as the CIS (Card
+> Information Structure)?  This is the part that seems to be missing in
+> sddr09.c, and the upper level stuff (e.g. fs/fat/inode.c) only handles
+>  pure FAT12.  In that case, sddr09.c isn't as useful to us as
+> previously suggested.
 
---- Ales Makarov <ales.makarov@wolfhill.cz> wrote:
->I've written my mtd_partition structure.
->
->Should I add the mtd_device first and then mtd_partitions? (I don't need
->the whole device access)
->
->  flash0_mtd->module = THIS_MODULE;
->  add_mtd_device(flash0_mtd);
->  add_mtd_partitions(flash0_mtd, flash0_parts, FLASH0_PARTS);
->
+OK, I thought there was more knowledge about the SmartMedia translation 
+layer in the driver than that -- after all, if they were going to do it in 
+firmware they could have just presented it as a standard USB-storage device 
+and not required a special driver.
 
-NO ,I believe you need to add the mtd_partitions only.
+Have you also looked at the updated driver at 
+	ftp://ftp.kernel.org/pub/linux/kernel/people/aeb/
 
-
-
-Jim Zeus
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+--
+dwmw2
