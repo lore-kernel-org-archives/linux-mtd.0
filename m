@@ -1,20 +1,19 @@
-Received: from flock1.newmail.ru ([212.48.140.157])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197tkZ-00061r-IX
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 10:07:39 +0100
-From: "A.L. Klyutchenya" <asoneofus@nm.ru>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 22 Apr 2003 13:06:58 +0400
-References: <200304010207.14078.asoneofus@nm.ru>
-	<200304010943.04279.asoneofus@nm.ru> <200304021228.44997.tglx@linutronix.de>
-In-Reply-To: <200304021228.44997.tglx@linutronix.de>
-MIME-Version: 1.0
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 197u9n-0006Cz-A8
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 10:33:43 +0100
+Date: Tue, 22 Apr 2003 11:33:42 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: leeyang <leeyang@ycig.com>
+Message-ID: <20030422093342.GA20257@wohnheim.fh-wedel.de>
+References: <001301c30745$438c1e60$0365a8c0@leeyang>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200304221249.50740.asoneofus@nm.ru>
-Content-Type: text/plain;
-  charset="koi8-r"
+In-Reply-To: <001301c30745$438c1e60$0365a8c0@leeyang>
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Subject: Re: K9F5608U0B-YIB0000: 528 byte in page, or 512?
+cc: linux-mtd@lists.infradead.org
+Subject: Re: mmap on jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2 Апрель 2003 14:28, Thomas Gleixner написал:
-> On Tuesday 01 April 2003 13:02, A.L. Klyutchenya wrote:
-> > Dear sir,
-> > Thank you for quick answer.
-> >
-> > 1 Апрель 2003 07:36, Charles Manning написал:
-> > > This is NAND flash. Do not try to treat it as NOR flash.
-> > > Use it with mtd/nand  and use YAFFS or JFFS2 file system.
-> >
-> > I want to write the first image, for booting system. I
-> > create this image (with kernel, MTD & Co). I have a
-> > possibility his write. Herewith: I have an physical access
-> > to page: size 256+256+16, and block on 32 pages. While NO
-> > MTD and NO kernel!
-> >
-> > > You must write NAND in whole pages, not on a per-byte
-> > > basis.
-> >
-> > I understand that page it is necessary to write, but what
-> > bring the first image: chain on 512+512.... or 512+16 free +
-> > 512+16 free...
-> >
-> > As even so write? :-) (to hrdware-level)
->
-> Please read http://linux-mtd.infraded.org/tech/nand.html
+On Sun, 20 April 2003 22:00:51 +0800, leeyang wrote:
+> 
+> I am using jffs2 on a ppc860 system(amd29lv160).
+> Things seems ok,but when I am trying mmap.
+> 
+> I want to mmap a file in flash,so i can treat
+> the file like some records.
+> 
+> I mean operation like
+>  fd = open("/usr/dat/sot.dat",O_RDWR,FILEMODE);
+>  
+>  ptr1=mmap(NULL,filesize,PROT_READ|PROT_WRITE,
+>    MAP_SHARED,fd,0);
+> 
+> fd returns 3 and it is ok,however ptr1 returns -1.
+> I checked the errno it said invalid argument.
+> 
+> I have to say arguments "filesize" above is not
+> aligment to any requirements,just the real file
+> size?Does it matter?
+> 
+> The same procedure can done on common ext2
+> so i wonder jffs2 implement all the features like
+> ext2?
 
-I read, and don't find answer.
+AFAIK (someone please correct me) jffs2 does not support mmap. I don't
+remember any technical reason, so it seems as if noone cared enough to
+implement it.
 
-1) make jffs2 image: correct erase block-size for NAND (512+16 
-page x 32) is 0x4200 or (512 page x 32) 0x4000?
+You can do the work yourself, pay someone to do it or wait and hope
+that someone else does it. As always.
 
-2) for writing jffs2 image to NAND use only 512byte space on each 
-page, or 512+16?
+JЖrn
 
 -- 
-ВсехБлаг!      
-      ____   __
-     /   |  / / А. Л. Клютченя
-    / /| | / /  (asoneofus)
-   / /_| |/ /   mail:   asoneofus@kde.ru
-  / ____  _ \   www:    http://www.qt.kde.ru
- / /   | | \ \  icq:    113679387
-/_/    |_|  \_\ 
+It's just what we asked for, but not what we want!
+-- anonymous
