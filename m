@@ -1,26 +1,14 @@
-Received: from [196.12.38.67] (helo=navgw.cmcltd.com)
+Received: from web30805.mail.mud.yahoo.com ([68.142.200.148])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DGGnY-0003cS-QN
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2005 08:30:25 -0500
-Received: (from navint [172.16.11.11])
-	by navgw.cmcltd.com (SMSSMTP 4.1.0.19) with SMTP id
-	M2005032918443710042
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2005 18:44:37 +0530
-Received: from cmcmail.cmcltd.com ([172.16.11.1])
-	by navint (SMSSMTP 4.1.0.19) with SMTP id M2005032918381105324
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2005 18:38:11 +0530
-Received: from webmail.cmcltd.com ([172.16.10.105])
-	by cmcmail.cmcltd.com (8.12.10+Sun/8.12.10) with ESMTP id
-	j2TDATff026550 for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Mar 2005 18:40:29 +0530 (IST)
-Message-ID: <17771.13.13.16.2.1112102736.squirrel@13.13.16.2>
-Date: Tue, 29 Mar 2005 18:55:36 +0530 (IST)
-From: srkumar@cmcltd.com
+	id 1DGH0u-0003oT-NA
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2005 08:44:13 -0500
+Message-ID: <20050329133733.49012.qmail@web30805.mail.mud.yahoo.com>
+Date: Tue, 29 Mar 2005 05:37:33 -0800 (PST)
+From: wilho wallaton <wilho_76@yahoo.com>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: S29GL128
+Content-Type: text/plain; charset=us-ascii
+Subject: Need help on using jffs2 with blkmtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +18,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have a problem with AMD S29GLS128 Flash.I have enabled the following in
-the kernel config file.But the driver is not able to probe the flash.The
-register_mtd_chip_driver() function from amd_flash.c is getting registered
-into the kernel,but no probing function is called. I have added  my chip
-deice ID and region info into the amd_flash_info table[]. But still not
-detecting.
+Hi!
 
-Help me.
+Although this is may or may not be the mtd problem, I
+dear to to ask your assistance, since you guys are my
+last hope it seems.
 
-kernel config file.
-CONFIG_MTD_CFI=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_JEDECPROBE=y
-CONFIG_MTD_GEN_PROBE=y
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-CONFIG_MTD_CFI_INTELEXT=y
-CONFIG_MTD_AMDSTD=y
-CONFIG_MTD_JEDEC=y
-CONFIG_MTD_CFI_AMDSTD=y
-CONFIG_MTD_PHYSMAP=n
+AFAIK jffs2 is only compressing rw filesystem on linux
+there is. Therefore I've tried a whole day to create
+jffs2 partition on my HD, I'm going to rdiff-backup
+onto it when it's ready (rdiff compresses only its
+diff-files).
+
+My intention is to make /dev/hdc4 to function with
+jffs2 filesystem. This is what I've done so far:
+-------------------------------------------
+I have these modules installed:
+Symbol: MTD [=m]
+Prompt: Memory Technology Device (MTD) support
+Defined at drivers/mtd/Kconfig:5
+Location:
+-> Device Drivers
+-> Memory Technology Devices (MTD)
+
+Code:
+Prompt: MTD emulation using block device
+Defined at drivers/mtd/devices/Kconfig:116
+Depends on: MTD
+Location:
+-> Device Drivers
+-> Memory Technology Devices (MTD)
+-> Self-contained MTD device drivers
+
+Code:
+Symbol: JFFS2_FS [=m]
+Prompt: Journalling Flash File System v2 (JFFS2)
+support
+Defined at fs/Kconfig:1052
+Depends on: MTD
+Location:
+-> File systems
+-> Miscellaneous filesystems
+Selects: CRC32
+-------------------------------------------
+
+Next thing was:
+
+  #modprobe blkmtd device=/dev/hdc4
+  #mknod /dev/mtdblock0 b 22 4
+
+I'm not sure about usage of mknod command. It seems
+that blkmtd needs it with udev, without it there's no
+/dev/mtdblcok* devices at all. I've checked major and
+minor number from
+/usr/src/linux/Documentation/devices.txt, I'm not sure
+but I think they're all right. BTW, how do I make
+those changes permanent?
+
+Well anyway, story goes on,
+
+  #mkfs.jffs2 -o /dev/mtdblock0
+
+everything seems to be OK this far, no error messages,
+but when I do:
+
+  #mount -t jffs2 /dev/mtdblock0 /mnt/hdc4
+-> mount: wrong fs type, bad option, bad superblock on
+/dev/mtdblock0
+
+
+
+Here's something I've done for troubleshooting:
+
+  #lsmod |grep mtd     
+-->blkmtd                  8884  0
+   mtdcore                 5316  3 jffs2,blkmtd
+
+  #lsmod |grep jffs
+-->jffs2                  83248  0
+   zlib_deflate           21272  1 jffs2
+   zlib_inflate           17280  1 jffs2
+   mtdcore                 5316  3 jffs2,blkmtd
+
+  #cat /proc/mtd
+-->dev:    size   erasesize  name
+   mtd0: 205b0000 00020000 "blkmtd: /dev/hdc4"
+
+if I do
+  #wc -c /dev/mtdblock0
+
+I get out size 542836224 bytes ~ 500MB which seems
+right - thats about the size as how big the partition
+should be.
+
+if I do
+  #head -n1 /dev/mtdblock0
+
+There's some filenames visible in output in middle of
+carbage. 
+
+
+
+So it seems that /dev/mtdblock0 is OK, but is it after
+all? If it it, then what the * is wrong with this, why
+can't I mount it? I'm gettign desperate.
+
+Thanks for all your help,
+-wilho
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
