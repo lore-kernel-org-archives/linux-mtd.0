@@ -1,15 +1,19 @@
-Received: from web17701.mail.tpe.yahoo.com ([202.43.200.205])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CMzf7-0006Mc-No
-	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2004 22:05:17 -0400
-Message-ID: <20041028020508.55014.qmail@web17701.mail.tpe.yahoo.com>
-Date: Thu, 28 Oct 2004 10:05:08 +0800 (CST)
-From: jjjaaaaa <jjjaaaaa@yahoo.com.tw>
+Received: from wproxy.gmail.com ([64.233.184.200])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CN2Oj-0006lC-HB
+	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 01:00:30 -0400
+Received: by wproxy.gmail.com with SMTP id 57so471934wri
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 27 Oct 2004 22:00:28 -0700 (PDT)
+Message-ID: <b4618e0f041027220032c8a576@mail.gmail.com>
+Date: Thu, 28 Oct 2004 10:30:28 +0530
+From: bandwidthcrunch <bandwidthcrunch@gmail.com>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=big5
-Content-Transfer-Encoding: 8bit
-Subject: mtd support kernel?
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: jffs2 and 2.4.19
+Reply-To: bandwidthcrunch <bandwidthcrunch@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,16 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI
-i now use kernel 2.4.26 
-i need patch 2.4.26 to use Doc
+Hi all,
+       I have been trying to integrate a Jul 31  2002 snapshot of mtd
+into the 2.4.19 kernel but end up having
+file.c: In function `jffs2_fsync':
+file.c:33: structure has no member named `wbuf'
+file.c:33: structure has no member named `wbuf_len'
 
-now patch not support 2.4.x??
-only can patch 2.6.x??
+Now i have in the earlier
+http://mhonarc.axis.se/jffs-dev/msg01282.html mail which says this
+happens due to CONFIG_JFFS2_FS being enabled in the kernel .
+But removing this is like disabling jffs2 support in the kernel ( yeah
+it builds the/fs/jffs2 modules ) . Isnt there a solution to this ?Any
+comments welcome
 
-thank 
-
------------------------------------------------------------------
-Yahoo!奇摩電子信箱
-100MB 免費信箱，電子信箱新紀元從這開始！
-http://mail.yahoo.com.tw/
+regards,
+Band
