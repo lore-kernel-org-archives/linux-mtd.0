@@ -1,24 +1,14 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ArN5m-0007GY-R4
-	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2004 20:05:47 +0000
-From: Joshua Wise <joshua@joshuawise.com>
-To: tharbaugh@lnxi.com
-Date: Thu, 12 Feb 2004 15:04:40 -0500
-References: <200402110054.31831.joshua@joshuawise.com>
-	<200402112259.53361.joshua@joshuawise.com>
-	<1076595846.19353.590.camel@tubarao>
-In-Reply-To: <1076595846.19353.590.camel@tubarao>
+Received: from web20724.mail.yahoo.com ([216.136.226.99])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1ArPLQ-00080C-Co
+	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2004 22:30:04 +0000
+Message-ID: <20040212223001.53258.qmail@web20724.mail.yahoo.com>
+Date: Thu, 12 Feb 2004 14:30:01 -0800 (PST)
+From: Shawn Jin <shawnxtech@yahoo.com>
+To: linuxmtd <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200402121505.49177.joshua@joshuawise.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: cfi_cmdset_0002.c: do_xxlock_oneblock: overflow subtract
-	causing oopsen on iPAQ h1900
+Content-Type: text/plain; charset=us-ascii
+Subject: Understanding JFFS2 behavior
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +18,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-> - adr =3D ((adr & ~0xffff) | 0x2) + ~0x3fffff;
-> + adr =3D ((adr & ~0xffff) | 0x2);
-That may indeed be the correct way to unlock flash on other platforms ... t=
-hat=20
-is the change that I am using, and it does not seem to cause any harm.
+When mounting a mtd device (chip Am29PL320D, 8MB, erase block 512KB, bus
+width 64 bits), I observed the following behavior of JFFS2 and don't
+understand what's going on inside JFFS2. 
 
-joshua
+The available space in the mtd is shrinking quickly and in the end it
+leaves 0%. As a matter of fact, the mtd device only has one file
+/var/log/messages with length 0. Then I cannot create any file there
+because of the lack of disk space.
 
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <RockShox> charge up a 50v 1000uf cap and toss it to someone
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+I know that 5 blocks need to be reserved for garbage colletion. But is this
+related the gc? Is the phenomenon normal? BTW, I use the latest mtd/jffs2
+code from CVS.
 
-iD8DBQFAK9xbPn9tWOqA4LMRAqIPAJ9TatM6muNW/NgFgszZGQPwnKsekgCffdbM
-4q4tfkOZu/qyZCtvWg+fYqw=3D
-=3DJ2EX
-=2D----END PGP SIGNATURE-----
+-Shawn.
+
+bash-2.05# mount -t jffs2 /dev/mtdblock1 /mnt
+bash-2.05# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/nfs               7044432   5535224   1151364  83% /
+/dev/mtdblock1            8192      2052      6140  26% /mnt
+bash-2.05# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/nfs               7044432   5535228   1151360  83% /
+/dev/mtdblock1            8192      3588      4604  44% /mnt
+bash-2.05# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/nfs               7044432   5535232   1151356  83% /
+/dev/mtdblock1            8192      4612      3580  57% /mnt
+bash-2.05# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/nfs               7044432   5535248   1151340  83% /
+/dev/mtdblock1            8192      8192         0 100% /mnt
+bash-2.05# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/nfs               7044432   5535248   1151340  83% /
+/dev/mtdblock1            8192      8192         0 100% /mnt
+bash-2.05# 
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Finance: Get your refund fast by filing online.
+http://taxes.yahoo.com/filing.html
