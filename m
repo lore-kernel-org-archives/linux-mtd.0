@@ -1,40 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13DpTo-0004Fo-00
-	for mtd-list@infradead.org; Sun, 16 Jul 2000 15:33:16 +0100
-Date: Sun, 16 Jul 2000 15:32:13 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Prabha19 Selva <sprabha19@hotmail.com>
-cc: mtd@infradead.org, sprabha@hotmail.com
-Subject: Re: Fwd: Re: Error when loading the modules
-In-Reply-To: <20000715222433.57109.qmail@hotmail.com>
-Message-ID: <Pine.LNX.4.21.0007161530460.900-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13E9KK-0006b9-00
+	for mtd-list@infradead.org; Mon, 17 Jul 2000 12:44:48 +0100
+Received: from maggiore.dsnet.it ([195.250.233.15])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13E9KI-0006b3-00
+	for mtd@infradead.org; Mon, 17 Jul 2000 12:44:47 +0100
+Received: from toshiba.distelco.it (host12.distelco.it [192.168.1.12])
+	by deunan.distelco.it (8.9.3/8.8.7) with ESMTP id NAA24544
+	for <mtd@infradead.org>; Mon, 17 Jul 2000 13:15:32 +0200
+Message-Id: <4.3.1.0.20000717130622.00acf280@mbox.distelco.it>
+Date: Mon, 17 Jul 2000 13:15:24 +0200
+To: mtd@infradead.org
+From: Matteo Costa <matteoc@distelco.it>
+Subject: Grub development
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Sat, 15 Jul 2000, Prabha19 Selva wrote:
+Hi all,
+I'm trying to complete the port of GRUB for the Diskonchip by adding the 
+NFTL read support. Is there someone else doing the same ?
 
-> Hi David,
-> Still the same problem (can not load the cfi_prob.o, cfi_cmdset_0002.o
-> etc. modules. It is still giving "unresolved symbol put-module-symbol". I 
-> have added the patch you mentioned earlier and recompile the kernel and also 
-> (just to make sure) the mtd drivers. But I still get the same error.
+Bye.
 
 
-Either the patch didn't apply properly, or you're not running the kernel
-to which you applied the patch.
+<Il problema quando si e' puntuali e' che non c'e' mai nessuno ad apprezzarlo>
 
-Check that kernel/ksyms.c contains a line which says:
-	EXPORT_SYMBOL(put_module_symbol);
-
-Check that put_module_symbol exists in /proc/ksyms
-
-Make sure CONFIG_MODVERSIONS is turned off.
-
---
-dwmw2
+Matteo
 
 
 
