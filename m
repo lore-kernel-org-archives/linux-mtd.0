@@ -1,19 +1,19 @@
-Received: from mail.broadpark.no ([217.13.4.2])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A5Kgv-0006vG-NU
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Oct 2003 08:49:34 +0100
-Received: from famine (217-13-20-38.dd.nextgentel.com [217.13.20.38])
-	by mail.broadpark.no (Postfix) with ESMTP id 0936A79E8B
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  3 Oct 2003 09:48:07 +0200 (MEST)
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <1065167286.24334.12.camel@famine>
-Mime-Version: 1.0
-Date: Fri, 03 Oct 2003 09:48:06 +0200
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: Can I set JFFS2_RESERVED_BLOCKS_WRITE=0?
+Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A5LDY-00074C-Ff
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Oct 2003 09:23:16 +0100
+Message-ID: <3F7D31B7.7020400@hectrix.com>
+Date: Fri, 03 Oct 2003 16:22:15 +0800
+From: Selwyn Tang <selwyn@hectrix.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <Law15-F74mSknvh7wFI000062b3@hotmail.com>
+	<3F7CD9CA.5090805@hectrix.com> <1065160480.16088.0.camel@imladris.demon.co.uk>
+In-Reply-To: <1065160480.16088.0.camel@imladris.demon.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: high cpu usage using nftl for DOC2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've got a JFFS2 fs mounted with only a single sector.
+Hi Dave,
 
-In this application, there is a phase where JFFS2 is written to,
-and afterwards it is protected in hardware and never changed again.
+On 10/03/2003 01:54 PM, David Woodhouse wrote:
+> Boot with 'profile=1' and use readprofile to see where it's spending all
+> the CPU time. Note your driver must be built-in to the kernel for this.
 
-JFFS2 scores over a ROM fs, because a ROM fs is normally created
-on the developer machine during compile time, whereas the JFFS2
-fs can be laid out by the application in the field.
+The followings, among others, are reported by readprofile:
 
-To my surprise, JFFS2 will refuse to write more files if there
-are less than 5 secotors free.
+  147 handle_IRQ_event			1.5978
+   17 ide_outb				1.4167
+ 3288 _DoC_Delay			32.8800
+ 6634 __rdtsc_delay			236.9286
 
-Having no fear, I set JFFS2_RESERVED_BLOCKS_WRITE = 0.
+I don't know how to interpret them :-)
 
-Apparently this is to avoid "endless gc looping".
-
-http://lists.infradead.org/pipermail/linux-mtd/2003-April/007437.html
-
-If someone could shed some light on this, I would be much obliged.
-
-
-Øyvind
+Selwyn
