@@ -1,19 +1,20 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 184JpR-0000W7-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2002 12:37:37 +0100
-Date: Wed, 23 Oct 2002 14:07:34 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Frank Neuber <neuber@convergence.de>
-Cc: linux-mtd@lists.infradead.org
+	id 184Kwj-0000cC-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2002 13:49:14 +0100
+Message-Id: <200210231319.g9NDJ9s02156@dagobert.svc.sysgo.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Robert Kaiser <rob@sysgo.de>
+Reply-To: rkaiser@sysgo.de
+To: linux-mtd@lists.infradead.org
 Subject: Re: parse_cmdline_partitions equivalent for map_info
-Message-ID: <20021023120734.GB31696@wohnheim.fh-wedel.de>
-References: <20021018104910.GA11807@jupiter> <26791.1034943288@passion.cambridge.redhat.com> <20021019164445.GA9364@wohnheim.fh-wedel.de> <20021022103936.GA24369@jupiter> <20021022170803.GA9161@wohnheim.fh-wedel.de> <20021023094928.GA27905@jupiter> <20021023100618.GB13926@wohnheim.fh-wedel.de> <20021023102709.GA28181@jupiter>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Date: Wed, 23 Oct 2002 15:25:39 +0200
+References: <20021022172914.GA18411@wohnheim.fh-wedel.de>
+In-Reply-To: <20021022172914.GA18411@wohnheim.fh-wedel.de>
+Cc: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20021023102709.GA28181@jupiter>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,47 +26,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 23 October 2002 12:27:09 +0200, Frank Neuber wrote:
-> Ahh, much more better. This is a good starting point. Thanks!
+Hi Jörn,
 
-My desk is a mess, my brain is a mess, my patches should be better,
-but... sorry for the inconvenience!
+no offense, but ...
 
-> I try to make this more generic (if time left :-)))
+Am Dienstag, 22. Oktober 2002 19:29 schrieb Jörn Engel:
+> Actually, I am not very sure about cmdline.c at all. Is there a single
+> mapping driver that could not be replaced by physmap.c or mphysmap.c?
 
-Allow me to drop some ideas. Maybe someone else picks those up, before
-I do:
+Not sure about mphysmap.c, but last time I checked, physmap.c was unable to 
+deal with configurations where:
 
-- All the mapping drivers in drivers/mtd/maps are just specialized
-  and tweaked versions of physmap.c.
-- physmap.c was not generic enough. I wrote mphysmap.c for a reason.
-- It should be possible to provide a small api that is generic enough
-  to rewrite all the mapping drivers in <20 lines of code.
+  - a set_vpp method is required (see cstm_mips_ixx.c, dilnetpc.c,
+    sa1100-flash.c)
+  - different kinds of flash chips exist (see sc520cdp.c)
+  - bank switched flash is used (see octagon-5066.c, elan-104nc.c,
+    sbc_gxx.c,vmax301.c)
+  - offset is not a direct index into the flash (see pci.c)
 
-That's the goal. This might be the path:
 
-- physmap.c allows for one range only. Some drivers need multiple
-  ranges. Pick mphysmap.c or write something similar.
-- Some drivers need to cut out a small range from the middle for the
-  bootloader. They then concatenate the range before and after the
-  bootloader into one virtual partition. Find a clean solution for
-  this.
+> The ones I casually looked at did nothing more than hardcoding
+> addresses and similar stuff. Basically, they condense several config
+> options into a single one, making the kernel configuration easier.
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+... which isn't so bad after all ...
 
-When physmap.c or any variant is generic enough to do all this, it
-needs two or three interfaces:
-- Command line, a lot of people should need that.
-- A c api for the "got a d-box, hit this options" type files.
-(-) Maybe a config language interface. You should cut back on the
-  flexibility, though, the Config.in part of the mphysmap patch is
-  ugly already, concatenate won't make it any better.
+BTW: That so many mapping drivers do their own (hardcoded) partitioning 
+instead of using cmdline.c is possibly because many of them existed before 
+cmdline.c was added and nobody has since bothered to adapt them. And then 
+there is also the copy-paste effect (new mapping mapping drivers being 
+derived from existing ones, thus copying their shortcomings).
 
-That is my bold vision of how it should be right. Not that I expect it
-to be done, but still...
 
-Jörn
+>
+> A quick grep on 2.4.19-ac4 showed that 32 out of 32 mapping drivers
+> use ioremap.
 
--- 
-Don't worry about people stealing your ideas. If your ideas are any good,
-you'll have to ram them down people's throats.
--- Howard Aiken quoted by Ken Iverson quoted by Jim Horning quoted by
-   Raph Levien, 1979
+This doesn't imply that they could all be replaced by physmap.c (see above). 
+
+I agree that many of the existing mapping drivers are basically specialized 
+versions of physmap.c. Probably one could make many (most ?) of them obsolete 
+by adding just a little bit of functionality to physmap.c, and that would be 
+a Good Thing(tm).
+But my experience tells me that one should never underestimate the hardware 
+designer's creativity when it comes to inventing new weird ways of connecting 
+a flash chip to a bus. So, the need for specialized mapping drivers to 
+support weird configurations will never vanish completely. 
+
+Given that, I would strongly suggest to encourage the use of cmdline.c 
+wherever it makes sense rather than re-inventing that particular wheel and 
+implementing it in {m}physmap.c where it would only be available to a subset 
+of the possible configurations. Mapping devices and partitioning them are 
+independent things and thus they should stay decoupled as they are.
+
+
+Rob
+
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO AG
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
