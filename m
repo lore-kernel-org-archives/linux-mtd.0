@@ -1,14 +1,15 @@
-Received: from cindrpmx1.corp.harris.com ([137.237.241.23])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15SJaD-00082p-00
-	for <linux-mtd@lists.infradead.org>; Thu, 02 Aug 2001 15:36:17 +0100
-Message-ID: <8D4C69676E66D511A1CB00508BBBB1921BCE95@ranmx1.ran.harris.com>
-From: "Walser, Martin" <mwalser@harris.com>
+Received: from nwcst337.netaddress.usa.net ([204.68.23.82])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15SPRe-0008OJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 02 Aug 2001 21:51:50 +0100
+Message-ID: <20010802205155.1538.qmail@nwcst337.netaddress.usa.net>
+Date: 2 Aug 2001 13:51:55 PDT
+From: Eric <ebrower@usa.net>
 To: linux-mtd@lists.infradead.org
-Subject: Disk on Chip -> Could not find valid boot record
-Date: Thu, 2 Aug 2001 10:41:11 -0400 
-MIME-Version: 1.0
-Content-Type: text/plain
+Subject: [PATCH] duplicate assignment in map_ram.c
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,30 +21,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'v downloaded the newst driver.
+dwmw2, et. al.,
 
-This is, what I've done:
+There's a duplicate assignment to mtd->erasesize in =
 
-1. eraseall /dev/mtd0
-2. nftl_format /dev/mtd0
+<mtd>/drivers/mtd/chips/map_ram.c which is removed
+with the following patch.  I've assumed that the later
+assignment is the one you wish to keep-- this may not
+be the correct assumption.
 
-Everything works fine, no errors were reported.
+E
 
-I've disabled DOC_SINGLE_DRIVER.
-
-But when I restart the system, the following output is shown:
-
-M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-Using configured probe address 0x50000000
-DiskOnChip Millennium found at address 0x50000000
-Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
-1 flash chips found. Total DiskOnChip size: 8 MiB
-mtd: Giving out device 0 to DiskOnChip Millennium
-NFTL driver: nftlcore.c $Revision: 1.76 $, nftlmount.c $Revision: 1.19 $
-Could not find valid boot record
-Could not mount NFTL device
-
-What did I wrong?
-
-best regards
-Martin
+Index: map_ram.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /home/cvs/mtd/drivers/mtd/chips/map_ram.c,v
+retrieving revision 1.12
+diff -u -r1.12 map_ram.c
+--- map_ram.c   2001/07/14 00:59:17     1.12
++++ map_ram.c   2001/08/02 20:52:38
+@@ -63,7 +63,6 @@
+        mtd->priv =3D map;
+        mtd->name =3D map->name;
+        mtd->type =3D MTD_RAM;
+-       mtd->erasesize =3D 0x10000;
+        mtd->size =3D map->size;
+        mtd->erase =3D mapram_erase;
+        mtd->read =3D mapram_read;
