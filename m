@@ -1,23 +1,22 @@
 Received: from pizda.ninka.net ([216.101.162.242] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Lu1Z-0000Z0-Hx
-	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 01:15:05 +0100
-Date: Fri, 30 May 2003 17:14:10 -0700 (PDT)
-Message-Id: <20030530.171410.104043496.davem@redhat.com>
-To: joern@wohnheim.fh-wedel.de
+	id 19Lzjh-0001UE-Ev
+	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 07:21:01 +0100
+Date: Fri, 30 May 2003 23:20:04 -0700 (PDT)
+Message-Id: <20030530.232004.115919834.davem@redhat.com>
+To: jmorris@intercode.com.au
 From: "David S. Miller" <davem@redhat.com>
-In-Reply-To: <20030530174319.GA16687@wohnheim.fh-wedel.de>
+In-Reply-To: <Mutt.LNX.4.44.0305310101550.30969-100000@excalibur.intercode.com.au>
 References: <20030530144959.GA4736@wohnheim.fh-wedel.de>
 	<Mutt.LNX.4.44.0305310101550.30969-100000@excalibur.intercode.com.au>
-	<20030530174319.GA16687@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-cc: matsunaga_kazuhisa@yahoo.co.jp
-cc: linux-mtd@lists.infradead.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 cc: dwmw2@infradead.org
+cc: matsunaga_kazuhisa@yahoo.co.jp
+cc: joern@wohnheim.fh-wedel.de
 cc: linux-kernel@vger.kernel.org
-cc: jmorris@intercode.com.au
+cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,16 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-   From: J=F6rn Engel <joern@wohnheim.fh-wedel.de>
-   Date: Fri, 30 May 2003 19:43:19 +0200
-   =
+   From: James Morris <jmorris@intercode.com.au>
+   Date: Sat, 31 May 2003 01:29:42 +1000 (EST)
+   
+   This won't work for the bh lock protected case outlined above, and
+   will cause contention between different users of zlib.
 
-   What contention were you talking about? :)
+My understanding is that these are just scratchpads.  The contents
+while a decompress/compress operation is not occuring does not
+matter.
 
-Actually, your idea is interesting.  Are you going to use
-per-cpu workspaces?
-
-I think the best scheme is 2 per-cpu workspaces, one for
-normal and one for softirq context.
-
-No locking needed whatsoever.  I hope it can work :-)
+So if we have 2 such scratchpads per cpu, one for normal and one for
+BH context, his idea truly can work and be useful to everyone.
+It would also be lockless on SMP.
