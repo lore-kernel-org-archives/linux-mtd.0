@@ -1,15 +1,21 @@
-Date: Thu, 13 Jan 2005 19:23:00 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Brian Fox <bfox@netCelerant.com>
-In-Reply-To: <BE0C07AC.5D8E%bfox@netCelerant.com>
-Message-ID: <Pine.LNX.4.58.0501131918080.17331@phoenix.infradead.org>
-References: <BE0C07AC.5D8E%bfox@netCelerant.com>
+Received: from motgate8.mot.com ([129.188.136.8])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CpOSF-0007jz-NQ
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 05:13:20 -0500
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by motgate8.mot.com (Motorola/Motgate8) with ESMTP id j0EAF3JD020357
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Jan 2005 03:15:03 -0700 (MST)
+Received: from zfr17exm01.ds.mot.com (zfr17exm01.ea.mot.com [10.160.17.16])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id j0EADA61026937
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jan 2005 04:13:11 -0600
+Message-ID: <A124D5FDCB07D911920E00110A9AE3833A036E@zfr17exm01.ea.mot.com>
+From: Pihet Jean-jpih01 <jean.pihet@motorola.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 14 Jan 2005 11:13:08 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Content-Type: text/plain
+Subject: JFFS2/3 NAND performance figures
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We might as well.
-We even might to make it per file using fcntl.
-(C) Josh W. Boyer: implement xattr support and use it for these purposes.
+Hi all !
 
-On Thu, 13 Jan 2005, Brian Fox wrote:
-> On 1/13/05 10:55 AM, "Artem B. Bityuckiy" <dedekind@infradead.org> wrote:
-> 
-> > May be smth like:
-> > #ifdef I_AM_NOT_PARANOID
-> > static inline uint32_t
-> > checksum(void *buf)
-> > {
-> > return 0;
-> > } 
-> 
-> Well, David says a mount time option, which means it should be available all
-> the time, and on a per mount basis.
-> 
-> So, why not have a checksum function jump table, per filesystem, and have
-> all of the callers use that?
-> 
-> Thanks,
-> 
-> Brian
-> -- 
-> -------------------------------------------------------------------
-> Brian J. Fox                                       netCelerant, Inc
-> CTO                                             www.netCelerant.com
-> bfox@netCelerant.com                             Ph: (805) 275-0214
-> -------------------------------------------------------------------
-> 
-> 
-> 
-> 
+I would like to evaluate the JFFS2/3 NAND flash performance. Are there measurements available for the following cases: read, write, erase, GC ?
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Looking on the MTD website and Google was not helpful =8-
+
+Regards,
+Jean.
