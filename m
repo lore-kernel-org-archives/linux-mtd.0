@@ -1,21 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTdCB-0003IN-Dj
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:30:48 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
+	id 1CTdNd-0003YT-7R
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:42:42 -0500
+Message-ID: <419879CB.3010209@yandex.ru>
+Date: Mon, 15 Nov 2004 12:41:31 +0300
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1100508552.8015.61.camel@localhost.localdomain>
-References: <41986D89.4060308@oktetlabs.ru>
-	<1100508552.8015.61.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Mon, 15 Nov 2004 10:22:09 +0100
-Message-Id: <1100510529.5074.119.camel@thomas>
-Mime-Version: 1.0
+References: <4198686D.8000301@yandex.ru>
+	<1100508326.8015.57.camel@localhost.localdomain>
+In-Reply-To: <1100508326.8015.57.camel@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: dedekind@oktetlabs.ru, linux-mtd@lists.infradead.org
-Subject: Re: NAND pages cache?
-Reply-To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: BUG in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-11-15 at 08:49 +0000, David Woodhouse wrote:
-> On Mon, 2004-11-15 at 11:49 +0300, Artem Bityuckiy wrote:
-> > So, the obvious idea how to avoid this is to introduce something like 
-> > NAND pages cache. The cache will keep several NAND pages which were last 
-> > accessed.
-> > 
-> > I don not know is it good to do this only in JFFS2 or on the MTD NAND layer?
+
+
+David Woodhouse wrote:
+> On Mon, 2004-11-15 at 11:27 +0300, Artem B. Bityuckiy wrote:
 > 
-> I thought we already did this in the MTD NAND layer, since we had to
-> read whole pages there to do ECC anyway. Thomas?
+>>Hello,
+>>
+>>I've hit on bug in JFFS2, but I can not reproduce it easilly yet. I have 
+>>  stess test which in general creates files, deletes them, creates 
+>>directories and deletes them, and so on so on. When I run this test 
+>>nightly, I see the following error when I come at work in the morning:
+>>
+>>kernel BUG at 
+>>/tester/linux/linux-2.6.8-1.521up-custom-nopreempt/fs/jffs2/gc.c:1164!
+> 
+> 
+> In my copy of v1.137 there's three instances of BUG_ON() around there,
+> but none at line 1164. They're at lines 116[123]. 
+I have the lastest MTD snapshot, v1.140. This is BUG_ON(end > 
+JFFS2_F_I_SIZE(f));
 
-We do caching only if a page is read partially. If we read a full page
-we read directly into the fs buffer.
+> 
+> Start by changing it from a simple BUG_ON() to a printk saying precisely
+> what went wrong and giving all the other information which might be
+> relevant. If you can just trap into a debugger when it happens, that's
+> even better.
+I'll do this as soos as I have done other pending JFFS2 tasks :-) I 
+think I'll insert useful printkeyss there since now I have no configured 
+environment to use debugger.
 
-The partial reads happen when we read nodes. The full page reads happen
-when we read data. That's sufficient and captures most of the double
-reads on the same page.
-
-tglx
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
