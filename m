@@ -1,15 +1,18 @@
-Date: Fri, 17 Dec 2004 11:20:58 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-In-Reply-To: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
-Message-ID: <Pine.LNX.4.58.0412171119290.8020@phoenix.infradead.org>
-References: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CfGMk-0004kN-IB
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 06:33:47 -0500
+Message-ID: <41C2C416.5090602@arcom.com>
+Date: Fri, 17 Dec 2004 11:33:42 +0000
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+References: <JPEALJAFNGDDLOPNDIEEEEGDCPAA.joakim.tjernlund@lumentis.se>
+In-Reply-To: <JPEALJAFNGDDLOPNDIEEEEGDCPAA.joakim.tjernlund@lumentis.se>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Dec 2004, Joakim Tjernlund wrote:
+Joakim Tjernlund wrote:
+> 
+> 2) Consider another checksum algorithm. Crc32 is very expensive
+>    and JFFS2 suffered severely in the early days. Now that crc32 is
+>    very optimized that problem is less visible, but crc32 is still
+>    expensive. Maybe an Adler32 checksum is good enough or a crc16?
 
-> > 
-> > > Another idea, calculate the CRC backwards(from the end of the buffer to the beginning).
-> > > That give better L1 cache behaviour.
-> > >
-> > Why (may be some URL)? For all archs? 
-> 
-> example, when writing a buffer to flash you first CRC it from top to bottom.
-> The bottom part of the buffer is then newer than the top of then buffer in the
-> L1 cache or the top part has already been evicted from the L1 cache depending
-> of the size of the buffer and size of L1 cache.
-> 
-> Now you start again from the top of the buffer to actually write the buffer
-> to flash and you probaly need to read the data from RAM into L1 cache again.
-> 
-> Reading from flash will cause similar effects.
-> 
-> If you calculate CRC backwards you will avoid trashing the cache needlessly.
-> 
->  Jocke
-> 
-Ok, thanks, good idea, I'll put it to the TODO file too.
- 
+Does anyone have links to the profilling data that showed this?
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+(Also, I wouldn't have thought crc16 on 32 bit archs would have any 
+significant performance benefits.  But since I don't know either the 
+crc16 or crc32 algorithms... *shrug*)
+
+David Vrabel
+-- 
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
