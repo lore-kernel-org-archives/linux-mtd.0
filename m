@@ -1,20 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nQg7-0007rs-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 22:30:11 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <002501c255eb$35c56680$0200a8c0@telia.com> 
-References: <002501c255eb$35c56680$0200a8c0@telia.com>  <3D78F4A1.4060304@redswitch.com> <3D77C812.3080108@redswitch.com> <1031314138.28700.167.camel@spawn> <3D78E270.6020203@redswitch.com> <20020906174829.GA3885@wohnheim.fh-wedel.de> <29521.1031338455@redhat.com> 
-To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-Cc: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>,
-    "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
-    "Kenneth Johansson" <kenneth.johansson@etx.ericsson.se>,
-    "Mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: writing to jffs2 is so slow? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 06 Sep 2002 22:30:05 +0100
-Message-ID: <8193.1031347805@redhat.com>
+Received: from sc-smtp1.homechoice.co.uk ([212.187.157.195] helo=sc-outsmtp2.homechoice.co.uk)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17o4sK-0005zm-00
+	for <linux-mtd@lists.infradead.org>; Sun, 08 Sep 2002 17:25:28 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: adr <mtd@mcmen.demon.co.uk>
+To: Mtd <linux-mtd@lists.infradead.org>
+Subject: Writing an mtd user module
+Date: Sun, 8 Sep 2002 17:26:50 +0100
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200209081726.50430.mtd@mcmen.demon.co.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,17 +22,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Joakim.Tjernlund@lumentis.se said:
->  I think that can be fixed(or at least better). Instead of eraseing
-> all blocks first and then write cleanmarker to those blocks, make it
-> erase one block and write cleanmarker erase the next block and write
-> it's cleanmarker and so on.
+Having written a driver module for the Dreamcast flash cartridge/vmu, I am now 
+attempting to write a user module that works with the default fs on the 
+Dreamcast flash (see http://mc.pp.se/dc/vms/flashmem.html if you are 
+interested in knowing more about that).
 
-> That way you will free up erase blocks as they become ready and you
-> don't have to watch the use % in df slowly raise to 100% and the
-> suddenly drop to the real usage.
+Anyway, I am struggling with the documentaion (which, as I found with the 
+driver was way out of date) and the code.
 
-Agreed.
+Looking at the mtdblock driver, register_mtd_user(&notifier); only seems to 
+get called when devfs is being used, yet the documentation implies it should 
+be called every time.
 
---
-dwmw2
+What have I missed here?
