@@ -1,24 +1,18 @@
-Received: from mail021.syd.optusnet.com.au ([210.49.20.161])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LHUa-0000co-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 07:01:56 +0100
-Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
-	by mail021.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g5L61qC32068
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 16:01:52 +1000
-Received: from k9.ctam.local ([192.168.0.55] helo=ctam.com.au)
-	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
-	id 17LHUV-0000dS-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 16:01:51 +1000
-Message-ID: <3D12C14A.7050903@ctam.com.au>
-Date: Fri, 21 Jun 2002 16:01:46 +1000
-From: Brendan J Simon <brendan.simon@ctam.com.au>
-Reply-To: brendan.simon@ctam.com.au
-MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: doc2000 nftl[abcd] devices
-References: <3D127644.3050004@ctam.com.au>  <3D115F9B.9030203@ctam.com.au> <12942.1024563800@redhat.com> <10394.1024620838@redhat.com> <3D12BAE1.3050400@ctam.com.au>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 17LISu-0000gc-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 08:04:16 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <AIEOIMKIOAAJKHJOGAEFMEFCCEAA.david@forcedpotato.com> 
+References: <AIEOIMKIOAAJKHJOGAEFMEFCCEAA.david@forcedpotato.com> 
+To: "David Cooper" <david@forcedpotato.com>
+Cc: "Ilguiz Latypov" <ilatypov@superbt.com>,
+    "Linux MTD" <linux-mtd@lists.infradead.org>
+Subject: Re: X Windows Performance with DOC 2000 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 21 Jun 2002 08:04:12 +0100
+Message-ID: <16562.1024643052@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,46 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->
->
->> Looking at them more closely, I see that I was mistaken -- we _don't_ 
->> continue the scan after finding the first NFTL on the device. 
->> Patching NFTL_mount() and find_boot_record() to take a 'start' 
->> argument for where to start scanning is simple enough -- you just 
->> need to fix NFTL_setup() to loop till NFTL_mount() stops working.
->>
-> I expect it's not as easy as you suggest (at least for me as all this 
-> MTD, NFTL stuff is doing my head in).
-> In NFTL_mount, it uses the number of blocks supplied to it as 
-> nftl->nb_blocks.  This is set in NFTP_setup() just before NFTL_mount 
-> is called.  I think this is currently set to the entire mtd device 
-> (ie. the DOC).  I'll put some more printks to find out exactly what it 
-> is doing :)
-> I guess the alternative to is to scan from some start address till the 
-> next media headers are found, then the size is known and it can be 
-> passed backed to NFTL_setup (directly or indirectly).
->
-> Does this sound right ?
->
-> What about holes in the DOC.  ie.  What if I have nftl_formatted 
-> between 0x00000000-0x01FFFFFF & 0x04000000-0x7FFFFFFF.  This has a 
-> hole between 0x02000000-0x03FFFFFF.  Does NFTL_mount cater for this ?  
-> Should it ? If so, does this mean that the Media Header needs to be 
-> searched to find the start of the partition and then the next Media 
-> Header to find the end of the partition.  This seems wrong because the 
-> first partition would be recognised as 4MB instead of 2MB.  There must 
-> be some info in the media headers that give the size of the 
-> partition.  Any clues ? I'll do some more research in the mean time. 
+david@forcedpotato.com said:
+>  - Mount operation mount /dev/nftla2 /mnt/doc causes the shell to
+> hang. - Viewing the process "mount" using top shows that it is running
+> continuously and using 84% CPU time. - All attempts to kill the mount
+> process are futile.
 
+OK, here we can find some clues. _What_ is it doing? Use SysRq-P a few 
+times to see where it's looping, look it up in your kernel image. If you 
+compile with '-g' you can get gdb to tell you the precise line.
 
-Does it make sense to put an nb_block_start in the NFTLRecord structure 
-or would it better to pass this information to the NFTL_mount() and 
-find_boot_records() functions.
-
-When reading information from nftlb, nftlbc, etc, how does the device 
-driver know where the first block of the device is ?
-Does it need to know or does it use some of the other variables such as 
-EUN, VUN, etc.
-
-Thanks,
-Brendan Simon.
+--
+dwmw2
