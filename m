@@ -1,15 +1,15 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0hKZ-0001Oi-Av
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 09:36:08 -0500
-Date: Mon, 14 Feb 2005 15:36:02 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050214143601.GB27046@synertronixx3>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Oops in 2.6.10-rc2
+Received: from [211.21.46.12] (helo=pluto.setabox.com.tw)
+	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CynDq-0002vE-KR
+	for linux-mtd@lists.infradead.org; Wed, 09 Feb 2005 08:29:23 +0000
+Message-ID: <4209C985.3020902@setabox.com>
+Date: Wed, 09 Feb 2005 16:27:49 +0800
+From: William J Beksi <wjbeksi@setabox.com>
+MIME-Version: 1.0
+To: Thomas Gleixner <tglx@linutronix.de>
+Content-Type: multipart/mixed; boundary="------------050908070200090109070408"
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] accessing NAND flash through an IDE interface
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,100 +19,326 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi people!
+This is a multi-part message in MIME format.
+--------------050908070200090109070408
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I have an Oops in 2.6.10-rc2. Sadly I can't update to 2.6.10 so I want
-to ask what in particular I should fix in 2.6.10-rc2 if this bug is
-fixed already.
+Hi Thomas,
+I am not sure if you received the patch I sent you last month for 
+accessing nand flash through an IDE interface so I am sending it again.
 
-I can reproduce it:
-flash bootloader, kernel, rootfs and adjust bootargs kernel cmdline to
-match the layout. Then I boot kernel, system comes up without a hitch.
-then scp rootfs.tar (some userspace binary additions) into /tmp which is
-tmpfs. Then go to / and do tar xf /tmp/rootfs.tar:
+I think some people may find it useful.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-Internal error: Oops: 807 [#1]
-CPU: 0                   
-pc : [<c00926c8>]    lr : [<c01de994>]    Not tainted
-Using defaults from ksymoops -t elf32-i386 -a i386
-sp : c031de18  ip : 00000000  fp : c031de68
-r10: c026ff54  r9 : c031de34  r8 : c0261600
-r7 : c026c830  r6 : c031de2c  r5 : 00000000  r4 : 000300d4
-r3 : 00000000  r2 : 00000030  r1 : c026ff34  r0 : c026ff44
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  Segment user
-Control: C000317F  Table: 08C10000  DAC: 00000015
-Stack: (0xc031de18 to 0xc031e000)
-de00:                                                       c031de2c c031de34
-de20: c0c4e4f4 c0c4d224 00000003 0000000c c0ebc002 c0021985 00000044 98f7fb1d
-de40: 00000000 c0c4d298 c0eb74f4 c0c4d24c c0015ea4 c0c4d224 c031defc c031decc
-de60: c031de6c c009a6c4 c0092134 00000000 0034ebb8 00000000 00000000 00000044
-de80: 00000000 00000000 c0261600 c0c4e4f4 00011448 0034ebb8 00000000 f9126449
-dea0: c0068160 c031defc 00000046 c0c4d24c 000041ed c0c7319c c031c000 0000fc80
-dec0: c031def8 c031ded0 c0075428 c0099fe0 0000005a 3296684c c0c4d2b4 ffffffff
-dee0: 00000000 c031df48 c00177e4 c031df44 c031defc c0059f04 c007531c 00000046
-df00: c031df28 000001f5 00000064 c01b1000 c031df48 0000005a 3296684c 0000005a
-df20: 3296684c 0000005a 3296684c 000001f5 000001f5 00000064 c031dfa4 c031df48
-df40: c0059fd4 c0059e50 c0c7319c c0193360 00000007 c01b1004 00000000 00000000
-df60: 00000001 00000000 c031df74 c005aec8 c005ab9c 00000400 00000000 00000000
-df80: 00000200 4006db10 ffffffff 4006daa8 4006da68 00000010 00000000 c031dfa8
-dfa0: c0017660 c0059fa0 ffffffff c001de44 4006daf8 000001f5 00000064 00000065
-dfc0: ffffffff 4006daa8 4006da68 4006da68 4006daa8 00000000 0000fc80 00000000
-dfe0: 0000ffff befffb84 0000f9f0 4005dfcc 80000010 4006daf8 00087805 00087806
-Backtrace:
-Function entered at [<c0092124>] from [<c009a6c4>]
-Function entered at [<c0099fd0>] from [<c0075428>]
-Function entered at [<c007530c>] from [<c0059f04>]
- r8 = C00177E4  r7 = C031DF48  r6 = 00000000  r5 = FFFFFFFF
- r4 = C0C4D2B4
-Function entered at [<c0059e40>] from [<c0059fd4>]
- r5 = 00000064  r4 = 000001F5
-Function entered at [<c0059f90>] from [<c0017660>]
- r7 = 00000010  r6 = 4006DA68  r5 = 4006DAA8  r4 = FFFFFFFF
-Code: 0587a02c e5903000 e3530000 13a03000 (15833000)
-
-
->>EIP; c00926c8 <jffs2_mark_node_obsolete+5a4/664>   <=====
-                         
-Trace; c0092124 <jffs2_mark_node_obsolete+0/664>
-Trace; c009a6c4 <jffs2_do_setattr+6f4/780>
-Trace; c0099fd0 <jffs2_do_setattr+0/780>
-Trace; c0075428 <notify_change+11c/184>
-Trace; c007530c <notify_change+0/184>
-Trace; c0059f04 <chown_common+c4/f8>
-                         
->>r8; c00177e4 <sys_call_table+0/0>
-                         
-Trace; c0059e40 <chown_common+0/f8>
-Trace; c0059fd4 <sys_lchown+44/58>
-Trace; c0059f90 <sys_lchown+0/58>
-Trace; c0017660 <ret_fast_syscall+0/2c>
-                         
-Code;  c00926b8 <jffs2_mark_node_obsolete+594/664>
-00000000 <_EIP>:         
-Code;  c00926b8 <jffs2_mark_node_obsolete+594/664>
-   0:   2c a0                     sub    $0xa0,%al
-Code;  c00926ba <jffs2_mark_node_obsolete+596/664>
-   2:   87 05 00 30 90 e5         xchg   %eax,0xe5903000
-Code;  c00926c0 <jffs2_mark_node_obsolete+59c/664>
-   8:   00 00                     add    %al,(%eax)
-Code;  c00926c2 <jffs2_mark_node_obsolete+59e/664>
-   a:   53                        push   %ebx
-Code;  c00926c3 <jffs2_mark_node_obsolete+59f/664>
-   b:   e3 00                     jecxz  d <_EIP+0xd>
-Code;  c00926c5 <jffs2_mark_node_obsolete+5a1/664>   <=====
-   d:   30 a0 13 00 30 83         xor    %ah,0x83300013(%eax)   <=====
-Code;  c00926cb <jffs2_mark_node_obsolete+5a7/664>
-  13:   15 00 00 00 00            adc    $0x0,%eax
-
-
-My question is if this bug is fixed, which changes from 10-rc2 to 10
-are concerned by the fix? I can't update because porting my usb stuff
-will take ages and I don't wan't to destabilize things which are stable
-now (well, all except this one).
-
-REgards, Konstantin Kletschke
+Thank you.
 
 -- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+William J Beksi                          <wjbeksi@users.sourceforge.net>
+GPG Key Fingerprint = ED4B 32C3 69E6 C2B7 705C  263F CB2F 3253 E7E1 DB3B
+
+
+--------------050908070200090109070408
+Content-Type: text/x-c;
+ name="ide.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ide.c"
+
+/* drivers/mtd/nand/ide.c
+ *
+ * Copyright (C) 2004  William J Beksi <wjbeksi@users.sourceforge.net> 
+ *
+ * Overview:
+ *  This device driver allows a NAND flash device to be accessed from
+ *  an IDE interface.  
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ */
+
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/nand.h>
+#include <linux/mtd/partitions.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+/*
+ * Values specific to the IDE
+ */
+#define IDE_IO_BASE_1 0x1F0		/* IDE1 NAND flash I/O base address */
+#define IDE_IO_BASE_2 0x170		/* IDE2 NAND flash I/O base address */
+
+#define IDE_IO_BASE IDE_IO_BASE_1
+
+/*
+ * IDE MTD structure
+ */
+static struct mtd_info *ide_mtd = NULL;
+
+/*
+ * Define partitions for flash device
+ */
+const static struct mtd_partition partition_info[] = {
+	{ 
+		.name   = "IDE flash partition 1", 
+		.offset = 0,  
+		.size   = 3*1024*1024 
+	},
+	{
+		.name   = "IDE flash partition 2",
+		.offset = 3*1024*1024,
+		.size   = 3*1024*1024
+	}
+};
+#define NUM_PARTITIONS  2 
+
+static void ide_hwcontrol(struct mtd_info *mtd, int cmd) 
+{
+	struct nand_chip *this = (struct nand_chip *) mtd->priv;
+
+	switch (cmd) {
+		case NAND_CTL_SETCLE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE+1; break;
+		case NAND_CTL_CLRCLE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE;   break;
+		case NAND_CTL_SETALE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE+2; break;	
+		case NAND_CTL_CLRALE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE;   break;
+	}
+}
+
+/*
+ * Main initialization routine
+ */
+int __init ide_init(void)
+{
+	struct nand_chip *this;
+	int err = 0;
+
+	/* Allocate memory for MTD device structure and private data */
+	ide_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+	if (!ide_mtd) {
+		printk("Unable to allocate IDE NAND MTD structure\n");
+		err = -ENOMEM; 
+		goto out;
+	}
+
+	/* Initialize structures */
+	memset((char *) ide_mtd, 0, sizeof(struct mtd_info) + sizeof(struct nand_chip));
+
+	/* Get pointer to private data */
+	this = (struct nand_chip *) (&ide_mtd[1]);
+	/* Link the private data with the MTD structure */
+	ide_mtd->priv = this;
+
+	/* Set address of NAND IO lines */
+	this->IO_ADDR_R  = (void __iomem *) IDE_IO_BASE;
+	this->IO_ADDR_W  = (void __iomem *) IDE_IO_BASE;
+	/* Reference hardware control function */
+	this->hwcontrol = ide_hwcontrol;
+	/* Set command delay time */
+	this->chip_delay = 20;
+	/* Assign the device ready function */
+	this->dev_ready = NULL;
+	/* Set the ECC generator mode */
+	this->eccmode = NAND_ECC_SOFT;
+
+	/* Scan to find existance of the device */
+	if (nand_scan(ide_mtd, 1)) {
+		err = -ENXIO;
+		goto out_mtd;
+	}
+
+	/* Register the partitions */
+	add_mtd_partitions(ide_mtd, partition_info, NUM_PARTITIONS);
+	goto out;
+
+out_mtd:
+	kfree(ide_mtd);
+out:
+	return err;
+}
+module_init(ide_init);
+
+/*
+ * Clean up routine
+ */
+#ifdef MODULE
+static void __exit ide_cleanup (void)
+{
+	/* Release resources, unregister the device */
+	nand_release(ide_mtd);	
+
+	/* Free the MTD device structure */
+	kfree(ide_mtd);
+}
+module_exit(ide_cleanup);
+#endif
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("William J Beksi <wjbeksi@users.sourceforge.net>");
+MODULE_DESCRIPTION("Glue layer for NAND flash through an IDE interface");
+
+--------------050908070200090109070408
+Content-Type: text/x-patch;
+ name="mtd-ide-patch.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mtd-ide-patch.diff"
+
+Index: drivers/mtd/nand/Kconfig
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/Kconfig,v
+retrieving revision 1.26
+diff -u -r1.26 Kconfig
+--- drivers/mtd/nand/Kconfig	5 Jan 2005 12:42:24 -0000	1.26
++++ drivers/mtd/nand/Kconfig	9 Feb 2005 08:17:20 -0000
+@@ -204,4 +204,11 @@
+ 	  The simulator may simulate verious NAND flash chips for the
+ 	  MTD nand layer.
+  
++config MTD_NAND_IDE
++	tristate "Support for NAND Flash through a PC's IDE interface"
++	depends on MTD_NAND && MTD_PARTITIONS
++	help
++	  This enables the driver for accessing NAND Flash through the
++	  IDE interface of a PC.
++	
+ endmenu
+Index: drivers/mtd/nand/Makefile.common
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/Makefile.common,v
+retrieving revision 1.15
+diff -u -r1.15 Makefile.common
+--- drivers/mtd/nand/Makefile.common	26 Nov 2004 12:28:22 -0000	1.15
++++ drivers/mtd/nand/Makefile.common	9 Feb 2005 08:17:20 -0000
+@@ -20,5 +20,6 @@
+ obj-$(CONFIG_MTD_NAND_RTC_FROM4)	+= rtc_from4.o
+ obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
++obj-$(CONFIG_MTD_NAND_IDE)		+= ide.o
+ 
+ nand-objs = nand_base.o nand_bbt.o
+Index: drivers/mtd/nand/nand_base.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/nand_base.c,v
+retrieving revision 1.130
+diff -u -r1.130 nand_base.c
+--- drivers/mtd/nand/nand_base.c	24 Jan 2005 03:07:43 -0000	1.130
++++ drivers/mtd/nand/nand_base.c	9 Feb 2005 08:17:24 -0000
+@@ -84,6 +84,8 @@
+ #include <linux/mtd/partitions.h>
+ #endif
+ 
++#define NAND_USE_IO_INSTR	0
++
+ /* Define default oob placement schemes for large and small page devices */
+ static struct nand_oobinfo nand_oob_8 = {
+ 	.useecc = MTD_NANDECC_AUTOPLACE,
+@@ -189,7 +191,13 @@
+ static u_char nand_read_byte(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *this = mtd->priv;
+-	return readb(this->IO_ADDR_R);
++
++	switch(NAND_USE_IO_INSTR) {
++		case 0:
++			return readb(this->IO_ADDR_R);
++		case 1:
++			return inb((unsigned int) this->IO_ADDR_R);
++	}
+ }
+ 
+ /**
+@@ -202,7 +210,15 @@
+ static void nand_write_byte(struct mtd_info *mtd, u_char byte)
+ {
+ 	struct nand_chip *this = mtd->priv;
+-	writeb(byte, this->IO_ADDR_W);
++
++	switch(NAND_USE_IO_INSTR) {
++		case 0:
++			writeb(byte, this->IO_ADDR_W);
++			break;
++		case 1:
++			outb(byte, (unsigned int) this->IO_ADDR_W);
++			break;
++	}
+ }
+ 
+ /**
+@@ -295,8 +311,16 @@
+ 	int i;
+ 	struct nand_chip *this = mtd->priv;
+ 
+-	for (i=0; i<len; i++)
+-		writeb(buf[i], this->IO_ADDR_W);
++	switch(NAND_USE_IO_INSTR) {
++		case 0:
++			for (i=0; i<len; i++)
++				writeb(buf[i], this->IO_ADDR_W);
++			break;
++		case 1:
++			for (i=0; i<len; i++)
++				outb(buf[i], (unsigned int) this->IO_ADDR_W);
++			break;
++	}
+ }
+ 
+ /**
+@@ -312,8 +336,16 @@
+ 	int i;
+ 	struct nand_chip *this = mtd->priv;
+ 
+-	for (i=0; i<len; i++)
+-		buf[i] = readb(this->IO_ADDR_R);
++	switch(NAND_USE_IO_INSTR) {
++		case 0:
++			for (i=0; i<len; i++)
++				buf[i] = readb(this->IO_ADDR_R);
++			break;
++		case 1:
++			for (i=0; i<len; i++)
++				buf[i] = inb((unsigned int) this->IO_ADDR_R);
++			break;
++	}
+ }
+ 
+ /**
+@@ -329,10 +361,18 @@
+ 	int i;
+ 	struct nand_chip *this = mtd->priv;
+ 
+-	for (i=0; i<len; i++)
+-		if (buf[i] != readb(this->IO_ADDR_R))
+-			return -EFAULT;
+-
++	switch(NAND_USE_IO_INSTR) {
++		case 0:
++			for (i=0; i<len; i++)
++				if (buf[i] != readb(this->IO_ADDR_R))
++					return -EFAULT;
++			break;
++		case 1:
++			for (i=0; i<len; i++)
++				if (buf[i] != inb((unsigned int) this->IO_ADDR_R))
++					return -EFAULT;
++			break;
++	}
+ 	return 0;
+ }
+ 
+
+--------------050908070200090109070408--
