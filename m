@@ -1,64 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14SMvI-0005ZN-00
-	for mtd-list@infradead.org; Mon, 12 Feb 2001 17:38:00 +0000
-Message-ID: <024701c09519$db036e10$0a070d0a@axis.se>
-Reply-To: "Johan Adolfsson" <johan.adolfsson@axis.com>
-From: "Johan Adolfsson" <johan.adolfsson@axis.com>
-To: "David Woodhouse" <dwmw2@infradead.org>,
-        "Johan Adolfsson" <johan.adolfsson@axis.com>
-Cc: "Jonas Holmberg" <jonas.holmberg@axis.com>, <mtd@infradead.org>
-References: <020701c09517$48fc61e0$0a070d0a@axis.se>  <151F3D2AE9F0D3119E480004ACB8EA3701DEC941@cluster01.axis.se> <14127.981995794@redhat.com>  <21475.981998659@redhat.com>
-Subject: Re: Problems with cfi_cmdset_0002.c 
-Date: Mon, 12 Feb 2001 18:33:04 +0100
+	id 14SRCn-0000Ze-00
+	for mtd-list@infradead.org; Mon, 12 Feb 2001 22:12:21 +0000
+Received: from reprofw.itrepro.com ([216.89.237.2] helo=itrepro.atlanta.itserve.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14SRCk-0000ZI-00
+	for mtd@infradead.org; Mon, 12 Feb 2001 22:12:19 +0000
+Received: from workbox.atlanta.itserve.com (IDENT:dhamm@workbox.atlanta.itserve.com [10.100.3.219])
+	by itrepro.atlanta.itserve.com (8.9.3/8.9.3) with SMTP id RAA05413
+	for <mtd@infradead.org>; Mon, 12 Feb 2001 17:13:56 -0500
+From: David Hamm <dhamm@itrepro.com>
+Reply-To: dhamm@itrepro.com
+To: mtd@infradead.org
+Subject: booting from doc
+Date: Mon, 12 Feb 2001 10:51:52 -0500
+Content-Type: text/plain
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-Id: <0102121712140C.26666@workbox.atlanta.itserve.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Is anyone booting from disk on chip with LILO.  I've tried several different
+methods but still can't do it.  I'm using lilo 21.6, kernel 2.4.0 with mtd
+modules.  I get the following info when I "fdisk /dev/nftla"
+	DiskOnChip Millennium found at address 0xD0000
+	Cannot calculate an NFTL geometry to match size of 0x7cf0.
+	Using C:999 H:16 S:2 (== 0x7ce0 sects) 
 
------ Original Message -----
-From: David Woodhouse <dwmw2@infradead.org>
-To: Johan Adolfsson <johana@axis.com>
-Cc: Jonas Holmberg <jonashg@axis.com>; <mtd@infradead.org>
-Sent: Monday, February 12, 2001 18:24
-Subject: Re: Problems with cfi_cmdset_0002.c
+DINFO yields 
+DiskOnChip 2000(R) found at D000:0000
+ 	Drive letter          : D
+  	Disk size             : 15,992 Kbytes
+  	SoftWare version      : 4.2
+  	TrueFFS Compatibility : 3.3.2
+  	FirmWare size         : 48 Kbytes 
+Also Lilo won't install because it doesn't know how to handle device 5d01.
 
-
->
-> johan.adolfsson@axis.com said:
-> > Wouldn't it be possible to check both the bootloc and the erase
-> > regions and do something like this? :
->
-> Would that help? I thought that _all_ the AMD chips had the smallest
-> regions listed first - that's the whole problem. But the top-boot chips
-you
-> have don't have bootloc == CFI_BOTTOM_BOOT. Or am I misunderstanding?
-
-It's probably mee...:-)
-Jonas has those flash chips, I dont.
-What does the bootloc say? Does it says something other the 2 and 3?
-
-> If the erase regions are listed the wrong way round _and_ the byte in the
-> extended header isn't set appropriately to tell you so, these AMD chips
-> really are broken. We need to work round them explicitly with a table of
-> JEDEC IDs for the broken chips, or just reject them and buy Intel chips
-> instead.
-
-We need a table like that for other AMD compatible non CFI chips as well
-(e.g. Toshiba).
-Jonas has a solution that seems to work here, I guess it should go into the
-mtd tree soner or later?
-We probably want the check against the list before doing the CFI probe.
-
-> --
-> dwmw2
-
-/Johan
+If you see anyting that might cause a problem or be different than what you are
+doing please let me know.  Thanks
 
 
+ ---------------------------------
+David Hamm
+Systems Analyst
+Imaging Technologies Services Inc.
+email: dhamm@itrepro.com
+voice: 404-870-6663
+---------------------------------
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
