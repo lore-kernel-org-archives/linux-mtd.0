@@ -1,14 +1,14 @@
-Received: from tomts13-srv.bellnexxia.net ([209.226.175.34])
+Received: from tomts17-srv.bellnexxia.net ([209.226.175.71])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ajx3-0004XA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 22:27:13 +0100
-Date: Fri, 2 Aug 2002 17:27:11 -0400 (EDT)
+	id 17akQZ-0004Zi-00
+	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 22:57:43 +0100
+Date: Fri, 2 Aug 2002 17:57:41 -0400 (EDT)
 From: Ilguiz Latypov <ilatypov@superbt.com>
 To: Mark Meade <mark@lakeshoremicro.com>
 cc: linux-mtd@lists.infradead.org
 Subject: Re: [patch] doc_stage1.S : GRUB on DoC
-In-Reply-To: <200208021549578.SM02488@there>
-Message-ID: <Pine.LNX.4.44.0208021720020.1426-100000@server.superbt.com>
+In-Reply-To: <Pine.LNX.4.44.0208021720020.1426-100000@server.superbt.com>
+Message-ID: <Pine.LNX.4.44.0208021755070.3723-100000@server.superbt.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,23 +22,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 2 Aug 2002, Mark Meade wrote:
+On Fri, 2 Aug 2002, Ilguiz Latypov wrote:
 
-> Anyway, is it possible to take an unmodified 0.92 Grub, and cleanly apply the 
-> latest (07-29) patch?  I was not able to do this, mainly because of automake 
-> version differences.  
+> It's not a big deal to downgrade the terminal emultaion changes, but I
+> have some other issues at work till the middle of August.
 
-I once moved to post-0.92 snapshot by adjusting the MTD DOC patch to the
-new terminal emulation.  It's not a big deal to downgrade the terminal
-emultaion changes, but I have some other issues at work till the middle of
-August.
+I produce more noise than I code :)  I attempted to downgrade to 0.92 and 
+added the grub-0.92-doc.patch to the CVS mtd/patches area.
 
-I updated the 07-29 patch in the folowing areas:
- 
-  a) correct the READID memory block and flash addresses
-  b) restore the accidentally dropped builtins.c modifications
-
-The correction (b) came up after a routine check of the new patch against
-the old patch.  Could be another reason for GRUB malfunction on P133...
+Both 07-29 and 0.92 patches work with 32M DoC 2000 on the Advantech PCA 
+6753 F board.
 
 Ilguiz
