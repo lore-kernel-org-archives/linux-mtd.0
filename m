@@ -1,16 +1,19 @@
-Received: from a.smtp-out.sonic.net ([208.201.224.38])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18O3Kz-0004oN-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 22:03:45 +0000
-Message-ID: <D3AF5F134D627243993F2F2FC32EE4D229C4B0@mailman.eason.com>
-From: Alex Pavloff <apavloff@eason.com>
-To: "'Tobias Otto-Adamczak'" <toa@indakom.de>, linux-mtd@lists.infradead.org
-Cc: Alex Pavloff <apavloff@eason.com>
-Subject: RE: writing new BBRAM driver
-Date: Mon, 16 Dec 2002 14:33:41 -0800
-MIME-Version: 1.0
+Received: from dragon.actrix.co.nz ([203.96.16.164])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18O46c-0004rm-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 22:52:58 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Russ Dill <Russ.Dill@asu.edu>, linux-mtd@lists.infradead.org
+Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts?
+Date: Tue, 17 Dec 2002 12:18:57 +1300
+References: <20021216095652.D4D24C6139@atlas.denx.de> <20021216210640.C31D314C2B@dragon.actrix.co.nz> <1040073679.27220.9.camel@timmy>
+In-Reply-To: <1040073679.27220.9.camel@timmy>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20021216232336.35B3D151B0@dragon.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,28 +25,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> That depends on your hardware and your applications needs. 
-> You may want to try minix. How much (KB) is your BBRAM, anyway ? Maybe you
+On Tue, 17 Dec 2002 10:21, you wrote:
+> On Mon, 2002-12-16 at 14:02, Charles Manning wrote:
+> > Intel's flash is expensive. Figure somwhere over $1 per MB.  NAND costs
+> > approx 30c/MB + SDRAM approx 20c/MB.  Intel's flash thus costs approx
+> > twice what a NAND/RAM image does.
+> >
+> > One NAND flash footprint can give you up to 256MB of storage.
+> >
+> > NOR fully sucks for any sort of writeable file system performance. NAND
+> > runs a very usable fs with YAFFS or JFFS2.
+> >
+> > The only benefit I can see in NOR is a faster boot. This is becoming less
+> > of an issue as more designs switch to sleep/resume models.
+>
+> It really depends on how much data you store, and how you use that data.
+> Sure, for you, with a dynamic file system, and 256M of storage, NAND is an
+> easy choice. But many designs out there have static file systems, use 2M or
+> 4M of flash, and for such designs, NOR offers a lot more simplicity for
+> around the same cost as a NAND + boot logic. With NOR flash, I can put a
+> couple cramfs filesystems on there, and use the boot block for storing a
+> simple journalled config, reliably. I don't have to worry about setting
+> aside blocks in case one goes bad.
+>
+> I think this is the market intel is targeting, just change 2M or 4M to 4M
+> or 8M (no more compressed fs).
 
-> need no FS at all ?
+True, flexibility is the key. If 2-4MB with a static fs is all you need, then 
+no need to take on all the extra drama.
 
-Alright, I've got most of that stuff done, and the device is there.  It just
-reboots when I mount the bbram. :-)  Got some work to do.
+However, to get back to the start of this thread, Intels big push is for the 
+larger sizes (8MB+) where NOR is less palatable.
 
-I want to use a file system to provide the abstraction layer so that I can
-go to a hard drive if needed.  Makes my life easier too, especially on
-testing.   My previous product had a 128KB BBRAM that was mapped to a DOS
-floppy drive by the bios and formatted with FAT12, and that worked well.
-Does the minix fs have a small overhead like FAT12?   Could I use FAT12 if I
-was willing to stick with 8.3?  (Which wouldn't be a bad idea anyway, for
-other reasons in my project).
-
-Alright, one more question:  What should the erasesize be for BBRAM?
-Obviously I'm not worried about wear, so should it be zero or one or
-something else?
-
-Thanks!
-
-Alex Pavloff - apavloff@eason.com
-Eason Technology -- www.eason.com
- 
+-- CHarles
