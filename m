@@ -1,19 +1,19 @@
-Received: from bulldog.adcon.at ([193.83.244.62] ident=root)
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZtJp-0006o6-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 14:15:13 +0100
-Received: from adcon.at (gca@aurora.adcon.at [193.83.244.110])
-	by bulldog.adcon.at (8.8.7/8.8.7) with ESMTP id PAA06514
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 15:15:11 +0200
-Message-ID: <3D47E2DE.F0D84D2F@adcon.at>
-Date: Wed, 31 Jul 2002 15:15:10 +0200
-From: Gerhard Chvatal <G.Chvatal@adcon.at>
+	id 17ZtRD-0006pZ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 14:22:52 +0100
+Message-ID: <01b201c23895$6d771b00$1b0448c0@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: <linux-mtd@lists.infradead.org>
+Cc: <dwmw2@redhat.com>
+References: <018001c23892$e85bb4a0$1b0448c0@gv.com.tw>
+Subject: jffs2 mounting problem
+Date: Wed, 31 Jul 2002 21:23:15 +0800
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: "Read-only file system" error while writing]
-References: <20020731141035.B17800@penguin.adcon.at>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,53 +25,81 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
+   dear all,
+   thanks for your help,
 
-Few months ago a had a similar problem.
+  now i try to:
 
-gromit1463@mailworks.org said:
-> [...]
-> I have a set of STMicro flash chips (M28W320CT) that use the Intel
-> Extended CFI command set (0001) [...]
+ 1> eraseall /dev/mtd1
+ 2> cp test.img /dev/mtdblock1
 
-The M28W320CT is not really 100% compatible with the Intel Chips.
-There is a small difference in the state machine:
+      test.img is created from:
+     mkfs.jffs2 -r rootfs_jffs2 -e 16K -l -o test.img
+     nand device is TC58128FT (16MBytes Nand flash)
+      (should i use "nandwrite" instead of "cp" here?)
 
- As stated in the data sheet of the INTEL 28F320C3 "APPENDIX A, 
- WSM CURRENT/NEXT STATES" on page 40, the device will present the status
- when in "Lock Oper. (Done) state" (usually after sending 60H followed
-by
- D0h to the command interface).
+ 3> mount -t jffs2 /dev/mtdblock1 /mnt
 
- The M28W320CB _does_not_ present the status - it presents the array
-data
- when read in this state.
+  then it still report many "magic bitmask not found"
+   do i missing something?
+   or is it caused by bad-block/ecc-error?
 
-Unfortunately, the Linux MTD Driver (Kernel 2.4.0-rmk2-bluemug1) 
-assumes to have the status available after UNLOCK Operation.
-(around line: 1365-1379 in cfi_cmdset_0001.c:do_unlock_oneblock()).
+   thanks in advanced!:)
 
-After 
+   best regards,
+   kevin
 
-  [...]
-  cfi_write(map, CMD(0x60), adr);
-  cfi_write(map, CMD(0x01), adr);
-  chip->state = FL_UNLOCKING;
-  [...]
+> >  ----following message
+> > > log------------------------------------------------------
+> > > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00298014:
+> > > 0xa3dc in
+> > > stead
+> > > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00298018:
+> > > 0xccfe in
+> > > stead
+> > > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0029801c:
+> > > 0xd1b5 in
+> > > stead
+> > > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00298020:
+> > > 0xf8fd in
+> > > stead
+> > > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00298024:
+> > > 0xb452 in
+> > > stead
+> > > Further such events for this erase block will not be printed
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc0
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc0
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc1
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc1
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc2
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc2
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc3
+> > > nand_read_ecc: Failed ECC read, page 0x00007fc3
+> > > jffs2_scan_empty(): Read 0x1000 bytes at 0x00df8000 returned -5
+> > > mount: wrong fs type, bad option, bad superblock on /dev/mtdblock1,
+> > >        or too many mounted file systems
+----- following eraseall log -------------------------------
+Erasing 16 Kibyte @ dc4000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dc8000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dcc000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dd0000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dd4000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dd8000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ ddc000 -- 98 % complete.MTD_ioctl
+Erasing 16 Kibyte @ de0000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ de4000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ de8000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ dec000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ df0000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ df4000 -- 99 % complete.MTD_ioctl
+Erasing 16 Kibyte @ df8000 -- 99 % complete.MTD_ioctl
+nand_erase: attempt to erase a bad block at page 0x00007fc0
 
-do a
+./eraseall: /dev/mtd1: MTD Erase failure: Input/output error
+Erasing 16 Kibyte @ dfc000 -- 99 % complete.MTD_ioctl
+nand_erase: attempt to erase a bad block at page 0x00007fe0
 
-  cfi_write(map, CMD(0x70), cmd_addr);
-
-to switch the state machine to READ_STATUS mode. Real Intel Chips will
-ignore this.
-
-I have never changed this, because we are still using INTEL chips in our
-design, but if it works, it would be nice to have a feedback.
-
-Gerhard
--- 
-ADCON TELEMETRY AG    ( ( (  /|\  ) ) )   Smart Wireless Solutions
-Inkustraﬂe 24, A-3400 Klosterneuburg
-Tel:+43 (0)2243 38280-0
-Fax:+43 (0)2243 38280-6
+./eraseall: /dev/mtd1: MTD Erase failure: Input/output error
+Erased 14336 Kibyte @ 0 -- 100% complete.
+MTD_close
+-----------------------end of log ----------------------------
