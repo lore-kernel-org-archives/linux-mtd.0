@@ -1,17 +1,18 @@
-Received: from nameservices.net ([208.234.25.16] helo=opersys.com)
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17pe3R-0007HL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2002 01:11:25 +0100
-Message-ID: <3D812E1F.FC5AC8E5@opersys.com>
-Date: Thu, 12 Sep 2002 20:15:27 -0400
-From: Karim Yaghmour <karim@opersys.com>
-Reply-To: karim@opersys.com
+	id 17pfjo-0007Q0-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2002 02:59:17 +0100
+Message-ID: <009501c25ac9$3905c140$b30210ac@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <007901c23869$35d3f500$1b0448c0@gv.com.tw>  <31207.1028103302@redhat.com>
+Subject: any comment about following news at http://www.handhelds.org/ ?
+Date: Fri, 13 Sep 2002 09:59:39 +0800
 MIME-Version: 1.0
-To: Wolfgang Denk <wd@denx.de>
-CC: Jack Lu <jlu@rdmcorp.com>, linux-mtd@lists.infradead.org
-Subject: Re: the procedure setting up jffs2
-References: <20020912231417.0ED47FA8D@denx.denx.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,27 +25,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Wolfgang Denk wrote:
-> in message <3D811741.FB5178A@opersys.com> you wrote:
-> >
-> > The chip you mention is bottom-boot, so the above will very likely wipe-out
-> > the bootloader. You probably want to partition your MTD device by modifying
-> > the mapping driver and then write the JFFS2 image to another partition then
-> > /dev/mtd0. Check drivers/mtd/tqm8xxl.c for an example.
-> 
-> We (more  or  less)  consider  this  method  of  static  partitioning
-> obsolete.  
-
-So do I. Unfortunately, drivers/mtd/cmdline.c is only available in the MTD
-CVS for the time being (and Denx's kernel sources ;). Neither 2.5.34 nor
-2.4.19 include this code. Instead, they currently include drivers/mtd/bootldr.c
-which is only for ARM. Do you have any idea when cmdline.c will be part of the
-mainline kernel?
-
-Karim
-
-===================================================
-                 Karim Yaghmour
-               karim@opersys.com
-      Embedded and Real-Time Linux Expert
-===================================================
+dear all,
+any comment about following news at http://www.handhelds.org/ ?
+--
+9/11/2002
+New experimental kernel packages with faster jffs2 mounting in
+2.4.18-fastjffs2 feed. We think it should cause no problems, but there is
+always the possibility of filesystem corruption. If it has no problems,
+we'll update the stable and preempt kernels.
+--
