@@ -1,19 +1,21 @@
-Received: from [213.86.99.234] (helo=phoenix.infradead.org)
+Received: from mail13.speakeasy.net ([216.254.0.213] helo=mail.speakeasy.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kGFI-0004ai-J7
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2003 05:49:56 +0100
-Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
-	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 19kGF9-0005ZY-00
-	for linux-mtd@lists.infradead.org; Wed, 06 Aug 2003 05:49:48 +0100
-Message-ID: <3F308914.2050500@hectrix.com>
-Date: Wed, 06 Aug 2003 12:50:28 +0800
-From: Selwyn Tang <selwyn@hectrix.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 19kJCn-0004zQ-9k
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2003 08:59:33 +0100
+From: Roger <rogerxxmaillist@speakeasy.net>
+To: Selwyn Tang <selwyn@hectrix.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <3F3058C8.2060404@hectrix.com>
+References: <3F2E3089.40904@hectrix.com>
+	 <1059992609.7431.19.camel@localhost3.localdomain>
+	 <3F2E38FE.8030800@hectrix.com>
+	 <1060093933.3861.6.camel@localhost3.localdomain>
+	 <3F3058C8.2060404@hectrix.com>
+Message-Id: <1060156541.4912.9.camel@localhost3.localdomain>
+Mime-Version: 1.0
+Date: 06 Aug 2003 00:55:41 -0700
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: NFTL formatting problem; alternatives?
+Subject: Re: Problems with DOC 2000 on 2.4.21
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+On Tue, 2003-08-05 at 18:24, Selwyn Tang wrote:
+> I used the MAKEDEV script provided by the mtd from cvs to create the 
+> various device files (/dev/mtd*, /dev/nftl*, etc.) and now I can access 
+> my DOC2000.
+> 
+> But concerning the unshadowing of the DIP socket, I do have a problem. 
+> My Intel D845BG borad seems to be unable to detect my DOC development 
+> board (M-Sys' PCI EVB), and even dinfo.exe in DOS cannot detect it. But 
+> in Linux, I can still access it using M-Sys's Linux driver. I wonder if 
+> it is the shadowing problem you are talking about. Right now, I am using 
+> a ASUS board smoothly with DOC.
 
-Since the latest mtd cvs doesn't build nftl_format, I wonder if there 
-are any alternatives in Linux. I also tried building nftl_format from 
-mtd snapshot 2002-07-31, the one mentioned in Karim's book. But since I 
-have already patched my 2.4.21 kernel with mtd snapshot 2003-08-04, I 
-failed to compile the former util snapshot. I even tried patching 2.4.21 
-with the mtd snapshot 2002-07-31, but failed. So, how can I perform a 
-NFTL format in Linux, instead of using dformat.exe in DOS?
+yup. the mtd device will remain invisible until unshadowed.  even the
+dos utilites fail to see the mtd device (or bios DIP socket with DOC
+inserted).
 
-Another problem is concerning the order of operations of preparing the 
-DOC. According to Karim's book, I successfully built a grub_firmware and 
-  loaded it to my DOC (previously erased by eraseall) using 
-doc_loadbios. The next step is to NTFL format my DOC. But the precaution 
-is that the NFTL driver would interfere with nftl_format, and therefore 
-I have to either compile the NFTL driver as a module and unload it when 
-NTFL formatting, or eraseall my DOC and reboot so that the 
-kernel-built-in NFTL driver would not detect it. Since I already 
-built-in the driver, I prefer the second approach. But if I eraseall my 
-DOC and reboot, can I still doc_loadbios the grub_firmware and then 
-nftl_format my DOC at 98304?
+funny. i never tried the msys binary drivers that they provide -- i
+believe that i was concerned i was using something out-dated and/or
+wouldn't work with my kernel versioning.  maybe i should try it since
+you've said you have had success with it. odd.
 
-Regards,
+> 
+> Selwyn
+> 
+> Roger wrote:
+> > On both of my 440BX boards, Intel incorporated a shadow feature which
+> > shadows the mtd devices (bios chip/DIP socket) from the normal mtd
+> > drivers/modules.
+> > 
+> > I have to utilize the openbios/devbios module/code to unshadow the 440BX
+> > DIP socket.
+> > 
+> > There are many other chipsets supported for unshadowing in that code.  I
+> > believe the code only needs to be implemented into mtd somehow.
+> > 
+> > But basically, I get nothing found in dmesg when loading the DOC modules
+> > and nothing showing in /proc/mtd* -- but mtdchar does show some info in
+> > the /proc/mtd* files.
+> > 
+> > After unshadowing the 440BX DIP socket (using openbios/devbios -- i
+> > hacked module to leave the DIP socket unshadowed after unloading;-), and
+> > then loading the mtd/doc modules,  I get 'found DOC ...' in dmesg and I
+> > get good info in the /proc/mtd* files. 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
 
-Selwyn
+Roger
+http://www.eskimo.com/~roger/index.html
