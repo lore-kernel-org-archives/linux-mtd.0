@@ -1,26 +1,26 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CudHd-0006WQ-Px
-	for linux-mtd@lists.infradead.org; Fri, 28 Jan 2005 16:04:03 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e3.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0SL3uZW003259
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Jan 2005 16:03:56 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0SL3uwd078280
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Jan 2005 16:03:56 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0SL3u3T027292
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Jan 2005 16:03:56 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Fri, 28 Jan 2005 15:03:52 -0600
-Message-Id: <1106946232.7542.33.camel@windu.rchland.ibm.com>
+Received: from wproxy.gmail.com ([64.233.184.199])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cuhid-0007z1-Mf
+	for linux-mtd@lists.infradead.org; Fri, 28 Jan 2005 20:48:12 -0500
+Received: by wproxy.gmail.com with SMTP id 68so459620wra
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 28 Jan 2005 17:48:10 -0800 (PST)
+Message-ID: <6934efce050128174863077433@mail.gmail.com>
+Date: Fri, 28 Jan 2005 17:48:10 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <Pine.LNX.4.61.0501281508160.21048@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: haverkam@de.ibm.com
-Subject: NAND partitioning
+References: <6934efce05012717207271fb10@mail.gmail.com>
+	<m33bwmw0ax.fsf@maxwell.lnxi.com>
+	<6934efce050128114749c662b1@mail.gmail.com>
+	<Pine.LNX.4.61.0501281508160.21048@localhost.localdomain>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	"Eric W. Biederman" <ebiederman@lnxi.com>
+Subject: Re: Unit test for cfi_cmdset_0001.c
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+> I can see that.  But in this particular case I think it would be better
+> for code maintainability, and more importantly upstream code acceptance,
+> that the code remains as is and that you write a small perl script to
+> split it up automatically.
 
->From what I understand, partitioning on NAND is the same as partitioning
-on NOR.  A map driver calls add_mtd_partitions passing a mtd_partition
-structure which has the partitions listed with name, physical offset
-into the chip, and a size.
+Right, #1 it is then.  For now that is, until ya'll see how niffty the
+test tools are.
 
-I stumbled upon the docboot directory today and read the README.  Seems
-that M-Systems marks the eraseblocks for their 1st and 2nd stage boot
-loaders using a special marker in the OOB area.  I assume that map
-drivers that use such devices simply make partitions for these areas and
-leave them be for the most part.
+>  The test tools could be committed to the MTD
+> CVS but they would never see the mainline tree.
 
-After thinking about that for a bit, why would one need to create
-separate partitions for that?  Could JFFS2 grok a "binary eraseblock"
-marker instead?  It would essentially ignore the data such an
-eraseblock.
+I couldn't, wouldn't, shouldn't ask for more.
 
-Some might be asking, "What's wrong with normal partitioning?"  Well,
-given that NAND is somewhat unreliable it might be advantageous to use
-JFFS2 across the entire device.  If normal partitions are used, they
-limit the amount of wear-leveling that JFFS2 can do on the device.
-Basically you only get wear-leveling within that partition.  The higher
-the number of partitions, the worse wear-leveling you get across the
-chip.
+> That's why I'm not sold to the idea since that particular driver sees
+> its core complexity in the locking, scheduling and concurrent stomping
+> on the state machine.  I don't think synthetic tests can replace careful
+> inspection and perfect understanding of the code.  Static analysis tools
+> like sparse should help with locking correctness though.  But I'm always
+> open to be shown otherwise!
 
-This concept extends to any sort of "binary" data that one would want on
-the device.  To access the data contained in said eraseblocks, one could
-write a device driver that understood the data and presented it to the
-user via a MTD device.
+I think you'll be surprised how much of that locking and concurrency
+we can test.
 
-Thoughts?
+> For filesystems I can imagine.  It has many more conditions to deal with
+> and making sure all of them are tested can be tedious.  But
+> purely writing to
+> flash is not that complex (or is it?) compared to all the needed code
+> above that dealing with concurrency.
+> 
+> I remember the first Linux NOR flash driver I wrote in 1997: pure char
+> device, no MTD layer, no reentrancy, no scheduling, just the pure flash
+> read/write.  It was in the order of 20 to 30 lines of code.  I made it a
+> block device with about 20 additional lines.  It even was able to deal
+> with flash errors!  More than that like what we have today is
+> performance stuff.
 
-josh
+Anything paragraph about coding that starts with 'I remember' is pure gold!
+
+I don't know.  The drivers are not that simple.  Lots of obscure cases
+and states.  I can say this much, almost every bug I've seen would be
+have been found by a unit test.  Of course this is almost as much
+because of the process of creating the tests as actually running them.
+ Running the tests will make sure you don't reintroduce bugs you found
+before as the code evolves.
