@@ -1,55 +1,67 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12u1Sl-0003Ch-00
-	for mtd-list@infradead.org; Tue, 23 May 2000 00:18:19 +0100
-Date: Mon, 22 May 2000 16:14:46 -0700 (PDT)
-From: Andre Hedrick <andre@linux-ide.org>
-To: Andries Brouwer <aeb@veritas.com>
-cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.rutgers.edu,
-        mtd@infradead.org
-Subject: Re: HDIO_GETGEO vs. BLKGETSIZE
-In-Reply-To: <20000522161756.A23047@veritas.com>
-Message-ID: <Pine.LNX.4.10.10005221612500.4473-100000@master.linux-ide.org>
+	id 12uIf0-0004rB-00
+	for mtd-list@infradead.org; Tue, 23 May 2000 18:40:06 +0100
+Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 12uIey-0004r5-00
+	for mtd@infradead.org; Tue, 23 May 2000 18:40:05 +0100
+From: Patrick Higgins <phiggins@transzap.com>
+To: Dvir Oren <dviro@lucidvon.com>
+Cc: mtd@infradead.org
+Date: Tue, 23 May 2000 11:43:44 -0600 (MDT)
+Subject: Re: Write support 
+In-Reply-To: <14634.41505.90854.754749@jodie.lucid>
+Message-ID: <Pine.LNX.4.21.0005231131490.23843-100000@phiggins.transzap.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tue, 23 May 2000, Dvir Oren wrote:
 
-If we have a superior answer over the "HDIO_GETBIGGEO" kludge, I am up for
-change.  I would ask it to stay until we verify that the newest changes
-are what we desire........after that.....rip it......
+> Patrick Higgins writes ("Re: Write support "):
+> > > > So, I went back the not-so-handy dformat and now find that it fails 
+> > > > after 4096 kbytes.  If this hardware is failing, it's failing like 
+> > > > wildfire.  Have any of your units failed on  you? 
+> 
+> > Unfortunately, no.  I suppose I need to order a few more.  We ordered the
+> > one I have from Flytech, and it took _forever_ to get here.  Do you know
+> > of any good suppliers?  Can you buy directly from M-Systems?
+> 
+> I found that when this happens, I could use docpmap /e, which would erase
+> the flsh _entirely_(***), and then I could use dformat, which will restore
+> the flash to a usable state.
+> 
+> ***
+> Using docpmap /e is 'prohibited' by M-Systems', and it will not be
+> available in the next version.  The problem with this is that it
+> erases the bad block table, which will never be restored again.
+> 
+> What can be done to avoid this is to do dformat /log:<filename>,
+> which should save the bad block table to filename, and you can then
+> restore it.
+> 
+> However, from my experience, and as it so happens to be, most flashes
+> have 0 bad blocks.
+> 
+> You can take your chances if you want.
 
-On Mon, 22 May 2000, Andries Brouwer wrote:
+I wish I could still do this...unfortunately, I took my chances already
+and used doc_loadbios to write the grub firmware onto the DoC, and now it
+won't boot on my system which has a floppy (the only way I've able to get
+DOS to boot), but I can still get it to boot Linux with PXE
+(netboot).  Would something like:
 
-> On Mon, May 22, 2000 at 01:06:17PM +0100, David Woodhouse wrote:
-> 
-> > Is it permitted for a driver to returns CHS values for HDIO_GETGEO which, 
-> > when multiplied together, don't match the value returned by BLKGETSIZE?
-> 
-> Yes - HDIO_GETGEO may contain whatever you want.
-> A modern fdisk will use the values for heads and sectors/track
-> given by HDIO_GETGEO, but ignore the value for cylinders.
-> 
-> Indeed, since cylinders is a 16-bit field and the number of cylinders
-> can be larger than 65535, the value may be truncated, and is to be
-> considered worthless.
-> 
-> Instead, the number of cylinders is computed as BLKGETSIZE/(H*S).
-> (Thus, there is no need for a new ioctl HDIO_GETBIGGEO or so.
-> I think the code for it should be deleted from the kernel.)
-> 
-> Andries
-> 
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.rutgers.edu
-> Please read the FAQ at http://www.tux.org/lkml/
-> 
+dd if=/dev/zero of=/dev/mtd0
 
-Andre Hedrick
-The Linux ATA/IDE guy
+accomplish the same thing?
 
+Has anyone gotten DOS to work with PXE?  If so, could you please describe
+your setup?
+
+
+Patrick
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
