@@ -1,24 +1,23 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from carisma.slowglass.com ([195.224.96.167]
+	helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190px2-0007JC-5C
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 22:39:20 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HCQ003EDK4PB4@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 23:38:50 +0200 (MEST)
-Date: Thu, 03 Apr 2003 00:39:18 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030402201233.GA17890@wohnheim.fh-wedel.de>
-To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
- Siddharth Choudhuri <choudhri@cs.tamu.edu>
-Message-id: <200304030039.18812.tglx@linutronix.de>
-MIME-version: 1.0
-References: <Pine.GSO.4.44.0304021225270.18949-100000@unix.cs.tamu.edu>
- <20030402201233.GA17890@wohnheim.fh-wedel.de>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: quoted-printable
+	id 190q1P-0007Mp-5f
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 22:43:51 +0100
+Received: from air-2.osdl.org ([65.172.181.6] helo=doc.pdx.osdl.net)
+	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.10)
+	id 190q1N-0000xZ-00
+	for linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 22:43:50 +0100
+Date: Wed, 2 Apr 2003 13:43:45 -0800
+From: Bob Miller <rem@osdl.org>
+To: torvalds@transmeta.com
+Message-ID: <20030402214345.GA17147@doc.pdx.osdl.net>
+Mime-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-Subject: Re: newbie: struct flchip in flashchip.h...
-Reply-To: tglx@linutronix.de
+cc: linux-kernel@vger.kernel.org
+Subject: [PATCH 2.5.66] Convert elan-104nc to to remove check_region().
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 April 2003 22:12, J=F6rn Engel wrote:
-> On Wed, 2 April 2003 12:28:47 -0600, Siddharth Choudhuri wrote:
-> > What are the members of the structure <mtd/flashchip.h>
-> > struct flchip {
-> > ...
-> > =09int word_write_time;
-> > =09int buffer_write_time;
-> > =09int erase_time;
-> > }
-> > used for ?
->
-> I don't know, but you can figure it out yourself. Try
-> http://lxr.linux.no/
-grep -r word_write_time *
-would help too :)
+Moved the request_region() call to replace check_region() and adds
+release_region()'s in the error paths that occure before the old
+call to request_region().  NOTE: This patch just updates comments.
 
---=20
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-- 
+Bob Miller					Email: rem@osdl.org
+Open Source Development Lab			Phone: 503.626.2455 Ext. 17
+
+diff -nru a/drivers/mtd/maps/elan-104nc.c b/drivers/mtd/maps/elan-104nc.c
+--- a/drivers/mtd/maps/elan-104nc.c	wed apr  2 10:57:40 2003
++++ b/drivers/mtd/maps/elan-104nc.c	wed apr  2 10:57:40 2003
+@@ -30,8 +30,8 @@
+ the single flash device is divided into 3 partition which appear as separate
+ mtd devices.
+ 
+-linux thinks that the i/o port is used by the pic and hence check_region() will
+-always fail.  so we don't do it.  i just hope it doesn't break anything.
++linux thinks that the i/o port is used by the pic and hence request_region()
++will always fail.  so we don't do it.  i just hope it doesn't break anything.
+ */
+ #include <linux/module.h>
+ #include <linux/slab.h>
+@@ -227,14 +227,14 @@
+ 	}
+ 
+ 	iounmap((void *)iomapadr);
+-	release_region(page_io,page_io_size);
++	/* release_region(page_io,page_io_size); */
+ }
+ 
+ int __init init_elan_104nc(void)
+ {
+ 	/* urg! we use i/o port 0x22 without request_region()ing it */
+ 	/*
+-	if (check_region(page_io,page_io_size) != 0) {
++	if (!request_region(page_io,page_io_size, "elan-104nc flash")) {
+ 		printk( kern_err"%s: io ports 0x%x-0x%x in use\n",
+ 			elan_104nc_map.name,
+ 			page_io, page_io+page_io_size-1 );
+@@ -245,12 +245,11 @@
+ 	if (!iomapadr) {
+ 		printk( kern_err"%s: failed to ioremap memory region\n",
+ 			elan_104nc_map.name );
++		/*
++		release_region(page_io,page_io_size);
++		*/
+ 		return -eio;
+ 	}
+-
+-	/*
+-	request_region( page_io, page_io_size, "elan-104nc flash" );
+-	*/
+ 
+ 	printk( kern_info"%s: io:0x%x-0x%x mem:0x%x-0x%x\n",
+ 		elan_104nc_map.name,
