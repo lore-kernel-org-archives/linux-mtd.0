@@ -1,17 +1,18 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16cr0C-0007Ht-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 16:50:56 +0000
-Date: Mon, 18 Feb 2002 18:01:57 +0100 (MET)
-From: Robert Kaiser <rob@sysgo.de>
-To: "Brian J. Fox" <bfox@ua.com>
-cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-   joern@wohnheim.fh-wedel.de
-Subject: Re: MTD concat layer
-In-Reply-To: <E16cq6b-0004Hq-00@speedy.datawave.net>
-Message-ID: <Pine.LNX.4.21.0202181800360.20027-100000@dagobert.svc.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16cr0x-0007I8-00
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 16:51:43 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.21.0202181800360.20027-100000@dagobert.svc.sysgo.de> 
+References: <Pine.LNX.4.21.0202181800360.20027-100000@dagobert.svc.sysgo.de> 
+To: Robert Kaiser <rob@sysgo.de>
+Cc: "Brian J. Fox" <bfox@ua.com>, linux-mtd@lists.infradead.org,
+    joern@wohnheim.fh-wedel.de
+Subject: Re: MTD concat layer 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 18 Feb 2002 17:02:56 +0000
+Message-ID: <7861.1014051776@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +24,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+rob@sysgo.de said:
+>  OK, so we all finally agree that BUG() is the way to go (rather than
+> returning -EINVAL. Right ?
 
-On Mon, 18 Feb 2002, Brian J. Fox wrote:
-> 
-> BUG() is completely acceptable.  It allows the driver to be fixed.
-> It's also orthogonal to the original question.  Erasing blocks is
-> simply a way to guarantee that data has been irrevocably lost.
+As long as you make sure you can't trigger the BUG() from the mtdchar 
+ioctl() routine, yes.
 
-OK, so we all finally agree that BUG() is the way to go (rather than
-returning -EINVAL. Right ?
 
-Rob
 
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+--
+dwmw2
