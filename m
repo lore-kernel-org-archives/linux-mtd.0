@@ -1,25 +1,18 @@
-Received: from mailout.fastq.com ([204.62.193.66])
+Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QBAL-00074Z-Hs
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 20:21:50 +0100
-Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
-	h5BJMLV86107	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 12:22:21 -0700 (MST)
-	(envelope-from Russ.Dill@asu.edu)
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Pantelis Antoniou <panto@intracom.gr>
-In-Reply-To: <3EE6FC72.10107@intracom.gr>
-References: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
-	 <3EE6FC72.10107@intracom.gr>
-Message-Id: <1055359356.896.38.camel@russ>
+	id 19QCsD-0007UB-4v
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 22:11:13 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chris Marston <chris@wirewerks.com>
+In-Reply-To: <20030611173522.NAUK12016.simmts1-srv.bellnexxia.net@there>
+References: <20030611173522.NAUK12016.simmts1-srv.bellnexxia.net@there>
+Message-Id: <1055365905.16455.114.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: 11 Jun 2003 12:22:36 -0700
-Content-Type: text/plain; charset=iso-8859-1
+Date: Wed, 11 Jun 2003 22:11:45 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: Jasmine Strong <jasmine@regolith.co.uk>
-Subject: Re: Cram FS on NAND - How to do this?
-Reply-To: Russ.Dill@asu.edu
+Subject: Re: blkmtd.o, JumpTec Dimm-PC woes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2003-06-11 at 18:35, Chris Marston wrote:
+> I'm working on a project using embedded linux on a JumpTec Dimm-PC (the Elan 
+> SC520 model). The JumpTec (supposedly) emulates a full PC with IDE, etc, so 
+> up till now, we've been able to get by quite happily with a homegrown 
+> slack-based distro with a minix FS (the final product will be mostly ro, so 
+> wear levelling is unnecessary).  Recently, however, we noticed that our 
+> development units were beginning to corrupt data on writes, well before the 
+> MTBF of their flash. It turns out that the DIMM-PC carries out a good chunk 
+> of its IDE-emulating chicanery in the BIOS. Any OS can happily talk to the 
+> fictitious hard drive on its own, but, without the help of the BIOS, it won't 
+> properly erase sectors before using them. Thus, because Linux cold-shoulders 
+> the BIOS, sectors on the (SanDisk NAND) flash aren't getting erased properly, 
+> and, over time, the boards become unusable.
 
-> I'm talking about a read only filesystem, and generating
-> the bad block info at mount time.
-> 
-> Perhaps I could also use some kind of lazy bad block scanning technique
-> in which the list would only be generated up to point where
-> someone requested a read.
-> 
-> Well, and if a block goes bad what was written as good there
-> is nothing any filesystem can do but die complaining.
+The ideal solution to this is to ditch the crap that pretends to be IDE
+_altogether_ and talk to the NAND flash directly. Do you have decent
+docs -- is that feasible?
 
-Bad blocks would be generated at FS creation time, but as time goes on,
-some blocks may start going bad. May not be important for 5 or 6
-devices, but when you go into production with 100+ devices, this would
-become important. Once a block goes bad, but the data is recoverable
-with ECC, you'd want to relocate the block at the end of the FS and note
-it somehow..
+> I'm thinking that the best way to handle this is to use blkmtd.o and then use 
+> JFFS2, eraseall, etc. Unfortunately, I can't figure out how or where to talk 
+> to the mtd device created by blkmtd.o. I've tried utils/MAKEDEV and 
+> /dev/ftla0, and /dev/nftla0, but (eg. eraseall /dev/ftla0) complains that 
+> there's no such device or address.
 
-or not:
+eraseall works on the '/dev/mtdN' or '/dev/mtd/N' device nodes (the
+latter with devfs, the former without). In order for those to be
+present, you must enable CONFIG_MTD_CHAR.
 
-An index is in each oob, for the first n (where n is the size of the FS)
-blocks, the index is just the block number. After that, if a block is
-found bad while writing the FS, or during usage, that block is rewritten
-past the end of the FS in the "reserve area" with the index number of
-that block.
-
-At mount time, the only scanning that would need to be done is in the
-reserve area.
-
+Don't bother with FTL and NFTL -- those are 'translation layers' for
+making flash pretend to be a hard drive, and your flash is already
+making that pretence for you.
 
 -- 
-Russ Dill <Russ.Dill@asu.edu>
+dwmw2
