@@ -1,16 +1,27 @@
-Received: from web15303.mail.bjs.yahoo.com ([202.3.77.178])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q12G-0001uV-CD
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 09:32:49 +0100
-Message-ID: <20030611083240.66885.qmail@web15303.mail.bjs.yahoo.com>
-Date: Wed, 11 Jun 2003 16:32:40 +0800 (CST)
-From: =?gb2312?q?Yy=20Yy?= <yy_hust@yahoo.com.cn>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <mailman.61.1055319954.2179.linux-mtd@lists.infradead.org>
+Received: from mailserv.intranet.gr ([146.124.14.106])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Q1DJ-000249-Ap
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 09:44:14 +0100
+Received: from mailserv.intranet.gr (localhost [127.0.0.1])
+	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id h5B8l0D29132
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 11:47:00 +0300 (EEST)
+Received: from ifaistos.intranet.gr (ifaistos.intranet.GR [146.124.20.203])
+	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id h5B8kxY29117
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 11:46:59 +0300 (EEST)
+Received: from intracom.gr (pcrnd46 [146.124.20.92])
+	by ifaistos.intranet.gr (8.9.1b+Sun/8.9.1) with ESMTP id LAA29907
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 11:40:41 +0300 (EET DST)
+Message-ID: <3EE6EBA0.3080508@intracom.gr>
+Date: Wed, 11 Jun 2003 11:43:12 +0300
+From: Pantelis Antoniou <panto@intracom.gr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
-Subject: Ask a question about Intel 28F128J3A flash chip.
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Cram FS on NAND - How to do this?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,15 +31,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a question about 28F128J3A chip driver.
-Whether we need to erase a block of the chip before
-write something on it.
-In mtdchar.c, when we write a word on the flash, the
-driver doesn't erase a block.
+Hi
 
+As it currently stands the only filesystems supporting
+raw NAND flash are:
 
+JFFS2: Read/write, compressed, best support, slow startup.
+YAFFS: Read/write, not compressed, newcomer, fast startup.
 
-_________________________________________________________
-Do You Yahoo!? 
-流连网络世界的“你”是谁？
-http://cn.rd.yahoo.com/mail_cn/tag/?http://cn.surveys.yahoo.com/cn_user_profile_study_may2003
+I have a requirement to have a compressed read only
+root filesystem in my board and I've come to the
+conclussion that the best fit would be CRAMFS if only
+had any concept of bad blocks.
+
+Looking at the code for CRAMFS I see that it would not
+be very difficult to hack it to detect the bad blocks
+and skip over them on startup. We could rely on
+the same OOB info that JFFS2 has, and just
+make a mapping list as follows:
+
+NAND block  bad?  fs block
+----------  ----  --------
+    0         n      0
+    1         n      1
+    2         y     skip
+    3         n      2
+
+... etc
+
+The first complication is that CRAMFS works with
+PAGE_SIZE blocks only, and that should be taken
+into account.
+
+The second is that this is the first time I hack filesystem
+code and I would like to ask the list if you see any difficulties
+ahead.
+
+What are your thoughts in this?
+
+Regards
+
+Pantelis
