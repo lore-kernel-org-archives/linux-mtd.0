@@ -1,19 +1,16 @@
-Received: from gate.icpe.ro ([193.230.185.1])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BLlas-0001GQ-AI
-	for linux-mtd@lists.infradead.org; Thu, 06 May 2004 17:19:30 +0100
-Received: from S40WS4 (ip211.icpe.ro [193.230.185.211])
-	by gate.icpe.ro (8.11.6/8.8.7) with SMTP id i46GMIL00615
-	for <linux-mtd@lists.infradead.org>; Thu, 6 May 2004 19:22:18 +0300
-Content-Type: Multipart/Mixed;
-  charset="iso-8859-1";
-  boundary="------------Boundary-00=_F0WAG588SZM4Z8EP8VA9"
-From: Paul Chitescu <Paul.Chitescu@IMC-Group.org>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 6 May 2004 19:19:27 +0300
+Received: from [210.162.188.189] (helo=secure.gec-tokyo.co.jp)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BLtfj-0002Rz-IA
+	for linux-mtd@lists.infradead.org; Fri, 07 May 2004 01:57:04 +0100
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 7 May 2004 09:58:03 +0900
+From: <GECGWS01/GEC%GEC@gec-tokyo.co.jp>
+Message-ID: <OFDC6091BC.DED9D2AD-ON49256E8D.000550A4@gec-tokyo.co.jp>
 MIME-Version: 1.0
-Message-Id: <04050619192700.21912@S40WS4>
-Subject: Patch: change in debug levels
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Subject: Security Alert - InterScan for Lotus Notes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,148 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+InterScan has detected a virus during a real-time scan of the e-mail
+traffic.
 
---------------Boundary-00=_F0WAG588SZM4Z8EP8VA9
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Date:        5/7/2004 9:58:3
+Subject:   Mail Delivery (failure chyekn@gec-tokyo.co.jp)
+From:       <linux-mtd@lists.infradead.org>
+To:            chyekn@gec-tokyo.co.jp
 
-I hope this will help people to keep only usefull information displayed.
-
-The patches are moving the informative MTD_open and MTD_close to MTD level 2, 
-MTD_read, MTD_write and MTD_ioctl to MTD level 3; in JFFS2 many debug info 
-messages were moved from level D1 to level D2.
-
-Paul Chitescu
-
---------------Boundary-00=_F0WAG588SZM4Z8EP8VA9
-Content-Type: application/x-gzip;
-  charset="iso-8859-1";
-  name="mtd+jffs2_message_levels.patch.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="mtd+jffs2_message_levels.patch.gz"
-
-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
-+4lSj32l0WOU9/8DzAfoN3RxAAA=
-
---------------Boundary-00=_F0WAG588SZM4Z8EP8VA9--
+Virus:        WORM_NETSKY.P
+File:           message.scr
+Action:      Uncleanable quarantine
+Event:       Virus Scan
