@@ -1,12 +1,14 @@
-Received: from mail.bfn.de ([217.76.99.222])
+Received: from bay19-f13.bay19.hotmail.com ([64.4.53.63] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Befmf-0005wQ-1e
-	for linux-mtd@lists.infradead.org; Sun, 27 Jun 2004 15:57:50 -0400
-Message-Id: <1djai410du9j4t@bfn.de>
-Date: Sun, 27 Jun 2004 21:56:20 +0200
-From: "GWAVA" <postmaster@bfn.de>
+	id 1BemuX-0006jj-JZ
+	for linux-mtd@lists.infradead.org; Sun, 27 Jun 2004 23:34:28 -0400
+From: "w h" <wh3cq@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [GWAVA:19z1ismg] RBL block message notification
+Date: Mon, 28 Jun 2004 03:34:17 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY19-F13LZ9fhzgAfi0004393d@hotmail.com>
+Subject: used percent in "df" command
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,68 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-##########################  R B L  L I S T  #################################
-This is an automated Notification e-mail message from Spam-Daemon at Domain 
-"bfn.de". You can not answere to this Message!
+Hi,
 
-The message you sent, from the address linux-mtd@lists.infradead.org
+I use Moto Dragonball MX1 (arm920T)to startup my cramfs root fs. All work 
+ok, but there is an information I wonder why. Is there anyone who can 
+explain?
 
-to PBox-Presse@BfN.de, Presse@BfN.de
+Actually the cramfs rootfs downloaded takes up only 4016K which is smaller 
+than the whole space(mtdblock2) 12448 allocated to root filesystem¡£But why 
+dose "Use% = 100%" exist?
 
-Concerning: Mail Delivery (failure presse@bfn.de)
+The information after "df" command is as following:
 
-Was not delivered because the e-mail system in use at the intended recipient's
-organization determined the message is Spam based on comparison with a 
-Real-time Blackhole List database at
+Filesystem           1k-blocks      Used Available Use% Mounted on
 
-SBL-XBL.SPAMHAUS.ORG
+/dev/mtdblock/2          12448     12448         0 100% /
+.....
+ 
+I want "df" to show actually used percent.What can I do? Is there any place 
+I can do some modificaton?
 
-The IP address of the blocked message is:
-
-213.47.83.137
-
-Please inform your Administrator about this EMail.
-For more Information follow this Links:
-
-http://www.abuse.net/sbl.phtml
-http://cbl.abuseat.org/lookup.cgi
-http://www.ordb.org/lookup/?host
-
-###############################################################################
-Dies ist eine automatisiert generierte EMail vom Spam-Daemon der Domäne 
-"bfn.de". Sie können auf diese EMail nicht antworten!
-
-Die Nachricht, die Sie versendet haben,
-
-von der Adresse linux-mtd@lists.infradead.org
-
-nach PBox-Presse@BfN.de, Presse@BfN.de
-
-Betreff: Mail Delivery (failure presse@bfn.de)
-
-wurde nicht angenommen, weil die Email von der IP-Adresse
-
-213.47.83.137
-
-versendet wurde, die in der Realtime-Blackhole-Liste (RBL) 
-
-SBL-XBL.SPAMHAUS.ORG
-
-aufgeführt ist.
-
-Bitte informieren Sie Ihren Administrator über diese Mail.
-Weitere Informationen finden Sie im Internet unter:
-
-http://www.abuse.net/sbl.phtml
-http://cbl.abuseat.org/lookup.cgi
-http://www.ordb.org/lookup/?host
-
-
-Best Regards / Mit freundlichen Grüßen
-
-Bundesamt für Naturschutz
-
-Konstantinstr. 110
-D-53179 Bonn
-
-Tel.:+49.228.8491.355
+_________________________________________________________________
+Ãâ·ÑÏÂÔØ MSN Explorer:   http://explorer.msn.com/lccn  
