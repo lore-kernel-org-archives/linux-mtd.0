@@ -1,20 +1,20 @@
-Received: from [212.105.56.244] (helo=dmz.lumentis.net)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cfi6S-0004qX-Gh
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 12:10:51 -0500
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
-   "David Vrabel" <dvrabel@arcom.com>
-Date: Sat, 18 Dec 2004 18:10:42 +0100
-Message-ID: <BCEFJBPJCGFCNMMMIDBHEEMPCJAA.Joakim.Tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20041218161437.GC1083@wohnheim.fh-wedel.de>
+	id 1CfiFp-00053T-NC
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 12:20:30 -0500
+Date: Sat, 18 Dec 2004 18:19:57 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+Message-ID: <20041218171957.GC2654@wohnheim.fh-wedel.de>
+References: <20041218161437.GC1083@wohnheim.fh-wedel.de>
+	<BCEFJBPJCGFCNMMMIDBHEEMPCJAA.Joakim.Tjernlund@lumentis.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BCEFJBPJCGFCNMMMIDBHEEMPCJAA.Joakim.Tjernlund@lumentis.se>
 Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
-Reply-To: Joakim.Tjernlund@lumentis.se
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Fri, 17 December 2004 11:33:42 +0000, David Vrabel wrote:
-> > 
-> > (Also, I wouldn't have thought crc16 on 32 bit archs would have any 
-> > significant performance benefits.  But since I don't know either the 
-> > crc16 or crc32 algorithms... *shrug*)
+On Sat, 18 December 2004 18:10:42 +0100, Joakim Tjernlund wrote:
 > 
-> See my earlier posts in this thread for the algorithms.  Without
-> special optimizations, you can process 16 bits at a time for crc16 and
-> 0 (zero) bits at a time for crc32.
+> hmm, what about the kernel version of crc32. I think that one should
+> be classified as 32 bits at a time. Is that the version you use in your tests?
 
-hmm, what about the kernel version of crc32. I think that one should
-be classified as 32 bits at a time. Is that the version you use in your tests?
+I use the zlib version on my machine, zlib 1.2.2.  It should have
+about the same performance.  At least that's what I thought when I
+last looked at the code.
 
-   Jocke
+Jörn
+
+-- 
+He that composes himself is wiser than he that composes a book.
+-- B. Franklin
