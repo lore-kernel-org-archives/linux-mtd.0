@@ -1,47 +1,37 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11ech7-0006Ce-00
-	for mtd@infradead.org; Fri, 22 Oct 1999 12:17:13 +0100
-To: Jeff Noxon <jeff@planetfall.com>
-Cc: Ian Eure <ieure@uswest.net>, linux-kernel@vger.rutgers.edu,
-    mtd@infradead.org
-Subject: Re: Linux + DiskOnChip problems 
+	id 11fljt-0002Zm-00
+	for mtd@infradead.org; Mon, 25 Oct 1999 16:08:49 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.03 #1)
+	id 11fljt-0000r3-00
+	for mtd@infradead.org; Mon, 25 Oct 1999 16:08:49 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 11fljt-0005J5-00; Mon, 25 Oct 1999 16:08:49 +0100
+To: mtd@infradead.org
+Subject: mtd-19991025 release.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 22 Oct 1999 12:17:12 +0100
+Date: Mon, 25 Oct 1999 16:08:49 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11ech6-0003J5-00@devel2.axiom.internal>
+Message-Id: <E11fljt-0005J5-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+I've just released the current version of my code. It's got a few bugfixes 
+which people had sent me, and I've ported it to the 2.3 kernel.
 
-jeff@planetfall.com said:
->  According to the following document, you must load new firmware:
->    Linkname: Using DiskOnChip with Linux - Installation Manual
->         URL: http://www.m-sys.com/files/imdoc_linux.pdf 
-> Perhaps I misunderstand something.  After all, I don't have a DOC.
+Although I don't actually remember doing anything significant to the NFTL code,
+I've been testing it with M-Systems own drivers, and it seems to interoperate
+fairly happily with them now - which means you ought to be able to boot from it
+now.
 
+Go play.
 
-David.Woodhouse@mvhi.com said:
->  No, I agree - it definitely says you need an alternative firmware
-> image to use  the thing from Linux. I'll ask them about it.
-
-
-OK - I've asked them about it.
-
-It appears that the DiskOnChip firmware and LILO 'cannot work together since 
-they use the same addresses'.
-
-Therefore, the 'new firmware' which you're expected to load is in fact just
-full of 0xff, and doesn't do anything. You install the Linux root on the
-DiskOnChip, and the patched LILO to work around the problem, and then you
-replace the firmware with a real copy again. 
-
-The best answer to this would be to replace the firmware with something that
-isn't so badly behaved - either providing an INT 10h interface like the current
-firmware does, or just something that's capable of booting a Linux kernel
-directly from the DiskOnChip. The latter idea is quite simple to implement.
+	ftp://ftp.linux-mtd.infradead.org/pub/mtd/mtd-19990820.tar.gz
 
 
 
