@@ -1,18 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15u8A4-0005az-00
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2001 09:04:17 +0100
-Date: Thu, 18 Oct 2001 10:13:28 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: Eric <ebrower@usa.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [MTD partitioning rewrite]
-Message-ID: <20011018101328.A13663@wohnheim.fh-wedel.de>
-References: <20011017175322.3246.qmail@cpdvg201.cms.usa.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20011017175322.3246.qmail@cpdvg201.cms.usa.net>; from ebrower@usa.net on Wed, Oct 17, 2001 at 10:53:21AM -0700
+	id 15u9qw-0005iE-00
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2001 10:52:38 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: Question/suggestion 
+Date: Thu, 18 Oct 2001 12:00:53 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLMEJPEPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <30104.1003305614@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,63 +25,53 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
-
-> > [ ... ] might even grow into a complete rewrite of the central 
-> > MTD code. We will see, how much is needed...
 > 
-> I applaud your decision to modify the partitioning scheme, and in
-> a few areas the central code could use spring-cleaning; however, 
-> a re-write of the central code is scary business unless you have
-> a lot of hardware with which to test and folks here aggressively 
-> audit the work.  I have yet to see "re-writes" that did not impact
-> the codebase stability.
-
-A valid point. "Rewrite" in my case often means typing off Davids
-code, thereby adjusting it to the new data structures. This increases
-my understanding but often does little more, than c&p.
-But I still have no grand plan, only a pretty good idea that is
-evolving over time. The project might grow or shrink.
-
-> > - An MTD device will be the equivalent of a hard drive. There will be
-> > several, named mtda, mtdb, mtdc,...
+> joakim.tjernlund@lumentis.se said:
+> >  Does JFFS2 erase the blocks that are already erased?
 > 
-> Hooray!  This would be a welcome change.  Perhaps we can also eliminate
-> the restriction of 16 char device maximum (yes, it does affect me in a
-> non-academic way).
-
-With 256 minor numbers, the sane solution appears to be 16 devices
-with up to 15 partitions each. Does this still limit you?
-
-> > - The partitioning should stay out of the mapping drivers as much as
-> > possible. The mapping driver only supplies a pointer to the partition
-> > table parser. When the device is registered, the partitioning will
-> > automatically be read.
+> Yes, because they might not be _completely_ erased - unless they have a 
+> cleanmarker node at the beginning, then it's possible that they're only 
+> partly-erased. So it erases them again, just to make sure.
 > 
-> I'd like more implementation details, but the separation is welcome.
-> It does seem a bit silly to re-write the mapping driver just for a
-> new partitioning scheme.  Perhaps we can treat it like a disk in 
-> this regard and "scan" it for a partition table.
+> > I also noticed that an umount hangs until kupdate is finished, should it?
+> 
+> There's no real reason for it to do so - can you get a backtrace (SysRq-T) 
+> and find out what it's waiting for? That should be fixable.
 
-That is the idea. I added two new functions:
-int add_mtd_part_device (struct mtd_info *mtd, partition_parser pars);
-int add_mtd_part_device_at (struct mtd_info *mtd, partition_parser
-                            pars, unsigned int index)
+OK, here it is:
 
-There is an empty partition_parser that renders add_mtd_part_device()
-semantically into add_mtd_device(). add_mtd_device() is now considered
-deprecated and simply calls add_mtd_part_device() with the empty
-parser.
+root@localhost:~# umount /jffs2/
+SysRq: Show State
+                 
+                         free                        sibling
+  task             PC    stack   pid father child younger older
+init      S 0FF86418     0     1      0    90  (NOTLB)         
+keventd   S 00000000     0     2      1        (L-TLB)       3
+kswapd    S 00000000     0     3      1        (L-TLB)       4     2
+kreclaimd  S 00000000     0     4      1        (L-TLB)       5     3
+bdflush   S 00000000     4     5      1        (L-TLB)       6     4 
+kupdate   R current      0     6      1        (L-TLB)       7     5
+mtdblockd  S 00000000    12     7      1        (L-TLB)       8     6
+rpciod    S 00000000     0     8      1        (L-TLB)      66     7 
+syslogd   S 0FF86418     0    66      1        (NOTLB)      68     8
+klogd     R 0FF7EB04     0    68      1        (NOTLB)      73    66
+inetd     S 0FF86418     0    73      1        (NOTLB)      74    68
+bash      S 0FEC35AC   192    74      1    93  (NOTLB)      90    73
+jffs2_gcd_mtd4  S 00000000     0    90      1        (L-TLB)            74
+umount    D 0FF8CA54     0    93     74        (NOTLB)                    
 
-Thus the mapping can decide whether to use Redhat's, Compaq's, Arm's
-or my parser, it can use no parser and leave the device unpartitioned
-or it can use a wrapper that tries every parser and uses the first
-that can make some sense from the disk information.
-
-> Sounds like a worthy plan to me.  I'd suggest holding-off on the 
-> "complete rewrite" until after this new functionality has been
-> added, though :)
-
-I'll try to, in general, but might ignore that advice in detail.
-
-Joern
+ Jocke
+> 
+> > Is it safe to power cycle the board during this initial formating? 
+> 
+> Yes. The formatting is done specifically to make sure it's safe to power 
+> cycle at any time.
+> 
+> --
+> dwmw2
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
