@@ -1,22 +1,16 @@
-Received: from mailserv.intranet.gr ([146.124.14.106])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C76mp-0007o7-E2
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2004 02:27:33 -0400
-Received: from mailserv.intranet.gr (localhost [127.0.0.1])
-	by mailserv.intranet.gr (8.13.1/8.13.1) with ESMTP id i8E6Rf1w025600
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Sep 2004 09:27:41 +0300 (EEST)
-Message-ID: <41468E01.10806@intracom.gr>
-Date: Tue, 14 Sep 2004 09:21:53 +0300
-From: Pantelis Antoniou <panto@intracom.gr>
-MIME-Version: 1.0
-To: tharbaugh@lnxi.com
-References: <41457C48.8040100@intracom.gr> <1095096422.5442.4.camel@tubarao>
-In-Reply-To: <1095096422.5442.4.camel@tubarao>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <4146449D.8030305@mvista.com>
+References: <4123FE19.9000109@mvista.com>
+	<1092904045.3777.69.camel@imladris.demon.co.uk>
+	<4146449D.8030305@mvista.com>
+Content-Type: text/plain
+Message-Id: <1095144725.9144.176.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Tue, 14 Sep 2004 07:52:05 +0100
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Support Macronix MX29LV040C
+Subject: Re: mtdblock cache flush at remount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thayne Harbaugh wrote:
-> On Mon, 2004-09-13 at 13:54 +0300, Pantelis Antoniou wrote:
-> 
->>Hello
->>
->>The following patch adds support for the Macronix MX29LV040C to
->>jedec_probe chip driver.
-> 
-> 
-> Thanks.
-> 
-> Applied.
-> 
-> I had to shuffle things with the patch because the device wasn't sorted
-> correctly WRT the other devices in jedec_table[] 8(.
-> 
-> 
-> 
-> 
+On Mon, 2004-09-13 at 18:08 -0700, Todd Poynor wrote:
+> If mtdblock is unique in that it does not necessarily write a block to 
+> stable storage when the block layer issues a write then this is not 
+> likely to gain much interest.  It's possible that the IDE drivers might 
+> want to flush disk hardware buffers in such a situation as well, much 
+> like what occurs at suspend and shutdown, but I haven't looked into that 
+> yet.
 
-The table is sorted? :)
+IDE and SCSI drives definitely _do_ need precisely this.
 
-Regards
-
-Pantelis
+-- 
+dwmw2
