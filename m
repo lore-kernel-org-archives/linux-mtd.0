@@ -1,21 +1,21 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from mailout03.sul.t-online.com ([194.25.134.81])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZnFN-0003Tg-UX
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 08:50:46 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <200307071548.01226.tglx@linutronix.de>
-References: <FCEAKDJJAPHPLJFINDAJAEDGDEAA.Stephan.Linke@epygi.de>
-	 <200307071548.01226.tglx@linutronix.de>
-Message-Id: <1057650656.28965.49.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Tue, 08 Jul 2003 08:50:56 +0100
-Content-Type: text/plain
+	id 19ZnQO-0003gL-65
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 09:02:08 +0100
+Received: from merkur.eurodsn.de (merkur.eurodsn.de [192.168.0.7])
+	ESMTP id h687qGT00515
+	for <linux-mtd@lists.infradead.org>; Tue, 8 Jul 2003 09:52:16 +0200
+From: Juergen Beisert <jbeisert@eurodsn.de>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 8 Jul 2003 10:01:10 +0200
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200307081001.10555.jbeisert@eurodsn.de>
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: Alex Samoutin <samoutin@hotbox.ru>
-cc: Linux-Mtd <linux-mtd@lists.infradead.org>
-cc: Stephan Linke <Stephan.Linke@epygi.de>
-Subject: Re: Fw: corrupt my NAND flash device
+Subject: NAND-Flash ECC data not used
+Reply-To: jbeisert@eurodsn.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-07-07 at 14:48, Thomas Gleixner wrote:
-> I see, I meant the data area. There we don't use partial programming. For the 
-> oob area it works with JFFS2. 
+Hello all,
 
-Not always. I've encountered some Toshiba NAND chips which zero the
-entire data page and the unwritten part of the OOB area if you try a
-partial OOB write. In fact, even if you try a complete OOB write they
-zero the data page.
+I have tried to use a 16MiB NAND flash in my application. It seems to work, 
+but it also seem that the driver is not using the ECC data. I have derived my 
+small driver from the spia.c source and have added the line
 
-Issuing a RESET before the write command fixes this.
+this->eccmode=NAND_ECC_SOFT;
 
--- 
-dwmw2
+before calling nand_scan(). nand_scan() inserts the ECC check routines 
+correctly in the structure. But later, if the jffs2 calls the driver to read 
+data from flash, it calls nand_read_ecc() with parameter oobsel = 0. So the 
+line 
+
+int	eccmode = oobsel ? this->eccmode : NAND_ECC_NONE;
+
+in nand_read_ecc() switches back to NONE ecc mode while reading.
+
+Any ideas what's going wrong?
+
+Juergen Beisert
