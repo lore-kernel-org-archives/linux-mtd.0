@@ -1,19 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from mailout03.sul.t-online.com ([194.25.134.81])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18MUUL-0002Ae-00
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 14:38:57 +0000
-Date: Thu, 12 Dec 2002 16:09:29 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+	id 18MZSo-0002iI-00
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 19:57:42 +0000
+Date: Thu, 12 Dec 2002 21:28:14 +0100
+From: Jochen Schaeuble <psionic@psionic.de>
 To: Tobias Otto-Adamczak <toa@indakom.de>
-Cc: linux-mtd@lists.infradead.org, Geoffroy Stevenne <geof@hellea.com>
-Subject: Re: bbram access problems
-Message-ID: <20021212150929.GC29974@wohnheim.fh-wedel.de>
-References: <20021212134542.GB29974@wohnheim.fh-wedel.de> <Pine.LNX.4.31.0212121456200.22502-100000@www.optixsoft.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: slram and buffer cache
+Message-ID: <20021212202814.GB5027@psionic.de>
+Reply-To: psionic@psionic.de
+References: <Pine.LNX.4.31.0212112004250.12431-100000@www.optixsoft.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.31.0212121456200.22502-100000@www.optixsoft.de>
+In-Reply-To: <Pine.LNX.4.31.0212112004250.12431-100000@www.optixsoft.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,21 +25,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 12 December 2002 15:09:11 +0100, Tobias Otto-Adamczak wrote:
-> [joern's ignorance of braindead pc hardware removed]
+Hi,
+I haven't used mtdblock for a while now so I'm not absolutely sure if
+this is correct. The "cache_size" of the mtdblock driver is initialized
+with the erasesize specified in the slram driver (0x10000 if you haven't
+changed anything). If you want uncached operation you should set this
+value to
+(*curmtd)->mtdinfo->erasesize = 0x0; (slram.c line 180).
+I had no time to check this but from reading the source I think this is
+correct. Please let me know if this works for you. If so it might be a
+good idea to make this size configurable.
+
+Greets,
+  Jochen
+
+On Wed, Dec 11, 2002 at 08:23:02PM +0100, Tobias Otto-Adamczak wrote:
+> Hi,
 > 
-> Other question: does the slram driver map this area in when it is
-> already covered by the kernel ?
-
-To my knowledge, yes. The driver is unaware of linux memory management
-and simply ioremaps physical memory. If the kernel already uses this
-area, you are in trouble.
-But I think to remember that for i386 architecture the first 1MB of
-memory has special treatment. Might be worth a look.
-
-Jörn
-
--- 
-Fantasy is more important than knowlegde. Knowlegde is limited,
-while fantasy embraces the whole world.
--- Albert Einstein
+> I have a custom board with 32MB SDRAM, 16MB Flash and 512K SRAM here. I
+> use the slram driver to access the SRAM (which isn't used otherwise by
+> the kernel). I created an 512K ext2 fs image and copied it to the SRAM
+> using an mtd char dev. I was able to mount this SRAM area as a mtd block
+> device (using mtdblock_ro) and read/write files to the ext2 fs.
+> 
+> My problem is the buffer cache for the block devices. I do not want
+> write operations to the SRAM being delayed. What can I do to avoid that
+> ? I searched for some hours today but to no avail.
+> 
+> [maybe OT for this list]
+> How is this problem solved for "normal" ram disks ?
+> 
+> Regards
+> Tobias
+> 
