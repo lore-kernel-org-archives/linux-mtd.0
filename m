@@ -1,19 +1,20 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from blood.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19jjze-0008UT-Fl
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2003 19:23:38 +0100
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 19jjzE-0005lg-00
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2003 20:23:12 +0200
-To: linux-mtd@lists.infradead.org
-From: David Wuertele <dave-gnus@bfnet.com>
-Date: Mon, 04 Aug 2003 11:10:20 -0700
-Message-ID: <m3oez59tv7.fsf@bfnet.com>
-References: <m3ispeb4cp.fsf@bfnet.com> <200308041040.11475.tglx@linutronix.de>
-Mime-Version: 1.0
-Sender: news <news@main.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: zlib patch doesn't take?
+	id 19jmHq-0000QT-Bu
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2003 21:50:34 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
+Date: Tue, 5 Aug 2003 08:54:30 +1200
+References: <5.2.1.1.0.20030804110326.00c65950@dns.struinfo.it>
+In-Reply-To: <5.2.1.1.0.20030804110326.00c65950@dns.struinfo.it>
+MIME-Version: 1.0
+Message-Id: <20030804205021.A547E4AF4@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+cc: yaffs@toby-churchill.org
+Subject: Re: Can't load yaffs.o (unresolved symbol __get_mtd_device)
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas> zlib.h is obviously not updated.
-Thomas> Can you provide the output of ./patchin.sh ?
+On Monday 04 August 2003 21:18, llandre wrote:
+> Hi all,
+>
+> I'm using recent YAFFS sources downloaded via CVS on Aug, 1st with the
+> kernel linuxppc_devel_2.4.21-pre5.
+> I succesfully built the yaffs module but I can't load it with the insmod
+> command.
+>
+> Here what I get when trying to load:
+>
+> bash-2.05# /sbin/insmod -v yaffs.o
+> Using yaffs.o
+> Symbol version prefix ''
+> yaffs.o: unresolved symbol __get_mtd_device
+> bash-2.05#
+>
+> In the kernel's symbol list (System.map) I see the get_mtd_device symbol.
+> Why does the dynamic linker add two underscores '__'?
+> How to solve the problem?
 
-$ ./patchin.sh -c -j ~/C/perforce/source/deschutes/kernel/metro-X225-M14.0
-Patching /home/dave/C/perforce/source/deschutes/kernel/metro-X225-M14.0
-Include Filesytems: yes
-Zlib-Patch needed: yes
-Method: Copy
-Can we start now ? [y/N]y
+I think you are using an inconsistent version of mtd.
 
-Patching MTD
-drivers/mtd
-drivers/mtd/chips
-drivers/mtd/devices
-drivers/mtd/maps
-drivers/mtd/nand
-include/linux/mtd
-Patching JFFS(2)
-fs/jffs
-fs/jffs2
-include/linux
-Patching ZLIB
-lib/zlib_deflate
-lib/zlib_inflate
-patching file lib/Makefile
-Hunk #1 succeeded at 20 (offset 1 line).
-Patching done
-Please update Documentation/Configure.help from /home/dave/C/perforce/source/deschutes/kernel/mtd/Documentation/Configure.help
-$ 
+The mtd I have here (definitely not the latest!) exports the symbol 
+__get_mtd_device from mtdcore.c
+
+>
+> Thanx in advance and best regards.
+>
+> PS: I posted the message to the YAFFS's ml too, but unfortunately I got no
+> answers :-(
+
+Sorry I have been very ill the last two weeks.
+
+-- CHarles
