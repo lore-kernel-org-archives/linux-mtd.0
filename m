@@ -1,21 +1,29 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8J9P-0005aw-E3
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 09:24:04 -0500
-Date: Mon, 7 Mar 2005 15:24:02 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Gareth Bult <gareth@linux.co.uk>
-Message-ID: <20050307142402.GC9597@wohnheim.fh-wedel.de>
-References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
-	<20050307110413.GD2198@wohnheim.fh-wedel.de>
-	<1110200816.11535.15.camel@squizzey.bult.co.uk>
+	id 1D8KFW-0005yW-EG
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 10:34:27 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1D8K3I-0001qZ-0D
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 16:21:48 +0100
+Received: from 212.130.19.66 ([212.130.19.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2005 16:21:47 +0100
+Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2005 16:21:47 +0100
+To: linux-mtd@lists.infradead.org
+From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+Date: Mon, 07 Mar 2005 16:18:52 +0100
+Message-ID: <d0hr2a$mi1$1@sea.gmane.org>
+References: <d01lkf$v0d$1@sea.gmane.org> <d04hdb$8k1$1@sea.gmane.org>
+	<Pine.LNX.4.58.0503031038120.26599@phoenix.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1110200816.11535.15.camel@squizzey.bult.co.uk>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Re; MTD (2) Block Driver broken
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.58.0503031038120.26599@phoenix.infradead.org>
+Sender: news <news@sea.gmane.org>
+Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 7 March 2005 13:06:56 +0000, Gareth Bult wrote:
-> 
-> Ahh, right, that makes sense.
-> 
-> I re-write a driver so it works properly.
-> 
-> You clean up all the code I've written to the extent that it no longer
-> works. (was it 22 different patches?)
-> 
-> Code gets submitted to kernel (obviously without testing) and ends up in
-> the live tree as broken code.
-> 
-> And it it's "my" fault for not checking and fixing all YOUR changes ?!
-> 
-> Right.
+Hi,
 
-Sure.  You have your reasons to be pissed and I have no problem to
-acknowledge them.  The current driver is broken and a fscking
-embarrassment.  And I am to blame.  No doubt.
+>>The problem arose after creating a directory in my JFFS2 NAND fs, and 
+>>creating some 1000 (small) files in it. After rebooting I removed the 
+>>entire directory, and at the next reboot I got the error.
+> Is it real to look at JFFS2 debugging output?
+After updating the mtd-code from CVS (2005-03-04) this problem is no 
+longer reproducable...
+Is there a better snapshot than CVS HEAD regarding stability?
 
-Yet - you have proven before and continue to prove than you are
-impossible to work with:
-
-> Well, firstly I have in interest in the integrity of the kernel tree -
-> I've been working with it and on it since 1991. Secondly, you inserted
-> my name into your broken code - I do not appreciate this.
-> 
-> What would I like, I would suggest one of;
-> 
-> a.    Fix your changes, TEST, and re-submit to the kernel tree
-> or
-> b.    Remove the new driver from the kernel tree
-> 
-> Either way, I would appreciate it greatly if you would remove my name
-> from your work.
-
-Deal.  Thank you for the original code.  It is a shame, but apparently
-working without you is the only possible solution.
-
-> Incidentally, there's nothing wrong with my memory (yet) and I'm still
-> not interested in working on the mtd driver for exactly the same reasons
-> as previously mentioned.
-
-In that case, I shall consider it a an act of extreme politeness that
-you directed your constructive criticism personally to me.  Very
-efficient on so many levels.
-
-Jörn, trying his best not to flame
-
--- 
-"Error protection by error detection and correction."
--- from a university class
+// Martin
