@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177Wuz-00004x-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 May 2002 08:40:21 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020514061754.D12882756@sitemail.everyone.net> 
-References: <20020514061754.D12882756@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: misc question about MTD 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 14 May 2002 08:40:19 +0100
-Message-ID: <23802.1021362019@redhat.com>
+	id 177WzT-00005R-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 May 2002 08:45:00 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: gleixner@autronix.de, David Woodhouse <dwmw2@infradead.org>,
+	franck.fleter@netbricks.com
+Subject: Re: Boot from NAND flash ???
+Date: Tue, 14 May 2002 19:37:41 +1200
+Cc: linux-mtd@lists.infradead.org
+References: <3CDF6922.9A0A870F@netbricks.com> <20020513101623.DE1A14235@tiger.actrix.co.nz> <200205131118.g4DBImU04255@thomas.tec.autronix.de>
+In-Reply-To: <200205131118.g4DBImU04255@thomas.tec.autronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020514074256.761DD49AA@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,33 +27,8 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
->  I think its just "assume" , If the Chip A and Chip B got QRY on the
-> same location for data ,they will be still regarded as same chip,  and
-> that's the "FIXME" in your code means,isnt it:)
+> There's another important limitation. Who guarantees you, that your
+> "boot-page" does not get bad or is a bad block already. That's the reason,
+> why DOC has 4 blocks with the same code.
 
-Yes.
-
->    I think before mount the flash should be erased automatically ,but
-> when I mount my flash (the mtd0 and mtdblock0 are all ok), I got the
-> following message:
-
-Strange. Is the flash completely erased? It should not be erased 
-automatically -- too many people attempt to mount the wrong flash 
-partition, and if you mount the partition that contains your bootloader you 
-will _not_ thank me for auto-erasing it.
-
-I would strongly recommend you use JFFS2, not JFFS. I haven't looked at JFFS
-code for ages now, and I don't think anyone else is doing so either.
-
-> I analysed all the case ,but I think that's impossible to enter the
-> "else" bracket theoretically  Did I miss something or there is
-> something special for the hardware?
-
-Something special for the hardware. If you power cycle a chip while it's 
-erasing, you may find that some bits become undefined -- sometimes they'll 
-return a '1', other times a '0'. 
-
-
---
-dwmw2
+The first page of NAND is guaranteed to be good.
