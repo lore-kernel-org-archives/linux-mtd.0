@@ -1,62 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 130OGC-0006OB-00
-	for mtd-list@infradead.org; Fri, 09 Jun 2000 13:51:40 +0100
-Received: from roma.axis.se ([193.13.178.2])
+	id 130Ufs-00085S-00
+	for mtd-list@infradead.org; Fri, 09 Jun 2000 20:42:36 +0100
+Received: from [212.49.98.2] (helo=gw.gentex.ru)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 130OGB-0006O5-00
-	for mtd@infradead.org; Fri, 09 Jun 2000 13:51:39 +0100
-Received: from fafner.axis.se (fafner.axis.se [10.0.2.41])
-	by roma.axis.se (8.9.3/8.9.3) with ESMTP id OAA00102
-	for <mtd@infradead.org>; Fri, 9 Jun 2000 14:51:02 +0200 (MEST)
-Received: from localhost (localhost [127.0.0.1])
-	by fafner.axis.se (8.9.3/8.9.3/Debian 8.9.3-21) with SMTP id OAA03463
-	for <mtd@infradead.org>; Fri, 9 Jun 2000 14:51:02 +0200
-Date: Fri, 9 Jun 2000 14:51:02 +0200 (CEST)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
+	id 130Ufr-00085M-00
+	for mtd@infradead.org; Fri, 09 Jun 2000 20:42:35 +0100
+Received: from dkhome.gentex.ru (dkhome.gentex.ru [212.49.99.132])
+	by gw.gentex.ru (8.9.1a/8.9.3) with ESMTP id BAA11703
+	for <mtd@infradead.org>; Sat, 10 Jun 2000 01:42:33 +0600 (ESS)
+Date: Sat, 10 Jun 2000 01:42:30 +0600
+From: Dmitry Kargapolov <dk@gentex.ru>
+Reply-To: Dmitry Kargapolov <dk@gentex.ru>
+Message-ID: <271.000610@gentex.ru>
 To: mtd@infradead.org
-Subject: Re: JFFS - ready for submission into 2.[34]?  (fwd)
-Message-ID: <Pine.LNX.3.96.1000609145026.2350N-100000@fafner.axis.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: DOC2000 lilo-boot question
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-In case you did not get this - there was some mail problems between axis
-and infradead.org.
+Hello.
+Some days ago I tested last (from CVS archive)
+version of MTD. I used kernel 2.3.99 with
+patch mtd-20000131-against-2.3.41.diff.gz + some
+manual fixes + update kernel files from the
+last CVS archive.
+Kernel was successfully compiled, and my DiskOnChip
+was detected during the booting.
+I can read and write DOS partition on my DOC using /dev/nftla1,
+I can create Linux native file system and successfully use it.
 
----------- Forwarded message ----------
-Date: Fri, 9 Jun 2000 14:24:54 +0200 (CEST)
-From: Bjorn Wesen <bjornw@axis.com>
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS - ready for submission into 2.[34]? 
+BUT! When I create Linux FS (type 83) by fdisk /dev/nftla
+command, I LOSE compability with original DOC firmware (doc123.exb),
+and system did not boot from flash.
 
-On Thu, 8 Jun 2000, Jason Gunthorpe wrote:
-> > mkfs.jffs and in the filesystem itself of course. But the on-flash
-> > node-structure of JFFS is so simple that mkfs.jffs is simple enough to
-> > warrant it I think.
-> 
-> Is the on flash structure documented? I need to write a simple read-only
-> driver for bootloaders. (see the boot stuff in MTD CVS, if it is still the
-> things I cooked up..)
+When I use original M-System's driver (/dev/fla)
+with 2.2.14 kernel for create linux FS on DOC,
+I can boot both: 2.2.14 kernel with /dev/fla support
+and 2.3.99 kernel with /dev/nftla support.
 
-It's "documented" in the .h file describing the struct, of course :)
+Can I create DOC boot disk with lilo-mtd
+using /dev/nftla? Or NFTL-MTD is not compatible
+with DOC firmware? (I use doc123.exb)
 
-In essence if you're just going to read say a file, the simplest is to
-write a small function that scans the entire flash looking for the most
-up-to-date version of a specified node. Then you do that scan for each
-path component of the file you need. Once for /, then for bin, then for
-myboot (for example).
+sincerely,
+Dmitry Kargapolov        dk@gentex.ru, ICQ 54000305
 
-Just remember that you do need to scan the entire flash because nodes that
-get replaced are still there, so you need to find the one with the highest
-version count (or whatever it is).
-
-If you write that simple file-finder, do post it back here, it would be
-a useful example tool. 
-
--Bjorn
 
 
 
