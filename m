@@ -1,16 +1,22 @@
-Received: from web52701.mail.yahoo.com ([206.190.39.152])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cp9TF-0000fN-Hk
-	for linux-mtd@lists.infradead.org; Thu, 13 Jan 2005 13:13:26 -0500
-Message-ID: <20050113181258.13116.qmail@web52701.mail.yahoo.com>
-Date: Thu, 13 Jan 2005 10:12:58 -0800 (PST)
-From: Michael <xemc@yahoo.com>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cp9W0-0000sD-U9
+	for linux-mtd@lists.infradead.org; Thu, 13 Jan 2005 13:16:16 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
 To: "David A. Marlin" <dmarlin@redhat.com>
-In-Reply-To: <41E699F9.10704@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <41E6B637.9070202@redhat.com>
+References: <41E699F9.10704@redhat.com>
+	<1105638483.5993.2.camel@lap02.tec.linutronix.de>
+	<41E6B637.9070202@redhat.com>
+Content-Type: text/plain
+Message-Id: <1105640157.5993.11.camel@lap02.tec.linutronix.de>
+Mime-Version: 1.0
+Date: Thu, 13 Jan 2005 19:15:57 +0100
+Content-Transfer-Encoding: 7bit
 Cc: MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: NAND fail testing
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2005-01-13 at 18:56, David A. Marlin wrote:
+> Thomas Gleixner wrote:
 > 
-> Is there a simple way (using existing drivers and utilities) to
-> "wear out" one byte on a NAND type chip by repeatedly rewriting a
-> single byte (single address)?
+> > 
+> > We have blocked the access to short writes. You can do the following:
+> > 
+> > Erase a block from userspace with flash_erase
+> > Write a page of all 0xff except one byte to the first page using
+> > nandwrite
+> > 
+> > Repeat until you get an error
+> 
+> Would this not still 'write' all bytes in the page (even though they are 
+> 0xff and unchanged), causing them to also wear and possibly fail?
 
-As I understand, you can write over an already-written page with
-new values.  Could you continually write the same data to a page,
-except for the byte that you want to wear out?
+Since the write is only from 1 -> 0 the page write command always
+"writes" all bytes regardless of the number of bytes you have supplied
+before. 
 
-I think because of the way NAND works, with a 512 byte buffer that
-goes all at once into NAND that you can't do much other than
-something like this.
-
-Mike
+tglx
