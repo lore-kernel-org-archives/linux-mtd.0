@@ -1,16 +1,24 @@
-Received: from barry.mail.mindspring.net ([207.69.200.25])
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190pCI-00072r-Vp
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 21:51:03 +0100
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 2 Apr 2003 15:51:06 -0500
-Message-ID: <IIEEICKJLNEPBBDJICNGMEHADCAA.chuckmeade@mindspring.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: _DoC_WaitReady timed out -- is this the correct way to handle it?
+	id 190px2-0007JC-5C
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 22:39:20 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+	21 2002)) with SMTP id <0HCQ003EDK4PB4@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 23:38:50 +0200 (MEST)
+Date: Thu, 03 Apr 2003 00:39:18 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <20030402201233.GA17890@wohnheim.fh-wedel.de>
+To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
+ Siddharth Choudhuri <choudhri@cs.tamu.edu>
+Message-id: <200304030039.18812.tglx@linutronix.de>
+MIME-version: 1.0
+References: <Pine.GSO.4.44.0304021225270.18949-100000@unix.cs.tamu.edu>
+ <20030402201233.GA17890@wohnheim.fh-wedel.de>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: quoted-printable
+cc: linux-mtd@lists.infradead.org
+Subject: Re: newbie: struct flchip in flashchip.h...
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-During bootup I get the following messages relating to my
-DiskOnChip device:
+On Wednesday 02 April 2003 22:12, J=F6rn Engel wrote:
+> On Wed, 2 April 2003 12:28:47 -0600, Siddharth Choudhuri wrote:
+> > What are the members of the structure <mtd/flashchip.h>
+> > struct flchip {
+> > ...
+> > =09int word_write_time;
+> > =09int buffer_write_time;
+> > =09int erase_time;
+> > }
+> > used for ?
+>
+> I don't know, but you can figure it out yourself. Try
+> http://lxr.linux.no/
+grep -r word_write_time *
+would help too :)
 
-Using configured DiskOnChip probe address 0xf1000000
-DiskOnChip Millennium found at address 0xF1000000
-Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-DoC_Command (reset) for 1,0 returned true
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-DoC_Command (reset) for 2,0 returned true
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-_DoC_WaitReady timed out.
-DoC_Command (reset) for 3,0 returned true
-1 flash chips found. Total DiskOnChip size: 8 MiB
-mtd: Giving out device 0 to DiskOnChip Millennium
-NFTL driver: nftlcore.c $Revision: 1.85 $, nftlmount.c $Revision: 1.25 $
-NFTL_notify_add for DiskOnChip Millennium
-.......
-
-The problem is that the timeouts associated with the
-"_DoC_WaitReady timed out." messages are greatly increasing the
-bootup time (about 2 additional minutes).  It is running DoC_ScanChips(),
-which is calling DoC_IdentChip(), which is timing out on a reset command,
-very slowly.
-
-One entry in the archives mentioned checking fewer floors, so I 
-reduced the number of floors being checked from 4 to 1.  It now runs
-fast enough, but I would like to know if this is the correct way to
-go about handling this "long timeout" issue, or if there is a cleaner
-approach.
-
-Thanks very much,
-Chuck
+--=20
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
