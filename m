@@ -1,73 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Vkey-0000Z6-00
-	for mtd-list@infradead.org; Thu, 22 Feb 2001 01:35:08 +0000
-Received: from [203.238.93.91] (helo=hades.idis.co.kr ident=mail)
+	id 14VnHH-0001KL-00
+	for mtd-list@infradead.org; Thu, 22 Feb 2001 04:22:51 +0000
+Received: from mail1.danielind.com ([12.19.96.6])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14Vkex-0000YF-00
-	for mtd@infradead.org; Thu, 22 Feb 2001 01:35:07 +0000
-Received: from cwryu by hades.idis.co.kr with local (Exim 3.22 #1 (Debian))
-	id 14Vkbn-00008u-00
-	for <mtd@infradead.org>; Thu, 22 Feb 2001 10:31:51 +0900
-To: mtd@infradead.org
-Subject: kernel/jedec.c bug?
+	id 14VnHF-0001KF-00
+	for mtd@infradead.org; Thu, 22 Feb 2001 04:22:50 +0000
+Message-ID: <30724FF712DFD2119E6200104B2448920119744A@mail1>
+From: Vipin Malik <Vipin.Malik@daniel.com>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Unable to mount compressed root f/s because init_mtd() does not r
+	egister block device!
+Date: Wed, 21 Feb 2001 22:19:05 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=euc-kr
-Content-Transfer-Encoding: 8bit
-From: Changwoo Ryu <cwryu@debian.org>
-Date: 22 Feb 2001 10:31:51 +0900
-Message-ID: <871ysrcxko.fsf@hades.idis.co.kr>
+Content-Type: text/plain
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
+In 2.2.18 patched with the 2.2.18 patch, I'm trying to boot
+a kernel from raw (CFI) flash and decompress an ext2 root
+f/s image (from /dev/mtdblock0) into ramdisk and mount it as root.
 
-I'm using the MachZ (x86 compatible PC-on-a-chip) evaluation system.
-It is equipped with AM29F017 2MB (8bit * 256k) flash, which is
-compatible with AM29F016 except the device ID (0x3D).  But I failed to
-erase a block at flash_earse() function in jedec.c.  Here it is:
+Everything goes fine, (kernel boots etc.) but when the load ramdisk
+code runs, it fails with a -ENODEV when it tries to open
+the root device (to load the compressed root file system, present
+on /dev/mtdblock0- right after the kernel).
 
+It fails because, even though init_mtd() has been already
+called before the rd_load() call in init/main.c, init_mtd()
+does NOT call init_mtdblock() which actually registers the
+mtdblock device.
+This is done much later when the file system is actually installed.
 
-         /* During erase bit 7 is held low and bit 6 toggles, we watch this,
-            should it stop toggling or go high then the erase is completed,
-            or this is not really flash ;> */
-         Last[0] = map->read32(map,(chip->base >> chip->addrshift) + chip->start
- + off);
-         Last[1] = map->read32(map,(chip->base >> chip->addrshift) + chip->start
- + off);
-         Last[2] = map->read32(map,(chip->base >> chip->addrshift) + chip->start
- + off);
-         Count = 3;
-         while (todo_left != 0)
-         {
-            for (J = 0; J != 4; J++)
-            {
-               __u8 Byte1 = (Last[(Count-1)%4] >> (J*8)) & 0xFF;
-               __u8 Byte2 = (Last[(Count-2)%4] >> (J*8)) & 0xFF;
-               __u8 Byte3 = (Last[(Count-3)%4] >> (J*8)) & 0xFF;
-               if (todo[J] == 0)
-                  continue;
-               
-               if ((Byte1 & (1 << 7)) == 0 && Byte1 != Byte2)
-               {
-//                printk("Check %x %x %x\n",(short)J,(short)Byte1,(short)Byte2);
-                  continue;
-               }
-               
-               if (Byte1 == Byte2)
-               {
-                  jedec_flash_failed(Byte3);
-                  return -EIO;
-               }
+Why? Any particular reason or no one tried this before.
 
+Thanks
 
-Last[0], Last[1] and Last[2] for my flash are all "0x084C084C".  It's
-ok, isn't?  Reading 32bit data requires 4 reads (0x08, 0x4C, 0x08,
-0x4C) from the 8bit flash.  So when the erasure is not completed, the
-two 32bit values should be same.
-
--- 
-Changwoo Ryu
+Vipin
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
