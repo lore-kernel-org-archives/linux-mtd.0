@@ -1,15 +1,19 @@
-Received: from localhost.localdomain ([127.0.0.1] helo=localhost)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JFFg-0000pX-Mv
-	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 17:18:40 +0100
-Date: Fri, 23 May 2003 17:18:40 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1053697323.3402.125.camel@passion.cambridge.redhat.com>
-Message-ID: <Pine.LNX.4.44.0305231717230.2461-100000@pentafluge.infradead.org>
+Received: from smtp13.mail.yahoo.co.jp ([211.14.15.236])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19JFtt-0000ZV-M8
+	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 18:00:13 +0100
+Message-ID: <003d01c3214c$ca7fa560$740486da@w0a3t0>
+From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
+To: "David Woodhouse" <dwmw2@infradead.org>
+References: <001101c32078$7de79840$740486da@w0a3t0>
+	<1053626518.21582.460.camel@imladris.demon.co.uk>
+Date: Sat, 24 May 2003 02:00:19 +0900
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: Re: Outage notice
+Content-Type: text/plain;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: vmalloc for zlib workspace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,18 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 May 2003, David Woodhouse wrote:
+----- Original Message ----- 
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Friday, May 23, 2003 3:01 AM
+Subject: Re: vmalloc for zlib workspace
 
-> Due to power maintenance, lists.infradead.org is scheduled to be
-> off-line from 0800-1600 GMT tomorrow (Saturday May 24th).
-> 
-> Hopefully it should be back up again by the evening; there exists a
-> possibility that the power interruption will last longer than that,
-> and/or that I won't get back in to bring it back up.
 
-It turns out that the ADSL router is on a UPS which needs to be shut down 
-tonight and can't be brought back up till Sunday morning. So the outage 
-will in fact be from some time quite soon until about 10:00 GMT on Sunday.
+> Hmm. That's a useful idea. Care to benchmark it an show how _much_ it
+> improves performance in practice? Although I suppose there's no downside
+> to it so we might as well change it.
 
--- 
-dwmw2
+I haven't tested it yet, I will check later...
+I think it could be effective to multitask environment.
+
+Matsunaga
+__________________________________________________
+Do You Yahoo!?
+Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
