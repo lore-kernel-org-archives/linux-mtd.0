@@ -1,44 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from mail1.danielind.com ([12.19.96.6])
+Received: from out5.prserv.net ([165.87.194.243] helo=prserv.net)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11pveT-0005yx-00
-	for mtd@imladris.mvhi.com; Mon, 22 Nov 1999 15:45:14 +0000
-Message-ID: <3839651A.4D22A6F3@danielind.com>
-Date: Mon, 22 Nov 1999 09:45:30 -0600
-From: Vipin Malik <vmalik@danielind.com>
-MIME-Version: 1.0
+	id 11r6qH-000895-00
+	for mtd@imladris.mvhi.com; Thu, 25 Nov 1999 21:54:17 +0000
+From: "Dvir Oren" <dviro@hotpop.com>
 To: MTD <mtd@imladris.mvhi.com>
-Subject: Reliability of FLASH data storage
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Fri, 26 Nov 1999 00:03:10 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: (Fwd) DoC2000 Kernel problems
+Message-Id: <E11r6qH-000895-00@imladris.mvhi.com>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi all, going through the list archive at the web site I did not find
-any discussion on the reliability of data storage during writes to
-FLASH.
 
-By reliability I mean, when data is being stored onto a flash sector,
-what happens when power is suddenly and without warning removed?
+------- Forwarded message follows -------
+From:           	Dvir Oren <dviro@hotpop.com>
+To:             	Majordomo@imladris.mvhi.com
+Subject:        	DoC2000 Kernel problems
+Date sent:      	Sat, 20 Nov 1999 21:35:27 +0200
 
-I am thinking of using Linux in embedded systems for future (and
-current) projects. Reliable storage of data is very important in
-embedded systems. More important than speed of access etc. Of course
-cost is also very important- hence
-the desire to use a flash file system rather than IDE flash disk (which
-has its own reliability problems, as I found).
+I have two questions that I hoped you might be able to help me with:
 
-would love to hear your guys thoughts on this issue. Reading the archive
-I got the impression that others are also using/thinking of using Linux
-in their embedded systems.
+1.  I'm not able to compile the files into the kernel.  For some 
+reason, when I compile the drivers into the kernel, I can't reach 
+/dev/nftla with fdisk, and I can't mount /dev/nftla1.  I applied the 
+patch from this mailing list, and still the same thing.  Anybody got 
+any ideas?
 
-Vipin
-_______________________________________________________________________________
+2.  I'm trying to create a diskless system using DoC2000 flash.  
+My problem is initializing the flash with the root file system, and 
+stuff that I need there, without connecting a disk to it.  I thought 
+about using Etherboot, however it has the same problem that lilo 
+has with M-Systems' firmware, that does not allow it to boot.  
+Anybody has any ideas?
 
-Daniel Industries
-Houston, TX.
-***All comments are my personal opinion and do not reflect the position
-of my company in any way.***
+------- End of forwarded message -------
+---------------
+Dvir Oren
+<dviro@hotpop.com>
+<http://thor.prohosting.com/~dviro>
 
 
 
