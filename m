@@ -1,19 +1,22 @@
-Received: from [213.239.205.147] (helo=debian.tglx.de)
+Received: from e32.co.us.ibm.com ([32.97.110.130])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BwhFc-0006FP-HD
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2004 09:10:14 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Ian Molton <spyro@f2s.com>
-In-Reply-To: <20040816013933.163a101d.spyro@f2s.com>
-References: <20040816013933.163a101d.spyro@f2s.com>
+	id 1BwiF0-0006YB-1m
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2004 10:13:41 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+In-Reply-To: <m31xic6d79.fsf@maxwell.lnxi.com>
+References: <m3vfgsmwfs.fsf@maxwell.lnxi.com>
+	<1089699909.8822.9.camel@imladris.demon.co.uk>
+	<m3658sj5ex.fsf@maxwell.lnxi.com>
+	<1089735455.29112.14.camel@weaponx.rchland.ibm.com>
+	<m31xic6d79.fsf@maxwell.lnxi.com>
 Content-Type: text/plain
-Message-Id: <1092661877.4354.10.camel@lap02.tec.linutronix.de>
+Message-Id: <1092665599.2912.120.camel@weaponx.rchland.ibm.com>
 Mime-Version: 1.0
-Date: Mon, 16 Aug 2004 15:11:17 +0200
+Date: Mon, 16 Aug 2004 09:13:19 -0500
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Support of stupid devices
-Reply-To: tglx@linutronix.de
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [RFC] refactoring MTD cmdset ops, jedec_probe, and cfi_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-08-16 at 02:39, Ian Molton wrote:
-> Hi.
+On Thu, 2004-08-12 at 02:13, Eric W. Biederman wrote:
+> So far I have been busy with other things so I have been taking the slow route
+> to refactoring.  I have just reported the cfi_fixup function from cfi_util
+> and have gotten nearly all of the variation in cfi_cmdset_0001 and cfi_cmdset_0002
+> under control.  
 > 
-> Im porting linux to the toshiba e7xx and 8xx PDAs
-> which contain a nand flash controller.
-> Im not certain, but it appears the controllerhas an
-> odd quirk meaning byte-reads of the data register
-> dont work as the linux mtd code expects.
+> It is probably enough infrastructure so that cfi_cmdset_0001 and 0020 could be
+> merged.
+
+Sorry for the delay.  Maybe I can convince Joern to get them merged. 
+Most of the stuff can probably be done in a fixup function now that they
+take a struct mtd_info *.
+
 > 
-> AFAICT if I read a word (after issuing a chipid command) I get:
+> For the deeper pieces of command set common code moving their helper functions
+> into cfi_util is probably a good place to start.
 > 
-> 0xYYZZ75ec   -- this is good - Samsung, 32MB device.
-> 
-> if I do two byte reads I get 0xec 0xec.
-> 
-> a halfword access gets me 0xYYZZ.
-> a misaligned (by one byte) word access gives me 0xecYYZZ75, 
+> I'm hoping I have accomplished enough I don't need to touch the code again for quite a while but...
 
-Sounds really stupid :)
+We can always hope :).
 
-> but this fails to work for byte accesses. halfword misaligned
-> accesses are just weird.
-> so basically, the only way to read the chipid is to do:
-> a word access to the data reg and then shift the data out
-> or
-> a word access (and mask off the high 3 bytes followed by a
-> misaligned word access and mask off the upper 3 bytes.
-> clearly the former solution is the better one, but this 
-> doesnt fit in the nand driver model very well 
-> (read_byte() et.al.)
-
-You can provide your own read_byte() et. al. functions which do all the
-magic. Look into the other Toshiba nand driver implementations. They do
-the same. I don't have the header files which implement the real access
-but Alice should be a source of help.
-
-> the chip is a TC6393XB (system on chip) and the flash 
-> is a samsung K9F5608UOC YCBO
-
-tglx
-
-
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+josh
