@@ -1,23 +1,18 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [202.101.18.220] (helo=localhost.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QOZN-00029O-Ql
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 10:40:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-In-Reply-To: <3EE8497F.30402@imc-berlin.de>
-References: <3EE752EE.8090902@imc-berlin.de>
-	 <1055347637.2097.240.camel@passion.cambridge.redhat.com>
-	 <3EE84317.1090307@imc-berlin.de>
-	 <1055409538.2097.438.camel@passion.cambridge.redhat.com>
-	 <3EE8497F.30402@imc-berlin.de>
-Message-Id: <1055410866.2097.449.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 12 Jun 2003 10:41:07 +0100
-Content-Type: text/plain
+	id 19QNc3-0001Wn-Ra
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 09:39:16 +0100
+Received: from [192.168.1.30] ([61.151.238.70])
+	by localhost.localdomain (8.12.5/8.12.5) with ESMTP id h5C9sUeo029994
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 17:54:33 +0800
+Date: Thu, 12 Jun 2003 16:40:43 +0800
+From: mingfeng <mingfeng@linpus.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <20030612163736.CFEC.MINGFENG@linpus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-cc: MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Stopping the GC thread?
+Subject: MRAM will kill FLASH ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-06-12 at 10:35, Steven Scholz wrote:
+who know MRAM(Magnetoresistive Random Access Memory) ?
+Will it kill FLASH soon?
 
-> But the impact on system performance done by kupdated is not as 
-> critical as the one that's done by the GC intself, is it?
-
-Assuming your flash supports erase-suspend, no. Certainly it doesn't eat
-lots of CPU time like GC can.
-
-> >>I suppose that a few more sectors will be examened and written... 
-> >>(10ms, 100ms, 1000ms ...???)
-
-> > 'sector'?  Read http://sources.redhat.com/jffs2/jffs2.pdf
-> I meant flash sectors.
-
-Whole erase blocks? God no, we GC one data (or dirent or whatever) node
-at a time, which is never going to be larger than about 4KiB.
-
--- 
-dwmw2
+--
