@@ -1,18 +1,19 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CB1Ho-0006Ry-Su
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2004 21:23:42 -0400
-Received: from [10.0.10.193] (av [127.0.0.1])
-	by av.mvista.com (8.9.3/8.9.3) with ESMTP id SAA26202
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Sep 2004 18:23:35 -0700
-Message-ID: <4154C897.3030008@mvista.com>
-Date: Fri, 24 Sep 2004 18:23:35 -0700
-From: Todd Poynor <tpoynor@mvista.com>
+Received: from moat.murgatroid.com ([69.17.55.116] helo=mail.murgatroid.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CB29k-0006gC-BZ
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2004 22:19:25 -0400
+From: "Christopher Hoover" <ch@murgatroid.com>
+To: "'Todd Poynor'" <tpoynor@mvista.com>,
+	<linux-mtd@lists.infradead.org>
+Date: Fri, 24 Sep 2004 19:18:57 -0700
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Subject: Supporting flash that is locked by default
+In-Reply-To: <4154C897.3030008@mvista.com>
+Message-Id: <20040925021907.D14A2A00043@mail.murgatroid.com>
+Cc: 
+Subject: RE: Supporting flash that is locked by default
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Various flash chips may be locked (at a chip or block level) at power-on 
-(perhaps depending on the board wiring), requiring an unlock before 
-writing to the device.  It doesn't seem unreasonable to require one to 
-run flash_unlock on appropriate partitions before writing to the device, 
-at least in the case of initially mounting filesystems during system 
-startup.  Platforms that power-cycle the device during a suspend/resume 
-make this a little more complicated, since there's not really a standard 
-way to insert the necessary flash_unlock commands into the system resume 
-sequence, especially for a writeable root filesystem.   (For example, 
-the Intel XScale PXA27x uses K3 StrataFlash, which powers up with all 
-blocks locked and power-cycles the chip on suspend.)
+> Various flash chips may be locked (at a chip or block level) 
+> at power-on 
+> (perhaps depending on the board wiring), requiring an unlock before 
+> writing to the device.
 
-This could all be handled inside the kernel, unlocking blocks as written 
-to (if the block has not been explicitly locked).  But keeping track of 
-which blocks are supposed to be unlockable is a messy business, and 
-could fairly be accused of placing intelligence or policy in the kernel 
-that is better left to userspace.  I don't, however, have an easy answer 
-for how to handle the suspend/resume case.  The embedded engineers I've 
-talked to felt this was a hardware detail the kernel should take care of 
-for them, and it might not be that bad of an idea to have the kernel 
-restore the flash to pre-suspend state by keeping track of 
-previously-unlocked blocks.
+I raised this issue several years ago.  There wasn't (to me at least) a
+satisfactory answer.  I carry a private patch forward from release to
+release that performs the unlock operation in the mtd map code.  
 
-So I thought I'd ask whether an architectural direction for linux-mtd 
-has been set in this regard, or whether anybody has an opinion on this. 
-  Thanks for any insight you can add,
+Basically I do this which gets called in the probe:
 
--- 
-Todd Poynor
-MontaVista Software
+static void __init xxxx_unlock_mtd(struct mtd_info *mtd)
+{
+	int i;
+
+	/* argh, no way to get to the slaves that make up the parts of
+	   our device, so instead cruise over all the available
+	   devices */
+	for (i = 0;; i++) {
+		struct mtd_info *info;
+
+		info = get_mtd_device(0, i);
+		if (!info)
+			break;
+
+		if ((info->flags & MTD_WRITEABLE) &&
+		    (info->unlock)) {
+			int ret;
+		
+			printk(KERN_DEBUG "unlocking mtd device %s\n",
+info->name);
+			ret = info->unlock(info, 0, info->size);
+			if (ret)
+				printk(KERN_ERR "failed (%d) to unlock mtd
+device %s\n", ret, info->name);
+		}
+
+		put_mtd_device(info);
+	}
+}               
+
+Somone (either rmk or David -- I don't recall whom) didn't feel the unlock
+belonged in the mapping code and didn't want the patch.   It would be nice
+to come up with a solution that pleased everyone.
+
+-ch
