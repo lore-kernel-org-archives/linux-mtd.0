@@ -1,13 +1,16 @@
 Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18WoaO-0005jv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 02:07:52 +0000
-Message-ID: <3E1E31F9.3020700@redswitch.com>
-Date: Thu, 09 Jan 2003 18:37:45 -0800
+	id 18X3K8-0007OG-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 17:52:04 +0000
+Received: from [192.168.4.57] (account xjin HELO redswitch.com)
+  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 2676521 for linux-mtd@lists.infradead.org; Fri, 10 Jan 2003 10:23:07 -0800
+Message-ID: <3E1F0F47.1080606@redswitch.com>
+Date: Fri, 10 Jan 2003 10:21:59 -0800
 From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,  linuxppc-embedded@lists.linuxppc.org
-Subject: rq_data_dir() in linux/blkdev.h is redundant
+To: linux-mtd@lists.infradead.org
+Subject: set_user_nice() not defined on 2.4.21+
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -23,48 +26,22 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
 
-When compiling linuxppc_2_4_devel (2.4.21-pre3) with the latest 
-MTD/JFFS2 code, I had such error posted in a previous message.
+When compiled JFFS2 with kernel 2.4.21-pre3, the linker complains that 
+the reference to set_user_nice() in function 
+jffs2_garbage_collect_thread() hasn't been defined. I traced the code 
+down to <linux/mtd/compatmac.h> and found that set_user_nice() is not 
+defined if linux verion is equal or greater than 2.4.21. See the code 
+below. Why? Does it mean that 2.4.21+ has already such a function 
+defined somewhere else or that 2.4.21+ doesn't need it? Actually I 
+searched 2.4.21-pre3 code and found no set_user_nice() defined except in 
+<linux/mtd/compatmac.h>. I guess it's possibly a bug.
 
-ppc_8xx-gcc -D__KERNEL__ 
--I/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_
-devel/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 
--fno-strict-aliasing
--fno-common -fomit-frame-pointer 
--I/u/xjin/2_4_devel/Software/Linux/MPC855/linux
-ppc_2_4_devel/arch/ppc -fsigned-char -msoft-float -pipe -ffixed-r2 
--Wno-uninitia
-lized -mmultiple -mstring   -nostdinc -I 
-/opt/eldk2.0/usr/lib/gcc-lib/ppc-linux/
-2.95.4/include -DKBUILD_BASENAME=mtdblock_core  -c -o mtdblock-core.o 
-mtdblock-c
-ore.c
-In file included from 
-/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel
-/include/linux/blk.h:4,
-                  from mtdblock-core.c:18:
-/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel/include/linux/blkdev.
-h:147: parse error before `struct'
-
-After traced down the problem, I found that it was caused by the 
-definition of rq_data_dir() in linux/blkdev.h. The definition is as 
-follows, which seems to be useless.
-
-extern inline int rq_data_dir(struct request *rq)
-{
-	if (rq->cmd == READ)
-		return READ;
-	else if (rq->cmd == WRITE)
-		return WRITE;
-	else {
-		BUG();
-		return -1;
-	}
-}
-
-Actually linux/mtd/compacmatmac.h defines rq_data_dir() as
-   #define rq_data_dir(x) ((x)->cmd)
-if the kernel version is older than 2.5.0.
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,0)   /* Is this right? */
+#define set_user_nice(tsk, n) do { (tsk)->priority = 20-(n); } while(0)
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(2,4,21) && 
+!defined(RED_HAT_LINUX_KERNEL)
+#define set_user_nice(tsk, n) do { (tsk)->nice = n; } while(0)
+#endif
 
 -- 
 Shawn Jin
