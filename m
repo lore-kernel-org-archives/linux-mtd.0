@@ -1,8 +1,8 @@
-Date: Fri, 7 Jan 2005 14:43:29 +0000 (GMT)
+Date: Fri, 7 Jan 2005 14:33:31 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: jasmine@linuxgrrls.org
-In-Reply-To: <Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
-Message-ID: <Pine.LNX.4.58.0501071438530.12887@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.61.0501071425550.28205@hex.linuxgrrls.org>
+Message-ID: <Pine.LNX.4.58.0501071432390.12887@phoenix.infradead.org>
 References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
 	<20041222160942.GC9783@wohnheim.fh-wedel.de>
@@ -17,8 +17,6 @@ References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0501071142460.12054@phoenix.infradead.org>
 	<Pine.LNX.4.58.0501071419550.12054@phoenix.infradead.org>
 	<Pine.LNX.4.61.0501071425550.28205@hex.linuxgrrls.org>
-	<Pine.LNX.4.58.0501071432390.12887@phoenix.infradead.org>
-	<Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: Artem Bityuckiy <dedekind@infradead.org>
@@ -37,27 +35,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Fri, 7 Jan 2005 jasmine@linuxgrrls.org wrote:
 
 > 
+> Hi Artem,
 > 
 > On Fri, 7 Jan 2005, Artem B. Bityuckiy wrote:
 > 
-> > Hmm, why is this better? (I suppose you mean cache line size)
+> > #cat /proc/cpuinfo
+> > Processor       : ARM926EJ-Sid(wb) rev 3 (v5l)
 > 
-> Because ARM926 has a compulsory cache penalty cycle on every line
-> traversal.  (This is why ARM926 is about 8% slower than ARM925 at
-> the same clock frequency.)  There is also a penalty on every eighth
-> page mapped in, because there are only eight microTLB entries and
-> there are wait states on the main TLB.
-> 
-> > But bake them word-aligned is good.
-> 
-> Not word-aligned, cacheline-aligned.
+> This is an OMAP1623 or similar.  Make sure your tight loops are 
+> 32-byte-aligned.
 > 
 > -J.
-> 
-But the reason why I include that loops is dictated by our discussions 
-about backward/forward CRC calculations and CPU cache benefits. CRC's are 
-calculated reading bytes. So I don't think we should take into account 
-cache line size in our particular case.
+>
+Hmm, why is this better? (I suppose you mean cache line size)
+But bake them word-aligned is good. Thanks. 
 
 --
 Best Regards,
