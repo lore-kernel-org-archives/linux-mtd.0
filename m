@@ -1,21 +1,16 @@
-Received: from ext-ch1gw-3.online-age.net ([216.34.191.37])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Anh9m-0001NZ-H1
-	for linux-mtd@lists.infradead.org; Mon, 02 Feb 2004 16:42:42 +0000
-Received: from int-ch1gw-3.online-age.net (int-ch1gw-3 [3.159.232.67])
-	id i12GgHxC011741	for <linux-mtd@lists.infradead.org>;
-	Mon, 2 Feb 2004 11:42:17 -0500 (EST)
-Received: from uswaumsxb4medge.med.ge.com (localhost [127.0.0.1])
-	id i12GgGnU026973	for <linux-mtd@lists.infradead.org>;
-	Mon, 2 Feb 2004 11:42:16 -0500 (EST)
-Message-ID: <77FE4A1FA59FF947845A42194AD667620A0FC0@uswaumsx07medge.med.ge.com>
-From: "Howard, Michael (MED)" <Michael.Howard@med.ge.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Mon, 2 Feb 2004 10:42:08 -0600 
+Received: from web20405.mail.yahoo.com ([66.163.169.93])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AnhpG-0001Yz-Qo
+	for linux-mtd@lists.infradead.org; Mon, 02 Feb 2004 17:25:35 +0000
+Message-ID: <20040202172532.63778.qmail@web20405.mail.yahoo.com>
+Date: Mon, 2 Feb 2004 09:25:32 -0800 (PST)
+From: Roy Lauer <rlaor@yahoo.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1075728808.786.28.camel@hades.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Compressed Partitions in JFFS2
+Content-Type: text/plain; charset=us-ascii
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Problems with DOC Millenium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,10 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-Does anyone know if it is possible to organize 2 JFFS2 partitions on
-NAND flash having one compressed and the other not?
+> 
+> The DiskOnChip Millennium Plus uses INFTL not NFTL.
+> You should be very
+> careful using the current INFTL code -- it does not
+> observe the Bad
+> Block Table.
+ 
+OK, I switched to INFTL and now I get the following:
 
-Thanks
-Mike
+INFTL: inftlcore.c $Revision: 1.14 $, inftlmount.c
+$Revision: 1.12 $
+Using configured DiskOnChip probe address 0xf0400000
+DiskOnChip Millennium Plus found at address 0xF0400000
+Flash chip found: Manufacturer ID: 98, Chip ID: 75
+(Toshiba:NAND 32MiB 3,3V)
+Flash chip found: Manufacturer ID: 98, Chip ID: 75
+(Toshiba:NAND 32MiB 3,3V)
+2 flash chips found. Total DiskOnChip size: 64 MiB
+INFTL: corrupt block 1024 in chain 1024, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1024
+INFTL: formatting block 1024
+MTD: Error 0xffffffa5 erasing at 0x2000000
+INFTL: error while formatting block 1024
+INFTL: corrupt block 1025 in chain 1025, chain length
+0, erase mark 0xbf?
+INFTL: formatting chain at block 1025
+INFTL: formatting block 1025
+MTD: Error 0xffffffa5 erasing at 0x2008000
+INFTL: error while formatting block 1025
+
+
+What does it mean?
+
+Roy
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free web site building tool. Try it!
+http://webhosting.yahoo.com/ps/sb/
