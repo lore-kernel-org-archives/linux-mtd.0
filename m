@@ -1,19 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.193])
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ca0WI-0003W4-23
-	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2004 18:37:55 -0500
-Received: by wproxy.gmail.com with SMTP id 37so1307025wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Dec 2004 15:37:52 -0800 (PST)
-Message-ID: <4de512b704120215377738f4ed@mail.gmail.com>
-Date: Thu, 2 Dec 2004 16:37:52 -0700
-From: Vernon Fuller <vernonfuller@gmail.com>
-To: linux-mtd@lists.infradead.org
+	id 1Ca1aV-0003mS-JC
+	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2004 19:46:21 -0500
+Date: Fri, 3 Dec 2004 00:46:01 +0000
+From: Ben Dooks <ben@fluff.org.uk>
+To: "K.F.J. Martens" <gmc@metro.cx>
+Message-ID: <20041203004601.GA29522@home.fluff.org>
+References: <20041202225607.GH3233@metro.cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: mkfs.jffs2 missing magic?
-Reply-To: Vernon Fuller <vernonfuller@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20041202225607.GH3233@metro.cx>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Horrible Bug? AMD29LV400BB with mtd in 2.6.10rc2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I compiled the latest mkfs.jffs2 and run it as 
-mkfs.jffs2 -l -e 128KiB  -d /opt/src/romfs -o /opt/src/images/root.jffs
-and load the image at 0x000240000 on my intel 28F640 J3 A (8Meg strata flash) 
+On Thu, Dec 02, 2004 at 11:56:07PM +0100, K.F.J. Martens wrote:
+> Hi All,
+> 
+> I'm currently developing a flash file system for the TomTom GO, a car
+> navigation system that employs an ARM processor.
+> 
+> In it is an EON29LV400BB flash chip, which is entirely compatible with
+> AMD's AM29LV400BB.
+> 
+> Now, what I did was copy the AM29LV400BB definition in
+> mtd/chips/jedec_probe.c to a new definition in the struct amd_flash_info
+> array jedec_table like so:
+> 
+> 
+>         },{
+>                 .mfr_id         = MANUFACTURER_EON, 
+>                 .dev_id         = EON29LV400BB,
+>                 .name           = "EON AM29LV400BB",
+>                 .uaddr          = {
+>                         [0] = MTD_UADDR_0x0AAA_0x0555,  /* x8 */
+>                         [1] = MTD_UADDR_0x0555_0x02AA,  /* x16 */
+>                 },
+>                 .DevSize        = SIZE_512KiB,
+>                 .CmdSet         = P_ID_AMD_STD,
+>                 .NumEraseRegions= 4,
+>                 .regions        = {
+>                         ERASEINFO(0x04000,1),
+>                         ERASEINFO(0x02000,2),
+>                         ERASEINFO(0x08000,1),
+>                         ERASEINFO(0x10000,7),
+>                 }
+>         }, {
+> 
+> 
+> 
+> Now, here comes. This does not work, and the reason is that the x8 and
+> x16 addresses are swapped. It's a bit late now to hook up one of those
+> devices and paste the exact error message, but it was something along
+> the line of 'MTD jedec_match(): 0x0555 0x0aaa did not match'
+> 
+> If I reverse them like so:
+> 
+> 
+>                         [0] = MTD_UADDR_0x0555_0x02AA,  /* x8 */
+>                         [1] = MTD_UADDR_0x0AAA_0x0555,  /* x16 */
+> 
 
-the image I make has lots of Magic bitmasks in it, just not at the offsets 
-jffs2_scan_eraseblock is looking for. 
-image at 0x240000:
-85 19 03 20 0C 00 00 00 B1 B0 1E E4 85 19 01 E0 
-2B 00 00 00 E6 6E 26 7D 01 00 00 00 00 00 00 00 
-02 00 00 00 2A 98 AF 41 03 04 00 00 EC 36 A8 A5 
-FF 83 66 55 62 69 6E FF 85 19 02 E0 44 00 00 00 
-1D FB F7 98 02 00 00 00 01 00 00 00 FD 41 00 00 
-F5 01 F5 01 00 00 00 00 2A 98 AF 41 2A 98 AF 41 
-2A 98 AF 41 00 00 00 00 00 00 00 00 00 00 00 00 
-00 00 00 00 00 00 00 00 AE A9 C8 14 85 19 01 E0 
-2B 00 00 00 E6 6E 26 7D 01 00 00 00 01 00 00 00 
-03 00 00 00 25 98 AF 41 03 04 00 00 BE F9 45 49 
-17 28 32 EE 64 65 76 FF 85 19 02 E0 44 00 00 00 
+There has been some fixing in the jedec and similar probe code
+to fix the use of the fields of device width / overlap due to
+incorrect addressing being used for the chip commands. 
 
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00240020:
-0x0002 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00240024:
-0x2818 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0024002c:
-0x4b3c instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00240030:
-0x7001 instead
-
-Which is right, mkfs.jffs2 or linux?  or do I not know how to use mkfs.jffs2?
+  'a smiley only costs 4 bytes'
