@@ -1,18 +1,18 @@
-Received: from carrot.linuxgrrls.org ([212.18.228.66] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157daB-0006CB-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 14:42:47 +0100
-Date: Wed, 6 Jun 2001 14:42:57 +0100 (BST)
-From: kira brown <kira@linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Frederic Giasson <fgiasson@mediatrix.com>,
-	Abraham vd Merwe <abraham@2d3d.co.za>,
-	MTD for Linux <linux-mtd@lists.infradead.org>
+	id 157dbF-0006CQ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 14:43:53 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D99548D@mail.mediatrix.com> 
+References: <F1BED55F35F4D3118C0F00E0295CFF4D99548D@mail.mediatrix.com> 
+To: Frederic Giasson <fgiasson@mediatrix.com>
+Cc: Abraham vd Merwe <abraham@2d3d.co.za>,
+    MTD for Linux <linux-mtd@lists.infradead.org>
 Subject: Re: mtd_info->write 
-In-Reply-To: <15619.991834880@redhat.com>
-Message-ID: <Pine.LNX.4.30.0106061442350.22563-100000@carrot.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 06 Jun 2001 14:44:35 +0100
+Message-ID: <16300.991835075@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+fgiasson@mediatrix.com said:
+> There is validation, in do_write_oneword ( cfi_cmdset_0002.c ), there
+> is pooling to see if data has changed. 
 
-On Wed, 6 Jun 2001, David Woodhouse wrote:
+Then it's probably b0rken. It should do the appropriate mask before
+comparing.
 
-> If you write to a region which already contains data, then read back and
-> compare with the data you wrote, you're likely to see differences.
-
-And if you don't see differences, then what's the problem?
-
-kira.
+--
+dwmw2
