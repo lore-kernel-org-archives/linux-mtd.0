@@ -1,20 +1,22 @@
-From: vdoukhan@cbnco.com (Vladimir Doukhanine)
-Date: Wed, 05 Feb 2003 09:37:04 -0500
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 05 Feb 2003 14:43:17 +0000
 Subject: Is JFFS2 position independent or not?
-Message-ID: <oprj4lj2kp7bj7b7@cbnsitar.cbnco.com>
+In-Reply-To: <oprj4lj2kp7bj7b7@cbnsitar.cbnco.com>
+References: <oprj4lj2kp7bj7b7@cbnsitar.cbnco.com>
+Message-ID: <1044456197.2222.51.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi,
-??
-I???m just wandering if JFFS2 file system is position independent or not?
-??
-For instance let's say:
-1) I want to copy /dev/mtd2 with a root JFFS2 to /dev/mtd1 then Boot Linux 
-from root on /dev/mtd1,
-2) I want to copy JFFS2 image from /dev/mtd2 (flash chip physically located 
-from ADDR1) to /dev/mtd2 (flash chip type the same, all /dev/mtd* have the 
-same size but chip physically located from ADDR2).
-??
-Thanks,
-Vlad
+On Wed, 2003-02-05 at 14:37, Vladimir Doukhanine wrote:
+> Hi,
+> =20
+> I=E2=80=99m just wandering if JFFS2 file system is position independent o=
+r not?
+
+Yes, it is. You can copy images from one device to another without
+problems. What you can _not_ do, however, is move an image from one
+device to a device with a _smaller_ eraseblock size. Other than that,
+you should be fine.
+
+--=20
+dwmw2
