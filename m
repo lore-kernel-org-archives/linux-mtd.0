@@ -1,16 +1,18 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16c28F-0006pa-00
-	for <linux-mtd@lists.infradead.org>; Sat, 16 Feb 2002 10:31:51 +0000
-Date: Sat, 16 Feb 2002 11:43:03 +0100 (MET)
-From: Robert Kaiser <rob@sysgo.de>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-mtd@lists.infradead.org, J?rn Engel <joern@wohnheim.fh-wedel.de>
+	id 16c296-0006pp-00
+	for <linux-mtd@lists.infradead.org>; Sat, 16 Feb 2002 10:32:44 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.21.0202161133340.17237-100000@dagobert.svc.sysgo.de> 
+References: <Pine.LNX.4.21.0202161133340.17237-100000@dagobert.svc.sysgo.de> 
+To: Robert Kaiser <rob@sysgo.de>
+Cc: linux-mtd@lists.infradead.org,
+    J?rn Engel <joern@wohnheim.fh-wedel.de>
 Subject: Re: MTD concat layer 
-In-Reply-To: <30752.1013796129@redhat.com>
-Message-ID: <Pine.LNX.4.21.0202161133340.17237-100000@dagobert.svc.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 16 Feb 2002 10:43:57 +0000
+Message-ID: <24247.1013856237@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,24 +24,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+rob@sysgo.de said:
+> OK, just to be clear about this: If my erase function is asked to
+> erase -say-  1.5 blocks, what should it do: 
 
-On Fri, 15 Feb 2002, David Woodhouse wrote:
+-EINVAL.
 
-> Partial blocks is impossible, so not supported. Multiple blocks is 
-> permitted.
-
-OK, just to be clear about this: If my erase function is asked
-to erase -say-  1.5 blocks, what should it do:
-
-- erase one block and silently ignore the .5 part ?
-- erase one block and return an error ?
-- erase two blocks ?
-- do nothing and return an error ?
-
-Rob
-
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+--
+dwmw2
