@@ -1,57 +1,52 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13vrcG-0000Qv-00
-	for mtd-list@infradead.org; Wed, 15 Nov 2000 01:44:00 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13vrcF-0000Qp-00
-	for mtd@infradead.org; Wed, 15 Nov 2000 01:43:59 +0000
-Date: Wed, 15 Nov 2000 01:43:48 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-cc: Erwin Authried <eauth@softsys.co.at>,
-    "'mtd@infradead.org'" <mtd@infradead.org>
+	id 13w0TQ-0001Si-00
+	for mtd-list@infradead.org; Wed, 15 Nov 2000 11:11:28 +0000
+Received: from www.softsys.co.at
+	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13w0TM-0001Sb-00
+	for mtd@infradead.org; Wed, 15 Nov 2000 11:11:25 +0000
+Message-ID: <01C04EFC.A4EA0860@smithwicks.softsys.co.at>
+From: Erwin Authried <eauth@softsys.co.at>
+To: David Woodhouse <dwmw2@infradead.org>, 'Alice Hennessy'
+	 <ahennessy@mvista.com>
+Cc: "'mtd@infradead.org'" <mtd@infradead.org>
 Subject: Re: JEDEC support broken?
-In-Reply-To: <3A11E285.1FF18FF7@mvista.com>
-Message-ID: <Pine.LNX.4.30.0011150138350.1030-100000@imladris.demon.co.uk>
+Date: Wed, 15 Nov 2000 12:07:35 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, 14 Nov 2000, Alice Hennessy wrote:
+Alice Hennessy[SMTP:ahennessy@mvista.com] wrote:
+> I have a board that needs support for both cfi and jedec flashes.   So,
+> the approach
+> I have taken is to use physmap.c with an array of "physmap_info" structures
+> that describe the window
+> address, window size, buswidth and number of partitions for each flash.  I
+> also use a double array of
+> mtd_partition structures to divide each flash into partitions (making use
+> of mtdpart.c).   This allows multiple
+> flashes to be described in one mapping file so the file is really a
+> description of a particular board.  There is
+> a probe for a cfi flash  and if that fails, then a probe for a jedec
+> flash.    This eliminates the use of
+> CONFIG_MTD_PHYSMAP_START  (and len and buswidth).   Is this in keeping with
+> the intent
+> of the map file?
+> 
+> Alice
+> 
+I'd like to spin your idea a little bit further: Instead of having a description of a particular
+board, I'd prefer to have one "generic" linear mapping file that is able to probe for 
+flash in an adress range that is specified during configuration (starting adress and
+length or end of the adress range, and possibly the adress increments for probing, e.g. 1MB).
+This way, you would be able to support virtually all boards that carry linear, non-banked flash
+without needing a specialized file for every board. That would be especially useful for uClinux ...
 
-> Do you mean to use map->size instead of bank_size (to spread the
-> individual start offsets over if there are gaps between chips)
-
-Nope, discard the concept of bank_size altogether. Each chip needs its own
-information structure, much like the 'struct flchip' in
-include/mtd/flashchip.h, which contains the start offset of the chip in
-the map.
-
-It's reasonable to assume that all chips in the array will be the same
-size. You have an array of struct flchip (or your equivalent if you don't
-want to use struct flchip) and you index into that by dividing by the
-individual chip size - and then just address the chip you've selected by
-using the start offset listed for it.
-
-> Also,  is spin_lock support going to be added in jedec.c?
-
-It certainly _needs_ doing. Feel free :)
-
-> I have a board that needs support for both cfi and jedec flashes.
-> So, the approach I have taken is to use physmap.c with an array of
-> "physmap_info" structures that describe the window address, window
-> size, buswidth and number of partitions for each flash.
- < ... deletia ... >
-
-> Is this in keeping with the intent of the map file?
-
-Sounds like it. Show us the code though.
-
--- 
-dwmw2
-
+-erwin
 
 
 
