@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178dYT-0005FA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 09:57:41 +0100
+	id 178dbL-0005Fx-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 10:00:39 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020517084644.525B52756@sitemail.everyone.net> 
-References: <20020517084644.525B52756@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: Quesion on copying to mtdblock0 
+In-Reply-To: <20020517.011732.74751668.takasi-y@ops.dti.ne.jp> 
+References: <20020517.011732.74751668.takasi-y@ops.dti.ne.jp> 
+To: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: can't erase "sharp". 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 May 2002 09:57:40 +0100
-Message-ID: <14935.1021625860@redhat.com>
+Date: Fri, 17 May 2002 10:00:30 +0100
+Message-ID: <15336.1021626030@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
-> Maybe I just use the wrong version of mkfs.jffs2
-> what I am using is "mkfs.jffs2 revision 1.8"
+takasi-y@ops.dti.ne.jp said:
+> I'm using drivers/mtd/chip/sharp.c (I know it's "obsolete", though).
+> And, found "eraseall" command doesn't work upon it. The operation
+> stops at 0%, and the command never exit.
 
-Cross-endian support was added in revision 1.9, over a year ago. The 
-current version in 1.25.
+> I added few lines(see the patch below), and it works, perhaps... I'm
+> not sure if it is correct (especially when signals received).
 
-> And... is there any difference in mkfs.jffs2 between different
-> architecture? I mean, is the mkfs.jffs2 for M68K different from
-> mkfs.jffs2 for ARM? 
+> Could someone tell me the right answer, please?
 
-Nope, the only real difference will be the endianness.
+The second part of your patch was the correct one -- setting instr->state 
+to MTD_ERASE_DONE on completion. When the erase fails immediately, it's not 
+required to set instr->state to MTD_ERASE_FAILED. That's only necessary if 
+the chip driver does asynchronous operation, and returns from the erase 
+function before the operation has completed.
 
 --
 dwmw2
