@@ -1,14 +1,18 @@
-Received: from smtp-out7.blueyonder.co.uk ([195.188.213.10])
+Received: from [2002:d556:63ea::1] (helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AObrf-0004ip-RV
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2003 12:00:19 +0000
-Message-ID: <001301c3b34b$f15d0470$6401a8c0@f87htyy9967774jjyuww2>
+	id 1AOjWu-0005hE-Tb
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2003 20:11:24 +0000
+Received: from smtp-out7.blueyonder.co.uk ([195.188.213.10])
+	by phoenix.infradead.org with esmtp (Exim 4.22)
+	id 1AOjV6-0006ev-H7
+	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2003 20:09:32 +0000
+Message-ID: <000001c3b38f$b3118170$6401a8c0@f87htyy9967774jjyuww2>
 From: "stephen" <lcbr17306@blueyonder.co.uk>
 To: "lanas" <lanas@t-online.de>
 References: 
 	<20031124213552.5357c92a.lanas@t-online.de><20031125003817.GA1762@ei.homeip.net><Pine.LNX.4.53.0311250040510.2903@pink.linuxgrrls.org>
 	<20031125053911.6526ba39.lanas@t-online.de>
-Date: Tue, 25 Nov 2003 12:02:04 -0000
+Date: Tue, 25 Nov 2003 19:27:20 -0000
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -26,27 +30,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-I know how to boot the DOC using the default native dos partition, last year
-i used 'loadln.exe' only because I had to utilize already existing DOC,
-which was 8 MB, so i used initrd to mount my root filesystem which ran in
-memory, no problem with powering down problems, I also found after compiling
-the kernel with DOC support i could write to the DOC after mounting as a DOS
-partition, David helped me on this (many thanks), another reason for doing
-it this way is that the AMPRO board i was using uses the DOC to store the
-bios from eeprom, so I had to work my way around it,
+just managed to do it IM SO HAPPY! :E
 
-it is definitely possible to boot from the DOC, i wouldnt reccomened ext2
-though only because its not Journaling like ext3, ext2 will force fcsk which
-can damage the DOC, which is what I am trying to do at the moment, as soon
-as I've sussed it i'll let you know what i did, im using a 32MB diskonchip
-at the moment,
+karim yaghmours book, 'building embedded linux systems' if you follow it
+exactly will show you how,
 
-maybe its a trade secret or summut? or it is not a worthy question for the
-almighty forum! :D
+problem i was doing was replacing the SPL with stage2/pre_load2 converted to
+grub_firmware by code in grub dir located in mtd cvs, patch not patching
+correctly, also i'm using redhat 9, ive got no mkfs.minix (annoying) plus a
+problem with 'automake' in regards to grub there is a patch that cures the
+errors '-p1' which you can find here:
+
+http://mail.gnu.org/archive/html/bug-grub/2003-01/msg00056.html
+
+is it true redhat is now over , time for some slackware!
 
 kind regards
 
-stephen
+stephen (happy as larry)
+
 ----- Original Message -----
 From: "lanas" <lanas@t-online.de>
 To: "Jasmine Strong" <jasmine@regolith.co.uk>
