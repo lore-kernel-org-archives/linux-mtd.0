@@ -1,16 +1,20 @@
-Received: from mtiwmhc12.worldnet.att.net ([204.127.131.116])
+Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19EJIc-00060Q-Bt
-	for <linux-mtd@lists.infradead.org>; Sat, 10 May 2003 02:37:18 +0100
-From: "Gregg C Levine" <hansolofalcon@worldnet.att.net>
-To: <linux-mtd@lists.infradead.org>
-Date: Sat, 10 May 2003 21:36:25 -0400
-Message-ID: <000001c3175d$c11852e0$0100a8c0@who5>
+	id 19EJmr-0006BF-QS
+	for <linux-mtd@lists.infradead.org>; Sat, 10 May 2003 03:08:34 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "Gregg C Levine" <hansolofalcon@worldnet.att.net>,
+	<linux-mtd@lists.infradead.org>
+Date: Sat, 10 May 2003 14:10:23 +1200
+References: <000001c3175d$c11852e0$0100a8c0@who5>
+In-Reply-To: <000001c3175d$c11852e0$0100a8c0@who5>
 MIME-Version: 1.0
+Message-Id: <20030510020844.D16A945B5@blood.actrix.co.nz>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: USB attached CF device readers
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: USB attached CF device readers
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello from Gregg C Levine
-David, please don't flame me on this, but I feel this is the perfect
-location/list to ask this question.
-How do the MTD device drivers treat a CF card that's accessible via
-the USB port, and its associated reader? Just thought I'd ask. I'm not
-even sure how Linux will react to the reader. Or the card even. I can
-supply details about them, but on a private basis.
--------------------
-Gregg C Levine hansolofalcon@worldnet.att.net
-------------------------------------------------------------
-"The Force will be with you...Always." Obi-Wan Kenobi
-"Use the Force, Luke."=A0 Obi-Wan Kenobi
-(This company dedicates this E-Mail to General Obi-Wan Kenobi )
-(This company dedicates this E-Mail to Master Yoda )
+
+
+> How do the MTD device drivers treat a CF card that's accessible via
+> the USB port, and its associated reader? Just thought I'd ask. I'm not
+> even sure how Linux will react to the reader. Or the card even. I can
+> supply details about them, but on a private basis.
+
+Firstly, and most importantly, CF - through a USB or any other interface - is 
+not mtd capable, so mtd does not treat it in any way.
+
+I have a Sandisk USB CF reader. Works great (ie. way better than with 
+Windows). It uses the Mass Storage class driver. It needs SCSI/IDE configured 
+and a few other things and appears as /dev/sda1.  There are various howtos on 
+the www. 
