@@ -1,14 +1,25 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Nicolas Pouillon <nipo@ssji.net>
-In-Reply-To: <20041001154617.163cc484.nipo@ssji.net>
-References: <20041001154617.163cc484.nipo@ssji.net>
-Content-Type: text/plain
-Message-Id: <1096639064.30942.477.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 01 Oct 2004 14:57:45 +0100
+Received: from mpeisrv.mpei.ac.ru ([193.233.69.251])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CDOtf-0003yj-85
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2004 11:00:37 -0400
+Received: from avanto.mpei.ac.ru (avanto.mpei.ac.ru [193.233.71.179])
+	by mpeisrv.mpei.ac.ru (8.12.10/8.12.11) with ESMTP id i91Evtsq017130
+	for <linux-mtd@lists.infradead.org>; Fri, 1 Oct 2004 18:59:06 +0400
+Received: from skorinkod.lan ([10.255.2.21])
+	by avanto.mpei.ac.ru with esmtp (Exim 3.36 #1 (Debian))
+	id 1CDOrF-00013W-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Oct 2004 18:58:05 +0400
+From: Dmitry <skorinkod@mosk.ru>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 1 Oct 2004 18:58:28 +0400
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Issues with a Doc Milplus
+Message-Id: <200410011858.28776.skorinkod@mosk.ru>
+Subject: Problems with DiskOnChip 2000
+Reply-To: skorinkod@mail.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +29,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-10-01 at 15:46 +0200, Nicolas Pouillon wrote:
-> 1/ Doc is mapped to mem address 0x0, in docprobe.c there is an
-> expression like: 
-> if (doc_config_location) {
-> 	[probe at specified address]
-> } else {
-> 	[probe hardlisted addresses]
-> }
-> 
-> So it never probes for my chip at 0. I noticed the same construct is
-> present in newer probing routines.
-> Is there a special way of declaring a chip at 0x0 ?
+Hi, all
 
-Hmmm. We should probably use -1 for 'unconfigured' instead of zero. Want
-to provide a patch accordingly?
+I have pc104 system ICOP-6070 with DiskOnChip 2000 on it..
+Here is task to install linux OS on this system..
+With Knoppix 3.6 CD I start linux and try load drivers for this flash disk for 
+next step with installation on it, but modules don't see chip on board...
 
-> 2/ It was not known by nan_ids, I had to add the following line:
-> {"NAND 64MiB 3,3V", 0xa5, 26, 0x4000, 0},
+kernel 2.6.8:
+#insmod mtdcore
+#insmod nand_ids
+#insmod docecc
+#insmod doc2000
+#insmod docprobe
+and i have:
+Resource temporarily unavailable
 
-Are you sure that's a 64MiB chip?
+kernel 2.4.27:
+#insmod mtdcore
+#insmod nand_ids
+#insmod docecc
+#insmod doc2000
+#insmod docprobe
+Possible DiskOnChip with unknown ChipID FF found at 0xc8000
+Possible DiskOnChip with unknown ChipID FF found at 0xca000
+Possible DiskOnChip with unknown ChipID FF found at 0xcc000
+Possible DiskOnChip with unknown ChipID FF found at 0xce000
+Possible DiskOnChip with unknown ChipID FF found at 0xd0000
+Possible DiskOnChip with unknown ChipID FF found at 0xd2000
+Possible DiskOnChip with unknown ChipID FF found at 0xd4000
+Possible DiskOnChip with unknown ChipID FF found at 0xd6000
+Possible DiskOnChip with unknown ChipID FF found at 0xd8000
+Possible DiskOnChip with unknown ChipID FF found at 0xda000
+Possible DiskOnChip with unknown ChipID FF found at 0xdc000
+Possible DiskOnChip with unknown ChipID FF found at 0xde000
+DiskOnChip Millennium found at address 0xE0000
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+No flash chips recognised.
+DiskOnChip Millennium found at address 0xE2000
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+No flash chips recognised.
+DiskOnChip Millennium found at address 0xE4000
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+No flash chips recognised.
+DiskOnChip Millennium found at address 0xE6000
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 01 01
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 81 81
+Please report to dwmw2@infradead.org
+No flash chips recognised.
+Possible DiskOnChip with unknown ChipID 36 found at 0xe8000
+Possible DiskOnChip with unknown ChipID C6 found at 0xea000
+Possible DiskOnChip with unknown ChipID F6 found at 0xec000
+Possible DiskOnChip with unknown ChipID C1 found at 0xee000
 
-> 3/ It seems to be detected twice, it should be 64MiB total, and there is
-> physically one chip on the board.
-> Could one chip be virtually two 32MiB chips ?
 
-I think that might actually be the case for the 64MiB DiskOnChip M+,
-yes.
+Help, please...
 
-> 4/ Using arm part in doc2000.h which is:
-> #define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u32
-> *)(((unsigned long)adr)+((reg)<<2)))) 
-> #define WriteDOC_(d, adr, reg) do{ *(volatile __u32 *)(((unsigned
-> #long)adr)+((reg)<<2)) = (__u32)d; wmb();} while(0)
-> 
-> makes the machine crash, I have to use readb/writeb in order to make the
-> device work.
-
-If provide that in 'diff -u' form we can change that too.
-
--- 
-dwmw2
+Dmitry
