@@ -1,14 +1,19 @@
-Received: from web20722.mail.yahoo.com ([216.136.226.76])
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AvnnC-0006Re-20
-	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 01:24:54 +0000
-Message-ID: <20040225012449.90118.qmail@web20722.mail.yahoo.com>
-Date: Tue, 24 Feb 2004 17:24:49 -0800 (PST)
-From: Shawn Jin <shawnxtech@yahoo.com>
-To: linuxmtd <linux-mtd@lists.infradead.org>
+Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AvwBH-0007RH-F6
+	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 10:22:19 +0000
+From: "" <simon@baydel.com>
+To: dwmw2@infradead.org
+Date: Wed, 25 Feb 2004 09:49:55 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Why CFI_DEVICETYPE_X8 in cfi_send_gen_cmd()?
+Message-ID: <403C6FC3.1941.DDC08@localhost>
+In-reply-to: <1077645958.7826.599.camel@hades.cambridge.redhat.com>
+References: <6A03D4BC2018@baydel.com>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 Corruption.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 24 Feb 2004 at 18:05, David Woodhouse wrote:
 
-In cfi_cmdset_0002.c, there is a piece of comment stating that the
-CFI_DEVICETYPE_X8 is needed even when cfi->device_type !=
-CFI_DEVICETYPE_X8. Why is it the case?
+> On Tue, 2004-02-24 at 17:05 +0000, Simon Haynes wrote:
+> > Would you recommend changing the printk for the "Empty Flash"
+> > messages to a different level and using the ramdisk as a permanent
+> > solution ?
+> 
+> Changing the printk level for the 'Empty Flash' messages does seem
+> appropriate -- or preferably finding a way to eliminate the ones which
 
-In my case, two Am29PL320D chips are interleaved and each works in 32-bit
-mode. So the buswidth is 64 bits. When CFI_DEVICETYPE_x8 is used in either
-erase_oneblock() or write_oneword(), the command address generated is not
-right. For example, to erase a block, the following commands are generated:
-    Addr: 0xff002aaa  Data: 0x000000aa000000aa
-    Addr: 0xff001554  Data: 0x0000005500000055
-I found out that the cfi->addr_unlock1(2) are set to 0x1555 (0xaaa) because
-of CFI_DEVICETYPE_X32 in cfi_cmdset_0002().
+Yesteday I managed to reproduce the problem using /dev/ram. The first message I 
+noticed was
 
-According to the datasheet of Am29PL320D
-(http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/24075.pdf),
-the correct addresses should be 0xff002aa8 (555 << 3) and 0xff001550 (2aa
-<< 3).
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x00050748: Read
+0x0b5da171, calculated 0xb1b1dbb
 
-So I replaced CFI_DEVICETYPE_X8 with cfi->device_type in both
-do_erase_oneblock() and do_write_oneword(). I tested and found that erase
-can succeed but write still fails.
+This happened some time after the kernel mounted root. On following reboots this 
+message was not displayed but I did get one
 
-Any ideas or explanations?
+jffs2_scan_dirent_node(): Node CRC failed on node at 0x0046a7f0 
+read 0xffffffff calculated 0xdec8161b
 
-Thanks,
--Shawn.
+message. 
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail SpamGuard - Read only the mail you want.
-http://antispam.yahoo.com/tools
+As I do mount read only on shutdown I assume this is corruption ?
+
+Cheers
+
+Simon.
+
+
+
+
+__________________________
+
+Simon Haynes - Baydel 
+Phone : 44 (0) 1372 378811
+Email : simon@baydel.com
+__________________________
