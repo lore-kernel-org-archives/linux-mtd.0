@@ -1,14 +1,23 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <41220F4E.3000805@inf.u-szeged.hu>
-References: <41220F4E.3000805@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1092751764.14552.255.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 17 Aug 2004 15:09:25 +0100
+Received: from ext-ch1gw-3.online-age.net ([216.34.191.37])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BxAcH-0003V4-EN
+	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2004 16:31:34 -0400
+Received: from int-ch1gw-2.online-age.net (int-ch1gw-2 [3.159.232.66])
+	by ext-ch1gw-3.online-age.net (8.12.9/8.12.9/990426-RLH) with ESMTP id
+	i7HKVRWG000817 for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Aug 2004 16:31:27 -0400 (EDT)
+Received: from uswaumsxb1medge.am.med.ge.com (localhost [127.0.0.1])
+	by int-ch1gw-2.online-age.net (8.12.9/8.12.3/990426-RLH) with ESMTP id
+	i7HKVQj7029112 for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Aug 2004 16:31:26 -0400 (EDT)
+Message-ID: <41226B8B.7010603@med.ge.com>
+Date: Tue, 17 Aug 2004 15:33:15 -0500
+From: Michael Howard <michael.howard@med.ge.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS2 (NAND) mount time improvment
+Subject: compile errors with daily snapshots
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-08-17 at 15:59 +0200, Ferenc Havasi wrote:
-> Now we have some patches (the idea is that one was discussed with David 
-> at http://lists.infradead.org/pipermail/linux-mtd/2004-June/009873.html ).
+Hello,
 
-Please just send them to the list. I'm sure some eager testers will
-crawl out of the woodwork :)
+I've been grabbing the daily snapshots for a couple of weeks now and 
+keep seeing the following error:
 
-How did you handle nlink? I'm sure I had a cunning plan for it at one
-point but I couldn't remember it at time I composed the message you're
-looking at, so I was hand-waving. 
+fs/jffs2/write.c: In function `jffs2_write_dnode':
+fs/jffs2/write.c:95: error: storage size of `vecs' isn't known
+fs/jffs2/write.c:95: warning: unused variable `vecs'
+fs/jffs2/write.c: In function `jffs2_write_dirent':
+fs/jffs2/write.c:236: error: storage size of `vecs' isn't known
+fs/jffs2/write.c:236: warning: unused variable `vecs'
+make[2]: *** [fs/jffs2/write.o] Error 1
+make[1]: *** [fs/jffs2] Error 2
+make: *** [fs] Error 2
 
--- 
-dwmw2
+
+Is anyone else getting this?  I've tried patching 2.4.23 and 2.6.7 with 
+the same results.  Any help would be much appreciated.
+
+Thanks
+Mike
