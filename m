@@ -1,13 +1,13 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14cbAp-0005DN-00
-	for mtd-list@infradead.org; Mon, 12 Mar 2001 22:52:19 +0000
+	id 14cbRD-0005Jv-00
+	for mtd-list@infradead.org; Mon, 12 Mar 2001 23:09:15 +0000
 Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14cbAo-0005DH-00
-	for mtd@infradead.org; Mon, 12 Mar 2001 22:52:18 +0000
-Message-ID: <3AAD5358.812F6E0@mvista.com>
-Date: Mon, 12 Mar 2001 14:53:12 -0800
+	id 14cbRB-0005Jp-00
+	for mtd@infradead.org; Mon, 12 Mar 2001 23:09:14 +0000
+Message-ID: <3AAD5751.69604C78@mvista.com>
+Date: Mon, 12 Mar 2001 15:10:09 -0800
 From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
 To: =?iso-8859-1?Q?K=E1ri=20Dav=ED=F0sson?= <kd@flaga.is>
@@ -43,8 +43,6 @@ Kári Davíðsson wrote:
 > +                 perror("\nMTD Unlock failure");
 > +                 close(Fd);
 > +                 return 8;
-
->
 > +                }
 >           if (ioctl(Fd,MEMERASE,&erase) != 0)
 >               {
@@ -52,15 +50,16 @@ Kári Davíðsson wrote:
 >
 > To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-I have tests for both lock and unlock that can easily become the
-utilities if desired.
+The unlock ioctl unlocks all of the flash sectors at once (because the
+Intel flash's command unlocks
+all of the sectors at once).  I put in a check for this in mtdpart.c
+against the entire flash size but it looks like it was changed -
+I also need to add a check in cfi_cmdset_0001.c for those that don't use
+partitions.
 
-
-lock.c: locks num sectors at ofs or all sectors
-USAGE: %s <mtd device> <ofs> <num of sectors or -1 for all sectors>
-
-unlock.c: unlocks all sectors since that's what Intel chips do
-USAGE: %s <mtd device>
+FYI,  the request that is trying to erase or write to a locked sector
+will return
+an EROFS error.
 
 Alice
 
