@@ -1,18 +1,27 @@
-Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ch8uv-0000sd-ST
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 11:00:51 -0500
-Date: Wed, 22 Dec 2004 15:59:46 +0000 (GMT)
-From: jasmine@linuxgrrls.org
-To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-In-Reply-To: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
-Message-ID: <Pine.LNX.4.61.0412221553470.15289@hex.linuxgrrls.org>
-References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Ch926-00017D-Qw
+	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 11:08:16 -0500
+Date: Wed, 22 Dec 2004 17:08:10 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20041222160810.GB9783@wohnheim.fh-wedel.de>
+References: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
+	<Pine.LNX.4.58.0412171119290.8020@phoenix.infradead.org>
+	<Pine.LNX.4.58.0412221328430.23254@phoenix.infradead.org>
+	<20041222140331.GG31282@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0412221442510.30556@phoenix.infradead.org>
+	<20041222151403.GA8943@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0412221522400.30689@phoenix.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0412221522400.30689@phoenix.infradead.org>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 22 December 2004 15:25:23 +0000, Artem B. Bityuckiy wrote:
+> 
+> Jorn, Could you please provide adler32r?
+
+I tried.  Hope this is correct.
+
+#define BASE 65521L		/* largest prime smaller than 65536 */
+#define NMAX 5552
+/* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
+
+#define DO1(buf,i)  {s1 += buf[i]; s2 += s1;}
+#define DO2(buf,i)  DO1(buf,i); DO1(buf,i+1);
+#define DO4(buf,i)  DO2(buf,i); DO2(buf,i+2);
+#define DO8(buf,i)  DO4(buf,i); DO4(buf,i+4);
+#define DO16(buf)   DO8(buf,0); DO8(buf,8);
+
+/* ========================================================================= */
+uint32_t adler32r(uint32_t adler, const char *buf, size_t len)
+{
+	unsigned long s1 = adler & 0xffff;
+	unsigned long s2 = (adler >> 16) & 0xffff;
+	int k;
+
+	if (!buf)
+		return 1L;
+
+	buf += len;
+	while (len > 0) {
+		k = len < NMAX ? len : NMAX;
+		len -= k;
+		while (k >= 16) {
+			buf -= 16;
+			DO16(buf);
+			k -= 16;
+		}
+		if (k != 0)
+			do {
+				s1 += *--buf;
+				s2 += s1;
+			} while (--k);
+		s1 %= BASE;
+		s2 %= BASE;
+	}
+	return (s2 << 16) | s1;
+}
 
 
-On Wed, 22 Dec 2004, Joakim Tjernlund wrote:
+Jörn
 
-[going backwards]
-> Prefetching may work well for some archs, but for low end embedded CPUs
-> I am not so sure. You will probably need to add arch specific code also to
-> do prefetching.
-
-This is nothing to do with prefetching.
-
-Imagine you have three functions, a(), b() and c().  They all
-work through a block of data D[] which is of a size >> cache size.
-
-a() runs, loading data into cache as it works through the data.
-At the end of a()'s run, the cache predominantly contains data from
-the end of D[], because that was the last part to be accessed.
-
-b() then runs, and needs data from the start of D[], so the cache
-discards all the lines it loaded for a() and reloads them.  At the
-end of b()'s runm the cache predominantly contains data from the
-last part of D[], again, because that was the last part to be accessed.
-
-c() finally runs, needs the start of D[].  The cache dumps all those
-lines once more and reloads them again.
-
-
-Now:  what happens if b() starts from the end of D[]?  You save a little 
-time because the data b() needs to start with is already in cache.  And 
-you save a little more because at the end of b(), the cache is full of the 
-start of D[], so c() is ready to run.
-
-Does this clarify?
-
--J.
+-- 
+Don't patch bad code, rewrite it.
+-- Kernigham and Pike, according to Rusty
