@@ -1,62 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14nqG1-0004P0-00
-	for mtd-list@infradead.org; Fri, 13 Apr 2001 00:12:09 +0100
-Received: from mail.ss7-link.com ([209.204.106.218] helo=slink12.ss7-link.com)
+	id 14nvuL-0006hX-00
+	for mtd-list@infradead.org; Fri, 13 Apr 2001 06:14:09 +0100
+Received: from asteroid.pacifier.com ([199.2.117.154])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14nqFx-0004Ou-00
-	for mtd@infradead.org; Fri, 13 Apr 2001 00:12:05 +0100
-Message-ID: <F1BD619B2A58D41197990050DA2C08E40258D8@SLINK12>
-From: Jan Rovins <jrovins@ss7-link.com>
-To: mtd@infradead.org
-Cc: Steve Ferri <sferri@ss7-link.com>
-Subject: MTD on a Motorola MPCN765 ?
-Date: Thu, 12 Apr 2001 19:11:34 -0400
+	id 14nvuE-0006hR-00
+	for mtd@infradead.org; Fri, 13 Apr 2001 06:14:07 +0100
+Received: from shell.pacifier.com (IDENT:manatee@shell.pacifier.com [199.2.117.66])
+	by asteroid.pacifier.com (8.11.2/8.11.1) with ESMTP id f3D5DQM20748
+	for <mtd@infradead.org>; Thu, 12 Apr 2001 22:13:26 -0700 (PDT)
+Date: Thu, 12 Apr 2001 22:13:40 -0700 (PDT)
+From: Manatee <manatee@pacifier.com>
+To: <mtd@infradead.org>
+Subject: mtd on linux
+Message-ID: <Pine.BSO.4.33.0104122209520.4678-100000@shell.pacifier.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi all,
-We are working on a project that involves a MPCN765 host card, and we are
-running a 2.2.17 Kernel.
-I have Downloaded the MTD patches and have merged them into our kernel, and
-every thing still boots...
-I tried some guesses at AMD CFI configuration, but it looks like our board
-has exotic flash chips & geometry
-that are not currently supported in MTD. (Time to roll up my sleeves & start
-hacking code)
 
-The MPCN765 has a 16MB bank of flash that is 64 bits wide (Ugh!) and is
-comprised of four 16 bit devices.
-we are planning to use the bottom 2/3 of this for boot image and the top 1/3
-for application data storage (via MTD).
-The Motorola literature mentions the flash chips as AM29DL323C in one
-document, and AM29LV323C in an other doc.
-The chips them selves say D323CT90VI on them, and the only data sheet that
-is on the AMD web site is for a AM29DL323D.
-at this point I am hoping that these are all similar enough so that the
-differences wont matter.
- Is any one out there familiar with these chips? 
+Hi,
 
-Right now I am looking for some general guidance as to which direction to
-proceed.
-my gut feel is to do a board specific Mapping implementation, because of the
-strange geometry.
-The other alternative would be to expand the generic AMD/CFI stuff so that
-it could accommodate our board's flash geometry.
-at this point I am still familiarizing myself with the MTD code, and would
-appreciate any opinions and/or advice.
+I compiled the 2.4.1 kernel for Linux which has support for this device.
+Then I put the card in the PCI slot and rebooted. My harddrive was not
+recognized.
 
-Thanks in advance,
+What I want to do is just boot up as normal and then mount the card and
+take a look at what is on it. Just curious. Could someone tell me how to
+install the card so it does not interfere with normal booting? And once I
+boot up how, specifically, can I take a look at what is on the 'disk on
+chip'? Thank you.
 
-Jan Rovins 
-Member Technical Staff 
-S-Link Corp. 
-jrovins@ss7-link.com 
-856-642-9229 X-228 
-
+Manatee
 
 
 
