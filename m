@@ -1,17 +1,19 @@
 Received: from mail.newlogic.at ([194.208.88.201])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19zZKO-0003Jl-Ay
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2003 11:14:28 +0100
-Message-Id: <200309171013.h8HAD9ZS003979@enterprise2.newlogic.at>
+	id 19zdSm-0003nn-9G
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2003 15:39:24 +0100
+Message-Id: <200309171438.h8HEc9ZS007084@enterprise2.newlogic.at>
 MIME-Version: 1.0
-Date: Wed, 17 Sep 2003 12:13:09 +0200 (MEST)
+In-Reply-To: <AF34F8F089D16B4FABE02B5F375228E0022F@serveur21.SYNCHRO2>
+Date: Wed, 17 Sep 2003 16:38:09 +0200 (MEST)
 Sender: nwaibel@newlogic.com
 From: Niki Waibel <niki.waibel@newlogic.com>
-To: linux-mtd@lists.infradead.org
+To: Yves CLOUSIER <yves.clousier@synchronic.fr>
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-cc: linuxbios@clustermatic.org
-Subject: damaged DoC MD2808-D08?
+cc: linux-mtd@lists.infradead.org
+cc: uclinux-dev@uclinux.org
+Subject: RE: Problem using DOC with mtd
 Reply-To: Niki Waibel <niki.waibel@newlogic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,150 +24,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-my DoC MD2808-D08 responds fine to the control registers
-(chipid and ecc toggle bit are ok i.e.).
 
-but if it comes to the stage of sending nand commands and
-reading memory it seems to do nothing.
+On 17-Sep-2003 Yves CLOUSIER wrote:
+> Ok Niki, 
+> 
+> I made a mistake in the adressage of DOC. I think I have now a good dump of
+> DOC, see attach file, but I have always 00 at 0xE0001000.
 
-if mem is read from the same IO reg (0x800) then
-i always get the same value (0x55). also if the
-nand ID command is sent, 0x800 responses with 0x55.
-0x55 is the beginning of 0x55 0xaa 0x10 0xeb which
-is the beginning of the IPL code (rom extension)...
-
-in addition if i read a page. and then read it again.
-i get some different bytes:
+DoC seems to be in reset mode...
+try this:
 ===
---- xxx.xxd     2003-09-17 12:01:44.615883064 +0200
-+++ xxx2.xxd    2003-09-17 12:01:44.629880936 +0200
-@@ -1,67 +1,67 @@
- 0000000: 55aa 10eb 3c00 0028 4329 4d2d 5379 7374  U...<..(C)M-Syst
- 0000010: 656d 7331 3939 3800 0000 2100 0004 001c  ems1998...!.....
- 0000020: 5524 506e 5001 0200 0000 1e6d 1a01 1000  U$PnP......m....
--0000030: 0000 0000 8001 9400 0000 0000 8181 8181  ................
-+0000030: 0000 0000 8001 9400 0000 0000 8181 98e6  ................
- 0000040: 009c 5053 5152 5657 551e 06ba c01f 33c0  ..PSQRVWU.....3.
--0000050: 8ec0 33ff 83c2 408e da81 fa00 8181 8181  ..3...@.........
-+0000050: 8ec0 33ff 83c2 408e da81 fa00 439a 8181  ..3...@.....C...
- 0000060: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 0075  ........u......u
--0000070: 021e 0747 83ff 3072 8181 8181 8181 98e6  ...G..0r........
-+0000070: 021e 0747 83ff 3072 8181 98e6 439a 8181  ...G..0r....C...
- 0000080: 588e c20e 1f8b ec83 ec04 8cc0 8c46 fec7  X............F..
- 0000090: 46fc ab00 0ee8 1300 8b46 fe8e c033 ffb9  F........F...3..
- 00000a0: 0060 33c0 fcf3 ab8b e5eb 7455 8bec 8b46  .`3.......tU...F
--00000b0: 048e d8bb 0000 c687 439a 0081 8181 8198  ........C.......
-+00000b0: 048e d8bb 0000 c687 0381 0081 8181 8181  ................
- 00000c0: c687 0210 85be 0008 b1ff e85d 00fc 32e4  ...........]..2.
--00000d0: b100 e855 002e 8b0e e643 9a81 8181 8181  ...U.....C......
-+00000d0: b100 e855 002e 8b0e 8181 8181 8181 8181  ...U............
- 00000e0: 7523 c687 0410 0d2e 8b16 1c00 8181 8181  u#..............
--00000f0: 8814 8834 8181 8181 8181 8181 8181 8198  ...4............
-+00000f0: 8898 8834 e643 9a81 8181 8198 e643 9a81  ...4.C.......C..
- 0000100: 1009 e836 0084 870d 10ac 02e0 aa4e e2cc  ...6.........N..
- 0000110: 2e3a 2620 0075 065d 0633 c050 cb5d cb07  .:& .u.].3.P.]..
- 0000120: 1f5d 5f5e 5a59 5b58 9dcb c687 0410 0b88  .]_^ZY[X........
--0000130: 0cc6 871e 1000 c687 0410 09f6 e643 9a81  .............C..
-+0000130: 0cc6 871e 1000 c687 0410 09f6 8181 8181  ................
- 0000140: f687 2010 80f6 8720 1080 f687 2010 80f6  .. .... .... ...
--0000150: 8704 1080 74f9 f687 2010 80f6 8181 8198  ....t... .......
--0000160: c31c 0000 0000 0000 0000 0000 e600 439a  ..............C.
--0000170: 0000 0000 0000 8181 8181 8181 8181 8181  ................
-+0000150: 8704 1080 74f9 f687 2010 80f6 8181 8181  ....t... .......
-+0000160: c31c 0000 0000 0000 0000 0000 0000 8181  ................
-+0000170: 0000 0000 8181 0000 8181 8181 8181 8198  ................
- 0000180: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 0000190: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 00001a0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
--00001b0: 0000 0000 0000 0000 8181 8181 8181 8181  ................
-+00001b0: 0000 0000 0000 0000 e643 9a81 8181 8198  .........C......
- 00001c0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
--00001d0: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
--00001e0: 0000 0000 0000 0000 0000 0000 8181 98e6  ................
--00001f0: 0000 0000 439a 8181 8181 8181 8181 8181  ....C...........
-+00001d0: 0000 0000 0000 0000 e643 9a81 8181 8181  .........C......
-+00001e0: 0000 0000 0000 0000 0000 0000 8181 8181  ................
-+00001f0: 8100 0000 8181 8181 8181 8181 8181 9898  ................
- 0000200: 55aa 10eb 3c00 0028 4329 4d2d 5379 7374  U...<..(C)M-Syst
- 0000210: 656d 7331 3939 3800 0000 2100 0004 001c  ems1998...!.....
- 0000220: 5524 506e 5001 0200 0000 1e6d 1a01 1000  U$PnP......m....
--0000230: 0000 0000 8001 9400 0000 0000 8181 8181  ................
-+0000230: 0000 0000 8001 9400 0000 0000 439a 8181  ............C...
- 0000240: 009c 5053 5152 5657 551e 06ba c01f 33c0  ..PSQRVWU.....3.
--0000250: 8ec0 33ff 83c2 408e da81 fa00 8181 8181  ..3...@.........
--0000260: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 8175  ........u......u
--0000270: 021e 0747 83ff 3072 8198 e643 9a81 8181  ...G..0r...C....
-+0000250: 8ec0 33ff 83c2 408e da81 fa00 8181 98e6  ..3...@.........
-+0000260: f6b9 0002 fcad 0bc0 75e8 e2f9 83ff 0043  ........u......C
-+0000270: 021e 0747 83ff 3072 9a81 8181 8181 8181  ...G..0r........
- 0000280: 588e c20e 1f8b ec83 ec04 8cc0 8c46 fec7  X............F..
- 0000290: 46fc ab00 0ee8 1300 8b46 fe8e c033 ffb9  F........F...3..
- 00002a0: 0060 33c0 fcf3 ab8b e5eb 7455 8bec 8b46  .`3.......tU...F
--00002b0: 048e d8bb 0000 c687 0381 98e6 439a 8181  ............C...
-+00002b0: 048e d8bb 0000 c687 8181 8181 8181 8181  ................
- 00002c0: c687 0210 85be 0008 b1ff e85d 00fc 32e4  ...........]..2.
--00002d0: b100 e855 002e 8b0e 8181 8181 8181 8181  ...U............
--00002e0: 7523 c687 0410 0d2e 8b16 1c00 8181 8181  u#..............
--00002f0: 8814 8881 8181 8181 8198 e643 9a81 8181  ...........C....
-+00002d0: b100 e855 002e 8b0e 8181 8181 8198 e643  ...U...........C
-+00002e0: 7523 c687 0410 0d2e 8b16 1c00 9a81 8181  u#..............
-+00002f0: 8814 8834 8198 e643 9a81 8181 8181 8181  ...4...C........
- 0000300: 1009 e836 0084 870d 10ac 02e0 aa4e e2cc  ...6.........N..
- 0000310: 2e3a 2620 0075 065d 0633 c050 cb5d cb07  .:& .u.].3.P.]..
- 0000320: 1f5d 5f5e 5a59 5b58 9dcb c687 0410 0b88  .]_^ZY[X........
--0000330: 0cc6 871e 1000 c687 0410 09f6 8198 e643  ...............C
-+0000330: 0cc6 871e 1000 c687 0410 09f6 8181 8181  ................
- 0000340: f687 2010 80f6 8720 1080 f687 2010 80f6  .. .... .... ...
--0000350: 8704 1080 74f9 f687 2010 80f6 9a81 8181  ....t... .......
--0000360: c31c 0000 0000 0000 0000 0000 8100 0081  ................
--0000370: 0000 0000 8100 8181 8181 8181 8181 8181  ................
-+0000350: 8704 1080 74f9 f687 2010 80f6 8181 8181  ....t... .......
-+0000360: c31c 0000 0000 0000 0000 0000 0081 8181  ................
-+0000370: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
- 0000380: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 0000390: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 00003a0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
--00003b0: 0000 0000 0000 0000 8181 8181 98e6 439a  ..............C.
-+00003b0: 0000 0000 0000 0000 8181 98e6 439a 8181  ............C...
- 00003c0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
--00003d0: 0000 0000 0000 0000 8181 8181 98e6 439a  ..............C.
-+00003d0: 0000 0000 0000 0000 8181 8181 8181 8181  ................
- 00003e0: 0000 0000 0000 0000 0000 0000 8181 8181  ................
--00003f0: 0000 8100 8181 8181 8181 8181 8181 8181  ................
-+00003f0: 8181 0000 8181 8181 98e6 439a 8181 8181  ..........C.....
- 0000400: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 0000410: 0000 0000 0000 0000 0000 0000 0000 0000  ................
- 0000420: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+#define doc_read(base,reg) \
+        (*(volatile unsigned char *)(base + MSYSTEMS_DOC_R_##reg))
+#define doc_write(data,base,reg) \
+        (*(volatile unsigned char *)(base + MSYSTEMS_DOC_W_##reg)) = data
+#define doc_read_nop(base) \
+        doc_read(base, NOP)
+#define doc_read_2nop(base) \
+        { doc_read_nop(base); doc_read_nop(base); }
+#define doc_read_4nop(base) \
+        { doc_read_2nop(base); doc_read_2nop(base); }
+#define MSYSTEMS_DOC_W__DOCControl                0x1002
+#define MSYSTEMS_DOC_R_NOP                        0x1020
+#define MSYSTEMS_DOC_W_NOP                        0x1020
+#define DOC_MODE_RESET  0
+#define DOC_MODE_NORMAL 1
+#define DOC_MODE_WREN   0x04
+#define DOC_CLR_ERR     0x80
+{
+        /* sets reset mode (has to be done twice) */
+        doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
+        doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
+        /* wait */
+        doc_read_4nop(bios);
+        /* sets normal mode (has to be done twic) */
+        doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
+        doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
+        /* wait */
+        doc_read_4nop(bios);
+        if(doc_wait(bios, 5000))
+                return(-1);
+}
+static int
+doc_wait(volatile char *bios, int timeout)
+{
+        int i = 20;
+        unsigned char busy;
+        doc_read_4nop(bios);
+        while((busy=_doc_busy(bios)) && (i != 0))
+        {
+                usleep(timeout*1000/20);
+                i--;
+        }
+        doc_read_2nop(bios);
+        if(busy)
+        {
+                return(-1);
+        }
+        return(0);
+} /* static int doc_wait(volatile char *bios, int timeout) */
 ===
-that data was read by
-===
-                cmd(bios, NAND_CMD_READ0);
-                adr(bios, page);
-                doc_read_nop(bios);  /* nop between write/read */
-                doc_write_cdsncontrol(bios, CDSN_CTRL_CE);
-                doc_read(bios, ReadPipelineInitialization);
-                for(i=0; i<512-1; i++) {
-                        doc_read_4nop(bios);
-                        doc_read(bios, CDSNSlowIO);
-                        doc_read_4nop(bios);
-                        buf[offset++] = doc_read(bios, _CDSNIO_BASE+i);
-                        doc_read_4nop(bios);
-                }
-                buf[offset++] = doc_read(bios, LastDataRead);
-                doc_write_cdsncontrol(bios, CDSN_CTRL_CE);
-                if(doc_wait(bios, 5000)) {
-                        printf("outch...\n");
-                        return(-1);
-                }
-===
-if i read without CDSNSlowIO and without doc_read_4nop(bios) then the result is
-worse and more bits/bytes are different each read.
-if i read doc_read(bios, _CDSNIO_BASE) (***check the missing ``+ i''***) then
-i get 0x55 all the time (except for doc_read(bios, LastDataRead)).
 
-all this is very strange and i am beginning to think
-that my DoC (the flash in it) is damaged.
+> Any idea ? 
 
-any idea?
+the above code snippies should give you an idea how to
+go out of the reset mode...
 
-niki w. waibel
+niki
+
+> -----Message d'origine-----
+> De : Niki Waibel [mailto:niki.waibel@newlogic.com]
+> Envoyé : mercredi 17 septembre 2003 11:31
+> À : Yves CLOUSIER
+> Cc : uclinux-dev@uclinux.org; uclinux-dev@uclinux.org;
+> linux-mtd@lists.infradead.org
+> Objet : RE: Problem using DOC with mtd
+> 
+> 
+> Doc dump at e0000000 : 55 55 aa aa 10 10 eb eb
+> Doc dump at e0000008 : 3c 3c 00 00 00 00 28 28
+> Doc dump at e0000010 : 43 43 29 29 4d 4d 2d 2d
+> Doc dump at e0000018 : 53 53 79 79 73 73 74 74
+> Doc dump at e0000020 : 65 65 6d 6d 73 73 31 31
+> 
+> is somehow good, but you should have:
+> Doc dump at e0000000 : 55 aa 10 eb 3c 00 00 28
+>  ...
+> as well on 
+> Doc dump at e0001000 : 00 00 00 00 00 00 00 00
+> there should be
+> Doc dump at e0001000 : 30 ...
+> 
+> maybe this is at e0002000 in your case and you have mixed up
+> some address wires...
+> 
+> niki
+> 
+> 
+> 
+> On 17-Sep-2003 Yves CLOUSIER wrote:
+>> Hi all, 
+>> 
+>> I have 5272 plateform with the 20030305-uclinux-dist. 
+>> In this plateform I have a disk-on-chip millenium module MD2802-D08. The
+> DOC
+>> is map at 0xE0000000.
+>> 
+>> But during booting, I have the message :
+>> Possible DiskOnChip with unknown ChipID 00 found at 0xe0000000
+>> No recognised DiskOnChip devices found
+>> 
+>> In the Doc_Check() fonction in probe.c I make a memory dump of the DOC
+> (from
+>> 0xE0000000 to 0xE0002000), see the attach file.
+>> I think that the acces of the DOC is correct because I see the DOC bios
+>> singature at 0xE0000000. But I don't understand why the mtd doesn't
+>> recognised the DOC. So if you have an idea ......
+>> 
+>> 
+>> Thanks.
+>> 
+>> 
+>> 
+>> 
+>> 
+>> I configure the mtd like this :
+>> 
+>>#
+>># Memory Technology Devices (MTD)
+>>#
+>> CONFIG_MTD=y
+>> CONFIG_MTD_DEBUG=y
+>> CONFIG_MTD_DEBUG_VERBOSE=3
+>># CONFIG_MTD_PARTITIONS is not set
+>># CONFIG_MTD_CONCAT is not set
+>> 
+>>#
+>># User Modules And Translation Layers
+>>#
+>> CONFIG_MTD_CHAR=y
+>> CONFIG_MTD_BLOCK=y
+>># CONFIG_FTL is not set
+>># CONFIG_NFTL is not set
+>> 
+>>#
+>># RAM/ROM/Flash chip drivers
+>>#
+>># CONFIG_MTD_CFI is not set
+>># CONFIG_MTD_JEDECPROBE is not set
+>># CONFIG_MTD_GEN_PROBE is not set
+>># CONFIG_MTD_RAM is not set
+>># CONFIG_MTD_ROM is not set
+>># CONFIG_MTD_ABSENT is not set
+>># CONFIG_MTD_OBSOLETE_CHIPS is not set
+>> 
+>>#
+>># Mapping drivers for chip access
+>>#
+>> 
+>>#
+>># Self-contained MTD device drivers
+>>#
+>># CONFIG_MTD_SLRAM is not set
+>># CONFIG_MTD_MTDRAM is not set
+>># CONFIG_MTD_BLKMTD is not set
+>> 
+>>#
+>># Disk-On-Chip Device Drivers
+>>#
+>># CONFIG_MTD_DOC1000 is not set
+>> CONFIG_MTD_DOC2000=y
+>># CONFIG_MTD_DOC2001 is not set
+>> CONFIG_MTD_DOCPROBE=y
+>> CONFIG_MTD_DOCPROBE_ADVANCED=y
+>> CONFIG_MTD_DOCPROBE_ADDRESS=e0000000
+>># CONFIG_MTD_DOCPROBE_HIGH is not set
+>># CONFIG_MTD_DOCPROBE_55AA is not set
+>> 
+>>#
+>># NAND Flash Device Drivers
+>>#
+>># CONFIG_MTD_NAND is not set
+>> 
+>> 
+>> 
+>>  <<dump.txt>> 
+> 
+> -- 
+> niki w. waibel - system administrator @ newlogic technologies ag
+> 
+> 
+
+-- 
+niki w. waibel - system administrator @ newlogic technologies ag
