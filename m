@@ -1,18 +1,15 @@
-Received: from phobos.hpl.hp.com ([192.6.19.124])
+Received: from [210.8.246.199] (helo=singularity.tronunltd.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dIdT-0000s3-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 22:21:19 +0000
-Received: from friction.hpl.hp.com (friction.hpl.hp.com [15.0.48.214])
-	by phobos.hpl.hp.com (8.9.3 (PHNE_24419)/HPL-PA Relay) with ESMTP id OAA14993
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 14:32:33 -0800 (PST)
-Date: Tue, 19 Feb 2002 14:32:29 -0800
-From: Christopher Hoover <ch@hpl.hp.com>
-To: linux-mtd@lists.infradead.org
-Subject: finer-grained squash support for mkfs.jffs2
-Message-ID: <20020219143229.A14203@friction.hpl.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 16dImI-0000t8-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 22:30:26 +0000
+Date: Wed, 20 Feb 2002 08:41:06 +1000
+Message-Id: <200202192241.IAA25078@singularity.tronunltd.com>
+To: "Chris Fowler" <cfowler@outpostsentinel.com>
+Subject: RE: Kerlen 2.4.13 and ramdisks
+From: "Ian" <Relativity@HumanHeuristic.com>
+Cc: <linux-mtd@lists.infradead.org>
+Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+Content-type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,129 +21,93 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This patch adds the capability to mkfs.jffs2 to just squash uids (very
-useful), just squash perms (not so useful), or both (the old
-behavior).
+> loopback would not allow me to write to the image while running it.  Making
+loopback allows you to make modifications without dd'ing it in and out of 
+ramdisks (I used to use both methods for my initrd creation).
 
-Cheers.
+> the flash (upgrade) process more difficult.  The FS is ext2 and I do not use
+> mount.
+I don't understand - you originally said;
+                  "mount /dev/ram6  fails."
 
--ch
-mailto:ch@murgatroid.com
-mailto:ch@hpl.hp.com
+.. but that said, I was mistaken too .. I meant the "-t" option ...
+Ie; mount -t ext2 /dev/ram6 /tmp/flash
 
 
+> The only way the kernel can mount this is by me putting it in memory first.
+> The only way to do that is with initrd.  It owkrs when initrd only places
+> that data there.  When I try to download the *same* data from the network
+> and put there it craps out.  I have to download the data first before I can
+If this is the case, where you download it and try to treat it like an initrd, then
+I'd be quicker to blame that process, than the ramdisk driver in 2.4.x -- particularly
+when you say that it works as a straight initrd process (which is only running
+in ram anyway, as you know).
 
-Index: util/mkfs.jffs2.c
-===================================================================
-RCS file: /home/cvs/mtd/util/mkfs.jffs2.c,v
-retrieving revision 1.20
-diff --unified -r1.20 mkfs.jffs2.c
---- util/mkfs.jffs2.c	2002/02/08 00:51:52	1.20
-+++ util/mkfs.jffs2.c	2002/02/19 22:22:02
-@@ -108,7 +108,8 @@
- static int fake_times = 0;
- 
- /* Squash all permissions and make everything be owned by root */
--static int squash = 0;
-+static int squash_uids = 0;
-+static int squash_perms = 0;
- 
- static int host_endian = __BYTE_ORDER;
- static int target_endian = __BYTE_ORDER;
-@@ -323,11 +324,13 @@
- 		}
- 	}
- 
--	if (squash) {
--		/* Squash all permissions so files are owned by
--		 * root, all timestamps are _right now_, and file
--		 * permissions have group and other write removed */
-+	/* Squash all permissions so files are owned by root, all
-+	 * timestamps are _right now_, and file permissions
-+	 * have group and other write removed */
-+	if (squash_uids) {
- 		uid = gid = 0;
-+	}
-+	if (squash_perms) {
- 		if (!S_ISLNK(mode)) {
- 			mode &= ~(S_IWGRP | S_IWOTH);
- 			mode &= ~(S_ISUID | S_ISGID);
-@@ -375,11 +378,13 @@
- 		timestamp = sb.st_mtime;
- 	}
- 
--	if (squash) {
--		/* Squash all permissions so files are owned by
--		 * root, all timestamps are _right now_, and file
--		 * permissions have group and other write removed */
-+	/* Squash all permissions so files are owned by
-+	 * root, all timestamps are _right now_, and file
-+	 * permissions have group and other write removed */
-+	if (squash_uids) {
- 		uid = gid = 0;
-+	}
-+	if (squash_perms) {
- 		mode &= ~(S_IWGRP | S_IWOTH);
- 		mode &= ~(S_ISUID | S_ISGID);
- 	}
-@@ -423,11 +428,13 @@
- 		timestamp = sb.st_mtime;
- 	}
- 
--	if (squash) {
-+	if (squash_uids) {
- 		/* Squash all permissions so files are owned by
- 		 * root, all timestamps are _right now_, and file
- 		 * permissions have group and other write removed */
- 		uid = gid = 0;
-+	}
-+	if (squash_perms) {
- 		mode &= ~(S_ISUID | S_ISGID);
- 	}
- 	if (fake_times) {
-@@ -876,7 +883,8 @@
- 
- 	/* Turn off squash, since we must ensure that values
- 	 * entered via the device table are not squashed */
--	squash = 0;
-+	squash_uids = 0;
-+	squash_perms = 0;
- 
- 	/* Looks ok so far.  The general plan now is to read in one
- 	 * line at a time, check for leading comment delimiters ('#'),
-@@ -1085,6 +1093,8 @@
- 	{"big-endian", 0, NULL, 'b'},
- 	{"little-endian", 0, NULL, 'l'},
- 	{"squash", 0, NULL, 'q'},
-+	{"squash-uids", 0, NULL, 'U'},
-+	{"squash-perms", 0, NULL, 'P'},
- 	{"faketime", 0, NULL, 'f'},
- 	{"devtable", 1, NULL, 'D'},
- 	{NULL, 0, NULL, 0}
-@@ -1106,6 +1116,8 @@
- 	"  -D, --devtable=FILE    Use the named FILE as a device table file\n"
- 	"  -f, --faketime         Change all file times to '0' for regression testing\n"
- 	"  -q, --squash           Squash permissions and owners making all files be owned by root\n"
-+	"  -U, --squash-uids      Squash owners making all files be owned by root\n"
-+	"  -P, --squash-perms     Squash permissions on all files\n"
- 	"  -h, --help             Display this help text\n"
- 	"  -v, --version          Display version information\n\n";
- 
-@@ -1171,7 +1183,16 @@
- 			break;
- 
- 		case 'q':
--			squash = 1;
-+			squash_uids = 1;
-+			squash_perms = 1;
-+			break;
-+			
-+		case 'U':
-+			squash_uids = 1;
-+			break;
-+
-+		case 'P':
-+			squash_perms = 1;
- 			break;
- 
- 		case 'f':
+> place it in /dev/ram7.  TO do that I mount a ram fs at a upper limit of
+> 32mb.  Download the file there then place it in /dev/ram7.  Just by using
+> that memory as temporary storeage I'm haing problems.  I've read posts that
+> state that certain 2.4.X kernels have problems repecting the boundaries of a
+> ramdisk.  They tend to overwrite those areas when needing memory.
+In all the work we did with ramdisks, I don't think we ever dd'd the img directly
+to the ramx device ... we always dd'd /dev/zero out to the size we wanted,
+mke2fs'd it, then untar'd our package ... and we never had any problems with
+that (in high 2.2.x's and low 2.4.x's too).
+
+
+> 
+> 
+> lilo.conf:
+> ....
+>    root=/dev/ram7
+> 
+> -----Original Message-----
+> From: linux-mtd-admin@lists.infradead.org
+> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ian
+> Sent: Tuesday, February 19, 2002 4:51 PM
+> To: Chris Fowler
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re:Kerlen 2.4.13 and ramdisks
+> 
+> 
+> 
+> If you have loopback support compiled in you can mount it directly through
+> the loopback driver, without creating a ramdisk ...
+> 
+> What was the error that mount gave?  You probably only need to specify
+> the "-o" parameter ... mount doesn't usually detect fancy filesystems ...
+> 
+> 
+>   ----- Original Message -----
+> >From: "Chris Fowler" <cfowler@outpostsentinel.com>
+> >To: <linux-mtd@lists.infradead.org>
+> >Subject:  Kerlen 2.4.13 and ramdisks
+> >Date: Tue, 19 Feb 2002 10:33:33 -0500
+> >
+> > You guys might have ran across a ramdisk problem.  I have a feeling that
+> kernel 2.4.13 is
+> not respecting my ramdisks.
+> >
+> >
+> > dd if=/etc/user.img of=/dev/ram6
+> >
+> > mount /dev/ram6  fails.
+> >
+> >
+> > Is this a problem?
+> >
+> >
+> >
+> >
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+> 
