@@ -1,24 +1,15 @@
-Received: from fmr01.intel.com ([192.55.52.18] helo=hermes.fm.intel.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16CV3r-0005KL-00
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 00:09:47 +0000
-Received: from petasus.fm.intel.com (petasus.fm.intel.com [10.1.192.37])
-	by hermes.fm.intel.com (8.11.6/8.11.6/d: outer.mc,v 1.25 2001/11/20 18:48:29 root Exp $) with ESMTP id fB80KYa23002
-	for <linux-mtd@lists.infradead.org>; Sat, 8 Dec 2001 00:20:34 GMT
-Received: from fmsmsxvs040.fm.intel.com (fmsmsxv040-1.fm.intel.com [132.233.48.108])
-	by petasus.fm.intel.com (8.11.6/8.11.6/d: inner.mc,v 1.11 2001/11/09 23:28:01 root Exp $) with SMTP id fB80Ka523453
-	for <linux-mtd@lists.infradead.org>; Sat, 8 Dec 2001 00:20:36 GMT
-Received: from FMSMSX018.fm.intel.com ([132.233.42.197])
- by fmsmsxvs040.fm.intel.com (NAVGW 2.5.1.16) with SMTP id M2001120716195826785
- for <linux-mtd@lists.infradead.org>; Fri, 07 Dec 2001 16:19:58 -0800
-Message-ID: <D9223EB959A5D511A98F00508B68C20C1F9639@ORSMSX108>
-From: "Carlson, Kristen" <kristen.carlson@intel.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: caching questions with jffs2
-Date: Fri, 7 Dec 2001 16:20:17 -0800 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from [200.53.172.133] (helo=qis)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16CWdk-0005Q3-00
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 01:50:57 +0000
+Message-ID: <20011208021016.28394.qmail@qis>
+From: "Nikolai Vladychevski" <niko@isl.net.mx>
+To: linux-mtd@lists.infradead.org
+Subject: nftl_format with offset
+Date: Sat, 08 Dec 2001 02:10:16 GMT
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,10 +21,79 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-Can someone describe to me the algorithm used for freeing memory that has
-been cached due to file activity in jffs2?  Is this done as part of the
-garbage collector?  How long does the cached memory stay around?  Is this
-tunable?
-Thanks,
-Kristen Carlson
+Hello,
+I got this problem, why when I :
+nftl_format /dev/mtd0
+i can load nftl module without problems, but when I:
+nftl_format /dev/mtd0 0x100000
+it gives "Could not find valid boot record" error ?
+It happends because I upgraded to 2.4.16, with the lastest cvs code. What 
+should be wrong? 
+
+Here are the details: 
+
+[root@qis1 util]# ./nftl_format /dev/mtd0
+$Id: nftl_format.c,v 1.17 2001/08/29 14:28:48 dwmw2 Exp $
+Phase 1. Checking and erasing Erase Zones from 0x00000000 to 0x00800000
+Skipping bad zone (factory marked) #103 @ 0xce000
+Skipping bad zone (factory marked) #128 @ 0x100000
+Skipping bad zone (factory marked) #129 @ 0x102000
+	Checking Zone #1023 @ 0x7fe000
+Phase 2.a Writing NFTL Media Header and Bad Unit Table
+Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
+Phase 3. Writing Unit Control Information to each Erase Unit
+You have new mail in /var/spool/mail/root
+[root@qis1 util]# dmesg|tail -5
+MTD_ioctl
+_DoC_WaitReady called for out-of-line wait
+MTD_ioctl
+_DoC_WaitReady called for out-of-line wait
+MTD_close
+You have new mail in /var/spool/mail/root
+[root@qis1 util]# insmod nftl
+Using /lib/modules/2.4.16-normal/kernel/drivers/mtd/nftl.o
+[root@qis1 util]# dmesg|tail -5
+Got mutex
+NFTL read request of 0x2 sectors @ 6 (req->nr_sectors == 2)
+NFTL read request completed OK
+end_request(1)
+unknown partition table
+[root@qis1 util]# 
+
+
+[root@qis1 util]# ./nftl_format /dev/mtd0 0x100000
+$Id: nftl_format.c,v 1.17 2001/08/29 14:28:48 dwmw2 Exp $
+Phase 1. Checking and erasing Erase Zones from 0x00100000 to 0x00800000
+Skipping bad zone (factory marked) #128 @ 0x100000
+Skipping bad zone (factory marked) #129 @ 0x102000
+	Checking Zone #1023 @ 0x7fe000
+Phase 2.a Writing NFTL Media Header and Bad Unit Table
+Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
+Phase 3. Writing Unit Control Information to each Erase Unit
+You have new mail in /var/spool/mail/root
+[root@qis1 util]# dmesg|tail -5
+MTD_ioctl
+_DoC_WaitReady called for out-of-line wait
+MTD_ioctl
+_DoC_WaitReady called for out-of-line wait
+MTD_close
+[root@qis1 util]# insmod nftl
+Using /lib/modules/2.4.16-normal/kernel/drivers/mtd/nftl.o
+[root@qis1 util]# dmesg|tail -5
+mtd->read = d00396c0, size = 8388608, erasesize = 8192
+NFTL_setup
+NFTL Media Headers at 0x0 and 0x104000 disagree.
+Could not find valid boot record
+Could not mount NFTL device
+[root@qis1 util]# dmesg|tail
+MTD_ioctl
+_DoC_WaitReady called for out-of-line wait
+MTD_close
+NFTL driver: nftlcore.c $Revision: 1.85 $, nftlmount.c $Revision: 1.25 $
+NFTL_notify_add for DiskOnChip Millennium
+mtd->read = d00396c0, size = 8388608, erasesize = 8192
+NFTL_setup
+NFTL Media Headers at 0x0 and 0x104000 disagree.
+Could not find valid boot record
+Could not mount NFTL device
+[root@qis1 util]# 
