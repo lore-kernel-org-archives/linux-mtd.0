@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15rI3g-00020f-00
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2001 13:01:56 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-In-Reply-To: <20011010112839.95341.qmail@web11503.mail.yahoo.com> 
-References: <20011010112839.95341.qmail@web11503.mail.yahoo.com> 
-To: Adil EL YOUSSEFI <adilos2@yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: A couple of questions 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 10 Oct 2001 13:11:02 +0100
-Message-ID: <21379.1002715862@redhat.com>
+	id 15rJ67-00028k-00
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2001 14:08:32 +0100
+Received: from Win1 (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id PAA13093
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2001 15:17:10 +0200 (MET DST)
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 performance
+Date: Wed, 10 Oct 2001 15:17:31 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLOEHNEPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <21379.1002715862@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +27,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-adilos2@yahoo.com said:
->  -> Under what license it is released. My boss wants to
->  know if he would have to pay in order to put JFFS2 in our product.
+Hi all
 
-Under what licence is your product? JFFS2 is under a dual licence - both 
-GPL for compatibility with the Linux kernel, and RHEPL for use in eCos. 
+I am wondering how JFFS2 performance(primarly read performance) is affected by compression.
+There are basically 3 types of (de)compression NONE, ZLIB and RTIME. Does it matter which
+one is used w.r.t read performace?
 
->  -> We are using a flash device with different sector sizes ( 1*32k,
-> 2*16k,1*64k and the others are 128k ), What size should the JFFS2
-> reserved sectors have then ? 
-
-128KiB - the 'major' erase size.
-
->  -> If JFFS2 is used without enabling compression, will there still be
-> corner cases in GC requiring 5 reserved sectors and not 2. 
-
-Probably not. To be honest, it probably wouldn't happen even _with_ 
-compression - I just don't like releasing software that'll 'probably' work 
-:)
-
->  -> Why can't JFFS2 be used on Compact flashes ? 
-
-Technically, it can - we now have a 'blkmtd' driver which uses any block 
-device as backing store for an MTD device - so it can use any hard drive. 
-At the moment, it's painfully slow. Checkpointing ought to fix that, but 
-nobody's currently working on implementing that.
-
---
-dwmw2
+ Joakim Tjernlund
