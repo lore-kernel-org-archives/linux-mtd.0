@@ -1,16 +1,16 @@
 Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfG0A-0003tc-Kl
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 06:10:27 -0500
+	id 1CfG9W-00049z-6i
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 06:20:07 -0500
 From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Date: Fri, 17 Dec 2004 12:10:20 +0100
-Message-ID: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>, <jasmine@linuxgrrls.org>
+Date: Fri, 17 Dec 2004 12:19:55 +0100
+Message-ID: <JPEALJAFNGDDLOPNDIEEEEHECPAA.joakim.tjernlund@lumentis.se>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0412171053080.8020@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0412171100470.8020@phoenix.infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Linux MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: RE: JFFS3 & performance
@@ -23,22 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> On Fri, 17 Dec 2004 jasmine@linuxgrrls.org wrote:
 > 
-> > Another idea, calculate the CRC backwards(from the end of the buffer to the beginning).
-> > That give better L1 cache behaviour.
-> >
-> Why (may be some URL)? For all archs? 
+> > 
+> > 
+> > On Fri, 17 Dec 2004, Artem B. Bityuckiy wrote:
+> > 
+> > >> Another idea, calculate the CRC backwards(from the end of the buffer to the beginning).
+> > >> That give better L1 cache behaviour.
+> > >>
+> > > Why (may be some URL)? For all archs?
+> > 
+> > Because the process to use the buffer after the CRC will probably start 
+> > from the beginning.  Processing the CRC from the beginning to the end will 
+> > tend to leave the L1 cache full of the end of the buffer and thus the next 
+> > process to use it will need to reload the L1.
+> > 
+> > -J.
+> > 
+> Ok, I got it, thanks.
 
-example, when writing a buffer to flash you first CRC it from top to bottom.
-The bottom part of the buffer is then newer than the top of then buffer in the
-L1 cache or the top part has already been evicted from the L1 cache depending
-of the size of the buffer and size of L1 cache.
+I wish I read all new messages before I anwer so I don't answer when someone else already has :(
 
-Now you start again from the top of the buffer to actually write the buffer
-to flash and you probaly need to read the data from RAM into L1 cache again.
+Looked a little closer on csum_partial and I think JFFS3 can use it. You need
+csum_fold as well:
+seed = ~0;
+crc = csum_fold(csum_partial(buff, len, seed));
 
-Reading from flash will cause similar effects.
-
-If you calculate CRC backwards you will avoid trashing the cache needlessly.
+Don't know if it is good enough for JFFS3 but it is fast.
 
  Jocke
