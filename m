@@ -1,69 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13d8hf-0006Vm-00
-	for mtd-list@infradead.org; Sun, 24 Sep 2000 11:08:11 +0100
-Received: from roma.axis.se ([193.13.178.2])
+	id 13dPiM-0001N8-00
+	for mtd-list@infradead.org; Mon, 25 Sep 2000 05:18:02 +0100
+Received: from sis.com.tw ([203.67.208.2] helo=fw11.sis.com.tw)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13d8hd-0006Vg-00
-	for mtd@infradead.org; Sun, 24 Sep 2000 11:08:10 +0100
-Message-ID: <004f01c0260f$fa7af160$1e2614ac@johanado.axis.se>
-From: "Johan Adolfsson" <johan.adolfsson@axis.com>
-To: "Steven J. Hill" <sjhill@cotw.com>, "JFFS List" <jffs-dev@axis.com>,
-        "MTD List" <mtd@infradead.org>
-Subject: Re: Humble question on actual journalling mechanism...
-Date: Sun, 24 Sep 2000 12:12:42 +0200
+	id 13dPiE-0001N1-00
+	for mtd@infradead.org; Mon, 25 Sep 2000 05:17:55 +0100
+Message-ID: <39CED0CE.7407D992@sis.com.tw>
+Date: Mon, 25 Sep 2000 12:13:02 +0800
+From: Ollie Lho <ollie@sis.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Andreas Micklei <ami@ivistar.de>
+CC: Juergen Beisert <jbeisert@eurodsn.de>, mtd@infradead.org
+Subject: Re: Choosing DiskOnChip driver
+References: <3.0.6.32.20000922120218.007c5650@eurodsn.de> <20000922134751.E908@bomberman.ivistar.de>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-The jffs-dev list is archived on:
-http://mhonarc.axis.se/jffs-dev/threads.html
-Information about that should be at the JFFS pages as well (but it isn't).
-Currently it's only in the "Contact Us" section of our developer site -
-we'll fix that.
-/Johan
+Andreas Micklei wrote:
+> 
+> Hi,
+> 
+> On Fri, Sep 22, 2000 at 12:02:18PM +0200, Juergen Beisert wrote:
+> > I develop a small PC board with a DiskOnChip Millenium chip. Because it should be an embedded system I do not want use a standard BIOS like desktop pc (I need a very fast boot). Instead I want load linux direct with a small ROM routine from the DiskOnChip (this small routine do the system initializing, too). So my question:
+> >
+> > Is this possible with the MTD software? Which parts of grub and mtd I have to use to solve it? Can anybody help me?
+> 
+> I asked a similar question some time ago and was referred to the following
+> project:
+> 
+> http://freebios.sourceforge.net/
+> 
+> Seems like a good starting point.
+> 
 
+Yes, you are right. We have just successfully boot Linux with LinuxBIOS + Doc
+Millennium on SiS 630. The whole system has only DoC Millennium as its sotrage device. No HD nor any other flash device
+is required. We can even put a tiny
+file system to run Microwindows "mdemo" demo program.
 
------Original Message-----
-From: Steven J. Hill <sjhill@cotw.com>
-To: JFFS List <jffs-dev@axis.com>; MTD List <mtd@infradead.org>
-Date: den 23 september 2000 15:32
-Subject: Humble question on actual journalling mechanism...
+If things go fine, we will demo this in ALS.
 
-
->Greetings again.
->
->I have been reading the JFFS code solid for the past two days
->now. I am about 1/4 the way through 'intrep.c' which is just
->huge. The function that I am currently looking at is
->'jffs_insert_node'. I must humbly ask for how the underlying
->journaling/versioning works. In the explanation, if the
->manipulation of the members in the 'jffs_node' structure with
->regards to versioning could be explained, that would be great.
->
->All the other files were easy to understand because it was just
->the basic calls for working with the flash and providing the
->upper level functions for superblock and inode interfacing with
->the kernel's VFS layer. 'intrep.c' is where the core is really
->at and I would appreciate some simple understanding.
->
->Yes, I did look through the MTD archives. No, I did not look
->through the JFFS mailing list archives because they do not seem
->to exist anywhere off of the Axis page or anywhere else for
->that matter. I also apologize for the cross-post.
->
->-Steve
->
->--
-> Steven J. Hill - Embedded SW Engineer
-> Public Key: 'finger sjhill@mail.cotw.com'
-> FPR1: E124 6E1C AF8E 7802 A815
-> FPR2: 7D72 829C 3386 4C4A E17D
->
-
+Ollie
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
