@@ -1,20 +1,19 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CCFdt-0004uM-RB
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 06:55:35 -0400
-Date: Tue, 28 Sep 2004 11:55:23 +0100
-From: Ben Dooks <ben@fluff.org.uk>
-To: "lp4u@inwind.it" <lp4u@inwind.it>
-Message-ID: <20040928105523.GC22627@home.fluff.org>
-References: <I4QXWY$DC028C17BCE4F7375CD8E760DCF56467@libero.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <I4QXWY$DC028C17BCE4F7375CD8E760DCF56467@libero.it>
-Sender: Ben Dooks <ben@fluff.org>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Nand detect
+	id 1CCG4o-00059v-8R
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 07:23:25 -0400
+Message-ID: <41594975.7060902@yandex.ru>
+Date: Tue, 28 Sep 2004 15:22:29 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: =?ISO-8859-2?Q?Kornel_Mas=B3owski?= <maslow@pf.pl>
+References: <000701c4a4c3$822d6e90$0b0aa8c0@maslow>
+	<415905E4.1020601@yandex.ru>
+In-Reply-To: <415905E4.1020601@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 28, 2004 at 12:17:22PM +0200, lp4u@inwind.it wrote:
-> Hi,
-> 
-> I've a s3c24210 board with BAST architecture, with 2 NAND on board.
-> I've compiling the kernel 2.6.9-rc2 after patched it with:
-> - patch-2.6.9-rc2-bk11
-> - dm9k-rc2.patch
-> - patchin (mtd 2004/09/19)
-> - nand_multi1.diff
+Also, the direntry node and probably the root directory inode node will=20
+also add 1-2 NAND pages. Thus, 24-27 pages if compression is disabled...
 
-the next release should be in mtd, and we will be able to do
-away with the nand_multi1.diff
+Artem B. Bityuckiy wrote:
+> Kornel Mas=B3owski wrote:
+>=20
+>> I'm not sure how jffs2 works.
+>> I have jffs2 on  8bit NAND flash (page 512 B).
+>> I want to append record 32B to the file on flash which current size is=
+=20
+>> 10kB.
+>> Flash device is almost empty.
+>> How many pages will be written by jffs2?
+>>
+>>
+> It is hard to calculate because of compression. Moreover, if your file =
 
-[snip] 
+> was created by
+> seek to "nowhere" it will cosist of only one "hole" node and fit into=20
+> one NAND page only.
+>=20
+> If there is no compression, the exact number of pages also depends on=20
+> how your file was created. Also, there is some platform dependency -=20
+> does you platform has 4K RAM pages? - but this is minor since most=20
+> platforms have 4K RAM pages.
+>=20
+> If your 10K file was created by one go and there is no compression, the=
+=20
+> file will consist of 3 JFFS2 nodes (4K + 4K + 2K) and fit into 9 + 9 + =
+5=20
+> =3D 23 NAND pages (4K data =3D 4 NAND pages and one is needed for node =
 
-> Bad eraseblock 3946 at 0x03da8000
-> No NAND device found!!!
-> s3c2410-nand: registered device sets:
-> s3c2410-nand: set 0, SmartMedia:error 1 
+> header; the rest of page won't be used since the next node isn't fit to=
+=20
+> it).
+>=20
+> When you append 32 bytes, one more page will be used (24 total). But if=
+=20
+> your append just after 10K file creation (i.e, the JFFS2 write buffer=20
+> hasn't yet been written to the NAND flash media), the 32B appendix node=
+=20
+> will be added to the 23-th page and there will be only 23 used pages.
+>=20
+> If the compression is on, there ought to be fewer used NAND pages.
+>=20
+> Ok, this is theory (I didn't check) and my own understanding of how=20
+> JFFS2 works. I might make mistakes :-)
+>=20
+> You may check this by creating/appending your file and then calculating=
+=20
+> the numbur of used pages. The nanddump utility may be used.
+>=20
 
-> s3c2410-nand: set 1, chip0:ok:
-> Creating 3 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-> 0x00000000-0x00004000 : "Boot Agent"
-> mtd: Giving out device 0 to Boot Agent
-> 0x00004000-0x00400000 : "/boot"
-> mtd: Giving out device 1 to /boot
-> 0x00400000-0x04000000 : "user"
-> mtd: Giving out device 2 to user
-> s3c2410-nand: set 2, chip1:ok:
-> Creating 3 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-> 0x00000000-0x00004000 : "Boot Agent"
-> mtd: Giving out device 3 to Boot Agent
-> 0x00004000-0x00400000 : "/boot" 
-
-> mtd: Giving out device 4 to /boot
-> 0x00400000-0x04000000 : "user"
-> mtd: Giving out device 5 to user
-> s3c2410-nand: set 3, chip2:error 1
-> 
-> I don't get work with the NAND, why?
-
-> MTD detect 5 devices, I've only 2 NAND. Why, occurs that?
-
-each mtd device node is 1 partition, not one chip. 
-
-> The proc/ is empty, there aren't device, why?
-
-/proc is for information, not device nodes.
-
-> Must I work with /dev/mtdN or /dev/mtdblockN?
-
-/dev/mtdX and /dev/mtdblockN are the proper devices to
-use for accessing the NAND partitions
-
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
