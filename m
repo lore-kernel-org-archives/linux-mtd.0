@@ -1,9 +1,9 @@
-Received: from web13205.mail.yahoo.com ([216.136.174.190])
+Received: from web13206.mail.yahoo.com ([216.136.174.191])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16tD84-0006CE-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 20:42:40 +0100
-Message-ID: <20020404194237.87870.qmail@web13205.mail.yahoo.com>
-Date: Thu, 4 Apr 2002 11:42:37 -0800 (PST)
+	id 16tEiE-0006JX-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 22:24:06 +0100
+Message-ID: <20020404212404.91918.qmail@web13206.mail.yahoo.com>
+Date: Thu, 4 Apr 2002 13:24:04 -0800 (PST)
 From: Sanjay Kumar <sankumar73@yahoo.com>
 Subject: Re: jffs2 mounting problem
 To: rkaiser@sysgo.de
@@ -23,20 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi Robert,
-Thanks for you useful sugestions.
-Now I create the character device using MAKEDEV script i.e 
-crwxr--r--   1 root     root      90,   0 Mar 27  2002 mtd0
-crwxr--r--   1 root     root      90,   2 Mar 27  2002 mtd1
-crwxr--r--   1 root     root      90,   4 Mar 27  2002 mtd2
-Also I am using eraseall(eraseall /dev/mtd2)to erase the last partition completely. 
-Still I see the same behaviour. 
-Also the used space remains at 100% and event after long time
-it doesn't decrease.
+One more intersting thing. 
+Even the "df" commnad shows uses to 100%, I can copy files to this last partition.
+Also copy between the two flashes(partition last to second) is extremly slow.
+Also still i see all those messages.
+What can be the reasons?
 
-Please let me know what else I can try. I am in very urgent need to solve this problem.
-
-Thanks & regards,
-Sanjay
+Thanks,
+Sanjay 
 --- Robert Kaiser <rob@sysgo.de> wrote:
 > Hi,
 > 
