@@ -1,18 +1,27 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from fep04-mail.bloor.is.net.cable.rogers.com ([66.185.86.74])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18X3K8-0007OG-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 17:52:04 +0000
-Received: from [192.168.4.57] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2676521 for linux-mtd@lists.infradead.org; Fri, 10 Jan 2003 10:23:07 -0800
-Message-ID: <3E1F0F47.1080606@redswitch.com>
-Date: Fri, 10 Jan 2003 10:21:59 -0800
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+	id 18X5kK-0007eI-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 20:27:16 +0000
+Received: from ei.homeip.net ([65.48.182.245])
+          by fep04-mail.bloor.is.net.cable.rogers.com
+          (InterMail vM.5.01.05.06 201-253-122-126-106-20020509) with ESMTP
+          id <20030110205646.JHBC214174.fep04-mail.bloor.is.net.cable.rogers.com@ei.homeip.net>
+          for <linux-mtd@lists.infradead.org>;
+          Fri, 10 Jan 2003 15:56:46 -0500
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ei.homeip.net (8.12.6/8.12.5) with ESMTP id h0AKvahC012062
+	(version=TLSv1/SSLv3 cipher=EDH-DSS-DES-CBC3-SHA bits=168 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 15:57:36 -0500
+Received: from localhost (ilgiz@localhost)
+	by localhost.localdomain (8.12.6/8.12.5/Submit) with ESMTP id h0AKvadx012058
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2003 15:57:36 -0500
+Date: Fri, 10 Jan 2003 15:57:36 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@infradead.org>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: DiskOnChip GRUB menu fall-back fix
+Message-ID: <Pine.LNX.4.44.0301101549410.12054-100000@localhost.localdomain>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: set_user_nice() not defined on 2.4.21+
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +33,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+I submitted a modification to the David Woodhouse's GRUB patch,
+patches/grub-2003-01-08-doc.patch in the MTD CVS tree.  It is the same as
+the previous one posted by Mark Meade plus the fix for a fall-back menu 
+option.  When the default drive (DiskOnChip) doesn't contain the menu.lst 
+file, the menu will be looked for among the first hard disk and the floppy 
+disk.  The bug was that selecting an item of the fall-back menu barked 
+about non-existent disk.
 
-When compiled JFFS2 with kernel 2.4.21-pre3, the linker complains that 
-the reference to set_user_nice() in function 
-jffs2_garbage_collect_thread() hasn't been defined. I traced the code 
-down to <linux/mtd/compatmac.h> and found that set_user_nice() is not 
-defined if linux verion is equal or greater than 2.4.21. See the code 
-below. Why? Does it mean that 2.4.21+ has already such a function 
-defined somewhere else or that 2.4.21+ doesn't need it? Actually I 
-searched 2.4.21-pre3 code and found no set_user_nice() defined except in 
-<linux/mtd/compatmac.h>. I guess it's possibly a bug.
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,0)   /* Is this right? */
-#define set_user_nice(tsk, n) do { (tsk)->priority = 20-(n); } while(0)
-#elif LINUX_VERSION_CODE < KERNEL_VERSION(2,4,21) && 
-!defined(RED_HAT_LINUX_KERNEL)
-#define set_user_nice(tsk, n) do { (tsk)->nice = n; } while(0)
-#endif
+I hope I didn't break anything by fixing this bug.
 
 -- 
-Shawn Jin
-RedSwitch Inc.
+Ilguiz Latypov
+Montreal, Quebec
+Canada
+
++1 (514) 526-6911 (home)
++1 (514) 281-9191 x 117 (work)
