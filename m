@@ -1,48 +1,80 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qE8U-0008AH-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 14:06:14 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14qEkc-0000EQ-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 14:45:38 +0100
+Received: from mail.utfors.se ([195.58.103.125])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qE8S-00089U-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 14:06:13 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <000b01c0c8ce$8d5d3d10$0a01a8c0@Win1> 
-References: <000b01c0c8ce$8d5d3d10$0a01a8c0@Win1> 
-To: joakim.tjernlund@lumentis.se
-Cc: "'Florian Schirmer / TayTron'" <schirmer@taytron.net>,
-    "'Vipin Malik'" <vipin.malik@daniel.com>, mtd@infradead.org
-Subject: Re: JFFS2 as root FS 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 19 Apr 2001 14:02:22 +0100
-Message-ID: <13506.987685342@redhat.com>
+	id 14qEka-0000EG-00
+	for mtd@infradead.org; Thu, 19 Apr 2001 14:45:36 +0100
+Received: from Win1 (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id PAA29595
+	for <mtd@infradead.org>; Thu, 19 Apr 2001 15:44:31 +0200 (MET DST)
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <mtd@infradead.org>
+Subject: mkfs.jffs2 again
+Date: Thu, 19 Apr 2001 15:44:35 +0200
+Message-ID: <000e01c0c8d6$dfb791c0$0a01a8c0@Win1>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1991.987680017@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+If I run mkfs.jffs2 on my PC(rh 7) I get this
+when I mount it on my RPX(PPC860) board:
+sh-2.03# mount -t jffs2 /dev/mtdblock0 mtdblock0/
+mtdblock_open
+ok
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000:
+0x8519 inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004:
+0x4400 inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008:
+0x1dfb inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000000c:
+0x0100 inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000010:
+0x0100 inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000014:
+0xed41 inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020:
+0xf4de inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024:
+0x9bde inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000028:
+0x9bde inst
+ead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000040:
+0xfc56 inst
+ead
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00008000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00010000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00018000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00020000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00028000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00030000 is not formatted. It will be erased
+JFFS2: Erase block at 0x00038000 is not formatted. It will be erased
 
-joakim.tjernlund@lumentis.se said:
->  I have tried to mount the FS again and the files are still there. It
-> still takes 1 min and 30 sec to mount it and sometime when I do a ls
-> the system hangs for 10-20 sec before the output from ls is seen. Is
-> this normal? 
+Then if I run mkfs.jffs2 on my RPX board I only get a few:
+JFFS2: Erase block at 0x00000800 is not formatted. It will be erased
 
-That's very very slow. I don't know why it's being so slow for you. 
+which I think is normal.
 
-Your CPU isn't particularly fast, but that shouldn't really make _that_ 
-much difference. 
 
-Can you set CONFIG_JFFS2_FS_DEBUG=1 and set default_loglevel to 8 in kernel/
-printk.c, then log the messages that it produces? I'd like to see if 
-anything untoward is happening.
-
-If it's really just being slow, then maybe you're going to need one or two 
-of the features on the wishlist implemented - checkpointing and 
-prepopulating inodes on mount.
-
---
-dwmw2
-
+Can this be an big/little endian issue?
 
 
 
