@@ -1,20 +1,20 @@
-Received: from mail.newlogic.at ([194.208.88.201])
+Received: from snifit.smb.utfors.se ([195.58.112.20])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A1MTX-0007rt-IW
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2003 09:55:19 +0100
-Message-Id: <200309220853.h8M8rth4001340@enterprise2.newlogic.at>
-MIME-Version: 1.0
-In-Reply-To: <3F6E89A6.4070408@snapgear.com>
-Date: Mon, 22 Sep 2003 10:53:55 +0200 (MEST)
-Sender: nwaibel@newlogic.com
-From: Niki Waibel <niki.waibel@newlogic.com>
-To: Greg Ungerer <gerg@snapgear.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-cc: uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [uClinux-dev] RE: Problem using DOC with mtd
-Reply-To: Niki Waibel <niki.waibel@newlogic.com>
+	id 1A1NwD-00086U-PD
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2003 11:29:01 +0100
+Received: from LUMENTIS02 ([212.105.56.242])
+ by snifit.smb.utfors.se (iPlanet Messaging Server 5.2 Patch 1 (built Aug 19
+ 2002)) with SMTP id <0HLM008CD2F2EZ@snifit.smb.utfors.se> for
+ linux-mtd@lists.infradead.org; Mon, 22 Sep 2003 12:28:14 +0200 (MEST)
+Date: Mon, 22 Sep 2003 12:28:14 +0200
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+To: linux-mtd@lists.infradead.org
+Message-id: <IGEFJKJNHJDCBKALBJLLCEHKFPAA.joakim.tjernlund@lumentis.se>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: GC does not handle big syslog files
+Reply-To: joakim.tjernlund@lumentis.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi
 
-On 22-Sep-2003 Greg Ungerer wrote:
-> Hi Yves,
-> 
-> Yves CLOUSIER wrote:
->> I think that this code should be add to the cvs. What do you think about
->> that Greg ? 
-> 
-> I thought the current DoC driver code did a reset?
-> Since this is not a diff It is not obvious to me what change here...
+By mistake I left syslog running on one of our boards. The syslog file
+has grown to 1.2 MB and is cuasing major problem for our app. Syslog just
+appends a line at time and that leads to LOTS of small data nodes.
 
-it could be a timing issue -- but i had no look, because my doc is dead.
-but it seems that my functions have helped yves.
+It takes about 10 minutes for jfs2_gcd to "check" this file during which writes
+to the FS hangs. Moreover this file is never GC:ed since theres is
+lots of free space left.
 
-niki
+1) Should I expect writes to hang while jffs2_gcd is "checking" a file?
+
+2) I think JFFS2 needs GC files even when there is plenty of room left in the
+   FS since fragmentation can get really bad. Comments?
+
+  Jocke
