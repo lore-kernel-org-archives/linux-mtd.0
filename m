@@ -1,21 +1,26 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
+Received: from stoneboat.aleph1.co.uk ([212.13.198.63] helo=home.wookware.org)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CADkE-0006dz-18
-	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2004 16:29:48 -0400
-Date: Wed, 22 Sep 2004 21:29:07 +0100
-From: Ben Dooks <ben-mtd@fluff.org>
-To: "lp4u@inwind.it" <lp4u@inwind.it>
-Message-ID: <20040922202907.GA25491@home.fluff.org>
-References: <I4G9K8$32150B19D33A6F23F04032D520B4890A@libero.it>
+	id 1CAHia-00073s-UA
+	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2004 20:44:18 -0400
+Received: from carnet-gw.aleph1.co.uk ([195.224.76.10] helo=court.aleph1.co.uk)
+	by stoneboat.aleph1.co.uk with esmtp (Exim 3.35 #1 (Debian))
+	id 1CAHhv-000096-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Sep 2004 01:43:35 +0100
+Received: from xios.aleph1.co.uk ([194.70.44.170] helo=xios ident=Debian-exim)
+	by court.aleph1.co.uk with esmtp (Exim 3.35 #1 (Debian))
+	id 1CAHi4-00063v-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Sep 2004 01:43:44 +0100
+Received: from wookey by xios with local (Exim 4.34) id 1CAHhs-0006Se-1w
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 01:43:32 +0100
+Date: Thu, 23 Sep 2004 01:43:32 +0100
+From: Wookey <wookey@aleph1.co.uk>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040923004331.GA24050@xios>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <I4G9K8$32150B19D33A6F23F04032D520B4890A@libero.it>
-Sender: Ben Dooks <ben@fluff.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, gavin@simtec.co.uk
-Subject: Re: NAND detect
-Reply-To: Ben Dooks <ben@fluff.org.uk>
+Sender: Wookey <wookey@aleph1.co.uk>
+Subject: Finding which block 'contains' a missing inode  
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 22, 2004 at 05:55:20PM +0200, lp4u@inwind.it wrote:
-> Hi,
-> 
-> I have a s3c2410 board (BAST architecture).
-> I have installed on board a kernel2.4.26 patched and with MTD.
-> But the board, at boot, don't detect the NAND (I've 3 NANDs on board: 2 samsung & 1 STM).
+Hello people, I have a JFFS2 NAND rootfs which is giving a single 
+'Eep. Child "gpe-filemanager.desktop" (ino #3324) of dir ino #3035 doesn't
+exist!' error.
 
-Does the bootloader list them, newish versions of the bootloader
-should probe all available devices and print the ID information
-it finds as it goes.
+I'd like to know if there is a way of finding out either form the live fs or
+from the jffs2 image file which block the offending inode/file should have
+been on?
 
-> The MTD detect only NOR Flash.
+Background: The kernel indicated one 'bad erase block' that is under this
+fs, but flasheraseall found no problem, and nandwrite did not skip that
+block. I worry that the block in question doesn't actually have the right
+data in it - if it corresponded to the above inode then I'd be sure I had
+located the problem.
 
-I've just had a check through, and it seems the driver was
-written pre the nand hooks for >1 chip per controller, and
-therefore just selects slot 0 (smartmedia card) at start time.
+There is also a 'normal' bad block (which gives an IO error when
+flasheraseall tries to erase it) - this _is_ skipped by nandwrite as expected.
 
-A quick way to get going would be to change the value passed
-to bast_nand_select_slot() in bast_nand_init() in the driver
-to at least show that a chip can be detected and used. The
-current default in the driver is to select the SmartMedia socket.
+TIA
 
-The slots are allocated as 0 for the SmartMedia card slot, and
-1 through 3 for the chips on the board (U52, U53 and U54)
-
-Looking through the NAND code, it seems that we may have a
-few problems with implementing >1 chip, which could bite
-in your configuration:
-
-1) The driver needs to work out which slots are used and
-   create a linear mapping of chips -> slots.
-
-2) The NAND layer itself seems to concatenate the chips
-   together, not export them as seperate devices, which
-   makes supporting removable devices in the card slot
-   and on-board NAND difficult.
-
-I would be interesting in anyone's comments about how difficult
-it would be to have an overall controller activity lock and
-allow a single controller to register more than one NAND chip
-as a seperate device. 
-
-It would also be nice to have at least some form of hotplug
-mechanism support where a chip can be re-scanned after a
-change in it's detect status.
-
+Wookey
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+Aleph One Ltd, Bottisham, CAMBRIDGE, CB5 9BA, UK  Tel +44 (0) 1223 811679
+work: http://www.aleph1.co.uk/     play: http://www.chaos.org.uk/~wookey/
