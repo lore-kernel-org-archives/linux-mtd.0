@@ -1,21 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dan Post <postster@gmail.com>
-In-Reply-To: <9f920bdf05011209455115963b@mail.gmail.com>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Comqp-0005Lk-H0
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:04:12 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050112165911.GE25638@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
-	<6934efce050112084111ef438c@mail.gmail.com>
-	<20050112170256.GF25638@wohnheim.fh-wedel.de>
-	<6934efce050112092246ae9277@mail.gmail.com>
-	<1105551293.26551.133.camel@hades.cambridge.redhat.com>
-	<9f920bdf05011209455115963b@mail.gmail.com>
-Content-Type: text/plain
-Date: Wed, 12 Jan 2005 17:52:02 +0000
-Message-Id: <1105552322.26551.143.camel@hades.cambridge.redhat.com>
+	<1105488400.17853.179.camel@tglx.tec.linutronix.de>
+	<20050112165911.GE25638@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 12 Jan 2005 18:37:00 +0100
+Message-Id: <1105551420.17853.256.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS3 & performance
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-01-12 at 09:45 -0800, Dan Post wrote:
-> Which can cause severe application performance problems in
-> RAM-constrained systems.  Your system will slow to a crawl if the page
-> cache is thrashed a lot... and I've seen this problem a number of
-> times.  If the page is always present, there is no page cache penalty
-> for executing code.
+On Wed, 2005-01-12 at 17:59 +0100, Jörn Engel wrote:
+> Ok, you completely ignore the central issue.  Looks like I was unclear
+> about it.
+> 
+> What happens, if crucial data in flash gets corrupted and is unusable?
+> Say, /sbin/init.
 
-Remember, you're comparing with the case where that page wasn't present
-at _all_ so the page is always absent. If you miscalculate your RAM
-budget with XIP, you're fairly quickly screwed as you run out of memory.
-If you miscalculate with non-XIP, you have a certain amount of slack
-because pages can be discarded and re-read. Yes, that can be suboptimal
-if you get into thrashing, but there's often going to be a reasonable
-number of pages you can discard before you get to that.
+I totaly agree that it must be sure that stuff does not get corrupted. 
 
-> We'll see what we can do to post numbers.
-> (No pun intended.)
+We use MTD for embedded systems since long and I'm well aware that data
+might be corrupted. So most of the systems have a ro partition for
+crucial stuff which only is mounted rw for updates under safe
+conditions. The application data is living on a different partition.
 
-:)
+For critical systems we have a backup emergency root, which we can
+activate when a update smashes the normal rootfs. There are other
+userspace possibilities to take care of backups and fallback.
 
-That'd be interesting. I can't imagine them showing that application XIP
-really is a long-term win, but we may find that some kind of partial
-XIP, or faulting parts of the kernel into RAM as we start up, or
-something like that, may be beneficial. I have an open mind -- mostly
-because I lack the wit to remember what I said before and hence be
-consistent :)
+So I don't see the point of an enforced mirror in MTD which will bring
+more complexity than it is worth, but I might have missed some points.
 
--- 
-dwmw2
+tglx
