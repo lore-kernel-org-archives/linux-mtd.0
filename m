@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from real.realitydiluted.com ([208.242.241.164])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15HSti-0002Bp-00
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Jul 2001 17:19:34 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <005f01c103db$b9336980$0301a8c0@landgarten.local> 
-References: <005f01c103db$b9336980$0301a8c0@landgarten.local> 
-To: Harris Landgarten <harrisl@samsungcctvusa.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad Magic 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 03 Jul 2001 17:25:09 +0100
-Message-ID: <26013.994177509@redhat.com>
+	id 15HUS4-0002J3-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Jul 2001 18:59:09 +0100
+Message-ID: <3B42078E.8E6539F7@cotw.com>
+Date: Tue, 03 Jul 2001 12:57:34 -0500
+From: "Steven J. Hill" <sjhill@cotw.com>
+Reply-To: sjhill@cotw.com
+MIME-Version: 1.0
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+CC: "Adam J. Richter" <adam@yggdrasil.com>, dwmw2@redhat.com,
+ 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ 	torvalds@transmeta.com
+Subject: Re: linux-2.4.6-pre8/drivers/mtd/nand/spia.c: undefined symbols
+References: <E15H3C2-0005qS-00@the-village.bc.nu>
+Content-Type: multipart/mixed;
+ boundary="------------94D7EE1425B8BCB7DFCFBFDE"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +26,92 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-harrisl@samsungcctvusa.com said:
->  Everything seems to work properly after boot but I am getting a bad
-> magic message and JFFS2 scan right after JFFS2 loads but before the
-> root filesystem is mounted.
+This is a multi-part message in MIME format.
+--------------94D7EE1425B8BCB7DFCFBFDE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-The 'bad magic' message probably comes from cramfs, which is looking at the 
-filesystem before JFFS2, and is rejecting it because the magic number which 
-would mark it as a cramfs filesystem is absent.
+Alan Cox wrote:
+> 
+> > The way that I architected the raw NAND flash device driver was to
+> > break it into 2 parts. 'nand.c' contains the actual driver code and
+> > is considered to be device independent. 'spia.c' is the device
+> > dependent part. You should write your own version of 'spia.c' and
+> 
+> So the Config.in is wrong since I can select spia on x86
+> 
+Indeed. That should be fixed now with this patch. Now onto the stuff
+for ESR.
 
-It's harmless.
+-Steve
 
+-- 
+ Steven J. Hill - Embedded SW Engineer
+--------------94D7EE1425B8BCB7DFCFBFDE
+Content-Type: application/octet-stream;
+ name="spia.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="spia.diff"
 
---
-dwmw2
+ZGlmZiAtdXJOIGxpbnV4LTIuNC42LXByZTkvZHJpdmVycy9tdGQvbmFuZC9Db25maWcuaW4g
+bGludXgtMi40LjYtcHJlOS1wYXRjaGVkL2RyaXZlcnMvbXRkL25hbmQvQ29uZmlnLmluCi0t
+LSBsaW51eC0yLjQuNi1wcmU5L2RyaXZlcnMvbXRkL25hbmQvQ29uZmlnLmluCVR1ZSBKdWwg
+IDMgMTE6Mjk6MDEgMjAwMQorKysgbGludXgtMi40LjYtcHJlOS1wYXRjaGVkL2RyaXZlcnMv
+bXRkL25hbmQvQ29uZmlnLmluCVR1ZSBKdWwgIDMgMTI6NTE6MTkgMjAwMQpAQCAtMSw2ICsx
+LDYgQEAKICMgZHJpdmVycy9tdGQvbmFuZC9Db25maWcuaW4KIAotIyAkSWQ6IENvbmZpZy5p
+bix2IDEuMSAyMDAxLzA0LzIwIDE1OjI3OjM4IGR3bXcyIEV4cCAkCisjICRJZDogQ29uZmln
+LmluLHYgMS4zIDIwMDEvMDcvMDMgMTc6NTA6NTYgc2poaWxsIEV4cCAkCiAKIG1haW5tZW51
+X29wdGlvbiBuZXh0X2NvbW1lbnQKIApAQCAtMTEsNiArMTEsOCBAQAogICAgYm9vbCAnICAg
+IEVuYWJsZSBFQ0MgY29ycmVjdGlvbiBhbGdvcml0aG0nICBDT05GSUdfTVREX05BTkRfRUND
+IHkKICAgIGJvb2wgJyAgICBWZXJpZnkgTkFORCBwYWdlIHdyaXRlcycgQ09ORklHX01URF9O
+QU5EX1ZFUklGWV9XUklURSB5CiBmaQotZGVwX3RyaXN0YXRlICcgIE5BTkQgRmxhc2ggZGV2
+aWNlIG9uIFNQSUEgYm9hcmQnIENPTkZJR19NVERfTkFORF9TUElBICRDT05GSUdfTVREX05B
+TkQKK2lmIFsgIiRDT05GSUdfQVJNIiA9ICJ5IiAtYSAiJENPTkZJR19BUkNIX1A3MjBUIiA9
+ICJ5IiBdOyB0aGVuCisgICBkZXBfdHJpc3RhdGUgJyAgTkFORCBGbGFzaCBkZXZpY2Ugb24g
+U1BJQSBib2FyZCcgQ09ORklHX01URF9OQU5EX1NQSUEgJENPTkZJR19NVERfTkFORAorZmkK
+IAogZW5kbWVudQpkaWZmIC11ck4gbGludXgtMi40LjYtcHJlOS9kcml2ZXJzL210ZC9uYW5k
+L3NwaWEuYyBsaW51eC0yLjQuNi1wcmU5LXBhdGNoZWQvZHJpdmVycy9tdGQvbmFuZC9zcGlh
+LmMKLS0tIGxpbnV4LTIuNC42LXByZTkvZHJpdmVycy9tdGQvbmFuZC9zcGlhLmMJVHVlIEp1
+bCAgMyAxMToyOTowMSAyMDAxCisrKyBsaW51eC0yLjQuNi1wcmU5LXBhdGNoZWQvZHJpdmVy
+cy9tdGQvbmFuZC9zcGlhLmMJVHVlIEp1bCAgMyAxMjo1MToxNCAyMDAxCkBAIC0zLDcgKzMs
+NyBAQAogICoKICAqICBDb3B5cmlnaHQgKEMpIDIwMDAgU3RldmVuIEouIEhpbGwgKHNqaGls
+bEBjb3R3LmNvbSkKICAqCi0gKiAkSWQ6IHNwaWEuYyx2IDEuOSAyMDAxLzA2LzAyIDE0OjQ3
+OjE2IGR3bXcyIEV4cCAkCisgKiAkSWQ6IHNwaWEuYyx2IDEuMTEgMjAwMS8wNy8wMyAxNzo1
+MDo1NiBzamhpbGwgRXhwICQKICAqCiAgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2Fy
+ZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogICogaXQgdW5kZXIg
+dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIg
+YXMKQEAgLTI4LDYgKzI4LDIyIEBACiBzdGF0aWMgc3RydWN0IG10ZF9pbmZvICpzcGlhX210
+ZCA9IE5VTEw7CiAKIC8qCisgKiBWYWx1ZXMgc3BlY2lmaWMgdG8gdGhlIFNQSUEgYm9hcmQg
+KHVzZWQgd2l0aCBFUDcyMTIgcHJvY2Vzc29yKQorICovCisjZGVmaW5lIFNQSUFfSU9fQURE
+Ugk9IDB4ZDAwMDAwMDAJLyogU3RhcnQgb2YgRVA3MjEyIElPIGFkZHJlc3Mgc3BhY2UgKi8K
+KyNkZWZpbmUgU1BJQV9GSU9fQUREUgk9IDB4ZjAwMDAwMDAJLyogQWRkcmVzcyB3aGVyZSBm
+bGFzaCBpcyBtYXBwZWQgKi8KKyNkZWZpbmUgU1BJQV9QRURSCT0gMHgwMDgwCS8qCisJCQkJ
+CSAqIElPIG9mZnNldCB0byBQb3J0IEUgZGF0YSByZWdpc3RlcgorCQkJCQkgKiB3aGVyZSB0
+aGUgQ0xFLCBBTEUgYW5kIE5DRSBwaW5zCisJCQkJCSAqIGFyZSB3aXJlZCB0by4KKwkJCQkJ
+ICovCisjZGVmaW5lIFNQSUFfUEVERFIJPSAweDAwYzAJLyoKKwkJCQkJICogSU8gb2Zmc2V0
+IHRvIFBvcnQgRSBkYXRhIGRpcmVjdGlvbgorCQkJCQkgKiByZWdpc3RlciBzbyB3ZSBjYW4g
+Y29udHJvbCB0aGUgSU8KKwkJCQkJICogbGluZXMuCisJCQkJCSAqLworCisvKgogICogTW9k
+dWxlIHN0dWZmCiAgKi8KICNpZiBMSU5VWF9WRVJTSU9OX0NPREUgPCAweDIwMjEyICYmIGRl
+ZmluZWQoTU9EVUxFKQpAQCAtMzUsNiArNTEsMjEgQEAKICAgI2RlZmluZSBzcGlhX2NsZWFu
+dXAgY2xlYW51cF9tb2R1bGUKICNlbmRpZgogCitzdGF0aWMgaW50IHNwaWFfaW9fYmFzZSA9
+IFNQSUFfSU9fQkFTRTsKK3N0YXRpYyBpbnQgc3BpYV9maW9fYmFzZSA9IFNQSUFfRklPX0JB
+U0U7CitzdGF0aWMgaW50IHNwaWFfcGVkciA9IFNQSUFfUEVEUjsKK3N0YXRpYyBpbnQgc3Bp
+YV9wZWRkciA9IFNQSUFfUEVERFI7CisKK01PRFVMRV9QQVJNKHNwaWFfaW9fYmFzZSwgImki
+KTsKK01PRFVMRV9QQVJNKHNwaWFfZmlvX2Jhc2UsICJpIik7CitNT0RVTEVfUEFSTShzcGlh
+X3BlZHIsICJpIik7CitNT0RVTEVfUEFSTShzcGlhX3BlZGRyLCAiaSIpOworCitfX3NldHVw
+KCJzcGlhX2lvX2Jhc2U9IixzcGlhX2lvX2Jhc2UpOworX19zZXR1cCgic3BpYV9maW9fYmFz
+ZT0iLHNwaWFfZmlvX2Jhc2UpOworX19zZXR1cCgic3BpYV9wZWRyPSIsc3BpYV9wZWRyKTsK
+K19fc2V0dXAoInNwaWFfcGVkZHI9IixzcGlhX3BlZGRyKTsKKwogLyoKICAqIERlZmluZSBw
+YXJ0aXRpb25zIGZvciBmbGFzaCBkZXZpY2UKICAqLwpAQCAtNzcsMTEgKzEwOCwxMSBAQAog
+CSAqIFNldCBHUElPIFBvcnQgRSBjb250cm9sIHJlZ2lzdGVyIHNvIHRoYXQgdGhlIHBpbnMg
+YXJlIGNvbmZpZ3VyZWQKIAkgKiB0byBiZSBvdXRwdXRzIGZvciBjb250cm9sbGluZyB0aGUg
+TkFORCBmbGFzaC4KIAkgKi8KLQkoKih2b2xhdGlsZSB1bnNpZ25lZCBjaGFyICopIChJT19C
+QVNFICsgUEVERFIpKSA9IDB4MDc7CisJKCoodm9sYXRpbGUgdW5zaWduZWQgY2hhciAqKSAo
+c3BpYV9pb19iYXNlICsgc3BpYV9wZWRkcikpID0gMHgwNzsKIAogCS8qIFNldCBhZGRyZXNz
+IG9mIE5BTkQgSU8gbGluZXMgKi8KLQl0aGlzLT5JT19BRERSID0gRklPX0JBU0U7Ci0JdGhp
+cy0+Q1RSTF9BRERSID0gSU9fQkFTRSArIFBFRFI7CisJdGhpcy0+SU9fQUREUiA9IHNwaWFf
+ZmlvX2Jhc2U7CisJdGhpcy0+Q1RSTF9BRERSID0gc3BpYV9pb19iYXNlICsgc3BpYV9wZWRy
+OwogCXRoaXMtPkNMRSA9IDB4MDE7CiAJdGhpcy0+QUxFID0gMHgwMjsKIAl0aGlzLT5OQ0Ug
+PSAweDA0Owo=
+--------------94D7EE1425B8BCB7DFCFBFDE--
