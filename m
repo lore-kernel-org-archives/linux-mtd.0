@@ -1,20 +1,19 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from palrel11.hp.com ([156.153.255.246])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ACQYs-0007JJ-9w
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2003 22:30:34 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "Srikanth Sherman" <sri@technovare.com>,
-	<linux-mtd@lists.infradead.org>
-Date: Thu, 23 Oct 2003 10:35:14 +1300
-References: <010001c398b6$aeadc740$1000a8c0@tsihq.com>
-In-Reply-To: <010001c398b6$aeadc740$1000a8c0@tsihq.com>
+	id 1ACRYp-0007WH-4F
+	for <linux-mtd@lists.infradead.org>; Wed, 22 Oct 2003 23:34:35 +0100
+From: "Christopher Hoover" <ch@hpl.hp.com>
+To: <tharbaugh@lnxi.com>, <ch@murgatroid.com>
+Date: Wed, 22 Oct 2003 15:33:24 -0700
+Message-ID: <000001c398ec$81bc7020$d203b60f@duckduck>
 MIME-Version: 1.0
-Message-Id: <20031022212914.ABE23BD59@blood.actrix.co.nz>
+In-Reply-To: <1066313282.10573.121.camel@tubarao>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: Running FAT+MTD
-Reply-To: manningc2@actrix.gen.nz
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+cc: 'mtd list' <linux-mtd@lists.infradead.org>
+Subject: RE: Regression of mtd/chips/jedec_probe.c in 2.6.0-test7
+Reply-To: ch@hpl.hp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +23,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 23 October 2003 05:08, Srikanth Sherman wrote:
-> Hello,
->
-> After reading some of the old archives of the MTD list,
-> it looks like at least a few people have used FAT+NFTL
-> instead of JFFS.  The one question I have is that how do
-> they take care of things like wear-leveling and garbage-collection?  Aren't
-> they a function of JFFS or am I completely confused about MTD?  Thanks.
->
-> Sri
+> If you can narrow the problem down to just a few lines that=20
+> are obviously incorrect then the patch should have a fighting=20
+> chance.
 
-First things first. ***DON'T BE TEMPTED TO DO THIS ***.
+Here's what I tried:
 
-The only valid reason to use FAT is if you have removeable storage that must 
-also plug into a FAT-based system.
+--- linux-2.6.0-test8-rmk1/drivers/mtd/chips/jedec_probe.c	2003-10-20
+22:19:24.000000000 -0700
++++ linux-2.6.0-test8-rmk1-ceiva1/drivers/mtd/chips/jedec_probe.c
+2003-10-22 15:24:55.000000000 -0700
+@@ -1481,7 +1481,7 @@
+ 	DEBUG( MTD_DEBUG_LEVEL3,
+ 	       "MTD %s(): Check fit 0x%.8x + 0x%.8x =3D 0x%.8x\n",
+ 	       __func__, base, 1 << finfo->DevSize, base + (1 <<
+finfo->DevSize) );
+-	if ( base + ( 1 << finfo->DevSize ) > map->size ) {
++	if ( base + cfi->interleave * ( 1 << finfo->DevSize ) > map->size )
+{
+ 		DEBUG( MTD_DEBUG_LEVEL3,
+ 		       "MTD %s(): 0x%.4x 0x%.4x %dKiB doesn't fit\n",
+ 		       __func__, finfo->mfr_id, finfo->dev_id,
+@@ -1539,10 +1539,10 @@
+ 	 */
+ 	DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): return to ID mode\n", __func__
+);
+ 	if(cfi->addr_unlock1) {
+-		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
+-		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
++		cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,
+cfi->device_type, NULL);
++		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,
+cfi->device_type, NULL);
+ 	}
+-	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,
+CFI_DEVICETYPE_X8, NULL);
++	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,
+cfi->device_type, NULL);
+ 	/* FIXME - should have a delay before continuing */
+=20
+  match_done:=09
 
-If you use FAT:
-* Your data is not safe.
-* Performance goes to hell.
+But it fails to find the chip:
 
-There are essentially two ways to implement a flash-based file system:
+Uncompressing Linux................................... done, booting the
+kernel.Linux version 2.6.0-test8-rmk1-ceiva1 (ch@laptop-vmware) (gcc =
+version
+3.3.1) #33CPU: ARM720T [41807202] revision 2 (ARMv4T)
+Machine: CEIVA/Polaroid Photo MAX Digital Picture Frame
+Memory policy: ECC disabled, Data cache write back
+On node 0 totalpages: 1024
+  DMA zone: 1024 pages, LIFO batch:1
+  Normal zone: 0 pages, LIFO batch:1
+  HighMem zone: 0 pages, LIFO batch:1
+Building zonelist for node : 0
+Kernel command line: root=3D/dev/mtdblock3 rootfstype=3Dcramfs =
+console=3DttyCL0
+debug
+Relocating machine vectors to 0xffff0000
+PID hash table entries: 32 (order 5: 256 bytes)
+Memory: 4MB =3D 4MB total
+Memory: 2908KB available (921K code, 116K data, 52K init)
+Calibrating delay loop... 36.76 BogoMIPS
+Dentry cache hash table entries: 1024 (order: 0, 4096 bytes)
+Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+CPU: Testing write buffer coherency: ok
+POSIX conformance testing by UNIFIX
+NET: Registered protocol family 16
+Bluetooth: Core ver 2.3
+NET: Registered protocol family 31
+Bluetooth: HCI device and connection manager initialized
+Bluetooth: HCI socket layer initialized
+epson1355fb: regs mapped at 0xc0800000, fb 2048 KiB mapped at 0xc0802000
+epson1355fb: xres=3D640, yres=3D480, is_color=3D1, is_dual=3D1, =
+is_tft=3D0
+epson1355fb: bpp=3D16, lcd_bpp=3D16, crt_enabled=3D0, lcd_enabled=3D1
+fb0: S1D13505 frame buffer device
+Fast Floating Point Emulator V0.9 (c) Peter Teichmann.
+JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+Serial: CLPS711x driver $Revision: 1.42 $
+ttyCL0 at I/O 0x100 (irq =3D 12) is a CLPS711x
+ttyCL1 at I/O 0x1100 (irq =3D 28) is a CLPS711x
+Using noop io scheduler
+Search for id:(01 225b) interleave(1) type(2)
+Search for id:(01 225b) interleave(1) type(2)
+Search for id:(70 e3a0) interleave(1) type(2)
+Search for id:(01 5b) interleave(2) type(1)
+Search for id:(01 5b) interleave(2) type(1)
+Search for id:(70 a0) interleave(2) type(1)
+Search for id:(70 f10) interleave(2) type(2)
+Search for id:(70 f10) interleave(2) type(2)
+Search for id:(70 f10) interleave(2) type(2)
+JEDEC: Found no ceiva flash device at location zero
+clps_setup_mtd: do_map_probe failed to find flash
+Bluetooth: HCI UART driver ver 2.1
+Bluetooth: HCI H4 protocol initialized
+NET: Registered protocol family 1
+Bluetooth: L2CAP ver 2.1
+Bluetooth: L2CAP socket layer initialized
+Bluetooth: RFCOMM ver 1.0
+Bluetooth: RFCOMM socket layer initialized
+Bluetooth: RFCOMM TTY layer initialized
+VFS: Cannot open root device "mtdblock3" or unknown-block(0,0)
+Please append a correct "root=3D" boot option
+Kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
 
-1) Block driver + regular file system (ext2, fat,...):
-This is the approach used by SmartMedia etc. In this approach, the block 
-driver tries to look like a hard disk block driver. The block driver does all 
-the wear levelling etc. The file system does not know anything about flash 
-and just thinks it is talking to a hard disk. To achieve this, the block 
-driver needs to tell a bunch of lies and make mappings etc that are liable to 
-corruption and speed issues.
-
-2) Flash file system (eg. JFFSx, YAFFS)
-These file systems know they are working with flash. They understand flash, 
-know how to exploit flash and work around performance issues. Both JFFSx and 
-YAFFS include some degree of journaling. They are both faster and more robust 
-than equivalent FAT+block solutions.
 
 
-IMHO.
+Is there something else you'd like me to try to narrow this down?
 
--- Charles
+-ch
