@@ -1,16 +1,18 @@
-Received: from mail.mediatrix.com ([205.237.248.11])
+Received: from [200.53.172.134] (helo=localhost.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 152dh1-0006MR-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 19:49:11 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D99545D@mail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Atmel flash memory device driver
-Date: Wed, 23 May 2001 14:49:08 -0400
+	id 152mUA-0006qz-00
+	for <linux-mtd@lists.infradead.org>; Thu, 24 May 2001 05:12:30 +0100
+Received: from isl.net.mx (localhost.localdomain [127.0.0.1])
+	by localhost.localdomain (8.9.3/8.9.3) with ESMTP id XAA04003
+	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 23:14:06 -0500
+Message-ID: <3B0C8A8E.F0543661@isl.net.mx>
+Date: Wed, 23 May 2001 23:14:06 -0500
+From: Nikolai Vladychevski <niko@isl.net.mx>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To: linux-mtd@lists.infradead.org
+Subject: mtdblock failing
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +26,32 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
 
-	I'm working on an Atmel flash memory device driver to run on a
-PowerPC embedded platform.  Did anybody have a clue about it?
+I have problems using mtdblock device with DoC millenium 8MB, it does
+not accept reading or writing. This is the error message when I do for
+example "dd if=/etc/passwd of=/dev/mtdblock0":
 
-Thanks!
+end_request: I/O error, dev 1f:00 (mtdblock), sector0
+dd: reading `/dev/mtdblock0': Input/output error
+0+0 records in
+0+0 records out
 
-Fr=E9d=E9ric Giasson
-Software Developper=20
-Mediatrix Telecom, Inc.=20
-4229 Garlock Street=20
-Sherbrooke (Quebec)=20
-Canada J1L 2C8=20
-Tel...: (819) 829-8749 EXT. 366
-Fax...: (819) 829-5100=20
-Web...: <http://www.mediatrix.com/>=20
-Email.: <mailto:fgiasson@mediatrix.com>=20
+
+/dev/mtd0 device works just perfect. I can read/write ok, I boot Linux
+Bios from it and I do not complain. But I could never get to work
+mtdblock device. Compiling it as module or comiling it in the kernel
+gives the same result. On the console I can see
+
+mtdblock_open
+ok
+mtdblock: read on "DiskOnChip Millenium" at 0x0, size 0x1000
+end_request: I/O error, dev 1f:00 (mtdblock), sector 0
+mtdblock_release
+ok
+
+Should I update to the lastests CVS tree? I am using version dated April
+11 2001. .2.4-test12 kernel.
+
+
+Thanks in advance
+
+Nikolai
