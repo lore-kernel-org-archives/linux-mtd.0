@@ -1,14 +1,20 @@
-Received: from thorgal.et.tudelft.nl ([130.161.40.91])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BE9vE-0001KE-9W
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 17:41:04 +0100
-Mime-Version: 1.0
-Message-Id: <a06002006bca469e103ce@[130.161.115.44]>
-Date: Thu, 15 Apr 2004 18:39:55 +0200
+	id 1BEBTd-0001kp-6E
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 19:20:41 +0100
+Received: from kiire.colleduc.ee (localhost [127.0.0.1])
+	by kiire.colleduc.ee (8.12.10/8.12.10) with ESMTP id i3FIKdhO019295
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2004 21:20:39 +0300
+Received: from localhost (kalev@localhost)i3FIKd0W019292
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2004 21:20:39 +0300
+Date: Thu, 15 Apr 2004 21:20:39 +0300 (EEST)
+From: Kalev Lember <kalev@colleduc.ee>
 To: linux-mtd@lists.infradead.org
-From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
-Subject: NAND bad blocks
+Message-ID: <Pine.LNX.4.44.0404152104170.18769-100000@kiire.colleduc.ee>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: FAT corruption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-There's a slight discrepancy between what mtd and mkyaffs consider a bad block.
+I am having trouble with current mtd code and linux 2.6.5 kernel.
 
- From mtd/drivers/mtd/nand/nand.c:
+I have a 16MB DoC Millennium Plus that has been formatted with dformat 
+(dformat -win:c800 -ipl:ipl.rom -s:doc514.exb -bdkf0:clara.rom 
+-bdkl0:256K -bdkn0:CLRA -y). It has been running for some time with 2.4.21 
+kernel and M-Systems TrueFFS driver. It uses the FAT filesystem.
 
-   static int nand_block_bad(struct mtd_info *mtd, unsigned long page)
-   {
-         struct nand_chip *this = mtd->priv;
+If I mount it with 2.6.5+mtd it also works flawlessly.
 
-         this->cmdfunc (mtd, NAND_CMD_READOOB, NAND_BADBLOCK_POS, page);
-         if (this->read_byte(mtd) != 0xff)
-                 return 1;
+Problems occur if I try to mount it again with 2.4+trueffs, then the 
+filesystem is corrupted. Sometimes file listing does not show any of the 
+files I have written with 2.6.5+mtd, sometimes I get filesystem panic and 
+I would be told that there was a FAT error.
 
-         return 0;
-   }
+And ideas?
 
-...which would indicate that even one bit set to zero would mark the 
-block bad. However, mkyaffs.c has this code:
-
-   /* Read the OOB data to determine if the block is valid.
-    * If the block is damaged, then byte 5 of the OOB data will
-    * have at least 2 zero bits.
-    */
-
-..snip..
-
-   if(countBits[oobbuf[5]] < 7)
-   {
-	printf("Block at 0x08%lx is damaged and is not being 
-formatted\n",addr);
-   }
-
-So, which is it ?
-
-JDB
 -- 
-LART. 250 MIPS under one Watt. Free hardware design files.
-http://www.lart.tudelft.nl/
+Best regards,
+Kalev
