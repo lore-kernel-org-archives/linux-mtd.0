@@ -1,26 +1,17 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192vzt-0004gO-3Y
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 17:30:57 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1049818139.31462.10.camel@passion.cambridge.redhat.com>
-References: <3E92D5C7.8020603@imc-berlin.de>
-	 <20030408141952.GA30313@wohnheim.fh-wedel.de>
-	 <3E92DDC9.7030000@imc-berlin.de>
-	 <20030408150331.GA32580@wohnheim.fh-wedel.de>
-	 <3E92EE0B.4000702@imc-berlin.de>
-	 <20030408160021.GC5065@wohnheim.fh-wedel.de>
-	 <3E92F32D.8000600@imc-berlin.de>
-	 <1049818139.31462.10.camel@passion.cambridge.redhat.com>
-Message-Id: <1049819444.1172.25.camel@tubarao>
-Mime-Version: 1.0
-Date: 08 Apr 2003 10:30:44 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-QPn3p01W7RA5b/U1Y4RI"
-cc: linux-mtd@lists.infradead.org
-cc: Steven Scholz <steven.scholz@imc-berlin.de>
-Subject: Re: JFFS2 uncompressed?
+Received: from oncidium.ireq.ca ([204.19.71.2] helo=caracas.ireq.ca)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 192w5i-0004jA-Px
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 17:37:00 +0100
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Tue, 8 Apr 2003 12:36:10 -0400
+Message-ID: <C1641369CCE2784593A091F212BF90D202D54F@caracas.ireq.ca>
+From: =?iso-8859-1?Q?=22Mercier=2C_Andr=E9=22?= <Mercier.Andre@ireq.ca>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Newbie questions: MTD vs M-Sys, ... RTLinuxPro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Before throwing myself in the MTD arena, I would like to know if it is =
+possible
+to boot from a DOC with RTLinux?
 
---=-QPn3p01W7RA5b/U1Y4RI
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Platform: PC104, Ampro CMP5E (pentium MMX)
+DOC 2000 (256MB, with TrueFSS 5.1.4)
+Linux: Redhat (5.2, 6.2, 7.2, 7.3, ...)
+RTLinux: version RTLinuxPro 1.1 or RTLinuxPro 1.2
 
-On Tue, 2003-04-08 at 10:08, David Woodhouse wrote:
-> On Tue, 2003-04-08 at 17:05, Steven Scholz wrote:
-> > But I'd love to see my name in the MTD Hall of Fame though! ;-)
+I am able to boot from DOC with Redhat 6.2 installation and M-Sys =
+drivers.
+But now, I would like to use instead the MTD drivers and be able to boot =
 
-For us, it's the cheap thrill of having our name in the MTD Hall of Fame
-. . .
+RTLinux from my 256MB DOC (note: this DOC cannot use the older
+version TrueFSS 4.2 from M-Sys). I have looked at the=20
+http://www.gctglobal.com/Download/DiskOnChip/diskonchip.html
+web site for some information, but there are still some questions to be =
+answered:
 
->=20
-> Send me a SSH key and you can commit your patch and at least get your
-> name in the $Id$ tag and the changelog... :)
+1) Does MTD work with new DOC2000 release (256 MB with TrueFSS 5.1.4)?
+2) Which Redhat distribution is the best choice for MTD (7.3, 8.0, =
+...9.0) ?
+3) What are the specific steps to include the MTD stuff with the =
+RTLinuxPro
+    distribution (note: RTLinux has been tested with Redhat 7.2, 7.3, =
+...
+    I did not buy the full kernel sources package, but I can make a =
+bzImage
+    and modules without problems) and be able to boot RTLinux from DOC?
 
-For Dave, it's that he's just too lazy to commit the patches we send him
-. . .
+Thanks for your help.
 
-;^)
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-QPn3p01W7RA5b/U1Y4RI
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+kvk0fsBPTKE6HMkRAojoAJ4q9rp7Fne3Qey7/aUGbL3wKe6GHACdEJhO
-PSIkRj1e8aypv8J9/7bsUTQ=
-=x9qS
------END PGP SIGNATURE-----
-
---=-QPn3p01W7RA5b/U1Y4RI--
+Andr=E9 Mercier
