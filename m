@@ -1,23 +1,16 @@
-Received: from [62.249.129.22] (helo=mars.iok.net)
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15IAr9-0004t8-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 16:15:52 +0100
-Received: from lin01.mn-logistik.de
-          (smit-3e365550.pool.mediaWays.net [62.54.85.80]) by mars.iok.net
-          (Post.Office MTA v3.5.3 release 223 ID# 127-53822U2500L250S0V35)
-          with ESMTP id net for <linux-mtd@lists.infradead.org>;
-          Thu, 5 Jul 2001 17:15:46 +0200
-Received: from there (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-logistik.de (Postfix) with SMTP id 8768DE77C
-	for <linux-mtd@lists.infradead.org>; Thu,  5 Jul 2001 16:32:44 +0200 (CEST)
-From: Holger Schurig <h.schurig@mn-logistik.de>
-To: linux-mtd@lists.infradead.org
-Subject: chip identification help?
-Date: Thu, 5 Jul 2001 16:32:44 +0200
+	id 15IDdM-00057n-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 19:13:48 +0100
+Date: Thu, 5 Jul 2001 20:16:21 +0200 (CEST)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: Vipin Malik <vipin@embeddedlinuxworks.com>
+cc: jffs-dev@axis.com, MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: On the "safe filesystem" and write() topic
+In-Reply-To: <5.1.0.14.0.20010704082022.00a67538@mail.spewey.com>
+Message-ID: <Pine.LNX.4.21.0107051942540.17972-100000@godzilla.axis.se>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_KE803A8EMFI1WBNJ4VYH"
-Message-Id: <20010705143244.8768DE77C@lin01.mn-logistik.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,259 +22,146 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---------------Boundary-00=_KE803A8EMFI1WBNJ4VYH
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+On Wed, 4 Jul 2001, Vipin Malik wrote:
+> I think I surely said it in context of JFFS (not JFFS2) loosing integrity 
+> (including files at random) during power fail tests and I stand behind 
+> those results till proven otherwise. Have you guys tested the JFFS fs under 
+> power fail? What version are you using and what were your results?
 
-Hi all!
+We've tested it but probably not in more than a couple of hundred
+cycles; I've never seen that floating bit error before, perhaps it's just
+some flash chips that get bitten by that and it might depend on the
+hardware as well (resident charge in capacitors etc).
 
-I have a board where I don't have the slightest idea what the flash 
-chip might be. Is there any web site that can help me idenfity it?
+> would you rather go with? With the maturing of JFFS2, IMHO folks should be 
+> encouraged to migrate to JFFS2 if possible (I am). Is there anything that 
+> JFFS gives you that you don't get with JFFS2?
 
+All products on sale from Axis still run 2.0.. next generation will be 2.4
+and some sort of JFFS, and it will be JFFS2 if the bugs are sorted out (no
+theoretical reason why JFFS2 shouldn't be perfect of course, it's just a
+matter of finetuning :) Well apart from compression-code and
+latency; after all you cannot both have synchronous writes, compression
+and expecting the application to not be blocked.. 
 
-The candiate I have in my eye is a square SMD chip with pins on all 
-four sites. The print says:
+(The rest of the system should not be blocked though, that's just a matter
+of being able to yield due to need_resched inside the
+compression code)
 
-D11644PBK
-F646501A
-# FA 0BAKLNW
+> >The problems arise from the vague definition of what the desired state
+> >would be - is it the data before the last write(), and what happens if you
+> >receive a signal ?
+> 
+> Isn't it the same case as what happens when you get a power fail? (please 
+> pardon my lack of understanding of signals in kernels. Can the execution 
+> that was interrupted with a signal ever resume at the interrupted point?)
 
-The "#" sign stands for the Texas Instruments logo.
+Depends on the system call and underlying filesystem; for a
+normal read/write, they probably just return the number of chars
+read/written up to the point of the signal (just as they can by the
+API). And hence my comment that it's no use trying to enforce atomic
+behaviour for entire write() chunks. Your app can catch a signal, return
+from a half-written write and then crash before you can write() the
+"missing" chars.
 
-No, a search on TI's website for 11644, D11644, F646501, 64F6501 etc 
-did not reveal any information on flash chips :-(
+So if you want to do the "atomic write" you need to disable all signal
+checking inside the write paths, which means going back to the non-generic
+write VFS functions and coincidentally you'll need to block the rest of
+the system as well (see 2'nd above paragraph) because you can't reschedule
+without a signal-check.
 
---------------Boundary-00=_KE803A8EMFI1WBNJ4VYH
-Content-Type: image/jpeg;
-  name="suspect.jpg"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="suspect.jpg"
+It's simply not a tenable scenario :) 
 
-/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
-HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
-MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAC/AMMDASIA
-AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
-AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
-ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
-p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
-AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
-BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
-U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
-uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDJcsDk
-see2KYJGI6559BUsltOeqyHjP3TQLWcDPlSf98GvAUJI9bnj3GeewJ56+1MZzhRk8EYqYwS55jfp
-/dNNMUiochwf92nZsOaPcV3bgghcdCB0pjuzgFmJNL8zErli2M7SOaj5wevFOzWguZdxcZAGenNN
-hiE8rqQrlfvqzAfKTz1Ppk0M4T7zBc9MnrVrQLrwjHDdDxDO0l1K+FVHIES46cdu+a6sK1GWpzYm
-1rneQaFbaJ4Wvkiv4p4NSgH2MF/mIABIH0rA0VLePWdLjku4Qm8I5L4Hbj9Kgu/G/gW7FmJrXUGN
-khhgIcKEX25HFUx4g+HTuHa11FTnOd46/nXdJKTvf8zkVZLRD5/CA1j4l+I7+5tHe2t5dzygZQx4
-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
+I'd much rather see the "start transaction/end transaction" ioctl's than
+trying to make write be atomic.
 
---------------Boundary-00=_KE803A8EMFI1WBNJ4VYH--
+> >  Writes to mmap'ed pages can't use that mechanism, and
+> >you'll be stuck with using write()'s when you really probably want to use
+> >libc wrappers like fwrite and fprintf.
+> 
+> That's true, but it's a tradeoff: If the task wants reliable writes to the 
+> fs, it must not use any lib calls. As a matter of fact, that's the last 
+> thing you want to use anyway as these wrappers buffer the programs writes, 
+> defeating the purpose of the default mechanism of O_SYNC of the JFFS(2) fs.
+
+I think that's a non sequiteur, especially given that the individual write
+itself is not atomic anyway. It can't matter if you do fprintf or a
+write() in a loop (since that's exactly what fprintf does eventually
+anyway).
+
+As long as writes are enforced to be sequential, I think that's
+enough. Does not JFFS2 queue writes internally anyway BTW ? And if you
+have O_SYNC (assuming JFFS adheres to it) when fprintf returns you can be
+as guaranteed that the data has been written as if you'd done it yourself
+with a write().
+
+> points in it that are being updated frequently. Each file has an overhead 
+> (as well a max # of files limit on the fs). How reasonable is it to put 
+> 5000, 8 byte files on a 1MB JFFS(2) fs? (this file would only occupy <50KB 
+> in a single (db) file) vs at least 5000*64(file overhead)+5000*8 = 360KB as 
+> separate files, assuming that you can even fit 5000 files on your partition.
+
+I think either a transaction mechanism or an entirely different flash
+filesystem (not VFS-based) need to be used if that is a common usage
+scenario.
+
+> >The kernel-level transactional extension would probably be quite difficult
+> >to get consistent also, because Linux VFS does not know about it yet (this
+> >is eventually changing with the integration of the general journalling
+> >layer I guess). I get a headache thinking about it, perhaps it's possible
+> >perhaps it's not; perhaps this code already exist in the other journalling
+> >filesystems, perhaps it does not.
+> 
+> I cannot speak intelligently about this so I'll keep my mouth shut :)
+
+IIRC the main holding points against merging reiserfs before was that it
+really should wait until VFS is made aware of journalling concepts in
+order to avoid "half way" solutions, and that in turn was dependant on the
+ext3 developers etc... 
+
+Thing is, I think JFFS2 uses the generic file writing in VFS which means
+that VFS itself fetches and updates pages in the page-cache (or
+similar) which means an overall more complex situation for JFFS which
+wants to write this transactionally without inter-process dependencies
+etc..
+
+I.e. suppose process A is writing to file X while B is reading from it,
+and writing to file Y at the same time. A starts a transaction and
+writes. If VFS does not know about transactions, it will simply put the
+writes in the page-cache so B might read them and write to file Y. So if a
+crash occurs, yes, file X is intact but Y is screwed up.
+
+So the writes need to be queued up in JFFS or VFS or you need to guarantee
+that only the process doing the writes have access to the file at the same
+time. This is a major obstacle, and I don't know how it's solved in
+reiser, JFS and XFS (if they support user-level transactions at
+all) without patching VFS and the page-cache.
+
+> any config or db directly on the fs unreasonable. (if you've been following 
+> my jitter tests recently, JFFS2 can block for 10's of seconds when it 
+> getting quite full).
+
+Probably possible but that's an implementation problem not a theoretical
+problem. In a "run time" phase (flash is almost all dirty, space exist and
+writes are coming in) there should never need to be more latency that what
+it takes to GC the same amount of space as you want to write.
+
+And as I wrote above somewhere, while the writing process needs to be
+blocked (in O_SYNC) there is no reason to block other processes from
+scheduling in, unless I've missed something major...
+
+> transactions in the fs. Anyway, there is a new project that is being 
+> started on developing (or modifying an existing embedded db (mird)) to 
+> provide for this transaction level processing for embedded systems on 
+> JFFS(2). In addition to providing transactions it will also provide a 
+
+One alternative is a completely user-mode flash DB. Have a deamon which
+have access to a raw flash device and implements a transactional database
+on that device. No need for a kernel system really..
+
+> caching layer that will allow the transaction log to be put on *another* 
+> non-volatile medium if such is available in your system. The big advantage 
+
+Why would this be necessary ?
+
+/BW
