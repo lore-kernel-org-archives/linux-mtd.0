@@ -1,48 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GTzm-0002EU-00
-	for mtd-list@infradead.org; Wed, 10 Jan 2001 22:45:30 +0000
-Received: from adsl-63-192-223-74.dsl.snfc21.pacbell.net ([63.192.223.74] helo=gateway.berkeley.innomedia.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14GTzl-0002EO-00
-	for mtd@infradead.org; Wed, 10 Jan 2001 22:45:29 +0000
-Received: from berkeley.innomedia.com (imap.berkeley.innomedia.com [192.168.1.5])
-	by gateway.berkeley.innomedia.com (8.9.1/8.9.1) with ESMTP id OAA02381
-	for <mtd@infradead.org>; Wed, 10 Jan 2001 14:45:23 -0800
-Received: (from mickey@localhost)
-	by berkeley.innomedia.com (8.9.3/8.9.3) id OAA31035
-	for mtd@infradead.org; Wed, 10 Jan 2001 14:45:23 -0800
-From: Michael Thompson <mickey@berkeley.innomedia.com>
-Message-Id: <200101102245.OAA31035@berkeley.innomedia.com>
+	id 14GUKM-0002Je-00
+	for mtd-list@infradead.org; Wed, 10 Jan 2001 23:06:46 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14GUKK-0002JY-00
+	for mtd@infradead.org; Wed, 10 Jan 2001 23:06:45 +0000
+Date: Wed, 10 Jan 2001 23:06:39 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?iso-8859-1?Q?St=E9phane?= Laroche <stephane.laroche@colubris.com>
+cc: <mtd@infradead.org>,  <nico@cam.org>
 Subject: Re: CFI problems with 32bit bus and 4 devices
-To: mtd@infradead.org
-Date: Wed, 10 Jan 2001 14:45:23 -0800 (PST)
+In-Reply-To: <3A5CE4A7.AB29F73E@colubris.com>
+Message-ID: <Pine.LNX.4.30.0101102300310.1062-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=UTF8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Wed, 10 Jan 2001, [iso-8859-1] St=E9phane Laroche wrote:
 
-dwmw2 wrote:
-> 
-> Technically, I think this setup would fit into the original model as
-> buswidth == 8, and we should be using read64/write64 for accesses to the
-> flash.
-> 
-> Just how crap is gcc's long long support these days? Could we use __u64
-> for this?
+> The only difference between the 2 modes are the CFI addresses (you have t=
+o
+> multiply them by 2 in x8 mode).  So you cannot cover that in the map driv=
+er,
+> which doesn't know the difference between a CFI and a normal operation.
 
-Actually, I just got buswidth==8 working on a 32-bit ppc (my configuration
-is 4 devices in 16 bit mode).  However, I found that I could use __u64 for
-passing data around, but __u64 would not work when accessing the devices..
-For this, I had to use a little trick: floating point loads and stores.
-On the ppc, these are 64 bits wide.
+"BYTE ENABLE: BYTE# low places the device in x8 mode. All data is then
+input or output on DQ0-DQ7, while DQ8-DQ15 float. Address A0 selects
+between the high and low byte. BYTE# high places the device in x16 mode,
+and turns off the A0 input buffer. Address A1 then becomes the lowest
+order address."
 
-I'd be willing to submit patches...  Shall I send them to you?
+Yep, I was wrong. It couldn't work the way I was thinking of - you'd have
+too few address lines to access the whole chip in x8 mode.
 
--Michael Thompson
-mickey@berkeley.innomedia.com
+We do need to handle it in the CFI code, as we did before I broke it.
+
+--=20
+dwmw2
+
+
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
