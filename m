@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from rezznor.smb.utfors.se ([195.58.112.22])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bfI9-0003ID-00
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 11:40:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <009301c23c5d$c8a3d380$3064000a@nurpinar> 
-References: <009301c23c5d$c8a3d380$3064000a@nurpinar> 
-To: "nur" <nurpinar@basari.net.tr>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: couldn't initialize doc2000 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Aug 2002 11:40:45 +0100
-Message-ID: <941.1028544045@redhat.com>
+	id 17bi1f-0003Zq-00
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2002 14:35:59 +0100
+Received: from LUMENTIS02 ([212.105.56.242]) by
+          rezznor.smb.utfors.se (Netscape Messaging Server 4.15) with SMTP
+          id H0DHRX00.MQF for <linux-mtd@lists.infradead.org>; Mon, 5 Aug
+          2002 15:35:57 +0200
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: Disk blocks for long periods
+Date: Mon, 5 Aug 2002 15:35:56 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLMEHIFFAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <461.1028543711@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-nurpinar@basari.net.tr said:
-> Using /lib/modules/2.2.18-rtl3.0-doc2000/block/doc.o 
-> Cannot initialize M-Systems DOC 2000 OSAK
+Hi 
 
-You are trying to use a binary module. In doing so, I believe you are 
-violating the GPL. You will not get any help here.
+I have noticed that if i copy a "big" file(580K) it sometimes take up to 42 seconds before
+it's finished. Normally it takes about 3-4 seconds. When this long copy happen, top reports
+that kupdate and the copy(cp) process is in D state, the rest is sleeping.
+The FS is a 45% usage. FS is about 63MB in size. Using the stable branch.
 
-On the other hand, if you want help trying to use the legal drivers which
-are part of the Linux kernel, we will try to help you.
+Why does it block for so long time?
 
---
-dwmw2
+Also, if I fill the FS up to 100% and later reboots, it kan take 10-15 minutes before
+init starts to run. The root fs mount takes about 20 seconds and the system just
+stops between the last message from the kernel and when init prints its version.
+
+It is just the first reboot after I fill the FS, once I have gotten past the first reboot and
+reboots again, things are back to normal.
+
+Any ideas?
+
+   Jocke
