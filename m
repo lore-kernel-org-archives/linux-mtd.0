@@ -1,25 +1,11 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.106])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CWws7-0005j3-Ey
-	for linux-mtd@lists.infradead.org; Wed, 24 Nov 2004 08:07:48 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.12.10/8.12.9) with ESMTP id iAOD7i0V479460
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:44 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	iAOD7hCv255766
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:43 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iAOD7hRL028436
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Nov 2004 08:07:43 -0500
-From: Josh Boyer <jdub@us.ibm.com>
+From: David Woodhouse <dwmw2@infradead.org>
 To: Todd Poynor <tpoynor@mvista.com>
 In-Reply-To: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
 References: <20041123222521.GA17741@slurryseal.ddns.mvista.com>
 Content-Type: text/plain
-Message-Id: <1101301663.22829.3.camel@weaponx.rchland.ibm.com>
+Message-Id: <1101304647.8191.9015.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 24 Nov 2004 07:07:43 -0600
+Date: Wed, 24 Nov 2004 13:57:28 +0000
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Supporting flash that powers up locked
@@ -32,15 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-11-23 at 16:25, Todd Poynor wrote:
-
-<snip>
-
+On Tue, 2004-11-23 at 14:25 -0800, Todd Poynor wrote:
+> Flash chips that power up with all blocks locked (such as K3
+> StrataFlash) seem to be showing up on more and more platforms.  At the
+> risk of being a pest, I'd like to push for some agreement on how to
+> handle this and possibly get the support into linux-mtd.
 > 
-> If anyone has any suggestions or comments as to why this wouldn't work
-> for their device or usage model or why this isn't the right way to go
-> about things then I'd appreciate it, thanks. -- Todd
+> Below is a patch to the partition driver to use the partition map as the
+> source of information for whether a partition is to be writeable and to
+> unlock blocks upon write if the block is found to be locked when this
+> was not intended.  It intercepts an EROFS return from the chip driver on
+> a write/erase, unlocks blocks, and retries the write/erase, if the
+> partition is marked writeable.  If the partition is not writeable, or if
+> the partition has been explicitly locked, then the locked blocks are
+> left alone and the EROFS is returned to the caller.
 
-Not everyone uses mtd partitions...
+We already have a bit to set in the partition flags to show that a
+partition should be read-only. 
 
-josh
+I'd rather do this with a blacklist of the chips which lock themselves,
+and have the chip driver automatically unlock it at boot time and
+suspend time (or automatically as required).
+
+-- 
+dwmw2
