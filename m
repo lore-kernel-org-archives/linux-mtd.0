@@ -1,23 +1,18 @@
-Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18P6tU-00039S-00
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 20:03:45 +0000
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	by dummy.ddiworldwide.com (Postfix) with SMTP id AF907162F79
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 15:37:04 -0500 (EST)
-Received: from plinux.ddiworldwide.com (plinux [192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id 10C6B162F78
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 15:37:04 -0500 (EST)
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Frank R Callaghan <f.callaghan@ieee.org>
-Reply-To: f.callaghan@ieee.org
-To: LinuxMTD <linux-mtd@lists.infradead.org>
-Subject: AMD Config Advice
-Date: Thu, 19 Dec 2002 15:31:19 -0500
+Received: from b.smtp-out.sonic.net ([208.201.224.39])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18P9ee-0003Pp-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 23:00:36 +0000
+Received: from mailman.eason.com (adsl-209-204-139-80.sonic.net [209.204.139.80])
+	by turbo.sonic.net (8.11.6/8.8.5) with ESMTP id gBJNVFn26776
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 15:31:15 -0800
+Message-ID: <D3AF5F134D627243993F2F2FC32EE4D229C4CE@mailman.eason.com>
+From: Alex Pavloff <apavloff@eason.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: RE: linux-mtd digest, Vol 1 #728 - 13 msgs
+Date: Thu, 19 Dec 2002 15:31:14 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200212191531.19640.f.callaghan@ieee.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,86 +24,63 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+> Date: Mon, 16 Dec 2002 13:54:14 +0100
+> From: Geoffroy Stevenne <geof@hellea.com>
+> To: linux-mtd@lists.infradead.org
+> Subject: Re: writing new BBRAM driver
+> Organization: Hellea SPRl
+> 
+> 
+> Hi,
+> 
+> On Mon, 16 Dec 2002 11:14:41 +0100 (MET)
+> Tobias Otto-Adamczak <toa@indakom.de> wrote:
+> 
+> > Alex Pavloff, 2002-12-13, 15:45h:
+> > 
+> > > Hi there folks.  I've written the struct mtd_info functions for a
+> > > 128KB BBRAM driver for my companies new board.  It's horribly
+> > > simple, as most of it is actually done by a gate array on 
+> the board,
+> > > so from kernel land its just poking ioports.  Easy stuff.
+> 
+> Great! If it works with the versalogic board it will be tested
+> here with a 512KB BBRAM.  Of course I'll provide maximum feedback
+> (maybe patches if any required). Thanks!
 
-I undrstand this may be a very basic question, but here go's
+Sadly, its an integrated piece of hardware that goes onto a
+power/touchscreen/bbram mezzanine board that fits directly on top of a geode
+"biscuit" SBC board and connects via PC104.  I'll make the source available,
+but I really don't think it'll be useful to anyone else as something other
+than an example.
 
-I am looking to use an AMD flash chip on my pc104 card
-to store some non-volatile data, the chip is a 2MB part  AMD29F016,
-the BIOS is in the top 128KB of the first mega-byte(do not want to overwrite).
+I'm still trying to figure out some stuff.
 
-After setting up the kernel with MDT I get
-cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00200000 00010000 "Physically mapped flash"
+The BBRAM formats to 122KB, which is fine.  I can copy files to & from it.
+Since my device can be powered down at any second, I'm might want to use a
+journalling filesystem, but, well, I don't need any sort of wear levelling,
+so I think jffs/2 is overkill.  Shall I just run minix and just fsck the
+drive on powerup or us there some sort of small non-wear-levelling yet
+journalling filesystem that I could use?
 
-ok but I only need the second 1MB - is there some way to either
-prevent the first meg being mapped/used ?
+Secondly:  erasesize.  I have to define a "erase" function (like that of the
+test RAM device) and define MTD_ERASEABLE and I've got the erasesize set to
+0.  Is this ok?  Will this be called?  Should I make erase size larger for
+some reason?
 
-Kernal Version 2.4.19 with:
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=3
-# CONFIG_MTD_PARTITIONS is not set
-# CONFIG_MTD_CONCAT is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CHAR is not set
-CONFIG_MTD_BLOCK=y
-CONFIG_FTL=y
-# CONFIG_NFTL is not set
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_CFI=y
-CONFIG_MTD_JEDECPROBE=y
-CONFIG_MTD_GEN_PROBE=y
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-CONFIG_MTD_CFI_AMDSTD=y
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-# CONFIG_MTD_OBSOLETE_CHIPS is not set
-# CONFIG_MTD_AMDSTD is not set
-# CONFIG_MTD_SHARP is not set
-# CONFIG_MTD_JEDEC is not set
-#
-# Mapping drivers for chip access
-#
-CONFIG_MTD_PHYSMAP=y
-CONFIG_MTD_PHYSMAP_START=9500000		<- My phy addr of second MB
-CONFIG_MTD_PHYSMAP_LEN=100000		<-- 1MB
-CONFIG_MTD_PHYSMAP_BUSWIDTH=1
-# CONFIG_MTD_PNC2000 is not set
-# CONFIG_MTD_SC520CDP is not set
-# CONFIG_MTD_NETSC520 is not set
-# CONFIG_MTD_SBC_GXX is not set
-# CONFIG_MTD_ELAN_104NC is not set
-# CONFIG_MTD_DILNETPC is not set
-# CONFIG_MTD_MIXMEM is not set
-# CONFIG_MTD_OCTAGON is not set
-# CONFIG_MTD_VMAX is not set
-# CONFIG_MTD_L440GX is not set
-# CONFIG_MTD_AMD766ROM is not set
-# CONFIG_MTD_ICH2ROM is not set
-# CONFIG_MTD_PCI is not set
-#
-# Self-contained MTD device drivers
-#
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_MTD_BLKMTD is not set
-# CONFIG_MTD_DOC1000 is not set
-# CONFIG_MTD_DOC2000 is not set
-# CONFIG_MTD_DOC2001 is not set
-# CONFIG_MTD_DOCPROBE is not set
+And lastly, while I've got you here, does anyone have any info on why
+certain CompactFlash pieces don't work properly in IDE mode without file
+corruption?
 
-also I'm looking to use jffs2 as the file system - maybe I can partion it
-to only use the second meg ???
+A range of possible theories have been proposed
+ 1)  Slow write speed of flash falling out of IDE spec
+ 2)  Crappy controller chips with IDE code that isn't up to spec
+ 3)  Linux affinity for SanDisk only, require the =flash option boot
 
-TIA,
-        Frank.
+I don't have any flash that does this, but its out there.  All thoughts
+appreciated.
+
+Thanks for the great subsystem.
+
+Alex Pavloff - apavloff@eason.com
+Eason Technology -- www.eason.com
