@@ -1,21 +1,16 @@
-Received: from miranda.axis.se ([193.13.178.2])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157DL4-0004Tu-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 10:41:27 +0100
-Message-ID: <018601c0eda3$fff76770$0a070d0a@axis.se>
-From: "Johan Adolfsson" <johan.adolfsson@axis.com>
-To: "David Woodhouse" <dwmw2@infradead.org>,
-   "David S. Miller" <davem@redhat.com>
-Cc: "Chris Wedgwood" <cw@f00f.org>, "Jeff Garzik" <jgarzik@mandrakesoft.com>,
-   <bjorn.wesen@axis.com>, <linux-kernel@vger.kernel.org>,
-   <linux-mtd@lists.infradead.org>
-References: <15132.22933.859130.119059@pizda.ninka.net>  <13942.991696607@redhat.com> <3B1C1872.8D8F1529@mandrakesoft.com> <15132.15829.322534.88410@pizda.ninka.net> <20010605155550.C22741@metastasis.f00f.org>  <25587.991730769@redhat.com>
-Subject: Re: Missing cache flush. 
-Date: Tue, 5 Jun 2001 11:43:39 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Received: from crystal.2d3d.co.za ([196.14.185.203] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 157EMb-0004YS-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 11:47:06 +0100
+Date: Tue, 5 Jun 2001 12:52:33 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: erasesize
+Message-ID: <20010605125233.A31929@crystal.2d3d.co.za>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,25 +22,48 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Possibly saying something extremly stupid here,
-how about simply "fakewriting" 0xFF to the flash
-after an erase to update any caches?
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 2. Flash. A few writes of magic data to magic addresses and a whole erase
->    block suddenly contains 0xFF. The CPU doesn't notice that either.
+Hi!
 
- do_erase_stuff();
- /* While verifying, update cache */
-                for (address = adr; address < (adr + size); address++) {
-                        if ((verify = map->read8(map, address)) != 0xFF) {
-                                error = 1;
-                                break;
-                        }
-                        /* "Fake" write 0xFF's to the erased sector so that
-caches are updated
-                         *  after we verified that uncached data is ok
-                         */
-                        *(unsigned char*)CACHED(address) = 0xFF;
-                }
+What should I set erasesize to when the flash chips have multiple erase
+sizes (and therefor I use eraseregions to get erasesize info)? Is 0
+acceptable or should I set it to something else - it doesn't really make
+sense to put any value in this after all...
 
-/Johan
+--=20
+
+Regards
+ Abraham
+
+Will Rogers never met you.
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
+
+
+--u3/rZRmxL6MmkK24
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7HLnxzNXhP0RCUqMRAqwhAJ485Fn3NAh5OgrBjT54ZEV43JSv0QCffi6e
+nCQb+p2CpLAZkoQosK4zl4I=
+=S9Eu
+-----END PGP SIGNATURE-----
+
+--u3/rZRmxL6MmkK24--
