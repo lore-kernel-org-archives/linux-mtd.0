@@ -1,19 +1,21 @@
-Received: from [61.144.167.188] (helo=asmail.avansys.com)
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17m9yk-0007Io-00
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2002 10:28:10 +0100
-Received: from l23009 ([10.63.16.1]) by asmail.avansys.com
-          (Netscape Messaging Server 4.15) with ESMTP id H1UVGT00.S2E for
-          <linux-mtd@lists.infradead.org>; Tue, 3 Sep 2002 17:24:29 +0800
-Message-ID: <001801c2532b$fda0d3f0$e8023f0a@l23009>
-From: "lixi_avansys" <lixi@avansys.com>
-To: "linux" <linux-mtd@lists.infradead.org>
-Subject: GPL ,LGPL ,and our application
-Date: Tue, 3 Sep 2002 17:26:32 +0800
+	id 17mAdL-0007N6-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2002 11:10:07 +0100
+Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
+	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 17mAdK-0002wy-0V
+	for linux-mtd@lists.infradead.org; Tue, 03 Sep 2002 11:10:06 +0100
+Subject: Stable cvs version for 2.4
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 3 Sep 2002 11:09:44 +0100
+Message-ID: <541025071C7AC24C84E9F82296BB9B952D23@OPTEX1.optex.local>
+Content-Class: urn:content-classes:message
+From: "John Hall" <John.Hall@optionexist.co.uk>
+To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,15 +27,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-aGVsbG8sDQoNCiAgICB3ZSB3YW50IHRvIG1ha2UgYSBwcm9kdWN0IHVzaW5nIENvbGRmaXJlNTI3
-MiB3aXRoIHVjbGludXgsIGJ1dCB3ZSBtZWV0IGEgbGljZW5zZSBwcm9ibGVtLiANCiAgICANCiAg
-ICBhY2NvcmRpbmcgdG8gR1BML0xHUEwgd2UgbmVlZCB0byBvcGVuIG91ciBhcHBsaWNhdGlvbiBz
-b3VyY2UgY29kZSBpZiB0aGUgYXBwbGljYXRpb24gcHJvZ3JhbSBhcmUgc3RhdGljIGxpbmtlZCB3
-aXRoIHVjLWxpYmMuDQoNCiAgICBJIHdhbnQgdG8ga25vdyBob3cgdG8gYXZvaWQgdG8gb3BlbiBh
-cHBsaWNhdGlvbiBzb3VyY2UgY29kZSAsIG90aGVyd2lzZSB0aGUgb3RoZXJzIGNhbiBjbG9uZSBv
-dXIgcHJvZHVjdCB3aXRob3V0IGFueSBwcm9ibGVtIC4gU29tZSBvdGhlciBjb21wYW55IHVzaW5n
-IHVjbGludXggaW4gdGhlaXIgcHJvZHVjdCBtYXkgZmFjZSBzYW1lIHByb2JsZW0gYmVmb3JlIHNv
-IEkgd2FudCB0byBrbm93IGhvdyB0aGVtIGhhbmRsZSB0aGlzPyANCg0KDQoNCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRoYW5rcyBhIGxvdCENCg0KDQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2luZHN0
-b25lDQo=
+Hi,
+
+We're currently using ARM Linux 2.4.18-rmk7, and following the 2.4 =
+series of the kernel for our product that we're developing. I've been =
+using cvs versions of the mtd subsystem since I've needed jffs2 on NAND =
+flash, and I currently have code dating back to June. I've just done an =
+update since there seem to be a lot of jffs2 changes.
+
+Looking at some of the comments, there seem to be some fairly =
+experimental things recently committed (e.g version 1.26 of =
+fs/jffs2/read.c). My question is, is there a reasonably stable version I =
+can use, and indeed is the current HEAD version suitable for 2.4, or is =
+it 2.5 only?
+
+I guess the answer to the first question is to stick with whatever's in =
+the stock kernel unless I want to be helping to test the latest code, =
+but I would appreciate advice anyway.
+
+Regards,
+John Hall
+
+--=20
+OptionExist Limited.
+The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
+Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
+http://www.optionexist.co.uk/
