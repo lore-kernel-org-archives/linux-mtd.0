@@ -1,16 +1,18 @@
-Received: from samar.sasken.com ([164.164.56.2])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 166VD4-0001My-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 11:06:30 +0000
-Message-ID: <3BFBDB54.C02EBE28@sasken.com>
-Date: Wed, 21 Nov 2001 16:50:28 +0000
-From: Ashok M Padmanaban <ashokmp@sasken.com>
-MIME-Version: 1.0
-To: MTD for Linux <linux-mtd@lists.infradead.org>,
-   JFFS mailing list <jffs-dev@axis.com>
-Subject: Flash Partitons
+	id 166VLf-0001Nb-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 11:15:23 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3BFBDB54.C02EBE28@sasken.com> 
+References: <3BFBDB54.C02EBE28@sasken.com> 
+To: Ashok M Padmanaban <ashokmp@sasken.com>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>,
+    JFFS mailing list <jffs-dev@axis.com>
+Subject: Re: Flash Partitons 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Wed, 21 Nov 2001 11:25:51 +0000
+Message-ID: <9111.1006341951@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,32 +24,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
- It will be very usefull if some one can give their  comments.
+ashokmp@sasken.com said:
+>  But having the config files and user data in the same partition
+> .......will it be safe? Like while manipulating the user data, is
+> there any chance that config files may be corrupted...while GC. is
+> running and the power goes down.......) 
 
-We are developing an embeded device (email device ) and planning to have
+It ought to be safe. It's designed that way and perhaps more importantly,
+we've actually done power-fail testing on active JFFS2 filesystems and
+observed that it's fine. You can do your own testing to make sure it's
+reliable to your own standards.
 
-CRAMFS for the root file system and JFFS2 for the user data.
+The 5 blocks of GC reserved space is also fixable. We'll reduce it if and
+when I'm sufficiently convinced that it's safe to do so.
 
-If CRAMFS is root fs, then i cant have  system and user configuration
-files under this as they are updated according to requirement.
-
-One way is to have links to Jffs2 partition so that we  can update these
-files.
-Or To have a separate partition (jffs2) for configuration files, which
-consumes a lot of
-flash space (as 5 sectors are reserved for GC).
-
-I feel first one is the better choice as we are very tight on FLASH
-space.
-But having the config files and user data in the same partition
-.......will it be safe?
-Like while manipulating the user data, is there any chance that config
-files may be corrupted...while GC. is running and the power goes
-down.......)
-
-Is there any other way of doing this.
-
-Thanks in advance
-Regards
-ashok
+--
+dwmw2
