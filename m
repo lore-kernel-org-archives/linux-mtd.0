@@ -1,20 +1,14 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTcYe-0001ix-IL
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 03:50:14 -0500
-Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id D434C22967
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Nov 2004 11:49:13 +0300 (MSK)
-Message-ID: <41986D89.4060308@oktetlabs.ru>
-Date: Mon, 15 Nov 2004 11:49:13 +0300
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+In-Reply-To: <41986A21.6040605@yandex.ru>
+References: <41986A21.6040605@yandex.ru>
+Content-Type: text/plain
+Date: Mon, 15 Nov 2004 08:46:17 +0000
+Message-Id: <1100508377.8015.59.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: NAND pages cache?
-Reply-To: dedekind@oktetlabs.ru
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: one more field in raw_node_ref ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +18,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, 2004-11-15 at 11:34 +0300, Artem B. Bityuckiy wrote:
+> Hello guys,
+> 
+> I would be happy to know your opinions about to introduce one more 
+> 32-bit field to the node_ref structure in the JFFS2. Is this really bad?
 
-It is known that MTD always reads/writes in fractions of the whole NAND 
-pages. An this is right I believe.
-
-But while working with JFFS2, I have mentioned that very often it reads 
-the same page several times consequently. This happens for example, when 
-JFFS2 performs Garbage Collection, and there are several small nodes in 
-the NAND page. Thus, when JFFS2 reads these nodes, it re-reads the same 
-NAND page several times. This is bad.
-
-So, the obvious idea how to avoid this is to introduce something like 
-NAND pages cache. The cache will keep several NAND pages which were last 
-accessed.
-
-Obviously, this will require at least one more page buffer copy 
-operation and, for example, will only decrease the sequential read speed.
-
-So, It is possible to introduce calls like:
-
-nand_read_buffered
-nand_read_unbuffered
-
-I don not know is it good to do this only in JFFS2 or on the MTD NAND layer?
-
-Comments?
-
-Thanks.
+Yes but if you make a really good case for it and you finish the bits
+which allow us to drop the length field we might let you get away with
+it :)
 
 -- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+dwmw2
