@@ -1,17 +1,17 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from [202.97.181.21] (helo=mail.cnbook.com.cn)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18C2lP-0005qj-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2002 19:01:23 +0000
-Message-ID: <3DD2A89F.BE82BB11@mvista.com>
-Date: Wed, 13 Nov 2002 11:31:43 -0800
-From: Scott Anderson <scott_anderson@mvista.com>
-MIME-Version: 1.0
-To: "Hicks, Jamey" <Jamey.Hicks@hp.com>
-CC: linux-mtd@lists.infradead.org
-Subject: Re: cmdline.c file name collision
-References: <D99C1FB421989A40818B6370E3187094040A3AB6@tayexc19.americas.cpqcorp.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 18C7f6-0006LX-00
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2002 00:15:12 +0000
+Message-Id: <200211141204.gAEC4hm02106@mail.cnbook.com.cn>
+From: "nbhorse" <nbhorse@163.com>
+To: nbhorse <nbhorse@163.net>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: help about jffs2 write problem.
+Mime-Version: 1.0
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 14 Nov 2002 8:45:8 +0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,30 +23,69 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-"Hicks, Jamey" wrote:
-> hmm.  My first thought was to rename drivers/mtd/cmdline.c to 
-> drivers/mtd/mtdcmdline.c or drivers/mtd/cmdlinepart.c.
+Hello nbhorse!
 
-That sounds reasonable.  Does someone that has direct access to the CVS
-repository want to move the files around in the repository (so we don't
-lose history) or should I just submit a patch that removes the file and
-adds the file back with a different name?
+    I download new mtd and include source code from=
+ http://lists.infradead.org,fix my old kernel,ererything is ok 
 
-> Actually, that was my second thought.  My first thought was to wonder
-> why CONFIG_MODVERSIONS flattens the kernel source file namespace.
-> I just turned on CONFIG_MODVERSIONS to build an ipaq kernel, and I find
-> I also have a name conflict on arch/arm/mach-sa1100/pm.c and kernel/pm.c.
+---------2002-11-13 11:42:00 nbhorse wrote:-------
 
-I've been told third hand or so that it is a "known limitation" in 2.4.
-I just looked in 2.5, and this limitation has been eliminated (there is
-a hierarchy of files under include/linux/modules that parallels the
-source hierarchy).
+>Hello everyone,
+>   I have a problem with the mtd and jffs2.when I ported a linux=
+ kernel(2.4.18 rmk7)to my arm 7212 board(samsung k9f560 32m=
+ nandflash),and my partition for nand mtd driver like this:
+>
+>const static struct mtd_partition partition_info[] =3D {
+>=09{ name: "kernel",
+>=09  offset: 0,
+>=09  size: 1*1024*1024},
+>=09{ name: "blank",
+>=09  offset: 1*1024*1024,
+>=09  size: 1*1024*1024},
+>=09{ name: "file system 1",
+>=09  offset: 2*1024*1024,
+>=09  size: 4*1024*1024},
+>=09{ name: "SamSung flash partition 1",
+>=09  offset: 6*1024*1024,
+>=09  size: 2*1024*1024},
+>=09{ name: "SamSung flash partition 2",
+>=09  offset: 8*1024*1024,
+>=09  size: 24*1024*1024 }
+>};
+>  and i want to mount partition 1(blank) with jffs2.
+>  I have a problem:
+>  I use "eraseall /dev/mtd1"(c 90 2) to erase the mtdblock1,and=
+ i "mount -t jffs2 /dev/mtdblock1 /flash","copy /bin/busybox=
+ /flash",it display following error message:
+>  
+>    ARGH. About to write node to 0x000f8760 on flash, but=
+ there's data already there:
+>0x000f8760: 57 a6 fb 05 76 e3 29 d7 fe f0 78 b7 ce 0f b8 c6
+>                       .....
+>then i run"/flash/busybox",error is:
+>
+>Node CRC b04df10c !=3D calculated CRC 49b35642 for node at=
+ 00020760
+>Node CRC b04df10c !=3D calculated CRC 49b35642 for node at=
+ 00020760
+>
+>I'm sure that partition 1=A3=A8"blank") is be erased.
+>
+>if i use ext2 filesystem,everything is ok.
+>
+>Any help would be appreciated
+>
+>
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-With that new found information, I guess a new question comes up: does
-working around the 2.4 limitation warrant the rename when the limitation
-is removed in 2.5?
+-------------------------------------------------
+=09=09=09
 
-    Scott Anderson
-    scott_anderson@mvista.com   MontaVista Software Inc.
-    (408)328-9214               1237 East Arques Ave.
-    http://www.mvista.com       Sunnyvale, CA  94085
+                    Best regards,
+=09=09=09=09 
+               nbhorse
+               nbhorse@163.com
+=09=09=09=09=092002-11-14 
