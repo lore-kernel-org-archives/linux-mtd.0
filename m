@@ -1,14 +1,22 @@
-Received: from web11603.mail.yahoo.com ([216.136.172.55])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D5cxu-0003jP-6B
-	for linux-mtd@lists.infradead.org; Sun, 27 Feb 2005 23:57:07 -0500
-Message-ID: <20050228045701.31920.qmail@web11603.mail.yahoo.com>
-Date: Sun, 27 Feb 2005 20:57:01 -0800 (PST)
-From: prasadam kumar <prasadamkumar@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: mtd cfi_cmdset_0001.c writing problem 
+Received: from rproxy.gmail.com ([64.233.170.203])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D5fm4-0004xa-3C
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2005 02:57:04 -0500
+Received: by rproxy.gmail.com with SMTP id y7so374268rne
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 27 Feb 2005 23:57:01 -0800 (PST)
+Message-ID: <f6d0cd06050227235769c791c8@mail.gmail.com>
+Date: Mon, 28 Feb 2005 13:27:01 +0530
+From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+To: "C. Michael Sundius" <msundius@sundius.com>
+In-Reply-To: <1f065e28ae2a88eda8f37b9c40f54ed2@sundius.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+References: <1f065e28ae2a88eda8f37b9c40f54ed2@sundius.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: utilities for mtd
+Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
- 
- hai ,
-   
-   Thanks for response to my query, as u suggested i
-checked 
-the flash image with my original image, i found that
-there is a 
-some mismatch. Using fis it is writing properly to
-flash but when 
-i am trying to write through mtd drivers (here
-versiong is 2.4.19)
-it is changing some bits and writing to the flash, I
-tryed a lot but 
-i am unable to find why it is behaving like that. i am
-using 
-IQ80321 flash and cfi_cmdset_0001.c to update the
-flash. 
-plz help me out
+I think you must have tried flash_erase on a block device
+(/dec/mtdblock0) but flash_erase will work only for Char Device. So
+you can create a char MTD device by giving below commands.
 
- 
-bye
-prashanth
+mknod /dev/mtd0 c 90 0
+
+Now try the flash_erase command, it should work.
+
+Regds
+Niraj
 
 
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Sports - Sign up for Fantasy Baseball. 
-http://baseball.fantasysports.yahoo.com/
+On Thu, 24 Feb 2005 11:34:34 -0800, C. Michael Sundius
+<msundius@sundius.com> wrote:
+> Hi,
+> 
+> I am using a the mtd code from the 2.4.20 kernel. how/where do I get
+> the corresponding utilities
+> such as flash_erase, flash_lock etc... I grabbed a random version of
+> them somewhere and it
+> didn't seem to work.. for one the flash_erase program calls an ioctl
+> "MEMGETREGIONCOUNT"
+> and my kernel returned:
+>        in appropriate ioctl for this device....
+> 
+> any help is appreciated.
+> 
+> thanks
+> 
+> C Michael Sundius
+> Solico Group LLC
+> 232 Nevada St
+> San Francisco, CA 94110
+> msundius@sundius.com
+> (415)608-0121
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
