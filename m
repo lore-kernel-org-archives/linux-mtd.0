@@ -1,15 +1,18 @@
-Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AsIy1-0007vx-EQ
-	for linux-mtd@lists.infradead.org; Sun, 15 Feb 2004 09:53:37 +0000
-Date: Sun, 15 Feb 2004 01:53:26 -0800
-From: Marc Singer <elf@buici.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20040215095325.GA27531@buici.com>
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AsK8K-000879-81
+	for linux-mtd@lists.infradead.org; Sun, 15 Feb 2004 11:08:20 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: Marc Singer <elf@buici.com>
+In-Reply-To: <20040215095325.GA27531@buici.com>
+References: <20040215095325.GA27531@buici.com>
+Content-Type: text/plain
+Message-Id: <1076843296.4484.2.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Can 256K erase blocks work with JFFS2?
+Date: Sun, 15 Feb 2004 11:08:16 +0000
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Can 256K erase blocks work with JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In struggling through final steps in proving a new kernel port, I'm
-trying to mount a root filesystem so I can see a shell prompt.  I've
-got a mapping driver with partitions that appears to work correctly.
-Yet, I'm concerned that the very large erase block size could be
-causing problems.
+On Sun, 2004-02-15 at 01:53 -0800, Marc Singer wrote:
+> When creating the jffs2 filesystem, if I set the erase block size to
+> 256 then the filesystem created is twice the size of my total flash
+> capacity--can't use it.  The default of 64 produces a modest
+> filesystem of 5MB.
 
-When creating the jffs2 filesystem, if I set the erase block size to
-256 then the filesystem created is twice the size of my total flash
-capacity--can't use it.  The default of 64 produces a modest
-filesystem of 5MB.
+256 would be a problem. 256KiB would be fine. Precisely what did you
+tell mkfs.jffs2, and what version of mkfs.jffs2 is it? Only recent
+versions will _assume_ you're lying if you tell it 256 bytes, and
+silently assume 256KiB instead.
 
-I'm pretty sure of the erase size.  There are two StrataFlash
-28F640J3A chips wired for a 32 bit data bus.  Each has 8MBytes
-organized in 64 blocks.  Moreover, empirical evidence shows that the
-erase size of 256K.
-
-The kernel will mount the filesystem as rootm but I don't get a shell.
-I'm reasonably confident that the root is good because it has worked
-when mounted over NFS.  This new system uses the same CPU, but doesn't
-yet have a working network driver.
-
-So, I'm asking if I have a snowball's chance in hades with this.  Or,
-should I start working on other means of mounting a root filesystem?
-
-TIA
+-- 
+dwmw2
