@@ -1,24 +1,17 @@
-Received: from scan1.fhg.de ([153.96.1.35])
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1616el-0007xX-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 13:52:47 +0000
-Received: from scan1.fhg.de (localhost [127.0.0.1])
-	by scan1.fhg.de (8.11.1/8.11.1) with ESMTP id fA6E22W28443
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:02 +0100 (MET)
-Received: from iese.iese.fhg.de (iese.iese.fhg.de [153.96.133.2])
-	by scan1.fhg.de (8.11.1/8.11.1) with ESMTP id fA6E21P28435
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:01 +0100 (MET)
-Received: from iese.fhg.de (pc144.iese.fhg.de [153.96.133.70])
-	by iese.iese.fhg.de (8.9.3/8.9.3) with ESMTP id PAA24165
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:02:00 +0100 (MET)
-Message-ID: <3BE7ED58.EEB937BA@iese.fhg.de>
-Date: Tue, 06 Nov 2001 15:02:00 +0100
-From: Alexander Kubicki <kubicki@iese.fhg.de>
+	id 1616fZ-0007xm-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 13:53:37 +0000
+Message-ID: <3fab01c166cb$c9155fe0$0a070d0a@axis.se>
+From: "Johan Adolfsson" <johan.adolfsson@axis.com>
+To: <joakim.tjernlund@lumentis.se>, <linux-mtd@lists.infradead.org>
+References: <IGEFJKJNHJDCBKALBJLLGENIEPAA.joakim.tjernlund@lumentis.se>
+Subject: Re: mkfs.jffs2 propsal and a question about burst reads
+Date: Tue, 6 Nov 2001 15:03:18 +0100
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: PCMCIA linear Flash (5V read/write)
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,23 +23,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+----- Original Message ----- 
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Sent: Tuesday, November 06, 2001 12:40
+Subject: mkfs.jffs2 propsal and a question about burst reads
 
-I´m using a compatible AMD Flash D-Series 4MB PCMCIA Card from Kingmax
-(http://www.tecsys.de/memory_frame.htm)
-I want to erase it blockwise or whole card and write to it adresswise as
-a raw device.
-The tool "wrflash" (http://www.telos.de/download/default_e.htm#alios (in
-alios_source)) is designed for this purpose but crashes because of a
-segmentation fault. The same with ftl_format (only for testing)
 
-The card is recognized by linux (cardctl info, cardctl ident, ftl_check
-/dev/mem0c0c).
-Other PCMCIA-Cards (CompactFlash with Adapter, Adaptec-SCSI) work fine.
+> Hi it's me again ..
+> 
+> with some more questions/suggestions
+> 
+> 1)
+>    Before I can install a new JFFS2 FS image(produced with mkfs.jffs2) I have
+>    to erase the whole flash partition, then copy the image(with cp image /dev/mtdlock4)
+>    the device. Then I boot linux and now JFFS2 will re-erase all unused blocks. 
+>    If I skip the initial erase, then JFFS2 will be confused by the earlier
+>    JFFS2 contens which remain after the previous JFFS2 FS that were on the flash.
+> 
+>    I think this is the expected behavior, correct?
+> 
+>    I find it unconvinient and time consuming to erase the WHOLE flash partiton
+>    before I can install a new FS image. Therefore I wonder if it would
+>    be possible to add some flag/end marker in JFFS2 that mkfs.jffs2 could
+>    set, so that JFFS2 knows that the flash space after the maker does not
+>    contain valid JFFS2 data. Once JFFS2 has recongnized its FS, JFFS2 would
+>    delete the end marker and resume normal behaviour. 
+>    
+>    What do you think?  
 
-I use SuSE Linux 7.2 (standard SUSE Kernel 2.4.4  / cardmgr 3.1.25)
+Perhaps we should give the erase command a "jffs2-format" option
+so that it erases and writes the proper erase marker on the sectors to prevent
+JFFS2 to erase them again?
+The erase ulitity should then also skip erasing sectors that has the erased 
+marker already which might speed up the erase a little.
+I guess copying an image to the formatted flash should work even if it contains
+erase marks?
 
-Can you provide some information?
-Thanks in advance
-
-Alexander
+/Johan
