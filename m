@@ -1,20 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <41751FA1.2040108@inf.u-szeged.hu>
-References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>
-	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>
-	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
-	<4174F0F3.7030604@yandex.ru> <4175035B.80101@inf.u-szeged.hu>
-	<4175065B.6040407@yandex.ru>
-	<1098193380.13633.1099.camel@hades.cambridge.redhat.com>
-	<41751FA1.2040108@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1098194912.13633.1101.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 19 Oct 2004 15:08:32 +0100
-Content-Transfer-Encoding: 7bit
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CJvLP-0004QN-2a
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 10:52:13 -0400
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Simon Haynes <simon@baydel.com>
+To: tglx@linutronix.de
+Date: Tue, 19 Oct 2004 15:39:36 +0100
+References: <E0180EAB7181@baydel.com> <1098186608.12223.857.camel@thomas>
+In-Reply-To: <1098186608.12223.857.camel@thomas>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID: <E0CCB8742B31@baydel.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 compression
+Subject: Re: Bad Blocks On JFFS2/NAND
+Reply-To: simon@baydel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-10-19 at 16:07 +0200, Ferenc Havasi wrote:
-> David Woodhouse wrote:
-> >>Ferenc, thanks for story, I really interested why the proc support was 
-> >>removed. 
-> > 
-> > It was buggy. There were buffer overflows and similar problems with it.
-> > I dropped it and suggested that the reimplementation may as well use
-> > sysfs.
-> 
-> Ups, than I misunderstood you.
-> 
-> Good to know that the problem was not the using of procfs itself, just 
-> my implementation. (it is much easier to fix :) )
+Thomas,
 
-Using procfs is _also_ a slight problem -- it would be nicer to use
-sysfs. But that's a minor problem not a reason not to merge it.
+I am using the ready pin.
 
--- 
-dwmw2
+On Tuesday 19 Oct 2004 12:50 pm, Thomas Gleixner wrote:
+> On Tue, 2004-10-19 at 13:22, Simon Haynes wrote:
+> > I have experienced a problem in which a JFF2 filesystem on NAND became
+> > full. This is a root file system and constant writes to a logfile filled
+> > the filesystem. On investigation it was found that the NAND device now
+> > had hundreds of bad blocks.
+> >
+> > I started to investigate this and found that JFFS2 was announcing
+> >
+> > Newly-erased block contained word 0x1985e002 at offset 0x020f7e00
+> >
+> > Messages which result in my mtd/jffs2 code marking the block bad. What I
+> > find strange is that a subsequent scan list the new block at a different
+> > 16k offset when the device erasesize is 16k, in this case 0x020f0000. Is
+> > that because my device is 128Mb and JFFS2 is using this 'virtual erase
+> > size' of 32k ?
+>
+> Yes. The bad block code scans/marks physical blocks and JFFS2 operates
+> on virtual ones, if the device size is big enough.
+>
+> > I have observed this now on several different NAND devices and it seems
+> > to be more prominent while performing small writes.
+> >
+> > I am currently trying to work out if the erase is not completing, or this
+> > is the wrong block or something else.
+>
+> Hmm, are you using Ready/Busy Pin or the timeout ?
+>
+> tglx
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
