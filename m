@@ -1,28 +1,18 @@
-Received: from zeus.vortex.is ([193.4.145.1])
+Received: from mail.mediatrix.com ([205.237.248.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15D8Fb-0006Xy-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 18:28:15 +0100
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <linux-mtd@lists.infradead.org>;
-          Thu, 21 Jun 2001 17:33:47 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <linux-mtd@lists.infradead.org>;
-          Thu, 21 Jun 2001 17:33:44 +0000
-content-class: urn:content-classes:message
+	id 15D8Ke-0006YP-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 18:33:29 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D9954D2@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: =?iso-8859-1?Q?=27K=E1ri_Dav=ED=F0sson=27?= <kd@flaga.is>,
+	Frederic Giasson <fgiasson@mediatrix.com>, Nicolas Pitre <nico@cam.org>
+Cc: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: RE: jffs2_scan_medium effor
+Date: Thu, 21 Jun 2001 13:33:41 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: jffs2_scan_medium effor
-Date: Thu, 21 Jun 2001 17:33:43 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E314591DB@kolkrabbi.flaga.is>
-From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: "Frederic Giasson" <fgiasson@mediatrix.com>,
-	"Nicolas Pitre" <nico@cam.org>
-Cc: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -34,11 +24,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Maybe there is a way to mark the sectors were the bootmonitor resides as
+	Yes, that's what I did actually.  I locked the sectors I don't what
+to be erased in my chip-level driver.  My erase function returns =
+-EINVAL
+when JFFS2 tries to erase it, so it marks it dirty ( I think ).  There =
+may
+be, however, a cleanier way of doing this.  Nevertheless, it works but =
+I
+have stange problems with jffs2.  For example, if I mount jffs2 on an =
+empty
+flash, fill it with files, erase all files and then try to refill it, I
+sometimes get a kernel panic...=20
+
+
+
+Fr=E9d=E9ric Giasson
+
+
+
+
+
+-----Original Message-----
+From: K=E1ri Dav=ED=F0sson [mailto:kd@flaga.is]
+Sent: Thursday, June 21, 2001 1:34 PM
+To: Frederic Giasson; Nicolas Pitre
+Cc: MTD mailing list (E-mail)
+Subject: RE: jffs2_scan_medium effor
+
+
+Maybe there is a way to mark the sectors were the bootmonitor resides =
+as
 
 "burnt out" or reserved so that the jffs2 does not attempt to use the.
 
-Then in theory you could just make one partition of the whole flash with
+Then in theory you could just make one partition of the whole flash =
+with
 few "bad" sectors that are not used by the jffs2....
 
 Just an idea.....
