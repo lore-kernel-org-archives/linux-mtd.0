@@ -1,48 +1,83 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JeeZ-0006uj-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 17:12:27 +0100
-Message-ID: <3986F5D0.AE69B670@colubris.com>
-Date: Tue, 01 Aug 2000 12:07:44 -0400
-From: Stephane Laroche <stephane.laroche@colubris.com>
+	id 13JeyN-00071p-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 17:32:55 +0100
+Received: from pop.gmx.net ([194.221.183.20] helo=mail.gmx.net)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13JeyL-00071a-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 17:32:53 +0100
+Message-ID: <002b01bffbd5$73f7f8e0$fd8907d4@gallien>
+From: "Markus Thiesmeyer" <mthi@gmx.de>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>
+Subject: CFI-Read-Command
+Date: Tue, 1 Aug 2000 18:23:00 +0200
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: mtd@infradead.org
-Subject: Re: Erasing more than one sector at a time?
-References: <3985C29C.8F37EBC3@colubris.com> <12989.965121916@cygnus.co.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0027_01BFFBE5.86188660"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Obviously, my mistake.  I didn't realize I had to have the erase size be a
-multiple of a sector size.  Sometimes, I just can't read code properly (an
-it wasn't even 3 AM).
+This is a multi-part message in MIME format.
 
-Thanks,
+------=_NextPart_000_0027_01BFFBE5.86188660
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--Stephane
+Hello,
 
+after I've integrated the cfi-support (from mtd-20000704.tar.gz) I =
+noticed a problem when I was tying to read bytes from odd addresses. It =
+it seems as if I've located the problem:
 
-David Woodhouse wrote:
+Before the flash =EDs read, the read-function tries to read the =
+cfi-statemachine. And this operation must be an aligned 16-bit read. But =
+the read-operation uses the given, odd address and gets confused. As a =
+fast bugfix I wrote a wrapper which handles unaligned accesses and =
+forwards aligned accesses to the given read-command.
 
-> stephane.laroche@colubris.com said:
-> >  I'm wondering why the parameter validation at the start of those
-> > function specifically prohibits erasing more than one sector.  Is this
-> > because the interface is defined this way or is it an oversight?
->
-> Unless I'm smoking crack, the CFI command set code _does_ support erases
-> longer than one erase block. The three checks which could cause it to
-> return EINVAL are:
->         1. start address must be erase-block-aligned
->         2. length needs to be a multiple of erase block size.
->         3. start + length must not exceed the _total_ size of the device.
->
-> The DiskOnChip code is different, but that's been/being fixed - depending
-> on whether the patch has hit the CVS tree yet or not.
->
-> --
-> dwmw2
+regards
+
+Markus Thiesmeyer
+
+------=_NextPart_000_0027_01BFFBE5.86188660
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>after I've integrated the cfi-support =
+(from=20
+mtd-20000704.tar.gz) I noticed a problem when I was tying to read bytes =
+from odd=20
+addresses. It it seems as if I've located the problem:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Before the flash =EDs read, the =
+read-function tries=20
+to read the cfi-statemachine. And this operation must be an aligned =
+16-bit read.=20
+But the read-operation uses the given, odd address and gets confused. As =
+a fast=20
+bugfix I wrote a wrapper which handles unaligned accesses and forwards =
+aligned=20
+accesses to the given read-command.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>regards</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Markus =
+Thiesmeyer</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0027_01BFFBE5.86188660--
 
 
 
