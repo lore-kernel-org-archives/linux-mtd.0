@@ -1,18 +1,17 @@
-Received: from popmail.space.net ([195.30.0.14])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18KFLb-000450-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Dec 2002 10:04:39 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18KFSP-00045s-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Dec 2002 10:11:41 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <049e01c29d0f$b3c52ff0$221faf9d@iphase.com> 
+References: <049e01c29d0f$b3c52ff0$221faf9d@iphase.com> 
 To: "Chantara Thlang" <thlang@iphase.com>
 Cc: linux-mtd@lists.infradead.org
-From: Wolfgang Denk <wd@denx.de>
 Subject: Re: need arguments to use JFFS2 
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Fri, 06 Dec 2002 11:10:28 +0100."
-             <049e01c29d0f$b3c52ff0$221faf9d@iphase.com>
-Date: Fri, 06 Dec 2002 11:34:15 +0100
-Message-Id: <20021206103420.76729C614B@atlas.denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 06 Dec 2002 10:42:11 +0000
+Message-ID: <28792.1039171331@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,34 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear Chantara,
+thlang@iphase.com said:
+> Please could someone give me some arguments to use JFFS2 instead of
+> all others Flash FS such as CRAMFS ? 
 
-in message <049e01c29d0f$b3c52ff0$221faf9d@iphase.com> you wrote:
-> 
-> In the web, I am not sure to see an article which clearly express the
-> advantage of JFFS2.
+cramfs is read-only. If you don't want to write to your file system, you 
+should probably be using it instead of JFFS2. 
 
-It makes little  sense  to  dicuss  "advantages"  without  specifying
-requirements.
+The only other flash file system for Linux is YAFFS, for use on NAND flash.
+I don't know as much about YAFFS as I should -- the choice between YAFFS and
+JFFS2 on NAND is basically a tradeoff between the improved speed and mount
+time of YAFFS, and the increased storage capacity which JFFS2 compression 
+gives, I think. Charles will probably offer more enlightenment.
 
-> Please could someone give me some arguments to use JFFS2 instead of all
-> others Flash FS such as CRAMFS ?
+Other than that, you only have the brain-dead 'translation layer' crap which
+is a kind of journalling pseudo-filesystem used to emulate a virtual hard
+drive, on which you need to use put a 'normal' journalling file system. This
+two-layer approach made some sense in the days of DOS, where you could just
+provide an INT 13h Disk BIOS IRQ handler and pretend to be a normal hard
+drive to DOS, but it makes far less sense now. You end up with power-loss
+safety being implemented in _both_ your 'normal' file system and the
+underlying pseudo-fs, the pseudo-fs has no way of knowing which blocks on
+the virtual hard drive are marked as 'free' by the higher file system and so
+it keep garbage-collecting stale data from one place on the flash to
+another, and at least at the moment, it means you don't get compression --
+although that's not a fundamental design flaw like the others. 
 
-One significant advantage is that JFFS2 provides a  _writable_  flash
-filesystem,  while cramfs is read-only. But as stated before: this is
-an advantage only when you need a writable filesystem.
 
-> One of the reason could it be in the Flash management : optimization ?
-
-Yes.
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-Every program has at least one bug and can be shortened by  at  least
-one instruction - from which, by induction, one can deduce that every
-program can be reduced to one instruction which doesn't work.
+--
+dwmw2
