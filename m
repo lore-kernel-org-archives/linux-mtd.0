@@ -1,23 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKFF2-0004TF-0D
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 08:06:57 -0400
-Message-ID: <417654BF.4010703@yandex.ru>
-Date: Wed, 20 Oct 2004 16:06:23 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <417156E1.9000009@yandex.ru> <4173AFAE.6060303@inf.u-szeged.hu>	
-	<4173B404.6040100@yandex.ru> <4174C8EF.50604@inf.u-szeged.hu>	
-	<4174D508.8050508@yandex.ru> <4174E7D3.9050706@inf.u-szeged.hu>
-	<1098180892.13633.1079.camel@hades.cambridge.redhat.com>
-	<41762CF9.9030501@inf.u-szeged.hu> <41764851.4030207@yandex.ru>
-	<417651AD.50001@inf.u-szeged.hu>
-In-Reply-To: <417651AD.50001@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1CKFWA-0004jS-MY
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 08:24:40 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: marcus@mikolaiczyk.de
+In-Reply-To: <E1CKEvW-0000RJ-00@www.strato-webmail.de>
+References: <E1CKEvW-0000RJ-00@www.strato-webmail.de>
+Content-Type: text/plain
+Message-Id: <1098274596.12223.1563.camel@thomas>
+Mime-Version: 1.0
+Date: Wed, 20 Oct 2004 14:16:36 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 compression
+Subject: Re: 16Bit Bus with 8 Bit NAND?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> If the "one step" means that you would like to use only one 
-> jffs2_decompress/... call than the answer is no.
-Ok, thanks for answer, I suspected so. But I was confused by the 
-interface function jffs2_free_comprbuf, and slender hope have appeared. :-)
-
+On Wed, 2004-10-20 at 13:46, marcus@mikolaiczyk.de wrote:
+> > > bit NAND Flash and realy don't have a clue if it's a problem that the
+> > > bus reads 16 Bit from an 8 Bit NAND.
+> > > 1. Does the Kernel (theh NAND Driver) automatically detect this and
+> > > 'ignores' the 'empty 8 bit?
+> >
+> > It might work, but it's not a big deal to fix it.
 > 
-> But I can imagine a solution, where you can call jffs2_compress 
-> separatedly for the small buffers, and you can uncompress it using a loop.
-> 
-> The compression buffer can be something like the following:
->   - original_size_of_small_buffer1
->   - compressed_size_of_small_buffer1
->   - comprtype (return value of jffs2_compress)
->   - compressed data1
->   - original_size_of_small_buffer2
->   - compressed_size_of_small_buffer2
->   - comprtype (return value of jffs2_compress)
->   - compressed data2
->   ...
-> 
-> I don't know it is OK for you or not.
-It would be OK, if I don't have to store the sizes of original buffers 
-(original_size_of_small_buffer1, etc) in the node... This is because the 
-number of input small buffers isn't fixed...
+> Means, that it works basicly but if not I can adapt the driver
+> source to work correctly?
 
-Thank you.
+It needs additional options and a set of additional functions for
+read/write which are aware of the buswidth.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+> > > 3. Or should we use 2 8bit NAND so that we've got 16bit - and is this
+> > > supported in the NAND Driver?
+> >
+> > The 2 parallel 8bit NAND is not supported yet. Is a bit of work though.
+> >
+> > But why don't you use 16bit NAND ?
+> 
+> Is it supported with the driver for the 2.4.x Kernle Release? 'Cause we
+> will use the 2.4.19 Release (an existing toolchain for tc1130 is based on
+> this release).
+> I read something about the supported NANDs (Toschiba,..?) in the nand.c -
+> if I remember correctly. Is this strongly restricted to these NANDS
+> there?
+
+The code there is not functional at all. See also
+http://www.linux-mtd.infradead.org/#kernelversions
+
+A toolchain is neither a reason nor an excuse :)
+
+> The colleagues, responsible for the hardware didn't tell me somenthing
+> about 16 bit NAND. Mayby its size is bigger or is more expensive - I'll
+> clearifiy that with the colleagues.
+
+There are chips with e.g 32MB with either 8 or 16bit interface
+available. I doubt that there is a big price difference.
+
+tglx
