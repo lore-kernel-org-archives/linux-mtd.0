@@ -1,18 +1,18 @@
-Received: from [80.120.128.82] (helo=hofr.at)
+Received: from fed1mtao04.cox.net ([68.6.19.241])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Xow3-00022o-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:10:07 +0100
-Received: (from root@localhost)
-	by hofr.at (8.10.2/8.9.3/SuSE Linux 8.9.3-0.1) id g6PJEbs25931
-	for linux-mtd@lists.infradead.org; Thu, 25 Jul 2002 21:14:37 +0200
-From: Der Herr Hofrat <der.herr@mail.hofr.at>
-Message-Id: <200207251914.g6PJEbs25931@hofr.at>
-Subject: MAX_NAME in jffs2
-To: linux-mtd@lists.infradead.org
-Date: Thu, 25 Jul 2002 21:14:37 +0200 (CEST)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 17Xp5w-00023r-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:20:20 +0100
+Subject: RE: read this
+From: Russ Dill <Russ.Dill@asu.edu>
+To: hamishl@dplanet.ch
+Cc: isa <dr_isa@kukamail.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
+References: <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Date: 25 Jul 2002 13:19:57 -0700
+Message-Id: <1027628397.3278.3.camel@timmy>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +24,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-HI !
+On Thu, 2002-07-25 at 12:47, Hamish Guthrie (Mail Lists) wrote:
+> Being an ex-African, and one having had financial dealings with people in
+> compromising circumstances (as this), and also referring to a number of
+> warnings in publications like TIME and NEWSWEEK, I would highly recommend
+> all members of this newsgroup to treat this mail with suspicion and
+> immediately refer it to /dev/null, in the hope that /dev/null will be of
+> assistance!
 
- is there a particular reson for jffs and jffs2 to have a 254 character
- filename limit and ext2/ext3/reiserfs 255 (probably others to - excluding
- minix/msdos/M$) ?? There probably is hardly a case where this will realy 
- hurt, but a test bit it so I wondered what the reson for this 254 is...
+actually, this scam is 20+ years old and there is a special office setup
+in washington to help people who have lost money this way. (Its also
+referered to as a 419 scam). Kindof funny that his email keeps getting
+cc'd.
 
-thx !
-hofrat
+419.fcd@usss.treas.gov
