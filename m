@@ -1,26 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CooQr-00007M-66
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 14:45:32 -0500
-Date: Wed, 12 Jan 2005 20:44:51 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20050112194451.GA7038@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
-	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
-	<20050112181006.GI25638@wohnheim.fh-wedel.de>
-	<1105554479.17853.287.camel@tglx.tec.linutronix.de>
-	<20050112184059.GL25638@wohnheim.fh-wedel.de>
-	<1105557401.17853.293.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1105557401.17853.293.camel@tglx.tec.linutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Received: from relay3.mail.twtelecom.net ([216.136.95.10])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CooT4-0000Gn-5s
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 14:47:48 -0500
+Received: from Spaceballs (66-194-80-47.gen.twtelecom.net [66.194.80.47])
+	by relay3.mail.twtelecom.net (Postfix) with ESMTP id 900BA5EC9
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Jan 2005 13:47:40 -0600 (CST)
+From: "Stuart Yoder" <stuart.yoder@conformative.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Wed, 12 Jan 2005 13:47:27 -0600
+Message-ID: <005401c4f8df$8be01350$2f010a0a@foundation.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: JFFS2 mount time is really bad on 1st boot only
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 January 2005 20:16:41 +0100, Thomas Gleixner wrote:
-> On Wed, 2005-01-12 at 19:40 +0100, Jörn Engel wrote:
-> > 
-> > Wouldn't that also require a DMZ of some size between static and
-> > dynamic data?  For example, 4MB static, 1MB unused, rest dynamic?
-> 
-> No it does not propagate over blocks of blocks. e.g. inside of 0-255,
-> 256-511, ... you have the trouble, but not between those regions.
 
-Ah, ok.  So they simply decided to pack the blocks inside those groups
-tighter.  Another way to handle it would be to treat those block
-groups as jffs2 eraseblocks.  Should be quite similar to NOR blocks
-sizes then.
+We are using JFFS2 in a  Linux 2.4.28 kernel based system (PowerPC based
+hw).  We have a large (256MB) flash.
 
-Jörn
+Here is the scenario for some behaviour we are seeing that we are trying
+to undertand:
 
--- 
-The story so far:
-In the beginning the Universe was created.  This has made a lot
-of people very angry and been widely regarded as a bad move.
--- Douglas Adams
+-create Linux root filesystem with mkfs.jffs2-- about 90MB of data.
+-flash partition onto board-- ~90MB data, ~140MB free (erased)
+-boot Linux
+-mount of JFFS2 root partition takes on the order of 8 min
+-reboot system from Linux
+-mount of JFFS2 root partition takes ~30 sec
+
+All subsequent boots take ~30 sec.
+
+Does anybody have any idea of why the very first mount of the filesystem
+takes so long?
+
+Thanks,
+Stuart Yoder
