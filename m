@@ -1,49 +1,84 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14lIi0-0008Ro-00
-	for mtd-list@infradead.org; Thu, 05 Apr 2001 23:58:32 +0100
-Message-ID: <1072F1A27E99D3119747005004B9A380EB98A6@MAIL>
-From: Brett Carswell <BrettC@nulec.com.au>
-To: 'David Woodhouse' <dwmw2@infradead.org>
+	id 14lWe4-0003LZ-00
+	for mtd-list@infradead.org; Fri, 06 Apr 2001 14:51:24 +0100
+Received: from humbolt.nl.linux.org ([131.211.28.48] ident=root)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14lWe2-0003LT-00
+	for mtd@infradead.org; Fri, 06 Apr 2001 14:51:22 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1072F1A27E99D3119747005004B9A380EB98A6@MAIL> 
+References: <1072F1A27E99D3119747005004B9A380EB98A6@MAIL> 
+To: Brett Carswell <BrettC@nulec.com.au>
 Cc: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: RE: CFI with 4 x8/x16 devices on a 32-bit bus 
-Date: Fri, 6 Apr 2001 08:58:21 +1000 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: CFI with 4 x8/x16 devices on a 32-bit bus 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 06 Apr 2001 14:45:37 +0100
+Message-ID: <7657.986564737@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> BrettC@nulec.com.au said:
-> >  The board has four AMD 29LV160 chips which are in x8 mode. These
-> > chips can also be in x16 mode but aren't in this case. 
-> 
-> > My first question is am I correct in expecting that I 
-> should see these
-> > chips detected as 4 x8 Devices in 32-bit mode? I can get 
-> them working
-> > in this mode only by shifting all the offset addresses in my mapping
-> > functions right by one.
-> 
-> Shouldn't that be 4 x16 devices in 8-bit mode? 
-> 
 
-I think I wasn't clear enough or my understanding of MTD is totally broken
-(which is possible). I'm referring to the output of the line:
+BrettC@nulec.com.au said:
+> I have four flash chips in parallel on a 32 bit bus so my impression
+> is that I have an interleave of 4, a device type of 1 (8 bits) and a
+> buswidth of 4 (32bits). 
 
-	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit
-mode\n", map->name, 
-	       cfi->interleave, cfi->device_type*8, base, map->buswidth*8);
+I believe that for 29LV160 chips, the device type should be X16, as that
+determines the addresses to which the CFI commands must be sent, rather than
+X8, which is merely the mode in which the chip happens to be configured at
+the moment.
 
-I have four flash chips in parallel on a 32 bit bus so my impression is that
-I have an interleave of 4, a device type of 1 (8 bits) and a buswidth of 4
-(32bits). However, the CFI probe is detecting the flash chips as device type
-2 (16bit). This is fine except when the second address for the write command
-is generated as 0x1550  (0x2AA << 8) instead of 0x1554 (0x555 << 4). I'm
-trying to work out whether the detection or the program address generation
-is wrong or whether by interpretation of buswidth, interleave etc is wrong.
+> However, the CFI probe is detecting the flash chips as device type 2
+> (16bit). 
 
-Brett
+That's what I'd expect. They _are_ 16-bit devices, even though you're using 
+them in 8-bit mode.
+
+> This is fine except when the second address for the write
+> command is generated as 0x1550  (0x2AA << 8) instead of 0x1554 (0x555
+> << 4).
+
+This stuff makes my head hurt :)
+
+Thinks... Numbering CPU address lines by _byte_ addresses, A0 and A1 don't
+exist. A2 is driving the 'A-1' line (aka D15 in word mode) of the flash
+chip, presumably. A3 is driving the A0 line, etc. Right? Remembering that 
+the flash chip address lines are numbered by word (16-bit) addresses.
+
+So to put 0x555 on the real address lines of the chip, we need to put 
+(0x555 << 3) == 0x2AA8 onto the CPU's address bus. And to put 0x2AA on the 
+real address lines of the chip, we put (0x2AA << 3) == 0x1550 onto the 
+CPU's address bus.
+
+Ignoring the fact that you wrote '<<' when you meant '*', why do you think 
+we should be using the address 0x1554 (== 0x555 << 3)? What am I missing 
+this time? :)
+
+0x1554 would be asserting the 'A-1' line of the flash chips. Why would you 
+want to do that?
+
+> I'm trying to work out whether the detection or the program
+> address generation is wrong or whether by interpretation of buswidth,
+> interleave etc is wrong.
+
+The address generation seems right. What exactly is going wrong, and where?
+
+To confirm:
+ buswidth: obvious. (4 bytes)
+ interleave: Number of devices accessible through a single bus-width access (4)
+ device type: _Device_ type (2). You ignore the 'A-1' line because the magic
+	addresses still need to be on the 'A0' line and above, so you still 
+	have to do the multiplication by this number.
+
+At one time, I was under the mistaken impression that 
+buswidth == interleave * devtype. That's not necessarily true.
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
