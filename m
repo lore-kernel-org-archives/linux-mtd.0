@@ -1,18 +1,16 @@
-Received: from beta.dmz-eu.st.com ([164.129.1.35])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGvsd-0001AO-IW
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 04:50:09 -0400
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <416A4930.6AF5C472@st.com>
-Date: Mon, 11 Oct 2004 10:49:52 +0200
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+	id 1CGw2P-0001LB-M4
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 05:00:15 -0400
+Date: Mon, 11 Oct 2004 12:00:02 +0300 (EEST)
+From: Kalev Lember <kalev@colleduc.ee>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <1097261009.11402.1703.camel@thomas>
+Message-ID: <Pine.LNX.4.44.0410111142280.30772-100000@kiire.colleduc.ee>
 MIME-Version: 1.0
-To: Mark Hamilton <mhamilton@alliantnetworks.com>
-References: <019301c4ad6e$33e3c730$0400a8c0@mark>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [JFFS2] GC patch for eCos port
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Nicolas Pouillon <nipo@ssji.net>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Probing at 0x0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +20,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+On Fri, 8 Oct 2004, Thomas Gleixner wrote:
 
-isn't it cleaner (for compatibility with Linux) to modify 
-jffs2_gc_fetch_page so that it reads a 
-PAGE_CACHE_SIZE-aligned buffer ?
-BTW I'd like to make the whole page caching thing optional for
-a specific use (application needs to write structures to a 
-file atomically & structure size is _not_ a power of 2 so it
-may overlap a page boundary)... I think eCos doesn't care
-about page caches ?
+> On Fri, 2004-10-08 at 20:28, Kalev Lember wrote:
+> > No, it is not supported. According to 
+> > http://www.tri-m.com/products/msystems/files/specs/mddoc_spec.pdf the 32 
+> > MB Millennium Plus has 16 bit data bus while the supported 16 MB Mil+ 
+> > has 8 bit bus.
+> 
+> Hmm, I think you talk about different things.
+> 
+> >> This time, chip is probed as a DoC-Mil+ 32MB, driver complains about 
+> >> it not being supported. It seems ok, and as mtd are much like rocket
+> >> science to me, I'll wait a little until it is (i hope) supported...
+> 
+> The DoC has Doc-chip-ID 0x41 according to the datasheet.
+> http://www.m-systems.com/files/documentation/doc/Mobile_Plus_32_64MB_DS_Rev1.7.pdf
 
-Estelle
+Why do you think it has 0x41?
 
- 
+Quoting this message: 
+http://lists.infradead.org/pipermail/linux-mtd/2004-October/010544.html :
+> In CE, there are 32Mib for system rom, and 32Mib for user, and chip is
+> alone on the board, so yes it is 64.  I have chip ref somewhere if it can
 
-Mark Hamilton wrote:
+So I understand this is a 64 MB chip.
+
+Quoting message 
+http://lists.infradead.org/pipermail/linux-mtd/2004-October/010552.html :
+> Things I can read on the chip (hoping i'm correct, it is not very
+> readable) are:
+> "M-Systems
+> Disc-on-chip
+> MD333-D64-V3-X
+
+I think we have a typo here, the right marking should be MD3331-D64-V3-X. 
+This is a Diskonchip Millennium Plus 64 MB according to 
+http://www.m-systems.com/files/prodUpd_EOL/doc/PU0103_DOC_Plus_Packaging.pdf 
+.
+
+
+> from include/linux/mtd/doc2000.h
+> #define DOC_ChipID_DocMilPlus32 0x40
+> #define DOC_ChipID_DocMilPlus16 0x41
 > 
-> There looks to be a bug with the eCos port on how garbage collection is
-> done. I sent a notice about this bug before but I didn't get a resolution.
-> Another fellow came across the same bug and verified my fix. The bug seems
-> specific to eCos because of how jffs2_gc_fetch_page was ported but the
-> proposed fix is applied to gc.c. Since the gc.c is a JFFS2 core file, I
-> guess this is the appropriate mailing list for posting the patch. The patch
-> is attached.
+> So how is it identified as a Mil+32 ? 
+
+http://lists.infradead.org/pipermail/linux-mtd/2004-October/010584.html :
+
+> This time, chip is probed as a DoC-Mil+ 32MB, driver complains about it
+> not being supported. It seems ok, and as mtd are much like rocket
+
+This proves that our chip id is 0x40, because in the diskonchip.c:
+> case DOC_ChipID_DocMilPlus32:
+> 	printk(KERN_ERR "DiskOnChip Millennium Plus 32MB is not supported, ignoring.\n");
+
+this message is output if the diskonchip's id is DOC_ChipID_DocMilPlus32 
+(0x40).
+
+
+> The chip can be accessed in 16 bit mode, but it does not need the two
+> parallel chip magic which are neccecary for the Mil+32.
 > 
-> Here is the problem.
-> ffs2_gc_fetch_page reads 4K of data into a static buffer. The static buffer
-> is hidden in the jffs2_gc_fetch_page function. The problem is when the
-> writebuf pointer is calculated. The offset is used again to reference into
-> the pg_ptr. You can image when start is equal to 4K that writebuf will
-> extend beyond the end of the pg_ptr valid memory. Offset is set to start
-> just before the while loop.
-> 
-> I made a comment below with what I think the fix should be.
-> Am I missing something?
-> 
->             pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
->             if (IS_ERR(pg_ptr)) {
->                 printk(KERN_WARNING "read_cache_page() returned error:
-> %ld\n",
->                 PTR_ERR(pg_ptr));
->                 return PTR_ERR(pg_ptr);
->             }
->             offset = start;
->             while(offset < orig_end) {
->                         uint32_t datalen;
->                         uint32_t cdatalen;
->                         char comprtype = JFFS2_COMPR_NONE;
->                         ret = jffs2_reserve_space_gc(c, sizeof(ri) +
-> JFFS2_MIN_DATA_LEN, &phys_ofs, &alloclen);
->                         if (ret) {
->                             printk(KERN_WARNING "jffs2_reserve_space_gc of
-> %zd bytes for
->                                        garbage_collect_dnode failed: %d\n",
->                                          sizeof(ri)+ JFFS2_MIN_DATA_LEN,
-> ret);
->                                     break;
->                         }
->                         cdatalen = min_t(uint32_t, alloclen - sizeof(ri),
-> end - offset);
->                         datalen = end - offset;
->                         // This looks to be wrong.
->                         writebuf = pg_ptr + (offset & PAGE_CACHE_SIZE -1));
->                         // I think it should be.
->                         writebuf = pg_ptr + ((offset -start) &
-> (PAGE_CACHE_SIZE -1));
-> 
-> The patch uses a define(__ECOS) to fix this problem.
+> Please correct me, if I'm wrong or talking about something different :)
+
+I think you have a misunderstanding about the chip we have here. This is a 
+64 MB device that must be accessed it 16 bit mode.
+
+-- 
+Best regards,
+Kalev Lember
