@@ -1,60 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13snlI-00078f-00
-	for mtd-list@infradead.org; Mon, 06 Nov 2000 15:00:40 +0000
-Date: Mon, 6 Nov 2000 15:11:55 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org
+	id 13so3s-0007Cg-00
+	for mtd-list@infradead.org; Mon, 06 Nov 2000 15:19:52 +0000
+Received: from [194.130.39.252] (helo=passion.cygnus)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13so3r-0007Ca-00
+	for mtd@infradead.org; Mon, 06 Nov 2000 15:19:51 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.10.10011061506410.530-100000@xanadu.gn.com> 
+References: <Pine.LNX.4.10.10011061506410.530-100000@xanadu.gn.com> 
+To: Nicolas Pitre <nico@cam.org>
+Cc: mtd@infradead.org
 Subject: Re: corruption with mtdblock 
-In-Reply-To: <18194.973522065@redhat.com>
-Message-ID: <Pine.LNX.4.10.10011061506410.530-100000@xanadu.gn.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 06 Nov 2000 15:19:47 +0000
+Message-ID: <21552.973523987@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+nico@cam.org said:
+>  Nope.  The only place where the queue can be plugged is:
+>         if (list_empty(head)) {
+>                 q->plug_device_fn(q, bh->b_rdev); /* is atomic */
+> Therefore the queue can't be plugged until we emptied it.
 
-On Mon, 6 Nov 2000, David Woodhouse wrote:
+But it starts off empty - so doesn't it get plugged the first time a 
+request is added? But it doesn't actually bite us until requests are merged 
+- when we do 'cat /dev/mtdblock0' or massive writes.
 
-> 
-> nico@cam.org said:
-> >  So in our case, q->head_active is 1 by default.
-> > Looking at __make_request() you can see the head of the queue is
-> > actually skipped when the queue is unplugged.  It is plugged only when
-> > actually empty and no request are processed until it gets unplugged
-> > again.  All this is done when io_request_lock is held.  That's why I
-> > came to the conclusion that requests don't have to be removed earlier.
-> > 
-> 
-> OK. How about 'plugging'?
-> 
-> The code looks like this...
-> 
->         /*
->          * skip first entry, for devices with active queue head
->          */
->         if (q->head_active && !q->plugged)
->                 head = head->next;
-> 
-> 
-> It may be that if our request function returns without first ending the 
-> request (as it does, because all it does is a wake_up()), the queue is 
-> 'plugged' to wait for requests to be merged. 
+> To be sure I tried to disable plugging by providing a dummy plug
+> function that does nothing.  No difference.
 
-Nope.  The only place where the queue can be plugged is:
+Ah. If something is mucking with the request at the head of the queue while 
+ (q->head_active && !q->plugged) then I think that has to be a kernel bug.
 
-        if (list_empty(head)) {
-                q->plug_device_fn(q, bh->b_rdev); /* is atomic */
+Just before the end_request() in mtdblock_handle_request(), can you put in 
+a sanity check for req->bh->b_end_io? If it's not a sane value, can you 
+print the current values of q->head_active and q->plugged?
 
-Therefore the queue can't be plugged until we emptied it.
+--
+dwmw2
 
-To be sure I tried to disable plugging by providing a dummy plug function
-that does nothing.  No difference.
-
-
-Nicolas
 
 
 
