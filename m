@@ -1,21 +1,18 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp9wr-0007t4-Cy
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 14:11:42 -0400
-Date: Mon, 26 Jul 2004 19:11:34 +0100
-From: Ben Dooks <ben-=mtd@fluff.org>
-To: Ben Dooks <ben-mtd@fluff.org>
-Message-ID: <20040726181134.GF7414@home.fluff.org>
-References: <20040726145639.GE7414@home.fluff.org>
+	id 1BrFWS-00054I-Hv
+	for linux-mtd@lists.infradead.org; Sun, 01 Aug 2004 08:33:05 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20040731135955.GA10803@wohnheim.fh-wedel.de>
+References: <20040731135955.GA10803@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <1091363581.12594.122.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <20040726145639.GE7414@home.fluff.org>
-Sender: Ben Dooks <ben@fluff.org>
+Date: Sun, 01 Aug 2004 13:33:01 +0100
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Suspend on 2.6.7-rc1 with mtd-snapshot-20040718
-Reply-To: Ben Dooks <ben@fluff.org.uk>
+Subject: Re: [RFC] Volatile data device vor jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 2004-07-31 at 15:59 +0200, Jörn Engel wrote:
+> With a ram based volatile device, there is danger of data loss, so
+> garbage collection would have to be forced from time to time, similar
+> to the current wbuf approach for nand.
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I wouldn't do it like this -- why have a separate nvram device with
+JFFS2 nodes in it, when we could just use the page cache and inode
+cache. It's going to be _very_ hard to get fsync() et al right if we
+implement our own caching.
 
-On Mon, Jul 26, 2004 at 03:56:39PM +0100, Ben Dooks wrote:
-> I have a 2.6.7-rc2 kernel (PXA255) with a newish mtd
-> snapshot applied, and I have a problem with suspend-to-ram
-> with the mtdblockd and ntfld not going to sleep, and causing
-> the suspend to fail.
-> 
-> The kernel outputs the following:
-> 
-> stopping tasks failed (1 tasks remaining)
-> Restarting tasks...<6> Strange, mtdblockd not stopped
-> 
-> I guess mtdblockd isn't going to sleep when
-> requested, and is therefore causing the power
-> management to abort. Is there a fix in the newer
-> releases, or do I need to investiage this problem
-> further?
+The reason this hasn't been done is because it requires space
+reservations, and that's not trivial. You have to ensure that you have
+enough free flash space to make room for everything that's currently
+outstanding in the cache. It shouldn't be _that_ hard though.
 
-I added the attached patch, and at least the system
-can now suspend and resume, but is this the right
-solution?
+Doing this right should fix the problem you describe, of extremly
+short-lived files hitting the medium when ideally they wouldn't ever get
+written out. It would also help a lot with coalescing frequent short
+writes to log files into larger nodes, and it would help us with
+implementing shared writable mmap too.
 
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="blkdev.patch"
-
-Index: drivers/mtd/mtd_blkdevs.c
-===================================================================
-RCS file: /var/lib/cvs/linux-2.6/kernel/drivers/mtd/mtd_blkdevs.c,v
-retrieving revision 1.2
-diff -u -r1.2 mtd_blkdevs.c
---- drivers/mtd/mtd_blkdevs.c	19 Jul 2004 16:23:59 -0000	1.2
-+++ drivers/mtd/mtd_blkdevs.c	26 Jul 2004 18:10:05 -0000
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-+#include <linux/suspend.h>
- #include <linux/list.h>
- #include <linux/fs.h>
- #include <linux/mtd/blktrans.h>
-@@ -111,6 +112,12 @@
- 			spin_unlock_irq(rq->queue_lock);
- 
- 			schedule();
-+
-+			if (current->flags & PF_FREEZE) {
-+				printk(KERN_DEBUG "mtdblockd: sleeping\n");
-+				refrigerator(0);
-+			}
-+
- 			remove_wait_queue(&tr->blkcore_priv->thread_wq, &wait);
- 
- 			spin_lock_irq(rq->queue_lock);
-
---EeQfGwPcQSOJBaQU--
+dwmw2
