@@ -1,18 +1,18 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AA0ku-0004ue-US
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 06:33:01 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: J B <mad_flasher@hotmail.com>
-In-Reply-To: <Law11-F88qfH4OWXoGR0001766a@hotmail.com>
-References: <Law11-F88qfH4OWXoGR0001766a@hotmail.com>
-Message-Id: <1066282313.18189.17.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Thu, 16 Oct 2003 06:31:53 +0100
+To: Thomas Koeller <thomas.koeller@baslerweb.com>
+In-Reply-To: <200310151330.02902.thomas.koeller@baslerweb.com>
+References: <1065598642.12197.6.camel@famine>
+	 <200310151211.29172.thomas.koeller@baslerweb.com>
+	 <1066215157.14783.933.camel@hades.cambridge.redhat.com>
+	 <200310151330.02902.thomas.koeller@baslerweb.com>
 Content-Type: text/plain
+Message-Id: <1066299929.14783.2697.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Thu, 16 Oct 2003 11:25:29 +0100
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] cfi_cmdset_0020.c
+cc: ecos-discuss@sources.redhat.com
+Subject: Re: [ECOS] Stress testing JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-10-15 at 20:54 -0500, J B wrote:
-> 2.  According to the data sheet for the M58LW032A, the erase operation can 
-> complete in the period between issuing the suspend command and the time the 
-> erase controller stops.  The last part ot the patch checks the erase 
-> suspended bit in the status register and only sets the suspended variable if 
-> the bit is on.  This keeps the software state machine in sync with the 
-> actual state of the hardware.
+On Wed, 2003-10-15 at 13:30 +0200, Thomas Koeller wrote:
+> I do not think this path leads anywhere I want to go. The flash size
+> was chosen to meet the expected storage requirements, which means that
+> at some point the flash will be filled with valid data and consequently
+> there will be few obsoleted nodes. I expect this to be true for most
+> systems.
 
-Consider the case where you have two chips side by side on the bus. One
-completes and the other doesn't; your if() statement doesn't match that
-but we still needed to restart the erase.
+A sane observation.
 
-cfi_cmdset_0001.c issues an erase resume and then a status command, to
-ensure that the chip goes into status mode even if it had previously
-completed the erase.
+> > Omitting the 'totlen' field should be relatively simple if you're not
+> > freeing obsolete refs. Observe that in 99% of cases, it's true that
+> >
+> > 	ref->totlen == ref_offset(ref->next_phys) - ref_offset(ref)
+> >
+> > Make it 100% and make me believe it, and you can remove totlen from the
+> > structure.
+> >
+> 
+> I will consider that.
+
+OK... I've made it slightly easier for you by switching all use of
+'ref->totlen' to an accessor function ref_totlen(c, jeb, ref), where
+'jeb' can be NULL if the caller doesn't know it -- it _can_ be
+calculated in the relatively rare case that it's required, but if it's
+already to hand we might as well use it.
+
+I've written what I suspect will be the new version of that accessor
+function, and included some sanity checks for it. It's in #if 0 for now
+since we know it'll be broken -- look in nodelist.h. We may end up
+wanting it out of line, since it's not entirely trivial.
+
+To make it usable, we need to ensure that we have a node reference for
+areas of dirty space which we've previously been ignoring -- scan.c can
+no longer just skip over stuff it ignores but must allocate node
+references for it, and we must allocate node references for the wasted
+space at the end of eraseblocks when we've filled them _almost_ to the
+end and then filed them elsewhere.
+
+It should be relatively simple.
 
 -- 
 dwmw2
