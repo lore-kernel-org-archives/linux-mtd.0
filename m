@@ -1,18 +1,14 @@
-Received: from beta.dmz-eu.st.com ([164.129.1.35])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CUTOl-0007fo-Vc
-	for linux-mtd@lists.infradead.org; Wed, 17 Nov 2004 12:15:18 -0500
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <419B8715.4036BDBB@st.com>
-Date: Wed, 17 Nov 2004 18:15:01 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+Date: Wed, 17 Nov 2004 17:33:12 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Simon Haynes <simon@baydel.com>
+In-Reply-To: <6BEF91EC1C3A@baydel.com>
+Message-ID: <Pine.LNX.4.58.0411171729350.6034@phoenix.infradead.org>
+References: <6BEF91EC1C3A@baydel.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: JFFS2 & NAND failure
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: oops line 231 of latest readinode.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,129 +18,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Is it possible to reproduce this? How if it is?
 
-here are a few corrections (I think) regarding the management
-of write or erase error with NAND flash.
- - bad_count was not initialised
- - during wbuf flushing, if the previously written node filled
-   wbuf exactly, "buf" may be used instead of "wbuf"
-   in jffs2_wbuf_recover (access to null pointer)
- - there is no refiling of nextblock if a write error occurs
-   during writev_ecc (direct write, not using wbuf), 
-   so the next write may occur on the failed block
- - if a write error occurs, but part of the data was written,
-   an obsolete raw node ref is added but nextblock has changed.
+On Wed, 17 Nov 2004, Simon Haynes wrote:
 
-Additionally I have a question about the retry cases in
-jffs2_write_dnode and jffs2_write_dirent.
-If the write error occurs during an API call (not GC),
-jffs2_reserve_space is called again to find space to rewrite
-the node. However since we refiled the bad block, the free space
-was reduced. Is it not possible then that jffs2_reserve_space
-will need to gc to find some space ?
-In the case of a deletion dirent, the previous dirent may be
-GCed so its version number is increased. When the deletion
-dirent is finally written in the retry, its version number
-is older than the GCed node, so it is (quietly) obsoleted.
-In the case of a dnode, I think there may be a deadlock
-if a dnode belonging to the same file is GCed, since the
-GC will attempt to lock f->sem.
-I actually saw the dirent case in my tests but since I wrote
-some nodes manually I am not sure this is a valid problem in
-ordinary JFFS2 processing ?
-Could the solution be to call jffs2_reserve_space_gc instead
-of jffs2_reserve_space ?
+> 
+> I have been running some systems here for some time error free using a root 
+> filesystem which is jffs2 on nand. One of them produced an oops today which 
+> seemed to kill off kupdated. I had a look at the oops and it seems there is a 
+> possible bug in jffs2_add_frag_to_fragtree.  
+> 
+> In my case all arguments appear to be valid kernel addresses. The call to 
+> jffs2_lookup_node_frag returns a 0.  So the 'if (this)' takes the else route 
+> and lastend is set to 0. We then execute the code in if (lastend <= 
+> newfrag->ofs)' and then in the next if as newfrag->ofs contains -1. The oops 
+> is produced by the line 'if(this->node)' because this is 0. I have checked 
+> this against the latest CVS code and it would seem that this could still 
+> happen.
+> 
+> I don't really know the flow of the code here but could I just put 
+> 'if(this)' in front of 'if(this->node)' or is there some other more serious 
+> problem here.
+> 
+> Here is the some of the ksymoops output
+> 
+> Oops: kernel access of bad area, sig: 11
+> NIP: 8007D104 XER: 00000000 LR: 8007D0C8 SP: 802BFD80 REGS: 802bfcd0 TRAP: 
+> 0800    Not tainted
+> Using defaults from ksymoops -t elf32-powerpc -a powerpc:common
+> MSR: 00029030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+> TASK = 802be000[6] 'kupdated' Last syscall: -1
+> last math 00000000 last altivec 00000000
+> GPR00: 000FFFFF 802BFD80 802BE000 00000000 FFFFFFFF 82C8FFB0 00400000 00000000
+> GPR08: 82C8F000 000FFFFF 00000D90 00000000 82004228 1001F23C 00000000 00000000
+> GPR16: 00000000 FFF8345A 00000000 00000000 00009032 80FFFF40 00000000 00000000
+> GPR24: 00000000 80140000 00000000 828EAD14 00000000 82C8FFB0 00000000 83F48CC4
+> Call backtrace:
+> 83F48CC4 8007CFEC 8007D8D8 8007D6A8 80086B80 8004F4DC 8004F95C
+> 800874F0 800823A4 800886EC 80086FB4 8003CBF0 8003BD44 8003C0EC
+> 800061B0
+> Warning (Oops_read): Code line not seen, dumping what data is available
+> 
+> 
+> >>NIP; 8007d104 <jffs2_add_frag_to_fragtree+68/3b0>   <=====
+> 
+> >>GPR1; 802bfd80 <_end+edcd8/4eaff58>
+> >>GPR2; 802be000 <_end+ebf58/4eaff58>
+> >>GPR5; 82c8ffb0 <_end+2abdf08/4eaff58>
+> >>GPR8; 82c8f000 <_end+2abcf58/4eaff58>
+> >>GPR12; 82004228 <_end+1e32180/4eaff58>
+> >>GPR21; 80ffff40 <_end+e2de98/4eaff58>
+> >>GPR25; 80140000 <crc32_table+3cc/1238>
+> >>GPR27; 828ead14 <_end+2718c6c/4eaff58>
+> >>GPR29; 82c8ffb0 <_end+2abdf08/4eaff58>
+> >>GPR31; 83f48cc4 <_end+3d76c1c/4eaff58>
+> 
+> Trace; 83f48cc4 <_end+3d76c1c/4eaff58>
+> Trace; 8007cfec <jffs2_add_full_dnode_to_inode+74/124>
+> Trace; 8007d8d8 <jffs2_do_read_inode_internal+140/698>
+> Trace; 8007d6a8 <jffs2_do_read_inode+198/1c4>
+> Trace; 80086b80 <jffs2_read_inode+60/300>
+> Trace; 8004f4dc <get_new_inode+d4/1bc>
+> Trace; 8004f95c <iget4+130/144>
+> Trace; 800874f0 <jffs2_gc_fetch_inode+b0/108>
+> Trace; 800823a4 <jffs2_garbage_collect_pass+49c/564>
+> Trace; 800886ec <jffs2_flush_wbuf_gc+cc/178>
+> Trace; 80086
+> 
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-BR
-Estelle
-
-
-
-
-
-diff -auNr jffs2/wbuf.c myjffs2/wbuf.c
---- jffs2/wbuf.c	2004-11-17 00:00:14.000000000 +0100
-+++ myjffs2/wbuf.c	2004-11-17 17:36:14.556445000 +0100
-@@ -263,7 +263,7 @@
- 			kfree(buf);
- 		return;
- 	}
--	if (end-start >= c->wbuf_pagesize) {
-+	if (end-start > c->wbuf_pagesize) {
- 		/* Need to do another write immediately. This, btw,
- 		 means that we'll be writing from 'buf' and not from
- 		 the wbuf. Since if we're writing from the wbuf there
-@@ -744,9 +744,42 @@
- 		
- 		if (ret < 0 || wbuf_retlen != PAGE_DIV(totlen)) {
- 			/* At this point we have no problem,
--			   c->wbuf is empty. 
-+			   c->wbuf is empty. However refile nextblock to avoid
-+                           writing again to same address.
- 			*/
- 			*retlen = donelen;
-+			struct jffs2_eraseblock *jeb;
-+			spin_lock(&c->erase_completion_lock);
-+                  
-+			jeb = &c->blocks[outvec_to / c->sector_size];
-+			D1(printk("About to refile bad block at %08x\n", jeb->offset));
-+
-+			D2(jffs2_dump_block_lists(c));
-+			/* File the existing block on the bad_used_list.... */
-+			if (c->nextblock == jeb)
-+				c->nextblock = NULL;
-+			else /* Not sure this should ever happen... need more coffee */
-+				list_del(&jeb->list);
-+			if (jeb->first_node) {
-+				D1(printk("Refiling block at %08x to bad_used_list\n", jeb->offset));
-+				list_add(&jeb->list, &c->bad_used_list);
-+			} else {
-+				D1(printk("Refiling block at %08x to erase_pending_list\n", jeb->offset));
-+				list_add(&jeb->list, &c->erase_pending_list);
-+				c->nr_erasing_blocks++;
-+				jffs2_erase_pending_trigger(c);
-+			}
-+			D2(jffs2_dump_block_lists(c));
-+
-+			/* Adjust its size counts accordingly */
-+			c->wasted_size += jeb->free_size;
-+			c->free_size -= jeb->free_size;
-+			jeb->wasted_size += jeb->free_size;
-+			jeb->free_size = 0;
-+
-+			ACCT_SANITY_CHECK(c,jeb);
-+			D1(ACCT_PARANOIA_CHECK(jeb));
-+			spin_unlock(&c->erase_completion_lock);
- 			return ret;
- 		}
- 		
-
-diff -auNr jffs2/nodemgmt.c myjffs2/nodemgmt.c
---- jffs2/nodemgmt.c	2004-11-17 00:00:14.000000000 +0100
-+++ myjffs2/nodemgmt.c	2004-11-17 17:40:40.130248000 +0100
-@@ -308,7 +308,7 @@
- 
- 	D1(printk(KERN_DEBUG "jffs2_add_physical_node_ref(): Node at 0x%x(%d), size 0x%x\n", ref_offset(new), ref_flags(new),
-len));
- #if 1
--	if (jeb != c->nextblock || (ref_offset(new)) != jeb->offset + (c->sector_size - jeb->free_size)) {
-+	if ((!ref_obsolete(new)) && (jeb != c->nextblock || (ref_offset(new)) != jeb->offset + (c->sector_size -
-jeb->free_size))) {
- 		printk(KERN_WARNING "argh. node added in wrong place\n");
- 		jffs2_free_raw_node_ref(new);
- 		return -EINVAL;
-
-
-
-diff -auNr jffs2/build.c myjffs2/build.c
---- jffs2/build.c	2004-11-17 00:00:13.000000000 +0100
-+++ myjffs2/build.c	2004-11-17 17:29:20.384186000 +0100
-@@ -310,6 +310,7 @@
- 		c->blocks[i].used_size = 0;
- 		c->blocks[i].first_node = NULL;
- 		c->blocks[i].last_node = NULL;
-+		c->blocks[i].bad_count = 0;
- 	}
- 
- 	init_MUTEX(&c->alloc_sem);
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
