@@ -1,21 +1,16 @@
-Received: from smtp2.crystaltech.com ([216.119.106.211])
+Received: from smtp10.mail.yahoo.co.jp ([211.14.15.31])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19IpL1-0007ps-Bc
-	for <linux-mtd@lists.infradead.org>; Thu, 22 May 2003 13:38:27 +0100
-From: "John Burch" <jburch@vincisystems.com>
-To: =?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@wohnheim.fh-wedel.de>
-Date: Thu, 22 May 2003 08:40:59 -0400
-Message-ID: <000301c3205f$669ca630$1200a8c0@JOHNB>
+	id 19IsBb-0008IO-Kk
+	for <linux-mtd@lists.infradead.org>; Thu, 22 May 2003 16:40:55 +0100
+Message-ID: <001101c32078$7de79840$740486da@w0a3t0>
+From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 23 May 2003 00:40:37 +0900
 MIME-Version: 1.0
-In-Reply-To: <20030521155703.GA30187@wohnheim.fh-wedel.de>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-cc: 'David Woodhouse' <dwmw2@infradead.org>
-cc: 'Jonas Holmberg' <jonas.holmberg@axis.com>
-cc: linux-mtd@lists.infradead.org
-Subject: RE: Mtd block access (jffs2 formatted) and mtd char
- access(unformatted) on different partitions of a single flashdevice
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Subject: vmalloc for zlib workspace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >=20
-> > Not that I know of.  I think the best case scenario would=20
-> be that all=20
-> > AMD devices supported it - then only the manuf ID would have to be=20
-> > checked.  However, that would have to be confirmed by AMD.
->=20
->=20
-> If I read this correctly, AMD won't confirm your assumption.
->=20
+Hi
 
-AMD has confirmed that all of their flash devices support the multiple
-sector erase capability as described in their datasheets under "Sector
-Erase Command Sequence".  Note that it requires that any additional
-erase commands be written within 50us of the previous erase command.
+In the jffs2_zlib_init() function of fs/jffs2/comr_zlib.c. 
+workspace is aquired by vmalloc.
+
+But it could be allocated by static variable, like;
+
+static char dbuf[WORKSPACESIZE];
+
+int __init jffs2_zlib_init(void)
+{
+        def_strm.workspace = dbuf;
+
+Care should be taken as to the workspace size, but it is old refined library and it would hardly be changed.
+It would reduce TLB load and improve performance (a little).
+
+BR.
+
+Matsunaga.
+
+P.S.
+GC thread BUG() (inode wrap around) seems to be fixed. Thanks.
+
+P.S.2
+fs/jffs2/gc.c
+line 139
+     struct jffs2_inode_cache *ic;
+seems not necessary or the name should be changed.
+__________________________________________________
+Do You Yahoo!?
+Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
