@@ -1,18 +1,16 @@
-Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
+Received: from rcmenter.iserver.net ([192.41.35.12])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DBFF-0006nX-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 21:40:06 +0100
-Date: Thu, 21 Jun 2001 16:40:34 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Frederic Giasson <fgiasson@mediatrix.com>,
-        "=?iso-8859-1?Q?'K=E1ri_Dav=ED=F0sson'?=" <kd@flaga.is>,
-        "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: jffs2_scan_medium effor 
-In-Reply-To: <23724.993155508@redhat.com>
-Message-ID: <Pine.LNX.4.33.0106211638420.30096-100000@xanadu.home>
+	id 15DBpm-0006t3-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 22:17:50 +0100
+Message-ID: <3B32668F.8020000@asu.edu>
+Date: Thu, 21 Jun 2001 14:26:39 -0700
+From: Russ Dill <Russ.Dill@asu.edu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: safe flash filesystem
+References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com> <20010621163537.A26714@crystal.2d3d.co.za>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,23 +22,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+If its just a config file, why make all this so complicated?
 
-On Thu, 21 Jun 2001, David Woodhouse wrote:
+struct node {
 
->
-> nico@cam.org said:
-> >  Then what I would suggest is that you play tricks with offsets in
-> > your map driver so the firmware sector appears at the end and the two
-> > separate parts are seen as being contigous.
->
-> Not in the map driver - it may confuse the probe code and break the 'magic'
-> unlock addresses, etc. Do it in the partition code - rather than using the
-> generic partition code, use your own wrappers which do similar translation
-> and then pass through to the 'master' device's methods.
+	u32 magic;
+	char valid;
+	u32 version;
+	u32 data_crc;
+	u32 hdr_crc;
+	char data[DATA_SIZE];
+};
 
-If you see the example code I posted I made sure the first half of addresses
-aren't modified especially not to confuse the probe code...  Don't know
-about unlock addresses.
+set aside 2-4 eraseblocks (preferably paramater blocks) and on mount, 
+find the valid config, walk though the flash and find the valid node 
+with the matching crc's and highest version (watch wraparound).
+
+on writing a new config, if there is space left in the current erase 
+block, put it after the last one, after finishing writing it, set the 
+previos config's valid field to zero (flash lets you do this). If the 
+eraseblock is full, write in the next eraseblock, and when you are done, 
+erase the previous eraseblock.
+
+All of this can be done in userspace or with a userspace library, just 
+mmap an mtd, and then use the erase ioctls.
 
 
-Nicolas
+
+databases and logs...thats another story
