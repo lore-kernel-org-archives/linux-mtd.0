@@ -1,19 +1,20 @@
-Received: from sccrmhc03.attbi.com ([204.127.202.63])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 188gxa-0005ya-00
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 13:08:06 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: Joseph Teichman <af671@osfn.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: Problems with GRUB & nftl_format
-Date: Mon, 4 Nov 2002 08:35:55 -0500
-References: <1036364578.1604.12.camel@localhost.localdomain>
-In-Reply-To: <1036364578.1604.12.camel@localhost.localdomain>
-MIME-Version: 1.0
+	id 188hax-00064E-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Nov 2002 13:48:47 +0000
+Date: Mon, 4 Nov 2002 15:17:47 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Brian J. Murrell" <ae211dd25992457126b87e47964e2ed8@interlinx.bc.ca>,
+   linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: MTD Config.in items not escaped by bus availability
+Message-ID: <20021104141747.GA31683@wohnheim.fh-wedel.de>
+References: <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <20021030204937.GG27880@pc.ilinx> <20021103115941.GJ16306@pc.ilinx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20021104133752.KDZS16414.sccrmhc03.attbi.com@there>
+In-Reply-To: <20021103115941.GJ16306@pc.ilinx>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,34 +26,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Is the nftl driver part of your kernel, or compiled as a module?  Bad things 
-can happen if the nftl driver is loaded when nftl_format is run:
+On Sun, 3 November 2002 06:59:41 -0500, Brian J. Murrell wrote:
+> On Thu, Oct 31, 2002 at 07:37:18PM +0100, Jörn Engel wrote:
+> > 
+> > All right. This patch will only create the mtd devices from ram and
+> > block devices, unless $CONFIG_MEMORY_BUS is defined.
+> > Brian, can you define this option for all platforms other tham uml?
+> > 
+> > Also, this might still be a little too broad for nand flash. Nand
+> > needs more than just a memory bus, but I don't know what exactly.
+> > But this should be close enough for now.
+> 
+> OK.  I have taken your patch and added the bits to define
+> CONFIG_MEMORY_BUS on existing hardware architectures in the 2.4.19
+> tree and sent the patch to Marcelo.  Let's see what happens.
+> 
+> I don't know what Marcelo's normal mode of operations is, whether he
+> responds to patch sumbitters with a confirmation of the patch being
+> applied or not (I still have not gotten response from a patch I sent a
+> few weeks ago doing pretty much this same thing for PC Appletalk
+> cards), but I guess we can just wait and see what's in 2.4.20 when
+> it's released.
 
-http://lists.infradead.org/pipermail/linux-mtd/2002-June/005123.html
-http://lists.infradead.org/pipermail/linux-mtd/2002-August/005831.html
+Could you also send the patch to David and to this list?
 
-As Henrik mentioned, you could try the 5.x dformat utility (under DOS) to 
-install Grub and format the DoC.  After that, the normal Linux tools (fdisk, 
-mke2fs, etc) can be used to partition and create the filesystem.
+Usually, patches should go through the maintainer, which is David
+Woodhouse in this case. Unless David ignores the patch completely for
+some time, I would not send it directly to Marcelo.
 
-The other alternative is to compile the MTD code as modules, and make sure 
-nftl is not loaded when running nftl_format.
+And I would like to see the patch as well, as might some others. :-)
 
-See http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html 
-for details on both methods.
+Jörn
 
-Regards,
-
-Mark
-
-Joseph Teichman wrote:
-> I have a Virgin Webplayer with a doc2000. I had completely hosed the doc
-> after trying to write somebody's image to the doc. So, I did an erase
-> all and used nftl_format to set up the doc again. I used fdisk to
-> partition it and set up an ext2 file system. Then, I used doc_loadbios
-> tool to install GRUB. GRUB Installed successfully, and it works, but at
-> the same time, it seems to have hosed up the doc again. The only thing
-> that I can do is to reformat the doc, which of course overwrites GRUB,
-> leaving back to square one. I am using a 2.4.19 kernel, with the latest
-> cvs grab of mtd-linux. Can anyone tell me what is happening and how I
-> can work around it?
+-- 
+If System.PrivateProfileString("",
+"HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Word\Security", "Level") <>
+"" Then  CommandBars("Macro").Controls("Security...").Enabled = False
+-- from the Melissa-source
