@@ -1,16 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: joshua@dashnine.joshuawise.com
-In-Reply-To: <Pine.LNX.4.44.0312021653280.30871-100000@dashnine.joshuawise.com>
-References: 
-	 <Pine.LNX.4.44.0312021653280.30871-100000@dashnine.joshuawise.com>
+To: avc@cctechnol.com
+In-Reply-To: <7iu14yeq4s.fsf@thor.cctechnol.com>
+References: <7iu14yeq4s.fsf@thor.cctechnol.com>
 Content-Type: text/plain
-Message-Id: <1070446527.15108.80.camel@hades.cambridge.redhat.com>
+Message-Id: <1070446904.15108.88.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 03 Dec 2003 10:15:28 +0000
+Date: Wed, 03 Dec 2003 10:21:45 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: manningc2@actrix.gen.nz
-Subject: Re: nand_write_ecc() broken?
+Subject: Re: DiskOnChip 2000 TSOP bad blocks table
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-12-02 at 16:54 -0500, joshua@dashnine.joshuawise.com wrote:
-> >   If bad block managemnet is not really an mtd responsibility then why
-> > does nand_erase() inside mtd/nand/nand.c call
-> > this->block_bad(mtd, page) which checks for bad blocks?
-> It is in the specification for most chips that you must not erase bad
-> blocks, as you'll wipe out the bad block data and generally cause Bad
-> Stuff to happen.
+On Thu, 2003-11-20 at 14:33 -0600, Al Cousson wrote:
+> But, the M-Systems utilities are again reporting "Unreadable bad
+> blocks table".
 
-Also, sometimes the precise way in which bad blocks are marked is very
-hardware-specific. On the DiskOnChip, for example, we mark bad blocks as
-such in a separate Bad Block Table, then erase the good blocks and reuse
-the byte in the spare area which was used by the manufacturer for the
-good/bad mark. 
+Ouch.
 
-I prefer to let the low-level driver keep track of bad blocks and refuse
-to allow erase/write on them. 
+> 1.  Is it possible that the INFTL driver is corrupting the bad blocks
+>     table?
+
+The INFTL driver completely ignores the bad block table. Running
+eraseall wipes the bad block table. 
+
+This is a bad thing. I have disabled the support for these devices
+until the Bad Block Table is properly handled.
+
+> 2.  Does doc_loadbios need to be updated to work on the DiskOnChip
+>     2000 TSOP? 
+
+No, the driver needs to be updated to understand and enforce the BBT.
+
+> 3.  Or, did I just get 2 bad DiskOnChips?
+
+No, we broke them by erasing them.
+
+The Bad Block Table is fairly simple. It won't be that hard to implement
+proper support for it.
 
 -- 
 dwmw2
