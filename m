@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 165XBQ-0006Hn-00
-	for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2001 19:00:48 +0000
+	id 165XPt-0006KU-00
+	for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2001 19:15:45 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1006109689.1390.50.camel@gromit.house> 
-References: <1006109689.1390.50.camel@gromit.house>  <1006107094.1391.46.camel@gromit.house> <1335.1006108414@redhat.com> 
+In-Reply-To: <1006107094.1391.46.camel@gromit.house> 
+References: <1006107094.1391.46.camel@gromit.house> 
 To: Michael Rothwell <rothwell@holly-springs.nc.us>
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, spse@secret.org.uk
 Subject: Re: second "mount" hangs 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sun, 18 Nov 2001 19:10:15 +0000
-Message-ID: <2506.1006110615@redhat.com>
+Date: Sun, 18 Nov 2001 19:25:12 +0000
+Message-ID: <2915.1006111512@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +24,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 rothwell@holly-springs.nc.us said:
-> Here ya go (SysRQ-t):
+>  I mounted a JFFS2 filesystem stored on a 16MB partition on a zip
+> disk, using mtdblock and blktmd. I accidentally typed "mount /mnt/
+> flash" rather than "umount /mnt/flash", and "mount" is now hung.
+> Unkillable. /mnt/flash is still mounted and usable, but not
+> unmountable. It seems I will have to reboot to umount the filesystem.
+> I can't even eject the zip disk.
 
-Thanks. I have seen this before - didn't reach any useful conclusions so 
-far. That has to be the down_read(s->s_umount) in get_super(). I don't know 
-why anything would have the write lock on that though. Can you show the 
-backtraces for all the other current processes too? 
+I think that the last time I saw this reported, it was also on a blkmtd 
+device. A quick perusal of the blkmtd code shows that it uses sleep_on 
+functions - which makes me instantly assume it's racy.
+
+Simon - can you reproduce this problem?
 
 --
 dwmw2
