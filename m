@@ -1,18 +1,21 @@
-Received: from smtp2.crystaltech.com ([216.119.106.211])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193JEW-0007rB-6R
-	for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2003 18:19:36 +0100
-From: "John Burch" <jburch@vincisystems.com>
-To: "'Earl Manning'" <EManning@PRISMIQ.com>,
-	<linux-mtd@lists.infradead.org>
-Date: Wed, 9 Apr 2003 13:19:58 -0400
-Message-ID: <001601c2febc$4013a050$1200a8c0@JOHNB>
+Received: from h209-139-192-234.gtconnect.net ([209.139.192.234]
+	helo=marmot.intrinsyc.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 193PoF-00007l-J4
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2003 01:20:55 +0100
+Received: from localhost (localhost [[UNIX: localhost]])
+	by marmot.intrinsyc.com (8.11.6/8.11.6) id h3A0KkS29681
+	for linux-mtd@lists.infradead.org; Wed, 9 Apr 2003 17:20:46 -0700
+Message-Id: <200304100020.h3A0KkS29681@marmot.intrinsyc.com>
+From: Chris Sperandeo <csperandeo@intrinsyc.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 9 Apr 2003 17:20:46 -0700
 MIME-Version: 1.0
-In-Reply-To: <20030407141857.3a11609c.EManning@PRISMIQ.com>
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Problems making jffs2 utils
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
+Subject: JFFS2 on NAND problems on ppc linux-2.4.21-pre2
+Reply-To: csperandeo@intrinsyc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> I have a similar system, embedded mips based, and here is the=20
-> changed Makefile for the util directory that I used.  I hope=20
-> this helps.
->=20
-> Earl Manning
+Hi,
 
-Two things...
+Wondering if anyone has experienced a bug described as follows.
 
-1. Your makefile helped, but the static 'erase' binary is nearly 2MB
-(0.5MB stripped); I need this for the target and can't afford that much
-space.  When I add '-shared' to CFLAGS, 'erase' is down to a manageable
-size, but then I see that the libc.so.6 (libc-2.2.5.so) that it needs is
-over 5MB (1.6M stripped).  Still too big.  Are there other solutions for
-erasing or for library?
+I am using the linux powerpc kernel 2.4.21-pre2.  We are using a March 09 
+2003 snapshot for MTD/JFFS2 from http://www.linux-mtd.infradead.org/.
 
-2. Also, I'm still getting...
+After rebooting the device we occasionally receive the following:
 
-"undefined reference to: 'cpu_to_je16'" and=20
-"undefined reference to: 'cpu_to_je32'"
+*********************************
+jffs2_get_inode_nodes(): CRC failed on node at 0x00d8a9c0: Read 0xffffffff, 
+calculated 0x4deb59e5
 
-errors when building eraseall.c.  It seems it uses these, but the only
-place I see them defined (as macros) is in mkfs.jffs2.c.  I could always
-just duplicate those from mkfs.jffs2 and put them into eraseall, but I'm
-wondering if there are other issues involved.
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x00d89a8c: Read 
+0xbaa193f5, calculated 0xcdd1fe6c Checked all inodes but still 0x1c20 bytes 
+of unchecked space? kernel BUG at gc.c:140!
+Oops: Exception in kernel mode, sig: 4
+NIP: C00A0420 XER: 00000000 LR: C00A0420 SP: C033FF10 REGS: c033fe60 TRAP: 
+0700
+ Not tainted
+MSR: 00009030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+TASK = c033e000[8] 'jffs2_gcd_mtd1' Last syscall: -1
+last math 00000000 last altivec 00000000
+PLB0: bear= 0x00000000 acr=   0x00000000 besr=  0x00000000
+PLB0 to OPB: bear= 0x00000000 besr0= 0x00000000 besr1= 0x00000000
 
-John
+GPR00: C00A0420 C033FF10 C033E000 00000018 00001030 00000001 00000020 C01F0000
+GPR08: 00003DA8 C01A5D04 00000000 C033FE30 82004028 1001F598 00FE4100 007FFF2F
+GPR16: 00000000 00000001 007FFF00 FFFFFFFF 00FDF920 00000000 00F9F548 00000002
+GPR24: 00000000 C01AB4AC 00000000 FFFFFFFF 00000000 C035CDB8 C03CF0F8 C03CF0C4
+Call backtrace:
+C00A0420 C00A3790 C0006F00
+**********************************
 
->=20
-> On Mon, 7 Apr 2003 14:50:49 -0400
-> "John Burch" <jburch@vincisystems.com> wrote:
->=20
-> > I'm running into compiler errors when trying to build the jffs2=20
-> > utilities for a 2.4.17/mips target.  I've checked out the=20
-> latest mtd=20
-> > code according to www.linux-mtd.infradead.org, then have=20
-> followed the=20
-> > instructions in the mtd/util/README file (copied mtd/util=20
-> contents to=20
-> > directory under linux root and changed $CROSS as necessary=20
-> since I'm=20
-> > cross-compiling to mips).  I cd to=20
-> <mips-kernel-path>/linux/utils and=20
-> > do a make, but get errors immediately, which typically include the=20
-> > following (depending on which util I'm trying to make)...
-> >=20
-> > .../libc.so.6: undefined reference to 'no symbol'
-> > .../mips-linux-ld: cannot find -lz
-> >=20
-> > I'm really only after 'erase' and maybe 'jffs2reader' for use on my=20
-> > mips embedded target; I already have mkfs.jffs2 as an x86=20
-> binary for=20
-> > my x86 development platform.  Any ideas, or better place for me to=20
-> > post this question?
-> >=20
-> > John
-> >=20
-> >=20
-> > ______________________________________________________
-> > Linux MTD discussion mailing list=20
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
+It appears that something has gone wrong with the garbage collection thread 
+(at least that is one of the theories).  Inserting a delay before actually 
+rebooting the device seems to remedy the problem somewhat but does not make 
+the problem dissappear.
+
+Is it possible that the garbage collection thread is not given enough time to 
+do its works before the device is rebooted?
+
+Any solution or suggestions on what avenues to a solution would be greatly 
+appreciated.
+
+Regards,
+
+Chris
+
+
+Chris Sperandeo
+Software Engineer
+Intrinsyc Software, Inc.
+
+10th Floor, 700 West Pender St.
+Vancouver, BC V6C 1G8
+p. 604-646-6969
+f.  604-801-6461
+e. csperandeo@intrinsyc.com
+w. www.intrinsyc.com
+
+Intrinsyc. Accelerate your Vision.
+
+This communication and the information it contains are intended for the 
+person or
+organization to whom it is addressed.  Its contents are confidential and may 
+be protected in law.  Unauthorized use, copying or disclosure of any of it 
+may be unlawful.  If you are not the intended recipient, we ask that you 
+contact us immediately and take notice that any distribution or copying of 
+this communication is strictly prohibited.
