@@ -1,21 +1,19 @@
-Received: from rm-rstar.sfu.ca ([142.58.120.21] ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17tt0h-0001IG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 17:58:07 +0100
-Received: from fraser.sfu.ca (btlee@fraser.sfu.ca [142.58.101.25])
-	by rm-rstar.sfu.ca (8.12.5/8.12.5/SFU-5.0H) with ESMTP id g8OGw1Ns024781
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 09:58:02 -0700 (PDT)
-From: Benjamin Tze-Kit Lee <btlee@sfu.ca>
-Received: (from btlee@localhost)
-	by fraser.sfu.ca (8.9.2/8.9.2/SFU-5.0C) id JAA28060
-	for linux-mtd@lists.infradead.org; Tue, 24 Sep 2002 09:58:01 -0700 (PDT)
-Message-Id: <200209241658.JAA28060@fraser.sfu.ca>
-Subject: difference between "node" and "inode"
-To: linux-mtd@lists.infradead.org
-Date: Tue, 24 Sep 2002 09:58:01 -0700 (PDT)
-MIME-Version: 1.0
+Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17ttGO-0001L3-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 18:14:21 +0100
+Date: Tue, 24 Sep 2002 10:14:19 -0700
+From: Marc Singer <elf@buici.com>
+To: Russ Dill <Russ.Dill@asu.edu>
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org,
+  yaffs@toby-churchill.org
+Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
+Message-ID: <20020924171419.GA2733@buici.com>
+References: <200209231220.12682.ayalon@tadlys.com> <20020924014556.6EC8B43F2@tiger.actrix.co.nz> <20020924034410.GA18915@buici.com> <20020924040150.A1499145FF@dragon.actrix.co.nz> <20020924044434.GA23917@buici.com> <1032854017.13283.3.camel@russ> <20020924165351.GA2533@buici.com> <1032886743.13283.6.camel@russ>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1032886743.13283.6.camel@russ>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,10 +25,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+On Tue, Sep 24, 2002 at 09:59:03AM -0700, Russ Dill wrote:
+> On Tue, 2002-09-24 at 09:53, Marc Singer wrote:
+> > On Tue, Sep 24, 2002 at 12:53:36AM -0700, Russ Dill wrote:
+> > > 
+> > > > Some people think that writing a new kernel would be easy.  %^)
+> > > > 
+> > > > The trouble is coming up with a convenient method.  LILO stores a list
+> > > > of blocks.  GRUB reads filesystems.  GRUB is better in the long run,
+> > > > but harder to implement.
+> > > 
+> > > I've written a cramfs reader for grub, to use on the DOC, and grub works
+> > > great on a DOC. Although the grub code is a bit ugly, and there are a
+> > > few gotchas, writing a module is pretty straight forward. That being
+> > > said, writing a module to load files of a journaled fs (jffs2), is a bit
+> > > more time consuming, but as I understand yaffs is greatly optimized
+> > > towards NAND (as apposed to NOR) flash layout and lends itself to easy
+> > > reading (same sized blocks, no compression iirc).
+> > > 
+> > > If I were you, I'd use grub.
+> > 
+> > That's what I'd expect.
+> > 
+> > A question, though.  I've been doing compression tests with cramfs.
+> > I'm finding that gzip -9 of an ext2 filesystem produces smaller images
+> > than mkcramfs.  Have you ever compared the two?
+> 
+> cramfs is meant to be lean, fast, and low on ram consumption, if you
+> compress the whole thing at once, you have to load the whole thing into
+> ram to read any of it, so cramfs compresses PAGE_CACHE (4096) sized
+> pages at a time
 
-Can anyone tell me what is the difference between a "node" and a "inode" 
-in the JFFS/MTD system?
-
-Thx a lot,
-Ben
+That's what isn't clear.  I made two filesystems with the same
+contents.  One cramfs and the other ext2.  The ext2 filesystem
+compressed was smaller than the cramfs.  My understanding is that both
+must be uncompressed into a ramfs to be used.  If this is correct,
+then the only comparable consideration is the size of the compressed
+data.
