@@ -1,25 +1,14 @@
-Received: from mailer.cse.iitd.ac.in ([202.141.68.3]
-	helo=desh.cse.iitd.ernet.in)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D4Jvz-00075f-4s
-	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 09:25:46 -0500
-Message-ID: <421DD992.60304@kritikalsolutions.com>
-Date: Thu, 24 Feb 2005 19:11:38 +0530
-From: Narinder Kumar <narinder@kritikalsolutions.com>
+Received: from web11603.mail.yahoo.com ([216.136.172.55])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D4JxO-0007Fo-3p
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 09:27:11 -0500
+Message-ID: <20050224142708.76840.qmail@web11603.mail.yahoo.com>
+Date: Thu, 24 Feb 2005 06:27:08 -0800 (PST)
+From: prasadam kumar <prasadamkumar@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>,
-	linux-mtd@lists.infradead.org
-References: <4219E20F.80908@kritikalsolutions.com>
-	<1108994310.13420.50.camel@sauron.oktetlabs.ru>
-	<4219EDC3.1060506@kritikalsolutions.com>
-	<1108999278.16852.46.camel@fuzzie.sanpeople.com>
-	<421D8C23.2000200@kritikalsolutions.com>
-	<Pine.LNX.4.58.0502241318300.5525@phoenix.infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0502241318300.5525@phoenix.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: mkfs.jffs2
+Content-Type: text/plain; charset=us-ascii
+Subject: crc error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-          I have finally mounted my dataflash's jffs2 partition. The 
-problem was that the driver of dataflash was taking page size in erase 
-size function (which was 1056 bytes) and mkfs.jffs2 takes the block 
-size. So i changed the erasesize in the driver to be block size which is 
-8 * page_size i,e ( 8 *1056) and then i mounted my device and it mounted 
-without any errors.
+hai to all,
 
-Thanx to all
-Narinder
+  I am working on intel IQ80321 flash(16MB), when i am
+using cfi_cmdset_0001 to write into the flash it is
+writing properly. When i am booting form flash
+it is giving following problem..
+
+my linux version : 2.4.19
+
+> g 0x1008000
+Uncompressing Linux ............................
+
+crc error
+
+-- System halted
+
+before sending this mail to mtd group i tryied a lot 
+to come out of this problem. plz give me any
+suggestions to come out of this problem
+
+bye
+prashanth 
 
 
-Artem B. Bityuckiy wrote:
-
->Please, erase your flash then mount *empty* flash. Then type 'dmesg'. You 
->should find the information about the block size implied by JFFS2 there.
->
->--
->Best Regards,
->Artem B. Bityuckiy,
->St.-Petersburg, Russia.
->
->
->.
->
->  
->
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Mail - Easier than ever with enhanced search. Learn more.
+http://info.mail.yahoo.com/mail_250
