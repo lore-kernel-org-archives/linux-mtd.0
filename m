@@ -1,18 +1,18 @@
-Received: from rproxy.gmail.com ([64.233.170.193] helo=mproxy.gmail.com)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkEGT-0001t4-BJ
-	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2004 23:47:34 -0400
-Received: by mproxy.gmail.com with SMTP id d15so304443rng
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Jul 2004 20:47:32 -0700 (PDT)
-Message-ID: <f88313bd04071220474c906cc5@mail.gmail.com>
-Date: Mon, 12 Jul 2004 23:47:32 -0400
-From: Paul Hodson <starchart@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BkGj2-0002B5-JJ
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 02:25:13 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Eric W. Biederman" <ebiederman@lnxi.com>
+In-Reply-To: <m3vfgsmwfs.fsf@maxwell.lnxi.com>
+References: <m3vfgsmwfs.fsf@maxwell.lnxi.com>
+Content-Type: text/plain
+Message-Id: <1089699909.8822.9.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Tue, 13 Jul 2004 07:25:09 +0100
 Content-Transfer-Encoding: 7bit
-Subject: Unable to load DOC2000
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [RFC] refactoring MTD cmdset ops, jedec_probe, and cfi_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+On Mon, 2004-07-12 at 21:13 -0600, Eric W. Biederman wrote:
+> I would like to have the probe functions fill in
+> not the CmdSet number but a structure full of function pointers.
+> And of course the upper layers need to be modified to cope.
 
-I found a similar problem to mine in the archives, but unfortunately I
-wasn't able to get my system working with its suggestions.  I would
-very much appreciate some guidance for what I think/hope is likely a
-simple problem on my end.
+> I have both Intel and AMD chips to test against.  CFI and non CFI
+> all being used as motherboard BIOS chips.  So I should be able
+> to catch the vast majority of problems in testing.  All but the
+> delicate chip interleave case, but I should not actually be touching
+> that part of the code, and at least I am aware of the issue.
 
-Here's the story.  I have a Tri-M TMZ104 with a 128MB DiskOnChip 2000.
- I'm using their "Linux-MZ" distribution, but I need a kernel newer
-than the 2.4.18 included with it.  I set up and compiled 2.4.26 with
-MTD according to all of the tips posted online.  Actually booting is
-my problem now.  I should note that the existing kernel is built with
-M-Systems' TrueFFS driver, whereas mine is not.
+And I just rewrote that part of the code too :)
 
-I set up LILO for both kernels, as shown in my lilo.conf:
-==== begin lilo.conf
-boot = /dev/doca
-disk = /dev/doca
-bios = 0x80
-prompt
-timeout = 10
-vga = normal
-serial = 0,9600n8
-#append="console=tty0 console=ttyS0,19200 ide0=nodma"
-#append="console=ttyS0,9600 console=tty1"
+> Does anyone have any problems with this refactoring?
 
-image = /boot/vmlinuz-2.4.18-doc514-allmod
-#image = /boot/vmlinuz-2.4.18-ext3+allmod
-  initrd = /boot/initrd-2.4.18-ext3+allmodc.gz
-  root = /dev/doca1
-  label = Linux-2.4.18
-  read-only
+No, it seems like a good idea. It'll let us drop half of cfi_cmdset_0020
+too.
 
-image = /boot/bzImage-2.4.26
-  root = /dev/nftla1
-  label = Linux-2.4.26
-  read-only
-==== end lilo.conf
+Once I've done some testing on the new interleave / map access code I
+was planning to send an update to Linus this week. That _really_ needs
+to happen this week, so if you're going to do this then either do it
+today, or wait a month. Personally I favour the former -- the whole
+thing needs testing now anyway.
 
-I also ran "rdev bzImage-2.4.26 /dev/ntfla1" on the kernel since I
-compiled it on a separate machine.
+Can you get to #mtd on irc.freenode.net?
 
-Upon booting, I get the following error message:
-==== begin error
-VFS: Cannot open root device "5a00" or 5a:00
-Please append a correct "root=" boot option
-Kernel panic: VFS: Unable to mount root fs on 5a:00
-==== end error
-
-I'm not sure if by this point the kernel has detected the DiskOnChip,
-since I don't have a means of logging the kernel message output.
-
-My guess is that the problem is related to the overall boot point of
-/dev/doca, which perhaps doesn't exist upon loading the new kernel
-because it doesn't use TrueFFS?
-
-Would anyone be able to offer me any ideas?
-
-Cheers,
-
-    Paul
+-- 
+dwmw2
