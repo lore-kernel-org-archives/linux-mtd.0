@@ -1,20 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Brian T <btuch@usa.net>
-In-Reply-To: <07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc>
-References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc>
-	<1093894808.25339.57.camel@weaponx.rchland.ibm.com>
-	<073f01c48ecc$abd3e600$fd0ba8c0@briantpc>
-	<1093899187.16320.25.camel@thomas.tec.linutronix.de>
-	<075f01c48ed7$08dbc570$fd0ba8c0@briantpc>
-	<1093900751.16320.28.camel@thomas.tec.linutronix.de>
-	<07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc>
-Content-Type: text/plain
-Date: Tue, 31 Aug 2004 16:41:09 +0100
-Message-Id: <1093966869.6200.34.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from ns2a.townisp.com ([216.195.0.134] helo=ns2.townisp.com)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2BKh-0006iP-NR
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2004 12:18:08 -0400
+Date: Tue, 31 Aug 2004 12:18:14 -0400 (EDT)
+From: Jamie Guinan <guinan@bluebutton.com>
+To: Bo Henriksen <bo.henriksen@nordicid.com>
+In-Reply-To: <A6991F0FA073F34C94E97976CAC03231327EF6@server2.nordicid.com>
+Message-ID: <Pine.LNX.4.44.0408311207130.9460-100000@gemini.home.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 file corruption
+Subject: Re: Setting up MTD via command line?
+Reply-To: Jamie Guinan <guinan@bluebutton.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-08-31 at 09:59 -0500, Brian T wrote:
-> Attached is my zipped syslog. From bootup, I touched a file, and then
-> echo'd some chars into it.  Everthing looks fine, even the file.
+On Thu, 26 Aug 2004, Bo Henriksen wrote:
 
-Logging via syslog is too lossy to be useful. Please obtain messages
-over a serial console or possibly netconsole if that's reliable enough. 
+> Hi,
+> 
+> I'm having trouple understanding the new MTD interface with 2.6.8?
+> Can anyone explain, or is there docs on how to setup MTD via command
+> line, which I think was introduced so 
+> you don't need to write your own driver for e.g. embedded processors
+> such as ARM.
 
-You need even the KERN_DEBUG messages which are absent from your syslog,
-too.
+Hi Bo,
 
-I need to see what it said while it wrote the new file, then what it
-said while remounting the offending file system. If you can take a
-snapshot of the flash after writing the file and turning the machine
-off, but before remounting it, that would be useful too.
+I found it in the config help for "Command line partition table parsing",
+and also in the comments in cmdlinepart.c.
 
--- 
-dwmw2
+For the LogicPD board (lpd7a404 here), I used this kernel command-line,
+
+  boot console=ttyAM1 root=/dev/mtdblock3 rootfstype=jffs2 \
+    mtdparts=phys_mapped_flash:256k,256k,1536k,2048k
+
+and (at least) these options,
+
+  CONFIG_MTD_PARTITIONS=y
+  CONFIG_MTD_CMDLINE_PARTS=y
+  CONFIG_MTD_CFI=y
+  CONFIG_MTD_PHYSMAP=y
+  CONFIG_MTD_PHYSMAP_START=0x0
+  CONFIG_MTD_PHYSMAP_LEN=0x4000000
+  CONFIG_MTD_PHYSMAP_BANKWIDTH=4
+
+Now I finally understand the thread from July where the developers were
+discussing this (trading a whole C file (lpd7a400-flash.c) for the
+"mtdparts=" parameter; good stuff).
+
+Good luck,
+-Jamie
+
+> 
+> Cheers,
+> 
+> Bo
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
