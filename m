@@ -1,28 +1,22 @@
-Received: from mailout.fastq.com ([204.62.193.66])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19aebU-0001mo-Jr
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Jul 2003 17:49:09 +0100
-Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
-	h6AGnJD48688	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jul 2003 09:49:19 -0700 (MST)
-	(envelope-from Russ.Dill@asu.edu)
-From: Russ Dill <Russ.Dill@asu.edu>
-To: jasmine@regolith.co.uk
-In-Reply-To: <Pine.LNX.4.53.0307101611170.844@hex.linuxgrrls.org>
+	id 19ajap-0002MW-3t
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jul 2003 23:08:47 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: David Woodhouse <dwmw2@infradead.org>, jasmine@regolith.co.uk
+Date: Fri, 11 Jul 2003 10:12:07 +1200
 References: <E19ZLo5-0000XC-Kw@pentafluge.infradead.org>
-	 <Pine.LNX.4.53.0307101358200.32710@hex.linuxgrrls.org>
-	 <1057846853.21073.378.camel@passion.cambridge.redhat.com>
-	 <Pine.LNX.4.53.0307101611170.844@hex.linuxgrrls.org>
-Message-Id: <1057855838.2659.333.camel@localhost>
-Mime-Version: 1.0
-Date: 10 Jul 2003 09:50:38 -0700
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+	<Pine.LNX.4.53.0307101358200.32710@hex.linuxgrrls.org>
+	<1057846853.21073.378.camel@passion.cambridge.redhat.com>
+In-Reply-To: <1057846853.21073.378.camel@passion.cambridge.redhat.com>
+MIME-Version: 1.0
+Message-Id: <20030710220855.468E515B9B@desire.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-cc: Charles Manning <manningc2@actrix.gen.nz>
-cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: nand flash driver
-Reply-To: Russ.Dill@asu.edu
+Subject: Re: nand flash driver -> ALE etc
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-07-10 at 08:12, jasmine@regolith.co.uk wrote:
-> On Thu, 10 Jul 2003, David Woodhouse wrote:
-> 
-> > Hmmm. When sending multiple bytes of address, isn't ALE supposed to
-> > remain high for the entire duration, without going low again between
-> > cycles? How do you achieve this if it's on the address bus?
-> 
-> By waiting to see if the next write is to the same address-  it's not hard 
-> to do that sort of thing in an FPGA or SoC.  Since the only line involved 
-> is the ALE to the NAND, there's no downside in hanging on a little longer
-> before dropping it.
+On Friday 11 July 2003 02:20, David Woodhouse wrote:
+> On Thu, 2003-07-10 at 14:05, jasmine@regolith.co.uk wrote:
+> > On Wed, 9 Jul 2003, Charles Manning wrote:
+> > > I think most people connect CLE and ALE to GPIO pins, but some
+> > > application notes describe driving these via the address bus. you
+> > > should then be able to drive the lines the way you want by accessing
+> > > the corresponding addresses.
+>
+> Hmmm. When sending multiple bytes of address, isn't ALE supposed to
+> remain high for the entire duration, without going low again between
+> cycles? How do you achieve this if it's on the address bus?
 
-yup, and a CPLD only costs about $1 (32 io, 32 mc) or $2.65 for a
-72io/72 mc. Makes this sort of thing pretty trivial, although for 2 or 3
-signals, discrete logic will do just fine.
+I always thought so too, but someone brought to my attention a discussion 
+about using address lines in a Toshiba doc.
 
--- 
-Russ Dill <Russ.Dill@asu.edu>
+The timing diagrams in the Toshiba datasheet I have open right now 
+(TC58128AFT) state  that ALE and friends are don't care except during the 
+actual read/write cycles.
+
+I looked at a Samsung datasheet and saw the same thing.
+
+
+-- Charles
