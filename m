@@ -1,20 +1,19 @@
-Received: from [212.43.253.35] (helo=synergie-inf.com)
+Received: from sccrmhc02.attbi.com ([204.127.202.62])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18UOa5-0003of-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 09:57:33 +0000
-Received: from archie.gsi.synergie-inf.com ([10.53.2.1])
-	by gateway.synergie-inf.com ([127.0.0.1])
-	with SMTP (MDaemon.PRO.v6.5.1.R)
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 11:27:44 +0100
-Message-ID: <515CABE7496FD111AA3300201829FCBE2FFC48@archie.gsi.synergie-inf.com>
-From: Marc Neiger <m.neiger@synergie-inf.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: 16 NANDS
-Date: Fri, 3 Jan 2003 11:27:42 +0100 
-MIME-Version: 1.0
+	id 18UQQm-00040V-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 11:56:04 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Reply-To: m.neiger@synergie-inf.com
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Sanal Kumar <p_sanalk@yahoo.com>
+Subject: Re: Problem with DiskOnChipMillenium
+Date: Fri, 3 Jan 2003 07:25:27 -0500
+References: <20030103094024.54024.qmail@web10308.mail.yahoo.com>
+In-Reply-To: <20030103094024.54024.qmail@web10308.mail.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <E18UQQm-00040V-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,13 +25,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
- 
-what are the current status/plan regarding the use of 16 NAND Flash,
-including with JFFS2
- 
-Cheers and happy new year,
-Marc Neiger
+Try using the following options:
 
-Marc Neiger
- 
+# Memory Technology Devices (MTD)
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_CHAR=y
+CONFIG_NFTL=y
+CONFIG_NFTL_RW=y
+
+# Disk-On-Chip Device Drivers
+CONFIG_MTD_DOC2000=y
+CONFIG_MTD_DOCPROBE=y
+
+(turn off CONFIG_MTD_DOC2001, and CONFIG_MTD_DOCPROBE ADDRESS).
+
+Sanal Kumar wrote:
+> I am working on an Assabet like board(SA1110).
+> but when I enable mtd device(M-systems Millenium)I am
+> able to see the driver recognizing the Millenium chip.
