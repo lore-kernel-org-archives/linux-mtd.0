@@ -1,24 +1,16 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from dns.chez-thomas.org ([63.225.98.241]
+	helo=hermes.chez-thomas.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B8a0H-0003zS-Pm
-	for linux-mtd@lists.infradead.org; Wed, 31 Mar 2004 08:19:13 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HVF00FODJ00I3@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 31 Mar 2004 09:19:12 +0200 (MEST)
-Date: Wed, 31 Mar 2004 08:15:38 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <406A2A5F.7040005@setabox.com>
-To: "William J. Beksi" <wjbeksi@setabox.com>, linux-mtd@lists.infradead.org
-Message-id: <200403310915.38528.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-References: <406A2A5F.7040005@setabox.com>
-Subject: Re: bad block replacement
-Reply-To: tglx@linutronix.de
+	id 1B8t5A-0007Jo-4M
+	for linux-mtd@lists.infradead.org; Thu, 01 Apr 2004 04:41:32 +0100
+Message-ID: <47940.62.166.230.82.1080790890.squirrel@www.chez-thomas.org>
+Date: Wed, 31 Mar 2004 20:41:30 -0700 (MST)
+From: "Gary Thomas" <gary@mlbassoc.com>
+To: dwmw2@infradead.org
+MIME-Version: 1.0
+Content-Type: multipart/mixed;boundary="----=_20040331204130_70183"
+cc: linux-mtd@lists.infradead.org
+Subject: Merge eCos changes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +20,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 31 March 2004 04:18, William J. Beksi wrote:
-> I'm using a Samsung KM29U256T 32Mb nand flash with 4 partitions on a
-> cramfs. I'm trying to implement ECC and a method for replacing bad
-> blocks. The spare array consists of 16 bytes, positions 512-528, the
-> 517th position being reserved for the bad block marker.
+------=_20040331204130_70183
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-The generic nand driver knows all about this. ECC is implemented and bad block 
-management is done in  NAND aware filesystems. 
+Merge back changes from the eCos public CVS
 
-Using cramfs on NAND is not really a good idea. Cramfs is _NOT_ aware of NAND 
-flash. There exist JFFS2 (compressing) and YAFFS (not compressing), which are 
-NAND aware. Use one of those and you are done with out any changes in the 
-code. 
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+
+------=_20040331204130_70183
+Content-Type: application/octet-stream; name="diffs"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="diffs"
+
+PyBmcy9qZmZzMi9lY29zL2pmZnMyLTIwMDMwMjA0MTQ0My5lcGsKPyBmcy9qZmZzMi9lY29zL2pm
+
+ZnMyLTIwMDMxMTE5MDQyMy5lcGsKPyBmcy9qZmZzMi9lY29zL2pmZnMyLTIwMDMxMjExMTYyOC5l
+
+cGsKPyBmcy9qZmZzMi9lY29zL2pmZnMyLTIwMDQwMjE3MDgwNC5lcGsKPyBmcy9qZmZzMi9lY29z
+
+L2pmZnMyLTIwMDQwMzA5MDkwNS5lcGsKPyBmcy9qZmZzMi9lY29zL2pmZnMyLTIwMDQwMzMxMDUy
+
+Ny5lcGsKSW5kZXg6IGZzL2pmZnMyL2Vjb3MvQ2hhbmdlTG9nCj09PT09PT09PT09PT09PT09PT09
+
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6
+
+IC9ob21lL2N2cy9tdGQvZnMvamZmczIvZWNvcy9DaGFuZ2VMb2csdgpyZXRyaWV2aW5nIHJldmlz
+
+aW9uIDEuNQpkaWZmIC11IC1yMS41IENoYW5nZUxvZwotLS0gZnMvamZmczIvZWNvcy9DaGFuZ2VM
+
+b2cJMzEgTWFyIDIwMDQgMTI6MTc6MDkgLTAwMDAJMS41CisrKyBmcy9qZmZzMi9lY29zL0NoYW5n
+
+ZUxvZwkxIEFwciAyMDA0IDAzOjM5OjExIC0wMDAwCkBAIC0zLDYgKzMsNDAgQEAKIAkqIHNyYy9m
+
+cy1lY29zLmMgKGpmZnMyX2ZvX3dyaXRlKTogU2V0IHJpLmlzaXplIHNvIHRoYXQgbm9uLWFwcGVu
+
+ZAogCXdyaXRlcyBkb24ndCB0cnVuY2F0ZSB0aGUgZmlsZS4KIAkKKzIwMDQtMDMtMDMgIFRob21h
+
+cyBLb2VsbGVyICA8dGhvbWFzLmtvZWxsZXJAYmFzbGVyd2ViLmNvbT4KKworICAgICAgICAqIHNy
+
+Yy9mcy1lY29zLmM6IAorCU1ha2UgSkZGUzIgaG9ub3IgT19UUlVOQyBmbGFnIChhZ2Fpbikgd2hl
+
+biBvcGVuaW5nIGZpbGVzIHdpdGggcmVhZAorCUFjY2Vzcy4KKworMjAwNC0wMy0xNyAgT3l2aW5k
+
+IEhhcmJvZSA8b3l2aW5kLmhhcmJvZUB6eWxpbi5jb20+CisKKwkqIHNyYy9mcy1lY29zLmM6IAor
+
+CVdpdGggQ1lHT1BUX0ZTX0pGRlMyX1dSSVRFPTEsIGZpbGUgY3JlYXRpb24gZmFpbGVkLiBUaGUg
+
+cHJvYmxlbQorCXdhcyBpbnRyb2R1Y2VkIGluIGZzLWVjb3MuYyAxLjIwCisJCisyMDA0LTAzLTEx
+
+ICBPeXZpbmQgSGFyYm9lIDxveXZpbmQuaGFyYm9lQHp5bGluLmNvbT4KKwkKKwkqIHNyYy9mcy1l
+
+Y29zLmM6CisJICBGaXhlZCB1bW91bnQgbWVtb3J5IGxlYWsuIHJvb3QtPmpmZnMyX2kuZGVudHMg
+
+d2hlcmUgbm90IGZyZWVkLgorCQorMjAwNC0wMi0yMCAgVmluY2VudCBDYXRyb3MgIDxWaW5jZW50
+
+LkNhdHJvc0BlbGlvcy1pbmZvcm1hdGlxdWUuZnI+CisKKwkqIHNyYy9mcy1lY29zLmMgOgorCShq
+
+ZmZzMl9maW5kKSBQb2xpY3kgdG8gc2tpcCBwYXRoIHNlcGFyYXRvciBpcyBubyBsb25nZXIKKwki
+
+aWYgJy8nIHRoZW4gc2tpcCIgYnV0ICJ3aGlsZSAnLycgdGhlbiBza2lwIiBhbGxvd2luZworCW11
+
+bHRpICcvJyBzZXBhcmF0b3JzIChpLmUgOiAvdG1wLy8vL2ZvbykuCisJKGZpbmRfZW50cnkpIFBv
+
+bGljeSB0byBkZXRlY3QgZW5kIG9mIHBhdGggaXMgbm8gbG9uZ2VyCisJImlmICdcMCcgdGhlbiBl
+
+bmRfb2ZfcGF0aCIKKwlidXQgIndoaWxlICcvJyBza2lwIGl0IGFuZCB0aGVuIGlmICdcMCcgdGhl
+
+biBlbmRfb2ZfcGF0aCIKKwlhbGxvd2luZyBwYXRoIHRlcm1pbmF0ZWQgd2l0aCBhbnkgbnVtYmVy
+
+IG9mICcvJworCShpLmUgOiBjaGRpcigvdG1wLy8vKSkuCisKKzIwMDQtMDMtMDMgIFRob21hcyBL
+
+b2VsbGVyICA8dGhvbWFzLmtvZWxsZXJAYmFzbGVyd2ViLmNvbT4KKworICAgICAgICogc3JjL2Zz
+
+LWVjb3MuYzoKKyAgICAgICBNYWtlIEpGRlMyIGhvbm9yIE9fVFJVTkMgZmxhZyB3aGVuIG9wZW5p
+
+bmcgZmlsZXMgL3cgcmVhZCBhY2Nlc3MuCisKIDIwMDQtMDItMTcgIERhdmlkIFdvb2Rob3VzZSAg
+
+PGR3bXcyQHJlZGhhdC5jb20+CiAKIAkqIHNyYy9mcy1lY29zLmM6CkBAIC0xNSw3ICs0OSwxMSBA
+
+QAogCXRoZSBfcGFyZW50X2lub2RlLCBub3QgdGhlIGNoaWxkICh3aGljaCBtYXkgYmUgemVybyBp
+
+biB0aGUgY2FzZSAKIAlvZiBhbiB1bmxpbmspLgogCi0wMDQtMDEtMDUgIFRob21hcyBLb2VsbGVy
+
+ICA8dGhvbWFzLmtvZWxsZXJAYmFzbGVyd2ViLmNvbT4KKzIwMDQtMDEtMDkgIFRob21hcyBLb2Vs
+
+bGVyICA8dGhvbWFzLmtvZWxsZXJAYmFzbGVyd2ViLmNvbT4KKworICAgICAgICogc3JjL2ZzLWVj
+
+b3MuYzogRml4ZWQgaW5vZGUgcmVmZXJlbmNlIGNvdW50aW5nIGluIGpmZnMyX29wc19saW5rKCku
+
+CisKKzIwMDQtMDEtMDUgIFRob21hcyBLb2VsbGVyICA8dGhvbWFzLmtvZWxsZXJAYmFzbGVyd2Vi
+
+LmNvbT4KIAogCSogY2RsL2pmZnMyLmNkbDogUmUtYWRkZWQgQ1lHUEtHX0ZTX0pGRlMyX0NGTEFH
+
+U19SRU1PVkUgdGhhdCBoYWQgYmVlbgogCXJlbW92ZWQgYnkgcHJldmlvdXMgY2hhbmdlLgpJbmRl
+
+eDogZnMvamZmczIvZWNvcy9zcmMvZnMtZWNvcy5jCj09PT09PT09PT09PT09PT09PT09PT09PT09
+
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6IC9ob21l
+
+L2N2cy9tdGQvZnMvamZmczIvZWNvcy9zcmMvZnMtZWNvcy5jLHYKcmV0cmlldmluZyByZXZpc2lv
+
+biAxLjM1CmRpZmYgLXUgLXIxLjM1IGZzLWVjb3MuYwotLS0gZnMvamZmczIvZWNvcy9zcmMvZnMt
+
+ZWNvcy5jCTMxIE1hciAyMDA0IDE0OjEwOjI4IC0wMDAwCTEuMzUKKysrIGZzL2pmZnMyL2Vjb3Mv
+
+c3JjL2ZzLWVjb3MuYwkxIEFwciAyMDA0IDAzOjM5OjExIC0wMDAwCkBAIC0yNjMsNyArMjYzLDgg
+
+QEAKIAl3aGlsZSAoKm4gIT0gJ1wwJyAmJiAqbiAhPSAnLycpCiAJCW4rKywgbmFtZWxlbisrOwog
+
+Ci0JLy8gSWYgd2UgdGVybWluYXRlZCBvbiBhIE5VTCwgc2V0IGxhc3QgZmxhZy4KKwkvLyBDaGVj
+
+ayBpZiB0aGlzIGlzIHRoZSBsYXN0IHBhdGggZWxlbWVudC4KKwl3aGlsZSggKm4gPT0gJy8nKSBu
+
+Kys7CiAJaWYgKCpuID09ICdcMCcpCiAJCWRzLT5sYXN0ID0gdHJ1ZTsKIApAQCAtMzUzLDcgKzM1
+
+NCw3IEBACiAJCS8vIFVwZGF0ZSBkaXJzZWFyY2ggb2JqZWN0IHRvIHNlYXJjaCBuZXh0IGRpcmVj
+
+dG9yeS4KIAkJZC0+ZGlyID0gZC0+bm9kZTsKIAkJZC0+cGF0aCArPSBkLT5uYW1lbGVuOwotCQlp
+
+ZiAoKihkLT5wYXRoKSA9PSAnLycpCisJCXdoaWxlICgqKGQtPnBhdGgpID09ICcvJykKIAkJCWQt
+
+PnBhdGgrKzsJLy8gc2tpcCBkaXJuYW1lIHNlcGFyYXRvcnMKIAl9CiB9CkBAIC01OTEsNiArNTky
+
+LDcgQEAKIAlzdHJ1Y3QgX2lub2RlICpyb290ID0gKHN0cnVjdCBfaW5vZGUgKikgbXRlLT5yb290
+
+OwogCXN0cnVjdCBzdXBlcl9ibG9jayAqamZmczJfc2IgPSByb290LT5pX3NiOwogCXN0cnVjdCBq
+
+ZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhqZmZzMl9zYik7CisgICAgICAgIHN0cnVj
+
+dCBqZmZzMl9mdWxsX2RpcmVudCAqZmQsICpuZXh0OwogCiAJRDIocHJpbnRmKCJqZmZzMl91bW91
+
+bnRcbiIpKTsKIApAQCAtNjM0LDYgKzYzNiwxMyBAQAogCQlqZmZzMl9zdG9wX2dhcmJhZ2VfY29s
+
+bGVjdF90aHJlYWQoYyk7CiAjZW5kaWYKIAkJamZmczJfaXB1dChyb290KTsJLy8gVGltZSB0byBm
+
+cmVlIHRoZSByb290IGlub2RlCisKKwkJLy8gZnJlZSBkaXJlY3RvcnkgZW50cmllcworCQlmb3Ig
+
+KGZkID0gcm9vdC0+amZmczJfaS5kZW50czsgZmQ7IGZkID0gbmV4dCkgeworCQkgIG5leHQ9ZmQt
+
+Pm5leHQ7CisJCSAgZnJlZShmZCk7CisJCX0KKwogCQlmcmVlKHJvb3QpOwogCQkvL0NsZWFyIHJv
+
+b3QgaW5vZGUKIAkJLy9yb290X2kgPSBOVUxMOwpAQCAtNzI2LDcgKzczNSw3IEBACiAJCXJldHVy
+
+biBFSVNESVI7CiAJfQogCi0jaWZuZGVmIENZR09QVF9GU19KRkZTMl9XUklURQorI2lmZGVmIENZ
+
+R09QVF9GU19KRkZTMl9XUklURQogCWlmIChtb2RlICYgT19UUlVOQykgewogCQlzdHJ1Y3QgamZm
+
+czJfaW5vZGVfaW5mbyAqZiA9IEpGRlMyX0lOT0RFX0lORk8obm9kZSk7CiAJCXN0cnVjdCBqZmZz
+
+Ml9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhub2RlLT5pX3NiKTsKQEAgLTk5MSw3ICsxMDAw
+
+LDYgQEAKIAogCS8vIEFsbG93IHRocm91Z2ggbGlua3MgdG8gbm9uLWV4aXN0aW5nIHRlcm1pbmFs
+
+IG9iamVjdHMKIAlpZiAoZHMyLmxhc3QgJiYgZXJyID09IEVOT0VOVCkgewotCQlqZmZzMl9pcHV0
+
+KGRzMi5ub2RlKTsKIAkJZHMyLm5vZGUgPSBOVUxMOwogCQllcnIgPSBFTk9FUlI7CiAJfQo=
+
+------=_20040331204130_70183--
