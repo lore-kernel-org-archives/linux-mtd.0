@@ -1,19 +1,18 @@
-Received: from pd9eb91f2.dip.t-dialin.net ([217.235.145.242] helo=thomas.tec.autronix.de)
+Received: from dsl-64-129-133-253.telocity.com ([64.129.133.253] helo=skylab.outpostsentinel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dC5F-0000Og-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 15:21:33 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Thomas Gleixner <gleixner@autronix.de>
-Reply-To: gleixner@autronix.de
-To: "rolf.fiedler" <rolf.fiedler@loop.de>, linux-mtd@lists.infradead.org
-Subject: Re: nand driver patch
-Date: Tue, 19 Feb 2002 16:35:40 +0100
-References: <20020219142725.FHPN19335.wmpexmta02-pub.mail-store.com@onebox.com>
-In-Reply-To: <20020219142725.FHPN19335.wmpexmta02-pub.mail-store.com@onebox.com>
-MIME-Version: 1.0
-Message-Id: <02021916354000.05221@thomas>
-Content-Transfer-Encoding: 8bit
+	id 16dC7F-0000Ox-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 15:23:37 +0000
+Received: from GATEKEEPER ([192.168.2.103])
+	by skylab.outpostsentinel.com (8.11.2/8.11.2) with SMTP id g1JGPgL15079
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 11:25:42 -0500
+Message-Id: <200202191625.g1JGPgL15079@skylab.outpostsentinel.com>
+Date: Tue, 19 Feb 2002 10:33:33 -0500
+To: linux-mtd@lists.infradead.org
+From: Chris Fowler <cfowler@outpostsentinel.com>
+Subject: Kerlen 2.4.13 and ramdisks
+Reply-To: cfowler@outpostsentinel.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday, 19. February 2002 15:27, rolf.fiedler wrote:
-> Hi there 
-> 
-> I have some strange piece of hardware that uses two different IO addresses
-> for the nand flash read/write accesses. I modified the nand struct
-> IO_ADDR to have IO_R_ADDR and IO_W_ADDR (in nand.h and nand.c)
-> and also upgraded the spia driver to use this more flexible abstraction.
-> pros: works with obscure hardware (like the one I have to use at the
-> moment)
-> cons: uses one long int (4 bytes) more memory
-> 
-The latest CVS contains a patch for this purpose alreay !
--- 
-Thomas
-__________________________________________________
-Thomas Gleixner, autronix automation GmbH
-auf dem berg 3, d-88690 uhldingen-muehlhofen
-fon: +49 7556 919891 , fax: +49 7556 919886
-mail: gleixner@autronix.de, http://www.autronix.de  
+You guys might have ran across a ramdisk problem.  I have a feeling that kernel 2.4.13 is not respecting my ramdisks.
+
+
+dd if=/etc/user.img of=/dev/ram6
+
+mount /dev/ram6  fails.  
+
+
+Is this a problem?
