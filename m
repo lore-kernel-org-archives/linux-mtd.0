@@ -1,18 +1,20 @@
-Received: from pu90.internetdsl.tpnet.pl ([80.55.20.90]
-	helo=evo.evopolska.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QP0a-0002ZX-So
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 11:08:41 +0100
-Date: Thu, 12 Jun 2003 12:10:56 +0200 (CEST)
-From: angainor@evo.evopolska.com
-To: Greg Ungerer <gerg@snapgear.com>
-In-Reply-To: <3EE7D5CB.1090305@snapgear.com>
-Message-ID: <Pine.LNX.4.44.0306120922280.29227-100000@evo.evopolska.com>
+	id 19QP7Q-0002fh-1C
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 11:15:44 +0100
+Message-Id: <200306121016.h5CAGCi07498@dagobert.svc.sysgo.de>
+From: Robert Kaiser <rob@sysgo.de>
+To: Chris Marston <chris@wirewerks.com>, linux-mtd@lists.infradead.org
+Date: Thu, 12 Jun 2003 12:18:32 +0200
+References: <20030611173522.NAUK12016.simmts1-srv.bellnexxia.net@there>
+In-Reply-To: <20030611173522.NAUK12016.simmts1-srv.bellnexxia.net@there>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: MTD drivers for DoC Millenium Plus
+Subject: Re: blkmtd.o, JumpTec Dimm-PC woes
+Reply-To: rkaiser@sysgo.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >>I have studied the "DiskOnChip 2000 128Mb problem"
-> >>thread here on list and tried to change the
-> >>MAX_CHIPS_MPLUS define to something else than 1.
-> >>Well, this way I got an 128MiB disk, then a
-> >>256MiB one, and so on... :). way too many chips found.
-> 
-> We will need to find out a little bit more about this
-> part. The Millennium Plus family originally had 2 memebers,
-> each with their own high level ID. Easy to tell them
-> apart. There internal flash organization is quite different
-> though, the larger (32MiB) part has dual interleaved
-> flash.
+Am Mittwoch, 11. Juni 2003 19:35 schrieb Chris Marston:
+> Hi,
+>
+> I'm working on a project using embedded linux on a JumpTec Dimm-PC (the
+> Elan SC520 model). The JumpTec (supposedly) emulates a full PC with IDE,
+> etc, so up till now, we've been able to get by quite happily with a
+> homegrown slack-based distro with a minix FS (the final product will be
+> mostly ro, so wear levelling is unnecessary).  Recently, however, we
+> noticed that our development units were beginning to corrupt data on
+> writes, well before the MTBF of their flash.
 
-> This sure does look odd. The doc I have states that the firstUnit
-> and lastUnit should be valid even for binary partitions.
+My understanding is that wear depends on the number erase cycles a particular 
+flash block has seen. How is it even possible to specify an MTBF in this case?
 
-Well, i think i finally got something. As i thought, the
-problem was that the driver did not recognize the size of the
-DoC correctly. I played with MAX_CHIPS_MPLUS/MAX_FLOORS_MPLUS.
-The correct setting seems to be in this case:
+Keep in mind that, even if you only read files off the disk, those file's 
+access times will get updated in the FS, so even read-only operation may 
+cause physical write accesses. To avoid this, try the "noatime" mount option.
 
-	MAX_CHIPS_MPLUS=1
-	MAX_FLOORS_MPLUS=2
 
-The detection code does not work here.
-Maybe it should be done differently with DoCMP?
-Greg, if you point me to proper data sheets, i might
-try to figure out.
+> It turns out that the DIMM-PC
+> carries out a good chunk of its IDE-emulating chicanery in the BIOS. Any OS
+> can happily talk to the fictitious hard drive on its own, but, without the
+> help of the BIOS, it won't properly erase sectors before using them. Thus,
+> because Linux cold-shoulders the BIOS, sectors on the (SanDisk NAND) flash
+> aren't getting erased properly, and, over time, the boards become unusable.
 
-I get no sanity checks errors and the driver correctly
-recognized two linux partitions created earlier with M-Systems
-driver. At least the partition table was read correctly.
-Dumps of the partitions differed from the actual data
-in many places. The only thing the driver said that might
-be wrong was this (<X> is in range 1981-2047, so not all blocks
-are affected):
+Are you absolutely sure of this? I thought all Jumptec DIMM-PCs have a 
+SanDisk IDE CF built in: The chips are soldered onto the PCB, but it behaves 
+exactly like a normal CF. I'm sure this is true for the 386SX and SC410 
+versions, not 100% sure for the SC520 version, though.
 
-	INFTL: formatting chain at block <X>
-	INFTL: formatting chain at block <X>
-	INFTL: formatting block <X>
-	MTD: Error 0xffffffa5 erasing at 0x3f20000
-	INFTL: error while formatting block <X>
+> I'm thinking that the best way to handle this is to use blkmtd.o and then
+> use JFFS2, eraseall, etc. Unfortunately, I can't figure out how or where to
+> talk to the mtd device created by blkmtd.o. I've tried utils/MAKEDEV and
+> /dev/ftla0, and /dev/nftla0, but (eg. eraseall /dev/ftla0) complains that
+> there's no such device or address. I know blkmtd.o loaded correctly,
+> because it shows an mtd0 in /proc/mtd.
 
-Any writing causes immediate system death :))
+If you can access the device through blkmtd.o or the Linux IDE driver, then 
+you most certainly have an IDE CF (these drivers access the device directly, 
+not through the BIOS). You *can* put a JFFS2 FS on such a device by means of 
+the blkmtd.o driver, but this not very useful. (IIRC, this has been discussed 
+on this list serveral times).
 
-Might my problems result from wrong cylinders/heads/sectors
-decided by the driver? I get:
+Rob
 
-	INFTL: cannot calculate a geometry to match size of 0x1f1c0.
-	INFTL: using C:995 H:16 S:8 (== 0x1f180 sects)
+
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO AG
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
