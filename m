@@ -1,28 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6UmB-0000Az-Lq
-	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 09:24:36 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1D6UcU-00007u-8h
-	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 15:14:34 +0100
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Mar 2005 15:14:34 +0100
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Mar 2005 15:14:34 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Wed, 02 Mar 2005 15:13:33 +0100
-Message-ID: <d04hdb$8k1$1@sea.gmane.org>
-References: <d01lkf$v0d$1@sea.gmane.org>
+	id 1D6V5A-0000NF-4b
+	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 09:44:13 -0500
+Date: Wed, 2 Mar 2005 15:44:07 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20050302144407.GA18893@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <d01lkf$v0d$1@sea.gmane.org>
-Sender: news <news@sea.gmane.org>
-Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 and RAM consumprion reincarnated
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again,
+On Tue, 1 March 2005 16:28:36 +0000, Artem B. Bityuckiy wrote:
+> 
+> We've stopped on the design like this: each inode has ICP which is stored 
+> on flash. The ICP is being outdated by GC and users. Since it is 
+> inefficient to rewrite new inode every time, we won't rewrite it but add 
+> node_ref instead. Sometimes we'll flush ICP and free node_refs.
 
-> After removing a directory containing a lot of files, I get lots of the 
-> following messages on reboot (one for each of the files I removed):
+I agree with tglx, your approach is complicated (aka horrible).  How
+about something much simpler:
+o The ICP is just a list of erase blocks.
+o For any non-obsolete node belonging to an inode, the containing
+  erase block number *must* be part of ICP.
+o If an erase block doesn't contain non-obsolute nodes for this inode,
+  its number *should* not be part of ICP.
+o The ICP *can* be stored in flash.
 
-> Cannot remove child "file10.txt", ino #13, because it doesn't exist
+Advantages over current design:
+o Lower memory consumption, as we don't track individual nodes anymore.
 
-> It keeps returning even after rebooting...
-Some more information:
+Advantages over your old ICP concept:
+o GC and write are simple.  They simply add the current eraseblock to
+  the ICP list, if it isn't part of it already.
 
-The problem arose after creating a directory in my JFFS2 NAND fs, and 
-creating some 1000 (small) files in it. After rebooting I removed the 
-entire directory, and at the next reboot I got the error.
+Disadvantages:
+o Whenever we need to check the full node list, we take a few more
+  indirections.
+o Removal of erase blocks from the ICP list is done on lookup.
+  "Whoops, this erase block doesn't contain any of my nodes."
 
-I'm running a 2.4.20 kernel but with mtd updated.
+Ultimate advantage: Design can be explained in less words. :)
 
-I didn't do the mtd update myself - this was handled by my board/linux 
-vendor, but scanning the mtd-directory structure I found that the newest 
-file in the structure seems to be "drivers/mtd/nand/s3c2410.c" from 
-2004-10-12:
+Jörn
 
-$Id: s3c2410.c,v 1.5 2004/10/12 10:10:15 bjd Exp $
-
-The remainder of the files are dated somewhat similar...
-
-Maybe this can clarify some things?
-
-BR,
-  Martin Egholm
+-- 
+My second remark is that our intellectual powers are rather geared to
+master static relations and that our powers to visualize processes
+evolving in time are relatively poorly developed.
+-- Edsger W. Dijkstra
