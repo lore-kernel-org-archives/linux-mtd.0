@@ -1,14 +1,16 @@
-Received: from [210.77.143.228] (helo=tsinghua.org.cn)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kGYc-0003Dy-00
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 05:05:22 +0100
-From: "" <yanhy@tsinghua.org.cn>
-To: linux-mtd@lists.infradead.org  
-Date: Thu, 29 Aug 2002 12:06:18 +0800
-Reply-To: "" <yanhy@tsinghua.org.cn>
-Subject: Can anyone give me some suggestions on using jffs(1/2)
-Content-Type: text/plain
-Message-Id: <E17kGYc-0003Dy-00@pentafluge.infradead.org>
+Received: from [194.79.107.66] (helo=abc1915.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17kJpY-00055t-00
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 08:35:07 +0100
+From: "Opt-inList" <besthomebiz@subdimension.com>
+Reply-To: stockbuyer@netzero.net
+To: linux-mtd@lists.infradead.org
+Date: Thu, 29 Aug 2002 03:47:28 -0500
+Subject: Everybody Gets Paid - No Recruiting Needed
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E17kJpY-00055t-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,19 +22,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!I'm a new comer here and I am new to uClinux.I want to use jffs(1 or 2) as the
-root filesystem on target M5272C3.But i failed to do that though i tried a lot
-according to "jffs-howto.txt".Can you tell me how to begin?
-well,I have download uClinux-2.4.x( uClinux-dist-20020701.tar.gz.tar) from
-www.uclinux.org, and i'v succesfully run the kernel on the M5272C3 target using
-romfs as root fs(BTW:i use ppcboot as the bootloader,which can receive
-kernel+romfs image via ethernet port and then put it in ram at 0x20000.Then i can
-run the kernel by typing command "go 20000") .
-Now, i want to use jffs as the root fs instead of romfs,but i failed to compile
-the kernel when i select MTD support, MTD partitions support and jffs support as 
-jffs-howto.txt says.
-Can you give me some suggestions how to build the jffs(2 or 1) as root fs? Are any
-patches required ?
-Thanks so much!
-Best wishes
-Yan
+Everybody gets paid=2E  No recruiting required=2E
+
+Join and reserve a position for free now=2E
+Program is 18 weeks old and it's paying=2E
+
+Everybody gets in line to get paid by all
+the new people coming in =28but it's NOT a
+traditional straightline=29=2E=2E=2EEVERYONE makes money=2E=2E=2E
+and those that sponsor make more=2E=2E=2E=2E
+
+=3Chtml=3E
+=3Ca href=3D=22mailto=3Agmt101info=40profitresponder=2Ecom=3Fsubject=3Dsend-more-info=22=3Cb=3E
+Click here to request for more information=3C=2Fb=3E=3C=2Fa=3E
+
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+=3Cbr=3E
+
+
+
+
+
+
+
+
+
+
+
+
+=3Ca href=3D=22mailto=3Astockbuyer=40netzero=2Enet=3Fsubject=3DREMOVE=22=3Cb=3E
+We belong to the same opt-in list=2E But if wish to have your email
+address REMOVE from our database please click here=3C=2Fb=3E=3C=2Fa=3E
+=3C=2Fhtml=3E
