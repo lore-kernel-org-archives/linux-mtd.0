@@ -1,45 +1,54 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from smtprch1.nortelnetworks.com ([192.135.215.14] helo=smtprch1.nortel.com)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11bmE8-0005yi-00
-	for mtd@infradead.org; Thu, 14 Oct 1999 15:51:32 +0100
-To: Andreas Kotes <count@flatline.de>
-Cc: mtd@infradead.org
-Subject: Re: Booting from 32MB DOC2000 
-Mime-Version: 1.0
+	id 11btrl-0000BX-00
+	for mtd@infradead.org; Fri, 15 Oct 1999 00:00:57 +0100
+Message-ID: <38065F6F.AABCDC@americasm01.nt.com>
+Date: Thu, 14 Oct 1999 17:55:43 -0500
+From: "Mark Ferrell" <mferrell@nortelnetworks.com>
+MIME-Version: 1.0
+To: mtd@infradead.org
+Subject: New low level driver
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 14 Oct 1999 15:51:29 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11bmE7-0001Cv-00@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-count@flatline.de said:
->  I would actually need to boot from it, actually with kernel 2.2.12 ..
-> any news from this side? And, could you tell me which Firmware code to
-> use? is it doc121.exb like I suspect?
+I am working on a low level driver for the PMC551 PCI Memory
+module from Ramix Inc. (http://www.ramix.com) to be used in a
+telecommunications project here at Nortel Networks.  Originally
+I had planned on implementing the entire driver as the lowlevel
+driver and the block device driver as well untill someone on the
+kernel mailing list pointed me to this project.
 
-It _should_ be. It's just that my NFTL driver leaves the device in a state
-which their firmware doesn't grok, so it may not actually boot.
+Anyway .. The PMC551 PCI Memory module is for cPCI
+(CompactPCI) systems.  Basicly it's a PCI device with a bank
+of dram/sdram that can be accessed just like normal memory
+once you have initialized the device.
 
-> > I'll be back on top of it within two weeks' time, and hope to submit a
-> > working version to Linus as soon as I can, to make sure it gets into
-> > 2.4.
+Since the memory on this device is crossing the PCI bus we
+chose not to implement it in a fashion where it got mapped into
+system memory for performance reasons and decided it would
+be better suited to to be used as a block device and mapped off
+as either swap space or as a ram drive for use in the project, as
+the systems in the project have no hard drives.
 
-> hm. any news here? 
+Anyway .. I have downloaded the mtd tarball and been looking
+through the documentation, and about to hit the source, and was
+curious if anyone had some pointers as to where I should start in
+hooking the low level module into the rest of the system so as to
+short-cut a headache.
 
-I've got as far as merging it into 2.3.21. I haven't managed to get enough 
-free minutes to actually make the patch and send it to Linus.
+Any information (docs, hints, tricks, chickens I can sacrifice
+over the cards and voodo rituals) that would help  to get this
+going quickly would be much appriciated
 
-
-
-----                                ----                                 ----
-David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
- Project Leader,    Process Information Systems     Mobile: (+44) 7976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
-
+- - --
+ Mark Ferrell  : mferrell@nortelnetworks.com
+(972) 685-7868 : Desk
+(972) 685-4210 : Lab
+(972) 879-4326 : Pager
 
 
 
