@@ -1,111 +1,62 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14XMs7-0003a6-00
-	for mtd-list@infradead.org; Mon, 26 Feb 2001 12:35:23 +0000
-Received: from [203.238.93.91] (helo=hades.idis.co.kr ident=mail)
+	id 14XPWN-0004cN-00
+	for mtd-list@infradead.org; Mon, 26 Feb 2001 15:25:07 +0000
+Received: from duba04h04-0.dplanet.ch ([212.35.36.38])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14XMs5-0003Yg-00
-	for mtd@infradead.org; Mon, 26 Feb 2001 12:35:22 +0000
-Received: from cwryu by hades.idis.co.kr with local (Exim 3.22 #1 (Debian))
-	id 14XMnl-0000rp-00
-	for <mtd@infradead.org>; Mon, 26 Feb 2001 21:30:53 +0900
-To: mtd@infradead.org
-Subject: Re: kernel/jedec.c bug?
-References: <871ysrcxko.fsf@hades.idis.co.kr>
+	id 14XPWL-0004cH-00
+	for mtd@infradead.org; Mon, 26 Feb 2001 15:25:06 +0000
+Received: from ntws (dialup-59-173.dplanet.ch [212.35.59.173])
+	by duba04h04-0.dplanet.ch (8.9.3/8.9.3/1.01dplanet-smtp) with SMTP id QAA16566
+	for <mtd@infradead.org>; Mon, 26 Feb 2001 16:24:51 +0100
+Reply-To: <hamish@dplanet.ch>
+From: "Hamish Guthrie" <hamish@dplanet.ch>
+To: "Mtd@Infradead.Org" <mtd@infradead.org>
+Subject: Could not find valid boot record
+Date: Mon, 26 Feb 2001 16:30:21 +0100
+Message-ID: <NEBBJKADBKFNCJOMHOAKMECOCGAA.hamish@dplanet.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=euc-kr
-Content-Transfer-Encoding: 8bit
-From: Changwoo Ryu <cwryu@debian.org>
-Date: 26 Feb 2001 21:30:52 +0900
-In-Reply-To: Changwoo Ryu's message of "22 Feb 2001 10:31:51 +0900"
-Message-ID: <871ysl8w3n.fsf@hades.idis.co.kr>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Changwoo Ryu <cwryu@debian.org> writes:
+I trying to mount a root filesystem using LinuxBIOS on a DoC millenium.
 
-[...]
-> Last[0], Last[1] and Last[2] for my flash are all "0x084C084C".  It's
-> ok, isn't?  Reading 32bit data requires 4 reads (0x08, 0x4C, 0x08,
-> 0x4C) from the 8bit flash.  So when the erasure is not completed, the
-> two 32bit values should be same.
+I have formatted an nftl portion of the DoC using
 
-OK, maybe nobody cares about jedec any more even if the code doesn't
-work...  Anyway here is a simple fix.  With applying this patch, the
-flash_erase uses either of map->read8/read16/read32 according to
-map->buswidth.  I also added the vendor/device ids for AM29F017 and
-for MX29F016.
+# nftl_format /dev/mtd0 1048576
 
-Could anyone commit this patch?
+to create an nftl 'partition' at an offset of 1M from the beginning of the
+device. I then fdisk this, create the partition, make it bootable (even if I
+don't I get the same result). Then mke2fs on the device. Mount the device -
+it is seen correctly - then populate it with some files an umount it. I then
+burn in my IPL code, LinuxBIOS code and Kernel image (using 2.4.2 kernel).
 
--- 
-Changwoo Ryu
+I am also passing the command line argument 'root=/dev/nftla' to the kernel.
 
-diff -u -r1.4 jedec.c
---- jedec.c	2001/01/05 23:01:51	1.4
-+++ jedec.c	2001/02/26 12:27:59
-@@ -36,10 +36,12 @@
- /* Listing of parts and sizes. We need this table to learn the sector
-    size of the chip and the total length */
- static const struct JEDECTable JEDEC_table[] = 
--  {{0x01AD,"AMD Am29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
-+  {{0x013D,"AMD Am29F017D",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
-+   {0x01AD,"AMD Am29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
-    {0x01D5,"AMD Am29F080",1*1024*1024,64*1024,MTD_CAP_NORFLASH},
-    {0x01A4,"AMD Am29F040",512*1024,64*1024,MTD_CAP_NORFLASH},
-    {0x20E3,"AMD Am29W040B",512*1024,64*1024,MTD_CAP_NORFLASH},
-+   {0xC2AD,"Macronix MX29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
-    {}};
- 
- static void jedec_sync(struct mtd_info *mtd) {};
-@@ -623,9 +625,23 @@
- 	 /* During erase bit 7 is held low and bit 6 toggles, we watch this,
- 	    should it stop toggling or go high then the erase is completed,
-   	    or this is not really flash ;> */
--	 Last[0] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
--	 Last[1] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
--	 Last[2] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	 switch (map->buswidth) {
-+	 case 1:
-+	    Last[0] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[1] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[2] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    break;
-+	 case 2:
-+	    Last[0] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[1] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[2] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    break;
-+	 case 3:
-+	    Last[0] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[1] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    Last[2] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	    break;
-+	 }
- 	 Count = 3;
- 	 while (todo_left != 0)
- 	 {
-@@ -656,8 +672,18 @@
- /*	    if (NoTime == 0)
- 	       Time += HZ/10 - schedule_timeout(HZ/10);*/
- 	    NoTime = 0;
--	    
--	    Last[Count % 4] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+
-+	    switch (map->buswidth) {
-+	    case 1:
-+	       Last[Count % 4] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	      break;
-+	    case 2:
-+	       Last[Count % 4] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	      break;
-+	    case 4:
-+	       Last[Count % 4] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
-+	      break;
-+	    }
- 	    Count++;
- 	    
- /*	    // Count time, max of 15s per sector (according to AMD)
+When I boot out of the DoC I get:
+
+M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
+$Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $
+NFTL_notify_add for DiskOnChip Millennium
+mtd->read = c0193100, size = 8388608, erasesize = 8192
+NFTL_setup
+Could not find valid boot record
+Could not mount NFTL device
+NFTL_open
+ENODEV: thisNFTL = 0, minor = 23808, ip = c0091780, fp = c0095f04
+VFS: Cannot open root device "nftla" or 5d:00
+Please append a correct "root=" boot option
+Kernel panic: VFS: Unable to mount root fs on 5d:00
+
+Any pointers as to where I may be screwing up please??
+
+TIA
+
+Hamish Guthrie
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
