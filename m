@@ -1,19 +1,16 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from smtp-out4.blueyonder.co.uk ([195.188.213.7])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ANzsE-00006C-KX
-	for <linux-mtd@lists.infradead.org>; Sun, 23 Nov 2003 19:26:22 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Rick Bronson <rick@efn.org>, linux-mtd@lists.infradead.org
-Date: Mon, 24 Nov 2003 08:31:08 +1300
-References: <E1ANwSn-0000bd-00@c-67-164-61-95.client.comcast.net>
-In-Reply-To: <E1ANwSn-0000bd-00@c-67-164-61-95.client.comcast.net>
+	id 1AOEYu-0001M5-BO
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2003 11:07:24 +0000
+Message-ID: <002601c3b27b$62ca9130$6401a8c0@f87htyy9967774jjyuww2>
+From: "stephen" <lcbr17306@blueyonder.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 24 Nov 2003 11:09:10 -0000
 MIME-Version: 1.0
-Message-Id: <20031123192443.CA92B15942@desire.actrix.co.nz>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: nand_write_ecc() broken?
-Reply-To: manningc2@actrix.gen.nz
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: booting from DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 24 November 2003 04:47, Rick Bronson wrote:
-> Hi,
->
->   The routine nand_write_ecc() doesn't seem to account for bad blocks.
-> If I write an image over a known bad block, nand_erase() correctly
-> identifies and skips over the bad block (via nand_block_bad()) but
-> nand_write_ecc() seems to ignore the bad blocks.
->
->   Anyone experienced the same problem?
->
-> I'm using 11/16/03 cvs version of mtd on an ARM, linux-2.4.19, and
-> here's my config:
->
-> CONFIG_JFFS2_FS=y
-> CONFIG_JFFS2_FS_DEBUG=0
-> CONFIG_JFFS2_FS_NAND=y
->
->  Here's my hardware specific NAND stuff:
->
-> 	my_nand->eccmode = NAND_ECC_SOFT;  /* enable ECC */
-> 	my_nand->chip_delay = 20;
->
+Hi All,
 
-Writing to known bad blocks is not necessarily a problem, depending on how 
-the block became bad (eg. bad block marking). Bad block managemnet is not 
-really an mtd responsibility, but that of the file system/block device driver.
+didn't get a reply from my last post , which was me rambling on a bit too
+much or my text sounds arrogant? (sorry if it does i am just a newbie)
 
--- CHarles
+I've been reading Karim Yaghmours book, got much further now, maybe someone
+can put me straight on a couple of things? (hopefully)
+
+first of all I managed to install grub using 'doc_loadbios' so it replaces
+the DOC's SPL , then I managed to use 'nftl_format' and formatted from
+memory address '98304' which isn't the size of the grub boot loader but I
+assume represents '16384 + 81920' , '81920' being the last erase offset,
+from here I managed to 'fdisk nftla' and created a new partition
+'/dev/nftla1', I can format this partition and safely read and write data. I
+compiled all the DOC files as modules, I didn't patch the kernel I decided
+to use a clean '2.4.19' kernel' , I also couldn't compile the latest CVS
+tools ;/ so I went back to a previous snapshot
+'Mtd-snapshot-20020708.tar.bz2' , this compiled fine (mainly I couldnt
+compile nftl_format and something to do with empty LIST_HEAD structures,
+blktrans.h with the latest CVS). I also realised that 'grub-0.92' needed
+patching so i did that and repeated the steps with 'doc_loadbios' and
+realised the last erase offset was now '65536' so the boot loader is smaller
+and my new partition begins at offset '81920', plus this should have
+contained 'ctrlbypass' as part of the grub compiled with patch.
+
+The grub loader boots from the DOC but stops at the grub prompt, how do I
+get grub to boot my kernel image ?
+in karims book it talks about building a root filesystem and
+/boot/grub/menu.lst but I can't see how this can run without the modules
+loaded needed by the kernel (e.g. docecc.o, doc2000.o etc) confused ;/ ...
+
+kind regards
+
+Stephen
