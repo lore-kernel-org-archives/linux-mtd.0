@@ -1,19 +1,18 @@
-Received: from dsl-64-129-131-125.telocity.com
-	([64.129.131.125] helo=mir.outpostsentinel.com ident=root)
+Received: from maila.telia.com ([194.22.194.231])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fsrI-0005xW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 01:26:16 +0000
-From: "Chris Fowler" <cfowler@outpostsentinel.com>
+	id 16fyR2-0006Tv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 07:23:32 +0000
+Message-ID: <00b301c1bf61$31048fc0$da9240d5@jocke>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
 To: "David Woodhouse" <dwmw2@infradead.org>
 Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: Testing MTD driver 
-Date: Tue, 26 Feb 2002 20:38:44 -0500
-Message-ID: <NFBBLCEFBCFEPMJJKOIKOENJCDAA.cfowler@outpostsentinel.com>
+References: <02022614424803.15969@jocke.lumentis.se>  <0111121314140A.28381@jocke.lumentis.se> <02010409585400.10979@jocke.lumentis.se> <02012911331100.15969@jocke.lumentis.se>  <17624.1014738778@redhat.com>
+Subject: Re: scan.c & ACCURATE 
+Date: Wed, 27 Feb 2002 08:34:29 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <10878.1014773364@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +24,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-How about the M-SYS as module and MTD as compiled in?  Will that work?  
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
-Woodhouse
-Sent: Tuesday, February 26, 2002 8:29 PM
-To: Chris Fowler
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Testing MTD driver 
+>
+> Joakim.Tjernlund@lumentis.se said:
+> >  Patch 1 skips scanning of inodes and dirents which are obsoleted.
+> > Improves scan speed.
+>
+> You're trusting ri.totlen before verifying ri.node_crc. Naughty.
 
+Totlen has been checked by jffs2_scan_eraseblock() before calling
+jffs2_scan_inode_node(), but that is not obvious. Move it to after the CRC
+check
+if you like.
 
-
-cfowler@outpostsentinel.com said:
-> I would like to begin migrating to the OpenSource DOC2000 driver.  I'm
-> uning kernel 2.4.17 and would like to have the M-SYS driver installed
-> as weel as the OpenSource one.  I will test with the OS one then
-> remove M-SYS.  Will this be a problem? 
-
-Compiling each as a module, and loading either one or the other, should be 
-fine. Be aware that the major numbers are different, though.
-
---
-dwmw2
+         Jocke
