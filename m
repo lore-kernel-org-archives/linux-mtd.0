@@ -1,60 +1,28 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13FBkg-0007ww-00
-	for mtd-list@infradead.org; Thu, 20 Jul 2000 09:32:18 +0100
-Received: from colo.asti-usa.com ([205.252.89.99] ident=root)
+	id 13FDTU-00088Q-00
+	for mtd-list@infradead.org; Thu, 20 Jul 2000 11:22:40 +0100
+Received: from smtp3.libero.it ([193.70.192.53])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13FBkf-0007wq-00
-	for mtd@infradead.org; Thu, 20 Jul 2000 09:32:17 +0100
-Message-ID: <3976C71D.280D8BFF@zentropix.com>
-Date: Thu, 20 Jul 2000 10:32:13 +0100
-From: Trevor Woolven <trevw@zentropix.com>
-MIME-Version: 1.0
-To: Matt Hortman <mbhortman@ieee.org>
-CC: mtd@infradead.org
-Subject: Re: building M-Sys DOC driver as a module
-References: <20000719183520.C26693@khayman.mavrik.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 13FDTR-00088J-00
+	for mtd@infradead.org; Thu, 20 Jul 2000 11:22:39 +0100
+Message-ID: <001501bff234$bae479e0$01ffa8c0@studiobalbi.it>
+From: "Studio Balbi" <balbi@iol.it>
+To: <mtd@infradead.org>
+Subject: RFC about my application
+Date: Thu, 20 Jul 2000 12:24:47 +0200
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi Matt,
-Yes this can be and has been done.
-There are effectively two ways to do this but we're trying to promote
-the one that has M-Systems approval.
+I need to change often some bytes of information inside a big file.
+I thougth I could store this information in a separate file or as a suffix
+to the file name rather than into the file. Could this two options give me
+some advantages in term of saving flash writes or reliability? Which is the
+better?
 
-Contact Stuart Lynne at Lineo/Fireplug (sl@lineo.com or sl@fireplug.net)
+Thanks
 
-for more details.
-
-If you're unsuccessful, get back to me and I'll see about
-'productionizing'
-(yuk!) my hack for general release.
-
-Cheers
-Trevor.
-
-Matt Hortman wrote:
-
-> Hi.
->
-> Does anyone know where (or if) I can find a patch to build the
-> M-Systems DOC driver as a kernel module?
->
-> thanks,
->
-> -Matt
->
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-
---
-Zentropix Inc - a Lineo company
-
-Tel: +44 (0)1273 234 647         Fax: +44 (0)1273 704 482
-
-Visit http://www.zentropix.com/ for Real Time Linux Tools
-Visit http://www.realtimelinux.org/ for Real Time Linux Information
+Alessandro Staltari
 
 
 
