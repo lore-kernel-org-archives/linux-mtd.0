@@ -1,16 +1,17 @@
-Received: from patan.sun.com ([192.18.98.43])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15NOxO-00040K-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 02:19:54 +0100
-Message-ID: <3B578A10.2475DD64@sun.com>
-Date: Thu, 19 Jul 2001 18:32:00 -0700
-From: Tim Hockin <thockin@sun.com>
-MIME-Version: 1.0
-To: Eric <ebrower@usa.net>, MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: [structure field names]
-References: <20010720011341.17284.qmail@nwcst289.netaddress.usa.net>
+	id 15NVlX-0004SJ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Jul 2001 09:36:07 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3B578A10.2475DD64@sun.com> 
+References: <3B578A10.2475DD64@sun.com>  <20010720011341.17284.qmail@nwcst289.netaddress.usa.net> 
+To: Tim Hockin <thockin@sun.com>
+Cc: Eric <ebrower@usa.net>, MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: [structure field names] 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Fri, 20 Jul 2001 09:12:24 +0100
+Message-ID: <28808.995616744@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,34 +23,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Eric wrote:
-> 
-> There is a patch for SPARC/Linux in the patches directory
-> that performs 32- to 64-bit ioctl conversions.  If you
-> touch any struct member names that are used as ioctl args
-> this patch will need to be rev'ed as well.
-> 
-> Also, I just sent a new patch to Dave Miller this morning
-> for an update to these ioctl conversions-- if he accepts
-> it, I will update the patch in MTD CVS (which will then
-> need to merge with your changes).
-> 
-> Do you plan to change any of those ioctl args in mtd.h?
+thockin@sun.com said:
+> ebrower@usa.net said:
+> > There is a patch for SPARC/Linux in the patches directory
+> > that performs 32- to 64-bit ioctl conversions.  If you
+> > touch any struct member names that are used as ioctl args
+> > this patch will need to be rev'ed as well.
 
-I was just planning to change the map_info, cfi_private, mtd_info
-structures, so that the fields were more descriptive:
+I thought we'd changed the types so that conversions weren't necessary?
 
-size -> map_size
-size -> mtd_size
 
-And the likes.  Trying to decipher the MTD layer is very hard right now :)
+thockin@sun.com said:
+>  I was just planning to change the map_info, cfi_private, mtd_info
+> structures, so that the fields were more descriptive:
 
-If there are any problems with Sparc patches, I can talk to Dave, he is
-always hanging around here.
+> size -> map_size
+> size -> mtd_size 
 
-Tim
--- 
-Tim Hockin
-Systems Software Engineer
-Sun Microsystems, Cobalt Server Appliances
-thockin@sun.com
+You mean:
+   map->size ==> map->map_size
+   mtd->size ==> mtd->mtd_size
+
+Almost all variables of type 'struct mtd_info *' have 'mtd' at the end of 
+the name, and almost all variable of type 'struct map_info *' have 'map' at 
+the end of the name, don't they?
+
+--
+dwmw2
