@@ -1,16 +1,18 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16eJYC-0006Km-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 17:32:04 +0000
-Date: Fri, 22 Feb 2002 18:43:17 +0100 (MET)
-From: Robert Kaiser <rob@sysgo.de>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-mtd@lists.infradead.org, Jonas Holmberg <jonas.holmberg@axis.com>
-Subject: Re: Re-entrancy of flash erase/write 
-In-Reply-To: <23802.1014397612@redhat.com>
-Message-ID: <Pine.LNX.4.21.0202221824060.8843-100000@dagobert.svc.sysgo.de>
+	id 16eMCE-0006WW-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 20:21:34 +0000
+Message-ID: <000b01c1bbe0$0e801cf0$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: "Ilguiz Latypov" <ilatypov@superbt.com>
+Cc: <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.44.0202221157280.8089-100000@server.superbt.com>
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Fri, 22 Feb 2002 15:32:20 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,47 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 22 Feb 2002, David Woodhouse wrote:
+On Fri, 22 Feb 2002, Ilguiz Latypov wrote:
 
-> 
-> rob@sysgo.de said:
-> >  Am I right in assuming that it is not possible to erase and/or write
-> > different blocks of the same flash chip concurrently ?
-> 
-> No - on some chips you can. Not most though.
-> 
-> > If so, where is the lock in the MTD code that would prevent concurrent
-> > execution of erase/write on the same chip by multiple processes ? 
-> 
-> In the chip drivers themselves. Grep for TASK_UNINTERRUPTIBLE in 
-> cfi_cmdset_0001.c, for example.
+> The source code for doc_loadbios is in the util/ directory of the Linux
+> MTD CVS repository.
+>
+ > Mind upgrading autoconf and automake?
 
+Thanks, Ilguiz.  I now have the latest from the CVS archive, and I also upgraded autoconf
+and automake.  Everything went flawlessly.
 
-OK, thanks!
+The doc_loadbios output to /dev/mtd0 is off by 512 bytes (when I use an offset of 1024):
 
-The reason I'm asking is that I have observed some strange behaviour
-while testing my new concat_erase function and I'm wondering wether
-it is a bug in my code or a general conceptual problem with MTD:
+*** doc_loadbios.c Fri Feb 22 15:22:17 2002
+--- doc_loadbios.c.orig Fri Feb 22 15:16:30 2002
+***************
+*** 89,98 ****
+       perror("read");
+       goto error;
+      }
+-     if (lseek(ofd, 0L, SEEK_SET) < 0) {
+-      perror("lseek");
+-      goto error;
+-     }
+     }
 
-In my test, I was repeatedly extracting a large tar archive unto a
-JFFS2-mounted device, deleting all the files again, then doing
-another tar extract. What happened was that at some point, JFFS's
-garbage collector started erasing blocks while tar was continuing
-to write to flash. In that situation, it ocassionally happened that
-VPP was turned off by one of the threads while the other one was
-still busy writing/erasing, causing that operation to fail.
-I was able to fix this by introducing a counter in my map driver's
-set_vpp() function and doing the actual disable/enable of VPP only
-when the counter reaches zero. Now I'm wondering if this is a flaw
-in MTD or in my new code.
+     erase.length = meminfo.erasesize;
+--- 89,94 ----
 
-Any ideas ?
+After making that change, the grub_firmware appears to be in the correct place (0x400),
+and the IPL is still at 0x0 and 0x200.
 
+I created an ext2 partition and copied the necessary files to /boot and /boot/grub.
 
-Rob
+My system now recognizes that something is there, but refuses to boot:
+    Searching for boot record from SCSI: Not Found.
 
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+I'll keep trying; if you have any ideas, let me know.
+
+Regards,
+
+Mark
