@@ -1,18 +1,16 @@
-Received: from [202.106.187.143] (helo=sina.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VuZy-00046m-Ro
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jun 2003 15:51:59 +0100
-Message-ID: <001501c33cbb$70502f80$5af1000a@LocalHost>
-From: "yong_guo@scomcenter.com" <yong_bvcom@sina.com>
-To: "Vikram Mehta" <vm6580@hotmail.com>
-References: <Law14-OE23bdHd2V4MT00030545@hotmail.com>
-Date: Fri, 27 Jun 2003 22:49:02 +0800
+Received: from law14-oe66.law14.hotmail.com ([64.4.20.201] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19W9Ql-0005j3-0F
+	for <linux-mtd@lists.infradead.org>; Sat, 28 Jun 2003 07:43:27 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Thu, 26 Jun 2003 19:05:12 -0700
 MIME-Version: 1.0
+Message-ID: <Law14-OE66ZFL8ywRIB00054d1f@hotmail.com>
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFs2 usage questions
+Content-Transfer-Encoding: 7bit
+Subject: problems with jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIlZpa3JhbSBNZWh0YSIgPHZt
-NjU4MEBob3RtYWlsLmNvbT4NClRvOiAibXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
-cmc+DQpDYzogIlVjbGludXgtRGV2QFVjbGludXguT3JnIiA8dWNsaW51eC1kZXZAdWNsaW51eC5v
-cmc+DQpTZW50OiBUaHVyc2RheSwgSnVuZSAyNiwgMjAwMyA0OjMxIFBNDQpTdWJqZWN0OiBKRkZz
-MiB1c2FnZSBxdWVzdGlvbnMNCg0KDQo+IEhpLA0KPiANCj4gTm93IEkgY2FuIG1vdW50ICB1c2lu
-ZyAgamZmczIuDQo+IGFuZCBteSBkaXJlY3RvcnkgZG9lcyBzaG93IHRoZSBjb250ZW50cy4NCj4g
-SSBoYXZlIGEgZmV3IHF1ZXN0aW9ucyBvbiB0aGUgdXNhZ2Ugb2YgSkZGczINCj4gDQo+IDEuKSAg
-SSBjYW5ub3QgbWtkaXIgaW50byB0aGUgZm9sZGVyLiBJIG1vdW50IGRldi9tdGRibG9jazIgb24g
-IC9tbnQuDQo+IElmIEkgZG8gbWtkaXIgLCAgdGhlIG1lc3NhZ2UgY29tZXMNCj4gbm8gc3BhY2Ug
-bGVmdCBvbiBkZXZpY2UNCj4gDQo+IDIuKSBpZiBJIHJlYm9vdCB0aGUgc3lzdGVtIC9tbnQgaXMg
-bGVmdCBhcyBlbXB0eS4NCj4gDQo+IDMuKSBIb3cgY2FuIEkgcHJvdmlkZSB0aGF0IDFvciAyIG9m
-IG15IHBhcnRpb25zIGFyZSByZWFkb25seS4gVGhhdCBpcyB0aGV5DQo+IGFyZSBub3QgZXJhc2Vk
-DQo+IA0KWW91IGNhbiBtb2RpZnkgdGhlc2UgcGFydGlvbnMgd29ya2VkIGFzIHJlYWRvbmx5ICBp
-biBNVEQgcGFydGlvbnMgZHJpdmVyLCAgaW4gIHRoZSBzdWJmbG9kZXIgb2YgdGhlIGxpbnV4IGtl
-cm5lbCBzb3VyY2UgY29kZQ0KdGhhdCdzIC9kcml2ZXJzL210ZC9tYXBzLywgZWRpdCB0aGUgb25l
-IG9mIHRoZXNlIGZpbGUgd2hpY2ggeW91IGFyZSB1c2luZyBmb3IgTVREIHBhcnRpb24hDQoNCj4g
-NC4pIEkgd2FudCB0aGF0IGFmdGVyIGJvb3RpbmcsIG9uZSBwYXJ0aXRpb24gaXMgY3JlYXRlZCBh
-cyBKZmZzMi4gKCBJIGNhbg0KPiBhZGQgdGhlIGNvbW1hbmRzIGluIHJjKSBhbmQgSSBjYW4gd3Jp
-dGUgb24gaXQgbGlrZSBvbiBkbyBvbiAvdmFyIHdoaWNoIGlzDQo+IG1vdW50ZWQgb24gUkFNDQpw
-bGVhc2UgdmlldyBmdHA6Ly9mdHAudWsubGludXgub3JnL3B1Yi9wZW9wbGUvZHdtdzIvbXRkL2N2
-cy9tdGQvbXRkLWpmZnMtSE9XVE8udHh0IGZvciBkZXRhaWwhDQo+IA0KPiBSZWdhcmRzDQo+IFZp
-a3JhbQ0KPiANCj4gDQo+IA0KPiANCj4gDQo+IA0KPiANCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdA0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8NCg==
+Hi all,
+
+I have taken care of erase blocks. I make 2 partitons of  2MB each so I dont
+have problems abt section boundaries
+
+But at time mount fails, even copy to the device fails.
+The system simply stops responding or gives me lots of Call trace messages
+
+What AM I missing
+
+Thanx
+Vikram
