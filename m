@@ -1,43 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13HFRn-0002lH-00
-	for mtd-list@infradead.org; Wed, 26 Jul 2000 01:53:19 +0100
-Received: from sis.com.tw ([203.67.208.2] helo=fw11.sis.com.tw)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13HFRm-0002lB-00
-	for mtd@infradead.org; Wed, 26 Jul 2000 01:53:18 +0100
-Message-ID: <397E360F.E799B99E@sis.com.tw>
-Date: Wed, 26 Jul 2000 08:51:27 +0800
-From: Ollie Lho <ollie@sis.com.tw>
-MIME-Version: 1.0
-To: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
-CC: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: muti-page-rw.diff follow-up
-References: <397E2D5A.DFBB7741@evoserve.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=big5
+	id 13HMSF-0003Qe-00
+	for mtd-list@infradead.org; Wed, 26 Jul 2000 09:22:15 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13HMSE-0003QY-00
+	for mtd@infradead.org; Wed, 26 Jul 2000 09:22:14 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <397E360F.E799B99E@sis.com.tw> 
+References: <397E360F.E799B99E@sis.com.tw>  <397E2D5A.DFBB7741@evoserve.com> 
+To: Ollie Lho <ollie@sis.com.tw>
+Cc: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>,
+  "mtd@infradead.org" <mtd@infradead.org>
+Subject: Re: muti-page-rw.diff follow-up 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 26 Jul 2000 09:22:07 +0100
+Message-ID: <26364.964599727@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-"Rogelio M. Serrano Jr." wrote:
-> 
-> I hope my modifications doesnt break nftl. I needed modifications to
-> make jffs work on the DOC. I am going to do the same to the DOCmil
-> driver when I have read through the docs. I have broken the ecc
-> functions in the doc2000 driver im afraid. I am fixing it now and I will
-> send patches when I am done. The diff is against mtd-snapshot-20000725.
-> 
 
-I will try the DoC Mil part. Rogelio, please be careful that the ECC logic
-and CDSNIO register should be programmed "as is" in the source I sent to you.
-Or it will not work at all.
+ollie@sis.com.tw said:
+>  P.S. there seems to be some small bugs in the DoC Mil driver and I
+> think I have found the solution. I will send you a patch soon.
 
-P.S. there seems to be some small bugs in the DoC Mil driver and I think
-I have found the solution. I will send you a patch soon.
+> P.S. 2. David, did you commit the patch to CVS ?? 
 
-P.S. 2. David, did you commit the patch to CVS ??
+I didn't - sorry, I got back from OLS on Monday, spent most of Monday 
+sleeping and haven't caught up yet. Should I wait for your new patch.
 
-Ollie
+Anyone else who sent me patches which I haven't yet applied - please could 
+you resend your latest version, made against the most recent snapshot?
+
+Rogelio - could you test NFTL or find someone to do so and let me know when 
+it's safe to merge your new patch?
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
