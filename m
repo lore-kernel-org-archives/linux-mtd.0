@@ -1,18 +1,23 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19YnH9-0001h7-Ux
-	for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2003 14:40:28 +0100
-To: paul@maypaul.com
-References: <012001c3411a$8e85bbb0$9000010a@paulwong>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 05 Jul 2003 07:40:25 -0600
-In-Reply-To: <012001c3411a$8e85bbb0$9000010a@paulwong>
-Message-ID: <m3smplks6u.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Content-Type: text/plain; charset=us-ascii
-cc: linux-mtd@lists.infradead.org
-Subject: Re: which is the latest code of mtd?
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Ynra-0001vm-K2
+	for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2003 15:18:06 +0100
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+	21 2002)) with SMTP id <0HHK00E1I2DRL4@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Sat, 05 Jul 2003 16:17:52 +0200 (MEST)
+Date: Sat, 05 Jul 2003 17:15:14 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <FCEAKDJJAPHPLJFINDAJCEAHDEAA.Stephan.Linke@epygi.de>
+To: Stephan Linke <Stephan.Linke@epygi.de>, Alex Samoutin <samoutin@hotbox.ru>
+Message-id: <200307051715.14902.tglx@linutronix.de>
+MIME-version: 1.0
+Content-disposition: inline
+References: <FCEAKDJJAPHPLJFINDAJCEAHDEAA.Stephan.Linke@epygi.de>
+Content-type: text/plain; charset=windows-1251
+Content-transfer-encoding: 7BIT
+cc: Linux-Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Fw: corrupt my NAND flash device
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-<paul@maypaul.com> writes:
+On Thursday 03 July 2003 07:44, Stephan Linke wrote:
+> Hi Alex,
+>
+> I just had a look at this mail and one of the problems you mention just
+> reminds me of me experiences a few month ago. You say that write verify on
+> you NAND flash sometimes failes. I had the same on my board using YAFFS on
+> a NAND. I figured out that verify failes during partial writes. The reason
+> the compair routine doesn'T deal with that special situation where there is
+> already some data in the page and someone writes only a few 0's leaving the
+> rest at 0xFF since the manual says to do so in partial writes. 
 
->  Hi! all,
->      the kernel 2.4.21 is released, is the latest code of the mtd in kernel
->  2.4.21? or in CVS of mtd? thanks.
+We have canceled partial page writes some time ago. 
 
-Generally CVS.  
-
-There is some effort to push known stable code into 2.4.x
-
-Eric
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
