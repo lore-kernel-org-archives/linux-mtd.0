@@ -1,14 +1,22 @@
-Date: Wed, 19 Jan 2005 17:46:09 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-In-Reply-To: <20050119174118.56675.qmail@web51007.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.58.0501191745210.8174@phoenix.infradead.org>
-References: <20050119174118.56675.qmail@web51007.mail.yahoo.com>
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CrKYU-0003xM-HE
+	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2005 13:27:48 -0500
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>,
+	Jochen Karrer <j.karrer@lightmaze.com>
+Date: Thu, 20 Jan 2005 07:34:06 +1300
+References: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
+	<Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: some questions regarding the write operation on JFFS2
+Content-Transfer-Encoding: 8bit
+Message-Id: <20050119182739.02A3F44AC@blood.actrix.co.nz>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mysqld on jffs2: MyISAM Index write is slow
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,79 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Jan 2005, Vahid Fereydunkolahi wrote:
+I expect it could help to add some caching to JFFS2 to handle stuff 
+like this. I did something like this for YAFFS.
 
-> 
-> --- "Artem B. Bityuckiy" <dedekind@infradead.org>
-> wrote:
-> 
-> > On Tue, 18 Jan 2005, Vahid Fereydunkolahi wrote:
-> > 
-> > > Hi All,
-> > >  I traced the write operation from the Linux
-> > kernel to
-> > > the JFFS2. I have some questions:
-> > >     1) Is there any chance that there could be
-> > some
-> > > partial writes on the NAND flash (if power failure
-> > > happens during write operation).
-> > Yes, there is chance.
-> 
-> Does JFFS2 guarantee that if there is a partial write
-> then the data will be ignored? 
-Yes it does.
+YAFFS supports a "short op" cache for handling reads and writes that are 
+smaller than parts of a page (it is bypassed by all whole page read/writes).  
+The cache has typically 10 page-size "slots".  The cache entries associated 
+with a file get flushed whenever the file gets flushed, closed or pushed out 
+by a new entry.
 
-> 
-> > 
-> > > 
-> > >     2) Does SYNC has any meaning when using the
-> > JFFS2.
-> > > As fas as I noticed the write operations are
-> > > forwarded to the MTD device, and they are not
-> > cached.
-> > For NAND JFFS2 has per-NAND page buffer, so sync
-> > flushes it. see 
-> > jffs2/wbuf.c.
-> > 
-> > > 
-> > > Thank you so much in advance,
-> > > --vahid
-> > You're welcome :-)
-> > 
-> > > 
-> > > 
-> > > 		
-> > > __________________________________ 
-> > > Do you Yahoo!? 
-> > > Read only the mail you want - Yahoo! Mail
-> > SpamGuard. 
-> > > http://promotions.yahoo.com/new_mail 
-> > > 
-> > >
+At first I only used this cache for WinCE and YAFFS direct and disabled this 
+cache for Linux, thinking that the Linux cache would do the job better. 
+However, the Linux cache is  write-through cache (ie does not cache writes). 
+Enabling the cache improved short write performance dramatically. I expect it 
+would in this case too.
+
+The cache is quite simple so implementing a similar cache in JFFS2 would not 
+be a big deal.
+
+-- Charles
+
+
+On Thursday 20 January 2005 02:03, Artem B. Bityuckiy wrote:
+> Not expert in this issue, but I was told by David that JFFS2 is
+> synchronous, and you need redesigning it if you want asynchronous
+> behaviour.
+>
+> > Hi,
+> > I am using mysqld on jffs2. Tables work fine, but as soon as
+> > i am using indexes the writing of new entries becomes very slow.
+> > I found that mysql is writing one 1024 byte block to the index file
+> > of the MyISAM table (.MYI) for every new row. This is up to 20 times in
+> > sequence
+> > the same block. On non synchronous filesystems
+> > this goes to a Buffer in RAM, but on jffs2 this causes many writes to
+> > the flash. In my amdflash emulator I found that mysql writes about 180MB
+> > to the flash
+> > for a table of 13MB with 88000 rows.
 > >
-> ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > >
+> > Is there a way to make jffs2 a little bit asynchronous ? Or does anybody
+> > know
+> > how to tell mysqld to write smaller blocks ? Mounting a reiser as
+> > loopback from
+> > a file on jffs2 does not work because jffs2 doesn't support mmap.
 > >
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > > 
-> > 
-> > --
-> > Best Regards,
-> > Artem B. Bityuckiy,
-> > St.-Petersburg, Russia.
-> > 
-> 
-> 
-> 
-> 		
-> __________________________________ 
-> Do you Yahoo!? 
-> Read only the mail you want - Yahoo! Mail SpamGuard. 
-> http://promotions.yahoo.com/new_mail 
-> 
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+> > Jochen
+> >
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
