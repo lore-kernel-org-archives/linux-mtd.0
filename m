@@ -1,22 +1,24 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuCfg-0001Eu-ON
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 11:39:06 -0500
-Date: Thu, 27 Jan 2005 17:38:45 +0100
+	id 1CuCrs-0001Ti-S4
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 11:51:42 -0500
+Date: Thu, 27 Jan 2005 17:51:38 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Cam <camilo@mesias.co.uk>
-Message-ID: <20050127163845.GA7755@wohnheim.fh-wedel.de>
+To: jasmine@linuxgrrls.org
+Message-ID: <20050127165138.GB7755@wohnheim.fh-wedel.de>
 References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
 	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
 	<1106819251.783.141.camel@baythorne.infradead.org>
 	<20050127131702.GA22121@wohnheim.fh-wedel.de>
 	<41F9127E.6030508@mesias.co.uk>
+	<20050127163845.GA7755@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.61.0501271637001.3401@hex.linuxgrrls.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <41F9127E.6030508@mesias.co.uk>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.61.0501271637001.3401@hex.linuxgrrls.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Subject: Re: JFFS3 document / wiki [OT]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,38 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 January 2005 16:10:38 +0000, Cam wrote:
+On Thu, 27 January 2005 16:37:47 +0000, jasmine@linuxgrrls.org wrote:
+> On Thu, 27 Jan 2005, [iso-8859-1] Jörn Engel wrote:
 > 
-> >Plus, Wikis tend to be instant security problems.  The situation
-> >appears to be so bad that anyone with average exploit knowledge can
-> >read the sources and control some new machines within a rainy
-> >afternoon. 
+> >And if you have too much time on your hands, security audits on php
+> >and mysql wouldn't hurt.
 > 
-> Can you back that statement up with an example please? I wasn't aware 
-> that wikis were so dangerous! :)
+> Or just do what anyone with taste does and use Java servlets or JSP on top 
+> of a PostgreSQL database.  I'm pretty sure there are Java-based wikis out 
+> there.
 
-Neither was I before attending last years ccc.
-http://www.ccc.de/congress/2004/
+Not sure how much better postgres is.  Java surely helps.  If all
+input is checked for "normalness" before being passed to the dbms,
+that would help as well.
 
-Various bits of information on this were spread all over the place:
-o Code examples of mysql - tons of buffer overflows.
-o Code examples of php - same.
-o Various hacks of machines based on either php or mysql
-  vulnerabilities.
-o Some specific problems with some wiki implementations.
-
-Considering that most wikis use php, mysql or both, you can pretty
-much get the idea.  I cannot point to specific vulnerabilities or
-exploits, but the only thing stopping me from owning your wiki is my
-lack of interest.  Cooking up something new is horribly simple.  So
-you might want to move it somewhere, either to a dedicated machine or
-to a vserver/chroot/jail.
-
-And if you have too much time on your hands, security audits on php
-and mysql wouldn't hurt.
+Sadly the "normalness" includes things like domain names being shorter
+than 100 bytes and other non-obvious stuff.
 
 Jörn
 
 -- 
-All art is but imitation of nature.
--- Lucius Annaeus Seneca
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+-- Theodore Roosevelt, Kansas City Star, 1918
