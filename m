@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16cjvp-0002lh-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 09:17:57 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <02021810263602.00860@thomas> 
-References: <02021810263602.00860@thomas>  <02021809481101.00860@thomas> <02021720360705.08654@thomas> <11512.1014021987@redhat.com> 
-To: gleixner@autronix.de
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS2 & NAND 
+	id 16ck8r-0002n7-00
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 09:31:25 +0000
+Date: Mon, 18 Feb 2002 10:42:13 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: [patch] make clean fixed for utils
+Message-ID: <20020218104213.A11798@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 18 Feb 2002 09:29:11 +0000
-Message-ID: <19529.1014024551@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +23,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-gleixner@autronix.de said:
-> Yes inside JFFS2, but who tells the NAND driver, which layout to use.
+Hi!
 
-Do we really need the NAND driver to be able to use more than one layout? 
+Make clean left a symlink. I fixed this and the cause - holding the
+same information in two places.
+Is it ok to check this in?
 
-Either we have hardware ECC which determines the layout, or the NAND driver 
-implements software ECC and gets to choose. Can't the filesystem just deal 
-with the ECC layout used by the NAND driver, as determined by the 
-underlying hardware?
+Jörn
+
+-- 
+Good warriors cause others to come to them and do not go to others.
+-- Sun Tzu
 
 
---
-dwmw2
+--- Makefile.old	Mon Feb 18 09:22:48 2002
++++ Makefile	Mon Feb 18 09:25:09 2002
+@@ -9,7 +9,7 @@
+ nftl_format mkfs.jffs ftl_check nandtest nandwrite mkfs.jffs2 lock unlock \
+ einfo mtd_debug fcp jffs2reader
+ 
+-SYMLINKS = crc32.h crc32.c compr_rtime.c compr_rubin.c compr.c pushpull.h histo_mips.h compr_rubin.h
++SYMLINKS = crc32.h crc32.c compr_rtime.c compr_rubin.c compr.c pushpull.h histo_mips.h compr_rubin.h compr_zlib.c
+ 
+ all: $(TARGETS)
+ 
+@@ -19,7 +19,7 @@
+ mkfs.jffs2.o crc32.o: crc32.h
+ compr_rubin.o: pushpull.h histo_mips.h compr_rubin.h
+ 
+-crc32.h crc32.c compr_rtime.c compr_rubin.c compr.c pushpull.h histo_mips.h compr_rubin.h compr_zlib.c:
++$(SYMLINKS):
+ 	ln -sf ../fs/jffs2/$@ $@
+ 
+ mkfs.jffs2: crc32.o compr_rtime.o compr_rubin.o compr.o mkfs.jffs2.o compr_zlib.o
