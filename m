@@ -1,23 +1,17 @@
-Received: from mailout09.sul.t-online.com ([194.25.134.84])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BTfUu-0003zB-QQ
-	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 07:26:02 -0400
-From: tglx@linutronix.de (Thomas Gleixner)
-To: Andy Hawkins <a.hawkins@cabletime.com>
-Date: Fri, 28 May 2004 13:20:53 +0200
-References: <1085737289.5617.3.camel@adh>
-	<200405281227.34312.tglx@linutronix.de>
-	<1085740962.5617.9.camel@adh>
-In-Reply-To: <1085740962.5617.9.camel@adh>
+Received: from cpe-66-189-17-154.ma.charter.com ([66.189.17.154]
+	helo=server.bluepeach.com)
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BTg1c-00049n-H1
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 07:59:49 -0400
+Message-ID: <65335.10.0.1.2.1085744407.squirrel@mail.bluepeach.com>
+Date: Fri, 28 May 2004 07:40:07 -0400 (EDT)
+From: "Richard Schmitt" <rschmitt@bluepeach.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200405281320.53554.tglx@linutronix.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Large flash concatenation
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: NAND Bad Block Algorithm, JFFS2, and CRAMFS
+Reply-To: rschmitt@bluepeach.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 28 May 2004 12:42, Andy Hawkins wrote:
-> Hi,
->
-> > 2. The nand driver itself can handle multiple chips now. The scan
-> > function supports multiple chip detection. Do not use the concat functi=
-on
-> > for this purpose. The chips are provided as one big device to the MTD
-> > layer if you do not use partitions.
->
-> How do I do this? Each chip appears at a separate address (we've used
-> the lower 6 bits of the address lines to decode the chip selects for
-> each chip). At the moment, I'm looping over all the possible addresses
-> calling 'nand_scan' at each address. Is this this correct way to do
-> this?
 
-nand_scan now takes a parameter maxchips. This tells nand_scan to scan for =
-up=20
-to maxchips chips.
+We are using JFFS2 on NAND devices and are currently running into a
+problem that I was hoping to get some guidance on.
 
-The selection is simple. Only one chip can be selected at a time.=20
-All you have to do is write your own select_chip function and set the funct=
-ion=20
-pointer in the nand chip structure to this function before calling nand_scan
+We've created a 14MB partition.  We've configured the NAND driver to -
+Verify Writes
+- Enable ECC
+- Disable Bad Block Checking
 
-the function gets the chipnr (0 - maxchip-1) which should be selected or -1=
- to=20
-deselect.
-Inside this function you simply modify the IO_ADDR_R and IO_ADDR_W fields o=
-f=20
-the nand structure so the appropriate chip gets selected.
+We've disabled Bad Block checking because as we understand it, this must
+be disabled in order to support JFFS2.  I have a question on this that
+I'll raise a bit further on.
 
-=2D-=20
-Thomas
-________________________________________________________________________
-Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
-time managing existing systems. That couldn=E2=80=99t have anything to do w=
-ith=20
-the fact that 99 percent of these systems run Windows, could it?
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+We can copy a 64K jffs2 image onto the flash and mount it without problem.
+ When we try to copy a 7MB image onto the flash, the copy will fail with a
+generic 'input/output error'.
+
+Our hypothesis is that there is a bad block somewhere in the flash that is
+not hit with the 64K image but is hit with the 7MB image.  Because of this
+and with Verify Writes enabled, the copy will fail.
+
+This brings us back to the question introduced earlier.  If we need to
+disable bad block checking with NAND in order to support JFFS2, then how
+do we copy a JFFS2 image onto the flash if the flash has a bad block in
+it?
+
+The second piece of this question is that we really wanted to support two
+partitions, one with a JFFS2, and another with CRAMFS.  We wanted to run
+with the bad block algorithm on CRAMFS and without it on the JFFS2 one.
+We've heard rummblings that this is not supported. Is that true or is
+there some way that we can get that to work.
+
+Rich
+-- 
+Richard Schmitt
+CTO
+Blue Peach Solutions
+Phone: 877.BLU.PEACH (877.258-7322) x 704
+Fax: 508.302.6183
+http://www.bluepeach.com
