@@ -1,18 +1,26 @@
-Received: from [211.144.200.5] (helo=csv006.jadechip.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CxGOv-00080p-6g
-	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2005 22:14:26 -0500
-Message-ID: <004901c3eb96$aff0ee10$33050a0a@jadechip.net>
-From: "stiger" <bhe@jadechip.com>
-To: "Nicolas Pitre" <nico@cam.org>
-References: <001501c3eb8f$1e9cf780$33050a0a@jadechip.net>
-	<Pine.LNX.4.61.0502042136340.25997@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: flash unlock on VPB
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CwdUO-0001gK-AW
+	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 04:41:29 -0500
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1CwdTK-0007Zu-On
+	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 10:40:22 +0100
+Received: from 212.130.19.66 ([212.130.19.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Feb 2005 10:40:22 +0100
+Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Feb 2005 10:40:22 +0100
+To: linux-mtd@lists.infradead.org
+From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+Date: Thu, 03 Feb 2005 10:31:42 +0100
+Message-ID: <ctsr0r$94m$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
+Subject: Writing frequently to NAND - wearing, caching?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +29,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sat, 05 Feb 2005 03:14:26 -0000
 
-dGh4Lg0KDQpJcyB0aGVyZSBhbnkgY29kZSB0byByZWFsIGNhbGwgdW5sb2NrPw0KDQppIHNlZSBt
-YW55IG1hcCBkcml2ZXJzIG9ubHkgc2V0DQoubWFza19mbGFncyAgID0gIE1URF9XUklURUFCTEUN
-CmFuZCB0aGVuIGNhbGwgYWRkX210ZF9wYXJ0aXRpb25zKCkNCmJ1dCBpIGRpZG4ndCBzZWUgYW55
-IHJlYWwgdW5sb2NrIGluIG1hcCBkcml2ZXJzLg0KDQpzbywgaG93IGNhbiB0aGV5IGRvIHdoZW4g
-dGhleSB3YW50IHRvIHVzZSB3cml0ZWFibGUgcm9vdCBmaWxlc3lzdGVtIGluIGZsYXNoID8NCg0K
-DQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIk5pY29sYXMgUGl0cmUiIDxu
-aWNvQGNhbS5vcmc+DQpUbzogInN0aWdlciIgPGJoZUBqYWRlY2hpcC5jb20+DQpDYzogPGxpbnV4
-LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg0KU2VudDogU2F0dXJkYXksIEZlYnJ1YXJ5IDA1LCAy
-MDA1IDEwOjM5IEFNDQpTdWJqZWN0OiBSZTogZmxhc2ggdW5sb2NrIG9uIFZQQg0KDQoNCj4gT24g
-VGh1LCA1IEZlYiAyMDA0LCBzdGlnZXIgd3JvdGU6DQo+IA0KPiA+IGhlbGxvLA0KPiA+IA0KPiA+
-IGknbSB1c2luZyBWUEIgKyBrZXJuZWwgMi42LjkNCj4gPiBidXQgaSBmb3VuZCB0aGUgZmxhc2gg
-Y2Fubm90IHdyaXRlLCBpdCBzaG91bGQgYmUgdW5sb2NrZWQgZmlyc3QuDQo+ID4gDQo+ID4gaWYg
-bm90IHVzZSByb290IGZpbGVzeXN0ZW0gaW4gZmxhc2gsIEkgY2FuIHVzZSBmbGFzaF91bmxvY2sg
-dG8gdW5sb2NrIHRoZQ0KPiA+IGZsYXNoLg0KPiA+IGJ1dCBpZiBidXJuIHJvb3QgZmlsZXN5c3Rl
-bSBpbnRvIGZsYXNoLCBpIGhhdmUgdG8gY2hhbmdlIHRoZSBrZXJuZWwgY29kZS4NCj4gPiANCj4g
-PiBpIGFkZCB0aGVzZSBjb2RlIGF0IGRyaXZlci9tdGQvbXRkcGFydC5jLT5hZGRfbXRkX3BhcnRp
-dGlvbnMoKQ0KPiA+IA0KPiA+ICAgICAgICAgaWYoKHNsYXZlLT5tdGQuZmxhZ3MgJiBNVERfV1JJ
-VEVBQkxFKSAmJiBzbGF2ZS0+bXRkLnVubG9jayApew0KPiA+ICAgICAgICAgICAgIHNsYXZlLT5t
-dGQudW5sb2NrKCYoc2xhdmUtPm10ZCksIDAsIHNsYXZlLT5tdGQuc2l6ZSApOw0KPiA+ICAgICAg
-ICAgfQ0KPiA+IA0KPiA+IG5vdywgaXQgd29ya3MuDQo+ID4gYnV0IGkgdGhpbmsgaXQncyBhIHN0
-dXBpZCB3YXkgdG8gZG8gdGhpcy4NCj4gPiBpcyB0aGVyZSBhbnkgb3RoZXIgd2F5IHRvIGRvIHRo
-aXMgPw0KPiANCj4gVGhlIHVubG9jayBpcyB1c3VhbGx5IGNhbGxlZCBmcm9tIHRoZSBtYXAgZHJp
-dmVyIGluIHRoYXQgY2FzZS4NCj4gDQo+IA0KPiBOaWNvbGFz
+Hi there,
+
+I have an application which may need to write states frequently to my 
+nand-fs in order to have these states in case of powerdown.
+But I'm a bit concerned about wearing the nand if I write to frequently.
+
+So, if I only need to write, say, 100 bytes every second, how often will 
+this actually be flushed to the nand?
+Is there a maximum commit/flush frequency built in the driver? Or can 
+this be configured?
+I know this is a very diffuse question, but hopefully you get my drift.
+
+BR,
+  Martin Egholm
