@@ -1,19 +1,20 @@
-Received: from ideaobjects.com ([204.83.220.134] helo=www.ideaobjects.com)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CeTUO-00008y-Gk
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 02:22:27 -0500
-Message-ID: <14876.203.125.107.14.1103095339.squirrel@203.125.107.14>
-In-Reply-To: <c3d0340b041214192038f70c2e@mail.gmail.com>
-References: <c3d0340b041214192038f70c2e@mail.gmail.com>
-Date: Wed, 15 Dec 2004 15:22:19 +0800 (SGT)
-From: "Prashant Alves" <prashant@pramatech.com>
-To: "Shawn Jin" <shawnxjin@gmail.com>
+Received: from postfix4-2.free.fr ([213.228.0.176])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CeUHX-0000Ms-Vs
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 03:13:13 -0500
+Received: from [192.168.0.3] (vigny-5-82-228-185-17.fbx.proxad.net
+	[82.228.185.17])
+	by postfix4-2.free.fr (Postfix) with ESMTP id C2171255A3E
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Dec 2004 09:13:09 +0100 (CET)
+Message-ID: <41BFF1DF.5000600@esitcom.org>
+Date: Wed, 15 Dec 2004 09:12:15 +0100
+From: Amaury Jacquot <sxpert@esitcom.org>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linuxmtd <linux-mtd@lists.infradead.org>
-Subject: Re: 2.6.x cannot mount the root fs on a jffs2 image?
-Reply-To: prashant@pramatech.com
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: using JFFS2 on compact flash ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+hi,
+I am working on an epia based embedded system that will be in my car ( 
+http://www.navsys.org for more details) and was wondering if JFFS2 could 
+be used with SanDisk UltraII compact flash cards, instead of the 
+horribly inefficient vfat ?
 
-On Wed, December 15, 2004 11:20 am, Shawn Jin said:
-> Hi,
->
-> Can 2.6.x mount the root fs on a jffs2 image? After a while of
-> research by googling, I found that do_mounts.c was re-written quite a
-> lot compared with 2.4.x. In 2.4.x there is root_dev_names specifying
-> all devices can be mounted as the root fs. But there isn't such a
-> struct any more. Probably root_device_name is the sibling?
->
-> How to add jffs2 support in do_mounts.c?
->
-> Thanks,
-> -Shawn.
+Sincerely
 
-
-Look at this
-http://lists.infradead.org/pipermail/linux-mtd/2004-October/010611.html
-
-Cheers,
-Prashant Alves
+Amaury
