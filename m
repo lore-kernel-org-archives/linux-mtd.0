@@ -1,46 +1,41 @@
-From: jerj@coplanar.net (Jeremy Jackson)
-Date: 14 Mar 2003 11:00:19 -0500
-Subject: devbios port to MTD
-Message-ID: <1047657619.2134.40.camel@contact.skynet.coplanar.net>
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 14 Mar 2003 16:05:10 +0000
+Subject: [PATCH] Fix stack usage for amd_flash.c
+In-Reply-To: <20030314154642.GC27154@wohnheim.fh-wedel.de>
+References: <20030314154642.GC27154@wohnheim.fh-wedel.de>
+Message-ID: <1047657910.14792.153.camel@passion.cambridge.redhat.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi,
+On Fri, 2003-03-14 at 15:46, Joern Engel wrote:
+> Hi!
+> 
+> This patch reduces the stack usage of amd_flash_probe by a couple of
+> kByte.
 
-I've been hacking away for a few days at the devbios code, my goal being
-to port it to the MTD framework.  Apart from being "the right thing" in
-my opinion, as well as in the devbios TODO, it solves a few practical
-problems:  
+Urgh. That should never have been on the stack in the first place. Make
+it static. The comment about being deallocated when the probe is done is
+bogus -- where do we think we get the contents of the table from when
+_entering_ the probe function anyway? It's elsewhere in the kernel
+image.
 
-It will let BIOS EEPROMS or DoC be programmed in a network card socket
-(eepro100 only just now with Eric Biederman's patch - PLCC32 socket.  I
-want to do tulip next so I have a DIP32 as well) to avoid having to swap
-chips with the power on.  
+>  The target of freeing the memory after probe should be reached
+> with __initdata as well. Untested, though.
+> 
+> Is it ok to apply?
 
-It also lets the BIOS chip be made read-only, yet have a DoC that is R/W
-(well they have to be).
+No. You can't make that __initdata because the functions which _call_ it
+aren't __init. You can load map drivers (e.g. pcmcia) as modules which
+try to probe for all kinds of chips.  
 
-And many more.
+Also note that all but the CFI-based drivers are deprecated. We have
+old-style probes which allow us to use the CFI back-end drivers with
+non-CFI chips anyway.
 
-So far I have refactored devbios to eliminate global variables (void
-*bios), and static flashdevice structures.  The flash probing routine is
-now a separate "library", which can use devbios flash_{readb,writeb}, or
-when linked into MTD, will use the map driver's access routines.  The
-MTD chip driver which uses the probe routine is about half done.  Any
-enhancements to the devbios probe routine "library" will automatically
-enhance the MTD chip probe routine as well.
+> J?rn
 
-I plan to make map drivers out of the devbios pcisets.c code in a
-similar manner.
+Btw you're sending out 8-bit mail with charset 'unknown-8bit'. What
+should be a ?? isn't.
 
-I'm posting this to elicit comments from the respective parties, words
-of wisdom, cautions, etc.
-
-I will post the initial devbios refactoring patch once I've checked it
-over again.
-
-Regards,
-
-Jeremy
 -- 
-Jeremy Jackson <jerj@coplanar.net>
+dwmw2
