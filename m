@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Xlai-0001f1-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 17:35:52 +0100
+	id 17Xm2q-0001jH-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 18:04:56 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3D401D1E.2DD54BF@sgi.com> 
-References: <3D401D1E.2DD54BF@sgi.com>  <20020725131457.GA19796@wohnheim.fh-wedel.de> <3D3FEE24.49D26D61@sgi.com> <600.1027603720@redhat.com> 
-To: Steven Hein <ssh@sgi.com>
+In-Reply-To: <20020725141838.53920.qmail@mail.com> 
+References: <20020725141838.53920.qmail@mail.com> 
+To: "Mike Schumi" <schumi@techie.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Integrating new MTD/jffs2 into 2.4.18 kernel 
+Subject: Re: jffs2_do_reserve_space 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 25 Jul 2002 17:35:49 +0100
-Message-ID: <17917.1027614949@redhat.com>
+Date: Thu, 25 Jul 2002 18:04:41 +0100
+Message-ID: <20696.1027616681@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ssh@sgi.com said:
->  5) in linux/fs/jffs2/file.c, there is a reference to PageUptodate()
->    that must be changed to Page_Uptodate()   (looks like this syntax
->    changed from 2.4 to 2.5 kernel....) 
+Can you try this?
 
-Copy CVS:mtd/include/linux/mtd/compatmac.h to linux/include/mtd/compatmac.h
+Index: fs/jffs2/scan.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/scan.c,v
+retrieving revision 1.78
+diff -u -p -r1.78 scan.c
+--- fs/jffs2/scan.c	2 Jul 2002 22:48:24 -0000	1.78
++++ fs/jffs2/scan.c	25 Jul 2002 17:04:28 -0000
+@@ -322,6 +322,16 @@ static int jffs2_scan_eraseblock (struct
+ 			continue;
+ 		}
+ 
++		if (ofs + node.totlen > jeb->offset + c->sector_size) {
++			/* Eep. Node goes over the end of the erase block. */
++			printk(KERN_WARNING "Node at 0x%08x with length 0x%08x would run over the end of the erase block\n",
++			       ofs, node.totlen);
++			printk(KERN_WARNING "Perhaps the file system was created with the wrong erase size?");
++			DIRTY_SPACE(4);
++			ofs += 4;
++			continue;
++		}
++
+ 		if (!(node.nodetype & JFFS2_NODE_ACCURATE)) {
+ 			/* Wheee. This is an obsoleted node */
+ 			D2(printk(KERN_DEBUG "Node at 0x%08x is obsolete. Skipping\n", ofs));
 
 
 --
