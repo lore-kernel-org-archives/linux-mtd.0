@@ -1,22 +1,25 @@
 Received: from mail.fh-wedel.de ([213.39.232.194])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AgSN7-0007qA-PR
-	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 17:30:33 +0000
-Date: Tue, 13 Jan 2004 18:27:55 +0100
+	id 1AgSOQ-0007rk-Et
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 17:31:54 +0000
+Date: Tue, 13 Jan 2004 18:29:20 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Markus Borchers <MBorchers@adwin.de>
-Message-ID: <20040113172755.GA25159@wohnheim.fh-wedel.de>
-References: <opr1py4bes8jdzbh@10.100.100.100>
-	<20040113154724.GA23333@wohnheim.fh-wedel.de>
-	<1074009621.17620.70.camel@hades.cambridge.redhat.com>
-	<opr1p1wgi48jdzbh@10.100.100.100>
+To: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+Message-ID: <20040113172920.GB25159@wohnheim.fh-wedel.de>
+References: <20040113125031.GA5146@angel.research.nokia.com>
+	<1074001140.17620.3.camel@hades.cambridge.redhat.com>
+	<1074007527.9219.11.camel@spawn.uab.ericsson.se>
+	<1074007799.17620.60.camel@hades.cambridge.redhat.com>
+	<1074010874.9216.28.camel@spawn.uab.ericsson.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <opr1p1wgi48jdzbh@10.100.100.100>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: overwrite complete flash
+In-Reply-To: <1074010874.9216.28.camel@spawn.uab.ericsson.se>
+cc: "Jarkko Lavinen \(NMP/Helsinki\)" <jarkko.lavinen@nokia.com>
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 January 2004 17:10:54 +0100, Markus Borchers wrote:
+On Tue, 13 January 2004 17:21:15 +0100, Kenneth Johansson wrote:
 > 
-> /dev/mtdblock0 (minor 0) is partition 0 (RedBoot).
-> If it _is_ possible to register the whole device first, what do I have to 
-> do?
+> hmm I reread the firt post why is read so slow?? When I thought about
+> using nand I read that reading a byte took something like 50 ns. That is
+> like 20MB per second for an 8 bit device. This is in the region where it
+> did not pay to be smart,the accesses overhead to do read only what's
+> needed is greater than the time wasted reading uneccessary data. 
 
-Change the code.  Should be pretty simple, a couple of lines.  What is
-your mapping driver?
-
-BTW: Imo there is no sane reason, _not_ to register the whole device.
-Ever.  Laziness is a reason, just not sane.
+But on nand it is not only possible, but also likely that flash size
+is greater than ram size.  Does your approach still work then?
 
 Jörn
 
 -- 
-Time? What's that? Time is only worth what you do with it.
--- Theo de Raadt
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+-- Theodore Roosevelt, Kansas City Star, 1918
