@@ -1,19 +1,20 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 11 Mar 2003 14:57:11 +0000
+From: joakim.tjernlund@lumentis.se (Joakim Tjernlund)
+Date: Tue, 11 Mar 2003 16:27:54 +0100
 Subject: Atmel SyncFlash
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLAEBAFLAA.joakim.tjernlund@lumentis.se>
-References: <IGEFJKJNHJDCBKALBJLLAEBAFLAA.joakim.tjernlund@lumentis.se>
-Message-ID: <1047394630.24808.149.camel@passion.cambridge.redhat.com>
+In-Reply-To: <1047394630.24808.149.camel@passion.cambridge.redhat.com>
+Message-ID: <IGEFJKJNHJDCBKALBJLLOEBAFLAA.joakim.tjernlund@lumentis.se>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Tue, 2003-03-11 at 14:49, Joakim Tjernlund wrote:
-> The JFFS2/MTD pices are already there. The only thing that's missing is
-> a new map function in struct map_info, erase_callback(start of EB, end of EB), that is
-> called when the flash driver initiates an erase.
+> On Tue, 2003-03-11 at 14:49, Joakim Tjernlund wrote:
+> > The JFFS2/MTD pices are already there. The only thing that's missing is
+> > a new map function in struct map_info, erase_callback(start of EB, end of EB), that is
+> > called when the flash driver initiates an erase.
+> 
+> Or a write. And we really do need to optimise out the actual flushes.
 
-Or a write. And we really do need to optimise out the actual flushes.
-But yeah -- we know how to do it and it's not hard.
+I do this in my map functions, read32 and write32.
+It's the easy way on PPC since it's only one extra instruction.
+Other arch's may have a harder time.
 
--- 
-dwmw2
+ Jocke
