@@ -1,21 +1,25 @@
-Received: from [212.58.137.10] (helo=trajan.ag-netcom.net)
+Received: from [202.37.96.11] (helo=gatekeeper.tait.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AFJyT-0003LP-LO
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 21:04:57 +0000
-Received: from 192.168.0.4 (dsl-217-155-44-202.zen.co.uk [217.155.44.202])
-	by trajan.ag-netcom.net (8.12.8p1/8.12.8) with ESMTP id h9UL5ERs041422
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 21:05:14 GMT
-	(envelope-from david@avoncliff.com)
-From: david stevenson <david@avoncliff.com>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 30 Oct 2003 21:03:42 +0000
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200310302103.42918.david@avoncliff.com>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: zlib versions
+	id 1AFKbz-0003Zb-0A
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 21:45:47 +0000
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9ULiVH21321
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Oct 2003 10:44:31 +1300
+Received: from sunstorm.tait.co.nz (sunstorm.tait.co.nz [172.25.40.9])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9ULiV221315
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Oct 2003 10:44:31 +1300
+Received: from tait.co.nz ([172.25.107.17])
+ by sunstorm.tait.co.nz (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with ESMTP id <0HNL00K1MB2548@sunstorm.tait.co.nz> for
+ linux-mtd@lists.infradead.org; Fri, 31 Oct 2003 10:44:29 +1300 (NZDT)
+Date: Fri, 31 Oct 2003 10:43:50 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+To: mtd list <linux-mtd@lists.infradead.org>
+Message-id: <3FA18616.6090201@tait.co.nz>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+Subject: Has anyone managed to compile jffs2reader lately?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Could someone please educate me on zlib?
+I note that its commented out in the makefile and despite various hacks 
+and trials I'm unable to compile it since it seems to suffer rather a 
+lot of typedef problems (inherited from zlib I think).
 
-I can compile kernel 2.4.21 with MTD updated from tarball 20031021 with jff2 
-with no errors.
-But when I try and compile the utils from the same tar ball, using the same 
-kernel headers I get error file not found zlib.h.
+I'll not include the whole list (too big) but this is an example of the 
+errors I'm seeing.
 
-I can compile the utils against the kernel headers on my host 2.4.20 without 
-error. But I guess then the binaries will not run on the target machine?
+jffs2reader.c: In function `putblock':
+jffs2reader.c:139: incompatible types in initialization
+jffs2reader.c:141: invalid operands to binary >
+jffs2reader.c:141: invalid operands to binary +
+jffs2reader.c:146: invalid operands to binary <
+jffs2reader.c:147: invalid operands to binary -
+jffs2reader.c:151: invalid operands to binary +
 
-The difference appears to be linux/zlib v1.1.3 or /zlib v1.1.4 but I am not 
-sure what I should use to get utils that run.
-Thanks
-David
+This lack of an analysis tool means I'm unable to debug the device file 
+problems I reports yesterday.
+
+-- 
+Robin Gilks
+Senior Design Engineer          Phone: (+64)(3) 357 1569
+Tait Electronics                Fax  :  (+64)(3) 359 4632
+PO Box 1645 Christchurch        Email : robin.gilks@tait.co.nz
+New Zealand
