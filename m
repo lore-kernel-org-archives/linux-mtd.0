@@ -1,20 +1,27 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
+Received: from mgr2.xmission.com ([198.60.22.202])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17JVRK-0000T7-00
-	for <linux-mtd@lists.infradead.org>; Sun, 16 Jun 2002 09:31:15 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: Der Herr Hofrat <der.herr@mail.hofr.at>
-Subject: Re: Boot from NAND flash ???
-Date: Sun, 16 Jun 2002 20:18:27 +1200
-Cc: linux-mtd@lists.infradead.org
-References: <200206160558.g5G5wWk09998@hofr.at>
-In-Reply-To: <200206160558.g5G5wWk09998@hofr.at>
+	id 17JdR7-00014L-00
+	for <linux-mtd@lists.infradead.org>; Sun, 16 Jun 2002 18:03:34 +0100
+Received: from mail by mgr2.xmission.com with spam-scanned (Exim 3.35 #1)
+	id 17JdR6-0001z2-00
+	for linux-mtd@lists.infradead.org; Sun, 16 Jun 2002 11:03:32 -0600
+Received: from [198.60.22.200] (helo=mail.xmission.com)
+	by mgr2.xmission.com with esmtp (Exim 3.35 #1)
+	id 17JdR6-0001yz-00
+	for linux-mtd@lists.infradead.org; Sun, 16 Jun 2002 11:03:32 -0600
+Received: from [166.70.16.78] (helo=elphel.com)
+	by mail.xmission.com with esmtp (Exim 3.22 #1)
+	id 17JdR5-0002q9-00
+	for linux-mtd@lists.infradead.org; Sun, 16 Jun 2002 11:03:32 -0600
+Message-ID: <3D0CC4F6.3060106@elphel.com>
+Date: Sun, 16 Jun 2002 11:03:50 -0600
+From: Andrey Filippov <andrey@elphel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020616082514.B5CAD14095@dragon.actrix.co.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [Fwd: cfi_cmdset_0001.c: do_write_buffer bug]
+References: <3D0CC18A.8080002@elphel.com>
+Content-Type: text/plain; charset=windows-1251; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,28 +33,7 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sun, 16 Jun 2002 17:58, Der Herr Hofrat wrote:
-> > > There's another important limitation. Who guarantees you, that your
-> > > "boot-page" does not get bad or is a bad block already. That's the
-> > > reason, why DOC has 4 blocks with the same code.
-> >
-> > The first page of NAND is guaranteed to be good.
->
-> do you have a pointer to docs that explains this ?
-> is it common to all NAND devices that they replicated the first block in
-> hardware or did I missunderstand your statement.
->
+Working with Intel TE28F640J3A and Axis ETRAX100LX processor I ran over a bug in cfi_cmdset_0001.c: do_write_buffer. It checks ready state 20 times but does not resend 
+Write-to-Buffer command (E8) before new checks. So if it was not ready first time it will never be ready later.
 
-They do not replicate the first block.
-
-What happens is this:
-* At manufacturing test time, bad blocks are identified and are marked.
-* If more than n blocks are found to be defective, the part is discarded.
-* If the first block is found to be defective, the part is discarded. 
-ie. when it ships, block zero is guaranteed good.
-
-Of course, block 0 might fail with time....
-
-At least one doc on the Samsung www explains this.
-
--- Charles
+Andrey Filippov
