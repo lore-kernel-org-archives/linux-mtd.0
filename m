@@ -1,17 +1,18 @@
 Received: from code-monsters.com ([65.67.50.169] helo=smash.codemonsters.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16gsZn-0002sQ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2002 19:20:20 +0000
-Received: from ba.devicemonsters.com (adsl-65-70-211-41.dsl.austtx.swbell.net [65.70.211.41])
-	by smash.codemonsters.net (8.9.3/8.8.7) with ESMTP id NAA16758
-	for <linux-mtd@lists.infradead.org>; Fri, 1 Mar 2002 13:31:39 -0600
-Date: Fri, 1 Mar 2002 14:39:44 -0600 (CST)
+	id 16gsdg-0002sn-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2002 19:24:20 +0000
+Message-ID: <000f01c1c157$47698de0$5a01a8c0@devicemonsters.com>
 From: "Brian P. Austin" <baustin@codemonsters.net>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Reproduction of NFTL Bug with DOC 2000 288MB FULL DEBUG
-Message-ID: <Pine.LNX.4.21.0203011437090.657-100000@ba.devicemonsters.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.21.0203011346350.795-100000@ba.devicemonsters.com>  <10097.1015010046@redhat.com>
+Subject: Re: Reproduction of NFTL Bug with DOC 2000 288MB FULL DEBUG 
+Date: Fri, 1 Mar 2002 13:28:34 -0600
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +24,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Ok.
+I shut down syslog, and everything is going out to the terminal now,
+however, it just keeps scrolling
 
-I formated the disk with dformat and reran the modules
+ _DoC_WaitReady called for out-of-line wait
 
-I get this...
+accross all my tty's, and I can't stop it!
 
-[root@ba /root]# modprobe -a doc2000 nftl mtdchar mtdcore
-[root@ba /root]# modprobe -a docprobe
-DiskOnChip 2000 found at address 0xD0000
-Formatting block 2
-Formatting block 3
-Formatting block 9
-Formatting block 11
-Formatting block 13
-Formatting block 15
-Formatting block 17
+----- Original Message -----
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "Brian P. Austin" <baustin@codemonsters.net>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Friday, March 01, 2002 1:14 PM
+Subject: Re: Reproduction of NFTL Bug with DOC 2000 288MB FULL DEBUG
 
-and it has been sitting here for quite a while now.
 
-the message repeated in log is....
-
-Mar  1 14:36:12 ba kernel: _DoC_WaitReady called for out-of-line wait
-Mar  1 14:36:43 ba last message repeated 8365 times
-Mar  1 14:37:44 ba last message repeated 17039 times
-Mar  1 14:38:45 ba last message repeated 17045 times
-...
-
-I apologize, I'm not sure what you mean by logging the serial term.. 
+>
+> Hmm. Did you do this from scratch, starting by reformatting the NFTL
+again?
+> It doesn't look like it.
+>
+> Use the M-Systems DFORMAT (version 4.2) if you can, rather than
+nftl_format.
+> If you do use nftl_format, make sure the NFTL kernel module isn't loaded
+> while you do so.
+>
+> Then get logs again, preferably over a serial console, because syslog is
+> lossy.
+>
+> I may have a 288MiB unit here, in fact - I'll see if I can reproduce it
+> myself.
+>
+> --
+> dwmw2
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
