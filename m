@@ -1,20 +1,23 @@
-Received: from hardrain.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
+Received: from mailout07.sul.t-online.com ([194.25.134.83])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19a1jK-0006Ou-Pm
-	for <linux-mtd@lists.infradead.org>; Wed, 09 Jul 2003 00:18:39 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "gjx" <marchguo@yahoo.com.cn>,
-	linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
-Date: Wed, 9 Jul 2003 11:21:53 +1200
-References: <E19ZLo5-0000XC-Kw@pentafluge.infradead.org>
-In-Reply-To: <E19ZLo5-0000XC-Kw@pentafluge.infradead.org>
+	id 19aGC4-0007cn-Pa
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Jul 2003 15:45:16 +0100
+From: Juergen Beisert <jbeisert@eurodsn.de>
+To: tglx@linutronix.de
+Date: Wed, 9 Jul 2003 16:43:59 +0200
+References: <200307081001.10555.jbeisert@eurodsn.de>
+	<200307081405.56822.jbeisert@eurodsn.de>
+	<200307081811.05797.tglx@linutronix.de>
+In-Reply-To: <200307081811.05797.tglx@linutronix.de>
 MIME-Version: 1.0
-Message-Id: <20030708231846.7C10B4431@blood.actrix.co.nz>
+Content-Disposition: inline
+Message-Id: <200307091644.00414.jbeisert@eurodsn.de>
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: nand flash driver
-Reply-To: manningc2@actrix.gen.nz
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND-Flash ECC data not used
+Reply-To: jbeisert@eurodsn.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 07 July 2003 14:33, gjx wrote:
-> hi,linux-mtd
->
-> 	 The hardware designer connects the control pins(CLE、ALE、R/B) of nand
-> flash to the data bus, The CE、WE、RE pins to corresponding pin of CPU.
-> Nedd I get the address of control pins? separate the data from data bus?
-> How to implement controlling of nand.   Please give me some advice, thanks!
+Am Dienstag, 8. Juli 2003 18:11 schrieben Sie:
+> On Tuesday 08 July 2003 14:05, Juergen Beisert wrote:
+> > Am Dienstag, 8. Juli 2003 12:42 schrieben Sie:
+> > > On Tuesday 08 July 2003 10:01, Juergen Beisert wrote:
+> > >
+> > > Have you enabled CONFIG_JFFS2_NAND ?
+                                      ^^^^^^^^^^^^^^^^^^^^^^^
+Sorry, I have searched for the macro CONFIG_JFFS2_NAND, not for 
+CONFIG_JFFS2_FS_NAND.
 
-R/B is an open collector that is driven from the NAND. You should not be 
-connecting this to the address bus. You can just leave this unconnected (R/B 
-detection not available) or connect it to a GPIO.
+Now I have find it and patched in. Seems to work now (with ECC).
 
-I think most people connect CLE and ALE to GPIO pins, but some application 
-notes describe driving these via the address bus. you should then be able to 
-drive the lines the way you want by accessing the corresponding addresses.
-
--- CHarles
+Thanks a lot
+JB
