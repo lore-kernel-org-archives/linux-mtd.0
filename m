@@ -1,9 +1,9 @@
-Received: from [203.199.83.24] (helo=mailweb12.rediffmail.com)
+Received: from [203.199.83.22] (helo=mailweb10.rediffmail.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15tUUu-0001Jp-00
-	for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2001 14:43:08 +0100
-Date: 16 Oct 2001 13:51:45 -0000
-Message-ID: <20011016135145.7311.qmail@mailweb12.rediffmail.com>
+	id 15tUXX-0001KA-00
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2001 14:45:52 +0100
+Date: 16 Oct 2001 13:53:36 -0000
+Message-ID: <20011016135336.21846.qmail@mailweb10.rediffmail.com>
 MIME-Version: 1.0
 From: "nagaraj trivedi" <trina@rediffmail.com>
 Reply-To: "nagaraj trivedi" <trina@rediffmail.com>
