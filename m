@@ -1,61 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14nmcf-00026k-00
-	for mtd-list@infradead.org; Thu, 12 Apr 2001 20:19:17 +0100
-Received: from [212.87.56.100] (helo=mail.taytron.net)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14nmcc-00026e-00
-	for mtd@infradead.org; Thu, 12 Apr 2001 20:19:16 +0100
-From: "Florian Schirmer / TayTron" <schirmer@taytron.net>
-To: "Williams, Kevin M." <kevin.m.williams@marconi.com>,
-	<mtd@infradead.org>
-Subject: AW: jffs steps from boot prompt to mount?
-Date: Thu, 12 Apr 2001 21:19:22 +0200
-Message-ID: <BKEKLBIBFPNGJKJDEODFEEKFEIAA.schirmer@taytron.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <A3E34B558F5CD211B4980008C7A4A99003163E52@sparrow.eng.gilbarco.com>
+	id 14nmkz-0002IO-00
+	for mtd-list@infradead.org; Thu, 12 Apr 2001 20:27:53 +0100
+Received: from nwcst286.netaddress.usa.net ([204.68.23.31])
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 14nmkx-0002IG-00
+	for mtd@infradead.org; Thu, 12 Apr 2001 20:27:52 +0100
+Message-ID: <20010412192716.20625.qmail@nwcst286.netaddress.usa.net>
+Date: 12 Apr 2001 12:27:16 PDT
+From: Eric <ebrower@usa.net>
+To: mtd@infradead.org
+Subject: [Q] MEMGETREGIONxxx ioctls
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi!
+Here are a few questions related to the MEMGETREGIONxxx ioctls.
+I'd simply submit a patch, but I am not sure about the reasoning
+and I'm not near a build system for verification:
 
->I need my application to be able to mount the mtd device and write/read
->files.  I have selected jffs support under file systems in xconfig. Can
->someone spell out the steps from bootup until mount?  I tried following the
->HOWTO but got stuck here with erase not working and wondering how
->mtdblock0/1/2 get created.
+	1) Why is MEMGETREGIONCOUNT declared with _IOW
+	   instead of _IOR in mtd.h?  It seems to be a
+	   read from kernelspace, rather than a write to
+           kernelspace in mtdchar.c.
 
-Check wether mtd0/1/... exits under you /dev directory. Probably they are
-missing. You want to consider this two kernel options:
+	2) Why is MEMGETREGIONINFO declared likewise with _IOW
+	   instead of _IOWR?  The ioctl in mtdchar.c reads the
+	   regionindex member and then populates the rest of the
+	   struct accordingly.
 
-# CONFIG_MTD_CHAR is not set
-# CONFIG_MTD_BLOCK is not set
+	3) Do we need the declaration of =
 
-The first creates mtd0/1/... and the second one mtdblock0/1/... which should
-fix both of your problems. After you compiled in both options you should
-erase all your partitions with eraseall. The erase command should work to,
-but i did not test that. Then you can simply create an filesystem on your
-device. If you want to use jffs simply do:
+		"struct mtd_erase_region_info *kr"
+	   inside the MEMGETREGIONINFO ioctl handler?  It is =
 
-mount -t jffs /dev/mtdblock0 /mount
+	   initialized but never used, so I doubt it is necessary.
 
-This creates a jffs filesystem on your partition. After the filesystem has
-been created you can ommit "-t jffs" since mount now autodetects the
-filesystem.
+Thanks,
+E
 
-Hope that helps
-  Florian Schirmer
-
-
----------------------------+--------------------------------------------
-TayTron Internet Solutions | Bei Fragen wenden Sie sich bitte an:
-                           |
-Webhosting     ab  29,- DM | http://www.velomedia.de - info@velomedia.de
-Serverhousing  ab 199,- DM | Tel. 0800 / 80 70 900 - Fax 030 / 43671-040
-
+____________________________________________________________________
+Get free email and a permanent address at http://www.netaddress.com/?N=3D=
+1
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
