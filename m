@@ -1,23 +1,14 @@
-Received: from amdext2.amd.com ([163.181.251.1])
+Received: from thorgal.et.tudelft.nl ([130.161.40.91])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19pDO6-0002Gx-U0
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 21:47:31 +0100
-Received: from SAUSGW01.amd.com (sausgw01.amd.com [163.181.250.21])
-	by amdext2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7JKipOW007468
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Aug 2003 15:46:37 -0500 (CDT)
-Received: from txexmtab.amd.com (txexmtab.amd.com [163.181.3.203]) by
- amdint2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7JKkSGV015943 for
- <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 15:46:28 -0500 (CDT)
-Message-ID: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FE4@txexmtab.amd.com>
-From: jon.hoekwater@spansion.com
+	id 19pHNL-0002qp-Ly
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 02:02:59 +0100
+Mime-Version: 1.0
+Message-Id: <a05200f03bb6877b9d497@[130.161.115.44]>
+Date: Wed, 20 Aug 2003 03:02:29 +0200
 To: linux-mtd@lists.infradead.org
-Date: Tue, 19 Aug 2003 15:46:28 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: MS Outlook replies breaking thread
+From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: 2k page NANDs ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi all,
 
-My replies seem to be breaking the thread.
-I am using MS Outlook and replying in text -
-I've read the email ediquette several times 
-now, and looked for options in Outlook that
-might help.  Any help would be appreciated.
-
-Yeh, I'm new at this.
+Is there any way to use either JFFS2 or YAFFS (or MTD-NAND, for that 
+matter) on the newer NAND devices with 2112-byte pages ? Looks like 
+all higher density (>1Gb) NANDs are using this page size nowadays.
 
 Thanks,
-Jon Hoekwater
-Software Engineer
-Spansion Product Line
-FASL LLD
-jon.hoekwater@spansion.com
+
+JDB
+[who has developed an insatiable appetite for shock-proof non-volatile storage]
+-- 
+LART. 250 MIPS under one Watt. Free hardware design files.
+http://www.lart.tudelft.nl/
