@@ -1,16 +1,16 @@
-Received: from albatros.havelsan.com.tr ([195.142.233.60])
+Received: from tomts22.bellnexxia.net ([209.226.175.184] helo=tomts22-srv.bellnexxia.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eFO7-0004Cr-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 14:37:39 +0100
-Message-ID: <009601c24205$690cc730$3064000a@nurpinar>
-From: "nur" <nurpinar@e-kolay.net>
-To: "MTD" <linux-mtd@lists.infradead.org>
-Subject: DOC millenium doesnt work anymore 
-Date: Mon, 12 Aug 2002 16:37:32 +0300
+	id 17eGsP-0004RC-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 16:13:01 +0100
+Date: Mon, 12 Aug 2002 11:12:57 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: nur <nurpinar@e-kolay.net>
+cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: DOC millenium doesnt work anymore 
+In-Reply-To: <009601c24205$690cc730$3064000a@nurpinar>
+Message-ID: <Pine.LNX.4.44.0208121108380.31365-100000@server.superbt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,22 +22,55 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have created two partitions as minix and msdos. After reboot, my kernel
-printed a message as follows
-Using configured DiskOnChip probe address 0ex8000
-Possible Diskonchop with unknown ChipID FD found at 0xe8000
-No recognised Diskonchip devices found
+On Mon, 12 Aug 2002, nur wrote:
 
-Anyone has faced such a problem?
+> Using configured DiskOnChip probe address 0ex8000
+> Possible Diskonchop with unknown ChipID FD found at 0xe8000
+> No recognised Diskonchip devices found
+> 
+> Anyone has faced such a problem?
 
-Under romdos dformat /win:e800 /s:doc51.exb doesn't work
-It can't find any diskonchip. dinfo /win:e800 doesnt work as well
+The BIOS might have configurable chip selects.  You may need to associate
+a certain chip select number with the DoC memory window in the BIOS
+configuration screen.
 
-running nftl_format after insmod nftl could harm my diskonchip? I don't
-suppose, because it was ok after formating and re-booting.
-I would like to know what was my mistake so that I won't do it again. Cos I
-have one doc millenium left
-Thanks
+I included a sample BIOS setup for the MZ104 board below.
 
-P.S. mtd-patch-2.4.0-test12-20001218-2230GMT doesn't apply to 2.4.0 kernel.
-gives many errors
+Ilguiz
+
+==================================================================
+
+  Main
+    Boot Drive Order:  Floppy Disk
+    Boot through RFD:  No [Removable Flash Disk?  The RFD thing is
+                          confusing because it doesn't apparently
+                          refer to DiskOnChip]
+  Advanced
+    Onboard RFD:            Disabled
+    Installed O/S:          Other   [are these two relevant
+    Large Disk Access Mode: DOS      to DiskOnChip startup?]
+
+    Console COM Port Address  Disabled
+      Console Baud Rate            115.2K
+      ...Continue C.R. after POST: Off
+
+  IO Devices
+    Serial Port A: Enabled
+    Serial Port B: Enabled
+    Infrared Port: Disabled
+    Parallel Port: Enabled
+    Floppy disk controller: Enabled
+      Base I/O address: Primary
+    Local Bus IDE adapter: Primary
+
+  Memory Windows
+    Memory Window - mem_cs3
+      Window Size:   1h
+      Window Base:  D0h
+      Window Page: F30h
+      Data width:  8-bits
+
+  I/O Windows
+    all disabled
+
+==================================================================
