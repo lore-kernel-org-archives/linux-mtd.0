@@ -1,67 +1,78 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13w9t1-0003UU-00
-	for mtd-list@infradead.org; Wed, 15 Nov 2000 21:14:31 +0000
-Message-ID: <61EBF4983550D311808900A0CC39BC2C41E050@hertz.ftel.com>
-From: quine@ftel.net
-To: dwmw2@infradead.org, ahennessy@mvista.com
-Cc: eauth@softsys.co.at, mtd@infradead.org
-Subject: RE: JEDEC support broken?
-Date: Wed, 15 Nov 2000 13:13:28 -0800
+	id 13wB9n-0003sP-00
+	for mtd-list@infradead.org; Wed, 15 Nov 2000 22:35:55 +0000
+Received: from gateway-490.mvista.com ([63.192.220.206] helo=hermes.mvista.com)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13wB9l-0003sJ-00
+	for mtd@infradead.org; Wed, 15 Nov 2000 22:35:54 +0000
+Message-ID: <3A130FEB.DAC0B454@mvista.com>
+Date: Wed, 15 Nov 2000 14:36:28 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: mark.langsdorf@amd.com, mtd@infradead.org, ahennessy@mvista.com
+Subject: Re: Big Endian/Little Endian headache in cfi_cmdset_0002.c
+References: <0FA1031B65A9D111960900805F9FA8E103B9F1B8@txexmta8.amd.com> <3A11B3BE.B4987B74@mvista.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I'm not sure how I got on your email list,  please remove my email address
-quine@ftel.net
+Alice Hennessy wrote:
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-Sent: Tuesday, November 14, 2000 5:44 PM
-To: Alice Hennessy
-Cc: Erwin Authried; 'mtd@infradead.org'
-Subject: Re: JEDEC support broken?
+> mark.langsdorf@amd.com wrote:
+>
+> >         The write code in cfi_amdext_write_bytes_32 uses
+> > be32_to_cpu and cpu_to_be32 to make the last four or
+> > less bytes of a buffer Big Endian.  However, none of
+> > the other write or read code in cfi_cmdset_002 is
+> > concerned with Endianess, so it looks like (on my
+> > x86 chip) that the first x bytes of a write are
+> > little endian, and then the last 3 or 4 are reversed.
+> >         Is there some reason for handling things this
+> > way, or is this a bug in the code?
+> >
+> > Mark Langsdorf
+> > Advanced Micro Devices, Inc             Tel: 512.602.3756
+> > 5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+> > Austin, TX 78741                        mark.langsdorf@amd.com
+> >
+> > To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+>
+> I'm also having to alter cfi_cmdset_0002.c for big endianness -  I think
+> we should use
+> cfi_write and cfi_read functions that cfi_cmdset_0001.c uses  but alter
+> them to take care
+> of both be32_to_cpu and le32_to_cpu (depending on a define) to take care
+> of both endiannesses.
+> This would isolate both the bus width issue and the endianness in these
+> 2 functions.   In other words, move the
+> endianness out of cfi_build_cmd and put it into cfi_read and
+> cfi_write.   Also,  the handling
+> of unaligned bytes in cfi_cmdset_0001. c is good for both
+> endiannesses.   We should use this
+> method in cfi_cmdset_0002.c
+>
+> Alice
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
+Well,
 
-On Tue, 14 Nov 2000, Alice Hennessy wrote:
+After thinking and testing a bit more,  the endianness should only be a
+concern
+in the cfi_build_cmd (where it is now) or query reads (which need to be
+altered slightly
+when filling in the cfi_ident structure  for buswidth > 1 and big endian)
+because a particular order is expected.
+In data writes and reads, endianness should not be a concern except for the
+unaligned bytes
+which should follow the cfi_cmdset_0001.c code example instead of the
+assumption of
+a particular endianness that exists now in cfi_amdext_write_bytes_32.
 
-> Do you mean to use map->size instead of bank_size (to spread the
-> individual start offsets over if there are gaps between chips)
+Alice
 
-Nope, discard the concept of bank_size altogether. Each chip needs its own
-information structure, much like the 'struct flchip' in
-include/mtd/flashchip.h, which contains the start offset of the chip in
-the map.
-
-It's reasonable to assume that all chips in the array will be the same
-size. You have an array of struct flchip (or your equivalent if you don't
-want to use struct flchip) and you index into that by dividing by the
-individual chip size - and then just address the chip you've selected by
-using the start offset listed for it.
-
-> Also,  is spin_lock support going to be added in jedec.c?
-
-It certainly _needs_ doing. Feel free :)
-
-> I have a board that needs support for both cfi and jedec flashes.
-> So, the approach I have taken is to use physmap.c with an array of
-> "physmap_info" structures that describe the window address, window
-> size, buswidth and number of partitions for each flash.
- < ... deletia ... >
-
-> Is this in keeping with the intent of the map file?
-
-Sounds like it. Show us the code though.
-
--- 
-dwmw2
-
-
-
-
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
