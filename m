@@ -1,21 +1,23 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Z0DE-0006ax-9B
-	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 04:29:16 +0100
-To: Joshua Wise <joshua@joshuawise.com>
-References: <200307042232.43815.joshua@joshuawise.com>
-	<200307052215.35596.joshua@joshuawise.com>
-	<m38yrcmkr2.fsf@maxwell.lnxi.com>
-	<200307052313.13389.joshua@joshuawise.com>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 05 Jul 2003 21:29:18 -0600
-In-Reply-To: <200307052313.13389.joshua@joshuawise.com>
-Message-ID: <m3n0fs5o4x.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Content-Type: text/plain; charset=us-ascii
+Received: from mailout.fastq.com ([204.62.193.66])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Z3Ck-0006u6-Er
+	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 07:40:58 +0100
+Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
+	h666fCD59510	for <linux-mtd@lists.infradead.org>;
+	Sat, 5 Jul 2003 23:41:12 -0700 (MST)
+	(envelope-from Russ.Dill@asu.edu)
+From: Russ Dill <Russ.Dill@asu.edu>
+To: Gregg C Levine <hansolofalcon@worldnet.att.net>
+In-Reply-To: <000001c34351$aa810520$239efea9@who5>
+References: <000001c34351$aa810520$239efea9@who5>
+Message-Id: <1057473735.2659.247.camel@localhost>
+Mime-Version: 1.0
+Date: 05 Jul 2003 23:42:15 -0700
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: jedec_probe.c
+Subject: Re: File systems and Disk on Chips
+Reply-To: Russ.Dill@asu.edu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joshua Wise <joshua@joshuawise.com> writes:
+On Sat, 2003-07-05 at 17:00, Gregg C Levine wrote:
+> Hello from Gregg C Levine
+> I have here a 2 Megabyte Disk on Chip device, plugged into a carrier
+> board. It is now wearing the GRUB based firmware. How when I bring up
+> my system, the DOC device complains about the lack of a file system.
+> Any ideas as to how I could put a file system on this device?
+> Preferably as a native Linux format.
 
-> On Saturday 05 July 2003 10:50 pm, Eric W. Biederman wrote:
-> > gen_probe_chip is one case where the cfi and the jedec case are
-> > common.  Warts are there but it is a common case.  And handling
-> > the various combinations of interleaved chips and various word
-> > sizes is tricky, and is quite easy for people who don't need that
-> > logic to get it wrong if it is not handled in common.
-> 
-> Really? I think it would be better to just probe all the unlock addresses in 
-> order instead of probing interleaves, etc
+Basically, you put a block filesystem on top of NFTL that grub
+understands. Grub does not at this point understand YAFFS or JFFS2 on
+NAND flash, but I'm sure there a lot of people who are looking for that
+and it wouldn't be difficult to do.
 
-There is more work to do when chips are interleaved.  And that
-extra work is non-obvious.  In the current setup almost everything
-looks like you have only a single chip, but that is by careful design.
-
-In particular if you have 2 8bit devices on a 16bit bus, a 16bit
-read will return one byte from each device.
-
-It happens that jedec_probe_chip is also guessing unlock addresses
-based upon the chip configuration, but that is an almost entirely
-different issue.  That part of the code can be removed with no ill
-effects.  cfi_send_gen_cmd already handles the issues with addresses
-caused by interleaved devices.
-
-> > Sorry, I'm not.  Submitting patches for review is another good
-> > way of accomplishing the same thing, and it is more economical
-> > of other peoples time.  This is a weekend and one of my rare moments
-> > with free time.  Thayne Harbaugh should be able to do just as good
-> > a job at answering your questions and he has a little more time
-> > than me.
-> 
-> Understood, I can appreciate that :) Who is Thayne Harbaugh? *pokes Thayne 
-> with a sharp object to call their attention to the discussion*
-
-He is a coworker, and currently is active making certain jedec_probe
-works in a lot of corner cases.  He is the guy who put all of the FIXME's
-in the code.  You probably won't here from him until Monday though.
- 
-> > Seriously all you should need to do is to take the loop in
-> > jedec_probe_chip where it loops through some unlock address and have
-> > it explicitly loop through all of the combinations, or at least enough
-> > of them until a match is found.  Look for the retry label.  It is a
-> > significant code change but it should be contained to just that one spot.
-> 
-> I'll take a look into that.
-
-Have fun.
-
-Eric
+-- 
+Russ Dill <Russ.Dill@asu.edu>
