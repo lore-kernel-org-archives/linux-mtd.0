@@ -1,17 +1,25 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from zeus.vortex.is ([193.4.145.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 154ejf-0006N6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 29 May 2001 09:20:15 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <sb13d79c.074@mail.microbits.com.au> 
-References: <sb13d79c.074@mail.microbits.com.au> 
-To: "Daniel Cox" <DCox@microbits.com.au>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Grub 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 29 May 2001 09:24:16 +0100
-Message-ID: <19508.991124656@redhat.com>
+	id 154hDw-0006Wi-00
+	for <linux-mtd@lists.infradead.org>; Tue, 29 May 2001 11:59:40 +0100
+Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
+          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
+          ID# 0-71211U5000L1850S0V35) with ESMTP id is
+          for <linux-mtd@lists.infradead.org>;
+          Tue, 29 May 2001 11:03:53 +0000
+Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
+          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
+          with ESMTP id is for <linux-mtd@lists.infradead.org>;
+          Tue, 29 May 2001 11:03:53 +0000
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C0E82F.0BBA96B8"
+Subject: Virtual regions
+Date: Tue, 29 May 2001 11:03:52 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9183@kolkrabbi.flaga.is>
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,65 +31,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-DCox@microbits.com.au said:
-> There is no patch for .5.96 and I cant find grub .5.97!
+This is a multi-part message in MIME format.
 
-There appears to be a 'grub-0.5.96-doc.patch' in my working directory. I've 
-committed it. 
+------_=_NextPart_001_01C0E82F.0BBA96B8
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-0.5.97 is what the current CVS version is called, I think.
+Hi,
 
+This patch removes the now optional Virtual regions option, i.e. virtual
+regions will always be made for all partitions.
 
-> However even with the --enable-diskonchip option for ./configure, root
-> (dc0) does not work - selected disk does not exist! For now I am
-> running from a hard disk (hd0). 
+You can make partitions on any boundary you want,
+if a partition does not start nor end on sector boundary the partition
+is non-writable. Otherwise it is writable.
 
-Does it even print the messages about probing for a DiskOnChip?
+Comments?
 
-DCox@microbits.com.au said:
->  Once the firmware is installed, the following appears
->   Could not find valid boot record
->   Could not mount NFTL device
+K.D.
 
-Argh. I've been seeing a lot of that recently. Something in the sanity 
-checks is failing. I'll put some more verbose messages in.
+------_=_NextPart_001_01C0E82F.0BBA96B8
+Content-Type: application/octet-stream;
+	name="virt_regions.diff"
+Content-Transfer-Encoding: base64
+Content-Description: virt_regions.diff
+Content-Disposition: attachment;
+	filename="virt_regions.diff"
 
+SW5kZXg6IGRyaXZlcnMvbXRkL210ZHBhcnQuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvaG9tZS9j
+dnMvbXRkL2RyaXZlcnMvbXRkL210ZHBhcnQuYyx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS4xOApk
+aWZmIC11IC1yMS4xOCBtdGRwYXJ0LmMKLS0tIGRyaXZlcnMvbXRkL210ZHBhcnQuYwkyMDAxLzAz
+LzMxIDEyOjM0OjE0CTEuMTgKKysrIGRyaXZlcnMvbXRkL210ZHBhcnQuYwkyMDAxLzA1LzI5IDEw
+OjU2OjA5CkBAIC0yNDQsMjcgKzI0NCw2IEBACiAJCQlwcmludGsgKCJtdGQ6IHBhcnRpdGlvbiBc
+IiVzXCIgZXh0ZW5kcyBiZXlvbmQgdGhlIGVuZCBvZiBkZXZpY2UgXCIlc1wiIC0tIHNpemUgdHJ1
+bmNhdGVkIHRvICUjeFxuIiwKIAkJCQlwYXJ0c1tpXS5uYW1lLCBtYXN0ZXItPm5hbWUsIHNsYXZl
+LT5tdGQuc2l6ZSk7CiAJCX0KLSNpZm5kZWYgQ09ORklHX01URF9DRklfVklSVFVBTF9FUgotCQlp
+ZiAobWFzdGVyLT5udW1lcmFzZXJlZ2lvbnM+MSkgewotCQkJLyogRGVhbCB3aXRoIHZhcmlhYmxl
+IGVyYXNlIHNpemUgc3R1ZmYgKi8KLQkJCWludCBpOwotCQkJc3RydWN0IG10ZF9lcmFzZV9yZWdp
+b25faW5mbyAqcmVnaW9ucyA9IG1hc3Rlci0+ZXJhc2VyZWdpb25zOwotCQkJCi0JCQkvKiBGaW5k
+IHRoZSBmaXJzdCBlcmFzZSByZWdpb25zIHdoaWNoIGlzIHBhcnQgb2YgdGhpcyBwYXJ0aXRpb24u
+ICovCi0JCQlmb3IgKGk9MDsgaSA8IG1hc3Rlci0+bnVtZXJhc2VyZWdpb25zICYmIHNsYXZlLT5v
+ZmZzZXQgPj0gcmVnaW9uc1tpXS5vZmZzZXQ7IGkrKykKLQkJCQk7Ci0KLQkJCWZvciAoaS0tOyBp
+IDwgbWFzdGVyLT5udW1lcmFzZXJlZ2lvbnMgJiYgc2xhdmUtPm9mZnNldCArIHNsYXZlLT5tdGQu
+c2l6ZSA+IHJlZ2lvbnNbaV0ub2Zmc2V0OyBpKyspIHsKLQkJCQlpZiAoc2xhdmUtPm10ZC5lcmFz
+ZXNpemUgPCByZWdpb25zW2ldLmVyYXNlc2l6ZSkgewotCQkJCQlzbGF2ZS0+bXRkLmVyYXNlc2l6
+ZSA9IHJlZ2lvbnNbaV0uZXJhc2VzaXplOwotCQkJCX0KLQkJCX0KLQkJfSBlbHNlIHsKLQkJCS8q
+IFNpbmdsZSBlcmFzZSBzaXplICovCi0JCQlzbGF2ZS0+bXRkLmVyYXNlc2l6ZSA9IG1hc3Rlci0+
+ZXJhc2VzaXplOwotCQl9Ci0KLSNlbHNlIC8vISBDT05GSUdfTVREX0NGSV9WSVJUVUFMX0VSCiAJ
+CXsgLy9DcmVhdGUgYSBzbWFsbCBsb2NhbCBjb250ZXh0CiAJCQlpbnQgaiA9IDA7CiAJCQlpbnQg
+ayA9IDA7CkBAIC0zMzcsNyArMzE2LDYgQEAKIAkJCQl9CiAJCQl9CiAJCX0gLy9Mb2NhbCBjb250
+ZXh0IG92ZXIKLSNlbmRpZiAvLyBDT05GSUdfTVREX0NGSV9WSVJUVUFMX0VSCiAKIAkJaWYgKChz
+bGF2ZS0+bXRkLmZsYWdzICYgTVREX1dSSVRFQUJMRSkgJiYgCiAJCSAgICAoc2xhdmUtPm9mZnNl
+dCAlIHNsYXZlLT5tdGQuZXJhc2VzaXplKSkgewo=
 
-DCox@microbits.com.au said:
->  nftl_format works but removes the firmware. 
-
-Give it an offset and it'll skip the firmware.
-	nftl_format /dev/mtd0 49152
-
-
-DCox@microbits.com.au said:
->  How can I get the firmware installed along with a formatted
-> partition? 
-
-If you mean the original firmware, then you have to do that from DOS with
-DFORMAT. If you mean Grub, then install Grub as before (having fixed it) 
-and then use nftl_format with an offset of (IIRC) 65536.
-
-
-DCox@microbits.com.au said:
->  How can I access the DOC device from Grub? 
-
-The Grub support was never 100% completed. It worked to a certain extent but
-wasn't reliable. I never got time to debug it, although it should be
-relatively simple. It seemed that the first time you read a sector it would
-return incorrect data. The next time it would work. So repeating the
-'kernel=' command a few times till Grub stopped complaining about errors,
-and then booting, worked. 
-
-
->  Does JFFS work with the DOC? I read the archive and it was recently
-> mentioned that it does not work.
-
-The DiskOnChip hardware driver only accepts write requests of a single 
-page. It needs to be fixed to allow larger writes - to loop till it's done.
-At that point, you should be able to use JFFS on it, although you only have 
-error detection, not error _correction_. The ideal solution is to add the 
-planned ECC support to JFFS2 and use that.
-
---
-dwmw2
+------_=_NextPart_001_01C0E82F.0BBA96B8--
