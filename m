@@ -1,20 +1,18 @@
-Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BhEGl-0005cu-Bf
-	for linux-mtd@lists.infradead.org; Sun, 04 Jul 2004 17:11:28 -0400
-From: dkey <dk.dbox2@gmx.net>
-To: linux-mtd@lists.infradead.org
-Date: Sun, 4 Jul 2004 23:12:26 +0200
-References: <Pine.LNX.4.44.0407012328180.18865-100000@xanadu.home>
-In-Reply-To: <Pine.LNX.4.44.0407012328180.18865-100000@xanadu.home>
+Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BhOS1-0006Vb-JD
+	for linux-mtd@lists.infradead.org; Mon, 05 Jul 2004 04:03:53 -0400
+Date: Mon, 5 Jul 2004 10:03:38 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: Wolfgang Denk <wd@denx.de>
+In-Reply-To: <20040702160247.55F4BC109F@atlas.denx.de>
+Message-ID: <Pine.LNX.4.56.0407051001290.1879@mag.sysgo.com>
+References: <20040702160247.55F4BC109F@atlas.denx.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200407042312.26606.dk.dbox2@gmx.net>
-Cc: Robert Lippmann <rlippmann@imsventures.com>, Nicolas Pitre <nico@cam.org>
-Subject: Re: unresoved symbol __ffs
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: adding cmd-line partitioning to rpxlite.c 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 02 July 2004 05:32, Nicolas Pitre wrote:
-> On Thu, 1 Jul 2004, Robert Lippmann wrote:
-> > hi all,
+On Fri, 2 Jul 2004, Wolfgang Denk wrote:
+
+> In message <Pine.LNX.4.56.0407021650140.8560@mag.sysgo.com> you wrote:
 > >
-> > haven't seen this covered before, but when i try to use recent snapshots
-> > (late june-ish), i get this unresolved symbol when building a 2.4.26
-> > kernel using linux-mips.  i assume it's because the compiler
-> > sets --disable-builtins when compiling.  it occurs in cfi_cmdset_0001.c
-> > oddly, the file compiles without warnings.  oh, and i'm using gcc 3.3.2
+> > > >>          lubbock_maps[flashboot^1].name = "Lubbock Application Flash";
+> > > >>          lubbock_maps[flashboot].name = "Lubbock Boot ROM";
+> ...
+> > spaced into it (YMMV). Still, I also like reusing things, and maybe it
+> > would be a good thing to add code that replaces the embedded spaces
+> > with underscores?
 >
-> __ffs should be defined in linux/asm/bitops.h.  It is defined for MIPS as
-> follows in 2.6.7:
->
+> Better use shorter names. Wast^H^H^H^H Using  41  characters  of  the
+> kernel command line for the MTD id's alone is IMHO not a good idea.
 
-but in 2.4.x kernels, it is defined as ffs (without leading underscores), so 
-maybe the code should be adapted to fit 2.6 and 2.4 kernels.
+Probably. Still, the current implementation is misleading and should
+be resolved. Things were easier if command line partitioning was
+default for all maps, and not something to add in later on demand.
 
-greets dkey
+Regards,
+Marius
+
+-- 
+Marius Groeger <mgroeger@sysgo.com>           Project Manager
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.imerva.com
