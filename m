@@ -1,19 +1,19 @@
-Received: from caramon.arm.linux.org.uk ([212.18.232.186])
+Received: from imladris.demon.co.uk ([193.237.130.41]
+	helo=lapdancer.baythorne.internal)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Wisb-0002O0-Ir
-	for <linux-mtd@lists.infradead.org>; Sun, 29 Jun 2003 21:34:33 +0100
-Date: Sun, 29 Jun 2003 21:34:50 +0100
-From: Russell King <rmk@arm.linux.org.uk>
-To: David Woodhouse <dwmw2@redhat.com>
-Message-ID: <20030629213450.B5653@flint.arm.linux.org.uk>
+	id 19WjiS-0002aS-1n
+	for <linux-mtd@lists.infradead.org>; Sun, 29 Jun 2003 22:28:08 +0100
+From: David Woodhouse <dwmw2@redhat.com>
+To: Russell King <rmk@arm.linux.org.uk>
+In-Reply-To: <20030629213450.B5653@flint.arm.linux.org.uk>
 References: <20030623010031.E16537@flint.arm.linux.org.uk>
-	<1056544988.24294.9.camel@passion.cambridge.redhat.com>
+	 <1056544988.24294.9.camel@passion.cambridge.redhat.com>
+	 <20030629213450.B5653@flint.arm.linux.org.uk>
+Message-Id: <1056922045.6616.28.camel@lapdancer.baythorne.internal>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1056544988.24294.9.camel@passion.cambridge.redhat.com>;
-	from dwmw2@redhat.com on Wed, Jun 25, 2003 at 01:43:09PM +0100
-Sender: Russell King <rmk@arm.linux.org.uk>
-Content-Type: text/plain; charset=us-ascii
+Date: Sun, 29 Jun 2003 22:27:25 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 cc: Linux Kernel List <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] Fix mtdblock / mtdpart / mtdconcat
@@ -26,29 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 25, 2003 at 01:43:09PM +0100, David Woodhouse wrote:
-> On Mon, 2003-06-23 at 01:00, Russell King wrote:
-> > Dirtily disable ECC support; it doesn't work when mtdpart is layered
-> > on top of mtdconcat on top of CFI flash.
-> > 
-> > There is probably a better fix, but that's for someone else to find.
+On Sun, 2003-06-29 at 21:34, Russell King wrote:
+> While looking over the changes between 1.5 and 1.6, I spotted this.  You
+> may want to fix this change:
 > 
-> I had to run 'indent' on mtdconcat.c before I could stand to even look
-> for it, so I haven't attached the patch here -- but could you try v1.6
-> from CVS, which should refrain from pretending to have ecc/oob access
-> functions of none of the subdevices have them, and hence fix the problem
-> you observed.
+> -                   concat->mtd.eccsize != subdev[i]->eccsize) {
+> +                   concat->mtd.eccsize != subdev[i]->eccsize ||
+> +                   !concat->mtd.read_ecc != !concat->mtd.read_ecc ||
+> +                   !concat->mtd.write_ecc != !concat->mtd.write_ecc ||
+> +                   !concat->mtd.read_oob != !concat->mtd.read_oob ||
+> +                   !concat->mtd.write_oob != !concat->mtd.write_oob) {
 
-While looking over the changes between 1.5 and 1.6, I spotted this.  You
-may want to fix this change:
-
--                   concat->mtd.eccsize != subdev[i]->eccsize) {
-+                   concat->mtd.eccsize != subdev[i]->eccsize ||
-+                   !concat->mtd.read_ecc != !concat->mtd.read_ecc ||
-+                   !concat->mtd.write_ecc != !concat->mtd.write_ecc ||
-+                   !concat->mtd.read_oob != !concat->mtd.read_oob ||
-+                   !concat->mtd.write_oob != !concat->mtd.write_oob) {
+Oops. Fixed in CVS.
 
 -- 
-Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
-             http://www.arm.linux.org.uk/personal/aboutme.html
+dwmw2
