@@ -1,18 +1,16 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from [207.236.123.4] (helo=mail.oerlikon.ca)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1986l7-0000jL-HY
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 00:01:05 +0100
-Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1986kL-0001WN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 01:00:17 +0200
+	id 19889Y-000142-FX
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 01:30:24 +0100
+Date: Tue, 22 Apr 2003 20:31:06 -0400
+From: Dominic Duval <dduval@oerlikon.ca>
 To: linux-mtd@lists.infradead.org
-From: David Wuertele <dave-gnus@bfnet.com>
-Date: Tue, 22 Apr 2003 15:56:23 -0700
-Message-ID: <m365p6b0q0.fsf@bfnet.com>
-Mime-Version: 1.0
-Sender: news <news@main.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: mtd and devfs
+MIME-Version: 1.0
+Message-ID: <MAIL7EjQxzmWecm9t0C000000d9@mail.oerlikon.ca>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Unlocking Intel K3 StrataFlash at boot time
+Reply-To: dduval@oerlikon.ca
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any reason why mtd wouldn't work under devfs?
-I'm running 2.4.18 plus some vendor patches.  I've got a nand flash
-that is recognized on boot:
+Hi,
 
-  STWX225 NAND Flash initializing...
-  PFLASH_CNTL before MOD: 80after MOD: 80
-  NAND device: Manufacture ID: 0xec, Chip ID: 0x73 (Samsung KM29U128T) Chip size: 2000000
-  Creating 5 MTD partitions on "Samsung KM29U128T":
-  0x00000000-0x00200000 : "MTD partition 0"
-  mtd: Giving out device 0 to MTD partition 0
-  0x00200000-0x00400000 : "MTD partition 1"
-  mtd: Giving out device 1 to MTD partition 1
-  0x00400000-0x00c00000 : "MTD partition 2 - root FS"
-  mtd: Giving out device 2 to MTD partition 2 - root FS
-  0x01f00000-0x01ffc000 : "MTD partition 3"
-  mtd: Giving out device 3 to MTD partition 3
-  0x01ffc000-0x02000000 : "MTD partition 4"
-  mtd: Giving out device 4 to MTD partition 4
-  STW4X225 NAND Flash initialized.
+I'm currently trying to boot from a XScale board which has some Intel
+StrataFlash banks (K3). However, it appears that the K3 flash in locked by
+default, so I'm getting some errors when the root partition is mounted by
+the Kernel in read/write mode.
 
-This results in devices under devfs:
+I figured the only way to work around this problem is to unlock the K3
+Flash before the Kernel mounts the root partition. Since our own bootloader
+doesn't support the K3 Flash, the only place left is right in the Kernel,
+probably just before the MTD device gets mounted.
 
-  # ls -R /dev/mtd
+I'd therefore like to know if this has been done before. If it has not, am
+I on the right track here? And is there a place in the mtd code which would
+be particularly well suited for placing the unlocking stuff? 
 
-  /dev/mtd:
-  0
-  0ro
-  1
-  1ro
-  2
-  2ro
-  3
-  3ro
-  4
-  4ro
+I'm no expert in MTD Flash devices, so your advice will be appreciated.
 
-But when I try to read from these, my system hangs before it ever gets
-to the nand_read() function:
+Cheers,
 
-  # head /dev/mtd/0 > fred
+		-Dominic
 
-Whether I try to read or write to the /dev/mtd/0 device, the system
-hangs hard.  The nand_read() function has a printk as its first
-statement, but the console never prints this, so I think there is
-something wrong with the read dispatch.  Could there be issues with my
-use of devfs?
-
-Thanks,
-Dave
+-- 
+Dominic Duval
+dduval@oerlikon.ca
