@@ -1,19 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JAOm-0001nB-00
-	for mtd-list@infradead.org; Mon, 31 Jul 2000 08:54:08 +0100
-Date: Mon, 31 Jul 2000 08:57:59 +0100 (BST)
-From: Kira Brown <kira@linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Ian Thompson <ithompson@coollogic.com>,
-	"mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: DOC serial numbers 
-In-Reply-To: <4180.965029170@cygnus.co.uk>
-Message-ID: <Pine.LNX.4.21.0007310857160.535-100000@carrot.linuxgrrls.org>
+	id 13JAg9-0001rK-00
+	for mtd-list@infradead.org; Mon, 31 Jul 2000 09:12:05 +0100
+Message-ID: <F6E17DCC9E59D411979400508BD904142F103C@mail.msys.co.il>
+From: Vadim Khamlinsky <Vadimk@m-sys.com>
+To: 'Kira Brown' <kira@linuxgrrls.org>, David Woodhouse
+	 <dwmw2@infradead.org>
+Cc: Ian Thompson <ithompson@coollogic.com>, mtd@infradead.org
+Subject: RE: DOC serial numbers 
+Date: Mon, 31 Jul 2000 11:11:43 +0300
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="ISO-8859-8"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
+
+Kira is absolutely right .
+DiskOnChip does not have any serial number saved in the electronic form. 
+
+Vadim 
+
+-----Original Message-----
+From: Kira Brown [mailto:kira@linuxgrrls.org]
+Sent: Mon, July 31, 2000 10:58 AM
+To: David Woodhouse
+Cc: Ian Thompson; mtd@infradead.org
+Subject: Re: DOC serial numbers 
+
 
 
 
@@ -26,6 +39,9 @@ as I can tell available in any electronic form.
 
 kira.
 
+
+
+To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
