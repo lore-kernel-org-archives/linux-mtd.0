@@ -1,52 +1,64 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14M9KR-0000tx-00
-	for mtd-list@infradead.org; Fri, 26 Jan 2001 13:54:15 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14M9KP-0000tp-00
-	for mtd@infradead.org; Fri, 26 Jan 2001 13:54:14 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <52AF3CB987C7D41183CD0090271F67C301C929@m4eng.m4data.co.uk> 
-References: <52AF3CB987C7D41183CD0090271F67C301C929@m4eng.m4data.co.uk> 
-To: Simon Munton <Simon.Munton@m4data.co.uk>
-Cc: "MTD (E-mail)" <mtd@infradead.org>,
-    "JFFS (E-mail)" <jffs-dev@axis.com>
-Subject: Re: Problem with deleted files 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 26 Jan 2001 13:53:49 +0000
-Message-ID: <16862.980517229@redhat.com>
+	id 14MDAB-0002cz-00
+	for mtd-list@infradead.org; Fri, 26 Jan 2001 17:59:55 +0000
+From: " Brian Michalk" <michalk@awpi.com>
+To: <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>
+Subject: RE: fdisk problems 
+Date: Fri, 26 Jan 2001 11:41:34 -0600
+Message-ID: <NEBBLKIBMLGPAFMHEJICEEANCFAA.michalk@awpi.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <Pine.LNX.4.30.0101252051460.20287-100000@imladris.demon.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I am at a loss.
+I can get my 8Mb DOCs to work, but not my 72Mb DOCs.
 
-Simon.Munton@m4data.co.uk said:
->  This could be fixed by always setting a node's deleted flag if the
-> corresponding file's deleted flag is set, when it is written in
-> jffs_write_node() and jffs_rewrite_data(). Can anyone see any problems
-> with this?
+I have booted into DOS and:
+dupdate /win=c800 /s:doc42.exb
+dformat /win:c800 /s:doc42.exb
 
-Er... I thought we already did this. Yes, that's what I'd recommend. Once 
-you're sure it's happy, can you commit the same change to the 
-linux-2_4-branch too, please?
+This all went without problems.
 
-Simon.Munton@m4data.co.uk said:
-> Should the filesystem fail to mount if it finds a node with no parent?
-> Would it be better to just throw away such nodes, or perhaps create a
-> virtual lost+found directory and put them there? 
+When I boot an MTD compiled kernel (no modules) I always get the ECC errors.
+I went to my cabinet and pulled out a handfull of 72Mb DOCs, and they all
+exhibit the same symptoms.
 
-I'd just let it mark them as deleted. JFFS2 will do that anyway - I'm not
-going to bother with marking inodes as deleted. They'll just fade away when
-nlink (calculated dynamically from the dirents) gets to zero.
+I recall that at some time in the past, we need needed to write either
+zeroes, or FFs to the flash before using it.  Is this still required?
+Is there a different .exb file I should be using?
 
-The whole thing gets _so_ much more interesting when you no longer GC in 
-strict order, and you can GC the 'deletion' nodes before you actually GC 
-the nodes they're deleting... 
-
---
-dwmw2
-
+> -----Original Message-----
+> From: dwmw2@infradead.org [mailto:dwmw2@infradead.org]
+> Sent: Thursday, January 25, 2001 2:57 PM
+> To: Brian Michalk
+> Cc: mtd@infradead.org
+> Subject: RE: fdisk problems
+>
+>
+> On Thu, 25 Jan 2001,  Brian Michalk wrote:
+>
+> > MTD_READECC(...) < 0
+>
+> If you define ECC_DEBUG in doc2000.c, I think you'll find it's reporting
+> an ECC failure. Before I left work, I managed to reproduce this, as
+> M-Systems sent me some 72MiB units a couple of days ago. Unfortunately, I
+> don't know _why_ it's reporting the ECC failure.
+>
+> For now, can you change the code so it ignores that and continues?
+>
+> You don't have anything valuable on that DiskOnChip at the moment, do
+> you?
+>
+> --
+> dwmw2
+>
+>
 
 
 
