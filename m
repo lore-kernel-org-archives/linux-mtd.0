@@ -1,16 +1,18 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta02.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nDZ8-00062C-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 08:30:06 +0100
-Date: Fri, 6 Sep 2002 09:29:31 +0200 (CEST)
-From: =?ISO-8859-1?Q?Henrik_Nordstr=F6m?= <hno@marasystems.com>
-To: MAL <mal@komcept.com>
-cc: mateo@posta.star.si, <linux-mtd@lists.infradead.org>
+	id 17nDnA-00063x-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 08:44:36 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Fri, 6 Sep 2002 00:36:58 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
+To: hno@marasystems.com
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: DOC 2000 and GRUB
-In-Reply-To: <1031294438.7779.6.camel@mal>
-Message-ID: <Pine.LNX.4.44.0209060926110.20719-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Reply-To: mateo@posta.star.si
+Message-Id: <20020906073658.53FAB3958@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,18 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 6 Sep 2002, MAL wrote:
+Hi Henrick
 
-> If you want to boot linux from the HDD again, remove the DOC address
-> selection jumper for your mainboard, boot, and put it back while the
-> system is at it's bootloader.
+>> If you want to boot linux from the HDD again, remove the DOC address
+>> selection jumper for your mainboard, boot, and put it back while the
+>> system is at it's bootloader.
+>
+>Or use the patch recently posted on this list to make it possible to abort 
+>the loading of the grub firmware from the DoC.
 
-Or use the patch recently posted on this list to make it possible to abort 
-the loading of the grub firmware from the DoC.
+I read about this patch in the e-mails from the mtd. (I believe 
+there were some arguing about that).
 
-Note: The jumer trick does not work on the mb I have. If a DoC is 
-installed in the socket without a address selection jumper then the system 
-hangs dead during POST.
+I thought about loading this grub firmware, but the only
+problem is, that I cannot boot the system, with the DOC!!
 
-Regards
-Henrik
+Regards,
+Mateo
+
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
