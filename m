@@ -1,22 +1,22 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6mD8-0005l2-Bq
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 04:01:35 -0500
+	id 1D6mPs-00064V-IG
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 04:14:51 -0500
+Received: from tglx.tec.linutronix.de (213-239-205-147.clients.your-server.de
+	[213.239.205.147]) (using SSLv3 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.tglx.de (Postfix) with ESMTP id D826A65C2B9
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  3 Mar 2005 10:10:41 +0100 (CET)
 From: Thomas Gleixner <tglx@linutronix.de>
-To: Kevin Liao <kevinliao@wellsyn.com>
-In-Reply-To: <01e801c51fcc$ae93fa10$1b0a060a@WellSyn.org>
-References: <018701c51fac$bef413b0$1b0a060a@WellSyn.org>
-	<1109838505.5398.3.camel@tglx.tec.linutronix.de>
-	<01e801c51fcc$ae93fa10$1b0a060a@WellSyn.org>
+To: MTD List <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Thu, 03 Mar 2005 10:01:27 +0100
-Message-Id: <1109840487.5398.16.camel@tglx.tec.linutronix.de>
+Date: Thu, 03 Mar 2005 10:14:42 +0100
+Message-Id: <1109841282.5398.30.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: compile error (undefined reference to jffs2_getlink) forkernel
-	2.4.26
+Subject: [RFD] Move 2.4 code out from CVS head
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,21 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-03 at 16:40 +0800, Kevin Liao wrote:
-> Thanks for the reply. Actully I had read it before I ask this question.
-> According to the webpage, the kernel version I used should be ok.
-> I think the root cause is not the kernel version. Because I serach
-> the whole directory extracted from snapshop 20050302 but found
-> no implementation for jffs2_getlink function. Maybe I search the
-> wrong place?
+We announced some time ago:
 
-Yes, jffs2_getlink is removed. There was an update to jffs2 a couple of
-days ago. It broke the 2.4 code.
+"The MTD support for 2.4 will be moved to a maintainence only mode in
+the near future. This will relieve us from a lot of compatibility crap
+and lets us concentrate on the further development in the 2.6 series."
 
-Frankly spoken, I personally don't care.
+The latests symlink changes broke 2.4 and I dont see any reason to keep
+this stupid game up.
 
-2.4 is as is and we are not going to do anything about. Feel free to fix
-it by porting the link changes back to super-v24.c or use an snapshot
-before said changes.
+The last CVS version which might work on 2.4 is before
+Tue, 01 Mar 2005 10:00:00 +0000  (11:00 CET)
+
+I strongly vote to branch of a mtd-2.4-latest-devel in CVS from said
+point and then remove the whole 2.4 crap from CVS head. 
+
+If somebody feels responsible to keep this branch up to date, I neither
+care nor object.
+
+I'm really tired of this backwards compability stuff and the complaints
+on the maillist.
 
 tglx
