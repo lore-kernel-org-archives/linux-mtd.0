@@ -1,28 +1,23 @@
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CvdN5-0006gP-1t
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 10:21:48 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e4.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0VFLgFM012263
-	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 10:21:42 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0VFLga6127498
-	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 10:21:42 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0VFLgGd008673
-	for <linux-mtd@lists.infradead.org>; Mon, 31 Jan 2005 10:21:42 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-In-Reply-To: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-Content-Type: text/plain
-Date: Mon, 31 Jan 2005 09:21:37 -0600
-Message-Id: <1107184897.7567.20.camel@windu.rchland.ibm.com>
+	id 1CvdUx-0006sc-Of
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 10:29:57 -0500
+Date: Mon, 31 Jan 2005 16:29:43 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Josh Boyer <jdub@us.ibm.com>
+Message-ID: <20050131152943.GF6694@wohnheim.fh-wedel.de>
+References: <1106946232.7542.33.camel@windu.rchland.ibm.com>
+	<1106998793.17802.3.camel@sauron.oktetlabs.ru>
+	<1107013860.10670.5.camel@windu.rchland.ibm.com>
+	<20050131125613.GA6345@wohnheim.fh-wedel.de>
+	<1107184238.7567.17.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1107184238.7567.17.camel@windu.rchland.ibm.com>
+Cc: haverkam@de.ibm.com, linux-mtd@lists.infradead.org
+Subject: Re: NAND partitioning
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-01-31 at 10:14 -0500, Robert P. J. Day wrote:
->   just for curiosity's sake, after i build a JFFS2 image using
-> mkfs.jffs2, i want to mount out to verify its contents.  to do that, i
-> use a recipe i patched together a while back involving loading the
-> appropriate modules, creating /dev/mtdblock/0, dd'ing the image to
-> that device, then mounting it.
+On Mon, 31 January 2005 09:10:38 -0600, Josh Boyer wrote:
+> On Mon, 2005-01-31 at 13:56 +0100, Jörn Engel wrote:
+> > 
+> > Problem would be trivial to solve, if said blocks were not scattered
+> > across the device.  Do you have a good reason to need this?
 > 
->   however, this morning, in trying this with a larger-than-normal
-> JFFS2 image, i get:
+> If said blocks were not scattered across the device, then they could be
+> in a static partition and there would be nothing to discuss :).  We just
+> got done discussing this on IRC, so I'll try and summarize.
 > 
->   # dd bs=4096 if=soefsimage of=/dev/mtdblock/0
->   # dd: writing `/dev/mtdblock/0': No space left on device
->   1025+0 records in
->   1024+0 records out
-> 
-> IOW, it dies after 4M.  is this a limit imposed by the ramdisk limit
-> in the kernel configuration?  is this a configurable parameter at
-> module load time?  thanks for any pointers.
+> The main reason to not have static partitions is the concern of bad
+> blocks on NAND and the effects that can have on the available space for
+> updates, etc of binary data.  If a majority of a partition is bad
+> blocks, either from the factory or from eventual wear, then you don't
+> have much room for updating, etc.
 
-If you are using mtdram.c, it should be a module parameter.  Try setting
-total_size to something larger.
+Not sure if there really is a problem that needs solving.
 
-josh
+Your concern is that you need R blocks for the raw data, pick an
+arbitrary number A of blocks, but notice that A-R is less than B, the
+number of bad blocks in the area.  Sure.
+
+So now you simply pick a sufficiently large A.  Let's say that your
+flashes have 5% bad blocks on average.  I'm too lazy to do the math
+properly, but if you pick A = 1.2*R, then well over 99% of all flash
+chips should have less than 20% bad blocks in you boot partition.
+
+And for the remaining 0.something%, you are the one to argue why those
+chips have a sufficient quality to hit the field.  I'd be scared.
+
+Jörn
+
+-- 
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
