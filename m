@@ -1,29 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JgSa-0007oI-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 19:08:12 +0100
-Date: Tue, 1 Aug 2000 11:08:05 -0700
-From: Philipp Rumpf <prumpf@uzix.org>
-To: Markus Thiesmeyer <mthi@gmx.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, mtd@infradead.org
-Subject: Re: Is JFFS a full featured filesystem?
-Message-ID: <20000801110805.B19485@fruits.uzix.org>
-References: <002a01bffbd5$6e5da560$fd8907d4@gallien>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <002a01bffbd5$6e5da560$fd8907d4@gallien>
+	id 13Jmc5-0000ku-00
+	for mtd-list@infradead.org; Wed, 02 Aug 2000 01:42:25 +0100
+Received: from mail-a.bezeqint.net ([192.115.106.23] helo=mail.bezeqint.net)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13Jmc3-0000ko-00
+	for mtd@infradead.org; Wed, 02 Aug 2000 01:42:24 +0100
+Received: from udi-40j7it3m8rn (bzq-182-67.bezeqint.net)
+ by mail.bezeqint.net (Sun Internet Mail Server sims.3.5.2000.03.23.18.03.p10)
+ with SMTP id <0FYN00FJB388V0@mail.bezeqint.net> for mtd@infradead.org; Wed,
+ 2 Aug 2000 03:40:56 +0300 (IDT)
+Date: Wed, 02 Aug 2000 03:43:15 +0200
+From: Udi Finkelstein <udif@bigfoot.com>
+Subject: Build your own DOC2000 programmer board
+To: mtd@infradead.org
+Message-id: <d4veosoh6eev27el5gqgiul90u3lk9jfjq@4ax.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, Aug 01, 2000 at 06:15:31PM +0200, Markus Thiesmeyer wrote:
-> So I've written a small program which uses file-mapping to change given
-> files.
+Hello everyone,
 
-At least on 2.3 you shouldn't be able to get a shared writable mmap of a
-JFFS file.  I don't think this should be any different in 2.2.
+You might want to take a look at a page I've finally uploaded:
 
-Can you send your code ?
+http://www.geocities.com/SiliconValley/Campus/3216/doc2000/st02doc2000.ht=
+m
 
+I needed a DOC2000 programmer, so I built one by hacking at old ST02 8 =
+bit ISA
+SCSI controller I had lying around. The card had a 28 pin EPROM socket, =
+and
+all I needed to do was add/modify a few pins to change it into a 32 pin =
+R/W
+socket.
+
+Udi
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
