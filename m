@@ -1,23 +1,21 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BsjQq-0003TI-Oc
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2004 10:41:25 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20040805143024.GA32322@wohnheim.fh-wedel.de>
-References: <e2041ca104080412415a9ce4e8@mail.gmail.com>
-	<20040805125250.GA29762@wohnheim.fh-wedel.de>
-	<1091711141.4383.4493.camel@hades.cambridge.redhat.com>
-	<20040805141454.GB29762@wohnheim.fh-wedel.de>
-	<1091715918.4383.4613.camel@hades.cambridge.redhat.com>
-	<20040805143024.GA32322@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Message-Id: <1091716878.4383.4622.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 05 Aug 2004 15:41:18 +0100
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Trivial fix to phram.c
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BsrbJ-0004G4-VP
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2004 19:24:47 -0400
+To: Andy Hawkins <a.hawkins@cabletime.com>
+References: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
+	<1090856360.2220.63.camel@adh> <1090858047.2219.77.camel@adh>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 05 Aug 2004 17:24:39 -0600
+In-Reply-To: <1090858047.2219.77.camel@adh>
+Message-ID: <m37jsdnp6w.fsf@maxwell.lnxi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Cc: D.A.Fedorov@inp.nsk.su, linux-mtd@lists.infradead.org,
+	Thayne Harbaugh <tharbaugh@lnxi.com>
+Subject: Re: Problem writing to NOR flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-08-05 at 16:30 +0200, Jörn Engel wrote:
-> On Thu, 5 August 2004 15:25:18 +0100, David Woodhouse wrote:
-> > On Thu, 2004-08-05 at 16:14 +0200, Jörn Engel wrote:
-> > > 
-> > > Does it involve work to set things up? ;)
-> > 
-> > Yeah. Four lines added to your network config scripts.
-> > http://www.linux-mtd.infradead.org/
+Andy Hawkins <a.hawkins@cabletime.com> writes:
+
+> Hi all,
 > 
-> o Debian
-> o Company firewall
-> o No internet at home (I'm a cheap and lazy bastard)
+> After a bit more digging and reading of the data sheet, it appears the
+> the chip I'm using doesn't need locking and unlocking. I then went back
+> to the version of the code where we had this working (whatever came with
+> the 2.4.20 kernel) and found that none of this locking / unlocking
+> mechanism was present.
+> 
+> So, to test I commented out the contents of cfi_amdstd_lock_varsize and
+> cfi_amdstd_unlock_varsize, and I can now successfully write to the NOR!
+> 
+> Are these functions only required for some very specific chips? 
 
-SSH's ProxyCommand option is a wonderful thing. 
+Yes.
 
- Host cvs.infradead.org
-	ProxyCommand ssh <someipv6capablebox> exec netcat %h %p
+> If so,
+> what is the *correct* way for this code to determine whether or not they
+> are needed (this code is in a 'generic' file, so I'm surprised that
+> there's chip specific information in there).
 
+When Thayne wrote the code he was assuming that since there were no
+lock/unlock functions the lock/unlock entry points were simply
+not called.  And he figured if it actually broken something someone
+would scream.  And then he thought someone had removed the code
+when cfi_cmdset_0002 was scrubbed a while ago.
 
+In addition that code really is generic, it applies to firmware
+hub parts and there are chips that use both cfi_cmdset_0001 and
+cfi_cmdset_0002 that can use it.
 
--- 
-dwmw2
+When I get a chance it is my intention to refactor the probing
+routines to make handling of chips with special capabilities
+simpler.
+
+As a first step I am putting a few conditionals in cfi_amdstd_setup
+so that chips that we won't use those methods on chips that
+don't support them.  Then we can look at better ways to organize
+the probe code so the probe/setup code is not such a mess.
+
+I have the first chunk done but I'm not ready to check it
+in until I have a chance to test it.  And I am swamped right now...
+
+Eric
