@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 170eeh-0007m0-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Apr 2002 09:31:07 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <001c01c1ebfc$00fea960$0201000a@flefebvre> 
-References: <001c01c1ebfc$00fea960$0201000a@flefebvre>  <1019677528.1351.67.camel@zeus> <17234.1019686502@redhat.com> 
-To: "Frederick Lefebvre" <flefebvre@irg.ca>
-Cc: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: build_fs failed 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 25 Apr 2002 09:31:06 +0100
-Message-ID: <4272.1019723466@redhat.com>
+	id 170evm-0007nN-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Apr 2002 09:48:46 +0100
+Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
+	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 170evl-000Jp3-0U
+	for linux-mtd@lists.infradead.org; Thu, 25 Apr 2002 09:48:46 +0100
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Subject: RE: JFFS2 on both Nand and StrataFlash
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 25 Apr 2002 09:50:27 +0100
+Message-ID: <541025071C7AC24C84E9F82296BB9B95080549@OPTEX1.optex.local>
+From: "John Hall" <John.Hall@optionexist.co.uk>
+To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,22 +27,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-flefebvre@irg.ca said:
-> Sorry, I included the full log in a message last week but did not get
-> any answers so I tought I would ask a more precise question.  I am
-> including it below.  Here are some of the problems I had that I think
-> could be relevent in this case. 
+On 18 April 2002 16:24, John Hall wrote:
 
-Sorry; I was away for a week and then I got distracted by real work :)
+> I have a board that has Intel StrataFlash as well as a=20
+> Smartmedia card slot. I have JFFS2 happily up and running on=20
+> the Smartmedia card, but would also like to put JFFS2 on a=20
+> section of the StrataFlash.
+>=20
+> If JFFS2 is configured for Nand flash (CONFIG_JFFS2_FS_NAND),=20
+> will it run on the StrataFlash or is it currently one or the other?
 
-> Apr 19 14:50:59 junior kernel: Short read: 0x3c bytes at 0x000003c4
-> instead of requested 44
+I've looked at the code, and it looks like it might work on non-NAND
+flash. Is this the case?
 
-That's the DiskOnChip driver refusing to perform a read command crossing
-from one page to another. To get JFFS2 working on DiskOnChip, we'll need to
-fix the hardware driver to read multiple pages in one go.
-
-It shouldn't be hard - want to have a go at it?
-
---
-dwmw2
+Regards,
+John Hall=20
