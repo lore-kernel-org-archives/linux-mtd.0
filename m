@@ -1,40 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H0FD-0007Pv-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 09:39:19 +0100
-Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
+	id 13H0Vf-0007Th-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 09:56:19 +0100
+Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13H0FB-0007Pl-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 09:39:19 +0100
-Message-ID: <397D52D7.B0CC9270@arcom.co.uk>
-Date: Tue, 25 Jul 2000 09:41:59 +0100
-From: David Vrabel <dvrabel@arcom.co.uk>
+	id 13H0Ve-0007Ta-00
+	for mtd@infradead.org; Tue, 25 Jul 2000 09:56:18 +0100
+Date: Tue, 25 Jul 2000 09:59:28 +0100 (BST)
+From: Kira Brown <kira@linuxgrrls.org>
+To: sl@fireplug.net
+Cc: mtd@infradead.org
+Subject: Re: ELANSC400
+In-Reply-To: <8likhn$d2h$1@whiskey.fireplug.net>
+Message-ID: <Pine.LNX.4.21.0007250955450.27686-100000@carrot.linuxgrrls.org>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Re: Intel Extended Command set in 8x mode
-References: <Pine.LNX.4.21.0007211711440.22633-100000@alpha1.cygnus.co.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
-> 
-> On Fri, 21 Jul 2000, David Vrabel wrote:
-> >
-> > I have a board with an Intel StrataFlash 28F640 on it.  Having written a
-> > map driver the CFI probe code detects the chip.  However it appears that
-> > the Intel Extended Command Set code is only for chips in 16x mode not 8x
-> > mode which this chip is in.  Is this the case?  If so how can I get it
-> > to work?  Do I need to write a whole new thing like cfi_cmdset_0001.c
-> > for 8x mode?
-> 
-> You need to provide the 2_by_8 versions of the access functions. It
-> doesn't really need to be a separate file.
 
-2_by_8?  What is the first number supposed to mean?
- 
-David Vrabel
+
+On 24 Jul 2000, Stuart Lynne wrote:
+
+> The flash parts on the SC400 are mapped through the SC400 MMU. There are 
+> several models, but the easiest is to map them 8kb at a time into a memory
+> window in low memory (0xc8000 if I remember correctly).
+
+Actually, it can be anywhere between 0xc8000 and 0xd4000, maybe even
+higher than that, I can't remember.  The MMU isn't really involved.  the
+SC4x0 generates a bunch of chipselects whose active address windows can be
+set using addressed registers.  The PCMCIA system is involved on SC400,
+and the vestiges of it are involved on SC410.  Interestingly, there's also
+a chip called SC405, but I can't get AMD to admit that it exists...
+
+kira.
 
 
 
