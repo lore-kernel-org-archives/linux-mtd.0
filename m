@@ -1,16 +1,17 @@
-Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16U90h-0003IT-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 16:15:27 +0000
-Date: Fri, 25 Jan 2002 09:26:19 -0700
-Message-Id: <200201251626.g0PGQJQ32684@vindaloo.ras.ucalgary.ca>
-From: Richard Gooch <rgooch@ras.ucalgary.ca>
-To: David Woodhouse <dwmw2@infradead.org>
+	id 16U9OM-0003Jo-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 16:39:54 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200201251626.g0PGQJQ32684@vindaloo.ras.ucalgary.ca> 
+References: <200201251626.g0PGQJQ32684@vindaloo.ras.ucalgary.ca>  <20020125103941.26958.qmail@web8101.in.yahoo.com> <4181.1011956000@redhat.com> 
+To: Richard Gooch <rgooch@ras.ucalgary.ca>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Cf Card vs DiskOnChip 
-In-Reply-To: <4181.1011956000@redhat.com>
-References: <20020125103941.26958.qmail@web8101.in.yahoo.com>
-	<4181.1011956000@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 25 Jan 2002 16:50:46 +0000
+Message-ID: <16566.1011977446@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,16 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse writes:
-> People have reported severe reliability problems with CF cards. With
-> the DiskOnChip, all the translation stuff to emulate a block device
-> is done in software, which is probably a better option.
+rgooch@ras.ucalgary.ca said:
+>  What kind of reliability problems? Cards that are DOA? Or random bit
+> errors during usage? 
 
-What kind of reliability problems? Cards that are DOA? Or random bit
-errors during usage?
+Death on power failure.
 
-				Regards,
+Vipin's report at http://www.embeddedlinuxworks.com/articles/jffs_guide.html
+seems fairly typical.
 
-					Richard....
-Permanent: rgooch@atnf.csiro.au
-Current:   rgooch@ras.ucalgary.ca
+--
+dwmw2
