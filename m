@@ -1,20 +1,19 @@
-Received: from a.ns.innominate.com ([212.21.76.70] helo=innominate.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 170fzF-0007sd-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Apr 2002 10:56:26 +0100
-Received: from tkeitel by tino with local (Exim 3.34 #1 (Debian))
-	id 170fxR-00077F-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Apr 2002 11:54:33 +0200
-Date: Thu, 25 Apr 2002 11:54:33 +0200
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: question about jffs
-Message-ID: <20020425095433.GA27354@tino>
-References: <20020425094251.249D67763C@www.hw-agent.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20020425094251.249D67763C@www.hw-agent.de>
-From: Tino Keitel <tino.keitel@innominate.com>
+Received: from isengard.yottayotta.com ([209.115.177.37])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 170pbP-0008R2-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Apr 2002 21:12:27 +0100
+Received: from fw-edm-dmz.yottayotta.com ([192.168.1.2] helo=edm-app01.yottayotta.com)
+	by isengard.yottayotta.com with esmtp (Exim 3.33 #1)
+	id 170pRw-0005r8-00
+	for linux-mtd@lists.infradead.org; Thu, 25 Apr 2002 14:02:40 -0600
+Message-ID: <3CC862ED.5030007@yottayotta.com>
+Date: Thu, 25 Apr 2002 14:11:25 -0600
+From: Murtada Shah <mshah@yottayotta.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Booting from /dev/mtdblock/0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,20 +25,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, Apr 25, 2002 at 11:44:02 +0200, jor @ hoeft-wessel. de wrote:
-> Hallo,
-> i found this mailing list at the internet. I want to use jffs for my own 
-> sa1100 based hardware. But i don't know how to create (format) such a image 
-> on my pc? The command 'mkfs' don't work. i would be very thankfull for any 
-> help.
+Hi,
 
-I think mtd-jffs-HOWTO.txt is what you want. :-)
+I'm trying to boot from /dev/mtdblock/0 (root=/dev/mtdblock/0 in cmdline 
+options)
 
-Regards,
-Tino
+When I boot from nfs, I can mount /dev/mtdblock/0 no problem from 
+command line & unmount etc.
 
--- 
-tino.keitel@innominate.com
-dipl.-inf.                        Innominate Security Technologies AG
-software engineer                                   networking people
-tel: +49.30.6392-3308                      http://www.innominate.com/
+But if I pass it as the root= option, while booting it gets stuck.
+
+With mtd debug level to 3 I see that it tries mtdblock_open twice... 
+which it shouldnt..
+
+"mtdblock_open
+ok
+mtdblock_open
+mtdblock_release"
+
+Then it hangs here for a long time.
+What could be the cause?
+
+Murtada
