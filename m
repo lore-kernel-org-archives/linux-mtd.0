@@ -1,41 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ZXQm-00015Q-00
-	for mtd-list@infradead.org; Thu, 14 Sep 2000 12:43:52 +0100
-Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
+	id 13ZXyV-0001Em-00
+	for mtd-list@infradead.org; Thu, 14 Sep 2000 13:18:43 +0100
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ZXQk-00015J-00
-	for mtd@infradead.org; Thu, 14 Sep 2000 12:43:51 +0100
-Date: Thu, 14 Sep 2000 12:45:11 +0100 (BST)
-From: Kira Brown <kira@linuxgrrls.org>
-To: David Given <dg@tao-group.com>
-Cc: mtd@infradead.org
-Subject: Re: sbc-mediagx
-In-Reply-To: <E13ZWjk-0003YF-00@pearl.tao.co.uk>
-Message-ID: <Pine.LNX.4.21.0009141242090.31733-100000@carrot.linuxgrrls.org>
+	id 13ZXyU-0001Eg-00
+	for mtd@infradead.org; Thu, 14 Sep 2000 13:18:42 +0100
+Message-ID: <39C0C312.44F942D2@arcom.co.uk>
+Date: Thu, 14 Sep 2000 13:22:42 +0100
+From: David Vrabel <dvrabel@arcom.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: mtd@infradead.org
+Subject: Latest mtdchar.c breaks with 2.2.17
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
+I just updated mtdchar.c to 1.10 and it fails to compile with kernel
+2.2.17 complaining about a nonexistant owner field in mtd_fops (line
+372).
 
-On Thu, 14 Sep 2000, David Given wrote:
+It compiles fine without it.
 
-> >Arcom is currently in the process of producing a Linux dev. kit which
-> >will do all this + booting for you.
-> 
-> Excellent.
+Is it a 2.4.x thing?
 
-Irony:  Rachel (my SO) and I wrote the Arcom website...  now I work for
-the competition.
-
-...who, incidentally, have a K6-2e+ board that's ncredibly small and
-featuresome...  and which comes with Linux preloaded...
-
-...sorry, must stop spamming now.
-
-kira.
+David Vrabel
 
 
 
