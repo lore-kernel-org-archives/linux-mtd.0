@@ -1,44 +1,41 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 112ie1-0007Pe-00
-	for mtd@infradead.org; Fri, 9 Jul 1999 22:57:21 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 112ie0-0001O1-00; Fri, 9 Jul 1999 22:57:20 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 112idz-0002jo-00; Fri, 9 Jul 1999 22:57:19 +0100
-To: mtd@infradead.org
+	id 112jOA-0007RE-00
+	for mtd@infradead.org; Fri, 9 Jul 1999 23:45:02 +0100
+Date: Fri, 9 Jul 1999 16:44:54 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: David Woodhouse <David.Woodhouse@mvhi.com>
+cc: mtd@infradead.org
 Subject: Re: Response from M-Systems 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 09 Jul 1999 22:57:19 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E112idz-0002jo-00@devel2.axiom.internal>
+In-Reply-To: <E112idz-0002jo-00@devel2.axiom.internal>
+Message-ID: <Pine.LNX.3.96.990709163733.11475A-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-David.Woodhouse@mvhi.com said:
->  Worst case: The GPL on the code gets retracted at some later date,
-> after we're all using it. 
+On Fri, 9 Jul 1999, David Woodhouse wrote:
 
-I ought to have pointed out that this applies to _any_ GPL'd driver for the 
-Disk-On-Chip and NFTL, regardless of whether it's produced by M-Systems, with 
-M-Systems' specifications, or by reverse-engineering.
+> I ought to have pointed out that this applies to _any_ GPL'd driver for the 
+> Disk-On-Chip and NFTL, regardless of whether it's produced by M-Systems, with 
+> M-Systems' specifications, or by reverse-engineering.
+> 
+> If we accept the premise that the patents prevent the code from being released 
+> under GPL, then what are we playing at in the first place? 
 
-If we accept the premise that the patents prevent the code from being released 
-under GPL, then what are we playing at in the first place? 
+I'm not sure you can actually patent and enforce the software side of a
+hardware interface. Ie if we write a driver that does the proper sequence
+to page, write and erase their chip they cannot take action agaist us,
+unless perhaps that sequence involved lots more software control that the
+AMD flash chips do.
 
-----                                 ----                                 ----
-David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
- Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+Can you dig up the patents they actually hold on their FTL and on their
+hardware interface? 
 
+Jason
 
 
 
