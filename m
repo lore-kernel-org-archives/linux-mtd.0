@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bzbs-0005aG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 09:22:32 +0100
+	id 17bze6-0005ac-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 09:24:50 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3D4EDA18.C77AEDA@esteem.com> 
-References: <3D4EDA18.C77AEDA@esteem.com> 
-To: Conn Clark <clark@esteem.com>
-Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: Need help getting JFFS2 working with kernel 2.4.19 
+In-Reply-To: <957BD1C2BF3CD411B6C500A0C944CA2601499C35@pdsmsx32.pd.intel.com> 
+References: <957BD1C2BF3CD411B6C500A0C944CA2601499C35@pdsmsx32.pd.intel.com> 
+To: "Yuan, Cain" <cain.yuan@intel.com>
+Cc: "'nico@cam.org'" <nico@cam.org>, linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 peoblems with K3 strata flash on Dalhart 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 06 Aug 2002 09:22:25 +0100
-Message-ID: <30838.1028622145@redhat.com>
+Date: Tue, 06 Aug 2002 09:24:46 +0100
+Message-ID: <31204.1028622286@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,13 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-clark@esteem.com said:
-> 
-> 	I am new here and I am having trouble getting the JFFS2 code working/
-> compiling with the 2.4.19 kernel . I get multiple definition errors
-> when the kernel is linking.
+cain.yuan@intel.com said:
+> 	I am now test JFFS2 file system on Dalhart with Redboot as
+> boorloader, Linux version 2.4.18-rmk6-pxa2 and some patches for
+> dalhart.
 
-Might help if you showed us the errors?
+What erase size did you create your JFFS2 image with?
 
 --
 dwmw2
