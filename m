@@ -1,19 +1,22 @@
-Received: from phoenix.infradead.org ([195.224.96.167])
+Received: from darwin.altera.com ([66.35.227.3])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Rdpj-0005ir-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Jul 2002 20:06:03 +0100
-Received: from c200.h061013011.is.net.tw ([61.13.11.200] helo=[206.201.31.182])
-	by phoenix.infradead.org with smtp (Exim 3.35 #5)
-	id 17Rdpg-0006Uk-00
-	for linux-mtd@lists.infradead.org; Mon, 08 Jul 2002 20:06:01 +0100
-Received: from 5cpfcn by [206.201.53.182] with SMTP (MDaemon.v2.7.SP4.R) for <mtd@infradead.org>; Mon, 08 Jul 2002 16:08:55 +0800
-Received: from login_0216.mailservice.net (mx.service.net[206.232.231.77] (may be forged)) by [192.201.131.147] (8.8.5/8.7.3) with SMTP id XAA00492 for <mtd@infradead.org>;  星期一, 8 七月 2002 16:25:18 -0700 (EDT)
-To: <linux-mtd@lists.infradead.org>
-From: <bhj_2vgklf3lycqk@scottishpower.plc.uk>
-Subject: 六千六百萬筆全世界最新Email名單
-Reply-To: receive_adm@topservice.net
-Message-Id: <4695985_28084794>
-Date: Mon, 08 Jul 2002 20:06:01 +0100
+	id 17RsIu-0006ac-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Jul 2002 11:33:08 +0100
+Received: from Altera.COM (sunrise [137.57.1.1])
+	by darwin.altera.com (8.10.2+Sun/8.10.2) with ESMTP id g69AUYW27736
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Jul 2002 03:30:34 -0700 (PDT)
+Received: from localhost (localhost [[UNIX: localhost]])
+	by localhost.localdomain (8.11.6/8.11.6) id g69AWUV27220
+	for linux-mtd@lists.infradead.org; Tue, 9 Jul 2002 11:32:30 +0100
+Message-Id: <200207091032.g69AWUV27220@localhost.localdomain>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Clive Davies <cdavies@altera.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: add_mtd_partition question
+Date: Tue, 9 Jul 2002 11:32:30 +0100
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,41 +28,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-                   六千六百萬筆全世界最新Email名單
+So if there are no objections, I'll commit the following change...
 
-    我有六千六百萬筆全世界最新Email名單，    
+Index: drivers/mtd/mtdpart.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/mtdpart.c,v
+retrieving revision 1.27
+diff -r1.27 mtdpart.c
+231a232
+>               slave->mtd.priv=master->priv;
 
-    你可以在花費極少的情形下，接觸到全世界六千六百萬人！
+----------  Forwarded Message  ----------
 
-    這些都是最新的地址，是我在網路上，有系統地收集下來的，
+Subject: Re: add_mtd_partition question
+Date: Fri, 5 Jul 2002 08:58:27 +0100
+From: Clive Davies <cdavies@altera.com>
+To: linux-mtd@lists.infradead.org
 
-    經過軟體測試，只保留有效地址，並盡量把不願收信者排除。
+Sorry, I meant slave->mtd.priv
 
-    已經過統計整理、排序，所以這些地址沒有一個是重複的！！！
+On Friday 05 July 2002 8:32 am, Clive Davies wrote:
+> Is there a reason why when you add a partition with add_mtd_partition
+> master->priv doesn't get copied into slave->priv ? If not, does anyone
+> object if I add it in? I'm trying to fix the read_user_prot_reg accesses
+> which no longer seem to work for me.
+>
+> Clive
 
-    可以立即上手使用！！！
-
-    這六千六百萬個地址，以文字壓縮檔的方式，
-
-    收集在一片CD中，方便重複一再的使用。請妥為保存。
-
-    為節省電子商務者之收集時間，
-
-    我願意以 NT$3000元分享。
-
-
-     分享專線
-     
-     電話：       02-27492314
-
-     
-   
-
-
-     
-
-
-    
-    
-
-    
+-------------------------------------------------------
