@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17L1Jf-0007tM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2002 13:45:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <541025071C7AC24C84E9F82296BB9B950805E5@OPTEX1.optex.local> 
-References: <541025071C7AC24C84E9F82296BB9B950805E5@OPTEX1.optex.local> 
-To: "John Hall" <John.Hall@optionexist.co.uk>
-Cc: joakim.tjernlund@lumentis.se, linux-mtd@lists.infradead.org
-Subject: Re: [Fwd: cfi_cmdset_0001.c: do_write_buffer bug] 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 20 Jun 2002 13:45:16 +0100
-Message-ID: <23003.1024577116@redhat.com>
+	id 17L3Rk-00082V-00
+	for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2002 16:02:04 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: GRUB on DoC Millennium/2000 - Instructions
+Date: Thu, 20 Jun 2002 11:01:36 -0400
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200206201059421.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +22,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-John.Hall@optionexist.co.uk said:
->  Possibly. We're going to wait and see what Intel say, and then submit
-> a patch if needed.
+Dzuy Nguyen wrote:
+>Thanks, Mark.  Your procedures work for me so you can make it the
+> official HOWTO.
 
-OK, thanks.
+Have you had a chance to try it with *both* the DoC 2000 and Millennium?  
+If it also works with the 2000, I'll update the instructions accordingly.
 
---
-dwmw2
+> Is there code to port it? (DFORMAT)
+
+AFAIK, all of the M-Sys stuff, including the DOS utilities, are proprietary.
