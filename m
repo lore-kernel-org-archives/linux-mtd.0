@@ -1,17 +1,16 @@
-Received: from [192.109.80.15] (helo=turing.logware.de)
+Received: from samar.sasken.com ([164.164.56.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15c36f-0004xl-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2001 12:02:01 +0100
-Received: from exchange.ten.logware.de (exchange.ten.logware.de [10.220.10.26])
-	by turing.logware.de (8.9.3/8.9.3) with ESMTP id NAA24906
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2001 13:37:34 +0200
-Message-ID: <71B37AB6576DD211AB7E008048CD4D319FA64B@exchange.ten.logware.de>
-From: Veikko Werner <veikko.werner@logware.de>
-To: linux-mtd@lists.infradead.org
-Subject: UnitSizeFactor != 1
-Date: Wed, 29 Aug 2001 13:07:54 +0200
+	id 15c69O-0005Dm-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2001 15:17:02 +0100
+Message-ID: <3B8D48D6.BE5EAAA0@sasken.com>
+Date: Wed, 29 Aug 2001 19:56:06 +0000
+From: Ashok M Padmanaban <ashokmp@sasken.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: MTD for Linux <linux-mtd@lists.infradead.org>,
+   JFFS mailing list <jffs-dev@axis.com>
+Subject: REG: FLASH BLOCK LOCKING
+Content-Type: multipart/mixed;
+ boundary="------------FCFA8BDEC3567EBD21EE5E0C"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +22,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello List,
+This is a multi-part message in MIME format.
+--------------FCFA8BDEC3567EBD21EE5E0C
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-I'm trying defferent ways to get the DOC work under my x86-system.
-I did all the things for the kernel, but get the following kernel messages
-while booting.
-I'm using a 2.4.9 kernel, but the same happens to 2.4.7
-I can't use nftl_format - it complains the erase size. (I can't use CVS, so
-I use the last tgz from 20000704)
-Do I have to load a special firmware - other than M-Systems 5.0 ?
-any comments?
+Hi,
+Are there any methods by which portions of  falsh device can be locked,
+so that accidental erase or corruption can be avoided.
+If there are, what are those.
+Are there any temporary and permanent locking mechanism.
 
-Thanks, Veikko
+In 3 volt intel strataFlash memory 28F128J3A, a block locking
+scheme is provided with BLOCK LOCK-BITS.
+How can these bits be used to lock the flash blocks.?
+If  blocks are locked , does this mean that accross the power cycles
+this will be consistent.
 
-<-- kernel message
-M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
-Using configured probe address 0xd8000
-DiskOnChip 2000 found at address 0xD8000
-Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
-3 flash chips found. Total DiskOnChip size: 48 MiB
-mtd: Giving out device 0 to DiskOnChip 2000
-M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
-$Id: nftlcore.c,v 1.73 2001/06/09 01:09:43 dwmw2 Exp $
-NFTL_notify_add for DiskOnChip 2000
-NFTL_setup
-Sorry, we don't support UnitSizeFactor of != 1 yet
-Sorry, we don't support UnitSizeFactor of != 1 yet
-Could not find valid boot record
-Could not mount NFTL device
--->
+regards
+ashok
+
+
+--------------FCFA8BDEC3567EBD21EE5E0C
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="ashokmp.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Card for Ashok M Padmanaban
+Content-Disposition: attachment;
+ filename="ashokmp.vcf"
+
+begin:vcard 
+n:.m.padmanabhan;ashok
+tel;work:5281461/5281229 ext 3096
+x-mozilla-html:FALSE
+org:sasken communication technologies ltd;internt access solutions
+version:2.1
+email;internet:ashokmp@sasken.com
+title:software engineer
+adr;quoted-printable:;;3008,12 th B cross,=0D=0Aindranagar	;banglore;;;india
+x-mozilla-cpt:;0
+fn:ashok .m.padmanabhan
+end:vcard
+
+--------------FCFA8BDEC3567EBD21EE5E0C--
