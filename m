@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15H5wi-0000ce-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 16:49:08 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010702150401.CE683E814@lin01.mn-logistik.de> 
-References: <20010702150401.CE683E814@lin01.mn-logistik.de> 
-To: Holger Schurig <h.schurig@mn-logistik.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 loop mounting 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 02 Jul 2001 16:54:29 +0100
-Message-ID: <15141.994089269@redhat.com>
+	id 15H62b-0000dB-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2001 16:55:13 +0100
+Date: Mon, 2 Jul 2001 12:00:12 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: Vipin Malik <vipin.malik@daniel.com>, jffs-dev <jffs-dev@axis.com>,
+        MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: Problems with JFFS2/MTD upgrade to latest in CVS. 
+In-Reply-To: <29076.994062929@redhat.com>
+Message-ID: <Pine.LNX.4.33.0107021159150.11480-100000@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +23,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-h.schurig@mn-logistik.de said:
-> How difficult would it be for a relatively kernel-newby to add
-> mount -o loop -t jffs2 /var/tmp/somefile.jffs2 /mnt/jffs2
-> support? 
 
-On your workstation:
+On Mon, 2 Jul 2001, David Woodhouse wrote:
 
-modprobe mtdram totalsize=$TOTALSIZE erasesize=$ERASESIZE
-dd if=somefile.jffs2 of=/dev/mtd0
-mount -t jffs2 /dev/mtdblock0 /mnt/jffs2
+>
+> vipin.malik@daniel.com said:
+> > > > jffs2_scan_empty(): Empty block at 0x00000000 ends at 0x00000000 (with 0x00031985)! Marking dirty
+>
+> > > Does reverting to an older version of scan.c fix this?
+> > >         cvs up -r 1.46 scan.c
+>
+> > Yes!
+>
+> Nicolas - should I just revert to 1.46? Is there anything in 1.48 you'd
+> like to (fix and) keep?
+
+Well... What's the problem already?  I fear I didn't follow the conversation
+closely enough lately.
 
 
---
-dwmw2
+
+Nicolas
