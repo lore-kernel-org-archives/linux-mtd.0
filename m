@@ -1,18 +1,18 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from host.globalsecureserver.com ([209.239.37.116])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AxOjj-0000PS-P5
-	for linux-mtd@lists.infradead.org; Sun, 29 Feb 2004 11:03:56 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ranjan Parthasarathy <Ranjan.Parthasarathy@efi.com>
-In-Reply-To: <9961BDB14162AA47A39FF91932F1AE440AF23D@fcexmb01.efi.internal>
-References: <9961BDB14162AA47A39FF91932F1AE440AF23D@fcexmb01.efi.internal>
-Content-Type: text/plain
-Message-Id: <1078052629.16950.6.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Sun, 29 Feb 2004 11:03:49 +0000
+	id 1AxaSf-0001Zu-QL
+	for linux-mtd@lists.infradead.org; Sun, 29 Feb 2004 23:35:05 +0000
+Received: from softplc.com (dpc69194025.direcpc.com [69.19.4.25])
+	i1TNYxUu007281
+	for <linux-mtd@lists.infradead.org>; Sun, 29 Feb 2004 18:35:01 -0500
+Message-ID: <40427594.4030602@softplc.com>
+Date: Sun, 29 Feb 2004 17:28:20 -0600
+From: DHollenbeck <dick@softplc.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Replying to a post bounces back
+Subject: [PATCH] util/nftl_format  util/nftldump
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-02-28 at 17:41 -0800, Ranjan Parthasarathy wrote:
-> Thanks Thomas for the feedback on the NAND and JFFS2 query.
-> 
-> When I am replying to your reply to my mail, the mail is getting bounced
-> back. Anybody know what is happening.
+David,
 
-You told us yourself in the mail you sent. Did you actually _read_ what
-you sent?
+RE: most recent snapshot, while trying to make util/nftl* utilities:
 
-You are being told that your request to the mailing list has been
-rejected by the list moderator. You are being told that the moderator
-(that's me) gave the following reason for rejecting your request:
+The util/Makefile had the subject utilities commented out.
 
-"Your message was top-posting and contained no References: header. 
-Please read http://www.infradead.org/~dwmw2/email.html "
+Uncommenting created compile time errors.
 
-You are further told that any questions or comments should be directed
-to the list administrator at linux-mtd-owner@lists.infradead.org
+A simple fix is the attached patch to nftl.h,
 
-So why are you posting to the _list_, and asking for information you
-were already given? Did you read the web page you were asked to read?
+--- mtdold/include/linux/mtd/nftl.h    2003-05-23 06:25:02.000000000 -0500
++++ mtd/include/linux/mtd/nftl.h    2004-02-29 17:07:47.000000000 -0600
+@@ -9,5 +9,8 @@
 
--- 
-dwmw2
+ #include <linux/mtd/mtd.h>
++
++#if defined(__KERNEL__)
+ #include <linux/mtd/blktrans.h>
++#endif
+
+ /* Block Control Information */
+
+
+Dick Hollenbeck
