@@ -1,45 +1,82 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qHGv-0001jI-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:27:09 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qHGp-0001jC-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 17:27:08 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010419181031.18A9.GAUTIER@email.enst.fr> 
-References: <20010419181031.18A9.GAUTIER@email.enst.fr> 
-To: Fabrice Gautier <gautier@email.enst.fr>
-Cc: mtd@infradead.org
-Subject: Re: MTD CVS and Official Kernel Tree 
-Mime-Version: 1.0
+	id 14qHWz-0001t1-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:43:45 +0100
+Message-ID: <3ADF15EF.DBCD9EA@daniel.com>
+Date: Thu, 19 Apr 2001 11:44:31 -0500
+From: Vipin Malik <vipin.malik@daniel.com>
+MIME-Version: 1.0
+To: joakim.tjernlund@lumentis.se
+CC: mtd@infradead.org, Nicolas Pitre <nico@cam.org>,
+ 	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2 as root FS
+References: <000801c0c8bb$44e56de0$0a01a8c0@Win1>
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 19 Apr 2001 17:25:56 +0100
-Message-ID: <5889.987697556@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+> Now I am having some other problems :-(
+> First it takes about 1 min 30 sec to mount my root FS. Is that expected? I
+> was hoping for a much shorter
+> mount time, 10-20 sec
+> The root partition is 15 MB and df reports:
+>
+> Filesystem           1k-blocks      Used Available Use% Mounted on
+> /dev/mtdblock1           15104      6580      8524  44% /mnt/mtdblock1
 
-gautier@email.enst.fr said:
-> Am I right when I assume that the mtd cvs tree can be applied to a 2.4
-> kernel tree by coppying directories like this?
+Just for reference, my AMD SC520 -100MHz (a 100MHz 486+) with a 8MB, 57% full
+JFFS2 f/s takes ~19 seconds to mount.
+The flash is connected on a 32bit bus. Even if it takes 700us (for max wait
+states on my system) per quad word read (32bits), the entire flash can be
+read in 1.46 seconds.
 
-> mtd/drivers/mtd -------> linux/drivers/mtd
-> mtd/fs ----------------> linux/fs
-> mtd/include -----------> linux/include
+Even if your flash is connected x8 wide, your flash read times should not be
+more than 10-12seconds.
 
-Yep. Assuming I got the Makefiles right. Which is unlikely. 
+Obviously, as my flash read time is only ~2 seconds of my 19s fs mount time,
+the processor speed plays quite a significant role in the mount process.
 
-gautier@email.enst.fr said:
->  And then what about the mtd/kernel directory in the CVS ? 
+To test this theory, I upped the speed to 133MHz and then it took ~15seconds
+to mount.
+The increase in clock speed was 33%, the mount was (19-15)/15 = 26% faster.
+However, if I remove the "constant" portion of the two mounts- the flash read
+which is not any faster, then the increase in
+mount speed  = ((19-1.46) - (15-1.46))/ (15 - 1.46) = 29.5% faster, almost
+linear with the increase with clock speed!
+(This also tells me that the code is executing primarily out of cache).
 
-Ignore it. It used to hold all the files which go into linux/drivers/mtd. 
-Now it only contains two obsolete files.
+If you say, that your system takes ~90seconds to mount. Let's say that your
+flash read time is ~10 seconds (for 16MB), then if all else is
+ok, your processor should be ~80/17.5 = 4.5 times slower than mine. This
+assumes equal amount of processing. But your processor is doing about
+(6580/4636 = 140%) more
+processing than mine. Assuming linear overhead, then the new factor is ~57/18
+= 3.1X slower. (your flash usage is 6580 blocks, mine is 4636 blocks).
 
+Now you say that you are using a MPC869T. I did not find a 869T on the web. I
+presume that you meant 860T. At what MHz?
 
---
-dwmw2
+The 860T is claimed to have a performance of ~66 Dhrystone MIPS at 50MHz. I
+downloaded Dhrystone 2.1 and that give me 51 mips at 100Mhz (and 67.7at
+133MHz).
 
+However, my 486 has a 16KB combined cache and a 66MHz SDRAM bus. The FLASH is
+not cached, so the entire cache can be used for the instruction execution.
+The 860T has only 4KB of instruction cache. Under some circumstances (when
+the code fits in the cache in my processor and not in yours), the SC520 will
+behave like a 100MHz machine while the PPC will be limited to the bus clock
+speed. What is you bus clock speed (and your core clock speed).
+
+If your BUS clock is ~25-33 MHz, it's not unbelievable that your processor
+runs ~2-3X slower, specially if your processor core is running at <50MHz.
+Also remember that execution from cache is significantly faster than
+execution from EDO DRAM on the bus.
+
+Something to think about. Of course it could be something completely
+different, like a bug in David's code ;)
+
+Vipin
 
 
 
