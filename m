@@ -1,10 +1,19 @@
-From: "earl john" <earljohn@teenmail.co.za>
-Date: Tue, 01 Mar 2005 15:51:38 +0200
-Message-ID: <web-655821781@mail01.infosat.net>
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6AEw-0004kX-Dl
+	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 11:28:55 -0500
+Received: from dedekind (helo=localhost)
+	by phoenix.infradead.org with local-esmtp (Exim 4.43 #1 (Red Hat
+	Linux)) id 1D6AEe-0005id-Hg
+	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 16:28:51 +0000
+Date: Tue, 1 Mar 2005 16:28:36 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: MTD List <linux-mtd@lists.infradead.org>
+Message-ID: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Please Revert
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Subject: JFFS3 and RAM consumprion reincarnated
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,41 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir/Madam,
+Hello,
 
-Re: Investment Capital.
+I'd like to continue the JFFS3 RAM consumption discussion.
+Please, take a glimpse at 
+http://lists.infradead.org/pipermail/linux-mtd/2005-January/011671.html 
+and follow the conversation 
+athttp://lists.infradead.org/pipermail/linux-mtd/2005-January/011716.html 
+to refresh your memory.
 
-Your contact has been gotten from after a search for a
-person whom we can jointly invest Trust in and also solicit
-a Honourable partnership with.I represent a client and my
-client has interest to do business relative to investments
-in your country in areas related to agriculture or any 
-business of your choice, to initiate a proper and
-structured relationship:
+Well, I suppose the reader knows what are Summary and ICP. If no, follow 
+the links above.
 
-Please let me know what your response will be to an offer
-to receive investment funds in cash if:
+We've stopped on the design like this: each inode has ICP which is stored 
+on flash. The ICP is being outdated by GC and users. Since it is 
+inefficient to rewrite new inode every time, we won't rewrite it but add 
+node_ref instead. Sometimes we'll flush ICP and free node_refs.
 
-1. The said fund amounts to Eight Million, Five hundred
-Thousand Dollars(US).
+Example:
+1. We have inode X with 10 nodes (node 1, node 2, ... node 10) and ICP 
+node which describes them. So far so good. On iget() call we read ICP and 
+have the inode built.
 
-2. The said fund is in cash and will be transferred to you
-in same state.
+2. Suppose GC has moved node 1 of our inode. Its position has been 
+changed, so the relating ICP entry is obsolete now. In this case JFFS3 
+does not rewrite new ICP. Instesd, it allocates node_ref for node 1 and 
+keeps it in-core.
+Now, on iget() call, we read ICP and the node 1's node_ref and this is 
+sufficient to build our inode.
 
-3.The fund is intended to be invested through your agency
-in the purchase of facilities and assets, for the said
-purposes within your country.
+Anologeously, if another nodes are moved, we just allocate more node_refs.
 
-4. This transaction will result in you being paid a
-commission of 10% off the investment capital.
+Sometimes, I don't specify when, we might rewrite old obsolete ICP and 
+free node_refs. And so on.
 
-5.The fund owners desire absolute confidentiality and
-professionalism in the handling of this matter.
+I think it makes sence to introduce JFFS3 parameter that limits the abount 
+of in-core RAM that JFFS3 might consume. Jets call this parameter 
+JFFS3_MAXRAM.
 
-Please respond urgently.
+If JFFS3_MAXRAM = 0, we rewrite new ICP every time when any of its entry 
+is obsoleted.
 
-Sincerely.
+If JFFS3_MAXRAM is very large, we have JFFS3 = JFFS2 in the memory 
+consumption's respect.
 
-Barrister. Earl John
+Comments?
 
-NB Please reply through this address (earl_johns@yahoo.ca)
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
