@@ -1,17 +1,18 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from sparta.scl.co.uk ([212.38.81.5] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173fmp-0005MW-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:19:59 +0100
-Date: Fri, 3 May 2002 17:19:55 +0100
-Subject: Re: Booting from DOC2000 with GRUB loader
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
+	id 173fql-0005NH-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 17:24:03 +0100
+From: John Sutton <john@scl.co.uk>
+To: Zhiwei Yu <linux_vpn@yahoo.com>, john@scl.co.uk
+Subject: Re: grub stuff
+Date: Fri, 3 May 2002 16:58:46 +0100
+Content-Type: text/plain
 Cc: linux-mtd@lists.infradead.org
-To: John Sutton <john@scl.co.uk>
-From: Jasmine Strong <jasmine@regolith.co.uk>
-In-Reply-To: <02050315580600.13762@diva.localdomain>
-Message-Id: <9A9FD862-5EB1-11D6-B6D6-000502893FA1@regolith.co.uk>
-Content-Transfer-Encoding: 7bit
+References: <20020503025059.96685.qmail@web20401.mail.yahoo.com>
+In-Reply-To: <20020503025059.96685.qmail@web20401.mail.yahoo.com>
+MIME-Version: 1.0
+Message-Id: <02050317250101.14339@diva.localdomain>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +24,66 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Friday, May 3, 2002, at 02:40 PM, John Sutton wrote:
-> ...the nftl
-> format put on there by M-systems.  Once you want to have a go with grub,
-> this is no good.  (Presumably precisely because the mtd-patched grub
-> insists on putting stage2 onto the doc thus trashing this existing 
-> format?
+Hi there
 
-Yes.  The M-systems stuff reserves a block at the start of the DoC for
-the BIOS extender-  however it only seems to be 48kbytes on any of the
-parts I've tried, so that's not big enough for grub, and you need to
-make more space.
+That's interesting!  I've been using netbooted diskless clients for some
+years but have never bothered to actually put a bootrom in a network card=
+ -
+ I just write the bootloader onto a floppy.  So I've no experience of
+actually booting from a real bootrom, but what you are saying (if I've
+understood correctly) is that a real bootrom on an ethercard always gets
+first bite of the cherry at boot time?  Regardless of the boot order
+you've configured in the BIOS setup screens? or the presence of a "grubbe=
+d"
+DiskOnChip?
 
-If you don't reformat and make more space, you'll trash the first two
-blocks of the NFTL, which contain the media headers, and this will
-effectively destroy the NFTL.
+PS and very OT: After years of faffing about with proprietary packet
+drivers supplied by ethercard manufacturers and/or hoping to find a
+suitable packet driver on Russell Nelson's priceless www.crynwr.com, I
+recently discovered rom-o-matic.net.  Take a look at that!  Oh dear, the
+time I've been a wasting...
 
->  Can't see why you couldn't have a "standard" grub installation which
-> would only need to overwrite 512 bytes like lilo does?  Not that that
-> would have much merit in itself.)
+On Fri, 03 May 2002, Zhiwei Yu wrote:
+> hi, John=20
+>=20
+> I am the one posting "Booting from DOC2000 with GRUB
+> Loader", and glad to see you still "fighting" grub.=20
+> Now I'm using lilo instead. Although grub have a lot
+> of benefits, I can't make it work before deadline.:(
+> If you work it out, would u please give me some clue?
+>=20
+> Here is my way to recover DOC chip.  I presumed that
+> you have an ethernet card on your board. =20
+> 1. Build a ramdisk with root fs, put nftl_format
+> inside it
+> 2. use mknbi to make ramdisk bootable
+> 3. setup a tftp server and bootp server on your
+> desktop
+> 4. go to etherboot.sourceforge.net to download the
+> latest package, find out the bios for ethernet card
+> and write it into ethernet card.  After that you can
+> choose to boot from local or network.
+> 5. boot from network, push your ramdisk to your SBC by
+> tftp server
+> You can now nftl_format your DOC.  It's a little
+> tricky to setup all of it. but quite useful for me who
+> don't have floppy and harddisk on the SBC.
+>=20
+> For further information, pls refer to
+> etherboot.sourceforge.net.
+>=20
+> Best Regards
+> Zhiwei Yu
+>=20
+> __________________________________________________
+> Do You Yahoo!?
+> Yahoo! Health - your guide to health and wellness
+> http://health.yahoo.com
+--=20
 
-You could, but you would have to leave the M-Systems int13h 
-implementation
-in the first 48k of the DoC (as an unpatched grub would need to be able 
-to
-use standard int13h calls to read its second stage) and that would suck
-*much* harder than just reformatting the thing.
-
-Jas.
+***************************************************
+John Sutton
+SCL Internet
+URL http://www.scl.co.uk/
+Tel. +44 (0) 1239 711 888
+***************************************************
