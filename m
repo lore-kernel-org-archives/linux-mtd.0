@@ -1,27 +1,20 @@
-Received: from moutvdom01.kundenserver.de ([195.20.224.200])
+Received: from [164.164.83.132] (helo=arianne.in.ishoni.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15OewM-0001tL-00
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2001 13:36:02 +0100
-Received: from [195.20.224.209] (helo=mrvdom02.schlund.de)
-	by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #2)
-	id 15Of1v-0007RT-00
-	for linux-mtd@lists.infradead.org; Mon, 23 Jul 2001 14:41:47 +0200
-Received: from p3ee28cf3.dip0.t-ipconnect.de ([62.226.140.243] helo=linux.ste-el.de)
-	by mrvdom02.schlund.de with esmtp (Exim 2.12 #2)
-	id 15Of1u-0003dW-00
-	for linux-mtd@lists.infradead.org; Mon, 23 Jul 2001 14:41:46 +0200
-Received: from bonita (peter@bonita.local [192.168.0.13])
-	by linux.ste-el.de (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA08665
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2001 14:41:40 GMT
-From: peter romero <promero@ste-el.de>
-Reply-To: promero@ste-el.de
-To: linux-mtd@lists.infradead.org
-Subject: nftl via spia nand
-Date: Mon, 23 Jul 2001 14:37:11 +0200
-Content-Type: text/plain
+	id 15OfRc-0001vS-00
+	for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2001 14:08:21 +0100
+Received: from raghav ([192.168.1.172])
+	by arianne.in.ishoni.com (8.11.1/8.11.4/Ishonir2) with SMTP id f6NDIKd07546
+	for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2001 18:48:21 +0530
+Reply-To: <raghav@ishoni.com>
+From: "Raghav P" <raghav@ishoni.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Porting FFS2 on MIPS
+Date: Mon, 23 Jul 2001 18:49:09 +0530
+Message-ID: <E0FDC90A9031D511915D00C04F0CCD250399CB@LEONOID>
 MIME-Version: 1.0
-Message-Id: <01072314374901.04442@bonita>
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -35,31 +28,19 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
 
-I try to get NFTL via nand (spia.c) on running.
+I am trying to get FFS2 working on my big endian MIPS. I was doing a dump of
+a formatted FFS2 flash and it was storing the FFS2 data structures in little
+endian mode. Since I do not have access to the format document nor access to
+FFS2 documenatation; can anyone point as to whether FFS2 specifies any
+endian for storing the data structures?
 
-The access is via adress databus and I/O controll.
+Thanks
+Raghav
 
-Who init this->wq ? 
-I did it in spia with "init_waitqueue_head(&this->wq);"!
-
-Is the SPIA board a Multiprocessor Board ? 
-why spin_lock_bh ?
-
-when i start schedul in nand.c :
- ..
- ..
- default:
-         set_current_state (TASK_UNINTERRUPTIBLE);
-         add_wait_queue (&this->wq, &wait);
-         spin_unlock_bh (&this->chip_lock);
--                schedule();
-
-         remove_wait_queue (&this->wq, &wait);
-         goto retry;
- };
-
-who wakes it up???
-
-thanks in advance....
-
-romero <promero@ste-el.de>
+_________________________________________________
+P.Raghavan
+ishoni Networks (India) Pvt Ltd (http://www.ishoni.com)
+...Broadband for everyone
+email:raghav@ishoni.com
+Phone: +91-80-2292125 (Work)
+Fax: +91-80-2995545 (Work)
