@@ -1,27 +1,20 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 05 Feb 2003 14:31:44 +0000
-Subject: Patch - remove unused CDL
-In-Reply-To: <1044455122.20755.3445.camel@hermes.chez-thomas.org>
-References: <1044453494.20752.3412.camel@hermes.chez-thomas.org>
- <1044454293.2222.28.camel@passion.cambridge.redhat.com>
- <1044454502.30670.3432.camel@hermes.chez-thomas.org>
- <1044454929.2222.33.camel@passion.cambridge.redhat.com>
- <1044455122.20755.3445.camel@hermes.chez-thomas.org>
-Message-ID: <1044455504.2222.37.camel@passion.cambridge.redhat.com>
+From: vdoukhan@cbnco.com (Vladimir Doukhanine)
+Date: Wed, 05 Feb 2003 09:37:04 -0500
+Subject: Is JFFS2 position independent or not?
+Message-ID: <oprj4lj2kp7bj7b7@cbnsitar.cbnco.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-> Fair enough.  One last question: do you think the "origin" will
-> be necessary/useful for the "parse_cmdline_partitions()" function?
-> I don't see why it ever would (plus that routine already has it's
-> own unique signature).
-
-Ug. I hadn't realised we'd already started having different prototypes
-for the partition parsing code. If that's the case then there's little
-advantage in you updating all the parsers to keep them in sync. 
-
-I'm sorry for mucking you about -- just go ahead and change the RedBoot
-one (and its callers) and I'll worry about cleaning it up later.
-
--- 
-dwmw2
+Hi,
+??
+I???m just wandering if JFFS2 file system is position independent or not?
+??
+For instance let's say:
+1) I want to copy /dev/mtd2 with a root JFFS2 to /dev/mtd1 then Boot Linux 
+from root on /dev/mtd1,
+2) I want to copy JFFS2 image from /dev/mtd2 (flash chip physically located 
+from ADDR1) to /dev/mtd2 (flash chip type the same, all /dev/mtd* have the 
+same size but chip physically located from ADDR2).
+??
+Thanks,
+Vlad
