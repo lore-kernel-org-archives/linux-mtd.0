@@ -1,18 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ool-18be22cd.dyn.optonline.net ([24.190.34.205] helo=iral.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1701Dx-0005Lg-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Apr 2002 15:24:53 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <UTC200204231404.g3NE41414336.aeb@smtp.cwi.nl> 
-References: <UTC200204231404.g3NE41414336.aeb@smtp.cwi.nl> 
-To: Andries.Brouwer@cwi.nl
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-    mdharm-usb@one-eyed-alien.net
-Subject: Re: Flash device IDs 
+	id 1705fA-0005bn-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Apr 2002 20:09:17 +0100
+From: "Albert Rybalkin" <albertr@forbes.net>
+To: linux-mtd@lists.infradead.org
+Subject: mtd partitions on Sharp Zaurus
+Date: Tue, 23 Apr 2002 19:08:45 GMT
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 23 Apr 2002 15:24:46 +0100
-Message-ID: <3782.1019571886@redhat.com>
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20020423190845.486244B001@iral.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,31 +21,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Andries.Brouwer@cwi.nl said:
->  It is worse. The commands are SCSI-like, but vendor-unique. So one
-> has to discover the commands and the details of the media format. I
-> wrote an ECC routine, and do something more or less random for the
-> connection between logical and physical blocks. If you have ECC and
-> LBA/PBA handling, then there is more to merge.
+Hi, 
 
->From a brief perusal of the code, it looks like the commands map to basic 
-operations on NAND flash - read/write/erase commands?
+I'm new to linux and mtd, sorry if my post is misdirected... 
 
-> [Things are not quite straightforward. I think the media uses 512+16
-> byte sectors, but my SCSI commands must use 512+64 byte sectors.][Of
-> course 512 and 16 are variables. Don't know about 64.] 
+I have a Sharp Zaurus PDA with 16MB sharp flash rom. There's a linux
+mtd chip driver `coolie_sharp.c` written by Sharp/Lineo for this
+flash chip (there's two 8MB chips actually for total of 16MB in there).
+This PDA comes with linux 2.4.6 kernel and initrd
+that has root partition mounted as cramfs. Both zImage and initrd can
+be flashed into the rom separately. Apparently, rom has some kind
+of partitioning already. There's a boot loader in the flash rom, no
+separate program to perform flashing. 
 
-That definitely sounds like you're dealing with raw NAND flash chips - 
-512 bytes with 16 bytes of 'spare' area - albeit through a _very_ 
-strange interface.
+I have source code for most of the kernel (save for couple of
+closed-source drivers for which I have binary KLMs). But I don't
+have source code or any documentation on sharp boot loader/flash
+program. 
 
-If we have to write code to handle the actual SmartMedia translation layer,
-which does translation of logical addresses to physical addresses for reads
-and handles safely writing the data to a new address before updating the
-metadata and possibly erasing old versions of the replaced logical sector,
-etc, then we should make sure it works with both the USB readers and the 
-raw flash chips.
+With the sharp stock kernel I have a couple of mtd devices, i.e.: 
 
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 01000000 00020000 "mtdrom"
+mtd1: 02200000 00000400 "mtdram"
+# 
 
---
-dwmw2
+Also, I have /dev/collie-fl that I think is a flash chip device. 
+
+I've recompiled the kernel to remove cramfs and use jffs2 instead
+for a root partition. 
+
+But I'm in a complete dark as of how I need to partition flash rom
+chip and map its partions to mtd block devices. Is there any user
+space program exist that can enumerate and display existing partitions
+which are already in the flash? Is there any documentation I can read
+on how to partition flash?
+Thanks,
+ -albertr 
