@@ -1,16 +1,16 @@
-Received: from mail.mediatrix.com ([205.237.248.11])
+Received: from rcmenter.iserver.net ([192.41.35.12])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DTsG-0008Kx-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 17:33:36 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D9954DF@mail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: "MTD mailing list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: JFFS2: Problems with cache
-Date: Fri, 22 Jun 2001 12:33:47 -0400
+	id 15DUWX-0008OK-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 18:15:13 +0100
+Message-ID: <3B337EF5.3030009@asu.edu>
+Date: Fri, 22 Jun 2001 10:23:01 -0700
+From: Russ Dill <Russ.Dill@asu.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To: Abraham vd Merwe <abraham@2d3d.co.za>, linux-mtd@lists.infradead.org
+Subject: Re: safe flash filesystem
+References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com> <20010621163537.A26714@crystal.2d3d.co.za> <3B32668F.8020000@asu.edu> <20010622102154.E1828@crystal.2d3d.co.za>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,55 +22,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+Abraham vd Merwe wrote:
 
-I get pretty stange behavior from jffs2 when I copy files to it in
-background (many copy operations at the same time).  Here is what I do:
-
-- Erase flash completely
-- Mount empty JFFS2 fs on it
-- Fill flash with files, copying many at the same time
-- When flash is full, rm *.*
-Up to here, everything worked all right will all test I done
-- Try copy many files again in background
-
-Here is a trace of what I get:
-
->[root@10.1.0.138 /jffs2]# cp =
-/home/fgiasson/linux-2.4.4-MPC860T/linux.bin
-linux1.bin &
->[1] 47
->[root@10.1.0.138 /jffs2]# cp =
-/home/fgiasson/linux-2.4.4-MPC860T/linux.bin
-linux3.bin &
->[2] 48
->[root@10.1.0.138 /jffs2]# dfARGH. About to write node to 0x0008e4b4 on
-flash, but there's data already there:
->0x0008e4b4: 10 48 31 1c 77 5b 77 1f 30 48 75 1d 30 48 75 1d
->Write to flash did not complete properly at address 8E4B4 with datum =
-1985,
-last: 3058, map_priv1: C2021000,
->map_priv1 + ofs: C20AF4B4
->Write of 4164 bytes at 0x0008e4b4 failed. returned -5, retlen 0
->Not marking the space at 0x0008e4b4 as dirty because the flash driver
-returned retlen zero
-
-I ensured that the sector was erased OK.  It is, always.  Then I tryed,
-after the cp failure, to read manually with a small test program I =
-wrote,
-using a char access to my chip, the offset JFFS2 claims as not being =
-erased:
-it contains ones ( FFFF ).  Then I suspected the cache of my PPC to =
-cheat on
-me, even if I did ioremap_nocache in my physmap.c.  It didn't help.  I =
-even
-tried to insert cache invalidation assembly instruction in my read_16 /
-write_16 function in my map driver, but it is still unsuccesful. =20
+> Hi Russ!
+> 
+> 
+>>If its just a config file, why make all this so complicated?
+>>
+>>struct node {
+>>
+>>	u32 magic;
+>>	char valid;
+>>	u32 version;
+>>	u32 data_crc;
+>>	u32 hdr_crc;
+>>	char data[DATA_SIZE];
+>>};
+>>
+> 
+> Yes, this is something in the lines I was thinking of. But what complicates
+> things is if you start taking things like avoiding damaged blocks into
+> account, wear levelling (this is fairly easy to solve) and keeping the flash
+> unfragmented.
+> 
+> 
 
 
-The problem is not happening if I do all copy operation ( cp ) in
-foreground, one after another.
-
-Does someone has a clue about it?
-
-Fr=E9d=E9ric Giasson
+if you only eraseblocks when you need to, you always have at least N-1 
+eraseblocks of pevious data, (where N is the number of eraseblocks 
+used). A CRC can be done after the store to see if the node written is 
+ok, if not, write it again (in the next node). since its a small amount 
+of data (maybe 4-8k) and written linearly, wear leveling and 
+fragmentation is not a problem. Lets say 4 parameter blocks of 16k a 
+peice are used, that would be 1 erase cycle per 8 configs written, this 
+would allow 800,000 configs to be written on standard flash. If a config 
+was written at a rate of once an hour, it would last 93 years. If it 
+were on 2 128k standard blocks, then you wolud have 3.2M configs 
+written, which at the same rate, would last about 332 years. Remember, 
+you are only performing an erase cycle after a block fills up, not for 
+every write.
