@@ -1,19 +1,16 @@
-Received: from beta.dmz-eu.st.com ([164.129.1.35])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGz8I-0002cj-QY
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 08:18:32 -0400
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <416A7A0A.591B4A03@st.com>
-Date: Mon, 11 Oct 2004 14:18:18 +0200
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+	id 1CGzDW-0002oz-Ei
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 08:23:55 -0400
+Date: Mon, 11 Oct 2004 15:23:45 +0300 (EEST)
+From: Kalev Lember <kalev@colleduc.ee>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1097262923.318.177.camel@hades.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.44.0410111519200.15371-100000@kiire.colleduc.ee>
 MIME-Version: 1.0
-To: Mark Hamilton <mhamilton@alliantnetworks.com>,
-	linux-mtd@lists.infradead.org
-References: <019301c4ad6e$33e3c730$0400a8c0@mark> <416A4930.6AF5C472@st.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: [JFFS2] GC patch for eCos port
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Nicolas Pouillon <nipo@ssji.net>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Probing at 0x0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Estelle Hammache wrote:
-> 
-> Hi Mark,
-> 
-> isn't it cleaner (for compatibility with Linux) to modify
-> jffs2_gc_fetch_page so that it reads a
-> PAGE_CACHE_SIZE-aligned buffer ?
+On Fri, 8 Oct 2004, David Woodhouse wrote:
 
-Ok so this was discussed in the eCos mailing list, but I meant that
-jffs2_gc_fetch_page should call jffs2_read_inode with the reading
-offset set to the page boundary: (offset & ~(PAGE_CACHE_SIZE-1)).
-I believe this is the expected behavior for jffs2_gc_fetch_page.
+> On Fri, 2004-10-08 at 21:28 +0300, Kalev Lember wrote:
+> > No, it is not supported. According to 
+> > http://www.tri-m.com/products/msystems/files/specs/mddoc_spec.pdf the 32 
+> > MB Millennium Plus has 16 bit data bus while the supported 16 MB Mil+ 
+> > has 8 bit bus.
+> 
+> I think you can use it in 8-bit mode too though. The old doc2001plus
+> driver handled them both, didn't it?
 
-Estelle
+I think you are right. It did handle both of them in 8-bit mode.
+I believe that if we are going to use 32 MB devices in 8-bit mode, we must 
+deal with the interleaving crap, right?
+
+-- 
+Kalev Lember
