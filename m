@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from phoenix.infradead.org ([195.224.96.167])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Zgd7-0005QF-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 00:42:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <FA06AA2C99BCD511951200005A99441001E3ECC3@irvexch1.sextantifs.com> 
-References: <FA06AA2C99BCD511951200005A99441001E3ECC3@irvexch1.sextantifs.com> 
-To: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
+	id 17Zgv9-0005SD-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 01:00:56 +0100
+Message-ID: <FA06AA2C99BCD511951200005A99441001E3ECC5@irvexch1.sextantifs.com>
+From: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>, "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: jffs2_scan_eraseblock() - errors 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 31 Jul 2002 00:42:14 +0100
-Message-ID: <16163.1028072534@redhat.com>
+Date: Tue, 30 Jul 2002 16:59:12 -0700
+Subject: RE: jffs2_scan_eraseblock() - errors
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,27 +22,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Allen.Curtis@Thales-IFS.com said:
->  Questions then: 1. Does this node get reclaimed? I get this same
-> message now with each reboot.
+> the root inode, which is obviously a bug. In that case, we 
+> just delete the 
+> offending directory and all its children. I suppose we should really 
+> re-link it to /lost+found instead :)
 
-It'll get erased when that block gets garbage-collected.
+Yes, disappearing files could be annoying.
 
-> 2. It appears that the mount operation gets slower once this error
-> condition occurs. Is this possible/expected?
+Has anyone characterized the performance of the JFFS* file-systems over
+time? Our initial tests indicated that JFFS2 was faster than JFFS. After
+using the JFFS2 file-system and maintaining a relatively consistent
+utilization there was a 4X increase in the time required to complete a mount
+operation. Is this expected? Is there a worse case? See below for some
+measurements.
 
-Definitely not expected. I can't really see how it's possible. I'd say it's 
-probably a coincidence.
+JFFS/JFFS2 Mount Performance (38% usage, fresh install):
+JFFS	real	16.164
+	user	 0.01
+	sys	16.14
+JFFS2	real	6.47
+	user	0.01
+	sys	6.45
 
-> 3. If the file-system becomes corrupted, what is the failure condition
-> and how do you correct it? Test for it?
-
-JFFS2 is purely log-structured. There are few ways in which the file system 
-as a whole can be declared to be 'corrupted'. The only real case I can 
-think of is when a directory with children appears to have no links from 
-the root inode, which is obviously a bug. In that case, we just delete the 
-offending directory and all its children. I suppose we should really 
-re-link it to /lost+found instead :)
-
---
-dwmw2
+After being used, usage = 41%:
+JFFS2	real	1m3.583	(4X increase)
