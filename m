@@ -1,77 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from [199.203.219.2] (helo=ms-exchange.msys.co.il)
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11BJ2b-0001lE-00
-	for mtd@infradead.org; Mon, 2 Aug 1999 15:26:14 +0100
-Message-ID: <B17893052A17D211A9860060978F7E63EF0562@MS-EXCHANGE>
-From: Amir Ban <amirban@m-sys.com>
-To: 'David Woodhouse' <David.Woodhouse@mvhi.com>, mtd@infradead.org
-Subject: RE: Disk-On-Chip documentation.
-Date: Mon, 2 Aug 1999 17:22:57 +0200 
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01BEDCFA.E68E81F0"
+	id 11BZUS-00025b-00
+	for mtd@infradead.org; Tue, 3 Aug 1999 09:00:04 +0100
+To: Tim Osburn <tim@osburn.com>
+Cc: mtd@infradead.org
+Subject: Re: Compact Flash 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 03 Aug 1999 09:00:01 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E11BZUP-0000GO-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_000_01BEDCFA.E68E81F0
-Content-Type: text/plain;
-	charset="windows-1252"
+tim@osburn.com said:
+> 
+> 	I use both the Simple Tech & SanDisk USB compact flash card reader
+> and was wondering if they have developed any drivers for linux yet for
+> either of those two units? That is the only reason I still have
+> windows on my hard drive :( 
 
-
-
-Hence the Cc of this message to Amir Ban of M-Systems. Is this development 
-model OK with M-Systems, and would you like to draft this proposed NDA?
-
-[Amir Ban] The development model is ok with us, and we will trust you to
-draft the NDA in its spirit.
+I don't think so - but I believe that all disk drives on USB have the same 
+interface - so it shouldn't be long before it's supported, if it uses that 
+interface - and I don't see why it wouldn't.
 
 
-------_=_NextPart_000_01BEDCFA.E68E81F0
-Content-Type: application/ms-tnef
-Content-Transfer-Encoding: base64
 
-eJ8+IjsPAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA5AQAAAAAAADoAAEIgAcAGAAAAElQTS5NaWNy
-b3NvZnQgTWFpbC5Ob3RlADEIAQWAAwAOAAAAzwcIAAIAEQAWADkAAQBBAQEggAMADgAAAM8HCAAC
-ABEAFgA6AAEAQgEBCYABACEAAABENEE4M0U2OEJGNDhEMzExQTlBMDAwNjA5NzhGN0U2MwAoBwEE
-gAEAIAAAAFJFOiBEaXNrLU9uLUNoaXAgZG9jdW1lbnRhdGlvbi4A3woBDYAEAAIAAAACAAIAAQOQ
-BgDgBgAAMgAAAAMANgAAAAAAAwAAgAggBgAAAAAAwAAAAAAAAEYAAAAAUoUAACdqAQAeAAGACCAG
-AAAAAADAAAAAAAAARgAAAABUhQAAAQAAAAQAAAA5LjAACwDLgAggBgAAAAAAwAAAAAAAAEYAAAAA
-BoUAAAAAAAADAAKACCAGAAAAAADAAAAAAAAARgAAAAABhQAAAAAAAAsAA4AIIAYAAAAAAMAAAAAA
-AABGAAAAAAOFAAAAAAAACwAEgAggBgAAAAAAwAAAAAAAAEYAAAAADoUAAAAAAAADAAWACCAGAAAA
-AADAAAAAAAAARgAAAAAQhQAAAAAAAAMABoAIIAYAAAAAAMAAAAAAAABGAAAAABGFAAAAAAAAAwAH
-gAggBgAAAAAAwAAAAAAAAEYAAAAAGIUAAAAAAAAeAAiACCAGAAAAAADAAAAAAAAARgAAAAA2hQAA
-AQAAAAEAAAAAAAAAHgAJgAggBgAAAAAAwAAAAAAAAEYAAAAAN4UAAAEAAAABAAAAAAAAAB4ACoAI
-IAYAAAAAAMAAAAAAAABGAAAAADiFAAABAAAAAQAAAAAAAAACAQkQAQAAAE0BAABJAQAAIgIAAExa
-RnVFLVPXAwAKAHJjcGcxMjXiMgNDdGV4BUEBAwH3/wqAAqQD5AcTAoAP8wBQBFY/CFUHshElDlED
-AQIAY2jhCsBzZXQyBgAGwxEl9jMERhO3MBIsETMI7wn3tjsYHw4wNREiDGBjAFDzCwkBZDM2FlAL
-pgrjCoQFCoBICfBjZSB0aMEd8ENjIG9mHgEEAKIgB4FzYWcd8W8QwDRtaQXAQgORHoFNLQUGsHMO
-sG1zLiBJpwQgHrMBAHZlF7BwB4CPAjAc5QRiAyBPSyAD8NMeECBoLCAAcGQjQAhgCmwkcHkIYCBs
-aWuxH2NkcmEBgB6kcANgDHBvFBAkcE5EQT/FHPpbH7ZdIFQeISGq0yLEHtFvayNEdSQmHfDlA/Bs
-AyB0ciqwBUAk8n8liR3wJvEp8AOgI2AEIHNWcB/QI2AuHPp9LxAAAAAeAHAAAQAAABwAAABEaXNr
-LU9uLUNoaXAgZG9jdW1lbnRhdGlvbi4AAgFxAAEAAAAbAAAAAb7c+LbBaD6n+ki/EdOpoABgl49+
-YwAAel+gAAMAJgAAAAAAAwAuAAAAAAALAAIAAQAAAAMACVkBAAAAHgBCEAEAAAAqAAAAPEUxMUJJ
-bVYtMDAwN0xQLTAwQGRldmVsMi5heGlvbS5pbnRlcm5hbD4AAAADAN4/5AQAAEAAOQAAXm7m+ty+
-AQMA8T8JBAAAHgAxQAEAAAAGAAAAQU1JUkIAAAADABpAAAAAAB4AMEABAAAABgAAAEFNSVJCAAAA
-AwAZQAAAAAADAP0/5wQAAAMAgBD/////AgFHAAEAAAA2AAAAYz1VUzthPSA7cD1NLVN5c3RlbXM7
-bD1NUy1FWENIQU5HRS05OTA4MDIxNTIyNTdaLTgyMzUAAAACAfk/AQAAAEwAAAAAAAAA3KdAyMBC
-EBq0uQgAKy/hggEAAAAAAAAAL089TS1TWVNURU1TL09VPVRFTC1BVklWL0NOPVJFQ0lQSUVOVFMv
-Q049QU1JUkIAHgD4PwEAAAAJAAAAQW1pciBCYW4AAAAAHgA4QAEAAAAGAAAAQU1JUkIAAAACAfs/
-AQAAAEwAAAAAAAAA3KdAyMBCEBq0uQgAKy/hggEAAAAAAAAAL089TS1TWVNURU1TL09VPVRFTC1B
-VklWL0NOPVJFQ0lQSUVOVFMvQ049QU1JUkIAHgD6PwEAAAAJAAAAQW1pciBCYW4AAAAAHgA5QAEA
-AAAGAAAAQU1JUkIAAABAAAcwoFxr5vrcvgFAAAgw8IGO5vrcvgEeAD0AAQAAAAUAAABSRTogAAAA
-AB4AHQ4BAAAAHAAAAERpc2stT24tQ2hpcCBkb2N1bWVudGF0aW9uLgAeADUQAQAAADUAAAA8QjE3
-ODkzMDUyQTE3RDIxMUE5ODYwMDYwOTc4RjdFNjNFRjA1NjJATVMtRVhDSEFOR0U+AAAAAAsAKQAA
-AAAACwAjAAAAAAADAAYQXVkzkAMABxDFAAAAAwAQEAAAAAADABEQAQAAAB4ACBABAAAAZQAAAEhF
-TkNFVEhFQ0NPRlRISVNNRVNTQUdFVE9BTUlSQkFOT0ZNLVNZU1RFTVNJU1RISVNERVZFTE9QTUVO
-VE1PREVMT0tXSVRITS1TWVNURU1TLEFORFdPVUxEWU9VTElLRVRPRFIAAAAAAgF/AAEAAAA1AAAA
-PEIxNzg5MzA1MkExN0QyMTFBOTg2MDA2MDk3OEY3RTYzRUYwNTYyQE1TLUVYQ0hBTkdFPgAAAAAh
-WA==
 
-------_=_NextPart_000_01BEDCFA.E68E81F0--
+
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
