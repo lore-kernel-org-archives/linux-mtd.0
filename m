@@ -1,58 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14leB6-0006ks-00
-	for mtd-list@infradead.org; Fri, 06 Apr 2001 22:54:00 +0100
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14leB3-0006km-00
-	for mtd@infradead.org; Fri, 06 Apr 2001 22:53:59 +0100
-Date: Fri, 6 Apr 2001 22:53:48 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Williams, Kevin M." <kevin.m.williams@marconi.com>
-cc: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: using a portion of a FLASH device as FTL?
-In-Reply-To: <A3E34B558F5CD211B4980008C7A4A99003163E42@sparrow.eng.gilbarco.com>
-Message-ID: <Pine.LNX.4.30.0104062249500.2971-100000@imladris.demon.co.uk>
+	id 14mXun-0004bn-00
+	for mtd-list@infradead.org; Mon, 09 Apr 2001 10:24:53 +0100
+Received: from ntp.iriti.cnr.it ([150.145.55.6] helo=ghirolo.iriti.cnr.it)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14mXul-0004bh-00
+	for mtd@infradead.org; Mon, 09 Apr 2001 10:24:51 +0100
+Received: from zot.iriti.cnr.it
+	([150.145.55.66] helo=iriti.cnr.it ident=fabrizio)
+	by ghirolo.iriti.cnr.it with esmtp (Exim 3.12 #1 (Debian))
+	id 14mXuI-0004Hf-00
+	for <mtd@infradead.org>; Mon, 09 Apr 2001 11:24:22 +0200
+Message-ID: <3AD17FC6.6A918EA0@iriti.cnr.it>
+Date: Mon, 09 Apr 2001 11:24:22 +0200
+From: Fabrizio Pollastri <pollastri@iriti.cnr.it>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: mtd@infradead.org
+Subject: Problems with nftl_format
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 6 Apr 2001, Williams, Kevin M. wrote:
+I have a problem with nftl_format. It give the following output to me.
 
-> Hello again,
-> 
-> I've figured out why FTL wasn't finding the header.  It was looking at the
-> bottom section of the flash for the FTL data structure ("FTL100").  We store
-> our bootloader and some other code at the base of the FLASH.  I need to only
-> use part of the FLASH as FTL, the rest I want to leave alone.  The Flash
-> chips (AMD29DL162, ) are detected properly by the CFI probe at location
-> 0xFFC00000 thru 0xFFFFFFFF, but I only want the FTL to use from 0xFFF20000
-> to FFFE0000. 
-> 
-> I can't see anywhere in the code where provisions for this have been added.
-> Any advice on modifying the existing code to accomplish this?
+# doc_loadbios /dev/mtd0 grub_firmware (OK: grub prompt appears at next
+boot)
+# nftl_format /dev/mtd0 81920
+Phase 1. Checking and erasing Erase Zones from 0x00014000 to 0x01000000
+Erasing Zone #10 @ 0x14000
+Erasing Zone #11 @ 0x16000
+Erasing Zone #12 @ 0x18000
+Erasing Zone #13 @ 0x1a000
+...
+Erasing Zone #2044 @ 0xff8000
+Erasing Zone #2045 @ 0xffa000
+Erasing Zone #2046 @ 0xffc000
+Erasing Zone #2047 @ 0xffe000
+Phase 2.a Writing NFTL Media Header and Bad Unit Table
+Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
+Phase 3. Writing Unit Control Information to each Erase Unit
+MEMWRITEOOB at 14200: Invalid argument
+MEMWRITEOOB at 16200: Invalid argument
+MEMWRITEOOB at 18200: Invalid argument
+MEMWRITEOOB at 1a200: Invalid argument
+...
+MEMWRITEOOB at ff8200: Invalid argument
+MEMWRITEOOB at ffa200: Invalid argument
+MEMWRITEOOB at ffc200: Invalid argument
+MEMWRITEOOB at ffe200: Invalid argument
 
-No modification required - just use the 'ftl_format' program with 
-appropriate arguments to make it start the FTL format at the offset you 
-desire.
+My configuration is linux 2.4.3, DOC-2000 16MB @d6000, mtd sanpshot
+1-mar-2001.
+Most recent snapshots give similar errors. What's wrong?
+Thank for any help.
 
-But are you in the Free World? FTL is patented, and in many places you may 
-not use it except on PCMCIA devices or with a licence from M-Systems. 
-Although there's nothing particularly non-obvious in the Linux code which 
-implements FTL, so the patent is probably invalid - you might get to prove 
-that in the EU if you're persued, but the US patent system is bad enough 
-that there's some risk.
-
-Why do you want use a pseudo-filesystem to emulate a block device on top 
-of which you put a normal filesystem anyway? Why not just put a JFFS{2,} 
-filesystem on the flash directly?
-
--- 
-dwmw2
-
-
+Fabrizio Pollastri.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
