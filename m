@@ -1,21 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CyWzz-00071r-Ci
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 10:09:56 -0500
-Date: Tue, 8 Feb 2005 16:09:53 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Message-ID: <20050208150953.GA23906@wohnheim.fh-wedel.de>
-References: <54CC136E5398384485619BC34B3A0F0B055D0DB0@ma00exh02.atitech.com>
-	<20050207195209.GC25504@wohnheim.fh-wedel.de>
-	<cu8n22$acu$1@sea.gmane.org>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CyYbg-0007sm-3C
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 11:52:57 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Rudi Engelbertink <rudi@unsec.nl>
+In-Reply-To: <20050204112622.M33820@unsec.nl>
+References: <20050204112622.M33820@unsec.nl>
+Content-Type: text/plain
+Date: Tue, 08 Feb 2005 17:51:47 +0100
+Message-Id: <1107881508.17747.2.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cu8n22$acu$1@sea.gmane.org>
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Follow-up to wearing / caching question
+Subject: Re: unable to get NAND oobinfo
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 7 February 2005 22:36:45 +0100, Martin Egholm Nielsen wrote:
->
-> >Another way to look at it is an imaginary 1MiB flash.  You can write
-> >it 100k times, for a total of 100GiB written to it.  With 600M seconds
-> >in your expected 20 years, that gives you ~160 Bytes/s average write
-> >speed.  Not very much.
-> Then what about the pagesize and corresponding writebuffer - this may 
-> have an effect, as well, when talking that slow write rates, right?!
+On Fri, 2005-02-04 at 12:43 +0100, Rudi Engelbertink wrote:
+> Hi,
+> 
+> trying to get my nand driver (for compulab 586core board) on kernel 2.4.27
+> working, i ran into the following problem:
+> The driver is recognised and appears to work. That means I can read the mtdchar
+> device but whin I'm trying to format the device, I recieve the message
+> 'flash_eraseall: /dev/mtd3: unable to get NAND oobinfo'
+> An strace replies with:
+> open("/dev/mtd3", O_RDWR)               = 3
+> ioctl(3, 0x80204d01, 0xbffffdf0)        = 0
+> ioctl(3, 0x80c84d0a, 0xbffffd20)        = -1 ENOTTY (Inappropriate ioctl for
+> device)
 
-For NOR, you don't need a write buffer.  For NAND you do, but then
-again, 1MiB is rather small for NAND.  With 128MiB, you'd already have
-a write rate of 20k/s, so the write buffer overhead is just a small
-fraction of it.
+I guess you are using vanilla 2.4.27 without mtd patches. So the ioctl
+is not implemented. The NAND stuff in MTD/JFFS2 on vanilla 2.4.xx is not
+really fully functional. 
 
-Jörn
-
--- 
-Fools ignore complexity.  Pragmatists suffer it.
-Some can avoid it.  Geniuses remove it.
--- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
+tglx
