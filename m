@@ -1,54 +1,38 @@
-From: kasparek@fit.vutbr.cz (Kasparek Tomas)
-Date: Fri, 7 Feb 2003 10:22:58 +0100 (CET)
+From: dwmw2@infradead.org (David Woodhouse)
+Date: 07 Feb 2003 09:29:03 +0000
 Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
-In-Reply-To: <1044604814.5502.616.camel@imladris.demon.co.uk>
+In-Reply-To: <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
 References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
  <1044544711.2535.13.camel@passion.cambridge.redhat.com>
  <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
  <1044604814.5502.616.camel@imladris.demon.co.uk>
-Message-ID: <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
+ <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
+Message-ID: <1044610143.5502.691.camel@imladris.demon.co.uk>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Fri, 7 Feb 2003, David Woodhouse wrote:
+On Fri, 2003-02-07 at 09:22, Kasparek Tomas wrote:
+> OK, please could you summarize actual state - how it should work without
+> mtdblock device. What is now the right value for 'root='?
 
-> > I'm trying to get 2.5.59 running on iPAQ and have following problem:
-> >
-> > - in 2.5.7 jffs2/super.c: fs_flags: FS_REQUIRES_DEV was removed from
-> >   jffs2_fs_type.
-> > -> that means 'nodev' word at line with jffs2 in /proc/filesystems
-> >   (in filesystems list -> get_filesystem_list())
-> > -> that means that init/do_mounts.c:get_fs_names() returns empty filesystem
-> >    list because thay skip entries with nodev keyword
-> > -> having no FS list init/do_mounts.c:mount_block_root() do not try to
-> >    mount any FS and it calls panic("VFS: Unable to mount root fs on %s").
-> >
-> > There are few solutions:
-> >
-> > - either use fs_flags FS_REQUIRE_DEV again
->
-> If we did this, then the mount by MTD device number or partition name
-> would stop working. We'd be back to requiring the mtdblock device to be
-> present again. I'd rather not do that.
->
-> > - or rewrite get_fs_names()
->
-> Not just get_fs_names(). We want the 'root=' argument from the kernel's
-> command line to be passed to us, which requires rethinking the way it's
-> converted into a major/minor number for /dev/root and then mounted.
+For the root file system, it _doesn't_ work without an mtdblock device.
+You need to specify the device as before. For mounting normally,
+however, you can specify something like 'mtd:jffs2 partition' or 'mtd:1'
+(IIRC -- I'd have to look at the code against to confirm the latter) to
+mount by MTD device name or number, with no need to use the mtdblock
+devices.
 
-OK, please could you summarize actual state - how it should work without
-mtdblock device. What is now the right value for 'root='?
+If the mechanism for mounting the root file system would pass the
+contents of the 'root=' command line argument in to the file system,
+then we could do it for the root file system too. But it doesn't so we
+can't -- until it gets fixed. So it's not just get_fs_names() that wants
+changing, but the whole way in which we use the 'root=' argument to
+decide on a block device and create a fake /dev/root with the
+appropriate major/minor.
 
-If there is some page about this, please give me link(s) too.
+> If there is some page about this, please give me link(s) too.
 
-(I'm not in the list, so please CC me.)
+Only fs/jffs2/super.c :)
 
-Thanks
-
---
-
-	Tomas Kasparek (sioux), PhD student FIT VUT Brno
- 	  tomas.kasparek@[seznam.cz,volny.cz]
-	  kasparek at fit.vutbr.cz, linux at fit.vutbr.cz
-	  http://www.fit.vutbr.cz/~kasparek
+-- 
+dwmw2
