@@ -1,20 +1,21 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CK24v-0006sx-KN
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2004 18:03:40 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Michael Moedt <xemc@yahoo.com>
-In-Reply-To: <20041019214518.26339.qmail@web52703.mail.yahoo.com>
-References: <20041019214518.26339.qmail@web52703.mail.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1098222917.12223.1020.camel@thomas>
+Received: from zorglub.ssji.net ([2001:7a8:3030::face])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKC6U-0000nb-Ju
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 04:45:56 -0400
+Date: Wed, 20 Oct 2004 10:45:46 +0200
+From: Nicolas Pouillon <nipo@ssji.net>
+To: Balint Cristian <rezso@rdsor.ro>
+Message-Id: <20041020104546.4fe9e838.nipo@ssji.net>
+In-Reply-To: <200410131001.43004.rezso@rdsor.ro>
+References: <200410052313.27435.rezso@rdsor.ro>
+	<200410091404.15342.rezso@rdsor.ro>
+	<20041013001912.3368476c.nipo@ssji.net>
+	<200410131001.43004.rezso@rdsor.ro>
 Mime-Version: 1.0
-Date: Tue, 19 Oct 2004 23:55:17 +0200
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, simon@baydel.com
-Subject: Re: Bad Blocks On JFFS2/NAND
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: More [DoC] strangeness.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-10-19 at 23:45, Michael Moedt wrote:
-> 1. Do you know what usually causes the "Newly-erased block contained
-> word   "... error?
-> Is it caused by a interrupted (or otherwise failed) erase?  Would
-> power-fail cause this?
+[Wed, 13 Oct 2004 10:01:42 +0300]
+Balint Cristian <rezso@rdsor.ro> eut le bonheur d'=E9crire:
 
-It's caused by a failed erase. If the chip interface is correct then it
-is usually a problem of a bad page/block. If not (e.g. wrong timing) it
-might return too early from an erase.
+Sorry for the lag answering...
 
-> 2. Would this cause good blocks to be incorrectly [and permanently]
-> marked as bad?
+Hello Cristian !
 
-Only if failes 5 times after mount. The counter is reset with each
-mount.
+> USB is still unachievable for me, I can only dream to buy one, to
+> build one is again tricky for me.
 
-> 
-> I think I may have seen something similar on my system.  I'm
-> considering writing a test to see if this is a problem for me, but
-> I'd like to learn more about this also.
+Just ask Microchip a sample ;) it wont cost you anything...
+But I'd like to be sure to be able to use it first ;)
+And anyway if i manage to build the thing up, will it be faster thar //?
 
-Which version of the mtd/nand code ?
+[In another mail]
+> Need the hacked source ?
+> Now i only include for DOCMILPlus32.
+> [I atached hacked jtag]
 
-There was a problem with the page cache, which was not invalidated on
-erase some time ago, but its fixed.
+Detection early fails with my device...
+I tried to read the code but I dont understand all interactions.
+I'll print some source to be able to study them while travelling to
+university ;)
 
-tglx
+Cheers
+
+--=20
+Nipo <nipo@ssji.net>
+Gnu-PGP: 1024D/1DBF658F
+http://nipo.ssji.net/nipo.asc
