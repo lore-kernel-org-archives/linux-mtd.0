@@ -1,17 +1,16 @@
-Received: from thorgal.et.tudelft.nl ([130.161.40.91])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BEHYV-0003Sm-Te
-	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2004 01:50:07 +0100
-Mime-Version: 1.0
-Message-Id: <a0600200abca4d9eb4609@[130.161.115.44]>
-In-Reply-To: <20040415222525.548414E20@blood.actrix.co.nz>
-References: <a06002006bca469e103ce@[130.161.115.44]>
- <20040415222525.548414E20@blood.actrix.co.nz>
-Date: Fri, 16 Apr 2004 02:50:02 +0200
-To: manningc2@actrix.gen.nz, linux-mtd@lists.infradead.org
-From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
-Subject: Re: NAND bad blocks
+	id 1BENRJ-0004Lu-8D
+	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2004 08:07:05 +0100
+Date: Fri, 16 Apr 2004 10:07:02 +0300 (EEST)
+From: Kalev Lember <kalev@colleduc.ee>
+To: Gu Susan-w15879 <w15879@motorola.com>
+In-Reply-To: <89DEFCC5DB33D411A27F00508BCF8A820A15B1DD@ZCH07EXM05.corp.mot.com>
+Message-ID: <Pine.LNX.4.44.0404160957570.20183-100000@kiire.colleduc.ee>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: linux-mtd@lists.infradead.org
+Subject: RE: FAT corruption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At 10:35 AM +1200 16/4/04, Charles Manning wrote:
->On Friday 16 April 2004 04:39, J.D. Bakker wrote:
+On Fri, 16 Apr 2004, Gu Susan-w15879 wrote:
 
-[Recap: I noticed that mtd considers a NAND block to be bad if byte 5 
-of the OOB data has one or more zero-bits in it; YAFFS looks for two 
-or more zero-bits before considering a block to be damaged]
+> I haven't used 2.6.5 kernel, from your email, it seems Trueffs driver has been involved into mtd layer in 2.6.5?
 
->The idea with the bit counting in YAFFS is to prevent a single bad bit
->causing a block to be erroneously marked bad, thereby losing your data.
+No, with 2.6.5 kernel I use only the current mtd snapshot. There is no 
+propietary TrueFFS driver in this kernel, I think that M-Sys has even not 
+released a driver for 2.6 kernel series.
 
-Fair enough, but...
+The problem that occurred was that if I wanted to us 2.4 kernel with 
+M-Systems TrueFFS driver _after_ using the same chip with 2.6 kernel + 
+current mtd snapshot, I would get filesystem corruption.
 
->In reality this situation hardly ever, if ever, arises and the two code
->sequences are pretty much equivalent.
-
-I have a Flash device which has a block which triggers this boundary 
-condition, resulting in a
-
-"nand_erase: attempt to erase a bad block at page 0x00000420"
-
-when running mkyaffs.
-
-Maybe it would be a good idea to have mkyaffs be more conservative, 
-ie adhere to the 'one strike out' policy when erasing a chip. 
-Something like:
-
-   if(oobbuf[5] != 0xFF)
-   {
-     oobbuf[5] = BAD_BLOCK_MARKER_WHICH_IS_ACCEPTED_BY_BOTH_MTD_AND_YAFFS;
-     write_oob_to_nand(oobbuf);
-   }
-
-Does that look reasonable ? I'd expect it to be likely for a block 
-with a single-bit error in the OOB to be going bad RSN anyway; might 
-as well mark it bad when there's no user data to be lost.
-
-JDB
-[yes, I know, -ENOPATCH. Excuses:
-* I don't know the NAND code well enough to pick a good value for 
-BAD_BLOCK_MARKER
-* it's WAY past my bedtime, especially since the UPS guy has a nice 
-little wake-up call planned for me]
 -- 
-LART. 250 MIPS under one Watt. Free hardware design files.
-http://www.lart.tudelft.nl/
+Best regards,
+Kalev Lember
