@@ -1,14 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Heikki O Lindholm <holindho@cs.helsinki.fi>
-In-Reply-To: <419A0CB4.2090007@cs.helsinki.fi>
-References: <419A0CB4.2090007@cs.helsinki.fi>
-Content-Type: text/plain
-Date: Tue, 30 Nov 2004 00:56:15 +0000
-Message-Id: <1101776175.4614.4.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: IBM 405GP Walnut map
+Received: from [217.111.56.2] (helo=farside.sncag.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CYxUC-0002XK-3H
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2004 21:11:25 -0500
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1101749178.23997.22.camel@weaponx.rchland.ibm.com> (Josh
+	Boyer's message of "Mon, 29 Nov 2004 11:26:18 -0600")
+References: <200411291024906.SM01112@ACarlisle>
+	<1101742712.23997.2.camel@weaponx.rchland.ibm.com>
+	<87hdn8fwk4.fsf@farside.sncag.com>
+	<1101749178.23997.22.camel@weaponx.rchland.ibm.com>
+From: Rainer Weikusat <rainer.weikusat@sncag.com>
+Date: Tue, 30 Nov 2004 03:11:15 +0100
+Message-ID: <87is7oaxx8.fsf@farside.sncag.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Andrew Carlisle <ACarlisle@acmepacket.com>, linux-mtd@lists.infradead.org,
+	Rainer Weikusat <rweikusat@sncag.com>
+Subject: Re: Multiple banks of flash?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,19 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-11-16 at 16:20 +0200, Heikki O Lindholm wrote:
-> Hello,
-> 
-> Here's a patch, at least, for the mailing list archive. Might be useful 
-> to include, since there's other support for the Walnut in the kernel, 
-> too. (Hopefully this list accepts attachments.)
-> 
-> * adds mapping for the IBM 405GP Walnut system flash
+Josh Boyer <jdub@us.ibm.com> writes:
+>> > Joern Engel wrote a mphysmap driver some time ago.  It works fairly
+>> > well.  You might be able to find it if you google for it.  Not sure why
+>> > it wasn't included in MTD CVS.
+>> 
+>> Various people have written something like this at different times
+>> :->.
+>
+> Indeed.  Joern's just happened to be the one I am most familiar with. 
+> But since lots of different implementations have been written, it makes
+> one wonder why none are in CVS...
 
-You really need to hassle me more frequently if I ignore your patches.
-Please send a SSH public key and you can commit it to CVS. It needs a
-$Id$ tag in the comments at the top of the file, and please change
-'128k' to '128 KiB'.
-
--- 
-dwmw2
+Open Source Mantra: 'Not my problem'.
