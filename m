@@ -1,17 +1,16 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BgEmh-0008Eb-90
-	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 23:32:20 -0400
-Date: Thu, 1 Jul 2004 23:32:14 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Robert Lippmann <rlippmann@imsventures.com>
-In-Reply-To: <NFBBKPKLPNGEMNKJKAIKIEBBCDAA.rlippmann@imsventures.com>
-Message-ID: <Pine.LNX.4.44.0407012328180.18865-100000@xanadu.home>
+	id 1BgNBg-0000b9-J2
+	for linux-mtd@lists.infradead.org; Fri, 02 Jul 2004 08:30:41 -0400
+Received: from [10.1.1.107] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
+	1.3.167) for linux-mtd@lists.infradead.org; 2 Jul 2004 08:30:37 -0400
+Date: Fri, 2 Jul 2004 08:26:23 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.60.0407020819380.5155@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: unresoved symbol __ffs
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: adding cmd-line partitioning to rpxlite.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Jul 2004, Robert Lippmann wrote:
 
-> hi all,
-> 
-> haven't seen this covered before, but when i try to use recent snapshots
-> (late june-ish), i get this unresolved symbol when building a 2.4.26 kernel
-> using linux-mips.  i assume it's because the compiler
-> sets --disable-builtins when compiling.  it occurs in cfi_cmdset_0001.c
-> oddly, the file compiles without warnings.  oh, and i'm using gcc 3.3.2
+   i was going to take a shot at adding command-line partitioning to 
+rpxlite.c (seems easy enough), but was confused by an example shown in 
+another map file.
 
-__ffs should be defined in linux/asm/bitops.h.  It is defined for MIPS as 
-follows in 2.6.7:
+   according to cmdlinepart.c, the format for the command line is:
 
-/*
- * __ffs - find first bit in word.
- * @word: The word to search
- *
- * Undefined if no bit exists, so code should check against 0 first.
- */
-static inline unsigned long __ffs(unsigned long word)
-{
-        return ffz(~word);
-}
+  * mtdparts=<mtddef>[;<mtddef]
+  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+  * <partdef> := <size>[@offset][<name>][ro]
+  * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
+  * <size>    := standard linux memsize OR "-" to denote all remaining space
+  * <name>    := '(' NAME ')'
 
-> i've tried #define __ffs ffs, but even that doesn't seem to work.
+from what i've seen, each partition has to have an <mtddef> identifier 
+to associate to a map.  i thought that this identifier corresponded to 
+the map_info.name field (that would make sense), but in 
+lubbock_flash.c, i notice the definitions in defining maps for two 
+flash chips:
 
-It's qite odd that it didn't compile, bit even if it did __ffs and ffs 
-aren't equivalent.
+         lubbock_maps[flashboot^1].name = "Lubbock Application Flash";
+         lubbock_maps[flashboot].name = "Lubbock Boot ROM";
 
+these name values have embedded spaces.  how exactly does that work in 
+trying to use command-line partitioning here?  or did i misread how to
+specify the <mtddef> field on the the command line?
 
-Nicolas
+or, to be more brief, how would one use command-line partitioning for 
+lubbock-flash.c?  i'm going to do a more careful re-reading of 
+cmdlinepart.c to see what i missed.  thanks.
+
+rday
