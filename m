@@ -1,18 +1,17 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17XiSS-0001Ll-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 14:15:08 +0100
-Date: Thu, 25 Jul 2002 15:14:57 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steven Hein <ssh@sgi.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Integrating new MTD/jffs2 into 2.4.18 kernel
-Message-ID: <20020725131457.GA19796@wohnheim.fh-wedel.de>
-References: <3D3FEE24.49D26D61@sgi.com>
+	id 17Xifo-0001N4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 14:28:56 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020725131457.GA19796@wohnheim.fh-wedel.de> 
+References: <20020725131457.GA19796@wohnheim.fh-wedel.de>  <3D3FEE24.49D26D61@sgi.com> 
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Cc: Steven Hein <ssh@sgi.com>, linux-mtd@lists.infradead.org
+Subject: Re: Integrating new MTD/jffs2 into 2.4.18 kernel 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3D3FEE24.49D26D61@sgi.com>
+Date: Thu, 25 Jul 2002 14:28:40 +0100
+Message-ID: <600.1027603720@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,34 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 25 July 2002 07:25:08 -0500, Steven Hein wrote:
-> I am running on an ARM platform using the 2.4.18 kernel with 2.4.18-rmk7
-> patch.  I'm using the MTD NAND flash support, and I'm having problems
-> running a jffs2 filesystem on a NAND flash device  (not a root
-> filesystem,
-> just a writable "scratch" directory).
-> 
-> Using a snapshot from yesterday, I tried to integrate the jffs2 from
-> the snapshot into my kernel.  But there were a few issues:
-> - include/linux/crc32.h but expected by the files in fs/jffs2
-> - zlib.[ch] were not in the jffs2 dir as they were previously
-> 
-> I tried fixing these, but still ended up missing the zlib_deflate*
-> functions.....
-> 
-> So my question is:   is there a place I can grab the MTD/jffs2 stuff
-> to drop directly into a 2.4.18-rmk7 kernel?   Or, is there a
-> procedure somewhere describing how to integrate the latest MTD
-> from CVS (especially jffs2) into the latest 2.4.x kernel?
+joern@wohnheim.fh-wedel.de said:
+>  My guess is that you need the zlib stuff in the kernel lib, you
+> should have linux/lib/zlib_inflate and linux/lib/zlib_deflate in your
+> source plus some modifications in arch/<yours>/config.in, lib/Makefile
+> and include/linux/zlib.h. Roughly. 
 
-You might want to take a look at a current -ac kernel. I had the same
-problems (and more), merging with a modified 2.4.2 kernel. Basically,
-whenever there was something missing, I took a look into the -ac
-kernel, modified mine accordingly, and went on to the next problem.
+ftp://ftp.??.kernel.org/pub/linux/kernel/people/dwmw2/shared-zlib/linux-2.4.19-pre10-shared-zlib.bz2
 
-My guess is that you need the zlib stuff in the kernel lib, you should
-have linux/lib/zlib_inflate and linux/lib/zlib_deflate in your source
-plus some modifications in arch/<yours>/config.in, lib/Makefile and
-include/linux/zlib.h. Roughly.
+And I think you may need to copy fs/jffs2/crc32.h to include/linux/crc32.h
+or something similar.
 
-Joern
+--
+dwmw2
