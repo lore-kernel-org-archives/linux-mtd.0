@@ -1,19 +1,16 @@
-Received: from 209-184-180-125.faxtell.net ([209.184.180.125] helo=eventlog.faxtell.net)
+Received: from msl-exchange.m-sys.com ([195.213.109.7])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xUid-0002Ye-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 15:13:36 +0100
-Message-ID: <001e01c0d892$6817f800$88b4b8d1@ShuhIII>
-Reply-To: "Shuh C. Chang" <schang@3inet.com>
-From: schang@3inet.com (Shuh C Chang)
-To: "Jason Walker" <jasonw@uswo.net>,
-	"MTD Mailing List" <linux-mtd@lists.infradead.org>
-References: <NEBBIDMHCLDPHDHEGDMLEEHACBAA.jasonw@uswo.net>
-Subject: Re: Oddities with MTD/DOC
-Date: Wed, 9 May 2001 09:14:48 -0500
+	id 14xVgs-0002fA-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 May 2001 16:15:50 +0100
+Message-ID: <44A73E446E0BD511860700508BEEF7071886C8@msl-exchange.m-sys.com>
+From: Vadim Khamlinsky <Vadimk@m-sys.com>
+To: "'Shuh C. Chang'" <schang@3inet.com>, Jason Walker <jasonw@uswo.net>,
+	MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: RE: Oddities with MTD/DOC
+Date: Wed, 9 May 2001 18:16:50 +0300 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,6 +21,29 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Never try to erase the whole diskonchip by using docpmap /e .
+After that there is a very good chance that you will not be able to 
+work with this DOC again since, you erase a bad block table of the device .
+If you want to return diskonchip back to its virgin state do the following :
+
+1. docpmap /b /f:file_name 
+  This operation saves bad block of the device in the file named file_name
+
+2. docpmap /bc /f:file_name  
+   This operation returns diskonchip to its virgin state, but does not
+erases bad blocks .
+
+3.  Now you can reformat diskonchip .
+
+Vadim 
+
+-----Original Message-----
+From: schang@3inet.com [mailto:schang@3inet.com]
+Sent: Wed, May 09, 2001 5:15 PM
+To: Jason Walker; MTD Mailing List
+Subject: Re: Oddities with MTD/DOC
+
 
 If you have the M-System's DOS utility (downloadable), then try this:
 
@@ -62,3 +82,8 @@ believing
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
