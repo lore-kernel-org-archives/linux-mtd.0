@@ -1,18 +1,20 @@
-Received: from green.nl.gxn.net ([62.100.30.36])
+Received: from jerusalem.magic.fr ([195.154.101.82])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1555km-0007uA-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 May 2001 14:11:12 +0100
-Received: from localhost([127.0.0.1]) (613 bytes) by green.nl.gxn.net
-	via sendmail with P:smtp/R:inet_hosts/T:smtp
-	(sender: <rini@van-zetten-2.myweb.nl>)
-	id <m1555oq-000ljOC@green.nl.gxn.net>
-	for linux-mtd@lists.infradead.org; Wed, 30 May 2001 15:15:24 +0200 (MET DST)
-	(Smail-3.2.0.106-3 1999-Mar-31 #11 built DST-Sep-7)
-Message-Id: <m1555oq-000ljOC@green.nl.gxn.net>
-Date: Wed, 30 May 2001 15:15:24 +0200 (MET DST)
-To: linux-mtd@lists.infradead.org
-From: rini@van-zetten-2.myweb.nl
-Subject: doc millennium compiled in kernel
+	id 1556fS-0007xW-00
+	for <linux-mtd@lists.infradead.org>; Wed, 30 May 2001 15:09:46 +0100
+Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
+	by jerusalem.magic.fr (8.9.0/8.9.0) with ESMTP id QAA08884
+	for <linux-mtd@lists.infradead.org>; Wed, 30 May 2001 16:13:59 +0200 (CEST)
+Message-ID: <3B14FFD7.16E200FD@inventel.fr>
+Date: Wed, 30 May 2001 16:12:39 +0200
+From: Xavier DEBREUIL <xde@inventel.fr>
+MIME-Version: 1.0
+To: Frederic Giasson <fgiasson@mediatrix.com>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: HOWTO add jffs2 support in Kernel Configuration xconfig
+References: <F1BED55F35F4D3118C0F00E0295CFF4D995475@mail.mediatrix.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,14 +26,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+add some lines equivalent to JFFS line in Config.in file
+Xavier
 
-When i use the M-System Disk-On-Chip 2000 and Millennnium as a module everything works fine but when i compile it in the kernel i can't use the doc. The messages show the following error :
-
-_DoC_WaitReady called for out-of-line wait
-May 30 14:59:16 arv-113 kernel: _DoC_WaitReady timed out.
-
-
-Anyone knows what to do ?
-
-Rini van Zetten
+Frederic Giasson a écrit :
+> 
+> Hi,
+> 
+>         I downloaded lastest MTD and JFFS1-2 from MTD's CVS site and no
+> options as added to my file system menu in xconfig to support JFFS2.  Can
+> someone tell me why?
+> 
+> Thanks!
+> 
+> Frédéric Giasson
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
