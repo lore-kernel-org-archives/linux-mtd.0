@@ -1,15 +1,15 @@
 Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e9RU-0000Fu-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 07:49:00 +0000
-Date: Thu, 30 Jan 2003 08:19:56 +0000 (GMT)
+	id 18e9V6-0000GJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 07:52:45 +0000
+Date: Thu, 30 Jan 2003 08:23:42 +0000 (GMT)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Raphael Hertzog <eng@eipm.ch>
-cc: Henrik Nordstrom <hno@marasystems.com>,  <linux-mtd@lists.infradead.org>
-In-Reply-To: <1043913922.556.4.camel@localhost>
-Message-ID: <Pine.LNX.4.44.0301300819250.4791-100000@imladris.demon.co.uk>
+To: Alex Samoutin <samoutin@hotbox.ru>
+cc: linux-mtd@lists.infradead.org
+In-Reply-To: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com>
+Message-ID: <Pine.LNX.4.44.0301300822251.4791-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Subject: Re: NFTL not recognizing disk on chip in some cases
+Subject: Re: NAND subsector writing problem
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,31 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 30 Jan 2003, Raphael Hertzog wrote:
+On Wed, 29 Jan 2003, Alex Samoutin wrote:
+> When I do write and read using "nandwrite/nanddump" utilities - it is look
+> like all working fine. However "nandtest" showed me error message during
+> subsector writing (see log below). Can I use  jffs2 with this type of
+> problem or I have to fix it? (And may be you know - what can cause this
+> error?)
 
-> I'm happy to test any patch since I can reproduce the problem here very
-> regularly ... :-)
+Are you expected to be able to use ECC with subsector writes? Surely you 
+expect the ECC to fail?
 
-Index: drivers/mtd/nftlmount.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/nftlmount.c,v
-retrieving revision 1.31
-diff -u -p -r1.31 nftlmount.c
---- drivers/mtd/nftlmount.c	15 Nov 2002 16:34:43 -0000	1.31
-+++ drivers/mtd/nftlmount.c	30 Jan 2003 08:19:46 -0000
-@@ -137,7 +137,11 @@ static int find_boot_record(struct NFTLr
- 				printk(KERN_NOTICE "NFTL Media Headers at 0x%x and 0x%x disagree.\n",
- 				       nftl->MediaUnit * nftl->EraseSize, block * nftl->EraseSize);
- 				/* if (debug) Print both side by side */
--				return -1;
-+				if (boot_record_count < 2) {
-+					/* We haven't yet seen two real ones */
-+					return -1;
-+				}
-+				continue;
- 			}
- 			if (boot_record_count == 1)
- 				nftl->SpareMediaUnit = block;
+JFFS2 doesn't do subsector writes on NAND, so shouldn't suffer. 
 
 -- 
 dwmw2
