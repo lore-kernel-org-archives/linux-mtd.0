@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [208.141.100.35] (helo=geirrod.nitsuko.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 169n0Q-0000zU-00
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Nov 2001 12:43:02 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01113013455100.01045@theodul> 
-References: <01113013455100.01045@theodul> 
-To: Felix Frey <ffrey@freesurf.ch>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Booting from DOC-Millenium 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 30 Nov 2001 12:53:29 +0000
-Message-ID: <20221.1007124809@redhat.com>
+	id 169pZm-0001BJ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Nov 2001 15:27:42 +0000
+Received: from shelton.nitsuko.com (IDENT:notes@shelton [143.101.35.7])
+	by geirrod.nitsuko.com (8.9.2/8.9.0) with ESMTP id EAA15440
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2001 04:10:58 -0500 (EST)
+From: MQuicquaro@necinfrontia.com
+Subject: Re: No space on jffs2 fs
+To: linux-mtd@lists.infradead.org
+Message-ID: <OFC89DF372.F3CC9069-ON85256B14.00554933@nitsuko.com>
+Date: Fri, 30 Nov 2001 10:37:41 -0500
+MIME-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +24,8 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ffrey@freesurf.ch said:
->  The only remaining problem is that I  can't boot from the DOC
-> anymore. I'm using doc-lilo as bootloader. I appreciate any advice.
-
-What happens? Does the built-in BIOS not detect the DiskOnChip any more? I 
-think the Grub code to drive the DiskOnChip directly, without even using 
-the M-Systems' BIOS extension, is now ready for people to use it - you 
-could try that.
-
---
-dwmw2
+DQpEYXZlIGFuZCBBc2hvaywNCg0KVGhhbmtzIGZvciB0aGUgaGVscC4NClNvIGluIGVzc2VuY2Ug
+d2hhdCB5b3UgYXJlIHRlbGxpbmcgbWUgaXMgdGhhdCBzaW5jZSB0aGUgYmxvY2sgc2l6ZQ0Kb2Yg
+bXkgZmxhc2ggcGFydCBpcyAyNTZLLCB0aGVuIHRoZSBzbWFsbGVzdCBqZmZzMiBmaWxlIHN5c3Rl
+bSB0aGF0IEkNCmNhbiBoYXZlIGlzIDUqMjU2SyBvciAxLjI1IE1CPw0KDQpJcyB0aGlzIGNvcnJl
+Y3Q/DQoNCk1pa2U=
