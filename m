@@ -1,22 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfG9Y-0004A0-EE
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 06:20:16 -0500
-Date: Fri, 17 Dec 2004 12:20:00 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20041217112000.GB10973@wohnheim.fh-wedel.de>
-References: <JPEALJAFNGDDLOPNDIEEGEHCCPAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0412171053080.8020@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0412171053080.8020@phoenix.infradead.org>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-Subject: Re: JFFS3 & performance
+Date: Fri, 17 Dec 2004 11:20:58 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+In-Reply-To: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
+Message-ID: <Pine.LNX.4.58.0412171119290.8020@phoenix.infradead.org>
+References: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 December 2004 10:56:22 +0000, Artem B. Bityuckiy wrote:
+On Fri, 17 Dec 2004, Joakim Tjernlund wrote:
+
+> > 
+> > > Another idea, calculate the CRC backwards(from the end of the buffer to the beginning).
+> > > That give better L1 cache behaviour.
+> > >
+> > Why (may be some URL)? For all archs? 
 > 
-> > Another idea, calculate the CRC backwards(from the end of the buffer to the beginning).
-> > That give better L1 cache behaviour.
-> >
-> Why (may be some URL)? For all archs? 
+> example, when writing a buffer to flash you first CRC it from top to bottom.
+> The bottom part of the buffer is then newer than the top of then buffer in the
+> L1 cache or the top part has already been evicted from the L1 cache depending
+> of the size of the buffer and size of L1 cache.
+> 
+> Now you start again from the top of the buffer to actually write the buffer
+> to flash and you probaly need to read the data from RAM into L1 cache again.
+> 
+> Reading from flash will cause similar effects.
+> 
+> If you calculate CRC backwards you will avoid trashing the cache needlessly.
+> 
+>  Jocke
+> 
+Ok, thanks, good idea, I'll put it to the TODO file too.
+ 
 
-Sounds rather odd indeed.  Most CPUs I know about either have no
-hardware-prefetch, can only prefetch forward or can prefetch both
-forward and backward.  In either case, calculating the CRC backward
-should either be the same speed or slower than going forward.
-
-But I like to learn something new.
-
-Jörn
-
--- 
-I've never met a human being who would want to read 17,000 pages of
-documentation, and if there was, I'd kill him to get him out of the
-gene pool.
--- Joseph Costello
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
