@@ -1,22 +1,18 @@
-Received: from mailserv.intranet.gr ([146.124.14.106])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVP0j-0004LV-ED
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 02:14:03 -0400
-Received: from mailserv.intranet.gr (localhost [127.0.0.1])
-	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id i526JSc26374
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 2 Jun 2004 09:19:28 +0300 (EEST)
-Message-ID: <40BD6EE4.5010805@intracom.gr>
-Date: Wed, 02 Jun 2004 09:08:36 +0300
-From: Pantelis Antoniou <panto@intracom.gr>
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BVTbX-0004uy-Nc
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 07:08:21 -0400
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004060207182613644
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jun 2004 07:18:26 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812A9@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 2 Jun 2004 07:09:52 -0400 
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <200406020023.02262.tglx@linutronix.de>
-In-Reply-To: <200406020023.02262.tglx@linutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND driver
+Content-Type: text/plain
+Subject: MTD drivers for Arm core
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+Hello All,
 
->Hi all,
->
->the NAND driver has some more new features
->
->- support for AG-AND chips (currently tested with HN29V1G91T-30)
->- bad block table support (memory and flash based)
->- a new API documentation (online version is available on MTD homepage)
->
->
-Sounds interesting...
+  I have been trying to get DOC Mil plus 32 working correctly on my Arm core
+board.  The DOC driver doc2001plus can see the chip after changing the
+doc200.h header file.  Seem that for arm core I couldn't use the way the
+ReadDOC and WriteDOC worked.  I had to use the inw and outw functions.  Now
+I am trying to get the mtd drivers working so I can use nftl_format.  When I
+run nftl_format it reads an incorrect erase size.  I am wondering if this is
+due to the same kind of problem I have with the DOC drivers.  If so in what
+file can I correct the ioctl reading and writing to the DOC so I get the
+proper values.  The native DOC drivers and utils read the chip correctly.
 
-I'll test when I have some spare time available.
-
-Just a question.
-
-Does it do the automatic bad block skipping on read-only
-like my patch did, so I can mount CRAMFS?
-
-That is, is something like my patch still required,
-or it is no longer necessary?
-
-Regards
-
-Pantelis
+Thanks for the help,
+John
