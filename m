@@ -1,21 +1,17 @@
-Received: from rr-border1.ext.ridgerun.com ([207.173.88.193] helo=ridgerun-lx.ridgerun.cxm)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16SmZY-0006Yj-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 22:05:49 +0000
-Received: from ridgerun.com (skranz-lx.ridgerun.cxm [192.168.1.15])
-	by ridgerun-lx.ridgerun.cxm (8.11.6/8.11.6) with ESMTP id g0LMB4n29163
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 15:11:04 -0700
-Received: from ridgerun.com (skranz-lx [127.0.0.1])
-	by ridgerun.com (8.11.2/8.11.2) with ESMTP id g0LMALd22938
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 15:10:21 -0700
-Message-ID: <3C4C91CD.D9574F9B@ridgerun.com>
-Date: Mon, 21 Jan 2002 15:10:21 -0700
-From: Steve Kranz <skranz@ridgerun.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: MTD on linux 2.0.38?
+	id 16SmyE-0006bB-00
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 22:31:18 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3C4C91CD.D9574F9B@ridgerun.com> 
+References: <3C4C91CD.D9574F9B@ridgerun.com> 
+To: Steve Kranz <skranz@ridgerun.com>
+Cc: linux-mtd@lists.infradead.org, Erwin Authried <eauth@softsys.co.at>
+Subject: Re: MTD on linux 2.0.38? 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 21 Jan 2002 22:42:09 +0000
+Message-ID: <4784.1011652929@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,12 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+skranz@ridgerun.com said:
+>   As of many months ago it was my understanding that
+>   MTD had never been back-ported to the 2.0.38 kernel.
+>   Is this still the case? 
 
-  As of many months ago it was my understanding that
-  MTD had never been back-ported to the 2.0.38 kernel.
+There are periodic screams of anguish when I break the 2.0 build, and I try 
+not to - it ought to work without too much pain. Erwin?
 
-  Is this still the case?
-
-Thank You.
-skranz@ridgerun.com
+--
+dwmw2
