@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 0x3ef25f5e.honxl.paisdn.tele.dk ([62.242.95.94] helo=sss.dnsalias.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ytXV-0007c6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2002 13:32:42 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <5.1.0.14.0.20021008132754.00b9b3d0@sss.dnsalias.net> 
-References: <5.1.0.14.0.20021008132754.00b9b3d0@sss.dnsalias.net> 
-To: Svenning Sorensen <sss@sss.dnsalias.net>
-Cc: linux-mtd@lists.infradead.org
+	id 17yuuo-0007iT-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2002 15:00:50 +0100
+Message-Id: <5.1.0.14.0.20021008154913.00b68b50@sss.dnsalias.net>
+Date: Tue, 08 Oct 2002 15:59:28 +0200
+To: David Woodhouse <dwmw2@infradead.org>
+From: Svenning Sorensen <sss@sss.dnsalias.net>
 Subject: Re: [BUG] Oops in nftl driver 
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <29399.1034080359@passion.cambridge.redhat.com>
+References: <5.1.0.14.0.20021008132754.00b9b3d0@sss.dnsalias.net>
+ <5.1.0.14.0.20021008132754.00b9b3d0@sss.dnsalias.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 08 Oct 2002 13:32:39 +0100
-Message-ID: <29399.1034080359@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-sss@sss.dnsalias.net said:
->  I don't know if it will be triggered under "normal" circumstances. In
-> my case, it happened after I had switched from using the M-Systems
-> driver to the linux-mtd driver, without reformatting the DOC in
-> between, and with an ext2-compressed file system on it. I would say
-> that the kernel should not oops, no matter the state and content of
-> the DOC, so I believe the bug is real.
+At 14:32 08-10-2002, David Woodhouse wrote:
 
-> I'm using the linux-2.4.19 driver, but the bug still appears to exist
-> in the cvs version.
+>Thanks for the useful report. Does this help?
 
-> I wrote down the oops info and handed it to ksymoops:
+Indeed, it does.
+Thanks for fixing this so promptly.
 
-Thanks for the useful report. Does this help?
-
---- drivers/mtd/nftlmount.c     13 Sep 2002 14:35:33 -0000      1.29
-+++ drivers/mtd/nftlmount.c     8 Oct 2002 12:32:24 -0000
-@@ -740,7 +740,7 @@ int NFTL_mount(struct NFTLrecord *s)
-
-        /* second pass to format unreferenced blocks  and init free block count */
-        s->numfreeEUNs = 0;
--       s->LastFreeEUN = BLOCK_NIL;
-+       s->LastFreeEUN = le16_to_cpu(s->MediaHdr.FirstPhysicalEUN);
-
-        for (block = 0; block < s->nb_blocks; block++) {
-                if (s->ReplUnitTable[block] == BLOCK_NOTEXPLORED) {
-
---
-dwmw2
+-
+Svenning
