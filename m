@@ -1,18 +1,16 @@
-Received: from ash.lnxi.com ([207.88.130.242])
+Received: from smtp015.mail.yahoo.com ([216.136.173.59])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Cp7t-00051P-SE
-	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 00:12:06 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Michael Moedt <xemc@yahoo.com>
-In-Reply-To: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
-References: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
-Message-Id: <1052176326.1172.11789.camel@tubarao>
+	id 19CqaA-0005IE-IL
+	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 01:45:22 +0100
+From: "=?GB2312?Q?=CC=D5=D3=C0?=" <taoyong2002cncq@yahoo.com.cn>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Date: 05 May 2003 17:12:07 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-mzc2GoFy/+Epw6GWaS3m"
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Error: Wacky! Unable to decode failure status
+Date: Tue, 6 May 2003 8:46:53 +0800
+Message-Id: <E19CqaA-0005IE-IL@pentafluge.infradead.org>
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Subject: NAND flash!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello=A3=AC
 
---=-mzc2GoFy/+Epw6GWaS3m
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+      Could i use cheaper NAND Flash-ROMs instead of expensive=
+ NOR Flash-ROMs
+   (like Intel or AMD Flash) to hold the=
+ MIPS-Kernel/Applications/Data and
+   boot the System from? We use the AMD PB1000 development=
+ board,and the bootloader 
+   is yamon. 
+   I know that yaffs is very useful for the NAND flash. But how=
+ to add it to the kernal or 
+   yamon?
 
-On Mon, 2003-05-05 at 16:49, Michael Moedt wrote:
-> I hope you don't mind my fooling, but I've modified
-> the patch yet again,
+Best regards, 
 
-I often find better ways of doing things if I re-read and edit things
-one more time.
+taoyong
 
-> to use if-then blocks instead of
-> a switch. (I've heard it's better for removing code at
-> compile-time.)
+=09
 
-I'm no expert here - I think a good compiler will remove unnecessary
-code regardless.  Either way, I'm not so hung up on a switch/case that I
-refuse to change.
-
-> Also, it complained to me about CFIDEV_BUSWIDTH_8
-> being undeclared, which matches the behavior in
-> include/linux/mtd/cfi.h, when the geometry option
-> isn't enabled.  I put in something in for this as
-> well.  Could you look over my changes?
-
-You'll have to forgive me, but I also changed my original patch.  The
-"ones =3D CMD( ones )" is not needed.
-
-BTW, we should just ignore the CFIDEV_BUSWIDTH_8 - it's not used
-anywhere that I know of and it has some known issues that make it icky.
-
-Yeah, I can't believe I used the word "icky."
-
-> Thanks again,
->=20
-> Mike
->=20
->=20
-> Here's that patch:
-
-Thanks.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-mzc2GoFy/+Epw6GWaS3m
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+tu/GfsBPTKE6HMkRAkdyAJ9nLvkBOvmK+L7Tkhrl4qa/NGb+FwCfRn/p
-kXlZCuUFUEpQ2WWxHE9I5kA=
-=hCn2
------END PGP SIGNATURE-----
-
---=-mzc2GoFy/+Epw6GWaS3m--
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1taoyong2002cncq@yahoo.com.cn
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-05-06
