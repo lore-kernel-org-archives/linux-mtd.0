@@ -1,20 +1,25 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cw24a-0000TM-UN
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 12:44:22 -0500
-Date: Tue, 1 Feb 2005 18:44:20 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
+Received: from wproxy.gmail.com ([64.233.184.206])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cw2Xr-0000pC-4K
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 13:14:38 -0500
+Received: by wproxy.gmail.com with SMTP id 68so836739wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 01 Feb 2005 10:14:24 -0800 (PST)
+Message-ID: <6934efce0502011014a75e21b@mail.gmail.com>
+Date: Tue, 1 Feb 2005 10:14:23 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050201174419.GA32581@synertronixx3>
+In-Reply-To: <20050201174419.GA32581@synertronixx3>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 References: <20050201153945.GA26068@synertronixx3>
 	<Pine.LNX.4.61.0502011137020.31479@localhost.localdomain>
 	<20050201172059.GB26068@synertronixx3>
 	<Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
+	<20050201174419.GA32581@synertronixx3>
 Subject: Re: I need still help with XIP, kernel boots now :)
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Regarding my mail before:
+> I changed IMX_TCN(1) to IMX_TCN(0) because this is the system timer,
+> damn! Oops is away then and booting an non xip uImage with
+> CONFIG_XIP_MTD=y works very well! I could copy a file onto the extra
+> partition mounted rw.
+> 
+> Running this xipuImage (/ mounted ro) allowed me to mount
+> an extra jffs2 partition and ls on it, but writing on it freezes the
+> system.
 
-I changed IMX_TCN(1) to IMX_TCN(0) because this is the system timer,
-damn! Oops is away then and booting an non xip uImage with
-CONFIG_XIP_MTD=y works very well! I could copy a file onto the extra
-partition mounted rw. 
+JTAG/BDM debug time?  I've had good luck with the Abatron BDI2000. ;)
 
-Running this xipuImage (/ mounted ro) allowed me to mount 
-an extra jffs2 partition and ls on it, but writing on it freezes the
-system.
-
-Am 2005-02-01 12:30 -0500 schrieb Nicolas Pitre:
-
-> What kernel version is this?
-
-2.6.11-rc2-mm2 with my board specific i.MX addons.
-
-Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+If you look at cfi_cmdset_0001 you'll find some function use __xipram.
+ This is intended to place them in RAM so when the flash goes into
+status mode you can run these functions.  Make sure they are actually
+in RAM.  Check your System.map.
