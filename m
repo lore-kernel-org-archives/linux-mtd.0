@@ -1,17 +1,16 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from sccrmhc12.attbi.com ([204.127.202.56])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q8PN-0005hX-S5
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:25:09 +0100
-From: David Woodhouse <dwmw2@infradead.org>
+	id 19Q8Sn-0005rR-Tv
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:28:42 +0100
+Message-ID: <3EE75C78.4020408@mvista.com>
+Date: Wed, 11 Jun 2003 12:44:40 -0400
+From: "George G. Davis" <gdavis@mvista.com>
+MIME-Version: 1.0
 To: Siddharth Choudhuri <choudhri@cs.tamu.edu>
-In-Reply-To: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
 References: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
-Message-Id: <1055348742.2097.257.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 11 Jun 2003 17:25:43 +0100
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: jffs2 vs. ext3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,7 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-06-11 at 17:03, Siddharth Choudhuri wrote:
+
+
+Siddharth Choudhuri wrote:
 > I am trying jffs2 and ext3 on a 3MB Intel NOR flash. I have a piece of
 > code in function part_write (mtdpart.c) that outputs the size in bytes and pid
 > of the process (current) sending write requests.
@@ -36,35 +37,26 @@ On Wed, 2003-06-11 at 17:03, Siddharth Choudhuri wrote:
 > 
 > Any ideas why it happens ?
 
-The flash chip has an erase size of 128KiB. You can't treat it like a
-normal hard drive -- to use a traditional file system like ext3, you
-have to have some kind of 'translation layer' to fake that behaviour.
+... also with ext3, you'll have a brick(TM) pretty soon too. ; )
+Hint: ext3 doesn't not do flash wear levelling. You'll burn out
+your flash chips pretty soon.
 
-The 'mtdblock' translation layer which you seem to be using is the most
-naïve implementation possible of such a thing -- every time a 512-byte
-sector on the 'virtual' block device is changed, we read the 128KiB
-block of flash into memory, modify 512 bytes of it accordingly and then
-write back the modified data.
+--
+Regards,
+George
 
-If you lose power during the period between the erase starting and the
-writeback of the modified data completing, you lose a huge chunk of your
-data.
-
-(OK, it's actually a little more intelligent than that and does combine
-subsequent writes into the same eraseblock, rather than doing an erase
-for _every_ 512-byte sector write, but the principle is the same, and
-it's still entirely unsafe.)
-
-There are other, more complex, translation layers such as FTL -- these
-are a kind of pseudo-filesystem which emulate a block device slightly
-more safely and do give you powerfail-protection by having some kind of
-journalling built-in. 
-
-When combined with a true journalling file system atop their 'virtual'
-block device, that's really not the most efficient use of the flash. 
-
-JFFS2, on the other hand, works directly with the flash and does not
-suffer the same problems.
-
--- 
-dwmw2
+> 
+> thanks in advance,
+> -siddharth
+> 
+> _____________________________________________________________________
+>      Unix is user friendly - its just picky about its friends.
+> _____________________________________________________________________
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+> 
