@@ -1,40 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14kGpC-0003sf-00
-	for mtd-list@infradead.org; Tue, 03 Apr 2001 03:45:42 +0100
-Received: from nwcst285.netaddress.usa.net ([204.68.23.30])
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14kGpB-0003sZ-00
-	for mtd@infradead.org; Tue, 03 Apr 2001 03:45:41 +0100
-Message-ID: <20010403024521.10444.qmail@nwcst285.netaddress.usa.net>
-Date: 2 Apr 2001 19:45:21 PDT
-From: Eric <ebrower@usa.net>
-To: Tim Bowman <tbowman@emware.com>, mtd mailing list <mtd@infradead.org>
-Subject: Re: [RPX Classic/Lite and byte ordering]
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+	id 14kWw3-0000Ob-00
+	for mtd-list@infradead.org; Tue, 03 Apr 2001 20:57:51 +0100
+Date: Tue, 3 Apr 2001 21:56:39 +0200 (CEST)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: Directory restructure? 
+In-Reply-To: <23328.985646097@redhat.com>
+Message-ID: <Pine.LNX.4.21.0104032147210.21780-100000@godzilla.axis.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Tim Bowman <tbowman@emware.com> wrote:
+On Mon, 26 Mar 2001, David Woodhouse wrote:
+> >  Hopefully you can play that game directly within the repository so
+> > not to lose log history. 
+> 
+> That's the plan, yes.
 
-> The rpxlite layer seems to be using memcpy_fromio, writeb, writew, etc,=
+There is no clean way of moving files in cvs and retaining history :( it's
+one of the (few) bad things with cvs (another is that you cannot really
+use -D to check out an old version cleanly).
 
-> not __raw_writeb.  Should these be replaced with the raw versions?
+I think the closest you can get is to cp the ,v files to the new place
+and then do cvs rm on the original files (so you can restore an earlier
+version if you want). If you do plain mv you screw that up (as well as any
+person who has a checkout).
 
-Yes, in any case they should be using the __raw equivalents to force
-untranslated byte ordering.  This allows the ENDIAN defines to work
-appropriately.  I can't say if this is your problem, but you should
-go 'raw' at the very least to be idiomatic with the other drivers.
+You'll need to manually remove the tags from the cp'ed files though,
+otherwise you'll get problems backing up as well (you'll get duplicates).
 
-E
+-BW
 
-
-
-____________________________________________________________________
-Get free email and a permanent address at http://www.netaddress.com/?N=3D=
-1
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
