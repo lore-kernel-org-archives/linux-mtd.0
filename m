@@ -1,22 +1,20 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from kynes.gatewest.net ([198.163.227.7])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A1twL-000415-LV
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Sep 2003 21:39:17 +0100
-Date: Tue, 23 Sep 2003 22:37:20 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Felipe W Damasio <felipewd@terra.com.br>
-Message-ID: <20030923203720.GB1599@wohnheim.fh-wedel.de>
-References: <3F709E0D.7090307@terra.com.br>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3F709E0D.7090307@terra.com.br>
-Content-Type: text/plain; charset=iso-8859-1
+	id 1A1v7Y-0004Fr-SJ
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Sep 2003 22:54:57 +0100
+From: Cam Mayor <cmayor@iders.ca>
+To: "Steve Brockway" <steve@str8line.com>, <linux-mtd@lists.infradead.org>
+Date: Tue, 23 Sep 2003 16:54:36 -0500
+References: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
+	<005201c381f9$25660a70$b670a8c0@laptoplukkino>
+	<01ba01c38202$644206a0$0800000a@qwest.net>
+In-Reply-To: <01ba01c38202$644206a0$0800000a@qwest.net>
+MIME-Version: 1.0
+Message-Id: <03092316543605.28719@kilauea.iders.ca>
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-cc: Andrew Morton <akpm@osdl.org>
-cc: linux-mtd@lists.infradead.org
-cc: David Woodhouse <dwmw2@infradead.org>
-cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Memory leak in mtd/chips/cfi_cmdset_0020.c
+Subject: Re: mounting mtd device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 September 2003 16:25:01 -0300, Felipe W Damasio wrote:
-> 
-> 	Patch against 2.6-test5.
-> 
-> 	If other kmallocs failed after successfully allocating a "struct 
-> mtd_info", it should be freed before returning NULL.
-> 
-> 	This function is called by inter_module_register...so I'm not sure 
-> 	it should really be freed...please review :)
-> 
-> 	Don't have the hardware, so just compilation checked.
+On Tuesday 23 September 2003 13:42, Steve Brockway wrote:
+> Hello All, I am new to this type of mailing list.
+>
+> I need help mounting a JFFS2. Not sure of the correct steps. The underlying
+> MTD structure is working.
+>
+> Below is a part of a boot sequence and the the output of
+> cat /proc/mtd.
+>
+> What is the next step to mount a JFFS2?
 
-Very few people do, STMicro sells those chips to a handpicked group of
-users only.  And none of them use 2.6 yet, to my knowledge.  But your
-patch looks fine, so please do apply, Andrew and David.
-
-Jörn
+1) read through mtd-jffs-HOWTO.txt for the answer
+2) beware using more than 8 (ie. 0-7) mtd partitions.  mtdblock devices don't 
+go higher than that.  (or so it seems)
+3) for new questions, start a new subject line without hitting the reply 
+button
 
 -- 
-A defeated army first battles and then seeks victory.
--- Sun Tzu
+Cameron Mayor
+Iders Incorporated
