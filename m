@@ -1,17 +1,16 @@
-Received: from [209.185.149.10] (helo=c0mailgw04.prontomail.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Y0lZ-0006yK-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Feb 2002 08:15:49 +0000
-Received: from c0web105 (209.185.149.10)  
-        id 3C50BB4D00391942 for linux-mtd@lists.infradead.org; Tue, 5 Feb 2002 00:19:31 -0800
-From: "Kristberg Karlsson" <gustix@visir.is>
-Message-Id: <46EF036A548E485419D075DB0E69CEF6@gustix.visir.is>
-Date: Tue, 5 Feb 2002 09:27:56 +0100
-Content-Type: text/plain; charset=iso-8859-1
-To: linux-mtd@lists.infradead.org
-Subject: Jedec chip mapping in SC400
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	id 16Y1GA-0006zy-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Feb 2002 08:47:26 +0000
+Date: Tue, 5 Feb 2002 09:58:30 +0100 (MET)
+From: Robert Kaiser <rob@sysgo.de>
+To: Kristberg Karlsson <gustix@visir.is>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Jedec chip mapping in SC400
+In-Reply-To: <46EF036A548E485419D075DB0E69CEF6@gustix.visir.is>
+Message-ID: <Pine.LNX.4.21.0202050945490.24810-100000@dagobert.svc.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am having trouble finding the map of 2 AMD 29F016(Jedec) chips that ar=
-e in my Elan SC400 custom made board.
-Does anyone know if there is a way to make jedec_probe (or another meth=
-od) search for them.
-Or if anyone has an experience in how to map the chips in a Elan SC400 =
-to a predefined place.
 
-Gusti
+On Tue, 5 Feb 2002, Kristberg Karlsson wrote:
 
---
-Agust Karlsson            mailto:gusti@pallas.dk
-Pallas Informatik A/S     http://www.pallas.dk
-Aller=F8d Stationsvej 2D    Tel.: +45 48 10 24 10
-DK-3450 Aller=F8d           Fax.: +45 48 10 24 01
+> I am having trouble finding the map of 2 AMD 29F016(Jedec) chips that
+> are in my Elan SC400 custom made board. Does anyone know if there is
+> a way to make jedec_probe (or another method) search for them.
+> Or if anyone has an experience in how to map the chips in a Elan
+> SC400 to a predefined place.
+> 
 
+The AMD 29F016 should be already be supported (at least it appears in
+jedec_probe.c). I believe the tricky part is to make the flash chips
+appear in the address space. For that, you might want to have a look at
+the mapping driver for the SSV DIL/NetPC that has been committed to the
+MTD CVS a few days ago (file name dilnetpc.c). The DIL/NetPC has an Elan
+SC410 which -I think- is the same as the SC400 in terms of how boot rom is
+mapped into the addess space. Look at function dnpc_map_flash().
 
+Cheers
 
+Rob
 
-Skr=E1=F0u inn undirskriftina =FE=EDna h=E9r
-Sent me=F0 Fr=EDp=F3sti fr=E1 V=EDsir.is
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
