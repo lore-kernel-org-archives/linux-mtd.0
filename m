@@ -1,19 +1,15 @@
-Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
+Received: from mail.mellanox.co.il ([194.90.237.34] helo=mtlex01.yok.mtl.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Wdjf-0004CT-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Jul 2002 15:00:28 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Can't format my DOC
-Date: Mon, 22 Jul 2002 09:59:46 -0400
-References: <1026923208.17761.22.camel@pc11>
-In-Reply-To: <1026923208.17761.22.camel@pc11>
+	id 17Wdvf-0004G1-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Jul 2002 15:12:51 +0100
+Message-ID: <91DB792C7985D411BEC300B40080D29C457DBC@mtvex01.mtv.mtl.com>
+From: Roee Friedman <roeef@mellanox.co.il>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Booting from flash in Artesyn PMPPC
+Date: Mon, 22 Jul 2002 17:14:25 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Jens Nixdorf <jens.nixdorf@embesso.com>
-Message-Id: <200207220956781.SM02488@there>
+Content-Type: text/plain;
+	charset="windows-1255"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,27 +21,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jens,
+Hello!
 
-You might want to try reformatting your DoC with an earlier version (4.2) of 
-the M-Sys DFORMAT utility.  I believe this is still available at the M-Sys 
-website.  This should take care of the "UnitSizeFactor" problem, which has 
-not been completely resolved yet, as far as I know.
+I am trying to boot Linux (HardHat 2.0 Pro) from the flash memory of PPC on
+Artesyn board. The kernel is loading from the flash without problems, but
+then it loos for the root fs.
+I have created a file system on /dev/mtdblock2 but it is not good enough for
+the kernel. Any tips, pointers, links, documentation of the Artesyn
+boot-loader?
 
-David -- is there anything I can do to help resolve this issue?  Has it 
-already been addressed in the latest CVS code?
-
-Regards,
-
-Mark
-
-Jens Nixdorf wrote:
-> DiskOnChip 2000 found at address 0xD8000
-> Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba
-> TC58256FT/DC)
-> 9 flash chips found. Total DiskOnChip size: 288 MiB
-> mtd: Giving out device 0 to DiskOnChip 2000
-> ...
-> Sorry, we don't support UnitSizeFactor of != 1 yet.
-> Could not find valid boot record
-> Could not mount NFTL device
+Thanks!!
+Roee
