@@ -1,25 +1,16 @@
-Received: from mail.imc-berlin.de ([217.110.46.186]
-	helo=mail.berlin.imc-berlin.de)
+Received: from fep01-mail.bloor.is.net.cable.rogers.com ([66.185.86.71])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193sGV-00031d-Vp
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 07:44:00 +0100
-Message-ID: <3E966431.8010107@imc-berlin.de>
-Date: Fri, 11 Apr 2003 08:44:01 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 193tJ6-0003DS-Sw
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 08:50:45 +0100
+Date: Fri, 11 Apr 2003 03:50:16 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@infradead.org>
+To: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+In-Reply-To: <3E9312BF.50009@mail.arc.nasa.gov>
+Message-ID: <Pine.LNX.4.44.0304110336470.3790-100000@CPE00e0292061fa-CM014370001917.cpe.net.cable.roger>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <3E92D5C7.8020603@imc-berlin.de>
-	<20030408141952.GA30313@wohnheim.fh-wedel.de>
-	<3E92DDC9.7030000@imc-berlin.de>
-	<20030408150331.GA32580@wohnheim.fh-wedel.de>
-	<3E92EE0B.4000702@imc-berlin.de>	 <20030408160021.GC5065@wohnheim.fh-wedel.de>
-	<3E92F32D.8000600@imc-berlin.de>
-	<1049818139.31462.10.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-cc: MTD <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 uncompressed?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: linux-mtd@lists.infradead.org
+Subject: Re: DoC + GRUB booting problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse schrieb:
-> On Tue, 2003-04-08 at 17:05, Steven Scholz wrote:
-> 
->>But I'd love to see my name in the MTD Hall of Fame though! ;-)
-> 
-> 
-> Send me a SSH key and you can commit your patch and at least get your
-> name in the $Id$ tag and the changelog... :)
 
-Do you need an entry for the man page as well?
+On Tue, 8 Apr 2003, Edward A. Hildum wrote:
 
-Steven
+> I have disassembled the BIOS boot code (included below) and found some
+> conflicts with the README_DiskOnChip info:
+
+Ted,
+
+May I suggest that the DoC bootloader you've disassembled was the one 
+supplied by M-Sys?  I myself didn't use the DFORMAT utility to load the 
+GRUB firmware, but that shouldn't mean it isn't possible.  
+
+Is it possible to DFORMAT the DoC's NFTL layer only, starting from the
+given offset?  If yes, it would be a good choice, accompanied by the 
+mtd/util/doc_loadbios utility which will store the grub_firmware file into 
+the beginning of the flash memory.
+
+I heard that the mtd/util/nftl_format utility may not be compatible with 
+the bad block table stored in the DoC at the factory.  I was lucky enough 
+to disregard the bad block table by issuing the erase_all command against 
+/dev/mtd0 and then proceeding with nftl_format.  However, this is not the 
+safest approach because NAND memory is error prone.
+
+-- 
+Ilguiz Latypov
+Montreal, Quebec
+Canada
+
+tel. +1 (514) 526-6911
