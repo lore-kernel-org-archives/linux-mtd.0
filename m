@@ -1,19 +1,24 @@
-Received: from wproxy.gmail.com ([64.233.184.197])
+Received: from fallback.mail.ru ([194.67.57.14] helo=mx4.mail.ru)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEeJw-0007KW-7D
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 21:13:09 -0500
-Received: by wproxy.gmail.com with SMTP id 68so681337wra
+	id 1DEiOW-0008D7-50
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 01:34:09 -0500
+Received: from f16.mail.ru (f16.mail.ru [194.67.57.46])
+	by mx4.mail.ru (mPOP.Fallback_MX) with ESMTP id B0C66188B1A
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 18:13:07 -0800 (PST)
-Message-ID: <7e75d411050324181317498525@mail.gmail.com>
-Date: Thu, 24 Mar 2005 20:13:07 -0600
-From: Matthew Hudson <hexsane@gmail.com>
+	Fri, 25 Mar 2005 08:14:30 +0300 (MSK)
+Received: from mail by f16.mail.ru with local id 1DEh9N-0008Wa-00
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 08:14:25 +0300
+From: =?koi8-r?Q?=F7=C9=D4=C1=CC=C9=CA=20=F3=D4=CF=CC=D1=D2=CF=D7?=
+	<svitaliy77@mail.ru>
 To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: mtd0 problem - debug level 3
-Reply-To: Matthew Hudson <hexsane@gmail.com>
+Date: Fri, 25 Mar 2005 08:14:25 +0300
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1DEh9N-0008Wa-00.svitaliy77-mail-ru@f16.mail.ru>
+Subject: jffs2 mounting time
+Reply-To: =?koi8-r?Q?=F7=C9=D4=C1=CC=C9=CA=20=F3=D4=CF=CC=D1=D2=CF=D7?=
+	<svitaliy77@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mar 24 20:45:42 notebook cardmgr[1289]: error parsing CIS on socket 3:
-Invalid argument
-Mar 24 20:45:42 notebook cardmgr[1289]: socket 3: Anonymous Memory
-Mar 24 20:45:42 notebook kernel: cs: memory probe
-0xa0000000-0xa0ffffff: excluding 0xa0000000-0xa00fffff
-Mar 24 20:45:43 notebook kernel: pcmciamtd: PCMCIA Flash memory card
-driver $Revision: 1.52 $
-Mar 24 20:45:44 notebook kernel: 3.0: ParseTuple: Bad CIS tuple
-Mar 24 20:45:44 notebook kernel: reset unlock called 555 2aa 
-Mar 24 20:45:44 notebook kernel: Search for id:(89 a0) interleave(2) type(1)
-Mar 24 20:45:44 notebook kernel: jedec_match(): ID is not 8bit
-Mar 24 20:45:44 notebook last message repeated 20 times
-Mar 24 20:45:44 notebook kernel: MTD jedec_match(): Check fit
-0x00000000 + 0x00200000 = 0x00200000
-Mar 24 20:45:44 notebook kernel: MTD jedec_match(): check unlock addrs
-0x0555 0x02aa
-Mar 24 20:45:44 notebook kernel: MTD jedec_match(): check ID's
-disappear when not in ID mode
-Mar 24 20:45:44 notebook kernel: reset unlock called 555 2aa 
-Mar 24 20:45:44 notebook kernel: MTD jedec_match(): return to ID mode
-Mar 24 20:45:44 notebook kernel: MTD jedec_probe_chip(): matched
-device 0x89,0xa0 unlock_addrs: 0x0555 0x02aa
-Mar 24 20:45:44 notebook kernel: PCMCIA Memory card: Found 2 x8
-devices at 0x0 in 16-bit bank
-Mar 24 20:45:44 notebook kernel: PCMCIA Memory card: Found 2 x8
-devices at 0x400000 in 16-bit bank
-Mar 24 20:45:44 notebook kernel: PCMCIA Memory card: Found 2 x8
-devices at 0x800000 in 16-bit bank
-Mar 24 20:45:44 notebook kernel: PCMCIA Memory card: Found 2 x8
-devices at 0xc00000 in 16-bit bank
-Mar 24 20:45:44 notebook kernel: mtd: Giving out device 0 to 16MiB
-PCMCIA Memory card
-Mar 24 20:45:44 notebook kernel: pcmciamtd: mtd0: 16MiB PCMCIA Memory card
+Hi!
 
-I've also been getting command set 0003 not found errors.
+I have the big problem with mounting jffs2.
 
--Matt
+I am using it with s3c2410 ARM linux-2.4.18-rmk7-pxa1 and
+Intel NOR flash TE28F128. But when I try to mount jffs2 (8M partition) with around 5MBytes of data the mounting (and first file access)
+process continues about 10 minutes!
+
+What can I do?
+
+Thank You!
+
+Best Regards,
+Vitaliy Stolyarov.
