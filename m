@@ -1,25 +1,22 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from kynes.gatewest.net ([198.163.227.7]
+	helo=10-10-1-6.gatewest.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEwwk-0007Vy-3r
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 20:29:38 +0000
-Received: from there (203-96-62-254-tollfree.actrix.co.nz [203.96.62.254])
-	by desire.actrix.co.nz (Postfix) with SMTP id 5261E1984C
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Oct 2003 09:27:54 +1300 (NZDT)
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 30 Oct 2003 09:33:48 +1300
-References: <3F9D3D98.6453.14E703@localhost>
-	<20031028232658.9B8854414@blood.actrix.co.nz>
-	<1067388508.17740.9.camel@imladris.demon.co.uk>
-In-Reply-To: <1067388508.17740.9.camel@imladris.demon.co.uk>
+	id 1AEzFy-00080p-S6
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 22:57:39 +0000
+From: Cam Mayor <cmayor@iders.ca>
+To: Jun Sun <jsun@mvista.com>, David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 29 Oct 2003 16:57:27 -0600
+References: <20031022182558.U19834@mvista.com>
+	<1067426006.15551.1546.camel@hades.cambridge.redhat.com>
+	<20031029104546.K30683@mvista.com>
+In-Reply-To: <20031029104546.K30683@mvista.com>
 MIME-Version: 1.0
-Message-Id: <20031029202754.5261E1984C@desire.actrix.co.nz>
+Message-Id: <03102916572705.02584@kilauea.iders.ca>
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-Subject: Re: SmartMedia FAT
-Reply-To: manningc2@actrix.gen.nz
+cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 29 October 2003 13:48, David Woodhouse wrote:
-> On Wed, 2003-10-29 at 12:33 +1300, Charles Manning wrote:
-> > The flip side to this is that if you can find an SDDR09  you could likely
-> > get YAFFS/JFFS2 working with that by bypassing the usb storage driver and
-> > exposing it as NAND to mtd. However, SDDR09's are pretty rare. Samsung
-> > does make a USB device for experimenting with NAND that could be used for
-> > the same purpose.
+On Wednesday 29 October 2003 12:45, Jun Sun wrote:
+> On Wed, Oct 29, 2003 at 11:13:26AM +0000, David Woodhouse wrote:
+> >
+> > That's nicer. Why multiple physmap_add_partition() calls rather than
+> > just a single array passed to physmap_set_map() though?
 >
-> Can't you just hang one off the parallel port and bitbang it? Should be
-> fairly trivial to make a driver which uses the generic NAND code and
-> does that.... left as an exercise for the reader with a soldering iron.
+> Hmm, currently partition only matters when CONFIG_MTD_PARTITIONS
+> is enabled.  I assume this mean sometimes people want to use
+> physmap without partitions.  True?
 
-Last time I tried reading with a soldering iron I burnt the page. 
+Yes.  We have a product that partitions physmap (from the kernel command 
+line), but also uses the unpartitioned physmap base device. 
 
-Samsung had a schematic for their parallel port thingy on their www. This is 
-no longer there. If you want, email me.
+ie. physmap on /dev/mtd0
+    physmap partitions on /dev/mtd1, /dev/mtd2, etc.   sometimes none.
 
-Samsung's  USB NAND thingy is:
-http://www.samsung.com/Products/Semiconductor/Flash/TechnicalInfo/NANDUSB_Introduction.pdf
+cam
 
--- CHarles
+-- 
+Cameron Mayor
+Iders Incorporated
