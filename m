@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from eagle.basari.net.tr ([213.248.128.40])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ciqQ-0004RX-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 09:40:34 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLMEJGFFAA.joakim.tjernlund@lumentis.se> 
-References: <IGEFJKJNHJDCBKALBJLLMEJGFFAA.joakim.tjernlund@lumentis.se> 
-To: joakim.tjernlund@lumentis.se
-Cc: "Dave Ellis" <DGE@sixnetio.com>, linux-mtd@lists.infradead.org
-Subject: Re: Disk blocks for long periods 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 08 Aug 2002 09:40:29 +0100
-Message-ID: <31741.1028796029@redhat.com>
+	id 17cj4Z-0004Ux-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 09:55:12 +0100
+Message-ID: <000b01c23eb9$36058b00$3064000a@nurpinar>
+From: "nur" <nurpinar@basari.net.tr>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <001301c23eb6$4a184630$3064000a@nurpinar>  <31396.1028795816@redhat.com>
+Subject: Re: kernel 2.2.18 
+Date: Thu, 8 Aug 2002 11:54:20 +0300
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joakim.tjernlund@lumentis.se said:
-> Maybe erasing should be moved away from kupdate then, to the gc thread
-> or a new erase thread that does not mind beeing blocked?
+Is there an inter-module patch for 2.2.18 kernel?
+I found one in mtd directory but it is inter-module-2.2.17.patch
 
-Maybe. I want to keep the GC thread optional though. I think it's 
-sufficient just to fix the chip drivers to really do asynchronous erases, 
-so the thread calling ->erase() doesn't actually have to block. Then we can 
-leave it in kupdate.
 
->  OK, so if schedule_task() is used instead its possible to replace
-> spin_lock_bh with spin_lock everywhere?
+----- Original Message ----- 
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "nur" <nurpinar@basari.net.tr>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Thursday, August 08, 2002 11:36 AM
+Subject: Re: kernel 2.2.18 
 
-Yes.
 
-> I think we should change erase.c to do atmost 3 erase & mark in one
-> go. That will free up space more quickly when there is a lot of
-> pending erases. 
-
-Seems reasonable.
-
---
-dwmw2
+> 
+> nurpinar@basari.net.tr said:
+> > I receive this error every time i compile kernel with doc2000 or doc
+> > 2001 support I do something wrong?
+> 
+> Look for the inter_module patch in the patches/ directory of CVS.
+> 
+> --
+> dwmw2
+> 
+> 
+> 
