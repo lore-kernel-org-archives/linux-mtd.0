@@ -1,56 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14defj-0002H1-00
-	for mtd-list@infradead.org; Thu, 15 Mar 2001 20:48:35 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14defi-0002Gv-00
-	for mtd@infradead.org; Thu, 15 Mar 2001 20:48:35 +0000
-Received: from dwmw2 by passion.cambridge.redhat.com with local (Exim 3.16 #2)
-	id 14defi-0006N7-00
-	for mtd@infradead.org; Thu, 15 Mar 2001 20:48:34 +0000
-From: David Woodhouse <dwmw2@redhat.com>
-To: linux-kernel@vger.kernel.org, mtd@infradead.org
-Reply-To: dwmw2@infradead.org
-Subject: ANNOUNCE: Journalling Flash File System, v2. 
-Mime-Version: 1.0
+	id 14djT8-0003uC-00
+	for mtd-list@infradead.org; Fri, 16 Mar 2001 01:55:54 +0000
+Message-ID: <3AB17308.DADE4BA@mvista.com>
+Date: Thu, 15 Mar 2001 17:57:28 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: =?iso-8859-1?Q?K=E1ri=20Dav=ED=F0sson?= <kd@flaga.is>, mtd@infradead.org,
+   Nicolas Pitre <nico@cam.org>, ahennessy@mvista.com
+Subject: Re: cfi_endian.h
+References: <3AB02C02.6C8A87C8@mvista.com>  <EADB10BAC266A14A85ECBF8686A73E3108AFCB@kolkrabbi.flaga.is> <17745.984564921@redhat.com> <14974.984646309@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 15 Mar 2001 18:03:24 +0000
-Message-ID: <21916.984679404@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Well, it's been almost a week since the latest stupid bug was found in the 
-JFFS2 code, so I suppose it's time to admit to the world that it exists.
+David Woodhouse wrote:
 
-JFFS2, developed by Red Hat, is a complete reimplementation of a 
-journalling filesystem for FLASH devices, based on the original JFFS 
-from Axis Communications AB. 
+> ahennessy@mvista.com said:
+> >  I just tested a board today (SH proc)  that if put in big endian mode
+> > needs CFI_BIG_ENDIAN enabled.   The hardware guys didn't swap the
+> > bytes for us this time :-)
+>
+> heh, ok. But to keep the complexity down for new users, let's hide them all
+> behind 'CFI Advanced configuration options' choice, and probably stick the
+> interleave/buswidth optimisation options behind it too.
+>
+> --
+> dwmw2
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-Improvements of JFFS2 over the original JFFS include:
+Done.   I created "CFI Advanced configuration options" under CFI, moved the
+geometry
+selection  under it and added the endianness selection under it as well.
 
-	- Improved wear levelling and garbage collection performance.
-	- Compression
-	- Improved RAM footprint and response to system memory pressure.
-	- Improved concurrency and support for suspending flash erases
-	- Support for hard links.
-	
+So, a new Config.in and cfi_endian.h
 
-You can get it from anonymous CVS:
-
-cvs -d :pserver:anoncvs@cvs.infradead.org:/home/cvs login (password: anoncvs)
-cvs -d :pserver:anoncvs@cvs.infradead.org:/home/cvs co mtd
-    
-The only platform currently supported is Linux 2.4. A port to eCos is 
-likely to happen quite soon.
-
-JFFS2 filesystem images of the current 'Familiar' distribution for the
-Compaq iPAQ, along with appropriate kernels, are available at 
-ftp://ftp.uk.linux.org/pub/people/dwmw2/familiar-0.3/
-
---
-dwmw2
-
+Alice
 
 
 
