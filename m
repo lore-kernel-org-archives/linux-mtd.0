@@ -1,40 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1384cp-00056C-00
-	for mtd-list@infradead.org; Fri, 30 Jun 2000 18:30:47 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 1384ck-000566-00
-	for mtd@infradead.org; Fri, 30 Jun 2000 18:30:43 +0100
-Received: from cygnus.co.uk (IDENT:dwmw2@localhost [127.0.0.1])
-	by passion.cygnus.co.uk (8.9.3/8.9.3) with ESMTP id SAA06076
-	for <mtd@infradead.org>; Fri, 30 Jun 2000 18:33:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
+	id 138Kgy-0007BG-00
+	for mtd-list@infradead.org; Sat, 01 Jul 2000 11:40:08 +0100
+Received: from [210.254.215.158] (helo=crossnet.co.jp)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 138Kgw-0007BA-00
+	for mtd@infradead.org; Sat, 01 Jul 2000 11:40:06 +0100
+Received: from crossnet.co.jp (nimbus [192.168.77.96])
+	by crossnet.co.jp (8.8.7/3.6Wbeta6) with ESMTP id JAA03195
+	for <mtd@infradead.org>; Sat, 1 Jul 2000 09:44:15 +0900
+Message-ID: <395DC4F0.5610B924@crossnet.co.jp>
+Date: Sat, 01 Jul 2000 19:16:16 +0900
+From: Masami Komiya <mkomiya@crossnet.co.jp>
+MIME-Version: 1.0
 To: mtd@infradead.org
-Subject: CFI code.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 30 Jun 2000 18:33:50 +0100
-Message-ID: <6073.962386430@cygnus.co.uk>
+Subject: Fujitsu MBM29LV160
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-The code for dealing with CFI Intel flash appears to be working to a certain
-extent. You can download it and test it now if you're brave.
+We try to port Linux kernel to our embedded system that has Fujitsu's
+NOR type Flash memory MBM29LV160.
+If it is possible, we want to use MTD for our system. 
+Does anyone let me know MTD support it or not?
+Also wellcome any suggestions.
 
-It's currently installing an 8Mb FTL filesystem on my embedded board, so 
-that I can beat on it for a while.
+Best Regards.
 
-I'll see if I can break it when I come in on Monday - by which time it'll
-hopefully have finished telling me about each successful two-byte write over
-a 115200 baud serial line :)
-
-
-
---
-dwmw2
-
-
+Masami Komiya
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
