@@ -1,13 +1,16 @@
-Received: from [61.152.250.172] (helo=webmta2.etang.com)
+Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17NVqn-0003d4-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2002 10:46:06 +0100
-MIME-Version: 1.0
-Message-Id: <3D1ADE5D.01401@webmta2>
-Date: Thu, 27 Jun 2002 17:43:57 +0800 (CST)
-From: g_friend@etang.com
+	id 17NYtS-0003qg-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2002 14:01:02 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
 To: linux-mtd@lists.infradead.org
-Subject: =?gb2312?B?SG93IHRvIENsZWFuIGJhZCBHcnViZmlybXdhcmUgb2ZmICBET0M/?=
+Subject: Re: How to Clean bad Grubfirmware off  DOC?
+Date: Thu, 27 Jun 2002 09:00:12 -0400
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200206270857718.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -19,31 +22,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have put a grub_firmware on my doc2000. It can drop me grub console mode but it cannot find any filesystem ,even filesystem on my harddisk. I have tried to use root(dc0,0) ,root(hd0,0),root(hd0,1)etc ,but it had no effect.It find nothing yet.
+g_friend@etang.com wrote:
+> How can I clean the bad grub off my doc?
 
-Then I face a serious situation.----How can I save my DOC ?
-How can I clean the bad grub off my doc?
-Before I put grub_firmware onto my DOC, I can boot from my harddisk ,floppy with DOC in place.However, after that , with DOC in place ,I even cannot boot from my floppy . It always give me grub boot .
-If I  pull out it from my board , the system boot from my hard disk or floppy as usually.
+Since you cannot boot with the doc2000 installed, I'd recommend trying the 
+following, **very carefully**:
 
-Is there any way to clean the bad grubfirmware ? 
-Does it mean it is waste now for me ? 
-Help is urgently needed ! please give your hand  .
-thanks in advance.
- 
+  1. Turn off system
+  2. Remove DoC from board (I assume it's an ISA/PCI board with DoC socketed?)
+  3. Install *empty* DoC board
+  4. Boot into DOS
+  5. Install latest M-Sys DOS utilities (if not already done)
+  6. *** CAREFULLY *** install DoC into socket
+  7. Run DFORMAT utility to replace grub firmware
 
+*Disclaimer:  This procedure has worked for me, but it could do *bad things* 
+to your DoC.  Use it only as a last resort.
 
-
-
-
-
-
------------------------------------------
-买虚拟主机送国际域名及邮箱
-http://www.999k.net
-亿唐生活品牌第一主打
-http://bag.etang.com/payment_1.htm
-亿唐短信，您贴身的时尚顾问
-http://sms.etang.com
-美国大学之门为你而开 百分百拿奖学金
-http://campus.etang.com/html/academic/usa/scho/scho017.htm                                    
+If your machine supports "Network" boot, you may want to try configuring GRUB 
+with the "--enable-diskonchip-biosnetboot" option.  This will allow you to 
+selectively boot from the DoC, returning to booting from a hard drive or 
+floppy when needed.
