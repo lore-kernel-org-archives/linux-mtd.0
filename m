@@ -1,39 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13jgq1-0001UD-00
-	for mtd-list@infradead.org; Thu, 12 Oct 2000 12:47:53 +0100
-Received: from [194.130.39.252] (helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13jgpz-0001U5-00
-	for mtd@infradead.org; Thu, 12 Oct 2000 12:47:52 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39E5A491.46DDC58C@gremlin.it> 
-References: <39E5A491.46DDC58C@gremlin.it>  <39E59F7B.C4AF2F28@gremlin.it> <39E59C26.D3969B6@gremlin.it> <8032.971349255@redhat.com> <9826.971350006@redhat.com> 
-To: Alessandro GARDICH <gremlin@gremlin.it>
-Cc: mtd@infradead.org
-Subject: Re: GRUB + DOC2000 = problems 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 12 Oct 2000 12:47:11 +0100
-Message-ID: <12546.971351231@redhat.com>
+	id 13jsSp-0005Ox-00
+	for mtd-list@infradead.org; Fri, 13 Oct 2000 01:12:43 +0100
+Message-ID: <39E65472.8A7A2E96@mvista.com>
+Date: Thu, 12 Oct 2000 17:16:50 -0700
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: Re: Flash chip locking
+References: <16397.962188563@cygnus.co.uk>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse wrote:
 
-gremlin@gremlin.it said:
-> ok now i did ... nothing changed :( ... 
+> Unfortunately, we have to consider the fact that this lock will also be
+> obtained from a Bottom Half context, when the "has the erase finished y=
+et?"
+> timer runs. Therefore, all occurrences of spin_lock in the main code ha=
+ve
+> to be spin_lock_bh()=B9 instead of the nurmal (and almost free) spin_lo=
+ck().
+>
+>
 
-Hmmm. That's not good. What if you type root=(dc0,0)?
+Was the  "has the erase finished yet?" timer the only reason for using
+spin_lock_bh instead of spin_lock?   Since the timer isn't implemented ye=
+t,
+spin_lock can be used at the moment, correct?   I'm experimenting with th=
+e
+driver in an environment that can  only tolerate disabling the bottom hal=
+f for
+very brief periods.
 
-It should say _something_ - even if it's only "No DiskOnChip found".
-
-
-
-
-
---
-dwmw2
-
+Alice
 
 
 
