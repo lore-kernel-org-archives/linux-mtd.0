@@ -1,18 +1,18 @@
-Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
+Received: from josephine.discordia.ch ([193.246.253.137])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17O3m5-0005nl-00
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Jun 2002 22:59:29 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: linux-mtd@lists.infradead.org
+	id 17O4oZ-0005sa-00
+	for <linux-mtd@lists.infradead.org>; Sat, 29 Jun 2002 00:06:07 +0100
+Date: Sat, 29 Jun 2002 01:06:05 +0200
+From: Peter Keel <seegras@discordia.ch>
+To: Mark Meade <mark@lakeshoremicro.com>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: How to Clean bad Grubfirmware off DOC?
-Date: Fri, 28 Jun 2002 17:58:29 -0400
-References: <3D1B22F2.18643@webmta2> <20020628184740.GA6828@discordia.ch>
-In-Reply-To: <20020628184740.GA6828@discordia.ch>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200206281756656.SM02488@there>
+Message-ID: <20020628230605.GB9136@discordia.ch>
+References: <3D1B22F2.18643@webmta2> <20020628184740.GA6828@discordia.ch> <200206281756656.SM02488@there>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <200206281756656.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,36 +24,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Peter Keel wrote:
-> > By saying above ,do you mean "hot plug" ?
-> And do you mean you have to have
-> - DOS (why shouldn't I use Linux?)
+* on the Fri, Jun 28, 2002 at 05:58:29PM -0400, Mark Meade wrote:
+> > - An Empty DOC
+> > ??
+> 
+> To clarify, "an empty DoC board" simply means inserting the ISA or PCI eval 
+> board, without installing the DoC.  Obviously, this would allow you to boot 
+> without the DoC GRUB taking over, and then you could "hot-plug" the DoC to 
+> erase it.
+> 
+> Keep in mind that these instructions assume a PC and a M-Sys eval-board.  If 
+> your system is different, please post the specifics.
 
-You don't *have* to use DOS, it just might be slightly easier to run DFORMAT 
-to erase GRUB and return the DoC to its "virgin" state.  
+Ah, ok. I understand. My DoC is on the mainboard. I'm not even sure
+if its socketed or soldered in, haven't checked. The machine is an
+IGEL-Terminal, 233Mhz, 32MB Ram, 16MB DoC 2000, Cyrix Media GX. 
+An older one. I think Its an IGEL-C. From http://www.igel.de
+Originally came with linux 2.0.36, libc5 and M-Systems binary-only
+driver, no ssh. So I had to fix that ;)) As it turned out, 2.4.18
+was the first kernel able to handle the nasty DMA-bug of the 
+Media GX chipset.. 
 
-If you used Linux, you would need to have all of the proper MTD stuff 
-compiled as modules, and do your "insmod" or "modprobe" *after* hot-plugging 
-the DoC.  You would also need to use "eraseall" to wipe out GRUB, and I 
-didn't recommend that option because of the possibility of wiping out the bad 
-block table.
+> What version of GRUB did you use, prior to applying the patch?  I'm still 
+> curious as to why it doesn't recognize your root filesystem.  Are you running 
+> GRUB on your hard drive?
 
-> - An Empty DOC
-> ??
+No. On the Harddisk is lilo. Grub was 0.93 or something. the newest 
+from cvs plus the newest MTD-patches, plus the Debian-diff, all 
+neatly patched in, with the rejects ironed out. Compiled with all
+the debian-options plus the docchip-2000 option. 
 
-To clarify, "an empty DoC board" simply means inserting the ISA or PCI eval 
-board, without installing the DoC.  Obviously, this would allow you to boot 
-without the DoC GRUB taking over, and then you could "hot-plug" the DoC to 
-erase it.
-
-Keep in mind that these instructions assume a PC and a M-Sys eval-board.  If 
-your system is different, please post the specifics.
-
-For what it's worth, my development PC has an ISA eval-board, and the ability 
-to "network" boot.  My target system has a *socketed* DoC, with no monitor or 
-keyboard.  I make sure the DoC is bootable (from (dc0,0) with root file 
-system on /dev/nftla1) prior to installing it on my target.
-
-What version of GRUB did you use, prior to applying the patch?  I'm still 
-curious as to why it doesn't recognize your root filesystem.  Are you running 
-GRUB on your hard drive?
+Cheers
+Peter
+-- 
+Those who give up essential liberties for temporary safety deserve 
+neither liberty nor safety. -- Benjamin Franklin
