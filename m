@@ -1,51 +1,51 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from localhost ([127.0.0.1] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10hrw7-0000LI-00
-	for mtd@imladris.demon.co.uk; Thu, 13 May 1999 10:37:51 +0100
+	id 10kTVA-0002Rv-00
+	for mtd@imladris.demon.co.uk; Thu, 20 May 1999 15:08:48 +0100
 Received: from pop3.mail.demon.net
 	by localhost with POP3 (fetchmail-5.0.0)
-	for mtd@imladris.demon.co.uk (multi-drop); Thu, 13 May 1999 10:37:51 +0100 (BST)
-Received: from punt-2.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
-          id 926588259:20:13846:0; Thu, 13 May 99 09:37:39 GMT
-Received: from biffen.signum.se (alex@biffen.signum.se [193.180.23.11])
-	by geisha.signum.se (8.8.7/8.8.7) with ESMTP id LAA05294
-	for <mtd@imladris.demon.co.uk>; Thu, 13 May 1999 11:37:22 +0200
-To: mtd@imladris.demon.co.uk
-Subject: Re: FTL patent.
-References: <E10hazQ-0001dy-00@devel2.axiom.internal>
-From: Alexander Larsson <alex@signum.se>
-Date: 13 May 1999 11:37:22 +0200
-In-Reply-To: David.Woodhouse@mvhi.com's message of Wed, 12 May 1999 16:32:08 +0100
-Message-ID: <w1d805nwdp.fsf@biffen.signum.se>
+	for mtd@imladris.demon.co.uk (multi-drop); Thu, 20 May 1999 15:08:48 +0100 (BST)
+Received: from punt-1.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
+          id 927209316:10:12706:10; Thu, 20 May 99 14:08:36 GMT
+Message-Id: <199905181403.HAA02853@devel.ftel.com>
+Date: Tue, 18 May 1999 07:03:45 -0700 (PDT)
+To: David.Woodhouse@mvhi.com
+Cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
+From: Mike Kilburn <mkilburn@ftel.net>
+Subject: Re[2]: RFC: kernel-based PCMCIA ...
+In-Reply-To: <E10kQCS-0001AQ-00@devel2.axiom.internal>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
-David.Woodhouse@mvhi.com (David Woodhouse) writes:
+David Woodhouse <David.Woodhouse@mvhi.com> wrote:
+> 
+> My main concern at the moment is producing a standalone driver for the
+> DoC2000,
+> with FTL built-in to it, for embedded systems using the 2.0 kernel. As soon
+> as
+> I've done that, I'll be turning back to the generic subsystem design, and
+> producing a DoC2000 driver for the new system.
 
-> dhinds@zen.stanford.edu said:
-> >  I've recently learned that there is a fairly annoying encumberance
-> > associated with FTL: while it is now part of the PCMCIA standard, it
-> > is patented and M-Systems grants a royalty free license for its use
-> > *only* for PCMCIA devices.  So technically, it appears that any use of
-> > FTL for non-PCMCIA devices is a patent infringement.
-> 
-> > The patent claims are broad enough that I don't see any straighforward
-> > way of writing a free non-FTL translation layer.  But I'm not a patent
-> > lawyer, and don't really know what can and can't be gotten away with. 
-> 
-> 
-> alex@signum.se said:
-> >  Note that there *might* be patent problems using this code in the US.
-> 
-> Is this _just_ a US problem, or are the patents applicable world-wide?
+Is there any beta code available for this. We have a PC104 with a 4M boot
+flash from M-Systems. The vendor of the PC104 wont give us any hardware 
+details on accessing the Flash and they say they are working with M-Systems
+to have a driver in a month or so. We dont want to be dependent on them for
+a driver.
 
-I wrote this because i don't think those patens are applicable everywhere.
-Sweden (where i live/work) doesn't allow software patents. I am not a
-lawyer, and i haven't looked at the specific patents, so I don't know
-the real deal here.
+> 
+> As an aside - we may have patent problems with using FTL on anything other 
+> than PCMCIA devices. Our position on this is as yet undecided. 
+> I've suggested that perhaps the flags for each low-level device should
+> include
+> a PCMCIA/ NON-PCMCIA bit, and the default configuration of the FTL driver
+> should refuse to work with non-PCMCIA devices. I don't really know what else
+> we
+> can do.
 
-/ Alex
+Why would a PCMICA be any different than a Flash on a PC104 cpu card?
 
 
 
