@@ -1,22 +1,30 @@
-Received: from host-216-252-217-242.interpacket.net ([216.252.217.242]
-	helo=forof.hylink.am)
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CetNu-0000L1-1N
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 06:01:28 -0500
-Message-ID: <002401c4e35e$6d926c40$1000000a@araav>
-From: "Ara Avanesyan" <araav@hylink.am>
-To: "David Woodhouse" <dwmw2@infradead.org>
-References: <redirect-100966814@mail5.rambler.ru>
-	<003e01c4e274$73696ff0$1000000a@araav>
-	<1103104997.13016.99.camel@hades.cambridge.redhat.com>
-	<004901c4e28e$a341fa20$1000000a@araav>
-	<1103106287.13016.110.camel@hades.cambridge.redhat.com>
-Date: Thu, 16 Dec 2004 15:00:15 +0400
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="koi8-r"; reply-type=original
+	id 1Cev8s-0000tn-OI
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 07:54:06 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id iBGCrt6q009526
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:55 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	iBGCrpqZ268890
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:55 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iBGCrpR8002406
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:51 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+In-Reply-To: <1103158974.15929.37.camel@squizzey.bult.co.uk>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C0D3AC.3050801@us.ibm.com>
+	<1103158974.15929.37.camel@squizzey.bult.co.uk>
+Content-Type: text/plain
+Message-Id: <1103201631.25765.7.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Date: Thu, 16 Dec 2004 06:53:51 -0600
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: supporting DiskOnChip G3
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +34,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ohh, actually I'm noob in the low level world but in any case I have to do 
-this porting. accidentally, is there any good book/material that explains 
-the mtd structure etc so i won't loose too much time exploring the source 
-code blindly... actually i'm doing it for two days already:)
+On Wed, 2004-12-15 at 19:02, Gareth Bult (Encryptec) wrote:
+> Hi,
 
-hey, thanks for a great answer!
-Ara
+Quick FYI, don't top post.  The email gremlin will chase you down and
+make you read http://david.woodhou.se/email.html if you break too many
+rules ;)
 
------ Original Message ----- 
-From: "David Woodhouse" <dwmw2@infradead.org>
-To: "Ara Avanesyan" <araav@hylink.am>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Wednesday, December 15, 2004 2:24 PM
-Subject: Re: supporting DiskOnChip G3
-
-
-> On Wed, 2004-12-15 at 14:12 +0400, Ara Avanesyan wrote:
->> David,
->>
->> thanks for the answer.
->> the documentation is the easiest part;)
->> http://www.m-systems.com/files/documentation/doc/DOC_G3_512Mb_1Gb_Rev2.0.pdf
->
-> Oh, that's interesting. They always used to be very cagey about their
-> documentation. I'm glad to see they're making progress -- at first
-> glance it looks like we ought to be able to support the device with that
-> information.
->
-> That would be enough for using YAFFS or JFFS2 on it; if the translation
-> layer isn't INFTL (as I suspect it isn't) then we'd also need docs on
-> the new translation layer too, if we want to use it in DOS-compatible
-> mode.
->
->> so now you have the doc, means you have plans to support it?:)
->
-> Yeah -- given some sample hardware and a few spare weeks of spare time,
-> I'd be happy to play :)
->
-> It shouldn't be _that_ hard to make a driver for it which uses the core
-> NAND code. See the existing drivers/mtd/nand/diskonchip.c for
-> inspiration and turn up on #mtd of irc.freenode.net. If you're willing
-> and capable then we can help you do it -- but if it turns out to be as
-> much work to talk you through it as it would be to do it ourselves, then
-> it's not going to work too well :)
->
-> -- 
-> dwmw2
->
 > 
+> Sure, the file I've been changing is blkmtd.c.
+
+Ok, cool.
+
+> 
+> The device I'm aiming for and testing on is 256Mb with a 128k erase
+> size.
+> 
+> Currently I'm using the code included in the 2.6.9 kernel source tree
+> with tools from cvs as of about a week ago.
+
+Ok, good.
+
+
+> Is this likely to contain the latest speedups or should I be looking
+> elsewhere?
+
+That should have the speedups I was referring to.  Basically checking
+the node CRCs is deferred until after mount time so the mount succeeds
+much more quickly.
+
+There is one more feature pending that I know of.  Ferenc Havasi has
+some eraseblock summary changes that should help.  I believe the
+intention was to commit that to JFFS3, but I haven't seen it go in yet.
+
+josh
