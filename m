@@ -1,15 +1,23 @@
-Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kfSW-0007Wg-Az
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 08:45:16 +0100
-Message-ID: <3F320400.3000002@hectrix.com>
-Date: Thu, 07 Aug 2003 15:47:12 +0800
-From: Selwyn Tang <selwyn@hectrix.com>
-MIME-Version: 1.0
+Received: from 100.red-80-36-174.pooles.rima-tde.net ([80.36.174.100]
+	helo=beta.iqc-services.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19kg2g-0007gQ-DT
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 09:22:38 +0100
+Received: from amavis by beta.iqc-services.com with scanned-ok (Exim 4.20 #1
+	(OpenNA Linux))	id 19kg22-00030f-Q6
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 10:21:58 +0200
+Received: from devil.iqc-services.local ([192.168.197.3]
+	helo=devil.teleline.es)
+	by beta.iqc-services.com with esmtp (Exim 4.20 #1 (OpenNA Linux))
+	id 19kg22-00030W-4v
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 10:21:58 +0200
+Message-Id: <5.2.1.1.2.20030807101847.00bfc310@pop3.iqc-services.com>
+Date: Thu, 07 Aug 2003 10:22:14 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: "init not found" after booting GRUB on DOC
+From: Marcos Lois =?iso-8859-1?Q?Berm=FAdez?= <securez@teleline.es>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: I have a NOR and NAND flash chips
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+Hello i will start to add support for the new revision of the Dragonix 
+board. Now in the board we have a NOR flash (i already have this flash chip 
+working), and a NAND chip also a SmartMedia slot.
 
-I followed Karim's book to put the kernel, modules, root filesystem
-(including busybox and tinylogin) and GRUB on a DOC and tried booting
-it. The kernel loaded successfully but it ended with a kernel panic of
-"no init found". I use this statements in my menu.lst:
+My question is:
 
-   title DiskOnChip 2000
-   kernel (dc0,0)/boot/vmlinuz-2.4.21-5x86 ro root=/dev/nftla1
+Can i setup mtd to work with both types of memories NOR and NAND, there are 
+any example to do this?
+How i can implement the SmartMedia slot, to allow hot plug of the 
+smartmedia cards?
 
-I have busybox's init in /sbin and I also tried adding "init=/sbin/init"
-to the above statement but with the same result.
+Any hel are apreciated.
 
-The NFTL driver is built-in and it correctly detects my DOC. The kernel 
-also successfully mounts the root filesystem (ext3).
-
-How should I configure GRUB in order to load the busybox's init?
-
-advTHANKSance!
-
-Selwyn
+Regards.
