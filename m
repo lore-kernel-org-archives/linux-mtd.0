@@ -1,22 +1,14 @@
-Received: from mailout05.sul.t-online.com ([194.25.134.82])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcWEA-0000XM-Tp
-	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 17:21:21 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>,
-	linux-mtd@lists.infradead.org
-Date: Mon, 21 Jun 2004 23:15:21 +0200
-References: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
+Received: from web60809.mail.yahoo.com ([216.155.196.72])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BcYz7-0000wj-B1
+	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 20:17:58 -0400
+Message-ID: <20040622001755.89563.qmail@web60809.mail.yahoo.com>
+Date: Mon, 21 Jun 2004 17:17:55 -0700 (PDT)
+From: Arnold Liu <asliu23@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200406212315.21856.tglx@linutronix.de>
-Cc: 
-Subject: Re: DOC Mil Plus 32 question erase size erase shift????
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Subject: LPD7A400 Argh. Special inode #118 mode 0xa1ff had more than one node
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +18,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 21 June 2004 20:44, Carlos, John J USAATC wrote:
-> Hello all,
->
->   Trying to get the bbt stuff working for diskonchip Mil Plus 32.  Questi=
-on
-> in nand_scan_bbt, I pass a erasesize of 8000 (32k bytes).  Is this the
+Greetings all,
 
-Where do you pass erasesize ? Erasesize is an autodetected value inside=20
-nand_scan() and _must not_ be modified.
+I've been using the LDP7A400 with a 
+2.6.7-rc2-lh7a40x-ms1 kernel.
 
-> correct size???  If so then I get 256 bytes of mem allocated for this->bbt
-> but then it fails (out of memory) when I try to allocate 88ooo bytes for
-> the buffer.  Is this correct?  544K bytes for that buffer.  My proc/memin=
-fo
-> shows much more memory
+Using Kegel's "crosstool", I rebuilt a 
+"gcc-3.3-glibc-2.3.2" toolchain for arm9tdmi
 
-Ooops !
+I also am using busybox-1.00-pre10.
 
-It fails as kmalloc max. allocation size is 128K.=20
+The kernel looks like it loads fine, but I 
+get the following messages after mounting
+the root filesystem :
 
-But why does anything there try to allocate 544K for a buffer ?????  What d=
-id=20
-you change in nand_bbt.c ? What's the bbt structure you pass to=20
-nand_scan_bbt ?
+-----
+VFS: Mounted root (jffs2 filesystem).
+Freeing init memory: 72K
+Argh. Special inode #118   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #118. Expect
+badness...
+Argh. Special inode #119   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #119. Expect
+badness...
+Argh. Special inode #120   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #120. Expect
+badness...
+Argh. Special inode #121   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #121. Expect
+badness...
+Argh. Special inode #122   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #122. Expect
+badness...
+Argh. Special inode #123   mode 0xa1ff had more than
+one node
+Returned error for crccheck of ino #123. Expect
+badness...
 
-Can you send me your driver code so I can have a look ?
+Please press enter to activate this console.
 
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+BusyBox v1.00-pre10 (2004.06.21-21:54+0000) Built-in
+shell (ash)
+-----
+
+Does anyone know what might be causing these messages?
+
+Thanks,
+Arnold
