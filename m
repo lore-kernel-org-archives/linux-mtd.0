@@ -1,16 +1,19 @@
-Received: from tomts9.bellnexxia.net ([209.226.175.53] helo=tomts9-srv.bellnexxia.net)
+Received: from h24-66-30-3.wp.shawcable.net ([24.66.30.3] helo=iders01.iders.ca)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17306G-0002Oe-00
-	for <linux-mtd@lists.infradead.org>; Wed, 01 May 2002 20:49:16 +0100
-Date: Wed, 1 May 2002 15:49:13 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: John Sutton <john@scl.co.uk>
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Booting from DOC2000 with GRUB loader
-In-Reply-To: <02050120383503.07252@diva.localdomain>
-Message-ID: <Pine.LNX.4.44.0205011545020.8520-100000@server.superbt.com>
+	id 1730Xn-0002S5-00
+	for <linux-mtd@lists.infradead.org>; Wed, 01 May 2002 21:17:44 +0100
+Received: from athlon ([200.123.101.48])
+	by iders01.iders.ca (8.12.3/8.12.3/Debian -4) with SMTP id g41KHcIV013907
+	for <linux-mtd@lists.infradead.org>; Wed, 1 May 2002 15:17:38 -0500
+Message-ID: <001501c1f14d$3a21bd30$30657bc8@gatewest.net>
+From: "Derek Ross" <dross@iders.ca>
+To: <linux-mtd@lists.infradead.org>
+Subject: User-space raw access of flash?
+Date: Wed, 1 May 2002 15:17:33 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,19 +25,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi John,
+Hello,
 
-On Wed, 1 May 2002, John Sutton wrote:
+Is is possible to directly access the flash
+memory from a user space application, by 
+using writel and readl functions, or their
+userspace equivalents? (writel and readl don't
+appear to be available outside of kernel space).
 
-> or nftl_format /dev/mtd0 98304  (bytes)
+Would mmap be a solution, or does that do caching
+on the data reads and writes?
 
-The third option is the right one.  The start offset of the NFTL layer
-must be specified in bytes.
+My problem is that I need to do some real-time 
+logging into a circular buffer in flash. This will 
+require non-blocking erases, which are not possible 
+with any of the MTD drivers.
 
-> And anyway, if the system is unbootable with the DoC chip in there, how
-> am I ever going to reprogram it?)
+Load-leveling will not be a problem here.
 
-Install GRUB or LILO on your hard disk.  Insert the DOC chip when you've
-gotten to the boot prompt.
+Thanks,
 
-Ilguiz
+Derek Ross.
