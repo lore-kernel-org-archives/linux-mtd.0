@@ -1,20 +1,20 @@
-Received: from pc-5.tkhnl.demon.nl
-	([195.11.235.101] helo=intranet.turnkiek.nl ident=root)
+Received: from dragon.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18OjKZ-0000hW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2002 18:54:08 +0000
-Reply-To: <wolff@turnkiek.nl>
-From: "Carl Wolff" <wolff@turnkiek.nl>
-To: "'Russ Dill'" <Russ.Dill@asu.edu>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: RE: problem using jffs2 on DiskOnChip
-Date: Wed, 18 Dec 2002 20:26:47 +0100
-Message-ID: <001a01c2a6cb$6943d420$446410ac@lt-gw8l30j.turnkiek.nl>
-MIME-Version: 1.0
+	id 18OtyM-0001lK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 06:15:55 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1040238853.2843.3.camel@timmy>
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Paul Nash <paulnash@wildseed.com>, Russ Dill <Russ.Dill@asu.edu>,
+	linux-mtd@lists.infradead.org
+Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thought s? -->NAND
+Date: Thu, 19 Dec 2002 19:41:49 +1300
+References: <43CB1396676FD4119F03001083FD299401A1C91F@neptune.kirkland.local>
+In-Reply-To: <43CB1396676FD4119F03001083FD299401A1C91F@neptune.kirkland.local>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20021219064630.BCABD14EC0@dragon.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,40 +26,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+On Thu, 19 Dec 2002 02:13, Paul Nash wrote:
+> So what are people out there using in their designs for NAND primarily? 
+> Raw NAND?  NAND plus some bootable sector?  DiskOnChip?
+>
 
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org
-> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Russ Dill
-> Sent: woensdag 18 december 2002 20:14
-> To: wolff@turnkiek.nl
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: problem using jffs2 on DiskOnChip
->
->
-> On Wed, 2002-12-18 at 12:03, Carl Wolff wrote:
-> > Hello,
-> >
-> > I've got a problem with jffs2. I'm using a DiskOnChip
-> module type milennium.
-> >
-> > Do I need NFTL support?
-> > I've managed to copy a jffs2 image onto the diskonchip
-> using cp image
-> > /dev/mtd/0.
->
-> eraseall /dev/mtd/0
+NAND has been around for over ten years now, but the real uptake has only 
+been very recent.
 
-I did it. I checked the contents after the eraseall and saw only FF's.
-Then I copied the image and verified the contents of the device with the
-orginial file: they are the same.
-So I think the data is correctly put into the flash....
+Until recently, most people have used DiskOnChip which is essentially just a 
+raw NAND + an ASIC to do ECC + a very expensive price tag.
 
->
-> --
-> Russ Dill <Russ.Dill@asu.edu>
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Probably most NAND in use is SmartMedia (numerically speaking) - using FAT. 
+These are just raw nand on a carrier card. Just ask David Woodhouse what he 
+thinks about that! THis is being superceded by XD card. 
+
+Now that there are very reliable NAND file systems (JFFS2 and YAFFS) that run 
+under Linux and other OSs, it is becoming increasingly palatable to use raw 
+NAND parts soldered down, or use SmartMedia/XD if you want an expanadable 
+system.
+
+The new generation NAND parts expand to 16-bit data buses and have bootable 
+code space. This makes it possible to build systems that are all NAND with no 
+NOR in sight.
+
+-- CHarles
