@@ -1,22 +1,14 @@
-Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
+Received: from f159.law14.hotmail.com ([64.4.21.159] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15gemU-0006XB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 05:04:14 +0100
-Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
-	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id f8B4AEJ15130
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 09:40:14 +0530
-Received: (from root@localhost)
-	by ncoretech.com (8.10.0/8.10.0) id f8B4AE925632
-	for linux-mtd@lists.infradead.org.VIRCHECK; Tue, 11 Sep 2001 09:40:14 +0530
-Message-ID: <3B9D9024.71EB046B@ncoretech.com>
-Date: Tue, 11 Sep 2001 04:16:36 +0000
-From: pradeep <pradeep@ncoretech.com>
-MIME-Version: 1.0
-To: Yunus Shaikh <yshaikh@start-icon.com>, linux-mtd@lists.infradead.org
-Subject: Re: Fw: Booting doc2000 and mtd
-References: <00d901c13a2c$ca16d2f0$c801a8c0@starticon>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 15gfPE-0006ZE-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 05:44:16 +0100
+From: "simon gittins" <simon__gittins@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 speed question
+Date: Tue, 11 Sep 2001 14:49:49 +1000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F159i9fQWcXciAkQiDC0000b5df@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,31 +20,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
-              I think you dont have the proper libraries also in the lib
-directory ,
-check out the links -- whether they are broken or not.
+Hi
+
+I've been looking at the performance of jffs2 when under high stress 
+(copying large files when fs is largely full).  Looking at the kernel debug 
+messages, I've noticed fairly frequent 3-5 second gaps.  I'm fairly new to 
+jffs2, but I did some hacking in the source and found:
+
+1. The 5 second wait times are generally started by a request for a file 
+semaphor, and are always terminated by kupdated, (which calls write_super?). 
+  kupdated sleeps for 5 seconds (on my 2.4.9 kernel) between iterations.  Am 
+I right in thinking that this is a large bottleneck in the system?  I can 
+manually 'speed it up' by running the following shell commands during a 
+block time:
+    kill -STOP 7; kill -CONT 7 #where 7 is the pid of kupdated
+Can we minimise the dependence of jffs2 on kupdated?
 
 
-Pradeep
+2.  Semaphors appear to be held during the execution of schedule().  While I 
+have not delved deeply enough to fully understand the algorithms in place, a 
+plethora of printk's seem to suggest that there are occasions where a 
+process (gc or user process) would hold the semaphor and go to sleep (via 
+schedule) without releasing the semaphor.  The other process would then pick 
+up the execution, and (eventually) try to access the semaphor and fall into 
+a sleep as well.  This appears to often cause the symptoms in (1), where 
+both processes are napping until kupdated comes along.
 
-Yunus Shaikh wrote:
+Am I on the right track?
 
-> Hello all
->
-> i have managed to write data   in to the doc2000 , although
-> i gives segmentation faults many times somehow i haev written it after
-> restarting almost 50+ times now the problem is the root file system is
-> mounted
-> but does not go ahead i get a error mesage saying
-> warning: unable to open an initial console
->
-> i have tried passing init=/bin/sh parameter to the kernel
-> any help ?
->
-> Thanks in advance
-> Yunus
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Is there any development time being spent looking at the performance issue 
+(apart from mine)?
+
+
+
+I am working with 3 September CVS code on a 2.4.9 kernel.  I am using a 
+pseudo flash device with mtdram to perform my tests.
+
+Regards
+Simon Gittins
+
+
+
+_________________________________________________________________
+Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp
