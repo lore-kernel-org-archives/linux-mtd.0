@@ -1,28 +1,19 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from pintail.mail.pas.earthlink.net ([207.217.120.122])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17X6BI-0006Zo-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 21:22:52 +0100
-Received: from cmailg3.svr.pol.co.uk ([195.92.195.173])
-	by phoenix.infradead.org with esmtp (Exim 4.10)
-	id 17X6BA-0007JI-00
-	for linux-mtd@lists.infradead.org; Tue, 23 Jul 2002 21:22:44 +0100
-Received: from [195.92.168.141] (helo=tmailb1.svr.pol.co.uk)
-	by cmailg3.svr.pol.co.uk with esmtp (Exim 3.35 #1)
-	id 17X6B5-0000WP-00
-	for mtd@infradead.org; Tue, 23 Jul 2002 21:22:39 +0100
-Received: from modem-3298.tiger.dialup.pol.co.uk ([62.136.220.226] helo=email.com)
-	by tmailb1.svr.pol.co.uk with smtp (Exim 3.35 #1)
-	id 17X6B1-0003an-00
-	for mtd@infradead.org; Tue, 23 Jul 2002 21:22:35 +0100
-From: "Discount Calls UK" <discountcalls@email.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: WE CAN HALVE YOUR COMPANY'S UK TELEPHONE BILLS!!
+	id 17XEdA-0007G2-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Jul 2002 06:24:12 +0100
+Received: from 24-205-79-158.pas-res.charterpipeline.net ([24.205.79.158])
+	by pintail.mail.pas.earthlink.net with esmtp (Exim 3.33 #1)
+	id 17XEd7-0001GJ-00
+	for linux-mtd@lists.infradead.org; Tue, 23 Jul 2002 22:24:09 -0700
+Subject: MTD/DOC2000 question
+From: Conrad Steenberg <conrad@hep.caltech.edu>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 23 Jul 2002 22:26:09 -0700
+Message-Id: <1027488370.4105.7.camel@Tafelberg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Date: Tue, 23 Jul 2002 21:30:00 +0100
-Reply-To: "Discount Calls UK" <discount-reply@email.com>
-Message-Id: <E17X6B1-0003an-00.2002-07-23-21-22-35@tmailb1.svr.pol.co.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -34,33 +25,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-With our UK National Calls costing as little as 1.8p per minute! we can
-save your company a fortune!
-That's less than half the "BT choices 1"  rate, and about a quarter of the
-price of the BT standard rate!
-Our local & international rates offer massive discounts as well.
-With our simple registration process, you can begin saving money straight
-away- no set up charge & no long contract periods.
-You keep your BT account & continue to pay your rental -we simply divert
-your calls to our reliable,  low cost system at the BT exchange.
-Try it for a month, if you are not completely satisfied, you can return to
-BT.
-Join the thousands of satisfied businesses both large & small that have
-dramatically reduced telephone bills!!---Can you think of a reason not to
-do it?
+Hi
 
-Hand this important document to your financial director
+I'm trying to create a filesystem on a 72M DOC2000 (Netier XL1000), and
+get up to creating a partition (/dev/nftla1). This is with Bering-rc3.
 
-For more information reply to
-mailto:discountcalls@devilnet-uk.net?subject=information-please
+When I try mke2fs /dev/nftla1, the following gets reported:
 
+NFTL_writeblock(): Cannot find block to write to
+end_request; I/O error, dev 5d:01 (unknown) sector XXXXX
+Argh! No free blocks found LastFreeEUN = 4603, FirstEUN = 3
+No Virtual Unit Chains available for folding. Failing request
 
+The device was formatted with nftl_format first.
 
-To be removed from the mail list reply to
-mailto:discountcalls@devilnet-uk.net?subject=remove-please
-We never intend to spam, or irritate with unsolicited emails, we always
-try to target companies that would benefit from our cost saving offers.
-This oportunity to save you money will be offered once only - you will not
-be emailed by us again.
-If you are an individual & not a company, then please accept our
-appoligies for us sending this email to you.
+Any ideas?
+
+Cheers!
+
+Conrad
