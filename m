@@ -1,16 +1,18 @@
-Received: from web51010.mail.yahoo.com ([206.190.39.129])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Ct8jq-0002pE-Sg
-	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 13:15:00 -0500
-Message-ID: <20050124181452.90946.qmail@web51010.mail.yahoo.com>
-Date: Mon, 24 Jan 2005 10:14:52 -0800 (PST)
-From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-To: dedekind@infradead.org
-In-Reply-To: <1106562777.4650.7.camel@sauron.oktetlabs.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CtCEX-00048t-PJ
+	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 16:58:54 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Estelle HAMMACHE <estelle.hammache@st.com>
+Content-Type: text/plain
+Date: Mon, 24 Jan 2005 22:58:48 +0100
+Message-Id: <1106603928.5081.50.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Performance of the MTD device and JFFS2
+Subject: mtd/fs/jffs2 nodemgmt.c,1.115,1.116
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using the same Linux kernel for both: Linux
-2.4.17. The components that are changed are MTD and
-JFFS2 (I ported them to Linux 2.4.17).
+> - avoid filing blocks on the clean list when they have wasted
+> space
 
---vahid
+That's plain wrong. 
 
-> Sorry Vahid, don't know what happened. May only
-> suggest:
-> 1. Check may be your NAND flash driver has degraded.
-> Why do you think
-> the reason is JFFS2?
-> 2. Try to profile your linux system.
-> 3. Try to find your old linux..
-> 
-> 
-> 
-> 
+Wasted space was introduced to prevent endless garbage collection.
+Wasted space is unreclaimable, because it is less than the minimum node
+size. It's totally correct to file those blocks on the clean list,
+because GC _cannot_ reclaim the wasted space. 
 
+This patch just reinvents the endless GC loop. Please revert.
 
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - Find what you need with new enhanced search.
-http://info.mail.yahoo.com/mail_250
+tglx
