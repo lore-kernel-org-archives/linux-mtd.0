@@ -1,37 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13XLgs-0008El-00
-	for mtd-list@infradead.org; Fri, 08 Sep 2000 11:47:26 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13XLgq-0008Ee-00
-	for mtd@infradead.org; Fri, 08 Sep 2000 11:47:25 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39B8C2FC.E6AFCF87@arcom.co.uk> 
-References: <39B8C2FC.E6AFCF87@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: Kernel configuration help text 
-Mime-Version: 1.0
+	id 13XNc0-0000Wy-00
+	for mtd-list@infradead.org; Fri, 08 Sep 2000 13:50:32 +0100
+Message-ID: <39B8E2CB.CC83B7FC@cotw.com>
+Date: Fri, 08 Sep 2000 07:59:55 -0500
+From: "Steven J. Hill" <sjhill@cotw.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/fs/jffs inode-v23.c'
+References: <E13X5id-0004fA-00@infradead.org> <3113.968398362@passion.cygnus.co.uk>
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 08 Sep 2000 11:47:12 +0100
-Message-ID: <30185.968410032@passion.cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse wrote:
+> 
+> Oi!. That was required for -test7 and above. You've just reversed the change
+> I made in v1.43.
+> 
+> If you're using older kernels, use v1.42.
+> 
+Crap. I am SO embarrassed. Sorry everyone.
 
-dvrabel@arcom.co.uk said:
->  I can't seem to  find anywhere in the MTD CVS where I can specify
-> help text for the kernel configuration options. 
+-S
 
-No. I'm not sure what to do about that - perhaps snip the section covering 
-the MTD stuff from the -test7 Configure.help and put it into CVS?
-
-
---
-dwmw2
-
-
+-- 
+ Steven J. Hill - Embedded SW Engineer
+ Public Key: 'finger sjhill@mail.cotw.com'
+ FPR1: E124 6E1C AF8E 7802 A815
+ FPR2: 7D72 829C 3386 4C4A E17D
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
