@@ -1,77 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14VoKX-0001bT-00
-	for mtd-list@infradead.org; Thu, 22 Feb 2001 05:30:17 +0000
-Received: from mail1.danielind.com ([12.19.96.6])
+	id 14Vqr5-0002Aw-00
+	for mtd-list@infradead.org; Thu, 22 Feb 2001 08:12:03 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14VoKW-0001bM-00
-	for mtd@infradead.org; Thu, 22 Feb 2001 05:30:17 +0000
-Message-ID: <30724FF712DFD2119E6200104B2448920119744B@mail1>
-From: Vipin Malik <Vipin.Malik@daniel.com>
-To: Vipin Malik <Vipin.Malik@daniel.com>, "''mtd@infradead.org' '"
-	 <mtd@infradead.org>
-Subject: RE: Unable to mount compressed root f/s because init_mtd() does n
-	ot r egister block device!
-Date: Wed, 21 Feb 2001 23:26:24 -0600
-MIME-Version: 1.0
-Content-Type: text/plain
+	id 14Vqr4-0002Aq-00
+	for mtd@infradead.org; Thu, 22 Feb 2001 08:12:02 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <30724FF712DFD2119E6200104B2448920119744B@mail1> 
+References: <30724FF712DFD2119E6200104B2448920119744B@mail1> 
+To: Vipin Malik <Vipin.Malik@daniel.com>
+Cc: "''mtd@infradead.org' '" <mtd@infradead.org>
+Subject: Re: Unable to mount compressed root f/s because init_mtd() does n ot r egister block device! 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 22 Feb 2001 08:08:51 +0000
+Message-ID: <12716.982829331@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Ok, looking a bit more at it, it seems that all the init for 
-the mtd stuff is happening when do_inicalls() gets called as
-they are all declared as initcalls.
 
-But looking at the other block device stuff (hd, floppy etc.)
-they all get init'ed by calling blk_dev_init() from genhd.c which
-gets called by device_setup() called from init/main.c
- 
+Vipin.Malik@daniel.com said:
+> Ok, looking a bit more at it, it seems that all the init for  the mtd
+> stuff is happening when do_inicalls() gets called as they are all
+> declared as initcalls.
 
-This guarantees that the block devices are registered before
-the ramdisk load stuff gets called, hence allowing them to be used
-to load compressed filesystems.
+> But looking at the other block device stuff (hd, floppy etc.) they all
+> get init'ed by calling blk_dev_init() from genhd.c which gets called
+> by device_setup() called from init/main.c
+>  
 
-This should be quite important to all as flash memory is considerably
-more expensive than DRAM, hence the need to load compressed root
-file systems from flash into RAMDISK.
+> This guarantees that the block devices are registered before the
+> ramdisk load stuff gets called, hence allowing them to be used to load
+> compressed filesystems.
 
-How to we fix this (as I'm not too familiar with the init stuff and 
-how to change that)?
+> How to we fix this (as I'm not too familiar with the init stuff and
+> how to change that)? 
 
-Thanks,
+Either we stop using initcalls for the MTD stuff in 2.2.18 - just revert to 
+the old method as we did in earlier 2.2, or we fix the remainder of 2.2.19 
+to use initcalls properly. Probably the former.
 
-Vipin
-
------Original Message-----
-From: Vipin Malik
-To: 'mtd@infradead.org'
-Sent: 2/21/01 10:19 PM
-Subject: Unable to mount compressed root f/s because init_mtd() does not r
-egister block device!
-
-In 2.2.18 patched with the 2.2.18 patch, I'm trying to boot
-a kernel from raw (CFI) flash and decompress an ext2 root
-f/s image (from /dev/mtdblock0) into ramdisk and mount it as root.
-
-Everything goes fine, (kernel boots etc.) but when the load ramdisk
-code runs, it fails with a -ENODEV when it tries to open
-the root device (to load the compressed root file system, present
-on /dev/mtdblock0- right after the kernel).
-
-It fails because, even though init_mtd() has been already
-called before the rd_load() call in init/main.c, init_mtd()
-does NOT call init_mtdblock() which actually registers the
-mtdblock device.
-This is done much later when the file system is actually installed.
-
-Why? Any particular reason or no one tried this before.
-
-Thanks
-
-Vipin
+--
+dwmw2
 
 
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
