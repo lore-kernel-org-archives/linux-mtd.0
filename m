@@ -1,16 +1,20 @@
-Received: from [80.190.106.10] (helo=taytron.net)
+Received: from 216.184.14.34.unused.swcp.com ([216.184.14.34]
+	helo=scone.biscuit.swcp.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AojMA-0002yu-8t
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 13:15:46 +0000
-Message-ID: <007301c3ebea$29f96270$9602010a@jingle>
-From: "Florian Schirmer" <jolt@tuxbox.org>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 5 Feb 2004 14:15:03 +0100
+	id 1AopGW-0004BP-3F
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 19:34:20 +0000
+Received: from scone.biscuit.swcp.com (localhost [127.0.0.1])
+	id i15Jap36012837
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Feb 2004 12:36:51 -0700
+Received: from localhost (bill@localhost)i15JapWH012834
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Feb 2004 12:36:51 -0700
+Date: Thu, 5 Feb 2004 12:36:51 -0700 (MST)
+From: Bill Mann <bill@biscuit.swcp.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.58.0402041528310.2191@scone.biscuit.swcp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: JFFS2 corruption
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: kernel 2.6.x support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-i'm having a strange problem with a JFFS2 filesystem: I always get messages
-about incorrect CRC values while mounting the filesystem. What i did:
+I'm using kernel 2.6.0 with a dropin tree from SourceForge supporting the
+SuperH processor series and I'd like to apply the latest mtd suport
+provided by the cvs.infradead.org CVS tree.  I've read the instructions 
+regarding the use of patchin.sh which states "The script works for kernels 
+>= 2.4"
 
-<create a file which contains nothing but lots of 0x42 called dummy.bin>
+Does this work for kernel 2.6.0?
 
-eraseall -j /dev/mtdblock/3
-mount -t jffs2 /dev/mtdblock /mnt
-cp /dummy.bin /mnt/dummy1.bin
-cp /dummy.bin /mnt/dummy2.bin
-cp /dummy.bin /mnt/dummy3.bin
-cp /dummy.bin /mnt/dummy4.bin
-sync
-cat /dev/mtdblock/3 > /dump1.raw
-umount /mnt
-cat /dev/mtdblock/3 > /dump2.raw
-mount -t jffs2 /dev/mtdblock /mnt
+I'm getting errors after doing the following:
+- untaring kernel 2.6.0
+- applying SourceForge's linuxsh dropin tree
+- configuring, building & booting kernel
+- applying linux-mtd from cvs.infradead.org via patchin.sh
 
-<Multiple messages about invalid JFFS2 CRC values>
+Errors:
 
-cat /dev/mtdblock/3 > /dump3.raw
+  CC      drivers/mtd/mtdchar.o
+drivers/mtd/mtdchar.c:28: syntax error before "devfs_dir_handle"
+drivers/mtd/mtdchar.c:28: warning: type defaults to `int' in declaration 
+of `devfs_dir_handle'
+drivers/mtd/mtdchar.c:28: warning: data definition has no type or storage 
+class
+drivers/mtd/mtdchar.c:29: syntax error before "devfs_rw_handle"
+drivers/mtd/mtdchar.c:29: warning: type defaults to `int' in declaration 
+of `devfs_rw_handle'
+drivers/mtd/mtdchar.c:29: warning: data definition has no type or storage 
+class
+drivers/mtd/mtdchar.c:30: syntax error before "devfs_ro_handle"
+drivers/mtd/mtdchar.c:30: warning: type defaults to `int' in declaration 
+of `devfs_ro_handle'
+drivers/mtd/mtdchar.c:30: warning: data definition has no type or storage 
+class
+drivers/mtd/mtdchar.c: In function `mtd_notify_add':
+drivers/mtd/mtdchar.c:486: warning: implicit declaration of function 
+`devfs_register'
+drivers/mtd/mtdchar.c:487: `DEVFS_FL_DEFAULT' undeclared (first use in 
+this function)
+drivers/mtd/mtdchar.c:487: (Each undeclared identifier is reported only 
+once
+drivers/mtd/mtdchar.c:487: for each function it appears in.)
+drivers/mtd/mtdchar.c: In function `mtd_notify_remove':
+drivers/mtd/mtdchar.c:503: warning: implicit declaration of function 
+`devfs_unregister'
+drivers/mtd/mtdchar.c: In function `init_mtdchar':
+drivers/mtd/mtdchar.c:518: warning: null format string
+drivers/mtd/mtdchar.c:518: warning: too many arguments for format
+make[2]: *** [drivers/mtd/mtdchar.o] Error 1
 
-cmp -l /dump1.raw /dump2.raw => files are the same
-cmp -l /dump2.raw /dump3.raw => Multiple differences.
 
-Did some addition tests:
-
-umount /mnt
-cat /dev/mtdblock/3 > /dump2.raw
-mount -t jffs2 /dev/mtdblock /mnt
-
-Mounts just fine. But there are huge chunks of 0x00 in my dummy files on the
-jffs2 partition.
-
-Any ideas on how to track down this problem? Basic MTD/flash stuff seems to
-work just fine. I can work with a cramfs image on this partition without any
-errors. So i assume something is going wrong in the JFFS2 code.
-
-Specs:
-
-Build Host: x86
-Target: MIPS (LE)
-Flash: NOR (AMD)
-MTD/JFFS2 Codebase: current CVS
-
-Thanks,
-   Florian
+- Bill
