@@ -1,20 +1,16 @@
-Received: from green.csi.cam.ac.uk ([131.111.8.57] ident=exim)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157YuZ-0005u2-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 09:43:32 +0100
-Date: Wed, 6 Jun 2001 09:43:30 +0100 (BST)
-From: James Sutherland <jas88@cam.ac.uk>
-To: Chris Wedgwood <cw@f00f.org>
-cc: Jamie Lokier <lk@tantalophile.demon.co.uk>,
-    "David S. Miller" <davem@redhat.com>,
-    David Woodhouse <dwmw2@infradead.org>,
-    Jeff Garzik <jgarzik@mandrakesoft.com>,  <bjornw@axis.com>,
-     <linux-kernel@vger.kernel.org>,  <linux-mtd@lists.infradead.org>
-Subject: Re: Missing cache flush.
-In-Reply-To: <20010606112419.A24800@metastasis.f00f.org>
-Message-ID: <Pine.SOL.4.33.0106060942160.14836-100000@green.csi.cam.ac.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from crystal.2d3d.co.za ([196.14.185.203] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 157ZH2-0005vh-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 10:06:45 +0100
+Date: Wed, 6 Jun 2001 11:12:04 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: mtd_info->write
+Message-ID: <20010606111204.A7288@crystal.2d3d.co.za>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,16 +22,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> On Tue, Jun 05, 2001 at 07:01:28PM +0200, Jamie Lokier wrote:
->
->     Whether this works depends on the cache line replacement policy.
->     It will always work with LRU, for example, and probably
->     everything else that exists.  But it is not guaranteed, is it?
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-LFU, if used, wouldn't be flushed by this trick... Potentially, you could
-have a slice of kernel interrupt handler sitting in a cache line, having
-been accessed $BIG_NUMBER times... (Does anything actually use this
-approach, though???)
+Hi!
+
+Can you safely assume in the MTD write function that the blocks on which the
+data is have been erased or do you actually have to do some error checking
+and return with -EINVAL if you discover that it's not been erased?
+
+--=20
+
+Regards
+ Abraham
+
+Just because he's dead is no reason to lay off work.
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
 
 
-James.
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7HfPkzNXhP0RCUqMRAgUDAJ0SbFale0MuxUDx644Hlvx3NhqOjQCfVTGc
+IhaBHE04tAz3tQo41iYEGC4=
+=Upac
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
