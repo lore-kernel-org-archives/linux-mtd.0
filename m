@@ -1,31 +1,19 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAvG4-000352-A6
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 14:29:45 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJTgxY022618
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:29:42 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j2EJTg9J238482
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:29:42 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJTfUN013408
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:29:42 -0500
-Received: from windu.rchland.ibm.com (windu.rchland.ibm.com [9.10.78.17])
-	by d01av01.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j2EJTfc9013389
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2005 14:29:41 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1110828016.7642.29.camel@windu.rchland.ibm.com>
-References: <1110827292.7642.26.camel@windu.rchland.ibm.com>
-	<1110828016.7642.29.camel@windu.rchland.ibm.com>
-Content-Type: text/plain
-Date: Mon, 14 Mar 2005 13:29:24 -0600
-Message-Id: <1110828565.7642.33.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
+Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DAwXo-0003WT-LO
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 15:52:09 -0500
+Message-ID: <4235F968.7040102@ieee.org>
+Date: Mon, 14 Mar 2005 15:51:52 -0500
+From: Dan Brown <dan_brown@ieee.org>
+MIME-Version: 1.0
+To: tglx@linutronix.de
+References: <4235D290.15983.3536316E@localhost>
+	<1110821676.4814.53.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1110821676.4814.53.camel@tglx.tec.linutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: lock bit and erase errors
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: lilo vs. diskonchip (again, sorry)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,14 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-03-14 at 13:20 -0600, Josh Boyer wrote:
-> On Mon, 2005-03-14 at 13:08 -0600, Josh Boyer wrote:
-> > Caveat:  I am using some pretty old code in this case, but the current
-> > code is also questionable so bear with me.
+Thomas Gleixner wrote:
+>>BTW, is docboot only intended for inftl devices, or
+>>does it work for nftl DoC's too?
+> 
+> 
+> Docboot seems to be written for and tested on INFTL devices, but it
+> should be not that hard to make it work on NFTL DoCs. 
+> 
+> Dan ??
 
-FYI, I just ran this with a 2.6 kernel + fairly recent MTD code and I
-see the same problems.
+Yeah, this issue keeps coming up.  I keep hoping someone else will 
+volunteer, since I don't use NFTL-based devices anymore in my project. 
+No such luck :(
 
-No more updates from me until I hear back, I promise :).
+However, since I keep claiming it should be easy to add this support to 
+DOCboot, I'll go ahead and put something together over the next week or so.
 
-josh
+	-Dan
