@@ -1,68 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14SbZO-0004Sn-00
-	for mtd-list@infradead.org; Tue, 13 Feb 2001 09:16:22 +0000
+	id 14Sban-0004TQ-00
+	for mtd-list@infradead.org; Tue, 13 Feb 2001 09:17:49 +0000
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14SbZL-0004Se-00
-	for mtd@infradead.org; Tue, 13 Feb 2001 09:16:20 +0000
+	id 14Sbam-0004TK-00
+	for mtd@infradead.org; Tue, 13 Feb 2001 09:17:48 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A886BED.9339AC4F@danielind.com> 
-References: <3A886BED.9339AC4F@danielind.com> 
-To: Vipin Malik <vmalik@danielind.com>
-Cc: jffs-dev <jffs-dev@axis.com>, mtd <mtd@infradead.org>
-Subject: Re: First cut at MTD/JFFS HOWTO 
+In-Reply-To: <151F3D2AE9F0D3119E480004ACB8EA3701DEC943@cluster01.axis.se> 
+References: <151F3D2AE9F0D3119E480004ACB8EA3701DEC943@cluster01.axis.se> 
+To: Jonas Holmberg <jonas.holmberg@axis.com>
+Cc: Johan Adolfsson <johan.adolfsson@axis.com>, mtd@infradead.org
+Subject: Re: Problems with cfi_cmdset_0002.c 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
-Date: Tue, 13 Feb 2001 09:15:47 +0000
-Message-ID: <10792.982055747@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 13 Feb 2001 09:17:16 +0000
+Message-ID: <10951.982055836@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-vmalik@danielind.com said:
-> Q. Why another file system. What was wrong with ext2? 
-> A. 
+jonas.holmberg@axis.com said:
+> I have two AM29LV160D one top and one bottom boot and the both say
+> bootloc==0 :(
 
-Standard response - need journalling pseudo-filesystem to emulate a block 
-device and to wear levelling. then need ext3 (note 3) on that. journalling 
-fs on top of journalling fs - not efficient. Also, no way for ext[23] to 
-mark blocks as _deleted_ and no longer cared about. Fill ext2 partition on 
-NFTL, empty it again, and the NFTL will still carefully copy around the 
-blocks containing old deleted data.
+One of these days I really am going to painfully slaughter a hardware 
+designer. The engineers at an unnamed company who decided to route the 
+PCMCIA socket's interrupt line to a general purpose I/O line on the SH3 CPU 
+without any possibility of generating an interrupt were prime targets a few 
+weeks ago. AMD are in that spot now. Strange - the chip manufacturers are 
+generally more clueful - it's the monkeys who glue them together who 
+usually screw it up (present company excepted :)
 
-> Q. Do I have to have JFFS on MTD? 
-> A. 
-
-ATM yes. Once you could do it on a block device. People are talking about 
-making me make it work on IDE devices (CF). But I don't want to :)
-
-> Q. What is DOC (disk on chip)? A. 
-
-Bunch of NAND flash chips connected together with a clever ASIC which does 
-hardware ECC.
-
-> Q. What File systems can I have on DOC? A. 
-
-If you put NFTL on it to emulate a block device (the status quo) then any 
-normal filesystem. JFFS ought to work too.
-
-> Q. What is Flash memory? A. 
-> Q. What is CFI Flash memory? A. 
-> Q. What is JDEC Flash memory? A.
-> Q. What is this "interleave" stuff? A.
-
-If you have 16-bit chips, but a 32-bit processor, it makes sense to arrange 
-them side-by-side to fill the CPU's bus. You drive them both 
-simultaneously. That's the arrangement we refer to as 'interleave'. 
-
-Other possibilities are... 4x 8-bit chips on 32-bit bus, 2x8-bit 
-chips on 16-bit bus, ...
-
-
-#include <compact_flash_is_not_flash.h>
-
+Is there _any_ difference between these chips which is detectable without 
+actually trying to erase the damn things and observing how much data gets 
+removed?
 
 --
 dwmw2
