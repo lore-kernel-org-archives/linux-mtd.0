@@ -1,17 +1,17 @@
 Received: from auriga.auriga.ru ([80.240.102.100])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19plRl-0007Wg-N7
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2003 10:09:33 +0100
+	id 19plW9-0007Zb-BW
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2003 10:14:05 +0100
 content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Thu, 21 Aug 2003 13:09:14 +0400
-Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D761@auriga.auriga.ru>
+Date: Thu, 21 Aug 2003 13:13:46 +0400
+Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D762@auriga.auriga.ru>
 From: "Eugeny Mints" <eugeny.mints@auriga.ru>
 To: <linux-mtd@lists.infradead.org>
 Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C367C3.E454AA7A"
+	boundary="----_=_NextPart_001_01C367C4.868FD55F"
 cc: Fillod Stephane <stephane.fillod@thomson.net>
-Subject: really attached  patch to mtd20030818, sorry 
+Subject: o-oops:( patch again, sorry
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,7 +23,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C367C3.E454AA7A
+------_=_NextPart_001_01C367C4.868FD55F
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -31,7 +31,6 @@ Content-Transfer-Encoding: quoted-printable
 Dear Fillod Stephane!
 
 >[offlist]
-
 >There's no such patch attached!
 
 Thank you very much!
@@ -41,7 +40,7 @@ Please, find proposed patch to mtd snapshot 20030818 attached.
 Regards,
 			Eugeny
 
-------_=_NextPart_001_01C367C3.E454AA7A
+------_=_NextPart_001_01C367C4.868FD55F
 Content-Type: application/octet-stream;
 	name="mtd20030818.patch"
 Content-Transfer-Encoding: base64
@@ -69,4 +68,4 @@ LyogU2VuZCBjb21tYW5kIHRvIHJlYWQgYmFjayB0aGUgZGF0YSAqLwogCXRoaXMtPmNtZGZ1bmMg
 KG10ZCwgTkFORF9DTURfUkVBRE9PQiwgY29sdW1uLCBwYWdlKTsKIApAQCAtMTAwOSw2ICsxMDEy
 LDcgQEAKIAkJCWdvdG8gb3V0OwogCQl9CiAJfQorCX0KICNlbmRpZgogCiBvdXQ6Cg==
 
-------_=_NextPart_001_01C367C3.E454AA7A--
+------_=_NextPart_001_01C367C4.868FD55F--
