@@ -1,19 +1,19 @@
-Received: from 62-177-159-132.static.bbeyond.nl ([62.177.159.132]
-	helo=mail.opticon.com)
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9Pgy-0002SI-BX
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 10:35:18 -0500
-Received: from [192.168.0.70] (user70.opticon.com [192.168.0.70])
-	by mail.opticon.com (8.12.11/8.12.11) with ESMTP id j2AFZ77d023659
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2005 16:35:08 +0100
-Message-ID: <4230692B.3020303@opticon.com>
-Date: Thu, 10 Mar 2005 16:35:07 +0100
-From: Wolter Kamphuis <wolter.kamphuis@opticon.com>
-MIME-Version: 1.0
+	id 1D9Ps0-0002iV-PK
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 10:46:42 -0500
+Date: Thu, 10 Mar 2005 16:46:41 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Message-ID: <20050310154640.GC4910@synertronixx3>
+References: <20050309131453.GA2497@synertronixx3>
+	<Pine.LNX.4.58.0503101314570.4649@phoenix.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Can't load DOC driver, DOC address unknown?
+In-Reply-To: <Pine.LNX.4.58.0503101314570.4649@phoenix.infradead.org>
+Subject: Re: jffs2 with sync burst mode
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,203 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Am 2005-03-10 13:15 +0000 schrieb Artem B. Bityuckiy:
 
-We're working on the Linux port for the E-ten P700. We've got a problem
-accessing the DiskOnChip (Millennium Plus 64Mb). The spec's we have
-(possibly outdated) say it should be mapped at address 0xA4000000 but
-the driver (doc2001plus) can't find it there.
+> Try to mount empty filesystem then copy your tree there by "cp -r -a", 
+> umount, mount. This will exclude errors during JFFS2 image 
+> creation/flashing.
 
-The driver does find a DOC on all addresses < 0x04000000 offset 0x1000
-but fails to find the flash chips. Doesn't look right.
+Ok. I did following:
+I copied the root-fs directory into the nfs export so I can reach it
+from the embedded system. I put a tar with /dev into it also.
 
-Is there a way to figure where the DOC is mapped without the use of JTAG
-(which we haven't). Maybe through a WindowsCE program?
+I erased /dev/mtdblock3 with bootloader and
+bootet with nfsroot again. I mounted empty /dev/mtdblock3, cd'ed into it
+and did "cp -a -r /usr/src/root/* ."
 
-The P700 has a M-systems DOC+ MD-3331-D64-V3.
-We start the kernel using HaRET, below is the output. I've added some
-debug to the docprobe and doc2001plus drivers.
+sh-2.05b# mount -t jffs2 /dev/mtdblock3 /mnt
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x003a52c8: Read 0x839452cb, calculated 0x262752af
+Name for which CRC failed is (now) 'openssh-host-key', ino #350
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x0043566c: Read 0x9fcfc7a9, calculated 0x445e56d8
+', ino #269ich CRC failed is (now) 'libpthread-0
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x0047aa4c: Read 0xb9570647, calculated 0x6ac2e146
+Name for which CRC failed is (now) 'linux-wlan-nÒ', ino #210
 
+i.e.:
 
-E-ten bootloader starting:
-*******Beginning System Initialization*******
-          CPU ID     = A0 PXA255
-          SDCLK[1]   = MemClk
-          MemClk     = 99.53 MHz
-          Run Mode   = 2 * MemClk
-          Turbo Mode = 2 * Run Mode
-Mode:    TURBO
+003a52c0: 0000 0000 ff45 79b6 8519 01e0 3e00 0000  .....Ey.....>... 
+003a52d0: 4bc9 e11a 4901 0000 1600 0000 5e01 0000  K...I.......^... 
+003a52e0: 9900 0000 1608 0000 333a 7af0 cb52 9483  ........3:z..R.. 
+003a52f0: 6f70 656e 7373 682d 686f 7374 2d6b 6579  openssh-host-key 
+003a5300: 6765 6e2e 7368 ffff 8519 02c0 2801 0000  gen.sh......(... 
+003a5310: 91d9 c5e8 5e01 0000 0200 0000 ed81 0000  ....^........... 
+003a5320: 0000 0000 9902 0000 9900 0000 9900 0000  ................ 
 
-MMU Enabled!
-******************************************************
-******************************************************
-******************************************************
-******************************************************
-******************************************************
-OEMInitDebugSerial using UART1
+00435660: 0000 0000 0000 0000 b882 2ec7 8519 01e0  ................ 
+00435670: 3c00 0000 c001 e8b0 fb00 0000 1300 0000  <............... 
+00435680: 0d01 0000 9400 0000 1408 0000 55ff 2d7c  ............U.-| 
+00435690: a9c7 cf9f 6c69 6270 7468 7265 6164 2d30  ....libpthread-0 
+004356a0: 2e39 2e32 362e 736f 8519 02c0 a906 0000  .9.26.so........ 
+004356b0: 4a1e 6fb8 0d01 0000 0200 0000 a481 0000  J.o............. 
+004356c0: 0000 0000 0010 0000 9400 0000 9400 0000  ................ 
 
-*****************************************************************
-*    Paladin, Version 2.30
-*    Built: 13:00:27  Jan 26 2005
-*
-*
-*    Copyright (C) 2003, E-TEN Information System Co., Ltd.
-*****************************************************************
-MSC1 Pre value = 7FF07FF0
-MSC1 Post value = 7FF172FC
-Tenerife ID = 1884D51
-DC_0=0x1......
-DC_1=0x43......
-DC_2=0x1......
-DC_4=0x4......
-DC_5=0x1......
-DC_8=0x868B8649......
-M1_0=0x1......
-M1_1=0x1B676CA0......
-M1_2=0x117700B0......
-M1_5=0x170211......
-CC_0=0x2......
-CC_2=0x200000......
-CC_5=0x0......
-SW_6=0xAABBCCDD......
-ulStride=0x1E0......
-(G1_BASE+GC_START_ADDR)=0x1B0......
-ulStride=0x1E0..0x140..0x25800..
-ulStride=0x1E0..0x140..0x9600..
-FP06R=0x80000000......
-FP07R=0x0......
-FP08R=0x3......
-FP08R aw=0x3......
-FP07R aw=0x0......
-FP0FR aw=0x10......
-====> Y = 320
-====> FB_BASE = B8300000
-flRegisterComponents
-Adapter Found....
-flRegisterDOCPLUS()....
-flRegisterINFTL()....
-bdkReadInit OK!
-read from 11 to 0x83FD0000  -> bdkReadBlock OK!
-read from 12 to 0x83FD8000  -> bdkReadBlock OK!
-read from 13 to 0x83FE0000  -> bdkReadBlock OK!
-read from 14 to 0x83FE8000  -> bdkReadBlock OK!
-read from 15 to 0x83FF0000  -> bdkReadBlock OK!
-Version String is AB2110.100.0014.WWE.premium.   .100.0000
-RCSR = 0x00000001
-dwNK = EA0003FE
-memset(0x80040000, 0, 0x01EC0000);
-memset(0x82000000, 0, 0x01F00000);
-Launch OS image...
-Launchà
+Filenames truncated by 0000?
 
+0047aa40: 0000 0000 0000 0000 3d99 4484 8519 01e0  ........=.D..... 
+0047aa50: 3c00 0000 c001 e8b0 d100 0000 0200 0000  <............... 
+0047aa60: d200 0000 9100 0000 1408 0000 56db cdde  ............V... 
+0047aa70: 4706 57b9 6c69 6e75 782d 776c 616e 2d6e  G.W.linux-wlan-n 
+0047aa80: 672d 7072 652d 7570 8519 02c0 8006 0000  g-pre-up........ 
+0047aa90: fefe 5565 d200 0000 0200 0000 ed81 0000  ..Ue............ 
+0047aaa0: 0000 0000 0010 0000 9100 0000 9100 0000  ................ 
+0047aab0: 9100 0000 0000 0000 3c06 0000 0010 0000  ........<....... 
 
+The `O is d2, third line first byte.
 
-HaRET starting kernel:
-x<x.ØxüxüØx<ÿØxx..x<Øxü.xü.x<.Øx.Øxü.x..x<.Øx.Øx<xx.x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x..x5
-CPU: XScale-PXA255 [69052d06] revision 6 (ARMv5TE)
-CPU0: D VIVT undefined 5 cache
-CPU0: I cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
-CPU0: D cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
-Machine: E-ten P700
-Memory policy: ECC disabled, Data cache writethrough
-Memory clock: 99.53MHz (*27)
-Run Mode clock: 199.07MHz (*2)
-Turbo Mode clock: 398.13MHz (*2.0, active)
-Built 1 zonelists
-Kernel command line: noinitrd console=ttyS1,38400n8 root=/dev/nfs
-init=/linuxrc ip=192.168.131.201:192.168.131.102:::::
-nfsroot=192.168.131.102:/mnt/nfsrootd
-PID hash table entries: 256 (order: 8, 4096 bytes)
-Console: colour dummy device 80x30
-Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
-Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
-Memory: 56MB = 56MB total
-Memory: 54820KB available (1487K code, 330K data, 84K init)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-CPU: Testing write buffer coherency: ok
-NET: Registered protocol family 16
-NetWinder Floating Point Emulator V0.97 (double precision)
-devfs: 2004-01-31 Richard Gooch (rgooch@atnf.csiro.au)
-devfs: boot_options: 0x1
-ttyS0 at MMIO 0x40100000 (irq = 15) is a FFUART
-ttyS1 at MMIO 0x40200000 (irq = 14) is a BTUART
-ttyS2 at MMIO 0x40700000 (irq = 13) is a STUART
-io scheduler noop registered
-io scheduler anticipatory registered
-io scheduler deadline registered
-io scheduler cfq registered
-loop: loaded (max 8 devices)
-pxa2xx_udc: version 14-Dec-2003
-usb0: Ethernet Gadget, version: Equinox 2004
-usb0: using pxa2xx_udc, OUT ep2out-bulk IN ep1in-bulk
-usb0: MAC 52:b1:32:84:10:2f
-mice: PS/2 mouse device common for all mice
-NET: Registered protocol family 2
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP established hash table entries: 2048 (order: 2, 16384 bytes)
-TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
-TCP: Hash tables configured (established 2048 bind 2048)
-NET: Registered protocol family 1
-IP-Config: Guessing netmask 255.255.255.0
-IP-Config: Complete:
-       device=usb0, addr=192.168.131.201, mask=255.255.255.0,
-gw=255.255.255.255,
-      host=192.168.131.201, domain=, nis-domain=(none),
-      bootserver=192.168.131.102, rootserver=192.168.131.102, rootpath=
-Looking up port of RPC 100003/2 on 192.168.131.102
-udc: USB reset
-usb0: full speed config #1: 100 mA, Ethernet Gadget, using CDC Ethernet
-Subset
-Looking up port of RPC 100005/1 on 192.168.131.102
-VFS: Mounted root (nfs filesystem).
-Mounted devfs on /dev
-Freeing init memory: 84K
-BusyBox v1.00-rc3 (2005.02.25-09:50+0000) Built-in shell (ash)
-Enter 'help' for a list of built-in commands.
-/ # modprobe -v doc2001plus
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/mtdcore.ko
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/mtdpart.ko
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/docecc.ko
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/nand/nand_ids.ko
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/doc2001plus.ko
+Konsti
 
-
-
-Try address 0x1000:
-/ # modprobe -v docprobe doc_config_location=0x1000
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/docprobe.ko
-doc_config_location=0x1000
-Using configured DiskOnChip probe address 0x1000
-drivers/mtd/devices/docprobe.c:142 (doccheck) 0x40
-drivers/mtd/devices/docprobe.c:194 (doccheck) 0x40
-drivers/mtd/devices/docprobe.c:255 (DoC_Probe) 0x40
-DiskOnChip Millennium Plus found at address 0x1000
-_DoC_WaitReady called for out-of-line wait
-drivers/mtd/devices/doc2001plus.c:83 (_DoC_WaitReady) 65534 ReadDOC's
-_DoC_WaitReady timed out.
-_DoC_WaitReady called for out-of-line wait
-drivers/mtd/devices/doc2001plus.c:83 (_DoC_WaitReady) 65534 ReadDOC's
-_DoC_WaitReady timed out.
-drivers/mtd/devices/doc2001plus.c:316 (DoC_IdentChip) mfr = 0x40
-drivers/mtd/devices/doc2001plus.c:321 (DoC_IdentChip) id = 0x40
-No flash chips recognised.
-insmod: cannot insert
-`/lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/docprobe.ko':
-Resource temporarily unavailable (-1): Resource temporarily unavailae
-modprobe: failed to load module docprobe
-
-
-
-Try address 0xA4000000:
-/ # modprobe -v docprobe doc_config_location=0xA4000000
-insmod    /lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/docprobe.ko
-doc_config_location=0xA4000000
-drivers/mtd/devices/docprobe.c:254 (DoC_Probe) physadr=0xa4000000
-docptr=0xc4000000
-drivers/mtd/devices/docprobe.c:144 (doccheck) physadr=0xa4000000
-ChipID=0x85
-No recognised DiskOnChip devices found
-insmod: cannot insert
-`/lib/modules/2.6.11-hh0/kernel/drivers/mtd/devices/docprobe.ko':
-Resource temporarily unavailable (-1): Resource temporarily unavailae
-modprobe: failed to load module docprobe
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
