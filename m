@@ -1,15 +1,15 @@
-Received: from mx1.mail.ru ([194.67.23.121])
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGHBO-0004dZ-GN
-	for linux-mtd@lists.infradead.org; Sat, 09 Oct 2004 09:23:18 -0400
-Message-ID: <4167E618.6030503@mail.ru>
-Date: Sat, 09 Oct 2004 17:22:32 +0400
-From: "Artem B. Bityuckiy" <dedekind@mail.ru>
+	id 1CGIWs-00052Q-OT
+	for linux-mtd@lists.infradead.org; Sat, 09 Oct 2004 10:49:04 -0400
+Message-ID: <4167FA3E.60609@yandex.ru>
+Date: Sat, 09 Oct 2004 18:48:30 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-References: <416122A1.4060302@oktetlabs.ru>		<1096885344.30942.559.camel@hades.cambridge.redhat.com>		<416127B7.3070505@yandex.ru>		<1096893242.22034.5.camel@weaponx.rchland.ibm.com>		<41614B2F.8060901@yandex.ru>		<1096895892.30942.614.camel@hades.cambridge.redhat.com>		<41615BA7.60801@yandex.ru>		<1096899817.30942.618.camel@hades.cambridge.redhat.com>		<4162AABC.9060809@yandex.ru>		<1096994744.30942.905.camel@hades.cambridge.redhat.com>	<1096996838.24013.3.camel@weaponx.rchland.ibm.com>
-	<4167CF42.3030506@yandex.ru>
-In-Reply-To: <4167CF42.3030506@yandex.ru>
+References: <416122A1.4060302@oktetlabs.ru>		<1096885344.30942.559.camel@hades.cambridge.redhat.com>		<416127B7.3070505@yandex.ru>		<1096893242.22034.5.camel@weaponx.rchland.ibm.com>		<41614B2F.8060901@yandex.ru>		<1096895892.30942.614.camel@hades.cambridge.redhat.com>		<41615BA7.60801@yandex.ru>		<1096899817.30942.618.camel@hades.cambridge.redhat.com>		<4162AABC.9060809@yandex.ru>		<1096994744.30942.905.camel@hades.cambridge.redhat.com>	<1096996838.24013.3.camel@weaponx.rchland.ibm.com>	<4167CF42.3030506@yandex.ru>
+	<4167E11C.1020202@mail.ru>
+In-Reply-To: <4167E11C.1020202@mail.ru>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,63 +23,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
-> Hello Guys.
+> Moreover, there is the 'ofs' field in the jffs2_full_dnode which isn't 
+> really needed since the sabe information is in the raw->flash_offset 
+> field. So, we can for example add 'version' and remove 'ofs' field. The 
+> size won't change, the JFFS2 will be a bit simpler. Only small overhead 
+> (need to dereference pointer to get the ofs) will be introduced.
 > 
-> Unfortunately, I hit on very painful trouble while trying to 
-> design/implement checkpoints (ICP) ...
-> 
-> Obviously, ICP must contain all information, which is required to build 
-> the inode cache. These are: offset, size and *version*. The problem is 
-> in version.
-> 
-> At first I thought that in order to create ICP for some regfile inode, 
-> we just need to be sure that the inode cache for this regfile exists. 
-> But! I've overseen the fact that *there is no versions in the inode 
-> cache* :-(
-> 
-> The inode cache (struct jffs2_inode_info) contains fragtree which has 
-> struct jffs2_full_dnode objects. But these objects have no version field...
-> 
-> So, I see two ways out:
-> 
-> 1. Add the version field to the struct jffs2_full_dnode objects.
-> This also means that the struct jffs2_tmp_dnode_info structure won't be 
-> needed anymore.
-> 
-> The advantage of such approach is that the JFFS2 will be more simple 
-> since one data structure will be removed. I like the KISS principle.
-Ok, guys, sorry, I've hurried saying that the struct 
-jffs2_tmp_dnode_info won't be needed... It is needed to construct lists 
-of struct jffs2_full_dnode objects...
+Sorry again (:-)), this is false. 'ofs' field is another offset and is 
+needed.
+I was just confused by the comment "/* Don't really need this, but 
+optimisation */"...
 
-Anyway, my problem is still actual.
-
-> 
-> The drawback is that the inode cache will eat more memory. But this 
-> isn't in-core object, just cache, so I don't think this is a big 
-> disadvantage.
-> 
-> 2. Don't use the inode cache at all. This is bad because in order to 
-> build the inode cache we'll need to read *all* the node headers, even if 
-> there is existing inode cache.
-> 
-> I believe this approach is bad and too heavyweight. Moreover, just 
-> imagine the situation when the GC has fount an ICP ant wants to 
-> determine if it valid or obsolete. Obsolete means that (1) there is 
-> newer ICP with higher version (simple case) or (2) all (or most) the 
-> nodes which are described by the ICP aren't valid anymore (complicated 
-> case). The second case means that we must read the ICPs lowest_version 
-> and highest_version and count how many valid nodes with versions within 
-> this interval exist. But we have NO versions even if the inode cache is 
-> present. I don't think it is a good idea if the GC will head all the 
-> node's headers...
-> 
-> What do you guys think? Any advices/ideas?
-> 
-> Thanks.
-> 
+Here is the patch (just for demonstration) to move the version field 
+from tmp_dnode_info to full_dnode structure. It is quite simple. But it 
+would be very useful fir checkpoints. It works at least with my simple 
+JFFS2 test.
 
 -- 
-Best Regards
-Artem B. Bityckiy
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
+
+
+
+diff -auNr mtd-snapshot-20041008/fs/jffs2/nodelist.c 
+mtd-version-move/fs/jffs2/nodelist.c
+--- mtd-snapshot-20041008/fs/jffs2/nodelist.c	2003-11-01 
+02:00:35.000000000 +0300
++++ mtd-version-move/fs/jffs2/nodelist.c	2004-10-09 17:50:43.325035342 +0400
+@@ -62,7 +62,7 @@
+  {
+  	struct jffs2_tmp_dnode_info **prev = list;
+  	
+-	while ((*prev) && (*prev)->version < tn->version) {
++	while ((*prev) && (*prev)->fn->version < tn->fn->version) {
+  		prev = &((*prev)->next);
+  	}
+  	tn->next = (*prev);
+@@ -363,7 +363,7 @@
+  				jffs2_free_tmp_dnode_info(tn);
+  				goto free_out;
+  			}
+-			tn->version = je32_to_cpu(node.i.version);
++			tn->fn->version = je32_to_cpu(node.i.version);
+  			tn->fn->ofs = je32_to_cpu(node.i.offset);
+  			/* There was a bug where we wrote hole nodes out with
+  			   csize/dsize swapped. Deal with it */
+diff -auNr mtd-snapshot-20041008/fs/jffs2/nodelist.h 
+mtd-version-move/fs/jffs2/nodelist.h
+--- mtd-snapshot-20041008/fs/jffs2/nodelist.h	2004-10-08 
+02:00:14.000000000 +0400
++++ mtd-version-move/fs/jffs2/nodelist.h	2004-10-09 17:54:20.785755572 +0400
+@@ -167,8 +167,8 @@
+  	uint32_t size;
+  	uint32_t frags; /* Number of fragments which currently refer
+  			to this node. When this reaches zero,
+-			the node is obsolete.
+-		     */
++			the node is obsolete.  */
++	uint32_t version;
+  };
+
+  /*
+@@ -180,7 +180,6 @@
+  {
+  	struct jffs2_tmp_dnode_info *next;
+  	struct jffs2_full_dnode *fn;
+-	uint32_t version;
+  };
+
+  struct jffs2_full_dirent
+diff -auNr mtd-snapshot-20041008/fs/jffs2/readinode.c 
+mtd-version-move/fs/jffs2/readinode.c
+--- mtd-snapshot-20041008/fs/jffs2/readinode.c	2003-11-04 
+02:00:36.000000000 +0300
++++ mtd-version-move/fs/jffs2/readinode.c	2004-10-09 17:48:25.354322429 
++0400
+@@ -526,7 +526,7 @@
+  		fn = tn->fn;
+
+  		if (f->metadata) {
+-			if (likely(tn->version >= mdata_ver)) {
++			if (likely(tn->fn->version >= mdata_ver)) {
+  				D1(printk(KERN_DEBUG "Obsoleting old metadata at 0x%08x\n", 
+ref_offset(f->metadata->raw)));
+  				jffs2_mark_node_obsolete(c, f->metadata->raw);
+  				jffs2_free_full_dnode(f->metadata);
+@@ -536,7 +536,7 @@
+  			} else {
+  				/* This should never happen. */
+  				printk(KERN_WARNING "Er. New metadata at 0x%08x with ver %d is 
+actually older than previous ver %d at 0x%08x\n",
+-					  ref_offset(fn->raw), tn->version, mdata_ver, 
+ref_offset(f->metadata->raw));
++					  ref_offset(fn->raw), tn->fn->version, mdata_ver, 
+ref_offset(f->metadata->raw));
+  				jffs2_mark_node_obsolete(c, fn->raw);
+  				jffs2_free_full_dnode(fn);
+  				/* Fill in latest_node from the metadata, not this one we're about 
+to free... */
+@@ -549,9 +549,9 @@
+  			jffs2_add_full_dnode_to_inode(c, f, fn);
+  		} else {
+  			/* Zero-sized node at end of version list. Just a metadata update */
+-			D1(printk(KERN_DEBUG "metadata @%08x: ver %d\n", 
+ref_offset(fn->raw), tn->version));
++			D1(printk(KERN_DEBUG "metadata @%08x: ver %d\n", 
+ref_offset(fn->raw), tn->fn->version));
+  			f->metadata = fn;
+-			mdata_ver = tn->version;
++			mdata_ver = tn->fn->version;
+  		}
+  	next_tn:
+  		tn_list = tn->next;
+
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
