@@ -1,18 +1,16 @@
-Received: from e35.co.us.ibm.com ([32.97.110.133])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CBume-0001rv-0V
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2004 08:39:13 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: "lp4u@inwind.it" <lp4u@inwind.it>
-In-Reply-To: <I4P01V$98C3EDB5078A59E7AAD6238C95341AF3@libero.it>
-References: <I4P01V$98C3EDB5078A59E7AAD6238C95341AF3@libero.it>
-Content-Type: text/plain
-Message-Id: <1096288742.17956.0.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Mon, 27 Sep 2004 07:39:02 -0500
+Received: from beton.pi.net.pl ([195.116.221.97] helo=mail133.pi.net.pl)
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CC0eg-0002gB-69
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2004 14:55:25 -0400
+Message-ID: <000701c4a4c3$822d6e90$0b0aa8c0@maslow>
+From: =?iso-8859-2?Q?Kornel_Mas=B3owski?= <maslow@pf.pl>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 27 Sep 2004 20:55:03 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-2";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: kernel panic
+Subject: jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +20,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-09-27 at 04:08, lp4u@inwind.it wrote:
-> Hi, 
->  
-> I've a s3c2410 board (BAST architecture), I've compilated a kernel 2.6.8.1 with patch 2.6.9-rc2 e 
-> patch 2.6.9-rc2-bk12. But the board don't start with NFS (with kernel 2.4.26, yes). My 
-> configuration is: 
->  
-
-Um..  what does all of this have to do with MTD?  Maybe you are asking
-on the wrong list... :)
-
-josh
+I'm not sure how jffs2 works.
+I have jffs2 on  8bit NAND flash (page 512 B).
+I want to append record 32B to the file on flash which current size is 10kB.
+Flash device is almost empty.
+How many pages will be written by jffs2? 
