@@ -1,21 +1,18 @@
-Received: from fmfdns01.fm.intel.com ([132.233.247.10] helo=calliope1.fm.intel.com)
+Received: from www.altera.com ([66.35.227.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WEKz-0005Hb-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:21:02 +0000
-Received: from fmsmsxvs041.fm.intel.com (fmsmsxv041-1.fm.intel.com [132.233.48.109])
-	by calliope1.fm.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.49 2002/01/25 02:16:58 root Exp $) with SMTP id KAA01549
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:32:07 GMT
-Received: from fmsmsx29.FM.INTEL.COM ([132.233.42.29])
- by fmsmsxvs041.fm.intel.com (NAVGW 2.5.1.16) with SMTP id M2002013102330019254
- for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 02:33:00 -0800
-Message-ID: <413FBB0BA5AED1119122000083234B1A01DD2963@alpha.igk.intel.com>
-From: "Kolakowski, Mikolaj" <Mikolaj.Kolakowski@intel.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Support for Intel 28F800B3B?
-Date: Thu, 31 Jan 2002 11:31:44 +0100
-MIME-Version: 1.0
+	id 16WFDM-0005Lw-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 11:17:12 +0000
+Message-Id: <200201311128.g0VBSBh22771@uk-proclin7.altera.com>
 Content-Type: text/plain;
-	charset="ISO-8859-2"
+  charset="iso-8859-15"
+From: Clive Davies <cdavies@altera.com>
+To: gleixner@autronix.de, linux-mtd@lists.infradead.org
+Subject: Re: compile errors on fs/jffs/inode-v23.c
+Date: Thu, 31 Jan 2002 11:28:10 +0000
+References: <02013111130007.00763@thomas>
+In-Reply-To: <02013111130007.00763@thomas>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,17 +24,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have IXP1200 eval board equiped with two 28F800B3B. Flashes are 16bit
-wide, data bus is 32 bit wide.
-These configuration works fine in RedBoot. The problem is in linux kernel
-booting, MTD doesn't recognize any flash.
-Whole flash is 0x200000 big and mapped at 0x00000000. I have tried to
-identify flashes using CFI and JEDEC probe but both failed.
- 
-I have done some additional tests, including raw writing and reading to the
-flash, the result is that I have read always 0xfffff... instead of 
-flash data. I think that I should at least read redboot image?
- 
-Anybody could help me?
- 
-Mikolaj
+> 	inode->i_rdev.value = 0;
+>
+ I think this is my fault. Try this patch...
+
+--- mtd_orig/fs/jffs/inode-v23        Thu Jan 31 11:24:54 2002
++++ mtd/fs/jffs/inode-v23.c     Thu Jan 31 11:22:19 2002
+@@ -364,7 +364,7 @@ jffs_new_inode(const struct inode * dir,
+        inode->i_nlink = raw_inode->nlink;
+        inode->i_uid = raw_inode->uid;
+        inode->i_gid = raw_inode->gid;
+-       inode->i_rdev.value = 0;
++       inode->i_rdev = NODEV;
+        inode->i_size = raw_inode->dsize;
+        inode->i_atime = raw_inode->atime;
+        inode->i_mtime = raw_inode->mtime;
