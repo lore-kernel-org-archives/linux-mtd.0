@@ -1,18 +1,21 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
+Received: from [213.239.205.147] (helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BpSal-000489-5i
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 10:06:08 -0400
-Message-ID: <41066111.7030903@smartlink.ee>
-Date: Tue, 27 Jul 2004 17:05:05 +0300
-From: Kalev Lember <kalev@smartlink.ee>
-MIME-Version: 1.0
-To: jigar shah <jigarshah121@rediffmail.com>
-References: <20040727135724.30064.qmail@webmail46.rediffmail.com>
-In-Reply-To: <20040727135724.30064.qmail@webmail46.rediffmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1BpSkc-0004KQ-Ng
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 10:16:20 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Andy Hawkins <a.hawkins@cabletime.com>
+In-Reply-To: <1090935846.17545.3.camel@adh>
+References: <1090923928.2237.6.camel@adh>
+	<1090930297.20889.93.camel@thomas.tec.linutronix.de>
+	<1090935846.17545.3.camel@adh>
+Content-Type: text/plain
+Message-Id: <1090937404.20889.166.camel@thomas.tec.linutronix.de>
+Mime-Version: 1.0
+Date: Tue, 27 Jul 2004 16:10:04 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Question abt jffs2
+Subject: Re: Large JFFS2 filesystem problem
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-jigar shah ::
+On Tue, 2004-07-27 at 15:44, Andy Hawkins wrote:
+> 'kmalloc' to a 'vmalloc' and this appeared to work. Your patch also has
+> the desired effect.
 
->i want to execute " ftp client" binary utility 
->but when i execute it it give me error
->"No such file or direcotrey" though itis present in that directory
->  
->
-Hi,
+Thanks, fixed in CVS
 
-This is the message that is output if one or more libraries are missing. 
-You can check it by running
-# ldd <progname>
-
--- 
-Best regards,
-Kalev Lember
+tglx
