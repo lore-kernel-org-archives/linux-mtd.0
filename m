@@ -1,20 +1,13 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CoM1O-0000Wq-0i
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2005 08:25:19 -0500
-Message-ID: <41E3D3E2.3090806@inf.u-szeged.hu>
-Date: Tue, 11 Jan 2005 14:25:54 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Date: Tue, 11 Jan 2005 12:29:33 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: joern@wohnheim.fh-wedel.de
+Message-ID: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-References: <Pine.LNX.4.61.0501101246150.20261@localhost.localdomain>	<1105380565.17584.4.camel@weaponx.rchland.ibm.com>
-	<Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	"Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: how to loopback mount a JFFS2 filesystem on my linux box?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +17,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
->>You can't do that AFAIK because JFFS2 needs an MTD device.  Instead, use
->>mtdram to create a fake MTD device, dd the image to it, and do:
->>
->># mount -t jffs2 /dev/mtdblock0 <mnt/point>
-> 
-> mtdblock is hardcoded to 4BM. So if you need larger, use nand/nandsim.c. 
-> This is NAND flash simulation driver and it is configurable, so you may 
-> configure it to have larger size. 
+Ferenc Havasi:
+>If I am right CRCs are not only against the effect of unclean reboots 
+>but also to handle flash errors. On NAND flashes the ECC handles this
+>problem but NOR doesn't have any error detection system. 
 
-The size of this device is depends on the size of the mtdram (not 
-related to mtdblock, I think). It can be configured easily by kconfig: 
-you can specify the size of it and its erase block size.
+Joern Engel wrote:
+>So either we can make sure this case never happens, or we can't.  It
+>depends on the type of flash, for sure, and it may be pretty hard with
+>some types.  But if it doesn't work at all, the flash is broken,
+>period.
 
-Nandsim is also configurable but unfortunatelly not from kconfig. If I 
-am right you have to edit sources by hand. Firstly in the source of 
-nandsim you have to specify a chip ID. You have to look up this ID from 
-  nand_ids.c (if you found an appropriate NAND chip) or you have to 
-define an own one.
+Hi, that is really interesting, *why* do we need CRCs in JFFS2?
 
-Bye,
-Ferenc
+Do we need CRC *only* to handle unclean reboots? If so, we may possibly 
+handle it another way, just putting some magic word at the end of node. 
+Possibly, no need for CRC at all.
+
+Joern stands that if Flash got rotten, we *do not need* to do something 
+special trying to recover data. Am I right?
+
+I still think we need to do recovery in case of NAND, mark the rotten 
+block bad and keep working, so we still need CRC. In case of NOR, we 
+possibly should just report error and do nothing (we can't mark block bad 
+there). Do not know about ECC NOR.
+
+Comments?
+
+P.S. By the way, we could put CRCs at the end of blocks (*after* data) - 
+in this case CRC well be extremely strong detecting unclean reboots, isn't 
+it?
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
