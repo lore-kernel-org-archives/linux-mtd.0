@@ -1,17 +1,18 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mb4F-0001T2-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:23:39 +0100
+	id 17mbIv-0001Uo-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:38:49 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFEEKGDLAA.acurtis@onz.com> 
-References: <NCBBIINEHIPFGJPLBEIFEEKGDLAA.acurtis@onz.com> 
-To: acurtis@onz.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: 64-bit support..what happened? 
+In-Reply-To: <Pine.LNX.4.33.0209041519170.22265-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0209041519170.22265-100000@hex.linuxgrrls.org> 
+To: Jasmine Strong <jasmine@hex.linuxgrrls.org>
+Cc: John Hall <John.Hall@optionexist.co.uk>,
+    "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Re: Stable cvs version for 2.4 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 04 Sep 2002 15:23:32 +0100
-Message-ID: <31730.1031149412@redhat.com>
+Date: Wed, 04 Sep 2002 15:37:00 +0100
+Message-ID: <547.1031150220@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-acurtis@onz.com said:
->  1. The conditional CONFIG_CFI_64 is defined within cfi.h. However not
-> all the source modules that use this conditional include the proper
-> header file. (all the source modules under drivers/mtd/maps)
+jasmine@hex.linuxgrrls.org said:
+>  Yes.  uCLinux, anyway.   Pointers should always be treated as opaque
+> unless you have a *really* good reason not to.
 
-You presumably only need to include it for the map drivers on those 
-platforms which can actually support 64-bit operation. So that's not 
-necessarily a problem.
+I have 8000 reasons not to:
 
-> 2. drivers/mtd/maps/physmap.c - attempts to reference __raw_readll()
-> and __raw_writell() when in 64-bit mode. These functions/macros do not
-> exist. They would appear in include/asm/io.h. Nothing exists in the
-> MTD tree to patch this file or otherwise provide these functions. 
+# grep node_frag /proc/slabinfo 
+jffs2_node_frag     8028   8064     28   64   64    1
 
-Correct. Again, this is platform-specific and you need to provide it. Some 
-people have to play tricks with transferring all 64 bits into a FP register 
-and storing form there, etc. It's probably best to take the stuff in 
-physmap.c as merely an example, and provide your own map driver.
+At a gratuitous extra 4 bytes per object, that's... ok, well it's only
+wasting 32KiB which is less than I expected, but it still annoys me.
+
+> (Architectures that don't always use word-aligned pointers include
+> m68k and ARM Thumb.) 
+
+Even when we're allocating from the slab and the object in question is a 
+structure of size which is an even number?
+
+Even so, I'd assume that we care even _more_ about that 32KiB on uCLinux, so
+maybe it's worth adding 1 byte of padding to the structure there and
+manually aligning the pointer after allocating, or something. We only need 
+1 bit, after all. Or we could use the _top_ bit on uCLinux, perhaps?
 
 --
 dwmw2
