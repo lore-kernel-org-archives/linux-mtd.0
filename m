@@ -1,24 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <41597C0B.7040607@yandex.ru>
-References: <41595913.4040007@yandex.ru>
-	<1096375038.30942.30.camel@hades.cambridge.redhat.com>
-	<41596471.5020108@yandex.ru>
-	<1096377761.30942.58.camel@hades.cambridge.redhat.com>
-	<41596913.6080207@yandex.ru>
-	<1096379132.30942.66.camel@hades.cambridge.redhat.com>
-	<41596DDC.3000506@yandex.ru>
-	<1096380254.30942.77.camel@hades.cambridge.redhat.com>
-	<41597498.7090704@yandex.ru>
-	<1096382241.30942.81.camel@hades.cambridge.redhat.com>
-	<41597C0B.7040607@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1096383873.30942.88.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 28 Sep 2004 16:04:33 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 an nodes checking
+Received: from smtp20.libero.it ([193.70.192.147])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CCJnr-0008MP-4b
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 11:22:08 -0400
+Date: Tue, 28 Sep 2004 17:21:32 +0200
+Message-Id: <I4RBZW$1BC751545D7EDF7C8647146B5A96310F@libero.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+From: "lp4u\@inwind\.it" <lp4u@inwind.it>
+To: "Ben Dooks" <ben@fluff.org.uk>,
+	"MTD mailing list" <linux-mtd@lists.infradead.org>
+Cc: 
+Subject: Write on nand
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +21,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-09-28 at 18:58 +0400, Artem B. Bityuckiy wrote:
-> What would you say if somebody offer you a patch with such optimization 
-> ? Would you reject it? Or you would accept it and rename JFFS2 to JFFS3 
-> :-) ?
-
-I'd probably reject it unless I was completely convinced it was
-necessary, and it was the only way to do it. We're not ready for JFFS3
-yet.
-
-How about introducing a new node type which can be ignored by older
-JFFS2 implementations? Consider an 'inode checkpoint' node, which tells
-you instantly the state of all the nodes with versions smaller than it,
-so you don't have to check all those. You only have to read and check
-the CRC on the nodes _newer_ than the checkpoint.
-
-Then you can write these whenever you feel like it, to large files. 
-
-> Anyway, the complex solution with partial fragtrees is the potential 
-> source of new bugs, etc.
-
-True. It took long enough to get the first fragtree stuff right, and I
-still have the mental scars :)
-
--- 
-dwmw2
+Hi,   
+   
+finally my board detect the NAND. How to use MTD? How to wri=
+te, read on my NAND?   
+Can I write on:   
+0x00000000-0x00004000 : "Boo=
+t Agent"   
+mtd: Giving out device 0 to Boot Agent   
+0x00004000-0x0040=
+0000 : "/boot"   
+mtd: Giving out device 1 to /boot   
+ 
+Or I can writ=
+e only on: 
+0x00400000-0x04000000 : "user"   
+mtd: Giving out device 2 =
+to user   
+ 
+Thanks, 
+Lorenzo 
