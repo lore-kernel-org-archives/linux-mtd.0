@@ -1,45 +1,42 @@
-Return-path: <dwmw2@infradead.org>
+Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ASTO-0002Rp-00
-	for mtd-list@infradead.org; Tue, 18 Jan 2000 06:50:38 +0000
-Received: from edison.dialix.com.au ([203.12.2.8] ident=root)
+	id 12AUju-0002WB-00
+	for mtd-list@infradead.org; Tue, 18 Jan 2000 09:15:50 +0000
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ASTK-0002Rj-00
-	for mtd@infradead.org; Tue, 18 Jan 2000 06:50:35 +0000
-Message-ID: <38840189.D35EE633@ctam.com.au>
-Date: Tue, 18 Jan 2000 17:00:42 +1100
-From: Brendan J Simon <Brendan.Simon@ctam.com.au>
-Reply-To: Brendan.Simon@ctam.com.au
-MIME-Version: 1.0
-To: Stuart Lynne <sdjl@fireplug.net>
-CC: linux-mtd <mtd@infradead.org>
-Subject: Re: DiskOnChip for PowerPC embedded system.
-References: <38726ECE.D3E3AAEE@ctam.com.au> <38719CC6.93FB5729@ctam.com.au> <E125Qft-0007VY-00@devel2.axiom.internal> <E125mWX-0001Gh-00@devel2.axiom.internal> <20000117225245.42847@fireplug.net>
+	id 12AUjt-0002W5-00
+	for mtd@infradead.org; Tue, 18 Jan 2000 09:15:49 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
+References: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
+To: Pavel Roskin <pavel_roskin@geocities.com>
+Cc: mtd@infradead.org
+Subject: Re: Patch for PowerPC 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Tue, 18 Jan 2000 09:24:56 +0000
+Message-Id: <E12AUsi-0008B9-00@devel2.axiom.internal>
+Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Stuart Lynne wrote:
 
-> On Wed, Jan 05, 2000 at 09:09:35AM +0000, David Woodhouse wrote:
->
-> > If you use M-Systems' code in a production system (i.e. something you
-> > distribute) you mustn't compile it into your kernel - that would violate the
-> > GPL.
->
-> It is trivial to compile their code as a module and use from an initrd file.
+pavel_roskin@geocities.com said:
+> That all for today. Don't hesitate to put a new diff on the website.
+> This will save time and labor of people interested in getting your
+> stuff working on PowerPC.
 
-I thought that the linux kernel didn't support modules for ppc, at least not for
-the 2.2.5 kernel which I got from the linuxppc.org site.  It is the
-embedded-2.2.5 kernel put together by Dan Malek.
+Excellent work - thanks. I'll try to get an updated release out by the end of 
+the week, or early next week at the latest.
 
-I assume that the newer version do support modules.  Is this true.
-Would this be true of all ppc targets such as 860, 8260, etc or is it just for
-common workstations like PowerMacs, etc ?
+I'll also upgrade CVS on our server - all the workstations have been upgraded 
+to Red Hat 6.1, but the server is still on 5.2 because we haven't had the 
+courage to upgrade it yet - hence it still has an old version of CVS.
 
-What kernel versions support modules on ppc ?
+As it takes a little more thought than just rpm --rebuild of the RH6.1 SRPM, 
+that failed too - hopefully I'll get some time to sort it out this week too.
 
-Brendan Simon.
+--
+dwmw2
 
 
 
