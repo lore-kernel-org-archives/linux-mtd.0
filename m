@@ -1,26 +1,15 @@
-Received: from mail1.asianet.co.th ([203.144.222.229] helo=mail.asianet.co.th)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cu0Vo-0004mB-QH
-	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 22:40:07 -0500
-Received: from virscan1.asianet.co.th (HELO mail.asianet.co.th)
-	([203.144.222.197]) (envelope-sender <jay4mail@yahoo.com>)
-	by mail1.asianet.co.th (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 27 Jan 2005 10:39:57 +0700
-Received: from ppp-210.86.146.220.revip.asianet.co.th (HELO [10.1.1.33]) ([2
-	10.86.146.220])(envelope-sender <jay4mail@yahoo.com>)by
-	mx1.asianet.co.th (
-	qmail-ldap-1.03) with SMTPfor <linux-mtd@lists.infradead.org>;
-	27 Jan 2005 10:39:37 +0700
-Message-ID: <41F8627B.1060809@yahoo.com>
-Date: Thu, 27 Jan 2005 10:39:39 +0700
-From: Pathompong Puengrostham <jay4mail@yahoo.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1106775037.6955.50.camel@weaponx.rchland.ibm.com>
+References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
+	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain
+Date: Thu, 27 Jan 2005 09:47:31 +0000
+Message-Id: <1106819251.783.141.camel@baythorne.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: AM29LV800BB not detected by jedec_probe
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS3 document
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2005-01-26 at 15:30 -0600, Josh Boyer wrote:
+> > Instead of editing this file via CVS, would it be possible (and a
+> > good idea) to use a wiki?  That would make it really easy (and time
+> > efficient) for anyone to modify it.
+> > 
+> That was brought up on IRC and vetoed.  Wikis tend to get spammed with
+> useless or out-dated information, and it's another application for the
+> server to have to keep up are the reasons I believe.
 
-My board has 1 AM29LV800BB chip in 16-bit mode with 16-bit buswidth. 
-jedec_probe v 1.61 cannot detect it but v 1.51 can. After I commented 
-out the line in finfo_uaddr() that force the unlock addresses to be 
-8-bit mode, it detected the chip and ran just fine. Has anybody 
-experienced this?
+It wasn't really vetoed. I just said that _I_ didn't want to run a Wiki,
+for much those reasons. I also pointed out that having a minor barrier
+to entry wasn't _necessarily_ a bad thing. Hell, most days even I
+shouldn't be permitted to commit to it. Why should we open it to the
+world? :)
 
-Best regards,
-Pathompong Puengrostham
+Send patches if you want to make changes. If you make a habit of sending
+patches we actually want to apply, we'll give you an account and you can
+do it yourself. That's the way it's always worked for the code, and it
+doesn't seem to have been much of a problem.
+
+-- 
+dwmw2
