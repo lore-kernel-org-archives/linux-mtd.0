@@ -1,15 +1,13 @@
-Received: from mail0.epfl.ch ([128.178.50.57])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18CoNh-0002AA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Nov 2002 21:52:05 +0000
-Message-Id: <200211152111.gAFLBoC04935@silentsoftpc1.epfl.ch>
-Date: Fri, 15 Nov 2002 20:58:01 GMT
-From: "Wauviel"<osdirectory@offshore-suppliers-directory.com>
-To: linux-mtd-cvs@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: (no subject)
+Received: from zerg.codec.ro ([193.230.240.30])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18DKBm-00073l-00
+	for <linux-mtd@lists.infradead.org>; Sun, 17 Nov 2002 07:49:54 +0000
+Message-Id: <200211111443.gABEhI017199@zerg.codec.ro>
+From: Dennis Dozie <ddozie@email.ro>
+To: ddozie@personal.ro
+Subject: BUSINESS RELATIONSHIP
+Date: Mon, 11 Nov 2002 16:43:18 +0200
+MIME-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,43 +19,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Offshore Suppliers Directory (http://www.OffshoreSuppliersDirectory.com) has just gotten better!
 
-You know Offshore Suppliers Directory as the world's first published guide to offshore software development, services, and product suppliers. However, did you know it's a growing online B2B, buyer / supplier exchange as well?
 
-New features for BUYERS:
 
-* RFPs and Projects:  You can post your RFPs to all suppliers or you can select just the suppliers you want to invite after a search. 
-* Offshore Resource Management System (ORMS): Nobody knows your requirements better than you.  Search for the right suppliers and invite them to respond to your RFP / Project all within ORMS! 
-* Search Utilities:  Perform basic and complex searches for offshore suppliers (both companies and independent contractors) at our unique ORMS. 
-* Purchase your advance copy of the Offshore Suppliers Directory at a  30% discount! Limited Time Offer!
+ATTN:DIRECTOR/CEO
 
-New features for SUPPLIERS:
+Sir,
 
-* Basic listings are FREE!  More comprehensive listings are available for purchase. Note: Buyers will search for suppliers by business and technology capabilities.  These fields are ONLY available with a paid listing.  If you want buyers to find you and invite you to bid on their RFP then upgrade to a 1-page or 2-page listing today. 
-* Our rates have been reduced!  A 1-page listing is now only $75.00 (was $125.00) and a 2-page listing is now only $125.00 (was 200.00)! 
-* Support for Independent Offshore Contractors.  Sometimes buyers just need one or two resources to support a project and now finding those individuals is simple.  It's like having Monster.com but for the offshore market! Make sure buyers find you! The cost is only $19.95 per year (that's only $0.05 per day!). 
-* List your offshore company! Your company information will be available to buyers around the world in both the printed directory and the online searches. 
-* We're sending FREE copies of the Offshore Suppliers Directory to key individuals at Fortune 500 companies! Make sure you have as much information as possible in the printed guide by purchasing a 1-page or 2-page listing so they choose your company as the right providers of services to meet their needs!  If you're not in the printed guide or online directory how can they select you? 
-* With our Offshore Resource Management System (ORMS) you don't have to register for RFPs, the system takes care of that automatically for you when you register as a Supplier or Independent Contractor!
+This contact is tantamount to an unflinching desire to establish a long mutual 
+business relationship based on trust and mutual understanding.
 
-See us at the following sites!:
+I am Mr.Dennis Dozie ,the payment Co-Ordinator of ECO INTERNATIONAL BANK 
+PLC(Lagos-Nigeria).During the course of investigation it was found that the sum 
+of 
+US$12.5M (Twelve Million Five Hundred Thousand US Dollars) has been lying 
+dormant in a suspense account of our bank.
 
-National Association of Software and Service Companies (NASSCOM): www.nasscom.org
+The said amount after due investigation belongs to a Foreigner, Late ENG.ANDREW 
+WILSON who was an Oil merchant/contractor with the Federal Government of 
+Nigeria and he was our valued customer but unfortunately the dastardly act of 
+the terrorists september 11th 2001 on the WTC(NEW YORK) building brought his 
+transaction to a halt.It is quite amazing that nobody has serviced the account 
+or shown up for his money since after his death till date.Although,several 
+efforts have been made by the bank to get in touch with his next of kin or any 
+of his relations, but all to no avail (he had no wife or children). 
+    
+It is on this note some top officials of ECO INTERNATIONAL BANK PLC,who are 
+fully aware of the incident resolved and asked me to find and negotiate with 
+trust worthy foreigner who will be willing to assist us ,and act as next of kin 
+to the Late ENG.ANDREW  WILSON.
 
-Outsourcing Russia - All about IT Outsourcing to Russia: www.outsourcing-russia.com
+Going by the policy in our country as against civil servants operating  foreign 
+account or even to have that kind of huge amount in our local accounts,I 
+solicit for your assistance in transferring this money into your foreign 
+account for personal investment purpose. Having found out that your city are 
+known for business acumen and trustworthiness in business dealings.
 
-Software Ireland - Ireland's leading FREE portal to the IT industry: www.softwareireland.com
+Because of this I have to solicit for your assistance and understanding,with an 
+unflinching faith that you will not betray me in this business.This is the 
+reason why I am  asking for your assistance to enable me invest the fund in 
+your city,settle down with my family and also have you as my mentor.
 
- 
 
-To Your Success,
+If you can handle the transfer for our joint benefit please get back to me so 
+we can discuss,as what is required now is either for us to  have you as his 
+next of kin or to transfer the money in your name.
 
-Offshore Suppliers Directory
-
-http://www.OffshoreSuppliersDirectory.com
-
-YOUR NAME WAS SELECTED AS A PERSON OR ORGANIZATION INVOLVED WITH TECHNOLOGY. 
-WE APOLOGIZE IF THIS EMAIL IS NOT APPLICABLE TO YOU. 
-THIS IS A ONE TIME SUBMISSION.  
-YOU DO NOT NEED TO SUBMIT A REMOVAL REQUEST.
+I want you to understand that this transaction must be kept in utmost 
+confidentiality and secrecy because the bank here might claim the fund if they 
+got to know
