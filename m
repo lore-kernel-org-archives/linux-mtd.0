@@ -1,18 +1,18 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ljw8-00053h-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 06:39:44 +0100
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+	id 17lnAx-0005LC-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 10:07:15 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020902053937.58D923947@sitemail.everyone.net> 
+References: <20020902053937.58D923947@sitemail.everyone.net> 
+To: mateo@posta.star.si
+Cc: leland@sway.org, linux-mtd@lists.infradead.org
+Subject: Re: 48meg DOC 
 Mime-Version: 1.0
-Date: Sun, 1 Sep 2002 22:39:37 -0700 (PDT)
-From: Mateo Anderson <mateo@posta.star.si>
-To: leland@sway.org
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: 48meg DOC
-Reply-To: mateo@posta.star.si
-Message-Id: <20020902053937.58D923947@sitemail.everyone.net>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Date: Mon, 02 Sep 2002 10:06:41 +0100
+Message-ID: <9674.1030957601@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,47 +24,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Leland,
+mateo@posta.star.si said:
+>  I found on this list, that somebody else had this problems and I
+> tried  with the solution he proposed, but it still did not work (lilo
+> did not accept those 3D before the numbers). 
 
->> > 22.2 lilo
->> 
->> I am using mtd pacthed 21 version of lilo.
->> 
->> I was thinking to try the version 22.
->> I'll try this tonight, and I'll let you know if I
->> get any further.
+Er, that sounds like the mail just got eaten by quoted-unreadable encoding. 
 
-Yesterday I tried with the lilo 22.3.2.
-No success :((
+Substitute '=' for '=3D'. 
 
-I got L 40 40...
-
-I found on this list, that somebody else had this problems and I tried 
-with the solution he proposed, but it still did not work (lilo did
-not accept those 3D before the numbers).
-
-Now I have tried with the:
-- lilo as is on the RH 7.2 system
-- patched lilo from M-sys
-- patched lilo from mtd
-- latest version of lilo
-
-What else should I try??
-
-Is there any HOW-TO about lilo and DOC?
-Do I have to use GRUB? Or maybe no boot loader (like a floppy)?
-
->this project has been interesting to say the least... 
-
->From the beginig it was interesting, but now I 
-don't know any more :((
-
-Regards,
-Mateo
-
-_____________________________________________________________
-Brezplacen E-mail - http://email.star.si
-Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
-
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+--
+dwmw2
