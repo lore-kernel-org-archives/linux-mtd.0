@@ -1,21 +1,18 @@
-Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BxSO1-0006K1-LU
-	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 11:30:03 -0400
-Received: from baydel.demon.co.uk ([158.152.156.193])
-	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BxSNz-000LAK-0Z
-	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 15:29:59 +0000
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Simon Haynes <simon@baydel.com>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 18 Aug 2004 16:17:51 +0100
+	id 1BxbS9-00075I-4D
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2004 21:10:54 -0400
+Received: from [10.0.10.193] (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id SAA31411
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Aug 2004 18:10:49 -0700
+Message-ID: <4123FE19.9000109@mvista.com>
+Date: Wed, 18 Aug 2004 18:10:49 -0700
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <1B7122EB7D4B@baydel.com>
-Subject: Long LS times
-Reply-To: simon@baydel.com
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: mtdblock cache flush at remount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+So far as I've been able to determine, the mtdblock cache is not 
+automatically flushed after a remount read-only, including remounts 
+performed by a sysrq-s emergency sync.
 
-I have many systems which use a JFFS2/SMC filesystem as root.
-On a couple of systems running this I noticed that the system paused
-on startup while trying to start syslogd. I thought initially that this what 
-due to a large logfile. I decided to delete the logfile and try that. This 
-had some effect but it still took 50 seconds. I changed the startup script to 
-use strace on starting syslogd and the process stalled while trying to open
-a fifo, made with, mkfifo. I later discovered that if I mounted the JFFS2 
-filesystem. not as root and performed an 'ls' of the directory containing the 
-fifo file, it took 50 seconds. This directory contains only 10 files and the 
-only one that is written to is the fifo. 
+To pick the somewhat silly example of an ext3 filesystem, the "no 
+recovery needed" superblock modification of which still sits in the 
+cache after the remount:
 
-I then copied this directory and contents to a new one, deleted the original
-and renamed the new directory to that of the old, thus recreating the 
-directory. I then umounted/mounted the filesystem and the ls took no time at 
-all. 
+# mount -o remount -o ro /mnt/mtd
+# dumpe2fs /dev/mtd2
+...
+Filesystem features:      has_journal filetype needs_recovery sparse_super
+...
+# # Block access shows the modified value, and the mount/unmount
+# # flushes the value to flash.
+# dumpe2fs /dev/mtdblock2
+...
+Filesystem features:      has_journal filetype sparse_super
+...
+# dumpe2fs /dev/mtd2
+...
+Filesystem features:      has_journal filetype sparse_super
 
-Can anyone explain what is happening to this directory and how I may stop
-it or clean it ?
+Since the block is committed from the block layer's point of view, even 
+a following sync won't flush it out; it seems only something like an 
+unmount (which explicitly calls the block device layer to release the 
+superblock) will flush it.  In certain admittedly unusual situations 
+this is undesirable (in particular, consumer electronics device flushing 
+and marking clean filesystems prior to a prolonged system suspend 
+interval during which it is expected batteries may die or be changed).
 
-Cheers
+Figured I'd check whether anybody feels this is something that could and 
+should be fixed or whether there's already a solution for this.  I've 
+recommended use of only mtd-savvy filesystems like JFFS2 for this sort 
+of usage, but the CE developers I talked to felt filesystems over 
+mtdblock were also important.  Thanks,
 
-
-Simon. 
+-- 
+Todd Poynor
+MontaVista Software
