@@ -1,25 +1,52 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qDYE-0007p0-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 13:28:46 +0100
-Received: from [212.87.56.100] (helo=mail.taytron.net)
+	id 14qDob-0007vm-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 13:45:41 +0100
+Received: from mail.utfors.se ([195.58.103.125])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qDYD-0007ou-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 13:28:45 +0100
-Message-ID: <001a01c0c8d1$143aece0$0d3318b5@jolt>
-From: "Florian Schirmer / TayTron" <schirmer@taytron.net>
-To: <joakim.tjernlund@lumentis.se>,
-	"'Vipin Malik'" <vipin.malik@daniel.com>
+	id 14qDoU-0007vg-00
+	for mtd@infradead.org; Thu, 19 Apr 2001 13:45:39 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "'Florian Schirmer / TayTron'" <schirmer@taytron.net>,
+        "'Vipin Malik'" <vipin.malik@daniel.com>
 Cc: <mtd@infradead.org>
-References: <000801c0c8bb$44e56de0$0a01a8c0@Win1>
-Subject: Re: JFFS2 as root FS
-Date: Thu, 19 Apr 2001 15:02:16 +0200
+Subject: RE: JFFS2 as root FS
+Date: Thu, 19 Apr 2001 14:45:01 +0200
+Message-ID: <000b01c0c8ce$8d5d3d10$0a01a8c0@Win1>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <001a01c0c8d1$143aece0$0d3318b5@jolt>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
+
+Hi, it's me again :-)
+
+I have tried to mount the FS again and the files are still there.
+It still takes 1 min and 30 sec to mount it and sometime when I do a ls the
+system hangs
+for 10-20 sec before the output from ls is seen. Is this normal?
+
+Maybe I should change my kernel, but to which? Linux 2.4.3? Or maybe a later
+kernel from the PPC tree?
+
+Also, when I boot the kernel it stops and ask for a kernel cmdline. Usually
+I press
+return here and the boot continues with my default values. How can I make
+the kernel bypass
+this and start without any questions asked?
+
+   Jocke
+
+-----Original Message-----
+From: Florian Schirmer / TayTron [mailto:schirmer@taytron.net]
+Sent: Thursday, April 19, 2001 15:02
+To: joakim.tjernlund@lumentis.se; 'Vipin Malik'
+Cc: mtd@infradead.org
+Subject: Re: JFFS2 as root FS
+
 
 Hallo!
 
