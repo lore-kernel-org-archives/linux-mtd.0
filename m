@@ -1,43 +1,72 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13D3Hz-0006eu-00
-	for mtd-list@infradead.org; Fri, 14 Jul 2000 12:05:51 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	id 13DEb6-00008D-00
+	for mtd-list@infradead.org; Sat, 15 Jul 2000 00:10:20 +0100
+Received: from web5305.mail.yahoo.com ([216.115.106.114])
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13D3Hx-0006eo-00
-	for mtd@infradead.org; Fri, 14 Jul 2000 12:05:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E1397tM-0004tu-00@the-village.bc.nu> 
-References: <E1397tM-0004tu-00@the-village.bc.nu> 
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: nico@cam.org (Nicolas Pitre), jgg@ualberta.ca (Jason Gunthorpe),
-  bjorn.wesen@axis.com (Bjorn Wesen), jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: garbage collect 
-Mime-Version: 1.0
+	id 13DEb5-00007w-00
+	for mtd@infradead.org; Sat, 15 Jul 2000 00:10:19 +0100
+Message-ID: <20000714230947.15023.qmail@web5305.mail.yahoo.com>
+Date: Fri, 14 Jul 2000 19:09:47 -0400 (EDT)
+From: Juan Gonzo <kayemmess@yahoo.ca>
+Subject: Re: persistence of files using jffs 
+To: MTD Mailing List <mtd@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jul 2000 12:05:34 +0100
-Message-ID: <8096.963572734@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+When umount and then remount, any new files I copied are
+not there.
 
-alan@lxorguk.ukuu.org.uk said:
-> > MTD devices are not even vaguely related to block devices, and don't
-> > go anywhere near the buffer cache.
+Our system has 4 Intel Strataflash chips that are coupled pairs
+to give us 32MB at 32bits data width.  In the structure 'map_info',
+I set the 'buswidth' field to 4.
 
-> The interesting question is should they. Withouth them going via the
-> block layer you wont be able to mirror them or potentially run a
-> loopback fs over them soon 
+The startup code uses the write32 functions, but when I mount 
+I noticed that write16 functions are being used.  As well, in 
+the file cfi_cmdset_0001.c, only write16 functions are called.  
+Is this causing a problem for our system?
 
-I had a chat with sct about this. For mirroring the answer is definitely 
-"Do it in the VFS". 
-
-Loopback I still maintain should be done via nbd.
-
---
-dwmw2
+Thanks,
+   -- kelly
 
 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> kayemmess@yahoo.ca said:
+> >    (1) mknod /dev/mtd3 b 31 3   (mtd3 is where the fs 'partition'
+> is,
+> >                                  using examples from nora.c)
+> 
+> The block devices should be /dev/mtdblock<n>. /dev/mtd3 should be a 
+> character device. But the names don't really matter.
+> 
+> 
+> kayemmess@yahoo.ca said:
+> >  And I can 'umount /mnt' successfully as well.
+> > However, when I cycle power on the system, any *new* files I create
+> or
+> > copy into this space are lost. 
+> 
+> Hmmm. Are they there when you unmount and remount? Can you make sure
+> you're 
+> using the latest version from CVS, and enable CONFIG_JFFS_FS_VERBOSE?
+> 
+> 
+> 
+> --
+> dwmw2
+> 
+> 
+> 
+> 
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+
+
+_______________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.ca address at http://mail.yahoo.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
