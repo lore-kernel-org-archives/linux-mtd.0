@@ -1,16 +1,18 @@
-Received: from serverc.sea.theriver.com ([216.39.128.33])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178bQJ-0004zG-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 07:41:07 +0100
-Date: Thu, 16 May 2002 23:40:17 -0700 (PDT)
-From: Paul <paul@oz.net>
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta02.mta.everyone.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 178bhF-00050X-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 07:58:37 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Thu, 16 May 2002 23:58:33 -0700 (PDT)
+From: Jim Zeus <zeusj@firstlinux.net>
 To: David Woodhouse <dwmw2@infradead.org>
-cc: Studying MTD <studying_mtd@yahoo.com>,  <linux-mtd@lists.infradead.org>
-Subject: Re: FAT for NAND Flash 
-In-Reply-To: <32431.1021615403@redhat.com>
-Message-ID: <Pine.LNX.4.44.0205162333450.26949-100000@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: Quesion on copying to mtdblock0
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020517065835.4FB6B36F9@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,18 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 17 May 2002, David Woodhouse wrote:
 
-> Have you also looked at the updated driver at 
-> 	ftp://ftp.kernel.org/pub/linux/kernel/people/aeb/
-> 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+>Are you sure the JFFS2 image was created correctly? 
 
-Thanks _very_ much for this pointer!  Didn't realize that
-the new USB storage modules for the 2.5.x kernels now have
-a separate smartmedia.c file with some good info.  Looks
-like there's some overlap with the MTD stuff as well; for
-example, nand_ids.h, ECC, etc.
+Yes, I create it with mkfs.jffs2 :
+mkfs.jffs2 --root=/some/place/ --eraseblock=8192KiB --output=jffs2.img
+Is there anything I missed?should I change pagesize from default 4KiB?
 
-Cheers,
+>Is your target bigendian? 
 
--- Paul
+Yes, its dragonball.
+But after I change the endianness of jffs.img/jffs2.img (exactly,I change the .b file), the problem is still there, just like what it shows before changing.Changing seems no use.
+
+
+Thanks 
+
+Jim Zeus
+
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
