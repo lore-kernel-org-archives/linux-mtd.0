@@ -1,21 +1,17 @@
-Received: from fep02.superonline.com ([212.252.115.9])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15XOTP-0005iC-00
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2001 15:50:16 +0100
-Received: from yunux ([212.253.32.74]) by fep02.superonline.com
-          (InterMail vK.4.03.02.00 201-232-124 license 82877460054e144bf0b390e626dd66fc)
-          with SMTP id <20010816145423.TSUR13128.fep02@yunux>
-          for <linux-mtd@lists.infradead.org>;
-          Thu, 16 Aug 2001 17:54:23 +0300
-Content-Type: text/plain;
-  charset="iso-8859-9"
-From: Yunus Yucel Altunbicak <yunus.altunbicak@eliar.com.tr>
-To: MTD <linux-mtd@lists.infradead.org>
-Subject: MTD support to kernel 2.0.38
-Date: Thu, 16 Aug 2001 17:54:59 +0300
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20010816145423.TSUR13128.fep02@yunux>
+	id 15XOWu-0005ic-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2001 15:53:52 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20010816145423.TSUR13128.fep02@yunux> 
+References: <20010816145423.TSUR13128.fep02@yunux> 
+To: Yunus Yucel Altunbicak <yunus.altunbicak@eliar.com.tr>
+Cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: MTD support to kernel 2.0.38 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 16 Aug 2001 15:59:42 +0100
+Message-ID: <16330.997973982@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,7 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-does  the mtd driver support uclinux with 2.0.38 kernel?
-Sincerely,
-YYA
+yunus.altunbicak@eliar.com.tr said:
+>  Hi, does  the mtd driver support uclinux with 2.0.38 kernel?
+> Sincerely,
+
+Theoretically, yes. It should. I don't test builds with the 2.0 kernel, 
+and occasionally somebody complains that I broke the 2.0 build and gives me 
+patches. YMMV. If it doesn't work, I'll accept patches to make it work.
+
+--
+dwmw2
