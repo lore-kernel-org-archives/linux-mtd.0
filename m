@@ -1,26 +1,26 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 132X0j-0006vE-00
-	for mtd-list@infradead.org; Thu, 15 Jun 2000 11:36:33 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 132X0i-0006v8-00
-	for cvs-notify@infradead.org; Thu, 15 Jun 2000 11:36:32 +0100
+	id 132rqE-0002QA-00
+	for mtd-list@infradead.org; Fri, 16 Jun 2000 09:51:06 +0100
+Received: from alex by infradead.org with local (Exim 3.03 #1)
+	id 132rqD-0002Q4-00
+	for cvs-notify@infradead.org; Fri, 16 Jun 2000 09:51:05 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel cfi_cmdset_0001.c'
-Message-Id: <E132X0i-0006v8-00@infradead.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 15 Jun 2000 11:36:32 +0100
+Subject: MTD CVS update: 'mtd/util mkfs.jffs.c'
+Message-Id: <E132rqD-0002Q4-00@infradead.org>
+From: Alexander Larsson <alex@infradead.org>
+Date: Fri, 16 Jun 2000 09:51:05 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv26602
+Update of /home/cvs/mtd/util
+In directory infradead.org:/tmp/cvs-serv9300
 
 Modified Files:
-	cfi_cmdset_0001.c 
+	mkfs.jffs.c 
 Log Message:
-er... even longer timeout and make it return zero on success rather than
--EIO which is quite silly really
+Patch from Sébastien Côté <scote1@matrox.com>
+Split large files into several chunks.
 
 
 
