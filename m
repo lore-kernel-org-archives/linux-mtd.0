@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from pd9e413bf.dip.t-dialin.net ([217.228.19.191] helo=thomas.tec.autronix.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fmbh-0005Qg-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 18:45:45 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.10.10202262036210.1131-100000@pinot.profis.ro> 
-References: <Pine.LNX.4.10.10202262036210.1131-100000@pinot.profis.ro> 
+	id 16fmlC-0005Sk-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 18:55:34 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
 To: Radu Corlan <rcorlan@pcnet.ro>
+Subject: Re: nftl problem
+Date: Tue, 26 Feb 2002 20:10:23 +0100
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: nftl problem 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Feb 2002 18:57:03 +0000
-Message-ID: <1591.1014749823@redhat.com>
+References: <Pine.LNX.4.10.10202262059250.1131-100000@pinot.profis.ro>
+In-Reply-To: <Pine.LNX.4.10.10202262059250.1131-100000@pinot.profis.ro>
+MIME-Version: 1.0
+Message-Id: <0202262010230N.10190@thomas>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +26,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-rcorlan@pcnet.ro said:
-> probably because i didn't send it ;-). 
-
-:)
-
-> Should the patch go to the list, or directly to you?
-
-The list is generally better - people there are more effective at dealing 
-with stuff when I drop it, and it's better archived than my inbox :)
-
-Thanks.
-
-
---
-dwmw2
+On Wednesday, 27. February 2002 03:00, Radu Corlan wrote:
+>
+> Just to make sure: i can mount a freshly erased chip as a jffs2 fs, right?
+Yep
+-- 
+Thomas
+__________________________________________________
+Thomas Gleixner, autronix automation GmbH
+auf dem berg 3, d-88690 uhldingen-muehlhofen
+fon: +49 7556 919891 , fax: +49 7556 919886
+mail: gleixner@autronix.de, http://www.autronix.de  
