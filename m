@@ -1,19 +1,29 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19RsdJ-00008W-FR
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jun 2003 12:58:45 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Massimo =?ISO-8859-1?Q?Cal=F2?= <m.calo@ctsgroup.it>
-In-Reply-To: <001001c333fb$3c2b3ba0$e10106c0@Massimo>
-References: <001001c333fb$3c2b3ba0$e10106c0@Massimo>
-Message-Id: <1055764754.2289.37.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 16 Jun 2003 12:59:15 +0100
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Data CRC failed on node...
+	id 19RwgO-0000u2-Ob
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Jun 2003 17:18:12 +0100
+Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
+	by dummy.domain.name (Postfix) with SMTP id 9B6DF6D00AF
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Jun 2003 12:14:45 -0400 (EDT)
+Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
+	by lserver.ddiworldwide.com (Postfix) with ESMTP id 830A56D00AE
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Jun 2003 16:14:45 +0000 (UTC)
+From: Frank R Callaghan <f.callaghan@ieee.org>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 16 Jun 2003 12:06:06 -0400
+References: <OOEOKBMECIFAEPIMFOGIMEPICBAA.sgluckman@omnitech.com>
+	<200306140052.38541.tglx@linutronix.de>
+	<200306131854.00636.f.callaghan@ieee.org>
+In-Reply-To: <200306131854.00636.f.callaghan@ieee.org>
+MIME-Version: 1.0
+Message-Id: <200306161206.06488.f.callaghan@ieee.org>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: Please Help, problem mounting jffs2
+Reply-To: f.callaghan@ieee.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +33,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-06-16 at 12:34, Massimo Calò wrote:
-> Hi All,
-> 
->     I have a 5272 Motorola Coldfire based board, running "uClinux dist. :
-> uClinux-20030305.tar.gz" +
-> 
-> "Tool Chain : m68k-elf-tools-20030314.sh.".
-> 
-> I have a 2Mb flash (AMD AM29LV160DB) using MTD + JFFS2.
-> 
-> It has worked fine for a long time, then I received the following message
-> during the bootstarp :
+Hi All,
 
->         jffs2_scan_inode_node(): Data CRC failed on node at 0x0005ca64: Read
-> 0xb399e587c
+I methodically removed code from my usrland programs until I'm left with
 
-That's normal and harmless. It's just a warning, not an error. You
-powered down while a node was being written -- perhaps by the garbage
-collection thread. In that case, the previous node containing the same
-data will still be valid and will continue to be used. No data are lost.
+int main()
+{
+    while(1) {
+    //  sleep(1);
+    }
+}
 
-> To fix the problem I do the command "eraseall /dev/mtd2" and the error was
-> cleared.
+With no RTAI modules loaded, the gc thread still stalls.
+With the sleep(1) works fine !
 
-Or you could have waited until the block containing the offending node
-was garbage-collected, and it would have gone away on its own.
+Does this mean that the gc thread has such a low priority that it never r=
+uns ?
 
-> Do I have to mount/unmount the flash every time I have to read/write from it
-> ?
+I'm sorry if this is a stupid question, but it doesn't seem right that a =
+mount
+should suspend if a fg process is in a while loop !!!
 
-No, but if you want to avoid the cosmetic warnings, you should mount the
-file system readonly or unmount it before each _reboot_.
+What should I do/try next ?
 
--- 
-dwmw2
+TIA,
+        Frank.
+ =20
+
+> attempting to mount the jffs2 filesystem stops. When I killed the two
+> processes the mount resumed and all works perfectly (killing the proces=
+ses
+> forces the unload of the shared memory & forces the closing of the rtf'=
+s)
+> Starting them backup after mounting sees to work fine !
+>
+> I guess I can try to isolate it futher by not starting the
+>  fifo's / shared memory,  unless anyone can suggest a better way to loc=
+ate
+> the problem.
+>
