@@ -1,20 +1,19 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from wproxy.gmail.com ([64.233.184.198])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CQTxg-0000BE-62
-	for linux-mtd@lists.infradead.org; Sat, 06 Nov 2004 12:02:49 -0500
-Date: Sat, 6 Nov 2004 12:02:47 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Dan Post <postster@gmail.com>
-In-Reply-To: <Pine.LNX.4.61.0411061031070.5250@xanadu.home>
-Message-ID: <Pine.LNX.4.61.0411061155480.5250@xanadu.home>
-References: <Pine.LNX.4.61.0411052041230.5250@xanadu.home>
-	<9f920bdf04110522596551a0a4@mail.gmail.com>
-	<Pine.LNX.4.61.0411061031070.5250@xanadu.home>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD and XIP
+	id 1CQmnY-0001MH-IZ
+	for linux-mtd@lists.infradead.org; Sun, 07 Nov 2004 08:09:37 -0500
+Received: by wproxy.gmail.com with SMTP id 57so106344wri
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 07 Nov 2004 05:09:30 -0800 (PST)
+Message-ID: <c2bc1f4041107050978fc06ff@mail.gmail.com>
+Date: Sun, 7 Nov 2004 21:09:30 +0800
+From: zheng wei <jeanwelly@gmail.com>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: Can't enable ecc check in mtd.
+Reply-To: zheng wei <jeanwelly@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 6 Nov 2004, Nicolas Pitre wrote:
+Hi, sir
+ I cannot enable ecc check in mtd, the message in nand.c, func int
+nand_write_page (),
+printk (KERN_WARNING "Writing data without ECC to NAND-FLASH is not
+recommended\n");
 
-> On Fri, 5 Nov 2004, Dan Post wrote:
-> 
-> > Do you have a specific reason to always disable write suspend on XIP
-> > kernels?  That's a pretty big latency hit, and I don't think we need
-> > to disable it for XIP systems.
-> > I saw your comment that "the XIP system config appears to have
-> > problems using write suspend at the moment".  Any specifics?
-> 
-> It was causing me jffs2 corruption problems and I couldn't figure out 
-> why.  So after two days of bug chasing I gave up and disabled write 
-> suspend, blaming the hardware.  I measured the IRQ latency hit to be in 
-> the 400 usec range in that case.
-> 
-> If you want to have a look please be my guest. To reproduce the problem, 
-> simply comment out the clearing of the write suspend bit and do:
-> 
-> 	eraseall /dev/mtd2
-> 	mount -t jffs2 /dev/mtdblock2 /mnt
-> 	cd /mnt
-> 	tar -cvf test.tar /sbin
-> 	tar -xvf test.tar
-> 
-> This was enough for jffs2 to complain about node totlen mismatch errors 
-> and occasional CRC errors.
+In mtd/nand.c,
+static int nand_write_page (struct mtd_info *mtd, struct nand_chip
+*this, int page, u_char *oob_buf,  struct nand_oobinfo *oobsel)
+{
+	int 	i, status;
+	u_char	ecc_code[6], *oob_data;
+	int	eccmode = oobsel->useecc ? this->eccmode : NAND_ECC_NONE;
+//??????? I have initialize the eccmode to NAND_ECC_HW3_512,
+...
+}
 
-Oh and BTW you don't need to have your kernel actually XIP to test this.
-A standard kernel but with CONFIG_MTD_XIP enabled will show the problem 
-as well, and it makes the loading of new test kernels quicker (unless 
-you do everything modular).
+I have enable the ecc check in mizi linux 2.4.18 for ARM2410.
 
-
-Nicolas
+Thank you
