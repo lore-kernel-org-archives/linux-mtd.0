@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 156V1z-0007Vp-00
-	for <linux-mtd@lists.infradead.org>; Sun, 03 Jun 2001 11:22:47 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E156MlF-0000A0-00@infradead.org> 
-References: <E156MlF-0000A0-00@infradead.org> 
-To: nico@cam.org
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD CVS update: 'mtd/drivers/mtd/chips cfi_cmdset_0001.c cfi_cmdset_0002.c cfi_probe.c' 
+Received: from crystal.2d3d.co.za ([196.14.185.203] ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 156seU-00031Q-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Jun 2001 12:36:07 +0100
+Date: Mon, 4 Jun 2001 13:41:36 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: mtd->erasesize
+Message-ID: <20010604134136.A2644@crystal.2d3d.co.za>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sun, 03 Jun 2001 11:27:02 +0100
-Message-ID: <28675.991564022@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,55 +22,55 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-nico@infradead.org said:
-> Tentatively cleaned up a bit further common CFI macro usage for code
-> reduction with fixed bus geometry.  Tried to push reference to the cfi
-> struct far down as possible with the nice effect of reducing the
-> number of arguments to many function calls.  It also removed warnings
-> about unused variables in cfi_cmdset_0001.s when single interleave is
-> configured.
+Hi!
 
-Nice.
+I'm busy writing a driver for the 28Fxxxxx 3V Intel Fast Boot Block flash
+devices (for now only a LART driver since I have no other boards to play
+with).
 
-> STILL... cfi_probe.c looks like a total mess!  There is certainly a
-> way to reduce the code splat and increase readability with clever use
-> of some macros. Yet there are some defined in cfi.h that could be put
-> to use already.
+The problem is that these chips have 8 4k blocks in the beginning and the
+rest is 32k blocks, so effectively there is two erasesize's.
 
-Agreed. One of the things I want to do to it is remove the JEDEC probe 
-altogether and put it in a separate module. That'll help remove a bit of 
-the cruft too.
+For now, I'm just skipping the first 8 4k blocks so you can't access that
+with the MTD driver, but I believe this is a design flaw with the MTD
+drivers. It should be able to handle multiple erasesize's for each device.
 
-> Open questions: 
+--=20
 
-> - Is the spot in cfi_probe.c I marked with a "FIXME" actually buggy? 
+Regards
+ Abraham
 
-Looks odd. Can't you send the 0xF0 command to any address in the chip 
-though? So it works anyway?
+Somebody's terminal is dropping bits.  I found a pile of them over in the
+corner.
 
-Actually, isn't 0xF0 specific to AMD chips? Intel chips are reset by 0xFF. 
-Is there a way to get chips _out_ of CFI mode defined by the spec?
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
 
-> - Are those calls to cfi_send_gen_cmd() with a static device type 
->   parameter like CFI_DEVICETYPE_X8 actually meant?
->   Could they use cfi->device_type instead?  If so we could get rid
->   of it since a *cfi is already passed to it.
+ Device Driver Development, Outsourcing, Embedded Systems
 
-They're meant to be like that. For a 16-bit device in 8-bit mode, we 
-actually have to put a '1' on the least significant address line, which 
-just to keep us on our toes is called A-1 (the 2nd least significant line 
-is A0, the next A1, etc. :)
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
 
-We have cfi->device_type == 2 for these chips. There is _nothing_ that we can do to 
-make the required addresses for the unlock cycles if cfi_send_gen_cmd uses 
-that automatically. I suppose we could simply refrain from using 
-cfi_send_gen_cmd, though. 
 
-- Why am I writing all this here?  Strange idea, hey? 
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Because people _are_ subscribed to the linux-mtd-cvs list, albeit very few 
-of them. :)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
---
-dwmw2
+iD8DBQE7G3PwzNXhP0RCUqMRAqRnAJ9yGhjLs9lpFyYrLwD1LRw4j3U8AwCePRrA
+Cl1WryQU3o/oXtpTlCH+/TU=
+=4Vzw
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
