@@ -1,18 +1,18 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VoQA-0002dp-I6
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jun 2003 09:17:26 +0100
+	id 19VoUq-0002nc-Ce
+	for <linux-mtd@lists.infradead.org>; Fri, 27 Jun 2003 09:22:16 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Vikram Mehta <vm6580@hotmail.com>
-In-Reply-To: <Law14-OE49BCUcoYhpl00054291@hotmail.com>
-References: <Law14-OE49BCUcoYhpl00054291@hotmail.com>
-Message-Id: <1056701866.28202.40.camel@imladris.demon.co.uk>
+To: Madhav Kandhikonda <madhavonline@indiainfo.com>
+In-Reply-To: <20030626201522.9222.qmail@indiainfo.com>
+References: <20030626201522.9222.qmail@indiainfo.com>
+Message-Id: <1056702156.28202.45.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Fri, 27 Jun 2003 09:17:46 +0100
+Date: Fri, 27 Jun 2003 09:22:36 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: mtd <linux-mtd@lists.infradead.org>
-Subject: Re: blkmem.c questions
+cc: linux-mtd@lists.infradead.org
+Subject: Re: May day, May day; DoC2000 with Flash How-to!!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-06-26 at 03:55, Vikram Mehta wrote:
-> HI folks,
-> 
-> I am working on uCdimm.
-> On trying to mount jffs2 , I get a message ,
-> 
-> "arena open of 1 failed"
-> Now this message is in blkmem.c
+On Thu, 2003-06-26 at 21:15, Madhav Kandhikonda wrote:
+> b) Tried to install Linux on DoC2000, ended in errors
 
-Do not use blkmem.c. You need to use the real Linux flash drivers.
+How can we possibly help if we do not know what the errors _were_?
+
+What did you try, and what happened?
+
+I don't understand precisely what you mean by 'Toshiba Flash' and why
+you might have been trying to plug it into an IDE port.
+
+> 
+> What am I looking from you
+> **************************
+> 
+> ==> How to make DoC2000 as Boot device
+
+This is described in the HOWTO. If you have followed the steps in the
+HOWTO and failed, you will need to describe the problem.
+
+> ==> How to make Flash device as Storage device
+
+Without any clue what your 'Flash device' is, this is impossible.
+
+> ==> EXT3 or JFFS2 for Flash File system? 
+
+Fish.
+
+> ==> How to use GRUB instead of troublesome LILO
+
+Again -- see the HOWTO.
+
+> **By using only ONE IDE port for these 2 devices**
+
+You can't possibly have tried to put a DiskOnChip 2000 into an IDE port;
+I'm vaguely interested in what else you've tried to plug into it...
 
 -- 
 dwmw2
