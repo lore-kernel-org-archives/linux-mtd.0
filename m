@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from mail2.racnet.net ([213.144.11.11])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DGwNJ-0003O1-Vt
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 04:54:06 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
+	id 1DGwRa-0003YG-72
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 04:58:31 -0500
+Message-ID: <424BC9C6.80800@rac.de>
+Date: Thu, 31 Mar 2005 11:58:30 +0200
+From: Marcus Mikolaiczyk <m.mikolaiczyk@rac.de>
+MIME-Version: 1.0
 To: m.mikolaiczyk@rac.de
-In-Reply-To: <424BBDE3.4000506@rac.de>
-References: <424BBDE3.4000506@rac.de>
-Content-Type: text/plain
-Date: Thu, 31 Mar 2005 12:53:56 +0200
-Message-Id: <1112266437.4228.60.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+References: <424BBDE3.4000506@rac.de> <424BC76A.7070808@setabox.com>
+In-Reply-To: <424BC76A.7070808@setabox.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: NAND connected with address lines based example
-Reply-To: tglx@linutronix.de
+Reply-To: m.mikolaiczyk@rac.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-03-31 at 11:07 +0200, Marcus Mikolaiczyk wrote:
-> Where do I tell the system to use the address 0xA8000001 for commands
-> and 0xA8000002 for addresses?
+Thanks to all
 
-http://www.linux-mtd.infradead.org/tech/mtdnand/x76.html
+I'll thought of Williams idea too but was not sure, and try to implement
+it asap (next few hours) and give a feedback.
+>
+> You can write your hardware control function like this:
+>
+> switch(cmd) {
+>     case NAND_CTL_SETCLE: this->IO_ADDR_W = io_base_addr+1; break;
+>     case NAND_CTL_CLRCLE: this->IO_ADDR_W = io_base_addr; break;
+>     case NAND_CTL_SETALE: this->IO_ADDR_W = io_base_addr+2; break;
+>     case NAND_CTL_CLRALE: this->IO_ADDR_W = io_base_addr; break;
+> }
+>
+> Where io_base_addr = A8000000, your base address.
+>
+> Hope this helps.
 
-tglx
+Thanks so far.
+
+Marcus
