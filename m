@@ -1,41 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Fef8-0004J5-00
-	for mtd-list@infradead.org; Fri, 21 Jul 2000 16:24:30 +0100
-Date: Fri, 21 Jul 2000 17:15:29 +0100 (BST)
-From: David Woodhouse <dwmw2@alpha1.cygnus.co.uk>
-To: David Vrabel <dvrabel@arcom.co.uk>
-cc: mtd@infradead.org
-Subject: Re: Intel Extended Command set in 8x mode
-In-Reply-To: <39785017.1C127BAC@arcom.co.uk>
-Message-ID: <Pine.LNX.4.21.0007211711440.22633-100000@alpha1.cygnus.co.uk>
+	id 13FfCY-0004P0-00
+	for mtd-list@infradead.org; Fri, 21 Jul 2000 16:59:02 +0100
+Received: from dawnmail.dawning.com ([24.93.23.251])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13FfCX-0004Ou-00
+	for mtd@infradead.org; Fri, 21 Jul 2000 16:59:01 +0100
+Received: from [192.168.0.142] by dawnmail.dawning.com (NTMail 4.30.0010/NY3896.00.832c5e1f) with ESMTP id xzeeaaaa for <mtd@infradead.org>; Fri, 21 Jul 2000 11:59:02 -0400
+Message-ID: <005001bff32c$b59a92a0$8e00a8c0@gpc>
+From: "Gregory Schallert" <gschallert@dawning.com>
+To: <mtd@infradead.org>
+References: <Pine.LNX.4.21.0007211646360.22633-100000@alpha1.cygnus.co.uk>
+Subject: ELANSC400
+Date: Fri, 21 Jul 2000 11:59:54 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 21 Jul 2000, David Vrabel wrote:
+Well,  Here's a new guy to the crowd.
 
-> Hi,
-> 
-> I have a board with an Intel StrataFlash 28F640 on it.  Having written a
-> map driver the CFI probe code detects the chip.  However it appears that
-> the Intel Extended Command Set code is only for chips in 16x mode not 8x
-> mode which this chip is in.  Is this the case?  If so how can I get it
-> to work?  Do I need to write a whole new thing like cfi_cmdset_0001.c
-> for 8x mode?
+I've Just started playing with the MTD drivers for linux and I have a couple
+of questions.
+I am currently working on a project that (will) store the linux kernel/os on
+flash.  We are useing the ElanSC400 chip and a board that has 3 pairs of
+AM29F016EC Flash Chips arranged such that the high byte of the data goes to
+one chip and the low byte goes to the other.  I was wondering if the MTD
+supports this?  These chips are JEDEC compatiable.
 
-You need to provide the 2_by_8 versions of the access functions. It
-doesn't really need to be a separate file.
+Also I wrote a test program that run in user space and I tried using mmap()
+to read the device and it seems to work OK as long as I map /dev/mem as
+MAP_PRIVATE.  I would like to be able to write to Memory < 1M directly.  If
+I change the flage to MAP_SHARED, mmap() falied with "Permision denied"  Any
+ideas?
 
-> Also,  JFFS won't compile.  I'm using kernel 2.2.16 and the
-> put-module-symbol patch has been applied and I'm building it outside the
-> kernel tree.
-
--ENOTENOUGHINFO
-
---
-dwmw2
+Greg Schallert
+Dawning Technoligies Inc
 
 
 
