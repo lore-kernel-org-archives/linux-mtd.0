@@ -1,16 +1,17 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fN6y-0003Np-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 15:32:20 +0000
-Date: Mon, 25 Feb 2002 07:38:56 -0800 (PST)
-From: Adam Wozniak <awozniak@comdev.cc>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <linux-mtd@lists.infradead.org>
-Subject: Re: MTD CVS update: 'mtd/fs/jffs2 dir.c file.c write.c'
-In-Reply-To: <E16fIKq-0000w3-00@infradead.org>
-Message-ID: <Pine.LNX.4.33.0202250738270.28327-100000@rangers.comdev.cc>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16fNA1-0003OB-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 15:35:29 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0202250738270.28327-100000@rangers.comdev.cc> 
+References: <Pine.LNX.4.33.0202250738270.28327-100000@rangers.comdev.cc> 
+To: Adam Wozniak <awozniak@comdev.cc>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD CVS update: 'mtd/fs/jffs2 dir.c file.c write.c' 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 25 Feb 2002 15:46:46 +0000
+Message-ID: <7023.1014652006@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 25 Feb 2002, David Woodhouse wrote:
-> Update of /home/cvs/mtd/fs/jffs2
-> In directory infradead.org:/tmp/cvs-serv3585
->
-> Modified Files:
-> 	dir.c file.c write.c
-> Log Message:
-> Obey the new rule that you must still be holding the alloc_sem when adding nodes to the lists and hence obsoleting other nodes
->
+awozniak@comdev.cc said:
+>  Should these wind up in the 2_4 branch as well?
 
-Should these wind up in the 2_4 branch as well?
+No. The rules changed to support the extra stuff that NAND flash does when 
+we add nodes to the lists. It's not required in the 2.4 branch. 
 
---Adam
--- 
-Adam Wozniak (KG6GZR)   COM DEV Broadband - Digital and Software Systems
-awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+--
+dwmw2
