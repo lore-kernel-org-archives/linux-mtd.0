@@ -1,24 +1,21 @@
-Received: from moutvdomng1.kundenserver.de ([212.227.126.181])
+Received: from fepd.post.tele.dk ([195.41.46.149])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17AATH-00067n-00
-	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 15:18:39 +0100
-Received: from [195.20.224.204] (helo=mrvdom00.kundenserver.de)
-	by moutvdomng1.kundenserver.de with esmtp (Exim 3.22 #2)
-	id 17AATF-0005kZ-00
-	for linux-mtd@lists.infradead.org; Tue, 21 May 2002 16:18:37 +0200
-Received: from [217.81.61.34] (helo=comm.esd-electronics.com)
-	by mrvdom00.kundenserver.de with esmtp (Exim 2.12 #3)
-	id 17AAKy-0005Qg-00
-	for linux-mtd@lists.infradead.org; Tue, 21 May 2002 16:10:04 +0200
-From: "Stefan Roese" <stefan.roese@esd-electronics.com>
+	id 17AAvX-0006AH-00
+	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 15:47:51 +0100
+Received: from PLJPC ([80.63.145.22]) by fepD.post.tele.dk
+          (InterMail vM.4.01.03.23 201-229-121-123-20010418) with SMTP
+          id <20020521144751.OTTA17099.fepD.post.tele.dk@PLJPC>
+          for <linux-mtd@lists.infradead.org>;
+          Tue, 21 May 2002 16:47:51 +0200
+Message-ID: <005d01c200d6$a0f88c80$0201a8c0@PLJPC>
+From: =?iso-8859-1?Q?Poul_Lund_J=F8rgensen?= <plj@pragmaticconsult.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: SST Flash Support (SST39VF160)
-Date: Tue, 21 May 2002 16:08:31 +0200
-Message-ID: <EFEAIMDCOOOHIEPHDNFJIELDDPAA.stefan.roese@esd-electronics.com>
+Subject: jffs2 on DOC ?
+Date: Tue, 21 May 2002 16:48:54 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -32,12 +29,29 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
 
-I am right now struggeling with mtd and sst flash chips (39VF160) support.
-The amd devices (am29lv160) work without problems.
+I am looking for a power fail safe way to run a DOC2000 device.
 
-My question: The file "amd_flash.c" contains some defines for SST flash
-chips, but they are never used. Is this because some problems occured, or
-because nobody had the time to fully implement the sst support.
+The system I am developing does only do little amount of disk writing so I
+have been considering to using two partitions:
+a read only boot partition containing the entire linux root and boot dir and
+one writeable for the dynamic application files.
 
-Best regards,
-Stefan.
+But from the mail archive I can see that the two partition solution does not
+solve the problem if NFTL is involved as the wear levelling
+will be done across partition boundaries, so the writeable partition may
+corrupt the readonly.
+
+Another solution would be to run jffs2 on the DOC. But the drivers that
+comes with the kernel I use (2.4.18) does not support this.
+
+Are there any version of the mtd drivers that currently support this ?
+
+If no, do there exist a patch that makes the DOC driver compatible with
+jffs2 or can anybody supply me with
+description of the necessary modifications.
+
+Any advice are appreciated.
+
+Thanks,
+
+Poul Lund Jørgensen
