@@ -1,32 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13OmFK-0004tr-00
-	for mtd-list@infradead.org; Tue, 15 Aug 2000 20:19:34 +0100
+	id 13PKQx-0008UG-00
+	for mtd-list@infradead.org; Thu, 17 Aug 2000 08:49:51 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.16 #2)
-	id 13OmFI-0004tl-00
-	for mtd@infradead.org; Tue, 15 Aug 2000 20:19:32 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-In-Reply-To: <Pine.LNX.4.04.10008151317260.30949-100000@phoenix.bmedesign.com> 
-References: <Pine.LNX.4.04.10008151317260.30949-100000@phoenix.bmedesign.com> 
-To: Mark Jackson <mdj@phoenix.bmedesign.com>
+	id 13PKQw-0008UA-00
+	for mtd@infradead.org; Thu, 17 Aug 2000 08:49:50 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ollie Lho <ollie@sis.com.tw>
 Cc: mtd@infradead.org
-Subject: Re: Patches to compile on redhat 6.2 with downloaded kernel src 
+Subject: NFTL cleanup
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 15 Aug 2000 20:19:28 +0100
-Message-ID: <14787.966367168@cygnus.co.uk>
+Date: Thu, 17 Aug 2000 08:49:46 +0100
+Message-ID: <21418.966498586@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-mdj@phoenix.bmedesign.com said:
->  I was able to get the mtd version in cvs to compile on my RedHat 6.2
-> box against the linux-2.2.13.tar.gz linux kernel tarball source with
-> the following patches applied (cvs diff 8/15/2000) 
+I've realised that we're not permitted to use a semaphore, or call any of 
+the MTD access functions, from the nftl_request() function.
 
-Don't do that. Use a newer kernel. Or at least just nick compatmac.h from 
-it.
+The nftl_request() function isn't permitted to sleep.
+
+Therefore, we want a kernel thread. The _request function should do nothing 
+but take requests off the kernel's queue and stick them on a private queue, 
+to be served by the kernel thread.
+
+Once we do proper concurrent access to individual flash chips within the 
+DiskOnChip, that'll become _very_ important.
 
 --
 dwmw2
