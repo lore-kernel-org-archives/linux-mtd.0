@@ -1,27 +1,15 @@
-Received: from fra-del-02.spheriq.net ([195.46.51.98])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtPwe-0002Aj-AA
-	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 07:37:23 -0500
-Received: from fra-inc-07.spheriq.net (fra-inc-07.spheriq.net [195.46.51.71])
-	by fra-del-02.spheriq.net with ESMTP id j0PAEGqL002735
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 10:14:16 GMT
-Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
-	by fra-inc-07.spheriq.net with ESMTP id j0PAEGWL013885
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 10:14:16 GMT
-Received: from fra-cus-01.spheriq.net (fra-cus-01.spheriq.net [195.46.51.37])
-	by fra-out-03.spheriq.net with ESMTP id j0PAEGlC027913
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 10:14:16 GMT
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <41F61BE1.10A2DDA8@st.com>
-Date: Tue, 25 Jan 2005 11:13:53 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+Received: from dedekind (helo=localhost)
+	by phoenix.infradead.org with local-esmtp (Exim 4.43 #1 (Red Hat
+	Linux)) id 1CtimW-0000sj-PG
+	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2005 08:44:23 +0000
+Date: Wed, 26 Jan 2005 08:44:08 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: MTD List <linux-mtd@lists.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <1106603928.5081.50.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd/fs/jffs2 nodemgmt.c,1.115,1.116
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Subject: JFFS3 memory consumption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +19,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
-> 
-> > - avoid filing blocks on the clean list when they have wasted
-> > space
-> 
-> That's plain wrong.
-> 
-> Wasted space was introduced to prevent endless garbage collection.
-> Wasted space is unreclaimable, because it is less than the minimum node
-> size. It's totally correct to file those blocks on the clean list,
-> because GC _cannot_ reclaim the wasted space.
+Hi, how about to discuss one more problem?
 
-Well without this patch I got blocks on the clean list with huge
-wasted space, more than the ISDIRTY calculation, when a write that
-fills exactly the space left in nextblock also obsoletes nodes
-in nextblock (not sure about the exact case it was some time ago).
-In jffs2_mark_node_obsolete, if the node belongs to nextblock, the
-space is always added to wasted_space - not dirty_space. So I don't
-understand whether wasted_space is not what you claim, or it is
-not well implemented.
+JFFS2 stores anything on flash using special container data structures 
+called
+nodes. Nodes have different types and different lengths. Nodes may be 
+situated
+everywhere within the block.
 
-I'm afraid my comment in the log was quite misleading: 
-this patch merely prevents filing the block to the clean
-list in jffs2_add_physical_node_ref. As the comment in that
-function says, the block will be filed to the correct list later 
-and with proper ISDIRTY check (or am I missing something ?).
+As David Woodhouse said, JFFS2 has no any structure on flash. There are no
+specific addresses which one may access to get specific JFFS2 information.
+For example, most file systems have the super block data structure, which 
+may
+be found at the specified address and the information about the whole file
+system may be read from that super block. JFFS2 has no super block. The 
+only
+it has is the set of nodes on it. Nodes may be placed to any offset within
+the flash device, so may have any position. JFFS2 just writes nodes,
+sequentially.
 
-Lastly, I did submit this patch beforehand to the list, even if it was
-in a thread on NAND failure. I would have expected you to have
-an interest in that thread anyway.
+The above design assumes two things:
 
-(please excuse me if I sound grumpy. Your comments are a bit
-of a cold shower on my newbie enthusiasm. If the patch is really
-a problem I will reverse it tonight.)
+1. When mounting JFFS2, the flash media scanning must be done. Since we 
+have no
+super block, we must scan the flash device and identify the offsets of 
+nodes,
+read their header information and only then "build" the file system's 
+tree.
+This is the reason why the mount process is slow in JFFS2. And, roughly
+speaking, the mount time grows lineary with the growing file system size .
+But this is not the subject of this speech.
 
-Estelle
+2. Nodes... They are the only JFFS2 data containers. They have no 
+determined
+position on the flash chip. They are moved by the Garbage Collection from 
+time
+to time, so their position is dynamically changed. This is problem.
+To handle this situation, JFFS2 needs to keep track of all its nodes in 
+memory
+since obviously, it is unacceptable to scan the whole flash device to find
+the position of all the inode's nodes when user issued, say, the file read
+operation. JFFS2 needs to quickly find all the needed nodes on flash.
+
+This is why JFFS2 have small object for each JFFS2 node in RAM memory. 
+This
+means, more nodes we have on the flash (i.e., mode data on the JFFS2 file
+system), more RAM JFFS2 needs to keep track of these nodes. The memory
+occupied by these object is called "in-core" memory. The RAM objects which
+correspond to nodes are called "node_ref" objects and have the
+"struct jffs2_raw_node_ref" type.
+
+Roughly speaking, the JFFS2 in-core memory consumption is the linear 
+function
+of the file system size.
+
+This is the problem which I want to discuss.
+
+The JFFS2 design is ideal from the wear-leveling viewpoint, it is simple 
+and
+clean, it is very robust in cases of power loss. But it has the major 
+problem -
+scalability. We have the linear dependency of the mount time and the RAM 
+usage.
+This may be the problem with the tendency of the flash sizes growth.
+
+Unfortunately, I believe this is fundamental JFFS2 problem, caused by its 
+"pure"
+log structured design. Denote denote the above dependency as Tm = K1N and 
+M = K2N,
+where
+        - Tm is the mount time;
+        - M is the required in-core memory;
+        - K1, K2 are some coefficients;
+        - N is the number of nodes on Flash.
+
+I think with the JFFS2 design we can not have other dependency then 
+linear, we can only
+make K1 and K2 smaller.
+
+K1 is decreased by the Ferenc Havasi's "summary" patch well. Would be nice 
+to decrease
+K2 either. Any Ideas how to do so?
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
