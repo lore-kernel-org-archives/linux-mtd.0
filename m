@@ -1,39 +1,66 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12Zaru-0000jZ-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 15:51:50 +0100
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12Zart-0000jT-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 15:51:49 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000327164003.31589G-100000@fafner.axis.se> 
-References: <Pine.LNX.3.96.1000327164003.31589G-100000@fafner.axis.se> 
-To: Bjorn Wesen <bjorn.wesen@axis.com>
-Cc: Scott Anderson <sanders@mvista.com>,
-    Alexander Larsson <alex@cendio.se>, mtd@infradead.org,
-    SeokKuon Kwon <kwonsk@mutech.co.kr>
-Subject: Re: Axis log based flash filesystem ported to 2.3 and MTD 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 27 Mar 2000 15:51:49 +0100
-Message-ID: <9932.954168709@devel2.axiom.internal>
+	id 12Zav7-0000kd-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 15:55:09 +0100
+Date: Mon, 27 Mar 2000 16:55:01 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+Reply-To: Alexander Larsson <alex@cendio.se>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: New release of MTD code pending. 
+In-Reply-To: <9873.954167938@devel2.axiom.internal>
+Message-ID: <Pine.LNX.3.96.1000327164508.26529C-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Mon, 27 Mar 2000, David Woodhouse wrote:
 
-bjorn.wesen@axis.com said:
->  The flash is not divided into blocks in our JFFS. The flash is
-> logically a single circular append-only file (but with random access
-> of course). Wear-leveling comes implicitely in that model, since the
-> log-file is circular. 
+> alex@cendio.se said:
+> >  Sure, but there are some architecture changes that should be done
+> > before that. (The ones we discussed last week). 
+> 
+> Definitely. I'm going through the FTL code first - to remind myself of how it 
+> actually works. Then I'll get round to making the changes we talked about.
+> 
+> As it is, I haven't actually looked at some of this code in three years. For 
+> example, I had no clue how the async erases worked until I just reread it.
 
-When you append to your circular log, you end up eating your tail. What if the 
-erase block you're about to 'eat' doesn't contain any data that needs to be 
-changed. Do you leave it alone and skip it, or do you erase it anyway?
+I've got some questions on the async erase btw:
 
---
-dwmw2
+When I fire away a flash erase, can i just continue working with the
+flash, content with knowing that if i do a read or write while the chip is
+erasing it will block? I thought so at first, and it would be the logical
+thing. 
+
+Some code in the current drivers made me doubt this though, so i added an
+explicit sleep until i got the finished callback.
+
+The code in question is stuff like: 
+doc100.c: flashcard_read():
+ /* There is an erase in progress or pending for this device. Stop it */
+ timeron = del_timer(&flashcard_timer);
+                
+ if (priv->cur_erases && priv->cur_erases->cell == cell) 
+ {
+   /* The erase is on the current cell. Just return all 0xff */ 
+   add_timer(&flashcard_timer);
+                        
+   printk("Cell %d currently erasing. Setting to all 0xff\n",cell);
+   memset(buf, 0xff, *retlen);
+   return 0;
+
+WTF is this?
+
+Also, doc2000.c: doc_erase() doesn't seem to call the callback function at
+all.
+
+/ Alex
+
+
+
+
 
 
 
