@@ -1,16 +1,21 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ZrUL-00018M-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 11:13:25 +0100
-Message-Id: <5.1.0.14.0.20010823052444.00a6f488@mail.spewey.com>
-Date: Thu, 23 Aug 2001 05:33:27 -0500
-To: Luke <luke_epsilon@yahoo.com>,linux-mtd@lists.infradead.org
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: ZFMicro MachZ success with the Am29LV065D 
-In-Reply-To: <20010823060822.87865.qmail@web13609.mail.yahoo.com>
-References: <20010814040820.37578.qmail@web13607.mail.yahoo.com>
+Received: from mail.udm.ru ([217.14.192.20] helo=aps.mark-itt.ru)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15ZskC-0001FG-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2001 12:33:53 +0100
+Received: from [195.161.198.29] (HELO 195.161.198.29)
+  by aps.mark-itt.ru (CommuniGate Pro SMTP 3.4.8)
+  with ESMTP id 13841889 for linux-mtd@lists.infradead.org; Thu, 23 Aug 2001 16:39:43 +0500
+Date: Thu, 23 Aug 2001 16:42:42 +0400
+From: ASA <atris@mail.ru>
+Reply-To: ASA <atris@mail.ru>
+Message-ID: <1776086221.20010823164242@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: BLKRRPART bug in NFTL?
+In-reply-To: <E15ZVks-00081M-00@pentafluge.infradead.org>
+References: <E15ZVks-00081M-00@pentafluge.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,75 +27,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 11:08 PM 8/22/2001 -0700, Luke wrote:
+Hello all,
 
->As I have it right now, linux loads and I see:
->
->physmap flash device: 800000 at 10000000
->Physically mapped flash: Found 1 x8 devices at 0x0 in 8-bit mode
->  Amd/Fujitsu Extended Query Table v1.1 at 0x0040
->number of CFI chips: 1
->mtd: Giving out device 0 to Physically mapped flash
->
->and if I cat /proc/mtd I see
->
->dev:      size        erasesize          name
->mtd0    00800000      00010000        "physically mapped flash"
->
->
->I tried a few different things and haven't got the second chip recognized 
->yet.  I tried setting
->the size (in the make xconfig dialog) to 16M and setting the MemWindow1 
->base address register to
->8Mbytes (with MemWindow1 page register 0 and size 8Mbytes) - but that 
->didn't work.  Do I need to
->do something else to get MTD to work with multiple flash devices?
+tried anybody to use *fdisk on DiskOnChip2000 from ramdisk
+and got expected results?
 
-What "map" driver are you using. If it's the generic "physmap" one 
-(physmap.c), then you need to loop in
-the detection code in the driver for each physical chip on your board 
-(actually each physical chip on your board
-that is to be mapped as a separate MTD device- so if you have two physical 
-8bit chips on a 16bit bus (interleave of 2), you don't need to loop).
+I'm automating linux installation, so such thing is needed...
 
-See the sc520cdp.c file as an example.
+My system consists of:
+hardware:
+  special embedded motherboard with AMD 486DX4-100
+  8 MB RAM
+  DiskOnChip 2000 (8 MB flash)
+software:
+  linux kernel 2.4.1 with MTD 20010730 snapshot
+  root filesystem on /dev/ram0 (loaded via cmdline: initrd=inird.gz root=/dev/ram0)
 
+All is based on debian potato (2.2; glibc 2.1; some utils, including
+  sfdisk, are upgraded in order to proper work with 2.4 kernel)
 
->I know this is long and drawn out and that I may be rambling from my 
->sleepiness - I do appreciate
->the help I have been given.  I did have a JFFS2 question or two also.
->
->I want to mount these 2 flash devices (well all of one and half of the 
->other since the other half
->is filled with the kernel and initrd, this seems like it should be 
->straightforward by messing with
->the MemWin0 size register and page register to point to the right portion 
->of the first flash
->device).
->
->I don't have any image - I just want these 2 flash chips to be initially 
->empty file systems where
->I can write data that is collected from some atmospheric sensors hooked up 
->to the embedded system.
->  Do I need mkfs.jffs on the embedded system or can I use it on my 
-> development system and then
->transfer it over?
+Symptoms are:
+after executing
 
-You don't need mkfs.jffs on your end system. This guy is only used i you 
-want to go the mkiso fs route- i.e.
-build a binary image off line then burn it in the mtd device (think of 
-mkfs.jffs2 -> mkisofs and copying to the mtd device as cdrecord).
+  #deleting any partition for sanity
+  dd if=/dev/zero of=/dev/nftla bs=512 count=1
+  # BLKRRPART ioctl (reread partition information)
+  sfdisk -R /dev/nftla
 
-I personally never use this program- as JFFS2 also supports populating the 
-fs "by hand"- i.e. make sure that the mtd device is completely erased (the 
-first time), then mount the JFFS2 fs. This will result in a blank JFFS2 fs. 
-Then just copy the files over that you need.
-To make further copies (for e.g. in production), just "dd" the entire mtd 
-image out to a file. You can then use this file as a binary image to 
-initialize other systems.
+  # making 5 and 3 megs partitions on 8 MiB DOC
+  echo ",5000,L,*;,,L;;" | sfdisk -f /dev/nftla
 
-Vipin
+  # make sure partition information is reread
+  sfdisk -R /dev/nftla
 
-P.S. Once you have successfully detected your flash as an mtd device, could 
-you please make an entry into my mtd flash device database at:
-http://www.embeddedlinuxworks.com/db.html
+the root filesystem (ramdisk) is screwed up!
+
+again, after clean reboot only invoking
+BLKRRPART ioctl is enough to break ramdisk
+
+in the same configuration, operating with hard disks instead of DOC
+is absolutely .
+
+Also, to reproduce this bug in other environment (only the kernel is
+the same) I tried to put my kernel (2.4.1+MTD-20010730) on the debian
+installation diskette and after using cfdisk ramdisk was screwed again...
+
+-- 
+Best regards,
+ ASA                            mailto:atris@mail.ru
