@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189hsA-0004yC-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 08:18:42 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLOELLFHAA.joakim.tjernlund@lumentis.se> 
-References: <IGEFJKJNHJDCBKALBJLLOELLFHAA.joakim.tjernlund@lumentis.se> 
-To: joakim.tjernlund@lumentis.se
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: seeking help on JFFS2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Nov 2002 08:49:02 +0000
-Message-ID: <7618.1036658942@passion.cambridge.redhat.com>
+	id 189kqa-0005JV-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 11:29:16 +0000
+Date: Thu, 7 Nov 2002 13:58:45 +0100 (CET)
+From: Marius Groeger <mag@sysgo.de>
+To: Taeil Um <tium@mail.palmpalm.com>
+cc: linux-mtd list <linux-mtd@lists.infradead.org>
+Subject: Re: NAND flash of EDB7312
+In-Reply-To: <BDEDIOGGNJEEPBHLJLFGOEGJCDAA.tium@palmpalm.com>
+Message-ID: <Pine.LNX.4.40.0211071355090.1961-100000@mag.devdep.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,27 +22,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joakim.tjernlund@lumentis.se said:
-> Why does JEDEC end up in cfi_cmdset_0001.c? 
+On Tue, 5 Nov 2002, Taeil Um wrote:
 
-CFI only defines how you _probe_ chips. The actual Intel command set is the
-same as it's always been, likewise the AMD one. This is why jedec_probe
-passes control to the CFI drivers and all the other chip drivers are
-deprecated.
+> So,  Did anybody succeed to use NAND flash on EDB7312 board ?
+> if somebody succeed, Could you inform me the value of MEMCFG1?
 
-> If it should end up in cfi_cmdset_0001.c, why does it not set cmdset_priv? 
+It worked ok for me using ARMboot (armboot.sf.net) and Elinos, which
+uses the driver checked in on Infradead. As for MEMCFG1, see
+armboot/board/ep7312/memsetup.S:
 
-IIRC because cmdset_priv is just a copy of the extended CFI table from the 
-chip, which we don't have in the case of a non-CFI chip. It's that which 
-holds the details of whether we can do erase suspend, etc.
+...
+memcfg1_val:    .long   0x1f101710
+...
 
-Perhaps the table in jedec_probe should also contain a 'fake' extended CFI 
-table. More sensibly, perhaps we should have a structure in the cmdset_priv 
-with just the flags we care about, and at probe time either parse the 
-extended CFI table or copy those flags from the jedec_probe table.
+Regards,
+Marius
 
-For now, we just assume jedec-probed chips have none of the extended 
-features.
-
---
-dwmw2
+-----------------------------------------------------------------------------
+Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
+Software Engineering     Embedded and Real-Time Software    www.sysgo.de
+Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
+FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
