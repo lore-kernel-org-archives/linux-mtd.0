@@ -1,22 +1,17 @@
-Received: from h109-210-243-242.aiptek.com.tw ([210.243.242.109] helo=aiptekser1.aiptek.com.tw)
+Received: from idiom.com ([216.240.32.1] ident=espin)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16G7sQ-0003gy-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 00:12:59 +0000
-Received: from andrew (ANDREW.aiptek.com.tw [10.0.3.35])
-          by aiptekser1.aiptek.com.tw (Post.Office MTA v3.5.3 release 223
-          ID# 619-69644U200L100S0V35) with SMTP id tw
-          for <linux-mtd@lists.infradead.org>;
-          Tue, 18 Dec 2001 08:23:36 +0800
-From: andrewkuo@aiptek.com.tw (AndrewKuo)
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: Contents of linux-mtd digest...
-Date: Tue, 18 Dec 2001 08:21:43 +0800
-Message-ID: <INEDIIEAKHENJJGJFHMECEDPCAAA.andrewkuo@aiptek.com.tw>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: base64
-In-Reply-To: <E16FwS6-00034R-00@pentafluge.infradead.org>
+	id 16G9CL-0003lD-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 01:37:37 +0000
+Received: (from espin@localhost)
+	by idiom.com (8.9.3/8.9.3) id RAA71187
+	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2001 17:48:22 -0800 (PST)
+Date: Mon, 17 Dec 2001 17:48:21 -0800
+From: Geoffrey Espin <espin@idiom.com>
+To: linux-mtd@lists.infradead.org
+Subject: mtd_debug.c patch for hex options and low memory
+Message-ID: <20011217174821.A64308@idiom.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,47 +23,183 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBsaW51eC1tdGQtYWRtaW5AbGlz
-dHMuaW5mcmFkZWFkLm9yZyBbbWFpbHRvOmxpbnV4LW10ZC1hZG1pbkBsaXN0cy4NCmluZnJhZGVh
-ZC5vcmddT24gQmVoYWxmIE9mIGxpbnV4LW10ZC1yZXF1ZXN0QGxpc3RzLmluZnJhZGVhZC5vcmcN
-ClNlbnQ6IE1vbmRheSwgRGVjZW1iZXIgMTcsIDIwMDEgODowMSBQTQ0KVG86IGxpbnV4LW10ZEBs
-aXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBsaW51eC1tdGQgZGlnZXN0LCBWb2wgMSAjMzA3
-IC0gMiBtc2dzDQoNCg0KU2VuZCBsaW51eC1tdGQgbWFpbGluZyBsaXN0IHN1Ym1pc3Npb25zIHRv
-DQoJbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCg0KVG8gc3Vic2NyaWJlIG9yIHVuc3Vi
-c2NyaWJlIHZpYSB0aGUgV29ybGQgV2lkZSBXZWIsIHZpc2l0DQoJaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQNCm9yLCB2aWEgZW1haWwsIHNlbmQg
-YSBtZXNzYWdlIHdpdGggc3ViamVjdCBvciBib2R5ICdoZWxwJyB0bw0KCWxpbnV4LW10ZC1yZXF1
-ZXN0QGxpc3RzLmluZnJhZGVhZC5vcmcNCg0KWW91IGNhbiByZWFjaCB0aGUgcGVyc29uIG1hbmFn
-aW5nIHRoZSBsaXN0IGF0DQoJbGludXgtbXRkLWFkbWluQGxpc3RzLmluZnJhZGVhZC5vcmcNCg0K
-V2hlbiByZXBseWluZywgcGxlYXNlIGVkaXQgeW91ciBTdWJqZWN0IGxpbmUgc28gaXQgaXMgbW9y
-ZSBzcGVjaWZpYw0KdGhhbiAiUmU6IENvbnRlbnRzIG9mIGxpbnV4LW10ZCBkaWdlc3QuLi4iDQoN
-Cg0KVG9kYXkncyBUb3BpY3M6DQoNCiAgIDEuIDY0LWJpdCBidXMgc3VwcG9ydCBmb3IgU3RyYXRh
-IChBbGxlbiBDdXJ0aXMpDQogICAyLiBBZnRlciBpbnN0YWxsaW5nIGZpcm13YXJlIChkaGFybXUg
-YmF2YWxlKQ0KDQotLV9fLS1fXy0tDQoNCk1lc3NhZ2U6IDENClJlcGx5LVRvOiA8YWN1cnRpc0Bv
-bnouY29tPg0KRnJvbTogIkFsbGVuIEN1cnRpcyIgPGFjdXJ0aXNAb256LmNvbT4NClRvOiA8bGlu
-dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+DQpTdWJqZWN0OiA2NC1iaXQgYnVzIHN1cHBvcnQg
-Zm9yIFN0cmF0YQ0KRGF0ZTogU3VuLCAxNiBEZWMgMjAwMSAxMDoyODo0MiAtMDgwMA0KDQoNCkkg
-aGF2ZSBiZWVuIGxvb2tpbmcgdGhyb3VnaCB0aGUgYXJjaGl2ZXMgYW5kIGhhdmUgZm91bmQgcmVm
-ZXJlbmNlcyB0bw0KcGF0Y2hlcw0KdG8gc3VwcG9ydCA2NC1iaXQgYnVzZXMuIFdoZXJlIGNhbiBJ
-IGZpbmQgdGhlbT8gV2hpbGUgSSB3YXMgbG9va2luZyBJIGFsc28NCm5vdGljZWQgbWVzc2FnZXMg
-dGhhdCBpbmRpY2F0ZWQgdGhlIGNmaV9jbWRzZXRfMDAwMS5jIG9ubHkgc3VwcG9ydGVkIDMyIGJp
-dHMNCmJ1c2VzLiBJcyB0aGlzIHRydWU/DQoNCihJIHN0YXJ0ZWQgd2l0aCB0aGUgTVREL0pGRlMg
-ZnJvbSBNb250YVZpc3RhKQ0KT3JpZ2luYWxseSBJIHRob3VnaHQgdGhhdCBJIGNvdWxkIGdldCB0
-aGlzIHRvIHdvcmsgYnkgbWFuaXB1bGF0aW5nIHRoZQ0KY2ZpX3ByaXZhdGUgc3RydWN0dXJlLiBJ
-dCBsb29rcyBsaWtlIGl0IGlzIGdvaW5nIHRvIGJlIGEgbGl0dGxlIG1vcmUNCmRpZmZpY3VsdCB0
-aGFuIHRoaXMuIEFueSBoZWxwIHdvdWxkIGJlIGFwcHJlY2lhdGVkLg0KDQpQUzogT3VyIGhhcmR3
-YXJlIGNvbmZpZ3VyYXRpb24gaGFzIDQgSW50ZWwgMTI4TWIgU3RyYWRhcyBGbGFzaCBpbiB4MTYg
-bW9kZS4NCkkNCmp1c3QgZG93bmxvYWRlZCB0aGUgbGF0ZXN0IHZlcnNpb24gZnJvbSBDVlMgYnV0
-IEkgZG8gbm90IHRoaW5rIGl0IGZpeGVzIHRoaXMNCnByb2JsZW0uDQoNCg0KDQotLV9fLS1fXy0t
-DQoNCk1lc3NhZ2U6IDINCkZyb206ICJkaGFybXUgYmF2YWxlIiA8ZGhhcm11QGxpbnV4bWFpbC5v
-cmc+DQpUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCkRhdGU6IE1vbiwgMTcgRGVj
-IDIwMDEgMTM6MzU6MDIgKzA4MDANClN1YmplY3Q6IEFmdGVyIGluc3RhbGxpbmcgZmlybXdhcmUN
-Cg0KSEkgYWxsLA0KICAgSSBqdXN0IGdvdCBpbnN0YWxsZWQgZ3J1YiBmaXJtd2FyZSBvbiB0byB0
-aGUgRE9DLiBBZnRlciByZW1vdmluZyB0aGUgaGFyZGRpc2ssIEkgYW0gZ2V0dGluZyB0aGUgZ3J1
-YiBwcm9tcHQsIHdoZXJlIGluIEkgY2FudCBhYmxlIHRvIGJvb3QgbGludXguIFdoYXQgbWF5IGJl
-IHRoZSBwcm9ibGVtPw0KSG9wZSB0aGlzIHRpbWUgSSB3aWxsIGdldCB0aGUgYW5zd2VyDQpEaGFy
-bXUNCi0tIA0KDQpHZXQgeW91ciBmcmVlIGVtYWlsIGZyb20gd3d3LmxpbnV4bWFpbC5vcmcgDQoN
-Cg0KUG93ZXJlZCBieSBPdXRibGF6ZQ0KDQoNCg0KLS1fXy0tX18tLQ0KDQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdCBkaWdlc3QNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0KDQoNCkVuZCBvZiBsaW51eC1tdGQgRGlnZXN0
+1. The 'mtd_debug' utility doesn't allow hex offsets on the
+command-line.
+
+2. If you're short of contiguous RAM then kmalloc() a smaller buffer
+and chunk along instead of bailing out.  Especially painful, if
+after erasing the existing contents!
+
+Geoff
+-- 
+Geoffrey Espin espin@idiom.com
+--
+
+--- mtd_debug.c.ORIG	Mon Oct  8 15:00:06 2001
++++ mtd_debug.c	Mon Dec 17 15:13:21 2001
+@@ -103,42 +103,62 @@
+ 
+ int flash_to_file (int fd,u_int32_t offset,size_t len,const char *filename)
+ {
+-   u_int8_t *buf;
++   u_int8_t *buf = NULL;
+    int outfd,err;
++   int size = len * sizeof (u_int8_t);
++   int n = len;
++
+    if (offset != lseek (fd,offset,SEEK_SET))
+ 	 {
+ 		perror ("lseek()");
+ 		goto err0;
+ 	 }
+-   if ((buf = (u_int8_t *) malloc (len * sizeof (u_int8_t))) == NULL)
+-	 {
+-		perror ("malloc()");
+-		goto err0;
+-	 }
+    outfd = creat (filename,O_WRONLY);
+    if (outfd < 0)
+ 	 {
+ 		perror ("creat()");
+ 		goto err1;
+ 	 }
+-   err = read (fd,buf,len);
++
++retry:
++   if ((buf = (u_int8_t *) malloc (size)) == NULL)
++	 {
++#define BUF_SIZE	(64 * 1024 * sizeof (u_int8_t))
++		fprintf (stderr, __FUNCTION__ ": malloc(%#x)\n", size);
++		if (size != BUF_SIZE) {
++			size = BUF_SIZE;
++			fprintf (stderr, __FUNCTION__ ": trying buffer size %#x\n", size);
++			goto retry;
++		}
++		perror ("malloc()");
++		goto err0;
++	 }
++ do {
++   if (n <= size)
++	   size = n;
++   err = read (fd,buf,size);
+    if (err < 0)
+ 	 {
++		fprintf (stderr, __FUNCTION__ ": read, size %#x, n %#x\n", size, n);
+ 		perror ("read()");
+ 		goto err2;
+ 	 }
+-   err = write (outfd,buf,len);
++   err = write (outfd,buf,size);
+    if (err < 0)
+ 	 {
++		fprintf (stderr, __FUNCTION__ ": write, size %#x, n %#x\n", size, n);
+ 		perror ("write()");
+ 		goto err2;
+ 	 }
+-   if (err != len)
++   if (err != size)
+ 	 {
+-		fprintf (stderr,"Couldn't copy entire buffer to %s. (%d/%d bytes copied)\n",filename,err,len);
++		fprintf (stderr,"Couldn't copy entire buffer to %s. (%d/%d bytes copied)\n",filename,err,size);
+ 		goto err2;
+ 	 }
++   n -= size;
++   } while (n > 0);
+ 
++   if (buf != NULL)
+    free (buf);
+    close (outfd);
+    printf ("Copied %d bytes from address 0x%.8x in flash to %s\n",len,offset,filename);
+@@ -147,6 +167,7 @@
+    err2:
+    close (outfd);
+    err1:
++   if (buf != NULL)
+    free (buf);
+    err0:
+    return (1);
+@@ -154,40 +175,59 @@
+ 
+ int file_to_flash (int fd,u_int32_t offset,u_int32_t len,const char *filename)
+ {
+-   u_int8_t *buf;
++   u_int8_t *buf = NULL;
+    FILE *fp;
+    int err;
++   int size = len * sizeof (u_int8_t);
++   int n = len;
++
+    if (offset != lseek (fd,offset,SEEK_SET))
+ 	 {
+ 		perror ("lseek()");
+ 		return (1);
+ 	 }
+-   if ((buf = (u_int8_t *) malloc (len * sizeof (u_int8_t))) == NULL)
++   if ((fp = fopen (filename,"r")) == NULL)
+ 	 {
+-		perror ("malloc()");
++		perror ("fopen()");
+ 		return (1);
+ 	 }
+-   if ((fp = fopen (filename,"r")) == NULL)
++retry:
++   if ((buf = (u_int8_t *) malloc (size)) == NULL)
+ 	 {
+-		perror ("fopen()");
+-		free (buf);
++		fprintf (stderr, __FUNCTION__ ": malloc(%#x) failed\n", size);
++		if (size != BUF_SIZE) {
++			size = BUF_SIZE;
++			fprintf (stderr, __FUNCTION__ ": trying buffer size %#x\n", size);
++			goto retry;
++		}
++		perror ("malloc()");
++		fclose (fp);
+ 		return (1);
+ 	 }
+-   if (fread (buf,len,1,fp) != 1 || ferror (fp))
++ do {
++   if (n <= size)
++	   size = n;
++   if (fread (buf,size,1,fp) != 1 || ferror (fp))
+ 	 {
++		fprintf (stderr, __FUNCTION__ ": fread, size %#x, n %#x\n", size, n);
+ 		perror ("fread()");
+ 		free (buf);
+ 		fclose (fp);
+ 		return (1);
+ 	 }
+-   err = write (fd,buf,len);
++   err = write (fd,buf,size);
+    if (err < 0)
+ 	 {
++		fprintf (stderr, __FUNCTION__ ": write, size %#x, n %#x\n", size, n);
+ 		perror ("write()");
+ 		free (buf);
+ 		fclose (fp);
+ 		return (1);
+ 	 }
++   n -= size;
++} while (n > 0);
++
++   if (buf != NULL)
+    free (buf);
+    fclose (fp);
+    printf ("Copied %d bytes from %s to address 0x%.8x in flash\n",len,filename,offset);
+@@ -386,13 +426,13 @@
+ 		showinfo (fd);
+ 		break;
+ 	  case OPT_READ:
+-		err = flash_to_file (fd,atol (argv[3]),atol (argv[4]),argv[5]);
++		err = flash_to_file (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0),argv[5]);
+ 		break;
+ 	  case OPT_WRITE:
+-		err = file_to_flash (fd,atol (argv[3]),atol (argv[4]),argv[5]);
++		err = file_to_flash (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0),argv[5]);
+ 		break;
+ 	  case OPT_ERASE:
+-		err = erase_flash (fd,atol (argv[3]),atol (argv[4]));
++		err = erase_flash (fd,strtol (argv[3],NULL,0),strtol (argv[4],NULL,0));
+ 		break;
+ 	 }
+ 
