@@ -1,29 +1,21 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cfh34-0003KC-2o
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:03:15 -0500
-Date: Sat, 18 Dec 2004 17:02:55 +0100
+	id 1Cfh8u-0003U8-B4
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:09:17 -0500
+Date: Sat, 18 Dec 2004 17:09:08 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20041218160255.GA1083@wohnheim.fh-wedel.de>
-References: <1103232128.15927.70.camel@squizzey.bult.co.uk>
-	<41C1FDFF.3020308@us.ibm.com>
-	<1103233669.15929.81.camel@squizzey.bult.co.uk>
-	<1103288058.3018.4.camel@weaponx.rchland.ibm.com>
-	<1103297611.15917.184.camel@squizzey.bult.co.uk>
-	<41C3030D.8040607@us.ibm.com>
-	<1103302002.15927.198.camel@squizzey.bult.co.uk>
-	<41C31307.70909@us.ibm.com>
-	<1103304360.15914.210.camel@squizzey.bult.co.uk>
-	<41C318C8.4030702@us.ibm.com>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Message-ID: <20041218160908.GB1083@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.58.0412171100470.8020@phoenix.infradead.org>
+	<JPEALJAFNGDDLOPNDIEEEEHECPAA.joakim.tjernlund@lumentis.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <41C318C8.4030702@us.ibm.com>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	"Gareth Bult \(Encryptec\)" <Gareth@Encryptec.net>
-Subject: Re: JFFS2 mount time
+In-Reply-To: <JPEALJAFNGDDLOPNDIEEEEHECPAA.joakim.tjernlund@lumentis.se>
+Cc: jasmine@linuxgrrls.org, Thomas Gleixner <tglx@linutronix.de>,
+	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 December 2004 11:35:04 -0600, Josh Boyer wrote:
+On Fri, 17 December 2004 12:19:55 +0100, Joakim Tjernlund wrote:
 > 
-> Again, most controllers do all the wear leveling, erasing for you.  So 
-> you are left with compression, right?
+> Looked a little closer on csum_partial and I think JFFS3 can use it. You need
+> csum_fold as well:
+> seed = ~0;
+> crc = csum_fold(csum_partial(buff, len, seed));
+> 
+> Don't know if it is good enough for JFFS3 but it is fast.
 
-If you have enough trust in your El Cheapo hardware supplier.  There
-is no standard that requires wear leveling and there are reports that
-basically tell you to do your own wear leveling on some devices.  With
-no good way to distinguish "some" devices from "others", you can read
-that as "all". ;)
-
-USB keys and all the various other consumer-type flash devices are
-good enough to beat 3 1/2" floppies, that's about it.  But that's
-quite good enough for most people.  Floppies sold like crazy after
-all.
+It sure is hard to read.  Is there any version in C around?
 
 Jörn
 
 -- 
-Simplicity is prerequisite for reliability.
--- Edsger W. Dijkstra
+It's not whether you win or lose, it's how you place the blame.
+-- unknown
