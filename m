@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from toq5.bellnexxia.net ([209.226.175.27] helo=toq5-srv.bellnexxia.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aDSB-0000nT-00
-	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 11:45:11 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com> 
-References: <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com> 
-To: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
-Cc: jffs-dev@axis.com
-Subject: Re: jffs2_scan_eraseblock() - errors 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 01 Aug 2002 11:44:54 +0100
-Message-ID: <30325.1028198694@redhat.com>
+	id 17aEV9-0000vH-00
+	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 12:52:20 +0100
+Date: Wed, 17 Jul 2002 14:35:17 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Mark Meade <mark@lakeshoremicro.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: [patch] doc_stage1.S : GRUB on DoC
+In-Reply-To: <200207161454984.SM02488@there>
+Message-ID: <Pine.LNX.4.44.0207171428020.4453-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,35 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-(Moved to JFFS list).
+On Tue, 16 Jul 2002, Mark Meade wrote:
 
-Allen.Curtis@Thales-IFS.com said:
-> > real	47.258s
+> Ilguiz -- is the DOC_MIL_KEEP_IPL option still used?
 
->  With the CRC patch:
->  real	36.7s
+I never used this conditional piece of code because I don't have DoC
+Millennium.  I added that code before I could better understand the
+mechanism of initial loading with DoC Millennium.  I don't know if the
+Millennium's own IPL can perform extra download from flash offset 1024.  
+If it can't, the DOC_MIL_KEEP_IPL piece can be removed.
 
-OK, that's respectable. I just need to finish the other part of the change 
--- to actually check the CRCs later on, rather than just leaving them 
-unchecked. Make sure you take the patch back out of your tree now :)
+I am behind my schedule at work at this moment.  I will be able to test 
+the improved code on DoC 2000 around next week.
 
-We may get a little bit more of a speedup when we do that too, as we'll also
-stop building up the fragment lists for every inode on mount, but in fact
-that code wasn't showing up very high on the profile last time I looked.
-
-> PS: The version of scan.c we are using is 1.57. The patch note was for
-> 1.51.2.3.
-
-Doesn't matter; it's basically the same in both branches. 
-
-I suspect that if you profile it now you'll find the most time is taken in 
-your flash map driver's copy_from routine or memcpy. 
-
-I need to implement the XIP scheme which will also allow JFFS2 to directly
-access the flash through a kind of pageable ioremap (which handles the times
-when the flash is in a mode other than read mode correctly) instead of 
-having to read into a buffer and work from that. We get to use caches and 
-burst reads from flash at that point too.
-
---
-dwmw2
+Ilguiz
