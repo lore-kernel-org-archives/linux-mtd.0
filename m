@@ -1,27 +1,18 @@
-Received: from zeus.vortex.is ([193.4.145.1])
+Received: from mail.mediatrix.com ([205.237.248.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1556vl-0007yf-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 May 2001 15:26:37 +0100
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <linux-mtd@lists.infradead.org>;
-          Wed, 30 May 2001 14:30:51 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <linux-mtd@lists.infradead.org>;
-          Wed, 30 May 2001 14:30:50 +0000
-content-class: urn:content-classes:message
+	id 155WEH-0000s4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 May 2001 18:27:25 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D995479@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: Frederic Giasson <fgiasson@mediatrix.com>, 'David Woodhouse'
+	 <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Found a potential bug in MTD 
+Date: Thu, 31 May 2001 13:27:07 -0400
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Subject: RE: HOWTO add jffs2 support in Kernel Configuration xconfig
 Content-Transfer-Encoding: quoted-printable
-Date: Wed, 30 May 2001 14:30:50 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E31459191@kolkrabbi.flaga.is>
-From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: "Frederic Giasson" <fgiasson@mediatrix.com>
-Cc: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -33,42 +24,62 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-And add links from fs/jffs2 to the mtd directory in the same way as for
-jffs.
-see patching.sh
 
-K.D.
+-----Original Message-----
+From: Frederic Giasson [mailto:fgiasson@mediatrix.com]
+Sent: Tuesday, May 29, 2001 3:38 PM
+To: 'David Woodhouse'
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Found a potential bug in MTD=20
 
-> -----Original Message-----
-> From: Xavier DEBREUIL [mailto:xde@inventel.fr]
-> Sent: 30. ma=ED 2001 14:13
-> To: Frederic Giasson
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: HOWTO add jffs2 support in Kernel Configuration xconfig
+
+----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Tuesday, May 29, 2001 3:13 PM
+To: Frederic Giasson
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Found a potential bug in MTD=20
+
+
+
+fgiasson@mediatrix.com said:
 >=20
->=20
-> add some lines equivalent to JFFS line in Config.in file
-> Xavier
->=20
-> Frederic Giasson a =E9crit :
-> >=20
-> > Hi,
-> >=20
-> >         I downloaded lastest MTD and JFFS1-2 from MTD's CVS=20
-> site and no
-> > options as added to my file system menu in xconfig to=20
-> support JFFS2.  Can
-> > someone tell me why?
-> >=20
-> > Thanks!
-> >=20
-> > Fr=E9d=E9ric Giasson
-> >=20
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
+> 	Maybe but the actual code does not work if you specify a 1x16
+> geometry with an actual single 16 bits chip on the memory bus.
+
+For CFI chips, I believe it works. The Compaq iPAQ 31xx series have=20
+precisely this arrangement.
+
+I'm interested to know whether it's the CFI probe or the JEDEC probe =
+which=20
+is working on your device. Please could you make it print the contents =
+of=20
+cfi->cfi_mode after detecting the chip?
+
+
+
+--
+dwmw2
+=20
+
+cfi->mode =3D 1 which means that MTD detects in JEDEC mode.  This =
+result is
+obtained by compiling the kernel with 1x16 geometry specification, and =
+the
+modification to cfi_qry_mode I talked about in a previous mail.
+
+But Atmel chips are CFI, right?  Correct me if I am wrong.=20
+
+Fr=E9d=E9ric Giasson
+
+About my own last question, I just got the answer for someone at Atmel:
+their chips are NOT CFI compliant.
+
+Fr=E9d=E9ric Giasson
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
