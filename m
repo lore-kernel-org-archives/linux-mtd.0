@@ -1,28 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B7VM5-0000xK-EP
-	for linux-mtd@lists.infradead.org; Sun, 28 Mar 2004 09:09:17 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HVA00CC31BFZ8@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sun, 28 Mar 2004 10:09:16 +0200 (MEST)
-Date: Sun, 28 Mar 2004 09:05:51 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20040328075658.221981764D@desire.actrix.co.nz>
-To: manningc2@actrix.gen.nz, David Woodhouse <dwmw2@infradead.org>,
- David Updegraff <dave@cray.com>
-Message-id: <200403281005.51480.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+	id 1B7VNO-00015L-Tg
+	for linux-mtd@lists.infradead.org; Sun, 28 Mar 2004 09:10:39 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Date: Sun, 28 Mar 2004 20:19:40 +1200
 References: <406328A2.3060905@cray.com>
- <1080404311.17352.69.camel@imladris.demon.co.uk>
- <20040328075658.221981764D@desire.actrix.co.nz>
-cc: linux-mtd@lists.infradead.org
+	<20040328072532.3FCCA168A8@desire.actrix.co.nz>
+	<200403280951.56183.tglx@linutronix.de>
+In-Reply-To: <200403280951.56183.tglx@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20040328081028.67681179BF@desire.actrix.co.nz>
 Subject: Re: nand oob layout assumptions
-Reply-To: tglx@linutronix.de
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 28 March 2004 10:06, Charles Manning wrote:
-> I agree with the idea of abstacting this as much as possible. Where the EEC
-> is stores (if indeed it even is stored in OOB) should not be the FS's
-> concern and should not be known to the FS. The FS should just be told that
-> the ECC passed, failed or fixed a single bit error.
-
-No problem with that
-
-> Unless we go for one abstract interface it will [continue to] be hell to
-> support more than one FS (it is already a /dev/ass/pain to try get YAFFS
-> and JFFS2 going on one machine due to different OOB layouts). The [already
-> bad] situation will only get worse when trying to deal with all the fun
-> that the newer NAND devices bring us.
-
-He ? I'm running YAFFS and JFFS2 since a long time on the same device and it 
-works without any PITA. 
-
-I just want to bring back into memories, that we had a long discussion about 
-an abstract interface 2 years ago. There was no way to find a common solution 
-as nobody was willing to break either JFFS2 or YAFFS1 or both. 
-
-Again. I agree with the idea of an abstract interface as long as we keep the 
-current stuff running. 
-
-> No bitmask. That just passes mucky knowledge through the interface.
+On Sunday 28 March 2004 19:51, Thomas Gleixner wrote:
+> On Sunday 28 March 2004 09:34, Charles Manning wrote:
+> > > But the fs must be aware of the bad block marker position in the OOB
+> > > area, as it can not use this byte for storing fs dependend data. The
+> > > OOB usage is given by the fs layer.
+> >
+> > No. Part of the deal is that the OOB area should not be shown in "raw"
+> > form to the fs. There should be no l physical placement knowledge in the
+> > fs, only abstract.
+> >
+> > This should be shown to the fs as:
+> >   __u8 spare[8];
+> >   ECCResult (OK, fixed, failed)
+> >   BlockOK (OK, bad)
 >
-> Rather:
-> * Have the mtd tell the FS the number of unused bytes in the OOB.
-> * Pass a byte array through the interface and the mtd packs/unpacks this
-> around the ECC, bad block markers and other stuff.
+> OK, I already have agreed, that we can use such an abstract form for new
+> developments, but we _MUST_ maintain compability for the existing
+> implementatitons. I like abstract models very much, but I will always keep
+> in view what consequences we will have, if we change things.
+>
+> That's all I'm insisting on.
+>
+> YAFFS1 uses a different ECC placement than JFFS2.
+> If we change this in general now, we will either break YAFFS or JFFS2 or
+> even both.
+>
+> This prevents users to upgrade their kernels. They will have format
+> incompabilities so they loose data on upgrading or loose the
+> interoperability of systems. Will you tell your customer to either upgrade
+> 1000 already sold devices or stick with the current code or accepting that
+> interoperability is not given ? That's not what Open Source Software stands
+> for.
+>
+> I do not have any objections against an API extension, but breaking things
+> I'm _NEVER_ going to accept.
 
-No objections.
+I agree with that fully. We should continue to support the currect 
+interfaces, but should perhaps depreciate them. As well as support what is 
+already out there we need to also ensure that we provide a more healthy 
+framework to move forward too.
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Here's what I suggest:
+
+* Keep the existing functions/interface (== the legacy interface) for the 
+current concepts so we don't break current implementations.
+
+* Extend the interface with new functions for the new interface.
+
+* Future devices will not necessarily have to support both interfaces. For 
+example, if a device has a bad block marking strategy that is not consistent 
+with the legacy interface (ie the assumptions in the legacy interface are 
+broken for that device)  then it might support the new interface, but not the 
+legacy interface.
+
+Current JFFS2, YAFFS1 and current 512byte page NAND devices can use the 
+legacy interface and will not get broken.
+
+Future JFFS2, YAFFS1 and 512byte NAND can be written to cope with either. 
+
+YAFFS2 will require the new interface to run in YAFFS2 mode (eg 2k page 
+support) and will support either interface to run in YAFFS1 mode.
+
+-- CHarles
