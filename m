@@ -1,12 +1,12 @@
-Received: from nwcst337.netaddress.usa.net ([204.68.23.82])
+Received: from nwcst339.netaddress.usa.net ([204.68.23.84])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15SPRe-0008OJ-00
-	for <linux-mtd@lists.infradead.org>; Thu, 02 Aug 2001 21:51:50 +0100
-Message-ID: <20010802205155.1538.qmail@nwcst337.netaddress.usa.net>
-Date: 2 Aug 2001 13:51:55 PDT
+	id 15SSY0-00007t-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2001 01:10:36 +0100
+Message-ID: <20010803001624.5377.qmail@nwcst339.netaddress.usa.net>
+Date: 2 Aug 2001 17:16:24 PDT
 From: Eric <ebrower@usa.net>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] duplicate assignment in map_ram.c
+Subject: [Q] Where are probed maps kfree'd?
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
@@ -21,31 +21,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dwmw2, et. al.,
+The usual course of events seems to be:
 
-There's a duplicate assignment to mtd->erasesize in =
+  mapping driver sets-up a struct map_info
+  mapping driver calls chip-family-specific probe routine
+  probe routine kmallocs a struct mtd_info are returns it
+  =
 
-<mtd>/drivers/mtd/chips/map_ram.c which is removed
-with the following patch.  I've assumed that the later
-assignment is the one you wish to keep-- this may not
-be the correct assumption.
+  mapping driver decides to unload
+  mapping driver calls (amongst other things) map_destroy
+  chip-family-specific destroy routine kfrees internal private data
+  mapping driver exits
+
+I've been looking at more than a few examples, and I don't
+see when (if ever) the struct mtd_info passed back from the
+probe routine is kfree'd.  It is NOT done in the destroy =
+
+routine and I can't see it being done in the mtdcore exit
+function either.  Am I missing it, or is everyone leaking
+mtd_info structs on unload?  =
+
 
 E
-
-Index: map_ram.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /home/cvs/mtd/drivers/mtd/chips/map_ram.c,v
-retrieving revision 1.12
-diff -u -r1.12 map_ram.c
---- map_ram.c   2001/07/14 00:59:17     1.12
-+++ map_ram.c   2001/08/02 20:52:38
-@@ -63,7 +63,6 @@
-        mtd->priv =3D map;
-        mtd->name =3D map->name;
-        mtd->type =3D MTD_RAM;
--       mtd->erasesize =3D 0x10000;
-        mtd->size =3D map->size;
-        mtd->erase =3D mapram_erase;
-        mtd->read =3D mapram_read;
