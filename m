@@ -1,19 +1,20 @@
-Received: from 212.68.198.130.brutele.be ([212.68.198.130] helo=mail.boat.be)
+Received: from elproma-gw.hbz.pl ([213.77.124.176] helo=elproma.com.pl)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zyzQ-0005nc-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 13:34:00 +0100
+	id 17zzD5-0005oY-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 13:48:07 +0100
+Received: from ptroja by elproma.com.pl with local (Exim 3.35 #1 (Debian))
+	id 17zzCU-00034C-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 14:47:30 +0200
+Date: Fri, 11 Oct 2002 14:47:30 +0200
+From: Piotr Trojanek <ptroja@elproma.com.pl>
+To: linux-mtd@lists.infradead.org
 Subject: Re: DoC trouble on wafer PC
-From: Robert Sprockeels <robert.sprockeels@boat.be>
-To: Mark Meade <mark@lakeshoremicro.com>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20021011121330.SMCL11063.rwcrmhc52.attbi.com@there>
-References: <1034333338.2619.81.camel@roadie.boat.be>
-	<20021011121330.SMCL11063.rwcrmhc52.attbi.com@there>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 11 Oct 2002 14:33:59 +0200
-Message-Id: <1034339639.2401.99.camel@roadie.boat.be>
+Message-ID: <20021011124730.GA11764@elproma.com.pl>
+References: <1034333338.2619.81.camel@roadie.boat.be> <20021011121330.SMCL11063.rwcrmhc52.attbi.com@there> <1034339639.2401.99.camel@roadie.boat.be>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1034339639.2401.99.camel@roadie.boat.be>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,23 +26,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 2002-10-11 at 14:12, Mark Meade wrote:
-> The /dev/nftla entries in Bering rc3 are not correct.  Try changing them to 
-> 93, x:
+On Fri, Oct 11, 2002 at 02:33:59PM +0200, Robert Sprockeels wrote:
+> What would you recommed as filesystem on a DoC? LEAF uses msdos FAT...
 > 
-> brw-rw----    1 root     root      93,   0  Jan 24  2002 nftla
-> brw-rw----    1 root     root      93,   1  Jan 24  2002 nftla1
-> brw-rw----    1 root     root      93,   2  Jan 24  2002 nftla2
-> brw-rw----    1 root     root      93,   3  Jan 24  2002 nftla3
+> Robert
 
-Thanks, Mark that did it! I could have searched a long time.
+look in archives, JFFS2.
+there also m-sys driver for their tffs.
 
-sfdisk now reports
-/dev/nftla1  *  0+  997  998-  15967  4  DOS 16-bit FAT <32M
-
-
-Thanks for your help!
-
-What would you recommed as filesystem on a DoC? LEAF uses msdos FAT...
-
-Robert
+-- 
+Piotr Trojanek
