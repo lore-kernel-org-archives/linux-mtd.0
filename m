@@ -1,17 +1,16 @@
-Received: from [213.86.99.237] (helo=passion.cambridge.redhat.com)
+Received: from fep02-mail.bloor.is.net.cable.rogers.com ([66.185.86.72])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18bfha-00075H-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 11:39:22 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20021017103610.GA13795@kosh.hut.fi> 
-References: <20021017103610.GA13795@kosh.hut.fi>  <20020502155602.A8801@kosh.hut.fi> <13211.1020346858@redhat.com> 
-To: Jarkko Lavinen <jlavi@iki.fi>
-Cc: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
-Subject: Re: Benchmarking JFFS2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 23 Jan 2003 12:09:55 +0000
-Message-ID: <30397.1043323795@passion.cambridge.redhat.com>
+	id 18bhv5-0007KO-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 14:01:27 +0000
+Date: Thu, 23 Jan 2003 09:31:50 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@infradead.org>
+To: Raphael Hertzog <eng@eipm.ch>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Lilo-mtd passes garbage as kernel command line
+In-Reply-To: <1043317565.559.24.camel@localhost>
+Message-ID: <Pine.LNX.4.44.0301230928440.1035-100000@CPE00e0292061fa-CM014370001917.cpe.net.cable.roger>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +22,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 17 Oct 2002, jlavi@iki.fi said:
->  Of course measuring write throughput is just one side of performance
-> but I think it is fair to say JFFS2 write performane on dirty file
-> system with low performance CPUs has improved dramatically since last
-> spring.
+I once enabled the serial port control in lilo but left a serial mouse
+attached.  It seems lilo interacts with video/keyboard and serial port at
+the same time, duplicating output into both.
 
-Fancy repeating the test with current CVS? I just committed the 
-oft-discussed code required to avoid decompressing and recompressing nodes 
-which haven't changed -- and to avoid even doing the iget() and building up 
-the node lists for the inodes to which they belong in that case too.
+On 23 Jan 2003, Raphael Hertzog wrote:
 
---
-dwmw2
+> I'm using lilo-mtd (lilo 21 with the patch available on the website) to
+> boot on a DOC. It works but I have a little problem. It looks like lilo
+> is passing garbage to the kernel as kernel command line.
