@@ -1,19 +1,21 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CFzTj-0001K8-En
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2004 14:28:34 -0400
-Message-ID: <4166DC47.5010104@colleduc.ee>
-Date: Fri, 08 Oct 2004 21:28:23 +0300
-From: Kalev Lember <kalev@colleduc.ee>
-MIME-Version: 1.0
-To: Nicolas Pouillon <nipo@ssji.net>
-References: <20041004215001.769d8017.nipo@ssji.net>	<Pine.LNX.4.44.0410051152070.2033-100000@kiire.colleduc.ee>
-	<20041006213434.55d36d65.nipo@ssji.net>
-In-Reply-To: <20041006213434.55d36d65.nipo@ssji.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CFzd8-0001Uq-Ab
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2004 14:38:15 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Vijay Sampath <Vijay.Sampath@aktino.com>
+In-Reply-To: <02DAE179D5CEED4C992055C823ED90FF114CD2@ex1>
+References: <02DAE179D5CEED4C992055C823ED90FF114CD2@ex1>
+Content-Type: text/plain
+Message-Id: <1097260202.11402.1690.camel@thomas>
+Mime-Version: 1.0
+Date: Fri, 08 Oct 2004 20:30:02 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]Probing at 0x0
+Subject: Re: kernel BUG at nodemgmt.c / Raw node at ... wasn't in node
+	lists for ino...
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pouillon wrote:
+On Fri, 2004-10-08 at 20:06, Vijay Sampath wrote:
+> Hi,
+> 
+> We are using Timesys Linux on our embedded system based on Linux kernel
+> version 2.4.18. We have been running the JFFS2 filesystem on our flash
+> drives for a while now without problems, but lately have begun to see
+> kernel crashes/warnings related to file system access (see traces 1 and
+> 2 below).
 
->>I reimplemented the Diskonchip Millennium Plus support in the new
->>driver, but unfortunately I have only 16MB pieces at hand.
->>    
->>
->
->Does this mean it is actually supported but disabled by lack of tests ?
->My chip can be a (read only until i've not dumped it) "guinea pig" ;-)
->  
->
-No, it is not supported. According to 
-http://www.tri-m.com/products/msystems/files/specs/mddoc_spec.pdf the 32 
-MB Millennium Plus has 16 bit data bus while the supported 16 MB Mil+ 
-has 8 bit bus.
+> I tried upgrading the JFFS2 version to the latest, but it appears that I
+> need the 2.6 kernel or atleast something newer than 2.4.18 (which is
+> what we are using.)
+> 
+> So the question is, is this a known problem that has gone away in later
+> releases? Also what is the easiest way to upgrade JFFS2 without
+> upgrading the kernel? What other things can be done to prevent the error
+> from occurring?
 
--- 
-Best regards,
-Kalev Lember
+http://www.linux-mtd.infradead.org/#kernelversions
+
+tglx
