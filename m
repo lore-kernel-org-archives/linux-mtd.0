@@ -1,32 +1,21 @@
-Received: from motgate8.mot.com ([129.188.136.8])
+Received: from pacific.moreton.com.au ([203.143.235.130]
+	helo=dorfl.internal.moreton.com.au)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AoZp3-00012R-0v
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 03:04:57 +0000
-Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
-	by motgate8.mot.com (Motorola/Motgate3) with ESMTP id i1534rAH005554
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 4 Feb 2004 20:04:53 -0700 (MST)
-Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
-	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id i1534nSC011525
-	for <linux-mtd@lists.infradead.org>; Wed, 4 Feb 2004 21:04:50 -0600
-From: Li Yang <leoli@motorola.com>
+	id 1AodOb-0001eG-3Q
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 06:53:53 +0000
+Message-ID: <4021E898.2080901@snapgear.com>
+Date: Thu, 05 Feb 2004 16:54:16 +1000
+From: Greg Ungerer <gerg@snapgear.com>
+MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1074583969.14499.100.camel@imladris.demon.co.uk>
-References: 
-	 <01139FC052A0D411900B00508B9535FC0F0D25BB@ZCH07EXM04.corp.mot.com>
-	 <1074503876.14499.40.camel@imladris.demon.co.uk>
-	 <1074509881.14564.3.camel@Gundam>
-	 <1074510244.14499.49.camel@imladris.demon.co.uk>
-	 <1074572447.14559.23.camel@Gundam>
-	 <1074583969.14499.100.camel@imladris.demon.co.uk>
-Content-Type: text/plain
-Message-Id: <1075950453.12044.7.camel@Gundam>
-Mime-Version: 1.0
-Date: 05 Feb 2004 11:07:33 +0800
+References: <20040204101218.92472.qmail@web20416.mail.yahoo.com>
+	<1075890631.5699.3.camel@lapdancer.baythorne.internal>
+In-Reply-To: <1075890631.5699.3.camel@lapdancer.baythorne.internal>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+cc: Roy Lauer <rlaor@yahoo.com>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2+mtd+big endian problem
-Reply-To: leoli@motorola.com
+Subject: Re: Problems with DOC Millennium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,18 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thank you.  I got it.
 
-In drivers/mtd/chips/sharp.c line 362
-There is a hard coded cpu_to_le32 swap, which caused the swap issue.
 
-I have tried to use Jedec_probe instead of sharp driver, but it always
-recognizes my sharp flash as Intel flash, they have the same vendor id
-and product id. Ugly.  And then something goes wrong.  So I have to
-stick to the obsoleted sharp driver.  Thank you for the continued help.
+David Woodhouse wrote:
+> If your mailer is broken and loses References: headers, get a real one.
+> Don't just remove 'Re:' from your subject line to get around the
+> filters. 
+> 
+> On Wed, 2004-02-04 at 02:12 -0800, Roy Lauer wrote:
+> 
+>>>The DiskOnChip Millennium Plus uses INFTL not NFTL.
+>>
+>>You should be very
+>>
+>>>careful using the current INFTL code -- it does not
+>>
+>>observe the Bad Block Table.
 
--- 
+How did you format the DoC INFTL?
+Did you use the M-Systems tools, or a modified nftl_format
+under Linux?
 
-Li Yang <leoli@motorola.com>
 
-Metrowerks
+>>What does it mean?
+>>Does it mean that practically the current INFTL code
+>>is unusable with the DiskOnChip Millennium Plus?
+>>
+>>The DOC is recognized correctly but I keep getting
+>>"corrupt block" errors (please see the log below).
+> 
+> 
+> It does indeed look like it's trying to erase blocks which are actually
+> bad -- which it should have _known_ are bad if it had been able to read
+> the BBT.
+> 
+> We really do need to implement support for reading the BBT.
+
+I have a modified nftl_format code that reads the BBT when
+doing the INFTL formating, and thus avoids the appropriate
+bad blocks at format time. Now we just need the inftlmount
+code to parse it as well.
+
+Regards
+Greg
+
+
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
+SnapGear -- a CyberGuard Company            PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
