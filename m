@@ -1,21 +1,17 @@
-Received: from smtp1.cybersurf.net ([209.197.145.111])
+Received: from t111.niisi.ras.ru ([193.232.173.111] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 153KyC-0000R3-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 May 2001 18:01:49 +0100
-Received: from localhost.localdomain ([209.197.132.58]) by
-          smtp1.cybersurf.net (Netscape Messaging Server 4.15) with SMTP
-          id GDWI5W00.89H for <linux-mtd@lists.infradead.org>; Fri, 25 May
-          2001 11:05:56 -0600
-From: Herman Oosthuysen <herman@wirelessnetworksinc.com>
-To: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Why timer interrupt is disabled?
-Date: Fri, 25 May 2001 11:06:11 -0600
-Content-Type: text/plain
-References: <3B0EF62E.30207@niisi.msk.ru> <25506.990803856@redhat.com> <1765.990808662@redhat.com>
-In-Reply-To: <1765.990808662@redhat.com>
+	id 153LPi-0000TB-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 May 2001 18:30:15 +0100
+Message-ID: <3B0F0766.1080207@niisi.msk.ru>
+Date: Fri, 25 May 2001 21:31:18 -0400
+From: Alexandr Andreev <andreev@niisi.msk.ru>
 MIME-Version: 1.0
-Message-Id: <01052511093801.00873@localhost.localdomain>
-Content-Transfer-Encoding: 8bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Why timer interrupt is disabled?
+References: <3B0EF62E.30207@niisi.msk.ru>  <3B0EE338.1000701@niisi.msk.ru> <3B0E5857.636CBC17@niisi.msk.ru> <11329.990796371@redhat.com> <25506.990803856@redhat.com> <1765.990808662@redhat.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,17 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 25 May 2001, David Woodhouse wrote:
-> The kernel is not preemptively scheduled. Unless the first process 
-> explicitly calls schedule(), it's not going to lose the CPU. Only processes 
-> in user mode are scheduled from the timer IRQ.
+David Woodhouse wrote:
 
-Is it not dangerous to assume that the kernel is non-preemptive?
-MTD is after all most likely to be used in a real-time system, which may very
-well have a different scheduler from the common/garden variety Linux.
-
-Cheers,
--- 
-Herman Oosthuysen
-Phone: 403+569-5687
-E-mail: Herman@WirelessNetworksInc.com
+>Ah - but we're _not_ manipulating the requests on the request queue. We're 
+>servicing the request at the head of the queue, which is a special case - 
+>the queueing code knows that drivers are likely to be looking at the 
+>request at the head of the queue even while the io_request_lock is not held.
+>
+>
+>The kernel is not preemptively scheduled. Unless the first process 
+>explicitly calls schedule(), it's not going to lose the CPU. Only processes 
+>in user mode are scheduled from the timer IRQ.
+>
+Oh yeah, i've got it... you absolutely right, the flash driver will 
+never support requests manipulating, so we can don't care about the 
+io_request_lock holding, and kernel is really preemptively.
+So, we can unlock the io_request_lock in ftl.c, but what about double 
+unlocking? Or, do you want to lock it back after proceeding request :) 
+Is there any conflicts, when we try to unlock already unlocked lock? 
