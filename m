@@ -1,16 +1,19 @@
-Received: from [217.110.46.186] (helo=mail.berlin.imc-berlin.de)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q8CW-0005Hs-JE
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:11:52 +0100
-Message-ID: <3EE754E4.7080800@imc-berlin.de>
-Date: Wed, 11 Jun 2003 18:12:20 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
+	id 19Q8Hw-0005Pn-Ia
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:17:28 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+In-Reply-To: <3EE754E4.7080800@imc-berlin.de>
 References: <3EE752EE.8090902@imc-berlin.de>
-	<1055347637.2097.240.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+	 <1055347637.2097.240.camel@passion.cambridge.redhat.com>
+	 <3EE754E4.7080800@imc-berlin.de>
+Message-Id: <1055348281.2097.245.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 11 Jun 2003 17:18:02 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: MTD <linux-mtd@lists.infradead.org>
 Subject: Re: Stopping the GC thread?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,43 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse schrieb:
-> On Wed, 2003-06-11 at 17:03, Steven Scholz wrote:
-> 
->>Is it safe to just do a
->>
->>~ # kill -s SIGSTOP `pidof jffs2_gcd_mtd0`
->>
->>even if my root fs is on this JFFS2 partition?
-> 
-> 
-> Yes.
-> 
-> 
->>(I just tried it now and it seems to work. But IIRC a while ago my 
->>system hung when I did something like that...)
-> 
-> 
-> It shouldn't. The GC thread remains strictly an optimisation (and
-> doesn't exist in the eCos port, etc.)
-> 
+On Wed, 2003-06-11 at 17:12, Steven Scholz wrote:
+> (How) Could I trigger the GC thread to test its impact on my 
+> application or the overall system performance?
+> Is there a signal I could sent to start a GC?
 
-Thanks for that!
-(How) Could I trigger the GC thread to test its impact on my 
-application or the overall system performance?
-Is there a signal I could sent to start a GC?
-
-Steven
-
-
-
+No. You used to be able to trigger it by repeatedly sending it SIGHUP
+but that doesn't work any more. I keep intending to make the thresholds
+tunable in /proc though, which you could abuse to do what you want.
 
 -- 
-mfg Steven Scholz
-
-imc Meﬂsysteme GmbH
-Voltastr. 5
-13355 Berlin
-Germany
-fon: +49 30 467090-0
-fax: +49 30 4631576
+dwmw2
