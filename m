@@ -1,18 +1,19 @@
 Received: from pony1.arc.nasa.gov ([128.102.31.31] helo=mail.arc.nasa.gov)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1944q3-0004jm-T5
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 21:09:32 +0100
-Message-Id: <5.1.1.5.2.20030411130135.018a6698@mail.arc.nasa.gov>
-Date: Fri, 11 Apr 2003 13:10:54 -0700
-To: Ilguiz Latypov <ilatypov@infradead.org>
+	id 1944wF-0004oR-OQ
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 21:15:55 +0100
+Message-Id: <5.1.1.5.2.20030411131136.0190b008@mail.arc.nasa.gov>
+Date: Fri, 11 Apr 2003 13:18:04 -0700
+To: Ilguiz Latypov <ilgiz@rogers.com>, Mercier.Andre@ireq.ca
 From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
-In-Reply-To: <Pine.LNX.4.44.0304110336470.3790-100000@CPE00e0292061fa-CM
+In-Reply-To: <Pine.LNX.4.44.0304110432370.4112-100000@CPE00e0292061fa-CM
  014370001917.cpe.net.cable.roger>
-References: <3E9312BF.50009@mail.arc.nasa.gov>
+References: <C1641369CCE2784593A091F212BF90D202D54F@caracas.ireq.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 cc: linux-mtd@lists.infradead.org
-Subject: Re: DoC + GRUB booting problem
+Subject: Re: Newbie questions: MTD vs M-Sys, ... RTLinuxPro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ilguiz,
-         The bootloader is definitely the M-Sys BIOS extension.  My 
-impression is that for DoC 2000s, the BIOS extension is in a ROM that can't 
-be changed.  I am still trying to verify that, but if its true, I have to 
-deal with it.  If it can be changed, like in a DoC Millenium, I could be in 
-business.
+Andre,
+         I'm also having problems with the 256MB DoC2000 with TrueFFS=20
+5.1.4.  I've built a recent kernel (2.4.18) with MTD.  When it starts, the=
+=20
+DoC is recognized as a DoC Millenium, and the driver says the flash chips=20
+are not recognized.  I am trying now to get information about the flash=20
+chips from M-Systems.  If I get this, it should be easy to update the table=
+=20
+of known flash chips so MTD can access the new DoC.
+         I'm also working on booting from the DoC using GRUB, but I am=20
+having trouble getting information from M-Systems.  If I find a solution, I=
+=20
+will post it to this list.
 
-So far, I have only used DFORMAT as described in the GRUB/MTD Readme_doc 
-file.  I haven't tried using doc_loadbios yet, but if the BIOS extension 
-code is in ROM, I will still have to change its checksums to get it to 
-load.  Since M-Sys hasn't told me (yet) what format DFORMAT expects from 
-binary files, doc_loadbios may indeed be the best way to proceed.
-
-Thanks,
 Ted Hildum
 
-At 03:50 AM 4/11/2003 -0400, you wrote:
+At 04:35 AM 4/11/2003 -0400, you wrote:
 
->On Tue, 8 Apr 2003, Edward A. Hildum wrote:
+>On Tue, 8 Apr 2003, "Mercier, Andr=E9" wrote:
 >
-> > I have disassembled the BIOS boot code (included below) and found some
-> > conflicts with the README_DiskOnChip info:
+> > I have looked at the
+> > http://www.gctglobal.com/Download/DiskOnChip/diskonchip.html web site
+> > for some information, but there are still some questions to be answered:
+> >
+> > 1) Does MTD work with new DOC2000 release (256 MB with TrueFSS 5.1.4)?
+> > 2) Which Redhat distribution is the best choice for MTD (7.3, 8.0,=20
+> ...9.0) ?
+> > 3) What are the specific steps to include the MTD stuff with the=
+ RTLinuxPro
+> >     distribution (note: RTLinux has been tested with Redhat 7.2, 7.3,=
+ ...
+> >     I did not buy the full kernel sources package, but I can make a=
+ bzImage
+> >     and modules without problems) and be able to boot RTLinux from DOC?
 >
->Ted,
 >
->May I suggest that the DoC bootloader you've disassembled was the one
->supplied by M-Sys?  I myself didn't use the DFORMAT utility to load the
->GRUB firmware, but that shouldn't mean it isn't possible.
+>Andre,
 >
->Is it possible to DFORMAT the DoC's NFTL layer only, starting from the
->given offset?  If yes, it would be a good choice, accompanied by the
->mtd/util/doc_loadbios utility which will store the grub_firmware file into
->the beginning of the flash memory.
+>I can't answer your questions, but this page may provide some instructions
+>on setting up DoC2000 and Millennium:
 >
->I heard that the mtd/util/nftl_format utility may not be compatible with
->the bad block table stored in the DoC at the factory.  I was lucky enough
->to disregard the bad block table by issuing the erase_all command against
->/dev/mtd0 and then proceeding with nftl_format.  However, this is not the
->safest approach because NAND memory is error prone.
+>http://www.lakeshoremicro.com/diskonchip-grub-howto.html
+>
+>Thanks,
 >
 >--
 >Ilguiz Latypov
@@ -68,3 +74,8 @@ At 03:50 AM 4/11/2003 -0400, you wrote:
 >Canada
 >
 >tel. +1 (514) 526-6911
+>
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
