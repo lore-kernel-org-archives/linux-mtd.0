@@ -1,18 +1,18 @@
-Received: from tidos.tid.es ([193.145.240.2] helo=tid.tid.es)
+Received: from ns1ca.ubisoft.qc.ca ([205.205.27.131])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15eyRT-0004ed-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 13:39:36 +0100
-Received: from tid.es ([1.0.22.18]) by tid.tid.es (Netscape
-          Messaging Server 4.15) with ESMTP id GJ8RFC02.Z3M for
-          <linux-mtd@lists.infradead.org>; Thu, 6 Sep 2001 14:45:12 +0200
-Message-ID: <3B976F5A.2000209@tid.es>
-Date: Thu, 06 Sep 2001 14:43:06 +0200
-From: Jose =?ISO-8859-1?Q?Rodr=EDguez?= Argente <jradc@tid.es>
+	id 15eyxv-0004iH-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 14:13:07 +0100
+Message-ID: <9A1957CB9FC45A4FA6F35961093ABB8404454904@srvmail-mtl.ubisoft.qc.ca>
+From: Patrick Allaire <pallaire@gameloft.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+        Patrick Allaire
+	 <pallaire@gameloft.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: lilo and mtd ans doc 
+Date: Thu, 6 Sep 2001 09:11:40 -0400 
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Trying to compile mtd-snapshot
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+in the mtd cvs download --> /mtd/patches there is a lilo-mtd.tar.gz ! inside
+this file there is a lilo-mtd allready compiled and a lilo21-mtd-patch ...
+should I recompile lilo our I should use the one that is there ? ... I am
+currently using the precompiled one.
 
-   I am trying to compile in my PC the mtd-snapshot-20010806 package to 
-get the jffs utilities working. I have executed:
+Patrick Allaire
+mailto:pallaire@gameloft.com
+If you can see it, but it's not there, it's virtual. 
+If you can't see it, but it is there, it's hidden. 
+It you can't see it and it isn't there, it's gone.
 
-   automake --foreign  (the automake version is 1.5)
 
-and I get the following message:
 
-/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
-AM_CONDITIONAL
-/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
-AM_CONDITIONAL
-/usr/local/share/automake/am/depend2.am: AMDEP does not appear in 
-AM_CONDITIONAL
-/usr/local/share/automake/am/lang-compile.am: AMDEP does not appear in 
-AM_CONDITIONAL
-
-Then I run autoconf and ./configure with no problem. But when finally I 
-run make, the message is :
-
-Makefile:340: *** missing separator.  Stop.
-
-Line 340 in the Makefile is:
-
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/compr.Po@am__quote@
-
-What am I doing wrong? Do I need another version of automake, or any patch?
-
-Thanks a lot,
-
-Pepe
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org]
+> Sent: August 31, 2001 5:37 PM
+> To: Patrick Allaire
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: lilo and mtd ans doc 
+> 
+> 
+> 
+> 
+> pallaire@gameloft.com said:
+> > Kernel Panic : VFS: unable to mount root fs on 03:05 
+> 
+> Er, that's /dev/hda5. It's not trying to mount the DiskOnChip at all.
+> Try append="root=/dev/nftla1" instead of just root=/dev/nftla1
+> 
+> LILO sucks like that.
+> 
+> BTW, how many partitions do you have on the DiskOnChip? If 
+> only one, why 
+> are you wasting space on partitions rather than just using a 
+> filesystem on 
+> /dev/nftla ?
+> 
+> --
+> dwmw2
+> 
+> 
