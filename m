@@ -1,19 +1,23 @@
-Received: from anchor-post-33.mail.demon.net ([194.217.242.91])
+Received: from mailout09.sul.t-online.com ([194.25.134.84])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BTepG-0003Ja-Rw
-	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 06:43:00 -0400
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: tglx@linutronix.de
-In-Reply-To: <200405281227.34312.tglx@linutronix.de>
+	id 1BTewA-0003T2-I5
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 06:50:07 -0400
+From: tglx@linutronix.de (Thomas Gleixner)
+To: Andy Hawkins <a.hawkins@cabletime.com>
+Date: Fri, 28 May 2004 12:44:57 +0200
 References: <1085737289.5617.3.camel@adh>
 	<200405281227.34312.tglx@linutronix.de>
-Content-Type: text/plain
-Message-Id: <1085740962.5617.9.camel@adh>
-Mime-Version: 1.0
-Date: 28 May 2004 11:42:42 +0100
-Content-Transfer-Encoding: 7bit
+	<1085740962.5617.9.camel@adh>
+In-Reply-To: <1085740962.5617.9.camel@adh>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200405281244.57973.tglx@linutronix.de>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Large flash concatenation
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Friday 28 May 2004 12:42, Andy Hawkins wrote:
+> Hi,
+>
+> Thanks to both Thomas and David for replying.
+>
+> On Fri, 2004-05-28 at 11:27, Thomas Gleixner wrote:
+> > 1. Please use the latest NAND code, as the support for the larger devic=
+es
+> > is already there and the old code does not handle the large page device=
+s.
+> > We have actually problems with CVS access (is IPV6 only). I can provide=
+ a
+> > current snapshot on request.
+>
+> I'm now doing that. I've downloaded the latest snapshot
+> (mtd-snapshot-20040527.tar.bz2) and am trying to get it to compile now.
 
-Thanks to both Thomas and David for replying.
+The snapshot is outdated due to the same reason. I'm building one and putti=
+ng=20
+it somewhere for download.
 
-On Fri, 2004-05-28 at 11:27, Thomas Gleixner wrote:
-> 1. Please use the latest NAND code, as the support for the larger devices is 
-> already there and the old code does not handle the large page devices.
-> We have actually problems with CVS access (is IPV6 only). I can provide a 
-> current snapshot on request.
-
-I'm now doing that. I've downloaded the latest snapshot
-(mtd-snapshot-20040527.tar.bz2) and am trying to get it to compile now.
-
-> 2. The nand driver itself can handle multiple chips now. The scan function
-> supports multiple chip detection. Do not use the concat function for this 
-> purpose. The chips are provided as one big device to the MTD layer if you do 
-> not use partitions.
-
-How do I do this? Each chip appears at a separate address (we've used
-the lower 6 bits of the address lines to decode the chip selects for
-each chip). At the moment, I'm looping over all the possible addresses
-calling 'nand_scan' at each address. Is this this correct way to do
-this?
-
-> It might turn out that JFFS2 is not the first choice for this concatenated 
-> device size, but it should work. Maybe YAFFS2 would be more suitable. It's 
-> not released yet AFAIK, but it should be available soon. 
-
-We haven't made a final choice of filesystem as of yet, I just want to
-get the devices up and running so that I can write / read them (to prove
-our hardware design is correct).
-
-> You can join #mtd on irc.freenode.net if you want.
-
-That might be a good idea. Thanks for letting me know about that.
-
-Andy
+=2D-=20
+Thomas
+________________________________________________________________________
+Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
+time managing existing systems. That couldn=E2=80=99t have anything to do w=
+ith=20
+the fact that 99 percent of these systems run Windows, could it?
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
