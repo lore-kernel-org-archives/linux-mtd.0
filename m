@@ -1,19 +1,23 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
+Received: from mailout02.sul.t-online.com ([194.25.134.17])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BaglJ-0000xy-VE
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 16:12:01 -0400
-Message-ID: <083701c453df$c65db960$0100a8c0@superfortress>
-From: "Dan Brown" <brown@osdsun1.nrl.navy.mil>
-To: "Slim" <slimaffi@yahoo.com>,
+	id 1BaiLI-0001Sw-KR
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 17:53:15 -0400
+From: "Thomas Gleixner" <tglx@linutronix.de>
+To: "Dan Brown" <brown@osdsun1.nrl.navy.mil>, "Slim" <slimaffi@yahoo.com>,
 	<linux-mtd@lists.infradead.org>
+Date: Wed, 16 Jun 2004 23:47:20 +0200
 References: <20040616161345.33330.qmail@web50802.mail.yahoo.com>
-Date: Wed, 16 Jun 2004 16:23:24 -0400
+	<083701c453df$c65db960$0100a8c0@superfortress>
+In-Reply-To: <083701c453df$c65db960$0100a8c0@superfortress>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200406162347.20436.tglx@linutronix.de>
 Cc: 
 Subject: Re: [PATCH] Towards DiskOnChip support as a NAND driver
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few answers:
+On Wednesday 16 June 2004 22:23, Dan Brown wrote:
+> > ECC - hardware error correction by the device?  Is this an optional
+> > enable in the driver?
+>
+> Yes, the DOC has an ASIC that does ECC computation (for actual error
+> correction, software assitance is required).  It's not optional, though it
+> could be made so....  Why would you want to turn it off?
 
-> Is the doc2000 dip NFTL or INFTL?  With read only support, would I be
-> able to create a filesystem to read?
+It has two advantages over software ECC.
 
-Some are NFTL, some are INFTL.  The INFTL variant is sometimes also known as
-DiskOnChip 2000 TSOP.  From the pdf file that comes with the DOS-based DOC
-utilities (hint hint):
+1. The software ECC is a Hamming code which can correct 1 bit errors and=20
+detect 2 bit errors. The HW ECC on DOC devices is a Reed Solomon Encoder /=
+=20
+Decoder which allows to correct and detect more errors
 
-[Inverse NAND Flash Translation Layer] M-Systems' latest flash management
-algorithm, used by the TrueFFS driver for the following devices:
-- DiskOnChip Millennium Plus
+2. In general a HW based ECC generator is a lot faster than the software=20
+version as it gets you rid of a ugly loop through all the data bytes on eac=
+h=20
+read / write.
 
-- Mobile DiskOnChip Plus
+A small drawback is the error correction for reed solomon, as it is more =20
+complex and slower than for hamming codes. This is not too bad as error=20
+correction usually starts to happen when the device wears out, but then the=
+=20
+hamming code which we use in soft ecc can be rather unsufficient.=20
+The speed improvement on write and read is really worth to use hw ecc if it=
+s=20
+thers
 
-- DiskOnChip 2000 DIP (high), 384Mbytes and higher.
-
-- DiskOnChip 2000 DIP (low), 192Mbytes and higher.
-
-As for read-only support, its only the bad-block table itself that's
-read-only, not the device itself.  Sorry, I should have been clearer in my
-message.  If more blocks go bad at runtime, the information won't be
-recorded to flash, and you'll forget about these additional bad blocks at
-poweroff (which is bad).  Unless you're using INFTL filesystem, which has
-its own markers for post-sale bad blocks.  Except INFTL doesn't work with
-this driver yet. :(
-
-The ability to update the BBT is something I plan to add soon, since I need
-it. :)
-
-You should be able to create a filesystem, but as I mentioned I haven't
-gotten JFFS2 to work for me, yet.
-
-> ECC - hardware error correction by the device?  Is this an optional
-> enable in the driver?
-
-Yes, the DOC has an ASIC that does ECC computation (for actual error
-correction, software assitance is required).  It's not optional, though it
-could be made so....  Why would you want to turn it off?
-
-> Does it support other filesystems (ext2/3)?
-
-Once the (I)NFTL code works with this driver, you can put filesystems like
-ext2/3 over (I)NFTL.  For reasons why you might not want to, read up on
-JFFS2.
-
-> Thanks to everyone working on this.  I've needed a driver for doc2000
-> dip devices for a couple years now.
-
-Yeah, me too, but until now I kept hoping David would do it in his copious
-spare time :)
-
-    -Dan
+=2D-=20
+Thomas
+_____________________________________________________________________
+=46rom slash dot org
+"When customers are visiting, engineers are not allowed to wear ties.=20
+That way the customer can tell who is the engineer and who is the=20
+salesman (and therefore whom to believe.). Ties cut off blood flow=20
+to the brain, making it easier for the salesmen to do their jobs."=20
+_____________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
