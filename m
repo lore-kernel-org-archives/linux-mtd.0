@@ -1,21 +1,21 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CNROX-0002U3-N0
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 03:41:59 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Aras Vaichas <arasv@magellan-technology.com>
-In-Reply-To: <4181840D.2020605@magellan-technology.com>
-References: <20041028230640.GB13105@home.fluff.org>
-	<4181840D.2020605@magellan-technology.com>
-Content-Type: text/plain
-Date: Fri, 29 Oct 2004 09:33:43 +0200
-Message-Id: <1099035223.22387.529.camel@thomas>
-Mime-Version: 1.0
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CNT34-00035g-0x
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2004 05:27:55 -0400
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id i9T9OM4r032618
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Oct 2004 17:24:23 +0800
+Message-ID: <41820F20.5060900@avantwave.com>
+Date: Fri, 29 Oct 2004 17:36:32 +0800
+From: mike <mikelee@avantwave.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <1CFEB358338412458B21FAA0D78FE86D4F0C69@rennsmail02.eu.thmulti.com>
+	<4181B55A.7020909@avantwave.com>
+In-Reply-To: <4181B55A.7020909@avantwave.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: Read/nBusy via interrupt
-Reply-To: tglx@linutronix.de
+Subject: Re: USB-flash driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-10-29 at 09:43 +1000, Aras Vaichas wrote:
-> Ben Dooks wrote:
-> > Does anyone here have any comments over the pros/cons of using
-> > an interrupt which goes off to wait for a NAND flash ready/not-busy
-> > signal?
-> > 
-> 
-> pros of using interrupt:
-> * faster MTD access (maybe, depends on polling rate) but as a percentage of 
-> total access time it probably doesn't make much difference.
+Fillod Stephane wrote:
 
-For program and erase it makes a lot of difference. The waiting process
-releases the CPU and gets woken when the job is done. Arguing with
-percentage of total access time is utter crap here. The poll/yield loop
-involves unneccecary context switches, which can significantly influence
-the overall system performance on smaller systems.
+>
+>>>   My situation is , to make my ARM-based board to be a USB mass 
+>>> storage disk from outside view. I am using Motorola M9328MXL 
+>>> development board with USB client.
+>>>   
+>>
+>>
+>> So your board is going to be an USB peripheral, right?
+>>
+>>  
+>>
+>>>   My question is how can i utilize mtd api to make the driver? Or 
+>>> anyone done that before? Or anyone can give me some advises?
+>>>   
+>>
+>>
+>> Have a look at the fine Linux-USB Gadget project 
+>> http://www.linux-usb.org/gadget
+>> Your board should use the "File-backed Storage" driver, with the 
+>> actual file
+>> (mtdblock or mtdchar?) being accessed through the VFS.
+>>
+>> Once you find out the details, some feedback on the list will be much
+>> appreciated, especially from the next person asking this soon-to-be a 
+>> FAQ :-)
+>>
+>>
+>> Best Regards,
+>>
+>>  
+>>
+Dear Fillod
 
-> * less cpu overhead
-> 
-> cons of using interrupt:
-> * more pins used up on CPU
+   Actually, i do have a USB ram disk driver from the BSP of motorola, i 
+also located the read write code to the driver, but it is RAM ,not flash.
+     I have a guess and please fix me.
+   Can I use the functions in <include/linux/mtd/CFI.h > to 
+read/write/erase my chip (AM29PLD127 AMD CFI flash) DIRECTLY?
 
-No. Usually R/B is connected anyway.
+   I think this can speed up my process if i need to rewrite the gadget 
+driver on M9328 chip
 
-> * more code to write and debug!
-
-About 20 lines. I'm scared.
-
-> * more interrupts going off in system
-
-They go only off, when a long lasting operation is in progress
-
-> * more pins needed on MTD -> more expensive boards and chips, longer board 
-> design times
-
-He ? NAND FLASH has a ready/busy pin, which does not produce extra
-costs. What's the longer design time per pin on complex boards ?
-A typical 32bit embedded system CPU board uses alone about 500 pins for
-connecting CPU, SDRAM, power and the on chip peripherals. Do you really
-want to tell me, that 1 more pin will increase board costs and design
-time significantly ?
-
-> If you take a look at the 8-CASON part, you'll notice that in order to reduce 
-> pin count, they leave out the ready/nbusy signal because this information can 
-> be obtained by polling. This is really a matter of board space as you can fit 
-> 1Megabyte of bootable FLASH into a surface mount 8pin package by leaving out 
-> this pin.
-
-This is a 1 MByte boot FLASH designed for space constraint devices. You
-need a CPU which can boot from those. 
-
-We are talking about NAND >= 32MB, which is often used for filesystems.
-
-> If you wanted to improve performance, you would simply find out how long the 
-> MTD usually stays busy for and only resume polling after that time.
-
-Nice plan. Using what ? Typical erase/program time, maximum
-erase/program time ? And waiting in the worst case 10ms for something
-what takes 3ms ? This improves performance a lot.
-
-> If you can spare the board space, why not use interrupts? Make it a kernel 
-> option. MTD_EADYNBUSY_INTERRUPT ?
-
-There's no option neccecary at all. This is board related and has to be
-solved by the board driver anyway. The functionality to do so is already
-there.
-
-tglx
+   Thanks for helping
+best regard
+Mike,Lee
