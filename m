@@ -1,16 +1,21 @@
 Received: from mail3.aracnet.com ([216.99.193.38])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 176GfH-0001Ey-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 21:06:55 +0100
-Message-Id: <200205102006.g4AK6kP01710@tinman.seitzassoc.com>
+	id 176I3O-0001MN-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 22:35:54 +0100
+Received: from tinman.seitzassoc.com (216-99-217-243.dsl.aracnet.com [216.99.217.243])
+	by mail3.aracnet.com (8.12.2/8.12.1) with ESMTP id g4ALZoGN008516
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 14:35:52 -0700
+Received: from tinman.seitzassoc.com (IDENT:galens@localhost [127.0.0.1])
+	by tinman.seitzassoc.com (8.11.6/8.11.6) with ESMTP id g4ALZjP02377
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 14:35:50 -0700
+Message-Id: <200205102135.g4ALZjP02377@tinman.seitzassoc.com>
 To: linux-mtd@lists.infradead.org
-Cc: dwmw2@infradead.org
-Subject: patch to correct time units in printk of erase time (cfi_probe.c)
+Subject: Re: can't rmmod cfi_cmdset_0002 
+In-Reply-To: Your message of "Fri, 10 May 2002 01:16:31 PDT."
+             <200205100816.g4A8GVP25163@tinman.seitzassoc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 10 May 2002 13:06:46 -0700
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 10 May 2002 14:35:45 -0700
 From: Galen Seitz <galens@seitzassoc.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -23,38 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This patch changes the time units in the printk statements which display
-the erase timeouts from microseconds to milliseconds.  This is in
-drivers/mtd/chips/.
+> In the course of hacking on pci.c, I've encountered an issue with
+> removing the cfi_cmdset_0002 module.  It seems that once I have
+> successfully loaded the pci module, I can't unload the cmdset module.
+> Is it likely that I have created this problem?  How does one go about
+> tracking down a problem like this? 
 
+I've done a little more experimenting and come up with another data point.
+After installing physmap, the use count of cfi_cmdset_0002 goes from
+0 to 2.  When I rmmod physmap, the use count of cfi_cmdset_0002 only drops
+back to 1, which prevents the module from being unloaded.  Has anyone
+else seen this problem?  Note that the only change I made to physmap.c
+was to change ioremap to ioremap_nocache.  It appears from looking at
+the code that a call to cfi_cmdset_0002 will result in the macro 
+MOD_INC_USE_COUNT being executed twice, once in cfi_cmdset_0002, and again
+in cfi_amdstd_setup.  cfi_cmdset_0001.c has a similar structure.
+Is this intentional?
+
+thanks,
 galen
-
---- cfi_probe.c.orig	Thu Oct  4 15:14:59 2001
-+++ cfi_probe.c	Fri May 10 12:39:59 2002
-@@ -250,11 +250,11 @@
- 	else
- 		printk("Full buffer write not supported\n");
- 	=
-
--	printk("Typical block erase timeout: %d =B5s\n", 1<<cfip->BlockEraseTim=
-eoutTyp);
--	printk("Maximum block erase timeout: %d =B5s\n", (1<<cfip->BlockEraseTi=
-meoutMax) * (1<<cfip->BlockEraseTimeoutTyp));
-+	printk("Typical block erase timeout: %d ms\n", 1<<cfip->BlockEraseTimeo=
-utTyp);
-+	printk("Maximum block erase timeout: %d ms\n", (1<<cfip->BlockEraseTime=
-outMax) * (1<<cfip->BlockEraseTimeoutTyp));
- 	if (cfip->ChipEraseTimeoutTyp || cfip->ChipEraseTimeoutMax) {
--		printk("Typical chip erase timeout: %d =B5s\n", 1<<cfip->ChipEraseTime=
-outTyp); =
-
--		printk("Maximum chip erase timeout: %d =B5s\n", (1<<cfip->ChipEraseTim=
-eoutMax) * (1<<cfip->ChipEraseTimeoutTyp));
-+		printk("Typical chip erase timeout: %d ms\n", 1<<cfip->ChipEraseTimeou=
-tTyp); =
-
-+		printk("Maximum chip erase timeout: %d ms\n", (1<<cfip->ChipEraseTimeo=
-utMax) * (1<<cfip->ChipEraseTimeoutTyp));
- 	}
- 	else
- 		printk("Chip erase not supported\n");
