@@ -1,21 +1,15 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from f143.law9.hotmail.com ([64.4.9.143] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VVPQ-0001sM-00
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 10:22:36 +0000
-Received: from jocke.lumentis.se (hidden-user@[212.105.56.242])
-	by mail.utfors.se (8.8.8/8.8.8) with SMTP id LAA15145
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 11:33:11 +0100 (MET)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-To: linux-mtd@lists.infradead.org
-Subject: MTD/CFI probe broken?
-Date: Tue, 29 Jan 2002 11:33:11 +0100
-References: <0111121314140A.28381@jocke.lumentis.se> <02010409585400.10979@jocke.lumentis.se>
-In-Reply-To: <02010409585400.10979@jocke.lumentis.se>
-MIME-Version: 1.0
-Message-Id: <02012911331100.15969@jocke.lumentis.se>
-Content-Transfer-Encoding: 8bit
+	id 16VVbn-0001tH-00
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 10:35:23 +0000
+From: "=?gb2312?B?1twgyPE=?=" <san_blabla@hotmail.com>
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Why no kernel message on my DOC system?
+Date: Tue, 29 Jan 2002 10:45:57 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <F143OYspJXTrtApTai500012772@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,53 +21,56 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi there
+Because I want to use an initrd as my root device so that I can put more 
+things in the fiel system. Below is my lilo.conf:
 
-I am trying to upgrade our MTD/JFFS2 code(from October) to the latest  CVS in the jffs2-2_4-branch and I think
-something is broken in the MTD sublayer. Now MTD does not find my
-second chip. This is the output from MTD before and after upgrade.
-Before upgrade:
-Lumentis: Found 2 x16 devices at 0x2000000 in 32-bit mode
-0: offset=0x0,size=0x40000,blocks=128
-1: offset=0x2000000,size=0x40000,blocks=128
-Creating 5 MTD partitions on "Lumentis":
-0x00000000-0x00040000 : "PPCBoot"
-0x00040000-0x00080000 : "Environment"
-0x00080000-0x00100000 : "FPGA"
-0x00100000-0x001c0000 : "Kernel"
-0x001c0000-0x04000000 : "JFFS2"
+boot=/dev/nftla 
+map=/boot/map 
+install=/boot/boot.b-mtd 
+default=doc-full 
+serial=0,9600n8 
+image=/boot/bzImage-2.4.17 
+       label=doc 
+       root=/dev/ram0 
+       read-write 
+       initrd=/boot/initrd.img.gz 
+       append="console=ttyS0,9600n8" 
+image=/boot/bzImage-2.4.17-full 
+       label=doc-full 
+       root=/dev/ram0 
+       read-write 
+       initrd=/boot/initrd.img.gz 
+       append="console=ttyS0,9600n8"
 
-After upgrade:
-Lumentis flash device: 4000000 at f0000000
-map_priv_1 ioremaped to : c9000000
-map_priv_2 ioremaped to : cd001000
-0: offset=0x0,size=0x40000,blocks=128
-Creating 5 MTD partitions on "Lumentis":
-0x00000000-0x00040000 : "PPCBoot"
-0x00040000-0x00080000 : "Environment"
-0x00080000-0x00100000 : "FPGA"
-0x00100000-0x001c0000 : "Kernel"
-0x001c0000-0x02000000 : "JFFS2"
+So I think I am installing LILO on /dev/nftla, only use /dev/ram0 to mount 
+my root file system.
 
 
-    Jocke
-PS.
-   Had to apply this patch to compile util/mkfs.jffs2:
+>From: David Woodhouse <dwmw2@infradead.org>
+>To: "周 锐" <san_blabla@hotmail.com>
+>CC: linux-mtd@lists.infradead.org
+>Subject: Re: Why no kernel message on my DOC system?
+>Date: Mon, 28 Jan 2002 23:46:14 +0000
+>
+>
+>san_blabla@hotmail.com said:
+> >  Because in /dev/nftla1 there is only kernel image and initrd on it,
+> > so I  have not tested to use 'root=/dev/nftla1' on my harddisk. But I
+> > do test to  use lilo-mtd on my harddisk and boot from it, the kernel
+> > messages came out  and the /proc/cmdline is:  auto
+> > BOOT_IMAGE=blabla-doc rw root=100 console=tty0 console=ttyS0,9600n8 On
+> > the contrary, if boot from DiskOnChip, the /proc/cmdline is
+> > unrecognizable strings.
+>
+>It's a LILO problem. Why are you installing LILO to /dev/ram0 instead of
+>/dev/nftla? Won't that make it look in the wrong place for stuff?
+>
+>--
+>dwmw2
+>
+>
 
-Index: util/Makefile
-===================================================================
-RCS file: /home/cvs/mtd/util/Makefile,v
-retrieving revision 1.20
-diff -u -r1.20 Makefile
---- util/Makefile       2001/09/05 00:18:11     1.20
-+++ util/Makefile       2002/01/29 10:27:41
-@@ -27,7 +27,7 @@
-        $(CC) -o $@ $^ -lz
- 
- compr.o: compr.c
--       $(CC) $(CFLAGS) -Dprintk=printf -DKERN_NOTICE= -c -o $@ $<
-+       $(CC) $(CFLAGS) -Dprintk=printf -DKERN_NOTICE= -DKERN_WARNING= -c -o $@
-$<
- 
- jffs2reader: jffs2reader.c
-        $(CC) $(CFLAGS) jffs2reader.c -o jffs2reader -lz
+
+_________________________________________________________________
+与联机的朋友进行交流，请使用 MSN Messenger：
+http://messenger.microsoft.com/cn
