@@ -1,22 +1,15 @@
-Received: from post2.inre.asu.edu ([129.219.110.73])
+Received: from tozal.unizar.es ([155.210.3.20] helo=relay.unizar.es)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173Cwr-0003Ks-00
-	for <linux-mtd@lists.infradead.org>; Thu, 02 May 2002 10:32:25 +0100
-Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.1 #40111)
- id <0GVH00B0195W0U@asu.edu> for linux-mtd@lists.infradead.org; Thu,
- 02 May 2002 02:32:20 -0700 (MST)
-Date: Thu, 02 May 2002 02:32:26 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-Subject: Re: Booting from DOC2000 with GRUB loader
-In-reply-to: <02050209075601.08259@diva.localdomain>
-To: John Sutton <john@scl.co.uk>
-Cc: linux-mtd@lists.infradead.org
-Message-id: <1020331947.19824.3160.camel@russ>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: <02050120383503.07252@diva.localdomain>
- <02050209075601.08259@diva.localdomain>
+	id 173EfJ-0003TT-00
+	for <linux-mtd@lists.infradead.org>; Thu, 02 May 2002 12:22:29 +0100
+Received: from eupla.unizar.es (eupla.unizar.es [155.210.224.20])
+	by relay.unizar.es (8.11.1/8.11.1) with ESMTP id g42BMIp05257
+	for <linux-mtd@lists.infradead.org>; Thu, 2 May 2002 13:22:18 +0200 (MET DST)
+Message-Id: <200205021122.g42BMIp05257@relay.unizar.es>
+To: linux-mtd@lists.infradead.org
+From: victor.martin@eupla.unizar.es
+Subject: IDE flash disk
+Date: Thu, 2 May 2002 06:12:28 EST
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,28 +21,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 2002-05-02 at 00:47, John Sutton wrote:
-> Hi again
-> 
-> Many thanks for all that feedback!  Definitely a positive consensus
-> about the units for start_offset ;-)
-> 
-> Jasmine suggests that I should leave some extra after the end of grub for
-> future expansion, which seems a good idea, but raises in my mind the
-> question as to how grub (or anything else) knows where the nftl partition
-> starts?  Does nftl_format also write a pointer to the start block
-> somewhere else?  Or does the format contain some kind of signature?
+I have an IDE disk with flash tecnology.
 
-just sure to erase any unused sectors.
+I think ide emulation doesnt work ok and i should to use JFFS2 Filesystem but 
+i can't do it.
+
+I think i should to use MTD block device emulation and i'm trying to make it 
+with a floppy disk to know the mtdblock behaivour 
+
+when i do it, in /proc/mtd i can read it
+
+root@localhost proc]# cat mtd
+dev:    size   erasesize  name
+mtd0: 00168000 00020000 "blkmtd: /dev/fd0"
+
+The problem is that i can't mount it and i don't know what i have to do now.
+
+Can anybody solve me it?
+
+thanks in advance
 
 
-nftl looks for a media header signiture
-
-> Re the suggestions as to how to recover from an unbootable system!  To
-> an old fool like me, the idea of pushing a chip into a live board makes my
-> hair curl!  Anyways, I hope it doesn't come to that as it would in my case
-> be extremely difficult, if not impossible - I'm using an SBC plugged into
-> a passive backplane and the DoC socket is right at the bottom next to the
-> edge connector ;-(
-
-maybe something in bios could help (shadow regions, etc)
+---------------------------------------------
+This message was sent using Endymion MailMan.
+http://www.endymion.com/products/mailman/
