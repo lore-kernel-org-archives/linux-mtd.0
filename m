@@ -1,123 +1,165 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14ZxFb-0000sf-00
-	for mtd-list@infradead.org; Mon, 05 Mar 2001 15:50:19 +0000
-Message-ID: <007401c0a590$61027ac0$0d3318b5@jolt>
-From: "Florian Schirmer / TayTron" <schirmer@taytron.net>
+	id 14Zzac-0001x6-00
+	for mtd-list@infradead.org; Mon, 05 Mar 2001 18:20:10 +0000
+From: Robert Kaiser <rob@sysgo.de>
+Reply-To: rob@sysgo.de
 To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Mapping for AMD SC520 CDP
+Date: Mon, 5 Mar 2001 18:48:55 +0100
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-=_nWlrBbmQBhCDarzOwKkYHIDdqSCD"
 Cc: <mtd@infradead.org>
-References: <005901c0a546$367c8d80$0d3318b5@jolt>  <Pine.LNX.4.30.0103031754080.7202-100000@imladris.demon.co.uk>  <19173.983781726@redhat.com>
-Subject: MTD Patches
-Date: Mon, 5 Mar 2001 17:21:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-Id: <01030519195600.02909@rob>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi!
 
-I've two little patches pending. Can someone please commit them to cvs?
+--Boundary-=_nWlrBbmQBhCDarzOwKkYHIDdqSCD
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Patch1:
+Hi,
 
-Adds partition support to physmap.c. Support can be enabled via kernel
-config, so if you dont need it you wont get bigger modules/kernels.
+I have written a new flash mapping module for the SC520 CDP board by AMD, which
+I would like to contribute (see attachment). Most of the code has obviously been
+stol^H^H^H^H derived from  various existing mapping modules. Hope I have not
+introduced any bugs. It works for me so far.
 
-Patch2: Fixes a small bug (?) in mtdblock_ro.c Please verify this. Seems
-someone disabled a function but did not disable the corresponding function
-call :-)
-
-Thanks for your help and happing hacking
-   Florian Schirmer
-
-[......]
-
-diff -Naur mtd-old/kernel/Config.in mtd/kernel/Config.in
---- mtd-old/kernel/Config.in Sat Feb 17 22:17:48 2001
-+++ mtd/kernel/Config.in Mon Mar  5 10:51:27 2001
-@@ -79,6 +79,7 @@
-       hex '    Physical start address of flash mapping'
-CONFIG_MTD_PHYSMAP_START 0x8000000
-       hex '    Physical length of flash mapping' CONFIG_MTD_PHYSMAP_LEN
-0x4000000
-       int '    Bus width in octets' CONFIG_MTD_PHYSMAP_BUSWIDTH 2
-+      bool '    Partition suport' CONFIG_MTD_PHYSMAP_PARTITION
-    fi
-    dep_tristate '  CFI Flash device mapped on Nora' CONFIG_MTD_NORA
-$CONFIG_MTD_CFI
-    dep_tristate '  CFI Flash device mapped on Photron PNC-2000'
-CONFIG_MTD_PNC2000 $CONFIG_MTD_CFI
-diff -Naur mtd-old/kernel/mtdblock_ro.c mtd/kernel/mtdblock_ro.c
---- mtd-old/kernel/mtdblock_ro.c Fri Nov 17 09:51:35 2000
-+++ mtd/kernel/mtdblock_ro.c Mon Mar  5 11:20:51 2001
-@@ -222,7 +222,9 @@
-       // Grab the lock and re-thread the item onto the linked list
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
-  spin_lock_irq(&io_request_lock);
-+#if 0
-  mtdblock_end_request(current_request, res);
-+#endif
- #endif
-  end_request(res);
-    }
-diff -Naur mtd-old/kernel/physmap.c mtd/kernel/physmap.c
---- mtd-old/kernel/physmap.c Sat Mar  3 19:17:09 2001
-+++ mtd/kernel/physmap.c Mon Mar  5 11:17:25 2001
-@@ -12,6 +12,21 @@
- #include <linux/mtd/map.h>
- #include <linux/config.h>
-
-+#ifdef CONFIG_MTD_PHYSMAP_PARTITION
-+#include <linux/mtd/partitions.h>
-+
-+/* partition_info gives details on the logical partitions that the split
-the
-+ * single flash device into. If the size if zero we use up to the end of
-the
-+ * device. */
-+const static struct mtd_partition partition_info[] = {/*{name:
-"Bootloader",
-+             offset: MTDPART_OFS_APPEND,
-+             size: 128 * 1024},*/
-+            {name: "Physically mapped flash",
-+             offset: MTDPART_OFS_APPEND,
-+             size: MTDPART_SIZ_FULL}};
-+
-+#define NUM_PARTITIONS (sizeof(partition_info) / sizeof(partition_info[0]))
-+#endif // CONFIG_MTD_PHYSMAP_PARTITION
-
- #define WINDOW_ADDR CONFIG_MTD_PHYSMAP_START
- #define WINDOW_SIZE CONFIG_MTD_PHYSMAP_LEN
-@@ -95,7 +110,13 @@
- #ifdef MODULE
-   mymtd->module = &__this_module;
- #endif
-+
-+#ifdef CONFIG_MTD_PHYSMAP_PARTITION
-+                /* Create MTD devices for each partition. */
-+         add_mtd_partitions(mymtd, partition_info, NUM_PARTITIONS);
-+#else
-   add_mtd_device(mymtd);
-+#endif // CONFIG_MTD_PHYSMAP_PARTITION
-   return 0;
-  }
-
-@@ -106,7 +127,11 @@
- mod_exit_t cleanup_physmap(void)
- {
-  if (mymtd) {
-+#ifdef CONFIG_MTD_PHYSMAP_PARTITION
-+  del_mtd_partitions(mymtd);
-+#else
-   del_mtd_device(mymtd);
-+#endif // CONFIG_MTD_PHYSMAP_PARTITION
-   map_destroy(mymtd);
-  }
-  if (physmap_map.map_priv_1) {
+The physmap.c driver works for that board too, but it seems I can only get
+support for one of the two flash banks this way.
 
 
+Cheers
+
+Rob
+
+  
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
+
+--Boundary-=_nWlrBbmQBhCDarzOwKkYHIDdqSCD
+Content-Type: text/english;
+  name="diffs"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="diffs"
+
+LS0tIHBhdGNoZXMvQ29uZmlndXJlLmhlbHAub3JpZwlTdW4gRmViIDE4IDAwOjAwOjA2IDIwMDEK
+KysrIHBhdGNoZXMvQ29uZmlndXJlLmhlbHAJTW9uIE1hciAgNSAxODo0NTozOCAyMDAxCkBAIC0x
+NzcsNiArMTc3LDEyIEBACiAgIGRldmljZXMuIFRoaXMgYm9hcmQgdXRpbGl6ZXMgSW50ZWwgU3Ry
+YXRhRmxhc2guIE1vcmUgaW5mbyBhdAogICAoaHR0cDovL3d3dy5hcmNvbWNvbnRyb2xzLmNvbS9w
+cm9kdWN0cy9pY3AvcGMxMDQvcHJvY2Vzc29ycy8pLgogCitGbGFzaCBjaGlwIG1hcHBpbmcgb24g
+QU1EIFNDNTIwIENEUCBib2FyZAorQ09ORklHX01URF9TQzUyMENEUAorICBUaGUgU0M1MjAgQ0RQ
+IGJvYXJkIGhhcyB0d28gYmFua3Mgb2YgQ0ZJLWNvbXBsaWFudCBjaGlwcy4gVGhpcworICAnbWFw
+cGluZycgZHJpdmVyIHN1cHBvcnRzIHRoYXQgYXJyYW5nZW1lbnQsIGltcGxlbWVudGluZyB0d28K
+KyAgTVREIGRldmljZXMuCisKIEZsYXNoIGNoaXAgbWFwcGluZyBvbiBBcmNvbSBDb250cm9sIFN5
+c3RlbXMnIEVMQU4tMTA0TkMKIENPTkZJR19NVERfRUxBTl8xMDROQwogICBUaGlzIHByb3ZpZGVz
+IGEgZHJpdmVyIGZvciB0aGUgb24tYm9hcmQgZmxhc2ggb2YgdGhlIEFyY29tIENvbnRyb2wKLS0t
+IGtlcm5lbC9Db25maWcuaW4ub3JpZwlTdW4gRmViIDE4IDAwOjAwOjA2IDIwMDEKKysrIGtlcm5l
+bC9Db25maWcuaW4JTW9uIE1hciAgNSAxODo0NDowNCAyMDAxCkBAIC04NCw2ICs4NCw3IEBACiAg
+ICBkZXBfdHJpc3RhdGUgJyAgQ0ZJIEZsYXNoIGRldmljZSBtYXBwZWQgb24gUGhvdHJvbiBQTkMt
+MjAwMCcgQ09ORklHX01URF9QTkMyMDAwICRDT05GSUdfTVREX0NGSQogICAgZGVwX3RyaXN0YXRl
+ICcgIENGSSBGbGFzaCBkZXZpY2UgbWFwcGVkIG9uIFJQWCBMaXRlIG9yIENMTEYnIENPTkZJR19N
+VERfUlBYTElURSAkQ09ORklHX01URF9DRkkKICAgIGRlcF90cmlzdGF0ZSAnICBDRkkgRmxhc2gg
+ZGV2aWNlIG1hcHBlZCBvbiBBcmNvbSBTQkMtTWVkaWFHWCcgQ09ORklHX01URF9TQkNfTUVESUFH
+WCAkQ09ORklHX01URF9DRklfSU5URUxFWFQKKyAgIGRlcF90cmlzdGF0ZSAnICBDRkkgRmxhc2gg
+ZGV2aWNlcyBtYXBwZWQgb24gQU1EIFNDNTIwIENEUCcgQ09ORklHX01URF9TQzUyMENEUCAkQ09O
+RklHX01URF9DRkkKICAgIGRlcF90cmlzdGF0ZSAnICBDRkkgRmxhc2ggZGV2aWNlIG1hcHBlZCBv
+biBBcmNvbSBFTEFOLTEwNE5DJyBDT05GSUdfTVREX0VMQU5fMTA0TkMgJENPTkZJR19NVERfQ0ZJ
+X0lOVEVMRVhUCiAgICBkZXBfdHJpc3RhdGUgJyAgQ0ZJIEZsYXNoIGRldmljZSBtYXBwZWQgb24g
+U3Ryb25nQVJNIFNBMTF4MCcgQ09ORklHX01URF9TQTExMDAgJENPTkZJR19NVERfQ0ZJCiAgICBk
+ZXBfdHJpc3RhdGUgJyAgQ0ZJIEZsYXNoIGRldmljZSBtYXBwZWQgb24gREMyMTI4NSBGb290YnJp
+ZGdlJyBDT05GSUdfTVREX0RDMjEyODUgJENPTkZJR19NVERfQ0ZJCg==
+
+--Boundary-=_nWlrBbmQBhCDarzOwKkYHIDdqSCD
+Content-Type: text/english;
+  name="sc520cdp.c"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="sc520cdp.c"
+
+Lyogc2M1MjBjZHAuYyAtLSBNVEQgbWFwIGRyaXZlciBmb3IgQU1EIFNDNTIwIEN1c3RvbWVyIERl
+dmVsb3BtZW50IFBsYXRmb3JtCiAqCiAqIENvcHlyaWdodCAoQykgMjAwMSBTeXNnbyBSZWFsLVRp
+bWUgU29sdXRpb25zIEdtYkgKICoKICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlv
+dSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICogaXQgdW5kZXIgdGhlIHRlcm1z
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKICogdGhl
+IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5z
+ZSwgb3IKICogKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KICoKICogVGhpcyBw
+cm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWws
+CiAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdh
+cnJhbnR5IG9mCiAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIg
+UFVSUE9TRS4gIFNlZSB0aGUKICogR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUg
+ZGV0YWlscy4KICoKICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05V
+IEdlbmVyYWwgUHVibGljIExpY2Vuc2UKICogYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5v
+dCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUKICogRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVt
+cGxlIFBsYWNlIC0gU3VpdGUgMzMwLCBCb3N0b24sIE1BIDAyMTExLTEzMDcsIFVTQQogKgogKiAk
+SWQkCiAqCiAqCiAqIFRoZSBTQzUyMENEUCBpcyBhbiBldmFsdWF0aW9uIGJvYXJkIGZvciB0aGUg
+RWxhbiBTQzUyMCBwcm9jZXNzb3IgYXZhaWxhYmxlCiAqIGZyb20gQU1ELiBJdCBoYXMgdHdvIGJh
+bmtzIG9mIDMyLWJpdCBGbGFzaCBST00sIGVhY2ggOCBNZWdhYnl0ZXMgaW4gc2l6ZS4KICogRm9y
+IGRldGFpbHMgc2VlIGh0dHA6Ly93d3cuYW1kLmNvbS9wcm9kdWN0cy9lcGQvZGVzaWdpbmcvZXZh
+bGJvYXJkcy8xOC5lbGFuc2M1MjAvNTIwX2NkcF9icmllZi9pbmRleC5odG1sCiAqLwoKI2luY2x1
+ZGUgPGxpbnV4L21vZHVsZS5oPgojaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KI2luY2x1ZGUgPGxp
+bnV4L2tlcm5lbC5oPgojaW5jbHVkZSA8YXNtL2lvLmg+CiNpbmNsdWRlIDxsaW51eC9tdGQvbXRk
+Lmg+CiNpbmNsdWRlIDxsaW51eC9tdGQvbWFwLmg+CgoKI2RlZmluZSBXSU5ET1dfQUREUl8wCTB4
+MDg0MDAwMDAKI2RlZmluZSBXSU5ET1dfQUREUl8xCTB4MDhDMDAwMDAKI2RlZmluZSBXSU5ET1df
+U0laRQkJMHgwMDgwMDAwMAoKc3RhdGljIF9fdTggc2M1MjBjZHBfcmVhZDgoc3RydWN0IG1hcF9p
+bmZvICptYXAsIHVuc2lnbmVkIGxvbmcgb2ZzKQp7CglyZXR1cm4gcmVhZGIobWFwLT5tYXBfcHJp
+dl8xICsgb2ZzKTsKfQoKc3RhdGljIF9fdTE2IHNjNTIwY2RwX3JlYWQxNihzdHJ1Y3QgbWFwX2lu
+Zm8gKm1hcCwgdW5zaWduZWQgbG9uZyBvZnMpCnsKCXJldHVybiByZWFkdyhtYXAtPm1hcF9wcml2
+XzEgKyBvZnMpOwp9CgpzdGF0aWMgX191MzIgc2M1MjBjZHBfcmVhZDMyKHN0cnVjdCBtYXBfaW5m
+byAqbWFwLCB1bnNpZ25lZCBsb25nIG9mcykKewoJcmV0dXJuIHJlYWRsKG1hcC0+bWFwX3ByaXZf
+MSArIG9mcyk7Cn0KCnN0YXRpYyB2b2lkIHNjNTIwY2RwX2NvcHlfZnJvbShzdHJ1Y3QgbWFwX2lu
+Zm8gKm1hcCwgdm9pZCAqdG8sIHVuc2lnbmVkIGxvbmcgZnJvbSwgc3NpemVfdCBsZW4pCnsKCW1l
+bWNweV9mcm9taW8odG8sICh2b2lkICopKG1hcC0+bWFwX3ByaXZfMSArIGZyb20pLCBsZW4pOwp9
+CgpzdGF0aWMgdm9pZCBzYzUyMGNkcF93cml0ZTgoc3RydWN0IG1hcF9pbmZvICptYXAsIF9fdTgg
+ZCwgdW5zaWduZWQgbG9uZyBhZHIpCnsKCXdyaXRlYihkLCBtYXAtPm1hcF9wcml2XzEgKyBhZHIp
+Owp9CgpzdGF0aWMgdm9pZCBzYzUyMGNkcF93cml0ZTE2KHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBf
+X3UxNiBkLCB1bnNpZ25lZCBsb25nIGFkcikKewoJd3JpdGV3KGQsIG1hcC0+bWFwX3ByaXZfMSAr
+IGFkcik7Cn0KCnN0YXRpYyB2b2lkIHNjNTIwY2RwX3dyaXRlMzIoc3RydWN0IG1hcF9pbmZvICpt
+YXAsIF9fdTMyIGQsIHVuc2lnbmVkIGxvbmcgYWRyKQp7Cgl3cml0ZWwoZCwgbWFwLT5tYXBfcHJp
+dl8xICsgYWRyKTsKfQoKc3RhdGljIHZvaWQgc2M1MjBjZHBfY29weV90byhzdHJ1Y3QgbWFwX2lu
+Zm8gKm1hcCwgdW5zaWduZWQgbG9uZyB0bywgY29uc3Qgdm9pZCAqZnJvbSwgc3NpemVfdCBsZW4p
+CnsKCW1lbWNweV90b2lvKCh2b2lkICopKG1hcC0+bWFwX3ByaXZfMSArIHRvKSwgZnJvbSwgbGVu
+KTsKfQoKc3RhdGljIHN0cnVjdCBtYXBfaW5mbyBzYzUyMGNkcF9tYXBbXSA9IHsKCXsKCQluYW1l
+OiAiU0M1MjBDRFAgRmxhc2ggQmFuayAjMCIsCgkJc2l6ZTogV0lORE9XX1NJWkUsCgkJYnVzd2lk
+dGg6IDQsCgkJcmVhZDg6IHNjNTIwY2RwX3JlYWQ4LAoJCXJlYWQxNjogc2M1MjBjZHBfcmVhZDE2
+LAoJCXJlYWQzMjogc2M1MjBjZHBfcmVhZDMyLAoJCWNvcHlfZnJvbTogc2M1MjBjZHBfY29weV9m
+cm9tLAoJCXdyaXRlODogc2M1MjBjZHBfd3JpdGU4LAoJCXdyaXRlMTY6IHNjNTIwY2RwX3dyaXRl
+MTYsCgkJd3JpdGUzMjogc2M1MjBjZHBfd3JpdGUzMiwKCQljb3B5X3RvOiBzYzUyMGNkcF9jb3B5
+X3RvLAoJCW1hcF9wcml2XzI6IFdJTkRPV19BRERSXzAKCX0sCgl7CgkJbmFtZTogIlNDNTIwQ0RQ
+IEZsYXNoIEJhbmsgIzEiLAoJCXNpemU6IFdJTkRPV19TSVpFLAoJCWJ1c3dpZHRoOiA0LAoJCXJl
+YWQ4OiBzYzUyMGNkcF9yZWFkOCwKCQlyZWFkMTY6IHNjNTIwY2RwX3JlYWQxNiwKCQlyZWFkMzI6
+IHNjNTIwY2RwX3JlYWQzMiwKCQljb3B5X2Zyb206IHNjNTIwY2RwX2NvcHlfZnJvbSwKCQl3cml0
+ZTg6IHNjNTIwY2RwX3dyaXRlOCwKCQl3cml0ZTE2OiBzYzUyMGNkcF93cml0ZTE2LAoJCXdyaXRl
+MzI6IHNjNTIwY2RwX3dyaXRlMzIsCgkJY29weV90bzogc2M1MjBjZHBfY29weV90bywKCQltYXBf
+cHJpdl8yOiBXSU5ET1dfQUREUl8xCgl9LAp9OwoKI2RlZmluZSBOVU1fRkxBU0hfQkFOS1MJKHNp
+emVvZihzYzUyMGNkcF9tYXApL3NpemVvZihzdHJ1Y3QgbWFwX2luZm8pKQoKc3RhdGljIHN0cnVj
+dCBtdGRfaW5mbyAqbXltdGRbTlVNX0ZMQVNIX0JBTktTXTsKCgoKI2lmIExJTlVYX1ZFUlNJT05f
+Q09ERSA8IDB4MjAyMTIgJiYgZGVmaW5lZChNT0RVTEUpCiNkZWZpbmUgaW5pdF9zYzUyMGNkcCBp
+bml0X21vZHVsZQojZGVmaW5lIGNsZWFudXBfc2M1MjBjZHAgY2xlYW51cF9tb2R1bGUKI2VuZGlm
+CgpzdGF0aWMgaW50IF9faW5pdCBpbml0X3NjNTIwY2RwKHZvaWQpCnsKCWludCBpOwoJCglmb3Ig
+KGkgPSAwOyBpIDwgTlVNX0ZMQVNIX0JBTktTOyBpKyspIHsKCQlwcmludGsoS0VSTl9OT1RJQ0Ug
+IlNDNTIwIENEUCBmbGFzaCBkZXZpY2U6ICV4IGF0ICVseFxuIiwgV0lORE9XX1NJWkUsIHNjNTIw
+Y2RwX21hcFtpXS5tYXBfcHJpdl8yKTsKCQlzYzUyMGNkcF9tYXBbaV0ubWFwX3ByaXZfMSA9ICh1
+bnNpZ25lZCBsb25nKWlvcmVtYXAoc2M1MjBjZHBfbWFwW2ldLm1hcF9wcml2XzIsIFdJTkRPV19T
+SVpFKTsKCgkJaWYgKCFzYzUyMGNkcF9tYXBbaV0ubWFwX3ByaXZfMSkgewoJCQlwcmludGsoIkZh
+aWxlZCB0byBpb3JlbWFwXG4iKTsKCQkJcmV0dXJuIC1FSU87CgkJfQoJCW15bXRkW2ldID0gZG9f
+Y2ZpX3Byb2JlKCZzYzUyMGNkcF9tYXBbaV0pOwoJCWlmIChteW10ZFtpXSkgewojaWZkZWYgTU9E
+VUxFCgkJCW15bXRkW2ldLT5tb2R1bGUgPSAmX190aGlzX21vZHVsZTsKI2VuZGlmCgkJCWFkZF9t
+dGRfZGV2aWNlKG15bXRkW2ldKTsKCQl9CgkJZWxzZSB7CgkJCWlvdW5tYXAoKHZvaWQgKilzYzUy
+MGNkcF9tYXBbaV0ubWFwX3ByaXZfMSk7CgkJCXJldHVybiAtRU5YSU87CgkJfQoJfQoJcmV0dXJu
+IDA7Cn0KCnN0YXRpYyB2b2lkIF9fZXhpdCBjbGVhbnVwX3NjNTIwY2RwKHZvaWQpCnsKCWludCBp
+OwoJCglmb3IgKGkgPSAwOyBpIDwgTlVNX0ZMQVNIX0JBTktTOyBpKyspIHsKCQlpZiAobXltdGRb
+aV0pIHsKCQkJZGVsX210ZF9kZXZpY2UobXltdGRbaV0pOwoJCQltYXBfZGVzdHJveShteW10ZFtp
+XSk7CgkJfQoJCWlmIChzYzUyMGNkcF9tYXBbaV0ubWFwX3ByaXZfMSkgewoJCQlpb3VubWFwKCh2
+b2lkICopc2M1MjBjZHBfbWFwW2ldLm1hcF9wcml2XzEpOwoJCQlzYzUyMGNkcF9tYXBbaV0ubWFw
+X3ByaXZfMSA9IDA7CgkJfQoJfQp9Cgptb2R1bGVfaW5pdChpbml0X3NjNTIwY2RwKTsKbW9kdWxl
+X2V4aXQoY2xlYW51cF9zYzUyMGNkcCk7Cg==
+
+--Boundary-=_nWlrBbmQBhCDarzOwKkYHIDdqSCD--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
