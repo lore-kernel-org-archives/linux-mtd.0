@@ -1,16 +1,17 @@
-Received: from zcars04e.nortelnetworks.com ([47.129.242.56])
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BzvL1-00026E-IF
-	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2004 06:49:08 -0400
-To: "David Woodhouse" <dwmw2@infradead.org>
+	id 1BzvPI-0002FZ-Rn
+	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2004 06:53:33 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Linh Dang <linhd@nortelnetworks.com>
+In-Reply-To: <wn5brgzh4ry.fsf@linhd-2.ca.nortel.com>
 References: <1093426720.3777.1480.camel@imladris.demon.co.uk>
-From: "Linh Dang" <linhd@nortelnetworks.com>
-Date: Wed, 25 Aug 2004 06:48:49 -0400
-In-Reply-To: <1093426720.3777.1480.camel@imladris.demon.co.uk> (David
-	Woodhouse's message of "Wed, 25 Aug 2004 05:38:40 -0400")
-Message-ID: <wn5brgzh4ry.fsf@linhd-2.ca.nortel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<wn5brgzh4ry.fsf@linhd-2.ca.nortel.com>
+Content-Type: text/plain
+Message-Id: <1093431210.3777.1535.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Wed, 25 Aug 2004 11:53:30 +0100
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Bottom halves being disabled
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,20 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse <dwmw2@infradead.org> wrote:
+On Wed, 2004-08-25 at 06:48 -0400, Linh Dang wrote:
+> reduce latency with preemptable kernel. I've tried that. In my test I
+> hammered jffs2 pretty hard (for typical flash usage, no kernel
+> compilation here) and everything still seemed ok.
 
-> On Tue, 2004-08-24 at 22:36 -0400, Linh Dang wrote:
->> Is it safe to convert those spin_locks to mutexes?
->
-> A spinlock is a mutex. Do you mean convert to semaphores?
+Show numbers.
 
-yes
-
-> Why?
-
-reduce latency with preemptable kernel. I've tried that. In my test I
-hammered jffs2 pretty hard (for typical flash usage, no kernel
-compilation here) and everything still seemed ok.
-
---
-Linh Dang
+-- 
+dwmw2
