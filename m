@@ -1,16 +1,25 @@
-Received: from [207.209.118.131] (helo=msi-ex6.m-sys.com)
+Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17a6t8-00007o-00
-	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 04:44:35 +0100
-Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BFE5E@MSI-EX6>
-From: Vadim Khmelnitsky <vadim.khmelnitsky@m-sys.com>
-To: 'Bill Burgess' <burgess@greeneridge.com>
+	id 17aCFk-0000f9-00
+	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 10:28:16 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H05001Y5RM950@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 01 Aug 2002 11:27:46 +0200 (MEST)
+Date: Thu, 01 Aug 2002 11:28:24 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: do i have to "eraseall" first?
+In-reply-to: <00f801c2390a$d956dd40$1b0448c0@gv.com.tw>
+To: ?? <kevin@gv.com.tw>, David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: 576-MB DOC reports as Millennium?
-Date: Wed, 31 Jul 2002 20:46:33 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Reply-to: tglx@linutronix.de
+Message-id: <0H05001Y6RM950@smtp-out.bhp.t-online.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+References: <013d01c2388f$94c655a0$1b0448c0@gv.com.tw>
+ <0H04006C5M7GUI@smtp-out.bhp.t-online.de>
+ <00f801c2390a$d956dd40$1b0448c0@gv.com.tw>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,60 +31,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-That's true .
+On Thursday, 1. August 2002 05:23, ?? wrote:
+> dear all,
+>
+> the only different config settings is CONFIG_JFFS2_FS_NAND
+> but there is no "CONFIG_JFFS2_FS_NAND" in source of jffs2/mtd here!!
+> (i'm using lastest jffs2/mtd source from cvs)
+> please help
+Sorry, CONFIG_JFFS2_FS_NAND is not patched in. Please add it manually. 
 
-New diskonchip 2000 of certain capacities will not work with current open
-source driver .
-576MB is one of them .
+See updated information at http://www.linux-mtd.infradead.org/tech/nand.html
 
-Vadim.
-
-
------Original Message-----
-From: Bill Burgess [mailto:burgess@greeneridge.com]
-Sent: Wed, July 31, 2002 8:24 PM
-To: linux-mtd@lists.infradead.org
-Subject: 576-MB DOC reports as Millennium?
-
-
-Doc2000.c can't seem to handle the new 576-MB DoC's.
-
-The docprobe.c driver (version 1.30) reports them as
-Millenniums, but then doc2000.c (version 1.46) fails
-to access the mfr or id using Millennium-oriented calls;
-these come back 0xff or 0.  If I force the ChipID to be
-a 2000, docprobe doesn't even get past the initial toggle
-test.  Also like a blank Millennium, there is no 0x55aa
-signature at the base address, only 0xffff.
-
-The 576's have NOT been formatted with DFORMAT
-or anything else, they came raw.  However what I am
-attempting is so low-level, the formatting should be
-irrelevant -- shouldn't it??
-
-I am not actually using Linux, but have incorporated
-the drivers into a low-level custom system based on
-a 68K.  The drivers have worked beautifully for months.
-Even now I can swap an 8-MB or a 288-MB DOC2000
-into the socket and they work fine.  So I don't think
-it's my platform that's suddenly gone off.
-
-If the solution is not obvious or quick I will have
-to buy some 288's very soon, which will hurt as I have
-already bought the 576's :-<  Help!
-
-Cheers & thanks!
-
---Bill
-
-_________________________________________________________
-William C. Burgess, Ph.D., Senior Research Engineer
-Greeneridge Sciences Inc., 1411 Firestone Rd., Goleta, CA 93117
-Tel: (805) 899-3558  Fax: (805) 967-7720
-http://www.greeneridge.com
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Thomas
+___________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
