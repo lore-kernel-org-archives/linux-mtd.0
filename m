@@ -1,22 +1,18 @@
-Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
+Received: from buserror-extern.convergence.de ([212.84.236.66] helo=jupiter)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1816eC-0005PN-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 15:56:44 +0100
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
-	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id g9ECwoLT018780
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 14:58:50 +0200
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id QAA19766
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 16:56:40 +0200 (CEST)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <3DAADB27.F0DD5A70@imc-berlin.de>
-Date: Mon, 14 Oct 2002 16:56:39 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: What means "Inode #10 was a directory with children" ?
+	id 18178y-0005RJ-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 16:28:32 +0100
+Date: Mon, 14 Oct 2002 17:28:19 +0200
+From: Frank Neuber <neuber@convergence.de>
+To: rkaiser@sysgo.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Virtual MTD-Device
+Message-ID: <20021014152819.GA2482@jupiter>
+References: <20021014092738.GA21251@jupiter> <200210141051.g9EApbs20276@dagobert.svc.sysgo.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <200210141051.g9EApbs20276@dagobert.svc.sysgo.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,42 +24,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi there,
+On Mon, Oct 14, 2002 at 12:57:48PM +0200, Robert Kaiser wrote:
+> Tach auch,
+Ebenso ...
 
-I am using MTD/JFFS2 as root fs for my embedded system for some time now.
-It was working fine.
-But as my image grows bigger and bigger I get strange errors:
+> > Has anyone thought about this problem, maybe there is a ready to run
+> > solution :-))
+> 
+> Yep. Have a look at the MTD concat layer (mtdconcat.c). See the map drivers 
+> for the DIL/NetPC (dilnetpc.c) and the SC520 CDP (sc520cdp.c) for examples on 
+> how to use this layer. On these two reference platforms, the chips that are 
+It seems that is exactly that what I want :-)
 
-While booting Linux I get
-...
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-Inode #10 was a directory with children - removing those too...
-Inode #11 was a directory with children - removing those too...
-VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 52k init
-...
+> being concatenated happen to have uniform sector sizes, but I did test this 
+> stuff in at least one configuration with varying sector sizes. So, this 
+> _should_ work out ot the box.
+Ahh, interresting. I will check this out and let you know when it works.
 
-What does that mean?
+Additionally I will add the exact flash configuration to the kernel
+command line, so that I can use the same kernel for different flash
+placements on the target platform.
 
-Sometimes he's complaining about hardlinks.
-Then for instance some links are not working correctly, i.e. power should be a
-link to busybox but has size zero.
-
-/etc/pcmcia should be a directory, but is a file containing garbage (i.e. some
-text that should be in a file in this directory).
-
-And what means:
-
-~ # cat /etc/hosts 
-Argh. Special inode #43 with mode 020600 had more than one node
-cat: Input/output error
-
-???
-
-cat should be a link to busybox. But "ls /bin" does not show cat !
-
-I am using linux-2.4.19 on a ppc platform.
-
-Thanks very much!
-
-Steven
+Bis dann,
+ Frank
+-- 
+Dipl.-Ing. Elektrotechnik           convergence / HW
+Frank Neuber                        Rosenthalerstr.51 / 10178 Berlin
+Email:  neuber@convergence.de           Phone:  +49(0)30-72 62 06 76
+WWW:    www.convergence.de              Fax:    +49(0)30-72 62 06 55
