@@ -1,43 +1,26 @@
-Received: from gw-eur5.philips.com ([161.85.125.12])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEQOF-0002lH-6F
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 06:20:40 -0500
-Received: from gw-eur4.philips.com (gw-eur4.philips.com [161.85.125.10])
-	by gw-eur5.philips.com (Postfix) with ESMTP id DA9204AF79
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 10:55:13 +0000 (UTC)
-Received: from smtpscan-eur6.philips.com (smtpscan-eur6.mail.philips.com
-	[130.144.57.169])
-	by gw-eur4.philips.com (Postfix) with ESMTP id A53BE49730
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 10:55:01 +0000 (UTC)
-Received: from smtpscan-eur6.philips.com (localhost [127.0.0.1])
-	by localhost.philips.com (Postfix) with ESMTP id 6737EA5
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 10:55:01 +0000 (GMT)
-Received: from smtprelay-eur1.philips.com (smtprelay-eur1.philips.com
-	[130.144.57.170])
-	by smtpscan-eur6.philips.com (Postfix) with ESMTP id 2F8A662
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 10:55:01 +0000 (GMT)
-Received: from beorn.natlab.research.philips.com
-	(beorn.natlab.research.philips.com [130.145.139.38])
-	by smtprelay-eur1.philips.com (Postfix) with ESMTP id 157F32539
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Mar 2005 10:55:01 +0000 (GMT)
-Received: from bard (bard [130.145.131.125])
-	by beorn.natlab.research.philips.com (8.12.11/8.12.11) with ESMTP id
-	j2OAt048004558
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2005 11:55:00 +0100
-Message-ID: <000f01c5305f$ed1cef50$9c9c9182@ddns.htc.nl.philips.com>
-From: "S. van Beek" <nlv11891@natlab.research.philips.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 24 Mar 2005 11:55:00 +0100
+Received: from lon-del-01.spheriq.net ([195.46.50.97])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DEQzo-000332-Hn
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 06:59:29 -0500
+Received: from lon-out-02.spheriq.net ([195.46.50.130])
+	by lon-del-01.spheriq.net with ESMTP id j2OBxRNE021711
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2005 11:59:27 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-02.spheriq.net with ESMTP id j2OBxQ5f000643
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2005 11:59:27 GMT
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <4242AB96.8D95936D@st.com>
+Date: Thu, 24 Mar 2005 12:59:19 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+References: <loom.20050322T224733-491@post.gmane.org>	<4241396B.D689EB32@st.com>
+	<loom.20050323T212715-407@post.gmane.org>
+	<4242925F.D29BC7CE@st.com> <42429C1C.8050600@yandex.ru>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Flash chips detected?
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,40 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there
+Hi Artem,
 
-Im a student working on embedded linux on a fpga board with powerpc core and
-some flash.
-I compiled my kernel (montavista linux 3.1 -> kernel 2.4.20) with mtd
-support. During boot I see the following messages concerning flash / mtd:
+"Artem B. Bityuckiy" wrote:
+> 
+> Estelle HAMMACHE wrote:
+> > Yes, when I write that the input buffer is split it means that
+> > several data nodes are written to the flash - each data node
+> > is an independent piece of data complete with header and CRC.
+> > If a data node is only partly written to flash, its CRC check
+> > will fail so the partial data will not be taken into account
+> > when building the file at next mount. In this sense each data
+> > node is an atomic write - but JFFS2 does not guarantee that
+> > a write() input buffer will be written as a single data node.
+> 
+> But if you:
+> 
+> 1. write only 0-PAGE_SIZE bytes;
+> 2. do not overlap n*PAGE_SIZE borders (n is 1,2, ...)
+> 3. do fsync after write.
+> 
+> then you have the guarantee that you either have written all or
+> nowthing. JFFS2 does guarantee that due to its implementation.
 
-physmap flash device: 400000 at 81000000
-CFI: Found no phys_mapped_flash device at location zero
-JEDEC: Found no phys_mapped_flash device at location zero
+This is not what I understand from jffs2_write_inode_range.
+When you reach the end of the block your data may be split at 
+any offset because jffs2_reserve_space may return more than 
+JFFS2_MIN_DATA_LEN but less than the data size (or not enough
+space to compress the whole input buffer if you use compression).
+Or is there some trick here that I don't understand ??
 
-And:
-
-Creating 2 MTD partitions on "phys_mapped_flash":
-0x00000000-0x00080000 : "reserved"
-ftl_cs: FTL header not found.
-0x00080000-0x00400000 : "flashdisk"
-ftl_cs: FTL header not found.
-
-But this confuses me. First i see the message 'Found no phys_mapped_flash
-device at location zero' but then still some partitions are created
-Are there any flash chips detected or not?
-
-If I look at my /proc/mtd, I do see those two partitions there, but trying
-to unlock / format them gives me an errors:
-
-# ftl_format /dev/mtd0
-open failed: Permission denied
-
-# flash_unlock  /dev/mtd0
-Could not open mtd device: /dev/mtd0
-
-The entries in the /dev dir do exist.
-Any help would be appreciated
-
-Regards
-Sander van Beek
+bye
+Estelle
