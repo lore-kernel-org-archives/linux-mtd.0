@@ -1,15 +1,17 @@
-Received: from web20303.mail.yahoo.com ([216.136.226.84])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16T1tC-0007Vq-00
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 14:27:07 +0000
-Message-ID: <20020122143808.55950.qmail@web20303.mail.yahoo.com>
-Date: Tue, 22 Jan 2002 14:38:08 +0000 (GMT)
-From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
-Subject: JFFS XConfig
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16T22i-0007Wa-00
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 14:36:56 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3C4D77FE.CCAC1B9F@cerberus.ch> 
+References: <3C4D77FE.CCAC1B9F@cerberus.ch> 
+To: Daniel Zwirner <daniel.zwirner@cerberus.ch>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Problem with MTD + RPXLite 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 22 Jan 2002 14:47:51 +0000
+Message-ID: <25792.1011710871@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,19 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+daniel.zwirner@cerberus.ch said:
+> Last[2] is 198520ff, datum is 19852003 
+> Write clean marker to block at 0x003c0000 failed: -5
 
-We have downloaded the source of 2.4.12 and are using
-XConfig to set compile parameters. We intend a system
-with a 16M compact flash IDE device formatted as
-JFFS2. However when it comes to JFFS2 the option is
-greyed out, JFFS is however available for selection,
-any thoughts?
+One of your flash chips isn't accepting the write commands. Can you erase 
+it and write to use directly through the /dev/mtd devices, of from the 
+bootloader? Is is protected or is Vpen missing?
 
-Thanks, David
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+--
+dwmw2
