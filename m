@@ -1,20 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cw0cH-0007NV-6a
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 11:11:02 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Rudi Engelbertink <rudi@unsec.nl>
-In-Reply-To: <20050201150810.M93647@unsec.nl>
-References: <20050201150810.M93647@unsec.nl>
-Content-Type: text/plain
-Date: Tue, 01 Feb 2005 17:10:31 +0100
-Message-Id: <1107274232.21196.433.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from modemcable096.213-200-24.mc.videotron.ca ([24.200.213.96]
+	helo=localhost.localdomain)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cw12x-0007fH-CL
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 11:38:36 -0500
+Date: Tue, 1 Feb 2005 11:38:23 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Konstantin Kletschke <lists@ku-gbr.de>
+In-Reply-To: <20050201153945.GA26068@synertronixx3>
+Message-ID: <Pine.LNX.4.61.0502011137020.31479@localhost.localdomain>
+References: <20050201153945.GA26068@synertronixx3>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2_get_inode_nodes() very very slow
-Reply-To: tglx@linutronix.de
+Subject: Re: I need still help with XIP, kernel boots now :)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-02-01 at 16:32 +0100, Rudi Engelbertink wrote:
-> Hello,
+On Tue, 1 Feb 2005, Konstantin Kletschke wrote:
+
+> Hi people!
 > 
-> On a 64 MiB NAND Flash I created a jffs2 file system. After several tests
-> especially power fail tests resulting in a lot off CRC and Data CRC errors.
-> This appears not to be a problem except it takes a very long time to check
-> the file system.
-> The initial check (scanning for erased blocks) is done in aproximatly 10
-> seconds, but after that the jffs2_get_inode_nodes check is running. 
-> This process takes up to 8 minutes.
-> During this time the file-system is inaccessible which in oure case a
-> watchdog decides to reboot the system, making it even worse.
-> It appears that the check is done with a stepsize of 16 bytes. On an 64MiB
-> NAND flash it does this check +/- 4 million times.
+> Now I need definately have XIP to get running :/
+> 
+> I use 2.6.11-rc2-mm2 and put the "xipu" patches into it, which make the
+> "make xipuImage" available and the XIP Kernel boots now. heureka.
+> 
+> Due to the fakt I have no hardware partiotionable Flash devices I need
+> to utlize the mtd software support to cexist with an XIP Kernel
+> (CONFIG_MTD_XIP=y).
 
-Hmm, which kernel version ? 
+Try that option with a non XIP kernel at first, then test writing to 
+flash etc.  See if that works first.
 
-Can you switch on JFFS2 debugging (debuglevel 1), log the output on a
-serial line and send me the log, please ? 
 
-tglx
+Nicolas
