@@ -1,14 +1,17 @@
-Received: from host-33-223.pace.co.uk ([136.170.33.223] helo=sbrodie.cam.pace.co.uk)
+Received: from h013.c007.snv.cp.net ([209.228.33.241] helo=c007.snv.cp.net)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Wg0G-0004XJ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Jul 2002 17:25:45 +0100
-Date: Mon, 22 Jul 2002 17:25:02 +0100
-From: Stewart Brodie <stewart.brodie@pace.co.uk>
-To: linux-mtd@lists.infradead.org
-Message-ID: <c5e41c5a4b.sbrodie@sbrodie.cam.pace.co.uk>
-Subject: mkfs.jffs2 failing to use zlib to compress things
+	id 17WnFb-00054X-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 01:10:03 +0100
+Message-ID: <003a01c231dd$03df6260$37032240@Presario>
+Reply-To: "Allen Curtis" <acurtis@directvinternet.com>
+From: "Allen Curtis" <acurtis@directvinternet.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: 2.4.17 64-bit support, read-only
+Date: Mon, 22 Jul 2002 17:03:32 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,26 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have been having problems with mkfs.jffs2 (with the fs/jffs2 files from a
-MIPS Linux 2.4.17 kernel) not compressing files as it constructs the
-filesystem image.  I have no idea whether this will affect the run-time
-behaviour or not - I've not got that far.  After inserting debugging into the
-compression routines, it appears that Z_STREAM_ERROR streaming errors are
-occurring when the data is being passed through zlib, and thus the simple
-rtime compression is being used instead.
+The 2.4.17 distribution that I am using did not properly support 64-bit
+flash. In order to fix this, I got the latest version of the MTD code from
+CVS and integrated that into our source tree. I modified maps/physmap.c to
+provide the partition information required for our configuration but no
+matter what I do the partitions appear to be Read-only. I can not erase or
+mount the partitions with Write enabled.
 
-It looks like mkfs.jffs2 is driving zlib's compression routines in a bizarre
-way (c.f. the decompression which uses a trivial loop) passing only small
-blocks of data at a time.  Is that loop correct?  Why is Z_PARTIAL_FLUSH
-being used?  The errors I get are all "final deflate returned -2".
-
-Any ideas what might be causing this?
-
-
-[originally posted to the MIPS Linux kernel mailing list by mistake]
-
--- 
-Stewart Brodie, Senior Software Engineer
-Pace Micro Technology PLC
-645 Newmarket Road
-Cambridge, CB5 8PB, United Kingdom         WWW: http://www.pacemicro.com/
+Any ideas?
