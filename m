@@ -1,17 +1,17 @@
-Received: from femail17.sdc1.sfba.home.com ([24.0.95.144])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15HwvL-0003y9-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 01:23:15 +0100
-Message-ID: <3B43B4F2.27794E8E@asu.edu>
-Date: Wed, 04 Jul 2001 17:29:38 -0700
-From: Russ Dill <Russ.Dill@asu.edu>
-MIME-Version: 1.0
-To: Frederic Giasson <fgiasson@mediatrix.com>,
- 	linux-mtd@lists.infradead.org
-Subject: Re: Boot loader that understands JFFS2
-References: <F1BED55F35F4D3118C0F00E0295CFF4D995513@webmail.mediatrix.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+	id 15I6d4-0004ap-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 11:45:02 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20010705124320.A469@cemil.debian-linux.de> 
+References: <20010705124320.A469@cemil.debian-linux.de> 
+To: Cemil Degirmenci <cemil@cemil.debian-linux.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Problems with GNU/grub bootloader 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 05 Jul 2001 11:50:24 +0100
+Message-ID: <26434.994330224@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,35 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Frederic Giasson wrote:
-> 
-> Hi,
-> 
-> Thank you for your help.  I read what I found at the link you mentionned in
-> your original message, but I am unable to get the source code.  Can you tell
-> me were I can ftp / cvs it?
-> 
-> Thanks!
-> 
-> Frédéric Giasson
-> 
-> -----Original Message-----
-> From: Russ Dill [mailto:Russ.Dill@asu.edu]
-> Sent: Wednesday, July 04, 2001 3:32 PM
-> To: Frederic Giasson; linux-mtd@lists.infradead.org
-> Subject: Re: Boot loader that understands JFFS2
-> 
-> > Do you know if there is a boot loader that understands JFFS2 so it could
-> > read a JFFS2-compressed image stored in the filesystem itself?  I made
-> some
-> > search and I didn't find anything that convinced me that it has been
-> > written.
-> >
-> general code to boot cramfs/jffs2
-> http://lists.arm.linux.org.uk/pipermail/linux-arm/2001-June/001523.html
-> 
-> patch against blob
-> http://www.lart.tudelft.nl/list/list.php3?arc=lart&sd=1&sm=6&sy=2001&ed=30&e
-> m=6&ey=2001&sort=t&inl=&mid=3B2FB1AB.35FF17DD%40asu.edu#body
+(Redirected to the correct list)
 
-try here: http://russ.dhs.org/load_kernel.html
+cemil@cemil.debian-linux.de said:
+> Hello, I have some problems with the Grub Bootloader.
+> root@manuel:/home/cemil/mtd-20000704/grub > ../util/doc_loadbios /dev/fla grub_firmware 
+> ioctl(MEMGETINFO): Invalid argument
+> root@manuel:/home/cemil/mtd-20000704/grub > 
+
+> I had downloaded grub rom FSF cvs-server.
+
+> How can i fix it? 
+
+Looks like you're using the M-Systems drivers, not the real ones. To load 
+Grub onto the device, you need to be able to write to the flash directly, 
+which you can't do with those drivers.
+
+You need to either boot a kernel with the proper drivers in, or convert 
+your Grub image into the format that M-Systems use for their own firmware 
+files.
+
+--
+dwmw2
