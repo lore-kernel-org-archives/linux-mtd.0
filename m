@@ -1,19 +1,26 @@
-Received: from p508b18de.dip.t-dialin.net ([80.139.24.222] helo=bendrich.com)
+Received: from fep04-mail.bloor.is.net.cable.rogers.com ([66.185.86.74])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19x0AN-0000x2-13
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2003 09:17:31 +0100
-Received: from amavis by bendrich.com with scanned-ok (Exim 3.14 #1)
-	id 19x09m-0001Mp-00
-	for linux-mtd@lists.infradead.org; Wed, 10 Sep 2003 10:16:54 +0200
-Received: from wfas02-nt.local ([192.168.30.119] helo=wfas02nt)
-	by bendrich.com with smtp (Exim 3.14 #1)
-	id 19x09h-0001Md-00
-	for linux-mtd@lists.infradead.org; Wed, 10 Sep 2003 10:16:49 +0200
-From: "Florian Geiges" <fg@fa-software.de>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 10 Sep 2003 10:16:49 +0200
-Message-ID: <ANEOJHKAHJPKEBNHOAGKKEKOCBAA.fg@fa-software.de>
-Subject: information on [c]romfs
+	id 19x5mH-0001gj-QX
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2003 15:17:02 +0100
+Received: from server ([65.48.183.29])
+	by fep04-mail.bloor.is.net.cable.rogers.comESMTP
+	<20030910141459.SVVG165573.fep04-mail.bloor.is.net.cable.rogers.com@server>
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Sep 2003 10:14:59 -0400
+Received: from ilgiz by server with local (Exim 3.36 #1 (Debian))
+	id 19x5l1-0002yY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2003 10:15:43 -0400
+Date: Wed, 10 Sep 2003 10:15:43 -0400
+From: Ilguiz Latypov <ilatypov@infradead.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20030910141542.GA11409@ei.homeip.net>
+References: <ANEOJHKAHJPKEBNHOAGKKEKOCBAA.fg@fa-software.de>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <ANEOJHKAHJPKEBNHOAGKKEKOCBAA.fg@fa-software.de>
+Sender: Ilguiz Latypov <ilgiz@ei.homeip.net>
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: information on [c]romfs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello list,
+On Wed, Sep 10, 2003 at 10:16:49AM +0200, Florian Geiges wrote:
+> i tried to look up some info on [c]romfs (means: cromfs and romfs)
+> using google.
 
-i tried to look up some info on [c]romfs (means: cromfs and romfs) using google.
-well, i found nothing, and thought this question might be right here...
+http://romfs.sourceforge.net/
 
-what i am searching for actually is pretty easy: anything useful about it ;)
+First result in google when searching for romfs.
 
-please send any answers directly to me, since i have'nt subscribed that list.
 
-thanks & greets
-florian geiges
+-- 
+Ilguiz Latypov
+
+tel.  +1 (519) 569-7193
+31 Oprington Drive, Unit D3
+Kitchener, Ontario N2N 3G3
