@@ -1,14 +1,15 @@
-Received: from [62.98.196.82] (helo=lisa.rhpk.springfield.inwind.it ident=root)
+Received: from chaingun.noernet.de ([62.154.254.10] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15oVGq-0002R1-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:32:04 +0100
-Date: Tue, 2 Oct 2001 21:35:20 +0200 (CEST)
-From: Cristiano Paris <c.paris@libero.it>
+	id 15oVLm-0002Rb-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:37:06 +0100
+Date: Tue, 2 Oct 2001 21:45:59 +0200 (CEST)
+From: dennis noermann <dennis.noermann@noernet.de>
 To: David Woodhouse <dwmw2@infradead.org>
-cc: <linux-mtd@lists.infradead.org>
-Subject: Re: MTD newbie 
-In-Reply-To: <13487.1002032051@redhat.com>
-Message-ID: <Pine.LNX.4.33.0110022124180.441-100000@lisa.rhpk.springfield.inwind.it>
+cc: Larry Doolittle <ldoolitt@recycle.lbl.gov>,
+     <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2_RESERVED_BLOCKS_* 
+In-Reply-To: <30731.1002040544@redhat.com>
+Message-ID: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,37 +23,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I am using
+
+#define JFFS2_RESERVED_BLOCKS_BASE 0
+#define JFFS2_RESERVED_BLOCKS_WRITE (JFFS2_RESERVED_BLOCKS_BASE + 1)
+#define JFFS2_RESERVED_BLOCKS_DELETION (JFFS2_RESERVED_BLOCKS_BASE + 1)
+#define JFFS2_RESERVED_BLOCKS_GCTRIGGER (JFFS2_RESERVED_BLOCKS_BASE + 2)
+#define JFFS2_RESERVED_BLOCKS_GCBAD (JFFS2_RESERVED_BLOCKS_BASE + 1)
+#define JFFS2_RESERVED_BLOCKS_GCMERGE (JFFS2_RESERVED_BLOCKS_BASE)
+
+for an 640kb partition on 2*intelF320 (8MB)
+so 128 kb are wastet , it is working fine , till i am copying more than
+the 512kb free space in the partition , then deleting doesnt work
+
+i think there is only 1 littel mistake in my config , but i was to lazy to
+figger out the problem
+JFFS2_RESERVED_BLOCKS_DELETION has to be set to 0 i think , i will try it
+next time i have time :)
+
+dennis
+
 On Tue, 2 Oct 2001, David Woodhouse wrote:
 
-> What is /task-familiar-etc? Did you mean:
-
-task-familiar is a jffs2 image that can be dowload from
-familiar.handhelds.org and contains a complete filesystem for the iPAQ
-handhelds.
-
->  dd if=/task-familiar-etc of=/dev/mtdblock0
-
-Why are you doing that ? I'm using 'cp' over /dev/mtd0 as said in the
-mtd-jffs-HOWTO :
-
-----QUOTE
-cp  /tmp/jffs.image /dev/mtd0,1,2
-----QUOTE
-
-Actually 'dd' is a more flexible 'cp'. Anyway I tried both ways.
-
->  mount -t jffs2 /dev/mtdblock0 /mnt
-
-Here's where I was wrong. The mount works but the system freezes for about
-30 seconds (YUP) so I thought the system was hung. Anyway, issuing a
-"touch /mnt/silly" crashes the system, giving me the same kernel oops. I
-increased the debugging level of printk, as you adviced in your previous
-post but I cannot post neither the debug messages nor the kernel oops
-itself : tomorrow I will buy a NULL modem cable and I'll try to catch the
-messages through the serial port.
-
-Taking a look to the stack trace is giving me the impression that my last
-backtrace was correct and the reason why this happens is always the same
-"invalid operand".
-
-Cristiano
+>
+> ldoolitt@recycle.lbl.gov said:
+> >  Maybe my use is atypical, and maybe 5 blocks is a theoretical
+> > minimum.  I don't want to sound like a complainer, either -- this file
+> > system certainly looks like it meets my needs. I guess I just want to
+> > point out the superficial imbalance between the amount of sweat people
+> > pour out on projects like busybox to reduce code size by a few kB,
+> > when there is 320 kB "just lying around" on any JFFS2 on a 64 kB erase
+> > block chip.
+>
+> Theoretical minimum is one block, not five. Give me formal proof that
+> this is also the _practical_ minimum, and we can drop the
+> overly-conservative limits.
+>
+> Actually, we'd drop it to two, to allow for at least one block going bad on
+> us. More than two on NAND flash.
+>
+> --
+> dwmw2
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
