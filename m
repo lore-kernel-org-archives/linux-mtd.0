@@ -1,19 +1,18 @@
-Received: from mailout01.sul.t-online.com ([194.25.134.80])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1COMth-00086C-KP
-	for linux-mtd@lists.infradead.org; Sun, 31 Oct 2004 16:05:58 -0500
-To: Jeff Angielski <jangiels@speakeasy.net>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Sat, 30 Oct 2004 17:35:37 EDT."
-	<1099172137.30440.8.camel@nighteyes.localdomain>
-Date: Sun, 31 Oct 2004 22:05:35 +0100
-Sender: wd@denx.de
-Message-Id: <20041031210540.B0558C146B@atlas.denx.de>
+Received: from mail1.speakeasy.net ([216.254.0.201])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CONHU-0008Hl-Vx
+	for linux-mtd@lists.infradead.org; Sun, 31 Oct 2004 16:30:34 -0500
+From: Jeff Angielski <jangiels@speakeasy.net>
+To: Wolfgang Denk <wd@denx.de>
+In-Reply-To: <20041031210540.B0558C146B@atlas.denx.de>
+References: <20041031210540.B0558C146B@atlas.denx.de>
+Content-Type: text/plain
+Message-Id: <1099258204.10498.12.camel@nighteyes.localdomain>
+Mime-Version: 1.0
+Date: Sun, 31 Oct 2004 16:30:04 -0500
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mkfs.jffs2 with DENX 2.4 kernel on MPC8260 
+Subject: Re: mkfs.jffs2 with DENX 2.4 kernel on MPC8260
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <1099172137.30440.8.camel@nighteyes.localdomain> you wrote:
+On Sun, 2004-10-31 at 16:05, Wolfgang Denk wrote:
+> In message <1099172137.30440.8.camel@nighteyes.localdomain> you wrote:
+> > 
+> > Using the default rootfs image from the ELDK toolkit and with the
+> > MTD/jffs2 debugging turned on, this is what I see:
 > 
-> Using the default rootfs image from the ELDK toolkit and with the
-> MTD/jffs2 debugging turned on, this is what I see:
+> You may want to update your kernel tree. On our CVS server  you  will
+> find a kernel tree which includes a much more recent MTD snapshot.
 
-You may want to update your kernel tree. On our CVS server  you  will
-find a kernel tree which includes a much more recent MTD snapshot.
+My 2.4 kernel source is up-to-date with the latest code from the DENX
+CVS linuxppc_2_4_devel tree.
 
-Best regards,
+It is the ramdisk_image from ELDK 3.0 that I am using for the rootfs. 
+In fact, I tried todays buildroot image from uclibc/busybox and it did
+not work either
 
-Wolfgang Denk
+The only "unusual" think about my flash is that it is configured for a
+64bit bus (4x16).  The DENX kernel was the only 2.4 kernel that would
+even work this much with the 64bit bus configuration - due mainly to
+your efforts to hand merge the MTD code before it went 2.6-only.
 
--- 
-See us @ Embedded/Electronica Munich, Nov 09 - 12, Hall A.6 Booth 513
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-A right is not what someone gives you; it's what no one can take from
-you.                                                   - Ramsey Clark
+Jeff Angielski
