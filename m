@@ -1,17 +1,15 @@
-Received: from securedesign.net ([216.99.200.242] helo=firewall.sdesign.com)
+Received: from mailout02.sul.t-online.com ([194.25.134.17] helo=mailout02.sul.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15MTtM-0000lC-00
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2001 13:23:57 +0100
-Message-ID: <003b01c10ebc$8a7ef0a0$160aa8c0@gumby>
-From: "Stephen Herzog" <mtd@sdesign.com>
-To: <cabcam@optusnet.com.au>, <linux-mtd@lists.infradead.org>
-References: <000901c10e92$eca169e0$4c418990@adsl>
-Subject: Re: Recovery of crashed DoC???
-Date: Tue, 17 Jul 2001 05:32:28 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 15MUIa-0000no-00
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2001 13:50:00 +0100
+Date: Tue, 17 Jul 2001 14:54:37 +0200
+To: linux-mtd@lists.infradead.org
+Subject: Patch
+Message-ID: <20010717145437.A26825@router.sternenhaufen>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+From: cemil@regio.net (Cemil Degirmenci)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,67 +21,214 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Greetings,
+----- Forwarded message from David Woodhouse <dwmw2@redhat.com> -----
 
-Assuming the OS is not the data you really, really, need, you could try=20
-the following:  Remove the DoC and attach a regular IDE drive to the=20
-SBU 4825 and boot from IDE first. Next compile a kernel on it with=20
-DoC support. You will have to install your kernel on a floppy disk=20
-however to get it to boot rather than from DoC. Now put the DoC back
-in the SBU, boot from floppy/linux-kernel try mounting the DoC. Perhaps
-you can get some of the data that way.=20
+To: cemil@regio.net
+From: David Woodhouse <dwmw2@redhat.com>
 
-I don't think you want to use the DINFO.EXE utility.  That tool places
-a dos bios patch on the nftl layer that allows the computer to boot=20
-from the DoC.=20
+Index: drivers/mtd/devices/doc2000.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/devices/doc2000.c,v
+retrieving revision 1.43
+diff -u -r1.43 doc2000.c
+--- drivers/mtd/devices/doc2000.c	2001/06/02 14:30:43	1.43
++++ drivers/mtd/devices/doc2000.c	2001/07/17 12:47:52
+@@ -84,19 +84,22 @@
+ static int _DoC_WaitReady(struct DiskOnChip *doc)
+ {
+ 	unsigned long docptr = doc->virtadr;
+-	unsigned short c = 0xffff;
++	unsigned long timeo = jiffies + (HZ * 10);
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL3,
+ 	      "_DoC_WaitReady called for out-of-line wait\n");
+ 
+ 	/* Out-of-line routine to wait for chip response */
+-	while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B) && --c)
+-		;
+-
+-	if (c == 0)
+-		DEBUG(MTD_DEBUG_LEVEL2, "_DoC_WaitReady timed out.\n");
++	while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B)) {
++		if (time_after(jiffies, timeo)) {
++			DEBUG(MTD_DEBUG_LEVEL2, "_DoC_WaitReady timed out.\n");
++			return -EIO;
++		}
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		schedule_timeout(1);
++	}
+ 
+-	return (c == 0);
++	return 0;
+ }
+ 
+ static inline int DoC_WaitReady(struct DiskOnChip *doc)
+@@ -566,6 +569,7 @@
+ 
+ 	this->curfloor = -1;
+ 	this->curchip = -1;
++	init_MUTEX(&this->lock);
+ 
+ 	/* Ident all the chips present. */
+ 	DoC_ScanChips(this);
+@@ -606,6 +610,8 @@
+ 	if (from >= this->totlen)
+ 		return -EINVAL;
+ 
++	down(&this->lock);
++
+ 	/* Don't allow a single read to cross a 512-byte block boundary */
+ 	if (from + len > ((from | 0x1ff) + 1))
+ 		len = ((from | 0x1ff) + 1) - from;
+@@ -724,6 +730,8 @@
+ 	    DoC_WaitReady(this);
+ 	}
+ 
++	up(&this->lock);
++
+ 	return ret;
+ }
+ 
+@@ -751,6 +759,8 @@
+ 	if (to >= this->totlen)
+ 		return -EINVAL;
+ 
++	down(&this->lock);
++
+ 	/* Don't allow a single write to cross a 512-byte block boundary */
+ 	if (to + len > ((to | 0x1ff) + 1))
+ 		len = ((to | 0x1ff) + 1) - to;
+@@ -813,6 +823,7 @@
+ 			printk("Error programming flash\n");
+ 			/* Error in programming */
+ 			*retlen = 0;
++			up(&this->lock);
+ 			return -EIO;
+ 		}
+ 
+@@ -865,6 +876,7 @@
+ 		printk("Error programming flash\n");
+ 		/* Error in programming */
+ 		*retlen = 0;
++		up(&this->lock);
+ 		return -EIO;
+ 	}
+ 
+@@ -874,6 +886,7 @@
+ 	if (eccbuf) {
+ 		unsigned char x[8];
+ 		size_t dummy;
++		int ret;
+ 
+ 		/* Write the ECC data to flash */
+ 		for (di=0; di<6; di++)
+@@ -882,9 +895,11 @@
+ 		x[6]=0x55;
+ 		x[7]=0x55;
+ 		
+-		return doc_write_oob(mtd, to, 8, &dummy, x);
++		ret = doc_write_oob(mtd, to, 8, &dummy, x);
++		up(&this->lock);
++		return ret;
+ 	}
+-
++	up(&this->lock);
+ 	return 0;
+ }
+ 
+@@ -892,10 +907,12 @@
+ 			size_t * retlen, u_char * buf)
+ {
+ 	struct DiskOnChip *this = (struct DiskOnChip *) mtd->priv;
+-	int len256 = 0;
++	int len256 = 0, ret;
+ 	unsigned long docptr;
+ 	struct Nand *mychip;
+ 
++	down(&this->lock);
++
+ 	docptr = this->virtadr;
+ 
+ 	mychip = &this->chips[ofs >> this->chipshift];
+@@ -939,12 +956,15 @@
+ 	/* Reading the full OOB data drops us off of the end of the page,
+          * causing the flash device to go into busy mode, so we need
+          * to wait until ready 11.4.1 and Toshiba TC58256FT docs */
+-	return DoC_WaitReady(this);
++	
++	ret = DoC_WaitReady(this);
++	up(&this->lock);
++	return ret;
+ 
+ }
+ 
+-static int doc_write_oob(struct mtd_info *mtd, loff_t ofs, size_t len,
+-			 size_t * retlen, const u_char * buf)
++static int doc_write_oob_nolock(struct mtd_info *mtd, loff_t ofs, size_t len,
++				size_t * retlen, const u_char * buf)
+ {
+ 	struct DiskOnChip *this = (struct DiskOnChip *) mtd->priv;
+ 	int len256 = 0;
+@@ -1032,8 +1052,20 @@
+ 	return 0;
+ 
+ }
++
++static int doc_write_oob(struct mtd_info *mtd, loff_t ofs, size_t len,
++			 size_t * retlen, const u_char * buf)
++{
++	struct DiskOnChip *this = (struct DiskOnChip *) mtd->priv;
++	int ret;
++
++	down(&this->lock);
++	ret = doc_write_oob_nolock(mtd, ofs, len, retlen, buf);
++	up(&this->lock);
++	return ret;
++}
+ 
+-int doc_erase(struct mtd_info *mtd, struct erase_info *instr)
++static int doc_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct DiskOnChip *this = (struct DiskOnChip *) mtd->priv;
+ 	__u32 ofs = instr->addr;
+@@ -1041,6 +1073,8 @@
+ 	unsigned long docptr;
+ 	struct Nand *mychip;
+ 
++	down(&this->lock);
++
+ 	if (len != mtd->erasesize)
+ 		printk(KERN_WARNING "Erase not right size (%x != %x)n",
+ 		       len, mtd->erasesize);
+@@ -1078,6 +1112,7 @@
+ 	if (instr->callback)
+ 		instr->callback(instr);
+ 
++	up(&this->lock);
+ 	return 0;
+ }
+ 
+Index: include/linux/mtd/doc2000.h
+===================================================================
+RCS file: /home/cvs/mtd/include/linux/mtd/doc2000.h,v
+retrieving revision 1.13
+diff -u -r1.13 doc2000.h
+--- include/linux/mtd/doc2000.h	2001/05/29 12:03:45	1.13
++++ include/linux/mtd/doc2000.h	2001/07/17 12:47:52
+@@ -134,6 +134,7 @@
+ 	int numchips;
+ 	struct Nand *chips;
+ 	struct mtd_info *nextdoc;
++	struct semaphore lock;
+ };
+ 
+ int doc_decode_ecc(unsigned char sector[512], unsigned char ecc1[6]);
 
-Good luck,
 
-Stephen Herzog
+----- End forwarded message -----
 
------ Original Message -----=20
-From: "Colin Durey" <cabcam@optusnet.com.au>
-To: "MTD List Admin (E-mail)" <linux-mtd@lists.infradead.org>
-Sent: Tuesday, July 17, 2001 12:34 AM
-Subject: Recovery of crashed DoC???
-
-
-> I have a 40mb DoC which contains critical information that I really, =
-really,
-> need to get hold of.
-> Linux fails to boot after discovering damaged blocks. The DoC is set =
-as the
-> boot device on an embedded SBU (Advantech 4825).
->=20
-> Plugging in a floppy and booting DOS, then using the DoC utility =
-DINFO.EXE
-> returns the following info:
-> Drive Name:  C:
-> Disk Size 40,072 kb
-> Software Version 1.10
-> TrueFFS Compatibility 3.3.2
-> Firmware size 48kb
->=20
-> which suggest that the chip is still alive, at least.
->=20
-> Is there any way in which to read the data files from the DoC?  I have =
-been
-> told to use the utility DUPDATE.EXE to change the drive name to D: or
-> something other than C:, so that I can then connect another HD and =
-boot it
-> as C: and then mount the DoC as a secondary drive and subsequently =
-recover
-> the precious files. DUPDATE.EXE doesn't seem to want to let me do =
-that.
->=20
-> Anyone know what to do?
->=20
-> Colin Durey
-> Cabcam - Tech Division
-> +61-2-96984711 (T)  +61-2-96984674 (F)
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
+-- 
+Cemil Degirmenci                //   http://cemil.debian-linux.de
+Am Eisenberg 13                 //   Tel.       06638-9180010   
+36341 Lauterbach                //   Mobil.     0177-2541153
+Germany                         //   E-Mail     cemil@security-focus.de
