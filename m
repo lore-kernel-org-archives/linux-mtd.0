@@ -1,17 +1,19 @@
-Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vc9z-00084V-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 11:50:35 +0100
-Received: from devil.securez.org (devil.iqc-services.local [192.168.197.3])
-	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g3BBWFh24877
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 13:32:15 +0200
-Message-Id: <5.1.0.14.2.20020411124749.01ff8b20@pop3.iqc-services.com>
-Date: Thu, 11 Apr 2002 12:49:29 +0200
-To: linux-mtd@lists.infradead.org
-From: Securez <securez@securez.org>
-Subject: About Blkmem and mtdblock devices
+	id 16vclJ-00088W-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 12:29:09 +0100
+Date: Thu, 11 Apr 2002 13:29:04 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Derek Ross <dross@iders.ca>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: What is smallest JFFS2 size (#blocks)
+Message-ID: <20020411132904.B11640@wohnheim.fh-wedel.de>
+References: <008f01c1e097$2dce41a0$87657bc8@athlon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <008f01c1e097$2dce41a0$87657bc8@athlon>; from dross@iders.ca on Wed, Apr 10, 2002 at 08:54:05AM -0500
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,9 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I see that the major number of the block devices used for blkmem and 
-mtdblock are the same (31).
-Ary any method to solve this and the posibility of have these 2 devices 
-working propertly.
+On Wed, 10 April 2002 08:54:05 -0500, Derek Ross wrote:
+> We plan to use JFFS2 to store several
+> text configuration files, but we don't 
+> expect the total size of the files to 
+> be more than 10k or so.
+> 
+> What is the smallest possible size
+> for a JFFS2 file system, in number
+> of blocks? I'm sure it's at least 2...
 
-Regards.
+joern@dublin:/usr/src/linux/fs/jffs2> grep "#define" *.h
+...
+nodelist.h:#define ALLOC_GC     2       /* Space requested for GC. Give it or die */
+nodelist.h:#define JFFS2_RESERVED_BLOCKS_BASE 3
+
+Looks like 6 is the correct answer. But you can reduce
+JFFS2_RESERVED_BLOCKS_BASE down to 0 - at your own risk of course.
+
+Jörn
+
+-- 
+Smart data structures and dumb code works a lot better than the other
+way around.
+-- Eric Raymond in "The cathedral and the bazaar"
