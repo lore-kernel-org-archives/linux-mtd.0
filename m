@@ -1,17 +1,34 @@
-From: jason@emsoftltd.com (Jason Chan)
-Date: Fri, 07 Mar 2003 09:30:40 +0800
-Subject: Can MTD support SyncFlash?
-Message-ID: <3E67F640.4020204@emsoftltd.com>
+From: guo_zl9@hotmail.com (guo_zhenglin)
+Date: Fri, 7 Mar 2003 09:50:02 +0800
+Subject: help : JFFS2 compile error :background.c
+Message-ID: <OE37v3DrhVRAGMd4uzH0000814c@hotmail.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi,
-    I have a SyncFlash from Micron.
-I would like to ask if MTD provide any support to SyncFlash chip and how 
-can I use that?
+I had use  mtd_cvs_20020612.tgz (from
+  http://qslinux.org/qslinux_2_4/tarballs/mtd_cvs_20020612.tgz)
 
-I have try to use Intel or AMD Norflash driver, however both failed.
 
-Best Regards,
+  but compile show error:
 
-Jason Chan
+
+ppc_8xx-gcc -D__KERNEL__ -I/home/guozl_1/linux-2.4.4-2002-10-06/include -Wal
+  l -W
+
+strict-prototypes -Os -fomit-frame-pointer -fno-strict-aliasing -D__powerpc_
+  _ -f
+
+signed-char -msoft-float -pipe -ffixed-r2 -Wno-uninitialized -mmultiple -mst
+  ring
+   -mcpu=860 -g -DJFFS2_OUT_OF_KERNEL  -c -o background.o background.c
+  background.c:108: arguments given to macro `recalc_sigpending'
+  background.c:155: arguments given to macro `recalc_sigpending'
+  make[2]: *** [background.o] Error 1
+  make[2]: Leaving directory `/home/guozl_1/linux-2.4.4-2002-10-06/fs/jffs2'
+  make[1]: *** [_subdir_jffs2] Error 2
+  make[1]: Leaving directory `/home/guozl_1/linux-2.4.4-2002-10-06/fs'
+  make: *** [_dir_fs] Error 2
+  [root at t80c35 linux-2.4.4-2002-10-06]#
+
+  can you tell me how to do ?
+ thanks !
