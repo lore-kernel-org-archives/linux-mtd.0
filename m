@@ -1,14 +1,13 @@
 From: tweedledum@openbrain.co.kr (=?ks_c_5601-1987?B?vcm8usC2?=)
-Date: Fri, 28 Mar 2003 12:03:56 +0900
-Subject: Required memory size for jffs2.
-Message-ID: <00da01c2f4d6$ac6b3140$7d0323d3@tweedledum>
+Date: Fri, 28 Mar 2003 16:55:40 +0900
+Subject: Required memory size for jffs2?
+Message-ID: <013d01c2f4ff$6e00f6f0$7d0323d3@tweedledum>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
 I have tested jffs2 in user memory space, which gave me many advantages to
 understand the inner works of jffs2 and save time; disk i/o request was
-redirected to file i/o and kmalloc() was modified to malloc().
-
+redirected to file i/o and kmalloc() was modified to malloc(). At some point
 I checked the size of all allocated memory using malloc_stats() function to
 meet our memory requirement in embedded environment.
 
@@ -26,7 +25,7 @@ in use bytes     =     140208
 max mmap regions =          0
 max mmap bytes   =          0
 
-After Creation of a ~10MB file under same situation. the number of total
+After Creation of a 10MB file under same situation. the number of total
 nodes on flash including clean markers is 3297
 
 system bytes     =     209568
@@ -54,5 +53,7 @@ I could hardly believe the results. jffs2 requires too much memory!!
 Actually I used the version ported to ecos(the date I downloaded ecos is
 2003-02-07 07:17). Because I thought that's easily be done.
 
-Could someone help me to understand the situation? any suggestion and
-help will be appreciated. thanks very much.
+Could someone help me to understand the situation? any suggestion and help
+will be appreciated. thanks very much.
+
+Kyle S. Shim
