@@ -1,38 +1,59 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14nvuL-0006hX-00
-	for mtd-list@infradead.org; Fri, 13 Apr 2001 06:14:09 +0100
-Received: from asteroid.pacifier.com ([199.2.117.154])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14nvuE-0006hR-00
-	for mtd@infradead.org; Fri, 13 Apr 2001 06:14:07 +0100
-Received: from shell.pacifier.com (IDENT:manatee@shell.pacifier.com [199.2.117.66])
-	by asteroid.pacifier.com (8.11.2/8.11.1) with ESMTP id f3D5DQM20748
-	for <mtd@infradead.org>; Thu, 12 Apr 2001 22:13:26 -0700 (PDT)
-Date: Thu, 12 Apr 2001 22:13:40 -0700 (PDT)
-From: Manatee <manatee@pacifier.com>
-To: <mtd@infradead.org>
-Subject: mtd on linux
-Message-ID: <Pine.BSO.4.33.0104122209520.4678-100000@shell.pacifier.com>
+	id 14nz6S-0007MO-00
+	for mtd-list@infradead.org; Fri, 13 Apr 2001 09:38:52 +0100
+Message-ID: <3AD6BBC3.95F590B1@cstelecom.com>
+Date: Fri, 13 Apr 2001 10:41:39 +0200
+From: "DELANNEAU Alain" <alain.delanneau@cstelecom.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: David Woodhouse <dwmw2@infradead.org>
+CC: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: What about a search engine ?
+References: <7657.986564737@redhat.com>  <1072F1A27E99D3119747005004B9A380EB98A6@MAIL> <10552.986566321@redhat.com>
+Content-Type: multipart/mixed;
+ boundary="------------BAC84674C3432DCB5C096D87"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Il s'agit d'un message multivolet au format MIME.
+--------------BAC84674C3432DCB5C096D87
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-I compiled the 2.4.1 kernel for Linux which has support for this device.
-Then I put the card in the PCI slot and rebooted. My harddrive was not
-recognized.
+Hi mtd hackers
+I'm a newcomer to mtd and jffs, and I'm impressed
+by the quantity and quality of the subjects treated here !
+I've been browsing this mail archive for some days
+"by hand", but it's so huge now ...
+Wouldn't it be a good idea to set up a search engine ?
 
-What I want to do is just boot up as normal and then mount the card and
-take a look at what is on it. Just curious. Could someone tell me how to
-install the card so it does not interfere with normal booting? And once I
-boot up how, specifically, can I take a look at what is on the 'disk on
-chip'? Thank you.
+Nice work anyway
 
-Manatee
+
+--------------BAC84674C3432DCB5C096D87
+Content-Type: text/x-vcard; charset=us-ascii;
+ name="alain.delanneau.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Description: Carte pour delanneau
+Content-Disposition: attachment;
+ filename="alain.delanneau.vcf"
+
+begin:vcard 
+n:DELANNEAU;Alain
+tel;fax:01 41 87 74 27
+tel;work:01 41 87 70 79
+x-mozilla-html:FALSE
+org:CS TELECOM;Basic software / System
+version:2.1
+email;internet:alain.delanneau@cstelecom.com
+title:Software development engineer
+adr;quoted-printable:;;4-16, Avenue du G=E9n=E9ral Leclerc=0D=0ABP 74;Fontenay-Aux-Roses;;92260;FRANCE
+x-mozilla-cpt:;-24128
+fn:Alain DELANNEAU
+end:vcard
+
+--------------BAC84674C3432DCB5C096D87--
 
 
 
