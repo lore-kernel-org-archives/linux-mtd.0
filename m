@@ -1,22 +1,14 @@
-Received: from host-216-252-217-242.interpacket.net ([216.252.217.242]
-	helo=forof.hylink.am)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D1nAy-0001Tj-1d
-	for linux-mtd@lists.infradead.org; Thu, 17 Feb 2005 10:02:46 -0500
-Received: from forof.hylink.am (localhost.hylink.am [127.0.0.1])
-	by forof.hylink.am (8.12.10/8.12.10) with ESMTP id j1HF2OAv044880
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Feb 2005 19:02:25 +0400 (AMT)
-	(envelope-from araav@forof.hylink.am)
-Received: (from araav@localhost)
-	by forof.hylink.am (8.12.10/8.12.10/Submit) id j1HF2OtT044879
-	for linux-mtd@lists.infradead.org; Thu, 17 Feb 2005 19:02:24 +0400 (AMT)
-	(envelope-from araav)
-Date: Thu, 17 Feb 2005 19:02:24 +0400 (AMT)
-From: Ara Avanesyan <araav@hylink.am>
-Message-Id: <200502171502.j1HF2OtT044879@forof.hylink.am>
-To: linux-mtd@lists.infradead.org
-Subject: Software Requirement && DiskOnChip
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ara Avanesyan <araav@hylink.am>
+In-Reply-To: <200502171502.j1HF2OtT044879@forof.hylink.am>
+References: <200502171502.j1HF2OtT044879@forof.hylink.am>
+Content-Type: text/plain
+Date: Thu, 17 Feb 2005 16:24:18 +0000
+Message-Id: <1108657458.19262.671.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Software Requirement && DiskOnChip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 2005-02-17 at 19:02 +0400, Ara Avanesyan wrote:
+>   Everywhere in DiskOnChip files there are referneces to a magic
+> "Software Requirement 11.x.y".
+> Can someone please tell me where can I locate one?
+> 
+>   Also, where can I find the descriptions of the registers
+> DoC_Mplus_FlashControl through DoC_Mplus_WritePipeTerm
+> defined in doc2000.h? The data-sheet for MPlus DOC device does not
+> contain this info.
 
-  Everywhere in DiskOnChip files there are referneces to a magic "Software
-Requirement 11.x.y".
-Can someone please tell me where can I locate one?
+Unfortunately I don't think these are publicly available. Although I
+have a vague recollection of being corrected last time I said that.
 
-  Also, where can I find the descriptions of the registers
-DoC_Mplus_FlashControl through DoC_Mplus_WritePipeTerm
-defined in doc2000.h? The data-sheet for MPlus DOC device does not contain
-this info.
-
-__
-Thanks,
-Ara
+-- 
+dwmw2
