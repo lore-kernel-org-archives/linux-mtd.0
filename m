@@ -1,54 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13qTu6-0006Jt-00
-	for mtd-list@infradead.org; Tue, 31 Oct 2000 05:24:10 +0000
-Received: from [63.196.9.2] (helo=ftp.neontech.com)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13qTu5-0006Jn-00
-	for mtd@infradead.org; Tue, 31 Oct 2000 05:24:09 +0000
-Date: Mon, 30 Oct 2000 21:27:07 -0800
-From: Qiuyuan Liu <q.liu@acm.org>
+	id 13qfWd-0000lu-00
+	for mtd-list@infradead.org; Tue, 31 Oct 2000 17:48:43 +0000
+Received: from amdext2.amd.com ([163.181.251.1])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13qfWb-0000lo-00
+	for mtd@infradead.org; Tue, 31 Oct 2000 17:48:41 +0000
+Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA21988
+	for <mtd@infradead.org>; Tue, 31 Oct 2000 11:48:09 -0600 (CST)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id LAA26346
+	for <mtd@infradead.org>; Tue, 31 Oct 2000 11:48:08 -0600 (CST)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F191@txexmta8.amd.com>
 To: mtd@infradead.org
-Subject: building mtd
-Message-Id: <39FE582B0.1786Q.LIU@mail.neontech.com>
+Subject: Problems with AMD CFI chips
+Date: Tue, 31 Oct 2000 11:47:59 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-It seems not easy to have it built.
+I'm testing the MTD/JFFS combo using Kernel 2.2.16 and
+the October 30, 2000 version of MTD on AMD CFI compliant
+chips.
 
-In the previous email, I said I got an issue on bitsy.h. After I
-commented the relative stuff, I had the whole make finished.
+The Flash bank is found correctly, and loads, and I can
+write to it.  However, when I boot from it, I can't seem
+to get it to commit writes - either creating new files 
+or altering old ones.  Once I reboot the device, my
+changes are gone.
 
-Now, where is what I built?
+mtab shows the root device as being mounted read/write.
+When I write a file, the debug info seems to indicate
+that the version numbers are being updated properly.
 
-Let me comfirm this:
-1. I installed kernel 2.2.17 source on 
-linux -> /usr/src/linux-2.2.17
-I just ran make menuconfig, and make dep
+What other information should I provide to help debug
+this problem?
 
-1.1 Should I finish the make to get vmlinuz?
-1.2 should I make modules_install to have the newly made kernel running?
-
-2. I used cvs checked out the latest mtd code, and put it in 
-/home/qliu/mtd/,  and ran make under mtd
-
-2.1 should I make symbolic links under 
-/usr/src/linux to it, I don't yet.
-2.2 should I make the kernel with the mtd modules to have the mtd
-modules built into the kernel?
-2.3 or I can make and load the mtd modules independently on the kernel
-2.2.14 that came with Red Hat Linux 6.2?
-
-2.4 btw, what version of kernel was put in Red Hat Linux 7.0?
-
-3. As the README file says, the result made should have 4 kernel
-modules: mtd.o, .., where are they?
-
-Thank you,
-Qiuyuan
+Mark Langsdorf
+Advanced Micro Devices, Inc             Tel: 512.602.3756
+5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+Austin, TX 78741                        mark.langsdorf@amd.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
