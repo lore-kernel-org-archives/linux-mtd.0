@@ -1,18 +1,16 @@
-Received: from [207.158.103.130] (helo=linux.local)
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uMUz-00045u-00
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2001 23:50:33 +0100
-Received: from vhbtech.com ([127.0.0.1])
-	by linux.local (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with ESMTP id f3UM39E05844
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2001 17:03:09 -0500
-Message-ID: <3AEDE11C.94AC9A22@vhbtech.com>
-Date: Mon, 30 Apr 2001 17:03:08 -0500
-From: Jeff Smith <jsmith@vhbtech.com>
+	id 14uMjx-0004Gc-00
+	for <linux-mtd@lists.infradead.org>; Tue, 01 May 2001 00:06:02 +0100
+Date: Tue, 1 May 2001 00:06:11 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Vipin Malik <vipin.malik@daniel.com>
+cc: mtd <linux-mtd@lists.infradead.org>, jffs-dev <jffs-dev@axis.com>
+Subject: Re: Wear Leveling in JFFS2 NOT working!(?)
+In-Reply-To: <3AEDE678.51C6F94E@daniel.com>
+Message-ID: <Pine.LNX.4.33.0104302356320.10289-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 Problem
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,21 +22,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Thanks to anyone who might offer some help for my problem.
+On Mon, 30 Apr 2001, Vipin Malik wrote:
 
-I'm running jffs2 on a PPC/855T board. I mount the jffs2 and have
-two (2) test scripts that "dd" various sized files to the jffs2 flash.
-I seem to be running into a race condition or something.
+> Obviously, not all sectors are being "cycled" evenly. As a matter of
+> fact, none of the sectors below 0x380000 are being cycled at all.
+>
+> Now, one thing that may be tripping up the wear leveling algorithm is
+> the fact that the system is being cycled every 2-3 minutes.
 
-My 2 scripts just "dd" a bunch of files to the jffs2/flash, "ls -l "
-them,
-"rm *" them and then "ls -l" the dir/mnt point again in a loop. I'm
-running
-2 of these and they always reach contention fairly quickly, ie.
-they lock up after 5 to 10 iterations. ps shows the processes sleeping.
-If I remove the "ls"portion of the scripts. That is I just "dd" and "rm"
--
-everything "seems" ok.Anybody seen this?
+That's almost certainly the reason. My testing on prolonged stress tests
+showed a fairly even wear levelling.
 
+> David? What does the algorithm to "pickup" a new "less cycled" sector
+> and give a over-used sector a rest depend on?
 
-Thanks Jeff
+Most of the time we pick the block off the end of the dirty_list. With a
+1/100 probability, we pick a block off the clean_list instead.
+Freshly-dirtied blocks get put on the back of the dirty_list. Likewise,
+freshly-filled blocks get put on back of the clean_list. So it tends to
+use them fairly evenly.
+
+However, when we remount the filesystem, we lose that ordering. The blocks
+get put on the lists in order, and we pick the block nearest the end of
+the medium.
+
+Suggested fix: introduce some randomness to the initial list after
+mounting.
+
+Either:
+	1. After scan, move the first <n> blocks in the list to the end
+		of the list, where 1 < n < sizeof(list).
+	2. When adding entries to the lists during scan, do something
+		like: if (jiffies % 1) list_add_tail() else list_add().
+
+-- 
+dwmw2
