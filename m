@@ -1,16 +1,23 @@
-Received: from [65.117.135.105] (helo=yoda.timesys)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C83rc-00081n-L3
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2004 17:32:25 -0400
-Date: Thu, 16 Sep 2004 17:32:19 -0400
+	id 1C86PI-0008Ur-Ip
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2004 20:15:21 -0400
+Received: from thomas.tec.linutronix.de (pD95F6EE6.dip.t-dialin.net
+	[217.95.110.230]) (using SSLv3 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by debian.tglx.de (Postfix) with ESMTP id 1148A65C035
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 17 Sep 2004 02:12:42 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20040916213219.GA28903@yoda.timesys>
+Content-Type: text/plain
+Message-Id: <1095379673.28388.206.camel@thomas.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: Scott Wood <scott@timesys.com>
-Cc: manas.saksena@timesys.com
-Subject: [PATCH] IXDP425 write16 alignment
+Date: Fri, 17 Sep 2004 02:07:53 +0200
+Content-Transfer-Encoding: 7bit
+Subject: 2.6 Update
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've attached a patch to the ixp4xx.c map file to prevent
-ixp4xx_write16() from writing to an unaligned address, which happens
-when probing the device width.  Such an access causes a fault handler
-to attempt to do the write a byte at a time, which apparently
-aggravates the hardware into causing a delayed data abort, which
-crashes the system.
+Hi,
 
-With this patch, unaligned writes are ignored, causing the 8-bit
-probe to fail and proceed to the 16-bit probe (which succeeds).
+The __iomem related changes in 2.6 concerning readb, writeb and friends
+made it neccecary to overhaul the MTD code to get rid of about 1000
+warnings.
 
-Signed-off-by: Scott Wood <scott.wood@timesys.com> under TS0068
+I committed the neccecary semantical fixes (works unfortunately on 2.4
+too). 
 
---- linux-2.6.8.1/drivers/mtd/maps/ixp4xx.c	2004-08-17 15:22:35.000000000 -0400
-+++ linux-ixdp425/drivers/mtd/maps/ixp4xx.c	2004-09-16 17:21:20.000000000 -0400
-@@ -71,7 +71,8 @@
- 
- static void ixp4xx_write16(struct map_info *map, map_word d, unsigned long adr)
- {
--	*(__u16 *) (map->map_priv_1 + adr) = d.x[0];
-+	if (!(adr & 1))
-+		*(__u16 *) (map->map_priv_1 + adr) = d.x[0];
- }
- 
- struct ixp4xx_flash_info {
+Please check the functionality of your drivers in order to prepare an
+upstream push
+
+tglx
