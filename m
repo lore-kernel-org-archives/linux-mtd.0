@@ -1,20 +1,24 @@
-Received: from adsl-69-233-160-201.dsl.pltn13.pacbell.net ([69.233.160.201]
-	helo=neptune.TidalNetworks.net)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1ChDrn-0005nF-LG
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 16:17:59 -0500
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 22 Dec 2004 13:17:45 -0800
-Message-ID: <52BBA75459915749B68F93B604B636CD136C99@neptune.TidalNetworks.net>
-From: "Fadi Nasser" <fnasser@TidalNetworks.net>
-To: <jffs-dev@axis.com>,
-	<linux-mtd@lists.infradead.org>
-Cc: 
-Subject: compiling mkfs.jffs2 for powerpc?
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1ChTOF-0001M6-OU
+	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 08:52:29 -0500
+Date: Thu, 23 Dec 2004 14:52:31 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: xemc <xemcnet@gmail.com>
+Message-ID: <20041223135231.GB24503@wohnheim.fh-wedel.de>
+References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
+	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
+	<20041222160942.GC9783@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0412221610230.30689@phoenix.infradead.org>
+	<20041222172637.GE9783@wohnheim.fh-wedel.de>
+	<1f9886eb0412221014256b83e6@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f9886eb0412221014256b83e6@mail.gmail.com>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Where can I get the sourcecode from? Better yet, as someone out there=20
-must have already compiled this for 82xx PPC, does anyone know where
-I can get an executable for 82xxPPC? Many thanks.
+On Wed, 22 December 2004 12:14:18 -0600, xemc wrote:
+> 
+> Please forgive me if this is a naive question, but isn't this data
+> also protected by ECC in the first place?  (or is that just for NAND?)
 
------Original Message-----
-From: owner-jffs-dev@axis.com [mailto:owner-jffs-dev@axis.com] On Behalf
-Of Fadi Nasser
-Sent: Tuesday, December 21, 2004 9:52 AM
-To: David Woodhouse; Pedro Aguilar
-Cc: jffs-dev@axis.com; linux-mtd@lists.infradead.org
-Subject: JFFS2 for multi-partition Flash
+Just for NAND.  NOR is pretty reliable anyway, so we could just go
+without a checksum.  Hard drive based filesystems usually do the same
+and few people complain.
+But as long as it's cheap enough, extra confidence doesn't hurt.
 
-Hello all,
-    I apologize I advance for my long email but I'll try to state
-The few questions that I have in a detailed fashion. My flash
-(sect_size=3D0x20000, starting@0xFE000000) looks like this:
-physmap_partitions
-0x00000->0x20000	   PPC hardware reset word
-0x20000->0x1F00000   Filesystem section
-0x1F00000->0x1F40000 U-boot
-0x1F40000->0x1F80000 U-boot env
+>  How strong is this ECC compared to CRC32 or Adler32?
 
-Basically, I only need a portion of Flash to use JFFS2. So I built my
-Jffs2.img (padded to 0x1F00000-0x20000=3D0x1ee0000), burned it in flash.
-/proc/mtd shows the proper partitions created (in proc at least).
+No idea.
 
-Question#1
-I get my jffs2.img filessize =3D 0x100000 (1MB) even though I'm padding =
-to
-0x1ee0000. Is this because of internal compression?
+> If the ECC can handle a few bit errors, then wouldn't a simple
+> checksum handle the case where the file was completely corrupt or
+> partially written?
 
-Problem#1
-When linux comes up, I "mknod /dev/mtdblock1 b 31 0". If I try to "mount
--t jffs2 /dev/mtdblock1 /mnt", I see the jffs2_do_mount_fs call scanning
-For the magic keys (0x1985) at offset 0x0 (where I don't have a JFFS
-Image burned). How can I get the scan_medium and mount_fs files to start
-at the proper offset!?
+Correct.  Simple parity might be a nice reference as well.  It is
+really bad at catching even-bit errors (2,4,6,...), but it's fast.
 
-Problem#2
-Even after hardcoding the offsets in the jffs2_do_fill_super call,=20
-after the scan_medium is happy for the first 0x100000 bytes, I=20
-start to see the msgs (0x1985 not found at 0x00100a18: xyz instead).
-Jffs2_scan_eraseblock() scans every 4bytes & keeps complaining about n
-ot finding the magic key (0x1985). I figured this is because my
-img size is 0x100000 even though I padded it to 0x1ee0000. What am I
-missing here?
+Jörn
 
-Thank you so much for any pointers that you may offer.
-
------Original Message-----
-From: owner-jffs-dev@axis.com [mailto:owner-jffs-dev@axis.com] On Behalf
-Of David Woodhouse
-Sent: Tuesday, December 21, 2004 3:39 AM
-To: Pedro Aguilar
-Cc: jffs-dev@axis.com; linux-mtd@lists.infradead.org
-Subject: Re: Kernel freezing when booting with jffs2
-
-On Sat, 2004-12-11 at 16:11 +0100, Pedro Aguilar wrote:
-> The problem is that when mounting the jffs2 filesystem it says
-read-only
-> (I'm not giving it any read-only flag in the MTD partition) and then
-shows
-> the msg 'Warning: unable to open an initial console'
-
-Is there a /dev/console node in your file system? Mounting read-only is
-normal -- add 'rw' on the command line if you don't want it read-only.
-
---=20
-dwmw2
-
-
-To unsubscribe from this list: send the line "unsubscribe jffs-dev" in
-the body of a message to majordomo@axis.com
-
-
-To unsubscribe from this list: send the line "unsubscribe jffs-dev" in
-the body of a message to majordomo@axis.com
+-- 
+"Translations are and will always be problematic. They inflict violence 
+upon two languages." (translation from German)
