@@ -1,18 +1,17 @@
-Received: from dsl-205-210-52-251.kingston.net ([205.210.52.251] helo=linux.interlinx.bc.ca)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189maW-0005Ye-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 13:20:48 +0000
-Date: Thu, 7 Nov 2002 08:50:53 -0500
-To: linux-mtd@lists.infradead.org
-Subject: Re: MTD Config.in items not escaped by bus availability
-Message-ID: <20021107135052.GA13914@pc.ilinx>
-References: <20021106204530.GE12743@pc.ilinx> <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <6557.1036
+	id 189mjg-0005a4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 13:30:16 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20021107135052.GA13914@pc.ilinx> 
+References: <20021107135052.GA13914@pc.ilinx>  <20021106204530.GE12743@pc.ilinx> <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <6557.1036 
+To: "Brian J. Murrell" <e88cd5ffd87e620fdc30b3e6db510d03@interlinx.bc.ca>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD Config.in items not escaped by bus availability 
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-In-Reply-To: <6557.1036656036@passion.cambridge.redhat.com>
-From: "Brian J. Murrell" <e88cd5ffd87e620fdc30b3e6db510d03@interlinx.bc.ca>
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 07 Nov 2002 14:00:34 +0000
+Message-ID: <7374.1036677634@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,39 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+e88cd5ffd87e620fdc30b3e6db510d03@interlinx.bc.ca said:
+>  I hope I am understanding the question/scenario you are proposing,
+> but the answer seems to simple, so I am sure I am missing something.
 
-On Thu, Nov 07, 2002 at 08:00:36AM +0000, David Woodhouse wrote:
->=20
-> What happens when someone makes a mapping driver for UML which mmaps part=
-=20
-> of /dev/kmem from the host?
+> When/if someone makes that UML mapping driver, it would have it's
 
-I hope I am understanding the question/scenario you are proposing, but
-the answer seems to simple, so I am sure I am missing something.
+<PEDANT>
+	YM "its"
+</PEDANT>
 
-When/if someone makes that UML mapping driver, it would have it's
-CONFIG_MTD_UML (or whatever they will call it) outside of the
-CONFIG_MEMORY bus protected portions of the MTD Config.in files.
+(Sorry, customers being bloody stupid at me today and I have to be nasty to 
+_someone_ or my brain will explode :)
 
-b.
+> CONFIG_MTD_UML (or whatever they will call it) outside of the
+> CONFIG_MEMORY bus protected portions of the MTD Config.in files.
 
---=20
-Brian J. Murrell
+But the options for the _chips_ it's able to find in that mapping are 
+disabled because CONFIG_MEMORY_BUS is turned off.
 
---ibTvN161/egqYuK8
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+A better plan would be to allow the chip configuration to be enabled iff 
+there is at least one mapping driver enabled. 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE9ym+8l3EQlGLyuXARAr5XAKCTh9Pa718B6NFfQPvev3ApxnoyoACgooOo
-98hStMrx8tlHvTzghh7gqSo=
-=MGzG
------END PGP SIGNATURE-----
-
---ibTvN161/egqYuK8--
+--
+dwmw2
