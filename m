@@ -1,19 +1,19 @@
-Received: from nat-pool-rdu.redhat.com ([66.187.233.200]
-	helo=devserv.devel.redhat.com)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Ul8W-0007Tc-0C
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 11:34:52 +0100
-Date: Tue, 24 Jun 2003 06:35:07 -0400
-From: Alexander Viro <aviro@redhat.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20030624063507.E9043@devserv.devel.redhat.com>
+	id 19UlFH-0007ci-2N
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 11:41:51 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexander Viro <aviro@redhat.com>
+In-Reply-To: <20030624063507.E9043@devserv.devel.redhat.com>
 References: <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
-	<1056446261.29264.393.camel@passion.cambridge.redhat.com>
+	 <1056446261.29264.393.camel@passion.cambridge.redhat.com>
+	 <20030624063507.E9043@devserv.devel.redhat.com>
+Message-Id: <1056451330.29264.409.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1056446261.29264.393.camel@passion.cambridge.redhat.com>;
-	from dwmw2@infradead.org on Tue, Jun 24, 2003 at 10:17:42AM +0100
-Content-Type: text/plain; charset=us-ascii
+Date: Tue, 24 Jun 2003 11:42:11 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: Allen Curtis <acurtis@onz.com>
 cc: Infradead Org <linux-mtd@lists.infradead.org>
 cc: jffs-dev@axis.com
@@ -27,13 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 24, 2003 at 10:17:42AM +0100, David Woodhouse wrote:
-> On Mon, 2003-06-23 at 06:58, Allen Curtis wrote:
-> > Patch for updating JFFS in 2.4.20 kernel
-> 
-> Looks good. Want to take over maintenance for JFFS? I'm getting very
-> tempted to remove it from the 2.5 tree unless someone steps forward to
-> look after it.
+On Tue, 2003-06-24 at 11:35, Alexander Viro wrote:
+> It would be nice.  There are several ugly craps in there and I'd
+> rather see it gone than try and fix them...
 
-It would be nice.  There are several ugly craps in there and I'd
-rather see it gone than try and fix them...
+Me too -- I started cleaning up at one point and the result was JFFS2 :)
+
+So unless I hear anguished screams from a huge user base who are using
+it and not JFFS2 for reasons which they haven't yet reported as JFFS2
+bugs, and someone also steps forward to clean it up for 2.6, I'll submit
+a patch to Linus to remove it in a couple of weeks time.
+
+-- 
+dwmw2
