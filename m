@@ -1,21 +1,16 @@
-Received: from [212.122.115.61] (helo=ia.mail)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BNW38-0002hb-14
-	for linux-mtd@lists.infradead.org; Tue, 11 May 2004 13:07:54 +0100
-Received: from josepascual by ia.mail
-	with SMTP (MDaemon.PRO.v6.7.9.R)
-	for <linux-mtd@lists.infradead.org>; Tue, 11 May 2004 14:16:21 +0200
-From: "Jose Pascual" <josepascual@almudi.com>
-To: "'David Vrabel'" <dvrabel@arcom.com>
-Date: Tue, 11 May 2004 14:16:01 +0200
-Message-ID: <000001c43751$ba92fb90$0319a8c0@dominio1.ingalmudi.com>
+Received: from web41502.mail.yahoo.com ([66.218.93.85])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BNZZU-0003IN-EA
+	for linux-mtd@lists.infradead.org; Tue, 11 May 2004 16:53:32 +0100
+Message-ID: <20040511155327.9810.qmail@web41502.mail.yahoo.com>
+Date: Tue, 11 May 2004 08:53:26 -0700 (PDT)
+From: Andre Sodermans <andreesje_werk@yahoo.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1084172142.21553.0.camel@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <40A0BC2E.1050809@arcom.com>
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-Subject: RE: symbolic link with jffs2
+Subject: Re: diskonchip2000 support in 2.4.22
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >=20
-> > It seems as strlen of names in symbolic links is wrong
->=20
-> Big-endian glibc bug?
+hmmmm
 
-I'm not sure, I'm working in an ARM CPU with little-endian. Everything
-seems okey less symlink,
+So, I do need 'CONFIG_INFTL'? I wasn't sure when I
+built my most recent kernel.
 
->=20
-> David Vrabel
-> --=20
-> David Vrabel, Design Engineer
->=20
-> Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-> Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
->=20
->=20
-> __________ Informaci=F3n de NOD32 1.756 (20040511) __________
->=20
-> Este mensaje ha sido analizado con  NOD32 Antivirus System=20
-http://www.nod32.com
+Andre
 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> On Sun, 2004-05-09 at 18:47 -0700, Andre Sodermans
+> wrote:
+> > Refusing to drive DiskOnChip 2000 TSOP until Bad
+> Block
+> > Table is correctly supported by INFTL
+> 
+> > What am I missing?
+> 
+> -- 
+> dwmw2
+> 
+> 
 
 
-__________ Informaci=F3n de NOD32 1.756 (20040511) __________
 
-Este mensaje ha sido analizado con  NOD32 Antivirus System
-http://www.nod32.com
+	
+		
+__________________________________
+Do you Yahoo!?
+Win a $20,000 Career Makeover at Yahoo! HotJobs  
+http://hotjobs.sweepstakes.yahoo.com/careermakeover 
