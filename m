@@ -1,18 +1,28 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
+Received: from mail1.cray.com ([136.162.0.111])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BhOS1-0006Vb-JD
-	for linux-mtd@lists.infradead.org; Mon, 05 Jul 2004 04:03:53 -0400
-Date: Mon, 5 Jul 2004 10:03:38 +0200 (CEST)
-From: Marius Groeger <mgroeger@sysgo.com>
-Sender: mag@sysgo.com
-To: Wolfgang Denk <wd@denx.de>
-In-Reply-To: <20040702160247.55F4BC109F@atlas.denx.de>
-Message-ID: <Pine.LNX.4.56.0407051001290.1879@mag.sysgo.com>
-References: <20040702160247.55F4BC109F@atlas.denx.de>
+	id 1BgAK8-0007kM-5n
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 18:46:33 -0400
+Received: from relaya.us.cray.com (relaya.us.cray.com [192.168.252.144])
+	by mail1.cray.com (8.12.10/8.12.10/gw-1.4) with ESMTP id i61MkOLl001249
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 1 Jul 2004 17:46:24 -0500 (CDT)
+Received: from orchid.us.cray.com (orchid.us.cray.com [172.30.27.91])
+	by relaya.us.cray.com (8.12.10/8.12.10/hub-1.3) with ESMTP id
+	i61MkLBu026008 for <linux-mtd@lists.infradead.org>;
+	Thu, 1 Jul 2004 17:46:21 -0500 (CDT)
+Received: from cray.com (troll [192.168.250.5])
+	by orchid.us.cray.com (8.12.10/8.12.8/badger-1.4) with ESMTP id
+	i61MkKdm2015578 for <linux-mtd@lists.infradead.org>;
+	Thu, 1 Jul 2004 17:46:20 -0500 (CDT)
+Message-ID: <40E4941B.7070103@cray.com>
+Date: Thu, 01 Jul 2004 17:45:47 -0500
+From: David Updegraff <dave@cray.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: adding cmd-line partitioning to rpxlite.c 
+To: linux-mtd@lists.infradead.org
+References: <40E448BD.8030909@cray.com> <200407012100.28033.tglx@linutronix.de>
+In-Reply-To: <200407012100.28033.tglx@linutronix.de>
+Content-Type: multipart/mixed; boundary="------------070507070705040101050801"
+Subject: Re: nand oob corruption recovery
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +32,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2 Jul 2004, Wolfgang Denk wrote:
+This is a multi-part message in MIME format.
+--------------070507070705040101050801
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> In message <Pine.LNX.4.56.0407021650140.8560@mag.sysgo.com> you wrote:
-> >
-> > > >>          lubbock_maps[flashboot^1].name = "Lubbock Application Flash";
-> > > >>          lubbock_maps[flashboot].name = "Lubbock Boot ROM";
-> ...
-> > spaced into it (YMMV). Still, I also like reusing things, and maybe it
-> > would be a good thing to add code that replaces the embedded spaces
-> > with underscores?
->
-> Better use shorter names. Wast^H^H^H^H Using  41  characters  of  the
-> kernel command line for the MTD id's alone is IMHO not a good idea.
+Relevant to this; enclosed is small nandwrite.c patch that fixes 
+segfault and at least warns about upcomming OOB destruction in 
+large-block devices.
 
-Probably. Still, the current implementation is misleading and should
-be resolved. Things were easier if command line partitioning was
-default for all maps, and not something to add in later on demand.
+-dbu.
 
-Regards,
-Marius
+--------------070507070705040101050801
+Content-Type: text/x-patch;
+ name="nandwrite.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="nandwrite.patch"
 
--- 
-Marius Groeger <mgroeger@sysgo.com>           Project Manager
-SYSGO AG                      Embedded and Real-Time Software
-Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
-www.sysgo.com | www.elinos.com | www.osek.de | www.imerva.com
+--- mtd/util/nandwrite.c.orig	2004-07-01 17:09:12.124117544 -0500
++++ mtd/util/nandwrite.c	2004-07-01 17:16:44.497346360 -0500
+@@ -42,8 +42,8 @@
+ /*
+  * Buffer array used for writing data
+  */
+-unsigned char writebuf[512];
+-unsigned char oobbuf[16];
++unsigned char *writebuf;
++unsigned char *oobbuf;
+ 
+ // oob layouts to pass into the kernel as default
+ struct nand_oobinfo none_oobinfo = { 
+@@ -223,6 +223,19 @@
+ 		close(fd);
+ 		exit(1);
+ 	}
++
++	/* NOW! allocate writebuf and oobbuf.. */
++	writebuf = malloc (meminfo.oobblock);
++	oobbuf = malloc (meminfo.oobsize);
++	if (!writebuf || !oobbuf)
++		perror ("cannot allocate buffers\n");
++	if ((forcejffs2 || forceyaffs || autoplace) && (meminfo.oobsize > 16))
++	{
++		fprintf (stderr, "\nDanger!Danger! Will Robinson, Overriding driver's AUTO_ECC layout for \nlarge-block chips will almost certainly trash OOB!\n Continue? (y/N)\n");
++		if (getchar () != 'y') {
++			exit(1);
++		}
++	}
+ 	
+ 	// write without ecc ?
+ 	if (noecc) {
+
+--------------070507070705040101050801--
