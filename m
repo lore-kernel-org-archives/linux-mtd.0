@@ -1,18 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17L9y2-0008Ub-00
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2002 22:59:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <AIEOIMKIOAAJKHJOGAEFMEEOCEAA.david@forcedpotato.com> 
-References: <AIEOIMKIOAAJKHJOGAEFMEEOCEAA.david@forcedpotato.com> 
-To: "David Cooper" <david@forcedpotato.com>
+Received: from mail05a.webhosting-verizon.net ([209.238.3.57])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17LCEM-0000DB-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 01:24:50 +0100
+From: "David Cooper" <david@forcedpotato.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
 Cc: "Ilguiz Latypov" <ilatypov@superbt.com>,
-    "Linux MTD" <linux-mtd@lists.infradead.org>
-Subject: Re: X Windows Performance with DOC 2000 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 20 Jun 2002 22:59:28 +0100
-Message-ID: <7324.1024610368@redhat.com>
+	"Linux MTD" <linux-mtd@lists.infradead.org>
+Subject: RE: X Windows Performance with DOC 2000 
+Date: Thu, 20 Jun 2002 20:33:47 -0400
+Message-ID: <AIEOIMKIOAAJKHJOGAEFGEFACEAA.david@forcedpotato.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <7324.1024610368@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,6 +24,38 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+David,
+
+Yes, when I use a kernel with the MTD support built-in for DoC 2000 and nftl
+I can still run X with the DoC in the system (unless I use the M-Systems 4.2
+firmware which prevents X from running with or without MTD support).  I have
+not tried loading and unloading MTD support as a kernel module.  Maybe this
+is worth a go.
+
+Interestingly, I can run SVGAlib applications from the DoC (using the VESA
+driver) without any trouble.  This is confusing because I would imagine that
+the SVGAlib VESA driver and the XFree86 VESA driver are both accessing the
+VESA BIOS.
+
+M-Systems have told me that the firmware DoC driver that loads into memory
+at bootup sometimes conflicts in memory space that linux is trying to use.
+I suppose this would explain why using different firmware versions can
+prevent X from running from the IDE drive.
+
+Cheers,
+
+David
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
+Woodhouse
+Sent: Thursday, June 20, 2002 5:59 PM
+To: David Cooper
+Cc: Ilguiz Latypov; Linux MTD
+Subject: Re: X Windows Performance with DOC 2000
+
+
 
 david@forcedpotato.com said:
 > (3) X Modules
@@ -38,9 +71,9 @@ david@forcedpotato.com said:
 > Question:  Why does X have trouble loading the libddc.a module from
 > the DOC?
 
-Interesting. The DDC module is likely to be using the VESA BIOS too -- you 
-may find that your box is dying when XFree86 tries to do _anything_ 
-BIOS-related. 
+Interesting. The DDC module is likely to be using the VESA BIOS too -- you
+may find that your box is dying when XFree86 tries to do _anything_
+BIOS-related.
 
 You said X works when you run it from the IDE drive. Do you have the
 DiskOnChip drivers loaded? If not, does it still work when you run it from
