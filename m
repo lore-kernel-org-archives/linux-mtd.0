@@ -1,19 +1,25 @@
-Received: from jeeves.momenco.com
-	([64.169.228.99] helo=host099.momenco.com ident=root)
+Received: from gorilla.mchh.siemens.de ([194.138.158.18])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19DpkY-0001OH-2C
-	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2003 19:04:10 +0100
-From: "Matthew Dharm" <mdharm@momenco.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Date: Thu, 8 May 2003 11:04:21 -0700
-Message-ID: <NEBBLJGMNKKEEMNLHGAIKEFKDAAA.mdharm@momenco.com>
+	id 19E6yn-0003U8-7F
+	for <linux-mtd@lists.infradead.org>; Fri, 09 May 2003 13:28:01 +0100
+Received: from moody.mchh.siemens.de ([139.21.205.85])
+	by gorilla.mchh.siemens.de (8.9.3/8.9.3) with ESMTP id OAA18071
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 9 May 2003 14:28:15 +0200 (MET DST)
+Received: from demchh2msx.icn.siemens.de (ss-aladin.mchh.siemens.de
+	[139.21.149.125])
+	by moody.mchh.siemens.de (8.9.3/8.9.1) with ESMTP id OAA13041
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 9 May 2003 14:28:16 +0200 (MET DST)
+Sender: uhx27328@ss-aladin.mchh.siemens.de
+Message-ID: <3EBB9EDF.A1DE0AE9@icn.siemens.de>
+Date: Fri, 09 May 2003 14:28:15 +0200
+From: Hans_Peter Urbanek <Hans-Peter.Urbanek.extern@icn.siemens.de>
 MIME-Version: 1.0
-In-Reply-To: <1052374635.6876.35.camel@imladris.demon.co.uk>
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Linux-MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: RE: DiskOnChip 2000 128Mb problem
+Subject: JFFS2 and kupdated
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +29,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Wed, 2003-05-07 at 21:37, Matthew Dharm wrote:
-> > I'm porting Linux to our embedded PPC platform.  We have
-> a DoC 2000
-> > (apparently known as "Millenium") on the board,
->
-> The DiskOnChip 2000 and DiskOnChip Millennium are separate beasts.
-> Remember the new Millennium didn't start till 2001 :)
->
-> You had a DiskOnChip 2000 on the Ocelots, and it's been
-> working fine --
-> looks like you really do have a Millennium on the new board though.
+Hi all,
 
-Well, now we may have found part of the problem -- the label on the
-chip says "DiskOnChip 2000" with a part number of MD2202-D128-V3
+I have the following situation: we use JFFS2 in a 5MB RAM partition
+(on top of the SLRAM driver). The file system is used for extensive
+logging; precautions are taken for the RAM content to be still
+available after a reboot caused by a system crash.
 
-So is that a 2000 or Millennium?  If it's really a 2000, then the
-driver is detecting it incorrectly.
+Now, as new logs are being written (and older ones are deleted), JFFS2
+at some point has to reuse blocks. I observe occasional delays in
+write system calls which appear to come from waiting for the completion
+of an erase operation. The completion of the erase operation is done
+through the `kupdated', which then wakes the `write' task.
 
-> > and I'm having problems getting the driver working.  I'm hoping
-> > someone here can help... I think the issue is that the
-> driver doesn't
-> > support this part, tho it should (are we really the first to try
-> > this?).
-> >
-> > We're using kernel 2.4.17, upgraded with MTD from CVS as of today.
-> > Our DoC is 128MB in size and operates at 3.3 V.
-> >
-> > Here's our story:  The main DoC driver detects the device, but is
-> > unable to identify any flash devices.  At boot time, it shows:
-> >
-> > Using configured DiskOnChip probe address 0x70400000
-> > DiskOnChip Millennium found at address 0x70400000
-> > No flash chips recognised.
->
-> Odd. There shouldn't really be much difference in behaviour
-> between the
-> 2000 and the 2001 drivers. They diverged for a while, then we merged
-> them. Some tracing and debugging ought to show what the
-> merged driver is
-> doing differently (and, I assume, wrong).
->
->  <...>
->
-> > Which is interesting, because it is exactly half the
-> correct size.  A
-> > quick check through the source code shows that
-> MAX_CHIPS_MIL is set to
-> > 1, and there is a FIXME in doc2001.c "to deal with multi-flash on
-> > multi-Millenium case more carefully".  If I change the
-> definition of
-> > MAX_CHIPS_MIL to 4, we get:
-> >
-> > Using configured DiskOnChip probe address 0x70400000
-> > DiskOnChip Millennium found at address 0x70400000
-> > Flash chip found: Manufacturer ID: EC, Chip ID: 76
-> (Samsung:NAND 64MB 3,3V)
-> > Flash chip found: Manufacturer ID: EC, Chip ID: 76
-> (Samsung:NAND 64MB 3,3V)
-> > 2 flash chips found. Total DiskOnChip size: 128 MiB
-> > mtd: Giving out device 0 to DiskOnChip Millennium
->
-> That looks basically correct now.
+In order not to wait up to five seconds for `kupdated' to become
+active again, I made a change in `jffs2_do_reserve_space'
+fs/jffs2/nodemgmt.c that wakes `kupdated' immediately and saves these
+seconds. For me this change seems to work. A patch against version
+`$Id: nodemgmt.c,v 1.94 2003/02/19 17:50:26 gleixner Exp $'
+is attached below.
 
-Well, that's worth something, I guess.
+My question simply is: as I'm only slowly getting familiar with the
+JFFS2 code, I wonder if my approch is the way an expert would solve
+the problem. And: could my patch damage anything in the case where
+JFFS2 is used in flash?
 
-> > NFTL driver: nftlcore.c $Revision: 1.88 $, nftlmount.c
-> $Revision: 1.31$
-> > NFTL_notify_add for DiskOnChip Millennium
-> > mtd->read = c00cd450, size = 134217728, erasesize = 8192
-> > NFTL_setup
-> > Could not find valid boot record
-> > Could not mount NFTL device
->
-> At this point, it failed to find the NFTL format on the
-> DiskOnChip. If
-> the kernel code fails, then 'nftldump' will too. Try
-> 'nanddump' which
-> should just dump the contents of the raw flash. Look
-> through it for a
-> block starting 'ANAND' and/or send me a copy.
+I also see that JFFS2 is not designed for a RAM based filesystem in the
+first place; yet we like it because of its journaling qualities. But
+if someone has suggestions for other solutions, I'd be thankful for any
+hints.
 
-I presume nanddump works on the /dev/mtd0 node?
 
-Matt
+Thanks and have a nice weekend
+Hans-Peter
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+
+--- fs/jffs2/nodemgmt.c.orig    Thu Feb 20 00:00:07 2003
++++ fs/jffs2/nodemgmt.c Fri May  9 14:09:40 2003
+@@ -149,6 +149,30 @@
+        return ret;
+ }
+ 
++struct task_struct * find_kupdated(void)
++{
++       static struct task_struct *p = NULL;
++
++       if (NULL != p &&
++           0 == strcmp(p->comm, "kupdated") &&
++           NULL == p->mm)
++       {
++               return p;
++       }
++
++       for_each_task(p)
++       {
++               if (0 == strcmp(p->comm, "kupdated"))
++               {
++                       printk(KERN_DEBUG "found kupdated, mm: %x\n",
+p->mm);
++                       return p;
++               }
++       }
++
++       p = NULL;
++       return p;
++}
++
+ /* Called with alloc sem _and_ erase_completion_lock */
+ static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t
+minsize, uint32_t *ofs, uint32_t *len)
+ {
+@@ -250,6 +274,20 @@
+                                jffs2_erase_pending_trigger(c);
+                        }
+                        spin_unlock(&c->erase_completion_lock);
++ 
++                       /* Wake up the kupdated immediately to be freed
++                          from the erase_wait queue as soon as
++                          possible.
++                       */
++                       {
++                               struct task_struct * kupdated_task =
++                                       find_kupdated();
++                               if (NULL != kupdated_task)
++                               {
++                                       wake_up_process(kupdated_task);
++                               }
++                       }
++ 
+                        schedule();
+                        remove_wait_queue(&c->erase_wait, &wait);
+                        spin_lock(&c->erase_completion_lock);
