@@ -1,19 +1,19 @@
 Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197f90-0002yN-BV
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 18:31:54 +0100
-Date: Mon, 21 Apr 2003 19:32:02 +0200
+	id 197fEI-0003Aq-6i
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 18:37:22 +0100
+Date: Mon, 21 Apr 2003 19:37:29 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Brian T." <btuch@usa.net>
-Message-ID: <20030421173202.GA1027@wohnheim.fh-wedel.de>
-References: <015701c30823$c19438e0$150a0ac0@jbmsoft.com>
+To: "A.L. Klyutchenya" <asoneofus@nm.ru>
+Message-ID: <20030421173729.GB1027@wohnheim.fh-wedel.de>
+References: <200304212130.50598.asoneofus@nm.ru>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <015701c30823$c19438e0$150a0ac0@jbmsoft.com>
+In-Reply-To: <200304212130.50598.asoneofus@nm.ru>
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: mount a jffs2 image
+Subject: Re: root=?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 21 April 2003 11:33:35 -0500, Brian T. wrote:
+On Mon, 21 April 2003 21:30:50 +0400, A.L. Klyutchenya wrote:
 > 
-> I was wondering if there is a way to mount a jffs2 image on a system which
-> has no mtd devices, such as the system I use (Redhat 7.1) to build an
-> embedded distro.  I am using a 2.4.20 mtd patched kernel, but I get errors
-> when trying to mount it on mtd devices (since they are not there).  "mount"
-> tells me to try using "-o /dev/loop0" but that locks the system up.  Thanks!
+> How to sent kernel rootfs params?
+> I have NAND Flash, and have error on boot:
+> 
+> NAND device: Manufacture ID: 0xec, Chip ID: 0x75 (Samsung NAND 
+> 32MB 3,3V)
+> Using static partition definition
+> Creating 1 MTD partitions on "NAND 32MB 3,3V":
+> 0x00000000-0x02000000 : "OSSC VoIP phone Nand Flash"
+> Im [init_mtd] starting at mtdcore.c line 422
+> Im [init_mtdblock] starting at mtdblock-core.c line 229
+> Im [netlink_proto_init] starting at af_netlink.c line 995
+> Im [inet_init] starting at af_inet.c line 1202
+> NET4: Linux TCP/IP 1.0 for NET4.0
+> IP Protocols: ICMP, UDP, TCP
+> IP: routing cache hash table of 512 buckets, 4Kbytes
+> TCP: Hash tables configured (established 2048 bind 2048)
+> Kernel panic: I have no root and I want to scream
+> 
+> I use "root=mtd0", "root=mtdblock", "root=/dev/mtd0", 
+> "root=/dev/mtdblock" with no effects :-(
 
-Loopback creates a block device, not an mtd device. So this behaviour
-is kind of expected. The system shouldn't lock up, that part should
-get fixed. I'll see if I can reproduce it here.
-
-A loopback variant for mtd does not exist, you have to write it
-yourself if you want it.
-
-You can still use mtdram, mtdblock or slram to create an mtd device an
-your host, copy the image to that device and use it from there.
-
-To the original question, either therotical mtdloopback or mtdram and
-friends give you an mtd device. No mtd device, no cookies.
+Try root=/dev/mtdblock0 or root=/dev/mtdblock1.
 
 Jörn
 
 -- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+"Error protection by error detection and correction."
+-- from a university class
