@@ -1,17 +1,19 @@
-Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1894aX-000088-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 14:21:53 +0000
+	id 18964j-0000LE-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 15:57:09 +0000
+Date: Tue, 5 Nov 2002 17:27:22 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: vijay vijay <vijay_peshkar@hotmail.com>
+Cc: linux-mtd@lists.infradead.org, vijay.peshkar@wipro.com
+Subject: Re: mtd2 partition mapping on mtd1?...
+Message-ID: <20021105162722.GA30984@wohnheim.fh-wedel.de>
+References: <F43HNrBBfE0q2TUniNA00011392@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="ISO-8859-1"
-MIME-Version: 1.0
-Date: Tue, 5 Nov 2002 14:52:02 UT
-From: "Jeffrey Lim" <jfsworld@fastmail.fm>
-To: "=?ISO-8859-1?Q?J=F6rn=20Engel?=" <joern@wohnheim.fh-wedel.de>
-Cc: "linux-mtd list" <linux-mtd@lists.infradead.org>
-Subject: Re: MTD CVS: missing JFFS2?
-Message-Id: <20021105145202.38E812FD6D@server4.fastmail.fm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <F43HNrBBfE0q2TUniNA00011392@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,36 +25,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I see - thanks a lot!
+On Tue, 5 November 2002 14:13:47 +0000, vijay vijay wrote:
+> 
+> Had tried doing all that. Do not have the log message, will
+> try again and get back to you. Only remember the crash happening
+> in cramfs_read -> bread -> ...submit_bh.
 
-I suppose patchin.sh might still be useful? Even if it doesnt patch in
-the latest jffs2 code, it certainly does the cvs mtd code..
+Should be a pretty simple mistake - when you see it. 
 
--jf
+> About the second query on raw operations:
+> Being new to Linux, am still trying to grasp the 'user/kernel'
+> space concepts. I tried my test using __raw_writel() operation
+> in inode.c itself. Guess that puts me in kernel space right?.
+> Should it work if tried from user space( build my code as a library,
+> copy it to filesystem and run from there like other utils(dd)) ?.
 
-On Tue, 5 Nov 2002 14:31:42 +0100, "J=F6rn Engel"
-<joern@wohnheim.fh-wedel.de> said:
-> On Tue, 5 November 2002 08:13:30 +0000, Jeffrey Lim wrote:
-> > Hi guys, i follow the instructions found at
-> > sources.redhat.com/jffs2 and download the latest MTD source from CVS.
-> >=20
-> > under the patches subdir, there is a patchin.sh, which i run.
-> >=20
-> > However, after taking a look at patchin.sh, i realize that the jffs2 co=
-de
-> > doesnt seem to get patched at all!, only jffs. Am i therefore to assume
-> > that the MTD CVS does not contain any jffs2 code at all, and that i
-> > should just use the jffs2 code from the stock kernel?
->=20
-> CVS definitely contains jffs2 code, but I never used patchin.sh. By
-> hand, you would switch fs/jffs2 and include/linux/jffs2*.
->=20
-> Hope that helps.
->=20
-> J=F6rn
->
-=20
---
-  "It's an extraordinary world!" - jfsworld <at> fastmail.fm
-=20
-=20
+If your code runs inside the kernel, either linked directly or as a
+kernel module, it runs from kernel space.
+If your code is compiled into a program and executed from bash, etc.
+it runs from user space.
+Plain and simple. :-)
+
+Working from userspace, you don't have any access to __raw_writel().
+Do you have a reason, why working on the block device from user space
+is not sufficient for your needs?
+
+Jörn
+
+Oh, and could you leave the quotation you refer to over the text you
+write? This makes the reference obvious.
+
+-- 
+Those who come seeking peace without a treaty are plotting.
+-- Sun Tzu
