@@ -1,27 +1,25 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
+Received: from [202.37.96.11] (helo=gatekeeper.tait.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEzYS-0008Ct-Bb
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 23:16:44 +0000
-Date: Wed, 29 Oct 2003 15:15:16 -0800
-From: Jun Sun <jsun@mvista.com>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Message-ID: <20031029151516.F6588@mvista.com>
-References: <20031022182558.U19834@mvista.com>
-	<20031027101741.C1678@mvista.com>
-	<1067338214.15551.405.camel@hades.cambridge.redhat.com>
-	<20031028182828.D30683@mvista.com>
-	<1067426006.15551.1546.camel@hades.cambridge.redhat.com>
-	<20031029104546.K30683@mvista.com>
-	<20031029193209.GA23482@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20031029193209.GA23482@wohnheim.fh-wedel.de>;
-	from joern@wohnheim.fh-wedel.de on Wed, Oct 29, 2003 at 08:32:09PM +0100
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
+	id 1AF39h-0000Or-Un
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 03:07:26 +0000
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9U367H10080
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 16:06:07 +1300
+Received: from sunstorm.tait.co.nz (sunstorm.tait.co.nz [172.25.40.9])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9U367210074
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 16:06:07 +1300
+Received: from tait.co.nz ([172.25.107.17])
+ by sunstorm.tait.co.nz (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with ESMTP id <0HNJ00A8PVA5GG@sunstorm.tait.co.nz> for
+ linux-mtd@lists.infradead.org; Thu, 30 Oct 2003 16:06:05 +1300 (NZDT)
+Date: Thu, 30 Oct 2003 16:05:31 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+To: mtd list <linux-mtd@lists.infradead.org>
+Message-id: <3FA07FFB.4020403@tait.co.nz>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+Subject: device major/minor attributes corrupt in jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,17 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 29, 2003 at 08:32:09PM +0100, Jörn Engel wrote:
-> On Wed, 29 October 2003 10:45:46 -0800, Jun Sun wrote:
-> > 
-> > phsmap currently only supports mapping for one physical flash unit.
-> 
-> I've created a physmap variant for multiply physical mappings once.
-> Google for mphysmap.c and you can still find it.  No reaction
-> whatsoever to this day, so you can guess how many people need it. ;)
-> 
+Greetings
 
-Cool!  I think once we extend phsymap driver and get more boards
-converted to using it good stuff like this will be in much more demand.
+Just trying to put a root filesystem into jffs2 and whilst I can mount 
+the filesystem and copy my /dev directory into it and it looks OK, when 
+I reboot the major/minor numbers have been added together into the minor 
+and the major is always 0
 
-Jun
+Anyone any ideas?
+
+target mpc8xx cross compiled from i386 with gcc-3.3.1
+kernel 2.4.22
+mtd snapshot of 22-10-03
+busybox 1.00-pre3 utils
+uclibc 0.9.20 library
+
+-- 
+Robin Gilks
+Senior Design Engineer          Phone: (+64)(3) 357 1569
+Tait Electronics                Fax  :  (+64)(3) 359 4632
+PO Box 1645 Christchurch        Email : robin.gilks@tait.co.nz
+New Zealand
