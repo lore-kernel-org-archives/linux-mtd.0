@@ -1,18 +1,20 @@
-Received: from wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BTJTY-0001Op-6T
-	for linux-mtd@lists.infradead.org; Thu, 27 May 2004 07:55:10 -0400
-Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
-	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004052708051117735
-	for <linux-mtd@lists.infradead.org>; Thu, 27 May 2004 08:05:11 -0400
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812A3@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BTds0-0002gz-Nt
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 05:41:48 -0400
+Received: from mailgate.cabletime.com ([80.177.138.66] helo=cabletime.com)
+	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BTdrw-0006tH-0V
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 10:41:40 +0100
+From: Andy Hawkins <a.hawkins@cabletime.com>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 27 May 2004 07:56:45 -0400
-MIME-Version: 1.0
 Content-Type: text/plain
-Subject: Help with DOC Mil Plus
+Message-Id: <1085737289.5617.3.camel@adh>
+Mime-Version: 1.0
+Date: 28 May 2004 10:41:29 +0100
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: Large flash concatenation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am having major problems.  I have 2.4.21 running on an arm core.  I have
-patched mtd with a recent snapshot.  I have had addressing problems with the
-way the manufacturer designed the board.  Inw and Outw work with the chip.
-I can read the chip ID reg but when DoC_ScanChips runs I get the wrong size
-of the chip.  Looking at the code the size is a function of chipshift.  Can
-someone explain what the chipshift variable represents????  I am not having
-much luck getting the DOC to work, I could really use some help.......
+Hi,
 
-Thanks,
-John
+I'm trying to add support to the kernel for concatenating a number of
+large flash devices (1Gb Samsung K9F1G08).
+
+I've added the following line to nand_ids.c:
+
+	{"NAND 1GiB 3,3V", 0xf1, 30, 0x4000, 0},
+
+and the devices are correctly detected (I've also written the required
+code in drivers/mtd/nand), showing a size of 0x40000000 for each device.
+However, when I concatenate 15 of these devices, I end up with a
+partition of size 0xc000000. I assume that this is because the total
+size is stored in 32 bits, and as such is overflowing.
+
+I want to be able to use these multiple chips as a single flash
+filesystem (probably JFFS2).
+
+Can anyone help as to how I can do this?
+
+Many thanks.
+
+Andy
