@@ -1,51 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 125mPP-0004oW-00
-	for mtd-list@infradead.org; Wed, 05 Jan 2000 09:07:11 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 126PXN-0005ms-00
+	for mtd-list@infradead.org; Fri, 07 Jan 2000 02:54:01 +0000
+Received: from ctam160.prophecy.com.au
+	([203.21.127.160] helo=k9.prophecy.com.au ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 125mPN-0004oQ-00
-	for mtd@infradead.org; Wed, 05 Jan 2000 09:07:09 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <38727F5D.73445B90@ctam.com.au> 
-References: <38727F5D.73445B90@ctam.com.au>  <38719CC6.93FB5729@ctam.com.au> <E125Qft-0007VY-00@devel2.axiom.internal> 
-To: Brendan.Simon@ctam.com.au
-Cc: mtd@infradead.org
-Subject: Re: DiskOnChip for PowerPC embedded system. 
-Mime-Version: 1.0
+	id 126PXI-0005mm-00
+	for mtd@infradead.org; Fri, 07 Jan 2000 02:53:58 +0000
+Message-ID: <3875490A.1078B54B@ctam.com.au>
+Date: Fri, 07 Jan 2000 13:01:47 +1100
+From: Brendan J Simon <Brendan.Simon@ctam.com.au>
+Reply-To: Brendan.Simon@ctam.com.au
+MIME-Version: 1.0
+To: Dvir Oren <dviro@lucidvon.com>
+CC: MTD <mtd@infradead.org>
+Subject: Re: Hardware RO & delays [DOC2000]
+References: <E126NIB-0005it-00@infradead.org>
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 05 Jan 2000 09:13:46 +0000
-Message-Id: <E125mVm-0001GX-00@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Dvir Oren wrote:
 
-Brendan.Simon@ctam.com.au said:
-> I just noticed something.  48KB of linear ROM space would require a
-> minimum of 16 address lines.  As far as I can see, the DOC2000 only
-> has 13 address lines (ie. 8KB address space).  I'm a bit confused
-> here.
+> 2.  Does the driver block the system?  I'm experience delays in
+> sending udp packets over ethernet for periods of 50-300
+> miliseconds.  I have a function that is supposed to send every
+> several miliseconds a packets, and when going over the logs, I
+> once in a while see a packet that is delayed for several tens of
+> miliseconds, which is not acceptable by me.  Any ideas?
+>
+> David, does the driver block the system?
 
-> How does the DOC distinguish between accesses to the linear ROM and
-> accesses to the NAND-Flash ? 
+Are you sure it is the DOC drivers ?  Could it be something else ?
+Highly loaded ethernet network with lots of collisions which forces the
+ethernet card to back off it's transmissions ?
 
-The 48Kb of firmware is actually on the flash, before the NFTL starts. You can 
-expand that as much as you like, although I'm not sure if M-Systems' drivers 
-will be happy with the NFTL starting in a different place. My drivers scan the 
-whole of the flash to find it, though.
+If you are not using a Real Time Operating System (like RT-Linux or
+KURT) then you are not guaranteed to have processes run with any
+determinism.
 
-The 'linear rom' is only about 32 bytes (or 64?) repeated throughout the first 
-half of the device's (externally-visible) address space. The second half of 
-the address space holds the registers through which you control and access the 
-flash.
-
-On ia32, the linear rom holds just enough code to read the next 48Kb off the 
-flash into memory, then jump to it.
-
-
-
---
-dwmw2
+Brendan Simon.
 
 
 
