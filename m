@@ -1,18 +1,16 @@
-Received: from [213.86.99.237] (helo=passion.cambridge.redhat.com)
+Received: from ip68-6-32-22.sb.sd.cox.net ([68.6.32.22] helo=speedy.datawave.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18dW1V-00040c-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2003 13:43:33 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E18dWJm-0000NO-00@speedy.datawave.net> 
-References: <E18dWJm-0000NO-00@speedy.datawave.net> 
-To: "Brian J. Fox" <bfox@ua.com>
-Cc: joern@wohnheim.fh-wedel.de, phil@river-bank.demon.co.uk,
-    hno@marasystems.com, linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Format Documentation? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Jan 2003 14:12:56 +0000
-Message-ID: <12781.1043763176@passion.cambridge.redhat.com>
+	id 18dW2s-00040z-00
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2003 13:44:59 +0000
+From: "Brian J. Fox" <bfox@ua.com>
+To: dwmw2@infradead.org
+CC: joern@wohnheim.fh-wedel.de, phil@river-bank.demon.co.uk,
+	hno@marasystems.com, linux-mtd@lists.infradead.org
+In-reply-to: <9649.1043761486@passion.cambridge.redhat.com> (message from
+	David Woodhouse on Tue, 28 Jan 2003 13:44:46 +0000)
+Subject: Re: JFFS2 Format Documentation?
+Message-Id: <E18dWJm-0000NO-00@speedy.datawave.net>
+Date: Tue, 28 Jan 2003 06:02:26 -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-bfox@ua.com said:
->  Perhaps he can't read that header file without "contaminating" his
-> clean-room implementation?
+   From: David Woodhouse <dwmw2@infradead.org>
+   Date: Tue, 28 Jan 2003 13:44:46 +0000
 
-I don't think we can argue that the node layout on the medium, as described
-in that file, could possibly be considered sufficient to 'contaminate' an
-alternative implementation.
+   phil@river-bank.demon.co.uk said:
+   > David's paper is a good start but I was after a lower level of detail.
+   > I need  something from which I can implement a JFFS2 reader from
+   > scratch (ie. without  any GPL code). 
 
+   The on-medium format is very simple. The actual layout of the
+   existing node types is detailed in full in include/linux/jffs2.h.
+   In conjunction with the theory of operation described in the paper,
+   these should be perfectly sufficient.
+
+Perhaps he can't read that header file without "contaminating" his
+clean-room implementation?
+
+Phil?
+
+Brian
 --
-dwmw2
+More people use Apache than Word, and it does them more good.
+  Kragen Sitaker, Mon, 04 Nov 2002 21:32:18 -0800
