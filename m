@@ -1,20 +1,16 @@
-Received: from f04s07.cac.psu.edu ([128.118.141.35] helo=f04n07.cac.psu.edu)
+Received: from taku.hut.fi ([130.233.228.87])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ceP7-0007uo-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2001 03:51:33 +0100
-Received: from nrl1 (nrl1.cedcc.psu.edu [130.203.252.61])
-	by f04n07.cac.psu.edu (8.9.3/8.9.3) with SMTP id WAA76256
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2001 22:57:31 -0400
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Bill <wrs122@psu.edu>
-Reply-To: wrs122@psu.edu
-To: linux-mtd@lists.infradead.org
-Subject: DOC2000 Boot de-ja-vue
-Date: Thu, 30 Aug 2001 22:59:44 -0400
-MIME-Version: 1.0
-Message-Id: <01083022594400.01562@nrl1>
-Content-Transfer-Encoding: 8bit
+	id 15cjX8-0008KH-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2001 09:20:10 +0100
+Date: Fri, 31 Aug 2001 11:26:01 +0300
+From: Jarkko Lavinen <jlavi@iki.fi>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Cc: Ashok M Padmanaban <ashokmp@sasken.com>
+Subject: Re: Lock utility in MTD util directory.
+Message-ID: <20010831112601.A26643@kosh.hut.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3B8E0B3B.3182A367@sasken.com>; from ashokmp@sasken.com on Thu, Aug 30, 2001 at 09:45:31AM +0000
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,23 +22,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Well, DOC2000 seems happy now kinda. I think my problem is with Linux. Here 
-is the end of my boot screen:
+On Thu, Aug 30, 2001 at 09:45:31AM +0000, Ashok M Padmanaban wrote:
+>   how can i use the lock utiliry in the MTD/util directory.
 
-blah... blah... blah...
-NFTL driver: nftlcore.c $Revision: 1.78 $, nftlmount.c $Revision: 1.21 $
-Cannot calculate an NFTL geometry to match size of 0x46840
-Using C:1002 H:16 S:18 (== 0x46740 sects)
- nftla: nftla1
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP, IGMP
-IP: routing cache hash table of 2048 buckets, 16 Kbytes
-TCP: Hash tables configured (established 16384 bind 16384)
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0
-VFS: Mounted root (ext2 filesystem) readonly.
-Freeing unused kernel memory 204k freed
-Kernel panic: No init found. Try passing init= option to kernel.
+I have to run the unlock command manually before mounting jffs2. Something 
+like "unlock /dev/mtd0". Kernel needs to have the MTD character device
+configured and the corresponding chip driver needs to have lock/unlock
+functions implemented. Whether sectors are locked after power on depends 
+on the chip. The reverse works also: "lock /dev/mtd0 0 -1" would lock all 
+sectors.
 
-It mounts the device fine but then dies. Any ideas?
-
--Bill
+Regards,
+Jarkko Lavinen
