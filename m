@@ -1,19 +1,14 @@
-Received: from ms-smtp-03.rdc-kc.rr.com ([24.94.166.129])
+Received: from bay19-f21.bay19.hotmail.com ([64.4.53.71] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BT7yp-0000JG-VV
-	for linux-mtd@lists.infradead.org; Wed, 26 May 2004 19:38:41 -0400
-From: Dan Eisenhut <deisenhut@wi.rr.com>
-To: tglx@linutronix.de
-In-Reply-To: <200405262326.29385.tglx@linutronix.de>
-References: <77FE4A1FA59FF947845A42194AD6676202E30F72@uswaumsx07medge.med.ge.com>
-	<200405262326.29385.tglx@linutronix.de>
-Content-Type: text/plain
-Message-Id: <1085614713.9876.4.camel@localhost>
+	id 1BTGvv-00015R-MD
+	for linux-mtd@lists.infradead.org; Thu, 27 May 2004 05:12:24 -0400
+From: "w h" <wh3cq@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 27 May 2004 09:11:00 +0000
 Mime-Version: 1.0
-Date: Wed, 26 May 2004 18:38:34 -0500
-Content-Transfer-Encoding: 7bit
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Accessing an MTD device from kernel space
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY19-F21ZFkTEPcOhN0005664a@hotmail.com>
+Subject: about syncflash lock and jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +18,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-05-26 at 16:26, Thomas Gleixner wrote:
-> Just use the mtd API which is used from fs drivers and anything else which 
-> accessed the mtd devices from kernel space
-> 
-> mtd->read(....), mtd->erase(...) 
+Hi,everyone:
 
-Thanks...  I dug through the fs/jffs2 directory and figured out how to
-use the get_mtd_device() and mtd->read() functions.  Its working great.
+I've worked on Moto Dragonball MX9328MXL for more than 4 months and on 
+jffs2 for about two months. But Now some problems in mtd and jffs2 trouble 
+me so much that I almost tear my hair and can do nothing. I do need some 
+help.
 
-Dan
+I try to use jffs2 as root filesystem on SyncFlash(micron mt28s4m16lc_6, 
+two chips, total 16M) in my board. Linux OS and jffs2 root fs can start up 
+but with some infomation like this:
+...
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+Erase at ****(some address) failed immediately:-EROFS.Is the sector locked?
+...
+
+after it starts up, I run 
+#cat /proc/mtd
+dev:         size       erasesize    name
+mtd0:     00100000       20000    bootloader
+mtd0:     00200000       20000    kernel
+mtd2:     00B00000       20000    filesystem
+mtd3:     00200000       20000    fdisk
+
+but if I try to "mkdir" or save file in some directory,it gives "Permission 
+denied"
+
+if running "cat /proc/mounts", I can see: 
+/dev/mtdblock/2 / jffs2 rw 0 0 
+……………………………… 
+……………………………… 
+#df 
+filesystem           1k -block    used    available use% mounted on 
+/dev/mtdblock/2    13312       13312        0       100%     / 
+……………………………………………………………………………… 
+……………………………………………………………………………… 
+the size of filesystem partition is 11M , the jffs2.img which I download 
+only takes up 6M, how dose "use%=100%" come from? 
+
+What I use is SyncFlash(micron mt28s4m16lc_6, two chips, total 16M), is it 
+posssible that the SyncFlash is locked(refer to the startup information) so 
+I can't "mkdir" or save file?
+Does anyone know the specific parameters when using command "unlock"?
+
+Thanks.
+
+Best Reguard to everyone who see this mail,
+susan
+
+_________________________________________________________________
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
