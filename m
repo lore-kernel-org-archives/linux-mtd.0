@@ -1,17 +1,18 @@
-Received: from inp.nsk.su ([193.124.167.24] helo=inpbox.inp.nsk.su)
+Received: from anchor-post-33.mail.demon.net ([194.217.242.91])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp76J-0005TF-Ry
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 11:09:17 -0400
-Date: Mon, 26 Jul 2004 22:00:47 +0700
-From: "Dmitry A. Fedorov" <D.A.Fedorov@inp.nsk.su>
-To: Andy Hawkins <a.hawkins@cabletime.com>
-In-Reply-To: <1090853366.2220.11.camel@adh>
-Message-ID: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1Bp7Zg-000661-Ne
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 11:39:38 -0400
+From: Andy Hawkins <a.hawkins@cabletime.com>
+To: D.A.Fedorov@inp.nsk.su
+In-Reply-To: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
+References: <Pine.SGI.4.10.10407262153220.569820-100000@Sky.inp.nsk.su>
+Content-Type: text/plain
+Message-Id: <1090856360.2220.63.camel@adh>
+Mime-Version: 1.0
+Date: 26 Jul 2004 16:39:20 +0100
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Problem writing to NOR flash
-Reply-To: D.A.Fedorov@inp.nsk.su
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26 Jul 2004, Andy Hawkins wrote:
+Hi,
 
-> > > Have you had any problems writing to NOR?
-> > 
-> > No, after upgrade from the MTD snapshot.
-> > There were problems with erase (ioctl call did not wait of
-> > completion of erase operation) and jffs2 did not allowed to
-> > write. Now it works properly.
-> 
-> Ah, should have been more clear. This is a 'raw' write to the NOR
-> device. It appears that it's crashing inside do_xxlock_oneblock in
-> cfi_cmdset_0002.c (where it does the 'cfi_write').
-> There's a comment at the top of the code saying that it's very chip
-> specific, and hasn't been tested on an interleaved device (which I think
-> mine is).
+On Mon, 2004-07-26 at 16:00, Dmitry A. Fedorov wrote:
+> I have use the same cmdset (exactly) but single (interleave 1) 16 bit
+> wide chip Am29LV640. No problems yet with backported code.
 
-I have use the same cmdset (exactly) but single (interleave 1) 16 bit
-wide chip Am29LV640. No problems yet with backported code.
+I've been doing a bit of digging now. The chip in question is an ST
+M29W320DB (32MBit)
+
+do_xxlock_oneblock is called, with an address of 0. However, this is
+translated in the function to an address of ffc00002. This address is
+then (eventually) passed into map_write16, which adds the virtual
+address of the flash onto this address...
+
+This to me appears to be invalid, but I'm not entirely sure what
+*should* be happening here. The chip's start address is added on to the
+address inside do_xxlock_oneblock (although this is zero), and then the
+virtual address is added on again. However, the translation doesn't
+appear correct to me:
+
+adr = ((adr & ~0xffff) | 0x2) + ~0x3fffff;
+
+As you can probably tell, I don't fully understand how the code is
+*supposed* to work, so it's difficult to know exactly what is going
+wrong here.
+
+Thanks.
+
+Andy
