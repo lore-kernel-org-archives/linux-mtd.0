@@ -1,18 +1,17 @@
-Received: from popmail.space.net ([195.30.0.14])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HVvA-0000Sp-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 21:10:05 +0000
-To: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-Cc: linux-mtd@lists.infradead.org
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: MTD access problem 
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Tue, 28 May 2002 12:18:19 PDT."
-             <3CF3D7FB.5020500@redswitch.com>
-Date: Thu, 28 Nov 2002 22:39:56 +0100
-Message-Id: <20021128214001.69C89C614B@atlas.denx.de>
+Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18Hj6N-0001r8-00
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2002 11:14:31 +0000
+From: "" <simon@baydel.com>
+To: "Damien GERANTON" <dgeranton@alpha3i.com>
+Date: Fri, 29 Nov 2002 11:28:16 -0000
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Re: JFFS/MTD and Raw access
+CC: "MTD mailing list" <linux-mtd@lists.infradead.org>
+Message-ID: <3DE74F50.30675.396F40@localhost>
+In-reply-to: <BNEJIGKFJNJLELKBCMDAMEFGCEAA.dgeranton@alpha3i.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +23,55 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In message <3CF3D7FB.5020500@redswitch.com> you wrote:
->
-> I'm not sure this problem is usual or not. My flash is AMD29LV642D. The 
-> mtd code is from DENX distribution 2.4.4-2002-08-09. It may not be the 
-> latest one from CVS.
+I have hit exactly the same problem using JFFS2. I am no authority 
+on this but, I thought the problem might be caused by the write 
+generating different OOB data for input blocks, which are erased or 
+only partially written. So I guess what needs to be done is to read 
+and copy the DATA and OOB. I think you can do this with the 
+nanddump and nandwrite utilities. I guess I will have to try it 
+sometime. 
 
-It is definitely not "the latest".
+Cheers
 
-> Wolfgang, is the mtd code from your distribution the same as the mtd cvs 
-> from infradead.org?
+Simon.
+On 28 Nov 2002, at 17:21, Damien GERANTON wrote:
 
-As you can see from a short look at our CVS server it is based  on  a
-CVS snapshot taken 2001-10-09.
+> Hello,
+> 
+> I face a strange problem, i use MTD with JFFS and i want to clone my
+> systeme from one card to another. I thought that some think like : dd
+> if=/dev/mtd0 of=/master.img
+> 
+> and
+> 
+> dd if=/master.img of=/dev/mtd0
+> 
+> But it does not work, if after i do
+> 
+> dd if=/dev/mtd0 of=/test.img
+> diff test.img master.img
+> i says they are different.
+> 
+> Is it normal.
+> 
+> Is RAW acces really RAW ?
+> 
+> Do i miss some think ?
+> 
+> Thanks
+> 
+> PS : I use MTD on 2.2.17 kernel
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Best regards,
 
-Wolfgang Denk
+__________________________
 
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-Quantum Mechanics is God's version of "Trust me."
+Simon Haynes - Baydel 
+Phone : 44 (0) 1372 378811
+Email : simon@baydel.com
+__________________________
