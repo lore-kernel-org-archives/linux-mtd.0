@@ -1,18 +1,14 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikana.artecdesign.ee)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CmVeu-0006bD-0n
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2005 06:18:30 -0500
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=pcx.artec.ee)
-	by postikana.artecdesign.ee with esmtp (Exim 3.35 #1 (Debian))
-	id 1CmVei-0000kQ-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Jan 2005 13:18:16 +0200
-Date: Thu, 6 Jan 2005 13:18:17 +0200 (EET)
-From: Olav Kongas <ok@artecdesign.ee>
+Received: from web61309.mail.yahoo.com ([216.155.196.152])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CmVft-0006hg-C2
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2005 06:20:11 -0500
+Message-ID: <20050106111916.63614.qmail@web61309.mail.yahoo.com>
+Date: Thu, 6 Jan 2005 03:19:16 -0800 (PST)
+From: Niraj Maheshwari <neer_mh@yahoo.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.44.0501061248210.5515-100000@pcx>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: 2.6.10, Intel chip, incorrect numparts detection
+Content-Type: text/plain; charset=us-ascii
+Subject: Booting Ramdisk from MTD 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,175 +20,191 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 2.6.10, the detected hw partition number seems to be
-insane. All is ok on 2.6.9. I added few printk's to the
-cfi_intelext_partition_fixup() in 2.6.10 hoping that this
-will provide some more useful info (probably not).  Below I
-give the code fragment sprinkled with my printk's and both
-unsuccessful 2.6.10 and successful 2.6.9 boot dumps.
+I am using JFFS2 and MTD on our target for booting the
+Ramdisk from MTD device ( Intel W18 Flash ).
 
-Olav
+Here is the logs for the same. I am getting this error
+eveytime when Linux Kernel tries to mount the JFFS2
+compressed Ramdisk from the Flash Device.
 
-PS Please use CC, I am not subscribed to the list.
+Can anyone help me out on this ?
 
+Thanks
+Niraj
+**************************************************
 
-
-
-------Code fragment from cfi_intelext_partition_fixup(), with my prink's added-------
-
-        printk("%s %d: enter\n",__FUNCTION__,__LINE__);    /* __LINE__ == 455 */
-		/* Protection Register info */
-		offs = (extp->NumProtectionFields - 1) * (4 + 6);
-
-        printk("%s %d: offs %d\n",__FUNCTION__,__LINE__,offs);
-		/* Burst Read info */
-		offs += 6;
-
-		/* Number of partition regions */
-		numregions = extp->extra[offs];
-		offs += 1;
-        printk("%s %d: offs %d, numregions %d\n",__FUNCTION__,__LINE__,offs, numregions);
-
-		/* Number of hardware partitions */
-		numparts = 0;
-		for (i = 0; i < numregions; i++) {
-			struct cfi_intelext_regioninfo *rinfo;
-			rinfo = (struct cfi_intelext_regioninfo *)&extp->extra[offs];
-			numparts += rinfo->NumIdentPartitions;
-			offs += sizeof(*rinfo)
-				+ (rinfo->NumBlockTypes - 1) *
-				  sizeof(struct cfi_intelext_blockinfo);
-        printk("%s %d: offs %d, numregions %d, numparts %d\n",__FUNCTION__,__LINE__,offs, numregions, numparts);
-		}
-
-		/*
-		 * All functions below currently rely on all chips having
-		 * the same geometry so we'll just assume that all hardware
-		 * partitions are of the same size too.
-		 */
-		partshift = cfi->chipshift - __ffs(numparts);
-        printk("%s %d: cfi->chipshift %ld, __ffs(numparts) %ld, partshift %d\n",
-               __FUNCTION__,__LINE__,cfi->chipshift, __ffs(numparts), partshift);
-
-		if ((1 << partshift) < mtd->erasesize) {
-			printk( KERN_ERR
-				"%s: bad number of hw partitions (%d)\n",
-				__FUNCTION__, numparts);
-			return -EINVAL;
-		}
-
-------------------Dump of failure on 2.6.10------------
-
-Linux version 2.6.10 (ok@pcx) (gcc version 3.3.2) #7 Thu Jan 6 12:47:28 EET 2005
-CPU: ARM922Tid(wb) [41029220] revision 0 (ARMv4T)
-CPU: D VIVT write-back cache
-CPU: I cache: 8192 bytes, associativity 64, 32 byte lines, 4 sets
-CPU: D cache: 8192 bytes, associativity 64, 32 byte lines, 4 sets
-Machine: Logic Product Development LPD7A400-10
-Memory policy: ECC disabled, Data cache writeback
-Built 7 zonelists
-Kernel command line: console=ttyAM1 mtdparts=phys_mapped_flash:4m@2m(root)ro,2m@
-6m(usrlocal)ro,384k@1664k(conf),64k@1344k(font)ro root=/dev/mtdblock0
-PID hash table entries: 64 (order: 6, 1024 bytes)
-Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
-Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
-Memory: 4MB 4MB 4MB 3MB = 15MB total
-Memory: 13628KB available (1093K code, 269K data, 60K init)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-CPU: Testing write buffer coherency: ok
-Linux NoNET1.0 for Linux 2.6
-SCSI subsystem initialized
-usbcore: registered new driver usbfs
-usbcore: registered new driver hub
-NetWinder Floating Point Emulator V0.97 (double precision)
-Real Time Clock Driver v1.12
-serial: LH7A40X serial driver
-ttyAM0 at MMIO 0x80000600 (irq = 12) is a LH7A40X
-ttyAM1 at MMIO 0x80000700 (irq = 13) is a LH7A40X
-ttyAM2 at MMIO 0x80000800 (irq = 16) is a LH7A40X
-io scheduler noop registered
-io scheduler cfq registered
-loop: loaded (max 8 devices)
-elevator: using cfq as default io scheduler
-physmap flash device: 800000 at 0
-phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit bank
- Intel/Sharp Extended Query Table at 0x0039
- Intel/Sharp Extended Query Table at 0x0039
- Intel/Sharp Extended Query Table at 0x0039
- Intel/Sharp Extended Query Table at 0x0039
-Using buffer write method
-cfi_cmdset_0001: Erase suspend on write enabled
-cfi_intelext_partition_fixup 455: enter
-cfi_intelext_partition_fixup 459: offs 0
-cfi_intelext_partition_fixup 466: offs 7, numregions 1
-cfi_intelext_partition_fixup 477: offs 69, numregions 1, numparts 4352
-cfi_intelext_partition_fixup 487: cfi->chipshift 23, __ffs(numparts) 8, partshif
-t 15
-cfi_intelext_partition_fixup: bad number of hw partitions (4352)
-gen_probe: No supported Vendor Command Set found
-Initializing USB Mass Storage driver...
-usbcore: registered new driver usb-storage
-USB Mass Storage support registered.
-usbcore: registered new driver usbhid
-drivers/usb/input/hid-core.c: v2.0:USB HID core driver
-VFS: Cannot open root device "mtdblock0" or unknown-block(0,0)
-Please append a correct "root=" boot option
-Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-
-
---------Dump of successful boot on 2.6.9-------------
-
-Linux version 2.6.9 (ok@pcx) (gcc version 3.3.2) #29 Mon Jan 3 17:07:49 EET 2005
-CPU: ARM922Tid(wb) [41029220] revision 0 (ARMv4T)
-CPU: D VIVT write-back cache
-CPU: I cache: 8192 bytes, associativity 64, 32 byte lines, 4 sets
-CPU: D cache: 8192 bytes, associativity 64, 32 byte lines, 4 sets
-Machine: Logic Product Development LPD7A400-10
-Memory policy: ECC disabled, Data cache writeback
-Built 7 zonelists
-Kernel command line: console=ttyAM1 mtdparts=phys_mapped_flash:4m@2m(root)ro,2m@
-6m(usrlocal)ro,384k@1664k(conf),64k@1344k(font)ro root=/dev/mtdblock0
-PID hash table entries: 64 (order: 6, 1024 bytes)
-Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
-Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
-Memory: 4MB 4MB 4MB 3MB = 15MB total
-Memory: 13552KB available (1128K code, 319K data, 56K init)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-CPU: Testing write buffer coherency: ok
-Linux NoNET1.0 for Linux 2.6
-SCSI subsystem initialized
-usbcore: registered new driver usbfs
-usbcore: registered new driver hub
-NetWinder Floating Point Emulator V0.97 (double precision)
-Real Time Clock Driver v1.12
-serial: LH7A40X serial driver
-ttyAM0 at MMIO 0x80000600 (irq = 12) is a LH7A40X
-ttyAM1 at MMIO 0x80000700 (irq = 13) is a LH7A40X
-ttyAM2 at MMIO 0x80000800 (irq = 16) is a LH7A40X
-loop: loaded (max 8 devices)
-Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
-ide: Assuming 50MHz system bus speed for PIO modes; override with idebus=xx
-Using cfq io scheduler
-physmap flash device: 800000 at 0
-phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit bank
+Kernel command line: root=/dev/mtdblock1 rw mem=64M
+rootfstype=jffs2 console=ttyS0,115200 ramdisk=8192
+physmap flash device: 1000000 at a0000000
+phys_mapped_flash: Found 1 x16 devices at 0x0 in
+16-bit bank
  Intel/Sharp Extended Query Table at 0x0039
 cfi_cmdset_0001: Erase suspend on write enabled
-Using buffer write method
-4 cmdlinepart partitions found on MTD device phys_mapped_flash
-Creating 4 MTD partitions on "phys_mapped_flash":
-0x00200000-0x00600000 : "root"
-0x00600000-0x00800000 : "usrlocal"
-0x001a0000-0x00200000 : "conf"
-0x00150000-0x00160000 : "font"
-Initializing USB Mass Storage driver...
-usbcore: registered new driver usb-storage
-USB Mass Storage support registered.
-usbcore: registered new driver usbhid
-drivers/usb/input/hid-core.c: v2.0:USB HID core driver
-VFS: Mounted root (cramfs filesystem) readonly.
-Freeing init memory: 56K
-init started:  BusyBox v1.00-pre2 (2004.02.13-19:56+0000) multi-call binary
+Using word write method
+cmdlinepart partition parsing not available
+RedBoot partition parsing not available
+IntelW18  flash driver (size->0x800000
+mem->0xA0300000)
+IntelW18 GS504V3.0 Flash: Found 1 x16 devices at 0x0
+in 16-bit bank
+ Intel/Sharp Extended Query Table at 0x0039
+cfi_cmdset_0001: Erase suspend on write enabled
+Using word write method
+Creating 1 MTD partitions on "IntelW18 Flash":
+0x00000000-0x00800000 : "Partition 1"
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 4096 bind
+8192)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+VFS: Mounted root (jffs2 filesystem).
+Freeing init memory: 68K
+INIT: Eep. Unknown node type 0080 at 00186f34 was
+marked REF_UNCHECKED
+Node header CRC failed at 00186f34. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000001b4)
+Eep. Unknown node type 0080 at 00186e88 was marked
+REF_UNCHECKED
+Node header CRC failed at 00186e88. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000000ac)
+Eep. Unknown node type 0080 at 00186de0 was marked
+REF_UNCHECKED
+Node header CRC failed at 00186de0. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000000a8)
+versionEep. Unknown node type 0080 at 00186bf8 was
+marked REF_UNCHECKED
+ 2Node header CRC failed at 00186bf8. But it must have
+been OK earlier.
+.7Node was: { 0080, 2080, 00800080, 00800080 }
+4 Node totlen on flash (0x00800080) != totlen from
+node ref (0x000001e8)
+bootEep. Unknown node type 0080 at 001866e0 was marked
+REF_UNCHECKED
+inNode header CRC failed at 001866e0. But it must have
+been OK earlier.
+gNode was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x00000518)
+Eep. Unknown node type 0080 at 00186124 was marked
+REF_UNCHECKED
+Node header CRC failed at 00186124. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000005bc)
+Eep. Unknown node type 0080 at 00185958 was marked
+REF_UNCHECKED
+Node header CRC failed at 00185958. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000007cc)
+Eep. Unknown node type 0080 at 0018511c was marked
+REF_UNCHECKED
+Node header CRC failed at 0018511c. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x0000083c)
+Eep. Unknown node type 0080 at 00184a2c was marked
+REF_UNCHECKED
+Node header CRC failed at 00184a2c. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000006f0)
 
-board (Tue Aug 3 19:53:25 EEST 2004)
+Eep. Unknown node type 0080 at 00184328 was marked
+REF_UNCHECKED
+Node header CRC failed at 00184328. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x00000704)
+Eep. Unknown node type 0080 at 00183e34 was marked
+REF_UNCHECKED
+Node header CRC failed at 00183e34. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000004f4)
+Eep. Unknown node type 0080 at 00183a60 was marked
+REF_UNCHECKED
+Node header CRC failed at 00183a60. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000003d4)
+Eep. Unknown node type 0080 at 00183444 was marked
+REF_UNCHECKED
+Node header CRC failed at 00183444. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x0000061c)
+Eep. Unknown node type 0080 at 00182ca8 was marked
+REF_UNCHECKED
+Node header CRC failed at 00182ca8. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x0000079c)
+Eep. Unknown node type 0080 at 00182550 was marked
+REF_UNCHECKED
+Node header CRC failed at 00182550. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x00000758)
+Eep. Unknown node type 0080 at 00181e14 was marked
+REF_UNCHECKED
+Node header CRC failed at 00181e14. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x0000073c)
+Eep. Unknown node type 0080 at 00181670 was marked
+REF_UNCHECKED
+Node header CRC failed at 00181670. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000007a4)
+Eep. Unknown node type 0080 at 00180da4 was marked
+REF_UNCHECKED
+Node header CRC failed at 00180da4. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x000008cc)
+Eep. Unknown node type 0080 at 00180414 was marked
+REF_UNCHECKED
+Node header CRC failed at 00180414. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x00000990)
+Eep. Unknown node type 0080 at 0018000c was marked
+REF_UNCHECKED
+Node header CRC failed at 0018000c. But it must have
+been OK earlier.
+Node was: { 0080, 2080, 00800080, 00800080 }
+Node totlen on flash (0x00800080) != totlen from node
+ref (0x00000408)
 
-board login:
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Take Yahoo! Mail with you! Get it on your mobile phone. 
+http://mobile.yahoo.com/maildemo 
