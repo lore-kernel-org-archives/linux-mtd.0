@@ -1,15 +1,19 @@
-Received: from f120.pav1.hotmail.com ([64.4.31.120] helo=hotmail.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 187uUn-0007aH-00
-	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 09:23:09 +0000
-From: "vijay vijay" <vijay_peshkar@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: vijay.peshkar@wipro.com
-Subject: mtd2 partition mapping on mtd1?...
-Date: Sat, 02 Nov 2002 09:52:47 +0000
+	id 1883E1-0008SI-00
+	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 18:42:25 +0000
+Date: Sat, 2 Nov 2002 20:12:31 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Eugene Surovegin <ebs@innocent.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD devices at the wrong place
+Message-ID: <20021102191231.GA12053@wohnheim.fh-wedel.de>
+References: <5.1.0.14.2.20021101144318.02cf71f0@pop.prodigy.net> <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net> <1036137508.26545.46.camel@Europa.matchpointds> <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net> <5.1.0.14.2.20021101144318.02cf71f0@pop.prodigy.net> <5.1.0.14.2.20021101170236.035dc4b0@pop.prodigy.net>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F120gLEbWm5zHXJ6uCu0001bb1e@hotmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5.1.0.14.2.20021101170236.035dc4b0@pop.prodigy.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,61 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Friends,
+On Fri, 1 November 2002 17:06:15 -0800, Eugene Surovegin wrote:
+> OK, I got your point :)). Agreed.
+> 
+> But Anders *should* use "c 90 8" otherwise he have to change code for char 
+> device to not right-shift minor number.
 
-Have added 3 partitions in mtd. The root filesystem is cramfs type.
-Since it was not being located by default, hardcoded cramfs_read
-to return the rootfs addr. Now the target is coming up..Am getting
-below results too...
+Correct. :-)
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 000c0000 00020000 "boot firmware + kernel"
-mtd1: 00200000 00020000 "cramfs partition"
-mtd2: 00100000 00020000 "test partition"
+Jörn
 
-# mount
-/dev/root on / type cramfs (rw)
-/proc on /proc type proc (rw)
-ramfs on /var type ramfs (rw)
-
-Now, "cat /dev/mtd1" and "cat /dev/mtd2" are both fetching
-same data. How's that?. A dd to /dev/mtd2 is going as..
-
-# busybox dd if=mtd2fs.bin bs=94208 of=/dev/mtd2 count=1
-MTD_open
-MTD_write
-vijay mtd_write (Í=E
-(vijay) in physmap_write32(data=0xaa00aa, adr=0x1554)
-(vijay) in physmap_write32(data=0x550055, adr=0xaa8)
-(vijay) in physmap_write32(data=0x200020, adr=0x1554)
-(vijay) in physmap_write32(data=0xa000a0, adr=0x0)
-(vijay) in physmap_write32(data=0x28cd3d45, adr=0x400000)
-(vijay) in physmap_read32(0xc3ba3000)
-(vijay) in physmap_read32(0xc3ba3000)
-(vijay) in physmap_read32(0xc3ba3000)
-(vijay) in physmap_read32(0xc3ba3000)
-:
-:
-:
-(vijay) in physmap_read32(0xc3ba3000)
-(vijay) in physmap_read32(0xc3ba3000)
-(vijay) in physmap_read32(0xc3ba3000)
-Last[3] is d726c2a6, datum is 28cd3d45
-(vijay) in physmap_write32(data=0xf000f0, adr=0x0)
-(vijay) in physmap_write32(data=0x900090, adr=0x0)
-(vijay) in physmap_write32(data=0x0, adr=0x0)
-dd: /dev/mtd2: Input/output error
-MTD_close
-
-On "cat /dev/mtd2", am still seeing old data(as on mtd1)?.
-
-Any suggestions on what's going wrong here?..
-
-Thanks and Regards,
-Vijay
-
-
-_________________________________________________________________
-Surf the Web without missing calls! Get MSN Broadband.  
-http://resourcecenter.msn.com/access/plans/freeactivation.asp
+-- 
+Those who come seeking peace without a treaty are plotting.
+-- Sun Tzu
