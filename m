@@ -1,22 +1,19 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=ocean.magtech.com.au)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C6dvD-0003s2-6U
-	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2004 19:38:16 -0400
-Received: from [203.26.222.154] (unknown [203.26.222.154])
-	by ocean.magtech.com.au (Postfix) with ESMTP id 17E7D40AA40E
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2004 09:38:03 +1000 (EST)
-Message-ID: <4144DDDA.1060109@magellan-technology.com>
-Date: Mon, 13 Sep 2004 09:38:02 +1000
-From: Aras Vaichas <arasv@magellan-technology.com>
+	id 1C6kgQ-0004dI-Hr
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2004 02:51:28 -0400
+Message-ID: <4145434B.90406@yandex.ru>
+Date: Mon, 13 Sep 2004 10:50:51 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <Pine.LNX.4.44.0409092347290.6169-100000@gemini.home.net>
-In-Reply-To: <Pine.LNX.4.44.0409092347290.6169-100000@gemini.home.net>
+To: tglx@linutronix.de
+References: <414490B8.8050304@yandex.ru>
+	<1095014499.13571.166.camel@thomas.tec.linutronix.de>
+In-Reply-To: <1095014499.13571.166.camel@thomas.tec.linutronix.de>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: Setting up MTD via command line?
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND page programm
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jamie Guinan wrote:
- >>>Can anyone explain, or is there docs on how to setup MTD via command
+Thomas Gleixner wrote:
+> 
+> NAND_CMD_READ0 sets the offset to the start of a page.
+> NAND_CMD_READ1 sets the offset to 256. This is only available on chips
+> with a pagesize = 512.
+Thanks, this is what I thought.
 
-from <your kernel here>/Documentation/Configure.help
+Do all NAND chips support the second half page reads? It seems for me - not.
 
-CONFIG_MTD_CMDLINE_PARTS
-   Allow generic configuration of the MTD paritition tables via the kernel
-   command line. Multiple flash resources are supported for hardware where
-   different kinds of flash memory are available.
+> 
+> What are you looking for ?
+Nothing special, I'm just writing a NAND flash driver (which simulates 
+NAND flash in RAM) and was a little bit confused since there is no 
+comments (concerning NAND commands)in nand.h ...
+> 
+> tglx
+> 
+Thanks for reply.
 
-   You will still need the parsing functions to be called by the driver
-   for your particular device. It won't happen automatically. The
-   SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
-   example.
-
-   The format for the command line is as follows:
-
-   mtdparts=<mtddef>[;<mtddef]
-   <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
-   <partdef> := <size>[@offset][<name>][ro]
-   <mtd-id>  := unique id used in mapping driver/device
-   <size>    := standard linux memsize OR "-" to denote all
-   remaining space
-   <name>    := (NAME)
-
-   Due to the way Linux handles the command line, no spaces are
-   allowed in the partition definition, including mtd id's and partition
-   names.
-
-   Examples:
-
-   1 flash resource (mtd-id "sa1100"), with 1 single writable partition:
-   mtdparts=sa1100:-
-
-   Same flash, but 2 named partitions, the first one being read-only:
-   mtdparts=sa1100:256k(ARMboot)ro,-(root)
-
-   If unsure, say 'N'.
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
