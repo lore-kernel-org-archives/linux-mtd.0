@@ -1,23 +1,18 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19YfD7-00015r-Ln
-	for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2003 06:03:45 +0100
-Received: from 192.168.1.100 (unknown [192.168.1.100])4186718FB8
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  5 Jul 2003 01:04:52 -0400 (EDT)
-From: Joshua Wise <joshua@joshuawise.com>
-To: linux-mtd@lists.infradead.org
-Date: Sat, 5 Jul 2003 01:03:56 -0400
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19YnFD-0001ey-Cz
+	for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2003 14:38:27 +0100
+To: Joshua Wise <joshua@joshuawise.com>
 References: <200307042232.43815.joshua@joshuawise.com>
-In-Reply-To: <200307042232.43815.joshua@joshuawise.com>
+	<200307050103.58666.joshua@joshuawise.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 05 Jul 2003 07:38:22 -0600
+In-Reply-To: <200307050103.58666.joshua@joshuawise.com>
+Message-ID: <m3wuexksa9.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200307050103.58666.joshua@joshuawise.com>
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Content-Type: text/plain; charset=us-ascii
+cc: linux-mtd@lists.infradead.org
 Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,33 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Joshua Wise <joshua@joshuawise.com> writes:
 
-On Friday 04 July 2003 10:32 pm, Joshua Wise wrote:
-> tracked this down to jedec_probe_chip's cfi->addr_unlock* garbage - it do=
-es
-> look like that function will need to be rewritten. Has anyone already
-> started this, or should I just go ahead?
-I stand corrected. It seems like it's also possible that jedec_probe() could
-be rewritten to just probe all the chips that we know about. Methinks I'll
-try that.
+> On Friday 04 July 2003 10:32 pm, Joshua Wise wrote:
+> > tracked this down to jedec_probe_chip's cfi->addr_unlock* garbage - it does
+> > look like that function will need to be rewritten. Has anyone already
+> > started this, or should I just go ahead?
 
-(Addendum a few minutes later)
-Sigh.. This just exposes fscking LAYERS of cruft that MTD was built on,=20
-including the idea that every flash chip would be CFI, and this horrible=20
-probing cruft. Someone please shoot me.
+Why?  What is your problem.  All the pieces do is validate what
+was detected.
 
-> ~joshua
+> I stand corrected. It seems like it's also possible that jedec_probe() could
+> be rewritten to just probe all the chips that we know about. Methinks I'll
+> try that.
 
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+It already does test for all of the chips we know about.
+ 
+> (Addendum a few minutes later)
+> Sigh.. This just exposes fscking LAYERS of cruft that MTD was built on, 
+> including the idea that every flash chip would be CFI, and this horrible 
+> probing cruft. Someone please shoot me.
+???
 
-iD8DBQE/Blw8Pn9tWOqA4LMRAratAJ9flffrOczi5a5pTa/Vi1PestkHSQCeNXEM
-PD9pfEOR53oD2NHJHXtU2I8=3D
-=3Dw4wO
-=2D----END PGP SIGNATURE-----
+Flash chips are almost ISA devices so there is no 100% reliable
+way of detecting which type of flash device you have plugged in.
+But there are major trends that help quite a lot.
+
+NOR flash devices have two different JEDEC specified methods of detecting
+exactly which flash chip you have plugged in.   Either the older
+jedec_probe, or the more recent cfi_probe.  Using the basic method
+in jedec_probe we can only get the manufacturer and device id of the
+flash chip, the rest of the information we need comes from a table.
+Flash devices tend to be a lot more common than that so the newer
+Common Flash Interface probe also reports the number of erase regions
+and the like, so the flash drive does not need to have knowledge of 
+a specific kind of flash device.
+
+Most NOR flash devices implement either the Intel or the AMD command
+set.  The probe method does not matter so the command set code
+is reused by both methods.
+
+There is no requirement to reuse the mtd infrastructure.  It is
+there simply because it does a good job of factoring out the common 
+pieces.
+
+So what kind of flash device do you have?  And why does the
+existing infrastructure not work for you?  
+
+Eric
