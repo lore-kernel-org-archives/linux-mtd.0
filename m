@@ -1,17 +1,21 @@
-Received: from webapps.arcom.com ([194.200.159.168])
+Received: from mailout11.sul.t-online.com ([194.25.134.85])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BDhZp-0000Qu-Qh
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 11:25:05 +0100
-Message-ID: <407D117D.9060809@arcom.com>
-Date: Wed, 14 Apr 2004 11:25:01 +0100
-From: David Vrabel <dvrabel@arcom.com>
+	id 1BDjoK-00011N-To
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 13:48:12 +0100
+From: tglx@linutronix.de (Thomas Gleixner)
+To: David Daney <ddaney@avtrex.com>,
+ linux-mtd@lists.infradead.org
+Date: Wed, 14 Apr 2004 14:43:56 +0200
+References: <407CC018.3030505@avtrex.com>
+In-Reply-To: <407CC018.3030505@avtrex.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <200404141209.42563.dk.dbox2@gmx.net>
-In-Reply-To: <200404141209.42563.dk.dbox2@gmx.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Re: cfi_cmdset_0002.c (AMD interleaved chips) fix
+Content-Disposition: inline
+Message-Id: <200404141443.56257.tglx@linutronix.de>
+Subject: Re: mtd, mtdblock and nand ecc.
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-dkey wrote:
-> 
-> attached a cif_cmdset_0002.c diff against the current cvs tested on AMD 
-> interleaved chips and it works!
+On Wednesday 14 April 2004 06:37, David Daney wrote:
+> Is there some reason that the mtd and mtdblock drivers do not use ECC
+> when the backing device is nand with ECC enabled?
 
-Excellent! Thanks for taking the time to test it and posting the results.
+Yes. 
+If the oobsel structure == NULL, then the nand driver uses the structure, 
+which is associated to this mtd device. This can be done from userspace using 
+MEMSETOOBSEL ioctl.
+NAND aware filesystem drivers provide their own oobsel structure and use the 
+xxx_ecc functions.
 
-I'll have to find time to test it here before checking the change into 
-CVS though.
+> I suppose you could run into problems if the backing device were a
+> concatenation of ECC and non-ECC devices, but that could probably be
+> detected either on open or at each page read/write.
 
-David Vrabel
+Concatenation of NAND and NOR will not work anyway, as the fs must be aware of 
+the FLASH type.
+
+-- 
+Thomas
+________________________________________________________________________
+"Free software" is a matter of liberty, not price. To understand the concept,
+you should think of "free" as in "free speech,'' not as in "free beer".
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
