@@ -1,21 +1,22 @@
-Received: from fed1mtao04.cox.net ([68.6.19.241])
+Received: from darwin.altera.com ([66.35.227.3])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17u7gC-0002zi-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 09:37:56 +0100
-Subject: RE: Interest in DOC and YAFFS? --> YAFFS bootloading
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Srinivasan.Ramasubramaniam@nokia.com
-Cc: elf@buici.com, kenneth.johansson@etx.ericsson.se,
-	linux-mtd@lists.infradead.org
-In-Reply-To: 
-	<F252EE46074AB645B4F44947EEAD57272E4EEC@mvebe001.americas.nokia.com>
-References: 
-	<F252EE46074AB645B4F44947EEAD57272E4EEC@mvebe001.americas.nokia.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 25 Sep 2002 01:38:31 -0700
-Message-Id: <1032943112.23565.15.camel@russ>
-Mime-Version: 1.0
+	id 17u8w6-00039N-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 10:58:26 +0100
+Received: from Altera.COM (sunrise [137.57.1.1])
+	by darwin.altera.com (8.10.2+Sun/8.10.2) with ESMTP id g8P9tMs17957
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 02:55:22 -0700 (PDT)
+Received: from localhost (localhost [[UNIX: localhost]])
+	by localhost.localdomain (8.11.6/8.11.6) id g8P9vkh20983
+	for linux-mtd@lists.infradead.org; Wed, 25 Sep 2002 10:57:46 +0100
+Message-Id: <200209250957.g8P9vkh20983@localhost.localdomain>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Clive Davies <cdavies@altera.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Bugfix in cfi_intelext_read_prot_reg
+Date: Wed, 25 Sep 2002 10:57:46 +0100
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,19 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 2002-09-25 at 00:09, Srinivasan.Ramasubramaniam@nokia.com wrote:
-> Hi all !
-> 
-> I request your help to clarify a doubt with regard to initrd-filesystem and cramfs. 
-> 
-> If we use cramfs in place initrd-filesystem, will the entire filesystem will be uncompressed and loaded onto the RAM ?  
-> 
-> But in initrd-filesystem, the entire filesystem is uncompressed and loaded. 
+This patch fixes a bug with the calculation of which byte to read from the 
+protection regsietsr which are presennt in some Intel flash devices.
 
-the compressed cramfs image will be loaded into ram, and then, from
-there, as pages are needed, they will be decompressed again and put into
-ram (but again, if memory is in a pinch, these pages can be dropped). I
-don't know if an ext2 initrd will do XIP (execute in place), but I
-somehow doubt that anyone has worked on that, meaning that the pages
-would need to be copied again, in which case, a cramfs would use less
-ram.
+Index: cfi_cmdset_0001.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0001.c,v
+retrieving revision 1.102
+diff -u -p -r1.102 cfi_cmdset_0001.c
+--- cfi_cmdset_0001.c   13 Sep 2002 14:39:34 -0000      1.102
++++ cfi_cmdset_0001.c   25 Sep 2002 09:46:16 -0000
+@@ -527,7 +527,7 @@ static int cfi_intelext_read_prot_reg (s
+
+                cfi_send_gen_cmd(0x90, 0x55,chip->start, map, cfi, cfi->device_type, NULL);
+                while(count && ((offst-base_offst)<reg_sz)){
+-                       *buf=map->read8(map,(chip->start+(extp->ProtRegAddr*ofs_factor)+offst));
++                       *buf=map->read8(map,(chip->start+((extp->ProtRegAddr+1)*ofs_factor)+offst));
+                        buf++;
+                        offst++;
+                        count--;
