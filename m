@@ -1,15 +1,15 @@
-Received: from f95.pav1.hotmail.com ([64.4.31.95] helo=hotmail.com)
+Received: from f202.pav1.hotmail.com ([64.4.31.202] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zxkx-0005dV-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 12:14:59 +0100
+	id 17zxl8-0005dW-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 12:15:11 +0100
 From: "vijay vijay" <vijay_peshkar@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Cc: vijay.peshkar@wirp.com
+Cc: vijay.peshkar@wirpo.com
 Subject: my bootloader and mtd / cramfs
-Date: Fri, 11 Oct 2002 11:14:27 +0000
+Date: Fri, 11 Oct 2002 11:14:39 +0000
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed
-Message-ID: <F95jdOfs53QsQsQPmf40001f2ae@hotmail.com>
+Message-ID: <F202rw7Gvslx0fQ3DaE0000b631@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -36,5 +36,4 @@ Regards,
 Vijay
 
 _________________________________________________________________
-MSN Photos is the easiest way to share and print your photos: 
-http://photos.msn.com/support/worldwide.aspx
+Send and receive Hotmail on your mobile device: http://mobile.msn.com
