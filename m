@@ -1,25 +1,24 @@
 Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18JWRa-0007QO-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 10:07:50 +0000
+	id 18JWT7-0007Qk-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 10:09:25 +0000
 Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
  by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6L00JKWC76FA@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 04 Dec 2002 11:37:55 +0100 (MET)
-Date: Wed, 04 Dec 2002 11:35:55 +0100
+ with SMTP id <0H6L00JRTC9TFA@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Wed, 04 Dec 2002 11:39:30 +0100 (MET)
+Date: Wed, 04 Dec 2002 11:37:31 +0100
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: IF eraseall will destryed(phys) the nand flash ?
+Subject: Re: Write error on the nand flash !
 In-reply-to: 
- <Pine.LNX.4.44.0212040642240.5200-100000@structure.biochem.nchu.edu.tw>
-To: shadow <saturn@structure.biochem.nchu.edu.tw>
-Cc: linux-mtd@lists.infradead.org
+ <Pine.LNX.4.44.0212040542320.4326-100000@structure.biochem.nchu.edu.tw>
+To: shadow <saturn@structure.biochem.nchu.edu.tw>, linux-mtd@lists.infradead.org
 Reply-to: tglx@linutronix.de
-Message-id: <200212041135.55747.tglx@linutronix.de>
+Message-id: <200212041137.31306.tglx@linutronix.de>
 MIME-version: 1.0
 Content-type: text/plain; charset=iso-8859-1
 Content-transfer-encoding: 7BIT
 References: 
- <Pine.LNX.4.44.0212040642240.5200-100000@structure.biochem.nchu.edu.tw>
+ <Pine.LNX.4.44.0212040542320.4326-100000@structure.biochem.nchu.edu.tw>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,19 +30,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday 03 December 2002 23:46, shadow wrote:
-> On Wed, 4 Dec 2002, Thomas Gleixner wrote:
-> > > Another problem is why the new SMC has some bad blocks and occurred
-> > > at the same page with using eraseall program erase it.
-> >
-> > NAND FLASH can have factory marked bad blocks at shipping time. See
-> > datasheet. Bad block is bad block and does not go away by erasing it. In
-> > fact you _MUST NOT_ erase it, as bad block information is lost and
->
-> 	I don't understand what is shipping time, your meaming is it was
-> destroyed at the shipping time between the factory to retailer ?
-Nope, the blocks were bad, when the chip was produced or do you believe that 
-the postman is a heavy source of gamma rays ? :)
+On Tuesday 03 December 2002 23:09, shadow wrote:
+> nand_write_ecc: to = 0x001fc000, len = 512
+> nand_write_page: Failed write verify, page 0x00000fe0
+Do you use latest MTD-CVS code ? If not, please upgrade.
+If yes, can I have a look at your hardware driver ?
 
 -- 
 Thomas
