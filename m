@@ -1,15 +1,16 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Esben Nielsen <ESN@vestas.com>
-In-Reply-To: <72F54639F41FD643A2349136F3E33DAD2C3BE5@rkbexch02.vws.vestas.dom>
+To: joshua@dashnine.joshuawise.com
+In-Reply-To: <Pine.LNX.4.44.0312021653280.30871-100000@dashnine.joshuawise.com>
 References: 
-	 <72F54639F41FD643A2349136F3E33DAD2C3BE5@rkbexch02.vws.vestas.dom>
+	 <Pine.LNX.4.44.0312021653280.30871-100000@dashnine.joshuawise.com>
 Content-Type: text/plain
-Message-Id: <1070446326.15108.74.camel@hades.cambridge.redhat.com>
+Message-Id: <1070446527.15108.80.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 03 Dec 2003 10:12:07 +0000
+Date: Wed, 03 Dec 2003 10:15:28 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: M-System's DiskOnChip
+cc: manningc2@actrix.gen.nz
+Subject: Re: nand_write_ecc() broken?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-12-03 at 10:53 +0100, Esben Nielsen wrote:
-> 1) They provide a TFFS-driver but there huge problems with license (it
-> isn't GPL). 
+On Tue, 2003-12-02 at 16:54 -0500, joshua@dashnine.joshuawise.com wrote:
+> >   If bad block managemnet is not really an mtd responsibility then why
+> > does nand_erase() inside mtd/nand/nand.c call
+> > this->block_bad(mtd, page) which checks for bad blocks?
+> It is in the specification for most chips that you must not erase bad
+> blocks, as you'll wipe out the bad block data and generally cause Bad
+> Stuff to happen.
 
-We have proper GPL'd support for this too. For the DiskOnChip 2000 and
-Millennium it's fine. For the DiskOnChip Millennium Plus (and also the
-larger, new DiskOnChip 2000 which uses a newer TFFS), we still have
-problems with the bad block management, because it's not implemented.
+Also, sometimes the precise way in which bad blocks are marked is very
+hardware-specific. On the DiskOnChip, for example, we mark bad blocks as
+such in a separate Bad Block Table, then erase the good blocks and reuse
+the byte in the spare area which was used by the manufacturer for the
+good/bad mark. 
 
-> 2) We can skip M-system's TFFS and jump to JFFS2. But how stable is
-> that on DiskOnChip? As far as I could see from the website there are
-> still problems with bad blocks support. How does that affect the
-> stability? What is your experience?
-> Is it stable enough for production use?
-
-The bad block management is unimplemented. Do not use JFFS2 on
-DiskOnChip until someone's spent a couple of weeks implementing it.
+I prefer to let the low-level driver keep track of bad blocks and refuse
+to allow erase/write on them. 
 
 -- 
 dwmw2
