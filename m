@@ -1,17 +1,19 @@
-Received: from mail.erinc.com ([216.158.10.5])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1897Bu-0000Va-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 17:08:39 +0000
-Message-ID: <F4608F665DF5D311B231009027B70F700131DEB6@MAIL>
-From: Junping Zhang <JZhang@erinc.com>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: seeking help on JFFS2
-Date: Tue, 5 Nov 2002 12:39:31 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 1898sz-0000j6-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2002 18:57:13 +0000
+Date: Tue, 5 Nov 2002 20:27:22 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Jeffrey Lim <jfsworld@fastmail.fm>
+Cc: linux-mtd list <linux-mtd@lists.infradead.org>
+Subject: Re: MTD CVS: missing JFFS2?
+Message-ID: <20021105192722.GB29951@wohnheim.fh-wedel.de>
+References: <20021105172124.324302FD78@server4.fastmail.fm>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20021105172124.324302FD78@server4.fastmail.fm>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,60 +25,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Yes, the minor number is 2, and I checked mkfs.jffs2 source, hex is ok. =
-I
-also tried with
-the method you mentioned, the crashed happened right away.
+On Tue, 5 November 2002 17:21:24 +0000, Jeffrey Lim wrote:
+> 
+> I assume David Woodhouse is the person to whom i should submit the patch
+> to patchin.sh to? (oh boy).
 
-I just tried using the stock JFFS2 in 2.4.18 kernel. It actually got me
-further than JFFS2
-in my mtd-20021022 snapshot, I could use either image or direct mount =
-to
-create JFFS2,
-but it still crashed under stress test. On the other hand, JFFS works =
-quite
-well.
+Correct. It would be nice, if you cc'd the mailinglist as well.
 
-Does stock 2.4.19 have a stable JFFS2 without patch? I downloaded a
-shared-zlib patch
-for 2.4.19-pre10 but am not sure it will fix my JFFS2 problem.
+> I'll have a patch ready first thing i get to work later.
 
-Thanks a lot
+Cool!
 
-- Junping
+Jörn
 
-> -----Original Message-----
-> From:	J=F6rn Engel [SMTP:joern@wohnheim.fh-wedel.de]
-> Sent:	Tuesday, November 05, 2002 11:41 AM
-> To:	Junping Zhang
-> Cc:	linux-mtd@lists.infradead.org
-> Subject:	Re: seeking help on JFFS2
->=20
-> >         eraseall /dev/mtd1
-> >         mount -t jffs /dev/mtdblock1 /mnt/flash
->=20
-> Just to be on the safe side, can you make sure that /dev/mtd1 has =
-minor
-> number 2? Common problem.
->=20
-> >=20
-> >         mkfs.jffs2 -dipc -e0x40000 -p0x700000 -b -o /opt/ipc.jffs2
->                              ^^^^^^^   ^^^^^^^^
-> Does this really work? I remember that mkfs.jffs2 once didn't
-> understand hex and you had to pass it the decimal numbers. Can you
-> check that?
->=20
-> >=20
-> >   Any ideas? I have been reading the mailing list archive and could
-> > not find the answer to this.
->=20
-> jffs2 also mounts partitions that are completely erased. You can
-> eraseall /dev/mtd1 and then mount /dev/mtdblock1. That should work
-> fine.
->=20
-> J=F6rn
->=20
-> --=20
-> "Translations are and will always be problematic. They inflict =
-violence=20
-> upon two languages." (translation from German)
+-- 
+ticks = jiffies;
+while (ticks == jiffies);
+ticks = jiffies;
+-- /usr/src/linux/init/main.c
