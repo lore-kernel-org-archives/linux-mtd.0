@@ -1,65 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14MDAB-0002cz-00
-	for mtd-list@infradead.org; Fri, 26 Jan 2001 17:59:55 +0000
-From: " Brian Michalk" <michalk@awpi.com>
-To: <dwmw2@infradead.org>
-Cc: <mtd@infradead.org>
-Subject: RE: fdisk problems 
-Date: Fri, 26 Jan 2001 11:41:34 -0600
-Message-ID: <NEBBLKIBMLGPAFMHEJICEEANCFAA.michalk@awpi.com>
+	id 14MI2z-0004O7-00
+	for mtd-list@infradead.org; Fri, 26 Jan 2001 23:12:49 +0000
+Received: from ftp.tpi.com ([198.107.51.136] helo=mailgate.tpi.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14MI2y-0004O1-00
+	for mtd@infradead.org; Fri, 26 Jan 2001 23:12:48 +0000
+From: Tim Gardner <timg@tpi.com>
+Reply-To: timg@tpi.com
+To: mtd@infradead.org
+Subject: What flash file system on uCLinux 2.0.38?
+Date: Fri, 26 Jan 2001 15:59:14 -0700
+Content-Type: text/plain
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <Pine.LNX.4.30.0101252051460.20287-100000@imladris.demon.co.uk>
+Message-Id: <01012616124100.01883@tim.tpi.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I am at a loss.
-I can get my 8Mb DOCs to work, but not my 72Mb DOCs.
+Hi,
 
-I have booted into DOS and:
-dupdate /win=c800 /s:doc42.exb
-dformat /win:c800 /s:doc42.exb
+I'm stuck using uCLinux (based on 2.0.38) on an ARM7 platform. I have 2 C=
+FI
+compliant flash parts (AM29DL323D), and will soon have to support equival=
+ent
+sized Intel Strataflash.
 
-This all went without problems.
+The JFFS that comes with uCLinux 2.0.38 is hopelessly based on flash.c wh=
+ich
+only support a few parts. I've backported the latest MTD from CVS, and al=
+l
+seems to work using CFI and cstm_cfi_jedec.c. However, the new JFFS is
+based on 2.2.0 VFS inode and dentry cache stuff. Way too much work to bac=
+kport.
 
-When I boot an MTD compiled kernel (no modules) I always get the ECC errors.
-I went to my cabinet and pulled out a handfull of 72Mb DOCs, and they all
-exhibit the same symptoms.
+Does anyone have a suggestion for a flash filesystem that I might use? Us=
+ing a
+regular file system on the flash translation layer is not an option since=
+ this
+is not a PCMCIA platform (patent issues I guess).
 
-I recall that at some time in the past, we need needed to write either
-zeroes, or FFs to the flash before using it.  Is this still required?
-Is there a different .exb file I should be using?
-
-> -----Original Message-----
-> From: dwmw2@infradead.org [mailto:dwmw2@infradead.org]
-> Sent: Thursday, January 25, 2001 2:57 PM
-> To: Brian Michalk
-> Cc: mtd@infradead.org
-> Subject: RE: fdisk problems
->
->
-> On Thu, 25 Jan 2001,  Brian Michalk wrote:
->
-> > MTD_READECC(...) < 0
->
-> If you define ECC_DEBUG in doc2000.c, I think you'll find it's reporting
-> an ECC failure. Before I left work, I managed to reproduce this, as
-> M-Systems sent me some 72MiB units a couple of days ago. Unfortunately, I
-> don't know _why_ it's reporting the ECC failure.
->
-> For now, can you change the code so it ignores that and continues?
->
-> You don't have anything valuable on that DiskOnChip at the moment, do
-> you?
->
-> --
-> dwmw2
->
->
-
+rtg
+  --  Tim Gardner - timg@tpi.com
+TriplePoint, Inc. - http://www.tpi.com
+PGP: http://www.tpi.com/PGP/Tim.txt
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
