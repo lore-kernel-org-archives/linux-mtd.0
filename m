@@ -1,18 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Brian T <btuch@usa.net>
-In-Reply-To: <011201c40c45$d318a160$fd0ba8c0@briantpc>
-References: <002901c406cb$3c049ec0$fd0ba8c0@briantpc>
-	 <1079387201.5835.344.camel@imladris.demon.co.uk>
-	 <405686B3.4090607@wasp.net.au>
-	 <1079424685.5835.404.camel@imladris.demon.co.uk>
-	 <011201c40c45$d318a160$fd0ba8c0@briantpc>
-Content-Type: text/plain
-Message-Id: <1079544909.16952.92.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 17 Mar 2004 17:35:10 +0000
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3h4S-0001XT-Nl
+	for linux-mtd@lists.infradead.org; Wed, 17 Mar 2004 19:51:20 +0000
+From: dkey <dk.dbox2@gmx.net>
+To: linux-mtd@lists.infradead.org,
+ dvrabel@arcom.com
+Date: Wed, 17 Mar 2004 20:51:22 +0100
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: free_list / free_size messages
+Message-Id: <200403172051.22120.dk.dbox2@gmx.net>
+Subject: Erasebug on AMD flashes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-03-17 at 11:32 -0600, Brian T wrote:
-> >
-> > Yes please. It should be harmless; it's just an accounting screwup. We
-> > seem to have placed a block on the free_list which doesn't actually have
-> > any significant amount of free space in it at all.
-> >
-> > -- 
-> 
-> I am limited to my debugging output, but here is what I caught from syslog
-> around the "eep".
+Hi list!
 
-That's not useful; we need to see what it was thinking at the time it
-put it _on_ the list, not at the time it later takes it off and finds it
-shouldn't have been there in the first place.
+we are using jffs2 on the dbox2 and AMD flash chips, but since rev. 1.96 of 
+cfi_cmdset_0002.c we can't erase the flashes. rev. 1.94 works without 
+problems.
+here are some debug infos, tell me if you need more!
 
-If you update to the current code, does it still happen?
+when we want to erase the flashes with MEMERASE ioctl, we get these errors:
 
 
--- 
-dwmw2
+Erase at 0x00080000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+Erase at 0x00060000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+Erase at 0x00040000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+Erase at 0x00020000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+Erase at 0x00000000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+Erase at 0x000c0000 failed immediately: errno -5
+MTD do_erase_oneblock(): flash internal timeout
+
+
+
+when we do erase with "eraseall" binary:
+
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 20000 -- 14 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 40000 -- 28 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 60000 -- 42 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 80000 -- 57 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ a0000 -- 71 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+eraseall: /dev/mtd/3: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ c0000 -- 85 % complete.MTD do_erase_oneblock(): flash 
+inter
+nal timeout
+
+
+would be please if anybody can take a look over the code or revert revision of 
+cfi_cmdset_0002.c to 1.94.
+thx!
+
+greets dkey
