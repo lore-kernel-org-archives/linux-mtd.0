@@ -1,18 +1,17 @@
-Received: from hal-5.inet.it ([213.92.5.24])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16iuzE-0004wX-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 10:19:00 +0000
-Received: (from root@localhost)
-	by hal-5.inet.it (8.11.1/8.11.1) id g27AUOL296194
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Mar 2002 11:30:24 +0100
-Message-ID: <3C87599B.410CDBA0@selta.it>
-Date: Thu, 07 Mar 2002 11:14:19 -0100
-From: stefania magistrali <s.magistrali@selta.it>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: DiskOnChip booting for PPC
+	id 16iv2M-0004x0-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 10:22:14 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3C87599B.410CDBA0@selta.it> 
+References: <3C87599B.410CDBA0@selta.it> 
+To: stefania magistrali <s.magistrali@selta.it>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DiskOnChip booting for PPC 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 07 Mar 2002 10:33:32 +0000
+Message-ID: <14934.1015497212@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
-I have a question about booting. Now I am using a FADS with powerpc 860T
-and I use PPCBOOT to boot and everything is ok, but our proprietary
-board will use DiskOnChip Millenium Plus and we will use the boot block
-inside it.
-Has anyone tried to boot fro DiskOnChip Millenium Plus in PPC
-architecture? Can I find the IPL code somewhere? And, (sorry but I am
-very confused, I am not familiar with DOC), can I use LILO to boot linux
-or isn't possible for powerpc architecture?
-I know the MTD driver doesn't support DiskOnChip Millenium Plus now, but
-is it possible it will support it in a short time?
-Any suggestion/experience is welcome.
-Thanks,
-Stefania
+s.magistrali@selta.it said:
+> I know the MTD driver doesn't support DiskOnChip Millenium Plus now,
+> but is it possible it will support it in a short time?
+
+Booting PPC from a DiskOnChip Millennium ought to be doable. However we 
+have no information about the Millennium Plus, and hence no chance of 
+writing drivers for it. Avoid the Millennium Plus at all costs, if you 
+intend to use Linux.
+
+Did anyone test the patches for UnitSizeFactor != 1 yet?
+
+--
+dwmw2
