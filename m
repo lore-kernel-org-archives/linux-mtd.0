@@ -1,15 +1,14 @@
-Received: from [211.23.185.132] (helo=sgt-mail.sg.com.tw)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19XXwZ-0001bZ-GP
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2003 04:06:05 +0100
-Message-ID: <E9581285B004D5118D7B0000E23635C901936653@sgt-mail.sg.com.tw>
-From: =?big5?B?QmVuKLFq2au37Ck=?= <Ben@sg.com.tw>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Wed, 2 Jul 2003 11:17:13 +0800 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Subject: INFTL algorithm ?
+Received: from [61.136.62.71] (helo=eyou.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Xe37-0002Ep-NP
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2003 10:37:14 +0100
+Date: 2 Jul 2003 17:39:14 +0800
+Message-ID: <20030702173914.36478.qmail@eyou.com>
+From: "Ivan" <faraway@eyou.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Subject: how to make my DOC bootable?
+Reply-To: Ivan <faraway@eyou.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,14 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-     Can you give me the algorithm of INFTL format ?
+Hi all,
+     I am new member of this mailinglist.
+     I have formated, mkfsed my doc, but i don't know how to make it bootable.
+Is there any HOWTO?
+     Thanks in advanced!
+Best Regards!
+ 
+    ivan
 
-     Thank you very much.
 
-Best regards,
 
-Ben
-Instrument Business Unit. 
-System General Corp. 
-e-mail: ben@sg.com.tw 
+
+
+--http://www.eyou.com
+--稳定可靠的免费电子信箱  语音邮件  移动书签  日历服务  网络存储...亿邮未尽
