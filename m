@@ -1,20 +1,16 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=Dual166.localdomain)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Ffxj-0002B3-00
-	for <linux-mtd@lists.infradead.org>; Sun, 16 Dec 2001 18:24:36 +0000
-Received: from nt40server ([192.168.1.101])
-	by Dual166.localdomain (8.9.3/8.9.3) with SMTP id KAA24781
-	for <linux-mtd@lists.infradead.org>; Sun, 16 Dec 2001 10:34:44 -0800
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: 64-bit bus support for Strata
-Date: Sun, 16 Dec 2001 10:28:42 -0800
-Message-ID: <NCBBIINEHIPFGJPLBEIFMENODCAA.acurtis@onz.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from 205-158-62-105.outblaze.com ([205.158.62.105] helo=ws4-4.us4.outblaze.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16FqGf-0002j2-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2001 05:24:49 +0000
+Message-ID: <20011217053502.11397.qmail@linuxmail.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From: "dharmu bavale" <dharmu@linuxmail.org>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 17 Dec 2001 13:35:02 +0800
+Subject: After installing firmware
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,18 +22,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have been looking through the archives and have found references to
-patches
-to support 64-bit buses. Where can I find them? While I was looking I also
-noticed messages that indicated the cfi_cmdset_0001.c only supported 32 bits
-buses. Is this true?
+HI all,
+   I just got installed grub firmware on to the DOC. After removing the harddisk, I am getting the grub prompt, where in I cant able to boot linux. What may be the problem?
+Hope this time I will get the answer
+Dharmu
+-- 
 
-(I started with the MTD/JFFS from MontaVista)
-Originally I thought that I could get this to work by manipulating the
-cfi_private structure. It looks like it is going to be a little more
-difficult than this. Any help would be appreciated.
+Get your free email from www.linuxmail.org 
 
-PS: Our hardware configuration has 4 Intel 128Mb Stradas Flash in x16 mode.
-I
-just downloaded the latest version from CVS but I do not think it fixes this
-problem.
+
+Powered by Outblaze
