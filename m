@@ -1,33 +1,59 @@
-From: swahl@brecis.com (Steve Wahl)
-Date: Wed, 19 Mar 2003 09:56:38 -0600
-Subject: DQ5 & DQ6 in chips/cfi_cmdset_0002.c (Dairy Queen 5 warning)
-In-Reply-To: <1048033423.11512.1657.camel@tubarao>; from tharbaugh@lnxi.com on Tue, Mar 18, 2003 at 05:23:43PM -0700
-References: <1047428715.11517.50.camel@tubarao> <20030312102735.U1745@brecis.com> <1047915630.11512.81.camel@tubarao> <1047926318.11517.235.camel@tubarao> <1048033423.11512.1657.camel@tubarao>
-Message-ID: <20030319095638.V1745@brecis.com>
+From: guo_zl9@hotmail.com (guo_zhenglin)
+Date: Thu, 20 Mar 2003 16:01:01 +0800
+Subject: help: network cannot startup from FLASH
+Message-ID: <OE64iIWMzRsft83wxnG00000add@hotmail.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Tue, Mar 18, 2003 at 05:23:43PM -0700, Thayne Harbaugh wrote:
->   It likely could be simplified even more - take out feeble support for
-> interleaved chips (which I don't have and can't test and I'm not even
-> sure that the chips that work this way support interleaving).
+ 1) I have a MBX860 board.
+    my linux kernel is 2.4.4
+  
+ 2) when I boot linux from MBX860 RAM,
+    BOOTP is ok. detail messages following:
 
-Interleaved operation is probably always supported, because the chips
-don't "know" they're doing it.
+       .....     
+      POSIX conformance testing by UNIFIX
+     Linux NET4.0 for Linux 2.4
+    Based upon Swansea University Computer Society NET3.039
+    Starting kswapd v1.8
+    CPM UART driver version 0.03
+    ttyS0 on SMC1 at 0x0280, BRG1
+    pty: 256 Unix98 ptys configured
+    block: queued sectors max/low 8186kB/2728kB, 64 slots per queue
+    RAMDISK driver initialized: 16 RAM disks of 8192K size 1024 blocksize
 
-Unless I'm completely mistaken, interleaving is simply having N chips
-with a data bus width of W on a bus that's N * W wide.  For instance,
-I once worked on a product with a processor that didn't do anything
-smaller than a 32 bit bus, so the flash area of memory was populated
-with 4 chips (each 8 bits wide).
+    eth0: CPM ENET Version 0.2 on SCC1, 08:00:3e:2e:68:41
 
-For these, you generally issue the commands to all chips at one time,
-in this case writing 32 bit words with the command bytes replicated in
-each byte of the word.  Makes the polling a little complicated,
-perhaps, because you have to watch for all chips to reach a finished
-state before you continue.
+    ....
+    NET4: Linux TCP/IP 1.0 for NET4.0
+    IP Protocols: ICMP, UDP, TCP, IGMP
+    IP: routing cache hash table of 512 buckets, 4Kbytes
+    TCP: Hash tables configured (established 1024 bind 1024)
 
-Still thinking about the rest of what you wrote.  My initial thoughts
-are this shouldn't really need a whole separate command set file.
+    Sending BOOTP requests.... OK
+    IP-Config: Got BOOTP answer from 192.168.1.252, my address is 
+    192.168.1.1
 
---> Steve
+    NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+
+  3) I ping 192.168.1.252 ,is success.
+  4) then I put linux's kernel file in MBX860 FLASH,
+      boot it from FLASH,
+    BOOTP is NOT success . detail messages following: 
+    
+    ....
+    eth0: CPM ENET Version 0.2 on SCC1, 03:94:80:82:9f:f9
+    NET4: Linux TCP/IP 1.0 for NET4.0
+    IP Protocols: ICMP, UDP, TCP, IGMP
+    IP: routing cache hash table of 512 buckets, 4Kbytes
+    TCP: Hash tables configured (established 1024 bind 1024)
+    Sending BOOTP requests........timeout
+  5) eth0's MAC is different ???!! 
+     and BOOTP timeout.
+     
+  
+
+------------------------------
+ guo zhenglin 
+ E-mail: guo_zl9 at hotmail.com
+ ------------------------------
