@@ -1,22 +1,24 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from smtp.hotbox.ru ([80.68.244.50])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19AtWH-00034r-Iq
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 16:29:17 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HE500BD4XO9EV@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Wed, 30 Apr 2003 17:29:00 +0200 (MEST)
-Date: Wed, 30 Apr 2003 18:28:17 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <Law11-F117Oc7wo95EF00013168@hotmail.com>
-To: J B <mad_flasher@hotmail.com>, dwmw2@infradead.org
-Message-id: <200304301828.17498.tglx@linutronix.de>
-MIME-version: 1.0
-References: <Law11-F117Oc7wo95EF00013168@hotmail.com>
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
+	id 19AurU-0003P6-Eb
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 17:55:16 +0100
+Message-ID: <000d01c30f39$3a05d880$1a00a8c0@itc.intrinsyc.com>
+From: "Alex Samoutin" <samoutin@hotbox.ru>
+To: "Thayne Harbaugh" <tharbaugh@lnxi.com>
+References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
+	<20030423204440.258661528E@desire.actrix.co.nz>
+	<000d01c30a8e$ebd08150$1a00a8c0@itc.intrinsyc.com>
+	<20030425130134.GC27144@wohnheim.fh-wedel.de>
+	<000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
+	<1051312243.1172.388.camel@tubarao>
+Date: Wed, 30 Apr 2003 09:54:48 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="windows-1251"
+Content-Transfer-Encoding: 8bit
+cc: tglx@linutronix.de
 cc: linux-mtd@lists.infradead.org
-Subject: Re: moving MTD partitions
-Reply-To: tglx@linutronix.de
+Subject: Re: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 30 April 2003 17:00, J B wrote:
->
-> i'll have to check in our version of jffs2 to see if SIGHUP still works.
-> using 2.4.18, so maybe...
+Hi Thayne,
 
-SIGHUP still works, but it is hard to figure out, if gc has cleaned up 
-everything. They only way for now is repeat -SIGHUP for a certain amount of 
-time. Note that there is no real switch off for gc. So it will recycle clean 
-blocks until you decide to stop it, so some hacking will be neccecary though.
-The block shuffle stuff (partition magic) itself is no big deal. Find the 
-empty ones and rotate the blocks until the empty ones are on top or bottom of 
-the partition. This could be done from userspace.
 
-> as for the special tool, i wonder if PowerQuest makes a version of
-> PartitionMagic that can deal with MTD devices... ;)
 
-I suggested a mtd-partition-magic project some minutes ago on IRC :)
+>I'm jumping in because I have some chips that appear to be broken - they
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+>occasionally drop operations (erase/write)
+
+
+
+>  When a command is
+
+>"dropped" it seems to always succeed when sent a second time (don't have
+
+>any examples that failed on the second try).  I'm interested because
+
+>your situation seems to be related.  Is the problem that the chip
+
+>sometimes ignores a command?  Does your retry fix things?
+
+
+
+
+
+Yes I had absolutely the same problem. Some times first write command was
+ignored, but second always successful. However I have no problem with erase
+operations, only write some times was ignored.
+
+
+
+(For Thomas) It’s not a bad H/W or incorrect timing. I’ve played with timing
+and result was the same. Also I have 5 boards with Toshiba NAND chip and 2
+of them are working fine without retry, but other 3 need retry for normal
+operation.
+
+
+
+Alex.
