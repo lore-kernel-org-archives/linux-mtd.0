@@ -1,16 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: James Ewing <james.ewing@sveasoft.com>
-In-Reply-To: <00e901c3dba2$52074960$0901a8c0@test>
-References: <00df01c3dba0$2b481360$0901a8c0@test>
-	 <1074163908.5893.21.camel@hades.cambridge.redhat.com>
-	 <00e901c3dba2$52074960$0901a8c0@test>
-Content-Type: text/plain
-Message-Id: <1074165647.5893.36.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 15 Jan 2004 11:20:48 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Booting directly to JFFS2 question
+Received: from [207.164.182.47] (helo=hermes.cbnco.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AhBIK-0005vv-Dy
+	for linux-mtd@lists.infradead.org; Thu, 15 Jan 2004 17:28:36 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by hermes.cbnco.com (Postfix) with ESMTP id 85BC9164E
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Jan 2004 12:26:22 -0500 (EST)
+Received: from vdoukhan (porcuswine.cbnco.com [207.164.182.8])
+	by hermes.cbnco.com (Postfix) with ESMTP id CBE14D5F
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Jan 2004 12:26:21 -0500 (EST)
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: VD <vdoukhan@cbnco.com>
+Content-Type: text/plain; format=flowed; charset=utf-8
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Date: Thu, 15 Jan 2004 12:25:53 -0500
+Message-ID: <opr1tupfh3lvf4sg@localhost>
+Subject: cfi_cmdset_0002.c kaput
+Reply-To: vdoukhan@cbnco.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-01-15 at 12:01 -0800, James Ewing wrote:
-> Hi David,
+Hi,
 
-Please don't top-post. See http://www.infradead.org/~dwmw2/email.html
+I’m working with 2.4.20 and 2.4.23 kernels, AMD29LV641DL flash on Hitachi 
+7750R processor.
 
-> It looks like JFFS2 uses a 2 byte magic number with a varying 2 byte block
-> type. My guess is that I need to look for any of the permutations and return
-> a pointer if found.
+Last well working version of cfi_cmdset_0002.c is 1.91 (2.4.20 or 2.4.23 
+kernels)
 
-The magic will be 4-byte aligned, and you can also check the CRC to
-avoid false positives.
+With the latest cfi_cmdset_0002.c I have a following problem:
+Kernel fails to mount JFFS2 file system:
 
-> My next question is how to add the boot/startup code to do_mounts.c.
-> Currently it finds the super_block and returns it to the routines for ext2,
-> cramfs, etc.
-> 
-> What would the return to JFFS2 look like?
+“Chip not ready after erase suspended: status = 0x1985”
 
-I'm not sure I understand -- what does the 'return to cramfs/ext3/etc.'
-look like? 
+Any thoughts?
 
-You set up the partitions appropriately, and then the normal root mount
-code mounts /dev/mtdblock1 as jffs2, surely?
-
--- 
-dwmw2
+Thanks,
+Vlad
