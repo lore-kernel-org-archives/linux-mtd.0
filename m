@@ -1,20 +1,17 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
+Received: from fwvip.nel.co.jp ([143.125.54.3] helo=lsig.nel.co.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BA9A3-0004XJ-Fr
-	for linux-mtd@lists.infradead.org; Sun, 04 Apr 2004 16:03:47 +0100
-Message-ID: <407023A4.9060903@colleduc.ee>
-Date: Sun, 04 Apr 2004 18:03:00 +0300
-From: Kalev Lember <kalev@colleduc.ee>
+	id 1BAM6F-0005q7-2B
+	for linux-mtd@lists.infradead.org; Mon, 05 Apr 2004 05:52:43 +0100
+Message-Id: <200404050501.AA00323@arimoto-pc.lsig.nel.co.jp>
+From: Takanori Arimoto <ari@lsig.nel.co.jp>
+Date: Mon, 05 Apr 2004 14:01:37 +0900
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <407024F1.8050609@colleduc.ee>
+References: <407024F1.8050609@colleduc.ee>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <Pine.LNX.4.44.0404041514100.12090-100000@kiire.colleduc.ee>
-	<200404041421.11425.tglx@linutronix.de>
-	<200404041434.44768.tglx@linutronix.de>
-In-Reply-To: <200404041434.44768.tglx@linutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: CVS compile errors
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: Problems with DOC Millenium Plus 64
+Reply-To: ari@lsig.nel.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
-> On Sunday 04 April 2004 14:21, Thomas Gleixner wrote:
-> 
->>On Sunday 04 April 2004 14:21, Kalev Lember wrote:
->>
->>>And indeed, there is no member named chipshift in nand.h.
->>
->>I'm in the middle of an overhaul of nand stuff. I modified the id structure
->>and forgot to adjust the doc stuff. I have a look into it
-> 
-> 
-> Fixed in CVS. cvs up
-> 
+Thank you.
+I try it. 
 
-Thank you! Builds ok now.
+> > CONFIG_NFTL=y
+> > CONFIG_NFTL_RW=y
+>
+>You should use INFTL with this chip.
 
-By the way, what is it that you are overhauling?
-
--- 
-Kalev Lember
+--------------------------------
+T.Arimoto  ari@lsig.nel.co.jp
