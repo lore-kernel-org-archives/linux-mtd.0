@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [216.187.71.220] (helo=shelbrook.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 175i9D-00079V-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 May 2002 08:15:31 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFCELHDGAA.acurtis@onz.com> 
-References: <NCBBIINEHIPFGJPLBEIFCELHDGAA.acurtis@onz.com> 
-To: acurtis@onz.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: 64bit bus patch for 2.4.19pre7? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 09 May 2002 08:15:07 +0100
-Message-ID: <1656.1020928507@redhat.com>
+	id 175kPQ-0007Ig-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 May 2002 10:40:24 +0100
+From: "Darren Martz" <dmartz@shelbrook.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Boot from DoC2000
+Date: Thu, 9 May 2002 02:40:18 -0700
+Message-ID: <001e01c1f73d$8a53ad90$9702a8c0@maverick>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-acurtis@onz.com said:
-> I recently acquired the 2.4.19pre8 kernel sources and was surprise
-> when I configured the kernel. The 64-bit bus option was not available
-> in MTD. Has this been pushed to the main kernel sources? 
+I'm new to linux, so my questions may seem rather simplistic <g>
 
-Not yet. I sent quite a lot of stuff to Marcelo for 2.4.19-pre, and I'm 
-waiting for 2.4.20-pre to send the final changes, which are slightly more 
-intrusive.
+Sorry for the multiple questions, I have read most of the papers and
+many of the posting on this list but these are missing pieces...
 
-When that's done, I'll sync up with the 2.5 kernel too.
+It seems the m-sys driver adds logic to the bios gaining access to the
+DoC. The mtd solution everyone is working so hard on seems to do things
+differently, but I'm not sure how or what.  I am also unclear as to what
+boot loaders support this new way to boot an mtd device. I understand
+grub is designed to support that scenario but is still in development.
+Does the lilo solution rely on the m-sys patch?
 
---
-dwmw2
+I suppose a boot loader like grub is required because the bios doesn't
+support native access to the device(s).
+
+So what filesystem options are there? I know that m-sys has their own
+"TrueFFS" fs, and it requires a kernel patch. Being new to linux, I'd
+like to stay away from that for the time being. I have read about jffs1
+and jffs2, and from what I can tell jffs1 is stable but lacking the nice
+features, while jffs2 is very much experimental but coming along nicely.
+
+Knowing all that, the options seem to be as follows:
+
+1) LILO plus an m-sys patch with the TrueFFS or any other filesystem
+2) GRUB with any filesystem including JFFS, but not TrueFFS
+3) SYSLINUX ??? i suspect is not supported
+
+I believe I read that to date, nobody has had a successful boot on a DoC
+with grub - yet! 
+So does that leave the only current option as LILO with the m-sys patch?
+
+Darren
