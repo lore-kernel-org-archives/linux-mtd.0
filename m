@@ -1,18 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15oVVP-0002SY-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:47:03 +0100
+	id 15oVtP-0002WS-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 21:11:51 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de> 
-References: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de> 
-To: dennis noermann <dennis.noermann@noernet.de>
-Cc: Larry Doolittle <ldoolitt@recycle.lbl.gov>,
-    linux-mtd@lists.infradead.org
-Subject: Re: JFFS2_RESERVED_BLOCKS_* 
+In-Reply-To: <20010925220426.B9581@wohnheim.fh-wedel.de> 
+References: <20010925220426.B9581@wohnheim.fh-wedel.de> 
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: partt partition table parser 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 02 Oct 2001 20:56:03 +0100
-Message-ID: <5927.1002052563@redhat.com>
+Date: Tue, 02 Oct 2001 21:20:54 +0100
+Message-ID: <6763.1002054054@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +23,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dennis.noermann@noernet.de said:
-> for an 640kb partition on 2*intelF320 (8MB) so 128 kb are wastet , it
-> is working fine , till i am copying more than the 512kb free space in
-> the partition , then deleting doesnt work
+In general, it looks relatively sane. Can you justify the use of 
+CONFIG_MTD_PARTT_INDIRECT? 
 
-> i think there is only 1 littel mistake in my config , but i was to
-> lazy to figger out the problem JFFS2_RESERVED_BLOCKS_DELETION has to
-> be set to 0 i think , i will try it next time i have time :) 
+What systems use this partition table format?
 
-That sounds like a reasonable assessment, and it's good news that it seems 
-to work. However, I believe there are one or two corner cases in the garbage 
-collection code, which should almost never actually get triggered, in which 
-it's not quite sufficient. So I'm unhappy about reducing it in the general 
-case until I can prove that it's safe. 
+
+> +++ mtd/util/mkpartt.c	Tue Sep 25 20:15:58 2001
+> +#include "/usr/src/linux/include/linux/mtd/ibmpartt.h"
+
+No. Pull the definitions into the C file or take a copy. Don't look too 
+hard at the mkfs.jffs2 code - do as I say, not as I do :)
+
+> +void x_order_32 (__u32 *old32)
+> +{
+> +	__u32 new32;
+> +	__u8 *new8 = (__u8*)&new32;
+> +	__u8 *old8 = (__u8*)old32;
+> +	new8[0] = old8[3];
+> +	new8[1] = old8[2];
+> +	new8[2] = old8[1];
+> +	new8[3] = old8[0];
+> +	*old32 = new32;
+> +}
+
+That's going to break. In the kernel, we compile with -fno-strict-aliasing 
+just because we've always had evil code there and nobody's yet looked too 
+hard at cleaning it up. For userspace, we need to write real C code.
+
+> +		columns = sscanf (buf, " %20s %x %x %x", /* FIXME: Replace 20 with NAME_MAX_LEN */
+
+ "%" #NAME_MAX_LEN "s %x %x %x"
+
+How about making big-endian and little-endian options too, instead of just 
+cross-endian?
 
 --
 dwmw2
