@@ -1,21 +1,14 @@
-Received: from imf19aec.mail.bellsouth.net ([205.152.59.67])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19qWUC-0006sH-GR
-	for <linux-mtd@lists.infradead.org>; Sat, 23 Aug 2003 12:23:12 +0100
-Received: from luna.siliconmotorsports.com ([68.158.3.61])
-	by imf19aec.mail.bellsouth.netESMTP
-	<20030823112220.JYBC24929.imf19aec.mail.bellsouth.net@luna.siliconmotorsports.com>
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 23 Aug 2003 07:22:20 -0400
-From: "Tim Drury" <tdrury@siliconmotorsports.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Sat, 23 Aug 2003 07:22:15 -0400
-Message-ID: <000501c36968$ceadd580$3301a8c0@SIMOTORSPORTS>
+Received: from web41706.mail.yahoo.com ([66.218.93.123])
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19qrVo-0002Vu-K6
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Aug 2003 10:50:16 +0100
+Message-ID: <20030824094921.98467.qmail@web41706.mail.yahoo.com>
+Date: Sun, 24 Aug 2003 02:49:21 -0700 (PDT)
+From: John Praveen <ijpraveen1@yahoo.com>
+To: MTD <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: DFORMAT ERROR " IPL block is bad."on DiskOnChip 2000?
+Content-Type: text/plain; charset=us-ascii
+Subject: JFFS-help!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Did the original poster of the error message below ever get 
-a solution to this problem?  I seem to be having the same problem.
+Hi,
 
--tim
+	I have an embedded device based on ARM processor.
 
+	My device has 32 Flash memory, 64MB SDRAM. The OS is
+linux OS. My linux OS will be in Flash memory. I need
+to have a file system for Flash memory. Hope I shall
+use jffs2 filesystem.
 
->When I use the DOC5.1.4 DOS utilities'
->DFORMAT /WIN:DC00 /S:DOC514.EXB /FIRST
->
->ERRORS
->
->DiskOnChip 2000 found in 0xdc000.
->64M media, 16K unit
->Virgin card rebuilding unit map.
->Media has been scanned
->ERROR - IPL block is bad.
->Error formatting DiskOnChip.
->Status code is 119 (flUnknow status) received from 
->flFormatPhysicalDrive. Format failed.
->
->What's the matter with it?
+	I dont have the target system right now. So i have to
+create the filesystem in my host system now and use
+that filesystem in my target device later.
+
+     mkfs.jffs -d /home/jffsstuff -o /tmp/jffs.image
+
+     /home/jffsstuff - stuff to put in flash
+
+	Is this jffs.image to be put in the Flash memory in
+the target?
+
+	What confuses me is, is the command mkfs.jffs is to
+be executed with the target flash in the host system?
+or is this to be executed without the
+target solely on the host system and later the image
+file can be put in the target when the target is
+ready?
+
+Regards,
+John.
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
