@@ -1,19 +1,25 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QTI8-0003hN-DK
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 15:43:04 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Pantelis Antoniou <panto@intracom.gr>
-In-Reply-To: <3EE88C84.6020803@intracom.gr>
-References: <3EE88C84.6020803@intracom.gr>
-Message-Id: <1055429015.2097.466.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 12 Jun 2003 15:43:36 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Trivial fix for Oops on unmount.
+	id 19QUQL-00048Q-48
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 16:55:37 +0100
+Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
+	by dummy.domain.name (Postfix) with SMTP id 1CB376D0074
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jun 2003 11:51:32 -0400 (EDT)
+Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
+	by lserver.ddiworldwide.com (Postfix) with ESMTP id 09B926D006D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jun 2003 15:51:32 +0000 (UTC)
+From: Frank R Callaghan <f.callaghan@ieee.org>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 12 Jun 2003 11:43:50 -0400
+MIME-Version: 1.0
+Message-Id: <200306121143.51204.f.callaghan@ieee.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Is this correct ?
+Reply-To: f.callaghan@ieee.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-06-12 at 15:21, Pantelis Antoniou wrote:
-> Hi
-> 
-> This is a trivial patch which fixes some oopses for me in 2.4.21-rc7 with
-> MTD compiled in instead of modules.
+Hi,
 
-Thanks... those were already fixed in CVS on the 26th of May, though.
+Is this output indicating an error codition ?
 
--- 
-dwmw2
+
+# /sbin/erase /dev/mtd0
+MTD_open
+Erase Total 1 UnMTD_ioctl
+its
+MTD_ioctl
+Performing FlasMTD_ioctl
+h Erase of lengtMTD do_erase_oneblock(): ERASE 0x00000000
+h 65536 at offseMTD do_erase_oneblock(): Check 0x00000044 0x00000004
+t 0x0MTD do_erase_oneblock(): Check 0x0000004c 0x0000000c
+MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
+MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
+MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
+MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
+MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
+MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
+MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
+MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
+MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
+MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
+ doneMTD_close
+
+I did a 'mount -t jffs2 /dev/mdtblock2 /mnt/ffs2' that went away for
+a very long time <more that miniutes> but the next day it was mounted, I
+could even create a file on it - which cat'ed ok.
+
+Any help please ?
+
+ If I can get this working I will submit the info back to the card
+ manufacture so they can add it to there linux/sbc docs.
+
+TIA,
+	Frank.
+
+ps. Thanks J=F6rn CONFIG_MTD_CHAR =3D yes fixed my last problem
