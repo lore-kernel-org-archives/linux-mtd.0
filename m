@@ -1,20 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.201])
+Received: from wproxy.gmail.com ([64.233.184.200])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DFo0P-0007Hz-7s
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2005 01:45:46 -0500
-Received: by wproxy.gmail.com with SMTP id 55so248989wri
+	id 1DG1RQ-0001FQ-Dl
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2005 16:06:33 -0500
+Received: by wproxy.gmail.com with SMTP id 57so349926wri
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 27 Mar 2005 22:45:46 -0800 (PST)
-Message-ID: <7e75d4110503272239dfc7115@mail.gmail.com>
-Date: Mon, 28 Mar 2005 00:39:06 -0600
-From: Matthew Hudson <hexsane@gmail.com>
-To: newtontalk@newtontalk.net, linux-mtd@lists.infradead.org
+	Mon, 28 Mar 2005 13:06:26 -0800 (PST)
+Message-ID: <a2cb6db605032812442a21b82a@mail.gmail.com>
+Date: Mon, 28 Mar 2005 21:44:58 +0100
+From: Zeri Virgo <sillyzeri@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Setting up Linux kernel 2.4.28 for reading linear flash PCMCIA cards
-Reply-To: Matthew Hudson <hexsane@gmail.com>
+Subject: flash_eraseall with jffs2 corrupts separate partition?
+Reply-To: Zeri Virgo <sillyzeri@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,99 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-*This is being posted to newtontalk@newtontalk.net and
-linux-mtd@lists.infradead.org*
+I have a few 64MB diskonchip 2000 (not TSOP). Given the apparent lack
+of support in linuxbios, u-boot and RedBoot for my x86-based Boser
+HS-4020 (and my lack of time), I'm trying the method of booting with
+GRUB, loading a kernel from a small NFTL/ext2 partition and then
+mounting a jffs2 partition as root.
+I've been trying this with linux kernel 2.6.11.5 and the utils from MTD CVS.
 
-Edit /usr/src/linux/.config to look like the following:
+I've made a two-line change to diskonchip.c to shift the "BDTL
+partition" it creates along a couple of MB to allow me to use the
+following layout (is this ok?).
+# cat /proc/mtd0
+dev:    size    erasesize       name
+mtd0: 04000000 00004000 "DiskOnChip 2000 (NFTL Model)"
+mtd1: 03de0000 00004000 " DiskOnChip BDTL partition"
 
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=3
-CONFIG_MTD_PARTITIONS=m
-CONFIG_MTD_CONCAT=m
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
-CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=m
-# CONFIG_MTD_BLOCK_RO is not set
-CONFIG_FTL=m
-# CONFIG_NFTL is not set
+I want...
+mtd0: grub_firmware and media headers totalling 131072 bytes.
+mtd0: 2097152 bytes with ./nftl_format /dev/mtd0 131072 2097152 and ext2
+mtd1: 64880640 bytes with jffs2
 
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_CFI=y
-CONFIG_MTD_JEDECPROBE=y
-CONFIG_MTD_GEN_PROBE=y
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-CONFIG_MTD_CFI_INTELEXT=y
-CONFIG_MTD_CFI_AMDSTD=y
-CONFIG_MTD_CFI_STAA=y
-CONFIG_MTD_RAM=m
-CONFIG_MTD_ROM=m
-CONFIG_MTD_ABSENT=m
-# CONFIG_MTD_OBSOLETE_CHIPS is not set
-# CONFIG_MTD_AMDSTD is not set
-# CONFIG_MTD_SHARP is not set
-# CONFIG_MTD_JEDEC is not set
+(BTW, I did try modifying diskonchip.c to give me an mtd1 of 2MB and
+mtd2 of the rest, but, after running nftl_format /dev/mtd1, I didn't
+get a /dev/nftla, b or anything to fdisk ???)
 
-#
-# Mapping drivers for chip access
-#
-# CONFIG_MTD_PHYSMAP is not set
-# CONFIG_MTD_PNC2000 is not set
-# CONFIG_MTD_SC520CDP is not set
-# CONFIG_MTD_NETSC520 is not set
-# CONFIG_MTD_SBC_GXX is not set
-# CONFIG_MTD_ELAN_104NC is not set
-# CONFIG_MTD_DILNETPC is not set
-# CONFIG_MTD_MIXMEM is not set
-# CONFIG_MTD_OCTAGON is not set
-# CONFIG_MTD_VMAX is not set
-# CONFIG_MTD_SCx200_DOCFLASH is not set
-# CONFIG_MTD_L440GX is not set
-# CONFIG_MTD_AMD76XROM is not set
-# CONFIG_MTD_ICH2ROM is not set
-# CONFIG_MTD_NETtel is not set
-# CONFIG_MTD_SCB2_FLASH is not set
-CONFIG_MTD_PCI=y
-CONFIG_MTD_PCMCIA=y
+So, I run something like this...
+# modprobe diskonchip    ( and get cat /proc/mtd0 results as above )
+# flash_eraseall /dev/mtd0
+# nftl_format /dev/mtd0 131072 2097152
+# modprobe nftl
+# fdisk /dev/nftla
+[NB: fdisk seems to see the whole chip as available, but I create a
+partition of 32 cylinders (65536 bytes a cylinder)].
+# mke2fs /dev/nftla1
+# nanddump -f /tmp/a -l 3000000 -b -p
+[Things are as I'd expected - nothing touched before 0x20000 or after
+0x220000, and /dev/nftla1 mounts and unmounts without any problems -
+2MB as desired.]
 
-#
-# Self-contained MTD device drivers
-#
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_MTD_BLKMTD is not set
-# CONFIG_MTD_DOC1000 is not set
-# CONFIG_MTD_DOC2000 is not set
-# CONFIG_MTD_DOC2001 is not set
-# CONFIG_MTD_DOCPROBE is not set
+# flash_eraseall -j /dev/mtd1
+# nanddump -f /tmp/b -l 3000000 -b -p
 
-#
-# NAND Flash Device Drivers
-#
-# CONFIG_MTD_NAND is not set
+/dev/nftla1 no longer mounts - group descriptors corrupted! A diff of
+the two nanddumps shows the expected changes to the mtd1 area, but
+also a few bytes near the beginning of the nftl partition have been
+played with! Nearly 2MB before the mtd1 partition!
+I have reproduced this a couple of times on different chips. Also,
+making the nftl/ext2 partition after the jffs2 one seems to screw up
+the jffs2 partition, though I can't see anything changed in the mtd1
+area.
 
-I've been using this all day today and have had only one problem
-(below). In newer kernels (2.6.x) calls to older kernel module hooks
-have been deprecated so I haven't been able to get anything to work on
-them.
+Interestingly, flash_eraseall without the -j option doesn't seem to
+affect the nftl area. I've put debug in flash_eraseall, and I can't
+see anything wrong with the start and length values passed to the
+ioctl calls.
 
-If you have problems - I can't help you. I've tried the linux-mtd list
-and they seem to not care that the drivers are broken. Maybe you can
-fair a little better than I did: http://www.linux-mtd.infradead.org
+There must be something I'm not understanding here, though I've read
+all I can find......help!?
 
-If you try to use different sized devices (2MB, 4MB and 16MB in my
-case) insert the smallest first. I've had Linux lock solid (!!!) once
-when I inserted the 16MB card and then went to a smaller card. After 
-rebooting and inserting the 2MB card I was able to insert any card
-without a problem.
-
-I hope this helps.
-
--Matt
+- Zeri
