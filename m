@@ -1,18 +1,17 @@
-Received: from [203.199.83.28] (helo=mailweb16.rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16V5KG-0008UP-00
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 06:31:32 +0000
-Date: 28 Jan 2002 06:42:44 -0000
-Message-ID: <20020128064244.4558.qmail@mailweb16.rediffmail.com>
+Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16V7ob-0000C7-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 09:11:01 +0000
+Date: Mon, 28 Jan 2002 09:21:20 +0000 (GMT)
+From: kira brown <kira@hex.linuxgrrls.org>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Cc: Ramya Ravichandran <rrhsin@yahoo.co.in>,
+	<linux-mtd@lists.infradead.org>
+Subject: Re: Cf Card vs DiskOnChip
+In-Reply-To: <20020128013905.81A0611FD@creative.actrix.co.nz>
+Message-ID: <Pine.LNX.4.33.0201280914130.9494-100000@hex.linuxgrrls.org>
 MIME-Version: 1.0
-From: "raji lakshmi suresh" <ramyam_ck@rediffmail.com>
-Reply-To: "raji lakshmi suresh" <ramyam_ck@rediffmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: DOC formatting problems
-Content-type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi all,=0A   i have a DISKONCHIP 2000 and i am unable to format it.=0Amy BI=
-OS recognizes the DOC but while i try to format it using the firmware (doc5=
-04.exb) i get a format failure message.=0A=0Ai am using the DOC in an ISA b=
-oard in a pentium machine.=0A(address c8000)=0Athe actual messages i got ar=
-e below.=0A=0Aformatting DOC with doc504.exb=0Acommand : dformat /win:c800 =
-/s:doc504.exb=0A=0ADFORMAT Version 5.0.4.10 for DOS=0ACopyright (c) M-Syste=
-ms ,1982-2001=0AWARNING : All data on Disk On Chip will be destroyed=0ACont=
-inue ? Y/N=0A=0AFormatting=0AVirgin card  rebuilding unit map=0AMedia has b=
-een scanned=0AError formatting Disk On Chip=0A=0AStatus code is 64(flvolume=
- too small) recieved from flformatphysical Drive=0AFormat failed=0A=0Aforma=
-tting DOC with ! (no firmware)=0Acommand : dformat /win:c800 /s:!=0A=0ADFOR=
-MAT Version 5.0.4.10 for DOS=0ACopyright (c) M-Systems ,1982-2001=0AWARNING=
- : All data on Disk On Chip will be destroyed=0AContinue ? Y/N=0A=0AFormatt=
-ing=0AVirgin card  rebuilding unit map=0AMedia has been scanned=0A40 of 204=
-8=0AError formatting Disk On Chip=0A=0AStatus code is 29(flwritefault) reci=
-eved from flformatphysical Drive=0AFormat failed=0A=0Amy DINFO command gave=
- this :=0A=0ADINFO Version 5.0.0=0ACopyright (C)M-Systems 1992-2001=0A=0AFl=
-ash Media statistics=0A=0ASoftware version could not be found=0AFlash Devic=
-e type : DiskOnChip=0AMedia Type        : Samsung KM29V64000=0AUnit size   =
-      : 8192 Bytes=0AMedia size        : 16 MBytes=0AChip size         : 8 =
-MBytes=0ANo. of chips      : 2=0AUnformatted media=0A=0Ai am new to this so=
- any one kindly help.=0A=0A=0A =0A
+
+On Mon, 28 Jan 2002, Charles Manning wrote:
+
+> kira I reckon you're being a bit rude!
+
+I'm sorry, I just don't have much respect for people who say things like
+'cost is more important than reliability'.  Probably becasue I've cleaned
+up their messes so often.
+
+I also don't understand the point of fitting an unreliable Flash to
+replace the hard disc in an ordinary PC.  It's not as if it will be any
+faster (CF is much slower than a rotating IDE disc) or last any longer
+(since CFs tend to drop dead unexpectedly).  Neither can you build a
+system free of moving parts, since it will still need a cooling fan or
+two.  The only thing you can say is that the power supply requirements
+will be a bit smaller-  but if you were really worried about that, why
+would you be using a big chunky x86 35-amps-at-two-volts processor?
+
+When designing an embedded system it's important to start by looking at
+your application rather than by looking at what technologies you
+understand and kludging the design to make it all fit.
+
+I think someone needs to tell us what they actually need from a storage
+device, and then we can help them, rather than saying 'I need 128M of
+somethign exactly like a hard disc' which is clearly a specification
+derived from trying to make a desktop system embedded.
+
+kira.
