@@ -1,21 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Selwyn Tang <selwyn@hectrix.com>
-In-Reply-To: <3F83E3E6.3070308@hectrix.com>
-References: <Law15-F74mSknvh7wFI000062b3@hotmail.com>
-	 <3F7CD9CA.5090805@hectrix.com>
-	 <1065160480.16088.0.camel@imladris.demon.co.uk>
-	 <3F7D31B7.7020400@hectrix.com>
-	 <1065171167.22491.53.camel@hades.cambridge.redhat.com>
-	 <3F83DCED.8090206@hectrix.com>
-	 <1065607132.22298.88.camel@hades.cambridge.redhat.com>
-	 <3F83E3E6.3070308@hectrix.com>
-Content-Type: text/plain
-Message-Id: <1065608571.22298.92.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 08 Oct 2003 11:22:52 +0100
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: high cpu usage using nftl for DOC2000
+Received: from ns-smtp1.anteon.com ([12.148.27.33])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A7Gdn-0004Y3-96
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2003 16:54:19 +0100
+Received: from ns-util3.anteon.com ([12.148.27.31])LAA14871
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2003 11:53:21 -0400
+Received: from ns-exbh02.anteon.com ([10.160.1.3])
+ by ns-util3.anteon.com (SAVSMTP 3.1.0.29) with SMTP id M2003100811532132213
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2003 11:53:21 -0400
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Wed, 8 Oct 2003 11:53:20 -0400
+Message-ID: <79E9503E1ABD5A479B45D36BEA17D31B093255@np-ex.anteon.com>
+From: "DiGiacomo, Mario" <mdigiaco@anteon.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: Fdisk/mount problem with DOC2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-10-08 at 18:16 +0800, Selwyn Tang wrote:
-> I will try my best to do that later.
-
-Thanks.
-
-> What do you mean by -onoatime? Should I change "defaults" to "noatime"?
-
-man 8 mount
-
-       noatime
-              Access timestamps are not updated when a file is read.
- 
-With atime enabled, every _read_ of a file or directory causes a write
-to the flash, because the 'access timestamp' is updated.
-
-On flash, this is a Bad Thing(tm).
-
--- 
-dwmw2
+SSdtIHRyeWluZyB0byBhY2Nlc3MgYW4gYWxyZWFkeS1mb3JtYXR0ZWQgMzJNIERPQyBvbiBhbiBB
+TUQgSzYgcnVubmluZyBMaW51eCAyLjQuMTggKGFuZCBUcnVlRkZTIDUuMS40KSwgYW5kIEknbSBo
+YXZpbmcgZGlmZmljdWx0eS4gIEl0IF9sb29rc18gbGlrZSBldmVyeXRoaW5nIGlzIGxvYWRpbmcg
+Y29ycmVjdGx5IChjb21waWxlZCBpbnRvIHRoZSBrZXJuZWwsIG5vdCBtb2R1bGVzKSwgYnV0IGlm
+IEkgdHJ5IHRvIHJ1biBtb3VudCBvciBmZGlzaywgdGhlIGNvbW1hbmQgaGFuZ3MuDQogDQpBbnkg
+aGVscD8gIEkndmUgYmVlbiBwb3VuZGluZyBvbiB0aGlzIGZvciA0IGRheXMgbm93LCBhbmQgcGVv
+cGxlIGFyZSBnZXR0aW5nIGFudHN5LiA6KQ0KIA0KTWFyaW8gRGkgR2lhY29tbw0KQW50ZW9uLCBJ
+bmMuDQogDQo=
