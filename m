@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mbjG-0001dV-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:06:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0209041546020.22265-100000@hex.linuxgrrls.org> 
-References: <Pine.LNX.4.33.0209041546020.22265-100000@hex.linuxgrrls.org> 
-To: Jasmine Strong <jasmine@hex.linuxgrrls.org>
-Cc: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Stable cvs version for 2.4 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 04 Sep 2002 16:06:02 +0100
-Message-ID: <4414.1031151962@redhat.com>
+Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=dual166.onz.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17mbl5-0001dz-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 16:07:55 +0100
+Reply-To: <acurtis@onz.com>
+From: "Allen Curtis" <acurtis@onz.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: 64-bit support..what happened? 
+Date: Wed, 4 Sep 2002 08:06:55 -0700
+Message-ID: <NCBBIINEHIPFGJPLBEIFOEKKDLAA.acurtis@onz.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <2249.1031151115@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,33 +25,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jasmine@hex.linuxgrrls.org said:
->  Is there nowhere that's not a pointer that you can stuff it? 
+> > I believe that there are 3 files under map that include the conditional
+> > compile and none of them include the proper header file. Perhaps this
+> > just indicates that the conditional should be moved to another file or
+> > change to use the autoconfig defines?
+>
+> I'm inclined to suggest that it should be removed from all three offending
+> map files and a new example for 64-bit operation be added;
+> physmap64.c. And
+> you should only be able to enable physmap64.c in the config if you've
+> enabled 64-bit operation -- so it shouldn't need any conditionals at all.
+>
+> Does that sound sane?
 
-struct jffs2_node_frag
-{
-	rb_node_t rb;
-	struct jffs2_full_dnode *node; /* NULL for holes */
-	uint32_t size;
-	uint32_t ofs; /* Don't really need this, but optimisation */
-};
-
-Not really. 'size' and 'ofs' are within the file -- so if you open a file,
-seek to 0xFFFFFFFD and write a byte, you can quite happily end up with a
-hole frag with size=0xFFFFFFFD and a subsequent data frag with the same ofs.
-So I can't abuse the high or low bits like I do with the physical offsets on
-the flash in the jffs2_raw_node_ref.
-
-And although I thought at the time that 'size' was an optimisation I don't 
-really think it is any more.
-
-Although actually perhaps it is. Must investigate that possibility too -- no
-reason why I can't assume that 'frag->size' is always equivalent to
-'frag_next(frag)->ofs - frag->ofs', as long as I stick in an end-marker to
-show the size of the last frag, if I can stick 0xFFFFFFFF in the 'node'
-pointer to mark that or something. Or if you'd shoot me for that too I could
-allocate something at boot and use _that_ address as the 'end marker' in the
-knowledge that it's not ambiguous.
-
---
-dwmw2
+Sounds good and just a Makefile change. Do you want me to do that?
