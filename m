@@ -1,18 +1,18 @@
-Received: from [203.231.231.195] (helo=smtp.netian.com)
+Received: from gw3.laser5.co.jp ([211.5.140.198] helo=mail.laser5.co.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18fcD1-00072a-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 08:44:07 +0000
-Received: from blueidev (165.194.27.54) by smtp.netian.com (5.1.048.1k) (authenticated as blueidev@smtp.netian.com)
-        id 3E31FCC900002F20 for linux-mtd@lists.infradead.org; Mon, 3 Feb 2003 17:42:03 +0900
-Message-ID: <002501c2cb60$bd7733c0$361bc2a5@cslab.cse.cau.ac.kr>
-From: =?utf-8?B?67CV7KCV7YOc?= <blueidev@netian.com>
-Cc: <linux-mtd@lists.infradead.org>
-Date: Mon, 3 Feb 2003 17:46:27 +0900
+	id 18fege-0007cn-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Feb 2003 11:22:53 +0000
+Received: from laser5.co.jp (unknown [192.168.128.159])
+	by mail.laser5.co.jp (Postfix) with ESMTP id D790683469
+	for <linux-mtd@lists.infradead.org>; Mon,  3 Feb 2003 20:25:40 +0900 (JST)
+Message-ID: <3E3E517F.9010908@laser5.co.jp>
+Date: Mon, 03 Feb 2003 20:24:47 +0900
+From: Vishal <vishal@laser5.co.jp>
 MIME-Version: 1.0
-Subject: Anyone have NAND Flash interface circuit diagram ?
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+To: linux-mtd@lists.infradead.org
+Subject: help: bootloader for loading kernel from mtdblock device on flash........
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,5 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-SGksIGFsbA0KDQpQbHosIHNlbmQgdG8gbWUgdGhlIE5BTkQgZmxhc2ggY2hpcChzYW1zdW5nKSAm
-IFNBLTExMTAgY2lyY3VpdCBkaWFncmFtLg0KDQpvciBTbWFydG1lYWRpYSBpbnRlcmZhY2UgLi4u
+Hi all,
+  I am a mtd newbie, and have been assigned the task of writting a boot 
+loader that can boot a kernel file placed in a mtdblock device, on NAND 
+flash( Samsung K9F2808U08). I would like suggestions on going about with 
+this process. If some one could take some time to at least list down the 
+steps involved in the same, it would be of immense help me.
+  Thanks in Advance!!
+regards,
+Vishal
