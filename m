@@ -1,69 +1,117 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12QHJE-0003yK-00
-	for mtd-list@infradead.org; Wed, 01 Mar 2000 22:09:32 +0000
-Received: from router.alerton.com ([206.63.253.200] helo=ls.alerton.com)
+	id 12QT49-0004y6-00
+	for mtd-list@infradead.org; Thu, 02 Mar 2000 10:42:45 +0000
+Received: from [202.112.136.2] (helo=dns.pubnic.buaa.edu.cn)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12QHJB-0003yE-00
-	for mtd@infradead.org; Wed, 01 Mar 2000 22:09:30 +0000
-Received: from alerton.com (IDENT:roman@songdog.alerton.com [192.168.1.47])
-	by ls.alerton.com (8.9.3/8.9.3) with ESMTP id OAA06586
-	for <mtd@infradead.org>; Wed, 1 Mar 2000 14:09:14 -0800
-Message-ID: <38BD950A.AF21594E@alerton.com>
-Date: Wed, 01 Mar 2000 14:09:14 -0800
-From: Bill Roman <roman@alerton.com>
-MIME-Version: 1.0
-To: mtd@infradead.org
+	id 12QT45-0004y0-00
+	for mtd@infradead.org; Thu, 02 Mar 2000 10:42:42 +0000
+Received: from pita ([210.78.131.227]) by dns.pubnic.buaa.edu.cn (8.7.5/8.7.3) with SMTP id SAA28001 for <mtd@infradead.org>; Thu, 2 Mar 2000 18:47:09 +0800
+Message-ID: <000d01bf8433$91592400$5800a8c0@pita>
+From: "jyllyj" <pfrl@sina.com>
+To: <mtd@infradead.org>
 Subject: Re: Booting from the flash
-References: <E12QFbt-0003hv-00@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 2 Mar 2000 18:37:35 +0800
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 Dvir Oren wrote:
-> 
-> It appears that nftl_format deletes M-Systems' firmware.  I
-> remember that David wrote something about fixing that.
-> doc_loadbios seems to destroy the partition entirely.  Neither M-
-> Systems' drivers nor MTD drivers can recognize anything on the
-> flash after doc_loadbios.
-> 
-> Is there a way to boot from a DOC2000 flash using MTD drivers?
+    It appears that nftl_format deletes M-Systems' firmware.  I
+    remember that David wrote something about fixing that.
+    doc_loadbios seems to destroy the partition entirely.  Neither M-
+    Systems' drivers nor MTD drivers can recognize anything on the
+    flash after doc_loadbios.
 
-Yes, I've just gone through this.  I've had mixed results resurrecting devices
-after destroying their firmware this way: a 4 MB DiskOnChip 2000 was
-recoverable, while a 2 MB unit was not.
+    Is there a way to boot from a DOC2000 flash using MTD drivers?
 
-What I learned is that doc_loadbios seems to need an image captured by "dd
-if=/dev/mtd0 ...".  Given this, I was able to destroy and reload the M-Systems
-firmware on the 4 MB device.  I confess, after the lack of success with the 2 MB
-unit, I didn't try too hard to explore the failure modes in this process, so I'm
-not promising it's foolproof.
+    [BTW:  I was only successful at creating a 2.3 kernel with MTD
+    drivers.  2.2 kernels don't seem to work.  I think I have an idea what
+    could be wrong, and I'll try to test it soon]
+in my case I had some experience about it
+1:get mtd-20000131 release and grub from GNU's CVS
 
-Of course if that firmware is already gone, you can't capture an image of it!  I
-managed to get out of this situation by using the DOS utilities from M-Systems'
-web site, and thrashing around booting Linux and DOS from a floppy.  First, I
-used the firmware image (DOC121.EXB) and doc_loadbios to load it.  This isn't
-enough to make the firmware work, but it's enough to persuade DUPDATE.EXE
-(running under DOS, I didn't try dosemu) that the DiskOnChip is present so it
-would write the firmware the right way.
+2:change doc_stage1.S like this
+.......
+   3. Return, and wait for our INT 18h to be called.
+ */
 
-After you've succeeded in restoring the boot code (or, preferably, before you've
-destroyed it), dd it off of /dev/mtd0 to make an image that works with
-doc_loadbios.
+  /* Store the DiskOnChip segment */
+ movw %ds, %cs:doc_seg
 
-You avoid getting into this mess in the first place by supplying an offset of
-49152 (48 * 1024) when doing nftl_format.  For example:
+  /* Find top of memory */
+ xorw %ax, %ax
+ movw %ax, %ds
+ movw 0x0413, %ax
 
-    nftl_format /dev/mtd0 49152
+  /* Set up our shiny net INT 18h handler */
 
-This leaves the firmware intact.  Then insmod nftl.o, run fdisk to create a
-partition, make a DOS filesystem on it with mkdosfs, and use syslinux to boot.  
 
-I put the necessary modules (doc2000.o, mtd.o, and nftl.o) on an initial RAM
-disk image.  This way I can access the flash to update the RAM disk image stored
-there.
+
+  /* Steal 1K from the top */
+ decw %ax
+ movw %ax,0x0413
+
+  /* Generate segment address */
+ shlw $6,%ax
+ movw %ax,%es
+
+  /* Debug: print the address at which we're installing */
+ pushw %cs
+ popw %ds
+
+  /* Copy ourself into the new segment we've just reserved */
+ movw $0x80, %cx
+ cld
+ xorw %si,%si
+ xorw %di,%di
+ rep
+ movsw
+
+ xorw %ax, %ax
+ movw %ax, %ds
+
+ movw %es,0x0062
+ movw $int18,0x0060
+........
+
+3:compile grub
+
+4:cp /cvs/grub/stage2/pre_stage2  /mtd-20000131/grub/
+
+5:compile mtd-20000131
+
+6:inmod mtd
+    insmod doc2000
+
+7: cd /mtd-20000131/grub
+doc_loadbios /dev/mtd0 grub_firmware
+
+8:reboot into dos
+i use int18 just for test.so you must make a floppy to boot it
+in my case like it
+    in dos
+    debug
+-a
+-xxxx:100 int 18
+-
+-w 100 0 0 1
+-q
+i write 512 byte to floppy boot sector.just to execute int 18 interrupt at
+floppy boot stage
+
+9:reboot and use floppy boot.if all is ok.you can execute into grub command
+interface
+
+Is someone dealing with that grub boot from DOC? i 'm hacking grub code but
+only
+can do something that "periphery" because I can't read ntfl's partition in
+doc.is anyone
+doing it? some advice?
+
+David Woodhourse,how are you ?
+
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
