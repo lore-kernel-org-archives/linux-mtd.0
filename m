@@ -1,24 +1,14 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Crv4w-0004Ah-R2
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2005 04:27:43 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "David A. Marlin" <dmarlin@redhat.com>
-In-Reply-To: <41F03217.3070300@redhat.com>
-References: <41ED2EB3.1070203@redhat.com>
-	<1106068748.16877.109.camel@tglx.tec.linutronix.de>
-	<41ED50B7.9000107@redhat.com>
-	<1106082905.16877.141.camel@tglx.tec.linutronix.de>
-	<41F03217.3070300@redhat.com>
-Content-Type: text/plain
-Date: Fri, 21 Jan 2005 10:27:38 +0100
-Message-Id: <1106299658.5483.16.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: additional error checks for AG-AND erase/write
-Reply-To: tglx@linutronix.de
+Date: Fri, 21 Jan 2005 09:39:59 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Thomas Weber <tweb@peppercon.de>
+In-Reply-To: <41EFAA38.3010903@peppercon.de>
+Message-ID: <Pine.LNX.4.58.0501210931330.20175@phoenix.infradead.org>
+References: <41EFAA38.3010903@peppercon.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Guaranteed writable space on JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +18,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-01-20 at 16:35 -0600, David A. Marlin wrote:
-> Attached is a patch that I think implements what you described.  Please 
-> let me know if I've missed anything or gone astray in the details.
+On Thu, 20 Jan 2005, Thomas Weber wrote:
+> Hi,
+> 
+> I've a problem with JFFS2 (kernel 2.4.26) on a NOR flash with 128k blocks.
+> Due to previous unexpected behaviour, I've already changed
+> 
+> > super.c@85:
+> > -       avail = c->dirty_size + c->free_size;
+> > +       avail = (c->dirty_size / c->sector_size) * c->sector_size + c->free_size;
+> 
+> as GC returns ENOSPC on dirty size < sector size. This occurs quite 
+> often on a nearly full fs with 128k blocks.
+> By now, e.g. df provides the physical free space, but I do not know how 
+> much of this space is really writable, since I do not know how much is 
+> necessary file system organisation, inodes, etc.
+> Is there a way to predict the maximum file size, which will still be 
+> writable?
+It is hard:
 
-Looks good.
+1. We do not exactly know how many nodes will be stored to flash. This 
+depends how will you write your file.
+2. GC works, it merges modes and sometimes splits them. So the free space 
+is f(t) (function of time).
+3. Depending on how block is filled we have different amount of unused 
+space at the end of block. This space is too small to store any node. But 
+after GC process this block, this space may be reclaimed, but there is no 
+guarantee.
+4. On NAND situation is even worth, because linux periodically syncs wbuf 
+(JFFS2 is designed such way), so we flush it when it is partially filled, 
+using padding nodes.
 
-> Note:  I changed a few literals to defined symbols in 'nand_base.c'. 
-> Please let me know if you would prefer this in a separate patch (or not 
-> at all).
+So, possibly we may evaluate the lowest border of free space, but can not 
+calculate the exact value.
 
-If it's not too much work it would be nice when you can do this change
-first.
+> 
+> Thanks for your suggestions,
+> Thomas
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-> @@ -1052,6 +1062,30 @@
->  static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
->  			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo *oobsel)
->  {
-> +	return do_nand_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel, 0xff);
-> +}
-
-Can you please change the call in nand_read too, so it calls
-do_nand_read_ecc directly instead of doing the double call ?
-
-tglx
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
