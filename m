@@ -1,17 +1,27 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8PLH-0008As-5R
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 16:00:44 -0500
-Date: Mon, 7 Mar 2005 22:00:39 +0100
+	id 1D8PSI-0008OJ-8Y
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 16:07:59 -0500
+Date: Mon, 7 Mar 2005 22:07:45 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20050307210039.GC26318@wohnheim.fh-wedel.de>
+To: Gareth Bult <gareth@linux.co.uk>
+Message-ID: <20050307210745.GD26318@wohnheim.fh-wedel.de>
+References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
+	<20050307110413.GD2198@wohnheim.fh-wedel.de>
+	<1110200816.11535.15.camel@squizzey.bult.co.uk>
+	<20050307142402.GC9597@wohnheim.fh-wedel.de>
+	<1110220494.11445.44.camel@squizzey.bult.co.uk>
+	<20050307190012.GA24412@wohnheim.fh-wedel.de>
+	<1110226862.29792.149.camel@baythorne.infradead.org>
+	<1110229064.11284.18.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH] code simplification of blkdevs.c
+In-Reply-To: <1110229064.11284.18.camel@squizzey.bult.co.uk>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Re; MTD (2) Block Driver broken
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,89 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This could be a matter of taste, but it shrinks the binary by a few
-bytes.
+On Mon, 7 March 2005 20:57:43 +0000, Gareth Bult wrote:
+> 
+> Well, my inclination is to go with "please remove it".
+> 
+> My priority is working code, working documentation and working Linux.
 
-Before:
-  [ 1] .text             PROGBITS        00000000 000040 000c18 00  AX  0   0 16
-After:
-  [ 1] .text             PROGBITS        00000000 000040 000bd8 00  AX  0   0 16
+Fwiw, I've found and fixed the bug.  Patch, along with the removal of
+your name, is on the way to Linus.
 
-Commit?
+If you insist, I can remove the driver completely and rewrite it from
+scratch, with none of your code remaining.  Tell me to do so and I
+will.
+
+BTW: Thank you for the bug report.  I've noticed this earlier but
+suspected jffs2 or my cowlink work to be at fault.  Despite our
+ability to get mad at each other, both your initial code and the bug
+report were very helpful (and worth any grief on my side).
 
 Jörn
 
 -- 
-Geld macht nicht glücklich.
-Glück macht nicht satt.
-
-
-Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
----
-
- drivers/mtd/mtd_blkdevs.c |   38 +++++++++++++++++++-------------------
- 1 files changed, 19 insertions(+), 19 deletions(-)
-
---- linux-2.6.10cow/drivers/mtd/mtd_blkdevs.c~blktrans	2005-02-27 23:26:46.652890848 +0100
-+++ linux-2.6.10cow/drivers/mtd/mtd_blkdevs.c	2005-02-27 23:34:26.855929352 +0100
-@@ -382,34 +382,25 @@ int register_mtd_blktrans(struct mtd_blk
- 
- 	ret = register_blkdev(tr->major, tr->name);
- 	if (ret) {
--		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
--		       tr->name, tr->major, ret);
--		kfree(tr->blkcore_priv);
--		up(&mtd_table_mutex);
--		return ret;
-+		printk(KERN_WARNING "Unable to register %s block device on "
-+				"major %d: %d\n", tr->name, tr->major, ret);
-+		goto err0;
- 	}
- 	spin_lock_init(&tr->blkcore_priv->queue_lock);
- 	init_completion(&tr->blkcore_priv->thread_dead);
- 	init_waitqueue_head(&tr->blkcore_priv->thread_wq);
- 
--	tr->blkcore_priv->rq = blk_init_queue(mtd_blktrans_request, &tr->blkcore_priv->queue_lock);
--	if (!tr->blkcore_priv->rq) {
--		unregister_blkdev(tr->major, tr->name);
--		kfree(tr->blkcore_priv);
--		up(&mtd_table_mutex);
--		return -ENOMEM;
--	}
-+	tr->blkcore_priv->rq = blk_init_queue(mtd_blktrans_request,
-+			&tr->blkcore_priv->queue_lock);
-+	ret = -ENOMEM;
-+	if (!tr->blkcore_priv->rq)
-+		goto err1;
- 
- 	tr->blkcore_priv->rq->queuedata = tr;
- 
- 	ret = kernel_thread(mtd_blktrans_thread, tr, CLONE_KERNEL);
--	if (ret < 0) {
--		blk_cleanup_queue(tr->blkcore_priv->rq);
--		unregister_blkdev(tr->major, tr->name);
--		kfree(tr->blkcore_priv);
--		up(&mtd_table_mutex);
--		return ret;
--	} 
-+	if (ret < 0)
-+		goto err2;
- 
- 	devfs_mk_dir(tr->name);
- 
-@@ -424,6 +415,15 @@ int register_mtd_blktrans(struct mtd_blk
- 	up(&mtd_table_mutex);
- 
- 	return 0;
-+
-+err2:
-+	blk_cleanup_queue(tr->blkcore_priv->rq);
-+err1:
-+	unregister_blkdev(tr->major, tr->name);
-+err0:
-+	kfree(tr->blkcore_priv);
-+	up(&mtd_table_mutex);
-+	return ret;
- }
- 
- int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
+If you're willing to restrict the flexibility of your approach,
+you can almost always do something better.
+-- John Carmack
