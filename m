@@ -1,72 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12fewQ-0003Vn-00
-	for mtd-list@infradead.org; Thu, 13 Apr 2000 09:25:34 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
+	id 12fhyP-0003m0-00
+	for mtd-list@infradead.org; Thu, 13 Apr 2000 12:39:49 +0100
+Received: from ncc2.infomail.es ([194.224.53.135] helo=infomail.es)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12fewP-0003Vh-00
-	for mtd@infradead.org; Thu, 13 Apr 2000 09:25:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <38F4D0AA.3FEA3BCF@tsai.es> 
-References: <38F4D0AA.3FEA3BCF@tsai.es> 
-To: Rodrigo Moya <rmoya@tsai.es>
-Cc: MTD List <mtd@infradead.org>
-Subject: Re: problems compiling 
-Mime-Version: 1.0
+	id 12fhyO-0003ls-00
+	for mtd@infradead.org; Thu, 13 Apr 2000 12:39:48 +0100
+Message-ID: <38F5B150.112227EE@tsai.es>
+Date: Thu, 13 Apr 2000 13:36:48 +0200
+From: Rodrigo Moya <rmoya@tsai.es>
+MIME-Version: 1.0
+To: MTD List <mtd@infradead.org>
+Subject: Re: problems compiling
+References: <38F5ADF6.30B89174@tsai.es>  <38F4D0AA.3FEA3BCF@tsai.es> <16135.955614336@devel2.axiom.internal> <17190.955625589@devel2.axiom.internal>
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 13 Apr 2000 09:25:36 +0100
-Message-ID: <16135.955614336@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-_Please_ turn off the base64 :)
-
-
-rmoya@tsai.es said:
->  1 - I had to comment the definition of DECLARE_WAITQUEUE in mtd.h, as
-> it's also defined in compatmac.h.
-
-> 2 - Compiler complained about 'add' not being a member of mtd_notifier.
-
-You say later that you're using CVS. DECLARE_WAITQUEUE isn't in my version, 
-and the add/remove members of the struct mtd_notifier _are_:
-
-/* $Id: mtd.h,v 1.8 2000/03/31 14:40:42 dwmw2 Exp $ */
+David Woodhouse wrote:
+> 
+> rmoya@tsai.es said:
+> >  'cvs update -A' and 'cvs -z3 diff' do nothing, just:
+> 
+> Very very odd. Can you try checking it out again from scratch?
+> 
+Yes, I've checked it out again, and now, at least the mtd.h is correct.
+I'll look at the other ones. But what could have happened?
 
 
+> rmoya@tsai.es said:
+> > What is not working? I don't know if I'll be able to do it, but as I
+> > really need the drivers, I can have a try.
+> 
+> It's the blkdev_dequeue_request and nftl_end_request code that's not
+> working somehow. I need to look more closely at some other block devices
+> and work out what it's doing wrong.
+> 
+I'll have a look at it!
 
-> 3 - Then, in doc2000.c, it complained about CDSNControl and
-> CDSN_CTRL_FR_B not being defined.
-
-> 4 - Again in doc2000.c, doc->nextdoc (struct DiskOnChip *doc) does not
-> exist. I couldn't figure out this one.
-
-
-For each of these two, I changed the include files at the same time as I
-changed the C files. It's OK in the current CVS:
-
-/* $Id: doc2000.h,v 1.4 2000/03/31 14:40:42 dwmw2 Exp $ */
-
-
-rmoya@tsai.es said:
-> I suppose all these errors are because I took the sources from CVS,
-> and that this is development code. 
-
-You seem to have an old copy of the include directory. Try 'cvs update -A'
-
-Note that the IO request handling in the current NFTL code (v1.26) is not
-working. You need to revert to v1.25 ('cvs update -r 1.25 nftl.c'). 
-Alternatively, you could fix it :)
-
-
-
-
---
-dwmw2
-
-
+> Actually, 1.24 is the last version which worked.
+>
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
