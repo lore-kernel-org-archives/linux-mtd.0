@@ -1,18 +1,22 @@
-Received: from relay2.mail.twtelecom.net ([216.54.204.190])
+Received: from motgate8.mot.com ([129.188.136.8])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BDX9b-0006zx-6K
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 00:17:19 +0100
-Received: from MenInBlack.conformative.com (unknown [204.57.109.134])
-	by relay2.mail.twtelecom.net (Postfix) with ESMTP id 9636AC1CE
+	id 1BDbHW-0007kJ-Ms
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 04:41:46 +0100
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by motgate8.mot.com (Motorola/Motgate3) with ESMTP id i3E3fv84020957
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Apr 2004 18:17:09 -0500 (CDT)
-Message-Id: <6.0.3.0.2.20040413175343.01c1b5a8@mail.conformative.com>
-Date: Tue, 13 Apr 2004 18:14:42 -0500
+	Tue, 13 Apr 2004 20:41:57 -0700 (MST)
+Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id i3E3fgLp027577
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Apr 2004 22:41:43 -0500
+Message-ID: <01139FC052A0D411900B00508B9535FC13AC4031@ZCH07EXM04.corp.mot.com>
+From: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
 To: linux-mtd@lists.infradead.org
-From: Clay Douglass <clay.douglass@conformative.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: List of supported devices?
+Date: Wed, 14 Apr 2004 11:41:34 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Subject: Bootloader for NAND flash with ecc and/or bad block checking
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-A couple, hopefully quick questions. I have downloaded all the source and 
-documentation I could find. I found many parts "IDs" in various files. I 
-was wondering if there is some more central place to look to see if a given 
-part is supported? Or some better way (magic grep pattern?) to collect the 
-supported parts "IDs"...
+  Anyone has the experience of NAND flash bootloader?
+  Could you send me a bootloader with ecc and/or bad block checking inside? I'd like to take it as a reference.
 
-
-Specifically, I did not find any Intel Sync Strata Flash parts (e.g. 
-RC28F256JC3) in the list. From my, admittedly limited understanding, all I 
-would have to write is  basic block read/write/erase functions? Is there a 
-document on this set of function I missed?
-
-Any comments how much work I'm biting off here?
-
-Thanks in advance for your time,
-
-Clay Douglass
+Thanks.
+Aaron
