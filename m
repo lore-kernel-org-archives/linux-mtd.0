@@ -1,17 +1,27 @@
-Received: from [203.199.83.247] (helo=rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19dTBs-0001zV-Br
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 12:14:20 +0100
-Date: 18 Jul 2003 11:12:56 -0000
-Message-ID: <20030718111256.30205.qmail@mailweb34.rediffmail.com>
+Received: from hermes.iil.intel.com ([192.198.152.99])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19dUHz-0002Bo-Pe
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 13:24:44 +0100
+Received: from petasus.iil.intel.com (petasus.iil.intel.com [143.185.77.3])
+	2003/05/22 21:17:36 rfjohns1 Exp $) with ESMTP id h6ICJHT12096
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 12:19:17 GMT
+Received: from hasmsxvs01.iil.intel.com (hasmsxvs01.iil.intel.com
+	[143.185.63.58])
+	2003/05/22 21:18:01 rfjohns1 Exp $) with SMTP id h6ICRJS13354
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 12:27:19 GMT
+Received: from hasmsx331.ger.corp.intel.com ([143.185.63.144])
+	M2003071815310630413
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 15:31:06 +0300
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-From: "MTD MTD MTD" <ragh_avan_mtd@rediffmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Disposition: inline
-Content-type: text/plain;
-	format=flowed
-Subject: flash endian
-Reply-To: MTD MTD MTD <ragh_avan_mtd@rediffmail.com>
+Date: Fri, 18 Jul 2003 13:24:14 +0100
+Message-ID: <ED688E0C6B23DC46861D0B6ED6C19C629CFEB4@swsmsx403>
+From: "Mialkowski, Andrzej" <Andrzej.Mialkowski@intel.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: hardcoded maximum number of CFI chips
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi;
+Have a problem with limit of 8 CFI chips, my board has currently 10. It
+would be nice to allow specify this in (advanced) configuration. Patch
+proposal below.
+Andrzej
 
-I have the following questions with regard to flash endianness. I 
-am awaiting a big endian processor based board; so I want to make 
-sure that I have the processor-flash interface with respect to 
-endianness correct before I start on the actual work.
-
-(i) Does a flash chip by itself have any endianness? If so what is 
-the endian mode of Intel/flash chips?
-
-(ii) Also does CFI have anything to say about flash endian?
-
-(iii) Is there any documentation on the endian support inside MTD 
-code?(with respect to CFI queries and actual data)
-
-Also any things I need to watch out on the board schematics with 
-respect to endianness?
-
-Thanks in advance
-Raghav
-___________________________________________________
-Download the hottest & happening ringtones here!
-OR SMS: Top tone to 7333
-Click here now: 
-http://sms.rediff.com/cgi-bin/ringtone/ringhome.pl
+diff -Nru --minimal prev/drivers/mtd/chips/Config.in
+linux/drivers/mtd/chips/Config.in
+--- prev/drivers/mtd/chips/Config.in	Fri Mar 14 17:21:15 2003
++++ linux/drivers/mtd/chips/Config.in	Thu Jul 17 16:27:10 2003
+@@ -40,6 +40,7 @@
+        bool '    Support 4-chip flash interleave' CONFIG_MTD_CFI_I4
+        bool '    Support 8-chip flash interleave' CONFIG_MTD_CFI_I8
+      fi
++     int '  Maximum number of flash chips' CONFIG_MTD_CFI_MAX_CHIPS 8 1
+256
+   fi
+ fi
+ dep_tristate '  Support for Intel/Sharp flash chips'
+CONFIG_MTD_CFI_INTELEXT $CONFIG_MTD_GEN_PROBE
+diff -Nru --minimal prev/include/linux/mtd/cfi.h
+linux/include/linux/mtd/cfi.h
+--- prev/include/linux/mtd/cfi.h	Fri Mar 14 17:05:39 2003
++++ linux/include/linux/mtd/cfi.h	Fri Jul 18 09:46:24 2003
+@@ -306,7 +306,7 @@
+ 	struct flchip chips[0];  /* per-chip data structure for each
+chip */
+ };
+=20
+-#define MAX_CFI_CHIPS 8 /* Entirely arbitrary to avoid realloc() */
++#define MAX_CFI_CHIPS CONFIG_MTD_CFI_MAX_CHIPS
+=20
+ /*
+  * Returns the command address according to the given geometry.
