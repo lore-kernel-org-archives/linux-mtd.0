@@ -1,38 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139wUe-0003jt-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:14:04 +0100
-Received: from mail.transzap.net ([207.239.241.226] helo=tzi.transzap.com)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 139wUd-0003jn-00
-	for mtd@infradead.org; Wed, 05 Jul 2000 22:14:03 +0100
-From: Patrick Higgins <phiggins@transzap.com>
-To: john@frumious.unidec.co.uk
-Cc: mtd@infradead.org
-Date: Wed, 5 Jul 2000 15:18:04 -0600 (MDT)
-Subject: NS Geode (was: doc2000 geometry problem?)
-Message-ID: <Pine.LNX.4.21.0007051510010.14615-100000@phiggins.transzap.com>
+	id 139wzz-0003pg-00
+	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:46:27 +0100
+Date: Wed, 5 Jul 2000 22:45:14 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>
+cc: Bjorn Wesen <bjorn.wesen@axis.com>, jffs-dev@axis.com, mtd@infradead.org
+Subject: Re: jffs_erasable_size: offset = 0x0034b000
+In-Reply-To: <39637696.8FD02579@matrox.com>
+Message-ID: <Pine.LNX.4.21.0007052243240.1189-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=UTF8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Wed, 5 Jul 2000, [iso-8859-1] S=E9bastien C=F4t=E9 wrote:
 
-John Halewood wrote:
+> Are you going to port MTD to 2.0 or will you switch your kernel to
+> 2.2/2.4 ?
 
-> I'm yet another person trying to embed linux using the doc2000 on a
-> NatSemi-based platform (Geode aka MediaGX - uck).
+There has already been some work on porting MTD to 2.0. I cruelly reverted
+a few of the changes which were made - but they were mostly fine in
+principle, it's just that the result didn't actually compile on 2.[24] any
+more for me.
 
-I've also been using a Geode and found it to have *horrible* performance
-(~3-7 times slower than equivalent clock PIII).  Has this been your
-experience as well?  My company is currently considering asking our
-hardware supplier to use another CPU in their boxes, but we don't really
-know what the good options are for systems which need to run without a
-fan.  We have some AMD K6-2's 450s that perform quite well, but require a
-fan, though I've heard that the 250s can be used fanless.  Has anyone had
-some good (or bad, so we know what to avoid) experiences they could share?
+--=20
+dwmw2
 
--Patrick
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
