@@ -1,17 +1,28 @@
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3z0s-0006wf-4w
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 15:00:50 +0000
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de
+ (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
+ with SMTP id <0HUS00EAS1P8VM@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 16:00:45 +0100 (MET)
+Date: Thu, 18 Mar 2004 15:57:46 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
 To: llandre <r&d@wawnet.biz>
-In-Reply-To: <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
+Message-id: <200403181557.46552.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
 References: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
-	 <200403181411.25596.tglx@linutronix.de>
-	 <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
-Content-Type: text/plain
-Message-Id: <1079621971.16952.154.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 18 Mar 2004 14:59:32 +0000
-Content-Transfer-Encoding: 7bit
-cc: tglx@linutronix.de
+ <200403181411.25596.tglx@linutronix.de>
+ <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
 cc: linux-mtd@lists.infradead.org
+cc: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: Large block NAND
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-03-18 at 15:52 +0100, llandre wrote:
+On Thursday 18 March 2004 15:52, llandre wrote:
+> >
+> >Yep, but nobody forced me / us to implement it by paying for it. :)
+>
 > In case we decide to implement this feature by ourselves:
 > 1) will the code be included in the public CVS tree?
-> 2) will we guided by you and David in order to write the code the right way (I
-> mean, for example, using the correct notations and coding style)?
 
-The code will be included if it's acceptable, certainly. Guidance is
-also likely to be forthcoming, but not excessive handholding. If it
-takes us so long to talk you through it that we might as well have done
-it ourselves, then it's not going to help :)
+Why not.
 
-Have a look, come up with a plan, and join the IRC channel to discuss
-it. 
+> 2) will we guided by you and David in order to write the code the right way
+> (I mean, for example, using the correct notations and coding style)?
+
+Sure, Try it. Join #mtd on irc.freenode.net. 
 
 -- 
-dwmw2
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
