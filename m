@@ -1,18 +1,18 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bfd4t-00046A-Nl
-	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2004 07:16:36 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812DF@atcml01.atc.army.mil>
-References: <EFF9A3506F74924AB5CC77BDC66E79351812DF@atcml01.atc.army.mil>
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BfdMx-0004GL-Mz
+	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2004 07:35:16 -0400
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004063007461025979
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Jun 2004 07:46:10 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812E0@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 30 Jun 2004 07:32:37 -0400
+MIME-Version: 1.0
 Content-Type: text/plain
-Message-Id: <1088594193.4636.205.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Wed, 30 Jun 2004 12:16:33 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: BBT question on DOC MIL Plus
+Subject: BBT question on DOC MIL Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-06-30 at 07:05 -0400, Carlos, John J USAATC wrote:
->  Looking at the current nand_bbt.c file looks like for other chips that
-> each block contains it bbt. 
+I downloaded the DOC_Millennium_plus_DS_Rev1.7.pdf from M-sys.  Pg 28 give a
+layout of the chip.  I will have to get on the chat site when I get home
+tonight (eastern time zone).  I am not allowed to use chat software here at
+my current location. Rules that hamper productivity, just what I don't need!
+Sorry about the inconvenience I hope later tonight someone will be on to
+discuss this with me.
 
-Do you mean each _chip_ contains its own BBT? I think we changed that so
-that we can have a BBT which covers a whole cluster of chips. Thomas?
-
-John, can you join us on IRC? It's much more productive that way (at
-least when we're all present :)
-
--- 
-dwmw2
+John
