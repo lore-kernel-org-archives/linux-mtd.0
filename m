@@ -1,16 +1,19 @@
-Received: from recycle.lbl.gov ([131.243.169.124])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15w3j6-0001gj-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 16:44:24 +0100
-Message-ID: <20011023085329.A144@recycle.lbl.gov>
-Date: Tue, 23 Oct 2001 08:53:29 -0700
-From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
-To: "Kremer, Alex" <alex.kremer@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: MTD support for Intel E28F016S3 ?
-References: <7C0E66E1B97BD5119B120002A50A63D22E41C9@hasmsx101.iil.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <7C0E66E1B97BD5119B120002A50A63D22E41C9@hasmsx101.iil.intel.com>; from Kremer, Alex on Tue, Oct 23, 2001 at 10:03:06AM +0200
+Received: from [216.219.239.237] (helo=www.sensoria.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15w6XD-0001wr-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 19:44:19 +0100
+Received: from baoha ([209.245.83.145])
+	by www.sensoria.com (8.10.2/8.10.2) with SMTP id f9NIlgW31123
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 14:47:42 -0400
+From: "Bao C. Ha" <baoha@sensoria.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 destroys CRAMFS!
+Date: Tue, 23 Oct 2001 11:52:14 -0700
+Message-ID: <014d01c15bf3$d4ff82a0$456c020a@SENSORIA>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,26 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, Oct 23, 2001 at 10:03:06AM +0200, Kremer, Alex wrote:
-> | From: Larry Doolittle [mailto:ldoolitt@recycle.lbl.gov]
-> | 
-> | One weird effect showed up using the 28F320B3B on a nanoEngine, where
-> | the CFI detect code "found" the chip, [ chop ]
-> 
-> This is strange, I have TE28F320B3B mapped over dc21285 and the cfi_probe
-> first, jedec_probe after works fine...
+We are using RedBoot and have several MTD partitions.
+One of the partitions has our minimal CRAMFS.  The
+other contains JFFS2.  I made a mistake of compiling
+a kernel with jffs2 built-in, but not cramfs.  The
+bootup process tells the kernel to mount the cramfs
+partition as the root device.  It just goes through 
+and erased everything there, then it panics!
 
-All I know is, I saw the "QRY" probe respond loud and clear from this
-chip, but the CFI data structure that the mtd code then picked up was
-garbage.  The package is marked
-   TE28F320
-   B3BA110
-   U9360221A
-   (U)(C)1998
+This behavior is not consistent with all other Linux
+filesystems.  I would like to propose changes to the
+designs of jffs2 as follows:
 
-I got a private e-mail from a Mr. Conley at Intel which said there is
-"a problem with some of the B3s that the CFI command comes back with
-information that is an invalid C3 information block."  He hoped to
-get more information and pass it on.
+- Only make.jffs2 can create a jffs2 filesystem
+- Unless jffs2 detects its MAGIC, it can't make
+changes to the MTD partition.
 
-    - Larry
+It will save a lot of griefs later.  I know that
+there are many work-arounds.  But, I had a mental
+block that had refused to believe that a read-only
+cramfs can be destroyed that easily.
+
+Thanks.
+Bao
