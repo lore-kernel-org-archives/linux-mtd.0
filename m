@@ -1,26 +1,22 @@
-Received: from gw-nl5.philips.com ([212.153.235.109] ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19NDBo-00012W-Oa
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 15:55:04 +0100
-Received: from smtpscan-nl3.philips.com (smtpscan-nl3.philips.com
-	[130.139.36.23])
-	by gw-nl5.philips.com (Postfix) with ESMTP id D769D55BBE
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  3 Jun 2003 16:55:43 +0200 (MET DST)
-Received: from smtprelay-nl2.philips.com (localhost [127.0.0.1])
-	ESMTP id QAA01425	for <linux-mtd@lists.infradead.org>;
-	Tue, 3 Jun 2003 16:55:43 +0200 (MET DST)
-From: nicolas.bellido@philips.com
-Received: from hbg001soh.diamond.philips.com (e1soh01.diamond.philips.com
-	[130.143.165.45]) ESMTP id QAA23269
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 3 Jun 2003 16:55:42 +0200 (MEST)
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 3 Jun 2003 16:56:20 +0200
-Message-ID: <OF1FF7B095.C08BCDCB-ONC1256D3A.00520075@diamond.philips.com>
+Received: from adsl-66-159-197-3.dslextreme.com
+	([66.159.197.3] helo=willie.blueskylabs.com ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19NGNZ-0001ev-Ka
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 19:19:25 +0100
+Message-ID: <3EDCE6D8.4010405@blueskylabs.com>
+Date: Tue, 03 Jun 2003 11:20:08 -0700
+From: Andrew Goodney <andrew@blueskylabs.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: StrataFlash K3
+To: Vikram Mehta <vm6580@hotmail.com>
+References: <Law14-F878P8Sp1ppTN0002fd45@hotmail.com>
+	<1054633243.17921.34.camel@passion.cambridge.redhat.com>
+In-Reply-To: <1054633243.17921.34.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+cc: uclinux-dev@uclinux.org
+Subject: Re: cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type,
+ NULL); not workin
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,79 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+David Woodhouse wrote:
 
-We are working on a custom PXA255 board, with 256K3 flashes from Intel.
-The kernel version we use is 2.4.17-rmk5-pxa1, patched with MTD CVS code
-from 19 feb.
+>On Tue, 2003-06-03 at 10:23, Vikram Mehta wrote:
+>  
+>
+>>Hi joern,
+>>Thanx
+>>I agree this format was confusing. So let me put it simply
+>>
+>>in cfi_probe.c  in  cfi_probe_chip function
+>>
+>>cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>>Works
+>>but
+>>
+>>cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+>>doesnot work.
+>>It fails when   __raw_writew(d, map->map_priv_1 +adr); is called in its 
+>>stack.
+>>    
+>>
+>
+>>From the Cc I'm inferring you're using uCLinux. Are you running with
+>your kernel in flash? Is your kernel in the _same_ flash chip as is
+>being probed here?
+>
+>If so, it's not really surprising it doesn't work. As soon as you send
+>the '0x98' command, your entire kernel turns into the CFI query results
+>and it isn't really going to work too well :)
+>
+>  
+>
+We had this problem as well on our uClinux systems. Once we changed to 
+running the kernel out of RAM our chips were detected properly.
 
-We experience some problems trying to program the flashes via the
-buffered-write method (reading works perfectly).
+The uClinux archives have a large amount of information on how to get 
+uClinux+MTD+JFFS(2) to play nicely together. I suggest searching the 
+online archive, as the subject comes up very often on that list.
 
-We tryed a patch from Robert Schwebel, available at
-http://www.pengutronix.de/software/linux-arm/linux-2.4.19-rmk7-pxa1-ptx3.diff
-(we merged the MTD code from the patch with our kernel version)
-
-When we try that patch, we see the following messages :
-
-waiting for chip to be ready timed out in bufwrite
-Write of %zd bytes at 0x0000088b failed. returned 3369884, retlen %zd
-waiting for chip to be ready timed out in bufwrite
-error: after bufwrite at addr 5f746c (e0021985/c013981c), stat=840084
-error: after bufwrite at addr 5f7470 (85f/80981c), stat=840084
-error: after bufwrite at addr 5f7474 (11fc7a3b/800080), stat=840084
-error: after bufwrite at addr 5f7478 (5ad/800080), stat=840084
-error: after bufwrite at addr 5f747c (125/800080), stat=840084
-Write of %zd bytes at 0x0000085f failed. returned 3372140, retlen %zd
-Not marking the space at 0x0033746c as dirty because the flash driver
-returned retlen zero
-
-
-We did some investigation, and we came to the following patch (against
-MTD CVS from 19 feb), and it works well here :
-
---- linux.orig/drivers/mtd/chips/cfi_cmdset_0001.c    Mon Jun  2 14:11:06 2003
-+++ linux/drivers/mtd/chips/cfi_cmdset_0001.c   Mon Jun  2 14:09:01 2003
-@@ -1172,6 +1172,10 @@
-      z = 0;
-      for (;;) {
-            cfi_write(map, CMD(0xe8), cmd_adr);
-+//NBE
-+     /* Write length of data to come */
-+     cfi_write(map, CMD(len/CFIDEV_BUSWIDTH-1), cmd_adr );
-+//NBE:end
-
-            status = cfi_read(map, cmd_adr);
-            if ((status & status_OK) == status_OK)
-@@ -1194,9 +1198,10 @@
-                  goto out;
-            }
-      }
--
-+//NBE : Moved above
-      /* Write length of data to come */
--     cfi_write(map, CMD(len/CFIDEV_BUSWIDTH-1), cmd_adr );
-+     //cfi_write(map, CMD(len/CFIDEV_BUSWIDTH-1), cmd_adr );
-+//NBE : end
-
-      /* Write data */
-      for (z = 0; z < len; z += CFIDEV_BUSWIDTH) {
-
-
-
-We are in contact with the Intel representatives and they sent us an
-errata for the status bits floating while the chip is busy (Errata #4).
-
-Who has an idea and/or solution to this ?
-
-Regards,
-
-Nicolas.
---
----------------------------------------------------------------------
-Nicolas Bellido Y Ortega
-Philips TASS Belgium
-Tweestationsstraat 80
-1070 Brussel
-Belgium
----------------------------------------------------------------------
+Good luck,
+Andrew Goodney
+andrew@blueskylabs.com
+-----------------------
+www.blueskylabs.com
