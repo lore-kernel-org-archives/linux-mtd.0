@@ -1,29 +1,19 @@
 Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
 	helo=ash.lnxi.com)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuPJA-0008Ba-S3
-	for linux-mtd@lists.infradead.org; Fri, 28 Jan 2005 01:08:44 -0500
+	id 1CuPLV-0008Oe-Hz
+	for linux-mtd@lists.infradead.org; Fri, 28 Jan 2005 01:11:06 -0500
 To: Jared Hulbert <jaredeh@gmail.com>
-References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
-	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
-	<6934efce050112084111ef438c@mail.gmail.com>
-	<Pine.LNX.4.58.0501121708100.10617@phoenix.infradead.org>
-	<6934efce0501121430471e55a8@mail.gmail.com>
-	<1105569824.3896.44.camel@weaponx.rchland.ibm.com>
-	<6934efce05011214553465438@mail.gmail.com>
-	<1105631437.15265.12.camel@weaponx.rchland.ibm.com>
-	<6934efce050113103077c06b4d@mail.gmail.com>
+References: <6934efce05012717207271fb10@mail.gmail.com>
 From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 27 Jan 2005 23:08:36 -0700
-In-Reply-To: <6934efce050113103077c06b4d@mail.gmail.com>
-Message-ID: <m3651iw0ez.fsf@maxwell.lnxi.com>
+Date: 27 Jan 2005 23:11:02 -0700
+In-Reply-To: <6934efce05012717207271fb10@mail.gmail.com>
+Message-ID: <m33bwmw0ax.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: Unit test for cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,26 +25,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Jared Hulbert <jaredeh@gmail.com> writes:
 
-> > Guess we'll have to agree to disagree then :).  All I know is that I
-> > want to be damn sure that the data I'm returning isn't totally screwed.
-> > Call me paranoid.  A checksum is the only way I know of doing that.
+> I plan on creating a unit test based on cutest.sourceforge.net for
+> cfi_cmdset_0001.c.
+> In order to stub out the various functions inside I will have to:
 > 
-> Paranoid :)
+> 1. Manually strip out functions for each version.
+> 2. Add #if''s
+> 3. fork this file into 2-3 files.
+> 
+> I prefer option 3.  As it seems cleaner to me and more maintainable. 
 
-Only insane programmers are not paranoid.
+Why would you even need to split the file into multiple pieces to
+provide test wrappers?  cutest does not seem to add that requirement.
+I'm not certain what value cutest actually provides.  A test harness
+that  would require the source file to be split into multiple pieces
+seems to indicate a flaw in the test harness.
 
-> To humor those of us willing to take our chances trusting the media
-> won't go bad, would it be possible to architect JFFS3 such that
-> disabling the checksumming or stripping it out is possible with out
-> too much pain?
+> The reason for the unit tests is to help us find bugs in the code
+> paths not easily tested and to enable more rapid updates for new flash
+> or features mtd doesn't currently support.
 
-But checksums protect against more than the reads going bad.  They
-also protect against writes going bad.  With large volumes of use
-write errors are almost a certainty, with NOR.  And if you miss the
-fact that the error happens.  And a single bad write is especially
-painful if you are writing compressed data.
+The hardest code paths to test are code paths for hardware that
+is usable but not quite right.  How do you plan on testing that?
 
-If you just need reads something like romfs, or isofs tuned for from a
-NOR flash chip is probably better.
+Which features for flash chips are you thinking about supporting that
+are not currently supported? 
 
 Eric
