@@ -1,18 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sphere.barak.net.il ([212.150.48.98])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16b1M2-0002s1-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 15:29:54 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <002001c1b0e5$7bda7bc0$7b00000a@SNAGGLE> 
-References: <002001c1b0e5$7bda7bc0$7b00000a@SNAGGLE> 
-To: "Christopher Hoover" <ch@murgatroid.com>
-Cc: linux-mtd@lists.infradead.org, Jeroen.Roose@chess.nl,
-    linux-arm-kernel@lists.arm.linux.org.uk
-Subject: Re: [PATCH] New Lock and Unlock Code for Intel FLASH parts 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Feb 2002 15:41:00 +0000
-Message-ID: <27071.1013614860@redhat.com>
+	id 16b25H-0002vn-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 16:16:39 +0000
+Received: from gad ([10.10.11.10]) by sphere.barak.net.il
+          (InterMail vK.4.03.00.00 201-232-121 license 5444ddd44659357c6c93343e0ce38507)
+          with SMTP id <20020213162537.EHBI445.sphere@gad>
+          for <linux-mtd@lists.infradead.org>;
+          Wed, 13 Feb 2002 18:25:37 +0200
+Message-ID: <100e01c1b4ab$47f991f0$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "Linux-mtd List" <linux-mtd@lists.infradead.org>
+Subject: cannot mount jffs1 image from loop
+Date: Wed, 13 Feb 2002 18:27:08 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +28,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ch@murgatroid.com said:
->  I rewrote some of the locking and unlocking support for Intel parts
-> in drivers/mtd/chips/cfi_cmdset_0001.c because it seemed completely
-> broken for parts with variable block sizes, such as the Intel C3 flash
-> I am using.
+i use mediaEngine, a SA1110 board.
+if i try to mount jffs1 file system that i made on 1 file (with mkfs.jffs),
+it says:
+[root@IMC-2 /root]$mount -t jffs -o loop jffs1 /mnt (jffs1 is the filename)
+JFFS: Trying to mount a non-mtd device.
+mount: wrong fs type, bad option, bad superblock on /dev/loop0,
+       or too many mounted file systems
 
-passion /home/dwmw2/working/mtd/drivers/mtd/chips $ patch -p4 --dry-run < ~/Mail/inbox/504  
-patching file `cfi_cmdset_0001.c'
-Hunk #2 succeeded at 65 (offset 2 lines).
-Hunk #3 succeeded at 1079 with fuzz 1 (offset 25 lines).
-Hunk #4 succeeded at 1331 (offset 22 lines).
-Hunk #5 FAILED at 1407.
-Hunk #6 succeeded at 1490 (offset 25 lines).
-Hunk #7 FAILED at 1522.
-Hunk #8 succeeded at 1608 (offset 26 lines).
-Hunk #9 succeeded at 1628 (offset 29 lines).
-Hunk #10 succeeded at 1640 (offset 26 lines).
-2 out of 10 hunks FAILED -- saving rejects to cfi_cmdset_0001.c.rej
+in the 2.4.17 kernel, i enabled all the mtd options, and also ram mtd block
+support.
+i have /dev/loop 0-2, and also jffs+jffs2 support on the kernel.
 
+2. i saw in the prevous posts that jffs2 do not support 'looping' (mounting
+from file). is that so untill now ?
 
---
-dwmw2
+3. is there any other read/write file system that i can put on flash chip
+like in nanoengine/assabet ?
+
+thanks
+
+Gad
