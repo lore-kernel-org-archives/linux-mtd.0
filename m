@@ -1,22 +1,20 @@
-Received: from smtp.hotbox.ru ([80.68.244.50])
+Received: from dragon.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eQAv-0002qS-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 01:41:01 +0000
-Received: from pengwin (h209-139-192-234.gtconnect.net [209.139.192.234])
-	(authenticated bits=0)
-	by smtp.hotbox.ru (8.12.6/8.12.6) with ESMTP id h0V27P31012300
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 05:07:26 +0300 (MSK)
-	(envelope-from samoutin@hotbox.ru)
-Message-ID: <004701c2c8ce$107caea0$1a00a8c0@itc.intrinsyc.com>
-From: "Alex Samoutin" <samoutin@hotbox.ru>
-To: <linux-mtd@lists.infradead.org>
-References: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com> <20030130210325.0F2BB405E@tiger.actrix.co.nz>
-Subject: Re: NAND subsector writing problem
-Date: Thu, 30 Jan 2003 18:11:23 -0800
-MIME-Version: 1.0
+	id 18eS2J-000368-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 03:40:16 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: "Alex Samoutin" <samoutin@hotbox.ru>,
+	<linux-mtd@lists.infradead.org>
+Subject: Re: NAND subsector writing problem
+Date: Fri, 31 Jan 2003 17:01:05 +1300
+References: <007801c2c7fc$5834da60$1a00a8c0@itc.intrinsyc.com> <20030130210325.0F2BB405E@tiger.actrix.co.nz> <004701c2c8ce$107caea0$1a00a8c0@itc.intrinsyc.com>
+In-Reply-To: <004701c2c8ce$107caea0$1a00a8c0@itc.intrinsyc.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20030131041111.5DE53151BD@dragon.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,32 +26,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
- don't know much about sub-page writing. I've only took latest MTD snapshot
-and wrote hardware level driver for NAND chip on IBM 405ep board. And then
-started "nandtest" program from the same snapshot. So, if "mixing ECC and
-sub-page writes is
-invalid" then something wrong in "nand.c" or "nandtest.o"
+Alex
 
-And furthermore -  that was not ECC error, it was error during verify read
-after write (read and write buffer not match).
+I assume you're using the TC58128AFT since there is no TC5818AFT.
 
-Also I have troubles with JFFS2  :(.  nand_write_page failed after verify
-( If CONFIG_MTD_NAND_VERIFY_WRITE not defined - I have no error message)
+I don't spend time in the mtd, only in YAFFS, but I can think of a few things 
+to look at. No doubt other people can think of more things...
 
-Alex.
+When I first looked at the NAND mtd a long time back I noticed that the 
+verify did not always work properly on NAND, giving false errors. This I 
+tracked down to a difference between NOR and NAND.  In NOR, a write fails if 
+try to overwrite a zero with a one bit. In NAND, the operation does not fail 
+even though the bit does not change.
 
------ Original Message ----- 
-From: "Charles Manning" <manningc2@actrix.gen.nz>
-To: "Alex Samoutin" <samoutin@hotbox.ru>; <linux-mtd@lists.infradead.org>
-Sent: Thursday, January 30, 2003 12:57 PM
-Subject: Re: NAND subsector writing problem
+ie.
 
+Say you start with 12FF56.
+If you write FF34FF
+You now have 123456.
+The NAND part will say the write was OK.
+The verify might fail since FF34FF != 123456.
 
-> There is no problem using this for JFFS2 or YAFFS since neither use 
-> sub-page writes.
-> 
-> ECC applies to the whole page.  Thus, mixing ECC and sub-page writes is 
-> invalid.
-> 
-> -- Charles
-> 
+Thus, problems might arise if the page is not clean.
+
+I've never used nandtest.c, so I am unsure as to whether it is expected to 
+work with verify enabled.
+
+It might be worth double-checking your chip commanding/handling (especially 
+the address handling) to ensure that you're doing the right things for this 
+part. It seems possible to me that there might be some address aliasing issue 
+going on.
+
+Perhaps you can hack nandtest to check that the page is empty before you 
+write to it, then read it back in the case of a failure and look at what you 
+got back.
+
+I'm sorry I can't speak to the JFFS2 questions  as I only understand the 
+YAFFS file system.
+
+-- Charles
