@@ -1,44 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12z60s-0002e2-00
-	for mtd-list@infradead.org; Tue, 06 Jun 2000 00:10:30 +0100
-Date: Tue, 6 Jun 2000 01:10:02 +0200 (CEST)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS - ready for submission into 2.[34]? 
-In-Reply-To: <28127.959934103@devel2.axiom.internal>
-Message-ID: <Pine.LNX.3.96.1000606010429.10303G-100000@fafner.axis.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 12zgVC-0008W9-00
+	for mtd-list@infradead.org; Wed, 07 Jun 2000 15:08:14 +0100
+Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
+	id 12zgVB-0008W3-00
+	for cvs-notify@infradead.org; Wed, 07 Jun 2000 15:08:13 +0100
+To: cvs-notify@infradead.org
+Subject: MTD CVS update: 'mtd/kernel nftl.c'
+Message-Id: <E12zgVB-0008W3-00@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 07 Jun 2000 15:08:13 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 2 Jun 2000, David Woodhouse wrote:
-> I saw the dicussion about this, and was wondering why mkfs.jffs actually 
-> populates the filesystem at all. Is it because it's more space-efficient to 
-> do it all at once than it would be to mkfs, mount and populate it?
+Update of /home/cvs/mtd/kernel
+In directory infradead.org:/tmp/cvs-serv32712
 
-It's because when you build an embedded product, you typically don't build
-it on the target, so you have no way of mounting and populating it. You
-should see mkfs.jffs more as a "filesystem cross compiler" than an mkfs
-tool (as Finn wrote, there is no need for a "real" mkfs.jffs - an empty
-flash will do).
+Modified Files:
+	nftl.c 
+Log Message:
+Added a notice regarding the legal status of the patent issues.
+M-Systems have now granted us a licence to use the patented algorithms in
+NFTL on DiskOnChip products, so I've stuck in a notice to that effect
+which is basically copied from the existing notice in the FTL code.
 
-So if you don't like the mkfs stage, you can skip it.
+i.e.:
+/*
+  LEGAL NOTE: The NFTL format is patented by M-Systems.  They have
+  granted a licence for its use with their DiskOnChip products:
 
-One drawback code-wise is that there is redundancy between code in
-mkfs.jffs and in the filesystem itself of course. But the on-flash
-node-structure of JFFS is so simple that mkfs.jffs is simple enough to
-warrant it I think.
+    "M-Systems grants a royalty-free, non-exclusive license under
+    any presently existing M-Systems intellectual property rights
+    necessary for the design and development of NFTL-compatible
+    drivers, file systems and utilities to use the data formats with, 
+    and solely to support, M-Systems' DiskOnChip products"
 
-Regarding NAND-flashes and bad blocks - that works even with a pre-made
-image. You just make sure the program that does the flashing knows to skip
-the bad blocks. You obviously need to have a smaller image than the flash
-size minus bad blocks as well :) 
-
--Bjorn
-
+  A signed copy of this agreement from M-Systems is kept on file by
+  Red Hat UK Limited. Or it will be as soon as it arrives. 
+*/
 
 
 
