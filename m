@@ -1,20 +1,22 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from mailserv.intranet.gr ([146.124.14.106])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q2IY-0003BR-7r
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:53:42 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: angainor@evo.evopolska.com
-In-Reply-To: <Pine.LNX.4.44.0306041127320.8546-100000@evo.evopolska.com>
-References: <Pine.LNX.4.44.0306041127320.8546-100000@evo.evopolska.com>
-Message-Id: <1055325225.2097.38.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 11 Jun 2003 10:53:45 +0100
-Content-Type: text/plain
+	id 19Q2Lf-0003DY-6o
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 10:56:56 +0100
+Received: from mailserv.intranet.gr (localhost [127.0.0.1])
+	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id h5BA04D23357
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 13:00:04 +0300 (EEST)
+Message-ID: <3EE6FC72.10107@intracom.gr>
+Date: Wed, 11 Jun 2003 12:54:58 +0300
+From: Pantelis Antoniou <panto@intracom.gr>
+MIME-Version: 1.0
+To: Jasmine Strong <jasmine@regolith.co.uk>
+References: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
+In-Reply-To: <4A3DE310-9BEB-11D7-B76F-000393AD6294@regolith.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: gerg@snapgear.com
 cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD drivers for DoC Millenium Plus
+Subject: Re: Cram FS on NAND - How to do this?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-06-04 at 11:56, angainor@evo.evopolska.com wrote:
-> First of all, docprobe successfuly identifies DOCMP,
-> but total size of the DoC is only half of its actual
-> size (64MiB chip is identified as 32MiB).
+Jasmine Strong wrote:
 
-Hmmm. Sounds like a bug in the hardware driver. Greg?
+>
+> On Wednesday, Jun 11, 2003, at 09:43 Europe/London, Pantelis Antoniou 
+> wrote:
+> [snip]
+>
+> 1)  Where are you going to store this bad block list?
+>
+> There isn't anywhere on the Flash that can be guaranteed good.
+> You can't pick a set location for the bad block list, so you must scan
+> for it-  and once you have found it you must have some way to
+> check that you are looking at a good copy of it.
+>
+> If you plan to generate it at mount time, you run the risk that
+> a block has gone bad while the device has been dormant, and
+> thus you may generate a block list that does not match the one
+> the device was written with,  which could render a block
+> -structured filesystem like cramfs unreadable.
+>
+> Also, all this scanning takes time, which makes mounting slow.
 
-> I have studied the "DiskOnChip 2000 128Mb problem"
-> thread here on list and tried to change the
-> MAX_CHIPS_MPLUS define to something else than 1.
-> Well, this way I got an 128MiB disk, then a
-> 256MiB one, and so on... :). way too many chips found.
+I'm talking about a read only filesystem, and generating
+the bad block info at mount time.
 
-> 1. inftlcore.c
-> 
->         if (mtd->ecctype != MTD_ECC_RS_DiskOnChip)
->                 return;
-> 
->    does indeed return. I guess it shouldn't...
+Perhaps I could also use some kind of lazy bad block scanning technique
+in which the list would only be generated up to point where
+someone requested a read.
 
-Mea Culpa. I've fixed that in CVS now.
+Well, and if a block goes bad what was written as good there
+is nothing any filesystem can do but die complaining.
 
-> 
-> INFTL: Media Header ->
->      bootRecordID          = BNAND
->      NoOfBootImageBlocks   = -1
->      NoOfBinaryPartitions  = 1
->      NoOfBDTLPartitions    = 1
->      BlockMultiplerBits    = 0
->      FormatFlgs            = 1
->      OsakVersion           = 0x30343135
->      PercentUsed           = 98
->      PARTITION[0] ->
->          virtualUnits    = 10
->          firstUnit       = 0
->          lastUnit        = 0
->          flags           = 0x20000000
->          spareUnits      = 0
->  INFTL: Media Header Parition 0  sanity check failed
->      firstUnit 0 : lastUnit 0  >   virtualUnits 0
-> 
->    Basically, the start is ok and does reflect the
->    reality. So what goes wrong afterwards?
+>
+> 2)  What about blocks that go bad while the system is in service?
+>
+> Flash blocks go bad randomly, and often while they are in use.
+> You must use a strategy to cope with this-  JFFS and YAFFS use
+> Reed-Solomon forward error correction.
 
-Can you dump the contents of the media header using the DOS tools? How
-big is the 'binary' partition? If you comment out that sanity check does
-it actually work? 
+Well, blocks go bad generally at writting, something that is
+quite rare at a read only filesystem.
+As for error correction I won't reinvent the wheel, I'll use the
+JFFS2 error correction.
 
+>
+> 3)  What about wear-levelling?
+>
+> Flash blocks do not last indefinitely.  Every erase brings the Flash
+> block you are erasing closer to the end of its lifespan.  Obviously
+> this is less of a concern on a static filesystem like cramfs.
+>
+> Why not put a cramfs filesystem into a file on a YAFFS or JFFS2
+> filesystem and use a loopback to mount it?
+>
+> -Jas.
+>
+>
+>
+Again, no need for that on a read-only filesystem. The number of erases
+I expect during the life of the device is lower than 100.
 
-> 2. doc2000.h
->    
->    I found the following definition:
-> 
-> 	#define DoC_Mplus_OutputControl         0x1002
-> 
->    Shouldn't this be rather:
-> 
-> 	#define DoC_Mplus_OutputControl         0x100c
-> 
->    This is what I found in DOC_Millennium_Plus_DS_Rev1.7.pdf.
->    0x1002 is actually NOP. I don't think this will help me
->    much though ;)
+And using the loopback trick is impossible for the root filesystem.
 
-I haven't seen that documentation. Greg?
+Anyway thanks for the input.
 
--- 
-dwmw2
+Regards
+
+Pantelis
