@@ -1,52 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Jbe1-0006KT-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 13:59:41 +0100
-Received: from [211.116.76.10] (helo=tinuviel.mizi.com)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13Jbdz-0006KM-00
-	for mtd@infradead.org; Tue, 01 Aug 2000 13:59:39 +0100
-Received: (from tolkien@localhost)
-	by tinuviel.mizi.com (8.9.3/8.9.3) id WAA01067
-	for mtd@infradead.org; Tue, 1 Aug 2000 22:00:30 +0900
-Date: Tue, 1 Aug 2000 22:00:30 +0900
-From: Yong-iL Joh <tolkien@mizi.com>
-To: mtd@infradead.org
-Subject: if flash_size is less than megabyte
-Message-ID: <20000801220030.A1053@tinuviel.mizi.com>
-Reply-To: tolkien@mizi.com
+	id 13JcQl-0006Qb-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 14:50:03 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13JcQk-0006QP-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 14:50:02 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20000727135944.F27468@one-eyed-alien.net> 
+References: <20000727135944.F27468@one-eyed-alien.net> 
+To: Matthew Dharm <mdharm-kernel@one-eyed-alien.net>
+Cc: Kernel Developer List <linux-kernel@vger.rutgers.edu>,
+  Linux USB Storage List <usb-storage@one-eyed-alien.net>, mtd@infradead.org
+Subject: Re: SmartMedia translation layer? 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Tue, 01 Aug 2000 14:49:30 +0100
+Message-ID: <13630.965137770@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I'm working on Intel BootBlock Flash.
-if mtd->size is less than a megabyte, kernel panic. :(
 
-in ftl.c, here is a tiny patch.
+mdharm-kernel@one-eyed-alien.net said:
+>   To do this, we need to have code which can take care of this
+> re-mapping system.  We're wondering if anyone out there has such code
+> allready (perhaps even in use with Linux).
 
-===================================================================
-RCS file: /exports/misc/embedded/cvs/linux/drivers/mtd/ftl.c,v
-retrieving revision 1.3
-diff -r1.3 ftl.c
-266c266
-<     loff_t offset;
----
->     loff_t offset, max_offset;
-268a269
->     max_offset = (0x100000<part->mtd->size)?0x100000:part->mtd->size;
-271c272
-<        offset < 0x100000;
----
->        offset < max_offset;
-283c284
-<     if (offset == 0x100000) {
----
->     if (offset == max_offset) {
+> If not, we're prepared to write our own management system... but if
+> there is existing code out there we can leverage, it would be really
+> nice. 
 
--- 
-Joh, Yong-iL
-E-mail: tolkien@nownuri.net tolkien@mizi.com
+We have a couple of translation layers for flash devices, which do a similar
+kind of remapping to emulate a block device. I doubt they're the same, and
+in some places they're patented and may only be used on certain hardware.
+
+See drivers/mtd/nftl.c and drivers/mtd/ftl.c for more details.
+
+
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
