@@ -1,14 +1,14 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19llXm-00023A-2q
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2003 09:27:14 +0100
+	id 19llXn-00023D-EE
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2003 09:27:15 +0100
 From: David Woodhouse <dwmw2@infradead.org>
 To: Dan Cardamore <dan.cardamore@officeserver.ca>
 In-Reply-To: <20030809053345.GA27061@officeserver.ca>
 References: <20030809053345.GA27061@officeserver.ca>
-Message-Id: <1060504021.29776.4.camel@imladris.demon.co.uk>
+Message-Id: <1060504021.29776.5.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Sun, 10 Aug 2003 09:27:01 +0100
+Date: Sun, 10 Aug 2003 09:27:04 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
