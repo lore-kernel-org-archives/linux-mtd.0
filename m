@@ -1,18 +1,17 @@
 Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vJk0-0006zi-00
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 16:10:33 +0100
-Received: from devil.iqc-services.com (devil.iqc-services.local [192.168.197.3])
-	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g3AFqBh22842
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 17:52:11 +0200
-Message-Id: <5.1.0.14.2.20020410170818.01fc1b90@pop3.iqc-services.com>
-Date: Wed, 10 Apr 2002 17:09:31 +0200
+	id 16vJkK-0006zj-00
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 16:10:52 +0100
+Received: from devil.teleline.es (devil.iqc-services.local [192.168.197.3])
+	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g3AFqSh22849
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 17:52:32 +0200
+Message-Id: <5.1.0.14.2.20020410170944.01fbc1d0@pop3.iqc-services.com>
+Date: Wed, 10 Apr 2002 17:09:49 +0200
 To: linux-mtd@lists.infradead.org
-From: Marcos Lois =?iso-8859-1?Q?Berm=FAdez?= <marcos@iqc-services.com>
+From: Securez <securez@teleline.es>
 Subject: Messagre from MTD layer
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,8 +23,7 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I try this, to put a test fs in my MTD device, for test purposes, i get=
- this:
+I try this, to put a test fs in my MTD device, for test purposes, i get this:
 
 /etc> expand ramfs.img /dev/mtd0
 MTD_open
@@ -193,14 +191,3 @@ MTD_close
 
 ------------------------
 Last[3] is xxx, datanum is xxx <- What are this message?
-
-----------------------------------------------------
-Marcos Lois Berm=FAdez
-marcos@iqc-services.com
-IQC-Services.
-Carretera provincial 60 - 1
-36210 Vigo - Pontevedra
-Tel: +34 986 281 830
-Fax: +34 986 415 074
-http://www.iqc-services.com
-----------------------------------------------------
