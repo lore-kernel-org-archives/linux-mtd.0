@@ -1,33 +1,15 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9X0g-0006OV-Gj
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 18:24:07 -0500
-Received: from dsl-213-023-243-193.arcor-ip.net
-	([213.23.243.193]:32905 helo=zappa ident=mail)
-	by mail.ku-gbr.de with asmtp (Exim 4.24 #1 (Debian))
-	id 1D9X0e-0001D6-MC
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Mar 2005 00:24:04 +0100
-Received: from [10.10.0.17] (helo=sexmachine.doom)
-	by zappa with esmtp (Exim 3.36 #1 (Debian)) id 1D9X0d-0001EL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Mar 2005 00:24:03 +0100
-Received: from konsti by sexmachine.doom with local (Exim 4.43)
-	id 1D9X0c-0002dE-LL
-	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 00:24:02 +0100
-Date: Fri, 11 Mar 2005 00:24:02 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
+Received: from [209.87.241.202] (helo=[10.0.1.46])
+	by pentafluge.infradead.org with esmtpsa (Exim 4.43 #1 (Red Hat Linux))
+	id 1D9XDJ-0000AO-4v
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 23:37:11 +0000
+Message-ID: <4230DA22.8070305@netwinder.org>
+Date: Thu, 10 Mar 2005 18:37:06 -0500
+From: Ralph Siemsen <ralphs@netwinder.org>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050310232402.GB10058@ku-gbr.de>
-References: <20050309131453.GA2497@synertronixx3>
-	<Pine.LNX.4.58.0503101314570.4649@phoenix.infradead.org>
-	<20050310152212.GB4910@synertronixx3>
-	<Pine.LNX.4.58.0503101554220.5450@phoenix.infradead.org>
-	<20050310164024.GD4910@synertronixx3>
-	<20050310192519.GC18903@qlogic.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050310192519.GC18903@qlogic.com>
-Subject: Re: jffs2 with sync burst mode
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Autodetection problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,33 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2005-03-10 13:25 -0600 schrieb Steve Wahl:
+I'm using kernel 2.6.10 on a PPC440GX with TWO 32MiB Intel J-series 
+Strataflash.  These are x16 devices and they are arranged in parallel 
+across the 32-bit data bus (interleave=2).  They share a common chip 
+select and are mapped at the top of the address space.
 
-> [ I don't actually know what kind of writes and reads the filesystem
-> does. I subscribe to this list for the MTD half, not the JFFS
+With mostly default options to the kernel, the MTD autodetection logic 
+performs two calls to do_cfi_probe() at offset 0x000000 and 0x2000000, 
+and then proclaims, erroneously:
+    Found 1 x32 devices at 0x0 in 32-bit bank
+Attempts to use the flash in this state fail miserably (tons of block 
+bitmap errors, cannot access beyond 32MiB, etc).
 
-Me neither, I hope the people here will guide me to find out :)
+Thanks to suggestion by ThomasG, I switched on the advanced options, 
+selected _only_ 32-bit buswidth, and _only_ interleave of 2.  Now the 
+kernel reports what I expected:
+    Found 2 x16 devices at 0x0 in 32-bit bank
+and everything works like it a charm.
 
-> Since your raw dumps of the flash after the fact appear good(?), I'd
-> concentrate on the read operations.  (If the dumps were bad, I'd look
-> at the writes.)
+Though I'd mention this in case anyone encounters similar situation. 
+I'm not sure if the autodetection code is meant to work in my situation...
 
-Yeah.
+PS. I also learned that having jffs2 debug level set at 2 causes 
+considerably slowdown - doing an "ls" was taking 11 seconds.  Putting 
+debug back to 0 makes everything work quickly as you'd expect.
 
-> If your hardware screws up with unusual alignment, well, it's not all
-> that rare of a bug to find.
-
-Well lets see. If you look at my debug outputs, I am actually tracing
-the problem down to the memcpy function itself.
-I suspect there is something wrong with the data cache.
-memcpy misreads the correct the original and puts garbage into the copy,
-which is most often a line above the original. I don't suspect burst
-wrap mode or such, because too much other things work well in this mode
-and both, source and copy of the memcpy function are actually in RAM
-already...
-
-Regards, Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+I'm currently not subscribed to the list, please cc: any replies!
+-Ralph
