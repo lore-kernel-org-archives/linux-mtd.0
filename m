@@ -1,22 +1,19 @@
-Received: from host.kingdommedia.net ([209.239.36.136] helo=host2.fw2.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KhDq-0006R3-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 16:18:14 +0100
-Received: from localhost (CPE0080c8df51b7.cpe.net.cable.rogers.com [24.112.28.188])
-	by host2.fw2.com (8.10.2/8.10.2) with ESMTP id g5JFIDV07611
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 11:18:13 -0400
-Received: from [10.0.0.20] (helo=localhost.localdomain ident=slayne)
-	by localhost with esmtp (Exim 3.12 #1 (Debian))
-	id 17KhDo-0003Xj-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 11:18:12 -0400
-Subject: Updating the root partition
-From: Chris AtLee <catlee@canada.com>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-3Mn8K4fY43sct1KupzRf"
-Date: 19 Jun 2002 11:18:12 -0400
-Message-Id: <1024499892.9366.31.camel@geb>
+	id 17Knqz-0006rR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 23:23:05 +0100
+Date: Thu, 20 Jun 2002 00:23:03 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Chris AtLee <catlee@canada.com>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Updating the root partition
+Message-ID: <20020620002303.A21586@wohnheim.fh-wedel.de>
+References: <1024499892.9366.31.camel@geb>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1024499892.9366.31.camel@geb>; from catlee@canada.com on Wed, Jun 19, 2002 at 11:18:12AM -0400
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,33 +25,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---=-3Mn8K4fY43sct1KupzRf
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Wed, 19 June 2002 11:18:12 -0400, Chris AtLee wrote:
+> I've got linux booting off of a cramfs partition sitting on mtdblock1. 
+> Is it possible to overwrite the mtdblock1 partition while linux is
+> running?  The kernel itself isn't located on the root partition.  I've
+> tried just copying a new cramfs image to /dev/mtd1 but I get errors on
+> decompressing next time I try and boot.
 
-Hi,
+- Use /dev/mtdblock1. The char device does not erase any blocks, so
+  you end up ||ing the old and new data.
+- Do the flashing soon after reboot and make sure, all necessary
+  binaries are in RAM. Power-cycle afterwards, as you sure don't want
+  to load good-as-random code and execute it, albeit it is only the
+  userspace.
 
-I've got linux booting off of a cramfs partition sitting on mtdblock1.=20
-Is it possible to overwrite the mtdblock1 partition while linux is
-running?  The kernel itself isn't located on the root partition.  I've
-tried just copying a new cramfs image to /dev/mtd1 but I get errors on
-decompressing next time I try and boot.
+Jörn
 
-Cheers,
-Chris
-
-
-
---=-3Mn8K4fY43sct1KupzRf
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQA9EKCzoOgacgDd/cQRAqJrAJ9E56uz/93j4IgB9ZrdrJrG8gqtyACgpNWL
-/Bg7P2ggGC6Fc2Y8sG6qFng=
-=aWi9
------END PGP SIGNATURE-----
-
---=-3Mn8K4fY43sct1KupzRf--
+-- 
+Premature optimization is the root of all evil.
+-- Donald Knuth
