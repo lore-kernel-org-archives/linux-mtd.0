@@ -1,20 +1,19 @@
-Received: from mail-gw.radisys.com ([206.102.10.35] helo=radisys.com)
+Received: from saturn.cs.uml.edu ([129.63.8.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157Nw1-0005GN-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 22:00:17 +0100
-Received: (945 bytes) by radisys.com
-	via sendmail with P:stdio/R:inet_hosts/T:smtp
-	(sender: <Jan.Rovins@radisys.com>)
-	id <m157Nzf-000qatC@radisys.com>
-	for linux-mtd@lists.infradead.org; Tue, 5 Jun 2001 14:04:03 -0700 (PDT)
-	(Smail-3.2.0.105 1999-Mar-3 #2 built 1999-Apr-18)
-To: linux-mtd@lists.infradead.org
-Subject: Latest cvs dosn't build (need to fix interp.c)
+	id 157YgJ-0005tB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2001 09:28:47 +0100
+From: "Albert D. Cahalan" <acahalan@cs.uml.edu>
+Message-Id: <200106060832.f568WR3253749@saturn.cs.uml.edu>
+Subject: Re: Missing cache flush.
+To: davem@redhat.com (David S. Miller)
+Date: Wed, 6 Jun 2001 04:32:27 -0400 (EDT)
+Cc: dwmw2@infradead.org (David Woodhouse), cw@f00f.org (Chris Wedgwood),
+       jgarzik@mandrakesoft.com (Jeff Garzik), bjornw@axis.com,
+       linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <15132.54565.311995.865807@pizda.ninka.net> from "David S. Miller" at Jun 05, 2001 05:48:37 AM
 MIME-Version: 1.0
-Message-ID: <OF597D578E.1F8F8219-ON85256A62.007302C9@radisys.com>
-From: Jan.Rovins@radisys.com
-Date: Tue, 5 Jun 2001 17:01:58 -0400
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,10 +25,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Just fetched the latest CVS,
-mtd/fs/jffs/interp.c  at line 376 there is a printk() that is malformed. 
-(has too many sets of parens)
-Could someone with CVS access please fix?
+David S. Miller writes:
+> David Woodhouse writes:
 
-Thanks in advance,
-Jan
+>>> Call it flush_ecache_full() or something.
+>>
+>> Strange name. Why? How about __flush_cache_range()?
+>
+> How about flush_cache_range_force() instead?
+>
+> I want something in the name that tells the reader "this flushes
+> the caches, even though under every other ordinary circumstance
+> you would not need to".
+
+"flush" means what to you?
+
+write-back
+write-back-and-invalidate
+discard-and-invalidate
+
+All 3 behaviors are useful to me, and a few more. I've been
+using chunks of PowerPC assembly. Using PowerPC mnemonics...
+
+dcba -- allocate a cache block with undefined content
+dcbf -- write to RAM, then invalidate ("data cache block flush")
+dcbi -- invalidate, discarding any data
+dcbst -- initiate write if dirty
+dcbt -- prefetch, hinting about future load instructions
+dcbtst -- prefetch, hinting about future store instructions
+dcbz -- allocate and zero a cache block (cacheable mem only!)
+
+So dcbf_range() and dcbi_range() sound good to me. :-)
