@@ -1,22 +1,12 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D3G4j-0001JQ-6Y
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 11:06:21 -0500
-Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR010.ip.videotron.ca
-	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
-	with ESMTP id <0IC9003B0RCOAT@VL-MO-MR010.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 11:05:12 -0500 (EST)
-Date: Mon, 21 Feb 2005 11:05:09 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <421998DA.1060503@imc-berlin.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-id: <Pine.LNX.4.61.0502211059090.15845@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <421998DA.1060503@imc-berlin.de>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: ioremap_cached in drivers/mtd/maps ?
+From: David Woodhouse <postmaster@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 21 Feb 2005 21:36:18 +0000
+Message-Id: <1109021779.26578.41.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: luc@transgaming.com
+Subject: Administrivia - READ ME
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +16,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 21 Feb 2005, Steven Scholz wrote:
+If you receive spam from the mailing list, please don't report it to
+spamcop without bothering to contact me. I do my best to filter the crap
+out of the list, and I don't think we do too badly. I really don't want
+to restrict the list to subscribers-only, which is about the only other
+trick I can think of.
 
-> Hi there,
-> 
-> it looks like only lubbock-flash.c is using ioremap_cached().
+The machine lists.infradead.org is in a temporary home, and I've just
+been jumped on by the people whose netblock it's currently living on,
+after they heard from spamcop.
 
-sa1100-flash could be using it as well.
+It's possible that whoever reported it didn't realise it was from the
+mailing list because their filtering is broken. You shouldn't be looking
+in the To: or Cc: headers of the mail. The SMTP reverse-path, usually
+seen in the Return-Path: header when the mail has been delivered, is the
+reliable way of detecting where mail came from and filtering list
+traffic.
 
-> Can I use ioremap_cached() with normal NOR flashes?
-
-Yes.
-
-> Is it only for DMA transfer from/to flash?
-
->From flash only.
-
-> Does it improve something when using JFFS2?
-
-Much improved read throughput.
-
-> What do I have to consider? .inval_cache function?
-
-Yep.
-
-
-Nicolas
+-- 
+dwmw2
