@@ -1,19 +1,17 @@
-Received: from ms-smtp-03-smtplb.tampabay.rr.com ([65.32.5.133]
-	helo=ms-smtp-03.tampabay.rr.com)
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BLu5u-0002eF-5W
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2004 02:24:06 +0100
-Received: from linux.local (6532247hfc158.tampabay.rr.com [65.32.247.158])
-	i471NJuI026397	for <linux-mtd@lists.infradead.org>;
-	Thu, 6 May 2004 21:23:19 -0400 (EDT)
-From: Burt Bicksler <bbick@ix.netcom.com>
+	id 1BM5on-0004CI-C3
+	for linux-mtd@lists.infradead.org; Fri, 07 May 2004 14:55:13 +0100
+From: Simon Haynes <simon@baydel.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <1083894588.2408.30.camel@linux.local>
-Mime-Version: 1.0
-Date: Thu, 06 May 2004 21:49:49 -0400
-Content-Transfer-Encoding: 7bit
-Subject: mkfs.jffs2 question
+Date: Fri, 7 May 2004 14:42:05 +0100
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_5EJCIJPZ0BMEDYUALXFH"
+Message-ID: <C98EE3515623@baydel.com>
+cc: David Woodhouse <dwmw2@infradead.org>
+Subject: wbuf flush or remount ro 
+Reply-To: simon@baydel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +21,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I've just started working with JFFS2 and I have a couple of questions. 
-First some details:
+--------------Boundary-00=_5EJCIJPZ0BMEDYUALXFH
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 
-Kernel 2.4.25 running on AMD Au1000 based system with AMD Flash chip.
+David,
 
-Using latest zlib from the zlib site.  Currently building mkfs.jffs2 on
-SuSE 8.2 (Intel) platform.  Other tools (e.g. fcp) built cross-compiled
-for mips32 (little endian).
+Just to recap 
 
-MTD tools that I've tried:
+It seems that the latest jffs2 CVS code does not flush wbuf when the 
+filesystem is remounted read only. This can cause a gc operation to be 
+abnormally terminated an error messages are generated on remount.
 
-Snapshot from 'snapgear' mkfs.jffs2 version 1.2 according to the source
-file.
+A while ago you suggested I do something like this. See attached 
 
-This one seems to build a JFFS2 file system that I can boot and access
-with no problems.  I fixed problems getting it to build / link with 
-the latest zlib version.
+I don't really know how to create a patch file so here is a diff and a patch.
+If the patch is not correct would you please enlighten me.
 
-The one issue I see with this build is that even though I have specified
-a devices file and I can see the device nodes when running jffs2dump on
-the created image file, when I mount the file system from Flash the /dev
-directory is empty!  
+--------------Boundary-00=_5EJCIJPZ0BMEDYUALXFH
+Content-Type: text/x-diff;
+  charset="iso-8859-15";
+  name="fs.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="fs.patch"
 
-The only thing that spit out during the creation of the file system was
-a message about /dev not having a parent directory so it was being 
-skipped. But the /dev directory (and the node files from the devices.txt
- file WERE in the resulting image file as mentioned above).
+LS0tIGZzLmN2cwlGcmkgTWF5ICA3IDE0OjI5OjQ1IDIwMDQKKysrIGZzLmMJRnJpIE1heSAgNyAx
+NDowODo0MCAyMDA0CkBAIC0zNTUsNiArMzU1LDEzIEBACiAKIAlpZiAoISgqZmxhZ3MgJiBNU19S
+RE9OTFkpKQogCQlqZmZzMl9zdGFydF9nYXJiYWdlX2NvbGxlY3RfdGhyZWFkKGMpOworCS8qIE1I
+QiBoYWNrICovCisJZWxzZSB7CisJCWRvd24oJmMtPmFsbG9jX3NlbSk7CisJICAgICAgICBqZmZz
+Ml9mbHVzaF93YnVmX3BhZChjKTsKKwkgICAgICAgIHVwKCZjLT5hbGxvY19zZW0pOworCX0KKwog
+CQogCXNiLT5zX2ZsYWdzID0gKHNiLT5zX2ZsYWdzICYgfk1TX1JET05MWSl8KCpmbGFncyAmIE1T
+X1JET05MWSk7CiAKQEAgLTQ2Myw3ICs0NzAsMTIgQEAKIAl9CiAKIAlpZiAoYy0+c2VjdG9yX3Np
+emUgIT0gYy0+bXRkLT5lcmFzZXNpemUpCisvKiBNSEIgKi8KKy8qCiAJCXByaW50ayhLRVJOX0lO
+Rk8gImpmZnMyOiBFcmFzZSBibG9jayBzaXplIHRvbyBzbWFsbCAoJWRLaUIpLiBVc2luZyB2aXJ0
+dWFsIGJsb2NrcyBzaXplICglZEtpQikgaW5zdGVhZFxuIiwgCisJCQljLT5tdGQtPmVyYXNlc2l6
+ZSAvIDEwMjQsIGMtPnNlY3Rvcl9zaXplIC8gMTAyNCk7CisqLworCQlwcmludGsoS0VSTl9ERUJV
+RyAiamZmczI6IEVyYXNlIGJsb2NrIHNpemUgdG9vIHNtYWxsICglZEtpQikuIFVzaW5nIHZpcnR1
+YWwgYmxvY2tzIHNpemUgKCVkS2lCKSBpbnN0ZWFkXG4iLCAKIAkJCWMtPm10ZC0+ZXJhc2VzaXpl
+IC8gMTAyNCwgYy0+c2VjdG9yX3NpemUgLyAxMDI0KTsKIAogCWlmIChjLT5mbGFzaF9zaXplIDwg
+NSpjLT5zZWN0b3Jfc2l6ZSkgewo=
 
-It's probably something that I'm missing on the command line or in the 
-file (but I just copied and tweaked the example from the util 
-directory).
+--------------Boundary-00=_5EJCIJPZ0BMEDYUALXFH
+Content-Type: text/x-diff;
+  charset="iso-8859-15";
+  name="fs.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="fs.diff"
 
-The other snapshot that I'm working with is the one from 04/30/2004. 
-The mkfs.jffs2 version from source code is 1.40.
+KioqIGZzLmN2cwlGcmkgTWF5ICA3IDE0OjI5OjQ1IDIwMDQKLS0tIGZzLmMJRnJpIE1heSAgNyAx
+NDowODo0MCAyMDA0CioqKioqKioqKioqKioqKgoqKiogMzU1LDM2MCAqKioqCi0tLSAzNTUsMzY3
+IC0tLS0KICAKICAJaWYgKCEoKmZsYWdzICYgTVNfUkRPTkxZKSkKICAJCWpmZnMyX3N0YXJ0X2dh
+cmJhZ2VfY29sbGVjdF90aHJlYWQoYyk7CisgCS8qIE1IQiBoYWNrICovCisgCWVsc2UgeworIAkJ
+ZG93bigmYy0+YWxsb2Nfc2VtKTsKKyAJICAgICAgICBqZmZzMl9mbHVzaF93YnVmX3BhZChjKTsK
+KyAJICAgICAgICB1cCgmYy0+YWxsb2Nfc2VtKTsKKyAJfQorIAogIAkKICAJc2ItPnNfZmxhZ3Mg
+PSAoc2ItPnNfZmxhZ3MgJiB+TVNfUkRPTkxZKXwoKmZsYWdzICYgTVNfUkRPTkxZKTsKICAKKioq
+KioqKioqKioqKioqCioqKiA0NjMsNDY5ICoqKioKLS0tIDQ3MCw0ODEgLS0tLQogIAl9CiAgCiAg
+CWlmIChjLT5zZWN0b3Jfc2l6ZSAhPSBjLT5tdGQtPmVyYXNlc2l6ZSkKKyAvKiBNSEIgKi8KKyAv
+KgogIAkJcHJpbnRrKEtFUk5fSU5GTyAiamZmczI6IEVyYXNlIGJsb2NrIHNpemUgdG9vIHNtYWxs
+ICglZEtpQikuIFVzaW5nIHZpcnR1YWwgYmxvY2tzIHNpemUgKCVkS2lCKSBpbnN0ZWFkXG4iLCAK
+KyAJCQljLT5tdGQtPmVyYXNlc2l6ZSAvIDEwMjQsIGMtPnNlY3Rvcl9zaXplIC8gMTAyNCk7Cisg
+Ki8KKyAJCXByaW50ayhLRVJOX0RFQlVHICJqZmZzMjogRXJhc2UgYmxvY2sgc2l6ZSB0b28gc21h
+bGwgKCVkS2lCKS4gVXNpbmcgdmlydHVhbCBibG9ja3Mgc2l6ZSAoJWRLaUIpIGluc3RlYWRcbiIs
+IAogIAkJCWMtPm10ZC0+ZXJhc2VzaXplIC8gMTAyNCwgYy0+c2VjdG9yX3NpemUgLyAxMDI0KTsK
+ICAKICAJaWYgKGMtPmZsYXNoX3NpemUgPCA1KmMtPnNlY3Rvcl9zaXplKSB7Cg==
 
-So far I haven't been able to create a JFFS2 file system that I can boot
- or mount with mkfs.jffs2 built from this snapshot.
-
-Also, mkfs.jffs2 from this snapshot also whines about the /dev directory
-not having a parent when building the image.  And the final difference
- is that the created image is nearly twice the size of that built with
- the mkfs.jffs2 from the older snapshot.
-
-I'm using the same current zlib library in both cases, and tweaked the
- source so that it will build/link with zlib.
-
-I suspect that part of the issue with the latest snapshot build may be
- that I'm still running with the older JFFS2 support that is part of the
- 2.4.25 Kernel.
-
-My questions:
-1) Is there a note somewhere that I've missed saying what snapshots are
-reasonably stable so that I know which one to work with for a 
-semi-production release?
-
-2) Has anyone else had a similar issue with the 04/30/2004 snapshot as 
-far as the created image not mounting and being much larger than that 
-created with older snapshots?
-
-I've looked back through the archives and so far have not been able to 
-locate anything related to the latest snapshot as applies to what I'm 
-seeing.
-
-Thanks,
-Burt
+--------------Boundary-00=_5EJCIJPZ0BMEDYUALXFH--
