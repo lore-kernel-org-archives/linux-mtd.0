@@ -1,20 +1,14 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=localhost.onz.COM)
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17XxZA-0002xW-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Jul 2002 06:23:04 +0100
-Received: from nt40server (nt40server [192.168.1.101])
-	by localhost.onz.COM (8.11.6/8.11.6) with SMTP id g6Q5MVk22919
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 22:22:32 -0700
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: What happened to 64-bit support?
-Date: Thu, 25 Jul 2002 22:22:31 -0700
-Message-ID: <NCBBIINEHIPFGJPLBEIFGEONDJAA.acurtis@onz.com>
+	id 17XyVx-000330-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Jul 2002 07:23:50 +0100
+To: <linux-mtd@lists.infradead.org>, LinuxBIOS <linuxbios@lanl.gov>
+Subject: Compact Flash is a valid canidate for an MTD device.
+From: Eric W Biederman <ebiederman@lnxi.com>
+Date: 26 Jul 2002 00:23:44 -0600
+Message-ID: <m3ofcv57nz.fsf@DLT.linuxnetworx.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,19 +20,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have had a chance to continue working on my Read-Only problem and have
-discovered that the flash is getting mounted as if it was ROM. Our system is
-configured with 4-16bit Strata flash devices and should be using the CFI
-interface. It appears that the flash is being recognized as CFI compliant
-bus fails the buswidth test.
+The Compact Flash extensions to the IDE command set, there is information
+that they can indeed be treated as a normal mtd character device.
 
-Using the latest CVS code I recompiled with DEBUG, genprobe...() reports
-that it does not support buswidth of 8. jedec_probe...() did not work. It
-did appear to work with the ROM mapped to RAM option but this also the
-reason that it is always mounted Read-Only.
+In particular the following commands were added to IDE.
+-  CFA REQUEST EXTENDED ERROR CODE
+-  CFA WRITE SECTORS WITHOUT ERASE
+-  CFA ERASE SECTORS
+-  CFA WRITE MULTIPLE WITHOUT ERASE
+-  CFA TRANSLATE SECTOR
+-  SET FEATURES Enable/Disable 8-bit transfer
 
-I retrieved linux-2_4-branch from CVS, it appears that this does not have
-64-bit bus support either. Looking at cfi_probe(), the case statement does
-not support buswidth of 8.
+They aren't a perfectly normal flash chip but, you do have the ability
+to just erase or to just write sectors.  CFA TRANSLATE SECTOR gives
+information on how many times an individual sector has been erased, so
+it is possible to implement wear-leveling above the CFA device.
 
-Where can I find the 64-bit patches?
+It appears to me there would be noticeable benefit to configuring a
+Compact Flash device as an MTD device, and running JFFS on top of it.
+
+I haven't had a chance to try it yet, but hopefully this will point
+someone in a useful direction.
+
+Eric
