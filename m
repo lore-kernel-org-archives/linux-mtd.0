@@ -1,18 +1,17 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16iFJb-0001lm-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 13:49:15 +0000
-Received: from pcjonashg.axis.se (pcjonashg.axis.se [10.13.8.50])
-	by krynn.axis.se (8.12.1/8.12.1/Debian -5) with ESMTP id g25E06QI025762
-	for <linux-mtd@lists.infradead.org>; Tue, 5 Mar 2002 15:00:06 +0100
-Subject: recalc_sigpending in compatmac.h
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 05 Mar 2002 15:01:16 +0100
-Message-Id: <1015336876.32356.6.camel@pcjonashg>
+	id 16iFQh-0001ms-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 13:56:35 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1015336876.32356.6.camel@pcjonashg> 
+References: <1015336876.32356.6.camel@pcjonashg> 
+To: Jonas Holmberg <jonas.holmberg@axis.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: recalc_sigpending in compatmac.h 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 05 Mar 2002 14:07:45 +0000
+Message-ID: <15259.1015337265@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +23,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-fs/jffs/intrep.c from Linux 2.4.17 won't compile:
+jonas.holmberg@axis.com said:
+>  intrep.c:3355:27: arguments given to macro `recalc_sigpending'
 
-intrep.c:3355:27: arguments given to macro `recalc_sigpending'
+Fixed. Sorry.
 
-It looks like recalc_sigpending has been changed to handle kernel
-version < 2.5.5 but it doesn't seem to work. fs/jffs/intrep.c (2.4.17
-and current) calls recalc_sigpending with an argument but the macro has
-no argument if kernel version < 2.5.5 according to latest compatmac.h.
-
-/Jonas
+--
+dwmw2
