@@ -1,17 +1,22 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15gX0V-0005sM-00
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2001 20:46:12 +0100
-Date: Mon, 10 Sep 2001 20:52:06 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Chris Lesiak <clesiak@licor.com>
-cc: <linux-mtd@lists.infradead.org>,
-    "Siders, Keith" <keith_siders@toshibatv.com>
-Subject: Re: Partition question...
-In-Reply-To: <86256AC3.006369F1.00@hooper2.licor.com>
-Message-ID: <Pine.LNX.4.33.0109102046090.30849-100000@imladris.demon.co.uk>
+	id 15gemU-0006XB-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 05:04:14 +0100
+Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
+	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id f8B4AEJ15130
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 09:40:14 +0530
+Received: (from root@localhost)
+	by ncoretech.com (8.10.0/8.10.0) id f8B4AE925632
+	for linux-mtd@lists.infradead.org.VIRCHECK; Tue, 11 Sep 2001 09:40:14 +0530
+Message-ID: <3B9D9024.71EB046B@ncoretech.com>
+Date: Tue, 11 Sep 2001 04:16:36 +0000
+From: pradeep <pradeep@ncoretech.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Yunus Shaikh <yshaikh@start-icon.com>, linux-mtd@lists.infradead.org
+Subject: Re: Fw: Booting doc2000 and mtd
+References: <00d901c13a2c$ca16d2f0$c801a8c0@starticon>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,53 +28,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 10 Sep 2001, Chris Lesiak wrote:
+Hello,
+              I think you dont have the proper libraries also in the lib
+directory ,
+check out the links -- whether they are broken or not.
 
-> I also have two banks mapped contiguously into virtual memory that I would
-> like to be seen as one.
 
-Should be fine, as long as the two chips are identical. At the moment, 
-they need to be mapped with no space between them. However, aliases are 
-OK. So, for example, if you have
+Pradeep
 
- 0xbe000000-0xbe7fffff Chip 1
- 0xbe800000-0xbeffffff Chip 1 again
- 0xbf000000-0xbf7fffff Chip 2
- 0xbf800000-0xbfffffff Chip 2 again. 
+Yunus Shaikh wrote:
 
-That'll be fine. It'll detect the aliases in there. It will quit scanning 
-the region when it finds something that's not a flash chip, though, so if 
-those aliases _weren't_ there it'd break (and you could trivially fix it 
-the your 'map' driver by munging the addresses).
-
-> The problem is that RedBoot (and ECOS) seems to only support one flash
-> logical device.  I wrote an ECOS flash driver that treated both banks
-> as a single large logical device.  RedBoot stores its partition table
-> in the last erase block of the device.  So in my case, a single
-> partition table is store in the last erase block of the second bank
-> but partitions the space of both banks.
-> 
-> When I get to the linux, mtd seems to expect a partition table for each bank.
-> 
-> What is the best way to reconcile the problem?
-
-Change your map driver to encompass the whole region, then it should 
-appear as a single MTD device and it'll look for a single partition table.
-
-> I have two 32-bit Flash devices (or so I'm told). Since this is a MIPS
-> application the reset vector is 0xBFC00000. The Flash devices are
-> 0xBE000000-BEFFFFFF and 0xBF000000-BFFFFFFF, so I have 4Megs at the
-> top of the second device, with the first device and lower 12Megs of
-> the second giving me 28Megs of linear Flash
-
-You should be able probe the two chips as a single device with no 
-problems, as I said above. But then you want two non-contiguous regions to 
-appear as a single partition. 
-
-That's not handled by the existing partition code - but the partition code 
-is just a simple set of wrappers that add an offset and pass control 
-through to the methods of the underlying MTD device. It's simple enough to 
-hack up your own wrapper which does what you want.
-
--- 
-dwmw2
+> Hello all
+>
+> i have managed to write data   in to the doc2000 , although
+> i gives segmentation faults many times somehow i haev written it after
+> restarting almost 50+ times now the problem is the root file system is
+> mounted
+> but does not go ahead i get a error mesage saying
+> warning: unable to open an initial console
+>
+> i have tried passing init=/bin/sh parameter to the kernel
+> any help ?
+>
+> Thanks in advance
+> Yunus
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
