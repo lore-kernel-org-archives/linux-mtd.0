@@ -1,26 +1,28 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 26 Feb 2003 15:12:30 +0000
-Subject: MTD/JFFS BK repository?
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFIELBECAA.acurtis@onz.com>
-References: <NCBBIINEHIPFGJPLBEIFIELBECAA.acurtis@onz.com>
-Message-ID: <1046272350.4795.6.camel@passion.cambridge.redhat.com>
+From: mal@komcept.com (MAL)
+Date: Wed, 26 Feb 2003 19:23:38 +0000
+Subject: devfs & mtd
+Message-ID: <3E5D143A.2060806@komcept.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Wed, 2003-02-26 at 15:01, Allen Curtis wrote:
-> I work primarily in the PPC tree. This is very behind. Do you have a
-> recommended procedure for doing this merge?
+Hi, i'm using a DiskOnChip 2000 48MB, with a 2.4.20 kernel, the CVS MTD 
+patches and a patched grub CVS.
 
-I can talk you through what I generally do, certainly. Want to come to
-#mtd on irc.freenode.net (although I'm on a phone conference ATM so I'll
-not be too responsive for a little while).
+I'm also running devfsd, but only to set up legacy /dev nodes, (-np).
 
-> PS: Do you want the bkbits tree updated or was this just a test? I also have
-> a bkbits repository were I could post a tree.
+All works fine, as long as I use /dev/root as the root fs in fstab.  If 
+I try to use /dev/nftl/disk0/part1, (which exists), the filesystem fails 
+to mount at init, (even read-only), stating that the device cannot be found.
 
-I'm not bothered to be honest -- I can give you access to it if you're
-inclined to keep it up to date. I suspect that may be useful -- update
-that and then the PPC tree can pull from it -- and so can other people.
+Yes, devfsd starts _before_ the filesystem mount.
 
--- 
-dwmw2
+Setting the root filesystem to /dev/root, (which points to 
+/dev/nftl/disk0/part1 !), works fine.
+
+Additionally, I still have to pass root=/dev/nftla1 to the kernel, even 
+though this location doesn't exist!
+
+Please can someone help me understand how this archaic mess up works :)
+
+Cheers,
+MAL
