@@ -1,18 +1,20 @@
-Received: from lmsmtp03.st1.spray.net ([212.78.202.113])
+Received: from [61.100.14.249] (helo=mail.palmpalm.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18UX91-0004lq-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 19:06:11 +0000
-Received: from lycos.de (p50859B6D.dip.t-dialin.net [80.133.155.109])
-	by lmsmtp03.st1.spray.net (Postfix) with ESMTP id A2A1B3CF11
-	for <linux-mtd@lists.infradead.org>; Fri,  3 Jan 2003 20:36:29 +0100 (MET)
-Message-ID: <3E15E63A.4060203@lycos.de>
-Date: Fri, 03 Jan 2003 20:36:26 +0100
-From: Indy500 <indy5xl@lycos.de>
+	id 18UiYh-0005sK-00
+	for <linux-mtd@lists.infradead.org>; Sat, 04 Jan 2003 07:17:27 +0000
+Received: from tium ([61.73.108.17])
+	(authenticated)
+	by mail.palmpalm.com (8.11.6/8.11.6) with ESMTP id h046bOk30454
+	for <linux-mtd@lists.infradead.org>; Sat, 4 Jan 2003 15:37:25 +0900
+From: "Taeil Um" <tium@mail.palmpalm.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2-MTD-NAND
+Date: Sat, 4 Jan 2003 16:50:34 +0900
+Message-ID: <BDEDIOGGNJEEPBHLJLFGCEANCFAA.tium@palmpalm.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: How to compile mkfs.jffs2?
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,16 +26,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
-
-I can't compile mkfs.jffs2. I tried both methods as described in Readme. 
-Once with Symlink and once with copying the whole util DIR to the Kernel 
-tree. I tried it with an unpatched 2.4.20 Kernel and with a 2.4.20 
-Kernel patched with patchin.sh....always there are several errors and 
-compiling stops.
-
-Is the description in README too old or is there another undocumented 
-Trick to compile successfully this Prog? I must have this binary because 
-I'm not able to go on further with my work.
-
-Thank you for any solution.
+SGkgYWxsICEgSGFwcHkgTmV3IFllYXIhDQoNCkkgdXNlZCBqZmZzMiBmb3IgTXkgQm9hcmQgd2hp
+Y2ggaGFzIDE2TSBTQU1TVU5HIG5hbmQgZmxhc2ggY2hpcC4NCkkgc3VjY2VlZGVkIHRvIHBvcnQg
+SkZGUzItTVRELU5BTkQgbGF5ZXIgaW4gb3JkZXIgdG8gdXNlIE5BTkQgZmxhc2guDQoNCkJ1dCBz
+b21ldGltZXMgKG5vdCBhbHdheXMpIGlmIGkgbW91bnQgTkFORCBjaGlwLCB0aGUga2VybmVsIGRp
+ZSB3aXRoIGZvbGxvd2luZyAiS0VSTkVMIE9PUFMhIg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQ0KQ2hlY2tlZCBhbGwgaW5vZGVzIGJ1dCBzdGlsbCAweDFkYyBi
+eXRlcyBvZiB1bmNoZWNrZWQgc3BhY2U/DQpVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBv
+aW50ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbCBhZGRyZXNzIDAwMDAwMDAwDQpwZ2QgPSBjMDAy
+NDAwMA0KKnBnZCA9IDAwMDAwMDAwLCAqcG1kID0gMDAwMDAwMDANCkludGVybmFsIGVycm9yOiBP
+b3BzOiBmZmZmZmZmZg0KQ1BVOiAwDQpwYyA6IFs8YzAwOTk3Mzg+XSAgICBsciA6IFs8YzAwNDY0
+ZTA+XSAgICBOb3QgdGFpbnRlZA0Kc3AgOiBjMDdjNWYwYyAgaXAgOiBjMDdjNWViOCAgZnAgOiBj
+MDdjNWY1NA0KcjEwOiBjMDdjNDM0NCAgcjkgOiBjMDJiZTkwNCAgcjggOiBjMDE2NmVlOA0Kcjcg
+OiBjMDJiZThjYyAgcjYgOiBjMDJiZThjYyAgcjUgOiBjMDdjNDAwMCAgcjQgOiBjMDdjNDAwMA0K
+cjMgOiAwMDAwMDAwMCAgcjIgOiAwMDAwMDAwMSAgcjEgOiAwMDAwMDAwMSAgcjAgOiAwMDAwMDA0
+MA0KRmxhZ3M6IG5aQ3YgIElSUXMgb24gIEZJUXMgb24gIE1vZGUgU1ZDXzMyICBTZWdtZW50IHVz
+ZXINCkNvbnRyb2w6IDIxN0YgIFRhYmxlOiBDMUNDQzAxNSAgREFDOiAwMDAwMDAxNQ0KUHJvY2Vz
+cyBqZmZzMl9nY2RfbXRkMiAocGlkOiAxNiwgc3RhY2twYWdlPWMwN2M1MDAwKQ0KU3RhY2s6ICgw
+eGMwN2M1ZWZjIHRvIDB4YzA3YzYwMDApDQo1ZWUwOiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjMDA0NjRlMCANCjVmMDA6IGMw
+MDk5NzM4IDYwMDAwMDEzIGZmZmZmZmZmIGMwN2M0MDAwIGMxYzUwMDAwIDAwMDAwMDAwIGMwMTUy
+MDQwIDAwMDAwMDAwIA0KNWYyMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzA3YzQwMDAg
+YzA3YzQwMDAgMDAwMDAwMDAgYzAyYmU4Y2MgYzA3YzQzMzQgDQo1ZjQwOiAwMDAwMDAwMCBjMDdj
+NDM0NCBjMDdjNWZmYyBjMDdjNWY1OCBjMDA5ZDExNCBjMDA5OTY5YyA3ZmI0ZmZlZiBmZmZmZGZm
+ZCANCjVmNjA6IGVmZmJmZjM3IGVkZmRmZmMzIGZmNGJmZmJkIGZmYmZmYmZmIDdmZWZmZmZkIGZl
+ZWQ1YmZmIGVjZjdmZGY4IDdmN2Y1ZmJmIA0KNWY4MDogZmZmZTVmZjcgOWVlYmY2YmQgZmVmYjdm
+ZmYgZmZmZmVmZjkgMDAwMDAwMTMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgDQo1ZmEwOiAw
+MDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCBjMDdjNWZiOCBjMDAzYjkzNCBjMDA0MmQ2OCAwMDAw
+MDAwMCAwMDAwMDAwMCANCjVmYzA6IDAwMDAwNjAwIGMwMDljZjI4IGMwMmJlOGNjIGMxYzQxNTYw
+IDAwMDAwMDAwIGMwMmJlOGUwIGMwMmJlOGNjIGMxYzQxNTYwIA0KNWZlMDogMDAwMDAwMDAgYzAy
+YmU4ZTAgMDAwMDAwMDAgZmZmZmZmZWEgMDAwMDAwMDAgYzA3YzYwMDAgYzAwM2NjYzAgYzAwOWNm
+MzggDQpCYWNrdHJhY2U6IA0KRnVuY3Rpb24gZW50ZXJlZCBhdCBbPGMwMDk5NjhjPl0gZnJvbSBb
+PGMwMDlkMTE0Pl0NCkZ1bmN0aW9uIGVudGVyZWQgYXQgWzxjMDA5Y2YyOD5dIGZyb20gWzxjMDAz
+Y2NjMD5dDQpDb2RlOiBlNTlmMDMzYyBlNTk2MTA3MCBlYmZlYjJjNSBlM2EwMzAwMCAoZTU4MzMw
+MDApIA0KS2VybmVsIHBhbmljOiBBaWVlLCBraWxsaW5nIGludGVycnVwdCBoYW5kbGVyIQ0KSW4g
+aW50ZXJydXB0IGhhbmRsZXIgLSBub3Qgc3luY2luZw0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpIZXJlIGlzIG15IHN5c3RlbSBlbnZpcm9ubWVu
+dA0KDQpDUFUgOiBFUDczMTINCktFUk5FTCA6IDIuNC4xOC1ybWs2DQpOQU5EIDogU0FNU1VORyAx
+NmJpdCAxNk0gDQpDcm9zcyBDb21waWxlciA6IGFybS1saW51eC1nY2MgKHZlcnNpb24gOiAyLjk1
+LjMpDQpNVEQgOiBmcm9tIENWUyBhdCBEZWNlbWJlciAgMXN0IDIwMDINCg0K
