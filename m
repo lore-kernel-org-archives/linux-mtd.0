@@ -1,22 +1,15 @@
-Received: from mailout03.sul.t-online.com ([194.25.134.81])
+Received: from [210.176.198.195] (helo=mail.octopus.com.hk)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BB8Sr-0006i6-Nn
-	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2004 09:31:17 +0100
-From: tglx@linutronix.de (Thomas Gleixner)
-To: Jon Schlueter <jonschl@umd.umich.edu>,
- linux-mtd@lists.infradead.org
-Date: Wed, 7 Apr 2004 10:27:21 +0200
-References: <Pine.LNX.4.44.0404041514100.12090-100000@kiire.colleduc.ee>
-	<200404041421.11425.tglx@linutronix.de> <407355CB.8000602@umd.umich.edu>
-In-Reply-To: <407355CB.8000602@umd.umich.edu>
+	id 1BBBo8-0007Ht-0T
+	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2004 13:05:28 +0100
+Message-ID: <B6FABB86BDB8D511A46C00902785F34D038D70F0@CS-MAIL-1>
+From: Yomie Chan <yomiechan@octopuscards.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Wed, 7 Apr 2004 20:14:28 +0800 
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200404071027.21812.tglx@linutronix.de>
-Subject: Re: CVS compile errors
-Reply-To: tglx@linutronix.de
+	charset="ISO-8859-1"
+Subject: ext2 and jffs2 partitions on arm linux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 07 April 2004 03:13, Jon Schlueter wrote:
->
-> doc2000.c:415: structure has no member named `page256'
+Hi
 
-Fixed in CVS. CVS up
+I have a 8MB atmel dataflash AT45DB2562 running on at91rm9200. I am running
+out of space at program flash. Can i partiting the dataflash in a way 
 
--- 
-Thomas
-________________________________________________________________________
-"Free software" is a matter of liberty, not price. To understand the concept,
-you should think of "free" as in "free speech,'' not as in "free beer".
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+| --------------------------------------------
+|   Ext2  to put the mtd/jffs2 libraries
+| --------------------------------------------
+|  Jffs2 data  partion section 1
+| --------------------------------------------
+|  Jffs2 data  partion section 2
+| --------------------------------------------
+
+
+So that after i boot up the linux kernel from uImage and ramdisk, I can run
+the mtd/jffs2 libraries in the first sector of of the dataflash and then
+mount the others jffs2  sector?
+
+how to do it? or should i put the ext2 near the end of the dataflash?
+How/where can i set the address boundary? Or is there any better way to do
+it?
+Many thanks
+
+Best Regards,
+Yomie
