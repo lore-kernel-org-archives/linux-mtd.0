@@ -1,17 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from i3micro-gw1.dcs.net ([217.78.32.2] helo=mail.i3micro.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15rflh-0004Ls-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2001 14:20:57 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BC59A87.30F514C9@uniquemodem.com> 
-References: <3BC59A87.30F514C9@uniquemodem.com> 
-To: data <data@uniquemodem.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Parse error before 'do' in chipreg.c 
-Mime-Version: 1.0
+	id 15rgQh-0004OP-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2001 15:03:19 +0100
+Message-ID: <3BC5A957.167577AE@i3micro.com>
+Date: Thu, 11 Oct 2001 16:14:47 +0200
+From: Arne Jonsson <arne.jonsson@i3micro.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: JFFS any erase sector?
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 11 Oct 2001 14:29:54 +0100
-Message-ID: <23621.1002806994@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +21,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hello!
 
-data@uniquemodem.com said:
->  Furthermore, I cannot download any patch from the ftp.infradead.org/
-> pub/mtd/patches. Every time I try to connect to it, I got a reply that
-> the ftp server is down.
+I have been trying to get a grip of JFFS (not JFFS2).
+Is there any documentation out there that tells you how
+to organize your flash re. partitioning?
+Is there a need for any erasesector that GC might need
+or can I just allocate 2MB-64kB for use by the filesystem.
+The -64kB is for the small sectors that I don't know if I
+can use. The example above is for a 2MB AMD flash.
+For now I am using the "old" JFFS, i.e not using any MTD,
+on uClinux for ARM7TDMI.
+I will migrate to the one used with MTD any day now but it would
+be nice to know what is happening.
 
-Ah yes - I took it down when there was a wu-ftpd exploit reported, but 
-forgot to start it again when the exploit turned out to be a hoax. I've 
-restarted it now.
+Please, anyone??
 
-> Could you please let me know where I can obtain the patch to include 
-> module.h?
+Regards,
+/Arne Jonsson
 
-ftp.??.kernel.org:/pub/linux/kernel/people/alan/linux-2.2/2.2.20pre/pre-patch-2.2.20-10.bz2
-
---
-dwmw2
+-- 
+Arne Jonsson
+i3 micro technology AB
+Phone:+46-8-506 388 00
+Fax:  +46-8-506 388 75
