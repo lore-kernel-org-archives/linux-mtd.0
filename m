@@ -1,23 +1,22 @@
-Received: from mail3.asianet.co.th ([203.144.222.231] helo=mail.asianet.co.th)
+Received: from mail.broadpark.no ([217.13.4.2])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkgMR-0001gU-Bi
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 05:47:36 -0400
-Received: from virscan3.asianet.co.th (HELO mail.asianet.co.th)
-	([203.144.222.224]) (envelope-sender <jay4mail@yahoo.com>)
-	by mail3.asianet.co.th (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 14 Jul 2004 16:47:28 +0700
-Message-ID: <40F50325.3000404@yahoo.com>
-Date: Wed, 14 Jul 2004 16:55:49 +0700
-From: Pathompong Puengrostham <jay4mail@yahoo.com>
-MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <40F4B205.6060902@yahoo.com> <40F4BD37.4090500@yahoo.com>
-	<1089790912.5274.61.camel@thomas.tec.linutronix.de>
-In-Reply-To: <1089790912.5274.61.camel@thomas.tec.linutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 on NAND, Magic bitmask 0x1985 not found
+	id 1Bkev7-0001A9-F5
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 04:15:18 -0400
+From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1089759689.8822.18.camel@imladris.demon.co.uk>
+References: <1089643331.3951.42.camel@famine>
+	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
+	<1089712151.5995.21.camel@famine>
+	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
+	<1089726079.6288.5.camel@famine>
+	<1089759689.8822.18.camel@imladris.demon.co.uk>
+Content-Type: multipart/mixed; boundary="=-x+M80IMBpMTCa9/ENmkV"
+Message-Id: <1089792912.7607.22.camel@famine>
+Mime-Version: 1.0
+Date: Wed, 14 Jul 2004 10:15:12 +0200
+Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
+Subject: Re: JFFS2 eats memory
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
-> On Wed, 2004-07-14 at 06:57, Pathompong Puengrostham wrote:
-> 
->>Hi,
->>
->>I just found the problem. It is that my NAND flash CE pin is not driven 
->>by GPIO. It is driven by CS from the CPU. Here is the change that I made.
-> 
-> 
-> Ok, I accept the change in nand_verify_pages. I expected this to break,
-> as it was stated in the comment. But for sure we will not invent a new
-> CONFIG_ switch, we have an options field for such stuff already, also
-> using a wait for ready there in any case will be enough.
-> 
-> 
->>I also had to add the following to my nand_init().
->>
->>for (i = 0; nand_flash_ids[i].name != NULL; i++)
->>	nand_flash_ids[i].options |= NAND_NO_AUTOINCR;
-> 
-> 
-> Sorry, thats crap. The options are defined in nand_ids.c and are not a
-> subject to be modified anywhere else. If you want to have the
-> NO_AUTOINCR option set for your board, then set it in the options field
-> before calling nand_scan. The bit is not overwritten by the option init
-> in nand_scan.
-> 
 
-Thank you for pointing that out. I just read the nand_scan code. I
-didn't know I can do that. I copied the code from spia.c and changed
-only the low-level stuff.
+--=-x+M80IMBpMTCa9/ENmkV
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-> Which chiptype are you using exactly? 
+On Wed, 2004-07-14 at 01:01, David Woodhouse wrote:
+> On Tue, 2004-07-13 at 15:41 +0200, Øyvind Harboe wrote:
+> > After your walkthrough if the approach on IRC, I came up with this
+> > patch, which seems to take care of the problem.
 > 
+> I can't work out what that's doing. Does it do something like this?
 
-I'm using Samsung K9F5608U0C.
+Yes.
 
-> The changes you made make not really sense as you put in delays which
-> are neccecary for chips, which do autoincrement. Those chips which can
-> not autoincrement do neither need a wait nor a deselect/select after a
-> page is read.
-> 
-> tglx
-> 
+- I made a small fix: update jeb->last_node
+- Ran some tests and it appears to do the job nicely on my rocket.
 
-The chip I'm using do autoincrement but I thought that after CE goes
-high I have to send the read command again which is not correct.
-Now I don't set NAND_NO_AUTOINCR and it works good. But I still need the
-delays.
 
-Jay
+-- 
+Øyvind Harboe
+http://www.zylin.com
+
+
+--=-x+M80IMBpMTCa9/ENmkV
+Content-Disposition: attachment; filename=memfix.txt
+Content-Type: text/x-patch; name=memfix.txt; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+Index: nodemgmt.c
+===================================================================
+RCS file: /cvs/ecos/ecos/packages/fs/jffs2/current/src/nodemgmt.c,v
+retrieving revision 1.6
+diff -w -u -r1.6 nodemgmt.c
+--- nodemgmt.c	11 Dec 2003 23:33:54 -0000	1.6
++++ nodemgmt.c	14 Jul 2004 08:12:21 -0000
+@@ -549,6 +549,50 @@
+ 		printk(KERN_WARNING "Short write in obliterating obsoleted node at 0x%08x: %zd\n", ref_offset(ref), retlen);
+ 		return;
+ 	}
++
++	/* Nodes which have been marked obsolete no longer need to be
++	   associated with any inode. Remove them from the per-inode list */
++	if (ref->next_in_ino) {
++		struct jffs2_inode_cache *ic;
++		struct jffs2_raw_node_ref **p;
++
++		ic = jffs2_raw_ref_to_ic(ref);
++		for (p = &ic->nodes; (*p) != ref; p = &((*p)->next_in_ino))
++			;
++
++		*p = ref->next_in_ino;
++		ref->next_in_ino = NULL;
++	}
++
++	/* Merge with the next node in the physical list, if there is one
++	   and if it's also obsolete */
++	if (ref->next_phys && ref_obsolete(ref->next_phys)) {
++		struct jffs2_raw_node_ref *n = ref->next_phys;
++
++		ref->__totlen += n->__totlen;
++		/* we don't need to check jeb->last_node */
++		ref->next_phys = n->next_phys;
++		BUG_ON(n->next_in_ino);
++		jffs2_free_raw_node_ref(n);
++	}
++
++	/* Also merge with the previous node in the list, if there is one
++	   and it that one is obsolete */
++	if (ref != jeb->first_node) {
++		struct jffs2_raw_node_ref *p = jeb->first_node;
++
++		while (p->next_phys != ref)
++			p = p->next_phys;
++
++		if (ref_obsolete(p)) {
++			p->__totlen += ref->__totlen;
++			if (jeb->last_node == ref) {
++			  jeb->last_node = p;
++			}
++			p->next_phys = ref->next_phys;
++			jffs2_free_raw_node_ref(ref);
++		}
++	}
+ }
+ 
+ #if CONFIG_JFFS2_FS_DEBUG > 0
+
+--=-x+M80IMBpMTCa9/ENmkV--
