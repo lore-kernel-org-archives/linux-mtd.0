@@ -1,17 +1,15 @@
-Received: from linuxgrrls.org ([212.18.228.66] helo=mail.linuxgrrls.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGxEQ-0001uk-9Z
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 06:16:43 -0400
-Date: Mon, 11 Oct 2004 11:16:11 +0100 (BST)
-From: jasmine@linuxgrrls.org
-To: Esben Nielsen <ESN@vestas.com>
-In-Reply-To: <98223556A08BA64E8C969246704EEE3B17FE85@aarexch01.vws.vestas.dom>
-Message-ID: <Pine.LNX.4.60.0410111114030.13309@hex.linuxgrrls.org>
-References: <98223556A08BA64E8C969246704EEE3B17FE85@aarexch01.vws.vestas.dom>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Booting from DOC Millenium
+Received: from h1462.serverkompetenz.net ([81.169.155.122])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CGyE7-0002Gx-H2
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 07:20:28 -0400
+Date: Mon, 11 Oct 2004 13:20:17 +0200
+From: cdlinux@koala.de
+To: Linux-mtd ML <linux-mtd@lists.infradead.org>
+Message-ID: <20041011112017.GA22376@koala.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: Loosing grub mbr after mounting jffs2 image with loop0 and mtdblock0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello list!
 
+I'm relatively new to linux-mtd and have the following problem:
 
-On Mon, 11 Oct 2004, Esben Nielsen wrote:
+I'm using 128MB-Cf-Cards with an ext2 and a jffs2 partition.
 
-> 1)  Have a small bootsector and used a compressed kernel in the 1Mb NOR.
+The image i write to the cf-card has a grub-loader on it that will boot the
+jffs2-image on (eg) /dev/hde2...
 
-This is a common strategy.
+Now, when I want to change the image-partition, i mount it with
 
-> 2) Get a bootsector which can read the kernel from the filesystem on the 
->    DOC.  Is there any such bootsector anywhere?
+  modprobe loop
+  losetup /dev/loop0 imagefile.img
+  modprobe mtdcore
+  modprobe blkmtd device=/dev/loop0 erasesz=64
+  mount -t jffs2 /dev/mtdblock0 /mnt/cfdisk
 
-GRUB can do this.  If you're on a non-Intel platform, there are other
-bootloaders that could be persuaded to do this.
+I then work on the filesystem and unmount everything after the changes are
+done.
 
-> 3) Go for a 3 stage boot: Have a small bootsector which boots a small, 
->    never changed Linux kernel from the 1Mb NOR. That small kernel does 
->    one thing: read out the real kernel from the DOC. Do anyone have 
->    experience with such a strategy?
+However, when I write the new image to a cfdisk (dd), I loose the grub info
+and booting reports "no valid filesystem" / bootimage...
 
-LinuxBIOS does this.
+I suppose, it has to do with the way I mount the jffs2 partition (as I'm
+actually mounting the entire image as loopdev/jffs2)...?
+I'm unsure about what would be the right way to do this.
 
-> 4) Use a small Linux as a bootsector. Compile the initial hardware setup 
->    in before decompression and instead of starting initrd make something 
->    like "kexec" to start the real, runtime kernel. Has anyone been 
->    playing with this?
+Any ideas, on how to proceed working on the 2nd partition of hde as jffs2
+w/o loosing the grub mbr?
 
-...that's functionally the same as (3) above.
+Thanks for any answers or pointers in the right direction, 
+and sorry if this has been asked before, i couldn't find an appropriate 
+answer yet..
 
-> Having to have a seperate bootsector for Linux is not very good. We 
-> otherwise use VxWorks here.
-
-Grub et al. can boot VxWorks.
-
--J.
+Greetings
+chris
