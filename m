@@ -1,20 +1,24 @@
-Received: from [66.220.10.164] (helo=mail.rinconhosting.com)
+Received: from b5aac.pppool.de ([213.7.90.172] helo=nicole.de.interearth.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192cF3-0006vX-6g
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 20:25:17 +0100
-Received: from dirt ([66.68.146.73])
-        by mail.rinconhosting.com (Merak 5.5.7) with SMTP id HUB73912
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 12:28:39 -0700
-Date: Mon, 7 Apr 2003 14:18:57 -0500
-From: Earl Manning <EManning@PRISMIQ.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20030407141857.3a11609c.EManning@PRISMIQ.com>
-In-Reply-To: <001f01c2fd36$9c006c90$1200a8c0@JOHNB>
-References: <001f01c2fd36$9c006c90$1200a8c0@JOHNB>
+	id 192nOo-0000KU-GG
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 08:20:06 +0100
+From: Daniel Egger <degger@fhm.edu>
+To: Miles Bader <miles@gnu.org>
+In-Reply-To: <buo3cktfvss.fsf@mcspd15.ucom.lsi.nec.co.jp>
+References: 
+	 <20030407171037.GB8178@wohnheim.fh-wedel.de.suse.lists.linux.kernel>
+	 <p73r88exh3r.fsf@oldwotan.suse.de>
+	 <20030407194039.GF8178@wohnheim.fh-wedel.de>
+	 <buo3cktfvss.fsf@mcspd15.ucom.lsi.nec.co.jp>
+Message-Id: <1049786306.27774.87.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart_Mon__7_Apr_2003_14:18:57_-0500_082ebd60"
-Subject: Re: Problems making jffs2 utils
+Date: 08 Apr 2003 09:18:27 +0200
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-BOKTtPWMSY6m6kClbXA1"
+cc: linux-mtd@lists.infradead.org
+cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+cc: Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>
+Subject: Re: [ANNOUNCE] New kernel tree for embedded linux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
 
---Multipart_Mon__7_Apr_2003_14:18:57_-0500_082ebd60
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+--=-BOKTtPWMSY6m6kClbXA1
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Hi John,
+Am Die, 2003-04-08 um 06.38 schrieb Miles Bader:
 
-I have a similar system, embedded mips based, and here is the changed Makefile for the util directory that I used.  I hope this helps.
+> How about dealing with uClinux?  That's almost entirely embedded
+> systems.
 
-Earl Manning
+... without MMU. If you have one you better use it.
 
-On Mon, 7 Apr 2003 14:50:49 -0400
-"John Burch" <jburch@vincisystems.com> wrote:
+--=20
+Servus,
+       Daniel
 
-> I'm running into compiler errors when trying to build the jffs2
-> utilities for a 2.4.17/mips target.  I've checked out the latest mtd
-> code according to www.linux-mtd.infradead.org, then have followed the
-> instructions in the mtd/util/README file (copied mtd/util contents to
-> directory under linux root and changed $CROSS as necessary since I'm
-> cross-compiling to mips).  I cd to <mips-kernel-path>/linux/utils and do
-> a make, but get errors immediately, which typically include the
-> following (depending on which util I'm trying to make)...
-> 
-> .../libc.so.6: undefined reference to 'no symbol'
-> .../mips-linux-ld: cannot find -lz
-> 
-> I'm really only after 'erase' and maybe 'jffs2reader' for use on my mips
-> embedded target; I already have mkfs.jffs2 as an x86 binary for my x86
-> development platform.  Any ideas, or better place for me to post this
-> question?
-> 
-> John
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--=-BOKTtPWMSY6m6kClbXA1
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dies ist ein digital signierter Nachrichtenteil
 
---Multipart_Mon__7_Apr_2003_14:18:57_-0500_082ebd60
-Content-Type: application/octet-stream;
- name="Makefile"
-Content-Disposition: attachment;
- filename="Makefile"
-Content-Transfer-Encoding: base64
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-CiMgLSotIHNoIC0qLQoKIyAkSWQ6IE1ha2VmaWxlLHYgMS4xLjEuMSAyMDAzLzAzLzI2IDIwOjU4
-OjI3IGVhcmwgRXhwICQKCkhPU1RDQyA6PSBnY2MKQ1JPU1M9bWlwc2VsLWxpbnV4LQpDQyA6PSAk
-KENST1NTKWdjYwpIT1NUQ0ZMQUdTICs9IC1JLi4vaW5jbHVkZSAtTzIgLVdhbGwgLVdzdHJpY3Qt
-cHJvdG90eXBlcyAtV3NoYWRvdwpDRkxBR1MgKz0gLUkuLi9pbmNsdWRlIC1XYWxsIC1Xc3RyaWN0
-LXByb3RvdHlwZXMgLVdzaGFkb3cgLVdsLC1Cc3RhdGljCgpUQVJHRVRTID0gZnRsX2Zvcm1hdCBl
-cmFzZSBlcmFzZWFsbCBuZnRsZHVtcCBuYW5kZHVtcCBkb2NfbG9hZGJpb3MgXApuZnRsX2Zvcm1h
-dCBta2ZzLmpmZnMgZnRsX2NoZWNrIG1rZnMuamZmczIgbG9jayB1bmxvY2sgXAplaW5mbyBtdGRf
-ZGVidWcgZmNwIG5hbmR3cml0ZSBqZmZzMmR1bXAgI2pmZnMycmVhZGVyCgpTWU1MSU5LUyA9IGNy
-YzMyLmggY3JjMzIuYyBjb21wcl9ydGltZS5jCgphbGw6ICQoVEFSR0VUUykKCmNsZWFuOgoJcm0g
-LWYgKi5vICQoVEFSR0VUUykgJChTWU1MSU5LUykKCm1rZnMuamZmczIubyBlcmFzZWFsbC5vIGNy
-YzMyLm86IGNyYzMyLmgKCiQoU1lNTElOS1MpOgoJbG4gLXNmIC4uL2ZzL2pmZnMyLyRAICRACgoj
-IG1rZnMuamZmczI6IGNyYzMyLm8gY29tcHJfcnRpbWUubyBta2ZzLmpmZnMyLm8gY29tcHJfemxp
-Yi5vCiMgCSQoQ0MpICQoTERGTEFHUykgLW8gJEAgJF4gLWx6CgojIGVyYXNlYWxsOiBjcmMzMi5v
-IGVyYXNlYWxsLm8KIyAJJChDQykgJChMRExBR1MpIC1vICRAICReIC1segoKIyBqZmZzMnJlYWRl
-cjogamZmczJyZWFkZXIubwojIAkkKENDKSAkKExERkxBR1MpIC1vICRAICReIC1seiAKCm1rZnMu
-amZmczI6IGNyYzMyLmMgY29tcHJfcnRpbWUuYyBta2ZzLmpmZnMyLmMgY29tcHJfemxpYi5jCgkk
-KEhPU1RDQykgJChIT1NUQ0ZMQUdTKSAkKExERkxBR1MpIC1vICRAICReIC1segoKZXJhc2VhbGw6
-IGNyYzMyLm8gZXJhc2VhbGwubwoJJChDQykgJChMRExBR1MpIC1vICRAICReCgpqZmZzMnJlYWRl
-cjogamZmczJyZWFkZXIubwoJJChDQykgJChMREZMQUdTKSAtbyAkQCAkXgoKCg==
+iD8DBQA+knfCchlzsq9KoIYRAmcoAKDahQt2elWkfn/UWkbmCmxDDDNxRwCgmsqu
+YtcudpJy2nOugPXTTJyde0k=
+=7fUO
+-----END PGP SIGNATURE-----
 
---Multipart_Mon__7_Apr_2003_14:18:57_-0500_082ebd60--
+--=-BOKTtPWMSY6m6kClbXA1--
