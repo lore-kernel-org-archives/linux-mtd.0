@@ -1,33 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13KwR2-0003q3-00
-	for mtd-list@infradead.org; Sat, 05 Aug 2000 06:23:48 +0100
-Date: Fri, 4 Aug 2000 23:22:34 -0600 (MDT)
-From: root <root@deltatee.com>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: David Vrabel <dvrabel@arcom.co.uk>, mtd@infradead.org
-Subject: Re: Booting from flash 
-In-Reply-To: <25533.965057345@cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000804232129.16383A-100000@white.priv.deltatee.com>
+	id 13L2Ff-0004Cd-00
+	for mtd-list@infradead.org; Sat, 05 Aug 2000 12:36:27 +0100
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13L2Fe-0004CX-00
+	for mtd@infradead.org; Sat, 05 Aug 2000 12:36:26 +0100
+Date: Sat, 5 Aug 2000 12:35:02 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Juan Gonzo <kayemmess@yahoo.ca>
+cc: MTD Mailing List <mtd@infradead.org>
+Subject: Re: compile errors - missing .h?
+In-Reply-To: <20000804171302.3195.qmail@web5302.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.21.0008051231460.929-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Fri, 4 Aug 2000, Juan Gonzo wrote:
 
-On Mon, 31 Jul 2000, David Woodhouse wrote:
-
-> >  How would I go about getting linux to boot of flash.
+> I updated via CVS my linux source tree today.  When I compile
+> I get the following errors:
 > 
-> See Jason's stuff in the boot/ directory of my CVS tree. I haven't looked 
-> at it. Other people are booting off flash quite happily.
+> I remember a while back David saying that a person might
+> miss updates to include/linux/jffs.h using CVS cause he 
+> uses a symlink farm for this file.  I suspect this is why my
+> compile is failing.
+> 
+> If this is the case, how can someone get 'jffs.h'?
 
-Since JFFS is working so nice someone really needs to write a version that
-can speak JFFS, then you will have a complete solution! 
+The most reliable way to build JFFS is outside the kernel tree. Make sure
+you don't have a 'jffs.h' in /usr/src/linux/include/linux.
 
-I have no time though, we are moving offices suddenly :<
+Then go into the MTD CVS tree, in the 'fs/jffs/' directory, and type:
+ make -C /usr/src/linux SUBDIRS=`pwd` modules
 
-Jason
+You may need to swap the comments on the following two lines in the
+Makefile, depending on which kernel you're building against:
+
+	#INODE_O := inode-v22.o
+	INODE_O := inode-v23.o
+
+
+-- 
+dwmw2
+
 
 
 
