@@ -1,21 +1,14 @@
-Received: from mail.utfors.se ([195.58.103.125])
+Received: from f243.law7.hotmail.com ([216.33.237.243] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15uGPb-0006Js-00
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2001 17:52:51 +0100
-Received: from Win1 (hidden-user@[212.105.56.242])
-	by mail.utfors.se (8.8.8/8.8.8) with SMTP id TAA15114
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2001 19:01:32 +0200 (MET DST)
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: <linux-mtd@lists.infradead.org>
-Subject: RE: linux/completion.h
-Date: Thu, 18 Oct 2001 19:01:38 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLMEKFEPAA.joakim.tjernlund@lumentis.se>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <7C0E66E1B97BD5119B120002A50A63D22E419B@hasmsx101.iil.intel.com>
+	id 15uGel-0006N8-00
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2001 18:08:31 +0100
+From: "arunchandra kalluri" <arunchandrak@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: mtd compiling problem on 2.2.16
+Date: Thu, 18 Oct 2001 17:17:09 
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F2431PArh8Hw3xQfVCC00009305@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,106 +20,342 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi 
 
-I just upgraded MV's 2.4.2 kernel to the latest MTD CVS. I had
-to apply the patch below to get it to compile. I am running it now
-and it's working fine. I think it should be applied to CVS, comments?
 
- Jocke 
 
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org
-> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Kremer, Alex
-> Sent: Monday, October 15, 2001 18:48
-> To: 'Larry Doolittle'; linux-mtd@lists.infradead.org
-> Subject: RE: linux/completion.h
-> 
-> 
-> 
-> | From: Larry Doolittle [mailto:ldoolitt@recycle.lbl.gov]
-> | 
-> | You did merge the part that protects the BLKGETSIZE64 cases 
-> | with an #ifdef. All Alex has to do is disable the #define BLKGETSIZE64
-> from 
-> | compatmac.h.
-> | There might be good reason for _some_ people to define BLKGETSIZE64 in
-> | compatmac.h, but I don't think that's a robust default.
-> 
-> That is correct. It is already there. Maybe a CONFIG options are in place
-> here.
-> 
-> I'm attaching a patch that did the trick for me.
-> 
-> 
-> 
-> diff -urN mtd/drivers/mtd/Config.in mtd-fix/drivers/mtd/Config.in
-> --- mtd/drivers/mtd/Config.in   Wed Oct  3 13:38:38 2001
-> +++ mtd-fix/drivers/mtd/Config.in       Mon Oct 15 18:31:34 2001
-> @@ -11,6 +11,12 @@
->     if [ "$CONFIG_MTD_DEBUG" = "y" ]; then
->        int '  Debugging verbosity (0 = quiet, 3 = noisy)'
-> CONFIG_MTD_DEBUG_VERBOSE 0
->     fi
-> +   bool 'Compatibility with kernels older than 2.4.8' CONFIG_MTD_COMPATMAC
-> +   
-> +   if [ "$CONFIG_MTD_COMPATMAC" = "y" ]; then
-> +      bool '     Enable 64 bit block operations'
-> CONFIG_MTD_COMPATMAC_BLKGETSIZE64
-> +   fi
-> +   
->     dep_tristate '  MTD partitioning support' CONFIG_MTD_PARTITIONS
-> $CONFIG_MTD
->     dep_tristate '  RedBoot partition table parsing'
-> CONFIG_MTD_REDBOOT_PARTS $CONFIG_M
-> TD_PARTITIONS
->  if [ "$CONFIG_ARM" = "y" ]; then
-> diff -urN mtd/fs/jffs2/background.c mtd-fix/fs/jffs2/background.c
-> --- mtd/fs/jffs2/background.c   Mon Oct  8 11:22:38 2001
-> +++ mtd-fix/fs/jffs2/background.c       Mon Oct 15 18:31:20 2001
-> @@ -43,7 +43,11 @@
->  #include <linux/jffs2.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/interrupt.h>
-> +#ifdef CONFIG_MTD_COMPATMAC
-> +#include <linux/mtd/compatmac.h>
-> +#else
->  #include <linux/completion.h>
-> +#endif
->  #include "nodelist.h"
->  
->  
-> diff -urN mtd/include/linux/jffs2_fs_sb.h
-> mtd-fix/include/linux/jffs2_fs_sb.h
-> --- mtd/include/linux/jffs2_fs_sb.h     Tue Sep 18 23:15:18 2001
-> +++ mtd-fix/include/linux/jffs2_fs_sb.h Mon Oct 15 18:31:20 2001
-> @@ -5,7 +5,11 @@
->  
->  #include <linux/types.h>
->  #include <linux/spinlock.h>
-> +#ifdef CONFIG_MTD_COMPATMAC
-> +#include <linux/mtd/compatmac.h>
-> +#else
->  #include <linux/completion.h>
-> +#endif
->  #include <asm/semaphore.h>
->  #include <linux/list.h>
->  
-> diff -urN mtd/include/linux/mtd/compatmac.h
-> mtd-fix/include/linux/mtd/compatmac.h
-> --- mtd/include/linux/mtd/compatmac.h   Tue Oct  2 11:13:53 2001
-> +++ mtd-fix/include/linux/mtd/compatmac.h       Mon Oct 15 18:31:20 2001
-> @@ -463,7 +463,7 @@
->                 }
->  }
->  #endif
-> -#ifndef BLKGETSIZE64 /* LINUX_VERSION_CODE < KERNEL_VERSION(2,4,10-pre13)
-> */
-> +#ifdef CONFIG_MTD_COMPATMAC_BLKGETSIZE64
->  #define BLKGETSIZE64 _IOR(0x12,114,sizeof(u64)) /* return device size in
-> bytes (u64 *a
-> rg) */
->  #endif
-> 
-> 
-> 
+
+Hi
+
+I have seen the below problem when trying to compile(making zImage) the mtd
+using 2.2.16, could some one show me a pointer or gave me a patch to resolve
+this issue.
+
+thanks
+Arun
+
+Script started on Thu Oct 18 05:44:27 2001
+[root@localhost linux]# make zImage
+kgcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes -O2
+-fomit-frame-pointer -fno-strict-aliasing -D__SMP__ -pipe
+-fno-strength-reduce -m486 -malign-loops=2 -malign-jumps=2
+-malign-functions=2 -DCPU=686 -DUTS_MACHINE='"i386"' -c -o init/version.o
+init/version.c
+make -C  kernel
+make[1]: Entering directory `/usr/src/linux-2.2.16/kernel'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/kernel'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/kernel'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/kernel'
+make -C  drivers
+make[1]: Entering directory `/usr/src/linux-2.2.16/drivers'
+make -C block
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/block'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/block'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/block'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/block'
+make -C char
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/char'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/char'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/char'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/char'
+make -C net
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/net'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/net'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/net'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/net'
+make -C misc
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/misc'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/misc'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/misc'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/misc'
+make -C sound
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/sound'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/sound'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/sound'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/sound'
+make -C pci
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/pci'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/pci'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/pci'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/pci'
+make -C video
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/video'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/video'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/video'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/video'
+make -C mtd
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd'
+make -C chips
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/chips'
+make all_targets
+make[4]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/chips'
+make[4]: Nothing to be done for `all_targets'.
+make[4]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/chips'
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/chips'
+make -C maps
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/maps'
+make all_targets
+make[4]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/maps'
+make[4]: Nothing to be done for `all_targets'.
+make[4]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/maps'
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/maps'
+make -C devices
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/devices'
+make all_targets
+make[4]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/devices'
+make[4]: Nothing to be done for `all_targets'.
+make[4]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/devices'
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/devices'
+make -C nand
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/nand'
+make all_targets
+make[4]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd/nand'
+make[4]: Nothing to be done for `all_targets'.
+make[4]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/nand'
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd/nand'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/mtd'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/mtd'
+make -C scsi
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/scsi'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/scsi'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/scsi'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/scsi'
+make -C cdrom
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers/cdrom'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/drivers/cdrom'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/drivers/cdrom'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers/cdrom'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/drivers'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/drivers'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/drivers'
+make -C  mm
+make[1]: Entering directory `/usr/src/linux-2.2.16/mm'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/mm'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/mm'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/mm'
+make -C  fs
+make[1]: Entering directory `/usr/src/linux-2.2.16/fs'
+make -C ext2
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/ext2'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/ext2'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/ext2'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/ext2'
+make -C proc
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/proc'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/proc'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/proc'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/proc'
+make -C isofs
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/isofs'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/isofs'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/isofs'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/isofs'
+make -C nfs
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/nfs'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/nfs'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/nfs'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/nfs'
+make -C lockd
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/lockd'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/lockd'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/lockd'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/lockd'
+make -C romfs
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/romfs'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/romfs'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/romfs'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/romfs'
+make -C jffs
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/jffs'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/jffs'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/jffs'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/jffs'
+make -C autofs
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/autofs'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/autofs'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/autofs'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/autofs'
+make -C devpts
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs/devpts'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/fs/devpts'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/fs/devpts'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs/devpts'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/fs'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/fs'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/fs'
+make -C  net
+make[1]: Entering directory `/usr/src/linux-2.2.16/net'
+make -C core
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/core'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/core'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/core'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/core'
+make -C ethernet
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/ethernet'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/ethernet'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/ethernet'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/ethernet'
+make -C sched
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/sched'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/sched'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/sched'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/sched'
+make -C 802
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/802'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/802'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/802'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/802'
+make -C ipv4
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/ipv4'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/ipv4'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/ipv4'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/ipv4'
+make -C unix
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/unix'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/unix'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/unix'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/unix'
+make -C packet
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/packet'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/packet'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/packet'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/packet'
+make -C sunrpc
+make[2]: Entering directory `/usr/src/linux-2.2.16/net/sunrpc'
+make all_targets
+make[3]: Entering directory `/usr/src/linux-2.2.16/net/sunrpc'
+make[3]: Nothing to be done for `all_targets'.
+make[3]: Leaving directory `/usr/src/linux-2.2.16/net/sunrpc'
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net/sunrpc'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/net'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/net'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/net'
+make -C  ipc
+make[1]: Entering directory `/usr/src/linux-2.2.16/ipc'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/ipc'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/ipc'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/ipc'
+make -C  lib
+make[1]: Entering directory `/usr/src/linux-2.2.16/lib'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/lib'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/lib'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/lib'
+make -C  arch/i386/kernel
+make[1]: Entering directory `/usr/src/linux-2.2.16/arch/i386/kernel'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/usr/src/linux-2.2.16/arch/i386/kernel'
+make -C  arch/i386/mm
+make[1]: Entering directory `/usr/src/linux-2.2.16/arch/i386/mm'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/arch/i386/mm'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/arch/i386/mm'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/arch/i386/mm'
+make -C  arch/i386/lib
+make[1]: Entering directory `/usr/src/linux-2.2.16/arch/i386/lib'
+make all_targets
+make[2]: Entering directory `/usr/src/linux-2.2.16/arch/i386/lib'
+make[2]: Nothing to be done for `all_targets'.
+make[2]: Leaving directory `/usr/src/linux-2.2.16/arch/i386/lib'
+make[1]: Leaving directory `/usr/src/linux-2.2.16/arch/i386/lib'
+kgcc -D__KERNEL__ -I/usr/src/linux/include -E -C -P -I/usr/src/linux/include
+-imacros /usr/src/linux/include/asm-i386/page_offset.h -Ui386
+arch/i386/vmlinux.lds.S >arch/i386/vmlinux.lds
+ld -m elf_i386 -T /usr/src/linux/arch/i386/vmlinux.lds -e stext
+arch/i386/kernel/head.o arch/i386/kernel/init_task.o init/main.o
+init/version.o \
+	--start-group \
+	arch/i386/kernel/kernel.o arch/i386/mm/mm.o kernel/kernel.o mm/mm.o fs/fs.o
+ipc/ipc.o \
+	fs/filesystems.a \
+	net/network.a \
+	drivers/block/block.a drivers/char/char.a drivers/misc/misc.a
+drivers/net/net.a drivers/scsi/scsi.a drivers/cdrom/cdrom.a
+drivers/pci/pci.a drivers/video/video.a drivers/mtd/mtdlink.o \
+	/usr/src/linux/arch/i386/lib/lib.a /usr/src/linux/lib/lib.a
+/usr/src/linux/arch/i386/lib/lib.a \
+	--end-group \
+	-o vmlinux
+fs/fs.o: In function `filesystem_setup':
+fs/fs.o(.text.init+0x397): undefined reference to `init_jffs_fs'
+drivers/mtd/mtdlink.o: In function `init_mtd':
+drivers/mtd/mtdlink.o(.text.init+0x22): undefined reference to
+`init_mtd_devices'
+make: *** [vmlinux] Error 1
+[root@localhost linux]# exit
+exit
+
+Script done on Thu Oct 18 05:45:07 2001
+
+
+_________________________________________________________________
+
+
+_________________________________________________________________
+Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp
