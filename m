@@ -1,23 +1,23 @@
-Received: from nssinet2.co-nss.co.jp ([150.96.0.5])
+Received: from mail.iok.net ([62.249.129.22] helo=mail05.iok.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eaeZ-0004HV-00
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 12:52:19 +0000
-Received: from nssnet.co-nss.co.jp (localhost [127.0.0.1])
-	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id WAA05001
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 22:13:34 +0900 (JST)
-Received: from 150.96.64.250 ([150.96.133.121])
-	by nssnet.co-nss.co.jp (8.9.3+Sun/3.7W) with SMTP id WAA18772
-	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 22:17:30 +0900 (JST)
-Date: Fri, 31 Jan 2003 22:22:44 +0900
-From: OHMURA Yutaka <ohmura@co-nss.co.jp>
-MIME-Version: 1.0
+	id 18ebip-0004RM-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 14:00:47 +0000
+Received: from lin01.mn-logistik.de (frdb-d9b95869.pool.mediaWays.net [217.185.88.105])
+	by mail05.iok.net (8.12.5/8.12.5) with ESMTP id h0VEVlpp020229
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 15:31:47 +0100
+Received: from mnz66.mn-logistik.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-logistik.de (Postfix) with ESMTP id 8A43E1FF15
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Jan 2003 15:31:30 +0100 (CET)
+From: Holger Schurig <h.schurig@mn-logistik.de>
 To: linux-mtd@lists.infradead.org
-Subject: Re: HELP! How to use EP8260 MTD device?
-Message-Id: <20030131222244z&XIe3@co-nss.co.jp>
-Content-Type: text/plain; charset=US-ASCII
+Subject: mkfs.jffs2 buggy?
+Date: Fri, 31 Jan 2003 15:31:30 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20030130182712hq&NZg@co-nss.co.jp>
-References: <20030130182712hq&NZg@co-nss.co.jp>
+Content-Disposition: inline
+Message-Id: <200301311531.30295.h.schurig@mn-logistik.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,84 +29,83 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Does no one uses EP8260 in this ML?
+When I compile mkfs.jffs2 from CVS HEAD, I get the following errors:
 
-Now I changed my .config as follows:
-> #
-> # Memory Technology Devices (MTD)
-> #
-> CONFIG_MTD=y
-> CONFIG_MTD_DEBUG=y
-> CONFIG_MTD_DEBUG_VERBOSE=3
-> CONFIG_MTD_PARTITIONS=y
-> CONFIG_MTD_CHAR=y
-> CONFIG_MTD_BLOCK=y
-> CONFIG_FTL=y
-> 
-> #
-> # RAM/ROM/Flash chip drivers
-> #
-> CONFIG_MTD_CFI=y
-> CONFIG_MTD_CFI_AMDSTD=y
-> CONFIG_MTD_AMDSTD=y
-> CONFIG_MTD_JEDEC=y
-> 
-> #
-> # Mapping drivers for chip access
-> #
-> CONFIG_MTD_PHYSMAP=y
-> CONFIG_MTD_PHYSMAP_START=FF000000
-> CONFIG_MTD_PHYSMAP_LEN=FFFFFF
-> CONFIG_MTD_PHYSMAP_BUSWIDTH=2
-(Only enabled lines are here.)
+mkfs.jffs2.c: In function `write_regular_file':
+mkfs.jffs2.c:823: incompatible types in assignment
+mkfs.jffs2.c: In function `write_symlink':
+mkfs.jffs2.c:925: incompatible types in assignment
+mkfs.jffs2.c: In function `write_pipe':
+mkfs.jffs2.c:967: incompatible types in assignment
+mkfs.jffs2.c: In function `write_special_file':
+mkfs.jffs2.c:1007: incompatible types in assignment
 
-But still kernel says 
-"physmap flash device: ffffff at ff000000
-CFI: Found no Physically mapped flash device at location zero
-$Id: ftl.c,v 1.38 2001/09/23 21:15:12 dwmw2 Exp $"
+Anyway, I somehow got it working, I think with a some older version.
 
-Is the TSL kernel(2.4.7 base) really support MTD?
-If someoen have any hints, please tell me.
+$ mkfs.jffs2 -d rootfs -p 262144 -e 262144 -o /tftpboot/bdi/root.jffs2
 
-Regards,
+and flash the result with
 
-Yutaka
+$ burner.py /tftpboot/bdi/root.jffs 0x140000
+...
+00440000: burning 262144 bytes to flash
+00480000: reading 262144 bytes from flash (68.4 %)
+00480000: erase flash
+00480000: burning 262144 bytes to flash
+004c0000: reading 262144 bytes from flash (73.7 %)
+004c0000: erase flash
+004c0000: burning 262144 bytes to flash
+00500000: reading 262144 bytes from flash (78.9 %)
+00500000: erase flash
+00500000: burning 262144 bytes to flash
+...
 
-OHMURA Yutaka <ohmura@co-nss.co.jp> wrote:
+I get a strange error. Immediately after the flashing, I pressed reset and 
+booted into Linux. Then I see:
 
-> Hello,
-> 
-> Now I'm trying to use Embedded Planet 8260 board Flash memory with TimeSys 
-> Linux 3.1(TSL). I have two type of this board. One has 200MHz clock, have RTC, 
-> 64MB PSDRAM, 32MB LSDRAM and 16MB Flash ROM. The other has 300MHz clock, 
-> no RTC, 32MB PSDRAM and 8MB Flash ROM. My goal is use MTD device under TSL with 
-> 300MHz MPU board, but the board looks some other difference with 200MHz board, 
-> so TSL can't works fine, so at first I'm trying to use MTD device with 200MHz 
-> board. But I can't use MTD until now.
-> 
-> Please tell me how to use MTD on EP8260 under TSL!
-> 
-> FYI, I attached .config file renamed config.8260.
-> Under this environment, MTD driver says 
-> > physmap flash device: 6ffffc at ff800000
-> > CFI: Found no Physically mapped flash device at location zero
-> > RPX Lite or CLLF flash device: 2000000 at fe000000
-> > CFI: Found no RPX device at location zero
-> > $Id: ftl.c,v 1.38 2001/09/23 21:15:12 dwmw2 Exp $
-> 
-> This is first time to use MTD for me, so if you know good reference to use it, 
-> please tell me too.
-> /usr/src/timesys/ep8260/2.4.7-timesys-3.1.180/kernel/Documents was not help me.
-> 
-> Regards,
-> 
-> Yutaka
-> 
+Probing flash at physical address 0x00000000 (32-bit buswidth)
+Using buffer write method
+Using static partition definition
+Creating 3 MTD partitions on "Flash":
+0x00000000-0x00040000 : "Bootloader"
+0x00040000-0x00140000 : "Kernel"
+0x00140000-0x02000000 : "Filesystem"
+...
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
+ffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0000: 0x6574 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0004: 0x665f 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0008: 0x6873 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c000c: 0x3030 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004c0010: 0x3030 
+instead
+JFFS2: Erase block at 0x004c0000 is not formatted. It will be erased
+
+Shouldn't a sector that has been freshly created by mkfs.jffs2 have the right 
+ID?
+
+So, I re-flashed it again and looked at this address. At physically 0x4c0000 I 
+see
+
+$ telnet bdi
+bdi>mdb 0x004c0000
+004c0000 : 85 19 03 20 0c 00 00 00  ... ....
+004c0008 : b1 b0 1e e4 85 19 02 e0  ........
+004c0010 : 03 09 00 00 16 a0 e5 91  ........
+004c0018 : cb 02 00 00 38 00 00 00  ....8...
+004c0020 : ed 81 00 00 00 00 00 00  ........
+004c0028 : 24 1d 06 00 08 40 c3 3b  $....@.;
+004c0030 : 08 40 c3 3b 08 40 c3 3b  .@.;.@.;
+004c0038 : 00 70 03 00 bf 08 00 00  .p......
+
+... and that looks like a valid ID.
 
 
-_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-OHMURA, Yutaka <ohmura@co-nss.co.jp>
-  Nissin Systems co.,ltd.
-  (Phone) +81-75-344-7950  (FAX) +81-75-344-7888
-   Ayakoji, Horikawa street, Shimogyo-ku, KYOTO, JAPAN
-_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+And also in root.fs at file offset 0x380000 = 3670016 I can see this.
+
+
+Am I doing something wrong?  Maybe confusing physical and virtual addressed?
