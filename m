@@ -1,8 +1,8 @@
-Date: Fri, 14 Jan 2005 10:54:18 +0000 (GMT)
+Date: Fri, 14 Jan 2005 11:00:11 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: matrix lau <matrix_lau@yahoo.com>
 In-Reply-To: <20050114104833.41929.qmail@web61207.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.58.0501141051450.17331@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501141058490.17331@phoenix.infradead.org>
 References: <20050114104833.41929.qmail@web61207.mail.yahoo.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -18,11 +18,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As always, the first step is to switch the JFFS2 debug level at 1 and 
-provide logs...
+Ah, you use dd to put image. That's may cause problems.
 
-Possibly enabling MTD debugging may be useful either, but at the first 
-step at least JFFS2 output is OK. 
+Use nandwrite utility instead.
 
 On Fri, 14 Jan 2005, matrix lau wrote:
 > Hi.
