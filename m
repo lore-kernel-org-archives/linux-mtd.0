@@ -1,20 +1,27 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8Yw1-0004Jp-0G
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 02:15:17 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: extabe@bredband.net
-In-Reply-To: <20050305125650.TCML1243.mxfep04.bredband.com@mxfep04>
-References: <20050305125650.TCML1243.mxfep04.bredband.com@mxfep04>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 08 Mar 2005 08:15:03 +0100
-Message-Id: <1110266103.29330.11.camel@tglx.tec.linutronix.de>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D8aZB-0004n8-DD
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 03:59:50 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1D8aYw-0004di-7Z
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 09:59:34 +0100
+Received: from 212.130.19.66 ([212.130.19.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Mar 2005 09:59:34 +0100
+Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Mar 2005 09:59:34 +0100
+To: linux-mtd@lists.infradead.org
+From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+Date: Tue, 08 Mar 2005 09:59:36 +0100
+Message-ID: <d0jphc$re$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Trying to get 1Gb Samsung nand flash working
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
+Subject: Many small files instead of one large files - writing, wearing,
+	mount-time?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andre, 
+Hi there,
 
-please place your answers below the citation and configure your mail
-client to break the lines at 80 chars. See also
-http://www.infradead.org/~dwmw2/email.html
+I'm about to make a choice of design. I have many many (i.e. O(3) - 
+[0-9]*1000) "resources" in an application that need their states flushed 
+to NAND-JFFS2 whenever they change - which happens with very different 
+frequencies for different resources.
 
-Thanks
+Hence, me initial strategy was to have a file in NAND for each resource. 
+However, I noticed that mount-time increased "severely" when many files 
+were put on the device, and doing an "ls" first time on the 
+device/directory took lots of time as well.
 
-On Sat, 2005-03-05 at 12:56 +0000, extabe@bredband.net wrote:
-> The chip is a Samsung 1Gx8 Bit NAND Flash (K9W8G08U1M). It is 
-> detected as a 512Mb chip (K9k4G08U0M) since it consist of two 
-> K9k4G08U0M stacked.
+Unfortunately low mount-time is one of the factors giving the user a 
+good experience with the system, so I started considering another 
+strategy - namely one large file to hold all these states.
 
-Should work.
+However, I'm a bit concerned how fopen( ..., "rw" ) is handled 
+underneith when I flush/sync the filedescriptor if I only mess with a 
+small part of the file. Is the entire file flushed to NAND once more, or 
+does Linux+JFFS2 handle this, and only write the parts (inodes) that are 
+affected...
 
-> I use 2.4.25 kernel patched with "mtd-snapshot-20050223"
-> 
-> The CVS $Id string is:
-> $Id: nand_bbt.c,v1.31 2005/02/16 17:09:36 dedekind Exp $
-
-There was a change in the bad block table code recently. I'm not sure if
-it is relevant to your problem - it should not. I send you a patch
-seperately to backout the changes. Please give it a try.
-
-> As I mentioned erlier I´ve used a Samsung 64Mb chip (K9F1208U0M) 
-> with the same driver and it´s working good.
-
-This chip is a small page chip (512Byte + 16Byte oob) and therefor a
-different thing.
-
-Can I have a look on your board driver please ?
-
-tglx
+BR,
+  Martin
