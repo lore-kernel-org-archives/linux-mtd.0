@@ -1,49 +1,58 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14QCYV-0003Yk-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 18:09:31 +0000
+	id 14QCbR-0003Zn-00
+	for mtd-list@infradead.org; Tue, 06 Feb 2001 18:12:33 +0000
 Received: from celeborn.rivendell.insynq.com ([216.174.202.131] ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14QCYU-0003Ye-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 18:09:30 +0000
+	id 14QCbQ-0003Zh-00
+	for mtd@infradead.org; Tue, 06 Feb 2001 18:12:32 +0000
 Received: from pyramid.insynq.com (pyramid.office.insynq.com [10.2.2.10])
-	by celeborn.rivendell.insynq.com (8.9.3/8.8.7) with ESMTP id KAA14278
-	for <mtd@infradead.org>; Tue, 6 Feb 2001 10:08:55 -0800
+	by celeborn.rivendell.insynq.com (8.9.3/8.8.7) with ESMTP id KAA14826
+	for <mtd@infradead.org>; Tue, 6 Feb 2001 10:12:00 -0800
 Received: by insynq.com
 	via sendmail from stdin
-	id <m14QCXk-0016mGC@pyramid.insynq.com> (Debian Smail3.2.0.102)
-	for mtd@infradead.org; Tue, 6 Feb 2001 10:08:44 -0800 (PST)
+	id <m14QCaj-0016mGC@pyramid.insynq.com> (Debian Smail3.2.0.102)
+	for mtd@infradead.org; Tue, 6 Feb 2001 10:11:49 -0800 (PST)
 From: "Ian Eure <Ian Eure" <ieure@insynq.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Message-ID: <14976.15788.166844.107972@pyramid.insynq.com>
-Date: Tue, 6 Feb 2001 10:08:44 -0800 (PST)
+Message-ID: <14976.15973.43530.527006@pyramid.insynq.com>
+Date: Tue, 6 Feb 2001 10:11:49 -0800 (PST)
 To: mtd@infradead.org
-Cc: 
-Subject: Re: NFTL Performance
-In-Reply-To: <20010206100044.27105.qmail@web6304.mail.yahoo.com>
-References: <20010206100044.27105.qmail@web6304.mail.yahoo.com>
+Subject: doc2k: "formatting block"?
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-i'm seeing about 5.7 seconds to write 1mb. i'm using a 32mb doc2000 on
-the isa eval board, with a vanilla 2.4.1 kernel.
+while testing a 32mb doc2000, i see these messages:
 
-a more important problem that i see is that when blocks are being
-flushed to the DOC, certain parts of the system (mouse, maybe others) stop
-responding until the write is complete.
+-- snip --
+DiskOnChip 2000 found at address 0xD0000
+Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
+2 flash chips found. Total DiskOnChip size: 32 Mb
+Block 807: referencing block 110 already in another chain
+Formatting chain at block 807
+Formatting block 807
+Unreferenced block 366, formatting it
+-- snip --
 
-i think it's caused by DoC_Delay, which is called from
-DoC_WaitReady. can someone confirm/deny?
+...and later on:
 
-Alessandro Staltari writes:
- > It seems GPL'd NFTL driver is a lot slower than the
- > M-Systems's propietary driver, it takes about 10
- > seconds to sync 1MB of data written to the flash. Does
- > is it confirmed by your experience?
- > 
+-- snip --
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 121, count = 1
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 185, count = 1
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 217, count = 1
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 233, count = 1
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 248, count = 1
+EXT2-fs error (device nftl(93,1)): ext2_free_blocks: Freeing blocks in system zones - Block = 243, count = 1
+end_request: I/O error, dev 5d:01 (unknown), sector 8274
+EXT2-fs error (device nftl(93,1)): ext2_free_branches: Read failure, inode=12, block=4137
+-- snip --
 
+is this a software problem, or a bad doc?
+
+i suppose it could be my eval board, they don't seem to be made very
+well.
 
 -- 
  ___________________________________
