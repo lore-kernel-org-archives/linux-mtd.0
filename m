@@ -1,18 +1,17 @@
-Received: from natpool.ud.com ([65.112.245.211] helo=jikku-lt.corp.ud.com)
+Received: from [207.209.118.131] (helo=msi-ex6.ccm.msyscal.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16j6VG-0005rf-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 22:36:50 +0000
-Received: from infinity-studios.com (localhost.localdomain [127.0.0.1])
-	by jikku-lt.corp.ud.com (8.11.6/8.11.6) with ESMTP id g27Mawh01395
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Mar 2002 16:36:58 -0600
-Message-ID: <3C87EB8A.7070305@infinity-studios.com>
-Date: Thu, 07 Mar 2002 16:36:58 -0600
-From: Dzuy Nguyen <dzuy@infinity-studios.com>
+	id 16j8aX-000616-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Mar 2002 00:50:25 +0000
+Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BFA54@MSI-EX6>
+From: Vadim Khmelnitsky <VadimK@m-sys.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>
+Cc: 'Herman Theron' <HEtheron@csir.co.za>, strtok@hotmail.com,
+	linux-mtd@lists.infradead.org
+Subject: RE: Lost DOC2000 after trying to load grub 
+Date: Thu, 7 Mar 2002 17:01:46 -0800 
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Compressed root FS & DoC partition
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,23 +23,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have a 16MB DoC 2000.  I am able to boot make an ext2 FS on and boot 
-via LILO.
+How feasible would it be to port the M-Systems DFORMAT utility to work 
+under Linux through the MTD driver? 
 
-Now, I want to be able to make it boot to a compressed root FS.  I've 
-created my own
-compressed root FS (about 6MB).  I figured I'd partition the DoC into 2 
-parts of 8MB
-each.  The first part is to hold the root FS (and possibly kernel) and 
-the latter part an
-ext2 FS to store system's configuration files (to mount on /etc later).
+[Vadim]
+If you guys have a hooks for physical access operations like read physical
+page, write physical page and erase unit it should not be a problem .
 
-I've tried both using dformat and nftl_format to format half of the DoC 
-and mke2fs it.
-It just refuses to make the formatted half an ext2 unless the entire DoC 
-is formatted.
+Vadim
 
-Am I on the wrong path here?  Can someone point me to the right 
-direction?  Thanks.
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Thu, March 07, 2002 8:01 AM
+To: Vadim Khmelnitsky
+Cc: 'Herman Theron'; strtok@hotmail.com; linux-mtd@lists.infradead.org
+Subject: Re: Lost DOC2000 after trying to load grub 
 
-Dzuy
+
+
+VadimK@m-sys.com said:
+> If i understand eraseall utility correctly it erases the whole
+> diskonchip completely . After that bad block table is lost and it's
+> unsafe to use such diskonchip afterwards . 
+
+You are correct. Neither nftl_format or eraseall functions are safe.
+
+How feasible would it be to port the M-Systems DFORMAT utility to work 
+under Linux through the MTD driver? 
+
+--
+dwmw2
