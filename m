@@ -1,18 +1,45 @@
 From: samoutin@hotbox.ru (Alex Samoutin)
-Date: Fri, 14 Feb 2003 09:59:20 -0800
-Subject: ECC calculation bug in nand_write_page()
-Message-ID: <001d01c2d452$ce30b2e0$1a00a8c0@itc.intrinsyc.com>
+Date: Fri, 14 Feb 2003 10:27:26 -0800
+Subject: NAND OOB and endians issue.
+Message-ID: <003e01c2d456$bba71340$1a00a8c0@itc.intrinsyc.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-I found that ECC calculation is worng when we do partial write to sector.
+I am using PPC (IBM 405ep) system with NAND flash. It is big endian
+processor.
 
-When starting byte !=0 and eccmode == NAND_ECC_SOFT this function made
 
-/* Read back previous written data, if col > 0 */
 
-for correct ECC calculation. It is ok. Hovewer  if col==0 but last !=0 it
-would do the same (read back previos written data) for the
-tail of block. But it didn't.
+When I create empty jffs2 image  on board (using mount -t jffs2 /dev/mtd0 on
+erased partition) jffs2 write clean marker bytes to the OOB of first sector
+of each blocks. According to docs it supposet to be
 
-Alex
+
+
+ Offset (hex) 08 09 0a 0b 0c 0d 0e 0f
+
+Data    85 19 03 20 08 00 00 00
+
+But in reality I have
+
+
+
+19 85 20 02 00 00 00 08
+
+
+
+(I used nanddump with formatted output to check it)
+
+
+
+Ok. Inside jffs2.h   I can define JFFS2_BIG_ENDIAN (instead default
+JFFS2_NATIVE_ENDIAN) but result the same. And only if I set
+JFFS2_LITTLE_ENDIAN I will get    85 19 03 20 08 00 00 00 pattern.
+
+
+
+It is look very strange for me. So, which def for endians I should use?
+
+
+
+Alex.
