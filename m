@@ -1,20 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bs3kV-0001n7-Gi
-	for linux-mtd@lists.infradead.org; Tue, 03 Aug 2004 14:10:58 -0400
-Received: from oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 7F2F4229D1
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  3 Aug 2004 22:09:39 +0400 (MSD)
-Message-ID: <410FD4CA.6010008@oktetlabs.ru>
-Date: Tue, 03 Aug 2004 22:09:14 +0400
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
+Received: from mail07.svc.cra.dublin.eircom.net ([159.134.118.23])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BsHqB-0003BC-Tm
+	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2004 05:13:45 -0400
+Date: Wed, 04 Aug 2004 09:55:41 +0100
+To: =?utf-8?Q?J=C3=B6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
+	linux-mtd@lists.infradead.org
+References: <20040731135955.GA10803@wohnheim.fh-wedel.de>
+From: "Dermot McGahon" <dermot@dspsrv.com>
+Content-Type: text/plain; format=flowed; delsp=yes; charset=utf-8
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: notice
-Reply-To: dedekind@oktetlabs.ru
+Content-Transfer-Encoding: 8bit
+Message-ID: <opsb69q3lv3ertue@mail.dspsrv.com>
+In-Reply-To: <20040731135955.GA10803@wohnheim.fh-wedel.de>
+Cc: 
+Subject: Re: [RFC] Volatile data device vor jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello. I have a notice to the JFFS2 initialisation code.
+On Sat, 31 Jul 2004 15:59:55 +0200, Jörn Engel  
+<joern@wohnheim.fh-wedel.de> wrote:
 
-It seems to me that it would be good to add the __init/__exit attributes 
-to the jffs2_compressors_init/jffs2_compressors_exit (compt.c) functions.
+> With a ram based volatile device, there is danger of data loss, so
+> garbage collection would have to be forced from time to time, similar
+> to the current wbuf approach for nand.
 
--- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+[-]
+
+> Comments?
+
+Well, it still needs to be flushed to something non-volatile at
+some point.
+
+You can vary the time between flushes. It depends on how valuable
+that data is to you. With an approach such as this you are really
+deciding how big of a window for data loss you are willing to put
+up with.
+
+The approach I took while doing this a couple of years ago was not
+to erase blocks until absolutely necessary and then do all the
+garbage collection/file system reorganisation once. This took time
+to do though, was suitable for the device in question (a KVM), but
+possibly not for a general filesystem.
+
+
+Dermot.
+--
