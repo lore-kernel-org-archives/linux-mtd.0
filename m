@@ -1,18 +1,17 @@
 Received: from [213.86.99.237] (helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eBfV-0000dy-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 10:11:38 +0000
+	id 18eBmy-0000eY-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 10:19:21 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.52.0301281755410.19671@mag.devdep.sysgo.de> 
-References: <Pine.LNX.4.52.0301281755410.19671@mag.devdep.sysgo.de> 
-To: Marius Groeger <mag@sysgo.de>
+In-Reply-To: <F147ztYnkp66U4PEFn7000023b4@hotmail.com> 
+References: <F147ztYnkp66U4PEFn7000023b4@hotmail.com> 
+To: "Brian Peterson" <purdue1996@hotmail.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: PATCH: support for Arctic/Beech/Ebony 
+Subject: Re: DiskOnChip 2000 read only file system 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Date: Thu, 30 Jan 2003 10:42:30 +0000
-Message-ID: <4504.1043923350@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 30 Jan 2003 10:50:13 +0000
+Message-ID: <8318.1043923813@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mag@sysgo.de said:
-> attached is a patch that adds MTD support for a couple of PowerPC
-> boards based on the IBM440GP CPU. It also clean up the PPC section in
-> the mapping drivers Config.in, making it more robust against
-> configuration errors.
+purdue1996@hotmail.com said:
+>  During some testing of power loss scenarios, I lose the ability to
+> use the  device. The kernel boots and after it cleans up from the
+> unclean unmount, I  receive kernel messages indicating "Argh! No free
+> blocks found!..."
 
-Please also update Kconfig, and add $Id$ headers to new files.
+We should be able to fix this.
+
+> What level of confidence is there that the read only partition would
+> be  protected from this problem. In other words, can the data located
+> in the  Read only partition be trusted? 
+
+The data on the read only partition cannot be trusted any more than the 
+data in the read-write partition. It's all in one big pseudo-filesystem, 
+the partitioning is purely cosmetic.
 
 --
 dwmw2
