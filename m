@@ -1,22 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.183])
+Received: from penguin-ext.wise.edt.ericsson.se ([193.180.251.47])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AgQDz-0006mO-7K
-	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 15:12:59 +0000
-Received: from [212.227.126.206] (helo=mrelayng.kundenserver.de)
-	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 1AgQBu-00035p-00
-	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 16:10:50 +0100
-Received: from [10.100.100.154] by server5.adwin.de (GMS
-	9.01.3158/LG0047.00.c59c3165) with ESMTP id qsvibaaa for
-	linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 16:10:49 +0100
-Date: Tue, 13 Jan 2004 16:10:49 +0100
-To: linux-mtd@lists.infradead.org
-From: Markus Borchers <MBorchers@ADwin.de>
-Content-Type: text/plain; format=flowed; charset=utf-8
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <opr1py4bes8jdzbh@10.100.100.100>
-Subject: overwrite complete flash
+	id 1AgQSH-0006tJ-SK
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 15:27:45 +0000
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1074001140.17620.3.camel@hades.cambridge.redhat.com>
+References: <20040113125031.GA5146@angel.research.nokia.com>
+	 <1074001140.17620.3.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain
+Message-Id: <1074007527.9219.11.camel@spawn.uab.ericsson.se>
+Mime-Version: 1.0
+Date: Tue, 13 Jan 2004 16:25:28 +0100
+Content-Transfer-Encoding: 7bit
+cc: MTD List <linux-mtd@lists.infradead.org>
+cc: "Jarkko Lavinen \(NMP/Helsinki\)" <jarkko.lavinen@nokia.com>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello everyone,
+On Tue, 2004-01-13 at 14:39, David Woodhouse wrote:
+> On Tue, 2004-01-13 at 14:50 +0200, Jarkko Lavinen (NMP/Helsinki) wrote:
+> > Is there anything that could be done to reduce the mount time of large
+> > JFFS2 partitions?  Lazy mounting with prioritized scanning?
+> 
+> We improved it a lot by not checking CRC32 on all nodes until later --
+> but we still need to read the whole medium at mount time.
+> 
+> We _can_ fix that. There's a limited amount of knowledge we're gaining
+> from our scan at mount time. For each inode on the medium, we need:
+> 		Its nlink
+> 		A list of the physical addresses of all its nodes
+> 
+> We currently read the whole of every eraseblock to work this out.
+> However, we could write a block 'tailer' at the _end_ of each eraseblock
+> as we fill it, containing enough information in compressed form about
+> the contents of the eraseblock.
+> 
+> That would mean that we only have to read a small proportion of each
+> properly-finished eraseblock, and should speed up the mount
+> significantly.
 
-during an firmware-update-process I want to overwrite the complete flash 
-with one image.
+I have done some work on the JFFS2 code in u-boot and found that the
+fastest way was to load the entire FLASH into a continuous disk image in
+DRAM and then have code that directly dereference pointers into this
+image without any access functions or read on demand.
 
-My system is an Intel IXP425-based custom board with RedBoot, linux 
-version 2.4.18, root on jffs2,
-5 MTD partitions on "IXP425 Flash":
-0x00000000-0x00040000 : "RedBoot"
-0x00040000-0x000e0000 : "kernel"
-0x00100000-0x007c0000 : "root"
-0x007c0000-0x007e0000 : "RedBoot config"
-0x007e0000-0x00800000 : "FIS directory"
+When I tried to be smart and skip the copy and only read in what needed
+to be read that was significantly slower.
 
-I know that I can overwrite a complete partition (e.g. /dev/mtdblock1 = 
-kernel),
-but then the update-process depends on the partition table.
+Never underestimate brute force :)
 
-I miss a device-file (like /dev/hda) to have access independent of any 
-partitions.
-
-
-I found the implementation of the struct map_info ixp425_map in
-drivers/mtd/maps/ixp425.c with the functions
-read16:     ixp425_read16,
-write16:    ixp425_write16
-After exporting that symbol I can use this funktions with my own
-kernel-modul.
-
-The reading works but the writing not.
-
-
-Any hints?
-
-Thanks in advance!
-Markus
+If you have very very poor bandwidth from the flash the the reverse is
+true but I had to slow down my flash 10 times to break even. 
