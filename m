@@ -1,14 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: vsergey@digitalparus.com
-In-Reply-To: <1072696192.3ff00b80ee311@digitalparus.com>
-References: <1072696192.3ff00b80ee311@digitalparus.com>
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AbNql-0001sb-2I
+	for linux-mtd@lists.infradead.org; Tue, 30 Dec 2003 17:40:11 +0000
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Patrick Hilt <philt@pioneer-pdt.com>
+In-Reply-To: <200312221245.11108.philt@pioneer-pdt.com>
+References: <200312221245.11108.philt@pioneer-pdt.com>
 Content-Type: text/plain
-Message-Id: <1072783494.2059.2.camel@lapdancer.baythorne.internal>
+Message-Id: <1072805172.21490.677.camel@tubarao>
 Mime-Version: 1.0
-Date: Tue, 30 Dec 2003 11:39:02 +0000
+Date: 30 Dec 2003 10:26:13 -0700
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem using JFFS2 with NOR flash
+Subject: Re: Weird chip/mtd behavior???
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-12-29 at 20:09 +0900, vsergey@digitalparus.com wrote:
-> I have a problem with JFFS2 romfs. I can mount empty JFFS2 partition only first 
-> time!!! Here is the log.
+On Mon, 2003-12-22 at 13:45, Patrick Hilt wrote:
+> Hi everybody!
+> I'm seeing some weird mtd/flash behavior... I guess I should be a little more 
+> specific ;-)...
 
-Looks like a problem with the underlying flash drivers, not with JFFS2.
-Double-check that the partition really is empty when you've attempted to
-erase it, and that anything you write to it via pwrite() to /dev/mtd2
-actually works.
+Please try David Vrabel's patches and let me know if it fixes, or
+changes, the problem.
 
-Check bus width, Vpp handling, etc. are correct. If it's the newer flash
-which requires unlocking after every reset, check that's done too.
+http://lists.infradead.org/pipermail/linux-mtd/2003-December/009001.html
+http://lists.infradead.org/pipermail/linux-mtd/2003-December/009009.html
 
 -- 
-dwmw2
+Thayne Harbaugh
+Linux Networx
