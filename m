@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15qWOM-00065T-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2001 10:08:06 +0100
+	id 15qWUe-000667-00
+	for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2001 10:14:36 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BBD8729.92A77296@digigram.com> 
-References: <3BBD8729.92A77296@digigram.com> 
-To: Claire Troussier <troussier@digigram.com>
+In-Reply-To: <20011005105919.A28963@recycle.lbl.gov> 
+References: <20011005105919.A28963@recycle.lbl.gov>  <20011004160202.A25776@recycle.lbl.gov> <20011004093533.A25013@recycle.lbl.gov> <1002226435.27652.21.camel@russ> <20011004160202.A25776@recycle.lbl.gov> <15283.1002287554@redhat.com> 
+To: Larry Doolittle <ldoolitt@recycle.lbl.gov>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem with mtd on a Sandpoint 
+Subject: Re: No clean _or_ dirty blocks to GC from! 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 08 Oct 2001 10:16:54 +0100
-Message-ID: <13586.1002532614@redhat.com>
+Date: Mon, 08 Oct 2001 10:23:45 +0100
+Message-ID: <13795.1002533025@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-troussier@digigram.com said:
->  I add the mtd support in the kernel configuration and during boot the
-> flash is correctly identified. When I try to access it I always got
-> the same error "can't locate module block-major-31" or "can't locate
-> module char-major-90" if I use mtd0 instead of mtdblock0
 
-Those errors happen because you haven't enabled CONFIG_MTD_BLOCK or 
-CONFIG_MTD_CHAR respectively. Without CONFIG_MTD_BLOCK, you can't mount 
-JFFS, although that's a limitation we intend to fix, as we don't actually 
-_use_ the mtdblock driver during the operation of JFFS.
+ldoolitt@recycle.lbl.gov said:
+>  It doesn't exactly get woken, it just has insomnia.  :-) This
+> one-liner "fixes" it for me.
+
+Thanks. I've committed that, with an appropriate comment to make it clear 
+that we don't care about the race.
 
 --
 dwmw2
