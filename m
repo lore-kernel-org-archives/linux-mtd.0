@@ -1,20 +1,21 @@
-Received: from smtp10.atl.mindspring.net ([207.69.200.246])
+Received: from phoenix.infradead.org ([195.224.96.167])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17prZ3-0000Uy-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2002 15:36:57 +0100
-Received: from sdn-ap-024tnnashp0337.dialsprint.net ([65.181.17.83] helo=there)
-	by smtp10.atl.mindspring.net with smtp (Exim 3.33 #1)
-	id 17prZ0-0001xO-00
-	for linux-mtd@lists.infradead.org; Fri, 13 Sep 2002 10:36:55 -0400
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Kyle Harris <kharris@nexus-tech.net>
-To: linux-mtd@lists.infradead.org
-Subject: 2.5 jffs2 wierdness
-Date: Fri, 13 Sep 2002 10:32:18 -0400
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <E17prZ0-0001xO-00@smtp10.atl.mindspring.net>
+	id 17pshn-0000m5-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2002 16:50:05 +0100
+Received: from [209.202.220.140] (helo=mailcity.com)
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 17pshh-0001r9-00
+	for linux-mtd@lists.infradead.org; Fri, 13 Sep 2002 16:49:57 +0100
+To: chrisbotha3@mailcity.com
+Date: Fri, 13 Sep 2002 11:48:49 -0400
+From: "Christopher Botha" <chrisbotha3@lycos.com>
+Message-ID: <KEGCBLLHHFEDGAAA@mailcity.com>
+Mime-Version: 1.0
+Reply-To: chrisbotha3@lycos.com
+Subject: Indo Investment 
+Content-Type: text/plain; charset=us-ascii
+Content-Language: en
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,16 +27,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Here's what I'm seeing at present. 
 
-I built a jffs2 root fs. When the system boots, the kernel hangs (vectors to 
-PC 0x4000xxxx). I tracked this down to the binary mawk. If I omit certain 
-startup scripts the system boots. If I then run mawk the system hangs. I can 
-boot from a nfs root, then mount jffs2, then run mawk from the mounted jffs2 
-partition and it works fine! What would be different running a binary from 
-root fs vs. a non-root partition? This is an embedded fs, so I think if I 
-start adding debug utils (strace, etc.) the problem will most likely change 
-)or go away). My original jffs2 fs failed when running mini_httpd, so it 
-varies depending on what's on the fs. 
+RE- INVESTMENT PROPOSAL:
 
-Kyle.
+Sir,
+
+I have been mandated by my client, Son to former dictatorship president 
+in Indonesia who is presently under-going large scale corruption and 
+embezzlement charges in his country for mismanagement of Government 
+funds, to liase him with a credible trustworthy and experienced financial 
+planner / astute businessman to act as his investment manager/investment 
+partner in your country. It is my client’s intention to invest in the 
+following areas for an up-ward of two years before review:
+
+1)	Real estate     (2) Ship leasing    (3) Acquisition of a drug 
+manufacturing plant
+(4)	Investment in a lucrative software production company
+(5)	Acquisition of a motor-vehicle manufacturing plant
+                  (6) Acquisition of an oil refinery plant.
+(7)	Construction of a five star hotel
+(8)	Acquisition of 100,000 acres of land for agricultural development.
+(9)	Acquisition of a domestic passenger airline
+                  (10) Development of a private health care clinic
+                  (11) Development of a multi complex shopping centre
+
+Your advice is therefore solicited since the investment falls within 
+your business environment, to this end, My client has embarked the sum of 
+USD $29,000,000.00 (Twenty nine million  dollars} for the investment 
+venture listed above depending on what area my client and his family 
+wishes to invest in.
+
+The investment funds ($29,000,000.00) is a cleared fund sitting in a 
+trustee account with a bank in a tax haven island, this funds need to be 
+invested as fast as possible because there is a confistication order 
+from the Indonesian Government on my client. And so far the Government 
+have already confisticated assets and funds worth over $900,000,000.00 
+United States dollars and are still confisticating any assets belonging 
+to my client. 
+
+For your assistance in this regard, You will be entitled to 10% of the 
+total funds to be invested ($800m) in advance and 20% shares in what 
+ever project you feel comfortable for my client to invest in.
+
+Please revert to me on my e-mail address for an immediate up-date,
+
+This is a very private and highly confidential project, 
+
+Looking forward to your early reply by E-MAIL as this is a very urgent 
+proposal.
+
+Yours truly,
+Mr. Chris Botha
+
+
+
+_____________________________________________________________
+Play the Elvis® Scratch & Win for your chance to instantly win $10,000 Cash
+- a 2003 Harley Davidson® Sportster® - 1 of 25,000 CD's - and more!
+http://r.lycos.com/r/sagel_mail_scratch_tl/http://win.ipromotions.com/lycos_020801/index.asp?tc=7087 
