@@ -1,23 +1,21 @@
-Received: from moutvdom00.kundenserver.de ([195.20.224.149])
+Received: from fep02.superonline.com ([212.252.115.9])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15vgCF-00089c-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2001 15:36:55 +0100
-Received: from [195.20.224.219] (helo=mrvdom03.schlund.de)
-	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
-	id 15vgLC-00075p-00
-	for linux-mtd@lists.infradead.org; Mon, 22 Oct 2001 16:46:10 +0200
-Received: from pd9e358af.dip.t-dialin.net ([217.227.88.175] helo=comm.esd-electronics.com)
-	by mrvdom03.schlund.de with esmtp (Exim 2.12 #2)
-	id 15vgK5-0000V0-00
-	for linux-mtd@lists.infradead.org; Mon, 22 Oct 2001 16:45:01 +0200
-Message-ID: <3BD43008.3A7C27D7@esd-electronics.com>
-Date: Mon, 22 Oct 2001 16:41:12 +0200
-From: Matthias Fuchs <matthias.fuchs@esd-electronics.com>
+	id 15vgNC-0008AH-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2001 15:48:14 +0100
+Received: from yunux ([212.253.56.213]) by fep02.superonline.com
+          (InterMail vK.4.03.02.00 201-232-124 license 82877460054e144bf0b390e626dd66fc)
+          with SMTP id <20011022145535.ELPW23653.fep02@yunux>
+          for <linux-mtd@lists.infradead.org>;
+          Mon, 22 Oct 2001 17:55:35 +0300
+Content-Type: text/plain;
+  charset="iso-8859-9"
+From: Yunus Yucel Altunbicak <yunus.altunbicak@eliar.com.tr>
+To: MTD <linux-mtd@lists.infradead.org>
+Subject: DOC millenium on vz328 processor
+Date: Mon, 22 Oct 2001 17:57:54 +0300
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: filesystem for battery-buffered SRAM
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Message-Id: <20011022145535.ELPW23653.fep02@yunux>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,34 +27,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi all,
+my embedded linux system is ucdimm(mc68vz328 processor) and i compiled linux 
+kernel 2.4.6 with mtd driver(included, i couldn't compile the mtd driver be a 
+module :)) for DOC millenium(DIP version)but i got below error.
 
-I have to setup an embedded Linux box that uses 1MB of battery buffered
-SRAM to store nonvolatile data.
-This memory is directly mapped into ma addressspace and needs no magic
-things to read or write to it.
+M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+Possible DiskOnChip with unknown ChipID 42 found at 0x10e00000
+M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
+$Id: nftlcore.c,v 1.73 2001/06/09 01:09:43 dwmw2 Exp $
 
-What might be the best choice for a filesystem for this memory and is it
-possible to setup file access with MTD.
-With other words: Is MTD able to access normal RAM devices (no FLASH,
-but SRAM) ?
+*the chip id 42 is correct, if not what should be correct chip id of doc 
+millenium for dip version?
+*is there any document about porting the doc millenium with mtd driver to any 
+embedded system?
 
-Are there other ways to setup a filesystem in a SRAM ?
+Sincerely,
+Yunus
 
-Matthias
-
-
--- 
---------------------------------------------------------------------------
-
-                             _/_/_/_/   Matthias Fuchs
-                            _/_/_/_/   Dipl.-Ing.
-                           _/_/_/_/   matthias.fuchs@esd-electronics.com
-
-       _/_/_/   _/_/_/_/_/_/_/      esd electronic system design gmbh
-     _/   _/  _/             _/    Vahrenwalder Str. 207
-    _/   _/    _/_/_/   _/   _/   D-30165 Hannover
-    _/             _/  _/   _/   Phone: +49-511-37298-0
-     _/_/_/_/_/_/_/   _/_/_/    Fax:   +49-511-37298-68
-
---------------------------------------------------------------------------
+sorry for my poor english :)
