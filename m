@@ -1,34 +1,36 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11g7aM-0004Al-00
-	for mtd@infradead.org; Tue, 26 Oct 1999 15:28:26 +0100
-To: Bob Canup <rcanup@go2fax.com>
-Cc: mtd@infradead.org
-Subject: Re: follow up 
+	id 11gUbF-0005o2-00
+	for mtd@infradead.org; Wed, 27 Oct 1999 16:02:53 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.03 #1)
+	id 11gUbF-0005ic-00
+	for mtd@infradead.org; Wed, 27 Oct 1999 16:02:53 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 11gUbF-0002Dt-00; Wed, 27 Oct 1999 16:02:53 +0100
+To: mtd@infradead.org
+Subject: Request for Testing.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Oct 1999 15:28:23 +0100
+Date: Wed, 27 Oct 1999 16:02:53 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11g7aK-0007tj-00@devel2.axiom.internal>
+Message-Id: <E11gUbF-0002Dt-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+I have yet to receive much real feedback regarding the reliability and 
+interoperability of my DiskOnChip and in particular NFTL drivers.
 
-rcanup@go2fax.com said:
-> BLOCK_USED found after BLOCK_FREE in Virtual unit Chain 0 for block 1
-> BLOCK_USED found after BLOCK_FREE in Virtual unit Chain 0 for block 1
+If you're using the code, or even if you've only tested it briefly, please let
+me know the results.
 
-I think this is what happens when a block is deleted from the NFTL completely, 
-and the M-Systems driver is interrupted in the middle of folding the chain.
+I'm especially interested in what happens when you switch between my drivers 
+and the ones provided by M-Systems. That includes the built-in BIOS extension 
+as well as their native drivers for Linux and other operating systems.
 
-If you only write to the system using my driver, then this should go away, 
-because my driver won't do that. Perhaps it should, but that's a different 
-matter.
-
-I believe that my response to that situation is correct according to their 
-NFTL specification. I just put the message in to warn me, because I didn't 
-know whether it ever actually happened.
 
 
 ----                                ----                                 ----
