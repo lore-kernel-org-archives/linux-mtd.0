@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZfUQ-0005Fs-00
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 23:29:14 +0100
+	id 17ZfXE-0005GI-00
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 23:32:08 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <25812.1028036746@www34.gmx.net> 
-References: <25812.1028036746@www34.gmx.net>  <Pine.LNX.4.44.0207291211590.20751-100000@server.superbt.com> 
-To: Frank Oltmanns <frank.oltmanns.ml@gmx.de>
+In-Reply-To: <F16pVyLridnGiAw8HQE00022566@hotmail.com> 
+References: <F16pVyLridnGiAw8HQE00022566@hotmail.com> 
+To: "invictus rm" <invictus_rm@hotmail.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Compiling Grub for DOC2000 
+Subject: Re: Jffs2 on MTD 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 30 Jul 2002 23:29:11 +0100
-Message-ID: <14743.1028068151@redhat.com>
+Date: Tue, 30 Jul 2002 23:32:06 +0100
+Message-ID: <14793.1028068326@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-frank.oltmanns.ml@gmx.de said:
-> NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> ######################################
-> # I get this far when I use DoC as the root-fs  #
-> ######################################
-> Looking up port of RPC 100003/2 on 192.168.1.99
-> Looking up port of RPC 100005/1 on 192.168.1.99
+invictus_rm@hotmail.com said:
+>  I am not copying the jffs2 image on to the /dev/mtd3 before mouting
+> but  rather copying the files after mounting ( i mean putting the
+> required files  after i have mounted the /dev/mtdblock3)
 
-Remove the bogus invalidate_device() from the mtdblock_release() function 
-in drivers/mtd/mtdblock.c.
+> The reason why i am doing this is becoz i do not need the directory
+> structure of a regular filesystem.
+
+Well, mkfs.jffs2 can happily make an image of a file system with no 
+subdirectories too.
+
+> Does this make any difference in terms of flash usage as compared to
+> the  case where i would have copied the jffs2.img to mtd3 and then
+> mounted it . 
+
+Basically, no. The image created by mkfs.jffs2 will be _slightly_ smaller 
+to start with, because it's not created incrementally. The difference 
+should be negligible though, and will go away when the flash gets 
+garbage-collected anyway.
 
 --
 dwmw2
