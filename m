@@ -1,14 +1,14 @@
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=[vX0Jeq5XQMZSr5BThJoykwSomS9d/3Px])
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=[aV1luUrNmLo0HVN25oYkupKu0P6W1u8+])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15x144-0007Ci-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2001 08:06:00 +0100
-Date: Fri, 26 Oct 2001 08:14:55 +0100 (BST)
+	id 15x15d-0007EU-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2001 08:07:38 +0100
+Date: Fri, 26 Oct 2001 08:16:46 +0100 (BST)
 From: David Woodhouse <dwmw2@infradead.org>
 To: "Kim, Sanghun" <shkim@fdma.snu.ac.kr>
 cc: Linux Mtd <linux-mtd@lists.infradead.org>
-Subject: Re: NAND Flash MTD Driver....
-In-Reply-To: <AEECKHHDHJAAFPKILIGNOELICAAA.shkim@fdma.snu.ac.kr>
-Message-ID: <Pine.LNX.4.33.0110260812320.12271-100000@imladris.demon.co.uk>
+Subject: Re: NAND-MTD (Please help me.....)
+In-Reply-To: <AEECKHHDHJAAFPKILIGNIELJCAAA.shkim@fdma.snu.ac.kr>
+Message-ID: <Pine.LNX.4.33.0110260815020.12271-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -24,10 +24,25 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 On Fri, 26 Oct 2001, Kim, Sanghun wrote:
 
-> To use fdisk, we must recompile... for 'ARM920T' ....
-> Where Can I get 'fdisk' source code....
+> 
+> I have changed "spia.c" to my own "spia.c"
+> (later spia.c is ported to our board..)
+> 
+> but at boot process, following messages returned.
+> "Could not find valid boot record"
+> "Could not mount NFTL device"
+> ....
+> 
+> so, according to "MTD_Howto",
+> 
+> we do "nftl_format .....". But our NAND Flash's erase size is 0x4000.
+> so nftl_format returned with reporting "not 8kb, i'm confused"....
+> 
+> Please tell me SOLUTION...!!!...
 
-fdisk is part of util-linux, which is in ftp.kernel.org:/pub/linux/utils/
+You can't use NFTL on devices other than a DiskOnChip. Use JFFS, or I 
+believe people might be looking at writing a SmartMedia translation layer 
+which does much the same as NFTL but without requiring ECC hardware. 
 
--- 
+--
 dwmw2
