@@ -1,19 +1,21 @@
 Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1984p6-00007p-8v
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 21:57:04 +0100
-Date: Tue, 22 Apr 2003 22:57:12 +0200
+	id 1984qx-0000BG-LH
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 21:58:59 +0100
+Date: Tue, 22 Apr 2003 22:59:05 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Kelly, Mike - ACDIN" <Michael.Kelly@itt.com>
-Message-ID: <20030422205712.GC662@wohnheim.fh-wedel.de>
-References: <998FEBD9C16DD211881200A0C9D61AD705AD5F56@acdfwx3.acdin.de.ittind.com>
+To: Alex Samoutin <samoutin@hotbox.ru>
+Message-ID: <20030422205905.GD662@wohnheim.fh-wedel.de>
+References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
+	<20030422202627.GB662@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <998FEBD9C16DD211881200A0C9D61AD705AD5F56@acdfwx3.acdin.de.ittind.com>
+In-Reply-To: <20030422202627.GB662@wohnheim.fh-wedel.de>
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Does jffs2 garbage collection include erasing
+cc: paul.wong@digitalview.com
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 April 2003 15:08:55 -0500, Kelly, Mike - ACDIN wrote:
+On Tue, 22 April 2003 22:26:27 +0200, Jörn Engel wrote:
 > 
-> When one discusses garbage collection, does that include erasure of the
-> flash device?  Should manual activation of the garbage collection by sending
-> the SIGHUP signal to the jffs2 process also cause the process to start
-> erasing part of the flash device?
+> Agreed. But this problem should be handled in kernel. In other words,
+> the writing process has to trigger GC and continue writing, if GC
+> managed to free more space. It would make sense to tell GC, how much
+> space is needed, so it won't work over the whole device, locking the
+> NAND for a long time.
+> 
+> Anything else is very unintuitive to the user and a plain bug, at
+> least in my book.
 
-Short answer:
-http://lxr.linux.no/ident?v=2.5.56&i=jffs2_garbage_collect_pass
+BTW: See the thread "Does jffs2 garbage collection include erasing"
 
-Long answer:
-
-jffs2_garbage_collect_pass is called from the GC thread, but also from
-all processes writing to flash. The GC thread basically runs
-permanently on idle systems and a little on busy ones. Sending SIGHUP
-to it triggers exactly one run of jffs2_garbage_collect_pass, so a
-single signal will barely be noticed. Not at all for idle systems.
-
-> Thanks for any assistance you can give me -- a jffs2 newbie. 
-
-Doing what I can, a newbie myself.
+jffs2 does just this. And I didn't even know the code until a few
+minutes ago. :)
 
 Jörn
 
 -- 
-Ninety percent of everything is crap.
--- Sturgeon's Law
+My second remark is that our intellectual powers are rather geared to
+master static relations and that our powers to visualize processes
+evolving in time are relatively poorly developed.
+-- Edsger W. Dijkstra
