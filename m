@@ -1,17 +1,18 @@
-Received: from krynn.axis.se ([193.13.178.10])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 163dzC-0004k1-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2001 13:52:22 +0000
-Date: Tue, 13 Nov 2001 17:12:09 +0100 (CET)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
+Received: from c000-h007.c000.snv.cp.net ([209.228.32.71] helo=c000.snv.cp.net)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 163fPx-0004r4-00
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2001 15:24:06 +0000
+Message-ID: <003d01c16c58$71c0d7f0$7f01010a@instant802.com>
+From: "Simon Barber" <simon@barber.net>
 To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: journaling
-In-Reply-To: <20011108140654.B7695@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.21.0111121408520.2402-100000@godzilla.axis.se>
+Cc: <linux-mtd@lists.infradead.org>
+References: <20011105172238.A10542@wohnheim.fh-wedel.de> <20011106133944.A1828@wohnheim.fh-wedel.de> <000201c16bc4$dae53120$7f01010a@instant802.com> <20011113125222.A2490@wohnheim.fh-wedel.de>
+Subject: Re: Bug in mtdblock_ro
+Date: Tue, 13 Nov 2001 07:32:42 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,37 +24,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 8 Nov 2001, Jörn Engel wrote:
-> large files or all the files in a directory - in one or few spots.
-> Without GC-optimizations or a defragmentation tool of some sort, LFSs
-> are very bad at this. And these optimizations are much more
+I'm travelling right now - so I can't, sorry - but it's a version I checked
+out from the anon CVS a few days (maybe 10) ago. With this bug fix it works
+great for me. Without the fix I get a kernel panic on trying to mount a
+mtd_ro partition as rootfs.
 
-But you can't have a LFS without a GC, so.. 
+Simon
 
-> > Some sort of hierarchical checkpointing could perhaps work.. I haven't
-> > read very much about that yet but it's a natural issue for JFFS3 :)
-> 
-> Sounds interesting. Can you quickly describe this one?
+----- Original Message -----
+From: "Jörn Engel" <joern@wohnheim.fh-wedel.de>
+To: "Simon Barber" <simon@barber.net>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Tuesday, November 13, 2001 3:52 AM
+Subject: Re: Bug in mtdblock_ro
 
-You need to find structures to put on flash (or disk), which serve the
-same purpose that directories do for finding files on a normal filesystem,
-but for the log in the jffs case.
 
-> > The second problem with LFS is the GC process. After some time, you
-> > reach a state where the log _is_ full and every write has to force a part
-> 
-> Getting low latency should be nearly impossible in the jffs case. The
-> write will always have to wait until a complete delete block is
-> finished. This can take several seconds, depending on your flash.
-
-The way out of this is to never fill the flash filesystem, and allow the
-GC to operate before any writes, so there always is a bit of room to do a
-low-latency write. Both JFFS's now do this, but it requires some awareness
-from the system designer.. like, as long as you dont fill the filesystem
-you can always write X bytes without waiting. 
-
-Also, you _can_ queue up writes so the writing process does not have to
-wait (JFFS2 has a write-queue (?)). As long as you don't loose
-synchronicity this might be a good trade-off.
-
-/BW
+> Moin!
+>
+> > the call in mtdblock_request to MTD_READ/WRITE passes nr_sectors, it
+should
+> > pass current_nr_sectors.
+>
+> Could you quickly add, what version has this problem? The filename
+> should be enough. When I get back from vacation (Thursday), I will
+> have a look at it.
+>
+> Jörn
+>
+> --
+> If you treat your beta-testers as if they're your most valuable resource,
+> they will respond by becoming your most valuable resource.
