@@ -1,40 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 132uVK-0002tR-00
-	for mtd-list@infradead.org; Fri, 16 Jun 2000 12:41:42 +0100
-Date: Fri, 16 Jun 2000 13:42:10 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/fs/jffs inode-v22.c Makefile inode.c'
-In-Reply-To: <E132u3n-0002oD-00@infradead.org>
-Message-ID: <Pine.LNX.4.10.10006161340080.32189-100000@tammy.signum.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 132uZr-0002vs-00
+	for mtd-list@infradead.org; Fri, 16 Jun 2000 12:46:23 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 132uZq-0002vm-00
+	for mtd@infradead.org; Fri, 16 Jun 2000 12:46:22 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.10.10006161340080.32189-100000@tammy.signum.se> 
+References: <Pine.LNX.4.10.10006161340080.32189-100000@tammy.signum.se> 
+To: Alexander Larsson <alex@cendio.se>
+Cc: mtd@infradead.org, "Sébastien" "Côté" <scote1@matrox.com>
+Subject: Re: MTD CVS update: 'mtd/fs/jffs inode-v22.c Makefile inode.c' 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Date: Fri, 16 Jun 2000 12:46:51 +0100
+Message-ID: <18478.961156011@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+alex@cendio.se said:
+>  Hmmm. There is quite a lot of 'spurious' differences in the 2.2
+> version and the 2.3 version. They could be merged to be much more
+> alike.
 
-On Fri, 16 Jun 2000, David Woodhouse wrote:
+I know. I've imported Sébastien's version as-is for now, and I'm about to 
+look at little details like making it compile :)
 
-> Update of /home/cvs/mtd/fs/jffs
-> In directory infradead.org:/tmp/cvs-serv10791
-> 
-> Modified Files:
-> 	Makefile 
-> Added Files:
-> 	inode-v22.c 
-> Removed Files:
-> 	inode.c 
-> Log Message:
-> Add inode-v22.c and fix Makefile to compile the appropriate one according
-> to which kernel we're part of.
+After that, some of the spurious differences can be eliminated. We may even 
+be able to have an 'inode-common.c' and make the v22 and v23 versions even 
+smaller - we'll see.
 
-Hmmm. There is quite a lot of 'spurious' differences in the 2.2 version
-and the 2.3 version. They could be merged to be much more alike.
-
-/ Alex
+--
+dwmw2
 
 
 
