@@ -1,17 +1,25 @@
-Received: from [203.199.83.248] (helo=mailFA12.rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17dZ8f-0004tf-00
-	for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2002 17:30:53 +0100
-Date: 10 Aug 2002 16:30:19 -0000
-Message-ID: <20020810163019.19590.qmail@mailFA12.rediffmail.com>
-MIME-Version: 1.0
-From: "sriram  neelakandan" <oops2k@rediffmail.com>
-Reply-To: "sriram  neelakandan" <oops2k@rediffmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: tiny JFFS2 Reader
-Content-type: text/plain;
-	format=flowed
-Content-Disposition: inline
+Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17dfJC-0005uI-00
+	for <linux-mtd@lists.infradead.org>; Sun, 11 Aug 2002 00:06:10 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H0N004IQHHEVD@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Sun, 11 Aug 2002 01:05:39 +0200 (MEST)
+Date: Sun, 11 Aug 2002 01:05:31 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: Hardware ECC in NAND flash driver
+In-reply-to: <1028975588.9592.167.camel@thomas.tec.linutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Steven Hein <ssh@sgi.com>, linux-mtd@lists.infradead.org
+Message-id: <1029020732.9668.344.camel@thomas.tec.linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
+References: <3D511B55.6ADABE4D@sgi.com>
+ <1028726139.19447.255.camel@thomas.tec.linutronix.de>
+ <3D527739.5B19816C@sgi.com>
+ <1028975588.9592.167.camel@thomas.tec.linutronix.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,62 +31,65 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi group,
-I am looking for a tiny jffs2 reader that can read a file from a 
-jffs2 partition..
-the code in jffs2reader.c in the MTD utils tar
-mtd-20000704.tar.gz (hope this is the latest)
-does not have the logic to read beyond the first node of the 
-file.
-basically the following func is called and it doesnt read beyond 
-the first inode !
---snip--
-putblock(char *b, size_t bsize, size_t * rsize,
- 			  struct jffs2_raw_inode *n)
-{
- 	uLongf dlen = n->dsize;
+On Sat, 2002-08-10 at 12:33, Thomas Gleixner wrote:
+> More comments later today.
+Hi Steven,
 
-if (*rsize < n->isize)
- 		bzero(b + *rsize, n->isize - *rsize);
+back again. I tried several possibilities to deal with all aspects. I
+picked up most of your ideas and worked them into the existing code. My
+final conclusion is as follows: 
 
- 	switch (n->compr) {
- 	case JFFS2_COMPR_ZLIB:
- 		uncompress((Bytef *) b + n->offset, &dlen,
- 				   (Bytef *) ((char *) n) + sizeof(struct jffs2_raw_inode),
- 				   (uLongf) n->csize);
- 		break;
+struct nand_chip got following extensions:
 
- 	case JFFS2_COMPR_NONE:
- 		memcpy(b + n->offset,
- 			   ((char *) n) + sizeof(struct jffs2_raw_inode), dlen);
- 		break;
+calculate_ecc - function for ecc calculation or readback from ecc
+hardware, defaults to nand_calculate_ecc for software ecc
+correct_data - function for ecc correction, matching to ecc generator
+(sw/hw), defaults to nand_correct_data for software ecc
+enable_hwecc - function to enable (reset) hardware ecc generator
+eccmod - mode of ecc: see constants
+eccsize - databytes used per ecc-calculation, set by nand.c depending on
+eccmod value
 
- 	case JFFS2_COMPR_ZERO:
- 		bzero(b + n->offset, dlen);
- 		break;
+following eccmodes are defined at the moment
 
- 		/* [DYN]RUBIN support required! */
+#define NAND_ECC_NONE		0 
+is forced, if CONFIG_MTD_NAND_ECC is not set
+#define NAND_ECC_SOFT		1 
+is forced, if CONFIG_MTD_NAND_ECC is set and no hardware ecc is selected
+#define NAND_ECC_HW3_256	2 
+user selectable, if your ecc hardware supports 3 byte ecc for 256 byte
+of data (DOC or passive SmartMedia adaptors)
+#define NAND_ECC_HW3_512	3
+user selectable, if your ecc hardware supports 3 byte ecc for 512 byte
+of data (Samsung S3C2410)
 
- 	default:
- 		fprintf(stderr, "Unsupported compression method!\n");
- 		exit(EXIT_FAILURE);
- 	}
+If you select hardware ecc in your driver, you have to take care, that
+calculate_ecc, correct_data and enable_hwecc are filled with the
+relevant function pointers and eccmod is set to the appropriate type,
+before you call nand_scan.
 
- 	*rsize = n->isize;
-}
+I'm still not willing to write already written data to the device for a
+second time. So I decided to skip hardware ecc for that case. If you use
+a NAND aware filesystem e.g. JFFS2 this should not happen, otherwise you
+will get in trouble anyway. 
 
+The funtion, which does correct_data calculations for the specfic
+hardware ecc should be implemented as a general function in nand_ecc.c
+to make it usable for similar hardware drivers and to avoid duplicated
+code in these drivers.
 
+Please remove the ECC reset out of your command function and move it to
+a seperate function, which will be called by enable_hwecc.
 
-How to get the compelete file from the partition? any ideas or is 
-there any other code.
+Get code from CVS and enjoy. Thanks for your suggestions. The standard
+software ecc mode runs on my machine without complains. I tested HW3_256
+mode with software ecc routines and a dummy enable_hwecc and found no
+problems. Any suggestions and improvements are welcome. 
+Happy testing.
 
-i looked at the actual JFFS2 kernel code , it uses pretty huge 
-inode caches which is initted  during sys_mount...but i cant 
-afford to put the MTD & FS code in my tiny bootloader!
-
-TIA
-sriram
-__________________________________________________________
-Give your Company an email address like
-ravi @ ravi-exports.com.  Sign up for Rediffmail Pro today!
-Know more. http://www.rediffmailpro.com/signup/
+-- 
+Thomas 
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
