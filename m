@@ -1,22 +1,22 @@
 Received: from [213.86.99.234] (helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19htrL-0002uD-Cq
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Jul 2003 17:31:27 +0100
+	id 19hu6v-00033C-RC
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Jul 2003 17:47:33 +0100
 Received: from hermes.fachschaften.tu-muenchen.de ([129.187.202.12])
 	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 19htrI-0006sl-00
-	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2003 17:31:24 +0100
-Date: Wed, 30 Jul 2003 18:31:00 +0200
+	id 19hu6s-000090-00
+	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2003 17:47:30 +0100
+Date: Wed, 30 Jul 2003 18:47:24 +0200
 From: Adrian Bunk <bunk@fs.tum.de>
 To: dwmw2@redhat.com
-Message-ID: <20030730163100.GC19356@fs.tum.de>
+Message-ID: <20030730164724.GA21734@fs.tum.de>
 Mime-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
 cc: linux-kernel@vger.kernel.org
 cc: trivial@rustcorp.com.au
-Subject: [patch]
+Subject: [patch] mtd/ftl.c: remove always false comparison
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,6 +25,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+[resent with a subject]
 
 gcc 3.3 correctly gives the following warning:
 
