@@ -1,8 +1,8 @@
-Date: Wed, 17 Nov 2004 09:04:07 +0000 (GMT)
+Date: Wed, 17 Nov 2004 09:07:29 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: Konstantin Kletschke <lists@ku-gbr.de>
 In-Reply-To: <20041117085555.GA22829@synertronixx3>
-Message-ID: <Pine.LNX.4.58.0411170903090.5169@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0411170906040.5169@phoenix.infradead.org>
 References: <20041117085555.GA22829@synertronixx3>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -18,9 +18,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-What type of Flash do you use (NOR, NAND etc)?
-
 On Wed, 17 Nov 2004, Konstantin Kletschke wrote:
 
 > Regarding my aforementioned Oops I put device table and resulting
@@ -30,6 +27,9 @@ On Wed, 17 Nov 2004, Konstantin Kletschke wrote:
 > http://www.ludenkalle.de/arm/root_scb9328
 > 
 > If that is not helpful, how can I start debugging this?
+I don't know what version of MTD is in you kernel, I would advice you to 
+try the lastest MTD snapshot first.
+
 > 
 > Konsti
 > 
