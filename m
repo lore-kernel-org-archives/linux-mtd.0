@@ -1,18 +1,19 @@
-Received: from florence.buici.com ([206.124.142.26] ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18AwZx-0007TP-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 18:13:01 +0000
-Date: Sun, 10 Nov 2002 10:43:21 -0800
-From: Marc Singer <elf@buici.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: crc32() optimization
-Message-ID: <20021110184321.GB16087@buici.com>
-References: <F122OgRGkQ6mBySsxVY00000854@hotmail.com> <24987.1036797874@passion.cambridge.redhat.com> <002301c288cd$c11a6180$0200a8c0@telia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <002301c288cd$c11a6180$0200a8c0@telia.com>
+Received: from mailout03.sul.t-online.com ([194.25.134.81])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18AxF9-0007YQ-00
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2002 18:55:35 +0000
+To: Marc Singer <elf@buici.com>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>,
+	linux-mtd@lists.infradead.org
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: crc32() optimization 
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Sun, 10 Nov 2002 10:43:21 PST."
+             <20021110184321.GB16087@buici.com>
+Date: Sun, 10 Nov 2002 20:25:38 +0100
+Message-Id: <20021110192544.0A34D10162@denx.denx.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,60 +25,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-As it should.  I wonder if you'd do better changing the loop slightly.
+In message <20021110184321.GB16087@buici.com> you wrote:
+> As it should.  I wonder if you'd do better changing the loop slightly.
+> 
+> Check for len == 0 and do a short-circuit return.  Then do this
+> 
+>   for (++len; len & 0x7; len >>= 3) {
+>      ONCE(); // repeat eight times
+>      ...
+>      len >>= 3;
+>   }
+>   while (--len > 0)
+>      ONCE();
+> 
+> This is the implementation I've written for another project which
 
-Check for len == 0 and do a short-circuit return.  Then do this
+Seems broken to me, since you "len >>= 3" twice.
 
-  for (++len; len & 0x7; len >>= 3) {
-     ONCE(); // repeat eight times
-     ...
-     len >>= 3;
-  }
-  while (--len > 0)
-     ONCE();
+Also, Duff's Device comes to mind.
 
-This is the implementation I've written for another project which
-we've found to be relatively optimal.  Note that len *must* be an int
-even though contemporary convention is to use the size_t type.
+Best regards,
 
+Wolfgang Denk
 
-On Sun, Nov 10, 2002 at 04:28:00PM +0100, Joakim Tjernlund wrote:
-> Hi David
-> 
-> This patch improves my scan time with 22%( from 2.39 to 1.86 seconds).
-> Maybe you want to include it in the 2.4 branch.
-> 
-> I will put this in my next backport of the crc32 stuff from 2.5.
-> 
->           Jocke
-> 
-> Index: fs/jffs2/crc32.h
-> ===================================================================
-> RCS file: /home/cvs/mtd/fs/jffs2/crc32.h,v
-> retrieving revision 1.3
-> diff -u -b -r1.3 crc32.h
-> --- fs/jffs2/crc32.h    26 Feb 2001 14:44:37 -0000      1.3
-> +++ fs/jffs2/crc32.h    10 Nov 2002 15:25:11 -0000
-> @@ -13,7 +13,16 @@
->  crc32(__u32 val, const void *ss, int len)
->  {
->         const unsigned char *s = ss;
-> -        while (--len >= 0)
-> +        while (len >= 6){
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
-> +         len -= 6;
-> +        }
-> +        while (len--)
->                  val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
->          return val;
->  }
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
+See us @ electronica 2002 in Munich, Nov 12-15, Hall A3, Booth A3.325 
