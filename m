@@ -1,46 +1,45 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZUz3-0006CF-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 09:34:49 +0100
-Received: from tammy.cendio.se
-	([193.180.23.67] helo=tammy.signum.se ident=root)
+	id 12ZVZ0-0006Ge-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 10:11:58 +0100
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZUz1-0006C9-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 09:34:48 +0100
-Date: Mon, 27 Mar 2000 10:35:49 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
+	id 12ZVYz-0006GY-00
+	for mtd@infradead.org; Mon, 27 Mar 2000 10:11:57 +0100
+From: David Woodhouse <dwmw2@infradead.org>
 To: mtd@infradead.org
-cc: Bjorn Wesen <bjorn.wesen@axis.com>, SeokKuon Kwon <kwonsk@mutech.co.kr>,
-        Scott Anderson <sanders@mvista.com>
-Subject: Re: Axis log based flash filesystem ported to 2.3 and MTD 
-In-Reply-To: <5747.954145418@devel2.axiom.internal>
-Message-ID: <Pine.LNX.4.10.10003271032020.3368-100000@tammy.signum.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: trevw@zentropix.com
+Subject: New release of MTD code pending.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 27 Mar 2000 10:12:49 +0100
+Message-ID: <6013.954148369@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Mon, 27 Mar 2000, David Woodhouse wrote:
 
-> Forgive me for reposting private mails to the list, but it seems that some 
-> introductions are in order....
-> 
-> alex@cendio.se said (re Axis' JFFS):
-> >  This filesystem is really needed since the ftl layer has patent
-> > problem and this one seems totally free. 
-> 
-> sanders@mvista.com said:
-> >  From what little I understand about the M-systems' patent, it
-> > basically patented the idea of using an array to do the translation
-> > and I would guess that Axis' work would violate that.
+I'm intending to make a new release some time this week.
 
-While i haven't read the M-systems patent I think the Axis fs doesn't
-violate it, because it uses no translation array. It is a fully
-log-structured filesystem directly on the flash memory, and not a flash to
-block device translator.
+I'd like to ship a tarball which holds drivers/mtd, along with two patches 
+which add that directory to the kernel infrastructure.
 
-/ Alex
+I can't run 2.2 easily on my current testbed, so I would appreciate it if 
+someone could give me a patch which adds _only_ the Makefile, arch/*/config.in 
+and init code to the 2.2 kernel.
 
+I'm going to update the FTL code so it compiles with 2.3 kernels - probably by 
+taking David Hinds' latest version from the PCMCIA code and porting it to MTD 
+again, so I get the last 3 years' worth of bug fixes while I'm at it.
+
+The mtdblock driver needs fixing too - volunteers?
+
+We're now in the interesting position of having two flash filesystems present 
+in the tree - one of which (FFS2) compiles only on 2.2 kernels, and the other 
+of which (JFFS) only compiles on 2.3. It'd be nice to fix that at some point.
+
+
+--
+dwmw2
 
 
 
