@@ -1,18 +1,17 @@
-Received: from bs1.dnx.de ([213.252.143.130] ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1755Gt-0004a4-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 14:44:51 +0100
-Date: Tue, 7 May 2002 15:00:57 +0200
-From: Robert Schwebel <robert@schwebel.de>
-To: Ludvik Kumin <ludvik.kumin@hermes.si>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: 2.4.18-howto?
-Message-ID: <20020507150057.R16630@schwebel.de>
-References: <81D0D3538E3CD411AE3C00D0B7474C31C8EE37@jadran.hermes.si>
+	id 1756UL-0004fQ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 May 2002 16:02:49 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020506151930.A15109@kosh.hut.fi> 
+References: <20020506151930.A15109@kosh.hut.fi>  <20020503201900.A32761@kosh.hut.fi> <20020502155602.A8801@kosh.hut.fi> <13211.1020346858@redhat.com> <20020503201900.A32761@kosh.hut.fi> <28528.1020448474@redhat.com> 
+To: Jarkko Lavinen <jlavi@iki.fi>
+Cc: MTD List <linux-mtd@lists.infradead.org>, jffs-dev@axis.com
+Subject: Re: Benchmarking JFFS2 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81D0D3538E3CD411AE3C00D0B7474C31C8EE37@jadran.hermes.si>; from ludvik.kumin@hermes.si on Tue, May 07, 2002 at 01:31:52PM +0200
+Date: Tue, 07 May 2002 16:02:06 +0100
+Message-ID: <25024.1020783726@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,23 +23,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Ludvik, 
+jlavi@iki.fi said:
+>  I have caught the message 8 times. It doesn't occur rather seldom
+> when I have been benchmarking JFFS2 over the weekend.
 
-On Tue, May 07, 2002 at 01:31:52PM +0200, Ludvik Kumin wrote:
-> I work with 2.4.18, but I don't use the latest SW from CVS (I use the
-> original code from the kernel and it works OK - at least the part I need).
+> On five cases the first line was "Unknown INCOMPAT nodetype C002 at
+> 0020293C" (address varies). 
 
-I need the ADNP concaternation layer stuff...
+Er, this means it's marked as obsolete on the flash but not in memory. I 
+have a vague recollection of having seen this and worked out the cause. 
+Is this with the latest code from the jffs2-2_4-branch of CVS? Does it also 
+happen with the trunk code?
 
-> About the HOWTO: do you have "jffs-mtd-HOWTO.txt"?
+>  Do you mean kernel profiling? I am using JFFS2 on an Arm based device
+> and  kernel profiling is not available for Arm or is it?
 
-Yes, but it is nearly one year old. 
+Yes. Kernel profiling should work fine on ARM. 
 
-Robert
--- 
- +--------------------------------------------------------+
- | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
- | Pengutronix - Linux Solutions for Science and Industry |
- |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
- |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
- +--------------------------------------------------------+
+--
+dwmw2
