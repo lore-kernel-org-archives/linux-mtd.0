@@ -1,27 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12uO3f-0005ji-00
-	for mtd-list@infradead.org; Wed, 24 May 2000 00:25:55 +0100
-Received: from phiggins by infradead.org with local (Exim 3.03 #1)
-	id 12uO3e-0005jc-00
-	for cvs-notify@infradead.org; Wed, 24 May 2000 00:25:54 +0100
+	id 12uaz0-0007FM-00
+	for mtd-list@infradead.org; Wed, 24 May 2000 14:13:58 +0100
+Received: from alex by infradead.org with local (Exim 3.03 #1)
+	id 12uayz-0007FG-00
+	for cvs-notify@infradead.org; Wed, 24 May 2000 14:13:57 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel doc2000.c doc2001.c'
-Message-Id: <E12uO3e-0005jc-00@infradead.org>
-From: phiggins@infradead.org
-Date: Wed, 24 May 2000 00:25:54 +0100
+Subject: MTD CVS update: 'mtd/fs/jffs intrep.c intrep.h jffs_fm.c jffs_fm.h'
+Message-Id: <E12uayz-0007FG-00@infradead.org>
+From: Alexander Larsson <alex@infradead.org>
+Date: Wed, 24 May 2000 14:13:57 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv22044
+Update of /home/cvs/mtd/fs/jffs
+In directory infradead.org:/tmp/cvs-serv27828
 
 Modified Files:
-	doc2000.c doc2001.c 
+	intrep.c intrep.h jffs_fm.c jffs_fm.h 
 Log Message:
-Fixed the NULL dereference in the Millenium code.
-Also added more thorough checking for aliased disk on chips (a single chip
-which appears at multiple addresses).
+Patch from finn håkansson (finn@axis.se).
+Changelog:
+
+        * intrep.c (jffs_rewrite_data): Added a missing free_page().
+        (jffs_garbage_collect_next): Modified the computations of
+        the amount of data to rewrite. Correctly check if `dirty_fm'
+        was allocated.
+        (jffs_try_to_erase): Better handle the return value from
+        the call to jffs_clear_end_of_node.
+        Added and changed some printouts.
+        Modified the TODO list and the header.
+        * intrep.h: Modified the header.
+        * jffs_fm.h: Likewise.
+        * jffs_fm.c: Likewise.
+
 
 
 
