@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from enigma.barak.net.il ([212.150.48.99])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16iv2M-0004x0-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 10:22:14 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C87599B.410CDBA0@selta.it> 
-References: <3C87599B.410CDBA0@selta.it> 
-To: stefania magistrali <s.magistrali@selta.it>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip booting for PPC 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Mar 2002 10:33:32 +0000
-Message-ID: <14934.1015497212@redhat.com>
+	id 16ixqr-0005BT-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 13:22:34 +0000
+Message-ID: <002701c1c5dc$c9ba47b0$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "Linux-mtd List" <linux-mtd@lists.infradead.org>
+Cc: "Linux-Arm List" <linux-arm@lists.arm.linux.org.uk>,
+	"JFFS dev list" <jffs-dev@axis.com>
+Subject: dump for jffs2
+Date: Thu, 7 Mar 2002 15:34:20 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +25,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-s.magistrali@selta.it said:
-> I know the MTD driver doesn't support DiskOnChip Millenium Plus now,
-> but is it possible it will support it in a short time?
+is there any dump utility for jffs2 file system ?
+(like e2fsdump, rdump, dump utils)
 
-Booting PPC from a DiskOnChip Millennium ought to be doable. However we 
-have no information about the Millennium Plus, and hence no chance of 
-writing drivers for it. Avoid the Millennium Plus at all costs, if you 
-intend to use Linux.
+why i need it ? cause i used rsync and it RUINED my links !
+every link to /bin/something has become to bin/somehting !!
+(and i tried every option ijn this damn program to solve this, but nada...)
 
-Did anyone test the patches for UnitSizeFactor != 1 yet?
-
---
-dwmw2
+Gad
