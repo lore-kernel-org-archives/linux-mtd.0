@@ -1,18 +1,18 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
+Received: from port103.vestas.dk ([195.41.59.103]
+	helo=rkbexch02.vws.vestas.dom)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ARJLV-0006hN-Sd
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Dec 2003 22:50:18 +0000
-Date: Tue, 2 Dec 2003 16:54:23 -0500 (EST)
-From: joshua@dashnine.joshuawise.com
-To: Rick Bronson <rick@efn.org>
-In-Reply-To: <E1ARHGG-00018H-00@c-67-164-61-95.client.comcast.net>
-Message-ID: <Pine.LNX.4.44.0312021653280.30871-100000@dashnine.joshuawise.com>
+	id 1ARTjf-0007bv-NX
+	for <linux-mtd@lists.infradead.org>; Wed, 03 Dec 2003 09:55:55 +0000
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: manningc2@actrix.gen.nz
-cc: linux-mtd@lists.infradead.org
-Subject: Re: nand_write_ecc() broken?
+Date: Wed, 3 Dec 2003 10:53:48 +0100
+Message-ID: <72F54639F41FD643A2349136F3E33DAD2C3BE5@rkbexch02.vws.vestas.dom>
+From: "Esben Nielsen" <ESN@vestas.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: M-System's DiskOnChip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->   If bad block managemnet is not really an mtd responsibility then why
-> does nand_erase() inside mtd/nand/nand.c call
-> this->block_bad(mtd, page) which checks for bad blocks?
-It is in the specification for most chips that you must not erase bad
-blocks, as you'll wipe out the bad block data and generally cause Bad
-Stuff to happen.
+Hey,
+ My company is designing a new piece of hardware based on a PPC. We are =
+looking at M-Systems for storage. So how good is the Linux support for =
+DiskOnChip?
 
->   Rick Bronson
-/joshua
+Our options are:
+
+1) They provide a TFFS-driver but there huge problems with license (it =
+isn't GPL). The only way to use it is to use it as a loadable module. =
+This is technically complicated as the root file system has to be on the =
+DiskOnChip, so I need some kind of trick to load the module from a =
+ramdisk or something before that.=20
+But as far as I can see it we will still be destributing the driver =
+along with the kernel, not linked, but residing on the same bootrom. =
+Chouldn't that be considered as a derivative work as a whole and thus =
+breaking the GPL?
+
+2) We can skip M-system's TFFS and jump to JFFS2. But how stable is that =
+on DiskOnChip? As far as I could see from the website there are still =
+problems with bad blocks support. How does that affect the stability? =
+What is your experience?
+Is it stable enough for production use?
+
+Esben Nielsen
+=20
