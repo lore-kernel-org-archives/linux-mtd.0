@@ -1,19 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from carisma.slowglass.com ([195.224.96.167]
+	helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197u9n-0006Cz-A8
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 10:33:43 +0100
-Date: Tue, 22 Apr 2003 11:33:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: leeyang <leeyang@ycig.com>
-Message-ID: <20030422093342.GA20257@wohnheim.fh-wedel.de>
-References: <001301c30745$438c1e60$0365a8c0@leeyang>
+	id 1982Tc-0007O5-DC
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 19:26:44 +0100
+Received: from covert.brown-ring.iadfw.net ([209.196.123.142])
+	by phoenix.infradead.org with esmtp (Exim 4.10)
+	id 1982Tj-00028Z-00
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2003 19:26:52 +0100
+Date: Tue, 22 Apr 2003 10:56:53 -0500
+From: Art Haas <ahaas@airmail.net>
+To: linux-kernel@vger.kernel.org, Simon Evans <spse@secret.org.uk>,
+	Abraham vd Merwe <abraham@2d3d.co.za>, linux-mtd@lists.infradead.org
+Message-ID: <20030422155653.GB7260@debian>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <001301c30745$438c1e60$0365a8c0@leeyang>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: mmap on jffs2
+Content-Type: text/plain; charset=us-ascii
+cc: Linus Torvalds <torvalds@transmeta.com>
+Subject: [PATCH] C99 initializers for drivers/mtd/devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +26,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 20 April 2003 22:00:51 +0800, leeyang wrote:
-> 
-> I am using jffs2 on a ppc860 system(amd29lv160).
-> Things seems ok,but when I am trying mmap.
-> 
-> I want to mmap a file in flash,so i can treat
-> the file like some records.
-> 
-> I mean operation like
->  fd = open("/usr/dat/sot.dat",O_RDWR,FILEMODE);
->  
->  ptr1=mmap(NULL,filesize,PROT_READ|PROT_WRITE,
->    MAP_SHARED,fd,0);
-> 
-> fd returns 3 and it is ok,however ptr1 returns -1.
-> I checked the errno it said invalid argument.
-> 
-> I have to say arguments "filesize" above is not
-> aligment to any requirements,just the real file
-> size?Does it matter?
-> 
-> The same procedure can done on common ext2
-> so i wonder jffs2 implement all the features like
-> ext2?
+Hi.
 
-AFAIK (someone please correct me) jffs2 does not support mmap. I don't
-remember any technical reason, so it seems as if noone cared enough to
-implement it.
+Here are two trivial patches adding C99 initializers to the files. The
+patches are against the current BK.
 
-You can do the work yourself, pay someone to do it or wait and hope
-that someone else does it. As always.
+Art Haas
 
-Jörn
-
+===== drivers/mtd/devices/blkmtd.c 1.29 vs edited =====
+--- 1.29/drivers/mtd/devices/blkmtd.c	Sun Mar 23 00:14:13 2003
++++ edited/drivers/mtd/devices/blkmtd.c	Mon Mar 24 11:44:57 2003
+@@ -287,12 +287,9 @@
+   return 0;
+ }
+ 
+-                    
+ static struct address_space_operations blkmtd_aops = {
+-  writepage:     blkmtd_writepage,
+-  readpage:      NULL,
++	.writepage	= blkmtd_writepage,
+ }; 
+-
+ 
+ /* This is the kernel thread that empties the write queue to disk */
+ static int write_queue_task(void *data)
+===== drivers/mtd/devices/lart.c 1.1 vs edited =====
+--- 1.1/drivers/mtd/devices/lart.c	Tue Feb  5 14:20:55 2002
++++ edited/drivers/mtd/devices/lart.c	Mon Mar  3 12:21:44 2003
+@@ -584,46 +584,41 @@
+ 
+ static struct mtd_info mtd;
+ 
+-static struct mtd_erase_region_info erase_regions[] =
+-{
+-   /* parameter blocks */
+-   {
+-	     offset: 0x00000000,
+-	  erasesize: FLASH_BLOCKSIZE_PARAM,
+-	  numblocks: FLASH_NUMBLOCKS_16m_PARAM
+-   },
+-   /* main blocks */
+-   {
+-	     offset: FLASH_BLOCKSIZE_PARAM * FLASH_NUMBLOCKS_16m_PARAM,
+-	  erasesize: FLASH_BLOCKSIZE_MAIN,
+-	  numblocks: FLASH_NUMBLOCKS_16m_MAIN
+-   }
++static struct mtd_erase_region_info erase_regions[] = {
++	/* parameter blocks */
++	{
++		.offset		= 0x00000000,
++		.erasesize	= FLASH_BLOCKSIZE_PARAM,
++		.numblocks	= FLASH_NUMBLOCKS_16m_PARAM,
++	},
++	/* main blocks */
++	{
++		.offset	 = FLASH_BLOCKSIZE_PARAM * FLASH_NUMBLOCKS_16m_PARAM,
++		.erasesize	= FLASH_BLOCKSIZE_MAIN,
++		.numblocks	= FLASH_NUMBLOCKS_16m_MAIN,
++	}
+ };
+ 
+ #ifdef HAVE_PARTITIONS
+-static struct mtd_partition lart_partitions[] =
+-{
+-   /* blob */
+-   {
+-	       name: "blob",
+-	     offset: BLOB_START,
+-	       size: BLOB_LEN,
+-	 mask_flags: 0
+-   },
+-   /* kernel */
+-   {
+-	       name: "kernel",
+-	     offset: KERNEL_START,			/* MTDPART_OFS_APPEND */
+-	       size: KERNEL_LEN,
+-	 mask_flags: 0
+-   },
+-   /* initial ramdisk / file system */
+-   {
+-	       name: "file system",
+-	     offset: INITRD_START,			/* MTDPART_OFS_APPEND */
+-	       size: INITRD_LEN,			/* MTDPART_SIZ_FULL */
+-	 mask_flags: 0
+-   }
++static struct mtd_partition lart_partitions[] = {
++	/* blob */
++	{
++		.name	= "blob",
++		.offset	= BLOB_START,
++		.size	= BLOB_LEN,
++	},
++	/* kernel */
++	{
++		.name	= "kernel",
++		.offset	= KERNEL_START,		/* MTDPART_OFS_APPEND */
++		.size	= KERNEL_LEN,
++	},
++	/* initial ramdisk / file system */
++	{
++		.name	= "file system",
++		.offset	= INITRD_START,		/* MTDPART_OFS_APPEND */
++		.size	= INITRD_LEN,		/* MTDPART_SIZ_FULL */
++	}
+ };
+ #endif
+ 
 -- 
-It's just what we asked for, but not what we want!
--- anonymous
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+ -- Theodore Roosevelt, Kansas City Star, 1918
