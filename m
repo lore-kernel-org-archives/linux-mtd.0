@@ -1,16 +1,17 @@
-Received: from tomts14-srv.bellnexxia.net ([209.226.175.35])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16eIrs-0006Cw-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 16:48:20 +0000
-Date: Fri, 22 Feb 2002 11:59:29 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Mark Meade <mark@lakeshoremicro.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-In-Reply-To: <002601c1bbbc$6a8c4d30$0101a8c0@dellc800>
-Message-ID: <Pine.LNX.4.44.0202221157280.8089-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16eIz7-0006EB-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 16:55:49 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.21.0202221726010.8843-100000@dagobert.svc.sysgo.de> 
+References: <Pine.LNX.4.21.0202221726010.8843-100000@dagobert.svc.sysgo.de> 
+To: Robert Kaiser <rob@sysgo.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Re-entrancy of flash erase/write 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 22 Feb 2002 17:06:52 +0000
+Message-ID: <23802.1014397612@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,17 +23,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 22 Feb 2002, Mark Meade wrote:
+rob@sysgo.de said:
+>  Am I right in assuming that it is not possible to erase and/or write
+> different blocks of the same flash chip concurrently ?
 
-> I can't seem to find an updated doc_loadbios.  Where should I look?
+No - on some chips you can. Not most though.
 
-The source code for doc_loadbios is in the util/ directory of the Linux
-MTD CVS repository.
+> If so, where is the lock in the MTD code that would prevent concurrent
+> execution of erase/write on the same chip by multiple processes ? 
 
-> The "aclocal && automake && autoconf" caused some errors; the errors I
-> had were identical to those posted by Herman Theron in the "Error using
-> GRUB patch" thread.
+In the chip drivers themselves. Grep for TASK_UNINTERRUPTIBLE in 
+cfi_cmdset_0001.c, for example.
 
-Mind upgrading autoconf and automake?
 
-Ilguiz
+--
+dwmw2
