@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from tomts23.bellnexxia.net ([209.226.175.185] helo=tomts23-srv.bellnexxia.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 175wfK-0008CA-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 May 2002 23:45:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <003501c1f7a8$de322840$9702a8c0@maverick> 
-References: <003501c1f7a8$de322840$9702a8c0@maverick> 
-To: "Darren Martz" <dmartz@shelbrook.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Boot from DoC2000 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 09 May 2002 23:45:37 +0100
-Message-ID: <23452.1020984337@redhat.com>
+	id 175wh8-0008CW-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 May 2002 23:47:30 +0100
+Date: Thu, 9 May 2002 18:47:27 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Darren Martz <dmartz@shelbrook.com>
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: RE: Boot from DoC2000 
+In-Reply-To: <003501c1f7a8$de322840$9702a8c0@maverick>
+Message-ID: <Pine.LNX.4.44.0205091840570.21136-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +22,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-dmartz@shelbrook.com said:
->  My PC/104 board has an older/patched version of lilo and linux on it,
-> how do I replace the current lilo firmware? I have already formatted
-> the device from a floppy boot (may that wasn't so smart). Can I
-> install grub over top of the existing lilo by bootdisk, or do I need
-> to uninstall lilo first? 
+Darren,
 
-Grub (or the original firmware) live in the raw flash, before the actual NFL
-format starts. Grub is bigger than the original firmware, so when you 
-install Grub, you have to recreate the NFTL format. It's best to do this 
-with the M-Systems DFORMAT program under DOS, but it's also possible to use 
-the Linux nftl_format program which doesn't deal with bad blocks properly.
+On Thu, 9 May 2002, Darren Martz wrote:
 
-You can tell the DFORMAT program how much space to reserve for the 
-firmware, I believe. 
+> Is there a document that covers most/part of this? I am assuming the
+> 0.92 build has DoC support.
 
-You need to apply the DiskOnChip patches to Grub, if they're not already 
-merged. 
+There is a patch to GRUB enabling DoC read support.  The latest one is
 
---
-dwmw2
+       patches/grub-2002-02-19-doc.patch
+
+in MTD CVS repository.  One has to apply it with the following command:
+
+        cd ~/grub
+        patch -p0 -i ~/infradead.org/mtd/patches/grub-2002-02-19-doc.patch
+
+You can experience inconsistencies between the patch and the latest GRUB 
+Changelog.
+
+Once you patched the GRUB source code, take a look at README_DiskOnChip 
+for further configuration commands.  You may be required to update 
+autoconf and automake.
+
+Ilguiz
