@@ -1,14 +1,22 @@
-Received: from web13905.mail.yahoo.com ([216.136.175.68])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19BfqE-0002Hv-6J
-	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 20:05:06 +0100
-Message-ID: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
-Date: Fri, 2 May 2003 12:05:16 -0700 (PDT)
-From: Michael Moedt <xemc@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Building MTD utils w/ arm-linux- cross
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19BgEr-0002UQ-NW
+	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 20:30:33 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+	21 2002)) with SMTP id <0HE900447Y6G4B@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Fri, 02 May 2003 21:30:17 +0200 (MEST)
+Date: Fri, 02 May 2003 22:29:58 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
+To: Michael Moedt <xemc@yahoo.com>, linux-mtd@lists.infradead.org
+Message-id: <200305022229.58700.tglx@linutronix.de>
+MIME-version: 1.0
+Content-disposition: inline
+References: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: Re: Building MTD utils w/ arm-linux- cross
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,45 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+On Friday 02 May 2003 21:05, Michael Moedt wrote:
+> Hi.
 
-I ran into a little bit of trouble compiling the MTD
-utilities for an ARM-based system.  I'm using
-2.4.19-rmk7 for an EP7312.  I executed the
-'patchin.sh' to this kernel directory, and copied the
-'util' directory over.  It compiles fine for the host
-system (x86), but when I uncommented the
-"CROSS=arm-linux-", it didn't compile correctly.
+eraseall does not need zlib. fixed in CVS
 
-Anyways, the trouble was in the form of:
+> Well, I installed zlib-1.1.4 into
+> /usr/local/arm/2.95.3 , but I needed to add -I and -L
+> flags to the Makefile in order for it to find it.  It
+> seems to work, but I didn't find this anywhere when I
+> searched the mailing list.  Is this the standard
+> procedure, or am I doing something wrong?
 
------
-arm-linux-gcc -I../include -O2 -Wall
--Wstrict-prototypes -Wshadow   -c -o eraseall.o
-eraseall.c
-eraseall.c:40: zlib.h: No such file or directory
-make: *** [eraseall.o] Error 1
-mmoedt@reptar:~/gonzo/linux-2.4.19-rmk7/util$
------
+header in /usr/local/arm/2.95.3/arm-linux/include
+lib in /usr/local/arm/2.95.3/arm-linux/lib
 
-Well, I installed zlib-1.1.4 into
-/usr/local/arm/2.95.3 , but I needed to add -I and -L
-flags to the Makefile in order for it to find it.  It
-seems to work, but I didn't find this anywhere when I
-searched the mailing list.  Is this the standard
-procedure, or am I doing something wrong?
+Then you don't need -L.
 
-Anyways, I also wanted to let someone with CVS access
-know that there's a typo in the Makefile.  In
-eraseall's build rule, it uses $(LDLAGS) instead of
-$(LDFLAGS).  I guess no one needs to add the '-L'
-LDFLAG other than me?
-
-Mike
+> Anyways, I also wanted to let someone with CVS access
+> know that there's a typo in the Makefile.  In
+> eraseall's build rule, it uses $(LDLAGS) instead of
+> $(LDFLAGS).  I guess no one needs to add the '-L'
+> LDFLAG other than me?
+Fixed, thanks
 
 
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
