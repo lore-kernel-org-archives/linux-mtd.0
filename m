@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159jCu-0000QP-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 09:07:24 +0100
+	id 159jHG-0000Qo-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 09:11:54 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <992279958.89789.mpc@mail2000.com.tw> 
-References: <992279958.89789.mpc@mail2000.com.tw> 
-To: mpc@mail2000.com.tw
-Cc: "" <linux-mtd@lists.infradead.org>
-Subject: Re: =?big5?B?UGF0Y2ggdG8gc3VwcG9ydCBUUU04eHhMIGJvYXJk?= 
+In-Reply-To: <3B24EC1B.7F920021@inventel.fr> 
+References: <3B24EC1B.7F920021@inventel.fr>  <991934470.27485.0.camel@timmy> <20010607114319.A23641@crystal.2d3d.co.za> <20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com> <23825.991907052@redhat.com> <9968.991944081@redhat.com> 
+To: Xavier DEBREUIL <xde@inventel.fr>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: problem with zlib.o 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Jun 2001 09:12:38 +0100
-Message-ID: <2490.992333558@redhat.com>
+Date: Tue, 12 Jun 2001 09:14:08 +0100
+Message-ID: <2667.992333648@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,29 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+xde@inventel.fr said:
+>  what I did is removing from jffs2/Makefile zlib.o in COMPR_OBJS...
+> and linking is then ok...
 
-Looks good generally - thanks. A few requests though...
+> Is it a good work around ?
 
-mpc@mail2000.com.tw said:
-> +dep_tristate '  CFI Flash device mapped on TQM8xxL' CONFIG_MTD_TQM8xxL $CONFIG_MTD_CFI $CONFIG_TQM8xxL 
+JFFS2 uses exactly the same zlib.c as the one in drivers/net - so yes, if 
+you're compiling in the latter then you can omit the JFFS2 one. 
 
-It's normal to have config options in all capitals. I'd rather not break 
-that convention. Also, we require a Configure.help entry for this option.
+In 2.5 we need to sort out zlib properly so it can be shared sanely.
 
-> + * Do not forget also choose CFI_LITTLE_ENDIAN......
-
-Actually HOST_ENDIAN should also work, shouldn't it?
-
-> +#ifndef CONFIG_MTD_TQM8xxL
-> +#error This is for TQM8xxL platform only
-> +#endif
-
-Please omit this. It shouldn't be necessary.
-
-> +#ifdef CONFIG_TQM8xxL 
-
-The Config.in entry prevents us from compiling this file otherwise, so this 
-should also be superfluous.
 
 --
 dwmw2
