@@ -1,18 +1,18 @@
 Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AKvvW-0002Js-03
-	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 08:37:06 +0000
+	id 1AKw33-0002Rn-Km
+	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 08:44:54 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: Joshua Wise <joshua@joshuawise.com>
-In-Reply-To: <200311150109.39539.joshua@joshuawise.com>
-References: <200311150109.39539.joshua@joshuawise.com>
-Message-Id: <1068885330.29549.9.camel@imladris.demon.co.uk>
+To: Andre Sodermans <andreesje_werk@yahoo.com>
+In-Reply-To: <20031113231250.68456.qmail@web41509.mail.yahoo.com>
+References: <20031113231250.68456.qmail@web41509.mail.yahoo.com>
+Message-Id: <1068885798.29549.15.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Sat, 15 Nov 2003 08:35:30 +0000
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Date: Sat, 15 Nov 2003 08:43:19 +0000
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 cc: linux-mtd@lists.infradead.org
-Subject: Re: JEDEC probing redux
+Subject: Re: suggestion to extend life of ATA IDE flash drive
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-11-15 at 01:09 -0500, Joshua Wise wrote:
-> However, HP had to throw a twist in - they shifted the address lines over one. 
-> A1 on the CPU is connected to A0 on the flash chip, etcetera, so we have to 
-> left-shift the unlock addresses.
+On Thu, 2003-11-13 at 15:12 -0800, Andre Sodermans wrote:
+> I did read the note By David on the very bottom of the
+> mtd homepage about compactflash IDE drives, but I have
+> been hearing different stories about this - somebody
+> mentioned that there exists an mtd-emulation. Is this
+> really true?
 
-Surely this affects more than just the unlock addresses? Doesn't it mean
-that when reading, each 16-bit word of flash would appear _twice_?
+Yes, =E2=88=83 such an emulation. It's the 'blkmtd' device, which uses any =
+block
+device (not just CF) as backing store for a faked MTD device.
 
-What if you just add the appropriate shift to your map driver?
+You can use JFFS2 on that. It's not wonderfully efficient, since every
+time we write a node to JFFS2 we end up rewriting a whole 512-byte
+'sector' (or more). We should use the code we already _have_ for NAND
+flash, which batches writes to the medium (but handles fsync() etc.
+properly).
 
--- 
+Left as an exercise for the reader...
+
+
+--=20
 dwmw2
