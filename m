@@ -1,19 +1,18 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=dual166.onz.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cfCj-0003ln-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 05:47:21 +0100
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: "??" <kevin@gv.com.tw>,
-	<linux-mtd@lists.infradead.org>
-Subject: RE: will jffs2 write to device when doing "read-only" operation like "ls"?
-Date: Wed, 7 Aug 2002 21:46:49 -0700
-Message-ID: <NCBBIINEHIPFGJPLBEIFMEIDDKAA.acurtis@onz.com>
+Received: from msr12.hinet.net ([168.95.4.112] helo=msr.hinet.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17cfmD-0003tK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2002 06:24:01 +0100
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "'Thomas Gleixner'" <tglx@linutronix.de>
+Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: RE: NAND Configuration
+Date: Thu, 8 Aug 2002 13:23:38 +0800
+Message-ID: <001201c23e9b$c188b490$5501a8c0@synso.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <000d01c23e95$4c679060$1b0448c0@gv.com.tw>
+In-Reply-To: <1028717345.19447.249.camel@thomas.tec.linutronix.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,7 +24,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> will jffs2 write to device when doing "read-only" operation like "ls"?
+Thomas,
+The following are the content of the page writing error. All the tests
+have the similar data in the page and the area have the data already
+always start with 0x1985  and  there are empty data next to the area.
+Does it mean that the area was written before?
 
-To my knowledge NO. JFFS and JFFS2 work just fine with read-only devices so
-I assume that writing for no reason is not necessary.
+Steve TSai
+
+ 85  19  01  e0  2b  00  00  00  e6  6e  26  7d  02  00  00  00
+ 27  00  00  00  00  00  00  00  48  01  00  00  03  00  e3  01
+ 3f  18  e6  6c  5f  cb  19  04  61  72  70  ff  85  19  04  20
+<------ start with 85 19
+ d4  01  00  00  48  7b  39  1b  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
+ ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff  ff
