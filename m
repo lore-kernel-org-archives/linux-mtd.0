@@ -1,24 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CETju-0008RX-Lj
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 10:23:02 -0400
-Message-ID: <41615C97.9080800@yandex.ru>
-Date: Mon, 04 Oct 2004 18:22:15 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: Josh Boyer <jdub@us.ibm.com>
-References: <416122A1.4060302@oktetlabs.ru>	
-	<1096885344.30942.559.camel@hades.cambridge.redhat.com>	
-	<4161379C.3070109@oktetlabs.ru>	
-	<1096893405.22034.9.camel@weaponx.rchland.ibm.com>	
-	<41614F6B.6050802@yandex.ru>	
-	<1096897195.22034.23.camel@weaponx.rchland.ibm.com>	
-	<4161568D.3060605@oktetlabs.ru> <416158D4.4050903@yandex.ru>
-	<1096899449.22034.28.camel@weaponx.rchland.ibm.com>
-In-Reply-To: <1096899449.22034.28.camel@weaponx.rchland.ibm.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+In-Reply-To: <41615BA7.60801@yandex.ru>
+References: <416122A1.4060302@oktetlabs.ru>
+	<1096885344.30942.559.camel@hades.cambridge.redhat.com>
+	<416127B7.3070505@yandex.ru>
+	<1096893242.22034.5.camel@weaponx.rchland.ibm.com>
+	<41614B2F.8060901@yandex.ru>
+	<1096895892.30942.614.camel@hades.cambridge.redhat.com>
+	<41615BA7.60801@yandex.ru>
+Content-Type: text/plain
+Message-Id: <1096899817.30942.618.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Mon, 04 Oct 2004 15:23:37 +0100
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,19 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Ok, good point.  #ifdefs are evil :).  But maybe the functions to access
-> them could be commonly named with different implementations depending on
-> the config options.  I'm thinking along the lines of how the wbuf stuff
-> is handled for NOR in os-linux.h.
-> 
-> Or maybe that doesn't make sense.  I think I should just wait and see
-> what you come up with :).
-> 
+On Mon, 2004-10-04 at 18:18 +0400, Artem B. Bityuckiy wrote:
+>      jint32_t data_crc;  /* the CRC checksum of the checkpoint data */
+>      jint32_t node_crc;  /* the CRC checksum of the checkpoint object without data */
 
-Yes, I'm fully agree. I believe It would be rather easy to add NOR ICPs if
-the NAND ICPs were implemented :-)
+You probably don't need to separate these. You'll only ever want to read
+the _whole_ thing anyway, surely?
+
+Other than that it looks sane enough at first glance. It looks like it
+_will_ be useful enough for NOR flash too. I'd rather not have two
+implementations if this is good enough for both.
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+dwmw2
