@@ -1,19 +1,18 @@
-Received: from [66.220.10.164] (helo=mail.rinconhosting.com)
+Received: from kasumi.idis.co.kr ([203.238.93.2] ident=mail)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 194tOO-00036C-7o
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 03:08:20 +0100
-Received: from dirt ([66.68.146.73])
-        by mail.rinconhosting.com (Merak 5.5.7) with SMTP id HUB73912
-        for <linux-mtd@lists.infradead.org>; Sun, 13 Apr 2003 19:12:04 -0700
-Date: Sun, 13 Apr 2003 21:01:33 -0500
-From: Earl Manning <EManning@PRISMIQ.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20030413210133.64cc28b9.EManning@PRISMIQ.com>
-In-Reply-To: <002901c3021b$546a6fe0$525deecb@noshel>
+	id 194wHC-0003S1-CB
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 06:13:06 +0100
+Message-ID: <000501c30244$91a09dc0$525deecb@noshel>
+From: "Edward Lee \(???\)" <noshel@idis.co.kr>
+To: "Earl Manning" <EManning@PRISMIQ.com>
 References: <002901c3021b$546a6fe0$525deecb@noshel>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	<20030413210133.64cc28b9.EManning@PRISMIQ.com>
+Date: Mon, 14 Apr 2003 14:13:20 +0900
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: base64
+cc: linux-mtd@lists.infradead.org
 Subject: Re: A question on ECC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,53 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Edward,
-
-I am using a similar chip with JFFS2.  When you wrote the image, did you us=
-e the supplied utility 'nandwrite'?  If you did, did you invoke it with the=
- "--yaffs" option? =20
-
-I hope this helps,
-Earl Manning
-
-
-On Mon, 14 Apr 2003 09:18:09 +0900
-Edward Lee \(=C0=CC=C0=E5=BF=F8\) <noshel@idis.co.kr> wrote:
-
-> Hello. I'm Edward Lee in Korea.
->=20
-> I'm using samsung NAND flash, with YAFFS on it..
-> But I'm having problems with ECC.
-> I wrote a file that's needed to use the flash chip with my board,
-> and here's  a small part of code that defines the partitions.
->=20
-> static struct mtd_partition partition_info[] =3D {
->     { name: "a",
->       offset: 0,
->       size: 32 * 512 },
->     { name: "b",
->       offset: 16384,
->       size: 2 * 1024 * 1024 },
->     { name: "c",
->       offset: 2113536,
->       size: 2 * 1024 * 1024 },
->     { name: "d",
->       offset: 4210688,
->       size: 11 * 1024 * 1024 },
->     { name: "e",
->       offset: 15745024,=20
->       size: 1032192 }
-> };
-> #define NUM_PARTITIONS 5
->=20
->     I'm using YAFFS on partitions "d" and "e".
-> But I can't stop recieving annoying kernel messages saying
-> "Reading data from NAND FLASH without ECC is not recommended".
->=20
->      On YAFFS's side, I set the option CONFIG_YAFFS_USE_NANDECC,
-> which I believe that asks the mtd NAND to do the ECC.
-> So, I would like to ask if any other settings are necessary in order to e=
-nable ECC.
-> (Probably something should be added to the stuff above?)
->=20
-> Well, that's all, and thanks for the great work.
+SGkgRWFybCwgdGhhbmtzIGZvciB0aGUgaGVscC4NCg0KSSBkaWRuJ3QgdXNlIG5hbmR3cml0ZSwg
+SSB3cm90ZSBvbiB0aGUgY2hpcCB1c2luZyBwbGFpbiBzdHVmZiBsaWtlICdjcCcgb3IgJ3Rhcics
+IGV0Yy4NCihoYXZpbmcgYSBmaWxlIHN5c3RlbSBvbiBteSBkZXZpY2UsIEkgY291bGRuJ3QgZmlu
+ZCBhIHJlYXNvbiB0byB3cml0ZSBmaWxlcyB1c2luZyANCiBvdGhlciBwcm9ncmFtcykNCg0KDQoN
+Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQpGcm9tOiAiRWFybCBNYW5uaW5nIiA8RU1h
+bm5pbmdAUFJJU01JUS5jb20+DQpUbzogPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg0K
+U2VudDogTW9uZGF5LCBBcHJpbCAxNCwgMjAwMyAxMTowMSBBTQ0KU3ViamVjdDogUmU6IEEgcXVl
+c3Rpb24gb24gRUNDDQoNCg0KSGkgRWR3YXJkLA0KDQpJIGFtIHVzaW5nIGEgc2ltaWxhciBjaGlw
+IHdpdGggSkZGUzIuICBXaGVuIHlvdSB3cm90ZSB0aGUgaW1hZ2UsIGRpZCB5b3UgdXNlIHRoZSBz
+dXBwbGllZCB1dGlsaXR5ICduYW5kd3JpdGUnPyAgSWYgeW91IGRpZCwgZGlkIHlvdSBpbnZva2Ug
+aXQgd2l0aCB0aGUgIi0teWFmZnMiIG9wdGlvbj8gIA0KDQpJIGhvcGUgdGhpcyBoZWxwcywNCkVh
+cmwgTWFubmluZw0KDQoNCk9uIE1vbiwgMTQgQXByIDIwMDMgMDk6MTg6MDkgKzA5MDANCkVkd2Fy
+ZCBMZWUgXCjAzMDlv/hcKSA8bm9zaGVsQGlkaXMuY28ua3I+IHdyb3RlOg0KDQo+IEhlbGxvLiBJ
+J20gRWR3YXJkIExlZSBpbiBLb3JlYS4NCj4gDQo+IEknbSB1c2luZyBzYW1zdW5nIE5BTkQgZmxh
+c2gsIHdpdGggWUFGRlMgb24gaXQuLg0KPiBCdXQgSSdtIGhhdmluZyBwcm9ibGVtcyB3aXRoIEVD
+Qy4NCj4gSSB3cm90ZSBhIGZpbGUgdGhhdCdzIG5lZWRlZCB0byB1c2UgdGhlIGZsYXNoIGNoaXAg
+d2l0aCBteSBib2FyZCwNCj4gYW5kIGhlcmUncyAgYSBzbWFsbCBwYXJ0IG9mIGNvZGUgdGhhdCBk
+ZWZpbmVzIHRoZSBwYXJ0aXRpb25zLg0KPiANCj4gc3RhdGljIHN0cnVjdCBtdGRfcGFydGl0aW9u
+IHBhcnRpdGlvbl9pbmZvW10gPSB7DQo+ICAgICB7IG5hbWU6ICJhIiwNCj4gICAgICAgb2Zmc2V0
+OiAwLA0KPiAgICAgICBzaXplOiAzMiAqIDUxMiB9LA0KPiAgICAgeyBuYW1lOiAiYiIsDQo+ICAg
+ICAgIG9mZnNldDogMTYzODQsDQo+ICAgICAgIHNpemU6IDIgKiAxMDI0ICogMTAyNCB9LA0KPiAg
+ICAgeyBuYW1lOiAiYyIsDQo+ICAgICAgIG9mZnNldDogMjExMzUzNiwNCj4gICAgICAgc2l6ZTog
+MiAqIDEwMjQgKiAxMDI0IH0sDQo+ICAgICB7IG5hbWU6ICJkIiwNCj4gICAgICAgb2Zmc2V0OiA0
+MjEwNjg4LA0KPiAgICAgICBzaXplOiAxMSAqIDEwMjQgKiAxMDI0IH0sDQo+ICAgICB7IG5hbWU6
+ICJlIiwNCj4gICAgICAgb2Zmc2V0OiAxNTc0NTAyNCwgDQo+ICAgICAgIHNpemU6IDEwMzIxOTIg
+fQ0KPiB9Ow0KPiAjZGVmaW5lIE5VTV9QQVJUSVRJT05TIDUNCj4gDQo+ICAgICBJJ20gdXNpbmcg
+WUFGRlMgb24gcGFydGl0aW9ucyAiZCIgYW5kICJlIi4NCj4gQnV0IEkgY2FuJ3Qgc3RvcCByZWNp
+ZXZpbmcgYW5ub3lpbmcga2VybmVsIG1lc3NhZ2VzIHNheWluZw0KPiAiUmVhZGluZyBkYXRhIGZy
+b20gTkFORCBGTEFTSCB3aXRob3V0IEVDQyBpcyBub3QgcmVjb21tZW5kZWQiLg0KPiANCj4gICAg
+ICBPbiBZQUZGUydzIHNpZGUsIEkgc2V0IHRoZSBvcHRpb24gQ09ORklHX1lBRkZTX1VTRV9OQU5E
+RUNDLA0KPiB3aGljaCBJIGJlbGlldmUgdGhhdCBhc2tzIHRoZSBtdGQgTkFORCB0byBkbyB0aGUg
+RUNDLg0KPiBTbywgSSB3b3VsZCBsaWtlIHRvIGFzayBpZiBhbnkgb3RoZXIgc2V0dGluZ3MgYXJl
+IG5lY2Vzc2FyeSBpbiBvcmRlciB0byBlbmFibGUgRUNDLg0KPiAoUHJvYmFibHkgc29tZXRoaW5n
+IHNob3VsZCBiZSBhZGRlZCB0byB0aGUgc3R1ZmYgYWJvdmU/KQ0KPiANCj4gV2VsbCwgdGhhdCdz
+IGFsbCwgYW5kIHRoYW5rcyBmb3IgdGhlIGdyZWF0IHdvcmsuDQoNCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0DQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8NCg0K
