@@ -1,24 +1,24 @@
-Received: from tyo201.gate.nec.co.jp ([210.143.35.51])
+Received: from mail.imc-berlin.de ([217.110.46.186]
+	helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192kt4-0008RW-Ev
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 05:39:10 +0100
-Sender: miles@mcspd15.ucom.lsi.nec.co.jp
-To: =?iso-8859-15?q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <20030407171037.GB8178@wohnheim.fh-wedel.de.suse.lists.linux.kernel>
-	<p73r88exh3r.fsf@oldwotan.suse.de>
-	<20030407194039.GF8178@wohnheim.fh-wedel.de>
-From: Miles Bader <miles@lsi.nec.co.jp>
-Date: 08 Apr 2003 13:38:27 +0900
-In-Reply-To: <20030407194039.GF8178@wohnheim.fh-wedel.de>
-Message-ID: <buo3cktfvss.fsf@mcspd15.ucom.lsi.nec.co.jp>
+	id 192n4F-0000Bp-FL
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2003 07:58:51 +0100
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
+	[10.0.0.13])h386wjLT022336
+	for <linux-mtd@lists.infradead.org>; Tue, 8 Apr 2003 08:58:45 +0200
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id IAA20980
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 8 Apr 2003 08:58:53 +0200 (CEST)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3E92732C.90000@imc-berlin.de>
+Date: Tue, 08 Apr 2003 08:58:52 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
-cc: linux-mtd@lists.infradead.org
-cc: Andi Kleen <ak@suse.de>
-cc: linux-kernel@vger.kernel.org
-Subject: Re: [ANNOUNCE] New kernel tree for embedded linux
-Reply-To: Miles Bader <miles@gnu.org>
+To: MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: unknown conversion type character `z'
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=F6rn Engel <joern@wohnheim.fh-wedel.de> writes:
-> So I wanted to create a focal point for the embedded developers and
-> see if I get something back for my work. I had to start with
-> something, three simple patches is not much. But if my hopes become
-> reality, it will grow. And I really suspect that a lot of the patches
-> done in step 2 could be generalized.
+Hi there,
 
-How about dealing with uClinux?  That's almost entirely embedded
-systems.
+I pulled the CVS yesterday, patched my linuxppc-2.4.20 and noticed 
+loads of warnings like
 
--miles
---=20
-"Whatever you do will be insignificant, but it is very important that
- you do it."  Mahatma Ghandi
+nodemgmt.c: In function `jffs2_mark_node_obsolete':
+nodemgmt.c:533: warning: unknown conversion type character `z' in format
+nodemgmt.c:533: warning: too many arguments for format
+nodemgmt.c:552: warning: unknown conversion type character `z' in format
+nodemgmt.c:552: warning: too many arguments for format
+
+when compiling it.
+
+What does that mean????
+
+I am using ppc_8xx-gcc version 2.95.4. (Could that be the problem?)
+
+Thanks!
+
+Steven
