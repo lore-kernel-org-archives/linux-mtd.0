@@ -1,41 +1,69 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14gN50-0000aY-00
-	for mtd-list@infradead.org; Fri, 23 Mar 2001 08:37:54 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14gN4y-0000aS-00
-	for mtd@infradead.org; Fri, 23 Mar 2001 08:37:52 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200103230202.f2N22R612056@new-york.lcs.mit.edu> 
-References: <200103230202.f2N22R612056@new-york.lcs.mit.edu> 
-To: decouto@lcs.mit.edu
-Cc: mtd@infradead.org, ipaq@handhelds.org
-Subject: Re: jffs2 problem 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 23 Mar 2001 08:37:37 +0000
-Message-ID: <11429.985336657@redhat.com>
+	id 14gSVg-0001C1-00
+	for mtd-list@infradead.org; Fri, 23 Mar 2001 14:25:48 +0000
+Date: Fri, 23 Mar 2001 09:25:34 -0500 (EST)
+Message-Id: <200103231425.f2NEPYH21217@new-york.lcs.mit.edu>
+From: "Douglas S. J. De Couto" <decouto@lcs.mit.edu>
+To: dwmw2@infradead.org
+CC: mtd@infradead.org, ipaq@handhelds.org
+In-reply-to: <11429.985336657@redhat.com> (message from David Woodhouse on
+	Fri, 23 Mar 2001 08:37:37 +0000)
+Subject: Re: jffs2 problem
+Reply-to: decouto@lcs.mit.edu
+References: <200103230202.f2N22R612056@new-york.lcs.mit.edu> <11429.985336657@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-decouto@lcs.mit.edu said:
->  is this likely to happen if i forgot to erase the flash with eflash
-> in the boat loader before loading the jffs2 image?  e.g. i had one
-> jffs2 image, and then i loaded another without eflashing.
+> >  is this likely to happen if i forgot to erase the flash with eflash
+> > in the boat loader before loading the jffs2 image?  e.g. i had one
+> > jffs2 image, and then i loaded another without eflashing.
+> 
+> Yes.
 
-Yes.
+i tried it again, but definitely erasing first.  similar thing:
 
->  the kernel i compiled is from the handhelds.org CVS, and the CVS
-> version is... well ther are a lot of files, so if you want to know a
-> specific thing i can tell you. 
+Argh. Special inode #1011 had more than one node
+...
 
-A date should be sufficient.
+> A date should be sufficient.
 
---
-dwmw2
+hmmm.  my last checkout and compile was say weds 21 march.
 
+[jffs2] bermuda% cat *.c *.h | grep Id:
+ * $Id: background.c,v 1.10 2001/03/15 15:38:23 dwmw2 Exp $
+ * $Id: build.c,v 1.16 2001/03/15 15:38:23 dwmw2 Exp $
+ * $Id: compr.c,v 1.16 2001/03/15 15:38:23 dwmw2 Exp $
+ * $Id: compr_rtime.c,v 1.5 2001/03/15 15:38:23 dwmw2 Exp $
+ * $Id: compr_rubin.c,v 1.9 2001/03/15 15:38:23 dwmw2 Exp $
+/* $Id: comprtest.c,v 1.4 2001/02/21 14:03:20 dwmw2 Exp $ */
+ * $Id: compr_zlib.c,v 1.5 2001/03/15 15:38:24 dwmw2 Exp $
+/* $Id: crc32.c,v 1.3 2001/02/07 16:45:32 dwmw2 Exp $ */
+ * $Id: dir.c,v 1.38 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: erase.c,v 1.16 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: file.c,v 1.50 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: gc.c,v 1.47 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: ioctl.c,v 1.5 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: malloc.c,v 1.16 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: nodelist.c,v 1.27 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: nodemgmt.c,v 1.37 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: pushpull.c,v 1.6 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: read.c,v 1.11 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: readinode.c,v 1.54 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: scan.c,v 1.31 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: super.c,v 1.37 2001/03/19 23:21:31 dwmw2 Exp $
+ * $Id: symlink.c,v 1.5 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: write.c,v 1.24 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: zlib.c,v 1.3 1997/12/23 10:47:42 paulus Exp $
+/* $Id: compr_rubin.h,v 1.5 2001/02/26 13:50:01 dwmw2 Exp $ */
+/* $Id: crc32.h,v 1.3 2001/02/26 14:44:37 dwmw2 Exp $ */
+ * $Id: nodelist.h,v 1.44 2001/03/15 15:38:24 dwmw2 Exp $
+ * $Id: pushpull.h,v 1.4 2001/03/15 15:38:24 dwmw2 Exp $
+/*      $Id: zlib.h,v 1.2 1997/12/23 10:47:44 paulus Exp $      */
+
+-- 
+Douglas S. J. De Couto    decouto@lcs.mit.edu
 
 
 
