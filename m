@@ -1,20 +1,17 @@
-Received: from [202.97.181.21] (helo=mail.cnbook.com.cn)
+Received: from proxy.force.de ([158.116.254.130])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Bnwv-0004Ny-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2002 03:12:19 +0000
-Received: from RavProxy ([202.107.117.132])
-	(authenticated)
-	by mail.cnbook.com.cn (8.11.6/8.11.6) with ESMTP id gADF27m32439
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2002 10:02:08 -0500
-Message-Id: <200211131502.gADF27m32439@mail.cnbook.com.cn>
-From: "nbhorse" <nbhorse@163.net>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: help about jffs2 write problem.
-Mime-Version: 1.0
-Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 13 Nov 2002 11:42:24 +0800
+	id 18BsAN-0004ni-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2002 07:42:28 +0000
+Received: from ex-deu-munich02.force.de (ex-deu-munich02.force.de [10.254.2.10])
+	by proxy.force.de (8.11.4/8.11.4) with ESMTP id gAD8D1207376
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2002 09:13:01 +0100 (MET)
+Message-ID: <9CFB9DA5261CD611A29B00508B789048380A50@ex-deu-munich02.force.de>
+From: "Gettert, Wolfram" <Wolfram.Gettert@fci.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: RE: Problem writing to flash with writeb()
+Date: Wed, 13 Nov 2002 09:12:59 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,47 +23,60 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello everyone,
-   I have a problem with the mtd and jffs2.when I ported a linux=
- kernel(2.4.18 rmk7)to my arm 7212 board(samsung k9f560 32m=
- nandflash),and my partition for nand mtd driver like this:
+Thanks for the hint.
 
-const static struct mtd_partition partition_info[] =3D {
-=09{ name: "kernel",
-=09  offset: 0,
-=09  size: 1*1024*1024},
-=09{ name: "blank",
-=09  offset: 1*1024*1024,
-=09  size: 1*1024*1024},
-=09{ name: "file system 1",
-=09  offset: 2*1024*1024,
-=09  size: 4*1024*1024},
-=09{ name: "SamSung flash partition 1",
-=09  offset: 6*1024*1024,
-=09  size: 2*1024*1024},
-=09{ name: "SamSung flash partition 2",
-=09  offset: 8*1024*1024,
-=09  size: 24*1024*1024 }
-};
-  and i want to mount partition 1(blank) with jffs2.
-  I have a problem:
-  I use "eraseall /dev/mtd1"(c 90 2) to erase the mtdblock1,and i=
- "mount -t jffs2 /dev/mtdblock1 /flash","copy /bin/busybox=
- /flash",it display following error message:
-  
-    ARGH. About to write node to 0x000f8760 on flash, but there's=
- data already there:
-0x000f8760: 57 a6 fb 05 76 e3 29 d7 fe f0 78 b7 ce 0f b8 c6
-                       .....
-then i run"/flash/busybox",error is:
+I was really blind.
 
-Node CRC b04df10c !=3D calculated CRC 49b35642 for node at=
- 00020760
-Node CRC b04df10c !=3D calculated CRC 49b35642 for node at=
- 00020760
+Wolfram
 
-I'm sure that partition 1=A3=A8"blank") is be erased.
-
-if i use ext2 filesystem,everything is ok.
-
-Any help would be appreciated
+> -----Original Message-----
+> From: J B [mailto:mad_flasher@hotmail.com]
+> Sent: Dienstag, 12. November 2002 20:02
+> To: Wolfram.Gettert@fci.com; linux-mtd@lists.infradead.org
+> Subject: Re: Problem writing to flash with writeb()
+> 
+> 
+> 
+> >   	physmap_map.map_priv_1 = (unsigned 
+> >long)ioremap_nocache(WINDOW_ADDR,WINDOW_SIZE);
+> >
+> >	...
+> >
+> >	//Read Manufacturer and Device code
+> >	physmap_write8(&physmap_map,0x90,physmap_map.map_priv_1);
+> 
+> Are you sure you want to pass physmap_map.map_priv_1 as the 
+> address?  That 
+> would imply that the address you are writing 0x90 to is (2 * 
+> physmap_map.map_priv_1) because physmap_writeX will add 
+> map->map_priv_1 to 
+> whatever address you pass it.  If that is bigger than 
+> WINDOW_SIZE, I don't 
+> think the command will actually reach the flash chip because 
+> the address 
+> isn't mapped to a flash chip.  I am assuming you are using a 
+> cfi compliant 
+> flash chip and 0x90 is putting it into "Read Identifier 
+> Codes".  Try using 0 
+> for the address instead, which is what you did below.
+> 
+> >If I do it like this:
+> >
+> >	p = physmap_map.map_priv_1;
+> >	p[0] = 0x90;
+> 
+> Looks like this is the equivalent of:
+> physmap_write8(&physmap_map,0x90,0);
+> 
+> 
+> I could be very wrong however.  I still consider myself a 
+> newbie, so sorry 
+> if this doesn't make any sense.  Hope it helps though.
+> 
+> 
+> Josh
+> 
+> _________________________________________________________________
+> The new MSN 8: smart spam protection and 2 months FREE*  
+> http://join.msn.com/?page=features/junkmail
+> 
