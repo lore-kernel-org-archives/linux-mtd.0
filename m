@@ -1,18 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <4177A468.2030605@yandex.ru>
-References: <4176449B.4090706@yandex.ru>
-	<1098270013.3872.83.camel@baythorne.infradead.org>
-	<4176493A.5080003@yandex.ru>
-	<1098271310.3872.87.camel@baythorne.infradead.org>
-	<4177A468.2030605@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1098360517.13633.1238.camel@hades.cambridge.redhat.com>
+Received: from mgw-x3.nokia.com ([131.228.20.26])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKcjf-0007YL-76
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 09:12:18 -0400
+Date: Thu, 21 Oct 2004 15:49:26 +0300
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+Message-ID: <20041021124926.GA1497@angel.research.nokia.com>
+References: <41767593.9030004@inf.u-szeged.hu>
 Mime-Version: 1.0
-Date: Thu, 21 Oct 2004 13:08:37 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: 4K block size question
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41767593.9030004@inf.u-szeged.hu>
+Sender: <jlavi@angel.research.nokia.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-10-21 at 15:58 +0400, Artem B. Bityuckiy wrote:
-> Hello,
+On Wed, Oct 20, 2004 at 04:26:27PM +0200, ext Ferenc Havasi wrote:
+> Jarkko made a measurement on a real NAND device: his JFFS2 image was 
+> 120819928 (115M), after running sumtool the new image was 123338752 (117M).
 > 
-> In the JFFS2, there is place where both c->erase_completion and 
-> c->inocache spinlocks are held. But the c->erase_completion is locked 
-> first. This fact does not highlighted in the README.Locking file.
-> 
-> I propose to metnion it there. (i.e., that if both locks are needed, the 
-> c->erase_completion must be locked first).
+> Using the original mount time was 55 sec, with the new image it is only 
+> 8.5 sec.
 
-Well spotted; thanks.
+My initial test was only about the mount time. I have now also tried
+to exercise the patched file system and with very little testing I get
+CRC or ECC errors.
 
--- 
-dwmw2
+  # mount /dev/mtdblock2 /mnt -t jffs2
+  # mkdir /mnt/testdir
+  # umount /mnt
+  jffs2_flush_wbuf(): Write failed with -5
+  # mount /dev/mtdblock2 /mnt -t jffs2
+  mtd->read(0x1fbec bytes from 0x1fc0414) returned ECC error
+  Empty flash at 0x01fc2f1c ends at 0x01fc3000
+  #
+
+With plain 2.6.9-rc4-omap1 with fresh CVS MTD code, I don't see anything
+weird occuring.
+
+Jarkko Lavinen
