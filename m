@@ -1,15 +1,17 @@
-Received: from web13907.mail.yahoo.com ([216.136.175.70])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ClrF-0003Vw-Gr
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 20:42:41 +0100
-Message-ID: <20030505194255.17749.qmail@web13907.mail.yahoo.com>
-Date: Mon, 5 May 2003 12:42:55 -0700 (PDT)
-From: Michael Moedt <xemc@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1052162831.1172.11269.camel@tubarao>
+Received: from sccrmhc01.attbi.com ([204.127.202.61])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19CmGV-0003dp-P3
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 21:08:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: Error: Wacky! Unable to decode failure status
+content-class: urn:content-classes:message
+Date: Mon, 5 May 2003 16:08:28 -0400
+Message-ID: <6D31D5429FA6884CBE9ECAB6C9B5E6A907E05F@intel-srvr.patcameron.ne.mediaone.net>
+From: <tom@ceisystems.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: CompactFlash...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > I'm getting the error message "Wacky! Unable to
-> > decode failure status".  See below:
-> 
-> My guess is that you are using
-> divers/mtd/chips/cfi_cmdset_0002.c with a
-> revision earlier than 1.68 - please update to that
-> version.  If you
-> still have problems then send another email and I'll
-> look a bit closer.
+Hello all,
 
-Thanks for the quick response!  I'm also looking at
-the  sheet.
-I am using 1.68. (last modified 04/21, by thayne.  =])
+	I have recently come to own a motherboard that supports the ATA
+interface to a CompactFlash card, which has been purchased from my local
+BestBuy.  I am wondering what the best implimentation would be for this
+flash, as it is seen at /dev/hdd.  Is there a way to still see it as a
+MTD device, and use jffs2 or yaffs on it?  Thanks in advance for any
+information.
 
-As far as we can tell, it looks like the erase
-operation completes correctly, and we start reading
-the flash again, getting the erased value of 0xffff.
-(It is in 16-bit wide mode)
-
-The 'ones' variable that it compares the read values
-to is only an 8-bit 0xff.  I traced this back a
-little,  (the CMD macro in include/linux/mtd/cfi.h and
-the function right above it) and it keeps it as 8-bit
-even if it knows that it's x16.
-
-Should it be masking off only the lowest byte?
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+Thomas Cameron
+CEI Systems, Inc.
