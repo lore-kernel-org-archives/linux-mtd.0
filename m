@@ -1,25 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 136vo7-0002VX-00
-	for mtd-list@infradead.org; Tue, 27 Jun 2000 14:53:43 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 136vo6-0002VR-00
-	for cvs-notify@infradead.org; Tue, 27 Jun 2000 14:53:42 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/include/linux/mtd flashchip.h'
-Message-Id: <E136vo6-0002VR-00@infradead.org>
+	id 136wKA-0002ga-00
+	for mtd-list@infradead.org; Tue, 27 Jun 2000 15:26:50 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 136wK8-0002gU-00
+	for mtd@infradead.org; Tue, 27 Jun 2000 15:26:48 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 27 Jun 2000 14:53:42 +0100
+In-Reply-To: <E136wFv-0002er-00@infradead.org> 
+References: <E136wFv-0002er-00@infradead.org> 
+To: rmoya@tsai.es
+Cc: mtd@infradead.org
+Subject: Re: problems compiling 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 27 Jun 2000 15:29:23 +0100
+Message-ID: <5559.962116163@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/include/linux/mtd
-In directory infradead.org:/tmp/cvs-serv9632
 
-Added Files:
-	flashchip.h 
-Log Message:
-struct flchip, to hold details of individual flash chips, and a spinlock
+rmoya@tsai.es said:
+> mtdcore.c:77: warning: `DECLARE_MUTEX' declared `static' but never defined 
+
+You are using an old version of the kernel. Update to 2.2.16 for various 
+reasons. If you really can't do that then you can at least make MTD compile 
+by nabbing include/linux/compatmac.h from 2.2.16 and putting it in place.
+
+
+rmoya@tsai.es said:
+>  Looking at the sources, I've seen that the DECLARE_MUTEX is declared
+> in the sysdep-2.2.h file, but into a:
+
+We're not using the sysdep-2.2.h file any more. The compatibility macros 
+have been included into the 2.2.16 kernel.
+
+--
+dwmw2
+
 
 
 
