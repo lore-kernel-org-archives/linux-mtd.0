@@ -1,19 +1,25 @@
-Received: from kasumi.idis.co.kr ([203.238.93.2] ident=mail)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 194wHC-0003S1-CB
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 06:13:06 +0100
-Message-ID: <000501c30244$91a09dc0$525deecb@noshel>
-From: "Edward Lee \(???\)" <noshel@idis.co.kr>
-To: "Earl Manning" <EManning@PRISMIQ.com>
+	id 194xrf-0003c9-Hs
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 07:54:51 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+	21 2002)) with SMTP id <0HDB003SDN6P6C@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Mon, 14 Apr 2003 08:54:26 +0200 (MEST)
+Date: Mon, 14 Apr 2003 09:54:27 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <000501c30244$91a09dc0$525deecb@noshel>
+To: "Edward Lee (???)" <noshel@idis.co.kr>, Earl Manning
+	<EManning@PRISMIQ.com>
+Message-id: <200304140954.27049.tglx@linutronix.de>
+MIME-version: 1.0
 References: <002901c3021b$546a6fe0$525deecb@noshel>
-	<20030413210133.64cc28b9.EManning@PRISMIQ.com>
-Date: Mon, 14 Apr 2003 14:13:20 +0900
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
+ <20030413210133.64cc28b9.EManning@PRISMIQ.com>
+ <000501c30244$91a09dc0$525deecb@noshel>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 cc: linux-mtd@lists.infradead.org
 Subject: Re: A question on ECC
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRWFybCwgdGhhbmtzIGZvciB0aGUgaGVscC4NCg0KSSBkaWRuJ3QgdXNlIG5hbmR3cml0ZSwg
-SSB3cm90ZSBvbiB0aGUgY2hpcCB1c2luZyBwbGFpbiBzdHVmZiBsaWtlICdjcCcgb3IgJ3Rhcics
-IGV0Yy4NCihoYXZpbmcgYSBmaWxlIHN5c3RlbSBvbiBteSBkZXZpY2UsIEkgY291bGRuJ3QgZmlu
-ZCBhIHJlYXNvbiB0byB3cml0ZSBmaWxlcyB1c2luZyANCiBvdGhlciBwcm9ncmFtcykNCg0KDQoN
-Ci0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQpGcm9tOiAiRWFybCBNYW5uaW5nIiA8RU1h
-bm5pbmdAUFJJU01JUS5jb20+DQpUbzogPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg0K
-U2VudDogTW9uZGF5LCBBcHJpbCAxNCwgMjAwMyAxMTowMSBBTQ0KU3ViamVjdDogUmU6IEEgcXVl
-c3Rpb24gb24gRUNDDQoNCg0KSGkgRWR3YXJkLA0KDQpJIGFtIHVzaW5nIGEgc2ltaWxhciBjaGlw
-IHdpdGggSkZGUzIuICBXaGVuIHlvdSB3cm90ZSB0aGUgaW1hZ2UsIGRpZCB5b3UgdXNlIHRoZSBz
-dXBwbGllZCB1dGlsaXR5ICduYW5kd3JpdGUnPyAgSWYgeW91IGRpZCwgZGlkIHlvdSBpbnZva2Ug
-aXQgd2l0aCB0aGUgIi0teWFmZnMiIG9wdGlvbj8gIA0KDQpJIGhvcGUgdGhpcyBoZWxwcywNCkVh
-cmwgTWFubmluZw0KDQoNCk9uIE1vbiwgMTQgQXByIDIwMDMgMDk6MTg6MDkgKzA5MDANCkVkd2Fy
-ZCBMZWUgXCjAzMDlv/hcKSA8bm9zaGVsQGlkaXMuY28ua3I+IHdyb3RlOg0KDQo+IEhlbGxvLiBJ
-J20gRWR3YXJkIExlZSBpbiBLb3JlYS4NCj4gDQo+IEknbSB1c2luZyBzYW1zdW5nIE5BTkQgZmxh
-c2gsIHdpdGggWUFGRlMgb24gaXQuLg0KPiBCdXQgSSdtIGhhdmluZyBwcm9ibGVtcyB3aXRoIEVD
-Qy4NCj4gSSB3cm90ZSBhIGZpbGUgdGhhdCdzIG5lZWRlZCB0byB1c2UgdGhlIGZsYXNoIGNoaXAg
-d2l0aCBteSBib2FyZCwNCj4gYW5kIGhlcmUncyAgYSBzbWFsbCBwYXJ0IG9mIGNvZGUgdGhhdCBk
-ZWZpbmVzIHRoZSBwYXJ0aXRpb25zLg0KPiANCj4gc3RhdGljIHN0cnVjdCBtdGRfcGFydGl0aW9u
-IHBhcnRpdGlvbl9pbmZvW10gPSB7DQo+ICAgICB7IG5hbWU6ICJhIiwNCj4gICAgICAgb2Zmc2V0
-OiAwLA0KPiAgICAgICBzaXplOiAzMiAqIDUxMiB9LA0KPiAgICAgeyBuYW1lOiAiYiIsDQo+ICAg
-ICAgIG9mZnNldDogMTYzODQsDQo+ICAgICAgIHNpemU6IDIgKiAxMDI0ICogMTAyNCB9LA0KPiAg
-ICAgeyBuYW1lOiAiYyIsDQo+ICAgICAgIG9mZnNldDogMjExMzUzNiwNCj4gICAgICAgc2l6ZTog
-MiAqIDEwMjQgKiAxMDI0IH0sDQo+ICAgICB7IG5hbWU6ICJkIiwNCj4gICAgICAgb2Zmc2V0OiA0
-MjEwNjg4LA0KPiAgICAgICBzaXplOiAxMSAqIDEwMjQgKiAxMDI0IH0sDQo+ICAgICB7IG5hbWU6
-ICJlIiwNCj4gICAgICAgb2Zmc2V0OiAxNTc0NTAyNCwgDQo+ICAgICAgIHNpemU6IDEwMzIxOTIg
-fQ0KPiB9Ow0KPiAjZGVmaW5lIE5VTV9QQVJUSVRJT05TIDUNCj4gDQo+ICAgICBJJ20gdXNpbmcg
-WUFGRlMgb24gcGFydGl0aW9ucyAiZCIgYW5kICJlIi4NCj4gQnV0IEkgY2FuJ3Qgc3RvcCByZWNp
-ZXZpbmcgYW5ub3lpbmcga2VybmVsIG1lc3NhZ2VzIHNheWluZw0KPiAiUmVhZGluZyBkYXRhIGZy
-b20gTkFORCBGTEFTSCB3aXRob3V0IEVDQyBpcyBub3QgcmVjb21tZW5kZWQiLg0KPiANCj4gICAg
-ICBPbiBZQUZGUydzIHNpZGUsIEkgc2V0IHRoZSBvcHRpb24gQ09ORklHX1lBRkZTX1VTRV9OQU5E
-RUNDLA0KPiB3aGljaCBJIGJlbGlldmUgdGhhdCBhc2tzIHRoZSBtdGQgTkFORCB0byBkbyB0aGUg
-RUNDLg0KPiBTbywgSSB3b3VsZCBsaWtlIHRvIGFzayBpZiBhbnkgb3RoZXIgc2V0dGluZ3MgYXJl
-IG5lY2Vzc2FyeSBpbiBvcmRlciB0byBlbmFibGUgRUNDLg0KPiAoUHJvYmFibHkgc29tZXRoaW5n
-IHNob3VsZCBiZSBhZGRlZCB0byB0aGUgc3R1ZmYgYWJvdmU/KQ0KPiANCj4gV2VsbCwgdGhhdCdz
-IGFsbCwgYW5kIHRoYW5rcyBmb3IgdGhlIGdyZWF0IHdvcmsuDQoNCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0DQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8NCg0K
+On Monday 14 April 2003 07:13, Edward Lee (???) wrote:
+> Hi Earl, thanks for the help.
+> 
+> I didn't use nandwrite, I wrote on the chip using plain stuff like 'cp' or
+> 'tar', etc. (having a file system on my device, I couldn't find a reason
+> to write files using other programs)
+nandwrite is just used to copy a filesystem image to a unformatted chip.
+If you have mounted the fs already, then nandwrite would be the wrong tool.
+
+These messages have a different reason. I assume that you followed the advice 
+on yaffs list and you have enabled YAFFS_USE_NANDECC and disabled 
+YAFFS_USE_OLD_MTD.
+
+Then I can only guess, that you did not select a ecc mode in your board driver 
+code. 
+
+<SNIP>
+	/* 20 us command delay time */
+	this->chip_delay = 20;		
+	this->eccmode = NAND_ECC_SOFT;
+<SNIP>
+
+NAND_ECC_SOFT is the right choice, if you don't have a hardware ecc generator.
+If you have one, you must supply the neccecary functions to use it.
+
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
