@@ -1,16 +1,16 @@
-Received: from sccrmhc12.comcast.net ([204.127.202.56])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AMElZ-000207-K5
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Nov 2003 22:56:13 +0000
-Received: from rick by c-67-164-61-95.client.comcast.net with local (Exim 3.35
-	#1 (Debian))	id 1AMEjW-0005uD-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Nov 2003 14:54:06 -0800
-From: Rick Bronson <rick@efn.org>
-To: linux-mtd@lists.infradead.org
-Message-Id: <E1AMEjW-0005uD-00@c-67-164-61-95.client.comcast.net>
-Sender: Rick Bronson <rick@comcast.net>
-Date: Tue, 18 Nov 2003 14:54:06 -0800
-Subject: NAND JFFS2 bad block usage
+Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AMPR2-0003So-3h
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Nov 2003 10:19:44 +0000
+Message-ID: <001701c3ae86$6a506450$170714ac@lukkino>
+From: "Luca Contini" <luca.contini@mediaenabling.com>
+To: "Linux-mtd" <linux-mtd@lists.infradead.org>
+Date: Wed, 19 Nov 2003 11:18:02 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: smartmedia block driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
+I've successfully completed the "read" part of a smartmedia driver for the
+Samsung board smdk2410.
+The Linux kernel is 2.4.18 (mandatory for this board)
+The driver is composed by 3 modules:
+s3c2410nand.o
+smdk2410.o
+mtdblock.o
 
-  I'm trying to understand NAND bad block usage under JFFS2.  I'm
-using the 11/16/03 cvs version of mtd on an ARM.  I have a partition
-(mtd0) on my 32 Mbyte NAND (Toshiba TC58256FT/DC) that has no bad
-blocks and I can erase/copy and cmp the file on NAND with the original
-and it all works.
+I've modified these sources in order to read the smartmedia and build up the
+logical to physical block address map.
+Now I am able to mount a vfat filesystem on the smartmedia:
+mount -t vfat /dev/mtdblock0 /mnt/smartmedia
 
-  I also have a partition (mtd1) with one bad block as reported by u-boot:
+My problem is that I have no idea about how to write sectors to smartmedia.
+I have already the low level function nand_write_ecc, but I need help from
+the logical side.
+When the mtdblock needs a logical sector (req->sector), I just use my table
+to translate the logical block address to physical block address (the low
+level driver module s3c2410nand.o reads only physical sectors) and pass this
+physical address to the nand_read_ecc function.
+I suppose that when I write, a new logical or physical address must be
+written in the OOB area of the requested block, but which is the logic?
 
-Uboot> nand bad                                                                 
-Device 0 bad blocks:                                                            
- 0x00dec000                                                                     
+is anybody able to help me?
 
-  and sure enough, when I do:
+regards
 
-./eraseall --jffs2 /dev/mtd1
-
-  I get:
-
-Erasing 16 Kibyte @ e8000 --  8 % complete. Cleanmarker written at e8000.
-Erasing 16 Kibyte @ ec000 --  8 % complete.
-./eraseall: /dev/mtd1: MTD Erase failure: Input/output error
-
-Erasing 16 Kibyte @ f0000 --  8 % complete. Cleanmarker written at f0000.
-Erasing 16 Kibyte @ f4000 --  8 % complete. Cleanmarker written at f4000.
-
-  mtd1 starts at 0x00d00000 so the offset of ec000 this makes sense
-with what u-boot reported above.
-
-  When I copy a file to mtd1, it doesn't report any errors but it
-doesn't compare (using cmp) with the original file.  Looking in
-nand.c, it doesn't look like there is any check for bad blocks in the
-write routine.  I must be missing something?
-
-I'm using linux-2.4.19, and here's my config:
-
-CONFIG_JFFS2_FS=y
-CONFIG_JFFS2_FS_DEBUG=0
-CONFIG_JFFS2_FS_NAND=y
-
- Here's my hardware specific NAND stuff:
-
-	my_nand->eccmode = NAND_ECC_SOFT;  /* enable ECC */
-	my_nand->chip_delay = 20;		
-
-
-  Any help greatly appreciated.
-
-  Rick Bronson
+Luca
