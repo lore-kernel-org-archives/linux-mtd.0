@@ -1,32 +1,57 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 144MMD-0007z5-00
-	for mtd-list@infradead.org; Fri, 08 Dec 2000 12:10:33 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 144MZa-00082s-00
+	for mtd-list@infradead.org; Fri, 08 Dec 2000 12:24:22 +0000
+Received: from [194.200.159.162] (helo=mailserver.arcom.co.uk)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 144MMC-0007yz-00
-	for mtd@infradead.org; Fri, 08 Dec 2000 12:10:32 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A30CFBB.E13F8F0@arcom.co.uk> 
-References: <3A30CFBB.E13F8F0@arcom.co.uk>  <3A30AA56.AEFBBF6E@arcom.co.uk> <8785.976276060@redhat.com> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: Requesting module even when it's compiled in 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 08 Dec 2000 12:10:25 +0000
-Message-ID: <11621.976277425@redhat.com>
+	id 144MZY-00082m-00
+	for mtd@infradead.org; Fri, 08 Dec 2000 12:24:21 +0000
+From: "Quarantine" <quarantine@arcom.co.uk>
+To: <mtd@infradead.org>
+Subject: FW: Requesting module even when it's compiled in
+Date: Fri, 8 Dec 2000 12:23:16 -0000
+Message-ID: <NDBBKECCCEBFFCBPNEGIIECDDDAA.quarantine@arcom.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-dvrabel@arcom.co.uk said:
->  It works provided the init functions changed from static to extern. 
 
-argh. Wanna commit that then?
+-----Original Message-----
+From: owner-mtd@infradead.org [mailto:owner-mtd@infradead.org]On Behalf
+Of David Vrabel
+Sent: Friday, December 08, 2000 9:31 AM
+To: mtd@infradead.org
+Subject: Requesting module even when it's compiled in
 
---
-dwmw2
+
+Hi,
+
+I've patched a 2.2.17 kernel with the latest mtd-patch-2.2.17 however
+the MTD code is from yesterday's CVS.
+
+Compiled into the kernel
+	MTD
+	CFI support
+	Intel Ext suport
+	SBC-MediaGX
+The SBC-MediaGX driver starts but fails with
+	request_module[cfi_probe]: Root fs is not mounted
+
+It shouldn't be looking for a module should it (since it is compiled
+into the kernel)?
+
+CONFIG_MODULES is defined. (don't know if this is relevant)
+
+David Vrabel
+
+
+
+To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+
 
 
 
