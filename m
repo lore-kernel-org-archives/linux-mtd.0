@@ -1,17 +1,16 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from mlbmx2.corp.harris.com ([137.237.90.74])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161cUx-0002Es-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2001 23:52:47 +0000
-Date: Thu, 8 Nov 2001 03:12:26 +0100 (CET)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-cc: linux-mtd@lists.infradead.org
-Subject: re: journaling
-In-Reply-To: <20011107133747.A5963@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.21.0111080259580.29588-100000@godzilla.axis.se>
+	id 161kIq-0002sZ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 08:12:48 +0000
+Message-ID: <8D4C69676E66D511A1CB00508BBBB192157887@ranmx1.ran.harris.com>
+From: "Fend, Matthias" <mfend@harris.com>
+To: 'linux mtd' <linux-mtd@lists.infradead.org>
+Subject: AW: AW: doc 2000 unknown partition table 
+Date: Thu, 8 Nov 2001 03:21:23 -0500 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,34 +22,132 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 7 Nov 2001, Jörn Engel wrote:
-> On a regular hard drive, user data journaling maximizes write
-> performance but will only achieve decent read performance when data is
-> read successively that was written successively, too. Very unlikely.
+ok, i did some further test with the doc2000...
 
-On the other hand, a "normal" filesystem does not optimize the read speed
-in any other way either. I don't see how you can optimize in another way
-than putting data which belong together logically together
-physically.. the LFS can do this even better than traditional systems
-because data is moved naturally during the GC process and can be
-reorganized.
+raw write/read on /dev/nftla works fine.
 
-The main problem with logstructured filesystems is that it's difficult to
-scalably _locate_ the data you want to read. That's why JFFS1,2 have long
-mount-times. Checkpointing the in-core representation would help a bit,
-but it would still not scale well with filesystem size.
+nftldump said this
 
-Some sort of hierarchical checkpointing could perhaps work.. I haven't
-read very much about that yet but it's a natural issue for JFFS3 :)
+<snip>
+...
+sh-2.03# ./nftldump /dev/mtd0=20
+MTD_open
+MTD_ioctl
+NFTL Media Header found at offset 0x00100000:
+NumEraseUnits:    64
+FirstPhysicalEUN: 64
+Formatted Size:   983040
+UnitSizeFactor:   0xff
+Second NFTL Media Header found at offset 0x00104000
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+Unit 64 is free
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+Unit 65 is free
+MTD_ioctl
+MTD_ioctl
+...
+<snap>
 
-The second problem with LFS is the GC process. After some time, you
-reach a state where the log _is_ full and every write has to force a part
-of the GC. There is a lot of tweaking which can be done in that area. As
-you note below it solves fragmentation as a byproduct, but getting good
-performance and low latency is difficult.
+but if i use nandwrite i get this messages
 
-> On the other hand, it is trivial to write a disk defragmentation tool
-> for these filesystems. Just read and rewrite everything in the
-> preferred order and the filesystem logic takes care of the rest.
+<snip>
+...
+sh-2.03# ./nandwrite /dev/mtd0 eraseall.c 0x0
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+ECC needs a full sector write (adr: 1000 size 1d2)
+Unexpected EOF in input file
+MTD_close
+sh-2.03#
+...
+<snap>
 
-/BW
+if i re-read the file with nanddump i get the file but at some =
+locations it
+seems to be corrupted. for example :
+
+<snip>
+...
+
+D@@@-- erase the whole of a MTD device
+
+   Copyright (C) 2000 Arcom Control System Ltd
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FI
+@ DER A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA =
+02111-1307, USA
+
+   $Id: eraseall.c,v 1.7 2001/04/25 07:11:19 ollie Exp $
+*/
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <string.h>
+#i
+`di,h<
+#include <getopt.h>
+
+#include <linux/mtd/mtd.h>
+...
+<snap>
+
+
+???
+
+matthias
+
+	-----Urspr=FCngliche Nachricht-----
+	Von:	David Woodhouse [SMTP:dwmw2@infradead.org]
+	Gesendet am:	Mittwoch, 7. November 2001 19:53
+	An:	Fend, Matthias
+	Cc:	'linux mtd'
+	Betreff:	Re: doc 2000 unknown partition table=20
+
+
+
+	mfend@harris.com said:
+	> Partition check:
+	>  nftla: unknown partition table
+
+	That's normal after you've just done nftl_format - there will have =
+been
+no=20
+	partition table on there. If you tried to write a partition table with =
+
+	fdisk and it still said that, then there's something wrong. Check that =
+
+	you can read and write the raw /dev/nftla device.=20
+
+	Also, try using the nftldump utility (on /dev/mtd0) to check that the
+	contents of the flash are sane.=20
+
+	--
+dwmw2
