@@ -1,16 +1,14 @@
-Received: from 82-168-191-45-bbxl.xdsl.tiscali.nl ([82.168.191.45] helo=levin)
+Received: from bay17-f15.bay17.hotmail.com ([64.4.43.65] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C8h6Q-0004bR-Sk
-	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2004 11:26:21 -0400
-Date: Sat, 18 Sep 2004 17:26:06 +0200
-From: Sean Young <sean@mess.org>
-To: David Woodhouse <dwmw2@redhat.com>
-Message-ID: <20040918152606.GA3666@levin.pad.mess.org>
+	id 1C8r6b-0005N3-6x
+	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2004 22:07:11 -0400
+From: "yan yong" <floatingdudu@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Sun, 19 Sep 2004 10:05:56 +0800
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH] New mapping driver for Technology Systems TS-5500 board
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY17-F15ByNP29M5f80002850e@hotmail.com>
+Subject: JFFS2 problem on ST M29W640DB (90 ns)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,200 +18,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here is a new mapping driver, patch against kernel 2.6.9-rc2 (I hope
-that's okay):
+发件人: "floatingdudu" <floatingdudu@163.com> 
+主题: JFFS2 problem on ST M29W640DB(90 ns) 
+日期: 2004-09-19 09:50:59 
+收件人: linux-mtd@lists.infradead.org 
+抄送: (无)  
+优先级: PriCommon  
 
-	MTD Mapping driver for Technology Systems TS-5500 board
-
-        Signed-off-by: Sean Young <sean@mess.org>
-
-Note that the bios on this board uses a proprietary ftl of General Software 
-which I haven't been able to figure out. Any ideas here would be most 
-welcome.
+--------------------------------------------------------------------------------
 
 
-Sean
+Hi friends,
+My board has one 16-bit flash: ST M29W640DB (90ns).
 
-diff -uprN ./drivers/mtd/maps/Kconfig /usr/src/linux-2.6.6/drivers/mtd/maps/Kconfig
---- ./drivers/mtd/maps/Kconfig	2004-09-18 16:52:09.000000000 +0200
-+++ /usr/src/linux-2.6.6/drivers/mtd/maps/Kconfig	2004-09-18 16:51:53.000000000 +0200
-@@ -84,6 +84,25 @@ config MTD_SC520CDP
- 	  Dual-in-line JEDEC chip. This 'mapping' driver supports that
- 	  arrangement, implementing three MTD devices.
+M29W640DB (16 bit bus): 
+0x00000000----0x00020000  bootloader 128k
+0x00002000----0x00100000  kernel     
+0x00100000----0x007F0000   JFFS2
+0x007F0000----0x00800000   spare
+
+
+I have burned bootloader(u-boot),jffs2 image and Linux kernel into flash.
+I set bootargs as: 
+root=/dev/mtdblock3 rw console=ttyS0,115200 ...........
+
+When power on, Linux kernel boots from flash and print out info such as:
+"
+AT91RM9200-NOR:0x00800000 at 0x10000000
+Amd/Fujitsu Extended Query Table v1.3 at 0x0040
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+mtd: Giving out device 0 to NOR flash on at91rm9200
+AT91RM9200-NOR:using static partition definition
+Creating 3 MTD partitions on "NOR flash on at91rm9200":
+0x00000000-0x00020000 : "ARMboot"
+mtd: Giving out device 1 to ARMboot
+0x00020000-0x00100000 : "Kernel"
+mtd: Giving out device 2 to Kernel
+0x00100000-0x007f0000 : "JFFS2"
+mtd: Giving out device 3 to JFFS2
+....................
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: 
+0x0020 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008: 
+0x0020 instead
+.....................................................................................
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010000: 
+0x0020 instead
+.....................................................................................
+
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00020000: 
+0x0020 instead
+............................................
+"
+In u-boot, I entered commands to display memory:
+u-boot=> md 0x00100000 4/md 0x00110000 4
+The magic number 0x1985 IS here!No 0x0020 exists at all!! 
+
+It's quite strange!! Why Linux detects 0x0020 instead?
+
+when Linux boots via nfs, I CAN erase these mtd partitions 
+succussfully(eraseall /dev/mtdx)! Then I try to mount jffs2 after erasing:
+# mount -t jffs2 /dev/mtdblockx /mnt
+It's ok! Jffs2 can be mounted successfully!But when i reboot the board via 
+nfs, and try to re-mount jffs2, It'll get failed again:
+"
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00010000: 
+0x0020 instead
+...........
+"
+
+I use "dd if=/dev/mtdx of=/mnt/memory.log" to dump flash memory into a 
+file.and open
+the file, I found all data in the file are 0x0020!!
+But if I use "md 0x001..... len" in u-boot, all data are there and 0x1985 
+can be found!
+
+Why U-boot can read the data on flash correctly while linux can't?
+and why sometimes linux can mount flash partitions correctly but sometimes 
+not?
+why linux always read all data as 0x0020?
+
+when I simply replace ST M29W640DB with AMD AM29DL640D(the two chips are 
+pin-to-pin comatible, ) JFFS2 works very fine!
+
+what's the problem? 
  
-+config MTD_TS5500
-+	tristate "JEDEC Flash device mapped on Technologic Systems TS-5500"
-+	depends on X86 && MTD_JEDECPROBE && MTD_PARTITIONS
-+	help
-+	  This provides a driver for the on-board flash of the Technologic
-+	  System's TS-5500 board. The flash is split into 3 partitions 
-+	  which are accessed as separate MTD devices.
-+
-+	  mtd0 and mtd2 are the two BIOS drives. Unfortunately the BIOS 
-+	  uses a proprietary flash translation layer from General Software, 
-+	  which is not supported (the drives cannot be mounted). You can 
-+	  create your own file system (jffs for example), but the BIOS 
-+	  won't be able to boot from it.
-+	  
-+	  mtd1 allows you to reprogram your BIOS. BE VERY CAREFUL.
-+	
-+	  Note that if jumper 3 ("Write Enable Drive A") must be set 
-+	  otherwise detection won't succeeed.
-+
- config MTD_NETSC520
- 	tristate "CFI Flash device mapped on AMD NetSc520"
- 	depends on X86 && MTD_CFI && MTD_PARTITIONS
-diff -uprN ./drivers/mtd/maps/Makefile /usr/src/linux-2.6.6/drivers/mtd/maps/Makefile
---- ./drivers/mtd/maps/Makefile	2004-09-18 16:52:09.000000000 +0200
-+++ /usr/src/linux-2.6.6/drivers/mtd/maps/Makefile	2004-09-15 22:54:34.000000000 +0200
-@@ -33,6 +33,7 @@ obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
- obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
- obj-$(CONFIG_MTD_SC520CDP)	+= sc520cdp.o
-+obj-$(CONFIG_MTD_TS5500)	+= ts5500_flash.o
- obj-$(CONFIG_MTD_NETSC520)	+= netsc520.o
- obj-$(CONFIG_MTD_SUN_UFLASH)	+= sun_uflash.o
- obj-$(CONFIG_MTD_VMAX)		+= vmax301.o
-diff -uprN ./drivers/mtd/maps/ts5500_flash.c /usr/src/linux-2.6.6/drivers/mtd/maps/ts5500_flash.c
---- ./drivers/mtd/maps/ts5500_flash.c	1970-01-01 01:00:00.000000000 +0100
-+++ /usr/src/linux-2.6.6/drivers/mtd/maps/ts5500_flash.c	2004-09-18 16:47:51.000000000 +0200
-@@ -0,0 +1,139 @@
-+/*
-+ * ts5500.c -- MTD map driver for Technology Systems TS-5500 board
-+ *
-+ * Copyright (C) 2004 Sean Young <sean@mess.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
-+ *
-+ * Note:
-+ * - In order for detection to work, jumper 3 must be set.
-+ * - Drive A and B use a proprietary FTL from General Software which isn't 
-+ *   supported as of yet so standard drives can't be mounted; you can create 
-+ *   your own (e.g. jffs) file system.
-+ * - If you have created your own jffs file system and the bios overwrites 
-+ *   it during boot, try disabling Drive A: and B: in the boot order.
-+ */
-+
-+#include <linux/config.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+#include <linux/mtd/partitions.h>
-+#endif
-+
-+#define WINDOW_ADDR	0x09400000
-+#define WINDOW_SIZE	0x00200000
-+
-+static struct map_info ts5500_map = {
-+	.name = "TS-5500 Flash",
-+	.size = WINDOW_SIZE,
-+	.bankwidth = 1,
-+	.phys = WINDOW_ADDR
-+};
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+static struct mtd_partition ts5500_partitions[] = {
-+	{
-+		.name = "Drive A",
-+		.offset = 0,
-+		.size = 0x0e0000
-+	},
-+	{
-+		.name = "BIOS",
-+		.offset = 0x0e0000,
-+		.size = 0x020000,
-+	},
-+	{
-+		.name = "Drive B",
-+		.offset = 0x100000,
-+		.size = 0x100000
-+	}
-+};
-+
-+#define NUM_PARTITIONS (sizeof(ts5500_partitions)/sizeof(struct mtd_partition))
-+
-+#endif
-+
-+static struct mtd_info *mymtd;
-+
-+static int __init init_ts5500_map(void)
-+{
-+	int rc = 0;
-+
-+	ts5500_map.virt = (void*)ioremap_nocache(ts5500_map.phys, ts5500_map.size);
-+
-+	if(!ts5500_map.virt) {
-+		printk(KERN_ERR "Failed to ioremap_nocache\n");
-+		rc = -EIO;
-+		goto err_out_ioremap;
-+	}
-+
-+	simple_map_init(&ts5500_map);
-+
-+	mymtd = do_map_probe("jedec_probe", &ts5500_map);
-+	if(!mymtd)
-+		mymtd = do_map_probe("map_rom", &ts5500_map);
-+
-+	if(!mymtd) {
-+		rc = -ENXIO;
-+		goto err_out_map;
-+	}
-+
-+	mymtd->owner = THIS_MODULE;
-+#ifdef CONFIG_MTD_PARTITIONS
-+	add_mtd_partitions(mymtd, ts5500_partitions, NUM_PARTITIONS);
-+#else	
-+	add_mtd_device(mymtd);
-+#endif
-+
-+	return 0;
-+
-+err_out_map:
-+	map_destroy(mymtd);
-+err_out_ioremap:
-+	iounmap((void *)ts5500_map.virt);
-+
-+	return rc;
-+}
-+
-+static void __exit cleanup_ts5500_map(void)
-+{
-+	if (mymtd) {
-+#ifdef CONFIG_MTD_PARTITIONS
-+		del_mtd_partitions(mymtd);
-+#else
-+		del_mtd_device(mymtd);
-+#endif
-+		map_destroy(mymtd);
-+	}
-+
-+	if (ts5500_map.virt) {
-+		iounmap((void *)ts5500_map.virt);
-+		ts5500_map.virt = 0;
-+	}
-+}
-+
-+module_init(init_ts5500_map);
-+module_exit(cleanup_ts5500_map);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Sean Young <sean@mess.org>");
-+MODULE_DESCRIPTION("MTD map driver for Techology Systems TS-5500 board");
-+
+Thanks
+Jean
+
+_________________________________________________________________
+与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
