@@ -1,28 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B7BlB-00034b-9D
-	for linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 11:13:53 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HV800J2LF73M4@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 12:13:52 +0100 (MET)
-Date: Sat, 27 Mar 2004 12:10:30 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <1080383077.17352.5.camel@imladris.demon.co.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <200403271210.30061.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+	id 1B7BwG-0003GB-36
+	for linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 11:25:20 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: tglx@linutronix.de
+In-Reply-To: <200403271210.30061.tglx@linutronix.de>
 References: <406328A2.3060905@cray.com>
-	<200403270907.07298.tglx@linutronix.de>
-	<1080383077.17352.5.camel@imladris.demon.co.uk>
+	 <200403270907.07298.tglx@linutronix.de>
+	 <1080383077.17352.5.camel@imladris.demon.co.uk>
+	 <200403271210.30061.tglx@linutronix.de>
+Content-Type: text/plain
+Message-Id: <1080386714.17352.52.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Sat, 27 Mar 2004 11:25:15 +0000
+Content-Transfer-Encoding: 7bit
 cc: manningc2@actrix.gen.nz
 cc: linux-mtd@lists.infradead.org
 Subject: Re: nand oob layout assumptions
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,73 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 27 March 2004 11:24, David Woodhouse wrote:
-> On Sat, 2004-03-27 at 09:07 +0100, Thomas Gleixner wrote:
-> > > For instance, the bad block handling is different in different NAND
-> > > parts.
->
-> And in some cases in the _same_ NAND parts in different environments.
-> Consider the DiskOnChip, where on first format we look at the 'bad
-> block' markers in the OOB areas and build a separate bad block bitmap in
-> a dedicated sector. Then we erase the good blocks and use _every_ byte
-> in the OOB area. That's why I added the ->block_is_bad() callback from
-> the NAND code to the board-specific code, but I'm not sure that's
-> sufficient.
+On Sat, 2004-03-27 at 12:10 +0100, Thomas Gleixner wrote:
+> What else would you need ? 
 
-What else would you need ? 
+Nothing more, but it does live where it is in the hardware driver.
 
-I'm not happy to build in the bad block bitmap stuff as a general solution. 
-Next will be translation tables, bad block remapping and all kind of crap, 
-which is not neccecary to run a NAND FLASH aware filesystem. 
+> I'm not happy to build in the bad block bitmap stuff as a general solution. 
+> Next will be translation tables, bad block remapping and all kind of crap, 
+> which is not neccecary to run a NAND FLASH aware filesystem. 
 
-> > > It is wrong, IMHO, to be handling bad-block logic in the file system.
-> > > Instead, the bad block handling should be done in mtd so that each
-> > > different chip can have its own methods and the file system can be kept
-> > > "clean".
-> >
-> > I have already considered this.
-> > But the fs must be aware of the bad block marker position in the OOB
-> > area, as it can not use this byte for storing fs dependend data. The OOB
-> > usage is given by the fs layer.
->
-> It might not be in the OOB area. The fs does need to be told which bytes
-> of the OOB area are reserved for hardware ECC and/or bad block markers,
-> but the hardware driver should still be responsible for bad block
-> handling.
+We don't need to build it in as a general solution -- the DiskOnChip
+code will do it itself. All we need to do is keep the API sufficiently
+versatile that the FS doesn't need to know about the peculiarities of
+the DiskOnChip -- it just gets told which bytes of the OOB area it can
+use, and does so.
 
-The NAND specs have defined to have the bad block markers in the OOB area, 
-which is quite clever, as it does not restrict the usage of any byte in the 
-main area.
+The DiskOnChip uses the first 6 bytes of the OOB area for hardware ECC,
+and bad block information is elsewhere on the medium.
 
-Nand.c needs bad block handling in the sense of preventing erase of bad 
-blocks. Maybe the prevention of reading / writing bad blocks too. And the 
-possibility to have a bad block detection function, which covers specific 
-cases like DOC.
+> The NAND specs have defined to have the bad block markers in the OOB area, 
+> which is quite clever, as it does not restrict the usage of any byte in the 
+> main area.
 
-But this does not change the interface. 
+No, the NAND specs have defined the bad block markers to be in the OOB
+area when the device is shipped. What you do with it after that is up to
+you. And in the case of the DiskOnChip that means the bad block
+information is moved. We _really_ want to honour that and keep it within
+the hardware driver. I don't want any possibility of erasing bad blocks,
+and I'm not overly happy with thinking non-bad blocks are bad just
+because the device has already been used with NFTL and has ECC data in
+byte 5.
 
-ECC positions are a totaly different thing. If we want to have a fixed scheme 
-for storing ECC bytes, which is not neccecary even with hardware ECC, as the 
-hardware ECC only does the ECC calculation and no placing of ECC data into 
-OOB, then we have to use _ONE_ final ECC placement scheme for all filesystems 
-and therefor we can only use the SmartmediaCard layout, as doing not so would 
-prevent the development of a SmartMedia FAT fs driver. This would break YAFFS 
-support complete. JFFS2 uses the SmartMedia layout anyway.
+> Nand.c needs bad block handling in the sense of preventing erase of bad 
+> blocks. Maybe the prevention of reading / writing bad blocks too. And the 
+> possibility to have a bad block detection function, which covers specific 
+> cases like DOC.
+> 
+> But this does not change the interface. 
 
-> > Not sure. The generic nand driver provides mechanisms to tell you where
-> > the bad block marker is located and a basic protection against the
-> > erasing of bad blocks. All other bad block handling tasks should be done
-> > in the fs layer.
->
-> Other than noticing them and avoiding them, there really isn't much
-> handling to be done.
+Except that in the file system we need to call the device's
+->is_bad_block() function rather than poking at the OOB area.
+ 
+> ECC positions are a totaly different thing. If we want to have a fixed scheme 
+> for storing ECC bytes, which is not neccecary even with hardware ECC, as the 
+> hardware ECC only does the ECC calculation and no placing of ECC data into 
+> OOB, 
 
-True, but it still is a job of the filesystem and therefor it must have access 
-to this information.
+On the DiskOnChip I think it has to be the first six bytes of the OOB.
+You read <data + ECC> and check a _bit_ to see if there was an error.
+You don't read the ECC syndrome and compare with what you separately
+read from the medium.
+
+> then we have to use _ONE_ final ECC placement scheme for all filesystems 
+> and therefor we can only use the SmartmediaCard layout, as doing not so would 
+> prevent the development of a SmartMedia FAT fs driver. This would break YAFFS 
+> support complete. JFFS2 uses the SmartMedia layout anyway.
+
+We don't need a fixed ECC scheme. But we do need to tell the file system
+what we support. Those should include the SmartMedia software ECC, and
+may include the DiskOnChip hardware ECC too. 
+
+JFFS2 uses the DiskOnChip ECC on DiskOnChip already, doesn't it?
+
+> > Other than noticing them and avoiding them, there really isn't much
+> > handling to be done.
+> 
+> True, but it still is a job of the filesystem and therefor it must have access 
+> to this information.
+
+Yes. It _absolutely_ needs access to the information 'is this a bad
+block?'. What it doesn't need is stuff like "what byte in the OOB area
+would tell us if this was a bad block".
 
 -- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+dwmw2
