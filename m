@@ -1,12 +1,13 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
+Date: Thu, 13 Jan 2005 13:18:02 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1105619501.26551.163.camel@hades.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.58.0501131317560.17331@phoenix.infradead.org>
 References: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
-Content-Type: text/plain
-Date: Thu, 13 Jan 2005 12:31:40 +0000
-Message-Id: <1105619501.26551.163.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1105619501.26551.163.camel@hades.cambridge.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
 Cc: MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: CRC on Read-Only partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,12 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-01-13 at 12:25 +0000, Artem B. Bityuckiy wrote:
-> The blocks from this partition are not ever erased. They are once writte 
-> when the device was shipped, checked.
+> I don't care. You show me formal proof that there cannot ever be an
+> error, or we check the CRC anyway :)
+I'm sorry, I mistiteled the mail. No doubt, CRC checking is needed to 
+detect problems. They may come from different sources, not only NAND 
+technology.
 
-I don't care. You show me formal proof that there cannot ever be an
-error, or we check the CRC anyway :)
+But I formulated question as: "does NAND technology imply that RO 
+partition may become bad, and it is normal?".
 
--- 
-dwmw2
+The question is about NAND technology.
+
+Ok, thin about Joern's phrase:
+> What happens, if crucial data in flash gets corrupted and is unusable?
+> Say, /sbin/init.
+
+Now imagine we have this data on RO partition. Other non-sensitive data on 
+RW partition. So, does this mean that only non-sensitive data may be 
+corrupted? Can we keep safe our RO data this way? I only mean the 
+corruptions due to *NAND technology*
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
