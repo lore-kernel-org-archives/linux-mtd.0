@@ -1,18 +1,21 @@
-Received: from ptb-relay01.plus.net ([212.159.14.212])
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgR85-0001WO-BK
-	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 12:15:30 -0500
+	id 1CgRdc-0001qt-QN
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 12:48:05 -0500
 From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-To: Amaury Jacquot <sxpert@esitcom.org>
-In-Reply-To: <41C6FC08.2010602@esitcom.org>
-References: <41C6FC08.2010602@esitcom.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+In-Reply-To: <41C6F923.20609@inf.u-szeged.hu>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C19118.1020407@inf.u-szeged.hu>
+	<1103558464.10788.44.camel@squizzey.bult.co.uk>
+	<41C6F923.20609@inf.u-szeged.hu>
 Content-Type: text/plain
-Date: Mon, 20 Dec 2004 17:15:31 +0000
-Message-Id: <1103562931.10786.66.camel@squizzey.bult.co.uk>
+Date: Mon, 20 Dec 2004 17:48:10 +0000
+Message-Id: <1103564890.10796.69.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 and compact flash
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-12-20 at 17:21 +0100, Amaury Jacquot wrote:
-> a couple weeks ago, I sent mail to this list about using JFFS2 on a 
-> compact flash card, but haven't received any answer...
-> 
-> can anyone answer me, or point me to a document describing the procedure 
-> it it is at all doable ?
-
 Hi,
 
-I guess it depends on how the compact flash is presented. If it appears
-to the system via a hard drive interface (?) then the answer would be
-yes.
+Patches applied and it seems to be working ..
 
-I'm running JFFS2 on USB Flash keys (which appear as SCSI devices
-via /dev/sd??) via the MTD block device emulator .. the default read
-speed is poor and the write speed is non-existent .. however if you grab
-my patch for blkmtd.c posted earlier, I'm pretty much getting raw
-read/write speeds from the key.
+After dd'ing a live FS off the key, sumtool'ing it and dd'ing it back
+on, it seems to have cut mount time from 31 seconds to 11 seconds ...
 
-hth
+This is certainly much better .. any way of making it quicker .. ;-)
+
 Gareth.
 
 
+On Mon, 2004-12-20 at 17:09 +0100, Ferenc Havasi wrote:
+> Hi Gareth,
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > I'm afraid this patch seems to be quite a long way from applying cleanly
+> > to my source. I'm using 2.6.9 .. at least half a dozen failures or
+> > more ...
+> 
+> It works with JFFS2 in the latest MTD CVS.
+> 
+> JFFS3 will contains this feature soon.
+> 
+> Regards,
+> Ferenc
