@@ -1,24 +1,17 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19AvAJ-0003YS-JO
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 18:14:43 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HE600B9I2JYEV@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Wed, 30 Apr 2003 19:14:23 +0200 (MEST)
-Date: Wed, 30 Apr 2003 20:13:41 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <000d01c30f39$3a05d880$1a00a8c0@itc.intrinsyc.com>
-To: Alex Samoutin <samoutin@hotbox.ru>, Thayne Harbaugh <tharbaugh@lnxi.com>
-Message-id: <200304302013.41845.tglx@linutronix.de>
-MIME-version: 1.0
-References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
- <1051312243.1172.388.camel@tubarao>
- <000d01c30f39$3a05d880$1a00a8c0@itc.intrinsyc.com>
-Content-type: text/plain; charset=windows-1251
-Content-transfer-encoding: quoted-printable
+Received: from ash.lnxi.com ([207.88.130.242])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19AvAL-0003YY-34
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 18:14:45 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Alex Samoutin <samoutin@hotbox.ru>
+Message-Id: <1051722893.1171.3546.camel@tubarao>
+Mime-Version: 1.0
+Date: 30 Apr 2003 11:14:53 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-dG+b4zJgli4qDgXVG/OL"
+cc: tglx@linutronix.de
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Fw: corrupt my NAND flash device
-Reply-To: tglx@linutronix.de
+Subject: Broken Flash chips - Was Re: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,72 +21,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 30 April 2003 18:54, Alex Samoutin wrote:
 
-> Yes I had absolutely the same problem. Some times first write command w=
-as
-> ignored, but second always successful. However I have no problem with e=
-rase
+--=-dG+b4zJgli4qDgXVG/OL
+Content-Type: text/plain; charset=iso-8859-7
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2003-04-30 at 10:54, Alex Samoutin wrote:=20
+> Hi Thayne,
+>=20
+>=20
+>=20
+> >I'm jumping in because I have some chips that appear to be broken - they
+>=20
+> >occasionally drop operations (erase/write)
+
+> Yes I had absolutely the same problem. Some times first write command was
+> ignored, but second always successful. However I have no problem with era=
+se
 > operations, only write some times was ignored.
->
-> (For Thomas) It=92s not a bad H/W or incorrect timing. I=92ve played wi=
-th
-> timing and result was the same. Also I have 5 boards with Toshiba NAND =
-chip
-> and 2 of them are working fine without retry, but other 3 need retry fo=
-r
-> normal operation.
 
-What timing params did you play with ?
-Are CLE/ALE connected to GPIO pins ?
-Do you use a ready function, which reads the R/B hardware pin ?
+Slightly different than mine (mine can fail erase and write), but still
+a concern.
 
-Can you please check the following:=20
+> (For Thomas) It=A2s not a bad H/W or incorrect timing. I=A2ve played with=
+ timing
+> and result was the same. Also I have 5 boards with Toshiba NAND chip and =
+2
+> of them are working fine without retry, but other 3 need retry for normal
+> operation.
 
-1. Add a delay into nand_wait and play with the time=20
+Slightly different than mine.  The only chips I have that "drop"
+commands are SST 49LF040 (NOR).  I have several samples from different
+batches and I have yet to see a single chip not drop a command in
+several million operations - I haven't seen a single SST 49LF040 work
+perfectly.  This is different than the other chips I have that work
+perfectly through billions of operations.
 
---- nand.c=0914 Apr 2003 07:00:39 -0000=091.43
-+++ nand.c=0930 Apr 2003 17:05:26 -0000
-@@ -226,6 +226,8 @@
- =09=09this->hwcontrol (NAND_CTL_CLRALE);
- =09}
- =09
-+=09udelay (500);
-+=09
- =09/*=20
- =09 * program and erase have their own busy handlers=20
- =09 * status and sequential in needs no delay
+What is the part number for the Toshiba NAND chip you have?
 
-2.. Report if that helps or changes anything
+I'm trying to establish how many chips are erratic, if they have similar
+problems, if retries will help all/some of the problems and where
+retries should go.
 
-3. Remove the erase abort in nand_get_chip
---- nand.c=0914 Apr 2003 07:00:39 -0000=091.43
-+++ nand.c=0930 Apr 2003 17:08:23 -0000
-@@ -287,16 +287,6 @@
- =09=09return;
- =09}
-=20
--=09if (this->state =3D=3D FL_ERASING) {
--=09=09if (new_state !=3D FL_ERASING) {
--=09=09=09this->state =3D new_state;
--=09=09=09spin_unlock_bh (&this->chip_lock);
--=09=09=09nand_select ();=09/* select in any case */
--=09=09=09this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
--=09=09=09return;
--=09=09}
--=09}
--
- =09set_current_state (TASK_UNINTERRUPTIBLE);
- =09add_wait_queue (&this->wq, &wait);
- =09spin_unlock_bh (&this->chip_lock);
+The more reports and information, the better.
 
-4.. Report if that helps or changes anything
+Thanks.
 
-Thanks
+>=20
+>=20
+> Alex.
 
 --=20
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Thayne Harbaugh
+Linux Networx
+
+--=-dG+b4zJgli4qDgXVG/OL
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+sASMfsBPTKE6HMkRAm6MAJ4ooTZkafXUD4+qNS4J0ZVNoQkNQACdFOtF
+PNPNli96ANv1/oAyKl08yK8=
+=Jl20
+-----END PGP SIGNATURE-----
+
+--=-dG+b4zJgli4qDgXVG/OL--
