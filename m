@@ -1,21 +1,14 @@
-Received: from sphere.barak.net.il ([212.150.48.98])
+Received: from mx10.radisys.com ([206.102.10.36])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AVvBa-0007Yh-0W
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2003 16:03:06 +0000
-Received: from pc166 ([82.166.70.240]) by sphere.barak.net.il
-	b2629777bce4038e9f419f7b71122558)
-	with SMTP id <20031215141051.KBOC4652.sphere@pc166>
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Dec 2003 16:10:51 +0200
-Message-ID: <009901c3c314$d86adc70$a600a8c0@pc166>
-From: "Isak Levi" <isak@barak.net.il>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 15 Dec 2003 16:07:59 +0200
+	id 1AW4SS-0000LS-7d
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2003 01:57:08 +0000
+To: linux-mtd@lists.infradead.org
+Message-ID: <OF8A3B61AB.36166DAD-ON88256DFD.007E51D0-88256DFE.000A899C@radisys.com>
+From: Arun.Kalluri@radisys.com
+Date: Mon, 15 Dec 2003 17:55:03 -0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1255"
-Content-Transfer-Encoding: 7bit
-Subject: problem using jffs2 with nand flash
+Content-type: text/plain; charset=us-ascii
+Subject: Problems installing MTD for 64 bit bus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,197 +18,305 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again,
-I am using samsung 2k pages NAND flash and I am trying to use JFFS2 with the
-flash.
-I did the following steps before copying a file:
+Greetings-
 
-1. eraseall /devfs/mtd/6
-2. mount -t jffs2 /devfs/mtdblock/6 /mnt
+I am having problems getting up a JFFS2 file system with linux kernel
+2.4.17 on a 8260 processor with 64 bit bus. I had success in bringing up a
+similar board with 32 bit bus without any problem.  I went through the
+mailing archive and as advised applied the latest
+mtd-snapshot-20031208.tar.bz2 on my kernel. I found there were a few
+compiling problems I could resolve some, but the zlib.h and some other
+files were causing problems, which I was not able to resolve. So, I decided
+to go to a relatively older mtd snapshot and used mtd-snapshot-20020731,
+which has 64 bit support and fewer changes. I was able to compile and
+configure, but I am having problems installing JFFS2 on MTD. Could you
+please tell me where I could be going wrong..
 
-while /mnt is empty, I am trying to copy ~11k file on it and encounter the
-following error:
-Only one page(2k) is actually being written to the flash (why is that?) and
-after rebooting & remounting the file system system the file is only 4096
-bytes long.
-I get 'Unable to handle kernel request at virtual address ... ' within the
-kupdated process. this is the full log I recieved including the Oops:
+thanks
+Arun
 
-# cp /tmp/triton.c triton.c
-jffs2_lookup()
-jffs2_lookup()
-jffs2_lookup()
-jffs2_lookup()
-jffs2_lookup()
-jffs2_read_inode(): inode->i_ino == 95
-jffs2_do_read_inode_internal(): ino #95 nlink is 1
-jffs2_get_inode_nodes(): ino #95
-Node at 0003167c (2) is a data node
-version 1, highest_version now 1
-dnode @0003167c: ver 1, offset 0000, dsize 0007
-jffs2_add_full_dnode_to_inode(ino #95, f c3aec1e0, fn c3d72bc0)
-jffs2_read_inode() returning
-jffs2_create()
-jffs2_new_inode(): dir_i 1, mode 0x81a4
-jffs2_do_new_inode(): Assigned ino# 2
-jffs2_reserve_space(): Requested 0x44 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x20000 bytes at 0x37e0000
-jffs2_do_create(): reserved 0x20000 bytes
-jffs2_add_physical_node_ref(): Node at 0x37e0000(2), size 0x44
-jffs2_write_dnode wrote node at 0x037e0000(2) with dsize 0x0, csize 0x0,
-node_cr
-c 0x535a2fc1, data_crc 0x00000000, totlen 0x00000044
-jffs2_do_create created file with mode 0x81a4
-jffs2_complete_reservation()
-jffs2_thread_should_wake(): nr_free_blocks 2038, nr_erasing_blocks 0,
-dirty_size
- 0x0: no
-jffs2_reserve_space(): Requested 0x30 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x1ffbc bytes at 0x37e0044
-jffs2_write_dirent(ino #1, name at *0xc3b6f91c "triton.c"->ino #2, name_crc
-0x8e
-f47e44)
-jffs2_add_physical_node_ref(): Node at 0x37e0044(2), size 0x30
-jffs2_add_fd_to_list( c3ffd9e0, c3aec800 (->00000000))
-jffs2_complete_reservation()
-jffs2_thread_should_wake(): nr_free_blocks 2038, nr_erasing_blocks 0,
-dirty_size
- 0x0: no
-jffs2_create: Created ino #2 with mode 100644, nlink 1(1). nrpages 0
-jffs2_prepare_write()
-end prepare_write(). pg->flags 41
-jffs2_commit_write(): ino #2, page at 0x0, range 0-4096, flags 2041
-jffs2_write_inode_range(): Ino #2, ofs 0x0, len 0x1000
-jffs2_reserve_space(): Requested 0xc4 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x1ff8c bytes at 0x37e0074
-calling deflate with avail_in 4084, avail_out 4084
-deflate returned with avail_in 0, avail_out 2923, total_in 4084, total_out
-1161
-calling deflate with avail_in 12, avail_out 2923
-deflate returned with avail_in 0, avail_out 2918, total_in 4096, total_out
-1166
-zlib compressed 4096 bytes into 1172
-jffs2_add_physical_node_ref(): Node at 0x37e0074(2), size 0x4d8
-jffs2_write_dnode wrote node at 0x037e0074(2) with dsize 0x1000, csize
-0x494, no
-de_crc 0x4c37861f, data_crc 0xf7370993, totlen 0x000004d8
-jffs2_add_full_dnode_to_inode(ino #2, f c3aec9e0, fn c3d72be0)
-Obsoleting node at 0x037e0000 of len 44: Wasting
-jffs2_complete_reservation()
-jffs2_thread_should_wake(): nr_free_blocks 2038, nr_erasing_blocks 0,
-dirty_size
- 0x0: no
-increasing writtenlen by 4096
-jffs2_commit_write() returning 4096
-jffs2_prepare_write()
-end prepare_write(). pg->flags 41
-jffs2_commit_write(): ino #2, page at 0x1000, range 0-4096, flags 2041
-jffs2_write_inode_range(): Ino #2, ofs 0x1000, len 0x1000
-jffs2_reserve_space(): Requested 0xc4 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x1fab4 bytes at 0x37e054c
-calling deflate with avail_in 4084, avail_out 4084
-deflate returned with avail_in 0, avail_out 2807, total_in 4084, total_out
-1277
-calling deflate with avail_in 12, avail_out 2807
-deflate returned with avail_in 0, avail_out 2795, total_in 4096, total_out
-1289
-zlib compressed 4096 bytes into 1295
-nand_write_ecc: to = 0x037e0000, len = 2048
-jffs2_add_physical_node_ref(): Node at 0x37e054c(2), size 0x554
-jffs2_write_dnode wrote node at 0x037e054c(2) with dsize 0x1000, csize
-0x50f, no
-de_crc 0x174c4991, data_crc 0xa31fa628, totlen 0x00000553
-jffs2_add_full_dnode_to_inode(ino #2, f c3aec9e0, fn c3d72bd0)
-jffs2_complete_reservation()
-jffs2_thread_should_wake(): nr_free_blocks 2038, nr_erasing_blocks 0,
-dirty_size
- 0x0: no
-increasing writtenlen by 4096
-jffs2_commit_write() returning 4096
-jffs2_prepare_write()
-jffs2_read_inode_range: ino #2, range 0x00002000-0x00003000
-Reading 8192-8192 from node at 0x037e054c (2)
-Filling non-frag hole from 8192-12288
-end prepare_write(). pg->flags 2049
-jffs2_commit_write(): ino #2, page at 0x2000, range 0-2965, flags 2049
-jffs2_write_inode_range(): Ino #2, ofs 0x2000, len 0xb95
-jffs2_reserve_space(): Requested 0xc4 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x1f560 bytes at 0x37e0aa0
-calling deflate with avail_in 2953, avail_out 2953
-deflate returned with avail_in 0, avail_out 1966, total_in 2953, total_out
-987
-calling deflate with avail_in 12, avail_out 1966
-deflate returned with avail_in 0, avail_out 1956, total_in 2965, total_out
-997
-zlib compressed 2965 bytes into 1003
-jffs2_add_physical_node_ref(): Node at 0x37e0aa0(2), size 0x430
-jffs2_write_dnode wrote node at 0x037e0aa0(2) with dsize 0xb95, csize 0x3eb,
-nod
-e_crc 0xbf79b8c1, data_crc 0x86b83b08, totlen 0x0000042f
-jffs2_add_full_dnode_to_inode(ino #2, f c3aec9e0, fn c3d72bf0)
-jffs2_complete_reservation()
-jffs2_thread_should_wake(): nr_free_blocks 2038, nr_erasing_blocks 0,
-dirty_size
- 0x0: no
-increasing writtenlen by 2965
-jffs2_commit_write() returning 2965
-# Unable to handle kernel paging request at virtual address 7dc3aecd
-pgd = c0104000
-*pgd = 00000000, *pmd = 00000000
-Internal error: Oops: ffffffff
-CPU: 0
-pc : [<c0135e4c>]    lr : [<c01597b4>]    Not tainted
-sp : c003bf7c  ip : c003bf9c  fp : c003bf98
-r10: a0115fc0  r9 : 69052903  r8 : c0298a94
-r7 : c3aec980  r6 : 00000000  r5 : c3aec970  r4 : c3aec97d
-r3 : 7dc3aec9  r2 : 87c3aec9  r1 : c3aec8c8  r0 : c3aec970
-Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
-Control: 397F  Table: A3EDC000  DAC: 0000001D
-Process kupdated (pid: 6, stackpage=c003b000)
-Stack: (0xc003bf6c to 0xc003c000)
-bf60:                            c01597b4 c0135e4c 80000013 ffffffff
-00000001
-bf80: c3aec8c0 c3ecec00 c3ecec60 c003bfbc c003bf9c c01597b4 c0135e28
-c0116928
-bfa0: c003a000 c003a334 c003a344 c0296c48 c003bfd4 c003bfc0 c0149270
-c01596e0
-bfc0: c0116928 c003a000 c003bff4 c003bfd8 c01495d4 c014926c 00000000
-00010e00
-bfe0: c02a6cfc c02a6cf0 00000000 c003bff8 c0119ca4 c01494a8 08d8418e
-b6d9d641
-Backtrace:
-Function entered at [<c0135e1c>] from [<c01597b4>]
- r7 = C3ECEC60  r6 = C3ECEC00  r5 = C3AEC8C0  r4 = 00000001
-Function entered at [<c01596d4>] from [<c0149270>]
- r8 = C0296C48  r7 = C003A344  r6 = C003A334  r5 = C003A000
- r4 = C0116928
-Function entered at [<c0149260>] from [<c01495d4>]
- r5 = C003A000  r4 = C0116928
-Function entered at [<c014949c>] from [<c0119ca4>]
- r7 = C02A6CF0  r6 = C02A6CFC  r5 = 00010E00  r4 = 00000000
-Code: 0a00001d e5954010 e5942004 e5943000 (e5832004)
+Relevant information about this problem is printed below:
 
 
-Trace c014949c :     kupdate
-Trace c0149260 :    sync_old_buffers
-Trace c01596d4 :     sync_unlocked_inodes
-Trace c0135e1c :     filemap_fdatawait
+## Booting image at 28100000 ...
+   Image Name:   ABCD Version 0.030
+   Image Type:   PowerPC Linux Kernel Image (gzip compressed)
+   Data Size:    636498 Bytes = 621.6 kB
+   Load Address: 00000000
+   Entry Point:  00000000
+   Verifying Checksum ... OK
+   Uncompressing Kernel Image ... OK
+Memory BAT mapping: BAT2=256Mb, BAT3=0Mb, residual: 0Mb
+Linux version 2.4.17 (ak001@build7) (gcc version 2.95.3 200103153On node 0
+totalpages: 65536
+zone(0): 65536 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: setenv bootargs root=/dev/mtdblock1 rw
+ip=10.0.0.1:10.0.0.5Warning: real time clock seems stuck!
+Calibrating delay loop... 197.83 BogoMIPS
+Memory: 256044k available (1228k kernel code, 440k data, 60k init, 0k
+highmem)
+Dentry-cache hash table entries: 32768 (order: 6, 262144 bytes)
+Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
+Mount-cache hash table entries: 4096 (order: 3, 32768 bytes)
+Buffer-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Page-cache hash table entries: 65536 (order: 6, 262144 bytes)
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+Disabling the Out Of Memory Killer
+JFFS2 version 2.1. (C) 2001, 2002 Red Hat, Inc., designed by Axis
+Communication.i2c-core.o: i2c core module version 2.6.2 (20011118)
+i2c-dev.o: i2c /dev entries driver module version 2.6.2 (20011118)
+i2c-algo_8260.o: i2c MPC8260 module
+ i2c-algo-8260.o: scanning bus m8260...
+(64)(a4)(aa)
+i2c-proc.o version 2.6.2 (20011118)
+CPM UART driver version 0.01
+ttyS0 on SMC1 at 0x0000, BRG1
+ttyS1 on SMC2 at 0x0040, BRG2
+pty: 256 Unix98 ptys configured
+block: 128 slots per queue, batch=32
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+eth0: FCC ENET Version 0.3, 00:00:50:0c:30:c8
+loop: loaded (max 8 devices)
+physmap flash device: 8000000 at 28000000
+Using buffer write method
+the size of the flash is 8000000
+Using partition definition
+Creating 5 MTD partitions on "Physically mapped flash":
+0x00300000-0x06000000 : "flash partition - JFFS2"
+Registering the partition of size 5d00000
+0x00200000-0x00300000 : "flash partition - Rollback Kernel"
+Registering the partition of size 100000
+0x00100000-0x00200000 : "flash partition - Main Kernel"
+Registering the partition of size 100000
+0x00000000-0x00100000 : "flash partition - PPCBoot and parameters"
+Registering the partition of size 100000
+0x06000000-0x08000000 : "flash partition - Not Used"
+Registering the partition of size 2000000
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+IP: routing cache hash table of 2048 buckets, 16Kbytes
+TCP: Hash tables configured (established 16384 bind 16384)
+IP-Config: Complete:
+      device=eth0, addr=10.0.0.1, mask=255.255.255.0, gw=255.255.255.255,
+     host=desg, domain=, nis-domain=(none),
+     bootserver=10.0.0.2, rootserver=10.0.0.2, rootpath=
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+jffs2: read_super for device 1f:01
+the value of sector_size is 80000 and flash size is 5d00000
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000:
+0xc90c id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004:
+0x5ed5 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008:
+0xd850 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000000c:
+0xee71 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000010:
+0x58bc id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000014:
+0x4a41 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018:
+0x0a5e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c:
+0xf977 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020:
+0x14ee id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024:
+0x08b4 id
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080000:
+0xc92e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080004:
+0xdec5 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080008:
+0x5852 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0008000c:
+0xde71 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080010:
+0x58ba id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080014:
+0x4a51 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080018:
+0x0a5e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0008001c:
+0xd937 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080020:
+0x54ee id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00080024:
+0x08b4 id
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00080000 is not formatted. It will be erased
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100000:
+0xc92e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100004:
+0x5ed5 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100008:
+0x5850 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0010000c:
+0xce21 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100010:
+0x58be id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100014:
+0x4a50 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100018:
+0x025e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0010001c:
+0xf973 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100020:
+0x54ee id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00100024:
+0x08b4 id
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00100000 is not formatted. It will be erased
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180000:
+0xc81e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180004:
+0x5ed5 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180008:
+0x5852 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0018000c:
+0x4e70 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180010:
+0x58ba id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180014:
+0x4a50 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180018:
+0x0a5e id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0018001c:
+0xd977 id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180020:
+0x54ee id
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00180024:
+0x08b4 id
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x00180000 is not formatted. It will be erased
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x04600000:
+0xfaaa id
+jffs2_scan_empty(): Empty block at 0x04600004 ends at 0x04600008 (with
+0xeaabafy
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x04600008:
+0xeaab id
+jffs2_scan_empty(): Empty block at 0x0460000c ends at 0x04600010 (with
+0xeaaaaay
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x04600010:
+0xeaaa id
+jffs2_scan_empty(): Empty block at 0x04600014 ends at 0x04600018 (with
+0xaeaeaay
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x04600018:
+0xaeae id
+jffs2_scan_empty(): Empty block at 0x0460001c ends at 0x04600020 (with
+0xeaabeey
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x04600020:
+0xeaab id
+jffs2_scan_empty(): Empty block at 0x04600024 ends at 0x04600028 (with
+0xbaafaay
+Further such events for this erase block will not be printed
+JFFS2: Erase block at 0x04600000 is not formatted. It will be erased
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+Kernel panic: VFS: Unable to mount root fs on 1f:01
+ <0>Rebooting in 180 seconds..
 
-Code:
-e5832004 :      str r2, [r3,#4]
-e5943000 :      ldr r3,[r4]
-e5942004 :      ldr r2, [r4,#4]
-e5954010 :      ldr r4, [r5,#16]
-0a00001d :      beq c0135eb8 <filemap_fdatawait + 0x9c>
 
 
 
 
-Another question: What is inode 95 doing there if the flash is empty?
 
-Thanks.
+
+
+
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+# CONFIG_MTD_DEBUG is not set
+CONFIG_MTD_PARTITIONS=y
+CONFIG_MTD_CONCAT=y
+# CONFIG_MTD_REDBOOT_PARTS is not set
+CONFIG_MTD_CMDLINE_PARTS=y
+CONFIG_MTD_CHAR=y
+CONFIG_MTD_BLOCK=y
+# CONFIG_FTL is not set
+# CONFIG_NFTL is not set
+
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+CONFIG_MTD_JEDECPROBE=y
+CONFIG_MTD_GEN_PROBE=y
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+# CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
+# CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
+CONFIG_MTD_CFI_GEOMETRY=y
+# CONFIG_MTD_CFI_B1 is not set
+# CONFIG_MTD_CFI_B2 is not set
+# CONFIG_MTD_CFI_B4 is not set
+CONFIG_MTD_CFI_B8=y
+# CONFIG_MTD_CFI_I1 is not set
+# CONFIG_MTD_CFI_I2 is not set
+CONFIG_MTD_CFI_I4=y
+# CONFIG_MTD_CFI_I8 is not set
+CONFIG_MTD_CFI_INTELEXT=y
+# CONFIG_MTD_CFI_AMDSTD is not set
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set
+# CONFIG_MTD_AMDSTD is not set
+# CONFIG_MTD_SHARP is not set
+# CONFIG_MTD_JEDEC is not set
+
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_PHYSMAP=y
+CONFIG_MTD_PHYSMAP_START=28000000
+CONFIG_MTD_PHYSMAP_LEN=08000000
+CONFIG_MTD_PHYSMAP_BUSWIDTH=8
+# CONFIG_MTD_TQM8XXL is not set
+# CONFIG_MTD_RPXLITE is not set
+# CONFIG_MTD_MBX860 is not set
+# CONFIG_MTD_DBOX2 is not set
+# CONFIG_MTD_CFI_FLAGADM is not set
+# CONFIG_MTD_REDWOOD is not set
+# CONFIG_MTD_PCI is not set
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+# CONFIG_MTD_BLKMTD is not set
+# CONFIG_MTD_DOC1000 is not set
+# CONFIG_MTD_DOC2000 is not set
+# CONFIG_MTD_DOC2001 is not set
+# CONFIG_MTD_DOCPROBE is not set
+
+#
+# NAND Flash Device Drivers
+#
+# CONFIG_MTD_NAND is not set
+
+
+
+
+
+
+ CONFIG_JBD_DEBUG is not set
+# CONFIG_FAT_FS is not set
+# CONFIG_MSDOS_FS is not set
+# CONFIG_UMSDOS_FS is not set
+# CONFIG_VFAT_FS is not set
+# CONFIG_EFS_FS is not set
+# CONFIG_JFFS_FS is not set
+CONFIG_JFFS2_FS=y
+CONFIG_JFFS2_FS_DEBUG=0
+# CONFIG_CRAMFS is not set
