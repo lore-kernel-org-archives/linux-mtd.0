@@ -1,18 +1,17 @@
-Received: from jerusalem.magic.fr ([195.154.101.82])
+Received: from h154.195-230-144.ukrpack.net ([195.230.144.154] helo=srv1.lrpeople.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zgUI-0007r0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 16:11:50 +0100
-Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
-	by jerusalem.magic.fr (8.9.0/8.9.0) with ESMTP id RAA28181
-	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 17:15:59 +0200 (CEST)
-Received: from inventel.fr (193.54.84.61) by serveur.inventel.fr (NPlex 1.3.152) for linux-mtd@lists.infradead.org; 15 May 2001 17:16:04 +0200
-Message-ID: <3B01495C.A7CC459A@inventel.fr>
-Date: Tue, 15 May 2001 17:21:00 +0200
-From: Xavier DEBREUIL <xde@inventel.fr>
+	id 14zglf-0007sF-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 16:29:48 +0100
+Message-ID: <003f01c0dd4c$11102e60$5502010a@lrpeople.com>
+From: "Alexander Melichenko" <AlexanderM@lrpeople.com>
+To: "Vipin Malik" <vipin.malik@daniel.com>
+Cc: <linux-mtd@lists.infradead.org>,
+	<s_krishna@in.ibm.com>
+Subject: SC520 CDP - problem with booting from BIOS Flash
+Date: Tue, 15 May 2001 18:33:48 +0400
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: how to make
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -25,11 +24,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I got the 20010306 version working on my board and now I would like to use jffs2
-; so, I got the last source version from the cvs access from yesterday and copy
-necessary files in my kernel tree ; then make clean, xconfig, and Image but it
-does not compile mtdchar or mtdblock and nothing in fact. I am using the
-2.4.0-test6 kernel. Did I miss something obvious ?
-Do I have to modify Makefiles by hand ?
+Hello, Vipin!
+I work with AMD SC520 CDP. I use file sc520cdp.c from CVS (written by Robert
+Kaiser). It works good when Linux boots from HDD or FDD. I can read/write
+into mtd0,... device or work with JFFS placed into mtdblock device.
+My root FS (JFFS) is placed into mtdblock0. Now I would like to place kernel
+into BIOS-flash (29F040). I followed instructions, written by You.  But I
+have some questions. My actions is :
 
-Xavier
+I use lstart16.asm from AMD site with Your modifications.
+
+BOOTCS - DIP
+ROMCS1 - 8MHCS
+ROMCS2 - 8MLCS
+
+z
+yi
+nb0
+ns lstart16.abs 7f800
+ns zFlashImage 0 (zFlashImage is kernel with assigning root device
+mtdblock0).
+z
+g
+
+After reset I see changing some digits on the LEDs but kernel is not
+booting.
+
+Why kernel doesn't booting? This kernel boots good ( with root fs into
+mtdblock0 ) when I use HDD.
+Any ideas?
+
+Thanks for any help.
+
+Alexander Melichenko
