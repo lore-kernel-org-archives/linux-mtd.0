@@ -1,18 +1,14 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from f132.law11.hotmail.com ([64.4.17.132] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18BeeE-0003UW-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 17:16:22 +0000
-Received: from mvista.com (av [127.0.0.1])
-	by av.mvista.com (8.9.3/8.9.3) with ESMTP id JAA18348
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 09:46:35 -0800
-Message-ID: <3DD13E84.5B38836C@mvista.com>
-Date: Tue, 12 Nov 2002 09:46:44 -0800
-From: Scott Anderson <scott_anderson@mvista.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: cmdline.c file name collision
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 18Bfpz-0003dm-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 18:32:35 +0000
+From: "J B" <mad_flasher@hotmail.com>
+To: Wolfram.Gettert@fci.com, linux-mtd@lists.infradead.org
+Subject: Re: Problem writing to flash with writeb()
+Date: Tue, 12 Nov 2002 13:02:27 -0600
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F132Y30kkZIhTrBoe2U00000281@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,16 +20,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+>   	physmap_map.map_priv_1 = (unsigned 
+>long)ioremap_nocache(WINDOW_ADDR,WINDOW_SIZE);
+>
+>	...
+>
+>	//Read Manufacturer and Device code
+>	physmap_write8(&physmap_map,0x90,physmap_map.map_priv_1);
 
-I recently noticed that when CONFIG_MODVERSIONS is turned on, both
-drivers/mtd/cmdline.c and lib/cmdline.c are trying to store their
-symbol versions in include/linux/modules/cmdline.ver in a 2.4 kernel
-tree.  Only one of them "wins" leaving the versioned symbols of the
-other undefined.  It seems to me that drivers/mtd/cmdline.c should
-probably be renamed to avoid the conflict.  Thoughts?
+Are you sure you want to pass physmap_map.map_priv_1 as the address?  That 
+would imply that the address you are writing 0x90 to is (2 * 
+physmap_map.map_priv_1) because physmap_writeX will add map->map_priv_1 to 
+whatever address you pass it.  If that is bigger than WINDOW_SIZE, I don't 
+think the command will actually reach the flash chip because the address 
+isn't mapped to a flash chip.  I am assuming you are using a cfi compliant 
+flash chip and 0x90 is putting it into "Read Identifier Codes".  Try using 0 
+for the address instead, which is what you did below.
 
-    Scott Anderson
-    scott_anderson@mvista.com   MontaVista Software Inc.
-    (408)328-9214               1237 East Arques Ave.
-    http://www.mvista.com       Sunnyvale, CA  94085
+>If I do it like this:
+>
+>	p = physmap_map.map_priv_1;
+>	p[0] = 0x90;
+
+Looks like this is the equivalent of:
+physmap_write8(&physmap_map,0x90,0);
+
+
+I could be very wrong however.  I still consider myself a newbie, so sorry 
+if this doesn't make any sense.  Hope it helps though.
+
+
+Josh
+
+_________________________________________________________________
+The new MSN 8: smart spam protection and 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
