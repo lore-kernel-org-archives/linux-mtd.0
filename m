@@ -1,12 +1,12 @@
 Received: from [64.244.22.242] (helo=mail.seranoa.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16bo8G-00062W-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 19:34:56 +0000
+	id 16bp5j-00066U-00
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 20:36:23 +0000
 Received: from seranoa.com (IDENT:andrew.dixon@[172.16.1.202])
-	by mail.seranoa.com (8.11.0/8.11.0) with ESMTP id g1FGbKs07108
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 11:37:47 -0500
-Message-ID: <3C6D35F6.6CF2A996@seranoa.com>
-Date: Fri, 15 Feb 2002 11:23:18 -0500
+	by mail.seranoa.com (8.11.0/8.11.0) with ESMTP id g1FKvSs11338
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2002 15:57:28 -0500
+Message-ID: <3C6D72ED.F2FCC661@seranoa.com>
+Date: Fri, 15 Feb 2002 15:43:25 -0500
 From: Andrew Dixon <andrew.dixon@seranoa.com>
 MIME-Version: 1.0
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -32,7 +32,7 @@ to kind of work by faking out cfi_chip_setup in cfi_probe.c.  I just
 increase cfi->cfiq->DevSize by one so that it thinks the device is twice
 as big and then I add one to cfi->cfiq->NumEraseRegions so that it
 thinks that there are two erase blocks (each one being one of my flash
-chips).  
+chips).
 
 This device is happily recognized and I can mount it as a jffs2 on
 /mnt.  It even works as long as I don't write too much data to it.  When
@@ -48,8 +48,8 @@ it.
 Thanks,
 Andy
 
- 
--- 
+
+--
 Andrew Dixon
 Software Engineer
 Seranoa Networks
