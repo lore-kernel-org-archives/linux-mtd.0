@@ -1,24 +1,19 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from mbutcher206.dsl.frii.net ([216.17.171.206] helo=www.aleph-null.tv)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DXvI-0000B6-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 21:53:00 +0100
-Received: from 213.237.12.194.adsl.brh.worldonline.dk ([213.237.12.194] helo=firewall.jaquet.dk)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 15DY0d-0006U4-00
-	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2001 21:58:31 +0100
-Date: Fri, 22 Jun 2001 22:57:59 +0200
-From: Rasmus Andersen <rasmus@jaquet.dk>
-To: Arnaldo Carvalho de Melo <acme@conectiva.com.br>,
-	dwmw2@redhat.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cleanup in drivers/mtd/ftl.c (245-ac16)
-Message-ID: <20010622225759.F842@jaquet.dk>
-References: <20010622222931.C842@jaquet.dk> <20010622172106.B3614@conectiva.com.br>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20010622172106.B3614@conectiva.com.br>; from acme@conectiva.com.br on Fri, Jun 22, 2001 at 05:21:06PM -0300
+	id 15DZbT-0000Je-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 23:40:40 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: M Butcher <mbutcher@aleph-null.tv>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: DOC Millenium not found by docprobe
+Date: Fri, 22 Jun 2001 16:39:49 -0600
+Cc: "MTD for Linux" <linux-mtd@lists.infradead.org>
+References: <0106211659100B.11839@golan> <26595.993165317@redhat.com>
+In-Reply-To: <26595.993165317@redhat.com>
+MIME-Version: 1.0
+Message-Id: <0106221639490C.11839@golan>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,24 +25,53 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, Jun 22, 2001 at 05:21:06PM -0300, Arnaldo Carvalho de Melo wrote:
-> Hi Rasmus,
-> 
-> 	I've fixed this ones and its already in 2.4.6-pre5, please take a
-> look and see if something is missing.
+On Thursday 21 June 2001 05:15 pm, David Woodhouse wrote:
+> mbutcher@aleph-null.tv said:
+> > But I wanted to create a single partition, so I followed the steps in
+> > the  jffs howto and did the following:
+> > (0: sometimes do an 'erase')
+> > 1: nftl_format /dev/mtd0
+> > 2: fdisk /dev/nftla (make one big partition)
+>
+> You didn't need step 1. We definitely shouldn't be encouraging people to do
+> that. Just using fdisk to change the partitioning would have been enough.
+>
 
-These patches are very close so I'll of course retract mine[1].
-The only thing I'll recommend is the printk I have in the error
-path.
+So I should really only nftl_format when the DOC is hosed?
 
-[1] Sorry about the unnecessary mailing. I am not accustomed to
-janitor-like patches being in Linus' kernel before Alan's :)
-(Arnaldo already offered an explanation for why this one happened
-to be.)
--- 
-Regards,
-        Rasmus(rasmus@jaquet.dk)
+> > 3: mke2fs /dev/nftla
+>
+> Is this a typo? Having made a partition you then erased it by using mkfs on
+> the _whole_ device rather than the single partition. That's fine if it's
+> what you wanted... but...
+>
 
-Smoking kills. If you're killed, you've lost a very important part of your
-life.  -Brooke Shields, during an interview to become spokesperson for a
-federal anti-smoking campaign.
+That should have been mke2fs /dev/nftla1 
+
+The intent was to make the fs on the partition... 
+
+> > 4: mount -t ext2 /dev/nftla1 /mnt
+>
+> I'm amazed this worked.
+>
+
+Well... had I typed #3 correctly, you probably wouldn't be as amazed. ;-)
+
+> mbutcher@aleph-null.tv said:
+> >  When I used the Millenium Only driver, I got an error from docprobe
+> > saying  something like "no driver", though I could see it with lsmod.
+>
+> To use that, you need to undef DOC_SINGLE_DRIVER in docprobe.c
+>
+
+Oh, yeah... that's even in the doc. Sorry. Which driver would you recommend 
+in this situation? The Millenium-only?
+
+
+Also, any ideas why the DOC "disappears" after a while -- e.g. why, after 
+doing the above process a few times, the DOC is no longer detected?
+
+
+Thanks,
+
+Matt
