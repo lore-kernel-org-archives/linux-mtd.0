@@ -1,58 +1,70 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZtYN-0003A1-00
-	for mtd-list@infradead.org; Tue, 28 Mar 2000 11:48:55 +0100
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZtYM-00039v-00
-	for mtd@infradead.org; Tue, 28 Mar 2000 11:48:54 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 3.03 #1)
-	id 12ZtYV-0007P2-00
-	for mtd@infradead.org; Tue, 28 Mar 2000 11:49:03 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 12ZtYV-0004jZ-00; Tue, 28 Mar 2000 11:49:03 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Subject: Preliminary documentation.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Mar 2000 11:49:03 +0100
-Message-ID: <18200.954240543@devel2.axiom.internal>
+	id 12ZuCO-0003FT-00
+	for mtd-list@infradead.org; Tue, 28 Mar 2000 12:30:16 +0100
+Date: Tue, 28 Mar 2000 13:30:20 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: More comments 
+In-Reply-To: <18073.954238703@devel2.axiom.internal>
+Message-ID: <Pine.LNX.3.96.1000328132847.17777A-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tue, 28 Mar 2000, David Woodhouse wrote:
+> alex@cendio.se said:
+> > On Mon, 13 Mar 2000, David Woodhouse wrote:
+> > > This has to be done somewhere. Where's best - in _every_ device dri=
+ver
+> > > or in only those front ends which attempt non-block-aligned access?
+>=20
+> > I don't know. You seem to think that it's better to have it in the
+> > front-ends, and I can accept that. I think the "_every_ driver" part
+> > is a bit of an overstatement though, as I would think many drivers ar=
+e
+> > for fully memory-mapped flashes where this wouldn't be necessary
+> > (where, in fact, looping in the frontend is unnecessary overhead).
+> > =20
+>=20
+> OK. How about this:
+>=20
+> You don't have to check the return from the mtd->write() function, it m=
+ust=20
+> always write the complete buffer or return failure.
+>=20
+> _BUT_ you may never make a write request which crosses a block boundary.
+>=20
+> So you still have to possibly issue more than one write request in the =
+jffs=20
+> code, but at least you can know beforehand and code accordingly, rather=
+ than=20
+> having a na=EFve loop.
+>=20
+>  (s/write/read/ throughout also applies, obviously.)
+=20
+Yes, this seems like a very good compromise. The jffs case is a bit
+excpetional in this case.
+=20
+> I'm putting together some documentation.=20
+>=20
+> 	www.linux-mtd.infradead.org/tech/API.html
+> 					/mtd_info.html
+> 					/core.html
+> 					/erase.html
+>=20
+> This will contain some changes to what's currently implemented - most n=
+otably=20
+> the notifier stuff will no longer have the horrible race conditions tha=
+t it=20
+> currently does.
 
-I've now put written up the documentation I wrote out by hand last night.
-It's at http://www.linux-mtd.infradead.org/tech/
+ I'll read it later tonigh. Review meetings all day...
 
-Comments, please. I haven't yet filled in my suggested restrictions on the 
-read/write functions, but I have removed the retlen arguments.
-
-As I said, I'm changing the notifier stuff to make it cleaner. I have yet to 
-actually change the code to fit in with my new documentation. 
-
-Also, a couple of questions on the decisions I've made:
-
-1. Is mtd->sync() enough, or could users want more access to the erase queue?
-
-	We could add 
-		struct erase_info *mtd->eraseq;
-		spin_lock_t	mtd->eraseq_lock;
-	... and allow users to use that.
-
-2. Is the callback in the erase_info OK or would we be better off having a 
-wait_queue_head_t instead (or as well)?
-
-
-
-
-
-
---
-dwmw2
+/ Alex
 
 
 
