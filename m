@@ -1,16 +1,18 @@
-Received: from mail.frequentis.com ([213.47.210.156])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BzysB-0002o3-1x
-	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2004 10:35:38 -0400
-Message-Id: <s12cbf16.032@mail.frequentis.com>
-Date: Wed, 25 Aug 2004 16:35:12 +0200
-From: "Gerhard TAEUBL" <Gerhard.TAEUBL@frequentis.com>
-To: <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C05sT-00045b-In
+	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2004 18:04:25 -0400
+Message-ID: <412D0CD5.3030104@mvista.com>
+Date: Wed, 25 Aug 2004 15:04:05 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Der Herr Hofrat <der.herr@hofr.at>
+References: <200408250608.i7P68x004504@hofr.at>
+In-Reply-To: <200408250608.i7P68x004504@hofr.at>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Subject: 28F320S3
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: Can jffs2 support XIP extensions?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Der Herr Hofrat wrote:
 
-I'm wondering if the mtd driver (cfi_cmdset_0001.c) really works?
-I get sometimes the error that the drive is read only.
-OK now my configuration: 
-Two 28F320S3 in parallel manner used as 32bit data device with an
-MPC860T.
-After looking at the code and put some Debug outputs into the code. It
-seems, that the chip isn't fast enough, to set the bits in the status
-register, because I got 00800082 (or 00820080). OK so thats right that I
-got an error as read only device...
-Then I look at the Status regsiter, and there you clear all other bits
-beside the bit 7. If I dont mask all unneeded bits I run in troubles
-while one block is erased and not suspended.
+> there are a number of examples of boot times and runtime performance posted
+> on the web and ALL of them show that the boot times of XIP
+> enabled kernels are primarily lower due to the kernel
+> not being decompressed and other steps actually being slower.
+> 
+>    Table of bootup times:
+> 
+>    Boot Stage                         Non-XIP  Time XIP Time
+>    Copy kernel to RAM                 85 ms    12 ms 
+>    Decompress kernel                  453 ms   0 ms
+>    Kernel time to initialize
+>    (time to first user space program) 819 ms   882 ms
+>    Total kernel boot time             1357 ms  894 ms
+>    Reduction:                         -        463 ms
+> 
+> (from: http://tree.celinuxforum.org/pubwiki/moin.cgi/KernelXIP)
 
-(if (status == status_OK)
-   break;)
+Yes, those are the numbers I measured on a PPC405LP.  The step of 
+copying the necessary kernel image is also slower non-XIP, since XIP 
+copies only the initialized data sections.  If an uncompressed non-XIP 
+image is used then that particular number will increase, partially 
+offseting the gain due to skipping the decompression.  Depending on the 
+sizes involved XIP will likely be faster by a few tens or hundreds of 
+milliseconds.  When combined with application XIP of several executables 
+and shared libraries from a CramFS filesystem this can add up to a 
+significant gain; if ROMFS is used to avoid compression then the 
+difference is less but still significant.
 
-Because bit 6 is still set and never cleared, so I get a timeout. I
-modified this line again:
-if ((status & ~0x00400040) == status_OK)
-   break;
+> The execution times of most system calls are clearly longer (not sure if
+> it was a 405/266 or a OMAP/168) fork was reported at 7.1 vs 4.8 us , trivial 
+> system calls will be about the same time (did not find the reference - if of 
+> interest I can dig it out).
 
-So it works. Of course this mask has to be set up via CMD(0x40), but
-does anyone else have such problems, or do you think that this
-workaround won't work properly?
+Should be 7.1ms vs. 4.7ms, on OMAP (and 4.1ms vs. 1.1ms on PPC405LP, 
+which seems to have a lower locality of reference or some other 
+uninvestigated disadvantage running XIP).  I've got the full LMbench 
+runs and some additional experimentation that produced those numbers as 
+well.  The system will definitely run overall slower due to the slower 
+memory, but certain operations such as the first exec of an image will 
+be faster -- subsequent exec's of the same image may be as fast or 
+faster after the block cache is warmed.
 
-Please answer direct to my mail address, I'm not in the list.
+> The only (?) real argument for XIP is system RAM requirements on very small 
+> systems (see: http://www.denx.de/twiki/publish/DULG/ConfigureLinuxForXIP.htm) 
 
-br
-Gerhard
+System startup time reduction (including applications) is certainly a 
+consideration as well.  After evaluating unit production cost, power 
+consumption, startup time, and performance, some cell phone designers 
+have chosen to go the XIP route, although no word on whether they'd 
+choose it again the next time. ;)
+
+-- 
+Todd Poynor
+MontaVista Software
