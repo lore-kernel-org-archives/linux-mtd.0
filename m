@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKChN-0001jt-Ru
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 05:24:03 -0400
-Message-ID: <41762E91.8060204@yandex.ru>
-Date: Wed, 20 Oct 2004 13:23:29 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <OF9C244FBD.F36AE939-ON85256F31.00585A10-85256F31.005A79E1@nanometrics.ca>	<200410192016.02411.vestby@alfanett.no>
-	<1098211369.3872.14.camel@baythorne.infradead.org>
-In-Reply-To: <1098211369.3872.14.camel@baythorne.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1CKCnT-0001uA-8C
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 05:30:20 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: marcus@mikolaiczyk.de
+In-Reply-To: <E1CKCCZ-0005xf-00@www.strato-webmail.de>
+References: <E1CKCCZ-0005xf-00@www.strato-webmail.de>
+Content-Type: text/plain
+Message-Id: <1098264118.12223.1468.camel@thomas>
+Mime-Version: 1.0
+Date: Wed, 20 Oct 2004 11:21:58 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 behaviour when large number of files are created.
+Subject: Re: 16Bit Bus with 8 Bit NAND?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I also don't see any other reason why the mount is much slower if there 
-are directories with many files in the file system. The only reason I 
-see is (what David said) that direntries are stored (in RAM) in the 
-lists, and it is relatively slow operation to find/insert/delete 
-direntries from the list. Instead, nodes are stored in RB-tees. So, in 
-case of slow CPU, there may be significant difference.
-
-David, If you mean inode checkpoints saying "snapshots", I don't think 
-they help to increase the mount time (But! They will increase the first 
-directory access delay!). If you mean what Ferenc is implementing, this 
-will increase the mount speed, but file system with "large" directories 
-will be mounted slower anyway ( IMHO, of course :-) ).
-
-
-David Woodhouse wrote:
-> On Tue, 2004-10-19 at 20:16 +0200, Jan Vestby wrote:
+On Wed, 2004-10-20 at 10:52, marcus@mikolaiczyk.de wrote:
+> Hi everybody,
+> I'm new to the embedded technologie and have a question concerning a setup
+> that uses the Infineon TC1130 (Microcontroller) together with NAND Flash.
 > 
->>I have seen startup time is quite nonlinear with respect to the number of 
->>files per directory. You could try to restrict the size of directories.
-> 
-> 
-> Hm. Should we be using rbtrees for dirents too? Or will the snapshots
-> fix this anyway?
+> The situation is that the TC1130 has an 16Bit EBU (External Bus Unit) to
+> connect to Flash, Disc On Chip, etc. devices. We disscuss the usage of 8
+> bit NAND Flash and realy don't have a clue if it's a problem that the bus
+> reads 16 Bit from an 8 Bit NAND.
+> The question is, what setup should be used to get this with Linux
+> working.
+> 1. Does the Kernel (theh NAND Driver) automatically detect this and
+> 'ignores' the 'empty 8 bit?
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+It might work, but it's not a big deal to fix it.
+
+> 2. Or is it somehow configruable in the Driver befor comilation?
+
+When it's fixed, it will be a option from the baord driver
+
+> 3. Or should we use 2 8bit NAND so that we've got 16bit - and is this
+> supported in  the NAND Driver?
+
+The 2 parallel 8bit NAND is not supported yet. Is a bit of work though.
+
+But why don't you use 16bit NAND ? 
+
+tglx
