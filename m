@@ -1,19 +1,18 @@
-Received: from rproxy.gmail.com ([64.233.170.207])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CP75G-0005vm-4w
-	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2004 17:24:59 -0500
-Received: by rproxy.gmail.com with SMTP id i8so15530rne
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Nov 2004 14:24:39 -0800 (PST)
-Message-ID: <a084b59f04110214246b8b4a76@mail.gmail.com>
-Date: Tue, 2 Nov 2004 17:24:39 -0500
-From: Ed Berube <eberube@gmail.com>
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CPGji-00071q-I8
+	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2004 03:43:24 -0500
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id iA38dU4r023337
+	for <linux-mtd@lists.infradead.org>; Wed, 3 Nov 2004 16:39:31 +0800
+Message-ID: <41889B50.9050608@avantwave.com>
+Date: Wed, 03 Nov 2004 16:48:16 +0800
+From: mike <mikelee@avantwave.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Possible small bug in nand_base.c
-Reply-To: Ed Berube <eberube@gmail.com>
+Subject: Can i use vfat as the mtd fs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using the CVS most recent code.  On a recent update I found what I
-believe is a small error in nand_base.c
+Dear all
 
-In the latest update, nand.h - eccbytes was added to the nand_chip structure.  
+    I need to do a flash disk for my board. It should be used by windows 
+system. So vfat or msdosfs should be use.
+    I have try to use mkdosfs to format the mtdblock device, but it is 
+unable to get the drive geometry. And i have browsed the source code of 
+mtdblock(with linux-2.4.18), there isn't ioctl for check geometry.
 
-This is because of the changes made to nand_base.c
+    If i want to use vfat with mtdblock , do i need to upgrade the 
+latest mtd version? Is this portable to linux-2.4.18 ? Or any portable 
+version of mtd i can use?
 
-However on line 844.  The line is 
-
-eccbytes = this->ecc_bytes;
-I believe it should be without the underbar
-
-eccbytes = this->eccbytes;
-
-
-I apologize if this is the incorrect place to post this - if so,
-please inform me of the correct way and I will do some from now on. 
-Or if its has already been dealt with please ignore this, I just
-didn't see anything posted and I didn't have a cvs update to fix the
-problem.
-
-Ed
+Best Regard
+Mike,Lee
