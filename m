@@ -1,30 +1,20 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
+Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cev8s-0000tn-OI
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 07:54:06 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id iBGCrt6q009526
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:55 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	iBGCrpqZ268890
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:55 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iBGCrpR8002406
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 07:53:51 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
-In-Reply-To: <1103158974.15929.37.camel@squizzey.bult.co.uk>
-References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
-	<41C0D3AC.3050801@us.ibm.com>
-	<1103158974.15929.37.camel@squizzey.bult.co.uk>
-Content-Type: text/plain
-Message-Id: <1103201631.25765.7.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Thu, 16 Dec 2004 06:53:51 -0600
+	id 1CevYn-00018y-1w
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 08:20:50 -0500
+Received: from jockewin (fw [172.31.1.1]) (authenticated bits=0)
+	by dmz.lumentis.net (8.12.8/8.12.8) with ESMTP id iBGDKhNX029521
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 14:20:43 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Date: Thu, 16 Dec 2004 14:20:43 +0100
+Message-ID: <JPEALJAFNGDDLOPNDIEEEEGDCPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 mount time
+Subject: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-12-15 at 19:02, Gareth Bult (Encryptec) wrote:
-> Hi,
+Hi List
 
-Quick FYI, don't top post.  The email gremlin will chase you down and
-make you read http://david.woodhou.se/email.html if you break too many
-rules ;)
+I am a long time JFFS2 user(and developer), but I haven't been following
+JFFS2 for a year or two. I have noticed that JFFS3 has begun and I figured
+I would offer a few thoughts.
 
-> 
-> Sure, the file I've been changing is blkmtd.c.
+1) Consider changing the start seed to crc32 from 0 to -1. Zero
+   is not a good start seed for crc32
 
-Ok, cool.
+2) Consider another checksum algorithm. Crc32 is very expensive
+   and JFFS2 suffered severely in the early days. Now that crc32 is
+   very optimized that problem is less visible, but crc32 is still
+   expensive. Maybe an Adler32 checksum is good enough or a crc16?
 
-> 
-> The device I'm aiming for and testing on is 256Mb with a 128k erase
-> size.
-> 
-> Currently I'm using the code included in the 2.6.9 kernel source tree
-> with tools from cvs as of about a week ago.
+3) Don't calculate a Adler32 checksum when comressing with zlib.
+   JFFS2 already has its own checksum.
 
-Ok, good.
-
-
-> Is this likely to contain the latest speedups or should I be looking
-> elsewhere?
-
-That should have the speedups I was referring to.  Basically checking
-the node CRCs is deferred until after mount time so the mount succeeds
-much more quickly.
-
-There is one more feature pending that I know of.  Ferenc Havasi has
-some eraseblock summary changes that should help.  I believe the
-intention was to commit that to JFFS3, but I haven't seen it go in yet.
-
-josh
+ Jocke
