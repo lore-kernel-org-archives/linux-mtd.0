@@ -1,24 +1,15 @@
-Received: from [212.58.137.10] (helo=trajan.ag-netcom.net)
+Received: from mail2.megatrends.com ([155.229.80.16]
+	helo=atl-ms1.megatrends.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ACzlr-0005up-QI
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Oct 2003 12:06:19 +0100
-Received: from 192.168.0.4 (dsl-217-155-44-202.zen.co.uk [217.155.44.202])
-	h9OB6TRs004645	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Oct 2003 12:06:29 +0100 (BST)
-	(envelope-from david@avoncliff.com)
-From: david stevenson <david@avoncliff.com>
+	id 1AD19B-0006BO-Rp
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Oct 2003 13:34:30 +0100
+Message-ID: <8CCBDD5583C50E4196F012E79439B45C046EBB01@atl-ms1.megatrends.com>
+From: Subash Kalbarga <Subashk@ami.com>
 To: linux-mtd@lists.infradead.org
-Date: Fri, 24 Oct 2003 12:05:06 +0100
-References: <200310232040.23006.david@avoncliff.com>
-	<1066981807.29915.597.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1066981807.29915.597.camel@hades.cambridge.redhat.com>
+Date: Fri, 24 Oct 2003 08:39:12 -0400
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200310241205.06646.david@avoncliff.com>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: Re: 2.2.18 status + jffs2
+Content-Type: text/plain
+Subject: amd_flash.c faster than cfi_cmdset_0002.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 24 October 2003 8:50 am, David Woodhouse wrote:
-> I'd be reluctant to talk to you if it was 2.4.18 you were using.
-> 2.2.18 is just too old.
->
-> Someone did work on backporting JFFS2 to the 2.2 kernel a couple of
-> years ago. If I recall correctly, last time I asked, he'd abandoned the
-> effort since it no longer made any sense to be using 2.2.
->
-> Update your kernel.
 
-OK, not the reply I had hoped for but understood.
+Hi all
 
-Can I propose the documentation needs updating to this status.
-In ftp.infradead.org/pub/mtd/patches a readme to say the 2.2.x is no longer 
-supported. And changes to the mtd-jffs-HOWTO.txt where specific instructions 
-how to use 2.2.18 are given.
-David
+We have an AM29LV641MH 8 meg flash on board and looking at performance,
+using amd_flash.c seems to make things considerably faster when writing to
+the flash.
+
+I am using the 2.4.18 kernel.
+
+Is there a particular reason?
+
+It seems do_amd_onewrite seems to wait for a standard timeout period?
+Chip->write_delay and then udelays of 10 seconds when reading back status?
+
+Do later versions address this?
+
+I am worried because amd_flash.c is obsoleted. Is it advisable to use it?
+
+Thanks in advance
+
+Subash Kalbarga
