@@ -1,27 +1,17 @@
-Received: from beta.dmz-eu.st.com ([164.129.1.35])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEPn8-000427-5q
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 06:10:03 -0400
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C47CEDD66
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  4 Oct 2004 10:09:47 +0000 (GMT)
-Received: from zeta.dmz-eu.st.com (localhost [127.0.0.1])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A5417599B
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  4 Oct 2004 10:09:46 +0000 (UTC)
-Received: from mail1.agr.st.com (mail1.agr.st.com [164.130.4.71])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CD0AD47221
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  4 Oct 2004 10:09:45 +0000 (GMT)
-Date: Mon, 4 Oct 2004 12:09:43 +0200
-From: Lorenzo PARISI <lorenzo.parisi@st.com>
-To: linux-mtd@lists.infradead.org
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CEPtL-0004EH-63
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 06:16:31 -0400
+Message-ID: <416122A1.4060302@oktetlabs.ru>
+Date: Mon, 04 Oct 2004 14:14:57 +0400
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
 MIME-Version: 1.0
-Message-Id: <4a91e303.89f0b4ae.8205100@mail1.agr.st.com>
-Content-Type: text/plain; charset=us-ascii
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: YAFFS on kernel 2.6.x
+Cc: dwmw2@infradead.org
+Subject: inode checkpoints
+Reply-To: dedekind@oktetlabs.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,8 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello. We are working on the possibility to increase JFFS2 on NAND 
+flashes and want to decrease the iget() call delay. We are going to 
+introduce "inode checkpoints" which are special type of nodes. 
+Checkpoints are created for the regular file inodes and directory inodes.
 
-howto include yaffs on kernel 2.6.x?
+Here is the idea description.
 
-Thanks
+-----------------------------------------------------------------------
+
+Currently when JFFS2 builds the inode cache for a regular file (iget() 
+call), it performs the following tasks (among others):
+
+1 reads headers of all the file nodes;
+2 reads all the file nodes data and checks CRC (if the data CRC wasn~Rt 
+yet checked because this activity is only performed once for each file 
+until unmount).
+
+If the JFFS2 is used with the NAND flash type, the access to all the 
+node headers which are distributed over different NAND flash pages might 
+be very expensive (especially if the file is relatively big). It is more 
+effective to have all these headers together in one inode checkpoint 
+node and to read them all from few pages.
+
+The second task is mainly needed to handle bad nodes and to perform roll 
+backs. The roll back means, that if there are bad nodes, JFFS2 discards 
+them and uses older ones. Thus, in case of unclean reboots, file data 
+which have already been successfully written can not be corrupted by the 
+subsequent broken writes. This mechanism doesn't guaranty the roll back 
+in case of flash media corruption, just unclean reboots are handled.
+
+Thus, it is important to check file data only once, and if it is OK, it 
+isn't necessary to check it anymore. But currently, after every reboot 
+all the files are rechecked. But with checkpoints, JFSS2 doesn't need to 
+re-check nodes which are referred by the checkpoint, since they have 
+already been checked when the checkpoint node was created. Thus, with 
+checkpoints, fewer data have to be read and checked. This also decreases 
+the iget() call delay.
+
+When JFFS2 builds the inode cache for the directory inodes, it currently 
+reads all the direntries, which are located in this directory. This also 
+means that in case of directories with lots of direntries, JFFS2 reads 
+lots of small direntry nodes from different NAND pages. Having the 
+checkpoint for the directory, JFFS2 might read that information from 
+much fewer pages.
+
+The drawback of checkpoints is that the additional flash space is used. 
+To save more space checkpoints are compressed.
+
+-----------------------------------------------------------------------
+
+Wha do JFFS2 folks think about the idea?
+
+-- 
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
