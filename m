@@ -1,17 +1,19 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from [216.201.190.67] (helo=towelie)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AHV6M-0003qJ-Oo
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 21:22:06 +0000
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1AHV57-0007Xn-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 22:20:49 +0100
+	id 1AHRMG-00034s-L3
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Nov 2003 17:22:16 +0000
+Received: from genaero.com (localhost.localdomain [127.0.0.1])
+	by towelie (Postfix) with ESMTP id 8DE0510CA09
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Nov 2003 11:20:30 -0600 (CST)
+Message-ID: <3FA9315E.2090508@genaero.com>
+Date: Wed, 05 Nov 2003 11:20:30 -0600
+From: Jim Duchek <jduchek@genaero.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: Miernik <miernik@ctnet.pl>
-Date: Wed, 5 Nov 2003 22:20:50 +0100
-Message-ID: <slrnbqiqdi.ke.miernik@tarnica.ctnet.pl>
-Sender: news <news@sea.gmane.org>
-Subject: SMART PCMCIA linear flash: compiled latest CVS - still no luck
-Reply-To: Miernik <miernik@ctnet.pl>
+Content-Type: multipart/mixed;
+ boundary="------------040302030405050502060108"
+Subject: DOC2000 + PPM-TX166 (PATCH)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I finally compiled the code from CVS (substituting the three 
-problematic files with their versions from the Linus' tree).
-My config file:
-http://www.miernik.ctnet.pl/mtd/9-CVS/config-2.6.0-test9
+This is a multi-part message in MIME format.
+--------------040302030405050502060108
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This time the logs of my debug may be found in 
-http://www.miernik.ctnet.pl/mtd/9-CVS/2/
+Hello.  I'm not subscribed to the mailing list, so please, if you could 
+make sure any replies for me go to my address and not to the list, I 
+would appreciate.
 
-Everything seems OK until I tru to do anything with an erase.
+We saw a problem (actually, a pretty big problem) wherein when a sync() 
+was done on a filesystem on the DoC we were using, it would hang and 
+never come back.  The system was perfectly responsive, except trying to 
+talk to the DoC wasn't going to happen again until reboot.  The problem 
+would never occur if we let the fs sync itself -- that is, just wait a 
+few minutes until the buffers have been cleared.
 
-When I try erase or eraseall on /dev/mtd0 I get it do nothing 
-endlessly, in the syslog it places messages like:
-Nov  4 17:56:25 tarnica kernel: drivers/mtd/maps/pcmciamtd.c:pcmcia_read16_remap(): ofs = 0x00000000 (c00c8000) data = 0x00a8
-millions of times. 
+I traced the problem down to the cond_resched() in WaitReady in 
+doc2000.c.  Removing cond_resched() made the problem go away (and the 
+system unresponsive while doing any DoC access).  Replacing the 
+udelay(1) and cond_resched() with a yield() fixes everything.  The patch 
+is short and appended to this message.  I believe the patch should be 
+Good for all users, although I'm not sure why we don't see this problem 
+on some other setups.  My best guess is that the other setups we are 
+using have Geode processors, which I don't believe have a TSC, and our 
+P-MMX does have one, and udelay() is totally different depending on the 
+existence of a TSC.
 
-If I try try to ^C or kill it, it prints something like: 
-"Kernel Panic .... aaaiee interupt handler..."
-and I can only press RESET switch, or Alt+SysRq+B. 
+For those curious, we are using an unpatched 2.4.22 kernel on a 
+WinSystems PPM-TX166.  The DoC in question is a 48M Industrial (X) rated 
+chip.  We saw the problem with both msdos and ext2 filesystems.
 
-BTW the same was for the stock kernel version, if I forgot to write 
-that already.
 
-Does anyone has any ideas what to try more?
 
-How do I get it to try the MTD_OBSOLETE_CHIPS drivers?
-I compiled MTD_SHARP and MTD_JEDEC, but how do I configure it to use 
-them?
 
-If you see that the "sharp" module is loaded in my dump of lsmod, it 
-was just because I've put it in /etc/modules But it did not make it 
-use it.
+--------------040302030405050502060108
+Content-Type: text/plain;
+ name="doc2000.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="doc2000.patch"
 
-If anyone had ever sucess with a SMART Modular PCMCIA linear flash, a 
-non-CFI model, can you please send me the output of lsmod, and 
-/var/log/syslog fragment (with CONFIG_MTD_DEBUG_VERBOSE=3 preferably) 
-while you erase/write/ftl_format the card?
+94a95
+> 		yield();
+99,100d99
+< 		udelay(1);
+< 		cond_resched();
+101a101,104
+> 	
+> 	DEBUG(MTD_DEBUG_LEVEL3,
+> 	      "_DoC_WaitReady finished\n");
+> 
 
--- 
-    Miernik         ________________________ jabber:miernik@amessage.info
-___________________/__ tel: +48608233394 __/      mailto:miernik@ctnet.pl
-Truth about Bush's military operations: 
-http://www.TruthAboutWar.org/
+--------------040302030405050502060108--
