@@ -1,56 +1,73 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1370mm-0003vB-00
-	for mtd-list@infradead.org; Tue, 27 Jun 2000 20:12:40 +0100
-Received: from tmmi197-073.telusvelocity.net
-	([209.115.197.73] helo=wakko.deltatee.com ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 1370mk-0003v5-00
-	for mtd@infradead.org; Tue, 27 Jun 2000 20:12:39 +0100
-Date: Tue, 27 Jun 2000 12:47:51 -0600 (MDT)
-From: Jason Gunthorpe <jgg@ualberta.ca>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org
+	id 137Dgx-0005Xr-00
+	for mtd-list@infradead.org; Wed, 28 Jun 2000 09:59:31 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 137Dgv-0005Xl-00
+	for mtd@infradead.org; Wed, 28 Jun 2000 09:59:30 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.3.96.1000627124319.12137A-100000@wakko.deltatee.com> 
+References: <Pine.LNX.3.96.1000627124319.12137A-100000@wakko.deltatee.com> 
+To: Jason Gunthorpe <jgg@ualberta.ca>
+Cc: mtd@infradead.org
 Subject: Re: MTD CVS update: 'mtd/kernel cfi_cmdset_0001.c cfi_probe.c nora.c octagon-5066.c vmax301.c' 
-In-Reply-To: <26144.962095860@cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000627124319.12137A-100000@wakko.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 28 Jun 2000 10:02:16 +0100
+Message-ID: <9649.962182936@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Tue, 27 Jun 2000, David Woodhouse wrote:
+jgg@ualberta.ca said:
+>  The map driver is the only driver that knows what the eletrical
+> connection is, if it knows the banks are 4 meg apart then it has to
+> communicate that up. The only thing this is used for is detection, the
+> detector can jump to the next bank start and do all of the banks. The
+> only other option is to probe every block int the mapping region
+> looking for bank starts, which is gross since the information is
+> available.
 
-> You've said, and I agree, that the map driver won't necessarily know the 
-> size of the chips within the area, so it can't know how the aliases are 
-> arranged and remap the space itself. 
+Ah - you mean there are two sets of address lines which are unused - for 
+example:
 
-The map driver is the only driver that knows what the eletrical connection
-is, if it knows the banks are 4 meg apart then it has to communicate that
-up. The only thing this is used for is detection, the detector can jump
-to the next bank start and do all of the banks. The only other option is
-to probe every block int the mapping region looking for bank starts, which
-is gross since the information is available.
+ A20-A19 : chip select
+ A18-A17 : not even connected on the chip sockets.
+ A16-A15 : present but the chips that are plugged in today don't use them
+ A14-A0  : connected to the chip and in use
 
-> Hmmm. How about a char * ?
+The map driver has no clue about the ones in the third category, but it 
+definitely knows about the second, you're right.
 
-That might be best.
- 
-> jgg@deltatee.com said:
-> >  Should probably also use the named initializers the rest of the
-> > kernel is moving to for these big structs.
-> 
-> You mean a static initialiser that ends up in the data segment rather than 
-> kmalloc'd? What does it do for us?
+I'm inclined to suggest that the map driver should map around the ones 
+which are hardwired, and let the flash chip driver sort out the rest, 
+having been given a hint as to the bank size.
 
-No, the C99 named member initializers for structs:
+Do we need to expand the map_info structure any further by including the
+bank size, though? It's likely to be needed only at probe time, so shall we
+pass it as an extra argument to the _probe functions instead?
 
-struct foo = {name: "Hello",size: 1024};
+> > Hmmm. How about a char * ?
+> That might be best.
 
-Makes those big initializers readable.
+OK, I'll sort that out as soon as I've worked out why my cfi_cmdset_0001 code 
+is oopsing. I need either NOR flash in a PC, or a ksymoops for ARMv4l.
 
-Jason
+
+>  No, the C99 named member initializers for structs:
+> struct foo = {name: "Hello",size: 1024};
+> Makes those big initializers readable. 
+
+Oh right - yeah, that makes sense. Using the form you quote, which is in 
+fact a GCC extension - C99 would be:
+
+struct foo = { .name = "Hello", .size = 1024 };
+
+
+
+--
+dwmw2
 
 
 
