@@ -1,20 +1,16 @@
-Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197htQ-000400-Cs
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 21:28:00 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "Paul Wong" <paul.wong@digitalview.com>,
-	<linux-mtd@lists.infradead.org>
-Date: Tue, 22 Apr 2003 08:28:57 +1200
-References: <007001c30639$6d034820$9000010a@paulwong>
-In-Reply-To: <007001c30639$6d034820$9000010a@paulwong>
+Received: from [152.101.51.1] (helo=janus.hk.panelx.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 197rqr-0005Ik-Nt
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 08:06:02 +0100
+Message-ID: <013401c3089d$9a930580$9000010a@paulwong>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 22 Apr 2003 15:05:48 +0800
 MIME-Version: 1.0
-Message-Id: <20030421202804.C9527414B@blood.actrix.co.nz>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: compare JFFS2 vs YAFFS
-Reply-To: manningc2@actrix.gen.nz
+	charset="big5"
+Content-Transfer-Encoding: 7bit
+Subject: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 19 April 2003 18:03, Paul Wong wrote:
-> Hi All,
->     could u tell me the JFFS2 and YAFFS comparsion? speed, save, reliable,
-> and future
->
-> Thanks
->
-> Paul
+ Hi all!
+     i installed the YAFFS file system in the NAND flash (samsung 16MB). And
+ test the reliability. I tried to copy a 5 MB file to the mounted yaffs
+ (spare 8MB) directory ( i separated the device to 3 partition - 4MB 4MB and
+ 8MB) . and then check the disk space, it is shown that it has 3 MB spare.
+ Next step, I erased the file and copied another 5 MB file to it. The device
+ said " no enough spare. Then I use the "mkyaffs" to format it, it is shown
+ many bad block in the device. I checked the OOB[5] ( bad block flag) it is
+ set to 0x00. Why? Why the yaffs set the health block to the bad block after
+ erase file? Is the YAFFS not support big file ?  any ideal?
+
+ Thanks
 
 Paul
-
-This is a tricky one. Both YAFFS and JFFS2 have their pros and cons.
-
-I have not used JFFS2 myself, but I have studied it a bit. Herewith my 
-impressions.
-* YAFFS is likely faster than JFFS2 in many situations. YAFFS does not do 
-compression (which takes time). YAFFS has a simpler garbage collection 
-mechanism that is likely to be faster.
-* YAFFS uses smaller management structures (and therefore uses less RAM).
-* JFFS2 provides compression. Nice if you have a small NAND. Some people 
-achieve almost the same thing (for read) by loop mounting compressed file 
-systems (eg. cramfs)  on a YAFFS file.
-* You might already have JFFS2 for NOR, therefore you get an image footprint 
-saving if you use it for NAND too.
-* YAFFS is very reliable. I think JFFS2 is also.
-* Both file systems are widely used and will continue to be supported. 
-
-As a hunch, I'd say it is better to use JFFS2 on smaller NAND arrays where 
-you gain from the compression and YAFFS on larger sizes.
-
-My suggestion to you is that you try both and go with the one that is the 
-best fit for your needs.
-
--- Charles
