@@ -1,15 +1,18 @@
-Received: from nwcst320.netaddress.usa.net ([204.68.23.65])
+Received: from borg.org ([208.218.135.231])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15STIC-0000AH-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2001 01:58:21 +0100
-Message-ID: <20010803010408.13811.qmail@nwcst320.netaddress.usa.net>
-Date: 2 Aug 2001 18:04:08 PDT
-From: Eric <ebrower@usa.net>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [[Q] Where are probed maps kfree'd?]
+	id 15SkEj-00015z-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2001 20:03:53 +0100
+Date: Fri, 3 Aug 2001 15:09:21 -0400
+From: Kent Borg <kentborg@borg.org>
+To: Linux Mtd <linux-mtd@lists.infradead.org>,
+  Abraham vd Merwe <abraham@2d3d.co.za>
+Subject: Building MTD with JFFS2
+Message-ID: <20010803150921.C20809@borg.org>
+References: <20010731175442.I10857@borg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20010731175442.I10857@borg.org>; from kentborg@borg.org on Tue, Jul 31, 2001 at 05:54:42PM -0400
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,40 +24,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Never mind me-- I chose the wrong week to give up caffeine.
-The kfree is done quite explicitly at the end of map_destroy
-in <linux>/include/mtd/map.h.
+On Tue, Jul 31, 2001 at 05:54:42PM -0400, I wrote:
+> Hello, a newbie here, and I thought I was making good progress
+> (debugging why I couldn't talk to our flash at all), and then I got
+> confused over sources.
 
-E
+And now I am getting closer.
 
-Eric <ebrower@usa.net> wrote:
-> The usual course of events seems to be:
-> =
+Following e-mailed advice of Abraham vd Merwe <abraham@2d3d.co.za> I
+used the infradead.org sources.  He sent me a script that copied the
+right cvs-ed files into the right places in the regular 2.4 kernel
+tree, but that left me with no configuration mention of JFFS2 and a
+compile error in the old JFFS directory.
 
->   mapping driver sets-up a struct map_info
->   mapping driver calls chip-family-specific probe routine
->   probe routine kmallocs a struct mtd_info are returns it
->   =
+Resorting to a little RTFM I looked at the mtd-jffs-HOWTO and followed
+its approach ("sh patchin.sh /usr/src/linux"), and got the same
+results: no mention of JFFS2 in the configuring and the same compile
+error in linux/fs/jffs (inode-v23.c, line 93, no member named
+s_maxbytes).
 
->   mapping driver decides to unload
->   mapping driver calls (amongst other things) map_destroy
->   chip-family-specific destroy routine kfrees internal private data
->   mapping driver exits
-> =
+Looking at the mtd/patches/Configure.help I see mention of
+CONFIG_JFFS2_FS and CONFIG_JFFS2_FS_DEBUG, I tried manually defining
+them in autoconf.h as 1 and 3 respectively, and in linux/fs/Makefile I
+changed the instances of jffs and JFFS to jffs2 and JFFS2 respectively.
 
-> I've been looking at more than a few examples, and I don't
-> see when (if ever) the struct mtd_info passed back from the
-> probe routine is kfree'd.  It is NOT done in the destroy =
+This made my compile happy, but, though the make dep seems to have
+visited the linux/fs/jffs directory, the make itself didn't.
 
-> routine and I can't see it being done in the mtdcore exit
-> function either.  Am I missing it, or is everyone leaking
-> mtd_info structs on unload?  =
+Hmmm.  Ideas on how to get out of the newbie mud?
 
-> =
 
-> E
-> =
+In the mean time, because we don't have CFI chips, I think I will look
+into whether I need to write my own mtd driver.  (AMD and Intel chips,
+but old ones.)
 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+Thanks,
+
+-kb, the Kent who is glad there are those who have been here before
+him.
