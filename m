@@ -1,15 +1,21 @@
-Received: from web9907.mail.yahoo.com ([216.136.129.250])
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A7dkT-0000Nm-Dq
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Oct 2003 17:34:45 +0100
-Message-ID: <20031009163345.54331.qmail@web9907.mail.yahoo.com>
-Date: Thu, 9 Oct 2003 09:33:45 -0700 (PDT)
-From: Slim <slimaffi@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <E1A6pZU-0003Bs-DJ@pentafluge.infradead.org>
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A7eo9-0000gQ-EB
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Oct 2003 18:42:37 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: gregmartin@lucent.com
+Date: Fri, 10 Oct 2003 06:47:11 +1300
+References: <000101c38e6c$469fdd40$1a53b987@na02.lucent.com>
+	<1065708286.22298.1679.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1065708286.22298.1679.camel@hades.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: redhat 9, doc 2000
+Message-Id: <20031009174133.8C422474D@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Nand Flash with 2048 Byte Page sizes
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> The GRUB's 'e' key will allow to edit the configuration file
-> in-memory.
-> And the 'c' key will bring to the GRUB's shell prompt.
+On Friday 10 October 2003 03:04, David Woodhouse wrote:
+> On Thu, 2003-10-09 at 08:50 -0500, Greg A. Martin wrote:
+> > Hi,
+> > I haven't seen any references yet to the newer NAND devices from
+> > Samsung that have 2048 byte pages with 64 bytes extra data. The Part
+> > numbers are K9F1G08U0M and K92G08U0M. These are 1 and 2 Gbit devices
+> > with 11 bit column addresses and 16 or 17 bit page addresses that need
+> > two byte read commands. Any idea if support for these devices will be
+> > forth coming soon, or do I get to blaze a trail?
+>
+> You get to blaze a trail. :)
 
-Didn't work for me.
+I'd like to suggest that when you go blaze that trail you ask guidance before 
+and you go. There are many possible direction, but certain of these are more 
+useful to the file systems that get to use the code.
 
-> When you get to the grub shell you can do something like:
-> 
-> root (hd0)
-> chainloader +1
-> boot
-
-Worked fine - thanks.  I'd like to incorporate the ctrl-key bypass
-or better yet, have it recognize the bios setting to boot from C
-instead.
- 
-So now I'm trying to mod the grub config on the doc, and I type:
-   mount /dev/nftla /mnt/doc
-and I get
-   mount: /dev/nftla: unknown device
-but 
-   ls -l /dev/nftla
-gives
-   brw-r--r--   1  root     93,   0 Sep 23 10:22 /dev/nftla
-
-I double checked the bios - it's correct.  Is the doc corrupted?
-What's the reformat sequence?
-
-Thanks,
-John
-
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
+-- Charles
