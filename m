@@ -1,17 +1,17 @@
-Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14vQuw-0001V4-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 22:45:47 +0100
-To: David Woodhouse <dwmw2@infradead.org>
+	id 14vR3o-0001XE-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 22:54:56 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3AEDE11C.94AC9A22@vhbtech.com> 
+References: <3AEDE11C.94AC9A22@vhbtech.com> 
+To: Jeff Smith <jsmith@vhbtech.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Flash driver probe/commandset separation.
-References: <m33damuyn5.fsf@DLT.linuxnetworx.com> <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> <5116.988817985@redhat.com> <17287.988926013@redhat.com>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 03 May 2001 15:45:52 -0600
-In-Reply-To: David Woodhouse's message of "Thu, 03 May 2001 22:40:13 +0100"
-Message-ID: <m3r8y6p0mn.fsf@DLT.linuxnetworx.com>
-MIME-Version: 1.0
+Subject: Re: JFFS2 Problem 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Thu, 03 May 2001 22:55:09 +0100
+Message-ID: <17429.988926909@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +23,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse <dwmw2@infradead.org> writes:
 
-> ebiederman@lnxi.com said:
-> >  Note there is a good argument for joining the probe paths Handling
-> > chip interleaving, unless we can make it simple we don't want that
-> > duplicated many times.
-> 
-> True. The build_cmd et al macros prevent duplication to a certain extent. 
-> 
-> > I'll try to have something working for 2 & 4 by the end of today.  Any
-> > hints on why the cmdset drivers don't compile? 
-> 
-> I changed the chip driver registration stuff. They need to have a 
-> struct mtd_chip_driver and set mtd->fldrv to point to it. 
+jsmith@vhbtech.com said:
+>  I'm running jffs2 on a PPC/855T board. I mount the jffs2 and have two
+> (2) test scripts that "dd" various sized files to the jffs2 flash. I
+> seem to be running into a race condition or something.
 
-I'll look I currently have the simply moved the destroy function into
-cfi_probe.  
+> My 2 scripts just "dd" a bunch of files to the jffs2/flash, "ls -l "
+> them, "rm *" them and then "ls -l" the dir/mnt point again in a loop.
+> I'm running 2 of these and they always reach contention fairly
+> quickly, ie. they lock up after 5 to 10 iterations. ps shows the
+> processes sleeping. If I remove the "ls"portion of the scripts. That
+> is I just "dd" and "rm" - everything "seems" ok.Anybody seen this? 
 
-> And I'd like to 
-> make the inter_module_xxx stuff go away completely - maybe they can 
-> register with the code in chipreg instead, and get cfi_probe to look them 
-> up that way. That can wait a little while though - I'm not sure that's the 
-> correct approach (because they're not actually probes).
+Sorry for the delayed response.
 
-Right, but something smiliar code work.  Or we could make them serve
-dual duty.  
+I've seen similar, and I thought I'd fixed it. You may have found a code 
+path which I hadn't considered, and which still has locking problems. Or 
+you may just be using the code from before I fixed it :)
 
-Eric
+What's the output of 'grep Id: fs/jffs2/*.[ch]'?
+
+If it's still happening with the latest code, can you make sure you have 
+SysRq enabled in your kernel and show me the backtraces of the offending 
+processes? (SysRq-T and ksymoops for decoding)
+
+--
+dwmw2
