@@ -1,40 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14L5rZ-0004oD-00
-	for mtd-list@infradead.org; Tue, 23 Jan 2001 16:00:05 +0000
-Received: from mx0.i-way.net.uk ([212.49.192.2] ident=root)
+	id 14L5yU-0004tP-00
+	for mtd-list@infradead.org; Tue, 23 Jan 2001 16:07:14 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14L5rX-0004o7-00
-	for mtd@infradead.org; Tue, 23 Jan 2001 16:00:04 +0000
-Message-ID: <52AF3CB987C7D41183CD0090271F67C301C7CE@m4eng.m4data.co.uk>
-From: Simon Munton <Simon.Munton@m4data.co.uk>
-To: "JFFS (E-mail)" <jffs-dev@axis.com>, "MTD (E-mail)"
-	 <mtd@infradead.org>
-Subject: Endless garbage collection
-Date: Tue, 23 Jan 2001 15:59:20 -0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 14L5yT-0004tJ-00
+	for mtd@infradead.org; Tue, 23 Jan 2001 16:07:13 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <52AF3CB987C7D41183CD0090271F67C301C7CE@m4eng.m4data.co.uk> 
+References: <52AF3CB987C7D41183CD0090271F67C301C7CE@m4eng.m4data.co.uk> 
+To: Simon Munton <Simon.Munton@m4data.co.uk>
+Cc: "JFFS (E-mail)" <jffs-dev@axis.com>,
+    "MTD (E-mail)" <mtd@infradead.org>
+Subject: Re: Endless garbage collection 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 23 Jan 2001 16:06:24 +0000
+Message-ID: <5100.980265984@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-It's possible to get the garbage collection going in an endless loop by
-creating lots of small files. eg, if I create 25 files, each 0 bytes long,
-on an empty filesystem, garbage collection starts and goes on and on.
+Simon.Munton@m4data.co.uk said:
+> Perhaps the test for too much RAM being used in thread_should_wake()
+> ought to take the number of files into account? ie should it be:
 
-Perhaps the test for too much RAM being used in thread_should_wake() ought
-to take the number of files into account? ie should it be:
+Probably something along the lines of what you suggested. I think we should
+probably put it _after_ the check for dirty_size < sector_size too, 
+until/unless we can be 100% sure that it'll never cause endless GC.
 
-	/* If there is too much RAM used by the various structures, GC */
-	if (jffs_get_node_inuse() >
-(c->fmc->used_size/c->fmc->max_chunk_size * 5 + 25 + jffs_get_file_count()))
-{
+--
+dwmw2
 
-where  jffs_get_file_count() returns the number of files on the filesystem.
-
-Simon
 
 
 
