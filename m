@@ -1,20 +1,28 @@
-Received: from e33.co.us.ibm.com ([32.97.110.131])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BxpAb-0002UT-A5
-	for linux-mtd@lists.infradead.org; Thu, 19 Aug 2004 11:49:42 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Stefan =?ISO-8859-1?Q?St=FCrke?= <sst@pandatel.com>
-In-Reply-To: <4124C848.7000808@pandatel.com>
-References: <cg23u5$gd0$1@sea.gmane.org>
-	<1092919733.23187.34.camel@linpc003.aimsys.nl>
-	<4124C848.7000808@pandatel.com>
-Content-Type: text/plain; charset=
-Message-Id: <1092930561.2991.8.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Thu, 19 Aug 2004 10:49:21 -0500
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD and 28F128J3A
+	id 1BxpK2-0002eK-Vm
+	for linux-mtd@lists.infradead.org; Thu, 19 Aug 2004 11:59:28 -0400
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id B37A12F016
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Aug 2004 17:59:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 944D7A2EC
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Aug 2004 17:59:23 +0200 (CEST)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 2ED6BA262
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Aug 2004 17:59:23 +0200 (CEST)
+Message-ID: <4124CE5A.5080508@imc-berlin.de>
+Date: Thu, 19 Aug 2004 17:59:22 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: do_write_oneword(): software timeout
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-08-19 at 10:33, Stefan Stürke wrote:
+Hi there,
 
-> Thank you, nice idea. I just tested it but unfortunatly at
-> my hardware the reset pin of the flash is only triggered
-> by power on reset and not by processor reset. So the
-> checkstop just kills the processor but it still can not
-> read valid code from flash :-(
+I am facing these messages
 
-I had a situation like that once.  Some may tell you that it's a broken
-board design, which is mostly true.  But we don't always have a say in
-the design of the boards we use ;).
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+MTD do_write_oneword(): software timeout
+Write of 2577 bytes at 0x00167098 failed. returned -5, retlen 2576
 
-> 
-> Of course as 'dirty' solution I could write a 0xFF to
-> the flash device before executing 'm8260_gorom()'.
-> In this way the problem should be solved.
-> 
-> But I am afraid that the code in cfi_cmset_0001 has a bug
-> leaving the chip in query mode after writing to it. And that
-> this bug has side effects which I can't see know but which will
-> be seen by our customers.
-> Has anybody ever heard of such behavior of cfi_cmset_0001?
+when writing to my JFFS2 root fs.
 
-Is it in CFI query mode, or in Read Status mode?  I have seen it be left
-in Read Status mode after a write, but never CFI query mode.
+A simple "cat bla > /dev/mtd/3" to a flash partition (seems to) works.
 
-Leaving it in Read Status mode shouldn't have any side effects during
-runtime operation, since the MTD code expects that.  It's probably more
-efficient anyway, since the code can't be sure of what the next
-operation will be.
+I am using linux-2.6.8.1 on a custom ARM9 board.
+Flash is a spanion 29GL064M90 (8MB, 16bit Data bus):
 
-To solve your reset issue, you could do what you said above.  Or you can
-put the chip in Read Array mode after every write is completed (erase
-too for that matter).  That won't catch all the corner cases though.
+HRDisplay: probing flash at 0x10000000
+imc HRDisplay Flash: Found 1 x16 devices at 0x0 in 16-bit bank
+  Amd/Fujitsu Extended Query Table at 0x0040
+imc HRDisplay Flash: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+Using static partition definition
+Creating 5 MTD partitions on "imc HRDisplay Flash":
+0x00120000-0x00740000 : "JFFS2"
+0x00000000-0x00030000 : "U-Boot"
+0x00030000-0x00040000 : "Environment"
+0x00040000-0x00050000 : "FPGA"
+0x00050000-0x00120000 : "Kernel"
 
-josh
+Increasing the timeouts in do_write_oneword() in 
+drivers/mtd/chips/cfi_cmdset_0002.c does not help.
+
+Any idea how I could chase that down?
+
+linux-2.6.8.1 does contain a recent version of the MTD/JFFS code, right?
+
+Thanks a million!
+
+-- 
+Steven Scholz
