@@ -1,22 +1,15 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19BgEr-0002UQ-NW
-	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 20:30:33 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HE900447Y6G4B@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Fri, 02 May 2003 21:30:17 +0200 (MEST)
-Date: Fri, 02 May 2003 22:29:58 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
-To: Michael Moedt <xemc@yahoo.com>, linux-mtd@lists.infradead.org
-Message-id: <200305022229.58700.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: Building MTD utils w/ arm-linux- cross
-Reply-To: tglx@linutronix.de
+Received: from web9607.mail.yahoo.com ([216.136.129.186])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19CgbO-0002QQ-Lr
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 15:05:58 +0100
+Message-ID: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
+Date: Mon, 5 May 2003 07:06:12 -0700 (PDT)
+From: Mike Kelly <mgkelly59@yahoo.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1051860123.21608.26.camel@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: Need help understanding jffs2 mount activity
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +19,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 02 May 2003 21:05, Michael Moedt wrote:
-> Hi.
 
-eraseall does not need zlib. fixed in CVS
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> On Thu, 2003-05-01 at 22:40, Mike Kelly wrote:
+> > Next we ran an operation, where a file has 65
+> bytes
+> > appended to it until it reaches a size of about
+> 700
+> > kB. When this was completed, the bootup time
+> increased
+> > to 75 seconds and has not gone back down upon
+> > subsequent reboots. 
+> 
+> That's expected. 
+> 
+> > So, does the garbage collection
+> > upon mount/bootup differ between deleted files and
+> > appended files? When a file is opened, appended,
+> then
+> > closed, does the jffs2 filesystem essentially copy
+> the
+> > file to a new location along with the new data,
+> then
+> > marks the old file as obsolete?
+> 
+> No, it writes out the new bytes in a new log entry,
+> leaving the rest as
+> it was. See
+> http://sources.redhat.com/jffs2/jffs2.pdf
+> 
+> So instead of a whole file made up of 4KiB nodes as
+> usual, you've ended
+> up with a file made entirely of 65-byte nodes, each
+> with its own CRC to
+> check etc. 
+> 
+---
+David, thanks for your reply.
 
-> Well, I installed zlib-1.1.4 into
-> /usr/local/arm/2.95.3 , but I needed to add -I and -L
-> flags to the Makefile in order for it to find it.  It
-> seems to work, but I didn't find this anywhere when I
-> searched the mailing list.  Is this the standard
-> procedure, or am I doing something wrong?
+If the 700KiB file is copied then deleted, would this
+result in 4KiB nodes for the new file?  If so,
+shouldn't the bootup time be quicker, since there are
+less nodes to CRC check?  The bootup time seems to
+remain the same, even after several reboots.
 
-header in /usr/local/arm/2.95.3/arm-linux/include
-lib in /usr/local/arm/2.95.3/arm-linux/lib
+--
+Mike K.
 
-Then you don't need -L.
-
-> Anyways, I also wanted to let someone with CVS access
-> know that there's a typo in the Makefile.  In
-> eraseall's build rule, it uses $(LDLAGS) instead of
-> $(LDFLAGS).  I guess no one needs to add the '-L'
-> LDFLAG other than me?
-Fixed, thanks
-
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
