@@ -1,61 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13op9m-0003Wm-00
-	for mtd-list@infradead.org; Thu, 26 Oct 2000 16:41:30 +0100
-Received: from d8fa50aa.ptr.dia.nextlink.net ([216.250.80.170] helo=tetsuo.applianceware.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13op9k-0003Wg-00
-	for mtd@infradead.org; Thu, 26 Oct 2000 16:41:29 +0100
-Received: (from mike@localhost)
-	by tetsuo.applianceware.com (8.9.3/8.9.3) id KAA24138
-	for mtd@infradead.org; Thu, 26 Oct 2000 10:52:27 -0400
-Message-ID: <20001026105227.A23989@tetsuo.applianceware.com>
-Date: Thu, 26 Oct 2000 10:52:27 -0400
-From: Mike Panetta <mpanetta@applianceware.com>
-To: mtd@infradead.org
-Subject: Help! I killed my DOC!
-Mime-Version: 1.0
+	id 13owxn-0006JV-00
+	for mtd-list@infradead.org; Fri, 27 Oct 2000 01:01:39 +0100
+Message-ID: <39F8C785.AEEB4CF4@mvista.com>
+Date: Thu, 26 Oct 2000 17:08:37 -0700
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: ahennessy@mvista.com, mtd@infradead.org
+Subject: kernel syncs
+References: <E13ZFNG-00020Z-00@pearl.tao.co.uk> <32401.968863402@passion.cygnus.co.uk>
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I seem to have got myself in the foot
-rather badly...  I was messing with grub
-on the DOC yesterday and I accidently 
-overwrote part of grub with an NFTL fs.
+Hello,
 
-Now whenever the computer probes the 
-bios on the DOC (grub) it says loading
-grub from DOC and then promply reboots!
-How do I get the system into a state
-that will allow me to rewrite grub to 
-the DOC?  Is this even possible?  I
-have tried booting the computer with
-the DOC out of the socket and then 
-placing the DOC back into the socket
-after the machine has booted.  When
-I modprobe the docprobe module I get 
-this message:
+This was asked in mid September:
 
-Cannot find driver for DiskOnChip 2000 at 0xD0000
-Possible DiskOnChip with unknown ChipID FF found at 0xe8000
+>>  BTW, anyone know how frequently the kernel syncs with the CVS tree?
 
-I then try to access /dev/mtd0 and I
-get a "No such device" message back
-from the kernel...
+>Rarely at the moment. I sync to Linus' kernel frequently, but I'm not
+>intending to send him anything more for 2.4. Once the 2.5 series starts,
+>I'll be keeping it reasonably up-to-date.
 
-Please if anyone knows what I can
-do to fix this please tell me!
+Can you tell me when the last kernel sync was and when the next one is
+planned?
 
-Thanks,
-Mike Panetta
+Alice
 
-
-
-
-
-
--- 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
