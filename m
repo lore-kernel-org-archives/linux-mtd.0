@@ -1,29 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13925K-0002zq-00
-	for mtd-list@infradead.org; Mon, 03 Jul 2000 10:00:10 +0100
+	id 13925i-000308-00
+	for mtd-list@infradead.org; Mon, 03 Jul 2000 10:00:34 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13925J-0002zj-00
-	for mtd@infradead.org; Mon, 03 Jul 2000 10:00:09 +0100
-Received: from cygnus.co.uk (IDENT:dwmw2@localhost [127.0.0.1])
-	by passion.cygnus.co.uk (8.9.3/8.9.3) with ESMTP id KAA07296
-	for <mtd@infradead.org>; Mon, 3 Jul 2000 10:03:55 +0100
+	id 13925g-000301-00
+	for mtd@infradead.org; Mon, 03 Jul 2000 10:00:33 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E13922q-0002yT-00@infradead.org> 
-References: <E13922q-0002yT-00@infradead.org> 
-To: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/kernel cfi_probe.c' 
+In-Reply-To: <395DC4F0.5610B924@crossnet.co.jp> 
+References: <395DC4F0.5610B924@crossnet.co.jp> 
+To: Masami Komiya <mkomiya@crossnet.co.jp>
+Cc: mtd@infradead.org
+Subject: Re: Fujitsu MBM29LV160 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 03 Jul 2000 10:03:55 +0100
-Message-ID: <7293.962615035@cygnus.co.uk>
+Date: Mon, 03 Jul 2000 10:04:17 +0100
+Message-ID: <7330.962615057@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-er... now I've also changed the CVS notification to point at the new list 
-too - which perhaps would have been appropriate in the first place :)
+mkomiya@crossnet.co.jp said:
+> We try to port Linux kernel to our embedded system that has Fujitsu's
+> NOR type Flash memory MBM29LV160.
+
+Is it CFI-compliant?
+
+If so, it'll be at least detected by the current code. 
+
+If it is capable of using the Intel command set, then it is supported. 
+Otherwise, you will have a little bit of work to do to add support for it. 
+
+It should be quite simple to add support for it if it doesn't support the 
+Intel command set.
+
+First you need to provide a 'map' driver which allows access to the flash 
+chips. Look at something simple like nora.c for an example - if your flash 
+chips are mapped into virtual memory then all you need to do is change a 
+couple of defines in nora.c to drive your own board.
+
+Then load the cfi_probe module and the nora module (or your own map driver).
+
+Show me all the output you get from it.
 
 --
 dwmw2
