@@ -1,16 +1,16 @@
-Received: from webmail31.rediffmail.com ([202.54.124.130] helo=rediffmail.com)
+Received: from [66.239.226.123] (helo=hermes.wildseed.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18OXfq-0007s5-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2002 06:27:18 +0000
-Date: 18 Dec 2002 06:56:53 -0000
-Message-ID: <20021218065653.31296.qmail@webmail31.rediffmail.com>
+	id 18OdXm-0008SU-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2002 12:43:22 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C91F@neptune.kirkland.local>
+From: Paul Nash <paulnash@wildseed.com>
+To: "'manningc2@actrix.gen.nz'" <manningc2@actrix.gen.nz>, Russ Dill
+	 <Russ.Dill@asu.edu>, linux-mtd@lists.infradead.org
+Subject: RE: Intel sez: Synchronous Flash and XIP is the future -- thought
+	s?
+Date: Wed, 18 Dec 2002 05:13:59 -0800
 MIME-Version: 1.0
-From: "Pichai  Raghavan" <ragh_avan@rediffmail.com>
-Reply-To: "Pichai  Raghavan" <ragh_avan@rediffmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: amd flash problem
-Content-type: multipart/mixed;
-	boundary="Next_1040194613---0-202.54.124.130-31294"
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,93 +22,52 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
- This is a multipart mime message
+So what are people out there using in their designs for NAND primarily?  Raw
+NAND?  NAND plus some bootable sector?  DiskOnChip?
+
+-----Original Message-----
+From: Charles Manning [mailto:manningc2@actrix.gen.nz] 
+Sent: Monday, December 16, 2002 3:19 PM
+To: Russ Dill; linux-mtd@lists.infradead.org
+Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts?
 
 
---Next_1040194613---0-202.54.124.130-31294
-Content-type: text/plain;
-	format=flowed
-Content-Disposition: inline
+On Tue, 17 Dec 2002 10:21, you wrote:
+> On Mon, 2002-12-16 at 14:02, Charles Manning wrote:
+> > Intel's flash is expensive. Figure somwhere over $1 per MB.  NAND 
+> > costs approx 30c/MB + SDRAM approx 20c/MB.  Intel's flash thus costs 
+> > approx twice what a NAND/RAM image does.
+> >
+> > One NAND flash footprint can give you up to 256MB of storage.
+> >
+> > NOR fully sucks for any sort of writeable file system performance. 
+> > NAND runs a very usable fs with YAFFS or JFFS2.
+> >
+> > The only benefit I can see in NOR is a faster boot. This is becoming 
+> > less of an issue as more designs switch to sleep/resume models.
+>
+> It really depends on how much data you store, and how you use that 
+> data. Sure, for you, with a dynamic file system, and 256M of storage, 
+> NAND is an easy choice. But many designs out there have static file 
+> systems, use 2M or 4M of flash, and for such designs, NOR offers a lot 
+> more simplicity for around the same cost as a NAND + boot logic. With 
+> NOR flash, I can put a couple cramfs filesystems on there, and use the 
+> boot block for storing a simple journalled config, reliably. I don't 
+> have to worry about setting aside blocks in case one goes bad.
+>
+> I think this is the market intel is targeting, just change 2M or 4M to 
+> 4M or 8M (no more compressed fs).
 
-Hi All,
+True, flexibility is the key. If 2-4MB with a static fs is all you need,
+then 
+no need to take on all the extra drama.
 
-I am using the 2.4.2 MTD driver code on my board that has AMD
-flash. I am noticing a bug in the write code. AMD flash driver
-makes use of unlock bypass mode for doing bulk write; when 
-issuing
-the start and end of the unlock bypass commands;it does not 
-check
-if the flash state is READY.(function cfi_amdstd_write() in
-cfi_cmdset_0002.c) In the meanwhile if the flash driver is doing
-an erase or write in the context of another process and has got
-scheduled out, then the flash gets into a unknown state.
+However, to get back to the start of this thread, Intels big push is for the
 
-This seems to be causing a problem when write to multiple
-partitions are written. Has this problem been fixed in later
-kernels? (Had a glance at 2.4.17 code and there also the same 
-code
-is there)
+larger sizes (8MB+) where NOR is less palatable.
 
-Thanks
-Raghav
+-- CHarles
 
-
-
---Next_1040194613---0-202.54.124.130-31294
-Content-type: message/rfc822
-
-MIME-Version: 1.0
-From: Mail Delivery System <Mailer-Daemon@pentafluge.infradead.org>
-To: ragh_avan@rediffmail.com
-Subject: Mail delivery failed: returning message to sender
-Message-Id: <E18NvQO-0003sx-00@pentafluge.infradead.org>
-
-This message was created automatically by mail delivery software (Exim).
-
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es) failed:
-
-  lists-mtd@lists.infradead.org
-    unknown local-part "lists-mtd" in domain "lists.infradead.org"
-
------- This is a copy of the message, including all the headers. ------
-
-Return-path: <ragh_avan@rediffmail.com>
-Received: from webmail31.rediffmail.com ([202.54.124.130] helo=rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18NvQO-0003sv-00
-	for <lists-mtd@lists.infradead.org>; Mon, 16 Dec 2002 13:36:48 +0000
-Received: (qmail 2799 invoked by uid 510); 16 Dec 2002 14:06:31 -0000
-Date: 16 Dec 2002 14:06:31 -0000
-Message-ID: <20021216140631.2798.qmail@webmail31.rediffmail.com>
-Received: from unknown (164.164.83.140) by rediffmail.com via HTTP; 16 dec 2002 14:06:31 -0000
-MIME-Version: 1.0
-From: "Pichai  Raghavan" <ragh_avan@rediffmail.com>
-Reply-To: "Pichai  Raghavan" <ragh_avan@rediffmail.com>
-To: lists-mtd@lists.infradead.org
-Subject: AMD CFI driver problem
-Content-type: text/plain;
-	format=flowed
-Content-Disposition: inline
-
-Hi All,
-
-I am using the 2.4.2 MTD driver code on my board that has AMD 
-flash. I am noticing a bug in the write code. AMD flash driver 
-makes use of unlock bypass mode for doing bulk write; when issuing 
-the start and end of the unlock bypass commands;it does not check 
-if the flash state is READY.(function cfi_amdstd_write() in 
-cfi_cmdset_0002.c) In the meanwhile if the flash driver is doing 
-an erase or write in the context of another process and has got 
-scheduled out, then the flash gets into a unknown state.
-
-This seems to be causing a problem when write to multiple 
-partitions are written. Has this problem been fixed in later 
-kernels? (Had a glance at 2.4.17 code and there also the same code 
-is there)
-
-Thanks
-Raghav
-
-
---Next_1040194613---0-202.54.124.130-31294--
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
