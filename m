@@ -1,31 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139wzz-0003pg-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:46:27 +0100
-Date: Wed, 5 Jul 2000 22:45:14 +0100 (BST)
+	id 139x49-0003rF-00
+	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:50:45 +0100
+Date: Wed, 5 Jul 2000 22:49:55 +0100 (BST)
 From: David Woodhouse <dwmw2@infradead.org>
-To: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>
-cc: Bjorn Wesen <bjorn.wesen@axis.com>, jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: jffs_erasable_size: offset = 0x0034b000
-In-Reply-To: <39637696.8FD02579@matrox.com>
-Message-ID: <Pine.LNX.4.21.0007052243240.1189-100000@imladris.demon.co.uk>
+To: Juan Gonzo <kayemmess@yahoo.ca>
+cc: MTD Mailing List <mtd@infradead.org>
+Subject: Re: MTD, JFFS, my target -- bringing them together?
+In-Reply-To: <20000705201702.5221.qmail@web5304.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.21.0007052247490.1189-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 5 Jul 2000, [iso-8859-1] S=E9bastien C=F4t=E9 wrote:
+On Wed, 5 Jul 2000, Juan Gonzo wrote:
 
-> Are you going to port MTD to 2.0 or will you switch your kernel to
-> 2.2/2.4 ?
+> From previous emails, it seems I have to supply a
+> read16() and write16() function for MTD to work
+> properly on my system.  Is this right?  Is that all
+> I have to supply?  What about all that info from the
+> website about populating the mtd_info struct and the
+> add_mtd_device business?  Do I still have to do that?
 
-There has already been some work on porting MTD to 2.0. I cruelly reverted
-a few of the changes which were made - but they were mostly fine in
-principle, it's just that the result didn't actually compile on 2.[24] any
-more for me.
+No you don't. All you need to do is provide something based on the
+physmap.c file which the CFI chip driver can use to access the chips. In
+fact, in the majority of cases you should get away with only changing a
+couple of #defines in that file to say where in physical memory the chips
+are, and how large the range is that they're mapped into.
 
---=20
+-- 
 dwmw2
 
 
