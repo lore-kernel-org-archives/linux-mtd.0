@@ -1,17 +1,16 @@
-Received: from fes-qout.whowhere.com ([209.185.123.96] helo=mailcity.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MWNq-0003XG-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 15:35:50 +0000
-To: linux-mtd@lists.infradead.org
-Date: Fri, 04 Jan 2002 21:15:58 +0530
-From: "Sanjay Kumar" <sankumar96@lycos.com>
-Message-ID: <ILOKBKPFFIJPEAAA@mailcity.com>
-Mime-Version: 1.0
-Reply-To: sankumar96@lycos.com
-Subject: Problem in changing  the starting location of JFFS2 for AMD flash
-Content-Type: text/plain; charset=us-ascii
-Content-Language: en
-Content-Transfer-Encoding: 7bit
+Received: from mail1.danielvalve.com ([12.19.96.6] helo=mail1.danielind.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16MWip-0003Ye-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 15:57:31 +0000
+Message-ID: <30724FF712DFD2119E6200104B244892011975B4@mail1>
+From: Vipin Malik <Vipin.Malik@daniel.com>
+To: "'sankumar96@lycos.com'" <sankumar96@lycos.com>,
+	linux-mtd@lists.infradead.org
+Subject: RE: Problem in changing  the starting location of JFFS2 for AMD f
+	lash
+Date: Fri, 4 Jan 2002 10:02:37 -0600 
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,8 +22,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+You don't want to mess around in the JFFS2 code for partitioning the raw
+flash.
+
+See the various map drivers in mtd/drivers/map for examples on how to
+partition the flash into separate logical /dev/mtdx devices.
+
+Then you just mount JFFS2 on the device you want leaving the other device(s)
+for your raw stuff.
+
+Keep in mind that things will work best if you partition the devices to end
+on a physical erase boundary.
+
+Vipin
+
+-----Original Message-----
+From: Sanjay Kumar [mailto:sankumar96@lycos.com]
+Sent: Friday, January 04, 2002 9:46 AM
+To: linux-mtd@lists.infradead.org
+Subject: Problem in changing the starting location of JFFS2 for AMD
+flash
+Importance: High
+
+
 Hi All,
-I am using AMD flash of 4M size and keeping starting 1/2 MB for RAW data. Then for the remaining I want to use JFFS2. That is JFF2 will start from 0.5 MB to 4MB. For that I am making changes in super.c of JFFS2 for function jffs2_read_super. The changes are -    
+I am using AMD flash of 4M size and keeping starting 1/2 MB for RAW data.
+Then for the remaining I want to use JFFS2. That is JFF2 will start from 0.5
+MB to 4MB. For that I am making changes in super.c of JFFS2 for function
+jffs2_read_super. The changes are -    
 c->free_size = c->mtd->size - jffs2_start_addr;
 c->flash_size = c->mtd->size - jffs2_start_addr;
 c->nr_blocks = c->flash_size / c->sector_size;
@@ -34,7 +59,8 @@ where am keeping jffs2_start_addr = 0x80000.
 
 I am using linux 2.4.2.
 
-Now I am able to mount the jffs2 file system and able to create a empty file. But when I go for writing into the created empty file, it is crashing.
+Now I am able to mount the jffs2 file system and able to create a empty
+file. But when I go for writing into the created empty file, it is crashing.
 
 The dump of the log message is as follows -
 
@@ -298,7 +324,8 @@ Allocated inocache at 80bc02d4
 jffs2_new_inode(): Assigned ino# 2
 jffs2_add_ino_cache: Add 80bc02d4 (ino #2)
 jffs2_add_physical_node_ref(): Node at 0x3f000c, size 0x44
-jffs2_write_dnode wrote node at 0x003f000c with dsize 0x0, csize 0x0, node_crc 0
+jffs2_write_dnode wrote node at 0x003f000c with dsize 0x0, csize 0x0,
+node_crc 0
 xfef3c9ce, data_crc 0x00000000, totlen 0x00000044
 jffs2_create created file with mode 0x8000
 jffs2_write_dirent(ino #1, name "hello.txt"->ino #2
@@ -322,7 +349,8 @@ jffs2_commit_write() loop: 0x5 to write to 0x0ge 0-5, nrpages 1
 jffs2_reserve_space(): Requested 0xc4 bytes
 jffs2_reserve_space(): alloc sem got
 jffs2_do_reserve_space(): Giving 0xfff4 bytes at 0x3f000c
-ARGH. About to write node to 0x003f000c on flash, but there's data already there
+ARGH. About to write node to 0x003f000c on flash, but there's data already
+there
 :
 0x003f000c: 19 85 e0 02 00 00 00 44 a4 ef 22 3e 00 00 00 02
 Last[2] is ff86, datum is 49
@@ -330,13 +358,15 @@ Write of 73 bytes at 0x003f000c failed. returned 0, retlen 6
 jffs2_add_physical_node_ref(): Node at 0x3f000c, size 0x4c
 raw node at 0x003f000c is off the end of device!
 kernel BUG at nodemgmt.c:301!
-Unable to handle kernel paging request at virtual address 00000000, epc == 809a6
+Unable to handle kernel paging request at virtual address 00000000, epc ==
+809a6
 180, ra == 809a6180
 Oops in fault.c:do_page_fault, line 189:
 
 
 
-And so I am not able to proceed. If anyone has any idea this problem or any suggestions?
+And so I am not able to proceed. If anyone has any idea this problem or any
+suggestions?
 Thanks,
 Sanjay
 
@@ -344,3 +374,7 @@ Sanjay
 --
 Click here for your very own create-a-date adventure from MatchMaker
 Go to http://ecard.matchmaker.com/dating.html
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
