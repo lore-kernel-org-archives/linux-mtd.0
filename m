@@ -1,18 +1,14 @@
-Received: from relay1.clb.oleane.net ([213.56.31.21])
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HTeF-0000EA-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 18:44:27 +0000
-Received: from dg ([217.167.163.86])
-	by relay1.clb.oleane.net with SMTP id gASJEoU1002990
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 20:14:53 +0100
-From: "Damien GERANTON" <dgeranton@alpha3i.com>
-To: "MTD mailing liste" <linux-mtd@lists.infradead.org>
-Subject: JFFS/MTD and Raw access
-Date: Thu, 28 Nov 2002 17:21:40 +0100
-Message-ID: <BNEJIGKFJNJLELKBCMDAMEFGCEAA.dgeranton@alpha3i.com>
+	id 18HUWX-0000KS-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 19:40:33 +0000
+Message-ID: <3CF3D7FB.5020500@redswitch.com>
+Date: Tue, 28 May 2002 12:18:19 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
+Subject: MTD access problem
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -25,30 +21,70 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+I'm experiencing a strange mtd access problem when two threads try to 
+access two different mtd devices which are in the same chip (using CS0). 
+This happens as follows.
+1. Thread A calls get_mtd_device() to an mtd handle (e.g. mtd6), calls 
+erase() to erase one sector (128K byte), and tries to write some data 
+into this sector, then calls put_mtd_device() to return the handle.
+2. At the same time, thread B tries the same action on another mtd 
+device (e.g. mtd5).
+3. The strange thing happens. The write action takes long time (10 
+minutes, sometimes even longer) to finish.
 
-I face a strange problem, i use MTD with JFFS and i want to clone my systeme
-from one card
-to another.
-I thought that some think like :
-dd if=/dev/mtd0 of=/master.img
+I'm not sure this problem is usual or not. My flash is AMD29LV642D. The 
+mtd code is from DENX distribution 2.4.4-2002-08-09. It may not be the 
+latest one from CVS.
 
-and
+Wolfgang, is the mtd code from your distribution the same as the mtd cvs 
+from infradead.org?
 
-dd if=/master.img of=/dev/mtd0
+I hacked into the mtd source code "mtdcore.c" and found a *temporary* 
+solution to my problem. I added the following two functions. Basically, 
+I intentionally delay the release of mtd_table_mutex until a user calls 
+rs_put_mtd_device() to release an mtd handle. When rs_get_mtd_device() 
+is called, only one can get permission to access an mtd device, thus it 
+prevents the above problem from taking place. Since my threads do not 
+write to mtd devices very frequently, I can tolerate such inefficiency. 
+Obviously, this is not a good fix, or may be a wrong one. Any 
+suggestions? Thank you very much.
 
-But it does not work, if after i do
+Happy Thanksgiving!
 
-dd if=/dev/mtd0 of=/test.img
-diff test.img master.img
-i says they are different.
+- Shawn.
 
-Is it normal.
+struct mtd_info *rs_get_mtd_device(struct mtd_info *mtd, int num)
+{
+	struct mtd_info *ret = NULL;
+	int i;
 
-Is RAW acces really RAW ?
+	down(&mtd_table_mutex);
 
-Do i miss some think ?
+	if (num == -1) {
+		for (i=0; i< MAX_MTD_DEVICES; i++)
+			if (mtd_table[i] == mtd)
+				ret = mtd_table[i];
+	} else if (num < MAX_MTD_DEVICES) {
+		ret = mtd_table[num];
+		if (mtd && mtd != ret)
+			ret = NULL;
+	}
+	
+	if (ret && ret->module && !try_inc_mod_count(ret->module)) {
+		up(&mtd_table_mutex);
+		return NULL;
+	}
 
-Thanks
+	return ret;
+}
 
-PS : I use MTD on 2.2.17 kernel
+void rs_put_mtd_device(struct mtd_info *mtd)
+{
+	up(&mtd_table_mutex);
+
+	if (mtd->module)
+	       __MOD_DEC_USE_COUNT(mtd->module);
+}
+
+EXPORT_SYMBOL(rs_get_mtd_device);
+EXPORT_SYMBOL(rs_put_mtd_device);
