@@ -1,20 +1,21 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
+Received: from mailout05.sul.t-online.com ([194.25.134.82])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BEBTd-0001kp-6E
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 19:20:41 +0100
-Received: from kiire.colleduc.ee (localhost [127.0.0.1])
-	by kiire.colleduc.ee (8.12.10/8.12.10) with ESMTP id i3FIKdhO019295
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2004 21:20:39 +0300
-Received: from localhost (kalev@localhost)i3FIKd0W019292
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Apr 2004 21:20:39 +0300
-Date: Thu, 15 Apr 2004 21:20:39 +0300 (EEST)
-From: Kalev Lember <kalev@colleduc.ee>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.44.0404152104170.18769-100000@kiire.colleduc.ee>
+	id 1BEC0Z-00020S-6R
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2004 19:54:43 +0100
+From: tglx@linutronix.de (Thomas Gleixner)
+To: Tino Keitel <tino.keitel@innominate.com>,
+ Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Date: Thu, 15 Apr 2004 20:50:25 +0200
+References: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
+In-Reply-To: <20040415144031.GU29551@tkeitel001.bln.innominate.local>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: FAT corruption
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200404152050.25417.tglx@linutronix.de>
+Subject: Re: JFFS2 writes fail with 2.4.25
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-I am having trouble with current mtd code and linux 2.6.5 kernel.
-
-I have a 16MB DoC Millennium Plus that has been formatted with dformat 
-(dformat -win:c800 -ipl:ipl.rom -s:doc514.exb -bdkf0:clara.rom 
--bdkl0:256K -bdkn0:CLRA -y). It has been running for some time with 2.4.21 
-kernel and M-Systems TrueFFS driver. It uses the FAT filesystem.
-
-If I mount it with 2.6.5+mtd it also works flawlessly.
-
-Problems occur if I try to mount it again with 2.4+trueffs, then the 
-filesystem is corrupted. Sometimes file listing does not show any of the 
-files I have written with 2.6.5+mtd, sometimes I get filesystem panic and 
-I would be told that there was a FAT error.
-
-And ideas?
+On Thursday 15 April 2004 16:40, Tino Keitel wrote:
+> Hi folks,
+>
+> The system is an Intel XScale IXP425 board (ARM little endian) with 16
+> MB NOR flash. I use the JFFS2 from the 2.4.25 kernel. Any hints what's
+> wrong here?
+>
+Can you try  MTD CVS code ?
 
 -- 
-Best regards,
-Kalev
+Thomas
+________________________________________________________________________
+"Free software" is a matter of liberty, not price. To understand the concept,
+you should think of "free" as in "free speech,'' not as in "free beer".
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
