@@ -1,17 +1,17 @@
-Received: from [63.118.32.25] (helo=c2.ciena.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173kk2-0005qB-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 22:37:27 +0100
-From: jm1@angert.net
-Received: from tangert-2k.pc.atl.ciena.com (jawheeler-lt.pc.atl.ciena.com [10.88.2.63] (may be forged))
-	by sylvester.ciena.com (8.8.8+Sun/8.8.8) with ESMTP id PAA20115
-	for <linux-mtd@lists.infradead.org>; Fri, 3 May 2002 15:21:50 -0400 (EDT)
-Date: Fri, 3 May 2002 15:21:49 -0400 (Eastern Daylight Time)
-To: linux-mtd@lists.infradead.org
-Subject: Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist!
-Message-ID: <Pine.WNT.4.44.0205031453060.1528-100000@tangert-2k.pc.atl.ciena.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 173lCv-0005tG-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 23:07:17 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.WNT.4.44.0205031453060.1528-100000@tangert-2k.pc.atl.ciena.com> 
+References: <Pine.WNT.4.44.0205031453060.1528-100000@tangert-2k.pc.atl.ciena.com> 
+To: jm1@angert.net
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist! 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 03 May 2002 23:07:15 +0100
+Message-ID: <23795.1020463635@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,31 +23,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-JFFS2 on a powerPC embedded system. 64M Intel Strataflash. Latest CVS patched
-into Hardhat Linux (2.4.3 based)
+jm1@angert.net said:
+> Today we rebooted it with the latest MTD CVS code (as of 5/2/02) and
+> got:
 
-We are using the board for development and test. It had an uptime of about a
-month and was working fine - it was running CVS code from 6 to 8 weeks ago.
+> Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist!
 
-Today we rebooted it with the latest MTD CVS code (as of 5/2/02) and got:
+> in the syslog.
 
-Eep. Child "ncp.cfg" (ino #344) of dir ino #88 doesn't exist!
+OK, that looks like filesystem corruption of some kind - you have a 
+directory entry for inode #344, but the inode itself doesn't exist.
 
-in the syslog. I am unable to delete the bad entry from the dir inode:
+Does it printk any other clues as to why that happened? Nodes with a bad 
+CRC, perhaps?
 
-# perl -e "unlink 'ncp.cfg';"
-# ls -la
-ls: ./ncp.cfg: Input/output error
-drwxrwxr-x 2 root root 0 May 3 14:10 .
-drwxr-xr-x 8 root root 0 May 3 14:57 ..
+> I am unable to delete the bad entry from the dir inode:
 
-Rebooting doesn't seem to help - the error is reported each time.
+> # perl -e "unlink 'ncp.cfg';" 
+> # ls -la 
+> ls: ./ncp.cfg: Input/output
 
-Other than this error the JFFS2 filesystem is working fine.
+That's very odd. Can you print the return code (and errno) of the unlink() 
+syscall? That really ought to work.
 
-Obviously I can clear this up by erasing the whole flash, but is there anything
-I should look at first?
+Can you compile with CONFIG_JFFS2_FS_DEBUG=1, set /proc/sys/kernel/printk 
+to 9 and log the kernel's output during mount and unlink attempts?
 
-Thanks,
+I assume the old kernel is showing the same behaviour if you reboot back to 
+it?
 
-Tom Angert
+
+
+--
+dwmw2
