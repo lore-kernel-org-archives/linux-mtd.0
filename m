@@ -1,17 +1,15 @@
-Received: from [80.239.140.166] (helo=rekin6.o2.pl)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AmhZz-00015D-WE
-	for linux-mtd@lists.infradead.org; Fri, 30 Jan 2004 22:57:41 +0000
-From: andrzej_mialkowski@o2.pl
-To: =?iso-8859-2?Q?Alice_Hennessy?= <ahennessy@mvista.com>
-Date: Fri, 30 Jan 2004 23:55:05 +0100
-Content-Type: text/plain; charset="iso-8859-2";
+Received: from web8201.mail.in.yahoo.com ([203.199.70.114])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AnTls-0007vy-9X
+	for linux-mtd@lists.infradead.org; Mon, 02 Feb 2004 02:25:08 +0000
+Message-ID: <20040202022446.86661.qmail@web8201.mail.in.yahoo.com>
+Date: Mon, 2 Feb 2004 02:24:46 +0000 (GMT)
+From: =?iso-8859-1?q?Deya?= <deyasis@yahoo.co.in>
+To: MTD <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4018514D.6E4DB38A@mvista.com>
-References: <4018514D.6E4DB38A@mvista.com>
-Message-Id: <20040130225505.8DE4ED0B17@rekin6.o2.pl>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: gen_probe.c issue
+Subject: Diskonchip Millennium Plus as a boot device?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Not understand purpose of this change; do you really have chip that is not fully visible in system? 
-Your solution would cause crash at least in two cases:
-1) if map size is really small for instance 0 or 1 and we are attempting to detect flash. So there must be some reasonable minimal map size value.
-2) returned size of mtd is calculated from "mtd->size = devsize * cfi->numchips" so you will get mtd size greater than supported by map driver (mapped in virtual memory?!). At least redboot parser will attempt access last sector of map:
-/* Read the start of the last erase block */
-	ret = master->read(master, master->size - master->erasesize,
-			   PAGE_SIZE, &retlen, (void *)buf);
+Hi,
+     I want to use diskonchip millenium plus as a boot
+device. Mine is PXA255 ARM processor.
+     If I have to use DOCMP instead of flash as boot
+device, what code all do i need to code? 
+     By the DOCMP datasheet, I need a IPL, SPL
+code....Do I have to code it myself or is it the one
+given by M-systems? What bootloader should I use to
+load the linux OS? 
+    Is the TrueFFS driver from M-systems is a must or
+linux diver is sufficient?
 
-I had somehow similar case when redboot partition were located not at the end of flash. I just modified in map driver detected map size between calls to do_map_probe and parse_mtd_partitions. In your case it might be possible that you need just to lay about map size before calling do_map_probe. For you effect will be same, you will not break others code.
-Andrzej
-
----- Wiadomo¶æ Oryginalna ----
-Od: Alice Hennessy <ahennessy@mvista.com>
-Do: linux-mtd@lists.infradead.org
-Data: Wed, 28 Jan 2004 16:18:21 -0800
-Temat: gen_probe.c issue
-
->Hi,
->
->The following patch fixes a problem seen when the map->size is less than
->the actual chip size.
->Without the fix,  max_chips gets set to 0.
->
->Alice
->
->Index: drivers/mtd/chips/gen_probe.c
->===================================================================
->RCS file: /home/cvs/mtd/drivers/mtd/chips/gen_probe.c,v
->retrieving revision 1.14
->diff -u -r1.14 gen_probe.c
->--- drivers/mtd/chips/gen_probe.c       8 Nov 2003 00:51:21 -0000
->1.14
->+++ drivers/mtd/chips/gen_probe.c       28 Jan 2004 23:58:38 -0000
->@@ -108,6 +108,9 @@
->         * Align bitmap storage size to full byte.
->         */
->        max_chips = map->size >> cfi.chipshift;
->+        /* correct for case where map->size is less than chip size */
->+        if (!max_chips)
->+                max_chips = 1;
->        chip_map = kmalloc((max_chips / 8) + ((max_chips % 8) ? 1 : 0),
->GFP_KERNEL);
->        if (!chip_map) {
->                printk(KERN_WARNING "%s: kmalloc failed for CFI chip
->map\n", map->name);
->
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+________________________________________________________________________
+Yahoo! India Mobile: Download the latest polyphonic ringtones.
+Go to http://in.mobile.yahoo.com
