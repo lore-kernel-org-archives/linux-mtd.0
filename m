@@ -1,53 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13AA04-0005yj-00
-	for mtd-list@infradead.org; Thu, 06 Jul 2000 12:39:24 +0100
-Received: from ncc2.infomail.es ([194.224.53.135] helo=infomail.es)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13AA03-0005yZ-00
-	for mtd@infradead.org; Thu, 06 Jul 2000 12:39:23 +0100
-Date: Thu, 06 Jul 2000 13:36:20 CEST
-From: Rodrigo Moya <rmoya@tsai.es>
-To: mtd@infradead.org
-Subject: Re: Re: plilo problems
-Reply-To: rmoya@tsai.es
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Message-Id: <E13AA03-0005yZ-00@infradead.org>
+	id 13ABC7-0006Fm-00
+	for mtd-list@infradead.org; Thu, 06 Jul 2000 13:55:55 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13ABC6-0006Fg-00
+	for mtd@infradead.org; Thu, 06 Jul 2000 13:55:54 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <396460AB.9BEC2657@crossnet.co.jp> 
+References: <396460AB.9BEC2657@crossnet.co.jp>  <Pine.LNX.4.21.0007050937500.1226-100000@imladris.demon.co.uk> 
+To: Masami Komiya <mkomiya@crossnet.co.jp>
+Cc: mtd@infradead.org
+Subject: Re: Fujitsu MBM29LV160 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 06 Jul 2000 13:55:48 +0100
+Message-ID: <327.962888148@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Hi all!
+mkomiya@crossnet.co.jp said:
+> I want to use FTL and JFFS for our system. These filesystems can be
+> used on AMD's flash chips?
 
-Well, first of all, I'd like to thank you all for your help. I owe you a
-beer (or two)!
+FTL provides a block device, on which you put a 'normal' filesystem.
+JFFS runs directly on the flash.
 
-> Hi Rodrigo,
-> 
-> You need the patched lilo provided by Dvir Oren which he patched to work
-> with
-> either M-Systems or MTD DOC drivers, which I've attached.
-> Decompress it (tar -zxvf...) and you should have a boot.b and a plilo
-> that
-> will work. Also you'll have a patch that you can apply to LILO-21 to
-> re-create
-> plilo (and it works!)
-> 
-Now everything seemed to work when running lilo. I then boot from DOS, run
-dupdate to update the firmware, and tried to boot from Linux, but, this is
-what I get:
+You don't need both, and FTL is patented in some jurisdictions so you're 
+not permitted to use it on non-PCMCIA devices.
 
-> Searching for Boot Record from SCSI..OK
-> 
-> LILO
-> .ccboot:
-> Loading linux.........................
 
-and it hangs there. What do you think about it?
+mkomiya@crossnet.co.jp said:
+> Our system has two interleaved flash in 32 bit mode. So I want to
+> implement only 32bit read & write routines instead of 16 bit if it is
+> allowed. FTL or JFFS require 16bit read & write routines ?
 
-Cheers
+FTL and JFFS can't actually tell what the underlying MTD driver uses to 
+talk to the flash chips. So it doesn't matter. 
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
