@@ -1,22 +1,14 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAr2l-0000Vd-Jc
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 09:59:44 -0500
-Date: Mon, 14 Mar 2005 15:59:48 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-Message-ID: <20050314145948.GB17977@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0503121217090.24583@localhost.localdomain>
-	<20050314141509.GA17590@wohnheim.fh-wedel.de>
-	<4235A298.50908@yandex.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4235A298.50908@yandex.ru>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	"Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: how to access jffs2 partition properties?
+Message-ID: <4235ACE0.1040000@netwinder.org>
+Date: Mon, 14 Mar 2005 10:25:20 -0500
+From: Ralph Siemsen <ralphs@netwinder.org>
+MIME-Version: 1.0
+To: Chris Elston <chris.elston@radstone.co.uk>
+References: <F38DEABE0E171746B133C1ABBD142D9703691AAF@radmail.Radstone.Local>
+In-Reply-To: <F38DEABE0E171746B133C1ABBD142D9703691AAF@radmail.Radstone.Local>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@redhat.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] RE: Autodetection problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +18,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 March 2005 17:41:28 +0300, Artem B. Bityuckiy wrote:
+Chris Elston wrote:
+
+> I've managed to fix it for me by reversing the direction of the loop in
+> genprobe_new_chip - i.e.: assume the bank has max_chips and work down.
+> I think this is the safer way to do it, but I'm not sure, and I'd like
+> someone to look at this and confirm it for me.
 > 
-> >Not all mtd are flash based.  Mtd code should have zero knowledge
-> >about chip, start address, etc.  If you need that information, you
-> >have to tweak the mapping driver to give it out.
-> 
-> May be /proc/mtd is what you are looking for ?
+> Ralph, let me know if this fixes your case.
 
-Nope.  mphysmap (the old version from several years ago) created its
-own proc file.  That one, in combination with /proc/mtd would contain
-the necessary information.
+Yes, it works for me as well.
 
-New mphysmap is missing the proc file.  And the person that requested
-the driver has been silent for a while, so I have no idea if it even
-works.  Lack of hardware.
-
-Jörn
-
--- 
-When in doubt, use brute force.
--- Ken Thompson
+-R
