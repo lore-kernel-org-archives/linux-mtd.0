@@ -1,17 +1,27 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: dvrabel@arcom.com
-In-Reply-To: <40163B1F.1010702@cantab.net>
-References: <3FD998F6.9000303@arcom.com> <3FDDD939.8030302@arcom.com>
-	 <4014E81E.4090808@arcom.com>
-	 <1075129557.24024.81.camel@hades.cambridge.redhat.com>
-	 <40163B1F.1010702@cantab.net>
-Content-Type: text/plain
-Message-Id: <1075200236.1633.7.camel@hades.cambridge.redhat.com>
+Received: from mgw-x1.nokia.com ([131.228.20.21])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AlR13-0004nt-Kc
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 11:04:21 +0000
+Received: from esvir01nok.ntc.nokia.com (esvir01nokt.ntc.nokia.com
+	[172.21.143.33])i0RB4AV19573	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Jan 2004 13:04:11 +0200 (EET)
+Received: from esebh001.NOE.Nokia.com (unverified) by esvir01nok.ntc.nokia.com
+	<T6763d6bc06ac158f21155@esvir01nok.ntc.nokia.com> for
+	<linux-mtd@lists.infradead.org>; Tue, 27 Jan 2004 13:04:08 +0200
+Received: from angel.research.nokia.com (localhost.localdomain [127.0.0.1])
+	i0RA6DJ8016138
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2004 12:06:13 +0200
+Received: (from jlavi@localhost)
+	by angel.research.nokia.com (8.12.8/8.12.8/Submit) id i0RA6Dao016135
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 12:06:13 +0200
+Date: Tue, 27 Jan 2004 12:06:13 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: MTD List <linux-mtd@lists.infradead.org>
+Message-ID: <20040127100613.GA16078@angel.research.nokia.com>
 Mime-Version: 1.0
-Date: Tue, 27 Jan 2004 10:43:58 +0000
-Content-Transfer-Encoding: 7bit
-cc: Linux MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: cfi_cmdset_0002 -- erase suspends broken.
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Subject: JFFS2 case insensitivity
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +31,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-27 at 10:19 +0000, David Vrabel wrote:
-> _____________________________________________________________________
-> The message in this transmission is sent in confidence for the
-> attention of the addressee only and should not be disclosed to any
-> other party. Unauthorised recipients are requested to preserve this
-> confidentiality. Please advise the sender if the addressee is not
-> resident at the receiving end.  Email to and from Arcom is
-> automatically monitored for operational and lawful business reasons.
+How difficult it would be to add support for file name case
+insensitivity to JFFS2?
 
-I can't find a way to make mailman trap for moderation any messages with
-'confidental' and/or 'addressee' in the _text_, only to filter on
-headers. So I've added 'Received:.*mail.*.arcom.com' along with
-'From:.*dolby.com' to the blocked-for-having-clueless-management list.
-
-Anyone else with similar disclaimers want to step forward now and
-volunteer to be added to the list, to prevent them from accidentally
-sending such crap in the future and being summarily removed?
-
--- 
-dwmw2
+Jarkko Lavinen
