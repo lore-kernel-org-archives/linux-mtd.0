@@ -1,15 +1,18 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from ns2.arlut.utexas.edu ([129.116.174.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17hYpw-0000LO-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 18:00:04 +0100
-Message-ID: <3D63C720.3325FC60@esteem.com>
-Date: Wed, 21 Aug 2002 10:00:16 -0700
-From: Conn Clark <clark@esteem.com>
-MIME-Version: 1.0
-To: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Where do you guys hang out on the IRC?
-Content-Type: text/plain; charset=us-ascii
+	id 17haSA-0000W7-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 19:43:39 +0100
+Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
+	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id g7LIhalg045221
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 13:43:36 -0500 (CDT)
+Date: Wed, 21 Aug 2002 13:43:34 -0500
+Subject: Cannot mount my NAND device with JFFS2
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+From: Ken Offer <koffer@arlut.utexas.edu>
+To: LinuxMTD <linux-mtd@lists.infradead.org>
 Content-Transfer-Encoding: 7bit
+Message-Id: <E5BE2C26-B535-11D6-92ED-000393467F1A@arlut.utexas.edu>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,30 +24,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+Hi all,
 
-With the post of the IRC discussion, I was wondering what channel and network
-you guys hang out and discuss this stuff in? 
+I can erase and test my smart media card NAND driver just fine 
+(i.e. eraseall seems to work, nandtest works, mtd0 and mtd1 show 
+up in /proc/mtd).  So far so good.  However, when I try to mount 
+the device with jffs2 I get:
 
+ > mount -v -t jffs2 /dev/mtdblock1 /mnt/jffs
+mount: wrong fs type, bad option, bad superblock on /dev/mtdblock1,
+        or too many mounted file systems
 
-Thanks
+I have:
 
-	Conn
--- 
+(a) applied the 
+"ftp://ftp.??.kernel.org/pub/linux/kernel/people/dwmw2/shared-
+zlib/linux-2.4.19-pre10-shared-zlib.bz2" patch to a 2.4.19 
+kernel,
+(b) copied the latest and greatest cvs mtd/jffs2 sources into my kernel,
+(c) made the appropriate changes to "file.c" for Page_uptodate,
+(d) made the change for "CONFIG_JFFS2_FS_NAND" to "fs/Config.in",
+(e) made a change to "include/linux/mtd/compatmac.h" to define 
+"set_user_nice" (isn't defined for 2.4.19).
 
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
+My driver is based on the autcpu12 driver in the nand sources.  
+I have noticed that there is a "autcpu12-nvram" map driver to 
+perform NVRAM mapping.  Is such a mapping device REQUIRED for 
+JFFS2 support???  Or is it just for mapping the device to 
+address space for other purposes?  The documentation is not 
+clear (what's new...)
 
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
+Got any ideas?
 
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
++-----------------------------------------------------------+
+|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
+|  Office: 512-835-3859                  Fax: 512-835-3259  |
++-----------------------------------------------------------+
