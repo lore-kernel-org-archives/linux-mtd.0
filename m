@@ -1,19 +1,31 @@
-Received: from sonolo.xs4all.nl ([80.126.206.91] helo=sendmail.metro.cx)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CaGyf-00063x-8U
-	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2004 12:12:18 -0500
-Date: Fri, 3 Dec 2004 18:11:41 +0100
-From: "K.F.J. Martens" <gmc@metro.cx>
-To: Ben Dooks <ben@fluff.org.uk>
-Message-ID: <20041203171141.GE2959@metro.cx>
-References: <20041202225607.GH3233@metro.cx>
-	<20041203004601.GA29522@home.fluff.org>
+Received: from mgw-x4.nokia.com ([131.228.20.27])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Caa7O-0007N0-2d
+	for linux-mtd@lists.infradead.org; Sat, 04 Dec 2004 08:38:37 -0500
+Received: from esdks004.ntc.nokia.com (esdks004.ntc.nokia.com [172.21.138.159])
+	by mgw-x4.nokia.com (Switch-2.2.8/Switch-2.2.8) with ESMTP id
+	iB4DcQS01790 for <linux-mtd@lists.infradead.org>;
+	Sat, 4 Dec 2004 15:38:26 +0200 (EET)
+Received: (from root@localhost)
+	by esdks004.ntc.nokia.com (8.12.9/8.12.9) id iB4Dc0gp016558
+	for <linux-mtd@lists.infradead.org>; Sat, 4 Dec 2004 15:38:00 +0200
+Received: from esebh001.NOE.Nokia.com (esebh001.ntc.nokia.com [172.21.138.28])
+	by mgw-int1.ntc.nokia.com (Switch-2.2.8/Switch-2.2.8) with ESMTP id
+	iB4Dbba14501 for <linux-mtd@lists.infradead.org>;
+	Sat, 4 Dec 2004 15:37:37 +0200 (EET)
+Received: from jlavi by angel.research.nokia.com with local (Exim 4.34)
+	id 1Caa2a-0003g4-7i
+	for linux-mtd@lists.infradead.org; Sat, 04 Dec 2004 15:33:36 +0200
+Date: Sat, 4 Dec 2004 15:33:36 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20041204133336.GA11070@angel.research.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20041203004601.GA29522@home.fluff.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Horrible Bug? AMD29LV400BB with mtd in 2.6.10rc2
+Sender: <jlavi@angel.research.nokia.com>
+Subject: ECC errors on padded images
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +35,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ben,
+I recently encountered ECC errors with padded JFFS2 images (mkfs.jffs2
+-p) on Nand flash.
 
-You are everywhere :)
+The padded pages were written into flash with a driver which uses
+noninverted ECC code. Pages with all bytes either 00 or FF will
+produce 00s as ECC bytes.
 
-On Fri, Dec 03, 2004 at 12:46:01AM +0000, Ben Dooks wrote:
-> On Thu, Dec 02, 2004 at 11:56:07PM +0100, K.F.J. Martens wrote:
-> > If I reverse them like so:
-> > 
-> > 
-> >                         [0] = MTD_UADDR_0x0555_0x02AA,  /* x8 */
-> >                         [1] = MTD_UADDR_0x0AAA_0x0555,  /* x16 */
-> > 
-> 
-> There has been some fixing in the jedec and similar probe code
-> to fix the use of the fields of device width / overlap due to
-> incorrect addressing being used for the chip commands. 
+When JFFS2 scans such padded image, it fails to check the zero ECC
+bytes of seemingly unused pages and will use them. Then the already
+once written page is written again and later an ECC error is produced
+upon read -- because ECC bytes remain zero.
 
-Meaning that a patch is indeed being submitted right now? It can be
-confusing though, how the terms x8 and x16 are used in the datasheets et
-al. 
+We have now three options:
 
-Kind regards,
+1. We couuld blame JFFS2, because it fails to check ECC bytes of
+   seemingly unused pages.
 
-Koen
+   But should JFFS2 care if somebody produces an image that JFFS2
+   would never produce by itself?
+
+   JFFS2 itself won't pad erase blocks and won't write unused blank
+   pages.  Even if writing a long node would result writing an all FF
+   page, JFFS2 would know in next mount from node header the page is
+   being used and not available for writing.
 
 
--- 
-K.F.J. Martens, Sonologic, http://www.sonologic.nl/
-Networking, embedded systems, unix expertise, artificial intelligence.
-Public PGP key: http://www.metro.cx/pubkey-gmc.asc
-Wondering about the funny attachment your mail program
-can't read? Visit http://www.openpgp.org/
+2. We could blame Mkfs.jffs2, because it is the one who produced
+   padded erase block. Without padding there would be no error.
+
+
+3. We could blame the Ecc logic and insist that writing a blank, all
+   FF page will result ECC code of FFs and it would allow writing
+   first a blank page and then real data page.
+
+   Conceptually an unused, erased page is not the same as used,
+   written blank page.
+
+
+Jarkko Lavinen
