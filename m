@@ -1,25 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14sCmn-0004nk-00
-	for mtd-list@infradead.org; Wed, 25 Apr 2001 01:04:01 +0100
-Received: from topaz.3com.com ([192.156.136.158])
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14sCml-0004nc-00
-	for mtd@infradead.org; Wed, 25 Apr 2001 01:03:59 +0100
-Received: from opal.3com.com (opal.3com.com [139.87.50.117])
-	by topaz.3com.com (Switch-2.1.0/Switch-2.1.0) with ESMTP id f3P01cf09724
-	for <mtd@infradead.org>; Tue, 24 Apr 2001 17:01:39 -0700 (PDT)
-Received: from hqoutbound.ops.3com.com (hqoutbound.ops.3com.com [139.87.48.104])
-	by opal.3com.com (Switch-2.1.0/Switch-2.1.0) with SMTP id f3P03H721881
-	for <mtd@infradead.org>; Tue, 24 Apr 2001 17:03:18 -0700 (PDT)
-From: Chester_Szczepucha@3com.com
-To: mtd@infradead.org
-Message-ID: <88256A39.00004845.00@hqoutbound.ops.3com.com>
-Date: Tue, 24 Apr 2001 17:04:42 -0700
-Subject: How to subscribe?
+	id 14sCsz-0004s0-00
+	for mtd-list@infradead.org; Wed, 25 Apr 2001 01:10:25 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14sCsy-0004ru-00
+	for mtd@infradead.org; Wed, 25 Apr 2001 01:10:24 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <88256A39.00004845.00@hqoutbound.ops.3com.com> 
+References: <88256A39.00004845.00@hqoutbound.ops.3com.com> 
+To: Chester_Szczepucha@3com.com
+Cc: mtd@infradead.org
+Subject: Re: How to subscribe? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 25 Apr 2001 01:10:06 +0100
+Message-ID: <32552.988157406@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
+
+
+Go to http://www.linux-mtd.infradead.org/ and follow the instructions under 
+the "Mailing list" header.
+
+
+--
+dwmw2
+
 
 
 
