@@ -1,20 +1,14 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from cougar.intrinsyc.com ([209.139.192.225])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QbCu-0006NS-OC
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 00:10:14 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Pantelis Antoniou <panto@intracom.gr>,
-	linux-mtd@lists.infradead.org
-Date: Fri, 13 Jun 2003 11:13:09 +1200
-References: <3EE6EBA0.3080508@intracom.gr>
-In-Reply-To: <3EE6EBA0.3080508@intracom.gr>
+	id 19Qc1s-0006ij-Am
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 01:02:52 +0100
+Date: Thu, 12 Jun 2003 17:05:38 -0700 (PDT)
+From: Chris <csperandeo@intrinsyc.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.44.0306121704110.1757-100000@intrinsyc.com>
 MIME-Version: 1.0
-Message-Id: <20030612231042.C385C409E@blood.actrix.co.nz>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: Cram FS on NAND - How to do this?
-Reply-To: manningc2@actrix.gen.nz
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Reliability of NAND JFFS2 vs YAFFS for Embedded Systems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[snip]
-> JFFS2: Read/write, compressed, best support, slow startup.
-> YAFFS: Read/write, not compressed, newcomer, fast startup.
 
-YAFFS is being used extensively and has been shipping in commercial products 
-for approx 9 months or so with well over ten thousand units in the field.
+Hi all,
 
->
-> I have a requirement to have a compressed read only
-> root filesystem in my board and I've come to the
-> conclussion that the best fit would be CRAMFS if only
-> had any concept of bad blocks.
->
-> Looking at the code for CRAMFS I see that it would not
-> be very difficult to hack it to detect the bad blocks
-> and skip over them on startup. We could rely on
-> the same OOB info that JFFS2 has, and just
-> make a mapping list as follows:
->
-> NAND block  bad?  fs block
-> ----------  ----  --------
->     0         n      0
->     1         n      1
->     2         y     skip
->     3         n      2
->
-> ... etc
->
-> The first complication is that CRAMFS works with
-> PAGE_SIZE blocks only, and that should be taken
-> into account.
+I was hoping that anyone who had some experience with JFFS2 and YAFFS NAND 
+devices could give a good idea of the reliability of both filesystems.  I 
+have attempted the JFFS2 filesystem on Toshiba NAND TC58256AFT with some 
+success but have encountered CRC errors when rebooting or interrupting 
+power 
+during writing.
 
-That is not a problem. NAND blocks are a multiple of PAGE_SIZE, therefore 
-each NAND block holds say 4 cramfs blocks ie. your table becomes
- NAND block  bad?  fs block
-> ----------  ----  --------
->     0         n      0..3
->     1         n      4..7
->     2         y     skip
->     3         n      8..11
+I am considering moving to the YAFFS filesystem due to reliablity 
+concerns, 
+but I am also wondering if YAFFS will have its own can of worms.  I would 
+like to have reliability, performance and space but reliability is the 
+most 
+important concern. 
 
->
-> The second is that this is the first time I hack filesystem
-> code and I would like to ask the list if you see any difficulties
-> ahead.
->
-> What are your thoughts in this?
+Does anyone have experience with testing reliability of both 
+configurations?  
+If so what were the resutls?
 
-While some people (myself included)  have suggested some ways you could 
-achieve your goals without native cramfs, I really think that native cramfs 
-support would be a GoodThing. It is always good to have another option 
-(that's why there are over 30 different file systems available for Linux).
+Should I change to YAFFS?  Why?
 
-I would not be worried about no previous FS experience. This is more of an 
-adaptaion of an existing FS. Having a read-only FS makes it much simpler.
+Or should I stay with JFFS2?  Why?
 
-Suggestion: GO FOR IT!
+Thanks,
 
--- CHarles
+Chris Sperandeo
