@@ -1,75 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11ixHr-0006oz-00
-	for mtd@infradead.org; Wed, 3 Nov 1999 10:05:03 +0000
-To: Bob Canup <rcanup@go2fax.com>
-Cc: mtd@infradead.org
-Subject: Re: 19991025 driver 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 03 Nov 1999 10:05:02 +0000
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11ixHq-00057C-00@devel2.axiom.internal>
+	id 11jVq2-0000rX-00
+	for mtd@infradead.org; Thu, 4 Nov 1999 22:58:39 +0000
+Date: Thu, 4 Nov 1999 15:58:12 -0700 (MST)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+cc: mtd@infradead.org
+Subject: Re: jfs/linux
+In-Reply-To: <E11iLRd-0002uk-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.3.96.991104155500.11060B-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-rcanup@go2fax.com said:
->  nftla:<3>ll_rw_block: Trying to read nonexistent block-device 5d:00
-> (0) unable to read partition table. 
+On Mon, 1 Nov 1999, Alan Cox wrote:
 
-Hmmm. My fault - I scan for NFTL partitions before actually registering the 
-block device. 
-
-Try this:
-
-Index: nftl.c
-===================================================================
-RCS file: /cvs/mtd/kernel/nftl.c,v
-retrieving revision 1.9
-diff -u -w -r1.9 nftl.c
---- nftl.c	1999/10/25 14:55:46	1.9
-+++ nftl.c	1999/11/03 10:04:35
-@@ -1129,15 +1129,6 @@
- #ifdef PRERELEASE 
- 	printk(KERN_INFO"$Id: nftl.c,v 1.9 1999/10/25 14:55:46 dwmw2 Exp $\n");
- #endif
--	register_mtd_notifier(&nftl_notifier);
--
--	for (i=0; i < MAX_MTD_DEVICES; i++) {
--		mtd = get_mtd_device(i);
--		
--		if (mtd) 
--			NFTL_notify_func(mtd, i);
--	}		
--
+> > All the solutions we currently have for filesystems on flash present a block 
+> > device rather than a filesystem interface - that is, both FTL and NFTL act as 
+> > an extra translation layer below the actual filesystem, providing 512-byte 
+> > random block access for use by a traditional filesystem. 
  
- 	if (register_blkdev(NFTL_MAJOR, "nftl", &nftl_fops)){
- 		printk("unable to register NFTL block device\n");
-@@ -1150,6 +1141,14 @@
- 		gendisk_head = &nftl_gendisk;
- 	}
- 	
-+	register_mtd_notifier(&nftl_notifier);
-+
-+	for (i=0; i < MAX_MTD_DEVICES; i++) {
-+		mtd = get_mtd_device(i);
-+		
-+		if (mtd) 
-+			NFTL_notify_func(mtd, i);
-+	}		
- 	
- 	return 0;
- }
+> Ditto with Compact flash (ATAPI). Compact flash according to the docs does
+> its own wear levelling.  Im still baffled why people use the other stuff 8)
 
+Primarily I think it is easier (and cheaper) on a board level to connect
+up a 8bit linear flash ROM than it is to work up a full blown IDE
+interface for compact flash. This is particularly true for things like
+boot flash where I don't think you'll see CF ever being used.
 
-----                                ----                                 ----
-David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
- Project Leader,    Process Information Systems     Mobile: (+44) 7976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+Basically, in our product at least, we need to have flash for booting the
+system and storing the bios, if we make it a little bigger (2M) the cost
+goes up a tiny bit and we can run the OS on there too. 
 
+Jason
 
 
 
