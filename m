@@ -1,30 +1,24 @@
-From: asoneofus@nm.ru (A.L. Klyutchenya)
-Date: Wed, 26 Feb 2003 11:09:24 +0300
-Subject: Is Samsung K9F5608U0B-YCB0 NAND Flash Supported
-In-Reply-To: <20030226054016.23676.qmail@web80411.mail.yahoo.com>
-References: <20030226054016.23676.qmail@web80411.mail.yahoo.com>
-Message-ID: <200302261109.25118.asoneofus@nm.ru>
+From: arne.jonsson@i3micro.com (Arne Jonsson)
+Date: Wed, 26 Feb 2003 12:00:50 +0100
+Subject: cramfs on 2.0-kernel?
+Message-ID: <3E5C9E62.CA40AC31@i3micro.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-26 ??????? 2003 08:40, Kevin Kaichuan He ???????:
-> This is a 16Mbtes, 8bits NAND Flash from Samsung.
-> I'm wondering if it's supported already. IOr is
-> there a similiar hardware specific NAND driver
-> I can copy and modify ?
+Hi!
 
-In sources of mtd (drivers). All ok :-)
-http://linux-mtd.infradead.org/tech/nand.html
-description of creating driver. All notes in this document
+Sorry for the crosspost ...
 
-Sample drivers: autcpu12.c, edb7312.c (eausy, as first)
+cramfs seems not to be supported in the 2.0-kernel.
+Would it be hard to backport it to 2.0-kernel?
+
+Yeah, yeah, I know, go for the 2.4 kernel....
+
+Best regards,
+/Arne Jonsson
 
 -- 
-????????!      
-      ____   __
-     /   |  / / ?. ?. ????????
-    / /| | / /  (asoneofus)
-   / /_| |/ /   mail:   asoneofus at kde.ru
-  / ____  _ \   www:    http://www.qt.kde.ru
- / /   | | \ \  icq:    113679387
-/_/    |_|  \_\ 
+Arne Jonsson
+i3 micro technology AB
+Phone:+46-8-506 388 00
+Fax:  +46-8-506 388 75
