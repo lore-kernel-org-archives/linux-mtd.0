@@ -1,52 +1,40 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11zEYD-0005Ik-00
-	for mtd-list@infradead.org; Sat, 18 Dec 1999 07:45:13 +0000
-Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
+	id 11zRIZ-0005Xr-00
+	for mtd-list@infradead.org; Sat, 18 Dec 1999 21:21:55 +0000
+Received: from out4.prserv.net ([165.87.194.239] helo=prserv.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11zEY9-0005Ie-00
-	for mtd@imladris.mvhi.com; Sat, 18 Dec 1999 07:45:11 +0000
-Date: Sat, 18 Dec 1999 01:53:18 -0600 (CST)
-From: Adi Linden <adi@adis.on.ca>
-To: ralph stickley <ralph@datalux.com>
-cc: Embedded <linux-embedded@waste.org>, MTD <mtd@imladris.mvhi.com>,
-        Dvir Oren <dvir@lucidvon.com>
-Subject: Re: DOC Script for booting 
-In-Reply-To: <385A9C66.1C950DA4@datalux.com>
-Message-ID: <Pine.LNX.4.10.9912180144030.9822-100000@localhost.localdomain>
+	id 11zRIX-0005Xl-00
+	for mtd@infradead.org; Sat, 18 Dec 1999 21:21:54 +0000
+From: "Dvir Oren" <dviro@ibm.net>
+To: MTD <mtd@infradead.org>
+Date: Sat, 18 Dec 1999 23:22:42 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: MTD compiled in the kernel
+Message-Id: <E11zRIX-0005Xl-00@infradead.org>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+I'm still having problems compiling MTD into the 2.2 kernel.
 
-> 
-> Adi, if this is useful, you can add this to your download page...
-> 
+The drivers seem to load fine, but when I try to fdisk /dev/nftla, I get 
+"unable to read /dev/nftla".  Trying to mount /dev/nftla1 won't work 
+either.
 
-I haven't tried it yet, but I added it in the Embedded_Build/script
-directory. I also added the patched lilo from Dvir Oren but I haven't
-build a package yet. Hope this is ok with both of you.
+Anybody got any ideas?
 
-Also, I build a boot disk tonight. It's a single floppy system with a
-monolithic kernel. It supports the ne2000 isa card (for the PCM-4823 SBC),
-doc, ms-dos fat, ext2 and nfs. It also contains syslinux, the patched
-lilo and fdisk but no ext2 tools (no room left). The kernel and ramdisk
-could be ftp'd into the mounted flash (incl. ftp) or copied from a mounted
-nfs volume.
+One other oddity, is that I get a strange error:
+"Changing size of flash from 7ce0 to 7ce0 for geometry reasons"
+(or something like that, quoting from memory).
 
-I've got to work a bit on remote boot and the nfs root filesystem. All I
-would need it to plug the SBC into the network and telnet into it once
-it's booted. 
+David, any ideas?
 
-I am slowly getting somewhere with mtd. I am trying to upload it to the
-sbc tomorrow evening and see if I can access the doc2000 with it...
-
-TTYL,
-Adi
-
-
+---------------
+Dvir Oren
+<dviro@hotpop.com>
+<http://thor.prohosting.com/~dviro>
 
 
 
