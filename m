@@ -1,22 +1,21 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+Received: from auemail1.lucent.com ([192.11.223.161]
+	helo=auemail1.firewall.lucent.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A7Vaz-000740-9v
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Oct 2003 08:52:26 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-To: Kevin Liao <kevinliao@iei.com.tw>
-In-Reply-To: <012c01c38e38$85298770$ab0a10ac@rdkevinliaonb>
-References: <1065683429.30987.223.camel@imladris.demon.co.uk>
-	 <012c01c38e38$85298770$ab0a10ac@rdkevinliaonb>
-Message-Id: <1065685868.30987.262.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Thu, 09 Oct 2003 08:51:08 +0100
-Content-Type: text/plain
+	id 1A7bCr-0007sY-4A
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Oct 2003 14:51:53 +0100
+Received: from ixstar.ih.lucent.com (h135-1-99-7.lucent.com [135.1.99.7])
+	ESMTP id h99DoL800082	for <linux-mtd@lists.infradead.org>;
+	Thu, 9 Oct 2003 08:50:21 -0500 (CDT)
+To: linux-mtd@lists.infradead.org
+From: "Greg A. Martin" <gregmartin@lucent.com>
+Date: Thu, 9 Oct 2003 08:50:17 -0500
+Message-ID: <000101c38e6c$469fdd40$1a53b987@na02.lucent.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: etux@embeddedtux.org
-cc: jffs-dev@axis.com
-Subject: Re: [ANNOUNCE] JFFS2 support for NAND flash..
-Reply-To: dwmw2@infradead.org
+Subject: Nand Flash with 2048 Byte Page sizes
+Reply-To: gregmartin@lucent.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-10-09 at 15:39 +0800, Kevin Liao wrote:
-> Congratulations and thanks a lot for all your effort! Does mtd-snapshot-20031008.tar.bz2 contains all thses?
+Hi,
+I haven't seen any references yet to the newer NAND devices from Samsung
+that have 2048 byte
+pages with 64 bytes extra data. The Part numbers are K9F1G08U0M and
+K92G08U0M. These
+are 1 and 2 Gbit devices with 11 bit column addresses and 16 or 17 bit page
+addresses that need
+two byte read commands. Any idea if support for these devices will be forth
+coming soon, or do
+I get to blaze a trail?
 
-Thanks. No it doesn't, at least not entirely -- although all the NAND
-wbuf handling has been there for a while, some of the tuning changes to
-the GC were actually committed in the small hours of this morning. The
-next snapshot will have it.
-
-Your question was worth answering on all three lists; further followups
-to only one please.
-
--- 
-dwmw2
+Greg
