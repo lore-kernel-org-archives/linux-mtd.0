@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Cdyu-0005pl-00
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 09:41:16 +0000
+	id 16Ce3N-0005qD-00
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 09:45:53 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <D9223EB959A5D511A98F00508B68C20C1F9639@ORSMSX108> 
-References: <D9223EB959A5D511A98F00508B68C20C1F9639@ORSMSX108> 
-To: "Carlson, Kristen" <kristen.carlson@intel.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: caching questions with jffs2 
+In-Reply-To: <20011208021016.28394.qmail@qis> 
+References: <20011208021016.28394.qmail@qis> 
+To: "Nikolai Vladychevski" <niko@isl.net.mx>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: nftl_format with offset 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sat, 08 Dec 2001 09:51:48 +0000
-Message-ID: <19171.1007805108@redhat.com>
+Date: Sat, 08 Dec 2001 09:56:28 +0000
+Message-ID: <19668.1007805388@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kristen.carlson@intel.com said:
-> Can someone describe to me the algorithm used for freeing memory that
-> has been cached due to file activity in jffs2?  Is this done as part
-> of the garbage collector?  How long does the cached memory stay
-> around?  Is this tunable?
+niko@isl.net.mx said:
+> NFTL Media Headers at 0x0 and 0x104000 disagree.
 
-At all times while mounted, JFFS2 keeps a list of the offsets of each 
-physical node belonging to each inode.
+It doesn't like the fact that you now seem to have _two_ different NFTL 
+headers, both claiming to use overlapping parts of the flash.
 
-On read_inode(), it reads each physical node and builds up a full map of 
-where data are found for each range of bytes in the file. 
+Erase the first two blocks of the flash, which contain the original, and 
+it should use the one at offset 0x100000 happily.
 
-On read(), it just reads data into the page cache. Normal Linux cache 
-eviction rules apply to data pages.
-
-On clear_inode(), the extra stuff allocated in read_inode() is freed.
-
-The paper linked from http://sources.redhat.com/jffs2/ may help to shed 
-light on this.
+In fact, I suspect you should erase the whole device (with 'eraseall'), as 
+it's complaining about factory-marked bad zones which are probably _not_ 
+actually marked as such from the factory - the normal operation of the 
+NFTL format can leave a sector in that state, whereas the SmartMedia format 
+mandates that you leave that particular byte alone. 
 
 --
 dwmw2
