@@ -1,49 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141rMh-000383-00
-	for mtd-list@infradead.org; Fri, 01 Dec 2000 14:40:43 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 141rMf-00037x-00
-	for mtd@infradead.org; Fri, 01 Dec 2000 14:40:42 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Cc: ollie@sis.com.tw, linuxbios@lanl.gov
-Subject: DiskOnChip 2000/Millennium driver merge.
+	id 141sYC-0003OI-00
+	for mtd-list@infradead.org; Fri, 01 Dec 2000 15:56:40 +0000
+From: "Levi Khatskevitch" <lkhatskevitch@hotmail.com>
+To: dwmw2@infradead.org
+Cc: linuxbios@lanl.gov, mtd@infradead.org
+Subject: Re: blk_dev[93].request_fn == NULL bug is still there
+Date: Fri, 01 Dec 2000 10:56:05 -0500
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 01 Dec 2000 14:40:32 +0000
-Message-ID: <8574.975681632@redhat.com>
+Content-Type: text/plain; format=flowed
+Message-ID: <LAW-F50uA8M6XQQez1e00006398@hotmail.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've now cleaned up some of the differences between the new combined 
-doc200[01] driver and the doc2001-only driver, and enabled 
-DOC_SINGLE_DRIVER in the docprobe code.
+On Fri, 1 Dec 2000, David Woodhouse wrote:
+>I thought we'd found that this was because we were initialising the MTD
+>code before device_setup(). So I moved init_mtd() down a couple of lines
+>in init/main.c.
+>
+>I'll try to reproduce this myself as soon as I get into the office.
+>
+>--
+>dwmw2
+>
+>
 
-I haven't removed the conditional stuff for two reasons -
-	1. Ollie wants to keep the separate doc2001 driver for easier
-		development and testing
-	2. The doc2000 driver doesn't actually _work_ for writing. It
-		exhibits the same behaviour with both types of device -
-		writes to NFTL just don't appear to _stay_ written.
+BTW Initializing MTD before device_setup was different (actially worse), it 
+caused blk_dev[xxx].plug_tq.routine == NULL, that contition is not checked 
+by run_task_queue() and was causing kernel to crash.
 
-If you need write support for the Millennium right now, just comment out
-the definition of DOC_SINGLE_DRIVER in docprobe.c and continue to use 
-the doc2001 module.
-
-As the doc2001 driver is working fine, I'm fairly sure it's a hardware
-driver problem, not an NFTL code problem. Writes to the main body of the
-flash appear to work too, so I currently suspect that it's an OOB data write
-problem. 
-
-If anyone else with Millennium hardware could take a look at the 
-differences between doc2000.c and doc2001.c, especially Ollie who actually 
-knows what he's doing, that'd be very much appreciated.
-
---
-dwmw2
-
+- Levi
+_____________________________________________________________________________________
+Get more from the Web.  FREE MSN Explorer download : http://explorer.msn.com
 
 
 
