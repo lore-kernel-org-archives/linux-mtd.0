@@ -1,19 +1,25 @@
-Received: from hall.mail.mindspring.net ([207.69.200.60])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEwqo-0007QR-V1
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 20:23:31 +0000
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: "Dan Post" <djp.mtd@onemyth.net>,
-	"Karoliya,Abhishek" <Abhishek.Karoliya@fci.com>
-Date: Wed, 29 Oct 2003 15:21:33 -0500
-Message-ID: <IIEEICKJLNEPBBDJICNGAELGEBAA.chuckmeade@mindspring.com>
+	id 1AEwwk-0007Vy-3r
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 20:29:38 +0000
+Received: from there (203-96-62-254-tollfree.actrix.co.nz [203.96.62.254])
+	by desire.actrix.co.nz (Postfix) with SMTP id 5261E1984C
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Oct 2003 09:27:54 +1300 (NZDT)
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 30 Oct 2003 09:33:48 +1300
+References: <3F9D3D98.6453.14E703@localhost>
+	<20031028232658.9B8854414@blood.actrix.co.nz>
+	<1067388508.17740.9.camel@imladris.demon.co.uk>
+In-Reply-To: <1067388508.17740.9.camel@imladris.demon.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <20031029181623.M2380@onemyth.net>
+Message-Id: <20031029202754.5261E1984C@desire.actrix.co.nz>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: RE: Intel K3 Flash + MTD
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: SmartMedia FAT
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey Dan,
+On Wednesday 29 October 2003 13:48, David Woodhouse wrote:
+> On Wed, 2003-10-29 at 12:33 +1300, Charles Manning wrote:
+> > The flip side to this is that if you can find an SDDR09  you could likely
+> > get YAFFS/JFFS2 working with that by bypassing the usb storage driver and
+> > exposing it as NAND to mtd. However, SDDR09's are pretty rare. Samsung
+> > does make a USB device for experimenting with NAND that could be used for
+> > the same purpose.
+>
+> Can't you just hang one off the parallel port and bitbang it? Should be
+> fairly trivial to make a driver which uses the generic NAND code and
+> does that.... left as an exercise for the reader with a soldering iron.
 
-Abhishek sent me a response directly that he got it working
-with the email I sent him, but then he had trouble getting
-a msg back to the list that he is up and running now.
+Last time I tried reading with a soldering iron I burnt the page. 
 
-The reason it was in "status mode" was his unlock logic was
-leaving it that way.
+Samsung had a schematic for their parallel port thingy on their www. This is 
+no longer there. If you want, email me.
 
-Chuck
+Samsung's  USB NAND thingy is:
+http://www.samsung.com/Products/Semiconductor/Flash/TechnicalInfo/NANDUSB_Introduction.pdf
 
-> -----Original Message-----
-> From: Dan Post [mailto:djp.mtd@onemyth.net]
-> Sent: Wednesday, October 29, 2003 1:16 PM
-> To: Chuck Meade; Karoliya,Abhishek
-> Cc: linux-mtd@lists.infradead.org
-> Subject: RE: Intel K3 Flash + MTD
-> 
-> 
-> On Sun, 26 Oct 2003 15:17:35 -0500, Chuck Meade wrote
-> > That sounds like the status bit that you are reading back.
-> > Most flashes give back status after you issue them commands
-> > (like all of your unlocks, for instance).  Usually you put them 
-> > back into "read mode" by writing a particular byte to them
-> > after reading the status.  Try writing an FF to the flash.
-> > Check your flash chip's datasheet for the exact sequence that
-> > you must use to put it back in read mode.
-> 
-> For K3's, writing an FF should work, though I don't know why it's coming up in
-> status mode.  I don't think that behavior is typical.  You probably should
-> check the datasheet.  Or it could be your bootloader that's setting it to
-> status mode (maybe not changing it to Read Array after a program or erase etc).
-> 
-> However, you should be aware that some NOR chips, such as Intel's L18/L30's,
-> are multi-partitioned and each partition must be set to read array mode... the
-> details of its multipartitioning can be very sticky, but very cool too...
-> 
-> Dan
+-- CHarles
