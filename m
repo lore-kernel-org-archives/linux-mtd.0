@@ -1,19 +1,16 @@
-Date: Tue, 16 Nov 2004 15:09:32 +0000 (GMT)
+Date: Tue, 16 Nov 2004 16:42:54 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1100617420.8191.6959.camel@hades.cambridge.redhat.com>
-Message-ID: <Pine.LNX.4.58.0411161507340.27293@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0411161316390.25950@phoenix.infradead.org>
-	<1100613327.8191.6954.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.58.0411161405080.27293@phoenix.infradead.org>
-	<1100615381.8191.6957.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.58.0411161450260.27293@phoenix.infradead.org>
-	<1100617420.8191.6959.camel@hades.cambridge.redhat.com>
+To: Konstantin Kletschke <lists@ku-gbr.de>
+In-Reply-To: <20041116131632.GD15759@synertronixx3>
+Message-ID: <Pine.LNX.4.58.0411161642460.27293@phoenix.infradead.org>
+References: <20041116124403.GC15759@synertronixx3>
+	<Pine.LNX.4.58.0411161258350.25950@phoenix.infradead.org>
+	<20041116131632.GD15759@synertronixx3>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: your mail
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 Oops on 2.6.10-rc1-mm5
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +20,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 Nov 2004, David Woodhouse wrote:
+Konstantin Kletschke wrote:
+> Is the root filesystem copyied together by ptxdist-0.5.2,
+> device_table.txt comntains some device nodes and file perission things,
+> is its content importand? 
+Theoretically may be.
 
-> On Tue, 2004-11-16 at 14:54 +0000, Artem B. Bityuckiy wrote:
-> > Yes. But imagine some file which is constant and is never changed. We 
-> > create checkpoint for it and this checkpoint covers all the nodes. So, we 
-> > will need to rewrite new checkpoint even for this file when its nodes are 
-> > garbage collected... 
-> 
-> Yeah. In particular we'd nee to rewrite a new checkpoint when the block
-> containing the old checkpoint was garbage-collected anyway.
-> 
-Hmm, do not get it why. Why we need this? We may just copu old checkpoint 
-inact I believe. What happen If we do this? 
 
 --
 Best Regards,
