@@ -1,20 +1,22 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from [212.18.228.76] (helo=mail.linuxgrrls.org ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QrS1-0001ys-4f
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 17:30:53 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: f.callaghan@ieee.org
-In-Reply-To: <200306131153.42657.f.callaghan@ieee.org>
-References: <OOEOKBMECIFAEPIMFOGIMEPICBAA.sgluckman@omnitech.com>
-	 <200306131153.42657.f.callaghan@ieee.org>
-Message-Id: <1055521884.3632.158.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 13 Jun 2003 17:31:24 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+	id 19QrTk-00024Y-79
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 17:32:40 +0100
+Date: Fri, 13 Jun 2003 17:33:07 +0100 (BST)
+From: Jasmine Strong <jasmine@regolith.co.uk>
+To: "Brian J. Fox" <bfox@RoamingMessenger.com>
+In-Reply-To: <E19QrRf-0003en-00@speedy.datawave.net>
+Message-ID: <Pine.LNX.4.53.0306131732140.12689@undine.linuxgrrls.org>
+References: <3EE6EBA0.3080508@intracom.gr>
+	<20030612231042.C385C409E@blood.actrix.co.nz>
+	<Pine.LNX.4.53.0306131316110.11502@undine.linuxgrrls.org>
+	<E19QrRf-0003en-00@speedy.datawave.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: manningc2@actrix.gen.nz
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Please Help, problem mounting jffs2
+cc: panto@intracom.gr
+Subject: Re: Cram FS on NAND - How to do this?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-06-13 at 16:53, Frank R Callaghan wrote:
-> Thanks Sid, but I don't think I'm getting that far :(
-> 
-> # mount -t jffs2 /dev/mtdblock0 /var/fixed_flash &
-> # mtdblock_open
-> ok
-> 
-> # ps ax
-
->     6         root          0   D   [kupdated]
->  
->    87 ttyS1   root        468   D   mount -t jffs2 /dev/mtdblock0 
-> /var/fixed_fl
->    88 ttyS1   root        468   R   mount -t jffs2 /dev/mtdblock0 
-> /var/fixed_fl
-
-Why are there two mounts running simultaneously? What if you compile
-with CONFIG_JFFS2_FS_DEBUG=1 and set the console loglevel to 9 before
-mounting? Is it actually _doing_ anything or is it just deadlocked?
-
-If it's just deadlocked (and you're not using 2.4.18) then what was the
-last thing it said _before_ stopping?
 
 
--- 
-dwmw2
+On Fri, 13 Jun 2003, Brian J. Fox wrote:
+
+> Why does the product have to remain nameless?
+
+Because it's covered by a non-disclosure agreement until it is launched.
+
+-Jas.
