@@ -1,23 +1,19 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from kasumi.idis.co.kr ([203.238.93.2] ident=mail)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196Gp0-0002ff-CN
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 22:21:30 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HDI00A6JBB6SR@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Thu, 17 Apr 2003 23:21:07 +0200 (MEST)
-Date: Fri, 18 Apr 2003 00:20:58 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030417204847.5409515144@desire.actrix.co.nz>
-To: manningc2@actrix.gen.nz, Paul <paul@maypaul.com>,
- linux-mtd@lists.infradead.org, yaffs list <yaffs@toby-churchill.org>
-Message-id: <200304180020.58774.tglx@linutronix.de>
-MIME-version: 1.0
-References: <001201c30505$c4b83dd0$6c00a8c0@home>
- <20030417204847.5409515144@desire.actrix.co.nz>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: Restore the bad block flag in OOB of  NAND flash
-Reply-To: tglx@linutronix.de
+	id 196K2H-0003DS-Fe
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2003 01:47:25 +0100
+Message-ID: <3E9FC99D.5040200@idis.co.kr>
+Date: Fri, 18 Apr 2003 18:47:09 +0900
+From: "Edward J. Lee" <noshel@idis.co.kr>
+MIME-Version: 1.0
+To: tglx@linutronix.de,  linux-mtd@lists.infradead.org
+References: <002901c3021b$546a6fe0$525deecb@noshel>
+	<200304140954.27049.tglx@linutronix.de> <3E9AF275.4000905@idis.co.kr>
+	<200304141325.02451.tglx@linutronix.de>
+In-Reply-To: <200304141325.02451.tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: A question on ECC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 17 April 2003 22:49, Charles Manning wrote:
+Thomas Gleixner wrote:
+
+>On Monday 14 April 2003 19:40, Edward J. Lee wrote:
+>  
 >
-> One way to achieve what you want is to hack mkyaffs. mkyaffs erases the
-> blocks in the partition, but first checks for bad block markers. If you
-> comment out the check then it will erase the block regardless. This will
-> set all the bits in the block to 1 (including the bad block marker).
-
-Only if you hack drivers/mtd/nand/nand.c too, as there is a senity check, 
-which refuses to erase bad blocks :)
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+>>this->eccmode is indeed set to NAND_ECC_SOFT.
+>>I guess my case is kind of 'extra-tricky'. I just found out another
+>>weird thing,
+>>that the warning messages complaining '...without ECC...' do NOT appear
+>>when I'm 'writing' on the chip. Strange, eh. :'(
+>>    
+>>
+>
+>Can you put some debug output YAFFS ?
+>
+>--- yaffs_mtdif.c	8 Apr 2003 19:53:44 -0000	1.9
+>+++ yaffs_mtdif.c	14 Apr 2003 10:23:39 -0000
+>@@ -90,10 +90,12 @@
+> 		if(dev->useNANDECC)
+> 		{   // Careful, this call adds 2 ints to the end of the spare data.  
+>Calling function should
+>             // allocate enough memory for spare, i.e. 
+>[YAFFS_BYTES_PER_SPARE+2*sizeof(int)].
+>+	    	printk (KERN_DEBUG "YAFFS ReadChunk with real ECC_INFO\n");
+>     		retval = 
+>mtd->read_ecc(mtd,addr,dev->nBytesPerChunk,&dummy,data,spareAsBytes,&yaffs_oobinfo);            
+> 		}
+> 		else
+> 		{
+>+		    	printk (KERN_DEBUG "YAFFS ReadChunk with dummy ECC_INFO\n");
+> 			retval = 
+>mtd->read_ecc(mtd,addr,dev->nBytesPerChunk,&dummy,data,spareAsBytes,&yaffs_noeccinfo);
+> 		}
+> 	}
+>
+>
+>  
+>
+I tried this last night, and I got a bunch of "YAFFS ReadChunk with real 
+ECC_INFO".
+when both reading/writing.
+Nothing else, do we need more information?
