@@ -1,16 +1,16 @@
-Received: from law14-oe66.law14.hotmail.com ([64.4.20.201] helo=hotmail.com)
+Received: from law14-oe48.law14.hotmail.com ([64.4.20.20] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19eSJ8-0000gt-O9
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2003 05:29:54 +0100
+	id 19eUaC-0000tU-Pn
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2003 07:55:40 +0100
 From: "Vikram Mehta" <vm6580@hotmail.com>
 To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Mon, 21 Jul 2003 09:50:02 -0700
+Date: Mon, 21 Jul 2003 12:28:30 -0700
 MIME-Version: 1.0
-Message-ID: <Law14-OE66TR9Ejb0zN0000fa8d@hotmail.com>
+Message-ID: <Law14-OE48eBIeBoVue0000fcf0@hotmail.com>
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Help me i n Garbage Collection Thread code
+Subject: Garbage collection code
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +22,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi folks,
 
-When I mount jffs2 file system, The grabage collection thread plays up
-funny.
+Can someone tell me what is happening in this code copied below
 
-The messages I get towards the end are
+Specifically what does schedule at the end of the code does.
 
-JFFS2: Garbage collect thread is pid 1792
-thread_should_wake(): nr_free_blocks 1, nr_erasing_blocks 15, dirty_size 0x0
-jffs2_garbage_collect_thread sleeping...
-thread_should_wake(): nr_free_blocks 1, nr_erasing_blocks 15, dirty_size 0x0
+Also kindly tell me a link where I can read abt these things in detail.
 
-And then the target board simple stops responding.
-
-I am using 68vz328/uCdimm.
-
-Help me here
-
-Wiht regards
+With regards
 Vikram
+
+for (;;) {
+  spin_lock_irq(&current->sigmask_lock);
+  siginitsetinv (&current->blocked, sigmask(SIGHUP) | sigmask(SIGKILL) |
+sigmask(SIGSTOP) | sigmask(SIGCONT));
+  recalc_sigpending(current);
+  spin_unlock_irq(&current->sigmask_lock);
+
+  if (!thread_should_wake(c)) {
+                        set_current_state (TASK_INTERRUPTIBLE);
+   D1(printk(KERN_EMERG "jffs2_garbage_collect_thread sleeping. ..\n"));
+   /* Yes, there's a race here; we checked thread_should_wake() before
+      setting current->state to TASK_INTERRUPTIBLE. But it doesn't
+      matter - We don't care if we miss a wakeup, because the GC thread
+      is only an optimisation anyway. */
+   schedule();
+}
