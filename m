@@ -1,18 +1,17 @@
-Received: from fed1mtao04.cox.net ([68.6.19.241])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Xp5w-00023r-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:20:20 +0100
-Subject: RE: read this
-From: Russ Dill <Russ.Dill@asu.edu>
-To: hamishl@dplanet.ch
-Cc: isa <dr_isa@kukamail.com>, linux-mtd@lists.infradead.org
-In-Reply-To: <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
-References: <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 25 Jul 2002 13:19:57 -0700
-Message-Id: <1027628397.3278.3.camel@timmy>
+	id 17XpYp-00026S-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:50:11 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020725184738.26475.qmail@mail.com> 
+References: <20020725184738.26475.qmail@mail.com> 
+To: "Mike Schumi" <schumi@techie.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2_do_reserve_space 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 25 Jul 2002 21:50:00 +0100
+Message-ID: <21898.1027630200@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 2002-07-25 at 12:47, Hamish Guthrie (Mail Lists) wrote:
-> Being an ex-African, and one having had financial dealings with people in
-> compromising circumstances (as this), and also referring to a number of
-> warnings in publications like TIME and NEWSWEEK, I would highly recommend
-> all members of this newsgroup to treat this mail with suspicion and
-> immediately refer it to /dev/null, in the hope that /dev/null will be of
-> assistance!
+schumi@techie.com said:
+> Then the Flash Loader I'm using adds a 0x40 header to the beginning of
+> every binary image loaded to flash. It adds 0x40 to the Linux Loader
+> (blob), Kernel, and jffs2.  
 
-actually, this scam is 20+ years old and there is a special office setup
-in washington to help people who have lost money this way. (Its also
-referered to as a 419 scam). Kindof funny that his email keeps getting
-cc'd.
+> I got confused by your emails!?! is this causing the problem we are
+> seeing or its only causing the printks and sanity checks?! 
+>  If its only causing the sanity checks to appear, its fine for now
+> (I'll fix the loader later on). But if its the cause of the kernel
+> panic let me know.  
 
-419.fcd@usss.treas.gov
+It was causing the panic. Now that I've added the sanity check in the patch
+I sent you, it's causing that instead of a panic, and also it's causing the
+corruption which prevents your init from starting.
+
+--
+dwmw2
