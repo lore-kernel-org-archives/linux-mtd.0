@@ -1,47 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 1399eu-0004NC-00
-	for mtd-list@infradead.org; Mon, 03 Jul 2000 18:05:24 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 1399es-0004N6-00
-	for mtd@infradead.org; Mon, 03 Jul 2000 18:05:22 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000627124319.12137A-100000@wakko.deltatee.com> 
-References: <Pine.LNX.3.96.1000627124319.12137A-100000@wakko.deltatee.com> 
-To: Jason Gunthorpe <jgg@ualberta.ca>
-Cc: mtd@infradead.org
-Subject: Changing mtd.name to a char *
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 03 Jul 2000 18:09:08 +0100
-Message-ID: <26435.962644148@cygnus.co.uk>
+	id 139F7U-0005QX-00
+	for mtd-list@infradead.org; Mon, 03 Jul 2000 23:55:16 +0100
+Date: Mon, 3 Jul 2000 16:59:04 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: mtd@infradead.org
+Subject: Re: CFI flash in a PC?
+In-Reply-To: <31462.962198615@cygnus.co.uk>
+Message-ID: <Pine.LNX.3.96.1000703165748.5555A-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-jgg@ualberta.ca said:
-> Hmmm. How about a char * ?
-> That might be best.
+On Wed, 28 Jun 2000, David Woodhouse wrote:
 
-Argh. The MEMGETINFO ioctl returns the first part of the struct mtd_info, 
-which used to contain the actual name of the device, but now just holds a 
-pointer to it.
+> I'm trying to find a way of putting CFI flash chips into a PC, just to make 
+> my life easier for the development stage - I'm getting extremely tired of 
+> having to download an entire kernel to the embedded ARM board I'm testing 
+> on, and write it to the flash chips it boots from, every time I want to 
+> change a line of code.
 
-For now, I've just shifted the name field out of the part which is available
-to the user - if anyone cares, you'll have to code up a MEMGETNAME ioctl
-which nicely and safely passes back the variable-length name. 
+What I did for doing the JEDEC driver was just develope and test the
+driver without a kernel to get all the communication issues sorted out. I
+downloaded it using Angel, quite speedy that way.
+ 
+> Anyone have any ideas where I can find preferably an ISA or PCI board with 
+> CFI flash chips on it, or failing that an IA32 single board computer with 
+> flash built-in and a network interface? UK suppliers preferred but not 
+> essential.
 
-Of course, I'm still screwed because I can't currently compile armv4l 
-binaries for my test board, so I can't update my utils to reflect that.
+They are not too hard to make, PLD and some chips is all it takes.
 
-Could anyone compile the contents of the util/ directory for armv4l and 
-mail them to dwmw2@redhat.com?
-
-
---
-dwmw2
-
+Jason
 
 
 
