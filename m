@@ -1,58 +1,74 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11ztzC-0006Ey-00
-	for mtd-list@infradead.org; Mon, 20 Dec 1999 03:59:50 +0000
+	id 11zuI4-0006HS-00
+	for mtd-list@infradead.org; Mon, 20 Dec 1999 04:19:20 +0000
 Received: from cr355197-a.poco1.bc.wave.home.com ([24.112.113.88] helo=nero.fireplug.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11ztzA-0006Es-00
-	for mtd@infradead.org; Mon, 20 Dec 1999 03:59:48 +0000
+	id 11zuI2-0006HM-00
+	for mtd@infradead.org; Mon, 20 Dec 1999 04:19:19 +0000
 Received: from news by nero.fireplug.net with local (Exim 2.04 #4)
-	id 11zu2O-000226-00
-	for mtd@infradead.org; Sun, 19 Dec 1999 20:03:08 -0800
+	id 11zuLH-0002CD-00
+	for mtd@infradead.org; Sun, 19 Dec 1999 20:22:39 -0800
 To: mtd@infradead.org
 From: sl@gateway.fireplug.net (Stuart Lynne)
-Subject: Re: [Fwd: power down]
-Date: 20 Dec 1999 04:03:08 GMT
-Message-ID: <83k9ps$7k9$1@nero.fireplug.net>
-References: <384D2C2D.6A6F4CE6@go2fax.com>
+Subject: Re: [Fwd: Power Down]
+Date: 20 Dec 1999 04:22:39 GMT
+Message-ID: <83kauf$87s$1@nero.fireplug.net>
+References: <384FC311.1E57CBD6@go2fax.com>
 Reply-To: sl@fireplug.net
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-In article <384D2C2D.6A6F4CE6@go2fax.com>, Bob Canup <rcanup@go2fax.com> wrote:
->Vipin Malik wrote:
+In article <384FC311.1E57CBD6@go2fax.com>, Bob Canup <rcanup@go2fax.com> wrote:
+>Bob Canup wrote:
 >
->> Bob Canup wrote:
+>> Vipin Malik wrote:
+>>
+>> > Bob Canup wrote:
+>> > >
 >> >
+>> I can't see any difference between erasing a bad sector after the next power
+>> up and the case of a slightly earlier power failure where the data was never
+>> written in the first place; you wind up with an identical file system in both
+>> cases.  If you can survive the case of the earlier power failure failing to
+>> record the sector then you can survive the case of the bad sector being
+>> erased.
+>>
+>> The only difference that I see is that in the case of the bad sector  you
+>> know something happened, in the case of the data never being recorded you
+>> don't.
+>>
+>> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 >
->I don't think that you understand what we're trying to tell you. There is a
->difference in philosophy.
+>On the way home last night it occurred to me that if you are doing a
+>read-modify-write cycle that it does make a difference where the error occurs.
+>In this case if the sector is never written the old data is still valid.
 >
->If you are running a flash as a normal read - write imitation of a disk there
->are severe time limitations as to how long the flash is going to work because
->of the limit on write cycles which flash technology has. As has been pointed
->out in an earlier post - one write a second will ruin a flash chip in a few
->weeks - which is not a very long for an embedded system to work.
+>It seems to me the wear leveling necessary in a flash can be a benefit here; if
+>I understand correctly we don't overwrite the physical pages - only when a page
+>is 'committed' does the chip change its mapping so that it appears that the
+>sector was overwritten.
 
-Assuming load levelling across a 4mb flash drive, if you average 4kb per
-write and write once per second continously you will write each sector a 
-about 40 times per day. 
+The typical algorithm for writing new blocks into a flash system emulating a
+disk device assumes that for each block you can store you have a logical
+sector number and status.
 
-AMD specs a minimum program/erase cycles of 100,000 per sector (flash
-sector) and 1,000,000 per device. To reach 100,000 writes at 50 per day
-would take over 5 years.
+    - find an empty block
+    - write your data into it
+    - update the old data block status to say the logical block is being moved
+    - update the new data block status to show where the logical block now is
+    - update the old data block status to invalidate the entry
+    - start a sector erase if you need to
 
->Because of this limitation most of the people in this group who do design
->with flash use it in a Write Rarely Read Mostly manner. The only time the
->flash is written to is when there is a firmware upgrade. This is also the
->manner in which flash chips are used on conventional PC motherboards - if you
->lose power during a firmware upgrade - you are in trouble - nor do I see any
->practical method of handling that problem.
+To read a block you look for a entry that shows the new location. If you can't find
+one but did find one that was marked as being moved you fall back to that.
 
-Well if you have control over your design simply ensure that you have two
-banks and can boot from either of them. Upgrading involves booting from
-one to upgrade the other and then selecting the new bank as the default
-boot.
+This gets complicated because you have to handle both sector erases and
+block writes not completing from power failures. Which probably means that
+you don't want to do anything to freshly erased sectors. I.e. a freshly
+erased sector is identified simply because it is in its default erased
+state. You can't dedicate sectors to any particular use (because you need to
+load balance). 
 
 
 -- 
