@@ -1,15 +1,15 @@
 Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e0Ka-0007XY-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:05:17 +0000
-Date: Wed, 29 Jan 2003 22:36:13 +0000 (GMT)
+	id 18e0PM-0007Ya-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:10:12 +0000
+Date: Wed, 29 Jan 2003 22:41:07 +0000 (GMT)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Stephane List <stephane.list@lilotux.net>
-cc: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <20030129161457.GA9083@lilotux.net>
-Message-ID: <Pine.LNX.4.44.0301292233430.4791-100000@imladris.demon.co.uk>
+To: Raphael Hertzog <eng@eipm.ch>
+cc: Henrik Nordstrom <hno@marasystems.com>,  <linux-mtd@lists.infradead.org>
+In-Reply-To: <1043858542.554.144.camel@localhost>
+Message-ID: <Pine.LNX.4.44.0301292238560.4791-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Subject: Re: Intel Strataflash
+Subject: Re: NFTL not recognizing disk on chip in some cases
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,40 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 29 Jan 2003, Stephane List wrote:
+On 29 Jan 2003, Raphael Hertzog wrote:
 
-> PS : I couldn't compile my kernel with the CVS code...
+> Am Mit, 2003-01-29 um 15.48 schrieb Henrik Nordstrom:
+> > From what I recall you must not have the NFTL driver loaded while
+> > running nftl_format.. if the NTFL driver is loaded then I think bad
+> > things may happen such as those you describe.
+> 
+> Unless the bad things are irreversible this should not be the case.
+> AFAIR I always took care to remove the module before formating.
+> 
+> And it doesn't explain why I have the problem when I copy a set of files
+> and why I doesn't have it with another set of files. Even stranger when
+> I first copy the good set of files, then umount, remount, remove the
+> good set of files and copy the problematic set of files then it's ok.
 
-Details?
+Does one of your files have 'ANAND' at the start of it (or at an offset of 
+n*512 bytes withing the file? :)
 
+That may get seen as an 'extra' NFTL media header sector; we should do 
+more sanity checks and refrain from looking inside an already-detected 
+NFTL partition.
 
-> CONFIG_MTD_CFI_ADV_OPTIONS=y
+> But if I copy the problematic set of files directly during the first
+> mount after the partitioning/formating then I have the problem exposed
+> in my previous mail.
 
-Advanced options? Why did you enable this? On this occasion it isn't the 
-problem, because you got the options it hides correct anyway. 
-
-> #Because the data bus of the CPU is 4 bytes
-> CONFIG_MTD_CFI_B4=y
-
-Correct.
-
-> #Because There are 2 flashs connected on the same Data bus.
-> CONFIG_MTD_CFI_I2=y
-
-Correct.
-
-> #Because it's an Intel Strataflash
-> CONFIG_MTD_CFI_INTELEXT=m
-
-Correct.
-
-> #Because my flash chip data bus is 2 bytes width
-> CONFIG_MTD_PHYSMAP_BUSWIDTH=2
-
-No, your CPU data bus is 4 bytes width (cf. CFI_B4 above) and has two 
-chips on it so
- CONFIG_MTD_PHYSMAP_BUSWIDTH=4
-
+Because in the first case the 'ANAND' went somewhere other than the first 
+page of an erase block, so wasn't seen as an 'extra' media header? Taking 
+raw dumps of the flash would confirm this.
 
 -- 
 dwmw2
