@@ -1,19 +1,21 @@
-Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
-	helo=wawnet.biz)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CjD9l-0003hW-3Q
-	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2004 03:56:42 -0500
-Message-Id: <6.0.1.1.0.20041228094614.01ec9ff8@192.168.2.1>
-Date: Tue, 28 Dec 2004 09:56:32 +0100
-To: Jared Hulbert <jaredeh@gmail.com>
-From: llandre <r&d2@dave-tech.it>
-In-Reply-To: <6934efce04122709464e95ec21@mail.gmail.com>
-References: <6.0.1.1.0.20041227121334.01ec55d8@192.168.2.1>
-	<6934efce04122709464e95ec21@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: How to exploit STS pin of Strata Flash
+Received: from njpmail.satyam.com ([204.179.188.132])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CjGiy-0004GN-Fp
+	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2004 07:45:18 -0500
+Received: from blr.satyam.com (blr.satyam.com [208.220.245.73])
+	by njpmail.satyam.com (8.11.6/8.11.6) with ESMTP id iBSCi4I00854
+	for <linux-mtd@lists.infradead.org>; Tue, 28 Dec 2004 07:44:24 -0500
+Received: from blant002.bla.satyam.com
+	(IDENT:chk0xGz0mgPzQH6aAPRtHcjKdc72m3ya@localhost [127.0.0.1])
+	by blr.satyam.com (8.11.6/8.11.6) with ESMTP id iBSCQQ115319
+	for <linux-mtd@lists.infradead.org.>; Tue, 28 Dec 2004 17:56:26 +0530
+Message-ID: <3D9FDCA910DD4445896A0BE5ECF009D40212F050@bla.satyam.com>
+From: Vikrant_Basotra <Vikrant_Basotra@Satyam.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 28 Dec 2004 18:13:59 +0530
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: S29GL064M90 flash memory driver required
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-> > I have a question about STS pin of Strata Flash.
-> > I'd like to implement a function in the low-level map driver
-> > in order to exploit the STS pin to read the ready/busy
-> > status (NAND-like).
-> > How should I hack the code? It seems there is
-> > no <board>_device_ready or something like that ...
->
->Why?
-
-To avoid the bus accesses to detect the end of erase/write operations.
-This wastes a lot of bus bandwidth.
-
-
->How?  Connect it to a irq line?
-
-Is this supported by MTD? How to enable this feature in the low-level driver?
-I had a look at the existing drivers but it neems no one uses interrupt ...
-
-
+Hi All,
+	I am using Spansion's S29GL064M90 flash memory (CFI Compatible) on
+mpc8248 based board. I need the linux driver for this flash memory, can any
+one guide me from where I could get the driver for this Flash Memory or if
+some one has a driver which can work with this flash, please do send the
+code.
 Regards,
-
-llandre
-
-DAVE Electronics System House - R&D Department
-web:   http://www.dave-tech.it
-email: r&d2@dave-tech.it
+Vikrant Basotra
+************************************************************************** 
+This email (including any attachments) is intended for the sole use of the
+intended recipient/s and may contain material that is CONFIDENTIAL AND
+PRIVATE COMPANY INFORMATION. Any review or reliance by others or copying or
+distribution or forwarding of any or all of the contents in this message is
+STRICTLY PROHIBITED. If you are not the intended recipient, please contact
+the sender by email and delete all copies; your cooperation in this regard
+is appreciated.
+**************************************************************************
