@@ -1,16 +1,21 @@
-Received: from smtp802.mail.sc5.yahoo.com ([66.163.168.181])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bo6hQ-0005cb-VD
-	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 16:31:28 -0400
-From: "Brock Denson" <bdenson@wa-ventures.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 23 Jul 2004 15:31:13 -0500
-Message-ID: <011d01c470f4$012c7b40$6400a8c0@BDENSONLAPTOP>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: problems with mtd on atmel dk
+Received: from tank.panorama.sth.ac.at ([193.170.53.11])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bo8tH-00062C-Ta
+	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2004 18:51:50 -0400
+Received: from soldats.cb.ac.at (soldats.cb.ac.at [10.1.33.21])
+	by tank.panorama.sth.ac.at (8.11.6/8.11.6) with ESMTP id i6NMpem21865
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Jul 2004 00:51:40 +0200
+Received: from soldats.cb.ac.at (soldats.cb.ac.at [10.1.33.21])
+	by soldats.cb.ac.at (8.12.8/8.12.8) with ESMTP id i6NMpe2P028072
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Jul 2004 00:51:40 +0200
+Date: Sat, 24 Jul 2004 00:51:39 +0200
+From: Peter Surda <shurdeek@routehat.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040723225139.GK31924@soldats.cb.ac.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: Problems getting grub to work with DoC 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am having problems with the flash on my at91rm9200dk board with
-linux-2.4.26-vrs1 and the at91-03052004 patch.  The dk has two flash =
-chips,
-an 8M dataflash (serial) at54db642, and a 2M parallel at49bv1614a.  In =
-the
-boot log I get the following:
+Hello,
 
-For the parallel flash:
-...
-physmap flash device: 200000 at 10000000
-CFI: Found no Physically mapped flash device at location zero
-Search for id:(1f c0) interleave(1) type(2)
-Found: Atmel AT49BV16X
-Physically mapped flash:=20
-Found 1 x16 devices at 0x0 in 16-bit mode
-kmod: failed to exec /sbin/modprobe -s -k cfi_cmdset_0002, errno =3D 2
-Support for command set 0002 not present
-gen_probe: No supported Vendor Command Set found
-kmod: failed to exec /sbin/modprobe -s -k map_rom, errno =3D 2
-...
+I have problems getting grub_firmware compiled correctly. No matter what I
+try (patching, editing makefiles, ...), upon boot it doesn't find menu.lst on
+the DoC and doesn't like
+root (dc0,0)
 
-For the serial flash:
-...
-Found AT91 i2c
-AT91 SPI driver loaded
-at91_dataflash: Atmel AT45DB642 detected [spi0] (8650752 bytes)
-Creating 3 MTD partitions on "Atmel AT45DB642":
-0x00000000-0x00010000 : "bootloader"
-0x00010000-0x000d0000 : "kernel"
-mtd: partition "kernel" doesn't start on an erase block boundary -- =
-force
-read-only
-0x000d0000-0x00840000 : "filesystem"
-mtd: partition "filesystem" doesn't start on an erase block boundary --
-force read-only
-...
+I know it used to work, because I have another DoC2k on which I tried it about
+a year ago and there are no problems with it.
 
-If I do a ls dev/mtdblock I see:
-0	1	2
-Which I assume are the three partitions on the dataflash device, but I =
-can
-not mount them with mount -t jffs2 /dev/mtdblock/0 /mnt.  I get a =
-permission
-denied error.
+Does anyone have a working grub_firmware for DoC2k with support for FAT and
+can email it to me?
 
-I don't see any listing at all for the parallel flash.  Can someone =
-point me
-in the right direction on how to solve this problem?
+Bye,
 
+Peter Surda (Shurdeek) <shurdeek@routehat.org>, ICQ 10236103, +436505122023
 
-
-Thanks,
-
-Brock Denson
-WAIV
-bdenson@wa-ventures.com
-210 849-1988
+-- 
+                Where do you think you're going today?
