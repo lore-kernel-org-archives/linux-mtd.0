@@ -1,19 +1,17 @@
-Received: from smtp.fh-landshut.de ([193.175.141.50])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BIDZA-0003gs-Cm
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2004 22:23:04 +0100
-Received: from fh-landshut.de (sw-gate1.fh-landshut.de [193.175.141.2])
-	i3QLN3O27874
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Apr 2004 23:23:03 +0200
-Message-ID: <408D7DC3.3020002@fh-landshut.de>
-Date: Mon, 26 Apr 2004 23:23:15 +0200
-From: Oliver Korpilla <okorpil@fh-landshut.de>
+Received: from n15.grp.scd.yahoo.com ([66.218.66.70])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BIIPX-0004SZ-54
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2004 03:33:27 +0100
+Date: 27 Apr 2004 02:33:24 -0000
+Message-ID: <1083033204.86.18414.m18@yahoogroups.com>
+From: Yahoo! Groups
+	<confirm-s2-Xkx3AKCLAIE97lkEdZdBs7lxQnA-linux-mtd=lists.infradead.org@yahoogroups.com>
+To: linux-mtd@lists.infradead.org 
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: Interleaved flash chips - basic understanding question
-Reply-To: okorpil@fh-landshut.de
+Subject: Please confirm your request to join bluejobs 
+Reply-To: confirm-s2-Xkx3AKCLAIE97lkEdZdBs7lxQnA-linux-mtd=lists.infradead.org@yahoogroups.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
 
-I have this 4MB of flash device - a Am29LV800BT on my board.
+Hello linux-mtd@lists.infradead.org,
 
-AMD lists the chips as this:
+We have received your request to join the bluejobs 
+group hosted by Yahoo! Groups, a free, easy-to-use community service.
 
-http://www.amd.com/us-en/FlashMemory/ProductInformation/0,,37_1447_1623_1468%5E1532,00.html
+This request will expire in 7 days.
 
-These devices are 16-Bit accessible, mine is 64-bit accessible.
+TO BECOME A MEMBER OF THE GROUP: 
 
-My device is 4 MB = 32 M-Bit = 4 * 8 M-Bit => consists of 4 of these 
-chips listed above, I guess.
+1) Go to the Yahoo! Groups site by clicking on this link:
 
-And the bigger erase regions on the single devices are 64KB, and mine 
-are 4*64 KB= 256 KB
+   http://groups.yahoo.com/i?i=Xkx3AKCLAIE97lkEdZdBs7lxQnA&e=linux-mtd%40lists%2Einfradead%2Eorg 
 
-If I understand this right, with a serial setup two flash chips simply 
-have an address space double as long with the same access width.
+  (If clicking doesn't work, "Cut" and "Paste" the line above into your 
+   Web browser's address bar.)
 
-My device is interleaved, so if I write a 64-bit date is it actually 
-distributed like this - 16 Bit into 1st chip, 16 Bit into 2nd, ... ??? 
-And if I erase the 1st region on my device, are then all the 4 first 
-regions erased??
+-OR-
 
-Am I understanding this right?
+2) REPLY to this email by clicking "Reply" and then "Send"
+   in your email program
 
-Am I required to access a 64-bit-width interleaved flash in 64-bit wide 
-accesses or can I use "smaller" ones (8, 16, 32 bit)??
+If you did not request, or do not want, a membership in the
+bluejobs group, please accept our apologies
+and ignore this message.
 
+Regards,
 
-Now how to configure the device? How can I make it work, if the driver 
-seems to be broken (cfi_cmdset_0002.c v 1.62, v 1.93 and v 1.98 don't 
-seem to work)? (If I set width in octetts, as configurable in 2.4.25, to 
-8 this doesn't even compile, but 4 does)
+Yahoo! Groups Customer Care
 
-Thanks in advance,
-Oliver Korpilla
+Your use of Yahoo! Groups is subject to http://docs.yahoo.com/info/terms/ 
+
+ 
