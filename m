@@ -1,20 +1,20 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
+Received: from mail9.messagelabs.com ([194.205.110.133])
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AlNNE-0003xG-LX
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 07:11:00 +0000
-To: manningc2@actrix.gen.nz
-References: <m3u12jr8y4.fsf@maxwell.lnxi.com>
-	<20040127042233.C8D0416623@desire.actrix.co.nz>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 27 Jan 2004 00:13:06 -0700
-In-Reply-To: <20040127042233.C8D0416623@desire.actrix.co.nz>
-Message-ID: <m3hdyhuanx.fsf@maxwell.lnxi.com>
+	id 1AlQJk-0004TW-Ud
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 10:19:37 +0000
+Message-ID: <40163B1F.1010702@cantab.net>
+Date: Tue, 27 Jan 2004 10:19:11 +0000
+From: David Vrabel <dvrabel@cantab.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Q: Filesystem choice..
+To: Linux MTD List <linux-mtd@lists.infradead.org>
+References: <3FD998F6.9000303@arcom.com> <3FDDD939.8030302@arcom.com>
+	<4014E81E.4090808@arcom.com>
+	<1075129557.24024.81.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1075129557.24024.81.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: cfi_cmdset_0002 -- erase suspends broken.
+Reply-To: dvrabel@arcom.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning <manningc2@actrix.gen.nz> writes:
-
+David Woodhouse wrote:
+> On Mon, 2004-01-26 at 10:12 +0000, David Vrabel wrote:
 > 
-> First up: Do you really need a full-blown file system? Maybe something more 
-> along the lines of a linear file store is more suited. Maybe too just some 
-> basic storage in binary partitions.
+>>>The problem with the occasional bit errors appears to only occur 
+>>>when the erase is suspended for a write so I've temporarily disabled
+>>>that.
+>>
+>>Seems I left the patch off that does this.
+> 
+> Thanks. Wanna go ahead and commit it?
 
-As I don't have one at the moment I don't.  At the moment I am considering
-my options.  I am looking at having several different pieces of firmware
-by different authors so a filesystem would be useful.
- 
-> YAFFS is not really designed for NOR, though it has been used for NOR. For 
-> the sizes you're talking about YAFFS would not really be a good choice 
-> because the file headers use one "chunk" per file. THis eases garbage 
-> collection, but swallows flash.
+Done.  MTD CVS should now work on AMD chips though performance will be 
+poor when used with (for example) JFFS2.
 
-Thanks, that was my impression but having it confirmed is appreciated.
+David Vrabel
 
-Eric
+
+
+_____________________________________________________________________
+The message in this transmission is sent in confidence for the attention of the addressee only and should not be disclosed to any other party. Unauthorised recipients are requested to preserve this confidentiality. Please advise the sender if the addressee is not resident at the receiving end.  Email to and from Arcom is automatically monitored for operational and lawful business reasons.
+
+This message has been checked for all viruses by MessageLabs Virus Control Centre.
