@@ -1,16 +1,17 @@
-Received: from [212.68.212.198] (helo=barnabe.hellea.be ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18MSZY-0001vr-00
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 12:36:12 +0000
-Date: Thu, 12 Dec 2002 14:05:46 +0100
-From: Geoffroy Stevenne <geof@hellea.com>
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18MT2d-0001xx-00
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 13:06:15 +0000
+Received: from mag.devdep.sysgo.de ([172.22.2.10])
+	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with ESMTP id gBCDaps14464
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2002 14:36:51 +0100
+Date: Thu, 12 Dec 2002 14:36:51 +0100 (CET)
+From: Marius Groeger <mag@sysgo.de>
 To: linux-mtd@lists.infradead.org
-Cc: jch@hellea.be
-Subject: bbram access problems
-Message-Id: <20021212140546.3607a3e0.geof@hellea.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Subject: Timeout in do_write_oneword()
+Message-ID: <Pine.LNX.4.40.0212121431470.7437-100000@mag.devdep.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,28 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hello,
 
-Hi,
+we ran into a problem with the current CVS version of
+drivers/mtd/chips/cfi_cmdset_0002.c::do_write_oneword(), line 514. We
+think the following is broken on most platform, where HZ is 100 and
+results in a 10ms jiffy resolution:
 
-We're trying to use BBRAM on a VersaLogic VSBC-6 m-b.  We use the slram
-driver and the 2.4.18 kernel.  The problem is that we can't acces the
-entire memory of the BBRAM, just the first 64k page.
+  timeo = jiffies + (HZ/1000); /* setting timeout to 1ms for now */
 
-Other problem: we added to our lilo.conf:
+Wouldn't this be better:
 
-append="slram=BBRAM,0xE0000,+0x10000"
+  /* setting timeout to 1ms for now, but wait a least one system tick */
+  timeo = jiffies + (HZ/1000) ? (HZ/1000) : 1;
 
-We can write to the BBRAM but we noticed data corruption (not write
-operation was done) in this address range.  Is there a way to lock this
-memory area?  Is this the right thing to do?
+Regards,
+Marius
 
-What we need is to mount a filesystem on the entire BBRAM, not just the
-first 64k. I can (and wish to) provide more information, test changes,
-report bugs, etc. I can read and understand C code but I don't feel
-competent in writing drivers on my own.
-
-Thanks for your help,
-
---
-Geoffroy Stévenne
-Hellea SPRL
+-----------------------------------------------------------------------------
+Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
+Software Engineering     Embedded and Real-Time Software    www.sysgo.de
+Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
+FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
