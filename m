@@ -1,28 +1,21 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtOIY-0000kG-Iu
-	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 05:51:52 -0500
-Date: Tue, 25 Jan 2005 11:51:40 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050125105140.GC29797@wohnheim.fh-wedel.de>
-References: <20050120161306.GG20639@wohnheim.fh-wedel.de>
-	<1106238673.7940.0.camel@sauron.oktetlabs.ru>
-	<20050120164153.GM20639@wohnheim.fh-wedel.de>
-	<1106240903.7940.12.camel@sauron.oktetlabs.ru>
-	<20050120173341.GA24657@wohnheim.fh-wedel.de>
-	<1106243853.7940.15.camel@sauron.oktetlabs.ru>
-	<20050121124403.GA9931@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501211312570.20298@phoenix.infradead.org>
-	<20050121134221.GB9931@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501211354110.20298@phoenix.infradead.org>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CtOOm-0000v2-UV
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 05:58:18 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Estelle HAMMACHE <estelle.hammache@st.com>
+In-Reply-To: <41F61BE1.10A2DDA8@st.com>
+References: <1106603928.5081.50.camel@tglx.tec.linutronix.de>
+	<41F61BE1.10A2DDA8@st.com>
+Content-Type: text/plain
+Date: Tue, 25 Jan 2005 11:58:10 +0100
+Message-Id: <1106650690.5081.81.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0501211354110.20298@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd/fs/jffs2 nodemgmt.c,1.115,1.116
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,71 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 January 2005 14:04:31 +0000, Artem B. Bityuckiy wrote:
+Hi Estelle,
+
+On Tue, 2005-01-25 at 11:13 +0100, Estelle HAMMACHE wrote:
+> Thomas Gleixner wrote:
 > > 
-> > none
-> > 	c->alloc_sem
-> > 		f->sem
-> RULE: Can not have any f->sem locked if gonna lock f->alloc_sem.
-
-Or c->erase_completion_lock if you want to lock either of the above.
-Or c->inocache_lock if you want to lock either of the above.
-
-As a very simple statical deadlock checker, you can draw a graph of
-all locks, like I did.  If the graph has cycles, deadlock situations
-are possible.
-
-> > 			c->erase_completion_lock
-> > 				c->inocache_lock
-> > 	c->erase_free_sem
-> > 	c->gc_thread_start
+> > > - avoid filing blocks on the clean list when they have wasted
+> > > space
 > > 
+> > That's plain wrong.
 > > 
-> > 
-> > Protected data structures:
-> > 
-> > f->sem
-> > 	everything inside f?
-> Yes. Also if you have f->sem seems you may change f->inocache fields 
-> without having c->inocachelock.
+> > Wasted space was introduced to prevent endless garbage collection.
+> > Wasted space is unreclaimable, because it is less than the minimum node
+> > size. It's totally correct to file those blocks on the clean list,
+> > because GC _cannot_ reclaim the wasted space.
+> 
+> Well without this patch I got blocks on the clean list with huge
+> wasted space, more than the ISDIRTY calculation, when a write that
+> fills exactly the space left in nextblock also obsoletes nodes
+> in nextblock (not sure about the exact case it was some time ago).
+> In jffs2_mark_node_obsolete, if the node belongs to nextblock, the
+> space is always added to wasted_space - not dirty_space. So I don't
+> understand whether wasted_space is not what you claim, or it is
+> not well implemented.
 
-That could be a problem.  Will take a while before I can check it.
+Things have changed over time, so I'm not sure whether the wasted ->
+dirty accounting is still correct all over the place. It was once :)
 
-> > c->alloc_sem
-> > 	everything in c but the below?
-> No. In essence f->alloc_sem protects flash space. Believe this mutex is 
-> misnamed. And tends to lock code, not data.
+> I'm afraid my comment in the log was quite misleading: 
+> this patch merely prevents filing the block to the clean
+> list in jffs2_add_physical_node_ref. As the comment in that
+> function says, the block will be filed to the correct list later 
+> and with proper ISDIRTY check (or am I missing something ?).
 
-Since that code writes to flash, it does protect data.  Makes sense,
-although one could possibly move the lock down to individual erase
-blocks.
+Sorry, I misunderstood the comment. 
 
-> > c->erase_completion_lock
-> Misnamed either. David said this is historical. Protects 
-> node_ref list.
+Filing the block in jffs2_add_physical_node_ref to the clean list if
+appropriate is an optimization. Your check in fact disables the
+optimization path as almost all blocks have wasted space. 
 
-Ok.
+Please check !ISDIRTY(jeb->wasted_size) instead of !jeb->wasted_size.
 
-> > 	c->free_list
-> > 	c->erasing_list
-> > 
-> > c->inocache_lock
-> > 	c->inocache_list
-> Protects inodcache list. Also protects objects in it. Protects ic->state.
+> Lastly, I did submit this patch beforehand to the list, even if it was
+> in a thread on NAND failure. I would have expected you to have
+> an interest in that thread anyway.
 
-Ok.
+I can not follow 100% of the mail threads all the time.
 
-> > c->erase_free_sem
-> > 	???
-> David hates this. This is to protect node_refs - they are protected by 
-> both c->erase_complition lock and by c->erase_free_sem. Most time you use 
-> c->erase_completion lock. But if you need sleep, you use mutex.
+> (please excuse me if I sound grumpy. Your comments are a bit
+> of a cold shower on my newbie enthusiasm. 
 
-Sounds like a good candidate for a patch.
+I did not intend to slow down your enthusiasm. :)
 
-Jörn
+> If the patch is really a problem I will reverse it tonight.)
 
--- 
-Das Aufregende am Schreiben ist es, eine Ordnung zu schaffen, wo
-vorher keine existiert hat.
--- Doris Lessing
+Fixing it is ok (see above). 
+
+The coding style violations which dwmw2 pointed out need to be fixed
+too.
+
+tglx
