@@ -1,17 +1,17 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mbTJ-0001Ws-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:49:33 +0100
-Date: Wed, 4 Sep 2002 15:49:32 +0100 (BST)
-From: Jasmine Strong <jasmine@hex.linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: John Hall <John.Hall@optionexist.co.uk>,
-	"Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Stable cvs version for 2.4 
-In-Reply-To: <547.1031150220@redhat.com>
-Message-ID: <Pine.LNX.4.33.0209041546020.22265-100000@hex.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17mbVi-0001XP-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2002 15:52:02 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <NCBBIINEHIPFGJPLBEIFOEKHDLAA.acurtis@onz.com> 
+References: <NCBBIINEHIPFGJPLBEIFOEKHDLAA.acurtis@onz.com> 
+To: acurtis@onz.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 64-bit support..what happened? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 04 Sep 2002 15:51:55 +0100
+Message-ID: <2249.1031151115@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,33 +23,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+acurtis@onz.com said:
+>  As you mentioned, although my architecture has a 64-bit bus, the only
+> way to perform a 64-bit bus access is through the floating point
+> processor. Do you see any reason why I couldn't just perform 2 32-bit
+> operations? 
 
-On Wed, 4 Sep 2002, David Woodhouse wrote:
+Er, I suppose not. Defeats the whole point of interleaving, but I don't see 
+a reason why it shouldn't _work_, offhand, hardware permitting.
 
-> At a gratuitous extra 4 bytes per object, that's... ok, well it's only
-> wasting 32KiB which is less than I expected, but it still annoys me.
+> I will take physmap.c as an example and make our own version. However
+> good sample code would include the proper headers if they reference
+> conditional defines. (slight jab...sorry) 
 
-Is there nowhere that's not a pointer that you can stuff it?
+You're right. It looks like the code snippet in physmap.c is in fact a 
+_bad_ example and has been copied into two new map files.
 
-> > (Architectures that don't always use word-aligned pointers include
-> > m68k and ARM Thumb.)
->
-> Even when we're allocating from the slab and the object in question is a
-> structure of size which is an even number?
+> I believe that there are 3 files under map that include the conditional
+> compile and none of them include the proper header file. Perhaps this 
+> just indicates that the conditional should be moved to another file or
+> change to use the autoconfig defines? 
 
-If you can ensure that the region you are allocating from is word-aligned,
-that the structures within it are always word aligned, and the code will
-never run on architectures with weird addressing schemes, fine.
+I'm inclined to suggest that it should be removed from all three offending
+map files and a new example for 64-bit operation be added; physmap64.c. And
+you should only be able to enable physmap64.c in the config if you've
+enabled 64-bit operation -- so it shouldn't need any conditionals at all.
 
-> Even so, I'd assume that we care even _more_ about that 32KiB on uCLinux, so
+Does that sound sane?
 
-Yes, I'd agree, but...
-
-> maybe it's worth adding 1 byte of padding to the structure there and
-> manually aligning the pointer after allocating, or something. We only need
-> 1 bit, after all. Or we could use the _top_ bit on uCLinux, perhaps?
-
-Depends on the architecture, again.  Problem is that treating pointers as
-non-opaque objects will necessarily limit portability.
-
-Jas.
+--
+dwmw2
