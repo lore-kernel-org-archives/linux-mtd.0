@@ -1,19 +1,16 @@
-Received: from orion.he.net ([216.218.179.2])
+Received: from anchor-post-34.mail.demon.net ([194.217.242.92])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19SyBh-0004oE-5r
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Jun 2003 13:06:45 +0100
-Received: from kenlap (81-31-97-214.adsl.entanet.co.uk [81.31.97.214]) by
-	orion.he.net (8.8.6p2003-03-31/8.8.2) with SMTP id FAA18523 for
-	<linux-mtd@lists.infradead.org>; Thu, 19 Jun 2003 05:07:13 -0700
-Message-ID: <003701c3365b$52c1eaf0$1207a8c0@kenlap>
-From: "Ken Gordon" <ken@magneticscrolls.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 19 Jun 2003 13:07:14 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: More protection register fun.
+	id 19SyG6-0004td-Fx
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Jun 2003 13:11:18 +0100
+Date: Thu, 19 Jun 2003 13:11:13 +0100
+Mime-Version: 1.0 (Apple Message framework v552)
+To: linux-mtd@lists.infradead.org
+From: Jasmine Strong <jasmine@regolith.co.uk>
+Message-Id: <1EA30C8E-A24F-11D7-8BCC-000393AD6294@regolith.co.uk>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: quoted-printable
+cc: =?KOI8-R?B?98zBxMnNydIg88/Sz8vJzg==?= <vavanchick38@mail.ru>
+Subject: Fwd: None
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-from cfi_intelext_read_prot_reg in cfi_cmdset_0001.c (in CVS)
+Once more, with feeling:
 
-        int ofs_factor = cfi->interleave * cfi->device_type;
+On Thursday, Jun 19, 2003, at 12:45 Europe/London, =F7=CC=C1=C4=C9=CD=C9=D2=
+ =F3=CF=D2=CF=CB=C9=CE=20
+wrote:
+> How can I make whis two DiskOnChips work with M-System driver now? If=20=
 
+> it possible of course.
 
-                while (count && ((offst-base_offst) < reg_sz)) {
-                        *buf =
-map_read8(map,(chip->start+((extp->ProtRegAddr+1)*ofs_factor)+offst));
-                        buf++;
-                        offst++;
-                        count--;
-                }
+It sounds like you have destroyed the DiskOnChip firmware.  This=20
+firmware is required
+for the DOS DFORMAT utility to write to the device.  Without the=20
+firmware image in
+the first portion of the Flash, the DoC2000 will not be recognized at=20
+all, and the
+Millennium will be recognized but will not work under DOS.
 
-In my case (2x Intel Strataflash J3 on a PXA255, configured as 2x16 bit on a
-32 bit bus):
+This happens if you do not skip the beginning of the device when you=20
+erase it.  The
+start of the DiskOnChip module has an IPL area in it which is used=20
+under DOS to
+hold the DOS driver for the device, and under Linux to hold the GRUB=20
+bootloader or
+similar.
 
-    interleave = 2
-    device_type = 2
+You can use the Linux based doc_loadbios utility to write a new BIOS=20
+image into the
+device, if you have one in an appropriate format.  When you make a new=20=
 
-    so ofs_factor = 4
+filesystem
+or NFTL on a DiskOnChip it's important to skip the first 64k or so, to=20=
 
-    Now ProtRegAddr is 0x100 and appears to be a byte address within the
-device. Now I don't claim any understanding of what device_type means and I
-can only test this on hardware I have so can someone who fully uderstands
-this code say whether it ought to be more like:
+avoid overwriting
+the bootload area.  (I always leave 128kbytes free at the beginning, so=20=
 
-while (count && ((offst-base_offst) < reg_sz)) {
-                       *buf =
-map_read8(map,(chip->start+((extp->ProtRegAddr+2)*cfi->interleave)+offst));
-// also +2 not +1 'cos the lock register is 16 bits
-                       buf++;
-                       offst++;
-                       count--;
-               }
+as to leave
+plenty of room for expanded firmware or GRUB menus and the like.)
 
-Actually this doen't really work either 'cos it gets the same bytes for each
-of the two chips.
+-J.
 
-Any ideas (I'm about to hack my one for my hardware and stop spending time
-on this)
-
-    Ken
+(hope this one comes out right.)
