@@ -1,17 +1,17 @@
-Received: from s142-179-222-244.ab.hsia.telus.net ([142.179.222.244] helo=bluetooth.WNI.AD)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18GLHD-0000Q0-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 15:35:59 +0000
-Message-ID: <3DE24AA0.9040106@WirelessNetworksInc.com>
-Date: Mon, 25 Nov 2002 09:06:56 -0700
-From: Herman Oosthuysen <Herman@WirelessNetworksInc.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: JFFS2 Config / FAQ
-References: <E18243X-0002eo-00@pentafluge.infradead.org>
-In-Reply-To: <E18243X-0002eo-00@pentafluge.infradead.org>
+	id 18GLJY-0000QO-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 15:38:24 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3DE24AA0.9040106@WirelessNetworksInc.com> 
+References: <3DE24AA0.9040106@WirelessNetworksInc.com>  <E18243X-0002eo-00@pentafluge.infradead.org> 
+To: Herman Oosthuysen <Herman@WirelessNetworksInc.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 Config / FAQ 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 25 Nov 2002 16:08:51 +0000
+Message-ID: <4170.1038240531@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Stupid question of the month:
-I need to know how many blocks to leave for the GC at a minimum.
+Herman@WirelessNetworksInc.com said:
+>  Stupid question of the month: I need to know how many blocks to leave
+> for the GC at a minimum.
 
-One?
+> One?
 
-Could someone point me to a FAQ that discusses this issue?
+There's a reason it's not configurable. Reducing it from its current value 
+would require significant effort in fixing the corner cases where the file 
+system expands, and then _proving_ it to be correct.
 
-Thanks,
--- 
 
-------------------------------------------------------------------------
-Herman Oosthuysen
-B.Eng.(E), Member of IEEE
-Wireless Networks Inc.
-http://www.WirelessNetworksInc.com
-E-mail: Herman@WirelessNetworksInc.com
-Phone: 1.403.569-5687, Fax: 1.403.235-3965
-------------------------------------------------------------------------
+--
+dwmw2
