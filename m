@@ -1,21 +1,19 @@
 Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1616ja-0007yB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 13:57:46 +0000
-Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
-	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id PAA16020
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Nov 2001 15:04:21 +0100
-Date: Tue, 6 Nov 2001 15:07:09 +0100
+	id 1616xn-00081P-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2001 14:12:27 +0000
+Date: Tue, 6 Nov 2001 15:21:27 +0100
 From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: linux-mtd@lists.infradead.org
+To: Johan Adolfsson <johan.adolfsson@axis.com>
+Cc: joakim.tjernlund@lumentis.se, linux-mtd@lists.infradead.org
 Subject: Re: mkfs.jffs2 propsal and a question about burst reads
-Message-ID: <20011106150709.A31698@wohnheim.fh-wedel.de>
-References: <15375.1005031664@redhat.com> <IGEFJKJNHJDCBKALBJLLGENIEPAA.joakim.tjernlund@lumentis.se> <20011106131316.A15512@wohnheim.fh-wedel.de> <003e01c166c3$ca707cb0$8501a8c0@gromit>
+Message-ID: <20011106152127.B31698@wohnheim.fh-wedel.de>
+References: <IGEFJKJNHJDCBKALBJLLGENIEPAA.joakim.tjernlund@lumentis.se> <3fab01c166cb$c9155fe0$0a070d0a@axis.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <003e01c166c3$ca707cb0$8501a8c0@gromit>; from rothwell@holly-springs.nc.us on Tue, Nov 06, 2001 at 08:06:03AM -0500
+In-Reply-To: <3fab01c166cb$c9155fe0$0a070d0a@axis.se>; from johan.adolfsson@axis.com on Tue, Nov 06, 2001 at 03:03:18PM +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,19 +25,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> Well, you can think of a log-structured filesystem as "all journal," so the
-> "J" applies.
+Hi!
 
-As far as I recall, the "trick" with journaling filesystems is to log
-only the metadata. On normal hard drives, this speeds up the most
-common operations, reads, and is still sufficient for most people.
-Real log-structured filesystems are considered slow in every-day
-useage and to my knowledge only one was ever implemented for some bsd
-flavor.
-But this is getting quite academic now. :)
+> Perhaps we should give the erase command a "jffs2-format" option
+> so that it erases and writes the proper erase marker on the sectors to prevent
+> JFFS2 to erase them again?
+> The erase ulitity should then also skip erasing sectors that has the erased 
+> marker already which might speed up the erase a little.
+> I guess copying an image to the formatted flash should work even if it contains
+> erase marks?
+
+1) Beware of featuritis. This is just a hack for the explained
+problem, depends on the fs used (jffs2) and does not give any real new
+functionality. Might be good for the sales department, though. :)
+
+Yesterday, I scrambled a fs because it was recognized as jffs (1),
+deleted and empty afterwards. Solution? Don't use jffs1 any more and
+be smarter next time.
+
+2) Flash is a write-once medium. You cannot overwrite the markers, you
+have to delete again.
 
 Jörn
 
 -- 
-In disagreements with loved ones, deal only
-with the current situation. Don't bring up the past.
+A defeated army first battles and then seeks victory.
+	Sun Tzu
