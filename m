@@ -1,20 +1,16 @@
-Received: from chello062178007137.3.11.vie.surfer.at ([62.178.7.137] helo=quake.thinstuff.com)
+Received: from t111.niisi.ras.ru ([193.232.173.111] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 153vK7-0003vy-00
-	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2001 08:50:51 +0100
-Received: from tk212017127147.teleweb.at ([212.17.127.147] helo=privat)
-	by quake.thinstuff.com with smtp (Exim 3.12 #1 (Debian))
-	id 153vLg-0003yy-00
-	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2001 09:52:28 +0200
-Message-ID: <003001c0e682$85a2cd70$937f11d4@privat>
-Reply-To: "MG" <m.gibson@thinstuff.com>
-From: "MG" <m.gibson@thinstuff.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: HELP! - ISDN device not working with 16M DOC2000 but working with 8MB DOC Millenium
-Date: Sun, 27 May 2001 09:56:22 +0200
+	id 154L3Y-0005HR-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 May 2001 12:19:28 +0100
+Message-ID: <3B12A202.3040409@niisi.msk.ru>
+Date: Mon, 28 May 2001 15:07:46 -0400
+From: Alexandr Andreev <andreev@niisi.msk.ru>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: dwmw2@infradead.org
+CC: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Why timer interrupt is disabled?
+References: <3B0EE8CF.7040502@niisi.msk.ru> <20010526000119.A23273@suse.de>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -27,17 +23,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I can mount nftla1 from the 16MB DOC2000, but when I try to load the hisax
-module for the Sedlbauer ISDN card it simply does not work.
-When I try to do the same thing with a 8MB DOC millenium I can load the
-hisax module without any problem.
+I had asked this question to linux-kernel@vger.kernel.org and there is 
+the answer:
 
-Same problem with wavelan - PCMCIA.
-it works perfect with 8MB DOC Millenium but with 16MB DOC2000 it does not
-work?
+Jens Axboe wrote:
 
-What is going wrong here???
-I would be very happy about any hints / help.
-
-Best regards
-Michael
+>On Fri, May 25 2001, Alexandr Andreev wrote:
+>
+>>Hi, list
+>>In ll_rw_block.c, before calling block device specific request function 
+>>( i mean do_hd_request, do_ftl_request, ... ) the io_request_lock is 
+>>locking, and all interrupts are disabling. I know, that request handler 
+>>routine have to be atomic, but when we read data from a flash device ( 
+>>for example ) we use a timeouts. Where do we have to enable timer 
+>>interrupts, or should we disable all interrupts?
+>>
+>
+>Even with dropping io_request_lock, it's not recommended to sleep inside
+>the request_fn. WIth plugging, you are basically preventing the other
+>plugged queues from being run until you return.
+>
+>You could use a timer or similar to call you on a specified timeout
+>instead.
+>
+... and nevertheless, this is a bad idea to unlock the io_request_lock 
+inside the do_ftl_request. What about the SMP? It may happen that one 
+CPU is reading and other CPU is writing data at the same time. So, the 
+flash memory can return status value instead of data, for example. Does 
+the chip->mutex lock provides  necessary synchronization?
+I look at the other block device drivers code and found, that io_request 
+handlers do sti() in some cases. If you still don`t want to do it, we 
+could use a softirq. In the do_fd_request(), the "bottom halves" is used 
+for example. We could use a "bottom halves" or even a tasklet in our 
+case. What do you think about this?
