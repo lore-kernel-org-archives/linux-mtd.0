@@ -1,44 +1,21 @@
-From: joern@wohnheim.fh-wedel.de (=?unknown-8bit?Q?J=F6rn?= Engel)
-Date: Thu, 6 Mar 2003 17:55:24 +0100
-Subject: Slow system after switching from 2.4.18 to 2.4.19
-In-Reply-To: <20030306153515.GB2166@tkeitel001.bln.gelonet.local>
-References: <20030306153515.GB2166@tkeitel001.bln.gelonet.local>
-Message-ID: <20030306165524.GB13619@wohnheim.fh-wedel.de>
+From: Stephan.Linke@epygi.de (Stephan Linke)
+Date: Thu, 6 Mar 2003 17:58:21 +0100
+Subject: canT use jffs2 with nand
+Message-ID: <FCEAKDJJAPHPLJFINDAJCEHLCOAA.Stephan.Linke@epygi.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Thu, 6 March 2003 16:35:15 +0100, Tino Keitel wrote:
-> 
-> after updating to 2.4.19, my system (Intel XScale based, 500 MHz, 16 MB
-> flash, 32 MB RAM) was awfully slow. I suspect the reason is a slow
-> access to the filesystem. As soon as something happens on the
-> filesystem, e.g. in shell scripts, runtimes are multimple times higher
-> than with 2.4.18. A short example what happens with the 2.4.19 kernel:
-> 
-> (1)
-> for i in 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1;
-> 	do echo "nothing" > /dev/null ;
-> done
-> 
-> takes 2 seconds(!), just for 30 echos.
-> 
-> (2)
-> for i in 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1;
-> 	do true;
-> done
-> 
-> returns immediately because 'true' is a shell builtin and no filesystem
-> access is necessary. With the 2.4.18 kernel, (1) also doesn't take
-> sensible time to complete. Of course, the configuration is the same
-> with both kernels. Any hints?
+Hi,
 
-Only that mtd is likely not the cause. :)
+I'm trying to use some nand chips on my board. Some selfmade tests in the bootloader show that they are already working fin in the
+system.
+But I have trouble using them in linux.
+When trying to use touch to create an empty file on a JFFS2 mounted on the nand I get the following result: "nand_write_ecc: Attempt
+to write not page aligned data" which is actualy true since the FS is trying to write only 12 bytes...
+I tried to use YAFFS first but the result was more difficult to "translate".
+Writing an mounting a cramfs image worked fine.
 
-Maybe someone on lkml known more...
+Any help is appreciated.
+  Thanks, Stephan
 
-J?rn
-
--- 
-Measure. Don't tune for speed until you've measured, and even then
-don't unless one part of the code overwhelms the rest.
--- Rob Pike
+P.S.: I have pretty new MTD and YAFFS sources and a 2.4.18 kernel.
