@@ -1,13 +1,13 @@
-Received: from moutng.kundenserver.de ([212.227.126.188])
+Received: from moutng.kundenserver.de ([212.227.126.177])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AlRbh-0005NK-39
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 11:42:13 +0000
-Date: Tue, 27 Jan 2004 12:42:06 +0100 (MET)
+	id 1AlRgy-0005WB-HF
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2004 11:47:40 +0000
+Date: Tue, 27 Jan 2004 12:47:34 +0100 (MET)
 From: Armin <armin@melware.de>
 Sender: <armin@melware.de>
-To: John Stirling <js@reciva.com>
-In-Reply-To: <1075202627.20473.113.camel@dobblers.nexus.co.uk>
-Message-ID: <Pine.LNX.4.31.0401271230320.5586-100000@phoenix.one.melware.de>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1075203149.1633.43.camel@hades.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.31.0401271245140.5630-100000@phoenix.one.melware.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 cc: linux-mtd@lists.infradead.org
@@ -21,20 +21,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27 Jan 2004, John Stirling wrote:
-> I get the same problems with a CVS snapshot about 4 weeks old. The
-> errors/warnings are reported on boot up which is disconcerting, but it
-> does seem to be working ok if you ignore the errors.
+On Tue, 27 Jan 2004, David Woodhouse wrote:
+> On Mon, 2004-01-26 at 15:26 +0100, Armin Schindler wrote:
+> > I thought, that such errors will be fixed, but every time I mount the partition,
+> > these errors still exist.
+>
+> They'll persist until the garbage collection erases the block in
+> question. That'll happen naturally in time, although I suppose we
+> probably ought to prioritise it so the blocks we complain about are GC'd
+> sooner.
+>
+> It's harmless. I prefer to err on the side of verbosity than to miss
+> reporting things which really _could_ be a problem.
 
-I'm not so sure. I did an ugly test by doing
- #cp file1 file2
-and during this command I pushed the reset button.
+Okay, that makes sense.
 
-After bootup and the expected error messages the file2 was
-there in an expected size (about half of file1).
-
-Now I tried to remove the "broken" file2, which worked, but
-after umount/mount, the file2 was here again. So I was not
-able to remove this file.
+What is the time the garbage collection starts or finished this?
+I waited some time (about 10 minutes) and the messages still occured after
+remount.
 
 Armin
