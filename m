@@ -1,16 +1,21 @@
-Received: from rrcs-nys-24-97-130-2.biz.rr.com
-	([24.97.130.2] helo=nt.sixnet.com ident=fwuser)
+Received: from dragon.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18KP6M-00059b-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Dec 2002 20:29:34 +0000
-Message-ID: <00512BA4F9D3D311912A009027E9B8F407E4A7@NT>
-From: Dave Ellis <DGE@sixnetio.com>
-To: 'Ken Offer' <koffer@arlut.utexas.edu>
-Cc: LinuxMTD <linux-mtd@lists.infradead.org>
-Subject: RE: Problem: 51MB partition max size on jffs2
-Date: Fri, 6 Dec 2002 16:00:04 -0500 
+	id 18Ka1e-00068M-00
+	for <linux-mtd@lists.infradead.org>; Sat, 07 Dec 2002 08:09:27 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: David Woodhouse <dwmw2@infradead.org>,
+	"Chantara Thlang" <thlang@iphase.com>
+Subject: Re: need arguments to use JFFS2
+Date: Sat, 7 Dec 2002 21:35:15 +1300
+Cc: linux-mtd@lists.infradead.org
+References: <049e01c29d0f$b3c52ff0$221faf9d@iphase.com> <28792.1039171331@passion.cambridge.redhat.com>
+In-Reply-To: <28792.1039171331@passion.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Message-Id: <20021207083957.9465F14AC1@dragon.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,25 +27,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Ken Offer wrote: 
-> Ok, I switched back to the latest CVS and tried to mount the 
-> partition. 
->   No luck, even with a 32MB partition.  I get:
-> 
-> mount -t jffs2 /dev/mtdblock1 /mnt/jffs
-> mount: /dev/mtdblock1 is not a valid block device
-> 
-> I have tried the latest CVS with both the "vmalloc c->blocks" change 
-> and without.  In both cases mount fails the same way.  I turned up 
-> debugging all the way for jffs2 and mtd but no messages were 
-> printed to 
-> /var/log/messages.  Guess I need to scour the jffs2 code and add some 
-> more printks...
+It is virtually impossible to make any firm statements without understanding 
+your needs a bit better.
 
-The latest CVS (05-Dec-2002) is working for me with kmalloc()
-for c->blocks. 128MB Nand flash, 8MB Nor Flash and slram running
-on battery-backed RAM all work. I have only tried copying some
-files to them, no extensive testing, but they all mount OK. This
-is with PPC 2.4.18.
+A few others have already covered cramfs and JFFSx. I can tell you a bit 
+about YAFFS.
 
-Dave
+YAFFS only works with NAND flash. YAFFS does not provide compression (like 
+JFFS does). YAFFS is faster than JFFS2 in most situations and uses less RAM.
+Mileage will vary though. Compression is not necessarily a huge advantage for 
+JFFSx. Some people loop-mount a cramfs image stored on YAFFS to get the 
+benefits of compression as well as the faster speed for other files.
+
+If you have NAND, then most likely YAFFS will serve you better for larger 
+flash arrays (say 16MB and bigger) and JFFS2 for smaller arrays.
+
+YAFFS will do nothing for you if you only have NOR flash.
+
+If you're designing a new board then consider including NAND flash for 
+storage (rather than NOR). NAND is cheaper, smaller (physically), bigger (in 
+bytes) and faster. You can then use YAFFS or JFFS2 (even both - by 
+partitioning the device).
+
+
+-- Charles
