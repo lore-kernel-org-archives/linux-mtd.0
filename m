@@ -1,18 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from miranda.axis.se ([193.13.178.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 172SGg-0008Jp-00
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 08:41:46 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3CCDCB4F.6030808@yottayotta.com> 
-References: <3CCDCB4F.6030808@yottayotta.com>  <3CCDBF21.40004@yottayotta.com> <3CC9A794.4070706@yottayotta.com> <3CC8C1C9.80709@yottayotta.com> <14375.1019801767@redhat.com> <24028.1019859603@redhat.com> <2017.1020116984@redhat.com> 
-To: Murtada Shah <mshah@yottayotta.com>
-Cc: linux-mtd@lists.infradead.org,
-    linux-arm-kernel@lists.arm.linux.org.uk
-Subject: Re: Kernel removing directories 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 30 Apr 2002 08:41:44 +0100
-Message-ID: <12971.1020152504@redhat.com>
+	id 172UPw-0008UM-00
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 10:59:28 +0100
+From: johan.adolfsson@axis.com
+Message-ID: <00d201c1f02d$f672d580$bdb270d5@homeip.net>
+Reply-To: <johan.adolfsson@axis.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: "Johan Adolfsson" <johan.adolfsson@axis.com>
+Subject: [PATCH/RFC] Create mtdram device at runtime.
+Date: Tue, 30 Apr 2002 12:01:13 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +24,142 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mshah@yottayotta.com said:
-> My mistake David. That was Jffs2 debug set to 2, that is why it took
-> hours.
+The following patch moves most of the stuff out from the init_mtdram() 
+function into a non static mtdram_init_device() function that can be 
+called from other places in the kernel, 
+e.g. from a mapping routine to map in a cramfs image in RAM using 
+the mtd layer:-)
+To prevent the device from being created by init_mtdram using the
+configured values, CONFIG_MTDRAM_TOTAL_SIZE should be set to 0
+(The help should be updated as well)
 
-OK. It's probably best not to send logs that large to the list; just to be 
-would have been better.
+A new file: include/linux/mtd/mtdram.h is created as well.
 
-> Nonetheless, I attached the serial output of jffs2debug set to 1... so
->  you can take a look at it. I copied/pasted the relevant parts at the
-> end.
+Still some things missing regarding cleanup on exit for modules.
 
-> The inode #7 seems to be causing problems. You can find the relevant
-> sections from the attached file by finding the following quotes. As
-> you  see inode #7 has important children :) (i.e. "mv", "ps",  /etc/
-> init.d/rc&). I can boot from nfs & mount the /dev/mtdblock/0 no
-> problem after another reboot. 
+This is a first shot at it and it seems to work for us, but the
+API should perhaps be tweaked a little bit more, i.e. providing the
+flags and erase size as well.
 
-There's no directory entry for inode #7. How did the JFFS2 file system get 
-there? Could there be some missing somehow?
+Does it make enough sense to go into the official version 
+(after some tweaking)?
 
---
-dwmw2
+/Johan
+
+
+diff -u -p -r1.1.1.3 mtdram.c
+--- linux/drivers/mtd/devices/mtdram.c 23 Apr 2002 13:18:59 -0000 1.1.1.3
++++ linux/drivers/mtd/devices/mtdram.c 30 Apr 2002 09:28:23 -0000
+@@ -118,7 +118,7 @@ static void __exit cleanup_mtdram(void)
+   }
+ }
+
+-int __init init_mtdram(void)
++int mtdram_init_device(void *mapped_address, unsigned long size, char
+*name)
+ {
+    // Allocate some memory
+    mtd_info = (struct mtd_info *)kmalloc(sizeof(struct mtd_info),
+GFP_KERNEL);
+@@ -128,26 +128,14 @@ int __init init_mtdram(void)
+    memset(mtd_info, 0, sizeof(*mtd_info));
+
+    // Setup the MTD structure
+-   mtd_info->name = "mtdram test device";
++   mtd_info->name = name;
+    mtd_info->type = MTD_RAM;
+    mtd_info->flags = MTD_CAP_RAM;
+-   mtd_info->size = MTDRAM_TOTAL_SIZE;
++   mtd_info->size = size;
+    mtd_info->erasesize = MTDRAM_ERASE_SIZE;
+-#if CONFIG_MTDRAM_ABS_POS > 0
+-   mtd_info->priv = ioremap(CONFIG_MTDRAM_ABS_POS, MTDRAM_TOTAL_SIZE);
+-#else
+-   mtd_info->priv = vmalloc(MTDRAM_TOTAL_SIZE);
+-#endif
+-
+-   if (!mtd_info->priv) {
+-     DEBUG(MTD_DEBUG_LEVEL1, "Failed to vmalloc(/ioremap) memory region of
+size %ld (ABS_POS:%ld)\n", (long)MTDRAM_TOTAL_SIZE,
+(long)CONFIG_MTDRAM_ABS_POS);
+-     kfree(mtd_info);
+-     mtd_info = NULL;
+-     return -ENOMEM;
+-   }
+-   memset(mtd_info->priv, 0xff, MTDRAM_TOTAL_SIZE);
++   mtd_info->priv = mapped_address;
+
+-   mtd_info->module = THIS_MODULE;
++   mtd_info->module = THIS_MODULE;
+    mtd_info->erase = ram_erase;
+    mtd_info->point = ram_point;
+    mtd_info->unpoint = ram_unpoint;
+@@ -155,11 +143,6 @@ int __init init_mtdram(void)
+    mtd_info->write = ram_write;
+
+    if (add_mtd_device(mtd_info)) {
+-#if CONFIG_MTDRAM_ABS_POS > 0
+-     iounmap(mtd_info->priv);
+-#else
+-     vfree(mtd_info->priv);
+-#endif
+      kfree(mtd_info);
+      mtd_info = NULL;
+      return -EIO;
+@@ -168,10 +151,42 @@ int __init init_mtdram(void)
+    return 0;
+ }
+
++int __init init_mtdram(void)
++{
++  void *addr;
++  int err = 0;
++#if CONFIG_MTDRAM_TOTAL_SIZE > 0
++#if CONFIG_MTDRAM_ABS_POS > 0
++   addr = ioremap(CONFIG_MTDRAM_ABS_POS, MTDRAM_TOTAL_SIZE);
++#else
++   addr = vmalloc(MTDRAM_TOTAL_SIZE);
++#endif
++   if (!addr) {
++     DEBUG(MTD_DEBUG_LEVEL1, "Failed to vmalloc(/ioremap) memory region of
+size %ld (ABS_POS:%ld)\n", (long)MTDRAM_TOTAL_SIZE,
+(long)CONFIG_MTDRAM_ABS_POS);
++     kfree(mtd_info);
++     mtd_info = NULL;
++     return -ENOMEM;
++   }
++   err = mtdram_init_device(addr, MTDRAM_TOTAL_SIZE, "mtdram test device";
++   if (err)
++   {
++#if CONFIG_MTDRAM_ABS_POS > 0
++     iounmap(mtd_info->priv);
++#else
++     vfree(mtd_info->priv);
++#endif
++   }
++   memset(mtd_info->priv, 0xff, MTDRAM_TOTAL_SIZE);
++#endif /* CONFIG_MTDRAM_TOTAL_SIZE > 0 */
++   return err;
++}
++
++
+ module_init(init_mtdram);
+ module_exit(cleanup_mtdram);
+
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Alexander Larsson <alexl@redhat.com>");
+ MODULE_DESCRIPTION("Simulated MTD driver for testing");
++
+
+--- /dev/null Sat Mar 24 05:37:44 2001
++++ linux/include/linux/mtd/mtdram.h Mon Apr 29 18:12:14 2002
+@@ -0,0 +1,8 @@
++#ifndef __MTD_MTDRAM_H__
++#define __MTD_MTDRAM_H__
++
++#ifdef __KERNEL__
++int mtdram_init_device(void *mapped_address, unsigned long size, char
+*name);
++
++#endif /* __KERNEL__ */
++#endif /* __MTD_MTDRAM_H__ */
