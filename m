@@ -1,24 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from phoenix.infradead.org ([195.224.96.167])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190eY3-0003O5-5f
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 10:28:47 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HCP00EGDMB300@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 11:28:16 +0200 (MEST)
-Date: Wed, 02 Apr 2003 11:28:44 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <200304010943.04279.asoneofus@nm.ru>
-To: "A.L. Klyutchenya" <asoneofus@nm.ru>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-id: <200304021228.44997.tglx@linutronix.de>
-MIME-version: 1.0
-References: <200304010207.14078.asoneofus@nm.ru>
- <20030401040736.0BA04406D@blood.actrix.co.nz>
- <200304010943.04279.asoneofus@nm.ru>
-Content-type: text/plain; charset=koi8-r
-Content-transfer-encoding: quoted-printable
-Subject: Re: K9F5608U0B-YIB0000: 528 byte in page, or 512?
-Reply-To: tglx@linutronix.de
+	id 190dow-0001gI-Lq
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 09:42:12 +0100
+Received: from ash.lnxi.com ([207.88.130.242])
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 1908mr-0008FY-00
+	for linux-mtd@lists.infradead.org; Tue, 01 Apr 2003 00:33:57 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: David Jones <david@embeddedminds.com>
+In-Reply-To: <3E88BC6F.6080109@embeddedminds.com>
+References: <3E88BC6F.6080109@embeddedminds.com>
+Message-Id: <1049153625.25992.20.camel@tubarao>
+Mime-Version: 1.0
+Date: 31 Mar 2003 16:33:45 -0700
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-/sItM2EwHEBHOQu4Tq8n"
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Kernel hangs when trying to probe AM29LV160DB flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +26,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 01 April 2003 13:02, A.L. Klyutchenya wrote:
-> Dear sir,
-> Thank you for quick answer.
->
-> 1 =E1=D0=D2=C5=CC=D8 2003 07:36, Charles Manning =CE=C1=D0=C9=D3=C1=CC:
-> > This is NAND flash. Do not try to treat it as NOR flash.
-> > Use it with mtd/nand  and use YAFFS or JFFS2 file system.
->
-> I want to write the first image, for booting system. I create
-> this image (with kernel, MTD & Co). I have a possibility his
-> write. Herewith: I have an physical access to page: size
-> 256+256+16, and block on 32 pages. While NO MTD and NO kernel!
->
-> > You must write NAND in whole pages, not on a per-byte basis.
->
-> I understand that page it is necessary to write, but what bring
-> the first image: chain on 512+512.... or 512+16 free + 512+16
-> free...
->
-> As even so write? :-) (to hrdware-level)
-Please read http://linux-mtd.infraded.org/tech/nand.html
 
+--=-/sItM2EwHEBHOQu4Tq8n
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+You don't mention which kernel + patches you are using.  Lately I have
+"fixed" some device probing which is in the CVS tree - although I don't
+think this is related to the problem you are seeing.
+
+On Mon, 2003-03-31 at 15:08, David Jones wrote:
+> Hi,
+>    I am trying to get an AM29LV160DB flash device to work with the MTD=20
+> drivers under uClinux.  The device is connected in a 16-bit bus
+> fashion to a Motorola MC68VZ328.
+>=20
+> The AM29LV160DB is supported by mtd/chips/jedec_probe.c
+>=20
+> In my map file I have:
+> mymtd =3D do_map_probe("jedec_probe", &em1vz328_map);
+>=20
+> The do_map_probe function calls get_mtd_chip_driver in mtd/mtd/chipreg.c
+> and that is where things seem to hang.  The get_mtd_chip_driver function
+> never returns and hangs the kernel.
+>=20
+> Here is a snippet of the boot messages:
+> ---------------------------------------------------------
+> .
+> .
+> EMDG em1-vz328 mapping:size 200000 at 2000000
+> EMDG: MTD Debug: Calling the do_map_probe function...
+> EMDG: MTD Debug: Calling get_mtd_chip_driver function...
+>=20
+> ---------------------------------------------------------
+>=20
+> I looked through the archives and I noticed someone else had a similar
+> problem with this flash device under uClinux, but I could not find what
+> the solution was.
+>=20
+> If anyone has any ideas I would be grateful.
+>=20
+> Thanks,
+> David
+>=20
+>=20
+> Kernel config:
+> #
+> # Memory Technology Devices (MTD)
+> #
+> CONFIG_MTD=3Dy
+> CONFIG_MTD_DEBUG=3Dy
+> CONFIG_MTD_DEBUG_VERBOSE=3D3
+> CONFIG_MTD_PARTITIONS=3Dy
+> # CONFIG_MTD_CONCAT is not set
+> # CONFIG_MTD_REDBOOT_PARTS is not set
+> # CONFIG_MTD_CMDLINE_PARTS is not set
+>=20
+> #
+> # User Modules And Translation Layers
+> #
+> CONFIG_MTD_CHAR=3Dy
+> # CONFIG_MTD_BLOCK is not set
+> CONFIG_MTD_BLOCK_RO=3Dy
+> # CONFIG_FTL is not set
+> # CONFIG_NFTL is not set
+>=20
+> #
+> # RAM/ROM/Flash chip drivers
+> #
+> CONFIG_MTD_CFI=3Dy
+> CONFIG_MTD_JEDECPROBE=3Dy
+> CONFIG_MTD_GEN_PROBE=3Dy
+> CONFIG_MTD_CFI_ADV_OPTIONS=3Dy
+> CONFIG_MTD_CFI_NOSWAP=3Dy
+> # CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
+> # CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
+> CONFIG_MTD_CFI_GEOMETRY=3Dy
+> # CONFIG_MTD_CFI_B1 is not set
+> CONFIG_MTD_CFI_B2=3Dy
+> # CONFIG_MTD_CFI_B4 is not set
+> CONFIG_MTD_CFI_I1=3Dy
+> # CONFIG_MTD_CFI_I2 is not set
+> # CONFIG_MTD_CFI_I4 is not set
+> # CONFIG_MTD_CFI_INTELEXT is not set
+> # CONFIG_MTD_CFI_AMDSTD is not set
+> CONFIG_MTD_RAM=3Dy
+> # CONFIG_MTD_ROM is not set
+> # CONFIG_MTD_ABSENT is not set
+> # CONFIG_MTD_OBSOLETE_CHIPS is not set
 --=20
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Thayne Harbaugh
+Linux Networx
+
+--=-/sItM2EwHEBHOQu4Tq8n
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+iNBZfsBPTKE6HMkRAg/BAJ9PuYwFAaDhGx4qLOIZH7GSyp5XrwCfZXXf
+BMKuHWF+qNGI8jroKzBGGiw=
+=M1p0
+-----END PGP SIGNATURE-----
+
+--=-/sItM2EwHEBHOQu4Tq8n--
