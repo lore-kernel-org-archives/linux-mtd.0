@@ -1,16 +1,16 @@
 Received: from auriga.auriga.ru ([80.240.102.100])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19pkgf-0007JT-LK
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2003 09:20:53 +0100
+	id 19pkic-0007KL-Rd
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2003 09:22:54 +0100
 content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Thu, 21 Aug 2003 12:20:27 +0400
-Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D75E@auriga.auriga.ru>
+Date: Thu, 21 Aug 2003 12:22:35 +0400
+Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E163D75F@auriga.auriga.ru>
 From: "Eugeny Mints" <eugeny.mints@auriga.ru>
 To: <linux-mtd@lists.infradead.org>
 Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C367BD.13E047A7"
-Subject: Corrupt my NAND flash device, proposed patch
+	boundary="----_=_NextPart_001_01C367BD.6059CBDB"
+Subject: proposed patch to 20030818 mtd spanshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C367BD.13E047A7
+------_=_NextPart_001_01C367BD.6059CBDB
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Eugeny Mints wrote:
-
 >Problem 2.
 
->My board falls in the infinite loop at (!(this->read_byte(mtd) &
-0x40)); >even with the latest snapshot 18.08.2003 on RESET command.
-Interesting, >that it happens not from the very begging but just when
-write_oob has >executed (during eraseall) for about a half of the flash.
-
+>My board falls in the infinite loop at (!(this->read_byte(mtd) &=20
+>0x40)); >even with the latest snapshot 18.08.2003 on RESET command.=20
+>Interesting, >that it happens not from the very begging but just when=20
+>write_oob has >executed (during eraseall) for about a half of the=20
+>flash.
 
 >I found that insertion of udelay() before issuing STATUS command helps.
-Any >suggestions?
+
+>Any >suggestions?
 
 Please, find proposed patch for mtd snapshot 20030818 attached.=20
 
@@ -46,18 +45,18 @@ Please, find proposed patch for mtd snapshot 20030818 attached.=20
 >>=20
 >> >However  after applying new MTD release the 2-nd problem still
 >> remained.
->> >Then I comment out erase abort in nand_get_chip (as you suggested)
+>> >Then I comment out erase abort in nand_get_chip (as you suggested)=20
 >> >and
 >> it
 >> >fixes my second problem!
->> >Could you remove this erase abort from MTD source? I think it will
+>> >Could you remove this erase abort from MTD source? I think it will=20
 >> >not affect much on efficiency.
 
->Possibly second Alex's problem may be solved by udelay() also? And
-there is >no need to comment out erase abort?=20
+>Possibly second Alex's problem may be solved by udelay() also? And=20
+>there is >no need to comment out erase abort?
 
 >>=20
->> My second problem is that system hangs if the device is filled once
+>> My second problem is that system hangs if the device is filled once=20
 >> and an attempt to re-use previously used sectors is made. Comment out
 
 >> erase abort in nand_get_chip fixes my second problem too.
@@ -66,7 +65,7 @@ there is >no need to comment out erase abort?=20
 Regards,
  		Eugeny
 
-------_=_NextPart_001_01C367BD.13E047A7
+------_=_NextPart_001_01C367BD.6059CBDB
 Content-Type: application/octet-stream;
 	name="mtd20030818.patch"
 Content-Transfer-Encoding: base64
@@ -94,4 +93,4 @@ LyogU2VuZCBjb21tYW5kIHRvIHJlYWQgYmFjayB0aGUgZGF0YSAqLwogCXRoaXMtPmNtZGZ1bmMg
 KG10ZCwgTkFORF9DTURfUkVBRE9PQiwgY29sdW1uLCBwYWdlKTsKIApAQCAtMTAwOSw2ICsxMDEy
 LDcgQEAKIAkJCWdvdG8gb3V0OwogCQl9CiAJfQorCX0KICNlbmRpZgogCiBvdXQ6Cg==
 
-------_=_NextPart_001_01C367BD.13E047A7--
+------_=_NextPart_001_01C367BD.6059CBDB--
