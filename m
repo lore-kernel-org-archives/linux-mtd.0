@@ -1,15 +1,19 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D14vz-0003OO-Qo
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 10:48:20 -0500
-Date: Tue, 15 Feb 2005 16:48:19 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050215154819.GB831@synertronixx3>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D155k-0003aK-R9
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 10:58:26 -0500
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: "Steven J. Magnani" <steve@digidescorp.com>
+In-Reply-To: <005101c51372$659fd420$6ffea8c0@banana>
+References: <005101c51372$659fd420$6ffea8c0@banana>
+Content-Type: text/plain
+Date: Tue, 15 Feb 2005 18:57:52 +0300
+Message-Id: <1108483073.26412.31.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: XIP aware file system
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Bug in jffs2/scan.c re: incorrect assumption of "allclean"block
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,60 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi people!
+On Tue, 2005-02-15 at 09:24 -0600, Steven J. Magnani wrote:
+> > Well, I've looked trough your debug output and the code and think the
+> following patch should fix the bug.
+> 
+> That also seems to work. I assume that the test for "jeb->used_size ==
+> PAD(c->cleanmarker_size)" assures that jeb->first_node is non-NULL, so
+> dereferencing it won't ever cause an oops.
+Yes
 
-Since I got a reasonable burst modus of flash device running XIP is not
-taking more but less time now, so third attempt to get this running...
-I have to port the stuff in xip.h.
-
-PXA:
-
-I have a question why (ICIP & ICMR) is done. Because ICIP _is_ already
-the hardware "and"ed between  ICMR and ICPR so it seems bogus at this
-place to "and" pending and mask by software again.
-Is this done because of "ICCR[DIM]=0 & Idle mode='1'" "or"ed to ICMR?
-If yes, on our i.MX it should be sufficient to do 
-( IMX_NIPNDH || IMX_NIPNDL ) which are the IRQ pending registers already
-"and"ed between IRQ source and INT enable.
-
-The OSCR Register is read to get some timing stuff, at what frequency is
-the timer ++ed? I am sure it is 32.768kHz or 32.8kHz. Is that correct?
-In this case I should also do
-(signed)((IMX_TCN(IMX_TIM1_BASE) - (x)) /4).
-because "our" timer runs at 32kHz. I am pretty sure though...
-
-Further I found in funktion __xipram xip_udelay() a call to printk()
-right at the beginning, "pending entry". This will never work,
-becaus printk is located in flash,is that
-correct (just trying to really understand)?
-When I look at dissassembled vmlinux I find several calls to functions in
-flash in xip_udelay:
-
-c0013974:       ebc3fa2e        bl      bf112234 <cond_resched>
-c0013994:       ebc34c31        bl      bf0e6a60 <memset>
-c00139dc:       ebc18b27        bl      bf076680 <add_wait_queue>
-c00139e0:       ebc3f696        bl      bf111440 <schedule>
-c00139ec:       ebc18b45        bl      bf076708 <remove_wait_queue>
-
-and so on.
-Is this correct?
-
-Hm, our Kernel freezes right after
-
-Creating 5 MTD partitions on "scb9328_flash":             
-0x00000000-0x00020000 : "U-boot"             
-0x00020000-0x00040000 : "U-boot_env"
-0x00040000-0x00140000 : "kernel"    
-0x00140000-0x00540000 : "root"  
-0x00540000-0x00940000 : "fs"
-
-at the moment.
-
-Kind regards, Konsti
-
-
-
+> 
+> Should the code at line 631 be changed to look more like your patched
+> code? (Why the difference?)
+I believe the same should be done there too.
 
 -- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
