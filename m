@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 151onT-0007mk-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 May 2001 13:28:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010521142827.A4829@psionic.de> 
-References: <20010521142827.A4829@psionic.de> 
-To: psionic@psionic.de
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: erase / interrupts 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 21 May 2001 13:32:34 +0100
-Message-ID: <21422.990448354@redhat.com>
+Received: from qmail1.ispname.net
+	([64.19.9.36] helo=ispname.net ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 151rFH-0007wP-00
+	for <linux-mtd@lists.infradead.org>; Mon, 21 May 2001 16:05:19 +0100
+Message-ID: <B1F74F3AD483D2119F80004005A19948357F12@Server01.accelent.com>
+From: Cliff Brake <cbrake@accelent.com>
+To: linux-mtd@lists.infradead.org
+Subject: erase timeout
+Date: Mon, 21 May 2001 11:15:20 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Using Intel Strataflash, I occasionally get the following error during linux
+boot usually when remounting a jffs2 filesystem as r/w:
 
-psionic@psionic.de said:
-> I have two questions. First of all, what happens to the interrupts
-> during an erase? Are they disabled?
+"waiting for erase to complete timed out."
 
-That's entirely dependent on the driver. In general, interrupts _shouldn't_ 
-be disabled. They aren't disabled in the cfi_cmdset_000[12] drivers.
+making the following change seems to fix the problem:
 
-The erase method may sleep. And it may return immediately, calling the 
-erase completion callback later, from a timer. That isn't implemented yet. 
-Of course, it's entirely permitted to do both.
+=================================================
+--- cfi_cmdset_0001.c	Thu May 17 15:23:17 2001
++++ cfi_cmdset_0001_cliff.c	Mon May 21 11:01:07 2001
+@@ -1021,7 +1021,7 @@
+ 			spin_unlock_bh(chip->mutex);
+ 			schedule();
+ 			remove_wait_queue(&chip->wq, &wait);
+-			timeo = jiffies + (HZ*2); /* FIXME */
++//			timeo = jiffies + (HZ*2); /* FIXME */
+ 			spin_lock_bh(chip->mutex);
+ 			continue;
+ 		}
+=================================================
 
-> The other one is, what happens if the power fails during a erase/write.
-> Does the init-code handle the reset of the chip?
+The Intel datasheet lists the block erase time maximum as 5sec and the
+errata lists the maximum erase time as high as 25s for some parts.  Is the
+above change correct?
 
-Yes, it should do. It's up the the application to work out the the sector 
-in question was partially erased and erase it properly. See the marker 
-nodes in JFFS2. 
-
---
-dwmw2
+Thanks,
+Cliff
