@@ -1,12 +1,12 @@
-Received: from msl-exchange.m-sys.com ([195.213.109.7])
+Received: from [199.221.73.29] (helo=marconi-gfw.marconicommerce.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14veBS-0002Vi-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 May 2001 12:55:42 +0100
-Message-ID: <44A73E446E0BD511860700508BEEF707139068@msl-exchange.m-sys.com>
-From: Oron Ogdan <Orono@m-sys.com>
+	id 14vhXM-0002jS-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 May 2001 16:30:33 +0100
+Message-ID: <A3E34B558F5CD211B4980008C7A4A99003163EC8@sparrow.eng.gilbarco.com>
+From: "Williams, Kevin M." <kevin.m.williams@marconi.com>
 To: linux-mtd@lists.infradead.org
-Subject: Linux-mtd and DiskOnChip usage
-Date: Fri, 4 May 2001 14:56:31 +0300 
+Subject: erase and 2.4.4 kernel
+Date: Fri, 4 May 2001 11:30:06 -0400 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -21,43 +21,66 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear Linux-mtd members
+I upgraded my kernel from 2.4.3-pre3 to the 2.4.4 release.  I also copied
+over the mtd snapshot from 25 April.  Now when I try the erase command, I
+get:
 
-My name is Oron Ogdan, I am working for M-Systems as the European Technical
-Director, I am a passive reader of this list and I have been following it on
-and off from it's very first days. 
+bash#> /sbin/erase /dev/mtd2 0 6
+MTD_open
+Erase Total 6 Units
+MTD_ioctl
+Invalid ioctl 80044d07 (MEMGETINFO = 40204d01)
+MTD_close
 
-I am interested in building a business case for opening more of our
-technology to activities such as this one and would like to understand the
-impact and reach of such a list. As with many open-source projects, most of
-what you read are people who write about the code, it is very difficult to
-understand or estimate even roughly, how many of our products are being sold
-with the support of the Linux-mtd project just by following the list.
+This was working fine when I load my 2.4.3 kernel with the 4 April mtd
+snapshot patched in.  
 
-What I would like to get are very basic details regarding projects (only
-public non confidential information of course) which use M-Systems products,
-with the following information
+Any advice?
 
-Example : 
+Kevin
 
-Storage Device & Capacity : 32MB M-Systems DiskOnChip 2000 
-Form Factor : DIP / DIMM / TSOP
-Potential : 500 pieces per month / quarter / year
 
-Company : Acme Ltd
-Project : PDA Device
 
-Since this information will be used only to compile a list of the total
-M-Systems' products expected to be sold with support by the Linux-mtd
-activity I really don't need the company name and project name, However, it
-would be nice to have this information just for reference. 
 
-Best regards, Thanks to everyone who can contribute. (Please send replies
-directly to my email unless you believe it of interest to all the group).
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Thursday, May 03, 2001 5:55 PM
+To: Jeff Smith
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 Problem 
 
-Oron Ogdan
-European Technical Director
 
-+44.870.163.8773 (United Kingdom fax only)  
 
-M-Systems, creating the unforgettable.
+
+jsmith@vhbtech.com said:
+>  I'm running jffs2 on a PPC/855T board. I mount the jffs2 and have two
+> (2) test scripts that "dd" various sized files to the jffs2 flash. I
+> seem to be running into a race condition or something.
+
+> My 2 scripts just "dd" a bunch of files to the jffs2/flash, "ls -l "
+> them, "rm *" them and then "ls -l" the dir/mnt point again in a loop.
+> I'm running 2 of these and they always reach contention fairly
+> quickly, ie. they lock up after 5 to 10 iterations. ps shows the
+> processes sleeping. If I remove the "ls"portion of the scripts. That
+> is I just "dd" and "rm" - everything "seems" ok.Anybody seen this? 
+
+Sorry for the delayed response.
+
+I've seen similar, and I thought I'd fixed it. You may have found a code 
+path which I hadn't considered, and which still has locking problems. Or 
+you may just be using the code from before I fixed it :)
+
+What's the output of 'grep Id: fs/jffs2/*.[ch]'?
+
+If it's still happening with the latest code, can you make sure you have 
+SysRq enabled in your kernel and show me the backtraces of the offending 
+processes? (SysRq-T and ksymoops for decoding)
+
+--
+dwmw2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
