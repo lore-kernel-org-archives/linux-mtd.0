@@ -1,18 +1,15 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVCaa-00029P-6s
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 12:58:12 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812A6@atcml01.atc.army.mil>
-References: <EFF9A3506F74924AB5CC77BDC66E79351812A6@atcml01.atc.army.mil>
-Content-Type: text/plain
-Message-Id: <1086109088.26119.238.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 01 Jun 2004 17:58:09 +0100
+Received: from adsl-110-19.38-151.net24.it ([151.38.19.110] helo=develer.com)
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BVFg9-0002RA-34
+	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 16:16:10 -0400
+Message-ID: <40BCE3FD.4080500@develer.com>
+Date: Tue, 01 Jun 2004 22:15:57 +0200
+From: Bernardo Innocenti <bernie@develer.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL_FORNAT ???
+Subject: TRIVIAL: Fix linux/mtd/nftl.h for user-space inclusion
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-06-01 at 12:45 -0400, Carlos, John J USAATC wrote:
-> Does anyone have a copy of inftl_format?  I can't locate a copy and need it
-> to format my DOC Mil Plus 32.  If anyone could please tell me where to find
-> it.  I have looked on the Snapgear site and have not been able to locate it.
 
-If it isn't where Greg said it was 2 hours ago then I don't know where
-it is.
+Fix linux/mtd/nftl.h for user-space inclusion (required to build mtd-utils).
+
+Please apply.
+
+--- linux-2.6.6-uc0/include/linux/mtd/nftl.h	2004-05-10 04:33:13.000000000 +0200
++++ linux-2.6.6-uc0-develer/include/linux/mtd/nftl.h	2004-06-01 22:03:36.824225250 +0200
+@@ -8,7 +8,6 @@
+ #define __MTD_NFTL_H__
+ 
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/blktrans.h>
+ 
+ /* Block Control Information */
+ 
+@@ -76,6 +75,8 @@
+ 
+ #ifdef __KERNEL__
+ 
++#include <linux/mtd/blktrans.h>
++
+ /* these info are used in ReplUnitTable */
+ #define BLOCK_NIL          0xffff /* last block of a chain */
+ #define BLOCK_FREE         0xfffe /* free block */
 
 -- 
-dwmw2
+  // Bernardo Innocenti - Develer S.r.l., R&D dept.
+\X/  http://www.develer.com/
