@@ -1,20 +1,17 @@
-Received: from bolna.monet.no ([195.139.82.18])
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15giBU-0006mk-00
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 08:42:16 +0100
-Received: from starticon (ca88-76.monet.no [195.139.88.76])
-	by bolna.monet.no (8.11.6/8.9.1) with SMTP id f8B6ker30162
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 08:46:40 +0200
-Message-ID: <003401c13a97$23011230$c801a8c0@starticon>
-Reply-To: "Yunus Shaikh" <yshaikh@start-icon.com>
-From: "Yunus Shaikh" <yshaikh@start-icon.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Fw: Booting doc2000 and mtd
-Date: Tue, 11 Sep 2001 09:55:34 +0200
+	id 15gjLe-0006rk-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2001 09:56:50 +0100
+Message-ID: <3C6BEE8B5E1BAC42905A93F13004E8AB6B6B53@mailse01.axis.se>
+From: Jonas Holmberg <jonas.holmberg@axis.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Cc: mtd <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS2 on 8MB Flash-Chip conneted to MPC850 works extremly slo
+	 w:(
+Date: Tue, 11 Sep 2001 11:01:45 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,11 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Thanks
-Nikolai and pradeep
-it worked after making /dev/cosole !!
-but one thing still suprizes me i was using the same image with m-sys driver
-i never had to create devices as devfs is enabled it used to handle it
+> > Does the size of the output from mkcramfs exceed the size of 
+> > the partition 
+> > the kernel thinks it's in?
+> 
+> No, mkcramfs says: "Everything: 984 kilobytes"
+> 
+> And the image created is 1007616 bytes (984 * 1024).
 
-Thanks
-yunus
+The problem seems to be cramfs assuming 4kB pages (in one lousy if-statement)
+and mine are 8kB...
+
+/Jonas
