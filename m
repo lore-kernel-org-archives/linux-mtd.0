@@ -1,19 +1,16 @@
-Received: from nuustak.csir.co.za ([146.64.10.11])
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fHAo-00030r-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 09:11:55 +0000
-Received: from CS-IMO.CSIR.CO.ZA (cs-imo.csir.co.za [146.64.10.94])
-	by nuustak.csir.co.za (8.11.4/8.11.4) with ESMTP id g1P9N3m17621
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 11:23:03 +0200 (SAST)
-Message-Id: <sc7a1e95.021@CS-IMO.CSIR.CO.ZA>
-Date: Mon, 25 Feb 2002 11:22:51 +0200
-From: "Herman Theron" <HEtheron@csir.co.za>
-To: <linux-mtd@lists.infradead.org>, <ilatypov@superbt.com>
-Subject: Re: Error using GRUB patch (and LILO questions)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	id 16fIpz-00036j-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 10:58:31 +0000
+Date: Mon, 25 Feb 2002 12:09:46 +0100 (MET)
+From: Robert Kaiser <rob@sysgo.de>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: linux-mtd@lists.infradead.org, Jonas Holmberg <jonas.holmberg@axis.com>
+Subject: Re: Re-entrancy of flash erase/write 
+In-Reply-To: <Pine.LNX.4.21.0202221824060.8843-100000@dagobert.svc.sysgo.de>
+Message-ID: <Pine.LNX.4.21.0202251153370.8474-100000@dagobert.svc.sysgo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,88 +22,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Ilguiz
 
-Yes, I upgraded to automake 1.5, and that solved the problem with grub.
-I successfully installed Grub and got the system booting. Being used to
-LILO, I must say that is was a bit difficult for me. The
-README_DiskOnChip can give more information on how to setup the DOC
-(going through nftl_format,etc, etc). Grub unfortunately doesn't abide
-to the BIOS boot order. Sometimes I want to boot using a stiffy (rescue
-disk), but Grub will always start first. I know that you should be able
-to boot from fd0 from Grub, but it is not easy (especially not for
-somebody that does not know grub well enough).
+On Fri, 22 Feb 2002, Robert Kaiser wrote:
 
-So, I still prefer LILO. And yes, I actually got version Lilo 22.2 to
-boot my DOC. Thanks Ilguiz. Here follows my lilo.conf:
+> 
+> On Fri, 22 Feb 2002, David Woodhouse wrote:
+> 
+> > 
+> > rob@sysgo.de said:
+> > > .., where is the lock in the MTD code that would prevent concurrent
+> > > execution of erase/write on the same chip by multiple processes ? 
+> > 
+> > In the chip drivers themselves. Grep for TASK_UNINTERRUPTIBLE in 
+> > cfi_cmdset_0001.c, for example.
+> 
+> .. What happened was that at some point, JFFS's
+> garbage collector started erasing blocks while tar was continuing
+> to write to flash. In that situation, it ocassionally happened that
+> VPP was turned off by one of the threads while the other one was
+> still busy writing/erasing, causing that operation to fail.
+> I was able to fix this by introducing a counter in my map driver's
+> set_vpp() function and doing the actual disable/enable of VPP only
+> when the counter reaches zero. Now I'm wondering if this is a flaw
+> in MTD or in my new code.
 
-boot=/dev/nftl/disc0/disc
-disk=/dev/nftl/disc0/disc
-bios=0x80
-lba32
-install=/boot/boot-text.b
-map=/boot/map
-backup=/dev/null
-prompt
-timeout=50
-default=Linux
-image=/boot/bzImage-2.4.17-rthal5g
-        label=Linux
-        root=/dev/nftl/disc0/disc
-        vga=normal
-	read-only
-image=/boot/bzImage-2.4.17-rthal5g
-        label=Linux-fb
-        root=/dev/nftl/disc0/disc
-        vga=0x314
-	read-only
+I looked into this a little further: it seems that the erase
+functions in cfi_cmdset_000?.c and amd_flash.c temporarily release
+the chip->mutex while VPP is on. Won't that allow other threads
+to get hold of the mutex and fiddle with VPP, possibly turning it
+off ?
 
-I had to tell LILO to use the DOC as the first drive (bios=0x80);
+That would explain the behavior I'm observing here. Only why doensn't
+anyone else see this problem ?
 
-Thanks all
-Herman
->>> Ilguiz Latypov <ilatypov@superbt.com> 02/22/02 06:57PM >>>
+A proper solution IMHO would be to use a counter (similar to what I
+now have in my mapping driver) in the ENABLE/DISABLE_VPP() macros.
 
-Herman,
-
-Can you try the updated automake and autoconf packages from
-  ftp://ftp.redhat.com/pub/redhat/linux/rawhide/i386/RedHat/RPMS 
-
-Mine are
-  automake-1.5-8
-  autoconf-2.52-6
-I get only a couple of warnings with autoconf.  Sorry for the 
-configuration nuisance.
-
-Ilguiz
-
-P.S.  Have you checked the LILO HOWTO at
-http://www.ibiblio.org/pub/Linux/docs/HOWTO/mini/LILO ? After the
-quick
-search on the web I have a suspicion that your M-Sys BIOS firmware was
-configured to pretend as a second hard drive.
-
-On Fri, 22 Feb 2002, Herman Theron wrote:
-
-> stage1/Makefile.am:55: invalid variable `nodist_pkgdata_DATA'
+Any ideas ?
 
 
+Rob
 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/ 
-
-
-****************************************
-Herman Theron
-Hermanus Magnetic Observatory
-CSIR
-PO Box 32
-Hermanus
-7200
-South Africa
-E-mail: hetheron@csir.co.za
-Phone: +27 28 3121196
-Fax: +27 28 3122039
-Cel: +27 833 206 311
+----------------------------------------------------------------
+Robert Kaiser                          email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14
+D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
