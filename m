@@ -1,15 +1,18 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16O8is-0004GX-00
-	for <linux-mtd@lists.infradead.org>; Wed, 09 Jan 2002 02:44:14 +0000
-Message-Id: <5.1.0.14.0.20020108210344.02b5c008@mail.spewey.com>
-Date: Tue, 08 Jan 2002 21:04:37 -0600
-To: sankumar96@lycos.com,linux-mtd@lists.infradead.org
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: JFFS2 mounting problem
-In-Reply-To: <EOJGDPJADNIDGAAA@mailcity.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16OnRp-0006Xb-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jan 2002 22:13:21 +0000
+Received: from mvista.com (IDENT:ahennessy@penelope.mvista.com [10.0.0.122])
+	by hermes.mvista.com (8.11.0/8.11.0) with ESMTP id g0AMNHB12346
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jan 2002 14:23:17 -0800
+Message-ID: <3C3E1515.CD99EB0@mvista.com>
+Date: Thu, 10 Jan 2002 14:26:29 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Problem with cfi_probe.c and Intel chip
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,24 +24,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Check back in the list archives. This topic has been discussed quite a bit. 
-Quite recently too, if I remember correctly.
+Hello,
 
-Vipin
+I just tried the latest code  and discovered that the command used
+before the query command  and also to
+return to read mode  in cfi_probe.c  has been changed to 0xF0 - it used
+to be 0xFF .  The board I'm testing
+on has an Intel strata chip and is not responding to the query.  If I
+use 0xFF, then everything is fine.  AMD chips
+seems to be happy with either command (I think because the
+AMD automatically returns to read mode after
+a command anyway).   It looks like this was changed with the jedec-probe
 
+additions so maybe this is necessary
+for older jedec chips (which I haven't tested).
 
-At 10:47 PM 1/8/2002 +0530, Sanjay Kumar wrote:
->Hi All,
->I am trying to mount JFFS2 and it is taking more than 5 minutes in 
->mounting and also reading from JFFS2 is very slow.
->In case I copy a single large file, mounting and reading is fast but when 
->I keep multiple files and try to mount then this problem is coming.
->Can please someone advice why this is happening.
->Thanks,
->Sanjay
->
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Alice
