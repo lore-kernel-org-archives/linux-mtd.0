@@ -1,19 +1,20 @@
-Received: from mail03.agrinet.ch ([81.221.250.52])
+Received: from gate.epygi.de ([212.126.211.241])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19sfDt-0000iT-IU
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 10:07:13 +0100
-Received: from pegasus (80.254.183.189) by mail03.agrinet.ch (7.0.018)
-	id 3F4A99F100082D2D for linux-mtd@lists.infradead.org;
-	Fri, 29 Aug 2003 11:06:17 +0200
-From: Felix Frey <ffrey@freesurf.ch>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 29 Aug 2003 11:04:06 +0200
+	id 19sii4-0001A3-0n
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 13:50:36 +0100
+Received: from pcstephan (pc-stephan.epygi.de [10.20.0.32])
+	by gate.epygi.de (8.12.9/8.12.9) with SMTP id h7TCo8hK016850
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 Aug 2003 14:50:08 +0200 (METDST)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
+Date: Fri, 29 Aug 2003 14:50:08 +0200
+Message-ID: <FCEAKDJJAPHPLJFINDAJEECKDHAA.Stephan.Linke@epygi.de>
 MIME-Version: 1.0
-Message-Id: <200308291104.06237.ffrey@freesurf.ch>
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: SRAM and MTD
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: FW: "du" returns wrong values on yaffs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hi,
 
-I'd like to connect a 32kx8 static RAM (battery buffered) to the ISAbus o=
-f my=20
-x86 based system to frequently store sensitive data which _must_ survive =
-a=20
-powerfail. Access should be made through the mtd character device. By div=
-ing=20
-a bit into the code I saw there is a ram chip driver, however, I got pret=
-ty=20
-confused.=20
-Do I have to write my own mapping driver or how can I tell the chip drive=
-r=20
-where it finds my RAM device and how large it is ?
-Does the ram chip driver accept any parameters ?
+in MTD list there are more filesystem guys so I copy this one from YAFFS list...
 
-Any help is greatly appreciated.
+Stephan
 
-Felix
+> -----Original Message-----
+> From: Stephan Linke [mailto:Stephan.Linke@epygi.de]
+> Sent: Freitag, 29. August 2003 14:48
+> To: manningc2@actrix.gen.nz; Yaffs List
+> Subject: RE: "du" returns wrong values on yaffs
+> 
+> 
+> Hi,
+> 
+> Now there's something strange:
+> The "du" I use (busybox) still returnes strange values. The reason is that it assumes a block size of 512 bytes and 
+> doesn't care for the file block size returned by lstat. "du" simply divides by 2 to get the number of 1k blocks (already 
+> a wrong calculation I guess).
+> 
+> Filesystems like cramfs and jffs show a similiar stupid behavior. They sai that their block size is PAGE_CACHE_SIZE or 
+> PAGE_SIZE (4k in our case) but use a hard coded 512 to calculate the block count.
+> It looks to me like there's something wrong in most of the filesystem inodes...
+> 
+> Thanx, Stephan
+> 
+> 
+> > -----Original Message-----
+> > From: Charles Manning [mailto:manningc2@actrix.gen.nz]
+> > Sent: Mittwoch, 20. August 2003 06:03
+> > To: Stephan Linke; Yaffs List
+> > Subject: Re: "du" returns wrong values on yaffs
+> > 
+> > 
+> > On Tuesday 19 August 2003 21:39, Stephan Linke wrote:
+> > > Hi,
+> > > we are using "du" to detect the amount of space occupied by some of our
+> > > files to keep us from running out of space. Unfortunately YAFFS returns a
+> > > block count of zero.
+> > >
+> > Stepahn I found and ??corrected?? a problem, though I don't know it is 100% 
+> > yet. THis is in cvs. 
+> > 
+> > At best du only provides an estimate and does not account for various other 
+> > overheads (eg. bad blocks, reserved blocks). statfs() , as used by 'df', 
+> > gives a better indicator of free space.
+> > 
+> > Stephan: please try the new yaffs_fs and see if this helps. 
+> > 
+> > -- Charles
+> > 
