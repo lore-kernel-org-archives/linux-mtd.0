@@ -1,19 +1,18 @@
-Received: from sccrmhc02.attbi.com ([204.127.202.62])
+Received: from lmsmtp03.st1.spray.net ([212.78.202.113])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18UQQm-00040V-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 11:56:04 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: Sanal Kumar <p_sanalk@yahoo.com>
-Subject: Re: Problem with DiskOnChipMillenium
-Date: Fri, 3 Jan 2003 07:25:27 -0500
-References: <20030103094024.54024.qmail@web10308.mail.yahoo.com>
-In-Reply-To: <20030103094024.54024.qmail@web10308.mail.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+	id 18UX91-0004lq-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 19:06:11 +0000
+Received: from lycos.de (p50859B6D.dip.t-dialin.net [80.133.155.109])
+	by lmsmtp03.st1.spray.net (Postfix) with ESMTP id A2A1B3CF11
+	for <linux-mtd@lists.infradead.org>; Fri,  3 Jan 2003 20:36:29 +0100 (MET)
+Message-ID: <3E15E63A.4060203@lycos.de>
+Date: Fri, 03 Jan 2003 20:36:26 +0100
+From: Indy500 <indy5xl@lycos.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <E18UQQm-00040V-00@pentafluge.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: How to compile mkfs.jffs2?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +24,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Try using the following options:
+Hi
 
-# Memory Technology Devices (MTD)
-CONFIG_MTD=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_CHAR=y
-CONFIG_NFTL=y
-CONFIG_NFTL_RW=y
+I can't compile mkfs.jffs2. I tried both methods as described in Readme. 
+Once with Symlink and once with copying the whole util DIR to the Kernel 
+tree. I tried it with an unpatched 2.4.20 Kernel and with a 2.4.20 
+Kernel patched with patchin.sh....always there are several errors and 
+compiling stops.
 
-# Disk-On-Chip Device Drivers
-CONFIG_MTD_DOC2000=y
-CONFIG_MTD_DOCPROBE=y
+Is the description in README too old or is there another undocumented 
+Trick to compile successfully this Prog? I must have this binary because 
+I'm not able to go on further with my work.
 
-(turn off CONFIG_MTD_DOC2001, and CONFIG_MTD_DOCPROBE ADDRESS).
-
-Sanal Kumar wrote:
-> I am working on an Assabet like board(SA1110).
-> but when I enable mtd device(M-systems Millenium)I am
-> able to see the driver recognizing the Millenium chip.
+Thank you for any solution.
