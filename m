@@ -1,16 +1,19 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dsl-64-129-131-125.telocity.com
+	([64.129.131.125] helo=mir.outpostsentinel.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16UT35-0004Re-00
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Jan 2002 13:39:15 +0000
-Date: Sat, 26 Jan 2002 13:50:15 +0000 (GMT)
-From: kira brown <kira@hex.linuxgrrls.org>
-To: Ramya Ravichandran <rrhsin@yahoo.co.in>
-Cc: <manningc2@actrix.gen.nz>, <linux-mtd@lists.infradead.org>
-Subject: Re: Cf Card vs DiskOnChip
-In-Reply-To: <20020126080500.34286.qmail@web8101.in.yahoo.com>
-Message-ID: <Pine.LNX.4.33.0201261349260.30003-100000@hex.linuxgrrls.org>
+	id 16UUCh-0004VQ-00
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Jan 2002 14:53:15 +0000
+From: "Chris Fowler" <cfowler@outpostsentinel.com>
+To: "Ramya Ravichandran" <rrhsin@yahoo.co.in>, "Russ Dill" <Russ.Dill@asu.edu>,
+        <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+Subject: RE: Cf Card vs DiskOnChip
+Date: Sat, 26 Jan 2002 10:03:28 -0500
+Message-ID: <NFBBLCEFBCFEPMJJKOIKGEFICCAA.cfowler@outpostsentinel.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20020126062925.22509.qmail@web8101.in.yahoo.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,15 +25,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+http://www.m-sys.com
 
-On Sat, 26 Jan 2002, Ramya Ravichandran wrote:
+-----Original Message-----
+From: linux-mtd-admin@lists.infradead.org
+[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ramya
+Ravichandran
+Sent: Saturday, January 26, 2002 1:29 AM
+To: Russ Dill; dwmw2@infradead.org; linux-mtd@lists.infradead.org
+Subject: Re: Cf Card vs DiskOnChip
 
-> You have a desktop system and in this desktop system I
-> just want to remove the HD and replace it with the CF
-> card or DOC
 
-I thought you said you were building an industrial embedded system?
+> > Doesn't the ROM needed  depend on the application
+> than
+> > runs on Linux? 
+> > 
+> 
+> you said "serial application". Doesn't seem like
+> much to me
+> 
 
-This doesn't sound like it's going to be embedded *or* industrial.
+Right now I am trying to find out the price of DOC. I
+tried the serach words "DiskOnChip" and "DiskOnChip
+Price" . The search results explain DOC but don't give
+the price.
+   If the price of DOC  is less than the CF+IDE
+adapter or CF + PCMCIA-CF adapter then I guess we will
+settle for DOC.
+   Also I dont know which adapter to go for PCMCIA or
+IDE for CF as I am not a h/w person.
+  
 
-kira.
+
+__________________________________________________
+Do You Yahoo!?
+Great stuff seeking new owners in Yahoo! Auctions! 
+http://auctions.yahoo.com
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
