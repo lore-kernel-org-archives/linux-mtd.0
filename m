@@ -1,26 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B7HqZ-0004aS-W6
-	for linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 17:43:52 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HV800C6IX92Z8@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 18:43:51 +0100 (MET)
-Date: Sat, 27 Mar 2004 18:40:28 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <1080404311.17352.69.camel@imladris.demon.co.uk>
-To: David Woodhouse <dwmw2@infradead.org>, David Updegraff <dave@cray.com>
-Message-id: <200403271840.28091.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-References: <406328A2.3060905@cray.com> <4065A81B.6020607@cray.com>
- <1080404311.17352.69.camel@imladris.demon.co.uk>
-cc: linux-mtd@lists.infradead.org
+	id 1B7Ufq-0000Ns-93
+	for linux-mtd@lists.infradead.org; Sun, 28 Mar 2004 08:25:38 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Date: Sun, 28 Mar 2004 19:34:43 +1200
+References: <406328A2.3060905@cray.com>
+	<20040327073147.03AF7179A8@desire.actrix.co.nz>
+	<200403270907.07298.tglx@linutronix.de>
+In-Reply-To: <200403270907.07298.tglx@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20040328072532.3FCCA168A8@desire.actrix.co.nz>
 Subject: Re: nand oob layout assumptions
-Reply-To: tglx@linutronix.de
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 27 March 2004 17:18, David Woodhouse wrote:
-> On Sat, 2004-03-27 at 10:13 -0600, David Updegraff wrote:
-> > In all this discussion, the need for anyone outside the driver to know
-> > hardware positions of ECC and badblock markers still elludes me.  Yes,
-> > various FS need to scribble oob info of their own in a particular
-> > format, and in a way that won't scribble over ecc/badblock, but is there
-> > anything more than that?
+On Saturday 27 March 2004 20:07, Thomas Gleixner wrote:
+> On Saturday 27 March 2004 08:40, Charles Manning wrote:
+> > > We should check the possibility to use the 16 bit buswith with the same
+> > > driver. The command interface is still 8 bits, only the data interface
+> > > is 16 bit. It should be possible to combine those in one go.
+> >
+> > I think it is time we re-think the whole mtd interface for NAND. There
+> > are a bunch of new NAND parts out there that bring a whole new bunch of
+> > issues.
+> >
+> > For instance, the bad block handling is different in different NAND
+> > parts. It is wrong, IMHO, to be handling bad-block logic in the file
+> > system. Instead, the bad block handling should be done in mtd so that
+> > each different chip can have its own methods and the file system can be
+> > kept "clean".
 >
-> Nope. The file system just need to be told which are bad blocks, where
-> the ECC data are, and which bytes are still available. In fact, it
-> possibly doesn't even need to know where the ECC data are in the general
-> case.
+> I have already considered this.
+> But the fs must be aware of the bad block marker position in the OOB area,
+> as it can not use this byte for storing fs dependend data. The OOB usage is
+> given by the fs layer.
+
+No. Part of the deal is that the OOB area should not be shown in "raw" form 
+to the fs. There should be no l physical placement knowledge in the fs, only 
+abstract.
+
+
+For example if the OOB area is used as follows (standard SmartMedia layout as 
+used by YAFFS1):
+    __u8  spare0[4];
+    __u8  pageStatus; 
+    __u8  blockStatus; // bad block marker
+   __u8  spare1[2];
+    __u8  ecc1[3];
+    __u8  spare2[2];;
+    __u8  ecc2[3];
+
+This should be shown to the fs as:
+  __u8 spare[8];
+  ECCResult (OK, fixed, failed)
+  BlockOK (OK, bad)
+
+or some such.
+
+
 >
-> > So, again, what if the 'oobsize' and 'oob_buf' (or a renamed relative
-> > thereof) were interpreted to mean "region available in OOB for misc.
-> > file system housekeeping, that will not stomp on private ECC or badblock
-> > areas and will not be interpreted by nand driver".  And let the driver
-> > put it wherever it wants/needs to in OOB.  Driver gets to ignorant of FS
-> > details, FS gets to be ignorant of chip-HW-dependent ECC and badblock
-> > layout.
+> > This is, BTW, the approach I have taken for YAFFS2. YAFFS2 has no ECC
+> > calcs or bad block logic in the file system "guts". Instead the mtd glue
+> > layer is currently tasked with this job, though in time I hope the
+> > actiual mtd ends up with the job.
 >
-> Seems reasonable. We can make it a bitmask of available bytes, perhaps?
+> Not sure. The generic nand driver provides mechanisms to tell you where the
+> bad block marker is located and a basic protection against the erasing of
+> bad blocks. All other bad block handling tasks should be done in the fs
+> layer.
 
-I'm tired to repeat myself. 
+But...One of the issues is that the bad block marking strategy of the 
+different NAND devices does not necessarily just depend on a fixed-location 
+bad block marker.  Some (particularly the 2k page devices) say that any pages 
+that are not completely 0xFF when shipped are bad. Therefore one needs to 
+track this badness as well as future badness.
 
-1. This will break existing code and I'm not willing to do so
-We accepted in a long discussion 2 years ago, that we support fs supplied ECC 
-layouts. YAFFS relies on this. 
+The fs should not know about bad block marking positions. The fs should be 
+saying to the mtd "mark this block bad" or asking "is this block bad". How 
+the mtd chooses to record the fact that the block is bad is not the fs's 
+concern.
 
-2. Putting stuff into any random place is not a thing I want to have.
-Changing one line in the placement code will break all existing fs at once. 
-Changing an oob layout in a fs driver just breaks this and solely this 
-filesystem. 
+For example, in a recent implementation of a 2K page NAND system I use block 
+0 to store a list of "manufacturing bad blocks". If the array is not found at 
+boot, then the driver assumes that this is the first boot for the device and 
+builds such a list. Subsequent failures are marked by stomping 0s on the OOB. 
+The next time the driver boots, the NAND "badness" is scanned into an array 
+that is held in RAM to remember which blocks are bad.
 
-It may be better and nicer and more clever to have this independent, but
-will you explain the people which are using YAFFS on a SmartMedia Card, that 
-they can either freeze the current code or accept that the already existing 
-cards are not longer readable ? This is valid for soldered flash too. Update 
-of existing hardware to a more recent kernel is then not longer possible 
-without loosing data. 
+IMHO...
 
-I'm not against an _extended_ API, which provides such things for new 
-developments, but I'm cowardly refusing to break compability of existing 
-stuff.
-
-Can you please accept the matter of fact that breaking existing 
-implementations, which are used on removable medias, is not possible.
-Thats like changing the FAT or the ISO driver is not possible even if there 
-could be better designs available.
-
-Breaking such things only for the sake of a slightly cleaner interface is the 
-playfield of M$ and friends. Linux has a good standing for long term 
-stability of interfaces and this is a reason for industrial users to choose 
-it. They are tired of changing stuff in short intervals, as the lifecycle of 
-such products are higher than the M$ incompabilty rate. And now we want to go 
-for the same ?
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-- Charles
