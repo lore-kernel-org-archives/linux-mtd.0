@@ -1,56 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14EEeD-0006nr-00
-	for mtd-list@infradead.org; Thu, 04 Jan 2001 17:57:57 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14EG3d-0007VS-00
+	for mtd-list@infradead.org; Thu, 04 Jan 2001 19:28:17 +0000
+Received: from post2.inre.asu.edu ([129.219.110.73])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14EEeC-0006nl-00
-	for mtd@infradead.org; Thu, 04 Jan 2001 17:57:56 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3.0.6.32.20010104184851.0082a4e0@popmail.libero.it> 
-References: <3.0.6.32.20010104184851.0082a4e0@popmail.libero.it> 
-To: Livio Plos <livioplos@bigfoot.com>
-Cc: mtd@infradead.org
-Subject: Re: howto 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 04 Jan 2001 17:57:54 +0000
-Message-ID: <10818.978631074@redhat.com>
+	id 14EG3c-0007VM-00
+	for mtd@infradead.org; Thu, 04 Jan 2001 19:28:16 +0000
+Received: from conversion.post2.inre.asu.edu by asu.edu (PMDF V6.0-24 #47347)
+ id <0G6N00401KQW2D@asu.edu> for mtd@infradead.org; Thu,
+ 04 Jan 2001 12:28:08 -0700 (MST)
+Received: from webmail2.asu.edu (webmail2.asu.edu [129.219.10.28])
+ by asu.edu (PMDF V6.0-24 #47347) with ESMTP id <0G6N003KBKQV3V@asu.edu> for
+ mtd@infradead.org; Thu, 04 Jan 2001 12:28:08 -0700 (MST)
+Received: (from nobody@localhost)	by webmail2.asu.edu (8.9.3/8.9.3)
+ id MAA05868	for mtd@infradead.org; Thu, 04 Jan 2001 12:28:08 -0700
+Date: Thu, 04 Jan 2001 12:28:08 -0700 (MST)
+From: Russ.Dill@asu.edu
+Subject: Supported flash memory
+To: mtd@infradead.org
+Message-id: <978636488.3a54cec86af09@webmail2.asu.edu>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+After attempting to find flash memory for the LART board (Intel DT28F160F3B),
+I've decided I need a plan B. So while I'm calling different suppliers around
+the world (any tips here would be appreciated), I'm designing my own StrongARM
+board, but with different flash/more flash options. I plan to use what seems to
+be the most popular non BGA footprint, TSOP-48. I'm printing out data sheets
+from various manufactures now to find the best way to make the most universal
+footprint/layout. 
 
-livioplos@bigfoot.com said:
->  I'm trying to build a system with flash chips instead of an hard disk
-> or a disk on module and this seems to be the  most advanced project to
-> help me doing this.
+Besides footprints, pinouts, etc, my other concern is software. The logical
+combination would seem to be blob/mtd. What flash products are known or probable
+to be compatible with this combination, what should I look for to attempt to
+assertain compatibilty? Does blob/mtd work transparently with a 16bit or 32bit
+ROM bus?
 
-> Neverthless, it is not easy to begin understanding how to  move
-> between sources, configuration, modules...
-
-Documentation is moving up the TODO list very slowly, as I get the code 
-closer to a state where I'm happy with it.
-
-> Can I boot totally from flash without any other storage support?
-
-Yes, as long as you have the flash mapped where the CPU startup vector 
-points, or the board's firmware has support for starting the Linux kernel
-from flash (RedBoot does).
-
-> Is there any howto or high level docs to configure and compile? 
-
-Drop the latest code from CVS on top of your 2.4 kernel tree. Enable all the
-CFI stuff, enable CONFIG_MTD_PHYSMAP and set the address, size and bus width
-for your flash mapping appropriately. Boot it and see what happens.
-
-If you want to partition the flash, as most people do, you'll want to copy
-one of the other 'map' drivers (eg. pnc2000.c) and change the numbers
-accordingly.
-
---
-dwmw2
-
-
+I of course know that blob will have to be modified to accept various flash
+configurations, I'm asking about compatibilty without having to completely
+rewrite large portions of mtd or blob.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
