@@ -1,16 +1,22 @@
-Received: from sproxy.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 186rGz-0000Ry-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2002 11:44:33 +0000
-Message-ID: <005b01c27e7e$cff78740$b910340a@datus.com>
-From: "Holger Speck" <hospe@gmx.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: cfi_cmdset_0002.c: Timeout for writing
-Date: Mon, 28 Oct 2002 13:37:43 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from phoenix.infradead.org ([195.224.96.167])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 186rZW-0000Vw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2002 12:03:42 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.10)
+	id 186XRc-0005sw-00
+	for linux-mtd@lists.infradead.org; Tue, 29 Oct 2002 14:34:12 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20021027195318.GB4634@wohnheim.fh-wedel.de> 
+References: <20021027195318.GB4634@wohnheim.fh-wedel.de>  <5.1.0.14.2.20021023101434.021da080@mail.attbi.com> 
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Cc: Eugene Surovegin <ebs@innocent.com>, linux-mtd@lists.infradead.org
+Subject: Re: mtdblock_ro and ext2 yields panic: block not locked 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 29 Oct 2002 14:28:45 +0000
+Message-ID: <12338.1035901725@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,17 +28,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+joern@wohnheim.fh-wedel.de said:
+>  Hmm. David appears to be _very_ unavaillable currently. Does anyone
+> know what is causing it? 
 
-Is this correct?
+Life. :)
 
-Line 511 in cfi_cmdset_0002.c, function do_write_oneword:
-<  timeo = jiffies + (HZ/1000); /* setting timeout to 1ms for now */
+The fact that Red Hat have actually been expecting me to _work_ recently 
+rather than just playing all the time doesn't help either. I hope to find 
+the time to clean up the current CVS and submit it to Linus and Marcelo 
+fairly soon, and then I want to merge the new partition code too.
 
-Timeo is set to jiffies because HZ/1000 = 0. This don't work in our
-integration.
-We use MTD in a non-linux environment. jiffies are emulated (10 ms)
-Nevertheless I think, it's not correct?
+Eugene -- please could you send me a SSH public key; I'll give you an 
+account and you can commit the patch. It looked sane to me IIRC and if you 
+commit it yourself I know who to blame anyway if it's not :)
 
-Greetings,
-Holger
+--
+dwmw2
