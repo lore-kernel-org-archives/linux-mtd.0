@@ -1,82 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12TTHi-0005z5-00
-	for mtd-list@infradead.org; Fri, 10 Mar 2000 17:33:10 +0000
-Received: from colo.asti-usa.com ([205.252.89.99] ident=root)
+	id 12U7M0-0000tB-00
+	for mtd-list@infradead.org; Sun, 12 Mar 2000 12:20:16 +0000
+Received: from geisha.cendio.se ([193.180.23.107] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12TTHg-0005yz-00
-	for mtd@infradead.org; Fri, 10 Mar 2000 17:33:08 +0000
-Received: from zentropix.com ([195.166.67.91])
-	by colo.asti-usa.com (8.9.3/8.9.3) with ESMTP id MAA20014
-	for <mtd@infradead.org>; Fri, 10 Mar 2000 12:38:07 -0500
-Message-ID: <38C93233.A1AC0566@zentropix.com>
-Date: Fri, 10 Mar 2000 17:34:43 +0000
-From: Trevor Woolven <trevw@zentropix.com>
+	id 12U7Ly-0000t5-00
+	for mtd@infradead.org; Sun, 12 Mar 2000 12:20:15 +0000
+Received: from biffen.cendio.se (IDENT:alex@biffen.cendio.se [193.180.23.11])
+	by geisha.cendio.se (8.9.3/8.9.3) with ESMTP id NAA17733
+	for <mtd@infradead.org>; Sun, 12 Mar 2000 13:20:10 +0100
+Received: from localhost (alex@localhost)
+	by biffen.cendio.se (8.8.7/8.8.7) with SMTP id NAA08878
+	for <mtd@infradead.org>; Sun, 12 Mar 2000 13:20:10 +0100
+Date: Sun, 12 Mar 2000 13:20:10 +0100 (CET)
+From: Alexander Larsson <alex@cendio.se>
+Reply-To: Alexander Larsson <alex@cendio.se>
+To: mtd@infradead.org
+Subject: More comments
+Message-ID: <Pine.LNX.3.96.1000312130417.7628A-100000@biffen.cendio.se>
 MIME-Version: 1.0
-To: MTD <mtd@infradead.org>
-Subject: Reviving DiskOnChip
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Err, anybody know the spells and incantations required to bring a
-DiskOnChip back to life?
+Ok. I've worked some more with mtd now.
 
-According to M-Systems there are ways to do this (eg: dformat /win:xxx
-/unformat) but they don't seem to work for me, (wrong kind of pointy hat
-I guess).
+What is the reason for having the read and write ops not always read/write
+the number of bytes you specify? (I guess that this is what the size_t
+*retlen argument means.)
 
-docpmap /e appears to frag the thing completely, full stop, goodnight
-vienna.
-I include an excerpt from an email that opens the lid (very slightly) on
-some of their secret squirrel stuff in case it's of use/information to
-anyone.
+What concurrency assumptions does mtd make? Since the ops can sleep
+(could be waiting for a sector erase to finish) there must be some kind of
+locking. Who does the locking? What is "int *lock" in struct mtd? (and
+shouldn't it be a semaphore or a spinlock?) Which operations can be called
+from interrupt-context?
 
-If anyone has the full monty on the M-Systems utilities, ie: what the
-commands really do, what their commandline parameters really are and
-which sub-sets actually work, I'd be externally grateful.
+/ Alex
 
-Alternatively, has anyone got some other utilities to achieve, stable,
-working, reliable and robust DOCs?
 
-Have I been stupid? (don't answer that!) or just unlucky?
 
-Thanks in advance and desperation,
 
-Trev.
 
-<<Snip>>
-dformat /win:e400 /log:<filename> - this will save the bad block table
-in
-the file <filename> just to be on the safe side. I still owe you this
-answer
-from a previous email if I remember correctly. you can later use dformat
-/win:e400 /uselog:<filename> - if you accidentally used docpmap /e.
-
-then 
-
-dformat /win:e400 /unformat - this will return the DOC to it's original
-condition where the flash is totally erased and bad blocks are marked.
-
-dformat /win:e400 /s:doc122.exb - this will return the firmware to the
-doc
-and format it ready for the file system
-
-There is a manual in the physical pack but unfortunately all the secrets
-such as these undocumented options are not documented there and in the
-help
-message when you write dformat with no parameters, sorry :-)
-
-<</Snip>>
--- 
-Trevor Woolven - Director of Customer Applications Engineering
-Zentropix Inc - a Lineo company
-
-Tel: +44 (0)1273 234 647	 Fax: +44 (0)1273 704 482
-
-Visit http://www.zentropix.com/ for Real Time Linux Tools
-Visit http://www.realtimelinux.org/ for Real Time Linux Information
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
