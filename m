@@ -1,16 +1,23 @@
-Received: from law14-oe57.law14.hotmail.com ([64.4.20.192] helo=hotmail.com)
+Received: from nat-pool-rdu.redhat.com ([66.187.233.200]
+	helo=devserv.devel.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19UkHh-0007HE-1B
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 10:40:17 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Tue, 24 Jun 2003 07:24:28 -0700
-MIME-Version: 1.0
-Message-ID: <Law14-OE57nHAaaz7Ej000018da@hotmail.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: BLKMEM ARENA QUESTION
+	id 19Ul8W-0007Tc-0C
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 11:34:52 +0100
+Date: Tue, 24 Jun 2003 06:35:07 -0400
+From: Alexander Viro <aviro@redhat.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20030624063507.E9043@devserv.devel.redhat.com>
+References: <5.2.1.1.0.20030622225659.00a46a30@192.168.1.10>
+	<1056446261.29264.393.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1056446261.29264.393.camel@passion.cambridge.redhat.com>;
+	from dwmw2@infradead.org on Tue, Jun 24, 2003 at 10:17:42AM +0100
+Content-Type: text/plain; charset=us-ascii
+cc: Allen Curtis <acurtis@onz.com>
+cc: Infradead Org <linux-mtd@lists.infradead.org>
+cc: jffs-dev@axis.com
+Subject: Re: JFFS patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Jun 24, 2003 at 10:17:42AM +0100, David Woodhouse wrote:
+> On Mon, 2003-06-23 at 06:58, Allen Curtis wrote:
+> > Patch for updating JFFS in 2.4.20 kernel
+> 
+> Looks good. Want to take over maintenance for JFFS? I'm getting very
+> tempted to remove it from the 2.5 tree unless someone steps forward to
+> look after it.
 
-
- Hi folks,
-
-1.)
- I think my kernel can start running from RAM now.
-
- Though I get a message
-
- Blkmem: bad access: block=2, count=2 (pos=800, len=0)
- end_request: I/O error, dev 1e:00 (Blkmem), sector 2
- EXT2-fs: unable to read superblock
- Blkmem: bad access: block=0, count=2 (pos=400, len=0)
- end_request: I/O error, dev 1e:00 (Blkmem), sector 0
- romfs: unable to read superblock
- Kernel panic: VFS: Unable to mount root fs on 1e:00
-
- I never faced this problem when I built a kernel as XIP
-
-2.)I looked up in linux-2.4.x /drivers/block/blkmem.c
-there is a line
-arena[0].address = (unsigned long)__data_rom_start + (unsigned long)_edata -
-(unsigned long)__data_start;
-
-My guess is that this is from where my file system starts.
-
-IN case of XIP kernel it was arena[0].address = 0x10CA7670 +
-0x48000 -0x20000. Which is a OK address in FLASH
-In case of MY RAM KERNEL it comes out to
-0x BCe90 + 0xd812C + 0xBCE90 = 0xd812C.... Serious trouble..... this address
-is in RAM...
-
-Am I thinking Right?....
-If yes HOw do I find out the correct value of  __data_rom_start and how do I
-set it.?
-
- Vikram
+It would be nice.  There are several ugly craps in there and I'd
+rather see it gone than try and fix them...
