@@ -1,19 +1,20 @@
-Received: from isengard.yottayotta.com ([209.115.177.37])
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17IbfA-0002pM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2002 21:57:48 +0100
-Received: from fw-edm-dmz.yottayotta.com ([192.168.1.2] helo=edm-app01.yottayotta.com)
-	by isengard.yottayotta.com with esmtp (Exim 3.33 #1)
-	id 17Ibat-0006Le-00
-	for linux-mtd@lists.infradead.org; Thu, 13 Jun 2002 14:53:23 -0600
-Message-ID: <3D09070E.4080500@yottayotta.com>
-Date: Thu, 13 Jun 2002 14:56:46 -0600
-From: Murtada Shah <mshah@yottayotta.com>
+	id 17IbxM-0002ry-00
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2002 22:16:36 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Robert Schwebel <robert@schwebel.de>,
+	linux-mtd@lists.infradead.org
+Subject: Re: Directly attached CF
+Date: Fri, 14 Jun 2002 09:09:45 +1200
+References: <20020612072229.P4388@schwebel.de>
+In-Reply-To: <20020612072229.P4388@schwebel.de>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Building a filesystem fails
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020613211632.A2F884027@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,25 +26,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Robert 
 
-I'm using mkfs.jffs2 to create a jffs2 filesystem, and copying it over 
-to /dev/mtd/1
+I don't know of anyone that has actually done this, but the way to do this is 
+documented on www.sandisk.com and has been discussed a few times here.
 
-When trying to mount the flash... I receive the following messages:
+>From software land, the CF would be (should be) impossible to tell apart from 
+an IDE haddrive. ie. no special drivers required.
 
-Inode #2 was a directory with children - removing those too...
-Inode #3 was a directory with children - removing those too...
-Inode #4 was a directory with children - removing those too...
-Inode #5 was a directory with children - removing those too...
-Inode #6 was a directory with children - removing those too...
-Inode #7 was a directory with children - removing those too...
-
-....
-
-Now in the mount directory, most the files are not present...
-
-I'm wondering whether any one else has received such errors in the past. 
-If so/not, any advice would be appreciated.
-
-Murtada Shah
+On Wed, 12 Jun 2002 17:22, Robert Schwebel wrote:
+> Hi,
+>
+> I know that CF in TrueIDE mode is offtopic here, but I'm wondering if
+> somebody has managed to connect a CF card directly to processor's bus
+> interface in one of the other modes and wrote a driver for Linux?
+>
+> Robert
