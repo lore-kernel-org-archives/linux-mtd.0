@@ -1,20 +1,18 @@
-Received: from kynes.gatewest.net ([198.163.227.7]
-	helo=10-10-1-6.gatewest.net)
+Received: from mclean.mail.mindspring.net ([207.69.200.57])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A0ORr-00011Z-E9
-	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 17:49:35 +0100
-From: Cam Mayor <cmayor@iders.ca>
-To: "Luca Contini" <luca.contini@mediaenabling.com>,
-   <linux-mtd@lists.infradead.org>
-Date: Fri, 19 Sep 2003 11:49:43 -0500
-References: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
-In-Reply-To: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
+	id 1A0Tk1-0001do-US
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 23:28:42 +0100
+From: "Chuck Meade" <chuckmeade@mindspring.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Date: Fri, 19 Sep 2003 18:27:58 -0400
+Message-ID: <IIEEICKJLNEPBBDJICNGEEDIDPAA.chuckmeade@mindspring.com>
 MIME-Version: 1.0
-Message-Id: <03091911494401.08026@kilauea.iders.ca>
+In-Reply-To: <1060327833.25209.271.camel@passion.cambridge.redhat.com>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: mounting mtd device
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: RE: DOC filesystem questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 19 September 2003 10:32, Luca Contini wrote:
-> Hi all,
-> I've successfully compiled the mtd subsystem as a module (mtdblock.o and
-> mtd_blkdevs.o).
-> I've also successfully inserted those modules using insmod utility, so that
-> now I can see the mtdblock block device (major number 31) in the
-> /proc/devices list.
-> But when I try to mount the corresponding /dev/mtdblock0 device to /mnt/mtd
-> I got the following error:
-> ** mount: /dev/mtdblock0: unknown device **
->
-> The /dev/mtdblock0 device relies on major number 31, minor number 0 and is
-> a block device.
-> Also, I've placed a
-> printk("<1>open\n")
-> in the 'blktrans_open' function to see whether the mount is at least trying
-> to open the device but with no result.
-> Does anyone know why?
+> On Thu, 2003-08-07 at 17:56, Chuck Meade wrote:
+> > David Woodhouse wrote:
+> > 
+> > > We _must_ retain the bad block table which was on the device when it
+> > > arrived from the factory. 
+> > 
+> > OK I see.  Would it be valuable then to have a Linux command-line
+> > utility which captures the BBT before calling nftl_format, then 
+> > is used to restore the BBT after calling nftl_format but before
+> > nftl tries to mount any partitions (via 'insmod nftl' or whatever)?
+> 
+> ... or which writes it back as _part_ of the nftl_format process,
+> perhaps?
+> 
+> Yes, it would be extremely useful to do this.
 
-I'm new to MTD, but i don't see enough information here.  How did you try and 
-mount it?  For instance, did you do "mount -t jffs2 /dev/mtdblock0 /mnt/mtd", 
-or did you just type "mount /dev/mtdblock0 /mnt/mtd"?  (jffs2 is an arbitrary 
-example).
+I have been working on the utilities to do this.  It is working on my
+DOC Millennium device that is soldered to the target board.  I now
+have a requirement to do the same with a DIMM DOC device.
+The device has the following markings:
+  MD-2220-D16-V3
+  DiskOnChip B-1.21
+  DIMM  (serial number follows)
 
-Is your device actually detected?  Just because you have the module installed 
-and showing up in /proc/devices doesn't mean it was detected.  what does 
-/proc/mtd say?  For instance, mine says:
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00800000 00020000 "flash"
-mtd1: 0000c000 00000010 "SRAM"
-mtd2: 00000080 00010000 "BootROM"
-mtd3: 00800000 00020000 "Physically mapped flash"
-mtd4: 00400000 00020000 "system"
-mtd5: 00400000 00020000 "userarea"
-mtd6: 09000000 00004000 "guidenand"
+This device is identified as a DOC 2000 at bootup, while my other one is
+identified as a DOC Millennium.
 
-this shows which mtd devices are actually there to be accessed.
+I am starting out saving and restoring the bad block table from the command
+line using dd.  Since the bad block table is to be saved before the 
+nftl_format, and restored afterwards, I thought it would be handy to do
+it with a shell script that uses dd.
 
-cheers,
-cam
+This approach is working on the DOC Millennium device.  It is not working,
+however, on my DOC 2000 device.  I get:
 
--- 
-Cameron Mayor
-Iders Incorporated
+Read of bad sector table failed (err -5)
+
+when I boot after restoring the bad block table via dd.
+The -5 is an EIO being returned because it is unhappy with the ECC
+that is read out.  I modified doc2000.c to print out the ECC codes that
+are being written in doc_write_ecc, and read in doc_read_ecc.  They
+do not match at all.
+
+Is there a known problem with ECC reading/writing with DOC 2000
+devices, or a subset of DOC 2000 devices?
+
+Thanks very much,
+Chuck Meade
