@@ -1,12 +1,12 @@
 Received: from casablanca.magic.fr ([195.154.101.81])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159n90-0000uG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 13:19:39 +0100
+	id 159nEJ-0000ul-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 13:25:07 +0100
 Received: from serveur.inventel.fr (ppp-146.net-1002.magic.fr [195.115.184.146])
-	by casablanca.magic.fr (8.9.3/8.9.3) with ESMTP id OAA29034
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 14:25:06 +0200 (CEST)
-Message-ID: <3B260B6C.40F07AE8@inventel.fr>
-Date: Tue, 12 Jun 2001 14:30:36 +0200
+	by casablanca.magic.fr (8.9.3/8.9.3) with ESMTP id OAA29320
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 14:30:37 +0200 (CEST)
+Message-ID: <3B260CB7.E1513BBD@inventel.fr>
+Date: Tue, 12 Jun 2001 14:36:07 +0200
 From: Xavier DEBREUIL <xde@inventel.fr>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
@@ -34,12 +34,16 @@ David Woodhouse wrote:
 > 
 > Those are harmless messages telling you that you passed an incorrect '-e'
 > option (or no '-e' option) to mkfs.jffs2.
+
+yes, no '-e' option since I want to use the default 64KiB as indicated in the
+help ;
+is it optional or not ?
+if not, I will notify it in the future.
+
+Xavier
+
 > 
 > They have no bearing on the failure to mount. What else happened?
 > 
 > --
 > dwmw2
-
-that is the problem, nothing else happens and I am compelled to reboot...
-
-Xavier (going to see the ftp transfer !!!)
