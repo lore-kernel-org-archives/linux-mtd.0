@@ -1,18 +1,17 @@
-Received: from sccrmhc03.attbi.com ([204.127.202.63])
+Received: from sccrmhc01.attbi.com ([204.127.202.61])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 184OdR-00010b-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2002 17:45:33 +0100
-Received: from c1396309-a.innocent.com ([12.235.89.101])
-          by sccrmhc03.attbi.com
-          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
-          id <20021023171501.LFZM16403.sccrmhc03.attbi.com@c1396309-a.innocent.com>
-          for <linux-mtd@lists.infradead.org>;
-          Wed, 23 Oct 2002 17:15:01 +0000
-Message-Id: <5.1.0.14.2.20021023101434.021da080@mail.attbi.com>
-Date: Wed, 23 Oct 2002 10:15:00 -0700
-To: linux-mtd@lists.infradead.org
+	id 184Ol7-00013s-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2002 17:53:29 +0100
+Message-Id: <5.1.0.14.2.20021023102143.03ec1de0@mail.attbi.com>
+Date: Wed, 23 Oct 2002 10:22:57 -0700
+To: bgat@billgatliff.com
 From: Eugene Surovegin <ebs@innocent.com>
 Subject: Re: mtdblock_ro and ext2 yields panic: block not locked
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20021023121843.A9783@saturn.billgatliff.com>
+References: <5.1.0.14.2.20021023101127.03ed2df0@pop.prodigy.net>
+ <20021023104957.G8758@saturn.billgatliff.com>
+ <5.1.0.14.2.20021023101127.03ed2df0@pop.prodigy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
@@ -26,24 +25,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 08:49 AM 10/23/2002, you wrote:
+Bill,
 
->The panic comes via the INIT_REQUEST macro in mtdblock_request, but
->only after half a dozen requests or so.  The requests appear to be
->associated with the execve at the end of the kernel boot process.
->
->I also get this with yesterday's CVS.
->
->Ideas?  I don't think this is an MTD problem per se, but I'm stumped
->nonetheless.
+At 10:18 AM 10/23/2002, you wrote:
+>Care to post the patch?  I'd love to see if it fixes my problem...
+
+Sure :)
+Here it is:
+
+diff -ur a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
+--- a/drivers/mtd/mtdblock_ro.c
++++ b/drivers/mtd/mtdblock_ro.c
+@@ -138,10 +138,11 @@
+        }
+
+        if (current_request->sector << 9 > mtd->size ||
+-         (current_request->sector + current_request->nr_sectors) << 9 > 
+mtd->size)
++         (current_request->sector + current_request->current_nr_sectors) 
+<< 9 > mtd->size)
+        {
+          printk("mtd: Attempt to read past end of device!\n");
+-        printk("size: %x, sector: %lx, nr_sectors %lx\n", mtd->size, 
+current_request->sector, current_request->nr_sectors);
++        printk("size: %x, sector: %lx, nr_sectors %lx\n", mtd->size, 
+current_request->sector,
++               current_request->current_nr_sectors);
+          end_request(0);
+          continue;
+        }
+@@ -162,7 +163,7 @@
+
+          case READ:
+          if (MTD_READ(mtd,current_request->sector<<9,
+-                     current_request->nr_sectors << 9,
++                     current_request->current_nr_sectors << 9,
+                       &retlen, current_request->buffer) == 0)
+             res = 1;
+          else
+@@ -184,7 +185,7 @@
+
+          // Do the write
+          if (MTD_WRITE(mtd,current_request->sector<<9,
+-                      current_request->nr_sectors << 9,
++                      current_request->current_nr_sectors << 9,
+                        &retlen, current_request->buffer) == 0)
+             res = 1;
+          else
+@@ -287,7 +288,7 @@
+  static void __exit cleanup_mtdblock(void)
+  {
+         unregister_blkdev(MAJOR_NR,DEVICE_NAME);
+-       blksize_size[MAJOR_NR] = NULL;
++       blk_size[MAJOR_NR] = NULL;
+         blk_cleanup_queue(BLK_DEFAULT_QUEUE(MAJOR_NR));
+  }
 
 
-mtdblock_ro is buggy. It uses nr_sectors instead current_nr_sectors while 
-processing request.
 
-I sent a patch to MTD maintainer several weeks ago - nothing happened.
-
-Thanks,
 
 
   Eugene Surovegin <mailto:ebs@innocent.com>
