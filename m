@@ -1,38 +1,47 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from localhost ([127.0.0.1] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10q6Ph-00015L-00
-	for mtd@imladris.demon.co.uk; Sat, 5 Jun 1999 03:42:25 +0100
+	id 10qvtV-0001YH-00
+	for mtd@imladris.demon.co.uk; Mon, 7 Jun 1999 10:40:37 +0100
 Received: from pop3.mail.demon.net
 	by localhost with POP3 (fetchmail-5.0.0)
-	for mtd@imladris.demon.co.uk (multi-drop); Sat, 05 Jun 1999 03:42:25 +0100 (BST)
+	for mtd@imladris.demon.co.uk (multi-drop); Mon, 07 Jun 1999 10:40:37 +0100 (BST)
 Received: from punt-1.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
-          id 928550533:10:19025:10; Sat, 05 Jun 99 02:42:13 GMT
-Date: Fri, 4 Jun 1999 20:41:56 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
+          id 928748335:10:14288:30; Mon, 07 Jun 99 09:38:55 GMT
+To: Jason Gunthorpe <jgg@deltatee.com>
+Cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
 Subject: Re: RFC: kernel-based PCMCIA ... 
-In-Reply-To: <E10kQCS-0001AQ-00@devel2.axiom.internal>
-Message-ID: <Pine.LNX.3.96.990604203916.23430B-100000@white.priv.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 07 Jun 1999 10:38:22 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E10qvrK-00038e-00@devel2.axiom.internal>
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Thu, 20 May 1999, David Woodhouse wrote:
+jgg@deltatee.com said:
+>  Has there been an talk of a FFS driver for linux? 
 
-> We will attempt to make this provide all the functionality required by the
-> existing MTD layer in the PCMCIA code, with a view to including it in the 2.3
-> kernels, and converting the PCMCIA code to use it (when present).
+There's already an FTL driver for Linux, and has been for some time. 
+M-Systems' new version of 'TrueFFS' doesn't appear to be FTL, and so there 
+isn't (yet) a driver for it. I'm unlikely to be looking into that - I'm going 
+to just put FTL on the device when I can eventually get it working properly.
 
-Has there been an talk of a FFS driver for linux? Also, has anyone done
-any work on writing drivers for ordinary flash chips (ie on embedded
-systems) 
+> Also, has anyone done any work on writing drivers for ordinary flash chips 
+> (ie on embedded systems)  
 
-Thanks,
-Jason
+Look in ftp://imladris.2001ad.net/pub/mtd/flash.diff
+
+
+
+
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+
 
 
 
