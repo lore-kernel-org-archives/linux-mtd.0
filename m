@@ -1,18 +1,24 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [164.164.42.6] (helo=gateway.ncoretech.com ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161unl-0003mq-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 19:25:25 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01110811510301.00788@grosmorne.wirelessnetworksinc.com> 
-References: <01110811510301.00788@grosmorne.wirelessnetworksinc.com>  <CAEBIEGNEOADOFPNEPJJOEEBCDAA.dmanesajian@nextgig.com> 
-To: Herman Oosthuysen <herman@wirelessnetworksinc.com>
-Cc: "Daniel Manesajian" <dmanesajian@nextgig.com>,
-    linux-mtd@lists.infradead.org
-Subject: Re: StrataFlash and patching 2.2.16 
-Mime-Version: 1.0
+	id 1625kP-0004aM-00
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2001 07:06:42 +0000
+Received: from ncoretech.com (IDENT:root@mail.ncoretech.com [192.168.1.3])
+	by gateway.ncoretech.com (8.10.0/8.10.0) with ESMTP id fA97FsA29558
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Nov 2001 12:45:54 +0530
+Received: (from root@localhost)
+	by ncoretech.com (8.10.0/8.10.0) id fA97FsU04052
+	for linux-mtd@lists.infradead.org.VIRCHECK; Fri, 9 Nov 2001 12:45:54 +0530
+Received: from ncoretech.com (ws126.ncoretech.com [192.168.1.126])
+	by ncoretech.com (8.10.0/8.10.0) with ESMTP id fA97Frl03963
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Nov 2001 12:45:53 +0530
+Message-ID: <3BEB7E75.AA1840EB@ncoretech.com>
+Date: Fri, 09 Nov 2001 12:27:57 +0530
+From: nagaraja <nagaraja@ncoretech.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: DOC-MILL-Plus
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 08 Nov 2001 19:34:27 +0000
-Message-ID: <22724.1005248067@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,14 +30,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-herman@wirelessnetworksinc.com said:
-> Bad news for you - the JFFS2 only works with kernel 2.4 and later.
-> You can however get a simple flash file system from Intel for the
-> enormous price of $99.  Secondly, Wireless Networks Inc. ported the
-> Intel IVFM to Linux.  Intel plans to ship it as an example
-> implementation with their IVFM. 
+Hello,
 
-JFFS v1 is Free Software and works fine in 2.2.16.
+    Can any body tell how do I dformat doc-millennium-plus in DOS
+environment.
 
---
-dwmw2
+I am using dformat /win:c800 /S:doc50.exb --for doc-2000 it works fine.
+But for doc-mill-plus it is not working.
+
+Thanks
+Nagaraja
