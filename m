@@ -1,56 +1,53 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12As0I-0003KS-00
-	for mtd-list@infradead.org; Wed, 19 Jan 2000 10:06:18 +0000
+	id 12AsoK-0003Oz-00
+	for mtd-list@infradead.org; Wed, 19 Jan 2000 10:58:00 +0000
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12As0G-0003KM-00
-	for mtd@infradead.org; Wed, 19 Jan 2000 10:06:16 +0000
+	id 12AsoJ-0003Ot-00
+	for mtd@infradead.org; Wed, 19 Jan 2000 10:57:59 +0000
 From: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
 References: <Pine.LNX.4.21.0001171855040.29220-100000@sunapee.transcept.com> 
 To: Pavel Roskin <pavel_roskin@geocities.com>
-Cc: mtd@infradead.org, linux-kernel@vger.rutgers.edu,
-    Jes.Sorensen@cern.ch
-Subject: Re: Patch for PowerPC 
+Cc: mtd@infradead.org
+Subject: mtd-20000119 release
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 19 Jan 2000 10:15:24 +0000
-Message-Id: <E12As96-0001Tn-00@devel2.axiom.internal>
+Date: Wed, 19 Jan 2000 11:07:18 +0000
+Message-Id: <E12AsxK-0001dS-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
 pavel_roskin@geocities.com said:
->  - Some macros are not constants on PPC and cannot be used after "case".
->   Converted to if-else chains.
+>  That all for today. Don't hesitate to put a new diff on the website.
+> This will save time and labor of people interested in getting your
+> stuff working on PowerPC. 
 
-Then either the cpu_to_le16 macro is buggy, gcc is buggy,
- or we should be using __constant_cpu_to_le16 or some such routine. 
+I've included your patches, with the exception of the change from switch() to 
+if-else chains, along with the other stuff I've changed or been sent.
 
-I don't think reverting to if-else chains is the right thing to do.
+I think that I've also applied any other patches which I've been send - if 
+anyone else has sent me stuff which I've omitted - I'm sorry, let me know 
+and I'll apply them.
 
-Comments, anyone?
+I'm waiting for a response on l-k and from Paul before I make a final 
+judgement on the switch() stuff, but I'm inclined to believe that we were 
+doing the right thing, and that it's the PPC swab macros which are buggy 
+because they don't handle constant expressions properly.
 
-                
--               switch(bci.Status) {
--               case cpu_to_le16(BLOCK_FREE):
-+               if (bci.Status == cpu_to_le16(BLOCK_FREE))
-                        thisEUN = 0;
--                       break;
--               case cpu_to_le16(BLOCK_USED):
-+               else if (bci.Status == cpu_to_le16(BLOCK_USED))
-                        lastgoodEUN = thisEUN;
--                       break;
--               case cpu_to_le16(BLOCK_IGNORE):
--               case cpu_to_le16(BLOCK_DELETED):
--                       break;
--               default:
-+               else if (bci.Status != cpu_to_le16(BLOCK_IGNORE) &&
-+                        bci.Status != cpu_to_le16(BLOCK_DELETED))
-                        printk("Unknown status for block %d in EUN %d: %x\n",block,thisEUN, bci.Status);
--               }
- 
+If it's not fixable any other way, I'd rather fix it by changing to:
+
+ switch(le16_to_cpu(status)) {
+	case BLOCK_FREE:
+
+than by changing to if-else chains. I had it like that in the first place, in 
+fact - but swapped it round as an optimisation - because I believed that the 
+swap would then be done at compile-time rather than at run time.
+
+I still believe that's what _should_ happen.
+
 
 
 --
