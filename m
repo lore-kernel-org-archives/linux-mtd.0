@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from virtualro.ic.ro ([194.102.78.138])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15JXK5-0004o2-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 10:27:21 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <7DF7BFDC95ECD411B4010090278A44CA0A3B8E@ATVX> 
-References: <7DF7BFDC95ECD411B4010090278A44CA0A3B8E@ATVX> 
-To: "Siders, Keith" <keith_siders@toshibatv.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: FTL and Endianity 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 09 Jul 2001 10:32:44 +0100
-Message-ID: <1688.994671164@redhat.com>
+	id 15JZOm-0004vi-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2001 12:40:20 +0100
+Received: from localhost (jani@localhost)
+	by virtualro.ic.ro (8.9.3/8.9.3) with ESMTP id OAA12006
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2001 14:46:59 +0300
+Date: Mon, 9 Jul 2001 14:46:59 +0300 (EEST)
+From: Jani Monoses <jani@astechnix.ro>
+To: linux-mtd@lists.infradead.org
+Subject: jffs min_free_space
+Message-ID: <Pine.LNX.4.10.10107091439240.12001-100000@virtualro.ic.ro>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-keith_siders@toshibatv.com said:
->  So since I'm using big-endian MIPS, does this effect JFFS2? That is,
-> does FTL stand for Flash Translation Layer, or some such thing?  
+Hi
 
-JFFS2 is host-endian. It shouldn't affect you at all. You don't need to use 
-FTL, JFFS works directly on the flash.
+if minfreespace is erase_size <<2 does that mean that if the sector
+size in the flash is 128K the fs must necessarily be larger that 512K?
+I had a 512k fs and it wouldn-t create new file (ENOSP) only when I
+changed minfreespace to two sectors size.
 
-If you're making your JFFS2 filesystem images on a little-endian box for 
-use on your target, make sure you use the appropriate arguments to 
-mkfs.jffs2 to make it do the byteswapping.
+Another Q:
+I grepped through the mtd sources and I didn-t find a place where flash
+blocks are unlocked explicitly.mtd->unlock is only called AFAICT in
+mtdchar but nowhere in mtdblock.So both jffs and jffs2 give EROFS when
+trying to write.I made ugly hacks to work around it but I was hoping there
+is a cleaner way andI overlooked something.The flash chips is 28FxxxC3
+so it boots with all blocks software locked.
 
---
-dwmw2
+Thanks,
+Jani.
