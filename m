@@ -1,46 +1,54 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 140VYi-0000f3-00
-	for mtd-list@infradead.org; Mon, 27 Nov 2000 21:11:32 +0000
-Received: from blackdog.wirespeed.com ([208.170.106.25])
+	id 140aK6-0001hR-00
+	for mtd-list@infradead.org; Tue, 28 Nov 2000 02:16:46 +0000
+Received: from modemcable248.137-200-24.mtl.mc.videotron.ca ([24.200.137.248] helo=xanadu.gn.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 140VYg-0000ex-00
-	for mtd@infradead.org; Mon, 27 Nov 2000 21:11:31 +0000
-Received: from seado (dhcp-21.wirespeed.com [172.16.17.21])
-	by blackdog.wirespeed.com (8.9.3/8.9.3) with SMTP id PAA11661
-	for <mtd@infradead.org>; Mon, 27 Nov 2000 15:09:23 -0600
-From: "Louis Hamilton" <hamilton@redhat.com>
-To: <mtd@infradead.org>
-Subject: Boot EBSA285 using root filesystem stored in flash
-Date: Mon, 27 Nov 2000 15:10:53 -0600
-Message-ID: <001601c058b6$8792f060$151110ac@seado.wirespeed.com>
+	id 140aK4-0001hL-00
+	for mtd@infradead.org; Tue, 28 Nov 2000 02:16:44 +0000
+Date: Mon, 27 Nov 2000 21:16:37 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Louis Hamilton <hamilton@redhat.com>
+cc: <mtd@infradead.org>
+Subject: Re: Boot EBSA285 using root filesystem stored in flash
+In-Reply-To: <001601c058b6$8792f060$151110ac@seado.wirespeed.com>
+Message-ID: <Pine.LNX.4.30.0011272107120.6722-100000@xanadu.gn.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
 
-I'm looking for information on moving our root filesystem (currently NFS
-mounted
-on a Linux host box) to flash memory on our EBSA285 (sa110) development
-card.
 
-We would like to eliminate the step where the kernel uses NFS to mount the
-filesystem and instead boot the target using a filesystem stored in flash.
+On Mon, 27 Nov 2000, Louis Hamilton wrote:
 
-Do you know of any write-ups, urls, etc. to help achieve this goal?
-I expect the MTD subsystem would (or could) be an important piece to
-solving the puzzle.
+> Hello,
+>
+> I'm looking for information on moving our root filesystem (currently NFS
+> mounted
+> on a Linux host box) to flash memory on our EBSA285 (sa110) development
+> card.
 
-thanks,
-  -Louis
+You need the dc21285 on top of all the other MTD modules.
 
-Louis Hamilton
-Red Hat, Inc.
-hamilton@redhat.com
+> We would like to eliminate the step where the kernel uses NFS to mount the
+> filesystem and instead boot the target using a filesystem stored in flash.
+
+You may use the mtdblock interface and tell the kernel to mount its root
+filesystem from it.  Any filesystems can be used.  However for a read-write
+filesystem you should consider JFFS in priority.
+
+> Do you know of any write-ups, urls, etc. to help achieve this goal?
+
+Nope.
+
+> I expect the MTD subsystem would (or could) be an important piece to
+> solving the puzzle.
+
+All pieces are already there.  You just need to know how to assemble them.
+
+
+Nicolas
 
 
 
