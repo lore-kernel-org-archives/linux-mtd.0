@@ -1,18 +1,14 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19CktC-00034m-9s
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 19:40:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Mike Kelly <mgkelly59@yahoo.com>
-In-Reply-To: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
-References: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
-Message-Id: <1052160051.2446.18.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Mon, 05 May 2003 19:40:51 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Need help understanding jffs2 mount activity
+Received: from web13905.mail.yahoo.com ([216.136.175.68])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19ClFZ-0003D6-I1
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 20:03:45 +0100
+Message-ID: <20030505190359.52930.qmail@web13905.mail.yahoo.com>
+Date: Mon, 5 May 2003 12:03:59 -0700 (PDT)
+From: Michael Moedt <xemc@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Error: Wacky! Unable to decode failure status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +18,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-05-05 at 15:06, Mike Kelly wrote:
-> If the 700KiB file is copied then deleted, would this
-> result in 4KiB nodes for the new file? 
+Hi.
+I'm having trouble using the 'erase' and 'eraseall'
+utilities on my flash device.  It's an AMD29LV640ML,
+which supports CFI and uses command set #2.
 
-Yes, assuming you copy it sensibly. If you read and write in smaller
-blocks then no. The 'cp' command should do the right thing.
+I'm getting the error message "Wacky! Unable to decode
+failure status".  See below: (with minor modifications
+to make it more readable)
+----------
 
->  If so, shouldn't the bootup time be quicker, since there are
-> less nodes to CRC check?  The bootup time seems to
-> remain the same, even after several reboots.
+# erase /devfs/mtd/2 0 1
+MTD_open
+Erase Total 1 Units
+MTD_ioctl
+MTD_ioctl
+Erase Unit Size 0x10000, Performing Flash Erase of
+length 65536 at offset 0x0
+MTD_ioctl
+MTD do_erase_oneblock(): ERASE 0x000a0000
+MTD do_erase_oneblock(): Check 0x0000ff44 0x0000ff00
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000004f 0x0000000b
+MTD do_erase_oneblock(): Check 0x0000005c 0x00000018
+MTD do_erase_oneblock(): Check 0x0000005c 0x00000018
+MTD do_erase_oneblock(): Check 0x0000005c 0x00000018
+MTD do_erase_oneblock(): Check 0x0000004e 0x0000000a
+MTD do_erase_oneblock(): Check 0x0000004e 0x0000000a
+MTD do_erase_oneblock(): Check 0x0000ffff 0x0000ffff
+MTD do_erase_oneblock(): Check 0x0000ffff 0x0000ffff
+MTD do_erase_oneblock(): Check 0x0000ffff 0x0000ffff
+MTD do_erase_oneblock(): Wacky!  Unable to decode
+failure status
+MTD do_erase_oneblock(): 0x000a0000(0x000000ff):
+0x0000ffff 0x0000ffff 0x0000ffff 0x0000ffff
 
-It _should_ be somewhat quicker since there are fewer nodes to CRC
-check, hence fewer node headers -- obviously there's still the same
-amount of data. 
+MTD Erase failu
+MTD_close
+error
+# 
+----------
+The procedure that is being executed is in
+cfi_cmdset_0002.c. (around line 1100)
 
-The real answer, though, is to simply avoid checking all those CRCs at
-mount time, and to postpone the checking till later. That's implemented
-in the latest code in CVS -- updating to that should give you a fairly
-dramatic improvement, especially if you also implement the 'point'
-method in your board's map driver. 
+Does anyone have a hunch of what it could be?
 
--- 
-dwmw2
+Thanks!
+
+Mike
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
