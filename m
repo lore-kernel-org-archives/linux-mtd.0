@@ -1,18 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15tp0q-0003rJ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 12:37:28 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3C6BEE8B5E1BAC42905A93F13004E8AB6B6C52@mailse01.axis.se> 
-References: <3C6BEE8B5E1BAC42905A93F13004E8AB6B6C52@mailse01.axis.se> 
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-Cc: =?iso-8859-1?Q?=27J=F6rn_Engel=27?= <joern@wohnheim.fh-wedel.de>,
-    linux-mtd@lists.infradead.org
-Subject: Re: MTD partitioning rewrite 
+	id 15tqAX-0003wp-00
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 13:51:33 +0100
+Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
+	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id OAA20335
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2001 14:58:47 +0200
+Date: Wed, 17 Oct 2001 15:00:41 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: MTD partitioning rewrite
+Message-ID: <20011017150041.A16970@wohnheim.fh-wedel.de>
+References: <20011017105143.B319@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 17 Oct 2001 12:46:33 +0100
-Message-ID: <8236.1003319193@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20011017105143.B319@wohnheim.fh-wedel.de>; from joern@wohnheim.fh-wedel.de on Wed, Oct 17, 2001 at 10:51:43AM +0200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +27,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jonas.holmberg@axis.com said:
->  Would it still be possible to make a logical partition that extends
-> over several flash chips (e.g. one big partition of two chips)?
+> Here are some quick pointers at my design goals:
+> [...]
 
-As possible as it is now - the chip probe code has to detect them all in 
-one go and make a single MTD device out of them. Otherwise, you have to 
-hack up your own wrapper anyway. 
+I forgot one:
+- Devices may be assigned numbers. Device 0 will become mtda if that
+one is still free or the first one that is free. Device 1 will become
+mtdb,...
 
---
-dwmw2
+Jörn
+
+-- 
+Open your arms to change, but don't let go
+of your values.
