@@ -1,14 +1,21 @@
-Received: from [208.28.249.7] (helo=ktc_internet)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MIXD-0002lT-00
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 00:48:35 +0000
-Subject: JFFS II Performance
+	id 16MQ1y-0003Av-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 08:48:50 +0000
+Received: from jocke.lumentis.se (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id JAA27225
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2002 09:59:15 +0100 (MET)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF1FA9A659.B3900388-ON88256B37.000396BC@LocalDomain>
-From: Steve_Chen@kingston.com
-Date: Thu, 3 Jan 2002 16:51:05 -0800
+Date: Fri, 4 Jan 2002 09:59:15 +0100
+References: <0111121314140A.28381@jocke.lumentis.se>
+In-Reply-To: <0111121314140A.28381@jocke.lumentis.se>
 MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
+Message-Id: <02010409585400.10979@jocke.lumentis.se>
+Content-Transfer-Encoding: 8bit
+Subject: CLEANMARKER question
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,19 +27,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
-We have just ported the JFFS II source code to Linux kernel "2.4.6".  And
-we like to report a performance issue on JFFS II.  Comparing to JFFS, the
-"mount" , "copy" and "ls" all take much longer to complete.  In one case,
-we have 3 files on a flash NAND partition.  The size of first  two files is
-1717 bytes, the size of the third file is 2M bytes.  After the JFFS II was
-mounted (took 30 seconds), it took 35 seconds to complete the "ls -la"
-command.
+Hi all
 
-I like to get some expert advice.
+I am trying to understand the scan procedure in JFFS2 since I want to improve 
+the speed in mounting a JFFS2 FS.
 
-Did anyone experience a similar performance issue on JFFS II when dealing
-with large files ?
+I have problems to understand the CLEANMARKER concept. Can a flash erase 
+sector which has a CLEANMARKER in the beginning contain any data or can one 
+assume that the rest of the erase sector is erased?
 
-Thanks.
-Steve...
+  Jocke
