@@ -1,16 +1,16 @@
 Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9iIl-0005QQ-ML
-	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 06:27:32 -0500
-Date: Fri, 11 Mar 2005 12:27:30 +0100
+	id 1D9ilS-0005qV-P6
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2005 06:57:11 -0500
+Date: Fri, 11 Mar 2005 12:57:09 +0100
 From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050311112730.GC11203@synertronixx3>
-References: <20050311104457.GB11203@synertronixx3> <42317DD7.3090205@yandex.ru>
+Message-ID: <20050311115708.GD11203@synertronixx3>
+References: <20050311104457.GB11203@synertronixx3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42317DD7.3090205@yandex.ru>
+In-Reply-To: <20050311104457.GB11203@synertronixx3>
 Subject: Re: jffs2 with sync burst mode
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -21,42 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2005-03-11 14:15 +0300 schrieb Artem B. Bityuckiy:
-> Konstantin Kletschke wrote:
-> > The "Name CRC failed on node at ..." is away. I populated the root-fs
-> Good.
+Am 2005-03-11 11:44 +0100 schrieb Konstantin Kletschke:
+> Actually I tried to debug, what happens in, before and after memcpy() in
+> fs/jffs2/scan.c line 773 (actual cvs) located in
+> jffs2_scan_dirent_node(), as I suspect some issues with dcache.
+> Therefore I copied memcpy() out of arch/arm/boot/compressed/misc.c (why
+> is it _there?) above jffs2_scan_dirent_node() to memcpykgk().
 
-But is moving the memcpy function a valid fix? There must be something
-really wrong which should be fixed :/ DCache corruption i.e. missing
-invalidating at the right time?
+No I am puzzled.
 
-> 
-> > root-fs. No problems. But mounting takes ages :)
-> How much time does "ages" mean ?
-> Do you stand that it was faster before?
+I think I replaced arch/arm/lib/memcpy.S with 
 
-Sorry, my apologies! CONFIG_MTD_DEBUG_VERBOSE was on 2, on 0 I get
-reasonable mount time again, I am very sorry for misleading you!
+static inline __ptr_t memcpykgk(__ptr_t __dest, __const __ptr_t __src,
+                size_t __n)
 
-> How large is your flash?
+out of arch/arm/boot/compressed/misc.c by accident, though it works now.
 
-16MB, the root-fs is 5MB...
+The inline helps probably. So, is it correct memcpy() in lib/string.c
+and out of arch/arm/boot/compressed/misc.c are NOT used in general arm
+code?
 
-> Do you have directories with huge files number in it (say, ~ 10000)?
-
-No.
-
-> A: This means that flash_eraseall ought to write special node called 
-> cleanmarker at the beginning of each block.
-
-> If you are sure that the problem is not your slow flash driver, you 
-> might try Ferenc's "summary" patch.
-
-But if I understood correct the not created-cleanmarkers-by-bootloader
-problem is "solved" on second boot? I see this here also, the 1st mount
-takes ages, the following are fast.
-
-Regards, sorry, Konstantin
+Konsti
 
 -- 
 GPG KeyID EF62FCEF
