@@ -1,19 +1,18 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AKvTX-00026V-VR
-	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 08:08:12 +0000
-To: Joshua Wise <joshua@joshuawise.com>
-References: <200311150109.39539.joshua@joshuawise.com>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 15 Nov 2003 01:08:24 -0700
-In-Reply-To: <200311150109.39539.joshua@joshuawise.com>
-Message-ID: <m3ptfuoxzb.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Content-Type: text/plain; charset=us-ascii
+Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AKvrC-0002Ek-9T
+	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 08:32:39 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: paul.vangool@rinconnetworks.com
+In-Reply-To: <20031115002533.GA15967@rinconnetworks.com>
+References: <20031115002533.GA15967@rinconnetworks.com>
+Message-Id: <1068885063.29549.5.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Sat, 15 Nov 2003 08:31:03 +0000
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: JEDEC probing redux
+Subject: Re: problem writing to /dev/mtd0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joshua Wise <joshua@joshuawise.com> writes:
+On Fri, 2003-11-14 at 16:25 -0800, Paul van Gool wrote:
+> Hi,
+> 
+> I'm trying to read and write from/to a flash partition using its char
+> device. Reading seems to work fine but I can't seem to get writing  to
+> work.
 
-> I'm thinking two things here: 1) I'm assuming that the unlock address verify 
-> is just paranoia. Can I nuke that? (Will it break anyone's board?)
+> I use this flash chip through its block device all the time and writing
+> through that device (/dev/mtdblock0) hasn't been an issue.
 
-It will break things.  Some flash chips will ID but nothing else with
-the wrong unlock address.  So without the test some boards will not
-work.
+Did you erase the block in question first?
 
-> and 2) Is 
-> there a better way to say that we should be left-shifting all the unlock 
-> addresses over?
-
-I am wondering if your map driver could handle that.  Either or
-a solution like LART endian might be appropriate.
-
-Handling flash chips that are connected up peculiarly seems to be
-a recurring theme.  If this isn't something the map driver can't do
-we may want to enhance that interface so it can handle more peculiar
-cases in the future.
-
-Eric
+-- 
+dwmw2
