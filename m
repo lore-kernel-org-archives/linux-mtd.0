@@ -1,17 +1,22 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17hDxL-0006bV-00
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 19:42:19 +0100
-Message-ID: <3D628D95.9447D6B6@esteem.com>
-Date: Tue, 20 Aug 2002 11:42:29 -0700
-From: Conn Clark <clark@esteem.com>
-MIME-Version: 1.0
+	id 17hEcG-0006gG-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 20:24:36 +0100
+Date: Tue, 20 Aug 2002 21:24:08 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: Christopher Hoover <ch@murgatroid.com>
-CC: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: How does one mount an existing jffs2 partition so it is   writeable?
-References: <004001c24876$0c2ad670$7800000a@derelict>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Cc: "'Jamey Hicks'" <jamey.hicks@hp.com>,
+        "'David Woodhouse'" <dwmw2@infradead.org>,
+        "'Conn Clark'" <clark@esteem.com>,
+        "'MTD Mailing List'" <linux-mtd@lists.infradead.org>
+Subject: Re: How does one mount an existing jffs2 partition so it is writeable?
+Message-ID: <20020820192408.GA19731@wohnheim.fh-wedel.de>
+References: <3D623224.1090604@hp.com> <000301c24867$6a81ad70$7800000a@derelict>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <000301c24867$6a81ad70$7800000a@derelict>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,43 +28,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Christopher Hoover wrote:
+On Tue, 20 August 2002 09:34:12 -0700, Christopher Hoover wrote:
+> You have a different flavor flash.  My platform uses Intel C3
+> StrataFlash parts.  The flash is completely locked after any power
+> cycle.   If I don't unlock the jffs2 partition somehow someway, I can't
+> write to it.
 > 
-> At one point locking and unlocking flash with variable-sized blocks
-> (such as Intel C3 flash) simply didn't work.  I fixed it -- the correct
-> code is in CVS and in current 2.4 (after some release I cannot
-> remember), but the changes unfortunately aren't in 2.5.
-> 
-> Check drivers/mtd/chips/cfi_cmdset_0001.c in your sources.   You should
-> see a changelog entry from me dated 02/05/2002; if you don't see it, you
-> don't have the fix.
-> 
-> -ch
-> ch@murgatroid.com
-> ch@hpl.hp.com
+> I suppose we could add yet another mount option for this
+> ("really_and_truly_rw"!).
 
-I don't have it. Can I just drop it in or are there other files I need to
-get/update? I haven't used CVS before so I will need help doing that if thats
-the best way of getting all relevant files. 
+If this is a problem (feature/whatever) of one flash type, why not
+encapsulate it in the low level driver? It would keep the jffs2 code
+clean of what could be considered a bugfix.
 
-Thanks
+Jörn
 
-	Conn
 -- 
-
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
-
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
-
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
+I can say that I spend most of my time fixing bugs even if I have lots
+of new features to implement in mind, but I give bugs more priority.
+-- Andrea Arcangeli, 2000
