@@ -1,18 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16TfmT-0001Q6-00
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Jan 2002 09:02:49 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1011862654.27784.0.camel@pcjonashg> 
-References: <1011862654.27784.0.camel@pcjonashg>  <200201240304.g0O349RM018586@krynn.axis.se> 
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-Cc: jmzhong@dtvia-usoft.com, jffs-dev@axis.com,
-    linux-mtd@lists.infradead.org
-Subject: Re: How to understand :interleave,numeraseregions and regions 
+	id 16ThDb-0001UT-00
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Jan 2002 10:34:55 +0000
+Date: Thu, 24 Jan 2002 11:45:55 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Navin Boppuri <navin.boppuri@newisys.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD partitioning for AMD flash chips
+Message-ID: <20020124114555.A26273@wohnheim.fh-wedel.de>
+References: <D3A72C5007329A4F991C0DD87202259F0EAFBA@sekhmet.ad.newisys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 24 Jan 2002 09:13:48 +0000
-Message-ID: <22450.1011863628@redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D3A72C5007329A4F991C0DD87202259F0EAFBA@sekhmet.ad.newisys.com>; from navin.boppuri@newisys.com on Wed, Jan 23, 2002 at 05:21:26PM -0600
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +25,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jonas.holmberg@axis.com said:
->  I would like to ask the MTD people why it's necessary to have a
-> variable for device_type? Isn't it always possible to calculate the
-> device_type (buswidth / interleave)? 
+Hi!
 
-You can use 16-bit devices in 8-bit mode. And it matters. 
+> I am new the MTD mailing lists. I have two AM29LV641D( 4M X 16) flash
+> chips connected to a 32 bit bus.(sector size is 128k). I  would like to
+> partion this device so that I may mount a JFFS2 flash file system on one
+> of the partitions and use the rest of the device for raw data.  I do see
+> some examples to do this for some intel chips in drivers/mtd but I dont
+> see anything for the AMD chips. Is the interface similar for the AMD
+> chips?
 
---
-dwmw2
+You have two options:
+1. Writing your own driver for this flash type, hardcoding the
+partitioning. Try physmap first and hardcode the flash size, mapping
+and pertitioning, once it works.
+
+2. Using an existing one (physmap ought to work) and using one of the
+existing partition parsers. The ones in the stock kernel are all
+specific to a certain bootloader, I wrote an independent one but there
+is no good howto for it (yet). See
+http://wh.fh-wedel.de/~joern/software/kernel/ if you are interested.
+
+Jörn
+
+-- 
+Often, the most striking and innovative solutions come from realizing
+that your concept of the problem was wrong.
+-- Eric Raymond in "The cathedral and the bazaar"
