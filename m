@@ -1,63 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14QDmf-0004CD-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 19:28:13 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14QDme-0004C6-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 19:28:12 +0000
-Date: Tue, 6 Feb 2001 19:28:04 +0000 (GMT)
+	id 14QPGG-0007gZ-00
+	for mtd-list@infradead.org; Wed, 07 Feb 2001 07:43:32 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14QPGF-0007gT-00
+	for mtd@infradead.org; Wed, 07 Feb 2001 07:43:31 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: "Ian Eure <Ian Eure" <ieure@insynq.com>
-cc: <mtd@infradead.org>,  <fabrice.bellard@netgem.com>
-Subject: Re: doc2k: "formatting block"?
-In-Reply-To: <14976.15973.43530.527006@pyramid.insynq.com>
-Message-ID: <Pine.LNX.4.30.0102061909140.2237-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <6930.010206@mik.ru> 
+References: <6930.010206@mik.ru> 
+To: Ruslan Satlykov <ruslan@mik.ru>
+Cc: mtd@infradead.org
+Subject: Re: M-Sys's driver and public driver 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 07 Feb 2001 07:42:58 +0000
+Message-ID: <8344.981531778@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, 6 Feb 2001, Ian Eure <Ian Eure wrote:
 
-> while testing a 32mb doc2000, i see these messages:
-> 
-> -- snip --
-> DiskOnChip 2000 found at address 0xD0000
-> Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
-> 2 flash chips found. Total DiskOnChip size: 32 Mb
-> Block 807: referencing block 110 already in another chain
-> Formatting chain at block 807
-> Formatting block 807
-> Unreferenced block 366, formatting it
-> -- snip --
+ruslan@mik.ru said:
+>  Well, I had successfully mounted the chip, but when I had rebooted I
+> lose all my data on the flash :(... GPL's driver "says" me words like
+> 'ECC read error' at the mount time, but I had ignored this warnings...
+> And - unlucky final, as you see :) 
 
-Eep. Can you reproduce it? Did this happen after the M-Systems drivers (or 
-firmware) had been writing to the device, or is it purely our software? 
-It's unlikely to be hardware.
+Is this a DiskOnChip 2000 or a DiskOnChip Millennium? 
 
-I'm trying to grok that code - even if the block _is_ linked in another 
-chain, we should be able to work out which chain it _ought_ to be in by 
-its own VirtUnitNum entry. We still have to format the chain in which the 
-block _isn't_ supposed to be, and there's definitely some data corruption 
-happened, but we should be able to do a little better than we do ATM, I 
-think.
-
-I don't see how this could be caused by a fold in progress - we don't fold 
-one chain into _another_, only into itself. But the comment implies 
-otherwise...
-
-	printk("Block %d: referencing block %d already in another chain\n", 
-		block, rep_block);
-	/* XXX: should handle correctly fold in progress chains */
-	do_format_chain = 1;
-	s->ReplUnitTable[block] = BLOCK_NIL;
-
-
--- 
+--
 dwmw2
-
 
 
 
