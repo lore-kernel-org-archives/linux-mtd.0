@@ -1,18 +1,18 @@
 Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfhOH-0003zO-Dw
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:25:10 -0500
+	id 1CfhQI-00049G-F0
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:27:15 -0500
 From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
-   "David Vrabel" <dvrabel@arcom.com>
-Date: Sat, 18 Dec 2004 17:25:00 +0100
-Message-ID: <BCEFJBPJCGFCNMMMIDBHGEMNCJAA.Joakim.Tjernlund@lumentis.se>
+To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>
+Date: Sat, 18 Dec 2004 17:26:59 +0100
+Message-ID: <BCEFJBPJCGFCNMMMIDBHKEMNCJAA.Joakim.Tjernlund@lumentis.se>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20041218161437.GC1083@wohnheim.fh-wedel.de>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+In-Reply-To: <20041218160908.GB1083@wohnheim.fh-wedel.de>
+Cc: jasmine@linuxgrrls.org, Thomas Gleixner <tglx@linutronix.de>,
+	Linux MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: RE: JFFS3 & performance
 Reply-To: Joakim.Tjernlund@lumentis.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,48 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Fri, 17 December 2004 11:33:42 +0000, David Vrabel wrote:
+> On Fri, 17 December 2004 12:19:55 +0100, Joakim Tjernlund wrote:
 > >
-> > (Also, I wouldn't have thought crc16 on 32 bit archs would have any
-> > significant performance benefits.  But since I don't know either the
-> > crc16 or crc32 algorithms... *shrug*)
+> > Looked a little closer on csum_partial and I think JFFS3 can use it. You need
+> > csum_fold as well:
+> > seed = ~0;
+> > crc = csum_fold(csum_partial(buff, len, seed));
+> >
+> > Don't know if it is good enough for JFFS3 but it is fast.
 >
-> See my earlier posts in this thread for the algorithms.  Without
-> special optimizations, you can process 16 bits at a time for crc16 and
-> 0 (zero) bits at a time for crc32.
+> It sure is hard to read.  Is there any version in C around?
 >
 > Jörn
 
-Hi Jörn
+Found this in RFC1017:
 
-Care to run this in your test program? Use the
-same table as tglx posted. This will only work on LE machines
-for now.
+       {
+           /* Compute Internet Checksum for "count" bytes
+            *         beginning at location "addr".
+            */
+       register long sum = 0;
 
- Jocke
+        while( count > 1 )  {
+           /*  This is the inner loop */
+               sum += * (unsigned short) addr++;
+               count -= 2;
+       }
 
-#define DO_CRC(x) crc = crc16tab[ (crc ^ (x)) & 255 ] ^ (crc>>8)
+           /*  Add left-over byte, if any */
+       if( count > 0 )
+               sum += * (unsigned char *) addr;
 
-unsigned short crc16 (unsigned char *buf, size_t len)
-{
-  const unsigned short  *b =(unsigned short *)buf;
-  unsigned short crc = 0xffff;
+           /*  Fold 32-bit sum to 16 bits */
+       while (sum>>16)
+           sum = (sum & 0xffff) + (sum >> 16);
 
-  if(len >= 2){
-    /* load data 16 bits wide, xor data 16 bits wide. */
-    size_t save_len = len & 1;
-    len = len >> 1;
-    do {
-      crc ^= *b++;
-      DO_CRC(0);
-      DO_CRC(0);
-    } while (--len);
-    len = save_len;
-  }
-  /* And the last few bytes */
-  if(len){
-      unsigned char *p = (unsigned char *)b;
-      DO_CRC(*p);
-  }
-  return crc;
-}
+       checksum = ~sum;
+   }
