@@ -1,18 +1,14 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178MlU-0003fh-00
-	for <linux-mtd@lists.infradead.org>; Thu, 16 May 2002 16:02:00 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <009c01c1fce9$4415bf60$0200010a@WT0136> 
-References: <009c01c1fce9$4415bf60$0200010a@WT0136>  <008101c1fce3$ae6588b0$0200010a@WT0136> <006401c1fcde$bc00e8c0$0200010a@WT0136> <001301c1fcd9$76792c40$0200010a@WT0136> <003801c1fc52$1eb60e10$0200010a@WT0136> <31716.1021552380@redhat.com> <5240.1021554647@redhat.com> <9456.1021556252@redhat.com> <14029.1021558521@redhat.com> 
-To: "Ho-Kuo Chan" <hchan@wavesat.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Trouble indetifying FLASH part 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Date: Thu, 16 May 2002 16:01:59 +0100
-Message-ID: <19099.1021561319@redhat.com>
+Received: from web21503.mail.yahoo.com ([66.163.169.14])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 178Mp2-0003ha-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 May 2002 16:05:40 +0100
+Message-ID: <20020516150538.65883.qmail@web21503.mail.yahoo.com>
+Date: Thu, 16 May 2002 08:05:38 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: Sources for JFFS2 - NAND Flash layer
+To: linux-mtd <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +20,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hchan@wavesat.com said:
->  The result was a continuous stream of 0xf0's. In VxWorks I get
-> 0x1303434953463900 which is "..CIS59.". Does this tell you anything?
+Hello all,
 
-Yeah. It really does look like the chip isn't where you think it is.
+If possible, Please let me know the name of source
+files for each layer (in reference with DOC2000 and/or
+another NAND flash device):-
 
-Can you get Linux to boot anyway, with NFSroot or something? 
+1. JFFS2: filesystem driver 
+2. MTD: Memory Technology Devices driver 
+3. NAND: generic NAND driver 
+4. Hardware specific driver 
 
-od -A x -t x1 /dev/mem | grep "13 03 43 49 53 46 39 00"
+Thank you for your help.
 
-Or you could code the equivalent in the kernel.
 
---
-dwmw2
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
