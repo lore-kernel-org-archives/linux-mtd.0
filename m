@@ -1,22 +1,21 @@
-Received: from 64-1-201-226.daf.concentric.net
-	([64.1.201.226] helo=firegate.datalight.com ident=root)
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16qGit-0001rW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 16:56:31 +0000
-Received: from rsherrillmob ([10.0.1.39])
-	by firegate.datalight.com (8.8.5/8.8.7) with SMTP id IAA07874
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 08:56:24 -0800
-Reply-To: <roy.sherrill@datalight.com>
-From: "Roy Sherrill" <roy.sherrill@datalight.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: unsubscribe
-Date: Wed, 27 Mar 2002 09:00:27 -0800
-Message-ID: <NDBBIEELOLFJFIKOHGAAEEDOCDAA.roy.sherrill@datalight.com>
+	id 16qHKr-0001vB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 17:35:45 +0000
+Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
+	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 16qHKm-000HIM-0V
+	for linux-mtd@lists.infradead.org; Wed, 27 Mar 2002 17:35:40 +0000
+content-class: urn:content-classes:message
+Subject: JFFS2 NAND flash support
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLIELJFCAA.joakim.tjernlund@lumentis.se>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 27 Mar 2002 17:42:42 -0000
+Message-ID: <541025071C7AC24C84E9F82296BB9B950804C4@OPTEX1.optex.local>
+From: "John Hall" <John.Hall@optionexist.co.uk>
+To: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,80 +27,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hi,
 
------Original Message-----
-From: linux-mtd-admin@lists.infradead.org
-[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Joakim
-Tjernlund
-Sent: Wednesday, March 27, 2002 2:47 AM
-To: linux-mtd@lists.infradead.org
-Subject: Unable to recover from CRC failiure
+I'm wanting to get JFFS2 to go on some NAND flash (it's actually
+Smartmedia, but it's pretty much just NAND flash) with a 2.4.17 kernel.
+I've adapted the NAND flash driver in the kernel tree and that now seems
+to work for me.
 
+The jffs2 stuff in my kernel sources doesn't seem very up to date so
+I've got the latest CVS stuff. Which branch of cvs do I need to use?
+Should I update the whole of the mtd subsystem or can I just use the
+updated jffs2 stuff?
 
-Hi
+I also came across some problems with the existing NAND flash driver,
+especially with erases. It doesn't seem to mark an erase as done,
+  i.e. instr->state =3D MTD_ERASE_DONE;
 
-I got the following on one of our nodes:
--------------- Start log --------------
-<snip>
-JFFS2: Total scan time: 11.41 sec
-Eep. Child "utmp" (ino #1853) of dir ino #130 doesn't exist!
-VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 52k init 4k openfirmware
-jffs2_read_inode() on nonexistent ino 1853
-INIT: version 2.78 booting
-Fast boot, no file system check
-none on /dev/shm type shm (rw)
-Cleaning: /etc/network/ifstate.
-Enabling packet forwarding: done.
-Configuring network interfaces: done.
-Cleaning: /tmp /var/lock /var/runfind: ./utmp: Input/output error
-/etc/init.d/rcS: /var/run/utmp: Input/output error
-Give root password for maintenance
-(or type Control-D for normal startup):
-bash-2.04# cd /var/run
-bash-2.04# ls
-exim  utmp
-bash-2.04# ls -l
-ls: utmp: Input/output error
-total 0
-drwxr-xr-x    1 root     root            0 May 24  2001 exim
-bash-2.04# rm utmp
-rm: cannot remove `utmp': Input/output error
-bash-2.04# rm -f utmp
-rm: cannot remove `utmp': Input/output error
-bash-2.04# ls
-exim  utmp
-bash-2.04# ls -l
-ls: utmp: Input/output error
-total 0
-drwxr-xr-x    1 root     root            0 May 24  2001 exim
-bash-2.04# cd ..
-bash-2.04# pwd
-/var
-bash-2.04# ls
-cache  lib  local  lock  log  mail  opt  run  spool  tmp  ucd-snmp
-bash-2.04# ls run
-exim  utmp
-bash-2.04# mv run slask
-mv: cannot stat `run/utmp': Input/output error
-bash-2.04# df
-Filesystem           1k-blocks      Used Available Use% Mounted on
-/dev/root                63744     44996     18748  71% /
-bash-2.04#
--------------- End log -------------
+Also, when doing an erase it obtains a spin lock that disables all
+bottom halves from running. It holds this lock for the duration of the
+erase, which is up to 4ms in the code - is this really a good idea? The
+Smartmedia specs say that this delay can be up to 400ms! Definitely not
+a good idea.
 
-I have no problem with getting a bad CRC on the JFFS2 FS at times, but that
-I am unable to get rid of
-the offending file(utmp).
+Regards,
+John Hall
 
-I am using the latest stable 2.4 branch.
-
-Any ideas?
-
-           Jocke
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--=20
+OptionExist Limited.
+The Irwin Centre, Scotland Road, Dry Drayton, Cambridge. UK.
+Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
+http://www.optionexist.co.uk/
