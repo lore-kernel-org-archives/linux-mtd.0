@@ -1,14 +1,15 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from nameservices.net ([208.234.25.16] helo=opersys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cwrU-00076y-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2002 00:38:36 +0100
-Message-ID: <3D530222.7040303@redswitch.com>
-Date: Thu, 08 Aug 2002 16:43:30 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+	id 17cxwV-0007Gn-00
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2002 01:47:51 +0100
+Message-ID: <3D5311E7.93A4805B@opersys.com>
+Date: Thu, 08 Aug 2002 20:50:47 -0400
+From: Karim Yaghmour <karim@opersys.com>
+Reply-To: karim@opersys.com
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,  linuxppc-embedded@lists.linuxppc.org
-Subject: MTD/JFFS2 on Intel 28F160F3
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: linux-mtd@lists.infradead.org
+Subject: Avoiding DOC hotplug when Grub fails
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -21,41 +22,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi *,
+As far as I can see by browsing this mailing list archive, one
+has to hotplug the DOC device in order to have the HD come up
+first if Grub fails in some way after having hijacked int 19h.
+This is rather inconvenient, to say the least.
 
-I'm trying to enable MTD and JFFS2 on an Intel 28F160F3 chip but have 
-some problems.
+Why not just hijack int 16h (keyboard) while we're at it, write
+a small keyboard int handler, and check if the space-bar (or
+some other key) is held down while Grub is booting? If it is,
+then Grub invokes the BIOS's original int 19h which then proceeds
+normally. If it isn't, then Grub continues with its own load
+procedure.
 
-The basic problem is what the physical start address of flash mapping 
-is? While on PPCBoot, I got flash information using command 'flinfo'. 
-The start address is FFE00000. Is this address the one used to configure 
-CFI flash device in physical memeory map? I tried using this address but 
-  'physmap' couldn't find flash device.
+Comments?
 
------------------clip-----------------------------------------
-root@ib8sw:~# modprobe -a physmap
-physmap flash device: 100000 at ffe00000
-CFI: Found no Physically mapped flash device at location zero
------------------clip-----------------------------------------
------------------clip-----------------------------------------
-=> flinfo
+Karim
 
-Bank # 1: INTEL 28F160F3 (16 Mbit, top boot sector)
-   Size: 2 MB in 39 Sectors
-   Sector Start Addresses:
-     FFE00000      FFE10000      FFE20000      FFE30000      FFE40000
-     FFE50000      FFE60000      FFE70000      FFE80000      FFE90000
-     FFEA0000      FFEB0000      FFEC0000      FFED0000      FFEE0000
-     FFEF0000      FFF00000 (RO) FFF10000 (RO) FFF20000 (RO) FFF30000 (RO)
-     FFF40000      FFF50000      FFF60000      FFF70000      FFF80000
-     FFF90000      FFFA0000      FFFB0000      FFFC0000      FFFD0000
-     FFFE0000      FFFF0000      FFFF2000      FFFF4000      FFFF6000
-     FFFF8000      FFFFA000      FFFFC000      FFFFE000
-=>
------------------clip-----------------------------------------
-
-I haven't dived into the routine 'do_cfi_probe()' yet since I'm not sure 
-if the start address I specified is correct. Any help is greatly 
-appreciated.
-
-- Shawn.
+===================================================
+                 Karim Yaghmour
+               karim@opersys.com
+      Embedded and Real-Time Linux Expert
+===================================================
