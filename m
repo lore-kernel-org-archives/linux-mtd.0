@@ -1,27 +1,24 @@
-Received: from mail.iok.net ([62.249.129.22] helo=mail05.iok.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1969K6-0000G2-Aa
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 14:21:06 +0100
-Received: from lin01.mn-logistik.de (frdb-d9b94bc1.pool.mediaWays.net
-	[217.185.75.193])
-	by mail05.iok.net (8.12.5/8.12.5) with ESMTP id h3HDLAsA025075
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 15:21:11 +0200
-Received: from mnz66.mn-logistik.de (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-logistik.de (Postfix) with ESMTP id 18C141FF1A
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Apr 2003 15:05:39 +0200 (CEST)
-From: Holger Schurig <h.schurig@mn-logistik.de>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 17 Apr 2003 15:05:38 +0200
-References: <1050513945.1172.265.camel@tubarao>
-In-Reply-To: <1050513945.1172.265.camel@tubarao>
+Received: from smtp13.mail.yahoo.co.jp ([211.14.15.236])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 196BrF-0000ec-38
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 17:03:29 +0100
+Message-ID: <002201c304fa$d04abd40$a10486da@w0a3t0>
+From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
+To: <tglx@linutronix.de>,
+	=?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: 
+	<20030415171123.GH7721@wohnheim.fh-wedel.de><002501c30424$c3fedf20$a10486da@w0a3t0>
+	<200304162019.50838.tglx@linutronix.de>
+Date: Fri, 18 Apr 2003 01:02:57 +0900
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200304171505.38785.h.schurig@mn-logistik.de>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: Re: device info in /proc/mtd
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+cc: Holger Schurig <h.schurig@mn-logistik.de>
+cc: linux-mtd@lists.infradead.org
+cc: esn@cotas.dk
+cc: Jasmine Strong <jasmine@regolith.co.uk>
+Subject: Re: Database on JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> It would be nice to be able to query
-> this information at any time - a specific model of motherboard might
-> socket a different chip depending on cost/availability and I'd like to
-> be able to track which BIOS flash chip is being used.
+----- Original Message -----
+From: "Thomas Gleixner" <tglx@linutronix.de>
+To: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>; "Jörn Engel" <joern@wohnheim.fh-wedel.de>
+Cc: <linux-mtd@lists.infradead.org>; "Holger Schurig" <h.schurig@mn-logistik.de>; <esn@cotas.dk>; "Jasmine Strong"
+<jasmine@regolith.co.uk>
+Sent: Thursday, April 17, 2003 3:19 AM
+Subject: Re: Database on JFFS2?
 
-For what do you need this?     Do "dmesg >/var/log/dmesg" at boot-time and you 
-can grep this file whenever you want it.
 
-Many people won't need this info, they run linux in a tightly defined 
-environment where you always load the same drivers for the MTD subsystem. 
-They know if the have a 49FL004 or whatever. No need to retrieve this info 
-from somewhere else.
+> On Wednesday 16 April 2003 16:30, matsunaga wrote:
+> > > iirc it used to ignore sync completely so people could potentially get
+> > > into trouble if they write-sync-poweroff with <2s between write and
+> > > poweroff.
+> >
+> > write - sync -poweroff works on NAND. flush_wbuf is also triggered on
+> > umount.
+> >
+> > I think that sys_sync is not supported yet, as is written in jffs2/Todo,
+> > right?
+>
+> Sorry, I mixed this up with fsync. sys_sync is not working, just flushing the
+> buffer on umount.
+>
+> When I brought in the timed flush, I tried to use kupdated
+> (superblock->s_dirty) and had a bunch of unwanted flush's during consecutive
+> writes, because setting sb->s_dirty is asynchronous to kupdated interval.
+> That's why I used the 2 seconds timer.
+>
+> I will think about it again.
 
-Adding fields after the output of /proc/mtd may break some applications that 
-use this info, e.g. flash utilities.
+I understand the sisuation. Asynchronous sync could prevents consecutive writes.
+I will wait for it ;-)
+Ideally sys_sync while a file is being written should wait for the last wbuf write of the file and flush it...
+
+BR.
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
