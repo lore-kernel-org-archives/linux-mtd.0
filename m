@@ -1,14 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: zaho@architect.bg
-In-Reply-To: <1094554143.413d921f56b09@mail.orbitel.bg>
-References: <1094554143.413d921f56b09@mail.orbitel.bg>
-Content-Type: text/plain
-Date: Tue, 07 Sep 2004 16:10:12 +0100
-Message-Id: <1094569812.5122.25.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from mailhub.hp.com ([192.151.27.10])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1C4ppM-0001fW-UK
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2004 19:56:46 -0400
+From: "Christopher Hoover" <ch@hpl.hp.com>
+To: <tharbaugh@lnxi.com>, "'Ben Dooks'" <ben-mtd@fluff.org>
+Date: Tue, 7 Sep 2004 16:52:53 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems getting DiskOnChip boot
+In-reply-to: <1094564091.20769.350.camel@tubarao>
+Message-Id: <20040907235310.31BF32711A@mailhub.hp.com>
+Cc: ben@fluff.org, linux-mtd@lists.infradead.org
+Subject: RE: jedec_probe problems with 16bit devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,11 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-09-07 at 13:49 +0300, zaho@architect.bg wrote:
-> The problem comes when I am trying to compile the 2.4.18 kernel 
 
-It does indeed. Use a current kernel -- at least 2.4.27 but preferably a
-2.6 kernel.
+> It seems like the CFI_DEVICETYPE_X8 was changed to cfi->device_type at
+> one point and it broke some 16-bit chips.
+> 
+> I think all of the CFI_DEVICETYPE_X8s were removed from jedec_probe.c
+> 1.30, but then some were added back in at 1.36.  I'm trying 
+> to find the
+> discussion as to why this happened, but what I'm finding isn't very
+> descriptive:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2003-October/00
+> 8685.html
+> 
+> I seem to remember IRC'ing with Christopher Hoover on this.  Maybe he
+> can remember something?  Christopher?  My memory is somewhat murky.
 
--- 
-dwmw2
+I don't have any new information to report -- only what is noted above, that
+some regression in the mtd tree about the time the CFI_DEVICETYPE_X8's
+disappeared.  It was never fixed while I worked with the board.  It may be
+fine now, but unfortunately I am unable to check easily.
+
+Can we locate someone with a suitable platform and coax them into testing
+the latest code?
+
+-ch
