@@ -1,45 +1,24 @@
-From: tharbaugh@lnxi.com (Thayne Harbaugh)
-Date: 24 Mar 2003 16:14:33 -0700
-Subject: cfi_cmdset_0002 better status polling
-In-Reply-To: <1048204894.1224.46.camel@tubarao>
-References: <1048204894.1224.46.camel@tubarao>
-Message-ID: <1048547673.1225.54.camel@tubarao>
+From: timwu@interepoch.com.tw (Tim Wu)
+Date: Tue, 25 Mar 2003 19:24:28 +0800
+Subject: not enough blocks for JFFS?
+In-Reply-To: <1048558906.2922.5.camel@gobbles>
+References: <3E7E6DE5.5000003@interepoch.com.tw>	 <1048483100.3593.3.camel@gobbles>	 <20030325000503.GA14469@wohnheim.fh-wedel.de>	 <3E7FBB35.1050100@interepoch.com.tw> <1048558906.2922.5.camel@gobbles>
+Message-ID: <3E803C6C.60203@interepoch.com.tw>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---=-YCMkT4oyuCZYMxtbhpog
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+So, by this approach, all the data-save write operations must be done 
+through this
+user-space lib instead of standard UNIX file I/O, right?
 
-On Thu, 2003-03-20 at 17:01, Thayne Harbaugh wrote:
-> I have been investigating the dq5 warning message (Warning: DQ5 raised
-> while program operation was in progress, however operation completed OK)
-> for a while now.  This warning is unfortunately an acceptable state that
-> should not be reported.
 
-<snip>
+Russ Dill :
 
-I'd like to get some feedback on this in the next couple of days.  If I
-don't get feedback by the end of the week I'll assume that this can be
-committed.
-
-Thanks.
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-YCMkT4oyuCZYMxtbhpog
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+f5FYfsBPTKE6HMkRArv5AJ41FxWbdEmCoowkfcG8WW9UVk1agwCfWwt6
-5NYRCi+50SXUStD2A2ESEkc=
-=KfGP
------END PGP SIGNATURE-----
-
---=-YCMkT4oyuCZYMxtbhpog--
+>Your goals would be better served by a user-space solution from what I
+>can tell. Not only would there be less code, but that code would be
+>compressed in cramfs. I'm able to use 1 boot block for blob, another for
+>static configuration, and the remaining two for configuration data saved
+>in this way.
+>
+>  
+>
