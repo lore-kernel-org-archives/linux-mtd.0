@@ -1,18 +1,32 @@
-Received: from pony2pub.arc.nasa.gov ([128.102.31.42])
+Received: from motgate8.mot.com ([129.188.136.8])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AoVfE-0000E4-4G
-	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2004 22:38:32 +0000
-Received: from [128.102.173.254] (HELO sg-sdl-eng-1.mail.arc.nasa.gov)
-	by pony2pub.arc.nasa.gov (CommuniGate Pro SMTP 4.1.8)
-	with ESMTP-TLS id 7045564 for linux-mtd@lists.infradead.org;
-	Wed, 04 Feb 2004 14:38:04 -0800
-Message-Id: <5.2.1.1.2.20040204135815.0151a418@mail.arc.nasa.gov>
-Date: Wed, 04 Feb 2004 14:44:45 -0800
-To: linux-mtd@lists.infradead.org
-From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+	id 1AoZp3-00012R-0v
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 03:04:57 +0000
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by motgate8.mot.com (Motorola/Motgate3) with ESMTP id i1534rAH005554
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 4 Feb 2004 20:04:53 -0700 (MST)
+Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id i1534nSC011525
+	for <linux-mtd@lists.infradead.org>; Wed, 4 Feb 2004 21:04:50 -0600
+From: Li Yang <leoli@motorola.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1074583969.14499.100.camel@imladris.demon.co.uk>
+References: 
+	 <01139FC052A0D411900B00508B9535FC0F0D25BB@ZCH07EXM04.corp.mot.com>
+	 <1074503876.14499.40.camel@imladris.demon.co.uk>
+	 <1074509881.14564.3.camel@Gundam>
+	 <1074510244.14499.49.camel@imladris.demon.co.uk>
+	 <1074572447.14559.23.camel@Gundam>
+	 <1074583969.14499.100.camel@imladris.demon.co.uk>
+Content-Type: text/plain
+Message-Id: <1075950453.12044.7.camel@Gundam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: INFTL bad block table support
+Date: 05 Feb 2004 11:07:33 +0800
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2+mtd+big endian problem
+Reply-To: leoli@motorola.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +36,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've got a DOC 2000 TSOP that I'd really like to use for booting an i386 
-system.
+Thank you.  I got it.
 
-Using the 2004/2/2 CVS, I see that bad block table support is still missing 
-from the
-INFTL driver.  If I comment out the if statement in docprobe.c that 
-disables INFTL
-support for doc2000 TSOP, I can see and mount the existing partitions on my 
-device,
-though I get various messages about formatting and erase errors for blocks 
-in the BBT.
+In drivers/mtd/chips/sharp.c line 362
+There is a hard coded cpu_to_le32 swap, which caused the swap issue.
 
-I would be glad to test code for INFTL BBT support if anyone wants to pass 
-it to me.
+I have tried to use Jedec_probe instead of sharp driver, but it always
+recognizes my sharp flash as Intel flash, they have the same vendor id
+and product id. Ugly.  And then something goes wrong.  So I have to
+stick to the obsoleted sharp driver.  Thank you for the continued help.
 
-I've looked briefly at docprobe.c, doc2000.c, inftlcore.c and 
-inftlmount.c.  According to
-the archives, it may not be a large effort to implement BBT awareness.  Can 
-someone
-give me some pointers as to what needs to be done and in which functions?
+-- 
 
-Many thanks,
-Ted Hildum
+Li Yang <leoli@motorola.com>
+
+Metrowerks
