@@ -1,36 +1,59 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14rU5u-0000hX-00
-	for mtd-list@infradead.org; Mon, 23 Apr 2001 01:20:46 +0100
-Received: from [62.178.143.33] (helo=gatekeeper.home.at ident=qmailr)
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14rU5t-0000hQ-00
-	for mtd@infradead.org; Mon, 23 Apr 2001 01:20:45 +0100
-From: "Erwin Authried" <eauth@softsys.co.at>
-To: <mtd@infradead.org>
-Subject: Re: JEDEC and MX29F1610 flash question
-Date: Mon, 23 Apr 2001 01:45:10 +0200
-Message-ID: <000001c0cb86$463357c0$6401a8c0@home.at>
+	id 14rV4K-0001SL-00
+	for mtd-list@infradead.org; Mon, 23 Apr 2001 02:23:12 +0100
+Received: from enst.enst.fr ([137.194.2.16])
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14rV4J-0001SF-00
+	for mtd@infradead.org; Mon, 23 Apr 2001 02:23:11 +0100
+Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
+	by enst.enst.fr (Postfix) with ESMTP id 828E31C8C9
+	for <mtd@infradead.org>; Mon, 23 Apr 2001 03:23:05 +0200 (MET DST)
+Received: from FABRICE (droopy.maisel1.rezel.enst.fr [137.194.8.239])
+	by email.enst.fr (8.9.3/8.9.3) with ESMTP id DAA19614
+	for <mtd@infradead.org>; Mon, 23 Apr 2001 03:22:46 +0200 (MET DST)
+Date: Mon, 23 Apr 2001 03:22:14 +0200
+From: Fabrice Gautier <gautier@email.enst.fr>
+To: mtd@infradead.org
+Subject: STPC and Macronix Flash.
+Message-Id: <20010423030902.1FEC.GAUTIER@email.enst.fr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-The MX29F1610 operation is rather different
-from the other JEDEC flash memories. After
-the programming commanmd sequence up to 
-128 bytes are sent to flash in a stream,
-with max. 30us between the writes. When all
-bytes have been sent, there must be a 100us
-delay to initiate programming. I don't think
-that this mode is already supported in the code.
-The buffer write must propably be done with 
-interrupts disabled to ensure <=30us between
-writes.
+Hi,
 
--Erwin
+I have this cutom STPC board with this odd Macronix Flash (MX29F1610)
+i'm trying to deal with. So i've tried to write an mtd driver for this.
+For now the driver should just try to read the Device ID.
+
+First problem is: In order to enable the flash i have to write in an
+STPC register (a RAM controller register) which open a memory hole.
+
+Then the flash should be mapped to 0x2a00000 so i'm doing an ioremap and
+using the return value to access the flash. Just like it is done in
+physmap.c and oher.
+
+But I can't even get anything. The sample code from Macronix I'm using
+gave good result an VxWorks and eCos. I personnally tested the code for
+eCos so i'm quite sure i'm doing the right thing from the flash point of
+view, but i'm thinking that maybe i get something wrong with the virtual
+memory mapping. (There's no virtual memory stuff in eCos so it's very
+simple)
+
+And anyway is it really safe to manipulate the RAM controller in the mtd
+driver? Didn't that would mess up with linux virtual memory managment?
+
+Is there anyone doing things like that with an STPC ?
+
+Thanks
+
+-- 
+Fabrice Gautier <gautier@email.enstfr>
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
