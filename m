@@ -1,21 +1,23 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CAbGG-0002rB-4f
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 17:36:21 -0400
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CAcjL-0003LR-IQ
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 19:10:28 -0400
+Date: Fri, 24 Sep 2004 00:05:18 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
 To: Ben Dooks <ben-mtd@fluff.org>
-References: <20040920234450.GA17169@home.fluff.org>
-	<m3brfxycuf.fsf@maxwell.lnxi.com>
-	<20040923210150.GF25491@home.fluff.org>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 23 Sep 2004 15:36:17 -0600
-In-Reply-To: <20040923210150.GF25491@home.fluff.org>
-Message-ID: <m3r7ossm5q.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
+Message-ID: <20040923230518.GG25491@home.fluff.org>
+References: <I4G9K8$32150B19D33A6F23F04032D520B4890A@libero.it>
+	<20040922202907.GA25491@home.fluff.org>
+	<1095923470.2925.57.camel@thomas>
+	<20040923191506.GE25491@home.fluff.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Fix to jedec_probe unlock addresses
+Content-Disposition: inline
+In-Reply-To: <20040923191506.GE25491@home.fluff.org>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, gavin@simtec.co.uk
+Subject: Re: NAND detect
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Dooks <ben-mtd@fluff.org> writes:
+On Thu, Sep 23, 2004 at 08:15:06PM +0100, Ben Dooks wrote:
+> On Thu, Sep 23, 2004 at 09:11:10AM +0200, Thomas Gleixner wrote:
+> > On Wed, 2004-09-22 at 22:29, Ben Dooks wrote:
+> 
+> I've posted the patch to a 2.6.9 kernel from my first
+> effort here (the kernel has the 19th September snapshot
+> applied to it first):
+> 
+> http://www.fluff.org/ben/mtd/nand-multi1.diff
 
-> I took the jedec_probe alterations as I was unsure wether I was going
-> to damage anything else by changing the cfi cmdset 0002 code.
+after discussions with tglx, the patch is too invasive into
+nand_base.c and has other problems.
 
-Your patch is broken with respect to interleaving.  The interleave
-gets applied twice.  Once in jedec_probe, and then again in
-cfi_send_gen_cmd.
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-
-The bottom line is that we need to be consistent with how we do this.
-Either we have magic addresses specified in terms as byte addresses
-or we have magic addresses specified as device visible addresses.
-
-Right now cfi_cmdset_0002 is the only place that does not use the
-device width.
-
-A 16bit device should not even be able to see a non-16bit 
-aligned address, and we have to play games with the address
-on the bus to handle interleaving so I don't see a reason
-why we would want to disable multiplying by device size.
-
-So it looks like the TODO item is to just look up what cfi standard
-says are the unlock addresses for cfi command set 2. And make certain
-the cfi hard codes are correct and nothing should be broken.
-
-But even without that I would rather see cfi_cmdset_0002 fixed
-then seeing this disagreement about how we should pass parameters
-to cfi_cmdset_0002.  At least if we agree on conventions the broken
-cases can be incrementally fixed until the code works properly for
-everyone.
-
-It is nice to see that this problem has nothing to do with
-interleaving so that anyone with a 16bit or wider device can test
-this.
-
-Eric
+  'a smiley only costs 4 bytes'
