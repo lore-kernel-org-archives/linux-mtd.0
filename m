@@ -1,32 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11xWgC-0002Fd-00
-	for mtd-list@infradead.org; Mon, 13 Dec 1999 14:42:24 +0000
+	id 11xWri-0002G5-00
+	for mtd-list@infradead.org; Mon, 13 Dec 1999 14:54:18 +0000
 Received: from [216.211.97.50] (helo=gizmo.adis.on.ca ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11xWgA-0002FX-00
-	for mtd@imladris.mvhi.com; Mon, 13 Dec 1999 14:42:22 +0000
-Date: Mon, 13 Dec 1999 08:49:38 -0600 (CST)
+	id 11xWrS-0002Fz-00
+	for mtd@imladris.mvhi.com; Mon, 13 Dec 1999 14:54:08 +0000
+Date: Mon, 13 Dec 1999 09:01:06 -0600 (CST)
 From: Adi Linden <adi@adis.on.ca>
-To: Jon Burford <jburford@xsilogy.com>
-cc: Vipin Malik <vmalik@danielind.com>, MTD <mtd@imladris.mvhi.com>
-Subject: Re: [Fwd: power down]
-In-Reply-To: <011a01bf40f2$b9660f00$6600160a@isidesign.com>
-Message-ID: <Pine.LNX.4.10.9912130848130.3723-100000@localhost.localdomain>
+To: ralph stickley <ralph@datalux.com>
+cc: "Tkatchouk, Pavel" <PTkatchouk@squirrelsystems.com>,
+        "'linux-embedded@waste.org'" <linux-embedded@waste.org>,
+        MTD <mtd@imladris.mvhi.com>, Oron Ogdan <Orono@m-sys.com>
+Subject: Re: Anyone embedding RH 6.1 / 2.2.12 ?
+In-Reply-To: <384ED6E8.59F54440@datalux.com>
+Message-ID: <Pine.LNX.4.10.9912130854360.3723-100000@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+> >I was wondering if anyone has sucessfully "embedded" the 2.2.12 kernel
+> >from the RedHat 6.1 distro...
+> >2.0.36 worked fine but I am required to do an upgrade and there seems to
+> >be quite a few differences.
 
-> I mount the DOC2000 on /usr, but write only to the logs and db files (I have
-> 'chattr i' on all other files in /usr).  What I would like to get an opinion
-> on is:
+Doing just. Took Redhat 6.1 and created minimal tar balls of packages.
+Stribed binaries and libs and no docs, man pages, etc. It's up and running
+including networking in an 8MB partition. df tells me it's consuming about
+5MB.
 
-If you mount the doc2000 on /usr and have evrything else in ramdisk,
-perhaps mount /usr read-only. It won't corrupt that way.
+> >Currently, I can boot to the M-Systems chip as single user .  With a
+> >normal boot, the login prompt shows but does not allow anyone, even
+> >root, to login (I've copied the passwd, shadow, tons of library files
+> >and pam.d stuff, but still no luck).
 
-TTYL,
+Compile util-linux, sysutils, shutils, ppp without PAM and shadow
+password. Get's rid of a lot of libs. You can grab my work so far at:
+http://projects.adis.on.ca/Embedded/embedded-0.13.tar.gz
+No docs, though,except for some noted in 'FileList'...
+
+Regards,
 Adi
 
 
