@@ -1,24 +1,20 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18JWT7-0007Qk-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 10:09:25 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6L00JRTC9TFA@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 04 Dec 2002 11:39:30 +0100 (MET)
-Date: Wed, 04 Dec 2002 11:37:31 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Write error on the nand flash !
-In-reply-to: 
- <Pine.LNX.4.44.0212040542320.4326-100000@structure.biochem.nchu.edu.tw>
-To: shadow <saturn@structure.biochem.nchu.edu.tw>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200212041137.31306.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+	id 18JWed-0007Uh-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2002 10:21:19 +0000
+Subject: Re: IF eraseall will destryed(phys) the nand flash ?
+From: Henrik Nordstrom <hno@marasystems.com>
+To: shadow <saturn@structure.biochem.nchu.edu.tw>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: 
+	<Pine.LNX.4.44.0212040642240.5200-100000@structure.biochem.nchu.edu.tw>
 References: 
- <Pine.LNX.4.44.0212040542320.4326-100000@structure.biochem.nchu.edu.tw>
+	<Pine.LNX.4.44.0212040642240.5200-100000@structure.biochem.nchu.edu.tw>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 04 Dec 2002 11:51:20 +0100
+Message-Id: <1038999080.21496.6.camel@henrik.marasystems.com>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,15 +26,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday 03 December 2002 23:09, shadow wrote:
-> nand_write_ecc: to = 0x001fc000, len = 512
-> nand_write_page: Failed write verify, page 0x00000fe0
-Do you use latest MTD-CVS code ? If not, please upgrade.
-If yes, can I have a look at your hardware driver ?
+tis 2002-12-03 klockan 23.46 skrev shadow:
 
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+> I don't understand what is shipping time, your meaming is it was 
+> destroyed at the shipping time between the factory to retailer ?
+
+The errors was detected at the factory and marked as bad blocks before
+the flash was shipped to the retailer.
+
+Just as there is small glitches in almost all TFT screens you can find
+there is quite commonly a small amount of errors in the manufacturement
+of flash memories.. 
+
+Regards
+Henrik
