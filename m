@@ -1,21 +1,25 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from mail.imc-berlin.de ([217.110.46.186]
+	helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193itm-00029u-CJ
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2003 21:43:54 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HD5001DIAWFWQ@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Thu, 10 Apr 2003 22:43:28 +0200 (MEST)
-Date: Thu, 10 Apr 2003 23:43:37 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <200304101926.h3AJQ8b05913@marmot.intrinsyc.com>
-To: csperandeo@intrinsyc.com, linux-mtd@lists.infradead.org
-Message-id: <200304102343.37383.tglx@linutronix.de>
-MIME-version: 1.0
-References: <200304101926.h3AJQ8b05913@marmot.intrinsyc.com>
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
-Subject: Re: JFFS2 on NAND reboot problems
-Reply-To: tglx@linutronix.de
+	id 193sGV-00031d-Vp
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 07:44:00 +0100
+Message-ID: <3E966431.8010107@imc-berlin.de>
+Date: Fri, 11 Apr 2003 08:44:01 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <3E92D5C7.8020603@imc-berlin.de>
+	<20030408141952.GA30313@wohnheim.fh-wedel.de>
+	<3E92DDC9.7030000@imc-berlin.de>
+	<20030408150331.GA32580@wohnheim.fh-wedel.de>
+	<3E92EE0B.4000702@imc-berlin.de>	 <20030408160021.GC5065@wohnheim.fh-wedel.de>
+	<3E92F32D.8000600@imc-berlin.de>
+	<1049818139.31462.10.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 uncompressed?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 10 April 2003 21:26, Chris Sperandeo wrote:
-> I have pulled the latest from CVS server, applied the changes and retested.
-> There seems to be no change in behaviour.  Any other suggestions?
+David Woodhouse schrieb:
+> On Tue, 2003-04-08 at 17:05, Steven Scholz wrote:
+> 
+>>But I'd love to see my name in the MTD Hall of Fame though! ;-)
+> 
+> 
+> Send me a SSH key and you can commit your patch and at least get your
+> name in the $Id$ tag and the changelog... :)
 
-Can you send me a binary image of your flash ?
+Do you need an entry for the man page as well?
 
-Turn on JFFS2 debugging to level 1 and log the debug messages on a serial  
-console. Compress it and send it to me or put it anywhere for download. 
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Steven
