@@ -1,28 +1,28 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from lon-del-03.spheriq.net ([195.46.50.99])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CtOdJ-0001K7-Ku
-	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 06:13:18 -0500
-Date: Tue, 25 Jan 2005 12:13:15 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+	id 1CtOhV-0001Xd-Sg
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2005 06:17:42 -0500
+Received: from lon-inc-07.spheriq.net ([195.46.50.71])
+	by lon-del-03.spheriq.net with ESMTP id j0PBHXp3008444
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 11:17:33 GMT
+Received: from lon-out-01.spheriq.net (lon-out-01.spheriq.net [195.46.50.129])
+	by lon-inc-07.spheriq.net with ESMTP id j0PBHXe8025859
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 11:17:33 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-01.spheriq.net with ESMTP id j0PBHVh8032207
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2005 11:17:33 GMT
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <41F62AC2.250C0C4C@st.com>
+Date: Tue, 25 Jan 2005 12:17:22 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
+MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20050125111315.GE29797@wohnheim.fh-wedel.de>
-References: <20050120164153.GM20639@wohnheim.fh-wedel.de>
-	<1106240903.7940.12.camel@sauron.oktetlabs.ru>
-	<20050120173341.GA24657@wohnheim.fh-wedel.de>
-	<1106243853.7940.15.camel@sauron.oktetlabs.ru>
-	<20050121124403.GA9931@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501211312570.20298@phoenix.infradead.org>
-	<20050121134221.GB9931@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501211354110.20298@phoenix.infradead.org>
-	<20050125105140.GC29797@wohnheim.fh-wedel.de>
-	<1106650599.6480.109.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1106650599.6480.109.camel@localhost.localdomain>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+References: <1106603928.5081.50.camel@tglx.tec.linutronix.de>
+	<1106604557.6480.80.camel@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: mtd/fs/jffs2 nodemgmt.c,1.115,1.116
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 January 2005 10:56:39 +0000, David Woodhouse wrote:
-> 
-> That (inocache_lock vs. erase_completion_lock) is documented in
-> README.Locking.
+David Woodhouse wrote:
+> And the first commit I looked at violated the coding style.
 
-Some of the locks I found are not.  Send a patch?
+I am a horrible coding style violator. I did submit
+the patch to the list beforehand didn't I ? 
+After googling up "linux kernel coding style" the only
+problem I find is with leading braces. If there are other
+uglies please tell me (unnecessary comments maybe ?). 
+I'll be correcting it tonight.
 
-Jörn
-
--- 
-ticks = jiffies;
-while (ticks == jiffies);
-ticks = jiffies;
--- /usr/src/linux/init/main.c
+Estelle
