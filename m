@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Immg-0003lq-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 09:50:19 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0206141627370.8899-100000@cliffordux.hkpc.org> 
-References: <Pine.LNX.4.33.0206141627370.8899-100000@cliffordux.hkpc.org> 
-To: Clifford Loo <kfloo@hkpc.org>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Problem putting JFFS on MTD 
-Mime-Version: 1.0
+Received: from web21507.mail.yahoo.com ([66.163.169.18])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17ImxT-0003n5-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 10:01:27 +0100
+Message-ID: <20020614090125.91096.qmail@web21507.mail.yahoo.com>
+Date: Fri, 14 Jun 2002 02:01:25 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: why MTD model ? 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <18178.1024041299@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jun 2002 09:50:14 +0100
-Message-ID: <19580.1024044614@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +22,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-kfloo@hkpc.org said:
->  I can now mount an erased mtdblock device directly to "/mnt/jffs".
-> But creating files or directories results in I/O errors: 
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> Flash devices have large erase blocks. You cannot
+> just treat them as a block
+> device with a sector size of 64KiB, etc. 
 
-Hmmm. No message from the flash driver when this happens? They're not from 
-JFFS, they're from the flash driver itself. 
+We can change the sector size on block devices.
 
---
-dwmw2
+> A flash device can have sectors
+> erased independently of write operations, can have
+> write operations
+> performed independently of erases 
+
+I think, this is not neccesary to keep erase
+independent from writing, we can erase before we
+write.
+
+> (e.g. JFFS2 does so just to clear one
+> extra 'valid' bit in existing nodes', can support
+> writes to arbitrary byte
+> ranges, etc. 
+
+It is not neccesary that we use JFFS2, we can use any
+filesystem on flash but at low level when we are
+writing to flash, we can use wear levelling.
+
+> The MTD API allows you to make use of those
+features.
+
+Are these are only feature provided by MTD ?
+
+I am not able to understand what is special in MTD
+model ?
+
+Please help me.
+
+thanks for your help.
+
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! - Official partner of 2002 FIFA World Cup
+http://fifaworldcup.yahoo.com
