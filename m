@@ -1,23 +1,28 @@
-Received: from moutng.kundenserver.de ([212.227.126.177] helo=moutng3.kundenserver.de)
+Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Wv6f-0005jI-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 09:33:21 +0100
-Received: from [212.227.126.155] (helo=mrelayng1.kundenserver.de)
-	by moutng3.kundenserver.de with esmtp (Exim 3.35 #2)
-	id 17Wv6c-0002o7-00
-	for linux-mtd@lists.infradead.org; Tue, 23 Jul 2002 10:33:18 +0200
-Received: from [80.134.12.7] (helo=[192.168.1.27])
-	by mrelayng1.kundenserver.de with asmtp (Exim 3.35 #2)
-	id 17Wv6c-0004LA-00
-	for linux-mtd@lists.infradead.org; Tue, 23 Jul 2002 10:33:18 +0200
-Subject: Formatting DoC at every boot-process
-From: Jens Nixdorf <jens.nixdorf@embesso.com>
-To: MTD Mailingliste <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 23 Jul 2002 10:36:02 +0200
-Message-Id: <1027413363.1184.12.camel@pc11>
+	id 17X6BI-0006Zo-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2002 21:22:52 +0100
+Received: from cmailg3.svr.pol.co.uk ([195.92.195.173])
+	by phoenix.infradead.org with esmtp (Exim 4.10)
+	id 17X6BA-0007JI-00
+	for linux-mtd@lists.infradead.org; Tue, 23 Jul 2002 21:22:44 +0100
+Received: from [195.92.168.141] (helo=tmailb1.svr.pol.co.uk)
+	by cmailg3.svr.pol.co.uk with esmtp (Exim 3.35 #1)
+	id 17X6B5-0000WP-00
+	for mtd@infradead.org; Tue, 23 Jul 2002 21:22:39 +0100
+Received: from modem-3298.tiger.dialup.pol.co.uk ([62.136.220.226] helo=email.com)
+	by tmailb1.svr.pol.co.uk with smtp (Exim 3.35 #1)
+	id 17X6B1-0003an-00
+	for mtd@infradead.org; Tue, 23 Jul 2002 21:22:35 +0100
+From: "Discount Calls UK" <discountcalls@email.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: WE CAN HALVE YOUR COMPANY'S UK TELEPHONE BILLS!!
 Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Date: Tue, 23 Jul 2002 21:30:00 +0100
+Reply-To: "Discount Calls UK" <discount-reply@email.com>
+Message-Id: <E17X6B1-0003an-00.2002-07-23-21-22-35@tmailb1.svr.pol.co.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,42 +34,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+With our UK National Calls costing as little as 1.8p per minute! we can
+save your company a fortune!
+That's less than half the "BT choices 1"  rate, and about a quarter of the
+price of the BT standard rate!
+Our local & international rates offer massive discounts as well.
+With our simple registration process, you can begin saving money straight
+away- no set up charge & no long contract periods.
+You keep your BT account & continue to pay your rental -we simply divert
+your calls to our reliable,  low cost system at the BT exchange.
+Try it for a month, if you are not completely satisfied, you can return to
+BT.
+Join the thousands of satisfied businesses both large & small that have
+dramatically reduced telephone bills!!---Can you think of a reason not to
+do it?
 
-now, with your help, my DoC is acknowledged by the system. But the next
-problem is underway ;)
-Every time the system is booting, it try to format the DoC. It has two
-bad blocks, and therefore i think it starts over and over again. How can
-i get rid of it? nftl_format from the mtd-utils still doesnt work, it
-brings  still the message:
+Hand this important document to your financial director
 
-ioctl(MEMGETINFO): Inappropriate ioctl for device
+For more information reply to
+mailto:discountcalls@devilnet-uk.net?subject=information-please
 
-Here is a part of my dmesg-output after a fresh boot:
 
-NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
-NFTL_notify_add for DiskOnChip 2000
-NFTL_setup
-Formatting block 1964
-Error erasing at 0x1eb0000
-Error while formatting block 1964
-Formatting block 6028
-Error erasing at 0x5e30000
-Error while formatting block 6028
-Cannot calculate an NFTL geometry to match size of 0x853c0.
-Using C:1003 H:16 S:34 (== 0x85360 sects)
- nftla:<6>NFTL_request
-NFTL read request of 0x2 sectors @ 0 (req->nr_sectors == 8)
-NFTL read request completed OK
-NFTL_request
-NFTL read request of 0x2 sectors @ 2 (req->nr_sectors == 6)
-NFTL read request completed OK
-NFTL_request
-NFTL read request of 0x2 sectors @ 4 (req->nr_sectors == 4)
-NFTL read request completed OK
-NFTL_request
-NFTL read request of 0x2 sectors @ 6 (req->nr_sectors == 2)
-NFTL read request completed OK
- nftla1
 
-Thanks in Advance, Jens
+To be removed from the mail list reply to
+mailto:discountcalls@devilnet-uk.net?subject=remove-please
+We never intend to spam, or irritate with unsolicited emails, we always
+try to target companies that would benefit from our cost saving offers.
+This oportunity to save you money will be offered once only - you will not
+be emailed by us again.
+If you are an individual & not a company, then please accept our
+appoligies for us sending this email to you.
