@@ -1,18 +1,14 @@
-Received: from chfdns01.ch.intel.com ([143.182.246.24] helo=pan.ch.intel.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15woyr-00065E-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2001 19:11:49 +0100
-Received: from hasmsxvs01.iil.intel.com (hasmsxvs01.iil.intel.com [143.185.63.58])
-	by pan.ch.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.44 2001/10/01 19:10:43 root Exp $) with SMTP id SAA13391
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2001 18:21:02 GMT
-Message-ID: <7C0E66E1B97BD5119B120002A50A63D22E41E6@hasmsx101.iil.intel.com>
-From: "Kremer, Alex" <alex.kremer@intel.com>
-To: "'dsaxena@mvista.com'" <dsaxena@mvista.com>, linux-mtd@lists.infradead.org
-Subject: RE: TE28F320B3B madness :(
-Date: Thu, 25 Oct 2001 20:20:59 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+Received: from recycle.lbl.gov ([131.243.169.124])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15wrWC-0006IJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2001 21:54:24 +0100
+Message-ID: <20011025140330.A3495@recycle.lbl.gov>
+Date: Thu, 25 Oct 2001 14:03:30 -0700
+From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
+To: linux-mtd@lists.infradead.org
+Subject: TE28F320B3B madness :(
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,49 +20,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This chip should work.
-Larry Doolittle recently (couple of weeks ago) added support for the B3
-(Boot Block) line
-via jedec_probe and cfi_cmdset_001. This is the best way to do it.
+Alex Kremer wrote:
 
-You will need to replace  "cfi_probe" with "jedec_probe" in do_map_probe() 
-from the maps driver (drivers/mtd/maps) you are using.
+> Larry Doolittle recently (couple of weeks ago) added support for the B3
+> (Boot Block) line via jedec_probe and cfi_cmdset_001.
 
-Kreso
+Yes, I did this for my own use, but Russell King did so
+independently, and his version got checked in to CVS.
+Plus, he knows what he's doing, so his version is
+better (after I had him clarify the part numbers).
 
+> You will need to replace  "cfi_probe" with "jedec_probe" in do_map_probe()
+> from the maps driver (drivers/mtd/maps) you are using.
 
+That's quite true.  Correct me if I'm wrong, but I think it
+should _always_ be safe to probe for JEDEC first, and CFI
+second.  So _all_ the mtd/maps drivers should do this,
+and there should in fact be a systematic method that they
+all use.  Like having a "map_flash" virtual probe that calls
+first "jedec" and then "cfi_probe", if and only if each in
+turn is compiled into the kernel.
 
-| -----Original Message-----
-| From: Deepak Saxena [mailto:dsaxena@mvista.com]
-| Sent: Thu, October 25, 2001 7:20 PM
-| To: linux-mtd@lists.infradead.org
-| Subject: TE28F320B3B madness :(
-| 
-| 
-| 
-| I've got a TE28F320B3B chip on an IXP board I'm porting to and 
-| seem to be blessed with the unluck that many have.  I've skimmed
-| through the archives and it seems that various people have different
-| patches/methods that make this chip work. What is the status of 
-| support for this chip? 
-| 
-| Markings:
-| 
-| TE28F320
-| B3BC90
-| A1104042
-| (C)1999
-| 
-| Tnx,
-| ~Deepak
-| 
-| -- 
-| Deepak Saxena, Code Monkey - Ph:480.517.0372 Fax:480.517.0262 
-| MontaVista Software - Powering the Embedded Revolution - 
-www.mvista.com
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+      - Larry
