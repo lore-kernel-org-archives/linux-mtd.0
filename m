@@ -1,41 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13WJ60-0000oy-00
-	for mtd-list@infradead.org; Tue, 05 Sep 2000 14:49:04 +0100
-Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
+	id 13WO3M-00020p-00
+	for mtd-list@infradead.org; Tue, 05 Sep 2000 20:06:40 +0100
+Received: from amdext2.amd.com ([163.181.251.1])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13WJ5y-0000os-00
-	for mtd@infradead.org; Tue, 05 Sep 2000 14:49:03 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39B4F959.EA4AFEBD@cotw.com> 
-References: <39B4F959.EA4AFEBD@cotw.com>  <21668.968158401@passion.cygnus.co.uk> 
-To: "Steven J. Hill" <sjhill@cotw.com>
-Cc: mtd@infradead.org
-Subject: Re: Naming of functions in 'mtdcore.c' 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Sep 2000 14:48:48 +0100
-Message-ID: <29781.968161728@passion.cygnus.co.uk>
+	id 13WO3K-00020j-00
+	for mtd@infradead.org; Tue, 05 Sep 2000 20:06:38 +0100
+Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id OAA28913
+	for <mtd@infradead.org>; Tue, 5 Sep 2000 14:06:01 -0500 (CDT)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id OAA04802
+	for <mtd@infradead.org>; Tue, 5 Sep 2000 14:06:01 -0500 (CDT)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F0AC@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: offsetting fmc->flash_start to accommodate the BIOS
+Date: Tue, 5 Sep 2000 14:05:55 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+in jffs_fm.c, line 53, flash_start is set to 0.  Will the flash
+code still work if flash_start is set to some other value?  I
+realize that flash_size would also need to be modified.
 
-sjhill@cotw.com said:
-> For the 'register_mtd_user' and 'unregister_mtd_user' functions would
-> renaming them to something like 'add_mtd_notify_callbacks' and
-> 'del_mtd_notify_callbacks' be more understandable? At a first read it
-> would to me. Comments? 
+Or is there some better way to set up MTD/JFFS for a CFI flash
+chip that has both BIOS and the root filesystem on it?
 
-You may be right. I already changed it from {un,}register_mtd_notifier
-to what it is at the moment because I thought it made it clearer. But I'm 
-not really the right person to judge. 
-
-Now it's in 2.4 like that, though, it may be best to leave it as-is.
-
---
-dwmw2
-
-
+Mark Langsdorf
+Advanced Micro Devices, Inc             Tel: 512.602.3756
+5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+Austin, TX 78741                        mark.langsdorf@amd.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
