@@ -1,16 +1,20 @@
-Received: from [64.47.34.180] (helo=minotaur.hekimian.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D4Ggd-0005bX-AY
-	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 05:57:40 -0500
-Message-ID: <421DB31B.7000900@users.sourceforge.net>
-Date: Thu, 24 Feb 2005 05:57:31 -0500
-From: Vern Sauder <vsauder@users.sourceforge.net>
-MIME-Version: 1.0
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D4H1D-0005oO-R7
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 06:18:56 -0500
+From: Thomas Brinker <thomas.brinker@gmx.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Date: Thu, 24 Feb 2005 12:15:58 +0100
+References: <200502221219.41518.thomas.brinker@gmx.de>
+In-Reply-To: <200502221219.41518.thomas.brinker@gmx.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 stats
-Reply-To: vsauder@users.sourceforge.net
+Content-Disposition: inline
+Message-Id: <200502241215.58195.thomas.brinker@gmx.de>
+Subject: Re: mounting jffs2 rw
+Reply-To: thomas.brinker@gmx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+Am Dienstag, 22. Februar 2005 12:19 schrieb Thomas Brinker:
+> Hi!
+>
+> I have problems in remounting a jffs2 as read/writeable.
+>
+> Currently it mounts successfully as root-fs but in ro, which is no wonder.
+> But how can I change it to rw?
+>
+>
+> Here is what I have tried so far:
+> ---===---
+> # cat /proc/version
+> Linux version 2.6.9-uc0 (thomas@mobile) (gcc version 3.4.3) #141 Mon Feb 21
+> 16:01:36 CET 2005 # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 00400000 00010000 "phys_mapped_flash"
+> # ls -l /dev/mtd*
+> crw-r--r--    1 root     root      90,   0 Feb  7  2005 /dev/mtd0
+> brw-r--r--    1 root     root      31,   0 Feb  7  2005 /dev/mtdblock0
+> crw-r--r--    1 root     root      90,   1 Feb  7  2005 /dev/mtdr0
+> # mount
+> /dev/rom0 on / type jffs2 (ro,noatime)                [<--- rom0 is strange]
+# ls -l rom0
+brw-r--r--    1 root     root      31,   0 Feb 22  2005 rom0
+# ls -l mtdblock0
+brw-r--r--    1 root     root      31,   0 Feb 22  2005 mtdblock0
 
-I am working on a "failed" PPC system with a 2.4.25 kernel. I saw a 
-lockup where the JFFS2 GC took all the CPU time and the application was 
-hung. All writes to the file system failed causing catastrophic problems.
+> /proc on /proc type proc (rw,nodiratime) 
+> none on /dev/pts type devpts (rw)
+> none on /sys type sysfs (rw)
+> ram on /var type ramfs (rw)
+> # mount -o remount,rw /dev/mtdblock0 /
+> mount: Mounting /dev/mtdblock0 on / failed: No such file or directory
+> # mount -o remount,rw /dev/rom0 /
+> mount: Mounting /dev/rom0 on / failed: No such file or directory
+> # mount -o remount,rw /
 
-On the way to fixing the application to not completely choke and go 
-haywire, I updated the MTD and JFFS2 drivers to the snapshot as of 16 
-Feb and now I am having different problems. One thing was that the patch 
-did not apply cleanly; I had to modify several files to fit it into my 
-kernel. I noticed that the mtd driver seems much faster (writes) which 
-was one of my main goal. I was testing the FLASH to verify that the 
-lockup wasn't the MTD failing to write to the FLASH. There were several 
-instances on the FLASH that seemed to show a one bit difference (always 
-a zero that should have been a one). The new drivers sped up the 
-testing. I fixed some utilities/scripts I was using and it looks like 
-the FLASH is writing and reading fine now.
+Adding 'rw' to the kernel command line solves the problem.
 
-I seem to have lost ZLIB compression. It is enabled but the JFFS2 debug 
-says it doesn't know anything about compression 6. It fails to mount it 
-as the root fs but it will mount it later but the data is not right 
-then. I thought I saw somewhere that there was a /proc entry that showed 
-the jffs2 compressors currently loaded. I can't find it now. Is the 
-JFFS2_PROC meaningless for the time being?
-
-I am ultimately looking for complete stats on the JFFS2 to tell what is 
-going on in terms of fragmentation and GC. Our application may be 
-overloading the JFFS2 by writing too fast or something like that. I 
-accidentally found significant info from the U-Boot prompt that looks at 
-first glance like it is a good start. Does anyone else have such a tool? 
-Is it in JFFS2 and I haven't found it yet?
-
-Vern
+Regards
+Thomas
