@@ -1,42 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Jmc5-0000ku-00
-	for mtd-list@infradead.org; Wed, 02 Aug 2000 01:42:25 +0100
-Received: from mail-a.bezeqint.net ([192.115.106.23] helo=mail.bezeqint.net)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13Jmc3-0000ko-00
-	for mtd@infradead.org; Wed, 02 Aug 2000 01:42:24 +0100
-Received: from udi-40j7it3m8rn (bzq-182-67.bezeqint.net)
- by mail.bezeqint.net (Sun Internet Mail Server sims.3.5.2000.03.23.18.03.p10)
- with SMTP id <0FYN00FJB388V0@mail.bezeqint.net> for mtd@infradead.org; Wed,
- 2 Aug 2000 03:40:56 +0300 (IDT)
-Date: Wed, 02 Aug 2000 03:43:15 +0200
-From: Udi Finkelstein <udif@bigfoot.com>
-Subject: Build your own DOC2000 programmer board
-To: mtd@infradead.org
-Message-id: <d4veosoh6eev27el5gqgiul90u3lk9jfjq@4ax.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: quoted-printable
+	id 13JwT1-0001vw-00
+	for mtd-list@infradead.org; Wed, 02 Aug 2000 12:13:43 +0100
+Date: Wed, 2 Aug 2000 13:13:34 +0200 (CEST)
+From: Alexander Larsson <alex@cendio.se>
+To: Markus Thiesmeyer <mthi@gmx.de>
+cc: David Woodhouse <dwmw2@infradead.org>, mtd@infradead.org
+Subject: Re: Is JFFS a full featured filesystem?
+In-Reply-To: <002a01bffbd5$6e5da560$fd8907d4@gallien>
+Message-ID: <Pine.LNX.3.96.1000802130539.27452A-100000@biffen.cendio.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello everyone,
+On Tue, 1 Aug 2000, Markus Thiesmeyer wrote:
 
-You might want to take a look at a page I've finally uploaded:
+> Hello,
+> 
+> I've integrated the JFFS into a 2.2.16 kernel and it works almost fine.
+> But I cannot use an editor like pico to create a file on a JFFS-filesystem. It leads to an serious error. Other operations like copying or moving files are no problem.
+> So I've written a small program which uses file-mapping to change given files. And the results were very strange: When I run this application it should open a file called map.txt and change the first bytes into the sequence "abcdef...xyz". But when I read the file after I've run that application, the file seems to be unchanged. Changes appear first when I unmount that fs and mount in again. Then the file looks like a concatenation of the unchanged and the changed version.
+> 
+> Is this a bug? And if it is a bug, is this a known bug?
 
-http://www.geocities.com/SiliconValley/Campus/3216/doc2000/st02doc2000.ht=
-m
+Well, i haven't had time to work on jffs lately so i haven't talked much
+about this... But, as currently implemented, writing to mmaped jffs files
+is serioiusly broken. Of the address space operations only readpage is
+implemented. To get a correcly working mmap implementation writepage and
+prepare_write_page (or whatever it's called, don't have source handy right
+now) should be implemented. This could cause consistancy problems though,
+because we're not using the (possibly modified) mmaped data when writing
+directly to a file, we also in some way guarantee that all writes are
+done to the log in the correct order. It will also be an inefficient way
+to write data to jffs, since we have to rewrite whole pages instead of
+only the written part.
 
-I needed a DOC2000 programmer, so I built one by hacking at old ST02 8 =
-bit ISA
-SCSI controller I had lying around. The card had a 28 pin EPROM socket, =
-and
-all I needed to do was add/modify a few pins to change it into a 32 pin =
-R/W
-socket.
+All this, and the fact that the missing needed mutex around the writing to
+the log makes the jffs filesystem quite seriously borked. It can be used,
+but it's *clearly* marked experimental in the config, and should be
+treated so.
 
-Udi
+/ Alex (On vacation)
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
