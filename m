@@ -1,18 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sphere.barak.net.il ([212.150.48.98])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16j0F0-0005MM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 15:55:38 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <AEA9DCA73595D411A6D4009027DE9C5E019BFA43@MSI-EX6> 
-References: <AEA9DCA73595D411A6D4009027DE9C5E019BFA43@MSI-EX6> 
-To: Vadim Khmelnitsky <VadimK@m-sys.com>
-Cc: 'Herman Theron' <HEtheron@csir.co.za>, strtok@hotmail.com,
-    linux-mtd@lists.infradead.org
-Subject: Re: Lost DOC2000 after trying to load grub 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Mar 2002 16:01:14 +0000
-Message-ID: <12182.1015516874@redhat.com>
+	id 16j0OT-0005NS-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 16:05:25 +0000
+Message-ID: <004301c1c5f3$92c9d470$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "Juergen Brunk" <juergen.brunk@gmx.de>
+Cc: "Linux-mtd List" <linux-mtd@lists.infradead.org>,
+	"Linux-Arm List" <linux-arm@lists.arm.linux.org.uk>,
+	"JFFS dev list" <jffs-dev@axis.com>
+References: <002701c1c5dc$c9ba47b0$1900000a@v.vmanage.com> <3C876F87.2010903@gmx.de>
+Subject: Re: dump for jffs2
+Date: Thu, 7 Mar 2002 18:17:27 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,15 +27,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-VadimK@m-sys.com said:
-> If i understand eraseall utility correctly it erases the whole
-> diskonchip completely . After that bad block table is lost and it's
-> unsafe to use such diskonchip afterwards . 
+i did not tried the -z option. just the other options. does it matter ?
+i tried the latest version of rsync and your suggest also (except -z) , but
+the same behaviour !
+try it yourself, with root-style-links , and check first that the target
+file does not exist at the target dir structure
 
-You are correct. Neither nftl_format or eraseall functions are safe.
+(i synced /bin/busybox links. busybox does not exist in std. linux distrib.)
 
-How feasible would it be to port the M-Systems DFORMAT utility to work 
-under Linux through the MTD driver? 
+Gad
+----- Original Message -----
+From: "Juergen Brunk" <juergen.brunk@gmx.de>
+To: "Gad Hayisraeli" <gad@syete.co.il>
+Cc: "Linux-mtd List" <linux-mtd@lists.infradead.org>; "Linux-Arm List"
+<linux-arm@lists.arm.linux.org.uk>; "JFFS dev list" <jffs-dev@axis.com>
+Sent: Thursday, March 07, 2002 3:47 PM
+Subject: Re: dump for jffs2
 
---
-dwmw2
+
+Hello!
+
+> why i need it ? cause i used rsync and it RUINED my links !
+> every link to /bin/something has become to bin/somehting !!
+> (and i tried every option ijn this damn program to solve this, but
+nada...)
+
+
+  rsync -avz foo:src/bar /data/tmp
+
+        this would recursively transfer all files from the  direc­
+        tory  src/bar  on  the  machine foo into the /data/tmp/bar
+        directory on the local machine. The files are  transferred
+        in  "archive"  mode,  which  ensures  that symbolic links,
+                                                   ^^^^^^^^^^^^^^
+        devices, attributes, permissions, ownerships etc are
+        preserved in the transfer.
+        ^^^^^^^^^
+
+May this help you?
+
+Regards, Juergen
+
+
+_______________________________________________
+http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm
+http://www.arm.linux.org.uk/armlinux/mailinglists.php
+Please visit the above addresses for information on this list.
