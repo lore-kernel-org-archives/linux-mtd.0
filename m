@@ -1,37 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143N3B-0001Fr-00
-	for mtd-list@infradead.org; Tue, 05 Dec 2000 18:42:49 +0000
-Date: Tue, 5 Dec 2000 13:42:42 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <ian.nelson@echostar.com>, "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: Possibly a FAQ or stupid question 
-In-Reply-To: <8883.976037403@redhat.com>
-Message-ID: <Pine.LNX.4.30.0012051340230.2601-100000@xanadu.gn.com>
+	id 143Nvk-0001TV-00
+	for mtd-list@infradead.org; Tue, 05 Dec 2000 19:39:12 +0000
+Received: from acl.lanl.gov ([128.165.147.1])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 143Nvj-0001TN-00
+	for mtd@infradead.org; Tue, 05 Dec 2000 19:39:11 +0000
+Date: Tue, 5 Dec 2000 12:38:58 -0700 (MST)
+From: Ronald G Minnich <rminnich@lanl.gov>
+To: mtd@infradead.org, linuxbios@lanl.gov
+Subject: Re: Problems with r/w on mtdblock0 
+In-Reply-To: <8609.976030593@redhat.com>
+Message-ID: <Pine.LNX.4.21.0012051238300.20717-100000@mini.acl.lanl.gov>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-
 On Tue, 5 Dec 2000, David Woodhouse wrote:
 
->
-> ian.nelson@echostar.com said:
-> > Can I just dd to the flash?  Assuming that my AMD flash works with CFI...
->
-> No. you have to use the MEMERASE ioctl first.
+> 
+> nico@cam.org said:
+> >  It does.
+> 
+> OK, I revert to my previous stance of having no clue then :)
 
-Well...  not if using /dev/mtdblock.
+I was confused too. All I can tell you is I have seen cases where the
+write doesn't "stick".
 
-To update my kernel in flash I simply use
-
-	cp zImage /dev/mtdblock1
-
-
-Nicolas
+ron
 
 
 
