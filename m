@@ -1,26 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2])
-	by pentafluge.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CQD36-0000Ly-LM
-	for linux-mtd@lists.infradead.org; Fri, 05 Nov 2004 22:59:17 +0000
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1CQD35-0006ik-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
-Received: from dsl081-242-215.sfo1.dsl.speakeasy.net ([64.81.242.215])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
-Received: from dave-gnus by dsl081-242-215.sfo1.dsl.speakeasy.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Nov 2004 23:59:15 +0100
+Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
+	helo=xanadu.home)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CQG0K-0006Gv-MD
+	for linux-mtd@lists.infradead.org; Fri, 05 Nov 2004 21:08:37 -0500
+Received: from localhost (nico@localhost)
+	by xanadu.home (8.11.6/8.11.6) with ESMTP id iA628ZU17410
+	for <linux-mtd@lists.infradead.org>; Fri, 5 Nov 2004 21:08:35 -0500
+Date: Fri, 5 Nov 2004 21:08:35 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
 To: linux-mtd@lists.infradead.org
-From: David Wuertele <dave-gnus@bfnet.com>
-Date: Fri, 05 Nov 2004 14:59:11 -0800
-Message-ID: <m3wtwznbr4.fsf@bfnet.com>
-References: <m33bzonifa.fsf@bfnet.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: news <news@sea.gmane.org>
-Subject: Re: in situ MTD upgrade from userspace (kernel, CRAMFS, YAFFS)
+Message-ID: <Pine.LNX.4.61.0411052041230.5250@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: MTD and XIP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> 1.  There are many other processes running at the time of the upgrade.
->     They are running out of CRAMFS.  As I overwrite the CRAMFS
->     partition, is it possible that my write could get corrupted?
->     Perhaps by crashing programs that inadvertently do weird syscalls?
 
-Corollary question:
+Just to let you all know that I committed to CVS my work on making MTD 
+deal with flash used for XIP purpose.  At the moment it only supports 
+Intel compatible flash on a SA11x0 or PXA2xx based system, but it should 
+be easy to extend to other configurations as well.
 
-  As my own userspace process overwrites the CRAMFS block that
-  contains that process's program, how can I ensure that the process
-  doesn't get hosed until after it has a chance to reboot the system?
+Also for those interested in making their kernel XIP on ARM, you can 
+look at the following patches against Linux-2.6.9:
+
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=2154/1
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=2160/1
+
+Enjoy!
+
+
+Nicolas
