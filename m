@@ -1,16 +1,16 @@
-Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16g3wy-0006xJ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 13:16:52 +0000
-Message-ID: <003201c1bf92$97c3b340$0101a8c0@dellc800>
-From: "Mark Meade" <mark@lakeshoremicro.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: I need your help . 
-Date: Wed, 27 Feb 2002 08:26:46 -0500
+Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16g7Jb-0007Ck-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 16:52:27 +0000
+Date: Wed, 27 Feb 2002 09:03:45 -0800 (PST)
+From: Adam Wozniak <awozniak@comdev.cc>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: <linux-mtd@lists.infradead.org>
+Subject: Re: MTD CVS update: 'mtd/fs/jffs2 scan.c'
+In-Reply-To: <E16fyzH-0002yf-00@infradead.org>
+Message-ID: <Pine.LNX.4.33.0202270903150.14708-100000@rangers.comdev.cc>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,12 +22,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hiram@thyme.com.tw said:
+On Wed, 27 Feb 2002, David Woodhouse wrote:
+> Update of /home/cvs/mtd/fs/jffs2
+> In directory infradead.org:/tmp/cvs-serv11435
+>
+> Modified Files:
+> 	scan.c
+> Log Message:
+> Patch from <Joakim.Tjernlund@lumentis.se> - ignore obsolete nodes during mount.
 
-> Sorry, we don,t support UnitSizeFactor of !=1 yet
+Should I try this in the 2_4_branch as well?
 
-I've seen this happen with the latest versions (5.0) of the M-Systems firmware.  Using the
-4.2 version (still available at www.m-sys.com) makes this problem go away.
-
-To clarify, use the DOS DFORMAT utility with the DOC42.EXB file.  The TrueFFS driver for
-Linux is *not* needed - as this is what the open-source MTD drivers are replacing.
+--Adam
+-- 
+Adam Wozniak (KG6GZR)   COM DEV Broadband - Digital and Software Systems
+awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
+                        http://www.comdev.cc
+                        Voice: (805) 544-1089       Fax: (805) 544-2055
