@@ -1,21 +1,20 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AD2sx-0006Vz-0c
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Oct 2003 15:25:51 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Subash Kalbarga <Subashk@ami.com>
-In-Reply-To: <8CCBDD5583C50E4196F012E79439B45C046EBB01@atl-ms1.megatrends.com>
-References: 
-	 <8CCBDD5583C50E4196F012E79439B45C046EBB01@atl-ms1.megatrends.com>
-Message-Id: <1067005143.6281.245.camel@tubarao>
-Mime-Version: 1.0
-Date: 24 Oct 2003 08:19:04 -0600
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: amd_flash.c faster than cfi_cmdset_0002.c
-Reply-To: tharbaugh@lnxi.com
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1ADImw-00085R-Os
+	for <linux-mtd@lists.infradead.org>; Sat, 25 Oct 2003 08:24:43 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Alice Hennessy <ahennessy@mvista.com>,
+	linux-mtd@lists.infradead.org
+Date: Sat, 25 Oct 2003 20:29:25 +1300
+References: <3F984931.E6409ED7@mvista.com>
+In-Reply-To: <3F984931.E6409ED7@mvista.com>
+MIME-Version: 1.0
+Message-Id: <20031025072323.378625DF3@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Re: Different nand interface
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-10-24 at 06:39, Subash Kalbarga wrote:
-> Hi all
-> 
-> We have an AM29LV641MH 8 meg flash on board and looking at performance,
-> using amd_flash.c seems to make things considerably faster when writing to
-> the flash.
-> 
-> I am using the 2.4.18 kernel.
+On Friday 24 October 2003 10:33, Alice Hennessy wrote:
+> Hi,
+>
+> I need some advice on how to support a board that has a hardware state
+> machine
+> that creates a parallel bus style interface to the NAND chip.  It is
+> totally
+> different from the standard 8 IO signal controls.   It can do write_byte
+> and read_byte
+> put requires the offset into the flash as a parameter.    nand.c is
+> fairly modular, allowing
+> several functions to be coded in the hardware file but there is no
+> current method of
+> passing an offset into, say, read_byte and write_byte unless the
+> nand_chip priv field
+> can be used (via mtd->priv).   Do you think the standard nand.c can be
+> used in this
+> case or should I create a specific one for this board?
+>
+> Any advice would be appreciated.
 
-The first thing I recommend is moving to something newer: both kernel
-and MTD drivers.  The latest version of cfi_cmdset_0002.c is r1.91.  I
-have no idea what is in the 2.4.18 kernel (and I'm too lazy to go find
-out).
+I would expect the existing nand.c can be used though you might have to do 
+some clever stuff to hide your flash behind it.
 
-Once you do some testing with the latest version then we will have a
-basis for performance comparison.  Let me know what you find.
+This is definitely the prefered way to get going in the beginning because it 
+will help comparmentalise things that inevitably go wrong when bringing up 
+new hardware.
 
--- 
-Thayne Harbaugh
-Linux Networx
+Once your system is up and running you might find that you want to replace 
+nand.c for efficiency reasons or whatever, but quite likely this won't be 
+required (and at least you'll have a way better understanding of where you 
+need to go).
+
+G'luck
+
+-- CHarles
