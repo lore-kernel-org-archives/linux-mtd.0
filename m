@@ -1,20 +1,22 @@
-Received: from pu90.internetdsl.tpnet.pl ([80.55.20.90]
-	helo=evo.evopolska.com)
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19NVuF-0004Q8-9i
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Jun 2003 11:54:11 +0100
-Received: from evo.evopolska.com (localhost.localdomain [127.0.0.1])
-	by evo.evopolska.com (8.12.5/8.12.5) with ESMTP id h54AubTe013521
-	for <linux-mtd@lists.infradead.org>; Wed, 4 Jun 2003 12:56:37 +0200
-Received: from localhost (angainor@localhost)h54AuX51013517
-	for <linux-mtd@lists.infradead.org>; Wed, 4 Jun 2003 12:56:35 +0200
-Date: Wed, 4 Jun 2003 12:56:33 +0200 (CEST)
-From: angainor@evo.evopolska.com
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.44.0306041127320.8546-100000@evo.evopolska.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: MTD drivers for DoC Millenium Plus
+	id 19NXNI-0004gQ-AO
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Jun 2003 13:28:16 +0100
+Date: Wed, 4 Jun 2003 14:28:36 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20030604122836.GA19246@wohnheim.fh-wedel.de>
+References: <1054715689.17921.183.camel@passion.cambridge.redhat.com>
+	<20030604095754.GB27112@wohnheim.fh-wedel.de>
+	<1054721184.17921.212.camel@passion.cambridge.redhat.com>
+	<1054721328.17921.214.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1054721328.17921.214.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Execute in place.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I'm trying to set up a single boot solution based
-on DiscOnChip Millenium Plus and Linux (yeah, I
-know... I should use a flash chip instead ;)
-not up to me.) No real problems when doing that 
-with M-Systems binary linux driver, still my boss 
-would rather use a GPLd driver. 
-I have experienced some problems with doc2001plus 
-and inftl drivers and I hoped you could help me out. 
-And yes, I know that the inftl driver is quite new...
-I could work on it for some time, if it wouldn't be
-too much time and if I knew where to start.
+On Wed, 4 June 2003 11:08:48 +0100, David Woodhouse wrote:
+> On Wed, 2003-06-04 at 11:06, David Woodhouse wrote:
+> > On Wed, 2003-06-04 at 10:57, Jörn Engel wrote:
+> > > For my flash chips, an erase operation is in the ballpark of a second.
+> > > That is very long for interrupts, so I would assume, we never complete
+> > > an erase without being interrupted.  Does this mean that a formerly
+> > > suspended and resumed erase operation completes quicker than a fresh
+> > > one? 
+> > 
+> > That appears to be the case, yes. Certainly, in the common case of it
+> > being 10ms before you get the next timer tick and consider rescheduling,
+> > the chip's made enough progress that it doesn't have to start again from
+> > scratch.
+> 
+> Oh, and bear in mind that if erases were happening and you were trying
+> to read from the filesystem, that was causing many many erase suspends
+> to happen too anyway -- if this was a problem, it would have bitten us
+> as soon as we started suspending erases to permit reads to happen.
 
-First of all, docprobe successfuly identifies DOCMP,
-but total size of the DoC is only half of its actual
-size (64MiB chip is identified as 32MiB).
-I have studied the "DiskOnChip 2000 128Mb problem"
-thread here on list and tried to change the
-MAX_CHIPS_MPLUS define to something else than 1.
-Well, this way I got an 128MiB disk, then a
-256MiB one, and so on... :). way too many chips found.
-I am able to correctly read the /dev/mtd0 device
-(char) with doc2001plus driver. However, 
-insmod inftl has no effect. Looking into the code
-and little debugging showed that:
+Right.  The great goddess Empiria smiles upon us.
 
-1. inftlcore.c
+Jörn
 
-        if (mtd->ecctype != MTD_ECC_RS_DiskOnChip)
-                return;
-
-   does indeed return. I guess it shouldn't...
-   I don't yet understand the full architecture
-   of linux MTD driver, but a quick grep showed,
-   that mtd->ecctype is never actually set, except
-   for mtd->ecctype = MTD_ECC_SW; in nand.c.
-   Is this value acquired from the chip directly?
-   If so, there must be something wrong there.
-   I commented out that part to see what's next ;)
-
-	Jun  4 13:36:43 (none) syslog.warn klogd: INFTL: Media Header ->
-	Jun  4 13:36:43 (none) syslog.warn klogd:     bootRecordID          = BNAND
-	Jun  4 13:36:43 (none) syslog.warn klogd:     NoOfBootImageBlocks   = -1
-	Jun  4 13:36:43 (none) syslog.warn klogd:     NoOfBinaryPartitions  = 1
-	Jun  4 13:36:43 (none) syslog.warn klogd:     NoOfBDTLPartitions    = 1
-	Jun  4 13:36:43 (none) syslog.warn klogd:     BlockMultiplerBits    = 0
-	Jun  4 13:36:43 (none) syslog.warn klogd:     FormatFlgs            = 1
-	Jun  4 13:36:43 (none) syslog.warn klogd:     OsakVersion           = 0x30343135
-	Jun  4 13:36:43 (none) syslog.warn klogd:     PercentUsed           = 98
-	Jun  4 13:36:43 (none) syslog.warn klogd:     PARTITION[0] ->
-	Jun  4 13:36:43 (none) syslog.warn klogd:         virtualUnits    = 10
-	Jun  4 13:36:43 (none) syslog.warn klogd:         firstUnit       = 0
-	Jun  4 13:36:43 (none) syslog.warn klogd:         lastUnit        = 0
-	Jun  4 13:36:43 (none) syslog.warn klogd:         flags           = 0x20000000
-	Jun  4 13:36:43 (none) syslog.warn klogd:         spareUnits      = 0
-	Jun  4 13:36:43 (none) syslog.warn klogd: INFTL: Media Header Parition 0 
-sanity check failed
-	Jun  4 13:36:43 (none) syslog.warn klogd:     firstUnit 0 : lastUnit 0  >  
-virtualUnits 0
-	Jun  4 13:36:43 (none) syslog.warn klogd: INFTL: could not find valid boot record?
-	Jun  4 13:36:43 (none) syslog.warn klogd: INFTL: could not mount device	
-   
-   Basically, the start is ok and does reflect the
-   reality. So what goes wrong afterwards?
-
-2. doc2000.h
-   
-   I found the following definition:
-
-	#define DoC_Mplus_OutputControl         0x1002
-
-   Shouldn't this be rather:
-
-	#define DoC_Mplus_OutputControl         0x100c
-
-   This is what I found in DOC_Millennium_Plus_DS_Rev1.7.pdf.
-   0x1002 is actually NOP. I don't think this will help me
-   much though ;)
+-- 
+The cheapest, fastest and most reliable components of a computer
+system are those that aren't there.
+-- Gordon Bell, DEC labratories
