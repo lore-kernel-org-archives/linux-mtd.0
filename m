@@ -1,24 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from sombre.pacific.net.sg ([203.120.90.146])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17raUz-0003AF-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 09:47:53 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H2M001UPLQYDI@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 18 Sep 2002 10:47:22 +0200 (MEST)
-Date: Wed, 18 Sep 2002 10:46:41 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: jffs2 filesystem
-In-reply-to: <001d01c25eea$0a65b0f0$b200a8c0@paulhome>
-To: paul@maypaul.com, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200209181046.41944.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=big5
-Content-transfer-encoding: 7BIT
-References: <005601c25ec7$0b5f8f30$9000010a@paulwong>
- <200209180805.33027.tglx@linutronix.de>
- <001d01c25eea$0a65b0f0$b200a8c0@paulhome>
+	id 17rbO5-0003FY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 10:44:49 +0100
+Received: from smtp2.pacific.net.sg (smtp2.pacific.net.sg [203.120.90.169])
+          by sombre.pacific.net.sg with ESMTP
+          id g8I9iGV15062 for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 17:44:17 +0800
+Received: from pacific.net.sg ([61.8.245.182])
+          by smtp2.pacific.net.sg with ESMTP
+          id g8I9iFE30405 for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 17:44:16 +0800
+Message-ID: <3D88F3B4.CAEC541@pacific.net.sg>
+Date: Wed, 18 Sep 2002 17:44:20 -0400
+From: Hor Meng Yoong <yhm@pacific.net.sg>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: DiskOnChip 2000 with Mandrake Linux with kernel 2.4.18
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: base64
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,22 +27,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wednesday 18 September 2002 10:04, paul@maypaul.com wrote:
-> should "mount -t jffs2 /dev/mtdblock1 /mnt/bla" ?
-Sure, sorry.
-> > and copy your data to the filesystem.
-> > 2. Use a bootloader utility, which skips the bad block.
-> any bootloader utility recommend? is LILO or GRUB?
-Neither LILO nor GRUB support this AFAIK
-> > 3. Write a small utility, which can handle bad blocks
-> is the utility compile with the nand driver?
-No it has to be a user space application. I'm not sure, if it is possible to 
-do it right now with the existing library functions. I will check this today 
-in the afternoon
-
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+SGk6DQoNCiAgSSBuZWVkIHlvdXIgYWR2aWNlIG9uIHVzaW5nIERpc2tPbkNoaXAgMjAwMCB1
+c2luZyBMaW51eCB3aXRoIGtlcm5lbA0KdmVyc2lvbiAyLjQuMTguDQoNCkN1cnJlbnRseSwg
+SSBoYXZlIGluc3RhbGxlZCBMaW51eCB3aXRoIE1URCBjb21waWxlZC4gIE15IGRpc3RyaWJ1
+dGlvbiBpcw0KTWFuZHJha2UgOC4xDQpJIHVzZWQgZ3J1YiB0byBib290IHRoZSBzeXN0ZW0u
+IEkgZW5jb3VudGVyZWQgdGhlIGZvbGxvd2luZyBzeW1wdG9tczoNCg0KYSkgIFRoZSBET0Mg
+ZmlybXdhcmUgd2FzIERPQzQyLmZmZiAoZHVtbXkgZmlybXdhcmUpDQogICAgIC0gSSB0cmll
+ZCB0byBib290IG5vcm1hbCBrZXJuZWwsIHRoZSBzeXN0ZW0ga2VwdCBvbiByZXNldHRpbmcN
+Cml0c2VsZi4NCiAgICAgLSBJIHRyaWVkIHRvIGJvb3QgdGhlIGtlcm5lbCB3aXRoIGZhaWxz
+YWZlIG1vZGUsIGl0IGlzIG9rYXkuIEJ1dCBJDQpjb3VsZCBub3Qgc2VlIHRoZSBET0MgdXNp
+bmcgZG1lc2cgY29tbWFuZC4NCg0KYikgIFRoZSBET0MgZmlybXdhcmUgd2FzIERPQzQyLkVY
+Qg0KICAgICAgLSBJIHRyaWVkIHRvIGJvb3Qgbm9ybWFsIG9yIGZhaWxzYWZlIG1vZGUsIGlu
+IGJvdGggY2FzZXMsIGdydWINCnRvbGQgbWU6DQogICAgICAgICAgICJrZXJuZWwgKGhkMCww
+KS9ib290L3ZtbGludXogcm9vdD0vZGV2L2hkYTEgZGV2ZnM9bW91bnQNCmZhaWxzYWZlIG1l
+bT0xMjhNDQogICAgICAgICAgICAgICAgIFtMaW51eC1iekltYWdlLCAgc2V0dXA9MHgxNDAw
+LCAgc2l6ZT0weGZlNmM4XQ0KICAgICAgICAgICAgICAgICBFcnJvciAyODogU2VsZWN0ZWQg
+aXRlbSBjYW5ub3QgZml0IGludG8gbWVtb3J5Ii4NCg0KDQpDb3VsZCB5b3UgcmVwbHkgZGly
+ZWN0bHkgdG8gbWUgYXMgSSBjb3VsZCBub3Qgc3Vic2NyaWJlIHRvIHRoZSBtYWlsaW5nDQps
+aXN0IGFzIHRoZSBteHZlcmlmeSBzY3JpcHQgY291bGQgbm90DQpjb25uZWN0IHRvIG15IG1h
+aWwgc2VydmVyLg0KDQpUaGFua3MNCllvb25nIEhvciBNZW5nDQoNCg==
