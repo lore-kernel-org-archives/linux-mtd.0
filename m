@@ -1,16 +1,19 @@
-Received: from email.aftek.com ([128.121.126.111])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15EO6W-0004eT-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2001 05:36:04 +0100
-Message-ID: <001e01c0fd31$331d58c0$4f00000a@ashwin>
-From: "Ashwin" <ashwinp@aftek.com>
-To: <linux-mtd@lists.infradead.org>, <jffs-dev@axis.com>
-Subject: jffs mount fails
-Date: Mon, 25 Jun 2001 10:11:44 +0530
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from mail.2d3d.co.za ([196.14.185.200])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15EQxw-0004nx-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2001 08:39:25 +0100
+Date: Mon, 25 Jun 2001 09:45:55 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: Russ Dill <Russ.Dill@asu.edu>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: safe flash filesystem
+Message-ID: <20010625094555.D32358@crystal.2d3d.co.za>
+References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com> <20010621163537.A26714@crystal.2d3d.co.za> <3B32668F.8020000@asu.edu> <20010622102154.E1828@crystal.2d3d.co.za> <3B337EF5.3030009@asu.edu>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JwB53PgKC5A7+0Ej"
+Content-Disposition: inline
+In-Reply-To: <3B337EF5.3030009@asu.edu>; from Russ.Dill@asu.edu on Fri, Jun 22, 2001 at 10:23:01 -0700
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,94 +25,73 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi ,
-I am using a L7205 board from linkup with amd flash.I managed to get mtd
-working on the board. The problem comes when I try to mount the jffs the
-system oppses. from what I get from the debug messages below is that the
-routine tries to read flash from 0 to 8388608.
-I have mapped my flash at physical location 800000 with size 400000 uisng
-physmap.
-what I think is that the start and end address in the routine
-jffs_scan_flash are going wrong and the start should be
- map->map_priv_1 and end should be map->map_priv_1 + 400000.Or just the end
-address is going wrong because the data shown in dump is from the flash
-region in question.
-As the end address may be wrong the kernel oppses since it is trying to read
-beyond actually mapped memory.
-Am I correct?What should be done to solve this problem?
-below is the capture of the screen.
+--JwB53PgKC5A7+0Ej
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#erase /dev/mtd0
-*MTD_open
-*GET_MTD_DEVICE okay
-*MTD_ioctl
-Era*MTD_ioctl
-*erase : 0x0 0x20000 0x0 0x800000
-sesize 0x20000
-Performing Flash Erase of length 131072 at offset 0*erase ret OK
-don*MTD_close
-*sync
-*sync end
-# cd /
-# cp /bin/ls /root/
-# mkfs.jffs -d /root/ > jffs.img
-Constructing JFFS filesystem...
-root
-ls
-# cp jffs.img /dev/mtd0
-*MTD_open
-*GET_MTD_DEVICE okay
-*MTD_write
-*<6>MTD_write
-.
-.
-*<6>MTD_write
-*<6>MTD_close
-*sync
-*sync end
-# mknod /dev/mtdblock0 b 31 0
-# mount -t jffs /dev/mtdblock0 /mnt
-* MAJOR1 31
-* MAX_BLK 1
-* MAX_BLK 31
-*mtdblock_open
-*ok
-*JFFS: Trying to mount device 1f:00.
-*jffs_scan_flash(): start pos = 0x0, end = 0x8388608
-*jffs_scan_flash(): Bad checksum: checksum = 6926185, raw_inode.dchksum =
-3009104
-*jffs_scan_flash(): Bad checksum: checksum = 3552929, raw_inode.dchksum =
-1302987
-*jffs_scan_flash(): 0xff at pos 0x49960.
-*jffs_scan_flash(): 0xff ended at pos 0x65536.
-**************** Dirty flash memory or bad inode: hexdump(pos = 0x65536, len
-= 128):
-*65536:* 69*6c* 20*31* 32*30* 20*70* 72*61* 62*68* 61*74* 73*75*
-*i*l*.*1*2*0*.*p*r*a*b*h*a*t*s*u*
-*65552:* 6e*69* 6c*20* 70*61* 74*69* 6c*20* 31*32* 30*20* 70*72*
-*n*i*l*.*p*a*t*i*l*.*1*2*0*.*p*r*
-*65568:* 61*62* 68*61* 74*73* 75*6e* 69*6c* 20*70* 61*74* 69*6c*
-*a*b*h*a*t*s*u*n*i*l*.*p*a*t*i*l*
-*65584:* 20*31* 32*30* 20*70* 72*61* 62*68* 61*74* 73*75* 6e*69*
-*.*1*2*0*.*p*r*a*b*h*a*t*s*u*n*i*
-*65600:* 6c*20* 70*61* 74*69* 6c*20* 31*32* 30*20* 70*72* 61*62*
-*l*.*p*a*t*i*l*.*1*2*0*.*p*r*a*b*
-*65616:* 68*61* 74*73* 75*6e* 69*6c* 20*70* 61*74* 69*6c* 20*31*
-*h*a*t*s*u*n*i*l*.*p*a*t*i*l*.*1*
-*65632:* 32*30* 20*70* 72*61* 62*68* 61*74* 73*75* 6e*69* 6c*20*
-*2*0*.*p*r*a*b*h*a*t*s*u*n*i*l*.*
-*65648:* 70*61* 74*69* 6c*20* 31*32* 30*20* 70*72* 61*62* 68*61*
-*p*a*t*i*l*.*1*2*0*.*p*r*a*b*h*a*
-*Unable to handle kernel paging request at virtual address c2c00000
-*current->tss.memmap = F1348000
-**pgd = f002f011*, *pmd = f002f011*, *pte = 00000000*
-*Internal error: Oops: 2
-*CPU: 0
-*pc : [<c00d82a4>] lr : [<c00d6718>]
-sp : c134fcb4 ip : c2800000 fp : 00000000
-*sp : c134fcb4 ip : c2800000 fp : 00000000
+Hi Russ!
 
-Please guide me and correct me if I am going wrong somewhere.
-Thanks ,
-Regards,
-Ashwin
+> > Yes, this is something in the lines I was thinking of. But what complic=
+ates
+> > things is if you start taking things like avoiding damaged blocks into
+> > account, wear levelling (this is fairly easy to solve) and keeping the =
+flash
+> > unfragmented.
+> >=20
+> if you only eraseblocks when you need to, you always have at least N-1=20
+> eraseblocks of pevious data, (where N is the number of eraseblocks=20
+> used). A CRC can be done after the store to see if the node written is=20
+> ok, if not, write it again (in the next node). since its a small amount=
+=20
+> of data (maybe 4-8k) and written linearly, wear leveling and=20
+> fragmentation is not a problem. Lets say 4 parameter blocks of 16k a=20
+> peice are used, that would be 1 erase cycle per 8 configs written, this=
+=20
+> would allow 800,000 configs to be written on standard flash. If a config=
+=20
+> was written at a rate of once an hour, it would last 93 years. If it=20
+> were on 2 128k standard blocks, then you wolud have 3.2M configs=20
+> written, which at the same rate, would last about 332 years. Remember,=20
+> you are only performing an erase cycle after a block fills up, not for=20
+> every write.
+
+True, but once the flash fills up you have to start moving things around to
+erase entire blocks and then the whole 4k-8k thing doesn't hold anymore.
+
+But anyhow, like you said, it's not the most complicated thing in the world.
+
+--=20
+
+Regards
+ Abraham
+
+You don't have to know how the computer works, just how to work the compute=
+r.
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
+
+
+--JwB53PgKC5A7+0Ej
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7NuwzzNXhP0RCUqMRAtyzAJ9xEYYzCtdpqEIPx0Sa5bPe5Z4wQACdE2WL
+2QzwJ6kJW8S1LJGeCF3xWLA=
+=w5Ah
+-----END PGP SIGNATURE-----
+
+--JwB53PgKC5A7+0Ej--
