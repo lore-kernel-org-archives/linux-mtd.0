@@ -1,18 +1,15 @@
-Received: from [62.98.205.21] (helo=lisa.rhpk.springfield.inwind.it ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15o5Kh-0000DB-00
-	for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2001 16:50:16 +0100
-Received: from localhost (paris@localhost)
-	by lisa.rhpk.springfield.inwind.it (8.11.4/8.11.4) with ESMTP id f91FqTg00260
-	for <linux-mtd@lists.infradead.org>; Mon, 1 Oct 2001 17:52:34 +0200
-Date: Mon, 1 Oct 2001 17:52:28 +0200 (CEST)
-From: Cristiano Paris <c.paris@libero.it>
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: MTD newbie
-In-Reply-To: <Pine.LNX.4.33.0110011550130.888-100000@hex.linuxgrrls.org>
-Message-ID: <Pine.LNX.4.33.0110011743030.223-100000@lisa.rhpk.springfield.inwind.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from recycle.lbl.gov ([131.243.169.124])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15o5cr-0000Eq-00
+	for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2001 17:09:01 +0100
+Message-ID: <20011001091720.A10960@recycle.lbl.gov>
+Date: Mon, 1 Oct 2001 09:17:20 -0700
+From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
+To: linux-mtd@lists.infradead.org
+Cc: Cristiano Paris <c.paris@libero.it>
+Subject: MTD newbie
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,34 +21,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Many thanks to all.
+Cristiano -
 
-At the moment the jffs2 is unusable for me. I'm using linux-2.4.9-ac10 on
-a Pentium166MMX notebook. I've tried to mount the task-familiar
-distribution on /dev/mtdblock0. The mount works fine but when I try to
-touch a file in the filesystem (say "touch /mnt/silly") the system just
-hangs and a kernel oops appears.
+> At the moment the jffs2 is unusable for me. I'm using linux-2.4.9-ac10 on
 
-touch seems to stop after perfoming a utime system call (open and close
-worked fine) and the kernel provides the following backtrace :
+The MTD/JFFS2 in that version dates back to about June 2001.
+There have been big changes since then.  I'm at about the same
+level of testing as you, but using the current CVS things seem
+to basically work.  Dropping in the code from CVS takes a little
+thought, but it only took me a couple of tries to get on the air.
 
-- system_call
-- sys_close
-- filp_close
-- sys_utime
-- notify_change (setattr)
-- jffs2_setattr
-- jffs2_complete_reservation
-- jffs2_garbage_collect_trigger
-- <UNKNOWN>
+Another approach is to apply a patch from Russell King, like
+  ftp://ftp.arm.linux.org.uk/pub/linux/arm/source/kernel-patches/v2.4/patch-2.4.9-ac10-rmk2.gz
 
-The error is "Invald parameter 00000"; I'm trying to get the full OOPS
-from a serial-line-attached console, so be patient. In addition I'm trying
-to debug the error myself.
+That one in particular looks like it takes you up to an early
+September CVS snapshot of the MTD subsystem.
 
-Maybe I'm using the wrong version of Linux or a more recent snapshot would
-sove the problem.
-
-Please, let me know. Thanks in advance, as usual.
-
-Cristiano
+        - Larry
