@@ -1,18 +1,20 @@
-Received: from sccrmhc12.attbi.com ([204.127.202.56])
+Received: from cc60549-a.deven1.ov.home.nl ([217.120.140.54]
+	helo=server.grimmerink.dhs.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q8Sn-0005rR-Tv
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:28:42 +0100
-Message-ID: <3EE75C78.4020408@mvista.com>
-Date: Wed, 11 Jun 2003 12:44:40 -0400
-From: "George G. Davis" <gdavis@mvista.com>
+	id 19Q8V8-0005wt-QN
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:31:07 +0100
+Received: from lunarpieter (lunarpieter.wielewaal [192.168.14.99])
+	with ESMTP id h5BGVAI03739
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 18:31:10 +0200
+From: Pieter Grimmerink <mailinglists@grimmerink.nl>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 11 Jun 2003 18:31:07 +0200
 MIME-Version: 1.0
-To: Siddharth Choudhuri <choudhri@cs.tamu.edu>
-References: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
-In-Reply-To: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 vs. ext3
+Message-Id: <200306111831.07071.mailinglists@grimmerink.nl>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Errors compiling current mtd CVS version
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I just checked out the mtd+jffs2 patches from CVS, and patched them into =
+a=20
+2.4.19 kernel tree, using patchin.sh.
 
+Now I've enabled mtd & jffs2, and try to compile.
 
-Siddharth Choudhuri wrote:
-> I am trying jffs2 and ext3 on a 3MB Intel NOR flash. I have a piece of
-> code in function part_write (mtdpart.c) that outputs the size in bytes and pid
-> of the process (current) sending write requests.
-> 
-> With ext3, no matter how many bytes are written (by an application/user
-> level program), the part_write function always gets a request that is
-> multiple of 128K (131072 bytes). This does not happen with jffs2 though.
-> Also, with ext3, the process is always mtdblockd, whereas with jffs2 the
-> process sending the request is the actual user/application process.
-> 
-> Any ideas why it happens ?
+#include <linux/init.h> seems to be missing in mtd/chips/amd_flash.c
+(errors on __init and __exit)
 
-... also with ext3, you'll have a brick(TM) pretty soon too. ; )
-Hint: ext3 doesn't not do flash wear levelling. You'll burn out
-your flash chips pretty soon.
+#include <linux/sched.h> seems to be missing in fs/jffs2/write.c
+(error on 'current')
 
---
-Regards,
-George
+If I have jffs enabled as well, it failes because Makefile.common is miss=
+ing.
 
-> 
-> thanks in advance,
-> -siddharth
-> 
-> _____________________________________________________________________
->      Unix is user friendly - its just picky about its friends.
-> _____________________________________________________________________
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
-> 
+When I also patch in zlib (using patchin.sh), Makefile.common is missing =
+both=20
+in zlib_inflate and zlib_deflate.
+
+Is there a problem with my config?
+
+Best regards,
+
+Pieter
