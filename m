@@ -1,19 +1,18 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19K6mN-0003L4-0f
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 02:27:59 +0100
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 19K6l8-0005Iz-00
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 03:26:42 +0200
-To: linux-mtd@lists.infradead.org
-From: David Wuertele <dave-gnus@bfnet.com>
-Date: Sun, 25 May 2003 18:28:41 -0700
-Message-ID: <m31xymzeba.fsf@bfnet.com>
+	id 19KDQW-0004Ww-UR
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 09:33:53 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: David Wuertele <dave-gnus@bfnet.com>
+In-Reply-To: <m34r3izfvn.fsf@bfnet.com>
+References: <m34r3izfvn.fsf@bfnet.com>
+Message-Id: <1053938076.17182.39.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Sender: news <news@main.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: Looking for mkfs.jffs2 source that compiles against 2.4.18
- (redhat+patches)
+Date: Mon, 26 May 2003 09:34:36 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd/utils automake attic?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a highly-patched 2.4.18 kernel from my CPU vendor that includes
-JFFS2 support, but I've been unable to get the latest CVS mkfs.jffs2
-to compile against it.  The reason seems to be my kernel's jffs2.h not
-having defined the jint16_t and jint32_t.  I have tried to follow the
-instructions in the latest mtd CVS for patching the kernel, but my
-kernel has a lot of special code in the mtd/nand directory that gets
-clobbered by mtd's patchin.sh.  I have tried working around this but
-it is just too tangled of a mess.
+On Mon, 2003-05-26 at 01:54, David Wuertele wrote:
+> I'm trying to compile the utils directory following the automake
+> instructions, but there seem to be files missing in my version of
+> CVS:  
+> 
+>   automake: `configure.ac' or `configure.in' is required
+>   automake: configure.in: required file `./install-sh' not found
+>   automake: configure.in: required file `./missing' not found
+>   configure.in: 4: required file `./config.h.in' not found
+> 
+> When I look at the web CVS, I can see those files:
+> 
+> http://www.infradead.org/cgi-bin/cvsweb.cgi/mtd/util/?hideattic=0&sortby=date
+> 
+> They appear to be "in the attic".  What does that mean?  Is there a
+> way to download these files using cvs?
 
-My kernel's jffs2.h says:
+It means they've been deleted from CVS. They're there only as part of
+the history -- you can obtain them by asking for a specific (i.e. the
+penultimate) version, or by date.
 
- * $Id: jffs2.h,v 1.22 2002/01/09 13:27:58 dwmw2 Exp $
+But don't bother -- I removed the auto* crap in favour of the proper
+makefiles. If you need to cross-compile, you can do so with a command
+such as 'make CROSS=arm-linux-gnu- mkfs.jffs2'.
 
-This looks almost identical to the version of jffs2.h in my stock
-RH7.3 development system's kernel source.
+You'll need to make sure that zlib is in your toolchain's sys-root or
+otherwise available.
 
-Can anyone tell me how to check out a version of mtd/util from CVS
-that will compile against my kernel's existing JFFS2 support?
-
-Thanks,
-Dave
+-- 
+dwmw2
