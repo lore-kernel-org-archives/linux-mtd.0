@@ -1,22 +1,22 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ATtr8-00076U-Kb
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2003 02:13:38 +0000
-From: Joshua Wise <joshua@joshuawise.com>
-To: manningc2@actrix.gen.nz, linux-mtd@lists.infradead.org
-Date: Tue, 9 Dec 2003 21:12:07 -0500
-References: <200312091440.22926.joshua@joshuawise.com>
-	<20031210003150.631E116BB2@desire.actrix.co.nz>
-In-Reply-To: <20031210003150.631E116BB2@desire.actrix.co.nz>
+Received: from xyz.url.com.tw ([210.59.228.230])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1ATydn-0007fY-NP
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Dec 2003 07:20:12 +0000
+Received: from unknown (HELO pavo.url.com.tw) ([210.59.228.22])
+	(envelope-sender <superjason@ms88.url.com.tw>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 10 Dec 2003 07:17:44 -0000
+Received: from unknown (HELO ms88.url.com.tw) ([210.59.228.105])
+	(envelope-sender <superjason@ms88.url.com.tw>)
+	by ms88.url.com.tw (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 10 Dec 2003 07:19:37 -0000
+Message-ID: <2874520031231072012218@ms88.url.com.tw>
+From: "SUPERJASON" <superjason@ms88.url.com.tw>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 10 Dec 2003 15:20:12 +0800
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200312092112.08502.joshua@joshuawise.com>
-Subject: Re: nand: oob question
+Content-type: text/plain; charset=big5
+Subject: booting Error , cramfs : wrong magic 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +26,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi ,
+    I try running arm-linux on the board Cogent 7312 . But  it hangs as
+follows . How can i do ?
 
-On Tuesday 09 December 2003 7:38 pm, you wrote:
-> NAND typically has pages with 512bytes data + 16 bytes oob.
-Right, that would be consistant with my 16MiB Samsung flash on h1910.
 
-> Why do you think jffs2 wants 32bytes of OOB?
 
-fs/jffs2/wbuf.c:944 (or thereabouts, I've added debugging printks here and=
-=20
-there)
-/*
-                   *    We read oob data from page 0 and 1 of the block.
-                   *    page 0 contains cleanmarker and badblock info
-                   *    page 1 contains failure count of this block
-                 */
-                ret =3D c->mtd->read_oob (c->mtd, offset, oob_size << 1,=20
-&retlen, buf);
+Linux version 2.4.18-rmk5 (root@localhost.localdomain) (gcc version 2.95.3
+20010315 (release)) #27 Wed Jul 3 17:11:52 CDT 2002
 
-This is interesting for a number of reasons.
-=46irstly, nandwrite does not handle writing failure counts of a block. Thi=
-s is=20
-bad, or so I think.
-Secondly, in nand_read_oob, we only send the NAND_READOOB command once at o=
-ne=20
-column. This would, per my flash's specs, only send one 16byte set of data.=
-=20
-This is again bad, or so I think. When I modify it to send the NAND_READOOB=
-=20
-stuff as we increment col, then it gets somewhere, but it still seems to be=
-=20
-giving garbage results (ie, the same 16 bytes.) The failure symptoms withou=
-t=20
-NAND_READOOB being resent are a slowly increasing failure count (1~128), wi=
-th=20
-some bumps of garbage (sometimes my NAND flash likes to insert 12 bytes of=
-=20
-garbage at the beginning of a read, which is an issue of its own. Jacking t=
-he=20
-cmd delay up way high seems to have done something about that though.)
+Processor: ARM ARM720T revision 2
 
-I'm rather perplexed here. I thought I understood it fairly well, although =
-it=20
-is evident that I don't. Can someone enlighten me?
+Architecture: Cirrus-CDB89712
 
-> -- Charles
-/joshua
+On node 0 totalpages: 4096
 
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+zone(0): 4096 pages.
 
-iD8DBQE/1oD3Pn9tWOqA4LMRAjYTAJ0Q0zt7tFHTEjhAb1zHMsxaASG/nwCfQ32h
-TzIUtUWazzQn8TxiOCwhIL0=3D
-=3DIGlY
-=2D----END PGP SIGNATURE-----
+zone(1): 0 pages.
+
+zone(2): 0 pages.
+
+Kernel command line: mem=16m
+
+Calibrating delay loop... 36.76 BogoMIPS
+
+Memory: 16MB = 16MB total
+
+Memory: 14640KB available (1133K code, 236K data, 44K init)
+
+Dentry-cache hash table entries: 2048 (order: 2, 16384 bytes)
+
+Inode-cache hash table entries: 1024 (order: 1, 8192 bytes)
+
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+
+Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+Page-cache hash table entries: 4096 (order: 2, 16384 bytes)
+
+POSIX conformance testing by UNIFIX
+
+Linux NET4.0 for Linux 2.4
+
+Based upon Swansea University Computer Society NET3.039
+
+Initializing RT netlink socket
+
+Starting kswapd
+
+JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis Communications
+AB.
+
+ttyAM0 at I/O 0x100 (irq = 12) is a CLPS711x
+
+ttyAM1 at I/O 0x1100 (irq = 28) is a CLPS711x
+
+pty: 256 Unix98 ptys configured
+
+Software Watchdog Timer: 0.05, timer margin: 60 sec
+
+block: 64 slots per queue, batch=16
+
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+
+cs89x0:cs89x0_probe(0x0)
+
+PP_addr=0x0
+
+cs89x0.c: v2.4.3-pre1 Russell Nelson <nelson@crynwr.com>, Andrew Morton
+<andrewm@uow.edu.au>
+
+eth0: cs8900 rev J found at 0xfe000300 [Cirrus EEPROM] 
+
+cs89x0 media RJ-45, IRQ 7, programmed I/O, MAC 00:30:23:01:00:01
+
+cs89x0_probe1() successful
+
+loop: loaded (max 8 devices)
+
+findTargetBoardFlashType(): Congent 7312 board found; Flash size:16M; Flash
+bus width=2 bytes.
+
+Cirrus CDB89712 MTD mappings:
+
+  Flash 0x1000000 at 0x0
+
+  SRAM 0xc000 at 0x60000000
+
+  BootROM 0x80 at 0x70000000
+
+Search for id:(89 18) interleave(1) type(2)
+
+Found: Intel 28F128J3A
+
+flash: Found 1 x16 devices at 0x0 in 16-bit mode
+
+Using word write method
+
+Creating 4 MTD partitions on "flash":
+
+0x00000000-0x000a0000 : "cdb89712 flash linux kernel partition"
+
+mtd: Giving out device 0 to cdb89712 flash linux kernel partition
+
+0x000a0000-0x002a0000 : "cdb89712 flash root partition"
+
+mtd: Giving out device 1 to cdb89712 flash root partition
+
+0x002a0000-0x00400000 : "cdb89712 flash data partition"
+
+mtd: Giving out device 2 to cdb89712 flash data partition
+
+0x00400000-0x01000000 : "cdb89712 flash free partition"
+
+mtd: Giving out device 3 to cdb89712 flash free partition
+
+mtd: Giving out device 4 to SRAM
+
+mtd: Giving out device 5 to BootROM
+
+NET4: Linux TCP/IP 1.0 for NET4.0
+
+IP Protocols: ICMP, UDP, TCP
+
+IP: routing cache hash table of 512 buckets, 4Kbytes
+
+TCP: Hash tables configured (established 1024 bind 1024)
+
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+
+NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
+
+mtdblock_open
+
+ok
+
+mtdblock_open
+
+mtdblock: read on "cdb89712 flash free partition" at 0x0, size 0x1000
+
+mtdblock: read on "cdb89712 flash free partition" at 0x1000, size 0x1000
+
+mtdblock: read on "cdb89712 flash free partition" at 0x2000, size 0x1000
+
+mtdblock: read on "cdb89712 flash free partition" at 0x3000, size 0x1000
+
+cramfs: wrong magic
+
+mtdblock_release
+
+ok
+
+mtdblock_open
+
+jffs2_scan_empty(): Empty block at 0x0000fffc ends at 0x00010000 (with
+0xe0021985)! Marking dirty
+
+jffs2_scan_empty(): Empty block at 0x0002fffc ends at 0x00030000 (with
+0xe0021985)! Marking dirty
+
+jffs2_scan_empty(): Empty block at 0x0004fffc ends at 0x00050000 (with
+0xe0021985)! Marking dirty
+
+mtdblock_release
+
+ok
+
+VFS: Mounted root (jffs2 filesystem).
+
+Freeing init memory: 44K
+
+eth0: using half-duplex 10Base-T (RJ-45)
+
+
+
+
+--
+
+--
+社團、小型企業購買虛擬主機的最佳選擇
+http://mymailer.url.com.tw
