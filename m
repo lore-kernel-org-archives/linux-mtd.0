@@ -1,18 +1,18 @@
-Received: from ip66-35-227-11.altera.com ([66.35.227.11] helo=www.altera.com)
+Received: from dc-mxdb05.hsacorp.net ([209.225.8.79] helo=dc-mxdb05.cluster1.charter.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15jN04-0000p0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 16:41:28 +0100
-Received: from Altera.COM (sunrise.altera.com [137.57.1.1])
-	by www.altera.com (8.9.3+Sun/8.9.3) with ESMTP id IAA07670
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 08:44:26 -0700 (PDT)
-Message-ID: <82B1591A280FD411B91200D0B75B484A015F5C3E@sis-uk-msg01.altera.com>
-From: Clive Davies <cdavies@altera.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Intel Flash protection registers
-Date: Tue, 18 Sep 2001 08:47:52 -0700
+	id 15jVRx-0001gW-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2001 01:42:49 +0100
+Received: from [206.190.89.51] (account <thepond@charter.net>)
+  by dc-mxdb05.cluster1.charter.net (CommuniGate Pro WebUser 3.4.8)
+  with HTTP id 1051373 for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2001 20:53:46 -0400
+From: "Gerald Walden" <thepond@charter.net>
+Subject: Can't get Linux on SSTI DOC 
+To: linux-mtd@lists.infradead.org
+Date: Tue, 18 Sep 2001 20:53:46 -0400
+Message-ID: <web-1051373@dc-mxdb05.cluster1.charter.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,11 +24,48 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'd like to be able to read/write the OTP protection registers which are a
-feature of some Intel flash chips. Is anybody already looking at this?
+Greetings:
 
-If not then I'm intending to do it myself and map this onto the oob
-read/write functionality. Is this a sensible approach or is there a better
-approach?
+I have an 8MB Disk-On-Chip Device made by SSTI.  From what I
+am told I do not need any special drivers to use this from
+Linux.
 
-Clive
+However - even before I get to that stage - I cannot even
+get the DOC to event try to boot linux.
+
+I followed all the step one would normally take to make a
+bootable Hard Drive, and I keep getting the error "Invalid
+or Damaged Bootable partition".
+
+Basically, 
+
+1) I made a filesystem for the device.
+
+2) Then I Fdisk'ed the device, setting the one and only
+partition to be bootable.
+
+2) Then I formatted the device (and hence the entire
+partition) as ext2.
+
+3) and then I mounted the device as a secondary IDE device
+on my Linux Box as ext2.
+
+4) I copied the filesystem files to the device.
+
+5) I ran LILO with a configuration file that pointed to the
+appropriate locations on my device.  In verbose mode it
+looked like everything went okay.
+
+When I try to boot from the device as a master I get the
+error:
+
+"Invalid or Damaged Bootable partition".
+
+Does anyone have any ideas?
+
+Please respond to this email address (thepond@charter.net)
+'cause I am only receiving a daily digest.
+
+Kindest Regards,
+
+Jerry
