@@ -1,47 +1,71 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13BvhF-00039r-00
-	for mtd-list@infradead.org; Tue, 11 Jul 2000 09:47:17 +0100
-Received: from ncc1.infomail.es ([194.224.53.134] helo=infomail.es)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13BvhE-00039l-00
-	for mtd@infradead.org; Tue, 11 Jul 2000 09:47:16 +0100
-Date: Tue, 11 Jul 2000 10:43:34 CEST
-From: Rodrigo Moya <rmoya@tsai.es>
-To: mtd@infradead.org
-Subject: no success
-Reply-To: rmoya@tsai.es
+	id 13C7VU-0005JC-00
+	for mtd-list@infradead.org; Tue, 11 Jul 2000 22:23:56 +0100
+Received: from web5302.mail.yahoo.com ([216.115.106.111])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13C7VT-0005J6-00
+	for mtd@infradead.org; Tue, 11 Jul 2000 22:23:55 +0100
+Message-ID: <20000711212323.21257.qmail@web5302.mail.yahoo.com>
+Date: Tue, 11 Jul 2000 17:23:23 -0400 (EDT)
+From: Juan Gonzo <kayemmess@yahoo.ca>
+Subject: Re: mtd devices & jffs 
+To: MTD Mailing List <mtd@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Message-Id: <E13BvhE-00039l-00@infradead.org>
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I guess the problem I am going to run into is that I don't
+want to erase all of the flash, nor do I want JFFS to use
+all of the flash.  Part of the flash will have a kernel
+image burned into, and another part is being used for config
+data etc.  And then the filesystem is supposed to have its
+chunk of flash to use.
 
-Hi all!
+Is this possible?  Looking through the JFFS code, they hardcode
+the start address for their scan at 0x0 and get the end addr
+based on the size of the total flash.  Is there a way to tell
+JFFS "start at this addr and only use this much space" without
+changing this code?
 
-It's me again with my strange problems. I've finally successfully run lilo
-on the DOC, and reboot, and now I get a normal LILO prompt (not as the
-other day, where I was getting strange characters in the LILO prompt), but:
+Thanks,
+   -- kelly
 
-LILO boot:
-Loading linux................
-Uncompressing Linux... Ok, booting the kernel
 
-and it stops there!
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> kayemmess@yahoo.ca said:
+> > Dirty flash memory or bad inode: hexdump(pos = 0x1098176, len =
+> 128):
+> 
+> Looks like there were data on the flash chips before you started.
+> Erase 
+> them first. There's no utility to erase whole devices, but the
+> 'erase' 
+> program in the util/ directory will erase a single erase block at a
+> time.
+> 
+>  for a in `seq 0 131072 16777216` ; do mtd/util/erase /dev/mtd0 $a ;
+> done
+> 
+> ....or put a loop into the erase program. The MTDGETINFO ioctl should
+> return 
+> the size of the device.
+> 
+> 
+> --
+> dwmw2
+> 
+> 
+> 
+> 
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-When running lilo, there was no error messages (I even run it with -v -v to
-see all messages, and everything seemed ok)
 
-When I run this kernel booting linux from DOS and from a ZIP drive, the DOC
-is detected and everything seems fine. So, I don't know where the problem
-is.
-
-I've run rdev also on the device with the kernel.
-
-Thanks
-
+_______________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.ca address at http://mail.yahoo.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
