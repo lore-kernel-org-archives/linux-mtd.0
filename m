@@ -1,13 +1,13 @@
 Received: from smtp.lynuxworks.com ([207.21.185.24])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16AunI-00085o-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2001 15:14:09 +0000
-Date: Mon, 3 Dec 2001 07:24:40 -0800 (PST)
+	id 16AuzC-00086q-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2001 15:26:27 +0000
+Date: Mon, 3 Dec 2001 07:36:59 -0800 (PST)
 From: Aleksander Sanochkin <asanochkin@Lnxw.COM>
-To: <linux-mtd@lists.infradead.org>
-cc: <jffs-dev@axis.com>
-Subject: Re: cfi_cmdset_001.c problem
-Message-ID: <Pine.LNX.4.33.0112030715100.14716-100000@newbast.lynuxworks.com>
+To: <dwmw2@infradead.org>
+cc: <linux-mtd@lists.infradead.org>, <jffs-dev@axis.com>
+Subject: Re: JFFS1/MTD bug-fixes
+Message-ID: <Pine.LNX.4.33.0112030726090.14716-100000@newbast.lynuxworks.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -21,30 +21,71 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> > I see that after write and erase operations, the current version of
-> > cfi_cmdset_0001.c driver can left a Flash device not in the READY
-> > state. If soft reboot is performed in such a situation, applications
-> > that use flash will behave erroneously since they expect that the
-> > flash is in the READY state. For instance, if the system is supposed
-> > to boot from flash, it will hang.
+> > --- cvs/drivers/mtd/chips/cfi_cmdset_0002.c   Wed Oct 24 13:37:30 2001
+> > +++ other/drivers/mtd/chips/cfi_cmdset_0002.c Wed Nov 21 12:58:47 2001
+> > @@ -162,10 +162,7 @@
+> >       /* Also select the correct geometry setup too */
+> >       mtd->size = devsize * cfi->numchips;
+> >
+> > -     if (cfi->cfiq->NumEraseRegions == 1) {
+> > -             /* No need to muck about with multiple erase sizes */
+> > -             mtd->erasesize = ((cfi->cfiq->EraseRegionInfo[0] >> 8) &
+~0xff) * cfi->interleave;
+> > -     } else {
+> > +     {
+> >               unsigned long offset = 0;
+> >               int i,j;
 >
-> Thanks for this. One thing that concerns me is that I have a vague
-> recollection that Nico once drastically improved the performance of the
-> same driver by ripping out all the gratuitous state changes.
+> Why do we need this? If NumEraseRegions is one (or zero, for that
+> matter),
+> we don't need to allocate the structure containing the region
+> information,
+> as the whole device is known to have the same 'major' erasesize.
 
-I seem to remember this, too. But it was in the read() routine. It used to
-switch flash to the status mode and then back to ready even if it had been
-ready right away. Our modification affects only write and erase routines.
+We did this for two reasons:
 
-> I wonder if it would be better to do this with a reboot notifier
-> than by changing back to read mode after every other operation?
+ 1) To be consistent with cfi_cmdset_002.c which always initializes
+    eraseregions.
 
-Probably you are right. The thing is that our modification was originally
-made in the context of 2.2.x kernel, which didn't have any reboot
-notifiers.
+ 2) We have also modified JFFS1 code so as it now works for flash
+    partitions with non-uniform sectors, and our code is based on
+    the assumption that eraseregions are always initialized.
 
-> Also, we need to make sure we do the right thing if the JFFS or JFFS2 GC
-> thread is actually in the process of writing to the flash while
-> machine_restart() happens on another CPU.
 
-In this case, our patch won't help. A reboot notifier probably would.
+> >       default:
+> >               DEBUG(MTD_DEBUG_LEVEL0, "Invalid ioctl %x (MEMGETINFO =
+%x)\n", cmd, MEMGETINFO);
+> > -             ret = -ENOTTY;
+> > +             ret = -ENOIOCTLCMD;
+>
+> Strange though it may seem, I thought -ENOTTY was correct there.
+>
+>        ENOTTY The specified request does not apply to the kind of
+>               object that the descriptor d references.
+
+You are right: ENOTTY is the correct value here.
+
+>
+> > +                     if (mtd->usage_counter)
+> > +                     {
+> > +                             up(&mtd_table_mutex);
+> > +                             return -EBUSY;
+> > +                     }
+>
+> Do we need to provide this in the kernel? I can see it protects against
+> user error, but that isn't necessarily the kernel's job. Am I missing
+> another need for it?
+
+We have also added a possibility for run-time partitioning of an MTD
+device, and use this usage_counter to prevent deleting of a partition
+while it is being used by some process.
+
+> > +     while (! c->gc_task)
+> > +     {
+> > +             schedule();
+> > +     }
+>
+> Better to do this with a semaphore. Start it locked, have the GC thread
+> call up(), and this code wait in down().
+
+You are right.
