@@ -1,22 +1,14 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19BdBV-0001ro-7B
-	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 17:14:53 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Vipin Malik <vipin@embeddedlinuxworks.com>
-In-Reply-To: <5.1.0.14.0.20030502105515.02464fa8@ns.webzsite.com>
-References: <00512BA4F9D3D311912A009027E9B8F407E4ED@NT>
-	 <00512BA4F9D3D311912A009027E9B8F407E4ED@NT>
-	 <5.1.0.14.0.20030502105515.02464fa8@ns.webzsite.com>
-Message-Id: <1051892105.23448.46.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 02 May 2003 17:15:05 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: dge@sixnetio.com
-cc: linux-mtd@lists.infradead.org
-Subject: RE: Oops in mounting jffs2 (jffs2_get_ino_cache())
+Received: from web13905.mail.yahoo.com ([216.136.175.68])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19BfqE-0002Hv-6J
+	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 20:05:06 +0100
+Message-ID: <20030502190516.98480.qmail@web13905.mail.yahoo.com>
+Date: Fri, 2 May 2003 12:05:16 -0700 (PDT)
+From: Michael Moedt <xemc@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Building MTD utils w/ arm-linux- cross
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +18,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-05-02 at 17:03, Vipin Malik wrote:
-> May I humbly suggest that this is the type of info one should comment in 
-> the relevant place in the code.
+Hi.
 
-It's already there...
+I ran into a little bit of trouble compiling the MTD
+utilities for an ARM-based system.  I'm using
+2.4.19-rmk7 for an EP7312.  I executed the
+'patchin.sh' to this kernel directory, and copied the
+'util' directory over.  It compiles fine for the host
+system (x86), but when I uncommented the
+"CROSS=arm-linux-", it didn't compile correctly.
 
-        ic = jffs2_get_ino_cache(c, ino);
-        if (!ic) {
-                /* Inocache get failed. Either we read a bogus ino# or it's just genuinely the
-                   first node we found for this inode. Do a CRC check to protect against the former
-                   case */
+Anyways, the trouble was in the form of:
 
-You might do better to humbly suggest that I actually _read_ the code
-before assuming I was too stupid to get it right in the first place :)
+-----
+arm-linux-gcc -I../include -O2 -Wall
+-Wstrict-prototypes -Wshadow   -c -o eraseall.o
+eraseall.c
+eraseall.c:40: zlib.h: No such file or directory
+make: *** [eraseall.o] Error 1
+mmoedt@reptar:~/gonzo/linux-2.4.19-rmk7/util$
+-----
+
+Well, I installed zlib-1.1.4 into
+/usr/local/arm/2.95.3 , but I needed to add -I and -L
+flags to the Makefile in order for it to find it.  It
+seems to work, but I didn't find this anywhere when I
+searched the mailing list.  Is this the standard
+procedure, or am I doing something wrong?
+
+Anyways, I also wanted to let someone with CVS access
+know that there's a typo in the Makefile.  In
+eraseall's build rule, it uses $(LDLAGS) instead of
+$(LDFLAGS).  I guess no one needs to add the '-L'
+LDFLAG other than me?
+
+Mike
 
 
--- 
-dwmw2
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
