@@ -1,16 +1,18 @@
-Received: from sc-smtp1.homechoice.co.uk ([212.187.157.195] helo=sc-outsmtp1.homechoice.co.uk)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17laLg-0004Fv-00
-	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 20:25:28 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: adr <mtd@mcmen.demon.co.uk>
-To: linux-mtd@lists.infradead.org
-Subject: Problem with my mtd driver
-Date: Sun, 1 Sep 2002 20:26:42 +0100
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200209012026.42558.mtd@mcmen.demon.co.uk>
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17ljw8-00053h-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 06:39:44 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Sun, 1 Sep 2002 22:39:37 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
+To: leland@sway.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 48meg DOC
+Reply-To: mateo@posta.star.si
+Message-Id: <20020902053937.58D923947@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,37 +24,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am writing a driver for the Dreamcast's mtd device.
+Leland,
 
-Reads now work fine. But writes fail - without, it seems my code being toched 
-at all (I am using the demo char driver in the kernel to test).
+>> > 22.2 lilo
+>> 
+>> I am using mtd pacthed 21 version of lilo.
+>> 
+>> I was thinking to try the version 22.
+>> I'll try this tonight, and I'll let you know if I
+>> get any further.
 
-cat foo > /dev/mtd/0
+Yesterday I tried with the lilo 22.3.2.
+No success :((
 
-Generates....
+I got L 40 40...
 
-MTD_open
-cannot create /dev/mtd/0: Permission denied
+I found on this list, that somebody else had this problems and I tried 
+with the solution he proposed, but it still did not work (lilo did
+not accept those 3D before the numbers).
 
-Yet /dev/mtd/0 already exists....
+Now I have tried with the:
+- lilo as is on the RH 7.2 system
+- patched lilo from M-sys
+- patched lilo from mtd
+- latest version of lilo
 
-ls -l /dev/mtd
-crw-rw-rw-		1 0 	0	90, 0 Jan 1 1970 0
-crw-rw-rw-		1 0    0	90, 1 Jan 1 1970 0ro
+What else should I try??
 
-As you can see, I am using devfs.
+Is there any HOW-TO about lilo and DOC?
+Do I have to use GRUB? Or maybe no boot loader (like a floppy)?
 
-Any ideas as to what is up?
+>this project has been interesting to say the least... 
 
-I have put a simply printk at the start of my write routine....
+>From the beginig it was interesting, but now I 
+don't know any more :((
 
-static int vmu_flash_write(struct mtd_info *mtd, loff_t from, size_t len,
-			   size_t * retlen, const u_char * buf)
-{
-  printk("Got here\n");
+Regards,
+Mateo
 
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
 
-But it never seems to get called....
-
-
-Adrian
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
