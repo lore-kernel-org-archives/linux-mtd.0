@@ -1,46 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qHAB-0001gY-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:20:11 +0100
-Received: from enst.enst.fr ([137.194.2.16])
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14qHAA-0001gM-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 17:20:10 +0100
-Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
-	by enst.enst.fr (Postfix) with ESMTP id D0B7E1C8F1
-	for <mtd@infradead.org>; Thu, 19 Apr 2001 18:19:47 +0200 (MET DST)
-Received: from FABRICE (droopy.maisel1.rezel.enst.fr [137.194.8.239])
-	by email.enst.fr (8.9.3/8.9.3) with ESMTP id SAA19792
-	for <mtd@infradead.org>; Thu, 19 Apr 2001 18:19:31 +0200 (MET DST)
-Date: Thu, 19 Apr 2001 18:18:58 +0200
-From: Fabrice Gautier <gautier@email.enst.fr>
-To: mtd@infradead.org
-Subject: MTD CVS and Official Kernel Tree
-Message-Id: <20010419181031.18A9.GAUTIER@email.enst.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+	id 14qHGv-0001jI-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:27:09 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14qHGp-0001jC-00
+	for mtd@infradead.org; Thu, 19 Apr 2001 17:27:08 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20010419181031.18A9.GAUTIER@email.enst.fr> 
+References: <20010419181031.18A9.GAUTIER@email.enst.fr> 
+To: Fabrice Gautier <gautier@email.enst.fr>
+Cc: mtd@infradead.org
+Subject: Re: MTD CVS and Official Kernel Tree 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 19 Apr 2001 17:25:56 +0100
+Message-ID: <5889.987697556@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
 
-Am I right when I assume that the mtd cvs tree can be applied to a 2.4
-kernel tree by coppying directories like this?
+gautier@email.enst.fr said:
+> Am I right when I assume that the mtd cvs tree can be applied to a 2.4
+> kernel tree by coppying directories like this?
 
-Mtd cvs ---------------> Kernel Tree
+> mtd/drivers/mtd -------> linux/drivers/mtd
+> mtd/fs ----------------> linux/fs
+> mtd/include -----------> linux/include
 
-mtd/drivers/mtd -------> linux/drivers/mtd
-mtd/fs ----------------> linux/fs
-mtd/include -----------> linux/include
+Yep. Assuming I got the Makefiles right. Which is unlikely. 
 
-And then what about the mtd/kernel directory in the CVS ? 
+gautier@email.enst.fr said:
+>  And then what about the mtd/kernel directory in the CVS ? 
 
-Thanks,
+Ignore it. It used to hold all the files which go into linux/drivers/mtd. 
+Now it only contains two obsolete files.
 
--- 
-Fabrice Gautier <gautier@email.enstfr>
+
+--
+dwmw2
+
 
 
 
