@@ -1,59 +1,72 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12W722-0005hO-00
-	for mtd-list@infradead.org; Sat, 18 Mar 2000 00:23:54 +0000
-Received: from pulse.flatline.de ([194.42.82.219] ident=root)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12W720-0005gv-00
-	for mtd@infradead.org; Sat, 18 Mar 2000 00:23:52 +0000
-Date: Sat, 18 Mar 2000 01:23:24 +0100 (CET)
-From: Andreas Kotes <count@flatline.de>
-To: "Mr. Oogie Boogie" <rpreston@mitre.org>, mtd@infradead.org
-Subject: Re: LILO and booting from DiskOnChip
-In-Reply-To: <38D29904.DA66D6E@mitre.org>
-Message-ID: <Pine.NEB.4.20.0003180119300.8571-100000@pulse.flatline.de>
-References: <38D29904.DA66D6E@mitre.org>
+	id 12WPTq-0007TT-00
+	for mtd-list@infradead.org; Sat, 18 Mar 2000 20:05:50 +0000
+From: "Dvir Oren" <dvir@lucidvon.com>
+To: MTD <mtd@infradead.org>,
+              David Woodhouse <dwmw2@infradead.org>
+Date: Sat, 18 Mar 2000 22:05:11 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Questions about MTD
+Message-Id: <E12WPTl-0007TN-00@infradead.org>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+I'm trying to use the MTD drivers to boot off a DiskOnChip 2000, 
+and ran into the following problems:
 
-Hi Ralph,
+1.  The flash has to be formatted with nftl_format in order for the 
+MTD drivers to write successfully to the flash.  However, when I run 
+nftl_format, it destroys the bios extension that allows booting from 
+the flash.  I then try to run nftl_format /dev/mtd0 49152, to skip the 
+first 48K, which hold the bios extension.  However, this seems to 
+cause some problems:
 
-On Fri, 17 Mar 2000, Mr. Oogie Boogie wrote:
+a.  nftl_format in fact does not erase the first 48K, however it does 
+delete the partition table.  As I understand it, the disk partition is in 
+the first 512 bytes, so how can that be?
 
-> Simply, when boot/root is set to the DoC, kernel messages during
-> bootup *do not* appear over the serial line. Strangely, when a boot
-> floppy (identical kernel) is used with the DoC as root the kernel
-> messages *do* appear over the serial line. 
->  
-> Has anyone encountered this problem before?
+b.  When I try to create the partition, there are a lot of file system 
+errors, possibly because I formatted starting at 49152.  It seems 
+like nftl_format doesn't set the start of the device from after the first 
+48k, which will then conflict.
 
-yes.
+2.  doc_loadbios doesn't seem to do what it's supposed to do.  
+However, it does destroy the flash, allowing me to docpmap /e the 
+flash, which will lead me to the next...
 
-> Do you think this is an error with the DoC or kernel?
+3.  erase seg faults.  Is erase supposed to do what docpmap /e 
+does?
 
-neither. the LILO you're using is stripped and doesn't parse any
-commandline-parameters you want to pass to the kernel.
+4.  Some odd problems when trying to dd the first 48k.  The 
+partition table is not saved after removing the nftl module.  Only 
+after writing it a second time does it get saved.
 
-> Any helpful suggestions on how I can fix this?
+5.  One thing I don't understand:  even though everybody talks 
+about the first 48k being the firmware, the firmware itself is less 
+than 48k.  How does that work?  And what about the first 512bytes 
+of the partition table?
 
-I patched the kernel (just calling the function that is called when a
-console=-parameter shows up in the commandline upon kernel init).
+Can anybody help?
+Has anybody succeeded in booting off a DiskOnChip 2000 using 
+the MTD drivers?
 
-Works like a charm.
+BTW:  The lilo I posted here a few weeks ago which was patched 
+to work with MTD, probably will not work correctly.  I'll post here a 
+new one soon,. if it interests anyone.
 
-   Count
+I was partially able to load LILO off /dev/nftla, however only from the 
+MBR (not /dev/nftla1) - it seems like nftl_format destroys the MBR, 
+or something like that.  I was not able to create a full boot from the 
+flash, since the file system keeps getting trashed.
 
-P.S: Please fix your From:-Header
-
--- 
-  -= Andreas Kotes - mailto:count@flatline.de - Questions? Just ask =-
- -= Are you doing what you are able to do to support peace on earth? =-
--= Commercial use of my email address NOT allowed. PGP key available. =-
-
-
+---------
+Dvir Oren <dvir@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
