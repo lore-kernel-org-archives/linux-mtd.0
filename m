@@ -1,40 +1,47 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZlTM-0002T7-00
-	for mtd-list@infradead.org; Tue, 28 Mar 2000 03:11:12 +0100
-Received: from [210.111.77.112] (helo=mutech.co.kr ident=root)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZlT9-0002T1-00
-	for mtd@infradead.org; Tue, 28 Mar 2000 03:11:05 +0100
-Received: from kwonsk.mutech.private ([192.168.1.3]) by mutech.co.kr (8.7.5/8.7.3) with SMTP id LAA13552 for <mtd@infradead.org>; Tue, 28 Mar 2000 11:11:52 +0900
-Message-ID: <007e01bf985b$0c2ec1e0$0301a8c0@kwonsk.mutech.private>
-From: "±Ç¼®±Ù" <kwonsk@mutech.co.kr>
-To: <mtd@infradead.org>
-Subject: Re: Axis log based flash file system
-Date: Tue, 28 Mar 2000 11:12:10 +0900
+	id 12ZrxH-00030M-00
+	for mtd-list@infradead.org; Tue, 28 Mar 2000 10:06:31 +0100
+Received: from [212.25.93.158] (helo=jodie.lucid)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 12ZrxD-00030G-00
+	for mtd@infradead.org; Tue, 28 Mar 2000 10:06:28 +0100
+Message-ID: <38E076C2.534F661E@lucidvon.com>
+Date: Tue, 28 Mar 2000 09:09:22 +0000
+From: Dvir Oren <dviro@lucidvon.com>
+MIME-Version: 1.0
+To: mtd@infradead.org
+Subject: Bad Block Table
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi, all
-In my thought, JFFS work of Axis was good for frequent log/delete
-applications
-like network printer or image server for web cam. But not good for general
-file system.
-Because, in JFFS, wear-leveling is only meaningful when old file is deleted
-and
-new file is created frequently (just like printer server).  maybe that's why
-they called it implicite.
-(wear leveling could be occur but not sure.)
-In situation where 80% of flash is steady (kernel + basic utils nerver
-deleted) then only 20 % of
-flash could be used in rotation. And if 20 % of flash could be fragmented
-stopping rotation.  Maybe my understanding about JFFS (i just followd full
-source
-once)  would be poor. and I need more notes from axis people.
-Thansk.
+I have several questions about the bad block table:
 
+1.  Where is it located?  Oron from M-Systems said that before erase the
+flash it is important to save it.  So where is it located, and how can I
+save it? (Will dd work?)
 
+2.  Also mentioned was that during the lifetime of the flash, if a new
+bad block is found, it is marked as a bad block.  This will be effective
+only before doing a boot.  Question is, who is responsible for finding
+those bad blocks - the M-Systems kernel driver?
 
+3.  And if the driver is responsible for this, does the MTD driver do
+the same?
+
+Also, on a related issue, I found that after using nftl_format,
+M-Systems' dfromat does not recognize the flash correctly, and errors
+something about "out of spare units".  I usually fixed this by erasing
+the flash (docpmap /e).  Any other way to do it?  dformat /unformat
+doesn't seem to do it.
+
+-- 
+Dvir Oren               <dviro@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
