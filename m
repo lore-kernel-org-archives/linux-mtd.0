@@ -1,11 +1,11 @@
 Received: from mx10.radisys.com ([206.102.10.36])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AW4SS-0000LS-7d
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2003 01:57:08 +0000
+	id 1AW5ka-0000YB-PH
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2003 03:19:56 +0000
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF8A3B61AB.36166DAD-ON88256DFD.007E51D0-88256DFE.000A899C@radisys.com>
+Message-ID: <OF7F14D5F4.6B7E8674-ON88256DFE.00120E5B-88256DFE.00121ED2@radisys.com>
 From: Arun.Kalluri@radisys.com
-Date: Mon, 15 Dec 2003 17:55:03 -0800
+Date: Mon, 15 Dec 2003 19:17:53 -0800
 MIME-Version: 1.0
 Content-type: text/plain; charset=us-ascii
 Subject: Problems installing MTD for 64 bit bus
@@ -17,6 +17,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+So close....
+
+I forgot to put image. sorry about the inconvenience.
+
+thanks
+Arun
+
+----- Forwarded by Arun Kalluri/Radisys_Corporation/US on 12/15/2003 07:17
+PM -----
+                                                                                                                                       
+                      Arun Kalluri                                                                                                     
+                                               To:       linux-mtd@lists.infradead.org                                                 
+                       12/15/2003 05:55        cc:                                                                                     
+                      PM                       Subject:  Problems installing MTD for 64 bit bus                                        
+                                                                                                                                       
+                                                                                                                                       
+
+
 
 Greetings-
 
