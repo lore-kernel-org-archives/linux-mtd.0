@@ -1,18 +1,20 @@
-Received: from mail.avantwave.com ([210.17.210.210])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CogTC-000808-Eg
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 06:15:24 -0500
-Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id j0CBDuXb032471
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Jan 2005 19:13:56 +0800
-Message-ID: <41E5095D.6020906@avantwave.com>
-Date: Wed, 12 Jan 2005 19:26:21 +0800
-From: mike <mikelee@avantwave.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CogZW-0008B0-Hg
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 06:21:56 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: mike <mikelee@avantwave.com>
+In-Reply-To: <41E5095D.6020906@avantwave.com>
+References: <41E5095D.6020906@avantwave.com>
+Content-Type: text/plain
+Date: Wed, 12 Jan 2005 12:21:31 +0100
+Message-Id: <1105528891.17853.218.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: supported flash
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: supported flash
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,9 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all
-    Does mtd support samsung k9f6408x0c nand flash? Or anyone try that 
-before?
+On Wed, 2005-01-12 at 19:26 +0800, mike wrote:
+> Dear all
+>     Does mtd support samsung k9f6408x0c nand flash? Or anyone try that 
+> before?
 
-best regard
-Mike,Lee
+Please read:
+
+http://www.linux-mtd.infradead.org/tech/nand.html
+http://www.linux-mtd.infradead.org/tech/mtdnand/index.html
+
+tglx
