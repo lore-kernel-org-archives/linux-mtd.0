@@ -1,19 +1,25 @@
-Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+Received: from mail5.asianet.co.th ([203.144.222.214] helo=mail.asianet.co.th)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CwcyG-0001ER-K4
-	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 04:08:22 -0500
-From: Andrew Victor <andrew@sanpeople.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050202124043.GB23156@wohnheim.fh-wedel.de>
-References: <1107248402.22631.53.camel@fuzzie.sanpeople.com>
-	<20050202124043.GB23156@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Message-Id: <1107421396.32163.53.camel@fuzzie.sanpeople.com>
-Mime-Version: 1.0
-Date: 03 Feb 2005 11:03:16 +0200
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2-on-DataFlash : 2 - DataFlash support
+	id 1CwdOw-0001Us-VL
+	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 04:35:52 -0500
+Received: from virscan1.asianet.co.th (HELO mail.asianet.co.th)
+	([203.144.222.197]) (envelope-sender <jay4mail@yahoo.com>)
+	by mail5.asianet.co.th (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 3 Feb 2005 16:35:42 +0700
+Received: from ppp-210.86.146.92.revip.asianet.co.th (HELO [10.1.1.33]) ([21
+	0.86.146.92])(envelope-sender <jay4mail@yahoo.com>)by mx1.asianet.co.th
+	(qm ail-ldap-1.03) with SMTPfor <linux-mtd@lists.infradead.org>;
+	3 Feb 2005 16: 35:40 +0700
+Message-ID: <4201F06F.4030207@yahoo.com>
+Date: Thu, 03 Feb 2005 16:35:43 +0700
+From: Pathompong Puengrostham <jay4mail@yahoo.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: jffs2_scan_eraseblock scan only 1 KiB not 4 KiB of 0xFF
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi Jörn,
+Hi,
 
-> > +	/* and Dataflash */
-> > +	if (jffs2_dataflash(c)) {
-> > +		ret = jffs2_dataflash_setup(c);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> 
-> This can be a bit simpler:
-> 	ret = jffs2_dataflash_setup()
-> 	if (ret)
-> 		return ret;
-
-I just copied the way it was done for the the NOR ECC flash.
+In scan.c, jffs2_scan_eraseblock() scan only 1 KiB of 0xFF not 4 KiB as 
+said in the comment. I think the comment is not correct. Do I get it right?
 
 
-> > -	return BLK_STATE_ALLFF;	/* OK to erase if all blocks are like this */
-> > +	if (c->cleanmarker_size == 0)
-> > +		return BLK_STATE_CLEANMARKER;	/* don't bother with re-erase */
+Thanks,
+Pathompong Puengrostham
 
-If a cleanmarker is not detected (within the first EMPTY_SCAN_SIZE bytes
-of a block), the block is added to the 'erase_pending_list' to be
-re-erased (and have a new cleanmarker written).
+--- scan.c	27 Jan 2005 04:35:22 -0000	1.3
++++ scan.c	3 Feb 2005 09:29:24 -0000
+@@ -325,7 +325,7 @@
+  	/* We temporarily use 'ofs' as a pointer into the buffer/jeb */
+  	ofs = 0;
 
-Since we don't need cleanmarkers on DataFlash, we return
-BLK_STATE_CLEANMARKER from jffs2_scan_eraseblock() so that the block
-rather gets added directly to the 'free_list'.
-
-
-Regards,
-  Andrew Victor
+-	/* Scan only 4KiB of 0xFF before declaring it's empty */
++	/* Scan only 1KiB of 0xFF before declaring it's empty */
+  	while(ofs < EMPTY_SCAN_SIZE && *(uint32_t *)(&buf[ofs]) == 0xFFFFFFFF)
+  		ofs += 4;
