@@ -1,46 +1,119 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GUKM-0002Je-00
-	for mtd-list@infradead.org; Wed, 10 Jan 2001 23:06:46 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14GUKK-0002JY-00
-	for mtd@infradead.org; Wed, 10 Jan 2001 23:06:45 +0000
-Date: Wed, 10 Jan 2001 23:06:39 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?iso-8859-1?Q?St=E9phane?= Laroche <stephane.laroche@colubris.com>
-cc: <mtd@infradead.org>,  <nico@cam.org>
-Subject: Re: CFI problems with 32bit bus and 4 devices
-In-Reply-To: <3A5CE4A7.AB29F73E@colubris.com>
-Message-ID: <Pine.LNX.4.30.0101102300310.1062-100000@imladris.demon.co.uk>
+	id 14GUiK-0002Uu-00
+	for mtd-list@infradead.org; Wed, 10 Jan 2001 23:31:32 +0000
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14GUiJ-0002Uo-00
+	for mtd@infradead.org; Wed, 10 Jan 2001 23:31:31 +0000
+Message-ID: <3A5CF18A.3DEAE71E@mvista.com>
+Date: Wed, 10 Jan 2001 15:34:34 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+To: =?iso-8859-1?Q?St=E9phane?= Laroche <stephane.laroche@colubris.com>
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: Re: CFI problems with 32bit bus and 4 devices
+References: <3A5CB4C3.41FC20D1@colubris.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 10 Jan 2001, [iso-8859-1] St=E9phane Laroche wrote:
+Stéphane Laroche wrote:
 
-> The only difference between the 2 modes are the CFI addresses (you have t=
-o
-> multiply them by 2 in x8 mode).  So you cannot cover that in the map driv=
-er,
-> which doesn't know the difference between a CFI and a normal operation.
+> Hi,
+>
+> I've just updated to the latest CVS and my CFI AMD chips are not
+> accessible anymore.
+>
+> I lokked briefly into it and saw that the cfi->interleave and
+> cfi->device_type were removed from offset calculations when accessing
+> the devices.
+>
+> So, for my setup, which has 4 x16 devices on a 32 bit bus (AMDs),  the
+> CFI query structure is located at offsets 0x80, 0x88, 0x90, etc.
+>
+> cfi_read_query()  uses only the buswidth to calculate the offset, which
+> is not general enough (it used to be like that before I played with the
+> code a bit last summer).  It's obviously wrong in my case ( 0x10 << 2 !=
+> 0x80 ).
+>
+> Rewriting cfi_read_query like this made the CFI query structure
+> readable:
+>
+> static inline __u8 cfi_read_query(struct map_info *map, __u32 base,
+> __u32 addr)
+> {
+>     struct cfi_private *cfi = map->fldrv_priv;
+>     addr *= cfi->interleave * cfi->device_type;  /* instead of addr <<
+> (buswidth / 2) */
+>     if (cfi_buswidth_is_1()) {
+>         return map->read8(map, base + addr);
+>     } else if (cfi_buswidth_is_2()) {
+>         return cfi16_to_cpu(map->read16(map, base + addr));
+>     } else if (cfi_buswidth_is_4()) {
+>         return cfi32_to_cpu(map->read32(map, base + addr));
+>     } else {
+>         return 0;
+>     }
+> }
+>
+> With this change, the chips are now properly recognized.  But I can't
+> still not use them (reads are wrong), so I think I have to look at
+> cfi_cmdset_002.c to bring back the use of cfi->interleave in some
+> calculations...
+>
+> Any comments?  Is it possible that I'm the only one using that kind of
+> geometry?
+>
+> -Stephane
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
-"BYTE ENABLE: BYTE# low places the device in x8 mode. All data is then
-input or output on DQ0-DQ7, while DQ8-DQ15 float. Address A0 selects
-between the high and low byte. BYTE# high places the device in x16 mode,
-and turns off the A0 input buffer. Address A1 then becomes the lowest
-order address."
+I just ran into the same problem with my one 8x16 intel chip which is set
+up in 8 bit mode.
 
-Yep, I was wrong. It couldn't work the way I was thinking of - you'd have
-too few address lines to access the whole chip in x8 mode.
+I think the fix should be:
 
-We do need to handle it in the CFI code, as we did before I broke it.
+static inline __u8 cfi_read_query(struct map_info *map, __u32 base, __u32
+query_addr, int int
+erleave, int type)
+{
+        __u32 addr = base + cfi_build_query_addr(query_addr, interleave,
+type);
 
---=20
-dwmw2
+        if (cfi_buswidth_is_1()) {
+                return map->read8(map, addr);
+        } else if (cfi_buswidth_is_2()) {
+                return cfi16_to_cpu(map->read16(map, addr));
+        } else if (cfi_buswidth_is_4()) {
+                return cfi32_to_cpu(map->read32(map, addr));
+        } else {
+                return 0;
+        }
+}
+
+with cfi_build_query_addr () the same as cfi_build_cmd_addr():
+
+static inline __u32 cfi_build_query_addr(__u32 cmd_ofs, int interleave, int
+type)
+{
+        return (cmd_ofs * type) * interleave;
+}
+
+So that the address of the query is adjusted for the 8 bit selection of an
+8x16 chip.
+I think the correct address is taken from the combo of interleave and type
+( which is correctly set up to be
+CFI_DEVICETYPE_X16  for this configuration).
+
+
+I think we need to pass in the interleave and type because the
+map->fldrv_priv
+isn't set up before the first query call.
+
+Alice
+
 
 
 
