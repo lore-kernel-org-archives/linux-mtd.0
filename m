@@ -1,19 +1,23 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from clavin.cs.tamu.edu
+	([128.194.130.106] helo=cs.tamu.edu ident=0)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q5eI-0004V7-Dc
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 14:28:22 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: angainor@evo.evopolska.com
-In-Reply-To: <Pine.LNX.4.44.0306111500380.14555-100000@evo.evopolska.com>
-References: <Pine.LNX.4.44.0306111500380.14555-100000@evo.evopolska.com>
-Message-Id: <1055338133.2097.102.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 11 Jun 2003 14:28:53 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD drivers for DoC Millenium Plus
+	id 19Q83v-00050q-B0
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:02:59 +0100
+Received: from unix.cs.tamu.edu (unix [128.194.138.13])
+	by cs.tamu.edu (8.11.0/8.11.0) with ESMTP id h5BG3Ug05434
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
+Received: from localhost (choudhri@localhost)
+	by unix.cs.tamu.edu (8.10.2+Sun/8.10.2) with ESMTP id h5BG3Uf07951
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
+Date: Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
+From: Siddharth Choudhuri <choudhri@cs.tamu.edu>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: jffs2 vs. ext3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-06-11 at 14:13, angainor@evo.evopolska.com wrote:
 
-> Guys, really, has nobody even run this code once
-> to see if it works? add_mtd_blktrans_dev is a function.
-> It needs arguments. Specifically, it needs to feed on
-> &inftl->mbd. So this should actually be:
+I am trying jffs2 and ext3 on a 3MB Intel NOR flash. I have a piece of
+code in function part_write (mtdpart.c) that outputs the size in bytes and pid
+of the process (current) sending write requests.
 
-Oops. Sorry. No -- it wasn't tested. I tested FTL and mtdblock when
-converting to the new mtd_blktrans stuff but not NFTL and INFTL. Barring
-stupid typos, I expected it to 'just work'.
+With ext3, no matter how many bytes are written (by an application/user
+level program), the part_write function always gets a request that is
+multiple of 128K (131072 bytes). This does not happen with jffs2 though.
+Also, with ext3, the process is always mtdblockd, whereas with jffs2 the
+process sending the request is the actual user/application process.
 
--- 
-dwmw2
+Any ideas why it happens ?
+
+thanks in advance,
+-siddharth
+
+_____________________________________________________________________
+     Unix is user friendly - its just picky about its friends.
+_____________________________________________________________________
