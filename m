@@ -1,24 +1,18 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from pu90.internetdsl.tpnet.pl ([80.55.20.90]
+	helo=evo.evopolska.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QOke-0002QU-Nj
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 10:52:12 +0100
-Date: Thu, 12 Jun 2003 11:52:37 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-ID: <20030612095237.GC1718@wohnheim.fh-wedel.de>
-References: <3EE752EE.8090902@imc-berlin.de>
-	<1055347637.2097.240.camel@passion.cambridge.redhat.com>
-	<3EE84317.1090307@imc-berlin.de>
-	<1055409538.2097.438.camel@passion.cambridge.redhat.com>
-	<3EE8497F.30402@imc-berlin.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3EE8497F.30402@imc-berlin.de>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: MTD <linux-mtd@lists.infradead.org>
+	id 19QP0a-0002ZX-So
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 11:08:41 +0100
+Date: Thu, 12 Jun 2003 12:10:56 +0200 (CEST)
+From: angainor@evo.evopolska.com
+To: Greg Ungerer <gerg@snapgear.com>
+In-Reply-To: <3EE7D5CB.1090305@snapgear.com>
+Message-ID: <Pine.LNX.4.44.0306120922280.29227-100000@evo.evopolska.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: linux-mtd@lists.infradead.org
 cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Stopping the GC thread?
+Subject: Re: MTD drivers for DoC Millenium Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 June 2003 11:35:59 +0200, Steven Scholz wrote:
+> >>I have studied the "DiskOnChip 2000 128Mb problem"
+> >>thread here on list and tried to change the
+> >>MAX_CHIPS_MPLUS define to something else than 1.
+> >>Well, this way I got an 128MiB disk, then a
+> >>256MiB one, and so on... :). way too many chips found.
 > 
-> But the impact on system performance done by kupdated is not as 
-> critical as the one that's done by the GC intself, is it?
+> We will need to find out a little bit more about this
+> part. The Millennium Plus family originally had 2 memebers,
+> each with their own high level ID. Easy to tell them
+> apart. There internal flash organization is quite different
+> though, the larger (32MiB) part has dual interleaved
+> flash.
 
-The impact on system performance is practically zero, really.  The
-work that GC is doing has to be done anyway.  The only question is,
-when will this work be done.
+> This sure does look odd. The doc I have states that the firstUnit
+> and lastUnit should be valid even for binary partitions.
 
-Try the following:
-time for i in `seq 10`; do 
-	cp $largefile $jffs2;
-	sleep 3;
-	rm $jffs2/$largefile;
-	sleep 3;
-done
+Well, i think i finally got something. As i thought, the
+problem was that the driver did not recognize the size of the
+DoC correctly. I played with MAX_CHIPS_MPLUS/MAX_FLOORS_MPLUS.
+The correct setting seems to be in this case:
 
-$largefile should be around 50% or of fs size, roughly.
+	MAX_CHIPS_MPLUS=1
+	MAX_FLOORS_MPLUS=2
 
-Run this with and whithout the sleeps.  Notice that the difference it
-not just one minute of idle time, it is more in the order of 2,
-ignoring the idle time.  And I bet you a fiver that you get the same
-order between enabled and disabled GC if you keep the sleep.
+The detection code does not work here.
+Maybe it should be done differently with DoCMP?
+Greg, if you point me to proper data sheets, i might
+try to figure out.
 
-GC eats up cpu cycles when the system is idle, so you have more left
-when you are under pressure.  And that is a Good Thing(tm).
+I get no sanity checks errors and the driver correctly
+recognized two linux partitions created earlier with M-Systems
+driver. At least the partition table was read correctly.
+Dumps of the partitions differed from the actual data
+in many places. The only thing the driver said that might
+be wrong was this (<X> is in range 1981-2047, so not all blocks
+are affected):
 
-> >'sector'?  Read http://sources.redhat.com/jffs2/jffs2.pdf 
-> I meant flash sectors.
+	INFTL: formatting chain at block <X>
+	INFTL: formatting chain at block <X>
+	INFTL: formatting block <X>
+	MTD: Error 0xffffffa5 erasing at 0x3f20000
+	INFTL: error while formatting block <X>
 
-Most people prefer to call them erase blocks or something similar. :)
+Any writing causes immediate system death :))
 
-Jörn
+Might my problems result from wrong cylinders/heads/sectors
+decided by the driver? I get:
 
--- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+	INFTL: cannot calculate a geometry to match size of 0x1f1c0.
+	INFTL: using C:995 H:16 S:8 (== 0x1f180 sects)
