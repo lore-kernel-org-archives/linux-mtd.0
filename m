@@ -1,21 +1,25 @@
-Received: from ioskeha.hittite.isp.9tel.net ([62.62.156.27])
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19iHIH-0005kS-6K
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2003 18:32:49 +0100
-Received: from jennifer (252.170.62.62.internet9t.9massy1-1-ro-bas-2.9tel.net
-	[62.62.170.252])
-	by ioskeha.hittite.isp.9tel.net (Postfix) with ESMTP id D161517BB91
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Jul 2003 19:32:14 +0200 (CEST)
-From: "Philippe" <philippe@accuitee.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 31 Jul 2003 19:32:14 +0200
-Message-ID: <000001c35789$aebf6220$6401a8c0@jennifer>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: DiskOnChip 2000 and CVS Drivers
+	id 19iHie-0005tY-UY
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2003 19:00:04 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de
+ (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
+ with SMTP id <0HIW007LJHZ671@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 31 Jul 2003 19:59:31 +0200 (MEST)
+Date: Thu, 31 Jul 2003 20:56:00 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <5.1.1.6.0.20030731180128.024a0020@192.168.2.1>
+To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
+Message-id: <200307312056.00480.tglx@linutronix.de>
+MIME-version: 1.0
+Content-disposition: inline
+References: <5.1.1.6.0.20030715182633.027cd5c0@dns.struinfo.it>
+ <5.1.1.6.0.20030731180128.024a0020@192.168.2.1>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: Re: Help to understand error messages (MTD on Samsung NAND  chips)
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thursday 31 July 2003 18:16, llandre wrote:
+> Hi Thomas,
+>
+> sorry for this late response, but I had to work for a couple of weeks on
+> another project.
+>
+> Anyway I restored the original source files included in the kernel and I
+> collected the debug information printed during the execution of the
+> eraseall command.
+> Here is a short dump of what I got:
+>
+> ---------------------------------------------------------------------------
+>------------ bash-2.05# echo 9 >/proc/sys/kernel/printk
+> bash-2.05# eraseall /dev/mtd0
+> MTD_open
+> MTD_ioctl
+> Erasing 16 KibyMTD_ioctl
+> te @ 0 --  0 % cnand_erase: start = 0x00000000, len = 16384
+> omplete.nand_erase: attempt to erase a bad block at page 0x00000000
 
-I'm a newbie to the MTD world.
+Byte 5 of the OOB area in the first page of the block is != 0xFF. 
+That means, that this block is bad. Either it was set by the manufacturer, 
+which is possible as NAND chips can contain bad blocks, or JFFS2 / YAFFS do 
+it when they recognize a bad block, or you managed it anyhow to write the bad 
+block markers. I assume the latter.
 
-My hardware :
+Bad blocks may not be erased, as the bad block information may be destroyed 
+and you then would use a bad block for storing data.
 
-  VIAC3 MotherBoard + DiskOnChip support
-  DiskOnChip 2000 32MiB MD2202-D32 (linux adress 0xD0000, 0xD000 for the
-dformat utility)
-
-I'm running Linux 2.4.20 patched with mtd drivers from CVS (2003-07-28)
-The patch was applied using the tool patchin.sh :
-sh patchin.sh -c -j /usr/src/linux-2.4.20
-
-Everything went fine.
-I patched grub and installed the firmware into the DOC.
-My DOC is now able to boot (LanBoot)
-
-Everything works great under GRUB/NFTL.
-
-
-Now I want to use two partitions (there is a similar post but it's
-pretty old and there were no real answer) :
- - 2Mb (NFTL/EXT2) kernel + initrd.gz (RO)
- - 30Mb (JFFS/JFFS2) config files, log files etc... (RW)
-
-I read (the last two weeks) that setting up JFFS2 on DOC is tricky. 
-I saw several posts (from 2001) with patches to build a
-FAKE_PARTITION_SYSTEM. I wasn't able to set it up with my 2.4.20 kernel
-and MTD stuff.
-
-I looked into the MTD stuff and saw that there is a NAND-Driver for the
-DiskOnChip (nand/diskonchip.c). 
-
-- Is this piece of code usable ?
-- Is there any documentation or any howto which explain how to configure
-the kernel to use the DiskOnChip with it?
-
-Thank you and sorry to disturb the mailing list if I missed the answer.
-
-Philippe
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
