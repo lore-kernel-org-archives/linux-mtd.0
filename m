@@ -1,20 +1,21 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AUqua-0007FD-73
-	for linux-mtd@lists.infradead.org; Fri, 12 Dec 2003 17:17:08 +0000
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: David Vrabel <dvrabel@arcom.com>
-In-Reply-To: <3FD998F6.9000303@arcom.com>
-References: <3FD998F6.9000303@arcom.com>
-Content-Type: text/plain
-Message-Id: <1071248708.21490.210.camel@tubarao>
-Mime-Version: 1.0
-Date: 12 Dec 2003 10:05:08 -0700
+Received: from sphere.barak.net.il ([212.150.48.98])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AVYLP-0005Iw-MY
+	for linux-mtd@lists.infradead.org; Sun, 14 Dec 2003 15:39:43 +0000
+Received: from pc166 ([82.166.70.240]) by sphere.barak.net.il
+	b2629777bce4038e9f419f7b71122558)
+	with SMTP id <20031214153615.FLNJ4652.sphere@pc166>
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 14 Dec 2003 17:36:15 +0200
+Message-ID: <006701c3c257$a2116c60$a600a8c0@pc166>
+From: "Isak Levi" <isak@barak.net.il>
+To: <linux-mtd@lists.infradead.org>
+Date: Sun, 14 Dec 2003 17:33:32 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="windows-1255"
 Content-Transfer-Encoding: 7bit
-cc: Linux MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: cfi_cmdset_0002 -- erase suspends broken.
-Reply-To: tharbaugh@lnxi.com
+Subject: problem using jffs2 with nand flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-12-12 at 03:31, David Vrabel wrote:
-> Hi,
-> 
-> The latest cfi_cmdset_0002.c (AMD chips) in CVS has broken erase-suspends.
+Hi,
+I am using samsung 2k pages NAND flash and I am trying to use JFFS2 with the
+flash.
+I did the following steps:
 
-I knew there was a possibility of this, but didn't have hardware and
-software for a good test.
+1. eraseall /devfs/mtd/6
+2. mount -t jffs2 /devfs/mtdblock/6 /mnt
 
-> 1. Erase suspend command must be written to the block to be resumed.
-> 2. When erasing DQ2 must a) be read from the erase in progress block b) 
-> doesn't indicate that an erase has been suspended.  DQ6 is the toggle 
-> bit to check.
-> 
-> There's a patch attached that fixes these issues.
+while /mnt is empty, I am trying to copy ~11k file on it and encounter the
+following error:
+Only one page(2k) is actually being written to the flash (why is that?) and
+after remounting the system
+the file is only 4096 bytes long.
+I get 'Unable to handle kernel request at virtual address ... ' within the
+kupdated process.
 
-Wonderful.  I need to look through it a bit more.
-
->   It's a 
-> work-in-progress as there's still an issue remaining -- JFFS2 reports 
-> (for example):
-> 
-> "Newly-erased block contained word 0xff7fffff at offset 0x00ca4540
-> Newly-erased block contained word 0xffefffff at offset 0x00c90a14
-> Newly-erased block contained word 0xffffffbf at offset 0x00c82ef4
-> Newly-erased block contained word 0xfffffbff at offset 0x00df0e20
-> Newly-erased block contained word 0xfffffffe at offset 0x00de0010"
-> 
-> My 1st thought was that some toggle/status bit were still active but it 
-> doesn't really make sense.
-
-I'll be looking for another patch, then. 8^)
-
--- 
-Thayne Harbaugh
-Linux Networx
+any idea's?
+Thanks
