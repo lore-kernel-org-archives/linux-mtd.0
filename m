@@ -1,20 +1,25 @@
-Received: from pacific.moreton.com.au ([203.143.235.130]
-	helo=dorfl.internal.moreton.com.au)
+Received: from mail.tuke.sk ([147.232.3.3] ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19J3gN-0002EC-RW
-	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 04:57:28 +0100
-Received: from snapgear.com (goober.internal.moreton.com.au [192.168.160.212])
-	h4N3vDkb021348	for <linux-mtd@lists.infradead.org.>;
-	Fri, 23 May 2003 13:57:13 +1000 (EST)
-	(envelope-from gerg@snapgear.com)
-Message-ID: <3ECD9C30.7090804@snapgear.com>
-Date: Fri, 23 May 2003 13:57:36 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-MIME-Version: 1.0
+	id 19J6CE-0002a7-Up
+	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 07:38:31 +0100
+Received: from smtp.tuke.sk (dot.tuke.sk [147.232.16.16])
+	(using TLSv1 with cipher EDH-RSA-DES-CBC3-SHA (168/168 bits))
+	(No client certificate requested)
+	by mail.tuke.sk (Postfix) with ESMTP id 1F5E21670CF
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 23 May 2003 08:38:19 +0200 (CEST)
+Received: from alfa.intrak.tuke.sk (alfa.intrak.tuke.sk [147.232.152.3])
+	by smtp.tuke.sk (Postfix) with ESMTP id 16F04B3B49
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 23 May 2003 08:35:30 +0200 (CEST)
+Date: Fri, 23 May 2003 08:38:20 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [ANNOUNCE] MTD driver for DiskOnChip Millennium Plus and INFTL
+Message-ID: <20030523063820.GH13272@intrak.sk>
+Mime-Version: 1.0
+Content-Disposition: inline
+From: stolc@intrak.sk (Oskar Stolc)
+Content-Type: text/plain; charset=us-ascii
+Subject: DiskOnChip MD2202-D256
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Hi All,
-
-I would like to announce a patch set to support the M-System's
-Disk-On-Chip Millennium Plus parts, and their new INFTL (Inverse
-NAND Flash Translation Layer).
-
-You can get the patch at either of these sites:
-
-  ftp://ftp.snapgear.org/pub/patches/mplus-20030414.patch.gz
-  http://www.uclinux.org/pub/uClinux/misc/mplus-20030414.patch.gz
-
-This patch is against standard Linux 2.4.20 kernel.
-
-The Millennium Plus flash devices are a new family of NAND
-flash devices from M-Systems, not unlike the 2000 or Millennium
-devices. INFTL is a new improved NFTL. The fundamental difference
-is that it stores its chains in inverted order.
-
-There is also some modified mtd utilities that go along with
-this driver code at:
-
-  ftp://ftp.snapgear.org/pub/patches/mtd-utils-20030414.tar.gz
-  http://www.uclinux.org/pub/uClinux/misc/mtd-utils-20030414.tar.gz
-
-It has an updated nftl_format capable of formating a device
-with an INFTL layer or NFTL. There is also some code that
-allows programming an IPL on a Millennium Plus device.
-
-The INFTL support is based wholey on the existing MTD NFTL
-support. So the same limitations do apply to using INFTL.
-Additionally given the current INFTL and Millenium Plus support
-is very new there are a number of limitations that will be
-rectified in future releases.
- 
-
-The currnet limitations include:
- 
-
-     1. Both the NFTL and INFTL layers use the same Linux major number.
-        So this means that only one of the NFTL or INFTL layers can be
-        compiled or loaded into the Linux kernel at any one time.
-     2. The INFTL layer can only use a single BDTL parition, even if the
-        device is setup with more.
-     3. Only 32MiB Millenium Plus devices have been tested.
-
-Feedback welcome:-)
-
-Regards
-Greg
+Hi,
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Chief Software Dude          EMAIL:  gerg@snapgear.com
-SnapGear Pty Ltd                               PHONE:    +61 7 3435 2888
-825 Stanley St,                                  FAX:    +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia              WEB:   www.SnapGear.com
+I'm just trying to install DiskOnChip MD2202-D256 flash disk on my
+2.4.21-rc2 linux. While loading modul by command
+	'modprobe docprobe'
+	
+these messages occurred on my screen:
+
+DiskOnChip Millenium found at address 0xE0000
+Unknown flash chip found: 21 21
+Please report to dwmw2@infradead.org
+Unknown flash chip found: 21 21
+Please report to dwmw2@infradead.org
+Unknown flash chip found: A1 A1
+Please report to dwmw2@infradead.org
+No flash chips recognised.
+
+This flash disk was formated by DOS command:
+	dformat /win:e000 /s:doc514.exb
+
+and that enabled C:\ disk under DOS.
+
+DiskOnChip is a part of ICOP-6070 PC/104 Embedded CPU module.
+
+Is there some HOWTO showing me how to install this DOC in Linux?
+
+Is this DOC supported by MTD drivers in 2.4.21-rc2 kernel?
+
+Thanks,
+
+Oskar
