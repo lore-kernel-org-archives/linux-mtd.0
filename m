@@ -1,18 +1,16 @@
-Received: from jafar.unixpac.com.au ([203.3.121.10])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17MHqR-0006Nk-00
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2002 01:36:40 +0100
+Received: from tomts23.bellnexxia.net ([209.226.175.185] helo=tomts23-srv.bellnexxia.net)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17MITT-0006Qo-00
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2002 02:17:00 +0100
+Date: Sun, 23 Jun 2002 21:16:57 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Gonzalo Servat <gonzalo@linuxaus.com>
+cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: Re: Trying to boot linux off a 2MiB M-Sys DoC2000 chip
-From: Gonzalo Servat <gonzalo@linuxaus.com>
-To: Ilguiz Latypov <ilatypov@superbt.com>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-In-Reply-To: <Pine.LNX.4.44.0206221044210.24642-100000@server.superbt.com>
-References: <Pine.LNX.4.44.0206221044210.24642-100000@server.superbt.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 24 Jun 2002 10:35:54 +1000
-Message-Id: <1024878954.15354.33.camel@pluto.unixpac.com.au>
-Mime-Version: 1.0
+In-Reply-To: <1024878954.15354.33.camel@pluto.unixpac.com.au>
+Message-ID: <Pine.LNX.4.44.0206232114130.6614-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,49 +22,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sun, 2002-06-23 at 00:49, Ilguiz Latypov wrote:
-> 
-> On 22 Jun 2002, Gonzalo Servat wrote:
-> 
-> > My question is, how do I configure grub to know how to boot off the DoC?
-> > I can get it to boot off an IDE HDD (root hd(0,0); kernel /boot/bzImage;
-> > boot) but how would grub know how to access the DoC's kernel?
-> 
-> Try
-> 
->   root (dc0)
->   kernel /boot/vmlinuz root=/dev/nftla ro
-> 
-> for a filesystem on top of /dev/nftla or
-> 
->   root (dc0,0)
->   kernel /boot/vmlinuz root=/dev/ntla1
-> 
-> for one on top of /dev/nftla1.  The first line may point to a different 
-> partition that would hold the kernel image.  Such separation allows to 
-> let GRUB boot a kernel off an ext2 partition.  The kernel in turn can 
-> mount another ext3 partition under "/".  GRUB is not aware of ext3.
+Gonzalo,
 
-Hi Ilguiz. Thanks for your reply.
+Did you see the recent instruction on applying the MTD DiskOnChip patch 
+to GRUB?  It's in
 
-I tried this and Grub doesn't like "dc0". It says "Error 23: Error while
-parsing number" .. I tried doing tab completion after the 'dc' but it
-kept giving me the same error.
+    http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html
 
-The DiskOnChip is on /dev/mtd0 and my first partition is /dev/nftla1
-(ext2)
+Ilguiz
 
-I configured /boot/grub/{menu.lst,grub.conf} on the DOC but since Grub
-doesn't seem to be able to read the DOC, it can't read the menu.lst.
+On 24 Jun 2002, Gonzalo Servat wrote:
 
-Any help would be greatly appreciated.
-
-Thanks!
-
-Regards,
-Gonzalo
-
-> 
-> Ilguiz
-> 
-> 
+> I tried this and Grub doesn't like "dc0". It says "Error 23: Error while
+> parsing number"
