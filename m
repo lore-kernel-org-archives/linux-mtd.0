@@ -1,24 +1,22 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=executor.cambridge.redhat.com)
+Received: from imf23aec.mail.bellsouth.net ([205.152.59.71])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19p42L-0008U0-T8
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 11:48:25 +0100
-Received: from hades.cambridge.redhat.com (hades.cambridge.redhat.com
-	[172.16.18.64])
-	by executor.cambridge.redhat.com (Postfix) with ESMTP id CD90E63D69
+	id 19p6fK-0000Oz-2o
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 14:36:50 +0100
+Received: from luna.siliconmotorsports.com ([68.158.3.61])
+	by imf23aec.mail.bellsouth.netESMTP
+	<20030819133601.RADQ8750.imf23aec.mail.bellsouth.net@luna.siliconmotorsports.com>
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Aug 2003 11:47:48 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: jon.hoekwater@spansion.com
-In-Reply-To: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FD4@txexmtab.amd.com>
-References: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FD4@txexmtab.amd.com>
-Message-Id: <1061286060.9943.1235.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 19 Aug 2003 10:42:13 +0100
-Content-Type: text/plain
+	Tue, 19 Aug 2003 09:36:01 -0400
+From: "Tim Drury" <tdrury@siliconmotorsports.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 19 Aug 2003 09:35:41 -0400
+Message-ID: <000501c36656$c9a96b90$f546a8c0@SIMOTORSPORTS>
+MIME-Version: 1.0
+In-Reply-To: <1061283331.9943.1164.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Unknown host cvs.infradead.org
+Subject: RE: INFTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-08-18 at 14:26 -0500, jon.hoekwater@spansion.com wrote:
-> I entered the command as instructed, but I get the following error message:
-> 
-> Unknown host cvs.infradead.org
+> /me wanders off to see if the coffee's brewed yet...
 
-The DSL line which unfortunately at the moment hosts _both_
-ns0.infradead.org and ns1.infradead.org has been going up and down like
-a yoyo for the past couple of days. One (or both) of them is moving
-fairly soon so it's slightly more sensible. In the meantime, just try
-again.
+Is there an IRC server/channel that you guys generally hang out in?
+I've been searching for a good embedded systems discussion channel
+without much luck.
 
--- 
-dwmw2
+-tim
