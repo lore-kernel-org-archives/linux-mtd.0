@@ -1,18 +1,17 @@
-Received: from mailg.telia.com ([194.22.194.26])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aYgS-0003GN-00
-	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 10:25:20 +0100
-Message-ID: <003b01c23a06$c83c3940$0200a8c0@telia.com>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-References: <003d01c2399a$b519a9e0$0200a8c0@telia.com>  <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com>  <12285.1028244660@redhat.com>
+	id 17aYxJ-0003Hn-00
+	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 10:42:45 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <003b01c23a06$c83c3940$0200a8c0@telia.com> 
+References: <003b01c23a06$c83c3940$0200a8c0@telia.com>  <003d01c2399a$b519a9e0$0200a8c0@telia.com> <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com> <12285.1028244660@redhat.com> 
+To: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: write suspend and/or erase suspend 
-Date: Fri, 2 Aug 2002 11:27:12 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 02 Aug 2002 10:42:43 +0100
+Message-ID: <1236.1028281363@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,28 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-From: "David Woodhouse" <dwmw2@infradead.org>
-> 
-> Joakim.Tjernlund@lumentis.se said:
-> > When a erase or write is suspened to allow some other part of the FS
-> > to read, is that read garanted to read from another sector than the
-> > one that has been suspended?
-> 
-> > I am asking since I think it's not allowed to access the sector that
-> > has a  suspended operation. I am using Intel Strata Flash. 
-> 
-> Correct. Currently we don't suspend writes, but when we do we need to make 
-> sure we get that right. Reading from a block on which an erase is in 
-> progress is a silly idea anyway, so I don't care that we don't check for 
-> that and make the reader wait.
+Joakim.Tjernlund@lumentis.se said:
+>  Yes, it's silly but can it happen by mistake? The flash state machine
+> may be  confused if an access is made during suspend. 
 
-Yes, it's silly but can it happen by mistake? The flash state machine may be 
-confused if an access is made during suspend. 
+You'll get a buffer full of status bits, I expect. Doesn't matter -- the 
+contents of the block at that time are undefined because they're in the 
+middle of an erase.
 
-hmm, my modified driver also supports "suspend erase to do a write". Could that be a problem? 
+> hmm, my modified driver also supports "suspend erase to do a write".
+> Could that be a problem? 
 
-> 
-> --
-> dwmw2
-> 
-> 
+Again, only if someone's trying to write to a block they're currently 
+trying to erase -- which they shouldn't be doing.
+
+We _should_ be checking for these things in the driver, and we _definitely_ 
+have to do so before start suspending writes to perform reads. But at the 
+moment, the only way a user could trigger wrong behaviour is if they're 
+doing something bloody stupid anyway.
+
+
+--
+dwmw2
