@@ -1,15 +1,14 @@
-Received: from [195.144.108.44] (helo=mail.deltaes.com)
+Received: from [62.154.254.10] (helo=chaingun.noernet.de ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15rNOM-0002bM-00
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2001 18:43:38 +0100
-Date: Wed, 10 Oct 2001 19:58:29 +0200 (CEST)
-From: martin.kula@deltaes.cz
-Reply-To: martin.kula@deltaes.cz
-To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Eraseblock size in jffs2 ? 
-In-Reply-To: <30602.1002735589@redhat.com>
-Message-ID: <Pine.LNX.4.21.0110101951520.18912-100000@lxserver.deltes.cz>
+	id 15rSEZ-000337-00
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2001 23:53:51 +0100
+Date: Thu, 11 Oct 2001 01:01:15 +0200 (CEST)
+From: dennis noermann <dennis.noermann@noernet.de>
+To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+cc: <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 performance
+In-Reply-To: <IGEFJKJNHJDCBKALBJLLOEHNEPAA.joakim.tjernlund@lumentis.se>
+Message-ID: <Pine.LNX.4.33.0110110058180.22291-100000@chaingun.noernet.de>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -23,27 +22,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
 
-On Wed, 10 Oct 2001, David Woodhouse wrote:
+On Wed, 10 Oct 2001, Joakim Tjernlund wrote:
 
-> > I'm very confused with it because when I use eraseall on the mtd0
-> > device than I erase  MBR and so  too ? I won't be able to boot from
-> > this, will I ?
-> 
-> Yes, it would take out all the firmware, but the firmware wouldn't have let 
-> you boot from JFFS or JFFS2 anyway.
+> Hi all
+>
+> I am wondering how JFFS2 performance(primarly read performance) is affected by compression.
+> There are basically 3 types of (de)compression NONE, ZLIB and RTIME. Does it matter which
+> one is used w.r.t read performace?
 
-Ohhh so !?! That it isn't the solution for me because I have a PC104
-with a DoC only.
+i am using ZLIB , and it is slow :(
+on a mpc823 with 66Mhz with 2 Intel 28F320 interlaced (32 Bit) with
+kernel 2.4.2 it takes 70 seconds to mount a 8Mb uge jffs2 Partition :(
 
-> 
-> Probably best just to use NFTL on it and a normal filesystem on top of that.
-> 
+an the read a write actions are slow :( ...
 
-OK
+but a 640k partition is mountet realy fast :)
 
-
-Thanks
-
-Martin
+dennis
