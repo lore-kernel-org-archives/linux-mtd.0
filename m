@@ -1,19 +1,16 @@
-Received: from sccrmhc01.attbi.com ([204.127.202.61])
+Received: from esteem.com ([198.65.249.253])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17c7BV-0006po-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 17:27:49 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: Ilguiz Latypov <ilatypov@superbt.com>
-Subject: Re: [patch] doc_stage1.S : GRUB on DoC
-Date: Tue, 6 Aug 2002 12:26:45 -0400
-Cc: linux-mtd@lists.infradead.org
-References: <Pine.LNX.4.44.0208021755070.3723-100000@server.superbt.com>
-In-Reply-To: <Pine.LNX.4.44.0208021755070.3723-100000@server.superbt.com>
+	id 17c7HD-0006qv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 17:33:43 +0100
+Message-ID: <3D4FFA9B.2C693A02@esteem.com>
+Date: Tue, 06 Aug 2002 09:34:35 -0700
+From: Conn Clark <clark@esteem.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020806162717.SAGG23732.sccrmhc01.attbi.com@there>
+To: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: Need help getting JFFS2 working with kernel 2.4.19
+References: <3D4EDA18.C77AEDA@esteem.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,40 +22,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Ilguiz Latypov wrote:
-> Both 07-29 and 0.92 patches work with 32M DoC 2000 on the Advantech PCA
-> 6753 F board.
+Conn Clark wrote:
+> 
+> Hello all,
+> 
+>         I am new here and I am having trouble getting the JFFS2 code
+> working/compiling with the 2.4.19 kernel . I get multiple definition
+> errors when the kernel is linking.
+> 
+> Many thanks in advance,
+> 
+>         Conn
 
-Ilguiz,
+	I figured it out. The jffs2 zlib was conflicting with the zlib
+used bye ppp compresion. I just had to remove zlib.o from the COMPR_OBJS
+definition in the Makefile.
 
-Both patches are now working great on both the faster PC and the P133 system.
+	Sorry for the lack of details. I figured it out yesterday but
+mailed this post to myself instead of the list. Sorry again.
 
-I finally figured out what is going on with Grub not working on a P133 
-system:  The grub_firmware produced on a Debian system (gcc 2.95.4) works 
-fine on both machines; grub_firmware from a Gentoo system (gcc 2.95.3) works 
-on the faster PC, but not on the P133.
 
-> I believe GRUBSTART is the offset value while GRUBLOADSEG is the segment 
-> value, i.e. GRUBSTART == (GRUBLOADSEG << 4) + GRUBLOADOFS.
+Thanks anyways
 
-My apologies for misunderstanding your earlier post.  Your latest change puts 
-the manufacturer/id code where I had intended it to be; I goofed on the 
-offset value in the original patch.
+	Conn
+-- 
 
-It's my understanding that these DoC 2000/Millennium patches will soon be 
-incorporated into the official Grub sources.   Until then, if anyone else is 
-interested in trying the latest patches, here's a summary:
+*****************************************************************
+  If you live at home long enough, your parents will move out.
+ (Warning they may try to sell their house out from under you.)
+*****************************************************************
 
-GRUB CVS: http://savannah.gnu.org/cvs/?group=grub
-Patch: grub-2002-07-29-doc.patch (MTD cvs)
-On a Debian system, use: 
-aclocal-1.6 && automake-1.6 --add-missing && autoconf2.50
+Conn Clark
+Engineering Stooge				clark@esteem.com
+Electronic Systems Technology Inc.		www.esteem.com
 
-GRUB 0.92: http://www.gnu.org/software/grub/grub-0.92.tar.gz
-Patch: grub-0.92-doc.patch (MTD cvs)
+Stock Ticker Symbol				ELST
 
-Instructions:
-http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html
-(With these patches, use "--enable-diskonchip-mil" for all DoC Millenniums)
-
-Mark
+"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
+ This email address may be used to communicate to Conn Clark
+ provided it is not being used for advertisement purposes, unless
+ prior written consent is given. This email address may not be 
+ sold under any circumstances. All other rights reserved.
