@@ -1,18 +1,19 @@
-Received: from [212.18.228.76] (helo=mail.linuxgrrls.org ident=postfix)
+Received: from ip68-6-32-22.sb.sd.cox.net ([68.6.32.22]
+	helo=speedy.datawave.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QrTk-00024Y-79
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 17:32:40 +0100
-Date: Fri, 13 Jun 2003 17:33:07 +0100 (BST)
-From: Jasmine Strong <jasmine@regolith.co.uk>
-To: "Brian J. Fox" <bfox@RoamingMessenger.com>
-In-Reply-To: <E19QrRf-0003en-00@speedy.datawave.net>
-Message-ID: <Pine.LNX.4.53.0306131732140.12689@undine.linuxgrrls.org>
+	id 19QrgA-0002QT-Ex
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2003 17:45:30 +0100
+From: "Brian J. Fox" <bfox@RoamingMessenger.com>
+To: jasmine@regolith.co.uk
+In-reply-to: <Pine.LNX.4.53.0306131732140.12689@undine.linuxgrrls.org>
+	(message from Jasmine Strong on Fri, 13 Jun 2003 17:33:07 +0100 (BST))
 References: <3EE6EBA0.3080508@intracom.gr>
 	<20030612231042.C385C409E@blood.actrix.co.nz>
 	<Pine.LNX.4.53.0306131316110.11502@undine.linuxgrrls.org>
-	<E19QrRf-0003en-00@speedy.datawave.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<Pine.LNX.4.53.0306131732140.12689@undine.linuxgrrls.org>
+Message-Id: <E19QrgB-0003fC-00@speedy.datawave.net>
+Sender: "Brian J. Fox" <bfox@ua.com>
+Date: Fri, 13 Jun 2003 09:45:31 -0700
 cc: manningc2@actrix.gen.nz
 cc: linux-mtd@lists.infradead.org
 cc: panto@intracom.gr
@@ -27,11 +28,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+   Date: Fri, 13 Jun 2003 17:33:07 +0100 (BST)
+   From: Jasmine Strong <jasmine@regolith.co.uk>
+   Cc: manningc2@actrix.gen.nz, panto@intracom.gr, linux-mtd@lists.infradead.org
 
-On Fri, 13 Jun 2003, Brian J. Fox wrote:
+   On Fri, 13 Jun 2003, Brian J. Fox wrote:
 
-> Why does the product have to remain nameless?
+   > Why does the product have to remain nameless?
 
-Because it's covered by a non-disclosure agreement until it is launched.
+   Because it's covered by a non-disclosure agreement until it is launched.
 
--Jas.
+Okay.  Please keep us posted -- this kind of adoption in the consumer
+market is exactly the thing that is needed (for many reasons), and I'm
+excited to hear about it.
+
+Brian
+--------------------------------------------------------------------
+Brian J. Fox                Roaming Messenger, Inc. 
+CTO                         www.RoamingMessenger.com
+bfox@RoamingMessenger.com   P:(805) 683-ROAM x119   F:(805) 964-6968
+-------------------------------------------------------------------- 
