@@ -1,19 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from proxy.force.de ([158.116.254.130])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Bd7Z-0003JX-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 15:38:33 +0000
-Date: Tue, 12 Nov 2002 17:08:43 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Miraj Mohamed <miraj@procsys.com>
-Cc: jffs-dev@axis.com, linux-mtd@lists.infradead.org
-Subject: Re: mirroring in JFFS2
-Message-ID: <20021112160843.GE5031@wohnheim.fh-wedel.de>
-References: <3DD0D966.E6D877EC@procsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3DD0D966.E6D877EC@procsys.com>
+	id 18BdH3-0003K8-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 15:48:22 +0000
+Received: from ex-deu-munich02.force.de (ex-deu-munich02.force.de [10.254.2.10])
+	by proxy.force.de (8.11.4/8.11.4) with ESMTP id gACGIn229755
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 17:18:50 +0100 (MET)
+Message-ID: <9CFB9DA5261CD611A29B00508B789048380A4F@ex-deu-munich02.force.de>
+From: "Gettert, Wolfram" <Wolfram.Gettert@fci.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Problem writing to flash with writeb()
+Date: Tue, 12 Nov 2002 17:18:46 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,31 +25,72 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 12 November 2002 16:05:18 +0530, Miraj Mohamed wrote:
-> 
->         Our system needs error detection and recovery of data on Flash.
-> We selected Jffs2 which has in built CRC. And planning to modify
-> Jffs2 code for mirroring. This means...each write and erase will be
-> duplicated
-> on mirror partition . While reading if a CRC error is detected,
-> the mirror data will be read.
-> 
->                     Can any one say if this implementation is ok (or is
-> possible)?
-> Have anyone implemented a similar system before? Any other way to attain
-> redundancy?
+Hallo,
+I try to identify my flash with manufacturer id and device id.
+Because I am using the 2.2.18 kernel and I want to be portable I
+use the physmap_read/writeX() functions. They are defined as followed.=20
 
-Are you trying to put the mirroring stuff into jffs2?
+void physmap_writeX(struct map_info *map, __u8 d, unsigned long adr)
+{
+	__raw_writeX(d, map->map_priv_1 + adr);
+	mb();
+}
 
-In the hard disk world, people use md for this, which uses two devices
-and returns one. The filesystem does not need to worry about anything.
+In the 2.2.18 __rawreadb is not defined so I have done this.
 
-Writing an mtd driver in that fashion should be pretty easy. Robert
-Kaiser has done something similar already, have a look at the concat
-layer.
+#define __raw_readX readX
+#define __raw_writeX writeX
 
-Jörn
 
--- 
-Data expands to fill the space available for storage.
--- Parkinson's Law
+Now I want to identify the flash doing this
+
+	volatile char *p;
+	u32 manufacturer, device;
+=09
+  	physmap_map.map_priv_1 =3D (unsigned =
+long)ioremap_nocache(WINDOW_ADDR,
+WINDOW_SIZE);
+
+	...
+=09
+	//Read Manufacturer and Device code=09
+	physmap_write8(&physmap_map,0x90,physmap_map.map_priv_1);
+	manufacturer =3D physmap_read8(&physmap_map,0);
+	device =3D physmap_read8(&physmap_map,2);=09
+	printk("Manufacturer Code: 0x%x\n",manufacturer);
+	printk("Device Code: 0x%x\n",device);
+
+The result in log is:
+
+Manufacturer Code: 0xff
+Device Code: 0xff
+
+If I do it like this:
+
+	p =3D physmap_map.map_priv_1;
+	p[0] =3D 0x90;
+	printk("Manufacturer Code: 0x%x\n",p[0]);
+	printk("Device Code: 0x%x\n",p[2]);
+=09
+The result in log is:
+
+Manufacturer Code: 0xffffff98
+Device Code: 0xffffff9c
+
+That's what I expect. *p needs to declared as volatile to let this =
+work.
+But I want to use readb ... Any ideas?
+
+Thanks
+
+Wolfram
+
+--
+Wolfram Gettert
+Software Engineer=20
+Force Computers GmbH
+- A Solectron Company -
+Lilienthalstr. 15=20
+D-85579 Neubiberg/M=FCnchen
+Wolfram.Gettert_at_fci.com
+www.forcecomputers.com
