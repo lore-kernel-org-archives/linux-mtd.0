@@ -1,18 +1,19 @@
-Received: from mailout04.sul.t-online.com ([194.25.134.18])
+Received: from rwcrmhc51.attbi.com ([204.127.198.38])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17lVMr-0003ng-00
-	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 15:06:21 +0100
-To: Andrew Hainsworth <andrew@hainsworth.ath.cx>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Frustration. 
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Sun, 01 Sep 2002 22:37:54 +1000."
-             <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
-Date: Sun, 01 Sep 2002 16:05:53 +0200
-Message-Id: <20020901140558.2A12E1182F@denx.denx.de>
+	id 17lVfC-0003qL-00
+	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 15:25:18 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Andrew Hainsworth <andrew@hainsworth.ath.cx>,
+ linux-mtd@lists.infradead.org
+Subject: Re: Frustration.
+Date: Sun, 1 Sep 2002 10:24:17 -0400
+References: <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
+In-Reply-To: <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020901142446.LRUK12451.rwcrmhc51.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,28 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In message <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8> you wrote:
+Hi Andrew,
 
-> The DoC is being recognised:
-> 
-> DiskOnChip 2000 found at address 0xD0000
-> Flash chip found: Manufacturer ID: EC, Chip ID: 75 (Samsung KM29U256T)
-> 1 flash chips found. Total DiskOnChip size: 32 MiB
-> 
-> NFTL driver loads:
-> 
-> NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
->   nftla: nftla1
-           ^^^^^^
+There's a DoC/Grub HOWTO at 
+http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html.
 
-> But where is the DoC for me to mount and have my merry way with?  I would 
+This has an example of using fdisk, mke2fs, and mount with a DoC.
 
-/dev/ntfla1 ??? How about something like "mount /dev/ntfla1 /mnt" ?
+Mark
 
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-It's all Klatchian to me.
-        - Terry Pratchett & Stephen Briggs, _The Discworld Companion_
+Andrew Hainsworth wrote:
+> I've been trying to get my DoC2000 to boot for the last couple of
+> weeks.  First I tried the drivers from m-sys themselves, but they didn't
+> work.  Now I'm trying the MTD drivers and hopefully GRUB.
