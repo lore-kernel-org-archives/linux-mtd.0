@@ -1,38 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14WDV5-0003JD-00
-	for mtd-list@infradead.org; Fri, 23 Feb 2001 08:22:51 +0000
+	id 14WDX7-0003K3-00
+	for mtd-list@infradead.org; Fri, 23 Feb 2001 08:24:57 +0000
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14WDV4-0003J7-00
-	for mtd@infradead.org; Fri, 23 Feb 2001 08:22:50 +0000
+	id 14WDX6-0003Jx-00
+	for mtd@infradead.org; Fri, 23 Feb 2001 08:24:56 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A957005.3400694E@danielind.com> 
-References: <3A957005.3400694E@danielind.com>  <30724FF712DFD2119E6200104B2448920119744A@mail1> <3A956884.2050504@brocade.com> 
+In-Reply-To: <3A9595A4.D98A5CF@danielind.com> 
+References: <3A9595A4.D98A5CF@danielind.com>  <Pine.LNX.4.30.0102222154410.7303-100000@imladris.demon.co.uk> 
 To: Vipin Malik <vmalik@danielind.com>
-Cc: Amit D Chaudhary <amitc@brocade.com>,
-    Vipin Malik <Vipin.Malik@daniel.com>,
-    "'mtd@infradead.org'" <mtd@infradead.org>
+Cc: mtd@infradead.org
 Subject: Re: Unable to mount compressed root f/s because init_mtd() does not r egister block device! 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 23 Feb 2001 08:22:47 +0000
-Message-ID: <20729.982916567@redhat.com>
+Date: Fri, 23 Feb 2001 08:24:56 +0000
+Message-ID: <20965.982916696@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
 vmalik@danielind.com said:
->  Also, as far as reading goes, there is no real difference between the
-> mtd0 device and the block device (i.e. reading from mtd0 does not get
-> you anything extra).
+>  Are you saying that you'll not fix this "bug" for me ;) Would saying
+> please help :) 
 
-Except that the block device is quite a lot of unnecessary overhead (and a 
-kernel thread, etc.). Reading directly from the MTD device rather than 
-through either the blockdevice or chardevice would be nicer. 
+Heh. Of course I'll help. Not sure how best to go about it, though. Init 
+order dependencies are ugly. rd_load() should probably be one of the last 
+things in the boot sequence, rather than an initcall. Can you add it to 
+init/main.c just before mount_root()?
 
-Actually, for 2.4 I'd like to be able to extract a tarball from an MTD 
-device directly into ramfs rather than ramdisk. CONFIG_BLK_DEV=n
+
+
+> > We'll have JFFS2 (with compression) ready to roll out quite soon :)
+
+> Well, there still would be reasons to decompress a root file system
+> into ramdisk and run from there, namely: 
+
+Definitely. Just pushing my new baby, that's all :)
+
+
+>  3. Compressibility: I would hazard a guess that the compressibility
+> obtained with compressing an entire file system image would be better
+> than that obtained with just compressing individual inode data. 
+
+Yep. Actually we only compress a single page at a time 
+in jffs2, not even the whole inode.
 
 
 --
