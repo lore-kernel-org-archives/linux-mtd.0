@@ -1,14 +1,17 @@
-Received: from bay19-f13.bay19.hotmail.com ([64.4.53.63] helo=hotmail.com)
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BemuX-0006jj-JZ
-	for linux-mtd@lists.infradead.org; Sun, 27 Jun 2004 23:34:28 -0400
-From: "w h" <wh3cq@hotmail.com>
+	id 1Bf0uU-0008UV-2x
+	for linux-mtd@lists.infradead.org; Mon, 28 Jun 2004 14:31:18 -0400
+Received: from [10.1.1.107] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
+	1.3.167) for linux-mtd@lists.infradead.org;
+	28 Jun 2004 14:31:12 -0400
+Date: Mon, 28 Jun 2004 14:27:05 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
 To: linux-mtd@lists.infradead.org
-Date: Mon, 28 Jun 2004 03:34:17 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Message-ID: <BAY19-F13LZ9fhzgAfi0004393d@hotmail.com>
-Subject: used percent in "df" command
+Message-ID: <Pine.LNX.4.60.0406281424320.3644@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: the state of MTD at the moment?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,25 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I use Moto Dragonball MX1 (arm920T)to startup my cramfs root fs. All work 
-ok, but there is an information I wonder why. Is there anyone who can 
-explain?
+   a colleague, who wants to upgrade JFFS2 in his 2.4.22 kernel, just 
+handed me a copy of an april 2004 posting to this list, concerned 
+because it said:
 
-Actually the cramfs rootfs downloaded takes up only 4016K which is smaller 
-than the whole space(mtdblock2) 12448 allocated to root filesystem°£But why 
-dose "Use% = 100%" exist?
+1.  Wait till the MTD CVS code is actually stable.  It's not at the
+     moment; cfi_cmdset_0002.c is known to be broken ...
 
-The information after "df" command is as following:
+first, i've enabled IPv6 on my FC2 system, and still can't get access 
+to the CVS repo, is it even alive?
 
-Filesystem           1k-blocks      Used Available Use% Mounted on
+also, i pointed out that, since that posting was a couple months old,
+just getting the latest snapshot was probably sufficient.
 
-/dev/mtdblock/2          12448     12448         0 100% /
-.....
- 
-I want "df" to show actually used percent.What can I do? Is there any place 
-I can do some modificaton?
+   thoughts?
 
-_________________________________________________________________
-√‚∑—œ¬‘ÿ MSN Explorer:   http://explorer.msn.com/lccn  
+rday
