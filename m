@@ -1,29 +1,20 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from main.gmane.org ([80.91.224.249])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19KKa3-0006w6-7C
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 17:12:11 +0100
-Date: Mon, 26 May 2003 18:12:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20030526161242.GD18612@wohnheim.fh-wedel.de>
-References: <20030522195708.GB11240@wohnheim.fh-wedel.de>
-	<004101c3214d$223c9560$740486da@w0a3t0>
-	<20030526094050.GA30361@wohnheim.fh-wedel.de>
-	<1053942836.17182.83.camel@imladris.demon.co.uk>
-	<20030526101918.GA11734@wohnheim.fh-wedel.de>
-	<20030526123500.GA12485@wohnheim.fh-wedel.de>
-	<1053956308.17182.88.camel@imladris.demon.co.uk>
-	<20030526134852.GA18612@wohnheim.fh-wedel.de>
-	<1053957469.17182.90.camel@imladris.demon.co.uk>
-	<20030526143324.GB18612@wohnheim.fh-wedel.de>
+	id 19KLMm-0007Ah-UC
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 18:02:33 +0100
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 19KLLW-0000uj-00
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 19:01:14 +0200
+To: linux-mtd@lists.infradead.org
+From: David Wuertele <dave-gnus@bfnet.com>
+Date: Mon, 26 May 2003 10:03:15 -0700
+Message-ID: <m3smr1y71o.fsf@bfnet.com>
+References: <m34r3izfvn.fsf@bfnet.com>
+	<1053938076.17182.39.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20030526143324.GB18612@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: matsunaga <matsunaga_kazuhisa@yahoo.co.jp>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: vmalloc for zlib workspace
+Sender: news <news@main.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: mtd/utils automake attic?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 26 May 2003 16:33:24 +0200, Jörn Engel wrote:
-> 
-> How about the following:
-> 
-> static int workspace_pid[some];
-> 	...
-> 	for (i=0; i<some; i++) {
-> 		if (likely(workspace_pid[i] == current_pid))
-> 			break;
-> 	}
+DWMW2> But don't bother -- I removed the auto* crap in favour of the
+DWMW2> proper makefiles. If you need to cross-compile, you can do so
+DWMW2> with a command such as 'make CROSS=arm-linux-gnu- mkfs.jffs2'.
 
-Why do I always have to produce 90% crap before the other 10% come
-out?  Ok, ok, don't tell me! ;)
+DWMW2> You'll need to make sure that zlib is in your toolchain's
+DWMW2> sys-root or otherwise available.
 
-The information, which workspace belongs to which process can be put
-into the z_stream.  That removes the ugly code above.  The
-information, which workspaces are still free can now be put into
-bit-array, aka long and the loop be replaces with fls().
 
-This design should perform as good as the current one in the worst
-case and a lot better for SMP and several parallel zlib processes
-currently on the same semaphore.
+Apparently that's not all you need.  I haven't been able to get any
+version to compile due to my kernel's jffs2.h not defining jint16_t
+and friends.  Unfortunately, I can't patch my kernel because it
+contains NAND code specific to my board that gets munged by
+patchin.sh.
 
-Maybe this time, the design is complete.  Any comments before the
-patch is finished and benchmarks prove me right or wrong?
-
-Jörn
-
--- 
-Those who come seeking peace without a treaty are plotting.
--- Sun Tzu
+Dave
