@@ -1,69 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13wgae-0002Hr-00
-	for mtd-list@infradead.org; Fri, 17 Nov 2000 08:09:44 +0000
-Received: from www.softsys.co.at
-	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13wgaZ-0002H6-00
-	for mtd@infradead.org; Fri, 17 Nov 2000 08:09:39 +0000
-Message-ID: <01C05075.8E6A49E0@smithwicks.softsys.co.at>
-From: Erwin Authried <eauth@softsys.co.at>
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: block device for 2.0
-Date: Fri, 17 Nov 2000 09:05:38 +0100
+	id 13wh8d-0002UM-00
+	for mtd-list@infradead.org; Fri, 17 Nov 2000 08:44:51 +0000
+Received: from mail.auriga.ru ([213.24.253.102])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13wh8c-0002UG-00
+	for mtd@infradead.org; Fri, 17 Nov 2000 08:44:50 +0000
+Message-ID: <3A14EFF6.EE574112@auriga.ru>
+Date: Fri, 17 Nov 2000 11:44:38 +0300
+From: Nick Ivanter <nick@auriga.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+To: Peter De Schrijver <p2@portablue.linux-apollo.org>
+CC: mtd@infradead.org
+Subject: Re: MTD on intel 28F320B3 flash memory
+References: <20001117005926.A829@portablue.linux-apollo.org>
+Content-Type: text/plain; charset=koi8-r
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Nicolas Pitre[SMTP:nico@cam.org] wrote:
-> 
-> Why not the other way around, i.e. CONFIG_MTD_BLOCK and CONFIG_MTD_BLOCK_RO?
-> The read-only one is more the "special case" than the read-write one...
-> 
-> 
-> Nicolas
-> 
-Ok., I have modified it this way. I don't know in detail what kind of changes are planned
-for module support, thus I'd like to know if it's ok. to modify cfi_probe.c to be able to
-compile without module support before I commit that:
+Are you sure it's not CFI complaint?
+I've been working with 28F640 which is CFI complaint and
+is detected and operated by the existing code fairly well.
+I believe the only difference between 28F640 and 28F320 is
+that the latter is smaller. They are even described in a
+single datasheet.
 
--Erwin
+Nick
 
+Peter De Schrijver wrote:
 
-#ifdef CONFIG_MODULES
-        sprintf(probename, "cfi_cmdset_%4.4X", type);
-        probe_function = (void *)get_module_symbol(NULL, probename);
-        if (!probe_function) {
-                request_module(probename);
-
-                probe_function = (void *)get_module_symbol(NULL, probename);
-        }
-
-        if (probe_function) {
-                (*probe_function)(map, primary, base);
-                put_module_symbol((unsigned long)probe_function);
-                return;
-        }
-#else
-        switch(type){
-#ifdef CONFIG_MTD_CFI_INTELEXT
-        case 0x0001:
-                cfi_cmdset_0001(map,primary,base);
-                return;
-#endif
-#ifdef CONFIG_MTD_CFI_AMDSTD
-        case 0x0002:
-                cfi_cmdset_0002(map,primary,base);
-                return;
-#endif
-        }
-#endif  /* CONFIG_MODULES */
-
-
-
+> Hi,
+>
+> Is this type of flash memory supported ? It seems to use the standard
+> intel/sharp command set (command set #3), although it's not fully CFI
+> compliant.
+>
+> Thanks,
+>
+> Peter.
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 
