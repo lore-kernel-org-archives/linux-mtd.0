@@ -1,18 +1,14 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from f83.law11.hotmail.com ([64.4.17.83] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15FZAN-0000KG-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2001 11:36:55 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010628120519.B6265@crystal.2d3d.co.za> 
-References: <20010628120519.B6265@crystal.2d3d.co.za>  <3B3B5128.7040006@niisi.msk.ru> 
-To: Abraham vd Merwe <abraham@2d3d.co.za>
-Cc: Alexandr Andreev <andreev@niisi.msk.ru>,
-    MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: Making partitions questions. 
+	id 15FZCH-0000KX-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2001 11:38:53 +0100
+From: "Svend Bengt" <pastaanta@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JEDEC flash confusion?
+Date: Thu, 28 Jun 2001 10:43:51 -0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 28 Jun 2001 11:37:20 +0100
-Message-ID: <12028.993724640@redhat.com>
+Content-Type: text/plain; format=flowed
+Message-ID: <F83i95HfqR77bieLYCT000174a7@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,26 +20,82 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-abraham@2d3d.co.za said:
->  In order to actually make a userland utility you'd have to implement
-> a system call to actually send the info to the partition driver which
-> will have to reregister the devices. Not all that difficult, but I
-> don't think anybody is working on it right now.
+Hi,
 
-You don't necessarily need to be able to change them at runtime. We already 
-support a few methods of storing partitioning information on the medium 
-rather than hard-coding it in the mapping driver. We can grok RedBoot FIS 
-tables, Compaq bootldr partitions, and also the ARM Firmware Suite layout.
+What chip driver should generally be used for JEDEC flash chips? When 
+looking at the MTD snapshots i found both jedec.c, cfi_jedec.c and 
+amd_flash.c as possible candidates. Will there be made a "unified" JEDEC 
+driver which incorporates support for all JEDEC flashes?
+
+My own story is that I have a board with Macronix MX29F800B flash chips. I 
+made it work by patching the amd_flash.c to recognize Macronix manufacturer 
+ID and patching physmap.c to use amd_flash instead of cfi.
+
+Regards,
+T. Vestermark
 
 
-abraham@2d3d.co.za said:
->  Yes. As long as you compile your kernel with MTD block device support
-> it, you can put anything on those block devices. I wouldn't use ext2
-> on flash tho since it's not optimised for flash - jffs2 is definitely
-> your best bet. 
+BTW.
+Here is my patch to mtd-snapshot-20010609 to include support for Macronix 
+flash. I hope you can use it. (Is this an OK way to supply patches?)
 
-He said ext2 on FTL. That's sane, but possibly not legal, depending on 
-whether software patents are enforceable in your part of the world.
+diff -r -C3 -P mtd_original/drivers/mtd/chips/amd_flash.c 
+mtd/drivers/mtd/chips/amd_flash.c
+*** mtd_original/drivers/mtd/chips/amd_flash.c Sun Jun  3 00:00:07 2001
+--- mtd/drivers/mtd/chips/amd_flash.c Sun Jun 17 19:13:48 2001
+***************
+*** 51,56 ****
+--- 51,57 ----
+  #define MANUFACTURER_ST  0x0020
+  #define MANUFACTURER_SST 0x00BF
+  #define MANUFACTURER_TOSHIBA 0x0098
++ #define MANUFACTURER_MACRONIX   0x00C2
 
---
-dwmw2
+  /* AMD */
+  #define AM29F800BB 0x2258
+***************
+*** 416,421 ****
+--- 417,434 ----
+     { offset: 0x010000, erasesize: 0x10000, numblocks: 15 }
+    }
+   }, {
++   mfr_id: MANUFACTURER_MACRONIX,
++   dev_id: AM29F800BB,
++   name: "Macronix MX29F800B",
++   size: 0x00100000,
++   numeraseregions: 4,
++   regions: {
++    { offset: 0x000000, erasesize: 0x04000, numblocks:  1 },
++    { offset: 0x004000, erasesize: 0x02000, numblocks:  2 },
++    { offset: 0x008000, erasesize: 0x08000, numblocks:  1 },
++    { offset: 0x010000, erasesize: 0x10000, numblocks: 15 }
++   }
++  }, {
+    mfr_id: MANUFACTURER_AMD,
+    dev_id: AM29LV800BT,
+    name: "AMD AM29LV800BT",
+***************
+*** 431,436 ****
+--- 444,461 ----
+    mfr_id: MANUFACTURER_AMD,
+    dev_id: AM29F800BT,
+    name: "AMD AM29F800BT",
++   size: 0x00100000,
++   numeraseregions: 4,
++   regions: {
++    { offset: 0x000000, erasesize: 0x10000, numblocks: 15 },
++    { offset: 0x0F0000, erasesize: 0x08000, numblocks:  1 },
++    { offset: 0x0F8000, erasesize: 0x02000, numblocks:  2 },
++    { offset: 0x0FC000, erasesize: 0x04000, numblocks:  1 }
++   }
++  }, {
++   mfr_id: MANUFACTURER_MACRONIX,
++   dev_id: AM29F800BT,
++   name: "Macronix MX29F800T",
+    size: 0x00100000,
+    numeraseregions: 4,
+    regions: {
+
+
+_________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com.
