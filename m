@@ -1,26 +1,17 @@
-Received: from packet.digeo.com ([12.110.80.53])
+Received: from mail1.bluewin.ch ([195.186.1.74])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18bdlx-0006pr-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 09:35:45 +0000
-Received: from digeo-nav01.digeo.com (digeo-nav01.digeo.com [192.168.1.233])
-	by packet.digeo.com (8.9.3+Sun/8.9.3) with SMTP id CAA05050
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 02:06:12 -0800 (PST)
-Date: Thu, 23 Jan 2003 02:06:27 -0800
-From: Andrew Morton <akpm@digeo.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: ch@murgatroid.com, fbecker@intrinsyc.com,
-        linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: 2.5.55-rmk1: user space lossage
-Message-Id: <20030123020627.5603a268.akpm@digeo.com>
-In-Reply-To: <17281.1043316072@passion.cambridge.redhat.com>
-References: <20030123015659.422e8179.akpm@digeo.com>
-	<000001c2c287$ffa8eef0$800b040f@bergamot>
-	<15943.1043315303@passion.cambridge.redhat.com>
-	<17281.1043316072@passion.cambridge.redhat.com>
+	id 18be4m-0006se-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 09:55:12 +0000
+Received: from [192.168.0.15] (213.3.72.145) by mail1.bluewin.ch (Bluewin AG 6.7.015)
+        id 3E102592002854FE for linux-mtd@lists.infradead.org; Thu, 23 Jan 2003 10:26:06 +0000
+Subject: Lilo-mtd passes garbage as kernel command line
+From: Raphael Hertzog <eng@eipm.ch>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <1043317565.559.24.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: 23 Jan 2003 11:26:05 +0100
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -32,46 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse <dwmw2@infradead.org> wrote:
->
-> 
-> 
-> -  	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
-> +-  	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
-> ++ 	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
+Hello,
 
-Yup.
+I'm using lilo-mtd (lilo 21 with the patch available on the website) to
+boot on a DOC. It works but I have a little problem. It looks like lilo
+is passing garbage to the kernel as kernel command line.
 
+During the boot there's a message saying: 
+Kernel command line: <insert esoteric garbage here>
 
+Also I noticed that any argument given in the append configuration item
+in lilo.conf is not used... which is understandable if the kernel really
+see the garbage as its command line.
 
-We cannot clear VM_MAYWRITE in there - it turns writeable MAP_PRIVATE
-mappings into readonly ones.
+Does anyone else experience the same problem ? How can I help you track
+this bug down ?
 
-So change it back to the 2.4 form - disallow a writeable MAP_SHARED mapping
-against filesystems which do no implement ->writepage().
+I use a stock 2.4.19 kernel.
 
+I tried to understand where the kernel looks for its command line
+arguments and where lilo puts them but it's a bit complicated for me.
 
- filemap.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff -puN mm/filemap.c~generic_file_readonly_mmap-fix mm/filemap.c
---- 25/mm/filemap.c~generic_file_readonly_mmap-fix	2003-01-23 01:55:41.000000000 -0800
-+++ 25-akpm/mm/filemap.c	2003-01-23 02:04:05.000000000 -0800
-@@ -1308,11 +1308,13 @@ int generic_file_mmap(struct file * file
- 	return 0;
- }
- 
-+/*
-+ * This is for filesystems which do not implement ->writepage.
-+ */
- int generic_file_readonly_mmap(struct file *file, struct vm_area_struct *vma)
- {
--	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
-+	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
- 		return -EINVAL;
--	vma->vm_flags &= ~VM_MAYWRITE;
- 	return generic_file_mmap(file, vma);
- }
- #else
-
-_
+Cheers,
+-- 
+Raphaël Hertzog - EIPM SA
