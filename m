@@ -1,20 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ceb1T-0003wK-2o
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 10:25:04 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: MQuicquaro@necii.com
-In-Reply-To: <OFF0986582.CD5BFAE1-ON85256F6B.0050207B-85256F6B.00544174@necii.com>
-References: <OFF0986582.CD5BFAE1-ON85256F6B.0050207B-85256F6B.00544174@necii.com>
+	id 1CehXG-00050m-Ov
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 17:22:19 -0500
+From: Dave Dillow <dave@thedillows.org>
+To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E7935181391@atcml01.atc.army.mil>
+References: <EFF9A3506F74924AB5CC77BDC66E7935181391@atcml01.atc.army.mil>
 Content-Type: text/plain
-Date: Wed, 15 Dec 2004 16:24:50 +0100
-Message-Id: <1103124291.3406.183.camel@tglx.tec.linutronix.de>
+Message-Id: <1103149330.5809.1.camel@dillow.idleaire.com>
 Mime-Version: 1.0
+Date: Wed, 15 Dec 2004 17:22:11 -0500
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 - mtd - nand flash works....except....
-Reply-To: tglx@linutronix.de
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: Big Problem with DOC 128Mbyte Help! ADDED Note
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-12-15 at 10:19 -0500, MQuicquaro@necii.com wrote:
-> Ok. Thanks.  My problem must be elsewhere then.
-> >From what you say, jffs2 will never do subsector writes.
-> Is that correct?  
+On Wed, 2004-12-15 at 09:49, Carlos, John J USAATC wrote:
+> The docfdisk utility shows that there are two partitions.  The BDL and the
+> BDTL partition.  Could this be giving me problems?  Should I get rid of the
+> two partitions and have one large one?  Is that even possible?
 
-Yes
+IIRC, the BDL partition is the DOC BIOS extension, which you'll need for
+using a standard BIOS.
 
-> Is there a configuration option maybe that
-> controls this?
+The BDTL is the actual data partition.
 
-No
-
-> My problem is that, in my 2 MB kernel MTD partition, I place
-> my 750K kernel.  There is like a 50-50% chance that when I
-> write this kernel, when I boot the system, it reports a CRC error.
-> If I diff the file with a known good one it shows no differences.
-> Hmm, maybe I have a problem with my U-boot reading NAND.
-
-Seems so.
-
-tglx
+Your setup is normal.
+-- 
+Dave Dillow <dave@thedillows.org>
