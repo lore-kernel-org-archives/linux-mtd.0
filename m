@@ -1,18 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mirapoint3.brutele.be ([212.68.203.242] ident=mirapoint)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18NtDL-0003cY-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 11:15:11 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20021216095652.D4D24C6139@atlas.denx.de> 
-References: <20021216095652.D4D24C6139@atlas.denx.de> 
-To: Wolfgang Denk <wd@denx.de>
-Cc: Paul Nash <paulnash@wildseed.com>,
-    "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts? 
+	id 18NuHa-0003lW-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 12:23:38 +0000
+Date: Mon, 16 Dec 2002 13:54:14 +0100
+From: Geoffroy Stevenne <geof@hellea.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: writing new BBRAM driver
+Message-Id: <20021216135414.6d72949c.geof@hellea.com>
+In-Reply-To: <Pine.LNX.4.31.0212161057400.28011-100000@www.optixsoft.de>
+References: <D3AF5F134D627243993F2F2FC32EE4D229C4A7@mailman.eason.com>
+	<Pine.LNX.4.31.0212161057400.28011-100000@www.optixsoft.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 16 Dec 2002 11:45:49 +0000
-Message-ID: <18190.1040039149@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +24,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-wd@denx.de said:
-> Running the kernel XIP is not so insane. It can help to  reduce  boot
-> time.  We  still  more  than  3  seconds from power-on to application
-> start, which is not so  bad,  but  still  too  much  in  some  cases;
-> avoiding  the  memcpy()  of  some  2 MB of data is kind of attractive
-> then...
+Hi,
 
-That's true, although even if you have the kernel on a separate flash chip
-to which you don't ever write, it does cost you later because you then run
-from flash which is slower than RAM. I wonder if we could copy the kernel
-from flash to RAM at runtime and fix up the page tables as we go, to get the
-best of both worlds?
+On Mon, 16 Dec 2002 11:14:41 +0100 (MET)
+Tobias Otto-Adamczak <toa@indakom.de> wrote:
+
+> Alex Pavloff, 2002-12-13, 15:45h:
+> 
+> > Hi there folks.  I've written the struct mtd_info functions for a
+> > 128KB BBRAM driver for my companies new board.  It's horribly
+> > simple, as most of it is actually done by a gate array on the board,
+> > so from kernel land its just poking ioports.  Easy stuff.
+
+Great! If it works with the versalogic board it will be tested
+here with a 512KB BBRAM.  Of course I'll provide maximum feedback
+(maybe patches if any required). Thanks!
 
 --
-dwmw2
+Geoffroy
