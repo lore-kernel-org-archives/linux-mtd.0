@@ -1,19 +1,19 @@
-Received: from host11.oneononeinternet.com ([209.239.43.35])
+Received: from web02.manitu.net ([217.11.48.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Ajs70-0006Jx-VS
-	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2004 03:36:03 +0000
-From: "Mark Richards" <markr@massmicro.com>
-To: "'Matthew S. McClintock'" <mattsm@arlut.utexas.edu>,
-        "'David Woodhouse'" <dwmw2@infradead.org>
-Date: Thu, 22 Jan 2004 22:35:57 -0500
-Message-ID: <003a01c3e162$03ab7a00$6e01a8c0@solarwave>
+	id 1AjyLY-0006zC-ST
+	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2004 10:15:28 +0000
+Message-ID: <4010F43F.1000600@treimers.net>
+Date: Fri, 23 Jan 2004 11:15:27 +0100
+From: Thorsten Reimers <thorsten@treimers.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1074623299.4726.2.camel@chuck.arlut.utexas.edu>
-cc: linux-mtd@lists.infradead.org
-Subject: RE: MTD - DOC 2000 freezes on umount
+To: Andrea Galbusera <andrea.galbusera@teamware.it>
+References: <400C1C7E.2090404@treimers.net>
+	<1074585028.3939.5.camel@andreagal>
+In-Reply-To: <1074585028.3939.5.camel@andreagal>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Problem booting from DiskOnChip 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I finally managed to get a good build running on the 2.4.24 kernel on RedHat
-7.2, applying the MTD drivers.  Here's what I had to do:
+Hello Andrea,
 
-1. Copy the sources (not link them).
-2. Include the JFFS drivers.
-3. Use make oldconfig (make xconfig is not properly supported by one of the
-MTD make files)
+> http://www.linuxdevices.com/files/misc/DiskOnChipDevelopment-HOWTO.pdf
+Thank you very much for the link.
 
-In a previous try I also had to fix one of the sources which had an extra
-parameter defined, but in my finally-successful build this problem did not
-show up.  
+I have read the paper and the next question came up. The paper does
+contain a description how to boot from DiskOnChip with LILO and GRUB. My
+system (from www.fli4l.de, site unfortunately in German) uses SYSLINUX.
 
-So the problem I had - lock up when issuing a umount - is resolved, but it
-was not easy getting there :)
+Do you or does anybody else know how to boot a DiskOnChip with SYSLINUX or why 
+my system is not booting?!
 
-I can't explain why the MTD version that ships with the 2.4.24 kernel has
-this problem and I can't find any reference to it searching the newsgroups,
-etc.  
-
-
-Mark Richards
-
-
-> -----Original Message-----
-> From: Matthew S. McClintock [mailto:mattsm@arlut.utexas.edu]
-> Sent: Tuesday, January 20, 2004 13:28
-> To: David Woodhouse
-> Cc: Mark Richards; linux-mtd@lists.infradead.org
-> Subject: RE: MTD - DOC 2000 freezes on umount
-> 
-> On Tue, 2004-01-20 at 12:22, David Woodhouse wrote:
-> 
-> > Bizarre. It's a define_bool, which is relatively new -- but not so new
-> > it's not in 2.4.24, I thought. As you're only interested in the
-> > DiskOnChip drivers, you're right that it doesn't affect you (assuming
-> > that's what you meant:)
-> 
-> I'm using the linuxppc_2_4_devel tree if that helps any.
-> 
-> --
-> Matthew S. McClintock <mattsm@arlut.utexas.edu>
+TIA
+Thorsten
+Leider sieht man meist noch älter aus als man sich ohnehin fühlt. - Sophia Loren
