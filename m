@@ -1,20 +1,22 @@
-Received: from smtp.hotbox.ru ([80.68.244.50])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 199Bbu-0003vV-Pm
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Apr 2003 23:24:02 +0100
-Message-ID: <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
-From: "Alex Samoutin" <samoutin@hotbox.ru>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+Received: from ash.lnxi.com ([207.88.130.242])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 199CL0-00046w-Oo
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Apr 2003 00:10:39 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Alex Samoutin <samoutin@hotbox.ru>
+In-Reply-To: <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
 References: <000d01c3090a$4b822850$1a00a8c0@itc.intrinsyc.com>
-	<20030423204440.258661528E@desire.actrix.co.nz>
-	<000d01c30a8e$ebd08150$1a00a8c0@itc.intrinsyc.com>
-	<20030425130134.GC27144@wohnheim.fh-wedel.de>
-Date: Fri, 25 Apr 2003 15:23:36 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	 <20030423204440.258661528E@desire.actrix.co.nz>
+	 <000d01c30a8e$ebd08150$1a00a8c0@itc.intrinsyc.com>
+	 <20030425130134.GC27144@wohnheim.fh-wedel.de>
+	 <000701c30b79$539ecbd0$1a00a8c0@itc.intrinsyc.com>
+Message-Id: <1051312243.1172.388.camel@tubarao>
+Mime-Version: 1.0
+Date: 25 Apr 2003 17:10:43 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-sEznoZ6QgKRaHlH2Q5ej"
 cc: linux-mtd@lists.infradead.org
+cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 Subject: Re: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,101 +28,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+--=-sEznoZ6QgKRaHlH2Q5ej
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> > cause. As I mentioned NAND driver (nand.c) has lock mechanism to prevent
-> > this situation. But it doesn't work in my case. I don't know why - the
-code
-> > look Ok. A added some additional locks and it solved this problem.
->
-> Ah, sorry for me misinterpreting you original post. I thought, you had
-> found a problem in yaffs.
->
-> Do you have a patch for this? Even if it is ugly and slow, correct
-> code is better than broken one.
->
-This is diff file for drivers/mtd/nand.c  (I made to many changes to create
-a patch)
+On Fri, 2003-04-25 at 16:23, Alex Samoutin wrote:
+> > > cause. As I mentioned NAND driver (nand.c) has lock mechanism to prev=
+ent
+> > > this situation. But it doesn't work in my case. I don't know why - th=
+e
+> code
+> > > look Ok. A added some additional locks and it solved this problem.
 
-151a152,154
-> static struct semaphore sam;
-> #define NAND_WRITE_RETRY 1
->
-362c365
-<
----
-> 	int ret = 0;
-370c373,381
-<
----
-> #ifdef NAND_WRITE_RETRY
-> repeat:
-> 	if (ret>3){
-> 		printk ("%s: " "Failed write verify, page 0x%08x ", __FUNCTION__, page);
-> 		return -EIO;
->
-> 	}
-> #endif
->
-476a488,491
-> #ifdef NAND_WRITE_RETRY
-> 			++ret;
-> 			goto repeat;
-> #endif
-485c500,504
-< 				DEBUG (MTD_DEBUG_LEVEL0, "%s: " "Failed write verify, page 0x%08x ",
-__FUNCTION__, page);
----
-> 				DEBUG (MTD_DEBUG_LEVEL0, "%s: " "Failed write verify OOB, page 0x%08x
-", __FUNCTION__, page);
-> #ifdef NAND_WRITE_RETRY
-> 				++ret;
-> 				goto repeat;
-> #endif
-507a527,530
-> #ifdef NAND_WRITE_RETRY
-> 				++ret;
-> 				goto repeat;
-> #endif
-557c580
-<
----
-> 	down(&sam);
-701a725
-> 	up(&sam);
-737c761
-<
----
-> 	down(&sam);
-763c787
-<
----
->         up(&sam);
-807c831
-<
----
-> 	down(&sam);
-851c875,876
-<
----
-> 	up(&sam);
->
-880a906
-> 	down(&sam);
-944c970,971
-<
----
->         up(&sam);
->
-990a1018
-> 	down(&sam);
-1063a1092
-> 	up(&sam);
-1098c1127,1128
-<
----
->
-> 	down(&sam);
-1189a1220
-> 	up(&sam);
-1373a1405
-> 	init_MUTEX(&sam);
+You added locks?
+
+> >
+> > Ah, sorry for me misinterpreting you original post. I thought, you had
+> > found a problem in yaffs.
+> >
+> > Do you have a patch for this? Even if it is ugly and slow, correct
+> > code is better than broken one.
+> >
+> This is diff file for drivers/mtd/nand.c  (I made to many changes to crea=
+te
+> a patch)
+>=20
+> 151a152,154
+> > static struct semaphore sam;
+> > #define NAND_WRITE_RETRY 1
+
+Hmmm - looks like you have more than just locking - you also have some
+retry logic for failed commands.
+
+I'm jumping in because I have some chips that appear to be broken - they
+occasionally drop operations (erase/write).  Eric Beiderman and I have
+been through the code (specifically cfi_cmdset_0002.c) and can't find
+anywhere that the software might be at fault.  Until I connect a logic
+analyzer I can't be certain it's the hardware either - although none of
+the other models of flash chip have this problem and everything points
+to bad hardware.
+
+Right now Eric and I are debating adding retry logic.  When a command is
+"dropped" it seems to always succeed when sent a second time (don't have
+any examples that failed on the second try).  I'm interested because
+your situation seems to be related.  Is the problem that the chip
+sometimes ignores a command?  Does your retry fix things?
+
+The big question is how common is this problem (needing retries)?=20
+Should this be more formalized and added to he chip drivers or should it
+be left up to individuals having to fix things for their special or less
+common cases?
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-sEznoZ6QgKRaHlH2Q5ej
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+qcBzfsBPTKE6HMkRApMfAKCBdZf4Lujx6QHcvJ/2HcKqy3BycgCfY5yf
+UQgOVPrTnFP+8SJx6Zow+1w=
+=otfI
+-----END PGP SIGNATURE-----
+
+--=-sEznoZ6QgKRaHlH2Q5ej--
