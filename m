@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from msr6.hinet.net ([168.95.4.106] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17SY1C-0000r7-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 08:05:38 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200207101752.51379.nsnehaprabha@tnint11.telogy.design.ti.com> 
-References: <200207101752.51379.nsnehaprabha@tnint11.telogy.design.ti.com> 
-To: Snehaprabha <nsnehaprabha@tnint11.telogy.design.ti.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Problem 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 11 Jul 2002 08:05:35 +0100
-Message-ID: <4554.1026371135@redhat.com>
+	id 17Sb3G-00014C-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 11:19:58 +0100
+Received: from stevexp (61-219-230-90.HINET-IP.hinet.net [61.219.230.90])
+	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id SAA02018
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 18:20:24 +0800 (CST)
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: ECC in Nand_write_page
+Date: Thu, 11 Jul 2002 18:19:49 +0800
+Message-ID: <003701c228c4$7decfee0$5501a8c0@synso.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-nsnehaprabha@tnint11.telogy.design.ti.com said:
->  I copy a file, and delete it for several times;  (You can think of a
-> case  where a configuration file is written again and again).
-
-> Depending on the space I had initially, it reaches a stage, where I
-> cannot   copy the file any more though 'df' shows enough available
-> space for the file. 
-
-Until recently there was a bug where we wouldn't reclaim the space if you 
-renamed one file over another. Could it be that? If not, it's not a known 
-problem.
-
-What version of the JFFS2 code are you using? Do you have a serial console? 
-Can you set CONFIG_JFFS2_FS_DEBUG=1 and set the console loglevel to 9 so 
-that all the resulting KERN_DEBUG messages are printed, then reproduce the 
-problem while logging the output?
+The board I used will display the message, "nand_write_ecc: Failed ECC
+write", so I try to trace the function nand_write_ecc, I found it can
+not write the ECC code into OOB sometime because the ECC in OOB are not
+set as 0xff. There are two conditions to cause the problem, one
+condition is the erase does not success, another condition is that the
+page  was written before. Nand_write_page could write partial page to
+the flash. Does it cause the ECC in OOB was written and ECC can not be
+written next time. For example, nand_write_page write 100 byte the first
+time and if it want to write 412 bytes to the same page next time, it
+will fail. Does anyone have this problem?
 
 
---
-dwmw2
+Steve Tsai
