@@ -1,20 +1,20 @@
-Received: from mail.newlogic.at ([194.208.88.201])
+Received: from kynes.gatewest.net ([198.163.227.7]
+	helo=10-10-1-6.gatewest.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A0Ngv-0000pr-98
-	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 17:01:05 +0100
-Message-Id: <200309191559.h8JFxoh4010270@enterprise2.newlogic.at>
+	id 1A0ORr-00011Z-E9
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 17:49:35 +0100
+From: Cam Mayor <cmayor@iders.ca>
+To: "Luca Contini" <luca.contini@mediaenabling.com>,
+   <linux-mtd@lists.infradead.org>
+Date: Fri, 19 Sep 2003 11:49:43 -0500
+References: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
+In-Reply-To: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
 MIME-Version: 1.0
-In-Reply-To: <AF34F8F089D16B4FABE02B5F375228E00238@serveur21.SYNCHRO2>
-Date: Fri, 19 Sep 2003 17:59:50 +0200 (MEST)
-Sender: nwaibel@newlogic.com
-From: Niki Waibel <niki.waibel@newlogic.com>
-To: Yves CLOUSIER <yves.clousier@synchronic.fr>
-Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <03091911494401.08026@kilauea.iders.ca>
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-cc: uclinux-dev@uclinux.org
-Subject: RE: Problem using DOC with mtd
-Reply-To: Niki Waibel <niki.waibel@newlogic.com>
+Subject: Re: mounting mtd device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,179 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I test your source code, and effectly my DOC was in reset mode. 
-> So I had your source code in doccheck() function in docprobe.c and now
-> doccheck read the chipID correctly :
->       
->               DiskOnChip Millennium found at address 0xE0000000
->               Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba
-> TC58V64AFT/DC)
->               _DoC_WaitReady called for out-of-line wait
->               _DoC_WaitReady timed out.
->               _DoC_WaitReady called for out-of-line wait
->               _DoC_WaitReady timed out.
->               _DoC_WaitReady called for out-of-line wait
->               _DoC_WaitReady timed out.
->               1 flash chips found. Total DiskOnChip size: 8 MiB
->               mtd: Giving out device 0 to DiskOnChip Millennium
-> 
-> 
-> I think that this code should be add to the cvs. What do you think about
-> that Greg ? 
+On Friday 19 September 2003 10:32, Luca Contini wrote:
+> Hi all,
+> I've successfully compiled the mtd subsystem as a module (mtdblock.o and
+> mtd_blkdevs.o).
+> I've also successfully inserted those modules using insmod utility, so that
+> now I can see the mtdblock block device (major number 31) in the
+> /proc/devices list.
+> But when I try to mount the corresponding /dev/mtdblock0 device to /mnt/mtd
+> I got the following error:
+> ** mount: /dev/mtdblock0: unknown device **
+>
+> The /dev/mtdblock0 device relies on major number 31, minor number 0 and is
+> a block device.
+> Also, I've placed a
+> printk("<1>open\n")
+> in the 'blktrans_open' function to see whether the mount is at least trying
+> to open the device but with no result.
+> Does anyone know why?
 
-afaik the code in docprobe.c does that already.
-the code snippies i sent you were from my userspace test prg...
-(an extention to flash_rom.c from linuxbios)
+I'm new to MTD, but i don't see enough information here.  How did you try and 
+mount it?  For instance, did you do "mount -t jffs2 /dev/mtdblock0 /mnt/mtd", 
+or did you just type "mount /dev/mtdblock0 /mnt/mtd"?  (jffs2 is an arbitrary 
+example).
 
-maybe there is a timing issue missing in docprobe.c.
-maybe you are using an old version...
+Is your device actually detected?  Just because you have the module installed 
+and showing up in /proc/devices doesn't mean it was detected.  what does 
+/proc/mtd say?  For instance, mine says:
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00800000 00020000 "flash"
+mtd1: 0000c000 00000010 "SRAM"
+mtd2: 00000080 00010000 "BootROM"
+mtd3: 00800000 00020000 "Physically mapped flash"
+mtd4: 00400000 00020000 "system"
+mtd5: 00400000 00020000 "userarea"
+mtd6: 09000000 00004000 "guidenand"
 
-i cannot say/help much, because the only doc i have
-seems to be dead. i dont get:
-Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
-i always get 55, 55 as manf id and chip id.
-i am waiting for another doc (next week)...
+this shows which mtd devices are actually there to be accessed.
 
-niki
+cheers,
+cam
 
-
-
-> -----Message d'origine-----
-> De : Niki Waibel [mailto:niki.waibel@newlogic.com]
-> Envoyé : mercredi 17 septembre 2003 16:38
-> À : Yves CLOUSIER
-> Cc : uclinux-dev@uclinux.org; linux-mtd@lists.infradead.org
-> Objet : RE: Problem using DOC with mtd
-> 
-> 
-> 
-> On 17-Sep-2003 Yves CLOUSIER wrote:
->> Ok Niki, 
->> 
->> I made a mistake in the adressage of DOC. I think I have now a good dump
-> of
->> DOC, see attach file, but I have always 00 at 0xE0001000.
-> 
-> DoC seems to be in reset mode...
-> try this:
-> ===
->#define doc_read(base,reg) \
->         (*(volatile unsigned char *)(base + MSYSTEMS_DOC_R_##reg))
->#define doc_write(data,base,reg) \
->         (*(volatile unsigned char *)(base + MSYSTEMS_DOC_W_##reg)) = data
->#define doc_read_nop(base) \
->         doc_read(base, NOP)
->#define doc_read_2nop(base) \
->         { doc_read_nop(base); doc_read_nop(base); }
->#define doc_read_4nop(base) \
->         { doc_read_2nop(base); doc_read_2nop(base); }
->#define MSYSTEMS_DOC_W__DOCControl                0x1002
->#define MSYSTEMS_DOC_R_NOP                        0x1020
->#define MSYSTEMS_DOC_W_NOP                        0x1020
->#define DOC_MODE_RESET  0
->#define DOC_MODE_NORMAL 1
->#define DOC_MODE_WREN   0x04
->#define DOC_CLR_ERR     0x80
-> {
->         /* sets reset mode (has to be done twice) */
->         doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios,
-> _DOCControl);
->         doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios,
-> _DOCControl);
->         /* wait */
->         doc_read_4nop(bios);
->         /* sets normal mode (has to be done twic) */
->         doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios,
-> _DOCControl);
->         doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios,
-> _DOCControl);
->         /* wait */
->         doc_read_4nop(bios);
->         if(doc_wait(bios, 5000))
->                 return(-1);
-> }
-> static int
-> doc_wait(volatile char *bios, int timeout)
-> {
->         int i = 20;
->         unsigned char busy;
->         doc_read_4nop(bios);
->         while((busy=_doc_busy(bios)) && (i != 0))
->         {
->                 usleep(timeout*1000/20);
->                 i--;
->         }
->         doc_read_2nop(bios);
->         if(busy)
->         {
->                 return(-1);
->         }
->         return(0);
-> } /* static int doc_wait(volatile char *bios, int timeout) */
-> ===
-> 
->> Any idea ? 
-> 
-> the above code snippies should give you an idea how to
-> go out of the reset mode...
-> 
-> niki
-> 
->> -----Message d'origine-----
->> De : Niki Waibel [mailto:niki.waibel@newlogic.com]
->> Envoyé : mercredi 17 septembre 2003 11:31
->> À : Yves CLOUSIER
->> Cc : uclinux-dev@uclinux.org; uclinux-dev@uclinux.org;
->> linux-mtd@lists.infradead.org
->> Objet : RE: Problem using DOC with mtd
->> 
->> 
->> Doc dump at e0000000 : 55 55 aa aa 10 10 eb eb
->> Doc dump at e0000008 : 3c 3c 00 00 00 00 28 28
->> Doc dump at e0000010 : 43 43 29 29 4d 4d 2d 2d
->> Doc dump at e0000018 : 53 53 79 79 73 73 74 74
->> Doc dump at e0000020 : 65 65 6d 6d 73 73 31 31
->> 
->> is somehow good, but you should have:
->> Doc dump at e0000000 : 55 aa 10 eb 3c 00 00 28
->>  ...
->> as well on 
->> Doc dump at e0001000 : 00 00 00 00 00 00 00 00
->> there should be
->> Doc dump at e0001000 : 30 ...
->> 
->> maybe this is at e0002000 in your case and you have mixed up
->> some address wires...
->> 
->> niki
->> 
->> 
->> 
->> On 17-Sep-2003 Yves CLOUSIER wrote:
->>> Hi all, 
->>> 
->>> I have 5272 plateform with the 20030305-uclinux-dist. 
->>> In this plateform I have a disk-on-chip millenium module MD2802-D08. The
->> DOC
->>> is map at 0xE0000000.
->>> 
->>> But during booting, I have the message :
->>> Possible DiskOnChip with unknown ChipID 00 found at 0xe0000000
->>> No recognised DiskOnChip devices found
->>> 
->>> In the Doc_Check() fonction in probe.c I make a memory dump of the DOC
->> (from
->>> 0xE0000000 to 0xE0002000), see the attach file.
->>> I think that the acces of the DOC is correct because I see the DOC bios
->>> singature at 0xE0000000. But I don't understand why the mtd doesn't
->>> recognised the DOC. So if you have an idea ......
->>> 
->>> 
->>> Thanks.
->>> 
->>> 
->>> 
->>> 
->>> 
->>> I configure the mtd like this :
-[---cut---]
+-- 
+Cameron Mayor
+Iders Incorporated
