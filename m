@@ -1,23 +1,16 @@
-Received: from mgw-x1.nokia.com ([131.228.20.21])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19NsTd-0008HP-9X
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Jun 2003 12:00:13 +0100
-Received: from esvir01nok.ntc.nokia.com (esvir01nokt.ntc.nokia.com
-	[172.21.143.33])h55B0nW20298	for <linux-mtd@lists.infradead.org>;
-	Thu, 5 Jun 2003 14:00:49 +0300 (EET DST)
-Received: from esebh001.NOE.Nokia.com (unverified) by esvir01nok.ntc.nokia.com
-	<T62a4adce45ac158f21107@esvir01nok.ntc.nokia.com> for
-	<linux-mtd@lists.infradead.org>; Thu, 5 Jun 2003 14:00:48 +0300
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Thu, 5 Jun 2003 19:00:04 +0800
-Message-ID: <AEB09EDA2548094C81ED6AA93269F63D01D0925F@siebe001.apac.nokia.com>
-From: <Srinivasu.Vaduguri@nokia.com>
+Received: from dns03.mail.yahoo.co.jp ([211.14.15.206])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Nvm7-0000Lx-TE
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Jun 2003 15:31:32 +0100
+Message-ID: <000e01c32b6f$22d11d80$570486da@w0a3t0>
+From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
 To: <linux-mtd@lists.infradead.org>
+Date: Thu, 5 Jun 2003 23:31:21 +0900
+MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: NAND Chips - "Erase success and failed writes !!!"
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Subject: PAD macro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi 
 
-I am facing a strange problem in some of our devices which uses Samsung =
-64MB NAND chips..=20
-The blocks didnt report any bad blocks initially. But after some days =
-one of the block
-Erase is succesfull but reports  "Failed write" after programming the =
-page..=20
+This is really a trivial thing, 
+but there are places where PAD macro is not used for 4byte alignment.
+I think it would be better to be unified.
 
-And in some devices I found "Erase fails" and write successful.. But in =
-this case "Write-verify" fails..
+scan.c, line 357 ofs = (ofs+3)&~3;
+dir.c,  line 359 writtenlen = (writtenlen+3)&~3;
+dir.c,  line 656 writtenlen = (writtenlen+3)&~3;
 
-Anybody faced this problem before.. or has any clues..
+Best regards.
 
-Thanx in advance,
-
-regards,
-Srini
+Matsunaga.
+__________________________________________________
+Do You Yahoo!?
+Yahoo! BB is Broadband by Yahoo!
+http://bb.yahoo.co.jp/
