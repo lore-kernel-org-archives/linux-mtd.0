@@ -1,23 +1,15 @@
-Received: from dsl-62-3-66-203.zen.co.uk
-	([62.3.66.203] helo=crown.nexus.co.uk ident=foobar)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AUNNw-0002vg-TO
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Dec 2003 09:45:30 +0000
-From: John Stirling <js@reciva.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1071061636.25344.70.camel@dobblers.nexus.co.uk>
-References: <1070992528.25344.23.camel@dobblers.nexus.co.uk>
-	 <1070995502.24447.2.camel@imladris.demon.co.uk>
-	 <1071053801.25344.43.camel@dobblers.nexus.co.uk>
-	 <1071054191.5712.204.camel@hades.cambridge.redhat.com>
-	 <1071061636.25344.70.camel@dobblers.nexus.co.uk>
-Content-Type: text/plain
-Message-Id: <1071135724.25344.165.camel@dobblers.nexus.co.uk>
-Mime-Version: 1.0
-Date: 11 Dec 2003 09:42:05 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2/nand flash
+Received: from mail9.messagelabs.com ([194.205.110.133])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AUkf5-0005qB-Mp
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Dec 2003 10:36:43 +0000
+Message-ID: <3FD998F6.9000303@arcom.com>
+Date: Fri, 12 Dec 2003 10:31:18 +0000
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: Linux MTD List <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed;
+ boundary="------------080508010503090208040802"
+Subject: cfi_cmdset_0002 -- erase suspends broken.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +19,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've done some further investigation on this.
+This is a multi-part message in MIME format.
+--------------080508010503090208040802
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The problem I was seeing was caused by a call to jffs2_full_dnode (in
-write.c, alloc_mode=ALLOC_GC). This leaves stuff in the write_buf, but
-never gets round to actually writing it to flash unless another write
-happens in the meantime. 
+Hi,
 
-When I copy a file the flushing procedure seems to work. I see an
-initial page write, followed a couple of seconds later by another write
-of the remaining stuff in the write_buf. However, following this, more
-stuff remains in the write_buf, which again never gets written to flash
-and produces errors again when the kernel is rebooted.
+The latest cfi_cmdset_0002.c (AMD chips) in CVS has broken erase-suspends.
 
-As an experiment i removed the checked for ino!=0 at the end of
-jffs2_flash_writev
-ie
-replaced 
-if (c->wbuf_len && ino)
-  jffs2_wbuf_dirties_inode(c, ino);
-with
-if (c->wbuf_len)
-  jffs2_wbuf_dirties_inode(c, ino);
+1. Erase suspend command must be written to the block to be resumed.
+2. When erasing DQ2 must a) be read from the erase in progress block b) 
+doesn't indicate that an erase has been suspended.  DQ6 is the toggle 
+bit to check.
 
-Having done this, almost all the reported errors disappeared next time I
-rebooted. 
+There's a patch attached that fixes these issues.  It's a 
+work-in-progress as there's still an issue remaining -- JFFS2 reports 
+(for example):
 
-Also, I noticed that having copied a few files manually then some of the
-errors disappeared. 
+"Newly-erased block contained word 0xff7fffff at offset 0x00ca4540
+Newly-erased block contained word 0xffefffff at offset 0x00c90a14
+Newly-erased block contained word 0xffffffbf at offset 0x00c82ef4
+Newly-erased block contained word 0xfffffbff at offset 0x00df0e20
+Newly-erased block contained word 0xfffffffe at offset 0x00de0010"
 
-So, is it possible that the errors that are being reported are not
-really errors and will get cleaned up via garbage collection at some
-point. If so, then it would be nice if they weren't reported are
-errors..
+My 1st thought was that some toggle/status bit were still active but it 
+doesn't really make sense.
 
+(Tested with an AMD AM29LV128M part.)
 
+David Vrabel
+-- 
+David Vrabel, Design Engineer
 
-
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
 
 
-On Wed, 2003-12-10 at 13:07, John Stirling wrote:
-> > Not fsync() but a flush should happen then, yes.
-> > 
-> > Compile with CONFIG_JFFS2_FS_DEBUG=1.  Run 'sync' after writing your
-> > file. Show me the output.
-> > 
-> 
-> See extract from kernel log below. Setting FS_DEBUG=1 didn't seem to
-> produce any more debug info. sync didn't cause a further page write..
-> 
-> 
-> 
+_____________________________________________________________________
+The message in this transmission is sent in confidence for the attention of the addressee only and should not be disclosed to any other party. Unauthorised recipients are requested to preserve this confidentiality. Please advise the sender if the addressee is not resident at the receiving end.
+
+This message has been checked for all viruses by MessageLabs Virus Control Centre.
+--------------080508010503090208040802
+Content-Type: text/plain;
+ name="mtd-cfi_cmdset_0002.c-erase-suspend-fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mtd-cfi_cmdset_0002.c-erase-suspend-fix.patch"
+
+Index: linux-2.4.21/drivers/mtd/chips/cfi_cmdset_0002.c
+===================================================================
+--- linux-2.4.21.orig/drivers/mtd/chips/cfi_cmdset_0002.c	2003-12-11 15:03:06.000000000 +0000
++++ linux-2.4.21/drivers/mtd/chips/cfi_cmdset_0002.c	2003-12-12 10:00:53.000000000 +0000
+@@ -505,22 +505,29 @@
+ 		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x1))))
+ 			goto sleep;
+ 
++                oldstatus = cfi_read(map, adr);
++                status = cfi_read(map, adr);
++                if ((oldstatus ^ status) & dq2) {
++                        printk(KERN_ERR "Can't suspend erase -- block in progress\n");
++                        goto sleep;
++                }
++
+ 		/* Erase suspend */
+ 		/* FIXME - is there a way to verify suspend? */
+-		cfi_write(map, CMD(0xB0), adr);
++		cfi_write(map, CMD(0xB0), chip->in_progress_block_addr);
+ 		chip->oldstate = FL_ERASING;
+ 		chip->state = FL_ERASE_SUSPENDING;
+ 		chip->erase_suspended = 1;
+ 		for (;;) {
+-			oldstatus = cfi_read(map, adr);
+-			status = cfi_read(map, adr);
+-			if (((oldstatus ^ status) & dq2) == dq2)
++			oldstatus = cfi_read(map, chip->in_progress_block_addr);
++			status = cfi_read(map, chip->in_progress_block_addr);
++			if (((oldstatus ^ status) & dq6) != dq6)
+ 			        break;
+ 
+ 			if (time_after(jiffies, timeo)) {
+ 				/* Urgh. Resume and pretend we weren't here. */
+ 				/* FIXME - is there a way to verify resume? */
+-				cfi_write(map, CMD(0x30), adr);
++				cfi_write(map, CMD(0x30), chip->in_progress_block_addr);
+ 				chip->state = FL_ERASING;
+ 				chip->oldstate = FL_READY;
+ 				printk(KERN_ERR "Chip not ready after erase "
+@@ -562,7 +569,7 @@
+ 	switch(chip->oldstate) {
+ 	case FL_ERASING:
+ 		chip->state = chip->oldstate;
+-		cfi_write(map, CMD(0x30), adr);
++		cfi_write(map, CMD(0x30), chip->in_progress_block_addr);
+ 		chip->oldstate = FL_READY;
+ 		chip->state = FL_ERASING;
+ 		break;
+@@ -1507,7 +1514,8 @@
+ 
+ 	chip->state = FL_ERASING;
+ 	chip->erase_suspended = 0;
+-	
++        chip->in_progress_block_addr = adr;
++
+ 	cfi_spin_unlock(chip->mutex);
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+ 	schedule_timeout((chip->erase_time*HZ)/(2*1000));
+@@ -1739,6 +1747,7 @@
+ 
+ 	chip->state = FL_ERASING;
+ 	chip->erase_suspended = 0;
++        chip->in_progress_block_addr = adr;
+ 	
+ 	cfi_spin_unlock(chip->mutex);
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+Index: linux-2.4.21/include/linux/mtd/flashchip.h
+===================================================================
+--- linux-2.4.21.orig/include/linux/mtd/flashchip.h	2003-12-11 11:19:59.000000000 +0000
++++ linux-2.4.21/include/linux/mtd/flashchip.h	2003-12-11 15:09:22.000000000 +0000
+@@ -61,6 +61,7 @@
+ 
+ 	int write_suspended:1;
+ 	int erase_suspended:1;
++        unsigned long in_progress_block_addr;
+ 
+ 	spinlock_t *mutex;
+ 	spinlock_t _spinlock; /* We do it like this because sometimes they'll be shared. */
+
+--------------080508010503090208040802--
