@@ -1,16 +1,15 @@
-Received: from mlbmx2.corp.harris.com ([137.237.90.74])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 164kWQ-0001Ce-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2001 15:03:14 +0000
-Message-ID: <8D4C69676E66D511A1CB00508BBBB1921578A7@ranmx1.ran.harris.com>
-From: "Fend, Matthias" <mfend@harris.com>
-To: 'linux mtd' <linux-mtd@lists.infradead.org>
-Subject: Re: problems to write a partition table
-Date: Fri, 16 Nov 2001 10:11:42 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail9.messagelabs.com ([194.205.110.133])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 164kum-0001Eh-00
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2001 15:28:24 +0000
+Subject: Caching of reads
+From: Ian Campbell <icampbell@arcom.co.uk>
+To: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 16 Nov 2001 15:37:10 +0000
+Message-Id: <1005925030.25782.27.camel@LinuxDev>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,61 +21,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-i guess you get this message=20
-"nftla : unknown partition table"
-if you try to write the partition(s) with fdisk ?
+Good afternoon,
 
-if yes check if you've enabled the partition type support (for example =
-MSDOS
-partition tables) in your kernel configuration.
+I've checked the documentation and list archives and I can't find
+anything which refers to my problem...
 
-the same for the filesystem stuff ... after solving the partition =
-problem :-)
+It seems as if reads from a JFFS2 file system are not being cached as we
+would expect, for instance this small script:
+
+while true ; do
+sleep 1
+done
+
+causes a read from the flash every time the sleep is executed. This is
+true even if the fs is mounted read only.
+
+This is with a 2.4.14 kernel (and the JFFS2 therein), does anyone have
+any clue as to what might be going on?
+
+Thanks IA,
+Ian.
+
+-- 
+Ian Campbell
+Design Engineer
+
+Arcom Control Systems Ltd,
+Clifton Road,
+Cambridge CB1 7EA
+United Kingdom
+
+Tel: +44 (0)1223 411200 ext. 3204
+E-Mail: icampbell@arcom.co.uk
+Web: http://www.arcomcontrols.com
 
 
-matthias
+_____________________________________________________________________
+The message in this transmission is sent in confidence for the attention of the addressee only and should not be disclosed to any other party. Unauthorised recipients are requested to preserve this confidentiality. Please advise the sender if the addressee is not resident at the receiving end.
 
-	-----Urspr=FCngliche Nachricht-----
-	Von:	Fend, Matthias=20
-	Gesendet am:	Freitag, 16. November 2001 16:04
-	An:	Fend, Matthias
-	Betreff:=09
+This message has been checked for all viruses by MessageLabs Virus Control Centre. 
 
-
-	Useing a doc2000 device (32Mb) and a kernel v2.4.14.
-
-	After insert some MTD modules :
-	mtdcore docecc doc2000 mtdchar mtdblock and nftl;
-	I run nflt_format to format my doc2000 chip;
-	but it complain :Erasesize not 8Kb - I'm confused!
-
-	For someone's advice I skip the erasesize check in nftl_format.c.
-	so nftl_format works well.
-	but when I run fdisk on /dev/nftla.
-	it's say :
-	You will not be able to write partition table.
-	Device contains neither a valid DOS partition table, nor Sun, SGI or =
-OSF
-	disklabel Building a new DOS disklabel.Changes will remain in memory
-only,until
-	you decide to write them.After that, of course,the previous content
-won't be
-	recoverable.
-
-	Command (m for help):
-
-	Even if I created a partition and enter "w",the partition also can not
-be writed
-	into /dev/nftla.
-
-	run nftldump on /dev/mtd0:
-	NFTL Media Header found at offset 0x00000000:
-	NumEraseUnits: 2048
-	FirstPhysicalEUN:0
-	Formatted Size:33488896
-	UnitSizeFactor: 0xff
-	Second NFTL Media Header found at offset 0x00004000
-	Unit 0 is free
-	Unit 1 is free
-	...
-	...
+Company registered in England No. 1608562.
+Registered Office: Unit 8, Clifton Road, Cambridge, CB1 7EA, United Kingdom, Tel: 01223 411200.
