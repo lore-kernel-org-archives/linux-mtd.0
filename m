@@ -1,22 +1,28 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CoW2C-00043b-80
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2005 19:06:51 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050111215102.GA6289@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
-	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-Content-Type: text/plain
-Date: Wed, 12 Jan 2005 01:06:40 +0100
-Message-Id: <1105488400.17853.179.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1CodHY-0005hw-L2
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 02:51:09 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id 35BB12F016
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Jan 2005 08:51:04 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 2825B11675
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Jan 2005 08:51:04 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 7C6E57A1E
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Jan 2005 08:51:03 +0100 (CET)
+Message-ID: <41E4D6E5.1090407@imc-berlin.de>
+Date: Wed, 12 Jan 2005 08:51:01 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS3 & performance
-Reply-To: tglx@linutronix.de
+Subject: JFFS2: checking CRCs twice!?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Claim: No mtd has problems with lost data due to bad blocks.  This is
-> a complete non-issue and jffs[23] doesn't care.
+Hi there,
 
-NAK 
+IIUC than mounting a JFFS2 root fs takes so long (6 seconds on my embedded ARM9) 
+cause the CRCs of all blocks/sectors are checked.
 
-NAND and ECC'ed NOR FLASH have a implicit property of occasional
-bitflips, which are related to various causes. The ECC addon in the
-chip/technology driver takes care of that and may even be able to
-recover the resulting data loss. 
+But then it looks to me that - shortly after boot - the GC thread doing the same 
+again (in background.c), which takes another 6 scondes and slows down the 
+application startup...
 
-ACK
+Or am I missing something?
 
-NOR is significantly less prone to data loss and bit flips, so I agree
-here to the extent of the following paragraph
+-- 
+Steven Scholz
 
-A flash aware filesystem has to be aware of failure sensitivity of the
-devices they are dealing with. An additional constraint is that FLASH
-filesystems are normally used in systems which have totally different
-environments and constraints than a desktop system.
-
-
-> "No" means that less than .001% (add or remove some digits, depending
-> on your needs) of all devices have this problem.  In those cases, the
-> system just won't work and will be replaced.  Business as usual.
-> 
-> Now, if any particular flash doesn't match this requirement, the mtd
-> driver is supposed to mirror all blocks.  If either copy rots away,
-> the data can still be read back from the other block.  After GC, the
-> block can be marked as bad and everyone lives on happily ever after.
-
-Mirroring is not a complete solution to address the various
-requirements. It's one out of many mechanisms which you might be able to
-sell to some of your audience.
-Moving the responsibility to a different layer is a real bad idea, as it
-restricts the implementation of other filesystems on top of the same MTD
-technology. e.g. YAFFS deals nice with NAND oddities and I totaly refuse
-to restrict the usage to a subset of capabilities. If your
-implementation decision is to use mirroring then provide is as a
-seperate feature/layer, which can be used on request.
-
-Facts: 
-
-- FLASH devices are error prone. The grade of proneness is depending on
-the FLASH technology
-- Devices have partially standardized mechanisms of error correction
-
-Problem:
-
-- Develop a filesystem aware of the above constraints
-- Do not overemphasize error correction/protection/ in favor of
-performance and depending on FLASH technology
-- Make it DAU (For non native german speakers: Dumbest Assumed User)
-safe 
-
-Incomplete solution requirements:
-
-- Be aware of the error proneness you are dealing with
-- Utilize the error correction / detection mechanisms and deal with the
-information they provide. 
-- Provide additional userspace fallback mechanisms and design patterns
-which help to improve the failsafe goal
-
-> Capacity is half the original, but that's better than losing
-> /sbin/init now and then, right?  And maybe the flash is cheap enough
-> that noone cares.
-> 
-> Sane?
-
-Especially high volume systems are very sensitive to the price aspect.
-For them it is cheaper to invest in software development than adding an
-additional 1$ to the hardware.
-
-tglx
+imc Measurement & Control
