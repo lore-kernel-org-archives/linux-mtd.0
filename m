@@ -1,19 +1,19 @@
-Received: from [213.239.205.147] (helo=debian.tglx.de)
+Received: from mail.dot4.com ([216.57.134.36])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BhwXs-0000az-Lr
-	for linux-mtd@lists.infradead.org; Tue, 06 Jul 2004 16:28:05 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Teuling, Sieme" <Sieme.Teuling@echostar.com>
-In-Reply-To: <C86A9402F6A07E47B2F50A302DFA9BAE044CBF@alm-exch.europe.echostar.com>
-References: <C86A9402F6A07E47B2F50A302DFA9BAE044CBF@alm-exch.europe.echostar.com>
-Content-Type: text/plain
-Message-Id: <1089145290.26880.9.camel@thomas.tec.linutronix.de>
-Mime-Version: 1.0
-Date: Tue, 06 Jul 2004 22:21:31 +0200
+	id 1Bhwfe-0000l4-0A
+	for linux-mtd@lists.infradead.org; Tue, 06 Jul 2004 16:36:06 -0400
+Received: from [192.168.200.101] (unknown [192.168.200.101])
+	by mail.dot4.com (Postfix) with SMTP id 041D64117
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  6 Jul 2004 16:36:02 -0400 (EDT)
+Message-ID: <40EB0D28.60309@dot4.com>
+Date: Tue, 06 Jul 2004 16:35:52 -0400
+From: "Thomas W. Nelson" <twn@dot4.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Kernel BUG
-Reply-To: tglx@linutronix.de
+Subject: MTD support on Motorola Hawk ASIC-based boards
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-06 at 17:06, Teuling, Sieme wrote:
-> Hi anyone,
-> 
-> I'm currently using the 2.4.21 kernel with mtd-snapshot-20040621 and a 2.4.
-> ilookup patch (included below) on an embedded conexant platform. I sometimes
-> run into the error below at the startup of the platform (a short time after
-> the mount). Does anybody know where this comes from and if it is possible to
-> fix it for the 2.4.21 kernel?
+We have the somewhat dubious honor of migrating a couple of customer's 
+applications environments from VxWorks to TimeSys Linux on obsolete 
+Motorola MVME2400 and MCP750 boards (the wheels of progress in certain 
+defense and telecomm hardware venues turn *very* slowly).  Everything 
+else is working fine except we've been unable to get the MTD subsystem 
+to successfully probe and recognize the 8 MB user flash on these boards.
 
-Yes, upgrade to a less ancient kernel. 
+The basic configuration is nothing out of the ordinary: 4 AMD 29LV160BT 
+(2 MB) devices in x16 mode, arranged in two 32-bit wide even/odd address 
+banks.  The one major quirk in the design is that the Hawk memory 
+controller ASIC only permits 32-bit wide aligned writes to this array 
+(any other type of write -> /dev/null, reads are unconstrained).  We're 
+very confident that we have the registers in the Hawk set up correctly 
+and we've spent many hours trying all the chip type/bus width/interleave 
+permutations available in the existing MTD implementation with no 
+success.  Therefore, before we embark on any inappropriate or 
+unnecessary major surgery we wanted to ask the community for any 
+suggestions, ideas, or other pearls of wisdom.
 
-> Backtrace: no frame pointer
-> Code: 1b00179a e59f0014 eb001798 e3a03000 (e5833000)
+Thanks for any assistance...
 
-The backtrace is meaningless as we do not have much experience in
-clairvoyance. Read linux/Documentation/oops-tracing.txt
-
-
-Thomas
+-- 
+Tom Nelson
+Sr. Consulting Engineer, Dot4, Inc.
+twn@dot4.com <mailto:twn@dot4.com>
