@@ -1,28 +1,20 @@
-Received: from mail1.cray.com ([136.162.0.111])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B42JS-0007zo-7e
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 18:32:14 +0000
-Received: from relaya.us.cray.com (relaya.us.cray.com [192.168.252.144])
-	i2IIWAFj021479	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Mar 2004 12:32:10 -0600 (CST)
-Received: from orchid.us.cray.com (orchid.us.cray.com [172.30.27.91])
-	i2IIW6DY029075	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Mar 2004 12:32:06 -0600 (CST)
-Received: from cray.com (troll [192.168.250.5])i2IIW5MU4147082
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Mar 2004 12:32:05 -0600 (CST)
-Message-ID: <4059EB24.7020603@cray.com>
-Date: Thu, 18 Mar 2004 12:32:04 -0600
-From: David Updegraff <dave@cray.com>
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B45aX-0000Ge-MG
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 22:02:05 +0000
+From: dkey <dk.dbox2@gmx.net>
+To: linux-mtd@lists.infradead.org,
+ dvrabel@arcom.com
+Date: Thu, 18 Mar 2004 23:02:45 +0100
+References: <E1B3wBv-0005HA-9d@pentafluge.infradead.org>
+In-Reply-To: <E1B3wBv-0005HA-9d@pentafluge.infradead.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
-	<200403181411.25596.tglx@linutronix.de>
-	<6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
-In-Reply-To: <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Re: Large block NAND
+Message-Id: <200403182302.45350.dk.dbox2@gmx.net>
+Subject: Re: Erasebug on AMD flashes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +24,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Does anyone know how 'industry-standard' the format of the 4th ID byte 
-in these large NAND chips from Samsung is?  Y'know, the one that tells 
-you pagesize, buswidth, etc.  I'd sure be sweet to be able to reliably 
-use them.
+here is a picture of the flashes
+http://www.dietmar-h.net/img/nokia_2xAMD_Pin12.jpg
+and their configuration
+http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/21534.pdf
+
+greets
 
 
->> > I'm going to write a driver for the Samsung Flash K9F1G08U0M (128MB).
->> > The main characteristics are:
->> > - erase block size: 128 KB
->> > - page program size: 2 KB
->> > - total chip size: 128 MB
->> > - tR = 25 us
->> >
->> > This chip is not fully compatible with the standard NAND flash commands
->> > defined in
->> > nand.h (Samsung call these devices "large block").
->> > Thus, in my understanding, I must provide the following custom 
->> functions:
->> > my_board_nand_command
->> > my_board_nand_wait
->> > my_board_nand_block_bad
->>
->> Those functions should be incorporated into nand.c, as they are 
->> generic. So
->> all boards which use those "large block" devices can use them.
->>
->> Be aware, that the available NAND aware filesystems must be changed 
->> too, as
->> they are not aware of pagesizes > 512 byte, but if IIRC  the datasheet
->> details it is possible to write 4  512 byte sub-pages to the device 
->> without
->> violating the specs. Anyway changes will be neccecary.
-> 
-> 
-> I see.
-> 
->> > Anybody wrote a driver for a similar device?
->> > Have the MTD maintainers already planned to support these devices?
->>
->> Yep, but nobody forced me / us to implement it by paying for it. :)
-> 
-> 
-> In case we decide to implement this feature by ourselves:
-> 1) will the code be included in the public CVS tree?
-> 2) will we guided by you and David in order to write the code the right 
-> way (I
-> mean, for example, using the correct notations and coding style)?
-> 
-> 
-> 
-> Regards,
-> 
-> llandre
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+On Thursday 18 March 2004 13:00, linux-mtd-request@lists.infradead.org wrote:
+> Message: 4
+> Date: Thu, 18 Mar 2004 10:25:17 +0000
+> From: David Vrabel <dvrabel@arcom.com>
+> Subject: Re: Erasebug on AMD flashes
+> To: linux-mtd@lists.infradead.org
+> Message-ID: <4059790D.4020904@arcom.com>
+> Content-Type: text/plain; charset=us-ascii; format=flowed
+>
+> dkey wrote:
+> > we are using jffs2 on the dbox2 and AMD flash chips, but since rev. 1.96
+> > of cfi_cmdset_0002.c we can't erase the flashes. rev. 1.94 works without
+> > problems.
+>
+> "since 1.96" doesn't make sense.  Any breakage would be from 1.95.
+>
+> > here are some debug infos, tell me if you need more!
+>
+> Part numbers of the flash chips and their configuration (interleaved etc.).
+>
+> > would be please if anybody can take a look over the code or revert
+> > revision of cfi_cmdset_0002.c to 1.94.
+>
+> There's no reason why you can't revert to 1.94 yourself.
+>
+> FWIW, I'm now of the opinion that chip_status() is definately broken for
+> interleaved chips and probably cannot be made to work without ending up
+> with a mess.
+>
+> I would suggest using the data polling algorithm instead (where
+> applicable).
+>
+> Also, ignoring the internal flash timeout (DQ5 toggling) and instead
+> relying on the software timeout might be acceptable.  However, a
+> repeatedly suspended erase keeps getting its software timeout extended
+> and thus there is a possibility of the software timeout never occuring.
+>   Hmmm.  An internal timeout requires a chip reset and thus we can't
+> actually suspend an internally timed-out erase so the software timeout
+> won't be extended.
+>
+> David Vrabel
+> --
+> David Vrabel, Design Engineer
+>
+> Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+> Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+>
+>
+>
+> ------------------------------
+>
+> Message: 5
+> Date: Thu, 18 Mar 2004 11:56:47 +0100
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Subject: Re: Bug in nand_select_chip?
+> To: llandre <r&d@wawnet.biz>, David Woodhouse <dwmw2@infradead.org>
+> Cc: Andrea Scian <andrea.scian@wawnet.biz>
+> Message-ID: <200403181156.47289.tglx@linutronix.de>
+> Content-Type: text/plain; charset=iso-8859-1
+>
+> On Thursday 18 March 2004 10:56, llandre wrote:
+> > >That's correct, but you unfortunaly relied on code, which was in a heavy
+> > >modifciation phase. If you use leading edge code, be aware, that things
+> > > might be broken from time to time. The fix for this was committed 10
+> > > days after the first rework.
+> >
+> > Ok, thanks for the advice.
+> > To avoid such problems, is it possible to download "stable" releases? Are
+> > they tagged in the CVS repository?
+>
+> Yep, but the NAND stuff is quite new and not always up to date in the
+> stable versions.
+>
+> You can subscribe on the CVS mailinglist, which informs you of all changes
+> in the repository.
+> http://lists.infradead.org/mailman/listinfo/linux-mtd-cvs
