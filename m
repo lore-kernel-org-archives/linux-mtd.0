@@ -1,21 +1,16 @@
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Avgd7-0004tw-Jw
-	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2004 17:46:01 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Simon Haynes <simon@baydel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 24 Feb 2004 17:05:03 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: simon@baydel.com
+In-Reply-To: <6A03D4BC2018@baydel.com>
 References: <4034E8ED.5757.55A2D9@localhost> <69D8404D0D5E@baydel.com>
-	<1077641461.7826.578.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1077641461.7826.578.camel@hades.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <6A03D4BC2018@baydel.com>
+	 <1077641461.7826.578.camel@hades.cambridge.redhat.com>
+	 <6A03D4BC2018@baydel.com>
+Content-Type: text/plain
+Message-Id: <1077645958.7826.599.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Tue, 24 Feb 2004 18:05:59 +0000
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS2 Corruption.
-Reply-To: simon@baydel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 24 Feb 2004 4:51 pm, David Woodhouse wrote:
-> Hack JFFS2 to always get_mtd_device number 2 and boot with
-> root=/dev/ram0
+On Tue, 2004-02-24 at 17:05 +0000, Simon Haynes wrote:
+> Would you recommend changing the printk for the "Empty Flash" messages to a 
+> different level and using the ramdisk as a permanent solution ?
 
-Sorry again for being so stupid. I know you have only told me half a dozen 
-times that JFFS2 does not use the block read and write routines.
+Changing the printk level for the 'Empty Flash' messages does seem
+appropriate -- or preferably finding a way to eliminate the ones which
+we don't want. Are you mounting the fs read-only before rebooting? If
+not, the occasional CRC failure is acceptable. You get those with an
+unclean restart. It doesn't indicate data loss; it indicates that one
+particular log entry which you were writing _while_ you rebooted was
+lost. That was not data which userspace thought was already on the
+medium.
 
-I have done this and rebooted several times. Normally I would expect a CRC 
-error within a couple or reboots. As yet I have no CRC errors but I do get a 
-large number of "Empty Flash" messages, about 15 per reboot. I do not see any 
-of these if I boot via the network and mount and dismount the smc ?
+The problem with mtdblock is interesting. Can you make it BUG() when it
+dirties its cache and put it back to how it was, using mtdblock?
 
-I will keep rebooting over night and hack the kernel to panic on a CRC error.
-
-Would you recommend changing the printk for the "Empty Flash" messages to a 
-different level and using the ramdisk as a permanent solution ?
+-- 
+dwmw2
