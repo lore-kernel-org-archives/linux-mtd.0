@@ -1,15 +1,15 @@
 Received: from dsl-dt-207-34-112-i157-cgy.nucleus.com ([207.34.112.157] helo=mail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16hIlq-000512-00
-	for <linux-mtd@lists.infradead.org>; Sat, 02 Mar 2002 23:18:30 +0000
+	id 16hK3z-000564-00
+	for <linux-mtd@lists.infradead.org>; Sun, 03 Mar 2002 00:41:19 +0000
 Received: (from rayl@localhost)
-	by mail.com (8.11.2/8.11.2) id g22NTmP19795
-	for linux-mtd@lists.infradead.org; Sat, 2 Mar 2002 16:29:48 -0700
-Date: Sat, 2 Mar 2002 16:29:48 -0700
+	by mail.com (8.11.2/8.11.2) id g230qbX20469
+	for linux-mtd@lists.infradead.org; Sat, 2 Mar 2002 17:52:37 -0700
+Date: Sat, 2 Mar 2002 17:52:37 -0700
 From: Ray Lehtiniemi <rayl@otii.com>
 To: linux-mtd@lists.infradead.org
-Subject: patch and two questions
-Message-ID: <20020302162948.A14453@otii.com>
+Subject: mkfs.jffs2 question
+Message-ID: <20020302175237.C14453@otii.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -24,51 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi all
+hi folks
 
-i'm using the latest MTD CVS against arm linux-2.4.18-rmk1.
-
-
-first a patch that seems to be needed:
+two problems i notice with mkfs.jffs2:
 
 
-Index: include/linux/mtd/compatmac.h
-===================================================================
-RCS file: /home/cvs/mtd/include/linux/mtd/compatmac.h,v
-retrieving revision 1.33
-diff -u -r1.33 compatmac.h
---- include/linux/mtd/compatmac.h	2002/03/02 22:08:26	1.33
-+++ include/linux/mtd/compatmac.h	2002/03/02 23:21:26
-@@ -489,7 +489,7 @@
- {
- 	recalc_sigpending(current);
- }
--#define recalc_sigpending() __recalc_sigpending ()
-+#define recalc_sigpending(c) __recalc_sigpending ()
- #endif
- 
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,5)
+first, the '-p' option seems to be parsed a little strangely:
+
+  mkfs.jffs2                  ----> 712832 bytes
+  mkfs.jffs2 -p               ----> 720896 bytes
+  mkfs.jffs2 --pad            ----> 720896 bytes
+  mkfs.jffs2 -p 0x800000      ----> 720896 bytes
+  mkfs.jffs2 --pad=0x800000   ----> 8388608 bytes
+
+shouldn't number 4 also result in an 8MB image?
 
 
 
 
-now, two questions:
+second, if the very first dirent of the --root= argument is itself a dir, then
+it is not put into the jffs2 image.  for example, if i have:
 
-i get the following compile warnings all over the place:
+ /some/place/foo
+ /some/place/usr/bin/
+ /some/place/usr/sbin/
 
-  /opt/dev/linux/src/linux/include/linux/mtd/compatmac.h:492: warning:
-           `recalc_sigpending' redefined
-  /opt/dev/linux/src/linux/include/linux/modules/signal.ver:24: warning:
-           this is the location of the previous definition
+then:
 
-should i be worried?
+  mkfs.jffs2 --root=/some/place -o some.img
+
+will contain both /usr/bin and /usr/sbin, but
+
+  mkfs.jffs2 --root=/some/place/usr -o some.img
+
+will only contain /sbin (assuming it's the first dirent in usr)
 
 
-
-second, if i have a flash device which i want to partition, is it better
-to use add_mtd_partitions() or use the approach taken by
-mtd/drivers/mtd/maps/nora.c?  just looking at the code, they seem to
-accomplish the same thing, correct?
+i am looking at the code right now, but i was hoping the answer might jump out
+at someone who already knows the code.
 
 
 
