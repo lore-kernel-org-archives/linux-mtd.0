@@ -1,21 +1,19 @@
-Received: from mailout11.sul.t-online.com ([194.25.134.85])
+Received: from avtrex.com ([216.102.217.178])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BDjoK-00011N-To
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 13:48:12 +0100
-From: tglx@linutronix.de (Thomas Gleixner)
-To: David Daney <ddaney@avtrex.com>,
- linux-mtd@lists.infradead.org
-Date: Wed, 14 Apr 2004 14:43:56 +0200
-References: <407CC018.3030505@avtrex.com>
-In-Reply-To: <407CC018.3030505@avtrex.com>
+	id 1BDl7Q-0001QT-Uj
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2004 15:12:01 +0100
+Message-ID: <407D46AD.4000801@avtrex.com>
+Date: Wed, 14 Apr 2004 07:11:57 -0700
+From: David Daney <ddaney@avtrex.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: tglx@linutronix.de
+References: <407CC018.3030505@avtrex.com>
+	<200404141443.56257.tglx@linutronix.de>
+In-Reply-To: <200404141443.56257.tglx@linutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200404141443.56257.tglx@linutronix.de>
+cc: linux-mtd@lists.infradead.org
 Subject: Re: mtd, mtdblock and nand ecc.
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 14 April 2004 06:37, David Daney wrote:
-> Is there some reason that the mtd and mtdblock drivers do not use ECC
-> when the backing device is nand with ECC enabled?
+Thomas Gleixner wrote:
 
-Yes. 
-If the oobsel structure == NULL, then the nand driver uses the structure, 
-which is associated to this mtd device. This can be done from userspace using 
-MEMSETOOBSEL ioctl.
-NAND aware filesystem drivers provide their own oobsel structure and use the 
-xxx_ecc functions.
+>On Wednesday 14 April 2004 06:37, David Daney wrote:
+>  
+>
+>>Is there some reason that the mtd and mtdblock drivers do not use ECC
+>>when the backing device is nand with ECC enabled?
+>>    
+>>
+>
+>Yes. 
+>If the oobsel structure == NULL, then the nand driver uses the structure, 
+>which is associated to this mtd device. This can be done from userspace using 
+>MEMSETOOBSEL ioctl.
+>NAND aware filesystem drivers provide their own oobsel structure and use the 
+>xxx_ecc functions.
+>  
+>
+I am using the cramfs on a NAND partition as my root file system.  
+cramfs is not NAND aware, and I cannot be running userspace programs 
+before mounting as it is the root file system.
 
-> I suppose you could run into problems if the backing device were a
-> concatenation of ECC and non-ECC devices, but that could probably be
-> detected either on open or at each page read/write.
+I have not completely educated myself on the mtdblock driver.  Since the 
+mtdblock driver can be used by non-mtd-aware filesystems, I am proposing 
+making mtdblock NAND aware so that it uses the xxx_ecc functions iff ECC 
+is available.  Perhaps there would be a kernel/module command line 
+switch to help manage the behavior.
 
-Concatenation of NAND and NOR will not work anyway, as the fs must be aware of 
-the FLASH type.
+Thoughts?
 
--- 
-Thomas
-________________________________________________________________________
-"Free software" is a matter of liberty, not price. To understand the concept,
-you should think of "free" as in "free speech,'' not as in "free beer".
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+David Daney
