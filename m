@@ -1,48 +1,52 @@
-From: purushn@future.futsoft.com (Purushothaman N)
-Date: Tue, 25 Feb 2003 21:38:05 +0530
-Subject: Root file system as CRAMFS on Flash
-In-Reply-To: <1046083004.1545.32.camel@passion.cambridge.redhat.com>
-Message-ID: <003301c2dce8$154bae80$1504060a@future.futsoft.com>
+From: tmbinc@elitedvb.net (Felix Domke)
+Date: Wed, 26 Feb 2003 00:51:08 +0100
+Subject: "Hot" updating root-mounted mtd partitions
+Message-ID: <3E5C016C.4070700@elitedvb.net>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
->> Sorry for disturbing the list again. I was successfully able to mount a
->> cramfs
->> image in flash with NFS as root file system. But i am facing problems
-with
->> mounting the cramfs image as root file system. I have given the correct
-root
->> option
->> to the kernel.
+Hi,
 
->No you haven't. Turn off devfs or change it to 'root=/dev/mtdblock/2'
+i'm using MTD on a Linux Set-Top-Box, and i like to upgrade the (cramfs) 
+root FS, which is on a mtd, while the device is running.
 
-is it possible to have 2 file systems of the same type (eg. cramfs) and
-mount it?
+Of course updating it (be it from internet, from satellite or whatever) 
+includes erasing and rewriting the root. This naturally causes troubles. 
+How can i avoid this?
 
-for eg. /dev/mtdblock/2 as root file system and /dev/mtdblock/3 as
-secondary file system which has some binaries alone. My kernel
-version is 2.4.5-pre1 (for IDT mips) and it seems that the kernel
-is crashing at semaphore.c (line 235) when i try to load my driver.
+Possibilities are:
+  - remount rootfs using an in-memory-copy (ramfs), but i don't think 
+this is possible, since there are many open files in the old fs.
+  - including ugly hacks in the flash driver, mainly by copying the 
+partition to RAM and redirect accesses to that backup while flashing the 
+rootfs
 
--Purush
+both possibilities suck.
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I tried the following: (with proper error checking, of course)
 
-***************************************************************************
-This message is proprietary to Future Software Limited (FSL) 
-and is intended solely for the use of the individual to whom it
-is addressed. It may contain  privileged or confidential information 
-and should not be circulated or used for any purpose other than for 
-what it is intended. 
+p=mmap(0, size, PROT_READ, MAP_SHARED|MAP_LOCKED, 
+open("/dev/mtdblock/0"), 0);
 
-If you have received this message in error, please notify the
-originator immediately. If you are not the intended recipient,
-you are notified that you are strictly prohibited from using,
-copying, altering, or disclosing the contents of this message. 
-FSL accepts no responsibility for loss or damage arising from 
-the use of the information transmitted by this email including
-damage from virus.
-***************************************************************************
+to map the BLOCK(!)device mtdblock0 in memory. as block accesses are 
+chached, i thought, this should prevent them to go out of cache (=ram).
+
+to enforce them to go into ram, i used
+
+for (i=0; i<size; i+=PAGE_SIZE) (void)p[i];
+
+Well, actually, it did help, but it's still not perfect. Sometimes the 
+application crashes with a busfault after erasing the root.
+
+My question: is it possible to do that this way? If not - why not?
+
+I know that the application might reload data of a.) itself or b.) used 
+fonts (it's a graphical application, based for example on freetype+ttf 
+fonts), so i cannot simple remove the root.
+
+Is such a mmap "strong enough" ?
+
+What else can i do? How is this normally done? Having a 2nd system in 
+flash is no choice.
+
+felix
