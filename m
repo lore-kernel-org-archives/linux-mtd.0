@@ -1,23 +1,18 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from aboulogne-111-1-1-87.abo.wanadoo.fr ([80.11.223.87] helo=ns.nexgen-private)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18LlXV-0006J4-00
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 14:39:13 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6W009WYSRJ8N@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Tue, 10 Dec 2002 16:09:19 +0100 (MET)
-Date: Tue, 10 Dec 2002 16:07:06 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
+	id 18Llwv-0006LK-00
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 15:05:31 +0000
+Message-ID: <002901c2a062$8c165c30$0111010a@nexgenprivate>
+From: "David Girault" <david@nexgen-software.fr>
+To: "the muppeteer" <themuppeteer@hotmail.com>
+Cc: "Liste Linux Mtd" <linux-mtd@lists.infradead.org>
+References: <F171pP0Xthjx7ciQ7SB000082c6@hotmail.com>
 Subject: Re: [DOC2000] invalid size detected
-In-reply-to: <001201c2a059$27471aa0$0111010a@nexgenprivate>
-To: David Girault <david@nexgen-software.fr>,
- Liste Linux Mtd <linux-mtd@lists.infradead.org>
-Reply-to: tglx@linutronix.de
-Message-id: <200212101607.06174.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <001201c2a059$27471aa0$0111010a@nexgenprivate>
+Date: Tue, 10 Dec 2002 16:41:02 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,25 +24,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday 10 December 2002 15:33, David Girault wrote:
-> The previous version I build (2.4.18) detect the correct size but lack for
-> UnitSizeFactor!=1 support.
+Hi,
+
+> I have a disk-on-chip with 16MB (kernel 2.4.20), and in /proc/mtd I see
+> mtd0: 01000000 00004000 "DiskOnChip 2000"
 >
-> I think the problem is in the NAND_IDS.C chip identification but I am not
-> sure.
-> As I can see, there is a name conflict beetween nand_ids.h and nand_ids.c.
-nand_ids.h is not longer in the CVS. I moved the ID's into nand_ids.c and 
-splitted the tables.
- 
-> What de you think of this problems/bug?
-I should not hack, when I'm tired :)
+> thats not 16meg, do I have the same problem as you ? (as my flash is
+rather
+> mailfunctioning)
 
-Fixed in CVS. Could you please try and bang me, if it's not working as 
-exspected.
+This is 16meg in hexadecimal. So it is Ok.
+I think you have another problem.
 
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+David
