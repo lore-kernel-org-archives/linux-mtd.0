@@ -1,20 +1,17 @@
-Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17gCAw-0007SL-00
-	for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2002 23:36:06 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H1000I4TERAT0@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sun, 18 Aug 2002 00:35:35 +0200 (MEST)
-Date: Sun, 18 Aug 2002 00:35:26 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: No free space left for GC
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Message-id: <1029623727.2142.495.camel@thomas.tec.linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7BIT
+Received: from gateway.digitalview.com.hk
+	([152.101.51.1] helo=janus.hk.panelx.com ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17giro-0003jn-00
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2002 10:30:32 +0100
+Message-ID: <00bb01c24762$dbcbaa40$9000010a@paulwong>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: help! more message -->jffs2_scan_eraseblock() 
+Date: Mon, 19 Aug 2002 17:28:36 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,73 +23,89 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David ! 
+Hi!
+    i am using a NAND flash to build up the jffs2 file system in Linux
+kernel 2.4.17. and get the updated version of the MTD via CVS server. I
+followed the NAND doc. and success to control the nand flash component. But,
+when using "mount" command to make a device driver. there are more message
+to display (like below that). After that, I check the file in jffs2
+partition. all files are avaliable in nand flash and good condition.  What
+is the meaning about the below message?????
 
-You wanted to know, why free_size got that low. 
+Thank you.
 
-I just copied stuff to an empty partition, until it got full. 
-But instead of returning with "not enough space" it keeps garbage 
-collection until really no more space is left. 
-One of the problems is, that we have at lot of blocks on the dirty list,
-with less than 2*sizeof(struct jffs2_raw_inode) left. At scan time we
-put these blocks on the clean_list. We must do this in normal operation
-too. It's total crap to gc blocks with 4 byte dirty space ! 
-The total sum of dirty space is 32K, when we start gc. The most dirty 
-block has 1.2k dirty space. Many blocks have less than 512 bytes dirty,
-which is the pagesize on my device. This is a result of padding, when we
-flush wbuf. The dirty space on blocks with more than 512 byte dirty
-space is 12048 Byte, which is less than 1 block. 
+Paul
 
-The real weird thing is, that we write to the device (from gc) until the
-last block is used and we run into an endless loop, where no more space
-is left for garbage collection. This happens, because we increase dirty
-size during gc instead of decreasing it. Once we are there we cannot
-mount the filesystem again, without running in that endless gc loop.
 
-I changed nodemgmt.c so that blocks with less than 2*sizeof(struct
-jffs2_raw_inode) dirty space are moved to clean_list. But the gc effect
-was still the same. 
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00143760:
+0x27de in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00143764:
+0x27de in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00143768:
+0x3000 in
+stead
+Further such events for this erase block will not be printed
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144000:
+0x9f2c in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144004:
+0x6ba1 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144008:
+0x04d4 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0014400c:
+0x25a6 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144010:
+0xb265 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144014:
+0xefc5 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144018:
+0x12d8 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0014401c:
+0x1a8f in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144020:
+0x7bfa in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00144024:
+0x42b7 in
+stead
+Further such events for this erase block will not be printed
 
-Now I noticed that we don't move blocks to the dirty list anymore,
-neither on mount (pass1) nor during gc or write. The reason is that
-mark_node_obsolete checks if the dirty_size == ref_totlen. Due to the
-fact, that we have blocks with some dirty space in the clean list, these
-blocks stay there until they are very dirty, which may never happen. I
-changed this by checking used space against sector_size -
-2*sizeof(struct jffs2_raw_inode). Result is better but not good.
-I tried the same procedure on a larger partition (56MB, previous one was
-8MB). There I was running in trouble again. I had enough dirty space in
-the clean_list, that the check in jffs2_reserve_space c->dirty_size <
-c->sector_size never lead to -ENOSPC. I added a check, which is done,
-when dirty_size is less than blocksneeded * sector_size. It checks if
-the dirty_size in the dirty_lists is > c->sector_size. If not it returns
--ENOSPC too. Same as above.
+******************************************************************
+all files are avalible in nand flash
+******************************************************************
 
-In both cases, we end up with 3 empty blocks and we can't even remove a
-file from the filesystem.
+bash-2.04# ls /mnt/flash -al
+total 2419
+drwxr-xr-x    3 root     0               0 Jan  1  1970 .
+drwxrwxrwx    4 root     0            1024 Aug 13  2002 ..
+-rw-r--r--    1 root     0           10818 Jul 25  2002 SiS630
+-rwxr--r--    1 root     0           35321 Jul 22  2002 fb_nsc.txt
+-rwxr--r--    1 root     0           37467 Jul 19  2002 geode_rm.txt
+-rwxr--r--    1 root     0          575598 Jul 17  2002 linuxapi_prgref.pdf
+-rwxr--r--    1 root     0           31168 Jun 23  2000
+loadregforlinux_v1.2.pdf
 
-The strange thing is, that the dirty_size is not always correct. When I
-filled the filesystem complete, df tells me:
-/dev/mtdblock1	8192	8164	28	100%	/mnt/data
-The last dirty information from the log was dirty_space = 0x3e0c
-After umount and mount I have suddenly dirty_space = 0xcfe8, which is
-the real dirty size. The good thing on this is, that the endless gc on a
-100% full filesystem stops. The bad thing is that we have only 3 blocks
-left and I can't remove a file anymore. Have to add some more checks on
-monday.
+-rw-rw-r--    1 500      500        788829 Jul  5  2002 ns2000manual.pdf
+-rwxr--r--    1 root     0           91578 Jun 23  2000 sc1200_sc1201_tv.pdf
+-rwxr--r--    1 root     0          136106 Jun 23  2000
+scx200_capturevip.pdf
+-rwxr--r--    1 root     0           42297 Jun 23  2000
+scx200_int_routing.pdf
+-rwxr--r--    1 root     0           93302 Jun 23  2000
+scx200_irq_expansion.pdf
 
-If we are at the point of a 100% full filesystem and the dirty space is
-splitted into small pieces, we add for each gc'd block one or two blocks
-to the dirty list and the block, we have written to ends up sometimes on
-the dirty list too. Maybe we have to add a check, where we calc the
-average dirty space per block on dirty_list. If this is less than a
-defined threshold, we return ENOSPC and stop garbage collection instead
-of screwing up the filesystem at least. It should always be possible to
-delete a file.
+-rwxr--r--    1 root     0           55786 Jun 23  2000 scx200_nand.pdf
+-rwxr--r--    1 root     0          425177 Jul 17  2002
+sp1sc10_stb_platform.pdf
 
--- 
-Thomas 
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-rwxr--r--    1 root     0          149956 Jul 17  2002 v4l2_prog_guide.pdf
+bash-2.04#
