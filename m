@@ -1,19 +1,22 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from [2002:d5aa:48c2::1] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CM1E3-0003ZV-Un
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2004 05:33:18 -0400
-Message-ID: <417CC91D.6060002@inf.u-szeged.hu>
-Date: Mon, 25 Oct 2004 11:36:29 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1CM2Wo-0003uR-6t
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2004 06:56:43 -0400
+Message-ID: <417CDBDD.1010004@oktetlabs.ru>
+Date: Mon, 25 Oct 2004 14:56:29 +0400
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
 MIME-Version: 1.0
-To: dedekind@oktetlabs.ru, David Woodhouse <dwmw2@infradead.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
 References: <41767593.9030004@inf.u-szeged.hu>	<1098365059.13633.1257.camel@hades.cambridge.redhat.com>
 	<41781683.3020602@inf.u-szeged.hu> <4179009D.8010409@oktetlabs.ru>
-In-Reply-To: <4179009D.8010409@oktetlabs.ru>
+	<417CC91D.6060002@inf.u-szeged.hu>
+In-Reply-To: <417CC91D.6060002@inf.u-szeged.hu>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	jffs-dev@axis.com
 Subject: Re: JFFS2 mount time
+Reply-To: dedekind@oktetlabs.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,105 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Hello Ferenc,
 
-> So, for this purpose you are going to distribute the inode nodes and 
-> other (including direntry nodes) by different blocks. Those blocks, who 
-> contain only the inode nodes, will have summaries, other blocks - will not.
+ > Yes, I think there are three kinds of nodes:
+ > - type A contains relevant amount of data which is not needed at mount
+ > time (jffs2_raw_inode)
+ > - type B is (almost) fully needed at mount time (jffs2_raw_dirent)
+ > - type C is any other (unkown, developements in the future...)
+ >
+ > To achieve as much mount time speed up as possible I think we should
+ > distinguish them.
+This is what I really do not like.
 
-Yes, I think there are three kinds of nodes:
-- type A contains relevant amount of data which is not needed at mount 
-time (jffs2_raw_inode)
-- type B is (almost) fully needed at mount time (jffs2_raw_dirent)
-- type C is any other (unkown, developements in the future...)
+Ok, let us discuss now only this topic. Lt I explain why I believe it is 
+vad and very *unnatural* to introduce two or more kinds of blocks.
 
-To achieve as much mount time speed up as possible I think we should 
-distinguish them.
+The example of JFFS2 change that I consider natural is the introduction 
+of new node type. It is natural, because of when JFFS2 was designed, 
+this possibility was foreseen and taken into account. It is relatively 
+easy to do this. It is possible to do this and do not affect other 
+things in the JFFS2.
 
-Using summary the really relevant speed up will be only at node type
-A. We can also generate summary for type B, but that (as you wrote) 
-relevant ratio of the information will be duplicated.
+Conversely, the introducing several block types was not foreseen in the 
+JFFS2 design. And all things in the JFFS2 are coded with the assumption 
+all the blocks are equivalent.
 
-So we whould like to intorduce two kinds of erase blocks:
-- erase blocks with summary: it will store (now only) type A nodes, 
-maybe later some of type B
-- erase block without summary: it will store all of type C and B nodes 
-which is not stored before
+This is my point view on the issue in general.
 
-> 1. Your change will affect JFFS2 very heavily. You will introduce 
-> restriction into JFFS2. Another improvements may not work with such 
-> restriction. Now all the blocks are equivalent. But you want to 
-> distinguish between two kins of blocks. Don't you think it is too 
-> complicated decision?
+Now I will try to illustrate why I think so.
 
-What kind of restriction do you mean? We don't introduce any 
-restrictions. The "type C" kind of nodes are processed as before, using 
-the usual scanning method. If you what to force for every node to make 
-their represenation in the summary, that whould be a restriction.
+1. In JFFS2 there are several lists of blocks - clean_list, dirty_list, 
+very_dirty_list?. Are you going to introduce clean_list_typeA, 
+dirty_list_typeA, very_dirty_list_typeA, clean_list_typeB, 
+dirty_list_typeB, very_dirty_list_typeB ?
 
-I think for some kinds of node summary is meaningful, and for some kinds 
-not.
+2. Just do 'grep "_list" * | grep -e "\(dirty\)\|\(very\)"' and see how 
+many places in JFFS2 where these lists are changed. Do you think it is 
+natural to introduce 3 more lists? I believe not. What if somebody else 
+will introduce one more type of block?
 
-If we mix them that can be a very big slow down, if you what to process 
-them only with making a reference in the summary to its offset, because 
-if you (for example) what to read only 50 bytes (size of the node) you 
-will have to read 512/2048 bytes depening on the flash. (where mostly 
-there will be inode nodes which is not neccesery to read because that is 
-int he summary)
+3. There is write buffer in the JFFS2 which is used in case of NAND. Are 
+you going to have two wbufs? This is also significant change.
 
-But if all of this "not summarized, small" nodes are stored in a
-"seperated" erase block than the this 512/2048 byte reading will not be 
-unnecessary (because on the remaining 462-1998 bytes will store also 
-relevant information, which is not in the summary).
+4. Now the GC just gives one block, and moves all the valid nodes to 
+another one. In your case (if you have the JFFS2 image which was created 
+  by older code, without your patch, where all node types are mixed), 
+you will need to move one type of nodes to one block, another to the 
+another block.
 
-> 2. Think about the wear-leveling. In JFFS it was ideal. In JFFS2 it is 
-> good, but not so ideal. I average, the inode nodes are changed more 
-> often (just think about FIFOs, we told about them in this list 
-> recently). So, you will need to Garbage Collect the NODE_ONLY blocks 
-> more often. So, I afraid the wear-leveling will suffer from your 
-> improvement.
+So, I think you will be needed to change many things in JFFS2. You have 
+a risk to hit on a can of worms.
 
-I think the GC solves it "automaticly". This mark 
-(SUMMARIZED/NOT_SUMMARIZED) is not a premament thing, it is done "pseudo 
-randomly".
+So, do you agree that this change is *unnatural* ?
 
-I aggree that it cause some different behavior in wear-leveling but I 
-don't think it makes it relevantly worse.
+===================================================================
 
-> 4. It seems for me you will need to increase the number of blocks which 
-> are reserved for the garbage collection (double ?). This is also minor 
-> drawback.
+ >> 4. It seems for me you will need to increase the number of blocks
+ >> which are reserved for the garbage collection (double ?). This is also
+ >> minor drawback.
+ > I don't understand what do you mean here
 
-I don't understand what do you mean here.
+I mean the sb->resv_blocks_gcmerge and related. You will need to 
+increase it, which is not very good.
 
-> I believe that if we have directory references in summaries, this will 
-> increase the mount speed.
-> 1. At first, we will store fewer data! We don't need to keep the common 
-> headers, CRCs and mctimes.
-> 2. At the second, we may compress summary (direntries aren't compressed)!
-> 3. And the third, on NAND there is difference between reading lots of 
-> different pages or few pages.
 
-Yes, we should try it - to store dirents in SUMMARIZED erase blocks. But 
-it can be a improvement later, for first we need a well working stable 
-system - and this is urgent for us now.
-
-> 2. Compress summaries.
-
-It makes harder to determine the optimal time of summary generation (it 
-is easy to see the summary size, but here the compressed size of it the 
-relevant). It can cause smaller image but may cause some slow down, too. 
-We may introduce it later as an option.
-
-So now we have two open discussion:
-- is the SUMMARIZED / NOT_SUMMARIZED distiguishment good or not
-- in the first version do we need dirents in the summary or not
-
-Fortunatelly the effects (and side effects) of this improvements will be 
-active only if the new kernel option is enabled, and don't kill any 
-other future improvements.
-
-I curious about (at least) David's optinion about these topics.
-
-Bye,
-Ferenc
+-- 
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
