@@ -1,50 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 1446D7-0003mn-00
-	for mtd-list@infradead.org; Thu, 07 Dec 2000 18:56:05 +0000
-Received: from cr53988-a.rchrd1.on.wave.home.com
-	([24.112.95.30] helo=thegravitywell.dhs.org ident=michealk)
+	id 144FU6-0006qY-00
+	for mtd-list@infradead.org; Fri, 08 Dec 2000 04:50:14 +0000
+Received: from rose.mizi.com ([203.239.30.86])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 1446D4-0003mh-00
-	for mtd@infradead.org; Thu, 07 Dec 2000 18:56:02 +0000
-From: Micheal Kelly <michealk@thegravitywell.dhs.org>
-Reply-To: michealk@thegravitywell.dhs.org
-Date: Thu, 7 Dec 2000 13:55:44 -0500
-Content-Type: text/plain;
-  charset="us-ascii"
-Cc: mtd@infradead.org
-To: Michiel Ronsse <Michiel.Ronsse@rug.ac.be>, michealk@thegravitywell.dhs.org
-References: <0012071234300I.24907@morpheus.espial.com> <3A2FD20E.733446C@rug.ac.be>
-In-Reply-To: <3A2FD20E.733446C@rug.ac.be>
-Subject: Re: MTD & JFFS on Arcom SBC
-MIME-Version: 1.0
-Message-Id: <00120713554403.04734@morpheus.espial.com>
-Content-Transfer-Encoding: 8bit
+	id 144FU3-0006qM-00
+	for mtd@infradead.org; Fri, 08 Dec 2000 04:50:12 +0000
+Received: (from root@localhost)
+	by rose.mizi.com (8.11.1/8.11.1) id eB84neN15189
+	for mtd@infradead.org; Fri, 8 Dec 2000 13:49:40 +0900
+Date: Fri, 8 Dec 2000 13:49:40 +0900
+From: SeonKon Choi <bushi@mizi.com>
+To: mtd@infradead.org
+Subject: DOC2K & mtd/util/nftl_format.c
+Message-ID: <20001208134940.A14241@mizi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+hi,
 
-Hello Michiel,
+mtd/util/nftl_format.c
 
-We are using 16 MB also - I'm curious - what version of MTD are you using?  
-Something fairly recent from CVS, or an earlier release?  
+    157 
+    158     if (meminfo.erasesize != 0x2000) {
+    159         printf("Erase size not 8Kb - I'm confused\n");
+    160         close(fd);
+    161         return 1;
+    162     }
+    163
 
-On Thursday 07 December 2000 13:08, Michiel Ronsse wrote:
-> Micheal Kelly wrote:
-> > Hi all,
-> >
-> > I've got an Arcom MediaGX board here that I'm trying to get working
-> > w/Linux 2.4-test12pre7 ...  Has anyone else tried the latest MTD source
-> > from CVS with this board?
->
-> We are using several Arcom MediaGX boards quite sucessfully with
-> 2.4-test8.
-> We are quite happy with this kernel, so I never bothered trying one of
-> the later
-> kernels. What amount of flash are you using (we have 16MB)?
->
->
-> Michiel Ronsse.
+It's 0x4000 (16kb) on my DOC2K 16 Mbytes (MD2202-D16, 1.23).
+
+Is there anyone who solve this problem ?
+
+M-System says,
+              MD220( )
+                    0 - Low profile (16,24,32,48 Mbytes)
+                    1 - High profile (72,80,112,144 Mbytes)
+                    2 - Low profile (64,96 Mbytes)
+                    3 - High profile (160,192,288 MBytes)
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
