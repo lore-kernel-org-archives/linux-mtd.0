@@ -1,14 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <419870D4.4050703@yandex.ru>
-References: <419870D4.4050703@yandex.ru>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CTdCB-0003IN-Dj
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:30:48 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1100508552.8015.61.camel@localhost.localdomain>
+References: <41986D89.4060308@oktetlabs.ru>
+	<1100508552.8015.61.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Mon, 15 Nov 2004 09:18:08 +0000
-Message-Id: <1100510289.8015.65.camel@localhost.localdomain>
+Date: Mon, 15 Nov 2004 10:22:09 +0100
+Message-Id: <1100510529.5074.119.camel@thomas>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: remove the 'totlen' field from node_ref
+Cc: dedekind@oktetlabs.ru, linux-mtd@lists.infradead.org
+Subject: Re: NAND pages cache?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-11-15 at 12:03 +0300, Artem B. Bityuckiy wrote:
-> Hello,
+On Mon, 2004-11-15 at 08:49 +0000, David Woodhouse wrote:
+> On Mon, 2004-11-15 at 11:49 +0300, Artem Bityuckiy wrote:
+> > So, the obvious idea how to avoid this is to introduce something like 
+> > NAND pages cache. The cache will keep several NAND pages which were last 
+> > accessed.
+> > 
+> > I don not know is it good to do this only in JFFS2 or on the MTD NAND layer?
 > 
-> I see there were efforts to remove the 'totlen' field from the 
-> jffs2_raw_node_ref structure. But it is not done yet.
-> 
-> As I understand, in order to succesfullt done this improvements, all the 
-> space in flash must be represented by means of nodes. This means, we 
-> should keep padding node references (jffs2_raw_node_ref for paddigs) 
-> in-core too.
+> I thought we already did this in the MTD NAND layer, since we had to
+> read whole pages there to do ECC anyway. Thomas?
 
-Correct.
+We do caching only if a page is read partially. If we read a full page
+we read directly into the fs buffer.
 
-> Why is this work not done yet? Are there some difficulties? May be some 
-> problems arise when we pad to the end of NAND page/Flash block but the 
-> padding length is not sufficient to write the padding node and we just 
-> write some pattern?
+The partial reads happen when we read nodes. The full page reads happen
+when we read data. That's sufficient and captures most of the double
+reads on the same page.
 
-No, that's not a problem. We can quite happily keep a raw_node_ref which
-describes that, and we can do so at mount time too. Mostly we just need
-to fix the mount code to generate obsolete node refs for dirty space
-rather than just ignoring it and moving on.
-
-Doing that alone is fairly simple. The main reason I haven't done it yet
-is because it would need a _lot_ of testing, probably with a period of
-checking against the real __totlen field and complaining if they differ.
-I haven't really had enough time to do the amount of testing I'd like
-before I release such a change.
-
--- 
-dwmw2
+tglx
