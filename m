@@ -1,14 +1,18 @@
-Received: from ip68-7-112-74.sd.sd.cox.net ([68.7.112.74] helo=clpanic.kennet.coplanar.net)
+Received: from sphere.barak.net.il ([212.150.48.98])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16u1hl-0000fQ-00
-	for <linux-mtd@lists.infradead.org>; Sun, 07 Apr 2002 02:42:53 +0100
-Message-ID: <001901c1ddd5$841955f0$7e0aa8c0@bridge>
-From: "Jeremy Jackson" <jerj@coplanar.net>
-To: "Eric W. Biederman" <ebiederman@lnxi.com>
-Cc: <linux-mtd@lists.infradead.org>
-References: <004501c1ddac$1ca95f60$7e0aa8c0@bridge> <m34rio308a.fsf@DLT.linuxnetworx.com>
-Subject: Re: JEDEC programming command spec
-Date: Sat, 6 Apr 2002 17:34:30 -0800
+	id 16uBxk-0002zY-00
+	for <linux-mtd@lists.infradead.org>; Sun, 07 Apr 2002 13:40:04 +0100
+Received: from gad ([10.10.11.10]) by sphere.barak.net.il
+          (InterMail vK.4.03.00.00 201-232-121 license 5444ddd44659357c6c93343e0ce38507)
+          with SMTP id <20020407123746.BVL18833.sphere@gad>
+          for <linux-mtd@lists.infradead.org>;
+          Sun, 7 Apr 2002 15:37:46 +0300
+Message-ID: <005801c1de39$ad6a1fc0$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "Linux-mtd List" <linux-mtd@lists.infradead.org>
+Subject: problems in latest mtd cvs - jffs2 implementation
+Date: Sun, 7 Apr 2002 15:39:44 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -24,30 +28,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Got it.  3.5.x actually. 
+i downloaded the cvs version from 7/4/2002 - this day.
+i tried to use it in order to include jffs2 support to older kernel - 2.4.2.
+but i noticed that in patchin.sh there's no link's to jffs2 files at all !
+is this intentional ?
 
-Thanks,
+maybe the simple way is better - to overwrite all files of old kernel with
+new mtd-cvs files ?
 
-Jeremy
-
------ Original Message ----- 
-From: "Eric W. Biederman" <ebiederman@lnxi.com>
-To: "Jeremy Jackson" <jerj@coplanar.net>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Saturday, April 06, 2002 2:56 PM
-Subject: Re: JEDEC programming command spec
-
-
-> "Jeremy Jackson" <jerj@coplanar.net> writes:
-> 
-> > I read everywhere about the JEDEC std. commands...
-> > but www.jedec.org only has CFI command set info.
-> > 
-> > Can anyone point me to this info?  Seems every vendor
-> > has some variation, but without the original to compare with,
-> > it seems impossible to know what is "standard" and what isn't.
-> 
-> JESD21-C section 3.3.1 I think.
-> 
-> Eric
-> 
+Gad
