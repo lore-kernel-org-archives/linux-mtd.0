@@ -1,8 +1,8 @@
-Date: Fri, 7 Jan 2005 14:50:56 +0000 (GMT)
+Date: Fri, 7 Jan 2005 14:43:29 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: jasmine@linuxgrrls.org
 In-Reply-To: <Pine.LNX.4.61.0501071434430.28451@hex.linuxgrrls.org>
-Message-ID: <Pine.LNX.4.58.0501071448290.12960@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501071438530.12887@phoenix.infradead.org>
 References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
 	<20041222160942.GC9783@wohnheim.fh-wedel.de>
@@ -54,8 +54,10 @@ On Fri, 7 Jan 2005 jasmine@linuxgrrls.org wrote:
 > 
 > -J.
 > 
-And it seems difficult to take into account a lot of platform-dependent 
-things. Isn't it better to have one universal test?
+But the reason why I include that loops is dictated by our discussions 
+about backward/forward CRC calculations and CPU cache benefits. CRC's are 
+calculated reading bytes. So I don't think we should take into account 
+cache line size in our particular case.
 
 --
 Best Regards,
