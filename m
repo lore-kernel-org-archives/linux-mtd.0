@@ -1,28 +1,19 @@
-Received: from 211-23-38-20.hinet-ip.hinet.net ([211.23.38.20]
-	helo=serversw.iei.com.tw)
+Received: from [207.164.182.16] (helo=cbnsitar.cbnco.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19PKU3-0004yb-Qz
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Jun 2003 12:06:40 +0100
-Received: from serversw.iei.com.tw (root@localhost)
-	by serversw.iei.com.tw with ESMTP id h59B0ax13270
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 9 Jun 2003 19:00:36 +0800 (CST)
-Received: from antivirusgw.hq.iei ([172.16.2.30])
-	by serversw.iei.com.tw with SMTP id h59B0ZI13262
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 9 Jun 2003 19:00:35 +0800 (CST)
-Received: (from kevinliao [172.17.23.81])
- by antivirusgw.hq.iei (NAVGW 2.5.1.19) with SMTP id M2003060919052016970
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jun 2003 19:05:20 +0800
-Message-ID: <00cf01c32e77$4367ae00$511711ac@kevinliao>
-From: "Kevin Liao" <kevinliao@iei.com.tw>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 9 Jun 2003 19:07:04 +0800
+	id 19PSZ2-00060w-03
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Jun 2003 20:44:20 +0100
+Received: (from root@localhost)h59JirC30265
+	for linux-mtd@lists.infradead.org; Mon, 9 Jun 2003 15:44:53 -0400
+Received: from vdoukhan (porcuswine.cbnco.com [207.164.182.8])
+	ESMTP id h59Jip030257
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Jun 2003 15:44:51 -0400
+Date: Mon, 09 Jun 2003 15:45:24 -0400
+To: linux-mtd@lists.infradead.org
+From: Vladimir Doukhanine <vdoukhan@cbnco.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-Subject: A question about how to send a page program command to NAND flash
+Message-ID: <oprqimhyy07bj7b7@cbnsitar.cbnco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Subject: Problem mounting root jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +23,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In nand.c, I found that there was a piece of code in nand_command(...) as below:
+Hi,
 
-...
-if (command != NAND_CMD_SEQIN)
-  writeb (command, NAND_IO_ADDR);
- else {
-  if (mtd->oobblock == 256 && column >= 256) {
-   column -= 256;
-   writeb (NAND_CMD_READOOB, NAND_IO_ADDR);
-   writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-  } else if (mtd->oobblock == 512 && column >= 256) {
-   if (column < 512) {
-    column -= 256;
-    writeb (NAND_CMD_READ1, NAND_IO_ADDR);
-    writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-   } else {
-    column -= 512;
-    writeb (NAND_CMD_READOOB, NAND_IO_ADDR);
-    writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-   }
-  } else {
-   writeb (NAND_CMD_READ0, NAND_IO_ADDR);
-   writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-  }
- }
-...
+Just upgraded kernel 2.4.20 and MTD from cvs and I'm experiencing some 
+weird delay 1-2 minutes when kernel initially mounts jffs2.
+I’d appreciate if someone can give me an idea what could be wrong.
 
-My question is why we need to send some kind of read command first before issuing the real page program command? Thanks a lot.
+Thanks,
+Vlad
 
-Regards,
-Kevin
+
+Loading done.
+Uncompressing Linux... Ok, booting the kernel.
+Linux version 2.4.20-sh (root@ex-max.ott.wann.com) (gcc version 3.2.3) #34 
+Mon 3
+On node 0 totalpages: 11263
+zone(0): 11263 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: mem=45052K sh_mv=CM2500 console=ttySC1,115200
+Setting GDB trap vector to 0x80000100
+CPU clock: 240.03MHz
+Bus clock: 40.00MHz
+Module clock: 40.00MHz
+Interval =Linux version 2.4.20-sh (root@ex-max.ott.wann.com) (gcc version 
+3.2.33
+Linux version 2.4.20-sh (root@ex-max.ott.wann.com) (gcc version 3.2.3) #34 
+Mon 3
+On node 0 totalpages: 11263
+On node 0 totalpages: 11263
+zone(0): 11263 pages.
+zone(0): 11263 pages.
+zone(1): 0 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+zone(2): 0 pages.
+Kernel command line: mem=45052K sh_mv=CM2500 console=ttySC1,115200
+Kernel command line: mem=45052K sh_mv=CM2500 console=ttySC1,115200
+Setting GDB trap vector to 0x80000100
+Setting GDB trap vector to 0x80000100
+CPU clock: 240.03MHz
+CPU clock: 240.03MHz
+Bus clock: 40.00MHz
+Bus clock: 40.00MHz
+Module clock: 40.00MHz
+Module clock: 40.00MHz
+Interval = 100014
+Interval = 100014
+Calibrating delay loop... 239.20 BogoMIPS
+Memory: 43344k/45052k available (1005k kernel code, 1708k reserved, 28k 
+data, 3)
+Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
+Inode cache hash table entries: 4096 (order: 3, 32768 bytes)
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes)
+Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
+CPU: SH7750/SH7751
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis Communications 
+AB.
+SuperH SCI(F) driver initialized
+ttySC0 at 0xffe00000 is a SCI
+ttySC1 at 0xffe80000 is a SCIF
+Real Time Clock Driver v1.10e
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+physmap flash device: 800000 at a0000000
+ Amd/Fujitsu Extended Query Table v1.1 at 0x0040
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+cmdlinepart partition parsing not available
+RedBoot partition parsing not available
+Using physmap partition definition
+Creating 5 MTD partitions on "Physically mapped flash":
+0x00000000-0x00800000 : "29LV641DL flash"
+mtd: Giving out device 0 to 29LV641DL flash
+0x00000000-0x00010000 : "bootloader"
+mtd: Giving out device 1 to bootloader
+0x00010000-0x000d0000 : "zImage#1"
+mtd: Giving out device 2 to zImage#1
+0x000d0000-0x00190000 : "zImage#2"
+mtd: Giving out device 3 to zImage#2
+0x00190000-0x00800000 : "root FS"
+mtd: Giving out device 4 to root FS
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 4096 bind 8192)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+mtdblock_open
+ok
+mtdblock: read on "root FS" at 0x400, size 0x200
+mtdblock: read on "root FS" at 0x600, size 0x200
+mtdblock_release
+ok
+mtdblock_open
+ok
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1-2 minuts pause (about 10 minuts pause with mtd debug printf enabled)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+VFS: Mounted root (jffs2 filesystem) readonly.
+Freeing unused kernel memory: 32k freed
