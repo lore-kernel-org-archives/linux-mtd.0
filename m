@@ -1,19 +1,24 @@
-Received: from mail05a.webhosting-verizon.net ([209.238.3.57])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LH6i-0000b9-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 06:37:16 +0100
-From: "David Cooper" <david@forcedpotato.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: "Ilguiz Latypov" <ilatypov@superbt.com>,
-	"Linux MTD" <linux-mtd@lists.infradead.org>
-Subject: RE: X Windows Performance with DOC 2000 
-Date: Fri, 21 Jun 2002 01:46:15 -0400
-Message-ID: <AIEOIMKIOAAJKHJOGAEFMEFCCEAA.david@forcedpotato.com>
+Received: from mail021.syd.optusnet.com.au ([210.49.20.161])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17LHUa-0000co-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 07:01:56 +0100
+Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
+	by mail021.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g5L61qC32068
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 16:01:52 +1000
+Received: from k9.ctam.local ([192.168.0.55] helo=ctam.com.au)
+	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
+	id 17LHUV-0000dS-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 16:01:51 +1000
+Message-ID: <3D12C14A.7050903@ctam.com.au>
+Date: Fri, 21 Jun 2002 16:01:46 +1000
+From: Brendan J Simon <brendan.simon@ctam.com.au>
+Reply-To: brendan.simon@ctam.com.au
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: doc2000 nftl[abcd] devices
+References: <3D127644.3050004@ctam.com.au>  <3D115F9B.9030203@ctam.com.au> <12942.1024563800@redhat.com> <10394.1024620838@redhat.com> <3D12BAE1.3050400@ctam.com.au>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <10120.1024619960@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,89 +30,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David,
-
-Some test results:
-
-(1) X (MTD-enabled kernel,IDE)
-
-- Works fine.
-
-(2) X after first mounting nftla2 on /mnt/doc (MTD-enabled kernel,IDE)
-
-- Works fine.
-- But, if I try to perform any file operations on /mnt/doc the system hangs.
-- If I stay away from /mnt/doc it is business as usual.
-
-(3) X (MTD-enabled kernel,IDE), then stopping X and mounting nftla2 on
-/mnt/doc
-
-- Mount operation mount /dev/nftla2 /mnt/doc causes the shell to hang.
-- Viewing the process "mount" using top shows that it is running
-continuously and using 84% CPU time.
-- All attempts to kill the mount process are futile.
-
-
-So, it seems that once X has had its way with the system, use of the
-DiskOnChip is impossible.  Question is, why?
-
-I have been reflecting some on why SVGAlib apps run while X does not when I
-use the DoC as the root file system.  My theory was that the SVGAlib
-application is loaded into memory before it starts executing and talking to
-the VESA BIOS.  In contrast, X is trying to setup the VESA BIOS and then
-attempts to load modules from the DoC (at which point it hangs).
-
-However, I repeated the above tests with SVGAlib and found that SVGAlib apps
-and file operations on the DoC can occur at the same time with no apparent
-problems.
-
-hmmmm?
-
-Cheers,
-
-David Cooper
+>
+>
+>> Looking at them more closely, I see that I was mistaken -- we _don't_ 
+>> continue the scan after finding the first NFTL on the device. 
+>> Patching NFTL_mount() and find_boot_record() to take a 'start' 
+>> argument for where to start scanning is simple enough -- you just 
+>> need to fix NFTL_setup() to loop till NFTL_mount() stops working.
+>>
+> I expect it's not as easy as you suggest (at least for me as all this 
+> MTD, NFTL stuff is doing my head in).
+> In NFTL_mount, it uses the number of blocks supplied to it as 
+> nftl->nb_blocks.  This is set in NFTP_setup() just before NFTL_mount 
+> is called.  I think this is currently set to the entire mtd device 
+> (ie. the DOC).  I'll put some more printks to find out exactly what it 
+> is doing :)
+> I guess the alternative to is to scan from some start address till the 
+> next media headers are found, then the size is known and it can be 
+> passed backed to NFTL_setup (directly or indirectly).
+>
+> Does this sound right ?
+>
+> What about holes in the DOC.  ie.  What if I have nftl_formatted 
+> between 0x00000000-0x01FFFFFF & 0x04000000-0x7FFFFFFF.  This has a 
+> hole between 0x02000000-0x03FFFFFF.  Does NFTL_mount cater for this ?  
+> Should it ? If so, does this mean that the Media Header needs to be 
+> searched to find the start of the partition and then the next Media 
+> Header to find the end of the partition.  This seems wrong because the 
+> first partition would be recognised as 4MB instead of 2MB.  There must 
+> be some info in the media headers that give the size of the 
+> partition.  Any clues ? I'll do some more research in the mean time. 
 
 
+Does it make sense to put an nb_block_start in the NFTLRecord structure 
+or would it better to pass this information to the NFTL_mount() and 
+find_boot_records() functions.
 
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
-Woodhouse
-Sent: Thursday, June 20, 2002 8:39 PM
-To: David Cooper
-Cc: Ilguiz Latypov; Linux MTD
-Subject: Re: X Windows Performance with DOC 2000
+When reading information from nftlb, nftlbc, etc, how does the device 
+driver know where the first block of the device is ?
+Does it need to know or does it use some of the other variables such as 
+EUN, VUN, etc.
 
-
-
-david@forcedpotato.com said:
->  Yes, when I use a kernel with the MTD support built-in for DoC 2000
-> and nftl I can still run X with the DoC in the system (unless I use
-> the M-Systems 4.2 firmware which prevents X from running with or
-> without MTD support).  I have not tried loading and unloading MTD
-> support as a kernel module.  Maybe this is worth a go.
-
-If you have the drivers built-in and can still run X, that's what I wanted
-to know. Can you even have the file system on NFTL mounted, as long as your
-X modules aren't on it?
-
->  Interestingly, I can run SVGAlib applications from the DoC (using the
-> VESA driver) without any trouble.  This is confusing because I would
-> imagine that the SVGAlib VESA driver and the XFree86 VESA driver are
-> both accessing the VESA BIOS.
-
-True.
-
-> M-Systems have told me that the firmware DoC driver that loads into
-> memory at bootup sometimes conflicts in memory space that linux is
-> trying to use. I suppose this would explain why using different
-> firmware versions can prevent X from running from the IDE drive.
-
-That caused Linux to fail to boot -- but once you're actually in Linux,
-the allocations of the old DOS driver should be long forgotten.
-
-Unless the XFree86 code somehow tries to re-run the DiskOnChip firmware --
-but you said you'd reproduced the problem even with that obliterated,
-didn't you?
-
---
-dwmw2
+Thanks,
+Brendan Simon.
