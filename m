@@ -1,13 +1,17 @@
-Received: from zerg.codec.ro ([193.230.240.30])
+Received: from lion-s12.seas.upenn.edu ([158.130.12.194] helo=lion.seas.upenn.edu)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18DKBm-00073l-00
-	for <linux-mtd@lists.infradead.org>; Sun, 17 Nov 2002 07:49:54 +0000
-Message-Id: <200211111443.gABEhI017199@zerg.codec.ro>
-From: Dennis Dozie <ddozie@email.ro>
-To: ddozie@personal.ro
-Subject: BUSINESS RELATIONSHIP
-Date: Mon, 11 Nov 2002 16:43:18 +0200
+	id 18E9fP-0003Gk-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Nov 2002 14:47:56 +0000
+Message-ID: <002501c28fde$e38d38b0$c3c8320a@langostino>
+From: "Adam Lee" <alee@ttcdas.com>
+To: "linux-mtd list" <linux-mtd@lists.infradead.org>
+Cc: <alee@ttcdas.com>
+Subject: 128MB DOC 2000 not working (possible bug)
+Date: Tue, 19 Nov 2002 10:17:58 -0500
 MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -19,52 +23,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hi,
 
+We just upgrade a 96 MB DOC 2000 to 128 MB DOC 2000 but the 128MB chip is
+not functioning.  I compiled the driver into the kernel, and it worked with
+the 96 MB.  In kernel boot up, the 128MB DOC2000 is recognized as DOC
+Millennium.  The kernel boot up message is as followed:
 
+.
+.
+Using configured DiskOnChip probe address 0xd0000
+DiskOnChip Millennium found at address 0xD0000
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+.
+.
+No flash chips recognised.
+NFTL driver: nftlcore.c $Revision: 1.87 $, nftlmount.c $Revision: 1.30 $
+.
+.
+After boot, /proc/mtd is empty.
 
-ATTN:DIRECTOR/CEO
+The part number for the 128 MB DOC 2000 is
+MD2202-D128-V3-X
+23205010089 5.1
 
-Sir,
+And we are using RedHat dist. kernel version 2.4.18-3
 
-This contact is tantamount to an unflinching desire to establish a long mutual 
-business relationship based on trust and mutual understanding.
-
-I am Mr.Dennis Dozie ,the payment Co-Ordinator of ECO INTERNATIONAL BANK 
-PLC(Lagos-Nigeria).During the course of investigation it was found that the sum 
-of 
-US$12.5M (Twelve Million Five Hundred Thousand US Dollars) has been lying 
-dormant in a suspense account of our bank.
-
-The said amount after due investigation belongs to a Foreigner, Late ENG.ANDREW 
-WILSON who was an Oil merchant/contractor with the Federal Government of 
-Nigeria and he was our valued customer but unfortunately the dastardly act of 
-the terrorists september 11th 2001 on the WTC(NEW YORK) building brought his 
-transaction to a halt.It is quite amazing that nobody has serviced the account 
-or shown up for his money since after his death till date.Although,several 
-efforts have been made by the bank to get in touch with his next of kin or any 
-of his relations, but all to no avail (he had no wife or children). 
-    
-It is on this note some top officials of ECO INTERNATIONAL BANK PLC,who are 
-fully aware of the incident resolved and asked me to find and negotiate with 
-trust worthy foreigner who will be willing to assist us ,and act as next of kin 
-to the Late ENG.ANDREW  WILSON.
-
-Going by the policy in our country as against civil servants operating  foreign 
-account or even to have that kind of huge amount in our local accounts,I 
-solicit for your assistance in transferring this money into your foreign 
-account for personal investment purpose. Having found out that your city are 
-known for business acumen and trustworthiness in business dealings.
-
-Because of this I have to solicit for your assistance and understanding,with an 
-unflinching faith that you will not betray me in this business.This is the 
-reason why I am  asking for your assistance to enable me invest the fund in 
-your city,settle down with my family and also have you as my mentor.
-
-
-If you can handle the transfer for our joint benefit please get back to me so 
-we can discuss,as what is required now is either for us to  have you as his 
-next of kin or to transfer the money in your name.
-
-I want you to understand that this transaction must be kept in utmost 
-confidentiality and secrecy because the bank here might claim the fund if they 
-got to know
+Thank you,
+Adam
