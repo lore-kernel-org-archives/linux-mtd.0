@@ -1,62 +1,56 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11xyKl-00038Y-00
-	for mtd-list@infradead.org; Tue, 14 Dec 1999 20:14:07 +0000
-Received: from stonewall.shenandoah.com ([204.111.72.3] helo=mail.datalux.com)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 11xyKj-00038S-00
-	for mtd@imladris.mvhi.com; Tue, 14 Dec 1999 20:14:05 +0000
-Message-ID: <3856A51A.FB60D73A@datalux.com>
-Date: Tue, 14 Dec 1999 15:14:18 -0500
-From: ralph stickley <ralph@datalux.com>
+	id 11y0WL-0003CD-00
+	for mtd-list@infradead.org; Tue, 14 Dec 1999 22:34:13 +0000
+Received: from awpi.com
+	([204.241.40.2] helo=sisko.awpi.com ident=michalk)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 11y0WJ-0003C6-00
+	for mtd@infradead.org; Tue, 14 Dec 1999 22:34:11 +0000
+Received: (from michalk@localhost)
+	by sisko.awpi.com (8.9.0/8.9.0) id QAA08264
+	for mtd@infradead.org; Tue, 14 Dec 1999 16:31:59 -0600
+From: "Brian K. Michalk" <michalk@sisko.awpi.com>
+Message-Id: <199912142231.QAA08264@sisko.awpi.com>
+Subject: Beginner with DoC
+To: mtd@infradead.org
+Date: Tue, 14 Dec 1999 16:31:58 -0600 (CST)
 MIME-Version: 1.0
-To: Adi Linden <adi@adis.on.ca>
-CC: "'linux-embedded@waste.org'" <linux-embedded@waste.org>,
- 	MTD <mtd@imladris.mvhi.com>
-Subject: Re: Anyone embedding RH 6.1 / 2.2.12 ?
-References: <Pine.LNX.4.10.9912130854360.3723-100000@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Adi Linden:
+My system:
+Advantech biscuit PC
+DoC2000, 72 megabyte
+Linux (slackware) 2.2.6
 
-Got it!   Looks great ... Now what do I do ?:-)
+Eventually I want to be able to boot off of the DoC, but for now, 
+I'll settle for making the kernel modules work.  I read the 
+documentation I could find, but still had problems.  Here's
+what I did:
 
-I have a shell script that erases/formats and loads files onto the DOC for
-booting (setup for plilo boot since we can't afford DOS for each of our
-units).  I'm converting this over to your directory structure - if you want a
-copy let me know - however, I'm a relative newbie to this stuff so it may not
-help..
+Downloaded mtd-19991025.tar.gz, extracted, compiled.
+	I get a compile error for the various utilities.
+Download mtd-19991025.diff, patch and compile -- no help,
+	so I comment out the offending utilities.
+insmod mtd -- cool
+insmod doc2000 -- cool
+Okay, now I want to see if I can see them with fdisk, but I've
+	got only a few clues as to the nodes.  I tried
+	mknod fla b 62 0 through fla4 for major IDs 62, 90, 31, 93,
+	and 44.  Fdisk never finds any of the devices.
 
-Also, if you need any help with the documentation I'd be able to provide some
-time..our system needs to be documented also...
+So, what nodes am I supposed to make?
 
-Thanks again
-Ralph Stickley
-Datalux, Corp.
-http://www.datalux.com/ipix
+Thanks for the help.
 
-BTW...any way to host this on a site thats available at >56K ?? (or parse out
-the standard files ?)
-
-Adi Linden wrote:
-
-> <snip>
-
-> Compile util-linux, sysutils, shutils, ppp without PAM and shadow
-> password. Get's rid of a lot of libs. You can grab my work so far at:
-> http://projects.adis.on.ca/Embedded/embedded-0.13.tar.gz
-> No docs, though,except for some noted in 'FileList'...
->
-> Regards,
-> Adi
->
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-
-
-
+-- 
+Brian Michalk  <http://www.awpi.com/michalk>
+Life is what you make of it ... never wish you had done something.
+Aviator, experimental aircraft builder, motorcyclist, SCUBA diver
+musician, home-brewer, entrepreneur and SINGLE!
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
