@@ -1,44 +1,37 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from tug.org ([158.121.106.10] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 112jXr-0007Sg-00
-	for mtd@infradead.org; Fri, 9 Jul 1999 23:55:03 +0100
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org
-Subject: Re: Response from M-Systems 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 09 Jul 1999 23:55:01 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E112jXq-0002oo-00@devel2.axiom.internal>
+	id 113BN2-0000eg-00
+	for mtd@infradead.org; Sun, 11 Jul 1999 05:37:44 +0100
+Date: Sun, 11 Jul 1999 00:46:51 -0400
+Message-Id: <199907110446.AAA10065@psilocin.gnu.org>
+From: Richard Stallman <rms@gnu.org>
+To: David.Woodhouse@mvhi.com
+CC: jgg@deltatee.com, mtd@infradead.org
+In-reply-to: <E112i0h-0002gf-00@devel2.axiom.internal> (message from David
+	Woodhouse on Fri, 09 Jul 1999 22:16:43 +0100)
+Subject: Re: Response from M-Systems
+Reply-to: rms@gnu.org
+References: <E112i0h-0002gf-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+A couple of months ago, I asked our lawyer a similar question: whether
+someone could permit distribution of a GPL-covered program, but then
+use a patent to try to restrict the running of the program.  Such a
+possibility would be disastrous, since it would mean that the program
+was not really free, despite the use of the GPL.
 
-jgg@deltatee.com said:
->  I'm not sure you can actually patent and enforce the software side of
-> a hardware interface. Ie if we write a driver that does the proper
-> sequence to page, write and erase their chip they cannot take action
-> agaist us, unless perhaps that sequence involved lots more software
-> control that the AMD flash chips do.
+The lawyer told me that licensing the distribution of a program
+automatically licenses users to run it.  I was relieved.
 
-That I suppose I'd agree with - although I would like to get NFTL working too, 
-which is a different matter.
+I cannot be certain that the case I asked him about is entirely
+equivalent to this one.  What I can say is that IF a program can be
+restricted in the way you suggest, it is not free software.  That is
+not a solution, it is a danger.
 
-> Can you dig up the patents they actually hold on their FTL and on
-> their hardware interface? 
-
-http://www.patents.ibm.com/ and search for "M-Systems". I can't see NFTL, just 
-FTL, which is a moot point because it's already done. There's some stuff on 
-hardware, too.
-
-----                                 ----                                 ----
-David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
- Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
-
-
+I don't think this danger exists, but if it does, I will do my best
+to safeguard against it with changes in the next version of the GPL.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
