@@ -1,16 +1,16 @@
-Received: from mail.mediatrix.com ([66.129.134.11])
+Received: from [217.109.194.170] (helo=intranet.mtp.eprocess.fr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17D4qu-0003lY-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 May 2002 15:55:04 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF77@mail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: "'tkeitel@innominate.com'" <tkeitel@innominate.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Append does not return error on full disks
-Date: Wed, 29 May 2002 10:55:01 -0400
+	id 17D4xj-0003mM-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 May 2002 16:02:07 +0100
+Message-ID: <3CF4EDE4.2080100@eprocess.fr>
+Date: Wed, 29 May 2002 17:04:04 +0200
+From: Frederic Marmond <fmarmond@eprocess.fr>
+Reply-To: fmarmond@eprocess.fr
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: UnitSizeFactor in nftlmount.c
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,8 +22,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->What version of JFFS2 did you use?
+hi all,
 
-I use code from MTD CVS took on May22th.
+I'm trying to make my doc2000 work for booting...
+any idea?
+;-)
 
-Frederic Giasson 
+well, in fact, I'm OK in:
+nftl_format /dev/mtd0 2097152
+(reboot, as all is compiled in kernel, no module)
+fdisk /dev/nftla
+mkfs -t ext2 /dev/nftla1
+
+it works all right...
+but impossible to boot (even with the "lilo-mtd -r /diskonchip").
+
+It seems that when making the fs (mkfs), the firmware is erased.
+And when I try to rewrite it, with the DOS util (dformat, given by 
+m-sys), it says that I have not enough binary place to put it in.
+
+I'm on 2.4.8, latest mtd-tool from cvs, on a x86/geode SC1200.
+
+any idea would be welcome...
+
+Fred
