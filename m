@@ -1,22 +1,19 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
+Received: from mail3.alphalink.com.au ([202.161.124.195])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AQE1X-0005yC-43
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Nov 2003 22:57:11 +0000
-Received: from 192.168.1.100 (unknown [192.168.1.100])F239F1441D
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Nov 2003 17:56:09 -0500 (EST)
-From: Joshua Wise <joshua@joshuawise.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Sat, 29 Nov 2003 17:55:32 -0500
+	id 1AQbgj-0001cp-GP
+	for <linux-mtd@lists.infradead.org>; Mon, 01 Dec 2003 00:13:17 +0000
+Message-ID: <00f801c3b79f$417dea80$0701000a@techmanager>
+From: "Denis Dowling" <dpd@alphalink.com.au>
+To: "stephen" <lcbr17306@blueyonder.co.uk>
+References: <002601c3b27b$62ca9130$6401a8c0@f87htyy9967774jjyuww2>
+Date: Mon, 1 Dec 2003 11:08:32 +1100
 MIME-Version: 1.0
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200311291755.33309.joshua@joshuawise.com>
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: [NAND] Multi-page OOB reads
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: booting from DOC
+Reply-To: Denis Dowling <dpd@alphalink.com.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi all,
+----- Original Message ----- 
+From: "stephen" <lcbr17306@blueyonder.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Sent: Monday, November 24, 2003 10:09 PM
+Subject: booting from DOC
 
-I'm on an iPAQ h1910 board working with a Samsung NAND 16MiB 3,3V chip=20
-(0xec/0x73).
 
-I have a few questions about reading from the out of band area, namely with=
-=20
-reading multiple pages. First off, by reading the spec sheet for this flash=
-=20
-chip, I don't see any information about multiple pages of OOB data. Would i=
-t=20
-be called something else?
+> Hi All,
+>
+> didn't get a reply from my last post , which was me rambling on a bit too
+> much or my text sounds arrogant? (sorry if it does i am just a newbie)
+>
+> I've been reading Karim Yaghmours book, got much further now, maybe
+someone
+> can put me straight on a couple of things? (hopefully)
+>
+> first of all I managed to install grub using 'doc_loadbios' so it replaces
+> the DOC's SPL , then I managed to use 'nftl_format' and formatted from
+> memory address '98304' which isn't the size of the grub boot loader but I
+> assume represents '16384 + 81920' , '81920' being the last erase offset,
+> from here I managed to 'fdisk nftla' and created a new partition
+> '/dev/nftla1', I can format this partition and safely read and write data.
+I
+> compiled all the DOC files as modules, I didn't patch the kernel I decided
+> to use a clean '2.4.19' kernel' , I also couldn't compile the latest CVS
 
-Secondly, I don't see any code in nanddump or nandwrite to deal with multip=
-le=20
-pages of OOB data. Should there be?
+> tools ;/ so I went back to a previous snapshot
+> 'Mtd-snapshot-20020708.tar.bz2' , this compiled fine (mainly I couldnt
+> compile nftl_format and something to do with empty LIST_HEAD structures,>
+blktrans.h with the latest CVS).
+My last patch fixes this :-)
 
-=46inally, I'm looking through drivers/mtd/nand/nand.c, and I'm looking at =
-the=20
-particular block that begins with the comment:
-        /*
-         * Read the data, if we read more than one page
-         * oob data, let the device transfer the data !
-         */
-I see how there's a read command before that. Should that be inside the loo=
-p=20
-if we're going to modify col?
+> I also realised that 'grub-0.92' needed
+> patching so i did that and repeated the steps with 'doc_loadbios' and
+> realised the last erase offset was now '65536' so the boot loader is
+smaller
+> and my new partition begins at offset '81920', plus this should have
+> contained 'ctrlbypass' as part of the grub compiled with patch.
 
-Thanks,
-/joshua
+I cannot get ctrlbypass working with grub at the moment. Code looks correct
+but always boots to the grub prompt even if I hold down the control key.
+Very strange.
 
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+>
+> The grub loader boots from the DOC but stops at the grub prompt, how do I
+> get grub to boot my kernel image ?
 
-iD8DBQE/ySPkPn9tWOqA4LMRAi0lAKCn3EKofWY81eUaff0O3iR0GSRTdQCfbUv0
-Gnd8CfRPe0xzV0vOuN3/pHQ=3D
-=3DnHv3
-=2D----END PGP SIGNATURE-----
+At the grub prompt type "kernel (" then TAB this should show all filesystems
+that grub supports.
+
+> in karims book it talks about building a root filesystem and
+> /boot/grub/menu.lst but I can't see how this can run without the modules
+> loaded needed by the kernel (e.g. docecc.o, doc2000.o etc) confused ;/ ...
+
+It is grub that needs to know how to read /boot/grub/menu.lst not the
+kernel. If you have applied the correct patches to grub then it should be
+able to read the ext2 partition and load the menu file. I am trying to get
+grub and DoC working at the moment so should be able to help you out with
+questions. Also have a look at
+http://lakeshoremicro.com/diskonchip-grub-howto.html
+
+Regards,
+Denis.
