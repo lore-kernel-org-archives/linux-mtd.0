@@ -1,20 +1,18 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from ns.suse.de ([213.95.15.193] helo=Cantor.suse.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16t2Fg-0005PD-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 09:05:48 +0100
-Subject: Re: how to use amd_flash.c
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: Steve Tsai <startec@ms11.hinet.net>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <00b001c1dbac$23abbd00$5501a8c0@synso.com.tw>
-References: <008801c1dba7$55a5b8b0$5501a8c0@synso.com.tw>
-	<1017905022.23995.13.camel@pcjonashg>
-	<00b001c1dbac$23abbd00$5501a8c0@synso.com.tw>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 04 Apr 2002 10:07:14 +0200
-Message-Id: <1017907634.23996.24.camel@pcjonashg>
+	id 16t4b9-0005ay-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 11:36:07 +0100
+Date: Thu, 4 Apr 2002 12:36:04 +0200
+To: Jeremy Jackson <jerj@coplanar.net>
+Cc: linux-mtd@lists.infradead.org, linuxbios@lanl.gov
+Subject: Re: jedec_probe_chip error?
+Message-ID: <20020404123603.A2734@suse.de>
+References: <015501c1db7f$5ea5ac90$7e0aa8c0@bridge>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <015501c1db7f$5ea5ac90$7e0aa8c0@bridge>; from jerj@coplanar.net on Wed, Apr 03, 2002 at 06:21:02PM -0800
+From: stepan@suse.de (Stefan Reinauer)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,22 +24,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 2002-04-04 at 09:41, Steve Tsai wrote:
-> Hi Jonas,
-> 
-> Thanks. I know how to add codes to amd_flash.c, but I can not make kernel
-> run amd_flash_probe(). I used jffs1 and flash.c on my board from AXIS before
-> and it works fine. Now I want ot port uClinux 2.4.17 to my board and I plan
-> to use jffs2 and mtd, but I found it is more complicated.  The flash I use
-> is not CFI compliance, so I am not sure I can use jedec_probe + CFI-driver.
+* Jeremy Jackson <jerj@coplanar.net> [020404 04:21]:
+> Also, I have discovered (see prev. post) at least one device that doesn't
+> respond to the aa 55 90 sequence, requiring an alternate
+> "old" sequence instead.  Any guidance on the best way to
+> implement this generically would be appreciated.
+ 
+There's 3 different methods used by flash devices to identify
+themselfes.
+aa 55 90 is the most used one. Others (i.e. some Winbonds) need
+aa 55 80 aa 55 60, whereas the third method (some other winbonds)
+is aa 55 80 aa 55 20.
+As far as I could estimate, the order in which you probe is crucial.
+Some chips answer to aa 55 80 aa 55 60 or  aa 55 80 aa 55 20 with
+their protection map instead of their id. 
+Eon Flashchips don't put their device id to 0x01, but to 0x101. 
+0x00 and 0x01 contain the vendor id (0x7f)
 
-The jedec_probe sets things up so that the CFI-drivers can be used with
-non-CFI chips.
+/dev/bios does that part of the probing pretty ok. I suggest you have a
+look at programming.c:flash_probe_address()
 
-> I modified amd_flash.c already, but the kernal can not probe the flash at
-> start time. Should I call do_map_probe in somewhere to find out the flash?
+get /dev/bios from the OpenBIOS cvs tree:
+http://www.freiburg.linux.de/OpenBIOS/dev/cvs.html
 
-Yes, you need to write a map driver that calls do_map_probe. You can
-look at arch/cris/drivers/axisflashmap.c for inspiration.
-
-/Jonas
+Best regards,
+  Stefan Reinauer
+  
+-- 
+Ok hex 4666 dup negate do i 4000 dup 2* negate do " *" 0 dup 2dup 1e 0 do
+ 2swap * e >>a 2* 5 pick + -rot - j + dup dup * e >>a rot dup dup * e >>a 
+  rot swap 2dup + 10000 > if 3drop 3drop "  " 0 dup 2dup leave then loop 
+              2drop 2drop type 268 +loop cr drop 5de +loop
