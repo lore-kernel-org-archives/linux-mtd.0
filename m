@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from tiger.actrix.co.nz ([203.96.16.160])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17AGrG-0006fs-00
-	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 22:07:50 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF47@mail.mediatrix.com> 
-References: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF47@mail.mediatrix.com> 
-To: Frederic Giasson <fgiasson@mediatrix.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Kernel oops after sync command in jffs2 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 21 May 2002 22:07:48 +0100
-Message-ID: <32287.1022015268@redhat.com>
+	id 17AIKf-0006lV-00
+	for <linux-mtd@lists.infradead.org>; Tue, 21 May 2002 23:42:18 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Yong-iL Joh <tolkien@mizi.com>,
+	Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: FAT for NAND Flash
+Date: Wed, 22 May 2002 10:36:57 +1200
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+References: <20020520113623.38371.qmail@web21508.mail.yahoo.com> <hby9ed93jh.fsf@tolkien.mizi.com>
+In-Reply-To: <hby9ed93jh.fsf@tolkien.mizi.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020521224213.A70804008@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +27,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> mtxmap_write16() called when erasing!
-> waiting for erase to complete timed out.
-> Erase at 0x00030000 failed immediately: errno -5
-> Oops: kernel access of bad area, sig: 11
+On Tue, 21 May 2002 22:52, Yong-iL Joh wrote:
+> Studying MTD <studying_mtd@yahoo.com> writes:
+> > --- Yong-iL Joh <tolkien@mizi.com> wrote:
+> > > attatched source of driver is working properly based
+> > > in 2.4.16-rmk2.
+> > > so mtd layer is a bit older.
+> >
+> > Thank you very much for your source code.
+> >
+> > Can you please let me know, from where you took the
+> > reference of :-
+>
+> visit SSFDC forum. :)
 
-> C00BCEFC:	concat_erase_callback()
-> C00BD26C:	concat_erase()
+Also the samsung www. This has a good description of the file system, ECC 
+etc. However, I believe you need to sign an NDA to get the code.
 
-Thanks. mtdconcat.c shouldn't have been calling the erase completion 
-callback _and_ returning failure. Can you update it and try again?
-
-T'would still be interesting to know _why_ the erase failed though. What 
-does the 'called while erasing!' message mean?
-
---
-dwmw2
+-- CHarles
