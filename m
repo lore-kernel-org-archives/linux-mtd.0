@@ -1,18 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mercury.sun.com ([192.9.25.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159vOH-0001kU-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 22:07:57 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B264F9D.9321AAE5@inventel.fr> 
-References: <3B264F9D.9321AAE5@inventel.fr>  <3B26459F.1F275CB1@inventel.fr> <3B26429A.5686E897@inventel.fr> <3B2635B4.63D6D647@colubris.com> <3B260CB7.E1513BBD@inventel.fr> <3B25FEB8.A00FCE03@inventel.fr> <3B24EC1B.7F920021@inventel.fr> <991934470.27485.0.camel@timmy> <20010607114319.A23641@crystal.2d3d.co.za> <20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com> <23825.991907052@redhat.com> <9968.991944081@redhat.com> <2667.992333648@redhat.com> <3B25DE97.D2041C9@inventel.fr> <3161.992348379@redhat.com> <5586.992349315@redhat.com> <3B261F73.BF7325E1@inventel.fr> <3B2632EA.B38B039C@inventel.fr> <1776.992360814@redhat.com> <7905.992363355@redhat.com> <9954.992364198@redhat.com> 
-To: Xavier DEBREUIL <xde@inventel.fr>
-Cc: Martin Gadbois <martin.gadbois@colubris.com>,
-    linux-mtd@lists.infradead.org
-Subject: Re: unable to modify jffs2 
-Mime-Version: 1.0
+	id 15A1Lj-0002GO-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 04:29:43 +0100
+Received: from hsmtv32a.SFBay.Sun.COM ([129.145.120.36])
+	by mercury.Sun.COM (8.9.3+Sun/8.9.3) with ESMTP id UAA24116
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 20:35:05 -0700 (PDT)
+Received: from sun.com (natbox [129.145.120.47])
+	by hsmtv32a.SFBay.Sun.COM (8.9.3+Sun/8.9.3/ENSMAIL,v2.1p1) with ESMTP id UAA16660
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 20:35:05 -0700 (PDT)
+Message-ID: <3B26DF7F.F9EE6185@sun.com>
+Date: Tue, 12 Jun 2001 20:35:27 -0700
+From: Tim Hockin <thockin@sun.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: how to get MTD support - need expert input
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Jun 2001 22:10:16 +0100
-Message-ID: <11419.992380216@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,19 +27,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-xde@inventel.fr said:
->  So, is it possible to define the size of a block inferior to the size
-> of the erase block ? For example, erase size is 128KB and block size
-> is 64KB. 
+Hello, All.
 
-Absolutely not possible. You cannot erase only a 64KiB region - you _must_ 
-erase 128KiB at a time.
+I am trying to get the general MTD layer in linux to support our systems'
+flashroms.  The problem is that our system setup is a bit unique.
 
-Cutting down JFFS2's requirements is possible. It's just a matter of time. 
-I'm happy to give you pointers, or it's on my TODO list for attention in 
-my Copious Spare Time (tm).
+We have 1 or 2 chips (so far all have been JEDEC).  These may be of
+intermixable sizes from 512K to 4MB.  They are mapped in the top 64k of
+address space (x86 compatible).  To swap pages and banks, there is a custom
+flash page register, which has a few bits that determine teh actively
+mapped page.
 
-Or talk to my pimp.
+So my question is this:
 
---
-dwmw2
+What is the best way for me get full support?  Apparently all the JEDEC
+support in 2.4.5 is broken.
+
+This is my thought:
+
+have a map driver (like the other chipset map drivers) that builds it's own
+struct mtd_info.  We can then flip pages at will, probe however we like,
+etc.  I wish I could say that we will always have both flash chips
+identical, but I can't.
+
+feedback?
+
+-- 
+Tim Hockin
+Systems Software Engineer
+Sun Microsystems, Cobalt Server Appliances
+thockin@sun.com
