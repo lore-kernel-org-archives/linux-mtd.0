@@ -1,21 +1,19 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19UrYn-0000NX-M5
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 18:26:25 +0100
-Received: from hermes.fachschaften.tu-muenchen.de ([129.187.202.12])
-	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 19UrZA-00084Y-00
-	for linux-mtd@lists.infradead.org; Tue, 24 Jun 2003 18:26:48 +0100
-Date: Tue, 24 Jun 2003 19:26:39 +0200
-From: Adrian Bunk <bunk@fs.tum.de>
-To: dwmw2@redhat.com, linux-mtd@lists.infradead.org
-Message-ID: <20030624172639.GR3710@fs.tum.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset=us-ascii
-cc: linux-kernel@vger.kernel.org
-cc: trivial@rustcorp.com.au
-Subject: [2.5 patch] two small MTD fixes
+Received: from adsl-66-159-197-3.dslextreme.com
+	([66.159.197.3] helo=willie.blueskylabs.com ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19UrfS-0000Sd-7G
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2003 18:33:18 +0100
+Message-ID: <3EF88B96.6000800@blueskylabs.com>
+Date: Tue, 24 Jun 2003 10:34:14 -0700
+From: Andrew Goodney <andrew@blueskylabs.com>
+MIME-Version: 1.0
+To: 'Infradead Org' <linux-mtd@lists.infradead.org>
+References: <3C6BEE8B5E1BAC42905A93F13004E8AB032ABD2B@mailse01.axis.se>
+	<5.2.1.1.0.20030624073531.00ae4780@192.168.1.10>
+In-Reply-To: <5.2.1.1.0.20030624073531.00ae4780@192.168.1.10>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch below contains the following fixes for MTD in 2.5.73:
-- postfix a constat in mptbase.c with ULL
-- add an extern declaration for a function that is later called in
-  gen_probe.c
+Allen Curtis wrote:
 
-Please apply
-Adrian
+> I would be screaming a lot if we were not moving to JFFS2 ourselves. 
+> However this will take us a few months to accomplish. If there is any 
+> interest in JFFS and if someone is kind enough to point out the work 
+> TBD, I will take a shot.
 
---- linux-2.5.73-not-full/drivers/message/fusion/mptbase.c.old	2003-06-23 23:07:57.000000000 +0200
-+++ linux-2.5.73-not-full/drivers/message/fusion/mptbase.c	2003-06-23 23:08:27.000000000 +0200
-@@ -1279,7 +1279,7 @@
- 	u32		 psize;
- 	int		 ii;
- 	int		 r = -ENODEV;
--	u64		 mask = 0xffffffffffffffff;
-+	u64		 mask = 0xffffffffffffffffULL;
- 
- 	if (pci_enable_device(pdev))
- 		return r;
---- linux-2.5.73-not-full/drivers/mtd/chips/gen_probe.c.old	2003-06-23 23:16:23.000000000 +0200
-+++ linux-2.5.73-not-full/drivers/mtd/chips/gen_probe.c	2003-06-23 23:16:45.000000000 +0200
-@@ -281,6 +281,7 @@
- 
- extern cfi_cmdset_fn_t cfi_cmdset_0001;
- extern cfi_cmdset_fn_t cfi_cmdset_0002;
-+extern cfi_cmdset_fn_t cfi_cmdset_0020;
- 
- static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map, 
- 						  int primary)
+
+My $0.02;
+
+It would be nice to keep JFFS around. We are using it because on our 
+fairly slow platform, JFFS seems to be faster and gives us more usable 
+space for a given partition size. So thanks for stepping up to the plate.
+
+-Andrew Goodney
+andrew@blueskylabs.com
+---------------------------
+www.blueskylabs.com
