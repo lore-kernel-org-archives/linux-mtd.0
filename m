@@ -1,21 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKDHV-0002ZG-3A
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 06:01:22 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: simon@baydel.com
-In-Reply-To: <E4E1C5BE221F@baydel.com>
-References: <20041019214518.26339.qmail@web52703.mail.yahoo.com>
-	<1098222917.12223.1020.camel@thomas>  <E4E1C5BE221F@baydel.com>
-Content-Type: text/plain
-Message-Id: <1098266000.12223.1504.camel@thomas>
-Mime-Version: 1.0
-Date: Wed, 20 Oct 2004 11:53:20 +0200
+	id 1CKEAN-000326-NL
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2004 06:58:05 -0400
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id D1435229DD
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Oct 2004 14:57:31 +0400 (MSD)
+Message-ID: <4176449B.4090706@yandex.ru>
+Date: Wed, 20 Oct 2004 14:57:31 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad Blocks On JFFS2/NAND
-Reply-To: tglx@linutronix.de
+Subject: 4K block size question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-10-20 at 11:40, Simon Haynes wrote:
-> This 5 error business is only if you have relatively new code. Old code 
-> generates an incorrect and permanent bad block after 1 failure. I am testing 
-> the suggestion by Thomas that this is a page cache problem by always marking 
-> an erase page as invalid. No errors as yet but I will keep you posted.
+Hello,
 
-A cvs history search should reveal the changes to the nr errors thing
-and to the page cache fixes. So you can verify against your particular
-version.
+In case of 2MiB NAND flash (with 256-byte page) the sector size is 4KiB. 
+The JFFS2 virtual block size is also 4KiB.
 
-tglx
+The size of pristine node is 4KiB data + node header. So, in 
+uncompressed form, the pristine node can't fit into JFFS2 block if the 
+compression is disabled. So, how does JFFS2 work on such flash :-) ?
+
+Thanks.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
