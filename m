@@ -1,19 +1,30 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from penguin-ext.wise.edt.ericsson.se ([194.237.142.110])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15qwhO-0008OG-00
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2001 14:13:30 +0100
-Date: Tue, 9 Oct 2001 15:22:39 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: partt partition table parser
-Message-ID: <20011009152238.A15708@wohnheim.fh-wedel.de>
-References: <20010925220426.B9581@wohnheim.fh-wedel.de> <6763.1002054054@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6763.1002054054@redhat.com>; from dwmw2@infradead.org on Tue, Oct 02, 2001 at 09:20:54PM +0100
+	id 15qxEU-0008Qi-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2001 14:47:42 +0100
+Received: from mbb5.ericsson.se (mbb5.ericsson.se [136.225.151.210])
+	by penguin.wise.edt.ericsson.se (8.11.0/8.11.0/WIREfire-1.3) with ESMTP id f99DuqC01489
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Oct 2001 15:56:52 +0200 (MEST)
+Received: from CONVERSION-DAEMON by mbb1.ericsson.se (PMDF V5.2-29 #39352)
+ id <0GKX00F01YQR3Z@mbb1.ericsson.se> for linux-mtd@lists.infradead.org; Tue,
+ 9 Oct 2001 15:56:51 +0200 (MET DST)
+Received: from switchboard.ericsson.se
+ (kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
+ by mbb1.ericsson.se (PMDF V5.2-29 #39352)
+ with ESMTP id <0GKX004FQYQQO2@mbb1.ericsson.se> for
+ linux-mtd@lists.infradead.org; Tue, 09 Oct 2001 15:56:51 +0200 (MET DST)
+Date: Tue, 09 Oct 2001 15:56:50 +0200
+From: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>
+Subject: Re: Q: Probing for devices > buswidth???
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: "Eric W. Biederman" <ebiederman@lnxi.com>, linux-mtd@lists.infradead.org
+Message-id: <3BC30222.2476B421@inn.ericsson.se>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 8BIT
+References: <3BC2F94C.A641360C@inn.ericsson.se>
+ <m3y9mljsin.fsf@DLT.linuxnetworx.com> <29886.1002609959@redhat.com>
+ <m3wv25gvdq.fsf@DLT.linuxnetworx.com> <21867.1002633721@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,65 +36,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
-
-> In general, it looks relatively sane. Can you justify the use of 
-> CONFIG_MTD_PARTT_INDIRECT? 
-
-During development, this makes it easier to move the partition table
-around without recompiling the kernel. I might get rid of it if i
-find/someone shows me a better solution. But work is still in
-progress, even if the parser is already useable (and used).
-
-> > +++ mtd/util/mkpartt.c	Tue Sep 25 20:15:58 2001
-> > +#include "/usr/src/linux/include/linux/mtd/ibmpartt.h"
+David Woodhouse wrote:
 > 
-> No. Pull the definitions into the C file or take a copy. Don't look too 
-> hard at the mkfs.jffs2 code - do as I say, not as I do :)
-
-That was a relic I missed. Fixed it now.
-
-> > +void x_order_32 (__u32 *old32)
-> > +{
-> > +	__u32 new32;
-> > +	__u8 *new8 = (__u8*)&new32;
-> > +	__u8 *old8 = (__u8*)old32;
-> > +	new8[0] = old8[3];
-> > +	new8[1] = old8[2];
-> > +	new8[2] = old8[1];
-> > +	new8[3] = old8[0];
-> > +	*old32 = new32;
-> > +}
+> kenneth.johansson@inn.ericsson.se said:
+> >  Yes. I have a pcmcia linear flash device that is using Intel
+> > strataflash 28F640xxx. The chips is 16 bit but used as 8bit. To make
+> > things interesting they also interleave the chip so odd bytes goes to
+> > one chip and even to the other.
 > 
-> That's going to break. In the kernel, we compile with -fno-strict-aliasing 
-> just because we've always had evil code there and nobody's yet looked too 
-> hard at cleaning it up. For userspace, we need to write real C code.
+> You have map driver code for PCMCIA devices? Is this a generic PCMCIA
+> driver or a platform-specific hack?
 
-True. I was still unaware of the correct way to handle endianness. Now
-the partition table is big endian. Always. It feel good to reduce
-error possibilities. :)
+Well this is linear flash this means I don't have to know anything about
+pcmcia it is directly connected to the bus. This gives max 64Meg memory.
 
-> > +		columns = sscanf (buf, " %20s %x %x %x", /* FIXME: Replace 20 with NAME_MAX_LEN */
-> 
->  "%" #NAME_MAX_LEN "s %x %x %x"
+On the other hand it also works as a proper pcmcia device and can be used in
+real pcmcia/cardbus environment.
 
-It was a little more complicated than that. See the c faq.
-http://www.eskimo.com/~scs/C-faq/q11.17.html
+I made a big fuckup when I started to use them and could no get it to work so
+I made a small driver for real pcmcia that i used in a x86 laptop just to se
+that the chip worked. This driver is way to simple to be usefull as a generic
+mapping driver for MTD. But a real driver is not to hard to do. The PCMCIA
+subsystem is just a bit confusing and has it's own bulkmem system that needs
+to be removed and converted to MTD. 
 
-> How about making big-endian and little-endian options too, instead of just 
-> cross-endian?
+The fuckup was that every pcmcia linear flash decode the entire 64Meg memory
+range. I had 16Meg flash and expected to get 4 views of the same memmory in
+that 64Meg rage. This did not happen and it never hit me to try to use the
+device in a memory region that was modulo 64Meg so I did only get strange
+values out of it:(
 
-I chose a different approach (see above) that will cost some
-nanoseconds on little endian machines but saves some people minutes
-and hours by not messing up endianness again. Any objections?
-
-The new patch can be found here:
-http://wh.fh-wedel.de/~joern/software/kernel/partt.patch
-
-Jörn
+I needed the memory to exist from -1 to -16Meg as the memory is used for
+booting a PowerPC CPU and they boot from fffffffc.
 
 -- 
-ticks = jiffies;
-while (ticks == jiffies);
-ticks = jiffies;
--- /usr/src/linux/init/main.c
+Kenneth Johansson	
+Ericsson Business Innovation AB   Tel: +46 8 404 71 83
+Viderögatan 3                     Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@inn.ericsson.se
