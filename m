@@ -1,18 +1,18 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nHFT-0006Z2-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 12:26:03 +0100
+	id 17nHvP-0006cd-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:09:23 +0100
+Subject: Re: writing to jffs2 is so slow?
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+Cc: Mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <3D77C812.3080108@redswitch.com>
+References: <3D77C812.3080108@redswitch.com>
 Content-Type: text/plain
-Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
+Date: 06 Sep 2002 14:08:58 +0200
+Message-Id: <1031314138.28700.167.camel@spawn>
 Mime-Version: 1.0
-Date: Fri, 6 Sep 2002 04:25:52 -0700 (PDT)
-From: Mateo Anderson <mateo@posta.star.si>
-To: mark@lakeshoremicro.com, dwmw2@infradead.org, hno@marasystems.com
-Cc: Russ.Dill@asu.edu, linux-mtd@lists.infradead.org
-Subject: Re: DOC 2000 and GRUB
-Reply-To: mateo@posta.star.si
-Message-Id: <20020906112553.896FB394E@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,50 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
+On Thu, 2002-09-05 at 23:09, Xiaogeng (Shawn) Jin wrote:
+> Hi,
+> 
+> I have an empty mtd partition (capacity is 16 MB) where a jffs2 fs is 
+> mounted. The strange observation is that making a first directory on 
+> that partition takes almost 2 minutes. So far I observed this behaviour 
+> just when making the first directory and just on that particular 
+> partition. Can anyone help me to explain this? Is there anything wrong 
+> with flash memory (hardware) or MTD device driver or JFFS2? Thanks.
+> 
 
-Thank you all for replys and all the help.
+The thing is that jffs2 seems to mark the whole disk dirty and has to re
+erase the whole disk before you can store anything on it. This happens
+only the first time. If you wait a few minutes after you do the mount
+you should see no delay in creating directories and files.
 
->After slightly modifying the Grub stage 2 code (bdev_diskonchip.c), 
->I was able to get Grub to boot from a freshly 5.x dformatted DoC. 
+Maybe it's possible to do a format command that creates a disk that is
+empty and prevents the jffs2 code to reformat every block.
 
-Is this modified version comitted in the cvs?
 
->I haven't tried any DoC 2000's that have a UnitSizeFactor that is 
->not 0 or FF, but it looks like this should work as well, with 
->the appropriate changes to bdev_diskonchip.c.
-
->I'm guessing that many problems are caused by having the nftl 
->module loaded during a fdisk, nftl_format, and/or doc_loadbios.
-
-Are you referring to kernel modules?
-If so, I have these build in (no modules), as suggested by 
-DOC and GRUB HOW-TO.
-
->Following Henrik's advice to use DFORMAT to install GRUB, plus being 
->*very* careful to make sure nftl is not loaded at inopportune times,
->seems to help.
-
-Now I have so much information that I need to sort them out.
-
-Steps:
-1) Boot DOS and use DFORMAT 5.x to format the DOC, with 
-   the appropriate space for the GRUB firmware (check the
-   size of the stage1 file).
-2) Boot to Linux, use the doc_loadbios to load the GRUB 
-   firmware (or use DFORMAT - what parameters??).
-3) Format the /dev/nftla.
-4) Copy everything to the /dev/nftla1.
-5) Boot from DOC.
-
-Is this correct?
-
-Regards,
-Mateo
-
-_____________________________________________________________
-Brezplacen E-mail - http://email.star.si
-Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
-
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+-- 
+Kenneth Johansson	
+Ericsson AB                       Tel: +46 8 404 71 83
+Borgafjordsgatan 9                Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
