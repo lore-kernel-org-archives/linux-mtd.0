@@ -1,21 +1,21 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from smtp-out-4.wanadoo.fr ([193.252.19.23] helo=mel-rto4.wanadoo.fr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nIXA-0006kf-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:48:24 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Mark Meade <mark@lakeshoremicro.com>,
-   David Woodhouse <dwmw2@infradead.org>
-Subject: Re: DOC 2000 and GRUB
-Date: Fri, 6 Sep 2002 14:48:16 +0200
-Cc: Russ Dill <Russ.Dill@asu.edu>, mateo@posta.star.si,
-   linux-mtd@lists.infradead.org
-References: <200209061149.02058.hno@marasystems.com> <200209061427.15220.hno@marasystems.com> <20020906124140.HVSQ11061.sccrmhc01.attbi.com@there>
-In-Reply-To: <20020906124140.HVSQ11061.sccrmhc01.attbi.com@there>
+	id 17nJzh-0006ye-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 15:21:57 +0100
+From: "Thomas TESTASECCA" <thomas.testasecca@etictelecom.com>
+To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>,
+	"David Woodhouse" <dwmw2@infradead.org>
+Cc: "Mtd" <linux-mtd@lists.infradead.org>,
+	"Linux-Arm-Kernel@Lists. Arm. Linux. Org. Uk" <linux-arm-kernel@lists.arm.linux.org.uk>,
+	"Der Herr Hofrat" <der.herr@mail.hofr.at>
+Subject: RE: Scheduler, or task priority problem ... i need help 
+Date: Fri, 6 Sep 2002 16:19:21 +0200
+Message-ID: <AEEFILJDOOHJLBCFOBJDKEJJDAAA.thomas.testasecca@etictelecom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200209061448.16909.hno@marasystems.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <8622.1031245320@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,20 +27,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mark Meade wrote:
-> Henrik Nordstrom wrote:
-> > I tried to patch my GRUB to read 0x00 as 0xFF some days ago, but it
-> > failed miserably.. but I only changed the ifs around the message. Maybe
-> > there is other things that need to be changed?
->
-> I don't think so -- all I did was accept UnitSizeFactors of both 0x0 and
-> 0xff.  No other changes were needed to make it work on a Millennium.
->
-> It's my understanding that there are some DoC 2000's that may have values
-> other than 0x0 or 0xff.  In this case, we might need to move some of
-> David's changes from nftlmount.c into Grub's bdev_diskonchip.c.
+Hi,
+I have updated the MTD/JFFS2 drivers from current CVS, it works fine :)
+Thanks for everything !!
+greetings
+TOM
 
-The one I tried on has 0x00.
+-----Message d'origine-----
+De : David Woodhouse [mailto:dwmw2@redhat.com]De la part de David
+Woodhouse
+Envoye : jeudi 5 septembre 2002 19:02
+A : Russell King - ARM Linux
+Cc : Der Herr Hofrat; Thomas TESTASECCA; Linux-Arm-Kernel@Lists. Arm.
+Linux. Org. Uk
+Objet : Re: Scheduler, or task priority problem ... i need help
 
-Regards
-Henrik
+
+
+linux@arm.linux.org.uk said:
+>  I'd recommend that you talk to the jffs2 people (see other mailing
+> lists) about this problem - jffs2 shouldn't suck all the CPU time in
+> the world, especially when there are other higher-priority threads
+> wanting to run.
+
+The current CVS code did get sprinkled with cond_resched() fairly recently.
+I suppose the 2.4 branch could do with the same.
+
+
+--
+dwmw2
