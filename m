@@ -1,16 +1,18 @@
-Received: from mail.mediatrix.com ([66.129.134.11])
+Received: from postfix2-1.free.fr ([213.228.0.9])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Cg74-0002G2-00
-	for <linux-mtd@lists.infradead.org>; Tue, 28 May 2002 13:30:06 +0100
-Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF72@mail.mediatrix.com>
-From: Frederic Giasson <fgiasson@mediatrix.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Append does not return error on full disks
-Date: Tue, 28 May 2002 08:30:03 -0400
+	id 17Cgeb-0002Id-00
+	for <linux-mtd@lists.infradead.org>; Tue, 28 May 2002 14:04:45 +0100
+Received: from imp4-1.free.fr (imp4-1.free.fr [213.228.0.57])
+	by postfix2-1.free.fr (Postfix) with ESMTP id 253E0407
+	for <linux-mtd@lists.infradead.org>; Tue, 28 May 2002 15:04:45 +0200 (CEST)
+To: linux-mtd@lists.infradead.org
+Subject: unresolved symbols in kernel (MTD_CVS and linux 2.4.19pre1)
+Message-ID: <1022591085.3cf3806d06fc4@imp.free.fr>
+Date: Tue, 28 May 2002 15:04:45 +0200 (MEST)
+From: olivier.eribon@free.fr
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,30 +24,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+I'm trying to compile the latest MTD_CVS (/home/oeribon/MTD_CVS/mtd) with my
+2.4.19pre1 Linux kernel in order to use JFFS2 on Nand flash.
+I've symlinked this files in the kernel :
 
-	I have observed that jffs2 nevers returns a 'disk full' error when
-an application appends data to an existing file.  I have setup a test =
-which
-opens an existing file for appending, and fwrite() data to it until =
-fwrite()
-returns error.
-My test never stopped!  So when I manually stoppped it, the file system =
-was
-corrupted.  I was unable to unmount it, and neither I could remount it =
-after
-reboot.  I have setup a second test which is a script instead of being =
-a
-program, using the append '>>' command.  Same results.=20
+./drivers/mtd                 -> /home/oeribon/MTD_CVS/mtd/drivers/mtd/
+./fs/jffs2                    -> /home/oeribon/MTD_CVS/mtd/fs/jffs2/
+./fs/ffs2                     -> /home/oeribon/MTD_CVS/mtd/fs/ffs2/
+./include/linux/mtd           -> /home/oeribon/MTD_CVS/mtd/include/linux/mtd
+./include/linux/jffs.h        -> /home/oeribon/MTD_CVS/mtd/include/linux/jffs.h
+./include/linux/jffs2.h       -> /home/oeribon/MTD_CVS/mtd/include/linux/jffs2.h
+./include/linux/jffs2_fs_i.h  ->
+/home/oeribon/MTD_CVS/mtd/include/linux/jffs2_fs_i.h
+./include/linux/zlib.h        -> /home/oeribon/MTD_CVS/mtd/include/linux/zlib.h
+./include/linux/zutil.h       -> /home/oeribon/MTD_CVS/mtd/include/linux/zutil.h
+./include/linux/zconf.h       -> /home/oeribon/MTD_CVS/mtd/include/linux/zconf.h
+./include/linux/jffs2_fs_sb.h ->
+/home/oeribon/MTD_CVS/mtd/include/linux/jffs2_fs_sb.h
+./include/linux/crc32.h       -> /home/oeribon/MTD_CVS/mtd/fs/jffs2/crc32.h
+./kernel/mapped.c             -> /home/oeribon/MTD_CVS/mtd/kernel/mapped.c
+./kernel/mixmem.c             -> /home/oeribon/MTD_CVS/mtd/kernel/mixmem.c
+./lib/zlib_deflate            -> /home/oeribon/MTD_CVS/mtd/lib/zlib_deflate/
+./lib/zlib_inflate            -> /home/oeribon/MTD_CVS/mtd/lib/zlib_inflate/
+./util                        -> /home/oeribon/MTD_CVS/mtd/util/
 
-	During my test, I did'nt open the file with OSYNC flag though, maybe
-it could patch the problem.  I will try it.
-Nevertheless, it shouldn't happen that a process be able to append data
-indefinitely to a file without ever getting an error when the disk =
-becomes
-full.
+I have the same problem (Andrew Dixon & Chris Wilson (unresolved symbols in
+kernel Apr. 2002))
 
-	Does anyone have a clue about it?  Maybe there is a bug somewhere
-down in the jffs2_reserve_space() function?
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:100: undefined reference to
+`zlib_deflateInit_'
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:100: relocation truncated to
+fit: R_PPC_REL24 zlib_deflateInit_
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:117: undefined reference to
+`zlib_deflate'
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:117: relocation truncated to
+fit: R_PPC_REL24 zlib_deflate
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:122: undefined reference to
+`zlib_deflateEnd'
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:122: relocation truncated to
+fit: R_PPC_REL24 zlib_deflateEnd
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:129: undefined reference to
+`zlib_deflate'
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:129: relocation truncated to
+fit: R_PPC_REL24 zlib_deflate
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:130: undefined reference to
+`zlib_deflateEnd'
+/home/oeribon/MTD_CVS/mtd/fs/jffs2/compr_zlib.c:130: relocation truncated to
+fit: R_PPC_REL24 zlib_deflateEnd
 
-Fr=E9d=E9ric Giasson
+Could you give me some information about tree structure integration of MTD_CVS
+and linux kernel.
+How can i compile MTD_CVS and a kernel (as 2.4.19) with JFFS2 without any error?
+
+With Regards,
+Thanks in advance
+
+Olivier Eribon
