@@ -1,53 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Sg0F-00072H-00
-	for mtd-list@infradead.org; Tue, 13 Feb 2001 14:00:23 +0000
-Received: from mail.mobach.nl ([212.136.194.138] helo=servans.mobach.nl)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14Sg08-000720-00
-	for mtd@infradead.org; Tue, 13 Feb 2001 14:00:16 +0000
-Received: from volens.mobach.nl (root@volens.mobach.nl [172.16.21.210])
-	by servans.mobach.nl (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA20293
-	for <mtd@infradead.org>; Tue, 13 Feb 2001 15:00:02 +0100
-Received: from mobach.nl (mendel@dolens.mobach.nl [172.16.21.68])
-	by volens.mobach.nl (8.9.3/BugBlue/Anti-Spam/Filtered) with ESMTP id NAA02341
-	for <mtd@infradead.org>; Tue, 13 Feb 2001 13:07:46 +0100
-Message-ID: <3A89239B.B48F51B6@mobach.nl>
-Date: Tue, 13 Feb 2001 13:07:55 +0100
+	id 14Sg0A-00072D-00
+	for mtd-list@infradead.org; Tue, 13 Feb 2001 14:00:18 +0000
+Message-ID: <3A893578.DB8FA7B4@mobach.nl>
+Date: Tue, 13 Feb 2001 14:24:08 +0100
 From: Mendel Mobach <mendel@mobach.nl>
 Reply-To: mendel@mobach.nl
 MIME-Version: 1.0
-To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Re: booting from doc
-References: <0102121712140C.26666@workbox.atlanta.itserve.com>
+To: David Woodhouse <dwmw2@infradead.org>
+CC: "mtd@infradead.org" <mtd@infradead.org>
+Subject: Re: Errors with M-Systems' DOC v MD2200 D16 and ext2
+References: <3A86F72B.A1971413@mobach.nl> <19636.981968145@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Hamm wrote:
+David Woodhouse wrote:
 > 
-> Is anyone booting from disk on chip with LILO.  I've tried several different
-> methods but still can't do it.  I'm using lilo 21.6, kernel 2.4.0 with mtd
-> modules.  I get the following info when I "fdisk /dev/nftla"
->         DiskOnChip Millennium found at address 0xD0000
->         Cannot calculate an NFTL geometry to match size of 0x7cf0.
->         Using C:999 H:16 S:2 (== 0x7ce0 sects)
-I have only DOC 2000 chips, sorry
+> mendel@mobach.nl said:
+> >  With the 2800 I've got no problems but with the  2200 I've got
+> > problems and get some very strange kernel messages
 > 
-<snap of dos>
-> Also Lilo won't install because it doesn't know how to handle device 5d01.
-did you use the mtd-lilo from the cvs tree???
-That knows how to handle device 5d01 
-(major: 93 minor 01 = /dev/nftl/disc0/part1 with devfs)
-if you want my lilo.conf you can get it.
+> Running out of free blocks to write to - again. This has happened to a few
+> people. I'm confused. I put a change into the CVS tree to attempt to fix
+> this - can you try it? Just drop nftl.c and nftlmount.c from CVS on top of
+> the versions in your kernel tree.
+I trid this from the latest version of the CVS tree..
+($Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $)
+But I'v got still the same errors
+(I build from a clean kernel source tree)
 
-> If you see anyting that might cause a problem or be different than what you are
-> doing please let me know.  Thanks
-<snap of signature>
 Regards
 
 Mendel Mobach
+> 
+> --
+> dwmw2
+
 -- 
 Mendel Mobach aka BugBlue - mendel@mobach.nl - bugblue@dds.nl
 ICQ: 40200278 - IRC: BugBlue (ircnet:#ne2000 undernet:#groningen)
