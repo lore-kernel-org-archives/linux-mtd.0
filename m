@@ -1,21 +1,17 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from orion.havelsan.com.tr ([195.142.233.59]
+	helo=orion.havelsan.intranet)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ArFV-0002LL-QN
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 14:03:49 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <200304301557.04691.tglx@linutronix.de>
-References: <Law11-F625OmHBewRNS00016c03@hotmail.com>
-	 <200304301557.04691.tglx@linutronix.de>
-Message-Id: <1051707840.18316.452.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 30 Apr 2003 14:04:00 +0100
-Content-Type: text/plain
+	id 19Astr-0002jQ-2n
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2003 15:49:36 +0100
+Message-ID: <001b01c30f27$a168d890$3064000a@nur>
+From: "nur" <nurpinar@e-kolay.net>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Date: Wed, 30 Apr 2003 17:48:56 +0300
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: J B <mad_flasher@hotmail.com>
-Subject: Re: moving MTD partitions
+Subject: unknown chip id FF
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-04-30 at 14:57, Thomas Gleixner wrote:
-> On Wednesday 30 April 2003 13:29, J B wrote:
-> > "The basic question is if it is feasible to resize (smaller or larger) a
-> > jffs2 filesystem / mtd block device over flash and maintain the existing
-> > contents. Copying the contents out and then back again is not an option
-> > (not enough space)."
-> 
-> First answer is no.
-> On second thought could be a possibility to do so. 
+First of all, i searched my problem through google.com
+Infradead archive refers to wrong pages for a specific subject
+I mean, i m clicking on "DOC 2000 driver (NFTL) in kernel 2.4.7" link but it
+goes to "Porting FFS2 on MIPS subject"
+So that, I couldn't find any comment about my problem.
 
-Well, making it _larger_ is trivial. Just extend the partition with
-empty erase blocks, and they'll get used.
-
-Making it smaller is of course more of a problem -- you need to force
-garbage collection until there's at least one block which is completely
-free, then unmount, move the last block of the fs into the newly-freed
-block, reduce the size by one block and remount it. Repeat.
-
-You used to be able to force GC by repeatedly sending SIGHUP to the
-kernel's GC daemon process, but I think Thomas is right that you can't
-do that any more and you have to hack it. You'd probably do better to do
-it offline with a special tool. 
-
--- 
-dwmw2
+I can boot my diskonchip millennium on a platform without any problem. DoCs
+window address is e8000
+The problem is that, I can't boot the same chip on another platform even
+though I changed window address to e8000 from bios settings
+If I boot from romdos, i can see the content of diskonchip. When I boot from
+DoC it says, using configured probe address e8000... possible diskonchip
+with unknown chip id FF found at E8000. So can't mount from DoC.
+Any idea would be appreciated. Thanks in advance
