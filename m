@@ -1,23 +1,15 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19h8u8-0006OV-2t
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Jul 2003 15:23:12 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HIQ00FN4NXP2Q@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Mon, 28 Jul 2003 16:22:40 +0200 (MEST)
-Date: Mon, 28 Jul 2003 17:18:17 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <a05200f13bb4ad4689358@[130.161.115.44]>
-To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>,
-	linux-mtd@lists.infradead.org
-Message-id: <200307281718.17326.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <a05200f13bb4ad4689358@[130.161.115.44]>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: nand_verify_buf broken ?
-Reply-To: tglx@linutronix.de
+Received: from web16714.mail.tpe.yahoo.com ([202.1.236.80])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19hKRe-0007fO-72
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Jul 2003 03:42:34 +0100
+Message-ID: <20030729024159.91379.qmail@web16714.mail.tpe.yahoo.com>
+Date: Tue, 29 Jul 2003 10:41:59 +0800 (CST)
+From: =?big5?q?=20=20=20?= <bohemian629@yahoo.com.tw>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=big5
+Content-Transfer-Encoding: 8bit
+Subject: Write a new flash driver. 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +19,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 28 July 2003 15:30, J.D. Bakker wrote:
-> Hi,
->
-> Context: drivers/mtd/nand/nand.c in the latest CVS.
->
-> static int nand_verify_buf(struct mtd_info *mtd, const u_char *buf, int
-> len) {
-> 	int i;
-> 	struct nand_chip *this = mtd->priv;
->
-> 	for (i=0; i<len; i++)
-> 		if (buf[i] != readb(this->IO_ADDR_R))
-> 			return i;
->
-> 	return 0;
-> }
->
-> This will yield a false positive if the first byte of the buffer is
-> corrupted. I didn't dig deep enough to find out who's using this and
-> why (or if buf[0] is guaranteed to be correct) so no patch, sorry.
+Hi, I am a new bie here, and am wondering is there any
+document for writing a new flash driver? either nand
+flash or nor flash... 
 
-You're right. There must be return -EIO; 
+Thank you in advance! :)
 
-It was there before the big changes for DOC support. Must have happened there.
-Thanks. Will be fixed.
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-----------------------------------------------------------------
+每天都 Yahoo!奇摩
+該換工作了嗎? - 幫你算出最合適的求職方向
+http://fate.yahoo.com.tw/
