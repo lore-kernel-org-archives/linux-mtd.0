@@ -1,20 +1,14 @@
-Received: from dsl-205-210-52-188.kingston.net ([205.210.52.188] helo=linux.interlinx.bc.ca)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1872ZW-0001tj-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2002 23:48:26 +0000
-Date: Wed, 30 Oct 2002 15:49:37 -0500
+Received: from web13405.mail.yahoo.com ([216.136.175.63])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 1875DL-0002Bk-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 02:37:43 +0000
+Message-ID: <20021031030757.2845.qmail@web13405.mail.yahoo.com>
+Date: Wed, 30 Oct 2002 19:07:57 -0800 (PST)
+From: Norm Legare <normlegare@yahoo.com>
+Subject: Is AM29F016 CFI-compliant?
 To: linux-mtd@lists.infradead.org
-Cc: joern@wohnheim.fh-wedel.de, Jamey.Hicks@hp.com
-Subject: Re: MTD Config.in items not escaped by bus availability
-Message-ID: <20021030204937.GG27880@pc.ilinx>
-References: <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YfqBrEkRVu0wMIYz"
-Content-Disposition: inline
-In-Reply-To: <20021030201608.GA28523@wohnheim.fh-wedel.de>
-From: "Brian J. Murrell" <8db422baa67bd7a698f50768bba0d47e@interlinx.bc.ca>
-Resent-Message-Id: <20021031001833.5C11DC6FD@pc.interlinx.bc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,82 +20,121 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---YfqBrEkRVu0wMIYz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello,  
 
-On Wed, Oct 30, 2002 at 09:16:08PM +0100, J=F6rn Engel wrote:
->=20
-> Usually, the list is a bit slow. My worst delay was a couple of days.
+I have searched the archives with this question, and someone has asked
+the same question, but no definitive answer could be found.
 
-Actually, no, this is a hard (550) bounce.  I have e-mailed the
-postmaster but got nothing back yet.
+Also, below is some output from my board and part of my .config in case
+there is something obvious which is in error.
 
-> Correct, uml does not have a memory bus. But it does have memory and
-> it does have block devices, which can both be used to create mtd
-> devices from.
+Thanks,
+Norm
 
-OK, I must be mis-understanding what an MTD device is then, not
-surprisingly.  Which is precicely why I came and asked here about
-this.  I had assumed that an MTD was the likes of a Compact Flash card
-/PCMCIA memory device and the like.  Some physical piece of memory
-hardware device that required physical connection to the machine.
+block: queued sectors max/low 9237kB/3079kB, 64 slots per queue
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+RAMDISK: Compressed image found at block 0
+Freeing initrd memory: 814k freed
+physmap flash device: 800000 at fe000000
+CFI: Found no Physically mapped flash device at location zero
+blkmtd: error, missing `device' name
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 1024 bind 1024)
+VFS: Mounted root (ext2 filesystem).
+Freeing unused kernel memory: 40k init
+init started:  BusyBox v0.51 (2002.10.31-01:06+0000) multi-call bi###
+Application running ...
 
-Can you elaborate on how an MTD could be used by a UML kernel?  Is
-this similar to using loopback devices to access files as block
-devices?  i.e. virtual MTD devices.
+BusyBox v0.51 (2002.10.31-01:06+0000) Built-in shell (lash)
+Enter 'help' for a list of built-in commands.
 
-So the MTD subsystem will build and run on a UML (i.e. it has no
-hardware properties such as IRQ's, DMA, etc. itself)?  Surely there
-must be some aspect of the MTD system which becomes dependent on
-addressing specific hardware devices though?
+/ # cat /proc/devices
+Character devices:
+  1 mem
+  2 pty
+  3 ttyp
+  4 ttyS
+  5 cua
+ 10 misc
+162 raw
 
-Perhaps the test for specific hardware required to support MTD devices
-needs to be finer grained than around the whole CONFIG_MTD option.
-Something more like:
+Block devices:
+  1 ramdisk
+ 31 mtdblock
 
-      <ask about CONFIG_MTD>
-if [ "$CONFIG_MEMORY_BUS" =3D "y" -o
-      "$CONFIG_SOME_OTHER_BUS" =3D "y" -o
-      "$CONFIG_YET_ANOTHER_BUS" =3D "y" ]; then
-      <ask about device specific MTD options>
-fi
+/ # cat /proc/mtd    
+dev:    size   erasesize  name
+/ # 
 
-with different test for different kinds of buses specific to each type
-of hardware MTD.
 
-> You can say, it already is. But=20
->=20
-> [ "$CONFIG_MEMORY_BUS" =3D "y" -o
->   "$CONFIG_HAS_MEMORY" =3D "y" -o
->   "$CONFIG_HAS_BLOCK_DEVICES" =3D "y" ]
->=20
-> evaluates to true for all current platforms, including uml.
+(.config snipped)
 
-Are you saying this is how it is already and it is correct?  How can
-you attribute a memory bus to UML?  Block devices, I can understand,
-in that there are some UML provided block devices like UBD disks etc.
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+# CONFIG_MTD_PARTITIONS is not set
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_CMDLINE_PARTS is not set
 
-> Your turn, can you still think of a system that doesn't allow for mtd?
+#
+# User Modules And Translation Layers
+#
+# CONFIG_MTD_CHAR is not set
+CONFIG_MTD_BLOCK=y
+# CONFIG_FTL is not set
+# CONFIG_NFTL is not set
 
-I dunno.  I don't know much about MTD, which is why I am asking for
-advice here.  Are there any CONFIG_*_MTD* options in the kernel that
-need to be protected by any bus options?
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+# CONFIG_MTD_JEDECPROBE is not set
+CONFIG_MTD_GEN_PROBE=y
+# CONFIG_MTD_CFI_ADV_OPTIONS is not set
+# CONFIG_MTD_CFI_INTELEXT is not set
+CONFIG_MTD_CFI_AMDSTD=y
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set
+# CONFIG_MTD_AMDSTD is not set
+# CONFIG_MTD_SHARP is not set
+# CONFIG_MTD_JEDEC is not set
 
---=20
-Brian J. Murrell
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_PHYSMAP=y
+CONFIG_MTD_PHYSMAP_START=fe000000
+CONFIG_MTD_PHYSMAP_LEN=800000
+CONFIG_MTD_PHYSMAP_BUSWIDTH=4
+# CONFIG_MTD_C2MON is not set
+# CONFIG_MTD_CU824 is not set
+# CONFIG_MTD_ICU862 is not set
+# CONFIG_MTD_IDIF855 is not set
+# CONFIG_MTD_DBOX2 is not set
+# CONFIG_MTD_CFI_FLAGADM is not set
+# CONFIG_MTD_R360MPI is not set
+# CONFIG_MTD_RPXLITE is not set
+# CONFIG_MTD_TQM8xxL is not set
+# CONFIG_MTD_TQM8260 is not set
+# CONFIG_MTD_PCI is not set
 
---YfqBrEkRVu0wMIYz
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+CONFIG_MTD_BLKMTD=y
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
 
-iD8DBQE9wEXhl3EQlGLyuXARAmXmAKCzCbpDGq8JsS7LC+yzFwVERs1+PwCePDi7
-Z6ap3NFT4682WiUiwXZLY/0=
-=k0hD
------END PGP SIGNATURE-----
-
---YfqBrEkRVu0wMIYz--
+__________________________________________________
+Do you Yahoo!?
+HotJobs - Search new jobs daily now
+http://hotjobs.yahoo.com/
