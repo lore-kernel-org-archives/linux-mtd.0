@@ -1,11 +1,11 @@
 Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D9Qq7-0003Ym-Uj
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 11:48:49 -0500
-Date: Thu, 10 Mar 2005 17:48:49 +0100
+	id 1D9R3G-0003p1-EN
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 12:02:23 -0500
+Date: Thu, 10 Mar 2005 18:02:23 +0100
 From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050310164848.GB7018@synertronixx3>
+Message-ID: <20050310170223.GC7018@synertronixx3>
 References: <20050309131453.GA2497@synertronixx3>
 	<Pine.LNX.4.58.0503101314570.4649@phoenix.infradead.org>
 	<20050310154640.GC4910@synertronixx3>
@@ -25,56 +25,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Am 2005-03-10 16:21 +0000 schrieb Artem B. Bityuckiy:
-> > 00435660: 0000 0000 0000 0000 b882 2ec7 8519 01e0  ................
-> > 00435670: 3c00 0000 c001 e8b0 fb00 0000 1300 0000  <...............
->             ^
->             node length
-> > 00435680: 0d01 0000 9400 0000 1408 0000 55ff 2d7c  ............U.-|
->                                 ^
->                                 name length
-> > 00435690: a9c7 cf9f 6c69 6270 7468 7265 6164 2d30  ....libpthread-0
->             ^^^^ ^^^^
->             Name CRC
-> > 004356a0: 2e39 2e32 362e 736f 8519 02c0 a906 0000  .9.26.so........
-> > 004356b0: 4a1e 6fb8 0d01 0000 0200 0000 a481 0000  J.o.............
-> > 004356c0: 0000 0000 0010 0000 9400 0000 9400 0000  ................
-> Where has this dump come from?
 
-My initial Mail:
-
-I did "cat /dev/mtdblock3 > file1" into nfs-root (as a side note, I did
-the same again with dd bs=1024k:
-konsti at synertronixx3:/usr/src/debian_arm/ > md5sum ddmtdblock3 
-e871d71c52d93c1cafb4a8f4ff47a741  ddmtdblock3
-konsti at synertronixx3:/usr/src/debian_arm/ > md5sum mtdblock3 
-e871d71c52d93c1cafb4a8f4ff47a741  mtdblock3
-).
-
-This is emacs in hexl-mode on these files:
-
-> This dump looks good:
-
-And this dump is read from the same system right after umounting.
-
-> * the length of node is 0x3c
-> * the length of the name is 0x14
-> * the name CRC - don't know, didn't calculate.
-> 
 > Looks like JFFS2 really reads messed data from flash and I think this 
 > isn't JFFS2'd failure.
 
-> I'd suggest to hack the write function and after each write read the data 
-> that has just been written again and check it has is the same as the 
-> original data. This check might be done either on MTD layer or on JFFS2 
-> layer.
+So it reads wrong length of name (always too less)
+and wrong data which always is one byte 
+located somewhere before the name itself in flash.
 
-But the error seems quite systematic so I suspect software. But of
-course, still my setup my be broken and jffs2 triggers something. I have
-no clue what though.
-I will look into the code and see if I find the "write" to read
-afterwards... :/
+When Hardware is broken, why does it not read name lengths too long
+sometimes or reads data which is not found in the image a couple of
+bytes before the filename? Is this possible? 
+
+Well, may be... hence my question. But I have no clue anymore where to
+search. I hacked onto this burst mode for weeks and only jffs2 is not
+working in always a similair pattern.
+Thats why I show up here, may be burst mode is broken for this system
+and that only for jffs2. But I don't know how this filesystems works
+exactly when reading and I am trying to find out which fucking bug in
+hardware it could trigger, all other tests run fine.
 
 Konsti
+
 
 -- 
 GPG KeyID EF62FCEF
