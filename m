@@ -1,19 +1,22 @@
-Received: from [208.177.141.226] (helo=ash.lnxi.com)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A9T6z-0007xJ-Ex
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2003 18:37:33 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Magnus =?ISO-8859-1?Q?M=E5rtensson?= <magnus.martensson@axis.com>
-In-Reply-To: <3C6BEE8B5E1BAC42905A93F13004E8AB03202232@mailse01.axis.se>
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A9WoC-00007r-Ek
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2003 22:34:24 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: tharbaugh@lnxi.com,
+	Magnus =?iso-8859-1?q?M=E5rtensson?= <magnus.martensson@axis.com>
+Date: Wed, 15 Oct 2003 10:39:03 +1300
 References: <3C6BEE8B5E1BAC42905A93F13004E8AB03202232@mailse01.axis.se>
-Message-Id: <1066152707.10573.20.camel@tubarao>
-Mime-Version: 1.0
-Date: 14 Oct 2003 11:31:47 -0600
-Content-Type: text/plain; charset=UTF-8
+	<1066152707.10573.20.camel@tubarao>
+In-Reply-To: <1066152707.10573.20.camel@tubarao>
+MIME-Version: 1.0
+Message-Id: <20031014213315.CA9124D6D@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: word line disturbance
-Reply-To: tharbaugh@lnxi.com
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-10-14 at 09:31, Magnus Mårtensson wrote:
-> Hi.
-> I had a discussion with flash manufacturer Atmel last week regarding
->  a phenomenon that we had seen. 
-> The phenomenon was called "word line disturbance" and it could occur
->  if you tried to program only ones
-> to a location that already contained ones. The result could be that
->  some bit on another address got tainted. Ex
-> writing 0xffff to address A could result in the content on address B
->  changing from 0xffff to 0xfffe.
+I'm using the flash embedded in a AT91FR4042 (single chip ARM7-based micro + 
+512kB flash + 256kB RAM).  The flash is essentially an AT49xV4096A.
 
-I'll add this to the list of broken flash chips.  I'm doing some major
-rework of jedec_probe.c and cfi_cmdset_0002.c so that chips with
-different "features" can be handled in a sane way.  What are the
-identifiers of these Atmel chips and are they CFI or are they probed
-with jedec_probe?
+This device has 4 sectors: 1x16kB "boot", 2x8kB "parameter" and 1x480kB 
+"application". The datasheet/appnote warns that  reprogramming the boot can 
+impact other sectors. Also, reprogramming the application area  can disturb 
+the parameter areas.
 
-> Anyway I thought of a software fix to this problem. Since it is
->  unnecessary to write
-> ones to a place in flash where there already are only ones and since
->  ones is the default bit state after an erase operation you
-> should simply skip that write.
+At first I just blew this off as just a theoretical possibility, but found 
+that these disturbances do occur on a regular basis (seen on 5 out of 5 proto 
+devices) - particularly upgrading the application area corrupting the 
+parameter areas.
 
-Simple enough.
-
->  In our case this fix has also resulted
->  in improvement in performance since we support firmware upgrades
-> over ftp and the firmware image is padded with 0xffff. The patch can
->  be seen below (diff to 2.4.22 kernel).
-
-Sounds reasonable enough to not even be a special case.  The patch makes
-the assumption that there are already ones written to the address.  A
-more correct method would be to read the address and compare against the
-datum - if they are equal then the function should return.
-
-I'll see about rolling this into some of the changes I'm making.  Right
-now I've seen more flash chips with problems than chips that function
-correctly.
+-- Charles
