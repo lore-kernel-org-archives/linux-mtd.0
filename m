@@ -1,37 +1,31 @@
-From: matsunaga_kazuhisa@yahoo.co.jp (matsunaga)
-Date: Mon, 10 Mar 2003 08:10:40 +0900
-Subject: Memory leak
-References: <000e01c2e65b$71ca7020$210486da@ybb> <200303092010.44211.tglx@linutronix.de>
-Message-ID: <000f01c2e691$1a319a60$210486da@ybb>
+From: assistant@tele-mail.net (assistant)
+Date: Mon, 10 Mar 2003 03:43:58 +0100
+Subject: EXPERT POSTE DE TRAVAIL
+Message-ID: <20030310024151Z70358-10178+4550@humbolt.nl.linux.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
------ Original Message ----- 
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>; <linux-mtd@lists.infradead.org>
-Sent: Monday, March 10, 2003 4:10 AM
-Subject: Re: Memory leak
+Telis, cabinet de recrutement, sp?cialiste des m?tiers de l'Informatique recherche pour l'un de ses clients 
+situ? ? B?thunes :
 
+- EXPERT POSTE DE TRAVAIL, Windows 95 et 98, NT Worstation.
+Vous disposez d'une exp?rience r?ussie au sein d'une ?quipe de support de proximit? sur un parc 
+industrialis? ou en passe de l'?tre.
+De formation minimum BAC+2 ? 4/5, votre capacit? d'auto formation permanente et votre volont? 
+d'apporter une r?elle valeur ajout?e dans les processus de gestion industrielle de poste de travail sont 
+vos principaux atouts.
 
-> On Sunday 09 March 2003 17:46, matsunaga wrote:
-> > Hi all
-> >
-> > I am testing on NAND flash.
-> > There seems memory leak when you mount and unmount a device with some data.
-> > Dnode resource acquired during mount seems not to be freed during unmount.
-> This is not a Problem of NAND Flash. It's a filesystem related problem. 
-> Do you use JFFS2 ?
-> If yes, which Dnode resource do you mean ? Where is it allocated ? Can you 
-> please give more precise information ?
+Consultez l'offre compl?te, en cliquant sur ce lien : 
+http://www.tele-mail.net/offres/detail.asp?IdAnnonce=4760
 
-Sorry for lacking details.
+Vous correspondez au profil recherch?, merci d'adressez votre candidature compl?te sous r?f?rence 
+CT/21 ? 
 
-Yes, I use JFFS2. 
-If you mount a device with a file on JFFS2, a dirent node and a dnode are alloced.
-But upper layer does not issue, jffs2_clear_inode for an inode of the dnode during unmount.
-You can see it just by free command if my implementation is not wrong.
+Cordialement, Anne DELAUNAY 
 
-Best regards.
-__________________________________________________
-Do You Yahoo!?
-Yahoo! BB is Broadband by Yahoo!  http://bb.yahoo.co.jp/
+TELIS Recrutement
+8 rue de Valmy
+93100 MONTREUIL - France
+T?l?phone : 01 48 18 77 30 - Fax : 01 48 18 78 97
+E-mail : laure at tele-mail.net
+http://www.tele-mail.net 
