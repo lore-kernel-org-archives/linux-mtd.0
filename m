@@ -1,15 +1,17 @@
-Received: from [210.8.246.199] (helo=singularity.tronunltd.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VKwx-00015K-00
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 23:12:32 +0000
-Date: Tue, 29 Jan 2002 09:22:59 +1000
-Message-Id: <200201282322.JAA22010@singularity.tronunltd.com>
-To: "Mark Sienkiewicz" <ms@wavix.com>
-Subject: Re: [OT] Cf Card vs DiskOnChip
-From: "Ian" <Relativity@HumanHeuristic.com>
-Cc: <linux-mtd@lists.infradead.org>
-Reply-To: "Ian" <Relativity@HumanHeuristic.com>
-Content-type: text/plain; charset="us-ascii"
+	id 16VL2A-00015l-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2002 23:17:54 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <D3A72C5007329A4F991C0DD87202259F096A3E@sekhmet.ad.newisys.com> 
+References: <D3A72C5007329A4F991C0DD87202259F096A3E@sekhmet.ad.newisys.com> 
+To: "Navin Boppuri" <navin.boppuri@newisys.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: linux/completion.h missing 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 28 Jan 2002 23:28:54 +0000
+Message-ID: <29911.1012260534@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,15 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> I don't think that is clear at all.  You can't tell the architecture of a
-> system solely by looking at storage requirements.  Maybe he just has a
-> lot of data.
+navin.boppuri@newisys.com said:
+> There is a missing file that jffs2_fs_sb.h looks for and does not
+> find. The file name is completion.h which is supposed to be in the
+> include/linux/ directory. I have the latest 2.4. kernel and I dont see
+> this file. What's going on? Where do I get this? 
 
-Dunno ... from his own description (and follow-ups) it looks like Kira is
-way right to me ...
+It's been there since 2.4.7-pre7. Your kernel tree is missing some files or 
+you lied about it being the latest.
 
-'Sides anyone coming onto a list (about flash programming) to then
-ask where to get definitions of all of the technology involved and where to
-get prices for the hardware really asks for good hard probing ... IMHO ...
 
-So why don't you get off Kira's back?
+--
+dwmw2
