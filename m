@@ -1,22 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTdmh-0004JP-SC
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 05:08:37 -0500
-Message-ID: <41987FFE.1050302@oktetlabs.ru>
-Date: Mon, 15 Nov 2004 13:07:58 +0300
-From: Artem Bityuckiy <dedekind@oktetlabs.ru>
-MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <41986D89.4060308@oktetlabs.ru>	
-	<1100508552.8015.61.camel@localhost.localdomain>	
-	<1100510529.5074.119.camel@thomas> <41987A4F.6090400@oktetlabs.ru>
-	<1100512632.5074.123.camel@thomas>
-In-Reply-To: <1100512632.5074.123.camel@thomas>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mail1.speakeasy.net ([216.254.0.201])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CTqoD-0005fM-Dx
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 19:03:15 -0500
+Received: from unknown (HELO [172.16.6.45]) (msundius@[12.47.55.31])
+	(envelope-sender <msundius@sundius.com>)
+	by mail1.speakeasy.net (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 16 Nov 2004 00:02:49 -0000
+Mime-Version: 1.0 (Apple Message framework v619)
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: NAND pages cache?
-Reply-To: dedekind@oktetlabs.ru
+Message-Id: <D4194EA8-3762-11D9-9C6E-000A95BE1940@sundius.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+To: linux-mtd@lists.infradead.org
+From: C. Michael Sundius <msundius@sundius.com>
+Date: Mon, 15 Nov 2004 16:02:38 -0800
+Subject: support for serial flash roms
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
-> The nand driver always reads whole pages due to ECC. But if the fs
-> driver requests only a part of the page then the page is read into the
-> cache buffer of the nand driver, ECC is checked and the part which was
-> requested by the fs driver is copied into the fs buffer. If the next
-> read requests another part of this page then we read out of the cache
-> buffer instead of reading the FLASH again.
-> 
-> tglx
-O, thank you for the hint!
+Hi,
 
--- 
-Best regards, Artem B. Bityuckiy
-Oktet Labs (St. Petersburg), Software Engineer.
-+78124286709 (office) +79112449030 (mobile)
-E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
+have you all added support for serial flash in the later versions of 
+MTD? if so
+what chips do you support. I am working on supporting a platform that 
+could configure
+any of the following devices and using the SPI bus to talk to the 
+chips..
+
+	MICROCHIP 25AA640,
+	ST M25P80
+	AMTEL AT45DB642
+
+if any (or all) of these are supported could you point me to the code?
+
+thanks
+
+
+C Michael Sundius
+Solico Group LLC
+232 Nevada St
+San Francisco, CA 94110
+msundius@sundius.com
+(415)608-0121
