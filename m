@@ -1,20 +1,24 @@
-Received: from mh1.kwic.com ([205.150.58.4])
+Received: from carisma.slowglass.com ([195.224.96.167]
+	helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VXOh-00083X-64
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 15:06:47 +0100
-Received: from mars.rdsdata.com (orb.kwic.com [205.150.58.194])
-	by mh1.kwic.com (8.11.6/8.11.6) with ESMTP id h5QE78G41848
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Jun 2003 10:07:08 -0400 (EDT)
-To: linux-mtd@lists.infradead.org
-From: Alan Daly <adaly@kwic.com>
-Date: Thu, 26 Jun 2003 10:06:19 -0400
-Message-ID: <jUsT.aNoTheR.mEsSaGe.iD.10566364287676@webmail.kwic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso8859-1
-Content-Transfer-Encoding: 8bit
-Subject: 2 mtd devices with DiskOnChip or
-Reply-To: adaly@kwic.com
+	id 19VY2u-0008I8-1l
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 15:48:20 +0100
+Received: from [213.86.99.237] (helo=passion.cambridge.redhat.com)
+	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.10)
+	id 19VXbR-00052Q-00
+	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2003 15:19:57 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: adaly@kwic.com
+In-Reply-To: <jUsT.aNoTheR.mEsSaGe.iD.10566364287676@webmail.kwic.com>
+References: <jUsT.aNoTheR.mEsSaGe.iD.10566364287676@webmail.kwic.com>
+Message-Id: <1056637156.27553.183.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Thu, 26 Jun 2003 15:19:17 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: 2 mtd devices with DiskOnChip or
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My question is how do I either:
-a) create 2 mtd devices with DiskOnChip
-(I found an old patch http://pficheux.free.fr/eyrolles/linux_embarque/docs_externes/jffs2_on_doc.
-html)
-b) boot the DiskOnChip using just JFFS2
+On Thu, 2003-06-26 at 15:06, Alan Daly wrote:
+> My question is how do I either:
+> a) create 2 mtd devices with DiskOnChip
+> (I found an old patch http://pficheux.free.fr/eyrolles/linux_embarque/docs_externes/jffs2_on_doc.html)
 
+Oooh; thanks -- I'd forgotten about this long ago.
 
-I'm setting an embedded linux build using 16 MB DiskOnChip on X86.
-I'm using GRUB as the bootloader.
+> b) boot the DiskOnChip using just JFFS2
 
-My original build was:
+I want this working in the long run -- indeed even the the medium term.
+Since JFFS2 is already working in eCos, I think I'd be inclined to put
+RedBoot into the DiskOnChip as firmware instead of Grub, and add the
+appropriate DiskOnChip hardware support to eCos/RedBoot.
 
-/dev/mtd0 -> /dev/nftla -> /dev/nftla1  / (root) ext2 16 MB
+> This build had some issues being hard powered on and off. 
 
-This build had some issues being hard powered on and off. 
-As a result, I want to use JFFS2.  
+Just the normal issues you'd expect for using ext2? Or bugs in the NFTL
+driver? The former are boring; the latter would interest me.
 
-My proposed build is:
+> /dev/mtd0 -> /dev/nftla -> /dev/nftla1 /boot ext2 1.5 MB (read-only)
+> /dev/mtd1 (/dev/mtdblock1)  / (root) jffs2 14.5 MB.
+> 
+> I thought that this way:
+> 1) I can still use the grub_firmware
+> 2) not worry about the ext2 partition as it is mounted read-only
+> 3) still get the benifits of jffs2 on the volatile data.
 
-/dev/mtd0 -> /dev/nftla -> /dev/nftla1 /boot ext2 1.5 MB (read-only)
-/dev/mtd1 (/dev/mtdblock1)  / (root) jffs2 14.5 MB.
+That makes sense. The partitioning bits of the patch you found should
+give you this, I'm just about to play with the other details about
+JFFS2/NAND on DiskOnChip anyway, as it happens.
 
-I thought that this way:
-1) I can still use the grub_firmware
-2) not worry about the ext2 partition as it is mounted read-only
-3) still get the benifits of jffs2 on the volatile data.
-
-
-
-*****
-dalya
+-- 
+dwmw2
