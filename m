@@ -1,41 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139N79-0006Vp-00
-	for mtd-list@infradead.org; Tue, 04 Jul 2000 08:27:27 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	id 139N7q-0006W3-00
+	for mtd-list@infradead.org; Tue, 04 Jul 2000 08:28:10 +0100
+Received: from [212.25.93.158] (helo=jodie.lucid)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 139N77-0006Vj-00
-	for mtd@infradead.org; Tue, 04 Jul 2000 08:27:26 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000703170541.5555B-100000@white.priv.deltatee.com> 
-References: <Pine.LNX.3.96.1000703170541.5555B-100000@white.priv.deltatee.com> 
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@Matrox.COM>,
-  mtd@infradead.org
-Subject: Re: Status of MTD for CFI 
-Mime-Version: 1.0
+	id 139N7n-0006Vu-00
+	for mtd@infradead.org; Tue, 04 Jul 2000 08:28:08 +0100
+From: Dvir Oren <dvir@lucidvon.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 04 Jul 2000 08:31:21 +0100
-Message-ID: <2683.962695881@cygnus.co.uk>
+Content-Transfer-Encoding: 7bit
+Date: Tue,  4 Jul 2000 10:30:37 +0300 (IDT)
+To: David Woodhouse <dwmw2@infradead.org>
+CC: MTD <mtd@infradead.org>
+Subject: Re: MTD CVS update: 'mtd/kernel cfi_probe.c' 
+In-Reply-To: <7293.962615035@cygnus.co.uk>
+References: <E13922q-0002yT-00@infradead.org>
+	<7293.962615035@cygnus.co.uk>
+Message-ID: <14689.37414.556329.9828@jodie.lucid>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse writes ("Re: MTD CVS update: 'mtd/kernel cfi_probe.c' "):
 
-jgg@deltatee.com said:
-> I popped my current codes up at http://amber.deltatee.com/~jgg/mtd/
-> jedec/
+> er... now I've also changed the CVS notification to point at the new list 
+> too - which perhaps would have been appropriate in the first place
 
-Imported. Let me have a SSH public key and I'll give you CVS access.
+One other thought:  Perhaps it will interest people to see once a
+month a summary of all CVS changes.  This way, people won't have to
+follow on every change that is made (at least those who are not
+actively developing), but will be able to see if something that they
+do need has been done.
 
-jgg@deltatee.com said:
-> Anyhow, I am going on a trip soon to Florida and then up to OLS..
+Just a thought.
 
-Cool. I may bump into you there.
-
---
-dwmw2
-
-
+-- 
+Dvir Oren               <dviro@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
