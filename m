@@ -1,20 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from 216.184.14.34.unused.swcp.com ([216.184.14.34]
+	helo=scone.biscuit.swcp.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Ao5WD-0004dD-KG
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2004 18:43:29 +0000
-Sender: ahennessy@mvista.com
-Message-ID: <401FEA03.7DCCA6F5@mvista.com>
-Date: Tue, 03 Feb 2004 10:35:48 -0800
-From: Alice Hennessy <ahennessy@mvista.com>
+	id 1Ao7v1-0004zJ-NL
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2004 21:17:15 +0000
+Received: from scone.biscuit.swcp.com (localhost [127.0.0.1])
+	id i13LJP36000315
+	for <linux-mtd@lists.infradead.org>; Tue, 3 Feb 2004 14:19:25 -0700
+Received: from localhost (bill@localhost)i13LJPqO000312
+	for <linux-mtd@lists.infradead.org>; Tue, 3 Feb 2004 14:19:25 -0700
+Date: Tue, 3 Feb 2004 14:19:25 -0700 (MST)
+From: Bill Mann <bill@biscuit.swcp.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.58.0402031331450.2191@scone.biscuit.swcp.com>
 MIME-Version: 1.0
-To: andrzej_mialkowski@o2.pl
-References: <4018514D.6E4DB38A@mvista.com>
-	<20040130225505.8DE4ED0B17@rekin6.o2.pl>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: dwmw2@infradead.org
-cc: linux-mtd@lists.infradead.org
-Subject: Re: gen probe.c issue
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: mtd, nand, lilo
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-andrzej_mialkowski@o2.pl wrote:
+Hello,
 
-> Not understand purpose of this change; do you really have chip that is not fully visible in system?
-> Your solution would cause crash at least in two cases:
-> 1) if map size is really small for instance 0 or 1 and we are attempting to detect flash. So there must be some reasonable minimal map size value.
-> 2) returned size of mtd is calculated from "mtd->size = devsize * cfi->numchips" so you will get mtd size greater than supported by map driver (mapped in virtual memory?!). At least redboot parser will attempt access last sector of map:
-> /* Read the start of the last erase block */
->         ret = master->read(master, master->size - master->erasesize,
->                            PAGE_SIZE, &retlen, (void *)buf);
->
-> I had somehow similar case when redboot partition were located not at the end of flash. I just modified in map driver detected map size between calls to do_map_probe and parse_mtd_partitions. In your case it might be possible that you need just to lay about map size before calling do_map_probe. For you effect will be same, you will not break others code.
-> Andrzej
->
-> ---- Wiadomo¶æ Oryginalna ----
-> Od: Alice Hennessy <ahennessy@mvista.com>
-> Do: linux-mtd@lists.infradead.org
-> Data: Wed, 28 Jan 2004 16:18:21 -0800
-> Temat: gen_probe.c issue
->
-> >Hi,
-> >
-> >The following patch fixes a problem seen when the map->size is less than
-> >the actual chip size.
-> >Without the fix,  max_chips gets set to 0.
-> >
-> >Alice
-> >
-> >Index: drivers/mtd/chips/gen_probe.c
-> >===================================================================
-> >RCS file: /home/cvs/mtd/drivers/mtd/chips/gen_probe.c,v
-> >retrieving revision 1.14
-> >diff -u -r1.14 gen_probe.c
-> >--- drivers/mtd/chips/gen_probe.c       8 Nov 2003 00:51:21 -0000
-> >1.14
-> >+++ drivers/mtd/chips/gen_probe.c       28 Jan 2004 23:58:38 -0000
-> >@@ -108,6 +108,9 @@
-> >         * Align bitmap storage size to full byte.
-> >         */
-> >        max_chips = map->size >> cfi.chipshift;
-> >+        /* correct for case where map->size is less than chip size */
-> >+        if (!max_chips)
-> >+                max_chips = 1;
-> >        chip_map = kmalloc((max_chips / 8) + ((max_chips % 8) ? 1 : 0),
-> >GFP_KERNEL);
-> >        if (!chip_map) {
-> >                printk(KERN_WARNING "%s: kmalloc failed for CFI chip
-> >map\n", map->name);
-> >
-> >
-> >
-> >______________________________________________________
-> >Linux MTD discussion mailing list
-> >http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
+I've got a SH4 system with a SmartMedia device that I'm able to read, 
+write, erase and mount as a JFFS2 filesystem.  
 
-I believe it's ok to set up partitions for a flash and not have all the flash visible.  Perhaps
-a better way to do this would be to just make another partition and make the protected part
-read only.   But I believe not making the whole flash visible is also acceptable.
-BTW, I don't use redboot partitioning with this flash.
+After applying the lilo-mtd patch, building and running lilo, I'm getting 
+the following errors:
 
-David,  if you think it's bad practice,  I will change my mapping file instead.
+	Reading data from NAND FLASH without ECC is not recommended
+		-
+		-
+	Reading data from NAND FLASH without ECC is not recommended
+	geo_query_dev HDIO_GETGEO (dev 0x1f01): Inappropriate ioctl for device
 
-Alice
+lilo.conf file:
+	linear
+	boot=/dev/mtdblock/0
+	image=/boot/zImage
+	root=/dev/mtdblock/1
+	label=linux
+
+Should I be using lilo or is there another relevant patch?
+
+- Bill
