@@ -1,17 +1,18 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15oVQW-0002S0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:42:00 +0100
+	id 15oVVP-0002SY-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:47:03 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0110022124180.441-100000@lisa.rhpk.springfield.inwind.it> 
-References: <Pine.LNX.4.33.0110022124180.441-100000@lisa.rhpk.springfield.inwind.it> 
-To: Cristiano Paris <c.paris@libero.it>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD newbie 
+In-Reply-To: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de> 
+References: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de> 
+To: dennis noermann <dennis.noermann@noernet.de>
+Cc: Larry Doolittle <ldoolitt@recycle.lbl.gov>,
+    linux-mtd@lists.infradead.org
+Subject: Re: JFFS2_RESERVED_BLOCKS_* 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 02 Oct 2001 20:51:07 +0100
-Message-ID: <5836.1002052267@redhat.com>
+Date: Tue, 02 Oct 2001 20:56:03 +0100
+Message-ID: <5927.1002052563@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +24,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-c.paris@libero.it said:
->  The mount works but the system freezes for about 30 seconds (YUP) so
-> I thought the system was hung. 
+dennis.noermann@noernet.de said:
+> for an 640kb partition on 2*intelF320 (8MB) so 128 kb are wastet , it
+> is working fine , till i am copying more than the 512kb free space in
+> the partition , then deleting doesnt work
 
-Yeah - checkpointing is on the TODO list along with some other ideas for 
-speeding up mounts. Unfortunately I haven't yet found the time to do it, 
-and nobody's yet talked nicely enough to the salespeople who control my
-destiny that I've been given real time to do it :)
+> i think there is only 1 littel mistake in my config , but i was to
+> lazy to figger out the problem JFFS2_RESERVED_BLOCKS_DELETION has to
+> be set to 0 i think , i will try it next time i have time :) 
 
-> Anyway, issuing a "touch /mnt/silly"
-> crashes the system, giving me the same kernel oops.
-
-Hmmm. Please get it fed through ksymoops and let me have a copy, along with 
-the last few debugging messages before it died.
+That sounds like a reasonable assessment, and it's good news that it seems 
+to work. However, I believe there are one or two corner cases in the garbage 
+collection code, which should almost never actually get triggered, in which 
+it's not quite sufficient. So I'm unhappy about reducing it in the general 
+case until I can prove that it's safe. 
 
 --
 dwmw2
