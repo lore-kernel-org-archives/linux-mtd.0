@@ -1,16 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Cagle, John" <john.cagle@hp.com>
-In-Reply-To: <C50AB9511EE59B49B2A503CB7AE1ABD108F82153@cceexc19.americas.cpqcorp.net>
-References: <C50AB9511EE59B49B2A503CB7AE1ABD108F82153@cceexc19.americas.cpqcorp.net>
-Content-Type: text/plain
-Date: Sun, 19 Sep 2004 08:50:54 +0100
-Message-Id: <1095580254.5065.172.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C92CL-0005qk-Pf
+	for linux-mtd@lists.infradead.org; Sun, 19 Sep 2004 09:57:53 -0400
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 9ED30229DD
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 19 Sep 2004 17:56:45 +0400 (MSD)
+Message-ID: <414D901A.3000703@yandex.ru>
+Date: Sun, 19 Sep 2004 17:56:42 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	Christian Borntraeger <linux-kernel@borntraeger.net>,
-	Torben Mathiasen <device@lanana.org>, linux-kernel@vger.kernel.org
-Subject: RE: [Patch][RFC] conflicting device major numbers in devices.txt
+Subject: NAND_NO_AUTOINCR
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,11 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-09-18 at 18:14 -0500, Cagle, John wrote:
-> Torben -- please correct this in devices.txt and find a new block
-> major for the Linux-MTD project (if they will accept it).
+It seems that NAND_NO_AUTOINCR option isn't really used in mtd, anyway...
 
-Seems reasonable.
+What does the NAND_NO_AUTOINCR mean? I suspect that this means that in 
+read operations we can continue reading next consequitive pages without 
+new read operation cycle. Is it this?
+
+Thanks.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
