@@ -1,19 +1,22 @@
-Received: from mail.2d3d.co.za ([196.14.185.200])
+Received: from ns1.spewey.com ([64.170.22.140])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15D5SE-0006Kj-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 15:29:07 +0100
-Date: Thu, 21 Jun 2001 16:35:37 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: Vipin Malik <mtd-linux@embeddedlinuxworks.com>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+	id 15D5lW-0006Lp-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2001 15:49:02 +0100
+Message-Id: <5.1.0.14.0.20010621094855.00a87480@mail.spewey.com>
+Date: Thu, 21 Jun 2001 10:05:29 -0500
+To: Abraham vd Merwe <abraham@2d3d.co.za>
+From: Vipin Malik <vipin@embeddedlinuxworks.com>
 Subject: Re: safe flash filesystem
-Message-ID: <20010621163537.A26714@crystal.2d3d.co.za>
-References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+In-Reply-To: <20010621163537.A26714@crystal.2d3d.co.za>
+References: <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>
+ <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com>
+ <20010621125458.A23785@crystal.2d3d.co.za>
+ <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com>
+ <20010621155737.A26310@crystal.2d3d.co.za>
+ <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-In-Reply-To: <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com>; from mtd-linux@embeddedlinuxworks.com on Thu, Jun 21, 2001 at 09:29:06 -0500
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,107 +28,92 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+>That's exactly what I've started writing today (:
 
-Hi Vipin!
+Have you written a spec for it?
 
-> Yeah, that "except is not free" means it costs >100K USD (for the=20
-> transaction version) if I remember the quote they gave me.
+>I don't know if merging something like this with jffs2 would solve the
+>problem like you said. I was more thinking of a completely different user
+>MTD driver to provide an uncached block device and slap a file system on top
+>of that. Or we can sync() all the time from the file system.
 
-$125K iirc (;
+Nooooo.... ;)
 
-> I guess I should change the name away from a "database", as I really don'=
-t=20
-> want to do anything more drastic than maybe a linear "recno" type flat fi=
-le=20
-> database or something very simple. Something that you or I may have=20
-> probably implemented anyway to solve our needs to store these config=20
-> variables in our respective systems.
+JFFS2 already provides for:
 
-That's exactly what I've started writing today (:
+1. Interface to MTD
+2. Flash wear levelling
+3. Compression/decompression on the fly
+4. "always sync()" data to flash before your write() returns functionality
+5. handling of erase paritions, GC, a file system interface etc.
+6. tested for power fail reliability of the fs metadata.
+7. Extensive usage by others even if they do not need this (our) 
+functionality- hence minimal hidden bugs.
 
-> I agree that this functionality should be present in the JFFS2 layer=20
-> itself, but have been unable to convince the powers to be.
->=20
-> David W. says that he'll entertain a diff -u if we (I) implement the=20
-> feature, but I don't think that I have the time or the capability to chan=
-ge=20
-> JFFS2 to implement this functionality all by myself. Plus the issue of th=
-e=20
-> blocked access will remain (even if we solve the power fail issue) and th=
-e=20
-> solution to that may be not be acceptable for inclusion to the regular=20
-> JFFS2 fs.
+My initial feel is that I really don't think that reinventing the wheel is 
+the right answer.
+What we need is a "layer" on top of JFFS2 to provide the 2 features that it 
+lacks. Namely:
 
-I don't know if merging something like this with jffs2 would solve the
-problem like you said. I was more thinking of a completely different user
-MTD driver to provide an uncached block device and slap a file system on top
-of that. Or we can sync() all the time from the file system.
+1. Roll back and recover to last data if your write did not complete and 
+power failed
+2. 0 latency writes. Reads are no problem as they can always be cached in 
+memory by reading the entire (it's not a database) database on startup.
 
-I have to agree that it's probably better to write a library/utilities first
-to do a preliminary thing. That way we'd get a functional thing quite fast
-and figure out what we did wrong in the first place.
+Alan Cox called this "transactional level" functionality.
 
-> Maybe you may want to subscribe to the development list on the=20
-> www.EmbeddedLinuxWorks site and we can take this discussion there. I am=
-=20
-
-Where do I subscribe?
-
-> looking for user input to define the feature set of this "config system"=
-=20
-> (not database :) And I want to make it LGPL (if it does become a lib or=
-=20
-> task) so that users can link to it without releasing the source of their=
-=20
-> own code.
-
-I'm in the fortunate position of being able to work on this fulltime for
-the next week or so, so if we can figure out a useful specification for this
-in a short time, I'm really keen on helping to implement this and LGPL/BSD
-license is just fine.
-
-> I can't believe that you and I are the only folks that may be interested =
-in=20
-> this. Maybe there is an existing solution- we just don't know about it- o=
-r=20
-> other's have not thought about this issue just yet ;)
-
-That's why I mailed here in the first place :P
-
---=20
-
-Regards
- Abraham
-
-Matrimony is the root of all evil.
-
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
-
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
+An implementation based on a transaction cache solves the issue of having 
+to duplicate all the members and CRC them thus supporting quite a large 
+database without the need for twice the space on the flash device, as well 
+as the issue of "roll back and recover" or "complete transaction" on the 
+next power up if the complete transaction is available. There is a reason 
+that transactional logs are the preferred choice even for large databases 
+that need to support fail safe.
 
 
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+>I have to agree that it's probably better to write a library/utilities first
+>to do a preliminary thing. That way we'd get a functional thing quite fast
+>and figure out what we did wrong in the first place.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+My thoughts exactly.
 
-iD8DBQE7MgY5zNXhP0RCUqMRAindAJ4gW6GKYidrYdShTSghKVi1sHDwpwCeIqQJ
-mVbZYvGxUh0lYcIAv6VhZ8I=
-=91Pb
------END PGP SIGNATURE-----
 
---wRRV7LY7NUeQGEoC--
+> > Maybe you may want to subscribe to the development list on the
+> > www.EmbeddedLinuxWorks site and we can take this discussion there. I am
+>
+>Where do I subscribe?
+
+http://www.embeddedlinuxworks.com/lists.html
+
+
+
+> > looking for user input to define the feature set of this "config system"
+> > (not database :) And I want to make it LGPL (if it does become a lib or
+> > task) so that users can link to it without releasing the source of their
+> > own code.
+>
+>I'm in the fortunate position of being able to work on this fulltime for
+>the next week or so, so if we can figure out a useful specification for this
+>in a short time, I'm really keen on helping to implement this and LGPL/BSD
+>license is just fine.
+
+That suits me just fine. We need to start working on a spec first. Maybe a 
+clearly defined requirement spec, then a design document. If you like I can 
+elaborate on the above thoughts a bit and start something- or feel free to 
+send me something if you like.
+
+
+> > I can't believe that you and I are the only folks that may be 
+> interested in
+> > this. Maybe there is an existing solution- we just don't know about it- or
+> > other's have not thought about this issue just yet ;)
+>
+>That's why I mailed here in the first place :P
+
+
+But I haven't heard from anyone else yet :(
+
+Regards,
+
+Vipin
