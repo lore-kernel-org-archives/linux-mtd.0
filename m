@@ -1,17 +1,19 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15MOrh-0000Rs-00
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2001 08:01:53 +0100
+	id 15MOvO-0000Sc-00
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2001 08:05:42 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <7118259C3044D311942700508B2CA5BB7412D8@balance.coactive.com> 
-References: <7118259C3044D311942700508B2CA5BB7412D8@balance.coactive.com> 
-To: Mike Voytovich <mvoytovich@coactive.com>
-Cc: Steve Kranz <skranz@ridgerun.com>, linux-mtd@lists.infradead.org
-Subject: Re: MTD/mtdblock.c uclinux 2.0.38? 
+In-Reply-To: <3B52FE8B.8F2736C6@daniel.com> 
+References: <3B52FE8B.8F2736C6@daniel.com>  <F1BED55F35F4D3118C0F00E0295CFF4D995554@webmail.mediatrix.com> <26220.995294549@redhat.com> 
+To: Vipin Malik <vipin.malik@daniel.com>
+Cc: Frederic Giasson <fgiasson@mediatrix.com>,
+    linux-mtd@lists.infradead.org, jffs-dev@axis.com,
+    Jean-Denis Boyer <jdboyer@mediatrix.com>
+Subject: Re: JFFS2 Stability problem! 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 17 Jul 2001 08:06:57 +0100
-Message-ID: <1836.995353617@redhat.com>
+Date: Tue, 17 Jul 2001 08:11:23 +0100
+Message-ID: <2541.995353883@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +25,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-mvoytovich@coactive.com said:
-> Are you now able to build the latest MTD/JFFS2 CVS with uClinux
-> 2.0.38?  I would also like to get this code working with 2.0.38,
-> although I'm first trying with a clean 2.0.38 kernel (then will try
-> with uClinux).
+vipin.malik@daniel.com said:
+>  Well, actually that's why I called them "strange" as these did not
+> show up on my serial console (I was logging my serial console messages
+> to a file on another computer)!.
 
-I don't even have a 2.0 kernel in the building.
+> Plus, they were not a "spew"- rather one in a few minutes type
+> frequency. Do they tell you anything? 
 
-> I tried the suggested workarounds below, but still have some problems,
-> which I'm not sure how to resolve. 
+KERN_DEBUG messages don't go to the console by default. But there were 
+enough of them to confuse syslogd.
 
-Show me.
 
 --
 dwmw2
