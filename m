@@ -1,24 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HlbS-00027S-00
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2002 13:54:46 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6C0080IDDBG8@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Fri, 29 Nov 2002 15:24:48 +0100 (MET)
-Date: Fri, 29 Nov 2002 15:23:00 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: JFFS/MTD and Raw access
-In-reply-to: <541025071C7AC24C84E9F82296BB9B950807D2@OPTEX1.optex.local>
-To: John Hall <john.hall@optionexist.co.uk>
-Cc: simon@baydel.com, Damien GERANTON <dgeranton@alpha3i.com>,
- MTD mailing list <linux-mtd@lists.infradead.org>
-Reply-to: tglx@linutronix.de
-Message-id: <200211291523.00197.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <541025071C7AC24C84E9F82296BB9B950807D2@OPTEX1.optex.local>
+	id 18Hr5Q-0002oF-00
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2002 19:46:04 +0000
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
+	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id gATIIYLT016897
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2002 19:18:34 +0100
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id VAA07076
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2002 21:16:35 +0100 (CET)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3DE7CB23.5535F5E6@imc-berlin.de>
+Date: Fri, 29 Nov 2002 21:16:35 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: undefined reference to 'crc32' ?
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,32 +28,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Friday 29 November 2002 14:04, John Hall wrote:
-> On 29 November 2002 12:35 Thomas Gleixner <tglx@linutronix.de> wrote:
-> > For NAND see http://www.linux-mtd/tech/nand.html
->
-> You mean http://www.linux-mtd.infradead.org/tech/nand.html
-Yep
-> I found a small bug on the page that caused all the text from "HOWTO
-> implement NAND support" onwards to be in h2. Patch is here:
->
-> diff -u nand.html.orig nand.html
-> --- nand.html.orig      Fri Nov 29 13:02:46 2002
-> +++ nand.html   Fri Nov 29 13:03:49 2002
-> @@ -191,7 +191,7 @@
->  </p>
->
->  <hr>
-> -<h2>JFFS2 specific information <h2>
-> +<h2>JFFS2 specific information</h2>
->  <h3>JFFS2 Out of Band usage</h3>
->
->  <h4>Nand chips with 256 byte pagesize and 8 byte OOB size</h4>
->
-Thanks
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Hi there,
+
+I am using linux 2.4.20 on a powerpc platform. 
+
+I just pulled the recent CVS, run patchin.sh on it and tried to build a new
+kernel image.
+But I get load of these:
+
+ppc_8xx-ld -T arch/ppc/vmlinux.lds -Ttext 0xc0000000 -Bstatic
+arch/ppc/kernel/head_8xx.o init/main.o init/version.o init/do_mounts.o \
+        --start-group \
+        arch/ppc/kernel/kernel.o arch/ppc/platforms/platform.o arch/ppc/mm/mm.o
+arch/ppc/lib/lib.o kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o
+arch/ppc/math-emu/math-emu.o \
+         drivers/char/char.o drivers/block/block.o drivers/misc/misc.o
+drivers/net/net.o drivers/media/media.o drivers/ide/idedriver.o
+drivers/mtd/mtdlink.o drivers/pcmcia/pcmcia.o drivers/macintosh/macintosh.o
+arch/ppc/8xx_io/8xx_io.o \
+        net/network.o \
+        /home/scholz/Projekte/linuxppc-2.4.20/lib/lib.a \
+        --end-group \
+        -o vmlinux
+fs/fs.o: In function `jffs2_symlink':
+fs/fs.o(.text+0x69194): undefined reference to `crc32'
+fs/fs.o(.text+0x69194): relocation truncated to fit: R_PPC_REL24 crc32
+fs/fs.o(.text+0x691b4): undefined reference to `crc32'
+fs/fs.o(.text+0x691b4): relocation truncated to fit: R_PPC_REL24 crc32
+fs/fs.o(.text+0x691c8): undefined reference to `crc32'
+fs/fs.o(.text+0x691c8): relocation truncated to fit: R_PPC_REL24 crc32
+fs/fs.o(.text+0x6933c): undefined reference to `crc32'
+fs/fs.o(.text+0x6933c): relocation truncated to fit: R_PPC_REL24 crc32
+fs/fs.o(.text+0x69388): undefined reference to `crc32'
+fs/fs.o(.text+0x69388): relocation truncated to fit: R_PPC_REL24 crc32
+fs/fs.o(.text+0x6939c): more undefined references to `crc32' follow
+fs/fs.o: In function `jffs2_symlink':
+....
+
+
+What could that be? 
+crc32.o got build...
+
+> ls -l fs/jffs2/crc32.o
+-rw-r--r--    1 scholz   devel        1736 Nov 29 21:07 fs/jffs2/crc32.o
+
+Thanks,
+
+Steven
