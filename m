@@ -1,27 +1,21 @@
-Received: from lyte-mail1.lyse.net ([213.167.96.67])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BmoJb-0007Ry-Df
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 02:41:28 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1090285839.4149.8.camel@localhost.localdomain>
-References: <1089643331.3951.42.camel@famine>
-	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
-	<1089712151.5995.21.camel@famine>
-	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
-	<1089726079.6288.5.camel@famine>
-	<1089759689.8822.18.camel@imladris.demon.co.uk>
-	<1089792912.7607.22.camel@famine> <1090246707.13401.18.camel@famine>
-	<Pine.LNX.4.58.0407191522360.4985@localhost.localdomain>
-	<1090250145.14173.3.camel@famine>
-	<1090285839.4149.8.camel@localhost.localdomain>
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <1090305682.14825.2.camel@famine>
-Mime-Version: 1.0
-Date: Tue, 20 Jul 2004 08:41:22 +0200
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
-Subject: Re: JFFS2 eats memory
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=ocean.magtech.com.au)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BmqRV-0007ud-Tu
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2004 04:57:47 -0400
+Received: from [203.26.222.199] (unknown [203.26.222.199])
+	by ocean.magtech.com.au (Postfix) with ESMTP id E39A4405CA2F
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jul 2004 18:56:58 +1000 (EST)
+Message-ID: <40FCDE5A.6080504@magellan-technology.com>
+Date: Tue, 20 Jul 2004 18:56:58 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: problems mounting >3.3MB JFFS2 partitions on Dataflash on
+	AT91RM9200DK
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,27 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-20 at 03:10, David Woodhouse wrote:
-> On Mon, 2004-07-19 at 17:15 +0200, =D8yvind Harboe wrote:
-> > At this point I'm just trying to find a fix that is correct.=20
->
-> Well yes, but this _is_ a performance optimisation you're doing :)
+I can't seem to mount a partition greater than about 3.3MB. All 
+partitions below this size *seem* to work fine.
 
-Granted.
+a partition of this size will mount:
+hex: 0x34c980, decimal: 3459456, erase blocks: 3276
 
-> > > Can't you adjust gc_node instead?
-> >=20
-> > I don't know.
-> >=20
-> > What should I adjust it to?
->=20
-> gc_node is the next node to be garbage-collected. We don't need to
-> garbage-collect nodes which are already obsolete. So if you're freeing
-> the object which is currently pointed to by jeb->gc_node, you can just
-> make gc_node point to the next_phys node which you're _not_ freeing.
+a partition greater than or equal to this size will NOT mount:
+hex: 0x34cda0, decimal: 3460512, erase blocks: 3277
 
-What if gc_node points to the last node?
+I am running Linux-2.4.6-VRS-1 on the AT91RM9200DK development board. I 
+have tried using command line partitions and setting at91_dataflash.c, 
+it makes no difference.
 
---=20
-=D8yvind Harboe
-http://www.zylin.com
+My kernel command line is:
+
+root=/dev/ram=rx initrd=0x21100000,6000000 ramdisk_size=15360 
+console=ttyS0,115200,mem=32M
+mtdparts=dataflash0:1047552(kernel_image)ro,0x400080(4MB_part),0x3000
+60(3MB_part),-(the_rest)
+
+This gives:
+dev:    size   erasesize  name
+mtd0: 00200000 00010000 "Physically mapped flash"
+mtd1: 000ffc00 00000420 "kernel_image"
+mtd2: 00400080 00000420 "4MB_part"
+mtd3: 00300060 00000420 "3MB_part"
+mtd4: 00040320 00000420 "the_rest"
+
+mtd3 and mtd4 will mount, mtd2 will not mount. e.g.
+
+$mount -t jffs2 /dev/mtdblock/2 /mnt
+mount: wrong fs type, bad option, bad superblock on /dev/mtdblock/2,
+        or too many mounted file systems
+[root@AT91RM9200DK /root]$
+
+I did notice one other strange thing. I turned on a DEBUG option in 
+at91_dataflash.c that showed all access to the dataflash device. When I 
+mounted the mtd3 or mtd4, it showed reading activity going on with the 
+dataflash. But when I mounted mtd2, the dataflash was not even accessed. 
+It is like the software isn't even getting that far.
+
+e.g. mounting mtd4, note the debug output
+
+[root@AT91RM9200DK /root]$mount -t jffs2 /dev/mtdblock/4 /mnt/4
+dataflash_read: 8387808 .. 8388864, 1056, 0x0420 bytes
+READ: (e8) f8 38 0
+   data: 85, 19, 03, 20, 0c, 00, 00, 00, b1, b0, 1e, e4, ff, ff, ff, ff,
+dataflash_read: 8387808 .. 8387820, 12, 0x000c bytes
+
+... SNIP ...
+
+dataflash_read: 8648720 .. 8648764, 44, 0x002c bytes
+READ: (e8) ff f0 50
+   data: 85, 19, 01, e0, 2c, 00, 00, 00, 5f, 56, f1, e0, 01, 00, 00, 00,
+
+[root@AT91RM9200DK /root]$mount
+/dev/rd/0 on / type ext2 (ro)
+/proc on /proc type proc (rw)
+/dev/mtdblock/4 on /mnt/4 type jffs2 (rw)
+
+
+e.g. mounting mtd2, note the lack of debug output
+
+[root@AT91RM9200DK /root]$mount -t jffs2 /dev/mtdblock/2 /mnt/2
+mount: wrong fs type, bad option, bad superblock on /dev/mtdblock/2,
+        or too many mounted file systems
+
+It doesn't even access the dataflash. So I suspect that something in a 
+higher layer is saying that this partition isn't valid.
+
+Any help or hints would be appreciated.
+
+Aras
