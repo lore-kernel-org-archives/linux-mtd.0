@@ -1,16 +1,20 @@
-Received: from 205-158-62-105.outblaze.com ([205.158.62.105] helo=ws4-4.us4.outblaze.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LL4G-0000tW-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 10:51:00 +0100
-Message-ID: <20020621095028.20837.qmail@linuxmail.org>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+Received: from pd9e41ee3.dip.t-dialin.net ([217.228.30.227] helo=thomas.tec.autronix.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17LL9D-0000uA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 10:56:07 +0100
+Message-Id: <200206210956.g5L9uaG02073@thomas.tec.autronix.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: "Steve Tsai" <startec@ms11.hinet.net>,
+   "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: Re: NAND FLASH
+Date: Fri, 21 Jun 2002 11:56:36 +0200
+References: <001901c21908$3f57b2e0$5501a8c0@synso.com.tw>
+In-Reply-To: <001901c21908$3f57b2e0$5501a8c0@synso.com.tw>
 MIME-Version: 1.0
-From: "xyz xyz" <watsup@linuxmail.org>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 21 Jun 2002 17:50:28 +0800
-Subject: X11 or microwindows on a DOC using GRUB??
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,41 +26,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi all,
-  i m working on a thin client solution with a
-DOC-2000 chip of 16 MB
-
-now for RDP client to run ,we need an X client, ihave
-tried microwindows as well as X11(stripped down/ reduced X11)
-no doubt X11 take more space but somehow gives better
-performance
-
-now we need to develop some configurator modules and
-an user interface on our X client,so the problem is
-shall i go ahead with development for X11 or microwindows?
-
-the dilemma is bcoz of the fact that X11 client is
-providing a better resolution as compared to
-microwindows,but i feel for an embedded device
-microwindows is the rite choice,(as far as size is
-concerned ,with microwindows we are savin lot of space
-but anyway we r not using that space,it will b free)
-
-so i want to ask if someone has used microwindows in
-commercial apps,what are the drawbacks of using X11 on
-an embedded device and is micrwindows stable and good
-enough to b used in a comm apps(i have seen there r
-some black patches left when an app is closed in
-microwindows)
-
-has any1 faced problems like black patches(the screen
-needs to b refreshed manually) or any other display
-probs while runnin nano-X with framebuffer support.
-
-TIA
+On Friday, 21. June 2002 11:44, Steve Tsai wrote:
+> Hi,
+> I try to use nand flash driver to my board, but it seems fail to do some
+> operations. I just can get chip ID, but I can not read data or program
+> data. I use GPIO to control CLE and ALE and connect WE, RE and CE to
+> procesor. Is it right? Does anyone have sample code to test NAND flash?
+1. CE should be a static signal 
+2. please read http://www.linux-mtd.infradead.org/tech/nand.html 
+3. Use the latest code from mtd-cvs
+4. Read one of the board specific nand drivers to setup your own
 
 -- 
-Get your free email from www.linuxmail.org 
-
-
-Powered by Outblaze
+Thomas
+___________________________________
+autronix automation GmbH
+http://www.autronix.de gleixner@autronix.de
