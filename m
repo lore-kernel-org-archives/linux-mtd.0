@@ -1,14 +1,22 @@
-Received: from gate004.ocs.lsu.edu ([130.39.184.111] helo=gate004.lsu.edu)
+Received: from host.kingdommedia.net ([209.239.36.136] helo=host2.fw2.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17HQez-0006aT-00
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2002 16:00:46 +0100
+	id 17HSHZ-0006gh-00
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2002 17:44:41 +0100
+Received: from localhost (CPE0080c8df51b7.cpe.net.cable.rogers.com [24.112.28.188])
+	by host2.fw2.com (8.10.2/8.10.2) with ESMTP id g5AGidN01698
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2002 12:44:39 -0400
+Received: from [10.0.0.20] (helo=localhost.localdomain ident=slayne)
+	by localhost with esmtp (Exim 3.12 #1 (Debian))
+	id 17HSHX-00069w-00
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2002 12:44:39 -0400
+Subject: JFFS2 on 2.2.18
+From: Chris AtLee <catlee@canada.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-From: "gate004.lsu.edu" <gate004.lsu.edu/LSU@lsu.edu>
-Subject: LSU's Anti-Virus scanner detected a virus in an email message you sent.
-Date: Mon, 10 Jun 2002 10:00:40 -0500
-Message-ID: <OF4DF57E1B.08427C50-ON86256BD4.005275B6@lsu.edu>
-MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-Oq02ZFX2ky+EKkg+eREg"
+Date: 10 Jun 2002 12:44:38 -0400
+Message-Id: <1023727479.20089.26.camel@geb>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,24 +28,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-The email was quarantined at LSU and not delivered to the intended
-recipient(s).
-You should inspect your computer for further signs of virus infection.
-.
-NOTE: Check below for the name of the virus that was detected.  If the
-detected virus was "Klez", then the probability is that your computer is
-not infected.  The "Klez" virus on another computer picked your address to
-use as the return address of an infected message that it sent to LSU.  This
-caused our virus detector to send a warning to you instead of the owner of
-the infected computer.
-.
-Please call the Computing Services Help Desk at 225-33H-DESK if you need
-assistance.
+--=-Oq02ZFX2ky+EKkg+eREg
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I've had some success getting MTD and JFFS (v1) working on my 2.2.18
+system.  I've been trying over the past few weeks to get JFFS2 up and
+running.  I've got it to the point where the kernel can read a jffs2
+partition, but I really have no idea how to get writing to work.  The
+mechanism for writing seems completely different in 2.2.x than in 2.4.x
+
+Any pointers?  Is anyone else working on this?
+
+Cheers,
+Chris
 
 
-The scanned document was QUARANTINED.
 
+--=-Oq02ZFX2ky+EKkg+eREg
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Virus Information:
-The attachment onload.exe contained the virus W32.Klez.H@mm and was
-quarantined on server gate004.lsu.edu/LSU.  No attempt was made to repair.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQA9BNd2oOgacgDd/cQRAkENAKCjcckiPgrdPA3JtJsRl7dQyVo+PQCeL7oj
+FeLbBB83qpQvIgpJ8kfwIWo=
+=GIGc
+-----END PGP SIGNATURE-----
+
+--=-Oq02ZFX2ky+EKkg+eREg--
