@@ -1,14 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Xin Li <xin123456.li@yahoo.com.cn>
-In-Reply-To: <20041022150511.22095.qmail@web15610.mail.cnb.yahoo.com>
-References: <20041022150511.22095.qmail@web15610.mail.cnb.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1098458240.13633.1374.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 22 Oct 2004 16:17:20 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd code for 2.4.26
+Received: from sccrmhc12.comcast.net ([204.127.202.56])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CL36Z-0007qx-Ui
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2004 13:21:33 -0400
+From: "Bob Coggeshall" <rdcjr@cogwheel.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 22 Oct 2004 10:21:25 -0700
+Message-ID: <GLEEJIHFPNJCEDMIAPLKMEEEEHAA.rdcjr@cogwheel.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: base64
+Subject: mtdchar.c  w/CONFIG_DEVFS under 2.4.22 busted ?
+Reply-To: rdcjr@cogwheel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-10-22 at 23:05 +0800, Xin Li wrote:
-> Does anyone has a very recent snapshot of MTD code for
-> 2.4.26 kernel? I need to support 2KB page Nand flash
-> in my kernel and mtd-util, but I cannot find a very
-> recent mtd snapshot for 2.4.26 kernel on Internet. Can
-> I get the code from CVS with a propoer tag?
-
-We've stopped supporting ancient and obsolete kernels. If you need new
-features, use a current kernel.
-
--- 
-dwmw2
+Q2hlY2tlZCBldmVyeXRoaW5nIG91dCBqdXN0IG5vdyAoMjFvY3QpIHdpdGg6DQoNCgljdnMgLWQg
+OmV4dDphbm9uY3ZzQGN2cy5pbmZyYWRlYWQub3JnOi9ob21lL2N2cyBjbyBtdGQNCg0KSW5zdGFs
+bGVkIGl0IGludG8gbXkgMi41LjIycHJlOCBrZXJuZWwgYW5kIGRpZCBhICdtYWtlIG1vZHVsZXMn
+IHdpdGggQ09ORklHX0RFVkZTIHR1cm5lZCBvbi4gDQoNCkdvdCB0aGUgZXJyb3JzIGJlbG93OyAN
+CklzIHRoaXMgc3R1ZmYgZ2V0dGluZyBidWlsdCB1bmRlciAyLjQgYmVmb3JlIGl0IGdldHMgY2hl
+Y2tlZCBpbiA/ICANCk9yIGlzIHN1cHBvcnQgZm9yIDIuNCBnZXR0aW5nIGRyb3BwZWQgPw0KDQpC
+YWNraW5nIG10ZGNoYXIuYyB0byB0aGUgMS42MCByZXYgc2VlbXMgdG8gZml4IGl0Lg0KDQoJY3Zz
+IC1kIDpleHQ6YW5vbmN2c0BjdnMuaW5mcmFkZWFkLm9yZzovaG9tZS9jdnMgY28gLXIxLjYwICBt
+dGQvZHJpdmVycy9tdGQvbXRkY2hhci5jDQoNClRoaXMgbG9va3MgbGlrZSB0aGUgb25seSB0aGlu
+ZyB0aGF0IGJ1c3RlZCBjb21waWxhdGlvbiB1bmRlciAyLjQNCg0KLS0NCkJvYiBDb2dnZXNoYWxs
+ICogQ29nd2hlZWwsIEluYyAqIHRlbDogKCsxKTIwNi4yMzAuNjQ0NSAoKzEpMjA2LjQ2NS43MzU1
+ICAqDQpmYXg6ICgrMSkyMDYuMjM2LjI1NTMgKiB3d3cuY29nd2hlZWwuY29tIA0KDQoNCm1ha2Ug
+LUMgbXRkIG1vZHVsZXMNCm1ha2VbMl06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvY29nZ3Mv
+c2t5bC9wcm9qZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10ZC1hcHIy
+MDA0L2RyaXZlcnMvbXRkJw0KcHBjXzh4eC1nY2MgLURfX0tFUk5FTF9fIC1JL2hvbWUvY29nZ3Mv
+c2t5bC9wcm9qZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10ZC1hcHIy
+MDA0L2luY2x1ZGUgLVdhbGwgLVdzdHJpY3QtcHJvdG90eXBlcyAtV25vLXRyaWdyYXBocyAtTzIg
+LWZuby1zdHJpY3QtYWxpYXNpbmcgLWZuby1jb21tb24gLWcgLWdnZGIgLWZuby1zY2hlZHVsZS1p
+bnNucyAtZm5vLXNjaGVkdWxlLWluc25zMiAtZm9taXQtZnJhbWUtcG9pbnRlciAtSS9ob21lL2Nv
+Z2dzL3NreWwvcHJvag0KZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10
+ZC1hcHIyMDA0L2FyY2gvcHBjIC1mc2lnbmVkLWNoYXIgLW1zb2Z0LWZsb2F0IC1waXBlIC1mZml4
+ZWQtcjIgLVduby11bmluaXRpYWxpemVkIC1tbXVsdGlwbGUgLW1zdHJpbmcgLURNT0RVTEUgIC1u
+b3N0ZGluYyAtaXdpdGhwcmVmaXggaW5jbHVkZSAtSSAvaG9tZS9vcHQvZW1iZWRkZWQvdG9vbHMv
+dXNyL2xpYi9nY2MtbGliL3BwYy1saW51eC8yLjk1LjQvaW5jbHVkZSAtREtCVUlMRF9CQVNFTkFN
+RT1tdGRjaGFyIC1jIC1vIG10ZGNoYXIubyBtdGRjaGFyLmMNCg0KbXRkY2hhci5jOiBJbiBmdW5j
+dGlvbiBgbXRkX25vdGlmeV9hZGQnOg0KbXRkY2hhci5jOjI3OiB3YXJuaW5nOiBpbXBsaWNpdCBk
+ZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiBgZGV2ZnNfbWtfY2RldicNCm10ZGNoYXIuYzogSW4gZnVu
+Y3Rpb24gYG10ZF9ub3RpZnlfcmVtb3ZlJzoNCm10ZGNoYXIuYzozODogd2FybmluZzogaW1wbGlj
+aXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gYGRldmZzX3JlbW92ZScNCm10ZGNoYXIuYzogSW4g
+ZnVuY3Rpb24gYG10ZGNoYXJfZGV2ZnNfaW5pdCc6DQptdGRjaGFyLmM6NDk6IHdhcm5pbmc6IHBh
+c3NpbmcgYXJnIDEgb2YgYGRldmZzX21rX2RpcicgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0
+eXBlDQptdGRjaGFyLmM6NDk6IHRvbyBmZXcgYXJndW1lbnRzIHRvIGZ1bmN0aW9uIGBkZXZmc19t
+a19kaXInDQptYWtlWzJdOiAqKiogW210ZGNoYXIub10gRXJyb3IgMQ0KbWFrZVsyXTogTGVhdmlu
+ZyBkaXJlY3RvcnkgYC9ob21lL2NvZ2dzL3NreWwvcHJvamVjdHMvZXA4NTItbWlzYy9rZXJuZWxz
+L2VwLWxpbnV4LWtlcm5lbC1tdGQtYXByMjAwNC9kcml2ZXJzL210ZCcNCm1ha2VbMV06ICoqKiBb
+X21vZHN1YmRpcl9tdGRdIEVycm9yIDINCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
+ZS9jb2dncy9za3lsL3Byb2plY3RzL2VwODUyLW1pc2Mva2VybmVscy9lcC1saW51eC1rZXJuZWwt
+bXRkLWFwcjIwMDQvZHJpdmVycycNCm1ha2U6ICoqKiBbX21vZF9kcml2ZXJzXSBFcnJvciAyDQoN
+Cg==
