@@ -1,41 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14kw5Z-0000Jp-00
-	for mtd-list@infradead.org; Wed, 04 Apr 2001 23:49:21 +0100
-Received: from w146-98.echostar.com ([205.172.146.98] helo=linux0.echostar.com)
+	id 14l4G6-0002aD-00
+	for mtd-list@infradead.org; Thu, 05 Apr 2001 08:32:46 +0100
+Received: from [203.102.220.26] (helo=mail.nulec.com.au)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14kw5W-0000Jj-00
-	for mtd@infradead.org; Wed, 04 Apr 2001 23:49:18 +0100
-Received: from echostar.com (IDENT:ian@linux10 [10.79.98.110])
-	by linux0.echostar.com (8.9.3/8.8.7) with ESMTP id QAA31689
-	for <mtd@infradead.org>; Wed, 4 Apr 2001 16:48:32 -0600
-Message-ID: <3ACBA4C2.DDED5432@echostar.com>
-Date: Wed, 04 Apr 2001 16:48:34 -0600
-From: "Ian S. Nelson" <ian.nelson@echostar.com>
-Reply-To: ian.nelson@echostar.com
+	id 14l4G5-0002a7-00
+	for mtd@infradead.org; Thu, 05 Apr 2001 08:32:45 +0100
+Message-ID: <1072F1A27E99D3119747005004B9A380EB98A4@MAIL>
+From: Brett Carswell <BrettC@nulec.com.au>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: CFI with 4 x8/x16 devices on a 32-bit bus
+Date: Thu, 5 Apr 2001 17:32:38 +1000 
 MIME-Version: 1.0
-To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: Proc stuff
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I need some extra bits added to the proc/mtd.  For the product I'm
-building we want to have things from the flash registers like the Device
-ID and "AMD flash"
+Hi All,
 
-Anything else anyone wants while I'm in there?  Also, I was thinking I'd
-just add a few extra columns to the /proc/mtd file if that's distasteful
-I could create a /proc/mtd directory and put a few different "files" in
-there.  Any comments before I start hacking?
+I'm having problems getting MTD working on a RPXLite board. I'm not having
+endian problems as have been discussed recently - that part seems OK. The
+board has four AMD 29LV160 chips which are in x8 mode. These chips can also
+be in x16 mode but aren't in this case. 
 
-thanks,
-Ian Nelson
+My first question is am I correct in expecting that I should see these chips
+detected as 4 x8 Devices in 32-bit mode? I can get them working in this mode
+only by shifting all the offset addresses in my mapping functions right by
+one. However when I do this and write to the flash every second word is
+skipped (not surprisingly).
 
-PS, it's bloody fast on my system too.  I have this hilo burner that
-takes 20+ minutes to burn a 2Mbyte flash while MTD does it in closer to
-20 seconds.  Very very cool.
+It's as though I need to shift the addresses for the CFI commands only. I
+looked in the archives from a couple of months ago an it seemed as though
+the problem was fixed. Perhaps I'm missing a point somewhere.
+
+Thanks in advance,
+Brett Carswell
+
+Nu-Lec Industries  (ACN 085 972 425)
+35-37 South Street, Lytton, Brisbane, Qld, 4178, Australia
+PO Box 761, Wynnum, Qld, 4178, Australia
+Direct Dial Phone No:	+61 7 3249 5498
+Switchboard Phone No:	+61 7 3249 5444
+Facsimile No:		+61 7 3249 5888
+Email Address:		BrettC@nulec.com.au
+World Wide Web Site:	http://www.nulec.com.au
+
 
 
 
