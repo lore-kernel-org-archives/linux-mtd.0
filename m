@@ -1,18 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from chambertin.convergence.de ([212.84.236.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uyl2-0007QJ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:41:40 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> 
-References: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> 
-To: Nicolas Pitre <nico@cam.org>
-Cc: linux-mtd@lists.infradead.org, ahennessy@mvista.com, ds@schleef.org,
-    jonas.holmberg@axis.com, cwryu@debian.org, eauth@softsys.co.at
-Subject: Re: Flash driver probe/commandset separation. 
-Mime-Version: 1.0
+	id 14uymP-0007Qk-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:43:23 +0100
+Received: from router-dmz.convergence.de ([212.84.236.1] helo=convergence.de)
+	by chambertin.convergence.de with esmtp (Exim 3.16 #7 (Debian))
+	id 14uym9-0005gY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 17:42:49 +0200
+Message-ID: <3AF02966.9689ABA5@convergence.de>
+Date: Wed, 02 May 2001 17:36:06 +0200
+From: Frank Neuber <neuber@convergence.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: FIX-Problem: use counter armflash.c
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 02 May 2001 16:39:45 +0100
-Message-ID: <5116.988817985@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,22 +25,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-nico@cam.org said:
->  Personally I think it would be best to send the curent code to Linus
-> and resend another update eventually when the new stuff would have
-> been proven stable.
+Hi list,
+I was playing with mtd's on an arm integrator board.
+I think I found a bug in the clean up sequence of the module armflash.
+The use counter never counts down when I unload the module armflash.
+Here is my patch to correct this behavior:
 
-> 	"release early, release often" 
+---cut---
+513,529d512
+<         int i;
+<         struct mtd_info *ret, *mtd;
+< 
+<         for (i=0; i < MAX_MTD_DEVICES; i++)
+<         {
+<                 mtd = NULL;
+<                 ret = __get_mtd_device(mtd, i);
+< 
+< //              printk("count down %d usecount %d\n",i, ret);
+<                 if(ret!=NULL)
+<                 {
+<                         if(del_mtd_device(ret))
+<                         {
+<                                 printk("cleanup %d failed\n",i);
+<                         }
+<                 }
+<         }
+---cut---
 
-Yes, you're probably right.
+There is another usecounter problem in armflash. In the afs_cfi_init()
+function the 
+function do_map_probe() is called. After this call the usecount 
+of the module cfi_cmdset_0001 is incremented and would never be
+decremented.
+How can I fix this behaviour?
+Is there anybody who is working with mtd's on arm-integrator?
 
-TODO list then:
+regards 
+Frank
 
-	1. Make cfi_cmdset_000[12].c compile again :)
-	2. Fix the partition stuff as discussed, removing VIRTUAL_ER
-	3. Sanity check DiskOnChip and NFTL drivers. 
-
-Anything else?
-
---
-dwmw2
+-- 
+Dipl.-Ing. Elektrotechnik     convergence integrated media gmbh / HW
+Frank Neuber                        Rosenthalerstr.51 / 10178 Berlin
+Email:  neuber@convergence.de           Phone:  +49(0)30-72 62 06 50
+WWW:    www.convergence.de              Fax:    +49(0)30-72 62 06 55
