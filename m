@@ -1,17 +1,20 @@
-Received: from law14-oe27.law14.hotmail.com ([64.4.20.84] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19MqoW-0004Lx-IW
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2003 16:01:32 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Mon, 2 Jun 2003 20:32:16 -0700
+Received: from dns01.mail.yahoo.co.jp ([211.14.15.204])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Mr2T-0004TV-2I
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2003 16:15:57 +0100
+Message-ID: <002901c32919$ddc37000$570486da@w0a3t0>
+From: "matsunaga" <matsunaga_kazuhisa@yahoo.co.jp>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
+	"David Woodhouse" <dwmw2@infradead.org>
+References: <20030530144959.GA4736@wohnheim.fh-wedel.de>
+Date: Tue, 3 Jun 2003 00:15:56 +0900
 MIME-Version: 1.0
-Message-ID: <Law14-OE27eYvUAA3qj0002e477@hotmail.com>
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: uclinux-dev@uclinux.org
-Subject: do_map_probe function problem.
+cc: linux-mtd@lists.infradead.org
+cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks
+> The following creates a central workspace per cpu for the zlib.  The
+> original idea was to save memory for embedded, but this should also
+> improve performance for smp.
 
-I get an error in do_map_probe function.
+Hi
 
-Code  never returns from this line
+Thank you for the patch.
+It definitely reduces resources and improve multiple CPU scalability. 
 
-drv = get_mtd_chip_driver(name);
-if (!drv && !request_module(name))
-  drv = get_mtd_chip_driver(name);
- if (!drv)
-  return NULL;
-ret = drv->probe(map);
+But I still would like to stick to performance.
+(Though I haven't evaluated the performance yet...)
+So far I think MTD is used mostly on Embedded device, 
+in which single CPU which is not so powerful is used.
 
-What could be going here. Where can I find the defninition of 
-struct mtd_chip_driver
+How is the following code (it is ugly though)?
 
-Vikram
+static void default_workspace[WSIZE];
+
+<snip>
+
+    size = MAX(sizeof(struct inflate_workspace),
+        sizeof(struct deflate_workspace));
+
+    if(WSIZE < size)
+        BUG();
+
+    zlib_workspace[0] = default_workspace;
+
+    for (i=1; i<smp_num_cpus; i++) {
+        zlib_workspace[i] = vmalloc(size);
+        if (!zlib_workspace[i]) {
+            zlib_exit();
+            return -ENOMEM;
+        }
+   }
+
+P.S.
+There is another vmalloc in mtdblock_open()...;-)
