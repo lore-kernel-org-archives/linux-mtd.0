@@ -1,17 +1,17 @@
-Received: from viefep16-int.chello.at ([213.46.255.17])
+Received: from [202.98.123.42] (helo=mail.ocdtt.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16SnFn-0006cj-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jan 2002 22:49:27 +0000
-Message-ID: <3C4C9AA6.92B91D59@softsys.co.at>
-Date: Mon, 21 Jan 2002 23:48:06 +0100
-From: Erwin Authried <eauth@softsys.co.at>
+	id 16SrcH-0006th-00
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2002 03:28:57 +0000
+Message-ID: <004a01c1a2f6$85633350$0c1112ac@ming>
+From: "Chen Yaoming" <ymchen@ocdtt.com>
+To: <linux-mtd@lists.infradead.org>,
+	"Jeroen Roose" <Jeroen.Roose@chess.nl>
+References: <200201211137.MAA19110@enterprise.chess.nl>
+Subject: Re: Intel C3 chips
+Date: Tue, 22 Jan 2002 11:40:20 +0800
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: Steve Kranz <skranz@ridgerun.com>,
- 	linux-mtd@lists.infradead.org
-Subject: Re: MTD on linux 2.0.38?
-References: <3C4C91CD.D9574F9B@ridgerun.com> <4784.1011652929@redhat.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,24 +24,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have switched to uClinux-2.4.x a couple of months ago, and I'm afraid
-that I'll not spend any time on 2.0.38 anymore. I got  really sick on
-backporting all the 2.4 stuff, not only MTD. I have written a small
-README for patching uClinux-2.0.38 , it's in the MTD folder at
-http://uclinux.home.at/. There aren't many differences with the "full"
-2.0.38 kernel, I hope.
+MTD can unlock Intel C3 flash, but the code is incomplete. Please look at
+drivers/mtd/chips/cfi_cmdset_0001.c
 
--Erwin
+----- Original Message ----- 
+From: "Jeroen Roose" <Jeroen.Roose@chess.nl>
+To: <linux-mtd@lists.infradead.org>
+Sent: Monday, January 21, 2002 7:37 PM
+Subject: Intel C3 chips
 
-David Woodhouse schrieb:
+
+> Hello,
 > 
-> skranz@ridgerun.com said:
-> >   As of many months ago it was my understanding that
-> >   MTD had never been back-ported to the 2.0.38 kernel.
-> >   Is this still the case?
+> We've got a board based on the CDB89712 but using C3 (TE28F320/C3BC90) in
+> stead of the B3 version. The C3 chip locks all blocks on chip reset. I've
+> patched the bootloader (hermit) to unlock all blocks on boot.
+> I've got MTD/JFFS2 working on the board, with the bootloader patch, but I
+> think MTD should unlock the blocks.
+> I'm not familiar with the MTD architecture, so I don't no how/where to
+> implement this, can You help me to point this out ?
 > 
-> There are periodic screams of anguish when I break the 2.0 build, and I try
-> not to - it ought to work without too much pain. Erwin?
+> Thanks,
 > 
-> --
-> dwmw2
+> Jeroen Roose
+> 
+> chess eT
+> 
+> http://www.chess.nl
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
