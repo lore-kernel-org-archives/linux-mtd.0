@@ -1,18 +1,17 @@
-Received: from [202.109.126.231] (helo=support-smartpc.com.cn)
+Received: from smtp25.singnet.com.sg ([165.21.101.224])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16U4AI-0002ox-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 11:05:05 +0000
-Message-ID: <A56A8E5E02CBD511881800306E002CCA24B20D@mrspdc.mrs.com.cn>
-From: =?utf-8?B?eGlhb2xpdS5tYW8g5q+b5puJ5p+z?= <xiaoliu.mao@mic.com.tw>
-To: 'David Woodhouse' <dwmw2@infradead.org>, Ramya Ravichandran
-	 <rrhsin@yahoo.co.in>
-Cc: linux-mtd@lists.infradead.org
-Subject: =?utf-8?B?562U5aSNOiBDZiBDYXJkIHZzIERpc2tPbkNoaXAg?=
-Date: Fri, 25 Jan 2002 19:15:26 +0800
+	id 16U4CV-0002pS-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 11:07:19 +0000
+Message-ID: <3C513E7B.6010808@smartbridges.com>
+Date: Fri, 25 Jan 2002 19:16:11 +0800
+From: Nikhil Goel <nikhil@smartbridges.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+To: David Woodhouse <dwmw2@infradead.org>
+CC: Ramya Ravichandran <rrhsin@yahoo.co.in>, linux-mtd@lists.infradead.org
+Subject: Re: Cf Card vs DiskOnChip
+References: <20020125103941.26958.qmail@web8101.in.yahoo.com> <4181.1011956000@redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,53 +23,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Doc surely is a good choice. Our team had made a fully embedded linux =
-system
-on it , it works ok.=20
+David Woodhouse wrote:
 
------=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
-=E5=8F=91=E4=BB=B6=E4=BA=BA: David Woodhouse =
-[mailto:dwmw2@infradead.org]
-=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: =
-2002=E5=B9=B41=E6=9C=8825=E6=97=A5 18:53
-=E6=94=B6=E4=BB=B6=E4=BA=BA: Ramya Ravichandran
-=E6=8A=84=E9=80=81: linux-mtd@lists.infradead.org
-=E4=B8=BB=E9=A2=98: Re: Cf Card vs DiskOnChip=20
-
-
-
-rrhsin@yahoo.co.in said:
->=20
->    I am a newbie  developing a embedded linux controller for an
-> industrial environment. I am unable to decide whether to use a =
-Compact
-> Flash card or DiskOnChip.With 128MB I need to get the whole thing
-> running. Can someone plese tell me as which one to use and why?=20
-
-People have reported severe reliability problems with CF cards. With =
-the=20
-DiskOnChip, all the translation stuff to emulate a block device is done =
-in=20
-software, which is probably a better option.
-
-The downside of the DiskOnChip is that the Linux driver doesn't do wear =
-
-levelling, although it's easy enough to add, and that the vendor's =
-driver=20
-is a binary-only module and hence of dubious legality.
-
-I would go for the DiskOnChip and add wear levelling support - all you =
-need=20
-to do it make it randomly pick a clean block for erasure occasionally, =
-to=20
-make sure stuff moves around over time.
+> rrhsin@yahoo.co.in said:
+> 
+>>industrial environment. I am unable to decide whether to use a Compact
+>>Flash card or DiskOnChip.With 128MB I need to get the whole thing
+>>running. Can someone plese tell me as which one to use and why? 
+> 
+> The downside of the DiskOnChip is that the Linux driver doesn't do wear 
+> levelling, although it's easy enough to add, and that the vendor's driver 
+> is a binary-only module and hence of dubious legality.
+> 
+> I would go for the DiskOnChip and add wear levelling support - all you need 
+> to do it make it randomly pick a clean block for erasure occasionally, to 
+> make sure stuff moves around over time.
 
 
---
-dwmw2
+Isn't that similar to the implementation of JFFS? So a DiskOnChip 
+running on the CVS based driver with JFFS should suffice for 
+wear-levelling! if I am missing some piece here, what should I rtfm?
+
+regards,
+nikhil
 
 
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+
+-- 
+Nikhil Goel <nikhil@smartbridges.com>
+Ph: +65 3240210  Ext 20, Fax: +65 3240607
+Reality is a crutch for those who can't handle science fiction.
