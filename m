@@ -1,21 +1,17 @@
-Received: from [206.71.186.2] (helo=mail.espressonet.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14xmuo-000402-00
-	for <linux-mtd@lists.infradead.org>; Thu, 10 May 2001 10:39:23 +0100
-Received: from softdqxcunjyu6 [203.117.57.34]
- by mail.espressonet.com [206.71.186.2]  (SLmail 3.2.3108) with SMTP
- id DC5561722EE611D5AFDA00A0CC3C4213
- for <linux-mtd@lists.infradead.org>; Thu, 10 May 2001 02:40:04 -0700
-Message-ID: <006a01c0d935$338c9840$223975cb@softdqxcunjyu6>
-Reply-To: "Jimmy Brian Christanthio" <jimmy@soft-v.com>
-From: "Jimmy Brian Christanthio" <jimmy@soft-v.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Fw: nftl
-Date: Thu, 10 May 2001 17:40:02 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 14xnAv-00043d-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 May 2001 10:56:01 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <006a01c0d935$338c9840$223975cb@softdqxcunjyu6> 
+References: <006a01c0d935$338c9840$223975cb@softdqxcunjyu6> 
+To: "Jimmy Brian Christanthio" <jimmy@soft-v.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Fw: nftl 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 10 May 2001 10:56:14 +0100
+Message-ID: <11739.989488574@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,45 +23,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
------ Original Message -----
-From: "Jimmy Brian Christanthio" <jimmy@soft-v.com>
-To: <dwmw2@infradead.org>
-Sent: Wednesday, 09 May, 2001 1:53 PM
-Subject: Fw: nftl
+jimmy@soft-v.com said:
+> Our system is the VR4121 using the Intel Strata Flash. If we use your code
+> to establish a sector of 1MB as a drive, can we also have XIP on it? 
+> That is, can we execute on the flash instead of from the SDRAM?
 
+You cannot use NFTL on that. Technically, you could use FTL, but in some 
+countries patents may prevent you from doing so. If you want a writable 
+filesystem, JFFS is probably the best bet. 
 
-> > Dear sir,
-> >
-> > We have recently downloaded the nftl.c from your repository. Our system is the VR4121 using the
-> Intel
-> > Strata Flash. If we use your code to establish a sector of 1MB as a drive, can we also have XIP
-on
-> > it? That is, can we execute on the flash instead of from the SDRAM?
-> >
-> > I understand you have the XIP component in working stage, appreciate if you could assist us by
-> > providing the link or the source codes.
-> >
-> > Thank you for you kind attention.
-> >
-> > With Best Regards
-> > Jimmy Brian Christanthio
-> >
-> >
-> > *******************Internet Email Confidentiality Footer*******************
-> >
-> >
-> > Privileged/Confidential Information may be contained in this message.  If you are not the
-> addressee
-> > indicated in this message (or responsible for delivery of
-> > the message to such person), you may not copy or deliver this message to anyone. In such case,
-you
-> > should destroy this message and kindly notify the
-> > sender by reply email. Please advise immediately if you or your employer do not consent to
-> Internet
-> > email for messages of this kind.  Opinions, conclusions
-> > and other information in this message that do not relate to the official business of my firm
-shall
-> > be understood as neither given nor endorsed by it.
-> >
-> >
->
+We don't yet have support for XIP. It would require a special filesystem 
+which aligns pages of the files at page-aligned addresses in the flash 
+chips. In general, compression is far more useful than XIP, because RAM is 
+cheaper than flash, so nobody's yet implemented this.
+
+I started hacking on such an xipfs once. I don't recall how far I got with 
+it - you're welcome to a copy of that if you want it, although I suspect 
+you'd to better to start with a clean copy of romfs and do it again.
+
+If you require a _writable_ filesystem, it's going to be extremely 
+difficult to do XIP.
+
+--
+dwmw2
