@@ -1,18 +1,21 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19KDdV-0004lM-Gb
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 09:47:17 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Stuart Menefy <stuart.menefy@st.com>
-In-Reply-To: <20030523235020.3ca198e1.stuart.menefy@st.com>
-References: <20030523235020.3ca198e1.stuart.menefy@st.com>
-Message-Id: <1053938881.17182.54.camel@imladris.demon.co.uk>
+	id 19KESf-0004ye-PO
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 10:40:10 +0100
+Date: Mon, 26 May 2003 11:40:50 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: matsunaga <matsunaga_kazuhisa@yahoo.co.jp>
+Message-ID: <20030526094050.GA30361@wohnheim.fh-wedel.de>
+References: <001101c32078$7de79840$740486da@w0a3t0>
+	<20030522195708.GB11240@wohnheim.fh-wedel.de>
+	<004101c3214d$223c9560$740486da@w0a3t0>
 Mime-Version: 1.0
-Date: Mon, 26 May 2003 09:48:01 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <004101c3214d$223c9560$740486da@w0a3t0>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI fixup code
+Subject: Re: vmalloc for zlib workspace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-05-23 at 23:50, Stuart Menefy wrote:
-> Folks
+On Sat, 24 May 2003 02:02:46 +0900, matsunaga wrote:
+> >
+> > int __init jffs2_zlib_init(void)
+> > {
+> > if (WORKSPACESIZE < zlib_deflate_workspacesize())
+> > BUG();
+> > if (WORKSPACESIZE < zlib_inflate_workspacesize())
+> > BUG();
+> > return 0;
+> > }
 > 
-> Having been bitten several times now by buggy CFI data in various chips, I
-> thought I'd try and come up with an generic mechanism for working round
-> this problem.
+> That's great idea too ;-)
 
-Me Likee. Thanks. One comment though...
+Thanks!
 
-+	if (extp->MajorVersion != '1' || 
-+	    (extp->MinorVersion < '0' || extp->MinorVersion > '3')) {
+> We only have to check the size in init routine.
 
-You've made it accept CFI table versions 1.0 through 1.3 for _all_
-chips, while some were only accepting 1.0->1.2 before.
+Actually, we could even go a bit further.  zlib itself could have a
+single workspace and a mutex.  Then we would add the following code to
+zlib_deflateInit2_():
+	if (strm->workspace)
+		mem = (deflate_workspace *) strm->workspace;
+	else {
+		down(&zlib_workspace_sem);
+		mem = zlib_workspace;
+	}
 
-That's probably not a problem since they _ought_ to be
-backward-compatible, but if we actually trusted the hardware
-manufacturers to display a modicum of intelligence, we wouldn't have had
-that check there at all. And you wouldn't have been writing this patch
-in the first place. I'm happy to remove it and perhaps reinstate it if
-it ever actually bites.
+And this little feller to zlib_deflateEnd():
+	up (&zlib_workspace_sem);
 
-Other than that, it looks fine. Please go ahead and commit it.
+The same for inflate, of course, both using the same workspace and
+semaphore.
+
+Now every subsystem using zlib can reuse the same workspace, jffs2
+anole would save one, a big fat system (TM) with jffs2, cramfs, ppp
+and additional patches would save quite a bit more.  And those systems
+do exist, no kidding.
+
+And users that want to scale to 64 CPUs and use zlib concurrently on
+all of them can still provide their own workspace.
+
+Comments?
+
+Jörn
 
 -- 
-dwmw2
+A victorious army first wins and then seeks battle.
+-- Sun Tzu
