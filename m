@@ -1,20 +1,17 @@
-Received: from rm-rstar.sfu.ca ([142.58.120.21] ident=root)
+Received: from mailhost.rdmcorp.com ([204.225.180.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17pa8C-0006n2-00
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 21:00:04 +0100
-Received: from fraser.sfu.ca (btlee@fraser.sfu.ca [142.58.101.25])
-	by rm-rstar.sfu.ca (8.12.5/8.12.5/SFU-5.0H) with ESMTP id g8CJxwrn002578
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 12:59:59 -0700 (PDT)
-Received: from localhost (btlee@localhost)
-	by fraser.sfu.ca (8.9.2/8.9.2/SFU-5.0C) with ESMTP id MAA18752
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 12:59:58 -0700 (PDT)
-Date: Thu, 12 Sep 2002 12:59:58 -0700 (PDT)
-From: Benjamin Tze-Kit Lee <btlee@sfu.ca>
-To: linux-mtd@lists.infradead.org
-Subject: flash chip interface with MTD
-Message-ID: <Pine.GSO.4.44.0209121259120.26546-100000@fraser.sfu.ca>
+	id 17pakf-0006sK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 21:39:49 +0100
+Received: from PARKER (10.1.2.1) by mailhost.rdmcorp.com (Worldmail 1.3.167) for linux-mtd@lists.infradead.org; 12 Sep 2002 16:43:46 -0400
+From: "Jack Lu" <jlu@rdmcorp.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: the procedure setting up jffs2
+Date: Fri, 13 Sep 2002 04:37:05 -0400
+Message-ID: <DFEAJMIABOLKNEBOPGDHAECJCBAA.jlu@rdmcorp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,15 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+Hi
 
-I am looking through the source code for MTD and trying to find the driver
-(interface) which communicates with the flash.
-Can anyone point me to some file or function that does the actually
-read/write to the flash?
+I am using RPX850 Lite with 16MB flash(4 chips of Am29Lv320MB) with buswidth
+32 and interleave 4.
+I have complied the MTD and JFFS2 module into the kernel.
+When I start up the Linux, Linux found the 16MB flash, the whole flash
+corresponds to /dev/mtd0.
 
-Also, is MTD able to talk to an on board flash chip, something like the
-Intel StrataFlash?
+1. where can I get the mkfs.jffs2 excutable for MPC850?
 
-Thx a lot,
-Ben
+2. the bottom 256KB is the boot loader code of the 16MB flash. the rest si
+for storing data
+	if I do
+	#cat jffs2.image > /dev/mtd0
+	will the bootloader be erased?
+
+I appreciate your help.
+Thanks.
