@@ -1,39 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H4Q6-0008P2-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 14:06:50 +0100
+	id 13H4ce-0008TG-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 14:19:48 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13H4Q5-0008Ow-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 14:06:49 +0100
+	id 13H4cc-0008TA-00
+	for mtd@infradead.org; Tue, 25 Jul 2000 14:19:46 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <397D90F2.69D2D5DD@arcom.co.uk> 
-References: <397D90F2.69D2D5DD@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: do_map_probe() can't find cfi_probe() 
+In-Reply-To: <Pine.LNX.3.96.1000725145702.8086O-100000@fafner.axis.se> 
+References: <Pine.LNX.3.96.1000725145702.8086O-100000@fafner.axis.se> 
+To: Bjorn Wesen <bjornw@axis.com>
+Cc: Finn Hakansson <finn@axis.com>, "mtd@infradead.org" <mtd@infradead.org>,
+  jffs-dev@axis.com
+Subject: Re: jffs_file_write 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 25 Jul 2000 14:06:47 +0100
-Message-ID: <23903.964530407@cygnus.co.uk>
+Date: Tue, 25 Jul 2000 14:19:44 +0100
+Message-ID: <26128.964531184@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-dvrabel@arcom.co.uk said:
->  do_map_probe() can't find cfi_probe() in the cfi_probe module.  Some
-> hints/suggestion on what may cause this problem would be appreciated. 
+bjornw@axis.com said:
+>  It usually takes about 1-2 seconds to erase a sector, so if you
+> really need to erase the entire 16 mb flash during GC, that's 250
+> sectors times 2 seconds, about 8 minutes. Mileage may vary depending
+> on flash manufacturer - I've never used 16 mbyte flashes in anything..
+> 
 
-Make sure that...
+On these chips, erases only take a second. At the time, it was also 128
+microseconds per _word_ write. So although a complete erase only takes 128
+seconds, writing the whole device was more like 20 minutes.
 
- 1. The cfi_probe module is available - either.
-	a. It's linked into the kernel statically.
-	b. It's in a directory where modprobe(8) can find it.
-	c. It's already loaded.
+Even so, it should be far less than the 90 minutes that I observed. Is it
+possible that the GC was compacting the data on the flash repeatedly, before
+it had completed removing all the files? The command I was running was:
+ rm -r /mnt/usr
 
- 2. You don't have CONFIG_MODVERSIONS enabled.
+If it removed a couple of MB, then garbage collected, then removed another 
+couple of MB, then would it have ended up moving the same data twice?
 
-Failing that, post more details.
+
 
 --
 dwmw2
