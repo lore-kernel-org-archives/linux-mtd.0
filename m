@@ -1,61 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14mXun-0004bn-00
-	for mtd-list@infradead.org; Mon, 09 Apr 2001 10:24:53 +0100
-Received: from ntp.iriti.cnr.it ([150.145.55.6] helo=ghirolo.iriti.cnr.it)
+	id 14mYAg-0004dE-00
+	for mtd-list@infradead.org; Mon, 09 Apr 2001 10:41:18 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14mXul-0004bh-00
-	for mtd@infradead.org; Mon, 09 Apr 2001 10:24:51 +0100
-Received: from zot.iriti.cnr.it
-	([150.145.55.66] helo=iriti.cnr.it ident=fabrizio)
-	by ghirolo.iriti.cnr.it with esmtp (Exim 3.12 #1 (Debian))
-	id 14mXuI-0004Hf-00
-	for <mtd@infradead.org>; Mon, 09 Apr 2001 11:24:22 +0200
-Message-ID: <3AD17FC6.6A918EA0@iriti.cnr.it>
-Date: Mon, 09 Apr 2001 11:24:22 +0200
-From: Fabrizio Pollastri <pollastri@iriti.cnr.it>
-MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Problems with nftl_format
+	id 14mYAf-0004d8-00
+	for mtd@infradead.org; Mon, 09 Apr 2001 10:41:17 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3AD17FC6.6A918EA0@iriti.cnr.it> 
+References: <3AD17FC6.6A918EA0@iriti.cnr.it> 
+To: Fabrizio Pollastri <pollastri@iriti.cnr.it>
+Cc: mtd@infradead.org
+Subject: Re: Problems with nftl_format 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 09 Apr 2001 10:41:04 +0100
+Message-ID: <18147.986809264@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I have a problem with nftl_format. It give the following output to me.
 
-# doc_loadbios /dev/mtd0 grub_firmware (OK: grub prompt appears at next
-boot)
-# nftl_format /dev/mtd0 81920
-Phase 1. Checking and erasing Erase Zones from 0x00014000 to 0x01000000
-Erasing Zone #10 @ 0x14000
-Erasing Zone #11 @ 0x16000
-Erasing Zone #12 @ 0x18000
-Erasing Zone #13 @ 0x1a000
-...
-Erasing Zone #2044 @ 0xff8000
-Erasing Zone #2045 @ 0xffa000
-Erasing Zone #2046 @ 0xffc000
-Erasing Zone #2047 @ 0xffe000
-Phase 2.a Writing NFTL Media Header and Bad Unit Table
-Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
-Phase 3. Writing Unit Control Information to each Erase Unit
-MEMWRITEOOB at 14200: Invalid argument
-MEMWRITEOOB at 16200: Invalid argument
-MEMWRITEOOB at 18200: Invalid argument
-MEMWRITEOOB at 1a200: Invalid argument
-...
-MEMWRITEOOB at ff8200: Invalid argument
-MEMWRITEOOB at ffa200: Invalid argument
-MEMWRITEOOB at ffc200: Invalid argument
-MEMWRITEOOB at ffe200: Invalid argument
+pollastri@iriti.cnr.it said:
+> MEMWRITEOOB at 14200: Invalid argument
 
-My configuration is linux 2.4.3, DOC-2000 16MB @d6000, mtd sanpshot
-1-mar-2001.
-Most recent snapshots give similar errors. What's wrong?
-Thank for any help.
+OK, I probably broke it when I changed the structures slightly to make 
+sparc64 happy. Can you confirm or deny my suspicion that it broke on the 
+17th of March?
 
-Fabrizio Pollastri.
+Does it start to work again if you recompile nftl_format against the new 
+headers?
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
