@@ -1,28 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.205])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Ck9AV-0003k8-L4
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2004 17:53:20 -0500
-Received: by wproxy.gmail.com with SMTP id 37so111078wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Dec 2004 14:53:16 -0800 (PST)
-Message-ID: <6934efce04123014525f17be83@mail.gmail.com>
-Date: Thu, 30 Dec 2004 14:52:18 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: llandre <r&d2@dave-tech.it>
-In-Reply-To: <6.0.1.1.0.20041230103615.01f4d508@192.168.2.1>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CkDSO-0004F3-Lf
+	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2004 22:28:06 -0500
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id iBV3RSXb014258
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Dec 2004 11:27:28 +0800
+Message-ID: <41D4C9AC.6020901@avantwave.com>
+Date: Fri, 31 Dec 2004 11:38:20 +0800
+From: mike <mikelee@avantwave.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-References: <6.0.1.1.0.20041227121334.01ec55d8@192.168.2.1>
-	<6934efce04122709464e95ec21@mail.gmail.com>
-	<6.0.1.1.0.20041228094614.01ec9ff8@192.168.2.1>
-	<6934efce041228094447dbfbd1@mail.gmail.com>
-	<6.0.1.1.0.20041229093407.01f20e88@192.168.2.1>
-	<6934efce041229202370761a59@mail.gmail.com>
-	<6.0.1.1.0.20041230103615.01f4d508@192.168.2.1>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: How to exploit STS pin of Strata Flash
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Subject: porting to new flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,16 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I see. So far I worked with Intel StrataFlash only.
+Dear all
+    I have a development board with using 32 bit bus AMD flash and now 
+move to 8-bit AM29LV652d. What do i need to do with my kernel mtd 
+mapping? Just change the size, buswidth?
+    As i have not yet got the new flash from hardware engineer, i am now 
+just imagining and preparing the problem. I am wonder if anyone can give 
+me a checklist or some hints on that.
 
-Even some new Intel StrataFlash does not have this pin.
-
-> Yes, I have encountered this problem with a Frescale MC9328MXL processor.
-> The flickering occurs when JFFS2 performs erase/write operations on the
-> StrataFlash. This happens with Linux 2.6 only. When running
-> Linux 2.4 LCD exhibits no flickering.
-
-Uh oh.  Same bootloader, hardware and everything?  I wonder what
-changed from 2.4 to 2.6 that would change that.
-
-Anybody have any ideas?
+best regard
+Mike,Lee
