@@ -1,23 +1,19 @@
-Received: from [217.110.46.186] (helo=mail.berlin.imc-berlin.de)
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q84M-00051E-5J
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:03:26 +0100
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
-	[10.0.0.13])h5BG3ULT001969
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 18:03:30 +0200
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id SAA22939
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 18:03:59 +0200 (CEST)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <3EE752EE.8090902@imc-berlin.de>
-Date: Wed, 11 Jun 2003 18:03:58 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 19Q87b-00057b-LT
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:06:47 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+In-Reply-To: <3EE752EE.8090902@imc-berlin.de>
+References: <3EE752EE.8090902@imc-berlin.de>
+Message-Id: <1055347637.2097.240.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 11 Jun 2003 17:07:17 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: Stopping the GC thread?
+cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Stopping the GC thread?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Wed, 2003-06-11 at 17:03, Steven Scholz wrote:
+> Is it safe to just do a
+> 
+> ~ # kill -s SIGSTOP `pidof jffs2_gcd_mtd0`
+> 
+> even if my root fs is on this JFFS2 partition?
 
-in "JFFS - A pratical guide" 
-(http://www.embeddedlinuxworks.com/articles/jffs_guide.html) I read
+Yes.
 
-"For completeness, I should mention that you can suspend and re-start 
-the GC thread on demand by sending it a signal. A SIGSTOP and a 
-SIGCONT can do that respectively."
+> (I just tried it now and it seems to work. But IIRC a while ago my 
+> system hung when I did something like that...)
 
-I would like to be able to stop the garbage collection thread from 
-within my application when doing some time critical things.
-Is it safe to just do a
+It shouldn't. The GC thread remains strictly an optimisation (and
+doesn't exist in the eCos port, etc.)
 
-~ # kill -s SIGSTOP `pidof jffs2_gcd_mtd0`
-
-even if my root fs is on this JFFS2 partition?
-
-(I just tried it now and it seems to work. But IIRC a while ago my 
-system hung when I did something like that...)
-
-
-Thanks,
-
-Steven
+-- 
+dwmw2
