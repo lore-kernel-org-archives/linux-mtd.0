@@ -1,20 +1,23 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from wproxy.gmail.com ([64.233.184.197])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D11F0-0001Kn-AD
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 06:51:44 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-In-Reply-To: <4211DFBC.2080901@imc-berlin.de>
-References: <1107439704.32168.66.camel@fuzzie.sanpeople.com>
-	<4211DFBC.2080901@imc-berlin.de>
-Content-Type: text/plain
-Date: Tue, 15 Feb 2005 14:51:07 +0300
-Message-Id: <1108468267.26412.28.camel@sauron.oktetlabs.ru>
+	id 1D13Mo-0001zg-MF
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 09:07:55 -0500
+Received: by wproxy.gmail.com with SMTP id 68so1989300wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Feb 2005 06:07:49 -0800 (PST)
+Message-ID: <43507b7c05021506077ab223aa@mail.gmail.com>
+Date: Tue, 15 Feb 2005 08:07:49 -0600
+From: Sean Kelley <sean.sweng@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1108453685.22597.30.camel@baythorne.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+References: <43507b7c0502141847134e1e68@mail.gmail.com>
+	<1108453685.22597.30.camel@baythorne.infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2_FS_WRITEBUFFER config option
-Reply-To: dedekind@infradead.org
+Subject: Re: Linux MTD and NFTL - Question
+Reply-To: Sean Kelley <sean.sweng@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-02-15 at 12:40 +0100, Steven Scholz wrote:
-> Hi,
-> 
-> > As per discussions on IRC, this patch replaces the current
-> > CONFIG_JFFS2_FS_NAND, CONFIG_JFFS2_FS_NOR_ECC and
-> > CONFIG_JFFS2_FS_DATAFLASH with a single configuration option - 
-> > CONFIG_JFFS2_FS_WRITEBUFFER.
-> 
-> IIUC than I dont need to enable this option for plain old NOR flash. Right?
+David,
 
-Hi, Right
+Thank you for your reply.  I would like to ship a product without a
+CD.  USB mass storage allows you that option.  I am not familiar with
+the file system profile.  Is this something similar to a PC side
+driver which can understand JFFS2?
+
+Thanks,
+
+Sean
+
+On Tue, 15 Feb 2005 07:48:05 +0000, David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> Does it have to be USB mass storage? What about the file system profile
+> which is used with cameras? That should work when backed by JFFS2.
+> 
+> --
+> dwmw2
+> 
+>
