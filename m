@@ -1,6 +1,10 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Brian T <btuch@usa.net>
-In-Reply-To: <080401c48f7d$253bda60$fd0ba8c0@briantpc>
+Received: from cmsout03.mbox.net ([165.212.64.33])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C2Emv-0007Pl-0o
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2004 15:59:30 -0400
+Message-ID: <082b01c48f94$fe637840$fd0ba8c0@briantpc>
+From: "Brian T" <btuch@usa.net>
+To: "David Woodhouse" <dwmw2@infradead.org>
 References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc>
 	<1093894808.25339.57.camel@weaponx.rchland.ibm.com>
 	<073f01c48ecc$abd3e600$fd0ba8c0@briantpc>
@@ -10,10 +14,11 @@ References: <070101c48ec7$d61e69d0$fd0ba8c0@briantpc>
 	<07e301c48f6b$0e95fdc0$fd0ba8c0@briantpc>
 	<1093966869.6200.34.camel@localhost.localdomain>
 	<080401c48f7d$253bda60$fd0ba8c0@briantpc>
-Content-Type: text/plain
-Date: Tue, 31 Aug 2004 18:11:51 +0100
-Message-Id: <1093972311.6200.47.camel@localhost.localdomain>
-Mime-Version: 1.0
+	<1093972311.6200.47.camel@localhost.localdomain>
+Date: Tue, 31 Aug 2004 14:59:13 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: jffs2 file corruption
@@ -26,23 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-08-31 at 12:08 -0500, Brian T wrote:
-> I'll try to get that done tomorrow.  Will take some time to setup remote
-> syslog, boot, break it, turn off, dump the image, reboot, and dump the
-> broken image.  Each image will probably be around 10MB compressed.  David, I
-> can put the files on an FTP server and give you the link if you will have
-> time to take a peek at them
-> 
-> Let me know what you want me to do.
 
-Putting them up for download is probably better than mailing them to the
-list -- yes.
+> Putting them up for download is probably better than mailing them to the
+> list -- yes.
+>
+> Make sure that your log includes KERN_DEBUG messages and isn't lossy.
+> Remote syslog isn't necessarily good enough -- a serial console
+> certainly is.
+>
+> Let me know the inode number of the test file you created too (ls -i me)
+>
 
-Make sure that your log includes KERN_DEBUG messages and isn't lossy.
-Remote syslog isn't necessarily good enough -- a serial console
-certainly is. 
+I got console logging on, and will run some tests.  I'll send you a priv
+email where to get the files from.
 
-Let me know the inode number of the test file you created too (ls -i me)
+With KERN_DEBUG (all options) on, I don't see anything extra in the syslog.
+Should there be?
 
--- 
-dwmw2
+-Brian
