@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178cWm-00057D-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 08:51:52 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020517073950.53BD02757@sitemail.everyone.net> 
-References: <20020517073950.53BD02757@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: Quesion on copying to mtdblock0 
+	id 178dCR-0005Bw-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 09:34:55 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 May 2002 08:51:50 +0100
-Message-ID: <5794.1021621910@redhat.com>
+Date: Fri, 17 May 2002 01:34:53 -0700 (PDT)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: Quesion on copying to mtdblock0
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020517083454.1C1582756@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +24,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
->  >Can you show me the image you loaded onto the flash? Just the first
-> few  >kilobytes should do.
 
-> Sure,with pleasure. If you dont mind , I send you the whole image in
-> the attachment
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+>That's a little-endian image. It ain't gonna work on a Dragonball.
 
- <Mailman caught it because it was too large for the list.>
+But I wrote a small program to tranfer the .b file into Big-endian
+Maybe I got something wrong in it...
 
- $ od -t x1 jffs2.img | head -1
-0000000 85 19 02 e0 44 00 00 00 1d fb f7 98 01 00 00 00
+>Did it not say 
+>"Magic bitmask is backwards at offset 0x00000000. Wrong endian filesystem?"?
 
-That's a little-endian image. It ain't gonna work on a Dragonball.
+No, never.
 
-Did it not say 
-"Magic bitmask is backwards at offset 0x00000000. Wrong endian filesystem?"?
+>
+>Make sure you use the '--bigendian' option to mkfs.jffs2.
 
+OK, I'll try it.
 
-Make sure you use the '--bigendian' option to mkfs.jffs2.
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
 
---
-dwmw2
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
