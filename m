@@ -1,25 +1,23 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZuAQ-0005WD-17
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 16:14:06 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HHP00L47OZ0IV@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Tue, 08 Jul 2003 17:13:49 +0200 (MEST)
-Date: Tue, 08 Jul 2003 18:11:05 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <200307081405.56822.jbeisert@eurodsn.de>
-To: jbeisert@eurodsn.de
-Message-id: <200307081811.05797.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <200307081001.10555.jbeisert@eurodsn.de>
- <200307081242.54207.tglx@linutronix.de>
- <200307081405.56822.jbeisert@eurodsn.de>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Zu5A-0005Un-Hr
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 16:08:40 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1057652512.28965.107.camel@imladris.demon.co.uk>
+References: <200307042232.43815.joshua@joshuawise.com>
+	 <200307052157.06325.joshua@joshuawise.com>
+	 <m3el142yly.fsf@maxwell.lnxi.com>
+	 <200307052215.35596.joshua@joshuawise.com>
+	 <1057589533.1135.8572.camel@tubarao.lnxi.com>
+	 <1057652512.28965.107.camel@imladris.demon.co.uk>
+Message-Id: <1057676896.1251.8626.camel@tubarao.lnxi.com>
+Mime-Version: 1.0
+Date: 08 Jul 2003 09:08:16 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-339/b7bPR8DTcLwtFXIF"
 cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND-Flash ECC data not used
-Reply-To: tglx@linutronix.de
+Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 08 July 2003 14:05, Juergen Beisert wrote:
-> Am Dienstag, 8. Juli 2003 12:42 schrieben Sie:
-> > On Tuesday 08 July 2003 10:01, Juergen Beisert wrote:
-> >
-> > Have you enabled CONFIG_JFFS2_NAND ?
->
-> I cannot find any source- or "Config.in" file that uses or defines this
-> macro. Not in my 2.4.21pre4 nor in the mtd snapshot (from July 1. 2003).
->
-> > This happens on boot up too, if you have not given the fs type in the
-> > commandline and the kernel tries to mount the partition with ext2 first.
-> > It should not happen with jffs2.
->
-mtd/fs/Config.in contains
-dep_tristate 'Journalling Flash File System (JFFS) support' CONFIG_JFFS_FS 
-$CONFIG_MTD
-if [ "$CONFIG_JFFS_FS" = "y" -o "$CONFIG_JFFS_FS" = "m" ] ; then
-   int 'JFFS debugging verbosity (0 = quiet, 3 = noisy)' 
-CONFIG_JFFS_FS_VERBOSE 0
-   bool 'JFFS stats available in /proc filesystem' CONFIG_JFFS_PROC_FS
-fi
-dep_tristate 'Journalling Flash File System v2 (JFFS2) support' 
-CONFIG_JFFS2_FS $CONFIG_MTD
-if [ "$CONFIG_JFFS2_FS" = "y" -o "$CONFIG_JFFS2_FS" = "m" ] ; then
-   int 'JFFS2 debugging verbosity (0 = quiet, 2 = noisy)' 
-CONFIG_JFFS2_FS_DEBUG 0
-   bool 'JFFS2 support for NAND chips' CONFIG_JFFS2_FS_NAND
-fi
 
-This is patched into the linux/fs/Config.in by the patchin.sh script, which 
-can be found in mtd/patches. It's recommended to use this script.
+--=-339/b7bPR8DTcLwtFXIF
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+On Tue, 2003-07-08 at 02:21, David Woodhouse wrote:
+> On Mon, 2003-07-07 at 15:52, Thayne Harbaugh wrote:
+> > Having a generic, forced configuration would be very useful for those
+> > that already know what they have in the system.  It would also fix case=
+s
+> > where hardware is impossible to reliably probe.  This type of work woul=
+d
+> > be very much appreciated.
+>=20
+> If we do this, it needs to be easy to switch back to the generic probe
+> code.
+
+The forced configuration would be an override.  I've played around and
+have some modules that take parameters that override usual behavior.=20
+I'm not sure if I like this or if I would rather have a separate module
+(maybe forced_probe) that could be used instead of gen_probe and
+jedec_probe (or even cfi_probe).
+
+>  Many people don't really know how their board is wired up, or are
+> given incorrect information. I have customers who _insist_ their boot
+> flash is wired up as 32 bits, and file bugs against the working kernel
+> because of the comments and board setup for 16 bit flash. Not because
+> they claim it doesn't work, but just because they're comparing with
+> their docs.
+
+Makes perfect sense.  Most people would use the already established
+probing mechanisms.
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-339/b7bPR8DTcLwtFXIF
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA/Ct5ffsBPTKE6HMkRAuSbAJ4i6jpm1YLsbSxMuDlRr0hBoK2rqwCcC4jj
+ORxWgsHwo4ZnsiuK+LWSeqM=
+=y4tb
+-----END PGP SIGNATURE-----
+
+--=-339/b7bPR8DTcLwtFXIF--
