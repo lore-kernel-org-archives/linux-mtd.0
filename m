@@ -1,22 +1,23 @@
-Received: from zcars04e.nortelnetworks.com ([47.129.242.56])
+Received: from proxy.ipv6.6wind.com ([194.250.197.211] helo=proxy.6wind.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bujis-0001Bd-UE
-	for linux-mtd@lists.infradead.org; Tue, 10 Aug 2004 23:24:20 -0400
-Received: from zcard303.ca.nortel.com (zcard303.ca.nortel.com [47.129.242.59])
-	by zcars04e.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
-	ESMTP id i7B3OEp02696 for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Aug 2004 23:24:14 -0400 (EDT)
-Received: from linhd by linhd-2.ca.nortel.com with local (Exim 3.36 #1
-	(Debian)) id 1Bujin-0006DN-00
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Aug 2004 23:24:13 -0400
-To: linux-mtd@lists.infradead.org
-From: Linh Dang <linhd@nortelnetworks.com>
-Date: Tue, 10 Aug 2004 23:24:13 -0400
-Message-ID: <wn5oeli8ihu.fsf@linhd-2.ca.nortel.com>
+	id 1BuoPB-0001s0-3n
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2004 04:24:18 -0400
+Received: from eagle.6wind.com (givenchy.6wind.com [212.234.238.114])
+	by proxy.6wind.com (Postfix) with ESMTP id 30E45803
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Aug 2004 10:24:13 +0200 (CEST)
+Received: from [127.0.0.1] (unknown [10.16.0.192])
+	by eagle.6wind.com (Postfix) with ESMTP id 192E4228
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Aug 2004 10:24:13 +0200 (CEST)
+Message-ID: <4119D7B0.8080105@6wind.com>
+Date: Wed, 11 Aug 2004 10:24:16 +0200
+From: Yann Rapaport <yann.rapaport@6wind.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: "Linh Dang" <linhd@nortelnetworks.com>
-Subject: beginner question about cfi_spin_lock()
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: mkfs.jffs2 and NAND smartmedia card
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi!
 
+I am currently working on installing a JFFS2 filesystem on an ARM 
+system, using a Samsung NAND Smartmedia device and 2.4.20 kernel from 
+montavista 3.1.
 
-why the struct flchip must be protected with:
+I succeed in mouting the partition and installing my filesystem in it 
+using the following commands:
+root:/# mount -t jffs2 /dev/mtdblock1 /mnt
+root:/# cp -r /usr/admin/* /mnt
 
-        - local_bh_disable()
-        - preempt_disable()
-        - spin_lock()
+My aim is now to create my filesystem using mkfs.jffs2. When mounting 
+the partition, I get ECC, CRC and magic bitmask errors.
+root:/# mkfs.jffs2 -r /usr/admin -s 512 -e 16384 -b -o /dev/mtd1
+root:/# mount -t jffs2 /dev/mtdblock1 /mnt
+mtd->read(0x400 bytes from 0x0) returned ECC error
+jffs2_scan_eraseblock(): Node at 0x00000000 {0x1985, 0xe001, 0x0000002c) 
+has invalid CRC 0xa026b584 (calculated 0xa026b184)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008: 
+0xa026 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018: 
+0x4119 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c: 
+0x0404 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020: 
+0xe158 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024: 
+0x5121 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000200: 
+0x0801 instead
+etc.
 
-isn't that a bit overkill? Won't a mutex (semaphore) be sufficient?
+It seems that the OOB data is damaged...
+Do you have any idea of what happens?
 
-
-Thanx
+Thanks in advance!
 
 -- 
-Linh Dang
+Yann
