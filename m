@@ -1,45 +1,65 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13euHN-0000jA-00
-	for mtd-list@infradead.org; Fri, 29 Sep 2000 08:08:21 +0100
-Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
+	id 13ezh1-0002S2-00
+	for mtd-list@infradead.org; Fri, 29 Sep 2000 13:55:11 +0100
+Received: from trappist.elis.rug.ac.be ([157.193.67.1] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13euHM-0000j4-00
-	for mtd@infradead.org; Fri, 29 Sep 2000 08:08:20 +0100
-Received: from cotw.com (laptop1.ptec.com [192.168.10.13])
-	by cvsftp.cotw.com (8.9.3/8.9.3) with ESMTP id CAA27103
-	for <mtd@infradead.org>; Fri, 29 Sep 2000 02:07:43 -0500
-Message-ID: <39D44220.FB9C32E4@cotw.com>
-Date: Fri, 29 Sep 2000 02:17:52 -0500
-From: "Steven J. Hill" <sjhill@cotw.com>
+	id 13ezgz-0002Rw-00
+	for mtd@infradead.org; Fri, 29 Sep 2000 13:55:09 +0100
+Received: from rug.ac.be (polaris.elis.rug.ac.be [157.193.67.43])
+	by trappist.elis.rug.ac.be (8.9.3/8.9.2) with ESMTP id OAA29330
+	for <mtd@infradead.org>; Fri, 29 Sep 2000 14:55:07 +0200
+Message-ID: <39D49129.7629180E@rug.ac.be>
+Date: Fri, 29 Sep 2000 14:55:05 +0200
+From: Michiel Ronsse <Michiel.Ronsse@rug.ac.be>
 MIME-Version: 1.0
-To: MTD List <mtd@infradead.org>
-Subject: First release of NAND flash device driver...
+To: mtd@infradead.org
+Subject: SBC-MediaGX
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Greetings.
 
-I have released my first version of a NAND flash driver. While
-it is written for my specific board, a person should easily be
-able to simply tailor the 'nand_send_command' function to their
-platform and be ready to go. I also have not put code in to
-deal with the NAND devices that have 256 byte wide pages. Please
-note that you may not modify the ECC algorithms in 'nand_ecc.c'
-as I am still working with Toshiba on licensing terms. Comments
-are welcome. I will be implementing the write functions tomorrow
-and then begin modifications to JFFS! Well, I have been up for
-21 hours straight and I'm off to bed. Cheers.
 
--Steve
+Hi,
+
+after checking all the messages in the archive of this
+mailing list I managed to access the Intel Strataflash
+chip on our Arcom SBC-MediaGX board. I 'repartitioned' the flash:
+256kB for the BIOS extension, 1.5MB for DOS and the remainder
+for Linux. The linux partition was formatted with JFFS.
+Everything seems to work find although JFFS makes a lot
+of noise when mounting the partition, moreover it finds only
+13MB free and df only reports 4MB free... 
+
+The next logical step would be to make the flash bootable
+by overwriting the BIOS extension. I'm a bit reluctant to
+do this as I don't want to make my board unbootable. E.g.
+what happens if there is something wrong with the new BIOS?
+Can you prevent somehow the BIOS on the board 
+from executing the BIOS extension in the flash? 
+
+
+Another question: why is the BIOS extension area soo big as
+the extension itself is only about 14kB? The autoexec.bat file
+on the Arcom bootfloppy mentions that the extension was enlarged
+some time ago to 256KB in order to accomodate the Windows CE
+registry???
+
+
+
+Michiel Ronsse.
+
 
 -- 
- Steven J. Hill - Embedded SW Engineer
- Public Key: 'finger sjhill@mail.cotw.com'
- FPR1: E124 6E1C AF8E 7802 A815
- FPR2: 7D72 829C 3386 4C4A E17D
++- Michiel Ronsse --- michiel.ronsse@rug.ac.be -+
+| Parallel Information Systems Group            |
+| ELIS - Ghent University  - Ghent, Belgium     |
+| Phone: +32/9/264.33.67   Fax: +32/9/264.35.94 |
++------ http://www.elis.rug.ac.be/~ronsse ------+
+
+In a train station the train stops, in a work station ...
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
