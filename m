@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14vLh8-00014j-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 17:11:10 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01C0D3F1.55B02480.chris.read@activesilicon.co.uk> 
-References: <01C0D3F1.55B02480.chris.read@activesilicon.co.uk> 
-To: "chris.read@activesilicon.co.uk" <chris.read@activesilicon.co.uk>
-Cc: "Mtd (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Wear Leveling in JFFS2 NOT working!(?) 
-Mime-Version: 1.0
+	id 14vMxs-0001BJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 18:32:32 +0100
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org,
+        ahennessy@mvista.com, ds@schleef.org, jonas.holmberg@axis.com,
+        cwryu@debian.org, eauth@softsys.co.at
+Subject: Re: Flash driver probe/commandset separation.
+References: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> <5116.988817985@redhat.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 03 May 2001 11:32:14 -0600
+In-Reply-To: David Woodhouse's message of "Wed, 02 May 2001 16:39:45 +0100"
+Message-ID: <m33damuyn5.fsf@DLT.linuxnetworx.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 03 May 2001 17:09:04 +0100
-Message-ID: <4072.988906144@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +25,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+David Woodhouse <dwmw2@infradead.org> writes:
 
-chris.read@activesilicon.co.uk said:
-> There are applications where a deeply embedded system may get power
-> cycled  frequently; thus I would advocate that wear levelling should
-> work correctly  in this case.
+> nico@cam.org said:
+> >  Personally I think it would be best to send the curent code to Linus
+> > and resend another update eventually when the new stuff would have
+> > been proven stable.
+> 
+> > 	"release early, release often" 
+> 
+> Yes, you're probably right.
+> 
+> TODO list then:
+> 
+> 	1. Make cfi_cmdset_000[12].c compile again :)
+> 	2. Fix the partition stuff as discussed, removing VIRTUAL_ER
+> 	3. Sanity check DiskOnChip and NFTL drivers. 
+        4. Don't hardcode the cmdset in cfi_jedec.
 
-We know how. Just that nobody's provided me with a patch or sufficient 
-motivation to do it myself yet :)
+I keep using very different flash chips so I want one probe path for
+all of the chips looks good. 
 
---
-dwmw2
+Note there is a good argument for joining the probe paths
+Handling chip interleaving, unless we can make it simple
+we don't want that duplicated many times.
+
+I'll try to have something working for 2 & 4 by the end of today.  Any
+hints on why the cmdset drivers don't compile?
+
+Eric
