@@ -1,19 +1,19 @@
-Received: from pony1.arc.nasa.gov ([128.102.31.31] helo=mail.arc.nasa.gov)
+Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49]
+	helo=albatross.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1944wF-0004oR-OQ
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 21:15:55 +0100
-Message-Id: <5.1.1.5.2.20030411131136.0190b008@mail.arc.nasa.gov>
-Date: Fri, 11 Apr 2003 13:18:04 -0700
-To: Ilguiz Latypov <ilgiz@rogers.com>, Mercier.Andre@ireq.ca
-From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
-In-Reply-To: <Pine.LNX.4.44.0304110432370.4112-100000@CPE00e0292061fa-CM
- 014370001917.cpe.net.cable.roger>
-References: <C1641369CCE2784593A091F212BF90D202D54F@caracas.ireq.ca>
+	id 1945hc-00053S-2J
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 22:04:52 +0100
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: "Marc D'Anjou" <marcd@amperion.com>
+In-Reply-To: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
+References: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
+Date: 11 Apr 2003 23:04:52 +0200
+Message-Id: <1050095092.1007.35.camel@spawn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Newbie questions: MTD vs M-Sys, ... RTLinuxPro
+cc: Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Long JFFS2 Mount time?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andre,
-         I'm also having problems with the 256MB DoC2000 with TrueFFS=20
-5.1.4.  I've built a recent kernel (2.4.18) with MTD.  When it starts, the=
-=20
-DoC is recognized as a DoC Millenium, and the driver says the flash chips=20
-are not recognized.  I am trying now to get information about the flash=20
-chips from M-Systems.  If I get this, it should be easy to update the table=
-=20
-of known flash chips so MTD can access the new DoC.
-         I'm also working on booting from the DoC using GRUB, but I am=20
-having trouble getting information from M-Systems.  If I find a solution, I=
-=20
-will post it to this list.
+On Fri, 2003-04-11 at 15:49, Marc D'Anjou wrote:
 
-Ted Hildum
+> our log grows, the JFFS mount time appears to be growing quite a bit. It
+> went from less than 1 second when we first started, to up to 7 or more
+> minutes over days.=20
 
-At 04:35 AM 4/11/2003 -0400, you wrote:
+>=20
+> Is there newer JFFS2 software available that minimize this behavior?
 
->On Tue, 8 Apr 2003, "Mercier, Andr=E9" wrote:
->
-> > I have looked at the
-> > http://www.gctglobal.com/Download/DiskOnChip/diskonchip.html web site
-> > for some information, but there are still some questions to be answered:
-> >
-> > 1) Does MTD work with new DOC2000 release (256 MB with TrueFSS 5.1.4)?
-> > 2) Which Redhat distribution is the best choice for MTD (7.3, 8.0,=20
-> ...9.0) ?
-> > 3) What are the specific steps to include the MTD stuff with the=
- RTLinuxPro
-> >     distribution (note: RTLinux has been tested with Redhat 7.2, 7.3,=
- ...
-> >     I did not buy the full kernel sources package, but I can make a=
- bzImage
-> >     and modules without problems) and be able to boot RTLinux from DOC?
->
->
->Andre,
->
->I can't answer your questions, but this page may provide some instructions
->on setting up DoC2000 and Millennium:
->
->http://www.lakeshoremicro.com/diskonchip-grub-howto.html
->
->Thanks,
->
->--
->Ilguiz Latypov
->Montreal, Quebec
->Canada
->
->tel. +1 (514) 526-6911
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I do not know I have never had a problem with long mount times on any of
+the versions I used. I did however test 2.4.21-pre6 and creating a file
+by appending data (512 bytes/write) did not result in any longer mount
+time.=20
+
+Creating the file on the other hand was not exactly speedy. =20
+
+--=20
+Kenneth Johansson=09
+Ericsson AB                       Tel: +46 8 719 70 20
+Tellusborgsv=E4gen  90              Fax: +46 8 719 29 45
+126 25 Stockholm                  ken@switchboard.ericsson.se
