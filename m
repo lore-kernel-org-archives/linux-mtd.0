@@ -1,16 +1,19 @@
-Received: from nameservices.net ([208.234.25.16] helo=opersys.com)
+Received: from carisma.slowglass.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Yw2p-0001hs-00
-	for <linux-mtd@lists.infradead.org>; Sun, 28 Jul 2002 22:57:43 +0100
-Message-ID: <3D446825.7482FE81@opersys.com>
-Date: Sun, 28 Jul 2002 17:54:45 -0400
-From: Karim Yaghmour <karim@opersys.com>
-Reply-To: karim@opersys.com
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Error in mtd/util/Makefile.am
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 17YyVt-0001tV-00
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2002 01:35:54 +0100
+Received: from sw59-152-52.adsl.seed.net.tw ([61.59.152.52] helo=[211.161.23.36])
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 17YyVr-0006Qh-00
+	for linux-mtd@lists.infradead.org; Mon, 29 Jul 2002 01:35:52 +0100
+Received: from 5cpfcn by [211.161.5.36] with SMTP (MDaemon.v2.7.SP4.R) for <mtd@infradead.org>; Sun, 28 Jul 2002 23:39:21 +0800
+Received: from login_0216.mailservice.net (mx.service.net[206.232.231.77] (may be forged)) by [192.201.131.147] (8.8.5/8.7.3) with SMTP id XAA04682 for <mtd@infradead.org>;  星期一, 29 七月 2002 00:06:04 -0700 (EDT)
+To: <linux-mtd@lists.infradead.org>
+From: <xcm_2gkgfvlycqk@unitedutilities.com>
+Subject: 您有辦公室即將空出嗎？
+Reply-To: receive_adm@topservice.net
+Message-Id: <9291596_59956359>
+Date: Mon, 29 Jul 2002 01:35:52 +0100
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,21 +25,3 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-There seems to be an error in the Makefile.am file for the utilities.
-The instructions for building compr.c:
-compr.o: compr.c
-        $(COMPILE) $(CFLAGS) $(INCLUDES) -Dprintk=printf -DKERN_NOTICE= -c -o $@ $< 
-
-should actually be:
-compr.o: compr.c
-        $(COMPILE) $(CFLAGS) $(INCLUDES) -Dprintk=printf -DKERN_WARNING= -DKERN_NOTICE= -c -o $@ $< 
-
-There's a missing "-DKERN_WARNING=" which will result in a failed build.
-
-Karim
-
-===================================================
-                 Karim Yaghmour
-               karim@opersys.com
-      Embedded and Real-Time Linux Expert
-===================================================
