@@ -1,33 +1,19 @@
-Received: from lyte-mail1.lyse.net ([213.167.96.67])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BnAXo-0004ga-DB
-	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 02:25:37 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1090361318.9473.10.camel@localhost.localdomain>
-References: <1089643331.3951.42.camel@famine>
-	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
-	<1089712151.5995.21.camel@famine>
-	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
-	<1089726079.6288.5.camel@famine>
-	<1089759689.8822.18.camel@imladris.demon.co.uk>
-	<1089792912.7607.22.camel@famine> <1090246707.13401.18.camel@famine>
-	<Pine.LNX.4.58.0407191522360.4985@localhost.localdomain>
-	<1090250145.14173.3.camel@famine>
-	<1090285839.4149.8.camel@localhost.localdomain>
-	<1090305682.14825.2.camel@famine>
-	<1090331120.4614.3.camel@localhost.localdomain>
-	<1090337308.15094.2.camel@famine>
-	<1090338869.4614.7.camel@localhost.localdomain>
-	<1090349564.15140.3.camel@famine>
-	<1090361318.9473.10.camel@localhost.localdomain>
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <1090391133.15766.4.camel@famine>
+Received: from [213.239.205.147] (helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BnBYz-00051M-8M
+	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 03:30:58 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Moreshwar Salpekar <moreshwars@hotmail.com>
+In-Reply-To: <BAY18-DAV3K2kXqbpZd000480c0@hotmail.com>
+References: <BAY18-DAV3K2kXqbpZd000480c0@hotmail.com>
+Content-Type: text/plain
+Message-Id: <1090395097.6864.22.camel@lap02.tec.linutronix.de>
 Mime-Version: 1.0
-Date: Wed, 21 Jul 2004 08:25:33 +0200
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
-Subject: Re: JFFS2 eats memory
+Date: Wed, 21 Jul 2004 09:31:37 +0200
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Regarding NAND MTD Driver Help Required
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,51 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-07-21 at 00:08, David Woodhouse wrote:
-> On Tue, 2004-07-20 at 20:52 +0200, =D8yvind Harboe wrote:
-> > I caught it in gc.c where at some point the code assumes that gc_node
-> > does not change beneath it. Don't remember.
->=20
-> Hmmm. That sounds like it could break anyway. Can you be more specific?
+On Tue, 2004-07-20 at 08:00, Moreshwar Salpekar wrote:
+> Dear All,
+> I am new to this list. I have just gone through the latest code and
+> documentation of NAND Flash MTD Driver. I am facing certain problems in
+> understanding this code as I need to modify this code for my board. I would
+> like somebody to help me understand this code. The problems are as follows:
+> 1. The code on this site and documentation is different from source code of
+> mtd in drivers/mtd/nand even in kernel version 2.6.7. The following files
+> are specifically different:
+> The code in Linux source includes nand.c here I think it is nand_base.c,
+> there is no file nand_ids.c in Linux source.
+> 
+> 2. Which version of kernel is this code applicable to ?
 
-1. Set jeb->gc_node =3D NULL; at the end of jffs2_mark_node_obsolete();=20
+linux-2.6.8-rc2
 
-2. fire up the debugger and start writing to the JFFS2 disk.
+> 3. What is the latest stable version of this code? What about snapshots in
+> this code
 
-3. See below...
+mtd-cvs
 
-in gc.c:
+http://linux-mtd.infraded.org
 
-	240=09
--	241		if (!raw->next_in_ino) {
- 	242			/* Inode-less node. Clean marker, snapshot or something like
-that */
- 	243			/* FIXME: If it's something that needs to be copied, including
-something
- 	244			   we don't grok that has JFFS2_NODETYPE_RWCOMPAT_COPY, we
-should do so */
- 	245			spin_unlock(&c->erase_completion_lock);
--	246			jffs2_mark_node_obsolete(c, raw);
--	247			up(&c->alloc_sem);
--	248			goto eraseit_lock;
- 	249		}
- 	250=09
+> 4. What are the bus widths of NAND flash supported (code in kernel supports
+> 8-bit but your version lists a constant BUSWIDTH_16 which I think implies
+> that 16-bit bus width is supported)? I need to support 8 and 16 bit right
+> now. What are the bus other options that may be set in the nand_flash_dev
+> structure
+> 5. Does the code support GPIO mode of addressing or Address lines? The code
+> uses register to control ALE, CLE and nCE signals and uses another register
+> (IO_ADDR) to driver date lines. I think this implies that GPIO or some other
+> IO pins are being used to drive ALE, CLE and nCE rather than
+> microprocessor/microcontroller driving these signals. I think that this
+> could slower down the operation of NAND Flash if software drives the
+> operation.
+> 6. What is SPIA board as mentioned in codes? I want to check how is the NAND
+> flash connected to microprocessor/ microcontroller as I may need to modify
+> the code to suit my requirements (addressing mode).
+> 7. If anybody has whole code that is based on addressing lines please give
+> me the same.
+> 
 
------ Here raw =3D=3D NULL, hence jffs2_raw_ref_to_ic() crashes.
+READ the DOCUMENTATION, which is clear enough to answer the questions.
+I'm not going to rephrase whats in there.
 
--	251		ic =3D jffs2_raw_ref_to_ic(raw);
+The source code of the various board support drivers in drivers/mtd/nand
+gives you enough examples how to use that code.
 
-
-> Also, memset the raw_node_ref to 0xdeadbeef before you free it. (Or run
-> with slab poisoning enabled in Linux). We should go through the code and
-> make sure manually that nothing's going to dereference a pointer to the
-> old node after it's freed, but the poisoning is a quick and useful
-> debugging aid.
-
-eCos, which I'm using, has this facility built in:
-CYGDBG_MEMALLOC_ALLOCATOR_DLMALLOC_DEBUG=20
-
-
---=20
-=D8yvind Harboe
-http://www.zylin.com
+tglx
