@@ -1,17 +1,20 @@
-Received: from gateway.digitalview.com.hk
-	([152.101.51.1] helo=janus.hk.panelx.com ident=qmailr)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17rVwQ-0002kV-00
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 04:55:54 +0100
-Message-ID: <005601c25ec7$0b5f8f30$9000010a@paulwong>
-From: "Paul Wong" <paul.wong@digitalview.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: jffs2 filesystem
-Date: Wed, 18 Sep 2002 11:53:43 +0800
-MIME-Version: 1.0
+Received: from tiger.actrix.co.nz ([203.96.16.160])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17rW8V-0002mI-00
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Sep 2002 05:08:23 +0100
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+Reply-To: manningc2@actrix.gen.nz
+To: Venkat Raghu <venkatraghu2002@yahoo.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: newbie
+Date: Wed, 18 Sep 2002 16:04:25 +1200
+References: <20020918034458.23918.qmail@web40004.mail.yahoo.com>
+In-Reply-To: <20020918034458.23918.qmail@web40004.mail.yahoo.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020918040819.D4EEF4388@tiger.actrix.co.nz>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,28 +26,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi! all,
-    I have a problem about the jffs2 file system. Pls. refer below message.
-If the i/o error occur in eraseall process, is the jffs2 fs corrupted if i
-copy the jffs2 image to /dev/mtd1 ? Does the "dd" or "cp" take care the i/o
-error? thanks.
+It sounds to me like you need to first understand what flash memory is. I 
+don't know if there is a faq that describes this.
 
+On Wed, 18 Sep 2002 15:44, Venkat Raghu wrote:
+> Hi,
+>
+> Any pointers to documents describing the basics
+> of mtd drivers. I would like know how it works, what
+> are the operations. Whats the reason behind erase
+> operation etc.
 
-Paul
+To answer that one question. Flash memory cannot just be reprogrammed, in 
+many/most instances you first need to erase the section of flash before you 
+can reprogram it. All the limitations are far too complex to answer in an 
+email like this though.
 
-****************************************************************************
-***
-bash-2.04# eraseall /dev/mtd1
-Erasing 16 Kibyte @ f0000 --  9 % compnand_erase: attempt to erase a bad
-block a
-t page 0x00003d20
-Erasing 16 Kibyte @ 1a4000 -- 16 % complete.
-eraseall: /dev/mtd1: MTD Erase failure: Input/output error
-Erased 10240 Kibyte @ 0 -- 100% complete.
-bash-2.04# dd if=jffs2.img of=/dev/mtd1 bs=1k
-dd: writing `/dev/mtd1': Bad address
-3607+1 records in
-3607+0 records out
-bash-2.04#
-
-****************************************************************
+-- Charles
