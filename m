@@ -1,20 +1,30 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Clq3v-0002Ry-MT
-	for linux-mtd@lists.infradead.org; Tue, 04 Jan 2005 09:53:33 -0500
-Date: Tue, 4 Jan 2005 14:53:22 +0000
-From: Ben Dooks <ben@fluff.org.uk>
-To: Fabrizio Grasso <f.grasso@custom.it>
-Message-ID: <20050104145322.GF29522@home.fluff.org>
-References: <5.0.2.1.2.20050104145418.00b425b8@192.168.2.9>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5.0.2.1.2.20050104145418.00b425b8@192.168.2.9>
-Sender: Ben Dooks <ben@fluff.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND Partitions on ARM
+	id 1ClqAP-0002cq-Fd
+	for linux-mtd@lists.infradead.org; Tue, 04 Jan 2005 10:00:14 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id B257A2F016
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  4 Jan 2005 16:00:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id A7AF2115ED
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  4 Jan 2005 16:00:09 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 091337A1E
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  4 Jan 2005 16:00:09 +0100 (CET)
+Message-ID: <41DAAF79.8020401@imc-berlin.de>
+Date: Tue, 04 Jan 2005 16:00:09 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: MTD List <linux-mtd@lists.infradead.org>
+References: <20040113125031.GA5146@angel.research.nokia.com>
+In-Reply-To: <20040113125031.GA5146@angel.research.nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +34,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 04, 2005 at 02:59:29PM +0100, Fabrizio Grasso wrote:
-> 
-> 
-> Hi all,
-> I'm using S3C2410A from Samsung and SMDK2410 from Aiji System. Kernel is 
-> 2.4.18 from MIZI and bootloader is VIVI version 0.1.4 .
-> I'm trying to partition my NAND flash (64MB) by using VIVI commands. The 
-> result I obtained is:
+Hi,
 
-Really, you should be using a 2.6 kernel, but since no-one seems to
-care enough about the support, there has been little work done on
-the smdk2410 boards.
+> Is there anything that could be done to reduce the mount time of large
+> JFFS2 partitions?  Lazy mounting with prioritized scanning?
 
-pre 2.4.26 is far too old, and all the work is being applied to
-the 2.6 series. At least someone has loaned me an smdk2440 to
-allow better support for that board.
+I wonder if the current CVS head is much better (i.e. faster) in mounting a 
+JFFS2 root fs then linux-2.6.10?
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+Or in other words: does it make sense to use the current CVS instead of the code 
+in linux-2.6.10?
 
-  'a smiley only costs 4 bytes'
+--
+Steven
