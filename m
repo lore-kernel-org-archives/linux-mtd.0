@@ -1,18 +1,22 @@
-Received: from wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcTkw-0000DC-Hp
-	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 14:43:00 -0400
-Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
-	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004062114533820050
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Jun 2004 14:53:38 -0400
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 21 Jun 2004 14:44:43 -0400
+Received: from mailout05.sul.t-online.com ([194.25.134.82])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BcWEA-0000XM-Tp
+	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 17:21:21 -0400
+From: "Thomas Gleixner" <tglx@linutronix.de>
+To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>,
+	linux-mtd@lists.infradead.org
+Date: Mon, 21 Jun 2004 23:15:21 +0200
+References: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
+In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812C9@atcml01.atc.army.mil>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: DOC Mil Plus 32 question erase size erase shift????
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200406212315.21856.tglx@linutronix.de>
+Cc: 
+Subject: Re: DOC Mil Plus 32 question erase size erase shift????
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+On Monday 21 June 2004 20:44, Carlos, John J USAATC wrote:
+> Hello all,
+>
+>   Trying to get the bbt stuff working for diskonchip Mil Plus 32.  Questi=
+on
+> in nand_scan_bbt, I pass a erasesize of 8000 (32k bytes).  Is this the
 
-  Trying to get the bbt stuff working for diskonchip Mil Plus 32.  Question
-in nand_scan_bbt, I pass a erasesize of 8000 (32k bytes).  Is this the
-correct size???  If so then I get 256 bytes of mem allocated for this->bbt
-but then it fails (out of memory) when I try to allocate 88ooo bytes for the
-buffer.  Is this correct?  544K bytes for that buffer.  My proc/meminfo
-shows much more memory
-# cat /proc/meminfo
-        total:    used:    free:  shared: buffers:  cached:
-Mem:  28512256  3280896 25231360        0        0  1691648
-Swap:        0        0        0
-MemTotal:        27844 kB
-MemFree:         24640 kB
-MemShared:           0 kB
-Buffers:             0 kB
-Cached:           1652 kB
-SwapCached:          0 kB
-Active:           1080 kB
-Inactive:          788 kB
-HighTotal:           0 kB
-HighFree:            0 kB
-LowTotal:        27844 kB
-LowFree:         24640 kB
-SwapTotal:           0 kB
-SwapFree:            0 kB
-#
+Where do you pass erasesize ? Erasesize is an autodetected value inside=20
+nand_scan() and _must not_ be modified.
 
-What could be the cause???  Or am I not calculating something right????
+> correct size???  If so then I get 256 bytes of mem allocated for this->bbt
+> but then it fails (out of memory) when I try to allocate 88ooo bytes for
+> the buffer.  Is this correct?  544K bytes for that buffer.  My proc/memin=
+fo
+> shows much more memory
 
-Thanks,
-John
+Ooops !
+
+It fails as kmalloc max. allocation size is 128K.=20
+
+But why does anything there try to allocate 544K for a buffer ?????  What d=
+id=20
+you change in nand_bbt.c ? What's the bbt structure you pass to=20
+nand_scan_bbt ?
+
+Can you send me your driver code so I can have a look ?
+
+=2D-=20
+Thomas
+_____________________________________________________________________
+=46rom slash dot org
+"When customers are visiting, engineers are not allowed to wear ties.=20
+That way the customer can tell who is the engineer and who is the=20
+salesman (and therefore whom to believe.). Ties cut off blood flow=20
+to the brain, making it easier for the salesmen to do their jobs."=20
+_____________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
