@@ -1,20 +1,16 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from phobos.hpl.hp.com ([192.6.19.124])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16sSYo-00038A-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2002 18:59:10 +0100
-Date: Tue, 2 Apr 2002 19:58:56 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: Andrew Dixon <andrew.dixon@seranoa.com>
-Cc: ppcboot-users <ppcboot-users@lists.sourceforge.net>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: PPCBoot can't read my jffs2 image
-Message-ID: <20020402195856.A13802@wohnheim.fh-wedel.de>
-References: <3CA9BFFB.CDE0382B@seranoa.com>
+	id 16sVpN-0003K0-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2002 22:28:29 +0100
+Date: Tue, 2 Apr 2002 13:28:19 -0800
+From: Christopher Hoover <ch@hpl.hp.com>
+To: linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
+Cc: ch@hpl.hp.com, dwmw2@redhat.com
+Subject: 2.5.7{,-rmk1}: jffs2 on root patch
+Message-ID: <20020402132818.A10402@friction.hpl.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3CA9BFFB.CDE0382B@seranoa.com>; from andrew.dixon@seranoa.com on Tue, Apr 02, 2002 at 09:28:11AM -0500
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,44 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
+2.5.7-rmk1 (and apparently any 2.5.7 kernel, hence the cross-posting)
+requires the following patch, if you wish to use a jffs2 file system
+as your root.  Without the patch, mount_block_root() won't attempt to
+use jffs2.
 
-> Sorry for the cross post but this a problem with the way the linux-mtd
-> layer and PPCBoot are interacting.
-> 
-> So here's the situation, I've got PPCBoot+Linux running on a custom
-> board.  I've formatted the flash to be one small raw partition for
-> PPCBoot and the rest is a jffs2 filesystem.  PPCBoot is reading Linux
-> and an initial ramdisk out of the jffs2.  In my original testing I was
-> booting the board via tftp and nfs and then copying copying the
-> filesystem onto the flash via /dev/mtdblock1.  This works great.  I
-> reboot and PPCBoot sees everything in the jffs2.  Now I'm trying to
-> automate this a little more so enhanced my build to give me a jffs2
-> image "wombat.jffs2".  I create this image with mkfs.jffs2 and put it
-> onto the flash by dd'ing it to /dev/mtd1:
-> 
-> 	dd if=/wombat.jffs2 of=/dev/mtd1
-> 
-> now when I mount /dev/mtdblock1 I can see the filesystem that I've put
-> over there but when I reboot PPCBoot doesn't see any of the files that
-> are there.  But if I boot back up Linux can still see all of those files
-> OK.
+-ch
 
-Did you do the following before the dd?
+mailto:ch@murgatroid.com
+mailto:ch@hpl.hp.com
 
-	eraseall /dev/mtd1
-
-Does the following give you a difference?
-
-	dd if=/dev/mtdblock1 of=readback.jffs2 count=1 bs=<image size>
-	diff readback.jffs2 wombat.jffs2
-
-With <image size> being the size of wombat.jffs2.
-
-Jörn
-
--- 
-ticks = jiffies;
-while (ticks == jiffies);
-ticks = jiffies;
--- /usr/src/linux/init/main.c
+--- linux-2.5.7-rmk1/fs/jffs2/super.c	Mon Apr  1 13:25:41 2002
++++ linux-2.5.7-rmk1-ch1/fs/jffs2/super.c	Tue Apr  2 13:20:01 2002
+@@ -300,7 +300,8 @@ static struct file_system_type jffs2_fs_
+ 	owner:		THIS_MODULE,
+ 	name:		"jffs2",
+ 	get_sb:		jffs2_get_sb,
+-	kill_sb:	generic_shutdown_super
++	kill_sb:	generic_shutdown_super,
++	fs_flags:	FS_REQUIRES_DEV,
+ };
+ 
+ 
