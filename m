@@ -1,18 +1,17 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cyLG-0007P1-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2002 02:13:26 +0100
-Received: from [192.168.5.81] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2468724 for linux-mtd@lists.infradead.org; Thu, 08 Aug 2002 18:13:34 -0700
-Message-ID: <3D53185C.9060100@redswitch.com>
-Date: Thu, 08 Aug 2002 18:18:20 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-MIME-Version: 1.0
+	id 17cz7v-0007SP-00
+	for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2002 03:03:43 +0100
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Mark Meade <mark@lakeshoremicro.com>
 To: linux-mtd@lists.infradead.org
-Subject: A custom board need a specific map file?
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: Avoiding DOC hotplug when Grub fails
+Date: Thu, 8 Aug 2002 22:02:07 -0400
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200208082158.18411.mark@lakeshoremicro.com>
+Cc: karim@opersys.com
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,9 +23,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-For a custom board, is it necessary to write a specific map file like 
-'rpxlite.c' and 'mbx860.c'? I'm really new to MTD stuff. I looked into 
-these two files as examples and found that they are almost similar. BTW, 
-what's differece between '__raw_readb()' and 'readb()'? Thanks.
+Karim Yaghmour wrote:
 
-- Shawn.
+> As far as I can see by browsing this mailing list archive, one
+> has to hotplug the DOC device in order to have the HD come up
+> first if Grub fails in some way after having hijacked int 19h.
+> This is rather inconvenient, to say the least.
+
+I've recently found an easier way - with the M-Sys ISA Eval card, anyway.  I 
+assume the PCI card would be similar.
+
+On the ISA card, there is a jumper used to set the DoC Address (C800, D000, 
+etc).  If this jumper is removed, the DoC is no longer recognized by the 
+BIOS.
+
+If the DoC has int 19h, simply boot without the jumper in place, and then put 
+it back after the hard drive boot has finished.  If you have the MTD stuff 
+compiled as modules, don't do the modprobe until after the jumper is 
+replaced.   Works great, plus eliminates the risky procedure of hotplugging 
+the DoC or Eval card.
+
+> Why not just hijack int 16h (keyboard) while we're at it, write
+> a small keyboard int handler, and check if the space-bar (or
+> some other key) is held down while Grub is booting? If it is,
+> then Grub invokes the BIOS's original int 19h which then proceeds
+> normally. If it isn't, then Grub continues with its own load
+> procedure.
+
+One potential problem is that the low level Grub code that grabs int 19 is 
+limited to 512 bytes.  With all the other things that code has to do, there 
+might not be enough room to add another int handler.
+
+Mark
