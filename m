@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from tomts22-srv.bellnexxia.net ([209.226.175.184])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KJhX-0004hu-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 15:11:19 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLAEKPFEAA.joakim.tjernlund@lumentis.se> 
-References: <IGEFJKJNHJDCBKALBJLLAEKPFEAA.joakim.tjernlund@lumentis.se> 
-To: joakim.tjernlund@lumentis.se
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: point()/unpoint() questions + small cfi_cmdset_0001.c patch 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 18 Jun 2002 15:11:18 +0100
-Message-ID: <5984.1024409478@redhat.com>
+	id 17KJi3-0004hz-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 15:11:51 +0100
+Date: Tue, 18 Jun 2002 10:11:45 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: David Cooper <david@forcedpotato.com>
+cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: RE: X Windows Performance with DOC 2000
+In-Reply-To: <AIEOIMKIOAAJKHJOGAEFMEDLCEAA.david@forcedpotato.com>
+Message-ID: <Pine.LNX.4.44.0206181008320.3554-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +22,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-joakim.tjernlund@lumentis.se said:
-> Is this on your board with burst reads working? Are you using a cached
-> mapping for point()? 
+David,
 
-> Yes x 2 
+Perhaps, running xinit command under gdb can help.  To go step-by-step 
+through the lines of code, a debug version of xinit would be more helpful.  
+I believe the gcc -g option will provide necessary debug information in 
+the produced executable binary.
 
-As discussed on IRC -- perhaps we want to investigate using prefetch() then.
+Ilguiz
 
->  After a quick read I think it's NOT possible to read data without
-> suspending an Erase first.
+On Mon, 17 Jun 2002, David Cooper wrote:
 
-Yeah - it looks that way to me too. XIP on a writable file system really 
-does seem like a silly plan, given current flash technology.
-
---
-dwmw2
+> I tried this but, of course, the screen goes blank, system hangs and I
+> can never look at the xinit.log file.
