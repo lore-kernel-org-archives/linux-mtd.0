@@ -1,58 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 148NdF-0001S5-00
-	for mtd-list@infradead.org; Tue, 19 Dec 2000 14:20:45 +0000
-From: dr john halewood <john@frumious.unidec.co.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: MTD module compilation (was: [PATCH] link time error in drivers/mtd (240t13p2))
-Date: Tue, 19 Dec 2000 14:20:12 +0000
-Content-Type: text/plain;
-  charset="US-ASCII"
-References: <Pine.LNX.4.30.0012171158140.14423-100000@imladris.demon.co.uk>
-In-Reply-To: <Pine.LNX.4.30.0012171158140.14423-100000@imladris.demon.co.uk>
+	id 148NiI-0001U7-00
+	for mtd-list@infradead.org; Tue, 19 Dec 2000 14:25:58 +0000
+Received: from [195.224.55.237] (helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 148NiH-0001U1-00
+	for mtd@infradead.org; Tue, 19 Dec 2000 14:25:57 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <00121914201204.01244@frumious.unidec.co.uk> 
+References: <00121914201204.01244@frumious.unidec.co.uk>  <Pine.LNX.4.30.0012171158140.14423-100000@imladris.demon.co.uk> 
+To: dr john halewood <john@frumious.unidec.co.uk>
 Cc: mtd@infradead.org
-MIME-Version: 1.0
-Message-Id: <00121914201204.01244@frumious.unidec.co.uk>
-Content-Transfer-Encoding: 8bit
+Subject: Re: MTD module compilation (was: [PATCH] link time error in drivers/mtd (240t13p2)) 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 19 Dec 2000 14:25:02 +0000
+Message-ID: <2006.977235902@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Sunday 17 December 2000 12:04, David Woodhouse wrote to linux-kernel:
-> On Sun, 17 Dec 2000, Keith Owens wrote:
-> > Your choice.  Just bear in mind that if CONFIG_MODULES=y but mtd
-> > objects are built into the kernel then mtd _must_ have a correct link
-> > order.  Consider a config with CONFIG_MODULES=y but every mtd option is
-> > set to 'y', link order is critical.
->
-> Yep, I'd just noticed that one. The patch was actually put in by someone
-> to fix 2.0 compilation - and I noticed that it made the link order
-> problem go away for certain configs.
->
-[cc'ed to mtd list as it might help a few people there]
-heh. 
-  I'm glad this has come up as I think I got bitten by this a couple of weeks 
-ago, but didn't realise it at the time. For various reasons to do with 
-avoiding using initrd's I'd built a kernel that was modular, but had doc2000 
-and nftl loaded statically - other mtd stuff was loaded as modules. My 
-Millenium chip behaved like the proverbial stick - data wouldn't stick to it, 
-certainly not across reboots. Then I came in one morning to find the screen 
-slowly scolling the following message:
-NFTL - writeblock(): Cannot find block to write to
-end_request: I/O error, dev 5d:01 (unknown), sector 256
-Tell Dave he fucked up. LastFreeEUN = 1023, FirstEUN=10765
-No Virtual Unit Chains available for folding. Failing request.
-[This will teach me not to run mke2fs from 5 miles away!]
 
-I guess this must have been caused by incorrect ordering of the modules, as a 
-recompilation of the kernel and linking everything as modular has left it 
-working fine [This was using 2.2.17 + the merged doc2000 w/Millenium support 
-from the 30/11 snapshot and from cvs since, although I've now jumped to 
-2.4.0-test12 without any problems]
+john@frumious.unidec.co.uk said:
+> Tell Dave he fucked up. LastFreeEUN = 1023, FirstEUN=10765 
+> No Virtual Unit Chains available for folding. Failing request. 
 
-If anyone else has had this problem I would suggest this as a solution
+That probably wasn't an init order problem. That was just broken code. It
+should now be fixed, and the printk has been sanitised too - it wasn't
+really supposed to get past the proof of concept stage with that precise
+wording in it.
 
-cheers
-john
+Regardless of the wording used, that error shouldn't ever happen in the new 
+code, if your NFTL has been reformatted since you broke it. If it does, we 
+need to know about it.
+
+
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
