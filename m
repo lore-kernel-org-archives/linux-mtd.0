@@ -1,52 +1,47 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12X9bd-000435-00
-	for mtd-list@infradead.org; Mon, 20 Mar 2000 21:20:57 +0000
-Received: from out4.prserv.net ([32.97.166.34] helo=prserv.net)
+	id 12XEux-00050J-00
+	for mtd-list@infradead.org; Tue, 21 Mar 2000 03:01:15 +0000
+Received: from tisch.mail.mindspring.net ([207.69.200.157])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12X9ba-00042f-00
-	for mtd@infradead.org; Mon, 20 Mar 2000 21:20:54 +0000
-From: "Dvir Oren" <dviro@hotpop.com>
-To: MTD <mtd@infradead.org>
-Date: Mon, 20 Mar 2000 23:20:01 +0200
+	id 12XEuw-00050D-00
+	for mtd@infradead.org; Tue, 21 Mar 2000 03:01:14 +0000
+Message-ID: <38D6E583.3C2E1334@nexus-tech.net>
+Date: Mon, 20 Mar 2000 21:59:15 -0500
+From: Kyle Harris <kharris@nexus-tech.net>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: (Fwd) LILO to use with MTD
-Message-Id: <E12X9ba-00042f-00@infradead.org>
+To: Oron Ogdan <Orono@m-sys.com>
+CC: MTD <mtd@infradead.org>
+Subject: Re: Questions about MTD
+References: <B17893052A17D211A9860060978F7E63014A0544@mail.msys.co.il>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-------- Forwarded message follows -------
-From:           	Dvir Oren <dviro@ibm.net>
-To:             	MTD <mtd@infradead.org>
-Subject:        	LILO to use with MTD
-Date sent:      	Mon, 20 Mar 2000 21:51:43 +0200
 
-I will tomorrow post a patched lilo that should work with /dev/nftla,
-and has been partially tested to work (my file systems keeps 
-getting
-corrupt, so LILO can't find boot.b, but it worked one time at least). 
-The boot.b file should be the same as the boot.b file that worked 
-with
-M-Systems'.  In fact, I think you could run the patched lilo that I
-previously posted here using M-Systems' drivers, to boot a kernel 
-with
-MTD.  Nonetheless, tomorrow I'll post a lilo that can work both with
-/dev/fla and with /dev/nftla.
+Oron Ogdan wrote:
+> 
+> Kyle Harris Wrote:
+> > So will the device still work if the static table has been deleted?
+> >
+> Yes and no, Yes after you format it again the bad block table will be empty,
+> So all blocks (including the originally bad ones will be used) which will
+> work 99.99% of the time. But No I would not go to manufacturing with such
+> devices. It can only be used for R&D and even this is pretty risky.
+> 
 
-As for GRUB - is it usable?
-And why use GRUB instead of LILO?
+I don't mean to drag this on.... but I'd really like to understand this.
+How are the original bad blocks determined (if they work 99.99% of the
+time). Are they the bad blocks indicated by the virgin flash device
+(e.g., Samsung indicates bad blocks by writing zero data to the first
+page)? Or are they determined by some testing process? I'm guessing the
+0.01% failure would be such that data is not retained, since if the
+block fails on a write/verify it will simply be mapped as bad and
+skipped.
 
-(Again - tomorrow I'll send the files)
-
-------- End of forwarded message -------
----------------
-Dvir Oren
-<dviro@hotpop.com>
-<http://thor.prohosting.com/~dviro>
-
+Thanks for any additional info, Kyle.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
