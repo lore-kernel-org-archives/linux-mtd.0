@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from verifonedns.verifone.com ([192.30.91.34])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 172aNw-0000aH-00
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 17:21:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01ff01c1f049$b2a19fa0$bdb270d5@homeip.net> 
-References: <01ff01c1f049$b2a19fa0$bdb270d5@homeip.net>  <012701c1f031$bc52eee0$bdb270d5@homeip.net> <00d201c1f02d$f672d580$bdb270d5@homeip.net> <30704.1020161437@redhat.com> <18096.1020169313@redhat.com> 
-To: johan.adolfsson@axis.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] Create mtdram device at runtime. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 30 Apr 2002 17:21:24 +0100
-Message-ID: <4685.1020183684@redhat.com>
+	id 172ad8-0000bS-00
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 17:37:30 +0100
+Received: from smf-nt-mail1.verifone.com (SMF-NT-MAIL1.verifone.com [10.64.88.34])
+	by verifonedns.verifone.com (Postfix) with ESMTP id 5081C3E38F
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2002 09:31:05 -0700 (PDT)
+Message-ID: <614CC7C21856D1118DA30060B06B487302ACC9AC@SMF-NT-MAIL1>
+From: Eric Nelson <eric_n2@verifone.com>
+To: linux-mtd@lists.infradead.org
+Subject: Splitting a DOC2000
+Date: Tue, 30 Apr 2002 09:36:57 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,13 +24,7 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-johan.adolfsson@axis.com said:
->  How about letting mtdram_init_device return an allocated mtd_info*
-> and the caller is responsible for cleaning it up? The hardcoded init
-> functions store the returned pointer in the static mtd_info variable
-> and do it's clean-up on exit.
+I would like to have 2 or 3 mtd devices on a DOC2000, say /dev/mtd0 and
+/dev/mtd1.  Has anyone out there done this?  Which drivers?  Much code?   
 
-Seems reasonable.
-
---
-dwmw2
+Eric Nelson
