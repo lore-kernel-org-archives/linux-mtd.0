@@ -1,18 +1,22 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZneW-00048F-NP
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 09:16:45 +0100
+	id 19ZnjL-0004XN-Bx
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2003 09:21:43 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Chris AtLee <chris@atlee.ca>
-In-Reply-To: <1057642854.847.27.camel@geb>
-References: <1057642854.847.27.camel@geb>
-Message-Id: <1057652214.28965.97.camel@imladris.demon.co.uk>
+To: Thayne Harbaugh <tharbaugh@lnxi.com>
+In-Reply-To: <1057589533.1135.8572.camel@tubarao.lnxi.com>
+References: <200307042232.43815.joshua@joshuawise.com>
+	 <200307052157.06325.joshua@joshuawise.com>
+	 <m3el142yly.fsf@maxwell.lnxi.com>
+	 <200307052215.35596.joshua@joshuawise.com>
+	 <1057589533.1135.8572.camel@tubarao.lnxi.com>
+Message-Id: <1057652512.28965.107.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Tue, 08 Jul 2003 09:16:54 +0100
+Date: Tue, 08 Jul 2003 09:21:52 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Teeny patch
+cc: linux-mtd@lists.infradead.org
+Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-07-08 at 06:40, Chris AtLee wrote:
-> My compiler (gcc 2.95.3) complains about "int ret = ..." on line 385 of
-> mtd_blkdevs-24.c
-> 
-> Or should I be using a newer compiler? :)
+On Mon, 2003-07-07 at 15:52, Thayne Harbaugh wrote:
+> Having a generic, forced configuration would be very useful for those
+> that already know what they have in the system.  It would also fix cases
+> where hardware is impossible to reliably probe.  This type of work would
+> be very much appreciated.
 
-No, gcc 2.95.3 is fine if I don't introduce accidental C99'isms. 
-
-Patch applied; thanks.
+If we do this, it needs to be easy to switch back to the generic probe
+code. Many people don't really know how their board is wired up, or are
+given incorrect information. I have customers who _insist_ their boot
+flash is wired up as 32 bits, and file bugs against the working kernel
+because of the comments and board setup for 16 bit flash. Not because
+they claim it doesn't work, but just because they're comparing with
+their docs.
 
 -- 
 dwmw2
