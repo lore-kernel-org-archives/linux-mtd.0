@@ -1,23 +1,15 @@
-Received: from moutvdom00.kundenserver.de ([195.20.224.149])
+Received: from mail1.danielind.com ([12.19.96.6])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Phyx-0005Wg-00
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Jul 2001 11:03:03 +0100
-Received: from [195.20.224.209] (helo=mrvdom02.schlund.de)
-	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
-	id 15Pi4X-00034y-00
-	for linux-mtd@lists.infradead.org; Thu, 26 Jul 2001 12:08:49 +0200
-Received: from pd9055330.dip.t-dialin.net ([217.5.83.48] helo=jurca.de)
-	by mrvdom02.schlund.de with esmtp (Exim 2.12 #2)
-	id 15Pi4X-0003QY-00
-	for linux-mtd@lists.infradead.org; Thu, 26 Jul 2001 12:08:49 +0200
-Message-ID: <3B5FEC30.82309CCC@jurca.de>
-Date: Thu, 26 Jul 2001 12:08:48 +0200
-From: Jan Debiec <jan.debiec@jurca.de>
+	id 15PkPN-0005em-00
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jul 2001 13:38:30 +0100
+Message-ID: <30724FF712DFD2119E6200104B244892011974BC@mail1>
+From: Vipin Malik <Vipin.Malik@daniel.com>
+To: 'Jan Debiec ' <jan.debiec@jurca.de>,
+	"'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS and RTLinux
+Date: Thu, 26 Jul 2001 07:29:53 -0500
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: JFFS and RTLinux
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,6 +20,19 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+I know that at least with RTAI, you can set the SMP flag off and then use
+the 8259 timer UP scheduler. RTL does not have something similar?
+
+Vipin
+
+P.S. I assume that without the SMP flag (and RTLinux) everything works fine?
+
+-----Original Message-----
+From: Jan Debiec
+To: linux-mtd@lists.infradead.org
+Sent: 7/26/01 5:08 AM
+Subject: JFFS and RTLinux
 
 Hello,
 
@@ -54,3 +59,7 @@ Jan
  email    jan.debiec@jurca.de
  www.jurca.de
 ----------------------------------
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
