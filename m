@@ -1,19 +1,21 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CTdNd-0003YT-7R
-	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:42:42 -0500
-Message-ID: <419879CB.3010209@yandex.ru>
-Date: Mon, 15 Nov 2004 12:41:31 +0300
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+	id 1CTdPG-0003r6-Aa
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:44:20 -0500
+Message-ID: <41987A4F.6090400@oktetlabs.ru>
+Date: Mon, 15 Nov 2004 12:43:43 +0300
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <4198686D.8000301@yandex.ru>
-	<1100508326.8015.57.camel@localhost.localdomain>
-In-Reply-To: <1100508326.8015.57.camel@localhost.localdomain>
+To: tglx@linutronix.de
+References: <41986D89.4060308@oktetlabs.ru>	
+	<1100508552.8015.61.camel@localhost.localdomain>
+	<1100510529.5074.119.camel@thomas>
+In-Reply-To: <1100510529.5074.119.camel@thomas>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: BUG in JFFS2
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: NAND pages cache?
+Reply-To: dedekind@oktetlabs.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-David Woodhouse wrote:
-> On Mon, 2004-11-15 at 11:27 +0300, Artem B. Bityuckiy wrote:
+Thomas Gleixner wrote:
+> On Mon, 2004-11-15 at 08:49 +0000, David Woodhouse wrote:
 > 
->>Hello,
+>>On Mon, 2004-11-15 at 11:49 +0300, Artem Bityuckiy wrote:
 >>
->>I've hit on bug in JFFS2, but I can not reproduce it easilly yet. I have 
->>  stess test which in general creates files, deletes them, creates 
->>directories and deletes them, and so on so on. When I run this test 
->>nightly, I see the following error when I come at work in the morning:
+>>>So, the obvious idea how to avoid this is to introduce something like 
+>>>NAND pages cache. The cache will keep several NAND pages which were last 
+>>>accessed.
+>>>
+>>>I don not know is it good to do this only in JFFS2 or on the MTD NAND layer?
 >>
->>kernel BUG at 
->>/tester/linux/linux-2.6.8-1.521up-custom-nopreempt/fs/jffs2/gc.c:1164!
+>>I thought we already did this in the MTD NAND layer, since we had to
+>>read whole pages there to do ECC anyway. Thomas?
 > 
 > 
-> In my copy of v1.137 there's three instances of BUG_ON() around there,
-> but none at line 1164. They're at lines 116[123]. 
-I have the lastest MTD snapshot, v1.140. This is BUG_ON(end > 
-JFFS2_F_I_SIZE(f));
+> We do caching only if a page is read partially. If we read a full page
+> we read directly into the fs buffer.
+> 
+> The partial reads happen when we read nodes. The full page reads happen
+> when we read data. That's sufficient and captures most of the double
+> reads on the same page.
+> 
+> tglx
+Hmm, It seems I do not know something about MTD. I thought it *always* 
+reads whole
+pages in orger to always check ECC... I'll see this more close.
 
-> 
-> Start by changing it from a simple BUG_ON() to a printk saying precisely
-> what went wrong and giving all the other information which might be
-> relevant. If you can just trap into a debugger when it happens, that's
-> even better.
-I'll do this as soos as I have done other pending JFFS2 tasks :-) I 
-think I'll insert useful printkeyss there since now I have no configured 
-environment to use debugger.
+Ok, thanks for comment.
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
