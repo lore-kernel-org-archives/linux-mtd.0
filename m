@@ -1,19 +1,21 @@
-Received: from linux2003-temp-17.226.gwc.org.uk ([212.240.17.226]
-	helo=lapdancer.baythorne.internal)
+Received: from ioskeha.hittite.isp.9tel.net ([62.62.156.27])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19iZus-0007vh-OU
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 14:25:54 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: gdavis@mvista.com
-In-Reply-To: <3F29AE2C.2020000@mvista.com>
-References: <3F29AE2C.2020000@mvista.com>
-Message-Id: <1059744249.19396.75.camel@lapdancer.baythorne.internal>
-Mime-Version: 1.0
-Date: Fri, 01 Aug 2003 14:24:11 +0100
-Content-Type: text/plain
+	id 19icMw-0008DK-Vv
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 17:03:03 +0100
+Received: from jennifer (unknown [81.185.32.15])
+	by ioskeha.hittite.isp.9tel.net (Postfix) with ESMTP id 8F29717B875
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  1 Aug 2003 18:02:28 +0200 (CEST)
+From: "Philippe" <philippe@accuitee.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 1 Aug 2003 18:02:28 +0200
+Message-ID: <000001c35846$4ebe3870$6401a8c0@jennifer>
+MIME-Version: 1.0
+In-Reply-To: <1059731746.19396.30.camel@lapdancer.baythorne.internal>
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: kernel oops due to aligment error in cmdlinepart.c
+Subject: RE : DiskOnChip 2000 and CVS Drivers
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-08-01 at 01:02, George G. Davis wrote:
-> Greetings,
-> 
-> I've been using the latest MTD CVS (+/- a few days) on an ARM
-> Integrator/CM920T running linux-2.4.20'ish and have found that
-> cmdlinepart.c has a struct alignment problem which causes a kernel
-> oops. The attached patch fixes the alignment problem
 
-No Likee. Linux requires that you fix up misaligned loads and stores.
-Therefore, explicit working around alignment 'breakage' isn't permitted.
-I've added it before and been told to remove it.
+Hi,
+ 
+> I merged some of that code already; all that remains is the fake
+> partitioning, and that should be fairly easy to patch in by hand if
+you
 
-IF your hardware _cannot_ do this, and I know some ARM7 uCLinux systems
-really can't, then you need to deal with it properly in 2.5 -- talk to
-DaveM and Linus about it. 
+I checked it today, as you told me I merged the FAKE_PART_CODE.
+Everything seems OK (no compilation troubles etc...)
 
-Alternatively, in this case you could probably just refactor the code to
-allocate the idents separately or at least arrange its storage so that
-the aligned bits are first, like I think the RedBoot code does.
+I'll test it next week. If Everything works as expected, i'll send a
+diff against [kernel 2.4.20 + cvs / mtd patch]
 
--- 
-dwmw2
+
+> want it -- what did you try and in what way did you fail? That's your
+> best option for the moment -- use nftl_format with an NFTL size as you
+> desire, and hack the doc2000.c code to register a second partition on
+> which you use JFFS2.
+
+Well I had troubles using NFTL, let me explain :
+
+I made two partition :
+ - 1 - Boot : grub stuff + kernel + initrd + software
+ - 2 - Conf/Save : every file wich may be used by my application
+
+Everything was fine except two things :
+
+a) when I turned off the machine -- when I launch the shutdown (via the
+app), I do "sync", "umount" and then shutdown -h now -- Nothing was
+saved on the DOC (I do not understand because when I use the same kernel
+/ stuff on  my hard drive or on a CF/ide, everything is allright)
+
+b) the sync process is very long (about 30sec)
+
+> Not really. I've been mounting JFFS2 on it -- it doesn't handle
+multiple
+> NAND devices in a single DiskOnChip yet, and doesn't do hardware ECC
+--
+> I've been using it with software ECC instead for now. You're unlikely
+to
+> get NFTL working with it for a while.
+
+Well, I don't mind about NFTL (for the boot partition) because my bootfs
+should be read-only (kernel + initrd + tar.bz2)
+I just want a Read only partition (bootfs) and a read/write partition
+for all the conf files / data
+
+Thank you for your help
+
+See you
+
+Philippe
