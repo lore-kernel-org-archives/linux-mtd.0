@@ -1,56 +1,75 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZsRN-00032U-00
-	for mtd-list@infradead.org; Tue, 28 Mar 2000 10:37:37 +0100
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZsRM-00032O-00
-	for mtd@infradead.org; Tue, 28 Mar 2000 10:37:36 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <38E076C2.534F661E@lucidvon.com> 
-References: <38E076C2.534F661E@lucidvon.com> 
-To: Dvir Oren <dviro@lucidvon.com>
-Cc: mtd@infradead.org
-Subject: Re: Bad Block Table 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Mar 2000 10:37:40 +0100
-Message-ID: <17860.954236260@devel2.axiom.internal>
+	id 12Zslc-00033y-00
+	for mtd-list@infradead.org; Tue, 28 Mar 2000 10:58:32 +0100
+Date: Tue, 28 Mar 2000 12:03:13 +0200 (CEST)
+From: Finn Hakansson <finn.hakansson@axis.com>
+To: =?ISO-8859-1?Q?Bj=F6rn_Wes=E9n?= <bjorn.wesen@axis.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Scott Anderson <sanders@mvista.com>,
+        Alexander Larsson <alex@cendio.se>,
+        SeokKuon Kwon <kwonsk@mutech.co.kr>
+cc: mtd@infradead.org
+Subject: Re: Axis log based flash filesystem ported to 2.3 and MTD 
+In-Reply-To: <Pine.LNX.3.96.1000327165250.31589K-100000@fafner.axis.se>
+Message-ID: <Pine.LNX.4.21.0003281115580.17037-100000@vvv.axis.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Mon, 27 Mar 2000, Bjorn Wesen wrote:
 
-dviro@lucidvon.com said:
->  1.  Where is it located?  Oron from M-Systems said that before erase
-> the flash it is important to save it.  So where is it located, and how
-> can I save it? (Will dd work?) 
+> On Mon, 27 Mar 2000, David Woodhouse wrote:
+> > >  The flash is not divided into blocks in our JFFS. The flash is
+> > > logically a single circular append-only file (but with random acces=
+s
+> > > of course). Wear-leveling comes implicitely in that model, since th=
+e
+> > > log-file is circular.=20
+> >=20
+> > When you append to your circular log, you end up eating your tail. Wh=
+at if the=20
+> > erase block you're about to 'eat' doesn't contain any data that needs=
+ to be=20
+> > changed. Do you leave it alone and skip it, or do you erase it anyway=
+?
+>=20
+> The garbage-collector is invoked when the amount of headroom starts to =
+get
+> low compared to the amount of redundant areas in the flash. It will sta=
+rt
+> to erase sectors, and if they contain non-redundant info, it is moved t=
+o
+> the head first. Finn can fill in here in more detail.
+>=20
+> As you see it's important that the GC is triggered at the right time. I=
+f
+> you end up with 1 byte head-room before the GC, you cannot move data ou=
+t
+> of the way of the sector-erase.=20
 
-Stored in the same erase block as the NFTL Media Header(s). 
-Look for BadUnitTable in util/nftl_format.c
+Yes. There must always be enough room to perform garbage collects. The
+room absolutely needed in JFFS is more than 1,5 sectors. This means
+that at least 1,5 sectors of the flash device are unused.
+
+Before every write to the flash, we make sure there is enough space
+left on the device. Deletions are always allowed though.
+
+After every completed write to the flash we check if we have to issue
+a garbage collect.
 
 
-dviro@lucidvon.com said:
->  2.  Also mentioned was that during the lifetime of the flash, if a
-> new bad block is found, it is marked as a bad block.  This will be
-> effective only before doing a boot.  Question is, who is responsible
-> for finding those bad blocks - the M-Systems kernel driver?
+> The parameters of the GC are chosen so they work for us, but they are
+> subject to tuning of course.
 
-This is effective only until you next reboot - i.e. it's not written to the 
-BadUnitTable, only stored in memory. Presumably, the M-Systems driver notices 
-a failure when it tries to erase or write a block, and marks it bad.
+There is a function in JFFS called jffs_garbage_collect which contains
+the criteria for garbage collects that, for the moment, suit our
+products. As Bj=F6rn stated, this function could be used as is, but could
+of course be tuned to fulfil slightly different requirements.
 
-
-dviro@lucidvon.com said:
->  3.  And if the driver is responsible for this, does the MTD driver do
-> the same? 
-
-Not yet.
-
-
-
---
-dwmw2
-
+/Finn
 
 
 
