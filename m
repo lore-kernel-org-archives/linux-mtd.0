@@ -1,17 +1,20 @@
-Received: from web20302.mail.yahoo.com ([216.136.226.83])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16YmMX-0001RW-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2002 11:05:10 +0000
-Message-ID: <20020207111620.70256.qmail@web20302.mail.yahoo.com>
-Date: Thu, 7 Feb 2002 11:16:20 +0000 (GMT)
-From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
-Subject: RE: CF
-To: "Malik, Vipin \[FRCO/HOU\]" <Vipin.Malik@EmersonProcess.com>
-Cc: Linux MTD Lists <linux-mtd@lists.infradead.org>
-In-Reply-To: <AB8D0DF31D9BD511BE94000347959DC9C615A0@MXSFRCOHOU01>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from krynn.axis.se ([193.13.178.10])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16YnNQ-0001Ve-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2002 12:10:08 +0000
+Subject: Re: chip drivers
+From: Jonas Holmberg <jonas.holmberg@axis.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: 
+	<Pine.LNX.4.44.0202070041040.1927-100000@lapdancer.baythorne.internal>
+References: 
+	<Pine.LNX.4.44.0202070041040.1927-100000@lapdancer.baythorne.internal>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Date: 07 Feb 2002 13:20:51 +0100
+Message-Id: <1013084451.24991.0.camel@pcjonashg>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,88 +26,47 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Vipin,
+On Wed, 2002-02-06 at 15:43, David Woodhouse wrote:
+> On 6 Feb 2002, Jonas Holmberg wrote:
+>=20
+> > Do you mean J=F6rn Engels patches
+> > (http://wh.fh-wedel.de/~joern/software/kernel/)? Are they expected to b=
+e
+> > committed to the MTD CVS soon?
+>=20
+> Yes - I believe they contain support for this. I'm intending to merge the=
+m=20
+> as soon as I've finished all the destabilising stuff in JFFS2 (eCos=20
+> support, NAND flash support) and when I stop ignoring Linus' 2.5 kernel.
+>=20
+> At that point I'll look at merging J=F6rn's patches into a 2.5 branch, wh=
+ich
+> should be usable in 2.4 but won't be submitted to Marcelo.
 
-Thanks for your 2c, allways valuable to hear
-viewpoints before we cock things up ourselves! We are
-kind of limited to CF for this product at this stage
-so we have to live with its short commings i guess. We
-were proposing to use ext3 for asynchronus power down
-protection. However the product is not designed to be
-powered down except in the event of brown and
-blackouts.
+I need a solution that will work in 2.4. It sounds like I shouldn't rely
+on J=F6rn's patches working in 2.4.
 
-Thanks again, David
+What really annoys me is that even though different probe funcions will
+find two different chips, the same driver will still be used
+(cfi_cmdset_0002 in my case) for both chips. So if I could merge the two
+mtd_info structs (and everything they point to, like eraseregions and
+flchip structs) the result ought to allow me to create devices that
+start in one chip and end in the other using the partition code in
+current CVS.
 
- --- "Malik, Vipin [FRCO/HOU]"
-<Vipin.Malik@EmersonProcess.com> wrote: > JFFS2 also
-provides file system corruption
-> protection in case of unclean
-> shutdowns.
-> 
-> To really answer your question, you need to provide
-> the fs that you are
-> thinking about on top of CF.
-> 
-> ext2 will not work as it is not designed for regular
-> unclean shutdowns (even
-> with e2fsck).
-> ext3 may work as it is journaled and a buddy of mine
-> tested ext3 format
-> reliability with a hard drive and was happy with it
-> (for his needs).
-> 
-> However, I would not use CF for any app that may be
-> suffer asynchronous
-> power down. CF (at least the ones I tested a few
-> years ago) are notoriously
-> bad at being able to withstand an asynchronous
-> shutdown if the OS is writing
-> to them. They suffer from low level formatting
-> failures (And in one case
-> even a partial hardware failure- where a portion of
-> the CF became completely
-> unaccessable).
-> 
-> Just my 2c.
-> 
-> Vipin
-> 
-> 
-> > -----Original Message-----
-> > From: David Mackay
-> [mailto:monitoreurope@yahoo.co.uk]
-> > Sent: Wednesday, February 06, 2002 10:26 AM
-> > To: Linux MTD Lists
-> > Subject: CF
-> > 
-> > 
-> > We have just been informed that CF disks have wear
-> > levelling built in and we do not need therfore to
-> > consider a file system such as JFFS(2), is this
-> true?
-> > 
-> > Is so any comments about how sucsessful it is?
-> > 
-> > Thanks, David
-> > 
-> > __________________________________________________
-> > Do You Yahoo!?
-> > Everything you'll ever need on one web page
-> > from News and Sport to Email and Music Charts
-> > http://uk.my.yahoo.com
-> > 
-> >
->
-______________________________________________________
-> > Linux MTD discussion mailing list
-> >
->
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >  
+This can be done in two ways at least: an ugly merge-function (kind of a
++ operator for mtd_infos), or make the probe functions check the
+map->fldrv_priv and use an existing mtd_info before creating a new one.
+I prefer the latter. I think it would work if I add an offset field to
+map_info that can be used for the second probe (added to all offsets in
+eraseregions and flchips for the second probe). The only problem would
+be the chipshift field in cfi_private (I think) and it could be removed
+and replaced by the start (offset) field in flchip where used.
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+The second probe with the same map would, of course, have to fail if
+there were a mismatch in interleave, device_type etc.
+
+I would like to get your opinion on this. Would it have any chance of
+ending up in 2.4 if it works?
+
+/Jonas
