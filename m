@@ -1,19 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15fIMQ-0006Ut-00
-	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 10:55:42 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B989822.DC1D51BE@sis.com.tw> 
-References: <3B989822.DC1D51BE@sis.com.tw>  <3B981BF6.24FD764D@sis.com.tw> <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> <14482.999791732@redhat.com> <17891.999850127@redhat.com> 
-To: Ollie Lho <ollie@sis.com.tw>
-Cc: kira brown <kira@hex.linuxgrrls.org>,
-    Herman Oosthuysen <herman@wirelessnetworksinc.com>,
-    "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: DiskOnChip write performance 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 07 Sep 2001 11:01:39 +0100
-Message-ID: <4786.999856899@redhat.com>
+Received: from [195.205.16.233] (helo=dgt-lab.com.pl)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15fLYV-0006lz-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 14:20:23 +0100
+Received: from dgt-lab.com.pl (unknown [192.168.6.66])
+	by dgt-lab.com.pl (Postfix) with ESMTP id F2F3647A0
+	for <linux-mtd@lists.infradead.org>; Fri,  7 Sep 2001 14:29:39 +0200 (CEST)
+Message-ID: <3B98CAF4.982C405E@dgt-lab.com.pl>
+Date: Fri, 07 Sep 2001 15:26:12 +0200
+From: Wojciech Kromer <krom@dgt-lab.com.pl>
+MIME-Version: 1.0
+To: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 on 8MB Flash-Chip conneted to MPC850 works extremly slow:(
+References: <3B987838.A7F8B7AA@dgt-lab.com.pl>  <3C6BEE8B5E1BAC42905A93F13004E8AB6B6B35@mailse01.axis.se> <18025.999850205@redhat.com> <3B98865D.8043C745@dgt-lab.com.pl>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,20 +25,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ollie@sis.com.tw said:
->  Yea, I know what Big O is although I am not CompSci graduate. 
+>
+> Another msgs:
+> # dd if=file of=/dev/mtdblock4
+> 588+1 records in
+> 588+1 records out
+> Last[3] is a79f, datum is 7c60
+> end_request: I/O error, dev 1f:04 (mtdblock), sector 128
+> Last[3] is a79f, datum is 7c60
+> .....
+>
+> But /dev/mtdblock4 should be1024K (see my prev mail)
 
-Sorry :)
-
-> My question is which part of the NFTL code is that bad ??
-
-The bit that selects a chain to fold in NFTL_makefreeblock is fairly crap, 
-and the way we do findfreeblock(0)/makefreeblock()/findfreeblock(desperate)
-in NFTL_findwriteunit() is also fairly crap.
-
-That lot wants rethinking.
-
-
+Sorry bothering You. This part was a hardware problem.
 
 --
-dwmw2
+* * * * * * * * * * * *
+* per pedes ad astra! *
+* * * * * * * * * * * *    mailto:krom@dgt-lab.com.pl
