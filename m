@@ -1,18 +1,14 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
+Received: from [210.77.143.228] (helo=tsinghua.org.cn)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17kFIH-0002Qo-00
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 03:44:25 +0100
-Received: from [192.168.5.81] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2510106 for linux-mtd@lists.infradead.org; Wed, 28 Aug 2002 19:44:35 -0700
-Message-ID: <3D6D8BC6.8000909@redswitch.com>
-Date: Wed, 28 Aug 2002 19:49:42 -0700
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: the latest MTD code from CVS has compilation errors
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 17kGYc-0003Dy-00
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2002 05:05:22 +0100
+From: "" <yanhy@tsinghua.org.cn>
+To: linux-mtd@lists.infradead.org  
+Date: Thu, 29 Aug 2002 12:06:18 +0800
+Reply-To: "" <yanhy@tsinghua.org.cn>
+Subject: Can anyone give me some suggestions on using jffs(1/2)
+Content-Type: text/plain
+Message-Id: <E17kGYc-0003Dy-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,19 +20,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-
-I tried to compile the latest MTD code got from CVS tree on linux 2.4.4 
-(from DENX). When fs/jffs2/background.c is compiled, it complains that
-   background.c:108: arguments given to macro 'recalc_sigpending'
-   background.c:155: arguments given to macro 'recalc_sigpending'
-errors. I looked into the code and included header file. In 
-linux/mtd/compatmac.h the macro is re-defined to have no arguments at 
-all if kernel version < 2.5.5. So in my case 108 and 155 should be 
-changed to have no arguments.
-
-Anybody reported this "bug" before?
-
-- Shawn.
-
-PS: compatmac.h's modification date is 2002/08/07, version v1.39.
+Hi!I'm a new comer here and I am new to uClinux.I want to use jffs(1 or 2) as the
+root filesystem on target M5272C3.But i failed to do that though i tried a lot
+according to "jffs-howto.txt".Can you tell me how to begin?
+well,I have download uClinux-2.4.x( uClinux-dist-20020701.tar.gz.tar) from
+www.uclinux.org, and i'v succesfully run the kernel on the M5272C3 target using
+romfs as root fs(BTW:i use ppcboot as the bootloader,which can receive
+kernel+romfs image via ethernet port and then put it in ram at 0x20000.Then i can
+run the kernel by typing command "go 20000") .
+Now, i want to use jffs as the root fs instead of romfs,but i failed to compile
+the kernel when i select MTD support, MTD partitions support and jffs support as 
+jffs-howto.txt says.
+Can you give me some suggestions how to build the jffs(2 or 1) as root fs? Are any
+patches required ?
+Thanks so much!
+Best wishes
+Yan
