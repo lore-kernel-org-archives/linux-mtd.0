@@ -1,15 +1,15 @@
-Received: from msr68.hinet.net ([168.95.4.168] helo=msr.hinet.net)
+Received: from msr8.hinet.net ([168.95.4.108] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16t1Dm-0005Ih-00
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 07:59:47 +0100
+	id 16t1Kj-0005KJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2002 08:06:57 +0100
 Received: from steve2000 (61-217-122-141.HINET-IP.hinet.net [61.217.122.141])
-	by msr.hinet.net (8.9.3/8.9.3) with SMTP id OAA01231
-	for <linux-mtd@lists.infradead.org>; Thu, 4 Apr 2002 14:59:42 +0800 (CST)
-Message-ID: <006e01c1dba6$54865b70$5501a8c0@synso.com.tw>
+	by msr.hinet.net (8.9.3/8.9.3) with SMTP id PAA02234
+	for <linux-mtd@lists.infradead.org>; Thu, 4 Apr 2002 15:06:54 +0800 (CST)
+Message-ID: <008801c1dba7$55a5b8b0$5501a8c0@synso.com.tw>
 From: "Steve Tsai" <startec@ms11.hinet.net>
 To: <linux-mtd@lists.infradead.org>
 Subject: how to use amd_flash.c
-Date: Thu, 4 Apr 2002 14:59:54 +0800
+Date: Thu, 4 Apr 2002 15:07:07 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="big5"
