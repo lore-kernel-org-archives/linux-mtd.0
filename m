@@ -1,15 +1,17 @@
-Received: from vindaloo.ras.ucalgary.ca ([136.159.55.21])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16kob1-0006xD-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 15:53:52 +0000
-Date: Tue, 12 Mar 2002 09:05:04 -0700
-Message-Id: <200203121605.g2CG54o27683@vindaloo.ras.ucalgary.ca>
-From: Richard Gooch <rgooch@ras.ucalgary.ca>
-To: David Woodhouse <postmaster@infradead.org>
+	id 16kok4-0006yI-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2002 16:03:12 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200203121605.g2CG54o27683@vindaloo.ras.ucalgary.ca> 
+References: <200203121605.g2CG54o27683@vindaloo.ras.ucalgary.ca>  <32074.1015924653@redhat.com> 
+To: Richard Gooch <rgooch@ras.ucalgary.ca>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Administrivia.
-In-Reply-To: <32074.1015924653@redhat.com>
-References: <32074.1015924653@redhat.com>
+Subject: Re: Administrivia. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 12 Mar 2002 16:14:34 +0000
+Message-ID: <6849.1015949674@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,18 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse writes:
-> Anyone else who has stupid broken autoresponders that send crap
-> _anywhere_ but the SMTP reverse-path, save me the trouble and
-> unsubscribe from the list now.
+rgooch@ras.ucalgary.ca said:
+>  That would be linux-mtd-admin@lists.infradead.org, right? You prefer
+> to receive crap rather than having it sent back to the originator?
 
-That would be linux-mtd-admin@lists.infradead.org, right? You prefer
-to receive crap rather than having it sent back to the originator?
+It would. I'm perfectly capable of removing crap from my inbox - I object 
+to it getting sent to my lists.
 
-At least tell us what kind of crap you've seen...
+> At least tell us what kind of crap you've seen... 
 
-				Regards,
+http://lists.infradead.org/pipermail/linux-mtd/2002-March/004413.html
 
-					Richard....
-Permanent: rgooch@atnf.csiro.au
-Current:   rgooch@ras.ucalgary.ca
+--
+dwmw2
