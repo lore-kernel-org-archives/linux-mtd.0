@@ -1,16 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: simon@baydel.com
-In-Reply-To: <EDC19A8677F@baydel.com>
-References: <3F9F94C0.28402.10FED3@localhost>
-	 <1067424903.15551.1537.camel@hades.cambridge.redhat.com>
-	 <EDC19A8677F@baydel.com>
-Content-Type: text/plain
-Message-Id: <1067526214.3423.147.camel@hades.cambridge.redhat.com>
+Received: from mail.fh-wedel.de ([213.39.232.194])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AFGta-0002i9-LX
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 17:47:42 +0000
+Date: Thu, 30 Oct 2003 18:45:30 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: J B <mad_flasher@hotmail.com>
+Message-ID: <20031030174530.GC25390@wohnheim.fh-wedel.de>
+References: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
 Mime-Version: 1.0
-Date: Thu, 30 Oct 2003 15:03:34 +0000
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: SmartMedia FAT
+cc: jffs-dev@axis.com
+Subject: Re: jffs2 fragmentation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +24,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-10-30 at 14:26 +0000, Simon Haynes wrote:
-> I have been looking at the OOB data format for SSFDC and it seems I will have 
-> to create and process my own OOB data as I can not see how the NAND/MTD layer 
-> will work with this. 
+Noone cared yet, how odd.
 
-Yes, that's expected. NFTL and JFFS2 do this too.
-
-> When we started this project there seemed to be a fixed NAND OOB format. Now 
-> the NAND OOB format is selectable. I have noticed in a couple of kernel 
-> distributions that the JFFS2 code does not seem to be aware of this and just 
-> calls pain mtd->read. I guess this would mean no ecc for JFFS2 on NAND unless 
-> it was done automatically by the hardware. This was the case for latest 
-> stable kernel, 2.4.22 downloaded from kernel.org today. 
+On Sat, 18 October 2003 09:20:23 -0500, J B wrote:
 > 
-> Is this really the case ?
+> Ok, maybe I am just completely missing something here, but I am stumped.  I 
+> am running some tests (similar to the jitter tests Vipin did a long time 
+> ago), and I am seeing some very bad performance.   Below is a summary of 
+> what I am doing and what I am seeing.
+> 
+> I have a jffs2 filesystem that is mounted and starts out at ~87% full.  
+> There are various small files on there, and one big file, ~15MiB (lgood 
+> compression :).  Here is what I do:
+> 
+> rm /opt/big_file; cp /home/big_file /opt/big_file; rm /opt/big_file; cp 
+> /home/big_file2 /opt/big_file
+> 
+> /opt is the jffs2 filesystem, /home is an nfs mounted directory.  big_file 
+> and big_file2 are the same size, but have different content (i.e. possibly 
+> different compression ratios).
+> 
+> Normally, a rm/cp pair takes about 2 minutes on my system.  After about 10 
+> iterations, the copies begin to take longer, about 3-4 minutes.   After 
+> about 10 iterations they take upwards of 1/2 an hour.
 
-The JFFS2 in the 2.4 kernel doesn't support NAND. The code in CVS does.
+The first slowdown is expected, the second is not.
 
+When flash is full, jffs2 has to wait for garbage collection before
+writing.  Flash erase costs roughly as long as flash write, so double
+time is expected.  Try to add a sleep after each rm and this should go
+away.
+
+1/2 hour is a surprise.  Does this still appear, when adding a sleep?
+
+> Looking at the dirty, used, and wasted size from a df command, I see this:
+> 
+> <7>STATFS:
+> <7>flash_size:	00680000
+> <7>used_size:		0041afe4
+> <7>dirty_size:	00199d2c
+> <7>wasted_size:	0000012c
+> <7>free_size:		000cb1c4
+> <7>erasing_size:	00000000
+> <7>bad_size:		00000000
+> <7>sector_size:	00020000
+> <7>nextblock:	      0x00660000
+> <7>gcblock:	      0x000a0000
+> 
+> So almost 13 eraseblocks worth of dirty space (NOR flash with 128KiB 
+> eraseblocks).  But, there is only 1 block on the dirty_list, 6 on the 
+> free_list, and 44 on the clean_list.  Garbage collection is going on during 
+> the writes obviously, but it doesn't seem to be making any difference.  In 
+> fact, the dirty_size _increases_.
+> 
+> So here is my question:  because of the size of the file involved and the 
+> relative lack of free eraseblocks to start with, is it possible that the 
+> filesystem is so fragmented that the dirty space is spread accross many 
+> eraseblocks and garbage collection is incapable of actually freeing up any 
+> space?
+
+Fragmentation is hard to achieve for log structured file systems. ;)
+
+Honestly, I have no idea.  Your test is not the usual workload for
+jffs2, so you may have uncovered some hidden problem. (and one that
+most people don't care about)
+
+> That is the only conclusion I could come to.  Any thoughts would be 
+> appreciated.
+
+Jörn
 
 -- 
-dwmw2
+Homo Sapiens is a goal, not a description.
+-- unknown
