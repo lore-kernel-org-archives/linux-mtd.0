@@ -1,18 +1,18 @@
-Received: from riker.dsl.inconnect.com
-	([209.140.76.229] helo=ns1.rikers.org ident=root)
+Received: from [213.97.115.166] (helo=madrid.hispafuentes.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15UBPX-0007y5-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2001 19:17:00 +0100
-Message-ID: <3B703045.FDD45F99@Rikers.org>
-Date: Tue, 07 Aug 2001 12:15:33 -0600
-From: Tim Riker <Tim@Rikers.org>
+	id 15UBUU-0007yb-00
+	for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2001 19:22:07 +0100
+Received: from hispafuentes.com (localhost [127.0.0.1])
+	by madrid.hispafuentes.com (Postfix) with ESMTP id 64B5132588
+	for <linux-mtd@lists.infradead.org>; Tue,  7 Aug 2001 20:28:01 +0200 (CEST)
+Message-ID: <3B70332C.A9F3D944@hispafuentes.com>
+Date: Tue, 07 Aug 2001 20:27:56 +0200
+From: olea@hispafuentes.com
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mtd lilo
-References: <3B6FD798.17986BCA@sri.crossvue.com>  <3B6E01BA.2B394136@sri.crossvue.com> <4758.997179115@redhat.com> <31492.997190095@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: A question about FAT, FTL and MTD 
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +24,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hmmm.
+	The FTL related documentation I've read talks about a FAT interface to
+flash chips but I'm confused because I didn't found any statement about
+FAT is part of the FTL standard or not and because I didn't found a
+reference to FAT in the MTD code/docs.
 
-Can the FAQ get updated?
+	Can anybody confirm me if FAT is part of the FTL standard? If yes, how
+is it supposed to be used with MTD?
 
-ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/mtd-jffs-HOWTO.txt
+	If not, what can be needed to do that? As we have a flash NAND memory
+on board, maybe it'd need a nftl driver similar to the DOC one. Correct
+me if I'm wrong.
 
-The DOC section says to use nftl_format
+	I understood that JFFS2 is a better tuned option for FS than FAT, but
+we had a legacy FAT system and it could be useful to maintain the DOS
+media compatibility if possible, and we want to be sure what  design
+options we have.
 
-David Woodhouse wrote:
-> 
-> dpathirana@sri.crossvue.com said:
-> >  I formatted it with the nftl_format, how does this affect lilo?? How
-> > can I figure out if it's still there??
-> 
-> You probably removed the BIOS completely then. You can't use LILO without a
-> BIOS to provide INT 13h functionality.
-> 
-> Reformat the DiskOnChip with the DFORMAT utility, and you should get the
-> BIOS back. You shouldn't need to use nftl_format - I'm severely tempted to
-> remove it from CVS.
-> 
-> --
-> dwmw2
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+	Again, thanks for your time :-)
 
 -- 
-Tim Riker - http://rikers.org/ - short SIGs! <g>
-All I need to know I could have learned in Kindergarten
-... if I'd just been paying attention.
+	A.Ismael Olea González
+	tlf +(34) 914 575 330
+	mailto:olea@hispafuentes.com
