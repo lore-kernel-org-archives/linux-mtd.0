@@ -1,35 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13CzvD-0006BK-00
-	for mtd-list@infradead.org; Fri, 14 Jul 2000 08:30:07 +0100
+	id 13D02V-0006Cj-00
+	for mtd-list@infradead.org; Fri, 14 Jul 2000 08:37:39 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13CzvB-0006BD-00
-	for mtd@infradead.org; Fri, 14 Jul 2000 08:30:06 +0100
+	id 13D02U-0006Cd-00
+	for mtd@infradead.org; Fri, 14 Jul 2000 08:37:38 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200007140358.WAA26445@duracef.shout.net> 
-References: <200007140358.WAA26445@duracef.shout.net> 
-To: Michael Elizabeth Chastain <mec@shout.net>
-Cc: scote1@matrox.com, mtd@infradead.org, tao@acc.umu.se
-Subject: Re: Config.in 
+In-Reply-To: <20000713200952.1875.qmail@web5302.mail.yahoo.com> 
+References: <20000713200952.1875.qmail@web5302.mail.yahoo.com> 
+To: Juan Gonzo <kayemmess@yahoo.ca>
+Cc: MTD Mailing List <mtd@infradead.org>
+Subject: Re: persistence of files using jffs 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jul 2000 08:30:01 +0100
-Message-ID: <8319.963559801@cygnus.co.uk>
+Date: Fri, 14 Jul 2000 08:37:36 +0100
+Message-ID: <9496.963560256@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-mec@shout.net said:
->  I am not following the MTD discussion, but I gather the idea is to
-> use the same Config.in files for both 2.2 and 2.3.  If you need to do
-> that, I suppose you can use define_bool and get away with it. 
+kayemmess@yahoo.ca said:
+>    (1) mknod /dev/mtd3 b 31 3   (mtd3 is where the fs 'partition' is,
+>                                  using examples from nora.c)
 
-Ok. I'll leave Linus with define_tristate for now and change my copy back 
-to define_bool. Hopefully I won't accidentally flush that change back to 
-Linus.
+The block devices should be /dev/mtdblock<n>. /dev/mtd3 should be a 
+character device. But the names don't really matter.
 
-Thanks.
+
+kayemmess@yahoo.ca said:
+>  And I can 'umount /mnt' successfully as well.
+> However, when I cycle power on the system, any *new* files I create or
+> copy into this space are lost. 
+
+Hmmm. Are they there when you unmount and remount? Can you make sure you're 
+using the latest version from CVS, and enable CONFIG_JFFS_FS_VERBOSE?
+
+
 
 --
 dwmw2
