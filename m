@@ -1,24 +1,16 @@
-Received: from mail.brecis.com ([65.198.34.10] helo=brecis.com)
+Received: from dsl-64-129-133-253.telocity.com ([64.129.133.253] helo=skylab.outpostsentinel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16idQ8-0003Vn-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2002 15:33:36 +0000
-Received: from solar.brecis.com (solar [172.18.10.8])
-	by brecis.com (8.9.3+Sun/8.9.3) with ESMTP id HAA09413
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Mar 2002 07:42:48 -0800 (PST)
-Received: from andromeda.brecis.com (andromeda [172.18.10.32])
-	by solar.brecis.com (8.9.1b+Sun/8.9.3) with ESMTP id HAA10838
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Mar 2002 07:45:01 -0800 (PST)
-Received: (from swahl@localhost)
-	by andromeda.brecis.com (8.9.1b+Sun/8.9.1) id HAA07843
-	for linux-mtd@lists.infradead.org; Wed, 6 Mar 2002 07:45:30 -0800 (PST)
-Date: Wed, 6 Mar 2002 09:44:31 -0600
-From: Steve Wahl <swahl@brecis.COM>
+	id 16idaY-0003Wq-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2002 15:44:22 +0000
+Message-Id: <200203061645.g26Gjl806741@skylab.outpostsentinel.com>
+Date: Wed, 06 Mar 2002 10:54:29 -0500
 To: linux-mtd@lists.infradead.org
-Subject: Possible bug in /proc/mtd ?
-Message-ID: <20020306094431.C15112@brecis.com>
+CC: dwmw2@infradead.org
+From: Chris Fowler <strtok@hotmail.com>
+Subject: Re: Lost DOC2000 after installation of Grub
+Reply-To: strtok@hotmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,48 +22,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've just started to bring up MTD in a uC-linux derived system.
+When I use root=(dc0,0) :
 
-I've found what I believe is a problem in the code for /proc/mtd.
+Error 23:  Erro parsing number.
 
-Does anyone else get some sort of strange behavior if they run:
+But my root is not on the flash.  My root is /dev/ram7.  I have an initrd that loads data from fla1 into ram7.  Initrd temrinates then the kernel mounts /dev/ram7 as it root.
 
-	dd if=/proc/mtd of=/dev/tty bs=1
+Lilo.conf:
+boot=/dev/nftla
+compact
+#install=/boot/doc.b
+map=/boot/map
+disk=/dev/nftla
+bios=0x80
+prompt
+delay = 50
+timeout = 50
+serial=0,9600n8
 
-The strange behavior on my system is a hang; it may be an oops or
-panic of some sort on a system with a mmu.
+image = /boot/kernel
+        label = outpost
+        root = /dev/ram7
+        initrd = /boot/initrd.gz
+        read-only
+        ramdisk=32768
+        append="console=ttyS0,9600"
 
-If you see this problem, I think it should go away with this patch:
+image = /boot/rtl8139.net
+        label = net
 
+I'm not concerned about serial console access.  How can I get the system up so I can try nftl_format?  Will I ever be able to use DFORMAT again?
 
-------------------------------------------------------------
---- mtdcore.c	22 Nov 2001 05:29:30 -0000	1.2
-+++ mtdcore.c	6 Mar 2002 15:40:55 -0000
-@@ -289,21 +289,21 @@
-         }
- 
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
-         *eof = 1;
- #endif
- 
- done:
- 	up(&mtd_table_mutex);
-         if (off >= len+begin)
-                 return 0;
--        *start = page + (begin-off);
-+        *start = page + (off-begin);
-         return ((count < begin+len-off) ? count : begin+len-off);
- }
- 
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2,2,0)
- struct proc_dir_entry mtd_proc_entry = {
-         0,                 /* low_ino: the inode -- dynamic */
-         3, "mtd",     /* len of name and name */
-         S_IFREG | S_IRUGO, /* mode */
-         1, 0, 0,           /* nlinks, owner, group */
-         0, NULL,           /* size - unused; operations -- use default */
-------------------------------------------------------------
+Thanks,
+Chris Fowler
 
-Thanks for looking,
-
---> Steve Wahl
+strtok@hotmail said: > Now when it boots I get a grub propmt. I'm not sure what to do to 
+> make the doc-lilo boot now. So I do not know what to type at grub
+> root=(dc0,0) kernel=/boot/... 
+> How do I revocer without replaceing the chip? Use nftl_format if DFORMAT won't work. 
