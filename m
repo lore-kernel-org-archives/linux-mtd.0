@@ -1,18 +1,19 @@
-Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
+Received: from u-87-21.karlsruhe.ipdial.viaginterkom.de ([62.180.21.87] helo=dea.waldorf-gmbh.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157HdD-0004op-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 15:16:27 +0100
-Message-ID: <3B1CEB15.FFB2EADB@daniel.com>
-Date: Tue, 05 Jun 2001 09:22:13 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
-MIME-Version: 1.0
-To: Bjorn Wesen <bjorn.wesen@axis.com>
-CC: David Woodhouse <dwmw2@infradead.org>,
- 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 157JBH-0004v1-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 16:55:44 +0100
+Date: Tue, 5 Jun 2001 17:17:04 +0200
+From: Ralf Baechle <ralf@uni-koblenz.de>
+To: Chris Wedgwood <cw@f00f.org>
+Cc: Bjorn Wesen <bjorn.wesen@axis.com>, David Woodhouse <dwmw2@infradead.org>,
+   linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Subject: Re: Missing cache flush.
-References: <Pine.LNX.4.21.0106051105110.1078-100000@godzilla.axis.se>
+Message-ID: <20010605171704.B30818@bacchus.dhis.org>
+References: <13942.991696607@redhat.com> <Pine.LNX.4.21.0106051105110.1078-100000@godzilla.axis.se> <20010606005703.A23758@metastasis.f00f.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20010606005703.A23758@metastasis.f00f.org>; from cw@f00f.org on Wed, Jun 06, 2001 at 12:57:03AM +1200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,33 +25,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Bjorn Wesen wrote:
+On Wed, Jun 06, 2001 at 12:57:03AM +1200, Chris Wedgwood wrote:
 
->
-> I'd agree that to be really certain, a "flush_dcache()" function
-> should be implemented and used when an erase finishes. Like David Miller
-> wrote somewhere in the thread, one way is to use your knowledge of the
-> arch's cache and do suitable dummy accesses to flush it, if there is no
-> explicit command to do it. But that's just up to the arch coders..
->
+> I don't know about the CRIS (never heard of it, what is it?), but on
+> an Athlon when benchmarking stuff, I could still see L1 cache hits
+> from data that was 15 seconds old under certain work-loads (obviously
+> not gcc!). Does anyone know how old something may exisit in cache
+> before being written back to RAM?
 
-Here's a stupid question: Are there any processors out there that have a cache
-but no explicit cache-flush command?
+I know of no architecture that has a time limit that after which's expire
+caches get written back to memory.  In other words cache lines may stay
+dirty for an indefinate time if things are just right.
 
-If not (i.e. no such "funny" processors), then what's wrong with the arch
-dependent include through a define to execute the
-arch specific asm command?
-
-The only issue (besides knowing the cache size at run time) that I can think
-about the "dummy" eviction scheme is that you now need to xfer potentially 3
-times the cache
-size data to and from memory:
-
-#1. The dummy read
-#2. The eviction of the entire cache data being evicted
-#3. The refilling of the cache with good data again, as the dummy data cannot
-really represent anything useful.
-
-Is my thinking here completely non coherent with others? ;)
-
-Vipin
+  Ralf
