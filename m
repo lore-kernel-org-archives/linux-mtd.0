@@ -1,35 +1,25 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 132v3y-00037R-00
-	for mtd-list@infradead.org; Fri, 16 Jun 2000 13:17:30 +0100
-Date: Fri, 16 Jun 2000 14:17:58 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org,
-        =?iso-8859-1?Q?S=E9bastien_C=F4t=E9?= <scote1@matrox.com>
-Subject: Re: MTD CVS update: 'mtd/fs/jffs inode-v22.c Makefile inode.c' 
-In-Reply-To: <19871.961157113@cygnus.co.uk>
-Message-ID: <Pine.LNX.4.10.10006161417340.32348-100000@tammy.signum.se>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 132v6F-000393-00
+	for mtd-list@infradead.org; Fri, 16 Jun 2000 13:19:51 +0100
+Received: from alex by infradead.org with local (Exim 3.03 #1)
+	id 132v6F-00038x-00
+	for cvs-notify@infradead.org; Fri, 16 Jun 2000 13:19:51 +0100
+To: cvs-notify@infradead.org
+Subject: MTD CVS update: 'mtd/fs/jffs inode-v23.c'
+Message-Id: <E132v6F-00038x-00@infradead.org>
+From: Alexander Larsson <alex@infradead.org>
+Date: Fri, 16 Jun 2000 13:19:51 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Update of /home/cvs/mtd/fs/jffs
+In directory infradead.org:/tmp/cvs-serv12081
 
-
-On Fri, 16 Jun 2000, David Woodhouse wrote:
-
-> 
-> alex@cendio.se said:
-> > 
-> >  Btw. Do you want any help merging these? 
-> 
-> Yes please.
-
- I can't test it right now, but i can do the "obvious" changes.
-
-/ Alex
-
+Modified Files:
+	inode-v23.c 
+Log Message:
+Update buf->f_bavail in statfs so df doesn't say 0 bytes availible.
 
 
 
