@@ -1,199 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13GiVO-00049d-00
-	for mtd-list@infradead.org; Mon, 24 Jul 2000 14:42:50 +0100
-Received: from mx0.i-way.net.uk ([212.49.192.2] ident=root)
+	id 13GjpM-0004Qd-00
+	for mtd-list@infradead.org; Mon, 24 Jul 2000 16:07:32 +0100
+Received: from roma.axis.se ([193.13.178.2])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13GiVL-00049W-00
-	for mtd@infradead.org; Mon, 24 Jul 2000 14:42:48 +0100
-Received: from m4exch.m4data.co.uk (host2.m4data.co.uk [212.49.209.214] (may be forged))
-	by mx0.i-way.net.uk (8.9.3/8.9.3) with ESMTP id NAA31662
-	for <mtd@infradead.org>; Mon, 24 Jul 2000 13:40:28 +0100
-Message-ID: <00B4D286538DD311BC6E005004E9EFC729B2D2@M4EXCH>
-From: Simon Munton <Simon.Munton@m4data.co.uk>
-To: "MTD (E-mail)" <mtd@infradead.org>
-Subject: additions and corrections to cfi_cmdset_0002.c 
-Date: Mon, 24 Jul 2000 14:42:47 +0100
+	id 13GjpK-0004QX-00
+	for mtd@infradead.org; Mon, 24 Jul 2000 16:07:30 +0100
+Date: Mon, 24 Jul 2000 17:09:42 +0200 (CEST)
+From: Finn Hakansson <finn@axis.com>
+To: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
+cc: "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
+Subject: Re: jffs_file_write
+In-Reply-To: <3978DFBA.175899F2@evoserve.com>
+Message-ID: <Pine.LNX.4.21.0007241657220.18380-100000@vvv.axis.se>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01BFF575.0D7FF500"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Sat, 22 Jul 2000, Rogelio M. Serrano Jr. wrote:
 
-------_=_NextPart_000_01BFF575.0D7FF500
-Content-Type: text/plain;
-	charset="iso-8859-1"
+> How do we handle these:
+> 
+>   Appending to an existing file. What fields must be updated with what?
+> We write a new inode right? What values should I place in the raw inode
+> struct?
 
-I found a problem when writing to the second or subsequent set of chips: the
-commands to write/erase the chips were being sent to the first chip only.
-
-It seems to be working OK on my system which has 4x 2MB AM29LV017 flash
-devices. I've mounted JFFS on it, and successfully copied/deleted files. The
-only "problem" I've had is when deleting files - it takes tens of seconds to
-finish. I guess this is down to the garbage collection - several flash
-erases occur, and if I compare a before and after dump of the flash, it
-would appear that everything has moved around. The filesystem was ~65% used
-before the delete, ~54% used after the delete. But so far I've not had any
-files being corrupted.
-
-The include diff also includes the following from my earlier post (for which
-i apologise for forgetting the subject!):
-
->I've added a set of xxx_2_by_8 routines to cfi_cmdset_0002.c to support the
->hardware I'm using.
-
->I also added code in cfi_amdext_setup() to select the correct routines
-based
->on buswidth and interleave.
-
- <<cfi_cmdset_0002.c.diff.gz>> 
-
-Simon
-
-========================================================
-Simon Munton	simonm@m4data.co.uk
-M4 Data Ltd	Tel: 44-1749-683800
-Mendip Court, Bath Rd, Wells	Fax: 44-1749-673928
-Somerset, BA5 3DG, England
+There must be a raw inode preceeding each new chunk of data. The kind of
+stuff that has to be inserted into each raw inode in jffs_file_write is
+approximately what is in there today. The thingies that have to be changed
+are the raw inode's version, offset and dsize. Of course one have to
+compute new checksums. I don't think there are stuff other than that.
 
 
- <<cfi_cmdset_0002.c.diff.gz>> 
+>   Rewriting file? Writing a file?
 
-------_=_NextPart_000_01BFF575.0D7FF500
-Content-Type: application/octet-stream;
-	name="cfi_cmdset_0002.c.diff.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="cfi_cmdset_0002.c.diff.gz"
+Yeah. One day, write and rewrite should be merged into one single function...
 
-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
-AA==
+/Finn
 
-------_=_NextPart_000_01BFF575.0D7FF500
-Content-Type: application/octet-stream;
-	name="cfi_cmdset_0002.c.diff.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="cfi_cmdset_0002.c.diff.gz"
-
-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
-7b9AJe/f6ueX5+97p0e9o/vq5f9MX4sJzzUAAA==
-
-------_=_NextPart_000_01BFF575.0D7FF500--
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
