@@ -1,45 +1,34 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from tmmi196-012.telusvelocity.net
-	([209.115.196.12] helo=Wakko.deltatee.com ident=mail)
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 119EEn-0001bo-00
-	for mtd@infradead.org; Tue, 27 Jul 1999 21:54:15 +0100
-Date: Tue, 27 Jul 1999 14:53:31 -0600 (MDT)
-From: Jason Gunthorpe <jgg@ualberta.ca>
-Reply-To: Jason Gunthorpe <jgg@ualberta.ca>
-To: Mike Panetta <mpanetta@realminfo.com>, dony <dony.he@huawei.com.cn>,
+	id 119EKE-0001cG-00
+	for mtd@infradead.org; Tue, 27 Jul 1999 21:59:50 +0100
+Date: Tue, 27 Jul 1999 14:59:18 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: Jason Gunthorpe <jgg@ualberta.ca>
+cc: Mike Panetta <mpanetta@realminfo.com>, dony <dony.he@huawei.com.cn>,
     mtd@infradead.org
-Subject: FFS2 and MTD stuff
-Message-ID: <Pine.LNX.3.96.990727144902.20266A-100000@Wakko.deltatee.com>
+Subject: Re: FFS2 and MTD stuff
+In-Reply-To: <Pine.LNX.3.96.990727144902.20266A-100000@Wakko.deltatee.com>
+Message-ID: <Pine.LNX.3.96.990727145821.10782A-100000@white.priv.deltatee.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Here is another drop of my code base. This version has a few bug fixes to
-the base MTD stuff, but sports a new FFS2 r/w filesystem and a FF2 bios
-extension boot loader for linux.
+On Tue, 27 Jul 1999, Jason Gunthorpe wrote:
 
-I now have a complete stand alone system that boots from flash and uses
-/dev/mtd1 as it's root device.
+> My code is at 
+> 
+> http://www.deltatee.com/~jgg/mtd/mtd/mtd-19990727.tar.gz
 
-Unfortunately the FFS2 stuff isn't as complete as I would like it it be
-and I have to leave it for awhile as I have to add features to the product
-that all this is supporting :>
+Er, drop that double mtd,
 
-Basically right now it is just a fancy WORM filesystem, but all the
-structures are there to implement more advanced writing functions - see
-the todo list..
-
-My code is at 
-
-http://www.deltatee.com/~jgg/mtd/mtd/mtd-19990727.tar.gz
-
-Enjoy!
+http://www.deltatee.com/~jgg/mtd/mtd-19990727.tar.gz
 
 Jason
-
 
 
 
