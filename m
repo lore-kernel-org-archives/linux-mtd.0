@@ -1,29 +1,14 @@
-Received: from smtp7.wanadoo.fr ([193.252.22.24])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CyX16-00079G-Cm
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 10:11:06 -0500
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0703.wanadoo.fr (SMTP Server) with ESMTP id 4FEA01000095
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  8 Feb 2005 16:10:45 +0100 (CET)
-Received: from vodka.iomeda.fr (ARouen-106-1-34-221.w81-48.abo.wanadoo.fr
-	[81.48.71.221])
-	by mwinf0703.wanadoo.fr (SMTP Server) with ESMTP id E33E1100009E
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  8 Feb 2005 16:10:44 +0100 (CET)
-Received: from rhum.iomeda.fr ([192.168.0.24] ident=mail)
-	by vodka.iomeda.fr with esmtp (Exim 4.34) id 1CyX0l-0005fj-UK
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2005 16:10:44 +0100
-Date: Tue, 8 Feb 2005 16:10:45 +0100
-From: Christophe Lucas <c.lucas@ifrance.com>
-To: kernel-janitors@lists.osdl.org
-Message-ID: <20050208151045.GQ31996@rhum.iomeda.fr>
-Mime-Version: 1.0
-Content-Disposition: inline
-Sender: Christophe Lucas <c.lucas@ifrance.com>
-Content-Type: multipart/mixed; boundary="ceuyUbi+oA5bUa/n"
-Cc: linux-mtd@lists.infradead.org
-Subject: drivers/mtd/maps/*: convert to pci_register_driver
+Date: Tue, 8 Feb 2005 19:23:26 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: anonymous <wanttoknowwhyandwhatfor@yahoo.com>
+In-Reply-To: <20050208173925.96725.qmail@web90108.mail.scd.yahoo.com>
+Message-ID: <Pine.LNX.4.58.0502081902060.20565@phoenix.infradead.org>
+References: <20050208173925.96725.qmail@web90108.mail.scd.yahoo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: 2 Questions - with regards to  Linux 2.6
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,85 +18,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 8 Feb 2005, anonymous wrote:
+> 
+> Hi Artem,
+> 
+> My mailer client  prevents me from posting to the list - could I ask you for a favor to answer few of my questions (I am new on Linux and its flash support) ? - I would highly appreciate your kindness to the person, who was born in the same beatiful city (St. Petersburg) you are living ...
+I wonder what disaster doesn't allow you to post to the mailing list :-)
+Well, I'll try to answer some questions. Hope others will 
+supplement/correct me.
 
---ceuyUbi+oA5bUa/n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> 
+> 1) NOR related question(s) 
+> 
+>  How commandline partition parsing is getting enabled (in .config ? ) on Linux 2.6 ?
+I've never used NOR flashes. Just hints where to dig:
 
-Hi,
+Documentation/kernel-parameters.txt - grep for mtdpart
+drivers/mtd/cmdlinepart.c - here the cmdline is usually parsed
+drivers/mtd/maps - the NOR registration/detecting etc stuff
 
-Description:
-convert from pci_module_init to pci_register_driver
-(from:http://kerneljanitors.org/TODO).
+>  How could I provide info for creating 3 partitions on single NOR flash on the commandline (is it possible in principle ?) 
+> 
+> What is the specific command line syntax to achieve the following effect:
+> 
+> Creating 3 MTD partitions on "phys_mapped_flash":
+> 0x00000000-0x00080000 : "name 1"
+> 0x00080000-0x00180000 : "name 2"
+> 0x00180000-0x00380000 : "name 3"
+drivers/mtd/cmdlinepart.c - see the header comment there, for example.
 
-Signed-off-by: Christophe Lucas <c.lucas@ifrance.com>
--- 
-Christophe
+> 
+>  2) NAND related question 
+> 
+>   Is there a generic driver on Linux 2.6 to support single partition on NAND flash ?
 
---ceuyUbi+oA5bUa/n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="pci_register_driver-linux-2.6.11-rc3_drivers_mtd_maps.patch"
+Well, the most generic driver is the default operations in nand_base.c.
+Usually people write different drivers. Dig nand_base.c for most 
+NAND-related stuff.
 
-diff -urpN -X /work/users/dontdiff linux-2.6.11-rc3-vanilla/drivers/mtd/maps/amd76xrom.c linux-2.6.11-rc3/drivers/mtd/maps/amd76xrom.c
---- linux-2.6.11-rc3-vanilla/drivers/mtd/maps/amd76xrom.c	2005-02-03 17:03:48.000000000 +0100
-+++ linux-2.6.11-rc3/drivers/mtd/maps/amd76xrom.c	2005-02-07 09:39:28.000000000 +0100
-@@ -314,7 +314,7 @@ static int __init init_amd76xrom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&amd76xrom_driver);
-+	return pci_register_driver(&amd76xrom_driver);
- #endif
- }
- 
-diff -urpN -X /work/users/dontdiff linux-2.6.11-rc3-vanilla/drivers/mtd/maps/ich2rom.c linux-2.6.11-rc3/drivers/mtd/maps/ich2rom.c
---- linux-2.6.11-rc3-vanilla/drivers/mtd/maps/ich2rom.c	2004-12-24 22:35:49.000000000 +0100
-+++ linux-2.6.11-rc3/drivers/mtd/maps/ich2rom.c	2005-02-07 09:39:28.000000000 +0100
-@@ -299,7 +299,7 @@ int __init init_ich2rom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&ich2rom_driver);
-+	return pci_register_driver(&ich2rom_driver);
- #endif
- }
- 
-diff -urpN -X /work/users/dontdiff linux-2.6.11-rc3-vanilla/drivers/mtd/maps/ichxrom.c linux-2.6.11-rc3/drivers/mtd/maps/ichxrom.c
---- linux-2.6.11-rc3-vanilla/drivers/mtd/maps/ichxrom.c	2005-02-03 17:03:48.000000000 +0100
-+++ linux-2.6.11-rc3/drivers/mtd/maps/ichxrom.c	2005-02-07 09:39:28.000000000 +0100
-@@ -366,7 +366,7 @@ static int __init init_ichxrom(void)
- 	}
- 	return -ENXIO;
- #if 0
--	return pci_module_init(&ichxrom_driver);
-+	return pci_register_driver(&ichxrom_driver);
- #endif
- }
- 
-diff -urpN -X /work/users/dontdiff linux-2.6.11-rc3-vanilla/drivers/mtd/maps/pci.c linux-2.6.11-rc3/drivers/mtd/maps/pci.c
---- linux-2.6.11-rc3-vanilla/drivers/mtd/maps/pci.c	2005-02-03 17:03:48.000000000 +0100
-+++ linux-2.6.11-rc3/drivers/mtd/maps/pci.c	2005-02-07 09:39:28.000000000 +0100
-@@ -370,7 +370,7 @@ static struct pci_driver mtd_pci_driver 
- 
- static int __init mtd_pci_maps_init(void)
- {
--	return pci_module_init(&mtd_pci_driver);
-+	return pci_register_driver(&mtd_pci_driver);
- }
- 
- static void __exit mtd_pci_maps_exit(void)
-diff -urpN -X /work/users/dontdiff linux-2.6.11-rc3-vanilla/drivers/mtd/maps/scb2_flash.c linux-2.6.11-rc3/drivers/mtd/maps/scb2_flash.c
---- linux-2.6.11-rc3-vanilla/drivers/mtd/maps/scb2_flash.c	2005-02-03 17:03:48.000000000 +0100
-+++ linux-2.6.11-rc3/drivers/mtd/maps/scb2_flash.c	2005-02-07 09:39:28.000000000 +0100
-@@ -238,7 +238,7 @@ static struct pci_driver scb2_flash_driv
- static int __init
- scb2_flash_init(void)
- {
--	return pci_module_init(&scb2_flash_driver);
-+	return pci_register_driver(&scb2_flash_driver);
- }
- 
- static void __exit
+> 
+>   What enabling of (each of)  the following Linux 2.6 .config options does ?
+> 
+> #
+> # NAND Flash Device Drivers
+> #
+> CONFIG_MTD_NAND
+Enable generic NAND support.
 
---ceuyUbi+oA5bUa/n--
+> CONFIG_MTD_NAND_VERIFY_WRITE 
+Gets MTD layer to operate in write-check mode. this means that after each 
+page write MTD will read this page agein and compare whether it was 
+written correctly.
+Usually useful on the development/debuggind stage, not in production.
+
+> CONFIG_MTD_NAND_IDS=y
+I assume this links the arrays of known NAND flash chips. Each NAND flash 
+chip type has unique ID bytes, so MTD layer may auto-detect its 
+geometry/etc automatically. I would suggest to use this. Dig the 
+nand_ids.c.
+
+> CONFIG_MTD_NAND_DISKONCHIP
+Enable the DiskOnChip stuff. Don't use this if you have no.
+
+> 
+> Again - If you could kindly spend some of your pressures time and answer my questions and perhaps (optionally - on your discretion) post your answers on the list so other newbies could also benefit from your answers - I would appreciate it very much !
+Not big help, but anyway...
+
+> 
+> Thanks,
+> 
+> Best Regards,
+> 
+> Alex (Sasha)
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
