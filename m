@@ -1,17 +1,20 @@
-Received: from law10-oe52.law10.hotmail.com ([64.4.14.41] helo=hotmail.com)
+Received: from [66.232.140.120] (helo=nsGotta.gotta.co.kr)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BAk9a-000219-Cn
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2004 07:33:46 +0100
-From: "Kishore" <kishoreseera@hotmail.com>
-To: "jffs" <jffs-dev@axis.com>,
-	"mtdlist" <linux-mtd@lists.infradead.org>
-Date: Tue, 6 Apr 2004 12:11:22 +0530
+	id 1BAkdT-0002Ed-M7
+	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2004 08:04:40 +0100
+Received: from prabhakar ([220.75.229.144])
+	(authenticated)
+	by nsGotta.gotta.co.kr (8.11.6/8.11.6) with ESMTP id i367QmC19513
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Apr 2004 16:26:48 +0900
+From: "Prabhakar Kalasani" <kalasani@sena.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 6 Apr 2004 16:05:22 +0900
+Message-ID: <ACEDKFIMODAHBNCONGOHGELCCCAA.kalasani@sena.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-ID: <LAW10-OE52lqKV6aGHW00002bd6@hotmail.com>
-Subject: VFS: Cannot open root device "mtdblock0" or 1f:00
+Subject: How to support both 16MB and 8MB partition table
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Friends,
+I had to support the partition table for 16MB and 8MB AMD Flash chip in same
+kernel.
+can we do it , if yes please let me know how can ?
 
-                    I'm trying to boot the embedded linux from flash using
-ROLO boot loader. I'm getting the following errors while booting. My target
-is Elan SC520 CDP board.
-
-the errors are as follows.
-
-VFS: Cannot open root device "mtdblock0" or 1f:00
-
-Please append a correct "root=" boot option
-
-Kernel panic: VFS: Unable to mount root fs on 1f:00
-
-                                                        Can anybody pls
-explain me what is the mistake and what can be the possible cause for the
-above errors. pls gimme a solution to avoid the above problem. Also what
-should be the correct boot option.
-
- Your earliest reply would help me a lot.
-
-
-Thanks in advance.
-
-with Regards,
-Kishore.S.
+Regards,
+Prabhakar
