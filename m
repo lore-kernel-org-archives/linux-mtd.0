@@ -1,19 +1,18 @@
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BpSFd-0003ua-MA
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 09:44:18 -0400
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: tglx@linutronix.de
-In-Reply-To: <1090930297.20889.93.camel@thomas.tec.linutronix.de>
-References: <1090923928.2237.6.camel@adh>
-	<1090930297.20889.93.camel@thomas.tec.linutronix.de>
-Content-Type: text/plain
-Message-Id: <1090935846.17545.3.camel@adh>
-Mime-Version: 1.0
-Date: 27 Jul 2004 14:44:06 +0100
+	id 1BpSal-000489-5i
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 10:06:08 -0400
+Message-ID: <41066111.7030903@smartlink.ee>
+Date: Tue, 27 Jul 2004 17:05:05 +0300
+From: Kalev Lember <kalev@smartlink.ee>
+MIME-Version: 1.0
+To: jigar shah <jigarshah121@rediffmail.com>
+References: <20040727135724.30064.qmail@webmail46.rediffmail.com>
+In-Reply-To: <20040727135724.30064.qmail@webmail46.rediffmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Large JFFS2 filesystem problem
+Subject: Re: Question abt jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+jigar shah ::
+
+>i want to execute " ftp client" binary utility 
+>but when i execute it it give me error
+>"No such file or direcotrey" though itis present in that directory
+>  
+>
 Hi,
 
-On Tue, 2004-07-27 at 13:11, Thomas Gleixner wrote:
-> It should be easy to fix the scan code. All we have to do is to reduce
-> the chunk size which we read in one go. The functionality to do so is
-> already there and its simple to make it work
-> 
-> Can you try the following patch ?
-> Please let me know if it works.
+This is the message that is output if one or more libraries are missing. 
+You can check it by running
+# ldd <progname>
 
-[snip patch]
-
-Apologies...I didn't read the code fully enough to realise that it would
-use that block size in a loop to read the entire flash. I changed the
-'kmalloc' to a 'vmalloc' and this appeared to work. Your patch also has
-the desired effect.
-
-> > Previously, someone recommended waiting for YAFFS2, as this is likely to
-> > be more efficient with large filesystems. Does anyone have any idea as
-> > to when this is likely to be available?
-> 
-> Ask on the YAFFS mailing list.
-
-Ok, I'll do this.
-
-Thanks.
-
-Andy
+-- 
+Best regards,
+Kalev Lember
