@@ -1,19 +1,18 @@
-Received: from c135.h203149222.is.net.tw
-	([203.149.222.135] helo=ms.gv.com.tw ident=root)
+Received: from msr56.hinet.net ([168.95.4.156] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17bxaX-0005LL-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 07:13:01 +0100
-Message-ID: <003501c23d10$5f6c4f60$1b0448c0@gv.com.tw>
-From: "??" <kevin@gv.com.tw>
-To: "??" <kevin@gv.com.tw>, "David Woodhouse" <dwmw2@infradead.org>
-Cc: <tglx@linutronix.de>, <linux-mtd@lists.infradead.org>,
-   "? ??" <djh@gv.com.tw>, <cms@gv.com.tw>
-References: <01c201c23c69$7995faa0$1b0448c0@gv.com.tw>  <00bc01c239cf$4ef3a8c0$1b0448c0@gv.com.tw> <013d01c2388f$94c655a0$1b0448c0@gv.com.tw> <0H04006C5M7GUI@smtp-out.bhp.t-online.de> <00f801c2390a$d956dd40$1b0448c0@gv.com.tw> <0H05001Y6RM950@smtp-out.bhp.t-online.de> <001001c23957$3a290520$1b0448c0@gv.com.tw> <28541.1028541296@redhat.com>  <31970.1028543113@redhat.com> <000701c23cfe$a1542040$1b0448c0@gv.com.tw>
-Subject: what't the max partition(single file size) jffs2/mtd can support?(64MB? or 2GB? or 8GB?)
-Date: Tue, 6 Aug 2002 14:13:24 +0800
+	id 17byj3-0005Rs-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 08:25:53 +0100
+Received: from stevexp (61-219-230-90.HINET-IP.hinet.net [61.219.230.90])
+	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id PAA07673
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Aug 2002 15:26:52 +0800 (CST)
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: NAND Configuration
+Date: Tue, 6 Aug 2002 15:25:41 +0800
+Message-ID: <001601c23d1a$7c6a4ae0$5501a8c0@synso.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -26,6 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-what't the max partition(single file size) jffs2/mtd can support?
-64MB? or 2GB? or 8GB?
-thanks in advanced!:)
+Does I have to set CONFIG_MTD_NAND_ECC_JFFS2=y and
+CONFIG_JFFS2_FS_NAND=y to use NAND flash? Weh I set these settings, I
+will get the following easily. If  I did not set these settings and the
+condition is better, still has problem, but it will not halt the system.
+If I need not set CONFIG_MTD_NAND_ECC_JFFS2=y and
+CONFIG_JFFS2_FS_NAND=y, I can trace my problem easily. I use
+mtd-snapshot-20020731.tar.bz2 with uClinux.
+
+
+Steve Tsai
+
+
+ARGH. About to write node to 0x0018de8c on flash, but there are data
+already the
+re:
+0x0018de8c: 85 19 04 20 74 01 00 00 4d 62 52 56 ff ff ff ff
+pid 24: failed 256
+
+jffs2_flush_wbuf(): Write failed with -5
+Write of 68 bytes at 0x004da000 failed. returned -5, retlen 0
+Not marking the space at 0x004da000 as dirty because the flash driver
+returned r
+etlen zero
