@@ -1,21 +1,22 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
+Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Ka1e-00068M-00
-	for <linux-mtd@lists.infradead.org>; Sat, 07 Dec 2002 08:09:27 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: David Woodhouse <dwmw2@infradead.org>,
-	"Chantara Thlang" <thlang@iphase.com>
-Subject: Re: need arguments to use JFFS2
-Date: Sat, 7 Dec 2002 21:35:15 +1300
-Cc: linux-mtd@lists.infradead.org
-References: <049e01c29d0f$b3c52ff0$221faf9d@iphase.com> <28792.1039171331@passion.cambridge.redhat.com>
-In-Reply-To: <28792.1039171331@passion.cambridge.redhat.com>
+	id 18L5Pv-0002Oq-00
+	for <linux-mtd@lists.infradead.org>; Sun, 08 Dec 2002 17:40:35 +0000
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
+	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id gB8GD7LT000845
+	for <linux-mtd@lists.infradead.org>; Sun, 8 Dec 2002 17:13:07 +0100
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id TAA16393
+	for <linux-mtd@lists.infradead.org>; Sun, 8 Dec 2002 19:11:10 +0100 (CET)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3DF38B3E.CD3CA322@imc-berlin.de>
+Date: Sun, 08 Dec 2002 19:11:10 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20021207083957.9465F14AC1@dragon.actrix.co.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Problems with BIG_ENDIAN
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,27 +28,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-It is virtually impossible to make any firm statements without understanding 
-your needs a bit better.
+Hi there,
 
-A few others have already covered cramfs and JFFSx. I can tell you a bit 
-about YAFFS.
+I am having trouble creating a big endian image with the latest CVS version of
+mkfs.jffs2!
 
-YAFFS only works with NAND flash. YAFFS does not provide compression (like 
-JFFS does). YAFFS is faster than JFFS2 in most situations and uses less RAM.
-Mileage will vary though. Compression is not necessarily a huge advantage for 
-JFFSx. Some people loop-mount a cramfs image stored on YAFFS to get the 
-benefits of compression as well as the faster speed for other files.
+> mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -l -p
+> hexdump -n 16 -x images/pFlashdisk 
+0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
 
-If you have NAND, then most likely YAFFS will serve you better for larger 
-flash arrays (say 16MB and bigger) and JFFS2 for smaller arrays.
+> mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -b -p
+> hexdump -n 16 -x images/pFlashdisk 
+0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
 
-YAFFS will do nothing for you if you only have NOR flash.
+Both options -l _and_ -b result in the same byteorder!!!
 
-If you're designing a new board then consider including NAND flash for 
-storage (rather than NOR). NAND is cheaper, smaller (physically), bigger (in 
-bytes) and faster. You can then use YAFFS or JFFS2 (even both - by 
-partitioning the device).
+An older version (mkfs.jffs2 revision 1.28) shows
+
+scholz@pinguin:~/Projekte/SELF> hexdump -n 16 -x images/pFlashdisk 
+0000000    1985    e001    0032    0000    76f3    5037    0001    0000
+
+for "-l" and 
+
+scholz@pinguin:~/Projekte/SELF> hexdump -n 16 -x images/pFlashdisk 
+0000000    8519    01e0    0000    3200    295a    e78c    0000    0100
+
+when using "-b" !!!
+
+Thanks,
+
+Steven
 
 
--- Charles
+BTW "mkfs.jffs2 -V" does _not_ work! "mkfs.jffs2 --version" works!
