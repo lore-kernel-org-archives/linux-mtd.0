@@ -1,20 +1,16 @@
-Received: from rwcrmhc51.attbi.com ([204.127.198.38])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17luSg-0005yr-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 17:54:02 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Mark Meade <mark@lakeshoremicro.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: 48meg DOC
-Date: Mon, 2 Sep 2002 12:52:08 -0400
-Cc: Henrik =?iso-8859-1?q?Nordstr=F6m?= <hno@marasystems.com>,
- linux-mtd@lists.infradead.org
-References: <20020902132838.NFAO11061.sccrmhc01.attbi.com@there> <Pine.LNX.4.44.0209011654210.31089-100000@filer.marasystems.com> <8501.1030982130@redhat.com>
-In-Reply-To: <8501.1030982130@redhat.com>
+Received: from [217.78.76.159] (helo=coolre42517.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17m5xc-0006z9-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2002 06:10:50 +0100
+From: "Mrs m mobutu  Sese-seko" <msekko@spinfinder.com>
+Reply-To: msekko@spinfinder.com
+To: linux-mtd@lists.infradead.org
+Date: Tue, 3 Sep 2002 05:56:59 -0700
+Subject: URGENT ATTENTION  NEEDED
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020902165330.BHCJ12451.rwcrmhc51.attbi.com@there>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E17m5xc-0006z9-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,30 +22,71 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Yes, I was experimenting with using DFORMAT to load Grub around the time I 
-wrote up the DoC/GRUB Howto.
+FROM=3AMRS=2E M SESE-SEKO 
 
-Henrik is correct that "dformat /win:xxxx /BDKF0:grub_firmware" will install 
-GRUB properly, but the UnitSizeFactor issue confuses the NFTL code in Grub.  
-I haven't found an easy way to format using version 4.2 and install the grub 
-code at the same time.
+DEAR FRIEND=2C 
 
-When the UnitSizeFactor issue is resolved, we should be able to use DFORMAT 
-to install GRUB, and doc_loadbios would no longer be needed.  We probably 
-wouldn't even need to generate a .EXB file, as the /BDKF option seems to be 
-OK with grub_firmware in its raw binary format.
+I AM MRS=2E  SESE-SEKO WIDOW OF LATE PRESIDENT MOBUTU 
+SESE-SEKO OF ZAIRE=3F NOW KNOWN AS DEMOCRATIC REPUBLIC 
+OF CONGO =28DRC=29=2E  I AM MOVED TO WRITE YOU THIS LETTER=2C 
+THIS WAS IN CONFIDENCE  CONSIDERING MY PRESENT 
+CIRCUMSTANCE AND SITUATION=2E 
 
-If the UnitSizeFactor thing has been fixed in the latest CVS code, I'd be 
-glad to apply the changes to the GRUB code.  If not, can you point us in the 
-right direction to fix it?  
+I ESCAPED ALONG WITH MY HUSBAND AND TWO OF OUR SONS 
+KONGOLO  AND BASHER  OUT OF DEMOCRATIC REPUBLIC OF 
+CONGO =28DRC=29 TO ABIDJAN=2C COTE D'IVOIRE WHERE MY FAMILY 
+AND I SETTLED=2C WHILE WE LATER MOVED  TO SETTLED IN 
+MORROCO WHERE MY HUSBAND LATER DIED OF CANCER 
+DISEASE=2E HOWEVER DUE TO THIS SITUATION WE DECIDED TO 
+CHANGED  MOST OF MY HUSBAND'S BILLIONS OF DOLLARS 
+DEPOSITED IN SWISS BANK AND OTHER COUNTRIES INTO OTHER 
 
-David Woodhouse wrote:
-> mark@lakeshoremicro.com said:
-> >  I have not found a reliable way to use DFORMAT to load the Grub
-> > firmware.
->
-> Oh, have you been trying? At first glance it looked like it should be
-> fairly simple to generate a .EXB file with our Grub in it instead of their
-> firmware -- are there problems?
->
-> Being able to use DFORMAT to load Grub would be very useful.
+FORMS OF MONEY CODED FOR  SAFE PURPOSE BECAUSE THE NEW 
+
+HEAD OF STATE OF =28DR=29 MR LAURENT  KABILA HAS MADE 
+ARRANGEMENT WITH THE SWISS GOVERNMENT AND OTHER 
+EUROPEAN COUNTRIES TO FREEZE ALL MY LATE HUSBAND'S 
+TREASURES  DEPOSITED IN SOME EUROPEAN COUNTRIES=2E HENCE 
+
+MY CHILDREN AND I DECIDED LAYING LOW IN AFRICA TO 
+STUDY THE SITUATION TILL  WHEN THINGS GETS BETTER=2C 
+LIKE NOW THAT PRESIDENT KABILA IS DEAD AND THE SON 
+TAKING OVER =28JOSEPH KABILA=29=2E ONE OF MY LATE HUSBAND'S 
+CHATEAUX IN SOUTHERN FRANCE WAS CONFISCATED  BY THE 
+FRENCH GOVERNMENT=2C AND AS SUCH I HAD TO CHANGE MY 
+IDENTITY  SO THAT MY INVESTMENT WILL NOT BE TRACED AND 
+
+CONFISCATED=2E I HAVE DEPOSITED THE SUM OF EIHGTEEN 
+MLLION UNITED STATE DOLLARS=28US$18=2C000=2C000=2C00=2E=29  WITH A 
+
+
+SECURITY COMPANY =2C FOR SAFEKEEPING=2E THE  FUNDS ARE 
+SECURITY CODED TO PREVENT THEM FROM KNOWING THE 
+CONTENT=2E WHAT I WANT YOU TO DO IS TO INDICATE YOUR 
+INTEREST THAT YOU WILL ASSIST US BY RECEIVING THE 
+MONEY ON OUR BEHALF=2EACKNOWLEDGE THIS MESSAGE=2C SO THAT 
+I CAN INTRODUCE YOU TO MY SON =28KONGOLO=29 WHO HAS THE 
+OUT MODALITIES FOR THE CLAIM OF THE SAID FUNDS=2E I WANT 
+
+YOU TO ASSIST IN INVESTING THIS MONEY=2C BUT I WILL NOT 
+WANT MY IDENTITY REVEALED=2E I WILL ALSO WANT TO BUY 
+PROPERTIES AND STOCK IN MULTI-NATIONAL COMPANIES AND 
+TO ENGAGE IN OTHER SAFE AND NON-SPECULATIVE 
+INVESTMENTS=2E MAY I AT THIS POINT EMPHASISE THE HIGH 
+LEVEL OF CONFIDENTIALITY=2C  WHICH THIS BUSINESS 
+DEMANDS=2C AND HOPE YOU WILL NOT BETRAY THE TRUST AND 
+CONFIDENCE=2C WHICH I REPOSE IN YOU=2E IN CONCLUSION=2C  IF 
+YOU WANT TO ASSIST US =2C MY SON SHALL PUT YOU IN THE 
+PICTURE  OF THE BUSINESS=2C TELL YOU WHERE THE FUNDS ARE 
+
+CURRENTLY BEING  MAINTAINED AND ALSO DISCUSS OTHER 
+MODALITIES INCLUDING REMUNERATION FOR YOUR SERVICES=2E 
+
+FOR THIS REASON KINDLY FURNISH US YOUR CONTACT 
+INFORMATION=2C THAT IS YOUR PERSONAL TELEPHONE AND FAX 
+NUMBER FOR CONFIDENTIAL PURPOSE AND ACKNOWLEDGE 
+RECEIPT OF THIS MAIL USING THE ABOVE EMAIL ADDRESS=2E 
+
+BEST REGARDS=2C 
+
+MRS M=2E SESE SEKO 
