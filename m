@@ -1,64 +1,64 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14b2DV-0000L9-00
-	for mtd-list@infradead.org; Thu, 08 Mar 2001 15:20:37 +0000
-Received: from fjordland.nl.linux.org ([131.211.28.101] ident=root)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14b2DS-0000Ji-00
-	for mtd@infradead.org; Thu, 08 Mar 2001 15:20:35 +0000
-Message-ID: <3AA7A1FE.B07D5797@danielind.com>
-Date: Thu, 08 Mar 2001 09:15:10 -0600
-From: Vipin Malik <vmalik@danielind.com>
+	id 14b2OH-0000SB-00
+	for mtd-list@infradead.org; Thu, 08 Mar 2001 15:31:45 +0000
+Message-ID: <3AA78A4D.44C64869@inventel.fr>
+Date: Thu, 08 Mar 2001 14:34:05 +0100
+From: Xavier DEBREUIL <xde@inventel.fr>
 MIME-Version: 1.0
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-CC: 'Erwin Authried' <eauth@softsys.co.at>,
-	"'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: reset/read mode cmd for AMD compatible flash
-References: <E6FE4E054F02D511818E00025558B61D429E7A@cluster01.axis.se>
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org
+Subject: Re: mtd with 2.0.4-test6
+References: <3AA4A648.F57BEF2@inventel.fr>  <3AA3A2FF.9E25407A@inventel.fr> <31161.983802881@redhat.com> <4257.983868984@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
->From the AMD 29LV017 CFI flash data sheet (pg. 16) (talking about the CFI cmd register and commands):
+Hello,
+I build the utilities for arm and almost all of these have been build without
+any problem.
+I got just one problem with the compr_zlib.c
 
-"Writing incorrect address or data values or in the impropper sequence resets the device to reading array data."
+In fact, I was compelled to explicitly give the zlib.h path. Should it be in my
+glibc ?
+Another point is that zalloc and zfree are defined as nozalloc and nozfree in
+the 2.4.0 kernel headers. Do I have just to rename those two fields in
+comp_zlib.c ?
 
-Vipin
+Xavier.
 
 
-
-Jonas Holmberg wrote:
-
-> I _think_ it should be 0xf0 (but 0xff seems to work on AM29LV160DB and DT!?). Isn't it just a typo?
->
-> BTW: did you try amd_flash_probe() with your Atmel chip? In that case can you give me manufacturer id, device id and eraseregions info, please? I'd like to add support for as many AMD compatible chips as possible in the AMD driver.
->
-> Best regards
-> /Jonas
->
-> > -----Original Message-----
-> > From: Erwin Authried [mailto:eauth@softsys.co.at]
-> > Sent: Thursday, March 08, 2001 9:30 AM
-> > To: 'mtd@infradead.org'
-> > Subject: reset/read mode cmd for AMD compatible flash
-> >
-> >
-> > In cfi-probe.c, it seems that the command 0xff is used to
-> > switch the flash
-> > into read mode. I have studied several datasheets of AMD
-> > compatible flash
-> > (AMD29F160, Fujitsu MB29F160, Atmel AT49BV160...), and they specify
-> > 0xf0 as the reset mode command. Can anybody please enlighten me?
-> >
-> > -Erwin
-> >
-> >
-> >
-> >
->
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-
+arm-linux-gcc -O -Wall -I/usr/arm-linux -I../include
+-I/home/xde/arm_linux/linux_2.4/linux/fs/cramfs/inflate   -c compr_zlib.c -o
+compr_zlib.o
+In file included from
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/stdio.h:40,
+                 from compr_zlib.c:47:
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/bits/types.h:95:
+warning: `__NFDBITS' redefined
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/posix_types.h:22:
+warning: this is the location of the previous definition
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/bits/types.h:97:
+warning: `__FDMASK' redefined
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/posix_types.h:34:
+warning: this is the location of the previous definition
+In file included from compr_zlib.c:47:
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/stdio.h:477:
+warning: redefinition of `off_t'
+/usr/lib/gcc-lib/arm-linux/2.95.2/../../../../arm-linux/include/linux/types.h:18:
+warning: `off_t' previously declared here
+compr_zlib.c: In function `zlib_compress':
+compr_zlib.c:73: structure has no member named `zalloc'
+compr_zlib.c:74: structure has no member named `zfree'
+compr_zlib.c: In function `zlib_decompress':
+compr_zlib.c:132: structure has no member named `zalloc'
+compr_zlib.c:133: structure has no member named `zfree'
+compr_zlib.c:136: warning: implicit declaration of function `inflateInit'
+compr_zlib.c:148: warning: implicit declaration of function `inflate'
+compr_zlib.c:153: warning: implicit declaration of function `inflateEnd'
+make: *** [compr_zlib.o] Error
+1
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
