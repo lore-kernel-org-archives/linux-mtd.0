@@ -1,20 +1,18 @@
-Received: from mail.fh-wedel.de ([213.39.232.194])
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BsIdV-0003Oq-Kx
-	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2004 06:04:45 -0400
-Date: Wed, 4 Aug 2004 12:04:35 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Dermot McGahon <dermot@dspsrv.com>
-Message-ID: <20040804100435.GA10493@wohnheim.fh-wedel.de>
-References: <20040731135955.GA10803@wohnheim.fh-wedel.de>
-	<opsb69q3lv3ertue@mail.dspsrv.com>
+	id 1BsJYT-0003dS-BS
+	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2004 07:03:33 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: m.thanuja@bpltelecom.com
+In-Reply-To: <1078.10.10.15.11.1091616626.squirrel@mail.bpltelecom.com>
+References: <1078.10.10.15.11.1091616626.squirrel@mail.bpltelecom.com>
+Content-Type: text/plain
+Message-Id: <1091617407.4383.2619.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <opsb69q3lv3ertue@mail.dspsrv.com>
+Date: Wed, 04 Aug 2004 12:03:27 +0100
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Volatile data device vor jffs2
+Subject: Re: ilookup() patch for linux-2.4.18
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 August 2004 09:55:41 +0100, Dermot McGahon wrote:
-> 
-> >Comments?
-> 
-> Well, it still needs to be flushed to something non-volatile at
-> some point.
-
-With a DRAM based device, yes.
-
-> You can vary the time between flushes. It depends on how valuable
-> that data is to you. With an approach such as this you are really
-> deciding how big of a window for data loss you are willing to put
-> up with.
-> 
-> The approach I took while doing this a couple of years ago was not
-> to erase blocks until absolutely necessary and then do all the
-> garbage collection/file system reorganisation once. This took time
-> to do though, was suitable for the device in question (a KVM), but
-> possibly not for a general filesystem.
-
-That can be moved to a different thread, as already the case.  Except
-for high-throughput write situations, it should be unnoticed by the
-user.
-
-Jörn
+Don't use 2.4.18. It's almost inexcusable even to be using the current
+2.4 kernel, which is 2.4.26 or 2.4.27. If you want proper NAND flash
+support, just use 2.6.8.
 
 -- 
-The grand essentials of happiness are: something to do, something to
-love, and something to hope for.
--- Allan K. Chalmers
+dwmw2
