@@ -1,18 +1,21 @@
-Received: from mail.meierinc.com ([63.166.206.6] helo=esteem.com)
+Received: from cc60549-a.deven1.ov.home.nl ([217.120.140.54]
+	helo=server.grimmerink.dhs.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QUVm-0004BZ-UG
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 17:01:15 +0100
-Message-ID: <3EE8A3EA.5090001@esteem.com>
-Date: Thu, 12 Jun 2003 09:01:46 -0700
-From: Conn Clark <clark@esteem.com>
+	id 19QUbl-0004I3-QC
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 17:07:26 +0100
+From: Pieter Grimmerink <mailinglists@grimmerink.nl>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 12 Jun 2003 18:06:42 +0200
+References: <200306111831.07071.mailinglists@grimmerink.nl>
+	<1055410352.2097.446.camel@passion.cambridge.redhat.com>
+In-Reply-To: <1055410352.2097.446.camel@passion.cambridge.redhat.com>
 MIME-Version: 1.0
-To: mingfeng <mingfeng@linpus.com>
-References: <20030612163736.CFEC.MINGFENG@linpus.com>
-In-Reply-To: <20030612163736.CFEC.MINGFENG@linpus.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: MRAM will kill FLASH ?
+Message-Id: <200306121806.42197.mailinglists@grimmerink.nl>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Errors compiling current mtd CVS version
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mingfeng wrote:
-> who know MRAM(Magnetoresistive Random Access Memory) ?
-> Will it kill FLASH soon?
+On Thursday 12 June 2003 11:32, David Woodhouse wrote:
+> Why are you using amd_flash.c and not the
+> non-deprecated drivers?
 
-It probably wont be soon. I don't think it will kill flash completely 
-either.
+I was not really using them, but they turned out to be in the defconfig f=
+ile=20
+of my arch (cris). Quickly removed that.
 
-Conn
--- 
+> > #include <linux/sched.h> seems to be missing in fs/jffs2/write.c
+> > (error on 'current')
+>
+> That one is unexpected -- can you give more details?
 
-*****************************************************************
-   If you live at home long enough, your parents will move out.
-  (Warning they may try to sell their house out from under you.)
-*****************************************************************
+Must have been my fault, probably because I didn't do a clean rebuild aft=
+er I=20
+tried to find the reason for the previous errors.
+Now it compiles again without <linux/sched.h>
 
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
+Regards,
 
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
-  This email address may be used to communicate to Conn Clark
-  provided it is not being used for advertisement purposes, unless
-  prior written consent is given. This email address may not be
-  sold under any circumstances. All other rights reserved.
+Pieter
