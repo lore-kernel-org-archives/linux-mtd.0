@@ -1,20 +1,20 @@
-Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Brhno-0008E1-CA
-	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2004 14:44:53 -0400
-Received: from smartlink.ee (mail.smartlink.ee [213.180.16.242])
-	(authenticated bits=0)
-	by kiire.colleduc.ee (8.12.11/8.12.10) with ESMTP id i72IiiYr003472
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Mon, 2 Aug 2004 21:44:45 +0300
-Message-ID: <410E8B9B.3050607@smartlink.ee>
-Date: Mon, 02 Aug 2004 21:44:43 +0300
-From: Kalev Lember <kalev@smartlink.ee>
+	id 1Bs3kV-0001n7-Gi
+	for linux-mtd@lists.infradead.org; Tue, 03 Aug 2004 14:10:58 -0400
+Received: from oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 7F2F4229D1
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  3 Aug 2004 22:09:39 +0400 (MSD)
+Message-ID: <410FD4CA.6010008@oktetlabs.ru>
+Date: Tue, 03 Aug 2004 22:09:14 +0400
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: DOCBoot and Millennium Plus
+Subject: notice
+Reply-To: dedekind@oktetlabs.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello. I have a notice to the JFFS2 initialisation code.
 
-I wanted to let you know that I have added support for the Diskonchip 
-Millennium Plus to DOCBoot and also some minor enhancments:
-
-1) added an option to build a BIOS extension
-2) added an option to force specific DOC address
-
-Currently is works only on Millennium Plus 16 MB devices. Support for 32 
-MB is planned.
+It seems to me that it would be good to add the __init/__exit attributes 
+to the jffs2_compressors_init/jffs2_compressors_exit (compt.c) functions.
 
 -- 
-Kalev Lember
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
