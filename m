@@ -1,20 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8GAc-00040i-WE
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 06:13:07 -0500
-Date: Mon, 7 Mar 2005 12:13:07 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Gareth Bult <gareth@linux.co.uk>
-Message-ID: <20050307111307.GA9597@wohnheim.fh-wedel.de>
-References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
-	<20050307110413.GD2198@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050307110413.GD2198@wohnheim.fh-wedel.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Re; MTD (2) Block Driver broken
+Received: from relay01.mail-hub.dodo.com.au ([203.220.32.149])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D8Gb4-0004FN-A7
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 06:40:27 -0500
+Received: from [220.240.204.94] (helo=APOLLO)
+	by relay01.mail-hub.dodo.com.au with smtp (Exim 3.36 #2)
+	id 1D8Gaz-0006Pq-00
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 22:40:21 +1100
+From: "Matt Garratt" <m.garratt@adfa.edu.au>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 7 Mar 2005 22:40:48 +1100
+Message-ID: <HMEGLJJFEGIOMNFLAPOFKEALCEAA.m.garratt@adfa.edu.au>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: docboot freeze
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 7 March 2005 12:04:13 +0100, Jörn Engel wrote:
-> > 
-> > It appears that someone has "cleaned up" this driver and it now appears
-> > as an option in the standard kernel tree for 2.6.11.
-> > 
-> > Unfortunately it doesn't appear to work. As soon as you mount a JFFS2
-> > filesystem on it and try to write data, corruption sets in resulting is
-> > a fairly sharp system crash.
+I am still trying to get docboot to work from a DOC200 after giving up on
+grub after much time wasted. Getting the DOC to boot is the most frustrating
+thing I have done for quite a while. I get as far as:
 
-Btw, it is interesting to note that noone has sent me bug reports
-before.  Apparently, 2.6.<final> is getting *much* more testing than
-mtd cvs, -mm, -bk* and -rc* together.
+Loading kernel.......Loading initrd.....
 
-Jörn
+My cmdline is:
 
--- 
-I can say that I spend most of my time fixing bugs even if I have lots
-of new features to implement in mind, but I give bugs more priority.
--- Andrea Arcangeli, 2000
+  root=/dev/ram0 rootfstype=ext2 ro console=tty0
+
+I was wondering if the arguments for the cmdline were defined somewhere and
+if there any limitations? For example, does root have to be an mtd device?
+
+It sais in the README that there is no serial port support yet the default
+cmdline contains console=ttyS0,115200 - I am a bit confused by this.
+
+ I am trying to run the root filesystem from RAM.
+
+I get the same kernel and initrd file to boot on the same machine from a
+hard diskc using lilo. The lilo stanza for doing this is:
+
+image = /boot/bzImage
+  root = /dev/ram0
+  label = ramOS
+  initrd = /boot/tiny.image.ext2.gz
+  read-only
+
+I may be misinterpreting the meaning of the cmdline parameters, but any
+suggestions would be very welcome.
+
+I am using a 2.6.9 kernel patched from cvs. I am not using jffs2. I have a
+new DOC2000 with inftla.
+
+Matt
