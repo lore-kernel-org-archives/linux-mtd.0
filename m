@@ -1,14 +1,18 @@
-Received: from web20412.mail.yahoo.com ([216.136.227.10])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17PS5i-0004CZ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 19:09:30 +0100
-Message-ID: <20020702170051.34184.qmail@web20412.mail.yahoo.com>
-Date: Tue, 2 Jul 2002 10:00:51 -0700 (PDT)
-From: Roy Lauer <rlaor@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: (no subject)
+Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17PSVx-0004EJ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 19:36:38 +0100
+Subject: Re: [ANN] Driver for PCMCIA Flash memory cards
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: Simon Evans <spse@secret.org.uk>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <E17PONb-0006pj-00@spoinky.renegade.org.uk>
+References: <E17PONb-0006pj-00@spoinky.renegade.org.uk>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 02 Jul 2002 20:35:49 +0200
+Message-Id: <1025634949.1046.18.camel@spawn>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,47 +24,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm using DOC 2000, and the latest mtd sw from the
-CVS.
+On Tue, 2002-07-02 at 16:11, Simon Evans wrote:
+> 
+> Hi,
+> 
+> I have written an MTD driver for PCMCIA flash memory cards. These are the
+> older type of PCMCIA memory cards (usually 4-16MB in size) NOT Compact Flash
+> cards. The driver works by mapping out the cards and providing read/write
+> routines then calling the chip probe functions. In this way it just acts
+> as a mapping driver and doesnt care about the chips used. 
 
-Following is what I get a boot time (I do NOT yet boot
-from the flash):
+Nice I also did a driver for this but I hardcoded everything so it was
+useless for anyone but me(and mostly for me too ).
 
-> Using configured DiskOnChip probe address 0xf0400000
-> DiskOnChip 2000 found at address 0xF0400000
-> Flash chip found: Manufacturer ID: 98, Chip ID: 73
-(Toshiba TH58V128DC)
-> 4 flash chips found. Total DiskOnChip size: 64 MiB
-> mtd: Giving out device 0 to DiskOnChip 2000
-> NFTL driver: nftlcore.c $Revision: 1.86 $,
-nftlmount.c $Revision: 1.28 $
-> NFTL_notify_add for DiskOnChip 2000
-> NFTL_setup
-> NFTL: UnitSizeFactor 0x00 detected. This violates
-the spec but we think we know what it means...
-> Cannot calculate an NFTL geometry to match size of
-0x1ed20.
-> Using C:986 H:16 S:8 (== 0x1ed00 sects)
-> Partition check:
->  nftla: nftla1
+> 
+> It is still quite alpha and should be treated with caution,
+> but I have successfully tested it on 2.4.19-rc1,2.4.17(i386) and
+> 2.4.17-rmk5(ipaq/arm) with a few different memory cards.
+> I have been able to setup jffs2 and transfer files between a laptop and
+> Ipaq successfully.
 
-The main problem (which cannot be seen above) is a
-delay of about 90 seconds after 
-"Flash chip found: ...". The system seems to stuck and
-only after a timeout 0f 90 seconds it continues 
-with "4 flash chips found...". What can be the reason
-for that?
+Is arm little endian?? one reason I did not find this so useful for me
+was that I have a powerpc target and that is big endian and I could not
+use it for jff2 work as the data would not work when moved from a pc to
+the target. 
 
-Other problems are UnitSizeFactor=0x00 and the size of
-0x1ed20. The driver seems to manage with that. Is this
-ok?
+> Once the code is more stable I may put it into the MTD CVS, however I'm
+> still figuring out some things with PCMCIA initialisation code so it
+> is still subject to large rewrites ;)
+> 
+> Anyway, if anyone is interested, it is at: http://si.org/pcmciamtd/
+> 
+> bugs & comments welcome ;) 
 
-Any help will be apreciated.
+Nice you parse the CIS data I never got around to do that. 
+Any thought on partitions as I understand it you only get one region.
+Perhaps creating a device node and some ioctl could solve that but It's
+maybe not that important.
 
-Roy
+I'm going to test this out but I'm in the middle of some other work so
+it has to wait some time. 
 
-
-__________________________________________________
-Do You Yahoo!?
-Sign up for SBC Yahoo! Dial - First Month Free
-http://sbc.yahoo.com
+-- 
+Kenneth Johansson	
+Ericsson AB                       Tel: +46 8 404 71 83
+Borgafjordsgatan 9                Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
