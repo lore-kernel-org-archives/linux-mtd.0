@@ -1,21 +1,21 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from dns.chez-thomas.org ([63.225.98.241]
+	helo=hermes.chez-thomas.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Ap0mT-0006Xx-3s
-	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2004 07:52:05 +0000
-From: David Woodhouse <postmaster@infradead.org>
-To: Pham Huy Vu <vuph@mail.cable.net.tw>
-In-Reply-To: <005101c3ec6a$85b05440$030910ac@linuxer>
-References: <00e301c3eb42$8dfbbc80$030910ac@linuxer>
-	<005101c3ec6a$85b05440$030910ac@linuxer>
+	id 1Ap6ag-0007W4-40
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2004 14:04:18 +0000
+From: Gary Thomas <gary@mlbassoc.com>
+To: Steffen Rumler <Steffen.Rumler@siemens.com>
+In-Reply-To: <40239C69.5040803@siemens.com>
+References: <40239C69.5040803@siemens.com>
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Message-Id: <1076053877.12587.149.camel@imladris.demon.co.uk>
+Message-Id: <1076076229.27984.182.camel@hermes>
 Mime-Version: 1.0
-Date: Fri, 06 Feb 2004 07:51:17 +0000
-Sender: <dwmw2@infradead.org>
-cc: Jonas Holmberg <jonas.holmberg@axis.com>
+Date: Fri, 06 Feb 2004 07:03:49 -0700
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Copy files to jffs2 partition have problem
+cc: linuxppc embedded <linuxppc-embedded@lists.linuxppc.org>
+Subject: Re: BUG in mtd/chips/cfi_cmdset_0002.c for 64bit width flashes
+	(linuxppc_2_4_devel)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-02-06 at 12:34 +0800, Pham Huy Vu wrote:
-> Hi Jonas,
-> Thanks for your reply,
+On Fri, 2004-02-06 at 06:53, Steffen Rumler wrote:
+> Hi,
+> 
+> We have found the following bug in mtd/chips/cfi_cmdset_0002.c
+> for 64bit bus width.
+> 
+> The routine do_write_oneword() uses the DQ6 algorithm in order
+> to detect the end of programming phase (see bitkeeper: linuxppc_2_4_devel)
+> 
+> 
+> oldstatus = cfi_read(map, adr);
+> status = cfi_read(map, adr);
+> 
+> while( (status & dq6) != (oldstatus & dq6) &&
+>          (status & dq5) != dq5 &&
+>          !time_after(jiffies, timeo) ) {
+> 
+>      if (need_resched()) {
+>          cfi_spin_unlock(chip->mutex);
+>          yield();
+>          cfi_spin_lock(chip->mutex);
+>      } else
+>          udelay(1);
+> 
+>      oldstatus = cfi_read( map, adr );
+>      status = cfi_read( map, adr );
+> }
+> 
+> There are two contiguous calls of cfi_read() to check for the DQ6 toggling.
+> 
+> But for 64bit one cfi_read() results in two flash accesses, one for
+> the upper 32bit and the other for lower 32bit. In this way the DQ6 bits toggle
+> for the two accesses related to one cfi_read(). The first access will be
+> compared with the third and the second with the fourth.
+> The end detection is broken, the body of the while loop will never be executed.
+> 
+> I suggest to switch to the alternative DQ7 algorithm.
 
-Your last message to the list was rejected, partly because you
-top-posted. Yet you repeated the offence.
-
-Do it again and you get a personal entry in the blacklist.
-
-> Last[3] is 10, datum is 14000010
-> Write of 71 bytes at 0x000fe494 failed. returned 0, retlen 68
-> .....
-> I think mtd driver is ok,
-> I just think the jffs2 fs or mkfs.jffs2 have bugs???
-
-It's the other way around. The error you see is in the flash driver. We
-really shouldn't have the top bits set in 'datum' if buswidth is 2. I
-have a recollection of this bug having been fixed already. What version
-of drivers/mtd/chips/cfi_cmdset_0002.c do you have? (The $ID:... $ tag
-near the top of the file).
+You should probably discuss this with the folks that support the MTD
+layer (cc'd)
 
 -- 
-dwmw2
+Gary Thomas <gary@mlbassoc.com>
+MLB Associates
