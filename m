@@ -1,21 +1,22 @@
-From: pitboss@savoiacasino.com (PITBOSS)
-Date: Fri, 21 Feb 2003 02:00:34 -0800
-Subject: $200 FREE CASH AT SAVOIA INN CASINO !
-Message-ID: <1045821634.493@dc.rr.com>
+From: arne.jonsson@i3micro.com (Arne Jonsson)
+Date: Mon, 24 Feb 2003 07:25:15 +0100
+Subject: JFFS2 for 2.0 kernel?
+Message-ID: <3E59BACB.762BB6C7@i3micro.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-FREE $200 AT SAVOIA INN CASINO
-Grab a Bonus Every day of the week!
+Hello!
 
-At SAVOIA INN CASINO , we are so sure you are going to love our games that 
-we are giving you up to $200 just for trying our Casino.
+As I understand JFFS2 is not publically available for the 2.0-kernel.
+Can anyone give some opinions of how much work a backport (from 2.4 to
+2.0) effort would be?
+Any pointers of where the big problems are?
+Is it even possible?
 
-Here is how to get your $200!!
-
-Download and Install our FREE Casino software.
-Open the software and click on Register Now, to become a Real Player.
-Then make your first deposit and we will instantly credit your account with 
-an additional 20% up to $200.
-
-http://www.savoiacasino.com
+Best regards,
+/Arne Jonsson
+-- 
+Arne Jonsson
+i3 micro technology AB
+Phone:+46-8-506 388 00
+Fax:  +46-8-506 388 75
