@@ -1,20 +1,17 @@
-Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
+Received: from cpe-203-51-197-227.qld.bigpond.net.au ([203.51.197.227] helo=august.hainsworth.net.au)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17l6pd-0008Ku-00
-	for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2002 12:54:26 +0100
-Received: from [212.100.65.236] (helo=2mails1557.com)
-	by phoenix.infradead.org with smtp (Exim 4.10)
-	id 17l6pR-000095-00
-	for linux-mtd@lists.infradead.org; Sat, 31 Aug 2002 12:54:23 +0100
-From: "MRS. M. SESE SEKO" <maseko_h3@yahoo.com>
-Reply-To: maseko_h3@yahoo.com
+	id 17lTzL-0003gl-00
+	for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2002 13:38:00 +0100
+Received: from ike.hainsworth.ath.cx (red@ike.hainsworth.net.au [10.0.0.9])
+	by august.hainsworth.net.au (8.11.6/8.11.2) with ESMTP id g81CUsE30221
+	for <linux-mtd@lists.infradead.org>; Sun, 1 Sep 2002 22:30:54 +1000
+Message-Id: <4.3.2.7.2.20020901223306.00cd3f08@10.0.0.8>
+Date: Sun, 01 Sep 2002 22:37:54 +1000
 To: linux-mtd@lists.infradead.org
-Date: Sat, 31 Aug 2002 12:49:11 +0100
-Subject: Urgent Assistance Needed
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E17l6pR-000095-00@phoenix.infradead.org>
+From: Andrew Hainsworth <andrew@hainsworth.ath.cx>
+Subject: Frustration.
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,62 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-FROM=3AMRS=2E M SESE-SEKO
+Howdy folks
 
-DEAR FRIEND=2C
+I've been trying to get my DoC2000 to boot for the last couple of 
+weeks.  First I tried the drivers from m-sys themselves, but they didn't 
+work.  Now I'm trying the MTD drivers and hopefully GRUB.
 
-I AM MRS=2E SESE-SEKO WIDOW OF LATE PRESIDENT MOBUTU
-SESE-SEKO OF ZAIRE=3F NOW KNOWN AS DEMOCRATIC REPUBLIC
-OF CONGO =28DRC=29=2E I AM MOVED TO WRITE YOU THIS LETTER=2C
-THIS WAS IN CONFIDENCE CONSIDERING MY PRESENT
-CIRCUMSTANCE AND SITUATION=2E
+The DoC is being recognised:
 
-I ESCAPED ALONG WITH MY HUSBAND AND TWO OF OUR SONS
-JAMES KONGOLO AND BASHER OUT OF DEMOCRATIC REPUBLIC OF
-CONGO =28DRC=29 TO ABIDJAN=2C COTE D'IVOIRE WHERE MY FAMILY
-AND I SETTLED=2C WHILE WE LATER MOVED TO SETTLED IN
-MORROCO WHERE MY HUSBAND LATER DIED OF CANCER
-DISEASE=2E HOWEVER DUE TO THIS SITUATION WE DECIDED TO
-CHANGED MOST OF MY HUSBAND'S BILLIONS OF DOLLARS
-DEPOSITED IN SWISS BANK AND OTHER COUNTRIES INTO OTHER
-FORMS OF MONEY CODED FOR SAFE PURPOSE BECAUSE THE NEW
-HEAD OF STATE OF =28DR=29 MR LAURENT KABILA HAS MADE
-ARRANGEMENT WITH THE SWISS GOVERNMENT AND OTHER
-EUROPEAN COUNTRIES TO FREEZE ALL MY LATE HUSBAND'S
-TREASURES DEPOSITED IN SOME EUROPEAN COUNTRIES=2E HENCE
-MY CHILDREN AND I DECIDED LAYING LOW IN AFRICA TO
-STUDY THE SITUATION TILL WHEN THINGS GETS BETTER=2C
-LIKE NOW THAT PRESIDENT KABILA IS DEAD AND THE SON
-TAKING OVER =28JOSEPH KABILA=29=2E ONE OF MY LATE HUSBAND'S
-CHATEAUX IN SOUTHERN FRANCE WAS CONFISCATED BY THE
-FRENCH GOVERNMENT=2C AND AS SUCH I HAD TO CHANGE MY
-IDENTITY SO THAT MY INVESTMENT WILL NOT BE TRACED AND
-CONFISCATED=2E I HAVE DEPOSITED THE SUM OF EIHGTEEN
-MILLION UNITED STATE DOLLARS=28US$18=2C000=2C000=2C00=2E=29 WITH A
-SECURITY COMPANY =2C FOR SAFEKEEPING=2E THE FUNDS ARE
-SECURITY CODED TO PREVENT THEM FROM KNOWING THE
-CONTENT=2E WHAT I WANT YOU TO DO IS TO INDICATE YOUR
-INTEREST THAT YOU WILL ASSIST US BY RECEIVING 
-THE MONEY ON OUR BEHALF=2EACKNOWLEDGE THIS MESSAGE=2C SO
-THAT I CAN INTRODUCE YOU TO MY SON =28KONGOLO =29 WHO HAS
-THE OUT MODALITIES FOR THE CLAIM OF THE SAID FUNDS=2E I
-WANT YOU TO ASSIST IN INVESTING THIS MONEY=2C BUT 
-I WILL NOT WANT MY IDENTITY REVEALED=2E I WILL ALSO WANT
-TO BUY PROPERTIES AND STOCK IN MULTI-NATIONAL COMPANIES
-AND TO ENGAGE IN OTHER SAFE AND NON-SPECULATIVE 
-INVESTMENTS=2E MAY I AT THIS POINT EMPHASISE THE HIGH
-LEVEL OF CONFIDENTIALITY=2CWHICH THIS BUSINESS DEMANDS=2C
-AND HOPE YOU WILL NOT BETRAY THE TRUST AND CONFIDENCE=2C
-WHICH I REPOSE IN YOU=2E IN CONCLUSION=2CIF YOU WANT
-TO ASSIST US =2C MY SON SHALL PUT YOU IN THE PICTURE OF
-THE BUSINESS=2CTELL YOU WHERE THE FUNDS ARE CURRENTLY
-BEING MAINTAINED AND ALSO DISCUSS OTHER MODALITIES
-INCLUDING REMUNERATION FOR YOUR SERVICES=2E
+DiskOnChip 2000 found at address 0xD0000
+Flash chip found: Manufacturer ID: EC, Chip ID: 75 (Samsung KM29U256T)
+1 flash chips found. Total DiskOnChip size: 32 MiB
 
-FOR THIS REASON KINDLY FURNISH US YOUR CONTACT
-INFORMATION=2C AND YOUR PERSONAL TELEPHONE AND FAX
-NUMBER FOR VALIDATION PROCESSES=2E
+NFTL driver loads:
 
-BEST REGARDS=2C
+NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
+  nftla: nftla1
 
-MRS M=2E SESE SEKO
+But where is the DoC for me to mount and have my merry way with?  I would 
+be much appreciative of any help/hints/suggestion/HOWTOs/walkthroughs 
+anyone might have.
+
+Cheers.
+
+Andrew 
