@@ -1,20 +1,23 @@
-Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cemux-00072S-K8
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 23:07:10 -0500
-Message-ID: <004801c4e325$01260320$8500a8c0@nit37>
-From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
-To: "Craig Hollabaugh" <craig@hollabaugh.com>, <linux-mtd@lists.infradead.org>
-References: <00cf01c4e29d$0b173670$8500a8c0@nit37>
-	<20041215222528.GA7880@boa.ouraynet.com>
-Date: Thu, 16 Dec 2004 09:39:03 +0530
+Received: from motgate8.mot.com ([129.188.136.8])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cerc1-0008AN-GJ
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 04:08:07 -0500
+Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
+	by motgate8.mot.com (Motorola/Motgate8) with ESMTP id iBG99PfL009820
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Dec 2004 02:09:25 -0700 (MST)
+Received: from zch01exm40.ap.freescale.net (zch01exm40.sps.mot.com
+	[10.192.130.11])
+	by il06exr04.mot.com (Motorola/il06exr04) with ESMTP id iBG96NrQ028585
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2004 03:06:25 -0600
+Message-ID: <9FCDBA58F226D911B202000BDBAD467307D4DC@zch01exm40.sps.mot.com>
+From: Shen Aaron-r62966 <aaron.shen@freescale.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 16 Dec 2004 17:07:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: Flash programming
-Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
+Content-Type: text/plain;
+	charset="GB2312"
+Subject: Problem of sending reset operation for NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Craig,
+Hi,
 
-Thank you, actually our target comprises of an intel processor(iop80321), a 
-flash(Intel NOR) and a ram, two usb ports and a ieee1394 port. In the flash 
-there are drivers for existing system to work, my present requirement is to 
-store a certain key/data/string in the flash, which shall be dynamically be 
-modifiable by an user interface provided to the host, when connected to the 
-target either through usb/firewire ports.
+      I met a problem when sending reset command to nand flash.
 
-Firstly, I have looked into mtd drivers to store data (which basically is a 
-key, a group of characters) in the flash, but I am not clear whether this 
-will work or I have to look into jffs2 file system also, basically my path 
-is not clear whether I have to use mtd/jffs2.
+	When the command "NAND_CMD_READ0" (0x0) and "NAND_CMD_READ_ID"(0x90) are passed, it 
+	can successfully execute. But when we pass "NAND_CMD_RESET"(0xff), it hangs on the statement
+	      "while((!(_reg_NFC_NF_CONFIG2&NAND_FLASH_CONFIG2_INT)));". Below is the code:
 
-I will be thankful if you can suggest an approach, for storing the key
-(group of characters).
+	------------------------------------------------------------------------------------------
+	u32 NAND_Command(IN u16 command)
+	{
+	    _reg_NFC_NF_CONFIG2&=~NAND_FLASH_CONFIG2_INT;
+	
+	    _reg_NFC_NAND_FLASH_CMD=command;
+	    _reg_NFC_NF_CONFIG2&=~NAND_FLASH_CONFIG2_FCMD;
+	    _reg_NFC_NF_CONFIG2|=NAND_FLASH_CONFIG2_FCMD;
+	
+	     while((!(_reg_NFC_NF_CONFIG2&NAND_FLASH_CONFIG2_INT)));
+	    if(!(_reg_NFC_NF_CONFIG2&NAND_FLASH_CONFIG2_INT))
+	        return ERR_TIME_OUT;
+	
+	    return 0;
+	}
+	------------------------------------------------------------------------------------------
+	
+	Is there any difference to send the reset command? Anybody can give comments 
+	to me?
 
-Thanks,
-Subrahmanyam.
-
-
------ Original Message ----- 
-From: "Craig Hollabaugh" <craig@hollabaugh.com>
-To: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
-Sent: Thursday, December 16, 2004 03:55 AM
-Subject: Re: Flash programming
-
-
-> On Wed, Dec 15, 2004 at 05:25:49PM +0530, Subrahmanyam wrote:
->> Can you please help me write into the flash, my present requirement is to
->> store a certain key/data/string in the flash, which shall be dynamically 
->> be
->> modifiable by an user interface provided to the host, when connected to 
->> the
->> target either through usb/firewire ports.
->
-> which processor, which board, what kind of flash?
-> 
+Best Regards!
+Feng Shen (Aaron)
