@@ -1,22 +1,20 @@
-Received: from mtiwmhc14.worldnet.att.net ([204.127.131.114])
+Received: from chrudim.coprosys.cz ([194.108.73.1] helo=ns3.coprosys.cz)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18FcHc-0002uP-00
-	for <linux-mtd@lists.infradead.org>; Sat, 23 Nov 2002 15:33:24 +0000
-Received: from who ([12.88.120.18]) by mtiwmhc14.worldnet.att.net
-          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
-          id <20021123160321.HPSJ21264.mtiwmhc14.worldnet.att.net@who>
-          for <linux-mtd@lists.infradead.org>;
-          Sat, 23 Nov 2002 16:03:21 +0000
-From: "Gregg C Levine" <hansolofalcon@worldnet.att.net>
-To: <linux-mtd@lists.infradead.org>
-Subject: RE: Problem in using DOC2000
-Date: Sat, 23 Nov 2002 11:03:54 -0500
-Message-ID: <000001c29309$eca01ca0$1278580c@who>
+	id 18Fu4q-0006BL-00
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Nov 2002 10:33:24 +0000
+Received: from wolfhill.cz (ctt2.cps.cz [194.108.73.202])
+	by ns3.coprosys.cz (8.12.0/8.12.0) with ESMTP id gAOB3rdj021284
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Nov 2002 12:03:53 +0100
+Message-ID: <3DE0B223.4090901@wolfhill.cz>
+Date: Sun, 24 Nov 2002 12:04:03 +0100
+From: Ales Makarov <ales.makarov@wolfhill.cz>
+Reply-To: ales.makarov@wolfhill.cz
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20021123155340.81672.qmail@web41009.mail.yahoo.com>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: Garbage collection failed
+References: <20021122011236.8686.qmail@web21006.mail.yahoo.com> <23792.1037957630@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,50 +26,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello from Gregg C Levine
-You will need to supply us with more information with your project. Such
-as, what motherboard does it use, and what distribution you are using.
-And yes it might be a conflict. The first IDE drive in a Linux system,
-is typically /dev/hda. Most DOCs are typically set to /dev//hdd, so as
-to use the IDE chain that the CD drive is attached to.
--------------------
-Gregg C Levine hansolofalcon@worldnet.att.net
-------------------------------------------------------------
-"The Force will be with you...Always." Obi-Wan Kenobi
-"Use the Force, Luke."=A0 Obi-Wan Kenobi
-(This company dedicates this E-Mail to General Obi-Wan Kenobi )
-(This company dedicates this E-Mail to Master Yoda )
+I have seen this message also (on our DragonBall VZ based
+board). But it appears only during shutdown/reset (when the
+JFFS2 partition remains mounted and the GC thread is running).
 
+Ales
 
-
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org [mailto:linux-mtd-
-> admin@lists.infradead.org] On Behalf Of tin man chan
-> Sent: Saturday, November 23, 2002 10:54 AM
-> To: linux-mtd@lists.infradead.org
-> Subject: Problem in using DOC2000
->=20
-> Hi,
->=20
-> I have compiled a linux kernel 2.4.19 with mtd driver
-> built-in and wish to use such kernel to probe the DOC
-> and use the DOC to boot my PC later by transferring
-> the kernel to DOC. However, after I insert the DOC
-> chip to the socket and start my PC, the PC will hang
-> in the booting message "Loading linux............."
->=20
-> Is it related to my PC BIOS? Or IDE harddisk conflict
-> with DOC? Any comment or idea? Thanks.
->=20
-> William
->=20
->=20
->=20
->=20
-> _________________________________________________________
-> =A4H=AE=F0=A5=E6=A4=CD=BC=F6=BDu#9351 =B8=DC=A1u=A4=CD=A1v=B4N=A6=B3
-> http://hk.yahoo.com/promotions/personals/9351
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+David Woodhouse wrote:
+ > inox_kas@yahoo.com said:
+ >
+ >>When I mount the JFFS2 I keep getting the following error:
+ >>"jffs2: No clean _or_ dirty blocks to GC from! Where are they
+ >>all?\n");
+ >
+ >
+ > Does the mount fail, or does it just print this and 
+continue working?
+ >
+ > --
+ > dwmw2
+ >
+ >
+ >
+ > ______________________________________________________
+ > Linux MTD discussion mailing list
+ > http://lists.infradead.org/mailman/listinfo/linux-mtd/
