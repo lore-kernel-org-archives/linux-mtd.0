@@ -1,39 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 132KGl-0004mL-00
-	for mtd-list@infradead.org; Wed, 14 Jun 2000 22:00:15 +0100
-Received: from ha1.rdc1.ov.nl.home.com ([212.120.66.198] helo=mail.rdc1.ov.nl.home.com)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 132KGk-0004mF-00
-	for mtd@infradead.org; Wed, 14 Jun 2000 22:00:14 +0100
-Received: from pieter ([212.120.115.124]) by mail.rdc1.ov.nl.home.com
-          (InterMail v4.01.01.00 201-229-111) with SMTP
-          id <20000614210026.KFWX5340.mail.rdc1.ov.nl.home.com@pieter>
-          for <mtd@infradead.org>; Wed, 14 Jun 2000 23:00:26 +0200
-From: "Pieter Grimmerink" <p.grimmerink@home.nl>
-To: <mtd@infradead.org>
-Subject: driver for AM29F040W
-Date: Wed, 14 Jun 2000 23:00:57 +0200
-Message-ID: <MPBBIIEFELAEABNCNHMMIEEOCDAA.p.grimmerink@home.nl>
+	id 132VGk-0006cd-00
+	for mtd-list@infradead.org; Thu, 15 Jun 2000 09:44:58 +0100
+Received: from gateway.pel.dk ([195.249.83.130])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 132VGj-0006cX-00
+	for mtd@infradead.org; Thu, 15 Jun 2000 09:44:57 +0100
+Message-ID: <39489799.EDB77B51@pel.dk>
+Date: Thu, 15 Jun 2000 10:45:13 +0200
+From: akc <akc@pel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: mtd@infradead.org
+Subject: CVS access
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've only recently read about the mtd project,
-and I'm interested in getting the AM29F040W chip
-to work in an embedded system (80188 processor).
-(for which I should probably use the ELK kernel)
+Howdy folks
 
-What driver should I use to 
-1. boot from this flashchip,
-2. and create a filesystem in it?
 
-Best regards,
+I tried the Anonymous CVS access, as described, but receives connection
+refused after entering the password ?????
 
-Pieter Grimmerink
+Is the password changed ?
+
+or what ..
+
+
+
+
+
+Thanks in advance
+
+Arnold
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
