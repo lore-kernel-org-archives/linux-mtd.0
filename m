@@ -1,20 +1,19 @@
-Received: from [212.209.10.220] (helo=miranda.se.axis.com)
+Received: from [212.105.56.244] (helo=dmz.lumentis.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AgOFd-00069X-TC
-	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 13:06:35 +0000
-Date: Tue, 13 Jan 2004 14:08:01 +0100
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20040113130800.GB29496@axis.com>
-References: <002201c3d985$8ff790f0$1a140a0a@leonnb>
-	<1073976604.5541.10.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <1073976604.5541.10.camel@imladris.demon.co.uk>
-cc: ????????? <lnys@avamax.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: nand flash driver problem
+	id 1AgOUM-0006Ib-8C
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2004 13:21:46 +0000
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "'Jarkko Lavinen \(NMP/Helsinki\)'" <jarkko.lavinen@nokia.com>,
+   "'MTD List'" <linux-mtd@lists.infradead.org>
+Date: Tue, 13 Jan 2004 14:19:11 +0100
+Message-ID: <000601c3d9d7$d770b630$0a01a8c0@LUMENTIS02>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20040113125031.GA5146@angel.research.nokia.com>
+Subject: RE: JFFS2 mount time
+Reply-To: joakim.tjernlund@lumentis.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 13, 2004 at 06:50:05AM +0000, David Woodhouse wrote:
-> On Tue, 2004-01-13 at 11:30 +0800, ????????? wrote:
-> >              I also do another test for reading or writing Nand flash by MTD
-> > block driver and it is ok (I mean reading or writing 200KB data from/to Nand
-> > flash is not more than 1 second).  So I don't know what the problem is. Do
-> > anyone meet the similar problem or any idea?
+> I am working with an embedded device with 64MB nand chip. I am able to
+> read from chip at 6MB/s and able to read the whole chip in 10 seconds
+> using character mtd device. The device has Omap1610 running at 190MHz,
+> kernel 2.4.21.
 > 
-> Use profiling to see where it's spending all its time. Read the
-> 'readprofile' man page.
+> With 80% file system usage the mount time is 8 seconds which is
+> unacceptable for root file system on a handheld device. I assume the
+> scan time is linear with respect to the size of the flash partition
+> and the file system usage.
+> 
+> Is there anything that could be done to reduce the mount time of large
+> JFFS2 partitions?  Lazy mounting with prioritized scanning?
 
-The time it takes to write to a regular file depends a lot on the 
-buffer size when copying data. Some implementations of cp, for 
-example, always use the same buffer size and doesn't use stat or 
-statfs to find out the blocksize of the destination file system. I 
-guess the compression in JFFS2 is a bottleneck when copying too small 
-chunks.
+Yes, it is already done in JFFS2 CVS. Mount time for me is about a second on
+a 64MB JFFS2 NOR flash.
 
-/Jonas
+      Jocke
