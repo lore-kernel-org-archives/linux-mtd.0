@@ -1,18 +1,20 @@
-Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A49q6-0005K3-UH
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 03:02:11 +0100
-Message-ID: <3F78E3DB.10508@hectrix.com>
-Date: Tue, 30 Sep 2003 10:00:59 +0800
-From: Selwyn Tang <selwyn@hectrix.com>
+Received: from host242-133.pool80206.interbusiness.it ([80.206.133.242]
+	helo=dns.ctsgroup.it)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A4HJG-0006Gq-M6
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 11:00:46 +0100
+Received: from Massimo (dyn225.ctsgroup.it [192.6.1.225])
+	by dns.ctsgroup.it (8.11.6/8.11.6) with SMTP id h8U9xt113285
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 11:59:55 +0200
+Message-ID: <001501c38739$e17ff190$e10106c0@Massimo>
+From: =?iso-8859-1?Q?Massimo_Cal=F2?= <m.calo@ctsgroup.it>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 30 Sep 2003 12:01:56 +0200
 MIME-Version: 1.0
-To: "Chiasson, John" <jchiasson@namrl.navy.mil>
-References: <D495FC2E1E65A44EAA961BC66B9395312A9C82@namrl.navy.mil>
-In-Reply-To: <D495FC2E1E65A44EAA961BC66B9395312A9C82@namrl.navy.mil>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: redhat 9, doc 2000
+Subject: Couldn't find erase block to garbage collect!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi John,
+Hi All,
 
-On 09/29/2003 10:05 PM, Chiasson, John wrote:
-> me to an example for booting the redhat 9 kernel from the doc?  I tried
-> copying the /boot tree over, but no joy.
+    I have done the following command :
 
-Did you copy the kernel image (like bzImage) to your doc and configure
-the grub settings on your doc correctly?
+        />eraseall /dev/mtd2                        (mtd2 is JFFS2)
 
-I put my bzImage in /boot and in grub/menu.lst I have the following:
+When I reboot I receive the following message:
 
-title DiskOnChip 2000
-	root (dc0,0)
-	kernel /boot/bzImage ro root=/dev/nftla1
+        /> /bin/reboot
+        jffs2: No clean _or_ dirty blocks to GC from! Where are they all?
 
-When you can boot from doc using grub, that's a good start. You may
-actually edit the boot command line when grub is booted. It supports
-auto-completion for you to easily locate your kernel image.
+        jffs2: Couldn't find erase block to garbage collect!
 
-Hope this helps!
+        Restarting system.
 
-Selwyn
+
+I think that this is a warning, but how can I solve this message?
+Is it possible to do some command like "format" to erase the mtd2 partition
+without giving any problem to GC?
+
+Thanks!
+
+Massimo.
