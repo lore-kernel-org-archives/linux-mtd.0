@@ -1,17 +1,25 @@
-Received: from structure.biochem.nchu.edu.tw ([140.120.131.1])
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Ghp1-0003Ah-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 15:40:24 +0000
-Date: Tue, 26 Nov 2002 12:22:27 +0800 (CST)
-From: shadow <saturn@structure.biochem.nchu.edu.tw>
-To: Thomas Gleixner <tglx@linutronix.de>
-cc: John Hall <john.hall@optionexist.co.uk>, <linux-mtd@lists.infradead.org>,
-   <manningc2@actrix.gen.nz>
+	id 18Gitv-0003Hj-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2002 16:49:32 +0000
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H6700EVP1GJAW@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Tue, 26 Nov 2002 18:19:32 +0100 (MET)
+Date: Tue, 26 Nov 2002 18:17:30 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: SmartMedia Card need to create fs before mounting it ?
-In-Reply-To: <200211261138.16297.tglx@linutronix.de>
-Message-ID: <Pine.LNX.4.44.0211261219490.21417-100000@structure.biochem.nchu.edu.tw>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-reply-to: 
+ <Pine.LNX.4.44.0211261219490.21417-100000@structure.biochem.nchu.edu.tw>
+To: shadow <saturn@structure.biochem.nchu.edu.tw>
+Cc: linux-mtd@lists.infradead.org
+Reply-to: tglx@linutronix.de
+Message-id: <200211261817.30312.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+References: 
+ <Pine.LNX.4.44.0211261219490.21417-100000@structure.biochem.nchu.edu.tw>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,36 +31,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 26 Nov 2002, Thomas Gleixner wrote:
-mount -t jffs2 /dev/mtdblock/6 /mnt
-getting follow error messages.
---------
-jffs2_scan_empty(): Empty block at 0x0000000c ends at 0x00000200 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x00000208 ends at 0x00000400 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x0000040c ends at 0x00000600 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x00000608 ends at 0x00000800 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x00000808 ends at 0x00000a00 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x00000a08 ends at 0x00000c00 (with
-0x00000000)! Marking dirty
-jffs2_scan_empty(): Empty block at 0x00000c08 ends at 0x00000e00 (with
-0x00000000)! Marking dirty
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000e08:
-0xff00 instead
-<............................. skip
-JFFS2: Erase block at 0x007fe000 is not formatted. It will be erased
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes 
--------
-
-> The I/O errors indicate probably that you have bad blocks on your FLASH.
-> Use dmesg to verify.
-> But it's not a problem. JFFS2 can handle this.
-> 
-> now 
-> mount -t jfss2 /dev/mtdblock/x /mnt/bla
-> 
-> 
+On Tuesday 26 November 2002 05:22, shadow wrote:
+> On Tue, 26 Nov 2002, Thomas Gleixner wrote:
+> mount -t jffs2 /dev/mtdblock/6 /mnt
+> getting follow error messages.
+> JFFS2: Erase block at 0x007fe000 is not formatted. It will be erased
+> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+The FLASH is not erased at all
+What says dmesg after eraseall ?
+If there is no hint, turn on debugging in nand driver
+-- 
+Thomas
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
