@@ -1,57 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14j34y-0000cm-00
-	for mtd-list@infradead.org; Fri, 30 Mar 2001 18:52:56 +0100
-Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
+	id 14j3CY-0000eV-00
+	for mtd-list@infradead.org; Fri, 30 Mar 2001 19:00:46 +0100
+Received: from [212.87.56.100] (helo=mail.taytron.net)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14j34x-0000cg-00
-	for mtd@infradead.org; Fri, 30 Mar 2001 18:52:55 +0100
-Date: Fri, 30 Mar 2001 12:52:46 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: =?iso-8859-1?Q?K=E1ri_Dav=ED=F0sson?= <kd@flaga.is>
-cc: <mtd@infradead.org>
-Subject: RE: partitions and erase regions
-In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E3108B012@kolkrabbi.flaga.is>
-Message-ID: <Pine.LNX.4.33.0103301246200.8580-100000@xanadu.home>
+	id 14j3CX-0000eO-00
+	for mtd@infradead.org; Fri, 30 Mar 2001 19:00:45 +0100
+From: "Florian Schirmer / TayTron" <schirmer@taytron.net>
+To: "=?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?=" <kd@flaga.is>,
+	<mtd@infradead.org>
+Subject: AW: partitions and erase regions
+Date: Fri, 30 Mar 2001 20:00:09 +0200
+Message-ID: <BKEKLBIBFPNGJKJDEODFMEHEEIAA.schirmer@taytron.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E3108B012@kolkrabbi.flaga.is>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi!
 
+>Since there was no protest I just went ahead and commited the "virtual"
+>erase region
+>patch to mtdpart.
 
-On Fri, 30 Mar 2001, Kári Davíðsson wrote:
+Just a short question :-)
 
-> Since there was no protest I just went ahead and commited the "virtual"
-> erase region
-> patch to mtdpart.
+Situation:
 
-Sorry, I apparently missed your original post.
+2 partitions not aligned to erase sectors. The first jffs and the second
+cramfs. What happens if jffs writes to the last sector (the shared one) and
+just in the second the block was erased the power fails. Data loss on the
+second partition?
 
-> > Hi,
-> >
-> > I am implementing a "virtual" erase regions for partitions.
-> > It looks to me that should be enough to create them in
-> > add_mtd_partition().
-> >
-> > This would make it easyer to manage partitions that cross erase region
-> > boundaries.
+If so please make virtual support a selectable option in kernel config. (If
+not already)
 
-Why do you want to have partitions that cross erase region in the first
-place?
-
-The primary goal of partitions is to easily _preserve_ some parts of the
-flash while allowing free access to others.  If a writable, ence eraseable,
-partition can start/end up in the middle of an erase region, you will
-potentially trash part of a contigous partition that was ment to be
-read-only.  Even if you preserve the erased content of the contigous
-partition to write it back afterwards, you still have the risk of a power
-failure at the right time that would rander your read-only partition
-corrupted.
-
-
-Nicolas
+Thanks
+  Florian Schirmer
 
 
 
