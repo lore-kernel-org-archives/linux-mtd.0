@@ -1,17 +1,18 @@
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18WQhq-0002sF-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2003 00:37:58 +0000
-Date: Thu, 9 Jan 2003 02:08:43 +0100 (CET)
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-cc: Russ Dill <Russ.Dill@asu.edu>, <Srinivasu.Vaduguri@nokia.com>,
-   <linux-mtd@lists.infradead.org>
-Subject: Re: CRAMFS on MTD/NAND Issue
-In-Reply-To: <200301082304.25101.tglx@linutronix.de>
-Message-ID: <Pine.LNX.4.44.0301090206130.14735-100000@filer.marasystems.com>
+	id 18WTs5-0003Cj-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2003 04:00:45 +0000
+Received: from [192.168.4.57] (account xjin HELO redswitch.com)
+  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 2674881 for linux-mtd@lists.infradead.org; Wed, 08 Jan 2003 20:31:47 -0800
+Message-ID: <3E1CFAEC.2090608@redswitch.com>
+Date: Wed, 08 Jan 2003 20:30:36 -0800
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: Compilation error on the latest mtd code
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +24,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 8 Jan 2003, Thomas Gleixner wrote:
+When compiling the latest mtd code with the kernel linuxppc_2_4_devel 
+checked out from bk://ppc.bkbits.net, I encountered the following error. 
+This kind of error seems to be caused by some special control character 
+in a text file. So I used 'dos2unix' to convert all header files. But it 
+didn't solve the error. Any hints? Thank you very much.
 
-> Mount your rootfs _readonly_ and you have the _same_ including bad block 
-> handling.
 
-If a flag could be added to a jffs2 image denying it to be mounted 
-read-write then yes..
+ppc_8xx-gcc -D__KERNEL__ 
+-I/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_
+devel/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 
+-fno-strict-aliasing
+-fno-common -fomit-frame-pointer 
+-I/u/xjin/2_4_devel/Software/Linux/MPC855/linux
+ppc_2_4_devel/arch/ppc -fsigned-char -msoft-float -pipe -ffixed-r2 
+-Wno-uninitia
+lized -mmultiple -mstring   -nostdinc -I 
+/opt/eldk2.0/usr/lib/gcc-lib/ppc-linux/
+2.95.4/include -DKBUILD_BASENAME=mtdblock_core  -c -o mtdblock-core.o 
+mtdblock-c
+ore.c
+In file included from 
+/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel
+/include/linux/blk.h:4,
+                  from mtdblock-core.c:18:
+/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel/include/linux/blkdev.
+h:147: parse error before `struct'
 
-With (c)ramfs I know the files in the image is not modified unless someone 
-has done a direct block access on the underlying device.
-
-Regards
-Henrik
+- Shawn.
