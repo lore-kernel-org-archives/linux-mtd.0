@@ -1,91 +1,83 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14s050-0005uR-00
-	for mtd-list@infradead.org; Tue, 24 Apr 2001 11:29:58 +0100
-content-class: urn:content-classes:message
-Subject: RE: partitions and erase regions 
+	id 14s0KZ-0005zU-00
+	for mtd-list@infradead.org; Tue, 24 Apr 2001 11:46:03 +0100
+Received: from ns.sysgo.de ([213.68.67.98] helo=rob.devdep.sysgo.de)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14s0KW-0005zO-00
+	for mtd@infradead.org; Tue, 24 Apr 2001 11:46:00 +0100
+From: Robert Kaiser <rob@sysgo.de>
+Reply-To: rob@sysgo.de
+To: Vipin Malik <vipin.malik@daniel.com>
+Subject: Re: Elan SC520 - problem with MTD
+Date: Tue, 24 Apr 2001 09:56:26 +0200
+Content-Type: text/plain
+References: <NEBBKJHOALKOLCFPGELEIEJLCJAA.ajlennon@arcom.co.uk> <01042316543802.01109@rob> <3AE4B5B3.26E340E8@daniel.com>
+In-Reply-To: <3AE4B5B3.26E340E8@daniel.com>
+Cc: Alex Lennon <ajlennon@arcom.co.uk>, mtd@infradead.org,
+        jffs-dev <jffs-dev@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 24 Apr 2001 10:29:48 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is>
-From: =?iso-8859-15?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <mtd@infradead.org>,
-	<nico@cam.org>
+Message-Id: <01042412450101.00394@rob>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> -----Original Message-----
-> From: David Woodhouse [mailto:dwmw2@infradead.org]
-> Sent: 23. apr=EDl 2001 14:11
-> To: K=E1ri Dav=ED=F0sson
-> Cc: mtd@infradead.org; nico@cam.org
-> Subject: Re: partitions and erase regions=20
->=20
-> How about the following rules/behaviour for MTD partitions:
->=20
->  1. For a partition to be writable, there must be a number=20
-> usable as 'major'
-> 	erasesize (mtd->erasesize), such that a na=EFve user of=20
-> MTD can get=20
-> 	erases at offsets such that offset % erasesize =3D=3D 0 to work.
->  2. If a partition covers regions of the master which have differing=20
-> 	erasesizes, the information about the exact erase regions should
-> 	be made available in the slave.
+On Die, 24 Apr 2001 you wrote:
+> Wow! Where (and why ;) were your hiding this gem for so long?!!!
 
-It sounds reasonable to me. Although I have a problem with the "major"
-erazesize in
-general. The erase regions are in the flash for a reason, i.e. the chip
-is not
-of one "major" erase size but of many erase sizes, although most of it
-(untill now, who knows what AMD, Intel and others might do in the future
-8-))
-is of one erase size. I think it should be a long term goal to remove
-the
-member "mtd->erasize". It might be irresponsible of me to say that since
-it seems
-that a lot of the code using mtd structure depend heavily on that
-member.
-It might also complicate the code a lot to always go through the erase
-region
-structures for every erase/[un]lock and slow down e.g. filesystems that
-live on
-the device. Modulo division is simple and fast no one can deny that 8-)
-But on the other hand it also complicates the code to have two ways of
-getting to a=20
-sector, i.e. mtd->erasesize and erase regions.....
+It's been there all the time ....
 
->=20
-> So... given a master device with 'major' erasesize 64K, which=20
-> is actually=20
-> 8*8K, 15*64K, this would be the result of some example partitions...
->=20
->  Partition range   Erase size(s)      Writable?
->=20
->  000000 - 020000  64K (8*8K, 1*16K)	Yes
->  020000 - 100000  64K			Yes
->=20
->  000000 - 008000  8K			Yes
->  008000 - 100000  -			No (no usable 'major'=20
-> erasesize)=20
->=20
->  000000 - 010000  8K			Yes
->  010000 - 100000  64K			Yes
->=20
->  008000 - 010000  8K			Yes
->=20
-> K=E1ri, if this is acceptable for your purposes (and I think it=20
-> is), then we=20
-> should just implement this behaviour and not have any=20
-> conditional code at=20
-> all.
+> 
+> This is the answer to a lot of maiden's prayers! Robert, are you the "rob" in the
+> CVS Id in the files?
 
-Yes, I will try to get to it this week.
+Yep :-)
+
+If there is enough public interest in this, maybe I can setup a home
+page/public CVS for it some day. If only I had more time :-(
 
 
-K.D.
+> P.S. I saw a couple of mails ago that some folks mentioned that I have
+> successfully booted the linux kernel directly out of flash and installed
+> the JFFS(2) as the root
+> fs (and a ext2 fs as a compressed fs in ramdisk). That is all true.
+> 
+> I have supplied, on request, the files to boot the kernel out of flash.  The
+> original source of the hacked kernel boot code to do this was AMD (and it's
+> open source of course).
+> Please let me know if you want those.
+
+Yes, please !
+
+> HOWEVER! The solution is not a very
+> elegant one.
+> It involves making changes to some startup files (bootset.S and setup.S) in the
+> Linux startup code itself.
+
+I am currently writing code to support booting  the SC520 CDP from ROM
+without BIOS using the above mentioned ROM bootloader (BTW, it's name is
+"ROLO" :-)).
+
+What I'm mostly interested in is the startup/initialization sequence for that
+board. Once it has been properly initialized, the generic ROLO code should
+work out of the box.
+
+I have some code that does the basic SC520 initialization right after
+reset and I am now trying to initialize the Super I/O chip (I have just
+received the chip manual from Acerlabs). After that, I need to figure out a way
+to setup the set up the PCI bridge... Another thing that is still missing in my
+code is a proper RAM size detection. 
+
+So any working code you might have along these lines -no matter how ugly-
+would probably be helpful to me.
+
+Rob
+
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
