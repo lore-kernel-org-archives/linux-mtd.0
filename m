@@ -1,16 +1,16 @@
-Received: from mail018.syd.optusnet.com.au ([210.49.20.176])
+Received: from mail014.syd.optusnet.com.au ([210.49.20.172])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cDoa-0007oc-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 00:32:36 +0100
+	id 17cE7o-0007q0-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 00:52:29 +0100
 Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
-	by mail018.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g76NWVj18030
-	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 09:32:32 +1000
+	by mail014.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g76NqOH22045
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Aug 2002 09:52:25 +1000
 Received: from k9.ctam.local ([192.168.0.55] helo=ctam.com.au)
 	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
-	id 17cDoN-00055n-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 09:32:23 +1000
-Message-ID: <3D505C85.80705@ctam.com.au>
-Date: Wed, 07 Aug 2002 09:32:21 +1000
+	id 17cE7j-0007P9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 09:52:23 +1000
+Message-ID: <3D506137.9050208@ctam.com.au>
+Date: Wed, 07 Aug 2002 09:52:23 +1000
 From: Brendan J Simon <brendan.simon@ctam.com.au>
 Reply-To: brendan.simon@ctam.com.au
 MIME-Version: 1.0
@@ -40,14 +40,14 @@ David Woodhouse wrote:
 >>>>>>>>>>BJS: nftl_release(): invalidate_device()
 >>>>>>>>>>
 
-Is this because get_super() fails ???
+I've just tried an older 2.4.1-pre11 kernel that a coleague is using.  I 
+loaded the kernel via tftp and passed it "root=/dev/nftla1 ro" 
+parameters.  It booted perfectly (except for some busybox seg faults). 
+ ie. the DOC was mounted so that implies that the super blocks are OK.
 
-I've done an fsck.ext2 and it passed with no problems.  This should mean 
-that the super blocks are OK, should it ???
+Maybe there is a bug in the 2.4.18-pre8 kernel related to MTD/NFTL ??
+Maybe I've changed something that I've forgotten about ?  I'll have a 
+closer look.
 
-I formatted the DOC with nftl_format if that makes any difference.
-I also used the latest fdisk from util-linux for format the drive with 
-an MSDOS partition table and one ext2 partition.
-
-Thanks for any help or advice.
+Regards,
 Brendan Simon.
