@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [217.167.239.213] (helo=tasmanie.mensi.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17LLYq-0000xJ-00
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 11:22:36 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020621102030.9607.qmail@linuxmail.org> 
-References: <20020621102030.9607.qmail@linuxmail.org> 
-To: "xyz xyz" <watsup@linuxmail.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: X11 or microwindows on a DOC using GRUB?? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 21 Jun 2002 11:22:32 +0100
-Message-ID: <9440.1024654952@redhat.com>
+	id 17LLpQ-0000yZ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2002 11:39:44 +0100
+Message-ID: <003a01c2190f$998b1cf0$280300c0@groenland>
+From: "Guillaume David" <guillaume.david@mensi.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: <guillaume.david@mensi.com>
+Subject: Problem in duplicating DoC2000
+Date: Fri, 21 Jun 2002 12:37:11 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-watsup@linuxmail.org said:
->  hows the practical performance of microwindows? i saw some black
-> patches when using microwindows and screen needs to b refreshed
-> manually?is it a common prob in microwindows ?(i know we r going away
-> from the  purpose of this mailing list but plz advise)
+Hi,
 
-No idea. You might try some of the more general-purpose fora for embedded 
-Linux stuff.
+I'm really happy having success in building an embedded linux system on
+DoC2000 with the mtd stuff.
+This system boots thanks to grub.
 
---
-dwmw2
+I bought the disk-on-chip GANG programmer from M-System to copy easily and
+fast my systems.
+This programmer first copies the source DoC to its own hard disk in an image
+file. Then in a second time, it writes the image file to the target DoC.
+But it doesn't really works, the copies seem to start but I have a message
+such as :
+    Spare Media Header for NFTL 0 found in flash sector 224
+    nftl_rawread error 16 in memcpy() or earlier, press any key...
+
+I press a key and then the boot sequence goes on and hangs up after having
+written
+    NFTL driver: nftlcore.c $ Revision1.86$, nflmount.c $ Revision 1.28 $
+
+The original DoC works pretty well instead, there must be some problem in
+the copy process.
+
+Do you have any idea of what happened and how I can correct or avoid the
+problem.
+
+Best Regards
+
+Guillaume DAVID
+Mensi
