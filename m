@@ -1,21 +1,19 @@
-Received: from mailout06.sul.t-online.com ([194.25.134.19])
+Received: from wohnheim.fh-wedel.de ([195.37.86.122])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 198FAL-0002RE-K0
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 08:59:41 +0100
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-In-reply-to: Your message of "Mon, 21 Apr 2003 13:55:44 +0200."
-             <20030421115544.GB9550@wohnheim.fh-wedel.de>
-Date: Wed, 23 Apr 2003 09:59:08 +0200
-Sender: wd@denx.de
-Message-Id: <20030423075913.34D7BC58B9@atlas.denx.de>
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-cc: Jeremy Bowen <Jeremy.Bowen@opennw.com>
-cc: "'dwmw2@infradead.org'" <dwmw2@infradead.org>
-cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Unable to write to some JFS partitions 
+	id 198FFx-0002XW-GW
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 09:05:29 +0100
+Date: Wed, 23 Apr 2003 10:05:35 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Wuertele <dave-gnus@bfnet.com>
+Message-ID: <20030423080535.GB12378@wohnheim.fh-wedel.de>
+References: <m365p6b0q0.fsf@bfnet.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <m365p6b0q0.fsf@bfnet.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd and devfs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <20030421115544.GB9550@wohnheim.fh-wedel.de> you wrote:
->
-> > > Note that there exist bootloaders which can boot
-> > > from JFFS2 so you can put the kernel in there too.
+On Tue, 22 April 2003 15:56:23 -0700, David Wuertele wrote:
 > 
-> David, do you have a longer list than grub and ecos? Just curious.
+> Is there any reason why mtd wouldn't work under devfs?
 
-U-Boot (the "Universal Bootloader" which is available sor  some  100+
-PowerPC,  ARM,  MIPS  and  x86  boards) supports commands to list the
-directory contents and to load files from JFFS2 filesystems. No write
-support though. See http://sourceforge.net/projects/u-boot
+It does here, with 2.4.18 plus some other patches.
 
-If JFFS2 support is a useful feature for a boot loader is subject  to
-discussion  -  IMHO the initial scan of the JFFS2 filesytem takes too
-long to make it interesting for embedded systems where boot  time  is
-usually  critical  (if  I need to have the application up and running
-within 3 seconds after poweron I cannot spend 2 seconds on the  JFFS2
-scan). But YMMV.
+> I'm running 2.4.18 plus some vendor patches.  I've got a nand flash
+> that is recognized on boot:
+> 
+>   STWX225 NAND Flash initializing...
+>   PFLASH_CNTL before MOD: 80after MOD: 80
+>   NAND device: Manufacture ID: 0xec, Chip ID: 0x73 (Samsung KM29U128T) Chip size: 2000000
+>   Creating 5 MTD partitions on "Samsung KM29U128T":
+>   0x00000000-0x00200000 : "MTD partition 0"
+>   mtd: Giving out device 0 to MTD partition 0
+>   0x00200000-0x00400000 : "MTD partition 1"
+>   mtd: Giving out device 1 to MTD partition 1
+>   0x00400000-0x00c00000 : "MTD partition 2 - root FS"
+>   mtd: Giving out device 2 to MTD partition 2 - root FS
+>   0x01f00000-0x01ffc000 : "MTD partition 3"
+>   mtd: Giving out device 3 to MTD partition 3
+>   0x01ffc000-0x02000000 : "MTD partition 4"
+>   mtd: Giving out device 4 to MTD partition 4
+>   STW4X225 NAND Flash initialized.
+> 
+> This results in devices under devfs:
+> 
+>   # ls -R /dev/mtd
+> 
+>   /dev/mtd:
+>   0
+>   0ro
+>   1
+>   1ro
+>   2
+>   2ro
+>   3
+>   3ro
+>   4
+>   4ro
+> 
+> But when I try to read from these, my system hangs before it ever gets
+> to the nand_read() function:
+> 
+>   # head /dev/mtd/0 > fred
+> 
+> Whether I try to read or write to the /dev/mtd/0 device, the system
+> hangs hard.  The nand_read() function has a printk as its first
+> statement, but the console never prints this, so I think there is
+> something wrong with the read dispatch.  Could there be issues with my
+> use of devfs?
 
+Does the system work when you create the nodes by hand without devfs?
+Likely not.
+Does it work if you use the block devices instead?
+Likely not.
 
-Best regards,
+If both fail enable CONFIG_MTD_DEBUG and increase
+CONFIG_MTD_DEBUG_VERBOSE until you can tell, where the read hangs.
+Write may be a bad test, depending on your setup, as printk doesn't
+always reach you after a system hang.
 
-Wolfgang Denk
+Results without vendor patches are preferred. :)
+
+Jörn
 
 -- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-If I have seen further it is by standing on the shoulders of  giants.
-              - Isaac Newton, Letter to Robert Hooke, 5 February 1676
+The cost of changing business rules is much more expensive for software
+than for a secretaty.
+-- unknown
