@@ -1,131 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GV24-0002eL-00
-	for mtd-list@infradead.org; Wed, 10 Jan 2001 23:51:56 +0000
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14GV23-0002eF-00
-	for mtd@infradead.org; Wed, 10 Jan 2001 23:51:55 +0000
-Message-ID: <3A5CF658.5E65A45C@mvista.com>
-Date: Wed, 10 Jan 2001 15:55:04 -0800
-From: Alice Hennessy <ahennessy@mvista.com>
-MIME-Version: 1.0
-To: =?iso-8859-1?Q?St=E9phane?= Laroche <stephane.laroche@colubris.com>,
-   mtd@infradead.org, ahennessy@mvista.com
+	id 14GVUk-0002vz-00
+	for mtd-list@infradead.org; Thu, 11 Jan 2001 00:21:34 +0000
+Date: Wed, 10 Jan 2001 19:21:31 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: =?iso-8859-1?Q?St=E9phane_Laroche?= <stephane.laroche@colubris.com>,
+        <mtd@infradead.org>
 Subject: Re: CFI problems with 32bit bus and 4 devices
-References: <3A5CB4C3.41FC20D1@colubris.com> <3A5CF18A.3DEAE71E@mvista.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.30.0101102149450.1062-100000@imladris.demon.co.uk>
+Message-ID: <Pine.LNX.4.30.0101101914190.584-100000@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Alice Hennessy wrote:
 
-> Stéphane Laroche wrote:
->
-> > Hi,
-> >
-> > I've just updated to the latest CVS and my CFI AMD chips are not
-> > accessible anymore.
-> >
-> > I lokked briefly into it and saw that the cfi->interleave and
-> > cfi->device_type were removed from offset calculations when accessing
-> > the devices.
-> >
-> > So, for my setup, which has 4 x16 devices on a 32 bit bus (AMDs),  the
-> > CFI query structure is located at offsets 0x80, 0x88, 0x90, etc.
-> >
-> > cfi_read_query()  uses only the buswidth to calculate the offset, which
-> > is not general enough (it used to be like that before I played with the
-> > code a bit last summer).  It's obviously wrong in my case ( 0x10 << 2 !=
-> > 0x80 ).
-> >
-> > Rewriting cfi_read_query like this made the CFI query structure
-> > readable:
-> >
-> > static inline __u8 cfi_read_query(struct map_info *map, __u32 base,
-> > __u32 addr)
-> > {
-> >     struct cfi_private *cfi = map->fldrv_priv;
-> >     addr *= cfi->interleave * cfi->device_type;  /* instead of addr <<
-> > (buswidth / 2) */
-> >     if (cfi_buswidth_is_1()) {
-> >         return map->read8(map, base + addr);
-> >     } else if (cfi_buswidth_is_2()) {
-> >         return cfi16_to_cpu(map->read16(map, base + addr));
-> >     } else if (cfi_buswidth_is_4()) {
-> >         return cfi32_to_cpu(map->read32(map, base + addr));
-> >     } else {
-> >         return 0;
-> >     }
-> > }
-> >
-> > With this change, the chips are now properly recognized.  But I can't
-> > still not use them (reads are wrong), so I think I have to look at
-> > cfi_cmdset_002.c to bring back the use of cfi->interleave in some
-> > calculations...
-> >
-> > Any comments?  Is it possible that I'm the only one using that kind of
-> > geometry?
-> >
-> > -Stephane
-> >
-> > To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
->
-> I just ran into the same problem with my one 8x16 intel chip which is set
-> up in 8 bit mode.
->
-> I think the fix should be:
->
-> static inline __u8 cfi_read_query(struct map_info *map, __u32 base, __u32
-> query_addr, int int
-> erleave, int type)
-> {
->         __u32 addr = base + cfi_build_query_addr(query_addr, interleave,
-> type);
->
->         if (cfi_buswidth_is_1()) {
->                 return map->read8(map, addr);
->         } else if (cfi_buswidth_is_2()) {
->                 return cfi16_to_cpu(map->read16(map, addr));
->         } else if (cfi_buswidth_is_4()) {
->                 return cfi32_to_cpu(map->read32(map, addr));
->         } else {
->                 return 0;
->         }
-> }
->
-> with cfi_build_query_addr () the same as cfi_build_cmd_addr():
->
-> static inline __u32 cfi_build_query_addr(__u32 cmd_ofs, int interleave, int
-> type)
-> {
->         return (cmd_ofs * type) * interleave;
-> }
->
-> So that the address of the query is adjusted for the 8 bit selection of an
-> 8x16 chip.
-> I think the correct address is taken from the combo of interleave and type
-> ( which is correctly set up to be
-> CFI_DEVICETYPE_X16  for this configuration).
->
-> I think we need to pass in the interleave and type because the
-> map->fldrv_priv
-> isn't set up before the first query call.
->
-> Alice
 
-Nevermind,  better to just put back in the ofs_factor in all the
-cfi_read_query calls:
+On Wed, 10 Jan 2001, David Woodhouse wrote:
 
-int ofs_factor = cfi->interleave * cfi->device_type;
-((unsigned char *)cfi.cfiq)[i] = cfi_read_query(map,base + ((0x10 +
-i)*ofs_factor));
+> On Wed, 10 Jan 2001, Nicolas Pitre wrote:
+>
+> > No.  Usually the actual x16 flash devices are able to operate in 8-bit mode
+> > (selected with a pin tied to VCC or GND I think).  Then you route four of
+> > them in parallel on a 32-bit bus.
+>
+> OK, sorry - I misunderstood. I was thinking of four x16 devices in x16
+> mode.  (Which would make a certain amount of sense - although you can't
+> drive them all with a single bus access, you can still have all four
+> writing simultaneously, hence achieving four times the write bandwidth of
+> a single chip.)
 
-I should have checked this change with both my test boards, sorry.
+This would become ugly IMHO to interleave multiple chips over multiple bus
+access.  Rather make one bank follow the other instead.
 
-Alice
+> So in this case, you've essentially got 4 8-bit devices with the address
+> lines all shifted left by one bit, right?
+>
+> I thought the whole point in the 8-bit emulation mode was that you just
+> didn't connect the chips' A0 line, and then you pretended they really were
+> 8-bit chips, rather than having to add all this extra support to the
+> drivers
 
+>From what I understand that's mostly that, except for the query structure
+which gets expanded on twice the address range.  All the rest should be the
+same.
+
+
+Nicolas
 
 
 
