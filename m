@@ -1,21 +1,16 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15AqoL-0005fH-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Jun 2001 11:26:41 +0100
-Received: from cad2.me.ccu.edu.tw ([140.123.121.3])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 15AqtX-0002UC-00
-	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2001 11:32:04 +0100
-Received: from cs.ccu.edu.tw (home.acronexus.com [211.23.94.162]) by cad2.me.ccu.edu.tw (8.7.5/8.7.5) with ESMTP id GAA16444 for <mtd@infradead.org>; Fri, 15 Jun 2001 06:40:55 +0800 (CST)
-Message-ID: <3B29E6B9.527B10E4@cs.ccu.edu.tw>
-Date: Fri, 15 Jun 2001 18:43:05 +0800
-From: lmc83 <lmc83@cs.ccu.edu.tw>
-MIME-Version: 1.0
-To: mtd <linux-mtd@lists.infradead.org>
-Subject: error when mounting jffs
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Received: from mail.2d3d.co.za ([196.14.185.200])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15Ar5A-0005gC-00
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Jun 2001 11:44:05 +0100
+Date: Fri, 15 Jun 2001 12:49:57 +0200
+From: Abraham vd Merwe <abraham@2d3d.co.za>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: flash driver patches
+Message-ID: <20010615124957.A29946@crystal.2d3d.co.za>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,20 +22,58 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi,
-    my board have a nand flash,
-    I use mtd's nand driver to create a mtd device.
-    It pass the nandtest's check:
-        nandtest ==> ok
-    but when I mount -t jffs /dev/mtdblock0 /flash
-    the mount is success, but will show following message:
-        jffs_scan_flash : Found a JFFS node
-        with dsize (0x15cc) > max_chunk_size (0x1000)
-        .....
-    although it can copy or delete the file on the file system,
-    but what's the means of the message?
-    Does it have any side effect?
-    
-    Thanks.
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    Liang Ming-Chung
+Hi!
+
+I've just finished testing my flash driver which I'd like to send to you
+guys to integrate into the MTD tree so that it can find it's way into the
+official kernel.
+
+I'm just wondering how you would prefer to get it? I can send it as a
+standalone module (it's just a single source file which should go under the
+mtd/devices section) or a unified diff (or both), but I don't know what I
+should patch. The latest CVS MTD tree, the kernel (which version? with or
+without the rmk/np patches?), etc.
+
+There's also a small patch that fixes a bug in mtdpart.c, so I can send a
+diff for this, but once again I don't know against what I should patch...
+
+--=20
+
+Regards
+ Abraham
+
+If I'd known computer science was going to be like this, I'd never have
+given up being a rock 'n' roll star.
+		-- G. Hirst
+
+__________________________________________________________
+ Abraham vd Merwe - 2d3D, Inc.
+
+ Device Driver Development, Outsourcing, Embedded Systems
+
+  Cell: +27 82 565 4451         Snailmail:
+   Tel: +27 21 761 7549            Block C, Antree Park
+   Fax: +27 21 761 7648            Doncaster Road
+ Email: abraham@2d3d.co.za         Kenilworth, 7700
+  Http: http://www.2d3d.com        South Africa
+
+
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7KehVzNXhP0RCUqMRAgUXAJ9U24kgW4rVTdWTHu5AP8NaB34dzwCggiFN
+AWPCi7abGXBMko01AwFI3+o=
+=ucjA
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
