@@ -1,49 +1,56 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13dPiM-0001N8-00
-	for mtd-list@infradead.org; Mon, 25 Sep 2000 05:18:02 +0100
-Received: from sis.com.tw ([203.67.208.2] helo=fw11.sis.com.tw)
+	id 13eAM8-0005T5-00
+	for mtd-list@infradead.org; Wed, 27 Sep 2000 07:06:12 +0100
+Received: from cherry.napri.sk ([194.1.128.4])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13dPiE-0001N1-00
-	for mtd@infradead.org; Mon, 25 Sep 2000 05:17:55 +0100
-Message-ID: <39CED0CE.7407D992@sis.com.tw>
-Date: Mon, 25 Sep 2000 12:13:02 +0800
-From: Ollie Lho <ollie@sis.com.tw>
-MIME-Version: 1.0
-To: Andreas Micklei <ami@ivistar.de>
-CC: Juergen Beisert <jbeisert@eurodsn.de>, mtd@infradead.org
-Subject: Re: Choosing DiskOnChip driver
-References: <3.0.6.32.20000922120218.007c5650@eurodsn.de> <20000922134751.E908@bomberman.ivistar.de>
+	id 13eAM7-0005Sz-00
+	for mtd@infradead.org; Wed, 27 Sep 2000 07:06:11 +0100
+Received: from ham.kundrat.sk (root@gw.pkx.sk [194.1.139.234])
+	by cherry.napri.sk (8.9.3/8.9.3/Debian/GNU) with ESMTP id IAA16925
+	for <mtd@infradead.org>; Wed, 27 Sep 2000 08:06:07 +0200
+Received: (from kundrat@localhost)
+	by ham.kundrat.sk (8.9.3/8.9.3/Debian/GNU) id IAA15243
+	for mtd@infradead.org; Wed, 27 Sep 2000 08:05:15 +0200
+Date: Wed, 27 Sep 2000 08:05:15 +0200
+From: Peter Kundrat <kundrat@pkx.sk>
+To: mtd@infradead.org
+Subject: journalled fs on partitioned flash
+Message-ID: <20000927080515.A15228@napri.sk>
+References: <E13dhnU-0007fK-00@infradead.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <E13dhnU-0007fK-00@infradead.org>; from Majordomo@infradead.org on Tue, Sep 26, 2000 at 12:36:32AM +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Andreas Micklei wrote:
-> 
-> Hi,
-> 
-> On Fri, Sep 22, 2000 at 12:02:18PM +0200, Juergen Beisert wrote:
-> > I develop a small PC board with a DiskOnChip Millenium chip. Because it should be an embedded system I do not want use a standard BIOS like desktop pc (I need a very fast boot). Instead I want load linux direct with a small ROM routine from the DiskOnChip (this small routine do the system initializing, too). So my question:
-> >
-> > Is this possible with the MTD software? Which parts of grub and mtd I have to use to solve it? Can anybody help me?
-> 
-> I asked a similar question some time ago and was referred to the following
-> project:
-> 
-> http://freebios.sourceforge.net/
-> 
-> Seems like a good starting point.
-> 
+Greetings,
 
-Yes, you are right. We have just successfully boot Linux with LinuxBIOS + Doc
-Millennium on SiS 630. The whole system has only DoC Millennium as its sotrage device. No HD nor any other flash device
-is required. We can even put a tiny
-file system to run Microwindows "mdemo" demo program.
+My idea to configure the embedded i386 box with Doc Millenium flash
+was to create 2 partitions, with one partition beeing used for cfg
+data and the second for cramfs. When trying jffs, i found that it 
+required mtdblock to be mounted on. With this requirement i dont see
+any other way how to get my desired setup with partitioned flash
+(except for ext3 on ntfl, but that doesnt seem to be ported to 2.4 
+(i havent checked latest status)).
 
-If things go fine, we will demo this in ALS.
+So it seems i have to use compressed loop over jffs on mtdblock.
+Does anybody have such a config working ?
 
-Ollie
+When i tried to dd if=rootfs.jffs of=/dev/mtdblock/0 i got
+end_request: I/O error, dev 1f:00 (mtdblock) sector 0 
+end_request: I/O error, dev 1f:00 (mtdblock) sector 254
+etc. every 254 blocks
+and dd hung in D state (__wait_on_buffer+0x4c)
+
+Is it a known problem ? Does any have cloop working on 2.4 (on
+first try the compilation choked .. i'll have a closer look
+whether it was my fault or not).
+
+	Thanks for any advice,
+
+		Peter
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
