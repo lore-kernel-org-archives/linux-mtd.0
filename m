@@ -1,20 +1,20 @@
 Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196DuY-0001VM-Hn
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 19:15:02 +0100
+	id 196E32-0001hH-24
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 19:23:48 +0100
 Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HDI000182OETR@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Thu, 17 Apr 2003 20:14:39 +0200 (MEST)
-Date: Thu, 17 Apr 2003 21:14:31 +0200
+	21 2002)) with SMTP id <0HDI000N4330TR@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Thu, 17 Apr 2003 20:23:24 +0200 (MEST)
+Date: Thu, 17 Apr 2003 21:23:17 +0200
 From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <001201c30505$c4b83dd0$6c00a8c0@home>
-To: Paul <paul@maypaul.com>, linux-mtd@lists.infradead.org
-Message-id: <200304172114.31896.tglx@linutronix.de>
+In-reply-to: <3E9EDF93.9070700@psilongbeach.com>
+To: crowe@psilongbeach.com, linux-mtd@lists.infradead.org
+Message-id: <200304172123.17395.tglx@linutronix.de>
 MIME-version: 1.0
-References: <001201c30505$c4b83dd0$6c00a8c0@home>
-Content-type: text/plain; charset=iso-8859-15
+References: <3E9EDF93.9070700@psilongbeach.com>
+Content-type: text/plain; charset=iso-8859-1
 Content-transfer-encoding: 7BIT
-Subject: Re: Restore the bad block flag in OOB of  NAND flash
+Subject: Re: CVS patch breaks zlib
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,20 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 17 April 2003 19:21, Paul wrote:
->  Dear All,
+On Thursday 17 April 2003 19:08, crowe@psilongbeach.com wrote:
+> Hi I'm new to the list
+> I'm designing with the Altera EPXA10.
+> I got the CVS version of mtd and applied the patch
+> patchin.sh -c -j /home/crowe/aacSpva/linux-2.4.17_zlibBusted
 >
->     How can I restore the 0xFF in the OOB[5]?   i understood the oob[5] is
->  the bad block indicator. The YAFFS set accidentally the byte to 0x00 . I
->  want to use JFFS2 but the eraseall command said they are invalid block. I
-> am
->  sure that the block is health . So, I want to force set the oob[5] to
-> oxFF, pls. how can i do? Thank you.
+> Here is a snippit of what happened
+> make modules
+> ....
+> make[1]: Entering directory
+> `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib' arm_920t_le-gcc
+> -D__KERNEL__ -I/home/crowe/aacSpva/linux-2.4.17_zlibBusted/include -Wall
+> -Wstrict-prototypes -Wno-trigraphs -O2  -fno-strict-aliasing -fno-common
+> -fno-common -pipe -g -mapcs-32 -march=armv4 -mtune=arm9tdmi
+> -mshort-load-bytes -msoft-float -DMODULE   -DEXPORT_SYMTAB -c zlib.c
+> zlib.c:72: `deflate' undeclared here (not in a function)
+> zlib.c:72: initializer element is not constant
+There is no file zlib.c in lib. At least it should be not there. Did you apply 
+any other patches , which modify lib directory ?
 
-There is no "legal" way to do so. The only way is to erase it. The sanity 
-check is in erase function drivers/mtd/nand/nand.c. 
-
-But think about, if it's worth do so for 16KiB flash memory :)
+MTD patchin.sh is know to work on vanilla kernels 2.4.17-2.4.20, ARM kernels 
+2.4.17-rmkx - 2.4.19-rmkx and PPC kernels 2.4.19 and 2.4.20.
 
 -- 
 Thomas
