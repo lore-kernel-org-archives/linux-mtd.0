@@ -1,19 +1,17 @@
-Received: from wproxy.gmail.com ([64.233.184.199])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CbS2P-00044A-8h
-	for linux-mtd@lists.infradead.org; Mon, 06 Dec 2004 18:13:02 -0500
-Received: by wproxy.gmail.com with SMTP id 58so182857wri
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Dec 2004 15:13:00 -0800 (PST)
-Message-ID: <4de512b7041206150853f90f61@mail.gmail.com>
-Date: Mon, 6 Dec 2004 16:08:46 -0700
-From: Vernon Fuller <vernonfuller@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from [203.197.255.76] (helo=mail.navayuga.co.in)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CbWHz-0000n3-Vq
+	for linux-mtd@lists.infradead.org; Mon, 06 Dec 2004 22:45:25 -0500
+Message-ID: <000b01c4dc0f$69fd88e0$8500a8c0@nit37>
+From: "Subrahmanyam" <subrahmanyam@navayuga.co.in>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 7 Dec 2004 09:16:52 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Subject: what version of mkfs.jffs2 is recommended for 2.4.21
-Reply-To: Vernon Fuller <vernonfuller@gmail.com>
+Subject: MTD driver
+Reply-To: Subrahmanyam <subrahmanyam@navayuga.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am running 2.4.21-rmk2-pxa1 and am looking for matching mtd utilities.
-I have tried mkfs.jffs2  1.41, 1.39 and even 1.26
-what would you recommend?
+ Hi,
 
+ I need to provide an user interface/GUI wherein when a certain data 
+(string/key) is entered, it should basically store the key in the flash 
+(this basically happens during run time after the target has been identified 
+by the host).
 
-The way I tell I have a mismatched version is jffs2_scan_eraseblock()
-gets off and can't find more than a few Magic bitmasks on blocks that
-should be formatted correctly.   My root jffs2 filesystem mounts,
-after much of it has been erased.
+In the target we have a flash in which there is jffs2 file system and also 
+mtd drivers, since i need to store block oriented data, i am looking at the 
+possiblity of using mtd driver and storing data(key) in a particular 
+location in flash. How should i proceed in acheiving the same.
+
+I will be thankful if you can best suggest an approach for acheiving the
+same.
+
+Thanks,
+Subrahmanyam. 
