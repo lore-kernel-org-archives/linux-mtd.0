@@ -1,14 +1,26 @@
-Received: from web20009.mail.yahoo.com ([216.136.225.72])
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19rHaL-0004od-Li
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2003 14:40:41 +0100
-Message-ID: <20030825134016.59014.qmail@web20009.mail.yahoo.com>
-Date: Mon, 25 Aug 2003 06:40:16 -0700 (PDT)
-From: nicolas brin <nino01_2000@yahoo.com>
-To: linux-mtd@lists.infradead.org
+Received: from news.ti.com ([192.94.94.33] helo=dragon.ti.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19rKEq-0005Fy-0D
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2003 17:30:40 +0100
+Received: from dlep52.itg.ti.com ([157.170.134.103])
+	by dragon.ti.com (8.12.9/8.12.9) with ESMTP id h7PGTjxe018580
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Aug 2003 11:29:45 -0500 (CDT)
+Received: from dlep90.itg.ti.com (localhost [127.0.0.1])
+	by dlep52.itg.ti.com (8.12.9/8.12.9) with ESMTP id h7PGTi8E005646
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Aug 2003 11:29:44 -0500 (CDT)
+Received: from dlee70.itg.ti.com (dlee70.itg.ti.com [157.170.135.145])
+	by dlep90.itg.ti.com (8.12.9/8.12.9) with ESMTP id h7PGTiJ5009056
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Aug 2003 11:29:44 -0500 (CDT)
+Message-ID: <55E815D2673DD71193CD0000F8FE891F0225F73A@dlee02.itg.ti.com>
+From: "Ramesh, Subramanian" <sramesh@ti.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Mon, 25 Aug 2003 11:29:39 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: jffs2 and busybox 
+Content-Type: text/plain
+Subject: jffs2 tests
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +30,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
-I'm a Montavista kernel linux 2.4 and PPCBOOT.
-I boot with PPCBOOT that run LINUX. With the boot
-arguments, I configure kernel running to boot with
-root file system in nfs(host machine). I don't have
-problem!
-Then, I mount my jffs2 partition and I install it my
-jffs2 image. further to I configure kernel running to
-boot with root file system on my jffs partition.
-Kernel display message and when I display busybox
-message then it display me that it tell me :rcS don't
-exist. then I display a message about tty4 in loop.
-I don't know if I forget an option when I configured
-the root file system with Montavista tools.
 
-I need to know which options must I choose to build my
-root file system that it will install in my flash of
-8Mo. And how to run busybox (does it use inittab ...
-like PC)?
+	I am looking for some of the tests that were run by Vipin Malik on
+JFFS2 file systems. Does anyone know if they are archived somewhere? Sorry
+for the blastogram, but my e-mail to Vipin bounced and
+embeddedlinuxworks.com seems to be offline.
 
-thks
-bye
-
-nicolas  
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+Thanks.
+--Ramesh
