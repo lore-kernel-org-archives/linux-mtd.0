@@ -1,35 +1,37 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from [62.6.164.226] (helo=mail.linuxgrrls.org ident=postfix)
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11iMSD-0003zZ-00
-	for mtd@infradead.org; Mon, 1 Nov 1999 18:45:19 +0000
-Date: Mon, 1 Nov 1999 18:42:06 +0000 (GMT)
-From: Kira Brown <kira@linuxgrrls.org>
+	id 11iZle-0004xF-00
+	for mtd@infradead.org; Tue, 2 Nov 1999 08:58:14 +0000
 To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: David Woodhouse <David.Woodhouse@mvhi.com>, miket@bluemug.com,
-	SLEAS@videoupdate.com, sct@redhat.com, joh@xinit.se,
-	linux-kernel@vger.rutgers.edu, mtd@infradead.org
-Subject: Re: jfs/linux
-In-Reply-To: <E11iLRd-0002uk-00@the-village.bc.nu>
-Message-ID: <Pine.LNX.4.10.9911011841010.8103-100000@carrot.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: miket@bluemug.com, SLEAS@videoupdate.com, sct@redhat.com,
+    joh@xinit.se, linux-kernel@vger.rutgers.edu, mtd@infradead.org
+Subject: Re: jfs/linux 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 02 Nov 1999 08:32:49 +0000
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E11iZN3-00027B-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+alan@lxorguk.ukuu.org.uk said:
+>  Ditto with Compact flash (ATAPI). Compact flash according to the docs
+> does its own wear levelling.  Im still baffled why people use the
+> other stuff 8) 
 
-On Mon, 1 Nov 1999, Alan Cox wrote:
+Cost, size, complexity.
 
-> Ditto with Compact flash (ATAPI). Compact flash according to the docs does
-> its own wear levelling.  Im still baffled why people use the other stuff 8)
+Why muck about with PCMCIA/IDE chipsets and CompactFlash when you can just 
+dump a chunk of NOR flash straight on your mainboard (or in a DIMM slot) and 
+use that?
 
-SmartMedia does too, according to the stuff I have here.  SmartMedia is
-slightly smaller than CompactFlash, which may explain why we're using it.
-
-Either way it'll be good to get rid of rassen frassen DiskOnChip.
-
-kira.
+----                                ----                                 ----
+David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
+ Project Leader,    Process Information Systems     Mobile: (+44) 7976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
 
 
 
