@@ -1,20 +1,18 @@
-Received: from miranda.axis.se ([193.13.178.2])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16bJgd-0003zm-00
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Feb 2002 11:04:23 +0000
-Message-ID: <3C6BEE8B5E1BAC42905A93F13004E8AB6B6DDF@mailse01.axis.se>
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: "'Robert Kaiser '" <rob@sysgo.de>,
-   "'David Woodhouse '"
-	 <dwmw2@infradead.org>
-Cc: "'joakim.tjernlund@lumentis.se '" <joakim.tjernlund@lumentis.se>,
-   "'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>,
-   "'J?rn Engel '" <joern@wohnheim.fh-wedel.de>
-Subject: RE: MTD concat layer 
-Date: Thu, 14 Feb 2002 12:14:25 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 16bKsy-00044b-00
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Feb 2002 12:21:12 +0000
+Date: Thu, 14 Feb 2002 13:32:23 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Adam Wozniak <adam.wozniak@comdev.cc>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: patch for 64 bit wide flash
+Message-ID: <20020214133223.A26200@wohnheim.fh-wedel.de>
+References: <3C1FD0DD.9A4F2CC8@comdev.cc>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3C1FD0DD.9A4F2CC8@comdev.cc>; from adam.wozniak@comdev.cc on Tue, Dec 18, 2001 at 03:27:25PM -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,22 +24,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->> You could hack up a map driver that appears to have the two CFI chips 
->> contiguously, and then the probe code would find them both and make a 
->> single MTD device from them -  but there was a reason why he wasn't
-doing 
->> this. Perhaps the 'BIOS' bit is in fact the beginning of the second
-chip, 
->> not actually a separate chip at all? I don't remember.
->
->No, the BIOS is in the middle of the chip's addressing space. All this
->_could_ conceivably be solved with a hacked-up map driver, but then
->again,
->one might as well do the partitioning stuff in a hacked-up map driver.
->The
->idea was to have this functionality available in a generic form, so it
->it is accessible as a service from the MTD core layer.
+Hi!
 
-I started to work on a different solution; probe functions that could be called several times with the same map. This would also make it possible to mix CFI and JEDEC chips. And you could mix chips of different geometry. I did , however, caught a nasty cold and haven't been working on it for a week now. If you are interested in this solution I will continue working on it when I get well, otherwise I'll use your solution.
+> I've got a 64 bit wide flash consisting of eight 8bit wide chips.
+> Here's a patch against the 2.4.16 kernel
+> 
+> I think I've added enough code to support all 64 bit wide
+> configurations,
+> but somebody whould probably check me on it.
 
-/Jonas
+After merging with current cvs again, I found an issue with your code
+and my kernel:
+
+> diff -urbBN --exclude=.*depend --exclude=*.flags --exclude=*.o linux-original/drivers/mtd/maps/physmap.c linux/drivers/mtd/maps/physmap.c
+> --- linux-original/drivers/mtd/maps/physmap.c	Thu Oct  4 15:14:59 2001
+> +++ linux/drivers/mtd/maps/physmap.c	Tue Dec 18 14:06:06 2001
+> @@ -10,6 +10,7 @@
+>  #include <asm/io.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/map.h>
+> +#include <linux/mtd/partitions.h>
+>  #include <linux/config.h>
+>  
+>  
+> @@ -34,6 +35,11 @@
+>  	return __raw_readl(map->map_priv_1 + ofs);
+>  }
+>  
+> +__u64 physmap_read64(struct map_info *map, unsigned long ofs)
+> +{
+> +	return __raw_readll(map->map_priv_1 + ofs);
+> +}
+
+__raw_readll is not defined in our kernel (2.4.2 based). Worse, I
+couldn't find that definition in the 2.4.17 kernel, either. Is this
+specific to your private kernel?
+
+Joern
+
+PS: The same applies to __raw_writell, of course.
