@@ -1,15 +1,18 @@
-Received: from mailhost.dragados.com ([194.224.246.95] helo=mw1-out-101.dragados.com)
+Received: from admc.win.mvl.intelos.net ([216.12.7.113] helo=bifrost.admc.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17U2zt-0001Mk-00
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Jul 2002 11:22:29 +0100
-Message-ID: <84BE72E17B15D61180E8009027E4112D056A67@WNT_EXCHANGE>
-From: "Valls Pellicer,Joan" <jvp-sice-barcelona@dragados.com>
-To: "'Herman@WirelessNetworksInc.com'" <Herman@WirelessNetworksInc.com>
-Cc: linux-mtd@lists.infradead.org
-Date: Mon, 15 Jul 2002 12:25:26 +0200
+	id 17UFSQ-00025I-00
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Jul 2002 00:40:47 +0100
+Received: from admc.com (gw.admc.com [192.168.100.246])
+	by bifrost.admc.com (8.11.2/8.11.2) with ESMTP id g6FNeF401887
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Jul 2002 19:40:15 -0400
+Message-ID: <3D335D5D.3090201@admc.com>
+Date: Mon, 15 Jul 2002 19:40:13 -0400
+From: Blaine Simpson <blaine.simpson@admc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: (no subject)
+To: linux-mtd@lists.infradead.org
+Subject: fdisk won't save changes
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,41 +24,90 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 17 Sep 2001, Herman Oosthuysen wrote: 
-> Howdy, 
->
-> Well, it would be horribly slow when system logs etc in /var are written
-to
-> flash, but in practice you can write to Flash an incredible number of
-times 
-> before it will become unreliable. In my experience the first thing 
-> that happens with age is that the erase cycles become slower and may
-increase 
-> from around 500ms to as much as 15s, but the device will still work
-reliably. 
-> This aging happens quite quickly actually - a few hundred erase cycles and
-the 
-> device will be significantly slower than when new. (I have seen and fixed
-many 
-> erase algorithms that do not allow sufficient erase time for old parts!). 
-I've been looking for this agging problem in M-Systems (like system
-integrator), Toshiba and Samsung (like Flash memory manufacturers) Web pages
-and I can't find any information. Only in Samsung flash FAQs I've find the
-following question (and answer):
-Q2. Is program/erase time deteriorated with the increase of program/erase
-cycles? 
- <<...OLE_Obj...>> 
-A : Samsung's NAND Flash goes through an internal qualification process with
-endurance up to 1M cycles. Since NAND Flash has superior endurance to other
-Flash technology, the closing of cell threshold is not noticeable until 1M
-cycles. The erase time does not change at all, regardless of endurance up to
-1M cycles. The program time could take a little longer or does not change. 
- <<...OLE_Obj...>> 
-Samsung says that their erasing cycle typical is 2 mseg. and maximal is 3
-mseg., which differs a lot of your measurements. When you said 500 mseg.,
-were you talking about format operations?
-Do you know if this agging problems still occurs? Does it happen with a
-specific vendor or product?
+I would much appreciate it if somebody experienced with MTD could point
+out something I'm doing wrong, direct me toward a solution, or,
+alternatively, confirm that the mtd drivers are just not up to
+production use for DOC2000.
 
-Joan Valls
-jvp-sice-barcelona@dragados.com
+
+Linux kernel 2.4.18
+Have built many kernels with all relevant features turned on
+188M DOC2000
+
+If I build my kernel with the nftlcore.c v. 1.86, upon bootup I get:
+
+     Jul 15 22:43:39 vox kernel: ftl_cs: FTL header not found.
+     Jul 15 22:43:39 vox kernel: NFTL driver: nftlcore.c $Revision: 1.86 
+$, nftlm
+ount.c $Revision: 1.25 $
+     Jul 15 22:43:39 vox kernel: Could not find valid boot record
+     Jul 15 22:43:39 vox kernel: Could not mount NFTL device
+and /dev/nftla is not usable at all.
+
+
+If I boot with a kernel with nftlcore v. 1.82, I  get:
+
+     Jul 15 23:11:47 vox kernel: ftl_cs: FTL header not found.
+     Jul 15 23:11:47 vox kernel: NFTL driver: nftlcore.c $Revision: 1.82 
+$, nftlm
+ount.c $Revision: 1.25 $
+     Jul 15 23:11:47 vox kernel: Cannot calculate an NFTL geometry to 
+match size
+of 0x3bf60.
+     Jul 15 23:11:47 vox kernel: Using C:1023 H:16 S:15 (== 0x3bf10 sects)
+     Jul 15 23:11:47 vox kernel:  nftla: unknown partition table
+
+
+I can then actually run fdisk on /dev/nftla, but when fdisk tries to save
+my changes, entries like this appear in my sys log:
+
+     Jul 15 23:30:41 vox kernel: Argh! No free blocks found! LastFreeEUN 
+= 7679,
+FirstEUN = 0
+     Jul 15 23:30:41 vox kernel: No Virtual Unit Chains available for 
+folding. Fa
+iling request
+     Jul 15 23:30:41 vox kernel: Argh! No free blocks found! LastFreeEUN 
+= 7679,
+FirstEUN = 0
+     Jul 15 23:30:41 vox kernel: Cannot make free space.
+     Jul 15 23:30:41 vox kernel: NFTL_writeblock(): Cannot find block to 
+write to
+     Jul 15 23:30:41 vox kernel: end_request: I/O error, dev 5d:00 
+(unknown), sec
+tor 14
+     Jul 15 23:30:44 vox kernel:  nftla: nftla1 < nftla5 >
+     Jul 15 23:30:44 vox kernel:  nftla: nftla1 < nftla5 >
+
+(An associate of mine has had very similar problems when trying to work
+with CF-- fdisk will not save changes properly).
+
+
+Her'es my nftldump /dev/mtd0 output:
+
+     NFTL Media Header found at offset 0x00010000:
+     NumEraseUnits:    9214
+     FirstPhysicalEUN: 2
+     Formatted Size:   295796736
+     UnitSizeFactor:   0xff
+     Second NFTL Media Header found at offset 0x00018000
+     Unit 2 is free
+     Unit 3 is free
+     EraseMark not present in unit 4: ffff
+     Unit 4 is free
+     Unit 5 is free
+     Unit 6 is free
+     Unit 7 is free
+     Unit 8 is free
+     Unit 9 is free
+     Unit 10 is free
+     Unit 11 is free
+     Unit 12 is in chain 2 and is not a replacement
+     Unit 13 is free
+     Unit 14 is in chain 3 and is not a replacement
+     Unit 15 is free
+     ...
+     Unit 5932 is free
+     Memory fault
+
+Help!
