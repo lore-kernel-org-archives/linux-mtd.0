@@ -1,22 +1,18 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Barkl-0003cM-4I
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2004 03:56:09 -0400
-Received: from yandex.ru (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 70EAB2288A
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Jun 2004 11:56:00 +0400 (MSD)
-Message-ID: <40D14E90.5080308@yandex.ru>
-Date: Thu, 17 Jun 2004 11:56:00 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-MIME-Version: 1.0
+Received: from wsgw2.atc.army.mil ([134.194.13.56])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bawzt-0004MQ-Bn
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2004 09:32:07 -0400
+Received: from atcml01.atc.army.mil ([134.194.25.206])
+	by wsgw2.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004061709252624807
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Jun 2004 09:25:26 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812B9@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
 To: linux-mtd@lists.infradead.org
-References: <40CD76C2.1080007@inf.u-szeged.hu> <40CDACF2.5040502@yandex.ru>
-	<34463.160.114.55.5.1087282322.squirrel@webmail.inf.u-szeged.hu>
-In-Reply-To: <34463.160.114.55.5.1087282322.squirrel@webmail.inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: (NAND) JFFS2 mount time
+Date: Thu, 17 Jun 2004 09:33:44 -0400
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: DOC Mil Plus 32 any work being done?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Frank. Thanks for reply.
+Hi,
 
-Ferenc Havasi wrote:
-> About our idea/plan: we would like to modify the mkfs and umount porcess
-> to store some extra information (inode_cache). At booting time it is
-> enough to read this information to serve the read requests, and the full
-> scan process can be done in the background. Write requestes should be
-> blocked until this background process finished. If I am right handeld
-> devices (but at least the Familiar distribution) uses RAM filesystem for
-> /tmp and /var, so the boot process hopefully does not require write
-> access.
-> 
-> Certainly, if this information cannot be found or not valid (there was no
-> umount) the original slow full scan method should be processed.
-> 
-> One possible idea to store this information can be to introduce new types
-> of node (with JFFS2_FEATURE_RWCOMPAT_DELETE bitmask). One type to store
-> the real information (inode_cache) and an other which is stored on the
-> first erase block and contains direct pointers to the previous kind of
-> nodes/its eraseblocks. (make it easy for the mount process to find them)
-> 
-> What are your ideas? Did you tried out them?
-> 
-> We did not tried this yet, but I hope it is feasable. (David?)
-> 
-> Regards,
-> Ferenc
-> 
-Very short description of my idea:
+  Is anyone actually working on getting support for the Millennium Plus 32M
+chip.  I looked at the latest patch and unfortunately work on that chip
+hasn't been added.  I have been trying to hack up the code but don't have
+much knowledge in this area.  I am sure what I am doing is time ill spent
+other then getting a small understanding of the problem.  I am doing a lot
+of cut and paste to the diskonchip.c file.  I see where the nand_chip struct
+gets filled and where in docprobe they fill the mtd_info struct with the
+proper driver names.  Which struct is actually the proper one to use?
+Should I be redoing the DoC functions so they will work in the nand_chip
+struct with the proper arguments????  I am just trying to get this chip in a
+usable state!!!!!
 
-I thought about introducing special node type (say, raw_blkdescr) which 
-should appear at the beginning of each block and describes some other 
-block's layout. The process of writing will be like this: we write node 
-on one block and simultaneously write it's description to some another 
-free block.
-
-When mounting, we just scan beginnings of flash blocks and construct 
-inode_caches. After that we can read/write. Full scan goes in background.
-
-I didn't try this too. More over, this is just an idea for now - I'm not 
-even sure that such algorithm is feasible yet.
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Thanks for any assistance that can be provided!
+John
