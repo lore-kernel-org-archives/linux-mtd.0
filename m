@@ -1,28 +1,23 @@
-Received: from mail.imc-berlin.de ([217.110.46.186]
-	helo=mail.berlin.imc-berlin.de)
+Received: from mailout02.sul.t-online.com ([194.25.134.17])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BBcfH-0004hH-Bh
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 17:46:07 +0100
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
-	[10.0.0.13])i38Fvsj9021312
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Apr 2004 17:57:54 +0200
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id SAA02105
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 8 Apr 2004 18:45:56 +0200 (CEST)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <407581AC.9090607@imc-berlin.de>
-Date: Thu, 08 Apr 2004 18:45:32 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 1BBfGR-0005Ia-C2
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 20:32:39 +0100
+From: tglx@linutronix.de (Thomas Gleixner)
+To: =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
+ Steven Scholz <steven.scholz@imc-berlin.de>
+Date: Thu, 8 Apr 2004 21:28:23 +0200
+References: <40742192.5030901@imc-berlin.de> <407553A5.5010702@imc-berlin.de>
+	<20040408143717.GA1921@wohnheim.fh-wedel.de>
+In-Reply-To: <20040408143717.GA1921@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-CC: MTD <linux-mtd@lists.infradead.org>
-References: <407547DF.1020404@imc-berlin.de>
-	<200404081458.56018.tglx@linutronix.de> <40754F47.9060404@imc-berlin.de>
-	<200404081519.57712.tglx@linutronix.de>
-In-Reply-To: <200404081519.57712.tglx@linutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Subject: Re: Changing the number of JFFS2 erasblocks?
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200404082128.23060.tglx@linutronix.de>
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: kernel oops in cfi_cmdset_0002.c:do_write_one()...
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+On Thursday 08 April 2004 16:37, J=F6rn Engel wrote:
+> On Thu, 8 April 2004 15:29:09 +0200, Steven Scholz wrote:
+> > I just notice that in my old 2.4.20 kernel tree I have a
+> >
+> > 	* $Id: cfi_cmdset_0002.c,v 1.67 2003/04/15 22:32:13 thayne Exp $
+> >
+> > and in a _new_ 2.4.25 tree I have
+> >
+> > 	 * $Id: cfi_cmdset_0002.c,v 1.62 2003/01/24 23:30:13 dwmw2 Exp $
+> >
+> > How could that be !?!?
+> >
+> > Is the MTD code not pushed up into the main kernel sources???
+>
+> It is, whenever David finds the time for it.
+>
+> Don't blame him, this is the result of using CVS, which is designed
+> around the assumption of a single central repository.  If current sync
+> speed is to slow for you, try to make it easier for him to send
+> patches forward.
 
-> On Thursday 08 April 2004 15:10, Steven Scholz wrote:
-> 
->>We need some place to store a few configuration files (ca. 50KB compressed
->>each) for our application. These 320KB are unused so I thought we could use
->>it for this dedicated purpose instead of wasting space (and poluting) on
->>our root fs...
->>
-> 
-> Is this data which changes a lot ? Do you really need a r/w filesystem ?
+I don't know, if he is really happy, if everybody starts to send patches=20
+upstream. He does a good job on this and he focussed more on 2.6 in the las=
+t=20
+months. But I'm sure that he can be convinced to bring 2.4 to the same stat=
+e=20
+as 2.6 at least. On the other hand we live very well with the MTD patches=20
+since long, so what :) I never trust the kernel stuff of subsystems, which=
+=20
+have a active development team :)
 
-I assumed we'll store up to 5 files. And change them at maximum once 
-everyday. But this might be worst case. Maybe we (our costumers) change them 
-once a week...
-
-I think I need a r/w filesystem because we need easy random access. CRAMFS 
-or ramdisk is no option.
-
--- 
-Steven Scholz
-
-imc Measurement & Control               imc Meﬂsysteme GmbH
-Voltastr. 5                             Voltastr. 5
-13355 Berlin                            13355 Berlin
-Germany                                 Deutschland
+=2D-=20
+Thomas
+________________________________________________________________________
+"Free software" is a matter of liberty, not price. To understand the concep=
+t,
+you should think of "free" as in "free speech,'' not as in "free beer".
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
