@@ -1,14 +1,20 @@
-Received: from [202.108.255.197] (helo=bjapp3.163.net)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 164Lny-0007yM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Nov 2001 12:39:42 +0000
-MIME-Version: 1.0
-Message-Id: <3BF3B9C1.21848@bjapp3>
-Date: Thu, 15 Nov 2001 20:49:05 +0800 (CST)
-From: "SHIKUILIANG" <klshi_163@163.net>
-To: shamalin@linpus.com.tw
-Cc: linux-mtd@lists.infradead.org;
-Subject: =?gb2312?B?RXJhc2Ugc2l6ZSBwcm9ibGVt?=
+	id 164Mnh-00083Q-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Nov 2001 13:43:30 +0000
+Date: Thu, 15 Nov 2001 14:51:38 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: Erwin Authried <eauth@softsys.co.at>
+Cc: David Woodhouse <dwmw2@infradead.org>, Simon Barber <simon@barber.net>,
+        linux-mtd@lists.infradead.org
+Subject: Re: Bug in mtdblock_ro
+Message-ID: <20011115145138.A2078@wohnheim.fh-wedel.de>
+References: <20011105172238.A10542@wohnheim.fh-wedel.de> <20011106133944.A1828@wohnheim.fh-wedel.de> <000201c16bc4$dae53120$7f01010a@instant802.com> <20011113125222.A2490@wohnheim.fh-wedel.de> <003d01c16c58$71c0d7f0$7f01010a@instant802.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <003d01c16c58$71c0d7f0$7f01010a@instant802.com>; from simon@barber.net on Tue, Nov 13, 2001 at 07:32:42AM -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,59 +26,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have a doc2000 device and a v2.4.14 kernel.
-after configured and compiled mtd device in kernel I  can insert some mtd
-modules :like mtdcore doc2000 docecc docprobe mtdchar and nftl.
+Hi!
 
-when I insert docprobe.o kernel report that:
+>>> the call in mtdblock_request to MTD_READ/WRITE passes nr_sectors, it
+>>> should pass current_nr_sectors.
+>>
+>> Could you quickly add, what version has this problem? The filename
+>> should be enough. When I get back from vacation (Thursday), I will
+>> have a look at it.
+>
+> I'm travelling right now - so I can't, sorry - but it's a version I checked
+> out from the anon CVS a few days (maybe 10) ago. With this bug fix it works
+> great for me. Without the fix I get a kernel panic on trying to mount a
+> mtd_ro partition as rootfs.
 
-DiskOnChip 2000 found at address 0xd8000
-Could not find valid boot record
-Could not mout NFFL device
+Erwin, this appears to be your code, if MODULE_AUTHOR is correct. Can
+you have a look at it?
+And David, Erwin, do you mind if I indent the request function to
+Linus' beloved style? Makes reading so much easier.
 
-then i try to format /mnt/mtd0 by nftl_format.
-but it's complain :
+J鰎n
 
-Erase size not 8k, I'am confused!
-
-when i use the last mtd patch from cvs accroding to someone advices.this problem
-already exists.
-
-It always say some symbols can not be find when I compile a pathed kernel which
-use a mtd patch on 2001-8-14  or  a patch on 2001-8-30.
-
-any hints will be appreciated.
-
-stars
-
-
-
-
-
-
-
-
-
-
-
-
-
-加薪，升职密笈
-http://www.englishtown.com/master/home/courseoverview.asp?etag=TOCN&ctr=cn
-
-
-
-===============================================
- 
-手机号码是电邮，从此交费不用愁，一号在手“随身邮”
- 
-—— 163“随身邮”手机邮箱 ——
-◎ 手机号码就是电子邮箱地址，方便记忆
-◎ 不用上网，透过手机短信，随时掌握邮件的接收情况
-◎ 决不错过任何商业良机
-◎ 方便的按月收费方式，最低每月只需5元
- 
-详情请浏览
-http://vip.163.net/mobile/mobile.htm
- 
-===============================================
+-- 
+Every good work of software starts by 
+scratching a developer's personal itch.
