@@ -1,29 +1,21 @@
-Received: from lon-del-01.spheriq.net ([195.46.50.97])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cy7bi-00044x-1U
-	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2005 07:03:11 -0500
-Received: from lon-inc-09.spheriq.net ([195.46.50.73])
-	by lon-del-01.spheriq.net with ESMTP id j17C364h007248
-	for <linux-mtd@lists.infradead.org>; Mon, 7 Feb 2005 12:03:06 GMT
-Received: from lon-out-03.spheriq.net (lon-out-03.spheriq.net [195.46.50.131])
-	by lon-inc-09.spheriq.net with ESMTP id j17C36Vx012210
-	for <linux-mtd@lists.infradead.org>; Mon, 7 Feb 2005 12:03:06 GMT
-Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
-	by lon-out-03.spheriq.net with ESMTP id j17C35ho009670
-	for <linux-mtd@lists.infradead.org>; Mon, 7 Feb 2005 12:03:05 GMT
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <420758F1.8CAC90A2@st.com>
-Date: Mon, 07 Feb 2005 13:02:57 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
-MIME-Version: 1.0
-To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-References: <ctsr0r$94m$1@sea.gmane.org>
-	<20050206220713.D99FE15504@desire.actrix.co.nz>
-	<cu7934$irr$1@sea.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 1Cy8QH-0004Pd-Bp
+	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2005 07:55:26 -0500
+Date: Mon, 7 Feb 2005 13:55:01 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Andrew Victor <andrew@sanpeople.com>
+Message-ID: <20050207125500.GA25504@wohnheim.fh-wedel.de>
+References: <1107248402.22631.53.camel@fuzzie.sanpeople.com>
+	<20050202124043.GB23156@wohnheim.fh-wedel.de>
+	<1107421396.32163.53.camel@fuzzie.sanpeople.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1107421396.32163.53.camel@fuzzie.sanpeople.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Writing frequently to NAND - wearing, caching?
+Subject: Re: JFFS2-on-DataFlash : 2 - DataFlash support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,79 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Martin,
+On Thu, 3 February 2005 11:03:16 +0200, Andrew Victor wrote:
+> 
+> > > +	/* and Dataflash */
+> > > +	if (jffs2_dataflash(c)) {
+> > > +		ret = jffs2_dataflash_setup(c);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	}
+> > 
+> > This can be a bit simpler:
+> > 	ret = jffs2_dataflash_setup()
+> > 	if (ret)
+> > 		return ret;
+> 
+> I just copied the way it was done for the the NOR ECC flash.
 
-regarding JFFS2/NAND, the filesystem does not cache
-write operations, however there is a NAND page cache.
-This means that if you write 100 bytes at a time,
-you will not use a full NAND page each time, but you will
-probably create two JFFS2 data nodes in the same
-NAND flash page. (NB a node may overlap a page boundary,
-the page buffer is flushed to the device when
-it is full).
-Now if you do fsync between each write operation,
-the page buffer will be flushed immediately. So in
-this case you do use a full page (256 bytes or 2KB)
-for each write.
-The main drawback of JFFS2 in both cases is that
-you end up with many small nodes on the flash
-and this slows down initialization and access to this
-file (see thread "jffs2_get_inode_nodes() very very slow"
-in the February archive at 
-http://lists.infradead.org/mailman/listinfo/linux-mtd/).
-If you were to write 1 byte at a time this problem would
-be even more acute. 
-There is no "journal" per se in JFFS2, the whole 
-filesystem is log-based.
+That's a good explantion, but not a good excuse. ;)
 
-The case with fsync will wear up the flash somewhat faster
-but in any case JFFS2 contains integrated wear levelling
-which will distribute the wear on all the blocks in the
-partition, so no single block should be worn so much
-that it fails (ideally. In real life some NAND blocks
-may fail at any time even with perfect wear levelling.
-However JFFS2 is able to cope with this case, and the
-failed write operation will be retried on another block).
+> > > -	return BLK_STATE_ALLFF;	/* OK to erase if all blocks are like this */
+> > > +	if (c->cleanmarker_size == 0)
+> > > +		return BLK_STATE_CLEANMARKER;	/* don't bother with re-erase */
+> 
+> If a cleanmarker is not detected (within the first EMPTY_SCAN_SIZE bytes
+> of a block), the block is added to the 'erase_pending_list' to be
+> re-erased (and have a new cleanmarker written).
+> 
+> Since we don't need cleanmarkers on DataFlash, we return
+> BLK_STATE_CLEANMARKER from jffs2_scan_eraseblock() so that the block
+> rather gets added directly to the 'free_list'.
 
-Have you read the JFFS/JFFS2 paper at
-http://sources.redhat.com/jffs2/jffs2.pdf ?
-(it is slightly out of date but the basic principles
-of journaling, wear leveling, data nodes etc have not 
-changed).
+Why don't you need cleanmarkers?
 
-bye
-Estelle
+With all other flash types, cleanmarkers catch the case where your
+power fails during flash erase.  If that happens, you cannot trust the
+eraseblock.  It could be fully erased, it could also just _look_ as if
+it was and fail later on.  Bad.
 
+Now you claim that this is not the case for DataFlash.  So I'd like
+some explanation before I trust your code.
 
-Martin Egholm Nielsen wrote:
-> 
-> Hi,
-> 
-> >>I have an application which may need to write states frequently to my
-> >>nand-fs in order to have these states in case of powerdown.
-> >>But I'm a bit concerned about wearing the nand if I write to frequently.
-> 
-> >>So, if I only need to write, say, 100 bytes every second, how often will
-> >>this actually be flushed to the nand?
-> >>Is there a maximum commit/flush frequency built in the driver? Or can
-> >>this be configured?
-> 
-> > It depends on what fs you're using.
-> > With YAFFS, and I believe JFFS2 too, there is no reason to worry about flash
-> > "wearing out".  I have done accelerated lifetime tests on NAND using YAFFS
-> > and in one test wrote 130GB to NAND without any data loss, bad blocks
-> > happening etc.
-> Now, that's a lot :-)
-> I'm using JFFS2 - so hopefully you're right...
-> 
-> > The NAND writes whenever the file system tells it to, so again your question
-> > is FS dependent, but all file systems that are NAND-friendly should handle
-> > the load you mention with no problems.
-> And that is JFFS2 - but since it's a journaling fs it must commit the
-> journal, as well, every now and then...
-> 
-> // Martin
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Jörn
+
+-- 
+I've never met a human being who would want to read 17,000 pages of
+documentation, and if there was, I'd kill him to get him out of the
+gene pool.
+-- Joseph Costello
