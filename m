@@ -1,23 +1,50 @@
-From: phil@river-bank.demon.co.uk (Phil Thompson)
-Date: Fri, 14 Feb 2003 14:18:33 +0000
-Subject: Initialising NAND OOB with Software ECC
-In-Reply-To: <1045230987.22719.59.camel@passion.cambridge.redhat.com>
-References: <200302132020.02330.phil@river-bank.demon.co.uk> <200302141450.46892.tglx@linutronix.de> <1045230987.22719.59.camel@passion.cambridge.redhat.com>
-Message-ID: <200302141418.34025.phil@river-bank.demon.co.uk>
+From: nicola76@inwind.it (Nicola)
+Date: 14 Feb 2003 17:14:34 +0100
+Subject: jffs2 question for Guru
+Message-ID: <1045239274.1191.58.camel@localhost.localdomain>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Friday 14 February 2003 1:56 pm, David Woodhouse wrote:
-> On Fri, 2003-02-14 at 13:50, Thomas Gleixner wrote:
-> > True, doe you have a better idea ?
->
-> We don't _really_ need to write both in a single atomic operation, do
-> we? Write to two different devices. You can always provide a library
-> routine to do the right thing if you really care about upsetting the
-> userspace programmer.
+Hi,
+I have a important question to ask someone very inside in code jff2.
+My Flash is Intel strataflash (NOR) 28F320C3, for space address
+optimization FPGA that work as companion chip of an Xscale 80200 use I/O
+space very singolar. In particular my physic base address for flash is
+0x8000:0000. If i want read from location addr = 0x100 from the base of
+the flash i need to read from addr<<2.
 
-Given that you have to pass a pointer to the data in order to calculate the 
-ECC, and you have to allow filesystems to supply some OOB data, then you 
-still need 2 pointers into user space even if you separate the writes.
+In pratice the simple read and write 16bit function for flash in mtd map
+file become:
 
-Phil
+static void tat_write16(struct map_info *map, __u16 d, unsigned long
+adr)
+{
+	*(__u16 *)(map->map_priv_1 + (adr << 2) ) = d;
+}  
+
+static __u16 tat_read16(struct map_info *map, unsigned long ofs)
+{
+
+	return *(__u16 *)(map->map_priv_1 + (ofs << 2) );
+}
+
+After debug i see that i reach to probe and read flash characteristic,
+and i reach to scan jffs2 root partition but all the process is very
+slowly. 
+This strange offset access can give problem in any point of jffs2 code?
+Or as I do is sufficient to rearrange only the function in structure
+static struct map_info tat_map = {
+	name: 		"TAT-Flash",
+	size: 		WINDOW_SIZE,
+	buswidth: 	BUSWIDTH,(=2)
+	read8:		tat_read8,
+	read16:		tat_read16,
+	read32:		tat_read32,
+	copy_from:	tat_copy_from,
+	write8:		tat_write8,
+	write16:	tat_write16,
+	write32:	tat_write32,
+	copy_to:	tat_copy_to
+};
+PS: TAT is my piece of hardware!! 
+:)--------------------------PLEASE HELP ME-----------------------:)
