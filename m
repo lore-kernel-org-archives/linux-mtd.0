@@ -1,83 +1,91 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14rv4Y-0004IZ-00
-	for mtd-list@infradead.org; Tue, 24 Apr 2001 06:09:10 +0100
-Received: from cs2875-45.austin.rr.com ([24.28.75.45] helo=localhost.localdomain)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14rv4W-0004IT-00
-	for mtd@infradead.org; Tue, 24 Apr 2001 06:09:09 +0100
-Received: from troche.org (IDENT:root@matrix [127.0.0.1])
-	by localhost.localdomain (8.11.0/8.11.0) with ESMTP id f3O57le03623
-	for <mtd@infradead.org>; Tue, 24 Apr 2001 00:07:48 -0500
-Message-ID: <3AE50A23.F1A27F2E@troche.org>
-Date: Tue, 24 Apr 2001 00:07:47 -0500
-From: Edmund Troche <edmund@troche.org>
-Reply-To: edmund@troche.org
+	id 14s050-0005uR-00
+	for mtd-list@infradead.org; Tue, 24 Apr 2001 11:29:58 +0100
+content-class: urn:content-classes:message
+Subject: RE: partitions and erase regions 
 MIME-Version: 1.0
-To: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Problem compiling under Linux 2.4.3
-References: <716A7F62A194D41195AB001083FC3AE4426A62@inlmx1.inl.intersil.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 24 Apr 2001 10:29:48 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is>
+From: =?iso-8859-15?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>,
+	<nico@cam.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org]
+> Sent: 23. apr=EDl 2001 14:11
+> To: K=E1ri Dav=ED=F0sson
+> Cc: mtd@infradead.org; nico@cam.org
+> Subject: Re: partitions and erase regions=20
+>=20
+> How about the following rules/behaviour for MTD partitions:
+>=20
+>  1. For a partition to be writable, there must be a number=20
+> usable as 'major'
+> 	erasesize (mtd->erasesize), such that a na=EFve user of=20
+> MTD can get=20
+> 	erases at offsets such that offset % erasesize =3D=3D 0 to work.
+>  2. If a partition covers regions of the master which have differing=20
+> 	erasesizes, the information about the exact erase regions should
+> 	be made available in the slave.
 
-I just got the latest CVS code and after doing the "patchin.sh" to my source tree I
-can't build. Doing a make depend also fails.
-This is what I get from make depend:
+It sounds reasonable to me. Although I have a problem with the "major"
+erazesize in
+general. The erase regions are in the flash for a reason, i.e. the chip
+is not
+of one "major" erase size but of many erase sizes, although most of it
+(untill now, who knows what AMD, Intel and others might do in the future
+8-))
+is of one erase size. I think it should be a long term goal to remove
+the
+member "mtd->erasize". It might be irresponsible of me to say that since
+it seems
+that a lot of the code using mtd structure depend heavily on that
+member.
+It might also complicate the code a lot to always go through the erase
+region
+structures for every erase/[un]lock and slow down e.g. filesystems that
+live on
+the device. Modulo division is simple and fast no one can deny that 8-)
+But on the other hand it also complicates the code to have two ways of
+getting to a=20
+sector, i.e. mtd->erasesize and erase regions.....
 
-make[4]: Leaving directory `/usr/src/linux-2.4.3/drivers/misc'
-make -C mtd fastdep
-make[4]: Entering directory `/usr/src/linux-2.4.3/drivers/mtd'
-make[4]: Makefile: No such file or directory
-make[4]: *** No rule to make target `Makefile'.  Stop.
-make[4]: Leaving directory `/usr/src/linux-2.4.3/drivers/mtd'
-make[3]: *** [_sfdep_mtd] Error 2
-make[3]: Leaving directory `/usr/src/linux-2.4.3/drivers'
-make[2]: *** [fastdep] Error 2
-make[2]: Leaving directory `/usr/src/linux-2.4.3/drivers'
-make[1]: *** [_sfdep_drivers] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.3'
-make: *** [dep-files] Error 2
+>=20
+> So... given a master device with 'major' erasesize 64K, which=20
+> is actually=20
+> 8*8K, 15*64K, this would be the result of some example partitions...
+>=20
+>  Partition range   Erase size(s)      Writable?
+>=20
+>  000000 - 020000  64K (8*8K, 1*16K)	Yes
+>  020000 - 100000  64K			Yes
+>=20
+>  000000 - 008000  8K			Yes
+>  008000 - 100000  -			No (no usable 'major'=20
+> erasesize)=20
+>=20
+>  000000 - 010000  8K			Yes
+>  010000 - 100000  64K			Yes
+>=20
+>  008000 - 010000  8K			Yes
+>=20
+> K=E1ri, if this is acceptable for your purposes (and I think it=20
+> is), then we=20
+> should just implement this behaviour and not have any=20
+> conditional code at=20
+> all.
 
-I looked into the /usr/src/linux-2.4.3/drivers/mtd/Makefile file and it was empty.
-This file is softlinked to /usr/src/mtd/kernel/Makefile. My /usr/src/linux
-directory is actually softlinked to /usr/src/linux-2.4.3.
-
-
-Running make xconfig returns the following:
-
-[root@matrix linux]# make xconfig
-rm -f include/asm
-( cd include ; ln -sf asm-i386 asm)
-make -C scripts kconfig.tk
-make[1]: Entering directory `/usr/src/linux-2.4.3/scripts'
-cat header.tk >> ./kconfig.tk
-./tkparse < ../arch/i386/config.in >> kconfig.tk
--: 249: unable to open drivers/mtd/Config.in
-make[1]: *** [kconfig.tk] Error 1
-make[1]: Leaving directory `/usr/src/linux-2.4.3/scripts'
-make: *** [xconfig] Error 2
-[root@matrix linux]#
-
-The file  /usr/src/mtd/kernel/Config.in, which is softlinked to
-/usr/src/linux/drivers/mtd/Config.in is also empty.
-
-I've done this before in previous kernels (2.2.X and 2.4.2) and it worker. Did I
-miss something? Thanks in advance for your help.
-
-
-Edmund Troche
-
-
-
-
+Yes, I will try to get to it this week.
 
 
-
-
+K.D.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
