@@ -1,22 +1,17 @@
-Received: from mg02.austin.ibm.com ([192.35.232.12])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZeWk-00059w-00
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 22:27:34 +0100
-Received: from austin.ibm.com (netmail2.austin.ibm.com [9.3.7.139])
-	by mg02.austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id QAA63530
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 16:28:30 -0500
-Received: from popmail.austin.ibm.com (popmail.austin.ibm.com [9.53.247.178])
-	by austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id QAA17154
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 16:27:32 -0500
-Received: from mahi190.austin.ibm.com (mahi190.austin.ibm.com [9.3.154.190]) by popmail.austin.ibm.com (AIX4.3/8.9.3/8.7-client1.01) with ESMTP id QAA24590 for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 16:27:31 -0500
-Subject: "Read-only file system" error while writing
-From: Stephen Hui <gromit1463@mailworks.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 30 Jul 2002 16:27:23 -0500
-Message-Id: <1028064443.23642.52.camel@mahi190.austin.ibm.com>
+	id 17ZfNK-0005EL-00
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2002 23:21:54 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <FA06AA2C99BCD511951200005A99441001E3ECBE@irvexch1.sextantifs.com> 
+References: <FA06AA2C99BCD511951200005A99441001E3ECBE@irvexch1.sextantifs.com> 
+To: "Curtis, Allen" <Allen.Curtis@Thales-IFS.com>
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2_scan_eraseblock() - errors 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 30 Jul 2002 23:21:51 +0100
+Message-ID: <14572.1028067711@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,38 +23,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Allen.Curtis@Thales-IFS.com said:
+> While testing power-fail operation of JFFS2, I can consistently
+> produce this error which occurs when the partition is mounted.
 
-I have a set of STMicro flash chips (M28W320CT) that use the Intel
-Extended CFI command set (0001), and I'm using kernel 2.4.2.  I can
-partition the chips, lock and unlock the chips, erase the chips and read
-from (dd) the chips perfectly fine.
+> jffs2_scan_eraseblock() - Node at 0xXXXXXX {0x1985, 0xe002,
+> 0x1985c002) has invalid CRC)
 
-When I write to the chips using either cat, dd, stdout redirection, or
-cp, the CFI driver complains of attempting to write to a "Read-only file
-system", even after unlocking all blocks in the partition and erasing
-the partition.  I can mount /dev/mtdblock*, but mount complains and I
-still can't put anything into the mounted partition.  do_write_buffer()
-in cfi_cmdset_0001.c is returning the error (EROFS).
+> I do not remember if the error is always CRC related and the Node
+> location changes but the hex values displayed within the parens is
+> consistent.
 
-All I want to do is put a JFFS2 image onto the partition and be able to
-erase and update the image later.
+> Has anyone seen this before? Some concerns are: 1. Once the error
+> occurs, it never gets fixed. 2. There does not appear to be a utility
+> to fix errors.
 
-I've scoured the list archive back about a year, but haven't found
-anything like the problem I'm experiencing.  Would it be worth my while
-to backport cfi_cmdset_0001.c from a later kernel rev (2.4.18 or
-2.4.17), besides to get the bug fix in do_write_buffer() (the one posted
-to this list a little while ago)?  I diff'ed the 2.4.2 cfi_cmdset_0001.c
-with a 2.4.18 and didn't see any really major differences between the
-two.  Or could the bug in do_write_buffer() have something to do with
-this?
+> We are using MVista 2.1, which is 2.4.17. I was able to produce this
+> error with only 13 power-cycles. 
 
-Thanks in advance,
-Stephen.
+It's harmless. We were in the middle of writing that node when we lost
+power, and hadn't finished writing the payload -- hence the CRC fails.
+That's sort of what the CRC is there for. No data were lost -- either we
+were garbage-collecting and the original copy of the data will still be on
+the flash, or it was a write of new data which never made it to flash
+because the write() call never returned -- just as if you pulled the plug a
+moment sooner. 
+
+It's actually possible to avoid the cosmetic annoyance by marking the node 
+as obsolete, so we don't check the CRC and hence don't bitch about it 
+failing. Older versions of JFFS2 did that, as does the current version in 
+2.4.19-rc3. But it's harmless and expected behaviour.
 
 
--- 
-"Find out what you've been missing while you've been
-rebooting Windows NT." -- Infoworld on Linux
-
-http://www.ao.com/~regan/penguins/tux.html
+--
+dwmw2
