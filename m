@@ -1,18 +1,17 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta04.mta.everyone.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1783km-0002GN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 19:44:00 +0100
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Date: Wed, 15 May 2002 11:43:59 -0700 (PDT)
-From: Jim Zeus <zeusj@firstlinux.net>
-To: "David  Woodhouse" <dwmw2@infradead.org>
+	id 1783pj-0002H3-00
+	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 19:49:07 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020515183403.3C15D2755@sitemail.everyone.net> 
+References: <20020515183403.3C15D2755@sitemail.everyone.net> 
+To: zeusj@firstlinux.net
 Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Quesion on copying to mtdblock0
-Reply-To: zeusj@firstlinux.net
-Message-Id: <20020515184359.301BD36F9@sitemail.everyone.net>
+Subject: Re: misc question about MTD 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 15 May 2002 19:49:05 +0100
+Message-ID: <16906.1021488545@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,19 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi, David
+zeusj@firstlinux.net said:
+>  I erased the flash, and I mount it(I do all these just like mount
+> JFFS),but I got the message that I have meet before (in the last board
+> I ported): 
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00020024: 0x2f0c instead 
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00020028: 0x0001 instead
 
-I've got some confusion:
-1.Is the command"cp jffs.img /dev/mtdblock0" after booting result as same as to burn the jffs.img into flash chip(which is presented as mtdblock0)with kernel Image?
-2.Is "cp somefile /dev/mtd0" as same as "cp somefile /dev/mtdblock0"?
-3.by the way , May I know the reason that you dont register the master MTD like you register the MTD partition?(just like hda and hda1,2,3...)
+The flash is not completely erased. 
 
-Thanks in advance
+> Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+> nodes 
 
-Jim Zeus
+The flash is not completely erased, and doesn't contain _anything_ that 
+looks like valid JFFS2 data, so we don't erase it and start using it, 
+because you might have mounted the wrong partition.
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+> I know the "Last[3] is 9da5, datum is 6246" message is to tell me that
+> what should be written is wrongly different from what be read from
+> flash,its a sanity check,but why a printk() can affects the Flash
+> write? 
 
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+Timing? You definitely have flash driver problems. 
+
+
+
+
+--
+dwmw2
