@@ -1,19 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.205])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CN2vB-00078A-Dn
-	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 01:34:02 -0400
-Received: by wproxy.gmail.com with SMTP id 57so474794wri
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Oct 2004 22:34:00 -0700 (PDT)
-Message-ID: <b4618e0f04102722337611da67@mail.gmail.com>
-Date: Thu, 28 Oct 2004 11:03:57 +0530
-From: bandwidthcrunch <bandwidthcrunch@gmail.com>
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CN6hI-0007lK-0M
+	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 05:35:58 -0400
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id i9S9WN4r010238
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2004 17:32:23 +0800
+Message-ID: <4180BF75.6010908@avantwave.com>
+Date: Thu, 28 Oct 2004 17:44:21 +0800
+From: mike <mikelee@avantwave.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Obtaining NAND oobinfo
-Reply-To: bandwidthcrunch <bandwidthcrunch@gmail.com>
+Subject: USB-flash driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-         Any clues why 
-./flash_eraseall -j /dev/mtd3 
-./flash_eraseall: /dev/mtd3: unable to get NAND oobinfo
+Dear all
 
-should happen ?  
-cat /proc/mtd shows
-dev:    size   erasesize  name
-mtd0: 00040000 00040000 "Bootloader"
-mtd1: 00100000 00040000 "Kernel"
-mtd2: 01ec0000 00040000 "Filesystem"
-mtd3: 02000000 00004000 "Filesystem on nand"
+    I am new to this place,thanks for anyone helping.
 
-and dmesg shows
-NAND device: Manufacture ID: 0xec, Chip ID: 0x76 (Samsung K9D1208V0M)
-Creating 1 MTD partitions on "Samsung K9D1208V0M":
-0x00000000-0x02000000 : "Filesystem on nand"
+    My situation is , to make my ARM-based board to be a USB mass 
+storage disk from outside view. I am using Motorola M9328MXL development 
+board with USB client.
+    My question is how can i utilize mtd api to make the driver? Or 
+anyone done that before? Or anyone can give me some advises?
 
-Any suggestions would be great 
-regards,
-band
+Thanks very much
+Mike,Lee
