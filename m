@@ -1,41 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pYGO-0002WI-00
-	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:23:36 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14pYGN-0002VY-00
-	for mtd@infradead.org; Tue, 17 Apr 2001 17:23:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.BSO.4.33.0104170918380.25263-100000@shell.pacifier.com> 
-References: <Pine.BSO.4.33.0104170918380.25263-100000@shell.pacifier.com> 
-To: Manatee <manatee@pacifier.com>
-Cc: mtd@infradead.org
-Subject: Re: mtd on linux 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 17 Apr 2001 17:23:00 +0100
-Message-ID: <5071.987524580@redhat.com>
+	id 14pYJQ-0002Xa-00
+	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:26:44 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Cc: <kd@flaga.is>, <mtd@infradead.org>
+Subject: RE: CFI with 4 x8/x16 devices on a 32-bit bus 
+Date: Tue, 17 Apr 2001 18:26:03 +0200
+Message-ID: <000901c0c75b$18f38de0$0a01a8c0@Win1>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <2093.987522793@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Great!!
 
-manatee@pacifier.com said:
->  It is a Disk On Chip and it fits into a PCI slot. 
+Wish I had the board here so I could bore you with even more questions :-)
+But I will have to wait several weeks ...
 
-OK. I'd heard of those but haven't actually met one yet.
+    Jocke
 
->  I see where jumpers would go but there are no jumpers on the card.
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
+Woodhouse
+Sent: Tuesday, April 17, 2001 17:53
+To: joakim.tjernlund@lumentis.se
+Cc: kd@flaga.is; mtd@infradead.org
+Subject: Re: CFI with 4 x8/x16 devices on a 32-bit bus 
 
-I was thinking of the ISA eval board.
 
->  Ah, so if I can get the machine to boot -- with the card in place --
-> then I can access the card. 
 
-Probably. It depends just how the PCI eval board is set up. Isn't there a 
-key sequence you can use during booting to prevent the DiskOnChip BIOS from 
-loading itself? Or use the DFORMAT program provided to load the null 
-firmware. 
+joakim.tjernlund@lumentis.se said:
+>  I can place them at any physical(almost) address since they are
+> connected to the cpu's Chip Select logic. I figure I will place them
+> somewhere high starting at 0xf8000000. I can also make the address
+> space linear(no holes between the banks).
+
+> Now, can I just define WINDOW_ADDR 0xf8000000 and WINDOW_SIZE
+> 0x8000000 and specifiy my partitions without worrying about flash bank
+> boundries? (In my dreams or ...) 
+
+That should work.
+
 
 --
 dwmw2
