@@ -7,8 +7,8 @@ References: <419B8715.4036BDBB@st.com>
 	<1100870238.8191.7368.camel@hades.cambridge.redhat.com>
 	<419E1DE0.FDD5DEC0@st.com>
 Content-Type: text/plain
-Date: Sat, 20 Nov 2004 18:57:29 +0000
-Message-Id: <1100977049.7949.36.camel@localhost.localdomain>
+Date: Sat, 20 Nov 2004 19:19:26 +0000
+Message-Id: <1100978366.7949.38.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,22 +23,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Fri, 2004-11-19 at 17:22 +0100, Estelle HAMMACHE wrote:
-> I feel that writing wbuf immediately adds code without necessity
-> (or maybe I'm just too lazy to test it).
+> 
+> Here is an example of the obsolete node/refiled nextblock pb:
+> - page size 512 bytes
+> - start condition: wbuf contains 500 bytes
+> jffs2_write_dnode call, total node size 700 bytes
+> -->jffs2_flash_writev
+> ------>fill up wbuf
+> ------>donelen = 12
+> ------>jffs2_flush_wbuf (succeeds)
+> ------>c->mtd->writev_ecc to write 1 page - fails
+> ------>nextblock is refiled (new code!)
+> ------>*retlen = donelen   (= 12)
+> -->add obsolete frag for dirtied space 
+> ------> free raw node & return early because c->nextblock == 0
+> -->probable segfault on (redundant?) jffs2_mark_node_obsolete
+> -->retry.
 
-The code is there already; it's just a case of making it use wbuf
-instead of buf. That shouldn't be so hard.
-
-> Maybe I ought to test nextblock == 0 in addition to the
-> obsolete flag to make the exclusion case more precise in
-> jffs2_add_physical_node_ref ?
-
-Ah, OK. Yes, that might be appropriate.
-
-> Or is the "dirty" node really necessary ? what happens if we
-> don't list it in the raw node refs ?
-
-We'll try writing to that same offset again, and will fail.
+This is the problem, surely? If we've refiled the nextblock, we should
+return retlen == 0.
 
 -- 
 dwmw2
