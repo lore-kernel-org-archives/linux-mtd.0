@@ -1,52 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13k6s6-0007ou-00
-	for mtd-list@infradead.org; Fri, 13 Oct 2000 16:35:46 +0100
-Received: from [194.130.39.252] (helo=passion.cygnus)
+	id 13k9GS-0000gj-00
+	for mtd-list@infradead.org; Fri, 13 Oct 2000 19:09:04 +0100
+Received: from virgo.techno.spb.ru ([195.5.142.100] ident=root)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13k6s5-0007on-00
-	for mtd@infradead.org; Fri, 13 Oct 2000 16:35:45 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <000b01c03529$edc4c1c0$0800a8c0@win95.inteloop.se> 
-References: <000b01c03529$edc4c1c0$0800a8c0@win95.inteloop.se> 
-To: "Bjorn Eriksson" <mdeans@algonet.se>
-Cc: mtd@infradead.org
-Subject: Re: Three change suggestions to nand.c and friends. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 13 Oct 2000 16:35:35 +0100
-Message-ID: <21265.971451335@redhat.com>
+	id 13k9GR-0000gc-00
+	for mtd@infradead.org; Fri, 13 Oct 2000 19:09:03 +0100
+Received: (from maxs@localhost)
+	by virgo.techno.spb.ru (8.9.3/8.9.3) id WAA17570
+	for mtd@infradead.org; Fri, 13 Oct 2000 22:08:56 +0400
+Date: Fri, 13 Oct 2000 22:08:56 +0400
+From: Nick Maximov <maxs@techno.spb.ru>
+Message-Id: <200010131808.WAA17570@virgo.techno.spb.ru>
+To: mtd@infradead.org
+Subject: Ampro again
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+I have got no response from anyone. 
+Just one question -- how safe to deal with mtd drivers and firmware
+updates (for grub) on Ampro hardware (CoreModule P5e-Q04).
+One thing stops me -- Ampro has their own format and update
+utilities which are incompatible with M-Systems' ones.
+Does mtd utilities works on that modules? I affraid to crash BIOS again...
+May I produce file to load it to extended area via supplied pformat 
+utility? Is that better way?
+And what the latest stable kernel works better with this drivers?
 
+Thank you again...
 
-mdeans@algonet.se said:
->  1) Right now the code needs the moddi3() helper to perform it's
-> checks. I suggest adding the requirement that {.oobblock} must be a
-> power of two. 
-
-That's sensible, but best just to require it. Don't piss about with config
-options.
-
->  2) I've also rewritten nand.c changing all 'NAND_CTRL |= this->CLE;'
-> -> NAND_SET_CMD et.al. Different hardware different support code. 
-
-Check with sjhill but that sounds reasonable.
-
->  3) I moved nand_flash_ids[] to a new file, nand_ids.h since nand.h is
-> included in several different places and not all .c-files that
-> #include it needs nand_flash_ids[] (thus creating dups). 
-
-OK.
-
-
-
---
-dwmw2
-
-
+Nick Maximov. 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
