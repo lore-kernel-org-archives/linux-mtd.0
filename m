@@ -1,24 +1,18 @@
-Received: from palrel11.hp.com ([156.153.255.246])
+Received: from palrel13.hp.com ([156.153.255.238])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A9vN4-00041B-Ge
-	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 00:48:02 +0100
-Received: from hplns3.hpl.hp.com (hplns3.hpl.hp.com [15.0.48.4])
-	by palrel11.hp.com (Postfix) with ESMTP id 4276A1C003D7
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Oct 2003 16:46:59 -0700 (PDT)
-Received: from duckduck (dhcp-1U-19.hpl.hp.com [15.4.94.19])
-	1.4+JAGae91741+JAGae92668)/8.12.9/HPL-PA Hub) with ESMTP id
-	h9FNkwi21545	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Oct 2003 16:46:58 -0700 (PDT)
+	id 1A9vNH-00041E-QJ
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Oct 2003 00:48:15 +0100
 From: "Christopher Hoover" <ch@hpl.hp.com>
-To: "'mtd list'" <linux-mtd@lists.infradead.org>
-Date: Wed, 15 Oct 2003 16:46:53 -0700
-Message-ID: <000901c39376$9cb111e0$d203b60f@duckduck>
+To: "'Robin Gilks'" <robin.gilks@tait.co.nz>,
+	"'mtd list'" <linux-mtd@lists.infradead.org>
+Date: Wed, 15 Oct 2003 16:47:08 -0700
+Message-ID: <000a01c39376$a5cb6460$d203b60f@duckduck>
 MIME-Version: 1.0
+In-Reply-To: <3F8DBD52.1020100@tait.co.nz>
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: Regression of mtd/chips/jedec_probe.c in 2.6.0-test7
+Subject: RE: Mount of jffs2 partition fails
 Reply-To: ch@hpl.hp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,23 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> 3. when I try to use 
+> the alternate Jedec probe method, I get a compile 
+> error in jedec_probe.c of:
+> jedec_probe.c:1756: error: parse error before "jedec_probe_init"
+> jedec_probe.c:1757: warning: return type defaults to `int'
+> [...]
 
-Perhaps this is already known, but it may serve as useful news to some. 
+Add #include <linux/init.h>.
 
-The version of mtd/chips/jedec_probe.c in 2.6.0-test7 (revision 1.29
-according to $Id$) has suffered a regression.  That version fails to detect
-AMD AM29LV800BB flash in 16-bit x 1 configuration.  Replacing it with
-revision 1.32 from CVS or downgrading to revision 1.6 from 2.5.70-rmk1,
-holding everything else constant, solves the problem.
-
-Also, all versions of mtd/chips/jedec_probe.c need:
-
-#include <linux/init.h>
-
-for 2.6.0-test7.  (I cannot ssh from my current network location, otherwise
-I'd make this change to CVS.)
-
-Cheers,
 -ch
-ch(at)murgatroid.com
-ch(at)hpl.hp.com
