@@ -1,16 +1,17 @@
-Received: from web21506.mail.yahoo.com ([66.163.169.17])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Ikzm-0003Zy-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 07:55:42 +0100
-Message-ID: <20020614065541.18847.qmail@web21506.mail.yahoo.com>
-Date: Thu, 13 Jun 2002 23:55:41 -0700 (PDT)
-From: Studying MTD <studying_mtd@yahoo.com>
-Subject: Re: Howto create a new jffs2
-To: Krypton <krypton8@inwind.it>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <001f01c2136b$ed3fb940$0100a8c0@ester>
-MIME-Version: 1.0
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17Ila2-0003dg-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 08:33:10 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0206141053220.8899-100000@cliffordux.hkpc.org> 
+References: <Pine.LNX.4.33.0206141053220.8899-100000@cliffordux.hkpc.org> 
+To: Clifford Loo <kfloo@hkpc.org>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Problem putting JFFS on MTD 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Fri, 14 Jun 2002 08:33:05 +0100
+Message-ID: <17643.1024039985@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,26 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---- Krypton <krypton8@inwind.it> wrote:
-> >> Creating 5 MTD partitions on "SA1100 flash":
-> >> 0x00000000-0x00020000 : "firmware"
-> >> 0x00020000-0x00040000 : "params"
-> >> 0x00040000-0x00140000 : "kernel"
-> >> 0x00140000-0x00fe0000 : "rootdisk"
-> >> 0x00fe0000-0x01000000 : "test"
-> 
-> > Try, mount -t jffs2 /dev/mtdblock4 <dir>
-> 
-> I already have tried this but unsuccesfully.
-> Error : "No such file or directory"
-> 
-> Other suggestions ?
+kfloo@hkpc.org said:
+> mount: /dev/mtdblock0 has wrong device number or fs type jffs not
+> supported and cp: cannot create regular file `/dev/mtd0': No such
+> device 
 
-what is the output of "ls -l /dev/mtd*" ?
+I'd strongly recommend using JFFS2, not JFFS. Do you definitely have the 
+/dev/mtd* device nodes and CONFIG_MTD_BLOCK and CONFIG_MTD_CHAR?
 
-
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
+--
+dwmw2
