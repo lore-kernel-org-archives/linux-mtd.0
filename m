@@ -1,26 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from thorgal.et.tudelft.nl ([130.161.40.91])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19gRpm-0006YI-TO
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Jul 2003 17:23:50 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HIN00M4M46WQ8@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Sat, 26 Jul 2003 18:23:21 +0200 (MEST)
-Date: Sat, 26 Jul 2003 19:20:03 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <1059232112.539.5.camel@lapdancer.baythorne.internal>
+	id 19gTf9-0006rX-8W
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Jul 2003 19:20:59 +0100
+Mime-Version: 1.0
+Message-Id: <a05200f07bb4875574a88@[130.161.115.44]>
+In-Reply-To: <1059231977.539.2.camel@lapdancer.baythorne.internal>
+References: <a05200f4ebb46f6708c1c@[130.161.115.44]>	
+ <1059147413.28255.40.camel@lapdancer.baythorne.internal>	
+ <a05200f01bb4700e6ff94@[130.161.115.44]>	
+ <1059148567.28255.47.camel@lapdancer.baythorne.internal>	
+ <a05200f05bb4803789a4f@[130.161.115.44]>
+ <1059231977.539.2.camel@lapdancer.baythorne.internal>
+Date: Sat, 26 Jul 2003 20:20:53 +0200
 To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <200307261920.03702.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <a05200f4ebb46f6708c1c@[130.161.115.44]>
- <200307261339.13142.tglx@linutronix.de>
- <1059232112.539.5.camel@lapdancer.baythorne.internal>
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
+From: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
 cc: linux-mtd@lists.infradead.org
-cc: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
 Subject: Re: Handling multiple NAND chips
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 26 July 2003 17:08, David Woodhouse wrote:
-> On Sat, 2003-07-26 at 07:39, Thomas Gleixner wrote:
-> > You can do this, but the question is, if it is really an advantage.
+At 11:06 -0400 26-07-2003, David Woodhouse wrote:
+>On Sat, 2003-07-26 at 06:22, J.D. Bakker wrote:
+>>  Ah, I see. Are you planning to always treat the NANDs as a linear
+>>  array ?
 >
-> Dunno. In general, interrupt-driven operation is an advantage over
-> polling -- it lets us get on with something else while we're waiting for
-> the flash, and come straight back to the flash driver when it's done.
-> Given the latencies involved on NAND, though, it might not really be
-> worth the effort -- but I'd like to investigate.
+>Yeah -- I think so. Any reason not to?
 
-For write it has really no advantage. All chips I have tested so far work near  
-the min. timings. 
+Not really, if you exclude braindead setups like multiple 
+hot-swappable SmartMedia cards. The only sane setup I could imagine 
+is having one partition per NAND device, but it's not one I would be 
+using myself.
 
-For erase it could be useful, as it can last a little bit longer. But I know 
-for sure, that the current yield and some polling code has better performance 
-than most ide drives.
+Would you expect all devices to have the same size ?
 
+JDB
+[working around oddities in Lattice's ABEL compiler...]
 -- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Riddoch's Myth of computing:
+         Any computer problem is invariably the fault of the closest
+         sysadmin.
