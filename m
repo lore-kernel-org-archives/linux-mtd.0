@@ -1,60 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14NOGa-0003em-00
-	for mtd-list@infradead.org; Tue, 30 Jan 2001 00:03:24 +0000
-Received: from brand.scrye.com
-	([207.174.18.194] helo=scrye.com ident=qmailr)
+	id 14Nvgt-0006wj-00
+	for mtd-list@infradead.org; Wed, 31 Jan 2001 11:44:47 +0000
+Received: from www.softsys.co.at
+	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
 	by infradead.org with smtp (Exim 3.20 #2)
-	id 14NOGT-0003e1-00
-	for mtd@infradead.org; Tue, 30 Jan 2001 00:03:19 +0000
-Message-ID: <20010130000249.18053.qmail@scrye.com>
-Date: Mon, 29 Jan 2001 17:02:49 -0700 (MST)
-From: Kevin Fenzi <kevin@scrye.com>
-To: mtd@infradead.org
-Subject: compile problem with mtd-patch-2.2.18-20001218-2230GMT
+	id 14Nvgo-0006wd-00
+	for mtd@infradead.org; Wed, 31 Jan 2001 11:44:44 +0000
+Message-ID: <01C08B82.5716DF60@smithwicks.softsys.co.at>
+From: Erwin Authried <eauth@softsys.co.at>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: MTD patches for 2.0 / 2.2 kernels
+Date: Wed, 31 Jan 2001 12:35:47 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I took a look at the "patches" directory and recognized that 
+the patches that are available via ftp have the complete mtd
+tree included. Wouldn' t it be much nicer to have a patch
+script (like patchin.sh), that 
+1. makes symlinks from the kernel source into the mtd tree,
+and 2. applies a very small patch for the kernel source 
+(init/main.c, drivers/Makefile, ...)
 
-Hi there. 
+I think that would be much more maintainable and easier to
+use than the seperate patches from the ftp server. It could even
+be reduced to invoke the patch script with the path to the
+kernel source, and the script might retrieve the version from
+there to apply the correct patch. I'd like to see all the patches
+inside the CVS distribution, instead of having them to download
+via ftp seperately. 
 
-Trying to get a DOC2000 working with the 2.2.18 kernel here. 
-When I patch the sources and compile, I get:
+Is there a special reason why there is a seperate link for 
+each mtd source file in patchin.sh, instead of having just one
+symbolic link for the mtd directory? This way, the kernel would 
+still be compileable if files are added to the mtd directory,
+without having to care about the symlinks.
 
-cc -D__KERNEL__ -I/usr/src/redhat/BUILD/linux/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing -pipe -fno-strength-reduce -m486 -DCPU=486   -c -o doc2000.o doc2000.c
-doc2000.c: In function `init_doc2000':
-doc2000.c:1090: warning: implicit declaration of function `inter_module_register'
-doc2000.c: At top level:
-doc2000.c:1094: parse error before `cleanup_doc2000'
-doc2000.c:1095: warning: return-type defaults to `int'
-doc2000.c: In function `cleanup_doc2000':
-doc2000.c:1109: warning: implicit declaration of function `inter_module_unregister'
-doc2000.c:1110: warning: control reaches end of non-void function
-doc2000.c: At top level:
-doc2000.c:1112: warning: initialization from incompatible pointer type
-make[3]: *** [doc2000.o] Error 1
-make[3]: Leaving directory `/usr/src/redhat/BUILD/linux/drivers/mtd'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/usr/src/redhat/BUILD/linux/drivers/mtd'
-make[1]: *** [_subdir_mtd] Error 2
-make[1]: Leaving directory `/usr/src/redhat/BUILD/linux/drivers'
-make: *** [_dir_drivers] Error 2
-
-the code snip looks like: 
-
-static void __exit cleanup_doc2000(void)
-{
-       struct mtd_info *mtd;
-       struct DiskOnChip *this;
-
-any ideas? This is on a redhat 6.2 box, with egcs-1.1.2-30 compiler. 
-is this a compiler issue? I am going to try and compile on a rh7 box
-in a few, but I thought I would check with the list to see if this is
-a known problem? 
-
-thanks, 
-
-kevin
+-Erwin
 
 
 
