@@ -1,15 +1,16 @@
-Received: from web20302.mail.yahoo.com ([216.136.226.83])
+Received: from recycle.lbl.gov ([131.243.169.124])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15w2Z5-0001b6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 15:30:00 +0100
-Message-ID: <20011023143913.42416.qmail@web20302.mail.yahoo.com>
-Date: Tue, 23 Oct 2001 15:39:13 +0100 (BST)
-From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
-Subject: JFFS
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+	id 15w3j6-0001gj-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 16:44:24 +0100
+Message-ID: <20011023085329.A144@recycle.lbl.gov>
+Date: Tue, 23 Oct 2001 08:53:29 -0700
+From: Larry Doolittle <ldoolitt@recycle.lbl.gov>
+To: "Kremer, Alex" <alex.kremer@intel.com>, linux-mtd@lists.infradead.org
+Subject: Re: MTD support for Intel E28F016S3 ?
+References: <7C0E66E1B97BD5119B120002A50A63D22E41C9@hasmsx101.iil.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <7C0E66E1B97BD5119B120002A50A63D22E41C9@hasmsx101.iil.intel.com>; from Kremer, Alex on Tue, Oct 23, 2001 at 10:03:06AM +0200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,50 +22,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+On Tue, Oct 23, 2001 at 10:03:06AM +0200, Kremer, Alex wrote:
+> | From: Larry Doolittle [mailto:ldoolitt@recycle.lbl.gov]
+> | 
+> | One weird effect showed up using the 28F320B3B on a nanoEngine, where
+> | the CFI detect code "found" the chip, [ chop ]
+> 
+> This is strange, I have TE28F320B3B mapped over dc21285 and the cfi_probe
+> first, jedec_probe after works fine...
 
-Could someone shed some light on a difficulty we are
-experiencing? We have an X86 board with 8meg of flash
-and 16meg of RAM. As you can see from the df output
-below most is mounted as / with a meg or so as /var
-and a 2meg ram disk mounted as /var/tmp. However we
-are finding that the df output differs substantially
-from the actual usage, as you can see from the du on
-the var directory tree we should only be using 132K
-whereas df suggests 552K. We understand that the file
-system itself will need a little space and on top of
-that there will be some wastage. Indeed if we fill
-/var up with files it does clean itself to an extent
-but we are still some 40% short.
+All I know is, I saw the "QRY" probe respond loud and clear from this
+chip, but the CFI data structure that the mtd code then picked up was
+garbage.  The package is marked
+   TE28F320
+   B3BA110
+   U9360221A
+   (U)(C)1998
 
-As we use /var for FIFO data storage on this system
-(many 8-32K files) we need a reliable predictable free
-space estimation in order to be able to maximise the
-number of stored files before we delete to add new.
-Therefore a better understanding of the inner workings
-of JFFS would be appreciated.
+I got a private e-mail from a Mr. Conley at Intel which said there is
+"a problem with some of the B3s that the CFI command comes back with
+information that is an invalid C3 information block."  He hoped to
+get more information and pass it on.
 
-arcom@ME /var$ du -s *
-3       home
-0       lock
-0       log
-129     me
-0       run
-34      tmp
-arcom@ME /var$ df
-Filesystem           1k-blocks      Used Available
-Use% Mounted on
-/dev/root                 5888      5524       364 
-94% /
-/dev/mtdblock1            1152       552       600 
-48% /var
-/dev/ram0                 2011        52      1857  
-3% /var/tmp
-arcom@ME /var$ 
-
-Many thanks, David
-
-____________________________________________________________
-Nokia Game is on again. 
-Go to http://uk.yahoo.com/nokiagame/ and join the new
-all media adventure before November 3rd.
+    - Larry
