@@ -1,19 +1,21 @@
 Received: from fish.redhat.com ([213.86.99.237]
 	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 198GKh-0002sy-Fb
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 10:14:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sid Gluckman <sgluckman@omnitech.com>
-In-Reply-To: <OOEOKBMECIFAEPIMFOGIIEEBCBAA.sgluckman@omnitech.com>
-References: <OOEOKBMECIFAEPIMFOGIIEEBCBAA.sgluckman@omnitech.com>
-Message-Id: <1051089275.1989.25.camel@passion.cambridge.redhat.com>
+	id 198GM1-0002um-TV
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 10:15:50 +0100
+Received: from localhost
+	([127.0.0.1] helo=localhost.localdomain ident=dwmw2)
+	by passion.cambridge.redhat.com with esmtp (Exim 4.14)
+	id 198GM9-0000dq-1X
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2003 10:15:57 +0100
+From: David Woodhouse <postmaster@infradead.org>
+To: linux-mtd@lists.infradead.org
+Message-Id: <1051089356.1989.29.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Wed, 23 Apr 2003 10:14:35 +0100
+Date: Wed, 23 Apr 2003 10:15:56 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD on a USB SmartMedai Reader
+Subject: List etiquette.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-04-21 at 18:00, Sid Gluckman wrote:
-> Hello,
-> 
-> I want to access a SmartMedia card on a USB adapter with JFFS2 filesystem.
-> The USB reader is recognized fine and seems to detect the card correctly.
-> My question is how can I direct the MTD subsystem to use the USB adapter?
+I've recently found myself having to inspect and reject a lot of crap
+which the list filters have caught, so it's time to rant about it a
+little... :)
 
-I suspect that you don't. Although SmartMedia is basically just NAND
-flash, the USB 'cardreader' will probably be hiding all that from you
-and presenting itself USB mass storage device. Turn on CONFIG_SCSI and
-CONFIG_USB_STORAGE.
+Please read http://www.infradead.org/~dwmw2/email.html
+
+In particular, please ensure that you use a sensible mail reader which
+inserts References: and/or In-Reply-To: headers such that threading
+works correctly. Please ensure that you do not try to start a new thread
+by just replying to an existing list message and changing the subject,
+for similar reasons. And don't send HTML.
 
 
 -- 
