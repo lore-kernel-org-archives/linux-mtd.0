@@ -1,20 +1,26 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from conn.mc.mpls.visi.com ([208.42.156.2])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 198eIe-0007TS-Lx
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Apr 2003 11:49:56 +0100
-From: David Woodhouse <postmaster@infradead.org>
-To: simon@baydel.com
-In-Reply-To: <3EA7C8DE.8333.56C7F7@localhost>
-References: <3EA7C8DE.8333.56C7F7@localhost>
-Message-Id: <1051181403.1989.1466.camel@passion.cambridge.redhat.com>
+	id 198i42-000897-66
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Apr 2003 15:51:06 +0100
+Received: from grante.comtrol.com (isis.visi.com [209.98.98.8])
+	by conn.mc.mpls.visi.com (Postfix) with SMTP id E623E8282
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 24 Apr 2003 09:51:14 -0500 (CDT)
+Date: Thu, 24 Apr 2003 09:47:09 -0500
+From: Grant Edwards <grante@visi.com>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+Message-ID: <20030424094707.A21265@visi.com>
+References: <1051089356.1989.29.camel@passion.cambridge.redhat.com>
+	<20030423204037.GB26678@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
-Date: Thu, 24 Apr 2003 11:50:03 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20030423204037.GB26678@wohnheim.fh-wedel.de>;
+	from joern@wohnheim.fh-wedel.de on Wed, Apr 23, 2003 at 10:40:37PM +0200
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-cc: postmaster@baydel.com
-Subject: Re: NAND and JFFS2 crash
+cc: David Woodhouse <postmaster@infradead.org>
+Subject: Re: List etiquette.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You are now barred from posting directly to the linux-mtd list. You can
-still post -- but all mail you send will require manual approval until
-you're taken off the blacklist.
+On Wed, Apr 23, 2003 at 10:40:37PM +0200, Jörn Engel wrote:
+> On Wed, 23 April 2003 10:15:56 +0100, David Woodhouse wrote:
+> >
+> > Please ensure that you do not try to start a new thread
+> > by just replying to an existing list message and changing the subject,
+> > for similar reasons.
+> 
+> Why exactly? I kind of like the habit of changing the subject in the
+> middle of a thread where appropriate, like "foo (was: bar)".
+> 
+> You are the boss, but I'd like to know the rationale.
 
-I posted a message to the list asking members to obey the guidelines,
-which are just a documentation of normal acceptable practice. 
+If you don't change the In-Reply-To: header, a decent MUA will
+thread the new article with the old thread.  It doesn't belong
+there (or you wouldn't have changed the topic).
 
-I rejected your broken messages without References headers, with a URL
-explaining why.
-
-Yet you deliberately mangled the subject of your message to get round
-the heuristics which trapped your previous broken messages, so you could
-post a message to the list which broke the threading.
-
-This behaviour is not acceptable.
-
-If you have genuine difficulty in finding a mail client which isn't
-broken, approach me privately and I'll help -- there are plenty of them
-out there, even for Windows. I think that even newer versions of Pegasus
-are OK. But don't attempt to work around the filters.
-
-Working around the need for manual approval by posting from a different
-address will be considered an abuse of my system and reported as such to
-your ISP.
+If you want to reply to a message and start a new thread, make
+sure you remove the In-Reply-To: header also.  That way you'll
+be starting a new thread -- which one must presume is your
+intention when you change the Subject: header.
 
 -- 
-dwmw2
+Grant Edwards
+grante@visi.com
