@@ -1,15 +1,15 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ReyH-00013v-00
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2002 19:46:41 +0000
-Message-ID: <3C487D9A.D85DDC3D@comdev.cc>
-Date: Fri, 18 Jan 2002 11:55:06 -0800
-From: Adam Wozniak <adam.wozniak@comdev.cc>
+Received: from mailout03.sul.t-online.com ([194.25.134.81])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16Rg4P-00018L-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2002 20:57:05 +0000
+Message-ID: <3C488E1F.46D2E05B@cs.uni-bonn.de>
+Date: Fri, 18 Jan 2002 22:05:35 +0100
+From: Loehnertz@t-online.de (Martin =?iso-8859-1?Q?L=F6hnertz?=)
+Reply-To: ml@cs.uni-bonn.de
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: optimum geometry
-References: <3C48504B.68F8FE7F@comdev.cc>  <20020118010528.A22777@swing.comdev.cc> <28158.1011372920@redhat.com>
-Content-Type: text/plain; charset=us-ascii
+Subject: DOM-Module vanishes
+Content-Type: text/plain; charset=us-ascii; x-mac-type="54455854"; x-mac-creator="4D4F5353"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,22 +22,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've got 8 x 8 bit chips forming my 64 bit wide flash area.
-An erase block on a single chip is 128K bytes, so I've really
-got 128K * 8 == 1024 K == 1 M erase blocks.  My JFFS2 partition
-is 96 Megs, so I've only got 96 erase blocks.
+Hello,
 
-I'm beginning to fear that this is far from optimum.  What is an
-optimum erase block size?
+this is perhaps a bit late because I already returned the module to the
+shop and it is now sent to the manufacturer but I wold still like to
+find out what has happened.
 
-I could drop back and rewrite the MTD driver to address each
-chip seperately, but I'm concerned that would be both messy and
-tough on performance.
+I bought an Adlink 16 MB DOM Flash Module. This is a DOC with some
+additional hardware that makes it look like an IDE Drive,
 
-Thoughts?
+I inserted it as secondary master and it did not work. After some time I
+found out that
+the 2nd IDE was deactivated in the BIOS. I activated it and the module
+was found immediately.
 
--- 
-Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
-awozniak@comdev.cc      3450 Broad St. 107, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+The BIOS detected it as 1000 cyc 16 tracks instead of 490/32 as
+described by the manual, but the manual said to belive in the BIOS
+autodetect stuff.
+
+I created a partition table with one large ext2fs partition. I formatted
+it, wrote data and read data successfully . I was happy and switched off
+the computer for that day.
+
+Next day the Module was no found by the BIOS. It was not a wrong setting
+or anything.
+After some time of experimenting (expecially switching on and off the
+computer some times) it showed up again. All data had vanished (also the
+partition-table).
+I formatted, wrote data, read data everything ok.
+I shut down the computer, started again and it was not found anymore.
+
+I tried it in another computer (old 386) without BIOS autodetection, set
+the parameters according to the manual and only got errors when trying
+to speak to the Module.
+
+Still both computers detect the existence of some object, as they need
+significantly longer to decide that there is no object than they need if
+I remove it.
+
+As I said I already sent it back - but has anybody any Idea ?
+
+Thank you very much
+Martin Loehnertz
