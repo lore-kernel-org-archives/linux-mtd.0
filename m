@@ -1,17 +1,27 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEmes-0002DN-7D
-	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 06:07:19 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: jamesm@redhat.com
-Content-Type: text/plain
-Date: Fri, 25 Mar 2005 14:06:47 +0300
-Message-Id: <1111748807.4566.16.camel@sauron.oktetlabs.ru>
+	id 1DErWq-0003R6-F2
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 11:19:21 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1DErWG-0003LB-BR
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 17:18:50 +0100
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2005 17:18:44 +0100
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2005 17:18:44 +0100
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Date: Fri, 25 Mar 2005 16:18:35 +0000 (UTC)
+Message-ID: <loom.20050325T163810-877@post.gmane.org>
+References: <loom.20050322T224733-491@post.gmane.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: Crypto API extention request
-Reply-To: dedekind@infradead.org
+Sender: news <news@sea.gmane.org>
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello James,
+Hi,
 
-I'm an JFFS2/JFFS3 developer and I'm working on cleaning-up the JFFS3
-compression stuff. JFFS3 contains a number of compressors which actually
-shouldn't be there as they are platform-independent and generic. So we
-want to move them to the generic part of the Linux kernel instead of
-storing them in fs/jffs2/. And we were going to use CryptoAPI to access
-the compressors.
+I was browsing the mailing lists and found that this topic has already 
+generated a fair bit of discussions started by Vipin Malik around 2001. 
+Then the consensus was that it is not a responsibility of a filesystem 
+to do transactions but a user space application. Nevertheless this question 
+keeps coming back again and again because obviously people with 
+"real life" applications want a way to store data in a transactional 
+manner. Nowadays there are also filesystems out there that sport that
+transactional functionality to address this need despite the fact that 
+"POSIX does not require it" and such. Obviously there are also transactional 
+databases out there (Dah!) but that does not help much if one needs to expose 
+data as a filesystem.
 
-But I've hit on a problem - CryptoAPI's compression method is too poor
-for us.
+I appologize since it now appears that the original post had little to 
+do with JFFS2 ;-) so the question may be rephrased as: Is anybody aware 
+of a generic transactional library that can be run on top of JFFS2 to 
+provide transactions for the filesystem operations? Or is everybody 
+for himself?
 
-CryptoAPI's compress method is:
 
-int crypto_compress(struct crypto_tfm *tfm,
-                    const u8 *src, unsigned int slen,
-                    u8 *dst, unsigned int *dlen);
-
-*src - input data;
-slen - input data length;
-*dst - output data;
-*dlen - on input - output buffer length, on output - the length of the
-compressed data;
-
-The crypto_compress() API call either compresses all the input data or
-returns error.
-
-In JFFS2 we need something more flexible. Te following is what we want:
-
-int crypto_compress_ext(struct crypto_tfm *tfm,
-                    const u8 *src, unsigned int *slen,
-                    u8 **dst, unsigned int *dlen);
-
-*src - input data;
-*slen - on input - input data length, on output - the amount of data
-that were actually compressed.
-*dst - output data;
-*dlen - on input - output buffer length, on output - the length of the
-compressed data;
-
-This would allow us (and we really need this) to provide a large input
-data buffer, a small output data buffer and to ask the compressor to
-compress as much input data as it can to fit to the output buffer. To
-put it differently, we often have a large input, and several small
-output buffers, and we want to compress the input data to them.
-
-I offer to extend the CryptoAPI and add an "extended compress" API call
-with the above mentioned capabilities. We might as well just change the
-crypto_compress() and all its users.
-
-What do you think?
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Sergei Sharonov
