@@ -1,18 +1,14 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from bay19-f37.bay19.hotmail.com ([64.4.53.87] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkezR-0001Ai-21
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 04:19:45 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: sc <stephane.carbillet@free.fr>
-In-Reply-To: <40F4E8EA.6050903@free.fr>
-References: <40F4E8EA.6050903@free.fr>
-Content-Type: text/plain
-Message-Id: <1089793182.14567.0.camel@hades.cambridge.redhat.com>
+	id 1BkfjL-0001Qb-KG
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2004 05:07:12 -0400
+From: "w h" <wh3cq@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 14 Jul 2004 09:07:09 +0000
 Mime-Version: 1.0
-Date: Wed, 14 Jul 2004 09:19:42 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 mount time on AMD flash
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY19-F37r2IAlyof1r00056a32@hotmail.com>
+Subject: CRC error in cramfsck
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-07-14 at 10:03 +0200, sc wrote:
-> First is it a normal time ?
+Hi,
 
-For the 2.4 kernel, yes.
+Today I meet a problem which makes me tear my hair out. This phenomenon 
+never occurred before.I use Moto DragonBall MX1 ADS.
 
-> How could I have better performance ?
+The command "cramfsck -x Dir Filename" worked ok before. But this afternoon 
+when I use it to decompress some cramfs file I made by myself, it occurs 
+the error as following. But it works well with the original root.cramfs in 
+MX1 ADS. 
+warning: file extends past end of filesystem
+./crmfsck: crc error
 
-Use a 2.6 kernel.
+Also there is error in using "mkcrmfs Dir Filename" to make my own cramfs 
+file, which never 
+happened before:
 
--- 
-dwmw2
+Everything: 4 kilobytes
+Super block:76 bytes
+CRC:fdeb894a
+
+Is there anyone who knows the reason? Please help. Thanks!
+
+_________________________________________________________________
+与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
