@@ -1,15 +1,16 @@
-Received: from smtp6.mindspring.com ([207.69.200.110])
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19l7Vq-0004jv-9G
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2003 14:42:34 +0100
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Date: Fri, 8 Aug 2003 09:42:28 -0400
-Message-ID: <IIEEICKJLNEPBBDJICNGEEIEDMAA.chuckmeade@mindspring.com>
-MIME-Version: 1.0
-In-Reply-To: <1060327833.25209.271.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 19l7ru-0004s8-QK
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2003 15:05:22 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chuck Meade <chuckmeade@mindspring.com>
+In-Reply-To: <IIEEICKJLNEPBBDJICNGEEIEDMAA.chuckmeade@mindspring.com>
+References: <IIEEICKJLNEPBBDJICNGEEIEDMAA.chuckmeade@mindspring.com>
+Message-Id: <1060351511.25209.478.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Fri, 08 Aug 2003 15:05:12 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: RE: DOC filesystem questions
@@ -22,21 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> > > We _must_ retain the bad block table which was on the device when it
-> > > arrived from the factory. 
-> > 
-> > OK I see.  Would it be valuable then to have a Linux command-line
-> > utility which captures the BBT before calling nftl_format, then 
-> > is used to restore the BBT after calling nftl_format but before
-> > nftl tries to mount any partitions (via 'insmod nftl' or whatever)?
-> 
-> ... or which writes it back as _part_ of the nftl_format process,
-> perhaps?
-> 
-> Yes, it would be extremely useful to do this.
+On Fri, 2003-08-08 at 14:42, Chuck Meade wrote:
+> I will work on this then and feed it back to the list for
+> evaluation when I have something that works.
 
-I will work on this then and feed it back to the list for
-evaluation when I have something that works.
+Cool, thanks. If you can make it eat the same file format as the DOS
+DFORMAT tool does, that would be great.
 
-Chuck
+-- 
+dwmw2
