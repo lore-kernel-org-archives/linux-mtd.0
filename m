@@ -1,47 +1,52 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JeyN-00071p-00
-	for mtd-list@infradead.org; Tue, 01 Aug 2000 17:32:55 +0100
+	id 13JeyA-00071i-00
+	for mtd-list@infradead.org; Tue, 01 Aug 2000 17:32:42 +0100
 Received: from pop.gmx.net ([194.221.183.20] helo=mail.gmx.net)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13JeyL-00071a-00
-	for mtd@infradead.org; Tue, 01 Aug 2000 17:32:53 +0100
-Message-ID: <002b01bffbd5$73f7f8e0$fd8907d4@gallien>
+	id 13Jey8-00071W-00
+	for mtd@infradead.org; Tue, 01 Aug 2000 17:32:40 +0100
+Message-ID: <002a01bffbd5$6e5da560$fd8907d4@gallien>
 From: "Markus Thiesmeyer" <mthi@gmx.de>
 To: "David Woodhouse" <dwmw2@infradead.org>
 Cc: <mtd@infradead.org>
-Subject: CFI-Read-Command
-Date: Tue, 1 Aug 2000 18:23:00 +0200
+Subject: Is JFFS a full featured filesystem?
+Date: Tue, 1 Aug 2000 18:15:31 +0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0027_01BFFBE5.86188660"
+	boundary="----=_NextPart_000_001F_01BFFBE4.7AAF7E60"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0027_01BFFBE5.86188660
+------=_NextPart_000_001F_01BFFBE4.7AAF7E60
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-after I've integrated the cfi-support (from mtd-20000704.tar.gz) I =
-noticed a problem when I was tying to read bytes from odd addresses. It =
-it seems as if I've located the problem:
+I've integrated the JFFS into a 2.2.16 kernel and it works almost fine.
+But I cannot use an editor like pico to create a file on a =
+JFFS-filesystem. It leads to an serious error. Other operations like =
+copying or moving files are no problem.
+So I've written a small program which uses file-mapping to change given =
+files. And the results were very strange: When I run this application it =
+should open a file called map.txt and change the first bytes into the =
+sequence "abcdef...xyz". But when I read the file after I've run that =
+application, the file seems to be unchanged. Changes appear first when I =
+unmount that fs and mount in again. Then the file looks like a =
+concatenation of the unchanged and the changed version.
 
-Before the flash =EDs read, the read-function tries to read the =
-cfi-statemachine. And this operation must be an aligned 16-bit read. But =
-the read-operation uses the given, odd address and gets confused. As a =
-fast bugfix I wrote a wrapper which handles unaligned accesses and =
-forwards aligned accesses to the given read-command.
+Is this a bug? And if it is a bug, is this a known bug?
+
 
 regards
 
 Markus Thiesmeyer
 
-------=_NextPart_000_0027_01BFFBE5.86188660
+------=_NextPart_000_001F_01BFFBE4.7AAF7E60
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -56,28 +61,39 @@ http-equiv=3DContent-Type>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>after I've integrated the cfi-support =
-(from=20
-mtd-20000704.tar.gz) I noticed a problem when I was tying to read bytes =
-from odd=20
-addresses. It it seems as if I've located the problem:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I've integrated the JFFS into a 2.2.16 =
+kernel and=20
+it works almost fine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But I cannot use an editor like pico to =
+create a=20
+file on a JFFS-filesystem. It leads to an serious error. Other =
+operations like=20
+copying or moving files are no problem.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>So I've written a small program which =
+uses=20
+file-mapping to change given files. And the results were very strange: =
+When I=20
+run this application it should open a file called map.txt and change the =
+first=20
+bytes into the sequence "abcdef...xyz". But when I read the file after =
+I've run=20
+that application, the file seems to be unchanged. Changes appear first =
+when I=20
+unmount that fs and mount in again. Then the file looks like a =
+concatenation of=20
+the unchanged and the changed version.</FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Before the flash =EDs read, the =
-read-function tries=20
-to read the cfi-statemachine. And this operation must be an aligned =
-16-bit read.=20
-But the read-operation uses the given, odd address and gets confused. As =
-a fast=20
-bugfix I wrote a wrapper which handles unaligned accesses and forwards =
-aligned=20
-accesses to the given read-command.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is this a bug? And if it is a bug, is =
+this a known=20
+bug?</FONT></DIV>
+<DIV>&nbsp;</DIV>
 <DIV>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2>regards</FONT></DIV>
 <DIV>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2>Markus =
 Thiesmeyer</FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0027_01BFFBE5.86188660--
+------=_NextPart_000_001F_01BFFBE4.7AAF7E60--
 
 
 
