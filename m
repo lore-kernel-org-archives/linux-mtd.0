@@ -1,16 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Michael McLellan <michael-mclellan@swsa.com.au>
-In-Reply-To: <Pine.LNX.4.53.0310141638470.12391@slop.cobalttech.com>
-References: <Pine.LNX.4.53.0310141537460.12298@slop.cobalttech.com>
-	 <1066111607.3172.40.camel@imladris.demon.co.uk>
-	 <Pine.LNX.4.53.0310141638470.12391@slop.cobalttech.com>
-Content-Type: text/plain
-Message-Id: <1066120362.14783.140.camel@hades.cambridge.redhat.com>
+Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A9Py4-0007DN-OW
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2003 15:16:09 +0100
+Received: from localhost (p0749-ip01funabasi.chiba.ocn.ne.jp [61.119.147.241])
+	by smtp.mba.ocn.ne.jp (Postfix) with ESMTP id E238D522D
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Oct 2003 23:14:57 +0900 (JST)
+Date: Tue, 14 Oct 2003 23:31:56 +0900 (JST)
+Message-Id: <20031014.233156.07647021.anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
-Date: Tue, 14 Oct 2003 09:32:44 +0100
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-cc: mtd list <linux-mtd@lists.infradead.org>
-Subject: Re: DoC Grub booting problems
+Subject: [PATCH] cmdlinepart with zero offset value
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-10-14 at 16:45 +1000, Michael McLellan wrote:
-> > Don't you have to tell it that the menu.lst file is on (dc0,0) to make
-> > it look there?
-> 
-> Yes I do, thats the problem.
+I sent this patch about two month ago but no response.  I will try
+again.
 
-Hmmm. Look at, and add more debugging to, find_config() and
-try_config_partition() in stage2.c. 
+I found that cmdlinepart.c can not handle zero offset value correctly
+(ex. "mtdparts=id:2M@2M,2M@0").
 
-Find out if they're actually being called. If not, why not -- and if so,
-why aren't they finding the config file?
+This is a patch to fix it.  Also I removed including asm/setup.h since
+some archs do not have it.  Please review my patch and apply if no
+problem.  Thank you.
 
--- 
-dwmw2
+--- mtd-20030811/drivers/mtd/cmdlinepart.c	Fri May 30 07:00:05 2003
++++ mtd/drivers/mtd/cmdlinepart.c	Tue Aug 12 16:35:43 2003
+@@ -29,7 +29,6 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/compatmac.h>
+-#include <asm/setup.h>
+ #include <linux/bootmem.h>
+ 
+ /* error message prefix */
+@@ -45,6 +44,7 @@
+ 
+ /* special size referring to all the remaining space in a partition */
+ #define SIZE_REMAINING 0xffffffff
++#define OFFSET_CONTINUOUS 0xffffffff
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -77,7 +77,7 @@
+ {
+ 	struct mtd_partition *parts;
+ 	unsigned long size;
+-	unsigned long offset = 0;
++	unsigned long offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -312,7 +312,7 @@
+ 		{
+ 			for(i = 0, offset = 0; i < part->num_parts; i++)
+ 			{
+-				if (!part->parts[i].offset)
++				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+ 				  part->parts[i].offset = offset;
+ 				else
+ 				  offset = part->parts[i].offset;
+---
+Atsushi Nemoto
