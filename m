@@ -1,28 +1,24 @@
 From: tglx@linutronix.de (Thomas Gleixner)
-Date: Fri, 14 Feb 2003 14:49:20 +0100
-Subject: jffs2 occasionally locking up?
-In-Reply-To: <2702075D4DE2B043BF5EB82E9CFAD45B0BD456@mail1.mediatrix.com>
-References: <2702075D4DE2B043BF5EB82E9CFAD45B0BD456@mail1.mediatrix.com>
-Message-ID: <200302141449.20995.tglx@linutronix.de>
+Date: Fri, 14 Feb 2003 14:50:46 +0100
+Subject: Initialising NAND OOB with Software ECC
+In-Reply-To: <1045229764.22719.56.camel@passion.cambridge.redhat.com>
+References: <200302132020.02330.phil@river-bank.demon.co.uk>
+ <200302141427.31025.tglx@linutronix.de>
+ <1045229764.22719.56.camel@passion.cambridge.redhat.com>
+Message-ID: <200302141450.46892.tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Friday 14 February 2003 14:48, Frederic Giasson wrote:
-> On Friday 14 February 2003 10:29:23, tglx at linutronix.de wrote:
-> >If you copy too much data to the partition, it tries to garbage collect to
-> >give you more space on the device. The endless loop seems true.
+On Friday 14 February 2003 14:36, David Woodhouse wrote:
+> On Fri, 2003-02-14 at 13:27, Thomas Gleixner wrote:
+> > True, but pread/pwrite does not support two pointers.
 > >
-> >Could you please set JFFS2_DEBUG=1 and provide a log-output.
-> >Don't forget to echo 9 >/proc/sys/kernel/printk before starting your copy
-> >session. Please compress the log and mail it to me in private (will be
-> > some MB) or provide it any location for download
+> > We can use one pointer, but then you have to copy things around in
+> > userspace.
 >
-> We encountered the same problem, the garbage collector seemed to spin
-> endlessly, but usually it stoped after many hours.  We found a way to avoid
-> the problem: calling "sync" command before every copy to jffs2. This way,
-> copy time is much more deterministic, even when jffs2 is almost full.
-But that does not solve the problem. Could anybody provide a log please, as 
-I'm out of hardware at the moment.
+> _ANYTHING_ is better than an ioctl which takes pointers to userspace
+> buffers.
+True, doe you have a better idea ?
 
 -- 
 Thomas
