@@ -1,20 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgIbz-0005Ly-2a
-	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 03:09:50 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: William J Beksi <wjbeksi@setabox.com>
-In-Reply-To: <41C1896F.9000107@setabox.com>
-References: <41C1896F.9000107@setabox.com>
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CgMxG-0006cP-Sk
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 07:48:04 -0500
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004122007484017845
+	for <linux-mtd@lists.infradead.org>; Mon, 20 Dec 2004 07:48:40 -0500
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E7935181399@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 20 Dec 2004 07:47:49 -0500
+MIME-Version: 1.0
 Content-Type: text/plain
-Date: Mon, 20 Dec 2004 09:09:44 +0100
-Message-Id: <1103530184.27708.102.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] command function for nand flash through IDE
-Reply-To: tglx@linutronix.de
+Subject: Doc_loadbios fails?  Docboot?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-12-16 at 21:11 +0800, William J Beksi wrote:
-> Hi,
-> This driver includes command and select chip functions specifically for  
-> accessing nand flash through an IDE port. Should be useful for anyone 
-> developing and testing on a PC. It works with the latest MTD snapshot.
+I am trying to get Grub to load/work on a DOC2000 128Mbyte MD2202-D128x ver
+5.1.2 dip.  This is one of the newer ones using INFTL technology.  The
+doc_loadbios fails.  Nand_erase fails with error attempt to erase bad block
+at page 0x00000000 ioctl(MEMERASE) Input/output error.  How can I get past
+this error?  Has the doc_loadbios worked on these devices before?  Any
+advice?  Should I just try to use docboot?  When using docboot I guess
+everything must be built into the kernel since initrd image is not supported
+(as the readme says it isn't).
 
-Works == compiles ?
-
-Do you expect, that the read/write/verify functions in nand_base.c will
-work? Your IO_ADDR_R/W values are representing an I/O port address so
-the readb/writeb macros in the generic read/write/verify functions will
-just oops.
-
-It's definitely not necessary to copy the command function. Please read
-the NAND API documentation and use an appropriate hw_control function
-(See the address lines based example). 
-
-tglx
+Thanks,
+John
