@@ -1,18 +1,14 @@
-Date: Wed, 19 Jan 2005 13:09:48 +0000 (GMT)
+Date: Wed, 19 Jan 2005 13:15:41 +0000 (GMT)
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce05011810013ea479b@mail.gmail.com>
-Message-ID: <Pine.LNX.4.58.0501191309140.8174@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
-	<1105619501.26551.163.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.58.0501131317560.17331@phoenix.infradead.org>
-	<6934efce05011810013ea479b@mail.gmail.com>
+To: Vahid Fereydunkolahi <fereydunk@yahoo.com>
+In-Reply-To: <20050119032133.28108.qmail@web51006.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.58.0501191313020.8174@phoenix.infradead.org>
+References: <20050119032133.28108.qmail@web51006.mail.yahoo.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: CRC on Read-Only partition
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: some questions regarding the write operation on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 Jan 2005, Jared Hulbert wrote:
+On Tue, 18 Jan 2005, Vahid Fereydunkolahi wrote:
 
-> My understanding is that NAND technology is prone to read error even
-> if you aren't programming or eraseing it.   Such errors can occur
-> randomly.  By that I mean the data reads fine and then its bad and
-> then it reads fine...
+> Hi All,
+>  I traced the write operation from the Linux kernel to
+> the JFFS2. I have some questions:
+>     1) Is there any chance that there could be some
+> partial writes on the NAND flash (if power failure
+> happens during write operation).
+Yes, there is chance.
+
 > 
-Hmm. Thanks. So we just need to re-read several times.
+>     2) Does SYNC has any meaning when using the JFFS2.
+> As fas as I noticed the write operations are
+> formwarded to the MTD device, and they are not cached.
+For NAND JFFS2 has per-NAND page buffer, so sync flushes it. see 
+jffs2/wbuf.c.
+
+> 
+> Thank you so much in advance,
+> --vahid
+You're welcome :-)
+
+> 
+> 
+> 		
+> __________________________________ 
+> Do you Yahoo!? 
+> Read only the mail you want - Yahoo! Mail SpamGuard. 
+> http://promotions.yahoo.com/new_mail 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
 --
 Best Regards,
