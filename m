@@ -1,18 +1,17 @@
-Received: from rcmenter.iserver.net ([192.41.35.12])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1583Ny-0007l6-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2001 18:15:54 +0100
-Subject: Re: HELP
-From: Russ Dill <Russ.Dill@asu.edu>
-To: MTD for Linux <linux-mtd@lists.infradead.org>
-In-Reply-To: <23825.991907052@redhat.com>
-References: <20010607114319.A23641@crystal.2d3d.co.za>
-	<20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com>
-	<23825.991907052@redhat.com>
-Content-Type: text/plain
-Date: 07 Jun 2001 10:21:06 -0700
-Message-Id: <991934470.27485.0.camel@timmy>
+	id 1585u6-0007uh-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2001 20:57:14 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <991934470.27485.0.camel@timmy> 
+References: <991934470.27485.0.camel@timmy>  <20010607114319.A23641@crystal.2d3d.co.za> <20010607110359.A22278@crystal.2d3d.co.za> <19468.991906514@redhat.com> <23825.991907052@redhat.com> 
+To: Russ Dill <Russ.Dill@asu.edu>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Re: HELP 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 07 Jun 2001 21:01:21 +0100
+Message-ID: <9968.991944081@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 07 Jun 2001 10:44:12 +0100, David Woodhouse wrote:
-> 
-> abraham@2d3d.co.za said:
-> >  why is this necessary though? The kernel docs make it pretty clear
-> > that enabling that causes severe performance penalties which I wanted
-> > to avoid. 
-> 
-> Then fix the kernel docs. :)
+Russ.Dill@asu.edu said:
+> . However, some drivers *cough*jffs2*cough* will make unaligned reads
+> from time to time, but only rarely. In this case, the handler speeds
+> things up by doing the access, instead of producing an oops. 
 
-I already tried feeding rmk such a patch. The unaligned handly only
-impacts performance when there is an unaligned read. So for you, its
-good you now know and are working around this. However, some drivers
-*cough*jffs2*cough* will make unaligned reads from time to time, but
-only rarely. In this case, the handler speeds things up by doing the
-access, instead of producing an oops.
+Actually JFFS2 does it quite a lot. I added a byte to the dirent structure 
+which means the names get unaligned.
+
+--
+dwmw2
