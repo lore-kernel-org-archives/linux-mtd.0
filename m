@@ -1,23 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cf2lz-0005YM-MX
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 16:02:56 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from [212.105.56.244] (helo=dmz.lumentis.net)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cf2pQ-0005i4-O6
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 16:06:30 -0500
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: "Jörn Engel" <joern@wohnheim.fh-wedel.de>,
+   "Thomas Gleixner" <tglx@linutronix.de>
+Date: Thu, 16 Dec 2004 22:06:21 +0100
+Message-ID: <BCEFJBPJCGFCNMMMIDBHCEMGCJAA.Joakim.Tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 In-Reply-To: <20041216205102.GC10285@wohnheim.fh-wedel.de>
-References: <BCEFJBPJCGFCNMMMIDBHAEMECJAA.Joakim.Tjernlund@lumentis.se>
-	<1103229452.27708.6.camel@tglx.tec.linutronix.de>
-	<20041216205102.GC10285@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 16 Dec 2004 22:02:50 +0100
-Message-Id: <1103230970.27708.14.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Joakim.Tjernlund@lumentis.se,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
-Reply-To: tglx@linutronix.de
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: RE: JFFS3 & performance
+Reply-To: Joakim.Tjernlund@lumentis.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-12-16 at 21:51 +0100, JÃ¶rn Engel wrote:
+> > unsigned short crc16 (unsigned char *buf, size_t len)
+> > {
+> >         unsigned short crc = 0xffff;
+> >         while (len--)
+> >                 crc = (unsigned short) (crc >> 8) ^ 
+> > 		     crc16tab[(crc ^ (unsigned short)(*buf++)) & 0xff];
+> >         return crc;
+> > }
+> > 
+> 
+> Thomas, you respond faster than I can think!
+> 
 > real    0m0.395s
 > user    0m0.326s
 > sys     0m0.067s
 > 
 > The algorithm doesn't run that fast, though.
 
-Makes sense, as the modulo in your loop is a provided by the div
-instruction on x86. I used this on a CPU where no modulo result was
-available.
+There is still more one can do, look in lib/crc32.c in the kernel to see
+what I mean. It is tricky to get everything right, but just unrolling it a bit will help.
 
-tglx
+ Jocke
