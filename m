@@ -1,21 +1,21 @@
-Received: from smtp-102.nerim.net ([62.4.16.102] helo=kraid.nerim.net)
+Received: from ganon.smb.utfors.se ([195.58.112.27])
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18gMPq-00039f-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 10:04:26 +0000
-Received: from bandit.lilotux.net (lilotux.net [62.212.107.33])
-	by kraid.nerim.net (Postfix) with ESMTP id D3D5240F5D
-	for <linux-mtd@lists.infradead.org>; Wed,  5 Feb 2003 11:04:25 +0100 (CET)
-Received: from slist by bandit.lilotux.net with local (Exim 3.35 #1 (Debian))
-	id 18gMPp-0001IH-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 11:04:25 +0100
-Date: Wed, 5 Feb 2003 11:04:25 +0100
-From: Stephane List <stephane.list@lilotux.net>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <20030205100425.GA4852@lilotux.net>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: Intel Strataflash on MIPS
-Content-Type: text/plain; charset=us-ascii
+	id 18gN3Z-0003M9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 10:45:29 +0000
+Received: from LUMENTIS02 ([212.105.56.242])
+ by ganon.smb.utfors.se (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H9U000BT0JSK1@ganon.smb.utfors.se> for
+ linux-mtd@lists.infradead.org; Wed, 05 Feb 2003 11:45:29 +0100 (MET)
+Date: Wed, 05 Feb 2003 11:45:28 +0100
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+In-reply-to: <1044436513.1110.17.camel@imladris.demon.co.uk>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-to: joakim.tjernlund@lumentis.se
+Message-id: <IGEFJKJNHJDCBKALBJLLGEPJFJAA.joakim.tjernlund@lumentis.se>
+MIME-version: 1.0
+Subject: RE: Administrivia -- list changes.
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,24 +27,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David,
+> 
+> Likewise if you send a reply which _lacks_ both In-Reply-To: and
+> References: headers -- proper email clients are available for free
+> download, even for Windows users, so there's no excuse for that either.
+> 
+> -- 
+> dwmw2
 
-One thing I didn't told you, is that I'm using an IDT.
-This is a CPU with a MIPS inside.
+hmm, I often use Outlook. Lets see if the list accepts that.
 
-In linux kernel, you've wrote :
-
-./include/asm-mips/io.h
-#define IO_SPACE_LIMIT 0xffff
-
-
-That's why I can't read more than 0xFFFF bytes in my flash, and that's
-why I can't erase the second sector of my flash, could you tell me how
-to modify the mtd driver to make it MIPS compliant ?
-
-Thanks
-
-
--- 
-Stephane List
-http://slist.lilotux.net
+ Jocke 
