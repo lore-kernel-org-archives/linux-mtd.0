@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from t111.niisi.ras.ru ([193.232.173.111] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ISmp-00065f-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Jul 2001 11:24:35 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B460280.9060805@niisi.msk.ru> 
-References: <3B460280.9060805@niisi.msk.ru> 
-To: Alexandr Andreev <andreev@niisi.msk.ru>
-Cc: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
-Subject: Re: FTL and Endianity 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 06 Jul 2001 11:30:07 +0100
-Message-ID: <31888.994415407@redhat.com>
+	id 15ITha-00069n-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Jul 2001 12:23:15 +0100
+Message-ID: <3B4610D7.8040501@niisi.msk.ru>
+Date: Fri, 06 Jul 2001 15:26:15 -0400
+From: Alexandr Andreev <andreev@niisi.msk.ru>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
+Subject: Re: FTL and Endianity
+References: <3B460280.9060805@niisi.msk.ru> <31888.994415407@redhat.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,13 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-andreev@niisi.msk.ru said:
->  Did anybody test FTL with big  endian CPU? If no, we need to throw
-> these macros out. In any case, we have to be  able to configure this
-> behaviour.
+David Woodhouse wrote:
 
-I didn't test - I think others did though. FTL is defined to be 
-little-endian. Why do you say the macros are unusable?
-
---
-dwmw2
+>
+>I didn't test - I think others did though. FTL is defined to be 
+>little-endian. Why do you say the macros are unusable?
+>
+As i can see, cpu_to_le32 and others macros, are usable only when FTL
+reading the FTL header. But when the ftl_fromat utility creates an ftl
+partition, it doesn't swap any field of the header.
+So, it doesn't matter on which endianity the FTL driver and ftl_format
+works, it must be the same only.
+Am i wrong?
