@@ -1,30 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13XNc0-0000Wy-00
-	for mtd-list@infradead.org; Fri, 08 Sep 2000 13:50:32 +0100
-Message-ID: <39B8E2CB.CC83B7FC@cotw.com>
-Date: Fri, 08 Sep 2000 07:59:55 -0500
+	id 13YWYc-0004zP-00
+	for mtd-list@infradead.org; Mon, 11 Sep 2000 17:35:46 +0100
+Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13YWYZ-0004zJ-00
+	for mtd@infradead.org; Mon, 11 Sep 2000 17:35:43 +0100
+Received: from cotw.com (laptop1.ptec.com [192.168.10.13])
+	by cvsftp.cotw.com (8.9.3/8.9.3) with ESMTP id LAA08562
+	for <mtd@infradead.org>; Mon, 11 Sep 2000 11:35:45 -0500
+Message-ID: <39BD0C1A.8CE92D9C@cotw.com>
+Date: Mon, 11 Sep 2000 11:45:14 -0500
 From: "Steven J. Hill" <sjhill@cotw.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/fs/jffs inode-v23.c'
-References: <E13X5id-0004fA-00@infradead.org> <3113.968398362@passion.cygnus.co.uk>
+To: mtd@infradead.org
+Subject: ATTN DOC Developers!
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
-> 
-> Oi!. That was required for -test7 and above. You've just reversed the change
-> I made in v1.43.
-> 
-> If you're using older kernels, use v1.42.
-> 
-Crap. I am SO embarrassed. Sorry everyone.
+Greetings.
 
--S
+I am working with David on some CVS changes as well as a MTD
+system architecture diagram. It was brought to my attention
+that the DOC drivers (2000 and Millenium) are being merged
+into one driver (file). Who is currently responsible for this
+effort? Please reply ASAP. Thanks a bunch.
+
+-Steve
 
 -- 
  Steven J. Hill - Embedded SW Engineer
