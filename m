@@ -1,16 +1,20 @@
-Received: from web21505.mail.yahoo.com ([66.163.169.16])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1798oe-00009T-00
-	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 19:20:28 +0100
-Message-ID: <20020518182026.49817.qmail@web21505.mail.yahoo.com>
-Date: Sat, 18 May 2002 11:20:26 -0700 (PDT)
-From: Studying MTD <studying_mtd@yahoo.com>
-Subject: Re: FAT for NAND Flash 
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <23649.1021737644@redhat.com>
+Received: from pd9eb9c7b.dip.t-dialin.net ([217.235.156.123] helo=thomas.tec.autronix.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 179Lyi-0002rX-00
+	for <linux-mtd@lists.infradead.org>; Sun, 19 May 2002 09:23:45 +0100
+Message-Id: <200001121137.e0CBbMR01569@thomas.tec.autronix.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: Yong-iL Joh <tolkien@mizi.com>, Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: FAT for NAND Flash
+Date: Wed, 12 Jan 2000 12:37:21 +0100
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+References: <20020516144608.86328.qmail@web21509.mail.yahoo.com> <hbvg9m9gs5.fsf@tolkien.mizi.com>
+In-Reply-To: <hbvg9m9gs5.fsf@tolkien.mizi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,37 +26,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---- David Woodhouse <dwmw2@infradead.org> wrote:
-> Neither the 'mtdblock' nor 
-> 'mtdchar' code is involved at all. 
+On Saturday, 18. May 2002 07:16, Yong-iL Joh wrote:
+> Studying MTD <studying_mtd@yahoo.com> writes:
+> > If i want to use FAT with NAND then i have to use :-
+> >
+> > A. FAT: filesystem driver
+> > B. Translation: Translation layer
+> > C. MTD: Memory Technology Devices driver
+> > D. NAND: generic NAND driver
+> > E. Hardware specific driver
+> >
+> > So i have to add only Translation layer, rest layers
+> > will remain same.
+> >
+> > Am i right ? If not, please correct me.
+> >
+> > How can i write traslation layer , any reference.
+>
+> IMHO, you're right.
+> we have implemented this way for SMC(SmartMedia Card). :)
+>
+> but, we can't use current MTD's nand.c because of different usage of OOB.
+> we called SMCTL as "B. Translation".
 
-As per drivers/mtd/Config.help (2.5.15) :-
+The usage of OOB data in nand.c is configurable. So you could use it for 
+SmartMedia-FAT too.
 
-CONFIG_MTD_BLOCK
-...
-At the moment, it is also required for the Journalling
-Flash File System(s) to obtain a handle on the MTD
-device when it's mounted(although JFFS and JFFS2 don't
-actually use any of the functionality of the mtdblock
-device).
-...
-You do not need this option for use with the
-DiskOnChip devices. For those, enable NFTL support
-(CONFIG_NFTL) instead.
-
-
-it means we have to set CONFIG_MTD_BLOCK, if we are
-not using DoC but we are using JFFS2 filesystem.
-
-i am confused, who is correct ?
-
-Please guide me.
-
-Thank for your help.
-
-
-
-__________________________________________________
-Do You Yahoo!?
-LAUNCH - Your Yahoo! Music Experience
-http://launch.yahoo.com
+-- 
+Thomas
+___________________________________
+autronix automation GmbH
+http://www.autronix.de gleixner@autronix.de
