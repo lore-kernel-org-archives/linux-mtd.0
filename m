@@ -1,24 +1,27 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from node-d-1ea6.a2000.nl ([62.195.30.166] helo=laptop.fenrus.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19M4Cw-00037c-34
-	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 12:07:30 +0100
-Date: Sat, 31 May 2003 13:07:43 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: James Morris <jmorris@intercode.com.au>
-Message-ID: <20030531110743.GA24300@wohnheim.fh-wedel.de>
-References: <20030530.232004.115919834.davem@redhat.com>
-	<Mutt.LNX.4.44.0305312025270.6696-100000@excalibur.intercode.com.au>
+	id 19M2Md-0002gh-HE
+	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 10:09:23 +0100
+From: Arjan van de Ven <arjanv@redhat.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20030531075615.GA25089@wohnheim.fh-wedel.de>
+References: <20030530174319.GA16687@wohnheim.fh-wedel.de>
+	 <20030530.171410.104043496.davem@redhat.com>
+	 <20030531064851.GA20822@wohnheim.fh-wedel.de>
+	 <20030530.235505.23020750.davem@redhat.com>
+	 <20030531075615.GA25089@wohnheim.fh-wedel.de>
+Message-Id: <1054372158.5259.0.camel@laptop.fenrus.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Mutt.LNX.4.44.0305312025270.6696-100000@excalibur.intercode.com.au>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Date: 31 May 2003 11:09:19 +0200
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-WGyCU2SqoXTxuFsnq5WU"
 cc: "David S. Miller" <davem@redhat.com>
-cc: matsunaga_kazuhisa@yahoo.co.jp
-cc: dwmw2@infradead.org
-cc: linux-kernel@vger.kernel.org
 cc: linux-mtd@lists.infradead.org
+cc: linux-kernel@vger.kernel.org
+cc: jmorris@intercode.com.au
+cc: Con Kolivas <kernel@kolivas.org>
 Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
+Reply-To: arjanv@redhat.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 31 May 2003 20:51:04 +1000, James Morris wrote:
-> On Fri, 30 May 2003, David S. Miller wrote:
-> 
-> > My understanding is that these are just scratchpads.  The contents
-> > while a decompress/compress operation is not occuring does not
-> > matter.
-> 
-> It depends on how the zlib library is used.  The filesystems and crypto
-> code use it so that each operation is distinct, although it is possible to
-> maintain compression history between operations: PPP does this via a
-> sliding compression window, and there are other potential users such as
-> ROHC.
-> 
-> One way of addressing this would to allow the user to supply their own 
-> workspace if compression history needs to be maintained.
 
-Agreed.  How much memory is needed for the history?  Most of the
-workspace or substancially less?
+--=-WGyCU2SqoXTxuFsnq5WU
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> > So if we have 2 such scratchpads per cpu, one for normal and one for
-> > BH context, his idea truly can work and be useful to everyone.
-> > It would also be lockless on SMP.
-> 
-> And perhaps implement with a lazy allocation scheme so that these
-> scratchpads are only allocated if needed (i.e. a caller does not provide
-> its own workspace).
+On Sat, 2003-05-31 at 09:56, J=C3=B6rn Engel wrote:
+> CC List pruned a little.
+>=20
+> On Fri, 30 May 2003 23:55:05 -0700, David S. Miller wrote:
+> >    From: J=C3=B6rn Engel <joern@wohnheim.fh-wedel.de>
+> >   =20
+> >    How about preemption?  zlib operations take their time, so at least =
+on
+> >    up, it makes sense to preempt them, when not in softirq context.  Ca=
+n
+> >    this still be done lockless?
+> >=20
+> > You'll need to disable preemption.
+>=20
+> My gut feeling claims that this would hurt interactivity.=20
 
-Disagreed.  Two scratchpads per cpu won't hurt in the mean case much
-and lazy allocation wouldn't improve the worst case either.  Keep them
-static and simple.
+the code is decompressing data that was 4096 bytes originally. I doubt
+that will be anything close to some real wallclock time nowadays....
 
-Jörn
+--=-WGyCU2SqoXTxuFsnq5WU
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--- 
-With a PC, I always felt limited by the software available. On Unix, 
-I am limited only by my knowledge.
--- Peter J. Schoenster
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQA+2HE+xULwo51rQBIRAti2AJ9+42PNjQlhlXi7ID0200udIuYulgCbBDV+
+vDobyg5RSQ2gy7x9qtzmKdo=
+=fStp
+-----END PGP SIGNATURE-----
+
+--=-WGyCU2SqoXTxuFsnq5WU--
