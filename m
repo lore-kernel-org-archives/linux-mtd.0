@@ -1,23 +1,19 @@
-Received: from [212.58.137.10] (helo=trajan.ag-netcom.net)
+Received: from web02.manitu.net ([217.11.48.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AiZp6-0001t0-3p
-	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2004 13:52:12 +0000
-Received: from 192.168.0.4 (dsl-217-155-44-202.zen.co.uk [217.155.44.202])
-	by trajan.ag-netcom.net (8.12.8p1/8.12.8) with ESMTP id i0JDruRs036640
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jan 2004 13:53:56 GMT
-	(envelope-from david@avoncliff.com)
-From: david stevenson <david@avoncliff.com>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 19 Jan 2004 13:49:57 +0000
-References: <Pine.GSO.4.44.0401190820001.12833-100000@rose.man.poznan.pl>
-In-Reply-To: <Pine.GSO.4.44.0401190820001.12833-100000@rose.man.poznan.pl>
+	id 1Aidon-0002U4-TM
+	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2004 18:08:10 +0000
+Received: from treimers.net (pD958F820.dip.t-dialin.net [217.88.248.32])
+	(authenticated)
+	by web02.manitu.net (8.10.2-SOL3/8.10.2) with ESMTP id i0JI5g402774
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jan 2004 19:05:43 +0100
+Message-ID: <400C1C7E.2090404@treimers.net>
+Date: Mon, 19 Jan 2004 19:05:50 +0100
+From: Thorsten Reimers <thorsten@treimers.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200401191349.57616.david@avoncliff.com>
-Subject: Re: Run out of memory
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: Problem booting from DiskOnChip 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 19 January 2004 7:22 am, Michal Schulz wrote:
-> On Fri, 16 Jan 2004, david stevenson wrote:
-> > In round figures the kernel is using 2meg code,data,reserved, and free
-> > shows 1700k used 300k free, before I try to run anything.
-> >
-> > Some hints of whether this looks normal or odd would be much appreciated.
-> > David
->
-> Try to put kernel image into some kind of ROM memory (may be flash as
-> well). Then you can first of all reduce the amount of memory consumed by
-> kernel itself. On one of machines I was working few years ago (386EX)
-> there was 1700K free RAM after system bootup, whereas total amount of RAM
-> was 2.5MB. (0K used for kernel code)
+Hi all,
 
-Thanks, that would be the largest item in ram out of the way. I will have to 
-look at the odd parallel memory maps on my sc400 to work out how to map that.
-Is there a howto for kernel xip?
+I have a board with a DiskOnChip 200 module from M-System. I have been able, to 
+start the driver as a module and partitioning and fromatting the chip. I am 
+struggling to boot from it, does anybody have an idea?
 
-I am interested to know if either mtd or jffs2, use large amounts of ram, in 
-this case large being in the 100's of kb. And do they use any user space ram 
-or is it all in kernel data?
+Find below the messages from my Bios and from Linux during boot (from floppy).
 
-David
+BIOS Messages
+=============
+
+DOC Socket Services - Version 0.2
+(C) Copyright 1992-1996, M-Systems Ltd.
+
+TrueFFF-BIOS -- Version 3.3.9 for DiskOnChip 2000 (V4.3)
+Copryright (C) M-Systems, 1992-2001
+
+Linux Boot Messages
+===================
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/mtdcore.o
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/nand/nand_ids.o
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/devices/docecc.o
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/devices/doc2000.o
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/mtd/mtd_bkl_devs.o
+DiskOnChip 2000 found at address 0xD8000
+Flash chip foind: Manufacturer ID: 98, Chip ID: E6 (Toshiba: NAND 8MiB 3,3V)
+3 flash chips found. Total DiskOnChip size: 24 MiB
+Ignoring DiskOnChip 2000 at 0xDA000 - already configured
+Ignoring DiskOnChip 2000 at 0xDC000 - already configured
+Ignoring DiskOnChip 2000 at 0xDE000 - already configured
+Using /opt/files/lib/modules/2.4.23/kernel/drivers/devices/docprobe.o
+NFTL driver: nftlcore.c $Revision: 1.94 $, nftlmount.c $Revision: 1.34 $
+NFTL: UnitSizeFactor 0x00 detected. This violates the spec but we think we know 
+what it means ...
+
+During boot it stop's after sending out only some characters from linux load:
+SYSLINUX 1.76 0x3d93445f
+
+Maybe I should clean the chip by a tool, maybe I should install a new
+firmware on the chip? I tried it together with a hard disk with Windows and the
+disk-on-chip tools from MSystem. This worked really fine so I decided to
+install Linux now.
+
+And, last but not least: Dave Woodhouse, I would like to apologize for sending 
+out an email to you (which you did answer nevertheless). I just discovered this 
+mailing list and how to get help.
+
+Thorsten
+
+Wer krank wird, erfährt als erstes, dass er selber Schuld hat. - Eugen Drewermann
