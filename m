@@ -1,25 +1,28 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAsGD-0001RS-Jh
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 11:17:42 -0500
-Date: Mon, 14 Mar 2005 17:17:36 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20050314161736.GA3613@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0503121217090.24583@localhost.localdomain>
-	<20050314141509.GA17590@wohnheim.fh-wedel.de>
-	<4235A298.50908@yandex.ru>
-	<20050314145948.GB17977@wohnheim.fh-wedel.de>
-	<1110814432.7642.8.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1110814432.7642.8.camel@windu.rchland.ibm.com>
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
-	MTD mailing list <linux-mtd@lists.infradead.org>,
-	"Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: how to access jffs2 partition properties?
+Received: from mail.fccps.cz ([195.146.112.10])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DAswg-0001oR-I3
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 12:01:36 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by mail.fccps.cz (Postfix) with ESMTP id 4BABB77C8D
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Mar 2005 18:01:28 +0100 (CET)
+Received: from mail.fccps.cz ([127.0.0.1])
+	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 25821-08 for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Mar 2005 18:01:27 +0100 (CET)
+Received: from frr (frr.in.fccps.cz [192.168.2.14])
+	by mail.fccps.cz (Postfix) with ESMTP id 6CFCB77C7C
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Mar 2005 18:01:26 +0100 (CET)
+From: "Frantisek Rysanek" <Frantisek.Rysanek@post.cz>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 14 Mar 2005 18:06:08 +0100
+MIME-Version: 1.0
+Message-ID: <4235D290.15983.3536316E@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Subject: lilo vs. diskonchip (again, sorry)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +32,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 March 2005 09:33:52 -0600, Josh Boyer wrote:
-> On Mon, 2005-03-14 at 15:59 +0100, Jörn Engel wrote:
-> > 
-> > New mphysmap is missing the proc file.  And the person that requested
-> > the driver has been silent for a while, so I have no idea if it even
-> > works.  Lack of hardware.
-> 
-> Who was that?  Me?  I haven't had a chance to look at it yet, but it
-> looked nicer than the one I'm currently using anyway.  I'll try to get
-> to it eventually.
+Dear MTD users and maintainers,
 
-No, it was some private mail from about a month ago.
+first of all I'd like to apologize for asking for help
+while I still work with Linux 2.4 - I guess my problem
+could be unrelated to the minor kernel version.
 
-Jörn
+I'm having trouble with Lilo on a 32meg DiskOnChip.
 
--- 
-Debugging is twice as hard as writing the code in the first place.
-Therefore, if you write the code as cleverly as possible, you are,
-by definition, not smart enough to debug it.
--- Brian W. Kernighan
+I'm using a homebrew boot CD with some scripts starting
+with sfdisk and mkfs.ext2, then unpacking a prepared
+system tarball onto the diskonchip, then running Lilo.
+
+I have an old kernel, maybe a year and a half old,
+it's 2.4.21 with a MTD patch from those days, that
+works just fine.
+
+Then I have several recent kernels (2.4.26, 2.4.28,
+2.4.29) with recent MTD patches: 2.4.29 with the
+"last 2.4-compatible MTD snapshot".
+These use the NAND-based re-implemented diskonchip
+driver and appear to consistently hamper Lilo installation
+for some reason.
+
+If I boot the ancient kernel from CD and install Lilo
+on the DoC, the recent kernel installed on the DoC
+is able to boot and accesses the DoC just fine.
+
+If I boot the recent kernel from CD and install Lilo,
+although the filesystem appears to be created just fine,
+Lilo refuses to boot, saying
+L 40 40 40 40 40 40 40... etc. a million times.
+
+I'm using the bios=0x80 option, to no avail - it works
+that way with the old kernel, but not with the new ones.
+
+I've tried switching between a vanilla lilo (+boot.b)
+and the M-Systems hacked lilo - no difference there.
+I'm not surprised though, as the OS MTD drivers use
+a different major number than the M-Systems semi-closed-source 
+driver.
+
+I take care to run a full graceful system shutdown after each
+install, though I'm sure Lilo does a sync() before and after 
+it messes with the MBR on the DoC, so a plain cold reset
+should work just fine.
+
+I'm puzzled.
+Is this something intrinsic to the re-implemented
+DoC driver? Is "use docboot" the only right answer?
+Or should the block device abstraction work to the
+extent that Lilo should work, using BIOS services
+to load the kernel?
+BTW, is docboot only intended for inftl devices, or
+does it work for nftl DoC's too?
+
+
+Thanks for any ideas
+
+Frank Rysanek
