@@ -1,24 +1,15 @@
 From: asoneofus@nm.ru (A.L. Klyutchenya)
-Date: Tue, 1 Apr 2003 02:02:21 +0400
-Subject: error in jffs2reader ?
-Message-ID: <200304010202.21850.asoneofus@nm.ru>
+Date: Tue, 1 Apr 2003 02:07:14 +0400
+Subject: K9F5608U0B-YIB0000: 528 byte in page, or 512?
+Message-ID: <200304010207.14078.asoneofus@nm.ru>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Having sources MTD from CVS has found the frob, which approached 
-to my task (read boot file from MTD NAND+JFFS2, 
-CVSROOT/mtd/util/jffs2reader.c). Was it however found very 
-unpleasant particularity: program reads only one block from 
-file. This only beside me so?
-Check:
-- shall create image of the disk (from directory OSSCVOIP01)
-mkfs.jffs2 -vl -e 0x4000 -o jffs2root.img -r ./OSSCVOIP01 -p
-- afterwards, given by program, extract the file.
-jffs2reader jffs2root.img -f vmlinus
-- a review - do not eqvivalent.
-After searching for has found that program takes only one block 
-from file (his decompress).
-
+I try to use the microcircuits K9F5608U0B-YIB0000 from Samsung. 
+Herewith, size of the page size of this chip is 512 + 16 bytes 
+(528). When I write the image of the disk on chip, me it is 
+necessary to write all bytes consecutively? Or only 512 on each 
+page, but remained 16 not to use?
 -- 
 ????????!      
       ____   __
