@@ -1,44 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12xJAl-0004T7-00
-	for mtd-list@infradead.org; Thu, 01 Jun 2000 01:49:19 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12xJAk-0004T1-00
-	for cvs-notify@infradead.org; Thu, 01 Jun 2000 01:49:18 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/grub doc_stage1.S'
-Message-Id: <E12xJAk-0004T1-00@infradead.org>
+	id 12xJLe-0004VJ-00
+	for mtd-list@infradead.org; Thu, 01 Jun 2000 02:00:34 +0100
+Received: from gate.mvhi.com
+	([194.205.184.34] helo=server.axiom.internal ident=exim)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 12xJLe-0004VD-00
+	for mtd@infradead.org; Thu, 01 Jun 2000 02:00:34 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.12 #1)
+	id 12xJLd-0001Fy-00
+	for mtd@infradead.org; Thu, 01 Jun 2000 02:00:33 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 12xJLd-0003oG-00; Thu, 1 Jun 2000 02:00:33 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 01 Jun 2000 01:49:18 +0100
+In-Reply-To: <E12xJAk-0004T1-00@infradead.org> 
+References: <E12xJAk-0004T1-00@infradead.org> 
+To: mtd@infradead.org
+Subject: Re: MTD CVS update: 'mtd/grub doc_stage1.S' 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 01 Jun 2000 02:00:33 +0100
+Message-ID: <14647.959821233@devel2.axiom.internal>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/grub
-In directory infradead.org:/tmp/cvs-serv17114
 
-Modified Files:
-	doc_stage1.S 
-Log Message:
-Fix the setup of the INT 19h handler so we are no longer using the
-previously initialised %es register as the segment address of the vector.
+dwmw2@infradead.org said:
+>  Also fix the segment registers in the actual copy, so that we put the
+>  right stuff in place, rather than starting our copy at 0000:0000. 
 
-Also fix the segment registers in the actual copy, so that we put the 
-right stuff in place, rather than starting our copy at 0000:0000.
+It seems I lied about this one - that was right in the previous version, 
+but I removed a 'push cs; pop ds' pair with some debugging cruft and didn't 
+remember that fact when I later noticed that they ought to be there for 
+other reasons. The perils of asm hacking at 2am :)
 
-I can hardly believe that this has ever worked. It seems that by an
-amazing coincidence, the IPL ROM sets %es to 0x2000 before jumping to
-the code - so even though we were using an uninitialised segment
-address pointer, and our copy of the IRQ handler to the _intended_
-location went AWOL, we ended up with the INT 19h handler pointing at
-the location in memory at which the IPL ROM loads the SPL, before the
-SPL relocates itself into the reserved area.
+So I'm not _quite_ as stupid as I thought. Close, though. It _was_ 
+copying the handler to the right place, but just pointing the IRQ vector at 
+the old location.
 
-So as long as nothing touched that memory later in the startup sequence,
-it would still be there when the BIOS got round to calling INT 19h to
-boot. This is why it worked on simple machines like my 386 testbed, but
-nothing else.
+Oh well, it ought to work now. Now we just need to finish hacking Grub so 
+it can boot a kernel off the NFTL. So far, it finds the hardware and scans 
+if for an NFTL Media Header. The rest should be simple.
 
-I hereby declare myself to be Today's Official Mr F*** All Good.
+--
+dwmw2
+
 
 
 
