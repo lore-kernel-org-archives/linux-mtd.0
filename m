@@ -1,22 +1,21 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from penguin-ext.wise.edt.ericsson.se ([193.180.251.47]
+	helo=penguin.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190zMN-0001J3-Ur
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Apr 2003 08:42:08 +0100
-Date: Thu, 3 Apr 2003 09:41:48 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20030403074147.GA19536@wohnheim.fh-wedel.de>
-References: <Pine.GSO.4.44.0304021225270.18949-100000@unix.cs.tamu.edu>
-	<20030402201233.GA17890@wohnheim.fh-wedel.de>
-	<200304030039.18812.tglx@linutronix.de>
+	id 1912ge-0001kF-W4
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Apr 2003 12:15:18 +0100
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: tglx@linutronix.de
+In-Reply-To: <200304030258.25876.tglx@linutronix.de>
+References: <004301c2f96b$0c111c20$1200a8c0@JOHNB>
+	<200304030258.25876.tglx@linutronix.de>
+Date: 03 Apr 2003 13:15:05 +0200
+Message-Id: <1049368506.32205.28.camel@spawn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200304030039.18812.tglx@linutronix.de>
-cc: Siddharth Choudhuri <choudhri@cs.tamu.edu>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: newbie: struct flchip in flashchip.h...
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+cc: Mtd <linux-mtd@lists.infradead.org>
+cc: John Burch <jburch@vincisystems.com>
+Subject: Re: Can mtd partition span multiple devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 3 April 2003 00:39:18 +0200, Thomas Gleixner wrote:
-> On Wednesday 02 April 2003 22:12, Jörn Engel wrote:
-> > On Wed, 2 April 2003 12:28:47 -0600, Siddharth Choudhuri wrote:
-> > > What are the members of the structure <mtd/flashchip.h>
-> > > struct flchip {
-> > > ...
-> > > 	int word_write_time;
-> > > 	int buffer_write_time;
-> > > 	int erase_time;
-> > > }
-> > > used for ?
+On Thu, 2003-04-03 at 02:58, Thomas Gleixner wrote:
+> On Thursday 03 April 2003 00:56, John Burch wrote:
+> > I'm wondering if a single mtd partition can span more than one physical
+> > flash device.  For example, if two flash devices span the following
+> > address ranges, 0x0-0x3FFFFF and 0x400000-0x7FFFFF, can an mtd partitio=
+n
+> > be defined as follows?
 > >
-> > I don't know, but you can figure it out yourself. Try
-> > http://lxr.linux.no/
-> grep -r word_write_time *
-> would help too :)
+> > Name: spanning_partition
+> > Size: 0x200000
+> > Offset: 0x300000
+> >
+> > So this partition would span physical addresses 0x300000 - 0x3FFFFF
+> > (device 1) and 0x400000 - 0x4FFFFF (device 2).
+>=20
+> Enable MTD concatenating support.
+>=20
 
-Yes, and so would ctags.
-Usually I prefer lxr. It is fast, knows the difference between
-declaration, definition and invocation and usually doesn't screw up.
-There are some rather obscure functions, though, where I have to fall
-back to grep. huft_build e.g.
+You mean MTD partitioning no need for concatenating with this layout.=20
 
-Jörn
-
--- 
-Beware of bugs in the above code; I have only proved it correct, but
-not tried it.
--- Donald Knuth
+--=20
+Kenneth Johansson=09
+Ericsson AB                       Tel: +46 8 719 70 20
+Tellusborgsv=E4gen  90              Fax: +46 8 719 29 45
+126 25 Stockholm                  ken@switchboard.ericsson.se
