@@ -1,20 +1,27 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from linares.terra.com.br ([200.154.55.228])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BvdRo-0007w1-QC
-	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2004 10:54:25 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: Stefan =?ISO-8859-1?Q?St=FCrke?= <sst@pandatel.com>
-In-Reply-To: <loom.20040813T164242-792@post.gmane.org>
-References: <loom.20040813T140134-351@post.gmane.org>
-	<1092400305.10618.145.camel@hades.cambridge.redhat.com>
-	<loom.20040813T164242-792@post.gmane.org>
-Content-Type: text/plain; charset=UTF-8
-Message-Id: <1092408859.14552.3.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 13 Aug 2004 15:54:19 +0100
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mkfs.jffs2
+	id 1Bvjz3-00007g-BL
+	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2004 17:53:12 -0400
+Received: from pasto.terra.com.br (pasto.terra.com.br [200.154.55.137])
+	by linares.terra.com.br (Postfix) with ESMTP id CA03DDDC45E
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Aug 2004 18:53:00 -0300 (BRT)
+Received: from ummagumma.ozzmosis.net
+	(200-102-085-034.nhoce7002.dsl.brasiltelecom.net.br [200.102.85.34])
+	(authenticated user lucasvr)
+	by pasto.terra.com.br (Postfix) with ESMTP id A95253C003
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Aug 2004 18:53:00 -0300 (BRT)
+From: Lucas Correia Villa Real <lucasvr@gobolinux.org>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 13 Aug 2004 18:55:16 -0300
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200408131855.16376.lucasvr@gobolinux.org>
+Subject: CRC errors and DMA
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +31,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-08-13 at 14:45 +0000, Stefan Stürke wrote:
-> jffs2_scan_empty(): Empty block at 0x0000fffc ends at 0x00010000 (with
-> 0x1985e002)! Marking dirty
-> 
-> Is it save to ignore these errors?
+Hi,
 
-Yes. It's observing that there's padding between 0xfffc and 0x10000.
-This is done because nodes aren't allowed to cross and eraseblock
-boundary, and the image was created for 64KiB eraseblocks. It's harmless
-though.
+What happens when the processor tryies to read data from memory while the bus 
+is being used for DMA transfers by another device? Is it possible that this 
+kind of situation turns into CRC errors when trying to read data from a flash 
+device (JFFS2)?
 
--- 
-dwmw2
+Given that this problem can happen, is there a way to make JFFS2, or the MTD 
+subsystem to try to execute the operation again?
+
+Any suggestion is very welcome.
+
+Thanks in advance,
+Lucas
