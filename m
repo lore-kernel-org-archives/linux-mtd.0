@@ -1,10 +1,14 @@
-Received: from avtrex.com ([216.102.217.178])
+Received: from mailserv.intranet.gr ([146.124.14.106])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BLRkH-0005Kl-E9
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2004 20:07:53 +0100
-Message-ID: <40993B7C.1010607@avtrex.com>
-Date: Wed, 05 May 2004 12:07:40 -0700
-From: David Daney <ddaney@avtrex.com>
+	id 1BLdG4-0006zx-Bw
+	for linux-mtd@lists.infradead.org; Thu, 06 May 2004 08:25:29 +0100
+Received: from mailserv.intranet.gr (localhost [127.0.0.1])
+	by mailserv.intranet.gr (8.11.7/8.11.3) with ESMTP id i467UJc25628
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 6 May 2004 10:30:19 +0300 (EEST)
+Message-ID: <4099E57A.7020108@intracom.gr>
+Date: Thu, 06 May 2004 10:12:58 +0300
+From: Pantelis Antoniou <panto@intracom.gr>
 MIME-Version: 1.0
 To: Phillip Lougher <phillip@lougher.demon.co.uk>
 References: <4098DF0D.1040703@intracom.gr> <40990798.9020703@avtrex.com>
@@ -14,8 +18,8 @@ Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 cc: Thomas Gleixner <tglx@linutronix.de>
-cc: Pantelis Antoniou <panto@intracom.gr>
 cc: David Woodhouse <dwmw2@infradead.org>
+cc: David Daney <ddaney@avtrex.com>
 Subject: Re: [patch] Allow any filesystem on MTD Nand when Read Only
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -50,9 +54,19 @@ Phillip Lougher wrote:
 >
 > Pantelis have you looked at Squashfs?  This filesystem gives much 
 > better compression than CRAMFS.
+>
+I've taken a look at squashfs. It does seems nicer than CRAMFS.
 
-It seems that if people want to use more than one type of RO filesystem, 
-that putting the badblock handling in the block driver instead of every 
-filesystem makes more sense.
+My main problem is not that it's not in the kernel proper, but it's not 
+in by bootloader too.
+If you took a look at u-boot and implemented squashfs support I would 
+probably switch.
 
-David Daney.
+> Phillip
+>
+>
+>
+>
+Regards
+
+Pantelis
