@@ -1,35 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13HEPr-0002aJ-00
-	for mtd-list@infradead.org; Wed, 26 Jul 2000 00:47:15 +0100
+	id 13HEVQ-0002bB-00
+	for mtd-list@infradead.org; Wed, 26 Jul 2000 00:53:00 +0100
 Received: from athena.evoserve.com ([210.16.10.134])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13HEPp-0002aD-00
-	for mtd@infradead.org; Wed, 26 Jul 2000 00:47:14 +0100
+	id 13HEVO-0002b5-00
+	for mtd@infradead.org; Wed, 26 Jul 2000 00:52:59 +0100
 Received: from evoserve.com (gateway.evoserve.com [210.16.10.120])
-	by athena.evoserve.com (8.9.3/8.9.3) with ESMTP id HAA08684
-	for <mtd@infradead.org>; Wed, 26 Jul 2000 07:48:57 +0800
-Message-ID: <397E2C0B.3DFFB9A@evoserve.com>
-Date: Wed, 26 Jul 2000 08:08:43 +0800
+	by athena.evoserve.com (8.9.3/8.9.3) with ESMTP id HAA08873
+	for <mtd@infradead.org>; Wed, 26 Jul 2000 07:54:42 +0800
+Message-ID: <397E2D5A.DFBB7741@evoserve.com>
+Date: Wed, 26 Jul 2000 08:14:18 +0800
 From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
 MIME-Version: 1.0
 To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: muti-page-rw.diff
+Subject: muti-page-rw.diff follow-up
 Content-Type: multipart/mixed;
- boundary="------------21E6BA8E1CC1947A226BDCBD"
+ boundary="------------DFA492937485651A1C5444AB"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 This is a multi-part message in MIME format.
---------------21E6BA8E1CC1947A226BDCBD
+--------------DFA492937485651A1C5444AB
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-I modified the doc2000 read and write functions to allow multipage read
-and write to any offest. I am behind a firewall so I cant do cvs. I am
-working on jffs_file_write to fix the max_chunk_size problem.
 
---------------21E6BA8E1CC1947A226BDCBD
+I hope my modifications doesnt break nftl. I needed modifications to
+make jffs work on the DOC. I am going to do the same to the DOCmil
+driver when I have read through the docs. I have broken the ecc
+functions in the doc2000 driver im afraid. I am fixing it now and I will
+send patches when I am done. The diff is against mtd-snapshot-20000725.
+--------------DFA492937485651A1C5444AB
 Content-Type: text/plain; charset=us-ascii;
  name="multi-page-rw.diff"
 Content-Transfer-Encoding: 7bit
@@ -197,7 +199,8 @@ diff -r -u mtd/kernel/doc2000.c mtd-snapshot-20000725/kernel/doc2000.c
  }
  
 
---------------21E6BA8E1CC1947A226BDCBD--
+
+--------------DFA492937485651A1C5444AB--
 
 
 
