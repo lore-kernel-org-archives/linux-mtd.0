@@ -1,14 +1,26 @@
-Date: Fri, 14 Jan 2005 16:44:11 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Pihet Jean-jpih01 <jean.pihet@motorola.com>
-In-Reply-To: <A124D5FDCB07D911920E00110A9AE3833A036E@zfr17exm01.ea.mot.com>
-Message-ID: <Pine.LNX.4.58.0501141641260.17331@phoenix.infradead.org>
-References: <A124D5FDCB07D911920E00110A9AE3833A036E@zfr17exm01.ea.mot.com>
+Received: from mailout01.ims-firmen.de ([213.174.32.96])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CpWoM-0003Dd-IV
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 14:08:44 -0500
+Received: from scanner01.ims-firmen.de ([192.168.1.17])
+	by mailout01.ims-firmen.de with esmtp (Exim 4.30) id 1CpWoC-0000UN-Ov
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 20:08:32 +0100
+Received: from [80.133.242.227] (helo=susemail.lightmaze.com)
+	by scanner01.ims-firmen.de with asmtp (Exim 4.30) id 1CpWoC-0005I2-Eu
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 20:08:32 +0100
+Received: from LIMZKarrer (unknown [192.168.1.181])
+	by susemail.lightmaze.com (Postfix SuSE 2.0) with SMTP id D09589B522
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Jan 2005 20:08:31 +0100 (CET)
+From: "Jochen Karrer" <j.karrer@lightmaze.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 14 Jan 2005 20:08:30 +0100
+Message-ID: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2/3 NAND performance figures
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: mysqld on jffs2: MyISAM Index write is slow
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Jan 2005, Pihet Jean-jpih01 wrote:
+Hi,
+I am using mysqld on jffs2. Tables work fine, but as soon as
+i am using indexes the writing of new entries becomes very slow.
+I found that mysql is writing one 1024 byte block to the index file
+of the MyISAM table (.MYI) for every new row. This is up to 20 times in
+sequence
+the same block. On non synchronous filesystems
+this goes to a Buffer in RAM, but on jffs2 this causes many writes to
+the flash. In my amdflash emulator I found that mysql writes about 180MB to
+the flash
+for a table of 13MB with 88000 rows.
 
-> Hi all !
-> 
-> I would like to evaluate the JFFS2/3 NAND flash performance. Are there measurements available for the following cases: read, write, erase, GC ?
-> 
-> Looking on the MTD website and Google was not helpful =8-
-Don't know.
-Just hint: the iget() operation may be quite slow for big files in JFFS2 
-due to its design, so consider benchmarking it either (open file/directory 
-or stat() it).
+Is there a way to make jffs2 a little bit asynchronous ? Or does anybody
+know
+how to tell mysqld to write smaller blocks ? Mounting a reiser as loopback
+from
+a file on jffs2 does not work because jffs2 doesn't support mmap.
 
-> 
-> Regards,
-> Jean.
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Jochen
