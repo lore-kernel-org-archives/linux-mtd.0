@@ -1,21 +1,16 @@
-Received: from smtp8.wanadoo.fr ([193.252.22.30] helo=mwinf0102.wanadoo.fr)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19dCHI-0000B0-7z
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Jul 2003 18:10:48 +0100
-Received: from Bragon (ALille-208-1-12-13.w81-48.abo.wanadoo.fr
-	[81.48.189.13])
-	by mwinf0102.wanadoo.fr (SMTP Server) with ESMTP id 0ACC81BFD345
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Jul 2003 19:10:25 +0200 (CEST)
-Date: Thu, 17 Jul 2003 19:10:03 +0200
-From: Eric Laly <e.laly@wanadoo.fr>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20030717171003.GA16350@Bragon>
+Received: from [202.106.127.236] (helo=harbournetworks.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19dNHB-0001PU-Vv
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2003 05:55:26 +0100
+From: "=?GB2312?Q?=CF=AF=D3=FD=D0=A2?=" <xiyuxiao@harbournetworks.com>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; format=flowed; charset=ISO-8859-15
-Content-Transfer-Encoding: 8bit
-Subject: mount a DOC2000 [newbie]
+Date: Fri, 18 Jul 2003 12:57:23 +0800
+Message-Id: <E19dNHB-0001PU-Vv@pentafluge.infradead.org>
+Content-Type: text/plain;
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Subject: AM29LV160DB 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2003.07.17 00:25, David Woodhouse wrote:
-> On Wed, 2003-07-16 at 19:54, Eric Laly wrote:
-> > I've used a 2.4.18 kernel.
-> 
-> Why so old? This should be fixed in 2.4.21.
-just tried with 2.4.21 and this is... working !
-Thanks a lot.
-	Eric.
+I am now working with NEC VR4131 and flash AM29LV160DB.
+I use Harhat Linux.
+I have a trouble now.Can anyone help me?
+I configure MTD subsystem as below:
+    MTD support
+    Direct char devices access to MTD devices
+    Caching block device access to MTD devices
+    Detect flash chips by CFI
+    Older drivers for non-CFI chips
+    JEDEC device support
+    Mapping drivers for chip access
+
+But when I boot my target,the AM29LV160DB can not be=
+ detected!!!:(
+Did I make some mistakes?Please help me.
+
+               Yuxiao Xi
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1xiyuxiao@harbournetworks.com
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-07-18
