@@ -1,16 +1,15 @@
-Received: from ppp83.spiderweb.com.au ([202.76.149.83] helo=lapdancer.baythorne.internal)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16YSnP-0000K2-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Feb 2002 14:11:37 +0000
-Date: Thu, 7 Feb 2002 00:22:21 +1000 (EST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: chip drivers
-In-Reply-To: <1013003382.14724.2.camel@pcjonashg>
-Message-ID: <Pine.LNX.4.44.0202070021020.1927-100000@lapdancer.baythorne.internal>
+Received: from web20309.mail.yahoo.com ([216.136.226.90])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16YUia-0000Ql-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Feb 2002 16:14:44 +0000
+Message-ID: <20020206162551.30552.qmail@web20309.mail.yahoo.com>
+Date: Wed, 6 Feb 2002 16:25:51 +0000 (GMT)
+From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
+Subject: CF
+To: Linux MTD Lists <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,15 +21,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On 6 Feb 2002, Jonas Holmberg wrote:
+We have just been informed that CF disks have wear
+levelling built in and we do not need therfore to
+consider a file system such as JFFS(2), is this true?
 
-> Can you explain that a bit further? I can't figure out how use
-> add_mtd_partitions (current CVS) when I want to make a partition that
-> starts in one map and ends in another. 
+Is so any comments about how sucsessful it is?
 
-It's not in CVS. There were patches on the mailing list. You need to 
-either use those, or write your own indirection routines to do what you 
-require, in place of the existing mtdpart methods.
+Thanks, David
 
--- 
-dwmw2
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
