@@ -1,14 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-In-Reply-To: <3F96FA57.470FECC7@mvista.com>
-References: <3F96FA57.470FECC7@mvista.com>
+To: Jun Sun <jsun@mvista.com>
+In-Reply-To: <20031022181528.T19834@mvista.com>
+References: <20031022181528.T19834@mvista.com>
 Content-Type: text/plain
-Message-Id: <1066897909.29915.456.camel@hades.cambridge.redhat.com>
+Message-Id: <1066898206.29915.458.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Thu, 23 Oct 2003 09:31:50 +0100
+Date: Thu, 23 Oct 2003 09:36:47 +0100
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: TX49 NAND supported?
+Subject: Re: [PATCH] remove unnecessary inclusion of <asm/setup.h>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +18,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-10-22 at 14:44 -0700, Alice Hennessy wrote:
- There is also a small change in nand.c to add
-> a missing case statement.
+On Wed, 2003-10-22 at 18:15 -0700, Jun Sun wrote:
+> I don't see any purpose of including this file.  Furthermore
+> <asm/setup.h> does not even exist on MIPS and other arches.
 
-Applied; thanks. For the tx49 drivers, please could you correct 'MB' to
-'MiB' throughout, switch to C99 struct initialisers, add $Id$ and 
-MODULE_AUTHOR, and also add the appropriate magic to Makefile.common,
-Config.in and Kconfig. Thanks.
-
-You have an account and should be able to commit those directly.
+Applied; thanks.
 
 -- 
 dwmw2
