@@ -1,14 +1,15 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <404C433C.7060604@inf.u-szeged.hu>
-References: <404C433C.7060604@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1078744502.13916.75.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 08 Mar 2004 11:15:03 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: A JFFS2 extension - compression performance improvement
+Received: from vdisk2.elitel.it ([212.34.224.151] helo=abraham.elitel.it)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B0Jcg-0002or-OJ
+	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 12:12:42 +0000
+Message-ID: <1078747931.404c631bec01e@www.postino.punto.it>
+Date: Mon,  8 Mar 2004 13:12:11 +0100
+From: adriacom2232@adriacom.it
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: JFFS2 check fault
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-03-08 at 10:56 +0100, Ferenc Havasi wrote:
-> Dear All,
-> 
-> With some of my colleagues at the University of Szeged (Hungary) we have 
-> been working on improving the compression performance of JFFS2 - keeping 
-> on mind the compatibility and the flexibility.
 
-This looks very interesting, thanks.
+Hi,
+sometimes, during boot sequence, the system I'm working on doesn't boot: the
+JFFS2 issues a data CRC failure and the kernel goes in panic!
+Panic is caused by a illegal memory access due to the fact that the JFFS's
+check function uses inodes "cdata" parameter to define how many bytes it has
+to read to perform CRC checking on data. Unfortunatelly this size is bigger
+than that allocated by the driver in a temporary buffer (RAM).
+The problem is that a previous JFFS's write contains bad inode "csize"
+value: bigger than PAGE_SIZE. It is not caused by a defective write to flash
+because the inode CRC is correct.
+I'am using JFFS2 version 2.1 included in the Handhelds linux distribution
+(kernel 2.4.7).
 
-Out of interest, what would be the disadvantages if I were to throw out
-the existing compression and merge BBS in its place?
+Do next releases of JFFS2 fix this bug?
+The problem appears very seldom and is difficult to catch.
+Any suggestion will be apreciated.
 
-It looks like the format you use for zlib is precisely compatible; we'd
-also need an implementation of rtime.
-
-For the benefit of those who want to keep code size down, we might want
-to make the model-based compressors a configuration option.
-
-I'm quite dubious about adding to /proc too -- perhaps this could be
-made optional too?
-
-I object very strongly to the use of jffs2_bbc_model_set_act_sb(); how
-about I just change the interface to jffs2_{de,}compress() to take extra
-c and f arguments instead?
-
-Am I right in thinking that you just let JFFS2 store JFFS2_COMPR_ZLIB in
-the 'compr' field of each page compressed with BBC? I think we need to
-give you official compression numbers to use.
-
-For the model-based compressors, we may need to allocate more than one
-number -- you'll need as many numbers as you may have active model files
-in a single fs (which shouldn't be more than two or three, I'd assume?)
-
-I'm a little unhappy with looking up model files by filename. I'd be
-slightly happier if they were identified by inode number instead, and
-hidden from the user so they can't be removed or modified. If we can
-only ever add model files in mkfs.jffs2, perhaps we can just use special
-inode numbers for them?
-
--- 
-dwmw2
+Michele
