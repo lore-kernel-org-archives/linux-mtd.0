@@ -1,113 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 135ndl-0001UJ-00
-	for mtd-list@infradead.org; Sat, 24 Jun 2000 11:58:21 +0100
-Date: Sat, 24 Jun 2000 11:59:38 +0100 (BST)
+	id 135ntc-0001eX-00
+	for mtd-list@infradead.org; Sat, 24 Jun 2000 12:14:44 +0100
+Date: Sat, 24 Jun 2000 12:16:03 +0100 (BST)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Juan Gonzo <kayemmess@yahoo.ca>
-cc: MTD Mailing List <mtd@infradead.org>
-Subject: Re: newbie trying to figure out MTD
-In-Reply-To: <20000623200502.17301.qmail@web5303.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.21.0006241132180.1089-100000@imladris.demon.co.uk>
+To: Patrick Higgins <phiggins@transzap.com>
+cc: mtd@infradead.org
+Subject: Re: Possible error in doc_write_ecc
+In-Reply-To: <Pine.LNX.4.21.0006231320560.14889-100000@phiggins.transzap.com>
+Message-ID: <Pine.LNX.4.21.0006241159450.1089-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 23 Jun 2000, Juan Gonzo wrote:
+On Fri, 23 Jun 2000, Patrick Higgins wrote:
 
-> I have little experience with the internals of Linux,
-> but I have been tasked with getting FTL to work with
-> an embedded Linux system.
+> Basically, higher levels would just call mtd_info.read() and accept the
+> results as valid, unless an error value is returned. 
 
-Unless you're in the Free World, you're not permitted to use FTL on
-non-PCMCIA devices. Use JFFS instead.
+I've always been fairly unhappy about the ECC interface. The idea was not
+so much to allow different hardware to provide the same ECC methods, but
+to allow them to provide different ones, and to give the user access to
+the generated ECC information so it can be stored in a sensible place.
 
+If we make the DiskOnChip hardware driver silently write the generated 6
+bytes of ECC data to the 'correct' area in the flash after a page write,
+that's fine while we're using NFTL on it, but what if we're using
+something different, like JFFS?
 
+JFFS-on-NAND is going to have to have some kind of ECC mechanism defined,
+and it may not be identical to the way that the DiskOnChip works. We may
+calculate our own ECC data and store them in the out-of-band area, in
+which case we definitely don't want the DiskOnChip driver to have already
+written something in that area.
 
->     1. Boot target with ram disk.
->     2. Install the mtd module(s).
->     3. Create an Ext2 filesystem with 
->        'mkfs -t ext2 /dev/ftl'
->        or something to that effect.
->     4. Populate the flash disk with the neccessary
->        files
->     5. Make the ftl device the root device.
+The current setup isn't particularly nice, but I think we do need
+_something_ in that place - we can't really just let the hardware driver
+write whatever it likes into the flash automatically.
 
-> Could someone comment on what I am trying to accomplish
-> vs. what I am doing?  Or perhaps some general instructions on 
-> how I should use MTD?   
+> They really shouldn't have to worry about what the hardware did or
+> didn't do to try to correct the error, but only with the results.
 
-Don't bother with modules - compile the stuff straight into the
-kernel. The toy on my desk is using Intel Strataflash as a root filesystem
-and booting straight into it. Currently, I'm using ext2-on-FTL but that's
-a temporary step until I have JFFS working properly.
-
-Check out the current version of the code from CVS, as per the
-instructions on the web site. Even if you've never used CVS before, all
-you need to do is cut and paste the two lines shown, and enter the
-password 'anoncvs' when prompted for it.
-
-Now copy the code into place in your kernel source tree as follows:
-
-LINUXDIR=/usr/src/linux
-cp -av mtd/kernel $LINUXDIR/drivers/mtd
-cp -av mtd/include/linux/mtd $LINUXDIR/include/linux/mtd
-cp -v mtd/include/linux/jffs.h $LINUXDIR/include/linux
-cp -av mtd/fs/jffs $LINUXDIR/fs/jffs
-
-Now make the appropriate changes to your kernel tree to make it use the
-new code. There's a patch for 2.4 (which doesn't yet include JFFS) in the
-mtd/patches directory, and I'll make a new one for 2.2 on Monday if
-someone prods me to remind me.
-
-make oldconfig and enable:
-
-	Memory Technology Device (MTD) support
-	  Common Flash Interface (CFI) support
-	  CFI support for Intel/Sharp Extended Command Set chips
-	  CFI chips on memory bus support
-	  Direct blockdevice access to MTD devices
-	Journalling Flash filesystem (JFFS) support
-
-Now edit drivers/mtd/nora.c and change the WINDOW_ADDR and WINDOW_SIZE
-definitions to match the address at which the flash chips are mapped in
-your system.
-
-Boot it up and mount -t jffs /dev/mtdblock0 /mnt
-
-Now you should have a JFFS filesystem. By putting some useful files and
-devices on it, and setting the kernel's root device to 0x1f,0 you can use
-it as a root filesystem.
-
-Of course it's not quite perfect yet. The CFI code is very new, and so far
-it only detects a single chip - if you have more than one mapped next to
-each other it won't find more than one. My testbed has two, though, so
-it's fairly high on my priority list. Also, the code busy-waits for flash
-erases and writes, rather than scheduling. That's to be fixed very shortly
-too.
-
-Also, my first attempt yesterday as using JFFS for a root filesystem
-failed because of a problem with jffs_mknod - that should be fixed now but
-I haven't tested it again yet.
-
-To import any updates which are made to the CVS version of the code, all
-you need to do is:
-
-cd /usr/src/linux/drivers/mtd
-cvs update
-cd /usr/src/linux/include/linux/mtd
-cvs update
-cd /usr/src/linux/fs/jffs
-cvs update
-
-The only thing you _might_ miss that way is an update to
-include/linux/jffs.h - what I actually do is set up a symlink farm -
-rather than copying the files into the Linux kernel tree, I just make the
-directories, and symlink the actual files from wherever I put the cvs copy
-of the MTD code. That way, I just need to update in one place, and when
-I'm testing code in three or four different kernel versions and
-architectures, I only have to edit one copy.
+If the hardware had to correct bit errors, it may not be able to correct
+them next time, and many MTD users will want to mark that block of flash
+as bad and never use it again. 
 
 -- 
 dwmw2
