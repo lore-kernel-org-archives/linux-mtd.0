@@ -1,22 +1,21 @@
-Received: from ring.vpop.net ([207.178.248.5])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DHPwV-0002fL-19
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2005 12:28:23 -0500
-From: Matthew Reimer <mreimer@vpop.net>
-To: tglx@linutronix.de
-Date: Fri, 1 Apr 2005 09:27:47 -0800
-References: <424B4FFA.7050906@joshuawise.com>
-	<200503311029.46475.mreimer@vpop.net>
-	<1112343814.4228.79.camel@tglx.tec.linutronix.de>
-In-Reply-To: <1112343814.4228.79.camel@tglx.tec.linutronix.de>
-MIME-Version: 1.0
+	id 1DIAO4-0000SE-QI
+	for linux-mtd@lists.infradead.org; Sun, 03 Apr 2005 15:03:57 -0400
+Received: from there (203-96-62-69-tollfree.actrix.co.nz [203.96.62.69])
+	by desire.actrix.co.nz (Postfix) with SMTP id 396F21585F
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  4 Apr 2005 07:03:52 +1200 (NZST)
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504010927.47300.mreimer@vpop.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: oobavail issues
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Date: Mon, 4 Apr 2005 07:03:11 +1200
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20050403190352.396F21585F@desire.actrix.co.nz>
+Subject: JFFS2 and eCOS
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +25,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 01 April 2005 12:23 am, Thomas Gleixner wrote:
-> On Thu, 2005-03-31 at 10:29 -0800, Matthew Reimer wrote:
-> > > I will fix this. But I still wonder why you hit this problem with
-> > > JFFS2. JFFS2 does not provide a filesystem buffer for oob data, so the
-> > > memcpy in nand_prepare_oobbuf is never invoked.
-> >
-> > IIRC it wasn't jffs2 but the MTD_WRITEECC() we were doing to write a
-> > kernel to a partition, which we had to do in preparation for mounting
-> > jffs2. Sorry for the confusion.
->
-> Ok. Fixed in CVS. Thanks for pointing this out.
+Is JFFS2 kept current in eCOS or is it periodically merged?
+If merged, when did this last happen?
 
-Thanks, looks good!
-
-Matt
+-- Charles
