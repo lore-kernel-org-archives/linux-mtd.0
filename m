@@ -1,17 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16q8Rk-0001Gb-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 08:06:16 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020327080151.2CD8C36F9@sitemail.everyone.net> 
-References: <20020327080151.2CD8C36F9@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
+Received: from web13207.mail.yahoo.com ([216.136.174.192])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16qABq-0001Nj-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 09:57:58 +0000
+Message-ID: <20020327095756.90242.qmail@web13207.mail.yahoo.com>
+Date: Wed, 27 Mar 2002 01:57:56 -0800 (PST)
+From: Sanjay Kumar <sankumar73@yahoo.com>
+Subject: probing two non-contiguous cfi flash and  a single partition 
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 27 Mar 2002 08:06:12 +0000
-Message-ID: <15554.1017216372@redhat.com>
-Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +21,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
->     Can you tell me why only my mtd char device with even minor deivce
-> number works? and there is no such thing happened on my mtd block
-> device. 
+Hi David,
+I need to use two flash chips(Both AMD CFI flash and each of 4MB size)
+with the following mapping configuration -
 
-Did you run the MAKEDEV script or try to make your devices by hand? If you 
-did them by hand, did you do so without referring to Documentation/devices.txt?
+1. starts at 0xbfa00000 and is of size 4MB
+2. starts at 0xbfc00000 and is of 4MB size
 
-grep -A6 " 90 char" /usr/src/linux/Documentation/devices.txt 
+Previously I was having only one flash starting at 0xbfc00000
+with two partition, first 640k for bootloader and the rest for JFFS2
+and is working fine for me.
 
---
-dwmw2
+Now still I want to have only two partition; the 640k at the address
+0xbfc00000 for bootloader in first partition and remaining for JFFS2 in 
+second partition. It means I need the following partition  
+memory mapping -
+4MB starting at 0xbfa00000 for JFFS2 -  second partition
+fisrt 640kB at 0xbfc00000 for bootloader - First Partition for bootlaoder
+remaining out of 4MB at 0xbfc00000 for JFFS2 - second partition
+
+So I need suggestions about how to probe the two flash and make the partition
+as per my requirements.
+I am using linux2.4.2. and MIPS processor.
+
+Thanks & Regards,
+Sanjay
+
+
+
+I don't know how to probe the two devices and 
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Movies - coverage of the 74th Academy Awards®
+http://movies.yahoo.com/
