@@ -1,20 +1,17 @@
-Received: from alquanto.nextra.it ([193.43.2.90])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WgGi-0007K1-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 16:10:28 +0000
-Received: from there (it13a21-126.dialup.nettuno.it [130.186.66.254])
-	by alquanto.nextra.it (8.9.3/8.9.3/NETTuno 5.0) with SMTP id RAA21253
-	for <linux-mtd@lists.infradead.org>; Fri, 1 Feb 2002 17:21:05 +0100 (MET)
-Message-Id: <200202011621.RAA21253@alquanto.nextra.it>
-Content-Type: text/plain;
-  charset="iso-8859-13"
-From: Alessandro Bonvicini <alessandro.bonvicini@nextra.it>
-Reply-To: alessandro.bonvicini@nextra.it
-To: linux-mtd@lists.infradead.org
-Subject: bios extension missed
-Date: Fri, 1 Feb 2002 17:24:46 +0100
+Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16WhRA-0007PC-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 17:25:20 +0000
+Message-ID: <3C5AD150.1A3B9AAE@comdev.cc>
+Date: Fri, 01 Feb 2002 09:33:04 -0800
+From: Adam Wozniak <adam.wozniak@comdev.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Subject: debugging strategies for jffs2
+References: <20020201142405.79130.qmail@web20309.mail.yahoo.com> <9323.1012576311@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,14 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
-I reformatted my diskonchip200 with the doc504.exe and the bios doesn't see 
-the DOC anymore.
+I'm trying to debug what I think might be a problem in jffs2 code.
 
-THe utilities I used was 
-dformat /win:d400 -s:doc504.exb
+Is it safe for me to create a new jffs2 image by randomly shuffling
+the erase blocks in an existing jffs2 image?
 
-Someone has been succesfull to restore the original bios extension, or 
-someone knows what could be happend to my DOC?
-Thank a lot in advance 
-Alex
+Should that work?
+
+--Adam
+-- 
+Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
+awozniak@comdev.cc      3450 Broad St. 107, San Luis Obispo, CA 93401
+                        http://www.comdev.cc
+                        Voice: (805) 544-1089       Fax: (805) 544-2055
