@@ -1,18 +1,18 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from host28.istor.com ([66.134.214.28]
+	helo=mail1irv.inside.istor.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkWTY-0006fZ-M0
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 19:14:17 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-In-Reply-To: <1089728296.6288.19.camel@famine>
-References: <1089728296.6288.19.camel@famine>
-Content-Type: text/plain; charset=UTF-8
-Message-Id: <1089760454.8822.23.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Wed, 14 Jul 2004 00:14:14 +0100
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Prune obsolete raw_node_ref's from RAM
+	id 1BkXVD-0006um-BX
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 20:20:04 -0400
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 13 Jul 2004 17:19:46 -0700
+Message-ID: <7D036BD3216A084DB1BD9D62BCEAF2905A203B@mail1irv.inside.istor.com>
+From: "Sidney Chu" <schu@istor.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Atomic write with JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-13 at 16:18 +0200, Øyvind Harboe wrote:
-> - Is the code correct? 
+Hi,
 
-It looks OK at first glance but I can't actually tell. List mangling
-code is hard enough to read when it's in the style I understand :)
+I have several questions regarding the JFFS2 in my development
+environment.
+Would you please help me by answering the questions? Thanks in advance.
+The development environment:
+1. Use Toshiba NAND Flash. It has 512 bytes sector and 16 bytes header
+   for each sector. The Erase Page contains 32 sectors. Hence the Erase
+   Page is 16Kbytes (512x32) plus another 512 bytes header (16x32).
+2. The JFFS2 page size is configured as 4Kbytes.
+3. The JFFS2 compression is on.
+4. I need atomic write to avoid the problems if there is not finished
+   writing during power failure.
 
-I've rewritten it and just posted that version. 
+My questions are the following:
+1. Does JFFS2 guarantee the atomic write on JFFS2 page size which is
+   4Kbytes in my development environment?
+2. If I have a 1Mbytes file, can JFFS2 guarantee the atomic write every
+time
+   when I only update partial part of the file? The partial update is
+either
+   within 4Kbytes or more than 4Kbytes. What happen if the partial
+update
+   crosses the JFFS2 page boundary?
 
-> - What performance impact does it have? 
-
-It'll go walking the lists every time a node is obsoleted. My guess is
-it'll make the performance suck _hard_. But it will get you your memory
-back. I suspect it should be a configuration option -- or maybe we could
-stick the list-walking code into a separate function and call it
-periodically to do the cleanup, rather than doing it every time.
-
-Could do with seeing some profiling info.
-
--- 
-dwmw2
+Regards,
+Sidney
