@@ -1,59 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 141UKJ-0006Pg-00
-	for mtd-list@infradead.org; Thu, 30 Nov 2000 14:04:43 +0000
-Date: Fri, 1 Dec 2000 00:04:33 +1000
-Message-Id: <200011301404.AAA00314@singularity.tronunltd.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: inter-module-2.2.17 patch
-From: "Ian" <Relativity@HumanHeuristic.com>
-Cc: <lkhatskevitch@hotmail.com>, <mtd@infradead.org>
-Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+	id 141UvO-0006ZI-00
+	for mtd-list@infradead.org; Thu, 30 Nov 2000 14:43:02 +0000
+Received: from amdext2.amd.com ([163.181.251.1])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 141UvI-0006ZB-00
+	for mtd@infradead.org; Thu, 30 Nov 2000 14:42:56 +0000
+Received: from odyssey.amd.com (odyssey.amd.com [163.181.250.8])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with SMTP id IAA19098
+	for <mtd@infradead.org>; Thu, 30 Nov 2000 08:42:24 -0600 (CST)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id IAA23677
+	for <mtd@infradead.org>; Thu, 30 Nov 2000 08:42:23 -0600 (CST)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F1F8@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: RE: inter-module-2.2.17 patch 
+Date: Thu, 30 Nov 2000 08:42:21 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-
-bit of a dodgy ... when I mounted it, I got that mounting unchecked filesystem, go run 
-e2fsck message (which is fine), ... buuuuut ... after cd'ing to the mounted file system
-and doing 
-ls -al
-ls -al
-
-I got the "NFTL_findfreeblock: there are too few free EUNs" ... which is odd, since the
-only time I've seen them before is after a heap of DoC disk writes ...
-
-
-hmm .. must have been time delayed from the mount ... hasn't reoccurred ... just copied
-a file to it ... no error .. sync'd it .. got that NFTL_findfreeblock error again .. the file is still 
-there tho ... reboot ... remount ... yep file is still in-tact.
-
-Looks like its fine ... does it do a free block check when its first mounted (in RW mode) ?
-
-
-
-  ----- Original Message -----
->From: "David Woodhouse" <dwmw2@infradead.org>
->To: "Ian" <Relativity@humanheuristic.com>
->Subject:  Re: inter-module-2.2.17 patch
->Date: Thu, 30 Nov 2000 13:45:22 +0000
->
+> mark.langsdorf@amd.com said:
+> >  What should I be doing to get the latest MTD code to  
+> > compile against 2.2.17? 
 > 
-> Relativity@HumanHeuristic.com said:
-> >  Works like a bought one :)
-> > Thanks Dave - and thanks to Levi too. 
+> OK, I've just put a complete patch for the inter_module_xxx 
+> stuff along with the latest CVS code into CVS. 
 > 
-> Can you write to the device?
-> 
-> --
-> dwmw2
-> 
-> 
-> 
+> It's patches/mtd-patch-2.2.17-20001130
 
---
-http://HumanHeuristic.com/
-"Bringing people together in a world full of computers"
+	Stupid stinking firewall.
+	I can't get CVS access, and the current build at 
+ftp.uk.linux.org doesn't have this file.
+	Could someone please email me this file?  Thank you
+very much.
+
+-Mark Langsdorf
+AMD, Inc.
 
 
 
