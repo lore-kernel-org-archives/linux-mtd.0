@@ -1,19 +1,24 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
+Received: from mail.newlogic.at ([194.208.88.201])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AIGxe-0003T5-PL
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2003 00:28:29 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Joan Dyer <joandy@us.ibm.com>
-In-Reply-To: <OFF4841C15.D689EB19-ON85256DD6.00644A30-85256DD6.00679D59@us.ibm.com>
-References: 
-	<OFF4841C15.D689EB19-ON85256DD6.00644A30-85256DD6.00679D59@us.ibm.com>
-Message-Id: <1068251044.18801.88.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Sat, 08 Nov 2003 00:24:04 +0000
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Jffs2 write Error
+	id 1AIVEG-00057Y-5v
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2003 15:42:24 +0000
+Received: from enterprise2.newlogic.at (e2-1.newlogic.at [172.27.1.1])
+	by mail.newlogic.at (8.12.10/8.12.10) with ESMTP id hA8FeV9H015160
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 8 Nov 2003 16:40:31 +0100 (MET)
+Received: from blade100-2 (blade100-2.newlogic.at [172.27.120.2])
+	hA8FeT84017893	for <linux-mtd@lists.infradead.org>;
+	Sat, 8 Nov 2003 16:40:30 +0100 (MET)
+Message-Id: <200311081540.hA8FeT84017893@enterprise2.newlogic.at>
+MIME-Version: 1.0
+Date: Sat, 08 Nov 2003 16:40:29 +0100 (MET)
+Sender: nwaibel@newlogic.com
+From: Niki Waibel <niki.waibel@newlogic.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: doc millennium (2001) with inftl?
+Reply-To: Niki Waibel <niki.waibel@newlogic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-11-06 at 13:51 -0500, Joan Dyer wrote:
-> I too have encountered this error (IOERR -5).  Repeating the failed 
-> operation generally works but that doesn't find the cause.
+hi,
 
-It's a hardware error. Precisely what flash chip?
+some weeks ago i bought a doc mill.
+access to the flash was not possible.
+only the access to the chip regs is working.
 
+is it possible that this is because the chip is
+INFTL instead of NFTL?
+
+i learned a little bit of the NFTL access by looking
+at the linux code. but not much and currently my time
+is limited... i just have seen some discussion about that
+topic for doc2000 devices... would be interesting
+if that is the reason why i could not access the
+flash memory...
+
+niki
 -- 
-dwmw2
+niki w. waibel - system administrator @ newlogic technologies ag
