@@ -1,18 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16kwPu-0007ho-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 00:14:54 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <FNEOLNAALFHDKOECFFJEEEGMEGAA.ch@murgatroid.com> 
-References: <FNEOLNAALFHDKOECFFJEEEGMEGAA.ch@murgatroid.com> 
-To: "Christopher Hoover" <ch@murgatroid.com>
-Cc: "Linux-Arm-Kernel" <linux-arm-kernel@lists.arm.linux.org.uk>,
-    "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: 2.5.5-rmk2: "deflateInit alloc of workspace failed" from fs/jffs2/compr_zlib.c 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Mar 2002 00:26:11 +0000
-Message-ID: <5303.1015979171@redhat.com>
+	id 16kx0i-0007k9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2002 00:52:56 +0000
+Message-ID: <002201c1ca2b$00ca7fc0$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	"Vadim Khmelnitsky" <VadimK@m-sys.com>
+Cc: <linux-mtd@lists.infradead.org>
+References: <AEA9DCA73595D411A6D4009027DE9C5E019BFA74@MSI-EX6>  <4513.1015976946@redhat.com>
+Subject: Re: UnitSizeFactor of != 1 yet? 
+Date: Tue, 12 Mar 2002 20:03:48 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +25,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ch@murgatroid.com said:
->  Recall that is the alternative you suggested vs unlocking writeable
-> parititions in mtdpart.c. 
+David Woodhouse wrote:
 
-Fine by me if Russell and Nico agree - either or both own that file; I 
-don't care too much about individual map drivers.
+> Er, as in "Sorry, we don't support UnitSizeFactor 0x00" ?
 
---
-dwmw2
+Yes, that was the message I got with the latest cvs code, after relocating the
+ReplUnitTable assignment.
+
+Just to make sure I didn't have something else screwed up, I went back to the source in
+2.4.18, and added a printk of the UnitSizeFactor.  In that case, it also said 0.
+
+The procedure that led up to this was a "DFORMAT /WIN:D000 /S:DOC504.EXB" in DOS, power
+down, boot up Linux 2.4.18, and insmod.  The dformat command ends up putting a formatted
+fat partition on the DoC.
+
+Mark
