@@ -1,18 +1,14 @@
-Received: from dialup.rama.com.au ([202.0.186.166] helo=gateway.perth.rama.com.au)
+Received: from mlbmx1.corp.harris.com ([137.237.90.73])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15RRKj-0004nB-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 05:40:43 +0100
-Received: from willhart-tech.com (IDENT:alex@[192.156.249.82])
-	by gateway.perth.rama.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA13427
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 14:01:09 +0800
-Message-ID: <3B6636CA.374A6E14@willhart-tech.com>
-Date: Tue, 31 Jul 2001 12:40:42 +0800
-From: Alexandru Harsanyi <a.harsanyi@willhart-tech.com>
+	id 15RS4i-0004pz-00
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2001 06:28:13 +0100
+Message-ID: <8D4C69676E66D511A1CB00508BBBB1921BCE91@ranmx1.ran.harris.com>
+From: "Walser, Martin" <mwalser@harris.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: unable to mount Disk on Chip -> unknown partition table
+Date: Tue, 31 Jul 2001 01:33:29 -0400
 MIME-Version: 1.0
-To: Linux Mtd <linux-mtd@lists.infradead.org>
-Subject: DOC 2000 driver (NFTL) in kernel 2.4.7
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,55 +20,41 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+I'm using a MD-2800-D08 Disk on Chip.
 
-I'm trying to configure the 2.4.7 kernel to access a DOC, and I have the
-following problems:
+I've tried to mount the device as described in JFFS HOWTO.
 
-1) Although I have only one DOC 2000, the DOC driver detects many more
-(see dmesg below)
+When booting, the following message is shown:
 
-2) The DOC driver detects 3 flash chips, I only have one
-
-3) (and this is the show stopper) The NFTL driver is not able to find a
-boot record on the DOC. This is strange because I'm actually booting
-from the DOC.
-
-The previous configuration used a 2.0.36 kernel with M-System provided
-drivers and it worked fine.
-
-Here is the relevant dmesg part from the system:
-
------ dmesg -----
-DiskOnChip 2000 found at address 0xC8000
-Flash chip found: Manufacturer ID: 98, Chip ID: 6B (Toshiba TC5832DC)
-3 flash chips found. Total DiskOnChip size: 12 MiB
-Possible DiskOnChip with unknown ChipID FF found at 0xca000
-Possible DiskOnChip with unknown ChipID 00 found at 0xcc000
-Possible DiskOnChip with unknown ChipID 00 found at 0xce000
-Possible DiskOnChip with unknown ChipID FF found at 0xd0000
-Possible DiskOnChip with unknown ChipID FF found at 0xd2000
-Possible DiskOnChip with unknown ChipID FF found at 0xd4000
-Possible DiskOnChip with unknown ChipID FF found at 0xd6000
-Possible DiskOnChip with unknown ChipID FF found at 0xd8000
-Possible DiskOnChip with unknown ChipID FF found at 0xda000
-Possible DiskOnChip with unknown ChipID FF found at 0xdc000
-Possible DiskOnChip with unknown ChipID FF found at 0xde000
-Possible DiskOnChip with unknown ChipID 0B found at 0xe0000
-Possible DiskOnChip with unknown ChipID 00 found at 0xe2000
-Possible DiskOnChip with unknown ChipID 28 found at 0xe4000
-Possible DiskOnChip with unknown ChipID 00 found at 0xe6000
-Possible DiskOnChip with unknown ChipID 6D found at 0xe8000
-Possible DiskOnChip with unknown ChipID 07 found at 0xea000
-Possible DiskOnChip with unknown ChipID 00 found at 0xec000
-Possible DiskOnChip with unknown ChipID FE found at 0xee000
+M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+Using configured probe address 0x50000000
+DiskOnChip Millennium found at address 0x50000000
+Flash chip found: Manufacturer ID: 98, Chip ID: E6 (Toshiba TC58V64AFT/DC)
+1 flash chips found. Total DiskOnChip size: 8 Mb
 M-Systems NAND Flash Translation Layer driver. (C) 1999 MVHI
-$Id: nftlcore.c,v 1.73 2001/06/09 01:09:43 dwmw2 Exp $
-Could not find valid boot record
-Could not mount NFTL device
----- end dmesg ----
+$Id: nftl.c,v 1.57 2000/12/01 17:51:54 dwmw2 Exp $
+Partition check:
+ nftla: unknown partition table
+....
 
-Does anyone know what's the problem? 
+That's the result of theses steps:
 
-Thanx,
-Alex.
+1.	./nftl_format /dev/mtd0
+
+2.	at startup, th message "unknown partition table" is shown
+
+3.	cfdisk /dev/nftla -> new partition /dev/nftla1
+
+4.	rebooting the system always shows the message "unknown partition table"
+
+
+mke2fs on /dev/nftla1 results in the following message:
+
+bash# ./mke2fs /dev/nftla1
+mke2fs 1.10, 24-Apr-97 for EXT2 FS 0.5b, 95/08/09
+/dev/nftla1: Invalid argument while setting up superblock
+
+I don't know what's wrong. Any ideas?
+
+best regards
+Martin
