@@ -1,23 +1,18 @@
-Received: from h002078c680df.ne.client2.attbi.com
-	([24.34.94.87] helo=joshuawise.com ident=postfix)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AKtx7-0001qb-Ek
-	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 06:30:37 +0000
-Received: from 192.168.1.100 (unknown [192.168.1.100])12E338DBD
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 15 Nov 2003 01:32:54 -0500 (EST)
-From: Joshua Wise <joshua@joshuawise.com>
-To: linux-mtd@lists.infradead.org
-Date: Sat, 15 Nov 2003 01:29:09 -0500
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AKvTX-00026V-VR
+	for <linux-mtd@lists.infradead.org>; Sat, 15 Nov 2003 08:08:12 +0000
+To: Joshua Wise <joshua@joshuawise.com>
 References: <200311150109.39539.joshua@joshuawise.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 15 Nov 2003 01:08:24 -0700
 In-Reply-To: <200311150109.39539.joshua@joshuawise.com>
+Message-ID: <m3ptfuoxzb.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
-Content-Description: clearsigned data
-Content-Disposition: inline
-Message-Id: <200311150129.10424.joshua@joshuawise.com>
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Content-Type: text/plain; charset=us-ascii
+cc: linux-mtd@lists.infradead.org
 Subject: Re: JEDEC probing redux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,27 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=2D----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Joshua Wise <joshua@joshuawise.com> writes:
 
-> In the mean time, I'll nuke the unlock address verify in jedec_match, and
-> see if that solves my problem.
+> I'm thinking two things here: 1) I'm assuming that the unlock address verify 
+> is just paranoia. Can I nuke that? (Will it break anyone's board?)
 
-I decided to go with option three out of two and just add a check for addr =
->>=20
-1 in jedec_match, so I don't have to worry about Stuff Going Boom. I'll cle=
-an=20
-it all up and check it in to hh.org tonight.
+It will break things.  Some flash chips will ID but nothing else with
+the wrong unlock address.  So without the test some boards will not
+work.
 
-/joshua
-=2D --=20
-Joshua Wise | www.joshuawise.com
-GPG Key     | 0xEA80E0B3
-Quote       | <lilo> I akilled *@* by mistake
-=2D----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+> and 2) Is 
+> there a better way to say that we should be left-shifting all the unlock 
+> addresses over?
 
-iD8DBQE/tce1Pn9tWOqA4LMRAihSAJ9/+m6QCxIRGLe7Sd71bfLrG0KjSQCeJyeO
-fMDejdjv8ucdgHcjjGSGcsA=3D
-=3Dq4CV
-=2D----END PGP SIGNATURE-----
+I am wondering if your map driver could handle that.  Either or
+a solution like LART endian might be appropriate.
+
+Handling flash chips that are connected up peculiarly seems to be
+a recurring theme.  If this isn't something the map driver can't do
+we may want to enhance that interface so it can handle more peculiar
+cases in the future.
+
+Eric
