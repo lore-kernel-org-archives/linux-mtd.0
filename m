@@ -1,15 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: J B <mad_flasher@hotmail.com>
-In-Reply-To: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
-References: <Law11-F26lgYBr4BvRn0000b9c5@hotmail.com>
-Content-Type: text/plain
-Message-Id: <1067539988.3423.208.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 30 Oct 2003 18:53:08 +0000
+Received: from [212.58.137.10] (helo=trajan.ag-netcom.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AFJyT-0003LP-LO
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 21:04:57 +0000
+Received: from 192.168.0.4 (dsl-217-155-44-202.zen.co.uk [217.155.44.202])
+	by trajan.ag-netcom.net (8.12.8p1/8.12.8) with ESMTP id h9UL5ERs041422
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Oct 2003 21:05:14 GMT
+	(envelope-from david@avoncliff.com)
+From: david stevenson <david@avoncliff.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 30 Oct 2003 21:03:42 +0000
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200310302103.42918.david@avoncliff.com>
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: jffs-dev@axis.com
-Subject: Re: jffs2 fragmentation
+Subject: zlib versions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,21 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2003-10-18 at 09:20 -0500, J B wrote:
-> Normally, a rm/cp pair takes about 2 minutes on my system.  After about 10 
-> iterations, the copies begin to take longer, about 3-4 minutes.   After 
-> about 10 iterations they take upwards of 1/2 an hour.
+Could someone please educate me on zlib?
 
-I suspect you've triggered the worst case of a performance bug which
-I've known about for a while.
+I can compile kernel 2.4.21 with MTD updated from tarball 20031021 with jff2 
+with no errors.
+But when I try and compile the utils from the same tar ball, using the same 
+kernel headers I get error file not found zlib.h.
 
-We should write new data out to one empty block, while writing out
-garbage-collected data out to another. We don't do that at the moment;
-we interleave old and new data and then you erase your new file, leaving
-us with a very suboptimal mix of valid and obsolete nodes in each
-eraseblock we've been writing to.
+I can compile the utils against the kernel headers on my host 2.4.20 without 
+error. But I guess then the binaries will not run on the target machine?
 
-I'm still a bit surprised it takes half an hour though. 
-
--- 
-dwmw2
+The difference appears to be linux/zlib v1.1.3 or /zlib v1.1.4 but I am not 
+sure what I should use to get utils that run.
+Thanks
+David
