@@ -1,17 +1,21 @@
-Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEbVr-000385-GW
-	for <linux-mtd@lists.infradead.org>; Tue, 28 Oct 2003 21:36:27 +0000
-From: Dave Dillow <ddillow@idleaire.com>
-To: Chris Ellec <cellec@celerity.net>
-In-Reply-To: <3F9EA810.6010905@celerity.net>
-References: <3F9EA810.6010905@celerity.net>
-Message-Id: <1067376879.9396.1.camel@dillow.idleaire.com>
+	id 1AEg5d-0003oc-KB
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 02:29:41 +0000
+Date: Tue, 28 Oct 2003 18:28:28 -0800
+From: Jun Sun <jsun@mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20031028182828.D30683@mvista.com>
+References: <20031022182558.U19834@mvista.com>
+	<20031027101741.C1678@mvista.com>
+	<1067338214.15551.405.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: 28 Oct 2003 16:34:39 -0500
-Content-Type: multipart/mixed; boundary="=-MvIT7rYWSuWai+sWeMSc"
+Content-Disposition: inline
+In-Reply-To: <1067338214.15551.405.camel@hades.cambridge.redhat.com>;
+	from dwmw2@infradead.org on Tue, Oct 28, 2003 at 10:50:15AM +0000
+Content-Type: multipart/mixed; boundary="s2ZSL+KKDSLx8OML"
 cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL problems
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,428 +26,276 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-MvIT7rYWSuWai+sWeMSc
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+--s2ZSL+KKDSLx8OML
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, 2003-10-28 at 12:32, Chris Ellec wrote:
-> Hello,
+On Tue, Oct 28, 2003 at 10:50:15AM +0000, David Woodhouse wrote:
+> On Mon, 2003-10-27 at 10:17 -0800, Jun Sun wrote:
+> > Any objections or comments?  David?
 > 
-> I have a WinSystems devel board with a DOC on it. Dinfo from MSystems 
-> reports a DOC 2000 at address D800 with 256 MB and an INFTL format.
+> Sorry for delayed response. I'm not really sure about this. Take a look
+> at drivers/mtd/maps/rpxlite.c -- that's what we're able to eliminate,
+
+I think a lot of more can be eliminated, including db1x00-flash.c
+which I did take a look.
+
+What concerns me more is that I have at least four more new boards
+that cry for this extension.  Without it, I would have to introduce
+more junk files into linux-mtd.
+
+We need to have this extension or something like this in place.
+
+> and we could even stick half of _that_ into a library function. 
 > 
 
-Try this -- it's my current hack to get my 128MB recoginzed. When I get
-time, I plan to work on nand/diskonchip.c, per dwmw2's suggestion.
+I don't quite follow here.
 
--- 
-Dave Dillow <ddillow@idleaire.com>
+> I'm all for cleaning up all the duplication in the map drivers, but I'm
+> not sure we need to do it by making users enter correct numbers for
+> CONFIG_MTD_PHYSMAP_*...
+> 
 
---=-MvIT7rYWSuWai+sWeMSc
-Content-Disposition: attachment; filename=doc2000.patch
-Content-Type: text/plain; name=doc2000.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+I didn't like that aspect either.  I thought I should keep the
+patch minimum so that it is easier for people to swallow. :)
 
-# This is a BitKeeper generated patch for the following project:
-# Project Name: Linux kernel tree
-# This patch format is intended for GNU patch command version 2.5 or higher.
-# This patch includes the following deltas:
-#	           ChangeSet	1.1191  -> 1.1192 
-#	drivers/mtd/devices/doc2000.c	1.6     -> 1.7    
-#	include/linux/mtd/doc2000.h	1.5     -> 1.6    
-#	drivers/mtd/devices/docprobe.c	1.7     -> 1.8    
-#
-# The following is the BitKeeper ChangeSet Log
-# --------------------------------------------
-# 03/10/13	ddillow@idleaire.com	1.1192
-# Add support for DoC 2000 TSOP
-# --------------------------------------------
-#
-diff -Nru a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
---- a/drivers/mtd/devices/doc2000.c	Tue Oct 28 16:32:43 2003
-+++ b/drivers/mtd/devices/doc2000.c	Tue Oct 28 16:32:43 2003
-@@ -25,6 +25,7 @@
- #include <linux/mtd/doc2000.h>
- 
- #define DOC_SUPPORT_2000
-+#define DOC_SUPPORT_2000TSOP
- #define DOC_SUPPORT_MILLENNIUM
- 
- #ifdef DOC_SUPPORT_2000
-@@ -33,6 +34,12 @@
- #define DoC_is_2000(doc) (0)
+Actually the new attached version is probably what I like more.
+It gets rid of the config options for physmap.
+
+Since physmap_map is external, one can easily setup the mapping
+at the run time instead of configuration time.  The new patch
+simply adds some syntactic sugar by introducing an inline function
+to do this.  
+
+Jun
+
+--s2ZSL+KKDSLx8OML
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=patch2
+
+diff -Nru linux/arch/mips/mips-boards/malta/malta_setup.c.orig linux/arch/mips/mips-boards/malta/malta_setup.c
+--- linux/arch/mips/mips-boards/malta/malta_setup.c.orig	Fri Aug  1 10:50:18 2003
++++ linux/arch/mips/mips-boards/malta/malta_setup.c	Tue Oct 28 17:02:01 2003
+@@ -24,6 +24,7 @@
+ #ifdef CONFIG_BLK_DEV_IDE
+ #include <linux/ide.h>
  #endif
++#include <linux/mtd/physmap.h>
  
-+#ifdef DOC_SUPPORT_2000TSOP
-+#define DoC_is_2000TSOP(doc) (doc->ChipID == DOC_ChipID_Doc2kTSOP)
-+#else
-+#define DoC_is_2000TSOP(doc) (0)
+ #include <asm/cpu.h>
+ #include <asm/bootinfo.h>
+@@ -166,6 +167,15 @@
+         conswitchp = &dummy_con;
+ #endif
+ #endif
++
++#if defined(CONFIG_MTD)
++	/* we use generic physmap mapping driver */
++	physmap_set_map(0x400000, 4, 0x1e000000);
++
++	physmap_add_partition("YAMON", 0x100000, 0x0, MTD_WRITEABLE);
++	physmap_add_partition("User FS", 0x300000, 0x100000, 0);
 +#endif
 +
- #ifdef DOC_SUPPORT_MILLENNIUM
- #define DoC_is_Millennium(doc) (doc->ChipID == DOC_ChipID_DocMil)
- #else
-@@ -76,7 +83,7 @@
- 	int i;
- 	
- 	for (i = 0; i < cycles; i++) {
--		if (DoC_is_Millennium(doc))
-+		if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
- 			dummy = ReadDOC(doc->virtadr, NOP);
- 		else
- 			dummy = ReadDOC(doc->virtadr, DOCStatus);
-@@ -95,6 +102,10 @@
+ 	mips_reboot_setup();
  
- 	/* Out-of-line routine to wait for chip response */
- 	while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B)) {
-+		/* issue 2 read from NOP register after reading from CDSNControl register
-+	   	see Software Requirement 11.4 item 2. */
-+		DoC_Delay(doc, 2);
+ 	board_time_init = mips_time_init;
+diff -Nru linux/drivers/mtd/maps/physmap.c.orig linux/drivers/mtd/maps/physmap.c
+--- linux/drivers/mtd/maps/physmap.c.orig	Wed Jul 23 15:17:52 2003
++++ linux/drivers/mtd/maps/physmap.c	Tue Oct 28 17:05:12 2003
+@@ -2,6 +2,11 @@
+  * $Id: physmap.c,v 1.28 2003/05/28 15:53:43 dwmw2 Exp $
+  *
+  * Normal mappings of chips in physical memory
++ *
++ * Copyright (C) 2003 MontaVista Software Inc.
++ * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
++ *
++ * 031022 - [jsun] add physmap_add_partition()
+  */
+ 
+ #include <linux/module.h>
+@@ -15,53 +20,39 @@
+ #include <linux/config.h>
+ #include <linux/mtd/partitions.h>
+ 
+-#define WINDOW_ADDR CONFIG_MTD_PHYSMAP_START
+-#define WINDOW_SIZE CONFIG_MTD_PHYSMAP_LEN
+-#define BUSWIDTH CONFIG_MTD_PHYSMAP_BUSWIDTH
+-
+ static struct mtd_info *mymtd;
+ 
+-
+-struct map_info physmap_map = {
+-	.name = "Physically mapped flash",
+-	.size = WINDOW_SIZE,
+-	.buswidth = BUSWIDTH,
+-	.phys = WINDOW_ADDR,
+-};
++struct map_info physmap_map = {.name = "phys_mapped_flash"};
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+ static struct mtd_partition *mtd_parts;
+ static int                   mtd_parts_nb;
+ 
+-static struct mtd_partition physmap_partitions[] = {
+-#if 0
+-/* Put your own partition definitions here */
+-	{
+-		.name =		"bootROM",
+-		.size =		0x80000,
+-		.offset =	0,
+-		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+-	}, {
+-		.name =		"zImage",
+-		.size =		0x100000,
+-		.offset =	MTDPART_OFS_APPEND,
+-		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+-	}, {
+-		.name =		"ramdisk.gz",
+-		.size =		0x300000,
+-		.offset =	MTDPART_OFS_APPEND,
+-		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+-	}, {
+-		.name =		"User FS",
+-		.size =		MTDPART_SIZ_FULL,
+-		.offset =	MTDPART_OFS_APPEND,
++#define NUM_PARTITIONS	4	/* random num which should be good enough */
++static struct mtd_partition physmap_partitions[NUM_PARTITIONS] __initdata = {};
 +
- 		if (time_after(jiffies, timeo)) {
- 			DEBUG(MTD_DEBUG_LEVEL2, "_DoC_WaitReady timed out.\n");
- 			return -EIO;
-@@ -136,18 +147,20 @@
- {
- 	unsigned long docptr = doc->virtadr;
- 
--	if (DoC_is_2000(doc))
-+	if (DoC_is_2000(doc) || DoC_is_2000TSOP(doc))
- 		xtraflags |= CDSN_CTRL_FLASH_IO;
- 
- 	/* Assert the CLE (Command Latch Enable) line to the flash chip */
- 	WriteDOC(xtraflags | CDSN_CTRL_CLE | CDSN_CTRL_CE, docptr, CDSNControl);
- 	DoC_Delay(doc, 4);	/* Software requirement 11.4.3 for Millennium */
- 
--	if (DoC_is_Millennium(doc))
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
- 		WriteDOC(command, docptr, CDSNSlowIO);
- 
- 	/* Send the command */
- 	WriteDOC_(command, docptr, doc->ioreg);
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
-+		WriteDOC(command, docptr, WritePipeTerm);
- 
- 	/* Lower the CLE line */
- 	WriteDOC(xtraflags | CDSN_CTRL_CE, docptr, CDSNControl);
-@@ -169,7 +182,7 @@
- 
- 	docptr = doc->virtadr;
- 
--	if (DoC_is_2000(doc))
-+	if (DoC_is_2000(doc) || DoC_is_2000TSOP(doc))
- 		xtraflags1 |= CDSN_CTRL_FLASH_IO;
- 
- 	/* Assert the ALE (Address Latch Enable) line to the flash chip */
-@@ -190,7 +203,7 @@
- 	 */
- 
- 	if (numbytes == ADDR_COLUMN || numbytes == ADDR_COLUMN_PAGE) {
--		if (DoC_is_Millennium(doc))
-+		if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
- 			WriteDOC(ofs & 0xff, docptr, CDSNSlowIO);
- 		WriteDOC_(ofs & 0xff, docptr, doc->ioreg);
++char *part_probes[] __initdata = {"cmdlinepart", "RedBoot", NULL};
++
++/*
++ * See include/linux/mtd/physmap.h file.
++ */
++static int part_index __initdata = 0;
++int __init physmap_add_partition(char *name, u32 size, u32 offset, u32 flags)
++{
++	if (part_index >= NUM_PARTITIONS) {
++		printk(KERN_ERR "physmap_add_partition() exceeds max partition table size (%d)\n", NUM_PARTITIONS);
++		return -1;
  	}
-@@ -203,12 +216,15 @@
+-#endif
+-};
  
- 	if (numbytes == ADDR_PAGE || numbytes == ADDR_COLUMN_PAGE) {
- 		for (i = 0; i < doc->pageadrlen; i++, ofs = ofs >> 8) {
--			if (DoC_is_Millennium(doc))
-+			if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
- 				WriteDOC(ofs & 0xff, docptr, CDSNSlowIO);
- 			WriteDOC_(ofs & 0xff, docptr, doc->ioreg);
+-#define NUM_PARTITIONS	(sizeof(physmap_partitions)/sizeof(struct mtd_partition))
+-const char *part_probes[] = {"cmdlinepart", "RedBoot", NULL};
++	physmap_partitions[part_index].name = name;
++	physmap_partitions[part_index].size = size;
++	physmap_partitions[part_index].offset = offset;
++	physmap_partitions[part_index].mask_flags = flags;
++
++	part_index++;
+ 
++	return 0;
++}
+ #endif /* CONFIG_MTD_PARTITIONS */
+ 
+ int __init init_physmap(void)
+@@ -69,8 +60,8 @@
+ 	static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", 0 };
+ 	const char **type;
+ 
+-       	printk(KERN_NOTICE "physmap flash device: %x at %x\n", WINDOW_SIZE, WINDOW_ADDR);
+-	physmap_map.virt = (unsigned long)ioremap(WINDOW_ADDR, WINDOW_SIZE);
++       	printk(KERN_NOTICE "physmap flash device: %lx at %lx\n", physmap_map.size, physmap_map.phys);
++	physmap_map.virt = (unsigned long)ioremap(physmap_map.phys, physmap_map.size);
+ 
+ 	if (!physmap_map.virt) {
+ 		printk("Failed to ioremap\n");
+@@ -97,11 +88,11 @@
+ 			return 0;
  		}
- 	}
  
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc))
-+		WriteDOC(ofs & 0xff, docptr, WritePipeTerm);
+-		if (NUM_PARTITIONS != 0) 
++		if (part_index != 0) 
+ 		{
+ 			printk(KERN_NOTICE 
+ 			       "Using physmap partition definition\n");
+-			add_mtd_partitions (mymtd, physmap_partitions, NUM_PARTITIONS);
++			add_mtd_partitions (mymtd, physmap_partitions, part_index);
+ 			return 0;
+ 		}
+ 
+diff -Nru linux/drivers/mtd/maps/Config.in.orig linux/drivers/mtd/maps/Config.in
+--- linux/drivers/mtd/maps/Config.in.orig	Tue Oct 21 18:07:35 2003
++++ linux/drivers/mtd/maps/Config.in	Tue Oct 28 16:59:07 2003
+@@ -8,12 +8,7 @@
+ 
+ bool '  Support for non-linear mappings of flash chips' CONFIG_MTD_COMPLEX_MAPPINGS
+ 
+-dep_tristate '  CFI Flash device in physical memory map' CONFIG_MTD_PHYSMAP $CONFIG_MTD_GEN_PROBE
+-if [ "$CONFIG_MTD_PHYSMAP" = "y" -o "$CONFIG_MTD_PHYSMAP" = "m" ]; then
+-   hex '    Physical start address of flash mapping' CONFIG_MTD_PHYSMAP_START 0x8000000
+-   hex '    Physical length of flash mapping' CONFIG_MTD_PHYSMAP_LEN 0x4000000
+-   int '    Bus width in octets' CONFIG_MTD_PHYSMAP_BUSWIDTH 2
+-fi
++bool '  CFI Flash device in physical memory map' CONFIG_MTD_PHYSMAP $CONFIG_MTD_GEN_PROBE
+ 
+ if [ "$CONFIG_SPARC" = "y" -o "$CONFIG_SPARC64" = "y" ]; then
+    dep_tristate '  Sun Microsystems userflash support' CONFIG_MTD_SUN_UFLASH $CONFIG_MTD_CFI
+diff -Nru linux/drivers/mtd/maps/Makefile.orig linux/drivers/mtd/maps/Makefile
+diff -Nru linux/include/linux/mtd/physmap.h.orig linux/include/linux/mtd/physmap.h
+--- linux/include/linux/mtd/physmap.h.orig	Wed Oct 22 17:05:22 2003
++++ linux/include/linux/mtd/physmap.h	Tue Oct 28 17:11:29 2003
+@@ -0,0 +1,58 @@
++/*
++ * For boards with physically mapped flash and using 
++ * drivers/mtd/maps/physmap.c mapping driver.
++ *
++ * Copyright (C) 2003 MontaVista Software Inc.
++ * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ *
++ */
 +
- 	DoC_Delay(doc, 2);	/* Needed for some slow flash chips. mf. */
- 	
- 	/* FIXME: The SlowIO's for millennium could be replaced by 
-@@ -237,7 +253,7 @@
- 	if (len <= 0)
- 		return;
- 
--	if (DoC_is_Millennium(doc)) {
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc)) {
- 		/* Read the data via the internal pipeline through CDSN IO register,
- 		   see Pipelined Read Operations 11.3 */
- 		dummy = ReadDOC(docptr, ReadPipeInit);
-@@ -252,7 +268,7 @@
- 	for (i = 0; i < len; i++)
- 		buf[i] = ReadDOC_(docptr, doc->ioreg + (i & modulus));
- 
--	if (DoC_is_Millennium(doc)) {
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc)) {
- 		buf[i] = ReadDOC(docptr, LastDataRead);
- 	}
- }
-@@ -271,7 +287,7 @@
- 	for (i = 0; i < len; i++)
- 		WriteDOC_(buf[i], docptr, doc->ioreg + i);
- 
--	if (DoC_is_Millennium(doc)) {
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc)) {
- 		WriteDOC(0x00, docptr, WritePipeTerm);
- 	}
- }
-@@ -347,15 +363,27 @@
- 
- 	/* Read the manufacturer and device id codes from the device */
- 
--	/* CDSN Slow IO register see Software Requirement 11.4 item 5. */
--	dummy = ReadDOC(doc->virtadr, CDSNSlowIO);
--	DoC_Delay(doc, 2);
--	mfr = ReadDOC_(doc->virtadr, doc->ioreg);
-+	if (DoC_is_Millennium(doc) || DoC_is_2000TSOP(doc)) {
-+		DoC_Delay(doc, 2);
-+		dummy = ReadDOC(doc->virtadr, ReadPipeInit);
-+		mfr = ReadDOC(doc->virtadr, LastDataRead);
++#ifndef __LINUX_MTD_PHYSMAP__
 +
-+		DoC_Delay(doc, 2);
-+		dummy = ReadDOC(doc->virtadr, ReadPipeInit);
-+		id = ReadDOC(doc->virtadr, LastDataRead);
-+	} else {
-+		/* CDSN Slow IO register see Software Req 11.4 item 5. */
-+		dummy = ReadDOC(doc->virtadr, CDSNSlowIO);
-+		DoC_Delay(doc, 2);
-+		mfr = ReadDOC_(doc->virtadr, doc->ioreg);
++#include <linux/config.h>
 +
-+		/* CDSN Slow IO register see Software Req 11.4 item 5. */
-+		dummy = ReadDOC(doc->virtadr, CDSNSlowIO);
-+		DoC_Delay(doc, 2);
-+		id = ReadDOC_(doc->virtadr, doc->ioreg);
-+	}
- 
--	/* CDSN Slow IO register see Software Requirement 11.4 item 5. */
--	dummy = ReadDOC(doc->virtadr, CDSNSlowIO);
--	DoC_Delay(doc, 2);
--	id = ReadDOC_(doc->virtadr, doc->ioreg);
-+	printk("IdentChip checking floor %d chip %d id 0x%02x mfr 0x%02x\n", floor, chip, id, mfr);
- 
- 	/* No response - return failure */
- 	if (mfr == 0xff || mfr == 0)
-@@ -541,6 +569,10 @@
- 
- 
- 	switch (this->ChipID) {
-+	case DOC_ChipID_Doc2kTSOP:
-+		mtd->name = "DiskOnChip 2000 TSOP";
-+		this->ioreg = DoC_Mil_CDSN_IO;
-+		break;
- 	case DOC_ChipID_Doc2k:
- 		mtd->name = "DiskOnChip 2000";
- 		this->ioreg = DoC_2k_CDSN_IO;
-@@ -692,7 +724,7 @@
- 			DoC_ReadBuf(this, eccbuf, 6);
- 
- 			/* Flush the pipeline */
--			if (DoC_is_Millennium(this)) {
-+			if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
- 				dummy = ReadDOC(docptr, ECCConf);
- 				dummy = ReadDOC(docptr, ECCConf);
- 				i = ReadDOC(docptr, ECCConf);
-@@ -773,6 +805,7 @@
- 	int len256 = 0;
- 	struct Nand *mychip;
- 	size_t left = len;
-+	int status;
- 
- 	docptr = this->virtadr;
- 
-@@ -865,7 +898,7 @@
- 			WriteDOC(CDSN_CTRL_ECC_IO | CDSN_CTRL_CE, docptr,
- 				 CDSNControl);
- 
--			if (DoC_is_Millennium(this)) {
-+			if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
- 				WriteDOC(0, docptr, NOP);
- 				WriteDOC(0, docptr, NOP);
- 				WriteDOC(0, docptr, NOP);
-@@ -875,6 +908,9 @@
- 				WriteDOC_(0, docptr, this->ioreg);
- 			}
- 
-+			WriteDOC(CDSN_CTRL_ECC_IO | CDSN_CTRL_FLASH_IO | CDSN_CTRL_CE, docptr,
-+				 CDSNControl);
++#if defined(CONFIG_MTD_PHYSMAP) 
 +
- 			/* Read the ECC data through the DiskOnChip ECC logic */
- 			for (di = 0; di < 6; di++) {
- 				eccbuf[di] = ReadDOC(docptr, ECCSyndrome0 + di);
-@@ -896,10 +932,16 @@
- 		DoC_Command(this, NAND_CMD_STATUS, CDSN_CTRL_WP);
- 		/* There's an implicit DoC_WaitReady() in DoC_Command */
- 
--		dummy = ReadDOC(docptr, CDSNSlowIO);
--		DoC_Delay(this, 2);
-+		if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
-+			ReadDOC(docptr, ReadPipeInit);
-+			status = ReadDOC(docptr, LastDataRead);
-+		} else {
-+			dummy = ReadDOC(docptr, CDSNSlowIO);
-+			DoC_Delay(this, 2);
-+			status = ReadDOC_(docptr, this->ioreg);
-+		}
- 
--		if (ReadDOC_(docptr, this->ioreg) & 1) {
-+		if (status & 1) {
- 			printk(KERN_ERR "Error programming flash\n");
- 			/* Error in programming */
- 			*retlen = 0;
-@@ -1067,6 +1109,7 @@
- 	unsigned long docptr = this->virtadr;
- 	struct Nand *mychip = &this->chips[ofs >> this->chipshift];
- 	volatile int dummy;
-+	int status;
- 
- 	//      printk("doc_write_oob(%lx, %d): %2.2X %2.2X %2.2X %2.2X ... %2.2X %2.2X .. %2.2X %2.2X\n",(long)ofs, len,
- 	//   buf[0], buf[1], buf[2], buf[3], buf[8], buf[9], buf[14],buf[15]);
-@@ -1115,10 +1158,16 @@
- 		DoC_Command(this, NAND_CMD_STATUS, 0);
- 		/* DoC_WaitReady() is implicit in DoC_Command */
- 
--		dummy = ReadDOC(docptr, CDSNSlowIO);
--		DoC_Delay(this, 2);
-+		if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
-+			ReadDOC(docptr, ReadPipeInit);
-+			status = ReadDOC(docptr, LastDataRead);
-+		} else {
-+			dummy = ReadDOC(docptr, CDSNSlowIO);
-+			DoC_Delay(this, 2);
-+			status = ReadDOC_(docptr, this->ioreg);
-+		}
- 
--		if (ReadDOC_(docptr, this->ioreg) & 1) {
-+		if (status & 1) {
- 			printk(KERN_ERR "Error programming oob data\n");
- 			/* There was an error */
- 			*retlen = 0;
-@@ -1134,10 +1183,16 @@
- 	DoC_Command(this, NAND_CMD_STATUS, 0);
- 	/* DoC_WaitReady() is implicit in DoC_Command */
- 
--	dummy = ReadDOC(docptr, CDSNSlowIO);
--	DoC_Delay(this, 2);
-+	if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
-+		ReadDOC(docptr, ReadPipeInit);
-+		status = ReadDOC(docptr, LastDataRead);
-+	} else {
-+		dummy = ReadDOC(docptr, CDSNSlowIO);
-+		DoC_Delay(this, 2);
-+		status = ReadDOC_(docptr, this->ioreg);
-+	}
- 
--	if (ReadDOC_(docptr, this->ioreg) & 1) {
-+	if (status & 1) {
- 		printk(KERN_ERR "Error programming oob data\n");
- 		/* There was an error */
- 		*retlen = 0;
-@@ -1170,6 +1225,7 @@
- 	volatile int dummy;
- 	unsigned long docptr;
- 	struct Nand *mychip;
-+	int status;
- 
-  	down(&this->lock);
- 
-@@ -1201,10 +1257,16 @@
- 
- 		DoC_Command(this, NAND_CMD_STATUS, CDSN_CTRL_WP);
- 
--		dummy = ReadDOC(docptr, CDSNSlowIO);
--		DoC_Delay(this, 2);
--		
--		if (ReadDOC_(docptr, this->ioreg) & 1) {
-+		if (DoC_is_Millennium(this) || DoC_is_2000TSOP(this)) {
-+			ReadDOC(docptr, ReadPipeInit);
-+			status = ReadDOC(docptr, LastDataRead);
-+		} else {
-+			dummy = ReadDOC(docptr, CDSNSlowIO);
-+			DoC_Delay(this, 2);
-+			status = ReadDOC_(docptr, this->ioreg);
-+		}
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
 +
-+		if (status & 1) {
- 			printk(KERN_ERR "Error erasing at 0x%x\n", ofs);
- 			/* There was an error */
- 			instr->state = MTD_ERASE_FAILED;
-diff -Nru a/drivers/mtd/devices/docprobe.c b/drivers/mtd/devices/docprobe.c
---- a/drivers/mtd/devices/docprobe.c	Tue Oct 28 16:32:43 2003
-+++ b/drivers/mtd/devices/docprobe.c	Tue Oct 28 16:32:43 2003
-@@ -97,10 +97,11 @@
- static inline int __init doccheck(unsigned long potential, unsigned long physadr)
- {
- 	unsigned long window=potential;
--	unsigned char tmp, tmpb, tmpc, ChipID;
-+	unsigned char tmp, tmpb, tmpc;
- #ifndef DOC_PASSIVE_PROBE
- 	unsigned char tmp2;
- #endif
-+	unsigned char ChipID;
- 
- 	/* Routine copied from the Linux DOC driver */
- 
-@@ -138,10 +139,16 @@
- 	/* We need to read the ChipID register four times. For some
- 	   newer DiskOnChip 2000 units, the first three reads will
- 	   return the DiskOnChip Millennium ident. Don't ask. */
--	ReadDOC(window, ChipID);
--	ReadDOC(window, ChipID);
--	ReadDOC(window, ChipID);
- 	ChipID = ReadDOC(window, ChipID);
-+#if 1
-+	if(ChipID == DOC_ChipID_DocMil) {
-+		ReadDOC(window, ChipID);
-+		ReadDOC(window, ChipID);
-+		ChipID = ReadDOC(window, ChipID);
-+		if(ChipID != DOC_ChipID_DocMil)
-+			ChipID = DOC_ChipID_Doc2kTSOP;
-+	}
-+#endif
-   
- 	switch (ChipID) {
- 	case DOC_ChipID_Doc2k:
-@@ -153,6 +160,7 @@
- 				return ChipID;
- 		break;
- 		
-+	case DOC_ChipID_Doc2kTSOP:
- 	case DOC_ChipID_DocMil:
- 		/* Check the TOGGLE bit in the ECC register */
- 		tmp  = ReadDOC(window, ECCConf) & DOC_TOGGLE_BIT;
-@@ -267,6 +275,12 @@
- 		sprintf(namebuf, "with ChipID %2.2X", ChipID);
- 
- 		switch(ChipID) {
-+		case DOC_ChipID_Doc2kTSOP:
-+			name="2000 TSOP";
-+			im_funcname = "DoC2k_init";
-+			im_modname = "doc2000";
-+			break;
-+			
- 		case DOC_ChipID_Doc2k:
- 			name="2000";
- 			im_funcname = "DoC2k_init";
-diff -Nru a/include/linux/mtd/doc2000.h b/include/linux/mtd/doc2000.h
---- a/include/linux/mtd/doc2000.h	Tue Oct 28 16:32:43 2003
-+++ b/include/linux/mtd/doc2000.h	Tue Oct 28 16:32:43 2003
-@@ -114,6 +114,7 @@
- #define DOC_MODE_MDWREN 	0x04
- 
- #define DOC_ChipID_Doc2k 	0x20
-+#define DOC_ChipID_Doc2kTSOP 	0x21	/* internal number for MTD */
- #define DOC_ChipID_DocMil 	0x30
- #define DOC_ChipID_DocMilPlus32	0x40
- #define DOC_ChipID_DocMilPlus16	0x41
-@@ -169,7 +170,7 @@
- 	unsigned long physadr;
- 	unsigned long virtadr;
- 	unsigned long totlen;
--	char ChipID; /* Type of DiskOnChip */
-+	unsigned char ChipID; /* Type of DiskOnChip */
- 	int ioreg;
- 	
- 	unsigned long mfr; /* Flash IDs - only one type of flash per device */
++/*
++ * The map_info for physmap.  Board can override size, buswidth, phys,
++ * (*set_vpp)(), etc in their initial setup routine.
++ */
++extern struct map_info physmap_map;
++
++/*
++ * Board needs to specify the exact mapping during their setup time.
++ */
++static inline void physmap_set_map(unsigned long size, int buswidth, unsigned long phys_addr)
++{
++	physmap_map.size = size;
++	physmap_map.buswidth = buswidth;
++	physmap_map.phys = phys_addr;
++}
++
++#if defined(CONFIG_MTD_PARTITIONS)
++
++/*
++ * Machines that wish to do flash partition may want to call this function in 
++ * their setup routine.  Examples:
++ *
++ *	physmap_add_partition("bootROM", 0x100000, 0, MTD_WRITEABLE);	// RO
++ *	physmap_add_partition("User FS", 0x300000, 0x100000, 0); 	// RW
++ *
++ * Note that one can always override this hard-coded partition with 
++ * command line partition (you need to enable CONFIG_MTD_CMDLINE_PARTS).
++ */
++int physmap_add_partition(char *name, u32 size, u32 offset, u32 mask_flags);
++
++#endif /* defined(CONFIG_MTD_PARTITIONS) */
++#endif /* defined(CONFIG_MTD) */
++
++#endif /* __LINUX_MTD_PHYSMAP__ */
++
 
---=-MvIT7rYWSuWai+sWeMSc--
+--s2ZSL+KKDSLx8OML--
