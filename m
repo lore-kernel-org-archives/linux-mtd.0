@@ -1,16 +1,18 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16U4Zq-0002qr-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 11:31:26 +0000
-Date: Fri, 25 Jan 2002 11:42:28 +0000 (GMT)
-From: kira brown <kira@hex.linuxgrrls.org>
-To: Ramya Ravichandran <rrhsin@yahoo.co.in>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: Cf Card vs DiskOnChip
-In-Reply-To: <20020125103941.26958.qmail@web8101.in.yahoo.com>
-Message-ID: <Pine.LNX.4.33.0201251142100.16833-100000@hex.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16U4or-0002sK-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 11:46:57 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3C513E7B.6010808@smartbridges.com> 
+References: <3C513E7B.6010808@smartbridges.com>  <20020125103941.26958.qmail@web8101.in.yahoo.com> <4181.1011956000@redhat.com> 
+To: Nikhil Goel <nikhil@smartbridges.com>
+Cc: Ramya Ravichandran <rrhsin@yahoo.co.in>,
+    linux-mtd@lists.infradead.org
+Subject: Re: Cf Card vs DiskOnChip 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 25 Jan 2002 11:57:55 +0000
+Message-ID: <12290.1011959875@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,17 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+nikhil@smartbridges.com said:
+>  Isn't that similar to the implementation of JFFS? So a DiskOnChip
+> running on the CVS based driver with JFFS should suffice for
+> wear-levelling! if I am missing some piece here, what should I rtfm? 
 
-On Fri, 25 Jan 2002, Ramya Ravichandran wrote:
+You could use JFFS on the DiskOnChip. You can't use JFFS2 at the moment 
+because it doesn't properly support NAND flash - there are a few extra 
+constraints that JFFS2 doesn't meet. It's not too hard to fix though - 
+various people have indicated an interest in working on it.
 
-> Hi,
->
->    I am a newbie  developing a embedded linux
-> controller for an industrial environment. I am unable
-> to decide whether to use a Compact Flash card or
-> DiskOnChip.With 128MB I need to get the whole thing
-> running.
-
-Why on earth do you need so much storage?
-
-k.
+--
+dwmw2
