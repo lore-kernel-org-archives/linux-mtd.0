@@ -1,18 +1,18 @@
 Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AIGcx-0003AS-LX
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2003 00:06:57 +0000
+	id 1AIGdw-0003B8-Ff
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Nov 2003 00:07:58 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: Chris Ellec <cellec@celerity.net>
-In-Reply-To: <3FAAF44B.8020804@celerity.net>
-References: <3FAAF44B.8020804@celerity.net>
-Message-Id: <1068249762.18801.43.camel@imladris.demon.co.uk>
+To: Alexander Shiyan <shc@milas.spb.ru>
+In-Reply-To: <20031107114947.19f4f33b.shc@milas.spb.ru>
+References: <20031107114947.19f4f33b.shc@milas.spb.ru>
+Message-Id: <1068249822.18801.47.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Sat, 08 Nov 2003 00:02:42 +0000
+Date: Sat, 08 Nov 2003 00:03:42 +0000
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: INFTL report
+Subject: Re: Mount jffs2 partition on Doc2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-11-06 at 17:24 -0800, Chris Ellec wrote:
-> INFTL: corrupt block 7140 in chain 7140, chain length 0, erase mark 0x0?
-> INFTL: formatting chain at block 7140
-> INFTL: error while formatting block 7140
-> 
-> repeated for a few more addresses.
+On Fri, 2003-11-07 at 11:49 +0300, Alexander Shiyan wrote:
+> I tryed to create and use jffs2 partition on Doc2000.
 
-Hmmm. I suspect those could be bad blocks, and we're not interpreting
-the Bad Block Table correctly. I really do need to spent a little time
-on fixing the BBT handling for all the DiskOnChip devices; I want to
-make it completely impossible to erase a bad block without hacking the
-code to allow it.
-
-Can you take a complete dump of the /dev/mtd0 device with nanddump and
-let me have a copy, please?
-
-> also the loading of docprobe.o seem to fail most of times, even though 
-> /dev/inftla1 is available for me to mount and create files on it.
-
-That's intentional and harmless. It installs the appropriate (doc2000)
-driver and exits having done its work -- the docprobe module _really_ is
-just for probing.
+What version of JFFS2 code. On NAND flash you shouldn't really be using
+anything but the current code from CVS. On DiskOnChip you probably ought
+to let me finish the bad block handling first too :)
 
 -- 
 dwmw2
