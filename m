@@ -1,27 +1,28 @@
 From: tglx@linutronix.de (Thomas Gleixner)
-Date: Wed, 12 Mar 2003 09:46:46 +0100
-Subject: 2.4.19 rmk4 Jffs2 Performance problems, Upgrade diffulculty.
-In-Reply-To: <3E6E5C74.2080201@visi.com>
-References: <3E6D1821.3060002@visi.com> <200303111555.47644.tglx@linutronix.de>
- <3E6E5C74.2080201@visi.com>
-Message-ID: <200303120946.46305.tglx@linutronix.de>
+Date: Wed, 12 Mar 2003 09:54:55 +0100
+Subject: Unable to open console /start init - more info (jffs2)
+In-Reply-To: <008d01c2e804$b981cd00$150a0ac0@jbmsoft.com>
+References: <003901c2e7ef$6ef75c60$150a0ac0@jbmsoft.com>
+ <008d01c2e804$b981cd00$150a0ac0@jbmsoft.com>
+Message-ID: <200303120954.55244.tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Tuesday 11 March 2003 23:00, RobertS wrote:
+On Tuesday 11 March 2003 20:30, Brian T. wrote:
 >
-> What I am doing now is turning on the verbose debug messages and keep
-> everything as simple as possible.  I will be performing a series of
-> tests and will use this thread either to post my findings or further
-> questions.
-Set JFFS2_DEBUG=1 and do an 
-echo 9 >/proc/sys/kernel/printk 
-before you mount the device and start copying.
-Log via a serial console if possible, as klogd seems to loose bits, if there 
-is heavy load.
+> But I don't see any JFFS2 output (formatting the blocks...etc...) on the
+> 2.4.20 kernel I'm trying to get running:
+> VFS: Mounted root (jffs2 filesystem) readonly.
+Your root-fs is mounted with JFFS2-Filesystem
 
-Send this captured log to me in private or put it anywhere for download.
+> Freeing unused kernel memory: 60k freed
+> Warning: unable to open an initial console.
 
+This message appears when your system tries to open /dev/ttyX and it is not 
+there. The possible reasons for this are:
+- Wrong root partition
+- /dev/ttyX is not there
+- The kernel was compiled without support for virtual termainals.
 
 -- 
 Thomas
