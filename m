@@ -1,77 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pvTh-0007UL-00
-	for mtd-list@infradead.org; Wed, 18 Apr 2001 18:10:53 +0100
-Received: from mail1.danielind.com ([12.19.96.6])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14pvTg-0007UD-00
-	for mtd@infradead.org; Wed, 18 Apr 2001 18:10:53 +0100
-Message-ID: <3ADDCACB.15BF0590@daniel.com>
-Date: Wed, 18 Apr 2001 12:11:39 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+	id 14px77-0008V5-00
+	for mtd-list@infradead.org; Wed, 18 Apr 2001 19:55:41 +0100
+Message-ID: <002d01c0c839$a2dda660$d897143e@jocke>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>
+References: <001101c0c829$095eb570$0a01a8c0@Win1>  <23794.987613527@redhat.com>
+Subject: Re: JFFS2 as root FS 
+Date: Wed, 18 Apr 2001 20:58:57 +0200
 MIME-Version: 1.0
-To: joakim.tjernlund@lumentis.se
-CC: mtd@infradead.org
-Subject: Re: JFFS2 as root FS
-References: <001001c0c826$63b43200$0a01a8c0@Win1>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Joakim Tjernlund wrote:
 
-> Hi there
->
-> Has anybody managed to get a root FS with JFFS2 to work?
+> 
+> joakim.tjernlund@lumentis.se said:
+> > yes, I dont have devFS support compiled into the kernel. 
+> 
+> Hmmm. And do you have an entry for 'mtdblock' in the big array in 
+> init/main.c? 
 
-Sure! But as you say that you followed the HOWTO, and since I wrote the
-HOWTO,
-I guess that something in my procedures tripped you up that worked ok for
-me :)
+Don't know, I will have to check when I get back to work(I am home now)
 
-
->
-> I followed the mtd howto and I have a root partition(with the necessary
-> files) and
-> all I get is: "Kernel panic: I have no root and I want to scream"
-> message.
-
-Hmm, what kernel version are you using? I've never seen that message (I've
-seen Kernel panic: Unable to open root..blah blah..)
-
-
->
->
-> first I tried to use "rdev zvmlinux /dev/mtdblock1", but
-> the kernel ignored that an did a NFS mount as usual.
-
-Wait, wait, wait. What do you mean by this? This is *a problem* right
-here.
-
-Why is it doing a NFS mount? Please describe your config and what you are
-trying to do.
-"usual" kernels don't NFS mount their root fs!
-
-
-
-> I then
-> specified on the kernel commad line: root=/dev/mtdblock1
-> and the I got the kernel panic above.
-
-Well, the kernel may not be able to understand the "mtdblock1" device by
-name unless you patched
-the init/main.c file to list a conversion table from mtdblockxx to a
-*device number*.
-
-
->
->
-> Any Ideas?
-
-These are some.
-
-Vipin
+           Jocke
+> 
+> --
+> dwmw2
+> 
+> 
 
 
 
