@@ -1,21 +1,14 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cu9Wk-000829-0w
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 08:17:39 -0500
-Date: Thu, 27 Jan 2005 14:17:02 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20050127131702.GA22121@wohnheim.fh-wedel.de>
-References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
-	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
-	<1106819251.783.141.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1106819251.783.141.camel@baythorne.infradead.org>
+Date: Thu, 27 Jan 2005 14:06:32 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Moises Beck - EDS Digicon <mbeck@perto.com.br>
+In-Reply-To: <200501271218.j0RCI9L07866@rsmail.perto.com.br>
+Message-ID: <Pine.LNX.4.58.0501271404530.10028@phoenix.infradead.org>
+References: <200501271218.j0RCI9L07866@rsmail.perto.com.br>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS3 document
+Subject: Re: nand_scan identification problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +18,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 January 2005 09:47:31 +0000, David Woodhouse wrote:
-> On Wed, 2005-01-26 at 15:30 -0600, Josh Boyer wrote:
-> > > Instead of editing this file via CVS, would it be possible (and a
-> > > good idea) to use a wiki?  That would make it really easy (and time
-> > > efficient) for anyone to modify it.
-> > > 
-> > That was brought up on IRC and vetoed.  Wikis tend to get spammed with
-> > useless or out-dated information, and it's another application for the
-> > server to have to keep up are the reasons I believe.
+Hi,
+
+I wonder is it possible because of bad timings? spia does not define any 
+dev_ready function. I would try to play with this->chip_delay value 
+defined in spia.c as 15...
+
+On Thu, 27 Jan 2005, Moises Beck - EDS Digicon wrote:
 > 
-> It wasn't really vetoed. I just said that _I_ didn't want to run a Wiki,
-> for much those reasons. I also pointed out that having a minor barrier
-> to entry wasn't _necessarily_ a bad thing. Hell, most days even I
-> shouldn't be permitted to commit to it. Why should we open it to the
-> world? :)
+> Hello,
+>      I am using a smartmedia card on linux MTD. Everything runs very
+> well. But just after power on, the first attempt to load the driver
+> spia.o fails. The driver calls nand_scan(), that cannot identify the
+> present card. On the second attempt to load the driver, the flash is
+> correctly identified. I saw that in nand_scan(), the command
+> NAND_CMD_READID return nand_maf_id=0 and nand_dev_id=0 on the first call
+> to it. On the second call the IDs are returned correctly. I tried to
+> solve this by putting the following code just before the command
+> NAND_CMD_READID, on nand_base.c:
+> 
+>         /* Select the device */
+>         this->select_chip(mtd, 0);
+>                                                                        
+>         
+>         /* by momo - reset smartmedia e put it on mode READ */
+>         this->cmdfunc (mtd, NAND_CMD_RESET, -1, -1);
+>         this->cmdfunc (mtd, NAND_CMD_READ0, -1, -1);
+>                                                                        
+>         
+>         /* Send the command for reading device ID */
+>         this->cmdfunc (mtd, NAND_CMD_READID, 0x00, -1);
+>                                                                        
+>         
+>         /* Read manufacturer and device IDs */
+>         nand_maf_id = this->read_byte(mtd);
+>         nand_dev_id = this->read_byte(mtd);
+> 
+>      But this does not run, and to problem persists. If the funtion to
+> NAND_CMD_READID is called twice, as in
+> 
+>         /* Select the device */
+>         this->select_chip(mtd, 0);
+>  
+>         /* Send the command for reading device ID */
+>         /* by momo - send the command twice !!! */
+>         this->cmdfunc (mtd, NAND_CMD_READID, 0x00, -1);
+>         this->cmdfunc (mtd, NAND_CMD_READID, 0x00, -1);
+>                                                                        
+>         
+>         /* Read manufacturer and device IDs */
+>         nand_maf_id = this->read_byte(mtd);
+>         nand_dev_id = this->read_byte(mtd);
+> 
+>     then it runs well, always identifying the flash on the first call to
+> the funtion nand_scan !!!
+>     I am using mtd-snapshot-20050111.
+> 
+> Anyone has some clue ?
+> 
+> Thanks,
+> Moises
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-Plus, Wikis tend to be instant security problems.  The situation
-appears to be so bad that anyone with average exploit knowledge can
-read the sources and control some new machines within a rainy
-afternoon.  So you'd have to keep a seperate machine just for wiki.
-
-Jörn
-
--- 
-I can say that I spend most of my time fixing bugs even if I have lots
-of new features to implement in mind, but I give bugs more priority.
--- Andrea Arcangeli, 2000
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
