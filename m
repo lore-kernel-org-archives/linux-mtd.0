@@ -1,18 +1,18 @@
-Received: from [203.63.104.245] (helo=cobalttech.com)
+Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A9I0W-0005qQ-IE
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2003 06:46:08 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by cobalttech.com (Postfix) with ESMTP id 3DFC7717C0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Oct 2003 01:44:27 -0400 (EDT)
-Date: Tue, 14 Oct 2003 15:44:27 +1000 (EST)
-From: Michael McLellan <michael-mclellan@swsa.com.au>
-To: mtd list <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.53.0310141537460.12298@slop.cobalttech.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: DoC Grub booting problems
+	id 1A9IJo-0005yt-Eo
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2003 07:06:04 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Robin Gilks <robin.gilks@tait.co.nz>
+In-Reply-To: <3F8B814D.3050408@tait.co.nz>
+References: <3F8B814D.3050408@tait.co.nz>
+Message-Id: <1066111497.3172.37.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Tue, 14 Oct 2003 07:04:57 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: mtd list <linux-mtd@lists.infradead.org>
+Subject: Re: Mount of jffs2 partition fails
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've compiled grub v.0.93 with the lastest MTD patch and it pretty much
-works. But it doesn't detect the DoC until I explicitly tell it its there.
+On Tue, 2003-10-14 at 17:53 +0000, Robin Gilks wrote:
 
-Currently when it boots up it doesn't say anything about finding the DoC
-and leaves me at a Grub shell prompt. If I type 'root (dc0,0)' it
-comes up with the usual guff about finding the DoC and NFTL
-partitions. Then I can type 'configfile /boot/grub/menu.lst' and it works
-fine.
+> / # mount -t jffs2 /dev/mtdblock1 /mnt
+> Write clean marker to block at 0x000d0000 failed: -30
 
-So my question is, how come it doesn't detect the DoC before searching for
-the menu.lst file? So then it will boot without going to the Grub shell.
+-30 is also -EROFS but we don't normally see it there so we don't have a
+nice helpful message telling you the reason :)
 
-Thanks & regards, Mikey.
+I have no clue why your flash allows erases but not writes. This is a
+flash hardware/driver problem, not JFFS2. Can you do more testing on the
+raw /dev/mtd0 device itself using
+read/write/ioctl(MEMERASE)/ioctl(MEMUNLOCK) to see what you need to do
+to make it work?
+
+-- 
+dwmw2
