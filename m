@@ -1,20 +1,19 @@
-Received: from mail8.cadvision.com ([207.228.64.93] ident=root)
+Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15f28P-00057q-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Sep 2001 17:36:09 +0100
-Received: from grosmorne.wirelessnetworksinc.com (h-207-228-117-70.gen.cadvision.com [207.228.117.70])
-	by mail8.cadvision.com (8.9.3/8.9.3/CWT/DCE) with SMTP id KAA28237
-	for <linux-mtd@lists.infradead.org>; Thu, 6 Sep 2001 10:41:42 -0600
-From: Herman Oosthuysen <herman@wirelessnetworksinc.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: DiskOnChip write performance
-Date: Thu, 6 Sep 2001 10:45:46 -0600
-Content-Type: text/plain
-References: <01090609533800.00800@grosmorne.wirelessnetworksinc.com> <Pine.LNX.4.33.0109061600490.9437-100000@hex.linuxgrrls.org> <13924.999791398@redhat.com>
-In-Reply-To: <13924.999791398@redhat.com>
+	id 15f9zE-0005iA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2001 01:59:13 +0100
+Message-ID: <3B981BF6.24FD764D@sis.com.tw>
+Date: Fri, 07 Sep 2001 08:59:34 +0800
+From: Ollie Lho <ollie@sis.com.tw>
 MIME-Version: 1.0
-Message-Id: <01090610482402.00800@grosmorne.wirelessnetworksinc.com>
-Content-Transfer-Encoding: 8bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: kira brown <kira@hex.linuxgrrls.org>,
+        Herman Oosthuysen <herman@wirelessnetworksinc.com>,
+        "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: DiskOnChip write performance
+References: <Pine.LNX.4.33.0109061649230.9437-100000@hex.linuxgrrls.org> <14482.999791732@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,21 +25,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-In  my experience, a disk drive is always at least an order of magnitude slower
-than the figure in the sales brochure, so the measured 70KB/s is probably
-good...
-
-Herman
-
-On Thu, 06 Sep 2001, David Woodhouse wrote:
-> herman@wirelessnetworksinc.com said:
-> >  You may be able to speed the system up a little by optimizing the
-> > code, but the improvement will be insignificant compared to the erase
-> > cycle time.
+David Woodhouse wrote:
 > 
-> Don't count on that if you're using my drivers. There are some fairly 
-> inefficient algorithms in there which I threw in to see if I could get it 
-> to work, and haven't yet had time to rewrite.
+> kira@hex.linuxgrrls.org said:
+> >  There are basically two ways to speed this situation up:
 > 
-> --
-> dwmw2
+> Don't forget "don't use O(n^3) algorithms when trying to find a new block
+> to write to".
+> 
+
+What does this suppose to mean ??
+
+Ollie
