@@ -1,30 +1,22 @@
-Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12n4Dj-0007AA-00
-	for mtd-list@infradead.org; Wed, 03 May 2000 19:50:03 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12n4Dh-00079s-00
-	for cvs-notify@infradead.org; Wed, 03 May 2000 19:50:01 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel nftl.c'
-Message-Id: <E12n4Dh-00079s-00@infradead.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 03 May 2000 19:50:01 +0100
-Sender: owner-mtd@imladris.demon.co.uk
+Return-path: <paonia@home.welcomehome.org>
+Received: from home.welcomehome.org ([216.254.71.207])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 12n7SO-0007pZ-00
+	for mtd-list@infradead.org; Wed, 03 May 2000 23:17:24 +0100
+Received: (from paonia@localhost)
+	by home.welcomehome.org (8.9.3/8.9.3/Debian/GNU) id SAA10825
+	for mtd-list@infradead.org; Wed, 3 May 2000 18:21:30 -0400
+From: Paonia Ezrine <paonia@home.welcomehome.org>
+Message-Id: <200005032221.SAA10825@home.welcomehome.org>
+Subject: read only
+To: mtd-list@infradead.org
+Date: Wed, 3 May 2000 18:21:29 -0400 (EDT)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv27487/kernel
-
-Modified Files:
-	nftl.c 
-Log Message:
-End-of-day cleanup of the files I've forgotten to commit earlier.
-- endianness/wordsize fixes in ftl.h
-- userspace compilation issues in mtd.h
-- added sync in nftl.c
-- porting comment in util/ftl_*.c
-
-
-
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+I am looking to use the DOC or similar with lrp. Is there a way to set the
+device to read only mode so that no one can hack with it. I dont mean a
+software setting but a hardware one. Also which DOC or similar would
+people project for this application. Porlby need 2-20 megs.
