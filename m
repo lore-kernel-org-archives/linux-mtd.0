@@ -1,21 +1,23 @@
-Received: from mail.imc-berlin.de ([217.110.46.186] helo=mail.berlin.imc-berlin.de)
+Received: from phoenix.mvhi.com ([195.224.96.167] helo=phoenix.infradead.org)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18L5Pv-0002Oq-00
-	for <linux-mtd@lists.infradead.org>; Sun, 08 Dec 2002 17:40:35 +0000
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de [10.0.0.13])
-	by mail.berlin.imc-berlin.de (8.12.3/8.12.3) with ESMTP id gB8GD7LT000845
-	for <linux-mtd@lists.infradead.org>; Sun, 8 Dec 2002 17:13:07 +0100
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id TAA16393
-	for <linux-mtd@lists.infradead.org>; Sun, 8 Dec 2002 19:11:10 +0100 (CET)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <3DF38B3E.CD3CA322@imc-berlin.de>
-Date: Sun, 08 Dec 2002 19:11:10 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 18LFPY-0003Hr-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2002 04:20:52 +0000
+Received: from [203.196.146.243] (helo=Mistralsoftware.com)
+	by phoenix.infradead.org with esmtp (Exim 4.10)
+	id 18LFt8-00027X-00
+	for linux-mtd@lists.infradead.org; Mon, 09 Dec 2002 04:51:27 +0000
+Received: from skumar [192.168.13.30]
+	by mistralsoftware.com [192.168.10.12]
+	with SMTP (MDaemon.PRO.v5.0.0.R)
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2002 10:28:40 +0530
+Message-ID: <009901c29f41$4200e240$1e0da8c0@skumar>
+From: "Skumar" <skumar@mistralsoftware.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: mkfs.jffs2 problem
+Date: Mon, 9 Dec 2002 10:40:14 +0530
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Problems with BIG_ENDIAN
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -28,36 +30,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi there,
+ Hi ,
+ 
+ [root@embedded_linux del]# ls -la
+ total 44
+ drwxrwxr-x    2 skumar   skumar       4096 Dec  5 11:48 .
+ drwxrwxrwx   25 skumar   skumar       4096 Dec  5 10:45 ..
+ -rwxr-xr-x    1 root     root        13830 Nov 14 17:56 erase
+ -rwxr-xr-x    1 root     root        14751 Nov 14 17:56 eraseall
+ -rw-rw-r--    1 skumar   skumar         13 Nov 14 12:51 test.c
+ [root@embedded_linux del]# cd ..
+ [root@embedded_linux skumar]# ./mkfs.jffs2 -r del -o tmp/jffs2.image
+ [root@embedded_linux skumar]# /usr/src/redhat/SOURCES/mtd/util/jffs2reader
+ tmp/jffs2.image
+ -rw-rw-r-- 1    503      503             13 Nov 14 12:51 /test.c
+ -rwxr-xr-x 1    0        0             4096 Nov 14 17:56 /eraseall
+[root@embedded_linux skumar]#
+ 
+ as seen though the del directory contains 3 files the jffs2.image contains
+ only 2 file & the size of one of the files(eraseall)
+ 
+when i mount this jffs2.image, i can see only test.c file
 
-I am having trouble creating a big endian image with the latest CVS version of
-mkfs.jffs2!
-
-> mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -l -p
-> hexdump -n 16 -x images/pFlashdisk 
-0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
-
-> mkfs.jffs2 -d /tmp/initrd.tmp.5530 -o images/pFlashdisk -b -p
-> hexdump -n 16 -x images/pFlashdisk 
-0000000    1985    2003    000c    0000    b0b1    e41e    1985    e001
-
-Both options -l _and_ -b result in the same byteorder!!!
-
-An older version (mkfs.jffs2 revision 1.28) shows
-
-scholz@pinguin:~/Projekte/SELF> hexdump -n 16 -x images/pFlashdisk 
-0000000    1985    e001    0032    0000    76f3    5037    0001    0000
-
-for "-l" and 
-
-scholz@pinguin:~/Projekte/SELF> hexdump -n 16 -x images/pFlashdisk 
-0000000    8519    01e0    0000    3200    295a    e78c    0000    0100
-
-when using "-b" !!!
-
-Thanks,
-
-Steven
-
-
-BTW "mkfs.jffs2 -V" does _not_ work! "mkfs.jffs2 --version" works!
+what is the reason?
+ 
+ Regards
+ sharath
+ 
+ 
+ 
+ 
