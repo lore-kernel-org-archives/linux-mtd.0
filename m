@@ -1,16 +1,16 @@
-Received: from mx0.gmx.de ([213.165.64.100] helo=mx0.gmx.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZCSF-0002xe-00
-	for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2002 16:29:03 +0100
-Date: Mon, 29 Jul 2002 17:28:31 +0200 (MEST)
-From: Frank Oltmanns <frank.oltmanns.ml@gmx.de>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-References: <Pine.LNX.4.44.0207261230250.6899-100000@server.superbt.com>
+Received: from tomts20-srv.bellnexxia.net ([209.226.175.74])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17ZDKD-00032E-00
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2002 17:24:50 +0100
+Date: Mon, 29 Jul 2002 12:24:47 -0400 (EDT)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Frank Oltmanns <frank.oltmanns.ml@gmx.de>
+cc: linux-mtd@lists.infradead.org
 Subject: Re: Compiling Grub for DOC2000
-Message-ID: <20537.1027956511@www7.gmx.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20537.1027956511@www7.gmx.net>
+Message-ID: <Pine.LNX.4.44.0207291211590.20751-100000@server.superbt.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,47 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> 
-> On Fri, 26 Jul 2002, Mark Meade wrote:
-> 
-> > I've had good luck patching GRUB 0.92 with the 2002-05-30 patch at:
-> 
-> It's the autoconf/automake change.  These now require CCAS and CCASFLAGS
-> variables instead of AS and ASFLAGS.  The June 2002 MTD patch at the
-> savannah link you've mentioned will change those in Makefile.am's as
-> needed.  I advise to apply the patch against the post July 2, 2002 version
-> of GRUB if you need serial port console at boot time.
-> 
-> Ilguiz
-> 
-Thank you all... It's working fine now. But I got some new problems.
-1) With grub on my DoC, I can't boot from diskette anymore (I want to use
-Etherboot)
-2) My root-filesystem on DoC is not being mounted. I did the following:
-      doc_loadbios grub_firmware
-      nftl_format /dev/mtd0 90112  (since my firmware is 89792 bytes)
-      fdisk /dev/nftla  (created 1 partition)
-      mke2fs /dev/nftla1
-   copied the files from my root-diskette to nftla1
-   When I reboot, grub starts so I can enter:
-      kernel (dc0,0)/boot/bzImage root=/dev/nftla1
-      boot
-   The kernel is being loaded and uncompressed. My DiskOnChip (and its
-partition)
-   is found, but when it should say: "INIT: version x.xx booting" there is
-nothing.
-   If I enter:
-      kernel (dc0,0)/boot/bzImage root=/dev/fd0
-      boot
-   everything works fine...
+On Mon, 29 Jul 2002, Frank Oltmanns wrote:
 
-I browsed through the Mailing-list, but I can't find anyone, who had the
-same
-problem. I hope someone can help!?
+> 1) With grub on my DoC, I can't boot from diskette anymore (I want to use
+> Etherboot)
 
-TIA
-  Frank
+This can probably be solved by changing this line in stage2/stage2.c
 
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
+                    is_opened = find_config(0x80);
+
+to
+
+                    is_opened = find_config(0);
+
+>       nftl_format /dev/mtd0 90112  (since my firmware is 89792 bytes)
+
+You may need to specify a multiple of 16 KiB as a start of NFTL layer in
+case your erase block size is 16 KiB.  Make sure the /dev/nftl* drivers
+weren't activated or were unloaded when running nftl_format.
+
+>       fdisk /dev/nftla  (created 1 partition)
+
+I believe it is required to reload the MTD NFTL driver between nftl_format
+and any subsequent actions against /dev/nftl*.  Since my kernel has MTD
+NFTL driver compiled in, I need to reboot.
+
+Check out 
+
+    http://lists.infradead.org/pipermail/linux-mtd/2002-June/005240.html
+
+for detailed instructions.
+
+Ilguiz
