@@ -1,24 +1,25 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=mail.magtech.com.au)
+Received: from sonolo.xs4all.nl ([80.126.206.91] helo=sendmail.metro.cx)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cb8nU-0001HD-Ai
-	for linux-mtd@lists.infradead.org; Sun, 05 Dec 2004 21:40:21 -0500
-Received: from mail.magtech.com.au (localhost [127.0.0.1])
-	by localhost.magtech.com.au (Postfix) with ESMTP id D52BF895801
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Dec 2004 13:40:13 +1100 (EST)
-Received: from [192.168.65.196] (unknown [192.168.65.196])
-	by mail.magtech.com.au (Postfix) with ESMTP id C29368945FF
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Dec 2004 13:40:13 +1100 (EST)
-Message-ID: <41B3C68C.8080808@magellan-technology.com>
-Date: Mon, 06 Dec 2004 13:40:12 +1100
-From: Aras Vaichas <arasv@magellan-technology.com>
-MIME-Version: 1.0
-To: MTD-LIST <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: problem with mtdblock dev entries over 9
+	id 1CbJMS-0002XM-Ud
+	for linux-mtd@lists.infradead.org; Mon, 06 Dec 2004 08:57:10 -0500
+Received: from dave.dh.sono (dave.dh.sono [10.1.2.5])
+	by sendmail.metro.cx (8.13.1/8.13.1) with ESMTP id iB6Dv3EF008697
+	for <linux-mtd@lists.infradead.org>; Mon, 6 Dec 2004 13:57:03 GMT
+Received: from dave.dh.sono (localhost [127.0.0.1])
+	by dave.dh.sono (8.12.9-20030917/8.12.9) with ESMTP id iB6Dv3E9002958
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Mon, 6 Dec 2004 14:57:03 +0100
+Received: (from gmc@localhost)
+	by dave.dh.sono (8.12.9-20030917/8.12.9/Submit) id iB6Dv3Lr002957
+	for linux-mtd@lists.infradead.org; Mon, 6 Dec 2004 14:57:03 +0100
+Date: Mon, 6 Dec 2004 14:57:03 +0100
+From: gmc@metro.cx
+To: linux-mtd@lists.infradead.org
+Message-ID: <20041206135703.GA2899@metro.cx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: More mtd problems: scheduling while atomic
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +29,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm using the 2.4.x version of the MTD cvs.
+Hi All,
 
-I recently created over 9 MTD partitions and I noticed that /dev/mtdblock had 
-incorrect names for entries 10 and 11 instead they were ":" and ";". The 
-/dev/mtd directory was OK though.
+Another problem with the mtd driver it seems. This time i'm looking at
+cfi_cmdset_0002.c, and it seems there's more horrible bug stuff in there
+(see the dump below). 
 
-e.g
+I'm at this point clueless at what to do with this. It is causing me
+trouble however.. Is this a known issue?? Any hints whatsoever??
 
-/root # ll /dev/mtdblock
-drwxr-xr-x    1 root     root            0 Jan  1  1970 ./
-drwxr-xr-x    1 root     root            0 Jan  1  1970 ../
-brw-rw-rw-    1 root     root      31,   0 Jan  1  1970 0
-brw-rw-rw-    1 root     root      31,   1 Jan  1  1970 1
-brw-rw-rw-    1 root     root      31,   2 Jan  1  1970 2
-brw-rw-rw-    1 root     root      31,   3 Jan  1  1970 3
-brw-rw-rw-    1 root     root      31,   4 Jan  1  1970 4
-brw-rw-rw-    1 root     root      31,   5 Jan  1  1970 5
-brw-rw-rw-    1 root     root      31,   6 Jan  1  1970 6
-brw-rw-rw-    1 root     root      31,   7 Jan  1  1970 7
-brw-rw-rw-    1 root     root      31,   8 Jan  1  1970 8
-brw-rw-rw-    1 root     root      31,   9 Jan  1  1970 9
-brw-rw-rw-    1 root     root      31,  10 Jan  1  1970 :
-brw-rw-rw-    1 root     root      31,  11 Jan  1  1970 ;
+It's with 2.6.10-rc2-bk17 btw..
 
-solution (assuming number of partitions does not exceed 99!):
+Koen
 
---- drivers/mtd/mtd_blkdevs-24.c.orig   2004-12-06 13:29:21.568417264 +1100
-+++ drivers/mtd/mtd_blkdevs-24.c        2004-12-06 13:35:25.443099904 +1100
-@@ -476,10 +476,9 @@
-         }
-  #ifdef CONFIG_DEVFS_FS
-         if (!tr->part_bits) {
--               char name[2];
-+               char name[3];
+----- Forwarded message from Koen Martens <Koen.Martens@tomtom.com> -----
 
--               name[0] = '0' + new->devnum;
--               name[1] = 0;
-+               sprintf( name, "%d", new->devnum );
+   scheduling while atomic: sh/0x00000001/44
+   [<c01d2400>]        (schedule+0x0/0x680)       from       [<c014f078>]
+   (do_write_oneword+0x610/0xc4c)
+   [<c014ea68>]     (do_write_oneword+0x0/0xc4c)     from    [<c014fb54>]
+   (cfi_amdstd_write_words+0x4a0/0x850)
+   [<c014f6b4>]   (cfi_amdstd_write_words+0x0/0x850)   from  [<c00eb9b0>]
+   (ngffs_write+0x64/0xcc)
+   [<c00eb94c>]       (ngffs_write+0x0/0xcc)       from      [<c00e8314>]
+   (ngffs_put_chunk+0x60/0x80)
+    r7 = C1E07D5C  r6 = 00000001  r5 = C1E07688  r4 = C167F2B8
+   [<c00e82b4>]      (ngffs_put_chunk+0x0/0x80)     from     [<c00e92ec>]
+   (ngffs_create+0x3e8/0x530)
+    r8 = C1E07688  r7 = C18A2040  r6 = 0001002A  r5 = C18A21F8
+    r4 = 00000000
+   [<c00e8f04>]      (ngffs_create+0x0/0x530)      from      [<c009f0ec>]
+   (vfs_create+0x90/0xb8)
+   [<c009f05c>]       (vfs_create+0x0/0xb8)       from       [<c009f498>]
+   (open_namei+0x1b0/0x734)
+    r8 = C0020A64  r7 = C1883F34  r6 = 00000241  r5 = C1E0627C
+    r4 = C1E061D0
+   [<c009f2e8>]       (open_namei+0x0/0x734)       from      [<c0087934>]
+   (filp_open+0x30/0x4c)
+   [<c0087904>]        (filp_open+0x0/0x4c)       from       [<c0088184>]
+   (sys_open+0x48/0x8c)
+    r4 = 000001B6
+   [<c008813c>]        (sys_open+0x0/0x8c)        from       [<c00208e0>]
+   (ret_fast_syscall+0x0/0x2c)
+    r7 = 00000005  r6 = 00050CB0  r5 = 00050D08  r4 = FFFFFFFF
+   ngffs: ngffs_create: about to invalidate at oldofs
+   ngffs: ngffs_write: write at ofs 65582l, len=1l
+   scheduling while atomic: sh/0x00000001/44
+   [<c01d2400>]        (schedule+0x0/0x680)       from       [<c014f078>]
+   (do_write_oneword+0x610/0xc4c)
+   [<c014ea68>]     (do_write_oneword+0x0/0xc4c)     from    [<c014feb4>]
+   (cfi_amdstd_write_words+0x800/0x850)
+   [<c014f6b4>]   (cfi_amdstd_write_words+0x0/0x850)   from  [<c00eb9b0>]
+   (ngffs_write+0x64/0xcc)
+   [<c00eb94c>]       (ngffs_write+0x0/0xcc)       from      [<c00e8744>]
+   (ngffs_invalidate_chunk+0x30/0x5c)
+    r7 = C18A2040  r6 = 0001002A  r5 = C18A21F8  r4 = 00000000
+   [<c00e8714>]   (ngffs_invalidate_chunk+0x0/0x5c)   from   [<c00e9328>]
+   (ngffs_create+0x424/0x530)
+   [<c00e8f04>]      (ngffs_create+0x0/0x530)      from      [<c009f0ec>]
+   (vfs_create+0x90/0xb8)
+   [<c009f05c>]       (vfs_create+0x0/0xb8)       from       [<c009f498>]
+   (open_namei+0x1b0/0x734)
+    r8 = C0020A64  r7 = C1883F34  r6 = 00000241  r5 = C1E0627C
+    r4 = C1E061D0
+   [<c009f2e8>]       (open_namei+0x0/0x734)       from      [<c0087934>]
+   (filp_open+0x30/0x4c)
+   [<c0087904>]        (filp_open+0x0/0x4c)       from       [<c0088184>]
+   (sys_open+0x48/0x8c)
+    r4 = 000001B6
+   [<c008813c>]        (sys_open+0x0/0x8c)        from       [<c00208e0>]
+   (ret_fast_syscall+0x0/0x2c)
+    r7 = 00000005  r6 = 00050CB0  r5 = 00050D08  r4 = FFFFFFFF
 
-                 new->blkcore_priv =
-                         devfs_register(tr->blkcore_priv->devfs_dir_handle,
+----- End forwarded message -----
 
-regards,
-
-Aras Vaichas
+-- 
+K.F.J. Martens, Sonologic, http://www.sonologic.nl/
+Networking, embedded systems, unix expertise, artificial intelligence.
+Public PGP key: http://www.metro.cx/pubkey-gmc.asc
+Wondering about the funny attachment your mail program
+can't read? Visit http://www.openpgp.org/
