@@ -1,21 +1,20 @@
-Received: from bs1.dnx.de ([213.252.143.130] ident=root)
+Received: from msr83.hinet.net ([168.95.4.183] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17MuPV-0000hV-00
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2002 18:47:26 +0100
-Received: from p50861125.dip.t-dialin.net ([80.134.17.37] helo=pengutronix.de)
-	by bs1.dnx.de with asmtp (Exim 3.34 #1)
-	id 17MuPP-0004i6-00
-	for linux-mtd@lists.infradead.org; Tue, 25 Jun 2002 19:47:20 +0200
-Date: Tue, 25 Jun 2002 19:21:18 +0200
-From: Robert Schwebel <robert@schwebel.de>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: OpenSSH/OpenSSL is too big... any alternatives?
-Message-ID: <20020625192118.X21675@schwebel.de>
-References: <1025014199.2220.3.camel@beamer.servat.com> <1025016211.25773.14.camel@moses.outpostsentinel.com> <20020625145011.DB9EF6B3F4@zachs.place.org> <1025017476.2200.8.camel@beamer.servat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1025017476.2200.8.camel@beamer.servat.com>; from gonzalo@linuxaus.com on Wed, Jun 26, 2002 at 01:04:36AM +1000
+	id 17N2AI-0001F7-00
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 03:04:14 +0100
+Received: from stevexp (61-219-230-90.HINET-IP.hinet.net [61.219.230.90])
+	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id KAA02435
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 10:04:18 +0800 (CST)
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: RE: Halt at mounting
+Date: Wed, 26 Jun 2002 10:04:07 +0800
+Message-ID: <001901c21c37$5e021910$5501a8c0@synso.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <001201c21bfe$cae566b0$5501a8c0@synso.com.tw>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,27 +26,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, Jun 26, 2002 at 01:04:36AM +1000, Gonzalo Servat wrote:
-> (ftp.uk.linux.org/pub/linux/Networking/netkit) but getting it to compile
-> vs uClibc is tricky. I still get errors to do with 'rpc'. I've decided
-> to just use telnet for the time being (until I can get a bigger DOC) but
-> even this task is looking doubtful :(
-> 
-> Has anyone had any success compiling netkit (inetd & telnet server)
-> against uClibc?
+I use new snapshot source and I can mount jffs2, but it will take about
+27 seconds. How to reduce the mounting time?
 
-If telnet is enough for you you can use utelnetd
+Steve Tsai
 
-  http://www.pengutronix.de/software/utelnetd_en.html
 
-For LSH I'll have a look - be a little bit patient, I'm hopelessly flooded
-with other work right now, but it's definitely in the pipeline. 
 
-Robert
--- 
- +--------------------------------------------------------+
- | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
- | Pengutronix - Linux Solutions for Science and Industry |
- |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
- |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
- +--------------------------------------------------------+
+
+When I copy some files into the jffs2 directory and remove all the
+files, the next mounting procedure will halt after nand_read_ecc is
+done. The procedure is,
+
+eraseall /dev/mtd1                                            //OK
+mount -t jffs2 /dev/mtdblock1 /mnt                    //OK
+cp /etc/* /mnt                                                 //OK
+rm  /mnt/*                                                       //OK  
+umount /mnt                                                   //OK
+mount -t jffs2 /dev/mtdblock1 /mnt                    //halt
+
+Have any idea?  Where can I hack?
+
+The last output message,
+
+nand_read_ecc: from = 0x007fe00c, len = 12
+nand_read_ecc: from = 0x007fe00c, len = 4096
+nand_read_ecc: from = 0x007ff00c, len = 4084
+
+
+Steve Tsai
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
