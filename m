@@ -1,20 +1,21 @@
-Received: from ee.snu.ac.kr ([147.46.112.25])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15yVzO-00018t-00
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2001 10:19:22 +0000
-Received: from fdma.snu.ac.kr (fdma.snu.ac.kr [147.46.61.99])
-	by ee.snu.ac.kr (8.11.4/8.11.4) with ESMTP id f9UASbo13581
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2001 19:28:37 +0900 (KST)
-Received: from localhost (shkim@localhost)
-	by fdma.snu.ac.kr (8.10.1/8.10.1) with ESMTP id f9UACHs03898
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2001 19:12:17 +0900 (KST)
-Date: Tue, 30 Oct 2001 19:12:17 +0900 (KST)
-From: Kim Sang Hun <shkim@dsp.snu.ac.kr>
+	id 15yWJs-0001Fg-00
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2001 10:40:32 +0000
+Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
+	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id LAA06504
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2001 11:47:51 +0100
+Date: Tue, 30 Oct 2001 11:49:53 +0100
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
 To: linux-mtd@lists.infradead.org
-Subject: NAND Flash.... ll_rw_block error report...
-Message-ID: <Pine.SOL.4.10.10110301859070.3868-100000@fdma.snu.ac.kr>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: MTD partitioning rewrite
+Message-ID: <20011030114953.B27906@wohnheim.fh-wedel.de>
+References: <20011017105143.B319@wohnheim.fh-wedel.de> <20011024142842.A16290@wohnheim.fh-wedel.de> <20011026150826.A19450@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20011026150826.A19450@wohnheim.fh-wedel.de>; from joern@wohnheim.fh-wedel.de on Fri, Oct 26, 2001 at 03:08:26PM +0200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,61 +27,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Before saying problem, i'll explain my environment...
+Hi!
 
-ARM920T + NAND Flash...
+> New version, less FIXME's less TODO's. It is now running on my
+> hardware with the rw block driver. Next will be a new physmap
+> driver,
+> then char, then block_ro.
 
-Linux kernel 2.2.13
+http://wh.fh-wedel.de/~joern/software/kernel/mtd-0.0.6.tar.gz
 
-So, I use MTD for 2.2.18 and patch manualy...
+Two people have downloaded the last version, but noone told me that I
+forgot to include mtdblock.c. Well...
 
-and modify spia.c
+Now the char driver and the procfs file are working, too. The physmap
+driver *might* be working with multiple devices, it *is* working with
+only one. Since this might be a problem with either my code or my
+hardware, this is postponed for a while.
 
-Kernel configuration is
+I haven't done any tests without devfs support, yet. That should work,
+but I haven't even proven it correct.
 
-CONFIG_MTD=y
-CONFIG_MTD_DEBUG=y
-CONFIG_MTD_DEBUG_VERBOSE=0
-CONFIG_MTD_NAND=y
-CONFIG_MTD_NAND_ECC=y
-CONFIG_MTD_NAND_SPIA=y
-CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=y
+Jörn
 
-and.... booting linux
-
-> root> cat /proc/mtd
-> mtd0: 0x00200000 "spia NAND flash partition 1"
----> Find my nand flash...(ok?)
-
-When I command read/write/erase using /dev/mtd0 , all operations work
-well.
-
-PROBLEM..........PROBLEM.........
-
-but. 
-To use JFFS.
-> root> dd of=/dev/mtdblock0 if=jffs.img
-> mtdblock_open
-> ok
-> ll_rw_block: Trying to read nonexistent block-device 1f:00 (0)
-> /dev/mtdblock_release
-> mtdblock0: Input/output error
-> nand_sync:called
-> ok
-
-Failure happen in  "checking dev->request_fn" ( in functin
-ll_rw_block)
-
-I don't know the reason why this happen...?
-
-
-
-######################################
-Sang-Hun , Kim
-Multimedia Systems Lab. SNU
-School of EE. Seoul National Univ.
-E-Mail : shkim@fdma.snu.ac.kr
-Http://fdma.snu.ac.kr/~shkim
-HP : 017-398-6203
-######################################
+-- 
+Beware of bugs in the above code; I have only proved it correct,
+but not tried it.
+  -- Donald Knuth
