@@ -1,23 +1,22 @@
-Received: from carisma.slowglass.com ([195.224.96.167]
-	helo=phoenix.infradead.org)
+Received: from phoenix.infradead.org ([195.224.96.167])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190q1P-0007Mp-5f
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 22:43:51 +0100
+	id 190q22-0007Nh-V7
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 22:44:31 +0100
 Received: from air-2.osdl.org ([65.172.181.6] helo=doc.pdx.osdl.net)
 	by phoenix.infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.10)
-	id 190q1N-0000xZ-00
-	for linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 22:43:50 +0100
-Date: Wed, 2 Apr 2003 13:43:45 -0800
+	id 190q21-0000xf-00
+	for linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 22:44:29 +0100
+Date: Wed, 2 Apr 2003 13:44:26 -0800
 From: Bob Miller <rem@osdl.org>
 To: torvalds@transmeta.com
-Message-ID: <20030402214345.GA17147@doc.pdx.osdl.net>
+Message-ID: <20030402214426.GB17147@doc.pdx.osdl.net>
 Mime-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
 cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 2.5.66] Convert elan-104nc to to remove check_region().
+Subject: [PATCH 2.5.66] Convert octagon-5066 to to remove check_region().
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,56 +28,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Moved the request_region() call to replace check_region() and adds
 release_region()'s in the error paths that occure before the old
-call to request_region().  NOTE: This patch just updates comments.
+call to request_region().
 
 -- 
 Bob Miller					Email: rem@osdl.org
 Open Source Development Lab			Phone: 503.626.2455 Ext. 17
 
-diff -nru a/drivers/mtd/maps/elan-104nc.c b/drivers/mtd/maps/elan-104nc.c
---- a/drivers/mtd/maps/elan-104nc.c	wed apr  2 10:57:40 2003
-+++ b/drivers/mtd/maps/elan-104nc.c	wed apr  2 10:57:40 2003
-@@ -30,8 +30,8 @@
- the single flash device is divided into 3 partition which appear as separate
- mtd devices.
- 
--linux thinks that the i/o port is used by the pic and hence check_region() will
--always fail.  so we don't do it.  i just hope it doesn't break anything.
-+linux thinks that the i/o port is used by the pic and hence request_region()
-+will always fail.  so we don't do it.  i just hope it doesn't break anything.
- */
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -227,14 +227,14 @@
- 	}
- 
- 	iounmap((void *)iomapadr);
--	release_region(page_io,page_io_size);
-+	/* release_region(page_io,page_io_size); */
- }
- 
- int __init init_elan_104nc(void)
- {
- 	/* urg! we use i/o port 0x22 without request_region()ing it */
- 	/*
--	if (check_region(page_io,page_io_size) != 0) {
-+	if (!request_region(page_io,page_io_size, "elan-104nc flash")) {
- 		printk( kern_err"%s: io ports 0x%x-0x%x in use\n",
- 			elan_104nc_map.name,
- 			page_io, page_io+page_io_size-1 );
-@@ -245,12 +245,11 @@
+
+diff -Nru a/drivers/mtd/maps/octagon-5066.c b/drivers/mtd/maps/octagon-5066.c
+--- a/drivers/mtd/maps/octagon-5066.c	Wed Apr  2 10:57:40 2003
++++ b/drivers/mtd/maps/octagon-5066.c	Wed Apr  2 10:57:40 2003
+@@ -231,7 +231,7 @@
+ 	int i;
+ 	
+ 	// Do an autoprobe sequence
+-	if (check_region(PAGE_IO,1) != 0)
++	if (!request_region(PAGE_IO,1,"Octagon SSD"))
+ 		{
+ 			printk("5066: Page Register in Use\n");
+ 			return -EAGAIN;
+@@ -239,16 +239,16 @@
+ 	iomapadr = (unsigned long)ioremap(WINDOW_START, WINDOW_LENGTH);
  	if (!iomapadr) {
- 		printk( kern_err"%s: failed to ioremap memory region\n",
- 			elan_104nc_map.name );
-+		/*
-+		release_region(page_io,page_io_size);
-+		*/
- 		return -eio;
+ 		printk("Failed to ioremap memory region\n");
++		release_region(PAGE_IO,1);
+ 		return -EIO;
  	}
--
--	/*
--	request_region( page_io, page_io_size, "elan-104nc flash" );
--	*/
- 
- 	printk( kern_info"%s: io:0x%x-0x%x mem:0x%x-0x%x\n",
- 		elan_104nc_map.name,
+ 	if (OctProbe() != 0)
+ 		{
+ 			printk("5066: Octagon Probe Failed, is this an Octagon 5066 SBC?\n");
+ 			iounmap((void *)iomapadr);
++			release_region(PAGE_IO,1);
+ 			return -EAGAIN;
+ 		}
+-	
+-	request_region(PAGE_IO,1,"Octagon SSD");
+ 	
+ 	// Print out our little header..
+ 	printk("Octagon 5066 SSD IO:0x%x MEM:0x%x-0x%x\n",PAGE_IO,WINDOW_START,
