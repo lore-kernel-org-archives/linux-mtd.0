@@ -1,21 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.194])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AshWx-0001pw-Ra
-	for linux-mtd@lists.infradead.org; Mon, 16 Feb 2004 12:07:19 +0000
-Date: Mon, 16 Feb 2004 13:06:47 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Florian Schirmer <jolt@tuxbox.org>
-Message-ID: <20040216120647.GA7202@wohnheim.fh-wedel.de>
-References: <20040212195532.38851.qmail@web20728.mail.yahoo.com>
-	<200402130838.06005.jolt@tuxbox.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200402130838.06005.jolt@tuxbox.org>
-cc: Shawn Jin <shawnxtech@yahoo.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: No space left on a blank mtd device?
+Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
+	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1Asjfy-0002At-05
+	for linux-mtd@lists.infradead.org; Mon, 16 Feb 2004 14:24:46 +0000
+Message-ID: <4030D2AB.7010002@arcom.com>
+Date: Mon, 16 Feb 2004 14:24:43 +0000
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: CFI command set 0002 (AMD/Fujitsu) work.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 February 2004 08:38:04 +0100, Florian Schirmer wrote:
-> 
-> > Is it mandatory to make a 'blank' JFFS2 filesystem image even for a blank
-> > mtd device?
-> 
-> jffs2 will refuse to mount unless at least one jffs2 was found on the device. 
-> Thats the reason why you can't mount an empty device.
+Hi,
 
-...at least one jffs2 erase block was found...
+I'm currently working on cfi_cmdset_0002.c to get erase-suspend-program 
+working.  So far I've taken all the chip status checking code and 
+refactored it into a single function -- it was all a bit of a mess.
 
-> Just use eraseall -j <mtddevice>
-> 
-> It will create a dummy inode so you can mount the device.
+A couple of questions:
 
-No it won't, but jffs2 will happily mount an empty device.  *Any* data
-on the device and it has to find at least one jffs2 erase block, but
-empty is fine.
+1. There's a fair amount of crap related to very broken SST chips (all 
+the stuff for retrying commands).  a) This is mess and appears only 
+applicable to a very few number of chips; b) I'm not sure it would even 
+work if talking to the chip is broken then retrying a few times won't 
+guarantee it will work.  I'd suggest removing this stuff from 
+cfi_cmdset_0002.c.  Clearly the SST chips aren't compliant even though 
+they claim to be.  Thoughts?
 
-Jörn
+2. The "fast programming" feature (unlock bypass) which is currently 
+always disabled (due to "code brokeness"). I don't believe this will 
+ever work with erase-suspends.  Should the "fast programming" stuff be 
+removed?
 
+David Vrabel
 -- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
