@@ -1,14 +1,14 @@
-Received: from tomts5.bellnexxia.net ([209.226.175.25] helo=tomts5-srv.bellnexxia.net)
+Received: from tomts25-srv.bellnexxia.net ([209.226.175.188])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17HqBM-0008EF-00
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 19:15:52 +0100
-Date: Tue, 11 Jun 2002 14:15:50 -0400 (EDT)
+	id 17HqTg-0008Fi-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 19:34:48 +0100
+Date: Tue, 11 Jun 2002 14:34:45 -0400 (EDT)
 From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Mark Meade <mark@lakeshoremicro.com>
+To: Matt Vestal <vestal@activmedia.com>
 cc: linux-mtd@lists.infradead.org
 Subject: Re: DOC2000 and Grub
-In-Reply-To: <200206111405453.SM02488@there>
-Message-ID: <Pine.LNX.4.44.0206111411450.469-100000@server.superbt.com>
+In-Reply-To: <Pine.LNX.4.21.0206111354560.31856-100000@server.activmedia.com>
+Message-ID: <Pine.LNX.4.44.0206111430260.509-100000@server.superbt.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,25 +22,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mark,
+Thanks, Matt.  It seems the stripped down version of MTD/DOC2000/NFTL
+drivers bdev_diskonchip.c was unable to find an NFTL header in the flash
+memory.  The diagnostics from bdev_diskonchip.c should appear earlier when
+GRUB is starting.  Unfortunately, those messages are not currently routed
+to the serial port.  Does your oard have a video chip?
 
-On Tue, 11 Jun 2002, Mark Meade wrote:
-
-> Is the "erase_all" necessary?  Does this delete the Bad Block Table on the 
-> DoC 2000 or Millennuim?
-
-I agree erase_all is dangerous because it will delete the bad block table.  
-The smarter way of inactivating the NFTL driver would be obfuscating the 
-NFTL headers or implementing the previously mentioned ioctl() interface to 
-NFTL layer or relying on the M-Sys native MS-DOS based NFTL format 
-utility.
-
-> I was able to get a Millennium booting without any "erase_all" commands.  I 
-> guess I'm not clear on why this is needed.
-
-I was afraid that the NFTL driver would keep updating the /dev/mtd0 device 
-even when nftl_format was running.
-
-Best regards,
+If not, I think GRUB could be modified to switch to serial port earlier 
+based on hard coded menu options.
 
 Ilguiz
+
+On Tue, 11 Jun 2002, Matt Vestal wrote:
+
+> Now, with DOC_DEBUG defined -
+> [...]
+> open_device(): errnum 21
