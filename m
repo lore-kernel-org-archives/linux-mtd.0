@@ -1,19 +1,14 @@
-Received: from [64.170.22.142] (helo=mail.spewey.com)
+Received: from web13603.mail.yahoo.com ([216.136.175.114])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Uy77-0002t1-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2001 23:17:13 +0100
-Message-Id: <5.1.0.14.0.20010809172521.00a683d8@mail.spewey.com>
-Date: Thu, 09 Aug 2001 17:36:20 -0500
-To: "A. Craig West" <acwest-jffs@mail.bdkw.yi.org>
-From: Vipin Malik <vipin@embeddedlinuxworks.com>
-Subject: Re: JFFS2 is broken
-Cc: David Woodhouse <dwmw2@infradead.org>,jffs-dev <jffs-dev@axis.com>,
- MTD for Linux <linux-mtd@lists.infradead.org>,
- elw_dev_list@embeddedlinuxworks.com
-In-Reply-To: <Pine.LNX.4.10.10108091255370.12113-100000@gizmo.bdkw>
-References: <3B3BC857.7FB81774@daniel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+	id 15VQNv-0004bw-00
+	for <linux-mtd@lists.infradead.org>; Sat, 11 Aug 2001 05:28:27 +0100
+Message-ID: <20010811043417.4943.qmail@web13603.mail.yahoo.com>
+Date: Fri, 10 Aug 2001 21:34:17 -0700 (PDT)
+From: Luke <luke_epsilon@yahoo.com>
+Subject: Am29LV065D woes???
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,60 +20,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Yes,
+Hello all,
 
-As it stands right now, a task (not reading/writing to JFFS2) marked POSIX 
-real time (via the set_sched(2) calls), is blocked for ~50ms on my 133MHz 
-486 DX4 while another _non posix_ task is writing to JFFS2.
+I have just read through the MTD HOWTO and am trying
+to figure out what everything means.  I am new to
+flash and at work I was given a project to figure out
+how to use flash in an embedded linux system.  The
+system uses a Cyrix 486dx4 as the processor and has 4
+banks of 8M of SDRAM (so 32 M total) and a Am29LV065D
+flash chip.
 
-The blocking time is highly processor performance dependent.
+The data sheet for this flash chip says it is CFI
+compliant which sounds good as the main example in the
+HOWTO is a CFI example.  Some other things that may be
+relevant from the data sheet (like I said I am NEW to
+this stuff):
 
-However, any task writing to JFFS2 _can_ be blocked upto 10's of seconds 
-(in my test case >40 seconds).
-This happens when there is no more free space left on the JFFS2 fs and 
-garbage collect needs to be done to make space for the write.
+Am29LV065D:
+    - 64 Megabit (8M x 8-bit)
+    - uniform sector flash memory
+    - 128 64 Kbyte sectors
+    - 8,388,608 = 0x800000 bytes total
+    - data appears on DQ0 - DQ7
 
-If a POSIX task is writing to JFFS2, then that AND ALL OTHER tasks will get 
-blocked as the POSIX task has priority and the GC is done in the context of 
-the writing task.
+I built a kernel with the relevant pieces (nothing as
+a module) and when I burn the kernel/initrd/linux
+loader onto the flash (through a dongle connected on
+the parallel cable and some flash burning utility that
+amd has made) 
 
-So the moral of the story is that at the very least do not write to JFFS2 
-from a POSIX real time task under Linux.
+When I reboot I get a working linux system, mostly.  I
+get the message about no CFI flash chip found.  I am
+assumng that for one that I have entered the wrong
+values when I was compiling the kernel.  When setting
+the physical address mapping in the mtd section of the
+kernel - what should the values be for this chip?  I
+assume from the above info that the bus width is 8 bit
+and the size is 0x800000 - but I am unsure what to put
+down for an address to start.  Do I want this to point
+to someplace on the chip not already used by the
+kernel, initrd, linux loader, and the bios (which is
+sitting in the last 256k region on the flash).
 
-I really haven't done any tests re. blocking times of a _regular_ task not 
-writing to JFFS2, when there is another _regular_ task writing to JFFS2.
-
-That should be easy to setup and run with my jitter test program. At this 
-time I haven't released that program under GPL, but I have permission from 
-my company to release it, so if anyone wants it just ask and I'll send it 
-to you/put it in th mtd CVS rep.
-
-Re. why it takes that long for GC to happen on a full JFFS2 fs? David had 
-some thoughts that a particular singly linked list should be doubly linked- 
-which would help quite a lot. David?
-
-Vipin
-P.S. There's been lots of traffic on the MTD list. Are you referring to the 
-JFFS list?
+I want to be able to eventually mount the free space
+on the flash and use it as I would use any other
+mounted device.
 
 
-At 01:00 PM 8/9/2001 -0400, A. Craig West wrote:
->Is there any more word on this problem? I'm planning on porting jffs2 to the
->Agenda VR3, but have been holding off for a resolution of this issue...
->By the way, has anybody else noticed that there has been no traffic on 
->this list
->in at least a week?
->
->On Thu, 28 Jun 2001, Vipin Malik wrote:
->
-> > For all practical purposes, JFFS2, in its present form, IMHO,  is
-> > broken.
-> >
-> > I've been doing a lot of "jitter" or "blocking" time testing for various
-> > tasks running on a system where there is JFFS2 activity going on (info
-> > for those that have not been following my posts).
->-Snipped, but boils down to kernel blocks for up to 30 seconds-
->
->--
->Craig West         Ph: (416) 213-0300   |  It's not a bug,
->acwest-sig@mail.bdkw.yi.org             |  It's a feature...
+Any help and suggestions would GREATLY be
+appreciated!!!
+
+Thanks,
+Luke
+ 
+
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Send instant messages & get email alerts with Yahoo! Messenger.
+http://im.yahoo.com/
