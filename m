@@ -1,42 +1,44 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139OZD-0006mF-00
-	for mtd-list@infradead.org; Tue, 04 Jul 2000 10:00:31 +0100
+	id 139Ooe-0006ok-00
+	for mtd-list@infradead.org; Tue, 04 Jul 2000 10:16:28 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 139OZC-0006m9-00
-	for mtd@infradead.org; Tue, 04 Jul 2000 10:00:30 +0100
+	id 139Ood-0006oe-00
+	for mtd@infradead.org; Tue, 04 Jul 2000 10:16:27 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <s961b546.043@mail.pel.dk> 
-References: <s961b546.043@mail.pel.dk> 
-To: "Arnold Christensen" <AKC@pel.dk>
-Cc: mtd@infradead.org
-Subject: Re: FOUND IT + how to fix, Was: Using MTD + cfi_probe with RPXLite ? 
+To: linux-kernel@vger.rutgers.edu
+Cc: mtd@infradead.org, linux-router-devel@linuxrouter.org,
+  linux@handhelds.org, linux-embedded@waste.org
+Subject: Memory Technology Device code 2000-07-04 release.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 04 Jul 2000 10:04:26 +0100
-Message-ID: <8930.962701466@cygnus.co.uk>
+Date: Tue, 04 Jul 2000 10:20:19 +0100
+Message-ID: <9972.962702419@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I've been lazy for a long time and not bothered to tar it up and make 
+releases - ever since I set up anoncvs access. 
 
-AKC@pel.dk said:
-> cfi_probe couldn't detect the flash on the RPXLite because it only has
-> x32 access, which means A30,A31 isn't connected to the flash. So to
-> detect the flash and get information from it all address' needs *4,
-> eg.   0xAA becomes 0x2a8.
+But here's the release you've all been waiting for. It features sexy new 
+code for driving Common Flash Interface chips, 2.2 and 2.4 ports of Axis' 
+Journalling Flash Filesystem, updated FTL code, and lots and lots of code 
+cleanups for the places where I'd been particularly stupid. There's even a 
+little bit of documentation, which is still mostly relevant despite my best 
+efforts to obsolete it.
 
-> After the flash is detected in cfi_probe_new_chip, all the address'
-> needs *2  
+Get it from ftp://ftp.linux-mtd.infradead.org/pub/mtd/mtd-20000704.tar.gz
+or preferably:
 
-> There must be a better way than touching up the code by hand ;-)
+	cvs -d :pserver:anoncvs@infradead.org:/home/cvs login
+		(password "anoncvs")
+	cvs -d :pserver:anoncvs@infradead.org:/home/cvs co mtd
 
-Try the rpxlite map driver which I've added to the CVS tree. If it doesn't 
-work, let me have a patch for it.
+A slightly more detailed changelog is on the web page at
+http://www.linux-mtd.infradead.org/ along with the mailing list 
+archive.
 
-There's also a 'physmap' driver for normal physical mappings of flash 
-chips, which require ioremap() to get a virtual mapping - unlike nora.c 
-which has a virtual mapping set up for it by the kernel's VM init code.
 
 --
 dwmw2
