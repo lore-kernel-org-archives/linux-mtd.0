@@ -1,11 +1,11 @@
 Received: from [218.104.33.139] (helo=san.cn.mtlg.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B7s4k-0004KN-2r
-	for linux-mtd@lists.infradead.org; Mon, 29 Mar 2004 09:24:54 +0100
-Message-ID: <37B6F35E2FFAE447B874C31B40D30105020AC3@san.cn.mtlg.org>
+	id 1B7sCG-0004UH-2Y
+	for linux-mtd@lists.infradead.org; Mon, 29 Mar 2004 09:32:40 +0100
+Message-ID: <37B6F35E2FFAE447B874C31B40D30105020AC4@san.cn.mtlg.org>
 From: "Karl(Kai) Ji" <k.ji@cn.metrologic.com>
 To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Mon, 29 Mar 2004 16:24:45 +0800
+Date: Mon, 29 Mar 2004 16:32:37 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="gb2312"
@@ -42,6 +42,10 @@ zlib.h/zconf.h seems such modification is allowed.
  that is, 32K for windowBits=15 (default value) plus a few kilobytes
  for small objects.
 */
+
+
+With windowBits=14, I got `inflate returned (-3)' error, which probably
+comes from `invalid window size'. 
 
 Any hints is appreciated.
 
