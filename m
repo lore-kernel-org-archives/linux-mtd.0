@@ -1,17 +1,23 @@
-Received: from dswu26.btconnect.com ([193.113.154.27])
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19zuuw-0006Un-TL
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Sep 2003 10:17:38 +0100
-From: David Goodenough <david.goodenough@btconnect.com>
+Received: from h-66-166-124-218.lsanca54.covad.net ([66.166.124.218]
+	helo=sb-exchange1.rinconnetworks.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A045I-0007LP-JF
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Sep 2003 20:04:56 +0100
+Received: from sb-lnx3.rinconnetworks.com (localhost.localdomain [127.0.0.1])
+	h8IJ43FR006055
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Sep 2003 12:04:03 -0700
+Received: (from vangool@localhost)
+	by sb-lnx3.rinconnetworks.com (8.12.8/8.12.8/Submit) id h8IJ43xT006053
+	for linux-mtd@lists.infradead.org; Thu, 18 Sep 2003 12:04:03 -0700
+Date: Thu, 18 Sep 2003 12:04:03 -0700
+From: Paul van Gool <paul.vangool@rinconnetworks.com>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 18 Sep 2003 10:15:19 +0100
-MIME-Version: 1.0
+Message-ID: <20030918190403.GA6047@rinconnetworks.com>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200309181015.19673.david.goodenough@btconnect.com>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: Compulab 586CORE Flash support
+Content-Type: text/plain; charset=us-ascii
+Subject: PCI to Compact flash adapter question
+Reply-To: paul.vangool@rinconnetworks.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Has anyone produces the MTD glue to talk to the NOR or NAND Flash on any of
-the Compulab X86CORE boards?  Their own driver comes as part binary, and does
-not fit the MTD model.  I would feel happier with an all open source driver.
+Hi,
 
-As far as I can tell (but I could be wrong) neither of the existing SC520 MTD
-drivers will work with the X86CORE boards, but presumably they should not
-need too much alteration.  The NAND Flash on my particular board is Samsumg,
-and the documentation that comes with the board does list things like which 
-PAR windows are used by both the NOR and NAND flash.  
+can anybody recommend a PCI to Compact flash adapter that can be used with
+Linux?
 
-There was talk on the Voy discusion group for these boards about such an MTD
-driver, but the person who said they have written one only identified 
-themselves by the first name, not eMail address, and so the trail has gone
-quiet.
+Thanks in advance.
 
-I have a 586CORE (and 586BASE on which it is mounted), and I am 
-running Debian Linux on it, should anyone have anything they wish
-to test. 
-
-Thanks in advance
-
-David
+Paul
+-- 
+Paul van Gool                                               Rincon Networks
+paul.vangool@rinconnetworks.com                              (805)-705-1442
