@@ -1,20 +1,19 @@
-Received: from newfrnk82.franklin.com
-	([63.88.59.82] helo=earth-out.franklin.com ident=root)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16rgWa-0000KK-00
-	for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2002 15:41:40 +0100
-Received: from saturn.franklin.com (IDENT:root@saturn.franklin.com [192.9.200.2])
-	by earth-out.franklin.com (8.9.3/8.9.3) with ESMTP id JAA28677
-	for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2002 09:41:29 -0500
-Received: from mercury.franklin.com (IDENT:root@mercury.franklin.com [192.9.200.250])
-	by saturn.franklin.com (8.9.3/8.9.3) with ESMTP id JAA02624
-	for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2002 09:41:28 -0500
-Date: Sun, 31 Mar 2002 09:41:30 -0500
-Message-Id: <200203311441.JAA30938@mercury.franklin.com>
-From: Duane Ellis <duane_ellis@franklin.com>
-To: linux-mtd@lists.infradead.org
-Subject: paging the kernel out of nand flash.
-Reply-to: duane_ellis@franklin.com
+Received: from mail08.webhosting-verizon.net ([209.238.3.57] helo=mail05a.webhosting-verizon.net)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16rm0S-0000bx-00
+	for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2002 21:32:52 +0100
+Received: from www.forcedpotato.com (168.143.87.180)
+	by mail08.gte-hosting.net (RS ver 1.0.60s) with SMTP id 168470789
+	for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2002 15:32:47 -0500 (EST)
+From: "David Cooper" <david@forcedpotato.com>
+To: "Linux MTD" <linux-mtd@lists.infradead.org>
+Subject: MTD Always Formats Blocks on Startup
+Date: Sun, 31 Mar 2002 15:41:46 -0500
+Message-ID: <AIEOIMKIOAAJKHJOGAEFAENOCCAA.david@forcedpotato.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,37 +25,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm not sure which list to ask this on. But since my 
-question is NAND flash specific I thought I'd ask here.
+I'm trying to put together an embedded Linux system using a DOC 2000 as the
+boot device.
 
-I've done something like this before on other systems 
-but never with linux.
+So far I have managed to re-compile my 2.4.2 kernel so as to recognise the
+DOC and allow me to setup partitions and install an ext2 filesystem.
 
-Has anybody setup a system with the following attributes:
+The problem now is that upon loading the DOC and NFTL drivers the system
+goes into a lengthy process of "formatting blocks".  Typical messages on
+startup are as follows:
 
-1) Kernel is configured with XIP
-2) BUT Kernel actually lives in NAND flash
-3) When sections of the kernel code page fault
-   they are loaded from NAND flash.
+...
+...
+...
+Formatting block 5321
+_DOC_WaitReady called for out-of-line wait
+_DOC_WaitReady called for out-of-line wait
+Formatting block 5322
+_DOC_WaitReady called for out-of-line wait
+_DOC_WaitReady called for out-of-line wait
+Formatting block 5323
+...
+...
+...
 
-Maybe you do this with a small micro-ish kernel under
-the main kernel.
+This adds a good 2 minutes or so to my boot process as well as worrying the
+living daylights out of me.
 
-ie: on the MMU interrupt - decided - who should handle the fault
+Despite this drama my partitions and ext2 filesystem seem to remain intact.
 
-    ie: If kernel fault - micro-kernel handles. 
-    Otherwise let linux kernel handle it.
+Any ideas?
 
-    In effect, the kernel 'just thinks' it is doing XIP.
+Cheers,
 
-In addition, one would need to allocate space on the NAND flash
-devices such that a portion of the device (ie: the part with the
-kernel in it) is not available to linux.
-
-Along with a portion of the physical ram used for paging.
-
-And yes, I'm well aware of problems of a fault within a fault that
-handles a fault. Somethings must live in real memory.  I'm looking 
-at the 'rest of the kernel'
-
--Duane.
+David Cooper
