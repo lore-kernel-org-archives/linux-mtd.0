@@ -1,15 +1,17 @@
-Received: from orwell.zhwin.ch ([160.85.104.31])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 176Auh-0000mY-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 14:58:27 +0100
-Message-ID: <3CDBD211.48E1EB1@darkwater.ch>
-Date: Fri, 10 May 2002 15:58:41 +0200
-From: Thomas Preisig <preisig@darkwater.ch>
-MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Firmware for DOC2000
+	id 176B0N-0000oI-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 15:04:19 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3CDBD211.48E1EB1@darkwater.ch> 
+References: <3CDBD211.48E1EB1@darkwater.ch> 
+To: Thomas Preisig <preisig@darkwater.ch>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Firmware for DOC2000 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Fri, 10 May 2002 15:04:17 +0100
+Message-ID: <24930.1021039457@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,10 +23,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Does anybody know if I have to use the Firmware from M-Systems for my
-DOC2000 to make the DOC bootable under the patched LILO?
-Bye
-Tom
+preisig@darkwater.ch said:
+>  Does anybody know if I have to use the Firmware from M-Systems for my
+> DOC2000 to make the DOC bootable under the patched LILO?
 
+Yes, we do know. If you read the mailing list archives for even the last few 
+messages, you should know too.
 
-Content Security by MailMarshal
+--
+dwmw2
