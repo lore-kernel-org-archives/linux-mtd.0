@@ -1,26 +1,22 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B3dl9-0000QM-4K
-	for linux-mtd@lists.infradead.org; Wed, 17 Mar 2004 16:19:11 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HUQ008VMA5Z69@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 17 Mar 2004 17:08:24 +0100 (MET)
-Date: Wed, 17 Mar 2004 17:05:28 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <6.0.1.1.0.20040317161859.01f80e70@dns.struinfo.it>
-To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
-Message-id: <200403171705.28040.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
+	helo=wawnet.biz)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3eFy-0000bC-VD
+	for linux-mtd@lists.infradead.org; Wed, 17 Mar 2004 16:51:04 +0000
+Message-Id: <6.0.1.1.0.20040317171534.01f84b38@192.168.2.1>
+Date: Wed, 17 Mar 2004 17:51:00 +0100
+To: David Woodhouse <dwmw2@infradead.org>
+From: llandre <r&d@wawnet.biz>
+In-Reply-To: <1079538886.16952.88.camel@hades.cambridge.redhat.com>
 References: <6.0.1.1.0.20040317161859.01f80e70@dns.struinfo.it>
+ <1079538886.16952.88.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 cc: Andrea Scian <andrea.scian@wawnet.biz>
+cc: tglx@linutronix.de
+cc: linux-mtd@lists.infradead.org
 cc: Matteo Bortolin <matteo.bortolin@wawnet.biz>
 Subject: Re: Bug in nand_select_chip?
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 17 March 2004 16:44, llandre wrote:
-> Hi,
 
-The calling functions were changed, so there is no problem at all.
+>On Wed, 2004-03-17 at 16:44 +0100, llandre wrote:
+> > The old function, with chip==0, sets the nCE pin low:
+>
+> > The new function, with chip==0, sets the nCE pin high:
+>
+> > 1) Why did the code change this way?
+>
+>To handle multiple chips. More correctly, should should say
+>"The new function, with chip == N, sets nCE on chip #N high."
+>
+>To deselect _all_ chips you use chip == -1.
+>
+>All callers of nand_select_chip() were changed at the same time
+>though... this shouldn't cause a problem.
 
-> The new function, with chip==0, sets the nCE pin high:
+I fixed the driver as shown in the NAND Flash document:
+- nCE pin low when hwcontrol is invoked with NAND_CTL_SETNCE
+- nCE pin high when hwcontrol is invoked with NAND_CTL_CLRNCE
 
-Wrong. SETNCE means set nCE active, which sets the physical pin low.
-Therefor it is called _n_CE and SET_N_CE.
+and now the driver works with the new MTD code.
 
-> 1) Why did the code change this way?
 
-To handle multiple chips.
 
-> 2) I think the best way to overcome the problem is to define a proprietary
-> nand_select_chip function
-> in the low-level driver and to make the select_chip pointer in the struct
-> nand_chip to point to it. Correct?
 
-You need only a seperate select function, if you have non standard hardware. 
-The hwcontrol function should be enough adjustment for most boards, where you 
-have 1 NAND chip to select.
+Regards,
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+llandre 
