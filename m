@@ -1,20 +1,25 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from wproxy.gmail.com ([64.233.184.197])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cqx0d-0003RV-Lk
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 12:19:16 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "David A. Marlin" <dmarlin@redhat.com>
-In-Reply-To: <41ED2EB3.1070203@redhat.com>
-References: <41ED2EB3.1070203@redhat.com>
-Content-Type: text/plain
-Date: Tue, 18 Jan 2005 18:19:08 +0100
-Message-Id: <1106068748.16877.109.camel@tglx.tec.linutronix.de>
+	id 1Cqxfy-0003kg-MD
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2005 13:02:01 -0500
+Received: by wproxy.gmail.com with SMTP id 36so114247wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 18 Jan 2005 10:01:54 -0800 (PST)
+Message-ID: <6934efce05011810013ea479b@mail.gmail.com>
+Date: Tue, 18 Jan 2005 10:01:54 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501131317560.17331@phoenix.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: additional error checks for AG-AND erase/write
-Reply-To: tglx@linutronix.de
+References: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
+	<1105619501.26551.163.camel@hades.cambridge.redhat.com>
+	<Pine.LNX.4.58.0501131317560.17331@phoenix.infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: CRC on Read-Only partition
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +29,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-01-18 at 09:43 -0600, David A. Marlin wrote:
-> The Renesas AG-AND chips support additional error checking on erase and
-> write operations beyond just checking the operation status.  I think the
-> logic is that since ECC can correct 2-bit errors on read, if only a
-> single bit error occurs on and erase or write the operation should not
-> be considered FAIL.  Even if a single bit error occurs on read (in
-> addition to the single bit error on write), it will still be corrected
-> and no data will be lost.
-
-Hmm, have you other information ?
-
->From the data sheet:
- 
-When an error occurs in program page, block replacement including
-corresponding page should be done. 
-...
-When an error occurs in erase operation, future access to this bad block
-is prohibited. 
-
-An error on erase is definitely a criteria for putting the block on the
-bad list. Actually JFFS2 tries to erase it again before sorting it out.
-
-The single bit programming error does not make a lot of sense to me, as
-you always have to do RS error correction when you read the page, which
-results in a nice performance penalty. And its a clear sign that
-something went wrong. We try to reuse the block, see above.
-
-tglx
+My understanding is that NAND technology is prone to read error even
+if you aren't programming or eraseing it.   Such errors can occur
+randomly.  By that I mean the data reads fine and then its bad and
+then it reads fine...
