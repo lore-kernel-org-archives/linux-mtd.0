@@ -1,112 +1,95 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12WygK-0002W1-00
-	for mtd-list@infradead.org; Mon, 20 Mar 2000 09:41:04 +0000
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12WygI-0002Vv-00
-	for mtd@infradead.org; Mon, 20 Mar 2000 09:41:02 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <E12WPTl-0007TN-00@infradead.org> 
-References: <E12WPTl-0007TN-00@infradead.org> 
-To: "Dvir Oren" <dvir@lucidvon.com>
+	id 12X0Bc-0002eh-00
+	for mtd-list@infradead.org; Mon, 20 Mar 2000 11:17:28 +0000
+Message-ID: <B17893052A17D211A9860060978F7E63014A052F@mail.msys.co.il>
+From: Oron Ogdan <Orono@m-sys.com>
+To: David Woodhouse <dwmw2@infradead.org>, Dvir Oren <dvir@lucidvon.com>
 Cc: MTD <mtd@infradead.org>
-Subject: Re: Questions about MTD 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 20 Mar 2000 09:41:01 +0000
-Message-ID: <22351.953545261@devel2.axiom.internal>
+Subject: RE: Questions about MTD 
+Date: Mon, 20 Mar 2000 13:17:09 +0200
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+David W wrote :
+> Isn't docpmap /e supposed to reformat it with NFTL again 
+> after doing that?
+> 
+No it's just erasing the whole of the flash, Destroying the bad block 
+table and all, This command is really low level command that should be
+executed with care. You have to save the bad block table somehow. 
 
-dvir@lucidvon.com said:
->  a.  nftl_format in fact does not erase the first 48K, however it does
->  delete the partition table.  As I understand it, the disk partition
-> is in  the first 512 bytes, so how can that be? 
+A better command to use is dformat /unformat
 
-In the beginning, there was an expanse of raw flash.
+This will return the flash to it's virgin state (with the bad blocks marked
+not in a table but on the units themselves) instead of just 
 
-We set aside 49152 bytes of that for the firmware. The firmware may not 
-actually take up all of that space, but it's allocated anyway.
+> It's not using all the flash, because the IPL ROM doesn't 
+> know how to address 
+> the second half of each page of the flash - so it's wasting 
+> 8k (I think).
+The reason is the NFTL media header has to start on a unit boundary
+the firmware goes into just less then 6 units.
 
-The remainder of the flash is taken up with the actual NFTL filing system. 
-This is a kind of filesystem which emulates a block device.
+Oron
 
-Your boot sector is actually in this block device, not on the first 512 bytes 
-of the flash itself. When you overwrite the entire contents of the block 
-device by using nftl_format, the boot sector is overwritten too - it's just 
-like formatting a disk drive.
-
-Think of it like low-level format and high-level format (remember old drives 
-where you had to do that?)
-
-
-> b.  When I try to create the partition, there are a lot of file system
->  errors, possibly because I formatted starting at 49152.  It seems
-> like nftl_format doesn't set the start of the device from after the
-> first  48k, which will then conflict. 
-
-If this is after you've previously used nftl_format without specifying that 
-you want it to start at byte 49152, then there's an NFTL header at the 
-beginning of the flash which will be confusing things. 
-
-Otherwise, I'm not sure, and I'd need a complete transcript of what you did, 
-and the errors you way.
-
->  2.  doc_loadbios doesn't seem to do what it's supposed to do.
-> However, it does destroy the flash, allowing me to docpmap /e the
-> flash, which will lead me to the next...
-
-The firmware that comes from M-Systems isn't supposed to be just loaded 
-directly into the flash - which is what doc_loadbios does. You're supposed to 
-spread out the first 8k of data over the first 16k of the flash, I think, 
-putting 256 bytes of data at the beginning of each 512-byte page of flash.
-
-
-dvir@lucidvon.com said:
-> 3.  erase seg faults.  Is erase supposed to do what docpmap /e  does?
-
-erase is supposed to completely clear the flash, and not do anything more. 
-Isn't docpmap /e supposed to reformat it with NFTL again after doing that?
-
-It shouldn't be segfaulting though - where's it doing it?
-
-
-> 4.  Some odd problems when trying to dd the first 48k.  The  partition
-> table is not saved after removing the nftl module.  Only  after
-> writing it a second time does it get saved.
-
-dd from where to where? Did you use the /dev/mtd0 device or /dev/nftla ?
-
-
-dvir@lucidvon.com said:
-> 5.  One thing I don't understand:  even though everybody talks  about
-> the first 48k being the firmware, the firmware itself is less  than
-> 48k.  How does that work? 
-
-It's not using all the flash, because the IPL ROM doesn't know how to address 
-the second half of each page of the flash - so it's wasting 8k (I think).
-
-> And what about the first 512bytes  of the partition table? 
-
-That's somewhere in the NFTL.
-
-
-> Has anybody succeeded in booting off a DiskOnChip 2000 using  the MTD
-> drivers?
-
-Not yet. I have grub loading from DiskOnChip, but not then capable of getting 
-a kernel off the NFTL.
-
-
-
-
-
---
-dwmw2
-
-
+begin 600 winmail.dat
+M>)\^(@T+`0:0"``$```````!``$``0>0!@`(````Y`0```````#H``$(@`<`
+M&````$E032Y-:6-R;W-O9G0@36%I;"Y.;W1E`#$(`06``P`.````T`<#`!0`
+M#0`1``D``0`6`0$@@`,`#@```-`'`P`4``T`$0`+``$`&`$!"8`!`"$````Y
+M-S5!-CDP1$,Q1D1$,S$Q038T1$8P0S(U,$,Q,#`P,``3!P$$@`$`&0```%)%
+M.B!1=65S=&EO;G,@86)O=70@351$(``<"`$-@`0``@````(``@`!`Y`&`(0(
+M```R````"P`"``$````#`"X``````$``.0"P$PO579*_`1X`<``!````%0``
+M`%%U97-T:6]N<R!A8F]U="!-5$0@``````(!<0`!````&P````&_DE:%B1[E
+M\U_^,!'3J<H`8)>/?F,``36`L``"`0D0`0```/<"``#S`@``<P0``$Q:1G41
+MGCN9`P`*`')C<&<Q,C7B,@-#=&5X!4$!`P'W_PJ``J0#Y`<3`H`/\P!0!%8_
+M"%4'LA$E#E$#`0(`8VCA"L!S970R!@`&PQ$E]C,$1A.W,!(L$3,([PGWMCL8
+M'PXP-1$B#&!C`%`S"PD!9#,V%E`+IB!$`&%V:60@5R!W,P-@#K`@.@JB"H`^
+M()!)<VXG!4!D;PWP$0#`<"`O';!S=7",<&\4$!TP=&\@&"!M`A!R`,`%0&D%
+M0`/P=`)H![!&5$P@86?W"W$*XQXB80&`$H$>P`N`9F<?\!/@=#\=YAWD3HL@
+M$"#`)P0@:G5S!4"=!)!A`)`C`QVP=V@&\"D=L&]F):-F"V!S:%8L'.`'D'0#
+M8'DE=F+N81TP`F`>T&LAY0&1)B&7`'`=,`=`;"<05&@$`/H@!:!M`X$=,"HQ
+M&"`IP9QY(!>P!^`F('9E`R!/*F8C,A]@)@!U;"A!97<=Y`[`!9!U#K`=,"#S
+M8Z$*P&4N(%D(8"`3X+LKX!_R<R]S)_LI)',#<+IE)@!W+P`=Y!WD02U1?P)`
+M$H$L)R`0)/`=L"HQ9/$@52]U;B!4,@HJ$P/P^RG0("%T"'`#H":''_(DDWD=
+M$')G(<$E`""0';`HSR#S)^L$(`#`<FL)@!WDKFX=D""P`Z!A,05B+B"_)D`W
+M-#4`(,`$("6Q;100\FPKX',I.X$E`"L@'3#_)E$DXS(*'D$DHCM2)/`B\C\I
+MP29Z+6`NP#0");))4/$A<%)/31ZQ!Y`>@AWFOFL[4`?@,;$?\B@P9!@@?P02
+M'?4ELA00!:`ID1/@;*\F8"91*R`3T"`*L&<F/*P@+3%A)(1W)5!T(O)E'>8X
+M**`H22,A"X!K_"DN->8=L"L1,7`#H"HQ]R6R(4,'@&0',"]0/E$2@?\3X#TQ
+M+\$!D``@/'([P#SR[R@0"&`ID`K`>2C%)I(X@.9M21`8("!G0R$[@2`!WR3C
+M)B`$$26Q`Z`V/.1*U5T=Y$\#8`N0'?-]5"``'@!"$`$````H````/#(R,S4Q
+M+CDU,S4T-3(V,4!D979E;#(N87AI;VTN:6YT97)N86P^``,`WC_D!````P`)
+M60$````#``"`""`&``````#`````````1@````!2A0``)VH!`!X``8`((`8`
+M`````,````````!&`````%2%```!````!````#DN,``+`,N`""`&``````#`
+M````````1@`````&A0````````,``H`((`8``````,````````!&``````&%
+M````````"P`#@`@@!@``````P````````$8``````X4````````+``2`""`&
+M``````#`````````1@`````.A0````````,`!8`((`8``````,````````!&
+M`````!"%`````````P`&@`@@!@``````P````````$8`````$84````````#
+M``>`""`&``````#`````````1@`````8A0```````!X`"(`((`8``````,``
+M``````!&`````#:%```!`````0`````````>``F`""`&``````#`````````
+M1@`````WA0```0````$`````````'@`*@`@@!@``````P````````$8`````
+M.(4```$````!``````````,`\3\)!```'@`Q0`$````&````3U)/3D\````#
+M`!I``````!X`,$`!````!@```$]23TY/`````P`90``````#`/T_Y`0```,`
+M)@```````P`V```````#`(`0_____P(!1P`!````-@```&,]55,[83T@.W`]
+M32U3>7-T96US.VP]35,M15A#2$%.1T4M,#`P,S(P,3$Q-S`Y6BTV.#(R````
+M`@'Y/P$```!,`````````-RG0,C`0A`:M+D(`"LOX8(!`````````"]//4TM
+M4UE35$5-4R]/53U414PM059)5B]#3CU214-)4$E%3E13+T-./4]23TY/`!X`
+M^#\!````"P```$]R;VX@3V=D86X``!X`.$`!````!@```$]23TY/`````@'[
+M/P$```!,`````````-RG0,C`0A`:M+D(`"LOX8(!`````````"]//4TM4UE3
+M5$5-4R]/53U414PM059)5B]#3CU214-)4$E%3E13+T-./4]23TY/`!X`^C\!
+M````"P```$]R;VX@3V=D86X``!X`.4`!````!@```$]23TY/````0``',.!`
+M$M!=DK\!0``(,)`:AM9=DK\!'@`]``$````%````4D4Z(``````>`!T.`0``
+M`!4```!1=65S=&EO;G,@86)O=70@351$(``````>`#40`0```#L````\0C$W
+M.#DS,#4R03$W1#(Q,4$Y.#8P,#8P.3<X1C=%-C,P,31!,#4R1D!M86EL+FUS
+M>7,N8V\N:6P^```+`"D```````L`(P```````P`&$%;@:MX#``<050(```,`
+M$!```````P`1$``````>``@0`0```&4```!$059)1%=74D]413I)4TY41$]#
+M4$U!4"]%4U504$]314143U)%1D]234%42517251(3D943$%'04E.049415)$
+M3TE.1U1(050_3D])5%-*55-415)!4TE.1U1(15=(3TQ%3T94``````(!?P`!
+M````.P```#Q",3<X.3,P-3)!,3=$,C$Q03DX-C`P-C`Y-SA&-T4V,S`Q-$$P
+8-3)&0&UA:6PN;7-Y<RYC;RYI;#X``-?C
+`
+end
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
