@@ -1,18 +1,16 @@
-Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18WTs5-0003Cj-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2003 04:00:45 +0000
-Received: from [192.168.4.57] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2674881 for linux-mtd@lists.infradead.org; Wed, 08 Jan 2003 20:31:47 -0800
-Message-ID: <3E1CFAEC.2090608@redswitch.com>
-Date: Wed, 08 Jan 2003 20:30:36 -0800
-From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
+Received: from web10306.mail.yahoo.com ([216.136.130.84])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18WbI6-000405-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2003 11:56:07 +0000
+Message-ID: <20030109122653.4606.qmail@web10306.mail.yahoo.com>
+Date: Thu, 9 Jan 2003 04:26:53 -0800 (PST)
+From: Sanal Kumar <p_sanalk@yahoo.com>
+Subject: Re: Accessing DiskonChip 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
+In-Reply-To: <27941.1041929480@passion.cambridge.redhat.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Compilation error on the latest mtd code
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,31 +22,119 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-When compiling the latest mtd code with the kernel linuxppc_2_4_devel 
-checked out from bk://ppc.bkbits.net, I encountered the following error. 
-This kind of error seems to be caused by some special control character 
-in a text file. So I used 'dos2unix' to convert all header files. But it 
-didn't solve the error. Any hints? Thank you very much.
+Hi David ,
+
+Sorry for not explaining the problem in detail.
+I have read the howto's on the infradead .
+But still I dont understand how to create a partition
+on Disk on chip
+and have filesystem on it.
+I have tried with nftl_* .But I could not do anything.
+
+Could you please explain what I need to do for making
+the filesystem on DOC.
 
 
-ppc_8xx-gcc -D__KERNEL__ 
--I/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_
-devel/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 
--fno-strict-aliasing
--fno-common -fomit-frame-pointer 
--I/u/xjin/2_4_devel/Software/Linux/MPC855/linux
-ppc_2_4_devel/arch/ppc -fsigned-char -msoft-float -pipe -ffixed-r2 
--Wno-uninitia
-lized -mmultiple -mstring   -nostdinc -I 
-/opt/eldk2.0/usr/lib/gcc-lib/ppc-linux/
-2.95.4/include -DKBUILD_BASENAME=mtdblock_core  -c -o mtdblock-core.o 
-mtdblock-c
-ore.c
-In file included from 
-/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel
-/include/linux/blk.h:4,
-                  from mtdblock-core.c:18:
-/u/xjin/2_4_devel/Software/Linux/MPC855/linuxppc_2_4_devel/include/linux/blkdev.
-h:147: parse error before `struct'
+Boot Messages
+--------------
 
-- Shawn.
+out-of-line wait
+_DoC_WaitReady called for out-of-line wait
+.
+. _DoC_WaitReady called for out-of-line wait
+
+Could not find valid boot record
+Could not mount NFTL device
+
+and using nftl_format I tried to format the diskon
+chip But I get an error like the following
+
+NFTL_open
+ENODEV: thisNFTL = 0, minor = 23808, ip = c94ac4c0, fp
+= c965caa0
+NFTL_open
+ENODEV: thisNFTL = 0, minor = 23809, ip = c94ac6e0, fp
+= c965ca20 The only thing I could do was
+
+dd if=XXXX of=/dev/mtd0
+
+
+
+I am adding part of my .config here.
+-----------------------------------
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+CONFIG_MTD_PARTITIONS=y
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_BOOTLDR_PARTS is not set
+# CONFIG_MTD_AFS_PARTS is not set #
+# User Modules And Translation Layers
+#
+CONFIG_MTD_CHAR=y
+# CONFIG_MTD_BLOCK is not set
+# CONFIG_MTD_BLOCK_RO is not set
+# CONFIG_FTL is not set
+CONFIG_NFTL=y
+CONFIG_NFTL_RW=y #
+# RAM/ROM/Flash chip drivers
+#
+# CONFIG_MTD_CFI is not set
+# CONFIG_MTD_JEDECPROBE is not set
+# CONFIG_MTD_GEN_PROBE is not set
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set #
+# Mapping drivers for chip access
+# #
+# Self-contained MTD device drivers
+#
+#
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+# CONFIG_MTD_BLKMTD is not set #
+# Disk-On-Chip Device Drivers
+#
+# CONFIG_MTD_DOC1000 is not set
+CONFIG_MTD_DOC2000=y
+CONFIG_MTD_DOC2001=y
+CONFIG_MTD_DOCPROBE=y
+# CONFIG_MTD_DOCPROBE_ADVANCED is not set
+CONFIG_MTD_DOCPROBE_ADDRESS=0
+# CONFIG_MTD_DOCPROBE_HIGH is not set
+# CONFIG_MTD_DOCPROBE_55AA is not set #
+# NAND Flash Device Drivers
+#
+# CONFIG_MTD_NAND is not set
+
+
+TIA
+Best Regards
+Sanal
+
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> p_sanalk@yahoo.com said:
+> >  I have added nftl support. So i need to support
+> make a filesystem on
+> > disk on chip How can I do that. 
+> 
+> Might have been useful had you included this
+> information in your first 
+> message. The HOWTO should suffice to get you going
+> from that point.
+> 
+> --
+> dwmw2
+> 
+> 
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
