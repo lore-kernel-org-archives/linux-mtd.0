@@ -1,41 +1,52 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11eD1g-0004Yh-00
-	for mtd@infradead.org; Thu, 21 Oct 1999 08:52:44 +0100
-To: "Mark Ferrell" <mferrell@nortelnetworks.com>
-cc: mtd@infradead.org
-Subject: Re: pmc551 status 
+	id 11eLK4-00054L-00
+	for mtd@infradead.org; Thu, 21 Oct 1999 17:44:16 +0100
+To: Ian Eure <ieure@uswest.net>
+Cc: linux-kernel@vger.rutgers.edu, mtd@infradead.org
+Subject: Re: Linux + DiskOnChip problems 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Date: Thu, 21 Oct 1999 08:52:43 +0100
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 21 Oct 1999 17:44:15 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11eD1f-0002cH-00@devel2.axiom.internal>
+Message-Id: <E11eLK3-00018z-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-mferrell@nortelnetworks.com said:
->  And that's it.  It opens the device for a short duration of time ..
-> but nothing comes forth.  I tried all sortsa fun with noluck.  Any
-> ideas, suggestions, large bat's to beat the system about the head
-> with? 
+ieure@uswest.net said:
+> I have stripped the kernel down as small as I can get it, and I still
+> can't boot it with the DOC. Does anyone know if there is some solution
+> to this dilemma, or should I just bite my tongue and use a LILO
+> floppy? I'd rather not, since the netboot stuff is really cool. :^) 
 
-Hmmm. To test your driver itself, use the character devices, which are what 
-/dev/mtd0 ought to be.
+For a start, unless you're helping to beta test my GPL'd DiskOnChip driver for 
+Linux from http://www.linux-mtd.infradead.org/ then I don't want to help you.
 
-When you're sure that's OK, you ought just to be able to load the mtdblock 
-device (after your driver) and use /dev/mtdblock0 too. There may be bugs in 
-the mtdblock code, however.
+If you'll download and test it, then you're permitted to read the rest of this 
+mail...
 
-Can you trace and send me the oops that you get if you load mtd, pmc551, then 
-mtdblock in that order?
+ ... do you promise ? ....
 
-Also, it's worth checking that the mtdblock code actually sets the size of the 
-block device. The kernel might be refusing to pass on any read() requests 
-because we've left the device size set to zero.
+
+If you're netbooting, you can just dump the firmware completely. Scribble over 
+the first 48k of the DiskOnChip by using the direct access device /dev/mtd0 
+and then it'll never try to load the BIOS again. 
+
+We have also been discussing possible alternatives to this which allow you to 
+actually boot from the DiskOnChip. It should be fairly simple to throw 
+together a boot loader which fetches the kernel out of the device, puts it in 
+place and executes it - without understanding the NFTL translation layer at 
+all. Sort of like LILO but not.
+
+Another alternative would be to take my driver and try to replace their 
+provided firmware with my code - and to reduce the amount of caching which it 
+does. I'm fairly sure that the reason it's sucking up all your RAM is because 
+it is caching block information from the NFTL. That's not strictly necessary - 
+it's a performance boost, but not if it prevents your system from booting.
+
+
 
 ----                                ----                                 ----
 David Woodhouse       David.Woodhouse@mvhi.com      Office: (+44) 1223 810302
