@@ -1,75 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13Kl2N-00026w-00
-	for mtd-list@infradead.org; Fri, 04 Aug 2000 18:13:35 +0100
-Received: from web5302.mail.yahoo.com ([216.115.106.111])
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13Kl2M-00026q-00
-	for mtd@infradead.org; Fri, 04 Aug 2000 18:13:34 +0100
-Message-ID: <20000804171302.3195.qmail@web5302.mail.yahoo.com>
-Date: Fri, 4 Aug 2000 13:13:02 -0400 (EDT)
-From: Juan Gonzo <kayemmess@yahoo.ca>
-Subject: compile errors - missing .h?
-To: MTD Mailing List <mtd@infradead.org>
+	id 13KwR2-0003q3-00
+	for mtd-list@infradead.org; Sat, 05 Aug 2000 06:23:48 +0100
+Date: Fri, 4 Aug 2000 23:22:34 -0600 (MDT)
+From: root <root@deltatee.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: David Vrabel <dvrabel@arcom.co.uk>, mtd@infradead.org
+Subject: Re: Booting from flash 
+In-Reply-To: <25533.965057345@cygnus.co.uk>
+Message-ID: <Pine.LNX.3.96.1000804232129.16383A-100000@white.priv.deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I updated via CVS my linux source tree today.  When I compile
-I get the following errors:
 
-================
-intrep.o intrep.c
-intrep.c: In function `jffs_create_control':
-intrep.c:443: structure has no member named `delete_list'
-intrep.c: In function `jffs_cleanup_control':
-intrep.c:470: structure has no member named `delete_list'
-intrep.c:472: structure has no member named `delete_list'
-intrep.c:473: structure has no member named `delete_list'
-intrep.c:473: structure has no member named `delete_list'
-intrep.c: In function `jffs_build_fs':
-intrep.c:556: structure has no member named `delete_list'
-intrep.c:560: structure has no member named `delete_list'
-intrep.c:563: structure has no member named `delete_list'
-intrep.c:564: structure has no member named `delete_list'
-intrep.c:564: structure has no member named `delete_list'
-intrep.c: In function `jffs_scan_flash':
-intrep.c:891: sizeof applied to an incomplete type
-intrep.c:900: dereferencing pointer to incomplete type
-intrep.c:901: dereferencing pointer to incomplete type
-intrep.c:901: structure has no member named `delete_list'
-intrep.c:902: structure has no member named `delete_list'
-intrep.c: In function `thread_should_wake':
-intrep.c:2769: `MIN_FREE_BYTES' undeclared (first use in this function)
-intrep.c:2769: (Each undeclared identifier is reported only once
-intrep.c:2769: for each function it appears in.)
-intrep.c:2770: `MAX_DIRTY_BYTES' undeclared (first use in this
-function)
-intrep.c:2771: warning: control reaches end of non-void function
-make[3]: *** [intrep.o] Error 1
-make[3]: Leaving directory `/home/kelly/armbuild/jinux/fs/jffs'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/home/kelly/armbuild/jinux/fs/jffs'
-make[1]: *** [_subdir_jffs] Error 2
-make[1]: Leaving directory `/home/kelly/armbuild/jinux/fs'
-make: *** [_dir_fs] Error 2
-=================
+On Mon, 31 Jul 2000, David Woodhouse wrote:
 
-I remember a while back David saying that a person might
-miss updates to include/linux/jffs.h using CVS cause he 
-uses a symlink farm for this file.  I suspect this is why my
-compile is failing.
+> >  How would I go about getting linux to boot of flash.
+> 
+> See Jason's stuff in the boot/ directory of my CVS tree. I haven't looked 
+> at it. Other people are booting off flash quite happily.
 
-If this is the case, how can someone get 'jffs.h'?
+Since JFFS is working so nice someone really needs to write a version that
+can speak JFFS, then you will have a complete solution! 
 
-Thanks,
-   -- kelly
+I have no time though, we are moving offices suddenly :<
 
+Jason
 
-_______________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.ca address at http://mail.yahoo.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
