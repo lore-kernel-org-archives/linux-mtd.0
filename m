@@ -1,57 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Q95Z-0001jF-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 14:27:25 +0000
-Received: from d167.as5200.mesatop.com ([208.164.122.167] helo=localhost.localdomain)
+	id 14QAA9-0002Gq-00
+	for mtd-list@infradead.org; Tue, 06 Feb 2001 15:36:13 +0000
+Received: from [195.166.20.93] (helo=frumious.unidec.co.uk)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14Q95X-0001j9-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 14:27:24 +0000
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (Postfix) with SMTP id 3F86B3A5
-	for <mtd@infradead.org>; Tue,  6 Feb 2001 07:30:11 -0700 (MST)
-From: Steven Cole <elenstev@mesatop.com>
-Reply-To: elenstev@mesatop.com
-Date: Tue, 6 Feb 2001 07:30:11 -0700
+	id 14QAA7-0002Gj-00
+	for mtd@infradead.org; Tue, 06 Feb 2001 15:36:12 +0000
+Received: from localhost (localhost [[UNIX: localhost]])
+	by frumious.unidec.co.uk (8.11.0/8.11.0) id f16FZX908507
+	for mtd@infradead.org; Tue, 6 Feb 2001 15:35:33 GMT
+From: dr john halewood <john@frumious.unidec.co.uk>
+To: mtd@infradead.org
+Subject: Re: Maybe FAQ, but I don't know te answer...
+Date: Tue, 6 Feb 2001 15:35:33 +0000
 Content-Type: text/plain;
   charset="us-ascii"
-Subject: Re: [PATCH] 2.4.1-ac3 CONFIG_INPUT documentation in Configure.help
-To: mtd@infradead.org
+References: <003c01c08fd2$db3d36a0$016310ac@archimede> <15502.981449891@redhat.com>
+In-Reply-To: <15502.981449891@redhat.com>
 MIME-Version: 1.0
-Message-Id: <01020607301103.02799@localhost.localdomain>
+Message-Id: <0102061535330I.29605@frumious.unidec.co.uk>
 Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tuesday 06 February 2001 08:58, David Woodhouse wrote:
+> You can leave the original firmware in place, which makes it pretend to be
+> a BIOS-supported hard drive. So you can use any bootloader, although some
+> versions of LILO have problems with the amount of memory that the firmware
+> eats.
 
-On Tuesday 06 February 2001 02:46, David Woodhouse wrote:
-> elenstev@mesatop.com said:
-> >  Now, only  496 undocumented config options in the 2.4.1-ac3 tree left
-> > to go, out of a total of 1982, of which 40 are apparently unused.
->
-> There are quite possibly some MTD related ones already in my CVS which I've
-> forgotten to flush in the last set of patches. Don't hesitate to poke me
-> (please Cc mtd@infradead.org in the hope that someone else will do it
-> instead though :)
+ I found that lilo < 21.4 would hang at boot with a 24Mb DOC2000. 21.5&6 both 
+work fine with it. And the one that shipped with RH7 didn't even get as far 
+as hanging on one of my development boxes whilst the one in 6.2 was fine (for 
+some reason I've got a 15Gb hard drive attached to it).
 
-It looks like the following MTD related config options have no help in
-Configure.help:
+cheers
+john
 
-CONFIG_MTD_CFI_AMDSTD
-CONFIG_MTD_DEBUG
-CONFIG_MTD_DEBUG_VERBOSE
-CONFIG_MTD_DOCPROBE_55AA
-CONFIG_MTD_DOCPROBE_ADDRESS
-CONFIG_MTD_DOCPROBE_HIGH
-CONFIG_MTD_PHYSMAP_BUSWIDTH
-CONFIG_MTD_PMC551_DEBUG
-CONFIG_MTD_PNC2000
-CONFIG_MTD_RAM
-CONFIG_MTDRAM_ERASE_SIZE
-CONFIG_MTDRAM_TOTAL_SIZE
-CONFIG_MTD_ROM
-
-Steven
-
+p.s. off-topic really: can anyone recommend a place to get DOCs from in the 
+UK? The last lot I tried (who M-Sys put us in contact with) took about 3 
+months to ship a single chip...
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
