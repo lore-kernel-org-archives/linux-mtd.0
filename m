@@ -1,26 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from fep02-mail.bloor.is.net.cable.rogers.com ([66.185.86.72])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 184gfq-0002gP-00
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2002 13:01:14 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H4H0099RK3316@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Thu, 24 Oct 2002 14:30:39 +0200 (MEST)
-Date: Thu, 24 Oct 2002 14:28:55 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: does mtd support both toshiba and samsung 128MBytes (1GBits) nand
- flash?
-In-reply-to: <014201c27b48$799ba360$b30210ac@gv.com.tw>
-To: ?? <kevin@gv.com.tw>, David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200210241428.55154.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <013d01c2388f$94c655a0$1b0448c0@gv.com.tw>
- <0H05001Y6RM950@smtp-out.bhp.t-online.de>
- <014201c27b48$799ba360$b30210ac@gv.com.tw>
+	id 184hhG-0002mv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2002 14:06:47 +0100
+Received: from AladinSane.stewart.net ([65.48.166.20])
+          by fep02-mail.bloor.is.net.cable.rogers.com
+          (InterMail vM.5.01.05.06 201-253-122-126-106-20020509) with ESMTP
+          id <20021024133514.SGE4551.fep02-mail.bloor.is.net.cable.rogers.com@AladinSane.stewart.net>
+          for <linux-mtd@lists.infradead.org>;
+          Thu, 24 Oct 2002 09:35:14 -0400
+Subject: intel 28F016B3 flash
+From: Jim Stewart <jstewart@celerox.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 24 Oct 2002 09:37:33 -0400
+Message-Id: <1035466654.1993.19.camel@AladinSane>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -32,14 +27,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thursday 24 October 2002 12:31, ?? wrote:
-> dear all,
->
-> does mtd support both toshiba and samsung 128MBytes (1GBits) nand flash?
-Yes, see include/linux/mtd/nand_ids.h
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Can some one list for me the list of kernel configuration options/files
+needed to use the MTD with JFFS2 on the following system:
+
+4 - TE28F016B3 flash chips connected as a 32 bit wide x 2Mb flash bank
+
+These chips do not support CFI and are physically connected to the
+processor memory bus (0x0C00_0000-0x0C7f_ffff)
+
+Thanks....
