@@ -1,22 +1,18 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
+Received: from penguin-ext.wise.edt.ericsson.se ([193.180.251.47] helo=penguin.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17wmt3-0002yN-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2002 18:02:13 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H3D007MU5YQYV@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Wed, 02 Oct 2002 19:01:39 +0200 (MEST)
-Date: Wed, 02 Oct 2002 19:00:34 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: nor and nand on same system
-In-reply-to: <1033573620.5141.6.camel@AladinSane>
-To: Jim Stewart <jstewart@celerox.com>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200210021900.34742.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <1033573620.5141.6.camel@AladinSane>
+	id 17wqnY-0003If-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2002 22:12:48 +0100
+Subject: Re: MTD copy on JFFS2
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+To: sriramneelakandan@yahoo.com
+Cc: Mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20021001131221.26804.qmail@web14906.mail.yahoo.com>
+References: <20021001131221.26804.qmail@web14906.mail.yahoo.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 02 Oct 2002 14:37:01 +0200
+Message-Id: <1033562222.1600.66.camel@spawn>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,27 +24,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wednesday 02 October 2002 17:46, Jim Stewart wrote:
-> I am designing a system that may contain both nor and nand flash in the
-> same system (NAND flash for future expansion and nor for boot and root
-> fs).
-cool
+On Tue, 2002-10-01 at 15:12, Sriram Neelakandan Iyer wrote:
+> hi list,
+> i have 2 jffs2 partitions(over mtd) used for storing
+> config files.
+> I need to copy all the files from one partition to
+> another, and the destination mtd partition is larger
+> than the source mtd partition.(i cannot mount the
+> second partition as jffs2 before the data is copied)
 
-> I have looked over the MTD documentation, how-to's, etc. and it seems
-> that the driver level is linked to a SINGLE specific hardware
-> implementation. Is it possible to have two separate drivers -- one for
-> the nor device (probably using the current CFI drivers) and one for a
-> NAND device?
-Yep, each device has it's own driver. They live side by side, as long they 
-arent configured to access the same physical device, which is unlikely for 
-NAND and NOR.
+So what you want is to change the partition layout on a live system and
+that is not possible as the same flash block would for a period end up
+in two partitions.
 
-> I plan on using the JFFS as the MTD client
-JFFS does not support NAND, JFFS2 does
+> But mkfs.jffs2 needs libz and both of them occupy
+> about 87K of space.
+> 
+> So i plan to do a plain mtd-copy ,i.e 
+> 1. first unmount source jffs2,
+> 2. read over the source mtd-char-device and 
+> 3. dump it back to the second mtd-partition. 
+> 
+> Will jffs2 be able to mount the second partition
+> without trouble?  (or) must i do a mkfs.jffs2 always
+> to have a jffs2 mountable partition.
+> 
+> regards
+> sriram.
+
+Could work. but why not.
+
+1. copy from old partition to ramdisk
+2. change to new partition layout 
+3. erase and mount new partition
+4. copy files from ramdisk to new partition.
+
 
 -- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Kenneth Johansson	
+Ericsson AB                       Tel: +46 8 404 71 83
+Borgafjordsgatan 9                Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
