@@ -1,18 +1,19 @@
-Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BpUOl-0005r7-4Z
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 12:01:52 -0400
-Received: from [10.1.1.102] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
-	1.3.167) for linux-mtd@lists.infradead.org;
-	27 Jul 2004 12:01:49 -0400
-Date: Tue, 27 Jul 2004 11:57:17 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.60.0407271156200.5684@localhost.localdomain>
+	id 1BpUQr-00061s-3n
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2004 12:04:05 -0400
+Message-ID: <41066966.8070107@yandex.ru>
+Date: Tue, 27 Jul 2004 18:40:38 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: Already there is  data 0x1985 shown in do_write_oneword() at a
- location before write (fwd)
+To: tglx@linutronix.de
+References: <410653C0.3070609@yandex.ru>
+	<1090934568.20889.162.camel@thomas.tec.linutronix.de>
+In-Reply-To: <1090934568.20889.162.camel@thomas.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: bugreport
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-   forwarded from a colleague:
 
----------- Forwarded message ----------
-Date: Tue, 27 Jul 2004 11:26:25 -0400
+Thomas Gleixner wrote:
+> On Tue, 2004-07-27 at 15:08, Artem B. Bityuckiy wrote:
+> 
+>>Hello.
+>>
+>>There is a bug in jffs2 module registration function - super.c line 293:
+>>the init_jffs2_fs function doesn't properly perform
+>>the de-initialization in case of failures on lines 315 and 321.
+>>The jffs2_inode_cachep is also not feed.
+>>
+>>I Tried to send a patch bit mailman soesn't gieve me...  
+> 
+> 
+> I think you meant that one, right ?
+> 
+> Thanks, fixed in CVS
+> 
+> tglx
+> 
+> 
+> @@ -330,6 +330,7 @@
+>   out_compressors:
+>         jffs2_compressors_exit();
+>   out:
+> +       kmem_cache_destroy(jffs2_inode_cachep);
+>         return ret;
+>  }
+> 
+Not only. The "go out" in case of jffs2_compressors_init() failure 
+doesn't free /proc resources...
 
-         We met a situation that is write flash time out in 
-do_write_oneword() on Am29LV128MH, so we printed the 
-before-write-word,wanted-write-word, and the after-write-word. The 
-interesting thing is that the before-write-word always is 0x1985 in 3 
-times timeout write of total 52,688,813 times write, because 0x1985 is 
-the first mark word of any jffs2 node, so it makes me guess if a dirty 
-space is allocated to write by regarding this dirty space to be clean 
-space.
+I tried to send the following patch as the attached file (now I'll try
+to just insert the text):
 
-         Any thought?
 
-         Another thing is in jffs2_garbage_collect_pristine() function, 
-the parts of the code is interesting
+-- super.c	2004-07-18 18:44:42.000000000 +0400
++++ /home/dedekind/tmp/super_fixed.c	2004-07-26 15:05:34.000000000 +0400
+@@ -318,7 +318,7 @@
+  	ret =
+  	if (ret) {
+  		printk(KERN_ERR "JFFS2 error: Failed to initialise compressors\n");
+-		goto out;
++		goto out_proc;
+  	}
+  	ret = jffs2_create_slab_caches();
+  	if (ret) {
+@@ -336,10 +336,12 @@
+  	jffs2_destroy_slab_caches();
+   out_compressors:
+  	jffs2_compressors_exit();
++ out_proc:
+  #ifdef CONFIG_JFFS2_PROC
+          jffs2_proc_exit();
+  #endif
+   out:
++        kmem_cache_destroy(jffs2_inode_cachep);
+  	return ret;
+  }
 
-         if (!retried && (nraw == jffs2_alloc_raw_node_ref())) {
-                /* Try to reallocate space and retry */
-                uint32_t dummy;
-                struct jffs2_eraseblock *jeb = &c->blocks[phys_ofs /
-c->sector_size];
-                 .....
 
-         why not here we use:
-                     if (!retried && (nraw = jffs2_alloc_raw_node_ref())) {
-                             ....
+Note - the patch is just to show the problem and doesn't pretent to be 
+applied as is.
 
-thanks.
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
