@@ -1,73 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13qLFq-0003MX-00
-	for mtd-list@infradead.org; Mon, 30 Oct 2000 20:10:02 +0000
-Received: from [63.196.9.2] (helo=ftp.neontech.com)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13qLFo-0003LS-00
-	for mtd@infradead.org; Mon, 30 Oct 2000 20:10:00 +0000
-Date: Mon, 30 Oct 2000 12:12:30 -0800
-From: Qiuyuan Liu <q.liu@acm.org>
-To: mtd@infradead.org
-Subject: building mtd: put_module_symbol?
-In-Reply-To: <39F94471.D0E5F971@auriga.ru>
-References: <39F8EAB996.E4A2Q.LIU@mail.neontech.com> <39F94471.D0E5F971@auriga.ru>
-Message-Id: <39FDD62E1B8.9E6AQ.LIU@mail.neontech.com>
+	id 13qLcN-0003SK-00
+	for mtd-list@infradead.org; Mon, 30 Oct 2000 20:33:19 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13qLcL-0003SE-00
+	for mtd@infradead.org; Mon, 30 Oct 2000 20:33:18 +0000
+Date: Mon, 30 Oct 2000 20:33:09 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Steven J. Hill" <sjhill@cotw.com>
+cc: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
+Subject: Re: Write support with JFFS and NAND now working...
+In-Reply-To: <39FDC4B2.A52F5D8A@cotw.com>
+Message-ID: <Pine.LNX.4.21.0010302031390.15834-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Thank you, Nick.
+On Mon, 30 Oct 2000, Steven J. Hill wrote:
 
-I installed the linux-2.2.17.tar.gz directly on my box. 
-Now I got the following 3 new errors:
+> SPECIAL NOTE: Process synchronization has not been implemented i.e.
+> spinlocks and waitqueues. It is NOT currently process/thread safe. I
+> will have this implemented hopefully by the end of the day or early
+> tomorrow morning my time. Enjoy.
 
-1. where is put_module_symbol defined referred in mtd/map.h:
-do_map_probe().
+Actually you'll probably find that the jffs semaphore makes it safe, as
+long as you've only got one filesystem on it and don't access any parts 
+of the device through other means while it's mounted.
 
-
-2. set_current_state redefinition
-
- * $Id: cfi_cmdset_0001.c,v 1.41 2000/10/19 14:26:34 nico Exp $
-
-#if LINUX_VERSION_CODE < 0x20300
-#define set_current_state(x) current->state = (x);	//line 36:
-#endif
-
- * mtd/include/compatmac.h
- * $Id: compatmac.h,v 1.6 2000/10/23 16:56:28 sjhill Exp $
-
-#if LINUX_VERSION_CODE < 0x20300
-#define set_current_state(state_value)                        \		//line : 203 
-        do { current->state = (state_value); } while (0)
-#endif
+Don't let that put you off fixing the locking though :)
 
 
-3. physmap.c, line 65:
-'CONFIG_MTD_PHYSMAP_BUSWIDTH' undeclared here (not in a function)
-initializer elemennt for 'physmap_map.buswidth' is not constant
+-- 
+dwmw2
 
-error exit.
-
-struct map_info physmap_map = {
-	name: "Physically mapped flash",
-	size: WINDOW_SIZE,
-	buswidth: BUSWIDTH,	// line 65
-	read8: physmap_read8,
-	read16: physmap_read16,
-	read32: physmap_read32,
-	copy_from: physmap_copy_from,
-	write8: physmap_write8,
-	write16: physmap_write16,
-	write32: physmap_write32,
-	copy_to: physmap_copy_to
-};
-
-
-Thank you,
-Qiuyuan Liu
 
 
 
