@@ -1,15 +1,15 @@
 Received: from [216.219.239.237] (helo=www.sensoria.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15w6XD-0001wr-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 19:44:19 +0100
+	id 15w8Ki-00026a-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 21:39:32 +0100
 Received: from baoha ([209.245.83.145])
-	by www.sensoria.com (8.10.2/8.10.2) with SMTP id f9NIlgW31123
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 14:47:42 -0400
+	by www.sensoria.com (8.10.2/8.10.2) with SMTP id f9NKgrW04794
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 16:42:53 -0400
 From: "Bao C. Ha" <baoha@sensoria.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 destroys CRAMFS!
-Date: Tue, 23 Oct 2001 11:52:14 -0700
-Message-ID: <014d01c15bf3$d4ff82a0$456c020a@SENSORIA>
+Subject: Patch to prevent jffs2 from make changes to other filesystems
+Date: Tue, 23 Oct 2001 13:46:17 -0700
+Message-ID: <014f01c15c03$c45a8b10$456c020a@SENSORIA>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -25,26 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-We are using RedBoot and have several MTD partitions.
-One of the partitions has our minimal CRAMFS.  The
-other contains JFFS2.  I made a mistake of compiling
-a kernel with jffs2 built-in, but not cramfs.  The
-bootup process tells the kernel to mount the cramfs
-partition as the root device.  It just goes through 
-and erased everything there, then it panics!
+I would like to propose the following patch to
+temporarily fix the problem of jffs2 making
+changes to other filesystems stored on MTD
+partitions.
 
-This behavior is not consistent with all other Linux
-filesystems.  I would like to propose changes to the
-designs of jffs2 as follows:
-
-- Only make.jffs2 can create a jffs2 filesystem
-- Unless jffs2 detects its MAGIC, it can't make
-changes to the MTD partition.
-
-It will save a lot of griefs later.  I know that
-there are many work-arounds.  But, I had a mental
-block that had refused to believe that a read-only
-cramfs can be destroyed that easily.
+--- scan.c.orig Tue Oct 23 13:35:38 2001
++++ scan.c      Tue Oct 23 13:32:28 2001
+@@ -214,7 +214,8 @@
+                        noisy_printk(&noise, "jffs2_scan_eraseblock(): Magic
+bit
+mask 0x%04x not found at 0x%08x: 0x%04x instead\n", JFFS2_MAGIC_BITMASK,
+ofs, no
+de.magic);
+                        DIRTY_SPACE(4);
+                        ofs += 4;
+-                       continue;
++                       /* continue; */
++                       return -EINVAL;
+                }
+                /* We seem to have a node of sorts. Check the CRC */
+                nodetype = node.nodetype;
 
 Thanks.
 Bao
