@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161nrl-0003BG-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 12:01:05 +0000
+	id 161o8C-0003G4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2001 12:18:04 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01110811501001.09516@uk-proclin2> 
-References: <01110811501001.09516@uk-proclin2> 
-To: Clive Davies <cdavies@altera.com>
+In-Reply-To: <01071015225100.01159@ronin> 
+References: <01071015225100.01159@ronin> 
+To: Anton Todorov <a.todorov@emness.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Intel protection register read 
+Subject: Re: MTD on MBX860 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 08 Nov 2001 12:10:10 +0000
-Message-ID: <6720.1005221410@redhat.com>
+Date: Thu, 08 Nov 2001 12:27:13 +0000
+Message-ID: <8307.1005222433@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,26 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+a.todorov@emness.com said:
+>  I am using linuxppc_2_4 (2.4.6) with current mtd support from cvs
+> tree. The board is with JEDEC AMD 29F016 x4 flash chips (8M Flash
+> space). Map file which I use for this board is attached (I use
+> rpxlite.c and  tqm8xxl.c (for partitioning) as reference). The problem
+> I found is that mtd says:
 
-cdavies@altera.com said:
-> I sent the patch below to this list a few days ago but had no
-> response. Has  anyone had a chance to look at it? If its ok, could
-> someone apply it?
+Thanks. May I add that map driver to CVS?
 
-Sorry. Thanks for retrying :)
-
-> +	unsigned char *ProtRegData;  /* Protection register data bytes */
-> 	struct flchip chips[0];  /* per-chip data structure for each chip */
-
-The ProtRegData are per-chip, but you've only left space for one pointer. 
-What happens when people have arrays of multiple chips side-by-side and/or
-consecutively mapped?
-
-Also, isn't it possible to _write_ to the user areas of the chips?
-
-Is this present in all versions of the Intel command sets, or do you need 
-to check the version number?
-
+You should hopefully now find that the new jedec_probe stuff will work for 
+your chips, and you don't have to use the old jedec code. 
 
 --
 dwmw2
