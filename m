@@ -1,15 +1,15 @@
-Received: from onz.com ([67.121.61.113] helo=dual166.onz.com)
+Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19UKaW-0003Sc-8X
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Jun 2003 07:14:00 +0100
-Message-Id: <5.2.1.1.0.20030622225831.00a462f0@192.168.1.10>
-Date: Sun, 22 Jun 2003 23:03:50 -0700
-To: Infradead Org <linux-mtd@lists.infradead.org>
-From: Allen Curtis <acurtis@onz.com>
+	id 19UToF-0004m2-QB
+	for <linux-mtd@lists.infradead.org>; Mon, 23 Jun 2003 17:04:47 +0100
+Date: Mon, 23 Jun 2003 18:02:45 +0200
+To: linux-mtd@lists.infradead.org
+Message-ID: <20030623160245.GA25579@timberwolf.dyndns.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=====================_25751453==_"
-Subject: cfs_cmdset_0001 patch
+Content-Disposition: inline
+From: kleine-budde@gmx.de (Marc Kleine-Budde)
+Content-Type: multipart/mixed; boundary="PNTmBPCT7hxwcZjr"
+Subject: DNP mounting issue
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +19,243 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=====================_25751453==_
-Content-Type: text/plain; charset="us-ascii"; format=flowed
 
-Patch that fixes:
-1. Fixed some printk() warnings
-2. Changed map->writexx() to map_writexx() macros
-3. Added patch to asm-ppc/io.h for __raw_readll() and __raw_writell()
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note: I tried to modify the order of the includes to fix problem #3. cfi.h 
-contains a macro for the missing __raw...() functions. However changing the 
-order of the includes to get cfi.h before maps.h is a problem.
---=====================_25751453==_
-Content-Type: application/octet-stream; name="cfi_cmdset_00001.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="cfi_cmdset_00001.patch"
+Hi!
 
-ZGlmZiAtcnUgZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMgLi4vdGhhbGVzL2xp
-bnV4cHBjL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMS5jCi0tLSBkcml2ZXJzL210
-ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwlTdW4gSnVuIDE1IDEwOjA4OjUxIDIwMDMKKysrIC4u
-L3RoYWxlcy9saW51eHBwYy9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwlTdW4g
-SnVuIDIyIDIyOjMwOjU5IDIwMDMKQEAgLTM3OCw3ICszNzgsNyBAQAogCQkJCWNoaXAtPnN0YXRl
-ID0gRkxfRVJBU0lORzsKIAkJCQljaGlwLT5vbGRzdGF0ZSA9IEZMX1JFQURZOwogCQkJCXByaW50
-ayhLRVJOX0VSUiAiQ2hpcCBub3QgcmVhZHkgYWZ0ZXIgZXJhc2UgIgotCQkJCSAgICAgICAic3Vz
-cGVuZGVkOiBzdGF0dXMgPSAweCV4XG4iLCBzdGF0dXMpOworCQkJCSAgICAgICAic3VzcGVuZGVk
-OiBzdGF0dXMgPSAweCV4XG4iLCAodWludClzdGF0dXMpOwogCQkJCXJldHVybiAtRUlPOwogCQkJ
-fQogCkBAIC05NjIsNyArOTYyLDcgQEAKIAkgICBTbyB3ZSBtdXN0IGNoZWNrIGhlcmUgYW5kIHJl
-c2V0IHRob3NlIGJpdHMgaWYgdGhleSdyZSBzZXQuIE90aGVyd2lzZQogCSAgIHdlJ3JlIGp1c3Qg
-cGlzc2luZyBpbiB0aGUgd2luZCAqLwogCWlmIChzdGF0dXMgJiBDTUQoMHgzMCkpIHsKLQkJcHJp
-bnRrKEtFUk5fV0FSTklORyAiU1IuNCBvciBTUi41IGJpdHMgc2V0IGluIGJ1ZmZlciB3cml0ZSAo
-c3RhdHVzICV4KS4gQ2xlYXJpbmcuXG4iLCBzdGF0dXMpOworCQlwcmludGsoS0VSTl9XQVJOSU5H
-ICJTUi40IG9yIFNSLjUgYml0cyBzZXQgaW4gYnVmZmVyIHdyaXRlIChzdGF0dXMgJXgpLiBDbGVh
-cmluZy5cbiIsICh1aW50KXN0YXR1cyk7CiAJCWNmaV93cml0ZShtYXAsIENNRCgweDUwKSwgY21k
-X2Fkcik7CiAJCWNmaV93cml0ZShtYXAsIENNRCgweDcwKSwgY21kX2Fkcik7CiAJfQpAQCAtMTAy
-NSwxMSArMTAyNSwxMSBAQAogCQl3aGlsZSAoaSA8IENGSURFVl9CVVNXSURUSCkKIAkJCXRtcF9i
-dWZbaSsrXSA9IDB4ZmY7CiAJCWlmIChjZmlfYnVzd2lkdGhfaXNfMigpKSB7Ci0JCQltYXAtPndy
-aXRlMTYgKG1hcCwgKigoX191MTYqKXRtcF9wKSsrLCBhZHIreik7CisJCQltYXBfd3JpdGUxNiAo
-bWFwLCAqKChfX3UxNiopdG1wX3ApKyssIGFkcit6KTsKIAkJfSBlbHNlIGlmIChjZmlfYnVzd2lk
-dGhfaXNfNCgpKSB7Ci0JCQltYXAtPndyaXRlMzIgKG1hcCwgKigoX191MzIqKXRtcF9wKSsrLCBh
-ZHIreik7CisJCQltYXBfd3JpdGUzMiAobWFwLCAqKChfX3UzMiopdG1wX3ApKyssIGFkcit6KTsK
-IAkJfSBlbHNlIGlmIChjZmlfYnVzd2lkdGhfaXNfOCgpKSB7Ci0JCQltYXAtPndyaXRlNjQgKG1h
-cCwgKigoX191NjQqKXRtcF9wKSsrLCBhZHIreik7CisJCQltYXBfd3JpdGU2NCAobWFwLCAqKChf
-X3U2NCopdG1wX3ApKyssIGFkcit6KTsKIAkJfSBlbHNlIHsKIAkJCXJldCA9IC1FSU5WQUw7CiAJ
-CQlnb3RvIG91dDsKPT09PT0gaW8uaCAxLjM1IHZzIDEuMzYgPT09PT0KLS0tIDEuMzUvaW5jbHVk
-ZS9hc20tcHBjL2lvLmgJU2F0IEp1bCAyMCAxMDoyMjo1NCAyMDAyCisrKyAxLjM2L2luY2x1ZGUv
-YXNtLXBwYy9pby5oCVN1biBKdW4gMjIgMjI6Mjc6MTcgMjAwMwpAQCAtODQsOSArODQsMTEgQEAK
-ICNkZWZpbmUgX19yYXdfcmVhZGIoYWRkcikJKCoodm9sYXRpbGUgdW5zaWduZWQgY2hhciAqKShh
-ZGRyKSkKICNkZWZpbmUgX19yYXdfcmVhZHcoYWRkcikJKCoodm9sYXRpbGUgdW5zaWduZWQgc2hv
-cnQgKikoYWRkcikpCiAjZGVmaW5lIF9fcmF3X3JlYWRsKGFkZHIpCSgqKHZvbGF0aWxlIHVuc2ln
-bmVkIGludCAqKShhZGRyKSkKKyNkZWZpbmUgX19yYXdfcmVhZGxsKGFkZHIpCSgqKHZvbGF0aWxl
-IHU2NCAqKShhZGRyKSkKICNkZWZpbmUgX19yYXdfd3JpdGViKHYsIGFkZHIpCSgqKHZvbGF0aWxl
-IHVuc2lnbmVkIGNoYXIgKikoYWRkcikgPSAodikpCiAjZGVmaW5lIF9fcmF3X3dyaXRldyh2LCBh
-ZGRyKQkoKih2b2xhdGlsZSB1bnNpZ25lZCBzaG9ydCAqKShhZGRyKSA9ICh2KSkKICNkZWZpbmUg
-X19yYXdfd3JpdGVsKHYsIGFkZHIpCSgqKHZvbGF0aWxlIHVuc2lnbmVkIGludCAqKShhZGRyKSA9
-ICh2KSkKKyNkZWZpbmUgX19yYXdfd3JpdGVsbCh2LCBhZGRyKQkoKih2b2xhdGlsZSB1NjQgKiko
-YWRkcikgPSAodikpCiAKIC8qCiAgKiBUaGUgaW5zdy9vdXRzdy9pbnNsL291dHNsIG1hY3JvcyBk
-b24ndCBkbyBieXRlLXN3YXBwaW5nLgo=
---=====================_25751453==_
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+I'm using linux-2.4.21 together with mtd from 'Mon Jun 23 17:45:34 CEST 2003'
+The hardware is SSV's DNP-486 (=2 MB flash).
+
+When booting the jffs2 filesystem on the mtd cannot be mounted,
+surprisingly it works with an unpatched linux-2.4.21 out of the box.
+
+I've attached the bootingmessages from both kernels....
 
 
---=====================_25751453==_--
+hope someone can help
+	Marc
+-- 
+#!/bin/sh
+set - `type $0` 'tr "[a-zA-Z]" "[n-za-mN-ZA-M]"';while [ "$2" != "" ];do \
+shift;done; echo 'frq -a -rc '`echo "$0"| $1 `'>$UBZR/.`rpub signature|'`\
+echo $1|$1`'`;rpub "Jr ner fvtangher bs obet. Erfvfgnapr vf shgvyr!"'|$1|sh
+
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="dnp-fail.log"
+
+Linux version 2.4.21 (frogger@vulture) (gcc version 3.2.3) #6 Mon Jun 23 14:39:35 CEST 2003
+BIOS-provided physical RAM map:
+ BIOS-88: 0000000000000000 - 000000000009f000 (usable)
+ BIOS-88: 0000000000100000 - 0000000000800000 (usable)
+8MB LOWMEM available.
+On node 0 totalpages: 2048
+zone(0): 2048 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: auto BOOT_IMAGE=kangaroo ro console=ttyS0,115200 root=/dev/mtdblock1
+Initializing CPU#0
+Calibrating delay loop... 16.48 BogoMIPS
+Memory: 6224k/8192k available (1040k kernel code, 1580k reserved, 207k data, 60k init, 0k highmem)
+Checking if this processor honours the WP bit even in supervisor mode... Ok.
+Dentry cache hash table entries: 1024 (order: 1, 8192 bytes)
+Inode cache hash table entries: 512 (order: 0, 4096 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 2048 (order: 1, 8192 bytes)
+CPU: AMD 02/0a stepping 04
+Checking 'hlt' instruction... OK.
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x1
+JFFS2 version 2.1. (C) 2001, 2002 Red Hat, Inc., designed by Axis Communications AB.
+pty: 256 Unix98 ptys configured
+Serial driver version 5.05c (2001-07-08) with no serial options enabled
+ttyS00 at 0x03f8 (irq = 4) is a 16550A
+cs89x0:cs89x0_probe(0x0)
+PP_addr=0x3000
+cs89x0.c: v2.4.3-pre1 Russell Nelson <nelson@crynwr.com>, Andrew Morton <andrewm@uow.edu.au>
+eth0: cs8900 rev J found at 0x300 [Cirrus EEPROM] 
+cs89x0 media RJ-45, IRQ 5, programmed I/O, MAC 02:80:ad:20:38:68
+cs89x0_probe1() successful
+PPP generic driver version 2.4.2
+PPP Deflate Compression module registered
+PPP BSD Compression module registered
+$Id: ftl.c,v 1.50 2003/05/21 10:49:47 dwmw2 Exp $
+MTD Sharp chip driver <ds@lineo.com>
+DIL/Net DNPC flash: 0x200000 at 0x2000000
+FLASH virtual address: 0xc1070000
+Search for id:(89 aa) interleave(1) type(1)
+MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+MTD jedec_match(): check unlock addrs 0x0555 0x02aa
+MTD jedec_match(): check ID's disappear when not in ID mode
+MTD jedec_match(): return to ID mode
+MTD jedec_probe_chip(): matched device 0x89,0xaa unlock_addrs: 0x0555 0x02aa
+Found: Intel I28F016S3
+DNP Flash Bank: Found 1 x8 devices at 0x0 in 8-bit mode
+Using word write method
+Creating 4 MTD partitions on "DNP Flash Bank":
+0x00000000-0x000f0000 : "DNP boot"
+0x000f0000-0x00100000 : "DNP system BIOS"
+0x00100000-0x001f0000 : "DNP file system"
+0x001f0000-0x00200000 : "DNP system BIOS entry"
+Concatenating MTD devices:
+(0): "DNP boot"
+(1): "DNP file system"
+(2): "DNP system BIOS"
+(3): "DNP system BIOS entry"
+into device "(A)DNP Flash Concatenated"
+Creating 3 MTD partitions on "(A)DNP Flash Concatenated":
+0x00000000-0x000c0000 : "DNP boot block"
+mtd: Giving out device 0 to DNP boot block
+0x000c0000-0x001e0000 : "DNP file system space"
+mtd: Giving out device 1 to DNP file system space
+0x001e0000-0x00200000 : "DNP system BIOS + BIOS Entry"
+mtd: Giving out device 2 to DNP system BIOS + BIOS Entry
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 512 bind 1024)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+mtdblock_open
+ok
+mtd->read(0x400 bytes from 0x0) returned -22
+mtdblock_release
+ok
+Kernel panic: VFS: Unable to mount root fs on 1f:01
+ 
+
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="dnp-success.log"
+
+Linux version 2.4.21-orig (frogger@vulture) (gcc version 3.2.3) #3 Mon Jun 23 17:02:35 CEST 2003
+BIOS-provided physical RAM map:
+ BIOS-88: 0000000000000000 - 000000000009f000 (usable)
+ BIOS-88: 0000000000100000 - 0000000000800000 (usable)
+8MB LOWMEM available.
+On node 0 totalpages: 2048
+zone(0): 2048 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: auto BOOT_IMAGE=kangaroo console=ttyS0,115200 root=/dev/mtdblock1
+Initializing CPU#0
+Calibrating delay loop... 16.48 BogoMIPS
+Memory: 6260k/8192k available (1024k kernel code, 1544k reserved, 183k data, 60k init, 0k highmem)
+Checking if this processor honours the WP bit even in supervisor mode... Ok.
+Dentry cache hash table entries: 1024 (order: 1, 8192 bytes)
+Inode cache hash table entries: 512 (order: 0, 4096 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer-cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 2048 (order: 1, 8192 bytes)
+CPU: AMD 02/0a stepping 04
+Checking 'hlt' instruction... OK.
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x1
+JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis Communications AB.
+pty: 256 Unix98 ptys configured
+Serial driver version 5.05c (2001-07-08) with no serial options enabled
+ttyS00 at 0x03f8 (irq = 4) is a 16550A
+cs89x0:cs89x0_probe(0x0)
+PP_addr=0x3042
+eth0: incorrect signature 0x156f
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+PP_addr=0xffff
+eth0: incorrect signature 0xffff
+cs89x0: no cs8900 or cs8920 detected.  Be sure to disable PnP with SETUP
+PPP generic driver version 2.4.2
+PPP Deflate Compression module registered
+PPP BSD Compression module registered
+MTD Sharp chip driver <ds@lineo.com>
+DIL/Net DNPC flash: 0x200000 at 0x2000000
+FLASH virtual address: 0xc1070000
+Search for id:(89 aa) interleave(1) type(1)
+Found: Intel I28F016S3
+DNP Flash Bank: Found 1 x8 devices at 0x0 in 8-bit mode
+Using word write method
+Creating 4 MTD partitions on "DNP Flash Bank":
+0x00000000-0x000f0000 : "DNP boot"
+0x000f0000-0x00100000 : "DNP system BIOS"
+0x00100000-0x001f0000 : "DNP file system"
+0x001f0000-0x00200000 : "DNP system BIOS entry"
+Concatenating MTD devices:
+(0): "DNP boot"
+(1): "DNP file system"
+(2): "DNP system BIOS"
+(3): "DNP system BIOS entry"
+into device "(A)DNP Flash Concatenated"
+Creating 3 MTD partitions on "(A)DNP Flash Concatenated":
+0x00000000-0x000c0000 : "DNP boot block"
+mtd: Giving out device 0 to DNP boot block
+0x000c0000-0x001e0000 : "DNP file system space"
+mtd: Giving out device 1 to DNP file system space
+0x001e0000-0x00200000 : "DNP system BIOS + BIOS Entry"
+mtd: Giving out device 2 to DNP system BIOS + BIOS Entry
+$Id: ftl.c,v 1.45 2003/01/24 23:31:27 dwmw2 Exp $
+ftl_cs: FTL header not found.
+ftl_cs: FTL header not found.
+ftl_cs: FTL header not found.
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 512 bind 1024)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+mtdblock_open
+ok
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7978: 0x1a1a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e797c: 0x1a1a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7980: 0x5154 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7984: 0x86ab instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7988: 0xc860 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e798c: 0xe416 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7990: 0xf9ad instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7994: 0x6aac instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e7998: 0x8197 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000e799c: 0x18a1 instead
+Further such events for this erase block will not be printed
+jffs2_scan_inode_node(): Data CRC failed on node at 0x000e7ae4: Read 0x1d5aaa1a, calculated 0x01fa69e1
+VFS: Mounted root (jffs2 filesystem) readonly.
+Mounted devfs on /dev
+Freeing unused kernel memory: 60k freed
+init started:  BusyBox v0.61.pre (2003.06.22-22:10+0000) multi-call binary
+init started:  BusyBox v0.61.pre (2003.06.22-22:10+0000) multi-call binary
+Starting pid 9, console /dev/tts/0: '/etc/init.d/rcS'
+starting the system...
+mounted proc & tmp
+modules loaded
+Thu Apr 17 14:30:00 UTC 2003
+executing /etc/startup
+Starting pid 20, console /dev/tts/0: '/sbin/getty'
+
+--PNTmBPCT7hxwcZjr--
