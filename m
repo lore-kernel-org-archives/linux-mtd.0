@@ -1,20 +1,17 @@
-Received: from 82-168-191-45-bbxl.xdsl.tiscali.nl ([82.168.191.45]
-	helo=levin.pad.mess.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CWAgg-0006u3-FA
-	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2004 04:40:47 -0500
-Received: from sean by levin.pad.mess.org with local (Exim 3.36 #1 (Debian))
-	id 1CWAgZ-0001Ha-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Nov 2004 10:40:39 +0100
-Date: Mon, 22 Nov 2004 10:40:39 +0100
-From: Sean Young <sean@mess.org>
+Received: from myyr.colleduc.ee ([193.40.113.30] helo=kiire.colleduc.ee)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CWBMf-0007Bn-KP
+	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2004 05:24:14 -0500
+Message-ID: <41A1BE40.2000106@colleduc.ee>
+Date: Mon, 22 Nov 2004 12:24:00 +0200
+From: Kalev Lember <kalev@colleduc.ee>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Message-ID: <20041122094039.GA4919@levin.pad.mess.org>
 References: <200411221211.12394.skorinkod@mosk.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <200411221211.12394.skorinkod@mosk.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: 
 Subject: Re: mkfs.ext3 - segmentation fault
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,19 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 22, 2004 at 12:11:12PM +0300, Dmitry Skorinko wrote:
-> 2.6.8-1 + mtd snapshot (about 2 week ago)
-> 
-> #modprobe inftl
-> #modprobe diskonchip
+Dmitry Skorinko wrote:
+<snip>
 
--snip-
+>EIP is at mtd_erase_callback+0x6/0x3b [mtdpart]
+>  
+>
+<snip>
 
-> EIP is at mtd_erase_callback+0x6/0x3b [mtdpart]
+>Help, plz.  Thanks.
+>  
+>
+I fixed this in the CVS about two weeks ago and sent a note about the 
+fix to the list. Try the current CVS.
 
-inftl is not setting the mtd member of struct erase_info. None of the
-ftl's seem to be doing this but I do not have a current cvs handy so it
-might be fixed.
-
-
-Sean
+-- 
+Best regards,
+Kalev Lember
