@@ -1,43 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14ZqZW-000724-00
-	for mtd-list@infradead.org; Mon, 05 Mar 2001 08:42:26 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14Ztfq-0007xn-00
+	for mtd-list@infradead.org; Mon, 05 Mar 2001 12:01:10 +0000
+Received: from chello062178007137.3.11.vie.surfer.at ([62.178.7.137] helo=quake.thinstuff.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14ZqZU-00071y-00
-	for mtd@infradead.org; Mon, 05 Mar 2001 08:42:25 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <005901c0a546$367c8d80$0d3318b5@jolt> 
-References: <005901c0a546$367c8d80$0d3318b5@jolt>  <Pine.LNX.4.30.0103031754080.7202-100000@imladris.demon.co.uk> 
-To: "Florian Schirmer / TayTron" <schirmer@taytron.net>
-Cc: mtd@infradead.org
-Subject: Re: AW: Some bugs 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 05 Mar 2001 08:42:06 +0000
-Message-ID: <19173.983781726@redhat.com>
+	id 14Ztfp-0007xf-00
+	for mtd@infradead.org; Mon, 05 Mar 2001 12:01:09 +0000
+Received: from dmz.thinstuff.com ([192.168.2.1] helo=mg)
+	by quake.thinstuff.com with smtp (Exim 3.12 #1 (Debian))
+	id 14ZuWA-0006DJ-00
+	for <mtd@infradead.org>; Mon, 05 Mar 2001 12:55:15 +0000
+Reply-To: <m.gibson@esesixtech.com>
+From: "Michael Gibson" <m.gibson@esesixtech.com>
+To: <mtd@infradead.org>
+Subject: Kernel panic DiskOnChip /Newbie question
+Date: Mon, 5 Mar 2001 13:03:59 +0100
+Message-ID: <002101c0a56c$5caf3090$3201a8c0@thinstuff.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Is there somebody who could help me with following jffs problem?
 
-schirmer@taytron.net said:
-> 1. cfi_cmdset_0001 broken: 
+kernel 2.4.2, mtd cvs snapshot of 02nd March 2001(same problem with original
+mtd modules from kernel 2.4.2), DOC2000 8MB with firmware 1.21
 
-Doh! That's fixed, sorry.
+DOC2000 is detected OK
+when I try to do "mount -t jffs /dev/mtdblock0 /test" after "erase
+/dev/mtd0" (as described in the mtd/jffs HOWTO from the CVS snapshot)
+I get a Kernel panic:
+" Didn´t read all bytes in flash_safe_read(). Returned 0 "
+
+but NFTL workes fine, I can do nftl_format - create a partition - put a
+minix fs on it and mount it.
+Also writing to the nftl partition works fine.
+
+What am I doing wrong?
+
+Best regards
+Michael Gibson
 
 
-schirmer@taytron.net said:
->  2. physmap (?) broken:
-> The inter_module stuff thems to have a problem somewhere. The modules
-> cant be unloaded since the usagecount wont decrement correctly. Dont
-> know wether it's the fault of physmap or not. 
-
-The inter_module stuff is just fundamentally screwed, as far as I'm 
-concerned. I'm severely tempted just to take it out and let the modules 
-have hard dependencies on each other.
-
---
-dwmw2
 
 
 
