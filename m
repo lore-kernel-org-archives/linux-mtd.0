@@ -1,16 +1,17 @@
-Received: from mail.frequentis.com ([213.47.210.148])
+Received: from [67.106.152.115] (helo=amperion.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193wse-0003ik-8n
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 12:39:40 +0100
-Message-Id: <se96c581.053@mail.frequentis.com>
-Date: Fri, 11 Apr 2003 13:39:06 +0200
-From: "Gerhard TAEUBL" <Gerhard.TAEUBL@frequentis.com>
+	id 193yuD-0003yO-Hx
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 14:49:25 +0100
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 11 Apr 2003 09:49:26 -0400
+Message-ID: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
+From: "Marc D'Anjou" <marcd@amperion.com>
 To: <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: Intel 28F320 Flash
+Subject: Long JFFS2 Mount time?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi to all!
 
-In our company we use the 28F320 3V3 flashes. The WP ist connected to low, =
-RP is high. So it isn't possible to lock or unlock any block. Also after =
-production we test the wholeflash (only word write, not buffer write).
+Hi,
 
-So far so good.
+I am using an embedded system with an IBMPPC405h and one bank (16meg)
+Intel strata flash. The page size is 4k bytes. The sector size is 128k
+bytes.  I am using the MTD Flash driver with the JFFS2 software version
+2 (newest files dated 7/2002). I'm not sure what the CVS revision number
+is?=20
 
-On some hardware (1 -3%) it isn't possible to use the jffs2 filesystem. If =
-we copy files the copy comand will be aborted. After searching in the code =
-and do some additional output, I see, that one flash (we have two in =
-parallel manner for 32 bit access) has set SR.1 bit after the buffer write =
-command.=20
+I am storing a system log inside the JFFS2. Only critical events are
+stored there for debugging purposes. In general I only store 4 entries
+per run time. Our system is such that it can go up and down daily. As
+our log grows, the JFFS mount time appears to be growing quite a bit. It
+went from less than 1 second when we first started, to up to 7 or more
+minutes over days.=20
 
-Hum, only one of both... and all pins a right connected.
-So I write an own test program for flash and buffer write =3D> everything =
-seems to be OK! The only difference is, that I check the whole status word =
-if it is correct not like in the cfi_cmdset program to mask only the OK =
-bit.
+My concern is that the mount time could grow to hours. There is a
+possibility that this has happened in a system.
 
-If I comment this & code (if ((status /*& status_OK*/) =3D=3D status_OK)) =
-then everything works fine.
+To test this concern, I executed a one line script that appends 450
+bytes repeatedly to the log file in the JFFS2. This was continued until
+the log file size grew to 2 Meg bytes. =20
 
-Is this a sw bug or the 28F320 chip has a defect?
+" cat file1.txt >> /mnt/jffs2/file.log "                  where
+file1.txt contains 450 bytes (ascii text file).
 
-Thanks for any hint
+Then I reset the system and watched how long it took to mount the JFFS2.
+It took about 13 minutes to mount!!!!
 
-best regards
-Gerhard
+I then did:  "ls -l" of the directory and it took about 30 minutes to
+come back???????
 
-P.S. I'm not member of this mailing list, so address me direct!
+The second and subsequent "ls -l" was very quick (normal speed for an
+ls). It acted as if all the information was cached.
+
+My understanding is that each time we append a 450 byte entry, a new
+page in the JFFS2 is obtained, it copies the previous page contents,
+plus the new 450 byte entry, then marks the old page for deletion. If
+this is repeated many times, the Garbage Collection Task will require
+more time to resolve the JFFS2 when it mounts the next time up. There
+will be many pages marked for deletion, essentially a longer trail of
+pages to resolve.
+
+Is this your understanding of the problem??
+
+Does anyone know how to get around this problem???=20
+
+Is there newer JFFS2 software available that minimize this behavior?
+
+=20
+Marc D. D'Anjou
+
+=20
