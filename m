@@ -1,50 +1,50 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14aHqW-0000KU-00
-	for mtd-list@infradead.org; Tue, 06 Mar 2001 13:49:48 +0000
-From: Robert Kaiser <rob@sysgo.de>
-Reply-To: rob@sysgo.de
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Using mtdblock as root device
-Date: Tue, 6 Mar 2001 14:37:48 +0100
-Content-Type: text/plain
-References: <01030613110600.01913@rob> <7121.983884306@redhat.com>
-In-Reply-To: <7121.983884306@redhat.com>
-Cc: <mtd@infradead.org>
+	id 14aHuC-0000MF-00
+	for mtd-list@infradead.org; Tue, 06 Mar 2001 13:53:36 +0000
+Message-ID: <30724FF712DFD2119E6200104B2448920119745E@mail1>
+From: Vipin Malik <Vipin.Malik@daniel.com>
+To: 'Robert Kaiser ' <rob@sysgo.de>, 'David Woodhouse '
+	 <dwmw2@infradead.org>
+Cc: "'mtd@infradead.org '" <mtd@infradead.org>
+Subject: RE: Using mtdblock as root device
+Date: Tue, 6 Mar 2001 07:49:16 -0600 
 MIME-Version: 1.0
-Message-Id: <01030614494400.02338@rob>
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+>Now my question is: is there any particular reason (other than "nobody
+>has told Linus") why this is not already in the standard kernel ?
 
-On Die, 06 Mär 2001 you wrote:
-> It's been submitted many many times. If you do submit it again, please add 
-> nftl[bcd] and ftl[abcd] too, and I don't think you actually need anything 
-> more than
-> 	{"mtdblock", 0x1f00},
-> 
-> for the mtdblock devices, because they're handled just like partitions.
 
-Hmm, I for one have two mtd devices on my platform, both of which I'd like
-to be able to use as root device. But I agree that 16 is probably a bit
-overkill. How about:
+because it's easier to do a
+$rdev <your kernel image here> /dev/mtdblock0 before installing
+the kernel with lilo. You don't need to pass any root kernel
+line parameters then.
 
-	{"mtdblock0", 0x1f00},
-	{"mtdblock1", 0x1f01},
-or:
-	{"mtdblock", 0x1f00},
-	{"mtdblock0", 0x1f00},
-	{"mtdblock1", 0x1f01},
+You can even boot a compressed root file system this way by
+passing the bit LOAD_RAMDISK=1, the RAMDISK_OFFSET=<your offset in
+1k from the start of your root device>. See the bootdisk
+howto.
 
-Rob
+Additionally, You have to go and hack the rd.c code in drivers/block/rc.c to
+remove the check to see that the boot device for compressed f/s
+is a floppy.
 
-----------------------------------------------------------------
-Robert Kaiser                         email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14                    phone: (49) 6136 9948-762
-D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
+As one additional matter you have to add a call to rd_load() just
+before mount_root() in init/main.c so that the ramdisk loading code
+runs *after* the mtdblock device has been registered.
+
+Go back in the archives a few weeks. There was quite a bit
+discussion re. this matter. I've found all these problems before :)
+
+There's quite a big update to the HOWTO pending that I'll commit
+as soon as I get some time (that includes all this stuff and
+some corrections). There is a bigger power fail issue
+in jffs1 that's hogging all my time right now.
+
+Vipin
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
