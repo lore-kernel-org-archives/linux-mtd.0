@@ -1,15 +1,16 @@
-Received: from orwell.zhwin.ch ([160.85.104.31])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178f9A-0005Qe-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 11:39:40 +0100
-Message-ID: <3CE4DE5F.294BA7E0@zhwin.ch>
-Date: Fri, 17 May 2002 12:41:35 +0200
-From: Thomas Preisig <preistho@zhwin.ch>
+Received: from web21510.mail.yahoo.com ([66.163.169.59])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 178i1n-0005hs-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 14:44:15 +0100
+Message-ID: <20020517134414.90856.qmail@web21510.mail.yahoo.com>
+Date: Fri, 17 May 2002 06:44:14 -0700 (PDT)
+From: Studying MTD <studying_mtd@yahoo.com>
+Subject: Re: FAT for NAND Flash 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <15117.1021559057@redhat.com>
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Kernelpanik while booting DOC2000
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,15 +22,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
-I installed mtd-lilo on my DOC2000 from the cvs and my kernel 2.4.18
-loads fine but fails to mount the root partiton.
-I see a message like this: Kernlel Panic: VFS: Unable to mount root fs
-on 03:04
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> AFAIK nothing. SmartMedia has a translation layer
+> just like FTL and NFTL, 
+> and you put a normal FAT file system on top of that.
+> 
 
-Why the the root fs refers on 03:04??? 03:04 is my Hardrive. I have run
-mtd-lilo on the doc2000. Could rdev -R help ?
+Are you also using FTL or NFTL for NAND Flash Device.
+
+Is it necessary to use FTL or NFTL for NAND Flash
+Device.
+
+What is the difference between FTL and NFTL.
+
+Thank you for your response.
 
 
-
-Content Security by MailMarshal
+__________________________________________________
+Do You Yahoo!?
+LAUNCH - Your Yahoo! Music Experience
+http://launch.yahoo.com
