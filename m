@@ -1,14 +1,15 @@
-Received: from bay14-f21.bay14.hotmail.com ([64.4.49.21] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BNuUh-000743-HR
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2004 15:13:59 +0100
-From: "J C" <jjcar1526@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 12 May 2004 10:13:37 -0400
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <BAY14-F215ScEbWIyTW000329ac@hotmail.com>
-Subject: MD2811-D32 DOC
+Received: from smtp1.iitb.ac.in ([203.199.51.149])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BNuVH-00075k-B4
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2004 15:14:36 +0100
+Message-ID: <1683.10.129.178.16.1084371249.squirrel@www.it.iitb.ac.in>
+Date: Wed, 12 May 2004 19:44:09 +0530 (IST)
+From: <varsachin@it.iitb.ac.in>
+To: <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: booting from ide flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +19,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
 
-  I am having problems with the DOC MD2811-D32.  I am assuming to use the 
-nand drivers for it since M-sys says it is nand technology.  The diskonchip 
-module in the nand directory will not compile.  I am using kernel 
-2.4.21-rmk1-omap and it is patched with the latest drivers.  Can anyone tell 
-me if there is a newer version where diskonchip isn't broken date 3-27-2004 
-on the diskonchip module.
+hi,
 
-Regards,
-John
+I am sachin varadkar working in KReSIT IIT Bombay , India,I want to boot
+linux from IDE flash so can you mail me the procedure of booting from ide
+flash.
 
-_________________________________________________________________
-Check out the coupons and bargains on MSN Offers! http://youroffers.msn.com
+
+sachin varadkar.
