@@ -1,24 +1,16 @@
-Received: from lon-del-01.spheriq.net ([195.46.50.97])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6Vqe-0000eQ-1b
-	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 10:33:17 -0500
-Received: from lon-out-01.spheriq.net ([195.46.50.129])
-	by lon-del-01.spheriq.net with ESMTP id j22FXBor024780
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Mar 2005 15:33:11 GMT
-Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
-	by lon-out-01.spheriq.net with ESMTP id j22FXA0w008171
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Mar 2005 15:33:11 GMT
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <4225DCA2.AFBE689F@st.com>
-Date: Wed, 02 Mar 2005 16:32:50 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
+Received: from [80.247.76.62] (helo=mail.hosting44.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6Xw1-0001BB-Bc
+	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 12:46:58 -0500
+Date: Wed, 2 Mar 2005 18:24:20 +0100
+From: "Simon Camilo" <committee@tendersc.cjb.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="windows-1251";
 MIME-Version: 1.0
-To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-References: <d01lkf$v0d$1@sea.gmane.org> <d04hdb$8k1$1@sea.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
+Message-Id: <20050302172420.D63791F85F7@mail.hosting44.com>
+To: undisclosed-recipients: ;
+Subject: Seeking Agent
+Reply-To: Simon Camilo <committee@tendersc.cjb.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Martin Egholm Nielsen wrote:
-> 
-> Hi again,
-> 
-> > After removing a directory containing a lot of files, I get lots of the
-> > following messages on reboot (one for each of the files I removed):
-> 
-> > Cannot remove child "file10.txt", ino #13, because it doesn't exist
+Dear Sir/Madam,
 
-This might happen when the deletion dirent for the directory
-is found, but the deletion dirent for the files are not found
-(which should not happen during ordinary operation).
-Exactly what command (or code) did you use to remove the file and
-directory ? Did you umount correctly after that ?
-Do you really get this message for each and every deleted file
-or only part of them ?
+I am a member of the Tenders committee, Department Minerals and Energy, Republic of South Africa.
+I am in search of an agent to assist us in the transfer of US$17.1m and subsequent investment in properties in your country. You will be required to:-
+(1) Assist in the transfer of the said sum
+(2) Advise on lucrative areas for investment
+(3) Assist us in purchase of properties.
+Should you be willing to assist us in the transaction, your share of the sum will be 27% of the US$17.1M, 67% for us and 6% for miscellaneous expenses.
+I will be pleased as soon as you Indicate your interest by including your confidential phone and fax numbers in your positive responses to my email; fulltxt@tsamail.co.za, this will enable us furnish you with further information on the procedures and modalities on how funds will be transferred or made available to you.
 
-> The problem arose after creating a directory in my JFFS2 NAND fs, and
-> creating some 1000 (small) files in it. After rebooting I removed the
-> entire directory, and at the next reboot I got the error.
+I await your immediate response.
 
-This message is a notice. It should not prevent JFFS2 from running.
-The directory and the files are considered as deleted.
+Sincerely,
+Simon Camilo.
+Direct Tel:+872 762 919750
+Direct Fax:+872 762 919751
 
-Just out of curiosity, do you get these messages
-"Eep. Child "fileXXXX" (ino #XXX) of dir ino #XX doesn't exist!"
-previously to the "Cannot remove..." messages ?
-If you don't, it might be interesting to get a trace with
-debug enabled since the child inode cache should not disappear
-between the build_inode_pass1 and remove_unlinked_inode.
 
-Bye
-Estelle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+________________________________
+L'email più cool del web?
+tu @3000.co.uk ! Fatti subito la tua mail, è gratis! http://mail.3000.co.uk
