@@ -1,10 +1,10 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BnFdi-0005ii-Vw
-	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 07:52:03 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-In-Reply-To: <1090391133.15766.4.camel@famine>
+Received: from lyte-mail1.lyse.net ([213.167.96.67])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BnFod-0005tT-3h
+	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2004 08:03:20 -0400
+From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1090410703.4280.10.camel@localhost.localdomain>
 References: <1089643331.3951.42.camel@famine>
 	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
 	<1089712151.5995.21.camel@famine>
@@ -22,11 +22,12 @@ References: <1089643331.3951.42.camel@famine>
 	<1090349564.15140.3.camel@famine>
 	<1090361318.9473.10.camel@localhost.localdomain>
 	<1090391133.15766.4.camel@famine>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 21 Jul 2004 07:51:43 -0400
-Message-Id: <1090410703.4280.10.camel@localhost.localdomain>
+	<1090410703.4280.10.camel@localhost.localdomain>
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <1090411396.15766.37.camel@famine>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Wed, 21 Jul 2004 14:03:16 +0200
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
 Subject: Re: JFFS2 eats memory
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,31 +39,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-07-21 at 08:25 +0200, Øyvind Harboe wrote:
+On Wed, 2004-07-21 at 13:51, David Woodhouse wrote:
+> On Wed, 2004-07-21 at 08:25 +0200, =D8yvind Harboe wrote:
+>=20
+> > in gc.c:
+>=20
+> > -	241		if (!raw->next_in_ino) {
+>=20
+> > -	251		ic =3D jffs2_raw_ref_to_ic(raw);
+>=20
+> Hmmm. Surely you shouldn't be able to get to those in the case where
+> gc_node is NULL? You should hit the condition at line 218 because
+> jeb->user_size should be zero.
+>=20
+> Remember, gc_node is the placemarker for the garbage-collector which is
+> busily obsoleting every node in this block so that the block can be
+> erased and returned to the free pool. If you were freeing a node, and
+> there was no 'next' node when you did so, that must have meant you got
+> to the end of the eraseblock, surely?
+>=20
+> Obviously I'm wrong -- you have empirical evidence. But why?
 
-> in gc.c:
+I have no idea. It is easy to reproduce in the fashion I described and
+this problem is complex enough that it takes a JFFS2 export a couple of
+rounds in the debugger to sort out. At this point I think little would
+be gained by me pursuing it.
 
-> -	241		if (!raw->next_in_ino) {
+But. What about my fix where I set jeb->gc_node to the previous element?
+Isn't that a better solution in any case?
 
-> -	251		ic = jffs2_raw_ref_to_ic(raw);
+> PS. Will somebody please kick Beat Morf <beat.morf@duagon.ch> off the
+> eCos list?
 
-Hmmm. Surely you shouldn't be able to get to those in the case where
-gc_node is NULL? You should hit the condition at line 218 because
-jeb->user_size should be zero.
+He will be punished at least. "autorespond =3D valid email address spack
+ack support" :-)
 
-Remember, gc_node is the placemarker for the garbage-collector which is
-busily obsoleting every node in this block so that the block can be
-erased and returned to the free pool. If you were freeing a node, and
-there was no 'next' node when you did so, that must have meant you got
-to the end of the eraseblock, surely?
-
-Obviously I'm wrong -- you have empirical evidence. But why?
-
-PS. Will somebody please kick Beat Morf <beat.morf@duagon.ch> off the
-eCos list? He has an extremely broken autoresponder -- it's replying to
-the From: address in the mail instead of the SMTP reverse-path, it's
-replying with non-error message status so that it can cause mail loops,
-and it's not even rate-limited. I get a response for every mail I send.
-
--- 
-dwmw2
+--=20
+=D8yvind Harboe
+http://www.zylin.com
