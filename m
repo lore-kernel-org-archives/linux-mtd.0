@@ -1,26 +1,19 @@
-Received: from stoneboat.aleph1.co.uk ([212.13.198.63] helo=home.wookware.org)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CAHia-00073s-UA
-	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2004 20:44:18 -0400
-Received: from carnet-gw.aleph1.co.uk ([195.224.76.10] helo=court.aleph1.co.uk)
-	by stoneboat.aleph1.co.uk with esmtp (Exim 3.35 #1 (Debian))
-	id 1CAHhv-000096-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Sep 2004 01:43:35 +0100
-Received: from xios.aleph1.co.uk ([194.70.44.170] helo=xios ident=Debian-exim)
-	by court.aleph1.co.uk with esmtp (Exim 3.35 #1 (Debian))
-	id 1CAHi4-00063v-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Sep 2004 01:43:44 +0100
-Received: from wookey by xios with local (Exim 4.34) id 1CAHhs-0006Se-1w
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 01:43:32 +0100
-Date: Thu, 23 Sep 2004 01:43:32 +0100
-From: Wookey <wookey@aleph1.co.uk>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20040923004331.GA24050@xios>
-Mime-Version: 1.0
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CAIiy-0007IZ-OR
+	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2004 21:48:46 -0400
+To: Ben Dooks <ben-mtd@fluff.org>
+References: <20040920234450.GA17169@home.fluff.org>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 22 Sep 2004 19:48:40 -0600
+In-Reply-To: <20040920234450.GA17169@home.fluff.org>
+Message-ID: <m3brfxycuf.fsf@maxwell.lnxi.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Wookey <wookey@aleph1.co.uk>
-Subject: Finding which block 'contains' a missing inode  
+Sender: "Eric W. Biederman" <eric@lnxi.com>
+Cc: ben@fluff.org, linux-mtd@lists.infradead.org
+Subject: Re: Fix to jedec_probe unlock addresses
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello people, I have a JFFS2 NAND rootfs which is giving a single 
-'Eep. Child "gpe-filemanager.desktop" (ino #3324) of dir ino #3035 doesn't
-exist!' error.
+Ben Dooks <ben-mtd@fluff.org> writes:
 
-I'd like to know if there is a way of finding out either form the live fs or
-from the jffs2 image file which block the offending inode/file should have
-been on?
+> Fix unlock address calculation for non-x8 chips for the
+> cfi cmdset code, which assumes always X8
+> 
+> Patch against 2.6.9-rc2 with 19th September CVS
+> 
+> Signed-off-by: Ben Dooks <ben-mtd@fluff.org>
+> 
+> --- linux-2.6.9-rc2-bk6-mtd20040919/drivers/mtd/chips/jedec_probe.c 2004-09-20
+> 13:02:46.000000000 +0100
+> 
+> +++ linux-2.6.9-rc2-bk6-mtd20040919-work/drivers/mtd/chips/jedec_probe.c
+> 2004-09-20 23:21:40.000000000 +0100
+> 
+> @@ -2046,7 +2046,15 @@
+>  	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+>  	       map->name, cfi_interleave(cfi), cfi->device_type*8, base, 
+>  	       map->bankwidth*8);
+> -	
+> +
+> +	/* fixup unlock addresses for the cmdset */
+> +
+> +	cfi->addr_unlock1 *= cfi_interleave(cfi) * cfi->device_type;
+> +	cfi->addr_unlock2 *= cfi_interleave(cfi) * cfi->device_type;
+> +
+> +	printk(KERN_DEBUG "unlocks at %08x,%08x\n", 
+> +	       cfi->addr_unlock1, cfi->addr_unlock2);
+> +
+>  	return 1;
+>  }
 
-Background: The kernel indicated one 'bad erase block' that is under this
-fs, but flasheraseall found no problem, and nandwrite did not skip that
-block. I worry that the block in question doesn't actually have the right
-data in it - if it corresponded to the above inode then I'd be sure I had
-located the problem.
+Hmm.  I think that points out a real issue but I think the bug actually
+lies in cfi_cmdset_0002.  
 
-There is also a 'normal' bad block (which gives an IO error when
-flasheraseall tries to erase it) - this _is_ skipped by nandwrite as expected.
+That fix makes below comment from cfi_cmdset_0002 clearly wrong.
+	/*
+	 * The CFI_DEVICETYPE_X8 argument is needed even when
+	 * cfi->device_type != CFI_DEVICETYPE_X8.  The addresses for
+	 * command sequences don't scale even when the device is
+	 * wider.  This is the case for many of the cfi_send_gen_cmd()
+	 * below.  I'm not sure, however, why some use
+	 * cfi->device_type.
+	 */
 
-TIA
+So I think it is more likely we need to change this hunk of code below.
 
-Wookey
--- 
-Aleph One Ltd, Bottisham, CAMBRIDGE, CB5 9BA, UK  Tel +44 (0) 1223 811679
-work: http://www.aleph1.co.uk/     play: http://www.chaos.org.uk/~wookey/
+		/*
+		 * These might already be setup (more correctly) by
+		 * jedec_probe.c - still need it for cfi_probe.c path.
+		 */
+		if ( ! (cfi->addr_unlock1 && cfi->addr_unlock2) ) {
+			switch (cfi->device_type) {
+			case CFI_DEVICETYPE_X8:
+				cfi->addr_unlock1 = 0x555; 
+				cfi->addr_unlock2 = 0x2aa; 
+				break;
+			case CFI_DEVICETYPE_X16:
+				cfi->addr_unlock1 = 0xaaa;
+				if (map_bankwidth(map) == cfi_interleave(cfi)) {
+					/* X16 chip(s) in X8 mode */
+					cfi->addr_unlock2 = 0x555;
+				} else {
+					cfi->addr_unlock2 = 0x554;
+				}
+				break;
+			case CFI_DEVICETYPE_X32:
+				cfi->addr_unlock1 = 0x1554;
+				if (map_bankwidth(map) == cfi_interleave(cfi)*2) {
+					/* X32 chip(s) in X16 mode */
+					cfi->addr_unlock1 = 0xaaa;
+				} else {
+					cfi->addr_unlock2 = 0xaa8; 
+				}
+				break;
+			default:
+				printk(KERN_WARNING
+				       "MTD %s(): Unsupported device type %d\n",
+				       __func__, cfi->device_type);
+				kfree(mtd);
+				kfree(extp);
+				return NULL;
+			}
+		}
+
+Does anyone have cfi cmdset 0002 devices in an interleaved configuration
+who would care to comment?
+
+
+Eric
