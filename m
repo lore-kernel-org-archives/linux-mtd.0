@@ -1,19 +1,20 @@
-Received: from kynes.gatewest.net ([198.163.227.7]
-	helo=10-10-1-6.gatewest.net)
+Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
+	helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AKNZP-0005rV-9I
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 19:55:59 +0000
-From: Cam Mayor <cmayor@iders.ca>
-To: hking <hking@qualcomm.com>, linux-mtd@lists.infradead.org
-Date: Thu, 13 Nov 2003 13:55:55 -0600
-References: <200311121031.08597.hking@qualcomm.com>
-In-Reply-To: <200311121031.08597.hking@qualcomm.com>
+	id 1AKOqa-00068E-Uu
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 21:17:49 +0000
+Received: from localhost (nico@localhost)
+	by xanadu.home (8.11.6/8.11.6) with ESMTP id hADLGOd11693
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2003 16:16:24 -0500
+Date: Thu, 13 Nov 2003 16:16:24 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.44.0311131607230.12180-300000@xanadu.home>
 MIME-Version: 1.0
-Message-Id: <03111313555502.02424@kilauea.iders.ca>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: Problem: erase mtd device
+Content-ID: <Pine.LNX.4.44.0311131607231.12180@xanadu.home>
+Content-Type: MULTIPART/Mixed; BOUNDARY=------------000806010609010805060004
+Subject: RedBoot partition support, was re: 2.6.0-test9-rmk1 ioremap() oops
+ (with lubbock-flash) (fwd)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 12 November 2003 12:31, hking wrote:
-> This is what I got after I added three custom partitions in the physmap.c:
-> After the kernel (2.4.20) boots up, I logged in as root and type:
-> #cat /proc/mtd
-> == and I got:
-> dev:    size   erasesize  name
-> mtd0: 00040000 00040000 "ResetWord"
-> mtd1: 01ec0000 00040000 "User FS"
-> mtd2: 00100000 00040000 "UBOOT"
->
->
-> The size, erasesize and name look correct.  It does not say the starting
-> point of each partitions.  Since our first and third partition are
-> write-protected, so I tried to erase the mtd1.
->
->
-> And I typed:
-> #erase /dev/mtd1
-> == and I got:
-> File open error
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-try unlocking that device before erasing.  my flash (YMMV) powers up to a 
-locked state.  (read the rest of this email first)
+--------------000806010609010805060004
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
+Content-ID: <Pine.LNX.4.44.0311131607232.12180@xanadu.home>
 
-> And I typed:
-> #eraseall /dev/mtd1
-> == and I got:
-> eraseall: /dev/mtd1: No such device
 
-check your /dev/mtd? entries against ./Documentation/devices.txt
-are the major/minor numbers correct?
+---------- Forwarded message ----------
+Date: Thu, 13 Nov 2003 08:37:10 -0800
+From: David Brownell <david-b@pacbell.net>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: linux-arm-kernel@lists.arm.linux.org.uk
+Subject: Re: 2.6.0-test9-rmk1 ioremap() oops (with lubbock-flash)
 
-cam
+>> This patch should fix it.
+> 
+> Indeed it does -- though without KMOD, that particular modprobe
+> needed a bit of manual assistance to finish.
 
--- 
-Cameron Mayor
-Iders Incorporated
+And for that matter, all the mtd map code expects a module
+called "RedBoot" instead of "redboot".  Rather than expect
+them all to change, this patch seems preferable.
 
-As of Decemeber 1, 2003			Until November 30, 2003
-100-137 Innovation Drive		600A Clifton Street
-Winnipeg, MB, Canada R3T 6B6		Winnipeg, MB Canada R3G 2X6
+- Dave
 
-hi Luc
+
+
+--------------000806010609010805060004
+Content-Type: TEXT/PLAIN; NAME=Diff
+Content-ID: <Pine.LNX.4.44.0311131607233.12180@xanadu.home>
+Content-Description: 
+Content-Disposition: INLINE; FILENAME=Diff
+
+--- 1.4/drivers/mtd/redboot.c	Wed May 28 08:01:05 2003
++++ edited/drivers/mtd/redboot.c	Thu Nov 13 08:32:14 2003
+@@ -189,6 +189,7 @@
+ module_init(redboot_parser_init);
+ module_exit(redboot_parser_exit);
+ 
++MODULE_ALIAS("RedBoot");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
+ MODULE_DESCRIPTION("Parsing code for RedBoot Flash Image System (FIS) tables");
+
+--------------000806010609010805060004
+Content-Type: TEXT/PLAIN; CHARSET=us-ascii
+Content-ID: <Pine.LNX.4.44.0311131607234.12180@xanadu.home>
+Content-Description: 
+Content-Disposition: INLINE
+
+-------------------------------------------------------------------
+Subscription options: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
+FAQ/Etiquette:       http://www.arm.linux.org.uk/armlinux/mailinglists.php
+
+
+--------------000806010609010805060004--
