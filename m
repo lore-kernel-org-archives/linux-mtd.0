@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [211.233.29.62] (helo=smail-107.hanmail.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15L7Pk-0002Yg-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2001 19:11:44 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B4F3ABA.2EFCAB42@sun.com> 
-References: <3B4F3ABA.2EFCAB42@sun.com>  <3B4E5085.62422401@sun.com> <24251.995007133@redhat.com> 
-To: Tim Hockin <thockin@sun.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: module names in request_module() 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 13 Jul 2001 19:17:24 +0100
-Message-ID: <15106.995048244@redhat.com>
+	id 15LCKu-0002pX-00
+	for <linux-mtd@lists.infradead.org>; Sat, 14 Jul 2001 00:27:04 +0100
+From: "=?EUC-KR?B?wMzA58jG?=" <kingseft@hanmail.net>
+Reply-To: "=?EUC-KR?B?wMzA58jG?=" <kingseft@hanmail.net>
+To: <linux-mtd@lists.infradead.org>
+Subject: [Question] cp result.txt  /dev/mtd0 problem
+Date: Sat, 14 Jul 2001 08:28:17 +0900 (KST)
+Message-Id: <20010714082817.HM.F0000000002ETLk@www16.hanmail.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=euc-kr
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +22,35 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-thockin@sun.com said:
->  So we have three options:
-> 	1) rename files to match their probe names
-> 	2) rename probe names to match module names
-> 	3) use modules.conf to give external fixes for internal flaws
-> I'm leaning towards #2.  Comments?  
+ Hi Developers,
 
-Fine.
+ I got latest MTD source code in CVS.
+ and I successfully got kernel boot message from MTD .
 
---
-dwmw2
+ after booted, I tried MKDEDEV, 
+ at that time, everyting is OK.
+
+ when I followed the step in FAQ manual.
+ I tried 
+
+ cp /tmp/jffs.image  /dev/mtd0
+
+ I got 
+
+ cp: /dev/mtd0  Read only file system.
+
+ I don't know how to overcome this problem..
+
+ Could anyone suggest any tips or helps?
+ Any comments will help us.
+
+ thanks.
+
+ kingseft@samsung.co.kr
+
+
+==================================================
+우리 인터넷, Daum
+평생 쓰는 무료 E-mail 주소 한메일넷
+지구촌 한글 검색서비스 Daum검색
+http://www.daum.net
