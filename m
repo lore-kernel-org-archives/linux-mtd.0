@@ -1,17 +1,19 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CUpxf-0006VV-HK
-	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2004 12:20:49 -0500
-Date: Thu, 18 Nov 2004 18:20:46 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20041118172046.GB9471@synertronixx3>
-References: <20041118163528.GA9471@synertronixx3>
-Mime-Version: 1.0
+	id 1CUqV8-0006iR-4D
+	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2004 12:55:24 -0500
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <419CE1E8.F20DD890@st.com>
+Date: Thu, 18 Nov 2004 18:54:48 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <419B8715.4036BDBB@st.com>
+	<1100795260.8191.7333.camel@hades.cambridge.redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20041118163528.GA9471@synertronixx3>
-Subject: Re: jffs2 Oops on 2.6.10-rc2
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 & NAND failure
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +23,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+David Woodhouse wrote:
+> >  - during wbuf flushing, if the previously written node filled
+> >    wbuf exactly, "buf" may be used instead of "wbuf"
+> >    in jffs2_wbuf_recover (access to null pointer)
+> 
+> Hmmm. But now with your change we can end up with a completely full wbuf
+> which we don't actually flush; we leave it in memory. We should write
+> that immediately, surely?
 
-In nodemgmt.c I remove the following code, which was added after 2.6.9:
+Not necessarily I think. If we write it immediately and the write fails,
+we have a fatal error. But if we leave it be, the next call to 
+jffs2_flash_writev will flush the buffer and we get 1 more try. 
+Unless there is something I don't understand, there is no harm in 
+leaving the wbuf full.
 
-#undef KONSTI
-#ifdef KONSTI
+> >  - there is no refiling of nextblock if a write error occurs
+> >    during writev_ecc (direct write, not using wbuf),
+> >    so the next write may occur on the failed block
+> 
+> OK. Priorities on printk though please.
 
-        /* Nodes which have been marked obsolete no longer need to be
-           associated with any inode. Remove them from the per-inode list */
-        if (ref->next_in_ino) {
-                struct jffs2_inode_cache *ic;
-                struct jffs2_raw_node_ref **p;
+OK. (was actually a copy/paste so I'll check the wbuf recover too
+and maybe make a function for the refiling).
 
-                ic = jffs2_raw_ref_to_ic(ref);
-                for (p = &ic->nodes; (*p) != ref; p = &((*p)->next_in_ino))
-                        ;
+> >  - if a write error occurs, but part of the data was written,
+> >    an obsolete raw node ref is added but nextblock has changed.
+> 
+> Where? You mean in jffs2_wbuf_recover()? That's an obsolete raw node ref
+> in the _new_ nextblock, surely?
 
-                *p = ref->next_in_ino;
-                ref->next_in_ino = NULL;
-        }
-
-
-        /* Merge with the next node in the physical list, if there is one
-           and if it's also obsolete. */
-        if (ref->next_phys && ref_obsolete(ref->next_phys) ) {
-                struct jffs2_raw_node_ref *n = ref->next_phys;
-
-                ref->__totlen += n->__totlen;
-                ref->next_phys = n->next_phys;
-                if (jeb->last_node == n) jeb->last_node = ref;
-                if (jeb->gc_node == n) {
-                        /* gc will be happy continuing gc on this node */
-                        jeb->gc_node=ref;
-                }
-                BUG_ON(n->next_in_ino);
-                jffs2_free_raw_node_ref(n);
-        }
-
-        /* Also merge with the previous node in the list, if there is one
-           and that one is obsolete */
-        if (ref != jeb->first_node ) {
-                struct jffs2_raw_node_ref *p = jeb->first_node;
-
-                while (p->next_phys != ref)
-                        p = p->next_phys;
-
-                if (ref_obsolete(p) ) {
-                        p->__totlen += ref->__totlen;
-                        if (jeb->last_node == ref) {
-                                jeb->last_node = p;
-                        }
-                        if (jeb->gc_node == ref) {
-                                /* gc will be happy continuing gc on this node */
-                                jeb->gc_node=p;
-                        }
-                        p->next_phys = ref->next_phys;
-                        jffs2_free_raw_node_ref(ref);
-                }
-        }
-
-#endif
+No, it is the "Mark the space as dirtied" case in jffs2_write_dirent and
+jffs2_write_dnode. I think this happens only if the write error occurs
+on mtd->writev_ecc and part of the data was successfully written by
+jffs2_flush_wbuf or writev_ecc previously so jffs2_flash_writev says 
+some data was written. In this case, when jffs2_write_dirent/dnode
+adds this obsolete raw node ref for the dirty space, nextblock was 
+modified during the refiling and / or recovery.
 
 
-That helps, the Kernel doesn't Oops on fresh flashed filesystem. Don't know
-if the error is this code or only triggered by it though.
+> > Additionally I have a question about the retry cases in
+> > jffs2_write_dnode and jffs2_write_dirent.
+> > If the write error occurs during an API call (not GC),
+> > jffs2_reserve_space is called again to find space to rewrite
+> > the node. However since we refiled the bad block, the free space
+> > was reduced. Is it not possible then that jffs2_reserve_space
+> > will need to gc to find some space ?
+> 
+> It is possible, yes.
+> 
+> > In the case of a deletion dirent, the previous dirent may be
+> > GCed so its version number is increased. When the deletion
+> > dirent is finally written in the retry, its version number
+> > is older than the GCed node, so it is (quietly) obsoleted.
+> 
+> Hmm, true. We should check f->highest_version after we reallocate space,
+> and update ri->version or rd->version accordingly.
 
-Konsti
+This was my first idea too but I found it ugly to tamper with
+structures which are clearly the responsibility of the caller.
+However this is a recovery case so... maybe it is necessary.
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+> > In the case of a dnode, I think there may be a deadlock
+> > if a dnode belonging to the same file is GCed, since the
+> > GC will attempt to lock f->sem.
+> 
+> No, because we unlock f->sem before calling jffs2_reserve_space.
+
+Right, I got confused.
+
+> > I actually saw the dirent case in my tests but since I wrote
+> > some nodes manually I am not sure this is a valid problem in
+> > ordinary JFFS2 processing ?
+> 
+> I think you're right -- the version number is indeed a real problem.
+> 
+> > Could the solution be to call jffs2_reserve_space_gc instead
+> > of jffs2_reserve_space ?
+> 
+> No, because if the write fails and then we're short of space, we want to
+> return -ENOSPC. We don't want to keep eating into the space qwhich is
+> reserved for GC.
+
+If we use jffs2_reserve_space_gc both in jffs2_wbuf_recover and the
+dnode/dirent retry cases I believe we will write at most 2*4KB = 8KB 
+this way ? Then further API calls will do the GC. Is this unacceptable ?
+
+> Thanks for the report and the patches. Would you like to send me a SSH
+> public key so that I can give you an account and you can commit
+> directly?
+
+We have a firewall here so I don't think CVS will work. I will ask.
+Like many people I rely on snapshots. BTW if JFFS2 and JFFS3 are 
+maintained in parallel do we get 2 sets of snapshots ? or is there
+another way to get both versions ?
+Anyway I'll send a corrected patch to the list when decision is made
+about the node version problem - I guess the version check/update ?
+
+Bye
+Estelle
