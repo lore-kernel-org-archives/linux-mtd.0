@@ -1,14 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@oktetlabs.ru
-In-Reply-To: <41986D89.4060308@oktetlabs.ru>
-References: <41986D89.4060308@oktetlabs.ru>
-Content-Type: text/plain
-Date: Mon, 15 Nov 2004 08:49:11 +0000
-Message-Id: <1100508552.8015.61.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CTcm6-0002kt-1Y
+	for linux-mtd@lists.infradead.org; Mon, 15 Nov 2004 04:04:01 -0500
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 372A322886
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Nov 2004 12:03:16 +0300 (MSK)
+Message-ID: <419870D4.4050703@yandex.ru>
+Date: Mon, 15 Nov 2004 12:03:16 +0300
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND pages cache?
+Subject: remove the 'totlen' field from node_ref
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-11-15 at 11:49 +0300, Artem Bityuckiy wrote:
-> So, the obvious idea how to avoid this is to introduce something like 
-> NAND pages cache. The cache will keep several NAND pages which were last 
-> accessed.
-> 
-> I don not know is it good to do this only in JFFS2 or on the MTD NAND layer?
+Hello,
 
-I thought we already did this in the MTD NAND layer, since we had to
-read whole pages there to do ECC anyway. Thomas?
+I see there were efforts to remove the 'totlen' field from the 
+jffs2_raw_node_ref structure. But it is not done yet.
+
+As I understand, in order to succesfullt done this improvements, all the 
+space in flash must be represented by means of nodes. This means, we 
+should keep padding node references (jffs2_raw_node_ref for paddigs) 
+in-core too.
+
+Why is this work not done yet? Are there some difficulties? May be some 
+problems arise when we pad to the end of NAND page/Flash block but the 
+padding length is not sufficient to write the padding node and we just 
+write some pattern?
+
+Thanks.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
