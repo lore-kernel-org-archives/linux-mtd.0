@@ -1,19 +1,17 @@
-Received: from kynes.gatewest.net ([198.163.227.7])
+Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.36] helo=albatross.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16b2L5-0002xJ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 16:32:59 +0000
-Received: from yahweh (h24-66-30-3.wp.shawcable.net [24.66.30.3])
-        by kynes.gatewest.net (8.12.1/8.12.0.Beta19/Debian 8.12.0.Beta19) with SMTP id g1DGi4mD015435
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 10:44:04 -0600
-Message-ID: <003e01c1b4ad$417d30f0$87657bc8@athlon>
-From: "Derek Ross" <dross@iders.ca>
-To: <linux-mtd@lists.infradead.org>
-Subject: Flash appears to be ROM, readonly.
-Date: Wed, 13 Feb 2002 10:41:16 -0600
+	id 16b4jL-000364-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2002 19:06:11 +0000
+Message-ID: <3C6ABB64.72BD8DD3@etx.ericsson.se>
+Date: Wed, 13 Feb 2002 20:15:48 +0100
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: Allen Curtis <acurtis@onz.com>, linux-mtd@lists.infradead.org
+Subject: Re: Flash left in a write mode
+References: <Pine.LNX.4.44.0202091114160.2394-100000@lapdancer.baythorne.internal>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,40 +23,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
-I'm running the mtd_debug.c app, and when I use the
-"info" switch, I get the following:
+David Woodhouse wrote:
+ 
+> I'm willing to entertain the notion that the flash driver should do this
+> on close, or we should have a reboot notifier registered that calls a new
+> method in the mtd_info to reset the flash.
 
- mtd.type = MTD_ROM
- mtd.flags = MTD_CAP_ROM
- mtd.size = 8388608 (8M)
- mtd.erasesize = 65536 (64K)
- mtd.oobblock = 0
- mtd.oobsize = 0
- mtd.ecctype = MTD_ECC_NONE
- regions = 0
-
-If I try to write or erase a sector, the app immediately
-exits as soon as it tries to open the file discriptor 
-with O_RDWR flag set.
-
-If I run a "cat /proc/mtd" I get:
-
- dev:  size     erasesize   name
- mtd0: 00800000 00010000    "flash"
- mtd1: 0000c000 00000010    "SRAM"
- mtd2: 00000080 00010000    "BootROM"
+Is this needed ?? I have never seen a reboot without some type of reset
+signal sent by the CPU. Not connecting that to the FLASH is the bug.
 
 
-The hardware details are:
-
-CDB89712 (rev B) development board.
-
-Flash TE28F320 B Jedec, not CFI
-Will later be using C for final product, which is CFI
-
-Kernel is 2.4.6-rmk1-rayl1, and we also have 2.4.16-rmk2
-We can upgrade mtd drivers if necessary.
-
-Thank you,
-Derek Ross.
+-- 
+Kenneth Johansson	
+Ericsson Telecom                  Tel: +46 8 404 71 83
+Viderögatan 3                     Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
