@@ -1,21 +1,18 @@
-Received: from pd9eb8a1c.dip.t-dialin.net ([217.235.138.28] helo=thomas.tec.autronix.de)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dgqg-0002in-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 00:12:34 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Thomas Gleixner <gleixner@autronix.de>
-Reply-To: gleixner@autronix.de
-To: Adam Wozniak <adam.wozniak@comdev.cc>
-Subject: Re: JFFS2 list_dirty corruption
-Date: Thu, 21 Feb 2002 01:26:34 +0100
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-   jffs-dev@axis.com
-References: <02022020414807.18560@thomas> <02022021101508.18560@thomas> <3C74383D.EC664E52@comdev.cc>
-In-Reply-To: <3C74383D.EC664E52@comdev.cc>
+	id 16dhSm-0002kt-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 00:51:56 +0000
+Message-ID: <000801c1ba73$7daa4240$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: "Ilguiz Latypov" <ilatypov@superbt.com>
+Cc: <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.44.0202201803210.14779-100000@server.superbt.com>
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Wed, 20 Feb 2002 20:01:59 -0500
 MIME-Version: 1.0
-Message-Id: <0202210126340B.18560@thomas>
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,43 +24,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thursday, 21. February 2002 00:58, Adam Wozniak wrote:
-> Ok, maybe this is a problem:
->
-Sorry, you're right. I should send such mails better in the morning.
-It happened on the transcript from my NAND modified stuff.
-Here is the correct patch:
+Ilguiz,
 
---- mtd/fs/jffs2/scan.c	2002/01/09 13:25:58	1.57
-+++ mtd/fs/jffs2/scan.c	2002/02/21 00:17:19
-@@ -127,10 +127,17 @@
-                         if (jeb->free_size > 2*sizeof(struct 
-jffs2_raw_inode) &&
-                                 (!c->nextblock || c->nextblock->free_size < 
-jeb->free_size)) {
-                                 /* Better candidate for the next writes to 
-go to */
--                                if (c->nextblock)
-+                                if (c->nextblock) {
-+					/* We must delete, because mark_node_obsolete
-+					   could have added this block to dirty_list already */
-+                                        list_del(&c->nextblock->list);
-                                         list_add(&c->nextblock->list, 
-&c->dirty_list);
-+				}
-                                 c->nextblock = jeb;
-                         } else {
-+				/* We must delete, because mark_node_obsolete
-+				   could have added this block to dirty_list already */
-+				list_del(&jeb->list);
-                                 list_add(&jeb->list, &c->dirty_list);
-                         }
- 		} else {
--- 
-Thomas
-P.S. David: The jffs2-nand-version is correct.
-__________________________________________________
-Thomas Gleixner, autronix automation GmbH
-auf dem berg 3, d-88690 uhldingen-muehlhofen
-fon: +49 7556 919891 , fax: +49 7556 919886
-mail: gleixner@autronix.de, http://www.autronix.de  
+I don't get any "Jumping to Grub" messages on boot; it's like the DOC is not installed at
+all (no messages on boot).
+
+The difference between INT 18/19 is a bit confusing.  I thought that int 18h was the old
+"bootstrap" handler that used to jump to ROM BASIC (many years ago), and that int 19h
+simply tried to first read the MBR on the floppy, and then on the first hard disk drive.
+According to a very old DOS book I have, it looks like INT 19h will transfer control to
+INT 18h if attempts to read the boot sector from floppy or hard drive are unsuccessful.
+
+I'll try booting from a floppy with MBR = int 19 tomorrow.
+
+I did enable the DOC_DEBUG in shared.h, but obviously this didn't make any difference as I
+haven't been able to even attempt to boot yet.
+
+The kernel I'm using does have the open source MTD drivers compiled in, and everything
+works great when booted from (mtd-patched) LILO.
+
+Thanks for your quick response.
+
+Mark
+
+On Wed, 20 Feb 2002, Ilguiz Latypov wrote:
+
+> Does the "Jumping to Grub" message show up during startup
+> (stage1/doc_stage1.S)?  Does this message come next?
+>    Attempting to open /boot/grub/menu.lst on drive 0xe0, partition 0xff
