@@ -1,14 +1,18 @@
-Received: from web13808.mail.yahoo.com ([216.136.175.18])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15WJ2L-00011J-00
-	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 15:49:50 +0100
-Message-ID: <20010813145542.24392.qmail@web13808.mail.yahoo.com>
-Date: Mon, 13 Aug 2001 07:55:42 -0700 (PDT)
-From: pirabusisamani visakan <kpsmanivisakan@yahoo.com>
-Subject: Detection of mtd devices
+Received: from ns1ca.ubisoft.qc.ca ([205.205.27.131])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15WLqN-0001CT-00
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 18:49:39 +0100
+Received: from srvmail-mtl.ubisoft.qc.ca (srvmail-mtl.ubisoft.qc.ca [205.205.27.194])
+	by ns1ca.ubisoft.qc.ca (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA22986
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 14:55:15 -0400
+Message-ID: <9A1957CB9FC45A4FA6F35961093ABB8403E3DF63@srvmail-mtl.ubisoft.qc.ca>
+From: Patrick Allaire <pallaire@gameloft.com>
 To: linux-mtd@lists.infradead.org
+Subject: Applying MTD to 2.2.x kernel
+Date: Mon, 13 Aug 2001 13:49:22 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,48 +24,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello everybody,
+Hi all,
 
-I am trying to make mtd partitions in my ATMEL
-AT49BV1604 flash, I have selected physical memory
-mapping and edited that to make 3 partitions,
-when I burn the flash and run the system, It gave some
-errors as follows.
+I a Newbie to the world of Flash access drivers. I am having quite a hard
+time to path the kernel to support MTD flash driver. I want to use 2.2.19
+kernel, but 2.2.18 would also be fine.
 
-mtdblock_open
-ok
-...
-...
-...
-maprom_write called
-maprom_write called
-...
-...
-maprom_write called
-[4] jffs_gcd:branch through zero
-Intenal error: Oops: 0
-CPU:0
-pc:[<ooooooo4>]
-lr:[<02020424>]
-...
-...
-and finally goes to the command promt.
+I have tried to apply some snapshot of the MTD to kernels 2.2.17 2.2.18
+without any success. If I only apply the mtd-2.2.17.patch, I dont have any
+problems with patch, but then it wont compile. If I try to add the others
+pach to the kernel, I get somes patchings errors. I am alwais using a fresh
+downloaded kernel from www.kernel.org, there is not any other patch aplyed
+to it.
 
-When I cat the proc entry for mtd
-mtd0:	00100000  00020000 "Physically mapped flash"
-mtd1: 	00001000  00020000 "loader"
-mtd2:	000b7000  00020000 "kernel"
-mtd3:	00048000  00020000 "files"
+I have been able to path and compile 2.4.0 kernel, but this is not a kernel
+that I can use in my embedded system.
 
-Is this indicates the mtd is properly mounted?
-I could not see any read operations and I can't do
-write operation.
+Is there a know snapshot that is suppose to wok on a 2.2.x kernel ?
 
-Does anybody find the fault, pls give me a clue to me?
+Before I get tell to search the old message archive, is there a way to do a
+search in the archive or I have to go through hte messages month bu month ?
 
-Thanks in advance 	
+Thank alot for your time.
 
-__________________________________________________
-Do You Yahoo!?
-Send instant messages & get email alerts with Yahoo! Messenger.
-http://im.yahoo.com/
+Patrick Allaire
+mailto:pallaire@gameloft.com
+If you can see it, but it's not there, it's virtual. 
+If you can't see it, but it is there, it's hidden. 
+It you can't see it and it isn't there, it's gone.
