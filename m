@@ -1,15 +1,25 @@
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+Received: from mailbox1.avalonworks.net ([216.58.97.66])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AOQSK-0002uR-Bt
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2003 23:49:24 +0000
-Date: Mon, 24 Nov 2003 21:35:52 +0100
-From: lanas@t-online.de (lanas)
+	id 1AORF9-00038G-VF
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Nov 2003 00:39:52 +0000
+Received: from localhost (i216-58-64-146.igs.net [216.58.64.146])
+	hAP0cHDG073298	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Nov 2003 19:38:17 -0500 (EST)
+	(envelope-from ilatypov@infradead.org)
+Received: from ilgiz by localhost with local (Exim 4.24)
+	id 1AORDe-0000Sj-12
+	for linux-mtd@lists.infradead.org; Mon, 24 Nov 2003 19:38:18 -0500
+Date: Mon, 24 Nov 2003 19:38:17 -0500
+From: Ilguiz Latypov <ilatypov@infradead.org>
 To: linux-mtd@lists.infradead.org
-Message-Id: <20031124213552.5357c92a.lanas@t-online.de>
+Message-ID: <20031125003817.GA1762@ei.homeip.net>
+References: <20031124213552.5357c92a.lanas@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: DoC newbie
+Content-Disposition: inline
+In-Reply-To: <20031124213552.5357c92a.lanas@t-online.de>
+Sender: Ilguiz Latypov <ilatypov@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: DoC newbie
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-  I have a few questions about a Disk-On-Chip 2000 and its possibilities
-ans integration.
+On Mon, Nov 24, 2003 at 09:35:52PM +0100, lanas wrote:
+>   What I did up to now is to get the device recognized as /dev/ntfla. 
 
-  Is it possible to boot from such a device ?
+LILO would need disk I/O int 0x13 emulation.  Such layer is offered by
+M-Sys.  I don't know if the source code for it is open.
 
-  What I did up to now is to get the device recognized as /dev/ntfla. 
-So I did a fdisk on this, created a bootable partition, and formatted it
-ext2.  Ans then I mount it and I can copy files to it.  I tried to run a
-basic and recent lilo with device being /dev/ntfla bit lilo got lost
-somewhere.  Anyhow I understand that using jffs2 would be a much better
-choice to leverage the wear on the chip.  Where can i find complete and
-recent instructions for using the jffs2 with kernel 2.4.20, as well as
-the utilities needed such as mkjffs2 (or some such) ?
+There is a nice description of dwmw2's open source NFTL patch to GRUB
+and further enhancements at
 
-  Ah, did I damaged anything in the DoC by formatting it using ext2 ? 
-Do I simply have to reformat it using the jffs2 formatting utility (much
-in the same way as mke2fs) ?
+  http://www.lakeshoremicro.com/diskonchip-grub-howto.html
 
-  Any hint and comments appreciated,
+I saw messages on JFFS2 on NAND driver development in the MTD mailing
+list archives.
 
-Cheers,
-
-Al
+-- 
+Ilguiz
