@@ -1,17 +1,17 @@
-Received: from [196.38.120.139] (helo=ntserver1.secureworx.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16i9xU-0001QJ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 08:06:05 +0000
-Message-ID: <9136BE9FE178D411A14F00508B6A0B7B36B843@ntserver1>
-From: Robert Sandilands <robert.sandilands@secureworx.com>
-To: "'cfowler@outpostsentinel.com'" <cfowler@outpostsentinel.com>,
-	americas-techsupport@m-sys.com
+	id 16iBHU-0001Va-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 09:30:48 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.SOL.4.30.0203050907220.25467-100000@alya.utu.fi> 
+References: <Pine.SOL.4.30.0203050907220.25467-100000@alya.utu.fi> 
+To: =?ISO-8859-1?Q?Veli-Pekka_Yl=F6nen?= <velpeyl@utu.fi>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: msys process
-Date: Tue, 5 Mar 2002 10:19:30 +0200 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: easy way to compile jffs2 and mtd 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 05 Mar 2002 09:42:10 +0000
+Message-ID: <5559.1015321330@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,45 +23,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-M-sys have already told me that they are not interested in chasing and
-fixing the bug. I would seriously recommend using the MTD drivers in Linux
-for the following reasons:
+velpeyl@utu.fi said:
+>  what is the easiest way to compile the jffs2 and mtd from the
+> repository? I use 2.4.2 kernel and having difficulties to compile.
+> Upgrading kernel is no option at the moment. 
 
-1. It works
-2. You get support
+It should work if you check out the current code from CVS, go into the 
+fs/jffs2 directory and type 'make'. Likewise the drivers/mtd/ directory.
 
-Robert Sandilands
+You may need 'make LINUXDIR=/home/where/I/put/linux'
 
-> -----Original Message-----
-> From: Chris Fowler [mailto:cfowler@outpostsentinel.com]
-> Sent: 04 March 2002 07:01
-> To: americas-techsupport@m-sys.com
-> Cc: linux-mtd@lists.infradead.org
-> Subject: msys process
-> 
-> 
-> Under Linux I have a process running.   msys/fla.
-> 
-> This process seems to keep my load averages around 1.    When 
-> I do not have the driver loaded my laod averages are 0.06.  
-> Since I mount my flash as ro to load software and only read  
-> a raw partition
-> for configuration informatin, I have to wonder my my load 
-> averages are *so* high with this process.
-> 
-> 1) What is it doing?
-> 
-> 2) How can I stop it?
-> 
-> 3) Why is is consuming so many resources for a little task?
-> 
-> 
-> Thanks,
-> Chris
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+
+--
+dwmw2
