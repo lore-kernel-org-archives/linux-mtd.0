@@ -1,15 +1,17 @@
-Received: from school.cyberec.com ([202.153.122.103])
+Received: from enigma.barak.net.il ([212.150.48.99])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17FnD7-0007Ca-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Jun 2002 03:41:13 +0100
-Message-ID: <3CFECA68.6060709@emsoftltd.com>
-Date: Thu, 06 Jun 2002 10:35:20 +0800
-From: Jason Chan <jason@emsoftltd.com>
+	id 17G0S3-00088L-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Jun 2002 17:49:31 +0100
+Message-ID: <006801c20d82$697b6800$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: <dwmw2@infradead.org>
+Cc: "Linux - MTD list" <linux-mtd@lists.infradead.org>
+Subject: Fw: jffs2 crc errors
+Date: Thu, 6 Jun 2002 19:48:48 +0200
 MIME-Version: 1.0
-To: "'linux-arm-kernel@lists.arm.linux.org.uk'" <linux-arm-kernel@lists.arm.linux.org.uk>,
-   linux-mtd@lists.infradead.org
-Subject: Need Some help to write NandFlash Driver
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,32 +24,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear all,
-	I am currently implementing Samsung Nand-Flash Driver for edb7312 block on 2.4.18 kernel. I am seeking for suggestion on which method should be used to improve my nandflash driver.
-
-It implement the Nand-Flash Driver as a block device currently.=20
-When there are some "WRITE" request to write an sector, I will
-1. Copy the content of the block into a buffer.
-2. Update the content of the buffer of specific sector location.
-3. Erase the block
-4. Write the whole block back to the flash.
-
-But I find that, when I write an whole block of buffer back to the flash, all the interrupt will be blocked during the operation. And that's cause problem of other drivers. And I want the interrupt can fully functional even when I writing flash.
-
-Now I have following idea,
-1. Not to disable interrupt when processing "WRITE" request. But how can I control the read/write operation so that I won't have some synchronization problem.
-
-2. Use MTD Block device, I have do some initial port on that. I use MTD NandFlash support and port my own code there. I can use the "mtd-nand" char device to read/write the flash. But when I use the "mtd-block" block device to read to flash, it work fine. But it crash when I try to write to the block device. Is that the MTD block driver problem? Anyone has successful port Samsung nandflash to MTD block device.
- 
-3. Use JFFS2. It seems JFFS2 can support the NandFlash. Anyone have try that?
- 
-4. Use NTFL. But it only support DiskOnChip. Can this use Nandflash on this.
-
-Any suggestion is welcome.
-
-
--- 
-Best Regards,
-
-Jason Chan
-Emsoft Ltd.
+> i encounter this err in boot:
+>
+> jffs2_scan_inode_node(): Data CRC failed on node at 0x001eaa24: Read
+> 0xda7b03c2,
+>  calculated 0x0da9fb30
+>
+> and it keeps appearing every boot.
+>
+> is it bad ?
+>
+> maybe its not fixed becuse i'm terminating the jffs optimization thread in
+> the middle of the init process ?
+>
+> thanks
+>
+> Gad
