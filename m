@@ -1,25 +1,17 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B0bua-0006eX-Qf
-	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2004 07:44:24 +0000
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HUA001F2THFLW@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Tue, 09 Mar 2004 08:44:04 +0100 (MET)
-Date: Tue, 09 Mar 2004 08:41:30 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <01139FC052A0D411900B00508B9535FC102796CD@ZCH07EXM04.corp.mot.com>
-To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
- "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Message-id: <200403090841.30564.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-References: <01139FC052A0D411900B00508B9535FC102796CD@ZCH07EXM04.corp.mot.com>
-Subject: Re: How to verify the ECC code for NAND Flash do work
-Reply-To: tglx@linutronix.de
+Received: from chello080110132030.102.11.vie.surfer.at
+	([80.110.132.30] helo=mail.hurricane.at ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B0cUO-0006qO-IX
+	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2004 08:21:27 +0000
+Date: Tue, 9 Mar 2004 09:16:09 +0100 (CET)
+From: Matthias Gorjup <mgorjup@norik.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <200403090829.36404.tglx@linutronix.de>
+Message-ID: <Pine.LNX.4.10.10403090907490.1601-100000@mail.hurricane.at>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Compiling kernel 2.4.20 with the latest snapshot of mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 09 March 2004 06:47, Shen Aaron-r62966 wrote:
-> Hello all,
->
->   I have modified the ECC part of code in my Linux system, but I don't know
-> how to confirm that it does work. 
 
-Why did you modify the code ? It is stable and tested.
 
-> One way I'm thinking of is to get a NAND
-> Flash with bad block somewhere inside it. 
+On Tue, 9 Mar 2004, Thomas Gleixner wrote:
 
-The bad block is not related to ECC. Bad blocks are skipped. They aren't read, 
-writted, erased.
+> On Monday 08 March 2004 18:52, Matthias Gorjup wrote:
+> > from the mtd CVS repository. I apply the patch by invoking script
+> > sh patchin.sh /home/gorjup/temp/linux but I get errors when compiling.
+> > Here are the errors:
+> 
+> Try
+> sh patchin.sh -j /home/gorjup/temp/linux
+> 
+I tried it, but I got errors as well. But does it make sense at all to
+take the latest snapshot from CVS and integrate it in our product with
+kernel 2.4.20 since there is no guarantee that the latest snapshot from
+CVS is stable? 
+Our problem is the speed of writing to flash memory (Fujitsu MBMLV650,
+16bit, 8MB). It takes us minimum 5 minutes for copying a 2MB large file
+from mounted NFS to flash partition. Is that normal? how could we optimize
+it?
 
->1. A suitable probram to create a period of bad block
-> inside a normal NAND Flash is needed. 
-
-You have to set the bad block marker. This can be done from userspace. Have a 
-look at utils/nandwrite.c
-
-> What's the result if the ECC part fails?
-
-The raw data on flash are returned to the caller with an errorcode. If ECC 
-fails completely then the data will be lost in the most cases.
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Matthias Gorjup
+Norik Systems
+www.norik.com
+> -- 
+> Thomas
+> ________________________________________________________________________
+> linutronix - competence in embedded & realtime linux
+> http://www.linutronix.de
+> mail: tglx@linutronix.de
+> 
+> 
