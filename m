@@ -1,19 +1,20 @@
-Received: from [2001:a60:0:488::2] (helo=mail-out.m-online.net)
+Received: from mail.fh-wedel.de ([213.39.232.194])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BrgP3-0007k2-G7
-	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2004 13:15:14 -0400
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Mon, 02 Aug 2004 19:08:24 +0200."
-	<20040802170824.GC26115@wohnheim.fh-wedel.de>
-Date: Mon, 02 Aug 2004 19:14:57 +0200
-Sender: wd@denx.de
-Message-Id: <20040802171502.4DCB1C109F@atlas.denx.de>
+	id 1BrgSs-0007u0-Px
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2004 13:19:12 -0400
+Date: Mon, 2 Aug 2004 19:19:10 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Wolfgang Denk <wd@denx.de>
+Message-ID: <20040802171910.GA29585@wohnheim.fh-wedel.de>
+References: <20040802170824.GC26115@wohnheim.fh-wedel.de>
+	<20040802171502.4DCB1C109F@atlas.denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20040802171502.4DCB1C109F@atlas.denx.de>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Volatile data device vor jffs2 
+Subject: Re: [RFC] Volatile data device vor jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <20040802170824.GC26115@wohnheim.fh-wedel.de> you wrote:
->
-> Your approach doesn't always work for me because sometimes people care
-> a lot about the last log entries.  They need to be inside a
-> non-volatile medium, either nvram or flash.  Unless you want to move
-> the page cache to nvram... ;)
+On Mon, 2 August 2004 19:14:57 +0200, Wolfgang Denk wrote:
+> In message <20040802170824.GC26115@wohnheim.fh-wedel.de> you wrote:
+> >
+> > Your approach doesn't always work for me because sometimes people care
+> > a lot about the last log entries.  They need to be inside a
+> > non-volatile medium, either nvram or flash.  Unless you want to move
+> > the page cache to nvram... ;)
+> 
+> Did you consider using oramfs? See http://pramfs.sourceforge.net/
 
-Did you consider using oramfs? See http://pramfs.sourceforge.net/
+We already have something similar.  People have to sort their data and
+send some to one fs, other to the other fs.  Prone to errors, static,
+ugly code, etc.
 
+Jffs2 would be able to do the sorting transparently.
 
-Wolfgang Denk
+Jörn
 
 -- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-4596-87  Fax: (+49)-8142-4596-88  Email: wd@denx.de
-Of all the things I've lost, I miss my mind the most.
+People will accept your ideas much more readily if you tell them
+that Benjamin Franklin said it first.
+-- unknown
