@@ -1,17 +1,20 @@
-Received: from [61.78.64.122] (helo=tolkien.mizi.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178waV-0007Rn-00
-	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 06:17:03 +0100
-To: Studying MTD <studying_mtd@yahoo.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: FAT for NAND Flash
-References: <20020516144608.86328.qmail@web21509.mail.yahoo.com>
-From: Yong-iL Joh <tolkien@mizi.com>
-Date: 18 May 2002 14:16:58 +0900
-In-Reply-To: <20020516144608.86328.qmail@web21509.mail.yahoo.com>
-Message-ID: <hbvg9m9gs5.fsf@tolkien.mizi.com>
-MIME-Version: 1.0
+	id 178yI2-0007aD-00
+	for <linux-mtd@lists.infradead.org>; Sat, 18 May 2002 08:06:06 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1021655281.27483.0.camel@timmy> 
+References: <1021655281.27483.0.camel@timmy>  <Pine.LNX.4.33.0205170948210.11746-100000@snaresland.acl.lanl.gov> 
+To: Russ Dill <Russ.Dill@asu.edu>
+Cc: Ronald G Minnich <rminnich@lanl.gov>,
+    "Richard A. Smith" <rsmith@bitworks.com>,
+    "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
+    linux-mtd@lists.infradead.org
+Subject: Re: Getting big flash onto motherboards. Will CF work? what will? 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Sat, 18 May 2002 08:06:01 +0100
+Message-ID: <10481.1021705561@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,29 +26,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Studying MTD <studying_mtd@yahoo.com> writes:
+Russ.Dill@asu.edu said:
+>  there are DOC devices that plug into IDE
 
-> If i want to use FAT with NAND then i have to use :-
-> 
-> A. FAT: filesystem driver 
-> B. Translation: Translation layer
-> C. MTD: Memory Technology Devices driver 
-> D. NAND: generic NAND driver 
-> E. Hardware specific driver 
-> 
-> So i have to add only Translation layer, rest layers
-> will remain same.
-> 
-> Am i right ? If not, please correct me.
-> 
-> How can i write traslation layer , any reference.
+Those are DiskOnModule -- they're effectively CF too, although maybe in a
+different form factor. Although M-Systems do seem to have some clue about
+how to do such things so perhaps they've managed to produce a _reliable_ CF
+device.
 
-IMHO, you're right.
-we have implemented this way for SMC(SmartMedia Card). :)
-
-but, we can't use current MTD's nand.c because of different usage of OOB.
-we called SMCTL as "B. Translation".
-
--- 
-Joh, Yong-iL
-E-mail: tolkien@nownuri.net tolkien@mizi.com
+--
+dwmw2
