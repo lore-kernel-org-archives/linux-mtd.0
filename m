@@ -1,14 +1,18 @@
-Received: from mail9.messagelabs.com ([194.205.110.133])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 186reN-0000Xk-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2002 12:08:43 +0000
-Subject: [PATCH] JFFS on an MTDRAM device
-From: Ian Campbell <icampbell@arcomcontrols.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-j8dcBdeZF/GTWtgRJiWs"
-Date: 30 Oct 2002 12:33:57 +0000
-Message-Id: <1035981237.32294.72.camel@LinuxDev>
-Mime-Version: 1.0
+Received: from zmamail05.zma.compaq.com ([161.114.64.105])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 186v95-0000tS-00
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2002 15:52:39 +0000
+Content-Class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: MTD Config.in items not escaped by bus availability
+Date: Wed, 30 Oct 2002 11:22:50 -0500
+Message-ID: <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net>
+From: "Hicks, Jamey" <Jamey.Hicks@hp.com>
+To: "Brian J. Murrell" <cc718ee62b87e84e665d57aa27e6bf39@interlinx.bc.ca>,
+	<linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,64 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---=-j8dcBdeZF/GTWtgRJiWs
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> -----Original Message-----
+> From: Brian J. Murrell
+> [mailto:cc718ee62b87e84e665d57aa27e6bf39@interlinx.bc.ca]
+> Sent: Monday, October 28, 2002 8:49 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: MTD Config.in items not escaped by bus availability
+>=20
+>=20
+> I have noticed that the whole MTD kernel configuration subsystem
+> (drivers/mtd/Config.in) in the 2.4.19 kernel is not escaped by any bus
+> configuration items.  That is, even on a kernel that I configure with
+> no busses (i.e. UML), I am still asked about MTD devices.  Should ths
+> really be so?  How can I have any MTD devices with no bus to connect
+> them to?
 
-Hi,
+Some MTD devices connect directly to the CPU.  It seems to me that if =
+you have a CPU with a memory bus, then it is possible to have MTD =
+devices, so drivers/mtd/Config.in needs to give you the option of =
+selecting those devices.
 
-I needed the attached patch to allow a JFFS2 filesystem to be mounted
-using an MTDRAM driver (actually an SRAM chip).
+The MTD configuration is all wrapped with the toplevel CONFIG_MTD =
+option, so there is really only one question you would have to say 'No' =
+to in order to avoid the others.
 
-Without it I get lots of warnings in jffs2_erase_callback: "Erase at
-0x%08x finished, but state != MTD_ERASE_DONE. State is 0x%x instead."
-
-Cheers,
-Ian.
-
--- 
-Ian Campbell
-Design Engineer
-
-Arcom Control Systems Ltd,
-Clifton Road,
-Cambridge CB1 7EA
-United Kingdom
-
-Tel: +44 (0)1223 403465
-E-Mail: icampbell@arcomcontrols.com
-Web: http://www.arcomcontrols.com
-
-
-________________________________________________________________________
-This email has been scanned for all viruses by the MessageLabs SkyScan
-service. For more information on a proactive anti-virus service working
-around the clock, around the globe, visit http://www.messagelabs.com
-________________________________________________________________________
---=-j8dcBdeZF/GTWtgRJiWs
-Content-Disposition: attachment; filename=mtd.ram.erase.patch
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; name=mtd.ram.erase.patch; charset=ISO-8859-1
-
-? mtd.ram.erase.patch
-? drivers/mtd/chips/.map_ram.c.swp
-Index: drivers/mtd/chips/map_ram.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /home/cvs/mtd/drivers/mtd/chips/map_ram.c,v
-retrieving revision 1.14
-diff -u -r1.14 map_ram.c
---- drivers/mtd/chips/map_ram.c	2 Oct 2001 15:05:12 -0000	1.14
-+++ drivers/mtd/chips/map_ram.c	30 Oct 2002 12:20:06 -0000
-@@ -107,6 +107,8 @@
- 	for (i=3D0; i<instr->len; i++)
- 		map->write8(map, 0xFF, instr->addr + i);
-=20
-+	instr->state =3D MTD_ERASE_DONE;
-+
- 	if (instr->callback)
- 		instr->callback(instr);
-=20
-
---=-j8dcBdeZF/GTWtgRJiWs--
+-Jamey
