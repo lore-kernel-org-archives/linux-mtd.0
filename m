@@ -1,19 +1,20 @@
-Received: from 12-234-34-139.client.attbi.com ([12.234.34.139] helo=heavens.murgatroid.com)
+Received: from [213.86.99.237] (helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18bWio-00064t-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 02:04:02 +0000
-From: "Christopher Hoover" <ch@murgatroid.com>
-To: "'Frank Becker'" <fbecker@intrinsyc.com>
-Cc: <linux-arm-kernel@lists.arm.linux.org.uk>,
-	"'linux-mtd'" <linux-mtd@lists.infradead.org>
-Subject: RE: 2.5.55-rmk1: user space lossage
-Date: Wed, 22 Jan 2003 18:34:47 -0800
-Message-ID: <000001c2c287$ffa8eef0$800b040f@bergamot>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <3E2F2354.7060508@intrinsyc.com>
+	id 18bdVO-0006nK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 09:18:39 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <000001c2c287$ffa8eef0$800b040f@bergamot> 
+References: <000001c2c287$ffa8eef0$800b040f@bergamot> 
+To: "Christopher Hoover" <ch@murgatroid.com>
+Cc: "'Frank Becker'" <fbecker@intrinsyc.com>,
+    linux-arm-kernel@lists.arm.linux.org.uk,
+    "'linux-mtd'" <linux-mtd@lists.infradead.org>, akpm@digeo.com,
+    linux-kernel@vger.kernel.org
+Subject: Re: 2.5.55-rmk1: user space lossage 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 23 Jan 2003 09:48:23 +0000
+Message-ID: <15943.1043315303@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +26,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Aha!  This is the problem:
+ < Snip long thread about init segfaulting immediately at boot on 2.5.55 >
 
-[ch@friction src]$ diff -B -w -Naurp linux-2.5.{52,53}/fs/jffs2 
-diff -B -w -Naurp linux-2.5.52/fs/jffs2/file.c
-linux-2.5.53/fs/jffs2/file.c
---- linux-2.5.52/fs/jffs2/file.c        2002-12-15 18:08:24.000000000
--0800
-+++ linux-2.5.53/fs/jffs2/file.c        2002-12-23 21:21:34.000000000
--0800
-@@ -58,7 +58,7 @@ struct file_operations jffs2_file_operat
-        .read =         generic_file_read,
-        .write =        generic_file_write,
-        .ioctl =        jffs2_ioctl,
--       .mmap =         generic_file_mmap,
-+       .mmap =         generic_file_readonly_mmap,
-        .fsync =        jffs2_fsync,
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,29)
-        .sendfile =     generic_file_sendfile
-[ch@friction src]$ 
+ch@murgatroid.com said:
+> I just dropped jffs2 from 2.5.52 into 2.5.55 and it works, too.
 
-If you reverese this change, 2.5.55-rmk1 behaves.
+ch@murgatroid.com said:
+> Aha!  This is the problem: 
+> -       .mmap =         generic_file_mmap,
+> +       .mmap =         generic_file_readonly_mmap,
+> If you reverese this change, 2.5.55-rmk1 behaves.
 
--ch
+Er, yes. generic_file_readonly_mmap() silently removed the VM_MAYWRITE bit 
+from vma->vm_flags when init made a _PRIVATE_ writable mapping, apparently 
+on the basis that we have no writepage().
+
+Then we return success anyway.
+
+Then init segfaults when it touches something in that mapping.
+
+/me blames akpm. :)
+
+--
+dwmw2
