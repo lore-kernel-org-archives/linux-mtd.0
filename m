@@ -1,16 +1,19 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CFE4b-0000FC-1J
-	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2004 11:51:26 -0400
-Message-ID: <416414B7.1060509@inf.u-szeged.hu>
-Date: Wed, 06 Oct 2004 17:52:23 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,  jffs-dev@axis.com
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from zorglub.ssji.net ([2001:7a8:3030::face])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CFHYi-0001fd-SF
+	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2004 15:34:46 -0400
+Date: Wed, 6 Oct 2004 21:34:34 +0200
+From: Nicolas Pouillon <nipo@ssji.net>
+To: linux-mtd@lists.infradead.org
+Message-Id: <20041006213434.55d36d65.nipo@ssji.net>
+In-Reply-To: <Pine.LNX.4.44.0410051152070.2033-100000@kiire.colleduc.ee>
+References: <20041004215001.769d8017.nipo@ssji.net>
+	<Pine.LNX.4.44.0410051152070.2033-100000@kiire.colleduc.ee>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 Cc: 
-Subject: bug in nodemgmt.c?
+Subject: Re: [PATCH]Probing at 0x0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+[Tue, 5 Oct 2004 11:59:19 +0300 (EEST)]
+Kalev Lember <kalev@colleduc.ee> eut le bonheur d'=E9crire:
 
-During the final testing of my model-based-patch I think I found a bug 
-in fs/jffs2/nodemgmt.c
+Hi
 
-In function jffs2_mark_node_obsolete() at the part of "Merge with the 
-next node in the physical list, if there is one and if it's also 
-obsolete" there is a comment: "we don't need to check jeb->last_node".
+> I reimplemented the Diskonchip Millennium Plus support in the new
+> driver, but unfortunately I have only 16MB pieces at hand.
 
-Is it right? Because I think we should deal with jeb->last_node here, or 
-should not use "D1(ACCT_PARANOIA_CHECK(jeb));" statement any more, but 
-now it is used by also this function.
+Does this mean it is actually supported but disabled by lack of tests ?
+My chip can be a (read only until i've not dumped it) "guinea pig" ;-)
 
-ACCT_PARANOIA_CHECK walk throught the nodes (using next_phys) and if at 
-the end of the list is not equals to jeb->last_node than halts. 
-Unfortunatelly with simple "NULL pointer dereference" without any 
-usefull messages.
+Cheers
 
-Just say I'm right and I fix this problem in the CVS (a single
-"if (jeb->last_node == n) jeb->last_node=ref;" line into nodemgmt.c and 
-better message in ACCT_PARANOIA_CHECK).
-
-Regards,
-Ferenc
+--=20
+Nipo <nipo@ssji.net>
