@@ -1,19 +1,20 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CANs4-00082H-MB
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 03:18:29 -0400
+	id 1CANsI-00083K-KT
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 03:19:00 -0400
 From: Thomas Gleixner <tglx@linutronix.de>
-To: Wookey <wookey@aleph1.co.uk>
-In-Reply-To: <20040923004331.GA24050@xios>
-References: <20040923004331.GA24050@xios>
+To: Ben Dooks <ben@fluff.org.uk>
+In-Reply-To: <20040922202907.GA25491@home.fluff.org>
+References: <I4G9K8$32150B19D33A6F23F04032D520B4890A@libero.it>
+	<20040922202907.GA25491@home.fluff.org>
 Content-Type: text/plain
-Message-Id: <1095923456.2925.55.camel@thomas>
+Message-Id: <1095923470.2925.57.camel@thomas>
 Mime-Version: 1.0
-Date: Thu, 23 Sep 2004 09:10:56 +0200
+Date: Thu, 23 Sep 2004 09:11:10 +0200
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Finding which block 'contains' a missing inode
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, gavin@simtec.co.uk
+Subject: Re: NAND detect
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,36 +25,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-09-23 at 02:43, Wookey wrote:
-> Hello people, I have a JFFS2 NAND rootfs which is giving a single 
-> 'Eep. Child "gpe-filemanager.desktop" (ino #3324) of dir ino #3035 doesn't
-> exist!' error.
+On Wed, 2004-09-22 at 22:29, Ben Dooks wrote:
+> I've just had a check through, and it seems the driver was
+> written pre the nand hooks for >1 chip per controller, and
+> therefore just selects slot 0 (smartmedia card) at start time.
 > 
-> I'd like to know if there is a way of finding out either form the live fs or
-> from the jffs2 image file which block the offending inode/file should have
-> been on?
+> A quick way to get going would be to change the value passed
+> to bast_nand_select_slot() in bast_nand_init() in the driver
+> to at least show that a chip can be detected and used. The
+> current default in the driver is to select the SmartMedia socket.
+> 
+> The slots are allocated as 0 for the SmartMedia card slot, and
+> 1 through 3 for the chips on the board (U52, U53 and U54)
+> 
+> Looking through the NAND code, it seems that we may have a
+> few problems with implementing >1 chip, which could bite
+> in your configuration:
+> 
+> 1) The driver needs to work out which slots are used and
+>    create a linear mapping of chips -> slots.
+> 
+> 2) The NAND layer itself seems to concatenate the chips
+>    together, not export them as seperate devices, which
+>    makes supporting removable devices in the card slot
+>    and on-board NAND difficult.
 
-Get a binary image from the chip and process it with 
-jffs2dump -vc binimg >img.dmp
+You can call nandscan (onboardnand, nrchips) and nandscan(removablenand,
+1) and you have two independend mtd devices where the first
+(onboardnand) is a concatenation of the available chips.
+You can also call nandscan for each chip seperate and you have n
+independend devices. They share the hwcontrol function, but the mtd
+private structure should tell you which chip you are handling.
+For concatenated chips you have to provide the getchip function to
+select the appropriate chip.
 
-The dump should tell you where which node/fragment resides
+> I would be interesting in anyone's comments about how difficult
+> it would be to have an overall controller activity lock and
+> allow a single controller to register more than one NAND chip
+> as a seperate device. 
 
-> Background: The kernel indicated one 'bad erase block' that is under this
-> fs, but flasheraseall found no problem, and nandwrite did not skip that
-> block. I worry that the block in question doesn't actually have the right
-> data in it - if it corresponded to the above inode then I'd be sure I had
-> located the problem.
+Are you talking about a hardware controller, where several chips are
+connected to and which can handle only one chip at a time ?
 
-What do you mean ? "kernel indicated one 'bad erase block'". 
-How is it indicated ?
+That's not supported at the moment. It is not hard to make this work. It
+needs some additional information about which devices share the
+controller and some access management which puts you on the right
+waitqueue.
 
-> There is also a 'normal' bad block (which gives an IO error when
-> flasheraseall tries to erase it) - this _is_ skipped by nandwrite as expected.
+struct nand_hw_controller {
+	spinlock_t	lock;
+	struct mtd_info	*active;
+};
 
-Are you using current MTD code ?
+The driver provides the structure for its hardware controller and adds a
+pointer to this structure to the nand structure before calling nandscan.
+nand_get_chip and nand_release_chip need some tweaks to check the
+availablity of such an structure. If active == NULL then the current mtd
+device is stored in active and we can grab the chip. Otherwise we add
+the current process to the waitqueue of the nand device, which holds the
+controller. 
 
-The code checks the device for bad blocks when nand_scan is called. It
-usually prints the bad block information. Is this your 'normal' bad
-block ?
+> It would also be nice to have at least some form of hotplug
+> mechanism support where a chip can be re-scanned after a
+> change in it's detect status.
+
+It should be not too hard to integrate such functionality into the
+generic hotplug framework. If the driver is a selfcontained module for
+one chip, then it should work right now. If the driver must stay in the
+kernel because it controls more than one chip, then interfacing to the
+kobject framework should be a valuable solution.
+
+Most stuff must be done in the driver, but we have to figure out if we
+need additional functionality for removal in the nand reps. mtd
+framework. 
+
+dwmw2 ???
+
 
 tglx
