@@ -1,6 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: leoli@motorola.com
-In-Reply-To: <1075971769.28245.60.camel@Gundam>
+Received: from motgate8.mot.com ([129.188.136.8])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AogFr-0002QT-Ni
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2004 09:57:03 +0000
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by motgate8.mot.com (Motorola/Motgate3) with ESMTP id i159v2AH018948
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 5 Feb 2004 02:57:02 -0700 (MST)
+Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id i159ufSC011139
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Feb 2004 03:56:57 -0600
+From: Li Yang <leoli@motorola.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1075973239.786.6179.camel@hades.cambridge.redhat.com>
 References: 
 	 <01139FC052A0D411900B00508B9535FC0F0D25BB@ZCH07EXM04.corp.mot.com>
 	 <1074503876.14499.40.camel@imladris.demon.co.uk>
@@ -11,13 +22,15 @@ References:
 	 <1075950453.12044.7.camel@Gundam>
 	 <1075964435.12587.2.camel@imladris.demon.co.uk>
 	 <1075971769.28245.60.camel@Gundam>
+	 <1075973239.786.6179.camel@hades.cambridge.redhat.com>
 Content-Type: text/plain
-Message-Id: <1075973239.786.6179.camel@hades.cambridge.redhat.com>
+Message-Id: <1075975166.28252.72.camel@Gundam>
 Mime-Version: 1.0
-Date: Thu, 05 Feb 2004 09:27:20 +0000
+Date: 05 Feb 2004 17:59:27 +0800
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: jffs2+mtd+big endian problem
+Reply-To: leoli@motorola.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +40,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-02-05 at 17:02 +0800, Li Yang wrote:
-> Search for id:(ff89 ffaa) interleave(2) type(2)
-> Search for id:(ff89 ffaa) interleave(2) type(2)
-> Search for id:(ff89 ffaa) interleave(2) type(2)
-> Search for id:(ff89 ffaa) interleave(2) type(2)
-> Search for id:(ff89 ffaa) interleave(2) type(2)
-> Search for id:(89 aa) interleave(2) type(1)
-
-The 'sharp.c' driver handles four 8-bit chips in parallel. Your probes
-above aren't _looking_ for that. Did you enable the advanced CFI options
-and then disable 4-way interleave? 
-
-> MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
-> MTD jedec_match(): check unlock addrs 0x0555 0x02aa
-> MTD jedec_match(): check ID's disappear when not in ID mode
-> MTD jedec_match(): return to ID mode
-> MTD jedec_probe_chip(): matched device 0x89,0xaa unlock_addrs: 0x0555
-> 0x02aa
-> Found: Intel I28F016S3
-> Flash SIMM: Found 2 x8 devices at 0x0 in 32-bit mode
-> Probe at addr_unlock2(0x00400000 + 0xc0185aac) past the end of the
-> map(0x007fffff)
-
-That's odd too. What is that pointer doing in addr_unlock2? Possibly not
-relevant though.
+On Thu, 2004-02-05 at 17:27, David Woodhouse wrote:
+> On Thu, 2004-02-05 at 17:02 +0800, Li Yang wrote:
+> > Search for id:(ff89 ffaa) interleave(2) type(2)
+> > Search for id:(ff89 ffaa) interleave(2) type(2)
+> > Search for id:(ff89 ffaa) interleave(2) type(2)
+> > Search for id:(ff89 ffaa) interleave(2) type(2)
+> > Search for id:(ff89 ffaa) interleave(2) type(2)
+> > Search for id:(89 aa) interleave(2) type(1)
+> 
+> The 'sharp.c' driver handles four 8-bit chips in parallel. Your probes
+> above aren't _looking_ for that. Did you enable the advanced CFI options
+> and then disable 4-way interleave? 
+Oh, yes.  I enabled the advanced CFI options, but not the CFI geometry
+selection.  Because I saw there is a BIG_ENDIAN_BYTE option under it,
+maybe I was a little bit too nervous about the endian setting. =)  I
+will try again without the advanced CFI options.
+> 
+> > MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+> > MTD jedec_match(): check unlock addrs 0x0555 0x02aa
+> > MTD jedec_match(): check ID's disappear when not in ID mode
+> > MTD jedec_match(): return to ID mode
+> > MTD jedec_probe_chip(): matched device 0x89,0xaa unlock_addrs: 0x0555
+> > 0x02aa
+> > Found: Intel I28F016S3
+> > Flash SIMM: Found 2 x8 devices at 0x0 in 32-bit mode
+> > Probe at addr_unlock2(0x00400000 + 0xc0185aac) past the end of the
+> > map(0x007fffff)
+> 
+> That's odd too. What is that pointer doing in addr_unlock2? Possibly not
+> relevant though.
+They are just baffling numbers to me.
 
 -- 
-dwmw2
+Li Yang <leoli@motorola.com>
+Metrowerks
