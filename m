@@ -1,52 +1,64 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12aaxm-0000Dk-00
-	for mtd-list@infradead.org; Thu, 30 Mar 2000 10:10:02 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12aaxl-0000De-00
-	for mtd@infradead.org; Thu, 30 Mar 2000 10:10:01 +0100
-Received: from devel2.axiom.internal ([10.0.1.4])
-	by server.axiom.internal with esmtp (Exim 3.03 #1)
-	id 12aayH-0006Pb-00
-	for mtd@infradead.org; Thu, 30 Mar 2000 10:10:33 +0100
-Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
-	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
-	for mtd@infradead.org
-	id 12aayG-0001eB-00; Thu, 30 Mar 2000 10:10:32 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Subject: Updates.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 30 Mar 2000 10:10:32 +0100
-Message-ID: <6334.954407432@devel2.axiom.internal>
+	id 12abNq-0000G5-00
+	for mtd-list@infradead.org; Thu, 30 Mar 2000 10:36:58 +0100
+Message-ID: <38E32032.E3A536D3@linuxaustria.at>
+From: Karl Pitrich <pit@linuxaustria.at>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>, mtd@infradead.org
+Subject: FYI: jffs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 30 Mar 2000 11:35:31 +0200
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've updated the documentation now. I thought I'd said that the notify 
-functions which are called to notify 'user' modules of addition and removal of 
-MTD devices may not sleep.
-
-That was a silly decision, and so I've changed it - these routines obviously 
-need to call the mtd->read() routines et al to see if there's anything of 
-interest on the newly-added device, which means they have to be able to sleep.
-
-I was going to protect the MTD driver list with a spinlock but it'll have to 
-be a semaphore.
-
-I've committed an updated ftl.c to CVS, based on the latest one from David 
-Hinds' PCMCIA code. It appears to be hanging in INIT_REQUEST, which is 
-confusing me. Anyone want to take a look?
+"Good morning Dave" ;-)
 
 
+Did you already notice this?
+
+http://www.developer.axis.com/software/jffs/
 
 
+"
+JFFS is the Journaling Flash File System developed by Axis
+Communications in Sweden, aimed at
+providing a crash/powerdown-safe filesystem for disk-less embedded
+devices. It is released under the
+GPL, and the current version works for the Linux 2.0 kernel series and
+memory-mapped
+industry-standard flash-memories (aka NOR-flashes). =
+
+"
+
+so, no patents apply!
+
+on their todo-list:
+
+-Standardizing the interface between JFFS and the flash-driver (see
+http://www.linux-mtd.infradead.org ). =
+
+-Support for NAND-flashes (block-mapped flashes). =
+
+
+
+-- =
+
+Best regards, Karl Pitrich.
+
+pitrich information technologies
+linuxsoftwareinternetworkcommunication!
+hauptstra=DFe 16-18 | 4040 linz | austria =
+
+voice: +43 70 72800 | fax: +43 70 738909 | support: 0900 970 710 (.at
+only)
 --
-dwmw2
+ Microsoft is prohibited from distributing this work in any form, in
+ whole or in part, across any medium. Licenses for distribution are =
 
-
+ available to Microsoft for $500. Posting without permission constitutes
+ an agreement to these terms.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
