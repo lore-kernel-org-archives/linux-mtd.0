@@ -1,16 +1,19 @@
-Received: from web21507.mail.yahoo.com ([66.163.169.18])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ImxT-0003n5-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 10:01:27 +0100
-Message-ID: <20020614090125.91096.qmail@web21507.mail.yahoo.com>
-Date: Fri, 14 Jun 2002 02:01:25 -0700 (PDT)
-From: Studying MTD <studying_mtd@yahoo.com>
-Subject: Re: why MTD model ? 
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <18178.1024041299@redhat.com>
+Received: from gate.epygi.de ([212.126.211.241] helo=epygi.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17In8k-0003p6-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 10:13:06 +0100
+Received: from pcstephan (pc-stephan.epygi.de [192.168.13.32])
+	by epygi.de (8.12.3/8.12.3) with SMTP id g5E9Cx3v015198
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 11:12:59 +0200 (METDST)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
+Subject: FW: why MTD model ? 
+Date: Fri, 14 Jun 2002 11:13:02 +0200
+Message-ID: <FCEAKDJJAPHPLJFINDAJAEJPCFAA.Stephan.Linke@epygi.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,46 +25,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---- David Woodhouse <dwmw2@infradead.org> wrote:
+Hi!
+
 > 
-> Flash devices have large erase blocks. You cannot
-> just treat them as a block
-> device with a sector size of 64KiB, etc. 
+> Can somehow we treat(emulate) memory device as a block
+> device and treat memory device like a hard disk ?
+>
 
-We can change the sector size on block devices.
+Maybe I didn't got the point. But if you like to use some (maybe 
+battery backuped) memory with a filesystem on it you could setup 
+your MTD device just like this:
+>>>>
 
-> A flash device can have sectors
-> erased independently of write operations, can have
-> write operations
-> performed independently of erases 
+static void* memremap;                                            
+              
+static struct mtd_info *myrammtd;                                 
+              
 
-I think, this is not neccesary to keep erase
-independent from writing, we can erase before we
-write.
+__u8 my_ram_read8(struct map_info *map, unsigned long ofs)
+{
+    return *(__u8 *)(memremap  + ofs);
+}
+...
 
-> (e.g. JFFS2 does so just to clear one
-> extra 'valid' bit in existing nodes', can support
-> writes to arbitrary byte
-> ranges, etc. 
-
-It is not neccesary that we use JFFS2, we can use any
-filesystem on flash but at low level when we are
-writing to flash, we can use wear levelling.
-
-> The MTD API allows you to make use of those
-features.
-
-Are these are only feature provided by MTD ?
-
-I am not able to understand what is special in MTD
-model ?
-
-Please help me.
-
-thanks for your help.
+struct map_info my_ram_map = {
+    name: "MY bbram    ",
+    size: RAM_WINDOW_SIZE,
+    buswidth: 4,
+    read8: my_ram_read8,
+    read16: my_ram_read16,
+    read32: my_ram_read32,
+    copy_from: my_ram_copy_from,
+    write8: my_ram_write8,
+    write16: my_ram_write16,
+    write32: my_ram_write32,
+    copy_to: my_ram_copy_to
+};
 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! - Official partner of 2002 FIFA World Cup
-http://fifaworldcup.yahoo.com
+...
+        myrammtd = do_map_probe("map_ram", &my_ram_map);          
+            
+        if (myrammtd) {
+            memremap = ioremap (RAM_WINDOW_ADDR, RAM_WINDOW_SIZE);
+            add_mtd_device (myrammtd);
+        } else {
+            printk ("mtd/my.o: error installing bbdram device!\n");
+        }
+        return 0;
+...
+
+<<<<
+(If someone thinks that this is the wrong way, feel free to send 
+comments.) :o)
+
+
+
+Stephan Linke
+> 
