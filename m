@@ -1,22 +1,18 @@
-Received: from mg01.austin.ibm.com ([192.35.232.18])
+Received: from ns2.arlut.utexas.edu ([129.116.174.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17fmhS-0004yH-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 20:23:58 +0100
-Received: from austin.ibm.com (netmail.austin.ibm.com [9.3.7.137])
-	by mg01.austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id OAA38798
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:22:32 -0500
-Received: from popmail.austin.ibm.com (popmail.austin.ibm.com [9.53.247.178])
-	by austin.ibm.com (AIX4.3/8.9.3/8.9.3) with ESMTP id OAA81268
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:23:54 -0500
-Received: from mahi190.austin.ibm.com (mahi190.austin.ibm.com [9.3.154.190]) by popmail.austin.ibm.com (AIX4.3/8.9.3/8.7-client1.01) with ESMTP id OAA06310 for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 14:23:53 -0500
-Subject: JFFS2 Power Fail Issue
-From: Stephen Hui <gromit1463@mailworks.org>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
+	id 17foPm-0005AO-00
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 22:13:50 +0100
+Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
+	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id g7GLDklg046795
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 16:13:46 -0500 (CDT)
+Date: Fri, 16 Aug 2002 16:13:44 -0500
+Subject: Found ecc verify bug in nand.c
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+From: Ken Offer <koffer@arlut.utexas.edu>
+To: LinuxMTD <linux-mtd@lists.infradead.org>
 Content-Transfer-Encoding: 7bit
-Date: 16 Aug 2002 14:23:48 -0500
-Message-Id: <1029525828.11559.47.camel@mahi190.austin.ibm.com>
-Mime-Version: 1.0
+Message-Id: <0BBECB8C-B15D-11D6-BE50-000393467F1A@arlut.utexas.edu>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,35 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi all,
 
-My JFFS2 filesystem doesn't like having the plug pulled on it.  I get
-some bad behaviour when:
+Using the cvs code from August 12th, I found a bug in nand.c 
+that was causing a page write to fail ecc verify.  In nand.c in 
+the function "nand_write_page" there is a line which reads:
 
-1.  I have the partition mounted under another filesystem, and I pull
-the plug while writing to it, or
+    if ((this->data_buf[(oob_config.ecc_pos[i])] != 
+ecc_code[i]) && ecc_code[i]) {
 
-2.  I have the partition unlocked and mounted read-write as root, and I
-pull the plug (regardless of whether I'm writing).
+This is a compare to see if the ecc has changed.  Unfortunately, 
+data_buf is UNSIGNED char and ecc_code is SIGNED char.  When 
+compiling under gcc 2.95.3 on a powerpc system, the code ends up 
+comparing two identical bytes and fails because one is 
+sign-extended (example: comparing 0xc3 becomes "0xc3 == 
+0xffffffc3").  I don't know if this makes a difference with the 
+x86 compiler, but it does under powerpc.
 
-After booting again and mounting the partition, I get a bunch of these:
+Changing the local array "ecc_code" to type "u_char" resolves 
+the problem.  Verified by running nandtest.
 
-Write error in obliterating obsoleted node at 0x0007eaec: -30                                                                                                                     
-Write error in obliterating obsoleted node at 0x0013d66c: -30                                                                                                                     
-Write error in obliterating obsoleted node at 0x0013d7b4: -30                                                                                                                     
-Write error in obliterating obsoleted node at 0x0013d884: -30                                                                                                                     
-Write error in obliterating obsoleted node at 0x0013dbec: -30
-
-and each time I pull the plug and bring it back up, more nodes are
-obsoleted.  Has this been seen before?  I'm using the latest JFFS2 code.
-
-Thanks in advance,
-Stephen.
-
-
-
--- 
-"Find out what you've been missing while you've been
-rebooting Windows NT." -- Infoworld on Linux
-
-http://www.ao.com/~regan/penguins/tux.html
++-----------------------------------------------------------+
+|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
+|  Office: 512-835-3859                  Fax: 512-835-3259  |
++-----------------------------------------------------------+
