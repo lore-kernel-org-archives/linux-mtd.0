@@ -1,24 +1,15 @@
-Received: from mailout04.sul.t-online.com ([194.25.134.18])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B5kmL-0003XG-BN
-	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2004 12:13:09 +0000
-Received: from sonne.eurodsn.de (sonne.eurodsn.de [192.168.0.11])
-	by mserver.eurodsn.de (Postfix) with ESMTP id 71ABE4F57D
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Mar 2004 13:12:50 +0100 (CET)
-From: Juergen Beisert <jbeisert@eurodsn.de>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 23 Mar 2004 13:09:39 +0100
-References: <200403231255.52627.jbeisert@eurodsn.de>
-In-Reply-To: <200403231255.52627.jbeisert@eurodsn.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Eisenhut, Daniel (MED)" <Daniel.Eisenhut@med.ge.com>
+In-Reply-To: <77FE4A1FA59FF947845A42194AD667627731AC@uswaumsx07medge.med.ge.com>
+References: 
+	 <77FE4A1FA59FF947845A42194AD667627731AC@uswaumsx07medge.med.ge.com>
+Content-Type: text/plain
+Message-Id: <1080045670.16509.202.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Tue, 23 Mar 2004 12:41:10 +0000
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200403231309.39961.jbeisert@eurodsn.de>
-Subject: Re: Problems using JFFS2 on my Samsung NAND chip
-Reply-To: jbeisert@eurodsn.de
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: Issue with DEBUG_LOCK_BITS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,8 +19,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Solved. My fault. After mtd cvs update I have still booted the old kernel...
-I can mount and use my NAND flash now.
+On Mon, 2004-03-22 at 17:07 -0600, Eisenhut, Daniel (MED) wrote:
+> In cfi_intelext_lock() and cfi_intelext_unlock()... if you have enabled
+> DEBUG_LOCK_BITS, do_printlockstatus_oneblock is called which sends the
+> command 0xff before returning.  This places the chip in Read Array mode.
+> Then do_xxlock_oneblock calls get_chip.  If the chip->state equals
+> FL_STATUS, it attempts to read the status register.  This naturally fails
+> since it is in Read Array mode, not Read Status mode.
 
-Regards
-JB
+Thanks for the report.
+
+But now you leave it in JEDEC Query mode, not Read Status mode. Surely
+the correct fix is to just set chip->state appropriately to reflect what
+you've just done to the chip?
+
+Can you test what I just committed to CVS, please?
+
+-- 
+dwmw2
