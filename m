@@ -1,20 +1,29 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CF781-0005uJ-RN
-	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2004 04:26:33 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Brad Beveridge <bbeveridge@bluewatersys.com>
-In-Reply-To: <41636AD5.4020403@bluewatersys.com>
-References: <41636AD5.4020403@bluewatersys.com>
-Content-Type: text/plain
-Message-Id: <1097051308.3045.4.camel@lap02.tec.linutronix.de>
-Mime-Version: 1.0
-Date: Wed, 06 Oct 2004 10:28:28 +0200
+	id 1CF7mo-0006II-QJ
+	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2004 05:08:42 -0400
+Message-ID: <4163B5E3.7070201@yandex.ru>
+Date: Wed, 06 Oct 2004 13:07:47 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: Josh Boyer <jdub@us.ibm.com>,
+	David Woodhouse <dwmw2@infradead.org>
+References: <416122A1.4060302@oktetlabs.ru>	
+	<1096885344.30942.559.camel@hades.cambridge.redhat.com>	
+	<416127B7.3070505@yandex.ru>	
+	<1096893242.22034.5.camel@weaponx.rchland.ibm.com>	
+	<41614B2F.8060901@yandex.ru>	
+	<1096895892.30942.614.camel@hades.cambridge.redhat.com>	
+	<41615BA7.60801@yandex.ru>	
+	<1096899817.30942.618.camel@hades.cambridge.redhat.com>	
+	<4162AABC.9060809@yandex.ru>	
+	<1096994744.30942.905.camel@hades.cambridge.redhat.com>
+	<1096996838.24013.3.camel@weaponx.rchland.ibm.com>
+In-Reply-To: <1096996838.24013.3.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: BUG in nand_base.c
-Reply-To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +33,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-10-06 at 05:47, Brad Beveridge wrote:
-> Hi all, I have been playing with large size nand devices & have found 
-> what I think is a bug in nand_base.c::nand_command.  I have the latest 
-> daily snapshot.
-> Starting at line 546, there is the following code
->                         /* One more address cycle for higher density 
-> devices */
->                         if (this->chipsize & 0x0c000000)
->                                 this->write_byte(mtd, (unsigned char) 
-> ((page_addr >> 16) & 0x0f));
-> Which will correctly trap the 4th write cycle for 64 & 128MiB parts, but 
-> not for larger sizes of 256 & 512 MiB.
-> In my code I have changed the line to read
->                         if (this->chipsize & 0xfc000000)
+>>>May be we create ICP during GC process, or on iget() call, or on
+>>>iput() call? But I have arguments against these...
+>>
+>>I was thinking of doing it during a normal write to the file, or during
+>>garbage collection of a node belonging to the file.
+>>
+>>But I think we can play with ideas on _when_ to call this once you've
+>>actually implemented the functions which does it :)
 > 
-> Also, I noticed that for the large page devices (nand_command_lp) a 
-> proper compare (>) is used instead of a mask - should one of these be 
-> changed to make both functions consistant?
+> 
+> Right.  Lots of places it could be done.  Start with one and work from
+> there :).
+> 
+Ok, I got it. I'll try to keep in my mind the possibility to call the 
+checkpoint creation function from different places.
 
-You're right. I will fix this later when I have CVS access again.
+Thanks.
 
-Thanks
-tglx
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
