@@ -1,42 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13YeAg-0007UT-00
-	for mtd-list@infradead.org; Tue, 12 Sep 2000 01:43:34 +0100
-Received: from sis.com.tw ([203.67.208.2] helo=fw11.sis.com.tw)
+	id 13Yl23-00008y-00
+	for mtd-list@infradead.org; Tue, 12 Sep 2000 09:03:07 +0100
+Received: from runyon.cygnus.com ([205.180.230.5] helo=cygnus.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13YeAe-0007UN-00
-	for mtd@infradead.org; Tue, 12 Sep 2000 01:43:33 +0100
-Message-ID: <39BD7B01.70556298@sis.com.tw>
-Date: Tue, 12 Sep 2000 08:38:25 +0800
-From: Ollie Lho <ollie@sis.com.tw>
-MIME-Version: 1.0
-To: "Steven J. Hill" <sjhill@cotw.com>
-CC: mtd@infradead.org
-Subject: Re: ATTN DOC Developers!
-References: <39BD0C1A.8CE92D9C@cotw.com>
+	id 13Yl22-00008s-00
+	for mtd@infradead.org; Tue, 12 Sep 2000 09:03:06 +0100
+Received: from passion.cygnus.co.uk (passion.cygnus.co.uk [194.130.39.73])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id BAA18315
+	for <mtd@infradead.org>; Tue, 12 Sep 2000 01:03:03 -0700 (PDT)
+Received: from passion.cygnus.co.uk (dwmw2@localhost)
+	by passion.cygnus.co.uk (8.11.0/8.9.3) with ESMTP id e8C82rk07019
+	for <mtd@infradead.org>; Tue, 12 Sep 2000 09:02:53 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: mtd@infradead.org
+Subject: 2.4 __setup and __initcall backported to 2.2.18
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Tue, 12 Sep 2000 09:02:53 +0100
+Message-ID: <7018.968745773@passion.cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-"Steven J. Hill" wrote:
-> 
-> Greetings.
-> 
-> I am working with David on some CVS changes as well as a MTD
-> system architecture diagram. It was brought to my attention
-> that the DOC drivers (2000 and Millenium) are being merged
-> into one driver (file). Who is currently responsible for this
-> effort? Please reply ASAP. Thanks a bunch.
-> 
-> -Steve
-> 
 
-I was the one that made the "standalong" Millenium work. I have not
-test the new merged driver yet. But I am very interested in your effort,
-we are approaching to use DoC Mil as "boot-rom" for LinuxBIOS project.
+The 2.2.18 release is going to support __setup and __initcall macros in the 
+same way as the 2.4 kernels, which means that we can do without a whole lot 
+of ugliness.
 
-Ollie
+Therefore, as soon as 2.2.18 final is released, I'm intending to stop 
+supporting the old method of init calls. 
+
+If anyone wants to step up and volunteer to maintain them, because they 
+want to use kernels older then 2.2.18 (I can't see the init stuff being 
+backported to 2.0 just yet), then please make yourself known now.
+
+Otherwise, the old init calls will get out of sync with the code. I won't
+remove them immediately, but I _will_ do so when I first notice that they're
+out of date.
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
