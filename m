@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 159jgp-0000Sy-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 09:38:19 +0100
+	id 159joI-0000Tk-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2001 09:46:02 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F1BED55F35F4D3118C0F00E0295CFF4D99549E@mail.mediatrix.com> 
-References: <F1BED55F35F4D3118C0F00E0295CFF4D99549E@mail.mediatrix.com> 
-To: Frederic Giasson <fgiasson@mediatrix.com>
-Cc: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Purpose of sync() function 
+In-Reply-To: <1010611181131.ZM26024@bristol.st.com> 
+References: <1010611181131.ZM26024@bristol.st.com> 
+To: Stuart Menefy <Stuart.Menefy@st.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: CFI vs JEDEC read commands 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Jun 2001 09:43:43 +0100
-Message-ID: <6352.992335423@redhat.com>
+Date: Tue, 12 Jun 2001 09:51:06 +0100
+Message-ID: <7578.992335866@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,16 +24,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 
-fgiasson@mediatrix.com said:
->   I have not implemented the sync() function, because looking at
-> others drivers it doest not seem to do anything useful.  Can anyone
-> tell me if I am right or wrong, and what should be the purpose of the
-> sync function^ 
+Stuart.Menefy@st.com said:
+>  However, this got me looking at the code. In virtually every case, a
+> 'read' command is 0xf0, apart from two (one in cfi_cfi_probe and the
+> other in cfi_cmdset_unknown), when is it 0xff. Is this deliberate, and
+> would changing the remaining two to 0xf0 cause any problems? 
 
-The sync function should wait for all pending erases to complete. As 
-nobody's actually implemented asynchronous erases yet - all the erase 
-functions block and call the callback before returning, this is a NOP in 
-all current drivers.
+They were originally 0xFF because I was dealing with Intel flash when I 
+wrote the CFI probe code, and that's the 'Read Array' command for Intel 
+flash. AFAICT CFI doesn't actually specify a way to take the chip _out_ of 
+read mode, and hence to detect aliases. I suspect 0xF0 should work. Let's 
+change it and see if it breaks - if it does we have to implement a 
+cmdset-specific 'switch back to read mode' function.
 
 --
 dwmw2
