@@ -1,14 +1,16 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <41767593.9030004@inf.u-szeged.hu>
-References: <41767593.9030004@inf.u-szeged.hu>
-Content-Type: text/plain
-Message-Id: <1098365059.13633.1257.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 21 Oct 2004 14:24:20 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: JFFS2 mount time
+Received: from mailout.despammed.com ([65.112.71.29])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKfIA-0000LX-4E
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 11:55:55 -0400
+Received: from filter.despammed.com (filter.despammed.com [65.112.71.26])
+	by mailout.despammed.com (8.11.6+Sun/8.11.6) with SMTP id i9LFeGk27157
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Oct 2004 10:40:16 -0500 (CDT)
+Date: Thu, 21 Oct 2004 10:40:16 -0500 (CDT)
+Message-Id: <200410211540.i9LFeGk27157@mailout.despammed.com>
+From: bodhi@despammed.com
+To: linux-mtd@lists.infradead.org
+Subject: Howto write to faslh from user space
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-10-20 at 16:26 +0200, Ferenc Havasi wrote:
-> Dear All,
-> 
-> Here is the latest version of our mount time improvement.
+Hello,
+this should be a FAQ, but I haven't been able to find the answer to this question in the Mailing Lists or Google.
 
-It's looking good, but the kernel really needs to be able to write these
-summaries for _itself_ in order to give a real improvement over the long
-term. If the file system has to be read-only we might as well be using
-cramfs, and if the summary becomes obsolete over time we might as well
-not bother in a lot of cases.
+Question:
+How can I write directly into flash from an user space application ?
+I am using a SA1110 with 16MB StrataFlash.
+I tried using /dev/mem but I can only read and not write to flash.
+Do I need to develop a driver ?
 
--- 
-dwmw2
+Please help me
+TIA
