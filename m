@@ -1,16 +1,14 @@
-Received: from mail.2d3d.co.za ([196.14.185.200])
+Received: from ns1.spewey.com ([64.170.22.140])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15CKNv-0003hJ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 13:13:32 +0100
-Date: Tue, 19 Jun 2001 14:20:07 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: jffs2 problems
-Message-ID: <20010619142007.A12096@crystal.2d3d.co.za>
+	id 15CKSL-0003hk-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 13:18:05 +0100
+Message-Id: <5.1.0.14.0.20010619072331.00a64ac0@mail.spewey.com>
+Date: Tue, 19 Jun 2001 07:34:21 -0500
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+From: Vipin Malik <vipin@embeddedlinuxworks.com>
+Subject: Flash Device Database fields?
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,84 +20,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm setting up a flash device/board/driver-tested-with etc. database on the 
+www.EmbeddedLinuxWorks.com site.
 
-Hi!
+Folks will then be requested to input the part #'s of the flash chips they 
+have got working, which driver file they used, version #,
+which board they tested this on, the "working state" etc.
 
-I just tried the 2.4.5 with the rmk6 and rmk6-np1 patches applied and
-used the MTD CVS code instead of the kernel MTD code. Problems ):
+Other folks would then be able to do searches in it to see if  someone 
+already has a particular driver or development board working and which 
+driver file was used to get it working.
 
-When I boot up, I still get:
+This should answer questions like:
 
-------------< snip <------< snip <------< snip <------------
-NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
-jffs2_scan_empty(): Empty block at 0x00000000 ends at 0x00000000 (with
-0xe0021985)! Marking dirt
-y
-jffs2_scan_empty(): Empty block at 0x00020000 ends at 0x00020000 (with
-0xe0021985)! Marking dirt
-y
-jffs2_scan_empty(): Empty block at 0x00040000 ends at 0x00040000 (with
-0xe0021985)! Marking dirt
-y
-jffs2_scan_empty(): Empty block at 0x00060000 ends at 0x00060000 (with
-0xe0021985)! Marking dirt
-y
-=2E
-=2E
-=2E
-jffs2_scan_empty(): Empty block at 0x002e0000 ends at 0x002e0000 (with
-0x20031985)! Marking dirt
-y
-VFS: Mounted root (jffs2 filesystem) readonly.
-------------< snip <------< snip <------< snip <------------
+"Does the XXX flash chip from the YYY mfg work with MTD, and why driver 
+file I need to use?" etc.
 
-Any ideas?
+I've thought of the following fields: Please review and suggest any new 
+one's that may be useful.
 
-Another interesting thing I noted is this:
+If you like, just reply to me privately to avoid unnecessary traffic on the 
+mtd list itself.
 
-------------< snip <------< snip <------< snip <------------
-Freeing init memory: 36K
-=2EI=FE=A0=FE#=AB)=F1.!=FE)init started:  BusyBox v0.51 (2001.06.07-09:49+0=
-000) multi-call
-binary
-------------< snip <------< snip <------< snip <------------
+Thanks
 
-Notice the hi-ascii garbage before init is started?
-
---=20
-
-Regards
- Abraham
-
-Your sister swims out to meet troop ships.
-
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
-
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
+Vipin
 
 
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7L0N3zNXhP0RCUqMRAlggAJ0bhoy2/uVZZLeUbAUhNNdwGHUZngCeOKEx
-tjlxZYS0M0WzdiceR90itSY=
-=mN0Z
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
+             FlashMfg      <AMD, INTEL, etc.> [OpenText field (or should it 
+be a "select" list)?]
+             PartNumber   <flash device part no> [Open txt field]
+             BoardTestedOn <AMD SC520CDP, LART, etc> [open txt field]
+             FlashType     <NOR, NAND, DOC etc.> [select list]
+             DriverName    <driver file name> [open txt field]
+             Results          <works_fine, works_partially, does_not_work> 
+[select list]
+             Driver Date    <date>
+             Date Submitted <today's date>
+             Submitted By  <optional> [Open txt field]
+             Description   <any detailed instructions, caveats, exceptions, 
+but's pointers etc.> [Big txt box.]
