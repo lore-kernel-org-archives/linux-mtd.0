@@ -1,19 +1,21 @@
-Received: from gate.epygi.de ([212.126.211.241] helo=epygi.de)
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vxed-0000xH-00
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 10:47:39 +0100
-Received: from pcstephan (pc-stephan.epygi.de [192.168.13.32])
-	by epygi.de (8.11.2/8.11.2) with SMTP id g3C9llM29648
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 11:47:47 +0200 (METDST)
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Subject: FW: Re: mapping of boot loader offset
-Date: Fri, 12 Apr 2002 11:47:48 +0200
-Message-ID: <FCEAKDJJAPHPLJFINDAJOECDCEAA.Stephan.Linke@epygi.de>
+	id 16vxrV-0000yE-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 11:00:57 +0100
+Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
+	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 16vxrS-0005u4-0V
+	for linux-mtd@lists.infradead.org; Fri, 12 Apr 2002 11:00:54 +0100
+content-class: urn:content-classes:message
+Subject: Writing JFFS2 image to Nand flash
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 12 Apr 2002 11:02:22 +0100
+Message-ID: <541025071C7AC24C84E9F82296BB9B95080502@OPTEX1.optex.local>
+From: "John Hall" <John.Hall@optionexist.co.uk>
+To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,60 +27,18 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> -----Original Message-----
-> From: Stephan Linke [mailto:Stephan.Linke@epygi.de]
-> Sent: Donnerstag, 11. April 2002 18:50
-> To: Tino Keitel
-> Cc: Linux-Mtd-Admin           <---------- :o) oops
-> Subject: RE: mapping of boot loader offset
-> 
-> 
-> Hi!
-> 
-> You may probably fix it by using the mapping file for your mtd 
-> driver. I mean the stuff placed in drivers/mtd/maps.
-> 
-> Here you have the chance to manipulate the addresses of the flash 
-> access. You have to call the real access function of the actual 
-> flash driver. So you could simply check the offset of the access 
-> and if its above the "magic" address of your boot loader you 
-> could add an additional offset. That's it. I didn't do that yet 
-> and I think it's not the basic intantion of that mapping files. 
-> (I think they should be used to split up flash areas, not to 
-> connect them.) But I think it could work.
-> 
-> Maybe someone else has an "official" idea ;-). If not...
-> 
-> Regards, Stephan
-> 
-> > -----Original Message-----
-> > From: linux-mtd-admin@lists.infradead.org
-> > [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Tino Keitel
-> > Sent: Donnerstag, 11. April 2002 16:30
-> > To: linux-mtd@lists.infradead.org
-> > Subject: mapping of boot loader offset
-> > 
-> > 
-> > Hi folks,
-> > 
-> > I wonder what to do if a processor looks for its BIOS/loader at a 
-> > specified
-> > address that is somewhere in the middle of a flash chip. The same 
-> > chip will
-> > contain one JFFS2. The boot loader area will have to be mapped 
-> out of the
-> > file system. Is there already something that MTD can do for me?
-> > 
-> > Regards,
-> > Tino
-> > 
-> > -- 
-> > tino.keitel@innominate.com
-> > dipl.-inf.                        Innominate Security Technologies AG
-> > software engineer                                   networking people
-> > tel: +49.30.6392-3308                      http://www.innominate.com/
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
+Hi,
+
+I'm having problems writing a JFFS2 image to a Nand flash device whose
+first block is bad. cp and dd fail in this case. Do I need to write a
+utility that checks for bad blocks and skips them, or am I missing
+something?
+
+Regards,
+John Hall
+
+--=20
+OptionExist Limited.
+The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
+Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
+http://www.optionexist.co.uk/
