@@ -1,23 +1,13 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1916yH-0003YO-Vl
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Apr 2003 16:49:46 +0100
-Date: Thu, 3 Apr 2003 17:49:25 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: John Burch <jburch@vincisystems.com>
-Message-ID: <20030403154925.GC5651@wohnheim.fh-wedel.de>
-References: <1049369136.14220.5.camel@passion.cambridge.redhat.com>
-	<003501c2f9f6$dc7373a0$1200a8c0@JOHNB>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <003501c2f9f6$dc7373a0$1200a8c0@JOHNB>
-cc: 'Kenneth Johansson' <kenneth.johansson@etx.ericsson.se>
-cc: 'Mtd' <linux-mtd@lists.infradead.org>
-cc: tglx@linutronix.de
-cc: 'David Woodhouse' <dwmw2@infradead.org>
-Subject: Re: Can mtd partition span multiple devices
+Received: from [202.108.35.176] (helo=vip.sina.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 191Ka5-0004z3-FZ
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 07:21:41 +0100
+Message-ID: <20030404062136.7806.qmail@vip.sina.com>
+From: <jimzeus@vip.sina.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Date: Fri, 04 Apr 2003 14:21:36 +0800
+Subject: [SPAM] FAT on NAND 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +17,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 3 April 2003 10:36:54 -0500, John Burch wrote:
-> 
-> I'm using 2.4.17 and I don't think mtdconcat is part of that kernel
-> (though I may not need it anyway based on dwmw2's response).  Are the
-> changes since then substantial, and can 2.4.17 be patched to support the
-> latest mtd/jffs2 code?
+Hi, all:
 
-I wouldn't patch the mtd/jffs2 part, unless I had to. The better
-strategy is to update the whole kernel, but that is always a bit
-tricky inside some companies.
 
-> Second, you imply that a single chip probe will handle multiple devices
-> (assuming contiguous addressing?).  Is this supported in 2.4.17 and is
-> it a common approach to use for multiple devices?
+What I am doing now is to build a filesystem which can be 
+recognized on _raw_ NAND flash. So, I think FAT will be the only
+choice(though I know it's very unstable). And I have following question now:
 
-That support has been in the official kernel since 2.4.2 or even
-longer.
+1.How unstable would it be? Does it support: 
+     a.journaling (crash/power-off safe ,I mean)
+     b.bad block management
+     c.wear levelling
+     d.error correction
+     e.something else I dont know to make the FS reliable
+2.I have checked the NAND flash docoment (especially 
+the "Filesystems supporting NAND"chapter) and I found out that
+it seems no way to build a FAT on a bare NAND flash but only on 
+the SmartMediaCards, am I right? Or the SM card and the bare NAND
+are just the same thing when a FAT on it.
+3.Maybe I misunderstood,but David Woodhouse had told me that I should apply layers like FAT->NFTL->NAND if I wanna build a FAT on
+a NAND flash.But I learned that the NFTL only support Doc from the
+NAND flash document, isnt it? And what should I do to support the 
+FAT ?
+4.Everybody tells me that the Fat on a NAND is not reliable,but I 
+think USB mass storage are based on NAND and got a FAT (or some 
+filesystem which windows can recognize) on it, so ,how comes it 
+happen?
 
-Jörn
+BTW:Why my mail sent to the maillist always "awaits moderator approval"?
 
--- 
-Measure. Don't tune for speed until you've measured, and even then
-don't unless one part of the code overwhelms the rest.
--- Rob Pike
+TIA
+
+Jim Zeus
+
+
+
+______________________________________
+
+===================================================================
