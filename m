@@ -1,36 +1,56 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from 24.64.25.86.ab.wave.home.com
-	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 111dkV-0005WP-00
-	for mtd@infradead.org; Tue, 6 Jul 1999 23:31:36 +0100
-Date: Tue, 6 Jul 1999 16:29:50 -0600 (MDT)
-From: Jason Gunthorpe <jgg@deltatee.com>
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-cc: mtd@infradead.org
-Subject: Re: Disk-On-Chip progress.
-In-Reply-To: <E111cUr-0006UV-00@devel2.axiom.internal>
-Message-ID: <Pine.LNX.3.96.990706162624.20082A-100000@white.priv.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 111dz7-0005Wv-00
+	for mtd@infradead.org; Tue, 6 Jul 1999 23:46:41 +0100
+To: Jason Gunthorpe <jgg@deltatee.com>
+Cc: mtd@infradead.org
+Reply-To: mtd@infradead.org
+Subject: Re: Disk-On-Chip progress. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 06 Jul 1999 23:46:40 +0100
+From: David Woodhouse <David.Woodhouse@mvhi.com>
+Message-Id: <E111dz6-0006dt-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+jgg@deltatee.com said:
+>  I was chatting with some of our folks here, apparently some time ago
+> we tried quite hard to get specs for their stuff, we were willing to
+> sign NDA's, etc, inorder to make it work in QNX. Apparently we got
+> noplace with them :<
 
-On Tue, 6 Jul 1999, David Woodhouse wrote:
+I found the same - I spent about three months waiting for a response from 
+their 'Director of Marketing and Sales Europe.' Then I was fed to a technical 
+person, who listed to what I wanted, and decided I had to talk to someone 
+higher up...
 
-> I have heard again from the President of M-Systems Ltd in Israel. He has been
-> unable to arrange an internal meeting today on such short notice to discuss the
-> issue, but he has promised to get back to me by the end of the week with a
-> proposal for a solution.
+I suspect that I was just caught up in red tape the whole time, and that I 
+didn't actually get attention from anyone who was able to make real decisions 
+until yesterday, when the news of my web site filtered back up through the 
+ranks to their President. 
 
-I was chatting with some of our folks here, apparently some time ago we
-tried quite hard to get specs for their stuff, we were willing to sign
-NDA's, etc, inorder to make it work in QNX. Apparently we got noplace with
-them :<
+It was quite amusing watching the hits from lots of different machines within
+their domain and wondering who they were from. They don't have reverse DNS set
+up, so I could only guess (tech.m-sys.com, marketing.m-sys.com,
+admin.m-sys.com, legal.m-sys.com...)
 
-Jason
+It's unfortunate that such tactics were the only way to open discussions, but 
+now we're talking, and they seem fairly genuinely willing to work with us to 
+find a solution to the problem. It seems as if we'll be able to reach an 
+agreement fairly soon. I certainly hope so.
+
+As I said, watch this space.
+
+
+----                                 ----                                 ----
+David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
+ Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
+    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
+             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
+
 
 
 
