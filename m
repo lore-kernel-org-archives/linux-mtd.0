@@ -1,20 +1,26 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CZtxI-00022H-Na
-	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2004 11:37:22 -0500
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Aras Vaichas <arasv@magellan-technology.com>
-In-Reply-To: <41AD38DA.40008@magellan-technology.com>
-References: <41AD38DA.40008@magellan-technology.com>
-Content-Type: text/plain
-Date: Thu, 02 Dec 2004 09:12:32 -0700
-Message-Id: <1102003952.5915.71.camel@tubarao>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: modprobe cfi_cmdset_0002 fails
-Reply-To: tharbaugh@lnxi.com
+Received: from mailout04.sul.t-online.com ([194.25.134.18])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CZubc-0002P0-3C
+	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2004 12:19:01 -0500
+Received: from atlas.denx.de (atlas.denx.de [10.0.0.14])
+	by denx.de (Postfix) with ESMTP id 8942E42A5B
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  2 Dec 2004 18:18:23 +0100 (MET)
+Received: from atlas.denx.de (localhost [127.0.0.1])
+	by atlas.denx.de (Postfix) with ESMTP id 011DC13D6DB
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  2 Dec 2004 18:18:22 +0100 (MET)
+To: linux-mtd@lists.infradead.org
+From: Wolfgang Denk <wd@denx.de>
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Thu, 02 Dec 2004 19:31:05 +0300."
+	<200412021931.05132.skorinkod@mosk.ru>
+Date: Thu, 02 Dec 2004 18:18:17 +0100
+Sender: wd@denx.de
+Message-Id: <20041202171822.02019C1430@atlas.denx.de>
+Subject: Re: Booting from DiskOnChip 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-12-01 at 14:22 +1100, Aras Vaichas wrote:
-> I am running 2.4.27-vrs1 on an AT91RM9200DK.
+In message <200412021931.05132.skorinkod@mosk.ru> you wrote:
 > 
-> I have managed to get the latest MTD code to compile with this kernel version 
-> and the kernel boots and executes OK (mostly)
-> 
-> Before I compiled in the new MTD code, the kernel detected my Smartmedia card 
-> and the Dataflash. Now it seems to fail.
-> 
-> from dmesg:
-> 
-> ...
-> physmap flash device: 200000 at 10000000
-> CFI: Found no phys_mapped_flash device at location zero
-> reset unlock called 555 2aa
-> Search for id:(1f c0) interleave(1) type(2)
-> MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
-> MTD jedec_match(): check unlock addrs 0x0555 0x02aa
-> MTD jedec_match(): 0x0555 0x0aaa did not match
-> reset unlock called 555 aaa
-> Search for id:(1f c0) interleave(1) type(2)
-> MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
-> MTD jedec_match(): check unlock addrs 0x0555 0x0aaa
-> MTD jedec_match(): check ID's disappear when not in ID mode
-> reset unlock called 555 aaa
-> MTD jedec_match(): return to ID mode
-> MTD jedec_probe_chip(): matched device 0x1f,0xc0 unlock_addrs: 0x0555 0x0aaa
-> Found: Atmel AT49BV16X
-> reset unlock called 555 aaa
-> phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit bank
-> 
-> The NOR Flash is found OK, and it comes up in /proc/mtd
+> As I understand there are two ways for booting from DiskOnChip (correct me, if 
+> I think wrong):
 
-Yep - looks sane so far.
+This depends on your hardware and the capabilities of your boot loader.
 
-> kmod: failed to exec /sbin/modprobe -s -k cfi_cmdset_0002, errno = 2
-> Support for command set 0002 not present
-> gen_probe: No supported Vendor Command Set found
-> kmod: failed to exec /sbin/modprobe -s -k map_rom, errno = 2
-> ...
-> 
-> Why does modprobe fail here? Shouldn't this already be compiled into the kernel?
+> 1) use patched lilo from M-System site
+> 2) use patched grub from mtd cvs
 
-It's only compiled in if it was selected when you configured your
-kernel.  You can enable it in this menu:
+3) Use U-Boot from U-Boot CVS.
 
-Main Menu
-  Memory Technology Devices (MTD)
-    RAM/ROM/Flash chip drivers
-      Support for AMD/Fujitsu flash chips
+Best regards,
 
-It's called CONFIG_MTD_CFI_AMDSTD in .config
+Wolfgang Denk
 
 -- 
-Thayne Harbaugh
-Linux Networx
+Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+As far as we know, our computer has never had an undetected error.
+		                                           -- Weisert
