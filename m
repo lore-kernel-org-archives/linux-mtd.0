@@ -1,18 +1,18 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19KDQW-0004Ww-UR
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 09:33:53 +0100
+	id 19KDdV-0004lM-Gb
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 09:47:17 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: David Wuertele <dave-gnus@bfnet.com>
-In-Reply-To: <m34r3izfvn.fsf@bfnet.com>
-References: <m34r3izfvn.fsf@bfnet.com>
-Message-Id: <1053938076.17182.39.camel@imladris.demon.co.uk>
+To: Stuart Menefy <stuart.menefy@st.com>
+In-Reply-To: <20030523235020.3ca198e1.stuart.menefy@st.com>
+References: <20030523235020.3ca198e1.stuart.menefy@st.com>
+Message-Id: <1053938881.17182.54.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Mon, 26 May 2003 09:34:36 +0100
+Date: Mon, 26 May 2003 09:48:01 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd/utils automake attic?
+Subject: Re: CFI fixup code
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-05-26 at 01:54, David Wuertele wrote:
-> I'm trying to compile the utils directory following the automake
-> instructions, but there seem to be files missing in my version of
-> CVS:  
+On Fri, 2003-05-23 at 23:50, Stuart Menefy wrote:
+> Folks
 > 
->   automake: `configure.ac' or `configure.in' is required
->   automake: configure.in: required file `./install-sh' not found
->   automake: configure.in: required file `./missing' not found
->   configure.in: 4: required file `./config.h.in' not found
-> 
-> When I look at the web CVS, I can see those files:
-> 
-> http://www.infradead.org/cgi-bin/cvsweb.cgi/mtd/util/?hideattic=0&sortby=date
-> 
-> They appear to be "in the attic".  What does that mean?  Is there a
-> way to download these files using cvs?
+> Having been bitten several times now by buggy CFI data in various chips, I
+> thought I'd try and come up with an generic mechanism for working round
+> this problem.
 
-It means they've been deleted from CVS. They're there only as part of
-the history -- you can obtain them by asking for a specific (i.e. the
-penultimate) version, or by date.
+Me Likee. Thanks. One comment though...
 
-But don't bother -- I removed the auto* crap in favour of the proper
-makefiles. If you need to cross-compile, you can do so with a command
-such as 'make CROSS=arm-linux-gnu- mkfs.jffs2'.
++	if (extp->MajorVersion != '1' || 
++	    (extp->MinorVersion < '0' || extp->MinorVersion > '3')) {
 
-You'll need to make sure that zlib is in your toolchain's sys-root or
-otherwise available.
+You've made it accept CFI table versions 1.0 through 1.3 for _all_
+chips, while some were only accepting 1.0->1.2 before.
+
+That's probably not a problem since they _ought_ to be
+backward-compatible, but if we actually trusted the hardware
+manufacturers to display a modicum of intelligence, we wouldn't have had
+that check there at all. And you wouldn't have been writing this patch
+in the first place. I'm happy to remove it and perhaps reinstate it if
+it ever actually bites.
+
+Other than that, it looks fine. Please go ahead and commit it.
 
 -- 
 dwmw2
