@@ -1,14 +1,29 @@
-Received: from web52704.mail.yahoo.com ([206.190.39.155])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CUDIF-0002t6-7J
-	for linux-mtd@lists.infradead.org; Tue, 16 Nov 2004 19:03:36 -0500
-Message-ID: <20041117000303.60699.qmail@web52704.mail.yahoo.com>
-Date: Tue, 16 Nov 2004 16:03:03 -0800 (PST)
-From: Michael <xemc@yahoo.com>
+Received: from bm-1a.paradise.net.nz ([202.0.58.20]
+	helo=linda-1.paradise.net.nz)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CUG7V-0003Kq-CT
+	for linux-mtd@lists.infradead.org; Tue, 16 Nov 2004 22:04:34 -0500
+Received: from smtp-2.paradise.net.nz (smtp-2b.paradise.net.nz [202.0.32.211])
+	by linda-1.paradise.net.nz (Paradise.net.nz)
+	with ESMTP id <0I7A001UJZ6U3V@linda-1.paradise.net.nz> for
+	linux-mtd@lists.infradead.org; Wed, 17 Nov 2004 16:04:24 +1300 (NZDT)
+Received: from hayes.bluewaternz.com
+	(203-96-159-182.paradise.net.nz [203.96.159.182])	by
+	smtp-2.paradise.net.nz
+	(Postfix) with ESMTP id 5B8869E876	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Nov 2004 16:04:06 +1300 (NZDT)
+Received: from emma.bluewaternz.com ([192.168.2.44] helo=bluewatersys.com)
+	by hayes.bluewaternz.com with esmtp (Exim 3.35 #1 (Debian))
+	id 1CUG73-0007EH-00	for <linux-mtd@lists.infradead.org>; Wed,
+	17 Nov 2004 16:04:05 +1300
+Date: Wed, 17 Nov 2004 16:06:12 +1300
+From: Brad Beveridge <bbeveridge@bluewatersys.com>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Child dir appears to be a hard link
+Message-id: <419AC024.1060202@bluewatersys.com>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+Subject: Removable flash storage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +33,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
-I'm getting some strange errors.
-Has anyone seen these, or could they comment on it?
+Hello all.
+I am working with a device that has 3 nand flash slots, two are internal 
+and not removable, one is external and is removable.
+We currently have a single driver that registers partitions on each card 
+at kernel boot time.  All three cards work, and we use yaffs as a 
+filesystem on top of MTD.
+I am trying to come up with a clean way of allowing the external card to 
+be inserted/removed at runtime.
+One solution is to have a seperate nand driver for that card & build it 
+as a module, then simply modprobe/rmmod.  However, that solution isn't 
+so great because we then have two driver source files that are 
+essentially the same.
+We also thought that a /proc based solution might work, where you write 
+"eject 3" or something to /proc/mtd.
 
-...
-drivers/usb/input/usbmouse.c: v1.6:USB HID Boot Protocol mouse
-driver
-RAMDISK: Couldn't find valid RAM disk image starting at 0.
-jffs2_scan_eraseblock(): Node at 0x001185f8 {0x1985, 0xe001,
-0x0000002c) has invalid CRC 0xffffffff (calculated 0xe0f1565f)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at
-0x001185fc: 0x002c instead
-jffs2_scan_inode_node(): CRC failed on node at 0x002079e0: Read
-0xffffffff, calculated 0x0c51258b
-Empty flash at 0x00207a2c ends at 0x00207c00
-jffs2_scan_dirent_node(): Node CRC failed on node at 0x0022fde0:
-Read 0xffffffff, calculated 0x06fef39c
-jffs2_scan_dirent_node(): Node CRC failed on node at 0x0054a5f0:
-Read 0xffffffff, calculated 0x9de56616
-Empty flash at 0x0054a61c ends at 0x0054a800
-Child dir "bin" (ino #4) of dir ino #2 appears to be a hard link
-Child dir "etc" (ino #84) of dir ino #2 appears to be a hard link
-Child dir "lib" (ino #90) of dir ino #2 appears to be a hard link
-Child dir "mnt" (ino #112) of dir ino #2 appears to be a hard link
-Child dir "usr" (ino #135) of dir ino #2 appears to be a hard link
-Child dir "proc" (ino #118) of dir ino #2 appears to be a hard link
-Child dir "sbin" (ino #120) of dir ino #2 appears to be a hard link
-Child dir "root" (ino #119) of dir ino #2 appears to be a hard link
-Child dir "devfs" (ino #83) of dir ino #2 appears to be a hard link
-Child dir "lost+found" (ino #3) of dir ino #2 appears to be a hard
-link
-Inode #2 was a directory with children - removing those too...
-VFS: Mounted root (jffs2 filesystem).
-Freeing init memory: 60K
-init started:  BusyBox v1.00-pre10 (2004.07.23-21:50+0000)
-multi-call binary
+What will play nicest with MTD as it stands?  If I need to break the 
+driver up, is there any suggestions for minimising code duplication?
 
-...
-
-
-I searched the archives, and they refer to using different versions
-of mkfs.jffs2.  I don't use this utility, I just mount the
-partition and copy the files to it directly.
-
-Does anyone have any ideas?
-
-Thanks a bunch,
-Mike
+Cheers
+Brad
