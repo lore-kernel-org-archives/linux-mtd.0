@@ -1,21 +1,15 @@
-Received: from [211.172.225.159] (helo=hartford.siteprotect.co.kr)
+Received: from [207.152.29.75] (helo=server3.toshibatv.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15hPLg-0001pN-00
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Sep 2001 06:47:41 +0100
-Received: (from kernelhacker@localhost)
-	by hartford.siteprotect.co.kr (8.9.3/8.9.3) id OAA24748
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2001 14:53:42 +0900
-Date: Thu, 13 Sep 2001 14:53:41 +0900
-From: Kim Jong-chan <kernelhacker@hartford.siteprotect.co.kr>
+	id 15hvj0-0004IJ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2001 17:21:54 +0100
+Message-ID: <7DF7BFDC95ECD411B4010090278A44CA1B72DD@ATVX>
+From: "Siders, Keith" <keith_siders@toshibatv.com>
 To: linux-mtd@lists.infradead.org
-Subject: Self Answer & NAND driver wait queue init problem
-Message-ID: <20010913145341.A21279@hartford.siteprotect.co.kr>
-Reply-To: zeppelin@kernelhacker.org
-References: <20010912155503.A26299@hartford.siteprotect.co.kr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20010912155503.A26299@hartford.siteprotect.co.kr>; from kernelhacker@hartford.siteprotect.co.kr on Wed, Sep 12, 2001 at 03:55:04PM +0900
+Date: Fri, 14 Sep 2001 11:25:35 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,63 +21,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Finally, I've solved the problem.
-The answer is that wq of struct nand_chip is not initialized.
-So I suggest... nand_scan() in nand.c
+I have a requirement to store compressed binary images with the intent that
+they will be uncompressed when loaded into memory. Can JFFS2 store data
+without compression, in this case previously compressed data, and still
+automatically uncompress it when retrieved from the filesystem?
 
-    /* Initialize state and spinlock */
-    this->state = FL_READY;
-    spin_lock_init(&this->chip_lock);
-
-    /* Initialize wait queue : fixed by Adelinux */
->   init_waitqueue_head(&this->wq);
-
-    /* De-select the device */
-    nand_deselect ();
-
-I've looked up MTD drivers code of other chips. And I think wq must be 
-initialized. Otherwise, wake_up will kill the system.
-
-On Wed, Sep 12, 2001 at 03:55:04PM +0900, Kim Jong-chan wrote:
-> Recent days, I have ported MTD NAND flash driver to x86, using GeodeGX board.
-> Module loading is ok. But, when I try to access NAND device, The Kernel says 
-> what follows and go away...
-> Using ksymoops, I found that kernel dies in __wake_up.
-> But I don't know actually which variable causes Null pointer dereferencing.
-> If I remove all wake_up in nand.c intentionally, all works file. But, I think
-> that's not a solution.  
-> Tested kernel includes 
-> 2.4.9(vanilla) 
-> 2.4.2(redhat) + mtd snapshot(20010906)
-> 2.4.2_hhl20(hard hat linux)
-> all above kernel shows the same phenomenon. 
-> 
-> Here goes oops message
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000    
->  printing eip:                                                                  
-> c010eeb3                                                                        
-> *pde = 00000000                                                                 
-> Oops: 0000                                                                      
-> CPU:    0                                                                       
-> EIP:    0010:[<c010eeb3>]                                                       
-> EFLAGS: 00010013                                                                
-> eax: c12eddf4   ebx: 00000000   ecx: 00000001   edx: c12eddf8                   
-> esi: 00000001   edi: fffffff8   ebp: c6c6fefc   esp: c6c6fee0                   
-> ds: 0018   es: 0018   ss: 0018                                                  
-> Process mke2fs (pid: 570, stackpage=c6c6f000)                                   
-> Stack: c12eddf8 00000001 00000282 00000003 00000001 00000001 c12edddc c028d7c8  
->        c881282d 00000000 c6c6e000 00000000 00000000 00000000 c6c6e000 00000000  
->        00000000 c76c5628 c76c5620 00000000 fffffff4 c01a9dba c12edd60 c6d37bc0  
-> Call Trace: [<c881282d>] [<c01a9dba>] [<c0134c52>] [<c012e4a9>] [<c012d4e5>]    
->    [<c012d533>] [<c0106d23>]                                                    
->                                                                                 
-> Code: 8b 1b 8b 4f 04 8b 01 85 45 f0 74 54 31 c0 9c 5e fa c7 01 00               
-> Kernel panic: Aiee, killing interrupt handler!                                  
-> In interrupt handler - not syncing                 
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Keith Siders
+Software Engineer
+ Toshiba America Consumer Products, Inc.
+Advanced Television Technology Center
+801 Royal Parkway, Suite 100
+Nashville, Tennessee 37214
+Phone: (615) 257-4050
+Fax:   (615) 453-7880
