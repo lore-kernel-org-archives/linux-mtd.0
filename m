@@ -1,18 +1,19 @@
-Received: from mail.2d3d.co.za ([196.14.185.200])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15DM6n-0007kA-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 09:16:06 +0100
-Date: Fri, 22 Jun 2001 10:22:38 +0200
-From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: safe flash filesystem
-Message-ID: <20010622102238.F1828@crystal.2d3d.co.za>
-References: <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621125458.A23785@crystal.2d3d.co.za> <5.1.0.14.0.20010621083448.00a64b60@mail.spewey.com> <20010621155737.A26310@crystal.2d3d.co.za> <5.1.0.14.0.20010621091714.00a64c70@mail.spewey.com> <20010621163537.A26714@crystal.2d3d.co.za> <3B32668F.8020000@asu.edu>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/QKKmeG/X/bPShih"
-Content-Disposition: inline
-In-Reply-To: <3B32668F.8020000@asu.edu>; from Russ.Dill@asu.edu on Thu, Jun 21, 2001 at 14:26:39 -0700
+Received: from mindseal.comm2000.it ([194.133.0.6] helo=relay.comm2000.it)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15DNtm-0007sh-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 11:10:46 +0100
+Received: from Athlon ([212.97.52.190])
+	by relay.comm2000.it (8.11.2/MFAGMM-19990726) with SMTP id f5MAB8a16866
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2001 12:11:08 +0200
+Message-ID: <001601c0fb03$b2e9bbf0$230d0dc3@Athlon>
+From: "Paolo Marini" <paolom@prisma-eng.it>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2: endian problem ?
+Date: Fri, 22 Jun 2001 12:11:26 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,61 +25,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---/QKKmeG/X/bPShih
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
+I am trying to have a working JFFS2 on an RPX-CLLF card (Motorola 860, big
+endian).
 
-Hi Russ!
+It happens that every time I mount the jfss2, the flash gets formatted. I
+dumped the flash block, and the bytes seem to be in the wrong order (e.g.
+magic number and nodetype swapped, and also magic number with the two bytes
+swapped). I tested it against a jffs2 image build for big endian with
+mkfs.jffs2, and the order of bytes is reversed. Reading a flash block
+containing e.g. card FW is ok. I am using the latest mtd on a 2.4.2 kernel.
 
-> If its just a config file, why make all this so complicated?
->=20
-> struct node {
->=20
-> 	u32 magic;
-> 	char valid;
-> 	u32 version;
-> 	u32 data_crc;
-> 	u32 hdr_crc;
-> 	char data[DATA_SIZE];
-> };
+Anyone can help me ?
 
-Yes, this is something in the lines I was thinking of. But what complicates
-things is if you start taking things like avoiding damaged blocks into
-account, wear levelling (this is fairly easy to solve) and keeping the flash
-unfragmented.
+Thanks a lot
 
---=20
-
-Regards
- Abraham
-
-Walking on water wasn't built in a day.
-		-- Jack Kerouac
-
-__________________________________________________________
- Abraham vd Merwe - 2d3D, Inc.
-
- Device Driver Development, Outsourcing, Embedded Systems
-
-  Cell: +27 82 565 4451         Snailmail:
-   Tel: +27 21 761 7549            Block C, Antree Park
-   Fax: +27 21 761 7648            Doncaster Road
- Email: abraham@2d3d.co.za         Kenilworth, 7700
-  Http: http://www.2d3d.com        South Africa
-
-
---/QKKmeG/X/bPShih
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7MwBOzNXhP0RCUqMRAu7dAKCGi78of4J6nBMHEEwVrf3PKmxXFgCfatS4
-/ZXKMjRu7DGc2rgkdDlwgRg=
-=5pCO
------END PGP SIGNATURE-----
-
---/QKKmeG/X/bPShih--
+Paolo Marini
