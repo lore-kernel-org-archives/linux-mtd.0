@@ -1,20 +1,26 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cj3jS-0002x4-KZ
-	for linux-mtd@lists.infradead.org; Mon, 27 Dec 2004 17:52:56 -0500
-Resent-Message-ID: <20041227225048.GF5345@stusta.de>
-Date: Mon, 27 Dec 2004 23:50:15 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Message-ID: <20041227225014.GD5345@stusta.de>
-References: <20041227222348.GB13628@mellanox.co.il>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20041227222348.GB13628@mellanox.co.il>
-Cc: nico@cam.org, linux-kernel@vger.kernel.org
-Subject: [2.6 patch] add missing dependencies on MTD_PARTITIONS
+Received: from usti.fccps.cz ([194.108.74.250])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CjeTO-0007zq-8H
+	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2004 09:06:47 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by usti.fccps.cz (Postfix) with ESMTP id 77D3577C89
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Dec 2004 15:06:40 +0100 (CET)
+Received: from usti.fccps.cz ([127.0.0.1])
+	by localhost (usti [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 23074-04 for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Dec 2004 15:06:39 +0100 (CET)
+Received: from frr (unknown [10.0.0.238])
+	by usti.fccps.cz (Postfix) with ESMTP id EB4E677C85
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Dec 2004 15:06:38 +0100 (CET)
+From: "Frantisek Rysanek" <Frantisek.Rysanek@post.cz>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 29 Dec 2004 15:10:27 +0100
+MIME-Version: 1.0
+Content-type: Multipart/Mixed; boundary=Message-Boundary-4951
+Message-ID: <41D2C8E3.26470.C13D47B@localhost>
+Subject: several bugfixes/workarounds in mtd snapshot of 20041226 && 2.4.28
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,82 +30,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 28, 2004 at 12:23:48AM +0200, Michael S. Tsirkin wrote:
 
-> Hello!
+--Message-Boundary-4951
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
 
-Hi Michael!
+Dear MTD maintainers,
 
-> Sorry, I had a wrong subject.
-> 
-> It seems that you can disable MTD partitioning support 
-> but enable , e.g. NAND.
-> And, if you are upgrading from and older kernel without
-> the paritioning option, and do oldconfig and are not careful,
-> thats what you end up with.
-> But, lots of code is calling del_mtd_partitions now, so you get
-> unresolved del_mtd_partitions.
-> 
-> Its easy to work around this by enabling partitioning, but
-> should not the dependency be added in the relevant KConfig?
+I suggest several bugfixes and workarounds against the 
+snapshot of 20041226 (inserted into a vanilla 2.4.28) - see 
+the attached patch.
 
-First of all thanks for your report.
-You didn't send the exact error mesage.
-I'm able to reproduce the following in 2.6.10-rc3-mm1:
+I'm using DiskOnChip devices in various sorts of Advantech 
+hardware. I'm compiling my MTD drivers for the DiskOnChip 
+alone - I don't want to include all the other MTD stuff 
+(useless to me).
 
-<--  snip  -->
+Bugs fixed / worked around:
 
-...
-  LD      .tmp_vmlinux1
-drivers/built-in.o(.init.text+0x6464b): In function `init_scx200_docflash':
-: undefined reference to `add_mtd_partitions'
-drivers/built-in.o(.init.text+0x66ab8): In function `ns_init_module':
-: undefined reference to `add_mtd_partitions'
-drivers/built-in.o(.exit.text+0x8bf4): In function `cleanup_scx200_docflash':
-: undefined reference to `del_mtd_partitions'
-make: *** [.tmp_vmlinux1] Error 1
+1) if you flush the partition table and issue a BLKRRPART 
+(i.e., you re-partition the diskonchip), the reported device 
+size shrinks to one half of the original. If you do this again 
+before a reboot, the size shrinks again (now one quarter).
+Seems like the driver would re-init device size to a size denominated in 1k blocks,
+rather than sectors (512B).
 
-<--  snip  -->
+2) in my DiskOnChip-only setup, CONFIG_MTD_MAP_BANK_WIDTH_1 
+is missing in the .config. I've added that straight to $LINUX/include/linux/map.h
 
-The patch below fixes them.
+3) two #includes seem to be missing in $MTD/nand/diskonchip.c
 
-Please tell whether this fixes the problems you observed.
+4) the Reed-Solomon library hooks are messed up in $LINUX/lib/Config.in
 
-> Cc me directly, I'm not on the list.
-> Thanks,
-> MST
+I hope this helps
 
-cu
-Adrian
+Frank Rysanek
 
 
-diffstat output:
- drivers/mtd/maps/Kconfig |    2 +-
- drivers/mtd/nand/Kconfig |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--Message-Boundary-4951
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'mtd-bugs.20041226.patch'
 
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig.old	2004-12-27 23:43:00.000000000 +0100
-+++ linux-2.6.10-rc3-mm1-full/drivers/mtd/maps/Kconfig	2004-12-27 23:44:01.000000000 +0100
-@@ -159,7 +159,7 @@
+--- linux_with_mtd_bugs/drivers/mtd/mtd_blkdevs-24.c	2004-12-27 14:48:52.000000000 +0100
++++ linux/drivers/mtd/mtd_blkdevs-24.c	2004-12-29 14:32:14.000000000 +0100
+@@ -315,7 +315,7 @@
+ 	}
  
- config MTD_SCx200_DOCFLASH
- 	tristate "Flash device mapped with DOCCS on NatSemi SCx200"
--	depends on X86 && MTD_CFI
-+	depends on X86 && MTD_CFI && MTD_PARTITIONS
- 	help
- 	  Enable support for a flash chip mapped using the DOCCS signal on a
- 	  National Semiconductor SCx200 processor.
---- linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig.old	2004-12-27 23:44:44.000000000 +0100
-+++ linux-2.6.10-rc3-mm1-full/drivers/mtd/nand/Kconfig	2004-12-27 23:45:37.000000000 +0100
-@@ -198,7 +198,7 @@
-  
-  config MTD_NAND_NANDSIM
-  	bool "Support for NAND Flash Simulator"
-- 	depends on MTD_NAND
-+ 	depends on MTD_NAND && MTD_PARTITIONS
+ 	grok_partitions(gd, minor, 1 << tr->part_bits, 
+-			tr->blkcore_priv->sizes[minor]);
++                        dev->size);
+ 	up(&mtd_table_mutex);
  
- 	help
- 	  The simulator may simulate verious NAND flash chips for the
+ 	return 0;
+--- linux_with_mtd_bugs/include/linux/mtd/map.h	2004-12-27 14:48:54.000000000 +0100
++++ linux/include/linux/mtd/map.h	2004-12-27 15:33:58.000000000 +0100
+@@ -14,6 +14,10 @@
+ #include <asm/io.h>
+ #include <asm/bug.h>
+ 
++#ifndef CONFIG_MTD_CFI_GEOMETRY
++#define CONFIG_MTD_MAP_BANK_WIDTH_1
++#endif
++
+ #ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
+ #define map_bankwidth(map) 1
+ #define map_bankwidth_is_1(map) (map_bankwidth(map) == 1)
+--- linux_with_mtd_bugs/drivers/mtd/nand/diskonchip.c	2004-12-27 14:48:53.000000000 +0100
++++ linux/drivers/mtd/nand/diskonchip.c	2004-12-27 13:39:56.000000000 +0100
+@@ -24,6 +24,8 @@
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+ #include <linux/rslib.h>
++#include <linux/moduleparam.h>
++#include <linux/rslib.h>
+ #include <asm/io.h>
+ 
+ #include <linux/mtd/mtd.h>
+--- linux_with_mtd_bugs/lib/Config.in	2004-12-27 14:48:54.000000000 +0100
++++ linux/lib/Config.in	2004-12-29 14:37:35.000000000 +0100
+@@ -43,13 +43,15 @@
+ 
+ if [ "$CONFIG_MTD_DOCPROBE" = "y" -o \
+      "$CONFIG_MTD_NAND_RTC_FROM4" = "y" -o \
+-     "$MTD_NAND_DISKONCHIP" = "y" ]; then
++     "$CONFIG_MTD_NAND_DISKONCHIP" = "y" ]; then
+    define_tristate CONFIG_REED_SOLOMON y
++   define_tristate CONFIG_REED_SOLOMON_DEC16 y
+ else
+   if [ "$CONFIG_MTD_DOCPROBE" = "m" -o \
+      "$CONFIG_MTD_NAND_RTC_FROM4" = "m" -o \
+-     "$MTD_NAND_DISKONCHIP" = "m" ]; then
++     "$CONFIG_MTD_NAND_DISKONCHIP" = "m" ]; then
+      define_tristate CONFIG_REED_SOLOMON m
++     define_tristate CONFIG_REED_SOLOMON_DEC16 y
+   else
+      define_tristate CONFIG_REED_SOLOMON n
+   fi
+
+--Message-Boundary-4951--
