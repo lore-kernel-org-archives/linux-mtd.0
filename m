@@ -1,58 +1,39 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12QDDP-0003Kq-00
-	for mtd-list@infradead.org; Wed, 01 Mar 2000 17:47:15 +0000
-Received: from tammy.cendio.se
-	([193.180.23.67] helo=tammy.signum.se ident=alex)
+	id 12QFbw-0003i1-00
+	for mtd-list@infradead.org; Wed, 01 Mar 2000 20:20:44 +0000
+Received: from out2.prserv.net ([32.97.166.32] helo=prserv.net)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12QDDN-0003KW-00
-	for mtd@infradead.org; Wed, 01 Mar 2000 17:47:13 +0000
-Received: from localhost (alex@localhost)
-	by tammy.signum.se (8.9.3/8.9.3) with ESMTP id SAA29086
-	for <mtd@infradead.org>; Wed, 1 Mar 2000 18:47:11 +0100
-Date: Wed, 1 Mar 2000 18:47:11 +0100 (CET)
-From: Alexander Larsson <alex@cendio.se>
-To: mtd@infradead.org
-Subject: mtd comments
-Message-ID: <Pine.LNX.4.10.10003011820470.29074-100000@tammy.signum.se>
+	id 12QFbt-0003hv-00
+	for mtd@infradead.org; Wed, 01 Mar 2000 20:20:42 +0000
+From: "Dvir Oren" <dvir@lucidvon.com>
+To: MTD <mtd@infradead.org>
+Date: Wed, 1 Mar 2000 22:22:43 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Subject: Booting from the flash
+Message-Id: <E12QFbt-0003hv-00@infradead.org>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+It appears that nftl_format deletes M-Systems' firmware.  I 
+remember that David wrote something about fixing that.  
+doc_loadbios seems to destroy the partition entirely.  Neither M-
+Systems' drivers nor MTD drivers can recognize anything on the 
+flash after doc_loadbios.
 
-I'm just browsing trough the mtd code.
-Here are some comments:
+Is there a way to boot from a DOC2000 flash using MTD drivers?
 
-The following code in mtd.c::mtd_read() is pretty bad from a security
-standpoint:
+[BTW:  I was only successful at creating a 2.3 kernel with MTD 
+drivers.  2.2 kernels don't seem to work.  I think I have an idea what 
+could be wrong, and I'll try to test it soon]
 
-if (!mtd->point || (ret = MTD_POINT(mtd, *ppos, count, &retlen, &mtdbuf)) != 0)
-{
-   /* mtd->point() failed; use mtd->read instead */
-   ret = MTD_READ(mtd, *ppos, count, &retlen, buf);
-
-The passing of buf, which is a userspace pointer to a kernel API is
-dubious at the very least. And in the case of i.e. slram.c the 
-physmem_read() function in fact just does an memcpy leading to a direct
-security problem. 
-
-FTL uses the read functions directly to though, so read must be able to
-handle kernel pointers also.
-
-Is the buffer pointer in the read call supposed to be a kernel or
-userspace pointer? Who is responsible for verifying it?
-Maybe there needs to be two API:s, one for userspace buffers and one for
-kernelspace buffers. In this context the MTD_POINT api is actually very
-nice.
-
-Also, what is oob (out of band) blocks? And how are flash-memories that
-have non-constant erase-sector size (i.e. boot sectors etc.) handled?
-
-/ Alex
-
-
+---------
+Dvir Oren <dvir@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
