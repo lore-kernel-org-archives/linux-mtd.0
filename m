@@ -1,28 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12wqDI-0008EM-00
-	for mtd-list@infradead.org; Tue, 30 May 2000 18:54:00 +0100
-Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12wqDH-0008EG-00
-	for cvs-notify@infradead.org; Tue, 30 May 2000 18:53:59 +0100
-To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/kernel nftl.c'
-Message-Id: <E12wqDH-0008EG-00@infradead.org>
+	id 12xEGr-0003SV-00
+	for mtd-list@infradead.org; Wed, 31 May 2000 20:35:17 +0100
+Received: from gate.mvhi.com
+	([194.205.184.34] helo=server.axiom.internal ident=exim)
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 12xEGq-0003SP-00
+	for mtd@infradead.org; Wed, 31 May 2000 20:35:16 +0100
+Received: from devel2.axiom.internal ([10.0.1.4])
+	by server.axiom.internal with esmtp (Exim 3.12 #1)
+	id 12xEGq-0000cl-00
+	for mtd@infradead.org; Wed, 31 May 2000 20:35:16 +0100
+Received: from localhost ([127.0.0.1] helo=devel2.axiom.internal)
+	by devel2.axiom.internal with esmtp (Exim 1.90 #1)
+	for mtd@infradead.org
+	id 12xEGp-0003Kr-00; Wed, 31 May 2000 20:35:15 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 30 May 2000 18:53:59 +0100
+To: mtd@infradead.org
+Subject: Testing majordomo after upgrade.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 31 May 2000 20:35:15 +0100
+Message-ID: <12824.959801715@devel2.axiom.internal>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/kernel
-In directory infradead.org:/tmp/cvs-serv31632
+Please ignore.
 
-Modified Files:
-	nftl.c 
-Log Message:
-Trying to debug the #define WE_KNOW_WTF_THIS_DOES_NOT_WORK case. To start
-with, stop it from using both end_request and nftl_end_request when that's
-defined.
-Now to find someone clever to look at it and tell me what I'm doing wrong.
+--
+dwmw2
+
 
 
 
