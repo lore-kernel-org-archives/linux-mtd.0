@@ -1,14 +1,24 @@
-Received: from web51002.mail.yahoo.com ([206.190.38.133])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CrpUF-0002B3-42
-	for linux-mtd@lists.infradead.org; Thu, 20 Jan 2005 22:29:33 -0500
-Message-ID: <20050121032925.6914.qmail@web51002.mail.yahoo.com>
-Date: Thu, 20 Jan 2005 19:29:25 -0800 (PST)
-From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Performance of the MTD device and JFFS2
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Crv4w-0004Ah-R2
+	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2005 04:27:43 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "David A. Marlin" <dmarlin@redhat.com>
+In-Reply-To: <41F03217.3070300@redhat.com>
+References: <41ED2EB3.1070203@redhat.com>
+	<1106068748.16877.109.camel@tglx.tec.linutronix.de>
+	<41ED50B7.9000107@redhat.com>
+	<1106082905.16877.141.camel@tglx.tec.linutronix.de>
+	<41F03217.3070300@redhat.com>
+Content-Type: text/plain
+Date: Fri, 21 Jan 2005 10:27:38 +0100
+Message-Id: <1106299658.5483.16.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: additional error checks for AG-AND erase/write
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
- I have just checked out the latest version of the MTD
-and JFFS2 from the
-":pserver:anoncvs@cvs.infradead.org:/home/cvs". I
-noticed that the mount/read/write operations on
-"mtdblock"s are much slower than the version I checke
-out 4 to 5 month ago.
+On Thu, 2005-01-20 at 16:35 -0600, David A. Marlin wrote:
+> Attached is a patch that I think implements what you described.  Please 
+> let me know if I've missed anything or gone astray in the details.
 
-Anybody has any information in this regard?
+Looks good.
 
---vahid
+> Note:  I changed a few literals to defined symbols in 'nand_base.c'. 
+> Please let me know if you would prefer this in a separate patch (or not 
+> at all).
 
+If it's not too much work it would be nice when you can do this change
+first.
 
-	
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - You care about security. So do we. 
-http://promotions.yahoo.com/new_mail
+> @@ -1052,6 +1062,30 @@
+>  static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
+>  			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo *oobsel)
+>  {
+> +	return do_nand_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel, 0xff);
+> +}
+
+Can you please change the call in nand_read too, so it calls
+do_nand_read_ecc directly instead of doing the double call ?
+
+tglx
