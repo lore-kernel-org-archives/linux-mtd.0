@@ -1,31 +1,19 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6oWM-0008Cj-Nr
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 06:29:35 -0500
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id 4D74F2F017
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Mar 2005 12:29:31 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 3F857117F4
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Mar 2005 12:29:31 +0100 (CET)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 8D74C116F7
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Mar 2005 12:29:30 +0100 (CET)
-Message-ID: <4226F51A.7070603@imc-berlin.de>
-Date: Thu, 03 Mar 2005 12:29:30 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6od3-0008Qy-Go
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 06:36:30 -0500
+Date: Thu, 3 Mar 2005 11:36:08 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Kevin Liao <kevinliao@wellsyn.com>
+In-Reply-To: <018701c51fac$bef413b0$1b0a060a@WellSyn.org>
+Message-ID: <Pine.LNX.4.58.0503031136030.26599@phoenix.infradead.org>
+References: <018701c51fac$bef413b0$1b0a060a@WellSyn.org>
 MIME-Version: 1.0
-To: MTD List <linux-mtd@lists.infradead.org>
-References: <1109841282.5398.30.camel@tglx.tec.linutronix.de>	<1109845739.16158.14.camel@hades.cambridge.redhat.com>	<1109846656.4370.20.camel@tglx.tec.linutronix.de>	<1109846792.16158.20.camel@hades.cambridge.redhat.com>	<1109847189.4370.27.camel@tglx.tec.linutronix.de>
-	<1109847630.16158.22.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1109847630.16158.22.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: [RFD] Move 2.4 code out from CVS head
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: compile error (undefined reference to jffs2_getlink) for kernel
+ 2.4.26
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Thu, 2005-03-03 at 11:53 +0100, Thomas Gleixner wrote:
+Kevin Liao wrote:
+> I use the snapshop 20050302 to patch kernel 2.4.26 for ARM. I get the 
+> following
+> error messages when I try to "make zImage":
 > 
->>>If you don't need it alive, you don't need a branch. You don't even need
->>>a tag -- 'cvs up -D2005-03-01'.
->>
->>I have zero interest to keep it alive.
-> 
-> 
-> Then we have no need of a branch. Just remove the files.
 
-Does that mean that there will be _no_ " maintainence only mode" for 2.4?
+Kevin,
 
-It's ok ig there are no new features for 2.4. But bugs should still be fixed...
-
-If there already is a 2.4 branch, then this could be used for that.
-
-Just my 0.01 Euro.
+I'm sorry, that was my patch which broke 2.4. I've completely forgotten 
+about 2.4-compatibility. I'll see what I might do to repair this. 
+Apologies.
 
 --
-Steven
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
