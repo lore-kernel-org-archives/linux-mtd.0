@@ -1,15 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Richard_Theil@dadebehring.com
-In-Reply-To: <OF00A6CB1C.1181C429-ONC1256E67.003B93D3-C1256E67.003BCC89@dadebehring.com>
-References: 
-	<OF00A6CB1C.1181C429-ONC1256E67.003B93D3-C1256E67.003BCC89@dadebehring.com>
+To: Luke Fimmerzane <lukefimmerzane@hotmail.com>
+In-Reply-To: <BAY10-F13brzvsTDWWc00016884@hotmail.com>
+References: <BAY10-F13brzvsTDWWc00016884@hotmail.com>
 Content-Type: text/plain
-Message-Id: <1080651809.24117.167.camel@hades.cambridge.redhat.com>
+Message-Id: <1080652507.24117.175.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Tue, 30 Mar 2004 14:03:29 +0100
+Date: Tue, 30 Mar 2004 14:15:07 +0100
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 not honouring MS_RDONLY flag on mount?
+Subject: Re: Mapping driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +18,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-03-30 at 12:55 +0200, Richard_Theil@dadebehring.com wrote:
-> It seems that somewhere on the path into jffs2_get_sb_mtd(), the flags 
-> passed as parameter _should_ be honoured, but are not. This would have to happen
-> before jffs2_do_fill_super is called, because in there, the collector 
-> thread is started if the fs is flagged r/w.
+On Fri, 2004-03-26 at 13:51 +0000, Luke Fimmerzane wrote:
+> Hi,
+> I'm new to MTD an jffs2.
 
-I've committed a patch which adds the slightly simpler alternative
-'sb->s_flags = flags' in the place you suggested. Thanks.
+And to email.... your lines are too long and your 'reply' is lacking
+References: which connect it to this email. Please don't do that again
+-- working round the automatic filter doesn't make it nice :)
 
-> (*) Well, I had to find out the "rootfstype" thing the hard way...
+> I have some very basic questions...
+> My target is ARM sc32410. It contains AMD 1Mbyte and Strata flash 32 Mb
+> I've looked at the directory drivers/mtd/maps and there is no mapping 
+> driver.  My kernel is configured to take mtdparts command line informat
+> My question is do I still need a mapping driver or does using mtdparts 
+> provide the same functionality.
 
-Yeah -- I meant to do something about that, and make it so you could
-mount by partition name as root, like you can later. It didn't make 2.6
-though.
+> physmap flash device: 2000000 at 8000000
+> Using buffer write method
+> mtd: Giving out device 0 to Physically mapped flash
+
+> mtd0: 02000000 00040000 "Physically mapped flash"
+
+Looks like it's found the StrataFlash and registered it whole as MTD
+device number 0.
+
+> when I do a ls -al I get ..
+> # ls -al /dev/mtd/0
+> /dev/mtd/0      /dev/mtd/0ro
+> 
+> I presume ro is read only but why would it be so? 
+
+It's a device which you can use if you want only read-only access. You
+can ignore it. 
+
+> Whats the difference between the two entries?
+
+You can't open the latter for write.
+
+>  I've seen /dev/mtd0 and /dev/mtd/0. Which is correct?
+
+Both. One's what you get without devfs, the other with devfs. 
+
+> What messages should the kernel emit if everything MTD related is going
+
+The above looks reasonable. Did you expect the AMD flash to also be
+detected? You omitted the command line from your original mail, so I
+can't tell why the command line partitioning isn't working -- but the
+'mtd-id' you provide has to be that used in the 'name' by the physmap
+device, which is "Physically mapped flash".
+
+I'm not actually convinced there's a way of passing a mtd-id with spaces
+in it. You may need to change physmap.c
+
+> Sorry if my questions are very basic! I'm 'slavishly' following a book 
+> Karim Yaghmor called " Building Embedded Linux systems" . I'm also slow
+> working my way back through the mtd archives for a similar problem. Is 
+> an easier way of searching the archives than by going through them year
+> year?
+
+google site:lists.infradead.org ?
 
 -- 
 dwmw2
