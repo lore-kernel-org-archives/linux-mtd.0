@@ -1,38 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 139x49-0003rF-00
-	for mtd-list@infradead.org; Wed, 05 Jul 2000 22:50:45 +0100
-Date: Wed, 5 Jul 2000 22:49:55 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Juan Gonzo <kayemmess@yahoo.ca>
-cc: MTD Mailing List <mtd@infradead.org>
-Subject: Re: MTD, JFFS, my target -- bringing them together?
-In-Reply-To: <20000705201702.5221.qmail@web5304.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.21.0007052247490.1189-100000@imladris.demon.co.uk>
+	id 13A6Jd-0005VB-00
+	for mtd-list@infradead.org; Thu, 06 Jul 2000 08:43:21 +0100
+Received: from [212.25.93.158] (helo=jodie.lucid)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13A6JH-0005V5-00
+	for mtd@infradead.org; Thu, 06 Jul 2000 08:43:13 +0100
+From: Dvir Oren <dvir@lucidvon.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Date: Thu,  6 Jul 2000 10:41:14 +0300 (IDT)
+To: rmoya@tsai.es
+CC: MTD <mtd@infradead.org>
+Subject: plilo problems
+In-Reply-To: <E139nuV-0002H3-00@infradead.org>
+References: <E139nuV-0002H3-00@infradead.org>
+Message-ID: <14692.14101.108681.624675@jodie.lucid>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 5 Jul 2000, Juan Gonzo wrote:
+Rodrigo Moya writes ("plilo problems"):
 
-> From previous emails, it seems I have to supply a
-> read16() and write16() function for MTD to work
-> properly on my system.  Is this right?  Is that all
-> I have to supply?  What about all that info from the
-> website about populating the mtd_info struct and the
-> add_mtd_device business?  Do I still have to do that?
+> /mnt/doc/sbin/plilo -C /mnt/doc/etc/lilo.conf -i /mnt/doc/boot/boot.b -m
+> /mnt/doc/boot/map
+> I get the following message:
+> First boot sector doesn't have a valid LILO signature
 
-No you don't. All you need to do is provide something based on the
-physmap.c file which the CFI chip driver can use to access the chips. In
-fact, in the majority of cases you should get away with only changing a
-couple of #defines in that file to say where in physical memory the chips
-are, and how large the range is that they're mapped into.
+First try using the patched LILO (and boot.b file) provided either in
+the MTD releases, or you might find it floating around somwhere in
+this mailing list archive.  That should solve your problem.
+
+There were a lot of discussions in this mailing list regarding this
+problem.  Basically, there are two problems in the plilo binary
+that M-Systems provide:  it's compiled against libc5 (unless they
+changed that in the newer release) and it is patched against LILO
+version 20, not 21.
 
 -- 
-dwmw2
-
-
+Dvir Oren               <dviro@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
