@@ -1,16 +1,19 @@
-Received: from pd9503046.dip.t-dialin.net ([217.80.48.70] helo=splash)
+Received: from mailserver.arcom.co.uk ([194.200.159.162])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15EoNf-000663-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 09:39:32 +0100
-Date: Tue, 26 Jun 2001 10:46:15 +0200
-From: Jochen Schaeuble <psionic@psionic.de>
-To: linux-mtd@lists.infradead.org
-Subject: mtd-utilities automake/autoconf
-Message-ID: <20010626104615.A10582@psionic.de>
-Reply-To: psionic@psionic.de
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 15EqiV-0006HO-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 12:09:12 +0100
+From: "Alex Lennon" <ajlennon@arcom.co.uk>
+To: "kira brown" <kira@linuxgrrls.org>
+Cc: <linux-mtd@lists.infradead.org>,
+	"Bao C. Ha" <baoha@sensoria.com>
+Subject: RE: Disk-On-Module
+Date: Tue, 26 Jun 2001 12:12:39 +0100
+Message-ID: <NEBBKJHOALKOLCFPGELEGEBMCNAA.ajlennon@arcom.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.30.0106251732570.1186-100000@carrot.linuxgrrls.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,13 +25,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Today I checked in automake/autoconf files to ease the make-process of the
-utilities (no more symbolic linking or copying required). I also added a short
-description to the README file. As soon I'm ready I will also check in a rpm
-spec file.
+>>> How do I build a JFFS2 on Disk-On-Modules?  Or
+>>> any flash-based ATA/IDE devices?
+>>
+>>You don't.  They have their own wear levelling, journalling flash
+>>translation layer built into them.  You just use them as discs.
 
-If there are any problems with these files please send me an email. I also
-plan to add a configure-switch "--wich-endianess" to select the default
-endianess used by mkfs.jffs,...
+Certainly wear levelling, and with ECC. This 'journalling' term seems
+to be bandied around at levels ranging from block access up to
+application data coherency. As far as I am aware the DOM will retain
+all but the last 512b sector written in a power fail condition. Does this
+count as journalling ?
 
-jochen
+-Alex
+
+
+>>-----Original Message-----
+>>From: linux-mtd-admin@lists.infradead.org
+>>[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of kira brown
+>>Sent: 25 June 2001 5:33 PM
+>>To: Bao C. Ha
+>>Cc: linux-mtd@lists.infradead.org
+>>Subject: Re: Disk-On-Module
+>>
+>>
+>>
+>>
+>>On Mon, 25 Jun 2001, Bao C. Ha wrote:
+>>
+>>> How do I build a JFFS2 on Disk-On-Modules?  Or
+>>> any flash-based ATA/IDE devices?
+>>
+>>You don't.  They have their own wear levelling, journalling flash
+>>translation layer built into them.  You just use them as discs.
+>>
+>>kira.
+>>
+>>
+>>______________________________________________________
+>>Linux MTD discussion mailing list
+>>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>
