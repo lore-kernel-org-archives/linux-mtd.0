@@ -1,21 +1,25 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17h8oZ-00065q-00
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 14:12:55 +0100
-Date: Tue, 20 Aug 2002 15:12:04 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Jamey Hicks <jamey.hicks@hp.com>, Christopher Hoover <ch@murgatroid.com>,
-        "'Conn Clark'" <clark@esteem.com>,
-        "'MTD Mailing List'" <linux-mtd@lists.infradead.org>
-Subject: Re: How does one mount an existing jffs2 partition so it is writeable?
-Message-ID: <20020820131204.GA25918@wohnheim.fh-wedel.de>
-References: <3D623224.1090604@hp.com> <007201c247e0$1022fcd0$a15f040f@SNAGGLE> <32719.1029838865@redhat.com> <12777.1029845954@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12777.1029845954@redhat.com>
+	id 17hBEy-0006JT-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2002 16:48:20 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H15009GEFVP3O@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Tue, 20 Aug 2002 17:47:50 +0200 (MEST)
+Date: Tue, 20 Aug 2002 17:47:34 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: No free space left for GC
+In-reply-to: <1029830371.22775.150.camel@thomas.tec.linutronix.de>
+To: =?UTF-8?Q?=E5=B0=8F?= =?UTF-8?Q?=E6=98=8E?= <kevin@gv.com.tw>
+Cc: linux-mtd@lists.infradead.org
+Message-id: <1029858455.23122.191.camel@thomas.tec.linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
+References: <1029623727.2142.495.camel@thomas.tec.linutronix.de>
+ <1029793649.22781.129.camel@thomas.tec.linutronix.de>
+ <015501c247f3$d13176a0$b30210ac@gv.com.tw>
+ <1029830371.22775.150.camel@thomas.tec.linutronix.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,20 +31,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 20 August 2002 13:19:14 +0100, David Woodhouse wrote:
-> Yeah -- you're probably right. That's the reason I refused to do the 
-> automatic unlock when it was originally suggested. We are fairly good about 
-> aborting a mount attempt if it really doesn't look like a JFFS2 partition, 
-> but if you have the partitioning wrong so that the range we try to mount 
-> includes some JFFS2 _and_ something important, that's still going to break.
-
-And if we have an old jffs2 partition that was partially overwritten
-by cramfs. Without a prior erase, this will be identified as jffs2.
-
-Pretty rare in production systems, though.
-
-Jörn
+On Tue, 2002-08-20 at 09:59, Thomas Gleixner wrote:
+> 2. The endless gc, which used up all blocks, is fixed now. I will do
+> some more tests and put a final version into CVS today.
+Is there, please try again. 
 
 -- 
-Those who come seeking peace without a treaty are plotting.
--- Sun Tzu
+Thomas 
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
