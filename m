@@ -1,51 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14WDX7-0003K3-00
-	for mtd-list@infradead.org; Fri, 23 Feb 2001 08:24:57 +0000
+	id 14WERD-0003sw-00
+	for mtd-list@infradead.org; Fri, 23 Feb 2001 09:22:55 +0000
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14WDX6-0003Jx-00
-	for mtd@infradead.org; Fri, 23 Feb 2001 08:24:56 +0000
+	id 14WERC-0003sq-00
+	for mtd@infradead.org; Fri, 23 Feb 2001 09:22:55 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A9595A4.D98A5CF@danielind.com> 
-References: <3A9595A4.D98A5CF@danielind.com>  <Pine.LNX.4.30.0102222154410.7303-100000@imladris.demon.co.uk> 
-To: Vipin Malik <vmalik@danielind.com>
+In-Reply-To: <01020607301103.02799@localhost.localdomain> 
+References: <01020607301103.02799@localhost.localdomain> 
+To: elenstev@mesatop.com
 Cc: mtd@infradead.org
-Subject: Re: Unable to mount compressed root f/s because init_mtd() does not r egister block device! 
+Subject: Re: [PATCH] 2.4.1-ac3 CONFIG_INPUT documentation in Configure.help 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 23 Feb 2001 08:24:56 +0000
-Message-ID: <20965.982916696@redhat.com>
+Date: Fri, 23 Feb 2001 09:22:42 +0000
+Message-ID: <28608.982920162@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-vmalik@danielind.com said:
->  Are you saying that you'll not fix this "bug" for me ;) Would saying
-> please help :) 
+elenstev@mesatop.com said:
+>  It looks like the following MTD related config options have no help
+> in Configure.help:
 
-Heh. Of course I'll help. Not sure how best to go about it, though. Init 
-order dependencies are ugly. rd_load() should probably be one of the last 
-things in the boot sequence, rather than an initcall. Can you add it to 
-init/main.c just before mount_root()?
+Some of those are present in my current CVS version:
+ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/patches/Configure.help
 
-
-
-> > We'll have JFFS2 (with compression) ready to roll out quite soon :)
-
-> Well, there still would be reasons to decompress a root file system
-> into ramdisk and run from there, namely: 
-
-Definitely. Just pushing my new baby, that's all :)
-
-
->  3. Compressibility: I would hazard a guess that the compressibility
-> obtained with compressing an entire file system image would be better
-> than that obtained with just compressing individual inode data. 
-
-Yep. Actually we only compress a single page at a time 
-in jffs2, not even the whole inode.
-
+I'll try to find some time shortly to fill in the rest and make a patch for
+you, if nobody else gets there first.
 
 --
 dwmw2
