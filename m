@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [211.101.140.100] (helo=email.rabbit.redflag-linux.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17XcIq-0000lf-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 07:40:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020724200415.98373.qmail@mail.com> 
-References: <20020724200415.98373.qmail@mail.com> 
-To: "Mike Schumi" <schumi@techie.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2_do_reserve_space 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 25 Jul 2002 07:40:39 +0100
-Message-ID: <29483.1027579239@redhat.com>
+	id 17Xcc6-0000nC-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 08:00:43 +0100
+Received: from there ([192.9.200.145])
+	by email.rabbit.redflag-linux.com (8.9.3/8.8.7) with SMTP id OAA04522
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 14:53:12 +0800
+Message-Id: <200207250653.OAA04522@email.rabbit.redflag-linux.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+From: yongsun <yongsun@redflag-linux.com>
+Reply-To: yongsun@redflag-linux.com
+To: linux-mtd@lists.infradead.org
+Subject: I need a mtd for Linux kernel 2.4.18, could anybody help me?
+Date: Thu, 25 Jul 2002 14:58:36 +0800
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +26,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-schumi@techie.com said:
->   I've looked for a solution to this problem, but haven't seen it
-> posted anywhere, although some ppl have had it before.  
+Hi, 
+I can not access the CVS following the guide on the homepage.
+Could anybody help me?
 
-Please could you provide a complete debug log, from mount onwards. I need to 
-see how the data structure got into that state. It'll be large -- maybe 
-bzip2 it and tick it up for FTP somewhere?
+Thanks alot!
 
-Also do 'df' as soon as it's happened.
+Bese Regards,
 
-
---
-dwmw2
+YongSun
