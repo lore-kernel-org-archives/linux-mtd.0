@@ -1,17 +1,18 @@
-Received: from c000-h007.c000.snv.cp.net ([209.228.32.71] helo=c000.snv.cp.net)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 163fPx-0004r4-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2001 15:24:06 +0000
-Message-ID: <003d01c16c58$71c0d7f0$7f01010a@instant802.com>
-From: "Simon Barber" <simon@barber.net>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Cc: <linux-mtd@lists.infradead.org>
-References: <20011105172238.A10542@wohnheim.fh-wedel.de> <20011106133944.A1828@wohnheim.fh-wedel.de> <000201c16bc4$dae53120$7f01010a@instant802.com> <20011113125222.A2490@wohnheim.fh-wedel.de>
-Subject: Re: Bug in mtdblock_ro
-Date: Tue, 13 Nov 2001 07:32:42 -0800
-MIME-Version: 1.0
+Received: from mail.utfors.se ([195.58.103.125])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 163fjN-0004s8-00
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2001 15:44:09 +0000
+Received: from jocke.lumentis.se (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id QAA10704
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2001 16:53:04 +0100 (MET)
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
+From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+To: linux-mtd@lists.infradead.org
+Subject: Fwd: Cache mappings and invalidate
+Date: Tue, 13 Nov 2001 17:53:04 +0200
+MIME-Version: 1.0
+Message-Id: <0111131653040B.28381@jocke.lumentis.se>
 Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,33 +25,104 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm travelling right now - so I can't, sorry - but it's a version I checked
-out from the anon CVS a few days (maybe 10) ago. With this bug fix it works
-great for me. Without the fix I get a kernel panic on trying to mount a
-mtd_ro partition as rootfs.
+Hi again
 
-Simon
+I did some changes since the first attempt  didn't work very well. I removed
+the changes in cfi_cmdset_0001.c and changed the copy_from() function to:
 
------ Original Message -----
-From: "Jörn Engel" <joern@wohnheim.fh-wedel.de>
-To: "Simon Barber" <simon@barber.net>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Tuesday, November 13, 2001 3:52 AM
-Subject: Re: Bug in mtdblock_ro
+void lumentis_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
+{
+#ifdef  USE_DCACHE
+       dma_cache_inv(map->map_priv_2 + from, len);
+       memcpy_fromio(to, (void *)(map->map_priv_2 + from), len);
+#else
+        memcpy_fromio(to, (void *)(map->map_priv_1 + from), len);
+#endif
+}
+
+This seems to work(no CRC errors so far) and has no visible impact on performance. When
+I get around to enable burst reads form my flash I hope to see a performance gain.
+
+Anybody care to comment on my experiment so far?
+
+          Jocke
+ 
+----------  Forwarded Message  ----------
+Subject: Cache mappings and invalidate
+Date: Mon, 12 Nov 2001 14:14:14 +0200
+From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+To: linux-mtd@lists.infradead.org
 
 
-> Moin!
->
-> > the call in mtdblock_request to MTD_READ/WRITE passes nr_sectors, it
-should
-> > pass current_nr_sectors.
->
-> Could you quickly add, what version has this problem? The filename
-> should be enough. When I get back from vacation (Thursday), I will
-> have a look at it.
->
-> Jörn
->
-> --
-> If you treat your beta-testers as if they're your most valuable resource,
-> they will respond by becoming your most valuable resource.
+Hi all
+
+I am trying to make copy_from use cahced memory by assignig
+map_priv_2 = (unsigned long)__ioremap(flash_addr, flash_size, 0);
+and then change copy_from routine to:
++#ifndef NO_CACHE
++       memcpy_fromio(to, (void *)(map->map_priv_2 + from), len);
++#else
+        memcpy_fromio(to, (void *)(map->map_priv_1 + from), len);
++#endif
+
+There are no cache invalidations in my map file, instead I have
+added invalidate_dcache_range() calls to
+ drivers/mtd/chips/cfi_cmdset_0001.c(see below) in do_write_oneword(),
+ do_write_buffer() and do_erase_oneblock(). Note that this is just a quick
+ hack to try out my theory. Does this look sane or should I use another
+ invalidate_dcache_range() and/or place the invalidate calls somewhere else?
+
+I am not using burst reads yet, that will come later once i have gotten the
+ cached mapping to work.
+
+       Joakim
+
+
+
+--- drivers/mtd/chips/cfi_cmdset_0001.c 2001/10/25 12:11:10     1.3
++++ drivers/mtd/chips/cfi_cmdset_0001.c 2001/11/12 12:02:33
+@@ -502,6 +502,10 @@
+        cfi_udelay(chip->word_write_time);
+        spin_lock_bh(chip->mutex);
+
++#ifndef NO_CACHE
++       invalidate_dcache_range(map->map_priv_2 + adr, map->map_priv_2 + adr
+ + 4); /* on a 32 bit bus */ +#endif
++
+        timeo = jiffies + (HZ/2);
+        z = 0;
+        for (;;) {
+@@ -691,7 +695,7 @@
+        wbufsize = CFIDEV_INTERLEAVE << cfi->cfiq->MaxBufWriteSize;
+        adr += chip->start;
+        cmd_adr = adr & ~(wbufsize-1);
+-
++
+        /* Let's determine this according to the interleave only once */
+        status_OK = CMD(0x80);
+
+@@ -790,6 +794,10 @@
+        cfi_udelay(chip->buffer_write_time);
+        spin_lock_bh(chip->mutex);
+
++#ifndef NO_CACHE
++       invalidate_dcache_range(map->map_priv_2 + adr, map->map_priv_2 + adr
+ + len); +#endif
++
+        timeo = jiffies + (HZ/2);
+        z = 0;
+        for (;;) {
+@@ -994,6 +1002,10 @@
+        spin_unlock_bh(chip->mutex);
+        schedule_timeout(HZ);
+        spin_lock_bh(chip->mutex);
++
++#ifndef NO_CACHE
++       invalidate_dcache_range(map->map_priv_2 + adr, map->map_priv_2 + adr
+ + 0x40000); /* 0x40000 is my erase size */
++#endif
+
+        /* FIXME. Use a timer to check this, and return immediately. */
+        /* Once the state machine's known to be working I'll do that */
+
+-------------------------------------------------------
