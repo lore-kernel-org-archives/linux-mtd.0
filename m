@@ -1,15 +1,18 @@
-Date: Wed, 12 Jan 2005 10:08:09 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-In-Reply-To: <Pine.LNX.4.58.0501120935250.10617@phoenix.infradead.org>
-Message-ID: <Pine.LNX.4.58.0501121007020.10617@phoenix.infradead.org>
-References: <41E4D6E5.1090407@imc-berlin.de>
-	<Pine.LNX.4.58.0501120935250.10617@phoenix.infradead.org>
+Received: from mail.avantwave.com ([210.17.210.210])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CogTC-000808-Eg
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 06:15:24 -0500
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id j0CBDuXb032471
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Jan 2005 19:13:56 +0800
+Message-ID: <41E5095D.6020906@avantwave.com>
+Date: Wed, 12 Jan 2005 19:26:21 +0800
+From: mike <mikelee@avantwave.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: checking CRCs twice!?
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: supported flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,49 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Jan 2005, Artem B. Bityuckiy wrote:
+Dear all
+    Does mtd support samsung k9f6408x0c nand flash? Or anyone try that 
+before?
 
-> > IIUC than mounting a JFFS2 root fs takes so long (6 seconds on my 
-> embedded ARM9)
-> > cause the CRCs of all blocks/sectors are checked.
-> Cause:
-> 1. *Some* of CRCs are checked. Nodes has 3 CRCs: (1) Common header CRC, 
-> (2) Header CRC, (3) Data CRC. On mount, JFFS2 check only common header 
-> CRCs of inode nodes, and all CRCs of direntries. When checking in 
-> background, it checks other CRCs.
-> 2. On mount, JFFS2 reads blocks fully. So multiply the number of used 
-> blocks on the block read time and add this number to your mount time. This 
-> should be fixed, IMHO, since we do not needed, for example, read inode 
-> node's data.
-> 3. It builds different data structures - fragtree list, direntries list. 
-Sorry, I'm wrong - fragtree is not built during mount. Ony dirent list. 
-And this is only needed to detect inodes nlink. 
-> It counts the inode link numbers. This also takes time, especially if you 
-> have slow CPU. Here is some room to improvement exist.
-> 
-> Seems that's all major activities.
-> 
-> >
-> > But then it looks to me that - shortly after boot - the GC thread doing 
-> the same
-> > again (in background.c), which takes another 6 scondes and slows down 
-> the
-> > application startup...
-> Not the same, it checks CRCs which were not checked during mount.
-> 
-> > Or am I missing something?
-> 
-> --
-> Best Regards,
-> Artem B. Bityuckiy,
-> St.-Petersburg, Russia.
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+best regard
+Mike,Lee
