@@ -1,21 +1,19 @@
-Received: from mailout06.sul.t-online.com ([194.25.134.19])
+Received: from msgbas1x.net.europe.agilent.com ([192.25.19.109])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BI55w-0001zz-5w
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2004 13:20:20 +0100
-From: tglx@linutronix.de (Thomas Gleixner)
-To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
- linux-mtd@lists.infradead.org
-Date: Mon, 26 Apr 2004 14:15:06 +0200
-References: <01139FC052A0D411900B00508B9535FC13AC405C@ZCH07EXM04.corp.mot.com>
-In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC405C@ZCH07EXM04.corp.mot.com>
+	id 1BIA9Y-0002yl-8M
+	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2004 18:44:24 +0100
+Message-ID: <408D4A58.7000402@agilent.com>
+Date: Mon, 26 Apr 2004 10:43:52 -0700
+From: Shawn Jin <xiaogeng_jin@agilent.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: Oliver Korpilla <okorpil@fh-landshut.de>
+References: <3236F92B82933347807DFF6A8BA63280D74675@wcosmb04.cos.agilent.com>
+In-Reply-To: <3236F92B82933347807DFF6A8BA63280D74675@wcosmb04.cos.agilent.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200404261415.06559.tglx@linutronix.de>
-Subject: Re: Where can I get nand16.c
-Reply-To: tglx@linutronix.de
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Newbie help! - Old AMD (cfi_cmdset_0002) interleaved flash
+	problems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 26 April 2004 14:00, Shen Aaron-r62966 wrote:
-> Hi all,
->
->   I still can't find a way to support Samsung 16 bit NAND flash. Please
-> inform or send me a nand16.c for reference.
+A general remark is that the current CVS code of cmdset_0002 may not 
+work on all interleaved chips. If I were you, I would try some older 
+version, e.g. the code coming with DENX distribution (v 1.62).
 
-The support for 16 bit NAND is incorporated into the generic NAND driver now. 
+-Shawn.
 
--- 
-Thomas
-________________________________________________________________________
-"Free software" is a matter of liberty, not price. To understand the concept,
-you should think of "free" as in "free speech,'' not as in "free beer".
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Oliver Korpilla wrote:
+
+> / # ftl_format -i -r 10 /dev/mtd2
+> Partition size = 2816 kb, erase unit size = 256 kb, 1 transfer units
+> Reserved 10%, formatted size = 2283 kb
+> This will destroy all data on the target device.  Confirm (y/n): y
+> Erasing all blocks...
+> ---+---+---
+> MTD do_write_oneword(): software timeout
+> 
+> This will cause Input/Output errors on cp and cat, and if I copy or cat
+> a JFFS2 image (I've tried both big and little endian just to be sure), I
+> cannot mount it afterwards (missing magic blocks).
