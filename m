@@ -1,83 +1,46 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qHWz-0001t1-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 17:43:45 +0100
-Message-ID: <3ADF15EF.DBCD9EA@daniel.com>
-Date: Thu, 19 Apr 2001 11:44:31 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
+	id 14qJ40-0003HR-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 19:21:56 +0100
+From: Robert Kaiser <rob@sysgo.de>
+Reply-To: rob@sysgo.de
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Elan SC520 - problem with MTD
+Date: Thu, 19 Apr 2001 20:11:18 +0200
+Content-Type: text/plain
+References: <3ADC73B1.1960BC87@daniel.com> <5360.987524764@redhat.com> <10578.987545795@redhat.com>
+In-Reply-To: <10578.987545795@redhat.com>
+Cc: Vipin Malik <vipin.malik@daniel.com>,
+        Alexander Melichenko <AlexanderM@lrpeople.com>, mtd@infradead.org,
+        mark.langsdorf@amd.com
 MIME-Version: 1.0
-To: joakim.tjernlund@lumentis.se
-CC: mtd@infradead.org, Nicolas Pitre <nico@cam.org>,
- 	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 as root FS
-References: <000801c0c8bb$44e56de0$0a01a8c0@Win1>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-Id: <01041920213500.03722@rob>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> Now I am having some other problems :-(
-> First it takes about 1 min 30 sec to mount my root FS. Is that expected? I
-> was hoping for a much shorter
-> mount time, 10-20 sec
-> The root partition is 15 MB and df reports:
->
-> Filesystem           1k-blocks      Used Available Use% Mounted on
-> /dev/mtdblock1           15104      6580      8524  44% /mnt/mtdblock1
+Hi David,
 
-Just for reference, my AMD SC520 -100MHz (a 100MHz 486+) with a 8MB, 57% full
-JFFS2 f/s takes ~19 seconds to mount.
-The flash is connected on a 32bit bus. Even if it takes 700us (for max wait
-states on my system) per quad word read (32bits), the entire flash can be
-read in 1.46 seconds.
+On Mit, 18 Apr 2001 you wrote:
+> I think I'm just going to stick my head in the sand on this one and accept 
+> what I'm given. It's just a leafnode driver, and I really can't keep 
+> track of them all unless they're doing something particularly naughty.
 
-Even if your flash is connected x8 wide, your flash read times should not be
-more than 10-12seconds.
+FYI, I have just checked in a new version of the sc520cdp.c mapping that
+does the PAR reprogramming as suggested by Vipin. The old behavior (i.e.
+keep the weird mapping setup by the BIOS) is still available by commenting
+out a single line. (I decided against a config option for this).
 
-Obviously, as my flash read time is only ~2 seconds of my 19s fs mount time,
-the processor speed plays quite a significant role in the mount process.
+Cheers
 
-To test this theory, I upped the speed to 133MHz and then it took ~15seconds
-to mount.
-The increase in clock speed was 33%, the mount was (19-15)/15 = 26% faster.
-However, if I remove the "constant" portion of the two mounts- the flash read
-which is not any faster, then the increase in
-mount speed  = ((19-1.46) - (15-1.46))/ (15 - 1.46) = 29.5% faster, almost
-linear with the increase with clock speed!
-(This also tells me that the code is executing primarily out of cache).
+Rob
 
-If you say, that your system takes ~90seconds to mount. Let's say that your
-flash read time is ~10 seconds (for 16MB), then if all else is
-ok, your processor should be ~80/17.5 = 4.5 times slower than mine. This
-assumes equal amount of processing. But your processor is doing about
-(6580/4636 = 140%) more
-processing than mine. Assuming linear overhead, then the new factor is ~57/18
-= 3.1X slower. (your flash usage is 6580 blocks, mine is 4636 blocks).
 
-Now you say that you are using a MPC869T. I did not find a 869T on the web. I
-presume that you meant 860T. At what MHz?
-
-The 860T is claimed to have a performance of ~66 Dhrystone MIPS at 50MHz. I
-downloaded Dhrystone 2.1 and that give me 51 mips at 100Mhz (and 67.7at
-133MHz).
-
-However, my 486 has a 16KB combined cache and a 66MHz SDRAM bus. The FLASH is
-not cached, so the entire cache can be used for the instruction execution.
-The 860T has only 4KB of instruction cache. Under some circumstances (when
-the code fits in the cache in my processor and not in yours), the SC520 will
-behave like a 100MHz machine while the PPC will be limited to the bus clock
-speed. What is you bus clock speed (and your core clock speed).
-
-If your BUS clock is ~25-33 MHz, it's not unbelievable that your processor
-runs ~2-3X slower, specially if your processor core is running at <50MHz.
-Also remember that execution from cache is significantly faster than
-execution from EDO DRAM on the bus.
-
-Something to think about. Of course it could be something completely
-different, like a bug in David's code ;)
-
-Vipin
-
+----------------------------------------------------------------
+Robert Kaiser                         email: rkaiser@sysgo.de
+SYSGO RTS GmbH
+Am Pfaffenstein 14                    phone: (49) 6136 9948-762
+D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
