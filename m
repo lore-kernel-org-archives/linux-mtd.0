@@ -1,33 +1,25 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D18vW-0006KF-0D
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 15:04:06 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j1FK44BK028895
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Feb 2005 15:04:04 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j1FK44Bk222644
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Feb 2005 15:04:04 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j1FK43fb012524
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Feb 2005 15:04:03 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-In-Reply-To: <1108496777.7801.9.camel@windu.rchland.ibm.com>
-References: <4210DB19.9000808@ateme.fr> <4210DEDB.DD35E2DE@st.com>
-	<4210E6C3.9030208@ateme.fr>
-	<1108404250.16612.327.camel@tglx.tec.linutronix.de>
-	<1108425786.22597.6.camel@baythorne.infradead.org>
-	<cuti4g$g6h$1@sea.gmane.org>
-	<1108496777.7801.9.camel@windu.rchland.ibm.com>
-Content-Type: text/plain
-Date: Tue, 15 Feb 2005 14:03:33 -0600
-Message-Id: <1108497813.7801.12.camel@windu.rchland.ibm.com>
+Received: from wproxy.gmail.com ([64.233.184.206])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D1Eoe-0007F0-UK
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 21:21:25 -0500
+Received: by wproxy.gmail.com with SMTP id 37so14780wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Feb 2005 18:21:17 -0800 (PST)
+Message-ID: <43507b7c0502151821309e9e51@mail.gmail.com>
+Date: Tue, 15 Feb 2005 20:21:17 -0600
+From: Sean Kelley <sean.sweng@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1108478378.19262.603.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+References: <43507b7c0502141847134e1e68@mail.gmail.com>
+	<1108453685.22597.30.camel@baythorne.infradead.org>
+	<43507b7c05021506077ab223aa@mail.gmail.com>
+	<1108478378.19262.603.camel@hades.cambridge.redhat.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2_get_inode_nodes(): Data CRC failed on NAND device
+Subject: Re: Linux MTD and NFTL - Question
+Reply-To: Sean Kelley <sean.sweng@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,21 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-02-15 at 13:46 -0600, Josh Boyer wrote:
-> On Tue, 2005-02-15 at 20:22 +0100, Martin Egholm Nielsen wrote:
-> > Well, as someone told me the other day on the IRC-channel, the 
-> > writebuffer is flushed automatically if the buffer has not been accessed 
-> > for X (2?) seconds (controlled by the VFS, right?)...
-> > 
-> > Correct me if I'm wrong...
-> 
-> Not quite.  The write buffer is flushed every 5 seconds, unless you tune
-> it using the /proc entry.  It's controlled by kupdated, which syncs the
-> supers, which flushes the write buffer in JFFS2.
-> 
-> If the write buffer contains GC data, that isn't flushed at all.
+One other idea is to do a loopback-type of mechanism by placing an
+image file that contains a FAT volume as a file in JFFS2, basically
+using JFFS2 to replace the FTL.  The downside is that if the FAT is
+meant to be RW, it will still have corruption  problems.  I would need
+a scandisk utility on my embedded device to repair the FAT image!  It
+is imazing the kind of hoops we jump through just so that Joe User can
+plug the device into his windows machine.
 
-Just to clarify that, if the buffer contains _only_ GC data it isn't
-flushed.  If it contains GC + inode data, all of that data is.
+Thanks for the links!
 
-josh
+Sean   
+
+
+On Tue, 15 Feb 2005 14:39:38 +0000, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Tue, 2005-02-15 at 08:07 -0600, Sean Kelley wrote:
+> > Thank you for your reply.  I would like to ship a product without a
+> > CD.  USB mass storage allows you that option.  I am not familiar with
+> > the file system profile.  Is this something similar to a PC side
+> > driver which can understand JFFS2?
+> 
+> It's a PC side driver which can understand a file system. I haven't
+> investigated it much -- all I know is what David Brownell said when I
+> last said "wouldn't it be nice if...' last March:
+> 
+> (Message-ID: <40644FCA.8000206@pacbell.net> on linux-kernel)
+> 
+> On Fri, 2004-03-26 at 07:44 -0800, David Brownell wrote:
+> > David Woodhouse wrote:
+> > >
+> > > Out of interest -- have they (or has anyone else) invented a 'file
+> > > system' USB device yet? For exporting some file systems, pretending to
+> > > be a block device really isn't very useful.
+> >
+> > There's a file system protocol used by many digital still cameras,
+> > which isn't actually camera-specific.  Not MSFT-specific either.
+> >
+> > Originally called "Picture Transfer Protocol" (PTP) it's actually
+> > more of a remote hierarchical filesystem protocol ... with an event
+> > channel (handy for "new picture" or "inserted new flash memory")
+> > and some built-in search capabilities ("what JPGs do you have").
+> > The strangest capability was a file type tag, which isn't actually
+> > that bizarre.
+> >
+> > As with RNDIS, and USB Mass Storage, I understand that support for
+> > PTP is part of MS-Windows since about Win2K.  So a PTP gadget
+> > driver would probably be a useful contribution to Linux.
+> 
+> A quick google shows an old host-side implementation for Linux at
+> http://www.michaelminn.com/?linux/mmptp/README.html but no slave
+> implmentation yet.
+> 
+> --
+> dwmw2
+> 
+>
