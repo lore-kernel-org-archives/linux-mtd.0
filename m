@@ -1,57 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13ogof-0001A2-00
-	for mtd-list@infradead.org; Thu, 26 Oct 2000 07:47:09 +0100
-Received: from sj-msg-core-1.cisco.com ([171.71.163.11])
+	id 13op9m-0003Wm-00
+	for mtd-list@infradead.org; Thu, 26 Oct 2000 16:41:30 +0100
+Received: from d8fa50aa.ptr.dia.nextlink.net ([216.250.80.170] helo=tetsuo.applianceware.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13ogod-00019w-00
-	for mtd@infradead.org; Thu, 26 Oct 2000 07:47:08 +0100
-Received: from kaspit.cisco.com (kaspit.cisco.com [144.254.91.49])
-	by sj-msg-core-1.cisco.com (8.9.3/8.9.1) with ESMTP id XAA08244
-	for <mtd@infradead.org>; Wed, 25 Oct 2000 23:46:35 -0700 (PDT)
-From: Udi Finkelstein <udif@bigfoot.com>
+	id 13op9k-0003Wg-00
+	for mtd@infradead.org; Thu, 26 Oct 2000 16:41:29 +0100
+Received: (from mike@localhost)
+	by tetsuo.applianceware.com (8.9.3/8.9.3) id KAA24138
+	for mtd@infradead.org; Thu, 26 Oct 2000 10:52:27 -0400
+Message-ID: <20001026105227.A23989@tetsuo.applianceware.com>
+Date: Thu, 26 Oct 2000 10:52:27 -0400
+From: Mike Panetta <mpanetta@applianceware.com>
 To: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/kernel doc2001.c'
-Date: Thu, 26 Oct 2000 08:46:28 +0200
-Message-ID: <qlkfvsgvms3s0fu6u8kieqhjndrb4ch3v9@4ax.com>
-References: <E13oMJV-0003oY-00@infradead.org> <18954.972464502@redhat.com> <39F6AF69.100AC50E@sis.com.tw>
-In-Reply-To: <39F6AF69.100AC50E@sis.com.tw>
-MIME-Version: 1.0
+Subject: Help! I killed my DOC!
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 25 Oct 2000 18:01:13 +0800, Ollie Lho <ollie@sis.com.tw> wrote:
+I seem to have got myself in the foot
+rather badly...  I was messing with grub
+on the DOC yesterday and I accidently 
+overwrote part of grub with an NFTL fs.
 
->David Woodhouse wrote:
->>=20
->> ollie@infradead.org said:
->> > Log Message:
->> > use memcpy_(from|to)_io to increase perfromance a little bit
->>=20
->> Here be dragons.
->>=20
->> Beware that this doesn't start trying to do 32-bit accesses, where the=
- top
->> three bytes are random, and that it doesn't break the ECC.
->>=20
->> Probably worth setting USE_MEMCPY in include/linux/mtd/doc2000.h in =
-with
->> all the other arch-dependent stuff to set up ReadDOC etc.
->>=20
->
->Oops, sorry. I just copy it from the dis-asm of M-Systems' driver.
->USE_MEMCPY should be protected by #ifdef 386 stuff.
+Now whenever the computer probes the 
+bios on the DOC (grub) it says loading
+grub from DOC and then promply reboots!
+How do I get the system into a state
+that will allow me to rewrite grub to 
+the DOC?  Is this even possible?  I
+have tried booting the computer with
+the DOC out of the socket and then 
+placing the DOC back into the socket
+after the machine has booted.  When
+I modprobe the docprobe module I get 
+this message:
 
-Do you put code disassembled from a proprietary M-systems' driver into a =
-GPL
-driver?
-Do we really want that?
+Cannot find driver for DiskOnChip 2000 at 0xD0000
+Possible DiskOnChip with unknown ChipID FF found at 0xe8000
 
->Ollie
+I then try to access /dev/mtd0 and I
+get a "No such device" message back
+from the kernel...
 
-udi
+Please if anyone knows what I can
+do to fix this please tell me!
+
+Thanks,
+Mike Panetta
+
+
+
+
+
+
+-- 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
