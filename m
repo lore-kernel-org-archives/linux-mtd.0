@@ -1,25 +1,23 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12slEK-0001Vy-00
+	id 12slEK-0001W0-00
 	for mtd-list@infradead.org; Fri, 19 May 2000 12:46:12 +0100
 Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
-	id 12slEI-0001Vl-00
-	for cvs-notify@infradead.org; Fri, 19 May 2000 12:46:10 +0100
+	id 12slEJ-0001Vr-00
+	for cvs-notify@infradead.org; Fri, 19 May 2000 12:46:11 +0100
 To: cvs-notify@infradead.org
-Subject: MTD CVS update: 'mtd/include/linux/mtd compatmac.h mtd.h'
-Message-Id: <E12slEI-0001Vl-00@infradead.org>
+Subject: MTD CVS update: 'mtd/kernel ftl.c mtdblock.c mtdchar.c mtdcore.c mtdram.c nftl.c'
+Message-Id: <E12slEJ-0001Vr-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Fri, 19 May 2000 12:46:10 +0100
+Date: Fri, 19 May 2000 12:46:11 +0100
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Update of /home/cvs/mtd/include/linux/mtd
-In directory infradead.org:/tmp/cvs-serv5771/include/linux/mtd
+Update of /home/cvs/mtd/kernel
+In directory infradead.org:/tmp/cvs-serv5771/kernel
 
 Modified Files:
-	mtd.h 
-Added Files:
-	compatmac.h 
+	ftl.c mtdblock.c mtdchar.c mtdcore.c mtdram.c nftl.c 
 Log Message:
 Fixed the 2.2 and 2.3 builds, and hopefully paved the way for the 2.0
 build to be merged in a less intrusive manner.
