@@ -1,29 +1,31 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0bkP-0000FG-Nd
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 08:38:29 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1D0bhg-000408-5K
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 09:35:36 +0100
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Feb 2005 09:35:36 +0100
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Feb 2005 09:35:36 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Mon, 14 Feb 2005 09:37:45 +0100
-Message-ID: <cupnsf$skj$1@sea.gmane.org>
-References: <ctsr0r$94m$1@sea.gmane.org>	<20050206220713.D99FE15504@desire.actrix.co.nz>	<cu7934$irr$1@sea.gmane.org>	<20050208000532.543131604C@desire.actrix.co.nz>
-	<4209AAC3.2090806@magellan-technology.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <4209AAC3.2090806@magellan-technology.com>
-Sender: news <news@sea.gmane.org>
-Subject: Re: Writing frequently to NAND - wearing, caching?
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D0bmz-0006HR-TA
+	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 03:41:10 -0500
+Received: from custom-daemon.mailout1.samsung.com by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	id <0IBW00L0184C1L@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 17:41:00 +0900 (KST)
+Received: from ep_mmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0IBW003FZ84CVL@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 17:41:00 +0900 (KST)
+Received: from july7 ([168.219.213.193])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPSA id <0IBW007DD84BOU@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 17:41:00 +0900 (KST)
+Date: Mon, 14 Feb 2005 17:40:59 +0900
+From: kyungmin park <kyungmin.park@samsung.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>,
+	'Thomas Gleixner' <tglx@linutronix.de>
+Message-id: <0IBW007DE84BOU@mmp1.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: 7BIT
+Cc: linux-mtd@lists.infradead.org
+Subject: [RFC] adding support for OneNAND flash memory
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,47 +35,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Aras,
+Dear,
 
->>>>> I have an application which may need to write states frequently to my
->>>>> nand-fs in order to have these states in case of powerdown.
->>>>> But I'm a bit concerned about wearing the nand if I write to 
->>>>> frequently.
->  > <snip>
->> (because we're not using explicite wear levelling) we still have only 
->> reached 24,000 - only 24% of the 100,000 cycle lifetime of the flash.
-Thanks for the "comments" below - they are nice to have...
+I'm working on a MTD driver-level support for OneNAND flash memory.
+OneNAND is a new type of fusion flash memory which has a small control logic inside.
+It is connected to the CPU via NOR flash interface, but acts like NAND device.
 
-> ... and then there is the fact that the 100,000 write cycle limit is 
-> generally a conservative estimate based on testing of the device at an 
-> operating temperature of around 125 celcius! Most likely the device will 
-> be able to withstand over to 1,000,000 write cycles before failure. If 
-> your FS uses write verification to make sure the data is secure then you 
-> shouldn't have any problems even if you do reach this limit on some 
-> areas of the Flash.
-> 
->  From the "Toshiba NAND Flash Applications Design Guide"
-> 
-> "NOR Flash is typically limited to around 100,000 cycles. Since the 
-> electron flow-path due to the hot electron injection for programming is 
-> different from the one due to tunneling from the floating gate to the 
-> source for erasing, degradation is enhanced. However, in NAND Flash, 
-> both the programming and erasing is achieved by uniform Fowler- Nordheim 
-> tunneling between the floating gate and the substrate. This uniform 
-> programming and uniform erasing technology guarantees a wide cell 
-> threshold window even after 1,000,000 cycles."
-> 
-> and
-> 
-> "There is one question that often comes up  Is ECC really necessary?  
-> After all, the likeliest cause of a bit error is during the programming 
-> process. For example, if you program a block, then verify it has no 
-> errors, how reliable is the data? In these ROM-like applications where 
-> the write/erase cycles is very low, the actual failure rate for a block 
-> is about 3 ppm after 10 years (i.e. 3 blocks out of every million blocks 
-> will have a bit error after 10 years) in which a block failure is 
-> defined as a single bit error. This result was derived from testing 
-> 29708 pieces of 512Mb NAND (0.16um) by writing a checkerboard pattern 
-> into blocks and storing at 125C. Since there will be a non-zero data 
-> retention failure rate, you should limit the amount of code to 1 block 
-> to achieve a low ppm probability of failure."
+At first, I've tried using the existing nand framework and extending it. However, due to the difference in the interfacing scheme, the existing nand framework needs to be modified heavily. 
+This is due to the fact that every NAND command is directly written to the OneNAND controller register accessed via address bus, while the data is read through specific buffer accessed via address bus and read via data bus.
+
+E.g., write operation
+In NAND nature, basic operations are based on address/command latch enable.
+
+1. send start address (ALE)
+2. send write command (CLE)
+3. write data
+4. send write command (CLE)
+5. send status command (CLE)
+6. check status
+
+But OneNAND operations are different from NAND flash.
+The OneNAND uses register based access
+
+1. select DataRAM* (REG)
+2. write data into DataRAM
+3. write block and page to Start Address Register (REG)
+4. write Start Buffer Register (REG)
+5. write 0 to interrupt register (REG)
+6. write program command to command register (REG)
+7. wait for write completed
+8. read controller status register (REG)
+9. check status
+Note: (1) must happen before data input
+
+So it's hard to apply OneNAND access method to current nand directory
+
+Moreover,
+
+To identify the OneNAND scheme is changed. There's no read id command.
+Just it reads from device id register (read-only).
+Also the device ids can be conflicted between NAND and OneNAND.
+
+For this reason, I'd like to suggest adding another directory (ex. drivers/mtd/onenand) to mtd source tree for supporting OneNAND flash memory instead of modifying/extending existing nand framework.
+
+Comments are always welcome.
+
+Regards,
+
+ps. for detailed info about OneNAND, please visit the following link http://www.samsung.com/Products/Semiconductor/Flash/OneNAND_TM/512Mbit/KFG1216Q2M/KFG1216Q2M.htm
+
+--
+ 
+Kyungmin Park
+Embedded Linux Group, System Lab.
+Samsung Electronics Co., Ltd.
+E-mail: kyungmin.park@samsung.com
+Office: +82-31-200-3109
