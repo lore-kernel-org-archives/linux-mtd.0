@@ -1,16 +1,22 @@
-Received: from [2002:d4ee:c952::1] (helo=xi.wantstofly.org)
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D3FgZ-00011r-QJ
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 10:41:24 -0500
-Date: Mon, 21 Feb 2005 16:41:21 +0100
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: dsaxena@plexity.net, linux-mtd@lists.infradead.org
-Message-ID: <20050221154121.GA31235@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: 
-Subject: [PATCH,RFC] remove slowport mode setting from ixp2000 map driver
+	id 1D3G4j-0001JQ-6Y
+	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 11:06:21 -0500
+Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR010.ip.videotron.ca
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	with ESMTP id <0IC9003B0RCOAT@VL-MO-MR010.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 11:05:12 -0500 (EST)
+Date: Mon, 21 Feb 2005 11:05:09 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <421998DA.1060503@imc-berlin.de>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+Message-id: <Pine.LNX.4.61.0502211059090.15845@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <421998DA.1060503@imc-berlin.de>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: ioremap_cached in drivers/mtd/maps ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(please CC on replies, not on the list)
+On Mon, 21 Feb 2005, Steven Scholz wrote:
 
-Setting the slowport to 8-bit mode is something that ought to be
-done in the IXP2000 generic code, not in the MTD map driver.  See
-the description for ARM patch 2493/1 for an explanation.
+> Hi there,
+> 
+> it looks like only lubbock-flash.c is using ioremap_cached().
 
-	http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=2493/1
+sa1100-flash could be using it as well.
 
-Now that 2493/1 has been accepted and will be upstream soon, this
-doesn't need to be done in the map driver anymore.
+> Can I use ioremap_cached() with normal NOR flashes?
 
-Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+Yes.
+
+> Is it only for DMA transfer from/to flash?
+
+>From flash only.
+
+> Does it improve something when using JFFS2?
+
+Much improved read throughput.
+
+> What do I have to consider? .inval_cache function?
+
+Yep.
 
 
-diff -urN linux-2.6.11-rc4.orig/drivers/mtd/maps/ixp2000.c linux-2.6.11-rc4/drivers/mtd/maps/ixp2000.c
---- linux-2.6.11-rc4.orig/drivers/mtd/maps/ixp2000.c	2004-12-24 22:35:39.000000000 +0100
-+++ linux-2.6.11-rc4/drivers/mtd/maps/ixp2000.c	2005-02-21 16:12:03.313753034 +0100
-@@ -216,11 +216,6 @@
- 		goto Error;
- 	}
- 
--	/*
--	 * Setup read mode for FLASH
--	 */
--	*IXP2000_SLOWPORT_FRM = 1;
--
- #if defined(__ARMEB__)
- 	/*
- 	 * Enable erratum 44 workaround for NPUs with broken slowport
+Nicolas
