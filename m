@@ -1,18 +1,18 @@
-Received: from [203.199.83.142] (helo=mailweb18.rediffmail.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Wa1Y-0006oj-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 09:30:24 +0000
-Date: 1 Feb 2002 08:25:28 -0000
-Message-ID: <20020201082528.15474.qmail@mailweb18.rediffmail.com>
-MIME-Version: 1.0
-From: "maharajan  veerabahu" <mahadoc@rediffmail.com>
-Reply-To: "maharajan  veerabahu" <mahadoc@rediffmail.com>
+Received: from krynn.axis.se ([193.13.178.10])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16Wd7d-000728-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 12:48:53 +0000
+Received: from pcjonashg.axis.se (pcjonashg.axis.se [10.13.8.50])
+	by krynn.axis.se (8.12.1/8.12.1/Debian -5) with ESMTP id g11B6F5l024876
+	for <linux-mtd@lists.infradead.org>; Fri, 1 Feb 2002 12:06:15 +0100
+Subject: chip drivers
+From: Jonas Holmberg <jonas.holmberg@axis.com>
 To: linux-mtd@lists.infradead.org
-Subject: DOC  formatting/BIOS  recognition problems
-Content-type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 01 Feb 2002 12:06:43 +0100
+Message-Id: <1012561603.21481.4.camel@pcjonashg>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +24,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Dear sir,=0A       I tried to format a DOC (DIskOnChip 2000)using the firmw=
-are version 5.04(doc504.exb)and i got this result.=0A=0A 1. I formatted the=
- DOC using the firmware version504=0A    the=0A=0A   dformat /win:d000 /s:d=
-oc504.exb /y=0A=0A   returns=0A=0A   formatting=0A   2041 of 2041=0A   stat=
-uscode is 26(flUnknownMedia)received from=0A   flmountVolume.=0A   Format f=
-ailed=0A=0A  once this is done the dinfo returns=0A=0A    No driver found.T=
-rying with direct access=0A=0A  and the software version is quoted to be=0A=
-=0A    Software version  : 255.255=0A=0ANext I tried dformat /win:c800 /s:!=
- =0AThis time it says=0Aformatting 2048 of 2048 =0Astatuscode is 26(flUnkno=
-wnMedia)received from=0A   flmountVolume.=0A   Format failed.=0A=0A=0A  2 .=
- i tried formatting the same DOC with doc121.exb=0A=0Aand this time it got =
-formatted well.and my Dinfo said the =0A       Software version : 1.21=0A=
-=0A  * But , my BIOS is not recognizing the DOC.Why is this ?=0AI have a fo=
-rmatted DOC(1.21) and why does not my bios recognize it?=0A=0A  * If , iam =
-able to format the DOC with 1.21 then why am i not able to format it with 5=
-.04 ?=0A=0ACan you give suggestions ,please .=0AThanks a lot.=0Aregards , m=
-aha=0A=0A=0A =0A
+I need to use different flash chips (AMD compatible, mixed CFI and
+non-CFI, mixed geometry etc) at the same time :). I think I will need to
+change the cfi drivers and the cfi- and jedec-probe to accomplish this. 
+
+I'm not going to try to use different chips in interleave (the code for
+that would probably be unreadable, and who needs it?).
+
+Are there other cases I ought to handle as well? Would anyone object if
+I replace the cfi_probe and jedec_probe with one unified flash_probe?
+
+I'll do some thinking and testing and come up with a more detailed plan
+before I start doing any serious damag^H^H^H^H^Hcoding.
+
+/Jonas
