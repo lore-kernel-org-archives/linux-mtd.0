@@ -1,36 +1,18 @@
-Received: from e31.co.us.ibm.com ([32.97.110.129])
+Received: from modemcable096.213-200-24.mc.videotron.ca ([24.200.213.96]
+	helo=localhost.localdomain)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuLK4-00061Z-0y
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 20:53:21 -0500
-Received: from westrelay03.boulder.ibm.com (westrelay03.boulder.ibm.com
-	[9.17.195.12])
-	by e31.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0S1rGm4417156
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 20:53:16 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay03.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0S1rG9j344926
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 18:53:16 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	j0S1rGtg014096
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 18:53:16 -0700
-From: Josh Boyer <jdub@us.ibm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1106872400.6480.201.camel@localhost.localdomain>
-References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
-	<1106730647.6480.190.camel@localhost.localdomain>
-	<Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
-	<1106857409.21196.58.camel@tglx.tec.linutronix.de>
-	<1106865326.783.146.camel@baythorne.infradead.org>
-	<1106871577.21196.155.camel@tglx.tec.linutronix.de>
-	<1106872400.6480.201.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Thu, 27 Jan 2005 19:53:09 -0600
-Message-Id: <1106877190.10729.1.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 memory consumption
+	id 1CuLcI-0006P7-I7
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 21:12:11 -0500
+Date: Thu, 27 Jan 2005 21:12:04 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+In-Reply-To: <6934efce05012717207271fb10@mail.gmail.com>
+Message-ID: <Pine.LNX.4.61.0501272035260.22434@localhost.localdomain>
+References: <6934efce05012717207271fb10@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: Unit test for cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,21 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-01-28 at 00:33 +0000, David Woodhouse wrote:
-> On Fri, 2005-01-28 at 01:19 +0100, Thomas Gleixner wrote:
-> > Sure. I'm aware of O_SYNC, fsync() and sync().
-> > 
-> > Please reread http://sources.redhat.com/jffs2/jffs2.pdf
+On Thu, 27 Jan 2005, Jared Hulbert wrote:
+
+> I plan on creating a unit test based on cutest.sourceforge.net for
+> cfi_cmdset_0001.c.
+> In order to stub out the various functions inside I will have to:
 > 
-> That isn't a promise that I'll continue to guarantee anything that POSIX
-> doesn't guarantee, especially in JFFS3.
+> 1. Manually strip out functions for each version.
+> 2. Add #if''s
+> 3. fork this file into 2-3 files.
 > 
-> I'm not going to object to a mount option which forces O_SYNC behaviour
-> for all files. But there's no need for that to be the default.
+> I prefer option 3.  As it seems cleaner to me and more maintainable. 
+> But I want to know which option is more "commitable."   Of course the
+> test be made availiable, I would hope we can get the tests commited
+> too.
 
-Isn't that what the MS_SYNCHRONOUS flag is for?  I seem to recall using
-that in a different filesystem once.  Something like:
+I'm skeptical.  How cutest is going to be of any benefit here?
 
-mount -t <fstype> -o sync <dev> <mnt>
+> CuTest is zlib licenced.  Is that a problem?
 
-josh
+It would if not GPL compatible.
+
+> The reason for the unit tests is to help us find bugs in the code
+> paths not easily tested and to enable more rapid updates for new flash
+> or features mtd doesn't currently support.
+
+You will have to show me that cutest can really test such code.  It's 
+not just algorithmic code we're talking about but a kernel driver for 
+hardware.  Hardware has subtle but random timing variations, and a 
+kernel driver needs to cope with scheduling, sleeping, locking, etc.  I 
+don't see cutest able to verify that proper locking against real life 
+concurrent access is correctly implemented while being as efficient as 
+possible for example.  IMHO it would only give you a false sense of 
+confidence.
+
+
+Nicolas
