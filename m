@@ -1,18 +1,19 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nDFN-0003KJ-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 06:37:25 +0000
-Subject: Re: Initialization ordering problem
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: William Jhun <wjhun@ayrnetworks.com>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20020318221449.L6821@ayrnetworks.com>
-References: <20020318221449.L6821@ayrnetworks.com>
+	id 16nEM9-0003ON-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 07:48:29 +0000
 Content-Type: text/plain
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
-Date: 19 Mar 2002 07:50:12 +0100
-Message-Id: <1016520612.19504.3.camel@pcjonashg>
 Mime-Version: 1.0
+Date: Mon, 18 Mar 2002 23:59:57 -0800 (PST)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: David Woodhouse <dwmw2@infradead.org>,
+	"David  Woodhouse" <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: (no subject)
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020319075957.63C5536F9@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,14 +25,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 2002-03-19 at 07:14, William Jhun wrote:
-> I could work up some kludge to make
-> our platform-specific flash initialization code link in after the mtd
-> code, but this would be ugly.
+thanks!  David, I have solved the problem! Ola, Ola ,Ola ......^O^
 
-Why don't you want to change the link order? Isn't it logical to link in
-the architecture independent parts before the architecture speficic ones
-so that the arch specific code can use the frameworks in the arch
-independent code?
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+>it'll be controlled by a GPIO pin somewhere. That would be board-specific.
 
-/Jonas
+it doesnt controlled by a GPIO,but just like that, its be controlled by a TC(traffic controller), no introduction about it in the document. 
+But finally I beat the problem.
+
+thank you for your help very much!
+
+Jim Zeus(survivor from the problem)
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
