@@ -1,49 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12spq4-0002Kd-00
-	for mtd-list@infradead.org; Fri, 19 May 2000 17:41:28 +0100
-Received: from roma.axis.se ([193.13.178.2])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12spq3-0002KX-00
-	for mtd@infradead.org; Fri, 19 May 2000 17:41:27 +0100
-Date: Fri, 19 May 2000 18:40:29 +0200 (CEST)
-From: Bjorn Wesen <bjorn.wesen@axis.com>
-To: Alexander Larsson <alex@cendio.se>
-cc: Alexander Viro <aviro@redhat.com>, jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: rename semantics
-In-Reply-To: <Pine.LNX.4.10.10005191829380.3233-100000@tammy.signum.se>
-Message-ID: <Pine.LNX.3.96.1000519183449.10581D-100000@fafner.axis.se>
+	id 12sqsO-0002Wo-00
+	for mtd-list@infradead.org; Fri, 19 May 2000 18:47:56 +0100
+Received: from www.softsys.co.at
+	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 12sqsM-0002Wi-00
+	for mtd@infradead.org; Fri, 19 May 2000 18:47:55 +0100
+Message-ID: <01BFC1CB.35B15840@smithwicks.softsys.co.at>
+From: Erwin Authried <eauth@softsys.co.at>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: more 2.0 compatibility problems
+Date: Fri, 19 May 2000 19:48:30 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 19 May 2000, Alexander Larsson wrote:
-> > I guess we'll have to maintain 3 cvs trees instead of one :) or maybe t=
-he
-> > 2.2 and 2.3 versions will be sufficiently similar to work with #ifdef's=
- ?=20
->=20
-> The 2.2 version will be merged into the MTD cvs tree.=20
-> S=E9bastien C=F4t=E9 <scote1@matrox.com> is working on it. The changes ar=
-e
-> sufficiently small to warrant #ifdef's.=20
+I have tried to use compatmac.h from 2.3.99 to compile for 2.0, without success.
+Some definitions in this file are simply wrong.
 
-Ok.
+Further problems:
+the functions end_that_request_first and end_that_request_last are missing.
+I don't know if they can simply be copied from some recent kernel.
 
-> For the 2.0 version.... I don't know. Maybe if we just keep two separate
-> inode.c in the tree. That file is the only one with changes, but they are
-> quite major.
+David's definition for __MOD_INC_USE_COUNT and __MOD_DEC_USE_COUNT in
+include/linux/mtd/compatmac.h doesn't work, the usage count in 2.0 kernels is 
+implemented in a different way. Is there an easy way to implement this functionality
+for 2.0 kernels? 
 
-That sounds good. As long as the internal routines are the same, it will
-make bugfixing etc easier if they coexist.
+Regarding the userspace copy problem in mtdchar.c:
+If a kernel buffer is used to hold the data for flash writes, may there be problems
+with some flash hardware if the write is splitted up into small chunks?
 
-So we'll merge in the inode.c from the MTD tree when you've merged in the
-2.2 patches, and then we'll do some magic incantations and make a real
-JFFS release as an all-purpose patch :)
-
--Bjorn
+-Erwin
 
 
 
