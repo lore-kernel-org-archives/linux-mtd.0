@@ -1,18 +1,21 @@
-Received: from dsl-64-129-133-253.telocity.com ([64.129.133.253] helo=skylab.outpostsentinel.com)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dsjH-0003da-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 12:53:43 +0000
-Received: from GATEKEEPER ([192.168.2.103])
-	by skylab.outpostsentinel.com (8.11.2/8.11.2) with SMTP id g1LDtdL04701
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 08:55:39 -0500
-Message-Id: <200202211355.g1LDtdL04701@skylab.outpostsentinel.com>
-Date: Thu, 21 Feb 2002 08:03:38 -0500
-To: linux-mtd@lists.infradead.org
-From: Chris Fowler <cfowler@outpostsentinel.com>
-Subject: Update on my problem
-Reply-To: cfowler@outpostsentinel.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+	id 16dtg7-0003hf-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 13:54:32 +0000
+Received: from LUMENTIS02 (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id PAA22997
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 15:05:13 +0100 (MET)
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: jffs2_scan_make_ino_cache() in scan.c very slow
+Date: Thu, 21 Feb 2002 15:05:12 +0100
+Message-ID: <IGEFJKJNHJDCBKALBJLLOEKHFBAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200202211355.g1LDtdL04701@skylab.outpostsentinel.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,12 +27,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Many of you guys lately has been halping overcome some issues I've been having during an initrd execution.  I appreciate the efforts.  I'm eamiling you to inform you what I did to fix it in case you ever run into the same problem. 
+Hi 
 
-I have to compile my linuxrc.c program statically.  lib-c is just too big to place on a initrd image.  To keep the size down from 400k I used a program called diet.  It bacsically executes gcc and use some of its own libraries.  My loader 
-went from 400k to 22k using it.  This allowed me to stuff more program on the initrd image.  I ran into some major problems using zlib and this program so I wnet back to a normal static binary.  My loader is now 400k but seems to
-be working great.  I can download software packages form the network and use those as my roofs just as easy as the package on flash.  I can also restore a backup package that the user has the option to create at flash time.
-It appears to be working great.  
+I have made some crude measures in jffs2_scan_medium() and friends to
+see where most of the time is spent. It turns out that
+jffs2_scan_make_ino_cache() is takes about 50 % of the total mount time!
 
-Thanks for all your help.
-Chris
+What can be done to decrease this time?
+
+ Jocke
+
+PS.
+    I sent a patch (Subject:  cfi_cmdset0001.c: bug fixes and new features) a week ago
+    and I haven't got any comments so far.
