@@ -1,19 +1,20 @@
-Received: from [202.141.68.3] (helo=desh.cse.iitd.ernet.in)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8STY-0002qn-4U
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2005 19:21:32 -0500
-Message-ID: <422C4B65.50804@kritikalsolutions.com>
-Date: Mon, 07 Mar 2005 18:09:01 +0530
-From: Narinder Kumar <narinder@kritikalsolutions.com>
-MIME-Version: 1.0
-To: Andrew Victor <andrew@sanpeople.com>
-References: <4222D35B.7070909@kritikalsolutions.com>
-	<1109667284.4420.18.camel@fuzzie.sanpeople.com>
-In-Reply-To: <1109667284.4420.18.camel@fuzzie.sanpeople.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D8Yw1-0004Jp-0G
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 02:15:17 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: extabe@bredband.net
+In-Reply-To: <20050305125650.TCML1243.mxfep04.bredband.com@mxfep04>
+References: <20050305125650.TCML1243.mxfep04.bredband.com@mxfep04>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 08 Mar 2005 08:15:03 +0100
+Message-Id: <1110266103.29330.11.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: SPI DataFlash interfacing using 2.4.27-vrs1
+Subject: Re: Trying to get 1Gb Samsung nand flash working
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Mr. Andrew,
+Andre, 
 
-               I tried out the solution that you mentioned in the last 
-mail (please look into the mail below) but still i am not able to reach 
-at a safe state. It did helped a bit in the sense that now my flash code 
-recovers from CRC errors sometimes but sometimes it fails too and it 
-fails because of Data corruption and when it fails it aborts my 
-application and thereafter i have to start from the beginning i.e 
-erasing the flash completely and then putting the application again.
+please place your answers below the citation and configure your mail
+client to break the lines at 80 chars. See also
+http://www.infradead.org/~dwmw2/email.html
 
-Can you please guide me in a bit detailed manner ?
-Which version of MTD is being used by you ?
+Thanks
 
-I tried out  mtd-snapshot-20050217.tar and latest one also but still not 
-able to get rid of my problem.
-I installed mtd using patchin.sh script with "-c -j" options and i 
-copied an older version(1.60) of mtdchar.c file as the newer one was 
-giving errors during kernel compilation and when i replaced it with 
-older version mtdchar then the kernel compiled succesfully.
-If there is something crucial that i am missing out please let me know. 
-I hope you have not done any major changes in the patches itself to get 
-it working, if that is the case can you please update me where from can 
-i get the working patches for 2.4.27-vrs1 or if you can forward the 
-patches to me , that will be great.
+On Sat, 2005-03-05 at 12:56 +0000, extabe@bredband.net wrote:
+> The chip is a Samsung 1Gx8 Bit NAND Flash (K9W8G08U1M). It is 
+> detected as a 512Mb chip (K9k4G08U0M) since it consist of two 
+> K9k4G08U0M stacked.
 
-Regards,
-Narinder
+Should work.
 
+> I use 2.4.25 kernel patched with "mtd-snapshot-20050223"
+> 
+> The CVS $Id string is:
+> $Id: nand_bbt.c,v1.31 2005/02/16 17:09:36 dedekind Exp $
 
-Andrew Victor wrote:
+There was a change in the bad block table code recently. I'm not sure if
+it is relevant to your problem - it should not. I send you a patch
+seperately to backout the changes. Please give it a try.
 
->hi Narinder,
->
->  
->
->>         Did anyone on the group sucessfully interfaced a JFFS2 
->>partition on SPI DataFlash on Atmel's AT91RM9200 DK using  kernel 2.4.26 
->>? I have been able to mount the partition but read/write was giving CRC 
->>errors.
->>    
->>
->
->I'm running JFFS2-on-DataFlash successfully on 2.4.27-vrs1.
->
->1) You will need to download the latest CVS version of the MTD/JFFS2
->code from cvs.infradead.org (see http://www.linux-mtd.infradead.org/ for
->instructions).
->
->2) Read the INSTALL file and then run the ./patchin.sh script
->
->3) There are some incompatibilities with 2.4 kernels, but they're not
->difficult to fix.  This might help:
->http://lists.infradead.org/pipermail/linux-mtd/2004-December/011039.html
->
->4) Configure your kernel and enable "JFFS2 write-buffering support"
->under Filesystems->JFFS2.
->
->
->Regards,
->  Andrew Victor
->
->
->
->
->
->  
->
+> As I mentioned erlier I´ve used a Samsung 64Mb chip (K9F1208U0M) 
+> with the same driver and it´s working good.
+
+This chip is a small page chip (512Byte + 16Byte oob) and therefor a
+different thing.
+
+Can I have a look on your board driver please ?
+
+tglx
