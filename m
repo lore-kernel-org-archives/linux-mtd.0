@@ -1,41 +1,36 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from zen.stanford.edu ([171.65.16.116])
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11EJSx-0003MC-00
-	for mtd@infradead.org; Tue, 10 Aug 1999 22:29:52 +0100
-Message-ID: <19990810142948.59781@zen.stanford.edu>
-Date: Tue, 10 Aug 1999 14:29:48 -0700
-From: David Hinds <dhinds@zen.stanford.edu>
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org
+	id 11ERGt-0003Xs-00
+	for mtd@infradead.org; Wed, 11 Aug 1999 06:49:56 +0100
+Date: Tue, 10 Aug 1999 23:49:51 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: David Hinds <dhinds@zen.stanford.edu>
+cc: mtd@infradead.org
 Subject: Re: mtd-19990809 including readonly DiskOnChip driver.
-References: <19990810140454.34027@zen.stanford.edu> <Pine.LNX.3.96.990810151540.7675A-100000@white.priv.deltatee.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.3.96.990810151540.7675A-100000@white.priv.deltatee.com>; from Jason Gunthorpe on Tue, Aug 10, 1999 at 03:20:36PM -0600
+In-Reply-To: <19990810142948.59781@zen.stanford.edu>
+Message-ID: <Pine.LNX.3.96.990810234642.10727A-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, Aug 10, 1999 at 03:20:36PM -0600, Jason Gunthorpe wrote:
+
+On Tue, 10 Aug 1999, David Hinds wrote:
+
+> > On all the memory cards I've seen the CIS is stored on the flash itself,
+> > so if you erase the CIS then it's gone. One of our systems here boots
+> > from a PCMCIA memory card, putting a CIS in there gets in the way. So for
+> > most of my purposes the current driver doesn't work.
 > 
-> As far as memory devices go, detecting is a big part of the entire
-> process. I also had lots of weird trouble getting this memory card up, I
-> finally did it but it was quite trying.
+> What cards, specifically, are you using?
 
-Hmmm, I'd have thought that getting the flash algorithms right was the
-bigger issue (that's certainly what took the most time for me).
+These cards are from AMD, memory only cards for use with their UforCE
+board. It boots off them (the card stores the bios).
 
-> On all the memory cards I've seen the CIS is stored on the flash itself,
-> so if you erase the CIS then it's gone. One of our systems here boots
-> from a PCMCIA memory card, putting a CIS in there gets in the way. So for
-> most of my purposes the current driver doesn't work.
+Jason
 
-What cards, specifically, are you using?
-
-All Intel Series 2 and 2+ cards put the CIS in a separate chip.  The
-Series 100 cards have it in the first flash block.
-
--- Dave
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
