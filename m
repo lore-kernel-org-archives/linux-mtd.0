@@ -1,19 +1,22 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuPLV-0008Oe-Hz
-	for linux-mtd@lists.infradead.org; Fri, 28 Jan 2005 01:11:06 -0500
-To: Jared Hulbert <jaredeh@gmail.com>
-References: <6934efce05012717207271fb10@mail.gmail.com>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 27 Jan 2005 23:11:02 -0700
-In-Reply-To: <6934efce05012717207271fb10@mail.gmail.com>
-Message-ID: <m33bwmw0ax.fsf@maxwell.lnxi.com>
+Date: Fri, 28 Jan 2005 08:45:25 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <1106873065.21196.168.camel@tglx.tec.linutronix.de>
+Message-ID: <Pine.LNX.4.58.0501280817330.11160@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
+	<1106730647.6480.190.camel@localhost.localdomain>
+	<Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
+	<1106857409.21196.58.camel@tglx.tec.linutronix.de>
+	<1106865326.783.146.camel@baythorne.infradead.org>
+	<1106871577.21196.155.camel@tglx.tec.linutronix.de>
+	<1106872400.6480.201.camel@localhost.localdomain>
+	<1106873065.21196.168.camel@tglx.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: Unit test for cfi_cmdset_0001.c
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 memory consumption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert <jaredeh@gmail.com> writes:
+> If it is JFFS3 it can have the default O_NOSYNC, but the option O_SYNC
+> still requires to solve the underlaying problem.
 
-> I plan on creating a unit test based on cutest.sourceforge.net for
-> cfi_cmdset_0001.c.
-> In order to stub out the various functions inside I will have to:
-> 
-> 1. Manually strip out functions for each version.
-> 2. Add #if''s
-> 3. fork this file into 2-3 files.
-> 
-> I prefer option 3.  As it seems cleaner to me and more maintainable. 
+Ok guys, seems we have agreed with:
+1. Wrtite-back cache is good idea
+2. For files opened with O_SYNC and if the file system was mounted with
+-o sync option, we have to do write through caching.
 
-Why would you even need to split the file into multiple pieces to
-provide test wrappers?  cutest does not seem to add that requirement.
-I'm not certain what value cutest actually provides.  A test harness
-that  would require the source file to be split into multiple pieces
-seems to indicate a flaw in the test harness.
+But my original proposal assumed we agree with that and was about a bit 
+another thing. The question was: do we really want to distinguish between 
+pritine nodes and non-pristine nodes.
 
-> The reason for the unit tests is to help us find bugs in the code
-> paths not easily tested and to enable more rapid updates for new flash
-> or features mtd doesn't currently support.
+Recall for those who do not remeber JFFS2 internals: pristine node is that 
+node which contains PAGE_SIZE (4K) bytes of data. These nodes may quicly 
+satisfy read request - just unpack the node's data to the page provided by 
+upper layer. Non-pristine nodes are those nodes which contain fewer then 
+PAGE_SIZE bytes of data or they may contain 4K of data, but be partially 
+overlapped by newer node with more actual data.
 
-The hardest code paths to test are code paths for hardware that
-is usable but not quite right.  How do you plan on testing that?
+My Idea is that having write-back cache a lot of writes will first go to 
+the cache, and we may just always write by 4K fractions. No more 
+not-pristine nodes. All nodes are now 4K or multiple of 4K.
 
-Which features for flash chips are you thinking about supporting that
-are not currently supported? 
+Adwantages:
+Simpler GC. Now we not need to merge non-pristine nodes. When Garbage 
+Collect one block, do not produce dirt in another block (because of 
+merging). GC is much faster. We do not need to iget() anymore when we meet 
+non-pristine node in GC.
 
-Eric
+Drawbacks:
+Yes, if we are forced to do synchronose IO, we well waste more space. For 
+example, user does 1 byte transactions, we write 4K instead every time. 
+But is this so bad?
+
+Comments?
+
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
