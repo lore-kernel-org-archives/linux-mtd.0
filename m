@@ -1,19 +1,22 @@
-Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
+Received: from sccrmhc01.attbi.com ([204.127.202.61])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nIJc-0006iR-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:34:24 +0100
+	id 17nIJm-0006iQ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:34:34 +0100
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Henrik Nordstrom <hno@marasystems.com>
-To: mateo@posta.star.si, mark@lakeshoremicro.com, dwmw2@infradead.org
+From: Mark Meade <mark@lakeshoremicro.com>
+To: mateo@posta.star.si,
+ dwmw2@infradead.org,
+ hno@marasystems.com
 Subject: Re: DOC 2000 and GRUB
-Date: Fri, 6 Sep 2002 14:34:17 +0200
-Cc: Russ.Dill@asu.edu, linux-mtd@lists.infradead.org
+Date: Fri, 6 Sep 2002 08:33:13 -0400
+Cc: Russ.Dill@asu.edu,
+ linux-mtd@lists.infradead.org
 References: <20020906112553.896FB394E@sitemail.everyone.net>
 In-Reply-To: <20020906112553.896FB394E@sitemail.everyone.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <200209061434.17881.hno@marasystems.com>
+Message-Id: <20020906123402.HNFT11061.sccrmhc01.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,43 +29,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Mateo Anderson wrote:
+> Is this modified version comitted in the cvs?
+
+No, I just started experimenting (with Grub) yesterday.  Things appear to be 
+working great on the DoC Millennium, but I haven't done enough testing to be 
+confident enough to submit a patch.  
+
+> >I'm guessing that many problems are caused by having the nftl
+> >module loaded during a fdisk, nftl_format, and/or doc_loadbios.
+>
+> Are you referring to kernel modules?
+> If so, I have these build in (no modules), as suggested by
+> DOC and GRUB HOW-TO.
+
+Yes.  I'm thinking about revising the how-to to suggest using modules for the 
+development system, and built-in for the kernel booting from the DoC.  
+Alternatively, you could use the built-in stuff all the time, but make sure 
+to reboot often:
+
+http://lists.infradead.org/pipermail/linux-mtd/2002-June/005123.html
+
+Wolfgang Denk submitted a patch to address this problem; it sounds like it 
+would eliminate the need to reboot:
+
+http://lists.infradead.org/pipermail/linux-mtd/2002-August/005831.html
+
+Being able to use DFORMAT to install GRUB and do the NFTL format eliminates 
+the need to use both doc_loadbios and nftl_format, and should make the choice 
+of built-in or module irrelevant.  However, Wolfgang's patch still seems to a 
+very good idea.
 
 > Steps:
 > 1) Boot DOS and use DFORMAT 5.x to format the DOC, with
 >    the appropriate space for the GRUB firmware (check the
 >    size of the stage1 file).
-
-DFORMAT 5.x automatically allocates the needed space. You only need to care 
-about space if you want to reserve additional space in the binary boot flash 
-partition to allow for upgrades to a bigger GRUB firmware in the future.
-
 > 2) Boot to Linux, use the doc_loadbios to load the GRUB
 >    firmware (or use DFORMAT - what parameters??).
-
-Use DFORMAT. doc_loadbios is for "advanced users" who have read the 
-documentation shipped with the M-Sys 5.X tools and knows the current 
-limitations of the doc_loadbios command and it's bad interactions with the 
-nftl Linux driver..
-
-Note: DFORMAT can also be used to upgrade the boot firmware without destroying 
-the NFTL disk flash partition, provided the new boot firmware fits in the 
-reserved binary flash partition that is..
-
 > 3) Format the /dev/nftla.
-
-This would be
-
-3) Partition /dev/nftla using Linux fdisk.
-
-The NFTL is already formatted by DFORMAT, and a single DOS partition covering 
-the whole flash have been created and formatted.
-
 > 4) Copy everything to the /dev/nftla1.
 > 5) Boot from DOC.
 >
 > Is this correct?
 
-More or less.
+Close.  I've been doing the following (with some Grub modifications):
 
-Regards
-Henrik
+1) dformat /win:xxxx /BDKF0:grub_firmware
+
+Use dformat 5.x to install grub, and the NFTL format.  You'll end up with one 
+FAT partition on the DoC.  This eliminates the need to use "doc_loadbios" and 
+"nftl_format".
+
+2) It's necessary (on my PC) to turn it off, rather than just rebooting.  The 
+howto explains why this is required.
+
+3) boot to Linux, fdisk, mke2fs, copy everything to /dev/nftla1
+
+4) boot from DoC
