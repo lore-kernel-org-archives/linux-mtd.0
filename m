@@ -1,61 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13AZDa-0001On-00
-	for mtd-list@infradead.org; Fri, 07 Jul 2000 15:35:02 +0100
-Received: from roma.axis.se ([193.13.178.2])
+	id 13AZxs-0001Un-00
+	for mtd-list@infradead.org; Fri, 07 Jul 2000 16:22:52 +0100
+Received: from royal2.eicnet.de ([62.144.196.2])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13AZDX-0001Oh-00
-	for mtd@infradead.org; Fri, 07 Jul 2000 15:35:00 +0100
-Date: Fri, 7 Jul 2000 16:33:31 +0200 (CEST)
-From: Simon Kagstrom <simonk@axis.com>
-To: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>
-cc: jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: jffs_erasable_size: offset = 0x0034b000
-In-Reply-To: <3965E670.79F93BEB@matrox.com>
-Message-ID: <Pine.LNX.4.21.0007071631110.16224-100000@bitwise.axis.se>
+	id 13AZxr-0001Uh-00
+	for mtd@infradead.org; Fri, 07 Jul 2000 16:22:51 +0100
+Received: from iserv.compu.lan (root@ppp-21.regio.net [192.135.7.149])
+	by royal2.eicnet.de (8.9.3/8.9.3) with ESMTP id RAA24843
+	for <mtd@infradead.org>; Fri, 7 Jul 2000 17:22:45 +0200
+Received: from compulan.de ([192.168.1.210])
+	by iserv.compu.lan (8.8.8/8.8.8) with ESMTP id RAA13005
+	for <mtd@infradead.org>; Fri, 7 Jul 2000 17:23:37 +0200
+Message-ID: <3965F5BB.195CE244@compulan.de>
+Date: Fri, 07 Jul 2000 17:22:35 +0200
+From: Michael Renzmann <mrenzmann@compulan.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+To: mtd@infradead.org
+Subject: DOC socket misuseable?
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Fri, 7 Jul 2000, S=E9bastien C=F4t=E9 wrote:
+Hi all.
 
-> Alexander Larsson wrote:
-> >=20
-> > On Thu, 6 Jul 2000, David Woodhouse wrote:
-> >=20
-> > >
-> > > bjorn.wesen@axis.com said:
-> > > >  We'll probably leave the 2.0 as it is, and when we switch to 2.4
-> > > > we'll either use mtd or just keep going with our own little flash=
-.c
-> > > > (which works fine :)
-> > >
-> > > It looks like 2.4 will have the MTD code in it already - Linus incl=
-uded
-> > > Tuesday's snapshot in 2.4.0-test3-pre4.
-> >=20
-> > Ouch, it's got jffs too. The invalidate_inode_pages(inode) patch shou=
-ld
-> > really be applied to it. I haven't had time to test it, but it's almo=
-st
-> > certainly correct, and it is broken without it.
-> >=20
->=20
-> I don't think JFFS is ready to be included in the kernel.  It hasn't
-> been tested a lot (the 2.2 and 2.4 ports) and I'm sure we'll find many
-> bugs (the invalidate_inode_pages bug is a good example of a huge bug
-> that we almost missed).  Just today, I untarred the source code of a
-> program on a JFFS partition, tried to compile it and got a read error
-> from jffs_readpage(). =20
+I know that my question is not ontopic, but maybe some of the hardware-
+and programming wizards could at least give some tips.
 
-Doing write()'s with the O_APPEND flag is not working correctly in jffs. =
-Some
-strange read errors might occur because of that.
+My problem is that I have to connect a lcd (liquid crystal display) to
+two different types of PC. Up to now I did this by connecting them with
+an appropriate cable to the parallel port which normally is used as
+printer port. A scheme of the cable and the needed "drivers" for the
+lcd=B4s for linux can easily be found (I=B4ll tell the link if someone wa=
+nts
+it). It worked fine by now.
 
-// Simon K=E5gstr=F6m
+The solution of connecting the displays to the parport can no longer be
+used, due to different problems. Now I am looking for another way to
+connect the lcd to the pc=B4s. I know that the driver for the lcd has to
+be rewritten after that, but thats the lesser problem. The bigger
+problem is to find an interface that provides at least 10 outout lines
+(8 for data transmission and 2 or 3 for toggling different states,
+depending on the display type). As both pc types are so called thin
+clients, they both feature a doc socket. So I wonder if it was possible
+to "misuse" this socket to connect the lcd to it. As the DOCs have to
+send and/or receive data as well there should be a way to use this
+socket in my opinion. But I don=B4t know how this could be done, maybe on=
+e
+of the wizards in here could help with that...?
 
+If this is not the right way (i.e. the socket can not be used for this
+purpose), does anyone have another idea how to connect the lcd to the
+pc? As said before, I need 10 or 11 output lines, no input needed. Any
+help appreciated and sorry for this (mostly) offtopic mail.
+
+Bye, Mike
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
