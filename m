@@ -1,26 +1,22 @@
-Received: from ptb-relay03.plus.net ([212.159.14.214])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1ChDQC-0005JC-33
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 15:49:28 -0500
-In-Reply-To: <1f9886eb04122212431223a508@mail.gmail.com>
-References: <JPEALJAFNGDDLOPNDIEEIEHDCPAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0412171119290.8020@phoenix.infradead.org>
-	<Pine.LNX.4.58.0412221328430.23254@phoenix.infradead.org>
-	<20041222140331.GG31282@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0412221442510.30556@phoenix.infradead.org>
-	<20041222151403.GA8943@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0412221522400.30689@phoenix.infradead.org>
-	<1f9886eb041222122244c01216@mail.gmail.com>
-	<1f9886eb04122212431223a508@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v619)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <F522C620-545A-11D9-8375-0030656C90F6@linuxgrrls.org>
-Content-Transfer-Encoding: 7bit
-From: Jasmine Strong <jasmine@linuxgrrls.org>
-Date: Wed, 22 Dec 2004 20:49:22 +0000
-To: xemc <xemcnet@gmail.com>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Received: from shinybook-wave.infradead.org ([2001:8b0:10b:1:209:5bff:fe84:c9e]
+	helo=shinybook.infradead.org)
+	by canuck.infradead.org with esmtpsa (Exim 4.42 #1 (Red Hat Linux))
+	id 1ChDZF-0005Sx-EZ
+	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 15:58:47 -0500
+Received: from [127.0.0.1] (helo=localhost)
+	by shinybook.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1ChDY8-0003On-7o
+	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2004 20:57:36 +0000
+To: linux-kernel@vger.kernel.org
+From: Rainer Weikusat <rainer.weikusat@sncag.com>
+Date: Wed, 22 Dec 2004 21:38:04 +0100
+Message-ID: <874qiekr0z.fsf@farside.sncag.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: linux-kernel-owner@vger.kernel.org
+ReSent-Message-ID: <Pine.LNX.4.58.0412222057240.13057@localhost.localdomain>
+Cc: 
+Subject: write support for MTD partitions w/ multiple erase sizes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +26,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The MTD partition setup code in drivers/mtd/mtdpart.c doesn't
+copy erase region info from master to slave devices, but instead
+(wrongfully) prints a message that MTD partitions spanning multiple
+erase regions cannot be written to and forces them to be read-only.
+The following patch adds a function that does copy this information,
+which enables writing to such MTD partitions as long as they begin
+and end on an erase block boundary. The patch is against 2.4.28, but
+can be used with 2.6.9, too. It hasn't been tested with anything more
+esoteric than a MTD partition starting in one erase region and
+ending in the next (is this even possible?)
 
-On 22 Dec 2004, at 20:43, xemc wrote:
-
-> LH7A400
-
-Sadly this is only an ARM9TDMI core and so misses out on the
-(substantial) benefits that the extra instructions in the 9EJ and
-11J architectures confer on such routines.  Packed arithmetic
-makes a huge difference to CRC16.
-
-I've been meaning to write some ARM SIMD routines for
-checksumming; if I can get permission to release them, I'll let you
-know.  (My employer is a bit paranoid...)
-
--J.
+--- linux-2.4.28/drivers/mtd/mtdpart.c	2004-12-19 16:02:48.000000000 +0100
++++ linux-eli/drivers/mtd/mtdpart.c	2004-12-19 20:47:15.000000000 +0100
+@@ -272,6 +272,7 @@
+ 			__list_del(prev, node->next);
+ 			if(slave->registered)
+ 				del_mtd_device(&slave->mtd);
++			kfree(slave->mtd.eraseregions);
+ 			kfree(slave);
+ 			node = prev;
+ 		}
+@@ -281,12 +282,98 @@
+ }
+ 
+ /*
+- * This function, given a master MTD object and a partition table, creates
++ * These functions, given a master MTD object and a partition table, creates
+  * and registers slave MTD objects which are bound to the master according to
+  * the partition definitions.
+  * (Q: should we register the master MTD object as well?)
+  */
+ 
++static void setup_erase_regions(struct mtd_info const *master,
++				struct mtd_info *slave, u_int32_t slave_offset)
++/*
++  Setup erase region info for slave devices.
++*/
++{
++#define region_end(region) (region.offset + region.erasesize * region.numblocks)
++	
++	struct mtd_erase_region_info *master_regions, *slave_regions;
++	unsigned first, last, ofs, n, remain;
++
++	slave->numeraseregions = 0;
++	if (master->numeraseregions == 1) {
++		slave->erasesize = master->erasesize;
++		return;
++	}
++	
++	master_regions = master->eraseregions;
++	slave->erasesize = 0;
++
++	first = 0;
++	while (region_end(master_regions[first]) <= slave_offset) ++first;
++	slave->erasesize = master_regions[first].erasesize;
++
++	last = first;
++	n = slave_offset + slave->size;
++	while (region_end(master_regions[last]) < n) {
++		++last;
++		
++		if (master_regions[last].erasesize > slave->erasesize)
++			slave->erasesize = master_regions[last].erasesize;
++	}
++
++	if (slave_offset % master_regions[first].erasesize) {
++	    printk("partition \"%s\" does not start on an erase"
++		   " block boundary -- forcing read-only\n", slave->name);
++	    goto force_read_only;
++	}
++	
++	slave_regions = kmalloc(sizeof(*slave_regions) * (last - first + 1),
++				GFP_KERNEL);
++	if (!slave_regions) {
++		printk("partition \"%s\": could not allocate memory for erase"
++		       " region information\n", slave->name);
++		printk("forcing read-only\n");
++		goto force_read_only;
++	}
++	
++	ofs = n = 0;
++	slave_regions[n].offset = ofs;
++	slave_regions[n].erasesize = master_regions[first].erasesize;
++	slave_regions[n].numblocks = master_regions[first].numblocks;
++	slave_regions[n].numblocks -=
++		(slave_offset - master_regions[first].offset)
++		/ slave_regions[n].erasesize;
++	ofs += slave_regions[n].numblocks * slave_regions[n].erasesize;
++
++	while (first + ++n < last) {
++		slave_regions[n].offset = ofs;
++		slave_regions[n].erasesize = master_regions[first + n].erasesize;
++		slave_regions[n].numblocks = master_regions[first + n].numblocks;
++		ofs += slave_regions[n].numblocks * slave_regions[n].erasesize;
++	}
++	
++	remain = slave->size - ofs;
++	
++	if (remain % master_regions[last].erasesize) {
++		printk("partition \"%s\" does not end on an erase block boundary\n"
++		       " -- forcing read-only\n", slave->name);
++		kfree(slave_regions);
++		goto force_read_only;
++	}
++		
++	slave_regions[n].offset = ofs;
++	slave_regions[n].erasesize = master_regions[last].erasesize;
++	slave_regions[n].numblocks = remain / master_regions[last].erasesize;
++
++	slave->eraseregions = slave_regions;
++	slave->numeraseregions = last - first + 1;
++	return;
++
++ force_read_only:
++	slave->flags &= ~(MTD_WRITEABLE | MTD_ERASEABLE);
++#undef region_end
++}
++
+ int add_mtd_partitions(struct mtd_info *master, 
+ 		       struct mtd_partition *parts,
+ 		       int nbparts)
+@@ -399,39 +486,8 @@
+ 			printk ("mtd: partition \"%s\" extends beyond the end of device \"%s\" -- size truncated to %#x\n",
+ 				parts[i].name, master->name, slave->mtd.size);
+ 		}
+-		if (master->numeraseregions>1) {
+-			/* Deal with variable erase size stuff */
+-			int i;
+-			struct mtd_erase_region_info *regions = master->eraseregions;
+-			
+-			/* Find the first erase regions which is part of this partition. */
+-			for (i=0; i < master->numeraseregions && slave->offset >= regions[i].offset; i++)
+-				;
+-
+-			for (i--; i < master->numeraseregions && slave->offset + slave->mtd.size > regions[i].offset; i++) {
+-				if (slave->mtd.erasesize < regions[i].erasesize) {
+-					slave->mtd.erasesize = regions[i].erasesize;
+-				}
+-			}
+-		} else {
+-			/* Single erase size */
+-			slave->mtd.erasesize = master->erasesize;
+-		}
+-
+-		if ((slave->mtd.flags & MTD_WRITEABLE) && 
+-		    (slave->offset % slave->mtd.erasesize)) {
+-			/* Doesn't start on a boundary of major erase size */
+-			/* FIXME: Let it be writable if it is on a boundary of _minor_ erase size though */
+-			slave->mtd.flags &= ~MTD_WRITEABLE;
+-			printk ("mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
+-				parts[i].name);
+-		}
+-		if ((slave->mtd.flags & MTD_WRITEABLE) && 
+-		    (slave->mtd.size % slave->mtd.erasesize)) {
+-			slave->mtd.flags &= ~MTD_WRITEABLE;
+-			printk ("mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
+-				parts[i].name);
+-		}
++		
++		setup_erase_regions(master, &slave->mtd, slave->offset);
+ 
+ 		if(parts[i].mtdp)
+ 		{	/* store the object pointer (caller may or may not register it */
