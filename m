@@ -1,19 +1,29 @@
-Received: from snifit.smb.utfors.se ([195.58.112.20])
+Received: from smtp-out.hamburg.pop.de ([195.222.210.86])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17giyE-0003kH-00
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2002 10:37:10 +0100
-Reply-To: <joakim.tjernlund@lumentis.se>
-From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Massive file corruption
-Date: Mon, 19 Aug 2002 11:37:06 +0200
-Message-ID: <IGEFJKJNHJDCBKALBJLLEEMHFFAA.joakim.tjernlund@lumentis.se>
+	id 17gkCX-0003sD-00
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2002 11:56:01 +0100
+Received: from mail.hamburg.pop.de ([193.98.9.7] helo=mail.provi.de)
+	by smtp-out.hamburg.pop.de with esmtp (Exim 3.22 #1)
+	id 17gk6W-0007rU-00
+	for linux-mtd@lists.infradead.org; Mon, 19 Aug 2002 12:49:48 +0200
+Received: from mail.jena.pop.de ([195.222.197.3])
+	by mail.provi.de with esmtp (Exim 3.20 #2)
+	id 17gk92-0000sh-00
+	for linux-mtd@lists.infradead.org; Mon, 19 Aug 2002 12:52:24 +0200
+Received: from goepel2.jena.provi.de (goepel2.jena.provi.de [195.222.197.91])
+	by mail.jena.pop.de (8.9.3/8.9.3) with ESMTP id MAA24748
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2002 12:55:54 +0200
+Received: from goepel.com (goepel109.goepel [172.16.1.109])
+	by goepel2.jena.provi.de (8.10.0/8.10.0) with ESMTP id g7JAtp226871
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2002 12:55:52 +0200
+Message-ID: <3D60CEBE.7090806@goepel.com>
+Date: Mon, 19 Aug 2002 12:55:58 +0200
+From: Michael Palme <m.palme@goepel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: newbie: dynamic partition creation possible
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1029623727.2142.495.camel@thomas.tec.linutronix.de>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,23 +35,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi again
+hello...
+i would like to know if it is possible to create flash dynamic 
+partitions (i mean other way than directly in the sources). in the howto 
+ive read it is impossible, but in some sources i found 
+part_type="static" -- and so i've concluded "dynamic" is also an option? 
+if this is possible can somebody explain the way to do it please.
 
-For the second time there has been massive file corrution on one of our
-boards.
+thanks in advance ... Michael Palme
 
-In /bin there was 3 files that had been corrupted, the first 4K was all zeroes.
-In /usr/bin, a ls gave me lots of Input/Output error and a load of CRC
-errors in dmesg.
+-- 
+-------------------------------
+Dipl.-Ing. (FH)
+Michael Palme
+software engineer
+Goepel electronic GmbH
 
-After reboot, ls in /usr/bin did not report Input/Output errors but there
-was more corrupted files in there, with the first 4K zeroed.
-
-Before this happened there was a lot of file I/O. ftp files to board, unpack them with rpm
-delete old files etc.
-
-No errors was reported during boot by JFFS2. Using the stable branch from ~3-4 months ago.
-
-Any ideas?
-
-            Jocke 
+mailto: m.palme@goepel.com
+phone:  +493641689682
+fax:    +493641689644
+inet:   http://www.goepel.com
+-------------------------------
