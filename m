@@ -1,15 +1,18 @@
-Received: from web50802.mail.yahoo.com ([206.190.38.111])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bad2r-0008Rn-6Z
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 12:13:55 -0400
-Message-ID: <20040616161345.33330.qmail@web50802.mail.yahoo.com>
-Date: Wed, 16 Jun 2004 09:13:45 -0700 (PDT)
-From: Slim <slimaffi@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <E1BacpZ-0008CJ-KT@canuck.infradead.org>
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bad4j-00009P-IT
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 12:15:46 -0400
+Message-ID: <40D07229.8030906@arcom.com>
+Date: Wed, 16 Jun 2004 17:15:37 +0100
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: [PATCH] Towards DiskOnChip support as a NAND driver
+To: Lucas Correia Villa Real <lucasvr@gobolinux.org>
+References: <200406161259.24278.lucasvr@gobolinux.org>
+In-Reply-To: <200406161259.24278.lucasvr@gobolinux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Am29LV128 support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'd like to help test the driver for DOC 2000 dip, but I have a few
-questions.  
+> 
+> Does anyone know if is there any patch lying around that implements access to 
+> Am29LV128 flash memory? I've googled a bit and searched on the archives, and 
+> it appears that some people were using Am29LV128 on Linux, but I got no 
+> references to links from where I could fetch their patches.
 
->     - Add bad block table (read-only) support for INFTL-based devices
-> (only
-> 2000TSOP for the moment)
+Shouldn't need patches.  Does it not work?  I'm using an AMD AM29LV128 
+with no problems here with MTD CVS from 2004/04/14.
 
-Is the doc2000 dip NFTL or INFTL?  With read only support, would I be
-able to create a filesystem to read?
+David Vrabel
+-- 
+David Vrabel, Design Engineer
 
->     - Add hardware ECC support for DOC2000 and Millenium/2000TSOP
-> (only
-> tested on 2000TSOP and needs more testing!)
-
-ECC - hardware error correction by the device?  Is this an optional
-enable in the driver?
-
-> Please realize that this needs a lot more testing.  I still haven't
-> gotten
-> JFFS2 to run properly with this 
-
-Does it support other filesystems (ext2/3)? 
-
-> Enjoy!
-
-Thanks to everyone working on this.  I've needed a driver for doc2000
-dip devices for a couple years now.
-
-Slim
-
-
-
-		
-__________________________________
-Do you Yahoo!?
-Take Yahoo! Mail with you! Get it on your mobile phone.
-http://mobile.yahoo.com/maildemo 
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
