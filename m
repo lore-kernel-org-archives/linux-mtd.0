@@ -1,21 +1,17 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from law14-oe60.law14.hotmail.com ([64.4.20.195] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19N6GC-0007tM-88
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 08:31:08 +0100
-Date: Tue, 3 Jun 2003 09:31:31 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Vikram Mehta <vm6580@hotmail.com>
-Message-ID: <20030603073130.GA23334@wohnheim.fh-wedel.de>
-References: <Law14-OE16a0SNv4hUr0002f2eb@hotmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Law14-OE16a0SNv4hUr0002f2eb@hotmail.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: carolyn.j.smith@exgate.tek.com
-cc: mtd <linux-mtd@lists.infradead.org>
+	id 19N6sd-00084Q-2a
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Jun 2003 09:10:51 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Date: Tue, 3 Jun 2003 13:41:48 -0700
+MIME-Version: 1.0
+Message-ID: <Law14-OE60hyN0a0SMh0002fd22@hotmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 cc: uclinux-dev@uclinux.org
-Subject: Re: AMD29DL323GB flash chip support
+Subject: cfi_probe_chip  problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 June 2003 10:36:29 -0700, Vikram Mehta wrote:
-> 
-> I was going through the code in files in drivers/mtd directory
-> 
-> In jedec_probe.c
-> in amd_flash_info jedec_table structure, I did not find the chip my board
-> has i.e. AMD29DL323GB.
-> So does that mean MTD will not work on my chip. I am asking this becuase
-> kernel built with MTD and JFFS2 support does not boot.
+Hi people.
+i built mtd and jffs2 support in my kernel with the flash chip is
+AM29DL323GB .
 
-The first few lines in jedec.c say this:
-/* JEDEC Flash Interface.
- * This is an older type of interface for self programming flash. It is 
- * commonly use in older AMD chips and is obsolete compared with CFI.
+Now my kernel doesnot boot  after I have put in MTD and JFFS2 supoort.
 
-In other words, don't bother fixing jedec, if it doesn't work.  Try
-again with cfi and if that doesn't work either, fix cfi or ask for
-help on the list.
+I am using CYGWN plus I am not very well versed with oops tracing and stuff
+but I have been able to find out where theproblem is
 
-Carolyn, this applies to your problem as well.  There have been other
-developers working with 64bit flashes, searching the archives you
-should find some information or at least some names.
+Let me tell u in detail with a map
+cfi_probe     calls
+     cfi_probe_chip. calls
+             cfi_send_gen_cmd calls
+                              cfi_build_cmd
+                            cfi_build_cmd  returns
+       cfi_send_gen_cmd:   code
+                        if (prev_val)
+                     *prev_val = cfi_read(map, addr); doesnot satify
+         cfi_send_gen_cmd     calls
+                           cfi_write     The values called are  __u32
+val=250 and __u32 addr = 0
+                            cfi_write calls
+                                   mymap->write16 calls
+                                      __raw_writew(d, map->map_priv_1 +
+adr);
+                                       __raw_writew(d, map->map_priv_1 +
+adr);      returns
+                                     mymap->write16  returns
+                           cfi_write retruns
+        cfi_send_gen_cmd  returns
+cfi_probe_chip again calls
+               cfi_send_gen_cmd
+                       .........similar to above stack
+                              cfi_write     The values called are  __u32
+val=152 and __u32 addr = 170
+cfi_write calls
+                                   mymap->write16 calls
+                                       __raw_writew(d, map->map_priv_1 +
+adr);
+                                                        DOES NOT RETURN
+Whay could be wrong here?
 
-Jörn
-
--- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface. 
--- Doug MacIlroy
+Help me here
+Vikram Mehta
