@@ -1,42 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
-Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13MrhB-0003Gx-00
-	for mtd-list@infradead.org; Thu, 10 Aug 2000 13:44:25 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13Mrh8-0003Gr-00
-	for mtd@infradead.org; Thu, 10 Aug 2000 13:44:22 +0100
-From: David Woodhouse <dwmw2@redhat.com>
-In-Reply-To: <ylb66p947pd.fsf@ganglot.ifi.uio.no> 
-References: <ylb66p947pd.fsf@ganglot.ifi.uio.no> 
-To: Sigurd Urdahl <sigurdur@ifi.uio.no>
-Cc: mtd@infradead.org
-Subject: Re: Has MTD production quality support for DOC2000? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 10 Aug 2000 13:44:19 +0100
-Message-ID: <5585.965911459@cygnus.co.uk>
+Received: from majordomo by infradead.org with local (Exim 3.16 #2)
+	id 13N278-0005JJ-00
+	for mtd-list@infradead.org; Fri, 11 Aug 2000 00:51:54 +0100
+Received: from [206.57.94.212] (helo=devel.ftel.com)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13N276-0005JD-00
+	for mtd@infradead.org; Fri, 11 Aug 2000 00:51:53 +0100
+Message-Id: <200008102356.QAA02347@devel.ftel.com>
+Date: Thu, 10 Aug 2000 16:56:41 -0700 (MST)
+To: dwmw2@redhat.com
+Cc: sigurdur@ifi.uio.no, mtd@infradead.org
+From: Mike Kilburn <mkilburn@ftel.net>
+Subject: Re[2]: Has MTD production quality support for DOC2000?
+In-Reply-To: <5585.965911459@cygnus.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+David Woodhouse <dwmw2@redhat.com> wrote:
+> 
+> Linking the M-Systems drivers into your kernel will place _you_ in violation
+> of the GPL and you may be sued, so why not help out with the MTD drivers?
+> 
 
-sigurdur@ifi.uio.no said:
->  I'm quite new at embedding my penguin, and will have to embedd it on
-> a DOC2000. But since I'm new at this I am quite confused... I am
-> considering going with MTD instead of m-sys drivers, but after
-> searching the archives I'm still not sure on wether MTD is stable
-> enough for production or not, so please help:=) 
-
-Not yet, if you want to write to the device. Nobody at the moment seems to 
-be working very fast on it, and I've been busy with JFFS recently.
-
-Linking the M-Systems drivers into your kernel will place _you_ in violation
-of the GPL and you may be sued, so why not help out with the MTD drivers?
-
-The support is mostly there - it just needs to be made a little more robust.
-
---
-dwmw2
+Also, last I checked, the M-Systems driver disables interrupts for quite
+a long time while writing to the device. This makes it unusable in
+a real-time embedded system. Switch to a SanDisk if you can.
 
 
 
