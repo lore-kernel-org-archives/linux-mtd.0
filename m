@@ -1,22 +1,16 @@
-Received: from mail017.syd.optusnet.com.au ([210.49.20.175])
+Received: from school.cyberec.com ([202.153.122.103])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17K735-0003cE-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 01:40:43 +0100
-Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
-	by mail017.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g5I0edX17771
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 10:40:39 +1000
-Received: from k9.ctam.local ([192.168.0.55] helo=ctam.com.au)
-	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
-	id 17K730-0000tf-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 10:40:38 +1000
-Message-ID: <3D0E8185.2080507@ctam.com.au>
-Date: Tue, 18 Jun 2002 10:40:37 +1000
-From: Brendan J Simon <brendan.simon@ctam.com.au>
-Reply-To: brendan.simon@ctam.com.au
+	id 17K9Jy-0003pO-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 04:06:18 +0100
+Received: from emsoftltd.com (ip-244-195.cyberec.com [202.60.244.195])
+	by school.cyberec.com (8.11.6/8.11.6) with ESMTP id g5I369T26020
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 11:06:12 +0800
+Message-ID: <3D0EA22F.9050801@emsoftltd.com>
+Date: Tue, 18 Jun 2002 10:59:59 +0800
+From: Jason Chan <jason@emsoftltd.com>
 MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: X Windows Performance with DOC 2000
-References: <AIEOIMKIOAAJKHJOGAEFMEDLCEAA.david@forcedpotato.com>
+To: linux-mtd@lists.infradead.org
+Subject: How to configure MTD so that JFFS2 work on 7312 NandFlash?
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -30,37 +24,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Can you save it to another computer via NFS ?
+Hi all,
+    I am trying to configure MTD NandFlash and JFFS2 on EP7312 NandFlash 
+driver.
+However, when I try to access, it output "I/O Error".
+But when the kernel bootup, I can see that the kernel successfully find 
+out the nandflash device. So how can I make the JFFS2 and MTD work on 7312?
 
+-- 
+Best Regards,
 
-David Cooper wrote:
-
->Thanks for the tip.
->
->I tried this but, of course, the screen goes blank, system hangs and I can
->never look at the xinit.log file.
->
->When I do a hard reboot, this file is gone.
->
->Cheers,
->
->David Cooper
->
->-----Original Message-----
->From: linux-mtd-admin@lists.infradead.org
->[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ilguiz Latypov
->Sent: Monday, June 17, 2002 6:32 PM
->To: David Cooper
->Cc: Linux MTD
->Subject: RE: X Windows Performance with DOC 2000
->
->
->
->Will this line log anything meaningful?
->
->   xinit > /tmp/xinit.log 2>&1
->
->Ilguiz
->
->On Mon, 17 Jun 2002, David Cooper wrote:
->
+Jason Chan
+Emsoft Ltd.
