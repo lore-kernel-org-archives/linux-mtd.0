@@ -1,25 +1,19 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CrIjw-0002Wr-Ua
-	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2005 11:31:30 -0500
-Date: Wed, 19 Jan 2005 17:31:23 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050119163123.GA29465@wohnheim.fh-wedel.de>
-References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0501191305530.8174@phoenix.infradead.org>
-	<20050119152427.GB26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191526140.8174@phoenix.infradead.org>
-	<20050119153233.GD26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191537440.8174@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0501191537440.8174@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-Subject: Re: JFFS3 & performance
+Date: Wed, 19 Jan 2005 16:56:14 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+In-Reply-To: <Pine.LNX.4.58.0501191309140.8174@phoenix.infradead.org>
+Message-ID: <Pine.LNX.4.58.0501191648070.8174@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501131219480.17331@phoenix.infradead.org>
+	<1105619501.26551.163.camel@hades.cambridge.redhat.com>
+	<Pine.LNX.4.58.0501131317560.17331@phoenix.infradead.org>
+	<6934efce05011810013ea479b@mail.gmail.com>
+	<Pine.LNX.4.58.0501191309140.8174@phoenix.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: CRC on Read-Only partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 January 2005 15:51:14 +0000, Artem B. Bityuckiy wrote:
+On Wed, 19 Jan 2005, Artem B. Bityuckiy wrote:
+
+> On Tue, 18 Jan 2005, Jared Hulbert wrote:
+> 
+> > My understanding is that NAND technology is prone to read error even
+> > if you aren't programming or eraseing it.   Such errors can occur
+> > randomly.  By that I mean the data reads fine and then its bad and
+> > then it reads fine...
 > > 
-> Hmm. Don't know if this good.
+> Hmm. Thanks. So we just need to re-read several times.
 > 
-> In case of network CRCs are always needed and the algorithm is the same.
+Ok guys, I looked through documentation and articles and have not 
+found anything which may approve this.
+
+The question is: if we've read page and encounter ECC error, is it 
+possible that if we re-read it several times we will have no errors? This 
+means does NAND technology assume random occasional bit flips which go 
+away after we re-read page?
+
+I do not mean solar rays, radiation, etc. I only mean NAND technology 
+itself.
+
+Would be good to have some URL.
+
+P.S. :
+Toshiba's guide stands bit flipping is possible, but they stay until block 
+is erased. Re-read as many times as yiu want - you will still have this 
+bit error. But this doesn't mean block is bad - erase the block and be 
+happy.
+
+
+> --
+> Best Regards,
+> Artem B. Bityuckiy,
+> St.-Petersburg, Russia.
 > 
-> In our case MTD is not dedicated to JFFS2. It is consceptually wrong to 
-> implement this on MTD layer. This implies one more operation to drivers... 
-> And then one may want to use another checksum algorith.... Implement yet 
-> another operation? Doubts... (even understanding that this may lead to 
-> better performance...). Thinking more needed.
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-Yup, it's fairly ugly.  Some ugliness in the name of performance is
-fine, so benchmarks should decide.
-
-Jörn
-
--- 
-More computing sins are committed in the name of efficiency (without
-necessarily achieving it) than for any other single reason - including
-blind stupidity.
--- W. A. Wulf 
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
