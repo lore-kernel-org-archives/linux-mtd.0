@@ -1,16 +1,14 @@
-Received: from [66.78.16.3] (helo=host2.hosting4everyone.com)
+Received: from maila.telia.com ([194.22.194.231])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nNBN-00043u-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 17:13:57 +0000
-Received: from ns.acuratech.com ([216.191.198.163] helo=MTG016)
-	by host2.hosting4everyone.com with smtp (Exim 3.34 #1)
-	id 16nNM2-0000L9-00
-	for linux-mtd@lists.infradead.org; Tue, 19 Mar 2002 12:24:58 -0500
-Message-ID: <001201c1cf6b$64df4a50$be04010a@MTG016>
-From: "Sebastian" <sebastian.vaitus@masstechgroup.com>
+	id 16nOaM-00048r-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 18:43:50 +0000
+Message-ID: <004c01c1cf77$9f28e5c0$0200a8c0@telia.com>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
 To: <linux-mtd@lists.infradead.org>
-Subject: No space left on device
-Date: Tue, 19 Mar 2002 12:27:47 -0500
+Cc: <dwmw2@infradead.org>
+References: <200203061645.g26Gjl806741@skylab.outpostsentinel.com>
+Subject: compr_zlib.c
+Date: Tue, 19 Mar 2002 19:55:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -26,21 +24,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+OK, a new compression type will be cleaner. What should be done with compression types 
+not supported? Can't say that I understand the logic behind the unsupported nodes. 
 
-I'm trying to use JFFS2 on a 512K AMD (AM29F040B) flash chip (8 erase
-blocks) installed on the IBM Walnut board. I was able to create a JFFS2
-image with mkfs.jffs2, erase the flash, and then copy the image to the flash
-( about 200 bytes). I can mount the mtdblock and browse the files on the
-JFFS2 file system, but I cannot make any changes to the existing files or
-add new ones. Everytime I try to modify it I get the 'No space left on
-device' error. I had a quick look through the JFFS2 code and I see that
-there has to be at least 5 free erase blocks (+ data) for the FS to function
-properly ... but I have 8! I tried changing JFFS2_RESERVED_BLOCKS_BASE from
-3 to 1 (which gives a total of 3 blocks for minimum requirement) and it
-still didn't work. Am I missing something here? Do I have to pad my image
-with 0xFF and make it 512K before I copy it? Is there another way to make
-the image and copy it to the flash ... etc?
+What do you think about STREAM_END_SPACE? Should it be changed to something bigger?
 
-Regards,
-Sebastian Vaitus
+What is the maximum amount of data JFFS2 will try to compress in one go? I am
+thinking of adjusting  windowBits and memLevel, now they default to 128 KB each which
+seems a bit too much.
+
+Will you accept a patch against the stable branch?
+
+Also there has been a few performance improvements lately and I would like to see them in the
+stable branch as well. We are using them all and no problems so far. Any chance that will
+happen?
+
+
+       Jocke
+
+On Tue, 19 Mar 2002, Joakim Tjernlund wrote:
+
+> No comments so far.
+> Anyone?
+
+Looks good. Suspect we should make it a new compression type instead, and 
+fix the mount routine to check for compression types we don't support, 
+like we check for node types we don't support.
+
+-- 
+dwmw2
