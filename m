@@ -1,17 +1,16 @@
-Received: from [211.47.47.10] (helo=www.openers.co.kr)
+Received: from ip68-6-32-25.sb.sd.cox.net ([68.6.32.25] helo=speedy.datawave.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ckni-0002rZ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 10:13:38 +0000
-Message-ID: <03d101c1b866$9125c0b0$126171d3@caesar>
-From: =?ks_c_5601-1987?B?sei/tcij?= <yhkim@openers.co.kr>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: problem with ftl_format 
-Date: Mon, 18 Feb 2002 19:25:20 +0900
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 8bit
+	id 16cppU-0007CR-00
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 15:35:48 +0000
+From: "Brian J. Fox" <bfox@ua.com>
+To: rob@sysgo.de
+CC: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	joern@wohnheim.fh-wedel.de
+In-reply-to: <Pine.LNX.4.21.0202180915200.5439-100000@dagobert.svc.sysgo.de>
+	(message from Robert Kaiser on Mon, 18 Feb 2002 09:48:51 +0100 (MET))
+Subject: Re: MTD concat layer
+Message-Id: <E16cq07-0004Hc-00@speedy.datawave.net>
+Date: Mon, 18 Feb 2002 07:46:47 -0800
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +22,48 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-No, it just print error message and return
+   Date: Mon, 18 Feb 2002 09:48:51 +0100 (MET)
+   From: Robert Kaiser <rob@sysgo.de>
 
------ Original Message -----
-From: "David Woodhouse" <dwmw2@infradead.org>
-To: "°æe¢Ø•ÏE°Ã" <yhkim@openers.co.kr>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Monday, February 18, 2002 6:49 PM
-Subject: Re: problem with ftl_format
+   > In order to achieve predictable behavior, and fewer bugs in the driver
+   > overall, functions should simply refuse to operate on parameters that
+   > fall out-of-bounds, and should return an error which specifies why
+   > nothing happened.
 
+   Now, here comes the problem. In the context of an erase function,
+   what does "predictable behavior" mean ? If it returns EINVAL, the caller
+   can see that they passed a faulty parameter, so does it make any
+   difference wether some of the specified flash range have been erased in
+   the process?
 
->
-> yhkim@openers.co.kr said:
-> >  I am building MTD/FTL driver on NAND Flash. When formating the mtd(/
-> > dev/mtd0) with ftl_format, format operation stops proceeding becaus of
-> > a bad block. why one bad block leads format operation to fail? Anybody
-> > could direct me how to handle this problem?
-> >
->
-> Er, make ftl_format mark the block bad and continue?
->
-> --
-> dwmw2
+Sure.  Erasing the blocks *changes* the state of the world from a
+predictable one to an unpredictable one.
+
+   By specifying a certain area of flash to be erased, the user has by
+   definition given up any hope of seeing the data in that area again.
+
+If the arguments are invalid, the code that calculated them is
+probably invalid.  Erasing the blocks is simply mean, and irreversible.
+
+   I think one can compare this to a read() function: if read() returns
+   an error, would you expect that the buffer that you passed to it
+   still contains all of its previous data ?
+
+It wouldn't matter if the buffer contained partial data, or no data,
+or the previous data.  You haven't done something that is user visibly
+irreversible!
+
+   > Hab' ich meine Gedanken gut eklaren?
+   > 
+
+   Ja. Ich meine auch ?
+
+Ja, aber "read" ist nicht "delete"!
+
+MBD,
+
+Brian
+== The Difference Between Cultures: ==
+    Einigkeit und Recht und Freiheit
+    Liberte', E'galite', Fraternite'
+    Sex, drugs and rock'n'roll
