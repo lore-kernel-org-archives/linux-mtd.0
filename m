@@ -1,19 +1,21 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1ComwY-0005Zb-3q
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:10:08 -0500
-Date: Wed, 12 Jan 2005 19:10:06 +0100
+	id 1Con3m-0005kb-VD
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:17:37 -0500
+Date: Wed, 12 Jan 2005 19:17:36 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050112181006.GI25638@wohnheim.fh-wedel.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20050112181736.GJ25638@wohnheim.fh-wedel.de>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
+	<1105488400.17853.179.camel@tglx.tec.linutronix.de>
+	<20050112165911.GE25638@wohnheim.fh-wedel.de>
+	<1105551420.17853.256.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
+In-Reply-To: <1105551420.17853.256.camel@tglx.tec.linutronix.de>
 Cc: David Woodhouse <dwmw2@infradead.org>,
 	MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS3 & performance
@@ -26,88 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 January 2005 09:15:42 +0000, Artem B. Bityuckiy wrote:
+On Wed, 12 January 2005 18:37:00 +0100, Thomas Gleixner wrote:
+> On Wed, 2005-01-12 at 17:59 +0100, Jörn Engel wrote:
+> > Ok, you completely ignore the central issue.  Looks like I was unclear
+> > about it.
+> > 
+> > What happens, if crucial data in flash gets corrupted and is unusable?
+> > Say, /sbin/init.
 > 
-> please, read the paper 
-> http://www.semicon.toshiba.co.jp/eng/prd/memory/doc/pdf/nand_applicationguide_e.pdf
-> I like this paper.
-
-Your ability to come up with excellent papers is astounding!
-
-> I've just reread it and now I have no doubts that CRCs 
-> are required on NAND. :-)
+> I totaly agree that it must be sure that stuff does not get corrupted. 
 > 
-> Shortly: errors are normal phenomena on NAND devices. Errors are mostly 
-> handled by NAND ECCs, but
-> JFFS[23] MUST take care about failures and handle them properly. There 
-> are permanent and occasional
-> errors exist. Blocks with permanent errors must be marked bad and it is 
-> good to recover data...
+> We use MTD for embedded systems since long and I'm well aware that data
+> might be corrupted. So most of the systems have a ro partition for
+> crucial stuff which only is mounted rw for updates under safe
+> conditions. The application data is living on a different partition.
+> 
+> For critical systems we have a backup emergency root, which we can
+> activate when a update smashes the normal rootfs. There are other
+> userspace possibilities to take care of backups and fallback.
+> 
+> So I don't see the point of an enforced mirror in MTD which will bring
+> more complexity than it is worth, but I might have missed some points.
 
-Ok, let me distinguish between the different problems:
+So my last mail in this thread for NAND analysis.  It basically states
+that data corruption is nothing we have to worry about a lot.  Maybe a
+little, depending on your preferred reliability.
 
+Same goes for NOR, DRAM and hard drives, so I feel pretty safe.
 
-  Bad blocks
-We definitely need to handle those, no doubt.  Problem is not that
-some blocks _are_ bad, it's that they _become_ bad.  So, when and how
-does this happen?
+Now, if some El-Cheapo manufacturer would come along and create an
+ultra-cheap and ultra-unreliable new type of flash, we might need to
+reconsider something like the mirroring, but only for this particular
+type of flash.  Let's hope this never happens.
 
-
-  Initial bad blocks
-Should be simple to handle.  No crucial data was ever written to those
-blocks, so we don't have a problem.
-
-
-  Blocks that fail during use
-Quote: "Therefore, blocks should be marked as bad and no longer
-accessed if there is either a block erase failure or a page program
-failure."
-
-During erase, by definition those blocks don't hold crucial data.  Not
-a problem.  Page program is slightly worse, but it only means that we
-have to program a different block instead.  Make sure you don't use
-the partial programming thing they hinted at and no crucial data is
-lost.  Again, harmless.
-
-
-  Permanent Failure
-Those can be noticed during either erase or program, so the above
-applies.  Harmless.
-
-
-  Soft errors
-They occur at a rate of 10^-10 or 2^-30 for 1-bit errors.  Those are
-corrected by the ECC, so no data is lost.  Assuming two such incidents
-are completely independent, 2-bit errors occur at a rate of 10^-20 or
-2^-60.  Let's do some math.
-
-Flash sizes today are in the 2^30 bit (128MiB) range.  Erase cycles
-are about 1 Million or 2^20, so total bit writes per medium are about
-2^50.  That means there is a 2^-10 remaining chance to experience a
-2-bit error during the lifetime of the flash.
-
-In other words, one out of 1000 flashes will have a non-recoverable
-error sometime during it's life cycle.  Doesn't exactly make me happy,
-but it's not horrible either.  In cases where little data is written
-to flash or other components (cpu, power regulators) die before the
-flash does, this is even less of an issue.
-
-For 3-bit errors, those that are not detected by ECC logic anymore,
-the chances are 2^-40 or practically non-existant.
-
-Well, mostly harmless.
-
-
-
-What does that mean for this discussion?  On Toshiba's NAND flashes,
-according to their claims, jffs2 checksums won't catch any errors that
-wouldn't already be caught either by ECC or during write/erase.
-
-Am I wrong?
+So again, I don't care too much, whether jffs2 can scavenge some bytes
+of data from a rotten block, simply because this never happens (for
+all practical purposes).  If it's simple enough, sure, go ahead.  If
+it's complicated and ugly, please don't.
 
 Jörn
 
 -- 
-Measure. Don't tune for speed until you've measured, and even then
-don't unless one part of the code overwhelms the rest.
--- Rob Pike
+It's just what we asked for, but not what we want!
+-- anonymous
