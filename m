@@ -1,18 +1,18 @@
 Received: from [2002:d412:e8ba::1] (helo=caramon.arm.linux.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BtQf9-0007Ru-5f
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2004 08:51:04 -0400
-Date: Sat, 7 Aug 2004 13:50:56 +0100
+	id 1BtR5m-0007ew-SF
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2004 09:18:35 -0400
+Date: Sat, 7 Aug 2004 14:18:29 +0100
 From: Russell King <rmk+lkml@arm.linux.org.uk>
 To: Linux Kernel List <linux-kernel@vger.kernel.org>,
 	linux-mtd@lists.infradead.org
-Message-ID: <20040807135056.C2805@flint.arm.linux.org.uk>
+Message-ID: <20040807141829.D2805@flint.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Sender: Russell King <rmk@arm.linux.org.uk>
 Cc: 
-Subject: [BUG] 2.6.8-rc3 redboot.c tries to kmalloc 256K
+Subject: [BUG] 2.6.8-rc3 jffs2 unable to read filesystems
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The following two messages sum up the problem:
 
-With 2.6.8-rc3, I'm unable to mount the jffs2 root filesystem on one of
-my test systems.  The system uses redboot, so has a redboot partition
-table.  However, the kernel was not detecting the table.
+JFFS2 compression type 0x5a06 not avaiable.
+Error: jffs2_decompress returned -5
 
-After prodding about for a while, I've found that redboot.c seems to
-be trying to kmalloc 256K of memory.   The largest size that kmalloc
-supports is 128K on MMUfull systems.
+It appears that a jffs2 change committed on July 15th has caused recent
+2.6.8-rc kernels to be incompatible with jffs2 filesystems modified by
+previous kernel versions.
 
-static int parse_redboot_partitions(struct mtd_info *master,
-                             struct mtd_partition **pparts,
-                             unsigned long fis_origin)
-{
-	...
-printk("erasesize: %d\n", master->erasesize);
-        buf = kmalloc(master->erasesize, GFP_KERNEL);
+The "new format" jffs2 filesystem uses both "compr" and "usercompr"
+of the jffs2_raw_inode structure, whereas previous implementations
+left "usercompr" uninitialised and thus contains random data.
 
-        if (!buf)
-                return -ENOMEM;
+This can be seen by tracing through the code from jffs2_alloc_raw_inode()
+and noticing that previous implementations do not initialise this field -
+AFAICS kmem_cache_alloc() does not guarantee that memory returned by
+this function will be initialised.
 
-produces:
-
-sa1100-0: Found 2 x16 devices at 0x0 in 32-bit bank
- Intel/Sharp Extended Query Table at 0x0031
-cfi_cmdset_0001: Erase suspend on write enabled
-Using buffer write method
-SA1100 flash: CFI device at 0x00000000, 32MiB, 32-bit
-CFI: Found no sa1100-1 device at location zero
-cmdlinepart: c03e69ec
-cmdlinepart: returned -22
-RedBoot: c03e69d8
-erasesize: 262144
-RedBoot: returned -12
-SA1100 flash: using static partition definition
-Creating 3 MTD partitions on "sa1100-0":
-0x00000000-0x00040000 : "bootloader"
-0x00040000-0x00080000 : "bootloader params"
-0x00080000-0x02000000 : "jffs"
-...
-Kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
+Therefore, recent 2.6.8-rc kernels must _NOT_ use this field if they
+wish to remain compatible with existing jffs2 filesystems.
 
 -- 
 Russell King
