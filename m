@@ -1,20 +1,15 @@
-Received: from nwd2mime2.analog.com ([137.71.25.114])
+Received: from f83.pav1.hotmail.com ([64.4.31.83] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 181dHn-0008Pa-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2002 02:47:47 +0100
-Message-ID: <3DACC52B.6311412B@analog.com>
-Date: Tue, 15 Oct 2002 18:47:23 -0700
-From: Justin Wojdacki <justin.wojdacki@analog.com>
-Reply-To: justin.wojdacki@analog.com
-MIME-Version: 1.0
-To: Russ Dill <Russ.Dill@asu.edu>
-CC: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: Hoping for a little insight
-References: <3DAC9026.B3F4550B@analog.com>
-		<11684.1034720007@passion.cambridge.redhat.com>
-		<3DACA2ED.4FACBDFD@analog.com> <1034725275.21133.8.camel@timmy>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 181gFX-0000HD-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2002 05:57:40 +0100
+From: "vijay vijay" <vijay_peshkar@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: vijay.peshkar@wipro.com
+Subject: mtd and cramfs on PC target?.
+Date: Wed, 16 Oct 2002 04:56:56 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F83tYwlib4g3Sv0YKpD000000ec@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,13 +21,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Is this helpful?
+Hi Friends,
 
-jffs2_reserve_space_gc of 196 bytes for garbage_collect_dnode failed:
--4
+Now that have got some ffs basics, want to get a hands on with  MTD and 
+cramfs.
+Getting hold of a real board is diffcult and hence want to try out on a PC 
+target.
+Is it possible?. How to tell cramfs and mtd to use PC resources instead of 
+flash?.
 
--- 
--------------------------------------------------
-Justin Wojdacki        
-justin.wojdacki@analog.com         (408) 350-5032
-Communications Processors Group -- Analog Devices
+Thanks for all specially to David in helping me bootstrap on MTD & ffs.
+
+Regards,
+Vijay
+
+_________________________________________________________________
+Unlimited Internet access -- and 2 months free!  Try MSN. 
+http://resourcecenter.msn.com/access/plans/2monthsfree.asp
