@@ -1,10 +1,10 @@
-Received: from ptb-relay02.plus.net ([212.159.14.213])
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D8bsx-0005KU-OT
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 05:24:20 -0500
+	id 1D8c0D-0005Up-O9
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2005 05:31:50 -0500
 From: Gareth Bult <gareth@linux.co.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1110234614.4591.21.camel@localhost.localdomain>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050307223329.GG26318@wohnheim.fh-wedel.de>
 References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
 	<20050307110413.GD2198@wohnheim.fh-wedel.de>
 	<1110200816.11535.15.camel@squizzey.bult.co.uk>
@@ -15,15 +15,14 @@ References: <1110043569.11425.63.camel@squizzey.bult.co.uk>
 	<1110229064.11284.18.camel@squizzey.bult.co.uk>
 	<1110230771.4591.12.camel@localhost.localdomain>
 	<1110233417.11311.58.camel@squizzey.bult.co.uk>
-	<1110234015.4591.16.camel@localhost.localdomain>
-	<1110234361.11310.63.camel@squizzey.bult.co.uk>
-	<1110234614.4591.21.camel@localhost.localdomain>
+	<20050307223329.GG26318@wohnheim.fh-wedel.de>
 Content-Type: text/plain
-Date: Tue, 08 Mar 2005 10:24:17 +0000
-Message-Id: <1110277457.11692.7.camel@squizzey.bult.co.uk>
+Date: Tue, 08 Mar 2005 10:31:47 +0000
+Message-Id: <1110277907.11690.15.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Subject: Re: Re; MTD (2) Block Driver broken
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -34,21 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Which were all accepted on the list apart from the one which was HTML.
+> Only after testing did I submit the code to cvs, so I was not
+> overconfident.  Stupid is more to the point.
 
-Mmm, as I say, I don't recall the detail.
+Stupid is a term that's often misused and misunderstood , I try to avoid
+it. Just because someone makes a mistake doesn't make them stupid ..
+possible prone to making errors, possibly overconfident, possibly
+lacking in experience .. possibly just unlucky.
 
-Like many mailers, mine prefers to send HTML by default. Occasionally
-one will forget one is posting to a list where people have some sort of
-religious objection to html and forget to uncheck the appropriate
-buttons to format as pure text.
+> Well, the credit is free advertisement.  On the next job interview, a
+> "just grep the kernel sources" comment explains my qualifications and
+> may keep me from unemployment here or raise my salary there.
 
-> Of the HTML mail we reject, most of it is spam -- I'm perfectly content
-> with rejecting HTML mail to the list, and it's not a particularly
-> uncommon occurrence. If you have content which can only sanely be
-> represented in HTML form, then you can always send it as an attachment.
+Mmm, not something I tend to worry about.
 
-Well, it's your list.
+> Credit is never the reason to write code in the first place.  My
+> block2mtd patches were written for fun and because I would like to
+> replace my hard driver with a USB key.  But the free extra doesn't
+> hurt, at least until I win the lottery (and I never play).
+
+I guess it depends on the sort of work you're after. If you're talking
+short contracts - sure.
+
+If you're talking "real" work, it doesn't take more than a couple of
+days to see what someone can "really" do. Having one's name on a Linux
+device driver is hardly indicative on one's ability.
+
+(!)
+
+Gareth.
 
 --
 Linux.co.uk - promoting open source software in the UK
