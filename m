@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16U9OM-0003Jo-00
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 16:39:54 +0000
+	id 16UAFg-0003NE-00
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2002 17:35:00 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200201251626.g0PGQJQ32684@vindaloo.ras.ucalgary.ca> 
-References: <200201251626.g0PGQJQ32684@vindaloo.ras.ucalgary.ca>  <20020125103941.26958.qmail@web8101.in.yahoo.com> <4181.1011956000@redhat.com> 
-To: Richard Gooch <rgooch@ras.ucalgary.ca>
+In-Reply-To: <NCBBIINEHIPFGJPLBEIFEEKMDDAA.acurtis@onz.com> 
+References: <NCBBIINEHIPFGJPLBEIFEEKMDDAA.acurtis@onz.com> 
+To: acurtis@onz.com
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Cf Card vs DiskOnChip 
+Subject: Re: JFFS2 and NAND Flash 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 25 Jan 2002 16:50:46 +0000
-Message-ID: <16566.1011977446@redhat.com>
+Date: Fri, 25 Jan 2002 17:45:11 +0000
+Message-ID: <26037.1011980711@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,14 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-rgooch@ras.ucalgary.ca said:
->  What kind of reliability problems? Cards that are DOA? Or random bit
-> errors during usage? 
+acurtis@onz.com said:
+> Could someone explain what the current limitations are implementing
+> JFFS2 on NANAD flash. I just made a recommendation to management to go
+> this way so I was surprised to see the prior posting. I would be
+> willing to fix this problem if a little background could be provided. 
 
-Death on power failure.
-
-Vipin's report at http://www.embeddedlinuxworks.com/articles/jffs_guide.html
-seems fairly typical.
+http://mhonarc.axis.se/jffs-dev/msg01140.html
 
 --
 dwmw2
