@@ -1,18 +1,21 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from smtp-102.nerim.net ([62.4.16.102] helo=kraid.nerim.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eC29-0000hH-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 10:35:01 +0000
-Date: Thu, 30 Jan 2003 12:05:57 +0100 (CET)
-From: Marius Groeger <mag@sysgo.de>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: PATCH: support for Arctic/Beech/Ebony 
-In-Reply-To: <4504.1043923350@passion.cambridge.redhat.com>
-Message-ID: <Pine.LNX.4.52.0301301203510.3890@mag.devdep.sysgo.de>
-References: <Pine.LNX.4.52.0301281755410.19671@mag.devdep.sysgo.de>
- <4504.1043923350@passion.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 18eE9J-0000zw-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 12:50:33 +0000
+Received: from bandit.lilotux.net (lilotux.net [62.212.107.33])
+	by kraid.nerim.net (Postfix) with ESMTP id 603DF40E31
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 14:21:33 +0100 (CET)
+Received: from slist by bandit.lilotux.net with local (Exim 3.35 #1 (Debian))
+	id 18eEdJ-0003aV-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 14:21:33 +0100
+Date: Thu, 30 Jan 2003 14:21:33 +0100
+From: Stephane List <stephane.list@lilotux.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: crc32.h
+Message-ID: <20030130132133.GA13604@lilotux.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +27,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 30 Jan 2003, David Woodhouse wrote:
+I'm using the CVS source code.
+All files in "fs/jffs2" use #include <linux/crc32.h>
+But this file is not part of 2.4.x kernel it's only in 2.5 
 
-> Please also update Kconfig, and add $Id$ headers to new files.
 
-Done. I also added an entry for the MBX860 and some "depends on 8xx"
-to the Kconfig to match the logic in Config.in.
-
-Regards,
-Marius
-
------------------------------------------------------------------------------
-Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
-Software Engineering     Embedded and Real-Time Software    www.sysgo.de
-Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
-FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
+B.R.
+Stephane
+-- 
+Stephane List
+http://slist.lilotux.net
