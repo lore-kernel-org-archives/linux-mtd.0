@@ -1,17 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Miernik <miernik@ctnet.pl>
-In-Reply-To: <20031107004945.GA25590@ctnet.pl>
-References: <1068028888.6065.20.camel@hades.cambridge.redhat.com>
-	<slrnbqgacq.1t2.miernik@tarnica.ctnet.pl>
-	<20031107004945.GA25590@ctnet.pl>
-Content-Type: text/plain
-Message-Id: <1068198800.6065.744.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 07 Nov 2003 09:53:21 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] gets the current CVS MTD code to compile with
-	2.6.0-test9
+Received: from anchor-post-33.mail.demon.net ([194.217.242.91])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AI7K2-0001aP-A2
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Nov 2003 14:10:46 +0000
+From: Simon Haynes <simon@baydel.com>
+To: linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Date: Fri, 7 Nov 2003 13:12:54 +0000
+MIME-Version: 1.0
+Message-ID: <37CC93E8710D@baydel.com>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
+Subject: SFFDC and blksize_size
+Reply-To: simon@baydel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-11-07 at 01:49 +0100, Miernik wrote:
-> Authors of the three changed files: please take a look what I did with 
-> this, in case I'm destroying something you've meant to do.
-> If it's OK, please merge it into CVS. 
 
-Looks sane; I've committed all but pcmciamtd.c which you said on IRC you
-were still working on.
+I have been writing a block driver for SSFDC compliant SMC cards. This stuff 
+allocates 16k blocks.  When I get requests the transfers are split into the 
+size I specifty in the blksize_size{MAJOR] array. It sems that most things 
+set this to 1k. In my case this causes a performance problem  as I have to 
+end up doing 16 * (16K write,  16K read, 16k erase)  to write and verify a 
+16k block which has been previously written.
+ 
+I increased this size to 4k and now I only need 4 * this lot. !deally I would 
+like to do 1. However if I set the block size to 16k the module installation 
+crashes when I call register_disk. 
 
--- 
-dwmw2
+I guess I could deal with the request queue myself but I would just like to 
+know if there is a 4k limit or I have some other bug.
+
+Many Thanks
+
+Simon.
