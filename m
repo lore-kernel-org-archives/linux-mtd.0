@@ -1,48 +1,67 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14GSvn-0001kD-00
-	for mtd-list@infradead.org; Wed, 10 Jan 2001 21:37:19 +0000
-Date: Wed, 10 Jan 2001 16:37:12 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: =?iso-8859-1?Q?St=E9phane_Laroche?= <stephane.laroche@colubris.com>,
-        <mtd@infradead.org>
-Subject: Re: CFI problems with 32bit bus and 4 devices
-In-Reply-To: <Pine.LNX.4.30.0101102011550.13913-100000@imladris.demon.co.uk>
-Message-ID: <Pine.LNX.4.30.0101101629560.584-100000@xanadu.home>
+	id 14GTWr-00022X-00
+	for mtd-list@infradead.org; Wed, 10 Jan 2001 22:15:37 +0000
+Received: from web2106.mail.yahoo.com ([128.11.68.250])
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 14GTWp-00022R-00
+	for mtd@infradead.org; Wed, 10 Jan 2001 22:15:36 +0000
+Message-ID: <20010110221533.7759.qmail@web2106.mail.yahoo.com>
+Date: Wed, 10 Jan 2001 14:15:33 -0800 (PST)
+From: Michael Stumpf <michaelstumpf@yahoo.com>
+Reply-To: mstumpf@pobox.com
+Subject: Re: howto
+To: Livio Plos <livioplos@bigfoot.com>
+Cc: mtd@infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+Sorry for the slow response; been on vacation.
 
-On Wed, 10 Jan 2001, David Woodhouse wrote:
+> Can I boot totally from flash without any other storage support?
 
-> On Wed, 10 Jan 2001, [iso-8859-1] Stéphane Laroche wrote:
->
-> > So, for my setup, which has 4 x16 devices on a 32 bit bus (AMDs),  the
-> > CFI query structure is located at offsets 0x80, 0x88, 0x90, etc.
-> >
-> > cfi_read_query()  uses only the buswidth to calculate the offset, which
-> > is not general enough (it used to be like that before I played with the
-> > code a bit last summer).  It's obviously wrong in my case ( 0x10 << 2 !=
-> > 0x80 ).
->
-> Sorry, mea culpa. I'd forgotten - or just didn't realise this arrangement
-> was used. How did {amd,cfi}_send_gen_cmd() send a command to all four
-> chips? With two separate 32-bit writes?
+I'm doing some work requiring precisely this--flash chips, preprogrammed,
+intended to boot linux with a read-only filesystem, preferrably compressed,
+from a well-known ROM address.
 
-No.  Usually the actual x16 flash devices are able to operate in 8-bit mode
-(selected with a pin tied to VCC or GND I think).  Then you route four of
-them in parallel on a 32-bit bus.  So in this case buswidth=4, interleave=4,
-chip_type=2.  That was the case that needed to be fixed for the Intel write
-buffer size lately.
+I originally hacked up mtdram.c to do what has already been done, quite
+elegantly infact..
+
+There is a patch out there somewhere (search this list, if you can't find it,
+let me know and I'll get it to you.) that adds a block device to the kernel
+called "/dev/rom".. it has two modes of operation:
+
+1)  Encodes the binary filesystem image and compiles it directly into the
+kernel, bloating its final size
+
+or 2)  Allow you to point it to a "well known" memory address that has (this is
+unclear) 4 bytes containing the filesystem size (in bytes), 4 bytes of "00",
+and then the filesystem image, whatever that may be.  I use cramfs with great
+success on a very memory-constrained target.
+ 
+> Is there any howto or high level docs to configure and compile?
+
+Patch it in, enable it in config, refer to above notes.  Let me know if you're
+still lost.
+
+Regards,
+Michael
 
 
-Nicolas
+=====
+=====================================================================
+Michael J. Stumpf                              
+LinuxPPC enablement
+IBM-Austin, TX     512.838.1524 [lab]  512.838.5335 [work]   
+http://www.pobox.com/~mstumpf
 
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Photos - Share your holiday photos online!
+http://photos.yahoo.com/
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
