@@ -1,19 +1,16 @@
-Received: from kasumi.idis.co.kr ([203.238.93.2] ident=mail)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196K2H-0003DS-Fe
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2003 01:47:25 +0100
-Message-ID: <3E9FC99D.5040200@idis.co.kr>
-Date: Fri, 18 Apr 2003 18:47:09 +0900
-From: "Edward J. Lee" <noshel@idis.co.kr>
-MIME-Version: 1.0
-To: tglx@linutronix.de,  linux-mtd@lists.infradead.org
-References: <002901c3021b$546a6fe0$525deecb@noshel>
-	<200304140954.27049.tglx@linutronix.de> <3E9AF275.4000905@idis.co.kr>
-	<200304141325.02451.tglx@linutronix.de>
-In-Reply-To: <200304141325.02451.tglx@linutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from [202.114.36.28] (helo=bbs.ccnu.edu.cn)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 196LQ3-0003ZH-Aq
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2003 03:16:04 +0100
+Date: Fri, 18 Apr 2003 10:31:16 +0800
+From: lhl <lhl@phy.ccnu.edu.cn>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
+Mime-Version: 1.0
+Message-Id: <E196LQ3-0003ZH-Aq@pentafluge.infradead.org>
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Subject: Re: A question on ECC
+cc: dwmw2@infradead.org
+Subject: No recognised DiskOnChip devices found.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +20,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+My DiskOnChip can work as a block device used M-system's DOC driver.
+while when I compile the DiskOnChip as a MTD device,it does not work stilly.
 
->On Monday 14 April 2003 19:40, Edward J. Lee wrote:
->  
->
->>this->eccmode is indeed set to NAND_ECC_SOFT.
->>I guess my case is kind of 'extra-tricky'. I just found out another
->>weird thing,
->>that the warning messages complaining '...without ECC...' do NOT appear
->>when I'm 'writing' on the chip. Strange, eh. :'(
->>    
->>
->
->Can you put some debug output YAFFS ?
->
->--- yaffs_mtdif.c	8 Apr 2003 19:53:44 -0000	1.9
->+++ yaffs_mtdif.c	14 Apr 2003 10:23:39 -0000
->@@ -90,10 +90,12 @@
-> 		if(dev->useNANDECC)
-> 		{   // Careful, this call adds 2 ints to the end of the spare data.  
->Calling function should
->             // allocate enough memory for spare, i.e. 
->[YAFFS_BYTES_PER_SPARE+2*sizeof(int)].
->+	    	printk (KERN_DEBUG "YAFFS ReadChunk with real ECC_INFO\n");
->     		retval = 
->mtd->read_ecc(mtd,addr,dev->nBytesPerChunk,&dummy,data,spareAsBytes,&yaffs_oobinfo);            
-> 		}
-> 		else
-> 		{
->+		    	printk (KERN_DEBUG "YAFFS ReadChunk with dummy ECC_INFO\n");
-> 			retval = 
->mtd->read_ecc(mtd,addr,dev->nBytesPerChunk,&dummy,data,spareAsBytes,&yaffs_noeccinfo);
-> 		}
-> 	}
->
->
->  
->
-I tried this last night, and I got a bunch of "YAFFS ReadChunk with real 
-ECC_INFO".
-when both reading/writing.
-Nothing else, do we need more information?
+#modprobe -a DOC2000
+nothing found in dmesg
+#modprobe -a docprob
+I get from dmesg:
+No recognised DiskOnChip devices found.
+
+I used Redhat 7.2 linux with 2.4.7-10 kernel work.
+I download the linux-2.4.17 kernel and get the mtd from cvs.then 
+#./patchin.sh -c -j /usr/src/linux
+
+
+
+
+I had use the DOC DOS utilities to format it by
+DFORMAT /WIN:DC00 /S:DOC514.exb /EMPTY /Y /NODOS
+
+
+here are the DOC info :
+
+        Physical Address:  0xDC000
+        DiskOnChip Type :  DiskOnChip 2000
+        Flash Type      :  TC58256
+        FormatType      :  NFTL
+        TrueFFS version :  5.1.4
+        Driver Version  :  DOS 5.1.4
+        Sectors         :  8
+        Heads           :  16
+        Cylinders       :  1001
+        Boot Area Size  :  65536 Bytes
+        Logical Sectors :  128224
+        Phy. UnitSize   :  16384 Bytes
+        Physical Size   :  67108864 (64 MB)
+        Unit Size       :  16384 Bytes
+        Media Size      :  67108864 Bytes (64 MB)
+        Chip Size       :  33554432 Bytes (32 MB)
+        No Of Chips     :  2
+        Interleaving    :  1
+
+
+
+Here are the relevant sections of the .config options I compiled my kernel 
+with:
+
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=m
+CONFIG_MTD_DEBUG=m
+# CONFIG_MTD_PARTITIONS is not set
+# CONFIG_MTD_CONCAT is not set
+# CONFIG_MTD_REDBOOT_PARTS is not set
+CONFIG_MTD_CHAR=m
+# CONFIG_MTD_BLOCK is not set
+CONFIG_FTL=m
+CONFIG_NFTL=m
+CONFIG_NFTL_RW=y
+
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=m
+CONFIG_MTD_JEDECPROBE=m
+CONFIG_MTD_GEN_PROBE=m
+# CONFIG_MTD_CFI_ADV_OPTIONS is not set
+# CONFIG_MTD_CFI_INTELEXT is not set
+# CONFIG_MTD_CFI_AMDSTD is not set
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set
+# CONFIG_MTD_AMDSTD is not set
+# CONFIG_MTD_SHARP is not set
+# CONFIG_MTD_JEDEC is not set
+
+#
+# Mapping drivers for chip access
+#
+# CONFIG_MTD_PHYSMAP is not set
+# CONFIG_MTD_PNC2000 is not set
+# CONFIG_MTD_SC520CDP is not set
+# CONFIG_MTD_NETSC520 is not set
+# CONFIG_MTD_SBC_GXX is not set
+# CONFIG_MTD_ELAN_104NC is not set
+# CONFIG_MTD_DILNETPC is not set
+# CONFIG_MTD_MIXMEM is not set
+# CONFIG_MTD_OCTAGON is not set
+# CONFIG_MTD_VMAX is not set
+# CONFIG_MTD_L440GX is not set
+# CONFIG_MTD_AMD766ROM is not set
+# CONFIG_MTD_ICH2ROM is not set
+# CONFIG_MTD_PCI is not set
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+# CONFIG_MTD_BLKMTD is not set
+# CONFIG_MTD_DOC1000 is not set
+CONFIG_MTD_DOC2000=m
+CONFIG_MTD_DOC2001=m
+CONFIG_MTD_DOCPROBE=m
+CONFIG_MTD_DOCPROBE_ADVANCED=m
+CONFIG_MTD_DOCPROBE_ADDRESS=0
+CONFIG_MTD_DOCPROBE_HIGH=y
+CONFIG_MTD_DOCPROBE_55AA=y
+
+#
+# NAND Flash Device Drivers
+#
+# CONFIG_MTD_NAND is not set
