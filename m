@@ -1,21 +1,15 @@
-Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
+Received: from [210.77.143.228] (helo=tsinghua.org.cn)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17mAdL-0007N6-00
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2002 11:10:07 +0100
-Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
-	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 17mAdK-0002wy-0V
-	for linux-mtd@lists.infradead.org; Tue, 03 Sep 2002 11:10:06 +0100
-Subject: Stable cvs version for 2.4
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 3 Sep 2002 11:09:44 +0100
-Message-ID: <541025071C7AC24C84E9F82296BB9B952D23@OPTEX1.optex.local>
-Content-Class: urn:content-classes:message
-From: "John Hall" <John.Hall@optionexist.co.uk>
-To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+	id 17mB69-0007Oq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2002 11:39:55 +0100
+From: "" <yanhy@tsinghua.org.cn>
+To: davidm@snapgear.com  
+Date: Tue, 03 Sep 2002 18:40:36 +0800
+CC: linux-mtd@lists.infradead.org  
+Reply-To: "" <yanhy@tsinghua.org.cn>
+Subject: problem of mounting jffs
+Content-Type: text/plain
+Message-Id: <E17mB69-0007Oq-00@pentafluge.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,29 +21,92 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi david!
 
-We're currently using ARM Linux 2.4.18-rmk7, and following the 2.4 =
-series of the kernel for our product that we're developing. I've been =
-using cvs versions of the mtd subsystem since I've needed jffs2 on NAND =
-flash, and I currently have code dating back to June. I've just done an =
-update since there seem to be a lot of jffs2 changes.
+I'v managed to compile my kernel with mtd and jffs support successfully,but 
+I can't delete or edit files or build directories on jffs partitions,why?
 
-Looking at some of the comments, there seem to be some fairly =
-experimental things recently committed (e.g version 1.26 of =
-fs/jffs2/read.c). My question is, is there a reasonably stable version I =
-can use, and indeed is the current HEAD version suitable for 2.4, or is =
-it 2.5 only?
+i created a jffs image including some directories(/dev,/bin,/etc,etc) and tried to
+mount jffs in following steps:
 
-I guess the answer to the first question is to stick with whatever's in =
-the stock kernel unless I want to be helping to test the latest code, =
-but I would appreciate advice anyway.
+# mkfs.jffs -d /jffstuff -a big -o jffs.img (on the host)
+/> eraseall /dev/mtd3 (on the target)
+/> cat /proc/mtd      (on the target)
 
-Regards,
-John Hall
+   dev:    size   erasesize  name
+mtd0: 00020000 00038000 "bootloader"
+mtd1: 00020000 00038000 "user"
+mtd2: 000c0000 00040000 "kernel"
+mtd3: 00100000 00040000 "jffs"
 
---=20
-OptionExist Limited.
-The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
-Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
-http://www.optionexist.co.uk/
+/> cp jffs.img /dev/mtd3 (or dd if=jffs.img /dev/mtd3 bs=256k
+ ........
+ MTD_write
+ MTD_write
+ .........
+ MTD_write
+ 39+1 records in
+ M9+1 records out
+ 
+/> modprobe jffs
+  Waiting for child 26
+  Using /lib/modules/2.4.17-uc0/kernel/fs/jffs/jffs.o
+  JFFS version 1.0, (C) 1999, 2000  Axis Communications AB
+  kmem_create: Forcing size word alignment - jffs_node  
+  
+/> mount -t jffs /dev/mtdblock3 /mnt/jffs
+JFFS: Failed to build tree.
+JFFS: Failed to mount device 1f:03.
+mount: Mounting /dev/mtdblock3 on /mnt/jffs failed: Invalid argument
+pid 28: failed 256
+
+Then i created another jffs.img which only contained two files:init and inetd,then
+tried
+above steps again.
+/> mount -t jffs /dev/mtdblock3 /mnt/jffs
+/> mount
+/dev/root on / type romfs (ro)
+/proc on /proc type proc (rw)
+/dev/ram0 on /var type ext2 (rw)
+/dev/mtdblock3 on /var/jffs type jffs (rw)
+
+/> ls -l /mnt/jffs
+-rwxrwxrwx    1 0        0           11336 init
+-rwxrwxrwx    1 0        0           21448 inetd
+
+/> /proc/fs/jffs/1f:03> cat info
+partition size:     00100000 (1048576)
+sector size:        00040000 (262144)
+used size:          000080D0 (32976)
+dirty size:         00000000 (0)
+free size:          000F7F30 (1015600)
+
+/> /proc/fs/jffs/1f:03> cat layout
+00000000 0000003C ino=00000001, ver=00000001
+0000003C 00002C88 ino=00000002, ver=00000001
+00002CC4 0000540C ino=00000003, ver=00000001
+000080D0 000F7F30 free 
+
+it seems that  jffs have been successfully mounted. 
+
+but when i tried to delete a file:
+/> /mnt/jffs/rm init
+   rm: unable to remove `init': I/O error
+
+if i tried to edit the file(vi init) ,error was showed as" init is a readonly
+file".
+then i tried to change the mode by "chmod 0777 init",however, an error came as"
+" init: No space left on device"
+
+What's problem?Any help is appreciated!
+
+Thanks!
+Best Wishes
+Yean
+
+
+ps:
+basic information:
+     Platform:M5272C3
+     Host:redhat 7.1
+     romfs with mtd support was selected, and jffs was selected as modules.
