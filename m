@@ -1,22 +1,19 @@
-Received: from ptb-relay03.plus.net ([212.159.14.214])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CcTOc-0001vz-9s
-	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 13:52:11 -0500
-Received: from [80.229.56.123] (helo=central.bult.co.uk)
-	by ptb-relay03.plus.net with esmtp (Exim) id 1CcTOW-000MT8-3i
-	for linux-mtd@lists.infradead.org; Thu, 09 Dec 2004 18:52:04 +0000
-Received: from squizzey.bult.co.uk (squizzey.bult.co.uk [10.1.0.4])
-	by central.bult.co.uk (Postfix) with ESMTP id 7A938375ED3
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  9 Dec 2004 20:01:34 +0000 (GMT)
-From: Oddjobz <oddjob@linux.co.uk>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Thu, 09 Dec 2004 18:52:22 +0000
-Message-Id: <1102618342.23213.12.camel@squizzey.bult.co.uk>
-Mime-Version: 1.0
+Received: from ns.loser.net ([66.93.181.194] helo=loser.net)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1Ccqxh-0004HK-QN
+	for linux-mtd@lists.infradead.org; Fri, 10 Dec 2004 15:01:59 -0500
+Received: from [199.108.74.225] (account holland HELO [10.16.2.68])
+	by loser.net (CommuniGate Pro SMTP 4.1.8)
+	with ESMTP id 8443569 for linux-mtd@lists.infradead.org;
+	Fri, 10 Dec 2004 12:01:54 -0800
+Mime-Version: 1.0 (Apple Message framework v619)
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 write performance boost ...
+Message-Id: <5710356C-4AE6-11D9-B290-000A959A0A94@loser.net>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+To: linux-mtd@lists.infradead.org
+From: Shannon Holland <holland@loser.net>
+Date: Fri, 10 Dec 2004 12:01:54 -0800
+Subject: How to test ecc correction code?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-Further to my previous email, I've managed to boost the write
-performance by a factor of x 4, however I think there is an issue here
-which probably needs at the very least some comment if not some
-attention.
+We're developing for a Samsung S3C2410 based system  (currently running 
+linux 2.6.10-rc3-bk2) and are using the internal hardware error 
+correction code from the cpu's nand controller (3 byte ecc for a 512 
+byte page). I "think" I've written some code to correct errors but am a 
+tad stumped as to how to test it.
 
-mkfs.jffs2 allows for a variable "erasesize" setting.
-mtdblock   allows for a variable "erasesize" setting.
-jffs2      should read this setting from the created filesystem.
+I had initially tried to read a block of data (including oob) using 
+nanddump, then erase the block, change a single bit in the first page 
+of my dumped data and re-write it to flash using nandwrite (specifying 
+-o as I include oob data). However, the first call to write the OOB 
+data in page 0 will fail.
 
-Unfortunately, jffs2 uses a buffer to cache the erase structure in
-memory and this cache is acquired using kmalloc - hence limited to 128k.
-To make the erase structure fit into 128k, jffs2 dynamically resizes the
-"erasesize" and sector count on the fly, thus you don't get the settings
-you were looking for if you're using more flash than will "fit".
+At the shell level I'm doing:
 
-Indeed on my systems you get a fairly fast panic, more often than not.
+# get the block of data with oob
+nanddump -a 0 -l 16384 /dev/mtd3 > /tmp/nand
 
-Now I'm guessing this problem isn't apparent on small flash sizes,
-however I'm working with 256Mb and it's a real show stopper - unless you
-can live with a dribble write speed ..
+# some magic to flip a bit in the first byte of /tmp namd
 
-Suggested solutions:
-Solution 1: remove the erasesize option in the tools
-Solution 2: allow a > 128k buffer for the erase structure
-Solution 3: recode JFFS2 to use a more memory-efficient approach
+# erase the block
+flash_erase /dev/mtd3 0 1
 
-I've removed the code from fs.c that scales the sector count and erase
-size (all three lines) and changed the kmalloc in build.c to a vmalloc.
-(and changes the kfree's to vfrees accordingly)
+#re-write with bad bit
+nandwrite -s 0 -o /dev/mtd3 /tmp/nand
 
-This "seems" to work just fine (?)
+The call to nandwrite when it attempts to write the oob data for the 
+first page (the ioctl(fd, MEMWRITEOOB) it returns an I/O Error.
 
-I now have a "proper" 8k erasesize (and I'm assuming other sizes will
-work) and as a result instead of getting 29k/sec write speed, I'm
-getting 117k/sec write speed.
+Am I doing this correctly? Is there a better way to do this? Do any 
+tools for this exist?
 
-[the erase structure eats 1.5Mb in this instance]
+Thanks for any help!
 
-Thoughts ?
-
-Gareth.
--- 
-Oddjobz <oddjob@linux.co.uk>
+Shannon
