@@ -1,43 +1,58 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14cW6H-0003Fq-00
-	for mtd-list@infradead.org; Mon, 12 Mar 2001 17:27:17 +0000
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14ca6o-0004zA-00
+	for mtd-list@infradead.org; Mon, 12 Mar 2001 21:44:06 +0000
+Received: from zeus.vortex.is ([193.4.145.1])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14cW6G-0003Fk-00
-	for mtd@infradead.org; Mon, 12 Mar 2001 17:27:17 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <01031218235800.02378@rob> 
-References: <01031218235800.02378@rob> 
-To: rob@sysgo.de
-Cc: mtd@infradead.org
-Subject: Re: Swich statement in cfi_probe.c 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 12 Mar 2001 17:27:10 +0000
-Message-ID: <27977.984418030@redhat.com>
+	id 14ca6n-0004z4-00
+	for mtd@infradead.org; Mon, 12 Mar 2001 21:44:05 +0000
+Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
+          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
+          ID# 0-60460U3500L350S0V35) with ESMTP id is
+          for <mtd@infradead.org>; Mon, 12 Mar 2001 21:43:58 +0000
+Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
+          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
+          with ESMTP id is for <mtd@infradead.org>;
+          Mon, 12 Mar 2001 21:43:57 +0000
+content-class: urn:content-classes:message
+Subject: erase.c
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 12 Mar 2001 21:43:54 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E3108AFC2@kolkrabbi.flaga.is>
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-rob@sysgo.de said:
->  I noticed that in cfi_probe.c, routine cfi_probe_new_chip(), the
-> cases following the switch(map->buswidth) are not terminated by a
-> break. Thus if the probe fails for the given buswidth, the code will
-> try all remaining buswidths too.
+In the intel chip that we are using here all sectors seem to be locked
+by default.
+So in the erase utility I propose the following patch.
 
-> Is that a bug or does it serve a purpose (if so, which ?)
+Maybe it is ambigous to do force unlocking of sectors like this.
+Should we maybe have a separate utility to lock/unlock sectors?
 
-Not sure. If it has a purpose, the only possibility I can think of off the 
-top of my head is to work around people giving the wrong buswidth. And I 
-think the code would probably break then anyway.
+K.D.
 
-So it's probably a bug. If nobody shouts I'll add in the missing breaks.
-
---
-dwmw2
-
-
+--- ../mtd/util/erase.c Thu Sep 21 22:00:07 2000
++++ util/erase.c        Mon Mar 12 14:58:58 2001
+@@ -51,6 +51,12 @@
+                 erase.length, erase.start);
+          fflush(stdout);
+=20
++         if(ioctl(Fd, MEMUNLOCK, &erase) !=3D 0)
++         {
++                 perror("\nMTD Unlock failure");
++                 close(Fd);
++                 return 8;
++                }
+          if (ioctl(Fd,MEMERASE,&erase) !=3D 0)
+              {     =20
+                  perror("\nMTD Erase failure");
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
