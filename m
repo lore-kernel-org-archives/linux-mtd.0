@@ -1,12 +1,12 @@
 Received: from [66.239.226.123] (helo=hermes.wildseed.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18HCWI-0006nd-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 00:27:07 +0000
-Message-ID: <43CB1396676FD4119F03001083FD299401A1C6BA@neptune.kirkland.local>
+	id 18HE1E-0006wJ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2002 02:03:09 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C6BC@neptune.kirkland.local>
 From: Paul Nash <paulnash@wildseed.com>
 To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Restart problems after writing to mtdblock?
-Date: Wed, 27 Nov 2002 16:57:30 -0800
+Subject: RE: Restart problems after writing to mtdblock?
+Date: Wed, 27 Nov 2002 18:33:31 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -20,6 +20,25 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Partially answering my question, it looks like I was partly correct.  It
+appears that MTD is setup to lazily delay a reset to read array mode until
+an actual read request comes along.  In my case, this is fatal.
+
+I'm wondering if a reasonable solution is to do something like install a
+reboot_notifier so I can guarantee the chip is back in Read Array mode.
+Where would be a good place to do such a thing, or if this is a bad idea,
+what is a better one?  Thanks...
+
+-Paul
+
+
+-----Original Message-----
+From: Paul Nash [mailto:paulnash@wildseed.com]
+Sent: Wednesday, November 27, 2002 4:58 PM
+To: 'linux-mtd@lists.infradead.org'
+Subject: Restart problems after writing to mtdblock?
+
 
 On 2.4.18, we're experiencing a problem where if we write some partition
 through /dev/mtdblock (by opening, writing and closing in code, not from the
@@ -49,3 +68,8 @@ Help greatly appreciated...
 
 
 -Paul
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
