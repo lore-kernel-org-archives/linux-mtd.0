@@ -1,19 +1,19 @@
-Received: from ms-smtp-01.nyroc.rr.com ([24.92.226.148])
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19E8CL-0003qU-7N
-	for <linux-mtd@lists.infradead.org>; Fri, 09 May 2003 14:46:05 +0100
-From: "Dave Ellis" <dge@sixnetio.com>
-To: "'Hans_Peter Urbanek'" <Hans-Peter.Urbanek.extern@icn.siemens.de>
-Date: Fri, 9 May 2003 09:46:04 -0400
-Message-ID: <00512BA4F9D3D311912A009027E9B8F407E4EE@NT>
-MIME-Version: 1.0
-In-Reply-To: <3EBB9EDF.A1DE0AE9@icn.siemens.de>
-Content-Type: text/plain;
-	charset="us-ascii"
+	id 19E8od-00041g-8M
+	for <linux-mtd@lists.infradead.org>; Fri, 09 May 2003 15:25:39 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Matthew Dharm <mdharm@momenco.com>
+In-Reply-To: <NEBBLJGMNKKEEMNLHGAIKEFKDAAA.mdharm@momenco.com>
+References: <NEBBLJGMNKKEEMNLHGAIKEFKDAAA.mdharm@momenco.com>
+Message-Id: <1052490354.23135.208.camel@passion.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Fri, 09 May 2003 15:25:54 +0100
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-cc: Linux-MTD <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS2 and kupdated
-Reply-To: dge@sixnetio.com
+cc: linux-mtd@lists.infradead.org
+Subject: RE: DiskOnChip 2000 128Mb problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-05-09 at 13:28, Hans_Peter Urbanek wrote:
-> In order not to wait up to five seconds for `kupdated' to become
-> active again, I made a change in `jffs2_do_reserve_space'
-> fs/jffs2/nodemgmt.c that wakes `kupdated' immediately ...
+On Thu, 2003-05-08 at 19:04, Matthew Dharm wrote:
+> Well, now we may have found part of the problem -- the label on the
+> chip says "DiskOnChip 2000" with a part number of MD2202-D128-V3
+> 
+> So is that a 2000 or Millennium?  If it's really a 2000, then the
+> driver is detecting it incorrectly.
 
-I am using the patch below for this problem. I have both
-RAM and NAND FLASH using JFFS2, and I don't want kupdated
-flushing the NAND write cache too often, so I do the
-erase immediately instead of waking kupdated.
+It's probably a Millennium.
 
-I only do the immediate erase for RAM devices so that any
-clever scheduling for the FLASH devices still works.
+> I presume nanddump works on the /dev/mtd0 node?
 
-A RAM erase is unlikely to schedule() or fail, but I kept
-the code to unlock the erase_completion_lock and return
--EAGAIN just in case. It seemed safer to work as much like
-the original code as possible.
+Yes.
 
-Dave Ellis
-
-diff -Naur old/nodemgmt.c new/nodemgmt.c
---- nodemgmt.c.orig	Fri May  9 09:16:48 2003
-+++ nodemgmt.c	Fri May  9 09:13:00 2003
-@@ -240,6 +240,22 @@
- 			   us. We do them ourselves right now. */
- 			jffs2_erase_pending_blocks(c);
- #else
-+
-+			/* It is possible to write to a RAM based device
-+			 * so quickly that letting kupdate do the
-erasing
-+			 * (every 5 seconds by default) can cause _LONG_
-+			 * delays here. Instead do the erase right here.
-+			 */
-+			if (c->mtd->type == MTD_RAM) {
-+
-spin_unlock_bh(&c->erase_completion_lock);
-+				jffs2_erase_pending_blocks(c);
-+				spin_lock_bh(&c->erase_completion_lock);
-+				/* An erase may have failed, decreasing
-the
-+				   amount of free space available. So we
-must
-+				   restart from the beginning */
-+				return -EAGAIN;
-+			}
-+
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			add_wait_queue(&c->erase_wait, &wait);
- 			D1(printk(KERN_DEBUG "Waiting for erases to
-complete. erasing_blocks is %d. (erasableempty: %s, erasingempty: %s,
-erasependingempty: %s)\n", 
+-- 
+dwmw2
