@@ -1,25 +1,19 @@
-Received: from smtp10.wanadoo.fr ([193.252.22.21] helo=mwinf1008.wanadoo.fr)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C4JCz-0005Ga-TX
-	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2004 09:07:01 -0400
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf1008.wanadoo.fr (SMTP Server) with SMTP id 2C67A1800118
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Sep 2004 15:06:56 +0200 (CEST)
-Received: from genevrier (ARennes-303-1-27-125.w81-53.abo.wanadoo.fr
-	[81.53.112.125])
-	by mwinf1008.wanadoo.fr (SMTP Server) with ESMTP id C1DC31800126
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Sep 2004 15:06:55 +0200 (CEST)
-From: "Pascal Fifre" <pascal.fifre@cleode.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 6 Sep 2004 15:06:52 +0200
+Received: from smtp.orbitel.bg ([195.24.32.22])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1C4dXD-00084s-86
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2004 06:49:13 -0400
+Received: from smtp.orbitel.bg ([10.0.0.3])
+	by localhost (sof-rv2.orbitel.bg [10.0.0.4]) (amavisd-new, port 10024)
+	with SMTP id 23643-14 for <linux-mtd@lists.infradead.org>;
+	Tue,  7 Sep 2004 14:55:16 +0300 (EEST)
+Message-ID: <1094554143.413d921f56b09@mail.orbitel.bg>
+Date: Tue,  7 Sep 2004 13:49:03 +0300
+From: zaho@architect.bg
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20040906130655.C1DC31800126@mwinf1008.wanadoo.fr>
-Subject: Pb with DOC millenium Plus 64MB
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Subject: Problems getting DiskOnChip boot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=20
-
-=20
-
-I=92m developping a board with a DOC Millenium Plus 64MB. I use a 16 =
-bits
-Access on a MPC5200 to dialog with it.
-
-I modify the doc2001plus.c to do that (only 8 bits access has been =
-supported
-for now).
-
-I=92ve formatted the DOC with the msysteme Dformat utility.
-
-The doc2001plus and inflmount driver recognized the DOC.
-
-But only the first 1024 blocks has been correct. The doc2001plus can=92t =
-read
-the 1024 other blocks.
-
-It seems to be wrong to access on the 1024 others blocks.
-
-I have these messages when Linux boot:
-
-Using configured DiskOnChip probe address 0x10000000
-ChipID : 0
-ChipID 1: 40
-DiskOnChip Millennium Plus found at address 0x10000000
-Manufacturer ID: 98, Chip ID: 75
-Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba:NAND 32MiB =
-3,3V
-8-bi
-t)
-Manufacturer ID: 98, Chip ID: 75
-Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba:NAND 32MiB =
-3,3V
-8-bi
-t)
-2 flash chips found. Total DiskOnChip size: 64 MiB
-mtd: Giving out device 0 to DiskOnChip Millennium Plus
-INFTL: corrupt block 1024 in chain 1024, chain length 0, erase mark =
-0xbf?
-INFTL: formatting chain at block 1024
-INFTL: formatting block 1024
-MTD: Error 0xffffffa5 erasing at 0x2000000
-INFTL: error while formatting block 1024
-INFTL: corrupt block 1025 in chain 1025, chain length 0, erase mark =
-0xbf?
-INFTL: formatting chain at block 1025
-INFTL: formatting block 1025
-MTD: Error 0xffffffa5 erasing at 0x2008000
-....
-INFTL: corrupt block 2047 in chain 2047, chain length 0, erase mark =
-0xbf?
-INFTL: formatting chain at block 2047
-INFTL: formatting block 2047
-MTD: Error 0xffffffa5 erasing at 0x3ff8000
-INFTL: error while formatting block 2047
-
-Is anybody works on it or have an idea to help me?
-
-=20
-
-Thanks a lot.
+ 
 
 
-Pascal FIFRE
-Responsable Syst=E8mes Embarqu=E9s
-CLEODE
-5, rue de Broglie
-22300 LANNION
-Tel : 02 96 48 68 18
-http://www.cleode.com
+Hi there !
+
+I am desperate. I am trying to make my DiskOnChip 2000 bootable but till now I 
+get no
+much success. I have a Debian distro and with it I can read and write to the 
+device. The problem
+comes when I am trying to compile the 2.4.18 kernel with the new snapshot from 
+mtd. I follow the
+instructions from mtd-jffs-HOWTO. But after executing make bzImage I get the 
+following errors:
+
+fs/fs.o: In function `jffs2_garbage_collect_dnode':
+fs/fs.o(.text+0x55ad6): undefined reference to `BUG_ON'
+fs/fs.o(.text+0x55d4f): undefined reference to `BUG_ON'
+fs/fs.o(.text+0x55d64): undefined reference to `BUG_ON'
+fs/fs.o(.text+0x55d80): undefined reference to `BUG_ON'
+fs/fs.o: In function `jffs2_build_filesystem':
+fs/fs.o(.text+0x56257): undefined reference to `BUG_ON'
+fs/fs.o: In function `jffs2_gc_fetch_inode':
+fs/fs.o(.text+0x589a4): undefined reference to `ilookup'
+drivers/mtd/mtdlink.o: In function `put_mtd_device':
+drivers/mtd/mtdlink.o(.text+0x308): undefined reference to `BUG_ON'
+drivers/mtd/mtdlink.o: In function `mtd_blktrans_thread':
+drivers/mtd/mtdlink.o(.text+0x2a24): undefined reference to `BUG_ON'
+drivers/mtd/mtdlink.o: In function `_DoC_WaitReady':
+drivers/mtd/mtdlink.o(.text+0x57af): undefined reference to `cond_resched'
+drivers/mtd/mtdlink.o: In function `DoC_IdentChip':
+drivers/mtd/mtdlink.o(.text+0x5c9d): undefined reference to `nand_flash_ids'
+drivers/mtd/mtdlink.o(.text+0x5ca9): undefined reference to `nand_flash_ids'
+drivers/mtd/mtdlink.o(.text+0x5cc1): undefined reference to `nand_manuf_ids'
+drivers/mtd/mtdlink.o(.text+0x5cce): undefined reference to `nand_manuf_ids'
+drivers/mtd/mtdlink.o(.text+0x5cdf): undefined reference to `nand_flash_ids'
+drivers/mtd/mtdlink.o(.text+0x5cee): undefined reference to `nand_manuf_ids'
+drivers/mtd/mtdlink.o(.text+0x5d44): undefined reference to `nand_flash_ids'
+drivers/mtd/mtdlink.o(.text+0x5d60): undefined reference to `nand_flash_ids'
+make: *** [vmlinux] Error 1
+
+
+Can someone help and give info how to make the DiskOnChip bootable without 
+using 
+M-Sys stuff ?
+
+Best regards,
+     Zax 
