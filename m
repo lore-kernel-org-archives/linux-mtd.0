@@ -1,38 +1,31 @@
-Return-path: <owner-mtd@infradead.org>
-Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13UdT1-0004zr-00
-	for mtd-list@infradead.org; Fri, 01 Sep 2000 00:09:55 +0100
-Date: Fri, 1 Sep 2000 01:10:57 +0200
-From: Ciro Cattuto <ciro@prosa.it>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Miguel Freitas <miguel@cetuc.puc-rio.br>, mtd@infradead.org
-Subject: Re: GRUB on DOC: 2Mb issues
-Message-ID: <20000901011057.A1046@localhost>
-References: <151C6E876B0@mamao.cetuc.puc-rio.br> <1512880772E@mamao.cetuc.puc-rio.br> <151C6E876B0@mamao.cetuc.puc-rio.br> <14431.967738848@passion.cygnus.co.uk>
+Return-path: <mlist@sonn-online.de>
+Received: from moutvdom00.kundenserver.de ([195.20.224.149])
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13UlB7-00067G-00
+	for mtd-list@infradead.org; Fri, 01 Sep 2000 08:23:57 +0100
+Received: from [195.20.224.204] (helo=mrvdom00.kundenserver.de)
+	by moutvdom00.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 13UlB6-00064I-00
+	for mtd-list@infradead.org; Fri, 1 Sep 2000 09:23:56 +0200
+Received: from r878.str.dial.surf-callino.de ([213.21.13.116] helo=sonn-online.de)
+	by mrvdom00.kundenserver.de with smtp (Exim 2.12 #2)
+	id 13UlAz-0000Ot-00
+	for mtd-list@infradead.org; Fri, 1 Sep 2000 09:23:51 +0200
+Date: Fri, 1 Sep 2000 09:18:38 +0100
+From: Volker Sonn <mlist@sonn-online.de>
+Reply-To: Volker Sonn <mlist@sonn-online.de>
+To: mtd-list@infradead.org
+Subject: Connot calculate an NFTL geometry to match size 0x7cf0
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <14431.967738848@passion.cygnus.co.uk>; from dwmw2@infradead.org on Thu, Aug 31, 2000 at 05:20:48PM +0100
-Sender: owner-mtd@infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E13UlAz-0000Ot-00@mrvdom00.kundenserver.de>
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Thu, Aug 31, 2000 at 05:20:48PM +0100, David Woodhouse wrote:
+Hi,
 
-> I just committed it - it's working on 512-byte devices. I see no reason why 
-> it shouldn't work on 256-byte devices if I copied Ciro's code correctly.
+sorry, I'm no kernel hacker. I'think my problem was on the list some time =
+ago, but i only understand 5% of the traffic here.=20
+Any hints to get my DOC 2000 16MB working ?
 
-I tried it after your last commit and it works fine on my 2 Mb DOC.
-I only needed to fix makecsum.c (reset checksum to zero - committed).
-
-Ciro
-
--- 
-Ciro Cattuto, Open Source Developer, Linuxcare Italia SpA
-Tel. +39.338.3002140  Fax +39.049.8036484 
-ciro@linuxcare.com    http://www.linuxcare.com/
-ciro@prosa.it         http://www.prosa.it/
-Linuxcare. Support for the revolution.
-
-
-
-
-To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+Lass die Sonne rein....
