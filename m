@@ -1,27 +1,39 @@
-Received: from gw.voda.cz ([212.24.154.90] helo=smtp.voda.cz)
+Received: from gw-eur4.philips.com ([161.85.125.10])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DElJV-0001Q1-3n
-	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 04:41:09 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.voda.cz (Postfix) with ESMTP id DC739117D7
+	id 1DEmLo-0001pw-OE
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2005 05:47:37 -0500
+Received: from smtpscan-eur6.philips.com (smtpscan-eur6.mail.philips.com
+	[130.144.57.169])
+	by gw-eur4.philips.com (Postfix) with ESMTP id 6B36A49702
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Mar 2005 10:41:09 +0100 (CET)
-Received: from smtp.voda.cz ([127.0.0.1])
-	by localhost (gw [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 04198-08 for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Mar 2005 10:40:56 +0100 (CET)
-Received: from [10.1.1.111] (unknown [10.1.1.111])
-	by smtp.voda.cz (Postfix) with ESMTP id 3DC38117DC
+	Fri, 25 Mar 2005 10:47:37 +0000 (UTC)
+Received: from smtpscan-eur6.philips.com (localhost [127.0.0.1])
+	by localhost.philips.com (Postfix) with ESMTP id 3C0947F
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Mar 2005 10:40:55 +0100 (CET)
-Message-ID: <4243DCA5.9010802@voda.cz>
-Date: Fri, 25 Mar 2005 10:40:53 +0100
-From: =?ISO-8859-2?Q?Tom=E1=B9_Vr=E1na?= <tom@voda.cz>
+	Fri, 25 Mar 2005 10:47:37 +0000 (GMT)
+Received: from smtprelay-eur1.philips.com (smtprelay-eur1.philips.com
+	[130.144.57.170])
+	by smtpscan-eur6.philips.com (Postfix) with ESMTP id 1BD7479
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Mar 2005 10:47:37 +0000 (GMT)
+Received: from beorn.natlab.research.philips.com
+	(beorn.natlab.research.philips.com [130.145.139.38])
+	by smtprelay-eur1.philips.com (Postfix) with ESMTP id EFB02212C
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Mar 2005 10:47:36 +0000 (GMT)
+Received: from bard (bard [130.145.131.125])
+	by beorn.natlab.research.philips.com (8.12.11/8.12.11) with ESMTP id
+	j2PAlaHT011808
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2005 11:47:36 +0100
+Message-ID: <001d01c53128$0f74e8a0$9c9c9182@ddns.htc.nl.philips.com>
+From: "S. van Beek" <nlv11891@natlab.research.philips.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 25 Mar 2005 11:47:37 +0100
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: MX29LV160BTC problem
+Subject: mtd_open errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +43,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-I'm trying to use a MX29LV160BTC flash on a MIPS board under 2.6.11rc4 
-kernel. I can detect it, I can read it, I can even write it - but the 
-data is not there after write. I remember having this problem on 2.4.x 
-kernel some time ago, but after a MTD update it just suddenly went 
-away... Does thiss remind you of something similar ? Can you please 
-direct where to look further ?.
+Im using flash memory on a memec virtex II pro vp7 design board with
+communications 2 module. I'm running Linux kernel 2.4.20 from Montavista
+with mtd support compiled in the kernel. I have debugging set to 3.
+I see the mtd partitions being created during boot and also my /proc/mtd
+looks good.
+But when I try to do anything with the devices I get errors:
 
-    Thanks, Tom
+# flash_unlock /dev/mtd/1
+MTD_open
+Could not open mtd device: /dev/mtd/1
 
--- 
- Tomas Vrana  <tom@voda.cz>
- --------------------------
- VODA IT consulting, Borkovany 48, 691 75
- http://www.voda.cz/
- phone: +420 519 419 416 mobile: +420 603 469 305 UIN: 105142752
+# ftl_format /dev/mtd/1
+MTD_open
+open failed: Permission denied
+
+My first partition is flagged read only in the partitions struct, the second
+has no flags set so should be writeable?
+I could use some clues on what could be wrong.
+
+Kindest regards
+
+Sander van Beek
