@@ -1,16 +1,19 @@
 Received: from [208.177.141.226] (helo=ash.lnxi.com)
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZXLD-0002JZ-6W
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 15:51:43 +0100
+	id 19ZXM2-0002Ju-EN
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 15:52:34 +0100
 From: Thayne Harbaugh <tharbaugh@lnxi.com>
 To: Joshua Wise <joshua@joshuawise.com>
-In-Reply-To: <200307042232.43815.joshua@joshuawise.com>
+In-Reply-To: <200307052215.35596.joshua@joshuawise.com>
 References: <200307042232.43815.joshua@joshuawise.com>
-Message-Id: <1057589479.1251.8569.camel@tubarao.lnxi.com>
+	 <200307052157.06325.joshua@joshuawise.com>
+	 <m3el142yly.fsf@maxwell.lnxi.com>
+	 <200307052215.35596.joshua@joshuawise.com>
+Message-Id: <1057589533.1135.8572.camel@tubarao.lnxi.com>
 Mime-Version: 1.0
-Date: 07 Jul 2003 08:51:19 -0600
+Date: 07 Jul 2003 08:52:13 -0600
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-4+g7xkbklQxWmGOpBe3m"
+	protocol="application/pgp-signature"; boundary="=-mwJR1nRm40qwUuvg1hzF"
 cc: linux-mtd@lists.infradead.org
 Subject: Re: jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,50 +26,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4+g7xkbklQxWmGOpBe3m
+--=-mwJR1nRm40qwUuvg1hzF
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2003-07-04 at 20:32, Joshua Wise wrote:
+On Sat, 2003-07-05 at 20:15, Joshua Wise wrote:
 
-> I've added a new flash chip to the jedec_probe.c definitions, and it seem=
-s=20
-> that it's throwing back errors that the unlock codes don't match.
+> On Saturday 05 July 2003 10:11 pm, Eric W. Biederman wrote:
 
-Smells like the unlock seeds at the start of jedec_probe_chip() are
-incorrect.  I've expected this to turn up a problem eventually.
+> > It shouldn't be, and the probes are just used at probe time.  The
+> > rest of the time their modules can even be unloaded if necessary.
+>=20
+> Sweet, so if jedec_probe was rewritten to not have to use jedec_probe_chi=
+p, or=20
+> gen_probe at all for that matter, we would not have to deal with=20
+> jedec_probe_chip anywhere else?
 
-> I've=20
-> tracked this down to jedec_probe_chip's cfi->addr_unlock* garbage - it do=
-es=20
-> look like that function will need to be rewritten. Has anyone already sta=
-rted=20
-> this, or should I just go ahead?
+jedec_probe only does chip setup.  Once things are setup then
+jedec_probe and gen_probe are no longer needed - they can be unloaded if
+they are modules.
 
-I have yet to start.  I know it needs to be reworked (per the FIXME
-comment).  I don't expect to get back to working on MTD code until
-middle to the end of this week.  I have this and a pile of other fixes
-that need to go in plus some patches that Carolyn at Tektronixs sent me.
+In the case of an embedded platform I can't see gen_probe and
+jedec_probe being too useful.  I would imagine that someone would write
+a very simple setup that initializes what is already expected to be
+there.  jedec_probe and gen_probe are very useful, however, on platforms
+that are generic.  Do you propose to write a replacement jedec_probe
+that is still generic?
 
-If you are motivated then send some patches with some fixes.  The unique
-unlock addresses are all enumerated in unlock_addrs[].  This could be
-used as the list to iterate through.  The current seeds try to take
-insight into the type of device (8, 16, etc.) being probed to select the
-set of addresses to probe.  While this approach is interesting, I'm not
-sure if it is good policy unless there is an obvious, bullet-proof
-association that can be drawn between device types and modes and probe
-addresses.
+I do realize that jedec_probe is not guaranteed to work and is poor when
+the configuration is known.  I have proposed writing a module that can
+take configuration information as arguments or from userspace and simply
+initialize the parts without stumbling around in the dark trying to find
+MTD's.  I have even written some code - I just never committed it
+because I wasn't happy with the solution and didn't have time to
+complete it (that might change in the future).
 
-PS.  Yeah, I see that there's a long thread strung out here.  I'm going
-to respond to each email rather than try to sum everything up in a
-single reply.  Replying to each email makes it easier to reply to each
-point in the topic and gives a better continuity to the archive.
+Having a generic, forced configuration would be very useful for those
+that already know what they have in the system.  It would also fix cases
+where hardware is impossible to reliably probe.  This type of work would
+be very much appreciated.
 
 --=20
 Thayne Harbaugh
 Linux Networx
 
---=-4+g7xkbklQxWmGOpBe3m
+--=-mwJR1nRm40qwUuvg1hzF
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
@@ -74,9 +78,9 @@ Content-Description: This is a digitally signed message part
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQA/CYjnfsBPTKE6HMkRAtr5AJ9eh8QQE5hN9PA75v8+pZu3ysC2TQCeMUTm
-QaWHEa1R87Xrsb80E9LSmZc=
-=J6ER
+iD8DBQA/CYkcfsBPTKE6HMkRAl56AJ9WbqB6A//CT3BlpCRbmIW0jUBT7gCcDp0g
+agQdCU4m41U/y0eTEuyxUlw=
+=L12O
 -----END PGP SIGNATURE-----
 
---=-4+g7xkbklQxWmGOpBe3m--
+--=-mwJR1nRm40qwUuvg1hzF--
