@@ -1,18 +1,21 @@
-Received: from smtp.fh-landshut.de ([193.175.141.50])
+Received: from mailout06.sul.t-online.com ([194.25.134.19])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BGwcR-0007JB-89
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2004 10:05:11 +0100
-Message-ID: <4088DBE9.2010702@fh-landshut.de>
-Date: Fri, 23 Apr 2004 11:03:37 +0200
-From: Oliver Korpilla <okorpil@fh-landshut.de>
+	id 1BGwoZ-0007U4-UA
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2004 10:17:43 +0100
+From: tglx@linutronix.de (Thomas Gleixner)
+To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
+ linux-mtd@lists.infradead.org
+Date: Fri, 23 Apr 2004 11:12:54 +0200
+References: <01139FC052A0D411900B00508B9535FC13AC4057@ZCH07EXM04.corp.mot.com>
+In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC4057@ZCH07EXM04.corp.mot.com>
 MIME-Version: 1.0
-To: David Vrabel <dvrabel@arcom.com>
-References: <4088D26D.8070105@fh-landshut.de> <4088D9F4.3010002@arcom.com>
-In-Reply-To: <4088D9F4.3010002@arcom.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: MVME2100 flash mapping patch - please review
+Content-Disposition: inline
+Message-Id: <200404231112.54873.tglx@linutronix.de>
+Subject: Re: Write function for 16 bit NAND Flash
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,75 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Vrabel wrote:
->  > cfi_cmdset_0002.c is version 1.93
-> 
-> If your flash chips support suspending erases then this version is 
-> broken.  You'll need either 1.94 or 1.98.
-> 
+On Friday 23 April 2004 05:43, Shen Aaron-r62966 wrote:
+> Hi,
+>
+>   I'm investigating to write boot code into an empty 16 bit NAND Flash. I
+> met some problem, and if you have some experience, please be kindly to
+> share with me.
+>
+>   The current write program is for 8 bit NAND Flash(Samsung K9F5608Q0C) and
+> is loaded by AXD. The flash is 32 page per block and 528(512+16) byte per
+> page.  I use int type pointer to copy the boot data into the main area
+> buffer of the flash. It's successful as I read back the data from the flash
+> to verify.
 
-Thanks, I've tried now with both, 1.93 and 1.98, too:
+int type pointer ? Surprise, surprise. Is the buswitdh set to 32 bit ?
 
-When trying with my patch against the old revision, I get this:
+>   As the 16 bit NAND Flash(Samsung K9F5616Q0C) is also 32 page per block
+> but 264(256+8) word per page, I try to use short int type pointer to copy.
+> The data has truly been copied into the main area buffer of the flash. But
+> after I read back it from the flash, it seems to be all 0xFFFF. Seems the
+> data are not writen into the flash at all.
 
-/ # cat tmp/rootfs.jffs2.img > /dev/mtd2
-MTD do_write_oneword(): FLASH internal timeout: 0x00200020 0x7aa6fe27 
-0x851901e0
-cat: Write Error: Input/output error 
+Hmm. How do you apply the commands to the chip ?
 
-/ # eraseall /dev/mtd2
-Erasing 256 Kibyte @ 2c0000 -- 91 % complete.
-/ # cat tmp/rootfs.jffs2.img > /dev/mtd2
-MTD do_write_oneword(): FLASH internal timeout: 0x00200000 0xd4a70000 
-0x2b000000
-/ # mount -t jffs2 -o ro /dev/mtdblock2 tmp
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: 
-0x0100 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004: 
-0x0100 instead
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 
-nodes
-empty_blocks 11, bad_blocks 0, c->nr_blocks 12
-mount: Mounting /dev/mtdblock2 on /tmp failed: Invalid argument
-
-When trying with the newest revision from CVS, I get this:
-
-On boot:
-
-Motorola MVME2100 flash device: 0x400000 at 0xff000000
-Found: AMD AM29LV800BT
-MVME2100 flash: Found 4 x16 devices at 0x0 in 32-bit mode
-number of JEDEC chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-Creating 2 MTD partitions on "MVME2100 flash":
-0x00000000-0x00100000 : "MVME2100 flash BOOT partition"
-0x00100000-0x00400000 : "MVME2100 flash rootfs partition"
-
-When I try to use it:
-
-/ # eraseall /dev/mtd2
-Erasing 256 Kibyte @ 2c0000 -- 91 % complete.
-/ # cat tmp/rootfs.jffs2.img > /dev/mtd2
-MTD do_write_oneword(): software timeout
-cat: Write Error: Input/output error
-/ # mount -t jffs2 /dev/mtdblock2 /tmp
-mountjffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
-0x00000000: 0x0100 instead
-: /dev/mtdblock2jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found 
-at 0x00000004: 0x0100 instead
-  is write-protected, mounting reCowardly refusing to erase blocks on 
-filesystem with no valid JFFS2 nodes
-ad-only 
-
-empty_blocks 11, bad_blocks 0, c->nr_blocks 12
-mount: Mounting /dev/mtdblock2 on /tmp failed: Invalid argument
-
-The write error in cat is described as follows in /var/log/messages:
-
-Apr 24 09:59:42 mvme2100 kern.warn klogd: MTD do_write_oneword(): 
-software timeout
-
-What am I doing wrong?
-
-Thanks in advance,
-Oliver Korpilla
+-- 
+Thomas
+________________________________________________________________________
+"Free software" is a matter of liberty, not price. To understand the concept,
+you should think of "free" as in "free speech,'' not as in "free beer".
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
