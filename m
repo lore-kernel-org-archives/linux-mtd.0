@@ -1,19 +1,15 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CMpOu-0004zv-6e
-	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2004 11:07:49 -0400
-Message-ID: <417FB99E.1000009@yandex.ru>
-Date: Wed, 27 Oct 2004 19:07:10 +0400
-From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+Received: from web17701.mail.tpe.yahoo.com ([202.43.200.205])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CMzf7-0006Mc-No
+	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2004 22:05:17 -0400
+Message-ID: <20041028020508.55014.qmail@web17701.mail.tpe.yahoo.com>
+Date: Thu, 28 Oct 2004 10:05:08 +0800 (CST)
+From: jjjaaaaa <jjjaaaaa@yahoo.com.tw>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-References: <417F961A.1090107@yandex.ru>		<1098881953.13633.1786.camel@hades.cambridge.redhat.com>		<417FA408.9080906@yandex.ru>	<1098884706.13633.1791.camel@hades.cambridge.redhat.com>
-	<417FB7DF.3040101@yandex.ru>
-In-Reply-To: <417FB7DF.3040101@yandex.ru>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 & SMP
+Content-Type: text/plain; charset=big5
+Content-Transfer-Encoding: 8bit
+Subject: mtd support kernel?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
-> One more thing: I don't see the problem whe yhe JFFS2 debug level is > 0
-Ups, sorry, "whe yhe" = "when the"  :-)
-:-)
+HI
+i now use kernel 2.4.26 
+i need patch 2.4.26 to use Doc
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+now patch not support 2.4.x??
+only can patch 2.6.x??
+
+thank 
+
+-----------------------------------------------------------------
+Yahoo!奇摩電子信箱
+100MB 免費信箱，電子信箱新紀元從這開始！
+http://mail.yahoo.com.tw/
