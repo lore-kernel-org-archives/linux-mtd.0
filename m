@@ -1,53 +1,48 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from [209.167.190.89] (helo=ampr.harc.on.ca)
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 112Uoh-0006u4-00
-	for mtd@infradead.org; Fri, 9 Jul 1999 08:11:27 +0100
-From: "D. Jeff Dionne / VE3DJF" <jeff@ampr.harc.on.ca>
-Message-Id: <199907090709.HAA04138@ampr.harc.on.ca>
+	id 112cYq-00075o-00
+	for mtd@infradead.org; Fri, 9 Jul 1999 16:27:36 +0100
+Date: Fri, 9 Jul 1999 09:27:31 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: "D. Jeff Dionne / VE3DJF" <jeff@ampr.harc.on.ca>
+cc: mtd@infradead.org
 Subject: Re: your mail
-In-Reply-To: <Pine.LNX.3.96.990708165218.3773A-100000@white.priv.deltatee.com> from Jason Gunthorpe at "Jul 8, 1999  4:53:49 pm"
-To: jgg@deltatee.com (Jason Gunthorpe)
-Date: Fri, 9 Jul 1999 07:09:48 +0000 (GMT)
-Cc: mtd@infradead.org
+In-Reply-To: <199907090709.HAA04138@ampr.harc.on.ca>
+Message-ID: <Pine.LNX.3.96.990709092452.8974B-100000@white.priv.deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-> 
-> On Thu, 8 Jul 1999, David Woodhouse wrote:
-> 
-> > > Anyway, having come over from the uClinux project, I am very
-> > > interested in anything you may have.  I can also lend a hand.  We've
-> > > had XIP from FLASH now for about a year, but are stuck using ROMfs
-> > > (which as you know is read only). 
-> 
-> Can you fire over your patch to ROMfs to make it do this? The 2.2.10
-> kernel version doesn't. 
 
-Unfortunately, in it's current form it will not be of any use to you I suspect.
-It's for 2.0.37, and is tied up with another meg of patch.  It touches lots
-of stuff, and it needs cleaning :-(
 
-We're also very 68k right now, so Linux/Intel would be some work.  You'll
-need fully position independant code to start with... Does -fpic go far enough
-on Intel?  You'll need to hack the ELF loader, we run a simple (low overhead)
-binary format.
+On Fri, 9 Jul 1999, D. Jeff Dionne / VE3DJF wrote: 
 
->   
-> > We don't have XIP. We _do_ have FTL, and are working on FFS2. The situation is 
-> > something like this:
+> > Can you fire over your patch to ROMfs to make it do this? The 2.2.10
+> > kernel version doesn't. 
 > 
-> I have read only ffs2 running, but the hair brained compression scheme is
-> giving me pain :<
+> Unfortunately, in it's current form it will not be of any use to you I suspect.
+> It's for 2.0.37, and is tied up with another meg of patch.  It touches lots
+> of stuff, and it needs cleaning :-(
 > 
-> On lwn there was a pointer to a Hard Hat linux which also claimed flash
-> support with a flash file system, anyone know more about those guys?
-> 
-> Jason
-> 
+> We're also very 68k right now, so Linux/Intel would be some work.  You'll
+> need fully position independant code to start with... Does -fpic go far enough
+> on Intel?  You'll need to hack the ELF loader, we run a simple (low overhead)
+> binary format.
+
+Oh this is not at all what I was thinking, on Intel all we'd need to do is
+setup the proper page tables so that each 4k page mapped to the correct 4k
+chunk of flash, the FFS write unit size and alignment would be set to 4k
+for executables. There should be no need to worry about pic and elf will
+run fine like that too.
+ 
+It should be really simple if someone can think up either a modification
+to readpage() that adjusts the physical  location of the given page
+structure or a new mmap that sets up a new page table mapping..
+
+Jason
 
 
 
