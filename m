@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16iFQh-0001ms-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 13:56:35 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1015336876.32356.6.camel@pcjonashg> 
-References: <1015336876.32356.6.camel@pcjonashg> 
-To: Jonas Holmberg <jonas.holmberg@axis.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: recalc_sigpending in compatmac.h 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Mar 2002 14:07:45 +0000
-Message-ID: <15259.1015337265@redhat.com>
+	id 16iGAp-0001qS-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2002 14:44:15 +0000
+Message-ID: <000b01c1c455$cee06040$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: msys process 
+Date: Tue, 5 Mar 2002 09:55:21 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,10 +22,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jonas.holmberg@axis.com said:
->  intrep.c:3355:27: arguments given to macro `recalc_sigpending'
+David Woodhouse wrote:
 
-Fixed. Sorry.
+> If you just reformat your DiskOnChip using version 4 of the software it
+> should work fine. Alternatively, it'll take about a couple of hours worth
+> of hacking to make it work.
 
---
-dwmw2
+If I may ask a (possibly dumb) question, does this UnitSizeFactor issue with different
+versions of M-Sys firmware even matter anymore when the M-Sys IPL/SPL is replaced with
+Grub?
+
+Mark
