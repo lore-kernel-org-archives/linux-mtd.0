@@ -1,20 +1,17 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BThBd-0004ZP-Jf
-	for linux-mtd@lists.infradead.org; Fri, 28 May 2004 09:14:14 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <200405281244.57973.tglx@linutronix.de>
-References: <1085737289.5617.3.camel@adh>
-	<200405281227.34312.tglx@linutronix.de> <1085740962.5617.9.camel@adh>
-	<200405281244.57973.tglx@linutronix.de>
+Received: from n23.grp.scd.yahoo.com ([66.218.66.79])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BTxTy-0005aO-AJ
+	for linux-mtd@lists.infradead.org; Sat, 29 May 2004 02:38:18 -0400
+Message-ID: <BP22656.1085812687@yahoogroups.com>
+Date: 29 May 2004 06:38:07 -0000
+From: Yahoo! Groups
+	<confirm-unbounce-1085807169-184235986-23114@yahoogroups.com>
+To: linux-mtd@lists.infradead.org 
+MIME-Version: 1.0
 Content-Type: text/plain
-Message-Id: <1085750049.26119.198.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 28 May 2004 14:14:10 +0100
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Large flash concatenation
+Subject: Please reactivate your Yahoo! Groups account 
+Reply-To: confirm-unbounce-1085807169-184235986-23114@yahoogroups.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-05-28 at 12:44 +0200, Thomas Gleixner wrote:
-> The snapshot is outdated due to the same reason. I'm building one and putting 
-> it somewhere for download.
 
-The snapshots stopped working because CVS doesn't handle pserver on
-IPv6. Anonymous CVS access is now done over SSH:
 
-	export CVS_RSH=`which ssh`
-	cvs -d :ext:anoncvs@cvs.infradead.org:/home/cvs co mtd
+Hello,
 
-The snapshots should be up to date again starting from tonight's.
+You belong to one or more email groups provided by Yahoo! Groups 
+(groups.yahoo.com). Email from these groups can be recognized by
+looking for a group name in the message Subject line, like
+[pet-owners] or [music-fans].
 
--- 
-dwmw2
+Recently, messages sent to you from Yahoo! Groups have been
+returned to us as undeliverable. To prevent any problems with your
+email service, we have temporarily turned your Yahoo! Groups 
+account OFF.
+
+If you are reading this message now, the delivery problem appears to
+be fixed. However, we won't know that the problem is fixed until you
+tell us.
+
+To turn your Yahoo! Groups account ON:
+
+- Please REPLY to this message. Send that reply back to us without
+changing anything.
+
+OR
+
+- While connected to the Internet, click on the following Web link (or
+copy and paste it into your Web browser and hit the RETURN key):
+
+  http://groups.yahoo.com/unbounce?adj=184235986,23114&p=1085807169 
+
+Once we get a response from you, we will turn your Yahoo! Groups 
+account back ON, and you will begin to receive messages from your
+groups again.
+
+After you respond, you can read any messages you might have missed
+while your account was off by visiting:
+
+  http://groups.yahoo.com/mygroups
+
+Thank you for using Yahoo! Groups!
+
+
+Yahoo! Groups Customer Care
+
+Your use of Yahoo! Groups is subject to http://docs.yahoo.com/info/terms/
+ 
