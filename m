@@ -1,35 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14DpKH-0004WB-00
-	for mtd-list@infradead.org; Wed, 03 Jan 2001 14:55:41 +0000
-Received: from mx0.i-way.net.uk ([212.49.192.2] ident=root)
+	id 14DqXN-0004s2-00
+	for mtd-list@infradead.org; Wed, 03 Jan 2001 16:13:17 +0000
+Received: from penguin-ext.wise.edt.ericsson.se ([194.237.142.110])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14DpKF-0004W5-00
-	for mtd@infradead.org; Wed, 03 Jan 2001 14:55:39 +0000
-Received: from m4exch.m4data.co.uk (host2.m4data.co.uk [212.49.209.214] (may be forged))
-	by mx0.i-way.net.uk (8.10.2/8.10.2) with ESMTP id f03F7rK24572
-	for <mtd@infradead.org>; Wed, 3 Jan 2001 15:07:54 GMT
-Message-ID: <52AF3CB987C7D41183CD0090271F67C3010613@m4eng.m4data.co.uk>
-From: Simon Munton <Simon.Munton@m4data.co.uk>
-To: "MTD (E-mail)" <mtd@infradead.org>
-Subject: Possible problem with unlock bypass in cfi_cmdset_0002.c?
-Date: Wed, 3 Jan 2001 14:55:09 -0000 
+	id 14DqXM-0004rw-00
+	for mtd@infradead.org; Wed, 03 Jan 2001 16:13:16 +0000
+Received: from mailserver1.ericsson.se (mailserver1.ericsson.se [136.225.152.91])
+	by penguin.wise.edt.ericsson.se (8.11.0/8.10.1/WIREfire-1.3) with ESMTP id f03GD6G12094
+	for <mtd@infradead.org>; Wed, 3 Jan 2001 17:13:07 +0100 (MET)
+Received: from switchboard.ericsson.se (mail@kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
+	by mailserver1.ericsson.se (8.9.3/8.9.3/eri-1.0) with ESMTP id RAA15259
+	for <mtd@infradead.org>; Wed, 3 Jan 2001 17:13:06 +0100 (MET)
+Message-ID: <3A534F91.6640C276@inn.ericsson.se>
+Date: Wed, 03 Jan 2001 17:13:06 +0100
+From: Kenneth Johansson <kenneth.johansson@inn.ericsson.se>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: mtd@infradead.org
+Subject: mail archive
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Looking at the code (in cfi_amdstd_write) which turns on the bypass program
-mode, it appears that the command is issued without locking the chip first. 
-
-Is this likely to be a problem, if, for example, it is halfway through
-issuing the command and then gets interrupted by another thread that
-writes/erases another part of the flash chip? It would seem to me that in
-this case the bypass command wouldn't be recognised by the device, and the
-subsequent 'fast' writes would fail.
-
-Simon
+The web interface to the mail archive is no good for searching inside
+messages and ftp://www.linux-mtd.infradead.org/pub/mtd/archives/ don't
+have anything later than aug.
+Dose anyone have an archive I can copy ??
 
 
 
