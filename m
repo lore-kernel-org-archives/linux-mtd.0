@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16pz3q-0000gA-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Mar 2002 22:04:58 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <000d01c1d500$c37f4a20$5d130aac@multitechcorp.com> 
-References: <000d01c1d500$c37f4a20$5d130aac@multitechcorp.com> 
-To: "Antonio Ruggieri" <truggieri@multitechcorp.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: logging into Anonymous CVS 
+	id 16q8Na-0001Fw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2002 08:01:58 +0000
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Mar 2002 22:04:40 +0000
-Message-ID: <31456.1017180280@redhat.com>
+Date: Wed, 27 Mar 2002 00:01:51 -0800 (PST)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: "David  Woodhouse" <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020327080151.2CD8C36F9@sitemail.everyone.net>
+Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +24,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-truggieri@multitechcorp.com said:
->  Is the CVS system down? I can't seem to login and download anymore.
+Hi,David
+    Can you tell me why only my mtd char device with even minor deivce number works? and there is no such thing happened on my mtd block device.
 
->From the headers of every mail on the list...
-	List-archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+and I find that in drivers/mtd/mtdchar.c/mtd_open there is a line :
+	int devnum = minor >> 1;
+I think if this is the reason, the odd mtd char devs should works just like the even devs, 
+that means the dev1 should be the same thing as dev0,and dev3==dev2... isnt it?
 
---
-dwmw2
+Thanks
+
+Jim Zeus
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
