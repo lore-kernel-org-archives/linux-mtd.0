@@ -1,18 +1,20 @@
-Received: from ms-smtp-01.rdc-kc.rr.com ([24.94.166.115])
+Received: from sproxy03.hi-ho.ne.jp ([202.224.159.198])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B6vUr-00088K-Ia
-	for linux-mtd@lists.infradead.org; Fri, 26 Mar 2004 17:51:57 +0000
-From: Dan Eisenhut <deisenhut@wi.rr.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1080222037.29835.50.camel@hades.cambridge.redhat.com>
-References: <1080221409.21277.30.camel@localhost>
-	 <1080222037.29835.50.camel@hades.cambridge.redhat.com>
-Content-Type: multipart/mixed; boundary="=-h6SYHDlxhxbbfxO0HuV8"
-Message-Id: <1080323446.25996.15.camel@localhost>
-Mime-Version: 1.0
-Date: Fri, 26 Mar 2004 11:50:46 -0600
-cc: linux-mtd@lists.infradead.org
-Subject: Re: do_erase_oneblock failing to detect lock-bit failure
+	id 1B77U9-0001eQ-6W
+	for linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 06:40:01 +0000
+Received: from k7.kit.hi-ho.ne.jp (eaoskd-p9.hi-ho.ne.jp [202.224.170.137])
+ by sproxy03.hi-ho.ne.jp (hi-ho Mail Server)
+ with SMTP id <0HV800A8O2ILAA@sproxy03.hi-ho.ne.jp> for
+ linux-mtd@lists.infradead.org; Sat, 27 Mar 2004 15:39:58 +0900 (JST)
+Date: Sat, 27 Mar 2004 15:39:59 +0900
+From: Hideki IWAMOTO <h-iwamoto@kit.hi-ho.ne.jp>
+In-reply-to: <200403261705.AA00890@k7.kit.hi-ho.ne.jp>
+To: linux-mtd@lists.infradead.org
+Message-id: <200403270639.AA00894@k7.kit.hi-ho.ne.jp>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+References: <200403261705.AA00890@k7.kit.hi-ho.ne.jp>
+Subject: Re: [PATCH] fix integer overflow in util/fcp.c,  util/eraseall.c,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-h6SYHDlxhxbbfxO0HuV8
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-On Thu, 2004-03-25 at 07:40, David Woodhouse wrote:
-> On Thu, 2004-03-25 at 07:30 -0600, Dan Eisenhut wrote:
-> > Is byte-lane swapping common?  
+On Sat, 27 Mar 2004 02:05:29 +0900, Hideki IWAMOTO wrote...
+> eraseall and fcp print wrong progress message for large partition (>=41944KB).
 > 
-> Not really. It's generally a symptom of hardware engineers who really
-> don't understand the problem, and think it might help.
 
-I looked into why they did this and apparently it was a recommendation
-from Motorola.  We are using a MPC8270 processor.
+Sorry. Previous patch has problem in the handling small files.
+This is corrected version.
 
-> > Wouldn't this code fail for someone
-> > without byte-lane swapping but requiring little endian enabled?  By
-> > changing the if statements with (chipstatus & 0xNN) with (status &
-> > CMD(0xNN)) appears to correct my problem, but I sure this is not the
-> > best solution.
-> 
-> You made me think about it again and now my head hurts. I suspect that
-> we should be using cfi_read_query() to read the status bits, not
-> cfi_read(). 
-
-I tried changing cfi_read to cfi_read_query, which sets status to
-0x00a2.  But the immediate next check of "if (status & CMD(0x3a))" fails
-since CMD(0x3a) resolves to 0x3a00.
-
-Looking at it a little more, I made a couple changes which corrects the
-problem for me.  (See attached diff)  How would this effect other boards
-that are currently working on the existing code?  I'm not sure how
-boards that do any kind of swapping were working in the first place. 
-Maybe just never tested the return value on an erase to a locked block?
-
-Dan
-
---=-h6SYHDlxhxbbfxO0HuV8
-Content-Disposition: attachment; filename=mtd_cfi_erase.diff
-Content-Type: text/x-patch; name=mtd_cfi_erase.diff; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-diff -uNr clean/drivers/mtd/chips/cfi_cmdset_0001.c mtd/drivers/mtd/chips/cfi_cmdset_0001.c
---- clean/drivers/mtd/chips/cfi_cmdset_0001.c	2004-03-26 10:33:48.000000000 -0600
-+++ mtd/drivers/mtd/chips/cfi_cmdset_0001.c	2004-03-26 10:34:26.000000000 -0600
-@@ -1373,8 +1373,8 @@
+? jffs2dump
+Index: eraseall.c
+===================================================================
+RCS file: /home/cvs/mtd/util/eraseall.c,v
+retrieving revision 1.12
+diff -u -r1.12 eraseall.c
+--- eraseall.c	2 May 2003 19:27:32 -0000	1.12
++++ eraseall.c	27 Mar 2004 06:28:40 -0000
+@@ -93,7 +93,7 @@
+ 			printf
+ 			    ("\rErasing %d Kibyte @ %x -- %2d %% complete.",
+ 			     meminfo.erasesize / 1024, erase.start,
+-			     erase.start * 100 / meminfo.size);
++			     (erase.start/meminfo.erasesize) * 100 / (meminfo.size/meminfo.erasesize));
+ 		}
+ 		fflush(stdout);
  
- 	/* check for lock bit */
- 	if (status & CMD(0x3a)) {
--		unsigned char chipstatus = status;
--		if (status != CMD(status & 0xff)) {
-+		unsigned char chipstatus = cfi_to_cpu(status);
-+		if (status != CMD(cfi_to_cpu(status) & 0xff)) {
- 			int i;
- 			for (i = 1; i<CFIDEV_INTERLEAVE; i++) {
- 				      chipstatus |= status >> (cfi->device_type * 8);
-diff -uNr clean/include/linux/mtd/cfi.h mtd/include/linux/mtd/cfi.h
---- clean/include/linux/mtd/cfi.h	2004-03-26 10:33:50.000000000 -0600
-+++ mtd/include/linux/mtd/cfi.h	2004-03-26 10:35:42.000000000 -0600
-@@ -473,6 +473,21 @@
- 	}
- }
+Index: fcp.c
+===================================================================
+RCS file: /home/cvs/mtd/util/fcp.c,v
+retrieving revision 1.2
+diff -u -r1.2 fcp.c
+--- fcp.c	3 Apr 2003 11:43:37 -0000	1.2
++++ fcp.c	27 Mar 2004 06:28:40 -0000
+@@ -59,7 +59,7 @@
+ #endif
  
-+static inline __u8 cfi_to_cpu(cfi_word val)
-+{
-+	if (cfi_buswidth_is_1()) {
-+		return val;
-+	} else if (cfi_buswidth_is_2()) {
-+		return cfi16_to_cpu(val);
-+	} else if (cfi_buswidth_is_4()) {
-+		return cfi32_to_cpu(val);
-+	} else if (cfi_buswidth_is_8()) {
-+		return cfi64_to_cpu(val);
-+	} else {
-+		return 0;
-+	}
-+}
-+
- static inline void cfi_udelay(int us)
- {
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
+ #define KB(x) ((x) / 1024)
+-#define PERCENTAGE(x,total) (((x) * 100) / (total))
++#define PERCENTAGE(x,total) ((x) <= 0xffffffff / 100 ? (x) * 100 / (total) : (x) / ((total) / 100))
+ 
+ /* size of read/write buffer */
+ #define BUFSIZE (10 * 1024)
 
---=-h6SYHDlxhxbbfxO0HuV8--
+----
+Hideki IWAMOTO  h-iwamoto@kit.hi-ho.ne.jp
