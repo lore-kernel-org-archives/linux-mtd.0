@@ -1,34 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14Q4vY-0000bj-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 10:00:48 +0000
-Received: from web6304.mail.yahoo.com ([128.11.22.141])
-	by infradead.org with smtp (Exim 3.20 #2)
-	id 14Q4vX-0000bd-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 10:00:47 +0000
-Message-ID: <20010206100044.27105.qmail@web6304.mail.yahoo.com>
-Date: Tue, 6 Feb 2001 11:00:44 +0100 (CET)
-From: =?iso-8859-1?q?Alessandro=20Staltari?= <a_staltari@yahoo.it>
-Subject: NFTL Performance
-To: mtd@infradead.org
+	id 14Q8ll-0001ZU-00
+	for mtd-list@infradead.org; Tue, 06 Feb 2001 14:06:57 +0000
+From: David Hamm <dhamm@itrepro.com>
+Reply-To: dhamm@itrepro.com
+To: David Woodhouse <dwmw2@infradead.org>,
+        "Alessandro Staltari" <a_staltari@yahoo.com>
+Subject: Re: Maybe FAQ, but I don't know te answer...
+Date: Tue, 6 Feb 2001 09:03:26 -0500
+Content-Type: text/plain
+Cc: mtd@infradead.org
+References: <15502.981449891@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <01020609064600.22126@workbox.atlanta.itserve.com>
 Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-It seems GPL'd NFTL driver is a lot slower than the
-M-Systems's propietary driver, it takes about 10
-seconds to sync 1MB of data written to the flash. Does
-is it confirmed by your experience?
+<snip>
+> Which boot loader should I use to boot the system from the flash?
+> 
+If you get the answer to that let me know.  I've tried Doc-LILO and Loadlin. 
+I've yet to see it boot to linux from disk on chip.  I'm exhausted.  
 
-Thanks
-
-Alessandro Staltari
-
-______________________________________________________________________
-Do You Yahoo!?
-Il tuo indirizzo gratis e per sempre @yahoo.it su http://mail.yahoo.it
+ --
+---------------------------------
+David Hamm
+Systems Analyst
+Imaging Technologies Services Inc.
+email: dhamm@itrepro.com
+voice: 404-870-6663
+---------------------------------
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
