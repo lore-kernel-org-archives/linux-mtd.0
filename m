@@ -1,19 +1,12 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CU3CE-0007rp-PL
-	for linux-mtd@lists.infradead.org; Tue, 16 Nov 2004 08:16:36 -0500
-Date: Tue, 16 Nov 2004 14:16:33 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: "Artem B. Bityuckiy" <dedekind@phoenix.infradead.org>
-Message-ID: <20041116131632.GD15759@synertronixx3>
-References: <20041116124403.GC15759@synertronixx3>
-	<Pine.LNX.4.58.0411161258350.25950@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0411161258350.25950@phoenix.infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 Oops on 2.6.10-rc1-mm5
+Date: Tue, 16 Nov 2004 13:48:48 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@phoenix.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <Pine.LNX.4.58.0411161316390.25950@phoenix.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: (no subject)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +16,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2004-11-16 13:00 +0000 schrieb Artem B. Bityuckiy:
-> Hello,
-> 
-> is it possible to somehow describe how to reproduce this? How to create 
-> such JFFS2 image?
+Hello David,
 
-What do you mean other than:
+When I create checkpoints, I read all the nodes which will be referred by 
+this checkpoint and check their CRCs. This is because we must trust 
+checkpoints and do not check CRCs for them on the iget() call.
 
-> > I created the jffs2 filestem that way:
-> > 
-> > mkfs.jffs2 -q --eraseblock=128KiB -o
-> > /home/konsti/svn/ptxdist-0.5.2-trunk/root_scb9328 -D
-> > /home/konsti/svn/ptxdist-0.5.2-trunk/src/device_table.txt
-> > --root=/home/konsti/svn/ptxdist-0.5.2-trunk/root
-> > 
-> > with mkfs.jffs2: revision 1.42
+When the Garbage Collector moves node, which is currently referred by an 
+checkpoint inact (I mean the jffs2_garbage_collect_pristine() function), 
+we have to read this node after we GC it. This is the problem. The unclean 
+reboot may happed and we can not guarantee that all noted in checkpoint 
+are OK. :-(
 
-:)
-/home/konsti/svn/ptxdist-0.5.2-trunk/root_scb9328
+So, how do you think is it absolutely necessary to check that nodes which 
+are reffered by checkpoint are OK? Is it OK if we just detect errors when 
+we actually read file?
 
-Is the root filesystem copyied together by ptxdist-0.5.2,
-device_table.txt comntains some device nodes and file perission things,
-is its content importand? I will put it onto a download location, if.
+Thanks.
 
-Also, if somebody want's to, I could put the rootfs image under a
-download location for you.
-
-Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
