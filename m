@@ -1,18 +1,14 @@
-Received: from [195.223.129.35] (helo=martina.custom.it)
+Received: from web90107.mail.scd.yahoo.com ([66.218.94.78])
 	by pentafluge.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cytci-0004LZ-MM
-	for linux-mtd@lists.infradead.org; Wed, 09 Feb 2005 15:19:30 +0000
-Received: from martina (192.168.2.9)
-	by martina.custom.it with MERCUR Mailserver (v4.03.03
-	MTA3LTI0MzYtNjY2Nw==)
-	for <linux-mtd@lists.infradead.org>; Wed, 9 Feb 2005 16:12:38 +0100
-Message-Id: <5.0.2.1.2.20050209161004.00b425b8@192.168.2.9>
-Date: Wed, 09 Feb 2005 16:16:03 +0100
+	id 1CyjI1-0002J4-Br
+	for linux-mtd@lists.infradead.org; Wed, 09 Feb 2005 04:17:23 +0000
+Message-ID: <20050209041615.31286.qmail@web90107.mail.scd.yahoo.com>
+Date: Tue, 8 Feb 2005 20:16:15 -0800 (PST)
+From: anonymous <wanttoknowwhyandwhatfor@yahoo.com>
 To: linux-mtd@lists.infradead.org
-From: Fabrizio Grasso <f.grasso@custom.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: Creating RAM partition??
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: further question on commandline partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +18,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I'm using ARM9 S3C2410A from Samsung and Linux 2.4.18 from Mizi.
+Hi,
 
-I'd like to know if it's possible ( and how :) ) to create a RAM filesystem 
-which I can mount in R/W mode... at a specified RAM area.
-I think I must create something under /dev path which represent the 
-specified memory area and then mount it at runtime with something like:
-"mount -t ramfs /dev/... /mnt/ramfs".
+I currently have:
+...
+<5>physmap flash device:400000 at 4000000.
+<4>__ioremap(): phys addr 04000000 is RAM lr c01d93f0.
+<4>__ioremap(): virt_to_phys(high_memory) addr
+02000000.
+<4>__ioremap(): passed first cond.
+<4>__ioremap(): passed second cond.
+<4>__ioremap(): passed label.
+<5>init_physmap after simple_map_init.
+<5>init_physmap type=cfi_probe.
+<6>phys_mapped_flash: Found 1 x16 devys_mapped_flash:
+Found 1 x16 devices at 0x0 in 16-bit bank.
+<4> Amd/Fujitsu Extended Query Tableat 0x0040.
+<5>number of CFI chips: 1.
+<5>cfi_cmdset_0002: Disabling erase-suspend-program
+due to code brokenness..
+<5>init_physmap after for loop.
+<5>RedBoot partition parsing not
+available.
+<5>init_physmap after parse_mtd_partitions.
+<6>mtd: Giving out device 0 to phys_mapped_flash.
+<5>init_physmap after add_mtd_device.
+...
+Now I am trying to use commandline for creating
+partitions. I was referred to the header comment in
+the drivers/mtd/cmdlinepart.c:
+/* The format for the command line is as follows:
+*
+* mtdparts=<mtddef>[;<mtddef]
+* <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+* <partdef> := <size>[@offset][<name>][ro]
+* <mtd-id>  := unique name used in mapping
+driver/device (mtd->name)
+* <size>    := standard linux memsize OR "-" to denote
+all remaining space
+* <name>    := '(' NAME ')'
+*
+* Examples:
+*
+* 1 NOR Flash, with 1 single writable partition:
+* edb7312-nor:-
+*
+* 1 NOR Flash with 2 partitions, 1 NAND with one
+*
+edb7312-nor:256k(ARMboot)ro,-(root);edb7312-nand:-(home)
+*/
 
-But... how to create the /dev/... object??
+It is still unclear for me from the comment and
+example above - how I come up with the:
 
-At this moment I have /dev/rd/0 which I can mount with:
-"mount -t ramfs /dev/rd/0 /mnt/ramfs"
-I can read/write to /mnt/ramfs but I don't know at which memory address it 
-write!
+ "<mtd-id>  := unique name used in mapping
+driver/device (mtd->name)"
 
-PS: Probably I'm wrong in all my reasoning... if it so... please 
-redirection me to the correct way!!
+ such as  "edb7312-nor" and "edb7312-nand" ...
 
-Thanks!
+is it the unique name, which I should make up on my
+own
+or else ?
+
+Also speaking of the sizes for partitions: -
+I suppose that for the NOR flash, the size info from
+the commandline will be processed together with the
+info on the total size of the NOR flash, provided in 
+.config's 
+CONFIG_MTD_PHYSMAP_LEN 
+- am I correct in my above conjecture ?
+
+However, this leaves unexplained how the total size of
+the NAND flash is derived, say for the given above
+example:
+edb7312-nand:-(home)
+In above notation - it merely refers to "all remaining
+space" (which in particular example I think means:
+entire space of the NAND flash - correct ?). So 
+how the total size of the NAND flash is derived ?
+(I do not see any .config entry for this info with
+regards to NAND flash).
+
+Thanks
+
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
