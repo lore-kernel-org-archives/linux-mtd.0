@@ -1,18 +1,18 @@
-Received: from mailhub.hp.com ([192.151.27.10])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1C4ppM-0001fW-UK
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2004 19:56:46 -0400
-From: "Christopher Hoover" <ch@hpl.hp.com>
-To: <tharbaugh@lnxi.com>, "'Ben Dooks'" <ben-mtd@fluff.org>
-Date: Tue, 7 Sep 2004 16:52:53 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Received: from mail.theptrgroup.com ([209.183.211.17])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C54em-0003NB-3U
+	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2004 11:46:49 -0400
+Received: from [192.168.180.200] ([132.250.144.104])
+	by mail.theptrgroup.com (8.11.6/linuxconf) with ESMTP id i88Fkfs07480
+	for <linux-mtd@lists.infradead.org>; Wed, 8 Sep 2004 11:46:44 -0400
+From: Jeff Angielski <jeff@theptrgroup.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Message-Id: <1094658352.23122.7.camel@localhost.localdomain>
+Mime-Version: 1.0
+Date: 08 Sep 2004 11:45:52 -0400
 Content-Transfer-Encoding: 7bit
-In-reply-to: <1094564091.20769.350.camel@tubarao>
-Message-Id: <20040907235310.31BF32711A@mailhub.hp.com>
-Cc: ben@fluff.org, linux-mtd@lists.infradead.org
-Subject: RE: jedec_probe problems with 16bit devices
+Subject: 64bit support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +23,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-> It seems like the CFI_DEVICETYPE_X8 was changed to cfi->device_type at
-> one point and it broke some 16-bit chips.
-> 
-> I think all of the CFI_DEVICETYPE_X8s were removed from jedec_probe.c
-> 1.30, but then some were added back in at 1.36.  I'm trying 
-> to find the
-> discussion as to why this happened, but what I'm finding isn't very
-> descriptive:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2003-October/00
-> 8685.html
-> 
-> I seem to remember IRC'ing with Christopher Hoover on this.  Maybe he
-> can remember something?  Christopher?  My memory is somewhat murky.
+After downloading the official 2.4.27 PPC kernel and applying a snapshot
+from 20040902, what is the "correct" way to enable 64bit support?
 
-I don't have any new information to report -- only what is noted above, that
-some regression in the mtd tree about the time the CFI_DEVICETYPE_X8's
-disappeared.  It was never fixed while I worked with the board.  It may be
-fine now, but unfortunately I am unable to check easily.
+There is no provision in the Config or Makefiles to compile
+physmap64.c.  Should I then create my own mapfile based on physmap64.c
+or just fix the Makefiles so the correct file gets compiled?
 
-Can we locate someone with a suitable platform and coax them into testing
-the latest code?
+Either way is fine with me, I just figured I would try to do it the
+"right" way.
 
--ch
+
+Thanks,
+Jeff Angielski
