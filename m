@@ -1,50 +1,63 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14QDfB-00049P-00
-	for mtd-list@infradead.org; Tue, 06 Feb 2001 19:20:29 +0000
-Received: from mik.rmt.ru ([194.67.128.138] helo=mx.mik.ru)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14QDfA-00049J-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 19:20:28 +0000
-Received: from [194.67.151.5] (helo=NP1K15)
-	by mx.mik.ru with esmtp (Exim 3.16 #2)
-	id 14QDkU-0000Mk-00
-	for mtd@infradead.org; Tue, 06 Feb 2001 22:25:58 +0300
-Date: Tue, 6 Feb 2001 22:20:20 +0300
-From: Ruslan Satlykov <ruslan@mik.ru>
-Reply-To: Ruslan Satlykov <ruslan@mik.ru>
-Message-ID: <6930.010206@mik.ru>
-To: mtd@infradead.org
-Subject: M-Sys's driver and public driver
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 14QDmf-0004CD-00
+	for mtd-list@infradead.org; Tue, 06 Feb 2001 19:28:13 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14QDme-0004C6-00
+	for mtd@infradead.org; Tue, 06 Feb 2001 19:28:12 +0000
+Date: Tue, 6 Feb 2001 19:28:04 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Ian Eure <Ian Eure" <ieure@insynq.com>
+cc: <mtd@infradead.org>,  <fabrice.bellard@netgem.com>
+Subject: Re: doc2k: "formatting block"?
+In-Reply-To: <14976.15973.43530.527006@pyramid.insynq.com>
+Message-ID: <Pine.LNX.4.30.0102061909140.2237-100000@imladris.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hi,
+On Tue, 6 Feb 2001, Ian Eure <Ian Eure wrote:
 
-Here is my (some) trouble. Under the Linux, I have a DOC partitioned
-with M-Systems's doc driver to two partiotions. It's works fine after
-rebooting, I can read/write on it, but some days ago I have tryed 2.4
-kernel, with embedded DOC driver in it. Well, I had successfully
-mounted the chip, but when I had rebooted I lose all my data on the
-flash :(... GPL's driver "says" me words like 'ECC read error' at the
-mount time, but I had ignored this warnings... And - unlucky final, as
-you see :)
+> while testing a 32mb doc2000, i see these messages:
+> 
+> -- snip --
+> DiskOnChip 2000 found at address 0xD0000
+> Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
+> 2 flash chips found. Total DiskOnChip size: 32 Mb
+> Block 807: referencing block 110 already in another chain
+> Formatting chain at block 807
+> Formatting block 807
+> Unreferenced block 366, formatting it
+> -- snip --
 
-For details:
- DiskOnChip 2000, size - 4-8Mb, firmware version - 1.21.
+Eep. Can you reproduce it? Did this happen after the M-Systems drivers (or 
+firmware) had been writing to the device, or is it purely our software? 
+It's unlikely to be hardware.
 
-And, after rebooting native M-System's driver can not 'fdisk' and
-mount my chip (I need to repair it with original DOC's image, getted
-with getmimg.bat from M-Systems floppy)
+I'm trying to grok that code - even if the block _is_ linked in another 
+chain, we should be able to work out which chain it _ought_ to be in by 
+its own VirtUnitNum entry. We still have to format the chain in which the 
+block _isn't_ supposed to be, and there's definitely some data corruption 
+happened, but we should be able to do a little better than we do ATM, I 
+think.
 
-Thanks.
-Ruslan.
+I don't see how this could be caused by a fold in progress - we don't fold 
+one chain into _another_, only into itself. But the comment implies 
+otherwise...
 
-P.S. But - thank you very much for your work!! :) And sorry for my
-English.
+	printk("Block %d: referencing block %d already in another chain\n", 
+		block, rep_block);
+	/* XXX: should handle correctly fold in progress chains */
+	do_format_chain = 1;
+	s->ReplUnitTable[block] = BLOCK_NIL;
+
+
+-- 
+dwmw2
+
 
 
 
