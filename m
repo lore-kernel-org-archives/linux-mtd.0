@@ -1,62 +1,96 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13582c-0004yk-00
-	for mtd-list@infradead.org; Thu, 22 Jun 2000 15:33:14 +0100
-Received: from maverick.techno.spb.ru ([195.5.142.101])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13582a-0004ye-00
-	for mtd@infradead.org; Thu, 22 Jun 2000 15:33:12 +0100
-Received: from techno.spb.ru (localhost [127.0.0.1])
-	by maverick.techno.spb.ru (8.9.3/8.9.3) with ESMTP id SAA01515
-	for <mtd@infradead.org>; Thu, 22 Jun 2000 18:39:14 +0400
-Message-ID: <39522510.394D649C@techno.spb.ru>
-Date: Thu, 22 Jun 2000 18:39:12 +0400
-From: Nick Maximov <maxs@techno.spb.ru>
-Reply-To: maxs@techno.spb.ru
-MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Compilation errors on 2.2.14 kernel
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: 7bit
+	id 13587I-0004zO-00
+	for mtd-list@infradead.org; Thu, 22 Jun 2000 15:38:04 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13587H-0004zI-00
+	for mtd@infradead.org; Thu, 22 Jun 2000 15:38:03 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <39522510.394D649C@techno.spb.ru> 
+References: <39522510.394D649C@techno.spb.ru> 
+To: maxs@techno.spb.ru
+Cc: mtd@infradead.org
+Subject: Re: Compilation errors on 2.2.14 kernel 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 22 Jun 2000 15:39:43 +0100
+Message-ID: <14771.961684783@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-What version of kernel should I use to get success?
 
-Now I have 2.2.14 and got compilation errors.
-What wrong I do? How to prepare my system to compilation
-(what symlinks needed?)
+maxs@techno.spb.ru said:
+>  Now I have 2.2.14 and got compilation errors. What wrong I do? How to
+> prepare my system to compilation (what symlinks needed?)
 
-In file included from mtdcore.c:24:
-/usr/src/linux-2.2.14/include/linux/mtd/compatmac.h:20:
-linux/compatmac.h: No such fil
-e or directory
-mtdcore.c:77: warning: type defaults to `int' in declaration of
-`DECLARE_MUTEX'
-mtdcore.c:77: warning: parameter names (without types) in function
-declaration
-mtdcore.c: In function `add_mtd_device_Rfbb9999f':
-mtdcore.c:88: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c:88: (Each undeclared identifier is reported only once
-mtdcore.c:88: for each function it appears in.)
-mtdcore.c: In function `del_mtd_device_Re489bb75':
-mtdcore.c:116: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c: In function `register_mtd_user_R5077437e':
-mtdcore.c:143: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c: In function `unregister_mtd_user_R014d06d1':
-mtdcore.c:163: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c: In function `__get_mtd_device_R53d645b3':
-mtdcore.c:197: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c: In function `mtd_read_proc':
-mtdcore.c:250: `mtd_table_mutex' undeclared (first use in this function)
-mtdcore.c: At top level:
-mtdcore.c:77: warning: `DECLARE_MUTEX' declared `static' but never
-defined
-make[2]: *** [mtdcore.o] Error 1
-make[2]: Leaving directory `/root/mtd/kernel'
-make[1]: *** [_mod_/root/mtd/kernel] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.2.14'
-make: *** [all] Error 2
+You need to grab a copy of linux/include/linux/compatmac.h from a more 
+recent kernel. Best bet is just to use 2.2.16 instead - why do you want to 
+use a kernel which has known security flaws?
+
+You'll also need to apply this (in reverse, sorry):
+
+diff -ur linux/kernel/ksyms.c /inst/nora/nora-orig/linux/kernel/ksyms.c
+--- linux/kernel/ksyms.c	Tue Jun 13 14:05:00 2000
++++ /inst/nora/nora-orig/linux/kernel/ksyms.c	Fri May 26 04:28:48 2000
+@@ -79,7 +79,6 @@
+ 
+ #ifdef CONFIG_MODULES
+ EXPORT_SYMBOL(get_module_symbol);
+-EXPORT_SYMBOL(put_module_symbol);
+ #endif
+ EXPORT_SYMBOL(get_options);
+ 
+diff -ur linux/kernel/module.c /inst/nora/nora-orig/linux/kernel/module.c
+--- linux/kernel/module.c	Tue Jun 13 14:16:26 2000
++++ /inst/nora/nora-orig/linux/kernel/module.c	Fri May 26 04:28:48 2000
+@@ -946,9 +946,7 @@
+  * Gets the address for a symbol in the given module.  If modname is
+  * NULL, it looks for the name in any registered symbol table.  If the
+  * modname is an empty string, it looks for the symbol in kernel exported
+- * symbol tables. Increase the usage count of the module in which the
+- * symbol was found - it's the only way we can guarantee that it's still
+- * there by the time our caller actually uses it.
++ * symbol tables.
+  */
+ unsigned long
+ get_module_symbol(char *modname, char *symname)
+@@ -965,29 +963,12 @@
+ 				i > 0; --i, ++sym) {
+ 
+ 				if (strcmp(sym->name, symname) == 0) {
+-					__MOD_INC_USE_COUNT(mp);
+ 					return sym->value;
+ 				}
+ 			}
+ 		}
+ 	}
+ 	return 0;
+-}
+-
+-/* Decrease the use count of the module containing a symbol with the 
+- * address passed.
+- */
+-void put_module_symbol(unsigned long addr)
+-{
+-	struct module *mp;
+-
+-	for (mp = module_list; mp; mp = mp->next) {
+-		if (addr >= (unsigned long)mp &&
+-		    addr < (unsigned long)mp + mp->size) {
+-			__MOD_DEC_USE_COUNT(mp);
+-			return;
+-		}
+-	}
+ }
+ 
+ #else		/* CONFIG_MODULES */
+
+
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
