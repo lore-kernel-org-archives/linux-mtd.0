@@ -1,19 +1,29 @@
-Date: Sat, 18 Dec 2004 12:23:26 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20041217112000.GB10973@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.58.0412181221370.20375@phoenix.infradead.org>
-References: <JPEALJAFNGDDLOPNDIEEGEHCCPAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0412171053080.8020@phoenix.infradead.org>
-	<20041217112000.GB10973@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-Subject: Re: JFFS3 & performance
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cfh34-0003KC-2o
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2004 11:03:15 -0500
+Date: Sat, 18 Dec 2004 17:02:55 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Josh Boyer <jdub@us.ibm.com>
+Message-ID: <20041218160255.GA1083@wohnheim.fh-wedel.de>
+References: <1103232128.15927.70.camel@squizzey.bult.co.uk>
+	<41C1FDFF.3020308@us.ibm.com>
+	<1103233669.15929.81.camel@squizzey.bult.co.uk>
+	<1103288058.3018.4.camel@weaponx.rchland.ibm.com>
+	<1103297611.15917.184.camel@squizzey.bult.co.uk>
+	<41C3030D.8040607@us.ibm.com>
+	<1103302002.15927.198.camel@squizzey.bult.co.uk>
+	<41C31307.70909@us.ibm.com>
+	<1103304360.15914.210.camel@squizzey.bult.co.uk>
+	<41C318C8.4030702@us.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <41C318C8.4030702@us.ibm.com>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	"Gareth Bult \(Encryptec\)" <Gareth@Encryptec.net>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +33,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Dec 2004, [iso-8859-1] J=F6rn Engel wrote:
+On Fri, 17 December 2004 11:35:04 -0600, Josh Boyer wrote:
+> 
+> Again, most controllers do all the wear leveling, erasing for you.  So 
+> you are left with compression, right?
 
-> On Fri, 17 December 2004 10:56:22 +0000, Artem B. Bityuckiy wrote:
-> >=20
-> > > Another idea, calculate the CRC backwards(from the end of the buffer =
-to the beginning).
-> > > That give better L1 cache behaviour.
-> > >
-> > Why (may be some URL)? For all archs?=20
->=20
-> Sounds rather odd indeed.  Most CPUs I know about either have no
-> hardware-prefetch, can only prefetch forward or can prefetch both
-> forward and backward.  In either case, calculating the CRC backward
-> should either be the same speed or slower than going forward.
->=20
-> But I like to learn something new.
-Hmm, I'm curious and exploring that too. Take a glimps at=20
-http://gcc.gnu.org/projects/prefetch.html
-There are some useful references there.
+If you have enough trust in your El Cheapo hardware supplier.  There
+is no standard that requires wear leveling and there are reports that
+basically tell you to do your own wear leveling on some devices.  With
+no good way to distinguish "some" devices from "others", you can read
+that as "all". ;)
 
->=20
-> J=F6rn
->=20
-> --=20
-> I've never met a human being who would want to read 17,000 pages of
-> documentation, and if there was, I'd kill him to get him out of the
-> gene pool.
-> -- Joseph Costello
->=20
+USB keys and all the various other consumer-type flash devices are
+good enough to beat 3 1/2" floppies, that's about it.  But that's
+quite good enough for most people.  Floppies sold like crazy after
+all.
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Jörn
+
+-- 
+Simplicity is prerequisite for reliability.
+-- Edsger W. Dijkstra
