@@ -1,28 +1,81 @@
-From: mal@komcept.com (MAL)
-Date: Wed, 26 Feb 2003 19:23:38 +0000
-Subject: devfs & mtd
-Message-ID: <3E5D143A.2060806@komcept.com>
+From: ahaas@airmail.net (Art Haas)
+Date: Wed, 26 Feb 2003 14:53:34 -0600
+Subject: [PATCH] C99 initializers for drivers/mtd files
+Message-ID: <20030226205334.GB8966@debian>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi, i'm using a DiskOnChip 2000 48MB, with a 2.4.20 kernel, the CVS MTD 
-patches and a patched grub CVS.
+Hi.
 
-I'm also running devfsd, but only to set up legacy /dev nodes, (-np).
+Here is a set of patches for converting files in drivers/mtd to use C99
+initializers. The patches are against the current BK.
 
-All works fine, as long as I use /dev/root as the root fs in fstab.  If 
-I try to use /dev/nftl/disk0/part1, (which exists), the filesystem fails 
-to mount at init, (even read-only), stating that the device cannot be found.
+Art Haas
 
-Yes, devfsd starts _before_ the filesystem mount.
-
-Setting the root filesystem to /dev/root, (which points to 
-/dev/nftl/disk0/part1 !), works fine.
-
-Additionally, I still have to pass root=/dev/nftla1 to the kernel, even 
-though this location doesn't exist!
-
-Please can someone help me understand how this archaic mess up works :)
-
-Cheers,
-MAL
+===== drivers/mtd/ftl.c 1.43 vs edited =====
+--- 1.43/drivers/mtd/ftl.c	Sun Feb  9 19:29:55 2003
++++ edited/drivers/mtd/ftl.c	Wed Feb 26 13:35:35 2003
+@@ -155,8 +155,8 @@
+ void ftl_freepart(partition_t *part);
+ 
+ static struct mtd_notifier ftl_notifier = {
+-	add:	ftl_notify_add,
+-	remove:	ftl_notify_remove,
++	.add	= ftl_notify_add,
++	.remove	= ftl_notify_remove,
+ };
+ 
+ /* Partition state flags */
+===== drivers/mtd/mtdchar.c 1.10 vs edited =====
+--- 1.10/drivers/mtd/mtdchar.c	Mon Dec  2 17:20:17 2002
++++ edited/drivers/mtd/mtdchar.c	Wed Feb 26 12:10:18 2003
+@@ -19,8 +19,8 @@
+ static void mtd_notify_remove(struct mtd_info* mtd);
+ 
+ static struct mtd_notifier notifier = {
+-	add:	mtd_notify_add,
+-	remove:	mtd_notify_remove,
++	.add	= mtd_notify_add,
++	.remove	= mtd_notify_remove,
+ };
+ 
+ #endif
+@@ -445,13 +445,13 @@
+ } /* memory_ioctl */
+ 
+ static struct file_operations mtd_fops = {
+-	owner:		THIS_MODULE,
+-	llseek:		mtd_lseek,     	/* lseek */
+-	read:		mtd_read,	/* read */
+-	write: 		mtd_write, 	/* write */
+-	ioctl:		mtd_ioctl,	/* ioctl */
+-	open:		mtd_open,	/* open */
+-	release:	mtd_close,	/* release */
++	.owner		= THIS_MODULE,
++	.llseek		= mtd_lseek,	/* lseek */
++	.read		= mtd_read,	/* read */
++	.write 		= mtd_write, 	/* write */
++	.ioctl		= mtd_ioctl,	/* ioctl */
++	.open		= mtd_open,	/* open */
++	.release	= mtd_close,	/* release */
+ };
+ 
+ 
+===== drivers/mtd/nftlcore.c 1.39 vs edited =====
+--- 1.39/drivers/mtd/nftlcore.c	Mon Oct 28 13:57:50 2002
++++ edited/drivers/mtd/nftlcore.c	Wed Feb 26 13:35:01 2003
+@@ -914,8 +914,8 @@
+  ****************************************************************************/
+ 
+ static struct mtd_notifier nftl_notifier = {
+-	add:	NFTL_notify_add,
+-	remove:	NFTL_notify_remove
++	.add	= NFTL_notify_add,
++	.remove	= NFTL_notify_remove
+ };
+ 
+ extern char nftlmountrev[];
+-- 
+They that can give up essential liberty to obtain a little temporary safety
+deserve neither liberty nor safety.
+ -- Benjamin Franklin, Historical Review of Pennsylvania, 1759
