@@ -1,17 +1,19 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from softsteprubberfloors.com ([192.220.111.56] helo=rcmenter.iserver.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18WG8i-0001W8-00
-	for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2003 13:21:00 +0000
-Received: from dagobert.svc.sysgo.de ([172.22.1.2])
-	by dagobert.svc.sysgo.de (8.10.2/8.10.2/SuSE Linux 8.10.0-0.3) with ESMTP id h08Dpml05879
-	for <linux-mtd@lists.infradead.org>; Wed, 8 Jan 2003 14:51:48 +0100
-Date: Wed, 8 Jan 2003 14:51:48 +0100 (MET)
-From: Armin Schindler <acs@sysgo.de>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: JFFS2 and NAND problems
-Message-ID: <Pine.LNX.4.21.0301081436360.5479-100000@dagobert.svc.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 18WLbj-0002Cf-00
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2003 19:11:19 +0000
+Subject: Re: CRAMFS on MTD/NAND Issue
+From: Russ Dill <Russ.Dill@asu.edu>
+To: Srinivasu.Vaduguri@nokia.com
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <F252EE46074AB645B4F44947EEAD5727C83809@mvebe001.americas.nokia.com>
+References: 
+	 <F252EE46074AB645B4F44947EEAD5727C83809@mvebe001.americas.nokia.com>
+Content-Type: text/plain
+Message-Id: <1042054935.10724.10.camel@timmy>
+Mime-Version: 1.0
+Date: 08 Jan 2003 12:42:15 -0700
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,48 +25,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+On Wed, 2003-01-08 at 05:40, Srinivasu.Vaduguri@nokia.com wrote:
+> Hi all,
+> 
+> I am trying to mount CRAMFS using MTD driver on a NAND flash. 
+> If there is a BAD block in the CRAMFS area of the NAND flash then i get the following error during mount. 
+> 
+> Error -3 while decompressing!
+> 802c3674(666163445)->83d7d000(4096)
+> 
+> Then the applications on the mounted cramfs are not running properly.
 
-I use the latest CVS MTD together with a 16MB NAND Flash and
-JFFS2. Creating and reading files seems to work very good,
-but when I want to remove files I get error messages like:
+NAND *will* have bad blocks, cramfs does not handle bad blocks. There
+isn't an elegant solution for this right now, but here are some options:
 
- Short write in obliterating obsoleted node at 0x00876804: 20
-and
- Node totlen on flash (0x00000002) != totlen in node ref (0x000002dc)
+cramfs on top of nftl: This works resonably well, but seems like
+overkill to me, and it puts you in questionable legal status if you
+aren't using an m-systems product afaik (this is what I use)
 
-After umount, when I try to mount it again I get:
+yaffs: desgined for NAND, but has no compression
 
-Empty flash at 0x0082bbf8 ends at 0x0082bc00
-jffs2_scan_eraseblock(): Node at 0x008341fc {0x1985, 0xe002, 0x00000002) has invalid CRC 0x00000004 (calculated 0x3b50c69b)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00834214: 0x01f5 instead
+jffs2: The NAND code is pretty new, and the journalling is probably
+overkill for your application, but it will work, and should be able to
+adapt to bad blocks.
 
-If "Verify NAND page writes" is enabled, and I try to write the
-response is: 
-Write error in obliterating obsoleted node at 0x00ff800c: -5
-Write of 2151 bytes at 0x00ff875c failed. returned -5, retlen 0
-Not marking the space at 0x00ff875c as dirty because the flash driver returned retlen zero
-ARGH. About to write node to 0x00ff875c on flash, but there are data already the re:
-0x00ff875c: 19 85 e0 02 00 00 08 67 ce 51 d9 44 00 00 00 02
-
-When I use e.g. ext2 or store data directly with the mtd character
-device, the flash doesn't show any problem.
-
-When using an AMD 1MB NOR Flash with JFFS2 the problem doesn't appear.
-
-It seems to be a problem of JFFS2 together with the NAND flash.
-Could this be something with a wrong block size ?
-
-Thanks for any help. 
-
-Armin
-
-
-Armin Schindler <acs@sysgo.de>
-SYSGO AG
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany
-phone: +49 6136 9948-0
-fax  : +49 6136 9948-10
-http://www.sysgo.de
-http://www.elinos.com
+roll your own: Please, make a static compressed filesystem (like cramfs)
+that incorporates extra blocks, so that when the checksum is bad while
+initially writing the filesystem, or reading the file system (in the
+case where ecc can save the data), it rewrites this block to a free
+sector). It would seem like a simple modification to cramfs to me.
