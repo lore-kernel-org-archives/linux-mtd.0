@@ -1,20 +1,21 @@
-Received: from 225-9.east.net ([202.130.225.9] helo=smtp2)
+Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197UNJ-0000gE-LT
-	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 07:01:58 +0100
-Received: from unknown (HELO leeyang) ([210.5.20.225])
-	<????e???[?]??U??WVS???????G???u7?_?S?7?w??w????????????????????w??_???Q?7V??S?_?>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <?O:??linux-mtd@lists.infradead.org?>; 21 Apr 2003 05:57:40 -0000
-Message-ID: <002a01c307cb$86dad630$cc00a8c0@ycigrnd>
-From: "leeyang" <leeyang@ycig.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 21 Apr 2003 14:01:55 +0800
+	id 197WBH-0000wa-Tc
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2003 08:57:40 +0100
+Received: from there (203-96-48-242-tollfree.actrix.co.nz [203.96.48.242])
+	by blood.actrix.co.nz (Postfix) with SMTP id 7C7F641AC
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 21 Apr 2003 19:57:46 +1200 (NZST)
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 21 Apr 2003 19:58:36 +1200
 MIME-Version: 1.0
+Message-Id: <20030421075746.7C7F641AC@blood.actrix.co.nz>
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-Subject: mmap on jffs2(2.4.19)
+  charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+Subject: nand_ecc error in byte order?
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I need mmap a "writable" file,
-and it fails.My code is as below:
 
- fd = open("/usr/dat/sot.dat",O_RDWR,FILEMODE);
- 
- ptr1=mmap(NULL,filesize,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);
+I've been dabbling with ECCs a bit today and discovered something that looks 
+to me like an error in nand_ecc.c.
 
-fd returns 3,but ptr1 returns -1 and 
-mmap errno says invalid agrument.
-These codes runs well on ext2.
+I think I recall someone mentioning this before, but could not find an email 
+to this effect.
 
-Then I checked the old maillist and source code.
-It seems jffs2 currently not support mmap writable.
-Am I right?
+The code implements the parity generation/correction algorithms used for 
+SmartMedia. However, unless I got it wrong, the byte ordering of the ecc_code 
+array is not the same as used in SmartMedia.
 
-In
-http://lists.infradead.org/pipermail/linux-mtd/2002-July/005436.html
-dw said "some kind of mtd_remap()",
-Has it been implemented now? 
+In SmartMedia (according to specs and code from Samsung), the byte ordering 
+is:
 
+byte 0: low byte of line parity.
+byte1: high byte of line parity
+byte2:column parity
 
-BTW:
-My last msg was blocked by 
-"Message has a suspicious header"
+nand_ecc.c seems to me to generate:
+byte 0: high byte of line parity.
+byte1: low byte of line parity
+byte2:column parity
 
-I'm not sure the reason,I guess 
-the smtp server I used is broken,
-and I change to another one,
-hope this one works.
+Clearly this is not a problem if the same ECC generator gets used all the 
+time. However, it will be a problem if they are mixed.
 
-leeyang
+Assuming I'm not seeing ghosts, and this is a real problem, do we fix the 
+problem (to be consistent with SmartMedia) or retain the status quo (to not 
+break legacy mtd)?
+
+-- Charles
