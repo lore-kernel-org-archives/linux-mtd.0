@@ -1,13 +1,18 @@
-Received: from taurus.mvis.com ([216.202.54.35] helo=[216.202.54.14])
+Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19uh1R-00008O-6v
-	for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2003 00:26:45 +0100
-content-class: urn:content-classes:message
-Date: Wed, 3 Sep 2003 16:25:42 -0700
-Message-ID: <AFA2797FA126FD46B8CD281F2809844E181968@taurus.primary.local>
-From: "Keith Outwater" <Keith_Outwater@microvision.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Latest CVS snapshot support for kernel 2.2.4?
+	id 19uhGY-0000G9-VA
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Sep 2003 00:42:23 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Keith Outwater <Keith_Outwater@microvision.com>
+In-Reply-To: <AFA2797FA126FD46B8CD281F2809844E181968@taurus.primary.local>
+References: <AFA2797FA126FD46B8CD281F2809844E181968@taurus.primary.local>
+Message-Id: <1062632507.31497.247.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Thu, 04 Sep 2003 00:41:47 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Latest CVS snapshot support for kernel 2.2.4?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,22 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello - 
+On Wed, 2003-09-03 at 16:25 -0700, Keith Outwater wrote:
+> Are there any plans to add support for earlier kernels?
 
-I am running a linux-2.4.4 kernel on an embedded target and noticed that
-the latest CVS snapshot has a driver for the DOC Millennium Plus. I
-(unfortunately)
-have one of these devices on my board and up to now had no MTD support.
-Sadly, the
-oldest kernel supported appears to be 2.4.10 per compatmach.h
+No. Even something as old as 2.4.10 won't work easliy -- although 2.4.19
+apparently does with a small amount of hacking.
 
-Are there any plans to add support for earlier kernels?
+It's mostly stuff in compatmac.h that you're missing, and much of it you
+could probably reclaim from an older version in CVS. I'm no longer
+interested in maintaining it though -- people just shouldn't be using
+old and known-broken code, and if they really want to do that they can
+use old MTD code too. 
 
-Thanks!
-Keith
+Or fix it themselves without bothering me :)
 
-Keith Outwater
-Sr. Staff Engineer
-Microvision, Inc.
-19910 N. Creek Parkway
-Bothell, WA 98011
+Sorry.
+
+-- 
+dwmw2
