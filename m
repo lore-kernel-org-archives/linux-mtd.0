@@ -1,19 +1,15 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173R3K-0004Kd-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 01:36:03 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: victor.martin@eupla.unizar.es, linux-mtd@lists.infradead.org
-Subject: Re: IDE flash disk
-Date: Fri, 3 May 2002 12:27:02 +1200
-References: <200205021122.g42BMIp05257@relay.unizar.es>
-In-Reply-To: <200205021122.g42BMIp05257@relay.unizar.es>
+Received: from web20401.mail.yahoo.com ([216.136.226.120])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 173T9x-0004TO-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 May 2002 03:51:01 +0100
+Message-ID: <20020503025059.96685.qmail@web20401.mail.yahoo.com>
+Date: Thu, 2 May 2002 19:50:59 -0700 (PDT)
+From: Zhiwei Yu <linux_vpn@yahoo.com>
+Subject: grub stuff
+To: john@scl.co.uk
+Cc: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20020503003342.E13134C10E@dragon.actrix.co.nz>
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +21,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 02 May 2002 23:12, victor.martin@eupla.unizar.es wrote:
-> I have an IDE disk with flash tecnology.
->
-> I think ide emulation doesnt work ok and i should to use JFFS2 Filesystem
-> but i can't do it.
+hi, John 
 
-What is this thing? Is it a Sandisk? What you you mean by the emulation 
-"doesn't work".
+I am the one posting "Booting from DOC2000 with GRUB
+Loader", and glad to see you still "fighting" grub. 
+Now I'm using lilo instead. Although grub have a lot
+of benefits, I can't make it work before deadline.:(
+If you work it out, would u please give me some clue?
 
-IDE devices look like disks and the fact that they contain flash inside 
-instead of magnetic media is invisible from the system's point of view.
+Here is my way to recover DOC chip.  I presumed that
+you have an ethernet card on your board.  
+1. Build a ramdisk with root fs, put nftl_format
+inside it
+2. use mknbi to make ramdisk bootable
+3. setup a tftp server and bootp server on your
+desktop
+4. go to etherboot.sourceforge.net to download the
+latest package, find out the bios for ethernet card
+and write it into ethernet card.  After that you can
+choose to boot from local or network.
+5. boot from network, push your ramdisk to your SBC by
+tftp server
+You can now nftl_format your DOC.  It's a little
+tricky to setup all of it. but quite useful for me who
+don't have floppy and harddisk on the SBC.
 
--- CHarles
+For further information, pls refer to
+etherboot.sourceforge.net.
+
+Best Regards
+Zhiwei Yu
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Health - your guide to health and wellness
+http://health.yahoo.com
