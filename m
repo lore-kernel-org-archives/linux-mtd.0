@@ -1,230 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14s15v-0006jK-00
-	for mtd-list@infradead.org; Tue, 24 Apr 2001 12:34:59 +0100
-Received: from mta02.talk21.com ([62.172.192.41] helo=t21mta02-app.talk21.com)
+	id 14s1qP-000702-00
+	for mtd-list@infradead.org; Tue, 24 Apr 2001 13:23:01 +0100
+Received: from mail.utfors.se ([195.58.103.125])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14s15l-0006jD-00
-	for mtd@infradead.org; Tue, 24 Apr 2001 12:34:49 +0100
-Received: from t21mtaV-lrs ([10.216.84.14]) by t21mta02-app.talk21.com
-          (InterMail vM.4.01.02.27 201-229-119-110) with SMTP
-          id <20010424113037.FQCK11909.t21mta02-app.talk21.com@t21mtaV-lrs>
-          for <mtd@infradead.org>; Tue, 24 Apr 2001 12:30:37 +0100
-From: simon.munton@talk21.com
-To: mtd@infradead.org
-Date: Tue, 24 Apr 2001 12:29:29 GMT+01:00
-Subject: (No Subject)
-Mime-Version: 1.0
-Content-type: multipart/mixed; boundary="--GgOuLpDpIyE--988111769029--"
-Message-Id: <20010424113037.FQCK11909.t21mta02-app.talk21.com@t21mtaV-lrs>
+	id 14s1qO-0006zw-00
+	for mtd@infradead.org; Tue, 24 Apr 2001 13:23:00 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "'Vipin Malik'" <vipin.malik@daniel.com>, <mtd@infradead.org>
+Subject: RE: JFFS2 as root FS
+Date: Tue, 24 Apr 2001 14:22:10 +0200
+Message-ID: <001401c0ccb9$30483af0$0a01a8c0@Win1>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <3AE43929.3695C91D@daniel.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Multipart Message Boundary - attachment/bodypart follows:
+Hi again
 
+Now that my JFFS2 FS mounts properly&speedy(less than 5 seconds) I try
+to use it as a root FS and I got this:
 
-----GgOuLpDpIyE--988111769029--
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+....
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (jffs2 filesystem) readonly.
+Freeing unused kernel memory: 48k init
+INIT: version 2.77 booting
+INIT: cannot execute "/etc/rc.sysinit"
 
-Back in January, I posted a similar question about the unlock bypass mode.
+The /etc/rc.sysinit file is there and executable, so why won't init execute
+it?
 
-Unfortunately, I've been busy on other things since then, so I've not been able to follow up on it.
-
-The chip needs to be locked before going into the unlock bypass mode and unlocked when it comes out of this mode. It would probably be best to have a couple of helper functions to enter and exit bypass mode. 
-
-Also, in do_write_oneword, it should skip the wait for the chip to be ready and not set the state back to ready if fast is set true.
-
-I've also noticed that CFI_DEVICETYPE_X8 is used in several places, where it seems that cfi->device_type should be used instead (one instance is in issuing the enter bypass mode commands).
-
-Something along the lines of the attached diff (haven't even tried compiling it, so it may be buggy)
-
-Simon
-
-> -----Original Message-----
-> From: Brenk, Rudger van [mailto:rudger.van.brenk@intersil.com]
-> Sent: 23 April 2001 2:56 pm
-> To: 'mtd@infradead.org'
-> Subject: Problems using fast write in cfi_cmdset_0002.c
-> 
-> 
-> While building a uClinux environment using MTD and JFFS on an 
-> AMD AM29DL323
-> device (Kernel 2.0.38). I encountered some problems using the 
-> cfi_cmdset_0002.c,
-> when ever the fast write option is used the flash is put in a 
-> 'unlock bypass
-> mode' and starts writing bytes to flash. 
-> 
-> This is OK but in between byte writes the chip state is set 
-> back to FL_READY,
-> and available for other threads to access. If an other 
-> threads accesses the
-> flash chip it's still in 'unlock bypass mode' and will not 
-> accept other
-> commands/or even worse when this thread schedules out the 
-> byte write program
-> will continue when the device isn't anymore in 'unlock bypass mode'!!
-> 
-> Is there anybody else experiencing problems like this?
-> 
-> Thanks,
-> 
-> Rudger 
-> 
-> 
-> Rudger.van.Brenk@intersil.com
-> 
-> 
-> 
-> 
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
-> 
-
-
-
-
---------------------
-talk21 your FREE portable and private address on the net at http://www.talk21.com
-----GgOuLpDpIyE--988111769029--
-Content-Type: text/plain; Name="cfi_cmdset_0002.c.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="cfi_cmdset_0002.c.diff"
-
-LS0tIGNmaV9jbWRzZXRfMDAwMi5jCVR1ZSBBcHIgMTcgMTU6MTM6NTQgMjAwMQ0KKysrIEM6XFRF
-TVAvY2ZpX2NtZHNldF8wMDAyLmMJVHVlIEFwciAyNCAxMDo0NjoyMiAyMDAxDQpAQCAtMzA0
-LDcgKzMwNCw3IEBADQogIHJldHJ5Og0KIAljZmlfc3Bpbl9sb2NrKGNoaXAtPm11dGV4KTsN
-CiANCi0JaWYgKGNoaXAtPnN0YXRlICE9IEZMX1JFQURZKXsNCisJaWYgKCFmYXN0ICYmIGNo
-aXAtPnN0YXRlICE9IEZMX1JFQURZKXsNCiAJICAgICAgICBwcmludGsoIldhaXRpbmcgZm9y
-IGNoaXAgdG8gd3JpdGUsIHN0YXR1cyA9ICVkXG4iLCBjaGlwLT5zdGF0ZSk7DQogCQlzZXRf
-Y3VycmVudF9zdGF0ZShUQVNLX1VOSU5URVJSVVBUSUJMRSk7DQogCQlhZGRfd2FpdF9xdWV1
-ZSgmY2hpcC0+d3EsICZ3YWl0KTsNCkBAIC0zMzEsOSArMzMxLDkgQEANCiAJCWNmaV9zZW5k
-X2dlbl9jbWQoMHhBMCwgMCwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBj
-ZmktPmRldmljZV90eXBlLCBOVUxMKTsNCiAJfQ0KIAllbHNlIHsNCi0JICAgICAgICBjZmlf
-c2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFw
-LCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VUWVBFX1g4LCBOVUxMKTsNCi0JICAgICAg
-ICBjZmlfc2VuZF9nZW5fY21kKDB4NTUsIGNmaS0+YWRkcl91bmxvY2syLCBjaGlwLT5zdGFy
-dCwgbWFwLCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VUWVBFX1g4LCBOVUxMKTsNCi0J
-ICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4QTAsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlw
-LT5zdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VUWVBFX1g4LCBOVUxM
-KTsNCisJICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sx
-LCBjaGlwLT5zdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUs
-IE5VTEwpOw0KKwkgICAgICAgIGNmaV9zZW5kX2dlbl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3Vu
-bG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgY2ZpLT5kZXZpY2Vf
-dHlwZSwgTlVMTCk7DQorCSAgICAgICAgY2ZpX3NlbmRfZ2VuX2NtZCgweEEwLCBjZmktPmFk
-ZHJfdW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBjZmktPmRl
-dmljZV90eXBlLCBOVUxMKTsNCiAJfQ0KIA0KIAljZmlfd3JpdGUobWFwLCBkYXR1bSwgYWRy
-KTsNCkBAIC0zNjUsMTMgKzM2NSw3OSBAQA0KIAkJcmV0ID0gLUVJTzsNCiAJfSAgICAgICAN
-CiAJRElTQUJMRV9WUFAobWFwKTsNCi0JY2hpcC0+c3RhdGUgPSBGTF9SRUFEWTsNCi0Jd2Fr
-ZV91cCgmY2hpcC0+d3EpOw0KKyAgICAgICAgaWYgKCFmYXN0KSB7DQorCSAgICAgICAgY2hp
-cC0+c3RhdGUgPSBGTF9SRUFEWTsNCisJICAgICAgICB3YWtlX3VwKCZjaGlwLT53cSk7DQor
-ICAgICAgICB9DQogCWNmaV9zcGluX3VubG9jayhjaGlwLT5tdXRleCk7DQogCQ0KIAlyZXR1
-cm4gcmV0Ow0KIH0NCiANCitzdGF0aWMgdm9pZCBjZmlfZW50ZXJfYnlwYXNzX21vZGUgKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY2hpcG51bSkNCit7DQorCXN0cnVjdCBtYXBfaW5m
-byAqbWFwID0gbXRkLT5wcml2Ow0KKwlzdHJ1Y3QgY2ZpX3ByaXZhdGUgKmNmaSA9IG1hcC0+
-ZmxkcnZfcHJpdjsNCisgICAgICAgIHVuc2lnbmVkIGxvbmcgY2hpcHN0YXJ0Ow0KKyAgICAg
-ICAgc3RydWN0IGZsY2hpcCAqY2hpcCA9ICZjZmktPmNoaXBzW2NoaXBudW1dOw0KKwl1bnNp
-Z25lZCBsb25nIHRpbWVvID0gamlmZmllcyArIEhaOw0KKwlERUNMQVJFX1dBSVRRVUVVRSh3
-YWl0LCBjdXJyZW50KTsNCisNCisgcmV0cnk6DQorCWNmaV9zcGluX2xvY2soY2hpcC0+bXV0
-ZXgpOw0KKw0KKwlpZiAoY2hpcC0+c3RhdGUgIT0gRkxfUkVBRFkpew0KKwkgICAgICAgIHBy
-aW50aygiV2FpdGluZyBmb3IgY2hpcCB0byB3cml0ZSwgc3RhdHVzID0gJWRcbiIsIGNoaXAt
-PnN0YXRlKTsNCisJCXNldF9jdXJyZW50X3N0YXRlKFRBU0tfVU5JTlRFUlJVUFRJQkxFKTsN
-CisJCWFkZF93YWl0X3F1ZXVlKCZjaGlwLT53cSwgJndhaXQpOw0KKyAgICAgICAgICAgICAg
-ICANCisJCWNmaV9zcGluX3VubG9jayhjaGlwLT5tdXRleCk7DQorDQorCQlzY2hlZHVsZSgp
-Ow0KKwkJcmVtb3ZlX3dhaXRfcXVldWUoJmNoaXAtPndxLCAmd2FpdCk7DQorCQlwcmludGso
-Ildha2UgdXAgdG8gd3JpdGU6XG4iKTsNCisjaWYgMA0KKwkJaWYoc2lnbmFsX3BlbmRpbmco
-Y3VycmVudCkpDQorCQkJcmV0dXJuIC1FSU5UUjsNCisjZW5kaWYNCisJCXRpbWVvID0gamlm
-ZmllcyArIEhaOw0KKw0KKwkJZ290byByZXRyeTsNCisJfQkNCisNCisJY2hpcC0+c3RhdGUg
-PSBGTF9XUklUSU5HOw0KKw0KKyAgICAgICAgY2hpcHN0YXJ0ID0gY2ZpLT5jaGlwc1tjaGlw
-bnVtXS5zdGFydDsNCisNCisJLyogR28gaW50byB1bmxvY2sgYnlwYXNzIG1vZGUgKi8NCisJ
-Y2ZpX3NlbmRfZ2VuX2NtZCgweEFBLCBjZmktPmFkZHJfdW5sb2NrMSwgY2hpcHN0YXJ0LCBt
-YXAsIGNmaS0+aW50ZXJsZWF2ZSwgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7DQorCWNmaV9z
-ZW5kX2dlbl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3VubG9jazIsIGNoaXBzdGFydCwgbWFwLCBj
-ZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KKwljZmlfc2VuZF9n
-ZW5fY21kKDB4MjAsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwc3RhcnQsIG1hcCwgY2ZpLT5p
-bnRlcmxlYXZlLCBjZmktPmRldmljZV90eXBlLCBOVUxMKTsNCisNCisJY2ZpX3NwaW5fdW5s
-b2NrKGNoaXAtPm11dGV4KTsNCit9DQorDQorc3RhdGljIHZvaWQgY2ZpX2V4aXRfYnlwYXNz
-X21vZGUgKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY2hpcG51bSkNCit7DQorCXN0cnVj
-dCBtYXBfaW5mbyAqbWFwID0gbXRkLT5wcml2Ow0KKwlzdHJ1Y3QgY2ZpX3ByaXZhdGUgKmNm
-aSA9IG1hcC0+ZmxkcnZfcHJpdjsNCisgICAgICAgIHVuc2lnbmVkIGxvbmcgY2hpcHN0YXJ0
-Ow0KKyAgICAgICAgc3RydWN0IGZsY2hpcCAqY2hpcCA9ICZjZmktPmNoaXBzW2NoaXBudW1d
-Ow0KKw0KKwljaGlwc3RhcnQgPSBjZmktPmNoaXBzW2NoaXBudW1dLnN0YXJ0Ow0KKw0KKwlj
-Zmlfc3Bpbl9sb2NrKGNoaXAtPm11dGV4KTsNCisNCisJLyogQ29tZSBvdXQgb2YgYnlwYXNz
-IG1vZGUgKi8NCisJY2ZpX3NlbmRfZ2VuX2NtZCgweDkwLCAwLCBjaGlwc3RhcnQsIG1hcCwg
-Y2ZpLT5pbnRlcmxlYXZlLCBjZmktPmRldmljZV90eXBlLCBOVUxMKTsNCisJY2ZpX3NlbmRf
-Z2VuX2NtZCgweDAwLCAwLCBjaGlwc3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBjZmkt
-PmRldmljZV90eXBlLCBOVUxMKTsNCisNCisJY2hpcC0+c3RhdGUgPSBGTF9SRUFEWTsNCisJ
-d2FrZV91cCgmY2hpcC0+d3EpOw0KKw0KKyAgICAgICAgY2ZpX3NwaW5fdW5sb2NrKGNoaXAt
-Pm11dGV4KTsNCit9DQorDQogc3RhdGljIGludCBjZmlfYW1kc3RkX3dyaXRlIChzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCwgbG9mZl90IHRvICwgc2l6ZV90IGxlbiwgc2l6ZV90ICpyZXRsZW4s
-IGNvbnN0IHVfY2hhciAqYnVmKQ0KIHsNCiAJc3RydWN0IG1hcF9pbmZvICptYXAgPSBtdGQt
-PnByaXY7DQpAQCAtNDI1LDEwICs0OTEsMTAgQEANCiAJCX0NCiAJfQ0KIAkNCi0JLyogR28g
-aW50byB1bmxvY2sgYnlwYXNzIG1vZGUgKi8NCi0JY2ZpX3NlbmRfZ2VuX2NtZCgweEFBLCBj
-ZmktPmFkZHJfdW5sb2NrMSwgY2hpcHN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgQ0ZJ
-X0RFVklDRVRZUEVfWDgsIE5VTEwpOw0KLQljZmlfc2VuZF9nZW5fY21kKDB4NTUsIGNmaS0+
-YWRkcl91bmxvY2syLCBjaGlwc3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBDRklfREVW
-SUNFVFlQRV9YOCwgTlVMTCk7DQotCWNmaV9zZW5kX2dlbl9jbWQoMHgyMCwgY2ZpLT5hZGRy
-X3VubG9jazEsIGNoaXBzdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VU
-WVBFX1g4LCBOVUxMKTsNCisgICAgICAgIGlmIChjZmktPmZhc3RfcHJvZykgew0KKyAgCSAg
-ICAgICAgLyogR28gaW50byB1bmxvY2sgYnlwYXNzIG1vZGUgKi8NCisgICAgICAgICAgICAg
-ICAgY2ZpX2VudGVyX2J5cGFzc19tb2RlIChtdGQsIGNoaXBudW0pOw0KKyAgICAgICAgfQ0K
-IA0KIAkvKiBXZSBhcmUgbm93IGFsaWduZWQsIHdyaXRlIGFzIG11Y2ggYXMgcG9zc2libGUg
-Ki8NCiAJd2hpbGUobGVuID49IENGSURFVl9CVVNXSURUSCkgew0KQEAgLTQ0OCw4ICs1MTQs
-NyBAQA0KIAkJaWYgKHJldCkgew0KIAkJCWlmIChjZmktPmZhc3RfcHJvZyl7DQogCQkJCS8q
-IEdldCBvdXQgb2YgdW5sb2NrIGJ5cGFzcyBtb2RlICovDQotCQkJCWNmaV9zZW5kX2dlbl9j
-bWQoMHg5MCwgMCwgY2hpcHN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgY2ZpLT5kZXZp
-Y2VfdHlwZSwgTlVMTCk7DQotCQkJCWNmaV9zZW5kX2dlbl9jbWQoMHgwMCwgMCwgY2hpcHN0
-YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7DQor
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmlfZXhpdF9ieXBhc3NfbW9kZSAo
-bXRkLCBjaGlwbnVtKTsNCiAJCQl9DQogCQkJcmV0dXJuIHJldDsNCiAJCX0NCkBAIC00NjIs
-OCArNTI3LDcgQEANCiAJCWlmIChvZnMgPj4gY2ZpLT5jaGlwc2hpZnQpIHsNCiAJCQlpZiAo
-Y2ZpLT5mYXN0X3Byb2cpew0KIAkJCQkvKiBHZXQgb3V0IG9mIHVubG9jayBieXBhc3MgbW9k
-ZSAqLw0KLQkJCQljZmlfc2VuZF9nZW5fY21kKDB4OTAsIDAsIGNoaXBzdGFydCwgbWFwLCBj
-ZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KLQkJCQljZmlfc2Vu
-ZF9nZW5fY21kKDB4MDAsIDAsIGNoaXBzdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNm
-aS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgY2ZpX2V4aXRfYnlwYXNzX21vZGUgKG10ZCwgY2hpcG51bSk7DQogCQkJfQ0KIA0KIAkJ
-CWNoaXBudW0gKys7IA0KQEAgLTQ3MywxNyArNTM3LDE0IEBADQogCQkJY2hpcHN0YXJ0ID0g
-Y2ZpLT5jaGlwc1tjaGlwbnVtXS5zdGFydDsNCiAJCQlpZiAoY2ZpLT5mYXN0X3Byb2cpew0K
-IAkJCQkvKiBHbyBpbnRvIHVubG9jayBieXBhc3MgbW9kZSBmb3IgbmV4dCBzZXQgb2YgY2hp
-cHMgKi8NCi0JCQkJY2ZpX3NlbmRfZ2VuX2NtZCgweEFBLCBjZmktPmFkZHJfdW5sb2NrMSwg
-Y2hpcHN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgQ0ZJX0RFVklDRVRZUEVfWDgsIE5V
-TEwpOw0KLQkJCQljZmlfc2VuZF9nZW5fY21kKDB4NTUsIGNmaS0+YWRkcl91bmxvY2syLCBj
-aGlwc3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBDRklfREVWSUNFVFlQRV9YOCwgTlVM
-TCk7DQotCQkJCWNmaV9zZW5kX2dlbl9jbWQoMHgyMCwgY2ZpLT5hZGRyX3VubG9jazEsIGNo
-aXBzdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VUWVBFX1g4LCBOVUxM
-KTsNCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNmaV9lbnRlcl9ieXBhc3Nf
-bW9kZSAobXRkLCBjaGlwbnVtKTsNCiAJCQl9DQogCQl9DQogCX0NCiANCiAJaWYgKGNmaS0+
-ZmFzdF9wcm9nKXsNCiAJCS8qIEdldCBvdXQgb2YgdW5sb2NrIGJ5cGFzcyBtb2RlICovDQot
-CQljZmlfc2VuZF9nZW5fY21kKDB4OTAsIDAsIGNoaXBzdGFydCwgbWFwLCBjZmktPmludGVy
-bGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KLQkJY2ZpX3NlbmRfZ2VuX2NtZCgw
-eDAwLCAwLCBjaGlwc3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBjZmktPmRldmljZV90
-eXBlLCBOVUxMKTsNCisgICAgICAgICAgICAgICAgY2ZpX2V4aXRfYnlwYXNzX21vZGUgKG10
-ZCwgY2hpcG51bSk7DQogCX0NCiANCiAJaWYgKGxlbiAmIChDRklERVZfQlVTV0lEVEgtMSkp
-IHsNCkBAIC01NDYsMTEgKzYwNywxMSBAQA0KIA0KIAlhZHIgKz0gY2hpcC0+c3RhcnQ7DQog
-CUVOQUJMRV9WUFAobWFwKTsNCi0JY2ZpX3NlbmRfZ2VuX2NtZCgweEFBLCBjZmktPmFkZHJf
-dW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBDRklfREVWSUNF
-VFlQRV9YOCwgTlVMTCk7DQotCWNmaV9zZW5kX2dlbl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3Vu
-bG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgQ0ZJX0RFVklDRVRZ
-UEVfWDgsIE5VTEwpOw0KLQljZmlfc2VuZF9nZW5fY21kKDB4ODAsIGNmaS0+YWRkcl91bmxv
-Y2sxLCBjaGlwLT5zdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIENGSV9ERVZJQ0VUWVBF
-X1g4LCBOVUxMKTsNCi0JY2ZpX3NlbmRfZ2VuX2NtZCgweEFBLCBjZmktPmFkZHJfdW5sb2Nr
-MSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLT5pbnRlcmxlYXZlLCBDRklfREVWSUNFVFlQRV9Y
-OCwgTlVMTCk7DQotCWNmaV9zZW5kX2dlbl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3VubG9jazIs
-IGNoaXAtPnN0YXJ0LCBtYXAsIGNmaS0+aW50ZXJsZWF2ZSwgQ0ZJX0RFVklDRVRZUEVfWDgs
-IE5VTEwpOw0KKwljZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBj
-aGlwLT5zdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5V
-TEwpOw0KKwljZmlfc2VuZF9nZW5fY21kKDB4NTUsIGNmaS0+YWRkcl91bmxvY2syLCBjaGlw
-LT5zdGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwp
-Ow0KKwljZmlfc2VuZF9nZW5fY21kKDB4ODAsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5z
-dGFydCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0K
-KwljZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFy
-dCwgbWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KKwlj
-Zmlfc2VuZF9nZW5fY21kKDB4NTUsIGNmaS0+YWRkcl91bmxvY2syLCBjaGlwLT5zdGFydCwg
-bWFwLCBjZmktPmludGVybGVhdmUsIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0KIAljZmlf
-d3JpdGUobWFwLCBDTUQoMHgzMCksIGFkcik7DQogCQ0KIAl0aW1lbyA9IGppZmZpZXMgKyAo
-SFoqMjApOw0K
-----GgOuLpDpIyE--988111769029----
+        Jocke
 
 
 
