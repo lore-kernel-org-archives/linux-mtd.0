@@ -1,72 +1,31 @@
-From: guo_zl9@hotmail.com (guo_zhenglin)
-Date: Tue, 11 Mar 2003 09:31:29 +0800
-Subject: help : JFFS2 compile error :background.c
-References: <OE605pneeFUtLch9wPi00017e8f@hotmail.com> <20030310151356.GA24341@wohnheim.fh-wedel.de>
-Message-ID: <OE25mGItB6rCjCuDauo00020d7f@hotmail.com>
+From: Russ.Dill@asu.edu (Russ Dill)
+Date: 10 Mar 2003 18:42:10 -0700
+Subject: Suggestions for using a DoC with Linux and a 2.4.20 kern
+In-Reply-To: <000101c2e76d$55323340$e3c8580c@who5>
+References: <000101c2e76d$55323340$e3c8580c@who5>
+Message-ID: <1047346930.2207.16.camel@gobbles>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-1)I had used  mtd_cvs_20020612.tgz (from
-  http://qslinux.org/qslinux_2_4/tarballs/mtd_cvs_20020612.tgz)
+> Hello again from Gregg C Levine
+> Right now I am doing a recompile of my kernel, after patching it,
+> using the patches found in that directory of today's snapshot.
 
- 2)input: "sh patches -j /home/guozl_1/linux-2.4.4-2002-10-06"
- 3)linux kernel is :linux-2.4.4
- 4)  Cross compile is MontaVista Hothard 2.0 for ppc platform
- 5) make vmlinux:
+you don't neccessarily need todays snapshot, stock kernel is probably
+good enough, unless maybe you want to play with things like JFFS2 on
+NAND flash.
 
- 6)compile show:
+> So far, I am working my way through. Only the DoC ones were built as
+> modules.
 
+then you must load them in the order of doc2000, doc_probe, nftl
 
-ppc_8xx-gcc -D__KERNEL__ -I/home/guozl_1/linux-2.4.4-2002-10-06/include -Wal
-  l -W
+> More, as I work my way through. This is a new aspect of working with
+> Linux, so I am quite literally groping in the dark here.
+> Ladies and Gentlemen: Because I suspect there are others out there,
+> who have gone through this, I would greatly appreciate a response from
+> everyone else who has had these problems happen to them before.
 
-strict-prototypes -Os -fomit-frame-pointer -fno-strict-aliasing -D__powerpc_
-  _ -f
-
-signed-char -msoft-float -pipe -ffixed-r2 -Wno-uninitialized -mmultiple -mst
-  ring
-   -mcpu=860 -g -DJFFS2_OUT_OF_KERNEL  -c -o background.o background.c
-  background.c:108: arguments given to macro `recalc_sigpending'
-  background.c:155: arguments given to macro `recalc_sigpending'
-  make[2]: *** [background.o] Error 1
-  make[2]: Leaving directory `/home/guozl_1/linux-2.4.4-2002-10-06/fs/jffs2'
-  make[1]: *** [_subdir_jffs2] Error 2
-  make[1]: Leaving directory `/home/guozl_1/linux-2.4.4-2002-10-06/fs'
-  make: *** [_dir_fs] Error 2
-  [root at t80c35 linux-2.4.4-2002-10-06]#
-
-  7) I don't know which file(s) should be modified
-  8) I don't know where should be modified
-
-  Can you tell me ?
-  thanks !
-
-
------ Original Message -----
-From: "J?rn Engel" <joern@wohnheim.fh-wedel.de>
-To: "guo_zhenglin" <guo_zl9@hotmail.com>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Monday, March 10, 2003 11:13 PM
-Subject: Re: help : JFFS2 compile error :background.c
-
-
-> On Fri, 7 March 2003 19:11:16 +0800, guo_zhenglin wrote:
-> >
-> > thanks very much.
-> > but I am beginner on linux ,
-> > I don't know how to modify ,
-> > Could you tell me more detailedly?
->
-> Not, unless you describe the problem in more details:
-> - kernel version
-> - applied patches
-> - command line and output of gcc
-> ...
->
-> J?rn
->
-> --
-> Fancy algorithms are buggier than simple ones, and they're much harder
-> to implement. Use simple algorithms as well as simple data structures.
-> -- Rob Pike
->
+could you be more specific when you talk about "this" and "these
+problems". BTW, if they are common problem you are having, its likely
+they are in the mailing list archives.
