@@ -1,24 +1,19 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 192Qcz-0004m2-O0
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 08:01:13 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HCY00A37OT90E@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Mon, 07 Apr 2003 09:00:45 +0200 (MEST)
-Date: Mon, 07 Apr 2003 10:01:03 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <005001c2fcb6$553cf1a0$2a00a8c0@zhengjun>
-To: Jim Zeus <jimzeus@vip.sina.com>
-Message-id: <200304071001.03442.tglx@linutronix.de>
-MIME-version: 1.0
+Received: from [202.108.35.197] (helo=vip.sina.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 192NC9-0004UP-GV
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2003 04:21:17 +0100
+Message-ID: <004a01c2fcb4$8f61cf60$2a00a8c0@zhengjun>
+From: "Jim Zeus" <jimzeus@vip.sina.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
 References: <20030404062136.7806.qmail@vip.sina.com>
- <200304041248.57751.tglx@linutronix.de>
- <005001c2fcb6$553cf1a0$2a00a8c0@zhengjun>
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
+	<1049449251.1980.90.camel@passion.cambridge.redhat.com>
+Date: Mon, 7 Apr 2003 11:19:53 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 cc: MTD mail list <linux-mtd@lists.infradead.org>
 Subject: Re: [SPAM] FAT on NAND
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 07 April 2003 05:32, Jim Zeus wrote:
-> > For what ? Why don't you use JFFS2 or YAFFS, which handle NAND out of the
-> > box ?
-> Because I've got to build a FS which can be accessed by Windows and Linux
-> at the same time.I think JFFS2/YAFFS can't be recognized by Windows
-> nowadays. And , it seems like I have to support some device layer between
-> the FS and Flash so the Linux can access it, isn't it?
-> Is there anyway else I can choose?
-No, but AFAIK is there a Windows driver for YAFFS. 
- 
-> Are all the functions supported by JFFS2/YAFFS? Somebody told me the wear
-> levelling is supported by MTD
-Crap, MTD just provides the low level interface. Bad block management, wear 
-levelling and journalling must be done in the fs driver.
-
-> Does the SMART-Media-FAT build directly on a _bare_ NAND Flash ? 
-> If it is, That's nothing useful to me 'cause Linux cant access it.
-You can build it on bare FLASH: But that's not the correct way for LINUX. Your 
-have to build a filesystem driver, which acts on top of MTD.
-
-1. fs-driver 
-2. MTD-block-device-driver
-3. MTD-partition-driver
-4. Generic NAND-driver
-5. yourHardwareInterface-driver
-
-2, 3 and 4 exist.
-5 is easy to build (copy an existing one and modify it to fit your hardware)
-
-1 has to be written from scratch. 
-The specifications of SmartMedia-FAT are available from
-http://www.ssfdc.or.jp/english/index.htm
-
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+PiA+IFdoYXQgSSBhbSBkb2luZyBub3cgaXMgdG8gYnVpbGQgYSBmaWxlc3lzdGVtIHdoaWNoIGNh
+biBiZSANCj4gPiByZWNvZ25pemVkIG9uIF9yYXdfIE5BTkQgZmxhc2guIFNvLCBJIHRoaW5rIEZB
+VCB3aWxsIGJlIHRoZSBvbmx5DQo+ID4gY2hvaWNlKHRob3VnaCBJIGtub3cgaXQncyB2ZXJ5IHVu
+c3RhYmxlKS4gQW5kIEkgaGF2ZSBmb2xsb3dpbmcgcXVlc3Rpb24gbm93Og0KPiANCj4gV2luZG93
+cyB3b24ndCByZWNvZ25pc2UgcmF3IE5BTkQgZmxhc2ggYW55d2F5LiBZb3UnbGwgaGF2ZSB0byB3
+cml0ZQ0KPiBfc29tZV8ga2luZCBvZiBkcml2ZXIgZm9yIFdpbmRvd3MuDQo+IA0KDQpTaW5jZSB0
+aGUgTVREIGJsb2NrIGRldmljZSh3aGljaCBpbmNsdWRlIG5hbmQuYyxtdGRjb3JlLmMgDQphbmQg
+bXRkYmxvY2suYykgaXMgYSBibG9jayBkZXZpY2UsIHdoeSBJIGNhbid0IGJ1aWxkDQphbnkgZmls
+ZXN5c3RlbSBvbiBpdD8gDQpBbmQsIHdoYXQncyB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIE1URCBi
+bG9jayBkZXZpY2UgYW5kIE5GVEwNCmlmIHRoZXkgc3RheSBvbiB0aGUgc2FtZSBsYXllcj8gRXZl
+biB0aG91Z2ggSSBjYW50IHVzZSBORlRMDQpiZWNhdXNlIG9mIHNvbWUgInNpbGx5IHBhdGVudCBw
+cm9ibGVtIiAsSSBzdGlsbCB3YW5uYSBrbm93IGl0LA0KdGhhbmtzLg0KDQoNCj4gPiAxLkhvdyB1
+bnN0YWJsZSB3b3VsZCBpdCBiZT8gRG9lcyBpdCBzdXBwb3J0OiANCj4gPiAgICAgIGEuam91cm5h
+bGluZyAoY3Jhc2gvcG93ZXItb2ZmIHNhZmUgLEkgbWVhbikNCj4gDQo+IE5vLg0KPiANCj4gPiAg
+ICAgIGIuYmFkIGJsb2NrIG1hbmFnZW1lbnQNCj4gDQo+IE5vLg0KPiANCj4gPiAgICAgIGMud2Vh
+ciBsZXZlbGxpbmcNCj4gDQo+IE5vLg0KPiANCj4gPiAgICAgIGQuZXJyb3IgY29ycmVjdGlvbg0K
+PiANCj4gTm8uDQo+IA0KPiA+ICAgICAgZS5zb21ldGhpbmcgZWxzZSBJIGRvbnQga25vdyB0byBt
+YWtlIHRoZSBGUyByZWxpYWJsZQ0KPiANCj4gTm8uDQoNClRoZW4sIG1heWJlIHRoZSBsb3dlciBs
+YXllciAoTVREIG9yIE5GVEwpIHN1cHBvcnQgaXQ/IG9yIGFsbCB0aGUNCnN0dWZmKGEuYi5jLmQu
+ZSkgYXJlIHN1cHBvcnRlZCBvbmx5IGJ5IHRoZSBmaWxlIHN5c3RlbSANCihKRkZTMi9ZQUZGUyxJ
+IG1lYW4pPw0KDQo+IA0KPiA+IDIuSSBoYXZlIGNoZWNrZWQgdGhlIE5BTkQgZmxhc2ggZG9jb21l
+bnQgKGVzcGVjaWFsbHkgDQo+ID4gdGhlICJGaWxlc3lzdGVtcyBzdXBwb3J0aW5nIE5BTkQiY2hh
+cHRlcikgYW5kIEkgZm91bmQgb3V0IHRoYXQNCj4gPiBpdCBzZWVtcyBubyB3YXkgdG8gYnVpbGQg
+YSBGQVQgb24gYSBiYXJlIE5BTkQgZmxhc2ggYnV0IG9ubHkgb24gDQo+ID4gdGhlIFNtYXJ0TWVk
+aWFDYXJkcywgYW0gSSByaWdodD8gT3IgdGhlIFNNIGNhcmQgYW5kIHRoZSBiYXJlIE5BTkQNCj4g
+PiBhcmUganVzdCB0aGUgc2FtZSB0aGluZyB3aGVuIGEgRkFUIG9uIGl0Lg0KPiA+IDMuTWF5YmUg
+SSBtaXN1bmRlcnN0b29kLGJ1dCBEYXZpZCBXb29kaG91c2UgaGFkIHRvbGQgbWUgdGhhdCBJIHNo
+b3VsZCBhcHBseSBsYXllcnMgbGlrZSBGQVQtPk5GVEwtPk5BTkQgaWYgSSB3YW5uYSBidWlsZCBh
+IEZBVCBvbg0KPiA+IGEgTkFORCBmbGFzaC5CdXQgSSBsZWFybmVkIHRoYXQgdGhlIE5GVEwgb25s
+eSBzdXBwb3J0IERvYyBmcm9tIHRoZQ0KPiA+IE5BTkQgZmxhc2ggZG9jdW1lbnQsIGlzbnQgaXQ/
+IEFuZCB3aGF0IHNob3VsZCBJIGRvIHRvIHN1cHBvcnQgdGhlIA0KPiA+IEZBVCA/DQo+IA0KPiBJ
+IHRvbGQgeW91IHRvIHVzZSB0aGUgU21hcnRNZWRpYSBmb3JtYXQsIG5vdCBORlRMLiBZb3UgY2Fu
+IGRvIHRoYXQgb24NCj4gYW55IE5BTkQgaGFyZHdhcmU7IE5GVEwgaGFzIHNpbGx5IHBhdGVudCBw
+cm9ibGVtcyBpbiBzb21lIHBhcnRzIG9mIHRoZQ0KPiB3b3JsZC4NCg0KVGhhbmsgeW91LCBidXQg
+d2hhdCBpcyB0aGUgU21hcnRNZWRpYSBmb3JtYXQ/IFNvcnJ5IEkgYW0gbm90IA0KZmFtaWxpYXIg
+d2l0aCB0aGF0Lg0KDQo+IA0KPiBCdXQgcmVhbGx5IHlvdSBzaG91bGQgaGF2ZSBhIGZpbGUgc3lz
+dGVtIGRpcmVjdGx5IG9uIHRoZSBmbGFzaCwgbm90IGENCj4gdHJhbnNsYXRpb24gbGF5ZXIgcHJl
+dGVuZGluZyB0byBiZSBhIGJsb2NrIGRldmljZS4NCj4gDQoNCkRvIHlvdSBtZWFuIGJ1aWxkIGEg
+dG90YWxseSBuZXcgRlMgb24gYSBfYmFyZV8gTkFORCBmbGFzaCBvciBvbiBhIE1URD8gDQpZb3Ug
+YXJlIHNvIHJpZ2h0LCBidXQgSSBtdXN0IGJ1aWxkIGEgRlMgd2hpY2ggV2luZG93cyBjYW4gDQpy
+ZWNvZ25pemUgYW5kIEkgaGF2ZSBubyBlbm91Z2ggdGltZSB0byBkbyB0aGlzIGJlZm9yZSB0aGUg
+dGltZQ0KbGltaXQuDQoNCg0KPiA+IDQuRXZlcnlib2R5IHRlbGxzIG1lIHRoYXQgdGhlIEZhdCBv
+biBhIE5BTkQgaXMgbm90IHJlbGlhYmxlLGJ1dCBJIA0KPiA+IHRoaW5rIFVTQiBtYXNzIHN0b3Jh
+Z2UgYXJlIGJhc2VkIG9uIE5BTkQgYW5kIGdvdCBhIEZBVCAob3Igc29tZSANCj4gPiBmaWxlc3lz
+dGVtIHdoaWNoIHdpbmRvd3MgY2FuIHJlY29nbml6ZSkgb24gaXQsIHNvICxob3cgY29tZXMgaXQg
+DQo+ID4gaGFwcGVuPw0KPiANCj4gSXQncyBub3QgcmVsaWFibGUsIGFzIHlvdSB3ZXJlIHRvbGQu
+DQo+IA0KPiA+IEJUVzpXaHkgbXkgbWFpbCBzZW50IHRvIHRoZSBtYWlsbGlzdCBhbHdheXMgImF3
+YWl0cyBtb2RlcmF0b3IgYXBwcm92YWwiPw0KPiANCj4gVGhlIG9uZXMgeW91IHNlbmQgYXMgSFRN
+TCBnZXQgYm91bmNlZCBmb3IgdGhhdCByZWFzb24uIFRoZSByZXN0IGFyZQ0KPiB0cmFwcGVkIGJl
+Y2F1c2UgU3BhbUFzc2Fzc2luIGRvZXNuJ3QgbGlrZSB0aGVtLi4uDQoNCkkgdGhpbmsgbXkgbWFp
+bCBpcyB0eHQgYnV0IG5vdCBpbiBIVE1MLldoYXRldmVyLCBJIGhvcGUgaXQgd29uJ3QgDQpoYXBw
+ZW4gYW55bW9yZTopDQoNCj4gDQo+IFgtU3BhbS1TdGF0dXM6IFllcywgaGl0cz03LjcgcmVxdWly
+ZWQ9NS4wDQo+ICAgICAgICAgdGVzdHM9QVdMLE5PX1JFQUxfTkFNRSxSQ1ZEX0lOX09TSVJVU09G
+VF9DT00sUkNWRF9JTl9SRkNJLA0KPiAgICAgICAgIFNQQU1fUEhSQVNFXzAwXzAxLFhfT1NJUlVf
+U1BBTV9TUkMgdmVyc2lvbj0yLjQ0DQo+IA0KPiAtLSANCj4gZHdtdzINCj4gDQo+IA0KPiANCg==
