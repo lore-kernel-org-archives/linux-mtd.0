@@ -1,16 +1,14 @@
-Received: from web11101.mail.yahoo.com ([216.136.131.148])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16MCt3-0002Tf-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2002 18:46:46 +0000
-Message-ID: <20020103185739.83836.qmail@web11101.mail.yahoo.com>
-Date: Thu, 3 Jan 2002 10:57:39 -0800 (PST)
-From: Sheela Kashyap <sheela_kashyap@yahoo.com>
-Subject: Re: (no subject) 
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <5660.1010049962@redhat.com>
+Received: from [208.28.249.7] (helo=ktc_internet)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16MIXD-0002lT-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Jan 2002 00:48:35 +0000
+Subject: JFFS II Performance
+To: linux-mtd@lists.infradead.org
+Message-ID: <OF1FA9A659.B3900388-ON88256B37.000396BC@LocalDomain>
+From: Steve_Chen@kingston.com
+Date: Thu, 3 Jan 2002 16:51:05 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,38 +20,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-The utilities had already been downloaded by someone else. I am not
-sure where they got the package from. I will download the mtd-utils
-package again and build the image. 
+Hi all,
+We have just ported the JFFS II source code to Linux kernel "2.4.6".  And
+we like to report a performance issue on JFFS II.  Comparing to JFFS, the
+"mount" , "copy" and "ls" all take much longer to complete.  In one case,
+we have 3 files on a flash NAND partition.  The size of first  two files is
+1717 bytes, the size of the third file is 2M bytes.  After the JFFS II was
+mounted (took 30 seconds), it took 35 seconds to complete the "ls -la"
+command.
 
-The 'Id' string in the mkfs.jffs.c file is as follows:
+I like to get some expert advice.
 
-$Id: mkfs.jffs.c,v 1.11 2001/03/11 11:44:42 dwmw2 Exp $
+Did anyone experience a similar performance issue on JFFS II when dealing
+with large files ?
 
-Sheela.
-
---- David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> sheela_kashyap@yahoo.com said:
-> > Hmm... I will try mkfs.jffs again in that case.  
-> 
-> If it fails, can you cut down the directory tree you're putting
-> into the
-> JFFS image to the smallest testcase that shows the problem (like
-> the /dev
-> directory and a single device node), then send me both a tarball
-> and the
-> JFFS image of it?
-> 
-> Where did you get your mkfs.jffs from? 
-> 
-> --
-> dwmw2
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Send your FREE holiday greetings online!
-http://greetings.yahoo.com
+Thanks.
+Steve...
