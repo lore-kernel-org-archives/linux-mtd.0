@@ -1,45 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14iHXx-0002NY-00
-	for mtd-list@infradead.org; Wed, 28 Mar 2001 16:07:41 +0100
-Received: from zeus.vortex.is ([193.4.145.1])
+	id 14iOx1-0005cP-00
+	for mtd-list@infradead.org; Thu, 29 Mar 2001 00:02:03 +0100
+Received: from asbestos.brocade.com ([63.121.140.244] helo=mail.brocade.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14iHXv-0002NS-00
-	for mtd@infradead.org; Wed, 28 Mar 2001 16:07:40 +0100
-Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
-          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
-          ID# 0-71211U5000L1850S0V35) with ESMTP id is
-          for <mtd@infradead.org>; Wed, 28 Mar 2001 15:07:31 +0000
-Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
-          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
-          with ESMTP id is for <mtd@infradead.org>;
-          Wed, 28 Mar 2001 15:07:28 +0000
-content-class: urn:content-classes:message
+	id 14iOwz-0005cJ-00
+	for mtd@infradead.org; Thu, 29 Mar 2001 00:02:01 +0100
+Received: from muppetlabs.com (amitc-linux [192.168.198.232])
+	by mail.brocade.com (8.8.8+Sun/8.8.8) with ESMTP id PAA13692
+	for <mtd@infradead.org>; Wed, 28 Mar 2001 15:01:29 -0800 (PST)
+Message-ID: <3AC26E58.7070907@muppetlabs.com>
+Date: Wed, 28 Mar 2001 15:06:00 -0800
+From: Amit D Chaudhary <amit@muppetlabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Wear leveling
-Date: Wed, 28 Mar 2001 15:07:28 -0000
-Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A9122@kolkrabbi.flaga.is>
-From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-To: <mtd@infradead.org>
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: Any plans to move mtd utils like erase, etc to a common package?
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 Hi,
 
-Is it correct that wear leveling is "only" supported throught the nftl
-and the ftl drivers?
+Are there any plans to integrate the MTD utilities like erase, etc to a 
+common package like util-linux?
+If yes, any idea when? :)
+Right now mtd support is already in the main kernel, so only a few utils 
+are needed?
 
-Are there any other possibilities?
+Thanks and Regards
+Amit
 
-I am concerned with the clause in the help that "you can not use" in the
-USA.
-
-Thanks,
-
-K.D.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
