@@ -1,21 +1,14 @@
-Received: from david.siemens.de ([192.35.17.14])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C2TWh-0002WM-ND
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2004 07:43:45 -0400
-Received: from mail3.siemens.de (mail3.siemens.de [139.25.208.14])
-	by david.siemens.de (8.12.6/8.12.6) with ESMTP id i81BgElO000052
-	for <linux-mtd@lists.infradead.org>; Wed, 1 Sep 2004 13:42:14 +0200
-Received: from mchh9ega.mchh.siemens.de (mchh9ega.mchh.siemens.de
-	[139.21.194.56])
-	by mail3.siemens.de (8.12.6/8.12.6) with ESMTP id i81Bg3fU007856
-	for <linux-mtd@lists.infradead.org>; Wed, 1 Sep 2004 13:42:13 +0200
-Message-ID: <7F3FE9B2FBF6194691BC493C6699C0B1568B8D@mchh9esa.mchh.siemens.de>
-From: Kuefmann Andreas ICM CP RD SD 1 <andreas.kuefmann@siemens.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Wed, 1 Sep 2004 13:41:58 +0200 
-MIME-Version: 1.0
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alex Bennee <kernel-hacker@bennee.com>
+In-Reply-To: <1094038230.29012.246.camel@cambridge.braddahead.com>
+References: <1094038230.29012.246.camel@cambridge.braddahead.com>
 Content-Type: text/plain
-Subject: how to change size of MTD partitions at runtime
+Message-Id: <1094041258.14552.29878.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 01 Sep 2004 13:20:59 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Handling non-uniform erase blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, 2004-09-01 at 12:30 +0100, Alex Bennee wrote:
+> We are using Am29LV160D flash chips on our SH based board. The chip has
+> a series on small blocks at the top or bottom of the address range for
+> use in bootstrap code or configuration storage.
 
-I'm searching for a solution to dynamically change the size of
-MTD partitions at runtime.
+All chips have a 'major' erasesize -- the smaller blocks at one end of
+the device can be grouped together into one or more blocks which are the
+same size as the blocks on the rest of the device.
 
-This functionality is required for a flash update of kernel and/or
-rootfs in the special case that the new kernel/rootfs is larger
-than the old one. (in an embedded environment)
+For the AM29LV160DB, the blocks are 1*16KiB, 2*8KiB, 1*32KiB and
+31*64KiB. The 'major' erasesize is 64KiB, and the smaller blocks at the
+beginning add up to that.
 
-1.)
-there is no problem in erasing the flash, e.g eraseall /dev/mtd?,
-(acting from a chrooted environment)
+Although the MTD code does allow erasing the smaller blocks, it
+currently requires that there be a 'major' erasesize for all partitions.
+So if you had two partitions, one of 32KiB and the other including the
+whole of the device, then it would assign a 'major' erasesize of 16KiB
+to the former, and mark the latter read-only.
 
-2.)
-However, reprogramming the flash with a larger image (now
-exceeding the limits of the previous partition) isn't as
-easy as a cp newimage.img /dev/mtd?.
+> When I set up my partitions I get this report:
+> 
+> Creating 4 MTD partitions on "India1 FLASH":
+> 0x00000000-0x00010000 : "Boot Code"
+> 0x00010000-0x001e0000 : "Kernel"
+> 0x001e0000-0x001fc000 : "FPGA"
+> mtd: partition "FPGA" doesn't end on an erase block -- force read-only
+> 0x001fc000-0x00200000 : "Config"
 
-The MTD layer will still rely on the (old) partition sizes
-that were valid during system startup. (taken over from a
-U-BOOT environment)
+AFAICT that's correct -- the FPGA partition doesn't actually map to a
+range on the chip which can be erased individually, let alone with a
+'major' erasesize which can be exported.
 
-My plans are as follows:
-- erase the flash partitions
-- adapt the u-boot environment to reflect the new mtd partition sizes
-- force the MTD subsystem to "re-read" the partition table in u-boot's
-  environment.
-- cp the new images to /dev/mtd? (which now reflect the changed
-  partition sizes)
-
-My question now is:
-- How can I manage to force a re-read of the partition table?
-
-Or can you think of another solution to change MTD partitions at
-runtime?
-
-Thank you,
-regards,
-- Andy
+-- 
+dwmw2
