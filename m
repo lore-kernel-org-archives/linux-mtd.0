@@ -1,27 +1,20 @@
-Received: from e31.co.us.ibm.com ([32.97.110.129])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEszg-0000xa-Gt
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 13:20:58 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1096994744.30942.905.camel@hades.cambridge.redhat.com>
-References: <416122A1.4060302@oktetlabs.ru>
-	<1096885344.30942.559.camel@hades.cambridge.redhat.com>
-	<416127B7.3070505@yandex.ru>
-	<1096893242.22034.5.camel@weaponx.rchland.ibm.com>
-	<41614B2F.8060901@yandex.ru>
-	<1096895892.30942.614.camel@hades.cambridge.redhat.com>
-	<41615BA7.60801@yandex.ru>
-	<1096899817.30942.618.camel@hades.cambridge.redhat.com>
-	<4162AABC.9060809@yandex.ru>
-	<1096994744.30942.905.camel@hades.cambridge.redhat.com>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CEt4G-000178-P9
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2004 13:25:42 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Luca Contini <luca.contini@akhela.com>
+In-Reply-To: <4162B2A0.5050200@akhela.com>
+References: <4162B2A0.5050200@akhela.com>
 Content-Type: text/plain
-Message-Id: <1096996838.24013.3.camel@weaponx.rchland.ibm.com>
+Message-Id: <1096996674.22827.339.camel@thomas>
 Mime-Version: 1.0
-Date: Tue, 05 Oct 2004 12:20:38 -0500
+Date: Tue, 05 Oct 2004 19:17:54 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: inode checkpoints
+Subject: Re: mizi support for jffs2 - FAQ
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-10-05 at 11:45, David Woodhouse wrote:
-> On Tue, 2004-10-05 at 18:07 +0400, Artem B. Bityuckiy wrote:
-> > Hello David, Josh. What did we decided about the GC thread?
-> > 
-> > I offered to create checkpoints from the GC thread. Are there some 
-> > reasons not to do so? There was one - the GC thread isn't always 
-> > enabled. But we may require it be enabled if checkpoints are enabled...
-> 
-> Checkpoints are an optimisation -- so is the GC thread. I'm perfectly
-> happy with the idea that killing the GC thread also stops checkpoints
-> from happening.
+On Tue, 2004-10-05 at 16:41, Luca Contini wrote:
+> Hi all,
+> I'm working on Samsung smdk2410 board using mizi linux (kernel 2.4.18).
+> Did anyone succeeded in modifying the kernel to support jffs2 instead of 
+> cramfs?
 
-Yep, me too.
+This starts to become a FAQ.
 
-> 
-> > May be we create ICP during GC process, or on iget() call, or on
-> > iput() call? But I have arguments against these...
-> 
-> I was thinking of doing it during a normal write to the file, or during
-> garbage collection of a node belonging to the file.
-> 
-> But I think we can play with ideas on _when_ to call this once you've
-> actually implemented the functions which does it :)
+1. We don't know anything about MIZI Linux
+2. 2.4.18 is a kernel from the last century and more than obsolete
 
-Right.  Lots of places it could be done.  Start with one and work from
-there :).
+Use an up to date and supported kernel.
 
-josh
+tglx
