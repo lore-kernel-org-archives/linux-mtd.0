@@ -1,18 +1,19 @@
-Received: from [213.97.115.166] (helo=madrid.hispafuentes.com ident=postfix)
+Received: from dialup.rama.com.au ([202.0.186.166] helo=gateway.perth.rama.com.au)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15UBUU-0007yb-00
-	for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2001 19:22:07 +0100
-Received: from hispafuentes.com (localhost [127.0.0.1])
-	by madrid.hispafuentes.com (Postfix) with ESMTP id 64B5132588
-	for <linux-mtd@lists.infradead.org>; Tue,  7 Aug 2001 20:28:01 +0200 (CEST)
-Message-ID: <3B70332C.A9F3D944@hispafuentes.com>
-Date: Tue, 07 Aug 2001 20:27:56 +0200
-From: olea@hispafuentes.com
+	id 15UKz7-0000CR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2001 05:30:23 +0100
+Received: from willhart-tech.com (IDENT:alex@[192.156.249.82])
+	by gateway.perth.rama.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id NAA21574
+	for <linux-mtd@lists.infradead.org>; Wed, 8 Aug 2001 13:55:10 +0800
+Message-ID: <3B70C06D.5908CAC8@willhart-tech.com>
+Date: Wed, 08 Aug 2001 12:30:37 +0800
+From: Alexandru Harsanyi <a.harsanyi@willhart-tech.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: A question about FAT, FTL and MTD 
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: Linux Mtd <linux-mtd@lists.infradead.org>
+Subject: Re: DOC 2000 driver (NFTL) in kernel 2.4.7
+References: <3B677B90.B2E244BD@cvs.anu.edu.au>  <E15RXGo-00058Q-00@pentafluge.infradead.org> <30960.997176999@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,26 +25,63 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-	The FTL related documentation I've read talks about a FAT interface to
-flash chips but I'm confused because I didn't found any statement about
-FAT is part of the FTL standard or not and because I didn't found a
-reference to FAT in the MTD code/docs.
+Hi, 
 
-	Can anybody confirm me if FAT is part of the FTL standard? If yes, how
-is it supposed to be used with MTD?
+I updated to the lastest CVS, and moved the driver code into the 2.4.7
+kernel source.
 
-	If not, what can be needed to do that? As we have a flash NAND memory
-on board, maybe it'd need a nftl driver similar to the DOC one. Correct
-me if I'm wrong.
+At boot I get the following messages (debug verbosity was set to 3):
 
-	I understood that JFFS2 is a better tuned option for FS than FAT, but
-we had a legacy FAT system and it could be useful to maintain the DOS
-media compatibility if possible, and we want to be sure what  design
-options we have.
+M-Systems DiskOnChip driver. (C) 1999 Machine Vision Holdings, Inc.
+DiskOnChip 2000 found at address 0xC8000
+Flash chip found: Manufacturer ID: 98, Chip ID: 6B (Toshiba TC5832DC)
+3 flash chips found. Total DiskOnChip size: 12 MiB
+mtd: Giving out device 0 to DiskOnChip 2000
+NFTL driver: nftlcore.c $Revision: 1.77 $, nftlmount.c $Revision: 1.20 $
+NFTL_notify_add for DiskOnChip 2000
+mtd->read = c0181a20, size = 12582912, erasesize = 8192
+NFTL_setup
+_DoC_WaitReady called for out-of-line wait
+ANAND header found at 0xc000 in mtd0, but ECC read failed (err 1)
+_DoC_WaitReady called for out-of-line wait
+ANAND header found at 0xe000 in mtd0, but ECC read failed (err 1)
+Could not find valid boot record
+Could not mount NFTL device
 
-	Again, thanks for your time :-)
+----------
 
--- 
-	A.Ismael Olea González
-	tlf +(34) 914 575 330
-	mailto:olea@hispafuentes.com
+It seems to me that there's an ECC error when reading the DOC. With the
+M-Systems provided driver, the chip works fine, so I suspect there's a
+problem at the ECC computation. That would explain why, when formating
+the chip with the linux-mtd tools it works (as Saul Thurrowgood
+<saul@cvs.anu.edu.au> reported)
+
+It would be interesting to test whether a chip formated with linux-mtd
+tools works with the M-System provided driver. 
+
+My DOC was formated using M-Systems tools and the partitions on it are
+MS-DOS. For non-technical reasons I cannot reformat the chip.
+
+Best Regards,
+Alex.
+
+
+David Woodhouse wrote:
+> 
+> saul@cvs.anu.edu.au said:
+> >  I fixed it by formatting with nftl_format (also comes with MTD
+> > source), providing it a 240k offset so it would not trash the BIOS at
+> > the beginning of the chip (Ampro specific).
+> 
+> That's normally 48KiB for the standard on-device firmware, I think.
+> 
+> > Works fine! So, what's the difference between the two formats?!? Both
+> > start at the exact same place on the DOC, as seen by running nftldump
+> > before and after.
+> 
+> Please upgrade to the latest version from CVS (nftlmount.c v1.20). It'll be
+> a lot more explicit about its reasons for rejecting any media headers which
+> it finds.
+> 
+> --
+> dwmw2
