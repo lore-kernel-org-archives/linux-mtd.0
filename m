@@ -1,17 +1,19 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from transedge-153-132.transedge.com ([216.171.153.132] helo=mercury.steinkuehler.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16P9P9-0007nr-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 21:40:03 +0000
-Message-ID: <3C3F5ECD.97773673@mvista.com>
-Date: Fri, 11 Jan 2002 13:53:17 -0800
-From: Alice Hennessy <ahennessy@mvista.com>
+	id 16PB3f-0007ta-00
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 23:26:00 +0000
+Received: from csteinathlon (transedge-153-131.transedge.com [216.171.153.131])
+	by mercury.steinkuehler.net (8.9.3/8.9.3) with SMTP id VAA11008
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2002 21:21:16 -0600
+Message-ID: <179401c19af8$a0418560$4101220a@csteinathlon>
+From: "Charles Steinkuehler" <charles@steinkuehler.net>
+To: <linux-mtd@lists.infradead.org>
+References: <E16MWkI-0003Z1-00@pentafluge.infradead.org> <20020104085040.A48397@idiom.com>
+Subject: Atmel Flash
+Date: Fri, 11 Jan 2002 17:35:16 -0600
 MIME-Version: 1.0
-To: "Eric W. Biederman" <ebiederman@lnxi.com>
-CC: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: Problem with cfi_probe.c and Intel chip
-References: <3C3E1515.CD99EB0@mvista.com> <17564.1010702853@redhat.com>
-		<m3sn9d8zs3.fsf@DLT.linuxnetworx.com> <3C3E48B6.C9FF834D@mvista.com> <m3ita83a6f.fsf@DLT.linuxnetworx.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,32 +26,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-"Eric W. Biederman" wrote:
+Are the small-sector Atmel flash (ie 29C010/29C040) parts supported by MTD?
 
-> Alice Hennessy <ahennessy@mvista.com> writes:
->
-> > array
-> > mode (0xff) would be necessary before the query command so I'm not sure why
-> > my board is having problems.  Even if the bios has issued a command to the
-> > flash
-> > between power up and cfi_probe,  I don't think read array command is necessary
-> > between commands.
-> > If my board is the only Intel with a problem, then I need to investigate it
-> > further.
->
-> That would certainly be useful.  My real suspicion is that this code hasn't
-> been utilized all that much, and we are entering it's first real
-> stabalization phase.  Since all I did was comment out what looked like
-> redundant code, I actually think you are the second person to notice
-> this.   Personally I have deal with boot block type flash memory,
-> which may have different characteristics than other intel product lines.
->
-> Having a couple of people get a firm grasp on what things cause
-> problems, is probably needed right now.  So if you come up with
-> anything interesting I'd be glad to hear it.
->
-> Eric
+These are the parts with 128/256 Byte sector size (ie 1024 128 byte sectors
+in the '010, and 2048 256 byte sectors in the '040), with no explicit erase
+command required before writing new data.
 
-I will do that.
-
-Alice
+Charles Steinkuehler
+charles@steinkuehler.net
