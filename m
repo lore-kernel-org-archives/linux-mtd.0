@@ -1,15 +1,15 @@
-Received: from hotwww5.hotwww.com ([161.58.242.233])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D97YJ-0005yl-4U
-	for linux-mtd@lists.infradead.org; Wed, 09 Mar 2005 15:13:08 -0500
-Date: Wed, 9 Mar 2005 13:13:00 -0700
-From: Jeremy Fillingim <jfilling@realmsys.com>
+Received: from mail.lotsys.com ([213.39.33.126] helo=smtp-dmz.lotsys.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D9MgU-0000wP-Kw
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2005 07:22:36 -0500
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050309201300.GA6975@realmsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Trouble with rw JFFS2 root
+Message-ID: <OFB60D2AA5.53149DE8-ONC1256FC0.003E7E1D-C1256FC0.00429577@lotsys.com>
+From: thierry.chantry@lotsys.com
+Date: Thu, 10 Mar 2005 13:07:15 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset="us-ascii"
+Cc: vincent.laporte@lotsys.com
+Subject: rmmod mtd driver produces a segmentation fault
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +19,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm having some trouble mounting a JFFS2 root partition as rw at
-boot/init time, and would appreciate any insight that you guys can
-provide.
+Sent by Thierry Chantry on behalf Vincent Laporte:
 
-Here are my system specifications:
+HARDWARE
+- Standard PC motherboard
+SOFTWARE configuration:
+- Fedora Core 2 distribution
+- Vanilla Kernel 2.6.7
+- MTD version provided with the above vanilla kernel
 
-PowerPC 405
-Linux kernel 2.6.10
-MTD head of CVS as of 2005-03-08 + jffs2 summary patch
-Samsung 256MB NAND Flash (128kB erase block, 2kB page size, 64B spare
-data per page)
+   Hi all,
 
-Here is some additional information:
+I writing two MTD drivers to manage specific SRAM and FLASH devices.
+All works well until I try to remove both modules. The problem is
+systematic,
+you have just to insert two mtd drivers (with insmod) and then remove them
+with
+rmmod.
 
-# cat /proc/mtd 
-dev:    size   erasesize  name
-mtd0: 00400000 00020000 "Live Kernel"
-mtd1: 02000000 00020000 "Live Root FS"
-mtd2: 0d800000 00020000 "Live User FS"
+Find bellow a sample and its makefile to help you to reproduce the problem.
 
-Kernel command line: console=uart,mmio,0xf0005003<<2,115200n8
-rootfstype=jffs2 root=/dev/mtdblock1 ro
+To reproduce the problem run the following commands:
+modprobe mtdram  (your test drivers)
+modprobe mtdblock (it is necessary to reproduce the bug)
+insmod mtd_sram.ko (my driver)
+rmmod mtd_sram
+rmmod mtdram
 
-If I attempt to mount a root filesystem as rw at boot/init time, I
-receive the following error messages (truncated to keep the message a
-reasonable length).
+The last rmmod produces a page fault. It seems that the bug is located in
+the
+block device managment because if mtdblock isn't loaded everything works
+well.
 
-...
-VFS: Mounted root (jffs2 filesystem) readonly.
-Freeing unused kernel memory: 60k init
-init started:  BusyBox v1.00 (2005.03.08-16:06+0000) multi-call binary
-Node header CRC failed at 000a71f0. But it must have been OK earlier.
-Node was: { 0000, 206c, 915a8ac4, 00000006 }
-read too short for dnode
-jffs2_get_inode_nodes() for ino 9 returned -5
-Returned error for crccheck of ino #9. Expect badness...
-Eep. Unknown node type 0002 at 000003e4 was marked REF_UNCHECKED
-Node header CRC failed at 000003e4. But it must have been OK earlier.
-Node was: { 93b9, 2002, 0c00b351, 3ac2ffff }
-jffs2_do_read_inode(): No data nodes found for ino #10
-Returned error for crccheck of ino #10. Expect badness...
-Node header CRC failed at 000a74f0. But it must have been OK earlier.
-Node was: { 0000, 2000, 00000000, 00000000 }
-Node header CRC failed at 000a73f0. But it must have been OK earlier.
-Node was: { 0000, 200a, 00000001, 000041ed }
-Node header CRC failed at 000a72e0. But it must have been OK earlier.
-Eep. Unknown node type cc7e at 000b63c0 was marked REF_UNCHECKED
-Node header CRC failed at 000b63c0. But it must have been OK earlier.
-Node was: { 85f0, ec7e, 33b62a65, 77d78ccc }
-...
+You'll find bellow a dmesg result after the page fault.
 
-I am able to mount the JFFS2 root filesystem as ro and perform a "mount
--o remount,rw /", then I am able to modify, add, and delete files without
-incident.
+I have also tested the MTD version embedded in the Fedora Core 2 kernel
+(2.6.10-1.12_FC2).
+I guess the isn't a very old version of the MTD layer. The problem still
+exist with that version.
 
-My problem only occurs if the kernel mounts the filesystem rw at boot
-time, or if I have my inittab remount the root filesystem as rw.
+Can you help me to solve that problem ?
+Thanks a lot for your help.
+Regards,
 
-JFFS2 filesystems on non-root partitions work as expected.
+      Vincent Laporte
 
-Thank you in advance
 
-Jeremy
+############  MY SAMPLE ################################
+#include <linux/mtd/mtd.h>
+
+static struct mtd_info sMyMtd;
+
+//****************************************************************************
+static int DeviceRead(struct mtd_info *psMtd, loff_t From, size_t Len,
+                      size_t *pRetlen, u_char *pucBuf)
+{
+  printk("SRAM(%d) : DeviceRead.\n", __LINE__);
+
+  return 0;
+}
+
+//****************************************************************************
+static int DeviceWrite(struct mtd_info *psMtd, loff_t To, size_t Len,
+                       size_t *pRetlen, const u_char *pucBuf)
+{
+  printk("SRAM(%d) : DeviceWrite.\n", __LINE__);
+
+  return 0;
+}
+
+//****************************************************************************
+static int __init init_mtdsram(void)
+{
+  int iRet = 0;
+
+  printk("SRAM(%d) : Init begin.\n", __LINE__);
+
+  memset(&sMyMtd, 0, sizeof(sMyMtd));
+
+  sMyMtd.name    = "MTDSRAM#1";
+  sMyMtd.type    = MTD_RAM;
+  sMyMtd.flags   = MTD_CAP_RAM;
+  sMyMtd.size    = 1024 * 1024;
+  sMyMtd.read    = DeviceRead;
+  sMyMtd.write   = DeviceWrite;
+
+  iRet = add_mtd_device (&sMyMtd);
+
+  printk("SRAM(%d) : iRet begin return %d.\n", __LINE__, iRet);
+
+  return iRet;
+}
+
+//****************************************************************************
+static void __exit cleanup_mtdsram(void)
+{
+  int iRet = 0;
+
+  printk("SRAM(%d) : Release begin.\n", __LINE__);
+
+  iRet = del_mtd_device(&sMyMtd);
+
+  printk("SRAM(%d) : iRet release return %d.\n", __LINE__, iRet);
+}
+
+module_init(init_mtdsram);
+module_exit(cleanup_mtdsram);
+
+############ EOF  MY SAMPLE #############################
+
+############   MY MAKEFILE ###############################
+
+ifeq ($(KLINUX_TARGET),)
+KLINUX_TARGET:=/lib/modules/`uname -r`/build
+endif
+
+# If KERNEL_RELEASE defined we are in the MAKE processus
+# otherwise the make command has just been launched
+ifneq ($(KERNELRELEASE),)
+
+obj-m := mtd_sram.o
+mtd_sram-objs := mtd_sram.module.o
+
+EXTRA_CFLAGS += -Wall
+
+else
+default:
+      $(MAKE) -C $(KLINUX_TARGET) SUBDIRS=`pwd` modules
+#     $(MAKE) -C $(KLINUX_TARGET) SUBDIRS=`pwd` KBUILD_VERBOSE=1 modules
+clean:
+      rm -rf *.o *.ko *.mod.c
+endif
+
+############   EOF MY MAKEFILE ############################
+
+############  DMESG after the crash  ############################
+mtd_sram: module license 'unspecified' taints kernel.
+SRAM(28) : Init begin.
+SRAM(41) : iRet begin return 0.
+SRAM(51) : Release begin.
+SRAM(55) : iRet release return 0.
+------------[ cut here ]------------
+kernel BUG at include/linux/dcache.h:276!
+invalid operand: 0000 [#1]
+Modules linked in: mtdram mtdblock mtd_blkdevs mtdchar mtdcore
+snd_mixer_oss
+snd soundcore parport_pc lp parport autofs4 smbfs rfcomm l2cap bluetooth
+sunrpc e100 mii floppy sg scsi_mod
+microcode usblp dm_mod joydev mtouchusb uhci_hcd usbcore ipv6 ext3 jbd
+CPU:    0
+EIP:    0060:[<c01802c8>]    Tainted: P
+EFLAGS: 00010246   (2.6.7)
+EIP is at sysfs_remove_dir+0xe8/0x100
+eax: 00000000   ebx: cefc507c   ecx: c0206e90   edx: 00000000
+esi: c135dc00   edi: d03af618   ebp: c135fd58   esp: cfdabedc
+ds: 007b   es: 007b   ss: 0068
+Process rmmod (pid: 3521, threadinfo=cfdaa000 task=d07759f0)
+Stack: cefc507c c135dc00 c135dcdc c01aa7c6 cefc507c c01aa7d8 cefc502c
+c020237f
+       cefc502c c0205cbf c135dc00 d89cc56c c0206a38 c135dc00 c017d6af
+d3350a54
+       d89cc574 d89c7792 d3350a54 d89cb768 d89cc56c d89c7810 d89cc540
+d89c92f0
+Call Trace:
+ [<c01aa7c6>] kobject_del+0x16/0x20
+ [<c01aa7d8>] kobject_unregister+0x8/0x10
+ [<c020237f>] elv_unregister_queue+0xf/0x30
+ [<c0205cbf>] blk_unregister_queue+0x2f/0x50
+ [<c0206a38>] unlink_gendisk+0x8/0x20
+ [<c017d6af>] del_gendisk+0x4f/0xc0
+ [<d89c7792>] del_mtd_blktrans_dev+0x52/0x60 [mtd_blkdevs]
+ [<d89cb768>] mtdblock_remove_dev+0x8/0x10 [mtdblock]
+ [<d89c7810>] blktrans_notify_remove+0x70/0x80 [mtd_blkdevs]
+ [<d89c1155>] del_mtd_device+0x85/0xf0 [mtdcore]
+ [<c012ec7c>] __try_stop_module+0x1c/0x30
+ [<c012c906>] try_stop_module+0x16/0x20
+ [<d898b2c5>] cleanup_mtdram+0x15/0x35 [mtdram]
+ [<c012cabe>] sys_delete_module+0x11e/0x170
+ [<c014291a>] unmap_vma_list+0x1a/0x30
+ [<c0142c69>] do_munmap+0x109/0x150
+ [<c01168b0>] do_page_fault+0x0/0x4cc
+ [<c0105cad>] sysenter_past_esp+0x52/0x71
+
+Code: 0f 0b 14 01 46 a7 2c c0 e9 23 ff ff ff 5b 5e 5f c3 8d b4 26
+
+############ EOF  DMESG after the crash  ############################
+
+
+
+
+
+******************************************************************************
+Ce message et les pieces jointes associees sont confidentiels et a l'attention
+exclusive des destinataires. Si vous avez recu ce message par erreur, merci
+d'avertir l'administrateur de la messagerie: postmaster@lotsys.com                                         
+
+This email and files transmitted with it are confidential and intended solely     
+for the use of the individual to whom they are addressed. If you have received    
+this email in error, please notify the system manager: postmaster@lotsys.com                                                 
+******************************************************************************
