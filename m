@@ -1,9 +1,9 @@
-Received: from web61309.mail.yahoo.com ([216.155.196.152])
+Received: from web61306.mail.yahoo.com ([216.155.196.149])
 	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CmVft-0006hg-C2
+	id 1CmVg1-0006iq-9Z
 	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2005 06:20:11 -0500
-Message-ID: <20050106111916.63614.qmail@web61309.mail.yahoo.com>
-Date: Thu, 6 Jan 2005 03:19:16 -0800 (PST)
+Message-ID: <20050106111925.60960.qmail@web61306.mail.yahoo.com>
+Date: Thu, 6 Jan 2005 03:19:25 -0800 (PST)
 From: Niraj Maheshwari <neer_mh@yahoo.com>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
@@ -206,5 +206,5 @@ ref (0x00000408)
 		
 __________________________________ 
 Do you Yahoo!? 
-Take Yahoo! Mail with you! Get it on your mobile phone. 
-http://mobile.yahoo.com/maildemo 
+The all-new My Yahoo! - What will yours do?
+http://my.yahoo.com 
