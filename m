@@ -1,17 +1,29 @@
-Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
-	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B3uiF-0004fa-Ma
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 10:25:19 +0000
-Message-ID: <4059790D.4020904@arcom.com>
-Date: Thu, 18 Mar 2004 10:25:17 +0000
-From: David Vrabel <dvrabel@arcom.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <200403172051.22120.dk.dbox2@gmx.net>
-In-Reply-To: <200403172051.22120.dk.dbox2@gmx.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: Erasebug on AMD flashes
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B3vLx-0004ux-0g
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 11:06:21 +0000
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de
+ (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
+ with SMTP id <0HUR006RAQJKZJ@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 18 Mar 2004 11:59:45 +0100 (MET)
+Date: Thu, 18 Mar 2004 11:56:47 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <6.0.1.1.0.20040318105224.01f77d10@192.168.2.1>
+To: llandre <r&d@wawnet.biz>, David Woodhouse <dwmw2@infradead.org>
+Message-id: <200403181156.47289.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+References: <6.0.1.1.0.20040317161859.01f80e70@dns.struinfo.it>
+ <200403181015.58675.tglx@linutronix.de>
+ <6.0.1.1.0.20040318105224.01f77d10@192.168.2.1>
+cc: Andrea Scian <andrea.scian@wawnet.biz>
+cc: Matteo Bortolin <matteo.bortolin@wawnet.biz>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Bug in nand_select_chip?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-dkey wrote:
-> 
-> we are using jffs2 on the dbox2 and AMD flash chips, but since rev. 1.96 of 
-> cfi_cmdset_0002.c we can't erase the flashes. rev. 1.94 works without 
-> problems.
+On Thursday 18 March 2004 10:56, llandre wrote:
+> >That's correct, but you unfortunaly relied on code, which was in a heavy
+> >modifciation phase. If you use leading edge code, be aware, that things
+> > might be broken from time to time. The fix for this was committed 10 days
+> > after the first rework.
+>
+> Ok, thanks for the advice.
+> To avoid such problems, is it possible to download "stable" releases? Are
+> they tagged in the CVS repository?
 
-"since 1.96" doesn't make sense.  Any breakage would be from 1.95.
+Yep, but the NAND stuff is quite new and not always up to date in the stable 
+versions.
 
-> here are some debug infos, tell me if you need more!
+You can subscribe on the CVS mailinglist, which informs you of all changes in 
+the repository.
+http://lists.infradead.org/mailman/listinfo/linux-mtd-cvs
 
-Part numbers of the flash chips and their configuration (interleaved etc.).
-
-> would be please if anybody can take a look over the code or revert revision of 
-> cfi_cmdset_0002.c to 1.94.
-
-There's no reason why you can't revert to 1.94 yourself.
-
-FWIW, I'm now of the opinion that chip_status() is definately broken for 
-interleaved chips and probably cannot be made to work without ending up 
-with a mess.
-
-I would suggest using the data polling algorithm instead (where applicable).
-
-Also, ignoring the internal flash timeout (DQ5 toggling) and instead 
-relying on the software timeout might be acceptable.  However, a 
-repeatedly suspended erase keeps getting its software timeout extended 
-and thus there is a possibility of the software timeout never occuring. 
-  Hmmm.  An internal timeout requires a chip reset and thus we can't 
-actually suspend an internally timed-out erase so the software timeout 
-won't be extended.
-
-David Vrabel
 -- 
-David Vrabel, Design Engineer
-
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
