@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WI6a-0005a9-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 14:22:24 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <02013113260208.00763@thomas> 
-References: <02013113260208.00763@thomas>  <02013022481901.00763@thomas> <15998.1007200283@redhat.com> <17832.1012472563@redhat.com> 
-To: gleixner@autronix.de
-Cc: jffs-dev@axis.com
-Subject: Re: JFFS2 on NAND flash 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 31 Jan 2002 14:30:14 +0000
-Message-ID: <17713.1012487414@redhat.com>
+Received: from [203.199.83.142] (helo=mailweb18.rediffmail.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16Wa1Y-0006oj-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2002 09:30:24 +0000
+Date: 1 Feb 2002 08:25:28 -0000
+Message-ID: <20020201082528.15474.qmail@mailweb18.rediffmail.com>
+MIME-Version: 1.0
+From: "maharajan  veerabahu" <mahadoc@rediffmail.com>
+Reply-To: "maharajan  veerabahu" <mahadoc@rediffmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: DOC  formatting/BIOS  recognition problems
+Content-type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,54 +24,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-( moved to jffs-dev list )
-
-gleixner@autronix.de said:
-> I know that and i was trying to put a workaround for the write cycle
-> problem  into the nand driver. I think thats the correct location for
-> this. Are there  other chips dealing with the same problem or is it
-> related to NAND only ? 
-
-Some new ST chips have similar problems, I think. You can only write once 
-to any given 8-byte region before erasing it.
-
-> My current solutiun would be: In nand.c the
-> write functions checks the write attempts to a page. If there  were
-> three writes already to this page, the function reads back the block
-> data, erases the block and writes the block data back to the chip. 
-
-You can't do it like that. What if you lose power while the block is erased,
-but before you have written the data back again? You lose all the
-information from the remainder of that erase block.
-
-See http://mhonarc.axis.se/jffs-dev/msg01140.html
-
->  Is this also a problem for jffs1 ? I run jffs1 for a couple of weeks
-> on my  board and had not one problem at all.  
-
-I think you get away with it on JFFS1. You don't have nodes small enough 
-that you'll fit ten of them in a page, and you can go for a couple of weeks 
-without the lack of ECC biting you.
-
-gleixner@autronix.de said:
-> > Also note that the locking in jffs2_garbage_collect_deletion_dirent()
-> > is broken. We need to lock the erase_completion_lock while we go through
-> > the list, and drop the lock when we read the nodes. 
-
-> I'm not deep enough inside this to see the neccecary change. Could you 
-> please  explain more detailed ?
-
-On completion of a block erase, we walk through all the node lists, and we 
-remove and free all nodes in the block which has just been erased. Anything 
-which walks the node lists (as this function does) must hold the
-erase_completion_lock, so that the erase can't happen simultaneously.
-
-So we must hold the erase_completion_lock while walking the lists, and 
-because it's a spinlock we must unlock it before calling the flash read 
-function. Then when we get it again the node we were looking at and the 
-next node in the list may both have gone and been freed - we have to start 
-again from the beginning.
-
-
---
-dwmw2
+Dear sir,=0A       I tried to format a DOC (DIskOnChip 2000)using the firmw=
+are version 5.04(doc504.exb)and i got this result.=0A=0A 1. I formatted the=
+ DOC using the firmware version504=0A    the=0A=0A   dformat /win:d000 /s:d=
+oc504.exb /y=0A=0A   returns=0A=0A   formatting=0A   2041 of 2041=0A   stat=
+uscode is 26(flUnknownMedia)received from=0A   flmountVolume.=0A   Format f=
+ailed=0A=0A  once this is done the dinfo returns=0A=0A    No driver found.T=
+rying with direct access=0A=0A  and the software version is quoted to be=0A=
+=0A    Software version  : 255.255=0A=0ANext I tried dformat /win:c800 /s:!=
+ =0AThis time it says=0Aformatting 2048 of 2048 =0Astatuscode is 26(flUnkno=
+wnMedia)received from=0A   flmountVolume.=0A   Format failed.=0A=0A=0A  2 .=
+ i tried formatting the same DOC with doc121.exb=0A=0Aand this time it got =
+formatted well.and my Dinfo said the =0A       Software version : 1.21=0A=
+=0A  * But , my BIOS is not recognizing the DOC.Why is this ?=0AI have a fo=
+rmatted DOC(1.21) and why does not my bios recognize it?=0A=0A  * If , iam =
+able to format the DOC with 1.21 then why am i not able to format it with 5=
+.04 ?=0A=0ACan you give suggestions ,please .=0AThanks a lot.=0Aregards , m=
+aha=0A=0A=0A =0A
