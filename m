@@ -1,7 +1,7 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CvJk5-0008BR-16
-	for linux-mtd@lists.infradead.org; Sun, 30 Jan 2005 13:24:15 -0500
+	id 1CvKHq-0008Sp-1e
+	for linux-mtd@lists.infradead.org; Sun, 30 Jan 2005 13:59:08 -0500
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: Thomas Gleixner <tglx@linutronix.de>
 In-Reply-To: <Pine.LNX.4.58.0501281855370.11160@phoenix.infradead.org>
@@ -18,8 +18,8 @@ References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
 	<Pine.LNX.4.58.0501280914580.11160@phoenix.infradead.org>
 	<Pine.LNX.4.58.0501281855370.11160@phoenix.infradead.org>
 Content-Type: text/plain
-Date: Sun, 30 Jan 2005 21:23:40 +0300
-Message-Id: <1107109420.18794.5.camel@sauron.oktetlabs.ru>
+Date: Sun, 30 Jan 2005 21:58:34 +0300
+Message-Id: <1107111514.18794.37.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: MTD List <linux-mtd@lists.infradead.org>,
@@ -34,6 +34,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Another interpretation of my idea.
+
+We may look to the summary nodes as to the file system superblock.
+Indeed,
+1. The summary nodes altogether (will call this "summary super block")
+give us the full file system map;
+2. The summary nodes have "fixed position", at least we can find their
+locations quickly, without scanning the file system fully.
+
+Unlike "classic" super blocks, the "summary super block" is distributed
+entity. It is scattered over different JFFS3 blocks. But this property
+will make JFFS3 unclean reboot-tolerant, since only small part of our
+"summary super block" may be lost due to unclean reboot. And we always
+may scan the summary-less block and build the block's nodes map.
+
+Since we consider all summary nodes as one single, united entity, we
+they should be tightly coupled. But the are not. Summaries are
+independent of each other. This is the problem.
+
+For example, imagine we want to build the track of inode's nodes. For
+this reason, we bust scan all the summary nodes. This is unacceptably
+long operation. For this operation I see two possible solutions:
+
+1. For each inode we keep in-core the list of block numbers, where this
+inode's nodes are present. Thus, to build the inode's nodes track, we
+need to read only these summary nodes.
+
+2. Use ICPs.
+
+Comments?
 
 On Fri, 2005-01-28 at 18:57 +0000, Artem B. Bityuckiy wrote:
 > Hi,
@@ -109,14 +140,6 @@ On Fri, 2005-01-28 at 18:57 +0000, Artem B. Bityuckiy wrote:
 > ...... may be something other.
 > 
 > Just almost the same as summary, but the per-inode information.
-
-Alternatively, in order to keep ICPs small, we may store in ICP only
-references to all the summary nodes which contain at least one reference
-to the inode's node. Thus, we will save some space, but lost some speed.
-
-This means, say, if some inode has its nodes scattered over blocks
-1,100,1003, then ICP's data will contain only these three digits.
-
 > 
 > 
 > The Idea
