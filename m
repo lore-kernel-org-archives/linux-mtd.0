@@ -1,56 +1,61 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13TXLG-0006Kp-00
-	for mtd-list@infradead.org; Mon, 28 Aug 2000 23:25:22 +0100
-From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
-To: Ciro Cattuto <ciro@prosa.it>
-Date: Mon, 28 Aug 2000 19:24:09 GMT-3
+	id 13Tv8X-0003qV-00
+	for mtd-list@infradead.org; Wed, 30 Aug 2000 00:49:49 +0100
+Message-ID: <39AC4D1F.BFBEEA21@mvista.com>
+Date: Tue, 29 Aug 2000 16:54:07 -0700
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: Re: GRUB on DOC: 2Mb issues
-Reply-to: miguel@cetuc.puc-rio.br
-CC: mtd@infradead.org, David Woodhouse <dwmw2@infradead.org>
-In-reply-to: <20000828185018.A2777@localhost>
-Message-ID: <129C7B9418F@mamao.cetuc.puc-rio.br>
+To: David Woodhouse <dwmw2@infradead.org>
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: MTD support for 8x16 devices
+References: <398F1287.E29C8ECE@matrox.com> <31647.965720843@cygnus.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On 28 Aug 00, at 18:50, Ciro Cattuto wrote:
+Hi,
 
-> Also, doc_stage1.S doesn't support the
-> addressing scheme needed for 2Mb DOCs, so I had to make a few
-> modifications to make it load GRUB-stage2.
+ I am using the MTD driver  to accomodate two different products,  one  with
+an AMD
+and one  with an Intel Strata.   Both are the 8x16 variety.   I have several
+questions:
 
-   I haven't tried your modifications yet, but IMHO it looks right. The  
-doc_stage1 should work on both 256 and 512 paged devices without 
-any conditionals. The loop will send a READ0 command, set 
-address such as column(byte)=0 and page(word)=counter++ and 
-read 256 bytes. Of course stage2 needs to be written as described 
-in mtd/grub/README.
-   It may also be a good idea to send an additional address byte 
-zero for compatibility with >= 64Mb chips. Datasheet of 2MB says 
-this additional byte would be ignored, but I need to check for all 
-other chips.
+1. The Strata is placed on the board as a byte wide device so I've added
+another check in cfi_probe_new_chip() to try accessing the cfi ident info at
+address 0xaa as well as the 0x55  (for buswidth of 1) and return an
+"cfi_ident_adjustment" so that cfi_cfi_probe can correctly access the cfi
+ident info (since the cfi ident field InterfaceDesc hasn't been read yet).
+Is this an acceptable method to handle this?
 
-> The relevant cvs diffs follow. Notice: these mods make doc_stage1.S and
-> makecsum.c work _only_ for 2Mb DOCs! I'd like to merge this functionality
-> into the existing code, but I'll wait for your feedback. I'd use a simple
-> "#ifdef DOC_PAGE256" both in doc_stage1.S and makecsum.c, but in the long
-> run it would be nice to be able to access the page256 flag
-> (mtd->priv->page256) from userland (page256 in mtd_info_user?).
+2.  I've added code to support  1_by_8 functions in cfi_cmdset_0001.c for the
+strata.  I've also added big endian and unaligned support in
+cfi_amdext_write_2_by_16().   I've also added some support to handle different
+erase sector sizes within one chip.  Has any of this already been checked in
+recently?  And what is the procedure?
 
-   I don't really like userland tools (eg. makecsum or doc_loadbios) 
-taking care of such details as addressing mechanism of nand chips. 
-I guess it would be better to create an ioctl called "loadbios" and 
-handle that odditys inside the kernel driver. If page256==1, just write 
-the 8kb image. If page256==0, write 512 byte pages padding with 
-0xff the unused bytes.
+3.  For both products, I have made use of  my own combo of physmap.c and
+nora.c so that the flash address and len can be set in menuconfig and the
+flash can be partitioned.    It seems that this version of physmap.c can be
+used in a very generic way if we also move buswidth into menuconfig.   I'm
+also thinking about different ways for the partition sizes to be set outside
+of physmap.c.   - any opinions?   Perhaps board specifics should be contained
+in a header file and
+be set via menuconfig or command line or ?
+
+4.   I need to implement a char device where the customer wants to write to
+the flash and have all the erase details handle by the driver.  They want to
+simply do a dd into the device.  They don't need a file system
+implementation.   Has there been any thought about doing this type of thing at
+the driver level?
 
 
-Regards,
+Alice
 
-Miguel Freitas
+
+
+
 
 
 
