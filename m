@@ -1,36 +1,46 @@
-From: guo_zl9@hotmail.com (guo_zhenglin)
-Date: Mon, 17 Mar 2003 10:50:09 +0800
-Subject: How use FTP on serial port(COM1)?
-Message-ID: <OE32DCOTSt39LktrLEz00001e01@hotmail.com>
+From: hno@marasystems.com (Henrik Nordstrom)
+Date: Mon, 17 Mar 2003 08:05:08 +0100 (CET)
+Subject: New problem with DoC
+In-Reply-To: <000001c2ec2e$e003ee80$cfc7580c@who5>
+Message-ID: <Pine.LNX.4.44.0303170801530.12277-100000@filer.marasystems.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-I have a question,I need your help.
+The Control+Alt+B DoC bypass key is only in newer 5.X versions of the MSys
+firmware if I remeber correctly, and only if the firmware can be loaded 
+OK.
 
-1)my target board has not ethernet card, only has a 
-serial port (COM1) .
+Regards
+Henrik
 
-2)in order to update or maintenance targetboard's linux system 
-and application system,I want to use FTP or TFTP via COM1.
+On Sun, 16 Mar 2003, Gregg C Levine wrote:
 
-3)I had config linux kernel :
-    CONFIG_PPP=y
-    CONFIG_PPP_ASYNC=y
-    CONFIG_PPPOE=y
-
-4) I place "tftp" file in "/bin" directory and "services" file in "/etc"
-    directory.
-    have "tftp            69/udp"  in  "services" file.
-
-5) when I run "tftp" on target board, show
-   "tftp: udp/tftp: unknow service"
-6) what are  I still need to config or add ?
-    need  "pppd"?
-
-thanks in advance.
-
-
- ------------------------------
- guo zhenglin 
- E-mail: guo_zl9 at hotmail.com
- ------------------------------
+> Hello from Gregg C Levine
+> It seems to be my day for problems with this configuration. Using the
+> "doc_loadbios" program found in the util directory of the mtd
+> collection, I've managed to write the firmware to the DoC, one was the
+> one labeled "DOC2.FFF", and the other one was "doc42.exb", both were
+> copied from the disk provided by M-SYS that's version 4.2 of their
+> series of tools.
+> 
+> Now with the card inserted in the computer, it does not even respond
+> to the <ctrl> <alt> B sequence, that M-SYS insists will prevent the
+> firmware, from loading. Nor is there any message printed regarding the
+> device. Now I am really lost. Oh, and this is an OEM computer wearing
+> an Award BIOS.
+> -------------------
+> Gregg C Levine hansolofalcon at worldnet.att.net
+> ------------------------------------------------------------
+> "The Force will be with you...Always." Obi-Wan Kenobi
+> "Use the Force, Luke."? Obi-Wan Kenobi
+> (This company dedicates this E-Mail to General Obi-Wan Kenobi )
+> (This company dedicates this E-Mail to Master Yoda )
+> 
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
