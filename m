@@ -1,35 +1,31 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13wYiH-0000u3-00
-	for mtd-list@infradead.org; Thu, 16 Nov 2000 23:45:05 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	id 13wYwE-0000wF-00
+	for mtd-list@infradead.org; Thu, 16 Nov 2000 23:59:30 +0000
+Received: from open.your.mind.be ([195.162.205.66] helo=portablue.intern.mind.be)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13wYiD-0000tx-00
-	for mtd@infradead.org; Thu, 16 Nov 2000 23:45:04 +0000
-Date: Thu, 16 Nov 2000 23:44:01 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Erwin Authried <eauth@softsys.co.at>
-cc: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: block device for 2.0
-In-Reply-To: <01C04FE2.F4415760@omnibook.home.at>
-Message-ID: <Pine.LNX.4.30.0011162343080.5514-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13wYwD-0000w9-00
+	for mtd@infradead.org; Thu, 16 Nov 2000 23:59:29 +0000
+Date: Fri, 17 Nov 2000 00:59:26 +0100
+To: mtd@infradead.org
+Subject: MTD on intel 28F320B3 flash memory
+Message-ID: <20001117005926.A829@portablue.linux-apollo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+From: p2@portablue.linux-apollo.org (Peter De Schrijver)
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Thu, 16 Nov 2000, Erwin Authried wrote:
+Hi,
 
-> I thought it might be best to have the choice between the
-> old, uncached block block driver (for uClinux) or the new driver
-> as a configuration option. Are there any better ideas?
+Is this type of flash memory supported ? It seems to use the standard 
+intel/sharp command set (command set #3), although it's not fully CFI 
+compliant.
 
-Makes sense. How about having CONFIG_MTD_BLOCK and CONFIG_MTD_BLOCK_RW
-just like we currently have for NFTL?
+Thanks,
 
--- 
-dwmw2
-
+Peter.
 
 
 
