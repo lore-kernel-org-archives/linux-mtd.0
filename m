@@ -1,14 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: cheetim_loh@innomedia.com.sg
-In-Reply-To: <002101c41154$a6339560$0b00a8c0@PIII1200MHzM>
-References: <002101c41154$a6339560$0b00a8c0@PIII1200MHzM>
-Content-Type: text/plain
-Message-Id: <1080119708.16509.322.camel@hades.cambridge.redhat.com>
+Received: from [202.56.196.162] (helo=brahma.intotoind.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B6QmI-0000pF-Cl
+	for linux-mtd@lists.infradead.org; Thu, 25 Mar 2004 09:03:55 +0000
+Received: from rajeshbv.intotoinc.com (3mc76.intotoind.com [172.16.3.76])
+	by brahma.intotoind.com (8.12.6/8.11.6) with ESMTP id i2P95YTX019133
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Mar 2004 14:35:34 +0530
+Message-Id: <5.1.0.14.0.20040325143833.01b20e50@172.16.1.10>
+Date: Thu, 25 Mar 2004 14:45:27 +0530
+To: linux-mtd@lists.infradead.org
+From: "Rajesh B. V." <rajeshbv@intotoinc.com>
 Mime-Version: 1.0
-Date: Wed, 24 Mar 2004 09:15:08 +0000
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Patch for RedBoot Partition Table Parsing
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: Running out of space on MTD partition with JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-03-24 at 12:00 +0800, LOH Chee Tim wrote:
-> The attached patch, against mtd-snapshot-20040323, fixes RedBoot Partition
-> Table Parsing for unallocated flash space before the first image.
+Hi All,
 
-Thanks.
+I mounted JFFS2 file system through device 'mtdblock4' on my ARM target.
+I need to update some files ( kind of configuration files ) periodically in 
+the JFFS2 partition.
+For this i create the files in RAM and just copy the files from RAM to 
+JFFS2, overwriting the previous files.
 
-> Also included are minor updates to:
-> 1. include nullname only if it is used
-> 2. add an option for selecting whether unallocated flash space is to be
-> included
+But the problem i am facing is, after doing for couple of times it is 
+giving error saying
+"No space left on device "
+I could not understand why the space is consumed on the JFFS2 partition as 
+the files i am updating are not bigger in size compared to older ones.
 
-OK. I'd be a lot happier if we had already fixed up the partitioning and
-could get at a 'whole-device' MTD device reliably, but it does make
-sense.
+When i run " df -h" after every copy, i observed that always the free 
+memory is becoming less on JFFS2 partition, even though the files i replace 
+are of same size.
 
-> 3. follow eCos 2.0 by reading partition table from the whole of last erase
-> block instead of just the start
+I will be thankful if anybody give a hint on why it is happening, even 
+though there are no new files added.
 
-OK.
-
-> 4. force read-only for RedBoot, RedBoot Config and FIS directory images
-
-I don't like this very much. I habitually update RedBoot from Linux. I
-have occasionally been known to change the config and FIS directory too.
-
-Perhaps we could make it optional too?
-
-Please update the Kconfig file to match what you've changed in
-Config.in.
-
-
-
--- 
-dwmw2
+Regards,
+--Rajesh
