@@ -1,33 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14mj7x-0001ai-00
-	for mtd-list@infradead.org; Mon, 09 Apr 2001 22:23:13 +0100
-Received: from humbolt.nl.linux.org ([131.211.28.48] ident=root)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14mj7w-0001ac-00
-	for mtd@infradead.org; Mon, 09 Apr 2001 22:23:12 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <5B08DC7C9AA6D411930E00105A19794B3E23C6@EXCHANGE> 
-References: <5B08DC7C9AA6D411930E00105A19794B3E23C6@EXCHANGE> 
-To: "Carson, Jon A." <JACarson@addcoinc.com>
-Cc: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: Re: Formatting problems with DOC2000 / 16 meg. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 09 Apr 2001 22:17:42 +0100
-Message-ID: <21067.986851062@redhat.com>
+	id 14mjPg-0001hi-00
+	for mtd-list@infradead.org; Mon, 09 Apr 2001 22:41:32 +0100
+Received: from ppp319.pcnet.ro ([213.154.130.182] helo=moshu)
+	by infradead.org with smtp (Exim 3.20 #2)
+	id 14mjPa-0001hP-00
+	for mtd@infradead.org; Mon, 09 Apr 2001 22:41:27 +0100
+To: mtd@infradead.org
+From: NOVATRONIC COMPUTERS <novatronic@go.ro>
+Date: Tue, 10 Apr 2001 00:40:27
+Subject: Informations
+Message-Id: <E14mjPa-0001hP-00@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-
-JACarson@addcoinc.com said:
->  Here is the print-out of "./nftl_format /dev/mtd0" which seems to
-> have failed somehow.
-
-OK, I'll plug in a DiskOnChip eval board and check this tomorrow morning.
-
---
-dwmw2
+Dear Sirs,
+ 
+    We are a company in Romania specialized 
+in selling computer hardware and we want to
+ find a partner in your country because in
+ this way we can get better prices than 
+buying from distributors here. We are i
+nterested in all kind of computer hardware 
+in large quantities . Please email us your
+ price lists and all payment methods you 
+accept. We prefer credit cards because 
+it's the fastest method and as you know 
+prices vary very much in computer hardware.
+ Also please e-mail your shipping option.
+No matter what your answer is, please 
+reply as soon as possible.
+                           
+Sincerely,
+Alecu Cornel
+www.Novatronic.go.ro
+Tel/Fax:4098397251
 
 
 
