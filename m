@@ -1,26 +1,30 @@
-Received: from mailout01.ims-firmen.de ([213.174.32.96])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C0K2N-0005a8-1b
-	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 09:11:34 -0400
-Received: from [192.168.1.18] (helo=scanner02.ims-firmen.de)
-	by mailout01.ims-firmen.de with esmtp (Exim 4.30) id 1C0K2I-0004t0-0L
-	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 15:11:26 +0200
-Received: from [80.133.246.52] (helo=susemail.lightmaze.com)
-	by scanner02.ims-firmen.de with asmtp (Exim 4.30) id 1C0K2H-0000qv-Nq
-	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 15:11:25 +0200
-Received: from LIMZKarrer (unknown [192.168.1.181])
-	by susemail.lightmaze.com (Postfix SuSE 2.0) with SMTP id F24168D5E8
+	id 1C0Kq4-0005ma-An
+	for linux-mtd@lists.infradead.org; Thu, 26 Aug 2004 10:02:53 -0400
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id BDE132F023
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Aug 2004 15:11:24 +0200 (CEST)
-From: "Jochen Karrer" <j.karrer@lightmaze.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Thu, 26 Aug 2004 15:11:22 +0200
-Message-ID: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+	Thu, 26 Aug 2004 16:02:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 98BF0A323
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Aug 2004 16:02:49 +0200 (CEST)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 1B835A31D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Aug 2004 16:02:49 +0200 (CEST)
+Message-ID: <412DED87.3080609@imc-berlin.de>
+Date: Thu, 26 Aug 2004 16:02:47 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Cc: linux-mtd@lists.infradead.org
+References: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+In-Reply-To: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
+Subject: Re: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +34,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-jffs2 did not work in linux-2.6.8.1 because single word writes at the end
-of a buffer write are done with the wrong address:
+Jochen Karrer wrote:
 
---- /home/jkarrer/kernel/linux-2.6.8.1/drivers/mtd/chips/cfi_cmdset_0002.c
-Sat Aug 14 12:55:20 2004
-+++ cfi_cmdset_0002.c	Thu Aug 26 14:33:42 2004
-@@ -1128,7 +1128,7 @@
- 	if (len) {
- 		size_t retlen_dregs = 0;
+> Hi,
+> jffs2 did not work in linux-2.6.8.1 because single word writes at the end
+> of a buffer write are done with the wrong address:
+> 
 
--		ret = cfi_amdstd_write_words(mtd, to, len, &retlen_dregs, buf);
-+		ret = cfi_amdstd_write_words(mtd, ofs + (chipnum<<cfi->chipshift), len,
-&retlen_dregs, buf);
+Aah! Thanks a million! I already started think that my hardware was broken...
 
- 		*retlen += retlen_dregs;
- 		return ret;
-
-
-Jochen
+-- 
+Steven
