@@ -1,20 +1,25 @@
-Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
+Received: from [202.37.96.11] (helo=gatekeeper.tait.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ABbEu-000060-AH
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2003 15:42:32 +0100
-Date: Mon, 20 Oct 2003 23:58:42 +0900 (JST)
-Message-Id: <20031020.235842.126570816.anemo@mba.ocn.ne.jp>
-To: noah@caltech.edu
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <Pine.GSO.4.58.0310171454050.13905@blinky>
-References: <Pine.GSO.4.58.0310171454050.13905@blinky>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-cc: dwmw2@redhat.com
-cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Remove needless and non-portable include in mtd
+	id 1ABgzb-0000oz-Ml
+	for <linux-mtd@lists.infradead.org>; Mon, 20 Oct 2003 21:51:08 +0100
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9KKnxH03728
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Oct 2003 09:49:59 +1300
+Received: from sunstorm.tait.co.nz (sunstorm.tait.co.nz [172.25.40.9])
+	by gatekeeper.tait.co.nz (8.11.2/8.9.3) with ESMTP id h9KKnx203722
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Oct 2003 09:49:59 +1300
+Received: from tait.co.nz ([172.25.110.7])
+ by sunstorm.tait.co.nz (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with ESMTP id <0HN2001L9PV9RY@sunstorm.tait.co.nz> for
+ linux-mtd@lists.infradead.org; Tue, 21 Oct 2003 09:49:58 +1300 (NZDT)
+Date: Tue, 21 Oct 2003 09:49:50 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+To: mtd list <linux-mtd@lists.infradead.org>
+Message-id: <3F944A6E.3090703@tait.co.nz>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+Subject: Unrequested module loading?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> On Sun, 19 Oct 2003 21:36:15 -0700 (PDT), "Noah J. Misch" <noah@caltech.edu> said:
+Greetings
 
-noah> The #include <asm/setup.h> in drivers/mtd/cmdlinepart.c does not
-noah> appear to provide any definition this file uses, and it quickly
-noah> breaks builds on architectures that lack such a header,
-noah> including ia64 and sparc.
+Any ideas why I get the following at boot time:
 
-I have posted a patch including this fix to linux-mtd ML two times
-(two month ago and a week ago).  My patch fixes another problem that
-cmdlinepart.c can not handle zero offset value correctly
-(ex. "mtdparts=id:2M@2M,2M@0").  Please consider applying this fix
-also.  Thank you.
+kmod: failed to exec /sbin/modprobe -s -k cmdlinepart, errno = 2
+cmdlinepart partition parsing not available
+kmod: failed to exec /sbin/modprobe -s -k RedBoot, errno = 2
+RedBoot partition parsing not available
 
---- mtd-20030811/drivers/mtd/cmdlinepart.c	Fri May 30 07:00:05 2003
-+++ mtd/drivers/mtd/cmdlinepart.c	Tue Aug 12 16:35:43 2003
-@@ -29,7 +29,6 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/compatmac.h>
--#include <asm/setup.h>
- #include <linux/bootmem.h>
- 
- /* error message prefix */
-@@ -45,6 +44,7 @@
- 
- /* special size referring to all the remaining space in a partition */
- #define SIZE_REMAINING 0xffffffff
-+#define OFFSET_CONTINUOUS 0xffffffff
- 
- struct cmdline_mtd_partition {
- 	struct cmdline_mtd_partition *next;
-@@ -77,7 +77,7 @@
- {
- 	struct mtd_partition *parts;
- 	unsigned long size;
--	unsigned long offset = 0;
-+	unsigned long offset = OFFSET_CONTINUOUS;
- 	char *name;
- 	int name_len;
- 	unsigned char *extra_mem;
-@@ -312,7 +312,7 @@
- 		{
- 			for(i = 0, offset = 0; i < part->num_parts; i++)
- 			{
--				if (!part->parts[i].offset)
-+				if (part->parts[i].offset == OFFSET_CONTINUOUS)
- 				  part->parts[i].offset = offset;
- 				else
- 				  offset = part->parts[i].offset;
----
-Atsushi Nemoto
+A bit odd as I have no modules defined in my system at all and the 
+relevant section of the .config file says:
+
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_CMDLINE_PARTS is not set
+
+-- 
+Robin Gilks
+Senior Design Engineer          Phone: (+64)(3) 357 1569
+Tait Electronics                Fax  :  (+64)(3) 359 4632
+PO Box 1645 Christchurch        Email : robin.gilks@tait.co.nz
+New Zealand
