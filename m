@@ -1,17 +1,17 @@
-Received: from hex.linuxgrrls.org ([212.18.228.73] ident=postfix)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15ecIX-0002p2-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 14:00:53 +0100
-Date: Wed, 5 Sep 2001 14:06:47 +0100 (BST)
-From: kira brown <kira@hex.linuxgrrls.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Adil EL YOUSSEFI <adilos2@yahoo.com>,
-	<linux-mtd@lists.infradead.org>
+	id 15ecLe-0002pw-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 14:04:06 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0109051406110.31189-100000@hex.linuxgrrls.org> 
+References: <Pine.LNX.4.33.0109051406110.31189-100000@hex.linuxgrrls.org> 
+To: kira brown <kira@hex.linuxgrrls.org>
+Cc: Adil EL YOUSSEFI <adilos2@yahoo.com>, linux-mtd@lists.infradead.org
 Subject: Re: mtd/jffs2 src. Help ! 
-In-Reply-To: <25533.999695064@redhat.com>
-Message-ID: <Pine.LNX.4.33.0109051406110.31189-100000@hex.linuxgrrls.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 05 Sep 2001 14:10:07 +0100
+Message-ID: <26219.999695407@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+kira@hex.linuxgrrls.org said:
+>  Not if they're behind a fascistic firewall. 
 
-On Wed, 5 Sep 2001, David Woodhouse wrote:
+I'll sell you some non-broken firewall software if you like. Or a baseball 
+bat to deal with your incompetent sysadmin.
 
-> Everybody can use CVS
-
-Not if they're behind a fascistic firewall.
-
-kira.
+--
+dwmw2
