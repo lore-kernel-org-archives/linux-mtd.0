@@ -1,21 +1,19 @@
 Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nICu-0006hd-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:27:28 +0100
+	id 17nIJc-0006iR-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:34:24 +0100
 Content-Type: text/plain;
   charset="iso-8859-1"
 From: Henrik Nordstrom <hno@marasystems.com>
-To: Mark Meade <mark@lakeshoremicro.com>,
-   David Woodhouse <dwmw2@infradead.org>
+To: mateo@posta.star.si, mark@lakeshoremicro.com, dwmw2@infradead.org
 Subject: Re: DOC 2000 and GRUB
-Date: Fri, 6 Sep 2002 14:27:15 +0200
-Cc: Russ Dill <Russ.Dill@asu.edu>, mateo@posta.star.si,
-   linux-mtd@lists.infradead.org
-References: <200209061149.02058.hno@marasystems.com> <32342.1031307879@redhat.com> <20020906110053.EFQR11061.sccrmhc01.attbi.com@there>
-In-Reply-To: <20020906110053.EFQR11061.sccrmhc01.attbi.com@there>
+Date: Fri, 6 Sep 2002 14:34:17 +0200
+Cc: Russ.Dill@asu.edu, linux-mtd@lists.infradead.org
+References: <20020906112553.896FB394E@sitemail.everyone.net>
+In-Reply-To: <20020906112553.896FB394E@sitemail.everyone.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <200209061427.15220.hno@marasystems.com>
+Message-Id: <200209061434.17881.hno@marasystems.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,25 +25,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mark Meade wrote:
+Mateo Anderson wrote:
 
-> After slightly modifying the Grub stage 2 code (bdev_diskonchip.c), I was
-> able to get Grub to boot from a freshly 5.x dformatted DoC.
+> Steps:
+> 1) Boot DOS and use DFORMAT 5.x to format the DOC, with
+>    the appropriate space for the GRUB firmware (check the
+>    size of the stage1 file).
+
+DFORMAT 5.x automatically allocates the needed space. You only need to care 
+about space if you want to reserve additional space in the binary boot flash 
+partition to allow for upgrades to a bigger GRUB firmware in the future.
+
+> 2) Boot to Linux, use the doc_loadbios to load the GRUB
+>    firmware (or use DFORMAT - what parameters??).
+
+Use DFORMAT. doc_loadbios is for "advanced users" who have read the 
+documentation shipped with the M-Sys 5.X tools and knows the current 
+limitations of the doc_loadbios command and it's bad interactions with the 
+nftl Linux driver..
+
+Note: DFORMAT can also be used to upgrade the boot firmware without destroying 
+the NFTL disk flash partition, provided the new boot firmware fits in the 
+reserved binary flash partition that is..
+
+> 3) Format the /dev/nftla.
+
+This would be
+
+3) Partition /dev/nftla using Linux fdisk.
+
+The NFTL is already formatted by DFORMAT, and a single DOS partition covering 
+the whole flash have been created and formatted.
+
+> 4) Copy everything to the /dev/nftla1.
+> 5) Boot from DOC.
 >
-> This is the old "UnitSizeFactor" issue - this Millennium says the
-> UnitSizeFactor is 0x00, which is assumed to mean the same thing as 0xFF.
->
-> I haven't tried any DoC 2000's that have a UnitSizeFactor that is not 0 or
-> FF, but it looks like this should work as well, with the appropriate
-> changes to bdev_diskonchip.c.
+> Is this correct?
 
-I tried to patch my GRUB to read 0x00 as 0xFF some days ago, but it failed 
-miserably.. but I only changed the ifs around the message. Maybe there is 
-other things that need to be changed?
-
-(Un)fortunately I do not have a DoC system at the moment (had to deliver all 
-we had to customers) so further testing will have to wait some time until we 
-have more systems available.
+More or less.
 
 Regards
 Henrik
