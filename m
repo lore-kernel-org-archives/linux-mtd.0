@@ -1,18 +1,22 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from mailout06.sul.t-online.com ([194.25.134.19])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVeqy-0007O2-8k
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 19:09:02 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812AA@atcml01.atc.army.mil>
-References: <EFF9A3506F74924AB5CC77BDC66E79351812AA@atcml01.atc.army.mil>
-Content-Type: text/plain
-Message-Id: <1086217723.26119.896.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 03 Jun 2004 00:08:43 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Let me add to last message
+	id 1BVn6y-0008I1-RI
+	for linux-mtd@lists.infradead.org; Thu, 03 Jun 2004 03:58:07 -0400
+From: tglx@linutronix.de (Thomas Gleixner)
+To: "Zhang, Jian" <jzhang@ti.com>, "David Woodhouse" <dwmw2@infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Date: Thu, 3 Jun 2004 09:52:30 +0200
+References: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
+In-Reply-To: <BA2832125C3C994384FCC051CDFC73690F4197@dlee2k05.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200406030952.30695.tglx@linutronix.de>
+Cc: 
+Subject: Re: stable MTD snapshot
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-06-02 at 07:33 -0400, Carlos, John J USAATC wrote:
-> This is some of the messages I get.  The chip is identified properly but
-> using the MTD_ioctl calls I get the wrong erase size??
+On Thursday 03 June 2004 00:48, Zhang, Jian wrote:
+>
+> 20040531:
+> Kernel builds but I got I/O error when mounting a partition. The
+> underlying MTD NAND driver works since I am able to read/write MTD
+> nodes.
 
-Er, do you have the correct major/minor numbers for /dev/mtd4? 
+Use a more recent snapshot please. There were some issues recently as I=20
+reworked a lot.
 
--- 
-dwmw2
+If the problem persists with a recent snapshot could you please describe in=
+=20
+detail what happens.
+
+=2D-=20
+Thomas
+________________________________________________________________________
+Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
+time managing existing systems. That couldn=E2=80=99t have anything to do w=
+ith=20
+the fact that 99 percent of these systems run Windows, could it?
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
