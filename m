@@ -1,13 +1,13 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14kB5S-0001Li-00
-	for mtd-list@infradead.org; Mon, 02 Apr 2001 21:38:06 +0100
+	id 14kBI3-0001Si-00
+	for mtd-list@infradead.org; Mon, 02 Apr 2001 21:51:07 +0100
 Received: from gatekeeper.emware.com ([209.140.75.114])
 	by infradead.org with smtp (Exim 3.20 #2)
-	id 14kB5N-0001Lc-00
-	for mtd@infradead.org; Mon, 02 Apr 2001 21:38:03 +0100
-Message-ID: <3AC8E3AA.3BFCCE50@emware.com>
-Date: Mon, 02 Apr 2001 14:40:10 -0600
+	id 14kBHu-0001Sc-00
+	for mtd@infradead.org; Mon, 02 Apr 2001 21:51:00 +0100
+Message-ID: <3AC8E6A2.E0E43DC1@emware.com>
+Date: Mon, 02 Apr 2001 14:52:50 -0600
 From: Tim Bowman <tbowman@emware.com>
 MIME-Version: 1.0
 To: mtd mailing list <mtd@infradead.org>
@@ -16,6 +16,13 @@ Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
+
+One more possibilty: 
+
+Would cross-compiling the kernel on an x86 produce different ordering
+than compiling natively on a PowerPC (which is how I am building it)? 
+Maybe I need to build it on an x86?
+
 
 Original message:
 
