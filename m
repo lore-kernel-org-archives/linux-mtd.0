@@ -1,20 +1,25 @@
-From: asoneofus@nm.ru (A.L. Klyutchenya)
-Date: Mon, 31 Mar 2003 15:11:21 +0400
-Subject: make mkfs.jffs2
-Message-ID: <200303311511.22013.asoneofus@nm.ru>
+From: eric.dejonc@thales-e-transactions.com (Eric DEJONC)
+Date: Mon, 31 Mar 2003 16:27:12 +0200
+Subject: mtd devices inaccessible
+Message-ID: <3E885040.41874936@thales-e-transactions.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Dear sirs,
-How to build fileutils (eq: mkfs.jffs2, e.t.c) for host computer, 
-x86 with RH8.0 ?
+I'm sorry to ask so many question but,
+I hadn't made a clean, that's why I got a stange error, but now, I can't
+compile the new kernel:
+missing mtdlink.o
+        I had to modify the makefile of the drivers/mtd and remove the
+ifeq($below25),y) but I have a 2.5.6.2 kernel.
 
--- 
-????????!      
-      ____   __
-     /   |  / / ?. ?. ????????
-    / /| | / /  (asoneofus)
-   / /_| |/ /   mail:   asoneofus at kde.ru
-  / ____  _ \   www:    http://www.qt.kde.ru
- / /   | | \ \  icq:    113679387
-/_/    |_|  \_\ 
+then when I boot, I have this:
+
+Probe at base[0x00](0x00000000) past the end of the map(0xffffffff)
+Probe at base[0x00](0x00000000) past the end of the map(0xffffffff)
+Probe at base[0x00](0x00000000) past the end of the map(0xffffffff)
+CFI: Found no SA1100 flash device at location zero
+
+
+and mtd devices are not accessible.
+
+Where could be my error
