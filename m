@@ -1,25 +1,17 @@
-Received: from [65.205.244.70] (helo=mail1.dmz.pioneer-pra.com)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bl9Jk-000583-QH
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 12:42:45 -0400
-Received: from philt.pioneer-pdt.com (sd-gateway.pioneer-pra.com
-	[207.215.131.7]) (using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(Client did not present a certificate)
-	by mail1.dmz.pioneer-pra.com (Postfix) with ESMTP id ACF1239006D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Jul 2004 09:42:39 -0700 (PDT)
-From: Patrick Hilt <philt@pioneer-pra.com>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 15 Jul 2004 09:47:47 -0700
-References: <200407091608.14442.philt@pioneer-pdt.com>
-In-Reply-To: <200407091608.14442.philt@pioneer-pdt.com>
+Received: from mx1.acopia.com ([12.172.68.25])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bl9Mt-0005Hy-6b
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 12:46:00 -0400
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200407150947.47727.philt@pioneer-pra.com>
-Subject: Re: JFFS 2 Question
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 15 Jul 2004 12:45:40 -0400
+Message-ID: <77A9CE908F115440B48104747E2534220D0930@email1.acopianet.com>
+From: "Brad Goodman" <bgoodman@acopia.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: 2.4.26 MTD Patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys!
-Thanks a lot or your input. Definitely appreciate it!!
-In the project I am working on, we have been seeing an occasional corruption 
-of our JFFS2 partition upon sudden loss of power and we get that even after 
-writing to the parition and sync'ing. Could that be caused by the power loss 
-happening during a block rotation / garbage collection?
+The following patch prevents a kernel OOPS when a faulty MTD device
+times-out,
+due to a the cleanup in the error path being done twice.
 
-Thanks again,
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D PATCH IS AS FOLLOWS =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Patrick
-
-
-On Friday 09 July 2004 04:08 pm, Patrick Hilt wrote:
-> Hi list!
-> Is there a way to make sure data is being written to physical flash when
-> using JFFS2? In other words, After writing a file on a JFFS2 partition, is
-> there anything that can be done to make sure that the data is getting
-> written to the flash right away? Would "sync" or "fsync" have that effect?
->
-> Thanks a lot in advance for any input!!!
->
-> Happy weekend,
->
-> Patrick
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--- orig/cfi_cmdset_0002.c      Thu Jul 15 12:31:42 2004
++++ cfi_cmdset_0002.c   Thu Jul 15 12:30:48 2004
+@@ -6,6 +6,8 @@
+  *
+  * 2_by_8 routines added by Simon Munton
+  *
++ * 7/15/2004 - Brad Goodman <bgoodman@acopia.com> Removed duplicate
+cleanup from error path
++ *
+  * This code is GPL
+  *
+  * $Id: cfi_cmdset_0002.c,v 1.62 2003/01/24 23:30:13 dwmw2 Exp $
+@@ -549,11 +551,7 @@
+                        }
+                } else {
+                        printk(KERN_WARNING "Waiting for write to
+complete timed out in do_write_oneword.");       =20
+-
+-                       chip->state =3D FL_READY;
+-                       wake_up(&chip->wq);
+-                       cfi_spin_unlock(chip->mutex);
+-                       DISABLE_VPP(map);
++
+                        ret =3D -EIO;
+                }
+        }=20
+ =20
+--------------------------------------------------------
+=20
+DISCLAIMER:   The information contained in this e-mail is confidential =
+and is intended solely for the review of the named addressee, and in =
+conjunction with specific Acopia Networks business.  Any review, =
+retransmission, dissemination or other use of, or taking of any action =
+in reliance upon, this information by persons or entities other than the =
+intended recipient is prohibited. If you are unable to treat this =
+information accordingly, or are not the intended recipient, please =
+notify us immediately by returning the e-mail to the originator. =20
