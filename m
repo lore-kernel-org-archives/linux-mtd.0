@@ -1,19 +1,16 @@
 Received: from mail.2d3d.co.za ([196.14.185.200])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15CJW5-0003eO-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 12:17:54 +0100
-Date: Tue, 19 Jun 2001 13:24:27 +0200
+	id 15CKNv-0003hJ-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2001 13:13:32 +0100
+Date: Tue, 19 Jun 2001 14:20:07 +0200
 From: Abraham vd Merwe <abraham@2d3d.co.za>
-To: Xavier DEBREUIL <xde@inventel.fr>
-Cc: MTD for Linux <linux-mtd@lists.infradead.org>
-Subject: Re: CVS updates
-Message-ID: <20010619132427.B7581@crystal.2d3d.co.za>
-References: <3B2E2C7A.F997FDEE@inventel.fr> <20010618131315.A2156@crystal.2d3d.co.za> <20010618142215.M12246@arthur.ubicom.tudelft.nl> <20010618143104.A3715@crystal.2d3d.co.za> <3B2E2C7A.F997FDEE@inventel.fr> <29895.992882600@redhat.com> <20010619093319.D10532@crystal.2d3d.co.za> <3B2F3346.44C57BCE@inventel.fr>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: jffs2 problems
+Message-ID: <20010619142007.A12096@crystal.2d3d.co.za>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
 Content-Disposition: inline
-In-Reply-To: <3B2F3346.44C57BCE@inventel.fr>; from xde@inventel.fr on Tue, Jun 19, 2001 at 13:11:02 +0200
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,36 +22,60 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---oLBj+sq0vYjzfsbl
-Content-Type: text/plain; charset=us-ascii
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Xavier!
+Hi!
 
-> > Just btw, if you're looking for an Intel probe routine for the 28F160 c=
-hips,
-> > look at the lart driver - I implemented one there which works for 28F16=
-0 and
-> > 28F800 chips (but then again you could probably use the entire driver a=
-s is
-> > as it should work with all 28F{800,160} chips.
->=20
-> where is it located in lart sources (blob, kernel...) or what is the
-> file you're talking about in mtd/maps/
+I just tried the 2.4.5 with the rmk6 and rmk6-np1 patches applied and
+used the MTD CVS code instead of the kernel MTD code. Problems ):
 
-The lart driver is in mtd/devices/lart.c - You'll have to check it out of
-the MTD CVS tree, it's not in the kernel yet.
+When I boot up, I still get:
 
-The maps driver I was talking about is mtd/maps/sa1100-flash.c, but you
-won't find any 28F160xx stuff in there.
+------------< snip <------< snip <------< snip <------------
+NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
+jffs2_scan_empty(): Empty block at 0x00000000 ends at 0x00000000 (with
+0xe0021985)! Marking dirt
+y
+jffs2_scan_empty(): Empty block at 0x00020000 ends at 0x00020000 (with
+0xe0021985)! Marking dirt
+y
+jffs2_scan_empty(): Empty block at 0x00040000 ends at 0x00040000 (with
+0xe0021985)! Marking dirt
+y
+jffs2_scan_empty(): Empty block at 0x00060000 ends at 0x00060000 (with
+0xe0021985)! Marking dirt
+y
+=2E
+=2E
+=2E
+jffs2_scan_empty(): Empty block at 0x002e0000 ends at 0x002e0000 (with
+0x20031985)! Marking dirt
+y
+VFS: Mounted root (jffs2 filesystem) readonly.
+------------< snip <------< snip <------< snip <------------
+
+Any ideas?
+
+Another interesting thing I noted is this:
+
+------------< snip <------< snip <------< snip <------------
+Freeing init memory: 36K
+=2EI=FE=A0=FE#=AB)=F1.!=FE)init started:  BusyBox v0.51 (2001.06.07-09:49+0=
+000) multi-call
+binary
+------------< snip <------< snip <------< snip <------------
+
+Notice the hi-ascii garbage before init is started?
 
 --=20
 
 Regards
  Abraham
 
-Advice is a dangerous gift; be cautious about giving and receiving it.
+Your sister swims out to meet troop ships.
 
 __________________________________________________________
  Abraham vd Merwe - 2d3D, Inc.
@@ -68,7 +89,7 @@ __________________________________________________________
   Http: http://www.2d3d.com        South Africa
 
 
---oLBj+sq0vYjzfsbl
+--mP3DRpeJDSE+ciuQ
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -76,9 +97,9 @@ Content-Disposition: inline
 Version: GnuPG v1.0.4 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE7LzZrzNXhP0RCUqMRAjijAJ45AGOy6Mo2IxoF0LMlguqNoCbq3gCeNOU1
-2HWz3DG1NIBheLhOMFS0oME=
-=kLUj
+iD8DBQE7L0N3zNXhP0RCUqMRAlggAJ0bhoy2/uVZZLeUbAUhNNdwGHUZngCeOKEx
+tjlxZYS0M0WzdiceR90itSY=
+=mN0Z
 -----END PGP SIGNATURE-----
 
---oLBj+sq0vYjzfsbl--
+--mP3DRpeJDSE+ciuQ--
