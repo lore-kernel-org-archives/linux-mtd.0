@@ -1,15 +1,17 @@
-Received: from [200.53.172.133] (helo=qis)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16CWdk-0005Q3-00
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 01:50:57 +0000
-Message-ID: <20011208021016.28394.qmail@qis>
-From: "Nikolai Vladychevski" <niko@isl.net.mx>
-To: linux-mtd@lists.infradead.org
-Subject: nftl_format with offset
-Date: Sat, 08 Dec 2001 02:10:16 GMT
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16Cdyu-0005pl-00
+	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 09:41:16 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <D9223EB959A5D511A98F00508B68C20C1F9639@ORSMSX108> 
+References: <D9223EB959A5D511A98F00508B68C20C1F9639@ORSMSX108> 
+To: "Carlson, Kristen" <kristen.carlson@intel.com>
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: caching questions with jffs2 
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 08 Dec 2001 09:51:48 +0000
+Message-ID: <19171.1007805108@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,79 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
-I got this problem, why when I :
-nftl_format /dev/mtd0
-i can load nftl module without problems, but when I:
-nftl_format /dev/mtd0 0x100000
-it gives "Could not find valid boot record" error ?
-It happends because I upgraded to 2.4.16, with the lastest cvs code. What 
-should be wrong? 
+kristen.carlson@intel.com said:
+> Can someone describe to me the algorithm used for freeing memory that
+> has been cached due to file activity in jffs2?  Is this done as part
+> of the garbage collector?  How long does the cached memory stay
+> around?  Is this tunable?
 
-Here are the details: 
+At all times while mounted, JFFS2 keeps a list of the offsets of each 
+physical node belonging to each inode.
 
-[root@qis1 util]# ./nftl_format /dev/mtd0
-$Id: nftl_format.c,v 1.17 2001/08/29 14:28:48 dwmw2 Exp $
-Phase 1. Checking and erasing Erase Zones from 0x00000000 to 0x00800000
-Skipping bad zone (factory marked) #103 @ 0xce000
-Skipping bad zone (factory marked) #128 @ 0x100000
-Skipping bad zone (factory marked) #129 @ 0x102000
-	Checking Zone #1023 @ 0x7fe000
-Phase 2.a Writing NFTL Media Header and Bad Unit Table
-Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
-Phase 3. Writing Unit Control Information to each Erase Unit
-You have new mail in /var/spool/mail/root
-[root@qis1 util]# dmesg|tail -5
-MTD_ioctl
-_DoC_WaitReady called for out-of-line wait
-MTD_ioctl
-_DoC_WaitReady called for out-of-line wait
-MTD_close
-You have new mail in /var/spool/mail/root
-[root@qis1 util]# insmod nftl
-Using /lib/modules/2.4.16-normal/kernel/drivers/mtd/nftl.o
-[root@qis1 util]# dmesg|tail -5
-Got mutex
-NFTL read request of 0x2 sectors @ 6 (req->nr_sectors == 2)
-NFTL read request completed OK
-end_request(1)
-unknown partition table
-[root@qis1 util]# 
+On read_inode(), it reads each physical node and builds up a full map of 
+where data are found for each range of bytes in the file. 
 
+On read(), it just reads data into the page cache. Normal Linux cache 
+eviction rules apply to data pages.
 
-[root@qis1 util]# ./nftl_format /dev/mtd0 0x100000
-$Id: nftl_format.c,v 1.17 2001/08/29 14:28:48 dwmw2 Exp $
-Phase 1. Checking and erasing Erase Zones from 0x00100000 to 0x00800000
-Skipping bad zone (factory marked) #128 @ 0x100000
-Skipping bad zone (factory marked) #129 @ 0x102000
-	Checking Zone #1023 @ 0x7fe000
-Phase 2.a Writing NFTL Media Header and Bad Unit Table
-Phase 2.b Writing Spare NFTL Media Header and Spare Bad Unit Table
-Phase 3. Writing Unit Control Information to each Erase Unit
-You have new mail in /var/spool/mail/root
-[root@qis1 util]# dmesg|tail -5
-MTD_ioctl
-_DoC_WaitReady called for out-of-line wait
-MTD_ioctl
-_DoC_WaitReady called for out-of-line wait
-MTD_close
-[root@qis1 util]# insmod nftl
-Using /lib/modules/2.4.16-normal/kernel/drivers/mtd/nftl.o
-[root@qis1 util]# dmesg|tail -5
-mtd->read = d00396c0, size = 8388608, erasesize = 8192
-NFTL_setup
-NFTL Media Headers at 0x0 and 0x104000 disagree.
-Could not find valid boot record
-Could not mount NFTL device
-[root@qis1 util]# dmesg|tail
-MTD_ioctl
-_DoC_WaitReady called for out-of-line wait
-MTD_close
-NFTL driver: nftlcore.c $Revision: 1.85 $, nftlmount.c $Revision: 1.25 $
-NFTL_notify_add for DiskOnChip Millennium
-mtd->read = d00396c0, size = 8388608, erasesize = 8192
-NFTL_setup
-NFTL Media Headers at 0x0 and 0x104000 disagree.
-Could not find valid boot record
-Could not mount NFTL device
-[root@qis1 util]# 
+On clear_inode(), the extra stuff allocated in read_inode() is freed.
+
+The paper linked from http://sources.redhat.com/jffs2/ may help to shed 
+light on this.
+
+--
+dwmw2
