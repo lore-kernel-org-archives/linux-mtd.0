@@ -1,12 +1,12 @@
-Received: from fed1mtao01.cox.net ([68.6.19.244])
+Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ttVk-0001Mr-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 18:30:12 +0100
+	id 17ttkM-0001OG-00
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 18:45:18 +0100
 Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
-From: Russ Dill <Russ.Dill@asu.edu>
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
 To: Marc Singer <elf@buici.com>
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org,
-	yaffs@toby-churchill.org
+Cc: Russ Dill <Russ.Dill@asu.edu>, Charles Manning <manningc2@actrix.gen.nz>,
+   Mtd <linux-mtd@lists.infradead.org>, yaffs@toby-churchill.org
 In-Reply-To: <20020924171419.GA2733@buici.com>
 References: <200209231220.12682.ayalon@tadlys.com>
 	<20020924014556.6EC8B43F2@tiger.actrix.co.nz>
@@ -17,8 +17,8 @@ References: <200209231220.12682.ayalon@tadlys.com>
 	<20020924171419.GA2733@buici.com>
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Date: 24 Sep 2002 10:30:45 -0700
-Message-Id: <1032888645.13282.11.camel@russ>
+Date: 24 Sep 2002 19:44:58 +0200
+Message-Id: <1032889498.1600.22.camel@spawn>
 Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -31,15 +31,7 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> > > A question, though.  I've been doing compression tests with cramfs.
-> > > I'm finding that gzip -9 of an ext2 filesystem produces smaller images
-> > > than mkcramfs.  Have you ever compared the two?
-> > 
-> > cramfs is meant to be lean, fast, and low on ram consumption, if you
-> > compress the whole thing at once, you have to load the whole thing into
-> > ram to read any of it, so cramfs compresses PAGE_CACHE (4096) sized
-> > pages at a time
-> 
+On Tue, 2002-09-24 at 19:14, Marc Singer wrote:
 > That's what isn't clear.  I made two filesystems with the same
 > contents.  One cramfs and the other ext2.  The ext2 filesystem
 > compressed was smaller than the cramfs.  My understanding is that both
@@ -47,11 +39,12 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 > then the only comparable consideration is the size of the compressed
 > data.
 
-no, a cramfs does not need to be loaded into a ramfs, only the pages
-that are needed are loaded from the cramfs, and if memory is in a pinch,
-fs pages can be dropped. If you gzip a 4M file at once, vs gzip 4096
-byte pieces of it at a time, the former will end up smaller. (deflate
-uses repetition of information, and runs of things).
+cramfs is a read only filesystem not an archive format like zip or tar
+so you do not have to copy the data into another filesystem to use it.
+You use cramfs instead of initrd+filesystem.
 
-of course, it depends which you want, greatly optimized memory usage
-(cramfs), or a slightly smaller image.
+-- 
+Kenneth Johansson	
+Ericsson AB                       Tel: +46 8 404 71 83
+Borgafjordsgatan 9                Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
