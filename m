@@ -1,19 +1,17 @@
-Received: from 209-184-180-125.faxtell.net ([209.184.180.125] helo=eventlog.faxtell.net)
+Received: from host155.209-113-146.oem.net ([209.113.146.155] helo=mail.netx4.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zJNt-0006Vy-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 15:31:41 +0100
-Message-ID: <003b01c0dc83$4f6ace00$88b4b8d1@ShuhIII>
-Reply-To: "Shuh C. Chang" <schang@3inet.com>
-From: schang@3inet.com (Shuh C Chang)
-To: "Felix Radensky" <felix@allot.com>,
-	"Linux-mtd" <linux-mtd@lists.infradead.org>
-References: <3AFFE80B.DCE1B139@allot.com>
-Subject: Re: DOC problems on PowerPC
-Date: Mon, 14 May 2001 09:36:49 -0500
+	id 14zKVq-0006Zq-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 16:43:58 +0100
+Message-ID: <3AFFFDAA.328323DD@mvista.com>
+Date: Mon, 14 May 2001 11:45:46 -0400
+From: "George G. Davis" <davis_g@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: Does MTD include support for STM M58LW064?
+References: <3AFC3CD1.1AEBE5EF@mvista.com> <22562.989772843@redhat.com>
+Content-Type: multipart/mixed;
+ boundary="------------DD047FE524D4358E40460E5C"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,42 +23,61 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> All I had to do is to run "eraseall /dev/mtd0",
+This is a multi-part message in MIME format.
+--------------DD047FE524D4358E40460E5C
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Is "eraseall" equivalent to the DOS utility "docpmap /e" in functionality?
-Anyone who can shed some light?
+David Woodhouse wrote:
+> 
+> davis_g@mvista.com said:
+> >  But I'll ask the question anyway in case I missed it: does MTD
+> > include support for the ST Microelectronics M58LW064 flash device?
+> > This device supports CFI commands. But I don't see any support for it
+> > in the current MTD CVS sources.
+> 
+> There's no such thing as 'CFI commands'. The only thing that's _common_
+> about the Common Flash Interface is the way you probe the chip to find out
+> what commands it supports.
 
-Shuh Chang
+Thanks for the education. The part data sheet states "The device supports the
+CFI command set definition". My apologies for the syntactical error - I'm not
+an expert on the subject matter!  : )
 
 
------ Original Message -----
-From: "Felix Radensky" <felix@allot.com>
-To: "Linux-mtd" <linux-mtd@lists.infradead.org>
-Sent: Monday, May 14, 2001 9:13 AM
-Subject: DOC problems on PowerPC
+> Looking at the datasheet for that chip, it seem to support command set
+> number 0x20, which we don't currently have code to recognise. But at first
+> glance, the command set described seems identical to the Intel chips.
+> 
+> Compare the commands listed in the datasheet with the ones in the Intel
+> datasheets, and if the latter really is a subset of the (parts we actually
+> use of the) former, then try hacking the CFI probe to treat cmdset 0x20 as
+> if it was cmdset 1, and see what happens. It'll probably work.
 
+Thanks. That's the impression I had - this device implements only a subset
+of the Intel/Sharp command set. At the moment I'm only investigating support
+for alternate sourcing of components. If we proceed with evaulating this
+device, I'll follow your recommendation and let you know how it goes.
 
-> Hi, all
->
-> I was able to solve the DOC problems on PowerPC I've reported yesterday.
->
-> All I had to do is to run "eraseall /dev/mtd0", then run "nftl_format
-> /dev/mtd0"
-> and  then create partitions with fdisk.
->
-> Can someone please explain me the difference between eraseall and
-> nftl_format.
-> HOWTO says nothing about it.
->
-> By the way, the latest mtd code would not compile, at least on my 2.4.2
-> kernel
-> unless you add #include <linux/kmod.h> to chipreg.c.  This is because of
->
-> a call to request_module() in do_map_probe(), which IMHO should be
-> under #ifdef CONFIG_KMOD, and not #ifdef CONFIG_MODULES.
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+ 
+> --
+> dwmw2
+
+-- 
+Regards,
+George
+--------------DD047FE524D4358E40460E5C
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="davis_g.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for George G. Davis
+Content-Disposition: attachment;
+ filename="davis_g.vcf"
+
+YmVnaW46dmNhcmQgCm46RGF2aXM7R2VvcmdlCnRlbDt3b3JrOjYwMy84ODAtMTQxNAp4LW1v
+emlsbGEtaHRtbDpGQUxTRQp1cmw6aHR0cDovL3d3dy5tdmlzdGEuY29tCm9yZzpNb250YVZp
+c3RhIFNvZnR3YXJlLCBJbmMuCmFkcjo7OzQ2IFBpbmUgU3RyZWV0IEV4dGVuc2lvbjtOYXNo
+dWE7Tkg7MDMwNjA7VVNBCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0OmRhdmlzX2dAbXZp
+c3RhLmNvbQp0aXRsZTpTb2Z0d2FyZSBFbmdpbmVlcgp4LW1vemlsbGEtY3B0OjstNTM3Ngpm
+bjpHZW9yZ2UgRy4gRGF2aXMKZW5kOnZjYXJkCg==
+--------------DD047FE524D4358E40460E5C--
