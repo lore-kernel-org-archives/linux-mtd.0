@@ -1,19 +1,25 @@
-Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+Received: from fra-del-03.spheriq.net ([195.46.51.99])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DEOU5-0001nV-F1
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 04:18:34 -0500
-Date: Thu, 24 Mar 2005 09:18:22 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce0503231727f7234f6@mail.gmail.com>
-Message-ID: <Pine.LNX.4.58.0503240918120.15561@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0503221406120.5581@phoenix.infradead.org>
-	<6934efce0503231727f7234f6@mail.gmail.com>
+	id 1DEPJi-00024O-Bo
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2005 05:11:57 -0500
+Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
+	by fra-del-03.spheriq.net with ESMTP id j2OABr7Z017401
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2005 10:11:53 GMT
+Received: from fra-cus-02.spheriq.net (fra-cus-02.spheriq.net [195.46.51.38])
+	by fra-out-03.spheriq.net with ESMTP id j2OABqe4006515
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2005 10:11:53 GMT
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <4242925F.D29BC7CE@st.com>
+Date: Thu, 24 Mar 2005 11:11:43 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & deletion dirents RFC
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+References: <loom.20050322T224733-491@post.gmane.org>
+	<4241396B.D689EB32@st.com> <loom.20050323T212715-407@post.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +29,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> Forgive me if my ignorance is obvious...
-> Are there any implications to non-dirent nodes?
-No, in data nodes versions play another and very important role. 
-Basically, they help to distinguish between valid and obsolete data when 
-the data nodes' data ranges overlap.
+Hi Sergei,
 
-> Shouldn't this speed
-> up the GC, mount time for any node?  If not then the version field for
-> non-dirent nodes is utterly wasted, right?  If the version field is
-> wasted for all non-dirent nodes (in other words, most nodes) then it
-> seems like a bad idea to add a WORD or DWORD to each node. If there is
-> a way to make version field only apply to dirent nodes then it would
-> be much better, of course that sounds ugly without even thinking it
-> through too far.
+more info below.
 
-We can't get rid of version in data nodes.
+Sergei Sharonov wrote:
+> > No write operation is guaranteed to be atomic. Have a look
+> > at jffs2_write_inode_range in write.c : if there is not enough
+> > space in the current block for the whole data, it may be split
+> > into several chunks. Additionally write ops that overlap a
+> > cache page boundary (not a flash page) are always split at
+> > the page limit.
+> 
+> That means that one write may have several CRCs corresponding to
+> splinter chunks?
 
-Example:
+Yes, when I write that the input buffer is split it means that
+several data nodes are written to the flash - each data node
+is an independent piece of data complete with header and CRC.
+If a data node is only partly written to flash, its CRC check
+will fail so the partial data will not be taken into account
+when building the file at next mount. In this sense each data
+node is an atomic write - but JFFS2 does not guarantee that
+a write() input buffer will be written as a single data node.
 
-data node A has data that covers file's range 0-100
-data node B has data that covers file's range 10-110
 
-How can we detect from which node should we fetch data of the 10-100 
-range? JFFS2 uses version for this reason.
+> > If you want to have atomic writes, you could:
+> > 1) Mandatorily: ensure that your application will not
+> > issue write ops which overlap a page boundary.
+> > You should not tweak the JFFS2 code to write such
+> > overlapping nodes, otherwise you must also tweak
+> > the GC and it gets difficult.
+> > 2) Either tweak jffs2_write_inode_range to forbid
+> > splitting data which does not overlap a page boundary
+> > or adjust JFFS2_MIN_DATA_LEN to reserve enough
+> > space (difficult to estimate maybe if you have
+> > compression...).
+> >
+> > The above tweaking should ensure that an input buffer
+> > is written to JFFS2 FS as a single CRC-protected
+> > data node.
+> 
+> Ok, got that. Does not seem like a promissing idea considering
+> how fast jffs2 evolves and therefore how bad forking would be.
+> Thansk for the suggestion anyway.
 
-Dirents' versions play another role.
+You can always submit your patch to the list and then
+either someone will merge it for you, or you can ask
+for a CVS account to do it yourself.
+It could be a conditionally-compiled option. Or maybe 
+there is an appropriate fcntl or open flag that could 
+be implemented in JFFS2  ?
+Anyway I think it would be an interesting option to 
+have. The main problem is the cache page boundary 
+which would require more thinking about to solve 
+and lots of testing...
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+> > You should be aware that on NAND flash JFFS2 uses
+> > a (nand flash) page buffer (wbuf.c), which is flushed
+> > only on fsync/sync/umount. So even though your write
+> > ops will be atomic (with above code tweaks),
+> > there is no guarantee that a buffer is effectively
+> > committed to flash when write() returns, because the
+> > end of the data node may remain in the buffer.
+> > If you want that also, you can tweak JFFS2 again
+> > by requiring a  wbuf flush after each "atomic write",
+> > or you can have your application call fsync after
+> > each write.
+> 
+> Beg pardon if it is FAQ, but if I open the file with O_SYNC
+> flag, wouldn't that guarantee synchronous write that does not
+> return untill all the data is in flash?
+
+I am not familiar with Linux VFS, however from previous 
+discussion on the list I was led to understand that
+it doesn't work with JFFS2. Probably you could implement 
+O_SYNC yourself without too much trouble.
+
+bye
+Estelle
