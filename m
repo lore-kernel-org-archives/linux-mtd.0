@@ -1,17 +1,18 @@
-Received: from carisma.slowglass.com ([195.224.96.167]
-	helo=phoenix.infradead.org)
+Received: from law14-oe37.law14.hotmail.com ([64.4.20.94] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19X1Eo-0005ON-BG
-	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 17:10:42 +0100
-Received: from [218.86.46.179] (helo=21cn.com)
-	by phoenix.infradead.org with esmtp (Exim 4.10)
-	id 19X1F5-0005aX-00
-	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2003 17:11:01 +0100
-From: 
- =?GB2312?B?xPq5wrbAwvCjrMfrvNPI68WuyfrD2MPcuavJ56Osw7/M7MavwcFNTbXI18XE?=
-Message-Id: <E19X1F5-0005aX-00@phoenix.infradead.org>
-Date: Mon, 30 Jun 2003 17:11:01 +0100
-Subject: None
+	id 19X2ac-0005cz-H6
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2003 18:37:18 +0100
+From: "Vikram Mehta" <vm6580@hotmail.com>
+To: "Uclinux-Dev@Uclinux.Org" <uclinux-dev@uclinux.org>
+Date: Mon, 30 Jun 2003 23:03:09 -0700
+MIME-Version: 1.0
+Message-ID: <Law14-OE37mut1Elus200057d5f@hotmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+cc: mtd <linux-mtd@lists.infradead.org>
+cc: jffs <jffs-dev@axis.com>
+Subject: PC jumping to wrong location
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- =?GB2312?B?46Gj?= <fsddsf@21cn.com>
-Subject:
- =?GB2312?B?xPq5wrbAwvCjrMfrvNPI68WuyfrD2MPcuavJ56Osw7/M7MavwcFNTbXI18XE?=
+Hi folks,
 
- =?GB2312?B?4w==?=
-To: mtd@infradead.org
-Content-Type: text/html;charset="GB2312"
-Reply-To: fs33rrw@21cn.com
-Date: Tue, 1 Jul 2003 00:10:52 +0800
-X-Priority: 3
-X-Mailer: Microsoft Outlook Express 5.00.2615.200
+ when I try to mount a partition using jffs2
 
-<html>
+it says
+***
+mtdblock_open
+ok
+****
 
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
-<title>GO173</title>
-</head>
+but then either system stops responding,
+Or the kernel crashes
+with the PC ( i am working on motorola 68VZ328) jumps to strange locations
+like 00007  and sometimes the kernel is corrupted too.
 
-<body bgcolor="#F3460C">
+Sometimes it mounts properly byt when I  cd into the mounted folder , then
+the system crashes...
 
-<div align="center">
-  <center>
-  <table border="0" cellpadding="0" cellspacing="0" width="80%">
-    <tr>
-      <td width="100%">
-        <p align="center"><iframe MARGINWIDTH=0 MARGINHEIGHT=0 HSPACE=0 VSPACE=0 FRAMEBORDER=0 SCROLLING=no src=http://mysms2.163.com/mb/101.html?username=huanqiu3636&type=101 height=300 width=300></iframe></td>
-    </tr>
-  </table>
-  </center>
-</div>
+The kernel I built was very stable before I put in
+Jffs2 support. to putJffs2 support I had tomake the kernel run from RAM but
+i don't think that  is the problem here
 
-</body>
+Can anyone give me any clues or hints as to how can I solve this problem...
 
-</html>
+I hv been working on this problem for a  long tie now
+
+regards
+Vikram
