@@ -1,25 +1,23 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuEvs-0002op-LP
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 14:03:57 -0500
-Date: Thu, 27 Jan 2005 20:01:13 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Cam <camilo@mesias.co.uk>
-Message-ID: <20050127190113.GA19902@wohnheim.fh-wedel.de>
-References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
-	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
-	<1106819251.783.141.camel@baythorne.infradead.org>
-	<20050127131702.GA22121@wohnheim.fh-wedel.de>
-	<41F9127E.6030508@mesias.co.uk>
-	<20050127163845.GA7755@wohnheim.fh-wedel.de>
-	<41F93275.3090705@mesias.co.uk>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CuGAu-0003Nl-3w
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 15:23:33 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
+	<1106730647.6480.190.camel@localhost.localdomain>
+	<Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
+Content-Type: text/plain
+Date: Thu, 27 Jan 2005 21:23:29 +0100
+Message-Id: <1106857409.21196.58.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <41F93275.3090705@mesias.co.uk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS3 document / wiki [OT]
+Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 memory consumption
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 January 2005 18:27:01 +0000, Cam wrote:
+On Thu, 2005-01-27 at 17:35 +0000, Artem B. Bityuckiy wrote:
+> On Wed, 26 Jan 2005, David Woodhouse wrote:
+> > We can also look at true write-behind caching, if we're a _lot_ more
+> > careful about free space than we are now. To have data outstanding in
+> > the page cache, we need to be able to guarantee that we have enough free
+> > space to write it out, and we need to be able to write it out _without_
+> > allocating memory. That includes any memory which might be required for
+> > GC. Doing that would allow us to coalesce writes so we fill a page (or a
+> > full node size) more often.
 > 
-> Sorry but I'm not convinced. The link is interesting but there is no 
-> mention of wikis. Also, php and mysql are used widely for other 
-> purposes, if it was as bad as you say, we would be in some kind of web 
-> apocalypse, which we're not. There are other wikis too (Java based or 
-> Perl/CGI in my case).
+> How do you think, if we implement write-back caching (I do not imagine 
+> how yet) then will we still need to distinguish between "pristine" and 
+> "normal" nodes?
+> 
+> Since JFFS2 is now write-through, we do write small data chunks if there 
+> are few changes in the cache. This is for space efficiency, right?
 
-Translated to plain English, my reasoning puts php/mysql into the same
-league as wuftpd or bind.  Expect to update those packages twice a
-year for security reasons.  And never run it on machines that
-criminals might care about - they will simply create a new exploit and
-attack the machine before you get a chance for updates.
+Keep it write-through !
 
-But if you're fine with that, feel free to use the software.
+Write caching is contrary to powerfail robustness.
 
-Jörn
+It worked always that way and many embedded users rely on this. If you
+want to have the writes cached, then make it an option and not the
+default behaviour. But then you have still to think about the solution
+for the non cached case.
 
--- 
-Victory in war is not repetitious.
--- Sun Tzu
+We discussed the two writeblock approach for long. I think its the happy
+medium.
+
+Writeblock A is used for GC and direct write of pristine nodes. 
+
+Writeblock B is used for direct write through of normal nodes and all
+the noise which happens when files are written in small chunks.
+
+When B becomes full, it is immidiately recycled into A. So GC can merge
+the tiny nodes and remove the obsolete ones.
+
+This will also reduce memory consumption, as you have only those noisy
+nodes in two blocks (the active B block and the previous B block, which
+is actually recycled). 
+
+And you still preserve the powerfail robustness.
+
+> In case of write-back cache, a lot of small changes will be merged to the 
+> page and we possibly may just write it fully. Perhaps, we might not bother 
+> writing only part of page.
+>
+> The agvantage of this is that we will not need to overcompicate the GC 
+> getting it merge "normal" nodes and produce "pristine" ones. All our nodes 
+> will be pristine.
+> 
+> On commit_write request we may really write several neigbour pages either 
+> if they are marked dirty, thus having nodes with several pages.
+> 
+> If we have only 4K-multiple data chunks on nodes, we will even save some 
+> RAM (both in-core and fragtree).
+
+That's just imagination. Analyse a couple of JFFS2 images to figure out
+how many 4k multiple data chunks you have. Those which are live usually
+in a part of the filesystem which is almost never updated
+(/bin, /lib ....) on embedded systems. 
+
+The parts where data are written frequently are usually 
+
+logging, data acquisition and data bases. All of them have one in
+common: small writes. And most of them are sensitive to data loss.
+
+tglx
