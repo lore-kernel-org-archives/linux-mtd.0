@@ -1,20 +1,20 @@
 Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Be9v-0003RV-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 16:45:04 +0000
-Date: Tue, 12 Nov 2002 18:15:00 +0100
+	id 18BeMD-0003Sd-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 16:57:45 +0000
+Date: Tue, 12 Nov 2002 18:27:51 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: David Woodhouse <dwmw2@infradead.org>
-Cc: Miraj Mohamed <miraj@procsys.com>, jffs-dev@axis.com,
-   linux-mtd@lists.infradead.org
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Miraj Mohamed <miraj@procsys.com>,
+   jffs-dev@axis.com, linux-mtd@lists.infradead.org
 Subject: Re: mirroring in JFFS2
-Message-ID: <20021112171500.GF5031@wohnheim.fh-wedel.de>
-References: <20021112160843.GE5031@wohnheim.fh-wedel.de> <3DD0D966.E6D877EC@procsys.com> <449.1037117917@passion.cambridge.redhat.com>
+Message-ID: <20021112172751.GG5031@wohnheim.fh-wedel.de>
+References: <1037121749.8746.67.camel@irongate.swansea.linux.org.uk> <20021112160843.GE5031@wohnheim.fh-wedel.de> <3DD0D966.E6D877EC@procsys.com> <449.1037117917@passion.cambridge.redhat.com> <6310.1037120842@passion.cambridge.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <449.1037117917@passion.cambridge.redhat.com>
+In-Reply-To: <6310.1037120842@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,37 +26,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 12 November 2002 16:18:37 +0000, David Woodhouse wrote:
+On Tue, 12 November 2002 17:07:22 +0000, David Woodhouse wrote:
 > 
-> RAID is done at the wrong layer. The file system knows stuff about the
-> contents of the media which a block device driver cannot possibly know. So
-> you end up having a RAID rebuild take ages to reconstruct parts of the disc
-> which the file system _knows_ are currently unused, etc. 
+> But it's not too bad -- you GC on _both_ media till you have enough space
+> on them both for the write you want to do, then you allow the allocation 
+> call to return, do the write to both media and return. Some detail in 
+> sorting out the case where a page write crosses an eraseblock boundary and 
+> ends up split into two on one or both media, but that's not really too hard 
+> conceptually -- I suspect it'd make an ugly mess of the code though.
 
-This is an implementation problem, the RAID driver could as well
-reconstruct on the fly and give pending requests priority. No need to
-duplicate the code in all the filesystems.
+I wonder if it would make sense to expand the erase marker a bit in
+this case. For two devices, the erase marker on each device holds the
+number of the corresponding block on the other. This would allow you
+to prioritize bad block recovery, once you find one.
 
-> Getting back to JFFS2, the same applies -- if you have a bad block in one 
-> of your flash chips, what do you do about it? Refrain from using the 
-> equivalent block in the other chip? Have some kind of block remapper 
-> underneath JFFS2, which keeps a whole lot of address information which is 
-> in fact entirely superfluous to the file system?
-
-The bad block point does make sense. Hard disks usually work
-completely or fail completely. Point taken.
-
-> I think it does want to be done in the file system, or possibly even in a 
-> layer _above_ the individual file system, which duplicates writes to two or 
-> more underlying file systems of a mountpoint, and do whatever's deemed 
-> appropriate for reads. Doing it in the individual file system is probably 
-> easier, if less interesting :)
-
-RAID over filesystems would be fun, for sure. But in this case, you
-have me convinced, jffs2 is the best place to put it into.
+This is quite a special case, though. More devices and the procedure
+is pointless. Different device types and the procedure is not
+possible.
 
 Jörn
 
 -- 
-Geld macht nicht glücklich.
-Glück macht nicht satt.
+"Translations are and will always be problematic. They inflict violence 
+upon two languages." (translation from German)
