@@ -1,21 +1,18 @@
-Received: from polonez.inetia.pl ([195.114.161.60])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AE9H5-0006Zq-3c
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Oct 2003 15:27:19 +0000
-Received: from www.n1.pl (www.n1.pl [195.114.173.151])
- by polonez.inetia.pl (Sun Internet Mail Server sims.4.0.1999.06.13.00.20)
- with ESMTP id <0HNF00G7X9KXLC@polonez.inetia.pl> for
- linux-mtd@lists.infradead.org; Mon, 27 Oct 2003 16:26:57 +0100 (MET)
-Received: from localhost [127.0.0.1] (helo=localhost)
-	linux-mtd@lists.infradead.org	id
-	1AE9Fl-0008AK-00; Mon, 27 Oct 2003 16:25:57 +0100
-Date: Mon, 27 Oct 2003 16:25:57 +0100
-From: andrzej.mialkowski@inetia.pl
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-id: <1067268357.3f9d3905c3fc9@imail.internetia.pl>
-MIME-version: 1.0
-Content-type: MULTIPART/MIXED; BOUNDARY="Boundary_(ID_wsJQCFrCx7aYrO8xhw6/vQ)"
-Subject: [PATCH] parse_redboot_partitions not always works correctly
+	id 1AEBx6-00079D-AR
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Oct 2003 18:18:52 +0000
+Date: Mon, 27 Oct 2003 10:17:41 -0800
+From: Jun Sun <jsun@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20031027101741.C1678@mvista.com>
+References: <20031022182558.U19834@mvista.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20031022182558.U19834@mvista.com>;
+	from jsun@mvista.com on Wed, Oct 22, 2003 at 06:25:58PM -0700
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,106 +22,205 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This message is in MIME format.
+On Wed, Oct 22, 2003 at 06:25:58PM -0700, Jun Sun wrote:
+> 
+> While looking at drvers/mtd/maps directories, it becomes
+> obvious to me that many files are derived from physmap.c,
+> in order to add partition support or add their own
+> set_vpp() pointer, etc..
+> 
+> Such a need can be easily satisfied by extending physmap.c
+> a little.
+> 
+> In this patch, I like to introduce phsmap_add_partition()
+> function, which allows boards to add flash partitions
+> at run-time.  (Note that you can still override this
+> hardcoded partition by using kernel command line)
+> 
+> In the patch I also showed how a board can make use of this
+> extension.  Hopefully we can get rid of lots of files under 
+> the maps directory. :)
+> 
+> Boards which need to set set_vpp pointer can do so easily
+> too.
+> 
+> Any comments?
+>
 
---Boundary_(ID_wsJQCFrCx7aYrO8xhw6/vQ)
-Content-type: text/plain; charset=ISO-8859-2
-Content-transfer-encoding: 7BIT
+Any objections or comments?  David?
 
-Hi,
- I just found that redboot_parse_partitions on my system (IXDP2801) builds 
-incorrect list of partitions, base addresses of some partitions are wrong. I 
-located a problem in following line in redboot.c:
-		buf[i].flash_base &= master->size-1;
-This line tries to relocate partition base address to be 0 based, by cutting 
-off some high order bits. This expression works correctly if two assumptions 
-are true:
- 1) master->size should be power of 2
- 2) base address must be aligned to map size
-Unfortunately on my board both are false: I have 10 flash chips, and base 
-address is not aligned to size even after number of chips align to 16 (because 
-of banking).
-
-On different platforms I sow different use of flash base address. Some platforms
-are using 0 based addresses in redboot some other physical address of flash 
-chip (my case). As far as I know base address used for building partition 
-entries is not stored.
-
-The most portable method that I found is use "FIS directory" entry for guessing 
-value of flash base used during building partitions. Assumption here is simple:
-FIS directory is located in known place at MTD level, in last erase block of 
-map. Subtracting flash base address stored in this entry with actual location 
-at map driver offset level should give base address used during creating 
-partition table.
-Of course all partition entries must be created with the same flash base 
-address.
-Did anybody have better idea? Patch attached.
-Thanks in advance for comments.
-
-	Andrzej Mialkowski
-
-
---Boundary_(ID_wsJQCFrCx7aYrO8xhw6/vQ)
-Content-type: text/plain; name=mtd-redboot-parse.patch
-Content-disposition: attachment; filename=mtd-redboot-parse.patch
-Content-transfer-encoding: 7BIT
-
-diff -Nru prev/drivers/mtd/redboot.c linux/drivers/mtd/redboot.c
---- prev/drivers/mtd/redboot.c	Fri Mar 14 16:30:08 2003
-+++ linux/drivers/mtd/redboot.c	Mon Oct 27 14:53:17 2003
-@@ -44,6 +44,7 @@
- 	size_t retlen;
- 	char *names;
- 	int namelen = 0;
-+	unsigned flash_base = 0;
+Jun
  
- 	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
- 
-@@ -64,8 +65,12 @@
- 
- 	/* RedBoot image could appear in any of the first three slots */
- 	for (i = 0; i < 3; i++) {
--		if (!memcmp(buf[i].name, "RedBoot", 8))
-+		if (!memcmp(buf[i].name, "RedBoot", 8)) {
-+			/* Legacy way of detecting flash base */
-+			/* Use RedBoot to be sure that we are using valid entry */ 
-+			flash_base = buf[i].flash_base & (master->size - 1);
- 			break;
-+		}
- 	}
- 	if (i == 3) {
- 		/* Didn't find it */
-@@ -75,6 +80,22 @@
- 		goto out;
- 	}
- 
-+	/* 
-+	 * Legacy way of detecting flash base does not work in two cases:
-+	 * 1) When map size (number of chips) is not equal power of 2
-+	 * 2) When flash base is not aligned to map size
-+	 */
-+	/* Look for FIS directory in entire read area */	
-+	for (i = 0; i < PAGE_SIZE / sizeof(struct fis_image_desc); i++) {
-+		if (!memcmp(buf[i].name, "FIS directory", sizeof("FIS directory"))) {
-+			flash_base = buf[i].flash_base - (master->size - master->erasesize);
-+			break;
-+		}
-+	}
-+	printk(KERN_DEBUG "RedBoot partition base 0x%08X\n",
-+		       flash_base);
-+
-+
- 	for (i = 0; i < PAGE_SIZE / sizeof(struct fis_image_desc); i++) {
- 		struct fis_list *new_fl, **prev;
- 
-@@ -90,7 +111,7 @@
- 			goto out;
- 		}
- 		new_fl->img = &buf[i];
--		buf[i].flash_base &= master->size-1;
-+		buf[i].flash_base -= flash_base;
- 
- 		/* I'm sure the JFFS2 code has done me permanent damage.
- 		 * I now think the following is _normal_
 
---Boundary_(ID_wsJQCFrCx7aYrO8xhw6/vQ)--
+> diff -Nru linux/arch/mips/mips-boards/malta/malta_setup.c.orig linux/arch/mips/mips-boards/malta/malta_setup.c
+> --- linux/arch/mips/mips-boards/malta/malta_setup.c.orig	Fri Aug  1 10:50:18 2003
+> +++ linux/arch/mips/mips-boards/malta/malta_setup.c	Wed Oct 22 17:26:24 2003
+> @@ -24,6 +24,7 @@
+>  #ifdef CONFIG_BLK_DEV_IDE
+>  #include <linux/ide.h>
+>  #endif
+> +#include <linux/mtd/physmap.h>
+>  
+>  #include <asm/cpu.h>
+>  #include <asm/bootinfo.h>
+> @@ -166,6 +167,12 @@
+>          conswitchp = &dummy_con;
+>  #endif
+>  #endif
+> +
+> +#if defined(CONFIG_MTD_PHYSMAP) && defined(CONFIG_MTD_PARTITIONS)
+> +	physmap_add_partition("YAMON", 0x100000, 0x0, MTD_WRITEABLE);
+> +	physmap_add_partition("User FS", 0x300000, 0x100000, 0);
+> +#endif
+> +
+>  	mips_reboot_setup();
+>  
+>  	board_time_init = mips_time_init;
+> diff -Nru linux/drivers/mtd/maps/physmap.c.orig linux/drivers/mtd/maps/physmap.c
+> --- linux/drivers/mtd/maps/physmap.c.orig	Wed Jul 23 15:17:52 2003
+> +++ linux/drivers/mtd/maps/physmap.c	Wed Oct 22 17:42:50 2003
+> @@ -2,6 +2,11 @@
+>   * $Id: physmap.c,v 1.28 2003/05/28 15:53:43 dwmw2 Exp $
+>   *
+>   * Normal mappings of chips in physical memory
+> + *
+> + * Copyright (C) 2003 MontaVista Software Inc.
+> + * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
+> + *
+> + * 031022 - [jsun] add physmap_add_partition()
+>   */
+>  
+>  #include <linux/module.h>
+> @@ -23,7 +28,7 @@
+>  
+>  
+>  struct map_info physmap_map = {
+> -	.name = "Physically mapped flash",
+> +	.name = "phys_mapped_flash",
+>  	.size = WINDOW_SIZE,
+>  	.buswidth = BUSWIDTH,
+>  	.phys = WINDOW_ADDR,
+> @@ -33,35 +38,31 @@
+>  static struct mtd_partition *mtd_parts;
+>  static int                   mtd_parts_nb;
+>  
+> -static struct mtd_partition physmap_partitions[] = {
+> -#if 0
+> -/* Put your own partition definitions here */
+> -	{
+> -		.name =		"bootROM",
+> -		.size =		0x80000,
+> -		.offset =	0,
+> -		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+> -	}, {
+> -		.name =		"zImage",
+> -		.size =		0x100000,
+> -		.offset =	MTDPART_OFS_APPEND,
+> -		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+> -	}, {
+> -		.name =		"ramdisk.gz",
+> -		.size =		0x300000,
+> -		.offset =	MTDPART_OFS_APPEND,
+> -		.mask_flags =	MTD_WRITEABLE,  /* force read-only */
+> -	}, {
+> -		.name =		"User FS",
+> -		.size =		MTDPART_SIZ_FULL,
+> -		.offset =	MTDPART_OFS_APPEND,
+> +#define NUM_PARTITIONS	4	/* random num which should be good enough */
+> +static struct mtd_partition physmap_partitions[NUM_PARTITIONS] __initdata = {};
+> +
+> +char *part_probes[] __initdata = {"cmdlinepart", "RedBoot", NULL};
+> +
+> +/*
+> + * See include/linux/mtd/physmap.h file.
+> + */
+> +static int part_index __initdata = 0;
+> +int __init physmap_add_partition(char *name, u32 size, u32 offset, u32 flags)
+> +{
+> +	if (part_index >= NUM_PARTITIONS) {
+> +		printk(KERN_ERR "physmap_add_partition() exceeds max partition table size (%d)\n", NUM_PARTITIONS);
+> +		return -1;
+>  	}
+> -#endif
+> -};
+>  
+> -#define NUM_PARTITIONS	(sizeof(physmap_partitions)/sizeof(struct mtd_partition))
+> -const char *part_probes[] = {"cmdlinepart", "RedBoot", NULL};
+> +	physmap_partitions[part_index].name = name;
+> +	physmap_partitions[part_index].size = size;
+> +	physmap_partitions[part_index].offset = offset;
+> +	physmap_partitions[part_index].mask_flags = flags;
+> +
+> +	part_index++;
+>  
+> +	return 0;
+> +}
+>  #endif /* CONFIG_MTD_PARTITIONS */
+>  
+>  int __init init_physmap(void)
+> @@ -97,11 +98,11 @@
+>  			return 0;
+>  		}
+>  
+> -		if (NUM_PARTITIONS != 0) 
+> +		if (part_index != 0) 
+>  		{
+>  			printk(KERN_NOTICE 
+>  			       "Using physmap partition definition\n");
+> -			add_mtd_partitions (mymtd, physmap_partitions, NUM_PARTITIONS);
+> +			add_mtd_partitions (mymtd, physmap_partitions, part_index);
+>  			return 0;
+>  		}
+>  
+> diff -Nru linux/include/linux/mtd/physmap.h.orig linux/include/linux/mtd/physmap.h
+> --- linux/include/linux/mtd/physmap.h.orig	Wed Oct 22 17:05:22 2003
+> +++ linux/include/linux/mtd/physmap.h	Wed Oct 22 18:20:34 2003
+> @@ -0,0 +1,48 @@
+> +/*
+> + * For boards with physically mapped flash and using 
+> + * drivers/mtd/maps/physmap.c mapping driver.
+> + *
+> + * Copyright (C) 2003 MontaVista Software Inc.
+> + * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
+> + *
+> + * This program is free software; you can redistribute  it and/or modify it
+> + * under  the terms of  the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + *
+> + */
+> +
+> +#ifndef __LINUX_MTD_PHYSMAP__
+> +
+> +#include <linux/config.h>
+> +
+> +#if defined(CONFIG_MTD_PHYSMAP) 
+> +
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/map.h>
+> +
+> +/*
+> + * The map_info for physmap.  Board can override size, buswidth, phys,
+> + * (*set_vpp)(), etc in their initial setup routine.
+> + */
+> +extern struct map_info physmap_map;
+> +
+> +#if defined(CONFIG_MTD_PARTITIONS)
+> +
+> +/*
+> + * Machines that wish to do flash partition may want to call this function in 
+> + * their setup routine.  Examples:
+> + *
+> + *	physmap_add_partition("bootROM", 0x100000, 0, MTD_WRITEABLE);
+> + *	physmap_add_partition("User FS", 0x300000, 0x100000, 0)
+> + *
+> + * Note that one can always override this hard-coded partition with 
+> + * command line partition (you need to enable CONFIG_MTD_CMDLINE_PARTS).
+> + */
+> +int physmap_add_partition(char *name, u32 size, u32 offset, u32 mask_flags);
+> +
+> +#endif /* defined(CONFIG_MTD_PARTITIONS) */
+> +#endif /* defined(CONFIG_MTD) */
+> +
+> +#endif /* __LINUX_MTD_PHYSMAP__ */
+> +
