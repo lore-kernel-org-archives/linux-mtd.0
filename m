@@ -1,46 +1,62 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 142AZu-0005ui-00
-	for mtd-list@infradead.org; Sat, 02 Dec 2000 11:11:38 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	id 142BIZ-0005yE-00
+	for mtd-list@infradead.org; Sat, 02 Dec 2000 11:57:47 +0000
+Received: from laxmls02.socal.rr.com ([24.30.163.11])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 142AZo-0005uc-00
-	for mtd@infradead.org; Sat, 02 Dec 2000 11:11:37 +0000
-Date: Sat, 2 Dec 2000 11:10:14 +0000 (GMT)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ollie Lho <ollie@sis.com.tw>
-cc: <mtd@infradead.org>,  <linuxbios@lanl.gov>
-Subject: Re: DiskOnChip 2000/Millennium driver merge.
-In-Reply-To: <3A28531C.4F5C8E14@sis.com.tw>
-Message-ID: <Pine.LNX.4.30.0012021050140.22169-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 142BIX-0005y8-00
+	for mtd@infradead.org; Sat, 02 Dec 2000 11:57:45 +0000
+Received: from smtp.socal.rr.com (sc-24-130-154-218.socal.rr.com [24.130.154.218])
+	by laxmls02.socal.rr.com (8.10.1/8.10.1) with SMTP id eB2BvfZ00792
+	for <mtd@infradead.org>; Sat, 2 Dec 2000 03:57:42 -0800 (PST)
+Date: Sat, 2 Dec 2000 05:01:32 +0000
+From: Shane Nay <shane@agendacomputing.com>
+To: mtd@infradead.org
+Subject: Problems with cfi_cmdset_0001
+Message-ID: <20001202050132.B4457@www.easysolutions.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Sat, 2 Dec 2000, Ollie Lho wrote:
+Okay, I've been reading the PDF for Strataflash, by Intel.  And I've traced
+my problems with the write routines in MTD down to two problems, the Block
+address, and the word write problem.  The command address isn't properly
+interpretted for this chip.  I'm not sure what the CFI spec is, but I
+think:
+cmd_adr=adr & ~(wbufsize-1);
+is wrong.  (Well, maybe it's different chip to chip, but I know it's wrong
+for this chip)
 
-> David,
-> 	I just tried the updated CVS version. The Millennium part of
-> doc2000.c works for some extend. It has some bugs which will offset/lost
-> 1 or 2 bytes at begin/end of each 512byte page. It is a common problem if
-> you are not programming the chip fully comply to M-Systems Spec (actually
-> you have to do some "undocumented" tricks too). I will review the new code
-> next week possiblly after you get the SiS 630 LinuxBIOS demo/devel platform.
+It should compute the top of the block via the erasesize and size.
+cmd_adr=mtd->erasesize*((int)(adr/mtd->erasesize));
 
-Thanks. I'll go through the driver and look for the remaining differences.
-Were these changes made in doc2001.c since the Millennium support was
-merged into doc2000.c, or did they get lost in the merge? If the former,
-do you remember the entry in the CVS log that I should be looking for?
+Now, this fixes the Block address.  The other problem though is
+significantly nastier.
 
-I note you changed DoC_Command() so it no longer finishes with
-DoC_WaitReady(). Is there a situation in which DoC_Command shouldn't wait
-for FR_B after sending the command? Does it do any harm to do so, or is
-the removal just an optimisation?
+Okay, MTD seems to think that it can write twice as much data as it can to
+a device at a time in write_buffer mode, which is all together wrong.  My
+configuration is two x8 chips interleaved on a 16 bit bus.  Basically...,
+its thinking we have two x16 chips on a 32 bit bus before streaming, but
+then streams the data the right way, but twice as much as it said it would.
+ (It says, I'm sending 16 words, then sends 32 of them instead, which as
+you could imagine, is quite confusing to the poor flash chips)
 
--- 
-dwmw2
+In any event.  I've got the block address problem fixed up in the code with
+the afore mentioned code.  The other problem I'm still working on. 
+However, my code is so removed at this point from MTD base since I had too
+many other things at play with MTD code to properly trace my problem, and
+now I have a cleaner version of the code for XIP.  So I'm not sure I'm
+going to roll all my changes into cfi_cmdset_0001.  Who is the maintainer
+of this file BTW?  I'll try to make patches for him/her to fix these
+problems.
 
+Thanks,
+Shane.
+
+(Or maybe my extremely tired brain is mis-interpretting..., if I'm wrong,
+tell me so :)
 
 
 
