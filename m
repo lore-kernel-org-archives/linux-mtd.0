@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mailer.cse.iitd.ac.in ([202.141.68.3]
+	helo=desh.cse.iitd.ernet.in)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D3ECK-0008PV-7z
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 09:06:05 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Narinder Kumar <narinder@kritikalsolutions.com>
-In-Reply-To: <4219E20F.80908@kritikalsolutions.com>
+	id 1D3EP5-00009p-Bh
+	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 09:19:16 -0500
+Message-ID: <4219EDC3.1060506@kritikalsolutions.com>
+Date: Mon, 21 Feb 2005 19:48:43 +0530
+From: Narinder Kumar <narinder@kritikalsolutions.com>
+MIME-Version: 1.0
+To: dedekind@infradead.org, linux-mtd@lists.infradead.org
 References: <4219E20F.80908@kritikalsolutions.com>
-Content-Type: text/plain
-Date: Mon, 21 Feb 2005 17:05:30 +0300
-Message-Id: <1108994730.13420.52.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	<1108994310.13420.50.camel@sauron.oktetlabs.ru>
+In-Reply-To: <1108994310.13420.50.camel@sauron.oktetlabs.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: 
 Subject: Re: mkfs.jffs2
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-02-21 at 18:58 +0530, Narinder Kumar wrote:
-> mkfs.jffs2 -e 0x420 -d /tmp/Application -o image
+Hi ,
 
-Please, post the `cat /proc/mtd/` output.
+       First of all thanx for the reply . I am using AT45DB642 NAND 
+Flash and it seems to have erase block of 0x420 i,e 1056 bytes. and when 
+i have created my MTD partitions i have specified the partition sizes to 
+be multiple of these eraseblock sizes in 
+drivers/at91/mtd/at91_dataflash.c , My 3 partitions are 4*1024*1056  (4 
+GB) , 3*1024*1056 (3 GB) and 1*1024*1056 (1 GB)
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+
+Artem B. Bityuckiy wrote:
+
+>On Mon, 2005-02-21 at 18:58 +0530, Narinder Kumar wrote:
+>  
+>
+>>mkfs.jffs2 -e 0x420 -d /tmp/Application
+>>    
+>>
+>
+>0x420 is strange size. I believe it is wrong, try to look at your Flash
+>specification closer. 
+>
+>
+>
+>.
+>
+>  
+>
