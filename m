@@ -1,19 +1,15 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVNLw-0003wo-L4
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 00:27:49 -0400
 Received: from holly.csn.ul.ie ([136.201.105.4])
-	by pentafluge.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVNLu-0007hq-Hp
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 05:27:47 +0100
-Date: Wed, 2 Jun 2004 05:22:40 +0100 (IST)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BVOa1-0004A0-3H
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2004 01:46:26 -0400
+Date: Wed, 2 Jun 2004 06:46:14 +0100 (IST)
 From: Dave Airlie <airlied@linux.ie>
 To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.58.0406020454090.16424@skynet>
+Message-ID: <Pine.LNX.4.58.0406020642310.16424@skynet>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-kernel@vger.kernel.org
-Subject: [patch] MTD: add st50fw040 to jedec probe
+Subject: [patch] MTD: add st m50fw0* to jedec_probe.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +20,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
-	This is a patch vs 2.6.6 to add the ST50FW040, which is an ICH2
-compatible firmware hub flash, datasheet at:
+Please ignore my last patch, my hardware guy pointed me at some more
+chips,
 
-http://www.st.com/stonline/books/ascii/docs/7273.htm
+so this patch adds support to the jedec probe for ST M50FW040, M50FW080
+and M50FW016 all Firmware hubs for i8x0 chipsets,
+http://www.st.com/stonline/products/families/memories/fl_nor/fl_fwh.htm
 
 From: Dave Airlie <airlied@linux.ie>
-
-Dave.
-
-p.s.
-Dave Woodhouse, is there any plans to merge up your MTD tree to the kernel
-soon? this is a fairly harmless change that would be useful for me in the
-mainline, but I don't wish to step on any toes :-)
 
 -- 
 David Airlie, Software Engineer
@@ -45,16 +35,18 @@ http://www.skynet.ie/~airlied / airlied at skynet.ie
 pam_smb / Linux DECstation / Linux VAX / ILUG person
 
 --- /storage/2.6/linux-2.6.4/drivers/mtd/chips/jedec_probe.c	2004-03-15 14:15:30.000000000 +1100
-+++ linux-2.6.6/drivers/mtd/chips/jedec_probe.c	2004-06-22 20:02:18.708945560 +1000
-@@ -109,6 +109,7 @@
++++ linux-2.6.6/drivers/mtd/chips/jedec_probe.c	2004-06-22 21:51:55.019354760 +1000
+@@ -109,6 +109,9 @@
  #define M29W160DT	0x22C4
  #define M29W160DB	0x2249
  #define M29W040B	0x00E3
-+#define M50FW040        0x002C
++#define M50FW040	0x002C
++#define M50FW080	0x002D
++#define M50FW016	0x002E
 
  /* SST */
  #define SST29EE512	0x005d
-@@ -1234,6 +1235,19 @@
+@@ -1234,6 +1237,45 @@
  		.regions	= {
  			ERASEINFO(0x10000,8),
  		}
@@ -70,6 +62,32 @@ pam_smb / Linux DECstation / Linux VAX / ILUG person
 +		.NumEraseRegions= 1,
 +		.regions	= {
 +			ERASEINFO(0x10000,8),
++		}
++        }, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M50FW080,
++		.name		= "ST M50FW080",
++		.uaddr		= {
++			[0] = MTD_UADDR_UNNECESSARY,    /* x8 */
++		},
++		.DevSize	= SIZE_1MiB,
++		.CmdSet		= P_ID_INTEL_EXT,
++		.NumEraseRegions= 1,
++		.regions	= {
++			ERASEINFO(0x10000,16),
++		}
++        }, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M50FW016,
++		.name		= "ST M50FW016",
++		.uaddr		= {
++			[0] = MTD_UADDR_UNNECESSARY,    /* x8 */
++		},
++		.DevSize	= SIZE_2MiB,
++		.CmdSet		= P_ID_INTEL_EXT,
++		.NumEraseRegions= 1,
++		.regions	= {
++			ERASEINFO(0x10000,32),
 +		}
  	}, {
  		.mfr_id		= MANUFACTURER_TOSHIBA,
