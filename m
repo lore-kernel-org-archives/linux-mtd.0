@@ -1,63 +1,57 @@
-From: jebc@c4solutions.net (Jeb Campbell)
-Date: Tue, 18 Feb 2003 20:50:10 -0500
-Subject: Grub 0.93 grub-2003-01-08-doc.patch DOC2000 trouble
-In-Reply-To: <Pine.LNX.4.44.0302180947080.11781-100000@CPE00e0292061fa-CM014370001917.cpe.net.cable.roger>
-References: <Pine.LNX.4.44.0302180947080.11781-100000@CPE00e0292061fa-CM014370001917.cpe.net.cable.roger>
-Message-ID: <3E52E2D2.5090801@c4solutions.net>
+From: enrico.scholz@sigma-chemnitz.de (Enrico Scholz)
+Date: Wed, 19 Feb 2003 13:35:41 +0100
+Subject: Kernel oops with an unclean unmounted filesystem
+Message-ID: <lyr8a41m8y.fsf@ensc-pc.intern.sigma-chemnitz.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-I will try without the netboot code,
-but it is not supposed to do anything unless
-you drop to command and use {dhcp,bootp,ifconfig}
-to config the network, then pull a kernel from tftp.
+Hello,
 
-To clarify, it finds /boot/grub/menu.lst on first
-partition of the DOC2000 (I assume the first to grub,
-because if there is nothing on the DOC, it gives the
-searching for menu.lst message on every possible drive
-and partition combination), but will not boot the kernel
-with "invalid partition table" (the board is at the lab
-now), and the tab completion for "kernel (hd0,tab " fails
-with the same error.
+after creating and/or modifying a file in a JFFS2 filesystem, I
+turned off the device without unmounting/syncing the device.
 
-Anyway thank for the response and I will let you know
-what happens without the netboot code.
+Because the JFFS documentation states
 
-Jeb Campbell
+| JFFS is aimed at providing a crash/powerdown-safe filesystem
 
-Ilguiz Latypov wrote:
-> On Sat, 15 Feb 2003, Jeb Campbell wrote:
-> 
-> 
->>./configure --exec-prefix=/ \
->>         --disable-auto-linux-mem-opt \
-> 
-> 
-> What is this option for?
-> 
-> 
->>But when I unplug the hd, grub fails on invalid MBR on the DOC2000-48M
->>I can netboot and get a kernel from tftp and boot the chip fine.
-> 
-> 
-> What is the error message?  I believe there can be a conflict between the 
-> "netdisk" and "diskonchip" default drive selection in stage2/asm.S.
-> 
-> 
->>But the strangest thing is grub will get the menu.lst from the DOC on 
->>the first partition!  But then error out when trying to boot/load the 
->>kernel.
-> 
-> 
-> Is this the same error as above?
-> 
-> Thanks,
-> Ilguiz
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+JFFS2 should cope with such a situation.
+
+Indeed, when restarting the device and mounting the filesystem
+the kernel oopses:
+
+| jffs2_get_inode_nodes() for ino 283 returned -12
+| Checked all inodes but still 0x44 bytes of unchecked space?
+| kernel BUG at fs/jffs2/gc.c:140!
+| Unable to handle kernel NULL pointer dereference at virtual address 00000000
+| ...
+| Backtrace: 
+| [<c0026030>] (__bug+0x0/0x58) from [<c00c6f50>] (jffs2_garbage_collect_pass+0x240/0x66c)
+|  r4 = C1E38000 
+| [<c00c6d10>] (jffs2_garbage_collect_pass+0x0/0x66c) from [<c00c9ff8>] (jffs2_garbage_collect_thread+0x1c4/0x200)
+|  r8 = FFFFFFFF  r7 = 00000000  r6 = 00000000  r5 = C1F2E000
+|  r4 = C1E38000 
+| [<c00c9e34>] (jffs2_garbage_collect_thread+0x0/0x200) from [<c0022040>] (kernel_thread+0x40/0x48)
+|  r6 = C1F2E014  r5 = 00000000  r4 = C1F2E000 
+| Code: 1b005243 e59f0014 eb005241 e3a03000 (e5833000) 
+
+I am running the 2.5.59 kernel + rmk patches on an ARM XScale
+platform. I tried the recent jffs2 fs-driver from CVS also but
+the oops still happens. The unclean "unmounting" happened with
+the original 2.5.59 JFFS2 driver.
+
+I get an I/O error when reading the questionable directory before
+the gc-thread dies.
+
+
+Does there exists a way to recover or have I to recreate the
+filesystem from scratch?
+
+
+
+Enrico
+
+-- 
+q: If you were young again, would you start writing TeX again or would
+   you use Microsoft Word, or another word processor?
+a: I hope to die before I have to use Microsoft Word.
+  -- Harald Koenig <koenig@tat.physik.uni-tuebingen.de> asking D.E.Knuth
