@@ -1,18 +1,18 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from [80.120.128.82] (helo=hofr.at)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17XotP-00022F-00
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:07:23 +0100
-Date: Thu, 25 Jul 2002 22:07:20 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Hamish Guthrie (Mail Lists)" <hamishl@dplanet.ch>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: read this
-Message-ID: <20020725200720.GA23060@wohnheim.fh-wedel.de>
-References: <E17Xno0-0001sf-00@pentafluge.infradead.org> <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <NEBBJKADBKFNCJOMHOAKGEAKDIAA.hamishl@dplanet.ch>
+	id 17Xow3-00022o-00
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2002 21:10:07 +0100
+Received: (from root@localhost)
+	by hofr.at (8.10.2/8.9.3/SuSE Linux 8.9.3-0.1) id g6PJEbs25931
+	for linux-mtd@lists.infradead.org; Thu, 25 Jul 2002 21:14:37 +0200
+From: Der Herr Hofrat <der.herr@mail.hofr.at>
+Message-Id: <200207251914.g6PJEbs25931@hofr.at>
+Subject: MAX_NAME in jffs2
+To: linux-mtd@lists.infradead.org
+Date: Thu, 25 Jul 2002 21:14:37 +0200 (CEST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +24,12 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 25 July 2002 21:47:20 +0200, Hamish Guthrie (Mail Lists) wrote:
-> 
-> Being an ex-African, and one having had financial dealings with people in
-> compromising circumstances (as this), and also referring to a number of
-> warnings in publications like TIME and NEWSWEEK, I would highly recommend
-> all members of this newsgroup to treat this mail with suspicion and
-> immediately refer it to /dev/null, in the hope that /dev/null will be of
-> assistance!
-> 
-> > [spam]
-> > This matter should be treated as urgent and confidential!
+HI !
 
-Excellent choice, as /dev/null is both efficient and confidential. ;-)
+ is there a particular reson for jffs and jffs2 to have a 254 character
+ filename limit and ext2/ext3/reiserfs 255 (probably others to - excluding
+ minix/msdos/M$) ?? There probably is hardly a case where this will realy 
+ hurt, but a test bit it so I wondered what the reson for this 254 is...
 
-Joern
+thx !
+hofrat
