@@ -1,15 +1,18 @@
-Received: from host4.americanmobile.com ([208.251.69.4] helo=amhmail)
+Received: from softsteprubberfloors.com ([192.220.111.56] helo=rcmenter.iserver.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Lmja-0006X5-00
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 15:55:46 +0000
-Message-ID: <ED5133872C7DD411A55700B0D04980090BB997E0@amhmail>
-From: David Byres <David.Byres@amnhealthcare.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Help!  Desparately trying to get MTD support in RH8 kernel 2.4.18
-	-14
-Date: Tue, 10 Dec 2002 08:25:06 -0800
-MIME-Version: 1.0
+	id 18LncG-0006d5-00
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 16:52:16 +0000
+Subject: Re: Which filesystem can live on one flash sector?
+From: Russ Dill <Russ.Dill@asu.edu>
+To: fred@sc23.sc.mcel.mot.com
+Cc: linuxppc-embedded@lists.linuxppc.org, linux-mtd@lists.infradead.org
+In-Reply-To: <000001c2a011$ab5926f0$940879c8@sc.mcel.mot.com>
+References: <000001c2a011$ab5926f0$940879c8@sc.mcel.mot.com>
 Content-Type: text/plain
+Message-Id: <1039541302.8122.40.camel@timmy>
+Mime-Version: 1.0
+Date: 10 Dec 2002 10:28:22 -0700
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,15 +24,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Am trying to boot RH linux 8 from a DiskOnChip Millenium in an Allwell 1030N
-set top box (STB).  Trying to recompile the kernel for MTD support.  Am
-trying the loadable module route w/o success.  Has anyone successfully done
-this?  Kernel recompiles ok but won't boot.
+On Mon, 2002-12-09 at 23:02, fred wrote:
+> Hi,
+> 
+> I am using CRAMFS plus RAMFS on my board.
+> And there is only one sector left for saving configuration data.
+> Can I put a file system, e.g. JFFS, on it?
 
-Sincerely appreciate anyone's assistance,
-David
-
-David Byres, MCSD
-Director, Internet Systems Group
-AMN Healthcare, Inc.
-(858) 509-3580 
+I'd make another block free and then do some sort of journalling from
+userspace (each data block has a header with crc, size, header crc, and
+revision). If you flash it boot block flash, the boot block may be the
+place to find a couple small free sectors.
