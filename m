@@ -1,19 +1,27 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from guardian.hermes.si ([193.77.5.150])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16uVns-00045L-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Apr 2002 10:51:12 +0100
-Date: Mon, 8 Apr 2002 11:51:08 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: =?iso-8859-1?Q?Marcos_Lois_Berm=FAdez?= <marcos@iqc-services.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Creating the /dev devices
-Message-ID: <20020408115108.A32219@wohnheim.fh-wedel.de>
-References: <5.1.0.14.2.20020408103956.01f944b0@pop3.iqc-services.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5.1.0.14.2.20020408103956.01f944b0@pop3.iqc-services.com>; from marcos@iqc-services.com on Mon, Apr 08, 2002 at 10:41:05AM +0200
+	id 16uW9Q-000477-00
+	for <linux-mtd@lists.infradead.org>; Mon, 08 Apr 2002 11:13:28 +0100
+Received: from primus.hermes.si (primus.hermes.si [193.77.5.98])
+	by guardian.hermes.si (8.9.3/8.9.3) with ESMTP id MAA16515
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Apr 2002 12:13:26 +0200 (METDST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by primus.hermes.si (Postfix) with ESMTP id A972F73C78
+	for <linux-mtd@lists.infradead.org>; Mon,  8 Apr 2002 12:12:56 +0200 (CEST)
+Received: from hsl-mb2.hermes.si (hsl-mb2.hermes.si [10.53.100.100])
+	by primus.hermes.si (Postfix) with ESMTP id 0BF3C73C6A
+	for <linux-mtd@lists.infradead.org>; Mon,  8 Apr 2002 12:12:56 +0200 (CEST)
+Received: from jadran.hermes.si (jadran.hermes.si [10.53.1.9])
+	by hsl-mb2.hermes.si (8.9.3/8.9.3) with ESMTP id MAA06814
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Apr 2002 12:32:47 +0200
+Message-ID: <81D0D3538E3CD411AE3C00D0B7474C31BB647C@jadran.hermes.si>
+From: Ludvik Kumin <ludvik.kumin@hermes.si>
+To: "Mtd Driver (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: Kernel version
+Date: Mon, 8 Apr 2002 12:16:03 +0200 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-2"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,25 +33,6 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 8 April 2002 10:41:05 +0200, Marcos Lois Bermúdez wrote:
-> I have get the MTD work, but i can't see any mtd device under /dev
-> How i can create it¿?
+Which kernel (2.4.x) is needed to use the latest mtd driver?
 
-man mknod
-less /usr/src/linux/Documentation/devices.txt
-
-Something like this should do it:
-mknod /etc/mtdblock0 b 31 0
-mknod /etc/mtdblock1 b 31 1
-mknod /etc/mtdblock2 b 31 2
-mknod /etc/mtd0 c 90 0
-mknod /etc/mtd1 c 90 2
-mknod /etc/mtd2 c 90 4
-
-You get the idea.
-
-Jörn
-
--- 
-Do not stop an army on its way home.
--- Sun Tzu
+ludvik
