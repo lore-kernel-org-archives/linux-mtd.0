@@ -1,16 +1,22 @@
-Received: from freya.inter.net.il ([192.114.186.14])
+Received: from ganon.smb.utfors.se ([195.58.112.27])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189hQR-0004sh-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 07:50:03 +0000
-Content-Type: text/plain;
-  charset="us-ascii"
-From: eylon eyal <ayalon@tadlys.com>
-To: linux-mtd@lists.infradead.org
-Subject: GRUB on DoC Millennium/2000 - Instructions (Revised)  problem
-Date: Thu, 7 Nov 2002 10:20:16 +0000
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200211071020.16625.ayalon@tadlys.com>
+	id 189hYL-0004tT-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 07:58:13 +0000
+Received: from LUMENTIS02 ([212.105.56.242])
+ by ganon.smb.utfors.se (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H5700FD567L6G@ganon.smb.utfors.se> for
+ linux-mtd@lists.infradead.org; Thu, 07 Nov 2002 09:28:34 +0100 (MET)
+Date: Thu, 07 Nov 2002 09:28:33 +0100
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Subject: RE: seeking help on JFFS2
+In-reply-to: <4556.1036599271@passion.cambridge.redhat.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-to: joakim.tjernlund@lumentis.se
+Message-id: <IGEFJKJNHJDCBKALBJLLOELLFHAA.joakim.tjernlund@lumentis.se>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,26 +28,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've read the last paper about how to use grub with doc 2000
+David
 
-http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html
+Why does JEDEC end up in cfi_cmdset_0001.c?
+If it should end up in cfi_cmdset_0001.c, why does it not set cmdset_priv?
 
-i downloaded the last mtd sources from the cvs as  following
-
-       cvs -d :pserver:anoncvs@cvs.infradead.org:/home/cvs login=20
-        (password =3D anoncvs)
-        cvs -z3 -d :pserver:anoncvs@cvs.infradead.org:/home/cvs co mtd
-
-and i downloaded the last grub source from cvs
-now the instractions says that i need to patch the grub sources as follow
-
-patch -p0 -i grub-2002-10-08-doc.patch
-
-i understand that this patch should be under directory /usr/src/mtd/patch=
-es/
-
-but the last patch i find there is grub-2002-07-29-doc.patch
-
-were can i get the correct patch? or is it ok to use this patch?
-
-thanks alot ayalon
+ Jocke
+> 
+> 
+> JZhang@erinc.com said:
+> > 0xc00e0008 is in do_read_onechip (cfi_cmdset_0001.c:473).
+> > 473         if (!(((struct cfi_pri_intelext*)cfi->cmdset_priv)->FeatureSupport & 2))
+> 
+> Why didn't you say so before? :)
+> 
+> cvs up
+> 
