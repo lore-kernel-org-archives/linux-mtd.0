@@ -1,17 +1,14 @@
-Received: from sccrmhc12.comcast.net ([204.127.202.56])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CL36Z-0007qx-Ui
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2004 13:21:33 -0400
-From: "Bob Coggeshall" <rdcjr@cogwheel.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 22 Oct 2004 10:21:25 -0700
-Message-ID: <GLEEJIHFPNJCEDMIAPLKMEEEEHAA.rdcjr@cogwheel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-Subject: mtdchar.c  w/CONFIG_DEVFS under 2.4.22 busted ?
-Reply-To: rdcjr@cogwheel.com
+From: David Woodhouse <dwmw2@infradead.org>
+To: rdcjr@cogwheel.com
+In-Reply-To: <GLEEJIHFPNJCEDMIAPLKMEEEEHAA.rdcjr@cogwheel.com>
+References: <GLEEJIHFPNJCEDMIAPLKMEEEEHAA.rdcjr@cogwheel.com>
+Content-Type: text/plain
+Message-Id: <1098466711.13633.1398.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Fri, 22 Oct 2004 18:38:32 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtdchar.c  w/CONFIG_DEVFS under 2.4.22 busted ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Q2hlY2tlZCBldmVyeXRoaW5nIG91dCBqdXN0IG5vdyAoMjFvY3QpIHdpdGg6DQoNCgljdnMgLWQg
-OmV4dDphbm9uY3ZzQGN2cy5pbmZyYWRlYWQub3JnOi9ob21lL2N2cyBjbyBtdGQNCg0KSW5zdGFs
-bGVkIGl0IGludG8gbXkgMi41LjIycHJlOCBrZXJuZWwgYW5kIGRpZCBhICdtYWtlIG1vZHVsZXMn
-IHdpdGggQ09ORklHX0RFVkZTIHR1cm5lZCBvbi4gDQoNCkdvdCB0aGUgZXJyb3JzIGJlbG93OyAN
-CklzIHRoaXMgc3R1ZmYgZ2V0dGluZyBidWlsdCB1bmRlciAyLjQgYmVmb3JlIGl0IGdldHMgY2hl
-Y2tlZCBpbiA/ICANCk9yIGlzIHN1cHBvcnQgZm9yIDIuNCBnZXR0aW5nIGRyb3BwZWQgPw0KDQpC
-YWNraW5nIG10ZGNoYXIuYyB0byB0aGUgMS42MCByZXYgc2VlbXMgdG8gZml4IGl0Lg0KDQoJY3Zz
-IC1kIDpleHQ6YW5vbmN2c0BjdnMuaW5mcmFkZWFkLm9yZzovaG9tZS9jdnMgY28gLXIxLjYwICBt
-dGQvZHJpdmVycy9tdGQvbXRkY2hhci5jDQoNClRoaXMgbG9va3MgbGlrZSB0aGUgb25seSB0aGlu
-ZyB0aGF0IGJ1c3RlZCBjb21waWxhdGlvbiB1bmRlciAyLjQNCg0KLS0NCkJvYiBDb2dnZXNoYWxs
-ICogQ29nd2hlZWwsIEluYyAqIHRlbDogKCsxKTIwNi4yMzAuNjQ0NSAoKzEpMjA2LjQ2NS43MzU1
-ICAqDQpmYXg6ICgrMSkyMDYuMjM2LjI1NTMgKiB3d3cuY29nd2hlZWwuY29tIA0KDQoNCm1ha2Ug
-LUMgbXRkIG1vZHVsZXMNCm1ha2VbMl06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvY29nZ3Mv
-c2t5bC9wcm9qZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10ZC1hcHIy
-MDA0L2RyaXZlcnMvbXRkJw0KcHBjXzh4eC1nY2MgLURfX0tFUk5FTF9fIC1JL2hvbWUvY29nZ3Mv
-c2t5bC9wcm9qZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10ZC1hcHIy
-MDA0L2luY2x1ZGUgLVdhbGwgLVdzdHJpY3QtcHJvdG90eXBlcyAtV25vLXRyaWdyYXBocyAtTzIg
-LWZuby1zdHJpY3QtYWxpYXNpbmcgLWZuby1jb21tb24gLWcgLWdnZGIgLWZuby1zY2hlZHVsZS1p
-bnNucyAtZm5vLXNjaGVkdWxlLWluc25zMiAtZm9taXQtZnJhbWUtcG9pbnRlciAtSS9ob21lL2Nv
-Z2dzL3NreWwvcHJvag0KZWN0cy9lcDg1Mi1taXNjL2tlcm5lbHMvZXAtbGludXgta2VybmVsLW10
-ZC1hcHIyMDA0L2FyY2gvcHBjIC1mc2lnbmVkLWNoYXIgLW1zb2Z0LWZsb2F0IC1waXBlIC1mZml4
-ZWQtcjIgLVduby11bmluaXRpYWxpemVkIC1tbXVsdGlwbGUgLW1zdHJpbmcgLURNT0RVTEUgIC1u
-b3N0ZGluYyAtaXdpdGhwcmVmaXggaW5jbHVkZSAtSSAvaG9tZS9vcHQvZW1iZWRkZWQvdG9vbHMv
-dXNyL2xpYi9nY2MtbGliL3BwYy1saW51eC8yLjk1LjQvaW5jbHVkZSAtREtCVUlMRF9CQVNFTkFN
-RT1tdGRjaGFyIC1jIC1vIG10ZGNoYXIubyBtdGRjaGFyLmMNCg0KbXRkY2hhci5jOiBJbiBmdW5j
-dGlvbiBgbXRkX25vdGlmeV9hZGQnOg0KbXRkY2hhci5jOjI3OiB3YXJuaW5nOiBpbXBsaWNpdCBk
-ZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiBgZGV2ZnNfbWtfY2RldicNCm10ZGNoYXIuYzogSW4gZnVu
-Y3Rpb24gYG10ZF9ub3RpZnlfcmVtb3ZlJzoNCm10ZGNoYXIuYzozODogd2FybmluZzogaW1wbGlj
-aXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gYGRldmZzX3JlbW92ZScNCm10ZGNoYXIuYzogSW4g
-ZnVuY3Rpb24gYG10ZGNoYXJfZGV2ZnNfaW5pdCc6DQptdGRjaGFyLmM6NDk6IHdhcm5pbmc6IHBh
-c3NpbmcgYXJnIDEgb2YgYGRldmZzX21rX2RpcicgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0
-eXBlDQptdGRjaGFyLmM6NDk6IHRvbyBmZXcgYXJndW1lbnRzIHRvIGZ1bmN0aW9uIGBkZXZmc19t
-a19kaXInDQptYWtlWzJdOiAqKiogW210ZGNoYXIub10gRXJyb3IgMQ0KbWFrZVsyXTogTGVhdmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2NvZ2dzL3NreWwvcHJvamVjdHMvZXA4NTItbWlzYy9rZXJuZWxz
-L2VwLWxpbnV4LWtlcm5lbC1tdGQtYXByMjAwNC9kcml2ZXJzL210ZCcNCm1ha2VbMV06ICoqKiBb
-X21vZHN1YmRpcl9tdGRdIEVycm9yIDINCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
-ZS9jb2dncy9za3lsL3Byb2plY3RzL2VwODUyLW1pc2Mva2VybmVscy9lcC1saW51eC1rZXJuZWwt
-bXRkLWFwcjIwMDQvZHJpdmVycycNCm1ha2U6ICoqKiBbX21vZF9kcml2ZXJzXSBFcnJvciAyDQoN
-Cg==
+On Fri, 2004-10-22 at 10:21 -0700, Bob Coggeshall wrote:
+> Checked everything out just now (21oct) with:
+> 
+> 	cvs -d :ext:anoncvs@cvs.infradead.org:/home/cvs co mtd
+> 
+> Installed it into my 2.5.22pre8 kernel and did a 'make modules' with CONFIG_DEVFS turned on. 
+> 
+> Got the errors below; 
+> Is this stuff getting built under 2.4 before it gets checked in ?  
+> Or is support for 2.4 getting dropped ?
+
+What part of the message before yours in the mailing list archives was
+ambiguous? Please assist me. I tried to make it clear there.
+
+I also tried to make it clear on the web site that one should always
+read the list archives before posting a question. Was there something I
+could have done to make that less ambiguous too?
+
+-- 
+dwmw2
