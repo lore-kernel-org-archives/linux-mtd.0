@@ -1,23 +1,19 @@
-Received: from [200.53.172.155] (helo=qis)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15gwfO-0007va-00
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2001 00:10:07 +0100
-Message-ID: <20010911222037.24555.qmail@qis>
-References: <20010911205853.21285.qmail@qis>
-            <20010911201345.19481.qmail@qis>
-            <20010911182623.15217.qmail@qis>
-            <8583.1000239450@redhat.com>
-            <9772.1000243426@redhat.com>
-            <10449.1000245624@redhat.com>
-In-Reply-To: <10449.1000245624@redhat.com> 
-From: "Nikolai Vladychevski" <niko@isl.net.mx>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: duplicate DoC millenium with dd
-Date: Tue, 11 Sep 2001 22:20:37 GMT
+Received: from [211.172.225.159] (helo=hartford.siteprotect.co.kr)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15h3pX-00005A-00
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2001 07:49:03 +0100
+Received: (from kernelhacker@localhost)
+	by hartford.siteprotect.co.kr (8.9.3/8.9.3) id PAA30081
+	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2001 15:55:04 +0900
+Date: Wed, 12 Sep 2001 15:55:04 +0900
+From: Kim Jong-chan <kernelhacker@hartford.siteprotect.co.kr>
+To: linux-mtd@lists.infradead.org
+Subject: NAND flash driver x86 port problem
+Message-ID: <20010912155503.A26299@hartford.siteprotect.co.kr>
+Reply-To: zeppelin@kernelhacker.org
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -29,62 +25,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse writes: 
+Recent days, I have ported MTD NAND flash driver to x86, using GeodeGX board.
+Module loading is ok. But, when I try to access NAND device, The Kernel says 
+what follows and go away...
+Using ksymoops, I found that kernel dies in __wake_up.
+But I don't know actually which variable causes Null pointer dereferencing.
+If I remove all wake_up in nand.c intentionally, all works file. But, I think
+that's not a solution.  
+Tested kernel includes 
+2.4.9(vanilla) 
+2.4.2(redhat) + mtd snapshot(20010906)
+2.4.2_hhl20(hard hat linux)
+all above kernel shows the same phenomenon. 
 
-> 
-> niko@isl.net.mx said:
->>  yes, this is the problem... right now I'm leaving 1 Meg for the
->> linuxBIOS  and kernel and right now there is left as little as 40 K
->> bytes free space of  that meg. 
-> 
-> Use modules?
+Here goes oops message
 
-yes, I do, but it still big, its a 2.4.7 
-
->  
-> 
->>  If I update the  software on the chip once a week (it's an automatic
->> update via remote  server), will it survive for 2 years without
->> errors, for example ?  
-> 
-> It doesn't degrade over time. Using it the first time may lose the 
-> bad-block information which is put on it by the NAND flash chip 
-> manufacturer (Toshiba or Samsung, not M-Systems). After that there's no 
-> difference. 
-> 
->>  Wow! that sounds cool! I have to try it, but would linuxBIOS conflict
->> with  it?  
-> 
-> No, should be fine. You could have it appear as three MTD devices - one for 
-> LinuxBIOS, one for the kernel, and one for cramfs.
-
-I'm sorry, I can't find any docs about creating partitions, mtd0, mtd1, 
-mtd2, etc..? list archives dont help either, how it is done? 
-
-
->
-> Using cramfs directly on the NAND flash gives you no error correction and 
-
-but wait a minute, if I enable these options: 
-
-   <*> NAND Device support
-     [*] Enable ECC correction algorithm
-     [*] Verify NAND page writes 
-
-won't it help me? 
-
-> no facility to work around bad blocks. I wouldn't wan to do it like that in 
-> production, although in practice it'll work unless you have a chip with bad 
-> blocks.
-
-well, my environment will be production,so I guess I'm out of luck because 
-if I take your precautions: 
-
-1) I can't use nftl_format
-2) I can't use mtd partitioning because I will write directly on the NAND 
-flash..... 
-
-this is kinda bad news....... 
-
-
-nikolai
+Unable to handle kernel NULL pointer dereference at virtual address 00000000    
+ printing eip:                                                                  
+c010eeb3                                                                        
+*pde = 00000000                                                                 
+Oops: 0000                                                                      
+CPU:    0                                                                       
+EIP:    0010:[<c010eeb3>]                                                       
+EFLAGS: 00010013                                                                
+eax: c12eddf4   ebx: 00000000   ecx: 00000001   edx: c12eddf8                   
+esi: 00000001   edi: fffffff8   ebp: c6c6fefc   esp: c6c6fee0                   
+ds: 0018   es: 0018   ss: 0018                                                  
+Process mke2fs (pid: 570, stackpage=c6c6f000)                                   
+Stack: c12eddf8 00000001 00000282 00000003 00000001 00000001 c12edddc c028d7c8  
+       c881282d 00000000 c6c6e000 00000000 00000000 00000000 c6c6e000 00000000  
+       00000000 c76c5628 c76c5620 00000000 fffffff4 c01a9dba c12edd60 c6d37bc0  
+Call Trace: [<c881282d>] [<c01a9dba>] [<c0134c52>] [<c012e4a9>] [<c012d4e5>]    
+   [<c012d533>] [<c0106d23>]                                                    
+                                                                                
+Code: 8b 1b 8b 4f 04 8b 01 85 45 f0 74 54 31 c0 9c 5e fa c7 01 00               
+Kernel panic: Aiee, killing interrupt handler!                                  
+In interrupt handler - not syncing                 
