@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.mediatrix.com ([205.237.248.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 152Veu-0005wX-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 11:14:28 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <F1BD619B2A58D41197990050DA2C08E40258E4@SLINK12> 
-References: <F1BD619B2A58D41197990050DA2C08E40258E4@SLINK12> 
-To: Jan Rovins <Jan.Rovins@radisys.com>
-Cc: linux-mtd@lists.infradead.org, Steve Ferri <steve.ferri@radisys.com>
-Subject: Re: MTD on a Motorola MPCN765 ? (32 bit linux and 64 bit flash) 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 23 May 2001 11:18:31 +0100
-Message-ID: <32329.990613111@redhat.com>
+	id 152dh1-0006MR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2001 19:49:11 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D99545D@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Atmel flash memory device driver
+Date: Wed, 23 May 2001 14:49:08 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +22,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Hi,
 
-Jan.Rovins@radisys.com said:
->  I was using partitions before, mostly to isolate & protect the boot
-> image. Can I have a setup that uses separately mapped devices and
-> multiple partitions at the same time? (I am having trouble visualizing
-> this) 
+	I'm working on an Atmel flash memory device driver to run on a
+PowerPC embedded platform.  Did anybody have a clue about it?
 
-Yeah, that's fine. You just call add_mtd_partitions() twice.
+Thanks!
 
-
->  Separate chip mappings also would imply that I would have to alter
-> the read(), write() copy_to/from() functions to skip over the bytes
-> that would show up in the other mapping, since my address lines are
-> wired up to treat the four chips as one range.
-
-Yep.
-
-
---
-dwmw2
+Fr=E9d=E9ric Giasson
+Software Developper=20
+Mediatrix Telecom, Inc.=20
+4229 Garlock Street=20
+Sherbrooke (Quebec)=20
+Canada J1L 2C8=20
+Tel...: (819) 829-8749 EXT. 366
+Fax...: (819) 829-5100=20
+Web...: <http://www.mediatrix.com/>=20
+Email.: <mailto:fgiasson@mediatrix.com>=20
