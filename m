@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15tWd1-00028K-00
-	for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2001 16:59:39 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20011016083420.A18642@recycle.lbl.gov> 
-References: <20011016083420.A18642@recycle.lbl.gov> 
-To: Larry Doolittle <ldoolitt@recycle.lbl.gov>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND flash 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 16 Oct 2001 17:08:51 +0100
-Message-ID: <21715.1003248531@redhat.com>
+	id 15tWxD-0002Ae-00
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2001 17:20:31 +0100
+Received: from Win1 (hidden-user@[212.105.56.242])
+	by mail.utfors.se (8.8.8/8.8.8) with SMTP id SAA06317
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2001 18:29:13 +0200 (MET DST)
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: Question/suggestion
+Date: Tue, 16 Oct 2001 18:29:23 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLEEJHEPAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <18185.1003209961@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +27,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ldoolitt@recycle.lbl.gov said:
->  I think you should double check that assertion.  My understanding is
-> that the "Smart" in the name is a bug.  These are actually NAND chips,
-> consumer-grade packaged, standardized, and marketed, with no smarts at
-> all.  So you _could_ use the nand.c driver, with the right interface-
-> specific wrapper layer to get at the device.
+Hi All
 
-Correct, with the proviso that some SmartMedia 'adapters' have 
-microcontrollers built in, and the host can't actually _get_ at the raw 
-flash.
+First: 
+I have noticed that when I mount a jffs2 FS(created with mkfs.jffs2) for the
+first time and look at the output of the df command, I see that "Use%" field
+slowly rise to 100% and then it drops back to ~15% and then it stays there.
+During this rise I also noticed that kupdate was eating alot of CPU(~80%)
 
-> Unfortunately, the result would not be content-compatible with other
-> SmartMedia users, because SmartMedia also has a standard for encoding
-> blocks on the nand chips.  I tried to read that standard, but the PDF
-> file is encrypted in a way that is incompatible with xpdf-0.92.  The
-> URL for that reference material has been posted here before, it's
->  http://www.ssfdc.or.jp/spec/english/
+Is this normal?
 
-Acroread can manage it. It all looks fairly simple to implement.
+Second:
+I have been playing with compression a bit. I changed the compress order so
+that RTIME is tried before ZLIB and this is what I got:
 
---
-dwmw2
+                     zlib            rtime
+RootFS image size    7582088 bytes   9295044 bytes
+mount time           10 sek          10 sek
+
+The system also feels a bit faster with RTIME than ZLIB when execute
+programs like ls, du. Is RTIME faster to decompress data than ZLIB or is it
+just in my mind? :-) I am on a custom MPC860 board 80 MHz.
+
+Is there any point to have a config option for preferred compression algorithm order?
+
+ Joakim 
