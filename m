@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from proxy.tritec.de ([193.141.224.1] helo=nimrod.tritec.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15I6d4-0004ap-00
-	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 11:45:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010705124320.A469@cemil.debian-linux.de> 
-References: <20010705124320.A469@cemil.debian-linux.de> 
-To: Cemil Degirmenci <cemil@cemil.debian-linux.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems with GNU/grub bootloader 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 05 Jul 2001 11:50:24 +0100
-Message-ID: <26434.994330224@redhat.com>
+	id 15I8DL-0004hL-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2001 13:26:35 +0100
+Received: from gideon.tritec.de (gideon.tritec.de [10.0.4.31])
+	by nimrod.tritec.de (8.8.8/8.8.8) with ESMTP id OAA01177
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Jul 2001 14:32:12 +0200 (MET DST)
+Received: from localhost (localhost [127.0.0.1])
+	by gideon.tritec.de (8.8.8/8.8.8) with SMTP id OAA04841
+	for <linux-mtd@lists.infradead.org>; Thu, 5 Jul 2001 14:32:12 +0200 (MET DST)
+Message-Id: <200107051232.OAA04841@gideon.tritec.de>
+Date: Thu, 5 Jul 2001 14:32:12 +0200 (MET DST)
+From: Peter Blum <pb@tritec.de>
+Reply-To: Peter Blum <pb@tritec.de>
+Subject: SmartMedia Card Flash File System
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: TEXT/plain; charset=us-ascii
+Content-MD5: AnX4xph+r3WIDYs0ojWZ6A==
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +28,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-(Redirected to the correct list)
+Hello,
 
-cemil@cemil.debian-linux.de said:
-> Hello, I have some problems with the Grub Bootloader.
-> root@manuel:/home/cemil/mtd-20000704/grub > ../util/doc_loadbios /dev/fla grub_firmware 
-> ioctl(MEMGETINFO): Invalid argument
-> root@manuel:/home/cemil/mtd-20000704/grub > 
+does anybody know what kind of flash file system is used for
+SmartMedia Card?
 
-> I had downloaded grub rom FSF cvs-server.
+I got a driver working on 2.4.5 ppc kernel and can use the mtdchar
+device to read the raw contens of the card. It seems that neither ftl
+nor nftl can't be used.
 
-> How can i fix it? 
 
-Looks like you're using the M-Systems drivers, not the real ones. To load 
-Grub onto the device, you need to be able to write to the flash directly, 
-which you can't do with those drivers.
+Peter
 
-You need to either boot a kernel with the proper drivers in, or convert 
-your Grub image into the format that M-Systems use for their own firmware 
-files.
-
---
-dwmw2
+_____________________________________________________________________
+Peter Blum                                 Tel. +49 (6131) 922 237
+Tritec Electronic AG                        Fax +49 (6131) 922 229
+Carl-Zeis-Strasse 41                      email Peter.Blum@tritec.de
+D-55129 Mainz                               URL http://www.tritec.de
