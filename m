@@ -1,40 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14rd6U-0003Q9-00
-	for mtd-list@infradead.org; Mon, 23 Apr 2001 10:57:58 +0100
-Received: from h154.195-230-144.ukrpack.net ([195.230.144.154] helo=srv1.lrpeople.com)
+	id 14rd9M-0003SD-00
+	for mtd-list@infradead.org; Mon, 23 Apr 2001 11:00:56 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14rd6T-0003Q3-00
-	for mtd@infradead.org; Mon, 23 Apr 2001 10:57:57 +0100
-Message-ID: <006701c0cbd3$85868ee0$4d02010a@lrpeople.com>
-From: "Alexander Melichenko" <AlexanderM@lrpeople.com>
-To: <mtd@infradead.org>
-Subject: Fw: Elan SC520 - problem with MTD
-Date: Mon, 23 Apr 2001 12:58:10 +0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 14rd9L-0003S6-00
+	for mtd@infradead.org; Mon, 23 Apr 2001 11:00:55 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <006701c0cbd3$85868ee0$4d02010a@lrpeople.com> 
+References: <006701c0cbd3$85868ee0$4d02010a@lrpeople.com> 
+To: "Alexander Melichenko" <AlexanderM@lrpeople.com>
+Cc: mtd@infradead.org
+Subject: Re: Fw: Elan SC520 - problem with MTD 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 23 Apr 2001 11:00:32 +0100
+Message-ID: <10854.988020032@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello Robert!
-Thank You very much for Your help.
-I worked with kernel 2.2.18 but could not achieve a success.
-Now I use Linux kernel 2.4.0 and latest version MTD from CVS. After booting
-in /proc/mtd I see :
-dev:    size   erasesize  name
-mtd0: 00800000 00040000 "SC520CDP Flash Bank #0"
-mtd1: 00800000 00040000 "SC520CDP Flash Bank #1"
 
-Das ist fantastik!
+AlexanderM@lrpeople.com said:
+>  Now I must place a kernel to a flash and booting from it. What steps
+> should be undertaken to reach that result? 
 
-Now I must place a kernel to a flash and booting from it.
-What steps should be undertaken to reach that result?
+You need a bootloader which is capable of doing so. RedBoot will probably 
+do it - I'm not sure what others are using.
 
-Thank You for any help.
+--
+dwmw2
 
-Alexander Melichenko.
 
 
 
