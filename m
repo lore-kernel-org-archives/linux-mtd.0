@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from server.itc.hu ([195.70.56.227] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Ce3N-0005qD-00
-	for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2001 09:45:53 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20011208021016.28394.qmail@qis> 
-References: <20011208021016.28394.qmail@qis> 
-To: "Nikolai Vladychevski" <niko@isl.net.mx>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nftl_format with offset 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 08 Dec 2001 09:56:28 +0000
-Message-ID: <19668.1007805388@redhat.com>
+	id 16DQQV-0001d3-00
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2001 13:24:59 +0000
+Received: from localhost (don@localhost)
+	by server.itc.hu (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA25937
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2001 15:10:46 +0100
+Date: Mon, 10 Dec 2001 15:10:46 +0100 (CET)
+From: =?iso-8859-1?Q?P=E1sztor_Szil=E1rd?= <don@itc.hu>
+To: linux-mtd@lists.infradead.org
+Subject: patch for JEDEC+mixmem
+Message-ID: <Pine.LNX.4.21.0112101509230.25933-100000@server.itc.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +23,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-niko@isl.net.mx said:
-> NFTL Media Headers at 0x0 and 0x104000 disagree.
+Hi
 
-It doesn't like the fact that you now seem to have _two_ different NFTL 
-headers, both claiming to use overlapping parts of the flash.
+  While writing the driver for 2 flash memory cards, we (ITC) stumbled upon 
+some errors (?) in the jedec code that we were supposed to use. So, for now,
+we applied some changes to it and added our driver that was already present
+in the 2.2.x series but needed a rewrite for 2.4.
 
-Erase the first two blocks of the flash, which contain the original, and 
-it should use the one at offset 0x100000 happily.
+  We would appreciate it if you took the time and looked into the patch at
 
-In fact, I suspect you should erase the whole device (with 'eraseall'), as 
-it's complaining about factory-marked bad zones which are probably _not_ 
-actually marked as such from the factory - the normal operation of the 
-NFTL format can leave a sector in that state, whereas the SmartMedia format 
-mandates that you leave that particular byte alone. 
+        ftp://ftp.itc.hu/pub/linux/v2.4/linux-2.4.16-mixmem-patch
 
---
-dwmw2
+and decided if our changes are to be considered. We, however, might have
+failed in understanding the code, though our hopes are we made it more
+workable. The patch contains comments on the changes in the source.
+
+regards
+s.
+ITC
+
+            --------------------------------------------------------
+            |   Vitality from Vitamins, Brutality from Brutamins.  |
+            --------------------------------------------------------
