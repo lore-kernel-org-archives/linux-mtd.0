@@ -1,22 +1,21 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from smtp3.libero.it ([193.70.192.127])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CCTmI-0003s6-Je
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2004 22:01:12 -0400
-Message-ID: <415A1757.9080007@mvista.com>
-Date: Tue, 28 Sep 2004 19:00:55 -0700
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1CCeVb-0005cS-V9
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2004 09:28:43 -0400
+Received: from localhost (172.16.1.83) by smtp3.libero.it (7.0.027-DD01)
+	id 4153CC0C001134B3 for linux-mtd@lists.infradead.org;
+	Wed, 29 Sep 2004 15:28:36 +0200
+Received: from libero.it (172.16.1.80) by smtp20.libero.it (7.0.027-DD01)
+	id 40E3F8E400732F23 for linux-mtd@lists.infradead.org;
+	Wed, 29 Sep 2004 15:28:36 +0200
+Date: Wed, 29 Sep 2004 15:28:36 +0200
+Message-Id: <I4T1FO$B6B45C614484D57A6F4917A9CBA57C48@libero.it>
 MIME-Version: 1.0
-To: Nicolas Pitre <npitre@mvista.com>
-References: <20040925021907.D14A2A00043@mail.murgatroid.com>
-	<1096108415.31730.4411.camel@imladris.demon.co.uk>
-	<20040928234320.GA8283@slurryseal.ddns.mvista.com>
-	<Pine.LNX.4.61.0409282042570.15236@xanadu.home>
-In-Reply-To: <Pine.LNX.4.61.0409282042570.15236@xanadu.home>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Christopher Hoover <ch@murgatroid.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: Supporting flash that is locked by default
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+From: "lp4u\@inwind\.it" <lp4u@inwind.it>
+To: "MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: Jffs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
-> On Tue, 28 Sep 2004, Todd Poynor wrote:
->>Here's a try at automatically unlocking all blocks of Intel CFI flash at
->>probe time and at system resume time.  The new logic is in the chip
->>driver, but perhaps it would be better to move it generic, adding a new
->>chip driver callback for "is unlock needed?"; can rework things that way
->>if desired (was originally hoping to hide this "feature" from generic
->>code).
->>
->>I did not notice a query feature bit that identifies whether the flash
->>has the "all blocks locked at power on" property in the datasheets, so
->>the patch checks whether block 0 is locked and assumes its one of those
->>flashes if so.
-> 
-> 
-> This is a rather bad idea since block 0 is often the bootloader and most 
-> likely to be locked on purpose.
-> 
-> I'm a bit unconfortable with a feature like this as well.  What if I 
-> want some partitions to remain locked at all times at the hw level?
-
-The intention was to catch the power-on behavior and normalize it to 
-"all unlocked" like traditional flashes, then allow system-specific 
-actions (or map partition software locking) to lock blocks, as is 
-commonly done on a Rev. J flash, for example.  But it may be the case 
-that some folks like the default-locked CFI behavior of these flashes 
-and don't want the "all unlocked by default" common denominator, so 
-agreed this should be rethought.
-
-> I think the decision of unlocking the chip and what to unlock should 
-> remain in the map driver since this is where the knowledge of what the 
-> flash is meant to be used for is the most likely to be found.
-
-Or require all the policy on this matter to reside in userspace, 
-requiring an explicit flash_unlock for partitions, and not have the 
-kernel automatically unlock anything.  If the map partition writeable 
-flags are proof enough the partition should be automatically unlocked 
-then sounds good to me, I'll send a patch.
-
->>Since all blocks may be unlocked at resume time, it would be up to a
->>userspace action to relock any previously explicitly locked blocks soon
->>afterwards.
-> 
-> 
-> This sounds really really fishy to me.
-> 
-> If you can query which blocks are or are not locked before suspending, 
-> then why don't you just create a bitmap with the state of the entire 
-> flash and restore it upon resume?
-
-I was planning what you describe for "phase 2" (the userspace actions to 
-re-lock are actually the converse of how it works today, where actions 
-are required to unlock), thought maybe adding this would be 
-controversial.  I'll send a patch to do this.  Thanks,
-
--- 
-Todd
+Hi, 
+ 
+how to mount jffs on a NAND? 
+how to write a file in a NAND, us=
+ing jffs? 
+what's a jffs image ? 
+ 
+Thanks, 
+Lorenzo 
