@@ -1,49 +1,41 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 142xnf-00042i-00
-	for mtd-list@infradead.org; Mon, 04 Dec 2000 15:45:07 +0000
-Received: from caja.ldhs.cetuc.puc-rio.br ([139.82.28.1])
+	id 142xw8-00044v-00
+	for mtd-list@infradead.org; Mon, 04 Dec 2000 15:53:52 +0000
+Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 142xnd-00041j-00
-	for mtd@infradead.org; Mon, 04 Dec 2000 15:45:05 +0000
-Received: from mamao.cetuc.puc-rio.br (mamao.cetuc.puc-rio.br [139.82.74.2])
-	by caja.ldhs.cetuc.puc-rio.br (8.9.3/8.9.3) with ESMTP id NAA12353
-	for <mtd@infradead.org>; Mon, 4 Dec 2000 13:42:15 -0200
-From: "Miguel Freitas" <miguel@cetuc.puc-rio.br>
-To: mtd@infradead.org
-Date: Mon, 4 Dec 2000 13:44:57 GMT-3
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Subject: Re: DiskOnChip 2000/Millennium driver merge.
-Reply-to: miguel@cetuc.puc-rio.br
-Message-ID: <F1CBD81818@mamao.cetuc.puc-rio.br>
+	id 142xw6-00044p-00
+	for mtd@infradead.org; Mon, 04 Dec 2000 15:53:51 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <F1CBD81818@mamao.cetuc.puc-rio.br> 
+References: <F1CBD81818@mamao.cetuc.puc-rio.br> 
+To: miguel@cetuc.puc-rio.br
+Cc: mtd@infradead.org, ollie@sis.com.tw
+Subject: Re: DiskOnChip 2000/Millennium driver merge. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 04 Dec 2000 15:53:11 +0000
+Message-ID: <14168.975945191@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Ollie Lho wrote:
 
-> > I note you changed DoC_Command() so it no longer finishes with
-> > DoC_WaitReady(). Is there a situation in which DoC_Command shouldn't
-> > wait for FR_B after sending the command? Does it do any harm to do
-> > so, or is the removal just an optimisation?
-> >
+miguel@cetuc.puc-rio.br said:
 > 
-> The reason that I removed DoC_WaitReady() for DoC_Command() is you are
-> using DoC_Command to find how many flash chip on a single DoC. If
-> there is no more chip, the ready bit will never get high. And the
-> driver hangs.
-> 
-> Ollie
+>    Hummm, this is a little off-topic, but you have just explained me
+> why my PIC routines to access DOC2000 were hanging!!! I saw  exactly
+> this with a logic analiser, but when using the same DOC on a  PC it
+> worked, don't ask me why...(and it never left the WaitReady by
+> timeout) 
 
-   Hummm, this is a little off-topic, but you have just explained me 
-why my PIC routines to access DOC2000 were hanging!!! I saw 
-exactly this with a logic analiser, but when using the same DOC on a 
-PC it worked, don't ask me why...(and it never left the WaitReady by 
-timeout)
+On a reasonably fast PC, the WaitReady will timeout and you won't lock 
+forever. I think we could just change the timeout to something more 
+appropriate - rather than a fixed number of loops, repeat until jiffies has 
+increased by a certain number of ticks.
 
+--
+dwmw2
 
-Miguel Freitas
 
 
 
