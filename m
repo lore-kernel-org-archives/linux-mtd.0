@@ -1,17 +1,20 @@
-Received: from modemcable166.48-200-24.mtl.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1988YK-0001Iz-Fe
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 01:56:00 +0100
-Date: Tue, 22 Apr 2003 20:56:19 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Dominic Duval <dduval@oerlikon.ca>
-In-Reply-To: <MAIL7EjQxzmWecm9t0C000000d9@mail.oerlikon.ca>
-Message-ID: <Pine.LNX.4.44.0304222052200.30897-100000@xanadu.home>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 198Ehz-0002Bw-HB
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2003 08:30:24 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20030422093342.GA20257@wohnheim.fh-wedel.de>
+References: <001301c30745$438c1e60$0365a8c0@leeyang>
+	 <20030422093342.GA20257@wohnheim.fh-wedel.de>
+Message-Id: <1051083025.13999.20.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Wed, 23 Apr 2003 08:30:25 +0100
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
+cc: leeyang <leeyang@ycig.com>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Unlocking Intel K3 StrataFlash at boot time
+Subject: Re: mmap on jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 Apr 2003, Dominic Duval wrote:
+On Tue, 2003-04-22 at 10:33, Jörn Engel wrote:
+> AFAIK (someone please correct me) jffs2 does not support mmap. I don't
+> remember any technical reason, so it seems as if noone cared enough to
+> implement it.
 
-> Hi,
-> 
-> I'm currently trying to boot from a XScale board which has some Intel
-> StrataFlash banks (K3). However, it appears that the K3 flash in locked by
-> default, so I'm getting some errors when the root partition is mounted by
-> the Kernel in read/write mode.
-> 
-> I figured the only way to work around this problem is to unlock the K3
-> Flash before the Kernel mounts the root partition. Since our own bootloader
-> doesn't support the K3 Flash, the only place left is right in the Kernel,
-> probably just before the MTD device gets mounted.
-> 
-> I'd therefore like to know if this has been done before. If it has not, am
-> I on the right track here? And is there a place in the mtd code which would
-> be particularly well suited for placing the unlocking stuff? 
+We support readonly mmap. What we don't support is shared writable mmap,
+where any time you change a byte in your mapped version, you end up
+writing the _whole_ page out to flash, because we can't tell how dirty
+the page is.
 
-Right in the MTD map driver, like:
+This is for three reasons -- firstly it's hard to ensure that we'll
+actually have enough space on the flash to write out a page when it's
+dirty. Secondly it's _very_ hard to make sure we've allocated all the
+memory in advance that we'll need for node information, because the
+writepage() function would get called under memory pressure and we
+mustn't reenter the allocation routines, and thirdly if you're writing
+to a flash file system you really ought to be paying more attention and
+limiting your writes.
 
---- linux/drivers/mtd/maps/lubbock.c	Thu Oct 31 15:12:20 2002
-+++ linux/drivers/mtd/maps/lubbock.c	Wed Jan  8 15:01:48 2003
-@@ -106,6 +106,7 @@
- 	struct mtd_partition *parts;
- 	int nb_parts = 0;
- 	int parsed_nr_parts = 0;
-+	int i;
- 	char *part_type = "static";
- 
- 	lubbock_map.buswidth = (BOOT_DEF & 1) ? 2 : 4;
-@@ -123,6 +124,15 @@
- 	}
- 	mymtd->module = THIS_MODULE;
- 
-+	/* Unlock the flash device. */
-+	for (i = 0; i < mymtd->numeraseregions; i++) {
-+		int j;
-+		for( j = 0; j < mymtd->eraseregions[i].numblocks; j++) {
-+			mymtd->unlock(mymtd, mymtd->eraseregions[i].offset +
-+				      j * mymtd->eraseregions[i].erasesize, 4);
-+		}
-+	}
-+
- #ifdef CONFIG_MTD_REDBOOT_PARTS
- 	if (parsed_nr_parts == 0) {
- 		int ret = parse_redboot_partitions(mymtd, &parsed_parts);
+I suggest you do what Berkeley DB does -- mmap the file readonly for
+direct access, but do writes with a write() system call. It does that on
+all file systems anyway, for reasons of reliability.
 
+> You can do the work yourself, pay someone to do it or wait and hope
+> that someone else does it. As always.
 
-Nicolas
+It's a _lot_ of work, for little perceivable gain.
+
+-- 
+dwmw2
