@@ -1,17 +1,19 @@
-Received: from mail1.infineon.com ([192.35.17.229])
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15wJPg-0003C6-00
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 09:29:24 +0100
-Message-ID: <3BD67D98.7F328DA0@infineon.com>
-Date: Wed, 24 Oct 2001 10:36:40 +0200
-From: amit lubovsky <amit.lubovsky@infineon.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-CC: David Woodhouse <dwmw2@infradead.org>
-Subject: mount of JFFS2 as root device
-References: <3BD575F2.35D16336@infineon.com> <18479.1003845325@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 15wJYn-0003Ch-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 09:38:49 +0100
+Date: Wed, 24 Oct 2001 10:48:02 +0200
+From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+To: "Bao C. Ha" <baoha@sensoria.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 destroys CRAMFS!
+Message-ID: <20011024104802.A22481@wohnheim.fh-wedel.de>
+References: <014d01c15bf3$d4ff82a0$456c020a@SENSORIA>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <014d01c15bf3$d4ff82a0$456c020a@SENSORIA>; from baoha@sensoria.com on Tue, Oct 23, 2001 at 11:52:14AM -0700
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,10 +25,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Moin!
 
-1. I don't have the utility 'rdev' in the o.s that I use, what are the
-alternatives to mount JFFS2 as root device ?
-2. Is there a better compression ration I can achieve when using flash ?
+> - Unless jffs2 detects its MAGIC, it can't make
+> changes to the MTD partition.
 
-Thanks, Amit.
+That appears to be a sane suggestion and would make me happy, too.
+But, apart from the problem of existing FSs w/out the magic number,
+there is also the question whether to use one MAGIC per FS or one per
+delete block. The latter would definitely be nicer but might be
+problematic with NAND flashes.
+
+Jörn
+
+-- 
+If you treat your beta-testers as if they're your most valuable resource, 
+they will respond by becoming your most valuable resource.
