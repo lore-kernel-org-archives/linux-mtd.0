@@ -1,19 +1,19 @@
 Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1883E1-0008SI-00
-	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 18:42:25 +0000
-Date: Sat, 2 Nov 2002 20:12:31 +0100
+	id 18840S-00006o-00
+	for <linux-mtd@lists.infradead.org>; Sat, 02 Nov 2002 19:32:28 +0000
+Date: Sat, 2 Nov 2002 21:02:37 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Eugene Surovegin <ebs@innocent.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD devices at the wrong place
-Message-ID: <20021102191231.GA12053@wohnheim.fh-wedel.de>
-References: <5.1.0.14.2.20021101144318.02cf71f0@pop.prodigy.net> <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net> <1036137508.26545.46.camel@Europa.matchpointds> <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net> <5.1.0.14.2.20021101144318.02cf71f0@pop.prodigy.net> <5.1.0.14.2.20021101170236.035dc4b0@pop.prodigy.net>
+To: vijay vijay <vijay_peshkar@hotmail.com>
+Cc: linux-mtd@lists.infradead.org, vijay.peshkar@wipro.com
+Subject: Re: mtd2 partition mapping on mtd1?...
+Message-ID: <20021102200237.GB12053@wohnheim.fh-wedel.de>
+References: <F120gLEbWm5zHXJ6uCu0001bb1e@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5.1.0.14.2.20021101170236.035dc4b0@pop.prodigy.net>
+In-Reply-To: <F120gLEbWm5zHXJ6uCu0001bb1e@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +25,66 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 1 November 2002 17:06:15 -0800, Eugene Surovegin wrote:
-> OK, I got your point :)). Agreed.
+On Sat, 2 November 2002 09:52:47 +0000, vijay vijay wrote:
+> Have added 3 partitions in mtd. The root filesystem is cramfs type.
+> Since it was not being located by default, hardcoded cramfs_read
+> to return the rootfs addr. Now the target is coming up..Am getting
+> below results too...
 > 
-> But Anders *should* use "c 90 8" otherwise he have to change code for char 
-> device to not right-shift minor number.
+> # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 000c0000 00020000 "boot firmware + kernel"
+> mtd1: 00200000 00020000 "cramfs partition"
+> mtd2: 00100000 00020000 "test partition"
+> 
+> # mount
+> /dev/root on / type cramfs (rw)
+> /proc on /proc type proc (rw)
+> ramfs on /var type ramfs (rw)
+> 
+> Now, "cat /dev/mtd1" and "cat /dev/mtd2" are both fetching
+> same data. How's that?. A dd to /dev/mtd2 is going as..
 
-Correct. :-)
+What do you get on "ls -l /dev/mtd?" ?
+I'd like to be sure what device we are dealing with.
+
+> # busybox dd if=mtd2fs.bin bs=94208 of=/dev/mtd2 count=1
+> MTD_open
+> MTD_write
+> vijay mtd_write (?=E
+> (vijay) in physmap_write32(data=0xaa00aa, adr=0x1554)
+> (vijay) in physmap_write32(data=0x550055, adr=0xaa8)
+> (vijay) in physmap_write32(data=0x200020, adr=0x1554)
+> (vijay) in physmap_write32(data=0xa000a0, adr=0x0)
+> (vijay) in physmap_write32(data=0x28cd3d45, adr=0x400000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> :
+> :
+> :
+> (vijay) in physmap_read32(0xc3ba3000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> (vijay) in physmap_read32(0xc3ba3000)
+> Last[3] is d726c2a6, datum is 28cd3d45
+> (vijay) in physmap_write32(data=0xf000f0, adr=0x0)
+> (vijay) in physmap_write32(data=0x900090, adr=0x0)
+> (vijay) in physmap_write32(data=0x0, adr=0x0)
+> dd: /dev/mtd2: Input/output error
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> MTD_close
+> 
+> On "cat /dev/mtd2", am still seeing old data(as on mtd1)?.
+
+This does not surprise me. Something went wrong on the write. Can you
+narrow the options down a little? Make sure that you don't have an
+-ro-device, check wether flash is locked, etc.
+
+The flash is nor, I suppose.
 
 Jörn
 
 -- 
-Those who come seeking peace without a treaty are plotting.
--- Sun Tzu
+When in doubt, use brute force.
+-- Ken Thompson
