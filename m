@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161bfm-0002A7-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2001 22:59:54 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <2178200CCE4ED311974300A0CC4263FB143612@accounting> 
-References: <2178200CCE4ED311974300A0CC4263FB143612@accounting> 
-To: jglennon@getntds.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: I still do not see how it (fails to) get from cfi_probe into cfi_cmdset_0002 ? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 07 Nov 2001 23:09:15 +0000
-Message-ID: <20169.1005174555@redhat.com>
+	id 161cUx-0002Es-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2001 23:52:47 +0000
+Date: Thu, 8 Nov 2001 03:12:26 +0100 (CET)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+cc: linux-mtd@lists.infradead.org
+Subject: re: journaling
+In-Reply-To: <20011107133747.A5963@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.21.0111080259580.29588-100000@godzilla.axis.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +23,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jglennon@getntds.com said:
-> I have re-read the HOW_TO!  Is do_cfi_probe now replaced by
-> do_map_probe?  I AM doing the "you have to dive into the routine
-> 'do_cfi_probe()' I think...! 
+On Wed, 7 Nov 2001, Jörn Engel wrote:
+> On a regular hard drive, user data journaling maximizes write
+> performance but will only achieve decent read performance when data is
+> read successively that was written successively, too. Very unlikely.
 
-Hmmm. Double-check that the flash really is wired up the way you think it 
-is, that it really is CFI-compliant chips, and that you don't have some 
-special board-specific protection on the WE line - sometimes you need to 
-turn a GPIO pin on to enable write cycles, etc. 
+On the other hand, a "normal" filesystem does not optimize the read speed
+in any other way either. I don't see how you can optimize in another way
+than putting data which belong together logically together
+physically.. the LFS can do this even better than traditional systems
+because data is moved naturally during the GC process and can be
+reorganized.
 
+The main problem with logstructured filesystems is that it's difficult to
+scalably _locate_ the data you want to read. That's why JFFS1,2 have long
+mount-times. Checkpointing the in-core representation would help a bit,
+but it would still not scale well with filesystem size.
 
+Some sort of hierarchical checkpointing could perhaps work.. I haven't
+read very much about that yet but it's a natural issue for JFFS3 :)
 
---
-dwmw2
+The second problem with LFS is the GC process. After some time, you
+reach a state where the log _is_ full and every write has to force a part
+of the GC. There is a lot of tweaking which can be done in that area. As
+you note below it solves fragmentation as a byproduct, but getting good
+performance and low latency is difficult.
+
+> On the other hand, it is trivial to write a disk defragmentation tool
+> for these filesystems. Just read and rewrite everything in the
+> preferred order and the filesystem logic takes care of the rest.
+
+/BW
