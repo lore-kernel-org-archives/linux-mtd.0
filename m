@@ -1,16 +1,17 @@
-Received: from esteem.com ([198.65.249.253])
+Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17hJA1-00079S-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 01:15:46 +0100
-Message-ID: <3D62DBBD.844DD24A@esteem.com>
-Date: Tue, 20 Aug 2002 17:15:57 -0700
-From: Conn Clark <clark@esteem.com>
+	id 17hLKy-0007O9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 03:35:12 +0100
+Received: from [192.168.5.81] (account xjin HELO redswitch.com)
+  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 2502027 for linux-mtd@lists.infradead.org; Tue, 20 Aug 2002 19:35:20 -0700
+Message-ID: <3D62FD94.10009@redswitch.com>
+Date: Tue, 20 Aug 2002 19:40:20 -0700
+From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-To: Christopher Hoover <ch@murgatroid.com>
-CC: MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: How does one mount an existing jffs2 partition so it is   writeable?
-References: <000001c2489f$bf76d070$7c00000a@SNAGGLE>
-Content-Type: text/plain; charset=us-ascii
+To: linux-mtd@lists.infradead.org
+Subject: basic question on CFI flash and JEDEC flash
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -23,34 +24,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Christopher Hoover wrote:
-> 
-> I assumed you were running 2.5.   Try to apply it and see how clean it
-> applies.
-> 
+A basic question on flash memory. What's the difference between CFI and 
+JEDEC flash?
 
-It applied with out a catch and everything seems to work like its supposed
-to now.
+I'm trying to add support of AMD Am29LV642D in MTD. After looking into 
+MTD device drivers, I found three source files doing flash memory probe. 
+They are cfi_probe.c, jedec_probe.c and jedec.c. The comments on jedec.c 
+clearly descibe its usage. But I don't quite understand the other two 
+files. Literally cfi_probe.c does cfi-compliant flash probe and 
+jedec_probe.c does jedec flash probe. My confusion comes from that 
+jedec_probe.c actually calls many cfi-related functions. So what should 
+I do to support Am29LV642D?
 
-Thank you very very much.
+BTW, I successfully added Intel I28F160F3T support, which is an JEDEC 
+type flash (not sure about this, :(), by adding corresponding 
+information into jedec_table[].
 
-	Conn
+Thanks.
 
--- 
-
-*****************************************************************
-  If you live at home long enough, your parents will move out.
- (Warning they may try to sell their house out from under you.)
-*****************************************************************
-
-Conn Clark
-Engineering Stooge				clark@esteem.com
-Electronic Systems Technology Inc.		www.esteem.com
-
-Stock Ticker Symbol				ELST
-
-"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
- This email address may be used to communicate to Conn Clark
- provided it is not being used for advertisement purposes, unless
- prior written consent is given. This email address may not be 
- sold under any circumstances. All other rights reserved.
+- Shawn.
