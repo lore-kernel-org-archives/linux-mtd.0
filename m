@@ -1,19 +1,23 @@
-Received: from mg03.austin.ibm.com ([192.35.232.20])
+Received: from mailc.telia.com ([194.22.190.4])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17a01P-0007nH-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 21:24:39 +0100
-Subject: Re: "Read-only file system" error while writing
-From: Stephen Hui <gromit1463@mailworks.org>
-To: linux-mtd@lists.infradead.org
-Cc: stuart.menefy@st.com
-In-Reply-To: <20020731163530.70c45960.stuart.menefy@st.com>
-References: <1028064443.23642.52.camel@mahi190.austin.ibm.com>
-	<20020731163530.70c45960.stuart.menefy@st.com>
-Content-Type: text/plain
+	id 17a0jV-0007sT-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 22:10:13 +0100
+Received: from d1o899.telia.com (d1o899.telia.com [213.67.176.241])
+	by mailc.telia.com (8.12.5/8.12.5) with ESMTP id g6VLACco000220
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 23:10:12 +0200 (CEST)
+Received: from jocke (h163n2fls32o899.telia.com [217.209.73.163])
+	by d1o899.telia.com (8.10.2/8.10.1) with SMTP id g6VLABV23444
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 23:10:11 +0200 (CEST)
+Message-ID: <000b01c238d7$002d7b60$0200a8c0@telia.com>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: <linux-mtd@lists.infradead.org>
+References: <20020731121648.GA18892@wohnheim.fh-wedel.de>  <20020731115703.GB28984@wohnheim.fh-wedel.de> <20020731103419.GA23749@wohnheim.fh-wedel.de> <FA06AA2C99BCD511951200005A99441001E3ECBE@irvexch1.sextantifs.com> <14572.1028067711@redhat.com> <2881.1028115952@redhat.com> <4164.1028116749@redhat.com>  <6102.1028117866@redhat.com>
+Subject: Problems with full FS
+Date: Wed, 31 Jul 2002 23:12:39 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Date: 31 Jul 2002 15:24:28 -0500
-Message-Id: <1028147069.12139.81.camel@mahi190.austin.ibm.com>
-Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,73 +29,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Thanks, Stuart.
+Hi all
 
-I applied the patches, but still no go.  I did notice that after
-applying the patches, a slightly new behaviour appears: when I
+We have run into a problem with JFFS2(stable branch) lately. I don't have much detalis 
+rigth now since I am on vacation(start to work on Monday). We have this directory
+which contains a lot of log files and the FS is full.
 
-    echo "1" > /dev/mtd0
+When I cd to that dir and do a ls, it hangs in getdents64(0x3, 0x10024c30, 0x1000) forever(not 
+always but 50% of the time) .
+But if do a ls with the absolute path instead(that is, ls /var/log/lumentis) it works just fine.
 
-and then
+Any ideas?
 
-    dd if=/dev/mtd0 of=partition.dat bs=1k count=1
-
-I see that the partition contains a "1\n", then the rest of the bits are
-erased as they should be.  I know that in this case the do_write_word()
-function is called based on the mess of printk()s I've sprinkled into
-the source.
-
-
-When I do these:
-
-    cp rootimg.jffs2 /dev/mtd0
-    cat rootimg.jffs2 > /dev/mtd0
-    dd if=rootimg.jffs2 of=/dev/mtd0 bs=4k
-
-they all call do_write_buffer().  I was looking at the specsheet for my
-STMicro chips, and I didn't see any mention of Write-to-Buffer (command
-0xE0) which is in the Intel command set, and issued by
-do_write_buffer().  Is this command supported on the STMicro chips? 
-Could non-support contribute to my problem?
-
-
-Thanks again,
-Stephen.  :o)
-
-
-
-
-On Wed, 2002-07-31 at 10:35, Stuart Menefy wrote:
-> Stephen
-> 
-> On Tue, 30 Jul 2002 16:27:23 -0500
-> gromit1463@mailworks.org wrote:
-> > I have a set of STMicro flash chips (M28W320CT) that use the Intel
-> > Extended CFI command set (0001), and I'm using kernel 2.4.2.  I can
-> > partition the chips, lock and unlock the chips, erase the chips and read
-> > from (dd) the chips perfectly fine.
-> 
-> I had problems getting these devices to work as well, and ended up deciding
-> there were a couple of bugs which had to be worked around. One is a problem
-> in the state machine which handles unlocking returns to read mode when
-> it should stay in command mode, and the other is a simple error in the CFI
-> data, which gets the size of the device wrong!
-> 
-> The attached changes work for me. Unfortuntaly my cfi_cmdset_0001.c is
-> pretty heavily modified, so the patch may not apply cleanly. The two
-> changes are for do_lock_onblock() and do_unlock_oneblock().
-> 
-> Note that I was using the bottom bank version, so if you find you also
-> need the work around for the CFI data being wrong, you will probably have
-> to adjust the device ID being checked for.
-> 
-> Hope this helps
-> 
-> Stuart
-> 
-
--- 
-"Find out what you've been missing while you've been
-rebooting Windows NT." -- Infoworld on Linux
-
-http://www.ao.com/~regan/penguins/tux.html
+         Jocke
