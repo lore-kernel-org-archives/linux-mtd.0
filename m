@@ -1,19 +1,23 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164] helo=desire.actrix.co.nz)
+Received: from [202.108.44.206] (helo=sm206.163.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 191XTq-0006lh-OM
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 21:08:08 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: <jimzeus@vip.sina.com>, linux-mtd@lists.infradead.org
-Date: Sat, 5 Apr 2003 08:08:24 +1200
-References: <20030404062136.7806.qmail@vip.sina.com>
-In-Reply-To: <20030404062136.7806.qmail@vip.sina.com>
-MIME-Version: 1.0
-Message-Id: <20030404200804.D416515471@desire.actrix.co.nz>
+	id 191dvb-0007O9-C8
+	for <linux-mtd@lists.infradead.org>; Sat, 05 Apr 2003 04:01:11 +0100
+Received: from localhost (localhost [127.0.0.1])
+	by sm206.163.com (Postfix) with SMTP id 6EE261C7DB804
+	for <linux-mtd@lists.infradead.org>;
+	Sat,  5 Apr 2003 11:01:04 +0800 (CST)
+Received: from test (unknown [61.144.207.53])S1IAAO1Gjj5MGc81.1
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 05 Apr 2003 11:01:04 +0800 (CST)
+From: "simonlee" <simonwebook@163.com>
+To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
+Mime-Version: 1.0
+Date: Sat, 5 Apr 2003 11:4:52 +0800
+Message-Id: <20030405030104.6EE261C7DB804@sm206.163.com>
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: [SPAM] FAT on NAND
-Reply-To: manningc2@actrix.gen.nz
+      charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Subject: newbie questions:how can I port JFFS2 to my OS-less platform?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jim
-
-As you see from David and Thomas, there is wide  agreement that FAT on NAND 
-is not a good idea if you want reliable storage.
-
-Some associates of mine using WinCE tried three different commercial 
-FAT-on-NAND solutions before they gave up and moved to YAFFS for data 
-integrity and speed reasons.
-
-The easiest way to get FAT-on-NAND is to use SmartMedia. This is used by MP3 
-players, cameras etc. It works OK, has wear levelling (of a sort - not 
-explicit wear levelling). As Thomas says, this is not pure FAT but is very 
-close and it looks like FAT from the operating system.  I would not trust it 
-for any data I cared about or if I needed a fast file system.
-
-I have had a look at what is required to get YAFFS working on Windows (98, 
-2000, XP). I think this would be far easier, and give far better results, 
-than trying to make FAT robust.
-
--- CHarles
+Hi,all
+=09JFFS2 is written for linux,but I want to port it to my OS-less=
+ environment,I just want to use the filesystem ,but have no time=
+ to write a OS for it.anybody has this kind of experience? =
+ thanks
+ =09=09=09=09
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1simonlee
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1simonwebook@163.com
+=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12003-04-05
