@@ -1,65 +1,65 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14IzFA-0001oy-00
-	for mtd-list@infradead.org; Wed, 17 Jan 2001 20:31:44 +0000
+	id 14IzYS-0001zK-00
+	for mtd-list@infradead.org; Wed, 17 Jan 2001 20:51:40 +0000
 Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
 	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 3.20 #2)
-	id 14IzF8-0001os-00
-	for mtd@infradead.org; Wed, 17 Jan 2001 20:31:43 +0000
-Date: Wed, 17 Jan 2001 20:31:31 +0000 (GMT)
+	id 14IzYR-0001zE-00
+	for mtd@infradead.org; Wed, 17 Jan 2001 20:51:39 +0000
+Date: Wed, 17 Jan 2001 20:51:30 +0000 (GMT)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Kyle Harris <kharris@nexus-tech.net>
-cc: mtd <mtd@infradead.org>
-Subject: Re: Newbie: more questions
-In-Reply-To: <3A65F6B3.B7842663@nexus-tech.net>
-Message-ID: <Pine.LNX.4.30.0101172017260.1101-100000@imladris.demon.co.uk>
+To: <mark.langsdorf@amd.com>
+cc: <mtd@infradead.org>,  <jffs-dev@axis.com>
+Subject: Re: 101% in use?
+In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9F285@txexmta8.amd.com>
+Message-ID: <Pine.LNX.4.30.0101172034350.2011-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, 17 Jan 2001, Kyle Harris wrote:
 
-> 1) What is the difference between JFFS and JFFS2?
+(This be more appropriate on the JFFS list, so I've CC'd the response
+there)
 
-Main fundamental difference: JFFS exists and JFFS2 is a little more 
-than twinkle in our collective eyes and a few kilobytes of code on my 
-workstation which doesn't compile.
+On Tue, 16 Jan 2001 mark.langsdorf@amd.com wrote:
 
-JFFS2 will support compression and hardlinks, forward compatibility, will
-(hopefully) have formal proof the the GC can't get stuck, and will have
-NAND flash support designed in from the start. Oh, and it'll make the tea.
+> I've finally gotten my flash system 95% working, and now I'm
+> performing some stress tests to make sure that everything is
+> good.
 
-Discussion of JFFS is best taken to jffs-dev@axis.com
+At last :) Good. Have you solved the random oops on write cycles to the 
+ioremapped flash addresses, then?
 
-> 2) Is NAND flash supported by JFFS? Is NAND flash supported by the
-> character device?
+> The partition size is 14.5 megs, give or take a bit, and
+> I have a very large directly (around 2.7 megs) that I'm
+> repeatedly copying onto the disk and deleting.  At one
+> point, I got my italicization (according to df) up to 
+> 101%, with a negative number of free blocks.  Is this bad?
 
-Yes, Steve Hill modified the existing JFFS code to meet the requirements 
-of NAND flash. I haven't used or checked it myself, but having discussed 
-stuff with him, I expect his code to be good.
+I wouldn't worry too much about the the results of df. We basically make
+stuff up in jffs_statfs(). It's only if the internal filesystem code
+_really_ thinks there are negative amounts of free space that I'd start to
+wet myself. And I don't think that's the case.
 
-He also provided a driver for certain types of NAND flash, and an an ECC
-mechanism for use with JFFS on NAND flash.
+> After I deleted the most recent copy of the directory, 
+> utilization dropped to 100%, with 44 blocks free.  
+> Shouldn't the GC be kicking in and getting rid of the
+> rest of the dirty space?  It's stayed at 44 blocks for
+> quite some time.
 
-> 3) Can the filesystem be limited to using only part of a device? For
-> example, can I write a compressed image to a well-known area in flash 
-> (that the boot is aware of) and prevent the fs from using this? Does
-> this apply to both NOR and NAND flash?
+Nope, that's OK. No point in GC'ing it till we actually need to - we GC
+enough to keep some space free but don't compact it right down till we
+want the space. It's a tradeoff between gratuitous flash erases and later
+write performance. It's tweakable - see the code in thread_should_wake().
 
-Yes. You register a handful of MTD devices, one for each 'partition' you 
-desire, with methods which simply subtract an offset from the requested 
-addresses and pass the call through to the original physical MTD device. 
-See mtdpart.c and anything which calls add_mtd_partitions() for more 
-information.
- 
-> > 4) How are different blocks/sectors within a device accessed by the
-> character device? Do I use different device minors or do I seek to an
-> address?
+If you want the background thread to always keep as much space free as 
+possible, change the 'return 0' at the end of the routine to 'return 1'.
 
-See above. They appear as different devices to the MTD layer, and hence 
-appear on different device minors, yes.
+Or at runtime, if you want the GC thread to wake up, send it a SIGHUP.  
+It'll GC a little and go back to sleep. Repeat until you're happy or 
+the dirty size is less than a sector (i.e. it can't usefully GC any more).
 
 -- 
 dwmw2
