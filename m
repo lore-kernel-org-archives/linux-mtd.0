@@ -1,52 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14VVta-0003NS-00
-	for mtd-list@infradead.org; Wed, 21 Feb 2001 09:49:14 +0000
-Received: from gw-nl4.philips.com ([212.153.190.6])
+	id 14VXF4-0003co-00
+	for mtd-list@infradead.org; Wed, 21 Feb 2001 11:15:30 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14VVtZ-0003NK-00
-	for mtd@infradead.org; Wed, 21 Feb 2001 09:49:13 +0000
-Received: from smtprelay-nl1.philips.com (localhost.philips.com [127.0.0.1])
-          by gw-nl4.philips.com with ESMTP id KAA27043
-          for <mtd@infradead.org>; Wed, 21 Feb 2001 10:49:10 +0100 (MET)
-          (envelope-from erik.niessen@philips.com)
-From: erik.niessen@philips.com
-Received: from notessmtp-nl1.philips.com (notessmtp-nl1.philips.com [130.139.36.10])
-	by smtprelay-nl1.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id KAA16392
-	for <mtd@infradead.org>; Wed, 21 Feb 2001 10:49:09 +0100 (MET)
-Received: from EHLMS01.DIAMOND.PHILIPS.COM (ehlms01sv1.diamond.philips.com [130.139.54.212])
-	by notessmtp-nl1.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id KAA13752
-	for <mtd@infradead.org>; Wed, 21 Feb 2001 10:49:08 +0100 (MET)
-To: <mtd@infradead.org>
-Subject: combine 2 banks into a single mtd device?
-Message-ID: <0056890022171085000002L952*@MHS>
-Date: Wed, 21 Feb 2001 10:50:45 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; name="MEMO 02/21/01 10:47:13"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+	id 14VXF3-0003ci-00
+	for mtd@infradead.org; Wed, 21 Feb 2001 11:15:29 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <0056890022171085000002L952*@MHS> 
+References: <0056890022171085000002L952*@MHS> 
+To: erik.niessen@philips.com
+Cc: mtd@infradead.org
+Subject: Re: combine 2 banks into a single mtd device? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 21 Feb 2001 11:15:26 +0000
+Message-ID: <1906.982754126@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
 
-I am trying to boot from flash on the SC520 development platform from A=
-MD.
->From Vipin I received some code to access the flash. But with this code=
- I get
-two devices mtd0 and mtd1 for each flash bank of 8 MB.
+erik.niessen@philips.com said:
+>  Is there a way to combine the two banks into one mtd device of 16MB?
+> So that I can put a simple Linux system on it.
 
-Is there a way to combine the two banks into one mtd device of 16MB? So=
- that
-I can put a simple Linux system on it.
+Yep. Whatever map driver you're using, switch the add_mtd_partitions call 
+to just register the underlying MTD device directly rather than the 
+partitions.
 
-David is the jffs2 code beta enough for some read only testing?
+> David is the jffs2 code beta enough for some read only testing? 
 
-Thanks for reading sofar.
+Testing is good, yes please. Read-only testing is pointless because nobody's
+written a mkfs.jffs2 yet, so you have to mount an empty filesystem and then
+fill it. It seems OK at the moment until you get to the end of the flash 
+and the GC starts having to do some work. Compression is working nicely. 
 
-	Erik
+I'm working on the GC code. The scan code and the normal read/write/etc 
+operations want exercising. And mkfs.jffs2 wants writing :)
 
-=
+--
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
