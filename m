@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mailg.telia.com ([194.22.194.26])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17aXzh-0003AN-00
-	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 09:41:09 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200208021020.47923.jens.nixdorf@embesso.com> 
-References: <200208021020.47923.jens.nixdorf@embesso.com> 
-To: Jens Nixdorf <jens.nixdorf@embesso.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DOC will formatted again and again 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 02 Aug 2002 09:41:07 +0100
-Message-ID: <25819.1028277667@redhat.com>
+	id 17aYgS-0003GN-00
+	for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2002 10:25:20 +0100
+Message-ID: <003b01c23a06$c83c3940$0200a8c0@telia.com>
+From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+References: <003d01c2399a$b519a9e0$0200a8c0@telia.com>  <FA06AA2C99BCD511951200005A99441001E3ECD8@irvexch1.sextantifs.com>  <12285.1028244660@redhat.com>
+Subject: Re: write suspend and/or erase suspend 
+Date: Fri, 2 Aug 2002 11:27:12 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,16 +24,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jens.nixdorf@embesso.com said:
->  i've send this posting some days before, but didn't get an answer and
->  also didn't found a solution somewhere else. Therefore i send my
-> question again: 
+From: "David Woodhouse" <dwmw2@infradead.org>
+> 
+> Joakim.Tjernlund@lumentis.se said:
+> > When a erase or write is suspened to allow some other part of the FS
+> > to read, is that read garanted to read from another sector than the
+> > one that has been suspended?
+> 
+> > I am asking since I think it's not allowed to access the sector that
+> > has a  suspended operation. I am using Intel Strata Flash. 
+> 
+> Correct. Currently we don't suspend writes, but when we do we need to make 
+> sure we get that right. Reading from a block on which an erase is in 
+> progress is a silly idea anyway, so I don't care that we don't check for 
+> that and make the reader wait.
 
-You need to ensure the offending blocks are _marked_ as bad so we don't try 
-to format them again. Not sure why we don't do that anyway when the format 
-fails.
+Yes, it's silly but can it happen by mistake? The flash state machine may be 
+confused if an access is made during suspend. 
 
-Where did you get nftl_format and how are you trying to run it?
+hmm, my modified driver also supports "suspend erase to do a write". Could that be a problem? 
 
---
-dwmw2
+> 
+> --
+> dwmw2
+> 
+> 
