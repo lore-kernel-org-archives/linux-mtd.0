@@ -1,17 +1,17 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14vQs4-0001UA-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 22:42:48 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <m38zketfse.fsf@DLT.linuxnetworx.com> 
-References: <m38zketfse.fsf@DLT.linuxnetworx.com> 
-To: ebiederman@lnxi.com (Eric W. Biederman)
+	id 14vQuw-0001V4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 May 2001 22:45:47 +0100
+To: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Q: interleave logic? 
-Mime-Version: 1.0
+Subject: Re: Flash driver probe/commandset separation.
+References: <m33damuyn5.fsf@DLT.linuxnetworx.com> <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> <5116.988817985@redhat.com> <17287.988926013@redhat.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 03 May 2001 15:45:52 -0600
+In-Reply-To: David Woodhouse's message of "Thu, 03 May 2001 22:40:13 +0100"
+Message-ID: <m3r8y6p0mn.fsf@DLT.linuxnetworx.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 03 May 2001 22:43:12 +0100
-Message-ID: <17354.988926192@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-ebiederman@lnxi.com said:
->  What do we have nasty half incomplete interleave logic all throughout
-> the cfi code?
+David Woodhouse <dwmw2@infradead.org> writes:
 
-> It looks like it could be done more cleanly with a wrapper around the
-> probe code, and a wrapper around the mapping driver. 
+> ebiederman@lnxi.com said:
+> >  Note there is a good argument for joining the probe paths Handling
+> > chip interleaving, unless we can make it simple we don't want that
+> > duplicated many times.
+> 
+> True. The build_cmd et al macros prevent duplication to a certain extent. 
+> 
+> > I'll try to have something working for 2 & 4 by the end of today.  Any
+> > hints on why the cmdset drivers don't compile? 
+> 
+> I changed the chip driver registration stuff. They need to have a 
+> struct mtd_chip_driver and set mtd->fldrv to point to it. 
 
-The chip driver needs to know about the interleave to some extent - it's 
-got to be able to deal with errors on individual chips in the interleave. 
-(How well we actually do that at the moment is a different question, of 
-course.)
+I'll look I currently have the simply moved the destroy function into
+cfi_probe.  
 
-I thought the macros that were introduced (by Nico?) were roughly the right 
-thing. If you have better suggestions, though, I'm interested.
+> And I'd like to 
+> make the inter_module_xxx stuff go away completely - maybe they can 
+> register with the code in chipreg instead, and get cfi_probe to look them 
+> up that way. That can wait a little while though - I'm not sure that's the 
+> correct approach (because they're not actually probes).
 
---
-dwmw2
+Right, but something smiliar code work.  Or we could make them serve
+dual duty.  
+
+Eric
