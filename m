@@ -1,39 +1,31 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13Ob9x-0003bX-00
-	for mtd-list@infradead.org; Tue, 15 Aug 2000 08:29:17 +0100
+	id 13OcoG-0003oH-00
+	for mtd-list@infradead.org; Tue, 15 Aug 2000 10:15:00 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.16 #2)
-	id 13Ob9v-0003bR-00
-	for mtd@infradead.org; Tue, 15 Aug 2000 08:29:16 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <6011381691@mamao.cetuc.puc-rio.br> 
-References: <6011381691@mamao.cetuc.puc-rio.br> 
-To: miguel@cetuc.puc-rio.br
-Cc: mtd@infradead.org
-Subject: Re: Integrating 2000 and Millenium drivers 
+	id 13OcoE-0003oB-00
+	for mtd@infradead.org; Tue, 15 Aug 2000 10:14:59 +0100
+Received: from cygnus.co.uk (IDENT:dwmw2@localhost [127.0.0.1])
+	by passion.cygnus.co.uk (8.9.3/8.9.3) with ESMTP id KAA16829
+	for <mtd@infradead.org>; Tue, 15 Aug 2000 10:14:56 +0100
+From: David Woodhouse <dwmw2@redhat.com>
+To: mtd@infradead.org
+Subject: Suspension of disbel^H^H^H^H^H^H erases.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 15 Aug 2000 08:29:10 +0100
-Message-ID: <2757.966324550@cygnus.co.uk>
+Date: Tue, 15 Aug 2000 10:14:56 +0100
+Message-ID: <16826.966330896@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I just committed the code to suspend in-progress erases on Intel CFI chips. 
 
-miguel@cetuc.puc-rio.br said:
-> 
->     BTW, I've just begin hacking DoC last month, so forgive me if I'm
-> missing some good reason why these drivers can't be merged... 
+I haven't actually tested this version - I am working with an older 
+snapshot of the MTD code, and this is a forward-port. It compiles, though - 
+what more do you want? 
 
-There's no particularly good reason to keep them separate if we can merge 
-them without killing the performance. I split them up so that I could point 
-people at doc2001.c and say 'There. Make it work if you want to'. 
-
-Now that's done, I don't see any particular reason to keep them separate.
-
-Code reuse is wonderful as long as it doesn't mean shitloads of conditional 
-branches in the inner loop of the access functions. I think we can merge 
-them without doing that, so why not?
+:)
 
 --
 dwmw2
