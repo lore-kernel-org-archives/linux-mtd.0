@@ -1,21 +1,23 @@
-Received: from mailout08.sul.t-online.com ([194.25.134.20])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BdDgs-00067n-Ue
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2004 15:45:52 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 23 Jun 2004 21:39:44 +0200
-References: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
-In-Reply-To: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
+	id 1BdR35-0007JY-1f
+	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2004 06:01:41 -0400
+Message-ID: <40DAA793.8050005@inf.u-szeged.hu>
+Date: Thu, 24 Jun 2004 12:06:11 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200406232139.44496.tglx@linutronix.de>
-Cc: 
-Subject: Re: Please recommend a mtd snapshot
-Reply-To: tglx@linutronix.de
+To: David Woodhouse <dwmw2@infradead.org>
+References: <E1Bd9E6-0002UD-O9@phoenix.infradead.org>	
+	<1088003135.18627.2676.camel@hades.cambridge.redhat.com>	
+	<40D9B37B.2070605@inf.u-szeged.hu>
+	<1088008952.18627.2691.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1088008952.18627.2691.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd/fs/jffs2 compr.c, 1.38, 1.39 compr.h, 1.3, 1.4	compr_lzari.c,
+ 1.1, 1.2 compr_lzo.c, 1.1, 1.2 compr_rtime.c, 1.12, 1.13	compr_rubin.c, 1.18,
+ 1.19 compr_zlib.c, 1.26, 1.27
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 21 June 2004 05:41, zh_chaohao@china.com.cn wrote:
-> Can somebody recommend me a mtd snapshot ?
-> I want it:
+David Woodhouse wrote:
+
+>Thanks. Also please #define spin_lock() /* */ in userspace and remove
+>COMPRESSOR_LIST_{UN,}LOCK, and use KERN_xxx printk prefixes which can
+>also be #defined to nothing in userspace.
+>  
 >
-> Stable
-> Dual flash support
-> NOR and NAND Flash support(Is nand support complete now?)
-> Erase suspend (optional)
+OK, it's ready. (#define spin_lock was not neccasary because it is not 
+used by userspace compr.c)
 
-Well, we have only rare, medium or well done at the moment. Please be=20
-appreciative of any things we can't serve at your wish.
+Did you read my model-file related letter? (3th jun) Will that be OK?
 
-The latest snapshot should be quite stable. If something is missing feel fr=
-ee=20
-to provide patches and improvements.
-
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Regards,
+Ferenc
