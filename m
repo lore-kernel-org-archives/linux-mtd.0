@@ -1,100 +1,54 @@
-From: chaffmanus@yahoo.com (tony Tong)
-Date: Fri, 7 Feb 2003 01:11:59 -0800 (PST)
-Subject: grub-doc patch problem
-In-Reply-To: <20030207090602.24812.16377.Mailman@localhost.localdomain>
-Message-ID: <20030207091159.93150.qmail@web20807.mail.yahoo.com>
+From: kasparek@fit.vutbr.cz (Kasparek Tomas)
+Date: Fri, 7 Feb 2003 10:22:58 +0100 (CET)
+Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
+In-Reply-To: <1044604814.5502.616.camel@imladris.demon.co.uk>
+References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
+ <1044544711.2535.13.camel@passion.cambridge.redhat.com>
+ <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
+ <1044604814.5502.616.camel@imladris.demon.co.uk>
+Message-ID: <Pine.BSF.4.51.0302071016360.70445@kazi.fit.vutbr.cz>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-sorry , because the previous two letters is unreadable
-,I have to change a emailaddress to resend it.
+On Fri, 7 Feb 2003, David Woodhouse wrote:
 
-I want to use grub to boot  from my DOC2000 (32M). 
-According to " GRUB on DoC Millennium/2000 -
-Instructions (Revised) "
-http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html
-,
-I use grub-0.92 and the patch file is
-grub-2002-10-08-doc.patch
-but everytime I use"patch -p0 -i
-grub-2002-10-08-doc.patch" ,I will get the following
-"
-patching file ./AUTHORS
-Hunk #1 FAILED at 42.
-1 out of 1 hunk FAILED -- saving rejects to file
-./AUTHORS.rej
-patching file ./ChangeLog
-Hunk #1 FAILED at 1.
-Hunk #2 FAILED at 88.
-2 out of 2 hunks FAILED -- saving rejects to file
-./ChangeLog.rej
-patching file ./README_DiskOnChip
-patching file ./configure.in
-Hunk #1 succeeded at 228 (offset -13 lines).
-patching file ./stage1/Makefile.am
-patching file ./stage1/doc_stage1.S
-patching file ./stage1/doc_stage1.h
-patching file ./stage1/makecsum.c
-patching file ./stage2/Makefile.am
-Hunk #1 FAILED at 83.
-1 out of 1 hunk FAILED -- saving rejects to file
-./stage2/Makefile.am.rej
-"
+> > I'm trying to get 2.5.59 running on iPAQ and have following problem:
+> >
+> > - in 2.5.7 jffs2/super.c: fs_flags: FS_REQUIRES_DEV was removed from
+> >   jffs2_fs_type.
+> > -> that means 'nodev' word at line with jffs2 in /proc/filesystems
+> >   (in filesystems list -> get_filesystem_list())
+> > -> that means that init/do_mounts.c:get_fs_names() returns empty filesystem
+> >    list because thay skip entries with nodev keyword
+> > -> having no FS list init/do_mounts.c:mount_block_root() do not try to
+> >    mount any FS and it calls panic("VFS: Unable to mount root fs on %s").
+> >
+> > There are few solutions:
+> >
+> > - either use fs_flags FS_REQUIRE_DEV again
+>
+> If we did this, then the mount by MTD device number or partition name
+> would stop working. We'd be back to requiring the mtdblock device to be
+> present again. I'd rather not do that.
+>
+> > - or rewrite get_fs_names()
+>
+> Not just get_fs_names(). We want the 'root=' argument from the kernel's
+> command line to be passed to us, which requires rethinking the way it's
+> converted into a major/minor number for /dev/root and then mounted.
 
-The AUTHORS and CHANGLOG problems has been pointed in
-the instrution ,but the last one hasnot been.
-why this happened?
-If I ignore this error , continue "aclocal && automake
---add-missing && autoconf"
-I will get two warnings:
-configure.in:17: warning: do not use m4_patsubst: use
-patsubst or m4_bpatsubst
-configure.in:681: warning: do not use m4_regexp: use
-regexp or m4_bregexp
+OK, please could you summarize actual state - how it should work without
+mtdblock device. What is now the right value for 'root='?
 
-Then 
-"./configure --enable-diskonchip-2000
--enable-diskonchip-ctrlbypass -enable-ext2fs " and 
-"make" ,
-it will stop ,and dump the following error infomation:
+If there is some page about this, please give me link(s) too.
 
-"
-stage2.c: In function `cmain':
-stage2.c:1019: `current_term' undeclared (first use in
-this function)
-stage2.c:1019: (Each undeclared identifier is reported
-only once
-stage2.c:1019: for each function it appears in.)
-stage2.c:1019: `TERM_DUMB' undeclared (first use in
-this function)
-make[2]: *** [pre_stage2_exec-stage2.o] Error 1
-make[1]: *** [all-recursive] Error 1
-make: *** [all] Error 2
-"
+(I'm not in the list, so please CC me.)
 
+Thanks
 
-what is wrong with my steps? 
-Anything I missed?
-Hope some kind guys could  give me a hand and thanks
-in advandce
- 
+--
 
-BTW:
-I have tried grub-2003-01-08-doc.patch ,but I got the
-same result 
-My linux is redhat7.1 , kernel is 2.4.2 , 
-I have used rpm package to update automake to 1.5 and
-autoconf to 2.53
-
-
-
-
-
-
-
- 
-
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+	Tomas Kasparek (sioux), PhD student FIT VUT Brno
+ 	  tomas.kasparek@[seznam.cz,volny.cz]
+	  kasparek at fit.vutbr.cz, linux at fit.vutbr.cz
+	  http://www.fit.vutbr.cz/~kasparek
