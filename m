@@ -1,140 +1,113 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 131uI7-0003eO-00
-	for mtd-list@infradead.org; Tue, 13 Jun 2000 18:15:55 +0100
-Date: Tue, 13 Jun 2000 11:16:06 -0600 (MDT)
-From: Jason Gunthorpe <jgg@ualberta.ca>
-Reply-To: Jason Gunthorpe <jgg@ualberta.ca>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: mtd@infradead.org
+	id 131utS-0003ir-00
+	for mtd-list@infradead.org; Tue, 13 Jun 2000 18:54:30 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 131utO-0003il-00
+	for mtd@infradead.org; Tue, 13 Jun 2000 18:54:26 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.3.96.1000613104519.11182F-100000@wakko.deltatee.com> 
+References: <Pine.LNX.3.96.1000613104519.11182F-100000@wakko.deltatee.com> 
+To: Jason Gunthorpe <jgg@ualberta.ca>
+Cc: mtd@infradead.org
 Subject: Re: Common Flash Interface probe code. 
-In-Reply-To: <11705.960912719@cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000613104519.11182F-100000@wakko.deltatee.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 13 Jun 2000 18:54:22 +0100
+Message-ID: <19411.960918862@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Tue, 13 Jun 2000, David Woodhouse wrote:
+jgg@ualberta.ca said:
+>  Well, that would be the point, you wouldn't make the page function
+> callable outside the low level driver. If ever two EC's could get into
+> the page function at once that would be a bug in the higher level
+> drivers. 
 
-> > Well, yes and no, AFAIK. The mapped driver was always indented to be
-> > used for memory mapped flash, that is flash that is connected directly
-> > to the CPU data bus (ie it is RAM).
- 
-> IIRC it shouldn't have been using readb at all, in that case. Just 
-> dereferencing pointers would be fine. (Thinks.... if you've been using it 
-> on ARM, was it me that added the readb() then?)
+I have a board here which has two flash chips in the same 'map'. I
+definitely want to be able to talk to each one individually and
+concurrently. Locking individual chips against concurrent access is
+_different_ to locking the page register.
 
-I just got the ARM boards two weeks ago.. the mapped driver probably
-should not have been using readb..
- 
-> > IMHO you should add another abstraction to keep this tidy:
-> >   top) Full blow MTD interface with write, read, erase functions. This
-> >        is what the MTD char, block and filesystems talk to
-> >   flash) Common functions shared by direct memory mapped flash, rom and
-> >          rams. Contains CFI and JEDEC routines, ram and rom reader and ram
-> >          writer. Maybe some file systems speak to this layer too..
-> >   mapped) Aide for Memory Mapped flash, provides a many
-> >           readers, one writer type locking for the paging function, and
-> >           the necessary fast IO functions using simple memory references.
-> >   low level mapped driver) Provides a paging function and sets up the
-> >           memory window [turn on write through, bring the physical memory
-> >           into the page tables, etc]
- 
-> I'm not sure why you want to separate the bottom two. The locking issues
-> don't work wonderfully if you make the 'page' function callable outside the
-> low-level mapped driver. Different hardware requires different locking, and 
-> it's worth having it all-in-one, with a set of access operations which 
-> lock, page and do the operation, then unlock.
 
-Well, that would be the point, you wouldn't make the page function
-callable outside the low level driver. If ever two EC's could get into the
-page function at once that would be a bug in the higher level drivers.
+jgg@ualberta.ca said:
+>  IMHO the driver should simply populate the structure with the
+> functions it supports (either read/write/etc or page) and then pass
+> that to a detect function which does all supported probes. Then you
+> can compile in/out support for various kinds of devices if you want
+> to.
 
-> What I have at the moment is...
+> Having the drivers call seperate probe functions is not what I had in
+> mind at all when I wrote that, I wanted to have a single probe
+> function and a 'hint' structure.
 
-Yes, I saw..
+We can do that quite simply, probably with an inline routine in map.h to 
+call all known probe functions in a sensible order. Map drivers which know 
+exactly what type of device they will contain can still call the right 
+probe function directly.
 
->     This is passed to a various probe functions, for example ram_probe.,
-> 	until one of them appears to like it.
 
-IMHO the driver should simply populate the structure with the functions it
-supports (either read/write/etc or page) and then pass that to a detect
-function which does all supported probes. Then you can compile in/out
-support for various kinds of devices if you want to.
+jgg@ualberta.ca said:
+>  What I am saying is that a good fraction of your low level drivers
+> will look *exactly* the same:
 
-Having the drivers call seperate probe functions is not what I had in mind
-at all when I wrote that, I wanted to have a single probe function and a
-'hint' structure.
- 
-> nora.c, for example, needs no locking because it's all memory-mapped 
-> linearly - there's only about 100 lines of code. It's the right place to do 
-> locking, but that doesn't mean it can't be dead simple. vmax301.c does 
-> locking now - would you claim it's not still simple?
+It's close, but it's not exactly identical. You outlined one case - 'paged
+or unpaged'. There's also 'which bus is it on' and strange things like the 
+octagon board where the page register is actually shared by two devices. You 
+can't handle a decent 'cache' of the currently-available page, you have to 
+call the page function each time. That's an out-of-line function call at 
+_every_ access rather than only the inline checks that it currently does.
 
-Well, it is about 2x as long as the original one :> It is simple right
-now, but if you wanted to add a read/write lock then you'd have to put all
-that complexity into all the low level drivers again, when they don't
-really need it.
+It's _possible_ to make a generic mid-level map driver handle all those
+cases  - but it means extra conditional jumps and/or indirect function calls
+at runtime, which I'm trying to avoid.
 
-What I am saying is that a good fraction of your low level drivers will
-look *exactly* the same:
 
-void device_writebXX(...)
-{
-   lock();
-   page();
-   write();
-   unlock();
-}
+jgg@ualberta.ca said:
+> I think if you clarify that the low level driver routines will never
+> be called concurrently with the same mtd structure that would be a
+> suitably simple design..
 
-or if there is no paging function:
+Suitably simple perhaps, but it's a restriction which should be unnecessary. 
+Concurrent access is fine. Locking may want to be done at a chip level for 
+flash (not RAM or ROM) but not at the 'map' level except as is necessary 
+for paging reasons.
 
-void device_writebXX(..)
-{
-   write()
-}
 
-So why not refactor that code, it makes it simpler for everyone to
-understand and takes about 100 lines out of half the current low level
-drivers.
+jgg@ualberta.ca said:
+> Pity both my boards share the IO window so they do need locking :<
 
-A little later you can add in a rwlock so you can do concurrent
-reads/writes to the same physical page.
+This particular feature means that your hypothetical middle layer map 
+driver cannot cache the last accessed page for any map device, as it may
+change when the device in question hasn't been accessed.
 
-> Most recent flash chips support Suspending of in-progress erases. The one 
-> I'm playing with ATM (Intel 28F128) can even do Program operations while an 
-> erase is suspended. You don't need the same kind of locking. The lock in 
+That's an important optimisation which is being thrown away because we're 
+trying to be too generic.
 
-I know, the AMD ones I was fiddling with last year did this too. It does
-mean that you have to wrap all possible IO functions so you can send the
-abort sequence, then restart the erase. 
+This is entirely my point - to handle that case and the other strange 
+cases which will occur, the mid-level driver is going to have to be 
+horribly ugly. All this special-casing is going to have to be done at 
+runtime, rather than at compile-time as it is at the moment. 
 
-> the low-level driver isn't supposed to be a mutual exclusion lock, it's 
-> only supposed to protect against the page register being changed in the 
-> middle of an operation. I've done it with spinlocks because that's simple - 
-> but it {sh,c}ould be optimised to rwlocks, so you can have multiple 
-> concurrent accesses as long as none of them want to touch the page register.
+I agree that the amount of redundancy is a little less than ideal, but the
+alternative is reduced _runtime_ performance.
 
-I think if you clarify that the low level driver routines will never be
-called concurrently with the same mtd structure that would be a suitably
-simple design.. AFAIK this is what you are saying, which is great. Pity
-both my boards share the IO window so they do need locking :<
+It's not difficult for an author of a new driver to cut'n'paste an existing 
+one. Yes it'll be largely similar, but that's not a problem. That's why 
+it's under GPL - it's not a problem to cut'n'paste.
 
-> Splitting the map drivers into two separate layers would only make that 
-> more complex. There might be fewer lines of code in each individual map 
-> driver, but as a whole each would be 'less obviously correct' because the 
-> interaction with the higher-level map driver would have to be taken into 
-> account.
 
-I disagree, all you should be looking at in the driver is if the paging
-and memory setup functions are correct and that the page window is not
-shared by multiple MTD devices. The mapped driver could handle all
-remaining issues. You can test the mapped driver quite easially, you
-cannot really test the device drivers.
 
-Jason
+
+
+
+
+
+--
+dwmw2
+
 
 
 
