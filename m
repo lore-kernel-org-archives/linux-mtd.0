@@ -1,15 +1,15 @@
-Received: from matrix01.home.net.pl ([212.85.112.31])
+Received: from web51006.mail.yahoo.com ([206.190.38.137])
 	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcqY6-000358-QJ
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 15:03:16 -0400
-Message-ID: <40D88281.2080300@gazeta.pl>
-Date: Tue, 22 Jun 2004 21:03:29 +0200
-From: MarekSk <mareksk7@gazeta.pl>
-MIME-Version: 1.0
+	id 1BcwrR-0003h4-2P
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2004 21:47:38 -0400
+Message-ID: <20040623014730.52022.qmail@web51006.mail.yahoo.com>
+Date: Tue, 22 Jun 2004 18:47:30 -0700 (PDT)
+From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Intel compatible flash device issue
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: What is the best way of creating a jffs2 image and copying it to
+	NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-  I have encountered a problem using M28W160CT flash chip as
-  LINUX character device. This chips is compatible with INTEL standard
-  command set.
+Hi All,
+ I create the jffs2 image by using mkfs.jffs2 and then
+ I try to copy it to NAND flash. When I try to copy
+the jffs2 image by fcp or nandwrite then I get
+different errors.
 
-  Since the chip is locked after power-up, there is required to unlock
-  some blocks before write operation. Of course, this can be done
-  from any application using MEMUNLOCK command.
+If I use the eraseall -j command and then mount the
+flash and copy the files directly it works fine!
+ 
+ What is the best way of creating jffs2 image and
+copying it to NAND flash.
 
-  Once the MEMUNLOCK command is executed (without any error)
-  the flash chip remains in the "command" state.
-  This state after MEMUNLOCK blocks any read access to data stored
-  in the flash.
 
-  Reviewing the cfi_cmdset_0001.c file I have found that single block
-  (un)lock algorithm (do_xxlock_oneblock) is different from these
-  described in the following documents:
-  - STM M28W160CT datasheet (figure 22)
-    <http://www.st.com/stonline/books/pdf/docs/7358.pdf>
-  - Intel 28F160C3 datasheet (figure 20)
-    <ftp://download.intel.com/design/flcomp/datashts/29064518.pdf>
+Best Regards,
+--vahid
 
-  It seems that there should be issued the reset command (0xff) just
-  after lock (0x01)/unlock (0xd0) command.
 
-  Any comments, ideas ?
-
-Thanks in advance,
-   MarekSk
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
