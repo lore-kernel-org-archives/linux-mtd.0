@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KL3I-0004pC-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 16:37:52 +0100
+	id 17KL5q-0004pq-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 16:40:30 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1024414167.9366.9.camel@geb> 
-References: <1024414167.9366.9.camel@geb> 
-To: Chris AtLee <catlee@canada.com>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS & MTDBLOCK 
+In-Reply-To: <20020618112117.5634.qmail@linuxmail.org> 
+References: <20020618112117.5634.qmail@linuxmail.org> 
+To: "xyz xyz" <watsup@linuxmail.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DOC boot prob,making rum 4 GRUB 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 18 Jun 2002 16:37:36 +0100
-Message-ID: <14188.1024414656@redhat.com>
+Date: Tue, 18 Jun 2002 16:40:13 +0100
+Message-ID: <14458.1024414813@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,22 +23,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-catlee@canada.com said:
->  I'm not sure that I understand what this means...
-> Does it mean that for production units where you want the filesystem
-> to be writeable you should use JFFS on a non-MTDBLOCK device?
+watsup@linuxmail.org said:
+>  i have learnt from the list that we need to make room for GRUB on DOC
+> ,how do i do that,david suggested to use DFORMAT,can any1 give me the
+> exact cmd to do that? i dont want to use ntfl_format due to poor block
+> handling 
 
-> Or does it mean that using a filesystem other than JFFS for writing to
-> a MTDBLOCK device is probably a bad idea?
+You can tell DFORMAT how much space to leave for the firmware -- try the 
+/HELP option or something. We don't yet know how to turn our grub_firmware 
+binary into a .EXB file which DFORMAT will write to the flash _for_ us. 
+That would be a nice development -- it shouldn't be too hard to work out 
+how that file works.
 
-It means the latter. When you mount JFFS/JFFS2 on an mtdblock device, it 
-doesn't actually _use_ the read/modify/erase/writeback algorithm described 
--- or indeed use the mtdblock driver at all -- it just uses the minor 
-number of the mtdblock device you specified to get a handle on the real 
-underlying MTD device. 
-
-Using any _other_ file system than JFFS/JFFS2 on the mtdblock device other 
-than in read-only mode is a bad idea. 
+You need to build grub according to the documentation and then see how 
+large the resulting binary is -- _that_ is the amount of space you need to 
+reserve.
 
 --
 dwmw2
