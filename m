@@ -1,17 +1,18 @@
-Received: from [67.106.152.115] (helo=amperion.com)
+Received: from pony1.arc.nasa.gov ([128.102.31.31] helo=mail.arc.nasa.gov)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 193yuD-0003yO-Hx
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 14:49:25 +0100
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Fri, 11 Apr 2003 09:49:26 -0400
-Message-ID: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
-From: "Marc D'Anjou" <marcd@amperion.com>
-To: <linux-mtd@lists.infradead.org>
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Long JFFS2 Mount time?
+	id 1944q3-0004jm-T5
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2003 21:09:32 +0100
+Message-Id: <5.1.1.5.2.20030411130135.018a6698@mail.arc.nasa.gov>
+Date: Fri, 11 Apr 2003 13:10:54 -0700
+To: Ilguiz Latypov <ilatypov@infradead.org>
+From: "Edward A. Hildum" <ehildum@mail.arc.nasa.gov>
+In-Reply-To: <Pine.LNX.4.44.0304110336470.3790-100000@CPE00e0292061fa-CM
+ 014370001917.cpe.net.cable.roger>
+References: <3E9312BF.50009@mail.arc.nasa.gov>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+cc: linux-mtd@lists.infradead.org
+Subject: Re: DoC + GRUB booting problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Ilguiz,
+         The bootloader is definitely the M-Sys BIOS extension.  My 
+impression is that for DoC 2000s, the BIOS extension is in a ROM that can't 
+be changed.  I am still trying to verify that, but if its true, I have to 
+deal with it.  If it can be changed, like in a DoC Millenium, I could be in 
+business.
 
-Hi,
+So far, I have only used DFORMAT as described in the GRUB/MTD Readme_doc 
+file.  I haven't tried using doc_loadbios yet, but if the BIOS extension 
+code is in ROM, I will still have to change its checksums to get it to 
+load.  Since M-Sys hasn't told me (yet) what format DFORMAT expects from 
+binary files, doc_loadbios may indeed be the best way to proceed.
 
-I am using an embedded system with an IBMPPC405h and one bank (16meg)
-Intel strata flash. The page size is 4k bytes. The sector size is 128k
-bytes.  I am using the MTD Flash driver with the JFFS2 software version
-2 (newest files dated 7/2002). I'm not sure what the CVS revision number
-is?=20
+Thanks,
+Ted Hildum
 
-I am storing a system log inside the JFFS2. Only critical events are
-stored there for debugging purposes. In general I only store 4 entries
-per run time. Our system is such that it can go up and down daily. As
-our log grows, the JFFS mount time appears to be growing quite a bit. It
-went from less than 1 second when we first started, to up to 7 or more
-minutes over days.=20
+At 03:50 AM 4/11/2003 -0400, you wrote:
 
-My concern is that the mount time could grow to hours. There is a
-possibility that this has happened in a system.
-
-To test this concern, I executed a one line script that appends 450
-bytes repeatedly to the log file in the JFFS2. This was continued until
-the log file size grew to 2 Meg bytes. =20
-
-" cat file1.txt >> /mnt/jffs2/file.log "                  where
-file1.txt contains 450 bytes (ascii text file).
-
-Then I reset the system and watched how long it took to mount the JFFS2.
-It took about 13 minutes to mount!!!!
-
-I then did:  "ls -l" of the directory and it took about 30 minutes to
-come back???????
-
-The second and subsequent "ls -l" was very quick (normal speed for an
-ls). It acted as if all the information was cached.
-
-My understanding is that each time we append a 450 byte entry, a new
-page in the JFFS2 is obtained, it copies the previous page contents,
-plus the new 450 byte entry, then marks the old page for deletion. If
-this is repeated many times, the Garbage Collection Task will require
-more time to resolve the JFFS2 when it mounts the next time up. There
-will be many pages marked for deletion, essentially a longer trail of
-pages to resolve.
-
-Is this your understanding of the problem??
-
-Does anyone know how to get around this problem???=20
-
-Is there newer JFFS2 software available that minimize this behavior?
-
-=20
-Marc D. D'Anjou
-
-=20
+>On Tue, 8 Apr 2003, Edward A. Hildum wrote:
+>
+> > I have disassembled the BIOS boot code (included below) and found some
+> > conflicts with the README_DiskOnChip info:
+>
+>Ted,
+>
+>May I suggest that the DoC bootloader you've disassembled was the one
+>supplied by M-Sys?  I myself didn't use the DFORMAT utility to load the
+>GRUB firmware, but that shouldn't mean it isn't possible.
+>
+>Is it possible to DFORMAT the DoC's NFTL layer only, starting from the
+>given offset?  If yes, it would be a good choice, accompanied by the
+>mtd/util/doc_loadbios utility which will store the grub_firmware file into
+>the beginning of the flash memory.
+>
+>I heard that the mtd/util/nftl_format utility may not be compatible with
+>the bad block table stored in the DoC at the factory.  I was lucky enough
+>to disregard the bad block table by issuing the erase_all command against
+>/dev/mtd0 and then proceeding with nftl_format.  However, this is not the
+>safest approach because NAND memory is error prone.
+>
+>--
+>Ilguiz Latypov
+>Montreal, Quebec
+>Canada
+>
+>tel. +1 (514) 526-6911
