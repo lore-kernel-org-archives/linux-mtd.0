@@ -1,17 +1,17 @@
-Received: from ns1.ibisnet.net ([206.96.176.8])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16px5D-0000Vi-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Mar 2002 19:58:15 +0000
-Received: from [209.241.58.14] by ns1.multitechcorp.com (NTMail 4.30.0013/AX0073.00.28c4a373) with ESMTP id fnwsoaaa for <linux-mtd@lists.infradead.org>; Tue, 26 Mar 2002 15:00:06 -0500
-From: "Antonio Ruggieri" <truggieri@multitechcorp.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: logging into Anonymous CVS
-Date: Tue, 26 Mar 2002 14:59:38 -0500
-Message-ID: <000d01c1d500$c37f4a20$5d130aac@multitechcorp.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 16pz3q-0000gA-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Mar 2002 22:04:58 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <000d01c1d500$c37f4a20$5d130aac@multitechcorp.com> 
+References: <000d01c1d500$c37f4a20$5d130aac@multitechcorp.com> 
+To: "Antonio Ruggieri" <truggieri@multitechcorp.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: logging into Anonymous CVS 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 26 Mar 2002 22:04:40 +0000
+Message-ID: <31456.1017180280@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,8 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+truggieri@multitechcorp.com said:
+>  Is the CVS system down? I can't seem to login and download anymore.
 
-Is the CVS system down? I can't seem to login and download anymore.
+>From the headers of every mail on the list...
+	List-archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Tony R
+--
+dwmw2
