@@ -1,15 +1,15 @@
-Received: from [202.108.44.230] (helo=163.com)
+Received: from [202.108.44.144] (helo=163.com)
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AxiFy-0002Xr-27
-	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 07:54:30 +0000
+	id 1AxkAV-0002ro-Tc
+	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 09:57:00 +0000
 MIME-Version: 1.0
-Message-ID: <4042EC2C.000060.10501@bj230.163.com>
-Date: Mon, 1 Mar 2004 15:54:20 +0800 (CST)
+Message-ID: <404308E3.00003E.11977@bj144.163.com>
+Date: Mon, 1 Mar 2004 17:56:51 +0800 (CST)
 From: "aaa" <qixiaolili@163.com>
 To: linux-mtd@lists.infradead.org
 Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset="gb2312"
-Subject: Need help on ffs2.0 !
+Subject: Some question about ffs2.0.(Need Help)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
