@@ -1,18 +1,16 @@
-Received: from host28.istor.com ([66.134.214.28]
-	helo=mail1irv.inside.istor.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1Atwb4-0004iA-Nq
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 22:24:42 +0000
-content-class: urn:content-classes:message
+Received: from web20721.mail.yahoo.com ([216.136.226.73])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AtxaV-0004xf-7H
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2004 23:28:11 +0000
+Message-ID: <20040219232807.54442.qmail@web20721.mail.yahoo.com>
+Date: Thu, 19 Feb 2004 15:28:07 -0800 (PST)
+From: Shawn Jin <shawnxtech@yahoo.com>
+To: David Vrabel <dvrabel@arcom.com>
+In-Reply-To: <40348A59.1000401@arcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 19 Feb 2004 14:23:12 -0800
-Message-ID: <7D036BD3216A084DB1BD9D62BCEAF29049A3C7@mail1irv.inside.istor.com>
-From: "Chris Carlson" <ccarlson@istor.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Old version of Linux
+Content-Type: text/plain; charset=us-ascii
+cc: linuxmtd <linux-mtd@lists.infradead.org>
+Subject: Re: Help: Error on mounting JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for the long e-mail.  I'm hoping to minimize going back and forth
-explaining why I'm asking what I'm asking.
+> > The version of cfi_cmdset_0002.c is 1.94, which is almost up-to-date
+> > without David Vrabel's patches. I have some questions on the debugging
+> > messages shown below.
+> > [...]
+> > MTD do_write_oneword(): WRITE 0x00780000(0xc03bdd84)
+> > MTD do_write_oneword(): Check 0xffffffff 0xffffffff
+> > MTD do_write_oneword(): Check 0xffffffff 0xffffffff
+> 
+> This looks like you're not write-enabling the flash device or the 
+> sectors are write protected so nothing ever gets written.  I'm a bit 
+> surprised the write didn't fail with an error though.  The datasheet I 
+> have here for the AM29LV128M doesn't say what the chip is supposed to do 
+> when you try to erase/program protected sectors.
 
-My company is developing an embedded iSCSI device using Linux as one of
-the core operating systems.  We are not a rich company and thus we
-purchased MontaVista Linux a year or so ago and did not renew the
-license.  The kernel version MontaVista provided was 2.4.17.
+Thank you very much for your hints.
 
-We have now reached the point where we need to put a file system on our
-Toshiba TC58256AFT NAND flash.  The theory was that we'd update the
-drivers from your group, bring up Linux and Voila!  Too bad they didn't
-talk to me back when they made this decision.
+Before I forgot to disable write protection (WP#) and the mtd driver even
+couldn't probe the chip. After WP# is disabled, which is controled by a bit
+of an internal register of the board, the flash Am29PL320D
+(http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/24075.pdf)
+is found, which, I think, verifies that the flash device is write enabled.
+Right?
 
-Anyway, enough with the history.  I'm now stuck with getting the NAND
-flash working.  Based on the errors I got when compiling the new drivers
-and the responses you've given to others who had the same problems, your
-solution is to upgrade the kernel to something newer.
+The device is shipped with all sectors unprotected and I'v verified this by
+manually issuing the Sector-Protect-Verify command sequence through a BDI.
 
-The problem with this solution is:
-  1 - We have to figure out how to merge all the enhancements MontaVista
-put in.
-  2 - We have to probably rebuild all of the Unix utilities and
-libraries.
-  3 - We have to port all of our internally written drivers to support
-the new release.
+This device is obviously not writable on linux. But why? Each factor I've
+found with the help from this mailing list indicates contrarily that the
+device be writable. What else will cause a device unwritable?
+ 
+> The reason the latest CVS appears to work better is because it no longer 
+> checks the flash to see if the data actually got written -- it assumes 
+> the status reported by the chip is correct.
 
-My concern is that the above will be months of work (since I have to do
-it by myself).
+This explains why the files are gone after the system reboot. Thanks.
 
-The other solution is to see if I can port your latest drivers to the
-old Linux.
+-Shawn.
 
-My question is: Is porting your latest drivers to the old Linux
-something that is essentially impossible?  If not, are there any
-gotcha's I should be aware of?
-
-Thanks for your time and understanding.
-
-
-Chris Carlson
-iStor Networks, Inc.
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail SpamGuard - Read only the mail you want.
+http://antispam.yahoo.com/tools
