@@ -1,14 +1,14 @@
-Received: from mailf.telia.com ([194.22.194.25])
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16e1Vr-0004W2-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 22:16:27 +0000
-Message-ID: <004501c1bb26$eb668380$e0d9b5d4@jocke>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: <gleixner@autronix.de>, "David Woodhouse" <dwmw2@infradead.org>
+	id 16e1bD-0004Wd-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 22:21:59 +0000
+Message-ID: <001601c1bb27$b8bac0d0$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: "Ilguiz Latypov" <ilatypov@superbt.com>
 Cc: <linux-mtd@lists.infradead.org>
-References: <IGEFJKJNHJDCBKALBJLLAEKJFBAA.joakim.tjernlund@lumentis.se> <02022122583010.18560@thomas> <002f01c1bb23$dfceb540$e0d9b5d4@jocke> <02022123225211.18560@thomas>
-Subject: Re: jffs2_scan_make_ino_cache() in scan.c very slow
-Date: Thu, 21 Feb 2002 23:27:17 +0100
+References: <Pine.LNX.4.44.0202211614390.27335-100000@server.superbt.com>
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Thu, 21 Feb 2002 17:32:20 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -24,15 +24,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Ilguiz,
 
-> On Thursday, 21. February 2002 23:05, Joakim Tjernlund wrote:
-> > What did you try? My cfi_cmd0001.c changes(I guess not, since you are
-> > on NAND) or the inode cache thing?
-> the inode cache thing
+It appears that the 2-byte signature (55 AA) is not there after I run the "doc_loadbios"
+program.  The entire IPL that was there (after the M-Sys DFORMAT) is modified by
+doc_loadbios.  The motherboard BIOS is no longer seeing that 2-byte signature, so none of
+the other steps are even attempted.
 
-hmm, how big is your FS? Maybe, if you have a small FS the inode 
-cache thing gets lost in "noise" from the NAND driver?
+I did apply the grub-2002-02-19-doc.patch prior to trying all of this; I used the
+2002-02-19 version of GRUB as detailed in your initial post, using the configure options
+specified.
 
-My FS is 63 MB and df reports 31% used.
+Regards,
 
-      Jocke
+Mark
+
+On Thur, 21 Feb 2002,  Ilguiz Latypov wrote:
+
+> Can you please try the updated DoC GRUB patch?  This shouldn't fix the INT
+> 19h problem though.
