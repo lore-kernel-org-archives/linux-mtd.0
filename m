@@ -1,23 +1,22 @@
-Received: from mailout.fastq.com ([204.62.193.66])
+Received: from hardrain.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZEWi-000828-53
-	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 19:46:20 +0100
-Received: from aquaman (foobar@russ.gothicfury.com [65.39.81.227])
-	h66IkXD68167	for <linux-mtd@lists.infradead.org>;
-	Sun, 6 Jul 2003 11:46:33 -0700 (MST)
-	(envelope-from Russ.Dill@asu.edu)
-From: Russ Dill <Russ.Dill@asu.edu>
-To: Gregg C Levine <hansolofalcon@worldnet.att.net>
-In-Reply-To: <000001c343e5$e6bb1d20$239efea9@who5>
-References: <000001c343e5$e6bb1d20$239efea9@who5>
-Message-Id: <1057517262.2658.292.camel@localhost>
-Mime-Version: 1.0
-Date: 06 Jul 2003 11:47:42 -0700
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+	id 19ZHv9-0008QJ-C5
+	for <linux-mtd@lists.infradead.org>; Sun, 06 Jul 2003 23:23:47 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Russ.Dill@asu.edu,
+	Gregg C Levine <hansolofalcon@worldnet.att.net>
+Date: Mon, 7 Jul 2003 10:27:18 +1200
+References: <000001c34351$aa810520$239efea9@who5>
+	<1057473735.2659.247.camel@localhost>
+In-Reply-To: <1057473735.2659.247.camel@localhost>
+MIME-Version: 1.0
+Message-Id: <20030706222358.8B57143EF@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 cc: linux-mtd@lists.infradead.org
-Subject: RE: File systems and Disk on Chips
-Reply-To: Russ.Dill@asu.edu
+Subject: Re: File systems and Disk on Chips
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sunday 06 July 2003 18:42, Russ Dill wrote:
+> On Sat, 2003-07-05 at 17:00, Gregg C Levine wrote:
+> > Hello from Gregg C Levine
+> > I have here a 2 Megabyte Disk on Chip device, plugged into a carrier
+> > board. It is now wearing the GRUB based firmware. How when I bring up
+> > my system, the DOC device complains about the lack of a file system.
+> > Any ideas as to how I could put a file system on this device?
+> > Preferably as a native Linux format.
+>
+> Basically, you put a block filesystem on top of NFTL that grub
+> understands. Grub does not at this point understand YAFFS or JFFS2 on
+> NAND flash, but I'm sure there a lot of people who are looking for that
+> and it wouldn't be difficult to do.
 
-> Okay that makes more sense. But now how do I go about creating the "
-> block filesystem on top of NFTL", that I need to use? 
+There is a YAFFS bootloader in CVS. Integrating into any loader (eg. grub) 
+should not be a big effort. estimate less than a day.
 
-basically use nftl_format with the proper offset, then modprobe nftl,
-fdisk /dev/nftla (Optional), mkfs.ext2 /dev/nftla (or nftla1, 2, etc if
-fdisked)
-
-> For example, I've gotten with my test image, as far as creating a
-> floppy disk image, and booting that, inside the Bochs emulator. It
-> worked, the test kernel launched, and told me that the kernel did what
-> it was supposed to do. 
-> 
-> My other problem, is that I still can not get the utilities inside
-> that directory to properly compile, they always break when trying to
-> create the ones that manage the JFFS2 stuff. I am hoping that the
-> snapshot from yesterday has been fixed, but I don't know.
-
-don't know what to say, worked for me, but at this point, I just use
-prepackaged binaries from my distro anyway.
-
--- 
-Russ Dill <Russ.Dill@asu.edu>
+-- CHarles
