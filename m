@@ -1,20 +1,19 @@
-Received: from dragon.actrix.co.nz ([203.96.16.164])
+Received: from 12-234-34-139.client.attbi.com ([12.234.34.139] helo=heavens.murgatroid.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18b4wi-0003B9-00
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2003 20:24:32 +0000
-Received: from there (203-96-48-192-tollfree.actrix.co.nz [203.96.48.192])
-	by dragon.actrix.co.nz (Postfix) with SMTP id 32F2814AF8
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jan 2003 09:55:25 +1300 (NZDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-Reply-To: manningc2@actrix.gen.nz
-To: linux-mtd@lists.infradead.org
-Subject: Fwd: YAFFS on NOR
-Date: Wed, 22 Jan 2003 09:50:56 +1300
+	id 18bWio-00064t-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2003 02:04:02 +0000
+From: "Christopher Hoover" <ch@murgatroid.com>
+To: "'Frank Becker'" <fbecker@intrinsyc.com>
+Cc: <linux-arm-kernel@lists.arm.linux.org.uk>,
+	"'linux-mtd'" <linux-mtd@lists.infradead.org>
+Subject: RE: 2.5.55-rmk1: user space lossage
+Date: Wed, 22 Jan 2003 18:34:47 -0800
+Message-ID: <000001c2c287$ffa8eef0$800b040f@bergamot>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20030121205525.32F2814AF8@dragon.actrix.co.nz>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <3E2F2354.7060508@intrinsyc.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,26 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+Aha!  This is the problem:
 
+[ch@friction src]$ diff -B -w -Naurp linux-2.5.{52,53}/fs/jffs2 
+diff -B -w -Naurp linux-2.5.52/fs/jffs2/file.c
+linux-2.5.53/fs/jffs2/file.c
+--- linux-2.5.52/fs/jffs2/file.c        2002-12-15 18:08:24.000000000
+-0800
++++ linux-2.5.53/fs/jffs2/file.c        2002-12-23 21:21:34.000000000
+-0800
+@@ -58,7 +58,7 @@ struct file_operations jffs2_file_operat
+        .read =         generic_file_read,
+        .write =        generic_file_write,
+        .ioctl =        jffs2_ioctl,
+-       .mmap =         generic_file_mmap,
++       .mmap =         generic_file_readonly_mmap,
+        .fsync =        jffs2_fsync,
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,29)
+        .sendfile =     generic_file_sendfile
+[ch@friction src]$ 
 
-Hi folks
+If you reverese this change, 2.5.55-rmk1 behaves.
 
-I thought it might be of interest to tell you that people are now starting to
-use YAFFS with NOR. Whether is a Good Thing or not, I will not comment on.
-
-Although YAFFS was designed/written with the intention of working only with
-NAND, you can make it work on NOR too.
-
-YAFFS uses the OOB space in NAND parts to store tag information. All you need
-to do is simulate this area.
-
-For instance, let us suppose you have 64kB blocks. You can do the following:
-* Set YAFFS up for 124 chunks per block. ie 124x512 bytes used for data
-* Use the remaining 2048 bytes to emulate OOB area (16 bytes per chunk).
-
-YAFFS is not erase suspend aware and thus is going to stall during an
-erasure. This might get addressed some time. OK, I lied, I will comment. I
-think JFFSx is superior on NOR for Linux. [The person using YAFFS on NOR is
-not doing this under Linux].
-
--- CHarles
+-ch
