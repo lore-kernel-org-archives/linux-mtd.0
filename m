@@ -1,16 +1,15 @@
-Received: from sccrmhc01.attbi.com ([204.127.202.61])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 187WhX-00051T-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2002 07:58:43 +0000
-Message-Id: <5.1.0.14.2.20021101002546.03b61038@pop.prodigy.net>
-Date: Fri, 01 Nov 2002 00:28:22 -0800
-To: Anders Olsson <Anders.Olsson@matchpointds.com>
-From: Eugene Surovegin <ebs@innocent.com>
-Subject: Re: MTD devices at the wrong place
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <1036137508.26545.46.camel@Europa.matchpointds>
+Received: from nimbus19.internetters.co.uk ([209.61.216.65])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 187ZS7-0005JA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2002 10:54:59 +0000
+Subject: Pointer to documentation request
+From: Alex Bennee <alex@braddahead.com>
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 01 Nov 2002 11:24:20 +0000
+Message-Id: <1036149861.2401.202.camel@cambridge>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,13 +21,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 11:58 PM 10/31/2002, you wrote:
+Hi,
 
->##I guess it's ok to just create one device? or do I have to create them
->all? Or a directory structure under /dev/mtd0 and /dev/mtd1
->mknod /dev/mtd4 c 90 4
+I know I've seen this somewhere before but I'm having no joy picking
+through the MTD site so I'm resorting the the list.
 
-/dev/mtd4 should be c 90 8
+Is there a document that describes the steps you take to configure the
+partitions of an MTD device. In my case I'm using an AMD AM29LV160D but
+as its a CFI device I'm assuming that all I need do is set out the
+correct mapping and I should be able to access various sized blocks of
+the flash as normal block devices.
 
+Is there a pointer to a HOWTO or some such to *using* MTD devices
+anywhere?
 
-  Eugene Surovegin <mailto:ebs@innocent.com>
+Regards,
+
+Alex.
