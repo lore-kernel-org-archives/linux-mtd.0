@@ -1,17 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mailrelay1.inwind.it ([212.141.54.101])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17Ilcd-0003e8-00
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 08:35:51 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <001c01c2134d$6811ed10$8ea8a8a8@yuanfei> 
-References: <001c01c2134d$6811ed10$8ea8a8a8@yuanfei> 
-To: "Sleepy" <sleepygod@sina.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD 16M Flash module detection error? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jun 2002 08:35:46 +0100
-Message-ID: <17698.1024040146@redhat.com>
+	id 17Illq-0003f0-00
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2002 08:45:22 +0100
+Received: from ester (62.98.10.110) by mailrelay1.inwind.it (6.5.015)
+        id 3CAA37A3032B048B for linux-mtd@lists.infradead.org; Fri, 14 Jun 2002 09:44:53 +0200
+Message-ID: <001101c21377$9331b6e0$0100a8c0@ester>
+Reply-To: "Krypton" <krypton8@inwind.it>
+From: "Krypton" <krypton8@inwind.it>
+To: <linux-mtd@lists.infradead.org>
+References: <20020614065541.18847.qmail@web21506.mail.yahoo.com>
+Subject: Re: Howto create a new jffs2
+Date: Fri, 14 Jun 2002 09:46:19 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +26,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-sleepygod@sina.com said:
-> I have a flash module come with Linkup7205SDB, which got total 8
-> AM29LV160DT chips on it. We use it in 32bit mode 4way interleave. But
-> some how I only can detect the first 8M, the kernel give me the
-> following messages:
+-----> > >> Creating 5 MTD partitions on "SA1100 flash":
+> > >> 0x00000000-0x00020000 : "firmware"
+> > >> 0x00020000-0x00040000 : "params"
+> > >> 0x00040000-0x00140000 : "kernel"
+> > >> 0x00140000-0x00fe0000 : "rootdisk"
+> > >> 0x00fe0000-0x01000000 : "test"
+> > 
+> > > Try, mount -t jffs2 /dev/mtdblock4 <dir>
+> > 
+> > I already have tried this but unsuccesfully.
+> > Error : "No such file or directory"
+> > 
+> > Other suggestions ?
+> 
+> what is the output of "ls -l /dev/mtd*" ?
+> 
 
-> Physmap flash device: 1000000 at 80000000
-
-> Physically mapped flash: Found 4 x16 devices at 0x0 in 32-bit mode A
-
-OK... can you try configuring the Physmap device to probe only for the 
-_second_ set of flash chips -- are they at 0x80800000?
-
-If it finds them there, we need to add some debugging code and work out why 
-it's not doing so after finding the first set.
-
---
-dwmw2
+No such file or directory
