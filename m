@@ -1,27 +1,24 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=mail.magtech.com.au)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DDsin-00050u-J4
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2005 18:23:38 -0500
-Received: from mail.magtech.com.au (localhost [127.0.0.1])
-	by localhost.magtech.com.au (Postfix) with ESMTP id CC163894002
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Mar 2005 10:23:32 +1100 (EST)
-Received: from [192.168.65.196] (unknown [192.168.65.196])
-	by mail.magtech.com.au (Postfix) with ESMTP id 068EC894002
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Mar 2005 10:23:32 +1100 (EST)
-Message-ID: <4240A8F3.1070203@magellan-technology.com>
-Date: Wed, 23 Mar 2005 10:23:31 +1100
-From: Aras Vaichas <arasv@magellan-technology.com>
+Received: from lon-del-03.spheriq.net ([195.46.50.99])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DE2LO-0006BH-Tr
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2005 04:40:08 -0500
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-03.spheriq.net with ESMTP id j2N9e5kn027505
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2005 09:40:05 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-03.spheriq.net with ESMTP id j2N9e4ZL014036
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2005 09:40:04 GMT
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <4241396B.D689EB32@st.com>
+Date: Wed, 23 Mar 2005 10:39:55 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <1ffb4b0705032109224f2c7805@mail.gmail.com>
-	<423FBE7F.6090700@magellan-technology.com>
-In-Reply-To: <423FBE7F.6090700@magellan-technology.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+References: <loom.20050322T224733-491@post.gmane.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Re: mtd permission denied
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: atomic file operations
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +28,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Aras Vaichas wrote:
-> Mike Lee wrote:
-> 
->> Hi all
->>   i tried to flash_erase and other flash_* tools to my mtd device, the
->> return value is permission denied, but i am already root login. I have
->> selected MTD_CHAR and MTD_BLOCK in kernel.  Do i miss somethings?
-> This is spookey, I just got the exact same problem at the same time(!)
-> 
-> I'm trying to write data to my Dataflash device, but I get a "permission 
-> denied" error whenever I try to fopen the file "/dev/mtd/2" to write the 
-> data into it. I can read data from it with no problems.
+Sergei Sharonov wrote:
+> Is a write of 1024 bytes atomic?
+> Does it relate to the page size in any way? BTW I am using NAND and the page
+> may vary between 512 and 2048 bytes depending on a device.
 
-Sorry to answer my owns post ... but Mike gave me a hint as to what the problem 
-was.
+No write operation is guaranteed to be atomic. Have a look
+at jffs2_write_inode_range in write.c : if there is not enough
+space in the current block for the whole data, it may be split
+into several chunks. Additionally write ops that overlap a
+cache page boundary (not a flash page) are always split at 
+the page limit.
 
-Mike had MTD_WRITEABLE set in the mask_flags for his partitions, so they were 
-read-only.
+If you want to have atomic writes, you could:
+1) Mandatorily: ensure that your application will not
+issue write ops which overlap a page boundary. 
+You should not tweak the JFFS2 code to write such 
+overlapping nodes, otherwise you must also tweak 
+the GC and it gets difficult.
+2) Either tweak jffs2_write_inode_range to forbid 
+splitting data which does not overlap a page boundary
+or adjust JFFS2_MIN_DATA_LEN to reserve enough 
+space (difficult to estimate maybe if you have
+compression...).
 
-My "permission denied" was caused because I'd left the default Dataflash 
-partition settings in at91_dataflash.c from the MTD backporting work I did last 
-year. The default settings don't honour erase block boundaries and thus the 
-partitions were being mounted "read only". Silly me didn't look at dmesg ...
+The above tweaking should ensure that an input buffer
+is written to JFFS2 FS as a single CRC-protected
+data node.
 
+You should be aware that on NAND flash JFFS2 uses
+a (nand flash) page buffer (wbuf.c), which is flushed 
+only on fsync/sync/umount. So even though your write
+ops will be atomic (with above code tweaks), 
+there is no guarantee that a buffer is effectively 
+committed to flash when write() returns, because the
+end of the data node may remain in the buffer.
+If you want that also, you can tweak JFFS2 again 
+by requiring a  wbuf flush after each "atomic write", 
+or you can have your application call fsync after 
+each write.
 
-regards,
+> Is file rename atomic?
+See jffs2_rename in dir.c. There are two steps:
+make the new hard link, remove the old hard link.
+You may end up with two names for the same inode if
+there is a powerdown, so no it is not atomic.
 
-Aras
+See dir.c, file.c, fs.c for other ops. Generally speaking
+write_inode_range is not an atomic operation, write_dnode
+and write_dirent are atomic ops. The order of operations
+in a file-level operation should ensure global atomicity
+in most cases. I don't know if there are other file-operations
+besides rename which are not atomic.
+
+> Second issue is: How badly these small chunks will affect my mount time?
+There have been previous threads about this.
+Some people proposed some (application-side) workaround, 
+you can find it in the archive or maybe someone will point 
+it to you.
+
+Bye
+Estelle
