@@ -1,25 +1,19 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CUy3m-00005m-O9
-	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2004 20:59:40 -0500
-Date: Thu, 18 Nov 2004 20:58:26 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20041118232527.GI4943@stusta.de>
-Message-ID: <Pine.LNX.4.61.0411182041130.12260@xanadu.home>
-References: <20041118021538.5764d58c.akpm@osdl.org>
-	<20041118154110.GE4943@stusta.de>
-	<1100793112.8191.7315.camel@hades.cambridge.redhat.com>
-	<Pine.LNX.4.61.0411181132440.12260@xanadu.home>
-	<20041118213232.GG4943@stusta.de>
-	<Pine.LNX.4.61.0411181727010.12260@xanadu.home>
-	<20041118232527.GI4943@stusta.de>
+	id 1CV4wP-0000oG-LU
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2004 04:20:36 -0500
+Message-ID: <419DBAA4.4070207@yandex.ru>
+Date: Fri, 19 Nov 2004 12:19:32 +0300
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [patch] 2.6.10-rc2-mm2: MTD_XIP dependencies
+To: 419cf994+419d3f9e@tempmail.wgz.org, bwarden@wgz.com
+References: <Pine.LNX.4.44.0411181209170.27784-100000@localhost.localdomain>
+	<1100810691.31062.22.camel@weaponx.rchland.ibm.com>
+In-Reply-To: <1100810691.31062.22.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Determining actual flash usage of a particular file
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Nov 2004, Adrian Bunk wrote:
 
-> On Thu, Nov 18, 2004 at 05:31:32PM -0500, Nicolas Pitre wrote:
-> >...
-> > Can we make it conditional on CONFIG_XIP_KERNEL instead?
-> > It would be less messy IMHO.
+
+jdub@us.ibm.com wrote:
+> On Thu, 2004-11-18 at 14:15, 419cf994@tempmail.wgz.org wrote:
 > 
-> I copied the dependency from the #ifdef before the #error.
+>>I've been reading through the archives for several days, so I hope I 
+>>haven't missed an answer somewhere.
+>>
+>>Is there a way to determine the actual flash space occupied by a 
+>>particular file on a JFFS2 partition?  'ls' and 'du' report number of 
+>>bytes of the content of the file, but of course compression and other 
+>>factors affect that greatly.
+>>
+>>My definition of actual space is flexible...  could be number of blocks or 
+>>pages occupied, or something similar.  I just need a metric that's more 
+>>closely related to storage space than uncompressed size.
 > 
-> The #error should either go or be the same than the Kconfig dependency.
+> 
+> I don't know of a way to get this info on a running system.  If you can
+> pull the binary filesystem image off of the board you might be able to
+> hack jffs2dump.c in the util directory to give you that info.
+> 
+> Or maybe there are other ways that I don't know about.
+> 
+> josh
 
-And on what basis?  This just doesn't make sense.
+You may write some fctl which does this. In the kernel space, it is very 
+easy to calculate th actual size of the file on flash (just go through 
+node_refs and summ the ref->totlen).
 
-CONFIG_MTD_XIP is there to be compatible with kernels which are made 
-XIP.  This currently means _all_ ARM flavours the kernel currently 
-supports.  Yet there is only SA11x0 and PXA2xx which have proper MTD_XIP 
-primitives ence the #error.
-
-My position is therefore that the CONFIG_MTD_XIP should depend on 
-CONFIG_XIP_KERNEL since this is what it is for, and the #error stay as 
-is.  If ever you make x86 kernel XIPable you'll need to add the missing 
-bits guarded by the #error anyway.
-
-And no, allyesconfig makes little sense on ARM as it has been discussed 
-on lkml before.
-
-
-Nicolas
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
