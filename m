@@ -1,14 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Pedro Aguilar <paguilar@junkerhq.net>
-In-Reply-To: <61863.81.72.55.167.1102777897.squirrel@81.72.55.167>
-References: <61863.81.72.55.167.1102777897.squirrel@81.72.55.167>
+To: mike@bithead.com
+In-Reply-To: <20041213223652.50142.qmail@web54704.mail.yahoo.com>
+References: <20041213223652.50142.qmail@web54704.mail.yahoo.com>
 Content-Type: text/plain
-Date: Tue, 21 Dec 2004 11:39:20 +0000
-Message-Id: <1103629161.6111.55.camel@localhost.localdomain>
+Date: Tue, 21 Dec 2004 11:40:20 +0000
+Message-Id: <1103629220.6111.57.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
-Subject: Re: Kernel freezing when booting with jffs2
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS1 vs JFFS2 compatibility
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-12-11 at 16:11 +0100, Pedro Aguilar wrote:
-> The problem is that when mounting the jffs2 filesystem it says read-only
-> (I'm not giving it any read-only flag in the MTD partition) and then shows
-> the msg 'Warning: unable to open an initial console'
+On Mon, 2004-12-13 at 14:36 -0800, Mike Wellington wrote:
+> Hi-
+>   I know some guys who have JFFS v1 running on their Linux platform.
+> 
+> They want to know what (if anything) is liable to break when they
+> try to go to JFFS2.
+> 
+>   They don't do anything fancy, just simple file operations 
+> (open, write, close).
+> 
+> I told them there should be no problem, but they still
+> want me to ask you experts.
 
-Is there a /dev/console node in your file system? Mounting read-only is
-normal -- add 'rw' on the command line if you don't want it read-only.
+There should be no problem. Obviously the on-medium format isn't
+compatible and you'll need to recreate your file system, but anything
+which worked on JFFS1 should continue to work on JFFS2 -- and more.
 
 -- 
 dwmw2
