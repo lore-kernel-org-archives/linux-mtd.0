@@ -1,14 +1,16 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: mike@bithead.com
-In-Reply-To: <20041213223652.50142.qmail@web54704.mail.yahoo.com>
-References: <20041213223652.50142.qmail@web54704.mail.yahoo.com>
+To: Dave Dillow <dave@thedillows.org>
+In-Reply-To: <1103151351.5814.12.camel@dillow.idleaire.com>
+References: <EFF9A3506F74924AB5CC77BDC66E7935181391@atcml01.atc.army.mil>
+	<1103149330.5809.1.camel@dillow.idleaire.com>
+	<1103151351.5814.12.camel@dillow.idleaire.com>
 Content-Type: text/plain
-Date: Tue, 21 Dec 2004 11:40:20 +0000
-Message-Id: <1103629220.6111.57.camel@localhost.localdomain>
+Date: Tue, 21 Dec 2004 11:43:14 +0000
+Message-Id: <1103629394.6111.59.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS1 vs JFFS2 compatibility
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: Big Problem with DOC 128Mbyte Help! ADDED Note
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-12-13 at 14:36 -0800, Mike Wellington wrote:
-> Hi-
->   I know some guys who have JFFS v1 running on their Linux platform.
-> 
-> They want to know what (if anything) is liable to break when they
-> try to go to JFFS2.
-> 
->   They don't do anything fancy, just simple file operations 
-> (open, write, close).
-> 
-> I told them there should be no problem, but they still
-> want me to ask you experts.
+On Wed, 2004-12-15 at 17:55 -0500, Dave Dillow wrote:
+> Have you tried an alternate means of booting? Perhaps using a modified
+> grub in place of M-System's BIOS driver? I've not tried it, but it
+> could help you avoid having their code trample your filesystem
 
-There should be no problem. Obviously the on-medium format isn't
-compatible and you'll need to recreate your file system, but anything
-which worked on JFFS1 should continue to work on JFFS2 -- and more.
+The real answer is to fix our implementation of INFTL so that it isn't
+considered corrupt by their code. Unfortunately the INFTL documentation
+isn't public -- but there are people from M-Systems on this list.
+Perhaps they could look at it?
 
 -- 
 dwmw2
