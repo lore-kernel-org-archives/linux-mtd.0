@@ -1,18 +1,18 @@
 Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DAwiQ-0003hV-SG
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 16:03:08 -0500
-Message-ID: <4235FC03.1030507@ieee.org>
-Date: Mon, 14 Mar 2005 16:02:59 -0500
+	id 1DAwq8-0003tW-Bq
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2005 16:11:05 -0500
+Message-ID: <4235FDE4.6080701@ieee.org>
+Date: Mon, 14 Mar 2005 16:11:00 -0500
 From: Dan Brown <dan_brown@ieee.org>
 MIME-Version: 1.0
 To: Matt Garratt <m.garratt@adfa.edu.au>
-References: <HMEGLJJFEGIOMNFLAPOFKEALCEAA.m.garratt@adfa.edu.au>
-In-Reply-To: <HMEGLJJFEGIOMNFLAPOFKEALCEAA.m.garratt@adfa.edu.au>
+References: <HMEGLJJFEGIOMNFLAPOFEEAMCEAA.m.garratt@adfa.edu.au>
+In-Reply-To: <HMEGLJJFEGIOMNFLAPOFEEAMCEAA.m.garratt@adfa.edu.au>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: docboot freeze
+Subject: Re: Bad black table not found
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +23,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Matt Garratt wrote:
-> I am still trying to get docboot to work from a DOC200 after giving up on
-> grub after much time wasted. Getting the DOC to boot is the most frustrating
-> thing I have done for quite a while. I get as far as:
+> When my computer boots, I get the following messages that concern me
+> regarding the DOC2000. Are these something I should worry about and if so,
+> is there anything that can be done to fix?
 > 
-> Loading kernel.......Loading initrd.....
+> Bad Block Table not found for chip 0
+> Bad Block Table not found for chip 0
 
-Hi, Matt.  Sorry I didn't respond to your message sooner.  I'm sorry to 
-hear about the trouble you're having.  My guess is that the newly-added 
-initrd support in DOCBoot is buggy in some fashion -- it's received very 
-little testing.
+I assume you're using the new NAND-based diskonchip driver.  This driver 
+uses a BBT scheme which is slightly different from the one used by 
+M-Systems.  (Specifically:  it preserves the MSystems BBT but adds a 
+backup BBT).  The messages you are seeing indicate that we haven't found 
+this "Linux-specific" BBT table.  This is completely normal.
 
-To help me figure this out, can you tell me how much RAM your system has?
+To avoid filesystem corruption, the diskonchip driver won't create the 
+BBT tables it wants unless you give it permission, using either a config 
+option (MTD_NAND_DISKONCHIP_BBTWRITE) or a module load parameter 
+(inftl_bbt_write).  See the config help for more info.
 
-Also, please try the following test:  Install DOCBoot WITHOUT the 
-ramdisk image (but with the same cmdline).  This, of course, should fail 
-when the kernel tries to load data from /dev/ram0.  But at least you 
-should see all the initial kernel messages before it tries to mount the 
-root filesystem.  The fact that you currently don't see those messages 
-indicates to me that DOCboot is doing Something Bad when it loads your 
-initrd.
+When the Linux-specific BBT table is created, it is marked as reserved, 
+so the MSystems tools won't touch it and won't be bothered by it.
 
-> My cmdline is:
-> 
->   root=/dev/ram0 rootfstype=ext2 ro console=tty0
-> 
-> I was wondering if the arguments for the cmdline were defined somewhere and
-> if there any limitations? For example, does root have to be an mtd device?
+> INFTL: corrupt block 4087 in chain 4087, chain length 0, erase mark 0x0?
+> INFTL: formating chain at block 4087
+> INFTL: formatting block 4087
+> nand_erase: Failed erase, page 0x0001fee0
+> INFTL: error while formatting block 4087
+> INFTL: cannot calculate a geometry to match size of 0x6d5c0
+> INFTL: using C:999 H:16 S:28 (==0x6d440 sects)
 
-No, there should be no such limitations.  I don't think this is user 
-error :)
-
-> It sais in the README that there is no serial port support yet the default
-> cmdline contains console=ttyS0,115200 - I am a bit confused by this.
-
-What I meant by that is that you can't see the messages printed by 
-DOCBoot itself on a serial port, only on your monitor.  Also, there is 
-no ability to control DOCBoot from a serial port (using a keyboard, you 
-can skip DOCBoot installation).
-
-The information in your cmdline affects the use of the serial port by 
-the Linux kernel, not by DOCBoot.
-
->  I am trying to run the root filesystem from RAM.
-> 
-> I get the same kernel and initrd file to boot on the same machine from a
-> hard diskc using lilo. The lilo stanza for doing this is:
-> 
-> image = /boot/bzImage
->   root = /dev/ram0
->   label = ramOS
->   initrd = /boot/tiny.image.ext2.gz
->   read-only
-> 
-> I may be misinterpreting the meaning of the cmdline parameters, but any
-> suggestions would be very welcome.
-
-The fact that this works for you in LILO strongly indicates a bug in my 
-initrd loading code, which is very simplistic.
+I can't help you with these messages -- I've never actually used INFTL.
 
 	-Dan
