@@ -1,19 +1,22 @@
-Received: from mailout05.sul.t-online.com ([194.25.134.82])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1ColgU-0002to-Kn
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 11:49:29 -0500
-To: Lokesh Kumar <kumar.lokesh@wrx-us.com>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Wed, 12 Jan 2005 10:50:58 EST."
-	<294FD9D3403A0340BDAC38E48DCEFFDC935788@RES-EXCH>
-Date: Wed, 12 Jan 2005 17:48:40 +0100
-Sender: wd@denx.de
-Message-Id: <20050112164845.AE560C108D@atlas.denx.de>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: how to behave on jffs2 
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1ColqD-00037B-W8
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 11:59:35 -0500
+Date: Wed, 12 Jan 2005 17:59:11 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20050112165911.GE25638@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
+	<20050111215102.GA6289@wohnheim.fh-wedel.de>
+	<1105488400.17853.179.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1105488400.17853.179.camel@tglx.tec.linutronix.de>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <294FD9D3403A0340BDAC38E48DCEFFDC935788@RES-EXCH> you wrote:
-> 
-> I have an embedded Linux (kernel 2.4.18) board at 50MHz, with jffs2 16MB
-> flash. My system creates small files of 700 bytes each and is required to
-> create ~3000 of such files. I see that when there are 1000 files, the system
-> takes 3 minutes or so to mount this partition and then another 3 to do "ls
-> -l". When there are 3000 files, the system takes 10 minutes each for mount
-> and "ls -l". 
-> 
-> Is that expected behaviour?
+Ok, you completely ignore the central issue.  Looks like I was unclear
+about it.
 
-Yes - given the age of MTD code you probably have in this old kernel.
+What happens, if crucial data in flash gets corrupted and is unusable?
+Say, /sbin/init.
 
-Best regards,
+If you don't have a solution for that case, I'm completely unexcited
+about solutions to any lesser problems.
 
-Wolfgang Denk
+Can you make sure /sbin/init remains safe?
+
+Jörn
 
 -- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-Substitute "damn" every time you're inclined to write "very"; your
-editor will delete it and the writing will be just as it should be.
-                - Mark Twain
+The wise man seeks everything in himself; the ignorant man tries to get
+everything from somebody else.
+-- unknown
