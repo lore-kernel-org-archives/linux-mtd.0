@@ -1,59 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14nz6S-0007MO-00
-	for mtd-list@infradead.org; Fri, 13 Apr 2001 09:38:52 +0100
-Message-ID: <3AD6BBC3.95F590B1@cstelecom.com>
-Date: Fri, 13 Apr 2001 10:41:39 +0200
-From: "DELANNEAU Alain" <alain.delanneau@cstelecom.com>
+	id 14oCNk-0004qL-00
+	for mtd-list@infradead.org; Fri, 13 Apr 2001 23:49:36 +0100
+Received: from mail6.galactica.it ([212.41.208.23] helo=galactica.it)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14oCNj-0004qF-00
+	for mtd@infradead.org; Fri, 13 Apr 2001 23:49:35 +0100
+Message-ID: <001f01c0c46b$d810d360$010110ac@archimede>
+From: "Alessandro Staltari" <a_staltari@yahoo.it>
+To: "Manatee" <manatee@pacifier.com>,
+	<mtd@infradead.org>
+References: <Pine.BSO.4.33.0104122209520.4678-100000@shell.pacifier.com>
+Subject: R: mtd on linux
+Date: Sat, 14 Apr 2001 00:48:21 +0200
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: "'mtd@infradead.org'" <mtd@infradead.org>
-Subject: What about a search engine ?
-References: <7657.986564737@redhat.com>  <1072F1A27E99D3119747005004B9A380EB98A6@MAIL> <10552.986566321@redhat.com>
-Content-Type: multipart/mixed;
- boundary="------------BAC84674C3432DCB5C096D87"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Il s'agit d'un message multivolet au format MIME.
---------------BAC84674C3432DCB5C096D87
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+> I compiled the 2.4.1 kernel for Linux which has support for this device.
+> Then I put the card in the PCI slot and rebooted. My harddrive was not
+> recognized.
+>
 
+It seems original DOC firmware interfere with lilo. M-sys provides an
+alternate DOC firmware to allow linux boot from hard drive but I prefer
+booting from a floppy by copying the kernel image to it (cp zImage
+/dev/fd0).
 
-Hi mtd hackers
-I'm a newcomer to mtd and jffs, and I'm impressed
-by the quantity and quality of the subjects treated here !
-I've been browsing this mail archive for some days
-"by hand", but it's so huge now ...
-Wouldn't it be a good idea to set up a search engine ?
+I hope this helps
 
-Nice work anyway
+Alessandro Staltari
 
-
---------------BAC84674C3432DCB5C096D87
-Content-Type: text/x-vcard; charset=us-ascii;
- name="alain.delanneau.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Description: Carte pour delanneau
-Content-Disposition: attachment;
- filename="alain.delanneau.vcf"
-
-begin:vcard 
-n:DELANNEAU;Alain
-tel;fax:01 41 87 74 27
-tel;work:01 41 87 70 79
-x-mozilla-html:FALSE
-org:CS TELECOM;Basic software / System
-version:2.1
-email;internet:alain.delanneau@cstelecom.com
-title:Software development engineer
-adr;quoted-printable:;;4-16, Avenue du G=E9n=E9ral Leclerc=0D=0ABP 74;Fontenay-Aux-Roses;;92260;FRANCE
-x-mozilla-cpt:;-24128
-fn:Alain DELANNEAU
-end:vcard
-
---------------BAC84674C3432DCB5C096D87--
 
 
 
