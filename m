@@ -1,16 +1,29 @@
-Received: from smtp-out4.blueyonder.co.uk ([195.188.213.7])
+Received: from motgate.mot.com ([129.188.136.100])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AOEYu-0001M5-BO
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2003 11:07:24 +0000
-Message-ID: <002601c3b27b$62ca9130$6401a8c0@f87htyy9967774jjyuww2>
-From: "stephen" <lcbr17306@blueyonder.co.uk>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 24 Nov 2003 11:09:10 -0000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: booting from DOC
+	id 1AOJ2Q-0001zU-W8
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2003 15:54:11 +0000
+Received: from il06exr06.mot.com (il06exr06.mot.com [129.188.137.136])
+	by motgate.mot.com (Motorola/Motgate) with ESMTP id hAOFqZZx008203
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Nov 2003 08:52:36 -0700 (MST)
+Received: from labs.mot.com (udomsvc2.labs.mot.com [173.23.250.2])
+	by il06exr06.mot.com (Motorola/il06exr06) with ESMTP id hAOFpZ6u019313
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Nov 2003 09:52:20 -0600
+Received: from udomsvc5.labs.mot.com (udomsvc5.labs.mot.com [173.23.250.5])
+	hAOFpZeT022481       for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Nov 2003 09:51:35 -0600 (CST)
+Received: from atdc00536 by ims1.labs.mot.com
+ (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0HOV00E145DZRX@ims1.labs.mot.com> for
+ linux-mtd@lists.infradead.org; Mon, 24 Nov 2003 09:51:35 -0600 (CST)
+Date: Mon, 24 Nov 2003 09:51:35 -0600
+From: Don Hiatt <don@motorola.com>
+To: linux-mtd@lists.infradead.org
+Message-id: <FPEBLIAFGDEEOHHAGOKBAEGPCDAA.don@motorola.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: DiskOnChip 2000 conflicts with Native CFI?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hello,
 
-didn't get a reply from my last post , which was me rambling on a bit too
-much or my text sounds arrogant? (sorry if it does i am just a newbie)
+I have SA1110 board (based on Intrinsyc's cerfboard) that I am
+trying to get a 384MB DOC (2000, in DIP package) to work with.
+The DOC leaves on CS2 so has an base address of 0x10000000 and is
+attached to the address bus shifted up 2 lines as per M-SYS tech
+note. For the life of me, I am unable to get this thing working.
+My question is, it appears that the CFI interface uses the same
+major/minor number as the DOC (90,0). Is it possible to use CFI
+and DOC at the same time? When I rebuild the kernel (2.4.9 with all
+the ARM patches) and configure it to look for the DOC at 0x10000000
+it does not seem to see the DOC.
 
-I've been reading Karim Yaghmours book, got much further now, maybe someone
-can put me straight on a couple of things? (hopefully)
+I would certainly appreciate any and all comments or suggestions. :)
 
-first of all I managed to install grub using 'doc_loadbios' so it replaces
-the DOC's SPL , then I managed to use 'nftl_format' and formatted from
-memory address '98304' which isn't the size of the grub boot loader but I
-assume represents '16384 + 81920' , '81920' being the last erase offset,
-from here I managed to 'fdisk nftla' and created a new partition
-'/dev/nftla1', I can format this partition and safely read and write data. I
-compiled all the DOC files as modules, I didn't patch the kernel I decided
-to use a clean '2.4.19' kernel' , I also couldn't compile the latest CVS
-tools ;/ so I went back to a previous snapshot
-'Mtd-snapshot-20020708.tar.bz2' , this compiled fine (mainly I couldnt
-compile nftl_format and something to do with empty LIST_HEAD structures,
-blktrans.h with the latest CVS). I also realised that 'grub-0.92' needed
-patching so i did that and repeated the steps with 'doc_loadbios' and
-realised the last erase offset was now '65536' so the boot loader is smaller
-and my new partition begins at offset '81920', plus this should have
-contained 'ctrlbypass' as part of the grub compiled with patch.
+Cheers,
 
-The grub loader boots from the DOC but stops at the grub prompt, how do I
-get grub to boot my kernel image ?
-in karims book it talks about building a root filesystem and
-/boot/grub/menu.lst but I can't see how this can run without the modules
-loaded needed by the kernel (e.g. docecc.o, doc2000.o etc) confused ;/ ...
-
-kind regards
-
-Stephen
+don
