@@ -1,10 +1,12 @@
-Date: Mon, 31 Jan 2005 17:25:05 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050131172133.GJ6694@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.58.0501311722120.17207@phoenix.infradead.org>
-References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-	<1107184897.7567.20.camel@windu.rchland.ibm.com>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CvfMW-0001q3-Hq
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 12:29:22 -0500
+Date: Mon, 31 Jan 2005 18:29:23 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20050131172923.GK6694@wohnheim.fh-wedel.de>
+References: <1107184897.7567.20.camel@windu.rchland.ibm.com>
 	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
 	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
 	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
@@ -13,10 +15,12 @@ References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
 	<Pine.LNX.4.61.0501311145030.14092@localhost.localdomain>
 	<Pine.LNX.4.58.0501311709530.17207@phoenix.infradead.org>
 	<20050131172133.GJ6694@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: Artem Bityuckiy <dedekind@infradead.org>
+	<Pine.LNX.4.58.0501311722120.17207@phoenix.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0501311722120.17207@phoenix.infradead.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
 	MTD mailing list <linux-mtd@lists.infradead.org>,
 	"Robert P. J. Day" <rpjday@mindspring.com>
@@ -30,40 +34,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 Jan 2005, [iso-8859-1] J=F6rn Engel wrote:
+On Mon, 31 January 2005 17:25:05 +0000, Artem B. Bityuckiy wrote:
+> On Mon, 31 Jan 2005, [iso-8859-1] Jörn Engel wrote:
+> > 
+> > What information does the "B" in "10KiB" contain?  And why is it "Ki"
+> > instead of the correct "ki"?
+> Hehe.
+> 
+> This is just widely used unit. And it is usually written like that. And 
+> now most utilities work with such. But if one wants and thinks it is 
+> reasonable, why not to use kib :-)
 
-> On Mon, 31 January 2005 17:11:38 +0000, Artem B. Bityuckiy wrote:
-> > On Mon, 31 Jan 2005, Robert P. J. Day wrote:
-> >=20
-> > > i agree completely, but i thought some of the recognized suffixes wer=
-e
-> > > "KiB", "MiB" and so on.  anyway, i was pretty sure that even a
-> > > suggestion this innocuous was going to generate some discussion.
-> > Nobody told about not to use KiB/MiB. It wos told about not to us K and=
- M,=20
-> > like 10K, 100M. Use 10KiB, 100MiB instead.
->=20
-> What information does the "B" in "10KiB" contain?  And why is it "Ki"
-> instead of the correct "ki"?
-Hehe.
+Well, if people really prefer it, allowing either "ki" or "kiB" would
+be fine.  Not that much extra code.  "kib" as well, sure.  phram and
+block2mtd will remain unchanged until people explicitly request it,
+though. :)
 
-This is just widely used unit. And it is usually written like that. And=20
-now most utilities work with such. But if one wants and thinks it is=20
-reasonable, why not to use kib :-)
-=20
-> Robert: please don't just sit there and wait for someone else to do
-> your work.  Send a patch.  If it's wrong, people will comment.  Right
-> now, this discussion is completely academic.
->=20
-> J=F6rn
->=20
-> --=20
-> Measure. Don't tune for speed until you've measured, and even then
-> don't unless one part of the code overwhelms the rest.
-> -- Rob Pike
->=20
+Jörn
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+I can say that I spend most of my time fixing bugs even if I have lots
+of new features to implement in mind, but I give bugs more priority.
+-- Andrea Arcangeli, 2000
