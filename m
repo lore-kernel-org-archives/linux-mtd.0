@@ -1,229 +1,111 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14WPH5-0007JQ-00
-	for mtd-list@infradead.org; Fri, 23 Feb 2001 20:57:11 +0000
-From: Steven Cole <elenstev@mesatop.com>
-Reply-To: elenstev@mesatop.com
-Date: Fri, 23 Feb 2001 14:00:22 -0700
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_MCA8EO0XKOF665AIKZLI"
-To: alan@lxorguk.ukuu.org.uk
-Cc: dwmw2@infradead.org, mtd@infradead.org
-Subject: [PATCH] 2.4.2-ac2 Configure.help for various MTD options.
+	id 14XMs7-0003a6-00
+	for mtd-list@infradead.org; Mon, 26 Feb 2001 12:35:23 +0000
+Received: from [203.238.93.91] (helo=hades.idis.co.kr ident=mail)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14XMs5-0003Yg-00
+	for mtd@infradead.org; Mon, 26 Feb 2001 12:35:22 +0000
+Received: from cwryu by hades.idis.co.kr with local (Exim 3.22 #1 (Debian))
+	id 14XMnl-0000rp-00
+	for <mtd@infradead.org>; Mon, 26 Feb 2001 21:30:53 +0900
+To: mtd@infradead.org
+Subject: Re: kernel/jedec.c bug?
+References: <871ysrcxko.fsf@hades.idis.co.kr>
 MIME-Version: 1.0
-Message-Id: <01022314002200.09541@localhost.localdomain>
+Content-Type: text/plain; charset=euc-kr
+Content-Transfer-Encoding: 8bit
+From: Changwoo Ryu <cwryu@debian.org>
+Date: 26 Feb 2001 21:30:52 +0900
+In-Reply-To: Changwoo Ryu's message of "22 Feb 2001 10:31:51 +0900"
+Message-ID: <871ysl8w3n.fsf@hades.idis.co.kr>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Changwoo Ryu <cwryu@debian.org> writes:
 
---------------Boundary-00=_MCA8EO0XKOF665AIKZLI
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+[...]
+> Last[0], Last[1] and Last[2] for my flash are all "0x084C084C".  It's
+> ok, isn't?  Reading 32bit data requires 4 reads (0x08, 0x4C, 0x08,
+> 0x4C) from the 8bit flash.  So when the erasure is not completed, the
+> two 32bit values should be same.
 
-Hi Alan,
+OK, maybe nobody cares about jedec any more even if the code doesn't
+work...  Anyway here is a simple fix.  With applying this patch, the
+flash_erase uses either of map->read8/read16/read32 according to
+map->buswidth.  I also added the vendor/device ids for AM29F017 and
+for MX29F016.
 
-The attached patch provides Configure.help entries for the following options:
+Could anyone commit this patch?
 
-CONFIG_MTD_DEBUG
-CONFIG_MTD_DEBUG_VERBOSE
-CONFIG_MTD_PMC551_DEBUG
-CONFIG_MTD_PHYSMAP_BUSWIDTH
-CONFIG_MTD_PNC2000
-CONFIG_JFFS_FS_VERBOSE
+-- 
+Changwoo Ryu
 
-The patch also updates Configure.help for these options:
-
-CONFIG_MTD_DOC2000
-CONFIG_MTD_DOC2001
-CONFIG_MTD_PMC551
-CONFIG_MTD_PMC551_BUGFIX
-CONFIG_MTD_CFI
-CONFIG_MTD_PHYSMAP
-CONFIG_MTD_OCTAGON
-CONFIG_MTD_RPXLITE
-CONFIG_JFFS_FS
-
-Authorship of these additions and updates should be credited to
-David Woodhouse. The information was obtained from:
-ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cfs/mtd/patches/Configure.help
-
-I provided the merge to the Configure.help of 2.4.2-ac2, as well as some
-small formatting changes to CONFIG_MTD_PMC551_BUGFIX.
-
-This patch applies to linux-2.4.2-ac2:
-I see that 2.4.2-ac3 just came out, but this should apply cleanly against it too.
-
-Steven
-
---------------Boundary-00=_MCA8EO0XKOF665AIKZLI
-Content-Type: text/english;
-  name="patch-Configure.help"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="patch-Configure.help"
-
-LS0tIGxpbnV4L0RvY3VtZW50YXRpb24vQ29uZmlndXJlLmhlbHAub3JpZwlGcmkgRmViIDIzIDEx
-OjU2OjMxIDIwMDEKKysrIGxpbnV4L0RvY3VtZW50YXRpb24vQ29uZmlndXJlLmhlbHAJRnJpIEZl
-YiAyMyAxMzoyMDozOCAyMDAxCkBAIC0xMDE5NywyNCArMTAxOTcsNjAgQEAKICAgdGhlbS4gSXQg
-d2lsbCBhbHNvIGFsbG93IHlvdSB0byBzZWxlY3QgaW5kaXZpZHVhbCBkcml2ZXJzIGZvciAKICAg
-cGFydGljdWxhciBoYXJkd2FyZSBhbmQgdXNlcnMgb2YgTVREIGRldmljZS4gSWYgdW5zdXJlLCBz
-YXkgTi4KIAorTVREIGRlYnVnZ2luZyBzdXBwb3J0CitDT05GSUdfTVREX0RFQlVHCisgIFRoaXMg
-dHVybnMgb24gbG93LWxldmVsIGRlYnVnZ2luZyBmb3IgdGhlIGVudGlyZSBNVEQgc3ViLXN5c3Rl
-bS4KKworTVREIGRlYnVnZ2luZyB2ZXJib3NpdHkKK0NPTkZJR19NVERfREVCVUdfVkVSQk9TRQor
-ICBEZXRlcm1pbmVzIHRoZSB2ZXJib3NpdHkgbGV2ZWwgb2YgdGhlIE1URCBkZWJ1Z2dpbmcgbWVz
-c2FnZXMuCisKIE0tU3lzdGVtcyBEaXNrLU9uLUNoaXAgMTAwMCBzdXBwb3J0CiBDT05GSUdfTVRE
-X0RPQzEwMDAKICAgVGhpcyBwcm92aWRlcyBhbiBNVEQgZGV2aWNlIGRyaXZlciBmb3IgdGhlIE0t
-U3lzdGVtcyBEaXNrT25DaGlwCiAgIDEwMDAgZGV2aWNlcywgd2hpY2ggYXJlIG9ic29sZXRlIHNv
-IHlvdSBwcm9iYWJseSB3YW50IHRvIHNheSAnTicuCiAKLU0tU3lzdGVtcyBEaXNrLU9uLUNoaXAg
-MjAwMCBzdXBwb3J0CitNLVN5c3RlbXMgRGlzay1Pbi1DaGlwIDIwMDAgYW5kIE1pbGxlbm5pdW0g
-c3VwcG9ydAogQ09ORklHX01URF9ET0MyMDAwCiAgIFRoaXMgcHJvdmlkZXMgYW4gTVREIGRldmlj
-ZSBkcml2ZXIgZm9yIHRoZSBNLVN5c3RlbXMgRGlza09uQ2hpcAotICAyMDAwIGRldmljZXMuIElm
-IHlvdSB1c2UgdGhpcywgeW91IHByb2JhYmx5IGFsc28gd2FudCB0aGUgTkZUTAotICAnTkFORCBG
-bGFzaCBUcmFuc2xhdGlvbiBMYXllcicgYmVsb3csIHdoaWNoIGlzIHVzZWQgdG8gZW11bGF0ZQot
-ICBhIGJsb2NrIGRldmljZSBieSB1c2luZyBhIGtpbmQgb2YgZmlsZSBzeXN0ZW0gb24gdGhlIGZs
-YXNoIGNoaXBzLgorICAyMDAwIGFuZCBNaWxsZW5uaXVtIGRldmljZXMuIE9yaWdpbmFsbHkgZGVz
-aWduZWQgZm9yIHRoZSBEaXNrT25DaGlwCisgIDIwMDAsIGl0IGFsc28gbm93IGluY2x1ZGVzIHN1
-cHBvcnQgZm9yIHRoZSBEaXNrT25DaGlwIE1pbGxlbm5pdW0uCisgIElmIHlvdSBoYXZlIHByb2Js
-ZW1zIHdpdGggdGhpcyBkcml2ZXIgYW5kIHRoZSBEaXNrT25DaGlwIE1pbGxlbm5pdW0sCisgIHlv
-dSBtYXkgd2lzaCB0byB0cnkgdGhlIGFsdGVybmF0aXZlIE1pbGxlbm5pdW0gZHJpdmVyIGJlbG93
-LiBUbyB1c2UKKyAgdGhlIGFsdGVybmF0aXZlIGRyaXZlciwgeW91IHdpbGwgbmVlZCB0byB1bmRl
-ZmluZSBET0NfU0lOR0xFX0RSSVZFUgorICBpbiB0aGUgZHJpdmVycy9tdGQvZG9jcHJvYmUuYyBz
-b3VyY2UgY29kZS4KKworICBJZiB5b3UgdXNlIHRoaXMgZGV2aWNlLCB5b3UgcHJvYmFibHkgYWxz
-byB3YW50IHRvIGVuYWJsZSB0aGUgTkZUTAorICAnTkFORCBGbGFzaCBUcmFuc2xhdGlvbiBMYXll
-cicgb3B0aW9uIGJlbG93LCB3aGljaCBpcyB1c2VkIHRvIGVtdWxhdGUKKyAgYSBibG9jayBkZXZp
-Y2UgYnkgdXNpbmcgYSBraW5kIG9mIGZpbGVzeXN0ZW0gb24gdGhlIGZsYXNoIGNoaXBzLgogCi1N
-LVN5c3RlbXMgRGlzay1Pbi1DaGlwIE1pbGxlbm5pdW0gc3VwcG9ydAorQWx0ZXJuYXRpdmUgRGlz
-ay1Pbi1DaGlwIE1pbGxlbm5pdW0gc3VwcG9ydAogQ09ORklHX01URF9ET0MyMDAxCi0gIFRoaXMg
-cHJvdmlkZXMgYW4gTVREIGRldmljZSBkcml2ZXIgZm9yIHRoZSBNLVN5c3RlbXMgRGlza09uQ2hp
-cAotICBNaWxsZW5uaXVtIGRldmljZXMuIElmIHlvdSB1c2UgdGhpcywgeW91IHByb2JhYmx5IGFs
-c28gd2FudCB0aGUKLSAgTkZUTCAnTkFORCBGbGFzaCBUcmFuc2xhdGlvbiBMYXllcicgYmVsb3cs
-IHdoaWNoIGlzIHVzZWQgdG8gZW11bGF0ZQotICBhIGJsb2NrIGRldmljZSBieSB1c2luZyBhIGtp
-bmQgb2YgZmlsZSBzeXN0ZW0gb24gdGhlIGZsYXNoIGNoaXBzLgorICBUaGlzIHByb3ZpZGVzIGFu
-IGFsdGVybmF0aXZlIE1URCBkZXZpY2UgZHJpdmVyIGZvciB0aGUgTS1TeXN0ZW1zCisgIERpc2tP
-bkNoaXAgTWlsbGVubml1bSBkZXZpY2VzLiBVc2UgdGhpcyBpZiB5b3UgaGF2ZSBwcm9ibGVtcyB3
-aXRoCisgIHRoZSBjb21iaW5lZCBEaXNrT25DaGlwIDIwMDAgYW5kIE1pbGxlbm5pdW0gZHJpdmVy
-IGFib3ZlLiBUbyBnZXQKKyAgdGhlIERpc2tPbkNoaXAgcHJvYmUgY29kZSB0byBsb2FkIGFuZCB1
-c2UgdGhpcyBkcml2ZXIgaW5zdGVhZCBvZgorICB0aGUgb3RoZXIgb25lLCB5b3Ugd2lsbCBuZWVk
-IHRvIHVuZGVmaW5lIERPQ19TSU5HTEVfRFJJVkVSIG5lYXIKKyAgdGhlIGJlZ2lubmluZyBvZiBk
-cml2ZXJzL210ZC9kb2Nwcm9iZS5jCisKKyAgSWYgeW91IHVzZSB0aGlzIGRldmljZSwgeW91IHBy
-b2JhYmx5IGFsc28gd2FudCB0byBlbmFibGUgdGhlIE5GVEwKKyAgJ05BTkQgRmxhc2ggVHJhbnNs
-YXRpb24gTGF5ZXInIG9wdGlvbiBiZWxvdywgd2hpY2ggaXMgdXNlZCB0byBlbXVsYXRlCisgIGEg
-YmxvY2sgZGV2aWNlIGJ5IHVzaW5nIGEga2luZCBvZiBmaWxlc3lzdGVtIG9uIHRoZSBmbGFzaCBj
-aGlwcy4KKworUmFtaXggUE1DNTUxIFBDSSBNZXp6YW5pbmUgcmFtIGNhcmQgc3VwcG9ydAorQ09O
-RklHX01URF9QTUM1NTEKKyAgVGhpcyBwcm92aWRlcyBhIE1URCBkZXZpY2UgZHJpdmVyIGZvciB0
-aGUgUmFtaXggUE1DNTUxIFJBTSBQQ0kgY2FyZAorICBmcm9tIFJhbWl4IEluYy4gKGh0dHA6Ly93
-d3cucmFtaXguY29tL3Byb2R1Y3RzL21lbW9yeS9wbWM1NTEuaHRtbCkuCisgIFRoZXNlIGRldmlj
-ZXMgY29tZSBpbiBtZW1vcnkgY29uZmlndXJhdGlvbnMgZnJvbSAzMk0gLSAxRy4gIElmIHlvdQor
-ICBoYXZlIG9uZSwgeW91IHByb2JhYmx5IHdhbnQgdG8gZW5hYmxlIHRoaXMuCisKKyAgSWYgdGhp
-cyBkcml2ZXIgaXMgY29tcGlsZWQgYXMgYSBtb2R1bGUgeW91IGdldCB0aGUgYWJpbGl0eSB0byBz
-ZWxlY3QgdGhlCisgIHNpemUgb2YgdGhlIGFwZXJ0dXJlIHdpbmRvdyBwb2ludGluZyBpbnRvIHRo
-ZSBkZXZpY2VzIG1lbW9yeS4gIFdoYXQgdGhpcworICBtZWFucyBpcyB0aGF0IGlmIHlvdSBoYXZl
-IGEgMUcgY2FyZCwgbm9ybWFsbHkgdGhlIGtlcm5lbCB3aWxsIHVzZSBhIDFHCisgIG1lbW9yeSBt
-YXAgYXMgaXQncyB2aWV3IG9mIHRoZSBkZXZpY2UuICBBcyBhIG1vZHVsZSwgeW91IGNhbiBzZWxl
-Y3QgYQorICAxTSB3aW5kb3cgaW50byB0aGUgbWVtb3J5IGFuZCB0aGUgZHJpdmVyIHdpbGwgInNs
-aWRlIiB0aGUgd2luZG93IGFyb3VuZAorICB0aGUgUE1DNTUxJ3MgbWVtb3J5LiAgVGhpcyB3YXMg
-cGFydGljdWxhcmx5IHVzZWZ1bGwgb24gdGhlIDIuMiBrZXJuZWxzCisgIG9uIFBQQyBhcmNoaXRl
-Y3R1cmVzIGFzIHRoZXJlIHdhcyBsaW1pdGVkIGtlcm5lbCBzcGFjZSB0byBkZWFsIHdpdGguCiAK
-IFVzZSBleHRyYSBvbmJvYXJkIHN5c3RlbSBtZW1vcnkgYXMgTVREIGRldmljZQogQ09ORklHX01U
-RF9TTFJBTQpAQCAtMTAyMjIsMTUgKzEwMjU4LDE3IEBACiAgIHlvdSBjYW4gc3RpbGwgdXNlIGl0
-IGZvciBzdG9yYWdlIG9yIHN3YXAgYnkgdXNpbmcgdGhpcyBkcml2ZXIgdG8KICAgcHJlc2VudCBp
-dCB0byB0aGUgc3lzdGVtIGFzIGEgTWVtb3J5IFRlY2hub2xvZ3kgRGV2aWNlLgogCi1SYW1peCBQ
-TUM1NTEgUENJIE1lenphbmluZSByYW0gY2FyZCBzdXBwb3J0Ci1DT05GSUdfTVREX1BNQzU1MQot
-ICBUaGlzIHByb3ZpZGVzIGFuIE1URCBkZXZpY2UgZHJpdmVyIGZvciB0aGUgUmFtaXggUE1DNTUx
-IFJBTSBjYXJkLgotICBJZiB5b3UgaGF2ZSBvbmUsIHlvdSBwcm9iYWJseSB3YW50IHRvIGVuYWJs
-ZSB0aGlzLgotCi1QTUM1NTEgMjU2TSBEUkFNIEJ1Z2ZpeC4KK1BNQzU1MSAyNTZNIERSQU0gQnVn
-Zml4CiBDT05GSUdfTVREX1BNQzU1MV9CVUdGSVgKLSAgU29tZSBQTUM1NTEgYm9hcmRzIGhhY3Zl
-IGludmFsaWQgY29sdW1uIGFuZCByb3cgbXV4IHZhbHVlcy4gVGhpcyAKLSAgb3B0aW9uIHdpbGwg
-Zml4IHRoZW0sIGJ1dCB3aWxsIGJyZWFrIG90aGVyIG1lbW9yeSBjb25maWd1cmF0aW9ucy4KKyAg
-U29tZSBvZiBSYW1peCdzIFBNQzU1MSBib2FyZHMgd2l0aCAyNTZNIGNvbmZpZ3VyYXRpb25zIGhh
-dmUgaW52YWxpZAorICBjb2x1bW4gYW5kIHJvdyBtdXggdmFsdWVzLiBUaGlzIG9wdGlvbiB3aWxs
-IGZpeCB0aGVtLCBidXQgd2lsbCBicmVhaworICBvdGhlciBtZW1vcnkgY29uZmlndXJhdGlvbnMu
-ICBJZiB1bnN1cmUgc2F5IE4uCisKK1BNQzU1MSBEZWJ1Z2dpbmcKK0NPTkZJR19NVERfUE1DNTUx
-X0RFQlVHCisgIFRoaXMgb3B0aW9uIG1ha2VzIHRoZSBQTUM1NTEgbW9yZSB2ZXJib3NlIGR1cmlu
-ZyBpdCdzIG9wZXJhdGlvbiBhbmQgaXMKKyAgb25seSByZWFsbHkgdXNlZnVsbCBpZiB5b3UgYXJl
-IGRldmVsb3Bpbmcgb24gdGhpcyBkcml2ZXIgb3Igc3VzcGVjdCBhCisgIHBvc3NpYmxlIGhhcmR3
-YXJlIG9yIGRyaXZlciBidWcuICBJZiB1bnN1cmUgc2F5IE4uCiAKIERlYnVnZ2luZyBSQU0gdGVz
-dCBkcml2ZXIKIENPTkZJR19NVERfTVREUkFNCkBAIC0xMDI0MiwxMCArMTAyODAsMTIgQEAKIAog
-Q29tbW9uIEZsYXNoIEludGVyZmFjZSAoQ0ZJKSBzdXBwb3J0CiBDT05GSUdfTVREX0NGSQotICBJ
-bnRlbCdzIENvbW1vbiBGbGFzaCBJbnRlcmZhY2Ugc3BlY2lmaWNhdGlvbiBwcm92aWRlcyBhIHVu
-aXZlcnNhbAotICBtZXRob2QgZm9yIHByb2JpbmcgdGhlIGNhcGFiaWxpdGllcyBvZiBmbGFzaCBk
-ZXZpY2VzLiBJZiB5b3Ugd2lzaAotICB0byBzdXBwb3J0IGFueSBkZXZpY2Ugd2hpY2ggdXNlcyBD
-RkktY29tcGxpYW50IGRldmljZXMsIHlvdSBuZWVkCi0gIHRvIGVuYWJsZSB0aGlzIG9wdGlvbi4K
-KyAgVGhlIENvbW1vbiBGbGFzaCBJbnRlcmZhY2Ugc3BlY2lmaWNhdGlvbiB3YXMgZGV2ZWxvcGVk
-IGJ5IEludGVsLAorICBBTUQgYW5kIG90aGVyIGZsYXNoIG1hbnVmYWN0dXJlcyB0aGF0IHByb3Zp
-ZGVzIGEgdW5pdmVyc2FsIG1ldGhvZAorICBmb3IgcHJvYmluZyB0aGUgY2FwYWJpbGl0aWVzIG9m
-IGZsYXNoIGRldmljZXMuIElmIHlvdSB3aXNoIHRvCisgIHN1cHBvcnQgYW55IGRldmljZSB0aGF0
-IGlzIENGSS1jb21wbGlhbnQsIHlvdSBuZWVkIHRvIGVuYWJsZSB0aGlzCisgIG9wdGlvbi4gVmlz
-aXQgKGh0dHA6Ly93d3cuYW1kLmNvbS9wcm9kdWN0cy9udmQvb3ZlcnZpZXcvY2ZpLmh0bWwpCisg
-IGZvciBtb3JlIGluZm9ybWF0aW9uIG9uIENGSS4KIAogQ0ZJIHN1cHBvcnQgZm9yIEludGVsL1No
-YXJwIEV4dGVuZGVkIENvbW1hbmQgU2V0IGNoaXBzCiBDT05GSUdfTVREX0NGSV9JTlRFTEVYVApA
-QCAtMTAyNTcsMTAgKzEwMjk3LDEwIEBACiBGbGFzaCBjaGlwIG1hcHBpbmcgaW4gcGh5c2ljYWwg
-bWVtb3J5CiBDT05GSUdfTVREX1BIWVNNQVAKICAgVGhpcyBwcm92aWRlcyBhICdtYXBwaW5nJyBk
-cml2ZXIgd2hpY2ggYWxsb3dzIHRoZSBDRkkgcHJvYmUgYW5kCi0gIGNvbW1hbmQgc2V0IGRyaXZl
-ciBjb2RlIHRvIGNvbW11bmljYXRlIHdpdGggZmxhc2ggY2hpcHMgd2hpY2ggCisgIGNvbW1hbmQg
-c2V0IGRyaXZlciBjb2RlIHRvIGNvbW11bmljYXRlIHdpdGggZmxhc2ggY2hpcHMgd2hpY2gKICAg
-YXJlIG1hcHBlZCBwaHlzaWNhbGx5IGludG8gdGhlIENQVSdzIG1lbW9yeS4gWW91IHdpbGwgbmVl
-ZCB0bwogICBjb25maWd1cmUgdGhlIHBoeXNpY2FsIGFkZHJlc3MgYW5kIHNpemUgb2YgdGhlIGZs
-YXNoIGNoaXBzIG9uCi0gIHlvdXIgcGFydGljdWxhciBib2FyZC4KKyAgeW91ciBwYXJ0aWN1bGFy
-IGJvYXJkIGFzIHdlbGwgYXMgdGhlIGJ1cyB3aWR0aC4KIAogUGh5c2ljYWwgc3RhcnQgbG9jYXRp
-b24gb2YgZmxhc2ggY2hpcCBtYXBwaW5nCiBDT05GSUdfTVREX1BIWVNNQVBfU1RBUlQKQEAgLTEw
-Mjc4LDYgKzEwMzE4LDEyIEBACiAgIG1hcCB3aGljaCBzaG91bGQgaG9wZWZ1bGx5IGJlIGluIHRo
-ZSBkb2N1bWVudGF0aW9uIGZvciB5b3VyCiAgIGJvYXJkLiAKIAorQ09ORklHX01URF9QSFlTTUFQ
-X0JVU1dJRFRICisgIFRoaXMgaXMgdGhlIHRvdGFsIHdpZHRoIG9mIHRoZSBkYXRhIGJ1cyBvZiB0
-aGUgZmxhc2ggZGV2aWNlcworICBpbiBvY3RldHMuIEZvciBleGFtcGxlLCBpZiB5b3UgaGF2ZSBh
-IGRhdGEgYnVzIHdpZHRoIG9mIDMyCisgIGJpdHMsIHlvdSB3b3VsZCBzZXQgdGhlIGJ1cyB3aWR0
-aCBvY3RlY3QgdmFsdWUgdG8gNC4gVGhpcyBpcworICB1c2VkIGludGVybmFsbHkgYnkgdGhlIENG
-SSBkcml2ZXJzLgorCiBGbGFzaCBjaGlwIG1hcHBpbmcgb24gTWl4Y29tIHBpZ2d5YmFjayBjYXJk
-CiBDT05GSUdfTVREX01JWE1FTQogICBUaGlzIHN1cHBvcnRzIHRoZSBwYWdpbmcgYXJyYW5nZW1l
-bnQgZm9yIGFjY2VzcyB0byBmbGFzaCBjaGlwcwpAQCAtMTAyOTAsMTkgKzEwMzM2LDI1IEBACiBD
-T05GSUdfTVREX05PUkEKICAgSWYgeW91IGhhZCB0byBhc2ssIHlvdSBkb24ndCBoYXZlIG9uZS4g
-U2F5ICdOJy4KIAorRmxhc2ggY2hpcCBtYXBwaW5nIG9uIFBOQzIwMDAKK0NPTkZJR19NVERfUE5D
-MjAwMAorICBQTkMtMjAwMCBpcyB0aGUgbmFtZSBvZiBOZXR3b3JrIENhbWVyYSBwcm9kdWN0IGZy
-b20gUEhPVFJPTgorICBMdGQuIGluIEphcGFuLiBJdCB1c2VzIENGSS1jb21wbGlhbnQgZmxhc2gu
-CisKIEZsYXNoIGNoaXAgbWFwcGluZyBvbiBPY3RhZ29uIDUwNjYgU0JDCiBDT05GSUdfTVREX09D
-VEFHT04KICAgVGhpcyBwcm92aWRlcyBhICdtYXBwaW5nJyBkcml2ZXIgd2hpY2ggc3VwcG9ydHMg
-dGhlIHdheSBpbiB3aGljaAogICB0aGUgZmxhc2ggY2hpcHMgYXJlIGNvbm5lY3RlZCBpbiB0aGUg
-T2N0YWdvbi01MDY2IFNpbmdsZSBCb2FyZAotICBDb21wdXRlci4gWW91IHdpbGwgYWxzbyBuZWVk
-IHRvIGNvbXBsZXRlIGFuZCBlbmFibGUgdGhlIGRyaXZlcgotICBmb3IgSkVERUMgZmxhc2ggY2hp
-cHMuCisgIENvbXB1dGVyLiBNb3JlIGluZm9ybWF0aW9uIG9uIHRoZSBib2FyZCBpcyBhdmFpbGFi
-bGUgYXQKKyAgKGh0dHA6Ly93d3cub2N0YWdvbnN5c3RlbXMuY29tL1Byb2R1Y3RzLzUwNjYvNTA2
-Ni5odG1sKS4KIAogRmxhc2ggY2hpcCBtYXBwaW5nIG9uIFJQWGxpdGUgUFBDIGJvYXJkCiBDT05G
-SUdfTVREX1JQWExJVEUKLSAgVGhlIFJQWExpdGUgUG93ZXJQQyBib2FyZCBoYXMgQ0ZJLWNvbXBs
-aWFudCBjaGlwcyBtYXBwZWQgaW4gCisgIFRoZSBSUFhMaXRlIFBvd2VyUEMgYm9hcmQgaGFzIENG
-SS1jb21wbGlhbnQgY2hpcHMgbWFwcGVkIGluCiAgIGEgc3RyYW5nZSBzcGFyc2UgbWFwcGluZy4g
-VGhpcyAnbWFwcGluZycgZHJpdmVyIHN1cHBvcnRzIHRoYXQKICAgYXJyYW5nZW1lbnQsIGFsbG93
-aW5nIHRoZSBDRkkgcHJvYmUgYW5kIGNvbW1hbmQgc2V0IGRyaXZlciBjb2RlCi0gIHRvIGNvbW11
-bmljYXRlIHdpdGggdGhlIGNoaXBzIG9uIHRoZSBSUFhMaXRlIGJvYXJkLgorICB0byBjb21tdW5p
-Y2F0ZSB3aXRoIHRoZSBjaGlwcyBvbiB0aGUgUlBYTGl0ZSBib2FyZC4gTW9yZSBhdAorICAoaHR0
-cDovL3d3dy5lbWJlZGRlZHBsYW5ldC5jb20vcnB4X2xpdGVfc3BlY2lmaWNhdGlvbl9zaGVldC5o
-dG0pLgogCiBGbGFzaCBjaGlwIG1hcHBpbmcgb24gVGVtcHVzdGVjaCBWTUFYIFNCQzMwMQogQ09O
-RklHX01URF9WTUFYCkBAIC0xMTgzMCwyMSArMTE4ODIsMTYgQEAKICAgd2hlbmV2ZXIgeW91IHdh
-bnQpLCBzYXkgTSBoZXJlIGFuZCByZWFkIERvY3VtZW50YXRpb24vbW9kdWxlcy50eHQuCiAgIFRo
-ZSBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgZWZzLm8uIAogCi1Kb3VybmFsbGluZyBGbGFzaCBGaWxl
-IFN5c3RlbSAoSkZGUykgc3VwcG9ydCAoRVhQRVJJTUVOVEFMKQorU3VwcG9ydCBmb3IgdGhlIEpv
-dXJuYWxsaW5nIEZsYXNoIEZpbGVzeXN0ZW0KIENPTkZJR19KRkZTX0ZTCi0gIEpGRlMgaXMgYSBu
-ZXcgZmlsZSBzeXN0ZW0gZGVzaWduZWQgZm9yIHVzZSBvbiBmbGFzaCBtZW1vcnkgZGV2aWNlcwot
-ICByYXRoZXIgdGhhbiBvbiBibG9jayBkZXZpY2VzLiBJdCB3YXMgZGV2ZWxvcGVkIG9uIHRoZSAy
-LjAga2VybmVsCi0gIGJ5IEF4aXMgQ29tbXVuaWNhdGlvbnMgQUIgZm9yIHVzZSBvbiB0aGVpciBM
-aW51eC1iYXNlZCBwcm9kdWN0cywKLSAgYW5kIHJlbGVhc2VkIHVuZGVyIEdQTCwgdGhlbiAnYm9y
-cm93ZWQnIGFuZCBwb3J0ZWQgdG8gd29yayB3aXRoIAotICB0aGUgMi40IGtlcm5lbCBhbmQgdGhl
-IG5ldyBNZW1vcnkgVGVjaG5vbG9neSBEZXZpY2Ugc3lzdGVtLiAKLQotICBUaGUgMi40IHBvcnQg
-aXMgZXhwZXJpbWVudGFsIGFuZCBub3QgeWV0IHN1cHBvcnRlZCBieSBBeGlzLiBCYXNpY2FsbHks
-Ci0gIHRoZSBnb29kIGJpdHMgYXJlIHByb2JhYmx5IHRoZWlycywgYW5kIGlmIGl0J3MgYnJva2Vu
-IGluIDIuNCBpdCdzIAotICBwcm9iYWJseSBvdXIgZmF1bHQuIFNlZSBodHRwOi8vd3d3LmRldmVs
-b3Blci5heGlzLmNvbS9zb2Z0d2FyZS9qZmZzLwotICBmb3IgbW9yZSBpbmZvcm1hdGlvbiBhYm91
-dCBKRkZTLgotCi0gIEFueSBwb3RlbnRpYWwgcGF0Y2hlcyBvciBxdWVyaWVzIHNob3VsZCBiZSBz
-ZW50IHRvIEF4aXMnIG1haWxpbmcgCi0gIGxpc3QgZm9yIEpGRlM6IDxqZmZzLWRldkBheGlzLmNv
-bT4KKyAgSkZGUyBpcyB0aGUgSm91cm5hbGluZyBGbGFzaCBGaWxlIFN5c3RlbSBkZXZlbG9wZWQg
-YnkgQXhpcworICBDb21tdW5pY2F0aW9ucyBpbiBTd2VkZW4sIGFpbWVkIGF0IHByb3ZpZGluZyBh
-IGNyYXNoL3Bvd2VyZG93bi1zYWZlCisgIGZpbGVzeXN0ZW0gZm9yIGRpc2stbGVzcyBlbWJlZGRl
-ZCBkZXZpY2VzLiBGdXJ0aGVyIGluZm9ybWF0aW9uIGlzCisgIGF2YWlsYWJsZSBhdCAoaHR0cDov
-L2RldmVsb3Blci5heGlzLmNvbS9zb2Z0d2FyZS9qZmZzLykuCisKK0pGRlMgZGVidWdnaW5nIHZl
-cmJvc2l0eQorQ09ORklHX0pGRlNfRlNfVkVSQk9TRQorICBEZXRlcm1pbmVzIHRoZSB2ZXJib3Np
-dHkgbGV2ZWwgb2YgdGhlIEpGRlMgZGVidWdnaW5nIG1lc3NhZ2VzLgogCiBVRlMgZmlsZSBzeXN0
-ZW0gc3VwcG9ydCAocmVhZC1vbmx5KQogQ09ORklHX1VGU19GUwo=
-
---------------Boundary-00=_MCA8EO0XKOF665AIKZLI--
+diff -u -r1.4 jedec.c
+--- jedec.c	2001/01/05 23:01:51	1.4
++++ jedec.c	2001/02/26 12:27:59
+@@ -36,10 +36,12 @@
+ /* Listing of parts and sizes. We need this table to learn the sector
+    size of the chip and the total length */
+ static const struct JEDECTable JEDEC_table[] = 
+-  {{0x01AD,"AMD Am29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
++  {{0x013D,"AMD Am29F017D",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
++   {0x01AD,"AMD Am29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
+    {0x01D5,"AMD Am29F080",1*1024*1024,64*1024,MTD_CAP_NORFLASH},
+    {0x01A4,"AMD Am29F040",512*1024,64*1024,MTD_CAP_NORFLASH},
+    {0x20E3,"AMD Am29W040B",512*1024,64*1024,MTD_CAP_NORFLASH},
++   {0xC2AD,"Macronix MX29F016",2*1024*1024,64*1024,MTD_CAP_NORFLASH},
+    {}};
+ 
+ static void jedec_sync(struct mtd_info *mtd) {};
+@@ -623,9 +625,23 @@
+ 	 /* During erase bit 7 is held low and bit 6 toggles, we watch this,
+ 	    should it stop toggling or go high then the erase is completed,
+   	    or this is not really flash ;> */
+-	 Last[0] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
+-	 Last[1] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
+-	 Last[2] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++	 switch (map->buswidth) {
++	 case 1:
++	    Last[0] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[1] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[2] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    break;
++	 case 2:
++	    Last[0] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[1] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[2] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    break;
++	 case 3:
++	    Last[0] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[1] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    Last[2] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++	    break;
++	 }
+ 	 Count = 3;
+ 	 while (todo_left != 0)
+ 	 {
+@@ -656,8 +672,18 @@
+ /*	    if (NoTime == 0)
+ 	       Time += HZ/10 - schedule_timeout(HZ/10);*/
+ 	    NoTime = 0;
+-	    
+-	    Last[Count % 4] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++
++	    switch (map->buswidth) {
++	    case 1:
++	       Last[Count % 4] = map->read8(map,(chip->base >> chip->addrshift) + chip->start + off);
++	      break;
++	    case 2:
++	       Last[Count % 4] = map->read16(map,(chip->base >> chip->addrshift) + chip->start + off);
++	      break;
++	    case 4:
++	       Last[Count % 4] = map->read32(map,(chip->base >> chip->addrshift) + chip->start + off);
++	      break;
++	    }
+ 	    Count++;
+ 	    
+ /*	    // Count time, max of 15s per sector (according to AMD)
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
