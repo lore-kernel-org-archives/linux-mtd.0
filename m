@@ -1,17 +1,23 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail015.syd.optusnet.com.au ([210.49.20.173])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17HX9k-0006yx-00
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2002 22:56:56 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1023727479.20089.26.camel@geb> 
-References: <1023727479.20089.26.camel@geb> 
-To: Chris AtLee <catlee@canada.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 on 2.2.18 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 10 Jun 2002 22:56:40 +0100
-Message-ID: <4337.1023746200@redhat.com>
+	id 17Hcj1-0007LI-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 04:53:43 +0100
+Received: from max.ctam.local (198.142.103.111.optusnet.com.au [198.142.103.111] (may be forged))
+	by mail015.syd.optusnet.com.au (8.11.1/8.11.1) with ESMTP id g5B3rb621042
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 13:53:38 +1000
+Received: from k9.ctam.local ([192.168.0.55] helo=bigpond.com)
+	by max.ctam.local with esmtp (Exim 3.12 #1 (Debian))
+	id 17Hciu-0002X4-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2002 13:53:36 +1000
+Message-ID: <3D057440.5000104@bigpond.com>
+Date: Tue, 11 Jun 2002 13:53:36 +1000
+From: Brendan J Simon <brendan.simon@bigpond.com>
+Reply-To: brendan.simon@bigpond.com
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: DOC2000 partitiioning question
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +29,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-catlee@canada.com said:
-> I've had some success getting MTD and JFFS (v1) working on my 2.2.18
-> system.  I've been trying over the past few weeks to get JFFS2 up and
-> running.  I've got it to the point where the kernel can read a jffs2
-> partition, but I really have no idea how to get writing to work.  The
-> mechanism for writing seems completely different in 2.2.x than in
-> 2.4.x
+I've got a single DOC2000 in PowerPC embedded system.  I want to have 3 
+seperate partiton, one which is read-only and the other two read-write. 
+ I've been told that this is easy to do from the filesystem level but 
+the underlying NFTL stuff can still swap bits a pieces underneath the 
+read-only partition.  I think what I'm after is the ability to create 3 
+"virtual disk devices" with single partions on each, as apposed to 1 
+disk device with 3 partions.
 
-> Any pointers?  Is anyone else working on this? 
+Is this doable ?
+Is it reliable ?
+Where can I find information on this (Howtos, etc).
 
-I know of nobody else working on a 2.2 backport. Worst case, you should be 
-able to ditch the page-based write code and call jffs2_write_file_range() 
-from a jffs2_file_write() which you provide instead of 
-generic_file_write(), surely?
+What are the most suitable filesystems to place on  DOC for reliability 
+(ext2, ext3, JFFS, JFFS2 ...) ?
+Is a journalling file system suitable for a device such as a DOC ?
+Are flash file systems suitable for a DOC or are they desinged for 
+ordinary flash chips ?
 
---
-dwmw2
+Is there a way to search the linux-mtd archives ?
+I couldn't find anything on the web site (except browsing).
+
+Thanks for any help or pointers,
+Brendan Simon.
