@@ -1,25 +1,18 @@
-Received: from [209.178.208.101] (helo=lserver.ddiworldwide.com)
+Received: from mail.meierinc.com ([63.166.206.6] helo=esteem.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19QUQL-00048Q-48
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 16:55:37 +0100
-Received: from 127.0.0.1 (lserver.ddiworldwide.com [127.0.0.1])
-	by dummy.domain.name (Postfix) with SMTP id 1CB376D0074
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Jun 2003 11:51:32 -0400 (EDT)
-Received: from plinux (plinux.ddiworldwide.com [192.168.1.128])
-	by lserver.ddiworldwide.com (Postfix) with ESMTP id 09B926D006D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Jun 2003 15:51:32 +0000 (UTC)
-From: Frank R Callaghan <f.callaghan@ieee.org>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 12 Jun 2003 11:43:50 -0400
+	id 19QUVm-0004BZ-UG
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2003 17:01:15 +0100
+Message-ID: <3EE8A3EA.5090001@esteem.com>
+Date: Thu, 12 Jun 2003 09:01:46 -0700
+From: Conn Clark <clark@esteem.com>
 MIME-Version: 1.0
-Message-Id: <200306121143.51204.f.callaghan@ieee.org>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Is this correct ?
-Reply-To: f.callaghan@ieee.org
+To: mingfeng <mingfeng@linpus.com>
+References: <20030612163736.CFEC.MINGFENG@linpus.com>
+In-Reply-To: <20030612163736.CFEC.MINGFENG@linpus.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+cc: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: MRAM will kill FLASH ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+mingfeng wrote:
+> who know MRAM(Magnetoresistive Random Access Memory) ?
+> Will it kill FLASH soon?
 
-Is this output indicating an error codition ?
+It probably wont be soon. I don't think it will kill flash completely 
+either.
 
+Conn
+-- 
 
-# /sbin/erase /dev/mtd0
-MTD_open
-Erase Total 1 UnMTD_ioctl
-its
-MTD_ioctl
-Performing FlasMTD_ioctl
-h Erase of lengtMTD do_erase_oneblock(): ERASE 0x00000000
-h 65536 at offseMTD do_erase_oneblock(): Check 0x00000044 0x00000004
-t 0x0MTD do_erase_oneblock(): Check 0x0000004c 0x0000000c
-MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
-MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
-MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
-MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
-MTD do_erase_oneblock(): Check 0x0000005c 0x0000001c
-MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
-MTD do_erase_oneblock(): Check 0x00000058 0x0000001c
-MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
-MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
-MTD do_erase_oneblock(): Check 0x000000ff 0x000000ff
- doneMTD_close
+*****************************************************************
+   If you live at home long enough, your parents will move out.
+  (Warning they may try to sell their house out from under you.)
+*****************************************************************
 
-I did a 'mount -t jffs2 /dev/mdtblock2 /mnt/ffs2' that went away for
-a very long time <more that miniutes> but the next day it was mounted, I
-could even create a file on it - which cat'ed ok.
+Conn Clark
+Engineering Stooge				clark@esteem.com
+Electronic Systems Technology Inc.		www.esteem.com
 
-Any help please ?
+Stock Ticker Symbol				ELST
 
- If I can get this working I will submit the info back to the card
- manufacture so they can add it to there linux/sbc docs.
-
-TIA,
-	Frank.
-
-ps. Thanks J=F6rn CONFIG_MTD_CHAR =3D yes fixed my last problem
+"clark@esteem.com" Copyright 2000 By Electronic Systems Technology
+  This email address may be used to communicate to Conn Clark
+  provided it is not being used for advertisement purposes, unless
+  prior written consent is given. This email address may not be
+  sold under any circumstances. All other rights reserved.
