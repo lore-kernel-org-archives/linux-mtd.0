@@ -1,25 +1,22 @@
-Received: from smtp2.a1.net ([194.48.125.37] helo=smtp.a1.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BIkq0-0001Eg-0J
-	for linux-mtd@lists.infradead.org; Wed, 28 Apr 2004 09:54:40 +0100
-Received: from uxmsgf01-cnt (nathidingcontent.a1.net [194.48.124.30])
-	Griff)linux-mtd@lists.infradead.org;
-	Wed, 28 Apr 2004 10:54:39 +0200 (MET DST)
-Received: from a1.net (uxmsgf01-cnt [10.247.30.44])
- by msgstore01.net.mobilkom.at
- (A1.net ORGANIZER - Alle Emails und Termine fest im Griff)
- with ESMTP id <0HWV005N0I33LF@msgstore01.net.mobilkom.at> for
- linux-mtd@lists.infradead.org; Wed, 28 Apr 2004 10:54:39 +0200 (MEST)
-Date: Wed, 28 Apr 2004 10:54:39 +0200
-From: hkrammer@a1.net
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
+	helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1BIn5K-0001eO-GM
+	for linux-mtd@lists.infradead.org; Wed, 28 Apr 2004 12:18:38 +0100
+Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
+	3.35 #1 (Debian))	id 1BIn5I-0003Oa-00
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Apr 2004 13:18:36 +0200
+Date: Wed, 28 Apr 2004 13:18:35 +0200
+From: Tino Keitel <tino.keitel@innominate.com>
 To: linux-mtd@lists.infradead.org
-Message-id: <61d365f3dc.5f3dc61d36@a1.net>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: de
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Subject: jffs2 problem on ep7311
+Message-ID: <20040428111835.GK2171@tkeitel001.bln.innominate.local>
+References: <20040427141926.GA23637@dose.home.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20040427141926.GA23637@dose.home.local>
+Sender: Tino Keitel <tino.keitel@innominate.com>
+Subject: Re: jffs2 error with gcc 3.3.2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,113 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have running linux 2.4.19-rmk7 on a  self made cirrus board (EP7311 - 
-ARM720T core)
-and the system run fine, but sometimes I get problems to write files
-into jffs2-flash-partition.
+On Tue, Apr 27, 2004 at 16:19:26 +0200, Tino Keitel wrote:
+> Hi folks,                                            
+>                                                      
+> I build a kernel 2.4.25 for ARM XScale using the MTD CVS version from
+> last week with a plain gcc 3.3.2 and binutils 2.14. When the kernel
+> mounts the root-FS, I get this message:
+>    
+> VFS: Mounted root (jffs2 filesystem).                     
+> Mounted devfs on /dev                
+> Freeing init memory: 68K  
+> jffs2_get_inode_nodes(): CRC failed on node at 0x00d063a8: Read
+> 0x648da27a, calculated 0xaad091fe                    
+> jffs2_do_read_inode(): No data nodes found for ino #513                       
+> jffs2_get_inode_nodes(): Data CRC failed on node at 0x00d7aea4: Read   
+> 0xc9706472, calculated 0xfb804e0f                    
+> jffs2_do_read_inode(): No data nodes found for ino #451                       
+> Kernel panic: No init found.  Try passing init= option to kernel.
 
-To isolate the problem I have written following script:
-
-while /bin/true
-do
-   echo COPY
-   time cp /bin/busybox /mnt/asd
-   echo SYNC
-   sync
-done
-
-Here my log of this simple test:
---------------------------------
-COPY
-cp: Write Error: Input/output error
-real    0m 0.57s
-user    0m 0.01s
-sys     0m 0.19s
-SYNC
-COPY
-cp: Write Error: Input/output error
-real    0m 1.27s
-user    0m 0.03s
-sys     0m 0.23s
-SYNC
-COPY
-real    0m 54.31s
-user    0m 0.02s
-sys     0m 14.05s
-SYNC
-
-After an Inpout/Output Error my file is corrupted.
-
-
-Here is my log, after an Inpout/Output Error:
----------------------------------------------
-increasing writtenlen by 4096
-jffs2_commit_write() returning 4096. nrpages is 41
-jffs2_prepare_write() nrpages 42
-end prepare_write(). nrpages 42
-jffs2_commit_write(): ino #460, page at 0x29000, range 0-4096, nrpages 42
-jffs2_commit_write() loop: 0x1000 to write to 0x29000
-jffs2_reserve_space(): Requested 0xc4 bytes
-jffs2_reserve_space(): alloc sem got
-jffs2_do_reserve_space(): Giving 0x15b0 bytes at 0x13ea50
-calling deflate with avail_in 4084, avail_out 4084
-deflate returned with avail_in 0, avail_out 1539, total_in 4084,
-total_out 2545
-calling deflate with avail_in 12, avail_out 1539
-deflate returned with avail_in 0, avail_out 1529, total_in 4096,
-total_out 2555
-zlib compressed 4096 bytes into 2561
-Last[2] is cb84, datum is 341f
-Write of 2629 bytes at 0x0013ea50 failed. returned 0, retlen 838
-jffs2_add_physical_node_ref(): Node at 0x13ea50, size 0xa48
-jffs2_mark_node_obsolete called with already obsolete node at 0x0013ea50
-jffs2_complete_reservation()
-thread_should_wake(): nr_free_blocks 30, nr_erasing_blocks 0, dirty_size
-0x32808
-jffs2_commit_write(): Not all bytes written. Marking page !uptodate
-jffs2_commit_write(): Only 0 bytes written to page. start (0) not
-reached, returning -5
-jffs2_commit_write() returning -5. nrpages is 42
-
-boot-msg :
----------
-physmap flash device: 400000 at 0
-Search for id:(04 22f9) interleave(1) type(2)
-Found: Fujitsu MBM29LV320BE
-Physically mapped flash: Found 1 x16 devices at 0x0 in 16-bit mode
-number of JEDEC chips: 1
-mtd: Giving out device 0 to Physically mapped flash
-Using physmap partition definition
-Creating 3 MTD partitions on "Physically mapped flash":
-0x00000000-0x00010000 : "bootROM"
-mtd: Giving out device 1 to bootROM
-0x00010000-0x00100000 : "zImage"
-mtd: Giving out device 2 to zImage
-0x00100000-0x00400000 : "rootdisk"
-mtd: Giving out device 3 to rootdisk
-
-note:
-rootdisk is my jffs2 root-partition
-
-
-
-
-Any ideas ?
-
-Best regards,
-Harald
-
+Problem solved. You always should make mrproper before switching to a
+new gcc with other build options.
 
 -- 
-Harald Krammer
-Brucknerstrasse 33
-A - 4020  Linz
-AUSTRIA
-
-Mobil +43.(0) 664. 130 59 58
-Mail: hkrammer@a1.net
-
-Please avoid sending me Word or PowerPoint attachments.
-See
-http://www.fsf.org/philosophy/no-word-attachments.html
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   enabling security
+tel: +49.30.6392-3308                      http://www.innominate.com/
