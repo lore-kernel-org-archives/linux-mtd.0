@@ -1,17 +1,17 @@
-Received: from chaingun.noernet.de ([62.154.254.10] ident=exim)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15oVLm-0002Rb-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:37:06 +0100
-Date: Tue, 2 Oct 2001 21:45:59 +0200 (CEST)
-From: dennis noermann <dennis.noermann@noernet.de>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Larry Doolittle <ldoolitt@recycle.lbl.gov>,
-     <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2_RESERVED_BLOCKS_* 
-In-Reply-To: <30731.1002040544@redhat.com>
-Message-ID: <Pine.LNX.4.33.0110022139240.18002-100000@chaingun.noernet.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 15oVQW-0002S0-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2001 20:42:00 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0110022124180.441-100000@lisa.rhpk.springfield.inwind.it> 
+References: <Pine.LNX.4.33.0110022124180.441-100000@lisa.rhpk.springfield.inwind.it> 
+To: Cristiano Paris <c.paris@libero.it>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD newbie 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 02 Oct 2001 20:51:07 +0100
+Message-ID: <5836.1002052267@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,51 +23,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am using
+c.paris@libero.it said:
+>  The mount works but the system freezes for about 30 seconds (YUP) so
+> I thought the system was hung. 
 
-#define JFFS2_RESERVED_BLOCKS_BASE 0
-#define JFFS2_RESERVED_BLOCKS_WRITE (JFFS2_RESERVED_BLOCKS_BASE + 1)
-#define JFFS2_RESERVED_BLOCKS_DELETION (JFFS2_RESERVED_BLOCKS_BASE + 1)
-#define JFFS2_RESERVED_BLOCKS_GCTRIGGER (JFFS2_RESERVED_BLOCKS_BASE + 2)
-#define JFFS2_RESERVED_BLOCKS_GCBAD (JFFS2_RESERVED_BLOCKS_BASE + 1)
-#define JFFS2_RESERVED_BLOCKS_GCMERGE (JFFS2_RESERVED_BLOCKS_BASE)
+Yeah - checkpointing is on the TODO list along with some other ideas for 
+speeding up mounts. Unfortunately I haven't yet found the time to do it, 
+and nobody's yet talked nicely enough to the salespeople who control my
+destiny that I've been given real time to do it :)
 
-for an 640kb partition on 2*intelF320 (8MB)
-so 128 kb are wastet , it is working fine , till i am copying more than
-the 512kb free space in the partition , then deleting doesnt work
+> Anyway, issuing a "touch /mnt/silly"
+> crashes the system, giving me the same kernel oops.
 
-i think there is only 1 littel mistake in my config , but i was to lazy to
-figger out the problem
-JFFS2_RESERVED_BLOCKS_DELETION has to be set to 0 i think , i will try it
-next time i have time :)
+Hmmm. Please get it fed through ksymoops and let me have a copy, along with 
+the last few debugging messages before it died.
 
-dennis
-
-On Tue, 2 Oct 2001, David Woodhouse wrote:
-
->
-> ldoolitt@recycle.lbl.gov said:
-> >  Maybe my use is atypical, and maybe 5 blocks is a theoretical
-> > minimum.  I don't want to sound like a complainer, either -- this file
-> > system certainly looks like it meets my needs. I guess I just want to
-> > point out the superficial imbalance between the amount of sweat people
-> > pour out on projects like busybox to reduce code size by a few kB,
-> > when there is 320 kB "just lying around" on any JFFS2 on a 64 kB erase
-> > block chip.
->
-> Theoretical minimum is one block, not five. Give me formal proof that
-> this is also the _practical_ minimum, and we can drop the
-> overly-conservative limits.
->
-> Actually, we'd drop it to two, to allow for at least one block going bad on
-> us. More than two on NAND flash.
->
-> --
-> dwmw2
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+--
+dwmw2
