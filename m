@@ -1,44 +1,45 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pYDe-0002Qa-00
-	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:20:46 +0100
-Date: Tue, 17 Apr 2001 09:20:39 -0700 (PDT)
-From: Manatee <manatee@pacifier.com>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <mtd@infradead.org>
+	id 14pYGO-0002WI-00
+	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:23:36 +0100
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14pYGN-0002VY-00
+	for mtd@infradead.org; Tue, 17 Apr 2001 17:23:35 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.BSO.4.33.0104170918380.25263-100000@shell.pacifier.com> 
+References: <Pine.BSO.4.33.0104170918380.25263-100000@shell.pacifier.com> 
+To: Manatee <manatee@pacifier.com>
+Cc: mtd@infradead.org
 Subject: Re: mtd on linux 
-In-Reply-To: <26445.987519158@redhat.com>
-Message-ID: <Pine.BSO.4.33.0104170918380.25263-100000@shell.pacifier.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 17 Apr 2001 17:23:00 +0100
+Message-ID: <5071.987524580@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-On Tue, 17 Apr 2001, David Woodhouse wrote:
+manatee@pacifier.com said:
+>  It is a Disk On Chip and it fits into a PCI slot. 
 
-> Which device?
+OK. I'd heard of those but haven't actually met one yet.
 
-It is a Disk On Chip and it fits into a PCI slot.
+>  I see where jumpers would go but there are no jumpers on the card.
 
-> Do you have a DiskOnChip on an evaluation board? The way I prevent it from
-> interfering with normal booting is to remove the jumper which controls the
-> memory window during booting, and replace it after the grub or lilo prompt
-> has appeared. If you _never_ want to boot from it, you can just destroy the
-> firmware on it. M-Systems provide an 'fff.exb' or similarly named firmware
-> file for this purpose.
+I was thinking of the ISA eval board.
 
-I see where jumpers would go but there are no jumpers on the card.
+>  Ah, so if I can get the machine to boot -- with the card in place --
+> then I can access the card. 
 
+Probably. It depends just how the PCI eval board is set up. Isn't there a 
+key sequence you can use during booting to prevent the DiskOnChip BIOS from 
+loading itself? Or use the DFORMAT program provided to load the null 
+firmware. 
 
-> If you get Linux to boot, with the DOC2000 and NFTL config options
-> turned on (or if you load the modules), then you ought to be able to access
-> the device as /dev/nftla (block 93,0) and /dev/nftla1 (block 93,1).
+--
+dwmw2
 
-Ah, so if I can get the machine to boot -- with the card in place -- then
-I can access the card.
-
-Manatee
 
 
 
