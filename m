@@ -1,19 +1,19 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D39uT-0006yb-9u
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 04:31:22 -0500
-Date: Mon, 21 Feb 2005 09:31:00 +0000
-From: Ben Dooks <ben@fluff.org.uk>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-ID: <20050221093100.GF28744@home.fluff.org>
-References: <421998DA.1060503@imc-berlin.de>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D3AsG-0007IN-8F
+	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 05:33:09 -0500
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Lior Balkohen <balkohen@gmail.com>
+In-Reply-To: <196b7d31050219120065170409@mail.gmail.com>
+References: <196b7d31050219120065170409@mail.gmail.com>
+Content-Type: text/plain
+Date: Mon, 21 Feb 2005 13:32:33 +0300
+Message-Id: <1108981953.13420.46.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <421998DA.1060503@imc-berlin.de>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: ioremap_cached in drivers/mtd/maps ?
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS3 & performance checksum test results.
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 21, 2005 at 09:16:26AM +0100, Steven Scholz wrote:
-> Hi there,
-> 
-> it looks like only lubbock-flash.c is using ioremap_cached().
-> 
-> Can I use ioremap_cached() with normal NOR flashes?
-> Is it only for DMA transfer from/to flash?
+On Sat, 2005-02-19 at 21:00 +0100, Lior Balkohen wrote:
+> I don't know where/whom to provide to results, so I send the results
+> for my IBM embedded powerpc 405 based set top box to the linux-mtd
+> list. I hope, I'm right here.
 
-you could use it for such, but it also allows an cached
-area for flash read, which makes it faster to execute
-code from.
+Thank you Lior.
 
-> Does it improve something when using JFFS2?
-> What do I have to consider? .inval_cache function?
+After we've talked with Joern at IRC we are in substantial agreement
+that it is good idea not to switch to adler32 and keep CRC32.
 
-It allows the mapping driver to have a seperate read-only
-cached area, the .inval_cache function is needed to flush
-this area when writes happen to the un-cached area.
+The main reason is weakness of adler32 checksum algorithm:
+1. It is claimed that the a-priori probability of checksum collisions
+might be much higher that 1/2^32 when adler32 ais applied to short data
+chunks.
+
+2. It is asserted that adler32 becomes weak (and doesn't detect even
+some 1-bit errors) for data chunks > 5552 bytes.
+
+Particularly, SCTP protocol's checksum has recently been changed from
+adler32 to CRC32c. For more information, see RFC3309.
+
+But the test is still actual - we can observe the difference between
+forward/backward calculation directions.
 
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
