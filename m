@@ -1,41 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13H14d-0007d0-00
-	for mtd-list@infradead.org; Tue, 25 Jul 2000 10:32:27 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13H14Z-0007ct-00
-	for mtd@infradead.org; Tue, 25 Jul 2000 10:32:25 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <8likhn$d2h$1@whiskey.fireplug.net> 
-References: <8likhn$d2h$1@whiskey.fireplug.net>  <005001bff32c$b59a92a0$8e00a8c0@gpc> 
-To: sl@fireplug.net
-Cc: mtd@infradead.org
-Subject: Re: ELANSC400 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 25 Jul 2000 10:31:54 +0100
-Message-ID: <31986.964517514@cygnus.co.uk>
+	id 13H1GT-0007g0-00
+	for mtd-list@infradead.org; Tue, 25 Jul 2000 10:44:41 +0100
+Date: Tue, 25 Jul 2000 11:44:13 +0200 (CEST)
+From: Finn Hakansson <finn@axis.com>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>,
+        "mtd@infradead.org" <mtd@infradead.org>, jffs-dev@axis.com
+Subject: Re: jffs_file_write 
+In-Reply-To: <31773.964517387@cygnus.co.uk>
+Message-ID: <Pine.LNX.4.21.0007251137360.17368-100000@vvv.axis.se>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Tue, 25 Jul 2000, David Woodhouse wrote:
 
-sl@whiskey.fireplug.net said:
->  The flash parts on the SC400 are mapped through the SC400 MMU. There
-> are  several models, but the easiest is to map them 8kb at a time into
-> a memory window in low memory (0xc8000 if I remember correctly).
+> 
+> finn@axis.com said:
+> >  Yeah. One day, write and rewrite should be merged into one single
+> > function... 
+> 
+> I'm been thinking about this, and about the problems with garbage collection
+> taking to long.
 
-> Once there you can access them as normal flash memory. 
-
-Any more details on how to set up and modify the mapping?
-
-Preferably in the form of source code based on octagon-5066.c :)
-
+I cannot understand that. How much time are we talking about? How large
+is the flash? How long does an erase take? One garbage collect cannot
+consume more time than (sectors on flash * number of sectors) time I
+think.
 
 
---
-dwmw2
+> What about shifting all node writes into a kernel thread,
+> which also does the GC?
 
+Hmmm...
+
+> The jffs_file_write() function then only needs to queue the node(s) to be 
+> written, and can return immediately. Obviously we have to implement a way 
+> of flushing a particular file, but that shouldn't be too difficult.
+
+Well. Sounds like a good idea. I'll think about it.
+
+/Finn
 
 
 
