@@ -1,66 +1,42 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 06 Feb 2003 14:58:00 +0000
-Subject: Two questions on mtds on x86 platform
-In-Reply-To: <3E42748A.D1E17F2A@procsys.com>
-References: <3E42748A.D1E17F2A@procsys.com>
-Message-ID: <1044543479.2535.8.camel@passion.cambridge.redhat.com>
+From: kasparek@fit.vutbr.cz (Kasparek Tomas)
+Date: Fri, 7 Feb 2003 08:50:49 +0100 (CET)
+Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
+In-Reply-To: <1044544711.2535.13.camel@passion.cambridge.redhat.com>
+References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
+ <1044544711.2535.13.camel@passion.cambridge.redhat.com>
+Message-ID: <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Thu, 2003-02-06 at 14:43, Somashekara DM wrote:
-> Hi,
-> 
-> We want to mount jffs2 on two mtd partitions as a part of our project.
-> Our platform is x86 - kernel version 2.4.13.
-> 
-> 1. We are using mtdram ("Test driver using RAM") and blkmtd ("MTD
-> emulation using block device")
->     to create two mtd's. Our aim is to mount jffs2 on two different
-> mtds.
+Hello,
 
-OK. So you have two MTD devices listed in /proc/mtd?
+I'm trying to get 2.5.59 running on iPAQ and have following problem:
 
-> Here are the steps we have followed.
-> 
-> Step1 :
->     mknod /dev/mtd0 c 90 0
->     mknod /dev/mtd2 c 90 2
+- in 2.5.7 jffs2/super.c: fs_flags: FS_REQUIRES_DEV was removed from
+  jffs2_fs_type.
+-> that means 'nodev' word at line with jffs2 in /proc/filesystems
+  (in filesystems list -> get_filesystem_list())
+-> that means that init/do_mounts.c:get_fs_names() returns empty filesystem
+   list because thay skip entries with nodev keyword
+-> having no FS list init/do_mounts.c:mount_block_root() do not try to
+   mount any FS and it calls panic("VFS: Unable to mount root fs on %s").
 
-This is incorrect. The MAKEDEV script in CVS is correct. The device
-numbers for the character devices alternate between 'normal' and
-read-only devices, as follows:
+There are few solutions:
 
-	/dev/mtd0	c 90 0
-	/dev/mtdr0	c 90 1
-	/dev/mtd1	c 90 2
-	/dev/mtdr1	c 90 3
-	/dev/mtd2	c 90 4
-	/dev/mtdr2	c 90 5
+- either use fs_flags FS_REQUIRE_DEV again
+- or rewrite get_fs_names()
+- or use rootfstype=jffs2 kernel parameter
 
-So what you've called '/dev/mtd2' is in fact what _should_ be called
-'/dev/mtd1', and is hence the second of the two MTD devices (In fact, 
-/dev/mtd2 would be a _third_ device, which does not exist in your
-system).
+Of course, I can use the kernel param, but I would like to know if
+this is desired way or if some code should be changed.
 
->     and
->     mknod /dev/mtdblock0 b 31 0
->     mknod /dev/mtdblock2 b 31 2
+I'm not in the list, so please could you CC the answers.
 
-These are correct device numbers and names but as before, /dev/mtdblock2
-refers to a third MTD device which does not exist in your system. Make
-/dev/mtdblock1 (b 31 1) and use that.
+Thanks in advance
 
->    mount -t jffs2 /dev/mtdblock2 /mnt/jffs2drive2    //this mount fails
->    error - "mount: fs type jffs2 not supported by kernel"
+--
 
-What it actually means is 'block device /dev/mtdblock2 does not exist'.
-But mount(2) doesn't return sensible errors.
-
-> 2. Can we create multiple partitions on the 'mtdram'?
->        Can you give us the procedure for that?
-
-No partitions, but you can load the mtdram module twice (with different
-names) so that you get two devices.
-
--- 
-dwmw2
+	Tomas Kasparek (sioux), PhD student FIT VUT Brno
+ 	  tomas.kasparek@[seznam.cz,volny.cz]
+	  kasparek at fit.vutbr.cz, linux at fit.vutbr.cz
+	  http://www.fit.vutbr.cz/~kasparek
