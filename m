@@ -1,20 +1,21 @@
-Received: from imladris.demon.co.uk ([193.237.130.41])
+Received: from synergieinf.net1.nerim.net ([213.41.145.98]
+	helo=synergie-inf.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19BV0S-0000GR-4E
-	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 08:30:56 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Vipin Malik <vipin@embeddedlinuxworks.com>
-In-Reply-To: <1051735274.2850.305.camel@imladris.demon.co.uk>
-References: <5.1.0.14.0.20030430145340.02502ea8@ns.webzsite.com>
-	 <1051735274.2850.305.camel@imladris.demon.co.uk>
-Message-Id: <1051860665.21608.36.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Fri, 02 May 2003 08:31:05 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: Dave Ellis <DGE@sixnetio.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Oops in mounting jffs2 (jffs2_get_ino_cache())
+	id 19BXEj-0000c6-BB
+	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 10:53:49 +0100
+Received: from archie.gsi.synergie-inf.com ([10.53.2.1])
+	by gateway.synergie-inf.com ([127.0.0.1])
+	with SMTP (MDaemon.PRO.v6.5.1.R)
+	for <linux-mtd@lists.infradead.org>; Fri, 02 May 2003 11:52:59 +0200
+Message-ID: <515CABE7496FD111AA3300201829FCBE2FFDF9@archie.gsi.synergie-inf.com>
+From: Marc Neiger <m.neiger@synergie-inf.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Fri, 2 May 2003 11:52:57 +0200 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: zlib and uClinux
+Reply-To: m.neiger@synergie-inf.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-04-30 at 21:41, David Woodhouse wrote:
-> On Wed, 2003-04-30 at 21:22, Vipin Malik wrote:
-> > I'm using CVS code (HEAD) from Feb 16th on x86 w/ NOR flash chips (AMD).
-> > 
-> > I've been doing pwr fail testing on my application code and during a power 
-> > up I got the following Oops.
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2003-February/007115.html
-> 
-> cvs up
+Hi,
 
-Urgh. That fix isn't enough. The idea is that we file nodes against the
-inode number they claim to belong to, and only later when we check the
-crc do we throw away the bogus ones such as the one you found, which
-claim to belong to inode #0xffffffef.
+I try to compile uCLinux for coldfire including mtd patch, and I can't get
+the mtd utils to compile.
 
-Unfortunately, this still means that we set c->highest_ino to
-0xffffffef, and the inode numbers are going to wrap around fairly
-quickly thereafter, leading to massive corruption since we don't
-actually check for ino# wrap -- we don't really expect to ever get past
-4 milliard inodes, and we just start again at zero.
+uclinux : uClinux-dist-20030305.tar.gz
+mtd patch : mtd-snapshot-20030427.tar.bz2
 
-I think I need to fix the ino wrap case, and also check the node_crc
-during mount _if_ the node in question is causing us to allocate a new
-jffs2_inode_cache -- i.e. if it's for an inode we haven't seen before.
+compile report :
 
--- 
-dwmw2
+make[2]: Entering directory `/home/mn/mtd/mtd/util'
+m68k-elf-gcc -Os -g -fomit-frame-pointer -m5307 -DCONFIG_COLDFIRE  -Dlinux
+-D__linux__ -Dunix -D__uClinux__ -DEMBED
+-I/home/mn/uClinuxwrk/lib/uClibc/include -I/home/mn/uClinuxwrk/lib/libm
+-I/home/mn/uClinuxwrk/lib/libcrypt_old -I/home/mn/uClinuxwrk -fno-builtin
+-msep-data -I/home/mn/uClinuxwrk/linux-2.4.x/include -I../include -O2 -Wall
+-Wstrict-prototypes -Wshadow   -c -o eraseall.o eraseall.c
+eraseall.c:40: zlib.h: No such file or directory
+make[2]: *** [eraseall.o] Error 1
+make[2]: Leaving directory `/home/mn/mtd/mtd/util'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/mn/uClinuxwrk/user'
+make: *** [subdirs] Error 1
+
+Cheers,
+Marc Neiger
+ 
+Groupe Synergie Informatique
+14 rue Saint Papoul
+31000 Toulouse
+Tel 05 34 41 38 42 Fax: 05 34 41 38 39
