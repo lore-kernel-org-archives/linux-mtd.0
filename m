@@ -1,19 +1,17 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D155k-0003aK-R9
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 10:58:26 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: "Steven J. Magnani" <steve@digidescorp.com>
-In-Reply-To: <005101c51372$659fd420$6ffea8c0@banana>
-References: <005101c51372$659fd420$6ffea8c0@banana>
-Content-Type: text/plain
-Date: Tue, 15 Feb 2005 18:57:52 +0300
-Message-Id: <1108483073.26412.31.camel@sauron.oktetlabs.ru>
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D15J2-0003nl-IO
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2005 11:12:09 -0500
+Date: Tue, 15 Feb 2005 17:12:08 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050215161208.GC831@synertronixx3>
+References: <20050215154819.GB831@synertronixx3>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: Bug in jffs2/scan.c re: incorrect assumption of "allclean"block
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050215154819.GB831@synertronixx3>
+Subject: Re: XIP aware file system
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-02-15 at 09:24 -0600, Steven J. Magnani wrote:
-> > Well, I've looked trough your debug output and the code and think the
-> following patch should fix the bug.
-> 
-> That also seems to work. I assume that the test for "jeb->used_size ==
-> PAD(c->cleanmarker_size)" assures that jeb->first_node is non-NULL, so
-> dereferencing it won't ever cause an oops.
-Yes
+eumn, in general, is it OK to try the XIP stuff with
+linux-2.6.11-rc2-mm1?
+The patches applied clean, I thought XIP is in mm tree and I realized
+much later the XIP is already in 2.6.11-rc2...
 
-> 
-> Should the code at line 631 be changed to look more like your patched
-> code? (Why the difference?)
-I believe the same should be done there too.
+Regards, Konsti
+
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
