@@ -1,20 +1,17 @@
-Received: from natpost.webmailer.de ([192.67.198.65] helo=post.webmailer.de)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16WE0M-0005Eu-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 09:59:43 +0000
-Received: from thomas (pD9EB8F59.dip.t-dialin.net [217.235.143.89])
-	by post.webmailer.de (8.9.3/8.8.7) with SMTP id LAA07025
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 11:10:49 +0100 (MET)
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Thomas Gleixner <gleixner@autronix.de>
-Reply-To: gleixner@autronix.de
-To: linux-mtd@lists.infradead.org
-Subject: compile errors on fs/jffs/inode-v23.c
-Date: Thu, 31 Jan 2002 11:13:00 +0100
-MIME-Version: 1.0
-Message-Id: <02013111130007.00763@thomas>
-Content-Transfer-Encoding: 8bit
+	id 16WEBt-0005Gp-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 10:11:37 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <02013022481901.00763@thomas> 
+References: <02013022481901.00763@thomas>  <15998.1007200283@redhat.com> 
+To: gleixner@autronix.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 on NAND flash 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 31 Jan 2002 10:22:43 +0000
+Message-ID: <17832.1012472563@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,17 +23,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Is there a real reason for the change in inode-v23.c at line 367
+gleixner@autronix.de said:
+>  I tried jffs2 on a NAND flash. Tracking down one ugly bug in fs/jffs2/
+> write.c  i got it basicly working ! Thanks to all of you, who did his
+> job on that jffs2/nand stuff obviously  without having access to a
+> NAND device. 
 
-	inode->i_rdev.value = 0;
+Be careful. You have nothing there to make sure that it doesn't violate the 
+constraints on the number of write cycles per page. You have no ECC, you 
+have no real chance of it working in the wild.
 
-As far as I can see is inode->i_rdev neither a structure nor a union. 
-I'm working on kernel 2.4.17. Is this a change for 2.5 ?
+Also note that the locking in jffs2_garbage_collect_deletion_dirent() is 
+broken. We need to lock the erase_completion_lock while we go through the 
+list, and drop the lock when we read the nodes. 
 
-Thomas
- 
-__________________________________________________
-Thomas Gleixner, autronix automation GmbH
-auf dem berg 3, d-88690 uhldingen-muehlhofen
-fon: +49 7556 919891 , fax: +49 7556 919886
-mail: gleixner@autronix.de, http://www.autronix.de  
+> jffs2_flash_writev calls mtd->writev, if available else it calls
+> mtd_fake_writev. The nand driver supports writev and does not check if
+> the  vecs[1] entry is empty. mtd_fake_writev takes care of this. I
+> suggest to do the check in jffs_write_dnode (where the wrong count
+> comes  from), although i will include a check in nand.c. This problem
+> did not show up due to the fact, that obviously none of the  FLASH
+> drivers supports writev. (I could not find one in mtd)
+
+All the writev stuff was put there for the benefit of NAND flash - so yes,
+nobody's used it yet. This problem had come up recently in the eCos port,
+but the fix hadn't yet propagated to the main tree.
+
+--
+dwmw2
