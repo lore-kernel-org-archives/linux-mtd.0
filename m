@@ -1,18 +1,21 @@
-Received: from [81.6.214.140] (helo=mail.infocell-its.com)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DH2SP-00050b-2r
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 11:23:46 -0500
-Message-ID: <424C1C58.3000905@infocell-its.com>
-Date: Thu, 31 Mar 2005 16:50:48 +0100
-From: Zeri Virgo <zerivirgo@infocell-its.com>
+Received: from ring.vpop.net ([207.178.248.5])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DH3V6-0005Pe-74
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 12:30:37 -0500
+From: Matthew Reimer <mreimer@vpop.net>
+To: tglx@linutronix.de
+Date: Thu, 31 Mar 2005 09:29:59 -0800
+References: <424B4FFA.7050906@joshuawise.com>
+	<1112269966.4228.68.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1112269966.4228.68.camel@tglx.tec.linutronix.de>
 MIME-Version: 1.0
-To: Dan Brown <dan_brown@ieee.org>
-References: <4249C357.2040600@ieee.org>
-In-Reply-To: <4249C357.2040600@ieee.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200503310929.59763.mreimer@vpop.net>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [UPDATE] DOCBoot support for NFTL-based DOC2000
+Subject: Re: oobavail issues
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,75 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dan Brown wrote:
-> As promised (albeit somewhat delayed), I have just checked into CVS some 
-> changes to DOCBoot supporting NFTL-based DOC2000 devices.
+On Thursday 31 March 2005 03:52 am, Thomas Gleixner wrote:
+> On Wed, 2005-03-30 at 20:18 -0500, Joshua Wise wrote:
+> > We found that making our oobfree match up with oobavail seemed to do the
+> > trick for avoiding this, and make JFFS2 work, to boot! Here's what we
+> > did:
+> >
+> > I suspect that oobavail should be summing oobfree instead of doing that
+> > arithmetic. Or is there something I'm not seeing?
+>
+> In general you're right. oobavail should be derived from oobfree, but in
+> case of JFFS2 this does not matter at all.
+>
+> Which problem went away with your changes ?
 
-Thanks for this - it's just what I need!
+We're using the nand_oobinfo structure from the s3c2410.c nand driver:
 
-Unfortunately my 2.6.11.5 kernel patched with mtd/patchkernel.sh, is 
-crashing with the following stack trace (I've just jotted down the 
-symbols)...
+static struct nand_oobinfo nand_hw_eccoob = {
+        .useecc         = MTD_NANDECC_AUTOPLACE,
+        .eccbytes       = 3,
+        .eccpos         = {0, 1, 2 },
+        .oobfree        = { {8, 8} }
+};
 
-EIP is at nand_do_read
-...
-nand_read+0x2c/0x30
-find_media_headers+0x3e/0x150
-nftl_scan_bbt+0x8f/0x360
-nand_scan+0x466/0x940
-doc2000_count_chips+0x4e/0x60
-init_nanddoc+0x34b/0xad0
-do_initcalls
-...
+On our platform, it's hooked up to Samsung flash part (k9f5608u0a) with 512 
+byte pages and 16 bytes of OOB. We were getting crashes in the memcpy() that 
+nand_prepare_oobbuf() does because with the above definition mtd->oobavail = 
+12, whereas the total number of oobfree bytes only equals 8. So the first 
+memcpy() would be correct and len would advance by 8, but then since len (now 
+8) < mtd->oobavail (now 12), it would iterate again. These subsequent 
+iterations assume that there are more entries in the oobfree array, and would 
+end up reading whatever values happened to follow the oobfree array and using 
+those. In our case, it would read zeroes, which would result in len not 
+advancing, and eventually it read some impossibly large number which memcpy() 
+would choke on and crash the kernel.
 
+We've worked around the crash by making sure that oobfree covers every free 
+byte.
 
-The MTD section of my .config is below (I removed NFTL because I'm only 
-going to be using JFFS2, ok?). Is there anything obviously wrong here?
+I'm not sure what is the correct fix--calculate oobavail differently, or to 
+change the loop condition in nand_prepare_oobbuf, or to require 
+nand_oobinfo.oobfree to cover every OOB byte. We just copied from the 
+s3c2410.c, assuming it was correct.
 
-- Zeri
+What would you suggest?
 
-
-CONFIG_MTD=y
-# CONFIG_MTD_DEBUG is not set
-CONFIG_MTD_CONCAT=y
-CONFIG_MTD_PARTITIONS=y
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not setCONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=y
-# CONFIG_FTL is not set
-# CONFIG_NFTL is not set
-# CONFIG_INFTL is not set
-# CONFIG_MTD_CFI is not set
-# CONFIG_MTD_JEDECPROBE is not set
-CONFIG_MTD_MAP_BANK_WIDTH_1=y
-CONFIG_MTD_MAP_BANK_WIDTH_2=y
-CONFIG_MTD_MAP_BANK_WIDTH_4=y
-# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-CONFIG_MTD_CFI_I1=y
-CONFIG_MTD_CFI_I2=y
-# CONFIG_MTD_CFI_I4 is not set
-# CONFIG_MTD_CFI_I8 is not set
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-# CONFIG_MTD_COMPLEX_MAPPINGS is not set
-# CONFIG_MTD_PLATRAM is not set
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_PHRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_MTD_BLKMTD is not set
-# CONFIG_MTD_BLOCK2MTD is not set
-# CONFIG_MTD_DOC2000 is not set
-# CONFIG_MTD_DOC2001 is not set
-# CONFIG_MTD_DOC2001PLUS is not set
-CONFIG_MTD_NAND=y
-# CONFIG_MTD_NAND_VERIFY_WRITE is not set
-CONFIG_MTD_NAND_IDS=y
-CONFIG_MTD_NAND_DISKONCHIP=y
-# CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED is not set
-CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0
-# CONFIG_MTD_NAND_DISKONCHIP_BBTWRITE is not set
-# CONFIG_MTD_NAND_NANDSIM is not set
+Matt
