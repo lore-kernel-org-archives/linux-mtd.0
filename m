@@ -1,20 +1,20 @@
-Received: from [203.238.93.2] (helo=kasumi.idis.co.kr ident=mail)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196jk2-0007mo-Ei
-	for <linux-mtd@lists.infradead.org>; Sat, 19 Apr 2003 05:14:18 +0100
-Message-ID: <007e01c3062a$21cfde90$525deecb@noshel>
-From: "Edward Lee \(???\)" <noshel@idis.co.kr>
-To: <tglx@linutronix.de>
-References: <002901c3021b$546a6fe0$525deecb@noshel>
-	<200304141325.02451.tglx@linutronix.de> <3E9FC99D.5040200@idis.co.kr>
-	<200304181049.02754.tglx@linutronix.de>
-Date: Sat, 19 Apr 2003 13:14:01 +0900
+Received: from [152.101.51.1] (helo=janus.hk.panelx.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 196joV-0007r9-BB
+	for <linux-mtd@lists.infradead.org>; Sat, 19 Apr 2003 05:18:55 +0100
+Message-ID: <005001c3062a$c366c070$9000010a@paulwong>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <tglx@linutronix.de>,
+	<linux-mtd@lists.infradead.org>,
+	"yaffs list" <yaffs@toby-churchill.org>
+References: <001301c305bc$17068680$6b00a8c0@mobile>
+	<200304181814.06776.tglx@linutronix.de>
+Date: Sat, 19 Apr 2003 12:18:41 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-cc: linux-mtd@lists.infradead.org
-Subject: Re: A question on ECC
+	charset="big5"
+Content-Transfer-Encoding: 7bit
+Subject: Re: using MEMWRITEOOB problem in NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLSANCkZyb206ICJUaG9tYXMgR2xlaXhuZXIiIDx0
-Z2x4QGxpbnV0cm9uaXguZGU+DQpUbzogIkVkd2FyZCBKLiBMZWUiIDxub3NoZWxAaWRpcy5jby5r
-cj47IDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4NClNlbnQ6IEZyaWRheSwgQXByaWwg
-MTgsIDIwMDMgNTo0OSBQTQ0KU3ViamVjdDogUmU6IEEgcXVlc3Rpb24gb24gRUNDDQoNCg0KPiBP
-biBGcmlkYXkgMTggQXByaWwgMjAwMyAxMTo0NywgRWR3YXJkIEouIExlZSB3cm90ZToNCj4gPg0K
-PiA+IEkgdHJpZWQgdGhpcyBsYXN0IG5pZ2h0LCBhbmQgSSBnb3QgYSBidW5jaCBvZiAiWUFGRlMg
-UmVhZENodW5rIHdpdGggcmVhbA0KPiA+IEVDQ19JTkZPIi4NCj4gPiB3aGVuIGJvdGggcmVhZGlu
-Zy93cml0aW5nLg0KPiA+IE5vdGhpbmcgZWxzZSwgZG8gd2UgbmVlZCBtb3JlIGluZm9ybWF0aW9u
-Pw0KPiANCj4gSSBhc3N1bWUgdGhlcmUgd2VyZSBubyBtZXNzYWdlcyBjb250YWluaW5nIFlBRkZT
-IFJlYWRDaHVuayB3aXRoIGR1bW15IEVDQyANCj4gaW5mby4NCg0KICAgIHJpZ2h0Lg0KDQo+IFRo
-YXQgbWVhbnMsIFlBRkZTIHN1cHBsaWVzIGFsd2F5cyBhIHBvaW50ZXIgdG8geWFmZnNfb29iaW5m
-byBzdHJ1Y3R1cmUuIA0KPiBEbyB0aGUgIkkndHMgbm90IHJlY29tbWVuZGVkIC4uLi4iIG1lc3Nh
-Z2VzIGZvbGxvdyB1cCB0aGUgYWJvdmUgbWVzc2FnZSwgb3IgDQo+IHNob3cgdGhleSB1cCBlbHNl
-d2hlcmUgPyBUaGF0IG1lYW5zLCBhcmUgdGhleSByZWFsbHkgcmVsYXRlZCB0byBhY2Nlc3Npbmcg
-dGhlIA0KPiBZQUZGUyBwYXJ0aXRpb25zID8gUGxlYXNlIHByb3ZpZGUgYSBzaG9ydCBkZWJ1ZyBv
-dXRwdXQsIHdoZXJlIEkgY2FuIHNlZSB0aGUgDQo+IGNvbnRleHQgb2YgdGhvc2UgIkl0J3Mgbm90
-IHJlY29tbWVuZGVkIC4uLiIgbWVzc2FnZXMuDQoNCkknbSBjdXJyZW50bHkgbm90IGluIHRoZSBw
-cm9wZXIgZW52aXJvbm1lbnQgdG8gc2VuZCB5b3UgdGhlIGRlYnVnIG1zZ3MsIA0KYnV0IEkgY2Fu
-IHRlbGwgeW91IHRoYXQgdGhlICdJdCdzIG5vdCByZWNvbW1lbmRlZC4uLicgc3R1ZmYgY2FtZSBv
-dXQganVzdCAnYmVmb3JlJw0KdGhlIFlBRkZTIG1zZ3MgZGlkLiBBIGJ1bmNoIG9mICdJdCdzIG5v
-dCByZWNvbW1lbmRlZC4uLicsIGFuZCB0aGVuIGFub3RoZXINCmJ1bmNoIG9mICdSZWFsIENodW5r
-Li4nLg0KSSBzZW5kIHlvdSB0aGUgb3V0cHV0IG5leHQgbW9uZGF5LCBJJ2xsIGhhdmUgdG8gbmV3
-bHkgc2V0dXAgYSBmZXcgdGhpbmdzIGJlZm9yZSANCnRyeWluZyBpdCBhZ2Fpbi4NCg0KPiANCj4g
-QXJlIHRoZXJlIGFueSBvdGhlciBmdW5jdGlvbnMgYWNjZXNzaW5nIHRoZSBmbGFzaCBkZXZpY2Ug
-PyANCj4gDQo+IFlvdSB1c2UgMiBwYXJ0aXRpb25zIG91dCBvZiA1IGZvciBZQUZGUy4gV2hhdCBh
-cmUgdGhlIG90aGVyIHBhcnRpdGlvbnMgZm9yPw0KPiANCg0KVGhlIGZpcnN0IHBhcnRpdGlvbiBj
-b250YWlucyB0aGUgc3RhdGUgb2YgdGhlIHdob2xlIGRldmljZSwgDQp0aGUgc2Vjb25kIGFuZCB0
-aGlyZCBoYXMgdGhlIGtlcm5lbCBpbWFnZSwgKHRoZSBmaXJzdCB0aHJlZSBwYXJ0aXRpb25zIGFy
-ZSBzdG9yZWQgYXMgcmF3IGJpbmFyeSkNCmFuZCB0aGUgZm9ydGggYW5kIGZpZnRoIGlzIHVzZWQg
-YXMgWUFGRlMuDQoNCj4gLS0gDQo+IFRob21hcw0KPiBfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gbGludXRy
-b25peCAtIGNvbXBldGVuY2UgaW4gZW1iZWRkZWQgJiByZWFsdGltZSBsaW51eA0KPiBodHRwOi8v
-d3d3LmxpbnV0cm9uaXguZGUNCj4gbWFpbDogdGdseEBsaW51dHJvbml4LmRlDQo+IA0KPiANCg==
+Thanks. I got it.
+
+Paul
+----- Original Message -----
+From: "Thomas Gleixner" <tglx@linutronix.de>
+To: "Paul Wong" <paul.wong@digitalview.com>;
+<linux-mtd@lists.infradead.org>; "yaffs list" <yaffs@toby-churchill.org>
+Sent: Saturday, April 19, 2003 12:14 AM
+Subject: Re: using MEMWRITEOOB problem in NAND flash device
+
+
+> On Friday 18 April 2003 17:06, Paul Wong wrote:
+> >  Hi All,
+> >      I want to restore the oob[5] using ioctl(..,MEMWRITEOOB,..) in NAND
+> >  flash device, but it is failure to write anything. Is any protected
+> >  condition in NAND.C?
+> You _CANNOT_ write a 0 bit to 1 on a FLASH chip. This works the other way
+> round. If you want to restore your block, remove the santity check in
+erase
+> function of nand.c.
+>
+> Last answer to this
+>
+> --
+> Thomas
+> ________________________________________________________________________
+> linutronix - competence in embedded & realtime linux
+> http://www.linutronix.de
+> mail: tglx@linutronix.de
+>
+>
+> --------------------------------------------------------------------------
+-------------
+> This mailing list is hosted by Toby Churchill open software
+(www.toby-churchill.org).
+> If mailing list membership is no longer wanted you can remove yourself
+from the list by
+> sending an email to yaffs-request@toby-churchill.org with the text
+"unsubscribe"
+> (without the quotes) as the subject.
+>
+>
