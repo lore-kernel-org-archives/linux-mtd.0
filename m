@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [213.154.159.82] (helo=pinot.profis.ro ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fjkA-00059p-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 15:42:18 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <02022614424803.15969@jocke.lumentis.se> 
-References: <02022614424803.15969@jocke.lumentis.se>  <0111121314140A.28381@jocke.lumentis.se> <02010409585400.10979@jocke.lumentis.se> <02012911331100.15969@jocke.lumentis.se> 
-To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: scan.c & ACCURATE 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Feb 2002 15:53:37 +0000
-Message-ID: <17692.1014738817@redhat.com>
+	id 16flSI-0005Hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 17:31:59 +0000
+Received: from localhost (IDENT:rcorlan@localhost.localdomain [127.0.0.1])
+	by pinot.profis.ro (8.9.3/8.8.7) with ESMTP id TAA00638
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 19:46:39 -0500
+Date: Tue, 26 Feb 2002 19:46:39 -0500 (EST)
+From: Radu Corlan <rcorlan@pcnet.ro>
+To: linux-mtd@lists.infradead.org
+Subject: nftl problem
+In-Reply-To: <0202261445370B.10190@thomas>
+Message-ID: <Pine.LNX.4.10.10202261939200.608-100000@pinot.profis.ro>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,11 +24,29 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Joakim.Tjernlund@lumentis.se said:
->  Patch 2 increases INOCACHE_HASHSIZE to 14 which also make scan alot
-> faster. 
+Before i gave up on nftl, i found the following problem: nftl accesses the
+flash through the read_ecc and write_ecc function pointers in the slave
+mtd_info structure. However, when the slave structure is initialised, only
+the read and write function pointers are filled, not the read_ecc and
+write_ecc; i got kernel panic out of this, which got away when i filled
+the fields.
 
-How does this compare with 8, which is easier to divide by?
+Anyway, i gave up on nftl; my mtd seems to run ok now, as i put a ext2
+filesystem on the mtdblock0 device and it runs fine.
 
---
-dwmw2
+But i can;t get jffs2 to work - i used the code from the latest snapshot
+on the infradead site - is it ok? Can i get a 'stable' version somewhere?
+my kernel is 2.4.2.
+
+Thanks,
+
+Radu
+
+
+-------------
+Radu Corlan           Snail Mail: Bucuresti sect. 1, 
+rcorlan@pcnet.ro             str. Argentina nr. 28, 71206 Romania
+
+   You can still escape the "Gates" of Hell!   
+                 Use Linux!                       
+-------------
