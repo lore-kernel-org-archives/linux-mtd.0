@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta05.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178dJT-0005Cm-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 09:42:11 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020517083454.1C1582756@sitemail.everyone.net> 
-References: <20020517083454.1C1582756@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: Quesion on copying to mtdblock0 
+	id 178dNt-0005DR-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 09:46:45 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 May 2002 09:42:09 +0100
-Message-ID: <13310.1021624929@redhat.com>
+Date: Fri, 17 May 2002 01:46:44 -0700 (PDT)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Re: Quesion on copying to mtdblock0
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020517084644.525B52756@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +24,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
->  But I wrote a small program to tranfer the .b file into Big-endian
-> Maybe I got something wrong in it... 
+Maybe I just use the wrong version of mkfs.jffs2
 
-Exactly what does your program do? You can't just byte-swap all words or 
-dwords in the whole image - you have to byteswap only the fields in the 
-JFFS2 node headers that are larger than a byte. 
+what I am using is "mkfs.jffs2 revision 1.8"
 
-Unless your program had intimate knowledge of JFFS2 structure, it can't 
-possibly have got it right.
+And... is there any difference in mkfs.jffs2 between different architecture?
+I mean, is the mkfs.jffs2 for M68K different from mkfs.jffs2 for ARM?
 
 
---
-dwmw2
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
