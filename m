@@ -1,22 +1,21 @@
-Received: from ftpbox.mot.com ([129.188.136.101])
+Received: from mailout06.sul.t-online.com ([194.25.134.19])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BI4oK-0001ow-Gm
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2004 13:02:08 +0100
-Received: from az33exr02.mot.com (az33exr02.mot.com [10.64.251.232])
-	by ftpbox.mot.com (Motorola/Ftpbox) with ESMTP id i3QC26TZ006826
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Apr 2004 05:02:07 -0700 (MST)
-Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
-	by az33exr02.mot.com (Motorola/az33exr02) with ESMTP id i3QBxFgr009229
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Apr 2004 06:59:18 -0500
-Message-ID: <01139FC052A0D411900B00508B9535FC13AC405C@ZCH07EXM04.corp.mot.com>
-From: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 26 Apr 2004 20:00:16 +0800
+	id 1BI55w-0001zz-5w
+	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2004 13:20:20 +0100
+From: tglx@linutronix.de (Thomas Gleixner)
+To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>,
+ linux-mtd@lists.infradead.org
+Date: Mon, 26 Apr 2004 14:15:06 +0200
+References: <01139FC052A0D411900B00508B9535FC13AC405C@ZCH07EXM04.corp.mot.com>
+In-Reply-To: <01139FC052A0D411900B00508B9535FC13AC405C@ZCH07EXM04.corp.mot.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: Where can I get nand16.c
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200404261415.06559.tglx@linutronix.de>
+Subject: Re: Where can I get nand16.c
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Monday 26 April 2004 14:00, Shen Aaron-r62966 wrote:
+> Hi all,
+>
+>   I still can't find a way to support Samsung 16 bit NAND flash. Please
+> inform or send me a nand16.c for reference.
 
-  I still can't find a way to support Samsung 16 bit NAND flash. Please inform or send me a nand16.c for reference.
+The support for 16 bit NAND is incorporated into the generic NAND driver now. 
 
-  What's the difference to write data into the flash comparing with x8 nand flash?
-
-Thanks.
--Aaron
+-- 
+Thomas
+________________________________________________________________________
+"Free software" is a matter of liberty, not price. To understand the concept,
+you should think of "free" as in "free speech,'' not as in "free beer".
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
