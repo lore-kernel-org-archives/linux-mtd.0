@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from samar.sasken.com ([164.164.56.2])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 166AeS-0001nz-00
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2001 13:09:24 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BF97017.B80B3DC1@virgin.net> 
-References: <3BF97017.B80B3DC1@virgin.net> 
-To: dave <david.harris18@virgin.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Help 
-Mime-Version: 1.0
+	id 166VD4-0001My-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 11:06:30 +0000
+Message-ID: <3BFBDB54.C02EBE28@sasken.com>
+Date: Wed, 21 Nov 2001 16:50:28 +0000
+From: Ashok M Padmanaban <ashokmp@sasken.com>
+MIME-Version: 1.0
+To: MTD for Linux <linux-mtd@lists.infradead.org>,
+   JFFS mailing list <jffs-dev@axis.com>
+Subject: Flash Partitons
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 20 Nov 2001 13:19:55 +0000
-Message-ID: <10496.1006262395@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +22,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-david.harris18@virgin.net said:
->  I have a DOC1000 with all the right patches to 2.4.9. And the erase
-> ioctl returns this.
+Hi
+ It will be very usefull if some one can give their  comments.
 
-> I can read from it using dd. But writes fail with similar results.
+We are developing an embeded device (email device ) and planning to have
 
-The DiskOnChip 1000 driver hasn't been looked at for some time, because I 
-don't have one - it's been out of production for years now, I believe. 
+CRAMFS for the root file system and JFFS2 for the user data.
 
-It should be turned into a 'map' driver and use the generic flash chip 
-drivers, rather than having its own standalone driver. Look at the paging 
-setup in something like drivers/mtd/maps/vmax301.c for inspiration.
+If CRAMFS is root fs, then i cant have  system and user configuration
+files under this as they are updated according to requirement.
 
---
-dwmw2
+One way is to have links to Jffs2 partition so that we  can update these
+files.
+Or To have a separate partition (jffs2) for configuration files, which
+consumes a lot of
+flash space (as 5 sectors are reserved for GC).
+
+I feel first one is the better choice as we are very tight on FLASH
+space.
+But having the config files and user data in the same partition
+.......will it be safe?
+Like while manipulating the user data, is there any chance that config
+files may be corrupted...while GC. is running and the power goes
+down.......)
+
+Is there any other way of doing this.
+
+Thanks in advance
+Regards
+ashok
