@@ -1,16 +1,16 @@
-Received: from tomts16-srv.bellnexxia.net ([209.226.175.4])
+Received: from mail.mediatrix.com ([66.129.134.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17CKoI-00011k-00
-	for <linux-mtd@lists.infradead.org>; Mon, 27 May 2002 14:45:18 +0100
-Date: Mon, 27 May 2002 09:45:15 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: =?gb2312?q?cytang?= <cytang_cn@yahoo.com.cn>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: grub cannt  boot from doc millennium
-In-Reply-To: <20020527123149.40310.qmail@web14405.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.44.0205270938250.8830-100000@server.superbt.com>
+	id 17Cg74-0002G2-00
+	for <linux-mtd@lists.infradead.org>; Tue, 28 May 2002 13:30:06 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D014ECF72@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Append does not return error on full disks
+Date: Tue, 28 May 2002 08:30:03 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,32 +22,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 27 May 2002, [gb2312] cytang wrote:
+Hi,
 
-> I searched the mail archive with keyword "grub"
-> but I only find just one detailed howto : 
+	I have observed that jffs2 nevers returns a 'disk full' error when
+an application appends data to an existing file.  I have setup a test =
+which
+opens an existing file for appending, and fwrite() data to it until =
+fwrite()
+returns error.
+My test never stopped!  So when I manually stoppped it, the file system =
+was
+corrupted.  I was unable to unmount it, and neither I could remount it =
+after
+reboot.  I have setup a second test which is a script instead of being =
+a
+program, using the append '>>' command.  Same results.=20
 
-There is a short how-to in the README_DiskOnChip file created by the
-patch.
+	During my test, I did'nt open the file with OSYNC flag though, maybe
+it could patch the problem.  I will try it.
+Nevertheless, it shouldn't happen that a process be able to append data
+indefinitely to a file without ever getting an error when the disk =
+becomes
+full.
 
-> 4. rm configure;
->    autoconf
-> 5. make ; make install;
+	Does anyone have a clue about it?  Maybe there is a bug somewhere
+down in the jffs2_reserve_space() function?
 
-Run 
-
-    ./configure --enable-diskonchip-mil512
-
-or
-
-    ./configure --enable-diskonchip-mil256
-
-depending on the type of the DoC Millennium flash parts.  You may want to
-explicitly disable unused file system drivers and leave only required one.
-
-> 6. cp stage2/pre_stage2 /usr/src/mtd/grub
-
-This and the next step are no longer needed.  The README_DiskOnChip file
-suggests to obtain the GRUB bootloader firmware from stage2/grub_firmware.
-
-Ilguiz
+Fr=E9d=E9ric Giasson
