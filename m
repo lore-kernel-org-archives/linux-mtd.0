@@ -1,15 +1,23 @@
-Date: Thu, 27 Jan 2005 17:35:55 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1106730647.6480.190.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
-	<1106730647.6480.190.camel@localhost.localdomain>
+Received: from ext-proxy-1.ftel.co.uk ([192.65.220.99])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CuEMM-0002Wq-Pn
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 13:27:17 -0500
+Message-ID: <41F93275.3090705@mesias.co.uk>
+Date: Thu, 27 Jan 2005 18:27:01 +0000
+From: Cam <camilo@mesias.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 memory consumption
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>
+	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>
+	<1106819251.783.141.camel@baythorne.infradead.org>
+	<20050127131702.GA22121@wohnheim.fh-wedel.de>
+	<41F9127E.6030508@mesias.co.uk>
+	<20050127163845.GA7755@wohnheim.fh-wedel.de>
+In-Reply-To: <20050127163845.GA7755@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS3 document / wiki [OT]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 26 Jan 2005, David Woodhouse wrote:
-> We can also look at true write-behind caching, if we're a _lot_ more
-> careful about free space than we are now. To have data outstanding in
-> the page cache, we need to be able to guarantee that we have enough free
-> space to write it out, and we need to be able to write it out _without_
-> allocating memory. That includes any memory which might be required for
-> GC. Doing that would allow us to coalesce writes so we fill a page (or a
-> full node size) more often.
+Jörn
 
-How do you think, if we implement write-back caching (I do not imagine 
-how yet) then will we still need to distinguish between "pristine" and 
-"normal" nodes?
+> Various bits of information on this were spread all over the place:
+> o Code examples of mysql - tons of buffer overflows.
+> o Code examples of php - same.
+> o Various hacks of machines based on either php or mysql
+>   vulnerabilities.
+> o Some specific problems with some wiki implementations.
+> 
+> Considering that most wikis use php, mysql or both, you can pretty
+> much get the idea.  I cannot point to specific vulnerabilities or
+> exploits, but the only thing stopping me from owning your wiki is my
+> lack of interest.
 
-Since JFFS2 is now write-through, we do write small data chunks if there 
-are few changes in the cache. This is for space efficiency, right?
+Sorry but I'm not convinced. The link is interesting but there is no 
+mention of wikis. Also, php and mysql are used widely for other 
+purposes, if it was as bad as you say, we would be in some kind of web 
+apocalypse, which we're not. There are other wikis too (Java based or 
+Perl/CGI in my case).
 
-In case of write-back cache, a lot of small changes will be merged to the 
-page and we possibly may just write it fully. Perhaps, we might not bother 
-writing only part of page.
+Cheers,
 
-The agvantage of this is that we will not need to overcompicate the GC 
-getting it merge "normal" nodes and produce "pristine" ones. All our nodes 
-will be pristine.
+-Cam
 
-On commit_write request we may really write several neigbour pages either 
-if they are marked dirty, thus having nodes with several pages.
-
-If we have only 4K-multiple data chunks on nodes, we will even save some 
-RAM (both in-core and fragtree).
-
-Comments?
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+camilo@mesias.co.uk                                                 <--
