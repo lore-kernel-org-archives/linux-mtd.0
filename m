@@ -1,18 +1,21 @@
-Received: from penguin-ext.wise.edt.ericsson.se ([193.180.251.47] helo=penguin.wise.edt.ericsson.se)
+Received: from darwin.altera.com ([66.35.227.3])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17sOQp-0007fz-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2002 15:06:55 +0100
-Received: from switchboard.ericsson.se (kieraypc01.p.y.ki.era.ericsson.se [147.214.82.33])
-	by penguin.wise.edt.ericsson.se (8.12.1/8.12.1/WIREfire-1.4) with ESMTP id g8KE6rRb016097
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2002 16:06:53 +0200 (MEST)
-Subject: Input/output error
-From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-To: Mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 20 Sep 2002 16:06:53 +0200
-Message-Id: <1032530813.7077.208.camel@spawn>
-Mime-Version: 1.0
+	id 17sOZ4-0007gg-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2002 15:15:26 +0100
+Message-Id: <200209201414.g8KEE7k04354@localhost.localdomain>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Clive Davies <cdavies@altera.com>
+To: Louie Boczek <louie@calimatech.com>,
+   Christopher Hoover <ch@murgatroid.com>
+Subject: Re: Unlocking flash problem with the epxa10db device
+Date: Fri, 20 Sep 2002 15:14:07 +0100
+Cc: "'ARM Linux kernel Mailinglist'" <linux-arm-kernel@lists.arm.linux.org.uk>,
+   linux-mtd@lists.infradead.org
+References: <000001c26061$7d20c8f0$7e00000a@bergamot> <3D8B282C.9080004@calimatech.com>
+In-Reply-To: <3D8B282C.9080004@calimatech.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,18 +27,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I got this on a ppc system running 2-4-19-pre8.
+> On a side note, is there any reason that the entire flash is unlocked on
+> boot instead of just the filesystem.  I am referencing the unlock code
+> in epxa10db-flash.c.
+>
+Not really, I didn't feel that the flash locking added much so I just 
+unlocked the whole flash at boot time and forgot about it.
 
-Five files is now in a state where they show up in the file system but
-can't be accessed or stat (ls works but ls -l do not).
-
-I see that a few fixes has gone in since this version. Could any of them
-fix a problem like this?
-
-
-
--- 
-Kenneth Johansson	
-Ericsson AB                       Tel: +46 8 404 71 83
-Borgafjordsgatan 9                Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
+Clive
