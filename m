@@ -1,61 +1,66 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13y9PV-00013M-00
-	for mtd-list@infradead.org; Tue, 21 Nov 2000 09:08:17 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13y9PU-00013G-00
-	for mtd@infradead.org; Tue, 21 Nov 2000 09:08:16 +0000
-Received: from dwmw2 (helo=redhat.com)
-	by passion.cygnus with local-esmtp (Exim 3.16 #2)
-	id 13y9PT-0000DB-00
-	for mtd@infradead.org; Tue, 21 Nov 2000 09:08:15 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: mtd@infradead.org
-Subject: 2.4 stuff.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 21 Nov 2000 09:08:15 +0000
-Message-ID: <816.974797695@redhat.com>
+	id 13yBSW-0001Mg-00
+	for mtd-list@infradead.org; Tue, 21 Nov 2000 11:19:32 +0000
+Received: from www.softsys.co.at
+	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13yBSR-0001Ma-00
+	for mtd@infradead.org; Tue, 21 Nov 2000 11:19:30 +0000
+Message-ID: <01C053B4.B7C47C60@smithwicks.softsys.co.at>
+From: Erwin Authried <eauth@softsys.co.at>
+To: 'MTD List' <mtd@infradead.org>
+Subject: Re: 2.4 stuff.
+Date: Tue, 21 Nov 2000 12:15:19 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-OK, I've just merged the inter_module_xxx changes from 2.4 as I said I was 
-going to do last week - yes it took me over a week to do it because I got 
-distracted and fixed PCMCIA in 2.4 instead.
+I had to make a few changes to the inter_module stuff to get 
+MTD working for uClinux.The changes are explained below. 
+They are not yet comitted, please let me know what you think.
 
-This will break the build on 2.2 if you don't have Keith's inter_module_xxx 
-patch applied. But you had to apply a patch anyway to make 
-put_module_symbol() work. Hopefully, it'll end up in 2.2.1[89] and we'll 
-all be happy. 
+-Erwin
 
-2.2.17 and above also contain the new module_init() code so I've (at least
-partially) carried out my threat to stop maintaining the initcalls. If you
-care, fix it. If you care and don't have CVS write access, send me a SSH
-public key.
+* map_rom.c
+There is a im_name member used in map_rom.c, line 51. Has this
+been added by mistake? In mtd.h, there's no such member.
 
-Note that a handful of drivers now ought to put the module_init() version 
-inside #if LINUX_VERSION_CODE >= 0x20211 instead of 0x20300
+* compatmac.h:
+For 2.0, the inter_module_* functions are defined as empty macros
+if CONFIG_MODULES is not defined. If CONFIG_MODULES is defined
+(for 2.0), compilation is stopped with #error saying that it's not possible
+to use MTD in 2.0 kernels with module support enabled.
 
-My current plan is to give Linus a selective update of the MTD code
-some time early in the 2.4 series. In it, I'm intending to include:
-	- mtdpart stuff
-	- New mtdblock
-	- New NFTL
-	- New DiskOnChip driver, _preferably_ with DOC_SINGLE_DRIVER
-	- API changes - set_vpp() and anything else that's momentarily
-		slipped my notoriously vague attention.
-	- Any new map drivers which are appropriate - probably the
-		SA1100 one. 
-	- New CFI code iff it actually works next time I try it on my
-		boards :)
+* I have removed the "static" for the cfi_cmdset_0001/0002 probe functions.
 
-Speak up if there's something missing which you think ought to be included, 
-or alternatively if there's something in there which you think I ought to 
-omit.
+* I have added a switch statement for compilation without module support
+  in cfi_probe.c:
 
---
-dwmw2
++#ifdef CONFIG_MODULES
+        sprintf(probename, "cfi_cmdset_%4.4X", type);
+
+        probe_function = inter_module_get_request(probename, probename);
+@@ -743,6 +747,20 @@
+                (*probe_function)(map, primary, base);
+                return;
+        }
++#else
++       switch(type){
++#ifdef CONFIG_MTD_CFI_INTELEXT
++       case 0x0001:
++               cfi_cmdset_0001(map,primary,base);
++               return;
++#endif
++#ifdef CONFIG_MTD_CFI_AMDSTD
++       case 0x0002:
++               cfi_cmdset_0002(map,primary,base);
++               return;
++#endif
++       }
++#endif /* CONFIG_MODULES */
 
 
 
