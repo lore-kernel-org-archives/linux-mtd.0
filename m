@@ -1,19 +1,20 @@
-Received: from mail.kendin.com ([209.128.93.97])
+Received: from pd9e41274.dip.t-dialin.net ([217.228.18.116] helo=thomas.tec.autronix.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16nPpc-0004E1-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 20:03:40 +0000
-Received: from kamwin (209-128-93-100.BAYAREA.NET [209.128.93.100])
-	by mail.kendin.com (8.11.6/8.11.2) with SMTP id g2JK99l16038
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Mar 2002 12:09:09 -0800
-Message-ID: <025f01c1cf83$11e23f70$9c011f0a@kamwin>
-From: "Kam Lee" <kamlee@kendin.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: newbee question
-Date: Tue, 19 Mar 2002 12:17:13 -0800
-MIME-Version: 1.0
+	id 16nbSc-0004yO-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 08:28:42 +0000
+Message-Id: <200203200843.g2K8hhA01557@thomas.tec.autronix.de>
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: "Thomas Locher" <Thomas.Locher@ascom.ch>
+Subject: Re: Bad Blocks on NAND and JFFS2
+Date: Wed, 20 Mar 2002 09:43:43 +0100
+References: <OF9A1A4A5F.79E7D10D-ONC1256B81.00335FA4@hasler.ascom.ch>
+In-Reply-To: <OF9A1A4A5F.79E7D10D-ONC1256B81.00335FA4@hasler.ascom.ch>
+Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,33 +26,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
-I'm just starting looking into JFFS2 & MTD, after following the HOWTO,
-mounting JFFS2 gives the following complain:
+On Dienstag, 19. März 2002 10:40 , Thomas Locher wrote:
+> I tried to put the JFFS2 on our NAND flash, but now I have troubles with
+> bad blocks on the flash device.
+> The actual CVS (cvs.infradead.org:/home/cvs) code seems to support bad
+> block handling, but the code
+> doesn't work correctly.
+>
+> What is the status of bad block handling in JFFS2?
+> I ask you this because I think you have developped most of the bad block
+> handling.
+Please keep such questions on the mailing list. Others may be interrested 
+too. :)
 
-# mount -t jffs2 /dev/mtdblock3 /mnt
-mount: Mounting /dev/mtdblock3 on /mnt failed: No such device or address
+Which chips do you use ? Which file did you use as template to hack your 
+chipdriver ? Have you adjusted 
+        /* 20 us command delay time */
+        this->chip_delay = 20;
+properly ?
 
-Hope somebody can hints me what am I missing.
-Thanks in advance.
+The bad block handling is fully functional. It uses the bad block marking 
+scheme of NAND chips (Samsung/Toshiba) and Smartmediacards, which is the same.
 
-More info:
+You must enable
+Enable ECC correction algorithm'  (CONFIG_MTD_NAND_ECC)
+JFFS2 layout for OOB area (CONFIG_MTD_NAND_ECC_JFFS2)
 
-cat /proc/mtd gives:
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "bootp"
-mtd1: 00080000 00020000 "zImage"
-mtd2: 000a0000 00020000 "initrd"
-mtd3: 00020000 00020000 "part1"
-
-mtd3 is a jffs2  file system image created by mkfs.jffs2
-
-ls /dev/mtd* gives:
-crw-rw-r--    1 root     root      90,   0 Mar 16  2002 /dev/mtd0
-crw-rw-r--    1 root     root      90,   2 Mar 19  2002 /dev/mtd1
-crw-rw-r--    1 root     root      90,   4 Mar 19  2002 /dev/mtd2
-crw-rw-r--    1 root     root      90,   6 Mar 19  2002 /dev/mtd3
-brw-rw-r--    1 root     root      31,   0 Mar 16  2002 /dev/mtdblock0
-brw-rw-r--    1 root     root      31,   1 Mar 16  2002 /dev/mtdblock1
-brw-rw-r--    1 root     root      31,   2 Mar 16  2002 /dev/mtdblock2
-brw-rw-r--    1 root     root      31,   3 Mar 16  2002 /dev/mtdblock3
+There were some modifications to JFFS2 recently, so the CVS seems to be 
+broken for JFFS2 and NAND at the moment. I will check this anyway today. Keep 
+an eye on the maillist and on linux-mtd-cvs@lists.infradead.org (cvs announce 
+list).
+ 
+-- 
+Thomas
+_________________________________
+Thomas Gleixner <gleixner@autronix.de>
+autronix automation http://www.autronix.de
