@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from enigma.barak.net.il ([212.150.48.99])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17JtXt-0002QU-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 11:15:37 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200206170954.g5H9s1JJ003771@blooper.utfors.se> 
-References: <200206170954.g5H9s1JJ003771@blooper.utfors.se>  <0111121314140A.28381@jocke.lumentis.se> <02022614424803.15969@jocke.lumentis.se> 
-To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] scan.c 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 17 Jun 2002 11:15:36 +0100
-Message-ID: <20935.1024308936@redhat.com>
+	id 17JvBR-0002Xz-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 13:00:34 +0100
+Received: from gad ([10.10.11.11]) by enigma.barak.net.il
+          (InterMail vK.4.03.00.00 201-232-121 license 5444ddd44659357c6c93343e0ce38507)
+          with SMTP id <20020617120204.IIMW9834.enigma@gad>
+          for <linux-mtd@lists.infradead.org>;
+          Mon, 17 Jun 2002 15:02:04 +0300
+Message-ID: <004c01c215fe$ed08f960$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "Linux - MTD list" <linux-mtd@lists.infradead.org>
+Subject: slow copy on jffs2
+Date: Mon, 17 Jun 2002 15:00:16 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,30 +28,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Joakim.Tjernlund@lumentis.se said:
-> I was sure that I sent this one long time ago, but my mind must play
-> tricks on me.
+why a simple copy of 87 kbytes file from CF (ext2) to JFFS2 partition takes
+about 30 seconds ?
+i use SA1110 , nanoengine , 2.4.17-rmk1-bse kernel.
 
-> Do not scan blocks which just contain a CLEANMARKER, it's a waste of
-> CPU cycles.
+thanks
 
-I'd rather we still scanned them, but deferred it till later -- as long as
-it gets done before we actually try to write to them, that's fine.
-
-We can go one better than that -- we can avoid doing the crc32 check on 
-data nodes during mount. As as we do it in read_inode(), and we do _all_ 
-inodes before actually starting to garbage-collect, we don't have to make 
-the user wait for it during mount.
-
-I tried both of these last week (well, actually I just disabled the crc32 
-without doing it later), and the latter gave more of an improvement. If we 
-skip the building up of fragment lists during mount too, it'll probably get 
-even faster.
-
-Of course, the two things that gave me the best improvement in mount time 
-were fixing the inocache_last optimisation, and then just increasing 
-INOCACHE_HASHSIZE to 128. The latter rendered the whole inocache_last 
-optimisation pointless, btw.
-
---
-dwmw2
+Gad
