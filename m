@@ -1,14 +1,14 @@
 Received: from d-200.linux2002.uq.net.au ([203.15.37.200] helo=lapdancer.baythorne.internal)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ZMUT-0003Xc-00
-	for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2002 01:39:46 +0000
-Date: Sat, 9 Feb 2002 11:19:47 +1000 (EST)
+	id 16ZMch-0003YV-00
+	for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2002 01:48:16 +0000
+Date: Sat, 9 Feb 2002 11:28:12 +1000 (EST)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Allen Curtis <acurtis@onz.com>
+To: Adam Wozniak <adam.wozniak@comdev.cc>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Flash left in a write mode
-In-Reply-To: <NCBBIINEHIPFGJPLBEIFMEBBDEAA.acurtis@onz.com>
-Message-ID: <Pine.LNX.4.44.0202091114160.2394-100000@lapdancer.baythorne.internal>
+Subject: Re: i node, u node, we all node for inodes
+In-Reply-To: <3C642220.8F055CF5@comdev.cc>
+Message-ID: <Pine.LNX.4.44.0202091120140.2394-100000@lapdancer.baythorne.internal>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
@@ -22,32 +22,54 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 7 Feb 2002, Allen Curtis wrote:
+On Fri, 8 Feb 2002, Adam Wozniak wrote:
 
-> I have observed a problem where the flash is left in a write mode even after
-> the file-system is unmounted. (Intel Strata flash, cmdset_0001.c)
+> > Do you mean a node? Not explicitly, although each type of node has its own
+> > limits so you could deduce the maximum node size you'll ever see.
 > 
-> The problem is this: if the flash is written to and then the system is
-> immediately rebooted, the flash is left in a write state. 
+> Maybe I don't have a clear idea of what an "inode" is in this context. I
+> normally think of an inode as a small block on a physical disk.  It has
+> a fixed size, say 1K.  A file larger than 1K would span multiple inodes.
+> Or maybe I have this wrong.
 
-Define 'rebooted'? Hitting the reset button if you have one should reset 
-the flash (although sometimes it doesn't - bogus f***wit points to whoever 
-designed the Assabet for that one)
+Basically, 'inode' == 'file'. Or devicenode, symlink, etc. But basically 
+it's a _logical_ filesystem object. Nothing physical on the medium - just 
+the 'inode #' field in each physical node to say which inode they belong 
+to.
 
-If you're implementing machine_restart() for your platform, then it should 
-be ensuring that the hardware is in a state sufficiently close to the 
-power-up state, for the benefit of the bootloader. That means turning off 
-the MMU and jumping to the startup vector, at the very least. Often it 
-means resetting bus controllers where we've moved around the physical 
-memory map too - it could be argued that this preparation should include 
-resetting the flash too.
+> In the case where a file consists of multiple inodes, and a data write
+> is performed which spans two inodes, does the write get broken into two
+> raw nodes, and linked into two inode chains, or is one raw node written
+> and somehow magically shared between two inode chains?
 
-I'm willing to entertain the notion that the flash driver should do this 
-on close, or we should have a reboot notifier registered that calls a new 
-method in the mtd_info to reset the flash. 
+I think I've obsoleted this question. I _hope_ I have, at least. If not, 
+read on a little...
 
-I'll consider if it a clean patch is presented - but I'm not going to go 
-out of my way to fix it myself - I don't consider it particularly broken.
+JFFS is log-structured. Basically you keep a log of every change that 
+happens to the filesystem, by writing packets of data, or 'nodes' to the 
+flash to say what happened each time something changed. So you make a new 
+file, and it'll pick an unused inode number for it, and write a 'node' to 
+the flash containing the metadata (uid,gid,etc) for that file. 
+
+It'll also write a 'dirent node', containing the inode# of the directory,
+the name of the file and the inode number of the file - which is enough to
+rebuild the filesystem tree.
+
+Whenever you write to the file, it just appends another node (or nodes) to 
+the flash, giving the new metadata (mtime, isize etc) and the new data. 
+
+Even if you overwrite the beginning of the file, it just appends another 
+node to the log, saying 'and now he wrote <this> <here>'...
+
+It replays this log of events in chronological order, when it needs to 
+know the 'current' state of the file/filesystem, in order to satisfy 
+reads etc.
+
+Imagine it with an infinite amount of flash, just writing out changelogs 
+every time you change anything on the file system - and it's very simple. 
+
+Then just take my word for it when I say that garbage collection doesn't 
+really change the concept very much :)
 
 -- 
 dwmw2
