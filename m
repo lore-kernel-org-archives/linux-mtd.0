@@ -1,29 +1,14 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1CyGc7-0008Bu-34
-	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2005 16:40:12 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1CyGab-0005MG-81
-	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2005 22:38:37 +0100
-Received: from 212.242.189.63 ([212.242.189.63])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Feb 2005 22:38:37 +0100
-Received: from martin by 212.242.189.63 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Feb 2005 22:38:37 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Mon, 07 Feb 2005 22:36:45 +0100
-Message-ID: <cu8n22$acu$1@sea.gmane.org>
-References: <54CC136E5398384485619BC34B3A0F0B055D0DB0@ma00exh02.atitech.com>
-	<20050207195209.GC25504@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050207195209.GC25504@wohnheim.fh-wedel.de>
-Sender: news <news@sea.gmane.org>
-Subject: Re: Follow-up to wearing / caching question
+Date: Tue, 8 Feb 2005 10:31:19 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Sergei Sharonov <Sergei.Sharonov@Halliburton.com>
+In-Reply-To: <487B538D08487B4D8FEC138A13D4F6AC21D8A5@HOUEXCH077.corp.halliburton.com>
+Message-ID: <Pine.LNX.4.58.0502081028020.13460@phoenix.infradead.org>
+References: <487B538D08487B4D8FEC138A13D4F6AC21D8A5@HOUEXCH077.corp.halliburton.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Low write throughput with arm/jffs2/nand
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,25 +18,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Mon, 7 Feb 2005, Sergei Sharonov wrote:
+> Hi,
+> 
+> Around Jan 18 nand_wait() function in nand_base.c was changed to 
+> use msleep(1) instead of yield(). While it is sort of OK on x86
+> with its default HZ=1000 (linux 2.6) it slows down the throughput
+> on arm where the default is HZ=100. What I believe is happening:
+> - on the first pass flash is not ready
+> - msleep(1) is invoked, but it actually sleeps 10 or 20 ms
+> 
+> What will be the right way of fixing that? Replacing msleep(1) with
+> yield() does it but philosophically is probably not the right thing 
+> to do, changing HZ is much worse..
+> 
+> Sergei
+> 
+> P.S. What is the best read/write speed you people are getting with 
+> jffs2/nand?
+This is highly depended on whether you use compression and the compression 
+mode.
 
->> I've been tasked with approximating the lifespan of the flash
->> (JFFS2) filesystem embedded in our products. Is there a best method
->> for calculating the space required for a fixed-size file over a
->> given lifespan? If we want our flash filesystem to be available for
->> an approximate lifespan of 20 years, given the wear-leveling
->> duty-cycle of JFFS2, and an average block endurance of 100k 
->> write/erase cycles, would I need 150% of the file's size? 200%?
->> 1000%?
-=== 8< 8< 8< ===
-> Another way to look at it is an imaginary 1MiB flash.  You can write
-> it 100k times, for a total of 100GiB written to it.  With 600M seconds
-> in your expected 20 years, that gives you ~160 Bytes/s average write
-> speed.  Not very much.
-Then what about the pagesize and corresponding writebuffer - this may 
-have an effect, as well, when talking that slow write rates, right?!
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-> Is that the calculation you were looking for?
-I liked it alot - thanks! ;-)
-
-// Martin
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
