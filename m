@@ -1,16 +1,17 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16g7Jb-0007Ck-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 16:52:27 +0000
-Date: Wed, 27 Feb 2002 09:03:45 -0800 (PST)
-From: Adam Wozniak <awozniak@comdev.cc>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <linux-mtd@lists.infradead.org>
-Subject: Re: MTD CVS update: 'mtd/fs/jffs2 scan.c'
-In-Reply-To: <E16fyzH-0002yf-00@infradead.org>
-Message-ID: <Pine.LNX.4.33.0202270903150.14708-100000@rangers.comdev.cc>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16g91W-0007Lx-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 18:41:54 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0202270903150.14708-100000@rangers.comdev.cc> 
+References: <Pine.LNX.4.33.0202270903150.14708-100000@rangers.comdev.cc> 
+To: Adam Wozniak <awozniak@comdev.cc>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD CVS update: 'mtd/fs/jffs2 scan.c' 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 27 Feb 2002 18:53:04 +0000
+Message-ID: <13961.1014835984@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,20 +23,11 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Wed, 27 Feb 2002, David Woodhouse wrote:
-> Update of /home/cvs/mtd/fs/jffs2
-> In directory infradead.org:/tmp/cvs-serv11435
->
-> Modified Files:
-> 	scan.c
-> Log Message:
-> Patch from <Joakim.Tjernlund@lumentis.se> - ignore obsolete nodes during mount.
+awozniak@comdev.cc said:
+>  Should I try this in the 2_4_branch as well? 
 
-Should I try this in the 2_4_branch as well?
+Please do test it, yes. It ought to be fine.
 
---Adam
--- 
-Adam Wozniak (KG6GZR)   COM DEV Broadband - Digital and Software Systems
-awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+
+--
+dwmw2
