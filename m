@@ -1,22 +1,19 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CDqpj-00082a-Qe
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2004 16:50:27 -0400
+	id 1CDrBt-0008Dm-OX
+	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2004 17:13:19 -0400
 From: Thomas Gleixner <tglx@linutronix.de>
-To: Nicolas Pouillon <nipo@ssji.net>
-In-Reply-To: <20041002155505.083d8440.nipo@ssji.net>
-References: <20041001154617.163cc484.nipo@ssji.net>
-	<1096639064.30942.477.camel@hades.cambridge.redhat.com>
-	<20041001162705.5873dc7c.nipo@ssji.net>
-	<20041002155505.083d8440.nipo@ssji.net>
+To: skorinkod@mail.ru
+In-Reply-To: <200410011858.28776.skorinkod@mosk.ru>
+References: <200410011858.28776.skorinkod@mosk.ru>
 Content-Type: text/plain
-Message-Id: <1096749729.21297.54.camel@thomas>
+Message-Id: <1096751135.21297.73.camel@thomas>
 Mime-Version: 1.0
-Date: Sat, 02 Oct 2004 22:42:09 +0200
+Date: Sat, 02 Oct 2004 23:05:36 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Patch !
+Subject: Re: Problems with DiskOnChip 2000
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,37 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-10-02 at 15:55, Nicolas Pouillon wrote:
-> I made two patches, for different handleds.org kernel dates (fall July,
-> (the one I'm working on): 2.6.7, and now: 2.6.8.1)
+On Fri, 2004-10-01 at 16:58, Dmitry wrote:
+> Hi, all
 > 
-> (I've not tried 2.6.8.1 version)
+> I have pc104 system ICOP-6070 with DiskOnChip 2000 on it..
+> Here is task to install linux OS on this system..
+> With Knoppix 3.6 CD I start linux and try load drivers for this flash disk for 
+> next step with installation on it, but modules don't see chip on board...
+> 
+> kernel 2.6.8:
+> #insmod mtdcore
+> #insmod nand_ids
+> #insmod docecc
+> #insmod doc2000
+> #insmod docprobe
+> and i have:
+> Resource temporarily unavailable
 
-You should have tried 2.6.8.1 !!
+Use the new diskonchip driver in drivers/mtd/nand. The old drivers are
+DEPRECATED (See Kernel config) and will be removed in the near future.
 
-Did you notice the DEPRECATED NOTE in Kconfig ????
+> kernel 2.4.27:
+> Unknown flash chip found: 81 81
+> Please report to dwmw2@infradead.org
+> No flash chips recognised.
+> Possible DiskOnChip with unknown ChipID 36 found at 0xe8000
+> Possible DiskOnChip with unknown ChipID C6 found at 0xea000
+> Possible DiskOnChip with unknown ChipID F6 found at 0xec000
+> Possible DiskOnChip with unknown ChipID C1 found at 0xee000
 
-INFTL in 2.6.8.1 tells you: 
-"INFTL no longer supports the old DiskOnChip drivers loaded via
-docprobe.\n"
-"Please use the new diskonchip driver under the NAND subsystem.\n");
+None of those ID's is a valid chip ID except the 0x36, which is a
+64MiB,1.8V chip. I doubt, that there are DoC's available with 1.8V
+supply. The stuff looks more like random nonsense.
 
-Please follow this advise. The docxx stuff in mtd/devices will be
-removed in the near future and INFTL with the old drivers was missing
-some functionality anyway, AFAIK.
-
-The chip ID part of your patch is giving me a bit more headache. The ID
-0xA5 is a valid ID for NAND 2GiB 1,8V 8-bit.
-Since NAND is available _all_ manufacturers use the same Chip ID codes
-for chips with the same specifications. All Cardreaders, MP3-Players and
-Digicams rely on those ID's.
-I doubt that there are 32 MiB chips around with chip ID 0xA5. The Chip
-ID in all Toshiba datasheets of their various 32MiB NAND chips is 0x75. 
-I'm not going to put this line into the code without sensible
-confirmation that this is the real ID. Please figure out the DoC
-partnumber and let M-Sys confirm this. If they confirm that some moron
-started to break the ID rules, then we have to figure out a way to make
-this work. Putting this line without any further modifications into the
-code would break other drivers.
+Use a recent 2.6 kernel with the new diskonchip driver. We don't know
+which kernel modifications are on the Knoppix CD, so please use a kernel
+>= V2.6.8.1 from kernel.org and if the problems persist the latest MTD
+patches from the MTD website.
 
 tglx
