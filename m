@@ -1,19 +1,21 @@
-Received: from river-bank.demon.co.uk ([62.49.20.162] helo=badger.river-bank.demon.co.uk)
+Received: from fep01-mail.bloor.is.net.cable.rogers.com ([66.185.86.71])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17wknz-0002mh-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2002 15:48:51 +0100
-Received: from ratty.river-bank.demon.co.uk (ratty.river-bank.demon.co.uk [192.168.1.5])
-	by badger.river-bank.demon.co.uk (8.12.6/8.12.6) with ESMTP id g92EmZHF027579
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Oct 2002 15:48:45 +0100
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Phil Thompson <phil@river-bank.demon.co.uk>
+	id 17wli0-0002rt-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2002 16:46:44 +0100
+Received: from AladinSane.stewart.net ([65.48.166.20])
+          by fep01-mail.bloor.is.net.cable.rogers.com
+          (InterMail vM.5.01.05.06 201-253-122-126-106-20020509) with ESMTP
+          id <20021002154556.QQVF252125.fep01-mail.bloor.is.net.cable.rogers.com@AladinSane.stewart.net>
+          for <linux-mtd@lists.infradead.org>;
+          Wed, 2 Oct 2002 11:45:56 -0400
+Subject: nor and nand on same system
+From: Jim Stewart <jstewart@celerox.com>
 To: linux-mtd@lists.infradead.org
-Subject: Current CVS and Linux 2.4
-Date: Wed, 2 Oct 2002 15:48:36 +0100
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200210021548.36663.phil@river-bank.demon.co.uk>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 02 Oct 2002 11:46:59 -0400
+Message-Id: <1033573620.5141.6.camel@AladinSane>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,15 +27,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is probably a FAQ...
+Dear list:
 
-What are the plans for updating Linux 2.4.x with the current CVS code?
+I am designing a system that may contain both nor and nand flash in the
+same system (NAND flash for future expansion and nor for boot and root
+fs).
+I have looked over the MTD documentation, how-to's, etc. and it seems
+that the driver level is linked to a SINGLE specific hardware
+implementation. Is it possible to have two separate drivers -- one for
+the nor device (probably using the current CFI drivers) and one for a
+NAND device?
 
-I'm stuck with 2.4, but need some of the changes to the NAND code. I also need 
-to make further changes to the NAND code - my chip's I/O lines are also on 
-GPIO pins so I need a function interface rather than IO_ADDR_R and IO_ADDR_W. 
-Are you interested in patches to support this - or is it too disgusting to 
-support in the main code?
+I plan on using the JFFS as the MTD client
 
 Thanks,
-Phil
+
+Jim Stewart
+Celerox Digital Solutions
