@@ -1,18 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18NrEB-0003Ml-00
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 09:07:55 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20021216092801.80539C6139@atlas.denx.de> 
-References: <20021216092801.80539C6139@atlas.denx.de> 
-To: Wolfgang Denk <wd@denx.de>
-Cc: Paul Nash <paulnash@wildseed.com>,
-    "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Intel sez: Synchronous Flash and XIP is the future -- thoughts? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 16 Dec 2002 09:38:34 +0000
-Message-ID: <2466.1040031514@passion.cambridge.redhat.com>
+Received: from [66.239.226.123] (helo=hermes.wildseed.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18NrkX-0003RP-00
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2002 09:41:21 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C8D5@neptune.kirkland.local>
+From: Paul Nash <paulnash@wildseed.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>, Wolfgang Denk <wd@denx.de>
+Cc: "Linux-MTD (E-mail)" <linux-mtd@lists.infradead.org>
+Subject: RE: Intel sez: Synchronous Flash and XIP is the future -- thought
+	s?
+Date: Mon, 16 Dec 2002 02:11:50 -0800
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,6 +21,26 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Actually, Intel's L18/L30 series of "wireless flash" has that feature,
+Read-while-erase-or-write as long as the reads are not to the 8MBit
+partition being dealt with in an erase or write.
+
+But I agree with the points made here. :-)  I'm sure the above costs even
+more... ;-)
+
+-Paul
+
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Monday, December 16, 2002 1:39 AM
+To: Wolfgang Denk
+Cc: Paul Nash; Linux-MTD (E-mail)
+Subject: Re: Intel sez: Synchronous Flash and XIP is the future --
+thoughts? 
+
+
 
 wd@denx.de said:
 > Also you might find problems running recent (and future)  kernels  in
