@@ -1,16 +1,19 @@
-Received: from www.optixsoft.de ([213.187.73.226])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Mm3P-0003ro-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 09:24:19 +0000
-Date: Fri, 13 Dec 2002 10:54:24 +0100 (MET)
-From: Tobias Otto-Adamczak <toa@indakom.de>
-To: <linux-mtd@lists.infradead.org>
-cc: Jochen Schaeuble <psionic@psionic.de>
-Subject: Re: slram and buffer cache
-In-Reply-To: <20021212202814.GB5027@psionic.de>
-Message-ID: <Pine.LNX.4.31.0212131038080.32069-100000@www.optixsoft.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from [212.68.212.198] (helo=barnabe.hellea.be ident=qmailr)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18MoiE-00045U-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2002 12:14:38 +0000
+Date: Fri, 13 Dec 2002 12:50:55 +0100
+From: Geoffroy Stevenne <geof@hellea.com>
+To: mtd-linux@lists.infradead.org
+Message-Id: <20021213125055.04adf242.geof@hellea.com>
+In-Reply-To: <200212121540.43586.tglx@linutronix.de>
+References: <20021212140546.3607a3e0.geof@hellea.com>
+	<200212121540.43586.tglx@linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Re: bbram access problems
+Resent-Message-Id: <20021213134454.7a00cf32.geof@hellea.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,37 +25,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Jochen Schaeuble, 2002-12-12, 21:28h:
+Le Thu, 12 Dec 2002 15:40:43 +0100
+Thomas Gleixner <tglx@linutronix.de> a écrit:
 
-> Hi,
-> I haven't used mtdblock for a while now so I'm not absolutely sure if
-> this is correct. The "cache_size" of the mtdblock driver is initialized
-> with the erasesize specified in the slram driver (0x10000 if you haven't
-> changed anything). If you want uncached operation you should set this
-> value to
-> (*curmtd)->mtdinfo->erasesize = 0x0; (slram.c line 180).
-> I had no time to check this but from reading the source I think this is
-> correct. Please let me know if this works for you. If so it might be a
-> good idea to make this size configurable.
+ 
+> from slram.c
+> NOTE:
+>   With slram it's only possible to map a contigous memory region. 
+> 
+> So you can't access it with slram, as the BBSRAM is a device with
+> paged access. All you have to do, is copy slram.c to bbram.c and add
+> an additional parameter, which tells the driver the number of
+> pages.available. Then modify the erase / read / write functions to do
+> the page selection depending on the address you have to access. 
+> If you think this is out of your league, then hope, that somebody does
+> this for you sometimes, or ask one of the experts to help you for a
+> little fee immidiately :)
+> 
 
-Thanks for your reply. I use the latest version of slram.c from
-http://www.linux-mtd.infradead.org/ which you can look at
-ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/drivers/mtd/devices/slram.c
+We should be able to do this.  Thanks for your suggestions and stay
+tuned for more feedback!
 
-Line 206 says already (*curmtd)->mtdinfo->erasesize = 0x0; I know that
-other (older) versions of this file have the value 0x10000 here.
+Thanks,
 
-However I have added printk()s to slram_read/slram_write to see when
-they are actually called and there is a lot of latency (several seconds)
-between writing some bytes into a file and see some slram driver
-activity. So there must be another point that I'm missing.
-
-I tried to mount with -o sync and also tuned the bdflush parameters,
-both helped a little bit to speed up the write process for cached
-buffers, but I definitely want to get rid of the caching at all for my
-BB-SRAM.
-
-Any more ideas ?
-
-Regards
-Tobias
+Geof
