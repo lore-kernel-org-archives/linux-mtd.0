@@ -1,51 +1,49 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13r2C3-0006nM-00
-	for mtd-list@infradead.org; Wed, 01 Nov 2000 18:00:59 +0000
-Received: from dawnmail.dawning.com ([24.93.23.251])
+	id 13r3mK-0007Xw-00
+	for mtd-list@infradead.org; Wed, 01 Nov 2000 19:42:32 +0000
+Received: from [205.250.170.220] (helo=xanadu.vipswitch.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13r2C0-0006nG-00
-	for mtd@infradead.org; Wed, 01 Nov 2000 18:00:58 +0000
-Received: from [192.168.0.142] by dawnmail.dawning.com (NTMail 4.30.0013/NY3896.00.832c5e1f) with ESMTP id umrfaaaa for <mtd@infradead.org>; Wed, 1 Nov 2000 13:01:33 -0500
-Message-ID: <3A005A52.E95F536@dawning.com>
-Date: Wed, 01 Nov 2000 13:00:51 -0500
-From: Gregory Schallert <gschallert@dawning.com>
+	id 13r3mJ-0007Xq-00
+	for mtd@infradead.org; Wed, 01 Nov 2000 19:42:31 +0000
+Date: Wed, 1 Nov 2000 14:37:29 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Gregory Schallert <gschallert@dawning.com>
+cc: "mtd@infradead.org" <mtd@infradead.org>
+Subject: Re: mtdblock module & I'm Back again 
+In-Reply-To: <3A005A52.E95F536@dawning.com>
+Message-ID: <Pine.LNX.4.10.10011011431390.3482-100000@xanadu.vipswitch.com>
 MIME-Version: 1.0
-To: "mtd@infradead.org" <mtd@infradead.org>
-Subject: mtdblock module & I'm Back again 
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I'm back again with a couple of more generic questions...  As a reminder
-this is my project.
 
-I am currently working on a project that (will) store the linux
-kernel/os on
-flash.  We are using the ElanSC400 chip and a board that has 3 pairs of
-AM29F016EC Flash Chips arranged such that the high byte of the data goes
-to
-one chip and the low byte goes to the other. I've been able to configure
-the windows on the SC400 to allow me to see what is on the chips by
-using the mmap() function.  I would like for the flash to emulate a
-block device so I've started playing around with the mtdblock.c file.
-My questions are these:
 
-1)  when I compile the mtdblock.c file I get a referenced symbol
-"invalidate_buffers"  Any Ideas why?
+On Wed, 1 Nov 2000, Gregory Schallert wrote:
 
-I have currently have a MTD release that is about a month old.  I'm
-going to download the new one and see if I still get the same problem.
+> 1)  when I compile the mtdblock.c file I get a referenced symbol
+> "invalidate_buffers"  Any Ideas why?
+> 
+> I have currently have a MTD release that is about a month old.  I'm
+> going to download the new one and see if I still get the same problem.
 
-2)  What does mtdblock.c actually do? If I load mtd.o, mapped.o, and
-mtdblock.o  what additional functionality do I need to program to get a
-minix file system on the flash chips?
+It should have been fixed in the current CVS.
 
-Thanx
+> 2)  What does mtdblock.c actually do? If I load mtd.o, mapped.o, and
+> mtdblock.o  what additional functionality do I need to program to get a
+> minix file system on the flash chips?
 
-Gregory Schallert
-Dawning Technologies, Inc.
+IMHO mtdblock is currently broken.  It works read-only.  I'm implementing
+the write support at the moment.
+
+However, in the mean time, you might consider investigating JFFS which
+might just do what you want.  Even if JFFS requires mtdblock it is used
+only to identify the flash device so the issue with mtdblock write support
+doesn't apply to JFFS.
+
+
+Nicolas
 
 
 
