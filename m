@@ -1,19 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.mediatrix.com ([205.237.248.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 157GG7-0004ge-00
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 13:48:31 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <15132.54565.311995.865807@pizda.ninka.net> 
-References: <15132.54565.311995.865807@pizda.ninka.net>  <15132.41562.879696.484467@pizda.ninka.net> <15132.40298.80954.434805@pizda.ninka.net> <15132.22933.859130.119059@pizda.ninka.net> <13942.991696607@redhat.com> <3B1C1872.8D8F1529@mandrakesoft.com> <15132.15829.322534.88410@pizda.ninka.net> <20010605155550.C22741@metastasis.f00f.org> <25587.991730769@redhat.com> <25831.991731935@redhat.com> <14071.991744970@redhat.com> 
-To: "David S. Miller" <davem@redhat.com>
-Cc: Chris Wedgwood <cw@f00f.org>, Jeff Garzik <jgarzik@mandrakesoft.com>,
-    bjornw@axis.com, linux-kernel@vger.kernel.org,
-    linux-mtd@lists.infradead.org
-Subject: Re: Missing cache flush. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Jun 2001 13:52:41 +0100
-Message-ID: <17788.991745561@redhat.com>
+	id 157GI0-0004gz-00
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2001 13:50:28 +0100
+Message-ID: <F1BED55F35F4D3118C0F00E0295CFF4D995483@mail.mediatrix.com>
+From: Frederic Giasson <fgiasson@mediatrix.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>, Abraham vd Merwe
+	 <abraham@2d3d.co.za>
+Cc: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: RE: erasesize 
+Date: Tue, 5 Jun 2001 08:49:24 -0400 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,17 +24,53 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+	I have a question too about the erase->len ( erasesize ).  I have a
+flash chip with variable block sizes, and I am using cfi_cmdset_0002.  =
+Where
+should that ->len be set?  When I printk the value held by erase->len =
+just
+before calling do_erase_oneblock() in cfi_amdstd_erase_varsize(), I get =
+a
+dummy value.  I suspect that it should be set according to the
+mtd_erase_region_info structure, but it is not done.=20
 
-davem@redhat.com said:
->  How about flush_cache_range_force() instead?
-> I want something in the name that tells the reader "this flushes the
-> caches, even though under every other ordinary circumstance you would
-> not need to". 
+	Does anyone has a clue about it? =20
 
-OL, then. I would have thought it made more sense to have the
-flush_dcache_range() unconditionally do what its name implies, and to have a
-separate flush_dcache_range_for_dma() function which is optional. But that
-decision was already made - I suppose we can't change the semantics now.
+Thanks!
+
+Fr=E9d=E9ric Giasson  =20
+
+
+
+
+
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Tuesday, June 05, 2001 8:30 AM
+To: Abraham vd Merwe
+Cc: MTD for Linux
+Subject: Re: erasesize=20
+
+
+
+abraham@2d3d.co.za said:
+>  What should I set erasesize to when the flash chips have multiple
+> erase sizes (and therefor I use eraseregions to get erasesize info)?
+> Is 0 acceptable or should I set it to something else - it doesn't
+> really make sense to put any value in this after all...
+
+See the other Intel driver. Set the erase size to the 'major' erase =
+size=20
+for the device, then fill in the appropriate structure to represent the =
+
+other regions.
 
 --
 dwmw2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
