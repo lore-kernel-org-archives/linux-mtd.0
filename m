@@ -1,20 +1,26 @@
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C6qvY-0005jm-3Q
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2004 09:31:29 -0400
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Ben Dooks <ben-mtd@fluff.org>
-In-Reply-To: <20040904173703.GA2100@fluff.org>
-References: <20040904173703.GA2100@fluff.org>
-Content-Type: text/plain
-Date: Mon, 13 Sep 2004 07:12:39 -0600
-Message-Id: <1095081159.5442.1.camel@tubarao>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: ch@hpl.hp.com, linux-mtd@lists.infradead.org
-Subject: Re: jedec_probe problems with 16bit devices
-Reply-To: tharbaugh@lnxi.com
+Received: from mailserv.intranet.gr ([146.124.14.106])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C6oYv-0005Na-JQ
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2004 07:00:02 -0400
+Received: from mailserv.intranet.gr (localhost [127.0.0.1])
+	by mailserv.intranet.gr (8.13.1/8.13.1) with ESMTP id i8DAxeaR028469
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Sep 2004 13:59:40 +0300 (EEST)
+Received: from ifaistos.intranet.gr (ifaistos.intranet.GR [146.124.20.203])
+	by mailserv.intranet.gr (8.13.1/8.13.1) with ESMTP id i8DAxbMO028439
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Sep 2004 13:59:37 +0300 (EEST)
+Received: from [146.124.120.118] (voipkopsias.intranet.GR [146.124.120.118])
+	by ifaistos.intranet.gr (8.11.7p1+Sun/8.11.7) with ESMTP id
+	i8DAssl29029 for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Sep 2004 13:54:55 +0300 (EEST)
+Message-ID: <41457C48.8040100@intracom.gr>
+Date: Mon, 13 Sep 2004 13:54:00 +0300
+From: Pantelis Antoniou <panto@intracom.gr>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------010206010309040101030801"
+Subject: [PATCH] Support Macronix MX29LV040C
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +30,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-09-04 at 18:37 +0100, Ben Dooks wrote:
-> I have been trying to get an SST 39LF160 on an Simtec Electronics
-> EB2410ITX (aka Bast). I have found some problems with jedec_probe
-> with non-8bit devices.
-> 
-> Basically, the two problems are as follows:
-> 
-> 1) A number of functions are masking out bits from the command
-> addresses, but the cfi_send_gen_cmd() moves the addresses up
-> depending on the chip type, so the masking is not needed.
-> 
-> 2) the cfi_send_gen_cmd() is called with CFI_DEVICETYPE_X8
-> instead of cfi->device_type, which causes the wrong accesses to
-> be generated to the chip.
+This is a multi-part message in MIME format.
+--------------010206010309040101030801
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-committed patch - please try it.
+Hello
+
+The following patch adds support for the Macronix MX29LV040C to
+jedec_probe chip driver.
+
+Please apply.
+
+Regards
+
+Pantelis
+
+
+--------------010206010309040101030801
+Content-Type: text/x-patch;
+ name="micronix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="micronix.patch"
+
+===== drivers/mtd/chips/jedec_probe.c 1.14 vs edited =====
+--- 1.14/drivers/mtd/chips/jedec_probe.c	2004-08-25 12:01:59 +03:00
++++ edited/drivers/mtd/chips/jedec_probe.c	2004-09-13 13:48:28 +03:00
+@@ -113,6 +113,7 @@
+ #define MX29F002T	0x00B0
+ #define MX29F004T	0x0045
+ #define MX29F004B	0x0046
++#define MX29LV040C	0x004F
+ 
+ /* PMC */
+ #define PM49FL002	0x006D
+@@ -502,6 +503,19 @@
+ 		.mfr_id		= MANUFACTURER_AMD,
+ 		.dev_id		= AM29LV040B,
+ 		.name		= "AMD AM29LV040B",
++		.uaddr		= {
++			[0] = MTD_UADDR_0x0555_0x02AA /* x8 */
++		},
++		.DevSize	= SIZE_512KiB,
++		.CmdSet		= P_ID_AMD_STD,
++		.NumEraseRegions= 1,
++		.regions	= {
++			ERASEINFO(0x10000,8),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_MACRONIX,
++		.dev_id		= MX29LV040C,
++		.name		= "Macronix MX29LV040C",
+ 		.uaddr		= {
+ 			[0] = MTD_UADDR_0x0555_0x02AA /* x8 */
+ 		},
+
+--------------010206010309040101030801--
