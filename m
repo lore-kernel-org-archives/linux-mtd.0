@@ -1,19 +1,16 @@
-Received: from richardson.uni2.net ([130.227.52.104])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16LioP-0000m1-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Jan 2002 10:39:57 +0000
-Received: from firewall.pallas.dk (firewall.pallas.dk [130.227.11.8])
-	by richardson.uni2.net (8.11.0/8.11.0) with SMTP id g02Aopu03243
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Jan 2002 11:50:51 +0100
-Message-ID: <D0B43857843DD41185DE0060979AC20C2FD28B@intermail.pallas.dk>
-From: Agust Karlsson <Gusti@pallas.dk>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Elan SC400 and Am29F016B
-Date: Wed, 2 Jan 2002 11:50:45 +0100 
+Received: from web11106.mail.yahoo.com ([216.136.131.153])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16Lv5I-0001Pf-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jan 2002 23:46:12 +0000
+Message-ID: <20020102235704.27620.qmail@web11106.mail.yahoo.com>
+Date: Wed, 2 Jan 2002 15:57:04 -0800 (PST)
+From: Sheela Kashyap <sheela_kashyap@yahoo.com>
+Subject: Re: (no subject) 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <14833.1009583578@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,16 +22,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I am trying to build a Linux kernel on a AMD Elan SC400. It is an OEM =
-built
-device with 2 Am29F016B Flash memory.
-Does anyone have any experience in how I can access theat device as a =
-block
-device (to build a file system on top of it).
-Best regards.
+Thank you. I was the missing the root dev as you rightly guessed. I
+am now successfully booting off mtd/jffs.
 
---
-Agust Karlsson            mailto:gusti@pallas.dk
-Pallas Informatik A/S     http://www.pallas.dk
-Aller=F8d Stationsvej 2D    Tel.: +45 48 10 24 10
-DK-3450 Aller=F8d           Fax.: +45 48 10 24 01
+While creating the jffs image using mkfs.jffs, I noticed that it did
+not create all the /dev entries for me. I had to use 'mknod' and
+create it manually on the target. What is the easiest way for me to
+create a target image with all the /dev files?
+
+Thanks,
+Sheela.
+
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> sheela_kashyap@yahoo.com said:
+> > everything is fine till it comes time to mount the root FS.It
+> still
+> > seems to try and go out on the net. This is the trace I see. I
+> have
+> > cut out some parts to reduce the clutter.  
+> 
+> A kernel that old doesn't have 'mtdblock' in the root_dev_names
+> array in 
+> init/main.c. Add it.
+> 
+> --
+> dwmw2
+> 
+> 
+
+
+__________________________________________________
+Do You Yahoo!?
+Send your FREE holiday greetings online!
+http://greetings.yahoo.com
