@@ -1,15 +1,21 @@
-Received: from [202.109.126.231] (helo=support-smartpc.com.cn)
+Received: from gorilla.mchh.siemens.de ([194.138.158.18])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16DkqT-0002m4-00
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2001 11:13:10 +0000
-Message-ID: <A56A8E5E02CBD511881800306E002CCA24B12B@mrspdc.mrs.com.cn>
-From: =?utf-8?B?eGlhb2xpdS5tYW8g5q+b5puJ5p+z?= <xiaoliu.mao@mic.com.tw>
+	id 16DpQJ-00031I-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2001 16:06:27 +0000
+Received: from blues.mchh.siemens.de (mail2.mchh.siemens.de [194.138.158.227])
+	by gorilla.mchh.siemens.de (8.9.3/8.9.3) with ESMTP id RAA25215
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2001 17:17:08 +0100 (MET)
+Received: from mchh274e.demchh201e.icn.siemens.de ([139.21.200.84])
+	by blues.mchh.siemens.de (8.9.1/8.9.1) with ESMTP id RAA16339
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2001 17:17:06 +0100 (MET)
+Message-ID: <BE684E2C997AD51199530002A56B207906622E@MCHH2A1E>
+From: Babic Stefano <Stefano.Babic@icn.siemens.de>
 To: linux-mtd@lists.infradead.org
-Subject: =?utf-8?B?562U5aSNOiBCb290aW5nIGZyb20gRGlzayBPbiBDaGlwIDIwMDA=?=
-Date: Tue, 11 Dec 2001 19:23:20 +0800
+Subject: BUSWIDTH > 4 (64 bit support on PPC)
+Date: Tue, 11 Dec 2001 14:35:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
+	charset="ISO-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,32 +28,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-There seems to be a tool named doc_lilo . It can boot system from doc .
+Hi,
 
------=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
-=E5=8F=91=E4=BB=B6=E4=BA=BA: joao.filgueira@copel.com =
-[mailto:joao.filgueira@copel.com]
-=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: =
-2001=E5=B9=B412=E6=9C=8811=E6=97=A5 19:52
-=E6=94=B6=E4=BB=B6=E4=BA=BA: linux-mtd@lists.infradead.org
-=E4=B8=BB=E9=A2=98: Booting from Disk On Chip 2000
+I have on my target (Motorola MPC 755, 64 bit bus width) the necessity =
+to use BUSWIDTH =3D 8. I have seen in the mailing list that the same =
+case occurred and Jan (Jan Rovins <jrovins@ss7-link.com>) provided some =
+patches to=20
+support it, mainly for cfi_cmdset_000x.c. I inserted the modifications =
+in a newer mtd-snapshot and, following the suggestion by David, my =
+system works.
+I checked if these changes are applied in latest MTD=B4s versions and I =
+have seen they are not. I=B4d like to ask if there are some plans to =
+apply these patches. I know, using a 32 bit processor (and 32 bit OS) =
+with a 64 bit bus seems quite weird, but it is probably not so unusual =
+in embedded systems with PowerPC and 60x bus.
 
+Thanks=20
 
-I have a SBC-8241 mainboard with a 8Mbytes Disk on Chip on it.
-I am using kernel 2.4.16 with MTD and NTFL support enabled.
-I used FDISK to create a 7Mbytes partition in /dev/ntfla1 and formated =
-it
-with mke2fs .
-My problem is that  either LILO nor GRUB are making my DiskOnChip =
-bootable.
-I=E2=80=B2ve got GRUB FSF 0.90, compiled it and applied the patch from =
-the CVS
-repository. When i try to use the utility DOC_LOADBIOS i get a "ioctl:
-MEMGETINFO error" message.
-What should be my next step ?
-
-Joao Alfredo Filgueira/
-Brazil.)=C3=AE=C3=84=C3=84=C3=83v+=1C=C2=BA=C3=8B"=EF=BF=A0y=C5=A1=C5=A0=
-X=C2=A7=E2=80=9AX=C2=AC=C2=B6=1Bm=C2=A7=C3=BF=C3=A5=C5=A0=C3=8Bl=C5=A0w=C3=
-=ABi=C3=97=C5=A1v=C5=A0=C3=A0=C3=BEf=EF=BF=A0=E2=80=93f=C2=A7=C3=BEX=C2=AC=
-=C2=B6)=C3=9F=EF=BF=A1=C3=B9b=C5=BE=C3=ACf
+Stefano
