@@ -1,19 +1,28 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
+Received: from main.gmane.org ([80.91.224.249])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BiDmF-0003Re-GP
-	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2004 10:52:04 -0400
-Date: Wed, 7 Jul 2004 16:51:54 +0200 (CEST)
-From: Marius Groeger <mgroeger@sysgo.com>
-Sender: mag@sysgo.com
-To: Rainer Weikusat <rainer.weikusat@sncag.com>
-In-Reply-To: <8765909olf.fsf@farside.sncag.com>
-Message-ID: <Pine.LNX.4.56.0407071646170.19011@mag.sysgo.com>
-References: <87fz85eidc.fsf@farside.sncag.com>
-	<8765909olf.fsf@farside.sncag.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: cmdlineparts.c [PATCH]
+	id 1BiF1A-0003pq-6I
+	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2004 12:11:32 -0400
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1BiF0z-00065M-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:24 +0200
+Received: from calvin.codito.com ([203.199.140.162])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:21 +0200
+Received: from amitshah by calvin.codito.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Jul 2004 18:11:21 +0200
+To: linux-mtd@lists.infradead.org
+From: Amit Shah <amitshah@gmx.net>
+Date: Wed, 07 Jul 2004 21:39:08 +0530
+Message-ID: <cch7b6$i3g$1@sea.gmane.org>
+References: <ccdut4$do6$2@sea.gmane.org>
+	<1089175560.27262.13.camel@thomas.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7Bit
+Sender: news <news@sea.gmane.org>
+Subject: Re: Accessing flash on a PCI card
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +32,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 7 Jul 2004, Rainer Weikusat wrote:
+Thomas Gleixner wrote:
 
-> not quite know what to do with it. And I don't really have an idea
-> about what to do with the 'author' and 'copyright' parts, either,
+> On Tue, 2004-07-06 at 12:26, Amit Shah wrote:
+>> I have a PCI card that has Intel Flash. I've cooked up a small driver
+>> (the host kernel is 2.6.6) that iomaps the base address exported by the
+>> PCI BARs and can verify that it's an intel flash by doing some config-
+>> write and read sequences.
+>> 
+>> I now want to export the flash to userspace for reading / writing to the
+>> flash. I guess it would be better to let MTD handle the stuff than me
+>> doing things all over again. So, how can I access that flash memory over
+>> the PCI with MTD?
+> 
+> Look at
+> drivers/mtd/maps/pci.c and other files using PCI in the same folder
 
-You should claim the MODULE_AUTHOR() tag for yourself. OTOH, it is
-good practice to just leave the existing copyright notices in the head
-and add yours to the list. Is it OK for you to use this hunk?
-
---- cmdlinepart.c.org   2004-07-07 16:48:53.000000000 +0200
-+++ cmdlinepart.c       2004-07-07 16:49:50.000000000 +0200
-@@ -3,7 +3,8 @@
-  *
-  * Read flash partition table from command line
-  *
-- * Copyright 2002 SYSGO Real-Time Solutions GmbH
-+ * Copyright 2002 SYSGO AG
-+ * Copyright 2004 SNC AG
-  *
-  * The format for the command line is as follows:
-  *
-
-Regards,
-Marius
+Thanks, Thomas!
 
 -- 
-Marius Groeger <mgroeger@sysgo.com>           Project Manager
-SYSGO AG                      Embedded and Real-Time Software
-Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
-www.sysgo.com | www.elinos.com | www.osek.de | www.imerva.com
+Amit Shah
+http://amitshah.nav.to/
