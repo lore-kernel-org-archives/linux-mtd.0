@@ -1,47 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13KNEV-0006rJ-00
-	for mtd-list@infradead.org; Thu, 03 Aug 2000 16:48:31 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13KNE0-0006rD-00
-	for mtd@infradead.org; Thu, 03 Aug 2000 16:48:29 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <39899405.CAB92AA4@arcom.co.uk> 
-References: <39899405.CAB92AA4@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: Messages produced by cfi_probe.c and cfi_cmdset_0001.c 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 03 Aug 2000 16:47:01 +0100
-Message-ID: <9202.965317621@cygnus.co.uk>
+	id 13KPl1-0007Tl-00
+	for mtd-list@infradead.org; Thu, 03 Aug 2000 19:30:15 +0100
+Received: from amdext2.amd.com ([163.181.251.1])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13KPkz-0007TZ-00
+	for mtd@infradead.org; Thu, 03 Aug 2000 19:30:14 +0100
+Received: from amdint2.amd.com (amdint2.amd.com [163.181.250.1])
+	by amdext2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id NAA22375
+	for <mtd@infradead.org>; Thu, 3 Aug 2000 13:29:41 -0500 (CDT)
+From: mark.langsdorf@amd.com
+Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118])
+	by amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id NAA23346
+	for <mtd@infradead.org>; Thu, 3 Aug 2000 13:29:40 -0500 (CDT)
+Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F02B@txexmta8.amd.com>
+To: mtd@infradead.org
+Subject: request module returns "root fs not mounted"
+Date: Thu, 3 Aug 2000 13:29:38 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Forgive me if this is a FAQ, but I can't seem to find any
+references to it.  I'm trying to set up some physically mapped
+Flash on a SuSE 6.3 system.
 
-dvrabel@arcom.co.uk said:
->  cfi_probe.c and cfi_cmdset_0001.c both produce large quantities of
-> output when probing. (eg all of the CFI query data).  Is is necessary?
->  Can I remove it (comment it out,#ifdef, debug only messages etc.)?
+When my system is starting up, I perform the do_map_cfi()
+call before I mount the root filesystem.  request_module(cfi_probe)
+returns "Root fs not mounted."
 
-It's only there because it came long before the actual access routines, and 
-it make me happy to think that the code could do something useful :)
+How can I make the kernel wait to mount the flash until after
+the root filesystem is mounted?
 
-By all means, wrap it in #if 0
-
-
-> Also, in cfi_cmdset_0001.c in cfi_intelext_write_{2_by_8,1_by_16}_buffe
-> rs() we always write a full buffer even if we have less than a buffer
-> to write.  This affects performace (particularly when writing short
-> <32byte buffers).  Is there a reason why this is done like this?
-
-Laziness. Please do fix it.
-
---
-dwmw2
-
-
+Mark Langsdorf
+Advanced Micro Devices, Inc             Tel: 512.602.3756
+5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+Austin, TX 78741                        mark.langsdorf@amd.com
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
