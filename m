@@ -1,20 +1,16 @@
-Received: from md4690b46.utfors.se ([212.105.11.70] helo=opal.aspo.lcl)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ApB0-0000uG-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 May 2002 10:46:33 +0100
-Message-Id: <200205230946.g4N9k9Ar000337@opal.aspo.lcl>
-To: manningc2@actrix.gen.nz
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Getting big flash onto motherboards. Will CF work? what will? 
-In-Reply-To: Message from Charles Manning <manningc2@actrix.gen.nz>
-   of "Mon, 20 May 2002 12:07:34 +1200." <20020520001251.556764B930@dragon.actrix.co.nz>
-References: <3.0.32.20020517142924.0074ef10@mail.i-bucks.com>  
- <20020520001251.556764B930@dragon.actrix.co.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 23 May 2002 11:46:09 +0200
-From: Karl Hammar <karl@kalle.csb.ki.se>
+Received: from web14401.mail.yahoo.com ([216.136.174.58])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17AszL-00019W-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 May 2002 14:50:43 +0100
+Message-ID: <20020523135042.47712.qmail@web14401.mail.yahoo.com>
+Date: Thu, 23 May 2002 21:50:42 +0800 (CST)
+From: =?gb2312?q?cytang?= <cytang_cn@yahoo.com.cn>
+Subject: Re: Re: how to make a bootable linux on doc
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <E17AqL9-00010h-00@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,31 +22,44 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-=2E..
-> The last is perhaps the simplest. You hook the CF onto the IDE bus with=
- a =
+Thanks to all replies .
+These days I have read some materials about how to
+make a bootable system on a floppy. According to them
+,I must do like the following:
+make a kernel --> make a mini file system->compress
+the file system -> try to converge them 
+but after many efforts ,I can not manage it
+successfully .
+I dont konw whether their method on a floppy can be
+applied to my doc .
+So, Could you do me a favor to give me some help or
+materials about how you manage to make such a
+filesystem ?
+ 
 
-> simple cable and the system just thinks it is a hard drive. Details for=
- this =
 
-> cable are available on the Sandisk www.
-> =
+>Marius is correct - both LILO and patched GRUB can
+>make the DOC Millennium bootable.  8MB is more than
+enough space for a small system.
+>I used a package called "Peewee Linux" (GPL-license)
+>to set up my DOC Mil.  
 
-> -- Charles
-=2E..
+> Marius is correct - both LILO and patched GRUB can
+> make the DOC Millennium 
+> bootable.  8MB is more than enough space for a small
+> system.
+> 
+> I used a package called "Peewee Linux" (GPL-license)
+> to set up my DOC Mil.  
+> It currently uses 2.2 kernels, but it is possible to
+> use a custom kernel -- 
+> in my case, a 2.4.18 with the MTD drivers.
+> 
+> Mark
 
-I have tried to find it at www.sandisk.com, but could not find it.
-Please send me the info or give an URL.
 
-Regards,
-/Karl
 
------------------------------------------------------------------------
-Karl Hammar                    Asp=F6 Data           karl@kalle.csb.ki.se=
-
-Lilla Asp=F6 2340             +46  173 140 57                    Networks=
-
-S-742 94 =D6sthammar         +46  10 270 26 67                  Computers=
-
-Sweden                                                       Consulting
------------------------------------------------------------------------
+_________________________________________________________
+Do You Yahoo!? 
+摊开你的掌心 让我看看你
+http://sweepstakes.yahoo.com/2002cnuser
