@@ -1,17 +1,16 @@
-Received: from repulse.teligenthost.com ([207.155.249.3])
+Received: from mail1.danielind.com ([12.19.96.6])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15F0WJ-0006pr-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 22:37:15 +0100
-From: "Bao C. Ha" <baoha@sensoria.com>
-To: "'Simon Evans'" <spse@secret.org.uk>, <linux-mtd@lists.infradead.org>
-Subject: RE: Block device as MTD 
-Date: Tue, 26 Jun 2001 14:41:14 -0700
-Message-ID: <01e501c0fe88$ba42a0f0$326c020a@SENSORIA>
+	id 15F0c5-0006qg-00
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2001 22:43:13 +0100
+Message-ID: <3B390418.8957E048@daniel.com>
+Date: Tue, 26 Jun 2001 16:52:24 -0500
+From: Vipin Malik <vipin.malik@daniel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: David Woodhouse <dwmw2@infradead.org>
+CC: MTD for Linux <linux-mtd@lists.infradead.org>
+Subject: Patch to patchin.sh file
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <E15EzJQ-0008Px-00@spoinky.secret.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,44 +22,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Can I mount a partition like /dev/hda3 or perhaps
-/dev/ide/host0/bus0/target0/lun0/part3?
+Any reason the following patch to the file patches/patchin.sh should not
+be applied to the file in CVS?
 
-Bao
+It adds the JFFS2 dir/file/include stuff to a stock kernel that knows
+nothing about it.
 
-> -----Original Message-----
-> From: linux-mtd-admin@lists.infradead.org
-> [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Simon Evans
-> Sent: Tuesday, June 26, 2001 1:20 PM
-> To: linux-mtd@lists.infradead.org
-> Subject: Re: Block device as MTD 
-> 
-> 
-> 
-> I have checked this into CVS now. The following files are affected:
-> 
-> drivers/mtd/devices/blkmtd.c  - the driver itself
-> drivers/mtd/devices/Config.in
-> drivers/mtd/devices/Makefile
-> patches/Configure.help
-> 
-> Please consider this alpha software. It uses raw/io to the 
-> disk (not via
-> the buffer cache). Basic usage is:
-> 
-> modprobe blkmtd device=/dev/floppy/0  etc
-> 
-> If you are going to put a JFFS2 fs on the device, please note that
-> it can take quite a while to mount because JFFS2 scans every block.
-> A 96MB CF card took about 2 minutes.
-> 
-> On the plus side, if you have more memory then the size of the device,
-> you should find the whole device in the page cache ;)
-> 
-> cheers
-> si
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Vipin
+
+
+Index: patchin.sh
+===================================================================
+RCS file: /home/cvs/mtd/patches/patchin.sh,v
+retrieving revision 1.6
+diff -u -r1.6 patchin.sh
+--- patchin.sh  2001/04/25 12:10:23     1.6
++++ patchin.sh  2001/06/26 21:40:06
+@@ -24,12 +24,16 @@
+ #
+
+ mkdir -p drivers/mtd
++rm -rf    drivers/mtd/* # clear out old junk
+ mkdir -p drivers/mtd/chips
+ mkdir -p drivers/mtd/devices
+ mkdir -p drivers/mtd/maps
+ mkdir -p drivers/mtd/nand
+ mkdir -p include/linux/mtd
+ mkdir -p fs/jffs
++rm -rf   fs/jffs/* # clear out old junk
++mkdir -p fs/jffs2
++rm -rf   fs/jffs2/* # clear out old junk
+ ln -sf $TOPDIR/drivers/mtd/*.[ch] drivers/mtd
+ ln -sf $TOPDIR/drivers/mtd/*akefile $TOPDIR/drivers/mtd/Rules.make
+$TOPDIR/drivers/mtd/Config.in drivers/mtd
+ ln -sf $TOPDIR/drivers/mtd/chips/*.[ch] drivers/mtd/chips
+@@ -42,7 +46,10 @@
+ ln -sf $TOPDIR/drivers/mtd/nand/*akefile
+$TOPDIR/drivers/mtd/nand/Config.in drivers/mtd/nand
+ ln -sf $TOPDIR/fs/jffs/*.[ch] fs/jffs
+ ln -sf $TOPDIR/fs/jffs/*akefile fs/jffs
+-ln -sf $TOPDIR/include/linux/jffs.h include/linux
++ln -sf $TOPDIR/fs/jffs2/*.[ch] fs/jffs2
++ln -sf $TOPDIR/fs/jffs2/*akefile fs/jffs2
++#ln -sf $TOPDIR/include/linux/jffs.h include/linux
++ln -sf $TOPDIR/include/linux/jffs*.h include/linux
+ ln -sf $TOPDIR/include/linux/mtd/*.h include/linux/mtd
+
+ #
