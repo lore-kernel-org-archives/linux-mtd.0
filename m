@@ -1,17 +1,21 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from mail.utfors.se ([195.58.103.125])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fPBi-0003ZD-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 17:45:22 +0000
-Date: Mon, 25 Feb 2002 18:56:35 +0100 (MET)
-From: Robert Kaiser <rob@sysgo.de>
-To: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
-cc: David Woodhouse <dwmw2@infradead.org>, Adam Wozniak <awozniak@comdev.cc>,
-   linux-mtd@lists.infradead.org, Jonas Holmberg <jonas.holmberg@axis.com>
+	id 16fPOP-0003aU-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2002 17:58:29 +0000
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: "Robert Kaiser" <rob@sysgo.de>, "Adam Wozniak" <awozniak@comdev.cc>,
+        <linux-mtd@lists.infradead.org>,
+        "Jonas Holmberg" <jonas.holmberg@axis.com>
 Subject: RE: Re-entrancy of flash erase/write 
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLGEMMFBAA.joakim.tjernlund@lumentis.se>
-Message-ID: <Pine.LNX.4.21.0202251855240.12881-100000@dagobert.svc.sysgo.de>
+Date: Mon, 25 Feb 2002 19:08:03 +0100
+Message-ID: <IGEFJKJNHJDCBKALBJLLOEMNFBAA.joakim.tjernlund@lumentis.se>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <29086.1014659686@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +27,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+> 
+> joakim.tjernlund@lumentis.se said:
+> > The patch I sent a week or 2 ago support that for cmdset0001.c
+> 
+> Ah, sorry. Resend (or pointer)?
+pointer, http://lists.infradead.org/pipermail/linux-mtd/2002-February/004117.html
 
-On Mon, 25 Feb 2002, Joakim Tjernlund wrote:
+But there is one problem, I did this against 1.91 so I don't know if it applies 
+against latest CVS. Has anybody tried?
 
-> > I see the possibility, but surely that would only _actually_ happen if we 
-> > started to support writes during erase suspend? Otherwise, the only thing 
-> > that should happen during an erase is a _read_, which doesn't set and clear 
-> > vpp.
-> The patch I sent a week or 2 ago support that for cmdset0001.c
-
-Bingo! I have been using that version.
-
-Rob
-
-----------------------------------------------------------------
-Robert Kaiser                          email: rkaiser@sysgo.de
-SYSGO RTS GmbH
-Am Pfaffenstein 14
-D-55270 Klein-Winternheim / Germany    fax:   (49) 6136 9948-10
+ Jocke
