@@ -1,26 +1,19 @@
-Received: from mailwasher.lanl.gov ([192.65.95.54] helo=mailwasher-b.lanl.gov)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D4NDR-0000Ac-5l
-	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 12:55:58 -0500
-Received: from ccs-mail.lanl.gov (ccs-mail.lanl.gov [128.165.4.126])
-	by mailwasher-b.lanl.gov (8.12.11/8.12.11/(ccn-5)) with ESMTP id
-	j1OHtr3a013035
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Feb 2005 10:55:53 -0700
-Received: from durango.c3.lanl.gov (durango.c3.lanl.gov [128.165.20.172])
-	by ccs-mail.lanl.gov (8.12.11/8.12.11/(ccn-5)) with ESMTP id
-	j1OHtquw022337
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Feb 2005 10:55:53 -0700
-Received: from gjohnson by durango.c3.lanl.gov with local (Exim 3.36 #1
-	(Debian)) id 1D4NDM-00027k-00
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Feb 2005 10:55:52 -0700
-Date: Thu, 24 Feb 2005 10:55:52 -0700
+Received: from mail21.sea5.speakeasy.net ([69.17.117.23])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D4Omn-0000oE-29
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2005 14:36:33 -0500
+Received: from unknown (HELO [172.16.6.181]) (msundius@[12.47.55.31])
+	(envelope-sender <msundius@sundius.com>)
+	by mail21.sea5.speakeasy.net (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 24 Feb 2005 19:34:29 -0000
+Mime-Version: 1.0 (Apple Message framework v619.2)
+Content-Transfer-Encoding: 7bit
+Message-Id: <1f065e28ae2a88eda8f37b9c40f54ed2@sundius.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050224175552.GR3347@durango.c3.lanl.gov>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: Greg Johnson <gjohnson@lanl.gov>
-Subject: MTD for Intel 28F320C3B BIOS flash?
+From: C. Michael Sundius <msundius@sundius.com>
+Date: Thu, 24 Feb 2005 11:34:34 -0800
+Subject: utilities for mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-I would like to be able to update the BIOS of a bunch of Intel SE7520JR2
-motherboards from Linux.  According to the spec for this board, it has a
-Intel 28F320C3B flash chip.  
+I am using a the mtd code from the 2.4.20 kernel. how/where do I get 
+the corresponding utilities
+such as flash_erase, flash_lock etc... I grabbed a random version of 
+them somewhere and it
+didn't seem to work.. for one the flash_erase program calls an ioctl 
+"MEMGETREGIONCOUNT"
+and my kernel returned:
+	in appropriate ioctl for this device....
 
-What would be required to support this under Linux MTD?  Grepping the
-source reveals references to Intel 28F320B3 chips.  Are these supported?
-If so, how similar are they?  I'm happy to read the spec and write code,
-but I need a little direction first.
+any help is appreciated.
 
-It would be great to be able to do this from Linux, as I have a cluster
-of 128 to update.
+thanks
 
-Thanks,
 
-Greg
+
+C Michael Sundius
+Solico Group LLC
+232 Nevada St
+San Francisco, CA 94110
+msundius@sundius.com
+(415)608-0121
