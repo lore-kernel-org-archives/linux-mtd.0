@@ -1,17 +1,18 @@
-Received: from ip10.savigear.adsl.gxn.net ([195.147.222.170] helo=xerp.secret.org.uk)
+Received: from elproma-gw.hbz.pl ([213.77.124.176] helo=elproma.com.pl)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1879JK-0002ah-00
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 07:00:10 +0000
-From: Simon Evans <spse@secret.org.uk>
-To: Norm Legare <normlegare@yahoo.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Is AM29F016 CFI-compliant? 
-In-reply-to: Your message of "Wed, 30 Oct 2002 19:07:57 PST."
-             <20021031030757.2845.qmail@web13405.mail.yahoo.com>
+	id 187HCI-0003JD-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 15:25:26 +0000
+Received: from ptroja by elproma.com.pl with local (Exim 3.35 #1 (Debian))
+	id 187Hey-0006bh-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2002 16:55:04 +0100
+Date: Thu, 31 Oct 2002 16:55:04 +0100
+From: Piotr Trojanek <ptroja@elproma.com.pl>
+To: linux-mtd@lists.infradead.org
+Subject: how to compile CVS stuff
+Message-ID: <20021031155504.GA25329@elproma.com.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 31 Oct 2002 07:30:23 +0000
-Message-Id: <E1879mZ-0008Hh-00@spoinky.renegade.org.uk>
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,26 +24,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi, 
->Hello,  
->
->I have searched the archives with this question, and someone has asked
->the same question, but no definitive answer could be found.
+Hello!
 
-AM29F016 should work with the jedec_probe driver. It works fine for
-me.
+I work with DOC with nftl driver from vanilla 2.4.19.
+Now I wan't to take fresh stuff from CVS, but I'm unable to comile it.
+I was trying many ways, but can you give me step-by-step instruct how to
+do this? When I just copy things into kernel tree, it won't work.
 
->Thanks,
->Norm
->
+And one more question:
+can I make 2 partitions on my DOC: nftla[12] and put bootloader stuff
+and bzImage on first, with JFFS2 on second?
+JFFS2 needs mtdblock device, and whole chip is seen as mtd0.
 
+or maybe I miss something?:)
 
-># RAM/ROM/Flash chip drivers
->#
->CONFIG_MTD_CFI=y
-># CONFIG_MTD_JEDECPROBE is not set
-
-CONFIG_MTD_JEDECPROBE=m   (or y)   is needed.
-
-cheers
-si
+-- 
+Piotr Trojanek
