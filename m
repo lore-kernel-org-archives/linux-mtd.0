@@ -1,16 +1,20 @@
-Received: from [202.114.36.28] (helo=bbs.ccnu.edu.cn)
+Received: from [152.101.51.1] (helo=janus.hk.panelx.com)
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196LQ3-0003ZH-Aq
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2003 03:16:04 +0100
-Date: Fri, 18 Apr 2003 10:31:16 +0800
-From: lhl <lhl@phy.ccnu.edu.cn>
-To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Message-Id: <E196LQ3-0003ZH-Aq@pentafluge.infradead.org>
-Content-Type: text/plain; charset="GB2312"
+	id 196MiM-0003u4-9Y
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2003 04:39:02 +0100
+Message-ID: <001401c3055c$dc8ec4e0$6c00a8c0@home>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <manningc2@actrix.gen.nz>,
+	<linux-mtd@lists.infradead.org>,
+	"yaffs list" <yaffs@toby-churchill.org>
+References: <001201c30505$c4b83dd0$6c00a8c0@home>
+	<20030417204847.5409515144@desire.actrix.co.nz>
+Date: Fri, 18 Apr 2003 11:44:27 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-cc: dwmw2@infradead.org
-Subject: No recognised DiskOnChip devices found.
+Subject: Re: Restore the bad block flag in OOB of  NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,118 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My DiskOnChip can work as a block device used M-system's DOC driver.
-while when I compile the DiskOnChip as a MTD device,it does not work stilly.
+Thanks  for suggestion. I will try it.
 
-#modprobe -a DOC2000
-nothing found in dmesg
-#modprobe -a docprob
-I get from dmesg:
-No recognised DiskOnChip devices found.
+I am using the Samsung 16MB NAND flash . and separate 3 partitions.
+/dev/mtd0 is used for kernel img; /dev/mtd1 for general file drive (YAFFS);
+/dev/mtd2 for initrd.img. The yaffs driver is compiled by module. and set
+"mount -t yaffs /dev/block1 /mnt/flash" in rcS (setup script). No format the
+partition in the first mounting.
+The drive is not always to use, it is just saved the config. file. So, I
+dont clearly know why the yaffs is corrupt. I check the disk space by "du"
+command. It said 100% used . And cannot remove any file in this /mnt/flash.
+therefore , i think it is corrupted.
 
-I used Redhat 7.2 linux with 2.4.7-10 kernel work.
-I download the linux-2.4.17 kernel and get the mtd from cvs.then 
-#./patchin.sh -c -j /usr/src/linux
+Any ideal??
 
+Thank a lot.
 
+Paul
 
-
-I had use the DOC DOS utilities to format it by
-DFORMAT /WIN:DC00 /S:DOC514.exb /EMPTY /Y /NODOS
-
-
-here are the DOC info :
-
-        Physical Address:  0xDC000
-        DiskOnChip Type :  DiskOnChip 2000
-        Flash Type      :  TC58256
-        FormatType      :  NFTL
-        TrueFFS version :  5.1.4
-        Driver Version  :  DOS 5.1.4
-        Sectors         :  8
-        Heads           :  16
-        Cylinders       :  1001
-        Boot Area Size  :  65536 Bytes
-        Logical Sectors :  128224
-        Phy. UnitSize   :  16384 Bytes
-        Physical Size   :  67108864 (64 MB)
-        Unit Size       :  16384 Bytes
-        Media Size      :  67108864 Bytes (64 MB)
-        Chip Size       :  33554432 Bytes (32 MB)
-        No Of Chips     :  2
-        Interleaving    :  1
+----- Original Message -----
+From: "Charles Manning" <manningc2@actrix.gen.nz>
+To: "Paul" <paul@maypaul.com>; <linux-mtd@lists.infradead.org>; "yaffs list"
+<yaffs@toby-churchill.org>
+Sent: Friday, April 18, 2003 4:49 AM
+Subject: Re: Restore the bad block flag in OOB of NAND flash
 
 
-
-Here are the relevant sections of the .config options I compiled my kernel 
-with:
-
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=m
-CONFIG_MTD_DEBUG=m
-# CONFIG_MTD_PARTITIONS is not set
-# CONFIG_MTD_CONCAT is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-CONFIG_MTD_CHAR=m
-# CONFIG_MTD_BLOCK is not set
-CONFIG_FTL=m
-CONFIG_NFTL=m
-CONFIG_NFTL_RW=y
-
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_CFI=m
-CONFIG_MTD_JEDECPROBE=m
-CONFIG_MTD_GEN_PROBE=m
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-# CONFIG_MTD_CFI_AMDSTD is not set
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-# CONFIG_MTD_OBSOLETE_CHIPS is not set
-# CONFIG_MTD_AMDSTD is not set
-# CONFIG_MTD_SHARP is not set
-# CONFIG_MTD_JEDEC is not set
-
-#
-# Mapping drivers for chip access
-#
-# CONFIG_MTD_PHYSMAP is not set
-# CONFIG_MTD_PNC2000 is not set
-# CONFIG_MTD_SC520CDP is not set
-# CONFIG_MTD_NETSC520 is not set
-# CONFIG_MTD_SBC_GXX is not set
-# CONFIG_MTD_ELAN_104NC is not set
-# CONFIG_MTD_DILNETPC is not set
-# CONFIG_MTD_MIXMEM is not set
-# CONFIG_MTD_OCTAGON is not set
-# CONFIG_MTD_VMAX is not set
-# CONFIG_MTD_L440GX is not set
-# CONFIG_MTD_AMD766ROM is not set
-# CONFIG_MTD_ICH2ROM is not set
-# CONFIG_MTD_PCI is not set
-
-#
-# Self-contained MTD device drivers
-#
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_MTD_BLKMTD is not set
-# CONFIG_MTD_DOC1000 is not set
-CONFIG_MTD_DOC2000=m
-CONFIG_MTD_DOC2001=m
-CONFIG_MTD_DOCPROBE=m
-CONFIG_MTD_DOCPROBE_ADVANCED=m
-CONFIG_MTD_DOCPROBE_ADDRESS=0
-CONFIG_MTD_DOCPROBE_HIGH=y
-CONFIG_MTD_DOCPROBE_55AA=y
-
-#
-# NAND Flash Device Drivers
-#
-# CONFIG_MTD_NAND is not set
+> On Friday 18 April 2003 05:21, Paul wrote:
+> >  Dear All,
+> >
+> >     How can I restore the 0xFF in the OOB[5]?   i understood the oob[5]
+is
+> >  the bad block indicator. The YAFFS set accidentally the byte to 0x00 .
+I
+> >  want to use JFFS2 but the eraseall command said they are invalid block.
+I
+> > am
+> >  sure that the block is health . So, I want to force set the oob[5] to
+> > oxFF, pls. how can i do? Thank you.
+> >
+> >  Paul
+>
+> Generally this is a bad idea to erase bad blocks since destroying factory
+> marked bad blocks can cause problems through the entire chip (not just the
+> bad block). eg. Some blocks are marked because a write to the block could
+> disturb data in another block.
+>
+> More recent chips seem to have some hardware "fuse" blown to prevent bad
+> blocks from being erased.
+>
+> One way to achieve what you want is to hack mkyaffs. mkyaffs erases the
+> blocks in the partition, but first checks for bad block markers. If you
+> comment out the check then it will erase the block regardless. This will
+set
+> all the bits in the block to 1 (including the bad block marker).
+>
+> BTW: I am curious as to how YAFFS managed to mark your block bad.
+>
+> -- Charles
+>
+>
+>
+> --------------------------------------------------------------------------
+-------------
+> This mailing list is hosted by Toby Churchill open software
+(www.toby-churchill.org).
+> If mailing list membership is no longer wanted you can remove yourself
+from the list by
+> sending an email to yaffs-request@toby-churchill.org with the text
+"unsubscribe"
+> (without the quotes) as the subject.
+>
+>
