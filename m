@@ -1,19 +1,18 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from natpool.ud.com ([65.112.245.211] helo=jikku-lt.corp.ud.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16j2Oe-0005Xt-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 18:13:44 +0000
-Date: Thu, 7 Mar 2002 19:25:06 +0100
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: Steve Wahl <swahl@brecis.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Possible bug in /proc/mtd ?
-Message-ID: <20020307192506.A12769@wohnheim.fh-wedel.de>
-References: <20020306094431.C15112@brecis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020306094431.C15112@brecis.com>; from swahl@brecis.COM on Wed, Mar 06, 2002 at 09:44:31AM -0600
+	id 16j6VG-0005rf-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2002 22:36:50 +0000
+Received: from infinity-studios.com (localhost.localdomain [127.0.0.1])
+	by jikku-lt.corp.ud.com (8.11.6/8.11.6) with ESMTP id g27Mawh01395
+	for <linux-mtd@lists.infradead.org>; Thu, 7 Mar 2002 16:36:58 -0600
+Message-ID: <3C87EB8A.7070305@infinity-studios.com>
+Date: Thu, 07 Mar 2002 16:36:58 -0600
+From: Dzuy Nguyen <dzuy@infinity-studios.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Compressed root FS & DoC partition
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +24,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi!
+I have a 16MB DoC 2000.  I am able to boot make an ext2 FS on and boot 
+via LILO.
 
-> Does anyone else get some sort of strange behavior if they run:
-> 
-> 	dd if=/proc/mtd of=/dev/tty bs=1
-> 
-> The strange behavior on my system is a hang; it may be an oops or
-> panic of some sort on a system with a mmu.
->
-> [...]
-> 
-> -        *start = page + (begin-off);
-> +        *start = page + (off-begin);
+Now, I want to be able to make it boot to a compressed root FS.  I've 
+created my own
+compressed root FS (about 6MB).  I figured I'd partition the DoC into 2 
+parts of 8MB
+each.  The first part is to hold the root FS (and possibly kernel) and 
+the latter part an
+ext2 FS to store system's configuration files (to mount on /etc later).
 
-Pretty obvious. You must be the first one to ever try that. :-)
+I've tried both using dformat and nftl_format to format half of the DoC 
+and mke2fs it.
+It just refuses to make the formatted half an ext2 unless the entire DoC 
+is formatted.
 
-David, is it ok, if I apply?
+Am I on the wrong path here?  Can someone point me to the right 
+direction?  Thanks.
 
-Jörn
-
--- 
-When in doubt, use brute force.
--- Ken Thompson
+Dzuy
