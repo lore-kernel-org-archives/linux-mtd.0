@@ -1,16 +1,20 @@
-Received: from law14-oe32.law14.hotmail.com ([64.4.20.89] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19VU0U-0006uk-8u
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 11:29:34 +0100
-From: "Vikram Mehta" <vm6580@hotmail.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Date: Wed, 25 Jun 2003 09:58:17 -0700
+Received: from mail22.messagelabs.com ([193.109.255.115])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19VUUa-00075k-S0
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2003 12:00:40 +0100
+Received: from stevejunior (unknown [192.168.200.17])
+	by netstar.stirling-dynamics.com (Postfix) with SMTP id E6E959802
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Jun 2003 11:59:49 +0100 (BST)
+Message-ID: <000f01c33bd2$2a579660$11c8a8c0@stevejunior>
+From: "Stephen Brown" <sbrown@stirling-dynamics.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 26 Jun 2003 12:00:33 +0100
 MIME-Version: 1.0
-Message-ID: <Law14-OE322SEnYzSTm0005334a@hotmail.com>
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: blkmem.c questions
+Subject: quick question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI folks,
+Hi all,
 
-I am working on uCdimm.
-On trying to mount jffs2 , I get a message ,
+what do you all think about this:
 
-"arena open of 1 failed"
-Now this message is in blkmem.c
-It comes when Minor number ( here 1) is < 0 or >= arenas
-arenas = sizeof(arena)/sizeof(arena_t)
-Now For uCdimm, blkmem defines CAT_ROMARRAY.
-at if CAT_ROMARRAY is define arena[] is initialzed to
-{ 0, 0 , -1}
-And I don't think any other  #if defined is true for uCdimm config in
-intialization of arena[].
+http://www.m-sys.com/content/products/product.asp?PID=17&FILE=DOCIdePro&FAM=
+doc
 
-So I have only one arena.
-How do I make more that one arena?.
-Is arena and Number of partitions and number of Arena related ( they apear
-to be so now.) ?
-I make two partions. One for first 2MB and one of second 2MB.
-Is that right?
-I can have as many partitions As i want as long as I keep every partition
-more than 5 sections long.. Am I right.?
-So Do I have do make as many arena to .
+if I used this as a standard IDE device does this mean that I wouldn't
+require any MTD drivers for linux and just use the standard IDE?
 
-2.) If I keep one partition (mtd0) and erase mtd0, will not my booltloader
-be erased too
+if so could I format this as EXT2 fs and contain my ROOT file system on it?
+or would I still run the risk of power failure disk error etc?
+
+ I mean I can load my ROOT fs into memory so thats not a problem, see the
+thing is at the moment I can't get the MTD drivers to work with the onboard
+'Msys D-O-C' on an Ampro p5e module, reason being is Ampro use part of the
+FLASH to store the bios for the ampro board and have specific tools for
+formatting etc, so I boot from a dos partition using 'LoadLin' or I can boot
+from a Harddrive connected to the IDE, so in my case maybe the 'IDE PRO' is
+an alternative , also to save recompiling the kernel for the p5e maybe..
+
+anyways let me know what you think,
+
+kind regards
+
+stephen
 
 
-Please Help me here
-
-Vikram
+________________________________________________________________________
+This e-mail has been scanned for all viruses by Star Internet. The
+service is powered by MessageLabs. For more information on a proactive
+anti-virus service working around the clock, around the globe, visit:
+http://www.star.net.uk
+________________________________________________________________________
