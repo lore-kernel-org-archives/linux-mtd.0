@@ -1,19 +1,17 @@
-Received: from smtp1.cern.ch ([137.138.128.38])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zEWX-0004Is-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 10:20:17 +0100
-Received: from pcl3af5 (pcl3af5.cern.ch [137.138.202.155])
-	by smtp1.cern.ch (8.9.3/8.9.3) with SMTP id LAA11760
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 11:23:52 +0200 (MET DST)
-Message-ID: <004901c0dc57$4b8d97d0$9bca8a89@pcl3af5>
-From: "Shoudong Xu" <ShoudongXu@cern.ch>
-To: "MTD" <linux-mtd@lists.infradead.org>
-Subject: Can not choose the " Specific CFI Flash geometry selection" opition
-Date: Mon, 14 May 2001 11:21:44 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+	id 14zEpA-0004m9-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 10:39:32 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <004901c0dc57$4b8d97d0$9bca8a89@pcl3af5> 
+References: <004901c0dc57$4b8d97d0$9bca8a89@pcl3af5> 
+To: "Shoudong Xu" <Shoudong.Xu@cern.ch>
+Cc: "MTD" <linux-mtd@lists.infradead.org>
+Subject: Re: Can not choose the " Specific CFI Flash geometry selection" opition 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 14 May 2001 10:43:09 +0100
+Message-ID: <18477.989833389@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-SGksDQoNCiAgICBJIHVzZSBrZXJuZWwgMi40LjIgYW5kIHRoZSBsYXN0ZXN0IGNvZGUgLGJ1dCBj
-YW4gbm90IGNob29zZSB0aGUgIiBTcGVjaWZpYyBDRkkgRmxhc2ggZ2VvbWV0cnkgc2VsZWN0aW9u
-IiBvcGl0aW9uICxwbGVhc2UgZ2l2ZSBtZSBzb21lIGFkdmljZT8NCiAgICANCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQoNCmNmaV9wcm9iZS5jOiBJbiBmdW5jdGlvbiBgY2ZpX3Byb2JlX25ld19j
-aGlwJzoNCmNmaV9wcm9iZS5jOjI1MDogYENGSURFVl9JTlRFUkxFQVZFXzEnIHVuZGVjbGFyZWQg
-KGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQ0KY2ZpX3Byb2JlLmM6MjUwOiAoRWFjaCB1bmRl
-Y2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlDQpjZmlfcHJvYmUuYzoyNTA6
-IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQ0KbWFrZVs0XTogKioqIFtjZmlfcHJv
-YmUub10gRXJyb3IgMQ0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4
-cHBjXzJfNS9kcml2ZXJzL210ZC9jaGlwcycNCm1ha2VbM106ICoqKiBbZmlyc3RfcnVsZV0gRXJy
-b3IgMg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4cHBjXzJfNS9k
-cml2ZXJzL210ZC9jaGlwcycNCm1ha2VbMl06ICoqKiBbX3N1YmRpcl9jaGlwc10gRXJyb3IgMg0K
-bWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4cHBjXzJfNS9kcml2ZXJz
-L210ZCcNCm1ha2VbMV06ICoqKiBbX3N1YmRpcl9tdGRdIEVycm9yIDINCm1ha2VbMV06IExlYXZp
-bmcgZGlyZWN0b3J5IGAvdXNyL3NyYy9saW51eHBwY18yXzUvZHJpdmVycycNCm1ha2U6ICoqKiBb
-X2Rpcl9kcml2ZXJzXSBFcnJvciAyDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQoNCkJl
-c3QgUmVnYXJkcw0KU2hvdWRvbmcNCg==
+ShoudongXu@cern.ch said:
+>     I use kernel 2.4.2 and the lastest code ,but can not choose the "
+> Specific CFI Flash geometry selection" opition ,please give me some
+> advice?
+
+You appear to have enabled a buswidth of 1, but not enabled an interleave 
+of 1. This doesn't seem very useful - it's difficult to interleave more 
+than one chip into a bus which is a single byte wide.
+
+We should probably do Config.in magic to prevent this. Either that or 
+something like...
+
+--- cfi_probe.c	2001/05/10 14:32:09	1.57
++++ cfi_probe.c	2001/05/14 09:42:37
+@@ -246,6 +246,9 @@
+ int index;
+ 	switch (map->buswidth) {
+ #ifdef CFIDEV_BUSWIDTH_1		
++#ifndef CFIDEV_INTERLEAVE_1
++#error You have asked to support a buswidth of 1, but have not enabled support for having only one chip interleave. How could this possibly work?
++#endif
+ 	case CFIDEV_BUSWIDTH_1:
+ 		cfi->interleave = CFIDEV_INTERLEAVE_1;
+ 		cfi->device_type = CFI_DEVICETYPE_X8;
+
+(PS. Please fix your From address)
+
+--
+dwmw2
