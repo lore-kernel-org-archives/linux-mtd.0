@@ -1,20 +1,23 @@
-Received: from [216.40.225.16] (helo=www.webmanixhosting.com)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1AEuzQ-0006UQ-Kt
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 18:24:16 +0000
-From: "Dan Post" <djp.mtd@onemyth.net>
-To: "Chuck Meade" <chuckmeade@mindspring.com>,
-   "Karoliya,Abhishek" <Abhishek.Karoliya@fci.com>
-Date: Wed, 29 Oct 2003 10:16:23 -0800
-Message-Id: <20031029181623.M2380@onemyth.net>
-In-Reply-To: <IIEEICKJLNEPBBDJICNGGEICEBAA.chuckmeade@mindspring.com>
-References: 
-	<903E17B6FF22A24C96B4E28C2C0214D7012BB2D8@sr-bng-exc01.int.tsbu.net>
-	<IIEEICKJLNEPBBDJICNGGEICEBAA.chuckmeade@mindspring.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	id 1AEvLQ-0006eS-Jh
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2003 18:47:00 +0000
+Date: Wed, 29 Oct 2003 10:45:46 -0800
+From: Jun Sun <jsun@mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20031029104546.K30683@mvista.com>
+References: <20031022182558.U19834@mvista.com>
+	<20031027101741.C1678@mvista.com>
+	<1067338214.15551.405.camel@hades.cambridge.redhat.com>
+	<20031028182828.D30683@mvista.com>
+	<1067426006.15551.1546.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1067426006.15551.1546.camel@hades.cambridge.redhat.com>;
+	from dwmw2@infradead.org on Wed, Oct 29, 2003 at 11:13:26AM +0000
+Content-Type: text/plain; charset=us-ascii
 cc: linux-mtd@lists.infradead.org
-Subject: RE: Intel K3 Flash + MTD
+Subject: Re: [PATCH] extend physmap.c to support run-time adding partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 26 Oct 2003 15:17:35 -0500, Chuck Meade wrote
-> That sounds like the status bit that you are reading back.
-> Most flashes give back status after you issue them commands
-> (like all of your unlocks, for instance).  Usually you put them 
-> back into "read mode" by writing a particular byte to them
-> after reading the status.  Try writing an FF to the flash.
-> Check your flash chip's datasheet for the exact sequence that
-> you must use to put it back in read mode.
+On Wed, Oct 29, 2003 at 11:13:26AM +0000, David Woodhouse wrote:
+> On Tue, 2003-10-28 at 18:28 -0800, Jun Sun wrote:
+> +#if defined(CONFIG_MTD)
+> +       /* we use generic physmap mapping driver */
+> +       physmap_set_map(0x400000, 4, 0x1e000000);
+> +
+> +       physmap_add_partition("YAMON", 0x100000, 0x0, MTD_WRITEABLE);
+> +       physmap_add_partition("User FS", 0x300000, 0x100000, 0);
+> +#endif
+> 
+> That's nicer. Why multiple physmap_add_partition() calls rather than
+> just a single array passed to physmap_set_map() though?
+> 
 
-For K3's, writing an FF should work, though I don't know why it's coming up in
-status mode.  I don't think that behavior is typical.  You probably should
-check the datasheet.  Or it could be your bootloader that's setting it to
-status mode (maybe not changing it to Read Array after a program or erase etc).
+Hmm, currently partition only matters when CONFIG_MTD_PARTITIONS
+is enabled.  I assume this mean sometimes people want to use
+physmap without partitions.  True?
 
-However, you should be aware that some NOR chips, such as Intel's L18/L30's,
-are multi-partitioned and each partition must be set to read array mode... the
-details of its multipartitioning can be very sticky, but very cool too...
+The board code here really takes advantage of the board-specific
+knowledge, where it knows it has support for partitions.  (Maybe
+I should add #ifdef CONFIG_MTD_PARTITIONS to surround adding partition
+part)
 
-Dan
+> 	mtd = physmap_set_map(adr, len, width, set_vpp, partitions);
+> 
+> 	physmap_unset_map(mtd);
+> 
+
+phsmap currently only supports mapping for one physical flash unit.
+I assume physmap_unset_map() is pretty much null op here?  
+
+And the "physmap_set_map" really means something like "physmap_configure_map". 
+So I am not sure if something "unconfigure" is necessary.
+
+Jun
