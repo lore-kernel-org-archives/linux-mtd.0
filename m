@@ -1,15 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@lumentis.se
-In-Reply-To: <004001c4074f$99fd6d70$0a01a8c0@LUMENTIS02>
-References: <004001c4074f$99fd6d70$0a01a8c0@LUMENTIS02>
-Content-Type: text/plain
-Message-Id: <1079000387.867.106.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 11 Mar 2004 10:19:48 +0000
-Content-Transfer-Encoding: 7bit
-cc: joris.lammers@pandora.be
+Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
+	helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B1PqJ-0005uB-CD
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2004 13:03:19 +0000
+To: "Adalbert =?iso-8859-1?q?M=FCller?=" <adalbert.mueller@web.de>
+References: <200403111111.i2BBBOQ08193@mailgate5.cinetic.de>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: 11 Mar 2004 06:10:29 -0700
+In-Reply-To: <200403111111.i2BBBOQ08193@mailgate5.cinetic.de>
+Message-ID: <m3r7vzr0l6.fsf@maxwell.lnxi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Sender: "Eric W. Biederman" <eric@lnxi.com>
 cc: linux-mtd@lists.infradead.org
-Subject: RE: Failed to garbage collect: ENOSPC
+Subject: Re: ich2rom mapper
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,21 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-03-11 at 10:59 +0100, Joakim Tjernlund wrote:
-> > Only way to get out of this is to remove the log file that 
-> > was written to most. This file is then about 200kB in size 
-> > but after removal the free space of the partition grows from 
-> > 124kB to 2MB! Apparently there was dirty space to collect?
-> 
-> The JFFS2 overhead from small writes is rather big. Each write is its own node in
-> flash so a 124kB log file can be 2MB on flash. If you copy the log file and delete the
-> old file, you will free flash space.
+"Adalbert M=FCller"  <adalbert.mueller@web.de> writes:
 
-We really ought to count the space taken up that way. We already have
-the offending nodes marked as non-optimal, so that on GC we actually
-read the whole page and write it out again in a single node, obsoleting
-lots of the smaller nodes. We should keep track of them separately and
-GC them before returning -ENOSPC.
+Please don't use html mail...
 
--- 
-dwmw2
+Please ask general questions on the appropriate mailing list, there
+are more people who can answer questions there.
+
+But since I am feeling nice at the moment.
+
+
+"Adalbert M=FCller" <adalbert.mueller@web.de> writes:
+
+> Hello Mr Biederman,
+>=20
+> I'm just playing around with your ich2 mapping driver.=20
+>=20
+> Unfortunatelly after hours of walking through the ich2rom/mtd code
+> it's not clear to me why you are adding the additional offsets in
+> addr() function.
+
+There is an assumption that you will be using an intel firmware hub
+part.  As I recall intel firmware hubs have memory mapped registers
+4MB from the address of the flash device.
+
+> Do you have some additional documentation for the driver or do you
+> know where to get more informations?=20
+
+developer.intel.com  Look for 82801ab I think is the part number
+for the firmware hub code.
+=20
+> Any help is greatly appreciated.
+
+Welcome.
+>=20
+> Kind regards,
+> Adalbert M=FCller=20
+
+
+Eric
