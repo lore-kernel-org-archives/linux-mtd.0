@@ -1,19 +1,25 @@
-Received: from ash.lnxi.com ([207.88.130.242])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19IUQV-0003sy-Nx
-	for <linux-mtd@lists.infradead.org>; Wed, 21 May 2003 15:18:43 +0100
-From: Thayne Harbaugh <tharbaugh@lnxi.com>
-To: Gordon J Milne <gordon@bluewatersys.com>
-In-Reply-To: <3ECB640C.5040305@bluewatersys.com>
-References: <1028064443.23642.52.camel@mahi190.austin.ibm.com>
-	 <14660.1028067926@redhat.com>  <3ECB640C.5040305@bluewatersys.com>
-Message-Id: <1053526720.1070.10.camel@tubarao>
-Mime-Version: 1.0
-Date: 21 May 2003 08:18:40 -0600
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-CB0rfLREf8hRAT5nFvum"
+Received: from phoenix.infradead.org ([195.224.96.167])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19IVsr-0004T6-CM
+	for <linux-mtd@lists.infradead.org>; Wed, 21 May 2003 16:52:05 +0100
+Received: from smtp2.crystaltech.com ([216.119.106.211])
+	by phoenix.infradead.org with smtp (Exim 4.10)
+	id 19ITxG-00064L-00
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2003 14:48:31 +0100
+From: "John Burch" <jburch@vincisystems.com>
+To: "'Jonas Holmberg'" <jonas.holmberg@axis.com>,
+	"'David Woodhouse'" <dwmw2@infradead.org>
+Date: Wed, 21 May 2003 09:49:30 -0400
+Message-ID: <000a01c31f9f$ceb90940$1200a8c0@JOHNB>
+MIME-Version: 1.0
+In-Reply-To: <3C6BEE8B5E1BAC42905A93F13004E8AB01CAF732@mailse01.axis.se>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+cc: =?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@wohnheim.fh-wedel.de>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: "Read-only file system" error while writing
+Subject: RE: Mtd block access (jffs2 formatted) and mtd char
+ access(unformatted) on different partitions of a single flashdevice
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> > > Also, does the mtd driver for AMD CFI devices handle
+> > > AMD's ability to support erasure of multiple sectors=20
+> simultaneously?
+> >=20
+> > Probably not yet, but there's no reason why it shouldn't.=20
+> Criticism in=20
+> > 'diff -u' form is preferred :)
+> >=20
+>=20
+> Is this chip-feature "probable"? We used to do simutaneous=20
+> erases in a bootloader, but after a while we started using=20
+> chips that couldn't do that so we had to change the behaviour=20
+> to be able to handle all sorts of chips. I'm not sure if CFI=20
+> covers that particular feature, but it would be great if it=20
+> did. It wouldn't be so great to have to check JEDEC IDs...
+>=20
 
---=-CB0rfLREf8hRAT5nFvum
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2003-05-21 at 05:33, Gordon J Milne wrote:
-
-> The device (1f:03) is the root device and it has been remounted rw. I=20
-> verified this by checking /proc/mounts - everything was rw, as expected. =
-My=20
-> system successfully boots and I can execute commands. It is just the=20
-> filesystem writes that are not working for me.
-
-This is the symptom if you have the incorrect unlock addresses for an
-LPC flash chip: everything is readable, but nothing can be erased or
-written.
-
-The ST M28W320CB is a CFI part and so I can't guarantee that it's the
-same thing, but it may be a similar problem.
-
-
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-CB0rfLREf8hRAT5nFvum
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+y4rAfsBPTKE6HMkRAsI+AJ9K73FUvAS/gKyib3Zkdy+31Y9lsQCeIyOF
-HSxG+s34IYtGWaBUHT6xHgk=
-=mSPg
------END PGP SIGNATURE-----
-
---=-CB0rfLREf8hRAT5nFvum--
+As far as I know, the feature is unique to AMD though I don't know if it
+is supported across their entire product line.  Also, it is not a CFI
+specific feature.  For example, it's discussed in the 29LV008B (not a
+CFI compliant device) data sheet under the "Sector Erase Command
+Sequence" section.
