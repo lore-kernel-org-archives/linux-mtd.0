@@ -1,17 +1,22 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from www.altera.com ([66.35.227.11])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ct4D-0007cP-00
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2002 19:03:13 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <00de01c1b8ac$928d8b40$f801a8c0@minibm> 
-References: <00de01c1b8ac$928d8b40$f801a8c0@minibm>  <Pine.LNX.4.44.0202112157400.1558-100000@lapdancer.baythorne.internal> 
-To: "Chung Ming" <min@hello.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: "No Flash Chips Recognized." error. 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 18 Feb 2002 19:14:27 +0000
-Message-ID: <17136.1014059667@redhat.com>
+	id 16dB1F-0000KN-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 14:13:21 +0000
+Received: from Altera.COM (sunrise.altera.com [137.57.1.1])
+	by www.altera.com (8.9.3+Sun/8.9.3) with ESMTP id GAA28775
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 06:20:10 -0800 (PST)
+Received: from localhost (localhost [[UNIX: localhost]])
+	by uk-proclin7.altera.com (8.11.6/8.11.6) id g1JEOUk01211
+	for linux-mtd@lists.infradead.org; Tue, 19 Feb 2002 14:24:30 GMT
+Message-Id: <200202191424.g1JEOUk01211@uk-proclin7.altera.com>
+Content-Type: text/plain;
+  charset="iso-8859-15"
+From: Clive Davies <cdavies@altera.com>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 & new linux zlib
+Date: Tue, 19 Feb 2002 14:24:30 +0000
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,9 +28,59 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-+ printk("Chip with mfr %02x, id %02x unknown. Tell dwmw2\n");
+In testing jffs2 in linux 2.5.4-rmk1 I've found that kmalloc cannot allocate 
+objects of the size returned by zlib_deflate_workspacesize() and 
+zlib_inflate_workspacesize(). The patch below uses vmalloc to sucessfully 
+allocate the memory, however I'm not sure that this is the best approach., 
+maybe it would be better to try and reduce the size of the deflate_workspace 
+& inflate workspace in zlib? (This might be a ridiculous idea, I haven't a 
+clue how zlib works) Any suggestions?
 
-Oops. Try it with the numbers in :)
-
---
-dwmw2
+--- linux_2.5.4-rmk1/fs/jffs2/compr_zlib.c	Mon Feb 11 01:50:06 2002
++++ linux/fs/jffs2/compr_zlib.c	Tue Feb 19 13:33:24 2002
+@@ -80,8 +80,7 @@ int zlib_compress(unsigned char *data_in
+ 		return -1;
+ 
+ #ifdef __KERNEL__
+-	strm.workspace = kmalloc(zlib_deflate_workspacesize(),
+-				 GFP_KERNEL);
++	strm.workspace = vmalloc(zlib_deflate_workspacesize());
+ 	if (strm.workspace == NULL) {
+ 		printk(KERN_WARNING "deflateInit alloc of workspace failed\n");
+ 		return -1;
+@@ -123,7 +122,7 @@ int zlib_compress(unsigned char *data_in
+ 
+ 	}
+ 	zlib_deflateEnd(&strm);
+-	kfree(strm.workspace);
++	vfree(strm.workspace);
+ 
+ 	D1(printk(KERN_DEBUG "zlib compressed %ld bytes into %ld\n", strm.total_in, 
+strm.total_out));
+ 
+@@ -137,7 +136,7 @@ int zlib_compress(unsigned char *data_in
+ 
+  out_err:
+ 	zlib_deflateEnd(&strm);
+-	kfree(strm.workspace);
++	vfree(strm.workspace);
+ 	return -1;
+ }
+ 
+@@ -148,8 +147,7 @@ void zlib_decompress(unsigned char *data
+ 	int ret;
+ 
+ #ifdef __KERNEL__
+-	strm.workspace = kmalloc(zlib_inflate_workspacesize(),
+-				 GFP_KERNEL);
++	strm.workspace = vmalloc(zlib_inflate_workspacesize());
+ 	if (strm.workspace == NULL) {
+ 		printk(KERN_WARNING "inflateInit alloc of workspace failed\n");
+ 		return;
+@@ -177,5 +175,5 @@ void zlib_decompress(unsigned char *data
+ 		printk(KERN_NOTICE "inflate returned %d\n", ret);
+ 	}
+ 	zlib_inflateEnd(&strm);
+-	kfree(strm.workspace);
++	vfree(strm.workspace);
+ }
