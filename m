@@ -1,16 +1,18 @@
-Received: from lion-s12.seas.upenn.edu ([158.130.12.194] helo=lion.seas.upenn.edu)
+Received: from relais.progression.net ([207.253.63.13])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18E9fP-0003Gk-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Nov 2002 14:47:56 +0000
-Message-ID: <002501c28fde$e38d38b0$c3c8320a@langostino>
-From: "Adam Lee" <alee@ttcdas.com>
-To: "linux-mtd list" <linux-mtd@lists.infradead.org>
-Cc: <alee@ttcdas.com>
-Subject: 128MB DOC 2000 not working (possible bug)
-Date: Tue, 19 Nov 2002 10:17:58 -0500
+	id 18ECMB-0003bt-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Nov 2002 17:40:16 +0000
+Received: from envitech.com (usrppp145.progression.net [207.253.63.145])
+	by relais.progression.net (8.9.3/8.9.3) with ESMTP id NAA13836
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Nov 2002 13:10:41 -0500
+Message-ID: <3DDA7F28.8030309@envitech.com>
+Date: Tue, 19 Nov 2002 13:12:56 -0500
+From: Richard Brunelle <rbrunelle@envitech.com>
+Reply-To: rbrunelle@envitech.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: BBRAM
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -23,33 +25,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+Hi, I have a question concerning a BBRAM from ST, the M48Z512A.
 
-We just upgrade a 96 MB DOC 2000 to 128 MB DOC 2000 but the 128MB chip is
-not functioning.  I compiled the driver into the kernel, and it worked with
-the 96 MB.  In kernel boot up, the 128MB DOC2000 is recognized as DOC
-Millennium.  The kernel boot up message is as followed:
+I'm using the BBRAM mapped at 0xE0000 on a single board computer from 
+VersaLogic. This BBRAM is pageable through access of a special register 
+on the single board computer. I want to map the BBRAM as part of the 
+file system.
 
-.
-.
-Using configured DiskOnChip probe address 0xd0000
-DiskOnChip Millennium found at address 0xD0000
-_DoC_WaitReady called for out-of-line wait
-_DoC_WaitReady called for out-of-line wait
-_DoC_WaitReady called for out-of-line wait
-.
-.
-No flash chips recognised.
-NFTL driver: nftlcore.c $Revision: 1.87 $, nftlmount.c $Revision: 1.30 $
-.
-.
-After boot, /proc/mtd is empty.
+As I understand MTD is appropriate for this purpose, am I right?
 
-The part number for the 128 MB DOC 2000 is
-MD2202-D128-V3-X
-23205010089 5.1
+If yes, what are the options in the kernel configuration I need to 
+enable to let the system access the device?
 
-And we are using RedHat dist. kernel version 2.4.18-3
+My guess is CONFIG_MTD_MTDRAM with the appropriate position set to 
+0xE0000. In this case, what type of device should I see in /dev/?
 
-Thank you,
-Adam
+Thanks.
+
+Richard Brunelle
