@@ -1,14 +1,16 @@
-Received: from web13908.mail.yahoo.com ([216.136.175.71])
+Received: from ash.lnxi.com ([207.88.130.242])
 	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Colv-0004ox-Al
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 23:49:23 +0100
-Message-ID: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
-Date: Mon, 5 May 2003 15:49:36 -0700 (PDT)
-From: Michael Moedt <xemc@yahoo.com>
-To: Thayne Harbaugh <tharbaugh@lnxi.com>
-In-Reply-To: <1052168461.1171.11504.camel@tubarao>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 19Cp7t-00051P-SE
+	for <linux-mtd@lists.infradead.org>; Tue, 06 May 2003 00:12:06 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Michael Moedt <xemc@yahoo.com>
+In-Reply-To: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
+References: <20030505224936.32155.qmail@web13908.mail.yahoo.com>
+Message-Id: <1052176326.1172.11789.camel@tubarao>
+Mime-Version: 1.0
+Date: 05 May 2003 17:12:07 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-mzc2GoFy/+Epw6GWaS3m"
 cc: linux-mtd@lists.infradead.org
 Subject: Re: Error: Wacky! Unable to decode failure status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,145 +23,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---- Thayne Harbaugh <tharbaugh@lnxi.com> wrote:
-> I have no explanation as to how that happened - the
-> patch worked just
-> fine when I didn't try to compile it 8-)
-> 
-> Once I get around to doing some local testing and
-> _really_compiling_it_,
-> I'll commit it to CVS.
-> 
-> -- 
-> Thayne Harbaugh
-> Linux Networx
-> 
+--=-mzc2GoFy/+Epw6GWaS3m
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I hope you don't mind my fooling, but I've modified
-the patch yet again, to use if-then blocks instead of
-a switch. (I've heard it's better for removing code at
-compile-time.)
+On Mon, 2003-05-05 at 16:49, Michael Moedt wrote:
+> I hope you don't mind my fooling, but I've modified
+> the patch yet again,
 
-Also, it complained to me about CFIDEV_BUSWIDTH_8
-being undeclared, which matches the behavior in
-include/linux/mtd/cfi.h, when the geometry option
-isn't enabled.  I put in something in for this as
-well.  Could you look over my changes?
+I often find better ways of doing things if I re-read and edit things
+one more time.
 
-Thanks again,
+> to use if-then blocks instead of
+> a switch. (I've heard it's better for removing code at
+> compile-time.)
 
-Mike
+I'm no expert here - I think a good compiler will remove unnecessary
+code regardless.  Either way, I'm not so hung up on a switch/case that I
+refuse to change.
 
+> Also, it complained to me about CFIDEV_BUSWIDTH_8
+> being undeclared, which matches the behavior in
+> include/linux/mtd/cfi.h, when the geometry option
+> isn't enabled.  I put in something in for this as
+> well.  Could you look over my changes?
 
-Here's that patch:
-(You'll have to correct for the altering that yahoo
-mail does to the text.  I can't use my normal outgoing
-email server because it fights with infradead's.)
+You'll have to forgive me, but I also changed my original patch.  The
+"ones =3D CMD( ones )" is not needed.
 
+BTW, we should just ignore the CFIDEV_BUSWIDTH_8 - it's not used
+anywhere that I know of and it has some known issues that make it icky.
 
---- cfi_cmdset_0002.c	2003-04-22 17:00:06.000000000
--0500
-+++ cfi_cmdset_0002.c_patched	2003-05-05
-17:34:23.000000000 -0500
-@@ -811,7 +811,11 @@ static inline int
-do_erase_chip(struct m
-         DECLARE_WAITQUEUE(wait, current);
-         int ret = 0;
-         int ta = 0;
-+#ifdef CFIDEV_BUSWIDTH_8
-+        __u64 ones = 0;
-+#else
-         __u32 ones = 0;
-+#endif
- 
-  retry:
-         cfi_spin_lock(chip->mutex);
-@@ -925,7 +929,23 @@ static inline int
-do_erase_chip(struct m
-         DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): Check
-0x%.8x 0x%.8x\n",
-                __func__, oldstatus, status );
- 
--        ones = CMD( (__u8)~0 );
-+        /* Determine the data that we read back on a
-successful erase */
-+        /* This depends on the bus-width of the chip
-in question.     */
-+        if ( CFIDEV_BUSWIDTH == CFIDEV_BUSWIDTH_1 ) {
-+                ones =  (__u8)~0;
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_2 ) {
-+                ones = (__u16)~0;
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_4 ) {
-+                ones = (__u32)~0;
-+#ifdef CFIDEV_BUSWIDTH_8   /* this is not always
-defined.. see cfi.h */
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_8 ) {
-+                ones = (__u64)~0;
-+#endif
-+        } else {
-+                printk(KERN_WARNING "Unsupported
-buswidth\n");
-+                goto erase_failed;
-+        }
-+        ones = CMD( ones );
-         
-         if ( oldstatus == ones && status == ones ) {
-                 /* success - do nothing */
-@@ -981,7 +1001,11 @@ static inline int
-do_erase_oneblock(stru
-         DECLARE_WAITQUEUE(wait, current);
-         int ret = 0;
-         int ta = 0;
-+#ifdef CFIDEV_BUSWIDTH_8
-+        __u64 ones = 0;
-+#else
-         __u32 ones = 0;
-+#endif
- 
-  retry:
-         cfi_spin_lock(chip->mutex);
-@@ -1095,7 +1119,23 @@ static inline int
-do_erase_oneblock(stru
-         DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): Check
-0x%.8x 0x%.8x\n",
-                __func__, oldstatus, status );
- 
--        ones = CMD( (__u8)~0 );
-+        /* Determine the data that we read back on a
-successful erase */
-+        /* This depends on the bus-width of the chip
-in question.     */
-+        if ( CFIDEV_BUSWIDTH == CFIDEV_BUSWIDTH_1 ) {
-+                ones =  (__u8)~0;
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_2 ) {
-+                ones = (__u16)~0;
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_4 ) {
-+                ones = (__u32)~0;
-+#ifdef CFIDEV_BUSWIDTH_8   /* this is not always
-defined.. see cfi.h */
-+        } else if ( CFIDEV_BUSWIDTH ==
-CFIDEV_BUSWIDTH_8 ) {
-+                ones = (__u64)~0;
-+#endif
-+        } else {
-+                printk(KERN_WARNING "Unsupported
-buswidth\n");
-+                goto erase_failed;
-+        }
-+        ones = CMD( ones );
- 
-         if ( oldstatus == ones && status == ones ) {
-                 /* success - do nothing */
+Yeah, I can't believe I used the word "icky."
 
+> Thanks again,
+>=20
+> Mike
+>=20
+>=20
+> Here's that patch:
 
+Thanks.
 
+--=20
+Thayne Harbaugh
+Linux Networx
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+--=-mzc2GoFy/+Epw6GWaS3m
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+tu/GfsBPTKE6HMkRAkdyAJ9nLvkBOvmK+L7Tkhrl4qa/NGb+FwCfRn/p
+kXlZCuUFUEpQ2WWxHE9I5kA=
+=hCn2
+-----END PGP SIGNATURE-----
+
+--=-mzc2GoFy/+Epw6GWaS3m--
