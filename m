@@ -1,57 +1,40 @@
-From: rkaiser@sysgo.de (Robert Kaiser)
-Date: Thu, 6 Mar 2003 13:10:17 +0100
-Subject: [PATCH] NAND and mtdconcat
-In-Reply-To: <NFBBLPGPLKFIKCCPLALEAENICFAA.cgan@iders.ca>
-References: <NFBBLPGPLKFIKCCPLALEAENICFAA.cgan@iders.ca>
-Message-ID: <200303061059.h26AxQl27547@dagobert.svc.sysgo.de>
+From: tino.keitel@innominate.com (Tino Keitel)
+Date: Thu, 6 Mar 2003 16:35:15 +0100
+Subject: Slow system after switching from 2.4.18 to 2.4.19
+Message-ID: <20030306153515.GB2166@tkeitel001.bln.gelonet.local>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Christian,
+Hi folks,
 
+after updating to 2.4.19, my system (Intel XScale based, 500 MHz, 16 MB
+flash, 32 MB RAM) was awfully slow. I suspect the reason is a slow
+access to the filesystem. As soon as something happens on the
+filesystem, e.g. in shell scripts, runtimes are multimple times higher
+than with 2.4.18. A short example what happens with the 2.4.19 kernel:
 
-Am Mittwoch, 5. M?rz 2003 20:21 schrieb Christian Gan:
-> Hello all,
->
-> Attached is a patch for mtdconcat.c that supports NAND functions for the
-> oob.  I've tested it on my own bench and it seems to work great on two 64MB
-> NANDs concatenated into one MTD.
->
-> Robert, since you were the original author of this file, can you verify it
-> for me?
+(1)
+for i in 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1;
+	do echo "nothing" > /dev/null ;
+done
 
-Looks OK to me. I can't test it right now as I don't have any suitable HW 
-available, but I'll take your word that it works ;-)
+takes 2 seconds(!), just for 30 echos.
 
-One question though, you made changes like this:
+(2)
+for i in 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1;
+	do true;
+done
 
+returns immediately because 'true' is a shell builtin and no filesystem
+access is necessary. With the 2.4.18 kernel, (1) also doesn't take
+sensible time to complete. Of course, the configuration is the same
+with both kernels. Any hints?
 
-@@ -410,11 +641,12 @@
- static int concat_suspend(struct mtd_info *mtd)
- {
- 	struct mtd_concat *concat = CONCAT(mtd);
-+	struct mtd_info *subdev = NULL;
- 	int i, rc = 0;
+Thanks in advance.
+Tino
 
- 	for(i = 0; i < concat->num_subdev; i++)
- 	{
--		struct mtd_info *subdev = concat->subdev[i];
-+        subdev = concat->subdev[i];
- 		if((rc = subdev->suspend(subdev)) < 0)
- 			return rc;
- 	}
-@@ -424,11 +656,12 @@
-
-all over the place. Why? This might generate slightly more code and be slower 
-(not that it would be noticeable though).
-
-Other than that, I have no objections.
-
-Rob
-
-
-----------------------------------------------------------------
-Robert Kaiser                         email: rkaiser@sysgo.de
-SYSGO AG
-Am Pfaffenstein 14                    phone: (49) 6136 9948-762
-D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
+-- 
+tino.keitel at innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   networking people
+tel: +49.30.6392-3308                      http://www.innominate.com/
