@@ -1,46 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13CjUj-0003BH-00
-	for mtd-list@infradead.org; Thu, 13 Jul 2000 14:57:41 +0100
-Message-ID: <396DCB00.D5F26E57@matrox.com>
-Date: Thu, 13 Jul 2000 09:58:24 -0400
-From: =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@Matrox.COM>
+	id 13CpJT-0004BI-00
+	for mtd-list@infradead.org; Thu, 13 Jul 2000 21:10:27 +0100
+Received: from web5302.mail.yahoo.com ([216.115.106.111])
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13CpJR-0004Ak-00
+	for mtd@infradead.org; Thu, 13 Jul 2000 21:10:26 +0100
+Message-ID: <20000713200952.1875.qmail@web5302.mail.yahoo.com>
+Date: Thu, 13 Jul 2000 16:09:52 -0400 (EDT)
+From: Juan Gonzo <kayemmess@yahoo.ca>
+Subject: persistence of files using jffs
+To: MTD Mailing List <mtd@infradead.org>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: MTD Mailing List <mtd@infradead.org>,
-        Michael Elizabeth Chastain <mec@shout.net>,
-        David Weinehall <tao@acc.umu.se>
-Subject: Re: Config.in
-References: <396DBBB1.A5494318@matrox.com>  <21454.963389948@cygnus.co.uk> <20000711212323.21257.qmail@web5302.mail.yahoo.com> <32068.963394509@cygnus.co.uk> <17260.963495837@cygnus.co.uk>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
->=20
-> Hmmm. Talk to David and Michael.
->=20
-> scote1@matrox.com said:
-> > Running make xconfig on 2.2.15, I get the following
-> > drivers/mtd/Config.in: 14: unknown command
->=20
-> > However, make menuconfig doesn't generate any error.  I'm not a kerne=
-l
-> > config specialist so I don't know if define_tristate was introduced i=
-n
-> > 2.3 or why in doesn't work only with xconfig, but this is definitly a
-> > bug of some sort.
+Me again.  More questions.  Oy!
 
-Another thing I just noticed is that the links in linux/modules are
-wrong for MTD.  They point to linux/Lost/mtd*.  But the link for jffs.o
-is correct! I didn't notice this before because I linked all my JFFS and
-MTD stuff directly in /lib/modules/...  I didn't use the patch to
-install MTD so maybe I did something wrong but where does the kernel
-look to make these links ?
+Our system is using a ramdisk (with a prebuilt image)
+as its root device.  Before I boot up the system I burn
+a small image into flash (this image was created with
+mkfs.jffs and contains a couple of files and one directory).
 
---=20
-S=E9bastien C=F4t=E9
+So, the system boots up and I do the following:
+   (1) mknod /dev/mtd3 b 31 3   (mtd3 is where the fs 'partition' is,
+                                 using examples from nora.c)
+   (2) mount -t jffs /dev/mtd3 /mnt
+
+The mount is successful and after this I can see the files and
+directory I burned into flash.  I can copy another file from the
+ramdisk to this mount.  And I can 'umount /mnt' successfully as
+well.
+
+However, when I cycle power on the system,
+any *new* files I create or copy into this space are lost.
+
+Everytime I restart the system I have to 'mknod /dev/mtd3', does
+this have something to do with that?  What am I missing to
+get the new files to be present when I remount JFFS?
+
+Thanks,
+   -- kelly
+
+
+
+_______________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.ca address at http://mail.yahoo.ca
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
