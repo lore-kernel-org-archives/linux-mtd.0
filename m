@@ -1,21 +1,17 @@
-Received: from ns2.arlut.utexas.edu ([129.116.174.1])
+Received: from cpe-203-51-204-188.qld.bigpond.net.au ([203.51.204.188] helo=august.hainsworth.net.au)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17hbfE-0000eq-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 21:01:13 +0100
-Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
-	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id g7LK1Blg047426
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 15:01:11 -0500 (CDT)
-Received: from koffer.arlut.utexas.edu (koffer.arlut.utexas.edu [10.8.17.114])
-	by ns5.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id g7LK1A1j028417
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2002 15:01:10 -0500 (CDT)
-Date: Wed, 21 Aug 2002 15:01:09 -0500
-Mime-Version: 1.0 (Apple Message framework v482)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Subject: cp of jffs image wants to clobber /dev/mtd1 node.
-From: Ken Offer <koffer@arlut.utexas.edu>
-To: LinuxMTD <linux-mtd@lists.infradead.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <BC765B75-B540-11D6-92ED-000393467F1A@arlut.utexas.edu>
+	id 17hhdy-0001IA-00
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2002 03:24:18 +0100
+Received: from ike.hainsworth.ath.cx (red@ike.hainsworth.net.au [10.0.0.9])
+	by august.hainsworth.net.au (8.11.6/8.11.2) with ESMTP id g7M2HR723236
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2002 12:17:27 +1000
+Message-Id: <4.3.2.7.2.20020822114908.00c8ee70@10.0.0.8>
+Date: Thu, 22 Aug 2002 12:24:14 +1000
+To: linux-mtd@lists.infradead.org
+From: Andrew Hainsworth <andrew@hainsworth.ath.cx>
+Subject: DiskOnChip - not found?
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,30 +23,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Anybody else run into this?
+Good morning/afternoon/evening
 
-I try to copy my jffs2 image created with:
+I have only just joined this list, so please excuse me if this has been 
+asked before (there were a lot of archives to troll through for answers...)
 
-     ./mkfs.jffs2 -r simple_directory -e 16K -l -o /tmp/test.img
+I have a 32 meg DoC2000 sitting in an ISA riser board on an i386 running 
+RedHat 7.2 (catch all that?)
 
-like so
+When I compile the kernel with MTD support, install it and reboot, I get 
+this output:
 
-     cp /tmp/test.img /dev/mtd1
+Possible DiskOnChip with unknown ChipID FF found at 0xfffc8000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffca000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffcc000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffce000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffd0000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffd2000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffd4000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffd6000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffd8000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffda000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffdc000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffde000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffe0000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffe2000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffe4000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffe6000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffe8000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffea000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffec000
+Possible DiskOnChip with unknown ChipID FF found at 0xfffee000
+No recognised DiskOnChip devices found
 
-And Linux wants to overwrite my "/dev/mtd1" node...
+All of those addresses are the ones the ISA board will use, but it cannot 
+find anything!
 
-     cp: overwrite `/dev/mtd1'?
+Any ideas?  If you need more info, I will get it.
 
-If I let it, Linux replaces the file "/dev/mtd1" with the 
-contents of test.img, instead of copying test.img TO the DEVICE 
-"/dev/mtd1".  Its acting as if "/dev/mtd1" is a simple file 
-instead of a device node.
-
-The node looks correctly created:
-
-crw-rw----    1 root     disk      90,   2 Aug 19 08:43 /dev/mtd1
-
-+-----------------------------------------------------------+
-|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
-|  Office: 512-835-3859                  Fax: 512-835-3259  |
-+-----------------------------------------------------------+
+Cheers
+Andrew
