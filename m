@@ -1,66 +1,48 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 14801Y-0003dr-00
-	for mtd-list@infradead.org; Mon, 18 Dec 2000 13:08:16 +0000
-Received: from www.softsys.co.at
-	([194.152.163.161] helo=corofin.softsys.co.at ident=qmailr)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 14801V-0003dk-00
-	for mtd@infradead.org; Mon, 18 Dec 2000 13:08:14 +0000
-Message-ID: <000e01c068f3$13881180$5201a8c0@home.at>
-From: "Erwin Authried" <eauth@softsys.co.at>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <mtd@infradead.org>
-References: <Pine.LNX.4.30.0012180026320.18907-100000@imladris.demon.co.uk>
-Subject: Re: module registration changes
-Date: Mon, 18 Dec 2000 14:04:37 +0100
+	id 148078-0003gU-00
+	for mtd-list@infradead.org; Mon, 18 Dec 2000 13:14:02 +0000
+Message-ID: <52AF3CB987C7D41183CD0090271F67C3184D@m4eng.m4data.co.uk>
+From: Simon Munton <Simon.Munton@m4data.co.uk>
+To: David Woodhouse <dwmw2@infradead.org>, jffs-dev@axis.com,
+   mtd@infradead.org
+Subject: RE: JFFS: deleted files still appear in directory 
+Date: Mon, 18 Dec 2000 13:13:44 -0000
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-there were a couple of small changes necessary to compile on 2.0.
-Here are some other changes that I would like to commit too, please let me
-know if its ok.:
+Yep, that fixed it. I'll try and break something else now.
 
-* Use #ifdef NO_MM in mtdchar.c to avoid vmalloc if no MMU is used
-(uClinux).
+Simon
 
-* "list.h" is missing in the 2.0 kernel source. The best thing that I could
-think of is to simply add it
-to MTD in linux/mtd/list.h.
-
-* Somehow initcalls.c must be used for 2.0 kernels conditionally. Either in
-the Makefile, or just
-#include from mtdcore.c? I don't know how to do that in the Makefile nicely.
-
-Regards,
-
-Erwin
-
------ Original Message -----
-From: David Woodhouse <dwmw2@infradead.org>
-To: <eauth@softsys.co.at>
-Cc: <mtd@infradead.org>
-Sent: Monday, December 18, 2000 1:29 AM
-Subject: module registration changes
-
-
->
-> Please could people test the new stuff I've just committed to bypass the
-> inter_module_get code by using weakly-linked symbols? Especially on 2.0.
->
-> This should also fix the dependency on link order which was introduced by
-> the removal of get_module_symbol().
->
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org]
+> Sent: 18 December 2000 01:06 pm
+> To: Simon Munton; jffs-dev@axis.com
+> Subject: Re: JFFS: deleted files still appear in directory 
+> 
+> 
+> 
+> Simon.Munton@m4data.co.uk said:
+> > There's still a problem with the following sequence of commands:
+> > # touch foo 
+> > # touch bar
+> > # mv foo bar
+> > # rm bar
+> > rm: cannot unlink `bar': Input/output error 
+> 
+> Hopefully that's fixed by the change to jffs_find_child() 
+> which I just 
+> committed.
+> 
+> 
 > --
 > dwmw2
->
->
->
-
+> 
+> 
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
