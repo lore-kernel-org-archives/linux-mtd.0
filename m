@@ -1,17 +1,18 @@
-Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=imagequestdesign.com)
+Received: from 64-166-72-137.ayrnetworks.com ([64.166.72.137] helo=ayrnetworks.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16lzfO-0005Aj-00
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2002 21:55:14 +0000
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Mark Meade <mark@lakeshoremicro.com>
+	id 16m5LF-0005TZ-00
+	for <linux-mtd@lists.infradead.org>; Sat, 16 Mar 2002 03:58:49 +0000
+Received: (from wjhun@localhost)
+	by  ayrnetworks.com (8.11.2/8.11.2) id g2G49OL22782
+	for linux-mtd@lists.infradead.org; Fri, 15 Mar 2002 20:09:24 -0800
+Date: Fri, 15 Mar 2002 20:09:24 -0800
+From: William Jhun <wjhun@ayrnetworks.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-Date: Fri, 15 Mar 2002 17:05:49 -0500
-Cc: ilatypov@superbt.com
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <200203151705703.SM01632@there>
+Subject: "Kernel panic: mtdblock: request list destroyed" with recent changes
+Message-ID: <20020315200923.J6821@ayrnetworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,45 +24,76 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 12 Mar 2002, Ilguiz Latypov wrote:
+Hi,
 
-> inform that DoC Millennium and DoC Millennium Plus feature a Download
-> Engine which takes care of copying the flash image into the read-only area
->available at offset 0 of the window.
+I'm a bit new to mtd-land, but I'm having a problem with a freshly
+updated cvs tree and the mtdblock driver. My kernel is based on
+linux-2.4.2 and has symlinks for drivers/mtd and include/linux/mtd to
+point to my mtd cvs sources.  A kernel build with a sticky tag set to
+03/10/2002 works perfectly fine, but the latest tree gives me this:
 
-> Apparently, the XIP IPL doesn't need the DoC 2000 trick with duplicating
-> the code for 256-byte and 512-byte page size devices at offsets 0x100 and
-> 0x200 respectively.
+[...]
+devfs: v0.102 (20000622) Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x0
+VFS: Mounted root (ext2 filesystem).
+Mounted devfs on /dev
+Freeing unused kernel memory: 64k freed
+Kernel panic: mtdblock: request list destroyed
 
-Ilguiz,
+This happens whether there are MTD devices registered or not, so I
+doubt this is related to any low-level flash drivers/devices. I
+noticed some changes that happened to mtdblock.c on 3/11; perhaps
+these are related?  Sorry, no call trace or anything...
 
-With a DoC Millennium , the doc_stage1 logic will always copy the 
-256-byte-page code to RAM, regardless of the chip type.  In fact, because of 
-the Millennium's 512 byte "boot block" window, the actual 512-byte page code 
-is never directly accessible -- it is always located at 0x200 in this case.
+Any ideas?
 
-As I mentioned previously, my hack to get my part to work was simply to force 
-the 512-byte-page code to 0x100, and everything worked great.  If there are 
-256-byte-page parts, this obviously won't work.
+Thanks,
+Will
 
-One alternative is to have both 256- and 512-byte code located at 
-0x100..0x1FF, and determine (at run time) which type of part we have.
+[wjhun@mcnaulty mtd]$ cvs status mtdblock.c
+===================================================================
+File: mtdblock.c        Status: Up-to-date
 
-One way of doing this would be to have a small look-up table, and based on 
-the chip ID, determine the part type.  
-
-Another way (which I've already tested) is to read from flash address 0x200, 
-using the 256-byte-page access method.  If we are indeed on a 256-byte 
-device, the word at 0x200 will always match the code word at %cs:doc_stage1b.
-
-In a 512-byte device, reading this address actually reads 0x400, which will 
-*most likely* not match, as it is actually stage 2 GRUB code.  We could 
-compare more bytes, if necessary, to reduce the possibility that this could 
-happen.
-
-Maybe there is an easier, cleaner way to handle this problem -- but I haven't 
-found it yet.  Does it make sense to pursue this further?
-
-Regards,
-
-Mark
+   Working revision:    1.52
+   Repository revision: 1.52    /home/cvs/mtd/drivers/mtd/mtdblock.c,v
+   Sticky Tag:          (none)
+   Sticky Date:         2002.03.10.08.00.00
+   Sticky Options:      (none)
+[wjhun@mcnaulty mtd]$ cd ../..
+[wjhun@mcnaulty mtd-main]$ cvs update -A
+[...]
+cvs server: Updating .
+cvs server: Updating boot
+cvs server: Updating drivers
+cvs server: Updating drivers/mtd
+P drivers/mtd/mtdblock.c
+P drivers/mtd/mtdblock_ro.c
+P drivers/mtd/nftlmount.c
+cvs server: Updating drivers/mtd/chips
+M drivers/mtd/chips/jedec_probe.c
+cvs server: Updating drivers/mtd/devices
+cvs server: Updating drivers/mtd/maps
+P drivers/mtd/maps/dilnetpc.c
+P drivers/mtd/maps/sa1100-flash.c
+cvs server: Updating drivers/mtd/nand
+cvs server: Updating ffs2
+cvs server: Updating fs
+cvs server: Updating fs/ffs2
+cvs server: Updating fs/jffs
+cvs server: Updating fs/jffs2
+P fs/jffs2/TODO
+P fs/jffs2/build.c
+P fs/jffs2/dir.c
+P fs/jffs2/fs.c
+P fs/jffs2/gc.c
+P fs/jffs2/malloc.c
+P fs/jffs2/nodelist.c
+P fs/jffs2/nodelist.h
+P fs/jffs2/nodemgmt.c
+P fs/jffs2/scan.c
+P fs/jffs2/super.c
+P fs/jffs2/wbuf.c
+cvs server: Updating fs/jffs2/compressors
+cvs server: Updating fs/jffs2/test
+cvs server: Updating grub
+[...]
