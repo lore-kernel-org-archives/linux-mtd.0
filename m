@@ -1,18 +1,14 @@
-Received: from mailb.telia.com ([194.22.194.6])
+Received: from f147.law11.hotmail.com ([64.4.17.147] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18e0hf-0007bH-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:29:07 +0000
-Message-ID: <002101c2c7ea$29259a00$020120b0@jockeXP>
-From: "Joakim Tjernlund" <Joakim.Tjernlund@lumentis.se>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: "Marius Groeger" <mag@sysgo.de>, <linux-mtd@lists.infradead.org>
-References: <Pine.LNX.4.44.0301292244070.4791-100000@imladris.demon.co.uk>
-Subject: Re: PATCH: support for Arctic/Beech/Ebony
-Date: Thu, 30 Jan 2003 00:00:04 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 18e0is-0007bM-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 22:30:22 +0000
+From: "Brian Peterson" <purdue1996@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: DiskOnChip 2000 read only file system
+Date: Wed, 29 Jan 2003 17:00:01 -0600
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F147ztYnkp66U4PEFn7000023b4@hotmail.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,13 +20,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+I am running a read only file system with a 64M Disk On Chip 2000 and want 
+to know if anyone else has seen the problem I am having.
 
-> On Wed, 29 Jan 2003, Joakim Tjernlund wrote:
-> 
-> >  - Add support for point()/unpoint().
-> 
-> True, but none of the other map drivers have it yet either -- didn't we 
-> already do them once? What happened to it?
+My system is a PC104 with a 64M DiskOnChip running linux kernel version 
+2.4.20.
+I have two partitions mounted: root is Read only and the other is 
+Read/Write.
 
-Someone has to be first(OK I have them already in my map). I did not "do them one", maybe
-you are thinking of someone else?
+During some testing of power loss scenarios, I lose the ability to use the 
+device. The kernel boots and after it cleans up from the unclean unmount, I 
+receive kernel messages indicating
+"Argh! No free blocks found!..."
+
+What level of confidence is there that the read only partition would be 
+protected from this problem. In other words, can the data located in the 
+Read only partition be trusted?
+
+Any feedback would be appreciated.
+
+Brian Peterson
+
+_________________________________________________________________
+STOP MORE SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
