@@ -1,18 +1,22 @@
-Received: from hex.linuxgrrls.org
-	([212.18.228.73] helo=mail.linuxgrrls.org ident=postfix)
+Received: from [216.208.38.106] (helo=lapdancer.baythorne.internal)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19gP7B-0005xl-Bu
-	for <linux-mtd@lists.infradead.org>; Sat, 26 Jul 2003 14:29:37 +0100
-Date: Sat, 26 Jul 2003 14:29:37 +0100 (BST)
-From: jasmine@regolith.co.uk
-To: Andrew Victor <andrew@sanpeople.com>
-In-Reply-To: <1059144299.3544.129.camel@fuzzie.sanpeople.com>
-Message-ID: <Pine.LNX.4.56.0307261428210.6903@hex.linuxgrrls.org>
-References: <1059144299.3544.129.camel@fuzzie.sanpeople.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 19gQdt-0006BT-N4
+	for <linux-mtd@lists.infradead.org>; Sat, 26 Jul 2003 16:07:29 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
+In-Reply-To: <a05200f05bb4803789a4f@[130.161.115.44]>
+References: <a05200f4ebb46f6708c1c@[130.161.115.44]>
+	 <1059147413.28255.40.camel@lapdancer.baythorne.internal>
+	 <a05200f01bb4700e6ff94@[130.161.115.44]>
+	 <1059148567.28255.47.camel@lapdancer.baythorne.internal>
+	 <a05200f05bb4803789a4f@[130.161.115.44]>
+Message-Id: <1059231977.539.2.camel@lapdancer.baythorne.internal>
+Mime-Version: 1.0
+Date: Sat, 26 Jul 2003 11:06:19 -0400
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: DataFlash
+Subject: Re: Handling multiple NAND chips
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 2003-07-26 at 06:22, J.D. Bakker wrote:
+> Ah, I see. Are you planning to always treat the NANDs as a linear 
+> array ? 
 
+Yeah -- I think so. Any reason not to?
 
-On Fri, 25 Jul 2003, Andrew Victor wrote:
+> As I obviously have access to multi-NAND hardware, I'll 
+> happily beta-test this WIP.
 
-> hi,
-> 
-> The attached patch adds support for Atmel DataFlash devices.
-> (http://www.atmel.com/products/DataFlash/)
-> DataFlash differs from standard NOR flash in that the page sizes are 528
-> or 1056 bytes (depending on capacity).  [And no, it's not NAND flash]
+Thanks ;)
 
-No, but the smaller featuresize on those chips means that you must treat 
-it like NAND Flash and use ECC on it.  It also has NAND-like restrictions 
-on read/write/erase cycles.
+> Polling should be possible through the Status Read command 
+> (0x70/0x71) anyway, right ? Or would you want hardware to generate an 
+> interrupt when any of the FR/B# lines change ? Hmmm...
 
-My recommendation is to avoid DataFlash in new designs.
+During an erase, polling should be possible -- but what about waiting
+for the chip to be ready after a reset, etc.? If another chip is
+erasing, your FR/B# line is pulled low, I assume?
 
--Jas.
+-- 
+dwmw2
