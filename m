@@ -1,15 +1,25 @@
-Received: from rwcrmhc13.comcast.net ([204.127.198.39])
+Received: from [207.215.131.7] (helo=mail.pioneer-pdt.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AYVSd-0001hv-1H
-	for linux-mtd@lists.infradead.org; Mon, 22 Dec 2003 19:11:23 +0000
-Date: Mon, 22 Dec 2003 14:09:06 -0500
-From: "George G. Davis" <davis_g@comcast.net>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
-Message-ID: <20031222190906.GB20778@mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AYX1X-00021f-Gv
+	for linux-mtd@lists.infradead.org; Mon, 22 Dec 2003 20:51:31 +0000
+Received: from 127.0.0.1 (localhost.pioneer-pdt.com [127.0.0.1])
+	by dummy.domain.name (Postfix) with SMTP id 4B2A29D835
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Dec 2003 12:49:18 -0800 (PST)
+Received: from philt.pioneer-pdt.com (unknown [172.30.2.110])
+	by mail.pioneer-pdt.com (Postfix) with ESMTP id 037DE9D834
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Dec 2003 12:49:16 -0800 (PST)
+From: Patrick Hilt <philt@pioneer-pdt.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 22 Dec 2003 12:45:11 -0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: integrator-flash Chip reports voltage low on erase
+Message-Id: <200312221245.11108.philt@pioneer-pdt.com>
+Subject: Weird chip/mtd behavior???
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,107 +29,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings,
+Hi everybody!
+I'm seeing some weird mtd/flash behavior... I guess I should be a little more 
+specific ;-)...
 
-First, I'm intentionlly cross posting this because portions of the relevent
-code are contained in both MTD CVS HEAD and linux-2.6.0-rmk1 patch.
+I'm working on Broadcom MIPS CPU based board with a 16 MB Micron flash CFI 
+flash chip (MT28F640J3... seems it's pretty new on the market). Linux-wise 
+I'm using a 2.4.18 Linux-mips kernel with a backported mtd subsystem (CVS 
+snapshot from 12/17/03). After some smaller modifications, the kernel incl. 
+the new mtd subsys compiled just fine. I configured mtd to access my chip and 
+to create the partitions I need, which I think succeeded based on the boot 
+output quoted below:
 
-I submitted a fix for this problem against linux-2.6.0-test10-rmk1 here:
+>physmap flash device: 1000000 at 1a000000
+>phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit mode
+> Intel/Sharp Extended Query Table at 0x0031
+>cfi_cmdset_0001: Erase suspend on write enabled
+>Using buffer write method
+>request_module[cmdlinepart]: Root fs not mounted
+>cmdlinepart partition parsing not available
+>request_module[RedBoot]: Root fs not mounted
+>RedBoot partition parsing not available
+>Using physmap partition definition
+>Creating 4 MTD partitions on "phys_mapped_flash":
+>0x00000000-0x00500000 : "boot"
+>mtd: Giving out device 0 to boot
+>0x00500000-0x00800000 : "root"
+>mtd: Giving out device 1 to root
+>0x00800000-0x00f00000 : "pioneer"
+>mtd: Giving out device 2 to pioneer
+>0x00f00000-0x01000000 : "fonts"
+>mtd: Giving out device 3 to fonts
 
-http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=1728/1
+So far, so good. But now the weird stuff: when I erase or write the lower 2 
+partitions (lower 8 MEGS) everything works just fine. Erase on the upper two 
+partitions seems to be OK but as soon as I try to write to one of the upper 
+two partitions (upper 8 MEGS), I get input/output errors and the following 
+messages on the console.
 
-However RMK has requested further discussion for this issue. So here goes...
+Sometimes, I get
+>MTD_open
+>MTD_ioctl
+>Invalid ioctl 540d (MEMGETINFO = 40204d01)
+>MTD_write
+>Waiting for chip to be ready timed out. Status 3d45
+>MTD_close
 
-The ARM Integrator/AP (see drivers/mtd/maps/integrator-flash.c) has a single
-contiguous logical bank of flash memory comprised of 4 physical banks x 2 x
-256kib x 16-bit Intel DT28F320 devices. At least this is the case for my ARM
-Integrator/AP rev D. For my particular hardware rev of the ARM Integrator/AP,
-I get "Chip reports voltage low on erase" errors while running linux-2.6.0-rmk1
-+ MTD CVS HEAD as of 19Dec03 +/-. The same problem also exists in past revs of
-linux 2.4, 2.6 and MTD CVS. So this is not a regression in recent kernels or
-MTD.
+Other times I get
+>MTD_open
+>MTD_ioctl
+>Invalid ioctl 540d (MEMGETINFO = 40204d01)
+>MTD_write
+>SR.4 or SR.5 bits set in buffer write (status ffff). Clearing.
+>Waiting for chip to be ready timed out in bufwrite.
+>MTD_close
 
-Here are the flash details from kernel init messages:
+Even weirder is that, when I had not partitioned the chip, and I erased the 
+whole thing, it seemed that the speed of erase clearly slowed (by a factor of 
+two or so) when the erase hit 50%/the 8MB boundary.
 
-armflash0: Found 2 x16 devices at 0x0 in 32-bit mode
-armflash0: Found 2 x16 devices at 0x800000 in 32-bit mode
-armflash0: Found 2 x16 devices at 0x1000000 in 32-bit mode
-armflash0: Found 2 x16 devices at 0x1800000 in 32-bit mode
- Intel/Sharp Extended Query Table at 0x0031
-cfi_cmdset_0001: Erase suspend on write enabled
-Using buffer write method
-4 cmdlinepart partitions found on MTD device armflash0
-Creating 4 MTD partitions on "armflash0":
-0x00000000-0x00400000 : "kernel"
-0x00400000-0x01000000 : "rootfs"
-0x01000000-0x01fc0000 : "userfs"
-0x01fc0000-0x02000000 : "sib"
+Has anybody in this list ever seen anything like this? (I haven't... searched 
+the web and mailing list archives but did not find anything that would help.)
+Any suggestions / comments??
 
-FWIW, I added MTD cmdlinepart support as follows (because I am not currently
-using RedBoot firmware on this target and I abhor the ARM afs support 8 ):
+Thanks a lot for any help in advance and sorry for the lengthy email ;-)
 
-Index: drivers/mtd/maps/integrator-flash.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/maps/integrator-flash.c,v
-retrieving revision 1.14
-diff -u -r1.14 integrator-flash.c
---- drivers/mtd/maps/integrator-flash.c	11 Oct 2003 10:00:31 -0000	1.14
-+++ drivers/mtd/maps/integrator-flash.c	22 Dec 2003 17:55:05 -0000
-@@ -65,7 +65,7 @@
- 		info->plat->set_vpp(on);
- }
- 
--static const char *probes[] = { "RedBoot", "afs", NULL };
-+static const char *probes[] = { "cmdlinepart", "RedBoot", "afs", NULL };
- 
- static int armflash_probe(struct device *_dev)
- {
-
-
-Here's the linux cmdline and flash partition details for this test case:
-
-cat /proc/cmdline
-console=ttyAM0,38400n8 noinitrd root=/dev/nfs ip=bootp mtdparts=armflash0:0x00400000@0x00000000(kernel),0x00c00000@0x00400000(rootfs),0x00fc0000@0x01000000(userfs),0x00040000@0x01fc0000(sib)
-
-cat /proc/mtd
-dev:	size   erasesize  name
-mtd0: 00400000 00020000 "kernel"
-mtd1: 00c00000 00020000 "rootfs"
-mtd2: 00fc0000 00020000 "userfs"
-mtd3: 00040000 00020000 "sib"
-
-
-And here's the test case with results:
-
-mkdir -p /initrd
-mkdir -p /mnt/mtdblock1
-eraseall /dev/mtd1
-mount -oloop /boot/initrd.ext2fs /initrd/
-mount -tjffs2 /dev/mtdblock1 /mnt/mtdblock1
-cd /initrd/
-find . -mount -depth--print0 | cpio -padmu0 /mnt/mtdblock1 lock1
-Chip reports voltage low on erase: status 0xa800a8
-Erase at 0x003e0000 failed immediately: errno -5
-Chip reports voltage low on erase: status 0xa800a8
-Erase at 0x003c0000 failed immediately: errno -5
-Chip reports voltage low on erase: status 0xa800a8
-Erase at 0x003a0000 failed immediately: errno -5
-.
-.
-.
-ad nauseam!
-
-
-A fix for this problem can be found at the URL noted above. Note that
-the fix is against the linux-2.6.0-rmk1 patch sice the affected code is
-not contained in MTD CVS. Also note that this problem exists in linux-2.4
-as well.
-
-
-Comments/feedback appreciated.
-
-TIA!
-
--- 
-Regards,
-George
+Patrick
