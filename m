@@ -1,20 +1,15 @@
-Received: from [2002:c1ed:8229::1] (helo=imladris.demon.co.uk)
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A6cc3-0007T2-Hd
-	for <linux-mtd@lists.infradead.org>; Mon, 06 Oct 2003 22:09:51 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Cam Mayor <cmayor@iders.ca>
-In-Reply-To: <03100615454506.30787@kilauea.iders.ca>
-References: <03100614331605.30787@kilauea.iders.ca>
-	 <1065468987.30987.26.camel@imladris.demon.co.uk>
-	 <03100615454506.30787@kilauea.iders.ca>
-Message-Id: <1065474534.30987.31.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Mon, 06 Oct 2003 22:08:54 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: a-linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mtd filesystem across different sector sizes in the same part
+Received: from web9906.mail.yahoo.com ([216.136.129.249])
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A6d0t-0008EF-Ub
+	for <linux-mtd@lists.infradead.org>; Mon, 06 Oct 2003 22:35:32 +0100
+Message-ID: <20031006213435.38037.qmail@web9906.mail.yahoo.com>
+Date: Mon, 6 Oct 2003 14:34:35 -0700 (PDT)
+From: Slim <slimaffi@yahoo.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <E1A6b7A-0004WA-Gx@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: redhat 9, doc 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-10-06 at 15:45 -0500, Cam Mayor wrote:
-> In my particular usage, the first two (of eight) "small" blocks are used by 
-> the bootloader, leaving a free area of 6 x 8kiB blocks + 6 x 64 kiB blocks.   
-> Just now i tried specifying this oddly shaped area on the kernel command 
-> line, with the result:
-> 	mtd: partition "free" doesn't start on an erase block boundary -- force 
-> read-only
+> Did you copy the kernel image (like bzImage) to your doc and
+configure
+> the grub settings on your doc correctly?
 
-Yep. There exists no 'major' erasesize. All real hardware devices have
-one, we don't try to work around it.
+I copied the entire /boot to the doc.
+ 
+> I put my bzImage in /boot and in grub/menu.lst I have the following:
+> 
+> title DiskOnChip 2000
+> 	root (dc0,0)
+> 	kernel /boot/bzImage ro root=/dev/nftla1
 
-> is there a way to use the disjoint mtd5+mtd7 together to host a continuous 
-> filesystem?
+This is the part I wasn't sure about.
 
-See mtdconcat.
+> When you can boot from doc using grub, that's a good start. You may
+> actually edit the boot command line when grub is booted. It supports
+> auto-completion for you to easily locate your kernel image.
 
--- 
-dwmw2
+I've tried now to boot the hard disk based kernel to allow editing to
+try
+the above, but the doc-grub always loads despite changing the boot
+device
+in the bios setup.  Now I can't boot from the hard drive unless I
+disable
+all access to the doc.  Any workaround?
+
+Thanks,
+John
+
+
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
