@@ -1,37 +1,59 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13vlqk-0006XS-00
-	for mtd-list@infradead.org; Tue, 14 Nov 2000 19:34:34 +0000
-Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
+	id 13vnyQ-0007Ok-00
+	for mtd-list@infradead.org; Tue, 14 Nov 2000 21:50:38 +0000
+Received: from gateway-490.mvista.com ([63.192.220.206] helo=hermes.mvista.com)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13vlqi-0006XM-00
-	for mtd@infradead.org; Tue, 14 Nov 2000 19:34:33 +0000
-Message-ID: <3A119641.19AD86D0@cotw.com>
-Date: Tue, 14 Nov 2000 13:45:05 -0600
-From: "Steven J. Hill" <sjhill@cotw.com>
+	id 13vnyP-0007Oe-00
+	for mtd@infradead.org; Tue, 14 Nov 2000 21:50:37 +0000
+Message-ID: <3A11B3BE.B4987B74@mvista.com>
+Date: Tue, 14 Nov 2000 13:50:54 -0800
+From: Alice Hennessy <ahennessy@mvista.com>
 MIME-Version: 1.0
-To: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
-Subject: New kernel patches available from MTD CVS...
+To: mark.langsdorf@amd.com
+CC: mtd@infradead.org, ahennessy@mvista.com
+Subject: Re: Big Endian/Little Endian headache in cfi_cmdset_0002.c
+References: <0FA1031B65A9D111960900805F9FA8E103B9F1B8@txexmta8.amd.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Greetings.
+mark.langsdorf@amd.com wrote:
 
-I have placed the latest MTD and JFFS code patches against 
-kernels for 2.2.17, 2.4.0-test9 and 2.4.0-test10 as of just
-a few minutes ago. These can be applied against Linus' kernel
-to bring your MTD and JFFS sub-systems in sync with the
-latest MTD CVS. Cheers.
+>         The write code in cfi_amdext_write_bytes_32 uses
+> be32_to_cpu and cpu_to_be32 to make the last four or
+> less bytes of a buffer Big Endian.  However, none of
+> the other write or read code in cfi_cmdset_002 is
+> concerned with Endianess, so it looks like (on my
+> x86 chip) that the first x bytes of a write are
+> little endian, and then the last 3 or 4 are reversed.
+>         Is there some reason for handling things this
+> way, or is this a bug in the code?
+>
+> Mark Langsdorf
+> Advanced Micro Devices, Inc             Tel: 512.602.3756
+> 5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
+> Austin, TX 78741                        mark.langsdorf@amd.com
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
--Steve
+I'm also having to alter cfi_cmdset_0002.c for big endianness -  I think
+we should use
+cfi_write and cfi_read functions that cfi_cmdset_0001.c uses  but alter
+them to take care
+of both be32_to_cpu and le32_to_cpu (depending on a define) to take care
+of both endiannesses.
+This would isolate both the bus width issue and the endianness in these
+2 functions.   In other words, move the
+endianness out of cfi_build_cmd and put it into cfi_read and
+cfi_write.   Also,  the handling
+of unaligned bytes in cfi_cmdset_0001. c is good for both
+endiannesses.   We should use this
+method in cfi_cmdset_0002.c
 
--- 
- Steven J. Hill - Embedded SW Engineer
- Public Key: 'finger sjhill@mail.cotw.com'
- FPR1: E124 6E1C AF8E 7802 A815
- FPR2: 7D72 829C 3386 4C4A E17D
+Alice
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
