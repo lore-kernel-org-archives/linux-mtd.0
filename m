@@ -1,17 +1,17 @@
-Received: from mail1.daniel.com ([12.19.96.6] helo=mail1.danielind.com)
+Received: from sis.com.tw ([203.67.208.2] helo=maillog.sis.com.tw)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zkiH-00088l-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 May 2001 20:42:34 +0100
-Message-ID: <30724FF712DFD2119E6200104B24489201197496@mail1>
-From: Vipin Malik <Vipin.Malik@daniel.com>
-To: 'Alexander Melichenko ' <AlexanderM@lrpeople.com>
-Cc: "'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>,
-	"'s_krishna@in.ibm.com '" <s_krishna@in.ibm.com>
-Subject: RE: SC520 CDP - problem with booting from BIOS Flash
-Date: Tue, 15 May 2001 14:37:14 -0500
+	id 14zpMh-0008O3-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2001 01:40:36 +0100
+Message-ID: <3B01CAFE.5397FA91@sis.com.tw>
+Date: Wed, 16 May 2001 08:34:06 +0800
+From: Ollie Lho <ollie@sis.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Felix Radensky <felix@allot.com>
+CC: Linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: DOC problems on PowerPC
+References: <3AFFE80B.DCE1B139@allot.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,65 +23,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Sorry for the delayed response. Here are some more things you can try:
+Felix Radensky wrote:
+> 
+> Hi, all
+> 
+> I was able to solve the DOC problems on PowerPC I've reported yesterday.
+> 
+> All I had to do is to run "eraseall /dev/mtd0", then run "nftl_format
+> /dev/mtd0"
+> and  then create partitions with fdisk.
+> 
+> Can someone please explain me the difference between eraseall and
+> nftl_format.
+> HOWTO says nothing about it.
+> 
 
-1. What are the LED's showing. two of them should say b7 (or something like
-that). None of them should say FF.
+For flash devices either NOR type or NAND type. You can only turn
+each bits for 1 state to 0 by a "write" command. If you want to
+turn a bit from 0 to 1, you have to erase the device. Each device
+has its onw minimal erase size i.e. if you want to erase onely 1 byte
+in a erase region, you have to erase the whole erase region.
 
-2. Are you watching the serial console? Is it configured?
+The nftl_format is used somewht like "low-level" format for old
+HDs. 
 
-3. How will you know when your kernel boots?
-
-Also, I rather than clutter up the list re. non mtd/JFFS issues (as your mtd
-and jffs seems to be working), I will send you a personal mail to help you
-further.
-
-Thanks
-
-Vipin
- 
-
------Original Message-----
-From: Alexander Melichenko
-To: Vipin Malik
-Cc: linux-mtd@lists.infradead.org; s_krishna@in.ibm.com
-Sent: 5/15/01 9:33 AM
-Subject: SC520 CDP - problem with booting from BIOS Flash
-
-Hello, Vipin!
-I work with AMD SC520 CDP. I use file sc520cdp.c from CVS (written by
-Robert
-Kaiser). It works good when Linux boots from HDD or FDD. I can
-read/write
-into mtd0,... device or work with JFFS placed into mtdblock device.
-My root FS (JFFS) is placed into mtdblock0. Now I would like to place
-kernel
-into BIOS-flash (29F040). I followed instructions, written by You.  But
-I
-have some questions. My actions is :
-
-I use lstart16.asm from AMD site with Your modifications.
-
-BOOTCS - DIP
-ROMCS1 - 8MHCS
-ROMCS2 - 8MLCS
-
-z
-yi
-nb0
-ns lstart16.abs 7f800
-ns zFlashImage 0 (zFlashImage is kernel with assigning root device
-mtdblock0).
-z
-g
-
-After reset I see changing some digits on the LEDs but kernel is not
-booting.
-
-Why kernel doesn't booting? This kernel boots good ( with root fs into
-mtdblock0 ) when I use HDD.
-Any ideas?
-
-Thanks for any help.
-
-Alexander Melichenko
+Ollie
