@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 166ZXy-0001iy-00
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 15:44:22 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3BFBCE4A.5DF617F3@allot.com> 
-References: <3BFBCE4A.5DF617F3@allot.com>  <3BFBB870.5D435486@allot.com> <10926.1006355051@redhat.com> 
-To: Felix Radensky <felix@allot.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Kernel partition 
+Received: from mail9.messagelabs.com ([194.205.110.133])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 166aIg-0001n9-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2001 16:32:38 +0000
+Subject: Re: Caching of reads
+From: Ian Campbell <icampbell@arcom.co.uk>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>, JFFS dev
+	Mailing List <jffs-dev@axis.com>
+In-Reply-To: <15923.1006357600@redhat.com>
+References: <1006355430.17354.8.camel@LinuxDev>
+	<1005925030.25782.27.camel@LinuxDev> <30843.1005925709@redhat.com>  
+	<15923.1006357600@redhat.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 21 Nov 2001 16:33:02 +0000
+Message-Id: <1006360382.903.16.camel@LinuxDev>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 21 Nov 2001 15:54:52 +0000
-Message-ID: <16766.1006358092@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,19 +27,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-felix@allot.com said:
->  Thanks, David. I know I need some translation layer, and I have a
-> driver that provides it. My concern is disk partitioning. Will the
-> method I described
+> Try this.
 
-> work ? Will I be able to use dd to copy kernel image to kernel
-> partition on block device ?
+It seems to do the trick!
 
-That depends on your translation layer - I assume that'll work. Your 
-translation layer code must use the gendisk mess to get partitioning to 
-work. Persuading your bootloader to understand your translation layer
-and the partitioning within it, and hence to load the kernel from it, is a 
-different matter.
+Thanks very much for the exceedingly quick response!
 
---
-dwmw2
+Ian.
+ 
+-- 
+Ian Campbell
+Design Engineer
+
+Arcom Control Systems Ltd,
+Clifton Road,
+Cambridge CB1 7EA
+United Kingdom
+
+Tel: +44 (0)1223 411200 ext. 3204
+E-Mail: icampbell@arcom.co.uk
+Web: http://www.arcomcontrols.com
+
+
+_____________________________________________________________________
+The message in this transmission is sent in confidence for the attention of the addressee only and should not be disclosed to any other party. Unauthorised recipients are requested to preserve this confidentiality. Please advise the sender if the addressee is not resident at the receiving end.
+
+This message has been checked for all viruses by MessageLabs Virus Control Centre. 
+
+Company registered in England No. 1608562.
+Registered Office: Unit 8, Clifton Road, Cambridge, CB1 7EA, United Kingdom, Tel: 01223 411200.
