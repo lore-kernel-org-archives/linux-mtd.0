@@ -1,19 +1,18 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from smtp6.mindspring.com ([207.69.200.110])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19l3qn-0004Or-Fo
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2003 10:47:57 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: "\"David" =?ISO-8859-1?Q?M=FCller?= "(ELSOFT AG)\"" <d.mueller@elsoft.ch>
-In-Reply-To: <3F336DA8.4040706@elsoft.ch>
-References: <3F336DA8.4040706@elsoft.ch>
-Message-Id: <1060336062.25209.299.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 08 Aug 2003 10:47:43 +0100
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+	id 19l7Vq-0004jv-9G
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2003 14:42:34 +0100
+From: "Chuck Meade" <chuckmeade@mindspring.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Date: Fri, 8 Aug 2003 09:42:28 -0400
+Message-ID: <IIEEICKJLNEPBBDJICNGEEIEDMAA.chuckmeade@mindspring.com>
+MIME-Version: 1.0
+In-Reply-To: <1060327833.25209.271.camel@passion.cambridge.redhat.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Tips and Tricks for S3C2410 NAND controller?
+Subject: RE: DOC filesystem questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-08-08 at 10:30, "David M=C3=BCller (ELSOFT AG)" wrote:
-> Hello
->=20
-> I have written a hardware driver for the NAND controller built in
-> Samsung's S3C2410 SoC. I followed the instruction on
-> http://linux-mtd.infradead.org/tech/nand.html to implement it but it
-> doesn't seem to work correctly.
+David Woodhouse wrote:
+> > > We _must_ retain the bad block table which was on the device when it
+> > > arrived from the factory. 
+> > 
+> > OK I see.  Would it be valuable then to have a Linux command-line
+> > utility which captures the BBT before calling nftl_format, then 
+> > is used to restore the BBT after calling nftl_format but before
+> > nftl tries to mount any partitions (via 'insmod nftl' or whatever)?
+> 
+> ... or which writes it back as _part_ of the nftl_format process,
+> perhaps?
+> 
+> Yes, it would be extremely useful to do this.
 
-Show code and describe symptoms. I've changed the interface to the core
-NAND code recently -- the docs will be slightly out of date.=20
+I will work on this then and feed it back to the list for
+evaluation when I have something that works.
 
---=20
-dwmw2
+Chuck
