@@ -1,46 +1,30 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13o2Mt-0007aN-00
-	for mtd-list@infradead.org; Tue, 24 Oct 2000 12:35:47 +0100
-Message-ID: <39F5767A.48E1A44C@cotw.com>
-Date: Tue, 24 Oct 2000 06:46:02 -0500
-From: "Steven J. Hill" <sjhill@cotw.com>
+	id 13o6rx-0008Mr-00
+	for mtd-list@infradead.org; Tue, 24 Oct 2000 17:24:09 +0100
+Received: from ltc.ltc.com ([38.149.17.171] helo=ltc.com)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13o6rt-0008Ml-00
+	for mtd@infradead.org; Tue, 24 Oct 2000 17:24:09 +0100
+Received: from gw1.ltc.com (gw1.ltc.com [38.149.17.163]) by ltc.com (NTMail 3.03.0017/1.afdd) with ESMTP id na314483 for <mtd@infradead.org>; Tue, 24 Oct 2000 12:29:57 -0400
+Message-ID: <00c101c03dd7$1775e840$0701010a@ltc.com>
+From: "Bradley D. LaRonde" <brad@ltc.com>
+To: <mtd@infradead.org>
+References: <E13nksk-0002RR-00@infradead.org> <18079.972375290@redhat.com> <39F5767A.48E1A44C@cotw.com>
+Subject: Proper way of setting MTD_DEBUG
+Date: Tue, 24 Oct 2000 12:25:58 -0400
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/kernel mtdblock.c'
-References: <E13nksk-0002RR-00@infradead.org> <18079.972375290@redhat.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-David Woodhouse wrote:
-> 
-> *(int *)0=0; doesn't cause an oops on all platforms. That was why BUG() was
-> introduced. Probably better just to omit my paranoia checks altogether,
-> once we're happy that mtdblock actually works. For now, surround them in
-> #ifdef PARANOIA. I thought I'd done that already.
-> 
-Alright, will do.
+What is the proper way of setting MTD_DEBUG?
 
-> DECLARE_MUTEX_LOCKED wants adding to compatmac.h if it's not already there.
-> 
-Will do.
+Regards,
+Brad
 
-> What was the reasoning for removing the 'static' from the declaration of
-> thr_wq?
-> 
-Uhhh...that would be my stupidity. I forgot to put 'static' back on
-the declaration.
-
--Steve
-
--- 
- Steven J. Hill - Embedded SW Engineer
- Public Key: 'finger sjhill@mail.cotw.com'
- FPR1: E124 6E1C AF8E 7802 A815
- FPR2: 7D72 829C 3386 4C4A E17D
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
