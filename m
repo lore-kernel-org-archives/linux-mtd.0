@@ -1,19 +1,18 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19c2Tn-00044H-5c
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Jul 2003 13:30:55 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Zachi Friedman <zachi.friedman@m-sys.com>
-In-Reply-To: <87F9EFDE786B68428C807B4F74CC348106E9EA@msi-ex6.msu.m-sys.com>
-References: <87F9EFDE786B68428C807B4F74CC348106E9EA@msi-ex6.msu.m-sys.com>
-Message-Id: <1058185861.26819.109.camel@passion.cambridge.redhat.com>
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19c3RM-0004T0-Nq
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Jul 2003 14:32:28 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Dmytro Bablinyuk <dmytro.bablinyuk@tait.co.nz>
+In-Reply-To: <3F120F4A.7080507@tait.co.nz>
+References: <3F120F4A.7080507@tait.co.nz>
+Message-Id: <1058189517.1251.8664.camel@tubarao.lnxi.com>
 Mime-Version: 1.0
-Date: Mon, 14 Jul 2003 13:31:01 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: DiskOnChip 2000 128Mb problem - clarifications
+Date: 14 Jul 2003 07:31:57 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-UpMVng+x5SZys/TCatep"
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem with finding flash device AM29F040B
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2003-06-02 at 20:58, Zachi Friedman wrote:
-> Here is the deal:
-> 
-> Newer (and higher capacity) DiskOnChip 2000 devices have a new ASIC
-> controller. This ASIC controller has the chip ID of 0x30 (instead of
-> 0x20). I guess that is the reason the MTD driver identifies the 128MB
-> as a Millennium... 
 
-OK. So if we ignore that and treat it precisely as a DiskOnChip 2000
-with an anomalous ChipID, will that work? Are the toggle registers and
-_everything_ else precisely the same as the 2000 and it's just the
-ChipID which is different?
+--=-UpMVng+x5SZys/TCatep
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> Also, to solve the confusion here once and for all: Millennium comes
-> _ONLY_ 8MB. There never was, and never will be a Millennium is
-> different capacity! 
+On Sun, 2003-07-13 at 20:02, Dmytro Bablinyuk wrote:
+> I have a MPC866ADS out of the box board and I got linux running from=20
+> ramdisk.
+> But I could not get flash (AM29F040B) working with 2.4.21 kernel.
+> I tried to specify phys map but I still have:
 
-Erm, but I think there's one on my desk. :)
+I haven't ever used phys map - it may work.  You may need to probe the
+chip before it can be used by phys map.
 
-It's a DIL unit in a square plastic case with a sticker, like all the
-DiskOnChip 2000 DIL units I've seen -- whereas other Millennium units
-I've seen have been a plain black case with white stencil on. It's an
-orange sticker and says 'Millennium Module' 'MD2841-D016' '00910104864
-1.21'. IIRC the Linux driver works with it just fine and claims it's a
-Millennium with a single 16MiB chip.
- 
-> So, once you have chip ID of 0x30, how can you tell whether it's a
-> Millennium or the newer DiskOnChip 2000?  You have to read chip ID 4
-> times. If the 4th read is NOT 0x30 - it's a new DiskOnChip 2000 !
+>=20
+> physmap flash device: 200000 at 2800000
+> CFI: Found no Physically mapped flash device at location zero
+> kmod: failed to exec /sbin/modprobe -s -k jedec_probe, errno =3D 2
+> kmod: failed to exec /sbin/modprobe -s -k map_rom, errno =3D 2
 
-OK... what _will_ the 4th read return? Is it always safe just to read
-ChipID four times and use the fourth answer, or should we read four
-times _only_ in the case where it first says it's a Millennium?
+Aren't these obvious errors WRT the config options you list below?
 
-For the case where the fourth read indicates it's one of these newer
-DiskOnChip 2000 units and not actually a Millennium, do we need to do
-anything else? Is absolutely everything else going to be precisely like
-an old DiskOnChip 2000, including the 'TOGGLE' test &c.? I seem to
-recall someone trying to get it to work just by overriding the ChipID
-check, and failing further down the line.
+> Could somebody please give me a clue about this.
+> Thank you in advance for any help.
+>=20
+> Some details of my kernel config:
+>=20
+> #
+> # Mapping drivers for chip access
+> #
+> CONFIG_MTD_PHYSMAP=3Dy
+> CONFIG_MTD_PHYSMAP_START=3D2800000
+> CONFIG_MTD_PHYSMAP_LEN=3D200000
+> CONFIG_MTD_PHYSMAP_BUSWIDTH=3D2
+> # CONFIG_MTD_TQM8XXL is not set
+> # CONFIG_MTD_RPXLITE is not set
+> # CONFIG_MTD_MBX860 is not set
+> # CONFIG_MTD_DBOX2 is not set
+> # CONFIG_MTD_CFI_FLAGADM is not set
+> # CONFIG_MTD_REDWOOD is not set
+> # CONFIG_MTD_PCI is not set
+> # CONFIG_MTD_PCMCIA is not set
+>=20
+> #
+> # RAM/ROM/Flash chip drivers
+> #
+> CONFIG_MTD_CFI=3Dy
+> # CONFIG_MTD_JEDECPROBE is not set
 
-Would it be possible to get me one of these units for further testing,
-please? I think it's the last of your devices which isn't properly
-supported by the Linux drivers.
+I suggest turning this on.
 
-> Also, these new DiskOnChip 2000 SHOULD be used with INFTL.
+> CONFIG_MTD_GEN_PROBE=3Dy
+> # CONFIG_MTD_CFI_ADV_OPTIONS is not set
+> # CONFIG_MTD_CFI_INTELEXT is not set
+> # CONFIG_MTD_CFI_AMDSTD is not set
+> # CONFIG_MTD_CFI_STAA is not set
+> # CONFIG_MTD_RAM is not set
+> # CONFIG_MTD_ROM is not set
+> # CONFIG_MTD_ABSENT is not set
+> CONFIG_MTD_OBSOLETE_CHIPS=3Dy
+> CONFIG_MTD_AMDSTD=3Dy
+>=20
+> #
+> # Memory Technology Devices (MTD)
+> #
+> CONFIG_MTD=3Dy
+> # CONFIG_MTD_DEBUG is not set
 
-OK; we actually use either NFTL or INFTL according to what we find on it
--- the decision is actually made at format time, not really in the
-kernel at all. It's probably actually worth us fixing
-nftl_format/inftl_format to automatically do the right thing according
-to the detected hardware, just as your DFORMAT will.
+CONFIG_MTD_DEBUG is also helpful - turni it on and set
+CONFIG_MTD_DEBUG_VERBOSE to 3.  The kernel output might be useful to
+figure out where things are failing (this can be turned off once
+everything is working).
 
--- 
-dwmw2
+> CONFIG_MTD_PARTITIONS=3Dy
+> # CONFIG_MTD_CONCAT is not set
+> # CONFIG_MTD_REDBOOT_PARTS is not set
+> # CONFIG_MTD_CMDLINE_PARTS is not set
+> CONFIG_MTD_CHAR=3Dy
+> CONFIG_MTD_BLOCK=3Dy
+> # CONFIG_FTL is not set
+> # CONFIG_NFTL is not set
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-UpMVng+x5SZys/TCatep
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA/ErDMfsBPTKE6HMkRAhKSAJ9hTN2fCiEZBEBXpaAztAS0VtVERwCeOgLU
+ZG3SFBEGP3NlCAM+sOwV7ag=
+=Aj1v
+-----END PGP SIGNATURE-----
+
+--=-UpMVng+x5SZys/TCatep--
