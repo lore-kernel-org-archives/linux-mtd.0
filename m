@@ -1,18 +1,21 @@
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
+Received: from smtp-102.nerim.net ([62.4.16.102] helo=kraid.nerim.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.12 #3 (Red Hat Linux))
-	id 18gLeH-0002qT-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 09:15:17 +0000
-Received: from dwmw2 by imladris.demon.co.uk with local (Exim 4.05)
-	id 18gLeD-0000bS-00
-	for linux-mtd@lists.infradead.org; Wed, 05 Feb 2003 09:15:13 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-Date: 05 Feb 2003 09:15:13 +0000
-Message-Id: <1044436513.1110.17.camel@imladris.demon.co.uk>
+	id 18gMPq-00039f-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 10:04:26 +0000
+Received: from bandit.lilotux.net (lilotux.net [62.212.107.33])
+	by kraid.nerim.net (Postfix) with ESMTP id D3D5240F5D
+	for <linux-mtd@lists.infradead.org>; Wed,  5 Feb 2003 11:04:25 +0100 (CET)
+Received: from slist by bandit.lilotux.net with local (Exim 3.35 #1 (Debian))
+	id 18gMPp-0001IH-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2003 11:04:25 +0100
+Date: Wed, 5 Feb 2003 11:04:25 +0100
+From: Stephane List <stephane.list@lilotux.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <20030205100425.GA4852@lilotux.net>
 Mime-Version: 1.0
-Subject: Administrivia -- list changes.
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Subject: Intel Strataflash on MIPS
+Content-Type: text/plain; charset=us-ascii
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +27,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-The box running the mailing list now has SpamAssassin installed so you
-should see less spam than before -- not that we really got that much
-anyway.
+Hi David,
 
-I also have some other filters in place -- if you attempt to start a new
-thread by replying to an old message and modifying the Subject line,
-hence sending a mail with a References: header showing it's part of the
-original thread, but in fact bearing no relation to that thread, that'll
-get rejected too. 
-(cf. http://www.arm.linux.org.uk/armlinux/mailinglists.php#e2)
+One thing I didn't told you, is that I'm using an IDT.
+This is a CPU with a MIPS inside.
 
-Likewise if you send a reply which _lacks_ both In-Reply-To: and
-References: headers -- proper email clients are available for free
-download, even for Windows users, so there's no excuse for that either.
+In linux kernel, you've wrote :
+
+./include/asm-mips/io.h
+#define IO_SPACE_LIMIT 0xffff
+
+
+That's why I can't read more than 0xFFFF bytes in my flash, and that's
+why I can't erase the second sector of my flash, could you tell me how
+to modify the mtd driver to make it MIPS compliant ?
+
+Thanks
+
 
 -- 
-dwmw2
+Stephane List
+http://slist.lilotux.net
