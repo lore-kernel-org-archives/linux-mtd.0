@@ -1,18 +1,21 @@
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+Received: from smtp-102.noc.nerim.net ([62.4.17.102] helo=mallaury.noc.nerim.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18dt1z-0006cQ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 14:17:35 +0000
-Subject: Re: NFTL not recognizing disk on chip in some cases
-From: Henrik Nordstrom <hno@marasystems.com>
-To: Raphael Hertzog <eng@eipm.ch>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <1043844420.555.111.camel@localhost>
-References: <1043844420.555.111.camel@localhost>
-Content-Type: text/plain
-Message-Id: <1043851709.11449.118.camel@henrik.marasystems.com>
+	id 18duNZ-0006op-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 15:43:57 +0000
+Received: from bandit.lilotux.net (lilotux.net [62.212.107.33])
+	by mallaury.noc.nerim.net (Postfix) with ESMTP id 6490262E3F
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 17:14:56 +0100 (CET)
+Received: from slist by bandit.lilotux.net with local (Exim 3.35 #1 (Debian))
+	id 18durZ-0002QC-00
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2003 17:14:57 +0100
+Date: Wed, 29 Jan 2003 17:14:57 +0100
+From: Stephane List <stephane.list@lilotux.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Intel Strataflash
+Message-ID: <20030129161457.GA9083@lilotux.net>
 Mime-Version: 1.0
-Date: 29 Jan 2003 15:48:29 +0100
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,46 +27,85 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
->From what I recall you must not have the NFTL driver loaded while
-running nftl_format.. if the NTFL driver is loaded then I think bad
-things may happen such as those you describe.
+Hi,
 
-Regards
-Henrik
+I'm using a 2.4.17 linux kernel for an embedded product.
+On my card I've got 4 Intel Strataflash 16 bits / 16 Mbytes.
+
+Flash 1 : 
+-Chip Select : 0
+-Data Bus connected on D0-D15 of my CPU
+
+Flash 2 :
+-Chip Select : 0
+-Data Bus connected on D16-D31 of my CPU
+
+Flash 3 and 4, same thing with Chip Select 1.
 
 
-ons 2003-01-29 klockan 13.47 skrev Raphael Hertzog:
-> Hi,
-> 
-> I followed the instructions given here :
-> http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html
-> 
-> I used the second set of instructions (the one for 2.4.18) since I'm
-> running an unmodified 2.4.19 kernel.
-> 
-> After having successfully created the filesystem on the disk on chip (I
-> can mount it and work with it), I reboot and then the chip is no more
-> recognized. The error happens in the NFTL module, it displays :
-> 
-> NFTL Driver: nftlcore.c $Revision: 1.85$ nftlmount.c $Revision: 1.25$
-> NFTL Media Headers at 0x18000 and 0x6cc000 disagree
-> Could not find valid boot record
-> Could not mount NFTL device
-> 
-> Now if I relaunch nftl_format a second time it may find "bad blocks"
-> which didn't exist the first time. After that the chip is usually again
-> recognized ... I can reproduce that with different disk on chip (this
-> does probably mean that it's not the disk on chip that is on fault).
-> 
-> After more tries, it appears that the disk on chip is recognized after
-> partitioning and formating ... but the problems appears once I copy a
-> specific set of files on the disk on chip (it's not reproducible with
-> any set of files) and umount the DOC (and try to reload the nftl
-> module).
-> 
-> Any idea of what can go wrong ?
-> 
-> Regards,
+When I load the module I've got the following message :
+"genprobe_new_chip called with unsupported buswidth 2"
+
+Could you tell me if my .config is OK ?
+Thanks
+
+PS : I couldn't compile my kernel with the CVS code...
+
+My .config has the following options :
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=m
+# CONFIG_MTD_JEDECPROBE is not set
+CONFIG_MTD_GEN_PROBE=m
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+# CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
+# CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
+CONFIG_MTD_CFI_GEOMETRY=y
+# CONFIG_MTD_CFI_B1 is not set
+# CONFIG_MTD_CFI_B2 is not set
+
+#Because the data bus of the CPU is 4 bytes
+CONFIG_MTD_CFI_B4=y
+
+# CONFIG_MTD_CFI_B8 is not set
+# CONFIG_MTD_CFI_I1 is not set
+
+#Because There are 2 flashs connected on the same Data bus.
+CONFIG_MTD_CFI_I2=y
+
+# CONFIG_MTD_CFI_I4 is not set
+
+#Because it's an Intel Strataflash
+CONFIG_MTD_CFI_INTELEXT=m
+
+# CONFIG_MTD_CFI_AMDSTD is not set
+# CONFIG_MTD_RAM is not set
+CONFIG_MTD_ROM=m
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set
+# CONFIG_MTD_AMDSTD is not set
+# CONFIG_MTD_SHARP is not set
+# CONFIG_MTD_JEDEC is not set
+
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_PHYSMAP=m
+CONFIG_MTD_PHYSMAP_START=10000000
+CONFIG_MTD_PHYSMAP_LEN=1FFFFFF
+
+#Because my flash chip data bus is 2 bytes width
+CONFIG_MTD_PHYSMAP_BUSWIDTH=2
+
+# CONFIG_MTD_CSTM_MIPS_IXX is not set
+# CONFIG_MTD_PB1000 is not set
+# CONFIG_MTD_PB1500 is not set
+# CONFIG_MTD_OCELOT is not set
+# CONFIG_MTD_PCI is not set
+
+
 -- 
-Henrik Nordstrom <hno@marasystems.com>
-MARA Systems AB
+Stephane List
+http://slist.lilotux.net
