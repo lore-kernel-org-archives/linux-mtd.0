@@ -1,35 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13KcCi-0000cR-00
-	for mtd-list@infradead.org; Fri, 04 Aug 2000 08:47:40 +0100
+	id 13Kjsg-0001tV-00
+	for mtd-list@infradead.org; Fri, 04 Aug 2000 16:59:30 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13KcCd-0000cK-00
-	for mtd@infradead.org; Fri, 04 Aug 2000 08:47:37 +0100
+	id 13Kjse-0001tP-00
+	for mtd@infradead.org; Fri, 04 Aug 2000 16:59:29 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9F02B@txexmta8.amd.com> 
-References: <0FA1031B65A9D111960900805F9FA8E103B9F02B@txexmta8.amd.com> 
-To: mark.langsdorf@amd.com
-Cc: mtd@infradead.org
-Subject: Re: request module returns "root fs not mounted" 
+To: jffs-dev@axis.com
+Cc: mtd@infradead.org, linux@handhelds.org
+Subject: JFFS in 2.2 - Call for testing.
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 04 Aug 2000 08:47:18 +0100
-Message-ID: <3380.965375238@cygnus.co.uk>
+Date: Fri, 04 Aug 2000 16:59:22 +0100
+Message-ID: <13576.965404762@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Ok. I've committed to my CVS the crap-but-safe fix to jffs_file_write() - 
+it kmalloc's a bounce buffer and copies the data into it, before passing it 
+to jffs_write_node().
 
-mark.langsdorf@amd.com said:
->  When my system is starting up, I perform the do_map_cfi() call before
-> I mount the root filesystem.  request_module(cfi_probe) returns "Root
-> fs not mounted."
+Hopefully someone will do the 'proper' fix fairly soon - writes through the
+page cache - but at the moment, I'm aware of no outstanding bugs in 2.2
+JFFS.
 
-> How can I make the kernel wait to mount the flash until after the root
-> filesystem is mounted?
-
-Either load your 'map' driver as a module, or build cfi_probe and whichever 
-CFI command set you require into the kernel too.
+I'm not sure I'd claim it's quite ready for production use, but it's getting 
+there. Suck it and see.
 
 --
 dwmw2
