@@ -1,52 +1,84 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14bLiL-0007KX-00
-	for mtd-list@infradead.org; Fri, 09 Mar 2001 12:09:45 +0000
-Received: from enst.enst.fr ([137.194.2.16])
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14bLiJ-0007KR-00
-	for mtd@infradead.org; Fri, 09 Mar 2001 12:09:44 +0000
-Received: from email.enst.fr (muse.enst.fr [137.194.2.33])
-	by enst.enst.fr (Postfix) with ESMTP id 765001C8FA
-	for <mtd@infradead.org>; Fri,  9 Mar 2001 13:09:21 +0100 (MET)
-Received: from FABRICE (droopy.maisel1.rezel.enst.fr [137.194.8.239])
-	by email.enst.fr (8.9.3/8.9.3) with ESMTP id NAA10893
-	for <mtd@infradead.org>; Fri, 9 Mar 2001 13:09:19 +0100 (MET)
-Date: Fri, 09 Mar 2001 13:08:28 +0100
-From: Fabrice Gautier <gautier@email.enst.fr>
-To: mtd@infradead.org
-Subject: Re: Macronix 29F1610 support
-In-Reply-To: <20010308233010.A37B.GAUTIER@email.enst.fr>
-References: <20010308233010.A37B.GAUTIER@email.enst.fr>
-Message-Id: <20010309125507.A488.GAUTIER@email.enst.fr>
+	id 14bN1j-0007rD-00
+	for mtd-list@infradead.org; Fri, 09 Mar 2001 13:33:51 +0000
+Received: from zeus.vortex.is ([193.4.145.1])
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14bN1h-0007r6-00
+	for mtd@infradead.org; Fri, 09 Mar 2001 13:33:50 +0000
+Received: from froskur.flaga.is (mail.flaga.is [193.4.144.1])
+          by zeus.vortex.is (Post.Office MTA v3.5.3 release 223
+          ID# 0-60460U3500L350S0V35) with ESMTP id is
+          for <mtd@infradead.org>; Fri, 9 Mar 2001 13:33:45 +0000
+Received: from kolkrabbi.flaga.is ([192.168.145.6]) by froskur.flaga.is
+          (Post.Office MTA v3.5.3 release 223 ID# 0-0U10L2S100V35)
+          with ESMTP id is for <mtd@infradead.org>;
+          Fri, 9 Mar 2001 13:33:44 +0000
+content-class: urn:content-classes:message
+Subject: Abstractation
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 9 Mar 2001 13:33:44 -0000
+Message-ID: <EADB10BAC266A14A85ECBF8686A73E310A910E@kolkrabbi.flaga.is>
+From: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+To: <mtd@infradead.org>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-On Thu, 08 Mar 2001 23:56:35 +0100
-Fabrice Gautier <gautier@email.enst.fr> wrote:
+I need to add a cfi_cmdset_0003 to support a Intel chip that we have in
+our boards.
 
-> Hi,
-> 
-> I trying to boot linux with a root filesystem on this Macronix NOR flash.
+Why does I as the cmdset writer have to know all this stuff about the
+buswith,
+number of chips etc?
 
-The datasheet for a M29F1610A (my flash is M29F1610-MC but i guess its
-the same - except the capacity) says it uses JEDEC commands.
+Me as a cmdset writer should only be conserned with implementing the
+cmdset which is
+only affecting one chip at a time, no matter how many there might be on
+the bus.
 
-I've seen a jedec.c file in the source; but i'm not with which mtd driver
-uses this file. Also, a comment in this file says i support only 8bit
-flash chips, but the datasheet talk about 2Mx8 or 1Mx16 chips.
+What I am trying to say why is the layering not something like:
 
+--------------------
+| Kernel interface |
+| has notation of  |
+| read / write     |   Sees flash as linear buffer
+| to/from linear   |
+| buffers (buf)    | =20
+--------------------
+          |
+          |
+          |
+-----------------------  Sees flash as collection of linear sectors
+| Mtd knows  the      |  that might be distributed over many flash chips
+| mapping from        |
+| buffer range to     |
+| individual flash    |
+| chips/sectors       |
+| i.e. where          |
+| buf[x] is physically|
+-----------------------
+          |
+          |
+          |
+--------------------
+| cmdset            | sees only one flash chip.
+| knows how to write| it knows how to erase sectors, write to them,
+read,
+| to chip at given  | at word level
+| offset for given  |
+| chip              |
+---------------------
 
-(see http://www.macronix.com/web/P_FLASH.nsf/bf3add4f68988391c825667100209fa5/42fce534dc51d8e8482569d10007e18d?OpenDocument
-for the Datasheet) 
--- 
-Fabrice Gautier <gautier@email.enstfr>
+Any way,
 
+Just a thought.
+
+K.D.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
