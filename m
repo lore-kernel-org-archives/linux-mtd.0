@@ -1,24 +1,16 @@
-Received: from fmr01.intel.com ([192.55.52.18] helo=hermes.fm.intel.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17BN3J-00041T-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 22:56:49 +0100
-Received: from petasus.fm.intel.com (petasus.fm.intel.com [10.1.192.37])
-	by hermes.fm.intel.com (8.11.6/8.11.6/d: outer.mc,v 1.48 2002/05/24 00:39:04 root Exp $) with ESMTP id g4OLvMr16843
-	for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 21:57:22 GMT
-Received: from fmsmsxvs040.fm.intel.com (fmsmsxv040-1.fm.intel.com [132.233.48.108])
-	by petasus.fm.intel.com (8.11.6/8.11.6/d: inner.mc,v 1.22 2002/05/24 00:38:22 root Exp $) with SMTP id g4OLso528695
-	for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 21:54:50 GMT
-Received: from fmsmsx26.fm.intel.com ([132.233.42.26])
- by fmsmsxvs040.fm.intel.com (NAVGW 2.5.1.16) with SMTP id M2002052414560817815
- for <linux-mtd@lists.infradead.org>; Fri, 24 May 2002 14:56:08 -0700
-Message-ID: <2B4461BF89BAD511A86100508B66D538026D0D88@fmsmsx112.fm.intel.com>
-From: "Conley, Christopher" <christopher.conley@intel.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: RE: Jedec probe for strange 28F800B3 chips (patch)
-Date: Fri, 24 May 2002 14:56:44 -0700
+Received: from web14405.mail.yahoo.com ([216.136.174.62])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17BWnu-0004ft-00
+	for <linux-mtd@lists.infradead.org>; Sat, 25 May 2002 09:21:34 +0100
+Message-ID: <20020525082133.75934.qmail@web14405.mail.yahoo.com>
+Date: Sat, 25 May 2002 16:21:33 +0800 (CST)
+From: =?gb2312?q?cytang?= <cytang_cn@yahoo.com.cn>
+Subject: Re: Why cannot boot off my doc 2000 ?
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <E17BHMf-0007bT-00@speedy.datawave.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,41 +22,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I apologize for responding so late, 
+after many experiments, I think maybe two possiblity
+lead to it .
+NO 1:
+I miss a step :
+dupdate /win:{address} /s:doc42.exb /first, 
+so I boot from a DOS floppy. 
+but this time, when I run "dinfo" ,it  tells me  no
+diskonchip found in system . 
+I am sure before my new kernel support doc , I can use
+"dinfo" to view information of doc on DOS,but now I
+can't .
+but even now ,I still can find it in my new kernel .
+run dmesg , I can find diskonchip found on 0xdc000
+,and I can read/write/mount /dev/nftla1 .
+however I run "dformat /win:dc000 " ,I get "no
+diskonchip 2000R found at c000:0" 
+NO 2:
+ something is wrong with lilo-mtd in my steps. 
+In the "patches" in mtd-snapshot , I find
+lilo-mtd.tar.gz.
+the following is my steps
+  tar zxvf lilo-mtd.tar.gz 
+  then I get 3 files : lilo-mtd
+,boot.b-mtd,lilo21-mtd-patch
+  I dont use lilo21-mtd-patch. because I dont know
+what use is it for .so  I just use lilo-mtd and
+boot.b-mtd
+ my step is :
+  lilo-mtd -v -C /etc/doc-lilo.conf -i boot.b-mtd -m
+/boot/map -r /doc  
+  #doc is my mount point
+  nothing bad is reported . 
+the output I have descript it in the above page->
+http://lists.infradead.org/pipermail/linux-mtd/2002-May/005064.html
 
-the configuration is actually for the 5V bottom boot part.
 
-Here is the datasheet for it:
-ftp://download.intel.com/design/flcomp/datashts/29059907.pdf
-
-
-
-Chris
----------
-Disclaimer: These opinions are mine and mine alone, and do not reflect those
-of my employer or its agents.
-
-
-
------Original Message-----
-From: linux-mtd-admin@lists.infradead.org
-[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Colin Cross
-Sent: Wednesday, May 08, 2002 2:06 PM
-Subject: Jedec probe for strange 28F800B3 chips (patch)
-
-
-I'm working on an embedded system that has two Flash chips labeled
-28F800B3-10BD.  The Intel datasheets say they should have an identifier
-of 0x8893 (which matches jedec_probe.c), but they report an identifier
-of 0x889D.  I found one errata datasheet that says the correct
-identifier for these chips is in fact 0x889D.  However, the block map of
-this chip is completely different from the one described in the
-datasheets.  It has 1 16kB block, 2 8kB blocks, 1 96kB, and 7 128kB
-blocks.  This matches the block map for some other random Intel 8Mb
-flash chip, but I can't find any datasheets that give this block map and
-identifier together.  I've added these chips to jedec_probe.c, and they
-work fine once added, but I'm at a loss as to why these chips don't
-agree with the datasheets.  Can anyone offer any insight?  Does anyone
-have 28F800B3 chips that follow the datasheet?  I've attached a patch
-that adds support for them, but I'm not sure what to call them (Intel
-28F800B3B version 2? for now).
+_________________________________________________________
+Do You Yahoo!? 
+摊开你的掌心 让我看看你
+http://sweepstakes.yahoo.com/2002cnuser
