@@ -1,18 +1,18 @@
 Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19cJQO-0008TM-RL
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Jul 2003 07:36:33 +0100
+	id 19cJTm-00005v-HA
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Jul 2003 07:40:02 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Mike G <gohas@sysil.net>
-In-Reply-To: <1058249854.1031.24.camel@localhost.localdomain>
-References: <1058249854.1031.24.camel@localhost.localdomain>
-Message-Id: <1058251000.2262.114.camel@imladris.demon.co.uk>
+To: Cristiano Parzani <c.parzani@tattile.com>
+In-Reply-To: <000001c34a20$09186b30$1d00a8c0@cristianop>
+References: <000001c34a20$09186b30$1d00a8c0@cristianop>
+Message-Id: <1058251209.2262.118.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: Tue, 15 Jul 2003 07:36:40 +0100
+Date: Tue, 15 Jul 2003 07:40:09 +0100
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: help installing MTD
+Subject: Re: FAT16 reserved sector determination
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-07-15 at 07:17, Mike G wrote:
-> Hi there,
+On Mon, 2003-07-14 at 16:53, Cristiano Parzani wrote:
+> Hi to all,
 > 
-> I am a Linux newbies, an idiot basically.  My task is to install the MTD
-> to the kernel linux-2.4.4 .. to run for MPC 857 for AM29DL322. 
+> i have a nice question for anyone expert with FAT. I have bought a
+> Secure Digital and I want to write my own code for FAT16 on it. 
 
-2.4.4 is very old. You really should consider upgrading to a vaguely
-recent kernel which isn't full of known holes.
+But we already _have_ FAT support. We don't have support for "FAT16 on
+SD", or "FAT16 on floppy" or "FAT16 on hard drive" or "FAT16 on MMC" or
+anything so specific -- we have generic FAT support which works on any
+block device.
 
-> This is the error msg.. of course there is some wrong file association i
-> can see.
+You just need an appropriate block device driver; ignore FAT totally. 
 
-You've copied files in manually rather than using the 'patchin' script
-from the patches/ directory. Which means you've got the 'Makefile' files
-instead of the 'Makefile.common' files which you should have copied and
-renamed to 'Makefile' in each subdirectory.
+> I have reached to dump the SD boot sector and a particular thing I have
+> noticed:
+> 
+> number of reserved sector typically = 1 for FAT 16 is 8, and the SD was
+> formatted by Windows XP. This is very strange, I have read Windows white
+> paper on FAT and it tell that normally for FAT16 this value is 1. 
 
-If you really do stay with 2.4.4 you'll probably need some surgery on
-linux/mtd/compatmac.h to make it support kernels that ancient again.
+Perhaps it's done so that the root directory starts in the first sector
+of a physical eraseblock? I don't think you need to worry about it too
+much, certainly.
 
 -- 
 dwmw2
