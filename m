@@ -1,42 +1,58 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 1440Ui-0001cm-00
-	for mtd-list@infradead.org; Thu, 07 Dec 2000 12:49:52 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
+	id 1444wE-00035b-00
+	for mtd-list@infradead.org; Thu, 07 Dec 2000 17:34:34 +0000
+Received: from cr53988-a.rchrd1.on.wave.home.com
+	([24.112.95.30] helo=thegravitywell.dhs.org ident=michealk)
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 1440Uh-0001cg-00
-	for mtd@infradead.org; Thu, 07 Dec 2000 12:49:51 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3A2F87C6.D1376DAD@arcom.co.uk> 
-References: <3A2F87C6.D1376DAD@arcom.co.uk> 
-To: David Vrabel <dvrabel@arcom.co.uk>
-Cc: mtd@infradead.org
-Subject: Re: CVS + separate kernel => missing patch? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Dec 2000 12:49:48 +0000
-Message-ID: <18043.976193388@redhat.com>
+	id 1444wC-00035V-00
+	for mtd@infradead.org; Thu, 07 Dec 2000 17:34:32 +0000
+Received: from morpheus.espial.com (espial.com [209.47.49.78])
+	by thegravitywell.dhs.org (8.10.1/8.10.1) with SMTP id eB7H9fe18152
+	for <mtd@infradead.org>; Thu, 7 Dec 2000 12:09:42 -0500 (EST)
+From: Micheal Kelly <michealk@thegravitywell.dhs.org>
+Reply-To: michealk@thegravitywell.dhs.org
+Date: Thu, 7 Dec 2000 12:34:30 -0500
+Content-Type: text/plain;
+  charset="iso-8859-1"
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: MTD & JFFS on Arcom SBC
+MIME-Version: 1.0
+Message-Id: <0012071234300I.24907@morpheus.espial.com>
+Content-Transfer-Encoding: 8bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi all,
 
-dvrabel@arcom.co.uk said:
->  You used to be able to check out MTD from CVS apply a patch to the
-> main kernel tree and run mtd/patches/patchin.sh and everything would
-> work.
+I've got an Arcom MediaGX board here that I'm trying to get working w/Linux 
+2.4-test12pre7 ...  Has anyone else tried the latest MTD source from CVS with 
+this board?
 
-> Is it still possible to do this?  If so where is the patch to do this?
+It boots, loads the kernel, and it *does* identify the onboard flash - it 
+even seems able to *read* from the flash (a JFFS filesystem)... but when a 
+write occurs, the screen fills with errors - they go scrolling by too quickly 
+to see, but they're something along the lines of:
 
-It was out of date and was removed. There's a complete patch on the ftp 
-site (the mtd-patch-README file says where).
+Chip not ready for buffer write ...  XStatus = 30  bstatus = 0
 
-If you feel like putting an infrastructure-only patch into CVS or on the 
-ftp site again, go for it.
+and
 
---
-dwmw2
+flash_safe_write returned 5
 
+After a few seconds, the screen fills with:
 
+jffs_garbage_collect_thread():  free size == 0 This is BAD.
+
+:)
+
+Also,
+I inadvertently compiled the latest MTD sources from CVS with the JFFS 
+included in the 2.4 sources and while I still couldn't write to the flash, I 
+wouldn't get clobbered by 1000's of errors - I'd get one "Chip not ready", 
+and then get the # prompt back....
+
+Anyone have this working with 2.4?
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
