@@ -1,10 +1,10 @@
 Received: from [202.108.44.144] (helo=163.com)
 	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AxkAV-0002ro-Tc
-	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 09:57:00 +0000
+	id 1AxkBp-0002sS-5a
+	for linux-mtd@lists.infradead.org; Mon, 01 Mar 2004 09:58:21 +0000
 MIME-Version: 1.0
-Message-ID: <404308E3.00003E.11977@bj144.163.com>
-Date: Mon, 1 Mar 2004 17:56:51 +0800 (CST)
+Message-ID: <40430937.000115.28664@bj144.163.com>
+Date: Mon, 1 Mar 2004 17:58:15 +0800 (CST)
 From: "aaa" <qixiaolili@163.com>
 To: linux-mtd@lists.infradead.org
 Content-Transfer-Encoding: base64
@@ -28,9 +28,10 @@ IGFuZCBob3cgdG8gZ2V0IHNvbWUgY29kZXMgZnJvbSBtaWNyb3NvZnQgb3Igb3RoZXIgcGxh
 Y2UgPw0KaWYgc29tZSBvbmUgaGF2ZSB0aGVzZSBpbmZvcm1hdGlvbiAscGxlYXNlIHRlbGwg
 bWUgaG93IHRvIGdldCAuIG9yIHNlbmQgdGhlc2UgdG8gbWUgYnkgbXkgZW1haWwgLS0tLS0g
 cWl4aWFvbGlsaUAxNjMuY29tDQpJdCdzIHZlcnkgaW1wb3J0YW50IHRvIG1lLiBzbyBhbnkg
-aGVscCB3aWxsIGJlIGFwcHJlY2lhdGVkLi4uIDopDQp+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+Cs340tdWSVDK1bfR08rP5MG91tzE6rOs1rXTxbvd
-ISDC+jHU+TajoaOhoaEgICAgICAgICAgaHR0cDovL3ZpcC4xNjMuY29tCgrW0Ln61+6087XE
-w+K30dPKz+TU2rXIxOMgMjXV17/VvOQ01de4vbz+o6GhoaGhoaGhoaGhIGh0dHA6Ly9tYWls
-LjE2My5jb20KCrXju/fN+NLXxd3F3b6qz7LO3s/eIMirw+K30crWu/q2zNDFyM7E47eiIaGh
-oaGhoaGhoaGhoWh0dHA6Ly9wb3BvLjE2My5jb20K
+aGVscCB3aWxsIGJlIGFwcHJlY2lhdGVkLi4uIDopDQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENvbmFuY29vbA0Kfn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgrN+NLXVklQytW30dPKz+TB
+vdbcxOqzrNa108W73SEgwvox1Pk2o6GjoaGhICAgICAgICAgIGh0dHA6Ly92aXAuMTYzLmNv
+bQoK1tC5+tfutPO1xMPit9HTys/k1Nq1yMTjIDI11de/1bzkNNXXuL28/qOhoaGhoaGhoaGh
+oSBodHRwOi8vbWFpbC4xNjMuY29tCgq147v3zfjS18Xdxd2+qs+yzt7P3iDIq8Pit9HK1rv6
+tszQxcjOxOO3oiGhoaGhoaGhoaGhoaFodHRwOi8vcG9wby4xNjMuY29tCg==
