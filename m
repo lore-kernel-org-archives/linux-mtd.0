@@ -1,20 +1,17 @@
-Received: from [211.210.107.120] (helo=palmpalm.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18EJgN-0004FZ-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2002 01:29:36 +0000
-Received: from tium ( [192.168.1.87] (may be forged))
-	by palmpalm.com (8.11.6/8.11.6) with SMTP id gAK26ns21131
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2002 11:06:50 +0900
-From: "Taeil Um" <tium@mail.palmpalm.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 20 Nov 2002 11:01:29 +0900
-Message-ID: <BDEDIOGGNJEEPBHLJLFGIENECDAA.tium@palmpalm.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-In-Reply-To: <20021119211359.GA3117@wohnheim.fh-wedel.de>
-Subject: (no subject)
+	id 18EOhD-0004ec-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2002 06:50:47 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <BDEDIOGGNJEEPBHLJLFGIENECDAA.tium@palmpalm.com> 
+References: <BDEDIOGGNJEEPBHLJLFGIENECDAA.tium@palmpalm.com> 
+To: "Taeil Um" <tium@mail.palmpalm.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: (no subject) 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 20 Nov 2002 07:20:53 +0000
+Message-ID: <3734.1037776853@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,29 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-DQpIaSBBbGwgIQ0KSSByZWNlbnRseSBwb3J0ZWQgSkZGUzItTVRELU5BTkQgd2l0aCBzYW1zdW5n
-IDE2Yml0IE5BTkQgZmxhc2guDQppdCB3b2tzIHdlbGwgZXhjZXB0IHBvd2VyIGZhaWwgY2FzZS4N
-Cg0KaSB0dXJuZWQgaXQgb2ZmIHdoaWxlIHdyaXRpbmcgb24gTkFORCBmbGFzaC4NCmFuZCBpIGZv
-dW5kIG15IGJvYXJkIGRpZWQgd2l0aCBhIGJlbGxvdyAgIktlcm5lbCBPT1BTIg0KDQotLS0tLS0t
-LS0tLS1rZXJuZWwgb29wcy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0NCnJhdyB1bmNoZWNrZWQgbm9kZSBvZiBzaXplIDB4NjQwMzQwMDAgZnJlZWQg
-ZnJvbSBlcmFzZSBibG9jayAxMyBhdCAweDAwMDM0MGMwLCBidXQgdW4wDQpVbmFibGUgdG8gaGFu
-ZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbCBhZGRyZXNzIDAw
-MDAwMDAwDQpwZ2QgPSBjMDUxNDAwMA0KKnBnZCA9IDAwMDAwMDAwLCAqcG1kID0gMDAwMDAwMDAN
-CkludGVybmFsIGVycm9yOiBPb3BzOiBmZmZmZmZmZg0KQ1BVOiAwDQpwYyA6IFs8YzAwOWU0OWM+
-XSAgICBsciA6IFs8YzAwM2UzZDg+XSAgICBOb3QgdGFpbnRlZA0Kc3AgOiBjMWNmZmM1OCAgaXAg
-OiBjMWNmZmMwNCAgZnAgOiBjMWNmZmNhMA0KcjEwOiBjMDdmNTQ4OCAgcjkgOiAwMDNkMTYwMCAg
-cjggOiAwMDAwMDAwMA0KcjcgOiBjMDYzZmZmZiAgcjYgOiBjMWMyZjhjYyAgcjUgOiBjMDY1MDI3
-MCAgcjQgOiAwMDAwMDAwZA0KcjMgOiBjMDE1ZjRjMCAgcjIgOiAwMDAwMDAwMSAgcjEgOiAwMDAw
-MDAwMSAgcjAgOiAwMDAwMDA3Yw0KRmxhZ3M6IG5aQ3YgIElSUXMgb24gIEZJUXMgb24gIE1vZGUg
-U1ZDXzMyICBTZWdtZW50IHVzZXINCkNvbnRyb2w6IDIxN0YgIFRhYmxlOiBDMDUxNDAxNSAgREFD
-OiAwMDAwMDAxNQ0KDQpCYWNrdHJhY2U6IA0KRnVuY3Rpb24gZW50ZXJlZCBhdCBbPGMwMDllM2U4
-Pl0gZnJvbSBbPGMwMDljMTgwPl0NCiByOCA9IEMwMjFGRDIwICByNyA9IEMxQzJGOENDICByNiA9
-IEMxQzJGOENDICByNSA9IEMwMjFGRDIwDQogcjQgPSBDMDAwNUU2NCANCkZ1bmN0aW9uIGVudGVy
-ZWQgYXQgWzxjMDA5YzBlND5dIGZyb20gWzxjMDBhMmM4ND5dDQogcjYgPSBDMDY1MkRDMCAgcjUg
-PSBDMDY4MEM1OCAgcjQgPSBDMDYzNTM1MCANCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAg
-DQpUaGUgIktlcm5lbCBPT1BTIiBtYXkgcmVsYXRlZCB0byAiamZmczJfbWFya19ub2RlX29ic29s
-ZXRlIiBmdW5jdGlvbi4NCg0KQW55Ym9keSBkaWQgaGF2ZSBzYW1lIGV4cGVyaWVuY2U/DQo=
+tium@mail.palmpalm.com said:
+> raw unchecked node of size 0x64034000 freed from erase block 13 at
+> 0x000340c0, but un0 
+
+Your output is corrupted.
+
+Please reproduce with CONFIG_JFFS2_FS_DEBUG=1 and show the messages from 
+the beginning of the mount.
+
+What's on the flash at offset 0x340c0? Not a node of length 0x64034000 and 
+with a valid CRC32 in the header, I'll bet. What compiler are you using?
+
+--
+dwmw2
