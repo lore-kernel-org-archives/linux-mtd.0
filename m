@@ -1,18 +1,19 @@
-Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
+Received: from sccrmhc01.attbi.com ([204.127.202.61])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17lqPj-0005ca-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 13:34:43 +0100
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Date: Mon, 2 Sep 2002 05:34:30 -0700 (PDT)
-From: Mateo Anderson <mateo@posta.star.si>
-To: andrew@hainsworth.ath.cx
+	id 17lrGS-0005hu-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 14:29:12 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Mark Meade <mark@lakeshoremicro.com>
+To: Henrik =?iso-8859-1?q?Nordstr=F6m?= <hno@marasystems.com>
+Subject: Re: 48meg DOC
+Date: Mon, 2 Sep 2002 09:27:55 -0400
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Mounting Read-only
-Reply-To: mateo@posta.star.si
-Message-Id: <20020902123430.8D1CA3963@sitemail.everyone.net>
+References: <Pine.LNX.4.44.0209011654210.31089-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0209011654210.31089-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20020902132838.NFAO11061.sccrmhc01.attbi.com@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,40 +25,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Andrew
+Henrik Nordström wrote:
+> Do I have to use the GRUB DOC firmware to support multiple partitions, or
+> will it also work if using the M-Sys DOS driver firmware and loading GRUB
+> via MBR?
 
->I now have the DoC detecting and mountable, but it is mounting read-only 
->and I can't seem ot make it mount read-write.  Any ideas?
->
->Also, I think the geometry, or pseudo-geometry or whatever of the chip is 
->out of whack.  This is what fdisk is telling me:
->
->Disk /dev/nftla: 1 heads, 64064 sectors, 1 cylinders
->Units = cylinders of 64064 * 512 bytes
->
->      Device Boot    Start       End    Blocks   Id  System
->/dev/nftla1             1         1     32031+  83  Linux
->Partition 1 has different physical/logical endings:
->      phys=(256, 0, 0) logical=(0, 0, 64064)
->Partition 1 does not end on cylinder boundary:
->      phys=(256, 0, 0) should be (256, 0, 64064)
+You shouldn't need to have GRUB on the DoC to support multiple partitions.  
+Grub is simply the bootloader -- the MTD/DoC stuff should work the same 
+regardless of the presence of GRUB/LILO/whatever.  
 
-I am not able to help you here, but I can tell you, that I was able
-to mount the DOC 2000 (48M) as read-write with simple mount command.
-And I had the similar output from the fdisk as you have. 
-(Now I have problems with LILO)
+> Not yet sure if I will go for the GRUB firmware or booting GRUB via the
+> MBR and the M-Sys DOS driver, but having multiple partitions is a definite
+> win!
 
-I don't know what is going here, because both the Start
-and the End are set to 1 ???
+Use the GRUB firmware if the DoC is the primary non-volatile storage in your 
+system.  Off-topic, but if you have a MBR in your target system, what is the 
+DoC used for?
 
-Is /dev/nftla1 mounted during the boot (e.g. in /etc/fstab)?
+> If I use the GRUB firmware, is there any difference if I install it using
+> the M-Sys DFORMAT utility or by using the doc_loadbios Linux command?
+> Would be great if DFORMAT could be used for the initial install, and
+> doc_loadbios for field upgrades.
 
-Regards,
-Mateo
+I have not found a reliable way to use DFORMAT to load the Grub firmware.  
 
-_____________________________________________________________
-Brezplacen E-mail - http://email.star.si
-Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+In general, DFORMAT is only needed once (to install M-Sys firmware version 
+4.2), and doc_loadbios is used to install GRUB.  
 
-_____________________________________________________________
-Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
+Mark
