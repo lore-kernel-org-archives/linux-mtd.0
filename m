@@ -1,18 +1,19 @@
-Received: from ultra.secret.org.uk ([194.154.178.202] helo=ultra)
+Received: from chfdns01.ch.intel.com ([143.182.246.24] helo=pan.ch.intel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15xovS-0004xm-00
-	for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2001 12:20:27 +0000
-Message-ID: <001001c15fae$4f966890$fb497ad5@smooth>
-From: "Si" <spse@secret.org.uk>
-To: "W . Suika Roberts" <ssfr@unm.edu>,
-	<linux-mtd@lists.infradead.org>
-References: <20011027003752.E16430@misa.genom.co.jp>
-Subject: Re: blkmtd command line specification?
-Date: Sun, 28 Oct 2001 12:43:18 -0000
+	id 15xsOl-0005Hd-00
+	for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2001 16:02:55 +0000
+Received: from hasmsxvs01.iil.intel.com (hasmsxvs01.iil.intel.com [143.185.63.58])
+	by pan.ch.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.46 2001/10/25 21:02:55 root Exp $) with SMTP id QAA14341
+	for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2001 16:12:11 GMT
+Message-ID: <7C0E66E1B97BD5119B120002A50A63D22E41EE@hasmsx101.iil.intel.com>
+From: "Kremer, Alex" <alex.kremer@intel.com>
+To: "'Larry Doolittle'" <ldoolitt@recycle.lbl.gov>,
+        linux-mtd@lists.infradead.org
+Subject: RE: TE28F320B3B madness :(
+Date: Sun, 28 Oct 2001 18:11:59 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="ISO-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,49 +25,54 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
+| From: Larry Doolittle [mailto:ldoolitt@recycle.lbl.gov]
+| 
+| > You will need to replace  "cfi_probe" with "jedec_probe" in 
+| do_map_probe()
+| > from the maps driver (drivers/mtd/maps) you are using.
+| 
+| That's quite true.  Correct me if I'm wrong, but I think it
+| should _always_ be safe to probe for JEDEC first, and CFI
+| second.  So _all_ the mtd/maps drivers should do this,
+| and there should in fact be a systematic method that they
+| all use.  Like having a "map_flash" virtual probe that calls
+| first "jedec" and then "cfi_probe", if and only if each in
+| turn is compiled into the kernel.
 
-the problem is that it doesnt handle kernel boot params as I didnt know they
-were handled seperately to module loading parameters. Im fixing it now ;)
+I'm still trying to contact the right people on false QRY from a B3 so
+"cfi_probe",
+then "jedec_probe" would work always. I didn't get any reply yet...
 
-cheers
-si
------ Original Message -----
-From: "W . Suika Roberts" <ssfr@unm.edu>
-To: <linux-mtd@lists.infradead.org>
-Sent: Saturday, October 27, 2001 6:37 AM
-Subject: blkmtd command line specification?
+Maybe there is a smart way in use somewhere else in kernel to
+set priorities (ordering), so there can be a mtd_register_probe()
+which would be called from the module init.
 
+If not, a single map_flash() would be really appreciated.
 
-> I'm working on getting a jffs2 root file system running on my new Ipaq
-IA-1.
->
-> I can use blkmtd when it is built as a module, but I can't seem to figure
-out
-> the coomand-line syntax for using it built into the kernel.
->
-> So, how do I specify what to do on the command line?
-> I tried
-> blkmtd=device:/dev/hda2
-> and
-> blkmtd=device=/dev/hda2
-> but neither worked.
->
-> As a module:
-> insmod blkmtd.o device=/dev/hda2
-> works just fine.
->
-> 2.4.13, no patches, i386.
->
-> Thanks,
-> Suika
-> --
-> ssfr@unm.edu
-> If the code and the comments disagree, then both are probably wrong.
->                 -- Norm Schryer
->    <a href="http://www.unm.edu/~ssfr/">Suika no homepage</a>
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+I think that replacing every do_map_probe("cfi_probe", ?) with 
+a call to the following would get the most from the current chip support:
+
+struct mtd_info *map_probe_flash(struct map_info *map) {
+
+	char *probes[] = {
+#ifdef CONFIG_MTD_CFI
+		"cfi_probe",
+#endif
+#ifdef CONFIG_MTD_JEDECPROBE
+		"jedec_probe",
+#endif
+#ifdef CONFIG_MTD_ROM
+		"map_rom",
+#endif
+		NULL
+	};
+
+      mtd_info *mymtd = NULL;
+	
+      while (*probes && !(mymtd = do_map_probe(*(probes++), map)))
+		;
+
+      return mymtd;
+}
+
+Kreso
