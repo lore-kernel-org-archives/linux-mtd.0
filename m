@@ -1,14 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: zheng wei <jeanwelly0614@hotmail.com>
-In-Reply-To: <BAY19-F26rjbudzxxfY00000234@hotmail.com>
-References: <BAY19-F26rjbudzxxfY00000234@hotmail.com>
-Content-Type: text/plain
-Message-Id: <1095144914.9144.179.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Tue, 14 Sep 2004 07:55:14 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Need help about mtd on s3c2410
+Received: from whopper.demon.nl ([212.238.246.142] helo=fserver.unsec.nl)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1C77gE-0008LM-Cc
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2004 03:24:47 -0400
+Received: from unsec.nl (localhost.localdomain [127.0.0.1])
+	by fserver.unsec.nl (8.12.11/8.12.8) with ESMTP id i8E7Ndqm023752
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Sep 2004 09:23:39 +0200
+From: "Rudi Engelbertink" <rudi@unsec.nl>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 14 Sep 2004 10:23:39 +0200
+Message-Id: <20040914065927.M81928@unsec.nl>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+Subject: Is there a driver available for compulab 586core boards
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-09-14 at 13:34 +0800, zheng wei wrote:
-> Hi, sir
->     I download the mtd newest package, and use patchin.sh to install it ... 
-> 
-> But when I make zImage, errors was found...
->     It says that there sis no bug.h file included in map.h.
-> How can i resolve it?
+I have a compulab 586core board and I'm searching for a mtd map driver
+for this board. Is there a (beta) driver available for this board?
 
-The kernel you are using is too old. Make sure you're using a 2.6
-kernel.
+Kind regards,
 
--- 
-dwmw2
+Rudi.
+--
+****************************************  Let's  JO   Y  ***********
+Rudi L. M. Engelbertink        __         l   i  J O  Y  u  u  x x  
+rudi@unsec.nl           []_.-'  (Q_,._    l   i  J  O Y  u  u   x   
+                        (o)_[F1}____(o)Z> lll i  J   OY  uuuu  x x. 
+PGP fingerprint = 36 8C B3 8E 45 42 A0 D9  38 9D 49 54 F2 94 88 A9 
+********************************************************************
