@@ -1,89 +1,60 @@
-From: tharbaugh@lnxi.com (Thayne Harbaugh)
-Date: 13 Feb 2003 09:02:52 -0700
-Subject: sharp memory leak
-In-Reply-To: <20030213085927.GA25431@wohnheim.fh-wedel.de>
-References: <1045072520.12666.53.camel@tubarao>
- <20030213085927.GA25431@wohnheim.fh-wedel.de>
-Message-ID: <1045152172.12667.100.camel@tubarao>
+From: jerj@coplanar.net (Jeremy Jackson)
+Date: 13 Feb 2003 13:34:35 -0500
+Subject: Q: MTD and NIC Roms...
+In-Reply-To: <3E4B37CD.8090507@pobox.com>
+References: <m3znp0zqaw.fsf@lnxi.com>  <3E4B37CD.8090507@pobox.com>
+Message-ID: <1045161274.1295.103.camel@contact.skynet.coplanar.net>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
---=-ZEJ1/b3Dh5PuYJHL58b7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2003-02-13 at 01:14, Jeff Garzik wrote:
+> Eric W. Biederman wrote:
+> > Currently I have a patch to eepro100.c that adds an MTD map driver so
+> > the onboard rom can be written.  Making code like etherboot easier to
+> > flash etc. 
+> [...]
+> > I am currently looking for ideas on ways to cleanly get this code
+> > into the kernel, and I am looking for ideas.  The map driver is
+> 
+> 
+> Well... this functionality has existed for a while, and it doesn't need 
+> to be in the kernel :)
+> 
+> Donald Becker's diag suite can do flashing. 
+> ftp://www.scyld.com/pub/diag/  He provides means to program the flash 
+> from userspace.
 
-On Thu, 2003-02-13 at 01:59, J=F6rn Engel wrote:
-> On Wed, 12 February 2003 10:55:20 -0700, Thayne Harbaugh wrote:
-> >=20
-> > I've been sitting on some patches for a while and have not sent them
-> > in.  I saw Jorn send in the patch for the missing cfi_cmdset_0020 and
-> > decided that I need to get my submissions in befor Jorn sends all of
-> > them in.
->=20
-> At least you allowed me to fix my own bug. I submitted cfi_cmdset_0020
-> a while ago and forgot the Makefile line. Darn!
+I tried it on a tulip, and it caused a hard reset. PCI bus issues? 
 
-:^)
+Also, by making it a map driver, I can flash LinuxBIOS into EEPROM,
+disable write access to the EEPROM, and put the *DoC* in the NIC
+socket.  Putting a public key in the EEPROM and making it RO makes the
+whole system secure.  Or I could port DoC and jffs driver to
+userspace...
 
-> > Here's just one - it's a memory leak in the sharp driver.  It's not hug=
-e
-> > and will likely never leak, but it needs to be there to balance the
-> > kmalloc().
->=20
-> Leak exists and fix is correct. It may also be worthwhile to do the
-> following instead:
-> 	mtd =3D kmalloc
-> 	if (!mtd)
-> 		goto out1;
-> 	sharp =3D kmalloc
-> 	if (!sharp)
-> 		goto out2;
-> 	width =3D kmalloc
-> 	if (!width)
-> 		goto out3;
-> 	...
-> 	return mtd;
-> out3:
-> 	kfree(width);
-> out2:
-> 	kfree(sharp);
-> out1:
-> 	kfree(mtd);
-> 	return NULL;
->=20
-> Dunno, this is not a perfect candidate for that strategy, but it might
-> be slightly more obvious. You decide.
+Porting devbios to MTD will then give a large library of NOR flash,
+including quirks (like ATMEL has different versions, and none work if
+you just use the datasheet), and allow them to be used in arbitrary
+sockets.
 
-I mostly don't care.  I'm not even using the sharp driver - I was just
-jumping in and looking around the MTD tree so that I could get up to
-speed.  I looked around at some examples and noticed that something was
-not right with the sharp kalloc/kfree pairing.
+Also, say bye bye to the "pull out the eeprom and put in DoC quick so
+the electrons don't notice" trick.  Just put the DoC into the NIC, boot
+up, flash, power down, swap to BIOS socket.  Sorry LinuxBIOS guys, I
+guess you'll have to switch back to drinking coffee.
 
-In short, you make the decision and commit it - I'm just browsing and am
-initially just mentioning what I have come across.
-
-Thanks for the feedback.
-
-BTW, my personal style is the same as what you have suggested above.  It
-is a bit cleaner and easier to follow for unwinding - IMHO.
-
->=20
-> J=F6rn
---=20
-Thayne Harbaugh
-Linux Networx
-
---=-ZEJ1/b3Dh5PuYJHL58b7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA+S8GsfsBPTKE6HMkRArpuAJ9PIeJN3vDZmh9KPpVha78UPJSMrgCeL4va
-EHoMTrCIEC/So2qr2LrUF78=
-=qmvz
------END PGP SIGNATURE-----
-
---=-ZEJ1/b3Dh5PuYJHL58b7--
+> 
+> And I think that's the best place for it.  We _could_ bloat up the 
+> kernel code by adding the ability flash -- but how many users is that 
+> going to serve, that are not already served by existing programs?  So, I 
+> disagree with getting this stuff into the kernel at all.
+> 
+> 	Jeff
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Jeremy Jackson <jerj@coplanar.net>
