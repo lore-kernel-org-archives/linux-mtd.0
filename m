@@ -1,22 +1,18 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from mail.broadpark.no ([217.13.4.2])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BkWHF-0006Kv-Vb
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 19:01:34 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-In-Reply-To: <1089726079.6288.5.camel@famine>
-References: <1089643331.3951.42.camel@famine>
-	<1089711000.2899.96.camel@hades.cambridge.redhat.com>
-	<1089712151.5995.21.camel@famine>
-	<1089713133.2899.117.camel@hades.cambridge.redhat.com>
-	<1089726079.6288.5.camel@famine>
-Content-Type: text/plain; charset=UTF-8
-Message-Id: <1089759689.8822.18.camel@imladris.demon.co.uk>
+	id 1BkO6s-0003Qt-Gw
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2004 10:18:19 -0400
+Received: from famine (217-13-20-38.dd.nextgentel.com [217.13.20.38])
+	by mail.broadpark.no (Postfix) with ESMTP id BA10B2DE0
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Jul 2004 16:18:47 +0200 (MEST)
+From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="=-63Mnx2Wo239bx8Gnce67"
+Message-Id: <1089728296.6288.19.camel@famine>
 Mime-Version: 1.0
-Date: Wed, 14 Jul 2004 00:01:29 +0100
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, ecos-discuss@sources.redhat.com
-Subject: Re: JFFS2 eats memory
+Date: Tue, 13 Jul 2004 16:18:16 +0200
+Subject: Prune obsolete raw_node_ref's from RAM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,68 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-07-13 at 15:41 +0200, Ã˜yvind Harboe wrote:
-> After your walkthrough if the approach on IRC, I came up with this
-> patch, which seems to take care of the problem.
 
-I can't work out what that's doing. Does it do something like this?
+--=-63Mnx2Wo239bx8Gnce67
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
+This patch prunes raw_node_ref's from RAM so as to achieve a fixed
+steady state RAM memory footprint when the number of files is constant. 
+
+The diff is against the eCos repository since thats where all this
+started:
+
+http://ecos.sourceware.org/ml/ecos-discuss/2004-07/msg00158.html
+
+
+
+Remaining issues to be checked:
+
+- Is the code correct? 
+- What performance impact does it have? 
+
+-- 
+Øyvind Harboe
+http://www.zylin.com
+
+
+--=-63Mnx2Wo239bx8Gnce67
+Content-Disposition: attachment; filename=memleakfix.txt
+Content-Type: text/x-patch; name=memleakfix.txt; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
 Index: nodemgmt.c
 ===================================================================
-RCS file: /home/cvs/mtd/fs/jffs2/nodemgmt.c,v
-retrieving revision 1.107
-diff -u -p -r1.107 nodemgmt.c
---- nodemgmt.c	26 Nov 2003 15:30:58 -0000	1.107
-+++ nodemgmt.c	13 Jul 2004 23:00:48 -0000
-@@ -549,6 +549,46 @@ void jffs2_mark_node_obsolete(struct jff
+RCS file: /cvs/ecos/ecos/packages/fs/jffs2/current/src/nodemgmt.c,v
+retrieving revision 1.6
+diff -w -u -r1.6 nodemgmt.c
+--- nodemgmt.c	11 Dec 2003 23:33:54 -0000	1.6
++++ nodemgmt.c	13 Jul 2004 13:35:44 -0000
+@@ -549,6 +549,60 @@
  		printk(KERN_WARNING "Short write in obliterating obsoleted node at 0x%08x: %zd\n", ref_offset(ref), retlen);
  		return;
  	}
 +
-+	/* Nodes which have been marked obsolete no longer need to be
-+	   associated with any inode. Remove them from the per-inode list */
-+	if (ref->next_in_ino) {
-+		struct jffs2_inode_cache *ic;
-+		struct jffs2_raw_node_ref **p;
++	// Merge obsolete nodes into its previous node, i.e. always leave
++	// one node behind so as not to screw up ref_totlen()
++	if (ref->next_in_ino!=NULL)
++	  {	
++	    bool moreToDo;
++	    do {
++	      moreToDo=false;	      
++	      struct jffs2_inode_cache *ic;
++	      ic = jffs2_raw_ref_to_ic(ref);
 +
-+		ic = jffs2_raw_ref_to_ic(ref);
-+		for (p = &ic->nodes; (*p) != ref; p = &((*p)->next_in_ino))
-+			;
++	      // unlink the node and 
++	      struct jffs2_raw_node_ref *raw;
++	      struct jffs2_raw_node_ref *prev=NULL;
++	      raw = ic->nodes;
++	      for (raw = ic->nodes; raw != (void *)ic; raw = raw->next_in_ino) {
++		// if this node *and* the previous *physical node* are obsolete, combine them.
++		if ((prev!=NULL)&&ref_obsolete(raw)) {
++		  // now take take it off the physcial list, unless it is the 
++		  // first node.
++		  struct jffs2_raw_node_ref *t;
++		  struct jffs2_raw_node_ref *phys_prev=NULL;
++		  t=jeb->first_node;
++		  while (t!=NULL) {
++		    if ((phys_prev!=NULL)&&(t==raw)&&ref_obsolete(prev)) {
++		      // take it off the inode list.
++		      prev->next_in_ino=t->next_in_ino;
++		      
++		      // take it off the physical list
++		      phys_prev->next_phys=t->next_phys;
++		      // update last physical entry pointer...
++		      if (jeb->last_node==t) {
++			jeb->last_node=t->next_phys;
++		      }
++		      
++		      // update physical __totlen field.
++		      phys_prev->__totlen+=t->__totlen;
++	      
++	  
++		      jffs2_free_raw_node_ref(raw);
++		      moreToDo=true;
 +
-+		*p = ref->next_in_ino;
-+		ref->next_in_ino = NULL;
-+	}
-+
-+	/* Merge with the next node in the physical list, if there is one
-+	   and if it's also obsolete */
-+	if (ref->next_phys && ref_obsolete(ref->next_phys)) {
-+		struct jffs2_raw_node_ref *n = ref->next_phys;
-+
-+		ref->__totlen += n->__totlen;
-+		ref->next_phys = n->next_phys;
-+		BUG_ON(n->next_in_ino);
-+		jffs2_free_raw_node_ref(n);
-+	}
-+
-+	/* Also merge with the previous node in the list, if there is one
-+	   and it that one is obsolete */
-+	if (ref != jeb->first_node) {
-+		struct jffs2_raw_node_ref *p = jeb->first_node;
-+
-+		while (p->next_phys != ref)
-+			p = p->next_phys;
-+
-+		if (ref_obsolete(p)) {
-+			p->__totlen += ref->__totlen;
-+			p->next_phys = ref->next_phys;
-+			jffs2_free_raw_node_ref(ref);
++		      break;
++		    }
++		    phys_prev=t;
++		    t=t->next_phys;
++		  }
++		  break;
 +		}
-+	}
++		prev=raw;
++	      }
++	    } while (moreToDo);
++	      }
++	
  }
  
  #if CONFIG_JFFS2_FS_DEBUG > 0
 
-
--- 
-dwmw2
+--=-63Mnx2Wo239bx8Gnce67--
