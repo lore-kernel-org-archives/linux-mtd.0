@@ -1,17 +1,19 @@
-Received: from 213-97-242-113.uc.nombres.ttd.es ([213.97.242.113] helo=rebirth.wojtyla.org)
+Received: from [210.123.115.185] (helo=mail.softman.co.kr)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16vJkK-0006zj-00
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 16:10:52 +0100
-Received: from devil.teleline.es (devil.iqc-services.local [192.168.197.3])
-	by rebirth.wojtyla.org (8.11.6/8.8.7) with ESMTP id g3AFqSh22849
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Apr 2002 17:52:32 +0200
-Message-Id: <5.1.0.14.2.20020410170944.01fbc1d0@pop3.iqc-services.com>
-Date: Wed, 10 Apr 2002 17:09:49 +0200
-To: linux-mtd@lists.infradead.org
-From: Securez <securez@teleline.es>
-Subject: Messagre from MTD layer
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+	id 16vT0d-0007VT-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 02:04:19 +0100
+Received: from jni04 ([202.79.104.82])
+	by mail.softman.co.kr (8.11.3/8.11.3) with SMTP id g3B11qZ32127
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2002 10:01:57 +0900
+Message-ID: <003101c1e0f4$e18d2410$3501040a@jni04>
+From: "Linus Kerk" <linus_kerk@linuxincluded.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: odd byte write to a single 16-bit flash
+Date: Thu, 11 Apr 2002 09:04:20 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,171 +25,9 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I try this, to put a test fs in my MTD device, for test purposes, i get this:
+I'm designing a custom board with 1 X16bits NOR Flash. This chip have 1
+write enables. So, my question is will JFFS handle writing to odd byte
+location, by performing read-modify-write? Or do I have to use 2 X 8-bits
+Flash so that I have 1 Write enable fro each byte.
 
-/etc> expand ramfs.img /dev/mtd0
-MTD_open
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-Last[3] is bfa7, datum is 4000
-MTD_write
-Last[3] is 8da7, datum is 7200
-MTD_write
-Last[3] is ffa7, datum is 20
-MTD_write
-Last[3] is 9a26, datum is 65c5
-MTD_write
-Last[3] is eba7, datum is 1400
-MTD_write
-Last[3] is fea7, datum is 100
-MTD_write
-Last[3] is 2ea7, datum is d174
-MTD_write
-Last[3] is ffa7, datum is 6c
-MTD_write
-Last[3] is fca7, datum is 300
-MTD_write
-Last[3] is c9a7, datum is 3600
-MTD_write
-Last[3] is a4, datum is ff1f
-MTD_write
-Last[3] is ff27, datum is 80
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is 24, datum is ffff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is ff24, datum is ff
-MTD_write
-Last[3] is 12a6, datum is ed41
-MTD_write
-Last[3] is 12a6, datum is ed41
-MTD_write
-Last[3] is 7fa5, datum is 803a
-MTD_write
-Last[3] is efa7, datum is 1000
-MTD_write
-Last[3] is eca7, datum is 1300
-MTD_write
-Last[3] is e9a7, datum is 1600
-MTD_write
-Last[3] is e6a7, datum is 1900
-MTD_write
-Last[3] is fea7, datum is 100
-MTD_write
-Last[3] is fda7, datum is 200
-MTD_write
-Last[3] is d1a7, datum is 2e00
-MTD_write
-Last[3] is fda7, datum is 200
-MTD_write
-Last[3] is ffa4, datum is 3
-MTD_write
-Last[3] is ffa7, datum is 64
-MTD_close
-
-------------------------
-Last[3] is xxx, datanum is xxx <- What are this message?
+Linus Kerk
