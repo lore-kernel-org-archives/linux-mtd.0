@@ -1,14 +1,31 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Selwyn Tang <selwyn@hectrix.com>
-In-Reply-To: <3F98EE07.20006@hectrix.com>
-References: <3F98EE07.20006@hectrix.com>
-Content-Type: text/plain
-Message-Id: <1069060971.4490.50.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 17 Nov 2003 09:22:52 +0000
+Received: from [61.30.80.237] (helo=serversw.iei.com.tw)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1ALgXg-0004CG-9e
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2003 10:23:36 +0000
+Received: from serversw.iei.com.tw (root@localhost)
+	by serversw.iei.com.tw with ESMTP id hAHADY704454
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Nov 2003 18:13:34 +0800 (CST)
+Received: from MailSQR.softnext.com.tw ([172.16.2.41])
+	by serversw.iei.com.tw with ESMTP id hAHADXF04450
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Nov 2003 18:13:33 +0800 (CST)
+Received: from navgw.hq.iei ([172.16.2.30])hAHAIeDs034648
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Nov 2003 18:18:40 +0800 (CST)
+	(envelope-from kevinliao@iei.com.tw)
+Received: (from rdkevinliaonb [172.16.10.248])
+ by navgw.hq.iei (SAVSMTP 3.1.1.32) with SMTP id M2003111718212416317
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Nov 2003 18:21:24 +0800
+Message-ID: <013301c3acf4$8d3033d0$f80a10ac@rdkevinliaonb>
+From: "Kevin Liao" <kevinliao@iei.com.tw>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 17 Nov 2003 18:21:22 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="big5"
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Setting up compressed rootfs on DOC
+Subject: Garbage collection problem for nand flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-10-24 at 17:16 +0800, Selwyn Tang wrote:
-> Hi all,
-> 
-> I am used to running a DOC patched grub firmware on my DOC 2000 (16MB)
-> with nftl, following the instructions of Karim's book. Since the space
-> is running out, I am interested in using a compressed root fs.
+Dear all,
 
-There is no clever way to do this out of the box. If I needed this, I'd
-do it as follows:
+I have a nand flash system with one Jffs2 partition on it. The kernel
+version is 2.4.18 and the mtd snapshot I use to patch is 20031112. I write
+that Jffs2 partition on the nand flash by the following methods:
 
-1. Fix the new NAND/DiskOnChip driver so it does hardware ECC and 
-   correctly reads and enforces the Bad Block Table.
+1. Build a Jffs2 image based on the directory "config" using the command:
+mkfs.jffs2 -p -r config -e 16384 -o config.jffs2 -l -n
+2. Erase the partition on the nand flash using the command: eraseall -j
+/dev/mtd2
+3. Write the image to that partition using the command: nandwrite -j
+/dev/mtd2 config.jffs2
+4. Mount the partition using the command: mount -t jffs2 /dev/mtdblock2
+/mnt/config
 
-2. Use JFFS2 on your DiskOnChip.
+After that, each time I try to touch or modify some file in /mnt/config. The
+kernel complains about the following messaes:
 
-3. Find/make a bootloader which can live in the DiskOnChip where
-   Grub currently is and which groks JFFS2 so it can find and boot
-   kernels from the file system. I'd probably use RedBoot for this,
-   since the JFFS2 code is designed to work in eCos (on which
-   RedBoot is based) and hence it shouldn't be hard to make
-   JFFS2/NAND work in RedBoot.
+jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they all?
+jffs2: Couldn't find erase block to garbage collect!
 
-You could skip step 3 if you put a tiny NFTL partition at the beginning
-of the flash to hold the kernel, and just use JFFS2 on the rest.
+It seems that the file content is still correct. Does anyone know what's
+wrong with it? Thanks a lot.
 
--- 
-dwmw2
+Regards,
+Kevin
