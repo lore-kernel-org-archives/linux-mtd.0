@@ -1,19 +1,20 @@
-Received: from krynn.axis.se ([193.13.178.10])
+Received: from gate.epygi.de ([212.126.211.241] helo=epygi.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ncKI-00052V-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 09:24:10 +0000
-Subject: Re: Initialization ordering problem
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: William Jhun <wjhun@ayrnetworks.com>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20020319111155.N6821@ayrnetworks.com>
-References: <20020318221449.L6821@ayrnetworks.com>
-	<1016520612.19504.3.camel@pcjonashg>  <20020319111155.N6821@ayrnetworks.com>
-Content-Type: text/plain
+	id 16nd1D-00055i-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 10:08:31 +0000
+Received: from pcstephan (pc-stephan.epygi.de [192.168.13.32])
+	by epygi.de (8.11.2/8.11.2) with SMTP id g2KAJgM24626
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2002 11:19:42 +0100 (MET)
+From: "Stephan Linke" <Stephan.Linke@epygi.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: RE: root=/dev/mtdblock doesn't work with kernel 2.4.18
+Date: Wed, 20 Mar 2002 11:18:40 +0100
+Message-ID: <FCEAKDJJAPHPLJFINDAJMELGCDAA.Stephan.Linke@epygi.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date: 20 Mar 2002 10:36:40 +0100
-Message-Id: <1016617000.4115.105.camel@pcjonashg>
-Mime-Version: 1.0
+In-Reply-To: <Pine.LNX.4.44.0203191047050.26226-100000@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,24 +26,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 2002-03-19 at 20:11, William Jhun wrote:
-> I may try this temporarily, but is this the "correct" way to deal with
-> the problem? I'm not sure it would even work.
+Thank's David! Now it works.
 
-I don't know what it looks like in your arch-specific Makefile. But I
-changed ours like this: 
-
-@@ -55,7 +55,8 @@
- # each others config options
- SUBDIRS += arch/cris/boot/rescue
- endif
--CORE_FILES += arch/cris/kernel/kernel.o arch/cris/mm/mm.o
-arch/cris/drivers/drivers.o
-+CORE_FILES += arch/cris/kernel/kernel.o arch/cris/mm/mm.o
-+DRIVERS += arch/cris/drivers/drivers.o
- LIBGCC = $(shell $(CC) $(CFLAGS) -print-file-name=libgcc.a)
- LIBS := $(TOPDIR)/arch/cris/lib/lib.a $(LIBS)
-$(TOPDIR)/arch/cris/lib/lib.a $(LIBGCC)
-
-Best regards
-/Jonas
+>
+> > After changing from 2.4.8-pre4 to a 2.4.18 kernel I can't mount the
+flash as
+> > root device any more. I'm using the "root=" boot argument to do so.
+> > The filesystem (cramfs) is alredy detected in mount_root() (super.c)
+when
+> > mount_root calls blkdev_put(bdev, BDEV_FS); Which for some reasons has
+to
+> > call the release function of the device which results in
+mtdblock_release()
+> > being called. The hole thing stops when invalidate_device() calls
+> > fsync_dev(dev).
+>
+> Remove just the call to invalidate_device() in mtdblock_release()
+>
+> --
+> dwmw2
+>
