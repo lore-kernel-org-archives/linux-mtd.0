@@ -1,21 +1,28 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=debian.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CEXCS-0001kq-Oj
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 14:04:41 -0400
+	id 1CEXEd-0001uC-BU
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 14:06:57 -0400
 From: Thomas Gleixner <tglx@linutronix.de>
-To: skorinkod@mosk.ru
-In-Reply-To: <200410042126.10303.skorinkod@mosk.ru>
-References: <200410011858.28776.skorinkod@mosk.ru>
-	<1096751135.21297.73.camel@thomas>
-	<200410042126.10303.skorinkod@mosk.ru>
+To: Nicolas Pouillon <nipo@ssji.net>
+In-Reply-To: <20041004183827.7bcc5071.nipo@ssji.net>
+References: <20041001154617.163cc484.nipo@ssji.net>
+	<1096639064.30942.477.camel@hades.cambridge.redhat.com>
+	<20041001162705.5873dc7c.nipo@ssji.net>
+	<20041002155505.083d8440.nipo@ssji.net>
+	<1096749729.21297.54.camel@thomas>
+	<20041003030653.2e0452a7.nipo@ssji.net>
+	<1096768161.21297.129.camel@thomas>
+	<20041003221827.7bea56fc.nipo@ssji.net>
+	<1096877111.21297.208.camel@thomas>
+	<20041004183827.7bcc5071.nipo@ssji.net>
 Content-Type: text/plain
-Message-Id: <1096912615.21297.429.camel@thomas>
+Message-Id: <1096912750.21297.433.camel@thomas>
 Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 19:56:55 +0200
+Date: Mon, 04 Oct 2004 19:59:11 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems with DiskOnChip 2000
+Subject: Re: Patch !
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,17 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 19:26, Dmitry Skorinko wrote:
-> oops, it's mistake. Knoppix 3.6 has 2.6.7 kernel....
-> :)
-> ok, I wil do install linux diskette with 2.6.8.1 
-> but what modules i must have there??
+On Mon, 2004-10-04 at 18:38, Nicolas Pouillon wrote:
+> > Is the chip configured for 16-bit interface mode ? 
+> 
+> PXA boots of it and its BOOT_SEL is configured to "Asynchronous 16bit
+> ROM", elsewhere, in mem controller, it is configured as "16bit fast
+> flash or rom, non burst read". so I assume it is.
+> 
+> > If yes, there are more tweaks neccecary.
+> 
+> I can see some NAND_BUSWIDTH_16 options, but how can this be enabled at
+> probe time ?
 
-drivers/mtd/nand/diskonchip
-
-> what about 2.4.x kernel? Will these new drivers included in this kernels? With 
-> 2.6 I must rewrite other self drivers and it's not best way for me...
-
-The MTD CVS code works with 2.4.
+The configuration register reflects the state of the IF_CFG pin.
+The NAND_BUSWIDTH_16 option must be set before calling nand_scan, but
+AFAICS you must also add 16bit aware read/write... functions for 
+doc2001plus.
 
 tglx
