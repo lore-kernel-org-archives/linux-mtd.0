@@ -1,11 +1,16 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <4193B304.1010009@yandex.ru>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CSbRX-0001Iu-Ky
+	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 08:26:27 -0500
+Message-ID: <4194B4DC.4070909@oktetlabs.ru>
+Date: Fri, 12 Nov 2004 16:04:28 +0300
+From: Artem Bityuckiy <dedekind@oktetlabs.ru>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
 References: <4193B304.1010009@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1100262876.21273.115.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Date: Fri, 12 Nov 2004 12:34:36 +0000
+	<1100262876.21273.115.camel@baythorne.infradead.org>
+In-Reply-To: <1100262876.21273.115.camel@baythorne.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: spin_lock() needed ?
@@ -18,35 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-11-11 at 21:44 +0300, Artem B. Bityuckiy wrote:
-> So, I think we should hold the c->erase_completion_lock here. I mean:
+> I think you're right -- if the first node in the per-inode list is
+> obsolete, then this can happen. README.Locking agrees with this
+> assessment. 
 > 
-> jffs2_add_physical_node_ref(c, raw);
-> spin_lock(&c->erase_completion_lock); /* <--------- this */
-> raw->next_in_ino = f->inocache->nodes;
-> f->inocache->nodes = raw;
-> spin_unlock(&c->erase_completion_lock); /* <--------- and this */
+> But I'm not sure the first node _can_ be obsolete. After all, nodes
+> become obsolete because we do something to make them so, and we can only
+> do that by writing a _new_ node... which ends up at the head of the
+> list.
+Hmm, true.
 > 
+> But it certainly wants a bloody great comment to that effect, at the
+> very least -- I suppose we might as well just take the lock.
 > 
-> Can anybody comment this please?
+> In fact I suspect it may be possible to get an obsolete node at the head
+> of the list, immediately after booting. There's no real ordering on the
+> list at that point. 
+Yes, and it seems not only "immediately after booting", but as long as a 
+file wasn't changed after booting...
 
-I think you're right -- if the first node in the per-inode list is
-obsolete, then this can happen. README.Locking agrees with this
-assessment. 
+So, it seems the lock would be good.
 
-But I'm not sure the first node _can_ be obsolete. After all, nodes
-become obsolete because we do something to make them so, and we can only
-do that by writing a _new_ node... which ends up at the head of the
-list.
+Thanks for comment. I'll try to fix this.
 
-But it certainly wants a bloody great comment to that effect, at the
-very least -- I suppose we might as well just take the lock.
-
-In fact I suspect it may be possible to get an obsolete node at the head
-of the list, immediately after booting. There's no real ordering on the
-list at that point. 
-
-Well spotted.
 
 -- 
-dwmw2
+Best regards, Artem B. Bityuckiy
+Oktet Labs (St. Petersburg), Software Engineer.
++78124286709 (office) +79112449030 (mobile)
+E-mail: dedekind@oktetlabs.ru, web: http://www.oktetlabs.ru
