@@ -1,18 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.allot.com ([199.203.223.202] helo=exg.allot.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zIcF-0006SG-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 14:42:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <DAV46AyfxRydC3hSsxL000018db@hotmail.com> 
-References: <DAV46AyfxRydC3hSsxL000018db@hotmail.com> 
-To: "zydla son" <zydlason@hotmail.com>
-Cc: "PPC-embedded" <linuxppc-embedded@lists.linuxppc.org>,
-    "MTD" <linux-mtd@lists.infradead.org>
-Subject: Re: kernel can not detect flash device. 
-Mime-Version: 1.0
+	id 14zIwY-0006U7-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 15:03:27 +0100
+Message-ID: <3AFFE80B.DCE1B139@allot.com>
+Date: Mon, 14 May 2001 17:13:31 +0300
+From: Felix Radensky <felix@allot.com>
+MIME-Version: 1.0
+To: Linux-mtd <linux-mtd@lists.infradead.org>
+Subject: DOC problems on PowerPC
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 14 May 2001 14:46:30 +0100
-Message-ID: <22540.989847990@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,16 +21,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zydlason@hotmail.com said:
->   My target platform is ForcePowerCore 6750 which has four
-> userflash(AM29F016) and I choose the relative options according to the
-> "Linux MTD, JFFS HOWTO",but kernel can not detect flash device.
+Hi, all
 
-> Physically mapped flash: Found no CFI device at location zero
+I was able to solve the DOC problems on PowerPC I've reported yesterday.
 
-Is the AM29F016 actually CFI-compliant? Try the amd_flash driver. You'll 
-probably have to hack the physmap.c code to invoke that probe instead of 
-the cfi probe.
+All I had to do is to run "eraseall /dev/mtd0", then run "nftl_format
+/dev/mtd0"
+and  then create partitions with fdisk.
 
---
-dwmw2
+Can someone please explain me the difference between eraseall and
+nftl_format.
+HOWTO says nothing about it.
+
+By the way, the latest mtd code would not compile, at least on my 2.4.2
+kernel
+unless you add #include <linux/kmod.h> to chipreg.c.  This is because of
+
+a call to request_module() in do_map_probe(), which IMHO should be
+under #ifdef CONFIG_KMOD, and not #ifdef CONFIG_MODULES.
