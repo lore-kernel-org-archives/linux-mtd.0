@@ -1,17 +1,20 @@
-Received: from [207.209.118.131] (helo=msi-ex6.ccm.msyscal.com)
+Received: from enigma.barak.net.il ([212.150.48.99])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16ePo3-0006jX-00
-	for <linux-mtd@lists.infradead.org>; Sat, 23 Feb 2002 00:12:52 +0000
-Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BF9D7@MSI-EX6>
-From: Vadim Khmelnitsky <VadimK@m-sys.com>
-To: 'Ilguiz Latypov' <ilatypov@superbt.com>, Mark Meade
-	 <mark@lakeshoremicro.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-Date: Fri, 22 Feb 2002 16:23:53 -0800
+	id 16eud6-0001ij-00
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Feb 2002 09:07:36 +0000
+Message-ID: <449501c1bd14$48bac5c0$1900000a@v.vmanage.com>
+Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
+From: "Gad Hayisraeli" <gad@syete.co.il>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: "Michael Michael" <memmel2@yahoo.com>,
+	<linux-mtd@lists.infradead.org>
+References: <441701c1ba2c$2cf1dc60$1900000a@v.vmanage.com>  <20020220063356.59191.qmail@web14702.mail.yahoo.com>  <24611.1014280415@redhat.com>
+Subject: Re: Slow jffs2 startup on DOM 
+Date: Sun, 24 Feb 2002 11:18:54 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,57 +26,45 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-[Ilguiz]
-Vadim, should the Millennium SPL check sum include IPL?
+you'll be very surprised, becasue many times that i had rebooted the machine
+(mediaEngine, strataflash intel) and the loading of all the files was VERY
+slow, untill i had done "shutdown -r now" and after that the machine
+returned to normal operation, almost...
+still i encountering a little slowness sometimes, and i suspect that the
+jffs layer is fixing things online, but i'm not sure. (i got rid of the jffs
+debug info so i cannot see its operation)
 
-[Vadim]
-I will verify it with IPL developer , but as far as i know there is no
-difference in behavior between IPL of DOC2000 and Millennium .
+maybe you can think of some e2fsck for jffs2, instead of fixing the blocks
+everytime without the user's knowledge ?
 
-IPL that you use should load SPL ( secondary program loader ) . In case
-of Millennium chip SPL should be placed right after IPL ( offset 0x400 ) and
-i think that size of SPL should be no longer than 7K . 1KB of IPL + 7KB of
-SPL = 8KB , which is the size of the Millennium chip erasable unit .
+Gad
 
-
-Vadim
-  
-
-
-
------Original Message-----
-From: Ilguiz Latypov [mailto:ilatypov@superbt.com]
-Sent: Fri, February 22, 2002 2:39 PM
-To: Mark Meade
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+----- Original Message -----
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "Gad Hayisraeli" <gad@syete.co.il>
+Cc: "Michael Michael" <memmel2@yahoo.com>; <linux-mtd@lists.infradead.org>
+Sent: Thursday, February 21, 2002 10:33 AM
+Subject: Re: Slow jffs2 startup on DOM
 
 
-
-Mark,
-
-On Fri, 22 Feb 2002, Mark Meade wrote:
-
-> The doc_loadbios output to /dev/mtd0 is off by 512 bytes (when I use an
-> offset of 1024):
-
-Thanks for the correction.   I adjusted your patch to take into account 
-the almost impossible case when IPL is bigger than erase sector.
-
-> My system now recognizes that something is there, but refuses to boot:
->     Searching for boot record from SCSI: Not Found.
-
-Perhaps, IPL refuses to execute SPL (GRUB's doc_stage1) because the
-doc_stage1's check sum didn't include IPL itself.  
-
-Vadim, should the Millennium SPL check sum include IPL?
-
-The other thought is if the stage1 code can be placed instead of IPL.
-
-Ilguiz
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+> gad@syete.co.il said:
+> >  in my case (mediaEngine + assabet), i encountered some slowness like
+> > you did, just when i previously shutdown the device without unmounting
+> > + syncing first
+>
+> Er, if that makes a difference to JFFS2 I'll be _very_ surprised. JFFS2
+> does nothing special on unmount. Checkpointing, either on unmount or
+> periodic opportunistic checkpoints, has been discussed a lot but never
+> actually implemented. I'm happy to give pointers if you seriously intend
+to
+> work on it.
+>
+> --
+> dwmw2
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
