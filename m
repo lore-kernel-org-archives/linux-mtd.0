@@ -1,15 +1,16 @@
-Received: from red.impulse.net ([207.154.64.11])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17a6Z0-00005i-00
-	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 04:23:46 +0100
-From: Bill Burgess <burgess@greeneridge.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: 576-MB DOC reports as Millennium?
-Date: Wed, 31 Jul 2002 20:23:37 -0700
-Message-Id: <20020801032337.18882@smtp.impulse.net>
+Received: from [207.209.118.131] (helo=msi-ex6.m-sys.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17a6t8-00007o-00
+	for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2002 04:44:35 +0100
+Message-ID: <AEA9DCA73595D411A6D4009027DE9C5E019BFE5E@MSI-EX6>
+From: Vadim Khmelnitsky <vadim.khmelnitsky@m-sys.com>
+To: 'Bill Burgess' <burgess@greeneridge.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: 576-MB DOC reports as Millennium?
+Date: Wed, 31 Jul 2002 20:46:33 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,6 +21,22 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+That's true .
+
+New diskonchip 2000 of certain capacities will not work with current open
+source driver .
+576MB is one of them .
+
+Vadim.
+
+
+-----Original Message-----
+From: Bill Burgess [mailto:burgess@greeneridge.com]
+Sent: Wed, July 31, 2002 8:24 PM
+To: linux-mtd@lists.infradead.org
+Subject: 576-MB DOC reports as Millennium?
+
 
 Doc2000.c can't seem to handle the new 576-MB DoC's.
 
@@ -56,3 +73,9 @@ William C. Burgess, Ph.D., Senior Research Engineer
 Greeneridge Sciences Inc., 1411 Firestone Rd., Goleta, CA 93117
 Tel: (805) 899-3558  Fax: (805) 967-7720
 http://www.greeneridge.com
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
