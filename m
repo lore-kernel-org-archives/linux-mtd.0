@@ -1,19 +1,18 @@
-Received: from enigma.barak.net.il ([212.150.48.99])
+Received: from pd9eb906a.dip.t-dialin.net ([217.235.144.106] helo=thomas.tec.autronix.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dZV9-00029r-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 16:21:52 +0000
-Message-ID: <441701c1ba2c$2cf1dc60$1900000a@v.vmanage.com>
-Reply-To: "Gad Hayisraeli" <gad@syete.co.il>
-From: "Gad Hayisraeli" <gad@syete.co.il>
-To: "Michael Michael" <memmel2@yahoo.com>,
-	<linux-mtd@lists.infradead.org>
-References: <20020220063356.59191.qmail@web14702.mail.yahoo.com>
-Subject: Re: Slow jffs2 startup on DOM
-Date: Wed, 20 Feb 2002 18:32:22 +0200
-MIME-Version: 1.0
+	id 16dcP1-0002N4-00
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 19:27:44 +0000
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-15"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: JFFS2 list_dirty corruption
+Date: Wed, 20 Feb 2002 20:41:48 +0100
+Cc: linux-mtd@lists.infradead.org, jffs-dev@axis.com
+MIME-Version: 1.0
+Message-Id: <02022020414807.18560@thomas>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,34 +24,33 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
------ Original Message -----
-From: "Michael Michael" <memmel2@yahoo.com>
-To: <linux-mtd@lists.infradead.org>
-Sent: Wednesday, February 20, 2002 8:33 AM
-Subject: Slow jffs2 startup on DOM
+While hacking on JFFS2 for NAND I found a possibility, where scan_medium 
+corrupts list_dirty.
 
+jffs2_scan_medium calls
+jffs2_scan_eraseblock calls
+jffs2_scan_dirent_node calls	
+jffs2_add_fd_to_list
+	There is a duplicate entry detected, so it calls
+jffs2_mark_node_obsolete
+	There is it possible that the jeb is added to list_dirty,
+	because it's a duplicate entry
+	with list_add_tail
+	We come back to
+jffs2_scan_eraseblock 
+	There is another condition, that marks the block dirty
+	We come back to
+jffs2_scan_medium
+	There we add the block to list_dirty too with add_list
+	Then we have a circular list entry.
+Result:	chaos	
 
-> Hello I'm using jffs2 on a DOM with the block device
-> driver. I find the startup times very slow. It seams
-> to me from reading the source that jffs2 may be
-> scanning every block with this driver. It takes about
-> 3 min for the first mount. Is there anyway to fix this
-> ?
-> Would it be  possible to add say a checkpoint such
-> that if the disk  is "clean" we proceed with normal
-> startup ?
-> I do write to the DOM but I can certianly ensure that
-> its clean except on sudden power downs.  I suspect
-> that a lot of people who write to the devices can
-> ensure that the writes are checkpointed so we don't
-> have to do a full scan.
->
-> Mike
->
-
-in my case (mediaEngine + assabet), i encountered some slowness like you
-did, just when i previously shutdown the device without unmounting + syncing
-first
-(this commands are regularly handled by  S0Reboot on rc6.d dir)
-
-Gad
+That's not a problem of the NAND modifications. I verified, that this can 
+happen in the actual CVS-version too.
+-- 
+Thomas
+__________________________________________________
+Thomas Gleixner, autronix automation GmbH
+auf dem berg 3, d-88690 uhldingen-muehlhofen
+fon: +49 7556 919891 , fax: +49 7556 919886
+mail: gleixner@autronix.de, http://www.autronix.de  
