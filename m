@@ -1,18 +1,16 @@
-Received: from borg.org ([208.218.135.231])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15SkEj-00015z-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2001 20:03:53 +0100
-Date: Fri, 3 Aug 2001 15:09:21 -0400
-From: Kent Borg <kentborg@borg.org>
-To: Linux Mtd <linux-mtd@lists.infradead.org>,
-  Abraham vd Merwe <abraham@2d3d.co.za>
-Subject: Building MTD with JFFS2
-Message-ID: <20010803150921.C20809@borg.org>
-References: <20010731175442.I10857@borg.org>
-Mime-Version: 1.0
+Received: from [203.115.15.101] (helo=obelix.sri.crossvue.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15TZxW-0005XN-00
+	for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2001 03:17:35 +0100
+Message-ID: <3B6E01BA.2B394136@sri.crossvue.com>
+Date: Mon, 06 Aug 2001 08:32:26 +0600
+From: dhammika <dpathirana@sri.crossvue.com>
+MIME-Version: 1.0
+To: david woodhouse <dwmw2@infradead.org>,
+ 	linux-mtd <linux-mtd@lists.infradead.org>
+Subject: mtd lilo
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20010731175442.I10857@borg.org>; from kentborg@borg.org on Tue, Jul 31, 2001 at 05:54:42PM -0400
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,42 +22,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, Jul 31, 2001 at 05:54:42PM -0400, I wrote:
-> Hello, a newbie here, and I thought I was making good progress
-> (debugging why I couldn't talk to our flash at all), and then I got
-> confused over sources.
+hello,
 
-And now I am getting closer.
+i'm trying to boot from a 32MB DOC. but am having trouble with mtd-lilo.
+here's my setup, 
+        133Mhz Advantech Biscuit PC (486 SBC),
+        32MB Millennium 2000 DOC,
+        2.4.6 kernel
 
-Following e-mailed advice of Abraham vd Merwe <abraham@2d3d.co.za> I
-used the infradead.org sources.  He sent me a script that copied the
-right cvs-ed files into the right places in the regular 2.4 kernel
-tree, but that left me with no configuration mention of JFFS2 and a
-compile error in the old JFFS directory.
+what i did,
+        got the mtd-lilo patches from earlier list
+posting,                                     
+	(http://lists.infradead.org/pipermail/linux-mtd/2001-April/000049.html)
+	build mtd-lilo
+        ./mtd-lilo -v -C /etc/lilo.conf -i /boot/mtd.b -c /boot/map.b
 
-Resorting to a little RTFM I looked at the mtd-jffs-HOWTO and followed
-its approach ("sh patchin.sh /usr/src/linux"), and got the same
-results: no mention of JFFS2 in the configuring and the same compile
-error in linux/fs/jffs (inode-v23.c, line 93, no member named
-s_maxbytes).
+now mtd-lilo runs ok, 
 
-Looking at the mtd/patches/Configure.help I see mention of
-CONFIG_JFFS2_FS and CONFIG_JFFS2_FS_DEBUG, I tried manually defining
-them in autoconf.h as 1 and 3 respectively, and in linux/fs/Makefile I
-changed the instances of jffs and JFFS to jffs2 and JFFS2 respectively.
+	Reading boot sector from /dev/nftla1
+	Merging with /boot/mtd.b
+	Mapping message file /boot/message
+	Boot image: /boot/vmlinuz
+Added linux *
+	Boot other: /dev/fd0, loader /boot/chain.b
+	Pseudo partition start: 0
+	Added floppy
+	/boot/boot.5D01 exists - no backup copy made.
+	Writing boot sector.
 
-This made my compile happy, but, though the make dep seems to have
-visited the linux/fs/jffs directory, the make itself didn't.
+and my lilo.conf looks like, 
+	boot=/dev/nftla1
+	map=/boot/map.b
+	install=/boot/mtd.b
+	prompt 
+	timeout=50
+	message=/boot/message
+	image=/boot/vmlinuz
+		label=linux
+		root=/dev/nftla1
+		read-only
+	other=/dev/fd0
+		label=floppy
+		unsafe	
 
-Hmmm.  Ideas on how to get out of the newbie mud?
+but when i try to boot with lilo nothing comes up, any ideas??
 
+thanks 
 
-In the mean time, because we don't have CFI chips, I think I will look
-into whether I need to write my own mtd driver.  (AMD and Intel chips,
-but old ones.)
-
-
-Thanks,
-
--kb, the Kent who is glad there are those who have been here before
-him.
+dhammika
