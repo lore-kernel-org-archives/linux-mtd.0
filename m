@@ -1,19 +1,22 @@
-Received: from gate.epygi.de ([212.126.211.241])
+Received: from mail.dev.equiinet.com ([194.164.241.163])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1C2tg9-00082n-H2
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2004 11:39:15 -0400
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Kuefmann Andreas ICM CP RD SD 1" <andreas.kuefmann@siemens.com>,
-	<linux-mtd@lists.infradead.org>
-Date: Thu, 2 Sep 2004 17:39:10 +0200
-Message-ID: <NGENJJFPMHGLPILEKKAMGEMHCEAA.Stephan.Linke@epygi.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7F3FE9B2FBF6194691BC493C6699C0B1568B93@mchh9esa.mchh.siemens.de>
-Cc: 
-Subject: RE: how to change size of MTD partitions at runtime
+	id 1C2tyB-0008Ep-8A
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2004 11:57:52 -0400
+Received: from invader.dev.equiinet.com (unknown [192.168.100.120])
+	by mail.dev.equiinet.com (Postfix) with ESMTP id A31344B6D7
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  2 Sep 2004 16:57:47 +0100 (BST)
+Received: from graham by invader.dev.equiinet.com with local (Exim 3.36 #1
+	(Debian)) id 1C2ty7-0002oB-00
+	for <linux-mtd@lists.infradead.org>; Thu, 02 Sep 2004 16:57:47 +0100
+Date: Thu, 2 Sep 2004 16:57:47 +0100
+From: Graham Keeling <graham@equiinet.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040902155747.GA9201@invader.dev.equiinet.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: MTD newbie trying to use AM29F016B
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,111 +26,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andreas,
+Hello,
+I am trying to get access (using Linux) to two AM29F016B flash chips on a
+machine that I have inherited.
+I haven't been able to find an introduction to MTD on the internet.
+What I've been trying (using 2.4.22 kernel) is this:
+Set the following kernel options...
 
-by saying "additional partion" a partition that mappes to the same area inside the flash as the kernel/rootfs/other area . That you
-whant to replace. You don't need more space to do so. Just tell this additional partition that it should be lokated at the same
-position as your old partitions. For instance you use this additional partition to map the entire flash. Then you can access the raw
-flash for writing the binaries to it.
-Maybe changing the partitioning works too...
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=m
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+CONFIG_MTD_PARTITIONS=m
+# CONFIG_MTD_CONCAT is not set
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_CMDLINE_PARTS is not set
+# CONFIG_MTD_CHAR is not set
+CONFIG_MTD_BLOCK=m
+# CONFIG_MTD_BLOCK_RO is not set
+# CONFIG_FTL is not set
+# CONFIG_NFTL is not set
 
-I always recalculate the flash areas for kernel, rootfs and a second fs during kernel startup based on the data in the flash. During
-system update I simply erase the entire area and then write the data to it.
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=m
+CONFIG_MTD_JEDECPROBE=m
+CONFIG_MTD_GEN_PROBE=m
+# CONFIG_MTD_CFI_ADV_OPTIONS is not set
+# CONFIG_MTD_CFI_INTELEXT is not set
+CONFIG_MTD_CFI_AMDSTD=m
+# CONFIG_MTD_CFI_STAA is not set
+CONFIG_MTD_RAM=m
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+CONFIG_MTD_OBSOLETE_CHIPS=y
+CONFIG_MTD_AMDSTD=m
+# CONFIG_MTD_SHARP is not set
+CONFIG_MTD_JEDEC=m
 
-In any case you should watch out for open filehandles to your filesystems while replacing them. "Open file handle problems" appeare
-more often when the layout of the flash and rootfs changes dramaticaly during the update process.
 
-Stephan
+I then end up with these modules:
 
-> -----Original Message-----
-> From: Kuefmann Andreas ICM CP RD SD 1
-> [mailto:andreas.kuefmann@siemens.com]
-> Sent: Donnerstag, 2. September 2004 16:48
-> To: 'Stephan Linke'; Kuefmann Andreas ICM CP RD SD 1;
-> linux-mtd@lists.infradead.org
-> Subject: AW: how to change size of MTD partitions at runtime
->
->
-> Hi Stephan,
->
-> thanks for your proposal. Unfortunately we have a very limited flash, so we
-> can't afford an additional partition for sw update purpose as you suggested.
->
-> If it should happen that future kernel/rootfs images would exceed the current
-> mtd partition sizes we'd have to shrink another mtd partition (user data)
-> accordingly in order to regain the missing space.
->
-> I don't think I'd have to re-mount/re-sync after the update, since it's OK
-> to reboot the machine after the update has completed.
->
-> regards,
-> - Andy
->
-> -----Ursprüngliche Nachricht-----
-> Von: Stephan Linke [mailto:Stephan.Linke@epygi.de]
-> Gesendet: Donnerstag, 2. September 2004 15:20
-> An: Kuefmann Andreas ICM CP RD SD 1; linux-mtd@lists.infradead.org
-> Betreff: RE: how to change size of MTD partitions at runtime
->
->
-> Hi Andreas,
->
-> for the same purpose I am using an additional partition that covers the range of kernel and rootfs to update both of them
-> at the same time. Ofcourse in this case after writing the images the device has to be rebooted. How do you handle
-> remounting the rootfs and synchronization with current systems configuration so you don't have to reboot?
->
-> Regards, Stephan
->
-> > -----Original Message-----
-> > From: linux-mtd-bounces@lists.infradead.org
-> > [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of Kuefmann
-> > Andreas ICM CP RD SD 1
-> > Sent: Mittwoch, 1. September 2004 13:42
-> > To: 'linux-mtd@lists.infradead.org'
-> > Subject: how to change size of MTD partitions at runtime
-> >
-> >
-> > Hi all,
-> >
-> > I'm searching for a solution to dynamically change the size of MTD
-> > partitions at runtime.
-> >
-> > This functionality is required for a flash update of kernel and/or
-> > rootfs in the special case that the new kernel/rootfs is larger than
-> > the old one. (in an embedded environment)
-> >
-> > 1.)
-> > there is no problem in erasing the flash, e.g eraseall /dev/mtd?,
-> > (acting from a chrooted environment)
-> >
-> > 2.)
-> > However, reprogramming the flash with a larger image (now exceeding
-> > the limits of the previous partition) isn't as easy as a cp
-> > newimage.img /dev/mtd?.
-> >
-> > The MTD layer will still rely on the (old) partition sizes that were
-> > valid during system startup. (taken over from a U-BOOT environment)
-> >
-> > My plans are as follows:
-> > - erase the flash partitions
-> > - adapt the u-boot environment to reflect the new mtd partition sizes
-> > - force the MTD subsystem to "re-read" the partition table in u-boot's
-> >   environment.
-> > - cp the new images to /dev/mtd? (which now reflect the changed
-> >   partition sizes)
-> >
-> > My question now is:
-> > - How can I manage to force a re-read of the partition table?
-> >
-> > Or can you think of another solution to change MTD partitions at
-> > runtime?
-> >
-> > Thank you,
-> > regards,
-> > - Andy
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
->
+mtdcore
+mtdblock
+mtdpart
+
+amd_flash
+cfi_cmdset_0002
+cfi_probe
+chipreg
+gen_probe
+jedec
+jedec_probe
+map_ram
+
+When I use modprobe to install these modules, they give no errors and lsmod
+shows that they are installed. No warnings or anything else appear in any
+log. I don't know whether I am installing them in the wrong order or
+something.
+
+/proc/mtd contains:
+dev:    size   erasesize  name
+
+If things were working correctly, I think that there should be more stuff in
+/proc/mtd.
+AM29F016 is listed in jedec_probe.c, which seems similar enough to
+AM29F016B.
+
+I don't know where to go from here. Any help at all would be appreciated!
+Thanks,
+Graham.
