@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from cpe-144-132-147-2.nsw.bigpond.net.au ([144.132.147.2] helo=fuego.linuxaus.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17MqUE-0000NV-00
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2002 14:36:02 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <02062413502007.08285@tux> 
-References: <02062413502007.08285@tux> 
-To: esn@cotas.dk
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problems with Jffs2 on this board 
+	id 17Mr1B-0000QR-00
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2002 15:10:05 +0100
+Received: from beamer.servat.com (beamer.servat.com [192.168.1.6])
+	by fuego.linuxaus.com (Postfix) with ESMTP id 9028F8325
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2002 00:09:58 +1000 (EST)
+Subject: OpenSSH/OpenSSL is too big... any alternatives?
+From: Gonzalo Servat <gonzalo@linuxaus.com>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-xnaIps8yIY0J2szTmWOh"
+Date: 26 Jun 2002 00:09:58 +1000
+Message-Id: <1025014199.2220.3.camel@beamer.servat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 25 Jun 2002 14:36:01 +0100
-Message-ID: <17635.1025012161@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,17 +24,36 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-esn@cotas.dk said:
->  I create a root filesystem image with mkfs.jffs2 which I transfer to
-> the  flash on the board with over serial. I can now boot the kernel
-> from the  bootloader but the kernel can't find other files that those
-> in /devs (from  the debug level of 2 in the jffs2 subsystem in the
-> kernel) and thus fails to call /sbin/init.
+--=-xnaIps8yIY0J2szTmWOh
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Your mkfs.jffs2 isn't the problem though -- can you double-check that the 
-image has made it correctly to the flash? If you can boot nfsroot, read it 
-back from the /dev/mtd device and compare it with the original -- to verify 
-correct download and correct partitioning setup etc.
+Hi All
 
---
-dwmw2
+I have a 2MiB DiskOnChip. After installing the kernel, BusyBox, iptables
+and a couple of libs from uClibc I only have 400k left of space.
+OpenSSH needs to link to OpenSSL and OpenSSL is well over 1MB on it's
+own. Is there any alternatives to OpenSSL/OpenSSH that will fit on 400k?
+
+Thanks in advance!
+
+Regards,
+
+Gonzalo.
+
+
+
+--=-xnaIps8yIY0J2szTmWOh
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA9GHm2vTbSWKMx8O4RAkOZAJ4tn0esLxEx1Bp7IOGyhrm1OyXW3ACfRNJi
+STAuqC3VdYdxIDNVWczs0Fs=
+=oyzy
+-----END PGP SIGNATURE-----
+
+--=-xnaIps8yIY0J2szTmWOh--
