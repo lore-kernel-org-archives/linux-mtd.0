@@ -1,53 +1,63 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14b0du-0000Fx-00
-	for mtd-list@infradead.org; Thu, 08 Mar 2001 13:39:46 +0000
-Received: from [207.206.34.25] (helo=penguin.theopalgroup.com)
+	id 14b2DV-0000L9-00
+	for mtd-list@infradead.org; Thu, 08 Mar 2001 15:20:37 +0000
+Received: from fjordland.nl.linux.org ([131.211.28.101] ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14b0ds-0000EV-00
-	for mtd@infradead.org; Thu, 08 Mar 2001 13:39:44 +0000
-Received: from localhost (jacobs@localhost)
-	by penguin.theopalgroup.com (8.11.0/8.11.0) with ESMTP id f28DcAv07846
-	for <mtd@infradead.org>; Thu, 8 Mar 2001 08:38:10 -0500
-Date: Thu, 8 Mar 2001 08:38:10 -0500 (EST)
-From: Kevin Jacobs <jacobs@penguin.theopalgroup.com>
-To: mtd@infradead.org
-Subject: Oh, the many joys of MTD...
-Message-ID: <Pine.LNX.4.21.0103080809310.7682-100000@penguin.theopalgroup.com>
+	id 14b2DS-0000Ji-00
+	for mtd@infradead.org; Thu, 08 Mar 2001 15:20:35 +0000
+Message-ID: <3AA7A1FE.B07D5797@danielind.com>
+Date: Thu, 08 Mar 2001 09:15:10 -0600
+From: Vipin Malik <vmalik@danielind.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Jonas Holmberg <jonas.holmberg@axis.com>
+CC: 'Erwin Authried' <eauth@softsys.co.at>,
+	"'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Re: reset/read mode cmd for AMD compatible flash
+References: <E6FE4E054F02D511818E00025558B61D429E7A@cluster01.axis.se>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello everyone!
+>From the AMD 29LV017 CFI flash data sheet (pg. 16) (talking about the CFI cmd register and commands):
 
-  I'm new to working on MTD and would like to start by thanking everyone who
-has contributed to it.  Its a fine addition to Linux and has made my life
-much easier.  However, I am having a few problems and was hoping for some
-kinds souls to enlighten me a little.
+"Writing incorrect address or data values or in the impropper sequence resets the device to reading array data."
 
-Let me also say that I am somewhat new to hardware driver development and
-have some rather odd gaps in my knowledge.
+Vipin
 
-My first questions is likely something fairly basic.  I've read over much of
-the MTD source and it seems that many of the erase and write functions do
-not deal with concurrent access and CPU cache issues.  What happens when a
-{read,write,erase} request comes in for a sector that is being
-{written,erased}?
 
-Also, is it assumed that the memory mapped for MTD devices will not be
-cached by the CPU?  If so, is it feasible to add support.  If not, where is
-code to flush/update the cache after a write or erase operation?
 
-Thanks,
--Kevin
+Jonas Holmberg wrote:
 
---
-Kevin Jacobs
-The OPAL Group - Enterprise Systems Architect
-Voice: (216) 986-0710 x 19         E-mail: jacobs@theopalgroup.com
-Fax:   (216) 986-0714              WWW:    http://www.theopalgroup.com
-
+> I _think_ it should be 0xf0 (but 0xff seems to work on AM29LV160DB and DT!?). Isn't it just a typo?
+>
+> BTW: did you try amd_flash_probe() with your Atmel chip? In that case can you give me manufacturer id, device id and eraseregions info, please? I'd like to add support for as many AMD compatible chips as possible in the AMD driver.
+>
+> Best regards
+> /Jonas
+>
+> > -----Original Message-----
+> > From: Erwin Authried [mailto:eauth@softsys.co.at]
+> > Sent: Thursday, March 08, 2001 9:30 AM
+> > To: 'mtd@infradead.org'
+> > Subject: reset/read mode cmd for AMD compatible flash
+> >
+> >
+> > In cfi-probe.c, it seems that the command 0xff is used to
+> > switch the flash
+> > into read mode. I have studied several datasheets of AMD
+> > compatible flash
+> > (AMD29F160, Fujitsu MB29F160, Atmel AT49BV160...), and they specify
+> > 0xf0 as the reset mode command. Can anybody please enlighten me?
+> >
+> > -Erwin
+> >
+> >
+> >
+> >
+>
+> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
 
 
 
