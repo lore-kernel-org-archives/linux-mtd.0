@@ -1,19 +1,17 @@
-Received: from msr56.hinet.net ([168.95.4.156] helo=msr.hinet.net)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17byj3-0005Rs-00
-	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 08:25:53 +0100
-Received: from stevexp (61-219-230-90.HINET-IP.hinet.net [61.219.230.90])
-	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id PAA07673
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Aug 2002 15:26:52 +0800 (CST)
-From: "Steve Tsai" <startec@ms11.hinet.net>
-To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: NAND Configuration
-Date: Tue, 6 Aug 2002 15:25:41 +0800
-Message-ID: <001601c23d1a$7c6a4ae0$5501a8c0@synso.com.tw>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 17bzbs-0005aG-00
+	for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2002 09:22:32 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3D4EDA18.C77AEDA@esteem.com> 
+References: <3D4EDA18.C77AEDA@esteem.com> 
+To: Conn Clark <clark@esteem.com>
+Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: Need help getting JFFS2 working with kernel 2.4.19 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 06 Aug 2002 09:22:25 +0100
+Message-ID: <30838.1028622145@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Does I have to set CONFIG_MTD_NAND_ECC_JFFS2=y and
-CONFIG_JFFS2_FS_NAND=y to use NAND flash? Weh I set these settings, I
-will get the following easily. If  I did not set these settings and the
-condition is better, still has problem, but it will not halt the system.
-If I need not set CONFIG_MTD_NAND_ECC_JFFS2=y and
-CONFIG_JFFS2_FS_NAND=y, I can trace my problem easily. I use
-mtd-snapshot-20020731.tar.bz2 with uClinux.
+clark@esteem.com said:
+> 
+> 	I am new here and I am having trouble getting the JFFS2 code working/
+> compiling with the 2.4.19 kernel . I get multiple definition errors
+> when the kernel is linking.
 
+Might help if you showed us the errors?
 
-Steve Tsai
-
-
-ARGH. About to write node to 0x0018de8c on flash, but there are data
-already the
-re:
-0x0018de8c: 85 19 04 20 74 01 00 00 4d 62 52 56 ff ff ff ff
-pid 24: failed 256
-
-jffs2_flush_wbuf(): Write failed with -5
-Write of 68 bytes at 0x004da000 failed. returned -5, retlen 0
-Not marking the space at 0x004da000 as dirty because the flash driver
-returned r
-etlen zero
+--
+dwmw2
