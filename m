@@ -1,25 +1,28 @@
-From: ohmura@co-nss.co.jp (OHMURA Yutaka)
-Date: Thu, 27 Feb 2003 23:02:33 +0900
-Subject: How to use EP8260 MTD device?
-In-Reply-To: <016701c2de11$40b9e490$e600a8c0@udtech.net>
-References: <016701c2de11$40b9e490$e600a8c0@udtech.net>
-Message-ID: <20030227230233up0yC4@co-nss.co.jp>
+From: Stephanie.Suzuki@cda.canon.com (Suzuki, Stephanie)
+Date: Thu, 27 Feb 2003 10:50:06 -0800
+Subject: Latest recommended release to use with 2.4.18 kernel
+Message-ID: <D775A533262CD141BADE285756C75FEA0141FEA1@cdasc02.sc.rd.canon.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Ouch!
+I am trying to get a more recent, release of mtd/jffs2 for my linux =
+2.4.18 kernel.  From the dialog on this mailing list, it seems that =
+there are many fixes since the version that was integrated into 2.4.18 =
+kernel.  I looked at the tags in CVS and PHASE2_FINAL_BETA seems to be =
+the most recent tag available.
 
-It was my careless miss.
-Surely &physmap_map ==map.
+I checked out this release and ran the patch script in =
+mtd/patches/patchin.sh against my kernel source. However, I found that =
+only directory fs/jffs was updated and not fs/jffs2. Furthermore, jffs2 =
+header files in include/linux were not updated as well. I hand-edited =
+the script file to make the necessary links to jffs2 files to see if it =
+would work. However, I ran into a lot of compilation problems with =
+header files not in the correct place, zlib function calls not =
+available, etc. This led me to believe that maybe PHASE2_FINAL_BETA is =
+not the correct tag version to use for kernel 2.4.18.
 
-"Shen Rong" <rshen@udtech.com.cn> wrote:
+I am wondering if there is a tagged version available that is applicable =
+to kernel 2.4.18? I am hesitant in using the latest checked-in version =
+as it is still a work-in-progress.
 
-> > physmap_map by address to do_map_probe.(do_map_probe(*type,
-> &physmap_map);)
-> > At this point , &physmap_map == 0xC022E82C.
-> > But in do_map_probe(driver/mtd/chips/chipreg.c:do_map_probe(struct
-> mtd_info
-> > *do_map_probe(const char *name, struct map_info *map)), *map ==
-> 0xC02D7EA8.
-> What do you want it to be? The &physmap_map == map, not *map!
-> *map will be the first element in the map_info struct, which is the 'name'.
+Stephanie Suzuki
