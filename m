@@ -1,15 +1,20 @@
-Received: from [141.169.254.2] (helo=mio.wago.de)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178iuU-0005qe-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 15:40:46 +0100
-From: olivier.eribon@acterna.com
-To: ppcboot-users@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Message-ID: <C1256BBC.005091CD.00@magnus.eni.wago.de>
-Date: Fri, 17 May 2002 16:32:06 +0200
-Subject: ppcboot load linux kernel on nand flash
+	id 178juV-0005y8-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 16:44:51 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <MDAEMON-F200205171026.AA261579MD57584@bitworks.com> 
+References: <MDAEMON-F200205171026.AA261579MD57584@bitworks.com> 
+To: "Richard A. Smith" <rsmith@bitworks.com>
+Cc: "Ronald G Minnich" <rminnich@lanl.gov>,
+    "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
+    linux-mtd@lists.infradead.org
+Subject: Re: Re[2]: linux boot time 
 Mime-Version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Date: Fri, 17 May 2002 16:44:43 +0100
+Message-ID: <9295.1021650283@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,28 +26,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+rsmith@bitworks.com said:
+>  I think I posted some info about my experiences a while back.... that
+> may have been on the embedded list though...
 
-Hello,
+> David, how many other reports besides mine to you have of the CF's
+> developing a problem?  We use both SanDisk and SST CF's in a couple of
+> projects and most of our failures are during the development cycle.
+> Go figure... 
 
-I tried to port ppcboot 1.1.5 and linux 2.4.19pre1 to our custom 405GP board
-with small nor flash and a nand flash memory.
-  - NOR  flash  1Mo (512 ko for ppcboot and 512 ko for fpga design),
-    (be careful: no more space on NOR flash !) AMD 29DL800BT
-  - NAND flash 32Mo (1 Mo for linux kernel, and 31 Mo for root fs and other...)
-Samsung K9F5608U0A
+There was Vipin Malik's writeup at http://www.embeddedlinuxworks.com/ but 
+that doesn't seem to be there any more. He was actually doing powerfail 
+testing on JFFS/JFFS2 and making me fix it when it broke, but he also did 
+some on CF, and obviously could do nothing when it broke. Software is _so_ 
+much nicer.
 
-Now after reset of this board, ppcboot is load from the nor flash to RAM and
-run.
+Charles Manning's rants about bog-roll technology¹ are too vehement to have 
+been born from anything but personal experience as well, AFAICT :)
 
-I want to read (read only) nand flash to load linux kernel. I known that some
-blocks of nand flash could be invalid.
-
-Has anybody an help whatidea about that could be incorporate to ppcboot in order
-to be able to read (only read) a nand flash ?
-
-Or has anyone developped a light nand driver ?
-
-With Regards,
-Thanks in advance
-
-Olivier Eribon
+--
+dwmw2
+¹ http://mhonarc.axis.se/jffs-dev/msg01267.html
