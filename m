@@ -1,17 +1,17 @@
-Received: from mailhost.rdmcorp.com ([204.225.180.10])
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17pakf-0006sK-00
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 21:39:49 +0100
-Received: from PARKER (10.1.2.1) by mailhost.rdmcorp.com (Worldmail 1.3.167) for linux-mtd@lists.infradead.org; 12 Sep 2002 16:43:46 -0400
-From: "Jack Lu" <jlu@rdmcorp.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: the procedure setting up jffs2
-Date: Fri, 13 Sep 2002 04:37:05 -0400
-Message-ID: <DFEAJMIABOLKNEBOPGDHAECJCBAA.jlu@rdmcorp.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 17pbVj-0006yR-00
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2002 22:28:27 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <2702075D4DE2B043BF5EB82E9CFAD45B0BD3B2@mail1.mediatrix.com> 
+References: <2702075D4DE2B043BF5EB82E9CFAD45B0BD3B2@mail1.mediatrix.com> 
+To: Frederic Giasson <fgiasson@mediatrix.com>
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2_scan_eraseblock() errors - truly harmless? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 12 Sep 2002 22:28:25 +0100
+Message-ID: <23182.1031866105@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,21 +23,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi
+fgiasson@mediatrix.com said:
+> But since the error message does apparently not disappear easily, what
+> about the space used by the node with the bad CRC?  I looked at the
+> code and at mount time it is added to the dirty space, but it is not
+> marked as obsolete on the medium...  thus the gc will not collect it.
 
-I am using RPX850 Lite with 16MB flash(4 chips of Am29Lv320MB) with buswidth
-32 and interleave 4.
-I have complied the MTD and JFFS2 module into the kernel.
-When I start up the Linux, Linux found the 16MB flash, the whole flash
-corresponds to /dev/mtd0.
+The GC _will_ collect it. Marking stuff obsolete on the medium is just an 
+optimisation to speed up the scan, what's important is whether we consider 
+it obsolete in our in-memory records. Which we do -- when we happen to GC 
+the block containing the node in question.
 
-1. where can I get the mkfs.jffs2 excutable for MPC850?
+>  You also mentionned than in old JFFS2 code those nodes with bad CRC
+> are marked as obsolete when discovered at mount time, but where is
+> this happening?  I loooked at old code ( as per 2.4.19-pre7 ) and the
+> jffs2_scan_eraseblock() function does not seem to obsolete the nodes
+> obsolete itself. Where is this obsoleting done? 
 
-2. the bottom 256KB is the boot loader code of the 16MB flash. the rest si
-for storing data
-	if I do
-	#cat jffs2.image > /dev/mtd0
-	will the bootloader be erased?
+Er, I can't see it. I could have sworn that we used to mark the offending
+nodes obsolete on the medium when we saw the CRC fail, so we didn't check
+the same CRC again and hence didn't whinge about it again. Then when the
+accounting changed with the rotate_lists stuff I stopped it doing that
+briefly, then changed it back again when I realised it was complaining about
+the CRCs repeatedly. Maybe ask me again in the morning :)
 
-I appreciate your help.
-Thanks.
+> I am using CVS code as per July 3rd.  I know that more recent code
+> should not complain with such messages at mount time, but unless
+> absolutely necessary I'd rather not upgrade right now.  If I am right
+> when I say that the GC will not collect the bad CRC node, how could I
+> patch the code (without side effects!) to obsolete the bad crc nodes? 
+
+It will GC them when it gets round to it. Leave it.
+
+--
+dwmw2
