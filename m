@@ -1,19 +1,16 @@
-Received: from natpost.webmailer.de ([192.67.198.65] helo=post.webmailer.de)
+Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17SfwH-0001XE-00
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 16:33:05 +0100
-Received: from Prak1 (mail.gigastream.de [212.18.200.6] (may be forged))
-	by post.webmailer.de (8.9.3/8.8.7) with SMTP id RAA03855
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 17:32:33 +0200 (MET DST)
-From: "Patrik Fuchs" <pfuchs@giga-stream.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: Boot kernel right from JFFS2
-Date: Thu, 11 Jul 2002 17:38:19 +0200
-Message-ID: <MNEEJPPNAELHIHNGGLHOAEJNCAAA.pfuchs@giga-stream.de>
+	id 17SgAi-0001Yg-00
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2002 16:48:00 +0100
+Date: Fri, 12 Jul 2002 17:43:02 +0200 (CEST)
+From: Marius Groeger <mag@sysgo.de>
+To: Daniel Belz <danielb@cyclades.com.br>
+cc: MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Mounting JFFS2, Bootloader
+In-Reply-To: <3D2D79FE.5C54CC78@cyclades.com.br>
+Message-ID: <Pine.LNX.4.40.0207121738590.7172-100000@mag.devdep.sysgo.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,14 +22,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello
-I beg your help:
-Here are my basics: PPCBoot1.1.5, Walnut 405GP,
-8MB AMD NOR Flash with two partitions:
-MTD0 with JFFS2(root filesystem) on it and MTD1 with the bootloader
-PPCBoot1.1.5.
-Is it possible to boot a compressed kernel(Version 2.4.17) with ppcboot
-1.1.5 right from jffs2 as root filessystem residing on the first MTD
-partition? Do you have a description or a HOWTO for that?
-Thank you for your help.
-Patrik
+On Thu, 11 Jul 2002, Daniel Belz wrote:
+
+> PS.: I don't like to use the PPCBoot!!!
+
+May I ask why? It sure would save you a lot of work... Anyway, if you don't
+want to use PPCboot, you can always rip out and use it's JFFS support
+routines.
+
+Regards,
+Marius
+
+-----------------------------------------------------------------------------
+Marius Groeger           SYSGO Real-Time Solutions GmbH     mgroeger@sysgo.de
+Software Engineering     Embedded and Real-Time Software    www.sysgo.de
+Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
+FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
