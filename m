@@ -1,25 +1,15 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19jokP-0000xs-6q
-	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 00:28:13 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de
- (iPlanet Messaging Server 5.2 HotFix 1.17 (built Jun 23 2003))
- with SMTP id <0HJ400IRFBU0OM@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Tue, 05 Aug 2003 01:27:36 +0200 (MEST)
-Date: Tue, 05 Aug 2003 02:23:55 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <m3oez59tv7.fsf@bfnet.com>
-To: David Wuertele <dave-gnus@bfnet.com>, linux-mtd@lists.infradead.org
-Message-id: <200308050223.55088.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <m3ispeb4cp.fsf@bfnet.com> <200308041040.11475.tglx@linutronix.de>
- <m3oez59tv7.fsf@bfnet.com>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: zlib patch doesn't take?
-Reply-To: tglx@linutronix.de
+Received: from [202.177.17.107] (helo=donut.udomain.com.hk)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19jtPy-0001bc-JX
+	for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2003 05:27:26 +0100
+Message-ID: <3F2F329D.5040204@hectrix.com>
+Date: Tue, 05 Aug 2003 12:29:17 +0800
+From: Selwyn Tang <selwyn@hectrix.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Cannot automake after patching grub with grub-2003-01-08-doc.patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 04 August 2003 20:10, David Wuertele wrote:
-> Thomas> zlib.h is obviously not updated.
-> Thomas> Can you provide the output of ./patchin.sh ?
->
-> $ ./patchin.sh -c -j ~/C/perforce/source/deschutes/kernel/metro-X225-M14.0
-> Patching /home/dave/C/perforce/source/deschutes/kernel/metro-X225-M14.0
-> Include Filesytems: yes
-> Zlib-Patch needed: yes
-> Method: Copy
-> Can we start now ? [y/N]y
+Dear all,
 
-Have you tried to use link method ?
+I downloaded the latest snapshot of grub through cvs and applied 
+grub-2003-01-08-doc.patch with only one rejection in ChangeLog. I then 
+followed README_DiskOnChip to run aclocal successfully. But when I run 
+automake, a lot of "AMDEP does not appear in AM_CONDITIONAL" messages 
+appeared! For examples,
 
-In which directory does the error occure ? In lib/... there is no zlib.c.
-I assume something does not get updated properly. Maybe Makefile in fs/jffs2.
-Before the zlib patch, there was a file zlib.c in fs/jffs2 and it is still 
-there if you have a 2.4.18 kernel.
+/usr/share/automake-1.5/am/depend2.am: AMDEP does not appear in 
+AM_CONDITIONAL
+/usr/share/automake-1.5/am/lang-compile.am: AMDEP does not appear in 
+AM_CONDITIONAL
 
-Can you please check, if all files from mtd/fs/jffs2 are copied into 
-linux/fs/jffs2 ?
+Before that, I use automake 1.4p5 and when I run automake it told me 
+that 1.5 was expected. Then I ln -s automake to automake-1.5 in my 
+RedHat 7.3, and got the above error.
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Have anyone successfully applied the patch to grub, compiled it and get 
+the "grub_firmware" file in stage1/ ?
+
+Yours,
+
+Selwyn
