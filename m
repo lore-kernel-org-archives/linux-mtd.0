@@ -1,18 +1,18 @@
-Received: from ca-ol-bordeaux-17-153.abo.wanadoo.fr ([195.6.78.153])
+Received: from dsl-64-129-131-125.telocity.com ([64.129.131.125] helo=mir.outpostsentinel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16JaJj-0000Wb-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 13:11:27 +0000
-Received: from openwide.fr (IDENT:pierre@localhost.localdomain [127.0.0.1])
-	by ca-ol-bordeaux-17-153.abo.wanadoo.fr (8.9.3/8.9.3) with ESMTP id OAA00962
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 14:21:48 +0100
-Message-ID: <3C2B206C.DA309B3F@openwide.fr>
-Date: Thu, 27 Dec 2001 14:21:48 +0100
-From: Pierre Ficheux <pierre.ficheux@openwide.fr>
+	id 16JaQJ-0000XI-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Dec 2001 13:18:15 +0000
+From: "Chris Fowler" <cfowler@outpostsentinel.com>
+To: "Pierre Ficheux" <pierre.ficheux@openwide.fr>,
+   <linux-mtd@lists.infradead.org>
+Subject: RE: M-Systems DOC + PPC
+Date: Thu, 27 Dec 2001 08:27:57 -0500
+Message-ID: <NFBBLCEFBCFEPMJJKOIKKEAJCBAA.cfowler@outpostsentinel.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: M-Systems DOC + PPC
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <3C2B206C.DA309B3F@openwide.fr>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,6 +23,21 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Pierre,
+
+I use to supplied M-SYS driver for intel.  I'm not sure if it supported on
+PPC.
+
+Chris
+
+-----Original Message-----
+From: linux-mtd-admin@lists.infradead.org
+[mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Pierre Ficheux
+Sent: Thursday, December 27, 2001 8:22 AM
+To: linux-mtd@lists.infradead.org
+Subject: M-Systems DOC + PPC
+
 
 	Hi all,
 
@@ -36,8 +51,12 @@ list.
 	Thx by advance,
 
 
--- 
+--
 Pierre FICHEUX -/- CTO OpenWide, France -\- pierre.ficheux@openwide.fr
 				         http://www.ficheux.com
 					 http://www.emulateur-xtel.org
 More fun, more freedom, less Micro$oft
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
