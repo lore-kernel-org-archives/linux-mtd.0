@@ -1,19 +1,20 @@
-Received: from external.zumanetworks.com ([64.161.185.13])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16sSVU-00037Z-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2002 18:55:44 +0100
-Date: Tue, 2 Apr 2002 09:55:05 -0800
-To: Andrew Dixon <andrew.dixon@seranoa.com>
-Cc: ppcboot-users <ppcboot-users@lists.sourceforge.net>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [Ppcboot-users] PPCBoot can't read my jffs2 image
-Message-ID: <20020402175505.GA19814@zumanetworks.com>
-References: <3CA9BFFB.CDE0382B@seranoa.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3CA9BFFB.CDE0382B@seranoa.com>
-From: Nye Liu <nyet@zumanetworks.com>
+Received: from h139-142-224-7.gtcust.grouptelecom.net ([139.142.224.7])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16sSYk-000384-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2002 18:59:06 +0100
+Received: from athlon (24-66-30-3.gatewest-shaw.ca [24.66.30.3])
+        by kynes.gatewest.net (8.12.1/8.12.0.Beta19/Debian 8.12.0.Beta19) with SMTP id g32Hx3du018655
+        for <linux-mtd@lists.infradead.org>; Tue, 2 Apr 2002 11:59:03 -0600
+Message-ID: <005701c1da70$1a0370f0$87657bc8@athlon>
+From: "Derek Ross" <dross@iders.ca>
+To: <linux-mtd@lists.infradead.org>
+References: <01f601c1d9ce$b9a1e5d0$87657bc8@athlon>  <3371.1017706441@redhat.com>
+Subject: Re: Are erase suspends possible? 
+Date: Tue, 2 Apr 2002 11:59:14 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,61 +26,46 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Andrew:
+> dross@iders.ca said:
+> > I was looking through the code in  cfi_cmdset_0001.c, and it appears
+> > that erase suspends are not implemented. Is this correct? 
+> 
+> No. Erase suspend has been working for ages. What version of 
+> cfi_cmdset_0001.c are you looking at?
 
-Until *very* recently, linux mtd has been a bit behind the main mtd
-development; check your linux/include/linux/jffs2.h;
+Sorry, I'm still wrapping my brain around mtd.
 
-If the structures are missing "attribute packed" you have an older
-kernel.
+I'm looking at a recent version, and it has
+the function "cfi_intelext_suspend".
 
-I recommend recompiling either 1) ppcboot with unpacked structures or
-2) updating your linux kernel AND mtdtools (your mkfs.jffs2 may also be
-out of date), making sure that the include file matches for all three
-when you are done ;)
+I was also looking at the function "do_write_oneword", and
+internally, it seems to halt if an erase is in progress.
 
-On Tue, Apr 02, 2002 at 09:28:11AM -0500, Andrew Dixon wrote:
-> Hi Everyone,
-> 
-> Sorry for the cross post but this a problem with the way the linux-mtd
-> layer and PPCBoot are interacting.
-> 
-> So here's the situation, I've got PPCBoot+Linux running on a custom
-> board.  I've formatted the flash to be one small raw partition for
-> PPCBoot and the rest is a jffs2 filesystem.  PPCBoot is reading Linux
-> and an initial ramdisk out of the jffs2.  In my original testing I was
-> booting the board via tftp and nfs and then copying copying the
-> filesystem onto the flash via /dev/mtdblock1.  This works great.  I
-> reboot and PPCBoot sees everything in the jffs2.  Now I'm trying to
-> automate this a little more so enhanced my build to give me a jffs2
-> image "wombat.jffs2".  I create this image with mkfs.jffs2 and put it
-> onto the flash by dd'ing it to /dev/mtd1:
-> 
-> 	dd if=/wombat.jffs2 of=/dev/mtd1
-> 
-> now when I mount /dev/mtdblock1 I can see the filesystem that I've put
-> over there but when I reboot PPCBoot doesn't see any of the files that
-> are there.  But if I boot back up Linux can still see all of those files
-> OK.
-> 
-> Any ideas?  
-> 
-> Thanks,
-> Andy 
-> -- 
-> Andrew Dixon
-> Software Engineer
-> Seranoa Networks
-> 978.897.3434 x231
-> 
-> _______________________________________________
-> Ppcboot-users mailing list
-> Ppcboot-users@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ppcboot-users
+Also, the function, do_erase_oneblock seems to 
+block during the erase.
 
--- 
-Nye Liu
-nyet@zumanetworks.com
+What would be good for my application is if there
+were two more functions:
 
-"Who would be stupid enough to quote a fictitious character?"
-	-- Don Quixote
+"do_erase_oneblock_dont_wait",
+which doesn't wait for the erase to finish, and
+returns immediately,
+
+and
+
+"do_write_oneword_suspend_if_needed",
+which will always write without delay, even
+if it has to suspend an erase that's in progress.
+
+I'm sure it wouldn't be difficult to write these
+extra functions (especially "do_write_oneword_suspend_if_needed", 
+which would just need an call to "cfi_intelext_suspend"), 
+but I'm worried that it would 
+be impossible to call using /dev/mtd and ioctl calls.
+
+Also, my app will effective deactivate any other 
+flash interaction during this phase, so I'm not
+worried about JFFS interference.
+
+Thanks,
+Derek Ross.
