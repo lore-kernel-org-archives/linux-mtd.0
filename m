@@ -1,21 +1,16 @@
-Received: from main.gmane.org ([80.91.224.249])
+Received: from 134.22.47.march-62.151.net ([134.22.47.62]
+	helo=mail.marchnetworks.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19KNdR-0007sW-1c
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 20:27:53 +0100
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 19KNcA-0003Sx-00
-	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 21:26:34 +0200
+	id 19KOL1-00089O-U2
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2003 21:12:56 +0100
+Message-ID: <3BBD8AB1E1EB12418982A3A8E7C5F624390CAC@orion.marchnetworks.com>
+From: Jeff Corrall <jcorrall@MarchNetworks.com>
 To: linux-mtd@lists.infradead.org
-From: David Wuertele <dave-gnus@bfnet.com>
-Date: Mon, 26 May 2003 12:28:35 -0700
-Message-ID: <m3he7hy0bg.fsf@bfnet.com>
-References: <m34r3izfvn.fsf@bfnet.com> <m3smr1y71o.fsf@bfnet.com>
- <20030526182624.GA551@wohnheim.fh-wedel.de>
- <200305262152.52858.tglx@linutronix.de>
-Mime-Version: 1.0
-Sender: news <news@main.gmane.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: Re: mtd/utils automake attic?
+Date: Mon, 26 May 2003 16:12:55 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: Intel 28F320J3 on SA1100
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,10 +20,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas> Another possibility. Patch your stuff into
-Thomas> mtd/drivers/mtd/nand directory and run then patchin.sh on your
-Thomas> kernel.
+Hi all,
 
-That was the first thing I tried, but the patches didn't take.
-There were so many errors I didn't think it was worth the time to
-track them all down.
+I have been unsuccessful in getting my Intel flash memory detected on a
+custom SA-1110 board.  
+There are 2 chips, both in x16 mode and are interleaved at address 0.  I
+have taken the following 
+steps:
+
+1) Added a description of my flash to mtd/maps/sa1100-flash.c
+2) Created a virtual mapping to 0xe8000000
+
+Has anybody experienced problems with this setup?  I've checked the archives
+and I found some 
+early problems with the Intel parts but everything I have found seems to be
+fixed in the latest source.
+I've also read the mtd-jffs-HOWTO and even tried to map the flash
+physically.  As far as I can tell from
+the datasheets, these parts are CFI compliant.  I'm looking for suggestions
+on the next step to solving 
+this problem  :o)
+
+3) I am using the following configuration file
+
+----------------------------------------------------------------------------
+------------------
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+CONFIG_MTD_PARTITIONS=y
+# CONFIG_MTD_CONCAT is not set
+# CONFIG_MTD_REDBOOT_PARTS is not set
+# CONFIG_MTD_BOOTLDR_PARTS is not set
+CONFIG_MTD_AFS_PARTS=y
+CONFIG_MTD_CHAR=y
+CONFIG_MTD_BLOCK=y
+# CONFIG_MTD_BLOCK_RO is not set
+# CONFIG_FTL is not set
+# CONFIG_NFTL is not set
+
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+# CONFIG_MTD_JEDECPROBE is not set
+CONFIG_MTD_GEN_PROBE=y
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+# CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
+# CONFIG_MTD_CFI_LE_BYTE_SWAP is not set
+CONFIG_MTD_CFI_GEOMETRY=y
+# CONFIG_MTD_CFI_B1 is not set
+# CONFIG_MTD_CFI_B2 is not set
+CONFIG_MTD_CFI_B4=y
+# CONFIG_MTD_CFI_B8 is not set
+# CONFIG_MTD_CFI_I1 is not set
+CONFIG_MTD_CFI_I2=y
+# CONFIG_MTD_CFI_I4 is not set
+# CONFIG_MTD_CFI_I8 is not set
+CONFIG_MTD_CFI_INTELEXT=y
+# CONFIG_MTD_CFI_AMDSTD is not set
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+# CONFIG_MTD_OBSOLETE_CHIPS is not set
+# CONFIG_MTD_AMDSTD is not set
+# CONFIG_MTD_SHARP is not set
+# CONFIG_MTD_JEDEC is not set
+
+#
+# Mapping drivers for chip access
+#
+# CONFIG_MTD_PHYSMAP is not set
+# CONFIG_MTD_NORA is not set
+# CONFIG_MTD_ARM_INTEGRATOR is not set
+# CONFIG_MTD_CDB89712 is not set
+CONFIG_MTD_SA1100=y
+# CONFIG_MTD_DC21285 is not set
+# CONFIG_MTD_IQ80310 is not set
+# CONFIG_MTD_FORTUNET is not set
+# CONFIG_MTD_EPXA10DB is not set
+# CONFIG_MTD_AUTCPU12 is not set
+# CONFIG_MTD_PCI is not set
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+# CONFIG_MTD_BLKMTD is not set
+# CONFIG_MTD_DOC1000 is not set
+# CONFIG_MTD_DOC2000 is not set
+# CONFIG_MTD_DOC2001 is not set
+# CONFIG_MTD_DOCPROBE is not set
+
+#
+# NAND Flash Device Drivers
+#
+# CONFIG_MTD_NAND is not set
+----------------------------------------------------------------------------
+------------------------------------------------
+
+Thanks,
+Jeff
