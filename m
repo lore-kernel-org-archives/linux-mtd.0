@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17cNP2-0000lT-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 10:46:53 +0100
+	id 17cNSI-0000m0-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2002 10:50:14 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <957BD1C2BF3CD411B6C500A0C944CA2601499C38@pdsmsx32.pd.intel.com> 
-References: <957BD1C2BF3CD411B6C500A0C944CA2601499C38@pdsmsx32.pd.intel.com> 
-To: "Yuan, Cain" <cain.yuan@intel.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 peoblems with K3 strata flash on Dalhart 
+In-Reply-To: <3D5028B7.22893B6E@esteem.com> 
+References: <3D5028B7.22893B6E@esteem.com>  <3D4FFA9B.2C693A02@esteem.com> <3D4EDA18.C77AEDA@esteem.com> <25573.1028653616@redhat.com> 
+To: Conn Clark <clark@esteem.com>
+Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: Need help getting JFFS2 working with kernel 2.4.19 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 07 Aug 2002 10:46:49 +0100
-Message-ID: <30833.1028713609@redhat.com>
+Date: Wed, 07 Aug 2002 10:50:06 +0100
+Message-ID: <31041.1028713806@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,23 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-cain.yuan@intel.com said:
-> 	According to your email  I  rebuild a JFFS2 image with the   block
-> size 0x10000,  same as the datasheet saids. but the problem still
-> exist.  First bootup will success without any error message. but when
-> I reset the board and boot it again, many errors occurs.
+clark@esteem.com said:
+>  I take it that this patch wasn't submitted to Marcelo or Marcelo
+> didn't get it integrated the final 2.4.19 then?
 
-Looks like you should be using 0x20000. 0x10000 is fine but triggers 
-harmless messages about 'Empty block at 0x.... '. I think you were using 
-0x40000 before which would have caused problems.
+> Is there anything else I need to do or will the patch fix everything?
 
-The other problem still remains, and isn't related, though...
+It's in 2.4.20-pre2. We figured it was a little too intrusive to go into 
+2.4.19.
 
-> Write of 68 bytes at 0x0035e908 failed. returned 0, retlen 0
-> Not marking the space at 0x0035e908 as dirty because the flash driver returned retlen zero
-
-The hardware driver seems broken -- it's returning success but not actually 
-reporting that it's written any data. What driver, what version?
 
 --
 dwmw2
