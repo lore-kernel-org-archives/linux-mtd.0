@@ -1,17 +1,16 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from freya.inter.net.il ([192.114.186.14])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189h7R-0004oQ-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 07:30:25 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20021106204530.GE12743@pc.ilinx> 
-References: <20021106204530.GE12743@pc.ilinx>  <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <20021030204937.GG27880@pc.ilinx> <200211041 
-To: "Brian J. Murrell" <f327b61d4f54c7b54025800b32e2ac7c@interlinx.bc.ca>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD Config.in items not escaped by bus availability 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Nov 2002 08:00:36 +0000
-Message-ID: <6557.1036656036@passion.cambridge.redhat.com>
+	id 189hQR-0004sh-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 07:50:03 +0000
+Content-Type: text/plain;
+  charset="us-ascii"
+From: eylon eyal <ayalon@tadlys.com>
+To: linux-mtd@lists.infradead.org
+Subject: GRUB on DoC Millennium/2000 - Instructions (Revised)  problem
+Date: Thu, 7 Nov 2002 10:20:16 +0000
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200211071020.16625.ayalon@tadlys.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +22,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-f327b61d4f54c7b54025800b32e2ac7c@interlinx.bc.ca said:
-> You are absolutely right!  That is what I get for patching my vendor's
-> kernel-source rather than working with a virgin kernel.org tree.  Find
-> attached a new patch, covering all 16 architectures.  I don't know
-> what some of them are (i.e. "sh, "cris") but I am assuming they are
-> all hardware an all have memory busses. 
+I've read the last paper about how to use grub with doc 2000
 
-What happens when someone makes a mapping driver for UML which mmaps part 
-of /dev/kmem from the host?
+http://lists.infradead.org/pipermail/linux-mtd/2002-October/006166.html
 
---
-dwmw2
+i downloaded the last mtd sources from the cvs as  following
+
+       cvs -d :pserver:anoncvs@cvs.infradead.org:/home/cvs login=20
+        (password =3D anoncvs)
+        cvs -z3 -d :pserver:anoncvs@cvs.infradead.org:/home/cvs co mtd
+
+and i downloaded the last grub source from cvs
+now the instractions says that i need to patch the grub sources as follow
+
+patch -p0 -i grub-2002-10-08-doc.patch
+
+i understand that this patch should be under directory /usr/src/mtd/patch=
+es/
+
+but the last patch i find there is grub-2002-07-29-doc.patch
+
+were can i get the correct patch? or is it ok to use this patch?
+
+thanks alot ayalon
