@@ -1,19 +1,16 @@
-Received: from endruntechnologies.com ([130.94.228.14])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BjC2n-0002HS-J5
-	for linux-mtd@lists.infradead.org; Sat, 10 Jul 2004 03:13:10 -0400
-Received: from unknown (HELO endruntechnologies.com) ([67.169.85.122])
-	(envelope-sender <bmpenrod@endruntechnologies.com>)
-	by 130.94.228.14 (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 10 Jul 2004 07:13:07 -0000
-Message-ID: <40EF9703.1010907@endruntechnologies.com>
-Date: Sat, 10 Jul 2004 00:13:07 -0700
-From: Bruce Penrod <bmpenrod@endruntechnologies.com>
-MIME-Version: 1.0
+Received: from web40106.mail.yahoo.com ([66.218.78.40])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BjECm-0002fF-Cv
+	for linux-mtd@lists.infradead.org; Sat, 10 Jul 2004 05:31:37 -0400
+Message-ID: <20040710093131.56688.qmail@web40106.mail.yahoo.com>
+Date: Sat, 10 Jul 2004 02:31:31 -0700 (PDT)
+From: Mike Wellington <be_a_fanatic@yahoo.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: ST Micro M29W641D clone of AM29LV641D needs extra reset command
+In-Reply-To: <200407091608.14442.philt@pioneer-pdt.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Re: JFFS 2 Question
+Reply-To: mike@bithead.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ths ST Micro M29W641D nor flash chip is a clone of the AMD AM29LV641D. 
-As usual, it's not quite a perfect clone and I've solved a problem in 
-using it with the cfi_cmdset_0002() probe that is included in the 2.4.26 
-kernel mtd driver.
 
-The difference in the two chips is that after a cfi query command is 
-performed while in the auto-select state, the ST Micro chip needs two 
-reset commands to return to the read state.  The first reset command 
-only causes the ST Micro chip to go back to the auto-select state.  The 
-AMD part jumps all the way back to the read state with only one reset 
-comand.
+Guess I'm the first one to wake up and see this.
 
-So the very simple fix which seems to work for me is to add a second 
-reset command after the existing one at the bottom of cfi_cmdset_0002(). 
-  This is the only place in the mtd code where I found cfi query being 
-performed while in the auto-select state.
+Sync "should" work.  Try it and check by doing
+ 
+>  od -x /jffs2 
 
-I haven't tried to determine if this is a common problem across the 
-entire ST Micro AMD clone flash product line, but the second reset 
-command can do no harm and might solve problems for many.
+and then see if your new data is in the dump.
 
-Bruce
+A foolproof way that is overkill - unmout the 
+/jffs2 file system and then remount it.  Put 
+that pair of commands in a script so you don't 
+get tired of typing it.
+
+-mike@bithead.com
+
+
+
+
+-- Patrick Hilt <philt@pioneer-pdt.com> wrote:
+> Hi list!
+> Is there a way to make sure data is being written to physical flash
+> when using 
+> JFFS2? In other words, After writing a file on a JFFS2 partition, is
+> there 
+> anything that can be done to make sure that the data is getting
+> written to 
+> the flash right away? Would "sync" or "fsync" have that effect?
+> 
+> Thanks a lot in advance for any input!!!
+> 
+> Happy weekend,
+> 
+> Patrick
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
