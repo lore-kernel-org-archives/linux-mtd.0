@@ -1,15 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from 209-184-180-125.faxtell.net ([209.184.180.125] helo=eventlog.faxtell.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14zJ4C-0006Uh-00
-	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 15:11:20 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-Cc: ajlennon@arcom.co.uk
-Subject: CPU caching of flash regions.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 14 May 2001 15:15:25 +0100
-Message-ID: <27217.989849725@redhat.com>
+	id 14zJNt-0006Vy-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2001 15:31:41 +0100
+Message-ID: <003b01c0dc83$4f6ace00$88b4b8d1@ShuhIII>
+Reply-To: "Shuh C. Chang" <schang@3inet.com>
+From: schang@3inet.com (Shuh C Chang)
+To: "Felix Radensky" <felix@allot.com>,
+	"Linux-mtd" <linux-mtd@lists.infradead.org>
+References: <3AFFE80B.DCE1B139@allot.com>
+Subject: Re: DOC problems on PowerPC
+Date: Mon, 14 May 2001 09:36:49 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,33 +25,42 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've just seen profiling of a system mounting JFFS2 filesystem which shows 
-that the majority of the time is spend in the map driver's copy_from 
-function.
+> All I had to do is to run "eraseall /dev/mtd0",
 
-The copy_from() functions are currently using a completely uncached mapping 
-of the flash chip, but in fact for reading the chip that's not strictly 
-necessary. This is especially true during the initial scan. 
+Is "eraseall" equivalent to the DOS utility "docpmap /e" in functionality?
+Anyone who can shed some light?
 
-I think we ought to allow map drivers to do intelligent caching of bus 
-accesses. Suggested semantics:
+Shuh Chang
 
- 1. Only the copy_from() and copy_to() functions can use a cacheable mapping.
 
- 2. Any access to the chip through one of the other ({read,write}{8,16,32}) 
-	functions causes the cache to be flushed for the entire mapping.
+----- Original Message -----
+From: "Felix Radensky" <felix@allot.com>
+To: "Linux-mtd" <linux-mtd@lists.infradead.org>
+Sent: Monday, May 14, 2001 9:13 AM
+Subject: DOC problems on PowerPC
 
-If a cache flush is expensive, a mapping driver may optimise the flushes and
-perform a cache flush only if the cache is expected to be non-empty.
 
-This approach is fairly simple, and allows mapping drivers to do something 
-closely approximating the "right thing" without adding complexity to the 
-chip driver code. An alternative, which I'm dubious about, is to add 
-explicit cache management functionality to the methods exported by the 
-mapping drivers, and to have the chip driver explicitly turn the cache 
-on/off and flush parts of it when writing/erasing.
-
-Comments?
-
---
-dwmw2
+> Hi, all
+>
+> I was able to solve the DOC problems on PowerPC I've reported yesterday.
+>
+> All I had to do is to run "eraseall /dev/mtd0", then run "nftl_format
+> /dev/mtd0"
+> and  then create partitions with fdisk.
+>
+> Can someone please explain me the difference between eraseall and
+> nftl_format.
+> HOWTO says nothing about it.
+>
+> By the way, the latest mtd code would not compile, at least on my 2.4.2
+> kernel
+> unless you add #include <linux/kmod.h> to chipreg.c.  This is because of
+>
+> a call to request_module() in do_map_probe(), which IMHO should be
+> under #ifdef CONFIG_KMOD, and not #ifdef CONFIG_MODULES.
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
