@@ -1,54 +1,64 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 11w4yM-0005rL-00
-	for mtd-list@infradead.org; Thu, 09 Dec 1999 14:55:10 +0000
-Received: from [209.184.180.169] (helo=bob.faxtel.net)
+	id 11wNTP-0006ys-00
+	for mtd-list@infradead.org; Fri, 10 Dec 1999 10:40:27 +0000
+Received: from dukat.scot.redhat.com ([195.89.149.246] ident=root)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 11w4yL-0005rF-00
-	for mtd@imladris.mvhi.com; Thu, 09 Dec 1999 14:55:09 +0000
-Message-ID: <384FC311.1E57CBD6@go2fax.com>
-Date: Thu, 09 Dec 1999 08:56:17 -0600
-From: Bob Canup <rcanup@go2fax.com>
+	id 11wNTN-0006ym-00
+	for mtd@imladris.mvhi.com; Fri, 10 Dec 1999 10:40:25 +0000
+From: "Stephen C. Tweedie" <sct@redhat.com>
 MIME-Version: 1.0
-To: MTD <mtd@imladris.mvhi.com>
-Subject: Re: [Fwd: Power Down]
-References: <384ECF77.C1F5D6FC@danielind.com> <384EE388.C92A374E@go2fax.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-ID: <14416.55529.249995.920763@dukat.scot.redhat.com>
+Date: Fri, 10 Dec 1999 10:41:45 +0000 (GMT)
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Oron Ogdan <Orono@m-sys.com>, MTD list <mtd@imladris.mvhi.com>,
+        Stephen Tweedie <sct@redhat.com>
+Subject: Re: Power Down 
+In-Reply-To: <E11vdnY-0002hW-00@devel2.axiom.internal>
+References: <B17893052A17D211A9860060978F7E63014A013C@mail.msys.co.il>
+	<E11vdnY-0002hW-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Bob Canup wrote:
+Hi,
 
-> Vipin Malik wrote:
->
-> > Bob Canup wrote:
-> > >
-> >
-> I can't see any difference between erasing a bad sector after the next power
-> up and the case of a slightly earlier power failure where the data was never
-> written in the first place; you wind up with an identical file system in both
-> cases.  If you can survive the case of the earlier power failure failing to
-> record the sector then you can survive the case of the bad sector being
-> erased.
->
-> The only difference that I see is that in the case of the bad sector  you
-> know something happened, in the case of the data never being recorded you
-> don't.
->
-> To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
+On Wed, 08 Dec 1999 09:54:12 +0000, David Woodhouse
+<dwmw2@infradead.org> said:
 
-On the way home last night it occurred to me that if you are doing a
-read-modify-write cycle that it does make a difference where the error occurs.
-In this case if the sector is never written the old data is still valid.
+> Orono@m-sys.com said:
+>> The only way to be resistant to power failures in the file system
+>> level  is to use a log-structured file system.
 
-It seems to me the wear leveling necessary in a flash can be a benefit here; if
-I understand correctly we don't overwrite the physical pages - only when a page
-is 'committed' does the chip change its mapping so that it appears that the
-sector was overwritten.
+>> I heard ext3 is log-structured but I am sure one of the Linux guys here
+>> knows more about this, 
 
+> ext3 is a journalling filesystem. I believe that it's not log-structured. 
 
+Correct.
 
+> Journalling is sufficient for protection from power failures. Stephen, 
+> would you care to elaborate on the difference?
+
+Log-structured disks are, oddly enough, structured as a log!  The
+entire data layout is in the form of a conceptually infinite log.  All
+disk writes are performed at the head of the log, so writes are
+necessarily sequential.  The write performance, as a result, is
+unmatched.  The read performance can sometimes suffer, but these
+filesystems are intended for use with huge amounts of cache, so that
+the write performance is more important: most reads are from cache.
+
+A journaled filesystem has a log *in addition to* the normal disk
+structure.  The log is used for recovery after a crash but does not
+store any long-term persistent data for the filesystem.
+
+> I believe that NTFS is also journalling but not log-structured.
+
+Indeed.
+
+Cheers,
+ Stephen
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
