@@ -1,22 +1,16 @@
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BXzyO-0005rD-8h
-	for linux-mtd@lists.infradead.org; Wed, 09 Jun 2004 06:06:21 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>,
-	linux-mtd@lists.infradead.org
-Date: Wed, 9 Jun 2004 12:00:50 +0200
-References: <EFF9A3506F74924AB5CC77BDC66E79351812B3@atcml01.atc.army.mil>
-In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812B3@atcml01.atc.army.mil>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 1BYa9R-00006x-8t
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2004 20:44:12 -0400
+Date: Thu, 10 Jun 2004 17:44:04 -0700
+From: Jun Sun <jsun@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040610174404.O10411@mvista.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="A6N2fC+uXW/VQSAv"
 Content-Disposition: inline
-Message-Id: <200406091200.50583.tglx@linutronix.de>
 Cc: 
-Subject: Re: Generic nand and DOC
-Reply-To: tglx@linutronix.de
+Subject: [PATCH] add config options for phys mapping
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +20,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 08 June 2004 16:22, Carlos, John J USAATC wrote:
-> Hi All,
->
->   I have been trying to get my DOC Mil plus to work properly.  The code in
-> the devices dir that is M-sys specific seems to works for the chip but I
-> can't use nandwrite on the chip.  Am I to assume from the lists that the
-> goal is to stop using the code in the devices directory and use the gener=
-ic
-> nand/inftl stuff to work for all devices?=20
 
-The plan is to have a doc driver in drivers/mtd/nand which uses the generic=
-=20
-nand code and overrides the doc specific functions. On top of this (I)NFTL=
-=20
-can be used or JFFS2/YAFFS without the (I)NFTL layer.
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Dan Brown is actually working on it.
+Due to popular demand, this patch adds back config time
+options for configuring phys mapping.
 
-> The code for DoC_IdentChip is
-> very specific, is it the plan that nand_scan will replace the later?
+The run-time configuration, if present, overrides the config-time
+options.
 
-No, this will be part of the doc driver in drivers/mtd/nand
+Jun
 
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="040610.a-mtd-physmap-config-options.patch"
+
+diff -Nru mtd/drivers/mtd/maps/physmap.c.orig mtd/drivers/mtd/maps/physmap.c
+--- mtd/drivers/mtd/maps/physmap.c.orig	2004-06-05 02:44:48.000000000 -0700
++++ mtd/drivers/mtd/maps/physmap.c	2004-06-10 17:35:12.000000000 -0700
+@@ -22,7 +22,12 @@
+ 
+ static struct mtd_info *mymtd;
+ 
+-struct map_info physmap_map = {.name = "phys_mapped_flash"};
++struct map_info physmap_map = {
++	.name = "phys_mapped_flash",
++	.phys = CONFIG_MTD_PHYSMAP_START,
++	.size = CONFIG_MTD_PHYSMAP_LEN,
++	.buswidth = CONFIG_MTD_PHYSMAP_BUSWIDTH,
++};
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+ static struct mtd_partition *mtd_parts;
+diff -Nru mtd/drivers/mtd/maps/Kconfig.orig mtd/drivers/mtd/maps/Kconfig
+--- mtd/drivers/mtd/maps/Kconfig.orig	2004-06-07 03:21:32.000000000 -0700
++++ mtd/drivers/mtd/maps/Kconfig	2004-06-10 17:37:04.000000000 -0700
+@@ -19,7 +19,8 @@
+ 	  command set driver code to communicate with flash chips which
+ 	  are mapped physically into the CPU's memory. You will need to
+ 	  configure the physical address and size of the flash chips on
+-	  your particular board as well as the bus width.
++	  your particular board as well as the bus width, either statically
++	  with config options or at run-time.
+ 
+ config MTD_PHYSMAP_START
+ 	hex "Physical start address of flash mapping"
+@@ -31,6 +32,9 @@
+ 	  memory map which should hopefully be in the documentation for
+ 	  your board.
+ 
++	  Ignore this option if you use run-time physmap configuration
++	  (i.e., run-time calling physmap_configure()).
++
+ config MTD_PHYSMAP_LEN
+ 	hex "Physical length of flash mapping"
+ 	depends on MTD_PHYSMAP
+@@ -43,6 +47,9 @@
+ 	  map which should hopefully be in the documentation for your
+ 	  board.
+ 
++	  Ignore this option if you use run-time physmap configuration
++	  (i.e., run-time calling physmap_configure()).
++
+ config MTD_PHYSMAP_BUSWIDTH
+ 	int "Bus width in octets"
+ 	depends on MTD_PHYSMAP
+@@ -53,6 +60,9 @@
+ 	  bits, you would set the bus width octect value to 4. This is
+ 	  used internally by the CFI drivers.
+ 
++	  Ignore this option if you use run-time physmap configuration
++	  (i.e., run-time calling physmap_configure()).
++
+ config MTD_SUN_UFLASH
+ 	tristate "Sun Microsystems userflash support"
+ 	depends on (SPARC32 || SPARC64) && MTD_CFI
+diff -Nru mtd/drivers/mtd/maps/Config.in.orig mtd/drivers/mtd/maps/Config.in
+--- mtd/drivers/mtd/maps/Config.in.orig	2004-04-11 23:38:39.000000000 -0700
++++ mtd/drivers/mtd/maps/Config.in	2004-06-10 17:36:24.000000000 -0700
+@@ -9,6 +9,11 @@
+ bool '  Support for non-linear mappings of flash chips' CONFIG_MTD_COMPLEX_MAPPINGS
+ 
+ bool '  CFI Flash device in physical memory map' CONFIG_MTD_PHYSMAP $CONFIG_MTD_GEN_PROBE
++if [ "$CONFIG_MTD_PHYSMAP" = "y" ]; then
++   hex '    Physical start address of flash mapping' CONFIG_MTD_PHYSMAP_START 0x8000000
++   hex '    Physical length of flash mapping' CONFIG_MTD_PHYSMAP_LEN 0x4000000
++   int '    Bus width in octets' CONFIG_MTD_PHYSMAP_BUSWIDTH 2
++fi
+ 
+ if [ "$CONFIG_SPARC" = "y" -o "$CONFIG_SPARC64" = "y" ]; then
+    dep_tristate '  Sun Microsystems userflash support' CONFIG_MTD_SUN_UFLASH $CONFIG_MTD_CFI
+
+--A6N2fC+uXW/VQSAv--
