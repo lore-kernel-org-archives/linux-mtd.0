@@ -1,15 +1,18 @@
-Received: from adsl-110-19.38-151.net24.it ([151.38.19.110] helo=develer.com)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVFg9-0002RA-34
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 16:16:10 -0400
-Message-ID: <40BCE3FD.4080500@develer.com>
-Date: Tue, 01 Jun 2004 22:15:57 +0200
-From: Bernardo Innocenti <bernie@develer.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BVFtS-0002aU-9g
+	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 16:29:54 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Bernardo Innocenti <bernie@develer.com>
+In-Reply-To: <40BCE3FD.4080500@develer.com>
+References: <40BCE3FD.4080500@develer.com>
+Content-Type: text/plain
+Date: Tue, 01 Jun 2004 21:29:43 +0100
+Message-Id: <1086121783.4273.0.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: TRIVIAL: Fix linux/mtd/nftl.h for user-space inclusion
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: TRIVIAL: Fix linux/mtd/nftl.h for user-space inclusion
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,31 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2004-06-01 at 22:15 +0200, Bernardo Innocenti wrote:
+> Fix linux/mtd/nftl.h for user-space inclusion (required to build mtd-utils).
+> 
+> Please apply.
 
-Fix linux/mtd/nftl.h for user-space inclusion (required to build mtd-utils).
-
-Please apply.
-
---- linux-2.6.6-uc0/include/linux/mtd/nftl.h	2004-05-10 04:33:13.000000000 +0200
-+++ linux-2.6.6-uc0-develer/include/linux/mtd/nftl.h	2004-06-01 22:03:36.824225250 +0200
-@@ -8,7 +8,6 @@
- #define __MTD_NFTL_H__
- 
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/blktrans.h>
- 
- /* Block Control Information */
- 
-@@ -76,6 +75,8 @@
- 
- #ifdef __KERNEL__
- 
-+#include <linux/mtd/blktrans.h>
-+
- /* these info are used in ReplUnitTable */
- #define BLOCK_NIL          0xffff /* last block of a chain */
- #define BLOCK_FREE         0xfffe /* free block */
+It should be including mtd/nftl-user.h not linux/nftl.h
 
 -- 
-  // Bernardo Innocenti - Develer S.r.l., R&D dept.
-\X/  http://www.develer.com/
+dwmw2
