@@ -1,19 +1,21 @@
-Received: from h24-66-20-25.wp.shawcable.net ([24.66.20.25] helo=iders01.iders.ca)
+Received: from mgw-dax2.ext.nokia.com ([63.78.179.217])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17tyST-0001yY-00
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2002 23:47:10 +0100
-From: "Christian Gan" <cgan@iders.ca>
-To: <manningc2@actrix.gen.nz>, "Nick Bane" <nick@cecomputing.co.uk>,
-   "Marc Singer" <elf@buici.com>
-Cc: <linux-mtd@lists.infradead.org>, <yaffs@toby-churchill.org>
-Subject: RE: Interest in DOC and YAFFS?
-Date: Tue, 24 Sep 2002 17:46:57 -0500
-Message-ID: <NFBBLPGPLKFIKCCPLALEEECPCEAA.cgan@iders.ca>
+	id 17u6IO-0002pD-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 08:09:16 +0100
+Received: from davir04nok.americas.nokia.com (davir04nok.americas.nokia.com [172.18.242.87])
+	by mgw-dax2.ext.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id g8P79iM08591
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2002 02:09:44 -0500 (CDT)
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <20020924205746.837BF43CF@tiger.actrix.co.nz>
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Interest in DOC and YAFFS? --> YAFFS bootloading
+Date: Wed, 25 Sep 2002 00:09:11 -0700
+Message-ID: <F252EE46074AB645B4F44947EEAD57272E4EEC@mvebe001.americas.nokia.com>
+From: <Srinivasan.Ramasubramaniam@nokia.com>
+To: <elf@buici.com>, <Russ.Dill@asu.edu>
+Cc: <kenneth.johansson@etx.ericsson.se>, <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,140 +27,78 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello all,
+Hi all !
 
-I heard my name being mentioned so I thought to respond :)
+I request your help to clarify a doubt with regard to initrd-filesystem =
+and cramfs.=20
 
-Currently I do have an implementation of HW_ECC for nand working.  Most of
-the structure is already in the NAND mtd.  Our NAND is connected through a
-custom FPGA that does the ECC for us.
+If we use cramfs in place initrd-filesystem, will the entire filesystem =
+will be uncompressed and loaded onto the RAM ? =20
 
-The current breakdown is this:
+But in initrd-filesystem, the entire filesystem is uncompressed and =
+loaded.=20
 
-1. YAFFS calls write_page in the MTD.  write_page fills the page and the HW
-ECC data in OOB where YAFFS expects it to be (using custom enable_hwecc and
-calc_ecc).
-2. YAFFS calls write_oob for the tag data, however the ECC bytes are filled
-with 0xff so that it doesn't corrupt the ECC already written by the MTD.
-i.e. my CalcECC function in YAFFS just writes 0xff.
-3. When YAFFS verifies the tag data, the ECC bytes are skipped since YAFFS
-will not know what they are supposed to be.
+Regards
+R Srinivasan=20
+Nokia Internet Communications=20
+PH: +91 40 3553343=20
+Mobile: 098480 32996
 
-Problems with this is that Steps 1 and 2 need to be combined to once write
-call, otherwise we may blow the specs of some NANDs for max writes to OOBs.
 
-Verbose version of things needed to make HW ECC work with YAFFS:
 
-MTD Changes:
-============
-- the nand_chip struct has a pointer to a function for enable_hwecc, you'll
-have to create your own function depending on your system and have the
-structure point to it.  The mtd calls this function to reset the HW ECC on
-the NAND device.  So it gets called once in the beginning of a page and
-again at the 256 byte mark.
-- calculate_ecc has to be changed so that it now reads the registers
-containing the calculated ECC in HW.
-- the problem with this implementation is that YAFFS needs a NAND MTD that
-allows it to write the page and OOB at the same time.  Here's a snipped of
-email I wrote on the YAFFS mailing list earlier:
-
-"A further problem I have to think about now is the max number of allowable
-writes in the OOB.  Some NANDs allow for three writes but there are some
-who's maxes are speced for two.  Which means that in my case:
-
-  1 write to OOB by the MTD when writing a page (for HW ECC).
-  1 write to OOB by YAFFS for tags.
-  1 write to OOB by YAFFS to mark pages deleted.
-  = 3 writes
-which of course would violate some NAND specs..."
-
-- Finally, the current MTD uses the OOB to write the ECCs and also a "valid
-ECC" byte.  YAFFS tags has no room for the valid ECC byte in the OOB so I
-had to ignore it, which is not exactly ideal.  The byte location that the
-MTD writes to the OOB for ECC also must be changed (by defining the ecc_pos
-in the oob config).
-
-YAFFS Changes:
-==============
-- Remove any instance where YAFFS tries to read / write ECC.  i.e. when
-YAFFS writes it's tags, have it write 0xff for the ECC bytes.  Don't verify
-the ECC in the tag/oob area in VerifyCompare and don't try to correct data
-in ReadChunkFromNand.
-- I'm working on getting Charles this code so that he can put in a NO_ECC
-macro of some sort.
 
 > -----Original Message-----
-> From: Charles Manning [mailto:manningc2@actrix.gen.nz]
-> Sent: Tuesday, September 24, 2002 3:54 PM
-> To: Nick Bane; Marc Singer
-> Cc: linux-mtd@lists.infradead.org; yaffs@toby-churchill.org
-> Subject: Re: Interest in DOC and YAFFS?
->
->
->
-> > > > How this works with DOC I am unclear as I had noticed a
-> while back that
-> > > > there was hardware assisted ECC. This might get in the way
-> of YAFFS ECC
-> >
-> > but
-> >
-> > > > maybe this can be circumvented.
-> > >
-> > > As far as I can tell, the hardware ECC just makes the DOC faster.
-> >
-> > Umm. It may use some of the oob data area for its own ECC in a YAFFS
-> > incompatible way. I am not sure of my ground here, only that you need to
-> > check it out.
-> >
-> > > Also, I think that Microsys has released information about how to use
-> > > the hardware ECC.
-> >
-> > Ok.
->
-> Determining, then straightening out, OOB conflicts is essetially what DOC
-> support boils down to.
->
-> As far as I am aware, the ECC does not actually impact on the
-> NAND and works
-> something like as follows.
-> * As you write bytes to the NAND buffer, an ECC is calculated on
-> the side in
-> the ASIC.
-> * You can then read ASIC registers to determine the ECC.
->
-> Essentially you can just ignore the ECC and see raw NAND chips,
-> ie the ECC is
-> non-intrusive.
->
-> Thus, the current YAFFS page programming would change from something like:
->
-> * Calculate ecc. + tags and format up OOB (spare)
-> * Write data + oob
-> * Program page
->
-> to:
->
-> * Write data
-> * Read ECC from ASIC
-> * Format up and write oob.
-> * Program page
->
-> Essentially, the hw ecc saves the ecc calcs - that's all.
->
-> Christian Gan has implemented a hw ecc scheme which I think is
-> like above in
-> YAFFS, so I suspect DOC support might almost be done :-).
->
-> -- Charles
->
->
-> ------------------------------------------------------------------
-> ---------------------
-> This mailing list is hosted by Toby Churchill open software
-(www.toby-churchill.org).
-If mailing list membership is no longer wanted you can remove yourself from
-the list by
-sending an email to yaffs-request@toby-churchill.org with the text
-"unsubscribe"
-(without the quotes) as the subject.
+> From: ext Marc Singer [mailto:elf@buici.com]
+> Sent: 25. September 2002 1:53
+> To: Russ Dill
+> Cc: Kenneth Johansson; mtd
+> Subject: Re: Interest in DOC and YAFFS? --> YAFFS bootloading
+>=20
+>=20
+> On Tue, Sep 24, 2002 at 11:47:43AM -0700, Russ Dill wrote:
+> >=20
+> > > > cramfs is a read only filesystem not an archive format=20
+> like zip or tar
+> > > > so you do not have to copy the data into another=20
+> filesystem to use it.
+> > > > You use cramfs instead of initrd+filesystem.
+> > >=20
+> > > That isn't really the issue here.  We're talking about=20
+> using gzip'd
+> > > ext2 versus cramfs to do initrd.  The thing is that in my tests,
+> > > cramfs images are larger than compressed ext2 images.  Not what I
+> > > would expect.
+> >=20
+> > if you are talking about an initrd, then the features of=20
+> cramfs aren't
+> > quite as usefull, as the whole thing will be loaded into=20
+> ram anyway. On
+> > the other side:
+>=20
+> I see.  That is where my understanding comes from.  Now it=20
+> makes sense.
+>=20
+> > A cramfs will always be exactly as small as it needs to be,=20
+> no guessing
+> > on an image size. cramfs is created by population, not by making an
+> > image, formatting it, mounting it loopback, and then copying files.
+>=20
+> Indeed.  It can be inconvenient knowing how big to make the loopback
+> file.
+>=20
+> > incedentally, I have a copy of mkcramfs with device table=20
+> support (as
+> > seen in mkfs.jffs2) as well as permission squashing, so=20
+> that a cramfs
+> > image can be made withoutt root (complete with suid root=20
+> programs, and
+> > /dev entries)
+>=20
+> I'd appreciate a copy of your mkcramfs changes.
+>=20
+> Thanks.
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
