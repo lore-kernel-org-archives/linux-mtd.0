@@ -1,20 +1,15 @@
-Received: from chrudim.coprosys.cz ([194.108.73.1] helo=ns3.coprosys.cz)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Fu4q-0006BL-00
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Nov 2002 10:33:24 +0000
-Received: from wolfhill.cz (ctt2.cps.cz [194.108.73.202])
-	by ns3.coprosys.cz (8.12.0/8.12.0) with ESMTP id gAOB3rdj021284
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Nov 2002 12:03:53 +0100
-Message-ID: <3DE0B223.4090901@wolfhill.cz>
-Date: Sun, 24 Nov 2002 12:04:03 +0100
-From: Ales Makarov <ales.makarov@wolfhill.cz>
-Reply-To: ales.makarov@wolfhill.cz
+Received: from web41001.mail.yahoo.com ([66.218.93.0])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18G8bB-0007Vf-00
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2002 02:03:45 +0000
+Message-ID: <20021125023343.82844.qmail@web41001.mail.yahoo.com>
+Date: Mon, 25 Nov 2002 10:33:43 +0800 (CST)
+From: =?big5?q?tin=20man=20chan?= <chantinman40@yahoo.com.hk>
+Subject: Problem in using DOC2000
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-CC: linux-mtd@lists.infradead.org
-Subject: Re: Garbage collection failed
-References: <20021122011236.8686.qmail@web21006.mail.yahoo.com> <23792.1037957630@passion.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=big5
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,28 +21,85 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have seen this message also (on our DragonBall VZ based
-board). But it appears only during shutdown/reset (when the
-JFFS2 partition remains mounted and the GC thread is running).
+Hello Gregg C Levine,
 
-Ales
+Here is my machine config.
 
-David Woodhouse wrote:
- > inox_kas@yahoo.com said:
- >
- >>When I mount the JFFS2 I keep getting the following error:
- >>"jffs2: No clean _or_ dirty blocks to GC from! Where are they
- >>all?\n");
- >
- >
- > Does the mount fail, or does it just print this and 
-continue working?
- >
- > --
- > dwmw2
- >
- >
- >
- > ______________________________________________________
- > Linux MTD discussion mailing list
- > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+motherboard model: PCA-6179
+bios: Pheonix Bios
+cpu: PIII 700MHz
+ram: 512MB
+
+Thanks.
+
+William
+
+Hello from Gregg C Levine
+You will need to supply us with more information with
+your project. Such
+as, what motherboard does it use, and what
+distribution you are using.
+And yes it might be a conflict. The first IDE drive in
+a Linux system,
+is typically /dev/hda. Most DOCs are typically set to
+/dev//hdd, so as
+to use the IDE chain that the CD drive is attached to.
+-------------------
+Gregg C Levine hansolofalcon@worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."=A0 Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan
+Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+> -----Original Message-----
+> From: linux-mtd-admin@lists.infradead.org
+[mailto:linux-mtd-
+> admin@lists.infradead.org] On Behalf Of tin man chan
+> Sent: Saturday, November 23, 2002 10:54 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: Problem in using DOC2000
+>=20
+> Hi,
+>=20
+> I have compiled a linux kernel 2.4.19 with mtd
+driver
+> built-in and wish to use such kernel to probe the
+DOC
+> and use the DOC to boot my PC later by transferring
+> the kernel to DOC. However, after I insert the DOC
+> chip to the socket and start my PC, the PC will hang
+> in the booting message "Loading linux............."
+>=20
+> Is it related to my PC BIOS? Or IDE harddisk
+conflict
+> with DOC? Any comment or idea? Thanks.
+>=20
+> William
+>=20
+>=20
+>=20
+>=20
+>
+_________________________________________________________
+> =A4H=AE=F0=A5=E6=A4=CD=BC=F6=BDu#9351
+=B8=DC=A1u=A4=CD=A1v=B4N=A6=B3
+> http://hk.yahoo.com/promotions/personals/9351
+>=20
+>
+______________________________________________________
+> Linux MTD discussion mailing list
+>
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+
+
+
+_________________________________________________________
+人氣交友熱線#9351 話「友」就有
+http://hk.yahoo.com/promotions/personals/9351
