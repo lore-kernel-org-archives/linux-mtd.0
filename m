@@ -1,19 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.fh-wedel.de ([195.37.86.23])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18Be2Q-0003Qf-00
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 16:37:18 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1037121749.8746.67.camel@irongate.swansea.linux.org.uk> 
-References: <1037121749.8746.67.camel@irongate.swansea.linux.org.uk>  <20021112160843.GE5031@wohnheim.fh-wedel.de> <3DD0D966.E6D877EC@procsys.com> <449.1037117917@passion.cambridge.redhat.com> 
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>,
-    Miraj Mohamed <miraj@procsys.com>, jffs-dev@axis.com,
-    linux-mtd@lists.infradead.org
-Subject: Re: mirroring in JFFS2 
+	id 18Be9v-0003RV-00
+	for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2002 16:45:04 +0000
+Date: Tue, 12 Nov 2002 18:15:00 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Miraj Mohamed <miraj@procsys.com>, jffs-dev@axis.com,
+   linux-mtd@lists.infradead.org
+Subject: Re: mirroring in JFFS2
+Message-ID: <20021112171500.GF5031@wohnheim.fh-wedel.de>
+References: <20021112160843.GE5031@wohnheim.fh-wedel.de> <3DD0D966.E6D877EC@procsys.com> <449.1037117917@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 12 Nov 2002 17:07:22 +0000
-Message-ID: <6310.1037120842@passion.cambridge.redhat.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <449.1037117917@passion.cambridge.redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,42 +26,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-alan@lxorguk.ukuu.org.uk said:
->  The fs doesnt know enough about the block I/O layer to do that
+On Tue, 12 November 2002 16:18:37 +0000, David Woodhouse wrote:
+> 
+> RAID is done at the wrong layer. The file system knows stuff about the
+> contents of the media which a block device driver cannot possibly know. So
+> you end up having a RAID rebuild take ages to reconstruct parts of the disc
+> which the file system _knows_ are currently unused, etc. 
 
-Certainly it doesn't when it's all hidden by RAID. It's feasible that it 
-_could_ though. It looked like the nwfs code did something like this -- you 
-told the file system explicitly about all the individual block devices it 
-was supposed to be using. I never did investigate it much though.
+This is an implementation problem, the RAID driver could as well
+reconstruct on the fly and give pending requests priority. No need to
+duplicate the code in all the filesystems.
 
-To be honest, in a lot of cases I'd settle for a way for a file system to 
-tell the block device 'this sector is now unused'. Not so much for RAID but 
-for the "block-based file system on flash translation layer" case.
+> Getting back to JFFS2, the same applies -- if you have a bad block in one 
+> of your flash chips, what do you do about it? Refrain from using the 
+> equivalent block in the other chip? Have some kind of block remapper 
+> underneath JFFS2, which keeps a whole lot of address information which is 
+> in fact entirely superfluous to the file system?
 
-> A dupfs layer is probably quite doable too yes. 
+The bad block point does make sense. Hard disks usually work
+completely or fail completely. Point taken.
 
-There are a few interesting cases about what you do when you get write 
-errors (or -ENOSPC) after your write already succeeded to the other device, 
-but yeah -- it shouldn't be too horrible.
+> I think it does want to be done in the file system, or possibly even in a 
+> layer _above_ the individual file system, which duplicates writes to two or 
+> more underlying file systems of a mountpoint, and do whatever's deemed 
+> appropriate for reads. Doing it in the individual file system is probably 
+> easier, if less interesting :)
 
-> However for JFFS2 surely all you actually want to do is write each log 
-> entry including its ID number to both journals. When you hit a bad block 
-> you can play back that bit of the journal from the other flash and then 
-> mark it bad. 
+RAID over filesystems would be fun, for sure. But in this case, you
+have me convinced, jffs2 is the best place to put it into.
 
-Yep, that basically works.
+Jörn
 
-> The only fun case is working out the size of your journal since its 
-> effectively the smaller of two journals can shrink online.
-
-Well that bit is quite fun already :) 
-
-But it's not too bad -- you GC on _both_ media till you have enough space
-on them both for the write you want to do, then you allow the allocation 
-call to return, do the write to both media and return. Some detail in 
-sorting out the case where a page write crosses an eraseblock boundary and 
-ends up split into two on one or both media, but that's not really too hard 
-conceptually -- I suspect it'd make an ugly mess of the code though.
-
---
-dwmw2
+-- 
+Geld macht nicht glücklich.
+Glück macht nicht satt.
