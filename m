@@ -1,21 +1,19 @@
-Received: from avanto.org ([193.233.71.179])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuAgi-0000Kw-OC
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 09:32:01 -0500
-Received: from skorinkod.lan ([10.255.2.21])
-	by avanto.org with esmtp (Exim 3.36 #1 (Debian)) id 1CuAgb-0000ba-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2005 17:31:53 +0300
-From: Dmitry Skorinko <skorinkod@mosk.ru>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 27 Jan 2005 17:31:46 +0300
+Received: from ext-proxy-2.ftel.co.uk ([192.65.220.98])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1CuCEb-0000xM-VT
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 11:11:07 -0500
+Message-ID: <41F9127E.6030508@mesias.co.uk>
+Date: Thu, 27 Jan 2005 16:10:38 +0000
+From: Cam <camilo@mesias.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501271731.46233.skorinkod@mosk.ru>
-Subject: docboot + 2.4.x
-Reply-To: skorinkod@mail.ru
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <20050126205121.11236.qmail@web52705.mail.yahoo.com>	<1106775037.6955.50.camel@weaponx.rchland.ibm.com>	<1106819251.783.141.camel@baythorne.infradead.org>
+	<20050127131702.GA22121@wohnheim.fh-wedel.de>
+In-Reply-To: <20050127131702.GA22121@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS3 document / wiki [OT]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-I know that 2.4.x is not supported by mtd team now. But I have many drivers 
-that is wrote on 2.4.x and don't have time to rewrite them. Changes in mtd 
-snapshot depended on 2.6 only is not very big and I have now 2.4 system with 
-full working mtd/inftla layers. I have only one big problem and I hope 
-anybode help me.
-docboot + 2.6 = all is working
-docboot + 2.4 = and I have:
-INFTL: inftlcore.c .......
-...
-DiskOnchip found at 0xe0000
-...
-INFTL ..
-INFTL ..
-Partition check:
- inftla: inftla1
-Creating 2 MTD partitions ...
-....
-VFS: Cannot open root device "inftla1" or 00:00
-Please append a correct "root=" boot option
-Kernel panic: VFS: Unable to mount root fs on 00:00
+Jörn
 
-docboot options are:
-root=/dev/inftla1 rootfstype=ext3 console=tty1,38400 disk=/dev/inftla 
-sectors=32 heads=16 cylinders=997
+> Plus, Wikis tend to be instant security problems.  The situation
+> appears to be so bad that anyone with average exploit knowledge can
+> read the sources and control some new machines within a rainy
+> afternoon. 
 
-Maybe reason is that devfs is disable? Does booting from flash depend on 
-devfs? What booting depends on?
+Can you back that statement up with an example please? I wasn't aware 
+that wikis were so dangerous! :)
 
-Thanks for all answers
-Dmitry
+I run a wiki which had some problems with spam but it didn't go beyond 
+that, and I've never heard of a wiki that caused security problems. IMHO 
+they provide a reasonable compromise between high security and good 
+features.
+
+-Cam
+
+
+-- 
+camilo@mesias.co.uk                                                 <--
