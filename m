@@ -1,18 +1,21 @@
-Received: from wall.comdev.cc ([63.150.62.162] helo=cleanup.comdev.cc)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dgX3-0002g9-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Feb 2002 23:52:18 +0000
-Message-ID: <3C74383D.EC664E52@comdev.cc>
-Date: Wed, 20 Feb 2002 15:58:53 -0800
-From: Adam Wozniak <adam.wozniak@comdev.cc>
-MIME-Version: 1.0
-To: gleixner@autronix.de
-CC: David Woodhouse <dwmw2@infradead.org>,
- 	linux-mtd@lists.infradead.org, jffs-dev@axis.com
+Received: from pd9eb8a1c.dip.t-dialin.net ([217.235.138.28] helo=thomas.tec.autronix.de)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16dgqg-0002in-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2002 00:12:34 +0000
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Thomas Gleixner <gleixner@autronix.de>
+Reply-To: gleixner@autronix.de
+To: Adam Wozniak <adam.wozniak@comdev.cc>
 Subject: Re: JFFS2 list_dirty corruption
-References: <02022020414807.18560@thomas> <02022021101508.18560@thomas>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Thu, 21 Feb 2002 01:26:34 +0100
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+   jffs-dev@axis.com
+References: <02022020414807.18560@thomas> <02022021101508.18560@thomas> <3C74383D.EC664E52@comdev.cc>
+In-Reply-To: <3C74383D.EC664E52@comdev.cc>
+MIME-Version: 1.0
+Message-Id: <0202210126340B.18560@thomas>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,47 +27,43 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Ok, maybe this is a problem:
+On Thursday, 21. February 2002 00:58, Adam Wozniak wrote:
+> Ok, maybe this is a problem:
+>
+Sorry, you're right. I should send such mails better in the morning.
+It happened on the transcript from my NAND modified stuff.
+Here is the correct patch:
 
-
-Thomas Gleixner wrote:
-> 
-> On Wednesday, 20. February 2002 20:41, Thomas Gleixner wrote:
-> > While hacking on JFFS2 for NAND I found a possibility, where scan_medium
-> > corrupts list_dirty.
-> This patch resolves the problem:
-> 
-> --- org/fs/jffs2/scan.c
-> +++ work/fs/jffs2/scan.c
-> @@ -128,9 +128,15 @@
->                                  (!c->nextblock || c->nextblock->free_size <
-> jeb->free_size)) {
->                                  /* Better candidate for the next writes to
-> go to */
->                                  if (c->nextblock)
-
-UMMM open { here?
-
-> +                                       /* We must delete, because mark_node_obsolete
-> +                                          could have added this block to dirty_list already */
-> +                                        list_del(&c->nextblock->list);
-
-and close } here?
-
->                                          list_add(&c->nextblock->list,
-> &c->dirty_list);
->                                  c->nextblock = jeb;
->                          } else {
-> +                               /* We must delete, because mark_node_obsolete
-> +                                  could have added this block to dirty_list already */
-> +                               list_del(&jeb->list);
->                                  list_add(&jeb->list, &c->dirty_list);
->                          }
->                 } else {
-
-
+--- mtd/fs/jffs2/scan.c	2002/01/09 13:25:58	1.57
++++ mtd/fs/jffs2/scan.c	2002/02/21 00:17:19
+@@ -127,10 +127,17 @@
+                         if (jeb->free_size > 2*sizeof(struct 
+jffs2_raw_inode) &&
+                                 (!c->nextblock || c->nextblock->free_size < 
+jeb->free_size)) {
+                                 /* Better candidate for the next writes to 
+go to */
+-                                if (c->nextblock)
++                                if (c->nextblock) {
++					/* We must delete, because mark_node_obsolete
++					   could have added this block to dirty_list already */
++                                        list_del(&c->nextblock->list);
+                                         list_add(&c->nextblock->list, 
+&c->dirty_list);
++				}
+                                 c->nextblock = jeb;
+                         } else {
++				/* We must delete, because mark_node_obsolete
++				   could have added this block to dirty_list already */
++				list_del(&jeb->list);
+                                 list_add(&jeb->list, &c->dirty_list);
+                         }
+ 		} else {
 -- 
-Adam Wozniak (KG6GZR)   COM DEV Wireless - Digital and Software Systems
-awozniak@comdev.cc      805 Aerovista Place, San Luis Obispo, CA 93401
-                        http://www.comdev.cc
-                        Voice: (805) 544-1089       Fax: (805) 544-2055
+Thomas
+P.S. David: The jffs2-nand-version is correct.
+__________________________________________________
+Thomas Gleixner, autronix automation GmbH
+auf dem berg 3, d-88690 uhldingen-muehlhofen
+fon: +49 7556 919891 , fax: +49 7556 919886
+mail: gleixner@autronix.de, http://www.autronix.de  
