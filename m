@@ -1,33 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14DbtH-00027J-00
-	for mtd-list@infradead.org; Wed, 03 Jan 2001 00:34:55 +0000
-Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
-	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 3.20 #2)
-	id 14DbtG-00027D-00
-	for mtd@infradead.org; Wed, 03 Jan 2001 00:34:54 +0000
-Date: Tue, 2 Jan 2001 23:29:34 +0000 (GMT)
+	id 14DlkA-0003TL-00
+	for mtd-list@infradead.org; Wed, 03 Jan 2001 11:06:10 +0000
+Received: from dell-paw-3-eth1.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14Dlk8-0003TF-00
+	for mtd@infradead.org; Wed, 03 Jan 2001 11:06:09 +0000
 From: David Woodhouse <dwmw2@infradead.org>
-To: Alice Hennessy <ahennessy@mvista.com>
-cc: <mark.langsdorf@amd.com>,  <mtd@infradead.org>
-Subject: Re: CFI ident problems with AMD chips.
-In-Reply-To: <3A5263C6.31F5D67D@mvista.com>
-Message-ID: <Pine.LNX.4.30.0101022328560.612-100000@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: mtd@infradead.org
+Cc: nico@cam.org, ahennessy@mvista.com, mark.langsdorf@amd.com,
+    Simon.Munton@m4data.co.uk, stephane.laroche@colubris.com,
+    dv207@cam.ac.uk
+Subject: RFC: merging CFI command set drivers.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 03 Jan 2001 11:05:23 +0000
+Message-ID: <17774.978519923@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Tue, 2 Jan 2001, Alice Hennessy wrote:
 
-> I don't see any specific language that states that the regions have to
-> be in order (too obvious to mention).
+A fair amount of the code to handle multiple erase sizes that I've just put 
+into cfi_cmdset_0002.c is also going to be needed in cfi_cmdset_0001.c
 
-Heh, yeah - I was coming to that conclusion too. Fun. How stupid of me to
-assume a modicum of common sense.
+I think it might be best to have the individual drivers provide the
+'internal' functions (do_write_oneword, do_write_buffer, do_erase_oneblock,
+etc.) and for the wrapper code which provides actual MTD routines to be 
+generic and shared. 
 
--- 
+Comments?
+
+--
 dwmw2
 
 
