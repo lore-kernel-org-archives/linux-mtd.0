@@ -1,17 +1,15 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from stone.tmok.com ([204.17.163.2] ident=pla)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15W4qa-00009p-00
-	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 00:40:44 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200108122333.TAA14506@stone.tmok.com> 
-References: <200108122333.TAA14506@stone.tmok.com> 
-To: pla <pla@tmok.com>
-Cc: linux-mtd@lists.infradead.org
+	id 15W6SG-0000G8-00
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2001 02:23:45 +0100
+Received: (from pla@localhost)
+	by stone.tmok.com (8.9.3/8.9.3) id VAA14974
+	for linux-mtd@lists.infradead.org; Sun, 12 Aug 2001 21:29:35 -0400 (EDT)
+Date: Sun, 12 Aug 2001 21:29:35 -0400 (EDT)
+From: pla <pla@tmok.com>
+Message-Id: <200108130129.VAA14974@stone.tmok.com>
+To: linux-mtd@lists.infradead.org
 Subject: Re: DOC2000 erase size of 16k? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 13 Aug 2001 00:46:05 +0100
-Message-ID: <32503.997659965@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,18 +21,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-pla@tmok.com said:
-> I have a problem with a DOC2000.  I use the 2.4.5 kernel, and the
-> 20010807 MTD snapshot for the utils. 
+> Use the latest code. It may fix it.
 
-Use the latest code. It may fix it.
-
-
-pla@tmok.com said:
-> Okay, I think, not a problem, the MTD-JFFS HowTo specifically says to
-> run nftl_format for that problem. 
-
-It shouldn't. Never run nftl_format unless you really have to.
-
---
-dwmw2
+Ah, many thanks.  the 2.4.8 kernel made all my problems magically go
+away, how wonderful!  (Guess I should have paid more attention to
+the kernel changelogs, my bad).
+ 
+Now on to the fun of getting GRUB to work as the DOC firmware (I don't
+suppose anyone's written a more detailed guide than the 4-step README
+in mtd/grub?  Such as, where does an 80k stage2 go when the DOC
+firmware region only holds 48k?  <G>)
+ 
+ 
+ 
+                                  - Ben
