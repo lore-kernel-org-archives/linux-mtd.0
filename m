@@ -1,22 +1,22 @@
-Received: from pc3-stap1-6-cust96.nott.cable.ntl.com ([81.98.145.96] helo=server)
+Received: from snifit.smb.utfors.se ([195.58.112.20])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18YKIP-00009g-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2003 06:11:33 +0000
-Received: from [10.0.0.2] (helo=linux)
-	by server with esmtp (Exim 3.35 #1 (Debian))
-	id 18YKlf-0003Nv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2003 06:41:47 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Marcus Birkin <marcus.birkin@bigfooot.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Grub on DiskOnChip2000
-Date: Tue, 14 Jan 2003 06:42:06 +0000
-References: <Pine.LNX.4.44.0301140109500.29365-100000@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.44.0301140109500.29365-100000@localhost.localdomain>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200301140642.06915.marcus.birkin@bigfooot.com>
+	id 18YLP7-0000Js-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2003 07:22:33 +0000
+Received: from LUMENTIS02 ([212.105.56.242])
+ by snifit.smb.utfors.se (iPlanet Messaging Server 5.2 Patch 1 (built Aug 19
+ 2002)) with SMTP id <0H8P000Z31WPLY@snifit.smb.utfors.se> for
+ linux-mtd@lists.infradead.org; Tue, 14 Jan 2003 08:53:21 +0100 (MET)
+Date: Tue, 14 Jan 2003 08:53:13 +0100
+From: Joakim Tjernlund <joakim.tjernlund@lumentis.se>
+Subject: RE: Display Unchecked space...
+In-reply-to: <000201c2bb7e$ff1e89a0$80d1a8c0@synso.com.tw>
+To: Steve Tsai <startec@ms11.hinet.net>,
+ Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Reply-to: joakim.tjernlund@lumentis.se
+Message-id: <IGEFJKJNHJDCBKALBJLLEEFCFJAA.joakim.tjernlund@lumentis.se>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,25 +28,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tuesday 14 January 2003 6:16 am, Ilguiz Latypov wrote:
-> There is the README_DiskOnChip file that appears after applying the pat=
-ch
-> from the patches/ directory.  It recommends to start these commands bef=
-ore
-> starting the configure script:
->
->    aclocal && automake && autoconf
+Hi Steve 
 
-I did this the first time to no avil.
+I got the same yesterday. I am using the preempt patch and the cfi_cmdset0001.c
+driver. I guessing it's a locking problem, but now I not that sure anymore, I
+don't think uClinux can do preempt? What's your CVS version of jffs2/write.c 
+and cfi_cmdset0001.c(if you use that driver)?
 
-> The above commands will re-generate the configure script and Makefile.i=
-n
-> files.  The patch itself won't modify the configure script and Makefile=
-=2Ein
-> just because it is possible to re-generate the latter files once their
-> templates are patched.
->
-> On Tue, 14 Jan 2003, Marcus Birkin wrote:
-> > I've got to the stage where i compile grub, it compiles with out erro=
-r.
-> > But theres no grub_firmware in /stage1.
+Can you repeat it?
+
+ Jocke 
+> 
+> 
+> Hi,
+> 
+> I download the latest cvs code and build it in uClinux. After running
+> two days, I got "kernel BUG at gc.c:136! Checked all inodes but still
+> 0x6a0 bytes of unchecked space?" and it will continue display the
+> message and halt the system. I set CONFIG_JFFS2_FS_DEBUG=1, but I did
+> not get any useful messages. Does anyone can tell me why the kernel BUG
+> will display? Could I solve the system halt, even "unchecked space"
+> occurs? Thanks.
+> 
+> Steve Tsai
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
