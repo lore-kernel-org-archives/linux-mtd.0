@@ -1,18 +1,19 @@
-Received: from tim.rpsys.net ([194.106.48.114])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CSkJR-0004Bm-Pb
-	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 17:54:39 -0500
-Message-ID: <027101c4c90a$94b592c0$0f01a8c0@max>
-From: "Richard Purdie" <rpurdie@rpsys.net>
-To: <linux-mtd@lists.infradead.org>
-References: <010b01c4c8de$82cc2b90$0f01a8c0@max> <1100297828l.6627l.0l@hydra>
-Date: Fri, 12 Nov 2004 22:54:29 -0000
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CSw4H-0005dh-B2
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2004 06:27:49 -0500
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id CEC1D22967
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 13 Nov 2004 14:26:59 +0300 (MSK)
+Message-ID: <4195EF83.8050104@yandex.ru>
+Date: Sat, 13 Nov 2004 14:26:59 +0300
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=response
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: Sharp SL Series NAND Driver
+Subject: JFFS2 prints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-John Lenz:
-> In the suspend and resume functions, you still have some prinks... those 
-> should be removed.  And does there need to be any code in resume?
+Hello,
 
-They're leftovers from the sharp driver. Knowing Sharp, they probably wake 
-up the screen or something but I'll remove them.
+I wonder, is there some reasons why JFFS2 doesn't use some macros to 
+output information? My be in order to be eCos-compatable? Or may be it 
+is just dirty work and nobody has time to do it?
 
-> This patch is very similar to the patch in my tree, except you also 
-> provide the scan_bbt function.
+I mean, why do not we introduce macros like:
 
-This sorts out the POSTBADBLOCK problem by adding an extra badblock marker
-in oob position 4 as the sharp driver does.
+/* JFFS2 message */
+#define JFFS2MSG(fmt, args...) \
+     printk(KERN_NOTICE fmt, args);
 
-> I just got poodle to boot up correctly with my patch.  The problem all
-> along was that I was passing the wrong root= option to the kernel! Passing 
-> the correct root device, and poodle boots up fine.  I can log in and run a 
-> few commands.  Note, this is with my patch but it should work
-> with yours as well since they are so similar.  Secondly, I have it working 
-> without any of the other patches you posted...
+/* JFFS2 debug message */
+#define JFFS2DMSG(level, fmt, args...) \
+     do { \
+         if (level <= JFFS2_DEBUG_LEVEL) \
+             printk(KERN_DEBUG "(%d) %s(): " fmt, level, __FUNCTION__, 
+args); \
+     }while(0)
 
-We've both got their via different routes. Mine's caught some things, yours 
-others but I guess the main thing is we've got there! :). I just continued 
-on with mine as I hadn't heard anything from you...
+/* JFFS2 warning message */
+#define JFFS2EMSG(fmt, args...) \
+     do { \
+         printk(KERN_ERR "JFFS2 Warning! %s(): " fmt, __FUNCTION__, args); \
+     } while(0)
 
->> http://www.rpsys.net/openzaurus/mtd/rp-mtd-sharpsl-map.patch - maps a ROM 
->> on
->> the device (I think its used to access configuration information?).
->
-> Do we actually need this patch?  Perhaps we should hold off including it 
-> until we have a program that needs to access this stuff.
+/* JFFS2 error message */
+#define JFFS2EMSG(fmt, args...) \
+     do { \
+         printk(KERN_ERR "JFFS2 Error! %s(): " fmt, __FUNCTION__, args); \
+     } while(0)
 
-I'm not sure if we need it or not. My view was it kept the device numbers
-consistent and as its rather simple, I didn't see a problem with including
-it. I can be persuaded otherwise...
+It is not very readable to use output like this:
+D1(printk(KERN_DEBUG "bababa"));
 
->>  http://www.rpsys.net/openzaurus/mtd/rp-mtd-sharpsl-extra.patch - This is
->
-> I notice in this patch you have CONFIG_MACH_HUSKY used... do we need to 
-> add  CONFIG_MACH_POODLE?  Is this something that poodle would have as 
-> well?  It  seems to be working here without this change... although I 
-> haven't tested  it a lot yet.
+But the main thing why I think it would be nice to introduce macros like 
+these is that the messages will be a bit standard. I mean that all 
+errors will have the same prefix. It is useful when you develop JFFS2 
+with debugging output on. In this case you will just s/JFFS2 Error and 
+see all the error messages. But currently, it is hard to find all the 
+error messages in JFFS2 because some of them use prefix "Error", some 
+just contain the word "failed", etc.
 
-There is a problem and I suspect its HUSKY and maybe tosa specific (as they
-have the large 128MB flash chips). The rootfs is large so it causes the
-eraseblock size to become too large and malloc can't cope. The kernel's
-solution - increase the eraseblock size by combing blocks. Sharp decided to
-use a different memory allocator which could cope with the increased size 
-instead. The two methods are incompatible. The machines that will need this 
-are ones which have filesystems that force a change in eraseblock size and 
-are too big for malloc. In the sharp driver this ifdef was for all the SL 
-series so we could probably change it to an ifdef MTD_NAND_SHARPSL safely. 
-Using dma may give a slight performance increase? I'm open to discussing 
-ways forward but if necessary we'll just have to keep that patch separate.
-
-I've just realised I left in the line that kills the RTIME compressor. I 
-think Sharp's performance calculations must have suggested it was beneficial 
-to do so but I'm not expecting that to go into the mtd-cvs!
+Thanks.
 
 -- 
-RP
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
