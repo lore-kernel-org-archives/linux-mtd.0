@@ -1,59 +1,70 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14tYUe-00006f-00
-	for mtd-list@infradead.org; Sat, 28 Apr 2001 18:26:52 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14tkcN-0003l3-00
+	for mtd-list@infradead.org; Sun, 29 Apr 2001 07:23:39 +0100
+Received: from www.ccimackay.com
+	([203.52.109.14] helo=mail.ccimackay.com ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14tYUd-00006Z-00
-	for mtd@infradead.org; Sat, 28 Apr 2001 18:26:51 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20010428101555.A22768@stm.lbl.gov> 
-References: <20010428101555.A22768@stm.lbl.gov>  <20010428090021.A21620@stm.lbl.gov> <20010427133716.A20218@stm.lbl.gov> <3AE98278.48DA955@daniel.com> <002801c0ceed$28aad830$0a01a8c0@Win1> <3AE98278.48DA955@daniel.com> <22885.988382072@redhat.com> <20010427133716.A20218@stm.lbl.gov> <9152.988454085@redhat.com> <20010428090021.A21620@stm.lbl.gov> <17699.988474317@redhat.com> 
-To: David Schleef <ds@schleef.org>
-Cc: mtd@infradead.org
-Subject: Re: sharp driver dissimilarities 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 28 Apr 2001 18:26:26 +0100
-Message-ID: <19377.988478786@redhat.com>
+	id 14tkcK-0003kx-00
+	for mtd@infradead.org; Sun, 29 Apr 2001 07:23:37 +0100
+Received: from dave (dave.ccimackay.com [192.168.100.130])
+	by mail.ccimackay.com (8.9.3/8.8.7) with SMTP id QAA26035
+	for <mtd@infradead.org>; Sun, 29 Apr 2001 16:41:03 +1000
+Message-ID: <004b01c0d074$d2c3b980$8264a8c0@dave>
+From: "David Griffith" <dgriffith@ccimackay.com>
+To: <mtd@infradead.org>
+Subject: Modification to Doc2000.c for Virgin Webplayer
+Date: Sun, 29 Apr 2001 16:22:53 +1000
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
+    Apologies for this note if someone else has been there / done that.
 
-ds@schleef.org said:
->  The write process uses word_write_time and adjusts it so that it
-> settles at the average write time.  The problem with that method is
-> that half the time, you will be sleeping for 10 ms on something that
-> may finish in 1 more usec of waiting.
+I have a few Virgin Webplayers with 48MB doc2000's in them.
+(Basically a MediaGX 200Mhz sbc)
 
-We only sleep for that long if current->need_resched.
+Anyways, I've been having trouble with the detection of the DOC. The MTD
+drivers in the linux kernel have trouble finding
+partitions on the DOC. (When I say "Have trouble" its means 99 out of 100
+times the nftl layer can't find a valid boot record, gets all grumpy, and
+gives up).
 
-But you're right that udelay() is fairly pointless - we should just spin 
-polling the flash. Assuming there aren't power consumption issues - but as 
-udelay is always a CPU spin anyway, I think that's OK.
+So I turned on debugging,  liberally sprinkled a few more printk's around..
+and hmmm.... turning on level 3 debugging makes it work.
+
+So, I says to meself, "Self, it must be some interaction with some sort of
+delay thingy with the DoC :-)",  a quick poke through the source showed this
+in doc2000.c in one of the functions near the front (I can't remember the
+name! sorry - my code is at home!)
+
+ what makes it work is to change this line (about 75 lines down in kernel
+2.4.4):
+
+    for (i = 0; i < cycles ; i++) {
+
+    to this :
+
+    for (i = 0; i < cycles*4 ; i++) {
 
 
-ds@schleef.org said:
->  A similar thing is true about block erase -- the schedule_timeout(HZ)
-> means that the earliest time the driver will notice that the chip is
-> done erasing is 1 s. 
+This effectively *quadruples* the delay time for all sorts of things in the
+code it seems.
+With this in - I can detect partitions, mount them , read / write to them
+just fine.
+I did try just doubling it, and I could read it, but it wasn't very happy
+about writing to it.
+I'd post logs , but currently I boot to a ramdisk...
 
-There's a tradeoff here between performance of the flash driver and 
-performance of the rest of the system. We should probably sleep only if 
-current->need_resched, I suppose.
+So,
+Any ideas as to why? ;-)
 
-
-ds@schleef.org said:
->  I also didn't understand how the locking was supposed to work, so I
-> rewrote it in the sharp driver.  I like it better. 
-
-The problem with having a single generic _wait function is that they're not 
-actually the same. When you want to read, you can interrupt erases or 
-writes. When you want to write, you can interrupt erases.
-
---
-dwmw2
-
+Regards,
+    David
 
 
 
