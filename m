@@ -1,23 +1,20 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from crl-mail.crl.dec.com ([192.58.206.9])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19ZVSQ-0001kY-R6
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 13:51:02 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HHN00KNONOHCG@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Mon, 07 Jul 2003 14:50:46 +0200 (MEST)
-Date: Mon, 07 Jul 2003 15:48:01 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <FCEAKDJJAPHPLJFINDAJAEDGDEAA.Stephan.Linke@epygi.de>
-To: Stephan Linke <Stephan.Linke@epygi.de>, Alex Samoutin <samoutin@hotbox.ru>
-Message-id: <200307071548.01226.tglx@linutronix.de>
-MIME-version: 1.0
-Content-disposition: inline
-References: <FCEAKDJJAPHPLJFINDAJAEDGDEAA.Stephan.Linke@epygi.de>
-Content-type: text/plain; charset=windows-1251
-Content-transfer-encoding: 7BIT
-cc: Linux-Mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Fw: corrupt my NAND flash device
-Reply-To: tglx@linutronix.de
+	id 19ZWmX-000219-1P
+	for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2003 15:15:53 +0100
+From: Jamey Hicks <jamey.hicks@hp.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1057324808.12384.314.camel@passion.cambridge.redhat.com>
+References: <000701c3422d$eb1417f0$1d00a8c0@cristianop>
+	 <1057324808.12384.314.camel@passion.cambridge.redhat.com>
+Message-Id: <1057587225.3151.1483.camel@vimes.crl.hpl.hp.com>
+Mime-Version: 1.0
+Date: 07 Jul 2003 10:13:45 -0400
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: Cristiano Parzani <c.parzani@tattile.com>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Secure Digital on Linux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 07 July 2003 11:27, Stephan Linke wrote:
-> Hi Thomas,
+On Fri, 2003-07-04 at 09:20, David Woodhouse wrote:
+> On Fri, 2003-07-04 at 14:12, Cristiano Parzani wrote:
+> > Hi to all,
+> > I am interested in Secure Digital (SD) under Linux, I have read the
+> > previous email posted here, someone could gladly tell me where to find
+> > information? 
+> 
+> SD is a problem because the specs are fairly hard to get hold of, and
+> without them we don't know how to initialise the cards. 
+> 
+> There is some information at
+> http://polysat.calpoly.edu/documents_cp2/cdh/data_sheets/toshiba_m1283bx.pdf
+> 
+
+I think that document has nearly enough information to make SD work.
+
+Luc Saillard sent me the following two document pointers, along with a
+patch adding support for SD cards to the MMC framework used by
+handhelds.org on the iPAQ.
+
+-Jamey
+
+Somes pointers found with google:
+> 
 >
-> From my experience partial page write is still used by YAFFS in OOB area.
-I see, I meant the data area. There we don't use partial programming. For the 
-oob area it works with JFFS2. I have to check for YAFFS
-
-> And I don't know how you are doing a journaling FS  on a NAND without
-> partial writes.
-By writing full data pages all the time.
-
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+www.intel.com/design/pca/applicationsprocessors/applnots/278533-001.htm
+> ==>
+>
+ftp://download.intel.com/design/pca/applicationsprocessors/applnots/278533-
+> At the end the pdf, you will find some code example to initialize the
+> sdcard.
+> 
+> This documentation details all public registers (not secure register)
+and
+> all commands (only number not parameters).
+> many documentation can be found written by toshiba
+>
+http://polysat.calpoly.edu/documents_cp2/cdh/data_sheets/toshiba_m1283bx.pdf
+> http://i.cmpnet.com/chipcenter/memory/images/prod055.pdf
+> or http://www.chipcenter.com/memory/images/prod055.pdf
+> 
