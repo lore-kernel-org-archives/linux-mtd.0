@@ -1,15 +1,13 @@
-Received: from c135.h203149222.is.net.tw
-	([203.149.222.135] helo=ms.gv.com.tw ident=root)
+Received: from mailhost.rdmcorp.com ([204.225.180.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17oL3l-0007cF-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2002 10:42:22 +0100
-Message-ID: <00c301c257e5$3b1d52e0$b30210ac@gv.com.tw>
-From: "??" <kevin@gv.com.tw>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: <linux-mtd@lists.infradead.org>
-References: <007901c23869$35d3f500$1b0448c0@gv.com.tw>  <31207.1028103302@redhat.com>
-Subject: any function/ioctl to get compression ratio of a single file in jffs2?
-Date: Mon, 9 Sep 2002 17:42:35 +0800
+	id 17oQZt-0008Ai-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Sep 2002 16:35:53 +0100
+Received: from PARKER (10.1.2.1) by mailhost.rdmcorp.com (Worldmail 1.3.167) for linux-mtd@lists.infradead.org; 9 Sep 2002 11:39:38 -0400
+From: "Jack Lu" <jlu@rdmcorp.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: about CFI flash
+Date: Mon, 9 Sep 2002 23:33:13 -0400
+Message-ID: <DFEAJMIABOLKNEBOPGDHKEBMCBAA.jlu@rdmcorp.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -25,9 +23,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-deal all,
+Hi
 
-is there any function/ioctl to get compression ratio of a single file in
-jffs2?
+The CFI flash memory can enter CFI query mode when the system writes CDI
+Query command 0x98, to address 0x55,, any time
+the device is ready to read array data. My question is:
 
-thx in advanced!:)
+The CFI flash memory can enter CFI query mode when the system writes CDI
+Query command 0x98, to address 0x55,, any time
+the device is ready to read array data ,
+only when the falsh is erasend and in blank
+or even if the flash has been programed and the memory at  address 0x55
+coontains any data?
+
+Thanks.
