@@ -1,20 +1,18 @@
-Received: from avicenna.cc.boun.edu.tr ([193.140.210.25])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19JxNU-00019u-RH
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 16:25:41 +0100
-Received: from saritepe.cc.boun.edu.tr ([193.140.192.31])
-	M2003052518252204982
-	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 18:25:22 +0300
-Message-ID: <1053887191.3ed10ad7ea7cf@webmail.boun.edu.tr>
-Date: Sun, 25 May 2003 18:26:31 +0000
-From: kusdogan@boun.edu.tr
-To: David Woodhouse <dwmw2@infradead.org>
+Received: from imladris.demon.co.uk ([193.237.130.41])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19JxSP-0001KN-KO
+	for <linux-mtd@lists.infradead.org>; Sun, 25 May 2003 16:30:45 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: kusdogan@boun.edu.tr
+In-Reply-To: <1053887191.3ed10ad7ea7cf@webmail.boun.edu.tr>
 References: <1053811251.3ecfe23346059@webmail.boun.edu.tr>
-	<1053855854.2082.3.camel@passion.cambridge.redhat.com>
-In-Reply-To: <1053855854.2082.3.camel@passion.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso8859-9;q=1.0
-Content-Transfer-Encoding: 8bit
+	 <1053855854.2082.3.camel@passion.cambridge.redhat.com>
+	 <1053887191.3ed10ad7ea7cf@webmail.boun.edu.tr>
+Message-Id: <1053876687.17182.1.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Sun, 25 May 2003 16:31:27 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
 Subject: Re: Oops ERROR : Unable to handle kernel NULL pointer dereference
  at virtual address 00000000
@@ -27,22 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 2003-05-25 at 19:26, kusdogan@boun.edu.tr wrote:
+> > Thanks for the report. Please could you apply this patch and check what
+> > it prints...
+> > 
+>  Here's the new output. 
 
-> Thanks for the report. Please could you apply this patch and check what
-> it prints...
-> 
- Here's the new output. 
+Where exactly is the oops this time, and if it's not in add_mtd_device()
+can you show the (decoded) backtrace too? (you need -mapcs-frame).
 
-H720x-MTD probing 16bit FLASH
- Amd/Fujitsu Extended Query Table v1.0 at 0x0040
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling fast programming due to code brokenness.
-cmdlinepart partition parsing not available
-Using builtin partition table
-Creating 3 MTD partitions on "SinX Flash":
-0x00000000-0x00010000 : "SinX Bootloader"
-Add c00895d0 for notifier at c00c787c
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-pgd = c0004000
-*pgd = 00000000, *pmd = 00000000
-Internal error: Oops: ffffffffC
+If it's still in add_mtd_device(), please show the entire disassembly of
+that function. What compiler are you compiling with?
+
+-- 
+dwmw2
