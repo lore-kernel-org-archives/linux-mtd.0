@@ -1,19 +1,19 @@
-Received: from modemcable096.213-200-24.mc.videotron.ca ([24.200.213.96]
-	helo=localhost.localdomain)
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cw1rB-0000Ag-C5
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 12:30:30 -0500
-Date: Tue, 1 Feb 2005 12:30:19 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20050201172059.GB26068@synertronixx3>
-Message-ID: <Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
+	id 1Cw24a-0000TM-UN
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 12:44:22 -0500
+Date: Tue, 1 Feb 2005 18:44:20 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050201174419.GA32581@synertronixx3>
 References: <20050201153945.GA26068@synertronixx3>
 	<Pine.LNX.4.61.0502011137020.31479@localhost.localdomain>
 	<20050201172059.GB26068@synertronixx3>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+	<Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0502011229310.31479@localhost.localdomain>
 Subject: Re: I need still help with XIP, kernel boots now :)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,34 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 Feb 2005, Konstantin Kletschke wrote:
+Regarding my mail before:
 
-> Am 2005-02-01 11:38 -0500 schrieb Nicolas Pitre:
-> > On Tue, 1 Feb 2005, Konstantin Kletschke wrote:
-> > 
-> > > Hi people!
-> > > 
-> > > Now I need definately have XIP to get running :/
-> > > 
-> > > I use 2.6.11-rc2-mm2 and put the "xipu" patches into it, which make the
-> > > "make xipuImage" available and the XIP Kernel boots now. heureka.
-> > > 
-> > > Due to the fakt I have no hardware partiotionable Flash devices I need
-> > > to utlize the mtd software support to cexist with an XIP Kernel
-> > > (CONFIG_MTD_XIP=y).
-> > 
-> > Try that option with a non XIP kernel at first, then test writing to 
-> > flash etc.  See if that works first.
-> 
-> *ourks* This guves a nice Oops.
-> 
-> Internal error: Oops: 0 [#1] 
-> CPU: 0            
-> pc : [<c001fdd8>]    lr : [<e5933000>]    Not tainted
-> Using defaults from ksymoops -t elf32-i386 -a i386
-[...]
+I changed IMX_TCN(1) to IMX_TCN(0) because this is the system timer,
+damn! Oops is away then and booting an non xip uImage with
+CONFIG_XIP_MTD=y works very well! I could copy a file onto the extra
+partition mounted rw. 
 
-What kernel version is this?
+Running this xipuImage (/ mounted ro) allowed me to mount 
+an extra jffs2 partition and ls on it, but writing on it freezes the
+system.
 
+Am 2005-02-01 12:30 -0500 schrieb Nicolas Pitre:
 
-Nicolas
+> What kernel version is this?
+
+2.6.11-rc2-mm2 with my board specific i.MX addons.
+
+Konsti
+
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
