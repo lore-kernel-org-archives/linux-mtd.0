@@ -1,23 +1,16 @@
-Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
-	helo=aeryn.fluff.org.uk)
+Received: from [211.144.194.212] (helo=yuhuatel.com)
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CAcjL-0003LR-IQ
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2004 19:10:28 -0400
-Date: Fri, 24 Sep 2004 00:05:18 +0100
-From: Ben Dooks <ben-mtd@fluff.org>
-To: Ben Dooks <ben-mtd@fluff.org>
-Message-ID: <20040923230518.GG25491@home.fluff.org>
-References: <I4G9K8$32150B19D33A6F23F04032D520B4890A@libero.it>
-	<20040922202907.GA25491@home.fluff.org>
-	<1095923470.2925.57.camel@thomas>
-	<20040923191506.GE25491@home.fluff.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040923191506.GE25491@home.fluff.org>
-Sender: Ben Dooks <ben@fluff.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, gavin@simtec.co.uk
-Subject: Re: NAND detect
+	id 1CAlAi-0004UZ-Ek
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2004 04:11:25 -0400
+Message-ID: <4153D79C.8080606@hotmail.com>
+Date: Fri, 24 Sep 2004 16:15:24 +0800
+From: Wangfeng Ai <beatit@hotmail.com>
+MIME-Version: 1.0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Data CRC failed
+Reply-To: beatit@hotmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 23, 2004 at 08:15:06PM +0100, Ben Dooks wrote:
-> On Thu, Sep 23, 2004 at 09:11:10AM +0200, Thomas Gleixner wrote:
-> > On Wed, 2004-09-22 at 22:29, Ben Dooks wrote:
-> 
-> I've posted the patch to a 2.6.9 kernel from my first
-> effort here (the kernel has the 19th September snapshot
-> applied to it first):
-> 
-> http://www.fluff.org/ben/mtd/nand-multi1.diff
+hi, list
 
-after discussions with tglx, the patch is too invasive into
-nand_base.c and has other problems.
+I have merged mtd-snapshot-20040919 with jffs2 into my kernel-2.4.20. I 
+use jffs2 as root filesystem, mounted read-write. But when I create and 
+remove some files(dirs), and then reboot, jffs2 complains something like 
+the following:
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x01aa0b3c: Read 
+0x14932849,
+  calculated 0xae8acdd4 
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x004c2ac8: Read 
+0x1c81ddb0,
+  calculated 0x33f397d4 
 
-  'a smiley only costs 4 bytes'
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x004c1f60: Read 
+0x1c81ddb0,
+  calculated 0xcc623008
+
+It seems that more files created and removed, more messages like that 
+come out.
+
+Is that minor? Or something is going wrong? Any comments please?
+
+
+--
+Wangfeng Ai
