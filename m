@@ -1,16 +1,18 @@
-Received: from [204.214.131.136] (helo=hooper2.licor.com)
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15gVMm-0005jG-00
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2001 19:01:04 +0100
-From: "Chris Lesiak" <clesiak@licor.com>
-To: linux-mtd@lists.infradead.org,
-	"Siders, Keith" <keith_siders@toshibatv.com>
-Message-ID: <86256AC3.006369F1.00@hooper2.licor.com>
-Date: Mon, 10 Sep 2001 12:55:28 -0500
-Subject: Re: Partition question...
+Received: from mailhst2.its.tudelft.nl ([130.161.34.250])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15gW2a-0005n1-00
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2001 19:44:16 +0100
+Date: Mon, 10 Sep 2001 20:50:17 +0200
+From: Erik Mouw <J.A.K.Mouw@ITS.TUDelft.NL>
+To: Robert Warner <rwarner@mediaone.net>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: list-newbie ... Have an Intel Flash E28F128 and want to ...
+Message-ID: <20010910205017.A14221@arthur.ubicom.tudelft.nl>
+References: <01090423503703.03804@amdk62300>
 Mime-Version: 1.0
-Content-type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <01090423503703.03804@amdk62300>; from rwarner@mediaone.net on Tue, Sep 04, 2001 at 11:50:37PM -0400
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,51 +24,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+On Tue, Sep 04, 2001 at 11:50:37PM -0400, Robert Warner wrote:
+> 1. In-circuit programming of CFI flashes .. is this feasible? does a utility 
+> already exist?
 
-I also have two banks mapped contiguously into virtual memory that I would
-like to be seen as one.
-
-The problem is that RedBoot (and ECOS) seems to only support one flash
-logical device.  I wrote an ECOS flash driver that treated both banks as a
-single large logical device.  RedBoot stores its partition table in the last
-erase
-block of the device.  So in my case, a single partition table is store in the
-last
-erase block of the second bank but partitions the space of both banks.
-
-When I get to the linux, mtd seems to expect a partition table for each bank.
-
-What is the best way to reconcile the problem?
-Can linux also easily see both banks as a single device that can be partitioned?
-
-Chris Lesiak
-clesiak@licor.com
+A commonly used trick on StrongARM SA11x0 platforms is to program the
+flash from the CPU JTAG interface (JTAG is a debugging interface). The
+utility "jflash" exists for that, it bit-bangs the JTAG protocol on the
+parallel port. You can get it (for the Intel Assabet board) at
+ftp://ftp.arm.linux.org.uk/pub/linux/arm/people/nico/Assabet-Jflash-v1.2-1.tgz
+No idea if it will be useful for you.
 
 
+Erik
 
-If the addressing between two Flash devices remains linear with no gaps,
-can they be part of the same mtd[n] partition, or must the next chip be
-mtd[n+1]?
-
-I have two 32-bit Flash devices (or so I'm told). Since this is a MIPS
-application the
-reset vector is 0xBFC00000. The Flash devices are 0xBE000000-BEFFFFFF and
-0xBF000000-BFFFFFFF, so I have 4Megs at the top of the second device, with
-the
-first device and lower 12Megs of the second giving me 28Megs of linear Flash
-
-available.
-
-Keith Siders
-Software Engineer
- Toshiba America Consumer Products, Inc.
-Advanced Television Technology Center
-801 Royal Parkway, Suite 100
-Nashville, Tennessee 37214
-Phone: (615) 257-4050
-Fax:   (615) 453-7880
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+J.A.K. (Erik) Mouw, Information and Communication Theory Group, Department
+of Electrical Engineering, Faculty of Information Technology and Systems,
+Delft University of Technology, PO BOX 5031,  2600 GA Delft, The Netherlands
+Phone: +31-15-2783635  Fax: +31-15-2781843  Email: J.A.K.Mouw@its.tudelft.nl
+WWW: http://www-ict.its.tudelft.nl/~erik/
