@@ -1,21 +1,22 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from h002078c680df.ne.client2.attbi.com
+	([24.34.94.87] helo=joshuawise.com ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1ApsVu-0007Ie-AH
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2004 17:14:34 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Florian Schirmer <jolt@tuxbox.org>
-In-Reply-To: <200402081802.42325.jolt@tuxbox.org>
-References: <007301c3ebea$29f96270$9602010a@jingle>
-	 <200402081238.45099.jolt@tuxbox.org>
-	 <1076241213.12587.240.camel@imladris.demon.co.uk>
-	 <200402081802.42325.jolt@tuxbox.org>
-Content-Type: text/plain
-Message-Id: <1076260389.12587.291.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Sun, 08 Feb 2004 17:13:09 +0000
-Content-Transfer-Encoding: 7bit
+	id 1ApulO-0007k3-Ie
+	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2004 19:38:42 +0000
+From: Joshua Wise <joshua@joshuawise.com>
+To: tglx@linutronix.de
+Date: Sun, 8 Feb 2004 14:38:38 -0500
+References: <200402080113.36039.joshua@joshuawise.com>
+	<200402080958.58584.tglx@linutronix.de>
+In-Reply-To: <200402080958.58584.tglx@linutronix.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <200402081438.43118.joshua@joshuawise.com>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 corruption
+Subject: Re: JFFS2 NAND support - Mount failure on "good" filesystem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2004-02-08 at 18:02 +0100, Florian Schirmer wrote:
-> memcopy_fromio is memcpy on MIPS. I've checked the memcpy implementation in 
-> arch/mips/lib/memcpy.S and it is using byte transfers for remaining byte 
-> transfers. So i expect at least the MIPS and SH plattform to be broken for 
-> non buswidth==1 setups. Haven't checked other archs yet.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I don't understand. Why should it be broken? If your bus controller is
-set up right for that region, byte loads ought to work fine. It'll
-_issue_ a wider load, then pick the right byte from it.
+On Sunday 08 February 2004 3:58 am, Thomas Gleixner wrote:
+> Seems like you managed to corrupt the OOB area, as all your blocks are
+> marked as bad. Your programming algorithm has to take care of the OOB data
+> ! There are some slightly outdated docs on linux-mtd.infradead.org
+My programming algorithm is exactly the same as nandwrite's. I believe that=
+=20
+the issue is not in JFFS2, but in the NAND driver - do we not need multiple=
+=20
+pages of OOB data, and does the NAND driver not expect the chip to=20
+automatically "move on"? My chip seems to be the only NAND chip that does n=
+ot=20
+automagically move on to the next page of OOB data...
 
-What's happening is that it's picking the _wrong_ byte from it. Is the
-bus controller set up to byte-swap transparently when we do 16-bit
-access?
+jwise
 
-Can you show the result of a single 32-bit load, two consecutive 16-bit
-loads, and four consecutive 8-bit loads all starting at the same
-address?
+=2D --=20
+Joshua Wise | www.joshuawise.com
+GPG Key     | 0xEA80E0B3
+Quote       | <RockShox> charge up a 50v 1000uf cap and toss it to someone
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-> I'm wondering what assumptions can be made about memcpy's access patterns? 
-> Looks like nobody even guarantees a specific access type. But we need to make 
-> sure every access to the flash matches the bus width, don't we?
-
-I don't think so. The bus controller really ought to handle this for us,
-for reading. 
-
--- 
-dwmw2
+iD8DBQFAJpBBPn9tWOqA4LMRAmZFAJ99i7XLldo46XZaa9txIZOixwzlkACglzPI
+9tsTGllBx3OpKu3ZYAM0M9g=3D
+=3DzlHR
+=2D----END PGP SIGNATURE-----
