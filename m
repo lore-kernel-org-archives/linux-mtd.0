@@ -1,15 +1,19 @@
-Received: from f225.pav1.hotmail.com ([64.4.31.225] helo=hotmail.com)
+Received: from c135.h203149222.is.net.tw
+	([203.149.222.135] helo=ms.gv.com.tw ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 181PNH-00072M-00
-	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 11:56:32 +0100
-From: "vijay vijay" <vijay_peshkar@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: vijay.peshkar@wipro.com
-Subject: mtd, jffs and bootloader..
-Date: Tue, 15 Oct 2002 10:55:50 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F225IaX31lKxtLUNYMy00017f3e@hotmail.com>
+	id 181QS7-00078v-00
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2002 13:05:35 +0100
+Message-ID: <00bf01c27443$37238220$b30210ac@gv.com.tw>
+From: "??" <kevin@gv.com.tw>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+References: <000e01c27400$f0766c30$80d1a8c0@synso.com.tw>  <32372.1034663283@passion.cambridge.redhat.com>
+Subject: [power-saving issue]
+Date: Tue, 15 Oct 2002 20:05:55 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,49 +25,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi Friends,
+dear all,
 
-Looks like either they are very dumb questions or haev been
-answered many many times already. Since am still unable to
-find answer to my queries, am reposting..pls help me out.
-Sorry for posting the querries again.
+we want to stop gc thread manually when system goto suspend mode,
 
-1. Can I put my bootloader in a seperate partition say mtd0 ?.
-2. Since its my home built bootloader, am not sure how to tell
-ffs about its location.( Will it matter?.) Am scared that the
-partition table / any ffs data struct may overwrite bootloader
-and if that happens, don't have any tool to reflash and bring
-up the board.
-3.Am unable to locate any detailed text on cramfs. Can you
-suggest one?.
+can we simply call "jffs2_stop_garbage_collect_thread()"?
+and how to get its param: "struct jffs2_sb_info *c"
 
-thanks and regards,
-Vijay
+btw, i think gc thread wakeup only if its necessary not regularly, right?
 
->
->-----Original Message-----
->From: vijay vijay [mailto:vijay_peshkar@hotmail.com]
->Sent: Friday, October 11, 2002 4:45 PM
->To: linux-mtd@lists.infradead.org
->Cc: vijay.peshkar@wirpo.com
->Subject: my bootloader and mtd / cramfs
->
->
->Hi Friends,
->
->Few queries..
->1. Is there any documentation availible on cramfs?. Couldn't find any thru 
->google, though saw lot of mail discussions?.
->2. Want to use an inhouse built bootloader on my board. How to ensure that 
->the ffs(jffs2 / cramfs) and mtd do not write to it(say partition tables 
->etc.,)?.
->3. Can I use FFS on only a certain part of flash and the rest as raw
->(say) for storing my image?.
->
->Regards,
->Vijay
-
-
-_________________________________________________________________
-Join the world’s largest e-mail service with MSN Hotmail. 
-http://www.hotmail.com
+best regards,
