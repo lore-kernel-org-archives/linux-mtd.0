@@ -1,20 +1,20 @@
-Received: from auriga.auriga.ru ([80.240.102.100])
+Received: from natsmtp00.webmailer.de ([192.67.198.74] helo=post.webmailer.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19mZ8V-0006vN-OT
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Aug 2003 14:24:27 +0100
-content-class: urn:content-classes:message
+	id 19mtGO-0000LA-3m
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Aug 2003 11:53:56 +0100
+Received: from pc50 (drsd-d9b844cb.pool.mediaWays.net [217.184.68.203])
+	by post.webmailer.de (8.12.8/8.8.7) with SMTP id h7DArYxD008816
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Aug 2003 12:53:37 +0200 (MEST)
+Message-ID: <000501c36189$2819d020$32fefe0a@pc50>
+From: "=?iso-8859-1?B?SvZybiBHcnXrbA==?=" <gruel@inovision.de>
+To: <linux-mtd@lists.infradead.org>
+Date: Wed, 13 Aug 2003 12:53:23 +0200
 MIME-Version: 1.0
-Date: Tue, 12 Aug 2003 17:24:14 +0400
-Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E1656486@auriga.auriga.ru>
-From: "Eugeny Mints" <eugeny.mints@auriga.ru>
-To: <tglx@linutronix.de>
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-cc: samoutin@hotbox.ru
-cc: linux-mtd@lists.infradead.org
-cc: tharbaugh@lnxi.com
-Subject: Toshiba TC58256AFTI question
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Problem with M-Systems DiskOnChip ...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, all!
+Working with kernel version 2.4.18 (ELinOS distribution), I always got
+messages like:
 
-I've read mail list archive, mainly letters with subject " Fw: corrupt
-my NAND flash device" because I'm interested in NAND Toshiba TC58256ATF
-flash support.
+> DiskOnChip Millennium found at address 0xD0000
+> Flash chip found: Manufacturer ID: 98, Chip ID: E6 (NAND 1MB 5V)
+> 1 flash chips found. Total DiskOnChip size: 1 MiB
+> Ignoring DiskOnChip 2000 at 0xD2000 - already configured
 
-As I understood the main issues are(or were:):
+That's wrong, because I have the MD-2810-DO8 on board. wich definitely has
+8MBytes space ... after that conflict not wondering about these later
+messages:
 
-  1. Write verify sometimes fail
-  2. Write operation during erase sometimes cause data corruption =20
+> NFTL driver: nftlcore.c $Revision: 1.87 $, nftlmount.c $Revision: 1.31 $
+> NFTL: UnitSizeFactor 0x00 detected. This violates the spec but we think we
+know
+> what it means...
+> NFTL Media Header sanity check failed:
+> numvunits (1988) > nb_blocks (256) - nb_boot_blocks(6) - 2
+> Could not find valid boot record
+> Could not mount NFTL device
 
-I've just started to work with mtd and this flash and have not
-investigated the above issues on my hardware yet,
-but it seems that I also experienced problems if the device is filled
-once and an attempt to re-use previously used sectors is made.
+I'm really starting to hate the manufacturer of our ELAN 540 boards for his
+idea not to use an IDE flashdisk ... but possibly I'm stupid myself an make
+mistakes never dreaming of?
 
-Could anybody please summarize issues connected with this flash support?
+I tried with doc514.exb, 514p.exb, doc42.exb and unformatted - all that done
+by dos tool dformat from M-Systems website ... always I got results like the
+one above ...
 
-Thanks in advance,
-					Eugeny
+An other approach has been to do formatting via /dev/mtd/0 (eraseall,
+nftlformat) - but that try was obviously the wrong one - after that I get
+write errors with all M-Systems tools ...
+
+Hopefully someone has any helpful hint for me,
+best regards,
+Joern.
