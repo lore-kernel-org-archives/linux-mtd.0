@@ -1,16 +1,18 @@
-Received: from tomts11.bellnexxia.net ([209.226.175.55] helo=tomts11-srv.bellnexxia.net)
+Received: from tweedy.ksc.nasa.gov ([128.217.76.165])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17D6AI-0003tW-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 May 2002 17:19:10 +0100
-Date: Wed, 29 May 2002 12:19:08 -0400 (EDT)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Frederic Marmond <fmarmond@eprocess.fr>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: UnitSizeFactor in nftlmount.c
-In-Reply-To: <3CF4EDE4.2080100@eprocess.fr>
-Message-ID: <Pine.LNX.4.44.0205291152410.3100-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 17DQvN-0005AX-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 May 2002 15:29:09 +0100
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by tweedy.ksc.nasa.gov (8.11.6/8.11.6) with ESMTP id g4UET3n19191
+	for <linux-mtd@lists.infradead.org>; Thu, 30 May 2002 10:29:03 -0400
+Subject: Grub Booting Disk On Chip
+From: Bob Chiodini <Robert.Chiodini-1@ksc.nasa.gov>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 30 May 2002 10:29:03 -0400
+Message-Id: <1022768943.26053.19.camel@tweedy.ksc.nasa.gov>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,52 +24,56 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Frederic,
+I'm having a problem configuring grub to boot from a DOC2000.
 
-On Wed, 29 May 2002, Frederic Marmond wrote:
+What's been done so far:
 
-> i made a "nftl_format /dev/mtd0 2097152", from the lastest CVS from 
+I've patched grub-0.92 with the grub-2002-02-19-doc.patch.  Installed
+the grub_firmware on the DOC, formated and partitioned /dev/nftla1 and
+have successfully mounted it.  I reserved 100000 bytes for the
+grub_firmware.  The /boot/grub directory exists on the DOC with the
+following menu.lst (a soft link to grub.conf):
 
-I believe the second parameter is a start offset for the NFTL layer.  It 
-can be supplied to provide a space for the bootloader.
+default=1
+timeout=5
+splashimage=(hd0,0)/grub/splash.xpm.gz
+title Red Hat Linux (2.4.7-10)
+	root (hd0,0)
+	kernel /vmlinuz-2.4.7-10 ro root=/dev/hda2
+title Red Hat Linux (2.4.18emb)
+        root (hd0,0)
+        kernel /vmlinuz-2.4.18emb ro root=/dev/hda2
+title Red Hat Linux (2.4.18emb from DOC)
+        root (dc0,0)
+        kernel /vmlinuz-2.4.18emb ro root=/dev/hda2
 
-The error might persist because part of the older NFTL layer still remains 
-in the beginning of the chip.
+What doesn't work:
 
-On Wed, 29 May 2002, Frederic Marmond wrote:
+When I boot the board:
 
-> but impossible to boot (even with the "lilo-mtd -r /diskonchip").
+1.  I get "DoC 2000 at D600".  The DOC is really at D000.
 
-As far as I know the lilo patched by M-Sys operates with the boot media
-through BIOS calls.  The M-Sys firmware stored in the beginning of the
-flash memory hooks up to the BIOS disk interrupt and will emulate a hard
-disk.
+2.  I get several messages about GRUB trying to find
+/boot/grub/menu.lst.  None of the messages indicate drive 0xE0.
 
-I haven't tried combining the M-Sys firmware with MTD drivers as they
-perform the same task.  The choice of Linux driver for DOC 2000 (M-Sys or
-MTD) will affect the choice of the bootloader.  With the M-Sys driver, the 
-lilo loader provided by M-Sys will operate with the chip via BIOS.  It 
-will make sense to stay with the same firmware when running Linux then.
+Eventually I get a grub prompt and can enter:
 
-One of the bootloader DOC2000 BIOS disk interface for the bootloader Using
-MTD drivers instead of M-Sys allows to replace the M-Sys firmware because 
-the latter is no longer critical for Linux kernel operation.
+root (dc0,0)
+kernel /boot/vmlinuz-2.4.18emb ro root=/dev/hda2
 
-A patch exists to make another bootloader (GRUB) aware of DOC 2000 and its 
-NFTL layer.  Essentially the patch provide a block read interface to the 
-NFTL "payload".
+Both commands respond appropriately (I think).  I can then type boot and
+all is well.
 
-The GRUB bootloader can be found at
+What am I missing to get grub to automatically boot from the DOC?
 
-    http://savannah.gnu.org/projects/grub
+Bob...
 
-and the patch is the
 
-    patches/grub-2002-02-19-doc.patch
-
-file from MTD tree.  The patch contains a short instruction on building 
-and installing the firmware in README_DiskOnChip.  See also
-
-    http://lists.infradead.org/pipermail/linux-mtd/2002-May/004811.html
-
-Ilguiz
+-- 
+Bob Chiodini
+Sr. Communications Engineer
+Dynacs Engineering Company, Inc.
+DNX-18
+Kennedy Space Center, Florida 32899
+321-867-6313 (voice)
+321-867-6300 (fax)
