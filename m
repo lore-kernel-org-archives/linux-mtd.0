@@ -1,17 +1,19 @@
-Received: from cl-303.ams-04.nl.sixxs.net ([2001:960:2:12e::2]
-	helo=joshuawise.com)
+Received: from mail2.racnet.net ([213.144.11.11])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DGoKu-0001d9-NB
-	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2005 20:19:05 -0500
-Message-ID: <424B4FFA.7050906@joshuawise.com>
-Date: Wed, 30 Mar 2005 20:18:50 -0500
-From: Joshua Wise <joshua@joshuawise.com>
+	id 1DGveX-0002yR-6u
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2005 04:07:54 -0500
+Received: from mikobook.office.rac.de ([10.0.0.84])
+	by mail2.racnet.net with asmtp (Exim (Debian)) id 1DGveV-00040G-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Mar 2005 11:07:47 +0200
+Message-ID: <424BBDE3.4000506@rac.de>
+Date: Thu, 31 Mar 2005 11:07:47 +0200
+From: Marcus Mikolaiczyk <m.mikolaiczyk@rac.de>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: Matt Reimer <mreimer@vpop.net>
-Subject: oobavail issues
+Subject: NAND connected with address lines based example
+Reply-To: m.mikolaiczyk@rac.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
+Dear list users,
 
-We're debugging a mysterious crash on NAND writes on an s3c2410-derived 
-driver. The culprit seems to be in how oobavail is determined:
+I got a system where a Samsung NAND ist connect  via Adresslines (A0 ->
+CLE, A1 -> ALE) using a chipselect from the processor. I looked through
+the guide "MTD NAND Driver Programming Interface" and the sources to
+adapt an existing driver. Now I stuck with a problem concerning the
+board_hwcontrol function.
+It's alwas there that CLE/ALE have a set and a clear command. But in my
+setup the CLE/ALE setting is made through the access of the
+addresslines. See the table:
 
-line 2524 nand_base.c: mtd->oobavail = mtd->oobsize - 
-(this->autooob->eccbytes + 1);
+        A1(ALE)   A0(CLE)  Beispieladresse    Funktion
+-------------------------------------------------------------------------------
+1         0         0       0xA8000000        read/write access on mem
+2         0         1       0xA8000001        Command
+3         1         0       0xA8000002        Addresssetting
+4         1         1       0xA8000003        not valid
 
-Our oobinfo is the same as the s3c2410's. For reference, that's:
+The base is A8000000 for example.
+Now writing a Byte to 0xA8000001 (a NAND command) automatically sets ALE
+=0 and CLE=1
+Writing the addressparts is done through writing the 1st databyte Col1
+to address 0xA8000002 and so on.
+Concerning now the function board_hwcontrol there is the
+...
+switch(cmd) {
+		case NAND_CTL_SETCLE: /* Write to addr 0xA8000001 */;break;
+		case NAND_CTL_CLRCLE: /* do nothing */;break;
+		case NAND_CTL_SETALE: /* Write to addr 0xA8000002 */;break;
+		case NAND_CTL_CLRALE: /* do nothing */;break;
+}
+...
+Am I right when these commands have to be empty in this case?
+Where do I tell the system to use the address 0xA8000001 for commands
+and 0xA8000002 for addresses?
 
-static struct nand_oobinfo nand_hw_eccoob = {
-         .useecc = MTD_NANDECC_AUTOPLACE,
-         .eccbytes = 3,
-         .eccpos = {0, 1, 2 },
-         .oobfree = { {8, 8} }
-};
+Kind Regards
 
-We found that making our oobfree match up with oobavail seemed to do the 
-trick for avoiding this, and make JFFS2 work, to boot! Here's what we did:
-
-static struct nand_oobinfo nand_hw_eccoob = {
-         .useecc = MTD_NANDECC_AUTOPLACE,
-         .eccbytes = 3,
-         .eccpos = {0, 1, 2 },
-         .oobfree = { {8, 8}, {3, 2}, {6, 2} } /* {6, 10} instead? */
-};
-
-I suspect that oobavail should be summing oobfree instead of doing that 
-arithmetic. Or is there something I'm not seeing?
-
-joshua
+Marcus
