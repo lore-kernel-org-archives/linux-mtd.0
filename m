@@ -1,21 +1,17 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from ns1.ixmail.hkcix.com ([202.181.230.228] helo=ixmail.hkcix.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15wN0H-0003b7-00
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 13:19:25 +0100
-Received: from wohnheim.fh-wedel.de (wohnheim.fh-wedel.de [195.37.86.122])
-	by mail.fh-wedel.de (8.9.3/8.9.3) with ESMTP id OAA00648
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 14:27:20 +0200
-Date: Wed, 24 Oct 2001 14:28:42 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: MTD partitioning rewrite
-Message-ID: <20011024142842.A16290@wohnheim.fh-wedel.de>
-References: <20011017105143.B319@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20011017105143.B319@wohnheim.fh-wedel.de>; from joern@wohnheim.fh-wedel.de on Wed, Oct 17, 2001 at 10:51:43AM +0200
+	id 15wO9U-0003h6-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 14:33:01 +0100
+Message-ID: <3BD6C5DA.200C3EA9@uniquemodem.com>
+Date: Wed, 24 Oct 2001 21:44:58 +0800
+From: data <data@uniquemodem.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Subject: Compilation problem on linux-2.4.6 with patch 2.4.6pre3
+References: <3BCD84E1.4DD484A6@uniquemodem.com> <25716.1003325012@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,28 +23,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Moin!
+Hi David,
 
-> I have currently started to do a rewrite of the MTD partitioning and
-> the project might even grow into a complete rewrite of the central MTD
-> code. We will see, how much is needed...
+Due to the fact that our application is working on kernel 2.4.5 or
+2.4.6, I need to re-compile the kernel on these version. I have chosen
+to start with 2.4.6 and understood that I need to include 2.4.6pre3
+patch. After I have completed that patch and start to compile the
+kernel, I encountered the following errors and hope you can help me to
+fix it.
 
-The most central work appears to be finished. This is still unusable
-for any practical purpose, but maybe I am lucky and find another
-developer who has a look at the code and can show me some bug, give a
-helpful hint or the like.
-So if any of you want to try something really new and really broken,
-download the tarball from
-http://wh.fh-wedel.de/~joern/software/kernel/mtd-0.0.2.tar.gz
+During the compilation for jffs_fm, I encountered the error with
+completion.h missing and gc_thread_comp with incomplete type. I hope you
+can give me a hand to fix my problem.
 
-To install it, simply unpack it into a linux source tree, recompile
-and - pray.
+Thank you very much in deed. I am looking forward to hear from you soon.
 
-I will try to provide new versions nearly daily and might have a
-running one sometime next week.
+Best regards,
 
-Jörn
+Jimmy
 
--- 
-Open your arms to change, but don't let go
-of your values.
+ 
+Build log:
+
+.o inode.o ioctl.o namei.o super.o symlink.o
+make[3]: Leaving directory `/home/root/linux-2.4.6/fs/ext2'
+make[2]: Leaving directory `/home/root/linux-2.4.6/fs/ext2'
+make -C jffs
+make[2]: Entering directory `/home/root/linux-2.4.6/fs/jffs'
+make all_targets
+make[3]: Entering directory `/home/root/linux-2.4.6/fs/jffs'
+gcc -D__KERNEL__ -I/home/root/linux-2.4.6/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer
+-fno-strict-aliasing -pipe -mpreferred-stack-boundary=2 -march=i486   
+-c -o jffs_fm.o jffs_fm.c
+In file included from jffs_fm.c:22:
+/home/root/linux-2.4.6/include/linux/jffs.h:24:30: linux/completion.h:
+No such file or directory
+In file included from jffs_fm.c:22:
+/home/root/linux-2.4.6/include/linux/jffs.h:191: field `gc_thread_comp'
+has incomplete type
+make[3]: *** [jffs_fm.o] Error 1
+make[3]: Leaving directory `/home/root/linux-2.4.6/fs/jffs'
+make[2]: *** [first_rule] Error 2
+make[2]: Leaving directory `/home/root/linux-2.4.6/fs/jffs'
+make[1]: *** [_subdir_jffs] Error 2
+make[1]: Leaving directory `/home/root/linux-2.4.6/fs'
+make: *** [_dir_fs] Error 2
+[root@localhost linux]#
