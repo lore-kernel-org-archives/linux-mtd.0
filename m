@@ -1,48 +1,52 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from localhost ([127.0.0.1] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10hch5-0000Bh-01
-	for mtd@imladris.demon.co.uk; Wed, 12 May 1999 18:21:19 +0100
+	id 10hrw7-0000LI-00
+	for mtd@imladris.demon.co.uk; Thu, 13 May 1999 10:37:51 +0100
 Received: from pop3.mail.demon.net
 	by localhost with POP3 (fetchmail-5.0.0)
-	for mtd@imladris.demon.co.uk (multi-drop); Wed, 12 May 1999 18:21:19 +0100 (BST)
-Received: from punt-1.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
-          id 926529447:10:10246:11; Wed, 12 May 99 17:17:27 GMT
-Message-ID: <19990512101556.19349@zen.stanford.edu>
-Date: Wed, 12 May 1999 10:15:56 -0700
-From: David Hinds <dhinds@zen.stanford.edu>
-To: David Woodhouse <David.Woodhouse@mvhi.com>
-Cc: mtd@imladris.demon.co.uk
+	for mtd@imladris.demon.co.uk (multi-drop); Thu, 13 May 1999 10:37:51 +0100 (BST)
+Received: from punt-2.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
+          id 926588259:20:13846:0; Thu, 13 May 99 09:37:39 GMT
+Received: from biffen.signum.se (alex@biffen.signum.se [193.180.23.11])
+	by geisha.signum.se (8.8.7/8.8.7) with ESMTP id LAA05294
+	for <mtd@imladris.demon.co.uk>; Thu, 13 May 1999 11:37:22 +0200
+To: mtd@imladris.demon.co.uk
 Subject: Re: FTL patent.
 References: <E10hazQ-0001dy-00@devel2.axiom.internal>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E10hazQ-0001dy-00@devel2.axiom.internal>; from David Woodhouse on Wed, May 12, 1999 at 04:32:08PM +0100
+From: Alexander Larsson <alex@signum.se>
+Date: 13 May 1999 11:37:22 +0200
+In-Reply-To: David.Woodhouse@mvhi.com's message of Wed, 12 May 1999 16:32:08 +0100
+Message-ID: <w1d805nwdp.fsf@biffen.signum.se>
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
-On Wed, May 12, 1999 at 04:32:08PM +0100, David Woodhouse wrote:
+David.Woodhouse@mvhi.com (David Woodhouse) writes:
+
+> dhinds@zen.stanford.edu said:
+> >  I've recently learned that there is a fairly annoying encumberance
+> > associated with FTL: while it is now part of the PCMCIA standard, it
+> > is patented and M-Systems grants a royalty free license for its use
+> > *only* for PCMCIA devices.  So technically, it appears that any use of
+> > FTL for non-PCMCIA devices is a patent infringement.
 > 
 > > The patent claims are broad enough that I don't see any straighforward
 > > way of writing a free non-FTL translation layer.  But I'm not a patent
 > > lawyer, and don't really know what can and can't be gotten away with. 
+> 
 > 
 > alex@signum.se said:
 > >  Note that there *might* be patent problems using this code in the US.
 > 
 > Is this _just_ a US problem, or are the patents applicable world-wide?
 
-I don't know.  I could ask M-Systems, I guess.
+I wrote this because i don't think those patens are applicable everywhere.
+Sweden (where i live/work) doesn't allow software patents. I am not a
+lawyer, and i haven't looked at the specific patents, so I don't know
+the real deal here.
 
-> Could we get away with inserting a check so that the FTL code is
-> only allowed to  
-> be used with PCMCIA devices, (which can conveniently be disabled with a 
-> single-line patch)
+/ Alex
 
-I'm not super interested in opening myself up for a potential lawsuit,
-so I'm not sure if this would be a good approach.
-
--- Dave
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@imladris.demon.co.uk
