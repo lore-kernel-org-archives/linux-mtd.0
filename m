@@ -1,15 +1,15 @@
 Received: from b.smtp-out.sonic.net ([208.201.224.39])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18P9ee-0003Pp-00
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 23:00:36 +0000
+	id 18PBGF-0003al-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2002 00:43:31 +0000
 Received: from mailman.eason.com (adsl-209-204-139-80.sonic.net [209.204.139.80])
-	by turbo.sonic.net (8.11.6/8.8.5) with ESMTP id gBJNVFn26776
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 15:31:15 -0800
-Message-ID: <D3AF5F134D627243993F2F2FC32EE4D229C4CE@mailman.eason.com>
+	by turbo.sonic.net (8.11.6/8.8.5) with ESMTP id gBK1EBn21447
+	for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2002 17:14:11 -0800
+Message-ID: <D3AF5F134D627243993F2F2FC32EE4D229C4D0@mailman.eason.com>
 From: Alex Pavloff <apavloff@eason.com>
 To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: RE: linux-mtd digest, Vol 1 #728 - 13 msgs
-Date: Thu, 19 Dec 2002 15:31:14 -0800
+Subject: Re: writing new BBRAM driver
+Date: Thu, 19 Dec 2002 17:14:11 -0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -23,6 +23,8 @@ List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+
+Sorry, repost with a proper header... grr...
 
 > Date: Mon, 16 Dec 2002 13:54:14 +0100
 > From: Geoffroy Stevenne <geof@hellea.com>
