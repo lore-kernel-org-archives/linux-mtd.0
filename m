@@ -1,20 +1,14 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19XeJR-0002Rf-Ag
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2003 10:54:05 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Stephen Brown <sbrown@stirling-dynamics.com>
-In-Reply-To: <000701c3407f$9b34aa10$11c8a8c0@stevejunior>
-References: <bdsdl7$gvb$1@main.gmane.org>
-	 <000701c3407f$9b34aa10$11c8a8c0@stevejunior>
-Message-Id: <1057139662.12384.143.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 02 Jul 2003 10:54:23 +0100
+Received: from [61.136.62.71] (helo=eyou.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19XeKJ-0002SV-8d
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2003 10:54:59 +0100
+Date: 2 Jul 2003 17:56:59 +0800
+Message-ID: <20030702175659.98005.qmail@eyou.com>
+From: faraway@eyou.com
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Diskonchip MD2200-D16 redhat installation
+Subject: How to make my DOC bootable
+Reply-To: faraway@eyou.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2003-07-02 at 10:52, Stephen Brown wrote:
-> i think the best way tho is to prepare the DOC with jffs then i assume you
-> can build your root fs and kernel on it and not worry too much about power
-> down etc?
+Hi all,
+  
+    I am new member of this mailinglist.
+    I want to boot my linux from DOC, and now i have sucsessfully formatted,
+mkfs'ed my DOC. But I don't 
+know how to make it bootable(or install the lilo firmware). I cannot find any
+HOWTO about this.
+    Can somebody help me?
+    Thanks in advanced!
 
-That is probably the best way forward, yes. Especially with a 16MiB unit
-where you really do want the compression.
+Best Regards
 
-I committed code to CVS yesterday to make JFFS2 work out of the box on
-the DiskOnChip 2000 and Millennium (not Millennium Plus). I haven't
-tested it hard yet, though.
+   Ivan
 
 
--- 
-dwmw2
+
+
+
+--http://www.eyou.com
+--稳定可靠的免费电子信箱  语音邮件  移动书签  日历服务  网络存储...亿邮未尽
