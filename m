@@ -1,42 +1,117 @@
-From: joern@wohnheim.fh-wedel.de (=?iso-8859-1?Q?J=F6rn?= Engel)
-Date: Mon, 3 Mar 2003 11:58:25 +0100
-Subject: [PATCH] makefile bug and some cleanup
-In-Reply-To: <20030302181439.GA31492@wohnheim.fh-wedel.de>
-References: <20030302092359.GN15015@pengutronix.de> <20030302105730.GA18324@wohnheim.fh-wedel.de> <20030302181439.GA31492@wohnheim.fh-wedel.de>
-Message-ID: <20030303105825.GA31829@wohnheim.fh-wedel.de>
+From: Amit.Lubovsky@infineon.com (Amit.Lubovsky at infineon.com)
+Date: Mon, 3 Mar 2003 15:08:47 +0100
+Subject: AMD - Am29LV160B
+Message-ID: <04C8EDC5AE3FD611ABE40002B39CF69B07F2D9@ntah901e.savan.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Sun, 2 March 2003 19:14:39 +0100, J?rn Engel wrote:
-> 
-> I'd have to check this on a 64bit machine on Monday but I expect
-> pretty ugly results. Correct fix would be to remove the 'l' from the
-> format string each and every time.
+Hi,
 
-Ok, 64bit machines obviously don't mind the current code, %lx does not
-imply %08lx. Silly me.
+Has anyone used the mtd device with the AMD
+Am29LV160B chips? They are 16 Megabit (2M x 8-Bit/1M x 16-Bit) chips
+and are CFI-compatible.
 
-J?rn
-
--- 
-Data dominates. If you've chosen the right data structures and organized
-things well, the algorithms will almost always be self-evident. Data
-structures, not algorithms, are central to programming.
--- Rob Pike
+I work with kernel 2.4.6 and am trying to detect 4MB,
+2 x16 bit devices in parallel (32 bit access) at address 0,
 
 
+I have mapped the physical addresses in drivers/mtd/maps/purple.c
 
->From Alex  Mon Mar  3 07:54:23 2003
-From: Alex (Alex)
-Date: Mon, 03 Mar 2003 15:54:23 +0300
-Subject: AMD AM30LV0064D and linux
-Message-ID: <E18ppSZ-0009V6-00@f7.mail.ru>
+...
+#define WINDOW_ADDR 0xb0000000
+#define WINDOW_SIZE 0x400000
+#define BUSWIDTH 2
 
-Hello all!
+static struct mtd_partition easyport_partitions[]={
+            { name: "boot partition",
+              offset: 0,
+              size: 0x100000 },
+            { name: "partition 1",
+              offset: 0x100000,
+              size: 0x100000 },
+            { name: "partition 2",
+              size: 0x200000,
+              offset: 0x200000 }
+};
 
-Could somebody help me with information about compability of Linux and AMD Flash AM30LV0064D (it is UltraNAND). AMD itself keeps silence. 
-Generally is it possible to boot Linux from this device, and then run root file system from it?
 
-Please help me, you are my last hope.
 
-Thank you.
+
+Here are the options I use:
+
+option #1
+----------
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_PARTITIONS=y
+CONFIG_MTD_CHAR=y
+CONFIG_MTD_BLOCK=y
+
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+CONFIG_MTD_CFI_AMDSTD=y
+
+# Mapping drivers for chip access
+#
+#
+CONFIG_MTD_PURPLE=y
+
+For the first option I get:
+---------------------------
+purple flash device: 400000 at b0000000
+purple_map.map_priv_1=0xb0000000
+-----------------> FLASH #2
+--------------------------->file: chipreg.c name=cfi drv=8020c970
+-----------@@@@@@@@@@ CFIDEV_BUSWIDTH_2 CFIDEV_INTERLEAVE_1
+--------########## func: cfi_probe_chip CFI_DEVICETYPE_X16
+-----------@@@@@@@@@@ CFIDEV_BUSWIDTH_2 CFIDEV_INTERLEAVE_2
+--------########## func: cfi_probe_chip CFI_DEVICETYPE_X8
+--------########## func: cfi_probe_chip CFI_DEVICETYPE_X16
+--------------> file: cfi_probe.c func: cfi_cfi_probe index=-1
+Physically mapped flash: Found no CFI device at location zero
+--------------> file: cfi_probe.c  cfi=0
+mymtd=0x00000000
+
+
+option #2
+----------
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_PARTITIONS=y
+CONFIG_MTD_CHAR=y
+CONFIG_MTD_BLOCK=y
+
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+CONFIG_MTD_CFI_GEOMETRY=y
+CONFIG_MTD_CFI_B4=y
+CONFIG_MTD_CFI_I2=y
+CONFIG_MTD_CFI_AMDSTD=y
+
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_PURPLE=y
+
+for option #2 I get:
+--------------------
+
+purple flash device: 400000 at b0000000
+purple_map.map_priv_1=0xb0000000
+--------------------------->file: chipreg.c name=cfi drv=8020a970
+cfi_probe called with unsupported buswidth 2
+--------------> file: cfi_probe.c func: cfi_cfi_probe index=-1
+Physically mapped flash: Found no CFI device at location zero
+--------------> file: cfi_probe.c  cfi=0
+mymtd=0x00000000
+
+Any help would be appreciated.
+
+Thanks,
+Amit.
