@@ -1,14 +1,16 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: gyf606-mtd@yahoo.com.cn
-In-Reply-To: <20040916031038.30732.qmail@web15710.mail.cnb.yahoo.com>
-References: <20040916031038.30732.qmail@web15710.mail.cnb.yahoo.com>
-Content-Type: text/plain
-Message-Id: <1095326635.9144.2198.camel@imladris.demon.co.uk>
-Mime-Version: 1.0
-Date: Thu, 16 Sep 2004 10:23:55 +0100
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1C7tr9-0006hP-TV
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2004 06:51:17 -0400
+Message-ID: <41496FA5.5010901@arcom.com>
+Date: Thu, 16 Sep 2004 11:49:09 +0100
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: jffs2 filesystem on flash problem CRC errpr
+Subject: [patch] Only probe for device combinations that fit in map's
+	bankwidth.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-09-16 at 11:10 +0800, gyf606-mtd@yahoo.com.cn wrote:
-> /usr> erase /dev/mtd4
-> Erase Total 1 Units
-> Performing Flash Erase of length 131072 at offset 0x0 done
+Hi,
 
-You erased only the first block (128KiB) of the partition.
+Recent MTD changed how chip probing is done and it now probes for chips 
+of all bus widths.  On my board (IXP425 with 16-bit AMD AM29LV128 flash) 
+probing for 8-bit wide devices cannot work because 8-bit writes/reads to 
+16-bit devices aren't allowed (they cause data aborts). So...
 
-> /usr> cp fs2.img /dev/mtd4
+Make genprobe_new_chip() only probe for combinations that fit in the 
+map's bankwidth.
 
-You wrote the image using the character device, which does not erase
-first -- hence performing a bitwise 'OR' with the previous contents of
-the flash.
+Index: linux-2.6-armbe/drivers/mtd/chips/gen_probe.c
+===================================================================
+--- linux-2.6-armbe.orig/drivers/mtd/chips/gen_probe.c	2004-09-15 
+17:06:44.000000000 +0100
++++ linux-2.6-armbe/drivers/mtd/chips/gen_probe.c	2004-09-16 
+11:37:15.000000000 +0100
+@@ -172,8 +172,9 @@
+  		for (type = 0; type < 3; type++) {
+  			cfi->device_type = 1<<type;
 
-> /usr> mount -t jffs2 /dev/mtdblock4 /mnt
+-			if (cp->probe_chip(map, 0, NULL, cfi))
+-				return 1;
++			if (cfi->device_type * cfi->interleave == map_bankwidth(map))
++				if (cp->probe_chip(map, 0, NULL, cfi))
++					return 1;
+  		}
+  	}
+  	return 0;
 
-You mounted it.
-
-> jffs2_scan_dirent_node(): Name CRC failed on node at 0x00000000: Read 0xca6598d0, calculated
-> 0x00000000
-
-It was corrupt.
-
-Use 'eraseall' instead of 'erase'.
-
+David Vrabel
 -- 
-dwmw2
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
