@@ -1,17 +1,17 @@
-Received: from c27.h061013091.is.net.tw ([61.13.91.27] helo=mail.thyme.com.tw)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fsOZ-0005t3-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 00:56:36 +0000
-Message-ID: <001201c1bf2b$c49e6b60$1902a8c0@infoserve.is.net.tw>
-Reply-To: =?big5?B?p/Wr2K71?= <leehiram@giga.net.tw>
-From: =?big5?B?p/Wr2K71?= <hiram@thyme.com.tw>
-To: <linux-mtd@lists.infradead.org>
-Subject: I need your help .
-Date: Wed, 27 Feb 2002 09:12:04 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+	id 16fsaZ-0005vO-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 01:08:59 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <001201c1bf2b$c49e6b60$1902a8c0@infoserve.is.net.tw> 
+References: <001201c1bf2b$c49e6b60$1902a8c0@infoserve.is.net.tw> 
+To: =?big5?B?p/Wr2K71?= <leehiram@giga.net.tw>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: I need your help . 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 27 Feb 2002 01:20:15 +0000
+Message-ID: <10715.1014772815@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,47 +23,32 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi ..
-Mr. Woodhouse .
-My name is HiramLee .
-I living in Taiwan .
-I read your data on  http://www.linux-mtd.infradead.org/doc2000.html this
-web side .
-And I tried to put the disk-on-chip function in my linux kernel .
-That is my process below .
-1. cd /usr/src/linux
-2. make menuconfig
-3. Turn on "NTFL support " ,"M-Systems Disk-On-Chip 2000 and Millennium"
-    ," Loopback device support " and " RAM disk support " in the kernel (not
-a module)
-   and what I need ...
+hiram@thyme.com.tw said:
+> 3. Turn on "NTFL support " ,"M-Systems Disk-On-Chip 2000 and
+> Millennium"," Loopback device support " and " RAM disk support " in the
+> kernel (not a module) 
 
-4. make dep
-5. make clean
-6. make bzImage
-7. make modules
-8. make modules_install
-9. copy the bzImage file to the /boot then setup the lilo and reboot
-10.  mknod /dev/fla b 62 0   (make a doc device node)
+You don't really need loopback or ramdisk support. But they don't hurt.
 
-The Kernel is working very well but there is a boot message show up about
-the disk-on-chip when loading the kernel .
-"DiskOnChip Millennium found at address 0xD8000
-  Flash chips found : Manufacturer ID:98,Chip ID:E6 (Toshiba TC58V64AFT/DC)
- 1 flach chips found. Total DiskOnChip size:8MiB"
-"M-Systems NAND Flash Translation Layer Driver .(c) 1999 MVHI
-$Id: nftlcore.c ,v 1.73 2001/06/09 01:09:43 dwmw2 Exp$
-Sorry, we don,t support UnitSizeFactor of !=1 yet
-Sorry, we don,t support UnitSizeFactor of !=1 yet
-Could not find valid boot record
-Could not mount NFTL device"
+> 10.  mknod /dev/fla b 62 0   (make a doc device node) 
 
-Could you answer me what this message mean ??
-I try on kernel-2.4.2 and 2.4.8 version thay both have this problem .
-I can't  mount my disk on chip device (Computer say "Unable to open device
-/dev/fla")
-Could you teach me what can I do .
-And my disk on chip could work .
-                                  Please    Thank you very much
+That's the wrong device node. It would be /dev/nftla, and any partitions 
+would be /dev/nftla1, /dev/nftla1 etc. 
 
-                                                                   HiramLee
+ mknod /dev/nftla b 93 0
+ mknod /dev/nftla1 b 93 1
+ mknod /dev/nftla2 b 93 2
+
+> Sorry, we don,t support UnitSizeFactor of !=1 yet
+> Sorry, we don,t support UnitSizeFactor of !=1 yet
+> Could not find valid boot record
+> Could not mount NFTL device"
+
+This is complaining because the logical erase size of the NFTL format is 
+more than a single _physical_ erase block. The code _ought_ to work like 
+that, but hasn't been tested. Other people on the mailing list have asked 
+before - I'm not sure what their conclusions were. I think I need to test 
+this setup myself and commit the code.
+
+--
+dwmw2
