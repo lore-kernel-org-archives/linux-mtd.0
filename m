@@ -1,18 +1,19 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from rezznor.smb.utfors.se ([195.58.112.22])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17PAon-00036K-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 00:42:53 +0100
-Received: from zeus.mvista.com (av [127.0.0.1])
-	by av.mvista.com (8.9.3/8.9.3) with ESMTP id QAA17598
-	for <linux-mtd@lists.infradead.org>; Mon, 1 Jul 2002 16:42:52 -0700
-Subject: Atmel 49BV1614A parts
-From: Pete Popov <ppopov@mvista.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+	id 17PKcO-0003i2-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2002 11:10:44 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "John Hall" <John.Hall@optionexist.co.uk>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: [Fwd: cfi_cmdset_0001.c: do_write_buffer bug] 
+Date: Tue, 2 Jul 2002 12:10:42 +0200
+Message-ID: <IGEFJKJNHJDCBKALBJLLKEANFFAA.joakim.tjernlund@lumentis.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Date: 01 Jul 2002 16:46:32 -0700
-Message-Id: <1025567192.16123.78.camel@zeus.mvista.com>
-Mime-Version: 1.0
+In-Reply-To: <541025071C7AC24C84E9F82296BB9B950805E5@OPTEX1.optex.local>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,17 +25,37 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm having a problem with the above parts which I finally debugged to a
-different sector scheme from the older 49BV1614 parts.  The 1614 has 8
-8KB sectors, 2 32KB sectors, and 30 64B sectors.  The newer 1614A has 8
-8KB sectors, and 31 64KB sectors.  But both parts have the same
-manufacturer and device IDs so I don't see any way of differentiating
-the two.  Any ideas on how to best handle this?   There is some sort of
-"additional" id in the newer part, but the current mtd layer has no
-support for this.
+Hi John
 
-I'm not on the list so a direct reply would be appreciated.
+Has Intel responded yet? If yes, do they have a fix?
 
-Thanks a lot.
-
-Pete
+         Jocke
+> 
+> 
+> On 20 June 2002 13:25 David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> > John.Hall@optionexist.co.uk said:
+> > >  Not yet. We've spoken to Intel and they acknowledge there might be
+> > >  a problem, but we're waiting for them to get back to us.
+> 
+> > OK, I suspect what we want to do is something like...
+> > 
+> >  Send WriteToBuffer command.
+> >  Poll for a little while for chips to become ready.
+> >  If neither chip is ready, repeat.
+> >  If only one chip is ready, abort the WriteToBuffer. Send a
+> >  zero-length (or one-byte) buffer and then something other than a
+> >  WriteConfirm command, to abort the write. Clear the resulting
+> >  'Invalid Command/ Sequence' error bits which will get set, and start
+> >  again.
+> 
+> Possibly. We're going to wait and see what Intel say, and then submit a
+> patch if needed.
+> 
+> Regards,
+> John Hall
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
