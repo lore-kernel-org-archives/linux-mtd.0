@@ -1,36 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pYLy-0002br-00
-	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:29:22 +0100
+	id 14pYY1-0002ka-00
+	for mtd-list@infradead.org; Tue, 17 Apr 2001 17:41:49 +0100
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14pYLx-0002bl-00
-	for mtd@infradead.org; Tue, 17 Apr 2001 17:29:21 +0100
+	id 14pYY0-0002kT-00
+	for mtd@infradead.org; Tue, 17 Apr 2001 17:41:48 +0100
+Received: from dwmw2 (helo=redhat.com)
+	by passion.cambridge.redhat.com with local-esmtp (Exim 3.16 #2)
+	id 14pYXx-0001pK-00
+	for mtd@infradead.org; Tue, 17 Apr 2001 17:41:45 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3ADC62AE.66B350ED@daniel.com> 
-References: <3ADC62AE.66B350ED@daniel.com>  <01041716025800.02061@rob> <01041715513200.02005@rob> <19294.987514727@redhat.com> <20801.987515671@redhat.com> <22300.987516491@redhat.com> 
-To: Vipin Malik <vipin.malik@daniel.com>
-Cc: rob@sysgo.de, Alexander Melichenko <AlexanderM@lrpeople.com>,
-    mtd@infradead.org, mark.langsdorf@amd.com
-Subject: Re: Elan SC520 - problem with MTD 
+In-Reply-To: <Pine.LNX.4.30.0103262244130.27497-100000@imladris.demon.co.uk> 
+References: <Pine.LNX.4.30.0103262244130.27497-100000@imladris.demon.co.uk> 
+Cc: mtd@infradead.org
+Subject: Re: Directory restructure? 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 17 Apr 2001 17:26:04 +0100
-Message-ID: <5360.987524764@redhat.com>
+Date: Tue, 17 Apr 2001 17:41:45 +0100
+Message-ID: <7025.987525705@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-vipin.malik@daniel.com said:
->  Anywhy, why I bring this is up, there is a *nasty* surprise waiting
-> for folks that use the default address of 0x8400000 as programmed by
-> the BIOS shipped with the board.
+dwmw2@infradead.org said:
+> It's getting a bit cluttered... I'm pondering the wisdom of
+> rearranging it  into something like...
 
-OK, so it's likely that the two drivers use different addresses just 
-because they expect the board to have been set up differently? Is it 
-possible to read the current values of these registers and ioremap() 
-accordingly? Then we can make it a config option to reprogram them to a 
-sane address. 
+> drivers/mtd/chips - CFI, JEDEC, ROM, RAM, amd_flash, etc. 
+> drivers/mtd/maps - all the map drivers drivers/mtd/devices - all-in-one drivers
+> like mtdram, doc2000, etc.
+
+It's done. I haven't yet fixed up the Makefile - I'll do it tomorrow if 
+nobody's beaten me to it.
 
 --
 dwmw2
