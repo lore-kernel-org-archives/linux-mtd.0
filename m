@@ -1,20 +1,10 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
+Received: from ptb-relay03.plus.net ([212.159.14.214])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgQUr-0000pR-34
-	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 11:34:58 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e3.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id iBKGYsV8020870
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Dec 2004 11:34:54 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	iBKGYs5X278596
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Dec 2004 11:34:54 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id iBKGYsDr002163
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Dec 2004 11:34:54 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20041218160255.GA1083@wohnheim.fh-wedel.de>
+	id 1CgR57-0001Me-4U
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2004 12:12:26 -0500
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1103560493.25853.31.camel@weaponx.rchland.ibm.com>
 References: <1103232128.15927.70.camel@squizzey.bult.co.uk>
 	<41C1FDFF.3020308@us.ibm.com>
 	<1103233669.15929.81.camel@squizzey.bult.co.uk>
@@ -26,13 +16,13 @@ References: <1103232128.15927.70.camel@squizzey.bult.co.uk>
 	<1103304360.15914.210.camel@squizzey.bult.co.uk>
 	<41C318C8.4030702@us.ibm.com>
 	<20041218160255.GA1083@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=
-Message-Id: <1103560493.25853.31.camel@weaponx.rchland.ibm.com>
+	<1103560493.25853.31.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain; charset=iso-8859-7
+Date: Mon, 20 Dec 2004 17:12:28 +0000
+Message-Id: <1103562748.10800.62.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
-Date: Mon, 20 Dec 2004 10:34:54 -0600
-Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	"Gareth Bult \(Encryptec\)" <Gareth@Encryptec.net>
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -43,35 +33,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2004-12-18 at 10:02, Jörn Engel wrote:
-> On Fri, 17 December 2004 11:35:04 -0600, Josh Boyer wrote:
-> > 
-> > Again, most controllers do all the wear leveling, erasing for you.  So 
-> > you are left with compression, right?
-> 
-> If you have enough trust in your El Cheapo hardware supplier.  There
-> is no standard that requires wear leveling and there are reports that
-> basically tell you to do your own wear leveling on some devices.  With
-> no good way to distinguish "some" devices from "others", you can read
-> that as "all". ;)
+On Mon, 2004-12-20 at 10:34 -0600, Josh Boyer wrote:
+> Ok, that's why I said "most".  And if your El Cheapo hardware has built
+> in wear leveling, then doing wear leveling on top of that is always
+> questionable.  It might not make things worse, but it's probably not
+> very efficient.
 
-Ok, that's why I said "most".  And if your El Cheapo hardware has built
-in wear leveling, then doing wear leveling on top of that is always
-questionable.  It might not make things worse, but it's probably not
-very efficient.
+Mmm, if the USB flash micro-controllers have build-in wear levelling,
+they'd be quite something .. (!)=20
 
-Now if you have El Super Cheapo hardware that explicitly states you need
-to do wear leveling, that's a different story ;).
+> Now if you have El Super Cheapo hardware that explicitly states you nee=
+d
+> to do wear leveling, that's a different story ;).
 
-> 
-> USB keys and all the various other consumer-type flash devices are
-> good enough to beat 3 1/2" floppies, that's about it.  But that's
-> quite good enough for most people.  Floppies sold like crazy after
-> all.
+Here's a quote from a "Kingston" advert;
 
-That's because it was the only removable media for PCs for a long time. 
-At least to the non-geeks.  I can remember buying spare hard drives and
-carrying those from machine to machine if I needed to do big transfers
-;).
+"Controllers automatically lock out bad memory cells and move the data
+to avoid corruption. Controllers also automatically distribute write
+cycles across the flash cells to extend the life of the flash memory
+card"
 
-josh
+What this means exactly in real terms .. [?]
+(for example, do you lose some of your key to a bad block table, if so
+how much ???)
+
+Here's a bit from "Verbatim";
+
+"For ultra-reliability, Verbatim=A2s new Store =A1n=A2 Go Pro drives feat=
+ure
+an on-board 32 bit ARM-7 microprocessor that manages I/O operations and
+many of the drive=A2s technical features. An advanced wear-leveling
+algorithm is used to distribute writes evenly among flash storage cells.
+By evenly distributing the writing, Store =A1n=A2 Go Pro achieves an
+unprecedented reliability rating of over one million write/erase cycles.
+Advanced Error Detection Code/Error Correction Code furthers the Store
+=A1n=A2 Go Pro=A2s immunity to failure."
+
+Interesting articles / links;
+http://www.digitalmediadesigner.com/articles/viewarticle.jsp?id=3D27727
+http://www.techworld.com/features/index.cfm?fuseaction=3Ddisplayfeature&F=
+eatureID=3D413
+
+In summary: lots of manufacturers seem to be quoting virtual / physical
+block mapping on the fly with integrated wear levelling ... (!)
+
+So maybe wear levelling is out of date at filesystem level ?
+The techworld link to the M-Systems chips looks interesting ..
+
+Can anyone with detailed flash experience comment ?
+
+Gareth.
+
+> That's because it was the only removable media for PCs for a long time.=
+=20
+> At least to the non-geeks.  I can remember buying spare hard drives and
+> carrying those from machine to machine if I needed to do big transfers
+> ;).
+>=20
+> josh
+>=20
