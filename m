@@ -1,19 +1,21 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from hex.linuxgrrls.org
+	([212.18.228.73] helo=mail.linuxgrrls.org ident=postfix)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19nH6a-0003dr-HE
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 13:21:24 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: "\"David" =?ISO-8859-1?Q?M=FCller?= "(ELSOFT AG)\"" <d.mueller@elsoft.ch>
-In-Reply-To: <3F3B7D66.5030907@elsoft.ch>
+	id 19nHJB-0003mS-0G
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2003 13:34:25 +0100
+Message-ID: <50684.192.91.75.30.1060864451.squirrel@mail.linuxgrrls.org>
+In-Reply-To: <1060863668.3152.72.camel@passion.cambridge.redhat.com>
 References: <3F3B75AA.6050701@elsoft.ch>
-	 <1060861648.3152.70.camel@passion.cambridge.redhat.com>
-	 <3F3B7D66.5030907@elsoft.ch>
-Message-Id: <1060863668.3152.72.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Thu, 14 Aug 2003 13:21:08 +0100
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+    <1060861648.3152.70.camel@passion.cambridge.redhat.com>
+    <3F3B7D66.5030907@elsoft.ch>
+    <1060863668.3152.72.camel@passion.cambridge.redhat.com>
+Date: Thu, 14 Aug 2003 13:34:11 +0100 (BST)
+From: jasmine@linuxgrrls.org
+To: "David Woodhouse" <dwmw2@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+cc: "\"David =?iso-8859-1?Q?M=FCller?=" <d.mueller@elsoft.ch>
 cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS2 internals question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,22 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-08-14 at 13:15, "David M=C3=BCller (ELSOFT AG)" wrote:
-> David Woodhouse wrote:
-> > On Thu, 2003-08-14 at 12:42, "David M=C3=BCller (ELSOFT AG)" wrote:
-> >=20
-> >>Is it true that the read calls emitted from the JFFS2 code to the MTD H=
-W
-> >>driver do not cross NAND block boundries (nand_read_ecc() has its start
-> >>and end point of reading in the same NAND block)?
-> >=20
-> >=20
-> > I'd first like to know why you think you need the answer to this... :)
-> >=20
->=20
-> I need it to test a theory.
 
-I think we do make read calls which cross a page boundary, yes.
+David wrote:
 
---=20
-dwmw2
+> I think we do make read calls which cross a page boundary, yes.
+
+And the inability to handle such calls was the reason that the
+old DiskOnChip driver didn't work with jffs2, as I recall.
+
+-Jasmine.
