@@ -1,20 +1,18 @@
-Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
-	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19tky9-0002AV-L5
-	for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2003 10:27:29 +0100
-Message-ID: <041c01c3706b$63cd8210$a970a8c0@topo>
-From: "Luca Contini" <luca.contini@mediaenabling.com>
-To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>
-References: <023501c36e31$81a4a610$a970a8c0@topo>
-	<a05200f17bb750899ef6e@[130.161.115.44]> <024b01c36e35$62241600$a970a8c0@topo>
-	<a05200f19bb750ddd2b65@[130.161.115.44]>
-Date: Mon, 1 Sep 2003 11:28:17 +0200
+Received: from [81.200.0.1] (helo=mail.su29.ru)
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19u4ny-0004Ge-SK
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Sep 2003 07:38:18 +0100
+Message-ID: <3F543ADF.4010805@mail.ru>
+Date: Tue, 02 Sep 2003 10:38:23 +0400
+From: dima <_pppp@mail.ru>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: Matthew Dharm <mdharm@momenco.com>
+References: <3F52FB48.3020908@mail.ru> <20030901121546.A26762@momenco.com>
+In-Reply-To: <20030901121546.A26762@momenco.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: "linux-mtd-request@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: latest MTD snapshot
+cc: linux-mtd@lists.infradead.org
+Subject: Re: trouble with samsung drive
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> At 15:56 +0200 29-08-2003, Luca Contini wrote:
-> >  > At 15:28 +0200 29-08-2003, Luca Contini wrote:
-> >  > >What Am I missing?
-> >>
-> >>  1) Which kernel version ?
-> >
-> >2.4.18-rmk6-swl6
->
-> That's a pretty ancient kernel (almost 18 months old). You may want
-> to retry with 2.4.21-rmk1 (works fine on the LART, which is also
-> arm-based).
+Matthew Dharm wrote:
 
-I've tried kernel 2.4.21, but the patch I have from samsung didn't work.
-So the point is: to make the new MTD subsystem work with my old 2.4.18
-kernel. Is it possible and how?
+>USB Mass Storage devices aren't handled via the MTD driver, generally.
+>They are handled by the usb-storage driver via SCSI emulation.
+>
+Yeah, I figured out that it's an USB mass storage device when plugged it 
+into my FreeBSD desktop at work. It was successfully detected as "Lexar 
+Jumpshot".
 
+>If the device shows up in /proc/bus/usb/devices with class code 8, then the
+>USB low-level is working and it's time to move on to enabling the
+>usb-storage driver.
 >
-> >  > 3) Any particular reason why you don't use the patchin.sh script ? I
-> >>  know, you 'only' need mtdblock, but partial installs tend to create
-> >>  no end of trouble.
-> >
-> >I just thought it was easiest to do it manually just for mtdblock device.
-> >I've copied the snapshot to ../linux/drivers/mtd/util/snapshot and tried
-the
-> >patchin.sh:
-> >[root@Lab patches]# patchin.sh
-> >Directory  does not exist or is not a kernel source directory
+/proc/bus/usb is empty. So, is this a problem with my USB hub? USB 
+driver loads ok and detects the hub successfully though. My 1st question 
+is still actual then: can USB 1.1 hub cooperate with USB 2.0 devices? 
+The USB driver doesn't report any unclaimed devices as I mentioned in 
+the previous post.
+
+>The place for usb-storage help is linux-usb-users@lists.sf.net
+>  
 >
-> You must give it the path to your kernel tree as an argument (as
-> documented on http://www.linux-mtd.infradead.org/).
->
-> HTH,
->
-> JDB.
-> -- 
-> LART. 250 MIPS under one Watt. Free hardware design files.
-> http://www.lart.tudelft.nl/
->
->
+Thanks, I'll try this list.
