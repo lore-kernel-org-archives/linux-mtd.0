@@ -1,26 +1,10 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D66A4-0003j4-IQ
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 07:07:37 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1D665C-0006Se-2U
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 13:02:34 +0100
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Mar 2005 13:02:34 +0100
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Mar 2005 13:02:34 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Tue, 01 Mar 2005 13:07:03 +0100
-Message-ID: <d01lkf$v0d$1@sea.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Cannot remove child "XXX", ino #13, because it doesn't exist
+From: "earl john" <earljohn@teenmail.co.za>
+Date: Tue, 01 Mar 2005 15:51:38 +0200
+Message-ID: <web-655821781@mail01.infosat.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: Please Revert
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +14,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+Dear Sir/Madam,
 
-After removing a directory containing a lot of files, I get lots of the 
-following messages on reboot (one for each of the files I removed):
+Re: Investment Capital.
 
-Cannot remove child "file10.txt", ino #13, because it doesn't exist
+Your contact has been gotten from after a search for a
+person whom we can jointly invest Trust in and also solicit
+a Honourable partnership with.I represent a client and my
+client has interest to do business relative to investments
+in your country in areas related to agriculture or any 
+business of your choice, to initiate a proper and
+structured relationship:
 
-It keeps returning even after rebooting...
+Please let me know what your response will be to an offer
+to receive investment funds in cash if:
 
-How much should be put into this?
-And how to "fix" it...
+1. The said fund amounts to Eight Million, Five hundred
+Thousand Dollars(US).
 
-BR,
-  Martin Egholm
+2. The said fund is in cash and will be transferred to you
+in same state.
+
+3.The fund is intended to be invested through your agency
+in the purchase of facilities and assets, for the said
+purposes within your country.
+
+4. This transaction will result in you being paid a
+commission of 10% off the investment capital.
+
+5.The fund owners desire absolute confidentiality and
+professionalism in the handling of this matter.
+
+Please respond urgently.
+
+Sincerely.
+
+Barrister. Earl John
+
+NB Please reply through this address (earl_johns@yahoo.ca)
