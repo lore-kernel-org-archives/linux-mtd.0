@@ -1,21 +1,19 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 191Nok-0005LG-KU
-	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 10:49:02 +0100
-Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
-	21 2002)) with SMTP id <0HCT003MKCKW2R@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Fri, 04 Apr 2003 11:48:33 +0200 (MEST)
-Date: Fri, 04 Apr 2003 12:48:57 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <20030404062136.7806.qmail@vip.sina.com>
-To: jimzeus@vip.sina.com, linux-mtd@lists.infradead.org
-Message-id: <200304041248.57751.tglx@linutronix.de>
-MIME-version: 1.0
-References: <20030404062136.7806.qmail@vip.sina.com>
-Content-type: text/plain; charset=iso-8859-15
-Content-transfer-encoding: 7BIT
-Subject: Re: [SPAM] FAT on NAND
-Reply-To: tglx@linutronix.de
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40]
+	helo=innominate.com)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 191R0G-0005vn-Ax
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 14:13:08 +0100
+Received: from tkeitel by tkeitel001.bln.innominate.local with local (Exim
+	3.35 #1 (Debian))	id 191R0G-0000KT-00
+	for <linux-mtd@lists.infradead.org>; Fri, 04 Apr 2003 15:13:08 +0200
+Date: Fri, 4 Apr 2003 15:13:08 +0200
+From: Tino Keitel <tino.keitel@innominate.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20030404131307.GB16455@tkeitel001.bln.innominate.local>
+Mime-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset=us-ascii
+Subject: Magic bitmask 0x1985 not found. fs corruption?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 04 April 2003 08:21, jimzeus@vip.sina.com wrote:
-> What I am doing now is to build a filesystem which can be
-> recognized on _raw_ NAND flash. So, I think FAT will be the only
-> choice(though I know it's very unstable). And I have following question
-> now:
-For what ? Why don't you use JFFS2 or YAFFS, which handle NAND out of the box 
-?
+Hi folks,
 
-> 1.How unstable would it be? Does it support:
->      a.journaling (crash/power-off safe ,I mean)
->      b.bad block management
->      c.wear levelling
->      d.error correction
->      e.something else I dont know to make the FS reliable
-JFFS2 and YAFFS have all this, read the source and build a new one, if you 
-have enough time.
+after some reboots, I sometimes get a filesystem that causes the
+following output when it is mounted:
 
-> 2.I have checked the NAND flash docoment (especially
-> the "Filesystems supporting NAND"chapter) and I found out that
-> it seems no way to build a FAT on a bare NAND flash but only on
-> the SmartMediaCards, am I right? Or the SM card and the bare NAND
-> are just the same thing when a FAT on it.
-SMCard and bare NAND is just the same, only packaging is different
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002c0000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002c0008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002e0000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002e0008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00300000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00300008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003e0000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003e0008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00400000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00400008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00420000: 0x2003 instead 
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00420008: 0x8124 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00440000: 0x2003 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00440008: 0x8124 instead
 
-> 3.Maybe I misunderstood,but David Woodhouse had told me that I should apply
-> layers like FAT->NFTL->NAND if I wanna build a FAT on a NAND flash.But I
-> learned that the NFTL only support Doc from the NAND flash document, isnt
-> it? And what should I do to support the
-> FAT ?
-Hack NTFL :)
+Since th numers are repeating, I think this is a bug that strikes
+multiple times. I'm using a CVS version that is a few weeks old.
 
-> 4.Everybody tells me that the Fat on a NAND is not reliable,but I
-> think USB mass storage are based on NAND and got a FAT (or some
-> filesystem which windows can recognize) on it, so ,how comes it
-> happen?
-Yes, this is Smart-Media-FAT, which is not exactly the same as DOS-FAT. 
-SmartMedia-FAT is used on SmartMedia cards for MP3-Players, Digicams ... 
-There exist various adapters (USB, serial, LPT) to access it via a PC. 
-SmartMedia-FAT is designed for NAND-FLASH and handles bad block management 
-and error correction. 
-If you want compability to this, you have to write a fs-driver, which is 
-compatible to the SMART-Media-FAT definition, which is available from Toshiba 
-under a non disclosure aggreement. 
-
+Regards,
+Tino
 
 -- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   networking people
+tel: +49.30.6392-3308                      http://www.innominate.com/
