@@ -1,21 +1,15 @@
-Received: from pacific.moreton.com.au ([203.143.235.130]
-	helo=dorfl.internal.moreton.com.au)
+Received: from fwvip.nel.co.jp ([143.125.54.3] helo=lsig.nel.co.jp)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B9CKO-0002GZ-JR
-	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 01:14:33 +0100
-Message-ID: <406CB05B.5030000@snapgear.com>
-Date: Fri, 02 Apr 2004 10:14:19 +1000
-From: Greg Ungerer <gerg@snapgear.com>
+	id 1B9Ep1-0002m2-UR
+	for linux-mtd@lists.infradead.org; Fri, 02 Apr 2004 03:54:20 +0100
+Message-Id: <200404020303.AA00315@arimoto-pc.lsig.nel.co.jp>
+From: Takanori Arimoto <ari@lsig.nel.co.jp>
+Date: Fri, 02 Apr 2004 12:03:50 +0900
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <Pine.LNX.4.44.0404011658150.6508-100000@kiire.colleduc.ee>
-	<1080830176.24117.1858.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1080830176.24117.1858.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-cc: Kalev Lember <kalev@colleduc.ee>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad blocks
+Content-Type: text/plain; charset=us-ascii
+Subject: Problems with DOC Millenium Plus 64
+Reply-To: ari@lsig.nel.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +19,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
-David Woodhouse wrote:
-> On Thu, 2004-04-01 at 17:06 +0300, Kalev Lember wrote:
->>I am going to use DOC Millennium Plus and I do not want to use M-Systems 
->>propietary kernel modules.
->>Having read the mailing list archives I have some questions.  Does current 
->>INFTL code support bad block handling? Without that I would say it is 
->>virtually useless. Am I correct?
-> 
-> 
-> It doesn't, and you're probably correct, yes.
-> 
-> This is fairly high up on my TODO list but keeps getting preempted by
-> RealWork(tm). Are you volunteering? It shouldn't be too hard.
+I try to use a DOC Millenium PLUS(64MB) in a PC-AT board, 
+working with kernel version 2.4.20, but I have some problems.
 
-Yeah, high on my todo list as well. But I am not going to
-get to it any time soon. It should be quite simple to do.
+Kernel does not recognize Millenium PLUS 64 correctly.
 
-Regards
-Greg
+When it checks by DataSheet, Chip-ID of Millennium PLUS 64 is
+the 40H same as Millennium PLUS 32. 
+
+I tried it with another DOC and got the same message.
+
+----kernel message---
+DiskOnChip Millennium Plus found at address 0xD8000
+Flash chip found: Manufacturer ID: 98, Chip ID: 75 (Toshiba 
+TC58256FT/DC)
+1 flash chips found. Total DiskOnChip size: 32 MiB
+mtd: Giving out device 0 to DiskOnChip Millennium Plus
+blkmtd: error, missing `device' name
+$Id: ftl.c,v 1.43 2002/02/13 15:31:37 dwmw2 Exp $
+_DoC_WaitReady called for out-of-line wait
+...
+_DoC_WaitReady called for out-of-line wait
+ftl_cs: FTL header not found.
+NFTL driver: nftlcore.c $Revision: 1.85 $, nftlmount.c $Revision: 1.25 
+$
+NFTL_notify_add for DiskOnChip Millennium Plus
+mtd->read = c01bf860, size = 33554432, erasesize = 32768
+NFTL_setup
+_DoC_WaitReady called for out-of-line wait
+...
+_DoC_WaitReady called for out-of-line wait
+Could not find valid boot record
+Could not mount NFTL device
+---
+
+I used this patch.
+http://www.uclinux.org/pub/uClinux/misc/mplus-20030414.patch.gz
+
+I formatted the DOC with doc514.exb at address d8000 by the
+ M-sys program.
+
+dformat /win:d800 /s:DOC514.EXB
+
+I set the following option to YES for by built-in MTD,
+and compiled my kernel.
+
+---kernel option---
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=0
+CONFIG_MTD_PARTITIONS=y
+CONFIG_MTD_CHAR=y
+CONFIG_MTD_BLOCK=y
+CONFIG_FTL=y
+CONFIG_NFTL=y
+CONFIG_NFTL_RW=y
+
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+CONFIG_MTD_JEDECPROBE=y
+CONFIG_MTD_GEN_PROBE=y
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+
+#
+# Self-contained MTD device drivers
+#
+CONFIG_MTD_BLKMTD=y
+CONFIG_MTD_DOC2000=y
+CONFIG_MTD_DOC2001=y
+CONFIG_MTD_DOC2001PLUS=y
+CONFIG_MTD_DOCPROBE=y
+CONFIG_MTD_DOCPROBE_ADVANCED=y
+CONFIG_MTD_DOCPROBE_ADDRESS=0xd8000
+CONFIG_MTD_DOCPROBE_55AA=y
+---
+
+Can anyone help me please with this situation.
+What have I done wrong?
+What shell I do now?
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
-SnapGear -- a CyberGuard Company            PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+--------------------------------------
+T.Arimoto  ari@lsig.nel.co.jp
