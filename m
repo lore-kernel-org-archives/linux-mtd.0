@@ -1,19 +1,24 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from lon-del-01.spheriq.net ([195.46.50.97])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6V5A-0000NF-4b
-	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 09:44:13 -0500
-Date: Wed, 2 Mar 2005 15:44:07 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050302144407.GA18893@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 and RAM consumprion reincarnated
+	id 1D6Vqe-0000eQ-1b
+	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 10:33:17 -0500
+Received: from lon-out-01.spheriq.net ([195.46.50.129])
+	by lon-del-01.spheriq.net with ESMTP id j22FXBor024780
+	for <linux-mtd@lists.infradead.org>; Wed, 2 Mar 2005 15:33:11 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-01.spheriq.net with ESMTP id j22FXA0w008171
+	for <linux-mtd@lists.infradead.org>; Wed, 2 Mar 2005 15:33:11 GMT
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <4225DCA2.AFBE689F@st.com>
+Date: Wed, 02 Mar 2005 16:32:50 +0100
+From: Estelle HAMMACHE <estelle.hammache@st.com>
+MIME-Version: 1.0
+To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+References: <d01lkf$v0d$1@sea.gmane.org> <d04hdb$8k1$1@sea.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Cannot remove child "XXX", ino #13, because it doesn't exist
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 March 2005 16:28:36 +0000, Artem B. Bityuckiy wrote:
+Martin Egholm Nielsen wrote:
 > 
-> We've stopped on the design like this: each inode has ICP which is stored 
-> on flash. The ICP is being outdated by GC and users. Since it is 
-> inefficient to rewrite new inode every time, we won't rewrite it but add 
-> node_ref instead. Sometimes we'll flush ICP and free node_refs.
+> Hi again,
+> 
+> > After removing a directory containing a lot of files, I get lots of the
+> > following messages on reboot (one for each of the files I removed):
+> 
+> > Cannot remove child "file10.txt", ino #13, because it doesn't exist
 
-I agree with tglx, your approach is complicated (aka horrible).  How
-about something much simpler:
-o The ICP is just a list of erase blocks.
-o For any non-obsolete node belonging to an inode, the containing
-  erase block number *must* be part of ICP.
-o If an erase block doesn't contain non-obsolute nodes for this inode,
-  its number *should* not be part of ICP.
-o The ICP *can* be stored in flash.
+This might happen when the deletion dirent for the directory
+is found, but the deletion dirent for the files are not found
+(which should not happen during ordinary operation).
+Exactly what command (or code) did you use to remove the file and
+directory ? Did you umount correctly after that ?
+Do you really get this message for each and every deleted file
+or only part of them ?
 
-Advantages over current design:
-o Lower memory consumption, as we don't track individual nodes anymore.
+> The problem arose after creating a directory in my JFFS2 NAND fs, and
+> creating some 1000 (small) files in it. After rebooting I removed the
+> entire directory, and at the next reboot I got the error.
 
-Advantages over your old ICP concept:
-o GC and write are simple.  They simply add the current eraseblock to
-  the ICP list, if it isn't part of it already.
+This message is a notice. It should not prevent JFFS2 from running.
+The directory and the files are considered as deleted.
 
-Disadvantages:
-o Whenever we need to check the full node list, we take a few more
-  indirections.
-o Removal of erase blocks from the ICP list is done on lookup.
-  "Whoops, this erase block doesn't contain any of my nodes."
+Just out of curiosity, do you get these messages
+"Eep. Child "fileXXXX" (ino #XXX) of dir ino #XX doesn't exist!"
+previously to the "Cannot remove..." messages ?
+If you don't, it might be interesting to get a trace with
+debug enabled since the child inode cache should not disappear
+between the build_inode_pass1 and remove_unlinked_inode.
 
-Ultimate advantage: Design can be explained in less words. :)
-
-Jörn
-
--- 
-My second remark is that our intellectual powers are rather geared to
-master static relations and that our powers to visualize processes
-evolving in time are relatively poorly developed.
--- Edsger W. Dijkstra
+Bye
+Estelle
