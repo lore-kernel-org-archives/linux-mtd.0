@@ -1,23 +1,32 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cvea6-0000Dh-Eq
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 11:39:20 -0500
-Date: Mon, 31 Jan 2005 17:39:19 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Message-ID: <20050131163919.GH6694@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-	<1107184897.7567.20.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
-	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
-	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
+Received: from wproxy.gmail.com ([64.233.184.196])
+	by pentafluge.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CveiM-0003w2-MX
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2005 16:47:52 +0000
+Received: by wproxy.gmail.com with SMTP id 68so657763wra
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Jan 2005 08:46:46 -0800 (PST)
+Message-ID: <6934efce05013108463a4d42e4@mail.gmail.com>
+Date: Mon, 31 Jan 2005 08:46:46 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1107111514.18794.37.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
+	<1106865326.783.146.camel@baythorne.infradead.org>
+	<1106871577.21196.155.camel@tglx.tec.linutronix.de>
+	<1106872400.6480.201.camel@localhost.localdomain>
+	<1106873065.21196.168.camel@tglx.tec.linutronix.de>
+	<Pine.LNX.4.58.0501280817330.11160@phoenix.infradead.org>
+	<1106903029.21196.216.camel@tglx.tec.linutronix.de>
+	<Pine.LNX.4.58.0501280914580.11160@phoenix.infradead.org>
+	<Pine.LNX.4.58.0501281855370.11160@phoenix.infradead.org>
+	<1107111514.18794.37.camel@sauron.oktetlabs.ru>
+Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+	MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 memory consumption
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,75 +36,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 January 2005 11:14:49 -0500, Robert P. J. Day wrote:
+> 1. For each inode we keep in-core the list of block numbers, where this
+> inode's nodes are present. Thus, to build the inode's nodes track, we
+> need to read only these summary nodes.
 > 
-> first, it's necessary to define a simple standard, so what about
-> something like the following?  any size values in *any* of the
-> JFFS2-related programs shall be in one of the following formats:
-> 
->   ###		(interpreted as bytes)
->   ###KiB	(obvious)
->   ###MiB	(obvious)
-> 
-> at the moment, this is not being followed.  for instance, mkfs.jffs2
-> has the --pad=SIZE option, where a simple number is treated as KiB.
-> anyway, you get idea -- it's pretty confusing.
-> 
-> so, do we at least have some agreement on a standard?  which would
-> hold across *all* programs and modules?  i'm not even going to
-> *consider* looking at patches to do this unless i'm convinced everyone
-> agrees, since changes like this will clearly force people to change
-> the way they do some things.  and i know how fond some people are of
-> *that* idea. :-)
+> 2. Use ICPs.
 
-I agree on a standard, if that helps you:
 
-0x[0-9]...	hex
-0[1-9]...	octal
-[1-9]...	decimal
+I'm not sure I understand the difference.  In case 1) are you
+suggesting keeping the ICP like data in the summary nodes?
 
-If followed by "ki", "Mi", or "Gi", they are multiplied by 1024, etc.
-
-Example code, taken from phram:
-
-static int ustrtoul(const char *cp, char **endp, unsigned int base)
-{
-	unsigned long result = simple_strtoul(cp, endp, base);
-
-	switch (**endp) {
-	case 'G':
-		result *= 1024;
-	case 'M':
-		result *= 1024;
-	case 'k':
-		result *= 1024;
-	/* By dwmw2 editorial decree, "ki", "Mi" or "Gi" are to be used. */
-		if ((*endp)[1] == 'i')
-			(*endp) += 2;
-	}
-	return result;
-}
-
-static int parse_num32(uint32_t *num32, const char *token)
-{
-	char *endp;
-	unsigned long n;
-
-	n = ustrtoul(token, &endp, 0);
-	if (*endp)
-		return -EINVAL;
-
-	*num32 = n;
-	return 0;
-}
-
-This allows different people with different taste to specify numbers
-in various simple formats.  If you think you can improve on this,
-please send me a patch.
-
-Jörn
-
--- 
-But this is not to say that the main benefit of Linux and other GPL
-software is lower-cost. Control is the main benefit--cost is secondary.
--- Bruce Perens
+I think the ICP's are a great idea.
