@@ -1,15 +1,28 @@
-Date: Wed, 17 Nov 2004 10:20:19 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1100686018.9201.49.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.58.0411171017450.5169@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0411171003510.5169@phoenix.infradead.org>
-	<1100686018.9201.49.camel@localhost.localdomain>
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CUQkA-0006fg-Qv
+	for linux-mtd@lists.infradead.org; Wed, 17 Nov 2004 09:25:13 -0500
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3B683DDB9
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Nov 2004 14:25:08 +0000 (GMT)
+Received: from zeta.dmz-eu.st.com (localhost [127.0.0.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 42D2975998
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Nov 2004 14:25:22 +0000 (UTC)
+Received: from mail2.agr.st.com (mail2.agr.st.com [164.130.4.72])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A17E4755B
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Nov 2004 14:25:21 +0000 (GMT)
+From: Vincenzo GRANATO <vincenzo.granato@st.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Wed, 17 Nov 2004 15:25:02 +0100
+Message-ID: <001001c4ccb1$3a760fb0$b03682a4@nap.st.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 improvement idea
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Subject: About MTD and Flash memory
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Wed, 2004-11-17 at 10:06 +0000, Artem B. Bityuckiy wrote:
-> > In deletion direntries, why not to store the physical offset of the
-> > deleted direntry (instead of, say, mctime field)?
->
-> I need more coffee before I give a coherent answer -- and I need _lots_
-> of it before I can comment on Ferenc's code, although that looks very
-> good so far.
-Ok, I hope we will discuss this later.
+Dear all,
 
->
-> But remember the deletion dirent node can obsolete more than one old
-> dirent, on NAND flash. When we GC a dirent node, we weren't able to
-> immediately mark the old one obsolete so there can be two. Or more, if
-> this keeps happening and we lose power each time we GC the node in
-> question.
-It seems to me this is not problem...
+If I develop drivers to work on a new device (not supported 
+by MTD) which MTD file I'll have to modify.
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+If I'll work with no standard microcontroller (not supported 
+by MTD), which MTD file I'll have to modify?
+
+Are there some document about these issues on line?
+Have somebody ever done these operation? 
+
+Thanks
+	Bye
+		Vinc
