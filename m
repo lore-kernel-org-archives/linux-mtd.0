@@ -1,70 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 136r32-0001m0-00
-	for mtd-list@infradead.org; Tue, 27 Jun 2000 09:48:48 +0100
-Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 136r2v-0001lu-00
-	for mtd@infradead.org; Tue, 27 Jun 2000 09:48:45 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000626225302.29267B-100000@white.priv.deltatee.com> 
-References: <Pine.LNX.3.96.1000626225302.29267B-100000@white.priv.deltatee.com> 
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org
-Subject: Re: MTD CVS update: 'mtd/kernel cfi_cmdset_0001.c cfi_probe.c nora.c octagon-5066.c vmax301.c' 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 27 Jun 2000 09:51:00 +0100
-Message-ID: <26144.962095860@cygnus.co.uk>
+	id 136s8h-0001xg-00
+	for mtd-list@infradead.org; Tue, 27 Jun 2000 10:58:43 +0100
+Received: from virgo.techno.spb.ru ([195.5.142.100])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 136s8f-0001xa-00
+	for mtd@infradead.org; Tue, 27 Jun 2000 10:58:41 +0100
+Received: from maverick (Maverick.Techno.Spb.Ru [195.5.142.101])
+	by Virgo.Techno.Spb.Ru (8.9.3/8.9.3) with SMTP id OAA17823
+	for <mtd@infradead.org>; Tue, 27 Jun 2000 14:01:15 +0400
+Message-ID: <005001bfe01f$5267b700$658e05c3@techno.spb.ru>
+From: "Nick Maximov" <maxs@techno.spb.ru>
+To: <mtd@infradead.org>
+Subject: does anyone here used Ampro modules?
+Date: Tue, 27 Jun 2000 14:06:11 +0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Is there specific conditions for using MTD drivers with Ampro CM/p5e?
 
-jgg@deltatee.com said:
->  Could you also add bank_size? 
+I still trying to figure out how it should work. Ampro said NEVER USE
+ORIGINAL
+M-SYSTEM UTILITIES TO FORMAT DOC!!!
+Does MTD utilities compatible with my hardware or I need special tune for
+them?
 
-Do we really need it? I turned my previous question around - why does the
-_map_ driver need to know about it? 
+I tried though... And got BIOS corruption :) After first sucessful recovery
+I tried to
+load alternative firmware file (grub.exb) to DoC firmware area. Now my DoC
+even unable to be formated!
 
-You've said, and I agree, that the map driver won't necessarily know the 
-size of the chips within the area, so it can't know how the aliases are 
-arranged and remap the space itself. 
-
-So the flash probe code needs to work that out for itself, and as 
-soon as the cfi_check_chipalias() function does something other than 
-'return 0' that'll be fine. Presumably you have something similar.
-
-Having worked out where each chip starts in the map, and recorded its start 
-address in the per-chip data structure, why does the flash driver need to 
-tell the map about it? Why not just use the 'correct' addresses?
-
-> Both oct and vmax are 8bit devices so your FIXME is wrong. Everything
-> using mapped before this has to be 8 bit because the JEDEC driver didn't
-> support any higher. 
-
-Fixed. Thanks.
-
->  Also, while you are changing things, can you widen the name feild in
-> the mtd_info to about 100 chars? I want to plunk detection info in
-> there too. 
-
-Hmmm. How about a char * ?
-
-
-jgg@deltatee.com said:
->  Should probably also use the named initializers the rest of the
-> kernel is moving to for these big structs.
-
-You mean a static initialiser that ends up in the data segment rather than 
-kmalloc'd? What does it do for us?
-
-I was aware of the netdev name changes - but that changed from a char * to 
-a constant-length char[] to allow name changes to work without overflowing 
-the original string.
+Does anyone knows what is exact address map for DoC device?
+As I know BIOS occupied 128K at 0xE000,
+user extention BIOS located at 0xD000 address and should occupied up to 64K.
+And then where the Flash Firmware is located? Why p5update utility unable to
+update exact area in memory space?
 
 --
-dwmw2
+Regards,
+Nick Maximov
 
+Techno-St.Petersburg
+http://www.techno.spb.ru
 
 
 
