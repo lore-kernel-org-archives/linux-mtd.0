@@ -1,16 +1,17 @@
-Received: from web11106.mail.yahoo.com ([216.136.131.153])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16LvYN-0001SK-00
-	for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2002 00:16:15 +0000
-Message-ID: <20020103002709.33463.qmail@web11106.mail.yahoo.com>
-Date: Wed, 2 Jan 2002 16:27:09 -0800 (PST)
-From: Sheela Kashyap <sheela_kashyap@yahoo.com>
-Subject: Re: (no subject) 
-To: David Woodhouse <dwmw2@infradead.org>
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16M3xt-0001y1-00
+	for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2002 09:15:09 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20020103002709.33463.qmail@web11106.mail.yahoo.com> 
+References: <20020103002709.33463.qmail@web11106.mail.yahoo.com> 
+To: Sheela Kashyap <sheela_kashyap@yahoo.com>
 Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <24355.1010016371@redhat.com>
-MIME-Version: 1.0
+Subject: Re: (no subject) 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Thu, 03 Jan 2002 09:26:02 +0000
+Message-ID: <5660.1010049962@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,36 +23,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hmm... I will try mkfs.jffs again in that case. 
+sheela_kashyap@yahoo.com said:
+> Hmm... I will try mkfs.jffs again in that case.  
 
-Well, by the time I was involved with the project, there had been
-some work done on using jffs. But we'll be moving to Jffs2 in a short
-while.
+If it fails, can you cut down the directory tree you're putting into the
+JFFS image to the smallest testcase that shows the problem (like the /dev
+directory and a single device node), then send me both a tarball and the
+JFFS image of it?
 
-Thank you for your help.
+Where did you get your mkfs.jffs from? 
 
-Sheela.
-
---- David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> sheela_kashyap@yahoo.com said:
-> >  While creating the jffs image using mkfs.jffs, I noticed that it
-> did
-> > not create all the /dev entries for me. I had to use 'mknod' and
-> > create it manually on the target. What is the easiest way for me
-> to
-> > create a target image with all the /dev files? 
-> 
-> Er, not sure - mkfs.jffs ought to work. Why are you using jffs not
-> jffs2?
-> 
-> --
-> dwmw2
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Send your FREE holiday greetings online!
-http://greetings.yahoo.com
+--
+dwmw2
