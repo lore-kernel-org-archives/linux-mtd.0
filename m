@@ -1,19 +1,31 @@
-Received: from wproxy.gmail.com ([64.233.184.194])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CfM8x-0007hu-Vh
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 12:43:57 -0500
-Received: by wproxy.gmail.com with SMTP id 67so156662wri
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Dec 2004 09:43:54 -0800 (PST)
-Message-ID: <d52a4b1c041217094333b5bf0@mail.gmail.com>
-Date: Fri, 17 Dec 2004 11:43:54 -0600
-From: Ian Yap <d2army@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from ptb-relay03.plus.net ([212.159.14.214])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CfMWv-0007ws-Jk
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2004 13:08:42 -0500
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <41C318C8.4030702@us.ibm.com>
+References: <1103152743.15913.33.camel@squizzey.bult.co.uk>
+	<41C0D3AC.3050801@us.ibm.com>
+	<1103158974.15929.37.camel@squizzey.bult.co.uk>
+	<1103201631.25765.7.camel@weaponx.rchland.ibm.com>
+	<1103232128.15927.70.camel@squizzey.bult.co.uk>
+	<41C1FDFF.3020308@us.ibm.com>
+	<1103233669.15929.81.camel@squizzey.bult.co.uk>
+	<1103288058.3018.4.camel@weaponx.rchland.ibm.com>
+	<1103297611.15917.184.camel@squizzey.bult.co.uk>
+	<41C3030D.8040607@us.ibm.com>
+	<1103302002.15927.198.camel@squizzey.bult.co.uk>
+	<41C31307.70909@us.ibm.com>
+	<1103304360.15914.210.camel@squizzey.bult.co.uk>
+	<41C318C8.4030702@us.ibm.com>
+Content-Type: text/plain
+Date: Fri, 17 Dec 2004 18:09:16 +0000
+Message-Id: <1103306956.15913.213.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: Please help in getting kernel 2.6.8.1 to work with a DOC 2000
-Reply-To: Ian Yap <d2army@gmail.com>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +35,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there everyone
+On Fri, 2004-12-17 at 11:35 -0600, Josh Boyer wrote:
+> Gareth Bult (Encryptec) wrote:
+> Again, most controllers do all the wear leveling, erasing for you.  So 
+> you are left with compression, right?
+> 
+> And that is certainly a lacking thing.  A block-based, writeable, 
+> compressed filesystem that does journalling.  Sounds like a good 
+> opportunity to me :).
 
-I was wondering if anyone has been able to boot from a kernel 2.6.8.1
-on with an M-Sys Disk-On-Chip(DOC) 2000 on an AMP (Advanced Micro
-Peripherals) MICRO886ULP Single-Board-Computer with a Crusoe Transmeta
-800 Mhz processor?
+Mmm, sounds a bit like JFFS2 on a block emulator , yeah ?
 
-I have enabled DOC probing for both self contained MTD and NAND flash
-devices when compiling the 2.6.8.1 kernel. However, when I try to boot
-from this kernel image I made on the SBC, I get :
+;-)
 
-DiskOnChip 2000 found at address 0xD8000
-
-Flash Chip found: Manufactureer ID: EC, Chip ID: 73 (Samsung: NAND 16
-MiB 3 , 3V 8-bit)
-
-(slight pause)
-
-3 flash chips found. Total DiskOnChip size: 48 MiB
-
-Ignoring DiskOnChip 2000 at 0xDA000 - already configured
-Ignoring DiskOnChip 2000 at 0xDC000 - already configured
-Ignoring DiskOnChip 2000 at 0xDE000 - already configured
-
-DiskOnChip 2000 found at address 0xD8000
-
-DiskOnChip 2000 responds to DWORD access
-
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x73 (Samsung NAND 16MiB
-3, 3V 8-bit)
-
-(hangs forever)
-
-There is no kernel panic message though
-
-I have a patched LILO on this machine already and someone got it to
-work with 2.4.x using an initrd image that he would use to boot the
-kernel from using "initrd="
-
-Therefore, I am wondering if I really need to figure out how to make
-an initrd boot image like that in order to make the 2.6.8.1 kernel
-work as well
-
-Thank a lot in advance!
-I.S.
+Gareth.
