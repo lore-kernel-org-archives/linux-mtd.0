@@ -1,35 +1,33 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13owxn-0006JV-00
-	for mtd-list@infradead.org; Fri, 27 Oct 2000 01:01:39 +0100
-Message-ID: <39F8C785.AEEB4CF4@mvista.com>
-Date: Thu, 26 Oct 2000 17:08:37 -0700
-From: Alice Hennessy <ahennessy@mvista.com>
+	id 13ozGJ-0006nv-00
+	for mtd-list@infradead.org; Fri, 27 Oct 2000 03:28:55 +0100
+Received: from [63.196.9.2] (helo=ftp.neontech.com)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13ozGH-0006np-00
+	for mtd@infradead.org; Fri, 27 Oct 2000 03:28:54 +0100
+Date: Thu, 26 Oct 2000 19:38:49 -0700
+From: Qiuyuan Liu <q.liu@acm.org>
+To: mtd@infradead.org
+Subject: building mtd: DECLARE_MUTEX?
+Message-Id: <39F8EAB996.E4A2Q.LIU@mail.neontech.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: ahennessy@mvista.com, mtd@infradead.org
-Subject: kernel syncs
-References: <E13ZFNG-00020Z-00@pearl.tao.co.uk> <32401.968863402@passion.cygnus.co.uk>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Hello,
+I am trying to build mtd (checked out from the CVS version) on my Red
+Hat Linux 6.2 box (2.2.14).
 
-This was asked in mid September:
+I can't find where DECLARE_MUTEX is defined, which referenced in
+mtdcore.c (line 89).
 
->>  BTW, anyone know how frequently the kernel syncs with the CVS tree?
+Btw, there isn't a file named compatmac.h under /usr/include/linux,
+except the one came with mtd package, which refers to it.
 
->Rarely at the moment. I sync to Linus' kernel frequently, but I'm not
->intending to send him anything more for 2.4. Once the 2.5 series starts,
->I'll be keeping it reasonably up-to-date.
-
-Can you tell me when the last kernel sync was and when the next one is
-planned?
-
-Alice
-
+Thank you,
+Qiuyuan
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
