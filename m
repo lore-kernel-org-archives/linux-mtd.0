@@ -1,21 +1,16 @@
-Received: from mailout09.sul.t-online.com ([194.25.134.84])
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bg6ti-0007CT-6Y
-	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 15:07:03 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
+	id 1Bg8nj-0007Uk-S0
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2004 17:09:02 -0400
+Received: from [10.1.1.107] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
+	1.3.167) for linux-mtd@lists.infradead.org; 1 Jul 2004 17:08:56 -0400
+Date: Thu, 1 Jul 2004 17:04:41 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 1 Jul 2004 21:00:27 +0200
-References: <40E448BD.8030909@cray.com>
-In-Reply-To: <40E448BD.8030909@cray.com>
+Message-ID: <Pine.LNX.4.60.0407011652160.6003@localhost.localdomain>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <200407012100.28033.tglx@linutronix.de>
-Cc: 
-Subject: Re: nand oob corruption recovery
-Reply-To: tglx@linutronix.de
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: couple questions about defining flash partitions on my rpxlite
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 01 July 2004 19:24, David Updegraff wrote:
-> I realize that specs say that if you wipe out mfg. bad block markers
-> that there is "no way to recover them".. but...
-> Are there suggestions for plausibly reliable test sequences that one
-> could run a nand chip thru to regenerate valid bad block markers?
->
-> Presumeably, it is insufficient to simply try to erase all blocks,
-> marking failures as bad...  perhaps verified full page writes ?
 
-Erasing may be not sufficient, as the block could be al ff. Writing all blo=
-cks=20
-to all zeros and verify that it works. Maybe try a 0x55 and 0xAA pattern to=
-o.
+   from my reading of the kernel source and looking at a old rpxlite.c 
+file that was hacked for a previous project, i just want to clarify a 
+couple things about defining flash partitions on an rpxlite board.
+(i want to set this up under the 2.6 kernel, but i'm also looking at 
+an rpxlite.c file from a previous 2.4-based project.)
 
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+1) if i start with a single 8M flash chip, i'm assuming i need
+    to define only a single map_info structure containing the basic
+    info for that flash chip.  that is, name, size, buswidth and so
+    on.  i ask since, in this hacked version, the programmer defined
+    a separate map_info structure (with, of course, identical info)
+    for every partition he created on that same chip -- i have no idea
+    why, and it certainly seems like overkill.
+
+2) in that same 2.4-based rpxlite.c file, the map_info structure
+    defined the various read/write/copy routines.  however, in 2.6,
+    i see that you don't have to define these unless you select
+    "non-linear mappings of flash chips" during the kernel
+    configuration, is that correct?
+
+
+    that should do for now.  thanks.
+
+rday
