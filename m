@@ -1,46 +1,48 @@
-From: dwmw2@infradead.org (David Woodhouse)
-Date: 07 Feb 2003 08:00:14 +0000
-Subject: JFFS2 & 2.5.59 & FS_REQUIRES_DEV
-In-Reply-To: <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
-References: <Pine.BSF.4.51.0302061603270.3212@kazi.fit.vutbr.cz>
- <1044544711.2535.13.camel@passion.cambridge.redhat.com>
- <Pine.BSF.4.51.0302070847270.66348@kazi.fit.vutbr.cz>
-Message-ID: <1044604814.5502.616.camel@imladris.demon.co.uk>
+From: g_friend@etang.com (=?GB2312?Q?=CC=C6=B3=AF=D4=C6?=)
+Date: Fri, 7 Feb 2003 16:43:5 +0800
+Subject: Grub-doc patch problems
+Message-ID: <20030207083731.3A60E1DA4F092@smtp.etang.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Fri, 2003-02-07 at 07:50, Kasparek Tomas wrote:
-> 
-> Hello,
-> 
-> I'm trying to get 2.5.59 running on iPAQ and have following problem:
-> 
-> - in 2.5.7 jffs2/super.c: fs_flags: FS_REQUIRES_DEV was removed from
->   jffs2_fs_type.
-> -> that means 'nodev' word at line with jffs2 in /proc/filesystems
->   (in filesystems list -> get_filesystem_list())
-> -> that means that init/do_mounts.c:get_fs_names() returns empty filesystem
->    list because thay skip entries with nodev keyword
-> -> having no FS list init/do_mounts.c:mount_block_root() do not try to
->    mount any FS and it calls panic("VFS: Unable to mount root fs on %s").
-> 
-> There are few solutions:
-> 
-> - either use fs_flags FS_REQUIRE_DEV again
-
-If we did this, then the mount by MTD device number or partition name
-would stop working. We'd be back to requiring the mtdblock device to be
-present again. I'd rather not do that.
-
-> - or rewrite get_fs_names()
-
-Not just get_fs_names(). We want the 'root=' argument from the kernel's
-command line to be passed to us, which requires rethinking the way it's
-converted into a major/minor number for /dev/root and then mounted. 
-
-> - or use rootfstype=jffs2 kernel parameter
-
-This is the short-term solution, as you've noted.
- 
--- 
-dwmw2
+bGludXgtbXRkSSB3YW50IHRvIHVzZSBncnViIHRvIGJvb3QgIGZyb20gbXkgRE9DMjAwMCAoMzJN
+KS4gDQpBY2NvcmRpbmcgdG8gIiBHUlVCIG9uIERvQyBNaWxsZW5uaXVtLzIwMDAgLSBJbnN0cnVj
+dGlvbnMgKFJldmlzZWQpICINCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9s
+aW51eC1tdGQvMjAwMi1PY3RvYmVyLzAwNjE2Ni5odG1sICwNCkkgdXNlIGdydWItMC45MiBhbmQg
+dGhlIHBhdGNoIGZpbGUgaXMgZ3J1Yi0yMDAyLTEwLTA4LWRvYy5wYXRjaA0KYnV0IGV2ZXJ5dGlt
+ZSBJIHVzZSJwYXRjaCAtcDAgLWkgZ3J1Yi0yMDAyLTEwLTA4LWRvYy5wYXRjaCIgLEkgd2lsbCBn
+ZXQgdGhlIGZvbGxvd2luZw0KIg0KcGF0Y2hpbmcgZmlsZSAuL0FVVEhPUlMNCkh1bmsgIzEgRkFJ
+TEVEIGF0IDQyLg0KMSBvdXQgb2YgMSBodW5rIEZBSUxFRCAtLSBzYXZpbmcgcmVqZWN0cyB0byBm
+aWxlIC4vQVVUSE9SUy5yZWoNCnBhdGNoaW5nIGZpbGUgLi9DaGFuZ2VMb2cNCkh1bmsgIzEgRkFJ
+TEVEIGF0IDEuDQpIdW5rICMyIEZBSUxFRCBhdCA4OC4NCjIgb3V0IG9mIDIgaHVua3MgRkFJTEVE
+IC0tIHNhdmluZyByZWplY3RzIHRvIGZpbGUgLi9DaGFuZ2VMb2cucmVqDQpwYXRjaGluZyBmaWxl
+IC4vUkVBRE1FX0Rpc2tPbkNoaXANCnBhdGNoaW5nIGZpbGUgLi9jb25maWd1cmUuaW4NCkh1bmsg
+IzEgc3VjY2VlZGVkIGF0IDIyOCAob2Zmc2V0IC0xMyBsaW5lcykuDQpwYXRjaGluZyBmaWxlIC4v
+c3RhZ2UxL01ha2VmaWxlLmFtDQpwYXRjaGluZyBmaWxlIC4vc3RhZ2UxL2RvY19zdGFnZTEuUw0K
+cGF0Y2hpbmcgZmlsZSAuL3N0YWdlMS9kb2Nfc3RhZ2UxLmgNCnBhdGNoaW5nIGZpbGUgLi9zdGFn
+ZTEvbWFrZWNzdW0uYw0KcGF0Y2hpbmcgZmlsZSAuL3N0YWdlMi9NYWtlZmlsZS5hbQ0KSHVuayAj
+MSBGQUlMRUQgYXQgODMuDQoxIG91dCBvZiAxIGh1bmsgRkFJTEVEIC0tIHNhdmluZyByZWplY3Rz
+IHRvIGZpbGUgLi9zdGFnZTIvTWFrZWZpbGUuYW0ucmVqDQoiDQoNClRoZSBBVVRIT1JTIGFuZCBD
+SEFOR0xPRyBwcm9ibGVtcyBoYXMgYmVlbiBwb2ludGVkIGluIHRoZSBpbnN0cnV0aW9uICxidXQg
+dGhlIGxhc3Qgb25lIGhhc25vdCBiZWVuLg0Kd2h5IHRoaXMgaGFwcGVuZWQ/DQpJZiBJIGlnbm9y
+ZSB0aGlzIGVycm9yICwgY29udGludWUgImFjbG9jYWwgJiYgYXV0b21ha2UgLS1hZGQtbWlzc2lu
+ZyAmJiBhdXRvY29uZiINCkkgd2lsbCBnZXQgdHdvIHdhcm5pbmdzOg0KY29uZmlndXJlLmluOjE3
+OiB3YXJuaW5nOiBkbyBub3QgdXNlIG00X3BhdHN1YnN0OiB1c2UgcGF0c3Vic3Qgb3IgbTRfYnBh
+dHN1YnN0DQpjb25maWd1cmUuaW46NjgxOiB3YXJuaW5nOiBkbyBub3QgdXNlIG00X3JlZ2V4cDog
+dXNlIHJlZ2V4cCBvciBtNF9icmVnZXhwDQoNClRoZW4gDQoiLi9jb25maWd1cmUgLS1lbmFibGUt
+ZGlza29uY2hpcC0yMDAwIC1lbmFibGUtZGlza29uY2hpcC1jdHJsYnlwYXNzIC1lbmFibGUtZXh0
+MmZzICIgYW5kICAibWFrZSIgLA0KaXQgd2lsbCBzdG9wICxhbmQgZHVtcCB0aGUgZm9sbG93aW5n
+IGVycm9yIGluZm9tYXRpb246DQoNCiINCnN0YWdlMi5jOiBJbiBmdW5jdGlvbiBgY21haW4nOg0K
+c3RhZ2UyLmM6MTAxOTogYGN1cnJlbnRfdGVybScgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRo
+aXMgZnVuY3Rpb24pDQpzdGFnZTIuYzoxMDE5OiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIg
+aXMgcmVwb3J0ZWQgb25seSBvbmNlDQpzdGFnZTIuYzoxMDE5OiBmb3IgZWFjaCBmdW5jdGlvbiBp
+dCBhcHBlYXJzIGluLikNCnN0YWdlMi5jOjEwMTk6IGBURVJNX0RVTUInIHVuZGVjbGFyZWQgKGZp
+cnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQ0KbWFrZVsyXTogKioqIFtwcmVfc3RhZ2UyX2V4ZWMt
+c3RhZ2UyLm9dIEVycm9yIDENCm1ha2VbMV06ICoqKiBbYWxsLXJlY3Vyc2l2ZV0gRXJyb3IgMQ0K
+bWFrZTogKioqIFthbGxdIEVycm9yIDINCiINCg0KDQp3aGF0IGlzIHdyb25nIHdpdGggbXkgc3Rl
+cHM/IA0KQW55dGhpbmcgSSBtaXNzZWQ/DQpIb3BlIHNvbWUga2luZCBndXlzIGNvdWxkICBnaXZl
+IG1lIGEgaGFuZCBhbmQgdGhhbmtzIGluIGFkdmFuZGNlDQogDQoNCkJUVzoNCkkgaGF2ZSB0cmll
+ZCBncnViLTIwMDMtMDEtMDgtZG9jLnBhdGNoICxidXQgSSBnb3QgdGhlIHNhbWUgcmVzdWx0IA0K
+TXkgbGludXggaXMgcmVkaGF0Ny4xICwga2VybmVsIGlzIDIuNC4yICwgDQpJIGhhdmUgdXNlZCBy
+cG0gcGFja2FnZSB0byB1cGRhdGUgYXV0b21ha2UgdG8gMS41IGFuZCBhdXRvY29uZiB0byAyLjUz
+DQoNCg0KDQoNCg0KDQoNCiANCg==
