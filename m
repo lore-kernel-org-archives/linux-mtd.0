@@ -1,20 +1,21 @@
-Received: from lakermmtao08.cox.net ([68.230.240.31])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=orion.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BbSpJ-0001ZK-Bj
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2004 19:31:23 -0400
-Received: from tinker ([68.100.185.121]) by lakermmtao08.cox.net
-	(InterMail vM.6.01.03.02 201-2131-111-104-20040324) with SMTP
-	id <20040618233109.LOYC17721.lakermmtao08.cox.net@tinker>
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2004 19:31:09 -0400
-Message-ID: <001501c4558c$4e42ce80$4402a8c0@tinker>
-From: "Dan Brown" <dan_brown@ieee.org>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 18 Jun 2004 19:30:56 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: DOC support update
+	id 1BbTMK-0001lw-Ae
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2004 20:05:28 -0400
+Date: Fri, 18 Jun 2004 17:05:14 -0700
+From: Jun Sun <jsun@mvista.com>
+To: Marc Singer <elf@buici.com>
+Message-ID: <20040618170514.A6101@mvista.com>
+References: <20040613214329.GA2282@buici.com>
+	<200406140207.48467.tglx@linutronix.de>
+	<20040614005455.GA4070@buici.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20040614005455.GA4070@buici.com>;
+	from elf@buici.com on Sun, Jun 13, 2004 at 05:54:55PM -0700
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD Maps driver for Sharp LH7a40x
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The new NAND-subsystem-based DiskOnChip driver should now be fairly close to
-providing proper JFFS2 support, if it doesn't already.  A tricky issue with
-the hardware ECC generator was discovered today, and hopefully solved.
+On Sun, Jun 13, 2004 at 05:54:55PM -0700, Marc Singer wrote:
+> On Mon, Jun 14, 2004 at 02:07:48AM +0200, Thomas Gleixner wrote:
+> > On Sunday 13 June 2004 23:43, Marc Singer wrote:
+> > > I've removed the ununsed, if-def's and commented, code from the
+> > > driver.
+> > >
+> > > As for the C_MAPS loop, there doesn't seem to be a good way to remove
+> > > it.  Even though there is only one 'chip', we still the map_info
+> > > structure for the simple_map_init() and friends.  The number of code
+> > > code bytes to be saved is nomimal.  The change would be to remove the
+> > > array references.  How do they make the code 'confusing'?
+> > 
+> > That's not a question of code bytes. 
+> > 
+> > Why does this code need a for (i = 0; i < C_MAPS;...) loop, if there is only 
+> > one chip which has to be detected, neglected or whatever and C_MAPS is 
+> > therefor 1 ?
+> 
+> You originally stated that you thought it made the driver 'confusing'.
+> I'm not seeing how this makes it confusing.
+> 
+> > 
+> > In fact the whole driver could be replaced by command line options.
+> 
+> So can the memory map.  The presence of a command line option doesn't
+> make it a good idea to use it. 
+> 
+> Let me put this a different way.  Are you saying that you'll apply the
+> patch if I remove the loop?
+> 
 
-I say hopefully because I won't have a chance to really test it myself until
-Monday.  However, interested folks who don't have vital data on their DOC
-devices are welcome to do so and provide feedback.
+How about just using physmap mapping driver and keep all your
+board specific stuff to your board directory?   See include/linux/mtd/physmap.h
+for more details.
 
-Brief HOWTO (better HOWTO coming soon!):
-
-- Have a DOC Millenium or DOC2000 TSOP.  Millenium+ is not supported (other
-folks are hard at work on this).  DOC2000 original does not have BBT
-handling yet (coming soon!) and should not be used with JFFS2 yet.
-
-- Load the new diskonchip module (there is now a kernel configuration option
-for this under NAND devices).  If your DOC device is not at window D000,
-you'll have to edit the source or remap your chip.  Proper probing coming
-soon!
-
-- A bunch of mtd devices should be created.  mtd0 is the whole DOC.  The
-others are partitions created by M-Systems.  A "BDK" partition is probably
-the M-Sys BIOS driver.  A "BDTL" partition is where your INFTL filesystem
-used to be.  I say used to be, because you're about to trash it.
-
-- You can review the list of devices with 'cat /proc/mtd'
-
-- Assuming your BDTL partition is mtd3:
-
-    flash_eraseall -j /dev/mtd3
-    mkfs.jffs2 -p -e 16384 -n -q -r <rootdir> -o <outputfile>
-    nandwrite /dev/mtd3 <outputfile from above>
-    mount -t jffs2 /dev/mtdblock3 <mountpoint>
-
-- Cross your fingers.
-
-
-
-Results, comments, etc appreciated.
-
-    -Dan Brown
+Jun
