@@ -1,16 +1,17 @@
-Received: from [202.106.187.156] (helo=sina.com)
+Received: from gateway.digitalview.com.hk
+	([152.101.51.1] helo=janus.hk.panelx.com ident=qmailr)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18UKjv-0003OK-00
-	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 05:51:28 +0000
-Date: Fri, 3 Jan 2003 14:22:17 +0800
-From: "thierry" <jokyman@sina.com>
-To: linux-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>
-Subject: jedec_probe still not working
-Mime-Version: 1.0
+	id 18UMGF-0003ZS-00
+	for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2003 07:28:55 +0000
+Message-ID: <000201c2b2fd$dc75c190$9000010a@paulwong>
+From: "Paul Wong" <paul.wong@digitalview.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: compile error when using MEMREADOOB in do_mounts.c.
+Date: Fri, 3 Jan 2003 15:56:29 +0800
+MIME-Version: 1.0
 Content-Type: text/plain;
-      charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E18UKjv-0003OK-00@pentafluge.infradead.org>
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,41 +23,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I have try to use the cfi_probe.But I met the same problem.
-So I go back to use jedec_probe.
-My board is based on DragonBall ez328,uClinux20020927
-I call the jedec_probe to detect my flash.
-I set:
-=09cfi->addr_unlock1 =3D 0xaaa;
-=09cfi->addr_unlock2 =3D 0x554;
-It execute:
-=09/* Reset */
-=09cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type,=
- NULL);
+Dear All,
 
-=09/* Autoselect Mode */
-=09cfi_send_gen_cmd(0xaa, cfi->addr_unlock1, base, map, cfi,=
- CFI_DEVICETYPE_X16, NULL);
-=09cfi_send_gen_cmd(0x55, cfi->addr_unlock2, base, map, cfi,=
- CFI_DEVICETYPE_X16, NULL);
-=09cfi_send_gen_cmd(0x90, cfi->addr_unlock1, base, map, cfi,=
- CFI_DEVICETYPE_X16, NULL);
+    I modified the init/do_mounts.c to want to skip the invalid block. and
+than make bzImage, that result say: undefined reference to 'ioctl'. What is
+the problem?
 
-=09if (!cfi->numchips) {
-=09=09/* This is the first time we're called. Set up the CFI 
-=09=09   stuff accordingly and return */
-=09=09
-=09=09cfi->mfr =3D jedec_read_mfr(map, base, osf);
-=09=09cfi->id =3D jedec_read_id(map, base, osf);
+Thank you.
+best regards,
+Paul
 
-=09=09printk("mfr:%lx\n",cfi->mfr);
-=09=09printk("id:%lx\n",cfi->id);
-When kernel boot up,it print=A3=BA
-mfr:7f
-id:fffc
-My flash is hy29lv190
-manufacturer code is 0xAD
-device code is 0x22C4
-I can't find out the problem.
-Can anyone point it out?
-Thanks!
+****** part of init/do_mounts.c *********
+
+#include <linux/mtd/mtd.h>
+
+static int __init fill_inbuf(void)
+{
+ static unsigned long curptr=0L;
+ if (exit_code) return -1;
+
+#if 1 // for mtd read and check valid block
+{
+ #define MTDBLOCKSIZE 16384
+ unsigned char oobbuf[16];
+ struct mtd_oob_buf oob;
+
+ oob.length = 16;
+ oob.ptr = (unsigned char*)&oobbuf;
+ for (;(curptr%MTDBLOCKSIZE)==0;
+  curptr =lseek(crd_infd,MTDBLOCKSIZE,1))
+ {
+  oob.start = curptr;
+  if (ioctl(crd_infd, MEMREADOOB, &oob) != 0)
+  {
+    return  -1;
+  }
+  if (oobbuf[5] == 0xFF)
+   break;
+  }
+}
+#endif
+ insize = read(crd_infd, inbuf, INBUFSIZ);
+
+ if (insize == 0) return -1;
+ curptr += insize;
+ inptr = 1;
+
+ return inbuf[0];
+}
