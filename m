@@ -1,19 +1,19 @@
 Received: from fish.redhat.com ([213.86.99.237]
 	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kiO9-0000TG-7Y
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 11:52:57 +0100
+	id 19kiT4-0000ac-CB
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 11:58:02 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Marcos Lois =?ISO-8859-1?Q?Berm=FAdez?= <securez@teleline.es>
-In-Reply-To: <5.2.1.1.2.20030807101847.00bfc310@pop3.iqc-services.com>
-References: <5.2.1.1.2.20030807101847.00bfc310@pop3.iqc-services.com>
-Message-Id: <1060253567.25209.56.camel@passion.cambridge.redhat.com>
+To: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+In-Reply-To: <000601c35cc8$46de3c50$73dea8c0@lair>
+References: <000601c35cc8$46de3c50$73dea8c0@lair>
+Message-Id: <1060253873.25209.61.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Thu, 07 Aug 2003 11:52:48 +0100
+Date: Thu, 07 Aug 2003 11:57:53 +0100
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 cc: linux-mtd@lists.infradead.org
-Subject: Re: I have a NOR and NAND flash chips
+Subject: Re: JFFS2 ram memory usage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2003-08-07 at 09:22, Marcos Lois Berm=C3=BAdez wrote:
-> Can i setup mtd to work with both types of memories NOR and NAND, there a=
-re=20
-> any example to do this?
+On Thu, 2003-08-07 at 10:42, =C3=98yvind Harboe wrote:
+> I've made some changes to JFFS2 locally to reduce memory usage.
+>=20
+> The change I did was to disable compresssion as I have lots
+> of flash and little ram(Atmel EB40a 2MB flash + 256k ram +
+> eCos and my app).
 
-Yes. You don't have to do anything special -- just have drivers for any
-and all flash devices found in the system. You just have to be aware
-that they'll get assigned numbers in the order they get registered,
-that's all.
+You could also remove the actual compression routines if you're going to
+do that. Other users, especially eCos users, may want to individually
+select the compression algorithms available too.
 
-> How i can implement the SmartMedia slot, to allow hot plug of the=20
-> smartmedia cards?
+> My usage of JFFS2 is intermittant and hence I'd like to
+> reduce peak memory usage(much better with compression
+> disabled) and idle memory usage(perhaps unmounting JFFS2
+> when I'm not using it?).
 
-
-That one's slightly harder. I suppose you just need to redirect all the
-read/write/erase functions to something which returns -EIO when it's
-hot-unplugged while it's in use.
+Finding a way to eliminate the 'totlen' field of the jffs2_raw_node_ref
+structure might be productive. Or possibly making the jffs2_raw_node_ref
+contain doubly-linked lists if that then means we can discard obsolete
+nodes immediately rather than keeping them around.
 
 --=20
 dwmw2
