@@ -1,14 +1,16 @@
-Received: from web50306.mail.yahoo.com ([206.190.38.60])
+Received: from web51010.mail.yahoo.com ([206.190.39.129])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Ct3Hl-0000i0-KV
-	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 07:25:39 -0500
-Message-ID: <20050124122536.808.qmail@web50306.mail.yahoo.com>
-Date: Mon, 24 Jan 2005 04:25:36 -0800 (PST)
-From: "Siddharth A. Trivedi" <sashhoney@yahoo.com>
-To: linux-mtd@lists.infradead.org
+	id 1Ct8jq-0002pE-Sg
+	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2005 13:15:00 -0500
+Message-ID: <20050124181452.90946.qmail@web51010.mail.yahoo.com>
+Date: Mon, 24 Jan 2005 10:14:52 -0800 (PST)
+From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
+To: dedekind@infradead.org
+In-Reply-To: <1106562777.4650.7.camel@sauron.oktetlabs.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: UnitSizeFactor 0x00
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Performance of the MTD device and JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,27 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I m having a trouble with mtd driver
-i m not having direct conn to internet, so i cant use CVS
-now i want to download nftl_format utility
-i m using kernel-2.4.24, and getting following message while booting
+I am using the same Linux kernel for both: Linux
+2.4.17. The components that are changed are MTD and
+JFFS2 (I ported them to Linux 2.4.17).
 
-NFTL: nftlcore.c.......$ver xxx$..........nftlmount.c
-NFTL: UnitSizeFactor is 0x00 which is not valid according to specs
-nfta:nfta1
+--vahid
 
-
-but i m unable to use /dev/nfta , while /dev/mtd0 is a valid device
-$mke2fs /devnfta
-no such device
-
-i know i can use nftl_format for this but pls
-tell me how to download mtd utilities without CVS
+> Sorry Vahid, don't know what happened. May only
+> suggest:
+> 1. Check may be your NAND flash driver has degraded.
+> Why do you think
+> the reason is JFFS2?
+> 2. Try to profile your linux system.
+> 3. Try to find your old linux..
+> 
+> 
+> 
+> 
 
 
 
 		
 __________________________________ 
 Do you Yahoo!? 
-All your favorites on one personal page – Try My Yahoo!
-http://my.yahoo.com 
+Yahoo! Mail - Find what you need with new enhanced search.
+http://info.mail.yahoo.com/mail_250
