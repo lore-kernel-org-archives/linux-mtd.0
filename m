@@ -1,53 +1,56 @@
-From: swahl@brecis.com (Steve Wahl)
-Date: Mon, 17 Mar 2003 10:19:28 -0600
-Subject: DQ5 & DQ6 in chips/cfi_cmdset_0002.c (Dairy Queen 5 warning)
-In-Reply-To: <1047916461.11517.85.camel@tubarao>; from tharbaugh@lnxi.com on Mon, Mar 17, 2003 at 08:54:21AM -0700
-References: <20030312102735.U1745@brecis.com> <002701c2e8ba$8690e8c0$1200a8c0@JOHNB> <20030312154316.X1745@brecis.com> <1047916461.11517.85.camel@tubarao>
-Message-ID: <20030317101928.J1745@brecis.com>
+From: hansolofalcon@worldnet.att.net (Gregg C Levine)
+Date: Mon, 17 Mar 2003 14:56:19 -0500
+Subject: New problem with DoC
+In-Reply-To: <A05D1A08-587E-11D7-ADC7-000393AD6294@regolith.co.uk>
+Message-ID: <000201c2ecbf$47ab1be0$88a7580c@who5>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-On Mon, Mar 17, 2003 at 08:54:21AM -0700, Thayne Harbaugh wrote:
-> On Wed, 2003-03-12 at 14:43, Steve Wahl wrote:
-> > On Wed, Mar 12, 2003 at 12:12:12PM -0500, John Burch wrote:
-> 
-> <snip>
-> 
-> > > The status register (including DQ5) won't reflect actual data until
-> > > a reset command is issued,
-> > 
-> > This I think is a misunderstanding or misstatement on your part.  The
-> > reads WILL return to actual data without a reset upon successful
-> > completion of the operation.  Only on a failure does software need to
-> > issue the reset to return to reading data!
-> 
-> Big question: how is it know if status bits are being read or the real
-> data that was written to an address?  I have read many data sheets and I
-> don't recall any of them discussing this concern.
+<Please see below! Jasmine you too!>
+> -----Original Message-----
+> From: Jasmine Strong [mailto:jasmine at regolith.co.uk]
+> Sent: Monday, March 17, 2003 8:45 AM
+> To: Gregg C Levine
+> Subject: Re: New problem with DoC
+>=20
+>=20
+> On Monday, Mar 17, 2003, at 02:42 Europe/London, Gregg C Levine
+wrote:
+>=20
+> > Hello from Gregg C Levine
+> > It seems to be my day for problems with this configuration. Using
+the
+> > "doc_loadbios" program found in the util directory of the mtd
+> > collection, I've managed to write the firmware to the DoC, one was
+the
+> > one labeled "DOC2.FFF", and the other one was "doc42.exb", both
+were
+> > copied from the disk provided by M-SYS that's version 4.2 of their
+> > series of tools.
+>=20
+> Uh.  last I saw, doc_loadbios didn't understand .exb files.
+>=20
+> You should be using the Grub firmware anyway.
+>=20
+> -Jas.
+Hello again from Gregg C Levine
+Thanks folks. That worked. Funny thing, these devices, the solutions
+suggested by the manufacturer didn't work. Which is what I expected.=20
 
-Easy, at least in theory.  If two consecutive reads are the same, then
-the DQ6 isn't toggling any longer, therfore you are reading data.
+Whereas the MTD method for reviving it, or even a new one for
+installing the Grub Firmware worked. It still looks for the /boot
+directory, and the menu.lst file. But at least it works.=20
 
-Only if the two consecutive reads are different can you assume that
-you read the status register -- and you can only assume the FIRST read
-was a status register, because the second read could have been after
-changing to data mode.
+Next question, how do I put that one, the /boot directory, and the
+menu.list as when I would use a normal Grub booting arrangement in to
+the DoC? Oh, and a custom kernel as well.
+-------------------
+P.S. David is my message formatting acceptable?
 
-But, outside of easy theories, there's a couple of gotchas in there.
-
-I've read at least one data sheet that suggested that the switch from
-the status register to the data "register" happens asyncronously to
-processor reads, so it is possible, though very unlikely, to get some
-bits from the status register and some bits from the actual data
-within a single read -- if the read happens at the exact instance that
-the chip is switching from one mode to the other.
-
-I have never seen any code that takes this into account -- sample
-code, data sheet flow charts, etc.  I think this may, however, have
-something to do with what you wrote: "I do know, however, that several
-manufactures recommend that the final status should be checked an
-additional two times before a success is reported."  I'd be interested
-to see specific data sheets or application notes that do this.
-
-
---> Steve
+-------------------------------
+Gregg C Levine hansolofalcon at worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."  Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
