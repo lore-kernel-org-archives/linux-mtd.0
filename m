@@ -1,17 +1,15 @@
 Received: from [145.253.187.130] (helo=proxy.baslerweb.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A9joM-00024z-TN
-	for <linux-mtd@lists.infradead.org>; Wed, 15 Oct 2003 12:27:26 +0100
+	id 1A9lBu-0002Np-Jl
+	for <linux-mtd@lists.infradead.org>; Wed, 15 Oct 2003 13:55:50 +0100
 From: Thomas Koeller <thomas.koeller@baslerweb.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 15 Oct 2003 13:30:02 +0200
-References: <1065598642.12197.6.camel@famine>
-	<200310151211.29172.thomas.koeller@baslerweb.com>
-	<1066215157.14783.933.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1066215157.14783.933.camel@hades.cambridge.redhat.com>
+To: Dinesh Kumar <mljangir@yahoo.co.in>
+Date: Wed, 15 Oct 2003 14:58:26 +0200
+References: <20031015115257.16327.qmail@web8006.mail.in.yahoo.com>
+In-Reply-To: <20031015115257.16327.qmail@web8006.mail.in.yahoo.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200310151330.02902.thomas.koeller@baslerweb.com>
+Message-Id: <200310151458.26409.thomas.koeller@baslerweb.com>
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
@@ -27,32 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+Dinesh Kumar wrote:
+> I am newbie to JFFS2. What is the reason behind not
+> freeing jffs2_raw_node_ref from RAM (even after they
+> have been used)?
 
-thanks for your quick response.
-
-> All correct. But you miss the observation that we also keep a
-> raw_node_ref around for _obsolete_ nodes, which perhaps we could avoid.
-> In fact, we do this because the raw_node_ref is in a singly-linked list,
-> and it's going to be very inefficient to remove obsoleted nodes from
-> that list when they become obsolete.
-
-I do not think this path leads anywhere I want to go. The flash size
-was chosen to meet the expected storage requirements, which means that
-at some point the flash will be filled with valid data and consequently
-there will be few obsoleted nodes. I expect this to be true for most
-systems.
-
-> Omitting the 'totlen' field should be relatively simple if you're not
-> freeing obsolete refs. Observe that in 99% of cases, it's true that
->
-> 	ref->totlen == ref_offset(ref->next_phys) - ref_offset(ref)
->
-> Make it 100% and make me believe it, and you can remove totlen from the
-> structure.
->
-
-I will consider that.
+Their purpose is to represent physical nodes in the FLASH,
+and so they must remain just as long as those.
 
 tk
 --------------------------------------------------
