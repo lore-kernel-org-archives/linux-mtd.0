@@ -1,34 +1,15 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CpOd5-0007xg-Il
-	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 05:24:34 -0500
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id DF0422F016
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id D38C311693
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 329767A1E
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Jan 2005 11:24:24 +0100 (CET)
-Message-ID: <41E79DD5.4050601@imc-berlin.de>
-Date: Fri, 14 Jan 2005 11:24:21 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
+Received: from web61207.mail.yahoo.com ([216.155.196.131])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CpP0M-0008EL-VM
+	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2005 05:48:36 -0500
+Message-ID: <20050114104833.41929.qmail@web61207.mail.yahoo.com>
+Date: Fri, 14 Jan 2005 02:48:32 -0800 (PST)
+From: matrix lau <matrix_lau@yahoo.com>
 To: linux-mtd@lists.infradead.org
-References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
-	<41E52EAD.2090302@imc-berlin.de>
-	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
-	<41E53F52.3010601@imc-berlin.de>
-	<Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
-In-Reply-To: <Pine.LNX.4.58.0501121519280.10617@phoenix.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: JFFS2: checking CRCs twice!?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: 2k Page support for the mtd driver
+Reply-To: matrix_lau@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,24 +19,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
+Hi.
 
->>>This seems to be true for NOR. But  chrcking CRC helps at least *detect* 
->>>and *report* media problems.
->>
->>Fair enough.
->>But who will pay attention if the system is embedded into your microwave oven or 
->>washing maschine... ;-)
-> 
-> In this case this doesn't make sence.
-> But in general it does.
-> 
-> Possibly it makes sence to have this checking as an configuration option.
+I am using the 2K page nand flash [NAND device:
+Manufacturer ID: 0xec, Chip ID: 0xf1 (Samsung NAND
+128MiB 3,3V 8-bit)] in the ARM system, and the nand
+driver was modified according to the NAND controller.
 
-So will someone add this config option for JFFS2?
-Or should it be done in SUMMARY patch?
-Are there any plans to include this SUMMARY patch to the JFFS2 CVS?
-Or will it stay seperated?
+Now, I face a problem in mounting the JFFS2 system.
+After program the JFFS2 to the mtdblock/2 by the
+following cmd: dd if=JFFS2_FILE of=/dev/mtdblock/2
+bs=128, then I mount it, the first time, it's ok.
 
---
-Steven
+However after umount then I mount it again, it can't
+be mount again and with the following message: 
+
+mount: wrong fs type, bad option, bad superblock on
+/dev/mtdblock/2, or too many mounted file systems
+
+I try with the 512 page device and it's ok, but
+problems exists in 2Kpage nand.
+
+
+Can any one help in the above issue?
+
+Thanks
+Matrix
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
