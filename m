@@ -1,43 +1,37 @@
 Return-path: <David.Woodhouse@mvhi.com>
 Received: from localhost ([127.0.0.1] ident=root)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 10wky6-0006Lv-00
-	for mtd@imladris.demon.co.uk; Wed, 23 Jun 1999 12:13:26 +0100
+	id 10wvib-0006cF-00
+	for mtd@imladris.demon.co.uk; Wed, 23 Jun 1999 23:42:09 +0100
 Received: from pop3.mail.demon.net
 	by localhost with POP3 (fetchmail-5.0.0)
-	for mtd@imladris.demon.co.uk (multi-drop); Wed, 23 Jun 1999 12:13:26 +0100 (BST)
+	for mtd@imladris.demon.co.uk (multi-drop); Wed, 23 Jun 1999 23:42:09 +0100 (BST)
 Received: from punt-1.mail.demon.net by mailstore for mtd@imladris.demon.co.uk
-          id 930136344:10:12028:0; Wed, 23 Jun 99 11:12:24 GMT
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
-Subject: Re: RFC: kernel-based PCMCIA ... 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 23 Jun 1999 12:10:59 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E10wkvj-0008H8-00@devel2.axiom.internal>
+          id 930177693:10:04608:0; Wed, 23 Jun 99 22:41:33 GMT
+Date: Wed, 23 Jun 1999 16:40:31 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: Linux-MTD mailing list <mtd@imladris.demon.co.uk>
+Subject: MTD Changes?
+Message-ID: <Pine.LNX.3.96.990623163713.2872A-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: David Woodhouse <David.Woodhouse@mvhi.com>
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-jgg@deltatee.com said:
->  We managed to extract the location of the specs today, go to  http://
-> msdn.microsoft.com and search for "microsoft flash file system". It
-> documents the MS FFS2 file system - I'll probably start working on one
-> this week unless someone else already has.. 
+Has anyone worked on the MTD stuff lately? I have a few changes that I
+think would be usefull. The most notable is support for JEDEC number
+sensing from flash devices, and ROM/RAM determination. Once the JEDEC
+number is determined it is possible to automatically size the flash chips
+and determine the writing algorithm to use.
 
-I couldn't find the pages - most of the search results are broken links, and 
-those that aren't don't seem very helpful - they just refer to the original 
-FTL.
+I'd like to encode the JEDEC number into the mtd structure and have a
+table of JEDEC -> Info for controling things that write to flash.
 
-Could you send me a copy of the docs, or a direct URL, please?
+Also, I have half written a driver for the Octagon 5066 SBC if anyone is
+interested..
 
-----                                 ----                                 ----
-David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
- Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
-
+Jason
 
 
 
