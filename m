@@ -1,20 +1,20 @@
-Received: from gate.aminocom.com
-	([193.132.141.181] helo=aminocom.com ident=0)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta03.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16w0zR-0001BK-00
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 14:21:21 +0100
-Received: from aminocom.com (eclarke@eclarke.aminocom.com [10.171.23.32])
-	by aminocom.com (8.11.6/8.11.6) with ESMTP id g3CDLLO08272
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2002 14:21:21 +0100
-Message-ID: <3CB6DF08.D1438B22@aminocom.com>
-Date: Fri, 12 Apr 2002 14:20:08 +0100
-From: Elizabeth Clarke <eclarke@aminocom.com>
-MIME-Version: 1.0
-To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: Writing JFFS2 image to Nand flash
-References: <541025071C7AC24C84E9F82296BB9B952CF6@OPTEX1.optex.local>
-Content-Type: text/plain; charset=us-ascii
+	id 16wxAj-0005zD-00
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2002 04:28:53 +0100
+Received: from sitemail.everyone.net (dsnat [216.200.145.62])
+	by omta03.mta.everyone.net (Postfix) with ESMTP id 7BD1E49097
+	for <linux-mtd@lists.infradead.org>; Sun, 14 Apr 2002 20:28:50 -0700 (PDT)
+Content-Type: text/plain
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Sun, 14 Apr 2002 20:28:50 -0700 (PDT)
+From: Jim Zeus <zeusj@firstlinux.net>
+To: all in MTD mailinglist <linux-mtd@lists.infradead.org>
+Subject: Does MTD support amd29dl640e
+Reply-To: zeusj@firstlinux.net
+Message-Id: <20020415032850.656D936F9@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,22 +26,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-John Hall wrote:
-> This image should then be written to the device with cp or dd.
-> However, if I have bad blocks on the device then dd fails.
+Hi,folks
 
-Not sure about dd, I've just been using cp. But the main issue...
+I want to know does the mtd support amd29dl640e flash, I wanna use it on dragonball
 
-> I'm not using the jffs2_nand_branch - I had not realised there was one.
+and when I learn mtd , I meet some question:
+1.will the do_map_probe() think 2 flashs with continuous address as one mtd device?
+2.and what will it be if their address are discontinuous?
+3.what is the difference between JEDEC(obsolete now) and JEDEC_PROBE?
+4.what does structure cfi_private, cfi_ident, flchip means?
 
-...is that. Get that branch and it should work. At least, it works here
-:)
+thanks first, and help with be appreciated
+
+Jim Zeus
 
 
-> I have the latest CVS code from the trunk. What changes are there to
-> support nand flash - is it just limiting the number of writes to a page,
-> or are there other things?
 
-Lots of things!
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
 
-Beth
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
