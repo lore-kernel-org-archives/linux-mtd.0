@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from rdu162-229-047.nc.rr.com ([24.162.229.47] helo=gateway.house)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16A7gI-0002dV-00
-	for <linux-mtd@lists.infradead.org>; Sat, 01 Dec 2001 10:47:38 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <614CC7C21856D1118DA30060B06B487302ACC800@SMF-NT-MAIL1.verifone.com> 
-References: <614CC7C21856D1118DA30060B06B487302ACC800@SMF-NT-MAIL1.verifone.com> 
-To: Eric Nelson <eric_n2@verifone.com>
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: beginners mtd/jffs question 
+	id 16ACnh-00031e-00
+	for <linux-mtd@lists.infradead.org>; Sat, 01 Dec 2001 16:15:37 +0000
+Received: from gromit.house (gromit.house [192.168.1.133])
+	by gateway.house (8.11.6/8.11.2) with ESMTP id fB1GJUs19663
+	for <linux-mtd@lists.infradead.org>; Sat, 1 Dec 2001 11:19:30 -0500
+Subject: JFFS2: cannot execute /bin/bash: Permission denied
+From: Michael Rothwell <rothwell@holly-springs.nc.us>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 01 Dec 2001 11:27:37 -0500
+Message-Id: <1007224058.1712.2.camel@gromit>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 01 Dec 2001 10:55:06 +0000
-Message-ID: <17820.1007204106@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,34 +24,30 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> Isn't it better to use plain NOR linear flash than DOC, because then JFFS2
-> has complete control?
 
-JFFS2 has complete control of a DiskOnChip. It's only an ASIC to do 
-hardware ECC and a handful of NAND flash chips. But JFFS2 doesn't yet 
-support NAND flash properly, so at the moment plain NOR linear flash is 
-best.
+I'm building a JFFS2 filesystem on a 16MB CF card. If I try to run
+bin/bash (really ash) from the mounted filesystem, it runs. But it will
+not run when booting from the flash card, or chrooting into it:
 
-> Is the DOC/JFFS2 a good solution? 
+[root@gromit flash]# chroot /mnt/flash
+chroot: cannot execute /bin/bash: Permission denied
 
-Not right now, maybe soon.
+I have also tried real bash, just to see.
 
-> I mean, it seems like w/ the commercial SBC's, the only options are
-> CompactFlash (Ugh!), or DOC. 
+[root@gromit flash]# ls -al bin/*ash
+-rwxr-xr-x    1 root     root        94364 Nov 30 23:47 bin/ash
+-rwxr-xr-x    1 root     root       519964 Dec  1 11:17 bin/bash
 
-> Is there some type of PCMCIA flash that meets MTD?
+Permissions seem to be correct. Busybox init complains that it cannot
+execute /etc/rc.sysinit (specified in inittab, and exists with correct
+permissions, #!/bin/sh at the top, etc.) This happens with sh as a
+symlink to busybox, to ash, and to bash.
 
-Hard to get hold of now - most people stopped making it in favour of CF. 
-Cisco still use it, but obviously that's fairly expensive, being Cisco.
-It's easy enough to make a map driver for it if you actually _have_ one, 
-but most people don't, so nobody's bothered to write that driver yet.
+I get no error messages from JFFS2. On my desktop, I'm using a USB CF
+reader, and the flash shows up as /dev/sda. On the device that boots
+this card, it's /dev/hda. Same symptoms, "Permission denied"
 
->  Are there commercial boards w/ linear MTD flash? 
+/dev/mtdblock0 on /mnt/flash type jffs2 (rw)
+/dev/sda1 on /mnt/flash/boot type ext2 (rw)
 
-Yes. http://www.arcomcontrols.com/products/icp/pc104/processors/SBC_GXm.htm
-
-Just looking in the drivers/mtd/maps directory will give you some boards to 
-look for.
-
---
-dwmw2
+Any ideas?
