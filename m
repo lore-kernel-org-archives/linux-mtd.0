@@ -1,21 +1,22 @@
-Received: from 213-229-28-240.static.adsl-line.inode.at ([213.229.28.240]
-	helo=contec-int.at)
+Received: from outmail1.freedom2surf.net ([194.106.33.237]
+	helo=outmail.freedom2surf.net)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1By9I0-0006tM-MZ
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 09:18:44 -0400
-From: Manfred Gruber <gruber.m@utanet.at>
+	id 1ByImK-0007ka-Qw
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 19:26:38 -0400
+Received: from wirenth (i-195-137-81-187.freedom2surf.net [195.137.81.187])
+	by outmail.freedom2surf.net (8.12.10/8.12.10) with SMTP id
+	i7KNQXnF025516
+	for <linux-mtd@lists.infradead.org>; Sat, 21 Aug 2004 00:26:33 +0100
+Date: Sat, 21 Aug 2004 00:26:33 +0100
+From: Ian Molton <spyro@f2s.com>
 To: linux-mtd@lists.infradead.org
-Date: Fri, 20 Aug 2004 15:23:16 +0200
-References: <200408201300.05579.gruber.m@utanet.at>
-	<200408201327.16211.gruber.m@utanet.at>
-	<1093002009.14552.3478.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1093002009.14552.3478.camel@hades.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-2"
+Message-Id: <20040821002633.13ba0927.spyro@f2s.com>
+In-Reply-To: <20040820132332.42c78dcc.spyro@f2s.com>
+References: <20040820132332.42c78dcc.spyro@f2s.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <200408201523.16300.gruber.m@utanet.at>
-Subject: Re: Number of CFI chips and Re: JFFS2 with AM29LV256M
+Subject: Re: supporting stupid chips part II
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 20. August 2004 13:40 schrieben Sie:
-> On Fri, 2004-08-20 at 13:27 +0200, Manfred Gruber wrote:
-> > But the output of device size and erase size?
-> > When it should be then seen as one chips, why is  erase size 0x10000 and
-> > device size 0x200000 ?? That for one chip ....
->
-> Yes, that's the debugging dump of the CFI table. You should find
-> different results in /proc/mtd
+Hi.
 
-OK. I see that finding the chips is correct.
-Writing whith write buffer is also okay.
-Then must be my problem in the write_word/write_oneword function be.
+I've hacked some new read/write functions and a new command function
+too, and I can now get to the 24th block before it complains that every
+subsequent block is a bad erase block.
 
-Any comment where here could be the problem, or how these functions work ?
+The controller is a pest. for writes of commands, it needs bytes. for
+the address it needs a word.
 
-Thanks regards manfred
+for everything else? god only knows. I think probably words for data
+transfers.
+
+having never used MTD before, Im not sure how to go about testing it.
+
+Does it require userspace tools?
+Should I see anything in /proc/mtd (or anywhere else) ?
+What should I expect it to do, given the disk probably has a SSFDC DOS
+filesystem on it (winCE handheld device)?
