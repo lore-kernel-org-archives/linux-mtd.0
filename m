@@ -1,23 +1,19 @@
-Received: from amdext2.amd.com ([163.181.251.1])
+Received: from auriga.auriga.ru ([80.240.102.100])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19nm4r-0007aO-0u
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 22:25:41 +0100
-Received: from SAUSGW01.amd.com (sausgw01.amd.com [163.181.250.21])
-	by amdext2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7FLOZOI002927
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Aug 2003 16:24:47 -0500 (CDT)
-Received: from txexmtab.amd.com (txexmtab.amd.com [163.181.3.203]) by
- amdint2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7FLOVGV006557 for
- <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 16:24:31 -0500 (CDT)
-Message-ID: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FC8@txexmtab.amd.com>
-From: jon.hoekwater@spansion.com
-To: linux-mtd@lists.infradead.org
-Date: Fri, 15 Aug 2003 16:24:30 -0500
+	id 19oiKY-0005hR-Bt
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Aug 2003 12:37:46 +0100
+content-class: urn:content-classes:message
 MIME-Version: 1.0
+Date: Mon, 18 Aug 2003 15:36:56 +0400
+Message-ID: <5B439D84E6653F4AA2E14A5D8898A7E1656493@auriga.auriga.ru>
+From: "Eugeny Mints" <eugeny.mints@auriga.ru>
+To: <samoutin@hotbox.ru>
 Content-Type: text/plain;
- charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: cfi_cmdset_0002.c support for erase suspend and resume
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: linux-mtd@lists.infradead.org
+Subject: Fw: corrupt my NAND flash device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I noticed that support for erase suspend and resume
-is present in cfi_cmdset_0001.c but not in cfi_cmdset_0002.c.
-After reviewing the files, it seems like the same type
-solution could be applied to cfi_cmdset_0002.c for AMD/"AMD 
-like" devices.  Is this a correct assessment, or are there 
-some pitfalls that I have failed to see ?
+Alex, all,
 
-I am adding support for the Am29LV640M.
+>Alex Samoutin samoutin at hotbox.ru=20
+>Wed Jul 2 11:43:11 BST 2003=20
 
-I will add support for the three byte device ID and buffered
-writes.  Testing will be done on an Alchemy DbAU1500 using
-MontaVista Linux.
+>Previous message: 2nd try: [PATCH] jffs2 on DOC=20
+>Next message: Fw: corrupt my NAND flash device=20
+>Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]=20
 
-What do I need to do to become a contributing developer?
+>Hi Thomas,
+>Sorry for big delay with answer - I had no hardware to test. Now I got
+my
+>CerfCube 405ep back and can play with it.
+>So I had two problems
 
-Thanks,
-Jon Hoekwater
-jon.hoekwater@spansion.com
-(512) 602-4252
- 
+>  1.. Write verify sometimes fail
+>  2.. Write operation during erase sometimes cause data corruption
+
+Could you please describe you test which detects the first problem? I
+have the same, but it arises very seldom and unstable. I'd like to be
+able to reproduce the bug predictably.=20
+
+>Hardware details :
+>- NAND chip Toshiba TC58256AFT
+>- ALE/CLE and CE connected to GPIO
+>- R/B pin connected to GPIO and I use ready function which reads it
+pin.
+>- I played with different timings - even slowest setting gets  me the
+same
+>result
+
+>1-st problem was solved by applying new MTD snapshot  (Jun 26). It's
+look
+>like nand_deselect(); nand_select() fixes the problem.
+
+It is interesting - this fix doesn't help me:( (I have MIPS Au1100 and
+Toshiba TC58256AFTI )=20
+More over, I discovered that fix proposed by David in the latests
+(august) snapshots (reset before write command) hangs my system during
+eraseall:(
+
+
+>However  after applying new MTD release the 2-nd problem still
+remained.
+>Then I comment out erase abort in nand_get_chip (as you suggested) and
+it
+>fixes my second problem!
+>Could you remove this erase abort from MTD source? I think it will not
+>affect much on efficiency.
+
+My second problem is that system hangs if the device is filled once and
+an attempt to re-use previously used sectors is made. Comment out erase
+abort in nand_get_chip fixes my second problem too.
+
+Regards,
+		Eugeny
