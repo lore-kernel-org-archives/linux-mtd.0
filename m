@@ -1,15 +1,14 @@
-Received: from mx-00.sil.at ([62.116.68.196])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A7nkc-0002IU-9D
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 04:15:34 +0100
-Date: Fri, 10 Oct 2003 05:13:02 +0200 (CEST)
-From: Ingo Flaschberger <if@sil.at>
-To: jffs-dev@axis.com
-Message-ID: <Pine.GSO.4.56.0310100453520.19931@ikarus.sil.at>
+Received: from web60301.mail.yahoo.com ([216.109.118.112])
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A7o2V-0002S9-MH
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Oct 2003 04:34:03 +0100
+Message-ID: <20031010033236.74060.qmail@web60301.mail.yahoo.com>
+Date: Thu, 9 Oct 2003 20:32:36 -0700 (PDT)
+From: Kevin Kaichuan He <hek_u5@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: linux-mtd@lists.infradead.org
-Subject: kmalloc jffs2_do_mount_fs 
+Content-Type: text/plain; charset=us-ascii
+Subject: nand_scan() returns 0 even if no nand chip exists
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,17 +18,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+It seems to me that the nand_scan() in nand.c will return 0
+even if no NAND chip is detected (CVS code on 10/09/03). This
+has negative impact since my hardware specific nand driver
+will assume a NAND chip is detected and go on doing 
+add_mtd_partition() ...
 
-after 3 nights... debugging why my sharp zaurus do not boot from my
-initrd.. i found:
+I applied the following patch to avoid the problem, not sure
+if I missed anything:
 
-kmalloc does not give you more than 128k (only i you "hack" it).
-jffs2 with a filesystem about 40Mb need more when mounting..
-to fix this.. i have luckily found a patch at the list:
-http://lists.infradead.org/pipermail/linux-mtd/2002-December/006577.html
+--- ./nand/nand.c       2003-10-09 19:10:05.000000000 -0700
+***************
+*** 1388,1394 ****
+                }
+        }
 
-but why doe you not apply it to the source or warn because of this
-"jffs2" problem???
+!       for (i=1; i < maxchips; i++) {
+                this->select_chip(mtd, i);
 
-thnx & bye, Ingo
+                /* Send the command for reading device ID */
+--- 1388,1396 ----
+                }
+        }
+
+!       if (nand_flash_ids[i].name) {  /* Added by Kevin */
+!                 /* Found NAND  */
+!         for (i=1; i < maxchips; i++) {
+                this->select_chip(mtd, i);
+
+                /* Send the command for reading device ID */
+***************
+*** 1398,1408 ****
+                if (nand_maf_id != this->read_byte(mtd) ||
+                    nand_dev_id != this->read_byte(mtd))
+                        break;
+       }
+       if (i > 1)
+                printk(KERN_INFO "%d NAND chips detected\n", i);
+
+       mtd->size = (1 << this->chipshift) /* * i when we fix the rest of the code */;
+
+        /*
+         * check ECC mode, default to software
+--- 1400,1411 ----
+                if (nand_maf_id != this->read_byte(mtd) ||
+                    nand_dev_id != this->read_byte(mtd))
+                        break;
+         }
+         if (i > 1)
+                printk(KERN_INFO "%d NAND chips detected\n", i);
+
+         mtd->size = (1 << this->chipshift) /* * i when we fix the rest of the code */;
++       }
+
+        /*
+         * check ECC mode, default to software
+
+
+Thanks
+
+Kevin
