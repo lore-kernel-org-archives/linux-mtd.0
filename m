@@ -1,20 +1,16 @@
-Received: from gate.epygi.de ([212.126.211.241])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19sii4-0001A3-0n
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 13:50:36 +0100
-Received: from pcstephan (pc-stephan.epygi.de [10.20.0.32])
-	by gate.epygi.de (8.12.9/8.12.9) with SMTP id h7TCo8hK016850
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Aug 2003 14:50:08 +0200 (METDST)
-From: "Stephan Linke" <Stephan.Linke@epygi.de>
-To: "Linux-Mtd" <linux-mtd@lists.infradead.org>
-Date: Fri, 29 Aug 2003 14:50:08 +0200
-Message-ID: <FCEAKDJJAPHPLJFINDAJEECKDHAA.Stephan.Linke@epygi.de>
+Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 19sjIh-0001Jg-6X
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Aug 2003 14:28:27 +0100
+Message-ID: <023501c36e31$81a4a610$a970a8c0@topo>
+From: "Luca Contini" <luca.contini@mediaenabling.com>
+To: "linux-mtd-request@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 29 Aug 2003 15:28:59 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: FW: "du" returns wrong values on yaffs
+Subject: latest MTD snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +21,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
+I've downloaded the latest snapshot from the CVS:
+mtd-snapshot-20030828.tar.bz2
+Since I need only the mtdblock device working I've just copied the snapshot
+/drivers/mtd content to my /linux/drivers/mtd directory, and the blktrans.h
+to /include/linux/mtd/.
+When I try to compile (using arm-linux-gcc) mtdblock.c I get this warning:
+"mtdblock.c:251: warning: implicit declaration of function `unlikely'"
+and when I try to insert the mtdblock.o module I get:
 
-in MTD list there are more filesystem guys so I copy this one from YAFFS list...
+[arm@Botolo2 mtd]$insmod mtdblock.o
+mtdblock.o: unresolved symbol unlikely
+mtdblock.o: unresolved symbol register_mtd_blktrans
+mtdblock.o: unresolved symbol add_mtd_blktrans_dev
+mtdblock.o: unresolved symbol deregister_mtd_blktrans
+mtdblock.o: unresolved symbol del_mtd_blktrans_dev
+[arm@Botolo2 mtd]$
 
-Stephan
+What Am I missing?
 
-> -----Original Message-----
-> From: Stephan Linke [mailto:Stephan.Linke@epygi.de]
-> Sent: Freitag, 29. August 2003 14:48
-> To: manningc2@actrix.gen.nz; Yaffs List
-> Subject: RE: "du" returns wrong values on yaffs
-> 
-> 
-> Hi,
-> 
-> Now there's something strange:
-> The "du" I use (busybox) still returnes strange values. The reason is that it assumes a block size of 512 bytes and 
-> doesn't care for the file block size returned by lstat. "du" simply divides by 2 to get the number of 1k blocks (already 
-> a wrong calculation I guess).
-> 
-> Filesystems like cramfs and jffs show a similiar stupid behavior. They sai that their block size is PAGE_CACHE_SIZE or 
-> PAGE_SIZE (4k in our case) but use a hard coded 512 to calculate the block count.
-> It looks to me like there's something wrong in most of the filesystem inodes...
-> 
-> Thanx, Stephan
-> 
-> 
-> > -----Original Message-----
-> > From: Charles Manning [mailto:manningc2@actrix.gen.nz]
-> > Sent: Mittwoch, 20. August 2003 06:03
-> > To: Stephan Linke; Yaffs List
-> > Subject: Re: "du" returns wrong values on yaffs
-> > 
-> > 
-> > On Tuesday 19 August 2003 21:39, Stephan Linke wrote:
-> > > Hi,
-> > > we are using "du" to detect the amount of space occupied by some of our
-> > > files to keep us from running out of space. Unfortunately YAFFS returns a
-> > > block count of zero.
-> > >
-> > Stepahn I found and ??corrected?? a problem, though I don't know it is 100% 
-> > yet. THis is in cvs. 
-> > 
-> > At best du only provides an estimate and does not account for various other 
-> > overheads (eg. bad blocks, reserved blocks). statfs() , as used by 'df', 
-> > gives a better indicator of free space.
-> > 
-> > Stephan: please try the new yaffs_fs and see if this helps. 
-> > 
-> > -- Charles
-> > 
+Regards
+
+Luca
