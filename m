@@ -1,21 +1,22 @@
 Received: from vds-320151.amen-pro.com ([62.193.204.86])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D4g8D-0006Jr-TO
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2005 09:07:50 -0500
+	id 1D4g9s-0006K8-GU
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2005 09:09:33 -0500
 From: Lorenzo =?ISO-8859-1?Q?Hern=E1ndez_?= =?ISO-8859-1?Q?Garc=EDa-Hierro?=
 	<lorenzo@gnu.org>
-To: Keshavamurthy Anil S <anil.s.keshavamurthy@intel.com>
-In-Reply-To: <20050224155559.A727@unix-os.sc.intel.com>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0502250919100.5525@phoenix.infradead.org>
 References: <44BDAFB888F59F408FAE3CC35AB47041014F9285@orsmsx409>
 	<1109206700.8215.4.camel@windu.rchland.ibm.com>
 	<20050223171559.A23461@unix-os.sc.intel.com>
 	<1109259722.3796.22.camel@localhost.localdomain>
 	<20050224155559.A727@unix-os.sc.intel.com>
+	<Pine.LNX.4.58.0502250919100.5525@phoenix.infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="=-Ai8oBvTFjZ/AzbQ9eTFt"
-Date: Fri, 25 Feb 2005 15:07:15 +0100
-Message-Id: <1109340435.18747.12.camel@localhost.localdomain>
+	boundary="=-Q38hssjiR2vf09Fhu3F7"
+Date: Fri, 25 Feb 2005 15:08:58 +0100
+Message-Id: <1109340538.18747.15.camel@localhost.localdomain>
 Mime-Version: 1.0
 Cc: lorenzo@gun.org, linux-mtd@lists.infradead.org
 Subject: Re: xattr support  for JFFS3
@@ -29,38 +30,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Ai8oBvTFjZ/AzbQ9eTFt
+--=-Q38hssjiR2vf09Fhu3F7
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-El jue, 24-02-2005 a las 15:56 -0800, Keshavamurthy Anil S escribi=F3:
-> Can you please point me to the same spec.
+El vie, 25-02-2005 a las 09:19 +0000, Artem B. Bityuckiy escribi=F3:
+> I offer to keep you work public as the community might assist you.=20
+> Furthermore, you probably may use the existing JFFS3 design document and=20
+> to add your xattr design there.
 
-Sure ;)
-http://sources.redhat.com/jffs2/jffs2.pdf
-http://sources.redhat.com/jffs2/jffs2-html/
+That's what we are going to do, the development is going on JFFS3, and
+of course I've read the specifications and design of JFFS2 at RH's JFFS2
+site (thanks to David for pointing this out).
 
-> Perfect.
-
-http://wiki.tuxedo-es.org/tuxedo/JFFS2xattr/RoadMap
-
-> We can start from next monday, let me know what time you want to chat wit=
-h
-> me next monday.
-
-OK, we could meet in the #mtd channel (irc.freenode.org) at 20:10 CET.
-Let me know if it's OK for you.
-
-> thanks once again.
-
-Thanks to you for your interest ;).
-
-Cheers,
+Thanks for the comments,
+Cheers.=20
 --=20
 Lorenzo Hern=E1ndez Garc=EDa-Hierro <lorenzo@gnu.org>=20
 [1024D/6F2B2DEC] & [2048g/9AE91A22][http://tuxedo-es.org]
 
---=-Ai8oBvTFjZ/AzbQ9eTFt
+--=-Q38hssjiR2vf09Fhu3F7
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
 	digitalmente
@@ -68,9 +57,9 @@ Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQBCHzETDcEopW8rLewRAlibAJ95pGHf92fljztB4HqCUpnuCM1glgCgokNg
-sQRqVgott3tmKHfRk9VBqvc=
-=4Bu/
+iD8DBQBCHzF6DcEopW8rLewRArjpAJ9UiCptFOlD4ATKvWdkwQoGEKPLWwCfQdJS
+TrpdhQtZQJYlHZoFsAkCGqs=
+=bf7S
 -----END PGP SIGNATURE-----
 
---=-Ai8oBvTFjZ/AzbQ9eTFt--
+--=-Q38hssjiR2vf09Fhu3F7--
