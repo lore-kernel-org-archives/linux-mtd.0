@@ -1,15 +1,14 @@
-Received: from smtp1.libero.it ([193.70.192.51])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1ARWRu-0008Sk-FV
-	for <linux-mtd@lists.infradead.org>; Wed, 03 Dec 2003 12:49:46 +0000
-Date: Wed,  3 Dec 2003 13:47:28 +0100
-Message-Id: <HPBKV4$E9254657A538CE235AF0217B16281E94@libero.it>
-MIME-Version: 1.0
-From: "c\.matamba" <c.matamba@libero.it>
-To: "c\.matamba" <c.matamba@libero.it>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Subject: PLEASE LET ME HEAR FROM YOU URGENTLY
+From: David Woodhouse <postmaster@infradead.org>
+To: "mark a. mixson" <mmixson@atlas-tech.com>
+In-Reply-To: <08F9C91BD42DD411A48900C04F109FD4C733AF@atlaspdc.atlas-tech.com>
+References: <08F9C91BD42DD411A48900C04F109FD4C733AF@atlaspdc.atlas-tech.com>
+Content-Type: text/plain
+Message-Id: <1070459264.15108.132.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Wed, 03 Dec 2003 13:47:45 +0000
+Content-Transfer-Encoding: 7bit
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: DOC + GRUB + MTD + compressed ext2 root ramdisk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,65 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SIR,
+On Tue, 2003-12-02 at 10:53 -0500, mark a. mixson wrote:
+> You essentially solved my problem (:  chroot was what I needed. 
 
-I am charles matamba the only son of attah Mtonga
-matamba of Mag=
-buraka distrct of liberia.my father
-was a wealthy traditional father who=
- died as
-a result of his refusal to sponsor or take sides with
-the warr=
-ing parties in my country. on the heat of the
-crises my father made arre=
-ngement for me and my sister
-to take refuge in Abidjan Cote`d Ivoire ,he=
- choose to
-stay behind due to his belief and it cost him his life
-Ever =
-since we left liberia my country`s capital life
-has not been the same.=0D
-=
+Do not top-post.
 
-Recently my mother got very ill on her sick bed she
-revealed to me tha=
-t 11.5 Million dollars was deposited
-in a bank on my behalf. 
+Do not start new threads in response to existing ones just because your
+email client is broken; use a fixed email client or use a list which
+isn't provided by me.
 
-I have =
-gone to the bank to claim the money but was
-told by the bank manager tha=
-t though the money belongs
-to me only my father`s foreign partner who my=
- father
-entrusted with the power to oversee my welfare and
-invest on my=
- behalf can have appropiate access untill
-i have good business knowledge=
-.
+Do not post 'Recall' messages which don't even contain a Message-ID for
+the message they're intending to recall -- so even if it wasn't an
+insane and impossible concept in the first place, it couldn't work.
 
-Please,i want you to be my father`s recommended
-foreign partner as =
-to enable me transfer this money to
-you country,your helping me will sol=
-ve my surffrings
-and that of my sister.I will also like to live and
-sch=
-ool in your country,If you oblige to help we are
-willing to give you 20 =
-Percent of the money.please
-write back on your indication of your intres=
-t to help
-me then i will give you every details and information
-on my d=
-isposal for the transfer.
+>  I found
+> that my libraries needed to be executable.  David Woodhouse pointed that out
+> on another post on this mailing-list
+> (http://lists.infradead.org/pipermail/linux-mtd/2001-December/003695.html).
 
-thanks, looking forward to hear from you.=0D
-=
+And do not ask questions which have already been answered -- although
+given that it was two years ago I suppose we can forgive you that one.
+:)
 
-CHARLES MATAMBA.
-
-
-
-
- 
+-- 
+dwmw2
