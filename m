@@ -1,17 +1,19 @@
-Received: from [208.190.191.184] (helo=sekhmet.ad.newisys.com)
+Received: from snipe.mail.pas.earthlink.net ([207.217.120.62] helo=snipe.prod.itd.earthlink.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16TWXd-0000mA-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Jan 2002 23:10:53 +0000
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: MTD partitioning for AMD flash chips
-Date: Wed, 23 Jan 2002 17:21:26 -0600
-Message-ID: <D3A72C5007329A4F991C0DD87202259F0EAFBA@sekhmet.ad.newisys.com>
-From: "Navin Boppuri" <navin.boppuri@newisys.com>
-To: <linux-mtd@lists.infradead.org>
+	id 16TWpP-0000nH-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Jan 2002 23:29:15 +0000
+Received: from 1cust63.tnt3.phoenix.az.da.uu.net ([63.14.194.63] helo=localhost.localdomain)
+	by snipe.prod.itd.earthlink.net with esmtp (Exim 3.33 #1)
+	id 16TX00-0005xq-00
+	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2002 15:40:12 -0800
+Subject: using the DOC2000
+From: Russ Dill <Russ.Dill@asu.edu>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: 23 Jan 2002 16:47:35 -0700
+Message-Id: <1011829656.1974.0.camel@timmy>
+Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,15 +25,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello all,
+I've been using 2 MB of standard flash on an ARM system. The layout I've
+been using is:
 
-I am new the MTD mailing lists. I have two AM29LV641D( 4M X 16) flash
-chips connected to a 32 bit bus.(sector size is 128k). I  would like to
-partion this device so that I may mount a JFFS2 flash file system on one
-of the partitions and use the rest of the device for raw data.  I do see
-some examples to do this for some intel chips in drivers/mtd but I dont
-see anything for the AMD chips. Is the interface similar for the AMD
-chips?
+boot blocks
+	32k - boot loader (blob)
+	8k - journaled config
+	8k - journaled config
+	16k - static config
+main blocks
+	128k * 3 - backup cramfs
+	128k * 12 - primary cramfs
 
-Thank you.
-Navin.
+both cramfs filesystems contain their own kernel, and the bootloader can
+boot either. I'm trying to port this over to x86 using a DOC2000. I'm
+trying to translate how I'm currently using MTD, to how I need to use a
+DOC2000. the only writing that occurs to the flash is the initial flash
+of everything, the periodic (every 4 hours to every few days) writing of
+the journaled config blocks, and the updates to the primary fs (once
+every few months). Currently as it stands, it seems for the DOC to be
+usefull at all, I need to use NTFL, which I don't paticularly care for.
+I'd like to mount my cramfs on a read only block device, as well as
+control the writing of the journaled config, as well as their erase
+blocks, so that I know what is going on with the flash in case power is
+lost.
+
+Does lilo need NTFL to be able to boot linux off of the device? does
+grub? Can I control erase cycles for my journaled config if I am using
+NTFL? What is all this talk about ECC?
