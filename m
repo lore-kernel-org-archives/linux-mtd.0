@@ -1,20 +1,21 @@
 Received: from mail.fh-wedel.de ([213.39.232.194])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BBaey-0003uw-Uu
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 15:37:41 +0100
-Date: Thu, 8 Apr 2004 16:37:17 +0200
+	id 1BBamr-00045n-7j
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 15:45:49 +0100
+Date: Thu, 8 Apr 2004 16:45:42 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-ID: <20040408143717.GA1921@wohnheim.fh-wedel.de>
-References: <40742192.5030901@imc-berlin.de>
-	<1081354787.4799.191.camel@tubarao> <407553A5.5010702@imc-berlin.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20040408144542.GB1921@wohnheim.fh-wedel.de>
+References: <407547DF.1020404@imc-berlin.de> <40754B83.3020000@imc-berlin.de>
+	<200404081458.56018.tglx@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <407553A5.5010702@imc-berlin.de>
-cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: kernel oops in cfi_cmdset_0002.c:do_write_one()...
+In-Reply-To: <200404081458.56018.tglx@linutronix.de>
+cc: MTD <linux-mtd@lists.infradead.org>
+cc: Steven Scholz <steven.scholz@imc-berlin.de>
+Subject: Re: Changing the number of JFFS2 erasblocks?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 April 2004 15:29:09 +0200, Steven Scholz wrote:
+On Thu, 8 April 2004 14:58:56 +0200, Thomas Gleixner wrote:
 > 
-> I just notice that in my old 2.4.20 kernel tree I have a
+> You can do this, but it will break and it will break your root jffs2 too, as 
+> there is no way to have this per partition. This all is related to garbage 
+> collection and the neccecarity to have spare blocks for writing / deleting 
+> /modifying files. In a read only fs this would not hurt.
 > 
-> 	* $Id: cfi_cmdset_0002.c,v 1.67 2003/04/15 22:32:13 thayne Exp $
-> 
-> and in a _new_ 2.4.25 tree I have
-> 
-> 	 * $Id: cfi_cmdset_0002.c,v 1.62 2003/01/24 23:30:13 dwmw2 Exp $
-> 
-> How could that be !?!?
-> 
-> Is the MTD code not pushed up into the main kernel sources???
+> 320K is not really useful for a filesystem IMHO. 
+> What do you want to do with it ?
 
-It is, whenever David finds the time for it.
+Here we go again...
 
-Don't blame him, this is the result of using CVS, which is designed
-around the assumption of a single central repository.  If current sync
-speed is to slow for you, try to make it easier for him to send
-patches forward.
+2 Eraseblocks (in words: two) are enough to put a jffs2 filesystem on
+it.  One eraseblock plus a few bytes have to be reserved for garbage
+collection, but not two, much less five.
+
+Jffs2 should:
+- Switch from free blocks to free bytes.
+- Make this per-mountpoint.
+- Make the numbers depend on number and size of erase blocks.
+
+Maybe I will even do this one day, but not before Redhat lawyers and
+myself sort out some things.  Don't tell me "Show me the code.", since
+it wouldn't get included anyway.
 
 Jörn
 
 -- 
-Invincibility is in oneself, vulnerability is in the opponent.
--- Sun Tzu
+Don't patch bad code, rewrite it.
+-- Kernigham and Pike, according to Rusty
