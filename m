@@ -1,19 +1,18 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from h0040f44728e3.ne.client2.attbi.com ([24.62.221.37]
+	helo=intel-srvr.patcameron.ne.mediaone.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1952YZ-0004sO-Ji
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 12:55:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Marc D'Anjou <marcd@amperion.com>
-In-Reply-To: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
-References: <C6D44AA99ECEB540A5498F15F92DA07D89227F@amperion01>
-Message-Id: <1050321331.32593.125.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Mon, 14 Apr 2003 12:55:31 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Long JFFS2 Mount time?
+	id 1953eb-00054V-Ky
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 14:05:46 +0100
+MIME-Version: 1.0
+content-class: urn:content-classes:message
+Date: Mon, 14 Apr 2003 09:05:13 -0400
+Message-ID: <6D31D5429FA6884CBE9ECAB6C9B5E6A9444D@intel-srvr.patcameron.ne.mediaone.net>
+From: "Thomas Cameron" <tom@ceisystems.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Which is simpler...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-04-11 at 14:49, Marc D'Anjou wrote:
+Hello all,
 
-> Is there newer JFFS2 software available that minimize this behavior?
+	I have been working on a project recently, which uses a
+DiskOnChip for storage.  However, I have had a number of problems
+getting the DOC to work as I would like.  My question is this.  Would it
+be easier to simply use a CompactFlash?
 
-The current code in CVS ought to be a lot better.
+	My end goal is to use some sort of flash-based storage, and a
+jffs2 or yaffs root filesystem.  Is it possible to use these filesystems
+on a DiskOnChip at this point, or is support for this still forthcoming?
+Additionally, what would be the easiest way to implement one of these
+filesystems on a DiskOnChip.
 
--- 
-dwmw2
+Thanks for any help,
+Thomas Cameron
