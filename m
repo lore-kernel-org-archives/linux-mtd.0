@@ -1,22 +1,18 @@
-Received: from mailer.cse.iitd.ac.in ([202.141.68.3]
-	helo=desh.cse.iitd.ernet.in)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D3SE5-0003aW-UA
-	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2005 00:04:56 -0500
-Message-ID: <421ABD09.2010006@kritikalsolutions.com>
-Date: Tue, 22 Feb 2005 10:33:05 +0530
-From: Narinder Kumar <narinder@kritikalsolutions.com>
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D3Y4u-0004pX-4A
+	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2005 06:19:45 -0500
+From: Thomas Brinker <thomas.brinker@gmx.de>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 22 Feb 2005 12:19:41 +0100
 MIME-Version: 1.0
-To: dedekind@infradead.org, linux-mtd@lists.infradead.org
-References: <4219E20F.80908@kritikalsolutions.com>	
-	<1108994730.13420.52.camel@sauron.oktetlabs.ru>	
-	<4219EF6B.8040208@kritikalsolutions.com>
-	<1108996545.13420.55.camel@sauron.oktetlabs.ru>
-In-Reply-To: <1108996545.13420.55.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Re: mkfs.jffs2
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200502221219.41518.thomas.brinker@gmx.de>
+Subject: mounting jffs2 rw
+Reply-To: thomas.brinker@gmx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,152 +22,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
+Hi!
 
->Could you please look at JFFS2 output during mount - it should inform
->what Virtual block size it gonna use. This should appear before error
->messages.
->
->  
->
-This is what is being shown when i mount the mtd block, can this help 
-out in someway ?
+I have problems in remounting a jffs2 as read/writeable.
 
-$mount -t jffs2 /dev/mtdblock/1 /tmp/mmm/
-Node at 0x00000048 with length 0x000006d2 would run over the end of the 
-erase block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000004c: 
-0x06d2 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000050: 
-0x39d7 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000054: 
-0x0002 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000058: 
-0x0002 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000005c: 
-0x81a4 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000060: 
-0x022f instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000064: 
-0x13fb instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000068: 
-0xa791 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000006c: 
-0xa791 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000070: 
-0xa791 instead
-Further such events for this erase block will not be printed
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000420: 
-0xad8f instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000424: 
-0xcfd9 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000428: 
-0x4e0b instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000042c: 
-0x2792 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000430: 
-0xfa51 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000434: 
-0xf7bd instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000438: 
-0xe348 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000043c: 
-0xb366 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000440: 
-0xe86b instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000444: 
-0x10f2 instead
-Further such events for this erase block will not be 
-printed                   
-Node at 0x0000071c with length 0x000003d7 would run over the end of the 
-erase block
-Perhaps the file system was created with the wrong erase 
-size?                 
-JFFS2: Erase block at 0x00000420 is not formatted. It will be 
-erased           
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000840: 
-0xf42b instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000844: 
-0x68c7 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000848: 
-0x0184 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000084c: 
-0xfb02 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000850: 
-0x6d29 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000854: 
-0x5cbd instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000858: 
-0x23a3 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000085c: 
-0xe231 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000860: 
-0xb762 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000864: 
-0x3c62 instead
-Further such events for this erase block will not be 
-printed                   
-Node at 0x00000af4 with length 0x000005a6 would run over the end of the 
-erase block
-Perhaps the file system was created with the wrong erase 
-size?                 
-JFFS2: Erase block at 0x00000840 is not formatted. It will be 
-erased           
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c60: 
-0x6df1 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c64: 
-0x1283 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c68: 
-0x1cd8 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c6c: 
-0x86dd instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c70: 
-0x8594 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c74; 
-0xb3c8 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c78: 
-0x8922 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c7c: 
-0x8d8c instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c80: 
-0x01f8 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000c84: 
-0x9726 instead
-Further such events for this erase block will not be 
-printed                   
-JFFS2: Erase block at 0x00000c60 is not formatted. It will be 
-erased           
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001080: 
-0x8c70 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001084: 
-0x8f13 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001088: 
-0x01fc instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000108c: 
-0xbf8e instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001090: 
-0x7b72 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001094: 
-0x00c0 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001098: 
-0x4ae2 instead
-Node at 0x0000109c with length 0x0000055c would run over the end of the 
-erase block
-Perhaps the file system was created with the wrong erase 
-size?                 
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000010a0: 
-0x055c instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000010a4: 
-0x4686 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000010a8: 
-0x0002 instead
-Further such events for this erase block will not be 
-printed                   
-JFFS2: Erase block at 0x00001080 is not formatted. It will be 
-erased           
-[............................................................]
+Currently it mounts successfully as root-fs but in ro, which is no wonder.
+But how can I change it to rw?
 
-Best Regards,
-Narinder Kumar,
-New Delhi, India.
+
+Here is what I have tried so far:
+=2D--=3D=3D=3D---
+# cat /proc/version
+Linux version 2.6.9-uc0 (thomas@mobile) (gcc version 3.4.3) #141 Mon Feb 21=
+ 16:01:36 CET 2005
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00010000 "phys_mapped_flash"
+# ls -l /dev/mtd*
+crw-r--r--    1 root     root      90,   0 Feb  7  2005 /dev/mtd0
+brw-r--r--    1 root     root      31,   0 Feb  7  2005 /dev/mtdblock0
+crw-r--r--    1 root     root      90,   1 Feb  7  2005 /dev/mtdr0
+# mount
+/dev/rom0 on / type jffs2 (ro,noatime)                [<--- rom0 is strange]
+/proc on /proc type proc (rw,nodiratime)
+none on /dev/pts type devpts (rw)
+none on /sys type sysfs (rw)
+ram on /var type ramfs (rw)
+# mount -o remount,rw /dev/mtdblock0 /
+mount: Mounting /dev/mtdblock0 on / failed: No such file or directory
+# mount -o remount,rw /dev/rom0 /
+mount: Mounting /dev/rom0 on / failed: No such file or directory
+# mount -o remount,rw /
+mount:
+Cannot read /etc/fstab: No such file or directory
+=2D--=3D=3D=3D---
+
+Boot logs:
+=2D--=3D=3D=3D---
+Linux version 2.6.9-uc0 (thomas@mobile) (gcc version 3.4.3) #141 Mon Feb 21=
+ 16:01:36 CET 2005
+CPU: P2001 [41029000] revision 0 (ARMv4T)
+Machine: P2001
+Built 1 zonelists
+Kernel command line: ip=3Ddhcp root=3D/dev/mtdblock0 rootfstype=3Djffs2 con=
+sole=3DttyS0,57600n8
+PID hash table entries: 128 (order: 7, 2048 bytes)
+Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+Memory: 16MB =3D 16MB total
+Memory: 14508KB available (1440K code, 184K data, 64K init)
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+NET: Registered protocol family 16
+NetWinder Floating Point Emulator V0.97 (extended precision)
+JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+JFFS2: default compression mode: priority
+p2001_uart.c:v1.3 12/01/2004 Tobias Lorenz (tobias.lorenz@gmx.net)
+ttyS0 at MMIO 0x140000 (irq =3D 1) is a P2001
+p2001_eth.c:v1.19 12/17/2004 Tobias Lorenz (tobias.lorenz@gmx.net)
+eth0: ADDR 0x180000, IRQ 17/18, MAC 00:09:4f:00:00:02.
+eth0: PHY 0, ID 0x78e20013 (Intel LXT971A).
+Setting PHY LEDs to:
+  Red    =3D Link Status
+  Yellow =3D Transmit Status
+  Green  =3D Receive Status
+eth1: ADDR 0x181000, IRQ 19/20, MAC 00:09:4f:00:00:03.
+eth1: PHY 1, ID 0x78e20013 (Intel LXT971A).
+Setting PHY LEDs to:
+  Red    =3D Link Status
+  Yellow =3D Transmit Status
+  Green  =3D Receive Status
+eth2: no more MII PHYs found
+p2001_eth: 2 interfaces found.
+Using anticipatory io scheduler
+physmap flash device: 400000 at 2000000
+phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit bank
+ Amd/Fujitsu Extended Query Table at 0x0040
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 1024 bind 2048)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+eth0: Receiving filtered multicast (0 entries).
+eth0: Receiving filtered multicast (0 entries).
+eth0: Receiving filtered multicast (0 entries).
+eth1: Receiving filtered multicast (0 entries).
+eth1: Receiving filtered multicast (0 entries).
+eth1: Receiving filtered multicast (0 entries).
+Sending DHCP requests ., OK
+IP-Config: Got DHCP answer from 10.0.0.1, my address is 10.0.0.205
+eth1: Receiving filtered multicast (0 entries).
+eth0: Receiving filtered multicast (1 entries).
+IP-Config: Complete:
+      device=3Deth0, addr=3D10.0.0.205, mask=3D255.255.255.0, gw=3D255.255.=
+255.255,
+     host=3Dp2001, domain=3D, nis-domain=3D(none),
+     bootserver=3D10.0.0.1, rootserver=3D10.0.0.1, rootpath=3D/root/linux/a=
+rmroot
+VFS: Mounted root (jffs2 filesystem) readonly.
+=46reeing init memory: 64K
+init: Mounting Filesystems:  proc devpts sys ram done.
+init: Setting up Interfaces: lo done.
+init: Starting Services: inetd done.                                       =
+                                                                           =
+              =20
+=2D--=3D=3D=3D---
+
+Regards
+Thomas
+
+=2D-=20
+Wo k=E4men wir hin, wenn alle sagten, wo k=E4men wir hin,
+und niemand ginge, um einmal zu schauen, wohin man k=E4me,
+wenn man ginge.
+=ABKurt Marti=BB
