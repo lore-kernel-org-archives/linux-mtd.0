@@ -1,29 +1,27 @@
-From: vishal@laser5.co.jp (Vishal)
-Date: Wed, 12 Mar 2003 18:02:26 +0900
-Subject: bootloader question for NAND flash boot from JFFS2
-Message-ID: <3E6EF7A2.3060607@laser5.co.jp>
+From: tglx@linutronix.de (Thomas Gleixner)
+Date: Wed, 12 Mar 2003 11:06:59 +0100
+Subject: Problems building contents of snapshot 3-9-2003
+In-Reply-To: <001b01c2e869$37224c80$bda6580c@who5>
+References: <001b01c2e869$37224c80$bda6580c@who5>
+Message-ID: <200303121106.59051.tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi all,
-  I have written a bootloader for booting from a jffs partition on a 
-NAND flash device for one of the boards i am working with. Currently, i 
-am able to locate the inode for the zImage on the filesystem .i.e. in 
-the flash emulation region i construct. i then generate a list of all 
-the inodes related to the inode number for the zImage enetry. This list 
-then becomes a input for my decompress routine which copies the 
-decompressed data to the location in memory where the final jump will be 
-made, and the kerenel will start booting...
-  i am stuck with something i havent been able to identify...all the 
-steps seem to go perfectly, and after thee jump to the starting memory 
- location of the kernel, i get a message:
+On Wednesday 12 March 2003 08:30, Gregg C Levine wrote:
+> Hello from Gregg C Levine
+> Well, I am now closer to my working problem's solution. But now a new
+> problem, or problems has surfaced. And here's a C&P of the problems:
+> Script started on Tue Mar 11 23:06:53 2003
+> root at drwho4:/usr/src/mtd# make
+I'm not sure, if the out of kernel build is really up to date.
 
-Uncompressing Linux............................... done, booting the kernel.
+Could you try to use patchin.sh from patches directory and do make xImage, 
+make modules from your kernel directory ? That works for sure.
+Please use latest CVS code, as we have fixed some leakes yesterday.
 
-
-but the system doesnt boot....any idea what can have caused this 
-behaviour?do u think my decmpress routines need to be looked at again.
-Please do help.
-Thanking y'all in anticipation.
-regards,
-vishal
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx at linutronix.de
