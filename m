@@ -1,18 +1,22 @@
-Received: from draco.netpower.no ([212.33.133.34])
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19kid7-0000sS-AK
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 12:08:25 +0100
-From: =?iso-8859-1?Q?=D8yvind_Harboe?= <oyvind.harboe@zylin.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Date: Thu, 7 Aug 2003 13:08:15 +0200
-Message-ID: <002001c35cd4$33139790$73dea8c0@lair>
-MIME-Version: 1.0
-In-Reply-To: <1060253873.25209.61.camel@passion.cambridge.redhat.com>
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-cc: linux-mtd@lists.infradead.org
-Subject: RE: JFFS2 ram memory usage
+Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
+	helo=wawnet.biz)
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19kirT-00012b-SW
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2003 12:23:16 +0100
+Message-Id: <5.1.1.6.0.20030807130525.0246b1f0@192.168.2.1>
+Date: Thu, 07 Aug 2003 13:23:02 +0200
+To: manningc2@actrix.gen.nz,"Nick Bane" <nick@cecomputing.co.uk>,
+ David Woodhouse <dwmw2@infradead.org>,yaffs@toby-churchill.org,
+ linux-mtd@lists.infradead.org
+From: llandre <r&d@wawnet.biz>
+In-Reply-To: <1060251988.25209.22.camel@passion.cambridge.redhat.com>
+References: <20030806194320.68FDE14DF8@desire.actrix.co.nz>
+ <5.2.1.1.0.20030804110326.00c65950@dns.struinfo.it>
+ <5.2.1.1.0.20030805091433.00c4e370@192.168.2.1>
+ <20030806194320.68FDE14DF8@desire.actrix.co.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: Re: Can't load yaffs.o (unresolved symbol __get_mtd_device)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->You could also remove the actual compression routines if=20
->you're going to do that.=20
 
-In my patch I:
+>On Sun, 2003-09-07 at 20:47, Charles Manning wrote:
+> > I would suggest you resolve the real problem.
+>
+>  <...>
+>
+> > Thus it seems the  mtd header files you are including are inconsistent 
+> with
+> > the mtd you have in the kernel. Likely the cure is just fixing up your
+> > include paths.
+>
+>It's not just include paths which are broken, Charles. The CFLAGS are
+>randomly different too. Take a look at the way the MTD makefiles build
+>-- using 'make -C $KERNELDIR SUBDIRS=`pwd` modules'. That's basically
+>the only way to get it right consistently.
 
-- removed the allocation of the compression/decompression buffer
-that the compression routines uses to attempt to compress.
-- removed the invocation of the compression/decompression call.
+I solved the problem. I was building the YAFFS module on the target that 
+unfortunately has no working RTC device yet. So the system clock is 
+initialized to Dec, 31st 1969 every time system boots. I don't know why 
+this caused this erroneous build (the yaffs.o file was built anyway but gcc 
+warned about the clock skew).
+Then I tried to build the module on the development host trough the 
+cross-compiler ppc-linux-gcc (the source files are the same because I use a 
+NFS to share the sources between the host and the target).
+After building it this way, I can load it on the target without any problem.
 
->Other users, especially eCos users, may want to individually=20
->select the compression algorithms available too.
+Many thanks again for the help.
 
-Agreed.
 
-I haven't checked, but I can't imagine that the runlength
-compressor using a lot of memory.
-
->Finding a way to eliminate the 'totlen' field of the=20
->jffs2_raw_node_ref structure might be productive. Or possibly=20
->making the jffs2_raw_node_ref contain doubly-linked lists if=20
->that then means we can discard obsolete nodes immediately=20
->rather than keeping them around.
-
-I don't speak enough JFFS2 currently to comfortably attempt this.
-
-=D8yvind
+llandre
