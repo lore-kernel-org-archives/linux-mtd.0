@@ -1,14 +1,15 @@
-Received: from [202.108.255.198] (helo=bjapp6.163.net)
+Received: from hirogen.kabelfoon.nl ([62.45.45.69])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 163ywF-0006L6-00
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Nov 2001 12:14:44 +0000
+	id 16423K-0006Yd-00
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Nov 2001 15:34:14 +0000
+Message-ID: <126622-2200111314154414250@kabelfoon.nl>
+Reply-To: jan.van.de.kraats@kabelfoon.nl
+To: "november" <jan.van.de.kraats@kabelfoon.nl>
+From: "J A van de Kraats" <jan.van.de.kraats@kabelfoon.nl>
+Subject: European Water Management News
+Date: Wed, 14 Nov 2001 16:44:14 +0100
 MIME-Version: 1.0
-Message-Id: <3BF26262.15239@bjapp6.163.net>
-Date: Wed, 14 Nov 2001 20:24:02 +0800 (CST)
-From: "SHIKUILIANG" <klshi_163@163.net>
-To: linux-mtd@lists.infradead.org
-Cc: dwmw2@infradead.org;, gareth@microm-electronics.com
-Subject: =?gb2312?B?RG9DIGJlZ2luZXIg?=
+Content-type: text/plain; charset="windows-1252"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,86 +21,49 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hi,
-I have a problem with my doc2000 device.
-my target is x86 PC.and I get a linux kernel of v2.4.6.
-then I compiled MTD modules with this kernel:
-
-   CONFIG_MTD=m
-
-   CONFIG_NFTL=m
-
-   CONFIG_MTD_DOC2000=m
-
-   CONFIG_MTD_DOCPROBE=m
-
-   CONFIG_MTD_DOCPROBE_ADDRESS=0
-
-and used the new kernel image to reboot my box,
-when rebooting up, I do modprobe:
-
-#modprobe doc2000 --> OK
-#modprobe nftl    --> OK
-
-then I can find 4 modules inserted into kernel :
-nftl ,doc2000, mtdcore and docecc
-
-then I run fdisk:
-
-#fdisk /dev/nftla
-.
-.
-.
-DiskOnChip 2000 found at address 0xDC000
-Sorry, we don't support UnitSizeFactor of != 1 yet
-Sorry, we don't support UnitSizeFactor of != 1 yet
-Could not find valid boot record
-Could not mount NFTL device
-
-Unable to open /dev/nftla
-.
-.
-.
-
-before do these I already run "dformat" command in dos system.
-A:>dformat /win:dc00 /s:doc50.exb /y
-
-where did wrong I do ? and what means of
-"UnitSizeFactor " ?
-
-I heard some mtd tools,like nftl_format,
-where r i can get it?
-
-any hints will be very appreciated!
-
-stars
-
-
-
-
-
-
-
-
-
-
-
-加薪，升职密笈
-http://www.englishtown.com/master/home/courseoverview.asp?etag=TOCN&ctr=cn
-
-
-
-===============================================
+Dear Colleague,
  
-手机号码是电邮，从此交费不用愁，一号在手“随身邮”
+Our journal, European Water Management, the official journal of the European Water Association (EWA), has started a free e-mail news service.
+
+If you subscribe, you get weekly a mail with press releases, etc. concerning water (management, research, policy, industry, etc.).
+
+It is completely free for all people working in the water sector in its broadest sense.
+
+Older issues of the news are available at www.riza.nl (click on European Water Management News). You can visit this site to get an idea what you will get and if this is useful for you. You can subscribe via this site, but you can subscribe too by sending me at jan.van.de.kraats@kabelfoon.nl a mail with in the subject line "Subscribe European Water Management News."
+
+Unsubscribing later is as easy, just send me a mail with "Unsubscribe European Water Management News" in the subject line.
+I am looking forward to your answer.
  
-—— 163“随身邮”手机邮箱 ——
-◎ 手机号码就是电子邮箱地址，方便记忆
-◎ 不用上网，透过手机短信，随时掌握邮件的接收情况
-◎ 决不错过任何商业良机
-◎ 方便的按月收费方式，最低每月只需5元
- 
-详情请浏览
-http://vip.163.net/mobile/mobile.htm
- 
-===============================================
+Best regards,
+Jan van de Kraats
+Institute for Inland Water Treatment and Waste Water Treatment (RIZA)
+
+
+
+European Water Management
+Official Journal of the European Water Association (EWA)
+Editor-in-Chief
+Drs J A van de Kraats
+Institute for Inland Water Management
+and Waste Water Treatment (RIZA)
+PO Box 17
+8200 AA Lelystad
+The Netherlands
+Tel +31 320 298 793
+Fax +31 320 280883
+E-mail j.vdkraats@riza.rws.minvenw.nl
+Private Fax +15308844520
+Private E-mail jan.van.de.kraats@kabelfoon.nl
+
+
+
+
+
+Drs Jan A van de Kraats
+Editor-in-Chief European Water Management
+INSTITUTE FOR INLAND WATER MANAGEMENT
+AND WASTE WATER TREATMENT(RIZA)
+Lelystad,
+The Netherlands
+jan.van.de.kraats@kabelfoon.nl
+www.riza.nl
