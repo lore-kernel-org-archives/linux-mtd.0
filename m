@@ -1,19 +1,16 @@
-Received: from fep02-0.kolumbus.fi ([193.229.0.44] helo=fep02-app.kolumbus.fi)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CU4HE-0000Ar-AD
-	for linux-mtd@lists.infradead.org; Tue, 16 Nov 2004 09:25:49 -0500
-Received: from [192.168.1.10] (really [193.229.34.141])
-	by fep02-app.kolumbus.fi with ESMTP
-	id <20041116142546.PWOW3570.fep02-app.kolumbus.fi@[192.168.1.10]>
-	for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2004 16:25:46 +0200
-Message-ID: <419A0DEA.6070007@cs.helsinki.fi>
-Date: Tue, 16 Nov 2004 16:25:46 +0200
-From: Heikki O Lindholm <holindho@cs.helsinki.fi>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0411161405080.27293@phoenix.infradead.org>
+References: <Pine.LNX.4.58.0411161316390.25950@phoenix.infradead.org>
+	<1100613327.8191.6954.camel@hades.cambridge.redhat.com>
+	<Pine.LNX.4.58.0411161405080.27293@phoenix.infradead.org>
+Content-Type: text/plain
+Message-Id: <1100615381.8191.6957.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Tue, 16 Nov 2004 14:29:41 +0000
 Content-Transfer-Encoding: 7bit
-Subject: minor Ebony mapping patch
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: your mail
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The IBM Ebony board's default config has AM29F0(40/16) parts, which are 
-JEDEC chips. So, I think the following is in order (Kconfig&Config.in 
-might need tuning also):
+On Tue, 2004-11-16 at 14:21 +0000, Artem B. Bityuckiy wrote:
+> I dreamed about checkpoints which we may write only once for constant 
+> files (for example, glibc libraries) ....
+> 
+> So, this problem is solvable I believe, but no I'm not quite sure are 
+> checkpoints will be so useful as I thought ... 
 
---- drivers/mtd/maps/ebony.c    Thu Nov  4 15:24:14 2004
-+++ /tmp/mtd/drivers/mtd/maps/ebony.c   Tue Nov 16 15:54:51 2004
-@@ -103,7 +103,7 @@
+Hm. I was imagining that we'd read in the information from the
+checkpoint, and then pull in anything _new_ -- which would include any
+nodes which weren't included in the checkpoint.
 
-         simple_map_init(&ebony_small_map);
-
--       flash = do_map_probe("map_rom", &ebony_small_map);
-+       flash = do_map_probe("jedec_probe", &ebony_small_map);
-         if (flash) {
-                 flash->owner = THIS_MODULE;
-                 add_mtd_partitions(flash, ebony_small_partitions,
-@@ -125,7 +125,7 @@
-
-         simple_map_init(&ebony_large_map);
-
--       flash = do_map_probe("cfi_probe", &ebony_large_map);
-+       flash = do_map_probe("jedec_probe", &ebony_large_map);
-         if (flash) {
-                 flash->owner = THIS_MODULE;
-                 add_mtd_partitions(flash, ebony_large_partitions,
+-- 
+dwmw2
