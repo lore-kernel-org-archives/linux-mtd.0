@@ -1,21 +1,21 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
+Received: from dsl093-192-209.stl1.dsl.speakeasy.net ([66.93.192.209]
+	helo=newman.jbmsoft.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 196E32-0001hH-24
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 19:23:48 +0100
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
-	21 2002)) with SMTP id <0HDI000N4330TR@smtp-out.bhp.t-online.de> for
-	linux-mtd@lists.infradead.org; Thu, 17 Apr 2003 20:23:24 +0200 (MEST)
-Date: Thu, 17 Apr 2003 21:23:17 +0200
-From: Thomas Gleixner <tglx@linutronix.de>
-In-reply-to: <3E9EDF93.9070700@psilongbeach.com>
-To: crowe@psilongbeach.com, linux-mtd@lists.infradead.org
-Message-id: <200304172123.17395.tglx@linutronix.de>
-MIME-version: 1.0
-References: <3E9EDF93.9070700@psilongbeach.com>
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Subject: Re: CVS patch breaks zlib
-Reply-To: tglx@linutronix.de
+	id 196Elq-0001rS-TB
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2003 20:10:07 +0100
+Received: from brianpc (BriansPC.jbmsoft.com [192.10.10.21])
+	by newman.jbmsoft.com (Postfix) with SMTP id B883190306
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 17 Apr 2003 14:30:10 -0500 (CDT)
+Message-ID: <002001c30514$f78e78a0$150a0ac0@jbmsoft.com>
+From: "Brian T." <btuch@usa.net>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 17 Apr 2003 14:10:10 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: jffs2 compression question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 17 April 2003 19:08, crowe@psilongbeach.com wrote:
-> Hi I'm new to the list
-> I'm designing with the Altera EPXA10.
-> I got the CVS version of mtd and applied the patch
-> patchin.sh -c -j /home/crowe/aacSpva/linux-2.4.17_zlibBusted
->
-> Here is a snippit of what happened
-> make modules
-> ....
-> make[1]: Entering directory
-> `/home/crowe/aacSpva/linux-2.4.17_zlibBusted/lib' arm_920t_le-gcc
-> -D__KERNEL__ -I/home/crowe/aacSpva/linux-2.4.17_zlibBusted/include -Wall
-> -Wstrict-prototypes -Wno-trigraphs -O2  -fno-strict-aliasing -fno-common
-> -fno-common -pipe -g -mapcs-32 -march=armv4 -mtune=arm9tdmi
-> -mshort-load-bytes -msoft-float -DMODULE   -DEXPORT_SYMTAB -c zlib.c
-> zlib.c:72: `deflate' undeclared here (not in a function)
-> zlib.c:72: initializer element is not constant
-There is no file zlib.c in lib. At least it should be not there. Did you apply 
-any other patches , which modify lib directory ?
+Hi,
 
-MTD patchin.sh is know to work on vanilla kernels 2.4.17-2.4.20, ARM kernels 
-2.4.17-rmkx - 2.4.19-rmkx and PPC kernels 2.4.19 and 2.4.20.
+I have jffs2 running on a 2.4.20 kernel custom Embedded box with 16MB ROM
+(Intel flash) and 32MB RAM.  The file system is about 52% full, and has
+about 22MB of free RAM.  When I copy 4 ~1.6MB programs over to the ROMFS I
+loose about 3MB of space with compression.  The system however also uses
+another ~3MB RAM once the files are done being copied.  My question is, when
+does (if ever) that 3MB RAM get freed up?  If I delete the files I just
+copied, the RAM appears to be freed up.   If I reboot the unit, the RAM gets
+reset back to the original 22MB RAM free.
 
--- 
-Thomas
-________________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+Thanks for any insite.
+
+-Brian
