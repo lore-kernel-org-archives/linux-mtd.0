@@ -1,16 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-In-Reply-To: <Pine.LNX.4.61.0501101703110.22288@localhost.localdomain>
-References: <Pine.LNX.4.61.0501101246150.20261@localhost.localdomain>
-	<1105380565.17584.4.camel@weaponx.rchland.ibm.com>
-	<Pine.LNX.4.61.0501101703110.22288@localhost.localdomain>
-Content-Type: text/plain
-Date: Mon, 10 Jan 2005 22:21:12 +0000
-Message-Id: <1105395672.15749.45.camel@baythorne.infradead.org>
-Mime-Version: 1.0
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CoHLk-000752-Vk
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2005 03:26:02 -0500
+Message-ID: <41E38DCD.4080606@inf.u-szeged.hu>
+Date: Tue, 11 Jan 2005 09:26:53 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+References: <20040113125031.GA5146@angel.research.nokia.com>	<41DAAF79.8020401@imc-berlin.de>	<41DBC52E.9020500@yandex.ru>	<41DBCB29.1090205@inf.u-szeged.hu>	<41DBCE80.9040408@imc-berlin.de>
+	<41DBD356.4080603@yandex.ru> <41E29BE6.1020601@imc-berlin.de>
+In-Reply-To: <41E29BE6.1020601@imc-berlin.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: how to loopback mount a JFFS2 filesystem on my linux box?
+Cc: MTD List <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-01-10 at 17:10 -0500, Robert P. J. Day wrote:
-> 
->   is there something here i need to know about?  is there any reason i
-> can't just build a JFFS2 filesystem on my linux host, copy it byte for
-> byte to the unit, and mount it there?
+Hi Steven,
 
-None. As long as the erasesize and total size of the two devices match,
-you can happily move your file system between them.
+> As I wrote in another thread the summary patch reduced the mount time 
+> from 6 seconds to less than 1 second on my embedded ARM9 system with 8MB 
+> NAND flash.
+> But now GC still slows down the start up of user applications as it 
+> checks all CRCs right after booting.
 
--- 
-dwmw2
+>> If we change
+>> the patch a bit (asking not to check any CRC in the block has summary) 
+>> we may
+>> have better mount speed (and iget()). And possibly in case of nor we 
+>> even doesn't
+>> need to store any data in summary - only header. Header will show us 
+>> that the block
+>> was successfully written (no unclean reboots) and we my trust it and 
+>> do not check CRC.
+
+If I am right CRCs are not only against the effect of unclean reboots 
+but also to handle flash errors. On NAND flashes the ECC handles this 
+problem but NOR doesn't have any error detection system.
+
+> Ferenc, what do you think about that?
+> No need to check CRC if we have a summary, right?
+
+Give us some days to invetigate it more deeply. I think we will be able 
+to imrove the summary patch in some way.
+
+Bye,
+Ferenc
