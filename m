@@ -1,43 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 137MSQ-00070s-00
-	for mtd-list@infradead.org; Wed, 28 Jun 2000 19:21:06 +0100
-Date: Wed, 28 Jun 2000 14:20:53 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
+	id 137MxA-000777-00
+	for mtd-list@infradead.org; Wed, 28 Jun 2000 19:52:52 +0100
+Date: Wed, 28 Jun 2000 19:54:46 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Nicolas Pitre <nico@cam.org>
 cc: Jason Gunthorpe <jgg@ualberta.ca>, Bjorn Wesen <bjorn.wesen@axis.com>,
-        jffs-dev@axis.com, mtd@infradead.org
+    jffs-dev@axis.com, mtd@infradead.org
 Subject: Re: garbage collect 
-In-Reply-To: <13130.962208311@cygnus.co.uk>
-Message-ID: <Pine.LNX.4.10.10006281416260.10194-100000@xanadu.vip.ca>
+In-Reply-To: <Pine.LNX.4.10.10006281416260.10194-100000@xanadu.vip.ca>
+Message-ID: <Pine.LNX.4.21.0006281950320.1463-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+On Wed, 28 Jun 2000, Nicolas Pitre wrote:
 
+> However it will byte you if you use the master device and partitioned
+> devices at the same time.  You'll end up with coherency problems in the
+> buffer cache.
 
-On Wed, 28 Jun 2000, David Woodhouse wrote:
+MTD devices are not even vaguely related to block devices, and don't go
+anywhere near the buffer cache.
 
-> 
-> jgg@ualberta.ca said:
-> >  Well, we don't have any partitioning ability in the MTD stuff yet.
-> 
-> Not difficult to add, at least the simple and ugly way.
-> 
-> For each 'partition' define a new MTD device, for which all the methods 
-> simply add an offset and pass control to the method for the 'original' MTD 
-> device.
-> 
-> Ugly, but simple and effective.
+As with block devices, though, using both the whole device and subsets of
+it simultaneously can lead to confusion. Dont Do That Then.
 
-However it will byte you if you use the master device and partitioned
-devices at the same time.  You'll end up with coherency problems in the
-buffer cache.
+-- 
+dwmw2
 
-
-
-Nicolas
 
 
 
