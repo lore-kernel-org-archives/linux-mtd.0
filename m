@@ -1,20 +1,16 @@
-Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
-	helo=xanadu.home)
+Received: from mailout.despammed.com ([65.112.71.29])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKfaz-0000xa-D1
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 12:15:22 -0400
-Date: Thu, 21 Oct 2004 12:15:12 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Scott Wood <scott@timesys.com>
-In-Reply-To: <20041021160427.GA26048@yoda.timesys>
-Message-ID: <Pine.LNX.4.61.0410211213040.26473@xanadu.home>
-References: <20041020233921.62536A00099@mail.murgatroid.com>
-	<Pine.LNX.4.61.0410202011020.26473@xanadu.home>
-	<20041021160427.GA26048@yoda.timesys>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Christopher Hoover <ch@murgatroid.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Interleave order while probing
+	id 1CKfye-0001EN-Az
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 12:39:49 -0400
+Received: from filter.despammed.com (filter.despammed.com [65.112.71.26])
+	by mailout.despammed.com (8.11.6+Sun/8.11.6) with SMTP id i9LGOGk29291
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Oct 2004 11:24:17 -0500 (CDT)
+Date: Thu, 21 Oct 2004 11:24:17 -0500 (CDT)
+Message-Id: <200410211624.i9LGOGk29291@mailout.despammed.com>
+From: bodhi@despammed.com
+To: linux-mtd@lists.infradead.org
+Subject: Howto write to flash from user space (II)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Oct 2004, Scott Wood wrote:
+I already read http://www.linux-mtd.infradead.org/
+but I found no useful informations
+How can I write directly into flash from an user space application ?
+I am using a SA1110 with 16MB StrataFlash.
+I tried using /dev/mem but I can only read and not write to flash.
+I do not have any /dev/mtd* device in my /dev , why ?
+Do I need to develop a driver ?
+Please help me, with at least a useful link or better a sample.
+TIA
 
-> > Not in query mode though.
-> 
-> But if you've guessed the wrong interleave, you could be seeing some
-> non-query-mode data for the chips that didn't get the query command.
-
-True.
-
-Like you said, the flash could then be asked to go into status mode, 
-which is sure not to have "qry" anywhere.
-
-
-Nicolas
+(sorry for the broken thread, I've lost the original message)
