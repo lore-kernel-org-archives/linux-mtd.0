@@ -1,14 +1,15 @@
-Received: from web40506.mail.yahoo.com ([66.218.78.123])
+Received: from web13609.mail.yahoo.com ([216.136.174.9])
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17yYxT-0005px-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Oct 2002 15:34:08 +0100
-Message-ID: <20021007143335.5602.qmail@web40506.mail.yahoo.com>
-Date: Mon, 7 Oct 2002 07:33:35 -0700 (PDT)
-From: Sanjay Kumar <sankumar73@yahoo.com>
-Subject: MTD access from user space problem
+	id 17youE-0007CX-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2002 08:35:51 +0100
+Message-ID: <20021008073548.75678.qmail@web13609.mail.yahoo.com>
+Date: Tue, 8 Oct 2002 09:35:48 +0200 (CEST)
+From: =?iso-8859-1?q?Carlos=20Mateo?= <otepas@yahoo.es>
+Subject: Booting from DOC2000
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,24 +22,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
+I have a DOC2000 working with the latest CVS version
+of MTD.
+If I use lilo in a hard disk I can load the kernel and
+the root fs from the DOC, but if I try to boot
+directly from the DOC, Lilo hangs:
+L 40 40 40 40 ......
 
-On our Linux 2.4.2 board, we are using a 3.8 MB JFFS2 and 0.2 MB raw partition on flash.
-For accessing the raw partition we are opening the MTD device and issuing write() and
-ioctls() for erasing from user space. The problem is under stress i.e when lots of 
-writes are hapenning in both the JFFS2 and raw partition; we get the following problem:
+Any hints?
+Should I use Grub instead of lilo?  If so, is there a
+Grub with DOC Howto?
 
-Last[2] is ffff, datum is 1962
-Error writing new dnode : -5
+Thank you
+--
+Carlos Mateo
+cmateo@indra.es
 
-Are there any restrictions in using MTD from the user space simultanesouly while JFFS2
-is using it from the kernel space? We understand that this Linux kernel has the preliminary
-JFFS2; if this is JFFS2 problem will it be resolved if we move to newer kernel?(we
-have in mind 2.4.18)
-
-Thanks
-Sanjay
-
-__________________________________________________
-Do you Yahoo!?
-Faith Hill - Exclusive Performances, Videos & More
-http://faith.yahoo.com
+_______________________________________________________________
+Yahoo! Messenger
+Nueva versión: Webcam, voz, y mucho más ¡Gratis! 
+Descárgalo ya desde http://messenger.yahoo.es
