@@ -1,22 +1,16 @@
-Received: from kukac.halom.u-szeged.hu ([160.114.44.1])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CRRlk-0007Uq-L3
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2004 03:54:29 -0500
-Received: from detonator.halminet.halom.u-szeged.hu ([10.0.0.2]
-	helo=mail.halom.u-szeged.hu)
-	by kukac.halom.u-szeged.hu with asmtp (TLS-1.0:RSA_ARCFOUR_SHA:16)
-	(Exim 4.34) id 1CRRlg-0001gG-BM
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2004 09:54:24 +0100
-Date: Tue, 09 Nov 2004 09:54:22 +0100
-From: "Kluba, Patrik" <pajko@halom.u-szeged.hu>
-To: linux-mtd@lists.infradead.org
-References: <20041109083203.11121.qmail@sina.com.tw>
-Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-2
+Received: from web52703.mail.yahoo.com ([206.190.39.154])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CRaHv-0008Rk-6a
+	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2004 13:00:18 -0500
+Message-ID: <20041109180010.96702.qmail@web52703.mail.yahoo.com>
+Date: Tue, 9 Nov 2004 10:00:10 -0800 (PST)
+From: Michael <xemc@yahoo.com>
+To: sam <sam.hsu@southpro.com.tw>
+In-Reply-To: <4190F0A5.80609@southpro.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <opsg6wcwrvwtryne@mail.halom.u-szeged.hu>
-In-Reply-To: <20041109083203.11121.qmail@sina.com.tw>
-Subject: Re: combine 2 mtds into a single mtd device?
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 root filesystem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +21,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi!
 
-Look at drivers/mtdconcat.c. This implements a device concatenation layer.
-Every function is included to handle multiple MTD devices as a virtual
-one. The virtual device must be created with the exported
-mtd_concat_create function, and must be destroyed with the
-mtd_concat_destroy after use. This function does not register devices, you
-should write a module which calls mtd_concat_create with proper parameters
-and registers the newly created device.
-For example, drivers/mtd/maps/dilnetpc.c is a good starting point.
+> FAT: bogus logical sector size 5349
 
---
-pajko
+This is wierd.  I wonder if it's trying to mount it as a FAT
+filesystem first.  Most people usually include 'rootfstype=jffs2'
+in the command line.
 
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at
+> 0x00000000:
+> 0x0016 instead
 
-On Tue, 09 Nov 2004 16:32:02 +0800, <mjabe@sina.com.tw> wrote:
+I think there's mention of this in the mailing list.  Can you try
+searching the archives and see what this indicates?
 
-> The follow is my MTD partition:
->
-> How to combine MTD1 and MTD2 into a single mtd device?
+> Freeing init memory: 64K
+> Warning: unable to open an initial console.
+> Kernel panic: No init found. Try passing init= option to kernel.
+> ..................
+
+> why can't i use mtd as my root disk
+
+It looks like you ARE using MTD for your root disk.  I usually get
+this "unable to open an initial console" warning / error when the
+device file /dev/console doesn't exist.  Perhaps the above error is
+messing up the root filesystem.
+
+BTW, have you tried booting off a ramdisk and manually mounting
+that partition?  That should clear up most of the issues that you'd
+run into, but it's much easier to debug.
+
+I hope this makes sense and that it helps.
+
+Mike
