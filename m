@@ -1,17 +1,14 @@
-Received: from outmail1.freedom2surf.net ([194.106.33.237]
-	helo=outmail.freedom2surf.net)
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BzPAX-0004Xv-18
-	for linux-mtd@lists.infradead.org; Mon, 23 Aug 2004 20:28:10 -0400
-Date: Tue, 24 Aug 2004 01:28:06 +0100
-From: Ian Molton <spyro@f2s.com>
+Received: from web52204.mail.yahoo.com ([206.190.39.86])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1Bza7I-00061s-JA
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2004 08:09:36 -0400
+Message-ID: <20040824120929.1377.qmail@web52204.mail.yahoo.com>
+Date: Tue, 24 Aug 2004 05:09:29 -0700 (PDT)
+From: Ed Co <edityacomm_knb@yahoo.com>
 To: linux-mtd@lists.infradead.org
-Message-Id: <20040824012806.365a3781.spyro@f2s.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Multipart=_Tue__24_Aug_2004_01_28_06_+0100_7ur3xl0Wl47kXOIK"
-Cc: tglx@linutronix.de
-Subject: [PATCH] provide overrideable read_id()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: Bottom halves being disabled
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,90 +18,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Hi All,
 
---Multipart=_Tue__24_Aug_2004_01_28_06_+0100_7ur3xl0Wl47kXOIK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In the NOR driver code, the spin locks are acquired
+everywhere with bottom halves disabled using the
+spin_lock_bh() API. My doubt is why are the bottom
+halves disabled? (Doesn't that add to the real time
+latency on the system!)
 
-Hi.
+Hoping someone would clear the doubt
 
-Heres the patch(es) to allow read_id to be overridden. makes the code a
-tad clearer too IMO. Default behaviour is preserved.
+Ed
 
-This supports the new TC6393XB Smartmedia driver.
 
---Multipart=_Tue__24_Aug_2004_01_28_06_+0100_7ur3xl0Wl47kXOIK
-Content-Type: application/octet-stream;
- name="include.diff"
-Content-Disposition: attachment;
- filename="include.diff"
-Content-Transfer-Encoding: base64
-
-LS0tIGluY2x1ZGUvbGludXgvbXRkL25hbmQuaAkyMDA0LTA3LTA3IDIzOjAwOjI2LjAwMDAwMDAw
-MCArMDEwMAorKysgL2hvbWUvaWFuL3Byb2plY3RzL2U3NDAvbGludXgxL2xpbnV4L2tlcm5lbDI2
-L2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAkyMDA0LTA4LTIwIDE3OjA4OjAwLjQwOTMxOTE3MSAr
-MDEwMApAQCAtMjgxLDYgKzI4MSw3IEBACiAJdm9pZAkJKCpyZWFkX2J1Zikoc3RydWN0IG10ZF9p
-bmZvICptdGQsIHVfY2hhciAqYnVmLCBpbnQgbGVuKTsKIAlpbnQJCSgqdmVyaWZ5X2J1Zikoc3Ry
-dWN0IG10ZF9pbmZvICptdGQsIGNvbnN0IHVfY2hhciAqYnVmLCBpbnQgbGVuKTsKIAl2b2lkCQko
-KnNlbGVjdF9jaGlwKShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IGNoaXApOworCXZvaWQJCSgq
-cmVhZF9pZCkoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCAqbWFmX2lkLCBpbnQgKmRldl9pZCk7
-CiAJaW50CQkoKmJsb2NrX2JhZCkoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBvZnMsIGlu
-dCBnZXRjaGlwKTsKIAlpbnQJCSgqYmxvY2tfbWFya2JhZCkoc3RydWN0IG10ZF9pbmZvICptdGQs
-IGxvZmZfdCBvZnMpOwogCXZvaWQgCQkoKmh3Y29udHJvbCkoc3RydWN0IG10ZF9pbmZvICptdGQs
-IGludCBjbWQpOwo=
-
---Multipart=_Tue__24_Aug_2004_01_28_06_+0100_7ur3xl0Wl47kXOIK
-Content-Type: application/octet-stream;
- name="driver.diff"
-Content-Disposition: attachment;
- filename="driver.diff"
-Content-Transfer-Encoding: base64
-
-LS0tIGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMJMjAwNC0wOC0wOSAyMzowMDoxOC4wMDAw
-MDAwMDAgKzAxMDAKKysrIC9ob21lL2lhbi9wcm9qZWN0cy9lNzQwL2xpbnV4MS9saW51eC9rZXJu
-ZWwyNi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCTIwMDQtMDgtMjQgMDA6Mjk6NDQuMDAw
-MDAwMDAwICswMTAwCkBAIC0zNyw3ICszNyw3IEBACiAgKglUaGUgQUctQU5EIGNoaXBzIGhhdmUg
-bmljZSBmZWF0dXJlcyBmb3Igc3BlZWQgaW1wcm92ZW1lbnQsCiAgKgl3aGljaCBhcmUgbm90IHN1
-cHBvcnRlZCB5ZXQuIFJlYWQgLyBwcm9ncmFtIDQgcGFnZXMgaW4gb25lIGdvLgogICoKLSAqICRJ
-ZDogbmFuZF9iYXNlLmMsdiAxLjExNSAyMDA0LzA4LzA5IDEzOjE5OjQ1IGR3bXcyIEV4cCAkCisg
-KiAkSWQ6IG5hbmRfYmFzZS5jLHYgMS4zIDIwMDQvMDgvMjMgMjM6Mjk6NDQgc3B5cm8gRXhwICQK
-ICAqCiAgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
-dGUgaXQgYW5kL29yIG1vZGlmeQogICogaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
-ZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIgYXMKQEAgLTE2NCw2ICsxNjQsMjUgQEAKIAly
-ZXR1cm4gcmVhZGIodGhpcy0+SU9fQUREUl9SKTsKIH0KIAorLyoKKyAqIG5hbmRfcmVhZF9pZCAt
-IFtERUZBVUxUXSByZWFkIHRoZSBtYW51ZmFjdHVyZXIgYW5kIGNoaXAgSURzCisgKiBAbXRkOiAg
-ICAgICAgTVREIGRldmljZSBzdHJ1Y3R1cmUKKyAqIEBtYWZfaWQ6CXBvaW50ZXIgdG8gaW50IHRv
-IHN0b3JlIG1hZi4gaWQgaW4KKyAqIEBkZXZfaWQ6CXBvaW50ZXIgdG8gaW50IHRvIHN0b3JlIGRl
-dmljZSBpZCBpbi4KKyAqCisgKi8KK3N0YXRpYyB2b2lkIG5hbmRfcmVhZF9pZChzdHJ1Y3QgbXRk
-X2luZm8gKm10ZCwgaW50ICptYWZfaWQsIGludCAqZGV2X2lkKQoreworCXN0cnVjdCBuYW5kX2No
-aXAgKnRoaXMgPSBtdGQtPnByaXY7CisKKwkvKiBTZW5kIHRoZSBjb21tYW5kIGZvciByZWFkaW5n
-IGRldmljZSBJRCAqLworCXRoaXMtPmNtZGZ1bmMgKG10ZCwgTkFORF9DTURfUkVBRElELCAweDAw
-LCAtMSk7CisKKwkvKiBSZWFkIG1hbnVmYWN0dXJlciBhbmQgZGV2aWNlIElEcyAqLworCSptYWZf
-aWQgPSB0aGlzLT5yZWFkX2J5dGUobXRkKTsKKwkqZGV2X2lkID0gdGhpcy0+cmVhZF9ieXRlKG10
-ZCk7Cit9CisKIC8qKgogICogbmFuZF93cml0ZV9ieXRlIC0gW0RFRkFVTFRdIHdyaXRlIG9uZSBi
-eXRlIHRvIHRoZSBjaGlwCiAgKiBAbXRkOglNVEQgZGV2aWNlIHN0cnVjdHVyZQpAQCAtMjIzNSw2
-ICsyMjU0LDggQEAKIAogCWlmICghdGhpcy0+c2VsZWN0X2NoaXApCiAJCXRoaXMtPnNlbGVjdF9j
-aGlwID0gbmFuZF9zZWxlY3RfY2hpcDsKKwlpZiAoIXRoaXMtPnJlYWRfaWQpCisJCXRoaXMtPnJl
-YWRfaWQgPSBuYW5kX3JlYWRfaWQ7CiAJaWYgKCF0aGlzLT53cml0ZV9ieXRlKQogCQl0aGlzLT53
-cml0ZV9ieXRlID0gYnVzdyA/IG5hbmRfd3JpdGVfYnl0ZTE2IDogbmFuZF93cml0ZV9ieXRlOwog
-CWlmICghdGhpcy0+cmVhZF9ieXRlKQpAQCAtMjI1OSwxMiArMjI4MCw4IEBACiAJLyogU2VsZWN0
-IHRoZSBkZXZpY2UgKi8KIAl0aGlzLT5zZWxlY3RfY2hpcChtdGQsIDApOwogCi0JLyogU2VuZCB0
-aGUgY29tbWFuZCBmb3IgcmVhZGluZyBkZXZpY2UgSUQgKi8KLQl0aGlzLT5jbWRmdW5jIChtdGQs
-IE5BTkRfQ01EX1JFQURJRCwgMHgwMCwgLTEpOwotCi0JLyogUmVhZCBtYW51ZmFjdHVyZXIgYW5k
-IGRldmljZSBJRHMgKi8KLQluYW5kX21hZl9pZCA9IHRoaXMtPnJlYWRfYnl0ZShtdGQpOwotCW5h
-bmRfZGV2X2lkID0gdGhpcy0+cmVhZF9ieXRlKG10ZCk7CisJLyogUmVhZCBkZXZpY2UgSUQgKi8K
-Kwl0aGlzLT5yZWFkX2lkKG10ZCwgJm5hbmRfbWFmX2lkLCAmbmFuZF9kZXZfaWQpOwogCiAJLyog
-UHJpbnQgYW5kIHN0b3JlIGZsYXNoIGRldmljZSBpbmZvcm1hdGlvbiAqLwogCWZvciAoaSA9IDA7
-IG5hbmRfZmxhc2hfaWRzW2ldLm5hbWUgIT0gTlVMTDsgaSsrKSB7CkBAIC0yMzY1LDE0ICsyMzgy
-LDExIEBACiAJfQogCiAJZm9yIChpPTE7IGkgPCBtYXhjaGlwczsgaSsrKSB7CisJCWludCBtYWZf
-aWQsIGRldl9pZDsKIAkJdGhpcy0+c2VsZWN0X2NoaXAobXRkLCBpKTsKKwkJdGhpcy0+cmVhZF9p
-ZChtdGQsICZtYWZfaWQsICZkZXZfaWQpOwogCi0JCS8qIFNlbmQgdGhlIGNvbW1hbmQgZm9yIHJl
-YWRpbmcgZGV2aWNlIElEICovCi0JCXRoaXMtPmNtZGZ1bmMgKG10ZCwgTkFORF9DTURfUkVBRElE
-LCAweDAwLCAtMSk7Ci0KLQkJLyogUmVhZCBtYW51ZmFjdHVyZXIgYW5kIGRldmljZSBJRHMgKi8K
-LQkJaWYgKG5hbmRfbWFmX2lkICE9IHRoaXMtPnJlYWRfYnl0ZShtdGQpIHx8Ci0JCSAgICBuYW5k
-X2Rldl9pZCAhPSB0aGlzLT5yZWFkX2J5dGUobXRkKSkKKwkJaWYgKG5hbmRfbWFmX2lkICE9IG1h
-Zl9pZCB8fCBuYW5kX2Rldl9pZCAhPSBuYW5kX2Rldl9pZCkKIAkJCWJyZWFrOwogCX0KIAlpZiAo
-aSA+IDEpCg==
-
---Multipart=_Tue__24_Aug_2004_01_28_06_+0100_7ur3xl0Wl47kXOIK--
+		
+_______________________________
+Do you Yahoo!?
+Win 1 of 4,000 free domain names from Yahoo! Enter now.
+http://promotions.yahoo.com/goldrush
