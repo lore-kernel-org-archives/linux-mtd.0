@@ -1,17 +1,19 @@
-Received: from northgate.starhub.net.sg ([203.117.1.53])
+Received: from chrudim.coprosys.cz ([194.108.73.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 177wce-0001ln-00
-	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 12:07:09 +0100
-Message-ID: <XFMail.20020515191030.hosler@lugs.org.sg>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+	id 177y2S-0001rR-00
+	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 13:37:52 +0100
+Received: from wolfhill.cz (user@ales.coprosys.cz [192.168.1.97])
+	by chrudim.coprosys.cz (8.9.3/8.9.3) with ESMTP id OAA04358
+	for <linux-mtd@lists.infradead.org>; Wed, 15 May 2002 14:37:49 +0200
+Message-ID: <3CE256AD.1BF84F1C@wolfhill.cz>
+Date: Wed, 15 May 2002 14:38:05 +0200
+From: Ales Makarov <ales.makarov@wolfhill.cz>
+Reply-To: ales.makarov@wolfhill.cz
 MIME-Version: 1.0
-Date: Wed, 15 May 2002 19:10:30 +0800 (SGT)
-Reply-To: Greg Hosler <hosler@lugs.org.sg>
-From: Greg Hosler <hosler@lugs.org.sg>
-To: linux-mtd@lists.infradead.org
-Subject: FAQ / Howto
-Cc: (me) <greg@lugs.org.sg>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: MTD+JFFS2 on DragonBall VZ
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,36 +27,12 @@ List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
 
-recently came across MTD. I have a DoC 2000 (quite a few, actually, but that's
-another story :)
+I've got MTD+JFFS2 running on our board with Motorola DragonBall 68VZ328
+CPU. We use CFI (or JEDEC) flashes (AMD/Fujitsu type: 29LV160, 29LV320).
+I use cfi_probe (or modified jedec_probe) and physmap.c.
 
-I'm interested to learn about using teh DoC under Linux, and have been actively
-catching up in the archives.
+Till now I needed MTD with only one chip. But I want use MTD also on the
+second chip (with partitioning). Do I have to write my own mapper for
+our board?
 
-I note, that aside from David's mtd-jffs-HOWTO, and NAND Flash document on his
-website, there is not a real FAQ / HOWTO available.
-
-so ...
-
-In the process of my trying and learning, I'm going to document what I have to
-do/learn/use/etc, and this will be the start of a HOWTO. Even though I've gone
-thru the MTD archives, and the above documents, I still have some questions,
-which will later be posted here. I'm thinking that I might as well write a FAQ
-in conjunction with the HOWTO.
-
-so... The purpose of this mail is to solicit Q's to put into the FAQ. I'll
-organize the Q's, and that will be the basis of the FAQ. From there, I start
-grepping the A's from the archives, and see what I can come up w/.
-
-You can either post to the list, or mail me privately.
-
-thx, and best rgds,
-
--Greg
-
-+---------------------------------------------------------------------+
-   You can release software that's good, software that's inexpensive, or
-   software that's available on time.  You can usually release software
-   that has 2 of these 3 attributes -- but not all 3.
-| Greg Hosler                                   hosler@lugs.org.sg    |
-+---------------------------------------------------------------------+
+Ales
