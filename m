@@ -1,50 +1,34 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14IeKU-0003iP-00
-	for mtd-list@infradead.org; Tue, 16 Jan 2001 22:11:50 +0000
-Received: from amdext2.amd.com ([163.181.251.1])
+	id 14IvWU-000092-00
+	for mtd-list@infradead.org; Wed, 17 Jan 2001 16:33:22 +0000
+Received: from mclean.mail.mindspring.net ([207.69.200.57])
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14IeKT-0003iJ-00
-	for mtd@infradead.org; Tue, 16 Jan 2001 22:11:49 +0000
-Received: from odyssey.amd.com (odyssey.amd.com [163.181.250.8])
-	by amdext2.amd.com (8.9.3/8.9.3/AMD) with SMTP id QAA21115
-	for <mtd@infradead.org>; Tue, 16 Jan 2001 16:11:09 -0600 (CST)
-From: mark.langsdorf@amd.com
-Received: from txexmta8.amd.com (txexmta8.amd.com [163.181.3.118]) by
- amdint2.amd.com (8.9.3/8.9.3/AMD) with ESMTP id QAA03138 for
- <mtd@infradead.org>; Tue, 16 Jan 2001 16:11:08 -0600 (CST)
-Message-ID: <0FA1031B65A9D111960900805F9FA8E103B9F285@txexmta8.amd.com>
-To: mtd@infradead.org
-Subject: 101% in use?
-Date: Tue, 16 Jan 2001 16:11:07 -0600
+	id 14IvWS-00008w-00
+	for mtd@infradead.org; Wed, 17 Jan 2001 16:33:20 +0000
+Received: from nexus-tech.net (pool-63.52.9.240.atln.grid.net [63.52.9.240])
+	by mclean.mail.mindspring.net (8.9.3/8.8.5) with ESMTP id LAA30046
+	for <mtd@infradead.org>; Wed, 17 Jan 2001 11:33:03 -0500 (EST)
+Message-ID: <3A65C7E4.FF2BC9D1@nexus-tech.net>
+Date: Wed, 17 Jan 2001 11:27:16 -0500
+From: Kyle Harris <kharris@nexus-tech.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=iso-8859-1
+To: mtd <mtd@infradead.org>
+Subject: Newbie: archives and legal issues
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've finally gotten my flash system 95% working, and now I'm
-performing some stress tests to make sure that everything is
-good.
+Hi,
 
-The partition size is 14.5 megs, give or take a bit, and
-I have a very large directly (around 2.7 megs) that I'm
-repeatedly copying onto the disk and deleting.  At one
-point, I got my italicization (according to df) up to 
-101%, with a negative number of free blocks.  Is this bad?
+Is there a searchable mail archive?
 
-After I deleted the most recent copy of the directory,
-utilization dropped to 100%, with 44 blocks free.  
-Shouldn't the GC be kicking in and getting rid of the
-rest of the dirty space?  It's stayed at 44 blocks for
-quite some time.
+I'm sure this question has probably been beat to death. So, if there is
+someplace I can look for discussion, please let me know. Is it legal to
+use the FTL and/or NFTL on custom hardware (i.e., not M-System devices)?
 
-Mark Langsdorf
-Advanced Micro Devices, Inc             Tel: 512.602.3756
-5204 E. Ben White Blvd. M/S 590         Fax: 512.602.5051
-Austin, TX 78741                        mark.langsdorf@amd.com
-
+Thanks, Kyle.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
