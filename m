@@ -1,36 +1,27 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12egfV-0007Yl-00
-	for mtd-list@infradead.org; Mon, 10 Apr 2000 17:04:05 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12egfU-0007Yf-00
-	for mtd@infradead.org; Mon, 10 Apr 2000 17:04:04 +0100
+	id 12egng-0007Zu-00
+	for mtd-list@infradead.org; Mon, 10 Apr 2000 17:12:32 +0100
+Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
+	id 12egnf-0007Zn-00
+	for cvs-notify@infradead.org; Mon, 10 Apr 2000 17:12:31 +0100
+To: cvs-notify@infradead.org
+Subject: MTD CVS update: 'mtd/html index.html'
+Message-Id: <E12egnf-0007Zn-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <38F1F693.58571537@tsai.es> 
-References: <38F1F693.58571537@tsai.es> 
-To: Rodrigo Moya <rmoya@tsai.es>
-Cc: mtd@infradead.org
-Subject: Re: subscribe mtd 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 10 Apr 2000 17:06:46 +0100
-Message-ID: <14900.955382806@devel2.axiom.internal>
+Date: Mon, 10 Apr 2000 17:12:31 +0100
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Update of /home/cvs/mtd/html
+In directory infradead.org:/tmp/cvs-serv29107
 
-You need to send that instruction to majordomo@infradead.org, not to the 
-list itself.
-
-Argh. At one point I had configured majordomo to reject messages like this, 
-but I found that it was rejecting _all_ mails which had the s-word anywhere 
-in them, so I had to change it. Isn't there a sensible middle ground?
-
---
-dwmw2
-
+Modified Files:
+	index.html 
+Log Message:
+Change the subscription instructions to be even more explicit than
+they already were. Include a mailto: URL just in case that isn't explicit
+enough.
 
 
 
