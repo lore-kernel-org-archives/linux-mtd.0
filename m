@@ -1,17 +1,31 @@
-Received: from ns5a.townisp.com ([216.195.0.139] helo=ns5.townisp.com)
+Received: from gw1.its.umd.umich.edu ([141.215.69.136])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BAvcT-0004MF-J1
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2004 19:48:21 +0100
-Date: Tue, 6 Apr 2004 14:48:16 -0400 (EDT)
-From: Jamie Guinan <guinan@bluebutton.com>
-To: Thayne Harbaugh <tharbaugh@lnxi.com>
-In-Reply-To: <1081193953.4799.185.camel@tubarao>
-Message-ID: <Pine.LNX.4.44.0404061438150.7366-100000@gemini.home.net>
+	id 1BB1dX-0005Bh-W4
+	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2004 02:13:52 +0100
+Received: from merc.its.umd.umich.edu (merc.its.umd.umich.edu [141.215.69.17])
+	by gw1.its.umd.umich.edu (Postfix) with ESMTP id 9833E38924
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  6 Apr 2004 21:13:49 -0400 (EDT)
+Received: from honor.its.umd.umich.edu
+          (merchonor.its.umd.umich.edu [141.215.136.66])
+          by merc.its.umd.umich.edu (Netscape Messaging Server 3.6)
+           with ESMTP id AAA1F78 for <linux-mtd@lists.infradead.org>;
+          Tue, 6 Apr 2004 21:13:48 -0400
+Received: from umd.umich.edu (cpe-069-133-085-216.twmi.rr.com [69.133.85.216])
+	by honor.its.umd.umich.edu (Postfix) with ESMTP id 93FAF1343A
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  6 Apr 2004 21:13:47 -0400 (EDT)
+Message-ID: <407355CB.8000602@umd.umich.edu>
+Date: Tue, 06 Apr 2004 21:13:47 -0400
+From: Jon Schlueter <jonschl@umd.umich.edu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-cc: linux-mtd@lists.infradead.org
-Subject: Re: SST 39VF1601
-Reply-To: Jamie Guinan <guinan@bluebutton.com>
+To: linux-mtd@lists.infradead.org
+References: <Pine.LNX.4.44.0404041514100.12090-100000@kiire.colleduc.ee>
+	<200404041421.11425.tglx@linutronix.de>
+In-Reply-To: <200404041421.11425.tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: CVS compile errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +35,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5 Apr 2004, Thayne Harbaugh wrote:
 
-> > > >                   [2] = MTD_UADDR_UNNECESSARY,
-> > > >                 },
-> > > >                 .DevSize        = SIZE_128KiB,
-> > > >                 .CmdSet         = P_ID_AMD_STD,
-> > > >                 .NumEraseRegions= 1,
-> > > >                 .regions        = {
-> > > >                         ERASEINFO(0x01000,64),
-> > > 
-> > > Shouldn't this be ERASEINFO(0x00800, 64)?
-> > 
-> > The chip supports 2k sector or 32k block erase, so I think either of
-> > ERASEINFO(0x00800,1024) ERASEINFO(0x08000,64) or should work.
+
+Thomas Gleixner wrote:
+
+ >
+> I'm in the middle of an overhaul of nand stuff. I modified the id structure 
+> and forgot to adjust the doc stuff. I have a look into it
 > 
-> I might be particularly dense today (it's happened before 8^).  I just
-> re-read and the size is 2k words which is ERASEINFO(0x01000,512):
-> 
-> 0x01000 Bytes = 2**12 Bytes = 4 KiB
-> 4 KiB * 512 = 2 MiB = 16 Mib
-> -or-
-> 512 = 2**9
-> 2**12 Bytes * 2**9 = 2**21 = 2 MiB = 16 Mib
->
-> Shouldn't .DevSize be SIZE_2MiB?  Isn't the part 16 Mib = 2 MiB?
 
-Right on both counts there.  I was thinking the first arg of ERASEINFO was
-words not bytes, and I hadn't thought about .DevSize yet.
+Hello,
 
-So, I put in these changes, used "mkfs.jffs2 -e 8192 ..." to create a
-JFFS2 file system (4KiB x 2 = 8KiB), flashed that via JTAG, and I am now
-up and running just fine,
 
-  Probing "LPD7A400-10 Flash" at physical address 0x00000000
-  Search for id:(6a 8d) interleave(2) type(2)
-  Search for id:(bf 234b) interleave(2) type(2)
-  Found: SST 39VF1601
-  LPD7A400-10 Flash: Found 2 x16 devices at 0x0 in 32-bit mode
-  number of JEDEC chips: 1
+I think I found another missed update but I'm not sure.
 
-Btw, this is still jedec_probe.c v1.29.  I will try 1.45 later, and post a
-patch for this SST part against that version if I get it working.
 
-Thanks again for your help!
--Jamie
+I used CVS to pull down the whole mtd tree on 4-5-2004 after those 
+changes were posted.
+
+I used the automatic kernel patch script
+
+When I get the following error when I compile the kernel modules
+
+I am using the 2.4.25 kernel
+
+
+make -C devices modules
+make[3]: Entering directory `/usr/src/linux-2.4.25/drivers/mtd/devices'
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.25/include -Wall 
+-Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common 
+-fomit-frame-pointer -pipe -mpreferred-stack-boundary=2 -march=i486 
+-DMODULE  -nostdinc -iwithprefix include -DKBUILD_BASENAME=doc2000  -c 
+-o doc2000.o doc2000.c
+doc2000.c: In function `DoC_IdentChip':
+doc2000.c:415: structure has no member named `page256'
+doc2000.c: In function `DoC2k_init':
+doc2000.c:601: warning: assignment from incompatible pointer type
+doc2000.c:602: warning: assignment from incompatible pointer type
+doc2000.c: In function `doc_writev_ecc':
+doc2000.c:1026: warning: passing arg 7 of `doc_write_ecc' makes integer 
+from pointer without a cast
+make[3]: *** [doc2000.o] Error 1
+make[3]: Leaving directory `/usr/src/linux-2.4.25/drivers/mtd/devices'
+make[2]: *** [_modsubdir_devices] Error 2
+make[2]: Leaving directory `/usr/src/linux-2.4.25/drivers/mtd'
+make[1]: *** [_modsubdir_mtd] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.25/drivers'
+make: *** [_mod_drivers] Error 2
+
+
+
+CONFIG_MTD=y
+CONFIG_NFTL=m
+CONFIG_NFTL_RW=m
+CONFIG_INFTL=m
+CONFIG_MTD_DOC2000=m
+CONFIG_MTD_DOC2001=m
+CONFIG_MTD_DOC2001PLUS=m
+CONFIG_MTD_DOCPROBE=m
+CONFIG_MTD_NAND=y
+CONFIG_MTD_NAND_IDS=y
+
+
+
+Side Note:
+
+I haven't been able to determine exactly what I need to compile to 
+support my DiskOnChip  M02202-D256 chip with the 5.1.2 firmware from 
+M-Systems.  Am I on the right path to getting it working?
+
+
+Thanks,
+
+Jon Schlueter
