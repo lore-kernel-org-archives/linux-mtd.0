@@ -1,24 +1,18 @@
-Received: from mail1.cray.com ([136.162.0.111])
+Received: from mail2.celestica.com ([205.233.28.11] helo=celestica.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B6Zqf-0003XE-4I
-	for linux-mtd@lists.infradead.org; Thu, 25 Mar 2004 18:45:01 +0000
-Received: from relaya.us.cray.com (relaya.us.cray.com [192.168.252.144])
-	i2PIirFj007005	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Mar 2004 12:44:54 -0600 (CST)
-Received: from orchid.us.cray.com (orchid.us.cray.com [172.30.27.91])
-	i2PIiqUc011821	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Mar 2004 12:44:52 -0600 (CST)
-Received: from cray.com (troll [192.168.250.5])i2PIipTi4454784
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Mar 2004 12:44:52 -0600 (CST)
-Message-ID: <406328A2.3060905@cray.com>
-Date: Thu, 25 Mar 2004 12:44:50 -0600
-From: David Updegraff <dave@cray.com>
-MIME-Version: 1.0
+	id 1B6aCM-0003j2-1n
+	for linux-mtd@lists.infradead.org; Thu, 25 Mar 2004 19:07:26 +0000
+Received: from clsgw03.ca-chq.celestica.com (clsgw03.ca-chq.celestica.com
+	[10.34.8.67])
+	by celestica.com (8.11.6/8.9.3) with ESMTP id i2PJ7AS116900
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Mar 2004 14:07:10 -0500
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: nand oob layout assumptions
+Message-ID: <OF6499D9FD.A5006680-ON85256E62.00682789-85256E62.0068A11B@ca-chq.celestica.com>
+From: "Patrick Kam" <patkam@celestica.com>
+Date: Thu, 25 Mar 2004 14:02:49 -0500
+MIME-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: Unable to handle kernel paging request at virtualaddress80000013
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+Hi Eric, I run into the same problem as you had, but my system is much
+simplier.
 
-So I have a little ducttape-string-and-bailing wire driver here now that 
-deals with these newer bigger Samsung K9xxx chips; am hitting snags 
-around the declarations of oob areas.
+I've gone thru all the corespondings posted about this problem, but I don't
+see any clear answer or solutions. How do you get your problem solved?
 
-The ecc calcluations within the driver are easy to deal with, straightup 
-algorithm of ecc-space-needed = 3 * #-of-256byte chunks in the page.
+Would you like to help?
 
-But how to cope with that exposed oobinfo structure defn. in mtd.h that 
-declares the all the universe uses 6 bytes for ecc in oob?
+Thanks
 
-It seems we need the lo-level driver to declare (and allocate?) that 
-oobinfo struct, and while we're at breaking everything by doing so, add 
-a badblock_pos element to it, since these samsung chips mark badblocks 
-not at offset:5 but offset:0 in oob.
 
-I have no solution dreamed up yet on how to cope with the MEMSETOOBSEL
-ioctl, though.  Do you?
-
--dbu.
+Pat.
