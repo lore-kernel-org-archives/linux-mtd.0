@@ -1,18 +1,18 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14uydi-0007Oo-00
-	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:34:07 +0100
-Date: Wed, 2 May 2001 11:33:48 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: <linux-mtd@lists.infradead.org>, <ahennessy@mvista.com>, <ds@schleef.org>,
-        <jonas.holmberg@axis.com>, <cwryu@debian.org>, <eauth@softsys.co.at>
-Subject: Re: Flash driver probe/commandset separation.
-In-Reply-To: <26353.988569497@redhat.com>
-Message-ID: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 14uyl2-0007QJ-00
+	for <linux-mtd@lists.infradead.org>; Wed, 02 May 2001 16:41:40 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> 
+References: <Pine.LNX.4.33.0105021131120.1390-100000@xanadu.home> 
+To: Nicolas Pitre <nico@cam.org>
+Cc: linux-mtd@lists.infradead.org, ahennessy@mvista.com, ds@schleef.org,
+    jonas.holmberg@axis.com, cwryu@debian.org, eauth@softsys.co.at
+Subject: Re: Flash driver probe/commandset separation. 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 02 May 2001 16:39:45 +0100
+Message-ID: <5116.988817985@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,20 +24,22 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Sorry for the delay -- I was on vacation.
+nico@cam.org said:
+>  Personally I think it would be best to send the curent code to Linus
+> and resend another update eventually when the new stuff would have
+> been proven stable.
 
-On Sun, 29 Apr 2001, David Woodhouse wrote:
+> 	"release early, release often" 
 
-> Even assuming people agree (or disagree unconvincingly :), I'm not sure
-> whether I should hold off on this until after I've sync'd up with Linus, or
-> whether I should get this all done first and worry about feeding the new
-> code to Linus later on. Probably the latter.
+Yes, you're probably right.
 
-Personally I think it would be best to send the curent code to Linus and
-resend another update eventually when the new stuff would have been proven
-stable.
+TODO list then:
 
-	"release early, release often"
+	1. Make cfi_cmdset_000[12].c compile again :)
+	2. Fix the partition stuff as discussed, removing VIRTUAL_ER
+	3. Sanity check DiskOnChip and NFTL drivers. 
 
+Anything else?
 
-Nicolas
+--
+dwmw2
