@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D0gQV-0000rG-Ch
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 08:38:13 -0500
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
-In-Reply-To: <f6d0cd0605021404467195684f@mail.gmail.com>
-References: <f6d0cd0605021404467195684f@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 14 Feb 2005 16:37:39 +0300
-Message-Id: <1108388259.26412.11.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from bnet12.balasai.co.in ([203.199.134.122])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D0gcw-00016L-Ug
+	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2005 08:51:04 -0500
+Received: from sharmila (static61.11.119-121.dsl-pun.eth.net [61.11.119.121]
+	(may be forged)) (authenticated bits=0)
+	by bnet12.balasai.co.in (8.12.8/8.12.8) with ESMTP id j1EDoYJo014763
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Feb 2005 19:20:54 +0530
+Message-ID: <002101c5129d$fc311e10$046464c7@sharmila>
+From: "sharmila inamdar" <sharmilai@rapideffect.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Date: Mon, 14 Feb 2005 19:33:28 +0530
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-7"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Compilation of MTD Utils
-Reply-To: dedekind@infradead.org
+Subject: M-systems linux driver 5.1.4 and INFTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-02-14 at 18:16 +0530, Niraj Maheshwari wrote:
-> Hi,
-> 
-> I am trying to compile the MTD utils ( Specifically mkfs.jffs2  ) for
-> ARM-Linux platform. I am getting lot of errors while compiling this.
-> Does anyone already have mkfs.jffs2 executable for ARM-Linux platform
-> then pl. send it to me.
-> 
-> Or if you can help me how to do this compilation then it will be of
-> great help. I am getting following error. It's not able to find
-> deflate() etc functions.
-> 
-Looks like you need to link zlib library...
+We have recently received  128MB DOCs  (MD2202-D128). With the 5.1.4
+utilities it is clear that it is DOC2000 TSOP and is using INFTL.
 
-> arm-linux-gcc  -o mkfs.jffs2 crc32.o compr_rtime.o mkfs.jffs2.o
-> deftree.o deflate.o compr_zlib.o compr.o compr_lzari.o compr_lzo.o
-> -L./libz.so.1.1.4
-> compr_zlib.o(.text+0x34): In function `jffs2_zlib_compress':
-> /root/temp/mtd/util/compr_zlib.c:68: undefined reference to `deflateInit_'
-> compr_zlib.o(.text+0x98):/root/temp/mtd/util/compr_zlib.c:80:
-> undefined reference to `deflate'
-> compr_zlib.o(.text+0xe4):/root/temp/mtd/util/compr_zlib.c:88:
-> undefined reference to `deflate'
-> compr_zlib.o(.text+0xf4):/root/temp/mtd/util/compr_zlib.c:93:
-> undefined reference to `deflateEnd'
-> compr_zlib.o(.text+0x128):/root/temp/mtd/util/compr_zlib.c:82:
-> undefined reference to `deflateEnd'
-> compr_zlib.o(.text+0x158): In function `jffs2_zlib_decompress':
-> /root/temp/mtd/util/compr_zlib.c:113: undefined reference to `inflateInit_'
-> compr_zlib.o(.text+0x188):/root/temp/mtd/util/compr_zlib.c:124:
-> undefined reference to `inflate'
-> compr_zlib.o(.text+0x198):/root/temp/mtd/util/compr_zlib.c:127:
-> undefined reference to `inflateEnd'
-> collect2: ld returned 1 exit status
-> make: *** [mkfs.jffs2] Error 1
-> 
-> Thanks
-> Niraj
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>From the list I understand that the MTD driver will support these DOCs on
+kernel 2.6.x . But for certain time constraints, I have to use these DOCS on
+Linux ( Redhat 6.2,kernel v 2.2.14).   I want to format these DOCs and put
+file system on them.
+
+
+We have been using M-sys old DOCS ,which are NTFL based, on this setup with
+5.1.4 driver. But the same can not be utilized now.
+
+For formatting I followed the documented procedure. i.e.
+
+step-1 > formatted the DOC with DOS utilities and put the firmware
+doc514.exb with /empty and /nodsos flag
+
+step-2 -> in Linux, gave command fdisk /dev/msys/fla
+
+and it says device can not be read .
+
+
+
+
+What's wrong ?Does the M-sys driver (5.1.4) on Linux support these DOCs
+?does it support INFTL ?
+How do I go about this ?  I am not getting any sort of hint on this from
+M-sys site or other sources.
+
+..sharmila
