@@ -1,23 +1,23 @@
-Received: from clavin.cs.tamu.edu
-	([128.194.130.106] helo=cs.tamu.edu ident=0)
+Received: from [217.110.46.186] (helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19Q83v-00050q-B0
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:02:59 +0100
-Received: from unix.cs.tamu.edu (unix [128.194.138.13])
-	by cs.tamu.edu (8.11.0/8.11.0) with ESMTP id h5BG3Ug05434
+	id 19Q84M-00051E-5J
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 17:03:26 +0100
+Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
+	[10.0.0.13])h5BG3ULT001969
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2003 18:03:30 +0200
+Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id SAA22939
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
-Received: from localhost (choudhri@localhost)
-	by unix.cs.tamu.edu (8.10.2+Sun/8.10.2) with ESMTP id h5BG3Uf07951
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
-Date: Wed, 11 Jun 2003 11:03:30 -0500 (CDT)
-From: Siddharth Choudhuri <choudhri@cs.tamu.edu>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.GSO.4.44.0306111054540.7463-100000@unix.cs.tamu.edu>
+	Wed, 11 Jun 2003 18:03:59 +0200 (CEST)
+	(envelope-from steven.scholz@imc-berlin.de)
+Message-ID: <3EE752EE.8090902@imc-berlin.de>
+Date: Wed, 11 Jun 2003 18:03:58 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: jffs2 vs. ext3
+To: MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Stopping the GC thread?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi there,
 
-I am trying jffs2 and ext3 on a 3MB Intel NOR flash. I have a piece of
-code in function part_write (mtdpart.c) that outputs the size in bytes and pid
-of the process (current) sending write requests.
+in "JFFS - A pratical guide" 
+(http://www.embeddedlinuxworks.com/articles/jffs_guide.html) I read
 
-With ext3, no matter how many bytes are written (by an application/user
-level program), the part_write function always gets a request that is
-multiple of 128K (131072 bytes). This does not happen with jffs2 though.
-Also, with ext3, the process is always mtdblockd, whereas with jffs2 the
-process sending the request is the actual user/application process.
+"For completeness, I should mention that you can suspend and re-start 
+the GC thread on demand by sending it a signal. A SIGSTOP and a 
+SIGCONT can do that respectively."
 
-Any ideas why it happens ?
+I would like to be able to stop the garbage collection thread from 
+within my application when doing some time critical things.
+Is it safe to just do a
 
-thanks in advance,
--siddharth
+~ # kill -s SIGSTOP `pidof jffs2_gcd_mtd0`
 
-_____________________________________________________________________
-     Unix is user friendly - its just picky about its friends.
-_____________________________________________________________________
+even if my root fs is on this JFFS2 partition?
+
+(I just tried it now and it seems to work. But IIRC a while ago my 
+system hung when I did something like that...)
+
+
+Thanks,
+
+Steven
