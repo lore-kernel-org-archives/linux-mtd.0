@@ -1,16 +1,14 @@
-Received: from mailout05.sul.t-online.com ([194.25.134.82])
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CgmvM-0005i6-61
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2004 11:31:49 -0500
-From: stephanwib@t-online.de (Stephan Wiebusch)
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 21 Dec 2004 17:29:11 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+From: David Woodhouse <dwmw2@infradead.org>
+To: Stephan Wiebusch <stephanwib@t-online.de>
+In-Reply-To: <1Cgmuu-1zfbjU0@fwd08.sul.t-online.com>
+References: <1Cgmuu-1zfbjU0@fwd08.sul.t-online.com>
+Content-Type: text/plain
+Date: Tue, 21 Dec 2004 16:46:30 +0000
+Message-Id: <1103647590.6111.107.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-ID: <1Cgmuu-1zfbjU0@fwd08.sul.t-online.com>
-Subject: DOC2000 bootloader
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DOC2000 bootloader
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +18,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+On Tue, 2004-12-21 at 17:29 +0100, Stephan Wiebusch wrote:
+> 
+> Lilo is able to boot the Kernel, but it ends with: "Kernel panic - not
+> syncing. VFS: Unable to mount root on device "<NULL>" or
+> unknown-block(254,0)"
 
-I am not able to boot my Linux 2.6.9 Kernel from a 16MB DOC2000 device.
+You aren't giving a correct 'root=' argument to the kernel.
 
-I am not able to compile Grub. I already asked because of this, but there
-came no reply.
-
-Lilo is able to boot the Kernel, but it ends with: "Kernel panic - not
-syncing. VFS: Unable to mount root on device "<NULL>" or
-unknown-block(254,0)"
-
-The Kernel contains the new NAND DiskOnChip-driver and the ext2fs-driver as
-built-in.
-The Kernel and the root-fs seem to be OK, but it simply does not work :(
-
-My lilo.conf looks like this:
-
--------------------------------------
-boot=/dev/nftla
-compact
-install=/boot/boot.b
-disk=/dev/nftla
-	bios=0x80
-
-prompt
-delay=50
-timeout=20
-
-image=/boot/vmlinuz-2.6.9
-	label=LinuxSTB
-	root=/dev/nftla1
-------------------------------------
-
-Any ideas??
-
-I would like to test a precompiled grub_firmware with ext2 support.
-Can anybody send this to: stephanwib@t-online.de
-
-Thanks 
-Stephan
+-- 
+dwmw2
