@@ -1,14 +1,17 @@
-Received: from cindrpmx1.corp.harris.com ([137.237.241.23])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 161UjD-0001bD-00
-	for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2001 15:34:59 +0000
-Message-ID: <8D4C69676E66D511A1CB00508BBBB192157886@ranmx1.ran.harris.com>
-From: "Fend, Matthias" <mfend@harris.com>
-To: 'linux mtd' <linux-mtd@lists.infradead.org>
-Subject: doc 2000 unknown partition table
-Date: Wed, 7 Nov 2001 10:43:33 -0500 
+Received: from web20302.mail.yahoo.com ([216.136.226.83])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 161XAQ-0001pB-00
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2001 18:11:14 +0000
+Message-ID: <20011107182035.47243.qmail@web20302.mail.yahoo.com>
+Date: Wed, 7 Nov 2001 18:20:35 +0000 (GMT)
+From: =?iso-8859-1?q?David=20Mackay?= <monitoreurope@yahoo.co.uk>
+Subject: Re: JFFS 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <15946.1003874432@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,34 +23,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-hello im trying to use a DoC 2000 (16MB) on a MPC860 board running linux (2-4-4)
+ --- David Woodhouse <dwmw2@infradead.org> wrote: > 
+> monitoreurope@yahoo.co.uk said:
+> >  As we use /var for FIFO data storage on this
+> system (many 8-32K
+> > files) we need a reliable predictable free space
+> estimation in order
+> > to be able to maximise the number of stored files
+> before we delete to
+> > add new. Therefore a better understanding of the
+> inner workings of
+> > JFFS would be appreciated.
+> 
+> We make stuff up in jffs2_statfs(). You may be able
+> to improve it if you 
+> include c->erasing_size in the calculation of
+> 'avail', and you'll probably 
+> want to include the size of the blocks on the
+> erase_pending_list too.
 
-i did all the nftl-format stuff as advised in older messages / howtos 
+David,
 
+Is there a method by which we could call the garbage
+collection function on demand? I ask because our 1 meg
+partion mounted as /var will be quite static as we
+have a ram disk for transient info. Therfore we will
+probably only do a write every 1 hour or so. It would
+therfore pay us to link garbage collection with our
+FIFO clean up.
 
-but all i get is this ugly message
+David.
 
-<snip>
-
-Using configured DiskOnChip probe address 0x50000000
-DiskOnChip 2000 found at address 0x50000000
-Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba TH58V128DC)
-1 flash chips found. Total DiskOnChip size: 16 MiB
-mtd: Giving out device 0 to DiskOnChip 2000
-NFTL driver: nftlcore.c $Revision: 1.83 $, nftlmount.c $Revision: 1.23 $
-Partition check:
- nftla: unknown partition table
-
-<snap>
-
-also if i try toi use fdisk
-
-<snip>
-Calling ioctl() to re-read partition table.
- nftla: unknown partition table
-<snap>
-
-any ideas
-
-thx
-matthias
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
