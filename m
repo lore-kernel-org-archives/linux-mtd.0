@@ -1,19 +1,20 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from cs2875-45.austin.rr.com ([24.28.75.45] helo=localhost.localdomain)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 14w4FF-0004Tc-00
-	for <linux-mtd@lists.infradead.org>; Sat, 05 May 2001 16:45:21 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0105051113080.15370-100000@xanadu.home> 
-References: <Pine.LNX.4.33.0105051113080.15370-100000@xanadu.home> 
-To: Nicolas Pitre <nico@cam.org>
-Cc: Alice Hennessy <ahennessy@mvista.com>,
-    "Fry,
-    Dan" <dfry@bb.directv.com>, linux-mtd@lists.infradead.org
-Subject: Re: Improper Command Sequence 
-Mime-Version: 1.0
+	id 14wTjL-0007Fj-00
+	for <linux-mtd@lists.infradead.org>; Sun, 06 May 2001 19:58:07 +0100
+Received: from troche.org (IDENT:root@matrix [127.0.0.1])
+	by localhost.localdomain (8.11.0/8.11.0) with ESMTP id f46IvE916912
+	for <linux-mtd@lists.infradead.org>; Sun, 6 May 2001 13:57:15 -0500
+Message-ID: <3AF59E89.BAAAEE50@troche.org>
+Date: Sun, 06 May 2001 13:57:13 -0500
+From: Edmund Troche <edmund@troche.org>
+Reply-To: edmund@troche.org
+MIME-Version: 1.0
+CC: MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Invalid ioctl
+References: <NEBBIDMHCLDPHDHEGDMLKEGLCBAA.jasonw@uswo.net> <2086.989061207@redhat.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Sat, 05 May 2001 16:45:04 +0100
-Message-ID: <5543.989077504@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +26,15 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-nico@cam.org said:
->  ... and don't forget possible chip interleaves.
+I created a 8MB partition (nftla1) on a 8MB DoC 2000, and tried to cp a jffs
+image that was created with mkfs.jffs, and got the following message:
+    Invalid ioctl 5401 (MEMGETINFO = 80204d01)
+    ECC needs a full sector write (adr: 9de00 size 134)
 
-We currently deal with that to a certain extent, but not particularly 
-nicely:
-        if (status & CMD(0x3a)) {
-                unsigned char chipstatus = status;
-                if (status != CMD(status & 0xff)) {
-                        int i = cfi->interleave;
-                        for (i = 1; i<cfi->interleave; i++) {
-                                      chipstatus |= status >> (cfi->device_type * 8);
-                        }
-                        printk(KERN_WARNING "Status is not identical for all chips: 0x%x. Merging to give 0x%02x\n", status, chipstatus);
-                }
+The DiskOnChip is being found @ address 0xD6000 and it correctly detects it as
+8MB. JFFS and MTD support is compiled in, no modules in this case.
 
-Actually I think the device_type there ought to be buswidth / interleave. 
+Anyone familiar with what may be the problem? Thanks in advance for any help.
 
---
-dwmw2
+
+Edmund Troche
