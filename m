@@ -1,21 +1,19 @@
-Received: from mailout10.sul.t-online.com ([194.25.134.21])
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Baj2T-0001m4-8s
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 18:37:50 -0400
-From: "Thomas Gleixner" <tglx@linutronix.de>
-To: "Dan Brown" <dan_brown@ieee.org>
-Date: Thu, 17 Jun 2004 00:32:09 +0200
+	id 1BajCr-0001xb-91
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 18:48:33 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: tglx@linutronix.de
+In-Reply-To: <200406170032.09129.tglx@linutronix.de>
 References: <073c01c453ac$de849e10$0100a8c0@superfortress>
-In-Reply-To: <073c01c453ac$de849e10$0100a8c0@superfortress>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200406170032.09129.tglx@linutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+	<200406170032.09129.tglx@linutronix.de>
+Content-Type: text/plain
+Date: Wed, 16 Jun 2004 23:46:47 +0100
+Message-Id: <1087426007.4530.6.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Dan Brown <dan_brown@ieee.org>, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] Towards DiskOnChip support as a NAND driver
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 16 June 2004 16:19, Dan Brown wrote:
-> Please realize that this needs a lot more testing.  I still haven't gotten
-> JFFS2 to run properly with this (though I suspect that may reflect my
-> inexperience with JFFS2).  Also, the change to nand.h may break other nand
-> drivers (though the fix is trivial).
+On Thu, 2004-06-17 at 00:32 +0200, Thomas Gleixner wrote:
+> Can you make it optional to use or should we break the code in 
+> drivers/mtd/devices to enforce the development on Dan's code in 
+> drivers/mtd/nand ? 
+> 
+> dwmw2 ??
+> 
+> IMHO the current DOC code in drivers/mtd/devices has too many todo's which 
+> inhibit proper usage. 
 
-The nand.h change is fixed in nand_ecc.c
+It's not so bad on the original DiskOnChip 2000 and Millennium devices.
+I'd rather keep it an option for now, at least till the todo list for
+the new nand-based driver is reduced. We need to get the HW ECC working
+on the driver, and fix up NFTL to work with it. We also need to fix up
+the probing to work properly -- currently my hack just had the address
+hard-coded.
 
->     - Modifying JFFS2 to use autooob layout?  (Not sure about this)
->     - Modifying flash_eraseall to use autooob layout?  (Should work OK on
-> DOC by coincidence)
-
-Yes, flash_eraseall works by coincidence, but I will look into this.
-
->     - Adding the nand/diskonchip driver into the kernel build system
-> instead of the old one
-
-Can you make it optional to use or should we break the code in=20
-drivers/mtd/devices to enforce the development on Dan's code in=20
-drivers/mtd/nand ?=20
-
-dwmw2 ??
-
-IMHO the current DOC code in drivers/mtd/devices has too many todo's which=
-=20
-inhibit proper usage.=20
-
-They are partly related to the bad block management. The bad block manageme=
-nt=20
-support in the generic nand driver is able to support all types of bad bloc=
-k=20
-tables found on DOC devices.=20
-
-We fixed the HW ecc problems in nand_base.c today.=20
-
-It should be not too hard to adjust (I)NFTL to work on the new driver.
-
-Some specialities of the DOC variants which are already working in the old=
-=20
-drivers should be easily copyied to the new one as Dan has already done for=
-=20
-his chip.
-
-Another point is the error correction code. I have a generic reed solomon=20
-library nearly finished which is then usable for all kind of reed solomon=20
-based hw ecc generators. I don't want to make the old drivers use it and I=
-=20
-dont wan't to have duplicate code around.
-
-=2D-=20
-Thomas
-_____________________________________________________________________
-=46rom slash dot org
-"When customers are visiting, engineers are not allowed to wear ties.=20
-That way the customer can tell who is the engineer and who is the=20
-salesman (and therefore whom to believe.). Ties cut off blood flow=20
-to the brain, making it easier for the salesmen to do their jobs."=20
-_____________________________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+-- 
+dwmw2
