@@ -1,14 +1,20 @@
-Received: from mail.nanometrics.ca ([206.191.47.130])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CKfTR-0000nO-Ot
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 12:07:38 -0400
-To: linux-mtd@lists.infradead.org
-Message-ID: <OFD4E06ABE.3DA35253-ON85256F34.0055D12A-85256F34.0058A7DB@nanometrics.ca>
-From: David Ho <DavidHo@nanometrics.ca>
-Date: Thu, 21 Oct 2004 12:08:21 -0400
+Received: from modemcable166.48-200-24.mc.videotron.ca ([24.200.48.166]
+	helo=xanadu.home)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CKfaz-0000xa-D1
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2004 12:15:22 -0400
+Date: Thu, 21 Oct 2004 12:15:12 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Scott Wood <scott@timesys.com>
+In-Reply-To: <20041021160427.GA26048@yoda.timesys>
+Message-ID: <Pine.LNX.4.61.0410211213040.26473@xanadu.home>
+References: <20041020233921.62536A00099@mail.murgatroid.com>
+	<Pine.LNX.4.61.0410202011020.26473@xanadu.home>
+	<20041021160427.GA26048@yoda.timesys>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Subject: Difference between old and new MTD char drivers.
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Christopher Hoover <ch@murgatroid.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Interleave order while probing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 21 Oct 2004, Scott Wood wrote:
+
+> > Not in query mode though.
+> 
+> But if you've guessed the wrong interleave, you could be seeing some
+> non-query-mode data for the chips that didn't get the query command.
+
+True.
+
+Like you said, the flash could then be asked to go into status mode, 
+which is sure not to have "qry" anywhere.
 
 
-
-
-Hi all,
-
-Anyone knows off-hand any changes to the MTD char driver that might prevent
-a linux utility from unlocking/erase/program a sector in an MTD partition.
-The u-boot fw_setenv utility is failing to program sectors in a partition.
-
-Regards,
-David Ho
+Nicolas
