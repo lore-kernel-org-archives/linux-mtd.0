@@ -1,22 +1,18 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from mailout01.sul.t-online.com ([194.25.134.80])
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BVH13-0003Ge-Qz
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 17:41:50 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: Bernardo Innocenti <bernie@develer.com>
-In-Reply-To: <40BCF7A0.70203@develer.com>
-References: <40BCE3FD.4080500@develer.com>
-	<1086121783.4273.0.camel@localhost.localdomain>
-	<40BCF190.3020509@develer.com>
-	<1086125112.4273.2.camel@localhost.localdomain>
-	<40BCF7A0.70203@develer.com>
-Content-Type: text/plain
-Date: Tue, 01 Jun 2004 22:41:36 +0100
-Message-Id: <1086126096.4273.4.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: TRIVIAL: Fix linux/mtd/nftl.h for user-space inclusion
+	id 1BVHkC-0003Tw-9e
+	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2004 18:28:30 -0400
+From: tglx@linutronix.de (Thomas Gleixner)
+To: linux-mtd@lists.infradead.org
+Date: Wed, 2 Jun 2004 00:23:02 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200406020023.02262.tglx@linutronix.de>
+Subject: NAND driver
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-06-01 at 23:39 +0200, Bernardo Innocenti wrote:
-> David Woodhouse wrote:
-> 
-> >>The header nftl-user.h doesn't exist in neither
-> >>linux-2.6.6 and in the version of mtd-utils
-> >>imported in uClinux-dist (a rather old version,
-> >>I shall admit).
-> > 
-> > nftl-user.h is in CVS, along with a version of the userspace tools which
-> > uses it.
-> 
-> Ok, I'll check it out from CVS and post a patch to
-> the uClinux-dev mailing-list adding this header in
-> user/mtd-utils.
-> 
-> Is it 100% binary-compatible with all kernels?
+Hi all,
 
-Yes, I believe so.
+the NAND driver has some more new features
 
--- 
-dwmw2
+=2D support for AG-AND chips (currently tested with HN29V1G91T-30)
+=2D bad block table support (memory and flash based)
+=2D a new API documentation (online version is available on MTD homepage)
+
+=2D-=20
+Thomas
+________________________________________________________________________
+Steve Ballmer quotes the statistic that IT pros spend 70 percent of their=20
+time managing existing systems. That couldn=E2=80=99t have anything to do w=
+ith=20
+the fact that 99 percent of these systems run Windows, could it?
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
