@@ -1,14 +1,26 @@
-Received: from web52705.mail.yahoo.com ([206.190.39.156])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cn0jU-000506-Lb
-	for linux-mtd@lists.infradead.org; Fri, 07 Jan 2005 15:29:18 -0500
-Message-ID: <20050107202914.45709.qmail@web52705.mail.yahoo.com>
-Date: Fri, 7 Jan 2005 12:29:14 -0800 (PST)
-From: Michael <xemc@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1281056899-1105129754=:45464"
-Subject: little mistake in nandwrite.c
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CnMzB-0004Rb-9Y
+	for linux-mtd@lists.infradead.org; Sat, 08 Jan 2005 15:14:59 -0500
+Date: Sat, 8 Jan 2005 21:14:42 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20050108201442.GA11728@wohnheim.fh-wedel.de>
+References: <JPEALJAFNGDDLOPNDIEEEEKJCPAA.joakim.tjernlund@lumentis.se>
+	<Pine.LNX.4.58.0412221552240.30689@phoenix.infradead.org>
+	<20041222160942.GC9783@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0412221610230.30689@phoenix.infradead.org>
+	<20041222172637.GE9783@wohnheim.fh-wedel.de>
+	<1f9886eb0412221014256b83e6@mail.gmail.com>
+	<20041223135231.GB24503@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.58.0501060954230.5460@phoenix.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0501060954230.5460@phoenix.infradead.org>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,53 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0-1281056899-1105129754=:45464
-Content-Type: text/plain; charset=us-ascii
-Content-Id: 
-Content-Disposition: inline
+On Thu, 6 January 2005 10:08:16 +0000, Artem B. Bityuckiy wrote:
+> On Thu, 23 Dec 2004, [iso-8859-1] Jörn Engel wrote:
+>
+> > NOR is pretty reliable anyway, so we could just go
+> > without a checksum.
+> 
+> Can not agree with you. Checksums are requred even for very reliable NOR 
+> flashes to be able to detect broken nodes which can appear after unclean 
+> reboots.
+> My understanding is that this is the most important thing why CRCs are 
+> needed. The media corruption is of lesser priority. From this perspective 
+> we may easilly use any weaker (then CRC32) checksum, but this checksum 
+> must be good in detecting partially written nodes.
 
-Hi.
-I'm pretty sure I've found a small mistake in 'nandwrite.c'.
+You win.  So I'll go and recheck adler32 wrt. detecting partially
+written nodes.  There's always the a-priori chance of missing a
+change, so we should try to cut that down as far as possible.  Since
+adler32 has a bit less than 32 bits of non-redundant information, we
+might want to cheat a little:
 
-Relevant code block:  (mistake is 5 lines in)
+static uint32_t adler32_tailcheck(const void *buf, size_t len)
+{
+	uint32_t end = *(uint32_t*) (buf + len - 4); /* last word */
+	return adler32(end, buf, len);
+}
 
-        // force oob layout for jffs2 or yaffs ?
-        if (forcejffs2 || forceyaffs) {
-                struct nand_oobinfo *oobsel = forcejffs2 ?
-&jffs2_oobinfo : &yaffs_oobinfo;
+By using the last word of data as initial value, we put extra emphasis
+on it.  For long data (full data nodes), this shouldn't make a
+difference.  On the 12-Byte header, it might make a big one.
 
-                if (forceyaffs && meminfo.oobsize == 8) {
-                        if (forceyaffs) {
-                                fprintf (stderr, "YAFSS cannot
-operate on 256 Byte page size");
-                                goto restoreoob;
-                        }
-                        /* Adjust number of ecc bytes */
-                        jffs2_oobinfo.eccbytes = 3;
-                }
+> > Correct.  Simple parity might be a nice reference as well.  It is
+> > really bad at catching even-bit errors (2,4,6,...), but it's fast.
+> 
+> And please, bear in mind that if we encounter ECC error, this means error 
+> somwhere in the page. But this page may contain several JFFS3 nodes and we 
+> may recover some of them. So, having per-node CRC is good idea even if 
+> there is ECC (ECC is per-page).
+> For example, the board may have been rebooted uncleanly during writing ECC 
+> (the data was already written, ECC is written after data). In this case we 
+> may have correct data but just wrong ECC. Having CRCs, we might recover 
+> all JFFS3 nodes.
 
-                if (ioctl (fd, MEMSETOOBSEL, oobsel) != 0) {
-                        perror ("MEMSETOOBSEL");
-                        goto restoreoob;
-                }
-        }
+Correct, although I don't care too much.  If you pull the power while
+writing, you'll lose data.  Yes, with some care you lose less data,
+but some extra milliseconds of power would have done the same.
 
-Patch is attached.
---0-1281056899-1105129754=:45464
-Content-Type: application/octet-stream; name="nandwrite.c_patch"
-Content-Transfer-Encoding: base64
-Content-Description: nandwrite.c_patch
-Content-Disposition: attachment; filename="nandwrite.c_patch"
+Jörn
 
-LS0tIG5hbmR3cml0ZS5jLm9yaWcJMjAwNS0wMS0wNyAxNDoyMjo1NC4wMDAw
-MDAwMDAgLTA2MDAKKysrIG5hbmR3cml0ZS5jCTIwMDUtMDEtMDcgMTQ6MjM6
-MTAuMDAwMDAwMDAwIC0wNjAwCkBAIC0yNzEsNyArMjcxLDcgQEAKIAlpZiAo
-Zm9yY2VqZmZzMiB8fCBmb3JjZXlhZmZzKSB7CiAJCXN0cnVjdCBuYW5kX29v
-YmluZm8gKm9vYnNlbCA9IGZvcmNlamZmczIgPyAmamZmczJfb29iaW5mbyA6
-ICZ5YWZmc19vb2JpbmZvOwogCQkKLQkJaWYgKGZvcmNleWFmZnMgJiYgbWVt
-aW5mby5vb2JzaXplID09IDgpIHsKKwkJaWYgKG1lbWluZm8ub29ic2l6ZSA9
-PSA4KSB7CiAgICAgCQkJaWYgKGZvcmNleWFmZnMpIHsKIAkJCQlmcHJpbnRm
-IChzdGRlcnIsICJZQUZTUyBjYW5ub3Qgb3BlcmF0ZSBvbiAyNTYgQnl0ZSBw
-YWdlIHNpemUiKTsKIAkJCQlnb3RvIHJlc3RvcmVvb2I7Cg==
-
---0-1281056899-1105129754=:45464--
+-- 
+Victory in war is not repetitious.
+-- Sun Tzu
