@@ -1,39 +1,46 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZafT-0000ew-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 15:38:59 +0100
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+	id 12Zafm-0000fA-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 15:39:18 +0100
+Received: from gateway.mvista.com ([63.192.220.206] helo=hermes.mvista.com)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZafS-0000eq-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 15:38:58 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.3.96.1000327162945.26529A-100000@biffen.cendio.se> 
-References: <Pine.LNX.3.96.1000327162945.26529A-100000@biffen.cendio.se> 
+	id 12Zafk-0000f4-00
+	for mtd@infradead.org; Mon, 27 Mar 2000 15:39:16 +0100
+Message-ID: <38DF728E.3F04C812@mvista.com>
+Date: Mon, 27 Mar 2000 06:39:10 -0800
+From: Scott Anderson <sanders@mvista.com>
+MIME-Version: 1.0
 To: Alexander Larsson <alex@cendio.se>
-Cc: mtd@infradead.org
-Subject: Re: New release of MTD code pending. 
-Mime-Version: 1.0
+CC: mtd@infradead.org, Bjorn Wesen <bjorn.wesen@axis.com>,
+        SeokKuon Kwon <kwonsk@mutech.co.kr>
+Subject: Re: Axis log based flash filesystem ported to 2.3 and MTD
+References: <Pine.LNX.4.10.10003271032020.3368-100000@tammy.signum.se>
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 27 Mar 2000 15:38:58 +0100
-Message-ID: <9873.954167938@devel2.axiom.internal>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Alexander Larsson wrote:
+> While i haven't read the M-systems patent I think the Axis fs doesn't
+> violate it, because it uses no translation array. It is a fully
+> log-structured filesystem directly on the flash memory, and not a flash to
+> block device translator.
 
-alex@cendio.se said:
->  Sure, but there are some architecture changes that should be done
-> before that. (The ones we discussed last week). 
+Let me give a bit more background.  I have *not* looked at Axis' filesystem
+so my "guesses" should not be viewed as authoritative.  Figuring out the
+patent implications was something that I hadn't yet gotten around to yet.
 
-Definitely. I'm going through the FTL code first - to remind myself of how it 
-actually works. Then I'll get round to making the changes we talked about.
+Thanks to Alexander, I may not have to.  I'm under the impression that Axis'
+file system implements wear-leveling, so if there isn't an FTL, then the
+file system itself must rotate through free blocks to prevent a given sector
+from being worn out.  Is this correct?  If not, would you mind educating me?
 
-As it is, I haven't actually looked at some of this code in three years. For 
-example, I had no clue how the async erases worked until I just reread it.
+Thanks!
 
---
-dwmw2
-
-
+    Scott Anderson		
+    scott_anderson@mvista.com	MontaVista Software Inc.
+    (408)328-9214		490 Potrero Ave.
+    http://www.mvista.com	Sunnyvale, CA  94086
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
