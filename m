@@ -1,21 +1,15 @@
-Received: from host31-220.pool21757.interbusiness.it ([217.57.220.31]
-	helo=wawnet.biz)
-	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B4FFo-0002MI-Mf
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2004 08:21:21 +0000
-Message-Id: <6.0.1.1.0.20040319091531.01f95270@192.168.2.1>
-Date: Fri, 19 Mar 2004 09:21:17 +0100
-To: David Updegraff <dave@cray.com>
-From: llandre <r&d@wawnet.biz>
-In-Reply-To: <4059EB24.7020603@cray.com>
-References: <6.0.1.1.0.20040317175202.01f80e70@dns.struinfo.it>
- <200403181411.25596.tglx@linutronix.de>
- <6.0.1.1.0.20040318154520.01ec5658@192.168.2.1>
- <4059EB24.7020603@cray.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
+In-Reply-To: <01139FC052A0D411900B00508B9535FC102796E7@ZCH07EXM04.corp.mot.com>
+References: 
+	 <01139FC052A0D411900B00508B9535FC102796E7@ZCH07EXM04.corp.mot.com>
+Content-Type: text/plain
+Message-Id: <1079686696.16952.218.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Large block NAND
+Date: Fri, 19 Mar 2004 08:58:16 +0000
+Content-Transfer-Encoding: 7bit
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2 Errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2004-03-19 at 13:35 +0800, Shen Aaron-r62966 wrote:
+> Hi,
+> 
+>   I met some error when using JFFS2 in my new board while there's no
+> problem to use cramfs file system. Actually, the problem is only these
+> disgusting error messeges because the JFFS2 rootdisk can be mounted at
+> last. 
+> 
+>   Below is the error messege, please help to see what's the cause.
 
->Does anyone know how 'industry-standard' the format of the 4th ID byte in 
->these large NAND chips from Samsung is?  Y'know, the one that tells you 
->pagesize, buswidth, etc.  I'd sure be sweet to be able to reliably use them.
+You have generated a JFFS2 image with incorrect erasesize. Use
+'-e0x40000' argument to JFFS2.
 
-Hi David,
-
-I'm not sure I understood exactly your question anyway the 4th ID byte is 
-usually described in the
-technical datasheet. For example, for the K9F1G08U0M, it is detailed on 
-pages 28 and 29.
-
-PS: which chip are you going to work with?
-
-
-
-Regards,
-
-llandre 
+-- 
+dwmw2
