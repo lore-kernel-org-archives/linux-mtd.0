@@ -1,20 +1,17 @@
-Received: from nrl1.cedcc.psu.edu ([130.203.252.61] helo=nrl1)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15bCHe-0000mt-00
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2001 03:37:51 +0100
-Received: from localhost (localhost [[UNIX: localhost]])
-	by nrl1 (8.11.2/8.11.2) id f7R2jkR07714
-	for linux-mtd@lists.infradead.org; Sun, 26 Aug 2001 22:45:46 -0400
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: wrs122@psu.edu
-Reply-To: wrs122@psu.edu
-To: linux-mtd@lists.infradead.org
-Subject: DOC2000 Linux Boot Error
-Date: Sun, 26 Aug 2001 22:45:45 -0400
-MIME-Version: 1.0
-Message-Id: <01082622441000.07707@nrl1>
-Content-Transfer-Encoding: 8bit
+	id 15bHe3-0001GW-00
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2001 09:21:19 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <01082622441000.07707@nrl1> 
+References: <01082622441000.07707@nrl1> 
+To: wrs122@psu.edu
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DOC2000 Linux Boot Error 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 27 Aug 2001 09:26:45 +0100
+Message-ID: <16442.998900805@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,8 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I've been working through trying to get linux to boot from a DOC2000 chip. 
-I'm running kernel 2.4.9. I get an error "kernel panic: no init found". I 
-have no idea where to look to solve this problem... any ideas?
+wrs122@psu.edu said:
+> I'm running kernel 2.4.9. I get an error "kernel panic: no init
+> found". I  have no idea where to look to solve this problem... any
+> ideas? 
 
--Bill
+Please show the rest of the messages you see at boot time. That alone isn't 
+enough to start guessing.
+
+--
+dwmw2
