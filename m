@@ -1,41 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13ABpY-0006Me-00
-	for mtd-list@infradead.org; Thu, 06 Jul 2000 14:36:40 +0100
-Date: Thu, 6 Jul 2000 15:36:33 +0200 (CEST)
-From: Alexander Larsson <alex@cendio.se>
-To: David Woodhouse <dwmw2@infradead.org>
-cc: Bjorn Wesen <bjorn.wesen@axis.com>,
-        =?iso-8859-1?Q?S=E9bastien=20C=F4t=E9?= <scote1@matrox.com>,
-        jffs-dev@axis.com, mtd@infradead.org
-Subject: Re: jffs_erasable_size: offset = 0x0034b000 
-In-Reply-To: <488.962889192@cygnus.co.uk>
-Message-ID: <Pine.LNX.3.96.1000706153526.15928A-100000@biffen.cendio.se>
+	id 13ABqk-0006Mx-00
+	for mtd-list@infradead.org; Thu, 06 Jul 2000 14:37:54 +0100
+Received: from [212.25.93.158] (helo=jodie.lucid)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 13ABqh-0006Mp-00
+	for mtd@infradead.org; Thu, 06 Jul 2000 14:37:52 +0100
+From: Dvir Oren <dvir@lucidvon.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Date: Thu,  6 Jul 2000 16:36:49 +0300 (IDT)
+To: rmoya@tsai.es
+CC: MTD <mtd@infradead.org>
+Subject: Re: Re: plilo problems
+In-Reply-To: <E13AA03-0005yZ-00@infradead.org>
+References: <E13AA03-0005yZ-00@infradead.org>
+Message-ID: <14692.35524.994297.742349@jodie.lucid>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Rodrigo Moya writes ("Re: Re: plilo problems"):
 
+> > LILO
+> > .ccboot:
+> > Loading linux.........................
 
-On Thu, 6 Jul 2000, David Woodhouse wrote:
+It might be because you have a large kernel.  One of the effects that
+the patch does is limit the size of the kernel you can use.  I think
+that LILO should have warned about it, or not installed it, but I may
+be wrong.  What size kernel are you using?  I think it should not be
+larger than 450K or so.  Try to make a smaller kernel.
 
-> 
-> bjorn.wesen@axis.com said:
-> >  We'll probably leave the 2.0 as it is, and when we switch to 2.4
-> > we'll either use mtd or just keep going with our own little flash.c
-> > (which works fine :)
-> 
-> It looks like 2.4 will have the MTD code in it already - Linus included 
-> Tuesday's snapshot in 2.4.0-test3-pre4.
-
-Ouch, it's got jffs too. The invalidate_inode_pages(inode) patch should
-really be applied to it. I haven't had time to test it, but it's almost
-certainly correct, and it is broken without it.
-
-/ Alex
-
-
+-- 
+Dvir Oren               <dviro@lucidvon.com>
+Lucid VON Ltd.     <http://www.lucidvon.com>
+9 Saloniki St.,        Tel-Aviv       Israel
+Tel:  +972 3 644 3038  Fax:  +972 3 644 3039
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
