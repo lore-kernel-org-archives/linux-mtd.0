@@ -1,20 +1,28 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D37XD-00063L-Q3
-	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 01:59:12 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: William J Beksi <wjbeksi@setabox.com>
-In-Reply-To: <4209C985.3020902@setabox.com>
-References: <4209C985.3020902@setabox.com>
-Content-Type: text/plain
-Date: Mon, 21 Feb 2005 07:59:05 +0100
-Message-Id: <1108969145.24721.419.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1D38k3-0006NG-6y
+	for linux-mtd@lists.infradead.org; Mon, 21 Feb 2005 03:16:32 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id B915B2F016
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id AE2FE11786
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 08D4199FF
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 21 Feb 2005 09:16:28 +0100 (CET)
+Message-ID: <421998DA.1060503@imc-berlin.de>
+Date: Mon, 21 Feb 2005 09:16:26 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
+MIME-Version: 1.0
+To: MTD List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] accessing NAND flash through an IDE interface
-Reply-To: tglx@linutronix.de
+Subject: ioremap_cached in drivers/mtd/maps ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-02-09 at 16:27 +0800, William J Beksi wrote:
-> Hi Thomas,
-> I am not sure if you received the patch I sent you last month for 
-> accessing nand flash through an IDE interface so I am sending it again.
+Hi there,
 
-@@ -84,6 +84,8 @@
- #include <linux/mtd/partitions.h>
- #endif
- 
-+#define NAND_USE_IO_INSTR      0
+it looks like only lubbock-flash.c is using ioremap_cached().
 
-As I said before, I'm not going to accept a change which needs to tweak
-a source file to make use of it.
+Can I use ioremap_cached() with normal NOR flashes?
+Is it only for DMA transfer from/to flash?
+Does it improve something when using JFFS2?
+What do I have to consider? .inval_cache function?
 
-tglx
+Thanks a million!
+
+-- 
+Steven Scholz
+imc Measurement & Control
