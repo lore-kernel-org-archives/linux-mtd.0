@@ -1,17 +1,17 @@
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 154P6I-0005UZ-00
-	for <linux-mtd@lists.infradead.org>; Mon, 28 May 2001 16:38:34 +0100
+	id 154PK5-0005VT-00
+	for <linux-mtd@lists.infradead.org>; Mon, 28 May 2001 16:52:49 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <003001c0e682$85a2cd70$937f11d4@privat> 
-References: <003001c0e682$85a2cd70$937f11d4@privat> 
-To: "MG" <m.gibson@thinstuff.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: HELP! - ISDN device not working with 16M DOC2000 but working with 8MB DOC Millenium 
+In-Reply-To: <3B12A202.3040409@niisi.msk.ru> 
+References: <3B12A202.3040409@niisi.msk.ru>  <3B0EE8CF.7040502@niisi.msk.ru> <20010526000119.A23273@suse.de> 
+To: Alexandr Andreev <andreev@niisi.msk.ru>
+Cc: "linux-mtd@lists.infrared.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Why timer interrupt is disabled? 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 28 May 2001 16:42:30 +0100
-Message-ID: <26670.991064550@redhat.com>
+Date: Mon, 28 May 2001 16:36:15 +0100
+Message-ID: <26581.991064175@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,20 +23,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-m.gibson@thinstuff.com said:
-> I can mount nftla1 from the 16MB DOC2000, but when I try to load the
-> hisax module for the Sedlbauer ISDN card it simply does not work. When
-> I try to do the same thing with a 8MB DOC millenium I can load the
-> hisax module without any problem.
 
-> Same problem with wavelan - PCMCIA. it works perfect with 8MB DOC
-> Millenium but with 16MB DOC2000 it does not work?
+andreev@niisi.msk.ru said:
+>  It may happen that one  CPU is reading and other CPU is writing data
+> at the same time. So, the  flash memory can return status value
+> instead of data, for example. Does  the chip->mutex lock provides
+> necessary synchronization?
 
-Do you mean it failed to detect the DiskOnChip hardware at all? Can you 
-show the startup messages?
+Yes. The flash driver is required to make that work correctly. The (blkdev)
+request functions aren't required to be reentrant anyway, I believe.
 
-Is it a PCMCIA ISDN card? Is the PCMCIA correctly configured not to attempt 
-to use the memory region used by the DiskOnChip?
+> I look at the other block device drivers code and found, that
+> io_request  handlers do sti() in some cases. If you still don`t want
+> to do it, we  could use a softirq. In the do_fd_request(), the "bottom
+> halves" is used  for example. We could use a "bottom halves" or even a
+> tasklet in our  case. What do you think about this?
+
+Take a look at the way it's done by the mtdblock device, with a kernel 
+thread.
 
 --
 dwmw2
