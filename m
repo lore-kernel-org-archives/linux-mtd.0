@@ -1,16 +1,17 @@
-Received: from rose.man.poznan.pl ([150.254.173.3])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CIM2l-00070k-1c
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2004 02:58:28 -0400
-Date: Fri, 15 Oct 2004 08:58:07 +0200 (CEST)
-From: Michal Schulz <mschulz@rose.man.poznan.pl>
-To: Manfred Gruber <gruber.m@utanet.at>
-In-Reply-To: <200410141908.55561.gruber.m@utanet.at>
-Message-ID: <Pine.GSO.4.44.0410150857090.28639-100000@rose.man.poznan.pl>
+Received: from phobos.telex.de ([217.7.76.163])
+	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CINaP-0007Su-Ds
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2004 04:37:19 -0400
+From: Josef Baumgartner <josef.baumgartner@telex.de>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 15 Oct 2004 10:37:06 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: phram/slram
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200410151037.06581.josef.baumgartner@telex.de>
+Subject: Access to AMD SecSi sector
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,18 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 14 Oct 2004, Manfred Gruber wrote:
+Hi,
 
-> another question is i have changed in this drivers for a default erase size to
-> get a jffs2 fs running on this. i know that it is not the right way to use a
-> flash fs on ram but another fs was not possible to run (ext2).
+I need to write and protect the SecSi sector of an AMD flash from linux. I 
+searched in the MTD sources but found no way to do that.
 
-why couldn't you use ext2? It works without any problems with slram
+Has anybody done this before?  How much work would it be to
+add such a function in the MTD driver?
 
-> is it correct to use a fs on ram chips? i will do this because then i have not
-> to change my application :-)
+Another way would be to add a simple kernel driver to do it without the whole 
+mtd stuff.  I think the problem would be sure that nobody else is accessing 
+the flash. 
 
-http://hedera.linuxnews.pl/_news/2002/09/03/_long/1445.html
+Hope, anybody can help me.
 
--- 
-Michal Schulz
+Regards,
+
+Josef
