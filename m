@@ -1,18 +1,19 @@
-Received: from [210.17.210.210] (helo=mail.avantwave.com)
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CN6hI-0007lK-0M
-	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 05:35:58 -0400
-Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id i9S9WN4r010238
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2004 17:32:23 +0800
-Message-ID: <4180BF75.6010908@avantwave.com>
-Date: Thu, 28 Oct 2004 17:44:21 +0800
-From: mike <mikelee@avantwave.com>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CN9B5-00088u-36
+	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2004 08:14:53 -0400
+Message-ID: <4180E28A.5020408@yandex.ru>
+Date: Thu, 28 Oct 2004 16:14:02 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+References: <417F961A.1090107@yandex.ru>		<1098881953.13633.1786.camel@hades.cambridge.redhat.com>		<417FA408.9080906@yandex.ru>	<1098884706.13633.1791.camel@hades.cambridge.redhat.com>
+	<417FB7DF.3040101@yandex.ru> <417FB99E.1000009@yandex.ru>
+In-Reply-To: <417FB99E.1000009@yandex.ru>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: USB-flash driver
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2 & SMP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all
+It seems there is one more problem in JFFS2. It appears when the 
+preemption is enabled even on UP systems. If you run several times the 
+script I sent, you will see sometimes messages like this:
 
-    I am new to this place,thanks for anyone helping.
+Data CRC 20f41434 != calculated CRC fbe09a15 for node at 005e2000
 
-    My situation is , to make my ARM-based board to be a USB mass 
-storage disk from outside view. I am using Motorola M9328MXL development 
-board with USB client.
-    My question is how can i utilize mtd api to make the driver? Or 
-anyone done that before? Or anyone can give me some advises?
+If the preemtion is disabled, the messages do not appear.
 
-Thanks very much
-Mike,Lee
+P.S. The flash is OK, these are some JFFS2 errors...
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
