@@ -1,45 +1,90 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14s6q4-0001a7-00
-	for mtd-list@infradead.org; Tue, 24 Apr 2001 18:43:00 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14s7Zj-000217-00
+	for mtd-list@infradead.org; Tue, 24 Apr 2001 19:30:11 +0100
+Received: from mail.addcoinc.com
+	([12.47.38.2] helo=exchange.addcoinc.com ident=fwuser)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14s6pz-0001Ys-00
-	for mtd@infradead.org; Tue, 24 Apr 2001 18:42:56 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is> 
-References: <EADB10BAC266A14A85ECBF8686A73E310A9148@kolkrabbi.flaga.is> 
-To: =?iso-8859-15?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-Cc: mtd@infradead.org, nico@cam.org
-Subject: Re: partitions and erase regions 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 24 Apr 2001 18:41:10 +0100
-Message-ID: <28157.988134070@redhat.com>
+	id 14s7Zh-000210-00
+	for mtd@infradead.org; Tue, 24 Apr 2001 19:30:09 +0100
+Message-ID: <5B08DC7C9AA6D411930E00105A19794B3E2405@EXCHANGE>
+From: "Carson, Jon A." <JACarson@addcoinc.com>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Cc: "Meyers, Jerry M." <JMMeyers@addcoinc.com>
+Subject: Still having problems with nftl_format
+Date: Tue, 24 Apr 2001 13:25:11 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+Hi,
 
-kd@flaga.is said:
-> It sounds reasonable to me. Although I have a problem with the "major"
-> erazesize in general. The erase regions are in the flash for a reason,
-> i.e. the chip is not of one "major" erase size but of many erase
-> sizes, although most of it (untill now, who knows what AMD, Intel and
-> others might do in the future 8-)) is of one erase size.
+A while back ( April 9, 2001 ) , I reported a problem with nftl_format. I
+know you are busy, but I wanted to state the problem again and also add some
+new information.
 
-I have a strong suspicion that we'll never see chips without a 'major' 
-erasesize. Making all clients (such as JFFS2) deal with variable erase 
-sizes is possible, but IMHO suboptimal. If we can avoid that complexity, it 
-would be nice. 
+The problem is that everything is nice until it gets to Phase 3 which deals
+with writing some data into the chip.
 
-Perhaps, however, we should provide a way for clients which _do_ know about 
-variable erase regions to write to partitions which don't have a 'major' 
-erasesize.
+I plugged in some printf's that show the state of the variables of interest,
+before we drop into the "for" loop.  I also added a printf to the for loop
+in case something was sucessful.  Please note that the first time through
+the loop, the call to the "ioctl" was apparently sucessful.  Every call to
+the same ioctl after that failed with errno == 14  (Bad address) .  I have
+included an excerpt from the nftl_format.c showing the revesion level of the
+code that I am using.
 
---
-dwmw2
+Here is the data:
+
+ /* nftl_format.c: Creating a NFTL partition on an MTD device
+ *
+ *
+ * $Id: nftl_format.c,v 1.13 2000/11/13 16:37:24 lethal Exp $
+ */
+
+Phase 3. Writing Unit Control Information to each Erase Unit
+
+/*... my printf's .....
+	ezone                 == 0x00000800 ( later gets init in the for
+loop  )
+	ezones                == 0x00000800 
+	startofs              == 0x00000000
+	meminfo.erasesize     == 0x00002000 
+	oob.start             == 0x00000000 
+.....................*/
 
 
+MEMWRITEOOB at 200: Success
+MEMWRITEOOB at 2200: Bad address
+MEMWRITEOOB at 4200: Bad address
+MEMWRITEOOB at 6200: Bad address
+MEMWRITEOOB at 8200: Bad address
+MEMWRITEOOB at a200: Bad address
+MEMWRITEOOB at c200: Bad address
+MEMWRITEOOB at e200: Bad address
+MEMWRITEOOB at 10200: Bad address
+.... yada yada , ad nauseum ......
+MEMWRITEOOB at ff0200: Bad address
+MEMWRITEOOB at ff2200: Bad address
+MEMWRITEOOB at ff4200: Bad address
+MEMWRITEOOB at ff6200: Bad address
+MEMWRITEOOB at ff8200: Bad address
+MEMWRITEOOB at ffa200: Bad address
+MEMWRITEOOB at ffc200: Bad address
+MEMWRITEOOB at ffe200: Bad address
+
+
+I am using a 16 MB DiskOnChip plugged into the M-System's ISA card ( window
+at 0xD0000 ) on a 300Mhz Pentium, running SUSE 7.1 with the 2.4.0 kernel all
+set up with the MTD drivers.
+
+Please help if you can.
+
+THANKS IN ADVANCE,
+Jon Carson
+ADDCO Inc.
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
