@@ -1,20 +1,21 @@
-Received: from [2002:c1ed:8229::1] (helo=baythorne.infradead.org)
+Received: from mail.fh-wedel.de ([213.39.232.194])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AsPzz-0000O1-Ry
-	for linux-mtd@lists.infradead.org; Sun, 15 Feb 2004 17:24:08 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Marc Singer <elf@buici.com>
-In-Reply-To: <20040215165455.GA31480@buici.com>
-References: <20040215095325.GA27531@buici.com>
-	 <1076843296.4484.2.camel@imladris.demon.co.uk>
-	 <20040215165455.GA31480@buici.com>
-Content-Type: text/plain
-Message-Id: <1076865846.6883.9.camel@imladris.demon.co.uk>
+	id 1AshWx-0001pw-Ra
+	for linux-mtd@lists.infradead.org; Mon, 16 Feb 2004 12:07:19 +0000
+Date: Mon, 16 Feb 2004 13:06:47 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Florian Schirmer <jolt@tuxbox.org>
+Message-ID: <20040216120647.GA7202@wohnheim.fh-wedel.de>
+References: <20040212195532.38851.qmail@web20728.mail.yahoo.com>
+	<200402130838.06005.jolt@tuxbox.org>
 Mime-Version: 1.0
-Date: Sun, 15 Feb 2004 17:24:06 +0000
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200402130838.06005.jolt@tuxbox.org>
+cc: Shawn Jin <shawnxtech@yahoo.com>
 cc: linux-mtd@lists.infradead.org
-Subject: Re: Can 256K erase blocks work with JFFS2?
+Subject: Re: JFFS2: No space left on a blank mtd device?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2004-02-15 at 08:54 -0800, Marc Singer wrote:
->   elf@florence ~...coastal/arm > mkfs.jffs2 -e 256kb -r root -o toucan.jffs
+On Fri, 13 February 2004 08:38:04 +0100, Florian Schirmer wrote:
+> 
+> > Is it mandatory to make a 'blank' JFFS2 filesystem image even for a blank
+> > mtd device?
+> 
+> jffs2 will refuse to mount unless at least one jffs2 was found on the device. 
+> Thats the reason why you can't mount an empty device.
 
-I've just committed a change to v1.40 to accept KiB and MiB. I did
-briefly make it accept 'kb' too but it was going to give you an erase
-size of 256 * 1000 / 8 == 32000 bytes, which probably isn't useful... so
-then I was going to have to add a warning for such erase sizes... so I
-took it out again :)
+...at least one jffs2 erase block was found...
 
- 
-dwmw2
+> Just use eraseall -j <mtddevice>
+> 
+> It will create a dummy inode so you can mount the device.
+
+No it won't, but jffs2 will happily mount an empty device.  *Any* data
+on the device and it has to find at least one jffs2 erase block, but
+empty is fine.
+
+Jörn
+
+-- 
+Everything should be made as simple as possible, but not simpler.
+-- Albert Einstein
