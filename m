@@ -1,18 +1,22 @@
-Received: from ns2.arlut.utexas.edu ([129.116.174.1])
+Received: from orvill.sda.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17foPm-0005AO-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 22:13:50 +0100
-Received: from ns5.arlut.utexas.edu (ns5.arlut.utexas.edu [10.4.1.6])
-	by ns2.arlut.utexas.edu (8.12.5/8.12.5) with ESMTP id g7GLDklg046795
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2002 16:13:46 -0500 (CDT)
-Date: Fri, 16 Aug 2002 16:13:44 -0500
-Subject: Found ecc verify bug in nand.c
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v482)
-From: Ken Offer <koffer@arlut.utexas.edu>
-To: LinuxMTD <linux-mtd@lists.infradead.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <0BBECB8C-B15D-11D6-BE50-000393467F1A@arlut.utexas.edu>
+	id 17fyln-0006Bf-00
+	for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2002 09:17:16 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H0Z0028QAZWRH@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Sat, 17 Aug 2002 10:16:45 +0200 (MEST)
+Date: Sat, 17 Aug 2002 10:16:31 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: Found ecc verify bug in nand.c
+In-reply-to: <0BBECB8C-B15D-11D6-BE50-000393467F1A@arlut.utexas.edu>
+To: Ken Offer <koffer@arlut.utexas.edu>
+Cc: LinuxMTD <linux-mtd@lists.infradead.org>
+Message-id: <1029571384.2142.19.camel@thomas.tec.linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
+References: <0BBECB8C-B15D-11D6-BE50-000393467F1A@arlut.utexas.edu>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,27 +28,21 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi all,
+On Fri, 2002-08-16 at 23:13, Ken Offer wrote:
+> This is a compare to see if the ecc has changed.  Unfortunately, 
+> data_buf is UNSIGNED char and ecc_code is SIGNED char.  When 
+> compiling under gcc 2.95.3 on a powerpc system, the code ends up 
+> comparing two identical bytes and fails because one is 
+> sign-extended (example: comparing 0xc3 becomes "0xc3 == 
+> 0xffffffc3").  I don't know if this makes a difference with the 
+> x86 compiler, but it does under powerpc.
+It's a problem on other arch's too. It did not happen to me, because I
+don't use the NAND_WRITE_VERIFY paranoia check :)
+Thanks, fixed in CVS
 
-Using the cvs code from August 12th, I found a bug in nand.c 
-that was causing a page write to fail ecc verify.  In nand.c in 
-the function "nand_write_page" there is a line which reads:
-
-    if ((this->data_buf[(oob_config.ecc_pos[i])] != 
-ecc_code[i]) && ecc_code[i]) {
-
-This is a compare to see if the ecc has changed.  Unfortunately, 
-data_buf is UNSIGNED char and ecc_code is SIGNED char.  When 
-compiling under gcc 2.95.3 on a powerpc system, the code ends up 
-comparing two identical bytes and fails because one is 
-sign-extended (example: comparing 0xc3 becomes "0xc3 == 
-0xffffffc3").  I don't know if this makes a difference with the 
-x86 compiler, but it does under powerpc.
-
-Changing the local array "ecc_code" to type "u_char" resolves 
-the problem.  Verified by running nandtest.
-
-+-----------------------------------------------------------+
-|  Ken Offer        koffer@arlut.utexas.edu         ARL:UT  |
-|  Office: 512-835-3859                  Fax: 512-835-3259  |
-+-----------------------------------------------------------+
+-- 
+Thomas 
+____________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
