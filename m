@@ -1,44 +1,42 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
-Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
+Received: from 24.64.25.86.ab.wave.home.com
+	([24.64.25.86] helo=white.priv.deltatee.com ident=mail)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11RzRM-0006ek-00
-	for mtd@infradead.org; Fri, 17 Sep 1999 15:56:44 +0100
-To: Jason Gunthorpe <jgg@deltatee.com>
-Cc: mtd@infradead.org
-Subject: mapped helpful functions requiring libgcc.a
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 Sep 1999 15:56:29 +0100
-From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11RzR8-00038d-00@devel2.axiom.internal>
+	id 11S66I-00071v-00
+	for mtd@infradead.org; Fri, 17 Sep 1999 23:03:27 +0100
+Date: Fri, 17 Sep 1999 16:03:00 -0600 (MDT)
+From: Jason Gunthorpe <jgg@deltatee.com>
+To: David Woodhouse <David.Woodhouse@mvhi.com>
+cc: mtd@infradead.org
+Subject: Re: mapped helpful functions requiring libgcc.a
+In-Reply-To: <E11RzR8-00038d-00@devel2.axiom.internal>
+Message-ID: <Pine.LNX.3.96.990917160014.16406A-100000@white.priv.deltatee.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-I've just noticed that the 'mapped' helper function write_flash(), when 
-compiled with 2.3.17, requires __divdi3 and __moddi3 from libgcc.a 
 
-This is because of these two lines (just after line 500, at the beginning of 
-flash_write):
+On Fri, 17 Sep 1999, David Woodhouse wrote:
 
-      // Compute the page offset and reposition
-      base = map->page(map,start/map->pagesize);
-      off = start %  map->pagesize;
+> I've just noticed that the 'mapped' helper function write_flash(), when 
+> compiled with 2.3.17, requires __divdi3 and __moddi3 from libgcc.a 
 
-Given that our map window is always going to be a power of two, I suggest that 
-we ought to use shifts instead of div/mod here, and change mapsize to be a 
-logarithm instead of the actual size.
-
-Jason?
-
-
-
-
-----                                 ----                                 ----
-David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
- Project Leader,     Process Information Systems      Mobile: (+44) 976 658355
-    Axiom (Cambridge) Ltd., Swaffham Bulbeck, Cambridge, CB5 0NA, UK.
-             finger dwmw2@ferret.lmh.ox.ac.uk for PGP key.
-
+I'm confused why GCC would not just emit code that performed these
+operations instead of using these helper functions - there is nothing
+special about them. It sounds like a compiler bug really.
+ 
+Jason
+> This is because of these two lines (just after line 500, at the beginning of 
+> flash_write):
+> 
+>       // Compute the page offset and reposition
+>       base = map->page(map,start/map->pagesize);
+>       off = start %  map->pagesize;
+> 
+> Given that our map window is always going to be a power of two, I suggest that 
+> we ought to use shifts instead of div/mod here, and change mapsize to be a 
+> logarithm instead of the actual size.
 
 
 
