@@ -1,95 +1,40 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12fO0D-0001RU-00
-	for mtd-list@infradead.org; Wed, 12 Apr 2000 15:20:21 +0100
-Received: from ncc1.infomail.es ([194.224.53.134] helo=infomail.es)
+	id 12fOB3-0001U7-00
+	for mtd-list@infradead.org; Wed, 12 Apr 2000 15:31:33 +0100
+Received: from gate.mvhi.com
+	([194.205.184.34] helo=server.axiom.internal ident=mail)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12fNzy-0001RH-00
-	for mtd@infradead.org; Wed, 12 Apr 2000 15:20:06 +0100
-Message-ID: <38F4855A.EF47278A@tsai.es>
-Date: Wed, 12 Apr 2000 16:16:58 +0200
-From: Rodrigo Moya <rmoya@tsai.es>
-MIME-Version: 1.0
-To: MTD List <mtd@infradead.org>
-Subject: problems compiling
-Content-Type: multipart/mixed;
- boundary="------------5BF441803B4CD81B4497A04C"
+	id 12fOB2-0001U0-00
+	for mtd@infradead.org; Wed, 12 Apr 2000 15:31:32 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <38F4855A.EF47278A@tsai.es> 
+References: <38F4855A.EF47278A@tsai.es> 
+To: Rodrigo Moya <rmoya@tsai.es>
+Cc: MTD List <mtd@infradead.org>
+Subject: Re: problems compiling 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 12 Apr 2000 15:31:27 +0100
+Message-ID: <2127.955549887@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-This is a multi-part message in MIME format.
---------------5BF441803B4CD81B4497A04C
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: base64
 
-aGkgYWxsIQ0KDQpJJ3ZlIHN1Y2Nlc3NmdWxseSBhcHBsaWVkIHRoZSBwYXRjaGVzIHRvIHRo
-ZSBrZXJuZWwsIGJ1dCB3aGVuIGNvbXBpbGluZw0KSSBnZXQgbG90cyBvZiBlcnJvcnMgKHNl
-ZSBhdHRhY2hlZCBmaWxlKS4gSSBoYXZlbid0IGludmVzdGlnYXRlZCB0b28NCm11Y2ggd2h5
-IGFyZSB0aGVzZSBlcnJvcnMsIGJ1dCB0aGUgZmlyc3QgaXMgYWJvdXQgbGludXgvY29tcGF0
-bWFjLmguDQoNCkkndmUgc2VlbiB0aGF0IHRoZSBwYXRjaGVzIGFyZSBmb3Iga2VybmVsIDIu
-Mi4xNCwgYW5kIEknbSB3aXRoIDIuMi4xMi4NCklzIHRoYXQgYSBwcm9ibGVtPyBEb2VzIHRo
-ZSBDVlMgdmVyc2lvbiB3b3JrIHdpdGggMi4yeCBrZXJuZWxzPw0KDQpDaGVlcnMNCg==
---------------5BF441803B4CD81B4497A04C
-Content-Type: application/octet-stream;
- name="output"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="output"
+rmoya@tsai.es said:
+>  I haven't investigated too much why are these errors, but the first
+> is about linux/compatmac.h.
 
-Z2NjIC1EX19LRVJORUxfXyAtSS91c3Ivc3JjL2xpbnV4LTIuMi4xMi9pbmNsdWRlIC1XYWxs
-IC1Xc3RyaWN0LXByb3RvdHlwZXMgLU8yIC1mb21pdC1mcmFtZS1wb2ludGVyIC1mbm8tc3Ry
-aWN0LWFsaWFzaW5nIC1waXBlIC1mbm8tc3RyZW5ndGgtcmVkdWNlIC1tMzg2IC1EQ1BVPTM4
-NiAtRFBNQzU1MV9EUkFNX0JVRyAgLURFWFBPUlRfU1lNVEFCIC1jIG10ZC5jCm10ZC5jOjMy
-OiBsaW51eC9jb21wYXRtYWMuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQptdGQuYzo4
-MDogd2FybmluZzogdHlwZSBkZWZhdWx0cyB0byBgaW50JyBpbiBkZWNsYXJhdGlvbiBvZiBg
-REVDTEFSRV9NVVRFWCcKbXRkLmM6ODA6IHdhcm5pbmc6IHBhcmFtZXRlciBuYW1lcyAod2l0
-aG91dCB0eXBlcykgaW4gZnVuY3Rpb24gZGVjbGFyYXRpb24KbXRkLmM6IEluIGZ1bmN0aW9u
-IGBtdGRfb3Blbic6Cm10ZC5jOjE0Nzogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24g
-b2YgZnVuY3Rpb24gYERFQlVHJwptdGQuYzoxNTg6IGBtdGRfdGFibGVfbXV0ZXgnIHVuZGVj
-bGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQptdGQuYzoxNTg6IChFYWNoIHVu
-ZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UKbXRkLmM6MTU4OiBm
-b3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKbXRkLmM6IEluIGZ1bmN0aW9uIGBt
-dGRfaW9jdGwnOgptdGQuYzozNDk6IGB4JyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhp
-cyBmdW5jdGlvbikKbXRkLmM6MzQ5OiBgeScgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRo
-aXMgZnVuY3Rpb24pCm10ZC5jOjM0OTogd2FybmluZzogbGVmdC1oYW5kIG9wZXJhbmQgb2Yg
-Y29tbWEgZXhwcmVzc2lvbiBoYXMgbm8gZWZmZWN0Cm10ZC5jOjM0OTogcGFyc2UgZXJyb3Ig
-YmVmb3JlIGBzdHJ1Y3QnCm10ZC5jOjM0ODogd2FybmluZzogdW51c2VkIHZhcmlhYmxlIGB3
-YWl0cScKbXRkLmM6MzQ5OiBgd2FpdCcgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMg
-ZnVuY3Rpb24pCm10ZC5jOjM0OTogd2FybmluZzogbGVmdC1oYW5kIG9wZXJhbmQgb2YgY29t
-bWEgZXhwcmVzc2lvbiBoYXMgbm8gZWZmZWN0Cm10ZC5jOjM1MjogYHdhaXRxJyB1bmRlY2xh
-cmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKbXRkLmM6MzgwOiBjYXNlIGxhYmVs
-IG5vdCB3aXRoaW4gYSBzd2l0Y2ggc3RhdGVtZW50Cm10ZC5jOjQxMDogYnJlYWsgc3RhdGVt
-ZW50IG5vdCB3aXRoaW4gbG9vcCBvciBzd2l0Y2gKbXRkLmM6NDE0OiBjYXNlIGxhYmVsIG5v
-dCB3aXRoaW4gYSBzd2l0Y2ggc3RhdGVtZW50Cm10ZC5jOjQ0NTogYnJlYWsgc3RhdGVtZW50
-IG5vdCB3aXRoaW4gbG9vcCBvciBzd2l0Y2gKbXRkLmM6NDUyOiBkZWZhdWx0IGxhYmVsIG5v
-dCB3aXRoaW4gYSBzd2l0Y2ggc3RhdGVtZW50Cm10ZC5jOjQ1NTogd2FybmluZzogY29udHJv
-bCByZWFjaGVzIGVuZCBvZiBub24tdm9pZCBmdW5jdGlvbgptdGQuYzogQXQgdG9wIGxldmVs
-OgptdGQuYzo0NTc6IHBhcnNlIGVycm9yIGJlZm9yZSBgcmV0dXJuJwptdGQuYzogSW4gZnVu
-Y3Rpb24gYGFkZF9tdGRfZGV2aWNlJzoKbXRkLmM6NDY5OiBgbXRkX3RhYmxlX211dGV4JyB1
-bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKbXRkLmM6NDgwOiBzdHJ1
-Y3R1cmUgaGFzIG5vIG1lbWJlciBuYW1lZCBgYWRkJwptdGQuYzogSW4gZnVuY3Rpb24gYGRl
-bF9tdGRfZGV2aWNlJzoKbXRkLmM6NDk3OiBgbXRkX3RhYmxlX211dGV4JyB1bmRlY2xhcmVk
-IChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKbXRkLmM6NTA1OiBzdHJ1Y3R1cmUgaGFz
-IG5vIG1lbWJlciBuYW1lZCBgcmVtb3ZlJwptdGQuYzogSW4gZnVuY3Rpb24gYHJlZ2lzdGVy
-X210ZF91c2VyJzoKbXRkLmM6NTI0OiBgbXRkX3RhYmxlX211dGV4JyB1bmRlY2xhcmVkIChm
-aXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKbXRkLmM6NTMxOiBzdHJ1Y3R1cmUgaGFzIG5v
-IG1lbWJlciBuYW1lZCBgYWRkJwptdGQuYzogSW4gZnVuY3Rpb24gYHVucmVnaXN0ZXJfbXRk
-X3VzZXInOgptdGQuYzo1NDQ6IGBtdGRfdGFibGVfbXV0ZXgnIHVuZGVjbGFyZWQgKGZpcnN0
-IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQptdGQuYzo1NTI6IHN0cnVjdHVyZSBoYXMgbm8gbWVt
-YmVyIG5hbWVkIGByZW1vdmUnCm10ZC5jOiBJbiBmdW5jdGlvbiBgbXRkX3JlYWRfcHJvYyc6
-Cm10ZC5jOjU4ODogYG10ZF90YWJsZV9tdXRleCcgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGlu
-IHRoaXMgZnVuY3Rpb24pCm10ZC5jOiBBdCB0b3AgbGV2ZWw6Cm10ZC5jOjgwOiB3YXJuaW5n
-OiBgREVDTEFSRV9NVVRFWCcgZGVjbGFyZWQgYHN0YXRpYycgYnV0IG5ldmVyIGRlZmluZWQK
-bXRkLmM6Njc2OiB3YXJuaW5nOiBgY2xlYW51cF9tdGQnIGRlZmluZWQgYnV0IG5vdCB1c2Vk
-Cm1ha2VbNF06ICoqKiBbbXRkLm9dIEVycm9yIDEKbWFrZVs0XTogTGVhdmluZyBkaXJlY3Rv
-cnkgYC91c3Ivc3JjL2xpbnV4LTIuMi4xMi9kcml2ZXJzL2Jsb2NrL210ZCcKbWFrZVszXTog
-KioqIFtmaXJzdF9ydWxlXSBFcnJvciAyCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAv
-dXNyL3NyYy9saW51eC0yLjIuMTIvZHJpdmVycy9ibG9jay9tdGQnCm1ha2VbMl06ICoqKiBb
-X3N1YmRpcl9tdGRdIEVycm9yIDIKbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Iv
-c3JjL2xpbnV4LTIuMi4xMi9kcml2ZXJzL2Jsb2NrJwptYWtlWzFdOiAqKiogW19zdWJkaXJf
-YmxvY2tdIEVycm9yIDIKbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xp
-bnV4LTIuMi4xMi9kcml2ZXJzJwptYWtlOiAqKiogW19kaXJfZHJpdmVyc10gRXJyb3IgMgo=
---------------5BF441803B4CD81B4497A04C--
+compatmac.h contains a handful of macros which allow you to use 2.3 code 
+with 2.2 kernels. If you really can't update your kernel, you should be 
+able to get away with just grabbing a copy of include/linux/compatmac.h 
+from a newer kernel.
+
+
+
+--
+dwmw2
+
 
 
 
