@@ -1,19 +1,20 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16tSyQ-0007B8-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2002 13:37:46 +0100
-Date: Fri, 5 Apr 2002 14:37:45 +0200
-From: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-To: Claus Gindhart <claus.gindhart@pep.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 and Disk-On-Chip for PowerPC
-Message-ID: <20020405143745.A7852@wohnheim.fh-wedel.de>
-References: <E16tSbI-00079k-00@pentafluge.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E16tSbI-00079k-00@pentafluge.infradead.org>; from claus.gindhart@pep.de on Fri, Apr 05, 2002 at 02:15:20PM +0200
+Received: from prgv79.xdsl.pgtc.com ([65.163.80.196] helo=bitworks.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 16tXEK-0007PT-00
+	for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2002 18:10:28 +0100
+Received: from rsmth [192.168.0.18] by bitworks.com [127.0.0.1] with SMTP (MDaemon.v2.7.SP4.R) for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2002 11:13:03 -0600
+From: "Richard A. Smith" <rsmith@bitworks.com>
+To: "stepan@suse.de" <stepan@suse.de>
+Cc: "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 05 Apr 2002 11:09:54 -0600
+Reply-To: "Richard A. Smith" <rsmith@bitworks.com>
+In-Reply-To: <20020404123603.A2734@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Re: jedec_probe_chip error?
+Message-ID: <MDAEMON-F200204051113.AA130309MD40469@bitworks.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,18 +26,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 5 April 2002 14:15:20 +0200, Claus Gindhart wrote:
-> I have installed successfully MTD and NFTLA for Disk-On-Chip for PowerPC. But 
-> that i really want is a Journalling Flash File System. 
-> Is there any chance, that JFFS2 will run stable on Disk-On-Chip in the next 
-> time, also for non-x86 architectures ?
+On Thu, 4 Apr 2002 12:36:04 +0200, Stefan Reinauer wrote:
 
-I have no idea about DOC, but jffs2 doesn't have any issues with ppc.
-It runs just fine on some 403 and 405 based systems here.
+>
+>get /dev/bios from the OpenBIOS cvs tree:
+>http://www.freiburg.linux.de/OpenBIOS/dev/cvs.html
+>
 
-Jörn
+The Readme lists that this should work under a 2.2.x kernel, however
+I get serveral errors trying to compile with 2.2.19 
 
--- 
-A security system is only as secure as its secret. Beware of
-pseudo-secrets.
--- Eric Raymond in "The cathedral and the bazaar"
+Things like:
+
+structure has no member nameed 'resource'
+'PCI_ROM_RESOURCE' undeclared
+
+Does it sill work with 2.2.x?
+
+I'm using the latest tarball from the above link.  I was unable to
+get a CVS copy as it kept complaining that 'anonymous' was an unknown
+user.
+
+--
+Richard A. Smith                         Bitworks, Inc.               
+rsmith@bitworks.com               501.846.5777 x204                        
+Sr. Design Engineer        http://www.bitworks.com   
