@@ -1,15 +1,20 @@
-Received: from mail.mellanox.co.il ([194.90.237.34] helo=mtlex01.yok.mtl.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17ZteY-0006ro-00
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 14:36:38 +0100
-Message-ID: <91DB792C7985D411BEC300B40080D29C457DC9@mtvex01.mtv.mtl.com>
-From: Roee Friedman <roeef@mellanox.co.il>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Compiling mkfs.jffs
-Date: Wed, 31 Jul 2002 16:38:32 +0300
+Received: from h011.c007.snv.cp.net ([209.228.33.239] helo=c007.snv.cp.net)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17Zty9-0006vz-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2002 14:56:53 +0100
+Reply-To: <acurtis@directvinternet.com>
+From: <acurtis@directvinternet.com>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	<acurtis@directvinternet.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: What happened to 64-bit support? 
+Date: Wed, 31 Jul 2002 06:56:20 -0700
+Message-ID: <NCBBIINEHIPFGJPLBEIFOEBGDKAA.acurtis@directvinternet.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <31698.1028103598@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,12 +26,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello!
+> >  In theory yes. if CONFIG_MTD_CFI_B8 translates to 64-bits in config
+> > (which I believe it does, then yes) As I mentioned, the problem
+> > appears to be in the probe routines not liking an octet of 8.
+>
+> What exactly happens?
 
-I want to compile mkfs.jffs only, without all the kernel support (I want to
-run it on the host and create a JFFS2 image which I will write to flash on
-the target). Is it possible? What are the compilation flags?
+cfi_probe() terminates with an unsupported buswidth. The devices do get
+mounted as ROM but then they are read-only.
 
-Thanks!
-
-Roee
+Sequence:
+cfi - unsupported buswidth
+jedec - fails
+ROM - mapped but read-only
