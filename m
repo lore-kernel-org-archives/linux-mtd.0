@@ -1,23 +1,20 @@
-Received: from ptb-relay03.plus.net ([212.159.14.214])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D7d2Z-0001aV-LG
-	for linux-mtd@lists.infradead.org; Sat, 05 Mar 2005 12:26:12 -0500
-Received: from [80.229.56.123] (helo=central.bult.co.uk)
-	by ptb-relay03.plus.net with esmtp (Exim) id 1D7d2X-0005Pv-03
-	for linux-mtd@lists.infradead.org; Sat, 05 Mar 2005 17:26:09 +0000
-Received: from squizzey.bult.co.uk (squizzey [10.1.0.4])
-	by central.bult.co.uk (Postfix) with ESMTP id 502FF2464C
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 5 Mar 2005 17:24:58 +0000 (Local time zone must be set--see zic
-	manual page)
-From: Gareth Bult <gareth@linux.co.uk>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Sat, 05 Mar 2005 17:26:09 +0000
-Message-Id: <1110043569.11425.63.camel@squizzey.bult.co.uk>
-Mime-Version: 1.0
+Received: from relay01.mail-hub.dodo.com.au ([203.220.32.149])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D7mnS-0004F9-5K
+	for linux-mtd@lists.infradead.org; Sat, 05 Mar 2005 22:51:15 -0500
+Received: from [220.240.204.94] (helo=APOLLO)
+	by relay01.mail-hub.dodo.com.au with smtp (Exim 3.36 #2)
+	id 1D7mnP-00050l-00
+	for linux-mtd@lists.infradead.org; Sun, 06 Mar 2005 14:51:11 +1100
+From: "Matt Garratt" <m.garratt@adfa.edu.au>
+To: <linux-mtd@lists.infradead.org>
+Date: Sun, 6 Mar 2005 14:51:38 +1100
+Message-ID: <HMEGLJJFEGIOMNFLAPOFCEAICEAA.m.garratt@adfa.edu.au>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: Re; MTD (2) Block Driver broken
+Subject: docboot freeze
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi All,
 
-A little while back I re-wrote blkmtd.c effectively to provide proper
-"write" access to jffs2 filesystems mounted on standard Linux block
-devices.
+I am trying to get docboot to work with a new inftla DOC2000 but docboot
+freezes after:
 
-The driver seems to have worked well (for me) and after many thousands
-of downloads of FlashLinux, I've not had any reports of JFFS2 problems
-or corruption.
+Loading kernel.......Loading initrd.....
 
-It appears that someone has "cleaned up" this driver and it now appears
-as an option in the standard kernel tree for 2.6.11.
+My cmdline is:
 
-Unfortunately it doesn't appear to work. As soon as you mount a JFFS2
-filesystem on it and try to write data, corruption sets in resulting is
-a fairly sharp system crash.
+  root=/dev/ram0 rootfstype=ext2 ro console=tty0,9600
 
-Copying back the source from the original driver I submitted to this
-list and recompiling the kernel (with a one line change) appears to
-yield a working system again.
+My /etc/lilo.conf stanza (which works from hard disk with the same bzImage
+and initrd file) is:
 
-So, two questions;
-a.	Did anyone actually test the code after cleaning it up?
-b.	Were there any life changing improvements that I really
-	*need* to make to the original code?
+image = /boot/bzImage
+  root = /dev/ram0
+  label = ramOS
+  initrd = /boot/tiny.image.ext2.gz
+  read-only
 
-tia
-Gareth
+I may be misinterpreting the meaning of the cmdline parameters, but any
+suggestions would be very welcome.
 
--- 
-Gareth Bult <gareth@linux.co.uk>
+I am using a 2.6.9 kernel patched from cvs. I am not using jffs2.
+
+Matt
