@@ -1,20 +1,16 @@
-Received: from real.realitydiluted.com ([208.242.241.164])
+Received: from krynn.axis.se ([193.13.178.10])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15HUS4-0002J3-00
-	for <linux-mtd@lists.infradead.org>; Tue, 03 Jul 2001 18:59:09 +0100
-Message-ID: <3B42078E.8E6539F7@cotw.com>
-Date: Tue, 03 Jul 2001 12:57:34 -0500
-From: "Steven J. Hill" <sjhill@cotw.com>
-Reply-To: sjhill@cotw.com
+	id 15HZrJ-0002cE-00
+	for <linux-mtd@lists.infradead.org>; Wed, 04 Jul 2001 00:45:33 +0100
+Date: Wed, 4 Jul 2001 01:53:00 +0200 (CEST)
+From: Bjorn Wesen <bjorn.wesen@axis.com>
+To: MTD for Linux <linux-mtd@lists.infradead.org>
+cc: Kyle Harris <kharris@nexus-tech.net>, Vipin Malik <vipin.malik@daniel.com>
+Subject: On the "safe filesystem" and write() topic
+In-Reply-To: <3B32645D.BF65C965@nexus-tech.net>
+Message-ID: <Pine.LNX.4.21.0107040109450.16799-100000@godzilla.axis.se>
 MIME-Version: 1.0
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-CC: "Adam J. Richter" <adam@yggdrasil.com>, dwmw2@redhat.com,
- 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- 	torvalds@transmeta.com
-Subject: Re: linux-2.4.6-pre8/drivers/mtd/nand/spia.c: undefined symbols
-References: <E15H3C2-0005qS-00@the-village.bc.nu>
-Content-Type: multipart/mixed;
- boundary="------------94D7EE1425B8BCB7DFCFBFDE"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,92 +22,77 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------94D7EE1425B8BCB7DFCFBFDE
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Alan Cox wrote:
-> 
-> > The way that I architected the raw NAND flash device driver was to
-> > break it into 2 parts. 'nand.c' contains the actual driver code and
-> > is considered to be device independent. 'spia.c' is the device
-> > dependent part. You should write your own version of 'spia.c' and
-> 
-> So the Config.in is wrong since I can select spia on x86
-> 
-Indeed. That should be fixed now with this patch. Now onto the stuff
-for ESR.
+I designed the JFFS specifications, log layout and GC method in the first
+place and me and Finn put a lot of thought into it while implementing so
+please consider some of these late night ramblings:
 
--Steve
+The initial requirement was that a small partition of configuration files
+(the /etc directory to be more specific) should be able to reside in flash
+and be completely safe from inconvenient power-outs or crashes.
 
--- 
- Steven J. Hill - Embedded SW Engineer
---------------94D7EE1425B8BCB7DFCFBFDE
-Content-Type: application/octet-stream;
- name="spia.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="spia.diff"
+It is my opinion (of course) that JFFS solves this in a manner as good as
+possible given the standard Linux VFS API. This means that when you
+rewrite a configuration file, you write the new one to another file and do
+a rename over the old once you're ready. Technically JFFS is based on a
+log structure consisting of VFS operations, and this is the best you can
+do while not involving the application more than what standard VFS gives
+you. VFS operations are not "transactions" in the high-level sense though.
 
-ZGlmZiAtdXJOIGxpbnV4LTIuNC42LXByZTkvZHJpdmVycy9tdGQvbmFuZC9Db25maWcuaW4g
-bGludXgtMi40LjYtcHJlOS1wYXRjaGVkL2RyaXZlcnMvbXRkL25hbmQvQ29uZmlnLmluCi0t
-LSBsaW51eC0yLjQuNi1wcmU5L2RyaXZlcnMvbXRkL25hbmQvQ29uZmlnLmluCVR1ZSBKdWwg
-IDMgMTE6Mjk6MDEgMjAwMQorKysgbGludXgtMi40LjYtcHJlOS1wYXRjaGVkL2RyaXZlcnMv
-bXRkL25hbmQvQ29uZmlnLmluCVR1ZSBKdWwgIDMgMTI6NTE6MTkgMjAwMQpAQCAtMSw2ICsx
-LDYgQEAKICMgZHJpdmVycy9tdGQvbmFuZC9Db25maWcuaW4KIAotIyAkSWQ6IENvbmZpZy5p
-bix2IDEuMSAyMDAxLzA0LzIwIDE1OjI3OjM4IGR3bXcyIEV4cCAkCisjICRJZDogQ29uZmln
-LmluLHYgMS4zIDIwMDEvMDcvMDMgMTc6NTA6NTYgc2poaWxsIEV4cCAkCiAKIG1haW5tZW51
-X29wdGlvbiBuZXh0X2NvbW1lbnQKIApAQCAtMTEsNiArMTEsOCBAQAogICAgYm9vbCAnICAg
-IEVuYWJsZSBFQ0MgY29ycmVjdGlvbiBhbGdvcml0aG0nICBDT05GSUdfTVREX05BTkRfRUND
-IHkKICAgIGJvb2wgJyAgICBWZXJpZnkgTkFORCBwYWdlIHdyaXRlcycgQ09ORklHX01URF9O
-QU5EX1ZFUklGWV9XUklURSB5CiBmaQotZGVwX3RyaXN0YXRlICcgIE5BTkQgRmxhc2ggZGV2
-aWNlIG9uIFNQSUEgYm9hcmQnIENPTkZJR19NVERfTkFORF9TUElBICRDT05GSUdfTVREX05B
-TkQKK2lmIFsgIiRDT05GSUdfQVJNIiA9ICJ5IiAtYSAiJENPTkZJR19BUkNIX1A3MjBUIiA9
-ICJ5IiBdOyB0aGVuCisgICBkZXBfdHJpc3RhdGUgJyAgTkFORCBGbGFzaCBkZXZpY2Ugb24g
-U1BJQSBib2FyZCcgQ09ORklHX01URF9OQU5EX1NQSUEgJENPTkZJR19NVERfTkFORAorZmkK
-IAogZW5kbWVudQpkaWZmIC11ck4gbGludXgtMi40LjYtcHJlOS9kcml2ZXJzL210ZC9uYW5k
-L3NwaWEuYyBsaW51eC0yLjQuNi1wcmU5LXBhdGNoZWQvZHJpdmVycy9tdGQvbmFuZC9zcGlh
-LmMKLS0tIGxpbnV4LTIuNC42LXByZTkvZHJpdmVycy9tdGQvbmFuZC9zcGlhLmMJVHVlIEp1
-bCAgMyAxMToyOTowMSAyMDAxCisrKyBsaW51eC0yLjQuNi1wcmU5LXBhdGNoZWQvZHJpdmVy
-cy9tdGQvbmFuZC9zcGlhLmMJVHVlIEp1bCAgMyAxMjo1MToxNCAyMDAxCkBAIC0zLDcgKzMs
-NyBAQAogICoKICAqICBDb3B5cmlnaHQgKEMpIDIwMDAgU3RldmVuIEouIEhpbGwgKHNqaGls
-bEBjb3R3LmNvbSkKICAqCi0gKiAkSWQ6IHNwaWEuYyx2IDEuOSAyMDAxLzA2LzAyIDE0OjQ3
-OjE2IGR3bXcyIEV4cCAkCisgKiAkSWQ6IHNwaWEuYyx2IDEuMTEgMjAwMS8wNy8wMyAxNzo1
-MDo1NiBzamhpbGwgRXhwICQKICAqCiAgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2Fy
-ZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogICogaXQgdW5kZXIg
-dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIg
-YXMKQEAgLTI4LDYgKzI4LDIyIEBACiBzdGF0aWMgc3RydWN0IG10ZF9pbmZvICpzcGlhX210
-ZCA9IE5VTEw7CiAKIC8qCisgKiBWYWx1ZXMgc3BlY2lmaWMgdG8gdGhlIFNQSUEgYm9hcmQg
-KHVzZWQgd2l0aCBFUDcyMTIgcHJvY2Vzc29yKQorICovCisjZGVmaW5lIFNQSUFfSU9fQURE
-Ugk9IDB4ZDAwMDAwMDAJLyogU3RhcnQgb2YgRVA3MjEyIElPIGFkZHJlc3Mgc3BhY2UgKi8K
-KyNkZWZpbmUgU1BJQV9GSU9fQUREUgk9IDB4ZjAwMDAwMDAJLyogQWRkcmVzcyB3aGVyZSBm
-bGFzaCBpcyBtYXBwZWQgKi8KKyNkZWZpbmUgU1BJQV9QRURSCT0gMHgwMDgwCS8qCisJCQkJ
-CSAqIElPIG9mZnNldCB0byBQb3J0IEUgZGF0YSByZWdpc3RlcgorCQkJCQkgKiB3aGVyZSB0
-aGUgQ0xFLCBBTEUgYW5kIE5DRSBwaW5zCisJCQkJCSAqIGFyZSB3aXJlZCB0by4KKwkJCQkJ
-ICovCisjZGVmaW5lIFNQSUFfUEVERFIJPSAweDAwYzAJLyoKKwkJCQkJICogSU8gb2Zmc2V0
-IHRvIFBvcnQgRSBkYXRhIGRpcmVjdGlvbgorCQkJCQkgKiByZWdpc3RlciBzbyB3ZSBjYW4g
-Y29udHJvbCB0aGUgSU8KKwkJCQkJICogbGluZXMuCisJCQkJCSAqLworCisvKgogICogTW9k
-dWxlIHN0dWZmCiAgKi8KICNpZiBMSU5VWF9WRVJTSU9OX0NPREUgPCAweDIwMjEyICYmIGRl
-ZmluZWQoTU9EVUxFKQpAQCAtMzUsNiArNTEsMjEgQEAKICAgI2RlZmluZSBzcGlhX2NsZWFu
-dXAgY2xlYW51cF9tb2R1bGUKICNlbmRpZgogCitzdGF0aWMgaW50IHNwaWFfaW9fYmFzZSA9
-IFNQSUFfSU9fQkFTRTsKK3N0YXRpYyBpbnQgc3BpYV9maW9fYmFzZSA9IFNQSUFfRklPX0JB
-U0U7CitzdGF0aWMgaW50IHNwaWFfcGVkciA9IFNQSUFfUEVEUjsKK3N0YXRpYyBpbnQgc3Bp
-YV9wZWRkciA9IFNQSUFfUEVERFI7CisKK01PRFVMRV9QQVJNKHNwaWFfaW9fYmFzZSwgImki
-KTsKK01PRFVMRV9QQVJNKHNwaWFfZmlvX2Jhc2UsICJpIik7CitNT0RVTEVfUEFSTShzcGlh
-X3BlZHIsICJpIik7CitNT0RVTEVfUEFSTShzcGlhX3BlZGRyLCAiaSIpOworCitfX3NldHVw
-KCJzcGlhX2lvX2Jhc2U9IixzcGlhX2lvX2Jhc2UpOworX19zZXR1cCgic3BpYV9maW9fYmFz
-ZT0iLHNwaWFfZmlvX2Jhc2UpOworX19zZXR1cCgic3BpYV9wZWRyPSIsc3BpYV9wZWRyKTsK
-K19fc2V0dXAoInNwaWFfcGVkZHI9IixzcGlhX3BlZGRyKTsKKwogLyoKICAqIERlZmluZSBw
-YXJ0aXRpb25zIGZvciBmbGFzaCBkZXZpY2UKICAqLwpAQCAtNzcsMTEgKzEwOCwxMSBAQAog
-CSAqIFNldCBHUElPIFBvcnQgRSBjb250cm9sIHJlZ2lzdGVyIHNvIHRoYXQgdGhlIHBpbnMg
-YXJlIGNvbmZpZ3VyZWQKIAkgKiB0byBiZSBvdXRwdXRzIGZvciBjb250cm9sbGluZyB0aGUg
-TkFORCBmbGFzaC4KIAkgKi8KLQkoKih2b2xhdGlsZSB1bnNpZ25lZCBjaGFyICopIChJT19C
-QVNFICsgUEVERFIpKSA9IDB4MDc7CisJKCoodm9sYXRpbGUgdW5zaWduZWQgY2hhciAqKSAo
-c3BpYV9pb19iYXNlICsgc3BpYV9wZWRkcikpID0gMHgwNzsKIAogCS8qIFNldCBhZGRyZXNz
-IG9mIE5BTkQgSU8gbGluZXMgKi8KLQl0aGlzLT5JT19BRERSID0gRklPX0JBU0U7Ci0JdGhp
-cy0+Q1RSTF9BRERSID0gSU9fQkFTRSArIFBFRFI7CisJdGhpcy0+SU9fQUREUiA9IHNwaWFf
-ZmlvX2Jhc2U7CisJdGhpcy0+Q1RSTF9BRERSID0gc3BpYV9pb19iYXNlICsgc3BpYV9wZWRy
-OwogCXRoaXMtPkNMRSA9IDB4MDE7CiAJdGhpcy0+QUxFID0gMHgwMjsKIAl0aGlzLT5OQ0Ug
-PSAweDA0Owo=
---------------94D7EE1425B8BCB7DFCFBFDE--
+In our embedded products this is handled by a configuration handling
+daemon similar to linuxconf, which caches parameters and knows how to
+rewrite configuration files atomically (just like any other sane Unix
+program does it). There is no need for any transactional semantics for
+small configuration files. We sell a lot of these products and I certainly
+disagree with Vipin's comment on his website that it's impossible to use
+JFFS in embedded products :) Log-files are not usually kept in flash and
+if they are they don't need anything more advanced than normal rotation
+and if a crash occurs, it's no big deal if the last line gets cut off
+completely or in the middle...
+
+It is difficult (if not impossible) in any consistant way to handle the
+case with random write()'s inside an already existing file. The filesystem
+needs to "roll back" to any pre-existing state but it then needs to
+know what the desired state would be. What we do now is make sure the
+filsystem itself is never corrupt even if a file was under writing.
+
+The problems arise from the vague definition of what the desired state
+would be - is it the data before the last write(), and what happens if you
+receive a signal ? Writes to mmap'ed pages can't use that mechanism, and
+you'll be stuck with using write()'s when you really probably want to use
+libc wrappers like fwrite and fprintf.
+
+I agree that if you need a binary database which is big so that you cannot
+rewrite it when you update something, you'll need to rethink. Either just
+split the database in smaller files, or you'll need a transaction marker
+API down to the filesystem (an ioctl pair was suggested somewhere I
+think). I don't think trying to tweak write() would lead to anything
+generally useful though.
+
+The kernel-level transactional extension would probably be quite difficult
+to get consistent also, because Linux VFS does not know about it yet (this
+is eventually changing with the integration of the general journalling
+layer I guess). I get a headache thinking about it, perhaps it's possible
+perhaps it's not; perhaps this code already exist in the other journalling
+filesystems, perhaps it does not.
+
+With regards to Kyle's question below though, the answer is certainly that
+he can do as he says but use the rename() operation and keep them on a
+single partition. There is no need for anything more advanced.. 
+
+(All this assumes other more technical problems are solved of course like
+the nasty surprises we've had with some flashes getting bits halfway
+erased...)
+
+/BW
+
+On Thu, 21 Jun 2001, Kyle Harris wrote:
+> I've read thru several posts and Vipin's jffs_guide. It appears that
+> JFFS, at his time, is about the most reliable open source fs for
+> embedded systems, even though it still has some problems. When JFFS
+> fails, is the filesystem still usable? My question is this. What if you
+> save only a small datafile (< 1K) and write it alternately to 2
+> different JFFS partitions (or even the same partition). At boot, you
+> read from both and get the latest, valid copy. This way if one is bad
+> you still have a backup. How reliable would this be? 
