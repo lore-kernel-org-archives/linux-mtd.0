@@ -1,17 +1,14 @@
-Received: from webapps.arcom.com ([194.200.159.168])
+Received: from bay14-f21.bay14.hotmail.com ([64.4.49.21] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BNpKL-0006Bc-Df
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2004 09:42:57 +0100
-From: Ian Campbell <icampbell@arcom.com>
-To: Linux MTD Mailing List <linux-mtd@lists.infradead.org>
-In-Reply-To: <001f01c43779$893048f0$0319a8c0@dominio1.ingalmudi.com>
-References: <001f01c43779$893048f0$0319a8c0@dominio1.ingalmudi.com>
-Content-Type: text/plain
-Message-Id: <1084351374.9910.10.camel@icampbell-debian>
+	id 1BNuUh-000743-HR
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2004 15:13:59 +0100
+From: "J C" <jjcar1526@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 12 May 2004 10:13:37 -0400
 Mime-Version: 1.0
-Date: Wed, 12 May 2004 09:42:55 +0100
-Content-Transfer-Encoding: 7bit
-Subject: RE: symbolic link with jffs2
+Content-Type: text/plain; format=flowed
+Message-ID: <BAY14-F215ScEbWIyTW000329ac@hotmail.com>
+Subject: MD2811-D32 DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +18,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-05-11 at 18:01, Jose Pascual wrote:
+Hello all,
 
-> I have found that symlink is broken if the length of char of the name is
-> pointing is odd but not with even.
-> 
-> any suggestion?
+  I am having problems with the DOC MD2811-D32.  I am assuming to use the 
+nand drivers for it since M-sys says it is nand technology.  The diskonchip 
+module in the nand directory will not compile.  I am using kernel 
+2.4.21-rmk1-omap and it is patched with the latest drivers.  Can anyone tell 
+me if there is a newer version where diskonchip isn't broken date 3-27-2004 
+on the diskonchip module.
 
-Way back in the mists of time I had a similar problem which turned out
-to be due to copy_from/copy_to in my mapping driver not handling
-unaligned copies properly.
+Regards,
+John
 
-I'm not sure if I am remembering right and I can't find any link to any
-details -- but I would start by adding some print statements to
-copy_from and making sure it is working right in all cases.
-
-Ian.
-
--- 
-Ian Campbell, Senior Design Engineer
-                                        Web: http://www.arcom.com
-Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
-Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
+_________________________________________________________________
+Check out the coupons and bargains on MSN Offers! http://youroffers.msn.com
