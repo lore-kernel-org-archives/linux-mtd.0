@@ -1,16 +1,20 @@
-Received: from samar.sasken.com ([164.164.56.2])
+Received: from f04s07.cac.psu.edu ([128.118.141.35] helo=f04n07.cac.psu.edu)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15cJ5w-0006KM-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2001 05:06:21 +0100
-Message-ID: <3B8E0B3B.3182A367@sasken.com>
-Date: Thu, 30 Aug 2001 09:45:31 +0000
-From: Ashok M Padmanaban <ashokmp@sasken.com>
+	id 15ceP7-0007uo-00
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2001 03:51:33 +0100
+Received: from nrl1 (nrl1.cedcc.psu.edu [130.203.252.61])
+	by f04n07.cac.psu.edu (8.9.3/8.9.3) with SMTP id WAA76256
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2001 22:57:31 -0400
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Bill <wrs122@psu.edu>
+Reply-To: wrs122@psu.edu
+To: linux-mtd@lists.infradead.org
+Subject: DOC2000 Boot de-ja-vue
+Date: Thu, 30 Aug 2001 22:59:44 -0400
 MIME-Version: 1.0
-To: MTD for Linux <linux-mtd@lists.infradead.org>,
-   JFFS mailing list <jffs-dev@axis.com>
-Subject: Lock utility in MTD util directory.
-Content-Type: multipart/mixed;
- boundary="------------A4CCDFC7AD012BE17D34CFB3"
+Message-Id: <01083022594400.01562@nrl1>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,37 +26,23 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-This is a multi-part message in MIME format.
---------------A4CCDFC7AD012BE17D34CFB3
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Well, DOC2000 seems happy now kinda. I think my problem is with Linux. Here 
+is the end of my boot screen:
 
-Hi,
-  how can i use the lock utiliry in the MTD/util directory.
-Has any one had success in using it. Can i use the unlock utility
-to reverse back to the configuration.
-thanks and regards
-ashok
+blah... blah... blah...
+NFTL driver: nftlcore.c $Revision: 1.78 $, nftlmount.c $Revision: 1.21 $
+Cannot calculate an NFTL geometry to match size of 0x46840
+Using C:1002 H:16 S:18 (== 0x46740 sects)
+ nftla: nftla1
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+IP: routing cache hash table of 2048 buckets, 16 Kbytes
+TCP: Hash tables configured (established 16384 bind 16384)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0
+VFS: Mounted root (ext2 filesystem) readonly.
+Freeing unused kernel memory 204k freed
+Kernel panic: No init found. Try passing init= option to kernel.
 
---------------A4CCDFC7AD012BE17D34CFB3
-Content-Type: text/x-vcard; charset=us-ascii;
- name="ashokmp.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Description: Card for Ashok M Padmanaban
-Content-Disposition: attachment;
- filename="ashokmp.vcf"
+It mounts the device fine but then dies. Any ideas?
 
-begin:vcard 
-n:.m.padmanabhan;ashok
-tel;work:5281461/5281229 ext 3096
-x-mozilla-html:FALSE
-org:sasken communication technologies ltd;internt access solutions
-version:2.1
-email;internet:ashokmp@sasken.com
-title:software engineer
-adr;quoted-printable:;;3008,12 th B cross,=0D=0Aindranagar	;banglore;;;india
-x-mozilla-cpt:;0
-fn:ashok .m.padmanabhan
-end:vcard
-
---------------A4CCDFC7AD012BE17D34CFB3--
+-Bill
