@@ -1,18 +1,22 @@
-Received: from nwd2mime2.analog.com ([137.71.25.114])
+Received: from ip10.savigear.adsl.uk.xo.com ([195.147.222.170] helo=xerp.secret.org.uk)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17G1a0-0008DJ-00
-	for <linux-mtd@lists.infradead.org>; Thu, 06 Jun 2002 19:01:48 +0100
-Message-ID: <3CFFA37C.F222E9E0@analog.com>
-Date: Thu, 06 Jun 2002 11:01:32 -0700
-From: Justin Wojdacki <justin.wojdacki@analog.com>
-Reply-To: justin.wojdacki@analog.com
-MIME-Version: 1.0
-To: Gad Hayisraeli <gad@syete.co.il>
-CC: Linux - MTD list <linux-mtd@lists.infradead.org>
-Subject: Re: Fw: jffs2 crc errors
-References: <006801c20d82$697b6800$1900000a@v.vmanage.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 17GJxI-0000qp-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Jun 2002 14:39:04 +0100
+Received: from spoinky.renegade.org.uk ([192.168.1.2])
+	by xerp.secret.org.uk with esmtp (Exim 3.33 #1)
+	id 17GJxG-0005M0-00
+	for linux-mtd@lists.infradead.org; Fri, 07 Jun 2002 14:39:02 +0100
+Received: from localhost ([127.0.0.1] helo=secret.org.uk)
+	by spoinky.renegade.org.uk with esmtp (Exim 3.35 #1 (Debian))
+	id 17GJxF-0001dQ-00
+	for <linux-mtd@lists.infradead.org>; Fri, 07 Jun 2002 14:39:01 +0100
+From: Simon Evans <spse@secret.org.uk>
+To: linux-mtd@lists.infradead.org
+Subject: module usage counting in mtdblock
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 07 Jun 2002 14:39:00 +0100
+Message-Id: <E17GJxF-0001dQ-00@spoinky.renegade.org.uk>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,35 +28,50 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Gad Hayisraeli wrote:
-> 
-> > i encounter this err in boot:
-> >
-> > jffs2_scan_inode_node(): Data CRC failed on node at 0x001eaa24: Read
-> > 0xda7b03c2,
-> >  calculated 0x0da9fb30
-> >
-> > and it keeps appearing every boot.
-> >
-> > is it bad ?
-> >
-> > maybe its not fixed becuse i'm terminating the jffs optimization thread in
-> > the middle of the init process ?
-> >
-> > thanks
-> >
-> > Gad
-> 
+Hi,
 
-Well, this could mean that the sector the node is in is going bad
-(which would be a bad thing for you). Or it could mean that the write
-process didn't complete, and so the calculated CRC is coming off of
-stale data.
+I think there is a bug in mtdblock where the open() leaves the module count
+1 more than it should be and it should be using BLK_{INC,DEC}_USE_COUNT
+everywhere instead of MOD_{INC,DEC}_USE_COUNT
 
-Why are you killing off the optimization thread? 
+(BLK_{INC,DEC}_USE_COUNT are nops on >= 2.4.14 due to module counting being
+done by fs/block_dev.c)
 
--- 
--------------------------------------------------
-Justin Wojdacki        
-justin.wojdacki@analog.com         (408) 350-5032
-Communications Processors Group -- Analog Devices
+Does the following look correct?
+
+cheers
+si
+
+
+Index: mtdblock.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/mtdblock.c,v
+retrieving revision 1.54
+diff -u -r1.54 mtdblock.c
+--- mtdblock.c	3 May 2002 16:46:24 -0000	1.54
++++ mtdblock.c	7 Jun 2002 13:26:01 -0000
+@@ -280,11 +280,13 @@
+ 	if (dev >= MAX_MTD_DEVICES)
+ 		return -EINVAL;
+ 
+-	MOD_INC_USE_COUNT;
++	BLK_INC_USE_COUNT;
+ 
+ 	mtd = get_mtd_device(NULL, dev);
+-	if (!mtd)
++	if (!mtd) {
++		BLK_DEC_USE_COUNT;
+ 		return -ENODEV;
++	}
+ 	if (MTD_ABSENT == mtd->type) {
+ 		put_mtd_device(mtd);
+ 		BLK_DEC_USE_COUNT;
+@@ -326,7 +328,7 @@
+ 		if (!mtdblk->cache_data) {
+ 			put_mtd_device(mtdblk->mtd);
+ 			kfree(mtdblk);
+-			MOD_DEC_USE_COUNT;
++			BLK_DEC_USE_COUNT;
+ 			return -ENOMEM;
+ 		}
+ 	}
