@@ -1,42 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13D02V-0006Cj-00
-	for mtd-list@infradead.org; Fri, 14 Jul 2000 08:37:39 +0100
+	id 13D3Hz-0006eu-00
+	for mtd-list@infradead.org; Fri, 14 Jul 2000 12:05:51 +0100
 Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
 	by infradead.org with smtp (Exim 3.03 #1)
-	id 13D02U-0006Cd-00
-	for mtd@infradead.org; Fri, 14 Jul 2000 08:37:38 +0100
+	id 13D3Hx-0006eo-00
+	for mtd@infradead.org; Fri, 14 Jul 2000 12:05:50 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20000713200952.1875.qmail@web5302.mail.yahoo.com> 
-References: <20000713200952.1875.qmail@web5302.mail.yahoo.com> 
-To: Juan Gonzo <kayemmess@yahoo.ca>
-Cc: MTD Mailing List <mtd@infradead.org>
-Subject: Re: persistence of files using jffs 
+In-Reply-To: <E1397tM-0004tu-00@the-village.bc.nu> 
+References: <E1397tM-0004tu-00@the-village.bc.nu> 
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: nico@cam.org (Nicolas Pitre), jgg@ualberta.ca (Jason Gunthorpe),
+  bjorn.wesen@axis.com (Bjorn Wesen), jffs-dev@axis.com, mtd@infradead.org
+Subject: Re: garbage collect 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 14 Jul 2000 08:37:36 +0100
-Message-ID: <9496.963560256@cygnus.co.uk>
+Date: Fri, 14 Jul 2000 12:05:34 +0100
+Message-ID: <8096.963572734@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-kayemmess@yahoo.ca said:
->    (1) mknod /dev/mtd3 b 31 3   (mtd3 is where the fs 'partition' is,
->                                  using examples from nora.c)
+alan@lxorguk.ukuu.org.uk said:
+> > MTD devices are not even vaguely related to block devices, and don't
+> > go anywhere near the buffer cache.
 
-The block devices should be /dev/mtdblock<n>. /dev/mtd3 should be a 
-character device. But the names don't really matter.
+> The interesting question is should they. Withouth them going via the
+> block layer you wont be able to mirror them or potentially run a
+> loopback fs over them soon 
 
+I had a chat with sct about this. For mirroring the answer is definitely 
+"Do it in the VFS". 
 
-kayemmess@yahoo.ca said:
->  And I can 'umount /mnt' successfully as well.
-> However, when I cycle power on the system, any *new* files I create or
-> copy into this space are lost. 
-
-Hmmm. Are they there when you unmount and remount? Can you make sure you're 
-using the latest version from CVS, and enable CONFIG_JFFS_FS_VERBOSE?
-
-
+Loopback I still maintain should be done via nbd.
 
 --
 dwmw2
