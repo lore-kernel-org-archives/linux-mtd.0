@@ -1,15 +1,20 @@
-Received: from web52010.mail.yahoo.com ([206.190.39.66])
-	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CCihB-0006QV-0w
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2004 13:56:54 -0400
-Message-ID: <20040929163916.19236.qmail@web52010.mail.yahoo.com>
-Date: Wed, 29 Sep 2004 09:39:16 -0700 (PDT)
-From: Mark D Horn <mhorn@acm.org>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CCjt4-0006gS-4L
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2004 15:13:15 -0400
+Date: Wed, 29 Sep 2004 20:13:07 +0100
+From: Ben Dooks <ben@fluff.org.uk>
+To: "lp4u@inwind.it" <lp4u@inwind.it>
+Message-ID: <20040929191307.GL22627@home.fluff.org>
+References: <I4SQEX$87F965B35ECF509E90791E3541F12398@libero.it>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: deadlock w/ processes accessing jffs2
-Reply-To: mhorn@acm.org
+Content-Disposition: inline
+In-Reply-To: <I4SQEX$87F965B35ECF509E90791E3541F12398@libero.it>
+Sender: Ben Dooks <ben@fluff.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: s3c2410 nand controller (#2)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,109 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Was there ever and answer to the issue?  I'm seeing
-the same problem on a 2.4.10 kernel.
- 
-Much thanks,
---mark
+On Wed, Sep 29, 2004 at 11:30:33AM +0200, lp4u@inwind.it wrote:
+> Hi,
+> 
+> I've trying, but I receive an error; this is my compiling error message:
 
---------------------------------------------------------------------------------
+[snip]
 
->From January Archive:
+rmk posted a fix for the first compile problem, that I think got into
+either 2.6.9-rc2-bk12 or 2.6.9-rc2-bk13, so go and get the latest release.
 
-deadlock w/ processes accessing jffs2
-Pierre Vandwalle PierreVandwalle at AirgoNetworks.Com 
-Sat Jan 24 13:02:33 GMT 2004 
+Secondly, you will also need to apply the following patch:
 
---------------------------------------------------------------------------------
-
-Hello ,
- 
-I am sorry to bother you like this, I am seeing
-deadlocks with JFFS2 on our system (we're making a
-wi-fi system with 2.4.20 powerPC on system with
-M-system flash, we're using JFFS2).
-I don't know if this deadlock has been fixed already
-in more recent versions of JFFS2, I checked kernels
-2.4.24 and 2.6.1 and the issue seems to be there
-although it might be fixed at other levels of the
-kernel or jffs2???
-
-More specifically I think that there is a race
-condition between two process on the following
-condition:
-1- first process is in jffs2_setattr doing an
-open/create which require
-truncating some of the file's inode page lists
-2- second process is in do_generic_file_read on the
-same file
-3- the inode has non up-to-date pages present in the
-page cache
-
-In short words, "do_generic_file_read"  locks a non 
-up-to-date page present in the cache, and then will
-attempt to get the inode's jffs2_inode_info semaphore
-in the jffs2_readpage.
-Whereas the jffs2_setattr will get the inode's
-semaphore, then maybe sleep, then will attempt to lock
-pages for inode truncation.
----> this seems cause a deadlock on my system...
-
- 
-
-Thank you so much, regards,
-
-Pierre
-
-------------------------------------------------------------
+http://www.fluff.org/ben/linux-26/mtd-bast1.patch
+and ensure CONFIG_BAST_NAND is set
 
 
-Deadlock sequence:
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-The first process (open/create) gets the
-jffs2_inode_semaphore, it then allocates and writes a
-new inode thru jffs2_write_dnode and at this point may
-sleep (in our system probably waiting in kmalloc on a
-memory alloc or on mtd I/O).
-
-During the sleep, the second process (read) may obtain
-the lock of one of the inode's page if the page is
-present in the page_cache and is not up_to_date.
-Moreover as it is not up to date the process will try
-to read this page thru jffs2_readpage, at this point
-jffs2_readpage will also try to get the page's
-host semaphore which is just the jffs2_inode_info
-semaphore owned by process1.
-As the semaphore is taken, the second process sleeps.
-
-Now the first process wakes up, completes its write
-and tries to truncate the page lists of the inode. For
-the truncation to happen, it has to obtain the
-lock on each page of the lists, this trigger the
-deadlock (as the first process has the lock).
-
-
->From the code viewpoint:
-------------------------
-
-Process 1 in jffs2_setattr() the steps are:
-
-1) down(&f->sem); //get inode's semaphore
-2) jffs2_write_dnode(); //may sleep
-3) vmtruncate(inode, ri->isize); //needs the lock on
-pages attached to inode
-
-
-Process 2 in do_generic_file_read() the steps are:
-
-1) page = __find_page_nolock(mapping, index, *hash);
-//get the page from the
-cache
-2) if (!Page_Uptodate(page)) goto page_not_up_to_date;
-3) page_not_up_to_date:
-                ...
-                lock_page(page); //if not up to date,
-lock the page
-4) error = mapping->a_ops->readpage(filp, page);
-//needs the page's host
-semaphore, do not unlock the page
+  'a smiley only costs 4 bytes'
