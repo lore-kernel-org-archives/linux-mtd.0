@@ -1,18 +1,18 @@
-Received: from isengard.yottayotta.com ([209.115.177.37])
+Received: from oe27.law10.hotmail.com ([64.4.14.84] helo=hotmail.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 171BEU-0001YK-00
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 20:18:14 +0100
-Message-ID: <3CC9A794.4070706@yottayotta.com>
-Date: Fri, 26 Apr 2002 13:16:36 -0600
-From: Murtada Shah <mshah@yottayotta.com>
+	id 171BIr-0001Yy-00
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2002 20:22:45 +0100
+From: "Gregg C Levine" <mrspock1962@hotmail.com>
+To: "'Dzuy Nguyen'" <dzuy@infinity-studios.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: RE: Current price for DoC devices
+Date: Fri, 26 Apr 2002 15:22:25 -0400
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAApkSt2kP11RGLWwABAjrE9cKAAAAQAAAAJf6Y1gRZ1hGLXAABAjrE9QEAAAAA@hotmail.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.arm.linux.org.uk
-Subject: Re: Kernel removing directories
-References: <3CC8C1C9.80709@yottayotta.com> <14375.1019801767@redhat.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <3CC8C662.8030408@infinity-studios.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +24,120 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-There is nothing displayed before it... Even with debug set to 2
-Just "Netwinder Floating Point Emulator"..
+Hello again from Gregg C Levine
+Just an ordinary SBC, its still at the paper and pencil stage.
+-------------------
+Gregg C Levine hansolofalcon@worldnet.att.net
+------------------------------------------------------------
+"The Force will be with you...Always." Obi-Wan Kenobi
+"Use the Force, Luke."=A0 Obi-Wan Kenobi
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+(This company dedicates this E-Mail to Master Yoda )
+-----Original Message-----
+From: Dzuy Nguyen [mailto:dzuy@infinity-studios.com]=20
+Sent: Thursday, April 25, 2002 11:16 PM
+To: Gregg C Levine
+Subject: Re: Current price for DoC devices
+=A0
+What's your hardware? =A0Thin client? =A0Settop? =A0SBC? =A0I know a few
+sources.
 
-Murtada
 
-David Woodhouse wrote:
+Gregg C Levine wrote:
+Hello from Gregg C Levine
 
->mshah@yottayotta.com said:
->
->> I'm booting from flash... but during bootup jffs2 erases some things
->>it  seems??
->>
->
->>"inode #7 was a directory with children ... removing those too" 
->>
->
->The line before that would probably have given an indication of _why_ it 
->felt it needed to remove inode #7.
->
->--
->dwmw2
->
+Nothing that will set the world on fire, or even throw something into a
+
+new timeline. Just an ordinary embedded device.
+
+-------------------
+
+Gregg C Levine hansolofalcon@worldnet.att.net
+
+------------------------------------------------------------
+
+"The Force will be with you...Always." Obi-Wan Kenobi
+
+"Use the Force, Luke."=A0 Obi-Wan Kenobi
+
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+
+-----Original Message-----
+
+From: linux-mtd-admin@lists.infradead.org [mailto:linux-mtd-
+
+admin@lists.infradead.org] On Behalf Of Dzuy Nguyen
+
+Sent: Thursday, April 25, 2002 10:47 PM
+
+To: linux-mtd@lists.infradead.org
+
+Subject: Re: Current price for DoC devices
+
+
+
+What's your idea?
+
+A 16MB DoC new goes for about $31.=A0 Check out eBay.=A0 I was able to =
+get
+a
+32MB for $20.
+
+
+
+Gregg C Levine wrote:
+Hello from Gregg C Levine
+
+Still thinking about my current idea, so this question surfaced. How
+
+much are the DoC devices going for? Typically I am interested in the
+
+first one available.
+
+-------------------
+
+Gregg C Levine mrspock1962@hotmail.com
+
+------------------------------------------------------------
+
+"The Force will be with you...Always." Obi-Wan Kenobi
+
+"Use the Force, Luke."=A0 Obi-Wan Kenobi
+
+(This company dedicates this E-Mail to General Obi-Wan Kenobi )
+
+(This company dedicates this E-Mail to Master Yoda )
+
+
+
+
+
+
+
+
+
+______________________________________________________
+
+Linux MTD discussion mailing list
+
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+
+
+
+
+______________________________________________________
+
+Linux MTD discussion mailing list
+
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+=A0
+=A0
