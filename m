@@ -1,21 +1,14 @@
-Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1AvhWH-0005OZ-GU
-	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2004 18:43:01 +0000
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Simon Haynes <simon@baydel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 24 Feb 2004 18:04:50 +0000
-References: <4034E8ED.5757.55A2D9@localhost> <6A03D4BC2018@baydel.com>
-	<1077645958.7826.599.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1077645958.7826.599.camel@hades.cambridge.redhat.com>
+Received: from web20722.mail.yahoo.com ([216.136.226.76])
+	by pentafluge.infradead.org with smtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1AvnnC-0006Re-20
+	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2004 01:24:54 +0000
+Message-ID: <20040225012449.90118.qmail@web20722.mail.yahoo.com>
+Date: Tue, 24 Feb 2004 17:24:49 -0800 (PST)
+From: Shawn Jin <shawnxtech@yahoo.com>
+To: linuxmtd <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <6A3A7BF261CD@baydel.com>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Corruption.
-Reply-To: simon@baydel.com
+Content-Type: text/plain; charset=us-ascii
+Subject: Why CFI_DEVICETYPE_X8 in cfi_send_gen_cmd()?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 24 Feb 2004 6:05 pm, David Woodhouse wrote:
-> On Tue, 2004-02-24 at 17:05 +0000, Simon Haynes wrote:
-> > Would you recommend changing the printk for the "Empty Flash" messages to
-> > a different level and using the ramdisk as a permanent solution ?
->
-> Changing the printk level for the 'Empty Flash' messages does seem
-> appropriate -- or preferably finding a way to eliminate the ones which
-> we don't want. Are you mounting the fs read-only before rebooting? If
-> not, the occasional CRC failure is acceptable. You get those with an
-> unclean restart. It doesn't indicate data loss; it indicates that one
-> particular log entry which you were writing _while_ you rebooted was
-> lost. That was not data which userspace thought was already on the
-> medium.
->
-> The problem with mtdblock is interesting. Can you make it BUG() when it
-> dirties its cache and put it back to how it was, using mtdblock?
+Hi,
 
-I do remount the filesystem read only as part of a shutdown. I also cat 
-/proc/mounts so that I can check it has happened. So the filesystem should be 
-clean. After this halt is called. I think this tries to write to utmp. If the 
-kernel already has the device open for write will this be allowed ? 
+In cfi_cmdset_0002.c, there is a piece of comment stating that the
+CFI_DEVICETYPE_X8 is needed even when cfi->device_type !=
+CFI_DEVICETYPE_X8. Why is it the case?
 
-I guess it is strange that the read only mtdblock device prevents write 
-access via jffs2. I don't know if the cache in mtdblock is ever being used 
-but I can certainly put a BUG() in there.
+In my case, two Am29PL320D chips are interleaved and each works in 32-bit
+mode. So the buswidth is 64 bits. When CFI_DEVICETYPE_x8 is used in either
+erase_oneblock() or write_oneword(), the command address generated is not
+right. For example, to erase a block, the following commands are generated:
+    Addr: 0xff002aaa  Data: 0x000000aa000000aa
+    Addr: 0xff001554  Data: 0x0000005500000055
+I found out that the cfi->addr_unlock1(2) are set to 0x1555 (0xaaa) because
+of CFI_DEVICETYPE_X32 in cfi_cmdset_0002().
 
-Cheers
+According to the datasheet of Am29PL320D
+(http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/24075.pdf),
+the correct addresses should be 0xff002aa8 (555 << 3) and 0xff001550 (2aa
+<< 3).
 
-Simon.
+So I replaced CFI_DEVICETYPE_X8 with cfi->device_type in both
+do_erase_oneblock() and do_write_oneword(). I tested and found that erase
+can succeed but write still fails.
+
+Any ideas or explanations?
+
+Thanks,
+-Shawn.
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail SpamGuard - Read only the mail you want.
+http://antispam.yahoo.com/tools
