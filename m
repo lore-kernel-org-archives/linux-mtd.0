@@ -1,18 +1,18 @@
-Received: from wsgw2.atc.army.mil ([134.194.13.56])
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bawzt-0004MQ-Bn
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2004 09:32:07 -0400
-Received: from atcml01.atc.army.mil ([134.194.25.206])
-	by wsgw2.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2004061709252624807
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Jun 2004 09:25:26 -0400
-Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812B9@atcml01.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 17 Jun 2004 09:33:44 -0400
-MIME-Version: 1.0
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BaxI8-0004We-Uw
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2004 09:50:57 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+In-Reply-To: <EFF9A3506F74924AB5CC77BDC66E79351812B9@atcml01.atc.army.mil>
+References: <EFF9A3506F74924AB5CC77BDC66E79351812B9@atcml01.atc.army.mil>
 Content-Type: text/plain
-Subject: DOC Mil Plus 32 any work being done?
+Message-Id: <1087480240.19489.2974.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Thu, 17 Jun 2004 14:50:40 +0100
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: DOC Mil Plus 32 any work being done?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 2004-06-17 at 09:33 -0400, Carlos, John J USAATC wrote:
+> Hi,
+> 
+>   Is anyone actually working on getting support for the Millennium Plus 32M
+> chip.  I looked at the latest patch and unfortunately work on that chip
+> hasn't been added.
 
-  Is anyone actually working on getting support for the Millennium Plus 32M
-chip.  I looked at the latest patch and unfortunately work on that chip
-hasn't been added.  I have been trying to hack up the code but don't have
-much knowledge in this area.  I am sure what I am doing is time ill spent
-other then getting a small understanding of the problem.  I am doing a lot
-of cut and paste to the diskonchip.c file.  I see where the nand_chip struct
-gets filled and where in docprobe they fill the mtd_info struct with the
-proper driver names.  Which struct is actually the proper one to use?
-Should I be redoing the DoC functions so they will work in the nand_chip
-struct with the proper arguments????  I am just trying to get this chip in a
-usable state!!!!!
+The Millennium Plus is a little more bizarre than the other DiskOnChip
+devices which we support; it'll take a little more to massage it into
+the generic NAND framework, although Thomas seems to think it won't be
+hard. 
 
-Thanks for any assistance that can be provided!
-John
+Unfortunately, although I am able to give limited access to DiskOnChip
+2000 and Millennium documentation, I can't do the same for the
+Millennium Plus. So you have to sort of pick it up from the existing
+code in drivers/doc2001plus.c. 
+
+Can you join us on IRC? irc.freenode.net channel #mtd
+
+>   I have been trying to hack up the code but don't have
+> much knowledge in this area.  I am sure what I am doing is time ill spent
+> other then getting a small understanding of the problem.  I am doing a lot
+> of cut and paste to the diskonchip.c file. 
+
+I suspect there isn't enough shared code to make it worth adding
+Millennium Plus support to diskonchip.c. You'd probably do better to
+create a new driver in drivers/nand for the Millennium Plus. You can
+still base it on diskonchip.c of course.
+
+If all you need to do is make INFTL work though, I suspect the
+devices/doc2001plus driver ought to be sufficient for now. Your problem
+wasn't actually with the low-level hardware driver; it was with the
+INFTL formatting wasn't it?
+
+
+-- 
+dwmw2
