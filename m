@@ -1,6 +1,10 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@infradead.org
-In-Reply-To: <1106399029.29388.50.camel@sauron.oktetlabs.ru>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cseaq-0006Sz-Md
+	for linux-mtd@lists.infradead.org; Sun, 23 Jan 2005 05:03:42 -0500
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1106431453.6932.57.camel@localhost.localdomain>
 References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0501191305530.8174@phoenix.infradead.org>
 	<20050119152427.GB26711@wohnheim.fh-wedel.de>
@@ -9,13 +13,15 @@ References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
 	<Pine.LNX.4.58.0501191957090.8174@phoenix.infradead.org>
 	<6934efce050121144619d2899d@mail.gmail.com>
 	<1106399029.29388.50.camel@sauron.oktetlabs.ru>
+	<1106431453.6932.57.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Sat, 22 Jan 2005 22:04:13 +0000
-Message-Id: <1106431453.6932.57.camel@localhost.localdomain>
+Date: Sun, 23 Jan 2005 13:03:04 +0300
+Message-Id: <1106474584.22008.6.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS3 & performance
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2005-01-22 at 16:03 +0300, Artem B. Bityuckiy wrote:
-> 2. Worse, compression impacts JFFS2 design globally. You know, that the
-> maximum amount of data JFFS2 may store in one inode node is the size of
-> RAM page, most often 4K. 
-> 
-> Q: Why we restrict ourself with this size? 
-> A: Because of compression.
+On Sat, 2005-01-22 at 22:04 +0000, David Woodhouse wrote:
+> Compression has other drawbacks though -- if you throw out compression
+> you can do fixed-size records, you can have a block-based architecture
+> and simplify your metadata, ...
 
-It's not just compression that restricts us to 4KiB. Compressing in
-larger chunks isn't hard -- zisofs does it, for example. The real
-problem is the larger buffers you need for garbage collection. It's not
-impossible to fix that though.
+Hmm. What do you mean? Do you mean YAFFS-like architecture? Than we
+would better do YAFFS2 then JFFS3 :-))
 
-We've always intended to have a per-inode attribute for user-specified
-compression parameters; the most basic of which would be 'no
-compression'. I originally intended to expose those as attributes in the
-way that 'chattr' works, with an ioctl on the file -- but I suspect
-xattrs would be a better approach nowadays.
+If to be serious, I really can't imagine this. Do you mean, just to fix
+the size of inode node data, say, to 512 bytes? What to do with
+direntries?
 
-Compression has other drawbacks though -- if you throw out compression
-you can do fixed-size records, you can have a block-based architecture
-and simplify your metadata, ...
-
--- 
-dwmw2
+Is it really feasible? Will we still have JFFS3 generation?
