@@ -1,19 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 178kQ2-00064n-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 17:17:27 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.33.0205171004550.11746-100000@snaresland.acl.lanl.gov> 
-References: <Pine.LNX.4.33.0205171004550.11746-100000@snaresland.acl.lanl.gov> 
-To: Ronald G Minnich <rminnich@lanl.gov>
-Cc: "Richard A. Smith" <rsmith@bitworks.com>,
+Received: from acl.lanl.gov ([128.165.147.1])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 178kSb-00065U-00
+	for <linux-mtd@lists.infradead.org>; Fri, 17 May 2002 17:20:06 +0100
+Date: Fri, 17 May 2002 10:20:03 -0600 (MDT)
+From: Ronald G Minnich <rminnich@lanl.gov>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: "Richard A. Smith" <rsmith@bitworks.com>,
     "linuxbios@lanl.gov" <linuxbios@lanl.gov>,
-    linux-mtd@lists.infradead.org
+     <linux-mtd@lists.infradead.org>
 Subject: Re: Getting big flash onto motherboards. Will CF work? what will? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 May 2002 17:17:23 +0100
-Message-ID: <12770.1021652243@redhat.com>
+In-Reply-To: <12770.1021652243@redhat.com>
+Message-ID: <Pine.LNX.4.33.0205171018500.11746-100000@snaresland.acl.lanl.gov>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,11 +24,16 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-rminnich@lanl.gov said:
->  We don't want to build this. Can we buy it?
+On Fri, 17 May 2002, David Woodhouse wrote:
 
-Dunno; I just made it up -- is it even technically possible to put flash in 
-the DIMM slots of most motherboards?
+> Dunno; I just made it up -- is it even technically possible to put flash in
+> the DIMM slots of most motherboards?
 
---
-dwmw2
+I think on SDRAM it would be doable, but i can't see anyone putting in the
+effort as you have to get all the state machines right, and then you have
+to convince the BIOS you're not really there.
+
+In an earlier life I did design 2 different NICs for DRAM slots, and it
+was not hard. But that was before SDRAM and its complexities.
+
+ron
