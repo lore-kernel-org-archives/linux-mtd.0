@@ -1,20 +1,19 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from fish.redhat.com ([213.86.99.237]
+	helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19J8wO-0000dT-8I
-	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 10:34:20 +0100
-Date: Fri, 23 May 2003 11:35:04 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: matsunaga <matsunaga_kazuhisa@yahoo.co.jp>
-Message-ID: <20030523093504.GA27276@wohnheim.fh-wedel.de>
-References: <001101c32078$7de79840$740486da@w0a3t0>
-	<20030522195708.GB11240@wohnheim.fh-wedel.de>
+	id 19JAw8-00018K-2I
+	for <linux-mtd@lists.infradead.org>; Fri, 23 May 2003 12:42:12 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Greg Ungerer <gerg@snapgear.com>
+In-Reply-To: <3ECD9C30.7090804@snapgear.com>
+References: <3ECD9C30.7090804@snapgear.com>
+Message-Id: <1053690186.3402.96.camel@passion.cambridge.redhat.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20030522195708.GB11240@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Date: Fri, 23 May 2003 12:43:06 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: vmalloc for zlib workspace
+Subject: Re: [ANNOUNCE] MTD driver for DiskOnChip Millennium Plus and INFTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 22 May 2003 21:57:08 +0200, Jörn Engel wrote:
+On Fri, 2003-05-23 at 04:57, Greg Ungerer wrote:
+> Hi All,
 > 
-> How about:
->
-> [code that works with 2.4.20]
+> I would like to announce a patch set to support the M-System's
+> Disk-On-Chip Millennium Plus parts, and their new INFTL (Inverse
+> NAND Flash Translation Layer).
+> 
+> You can get the patch at either of these sites:
+> 
+>   ftp://ftp.snapgear.org/pub/patches/mplus-20030414.patch.gz
+>   http://www.uclinux.org/pub/uClinux/misc/mplus-20030414.patch.gz
+> 
+> This patch is against standard Linux 2.4.20 kernel.
 
-Oh, crud! Maybe I should work more with mtd cvs, even though it is a
-pain. Sorry for the noise.
+Thanks. I've imported it into CVS and updated it to reflect the other
+changes I've made recently, so it should now be working in 2.4 and 2.5
+kernels through the blkdev helper stuff.
 
-> In a second patch, it would be possible to fold those two workspaces
-> into one and save a little memory as well.
-
-But this is still possible and should be almost orthogonal to your
-proposal.
-
-Jörn
+I haven't incorporated the new ioctls for mtdchar.c -- I think the
+MEMSETOOBSEL ioctl should suffice for switching between with-ECC and
+without-ECC modes. If not, it _should_ :) 
 
 -- 
-Fantasy is more important than knowlegde. Knowlegde is limited,
-while fantasy embraces the whole world.
--- Albert Einstein
+dwmw2
