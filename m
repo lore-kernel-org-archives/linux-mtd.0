@@ -1,51 +1,53 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 136s8h-0001xg-00
-	for mtd-list@infradead.org; Tue, 27 Jun 2000 10:58:43 +0100
-Received: from virgo.techno.spb.ru ([195.5.142.100])
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 136s8f-0001xa-00
-	for mtd@infradead.org; Tue, 27 Jun 2000 10:58:41 +0100
-Received: from maverick (Maverick.Techno.Spb.Ru [195.5.142.101])
-	by Virgo.Techno.Spb.Ru (8.9.3/8.9.3) with SMTP id OAA17823
-	for <mtd@infradead.org>; Tue, 27 Jun 2000 14:01:15 +0400
-Message-ID: <005001bfe01f$5267b700$658e05c3@techno.spb.ru>
-From: "Nick Maximov" <maxs@techno.spb.ru>
-To: <mtd@infradead.org>
-Subject: does anyone here used Ampro modules?
-Date: Tue, 27 Jun 2000 14:06:11 +0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+	id 136siV-00023m-00
+	for mtd-list@infradead.org; Tue, 27 Jun 2000 11:35:43 +0100
+Received: from dns.cygnus.co.uk ([194.130.39.3] helo=pasanda.cygnus.co.uk)
+	by infradead.org with smtp (Exim 3.03 #1)
+	id 136siU-00023g-00
+	for mtd@infradead.org; Tue, 27 Jun 2000 11:35:42 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <005001bfe01f$5267b700$658e05c3@techno.spb.ru> 
+References: <005001bfe01f$5267b700$658e05c3@techno.spb.ru> 
+To: "Nick Maximov" <maxs@techno.spb.ru>
+Cc: mtd@infradead.org
+Subject: Re: does anyone here used Ampro modules? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 27 Jun 2000 11:38:17 +0100
+Message-ID: <19568.962102297@cygnus.co.uk>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Is there specific conditions for using MTD drivers with Ampro CM/p5e?
 
-I still trying to figure out how it should work. Ampro said NEVER USE
-ORIGINAL
-M-SYSTEM UTILITIES TO FORMAT DOC!!!
-Does MTD utilities compatible with my hardware or I need special tune for
-them?
+maxs@techno.spb.ru said:
+> I tried to load alternative firmware file (grub.exb) to DoC firmware
+> area. Now my DoC even unable to be formated!
 
-I tried though... And got BIOS corruption :) After first sucessful recovery
-I tried to
-load alternative firmware file (grub.exb) to DoC firmware area. Now my DoC
-even unable to be formated!
+How did you make 'grub.exb'? I haven't written any tool to produce EXB 
+files from the Grub images - I only write them to the flash with my own 
+doc_loadbios utility.
 
-Does anyone knows what is exact address map for DoC device?
-As I know BIOS occupied 128K at 0xE000,
-user extention BIOS located at 0xD000 address and should occupied up to 64K.
-And then where the Flash Firmware is located? Why p5update utility unable to
-update exact area in memory space?
+
+maxs@techno.spb.ru said:
+>  Does anyone knows what is exact address map for DoC device?
+
+Load the docprobe and doc2000 modules under Linux - it'll probe all the 
+possibilities and tell you where it's mapped in your particular board.
+
+
+maxs@techno.spb.ru said:
+> And then where the Flash Firmware is located? Why p5update utility
+> unable to update exact area in memory space? 
+
+The DiskOnChip firmware is at the beginning of the first flash chip in the 
+DiskOnChip. As it's NAND flash, it's not memory-mapped directly.
+
+You _have_ read the NAND flash datasheets, haven't you?
 
 --
-Regards,
-Nick Maximov
+dwmw2
 
-Techno-St.Petersburg
-http://www.techno.spb.ru
 
 
 
