@@ -1,14 +1,17 @@
-Received: from web9607.mail.yahoo.com ([216.136.129.186])
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19CgbO-0002QQ-Lr
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 15:05:58 +0100
-Message-ID: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
-Date: Mon, 5 May 2003 07:06:12 -0700 (PDT)
-From: Mike Kelly <mgkelly59@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1051860123.21608.26.camel@imladris.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from imladris.demon.co.uk ([193.237.130.41])
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19CktC-00034m-9s
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 19:40:38 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Kelly <mgkelly59@yahoo.com>
+In-Reply-To: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
+References: <20030505140612.95087.qmail@web9607.mail.yahoo.com>
+Message-Id: <1052160051.2446.18.camel@imladris.demon.co.uk>
+Mime-Version: 1.0
+Date: Mon, 05 May 2003 19:40:51 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: linux-mtd@lists.infradead.org
 Subject: Re: Need help understanding jffs2 mount activity
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,54 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2003-05-05 at 15:06, Mike Kelly wrote:
+> If the 700KiB file is copied then deleted, would this
+> result in 4KiB nodes for the new file? 
 
---- David Woodhouse <dwmw2@infradead.org> wrote:
-> On Thu, 2003-05-01 at 22:40, Mike Kelly wrote:
-> > Next we ran an operation, where a file has 65
-> bytes
-> > appended to it until it reaches a size of about
-> 700
-> > kB. When this was completed, the bootup time
-> increased
-> > to 75 seconds and has not gone back down upon
-> > subsequent reboots. 
-> 
-> That's expected. 
-> 
-> > So, does the garbage collection
-> > upon mount/bootup differ between deleted files and
-> > appended files? When a file is opened, appended,
-> then
-> > closed, does the jffs2 filesystem essentially copy
-> the
-> > file to a new location along with the new data,
-> then
-> > marks the old file as obsolete?
-> 
-> No, it writes out the new bytes in a new log entry,
-> leaving the rest as
-> it was. See
-> http://sources.redhat.com/jffs2/jffs2.pdf
-> 
-> So instead of a whole file made up of 4KiB nodes as
-> usual, you've ended
-> up with a file made entirely of 65-byte nodes, each
-> with its own CRC to
-> check etc. 
-> 
----
-David, thanks for your reply.
+Yes, assuming you copy it sensibly. If you read and write in smaller
+blocks then no. The 'cp' command should do the right thing.
 
-If the 700KiB file is copied then deleted, would this
-result in 4KiB nodes for the new file?  If so,
-shouldn't the bootup time be quicker, since there are
-less nodes to CRC check?  The bootup time seems to
-remain the same, even after several reboots.
+>  If so, shouldn't the bootup time be quicker, since there are
+> less nodes to CRC check?  The bootup time seems to
+> remain the same, even after several reboots.
 
---
-Mike K.
+It _should_ be somewhat quicker since there are fewer nodes to CRC
+check, hence fewer node headers -- obviously there's still the same
+amount of data. 
 
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Search - Faster. Easier. Bingo.
-http://search.yahoo.com
+The real answer, though, is to simply avoid checking all those CRCs at
+mount time, and to postpone the checking till later. That's implemented
+in the latest code in CVS -- updating to that should give you a fairly
+dramatic improvement, especially if you also implement the 'point'
+method in your board's map driver. 
+
+-- 
+dwmw2
