@@ -1,17 +1,19 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16hzJ3-0000o3-00
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2002 20:43:37 +0000
-Date: Mon, 4 Mar 2002 20:54:46 +0000 (GMT)
-From: ilatypov@infradead.org
-To: Mark Meade <mark@lakeshoremicro.com>,
-    David Woodhouse <dwmw2@infradead.org>
-cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader
-Message-ID: <Pine.LNX.4.44.0203042053180.29985-100000@infradead.org>
+	id 16i0AM-0000rF-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2002 21:38:42 +0000
+Message-ID: <005301c1c3c6$87ceea30$0101a8c0@dellc800>
+From: "Mark Meade" <mark@lakeshoremicro.com>
+To: "Ilguiz Latypov" <ilatypov@superbt.com>,
+	"David Woodhouse" <dwmw2@infradead.org>
+Cc: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+References: <Pine.LNX.4.44.0203041529100.20113-100000@server.superbt.com>
+Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
+Date: Mon, 4 Mar 2002 16:48:56 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,37 +25,68 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mark,
+On Mon, 4 Mar 2002, Ilguiz Latypov wrote:
 
-Thanks a lot for your contribution.  I totally missed the DoC segment
-issue you have identified.  What was your fix?  Do you copy %cs to %ds in
-case doc_stage1 is IPL itself?  Are there any extra things to be done to 
-make the code eXecute-In-Place?
+> What was your fix?  Do you copy %cs to %ds in
+> case doc_stage1 is IPL itself?  Are there any extra things to be done to
+> make the code eXecute-In-Place?
 
-I will modify the checksum program to generate a different value when
-"--enable-diskonchip-ipl" option is supplied to the configure script.
+Ilguiz,
 
-I will also add an option to hook to the diskless boot int 18h handler.  
+The segment issue is minor -- the original code assumed that _start was loaded at 0x20000
+by the IPL, but in this case, we are executing in place, at 0xD0000 (for example).
 
-I found a detailed explanation of the PC BIOS startup at
-    http://etherboot.sourceforge.net/doc/html/devman-3.html
+So instead of this:
 
-Dave, is DoC Millennium documentation still available?  Mark has made
-significant testing and coding with the GRUB patch.
+#ifndef DOC_REPLACE_IPL
+    /* Store the DiskOnChip segment */
+    movw %ds, %cs:doc_seg
+#endif
 
-Mark, my DoC Millennium modifications to the MTD GRUB patch were based on 
-the doc2000.c kernel driver code from MTD repository.  Perhaps, I wasn't 
-careful enough in copying the necessary operations.
+I added the following, after the int 18/19 handler has been copied to the end of memory:
 
-Ilguiz
+#ifdef DOC_REPLACE_IPL
+    /* Store the DiskOnChip segment (XIP from the IPL area) */
+    movw %cs, %es:doc_seg
+#endif
 
-On Fri, 1 Mar 2002, Mark Meade wrote:
+When the interrupt handler is called, doc_seg is now in the correct spot.
 
-> 1) Some BIOS's don't like extensions without correct checksums.
-[..]
-> 2) For some reason, my BIOS won't let me override the int 19 handler.  
-[..]
-> 3) I made additional minor changes in doc_stage1.S to save and restore
-> the doc segment correctly.  The boot block on a Millennium is an XIP
-> block; _start is not running at 0x20000 in this case.
-[..]
+I suppose it's possible to let the int handler XIP also, but it just seemed to fit better
+with existing code to copy it to the 1K segment at the top of memory.  This way, no more
+Millennium-specific changes are required in doc_stage1b.S.
+
+> I will modify the checksum program to generate a different value when
+> "--enable-diskonchip-ipl" option is supplied to the configure script.
+
+I had to add the checksum byte and a jump to the _start routine:
+
+#ifdef DOC_REPLACE_IPL
+    /*
+      * _start is in the beginning of DoC Millennium flash memory
+      */
+     .byte 0x55, 0xAA        /* BIOS extension signature */
+     .byte 0x10                  /* DoC window is 8K (16*512) in size */
+     /* BIOS will call far _start + 3 */
+
+    jmp over
+    .byte 0                       /* BIOS extension checksum goes here */
+#endif
+over:
+
+> I will also add an option to hook to the diskless boot int 18h handler.
+
+Thanks!  This makes it easier for me to test.  I had one occasion when a botched int 19
+handler made it impossible to boot with the DOC installed.  I had to remove the DOC, boot
+into DOS, install the DOC (with the PC turned on), and then erase it.  Needless to say,
+I'm trying to avoid having to do this again.  ;-)
+
+> Mark, my DoC Millennium modifications to the MTD GRUB patch were based on
+> the doc2000.c kernel driver code from MTD repository.  Perhaps, I wasn't
+> careful enough in copying the necessary operations.
+
+I looked at that source late Friday, but I haven't had time to get real serious about it
+yet.  I've found some assembly sources related to the Linux BIOS project that may help,
+also.
+
+Mark
