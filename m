@@ -1,21 +1,23 @@
-Date: Wed, 12 Jan 2005 18:45:58 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050112184304.GM25638@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.58.0501121844300.12973@phoenix.infradead.org>
-References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
-	<20050111215102.GA6289@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
-	<20050112181006.GI25638@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501121833250.10617@phoenix.infradead.org>
-	<20050112184304.GM25638@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Cona0-0007N7-B7
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:50:53 -0500
+Date: Wed, 12 Jan 2005 19:50:27 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Josh Boyer <jdub@us.ibm.com>
+Message-ID: <20050112185027.GN25638@wohnheim.fh-wedel.de>
+References: <41E4D6E5.1090407@imc-berlin.de> <41E4EDBE.8070302@inf.u-szeged.hu>
+	<41E52EAD.2090302@imc-berlin.de>
+	<Pine.LNX.4.58.0501121508270.10617@phoenix.infradead.org>
+	<20050112182638.GK25638@wohnheim.fh-wedel.de>
+	<1105555410.3896.34.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1105555410.3896.34.camel@weaponx.rchland.ibm.com>
+Cc: Steven Scholz <steven.scholz@imc-berlin.de>, linux-mtd@lists.infradead.org
+Subject: Re: JFFS2: checking CRCs twice!?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Jan 2005, [iso-8859-1] J=F6rn Engel wrote:
+On Wed, 12 January 2005 12:43:30 -0600, Josh Boyer wrote:
+> 
+> I've seen them fail.  Multiple times.  And yes, the CRCs detected it and
+> helped me figure out that the hardware was borked.
 
-> On Wed, 12 January 2005 18:33:33 +0000, Artem B. Bityuckiy wrote:
-> >
-> > Hmm. I think about the intermediate stage. I mean that block is good at=
-=20
-> > one moment, and it is bad at another moment. But *when* it become bad? =
-Is=20
-> > this only during erase? If so, you're probably right. But I'm not sure.=
- Is=20
-> > there some stage when block still contain crucial data, but is already=
-=20
-> > bad? If it is, CRC will cach this.
->=20
-> According to the paper, all but soft errors only occur during erase
-> and write.  So we're safe ...
->=20
-> ... or Toshiba lied to us.
->=20
-Still not sure. This is not standed explicitly...
-To be honest, I would be happy if you are right - this would simplify=20
-things.
+Ok, Empiria has spoken, I stand corrected.
 
-> J=F6rn
->=20
-> --=20
-> The only real mistake is the one from which we learn nothing.
-> -- John Powell
->=20
+> You may be right that failures are rare, and when they do occur the
+> flash definitely needs to be replaced.  But I'd much rather debug a card
+> that had CRC errors than one that just had apps mysteriously getting
+> SIGILL because a bit flipped and the filesystem didn't bother to verify
+> the data before using it.
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Agreed.  So we still need checksums, and have the type of checksums
+left to argue about.
+
+Jörn
+
+-- 
+Public Domain  - Free as in Beer
+General Public - Free as in Speech
+BSD License    - Free as in Enterprise
+Shared Source  - Free as in "Work will make you..."
