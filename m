@@ -1,18 +1,27 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mout02.kundenserver.de ([195.20.224.133])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15Undu-0002Ee-00
-	for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2001 12:06:22 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3B726C90.F8A182F5@jurca.de> 
-References: <3B726C90.F8A182F5@jurca.de>  <3B6571F2.6258156D@jurca.de> <30724FF712DFD2119E6200104B244892011974BC@mail1> <12764.997170980@redhat.com> 
-To: Jan Debiec <jan.debiec@jurca.de>
-Cc: "'linux-mtd@lists.infradead.org '" <linux-mtd@lists.infradead.org>,
-    "Alex Lennon @ Arcom" <ajlennon@arcom.co.uk>
-Subject: Re: JFFS and RTLinux 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 09 Aug 2001 12:12:13 +0100
-Message-ID: <515.997355533@redhat.com>
+	id 15UpuF-0002NG-00
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2001 14:31:23 +0100
+Received: from [195.20.224.209] (helo=mrvdom02.schlund.de)
+	by mout02.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 15Upzv-0002wj-00
+	for linux-mtd@lists.infradead.org; Thu, 9 Aug 2001 15:37:15 +0200
+Received: from p3e9924c6.dip0.t-ipconnect.de ([62.153.36.198] helo=linux.ste-el.de)
+	by mrvdom02.schlund.de with esmtp (Exim 2.12 #2)
+	id 15Upzq-0002Hs-00
+	for linux-mtd@lists.infradead.org; Thu, 9 Aug 2001 15:37:10 +0200
+Received: from bonita (peter@bonita.local [192.168.0.13])
+	by linux.ste-el.de (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA06485
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Aug 2001 15:24:23 GMT
+From: peter romero <promero@ste-el.de>
+Reply-To: promero@ste-el.de
+To: linux-mtd@lists.infradead.org
+Subject: cfdisk
+Date: Thu, 9 Aug 2001 15:16:12 +0200
+Content-Type: text/plain
+MIME-Version: 1.0
+Message-Id: <01080915200200.02491@bonita>
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,26 +33,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jan.debiec@jurca.de said:
->  unfortunately "stext_lock" tells me nothing (is used in head.S),
-> sbc_mediagx_map is a structure used for Arcom GXM board
+Hello,
 
-Spinlock deadlock. Check the spin_lock() and spin_unlock() pairs are evenly 
-matched in sbc_mediagx.c (they look like they are in the current version of 
-sbc_gxx.c).
+where do i find the source code of cfdisk ?
 
-$ gdb vmlinux
-(gdb) disassemble 0xc01986d3
+good www and ftp sides are welcome :-)
 
-It should be in a loop which looks something like
-
-0xc0263620 <stext_lock+64>:	cmpb   $0x0,0xc02ccdf8
-0xc0263627 <stext_lock+71>:	repz nop 
-0xc0263629 <stext_lock+73>:	jle    0xc0263620 <stext_lock+64>
-0xc026362b <stext_lock+75>:	jmp    0xc0105b3f <__down+111>
-
-The place it's jumping to in the final line is the place that's trying to 
-obtain the (blocked) spinlock. 
-
---
-dwmw2
+romero <promero@ste-el.de>
