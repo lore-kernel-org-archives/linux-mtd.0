@@ -1,17 +1,18 @@
-Received: from cpe-203-51-197-227.qld.bigpond.net.au ([203.51.197.227] helo=august.hainsworth.net.au)
+Received: from sitemail3.everyone.net ([216.200.145.37] helo=omta01.mta.everyone.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17lpcT-0005Xw-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 12:43:49 +0100
-Received: from ike.hainsworth.ath.cx (red@ike.hainsworth.net.au [10.0.0.9])
-	by august.hainsworth.net.au (8.11.6/8.11.2) with ESMTP id g82BahE32167
-	for <linux-mtd@lists.infradead.org>; Mon, 2 Sep 2002 21:36:43 +1000
-Message-Id: <4.3.2.7.2.20020902213847.00cb8908@10.0.0.8>
-Date: Mon, 02 Sep 2002 21:43:46 +1000
-To: linux-mtd@lists.infradead.org
-From: Andrew Hainsworth <andrew@hainsworth.ath.cx>
-Subject: Mounting Read-only
+	id 17lqPj-0005ca-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2002 13:34:43 +0100
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Date: Mon, 2 Sep 2002 05:34:30 -0700 (PDT)
+From: Mateo Anderson <mateo@posta.star.si>
+To: andrew@hainsworth.ath.cx
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Mounting Read-only
+Reply-To: mateo@posta.star.si
+Message-Id: <20020902123430.8D1CA3963@sitemail.everyone.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,24 +24,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello again,
+Hi Andrew
 
-I now have the DoC detecting and mountable, but it is mounting read-only 
-and I can't seem ot make it mount read-write.  Any ideas?
+>I now have the DoC detecting and mountable, but it is mounting read-only 
+>and I can't seem ot make it mount read-write.  Any ideas?
+>
+>Also, I think the geometry, or pseudo-geometry or whatever of the chip is 
+>out of whack.  This is what fdisk is telling me:
+>
+>Disk /dev/nftla: 1 heads, 64064 sectors, 1 cylinders
+>Units = cylinders of 64064 * 512 bytes
+>
+>      Device Boot    Start       End    Blocks   Id  System
+>/dev/nftla1             1         1     32031+  83  Linux
+>Partition 1 has different physical/logical endings:
+>      phys=(256, 0, 0) logical=(0, 0, 64064)
+>Partition 1 does not end on cylinder boundary:
+>      phys=(256, 0, 0) should be (256, 0, 64064)
 
-Also, I think the geometry, or pseudo-geometry or whatever of the chip is 
-out of whack.  This is what fdisk is telling me:
+I am not able to help you here, but I can tell you, that I was able
+to mount the DOC 2000 (48M) as read-write with simple mount command.
+And I had the similar output from the fdisk as you have. 
+(Now I have problems with LILO)
 
-Disk /dev/nftla: 1 heads, 64064 sectors, 1 cylinders
-Units = cylinders of 64064 * 512 bytes
+I don't know what is going here, because both the Start
+and the End are set to 1 ???
 
-      Device Boot    Start       End    Blocks   Id  System
-/dev/nftla1             1         1     32031+  83  Linux
-Partition 1 has different physical/logical endings:
-      phys=(256, 0, 0) logical=(0, 0, 64064)
-Partition 1 does not end on cylinder boundary:
-      phys=(256, 0, 0) should be (256, 0, 64064)
+Is /dev/nftla1 mounted during the boot (e.g. in /etc/fstab)?
 
-Help would be much appreciated, as per usual.
+Regards,
+Mateo
 
-Andrew
+_____________________________________________________________
+Brezplacen E-mail - http://email.star.si
+Brezplacen prostor 100 MB,lastna domena - http://www.slohosting.com
+
+_____________________________________________________________
+Promote your group and strengthen ties to your members with email@yourgroup.org by Everyone.net  http://www.everyone.net/?btn=tag
