@@ -1,20 +1,17 @@
-Received: from dsl-64-129-131-125.telocity.com
-	([64.129.131.125] helo=mir.outpostsentinel.com ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16fseJ-0005w4-00
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 01:12:51 +0000
-Received: from amd800 (dhcp02.outpostsentinel.com [192.168.1.102])
-	by mir.outpostsentinel.com (8.9.3/8.9.3) with SMTP id PAA22683
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2002 15:25:16 -0500
-From: "Chris Fowler" <cfowler@outpostsentinel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Testing MTD driver
-Date: Tue, 26 Feb 2002 20:25:16 -0500
-Message-ID: <NFBBLCEFBCFEPMJJKOIKOENICDAA.cfowler@outpostsentinel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 16fsjb-0005wj-00
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Feb 2002 01:18:19 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <NFBBLCEFBCFEPMJJKOIKOENICDAA.cfowler@outpostsentinel.com> 
+References: <NFBBLCEFBCFEPMJJKOIKOENICDAA.cfowler@outpostsentinel.com> 
+To: "Chris Fowler" <cfowler@outpostsentinel.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Testing MTD driver 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 27 Feb 2002 01:29:24 +0000
+Message-ID: <10878.1014773364@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,10 +23,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I would like to begin migrating to the OpenSource DOC2000 driver.  I'm uning
-kernel 2.4.17 and would like to have the M-SYS driver installed as weel as
-the OpenSource one.  I will test with the OS one then remove M-SYS.  Will
-this be a problem?
+cfowler@outpostsentinel.com said:
+> I would like to begin migrating to the OpenSource DOC2000 driver.  I'm
+> uning kernel 2.4.17 and would like to have the M-SYS driver installed
+> as weel as the OpenSource one.  I will test with the OS one then
+> remove M-SYS.  Will this be a problem? 
 
-Thanks,
-Chris Fowler
+Compiling each as a module, and loading either one or the other, should be 
+fine. Be aware that the major numbers are different, though.
+
+--
+dwmw2
