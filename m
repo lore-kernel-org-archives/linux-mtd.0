@@ -1,17 +1,16 @@
-Received: from [202.98.123.42] (helo=mail.ocdtt.com ident=postfix)
+Received: from mail1.infineon.com ([192.35.17.229])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15wGMR-0002vS-00
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 06:13:52 +0100
-Received: from ocdtt.com (unknown [61.139.82.145])
-	by mail.ocdtt.com (Postfix) with ESMTP id 37E7113D8F
-	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 13:05:34 +0800 (CST)
-Message-ID: <3BD64DC2.3E3E79F1@ocdtt.com>
-Date: Wed, 24 Oct 2001 13:12:34 +0800
-From: Chen Yaoming <ming@ocdtt.com>
+	id 15wJPg-0003C6-00
+	for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2001 09:29:24 +0100
+Message-ID: <3BD67D98.7F328DA0@infineon.com>
+Date: Wed, 24 Oct 2001 10:36:40 +0200
+From: amit lubovsky <amit.lubovsky@infineon.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: mtd_debug damaged my rom monitor
-Content-Type: text/plain; charset=gb2312
+CC: David Woodhouse <dwmw2@infradead.org>
+Subject: mount of JFFS2 as root device
+References: <3BD575F2.35D16336@infineon.com> <18479.1003845325@redhat.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -24,36 +23,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-# ./mtd_debug write /dev/mtd0 0x100000 16 /boot/vmlinuz
+Hi,
 
-The command above damaged my rom monitor at FLASH offset 0.
-Actually the code in mtd_debug.c can't recognize hex digital due to its
-the string to digital conversion
-functions called is atol(). I think it should be strtol() as in erase.c
-to reach the versatility.
+1. I don't have the utility 'rdev' in the o.s that I use, what are the
+alternatives to mount JFFS2 as root device ?
+2. Is there a better compression ration I can achieve when using flash ?
 
-Here is the patch.
-
---- mtd_debug.c.orig    Tue Oct  9 06:00:06 2001
-+++ mtd_debug.c Wed Oct 24 11:34:49 2001
-@@ -386,13 +386,13 @@
-                showinfo (fd);
-                break;
-          case OPT_READ:
--               err = flash_to_file (fd,atol (argv[3]),atol
-(argv[4]),argv[5]);
-+               err = flash_to_file (fd,strtol (argv[3],NULL,0),strtol
-(argv[4],NULL,0),argv[5]);
-                break;
-          case OPT_WRITE:
--               err = file_to_flash (fd,atol (argv[3]),atol
-(argv[4]),argv[5]);
-+               err = file_to_flash (fd,strtol (argv[3],NULL,0),strtol
-(argv[4],NULL,0),argv[5]);
-                break;
-          case OPT_ERASE:
--               err = erase_flash (fd,atol (argv[3]),atol (argv[4]));
-+               err = erase_flash (fd,strtol (argv[3],NULL,0),strtol
-(argv[4],NULL,0));
-                break;
-         }
+Thanks, Amit.
