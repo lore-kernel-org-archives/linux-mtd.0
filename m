@@ -1,20 +1,21 @@
-Received: from e35.co.us.ibm.com ([32.97.110.133])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CESP1-0006Hm-89
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 08:57:20 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Lorenzo PARISI <lorenzo.parisi@st.com>
-In-Reply-To: <1096893650.22034.11.camel@weaponx.rchland.ibm.com>
-References: <97176254.89f2aa2c.81aa100@mail1.agr.st.com>
-	<1096893650.22034.11.camel@weaponx.rchland.ibm.com>
-Content-Type: text/plain
-Message-Id: <1096894619.22034.17.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 07:56:59 -0500
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CESa1-0006VH-If
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 09:08:45 -0400
+Message-ID: <41614B2F.8060901@yandex.ru>
+Date: Mon, 04 Oct 2004 17:07:59 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: Josh Boyer <jdub@us.ibm.com>
+References: <416122A1.4060302@oktetlabs.ru>	
+	<1096885344.30942.559.camel@hades.cambridge.redhat.com>	
+	<416127B7.3070505@yandex.ru>
+	<1096893242.22034.5.camel@weaponx.rchland.ibm.com>
+In-Reply-To: <1096893242.22034.5.camel@weaponx.rchland.ibm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	YAFFS mailing list <yaffs@stoneboat.aleph1.co.uk>
-Subject: Re: Errors
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 07:40, Josh Boyer wrote:
-> On Mon, 2004-10-04 at 05:31, Lorenzo PARISI wrote:
-> > Hi,
-> > 
-> > whi compiling yaffs_guts.c there are errors, with command:
-> > 
-> > #ifdefined KERNEL...
-> > 
-> > 
-> > there are more one error.
+> Can we extend this to be "files with a large amount of nodes"?  I'm
+> thinking of the fifo problem here too...
+>
+:-)
+FIFOs, blk/chr dvice files *always have only one valid node at a time* 
+(right?). Thus, when building the inode cache, we may only read the node 
+with the highest version (which is found by scanning the correspondent 
+node_ref list) and read *only* this node. If it is OK (CRC is right), no 
+need to read more. If CRC is bad, read the older one...  Checkpoints 
+aren't needed, this is *another* improvement...
+
+How about this scheme?
+
 > 
-> Maybe your questions could be answered on the yaffs mailing list. 
-> linux-mtd doesn't do the yaffs development.
+> eCos doesn't have a GC thread IIRC.  Not a big deal in my opinion, but
+> others might care :).
+> 
+> josh
+.....
+David Woodhouse:
+ > I agree that it shouldn't be left to the GC thread alone -- there isn't
+ > one on eCos and it's optional on Linux too.
 
-Oops, you did ask that mailing list.  Sorry, I should have looked at the
-CC line first.
+Hmm, true.
+Does eCos support threads (I didn't work with it)? If not, the situation 
+is more complicated... I want to use thread (low-priority) in order to 
+*not affect the system performance much*.
 
-josh
+ >We can write out snapshots
+ > in the normal course of garbage collection though, when we have
+ > obsoleted a node belonging to the inode in question.
+> 
+I think the checkpoints shouldn't be created by GC (when it is actually 
+garbage collecting) because of it will decrease the JFFS2 performance. 
+GC is called on some write request when there is no space (excluding the 
+situation when it is called in background by the GC thread). This, it is 
+bad to load GC by additional work of creating checkpoints since it is 
+long enough process....
+
+What do you think?
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
