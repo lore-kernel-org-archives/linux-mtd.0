@@ -1,19 +1,16 @@
-Received: from mxout3.netvision.net.il ([194.90.9.24])
+Received: from fastmail.fm ([209.61.183.86] helo=www.fastmail.fm)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189OA2-0002cU-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2002 11:15:51 +0000
-Received: from david2.lan ([212.143.44.83]) by mxout3.netvision.net.il
- (iPlanet Messaging Server 5.2 HotFix 0.8 (built Jul 12 2002))
- with ESMTPA id <0H5500184KO3XL@mxout3.netvision.net.il> for
- linux-mtd@lists.infradead.org; Wed, 06 Nov 2002 13:45:39 +0200 (IST)
-Date: Wed, 06 Nov 2002 13:48:23 +0200
-From: "David @ Netvision" <itamar13@netvision.net.il>
-Subject: jffs2 root file system erased during boot
-To: linux-mtd@lists.infradead.org
-Message-id: <1036583304.25851.15.camel@david2.lan>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7BIT
+	id 189FUv-0001Xn-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2002 02:00:50 +0000
+Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="_----------=_1036549852166762"
+MIME-Version: 1.0
+Date: Wed, 6 Nov 2002 02:30:52 UT
+From: "Jeffrey Lim" <jfsworld@fastmail.fm>
+To: Dave@imladris.demon.co.uk
+Cc: "linux-mtd list" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] patches/patchin.sh (was Re: MTD CVS: missing JFFS2?)
+Message-Id: <20021106023051.B8F0C2FD2E@server4.fastmail.fm>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,101 +22,82 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi All,
+This is a multi-part message in MIME format.
 
- I am trying to bring up arm linux-2.5.30-rmk1-pxa1.
- I Mapped jffs2 root file system (bootstrap.jffs2 Downloaded from
-familiar project) as mtdblock2 and defined that
-  this is the root file system.
- The boot fails because the kernel can't find init, and the kernel
-erasing the entire file system.
+--_----------=_1036549852166762
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="ISO-8859-1"
 
 
- Any idea what may cause this?
+Sorry - i must have forgotten to attach the patch.
 
+-jf
 
- The console output is bellow.
+On Wed, 6 Nov 2002 02:09:32 UT, "Jeffrey Lim" <jfsworld@fastmail.fm>
+said:
+> Hi David,
+>=20
+> referencing the email below, this is a simple patch to patches/patchin.sh
+> (dated in the CVS Wed Apr 25 12:10:23 2001) to "patch in" the jffs2 code
+> as well. Currently patchin.sh only patches in the latest mtd code, and
+> jffs, but not jffs*2*)=20
+>=20
+> Would you mind looking over the diff to see if i missed out anything that
+> should be patched in as well?
+> Thanks.
+>=20
+> -jf
+>=20
+> On Tue, 5 Nov 2002 20:27:22 +0100, "J=F6rn Engel"
+> <joern@wohnheim.fh-wedel.de> said:
+> > On Tue, 5 November 2002 17:21:24 +0000, Jeffrey Lim wrote:
+> > >=20
+> > > I assume David Woodhouse is the person to whom i should submit the pa=
+tch
+> > > to patchin.sh to? (oh boy).
+> >=20
+> > Correct. It would be nice, if you cc'd the mailinglist as well.
+> >=20
+> > > I'll have a patch ready first thing i get to work later.
+> >=20
+> > Cool!
+> >=20
+> > J=F6rn
+> >=20
+> > --=20
+> > ticks =3D jiffies;
+> > while (ticks =3D=3D jiffies);
+> > ticks =3D jiffies;
+> > -- /usr/src/linux/init/main.c
+> >=20
+>=20
+>=20=20
+> --
+>   "It's an extraordinary world!" - jfsworld <at> fastmail.fm
+>=20=20
+>=20=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
 
-/*******************************************************************************\
+=20
+--
+  "It's an extraordinary world!" - jfsworld <at> fastmail.fm
+=20
+=20
 
-Linux version 2.5.30-rmk1-pxa1 (root@TESTLIN) (gcc version 3.2) #40 Mon
-Sep 30 13:27:50 IDT 2002
-CPU: Intel XScale-PXA250 revision 3
-CPU: D undefined 5 cache
-CPU: I cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
-CPU: D cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
-Machine: Intel DBPXA250 Development Platform
-On node 0 totalpages: 4096
-zone(0): 4096 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: console=ttyS0,38400n8 root=/dev/mtdblock2
-Calibrating delay loop... 99.12 BogoMIPS
-Memory: 16MB = 16MB total
-Memory: 14596KB available (1317K code, 218K data, 56K init)
-Security Scaffold v1.0.0 initialized
-Dentry-cache hash table entries: 2048 (order: 2, 16384 bytes)
-Inode-cache hash table entries: 1024 (order: 1, 8192 bytes)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-POSIX conformance testing by UNIFIX
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Initializing RT netlink socket
-Starting kswapd
-BIO: pool of 256 setup, 14Kb (56 bytes/bio)
-biovec: init pool 0, 1 entries, 12 bytes
-biovec: init pool 1, 4 entries, 48 bytes
-biovec: init pool 2, 16 entries, 192 bytes
-biovec: init pool 3, 64 entries, 768 bytes
-biovec: init pool 4, 128 entries, 1536 bytes
-biovec: init pool 5, 256 entries, 3072 bytes
-Journalled Block Device driver loaded
-JFFS version 1.0, (C) 1999, 2000  Axis Communications AB
-JFFS2 version 2.1. (C) 2001, 2002 Red Hat, Inc.
-Capability LSM initialized
-NetWinder Floating Point Emulator V0.95 (c) 1998-1999 Rebel.com
-Serial: 8250/16550 driver $Revision: 1.90 $ IRQ sharing disabled
-ttyS0 at  (irq = 14) is a PXA
-pty: 256 Unix98 ptys configured
-block: 32 slots per queue, batch=8
-RAMDISK driver initialized: 16 RAM disks of 8192K size 1024 blocksize
-Probing Lubbock flash at physical address 0x00000000
-Using static partition definition
-Creating 4 MTD partitions on "Lubbock flash":
-0x00000000-0x00100000 : "ArmBoot"
-mtd: Giving out device 0 to ArmBoot
-0x00100000-0x00200000 : "Kernel Image"
-mtd: Giving out device 1 to Kernel Image
-0x00200000-0x01000000 : "Root Filesystem"
-mtd: Giving out device 2 to Root Filesystem
-0x01000000-0x01200000 : "Other Filesystem"
-mtd: Giving out device 3 to Other Filesystem
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 1024 bind 2048)
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-mtdblock_open
-ok
-mtdblock: read on "Root Filesystem" at 0x400, size 0x400
-mtdblock_release
-ok
-mtdblock_open
-ok
-mtdblock: read on "Root Filesystem" at 0x400, size 0x400
-mtdblock_release
-ok
-mtdblock_open
-ok
-VFS: Mounted root (jffs filesystem) readonly.
-Freeing init memory: 56K
-Warning: unable to open an initial console.
-Kernel panic: No init found.  Try passing init= option to kernel.
+--_----------=_1036549852166762
+Content-Disposition: attachment; filename="patchin.sh.diff"
+Content-Transfer-Encoding: base64
+Content-Type: application/unknown; name="patchin.sh.diff"
 
+NDdhNDgsNTMKPiAjCShKZWZmcmV5IExpbSkgaW5jbHVkZSBzeW1saW5rcyBm
+b3IgamZmczIgY29kZSBhcyB3ZWxsCj4gIwo+IGxuIC1zZiAkVE9QRElSL2Zz
+L2pmZnMyLyouW2NoXSBmcy9qZmZzMgo+IGxuIC1zZiAkVE9QRElSL2ZzL2pm
+ZnMyLypha2VmaWxlIGZzL2pmZnMyCj4gbG4gLXNmICRUT1BESVIvaW5jbHVk
+ZS9saW51eC9qZmZzMiogaW5jbHVkZS9saW51eC9qZmZzMioKPiAK
 
-/**********************************************************************\
-
-
-Thanks,
-
-David
+--_----------=_1036549852166762--
