@@ -1,26 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
+Received: from wproxy.gmail.com ([64.233.184.205])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CuKFQ-0005LN-8U
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 19:44:29 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1106872400.6480.201.camel@localhost.localdomain>
-References: <Pine.LNX.4.58.0501260841380.3222@phoenix.infradead.org>
-	<1106730647.6480.190.camel@localhost.localdomain>
-	<Pine.LNX.4.58.0501271719470.11160@phoenix.infradead.org>
-	<1106857409.21196.58.camel@tglx.tec.linutronix.de>
-	<1106865326.783.146.camel@baythorne.infradead.org>
-	<1106871577.21196.155.camel@tglx.tec.linutronix.de>
-	<1106872400.6480.201.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Fri, 28 Jan 2005 01:44:25 +0100
-Message-Id: <1106873065.21196.168.camel@tglx.tec.linutronix.de>
+	id 1CuKoc-0005iy-MH
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2005 20:20:51 -0500
+Received: by wproxy.gmail.com with SMTP id 68so333305wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Jan 2005 17:20:49 -0800 (PST)
+Message-ID: <6934efce05012717207271fb10@mail.gmail.com>
+Date: Thu, 27 Jan 2005 17:20:49 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: MTD List <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 memory consumption
-Reply-To: tglx@linutronix.de
+Subject: Unit test for cfi_cmdset_0001.c
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-01-28 at 00:33 +0000, David Woodhouse wrote:
-> On Fri, 2005-01-28 at 01:19 +0100, Thomas Gleixner wrote:
-> > Sure. I'm aware of O_SYNC, fsync() and sync().
-> > 
-> > Please reread http://sources.redhat.com/jffs2/jffs2.pdf
-> 
-> That isn't a promise that I'll continue to guarantee anything that POSIX
-> doesn't guarantee, especially in JFFS3.
-> 
-> I'm not going to object to a mount option which forces O_SYNC behaviour
-> for all files. But there's no need for that to be the default.
+I plan on creating a unit test based on cutest.sourceforge.net for
+cfi_cmdset_0001.c.
+In order to stub out the various functions inside I will have to:
 
-Agreed. 
+1. Manually strip out functions for each version.
+2. Add #if''s
+3. fork this file into 2-3 files.
 
-If it is JFFS3 it can have the default O_NOSYNC, but the option O_SYNC
-still requires to solve the underlaying problem.
+I prefer option 3.  As it seems cleaner to me and more maintainable. 
+But I want to know which option is more "commitable."   Of course the
+test be made availiable, I would hope we can get the tests commited
+too.  CuTest is zlib licenced.  Is that a problem?
 
-tglx
+The reason for the unit tests is to help us find bugs in the code
+paths not easily tested and to enable more rapid updates for new flash
+or features mtd doesn't currently support.
+
+Thoughts, flames, jokes?
+
+,Jared
