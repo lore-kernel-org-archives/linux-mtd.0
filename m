@@ -1,16 +1,14 @@
 Received: from mail.redswitch.com ([206.14.68.143] helo=redswitch.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 182Hd5-0003zl-00
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Oct 2002 21:52:27 +0100
-Received: from [192.168.5.81] (account xjin HELO redswitch.com)
-  by redswitch.com (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 2558566 for linux-mtd@lists.infradead.org; Thu, 17 Oct 2002 13:52:40 -0700
-Message-ID: <3DAF2486.8000006@redswitch.com>
-Date: Thu, 17 Oct 2002 13:58:46 -0700
+	id 182HvD-00043q-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Oct 2002 22:11:11 +0100
+Message-ID: <3DAF28EB.9090602@redswitch.com>
+Date: Thu, 17 Oct 2002 14:17:31 -0700
 From: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: check disk usage
+To: linux-mtd@lists.infradead.org, Wolfgang Denk <wd@denx.de>
+Subject: Re: JFFS2 basic question
+References: <20021017104318.89BA9FAA7@denx.denx.de> <3DAF218C.4020503@redswitch.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
@@ -24,25 +22,14 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi,
-
-My root filesystem is jffs2, which is mounted by kernel getting booting 
-parameters "root=/dev/mtdblock3 rw" from the command line. I noticed 
-that running 'df -k' only shows the usage of those devices that are 
-mounted explicitly by 'mount' command but not the root filesystem. The 
-following is the result of 'df -k' running on busybox-0.60.2.
-
-# df -k
-Filesystem           1k-blocks      Used Available Use% Mounted on
-/dev/mtdblock0           16384       688     15696   4% /usr
-/dev/mtdblock1           16384      5836     10548  36% /home
-/dev/mtdblock2           16384       652     15732   4% /var
-
-On a regular linux system, e.g. RedHat, we do get information about the 
-usage of the root filesytem, right?
-
-Is this a problem? If it's is, is it related to jffs2 or busybox?
-
-Thanks,
+> Denk,
+> 
+>> It worked fine for me, in a couple of configurations,  running  2.4.4
+>> on misc PowerPC systems.
+> 
+> Do you mean that the latest mtd/jffs2 code from CVS can be compiled with 
+> 2.4.4 distribution from your website? I did succeed in doing this.
+                                           ^^^^^^
+Sorry. Made a mistake. I did NOT succeed in doing this.
 
 Shawn.
